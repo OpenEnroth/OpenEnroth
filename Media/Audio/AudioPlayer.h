@@ -117,7 +117,7 @@ class AudioPlayer {
     } SoundHeader;
 
  public:
-    AudioPlayer() : bPlayerReady(false), currentMusicTrack(0) {}
+    AudioPlayer() : bPlayerReady(false), currentMusicTrack(0), uMasterVolume(0) {}
     virtual ~AudioPlayer() {}
 
     void Initialize();
@@ -140,12 +140,13 @@ class AudioPlayer {
     void MessWithChannels();
     bool FindSound(const std::string &pName, struct SoundHeader *header);
     PMemBuffer LoadSound(const std::string &pSoundName);
+    PMemBuffer LoadSound(int uSoundID);
     void PlaySpellSound(unsigned int spell, unsigned int pid);
 
  protected:
     bool bPlayerReady;
     int currentMusicTrack;
-    unsigned int uMasterVolume;
+    float uMasterVolume;
     PAudioTrack pCurrentMusicTrack;
     std::ifstream fAudioSnd;
     std::map<String, SoundHeader> mSoundHeaders;

@@ -54,9 +54,9 @@ void GUIWindow_RestWindow::Update() {
 
 void PrepareToLoadRestUI() {
     if (!_506F14_resting_stage) pAudioPlayer->StopChannels(-1, -1);
-    if (current_screen_type != SCREEN_GAME) {
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
         pGUIWindow_CurrentMenu->Release();
-        current_screen_type = SCREEN_GAME;
+        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
         viewparams->bRedrawGameUI = true;
     }
     pEventTimer->Pause();
@@ -90,7 +90,7 @@ void PrepareToLoadRestUI() {
 GUIWindow_Rest::GUIWindow_Rest()
     : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
     PrepareToLoadRestUI();
-    current_screen_type = SCREEN_REST;
+    current_screen_type = CURRENT_SCREEN::SCREEN_REST;
 
     _507CD4_RestUI_hourglass_anim_controller = 0;
     rest_ui_restmain = assets->GetImage_Alpha("restmain");

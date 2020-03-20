@@ -38,13 +38,13 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
 
     String filename;
     switch (pParty->alignment) {
-        case PartyAlignment_Good:
+    case PartyAlignment::PartyAlignment_Good:
             filename = "evt02-b";
             break;
-        case PartyAlignment_Neutral:
+        case PartyAlignment::PartyAlignment_Neutral:
             filename = "evt02";
             break;
-        case PartyAlignment_Evil:
+        case PartyAlignment::PartyAlignment_Evil:
             filename = "evt02-c";
             break;
         default:
@@ -128,7 +128,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                                        int button, const String &hint)
     : GUIWindow(x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
-    current_screen_type = SCREEN_NPC_DIALOGUE;
+    current_screen_type = CURRENT_SCREEN::SCREEN_NPC_DIALOGUE;
     pBtn_ExitCancel =
         CreateButton(0x1D7u, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
                      localization->GetString(79),  // "Exit"
@@ -538,7 +538,7 @@ GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(
     : GUIWindow(x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
     pKeyActionMap->EnterText(0, 15, this);
-    current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
+    current_screen_type = CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG;
 }
 
 void GUIWindow_GenericDialogue::Release() {

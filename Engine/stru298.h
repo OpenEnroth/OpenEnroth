@@ -14,11 +14,11 @@ struct stru298 {
     int16_t pXs[100];
     int16_t pYs[100];
     int16_t pZs[100];
-    int16_t field_324[100];
+    int16_t field_324[100];  // range?
     char field_3EC[100];
     char field_450[100];
     Vec3_int_ vec_4B4[100];
 };
 #pragma pack(pop)
 
-extern stru298 AttackerInfo;
+extern stru298 AttackerInfo;  // for area of effect damage

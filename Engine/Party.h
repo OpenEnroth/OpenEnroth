@@ -130,7 +130,7 @@ struct ActionQueue {
 };
 #pragma pack(pop)
 
-typedef enum PartyAlignment : uint32_t {
+typedef enum class PartyAlignment : uint32_t {
     PartyAlignment_Good = 0,
     PartyAlignment_Neutral = 1,
     PartyAlignment_Evil = 2
@@ -261,7 +261,7 @@ struct Party {
     unsigned int bFlying;
     char field_708;
     unsigned __int8 hirelingScrollPosition;
-    char field_70A;
+    char cNonHireFollowers;  // number of non hireling party guests
     char field_70B;
     unsigned int uCurrentYear;
     unsigned int uCurrentMonth;
@@ -320,6 +320,7 @@ struct Party {
     float flt_TorchlightColorR;
     float flt_TorchlightColorG;
     float flt_TorchlightColorB;
+    float TorchLightLastIntensity;
 };
 
 extern Party *pParty;  // idb

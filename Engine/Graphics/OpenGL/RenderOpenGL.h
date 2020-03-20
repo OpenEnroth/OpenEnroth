@@ -160,7 +160,6 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                         Texture *texture);
 
-    virtual void am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY, int a3);
     virtual void am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                int blend_mode);
 

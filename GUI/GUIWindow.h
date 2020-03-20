@@ -518,7 +518,7 @@ class OnCastTargetedSpell : public GUIWindow {
     virtual ~OnCastTargetedSpell() {}
 };
 
-enum CURRENT_SCREEN {
+enum class CURRENT_SCREEN {
     SCREEN_GAME = 0,
     SCREEN_MENU = 1,
     SCREEN_OPTIONS = 2,

@@ -184,7 +184,7 @@ float AudioPlayer::MusicGetVolume() {
 void AudioPlayer::SetMasterVolume(int level) {
     level = max(0, level);
     level = min(9, level);
-    uMasterVolume = (unsigned int)(2.f * pSoundVolumeLevels[level]);
+    uMasterVolume = (2.f * pSoundVolumeLevels[level]);
 }
 
 void AudioPlayer::StopAll(int sample_id) {
@@ -207,7 +207,15 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     SoundInfo &si = mapSounds[eSoundID];
 
     if (!si.sample) {
-        PMemBuffer buffer = LoadSound(si.sName);
+        PMemBuffer buffer;
+
+        if (si.sName == "") {  // enable this for bonus sound effects
+            // logger->Warning(L"Trying to load sound \"%i\"", eSoundID);
+            // buffer = LoadSound(int(eSoundID));
+        } else {
+            buffer = LoadSound(si.sName);
+        }
+
         if (!buffer) {
             logger->Warning(L"Failed to load sound \"%S\"", si.sName.c_str());
             return;
@@ -222,6 +230,9 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     if (!si.sample) {
         return;
     }
+
+    si.sample->SetVolume(uMasterVolume);
+
 
     if (pid == 0) {  // generic sound like from UI
         si.sample->Play();
@@ -252,6 +263,8 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 return;
             }
             case OBJECT_Player: {
+                si.sample->SetVolume((2.f * pSoundVolumeLevels[engine->config->voice_level]));
+                if (object_id == 5) si.sample->Stop();
                 si.sample->Play();
                 return;
             }
@@ -271,12 +284,12 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
             case OBJECT_Decoration: {
                 assert(object_id < pLevelDecorations.size());
 
-                provider->SetListenerPosition((float)pParty->vPosition.x,
-                                              (float)pParty->vPosition.y,
-                                              (float)pParty->vPosition.z);
-                si.sample->SetPosition((float)pLevelDecorations[object_id].vPosition.x,
-                                       (float)pLevelDecorations[object_id].vPosition.y,
-                                       (float)pLevelDecorations[object_id].vPosition.z, 2000.f);
+                provider->SetListenerPosition((float)pParty->vPosition.x / 50.f,
+                                              (float)pParty->vPosition.y / 50.f,
+                                              (float)pParty->vPosition.z / 50.f);
+                si.sample->SetPosition((float)pLevelDecorations[object_id].vPosition.x / 50.f,
+                                       (float)pLevelDecorations[object_id].vPosition.y / 50.f,
+                                       (float)pLevelDecorations[object_id].vPosition.z / 50.f, 2000.f);
 
                 si.sample->Play(true, true);
                 return;
@@ -369,6 +382,7 @@ void PlayLevelMusic() {
     }
 }
 
+
 bool AudioPlayer::FindSound(const std::string &pName, struct SoundHeader *header) {
     if (header == nullptr) {
         return false;
@@ -383,6 +397,44 @@ bool AudioPlayer::FindSound(const std::string &pName, struct SoundHeader *header
 
     return true;
 }
+
+
+PMemBuffer AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by ID index) - plays some interesting files
+    SoundHeader header = { 0 };
+
+    if (uSoundID < 0 || uSoundID > mSoundHeaders.size())
+        return nullptr;
+
+    // iterate through to get sound by int ID
+    std::map<String, SoundHeader>::iterator it = mSoundHeaders.begin();
+    std::advance(it, uSoundID);
+
+    if (it == mSoundHeaders.end()) {
+        return nullptr;
+    }
+
+    header = it->second;
+
+    // read into buffer
+    PMemBuffer buffer = AllocMemBuffer(header.uDecompressedSize);
+
+    fAudioSnd.seekg(header.uFileOffset, std::ios_base::beg);
+    if (header.uCompressedSize >= header.uDecompressedSize) {
+        header.uCompressedSize = header.uDecompressedSize;
+        if (header.uDecompressedSize) {
+            fAudioSnd.read((char*)buffer->GetData(), header.uDecompressedSize);
+        } else {
+            logger->Warning(L"Can't load sound file!");
+        }
+    } else {
+        PMemBuffer compressed = AllocMemBuffer(header.uCompressedSize);
+        fAudioSnd.read((char*)compressed->GetData(), header.uCompressedSize);
+        buffer = zlib::Uncompress(compressed);
+    }
+
+    return buffer;
+}
+
 
 PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
     SoundHeader header = { 0 };

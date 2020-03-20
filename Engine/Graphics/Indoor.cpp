@@ -100,7 +100,7 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
 
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
-    int v5;           // eax@4
+    int TorchLightPower;           // eax@4
     unsigned int v7;  // ebx@8
     BLVSector *v8;    // esi@8
 
@@ -112,13 +112,33 @@ void PrepareDrawLists_BLV() {
     uNumBillboardsToDraw = 0;
 
     if (!_4D864C_force_sw_render_rules || !engine->config->TorchlightEffect()) {  // lightspot around party
-        v5 = 800;
-        if (pParty->TorchlightActive())
-            v5 *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+        TorchLightPower = 800;
+        if (pParty->TorchlightActive()) {
+            // max is 800 * torchlight
+            // min is 800
+            int MinTorch = TorchLightPower;
+            int MaxTorch = TorchLightPower * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+
+            // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
+            int ran = rand();
+            int mod = ((ran - (RAND_MAX * .4)) / 200);
+            TorchLightPower = (pParty->TorchLightLastIntensity + mod);
+
+            // clamp
+            if (TorchLightPower < MinTorch)
+                TorchLightPower = MinTorch;
+            if (TorchLightPower > MaxTorch)
+                TorchLightPower = MaxTorch;
+        }
+
+        pParty->TorchLightLastIntensity = TorchLightPower;
+
+        //       double nexLightIntensity(lastIntensity)
+        //   return clamp(0, 1, lastIntensity + (rand() - .3) / 100)
 
         pMobileLightsStack->AddLight(
             pIndoorCameraD3D->vPartyPos.x, pIndoorCameraD3D->vPartyPos.y,
-            pIndoorCameraD3D->vPartyPos.z, pBLVRenderParams->uPartySectorID, v5,
+            pIndoorCameraD3D->vPartyPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
             floorf(pParty->flt_TorchlightColorR + 0.5f),
             floorf(pParty->flt_TorchlightColorG + 0.5f),
             floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
@@ -484,7 +504,9 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                 }
 
                 if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
-                    lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, pVertices, 0);
+                    // if (pFace->uAttributes & FACE_OUTLINED) {
+                        lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, pVertices, 0);
+                    //}
 
                 // bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *a3, unsigned int uNumVertices,
                // RenderVertexSoft *VertexRenderList, IndoorCameraD3D_Vec4 *a6, char uClipFlag) {
@@ -1068,7 +1090,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     String dlv_filename = String(filename);
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
-    bool _v244 = false;
+    bool bResetSpawn = false;
     size_t dlv_size = 0;
     rawData = pGames_LOD->LoadCompressed(dlv_filename, &dlv_size);
     if (rawData != nullptr) {
@@ -1076,14 +1098,14 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         memcpy(&dlv, pData, sizeof(DDM_DLV_Header));
         pData += sizeof(DDM_DLV_Header);
     } else {
-        _v244 = true;
+        bResetSpawn = true;
     }
 
     if (dlv.uNumFacesInBModels > 0) {
         if (dlv.uNumDecorations > 0) {
             if (dlv.uNumFacesInBModels != uNumFaces ||
                 dlv.uNumDecorations != uNumLevelDecorations)
-                _v244 = true;
+                bResetSpawn = true;
         }
     }
 
@@ -1091,22 +1113,22 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         respawn_interval_days = 0x1BAF800;
     }
 
-    bool _a = false;
+    bool bRespawnLocation = false;
     if (num_days_played - dlv.uLastRepawnDay >= respawn_interval_days &&
         (pCurrentMapName != "d29.dlv")) {
-        _a = true;
+        bRespawnLocation = true;
     }
 
-    char v203[875];
-    if (_v244 || (_a || !dlv.uLastRepawnDay)) {
-        if (_v244) {
-            memset(v203, 0, 875);
-        } else if (_a || !dlv.uLastRepawnDay) {
-            memcpy(v203, pData, 875);
+    char SavedOutlines[875];
+    if (bResetSpawn || (bRespawnLocation || !dlv.uLastRepawnDay)) {
+        if (bResetSpawn) {
+            memset(SavedOutlines, 0, 875);
+        } else if (bRespawnLocation || !dlv.uLastRepawnDay) {
+            memcpy(SavedOutlines, pData, 875);
         }
 
         dlv.uLastRepawnDay = num_days_played;
-        if (_v244) ++dlv.uNumRespawns;
+        if (!bResetSpawn) ++dlv.uNumRespawns;
         *(int *)pDest = 1;
 
         pData = (char*)pGames_LOD->LoadCompressed(dlv_filename);
@@ -1118,7 +1140,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     memcpy(_visible_outlines, pData, 875);
     pData += 875;
 
-    if (*(int *)pDest) memcpy(_visible_outlines, v203, 875);
+    if (*(int *)pDest) memcpy(_visible_outlines, SavedOutlines, 875);
 
     for (uint i = 0; i < pMapOutlines->uNumOutlines; ++i) {
         BLVMapOutline *pVertex = &pMapOutlines->pOutlines[i];
@@ -1186,6 +1208,11 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     // v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
     // v171 = blv.uDoors_ddata_Size;
     ptr_0002B4_doors_ddata = (uint16_t*)malloc(blv.uDoors_ddata_Size);  //, "L.DData");
+    if (ptr_0002B4_doors_ddata == nullptr) {
+        log->Warning(L"Malloc error");
+        Error("Malloc");  // is this recoverable
+    }
+
     memcpy(ptr_0002B4_doors_ddata, pData, blv.uDoors_ddata_Size);
     pData += blv.uDoors_ddata_Size;
 
@@ -1718,7 +1745,7 @@ void UpdateActors_BLV() {
     unsigned int actor_id;   // [sp+5Ch] [bp-4h]@1
 
     if (engine->config->no_actors)
-        uNumActors = 0;
+        return;  // uNumActors = 0;
 
     for (actor_id = 0; actor_id < uNumActors; actor_id++) {
         if (pActors[actor_id].uAIState == Removed ||
@@ -2698,7 +2725,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
             }
         } else if (v38 < result) {
             result = blv_floor_level[i];
-            if (blv_floor_level[i] <= -29000) __debugbreak();  // crashes here
+            if (blv_floor_level[i] < -29000) __debugbreak();  // crashes here when <=
             *pFaceID = blv_floor_id[i];
         }
     }
@@ -2707,7 +2734,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
 }
 
 //----- (0043FDED) --------------------------------------------------------
-void IndoorLocation::PrepareActorRenderList_BLV() {
+void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdoorlocation ??
     unsigned int v4;  // eax@5
     int v6;           // esi@5
     int v8;           // eax@10
@@ -2749,6 +2776,8 @@ void IndoorLocation::PrepareActorRenderList_BLV() {
             v9 = pSpriteFrameTable->GetFrame(
                 pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], v8);
 
+        if (v9->icon_name == "null") continue;
+
         v41 = 0;
         if (v9->uFlags & 2) v41 = 2;
         if (v9->uFlags & 0x40000) v41 |= 0x40;
@@ -2782,9 +2811,14 @@ void IndoorLocation::PrepareActorRenderList_BLV() {
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
-                        pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                        pActors[i].uAttributes |= ACTOR_VISIBLE;
                         pBillboardRenderList[uNumBillboardsToDraw - 1]
                             .hwsprite = v9->hw_sprites[v6];
+
+                        // error catching
+                        if (v9->hw_sprites[v6]->texture->GetHeight() == 0 || v9->hw_sprites[v6]->texture->GetWidth() == 0)
+                            __debugbreak();
+
                         pBillboardRenderList[uNumBillboardsToDraw - 1]
                             .uPalette = v9->uPaletteIndex;
                         pBillboardRenderList[uNumBillboardsToDraw - 1] .uIndoorSectorID = pActors[i].uSectorID;
@@ -2851,7 +2885,12 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                                             pSpriteObjects[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
                     int v7 = pSpriteObjects[i].uFacing;
                     int v9 = ((int)(stru_5C6E00->uIntegerPi + ((int)stru_5C6E00->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
+
                     pBillboardRenderList[uNumBillboardsToDraw].hwsprite = v4->hw_sprites[v9];
+                    // error catching
+                    if (v4->hw_sprites[v9]->texture->GetHeight() == 0 || v4->hw_sprites[v9]->texture->GetWidth() == 0)
+                        __debugbreak();
+
                     if (v4->uFlags & 0x20)
                         pSpriteObjects[i].vPosition.z -= (int)(fixpoint_mul(v4->scale._internal, v4->hw_sprites[v9]->uBufferHeight) / 2);
 
@@ -2890,7 +2929,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                         int projected_y = 0;
                         pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-                        assert(uNumBillboardsToDraw < 500);
+                        assert(uNumBillboardsToDraw < 499);
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
@@ -3043,6 +3082,10 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v10 = abs(pLevelDecorations[uDecorationID].vPosition.x +
               pLevelDecorations[uDecorationID].vPosition.y);
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + v10);
+
+    // error catching
+    if (v11->icon_name == "null") __debugbreak();
+
     v30 = 0;
     if (v11->uFlags & 2) v30 = 2;
     if (v11->uFlags & 0x40000) v30 |= 0x40;
@@ -3071,6 +3114,10 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite =
                 v11->hw_sprites[v9];
+
+            if (v11->hw_sprites[v9]->texture->GetHeight() == 0 || v11->hw_sprites[v9]->texture->GetWidth() == 0)
+                __debugbreak();
+
             pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette =
                 v11->uPaletteIndex;
             pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
@@ -3714,7 +3761,7 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
                 if (pIndoor->pFaces[v17].uAttributes & FACE_HAS_EVENT ||
                     !pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID)
                     return 1;
-                if (current_screen_type != SCREEN_BRANCHLESS_NPC_DIALOG)
+                if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG)
                     EventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID,
                                    a1, 1);
             }
@@ -3753,8 +3800,8 @@ bool PortalFrustrum(int pNumVertices,
     __int16 v38;            // dx@67
     int v46;                // edx@87
     int v49;                // esi@93
-    int v53;                // [sp+Ch] [bp-34h]@44
-    int v54;                // [sp+10h] [bp-30h]@0
+    int v53 = 0;                // [sp+Ch] [bp-34h]@44
+    int v54 = 0;                // [sp+10h] [bp-30h]@0
     int min_y_ID2;          // [sp+14h] [bp-2Ch]@12
     int v59;                // [sp+14h] [bp-2Ch]@87
     int v61;                // [sp+1Ch] [bp-24h]@29
@@ -4603,10 +4650,10 @@ int GetPortalScreenCoord(unsigned int uFaceID) {
 int sub_4AAEA6_transform(RenderVertexSoft *a1) {
     double v4;  // st5@2
     double v5;  // st4@3
-    float v11;  // [sp+8h] [bp-8h]@2
-    float v12;  // [sp+8h] [bp-8h]@6
-    float v13;  // [sp+Ch] [bp-4h]@2
-    float v14;  // [sp+Ch] [bp-4h]@6
+    double v11;  // [sp+8h] [bp-8h]@2
+    double v12;  // [sp+8h] [bp-8h]@6
+    double v13;  // [sp+Ch] [bp-4h]@2
+    double v14;  // [sp+Ch] [bp-4h]@6
 
     if (pIndoorCameraD3D->sRotationX) {
         v13 = a1->vWorldPosition.x - (double)pParty->vPosition.x;
@@ -4651,7 +4698,7 @@ int sub_4AAEA6_transform(RenderVertexSoft *a1) {
     return 0;
 }
 //----- (00472866) --------------------------------------------------------
-void BLV_ProcessPartyActions() {
+void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
     int v1;                   // ebx@1
     int v2;                   // edi@1
     double v10;               // st7@27
@@ -4926,9 +4973,7 @@ void BLV_ProcessPartyActions() {
                      party_z <= floor_level + 6 && pParty->uFallSpeed <= 0) &&
                     pParty->field_24) {
                     hovering = true;
-                    pParty->uFallSpeed =
-                        (signed __int64)((double)(pParty->field_24 << 6) * 1.5 +
-                                         (double)pParty->uFallSpeed);
+                    pParty->uFallSpeed += pParty->field_24 * 96;
                 }
                 break;
             default:
@@ -5297,12 +5342,12 @@ int GetAlertStatus() {
 }
 
 int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
-    int result;            // eax@8
+    int result = 0;            // eax@8
     int v6;                // edi@11
     int v7;                // ebx@11
     int v9;                // ebx@12
     int v10;               // eax@12
-    char v11;              // zf@16
+    char v11 = 0;              // zf@16
     int v12;               // edi@20
     int v13;               // eax@20
     int v14;               // ebx@20
@@ -5313,7 +5358,7 @@ int _45063B_spawn_some_monster(MapInfo *a1, int a2) {
     SpawnPointMM7 v19;     // [sp+Ch] [bp-38h]@1
     int v22;               // [sp+2Ch] [bp-18h]@3
     unsigned int uFaceID;  // [sp+38h] [bp-Ch]@10
-    int v26;               // [sp+3Ch] [bp-8h]@11
+    int v26 = 0;               // [sp+3Ch] [bp-8h]@11
     int v27;               // [sp+40h] [bp-4h]@11
 
     if (!uNumActors) return 0;
@@ -5459,7 +5504,7 @@ bool sub_4075DB(int x, int y, int z, BLVFace *face) {
     dword_4F5D98_xs[face->uNumVertices] = dword_4F5D98_xs[0];
     dword_4F5CC8_ys[face->uNumVertices] = dword_4F5CC8_ys[0];
     for (int i = 0; i < face->uNumVertices && a3a < 2; i++) {
-        if (dword_4F5CC8_ys[i] >= v8 ^ (dword_4F5CC8_ys[i + 1] >= v8)) {
+        if ((dword_4F5CC8_ys[i] >= v8) ^ (dword_4F5CC8_ys[i + 1] >= v8)) {
             // if( dword_4F5D98_xs[i + 1] >= a4a || dword_4F5D98_xs[i] >= a4a)
             if (!(dword_4F5D98_xs[i + 1] >= a4a && dword_4F5D98_xs[i] < a4a)) {
                 if ((dword_4F5D98_xs[i + 1] < a4a && dword_4F5D98_xs[i] >= a4a)) {
@@ -5520,7 +5565,7 @@ bool sub_4077F1(int a1, int a2, int a3, ODMFace *face, BSPVertexBuffer *a5) {
     dword_4F5B24_ys[face->uNumVertices + 1] = dword_4F5B24_ys[1];
     for (int i = 0; i < face->uNumVertices; i++) {
         if (a5a >= 2) break;
-        if (dword_4F5B24_ys[i + 1] >= a3 ^ (dword_4F5B24_ys[i + 2] >= a3)) {
+        if ((dword_4F5B24_ys[i + 1] >= a3) ^ (dword_4F5B24_ys[i + 2] >= a3)) {
             if (dword_4F5BF4_xs[i + 2] >= a4a || dword_4F5BF4_xs[i] >= a4a) {
                 if (dword_4F5BF4_xs[i + 2] >= a4a &&
                     dword_4F5BF4_xs[i + 1] >= a4a) {
@@ -5553,13 +5598,13 @@ bool sub_4077F1(int a1, int a2, int a3, ODMFace *face, BSPVertexBuffer *a5) {
 
 //----- (0049B04D) --------------------------------------------------------
 void stru154::GetFacePlaneAndClassify(ODMFace *a2, BSPVertexBuffer *a3) {
-    Vec3_float_ v;  // [sp+4h] [bp-Ch]@1
-    float v7;
+    Vec3_float_ OutPlaneNorm;
+    float OutPlaneDist;
 
-    v.x = 0.0;
-    v.y = 0.0;
-    v.z = 0.0;
-    GetFacePlane(a2, a3, &v, &v7);
+    OutPlaneNorm.x = 0.0;
+    OutPlaneNorm.y = 0.0;
+    OutPlaneNorm.z = 0.0;
+    GetFacePlane(a2, a3, &OutPlaneNorm, &OutPlaneDist);
 
     if (fabsf(a2->pFacePlane.vNormal.z) < 1e-6f)
         polygonType = POLYGON_VerticalWall;
@@ -5569,10 +5614,10 @@ void stru154::GetFacePlaneAndClassify(ODMFace *a2, BSPVertexBuffer *a3) {
     else
         polygonType = POLYGON_InBetweenFloorAndWall;
 
-    face_plane.vNormal.x = v.x;
-    face_plane.vNormal.y = v.y;
-    face_plane.vNormal.z = v.z;
-    face_plane.dist = v7;
+    face_plane.vNormal.x = OutPlaneNorm.x;
+    face_plane.vNormal.y = OutPlaneNorm.y;
+    face_plane.vNormal.z = OutPlaneNorm.z;
+    face_plane.dist = OutPlaneDist;
 }
 
 //----- (0049B0C9) --------------------------------------------------------

@@ -209,6 +209,8 @@ bool Image::LoadImageData() {
         }
     }
 
+    if ((width == 0 || height == 0) && initialized) __debugbreak();
+
     return initialized;
 }
 
@@ -218,6 +220,7 @@ unsigned int Image::GetWidth() {
     }
 
     if (initialized) {
+        if (width == 0) __debugbreak();
         return width;
     }
 
@@ -230,6 +233,7 @@ unsigned int Image::GetHeight() {
     }
 
     if (initialized) {
+        if (height == 0) __debugbreak();
         return height;
     }
 
@@ -238,6 +242,8 @@ unsigned int Image::GetHeight() {
 
 Image *Image::Create(unsigned int width, unsigned int height,
                      IMAGE_FORMAT format, const void *pixels) {
+    if (width == 0 || height == 0) __debugbreak();
+
     Image *img = new Image(false);
     if (img) {
         img->initialized = true;
@@ -253,9 +259,12 @@ Image *Image::Create(unsigned int width, unsigned int height,
         } else {
             memset(img->pixels[format], 0, num_pixels_bytes);
         }
-    }
 
-    return img;
+        return img;
+
+    } else {
+        return nullptr;
+    }
 }
 
 const void *Image::GetPixels(IMAGE_FORMAT format) {

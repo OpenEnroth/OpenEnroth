@@ -88,13 +88,13 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
 
     String filename;
     switch (pParty->alignment) {
-        case PartyAlignment_Good:
+        case PartyAlignment::PartyAlignment_Good:
             filename = "evt02-b";
             break;
-        case PartyAlignment_Neutral:
+        case PartyAlignment::PartyAlignment_Neutral:
             filename = "evt02";
             break;
-        case PartyAlignment_Evil:
+        case PartyAlignment::PartyAlignment_Evil:
             filename = "evt02-c";
             break;
         default:
@@ -170,7 +170,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     String hint = this->sHint = transition_button_label;
 
     prev_screen_type = current_screen_type;
-    current_screen_type = SCREEN_INPUT_BLV;
+    current_screen_type = CURRENT_SCREEN::SCREEN_INPUT_BLV;
     pBtn_ExitCancel = CreateButton(
         0x236u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionWindowCloseBtn, 0,
         'N', localization->GetString(34), {{ui_buttdesc2}});  // Cancel / Отмена
@@ -190,13 +190,13 @@ GUIWindow_Travel::GUIWindow_Travel()
     pEventTimer->Pause();
 
     switch (pParty->alignment) {
-        case PartyAlignment_Good:
+        case PartyAlignment::PartyAlignment_Good:
             pContainer = "evt02-b";
             break;
-        case PartyAlignment_Neutral:
+        case PartyAlignment::PartyAlignment_Neutral:
             pContainer = "evt02";
             break;
-        case PartyAlignment_Evil:
+        case PartyAlignment::PartyAlignment_Evil:
             pContainer = "evt02-c";
             break;
         default:
@@ -215,7 +215,7 @@ GUIWindow_Travel::GUIWindow_Travel()
     String hint = this->sHint = transition_button_label;
 
     prev_screen_type = current_screen_type;
-    current_screen_type = SCREEN_CHANGE_LOCATION;
+    current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
     pBtn_ExitCancel = CreateButton(
         566, 445, 75, 33, 1, 0, UIMSG_CHANGE_LOCATION_ClickCencelBtn, 0, 'N',
         localization->GetString(156),

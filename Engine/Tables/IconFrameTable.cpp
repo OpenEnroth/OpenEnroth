@@ -96,6 +96,11 @@ void IconFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
 
     IconFrame_MM7 *pIcons =
         (IconFrame_MM7 *)malloc(uNumIcons * sizeof(IconFrame_MM7));
+    if (pIcons == nullptr) {
+        logger->Warning(L"Malloc error");
+        Error("Malloc");  // is this recoverable
+    }
+
     memcpy(pIcons, (char *)data_mm7 + 4,
            num_mm7_frames * sizeof(IconFrame_MM7));
     // memcpy(pIcons + num_mm7_frames,                  (char *)data_mm6 + 4,

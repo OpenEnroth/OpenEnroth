@@ -12,12 +12,9 @@ $ make
 ```
 or select platform dependent [generator](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for your favorite IDE.
 
-Some useful configure variables (set as environment variable or with `-D` command line option):
 
-* `SDL2DIR` - path to SDL2 root directory
-* `FFMPEGDIR` - path to FFmpeg root directory
-* `OPENALDIR` - path to OpenAL root directory
-* `ZLIBDIR` - path to zlib root directory
+This has been tested on Visual Studio 2019 - your experiences with other IDE's may vary.
+
 
 Dependencies
 ------------
@@ -27,13 +24,26 @@ Dependencies
 * [OpenAL](https://www.openal.org/downloads/OpenAL11CoreSDK.zip) - audio support
 * [zlib](http://gnuwin32.sourceforge.net/packages/zlib.htm) - compression
 
-On Windows, you have to follow these steps:
-* run `cmd.exe`
-* type `powershell`
-* type `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted`
-* type `win/WinPrebuild.ps1 %dependecies_folder%`
-This will download and install dependencies into %dependecies_folder% using PowerShell script.
-note: windows restart required 
+These are now auto-resolved during CMake build.
+
+
+Instructions
+------------
+You will require the following installed on your computer: Git, CMake and Visual Studio 2019.
+
+* Clone, fork or download the repo "https://github.com/gp-alex/world-of-might-and-magic.git"
+* Move to folder and create a seperate build directory
+* Open CMake GUI and select the source directory and the build directory
+* Configure -> Select "Visual Studio 16 2019" for the generator and "Win32" as the optional platform
+* Generate
+* Open Project (Can now close CMake)
+* In Visual Studio 2019 Build the project
+* Once that completes set "World_of_Might_and_Magic" as the startup project and run
+
+NB - Always use a new empty folder for the build directory if you need to re-run CMake
+
+Still having problems? Try the discord chat [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)
+
 
 Coding style
 ------------

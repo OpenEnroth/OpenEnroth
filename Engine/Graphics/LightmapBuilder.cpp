@@ -86,10 +86,10 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
     // String v58;  // [sp-18h] [bp-38h]@10
                       //  double v61; // [sp+Ch] [bp-14h]@11
     float minz;       // [sp+14h] [bp-Ch]@11
-    float tX_0;
-    float tX_1;
-    float tY_0;
-    float tY_1;  // [sp+1Ch] [bp-4h]@5
+    float tX_0 = 0;
+    float tX_1 = 0;
+    float tY_0 = 0;
+    float tY_1 = 0;  // [sp+1Ch] [bp-4h]@5
 
     //  x0,y0      x1,y1 // this is actuall ccw??
     //  .____________.
@@ -919,13 +919,13 @@ int LightmapBuilder::_45CB89(RenderVertexSoft *a1, int a2) {
     int result;   // eax@2
     char *v5;     // ecx@2
     double v6;    // st7@4
-    __int16 v7;   // fps@4
+    __int16 v7 = 0;   // fps@4
     char v8;      // c0@4
     char v9;      // c2@4
     char v10;     // c3@4
     double v11;   // st7@5
     double v12;   // st7@6
-    __int16 v13;  // fps@6
+    __int16 v13 = 0;  // fps@6
     char v14;     // c0@6
     char v15;     // c2@6
     char v16;     // c3@6
@@ -1006,7 +1006,7 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3,
     double result;       // st7@8
     double v16;          // st7@9
     int v17;             // esi@9
-    const char *v18;     // ecx@9
+    const char *v18 = nullptr;     // ecx@9
     double v19;          // st7@10
     double v20;          // st7@10
     String v21;     // [sp-10h] [bp-40h]@13

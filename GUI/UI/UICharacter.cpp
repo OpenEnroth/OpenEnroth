@@ -656,7 +656,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
     pAudioPlayer->StopChannels(-1, -1);
     bRingsShownInCharScreen = 0;
     CharacterUI_LoadPaperdollTextures();
-    current_screen_type = SCREEN_CASTING;
+    current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;
     GUIWindow *CS_inventory_window = new GUIWindow_Inventory_CastSpell(
         0, 0, window->GetWidth(), window->GetHeight(), (int)this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(
@@ -931,7 +931,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
     Image *v127;                // ebx@314
     Image *v153;                // eax@370
     char *v166;                 // [sp-8h] [bp-54h]@16
-    const char *container;      // [sp-8h] [bp-54h]@79
+    const char *container = nullptr;      // [sp-8h] [bp-54h]@79
     char *v181;                 // [sp-8h] [bp-54h]@337
     int item_Y;                 // [sp+10h] [bp-3Ch]@38
     int pBodyComplection;       // [sp+24h] [bp-28h]@6
@@ -1727,14 +1727,16 @@ void CharacterUI_DrawPaperdoll(Player *player) {
             v153 = assets->GetImage_Alpha(item->GetIconName());
 
             if (item->ItemEnchanted()) {
-                if (item->AuraEffectRed())
+                // if (item->AuraEffectRed())
                     container = "sptext01";
-                else if (item->AuraEffectBlue())
+                /*else*/
+                if (item->AuraEffectBlue())
                     container = "sp28a";
                 else if (item->AuraEffectGreen())
                     container = "sp30a";
                 else if (item->AuraEffectPurple())
                     container = "sp91a";
+
                 _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
                 if (_50C9A8_item_enchantment_timer <= 0) {
                     _50C9A8_item_enchantment_timer = 0;
@@ -2734,7 +2736,7 @@ void OnPaperdollLeftClick() {
     unsigned int v50;  // [sp+38h] [bp-14h]@50
     // int v51; // [sp+3Ch] [bp-10h]@1
     int freeslot;  // [sp+40h] [bp-Ch]@5
-    ITEM_EQUIP_TYPE pEquipType;
+    ITEM_EQUIP_TYPE pEquipType = EQUIP_NONE;
     CastSpellInfo *pSpellInfo;
 
     int twohandedequip = 0;

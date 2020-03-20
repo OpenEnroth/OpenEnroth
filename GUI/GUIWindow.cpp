@@ -80,7 +80,7 @@ std::list<GUIWindow*> lWindowList;
 
 MENU_STATE sCurrentMenuID;
 
-enum CURRENT_SCREEN current_screen_type = SCREEN_VIDEO;
+enum CURRENT_SCREEN current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
 enum CURRENT_SCREEN prev_screen_type;
 
 struct GUIMessageQueue *pMessageQueue_50CBD0 = new GUIMessageQueue;
@@ -505,7 +505,7 @@ void GUIWindow::HouseDialogManager() {
     render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f,
         pNPCPortraits_y[0][0] / 480.0f,
         pDialogueNPCPortraits[(int)v4]);
-    if (current_screen_type == SCREEN_E) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f,
@@ -741,7 +741,7 @@ bool GUIWindow::Contains(unsigned int x, unsigned int y) {
 }
 
 void GUIWindow::InitializeGUI() {
-    SetUserInterface(PartyAlignment_Neutral, false);
+    SetUserInterface(PartyAlignment::PartyAlignment_Neutral, false);
     MainMenuUI_LoadFontsAndSomeStuff();
 }
 
@@ -895,7 +895,7 @@ void OnSaveLoad::Update() {
     }
     Release();
 
-    if (current_screen_type == SCREEN_SAVEGAME) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME) {
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
     } else {
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
@@ -1013,7 +1013,7 @@ void CreateMsgScrollWindow(signed int mscroll_id) {
         if (mscroll_id <= 782) {
             pGUIWindow_ScrollWindow =
                 new GUIWindow_Scroll(0, 0, window->GetWidth(),
-                    window->GetHeight(), mscroll_id - 700, 0);
+                    window->GetHeight(), mscroll_id - 700, "");
         }
     }
 }
@@ -1034,7 +1034,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
         parchment = assets->GetImage_ColorKey("parchment", 0x7FF);
     }
 
-    if (align == PartyAlignment_Evil) {
+    if (align == PartyAlignment::PartyAlignment_Evil) {
         if (bReplace) {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-C.pcx");
             game_ui_bottomframe =
@@ -1148,7 +1148,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
         }
         uGameUIFontMain = Color16(0xC8u, 0, 0);
         uGameUIFontShadow = Color16(10, 0, 0);
-    } else if (align == PartyAlignment_Neutral) {
+    } else if (align == PartyAlignment::PartyAlignment_Neutral) {
         if (bReplace) {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-a.pcx");
             game_ui_bottomframe =
@@ -1270,7 +1270,7 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
         }
         uGameUIFontMain = Color16(0xAu, 0, 0);
         uGameUIFontShadow = Color16(230, 214, 193);
-    } else if (align == PartyAlignment_Good) {
+    } else if (align == PartyAlignment::PartyAlignment_Good) {
         if (bReplace) {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-B.pcx");
             game_ui_bottomframe =
@@ -1660,7 +1660,7 @@ void ClickNPCTopic(int uMessageParam) {
     if (uActiveCharacter)
         pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)61, 0);
 
-_return:
+// _return:
     BackToHouseMenu();
 }
 
@@ -1670,7 +1670,7 @@ _return:
 void _4B3FE5_training_dialogue(int a4) {
     uDialogueType = DIALOGUE_SKILL_TRAINER;
     current_npc_text = String(pNPCTopics[a4 + 168].pText);
-    _4B254D_SkillMasteryTeacher(
+    String what = _4B254D_SkillMasteryTeacher(
         a4);  // might be needed because of contract_approved ?
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, a4);
@@ -2191,7 +2191,7 @@ String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID,
 //----- (00495461) --------------------------------------------------------
 String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
     char *a4, int shop_screen, GameTime *a6) {
-    char v1[256];
+    char v1[256] = "";
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
     int v17;               // eax@10

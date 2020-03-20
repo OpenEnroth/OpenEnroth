@@ -68,7 +68,7 @@ void OtherOverlayList::DrawTurnBasedIcon(int a2) {
     Icon *frame;      // eax@12
     unsigned int v5;  // [sp-8h] [bp-Ch]@4
 
-    if (current_screen_type != SCREEN_GAME || !pParty->bTurnBasedModeOn) return;
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME || !pParty->bTurnBasedModeOn) return;
 
     if (pTurnEngine->turn_stage == TE_MOVEMENT) {  // все персы отстрелялись(сжатый кулак)
         frame = pIconsFrameTable->GetFrame(

@@ -32,7 +32,7 @@ DEBUG_PRINT("ZLIB_SHARE     ${ZLIB_SHARE}")
     
     set_property(TARGET zlib PROPERTY IMPORTED_LOCATION "${ZLIB_LIB}/zlibd.lib")
     set_property(TARGET zlib PROPERTY IMPORTED_LOCATION_DEBUG "${ZLIB_LIB}/zlibd.lib")
-    set_property(TARGET zlib PROPERTY IMPORTED_LOCATION_RELEASE "${ZLIB_LIB}/zlib.lib")
+    set_property(TARGET zlib PROPERTY IMPORTED_LOCATION_RELEASE "${ZLIB_LIB}/zlibd.lib")
 
     NINJA_WORKAROUND_GET_BYPRODUCTS(zlib)
 

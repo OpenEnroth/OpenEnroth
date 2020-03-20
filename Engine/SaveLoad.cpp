@@ -38,9 +38,9 @@
 
 struct SavegameList *pSavegameList = new SavegameList;
 unsigned int uNumSavegameFiles;
-std::array<unsigned int, 45> pSavegameUsedSlots;
-std::array<Image *, 45> pSavegameThumbnails;
-std::array<SavegameHeader, 45> pSavegameHeader;
+std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
+std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
+std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
 
 bool CopyFile(const String &from, const String &to) {
     int file_size = -1;
@@ -158,11 +158,12 @@ void LoadGame(unsigned int uSlot) {
         void *npcgroup = pNew_LOD->LoadRaw("npcgroup.bin");
         if (npcgroup == nullptr) {
             logger->Warning(L"%S", localization->FormatString(612, 105).c_str());  // Savegame damaged! Code=%d
-        }
-        if (sizeof(pNPCStats->pGroups_copy) != 102) {
+            __debugbreak();
+        } else if (sizeof(pNPCStats->pGroups_copy) != 102) {
             logger->Warning(L"NPCStats: deserialization warning");
+        } else {
+            memcpy(pNPCStats->pGroups_copy, npcgroup, sizeof(pNPCStats->pGroups_copy));
         }
-        memcpy(pNPCStats->pGroups_copy, npcgroup, sizeof(pNPCStats->pGroups_copy));
         free(npcgroup);
     }
 
@@ -197,7 +198,7 @@ void LoadGame(unsigned int uSlot) {
         }
     }
 */
-    current_screen_type = SCREEN_GAME;
+    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
     viewparams->bRedrawGameUI = true;
 
@@ -376,6 +377,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     if (!NotSaveWorld) {  // autosave for change location
         CompactLayingItemsList();
         char *compressed_buf = (char *)malloc(1000000);
+        if (compressed_buf == nullptr) {
+            logger->Warning(L"Malloc error");
+            Error("Malloc");  // is this recoverable
+        }
         ODMHeader *odm_data = (ODMHeader*)compressed_buf;
         odm_data->uVersion = 91969;
         odm_data->pMagic[0] = 'm';
@@ -517,10 +522,10 @@ void DoSavegame(unsigned int uSlot) {
     }
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
-    current_screen_type = SCREEN_GAME;
+    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
     viewparams->bRedrawGameUI = true;
-    for (uint i = 0; i < 45; i++) {
+    for (uint i = 0; i < MAX_SAVE_SLOTS; i++) {
         if (pSavegameThumbnails[i] != nullptr) {
             pSavegameThumbnails[i]->Release();
             pSavegameThumbnails[i] = nullptr;
@@ -551,7 +556,7 @@ void SavegameList::Initialize() {
 SavegameList::SavegameList() { Reset(); }
 
 void SavegameList::Reset() {
-    for (int j = 0; j < 45; j++) {
+    for (int j = 0; j < MAX_SAVE_SLOTS; j++) {
         this->pFileList[j].clear();
     }
 }

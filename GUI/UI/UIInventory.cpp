@@ -23,7 +23,7 @@ void GUIWindow_Inventory::Update() {
         ItemGen2.Reset();
         Release();
         pEventTimer->Resume();
-        current_screen_type = SCREEN_GAME;
+        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
         viewparams->bRedrawGameUI = 1;
         int v39 = atoi(pKeyActionMap->pPressedKeysBuffer);
         if (v39 > 0 && v39 < 800) {
@@ -41,7 +41,7 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, uns
         { { ui_buttdesc2 } });
     GameUI_StatusBar_OnEvent(localization->GetString(39), 2);  // Choose target
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
-    current_screen_type = SCREEN_CASTING;
+    current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;
 }
 
 void GUIWindow_Inventory_CastSpell::Update() {

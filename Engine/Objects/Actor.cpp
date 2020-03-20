@@ -60,17 +60,13 @@ bool ShouldMonsterPlayAttackAnim(signed int spell_id) {
         case SPELL_DARK_PAIN_REFLECTION:
             return false;
     }
-
     return true;
 }
 
 //----- (0041AF52) --------------------------------------------------------
 void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
-    unsigned int bar_length;  // esi@1
-    unsigned int uX;          // ebx@10
-    Image *v9;                // [sp+14h] [bp-Ch]@4
-    unsigned int v10;         // [sp+1Ch] [bp-4h]@4
-
+    // bar length
+    unsigned int bar_length;
     if (actor->pMonsterInfo.uHP <= 25)
         bar_length = 25;
     else if (actor->pMonsterInfo.uHP < 200)
@@ -78,27 +74,31 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
     else
         bar_length = 200;
 
-    v10 = bar_length;
-    v9 = game_ui_monster_hp_green;
+    // bar colour
+    Image *bar_image = game_ui_monster_hp_green;
     if (actor->sCurrentHP <= (0.34 * actor->pMonsterInfo.uHP))
-        v9 = game_ui_monster_hp_red;
+        bar_image = game_ui_monster_hp_red;
     else if (actor->sCurrentHP <= (0.67 * actor->pMonsterInfo.uHP))
-        v9 = game_ui_monster_hp_yellow;
+        bar_image = game_ui_monster_hp_yellow;
 
+    // how much of bar is filled
+    unsigned int bar_filled_length = bar_length;
     if (actor->sCurrentHP < (int)actor->pMonsterInfo.uHP)
-        v10 = bar_length / actor->pMonsterInfo.uHP * actor->sCurrentHP;
+        bar_filled_length = (bar_length * actor->sCurrentHP) / actor->pMonsterInfo.uHP;
 
-    uX = window->uFrameX + (signed int)(window->uFrameWidth - bar_length) / 2;
+    // centralise for clipping and draw
+    unsigned int uX = window->uFrameX + (signed int)(window->uFrameWidth - bar_length) / 2;
 
-    render->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_length,
-                          window->uFrameY + 52);
+    render->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_length, window->uFrameY + 52);
     render->DrawTextureAlphaNew(uX / 640.0f, (window->uFrameY + 32) / 480.0f,
                                 game_ui_monster_hp_background);
-    render->SetUIClipRect(uX, window->uFrameY + 32, uX + v10,
+
+    render->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_filled_length,
                           window->uFrameY + 52);
     render->DrawTextureAlphaNew(uX / 640.0f, (window->uFrameY + 34) / 480.0f,
-                                v9);
+                                bar_image);
 
+    // draw hp bar ends
     render->ResetUIClipRect();
     render->DrawTextureAlphaNew((uX - 5) / 640.0f,
                                 (window->uFrameY + 32) / 480.0f,
@@ -241,6 +241,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     int a1a;                    // [sp+E0h] [bp+10h]@34
     int a1c;                    // [sp+E0h] [bp+10h]@184
 
+    GameTime spell_length = GameTime(0);
+
     actorPtr = &pActors[uActorID];
     realPoints = uSkillLevel & 0x3F;
     masteryLevel = SkillToMastery(uSkillLevel);
@@ -307,8 +309,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v39 = 3 * 60 * (realPoints + 15);
             else
                 v39 = 0;
-            actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v39 / 60)),
+
+            spell_length = GameTime::FromMinutes(v39 / 60);
+
+            actorPtr->pActorBuffs[ACTOR_BUFF_HASTE].Apply((pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFF3C1Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Haste,
@@ -445,8 +449,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v8 = 60 * 60 * (realPoints + 64);
             else
                 v8 = 0;
+            spell_length = GameTime::FromMinutes(v8 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_SHIELD].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v8 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
             return;
 
@@ -459,8 +464,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v44 = 60 * 60 * (realPoints + 64);
             else
                 v44 = 0;
+            spell_length = GameTime::FromMinutes(v44 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_STONESKIN].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v44 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x5C310Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Stoneskin,
@@ -476,9 +482,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v42 = 20 * 60 * realPoints + 3840;
             else
                 v42 = 0;
-
+            spell_length = GameTime::FromMinutes(v42 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_BLESS].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v42 / 60)),
+               (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
 
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
@@ -496,9 +502,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v48 = 2 * (3 * realPoints + 60);
             else
                 v48 = 0;
-
+            spell_length = GameTime::FromMinutes(5);
             actorPtr->pActorBuffs[ACTOR_BUFF_FATE].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(5)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, v48, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_Fate,
@@ -515,8 +521,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v54 = 20 * 60 * realPoints + 3840;
             else
                 v54 = 0;
+            spell_length = GameTime::FromMinutes(v54 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_HEROISM].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v54 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xC8C805u);
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
@@ -529,8 +536,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v51 = 0;
             else
                 v51 = 60 * 60 * realPoints;
+            spell_length = GameTime::FromMinutes(v51 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_HAMMERHANDS].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v51 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xA81376u);
             pAudioPlayer->PlaySound((SoundID)SOUND_51heroism03,
@@ -583,8 +591,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 HEXRAYS_LOWORD(realPoints) = uSkillLevel;
                 v96 = 0;
             }
+            spell_length = GameTime::FromMinutes(v96 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_DAY_OF_PROTECTION].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v96 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
             pAudioPlayer->PlaySound((SoundID)SOUND_94dayofprotection03,
@@ -601,8 +610,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v94 = 20 * 60 * realPoints + 30 * 128;
             else
                 v94 = 0;
+            spell_length = GameTime::FromMinutes(v94 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v94 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, realPoints + 5, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0xFFFFFFu);
             pAudioPlayer->PlaySound((SoundID)SOUND_9armageddon01,
@@ -671,8 +681,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v68 = 5 * 30 * realPoints + 30 * 128;
             else
                 v68 = 15 * 30 * realPoints + 30 * 128;
+            spell_length = GameTime::FromMinutes(v68 / 60);
             actorPtr->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromMinutes(v68 / 60)),
+                (pParty->GetPlayingTime() + spell_length),
                 masteryLevel, 0, 0, 0);
             spell_fx_renderer->_4A7E89_sparkles_on_actor_after_it_casts_buff(actorPtr, 0x7E7E7Eu);
             pAudioPlayer->PlaySound((SoundID)SOUND_Sacrifice2,
@@ -683,7 +694,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 }
 
 unsigned short Actor::GetObjDescId(int spellId) {
-    return pObjectList->ObjectIDByItemID(spell_sprite_mapping[spellId].uSpriteType);
+    return pObjectList->ObjectIDByItemID(spell_sprite_mapping[spellId].uSpriteType);  // crash here
 }
 
 bool Actor::ArePeasantsOfSameFaction(Actor *a1, Actor *a2) {
@@ -790,8 +801,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.spell_id = 0;
     a1.vPosition.x = pActors[uActorID].vPosition.x;
     a1.vPosition.y = pActors[uActorID].vPosition.y;
-    a1.vPosition.z = pActors[uActorID].vPosition.z -
-                     (unsigned int)(pActors[uActorID].uActorHeight * -0.75);
+    a1.vPosition.z = pActors[uActorID].vPosition.z + (pActors[uActorID].uActorHeight * 0.75);
     a1.spell_level = 0;
     a1.spell_skill = 0;
     a1.uFacing = pDir->uYawAngle;
@@ -837,24 +847,21 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
 }
 
 //----- (00404736) --------------------------------------------------------
-void Actor::Explode(unsigned int uActorID) {
-    SpriteObject a1;  // [sp+Ch] [bp-78h]@1
-
-    a1.uType = SPRITE_600;
-    a1.uObjectDescID = GetObjDescId(a1.uType);
+void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors eg gogs
+    SpriteObject a1;
+    a1.uType = SPRITE_OBJECT_EXPLODE;
+    a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.containing_item.Reset();
     a1.spell_id = 0;
     a1.spell_level = 0;
     a1.spell_skill = 0;
     a1.vPosition.x = pActors[uActorID].vPosition.x;
     a1.vPosition.y = pActors[uActorID].vPosition.y;
-    a1.vPosition.z = pActors[uActorID].vPosition.z -
-                     (unsigned int)(pActors[uActorID].uActorHeight * -0.75);
+    a1.vPosition.z = pActors[uActorID].vPosition.z + (pActors[uActorID].uActorHeight * 0.75);
     a1.uFacing = 0;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID =
-        pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
     a1.uSpriteFrameID = 0;
     a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
     a1.spell_target_pid = 0;
@@ -890,11 +897,11 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
     float v33;        // st7@45
     Vec3_int_ v37;    // [sp-10h] [bp-5Ch]@15
     AIDirection v41;  // [sp+14h] [bp-38h]@46
-    float outy2;      // [sp+38h] [bp-14h]@33
-    float outx2;      // [sp+3Ch] [bp-10h]@33
-    int outz;         // [sp+40h] [bp-Ch]@6
-    int outy;         // [sp+44h] [bp-8h]@6
-    int outx;         // [sp+48h] [bp-4h]@6
+    float outy2 = 0;      // [sp+38h] [bp-14h]@33
+    float outx2 = 0;      // [sp+3Ch] [bp-10h]@33
+    int outz = 0;         // [sp+40h] [bp-Ch]@6
+    int outy = 0;         // [sp+44h] [bp-8h]@6
+    int outx = 0;         // [sp+48h] [bp-4h]@6
     float a4a;        // [sp+58h] [bp+Ch]@45
 
     v4 = PID_ID(uObj1ID);
@@ -910,10 +917,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         case OBJECT_Actor: {
             outx = pActors[v4].vPosition.x;
             outy = pActors[v4].vPosition.y;
-            outz = pActors[v4].vPosition.z -
-                   (unsigned int)(signed __int64)((double)pActors[v4]
-                                                      .uActorHeight *
-                                                  -0.75);
+            outz = pActors[v4].vPosition.z + (pActors[v4].uActorHeight * 0.75);
             break;
         }
         case OBJECT_Player: {
@@ -999,10 +1003,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         case OBJECT_Actor: {
             outx2 = (float)pActors[v5].vPosition.x;
             outy2 = (float)pActors[v5].vPosition.y;
-            a4 = pActors[v5].vPosition.z -
-                 (unsigned int)(signed __int64)((double)pActors[v5]
-                                                    .uActorHeight *
-                                                -0.75);
+            a4 = pActors[v5].vPosition.z + (pActors[v5].uActorHeight * 0.75);
             break;
         }
         case OBJECT_Player: {
@@ -1068,32 +1069,30 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
 }
 
 //----- (00404030) --------------------------------------------------------
-void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int _48,
-                          AIDirection *a4) {
-    AIDirection *v7;  // eax@3
-    AIDirection v1;   // eax@3
-    AIDirection a3;   // [sp+8h] [bp-38h]@4
+void Actor::AI_FaceObject(unsigned int uActorID, unsigned int uObjID, int UNUSED,
+                          AIDirection *Dir_In) {
+    AIDirection *Dir_Out;
+    AIDirection Dir_Ret;
 
     if (rand() % 100 >= 5) {
-        // v9 = &pActors[uActorID];
-        if (!a4) {
-            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), uObjID, &v1,
-                                    0);
-            v7 = &v1;
+        if (!Dir_In) {
+            Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), uObjID, &Dir_Ret, 0);
+            Dir_Out = &Dir_Ret;
         } else {
-            v7 = a4;
+            Dir_Out = Dir_In;
         }
-        pActors[uActorID].uYawAngle = v7->uYawAngle;
+
+        pActors[uActorID].uYawAngle = Dir_Out->uYawAngle;
         pActors[uActorID].uCurrentActionTime = 0;
         pActors[uActorID].vVelocity.z = 0;
         pActors[uActorID].vVelocity.y = 0;
         pActors[uActorID].vVelocity.x = 0;
-        pActors[uActorID].uPitchAngle = v7->uPitchAngle;
+        pActors[uActorID].uPitchAngle = Dir_Out->uPitchAngle;
         pActors[uActorID].uCurrentActionLength = 256;
         pActors[uActorID].uAIState = Interacting;
         pActors[uActorID].UpdateAnimation();
     } else {
-        Actor::AI_Bored(uActorID, uObjID, a4);
+        Actor::AI_Bored(uActorID, uObjID, Dir_In);
     }
 }
 
@@ -1442,7 +1441,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
         return;
     }
     v19 = v3->uActorHeight;
-    v7.z = v3->vPosition.z - (int)(v19 * -0.75);
+    v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
     if (sub_407A1C(v4, v5, v21, v7)) {
@@ -1515,7 +1514,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
         return;
     }
     v19 = v3->uActorHeight;
-    v7.z = v3->vPosition.z - (int)(v19 * -0.75);
+    v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
     if (sub_407A1C(v4, v5, v21, v7)) {
@@ -1589,7 +1588,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
         return;
     }
     v18 = v3->uActorHeight;
-    v7.z = v3->vPosition.z - (int)(v18 * -0.75);
+    v7.z = v3->vPosition.z + (v18 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
     if (sub_407A1C(v4, v5, v20, v7)) {
@@ -1637,7 +1636,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     AIDirection v18;   // [sp+28h] [bp-2Ch]@10
     int v19;           // [sp+44h] [bp-10h]@6
     // signed int a2; // [sp+48h] [bp-Ch]@1
-    int v22;             // [sp+50h] [bp-4h]@3
+    int v22 = 0;             // [sp+50h] [bp-4h]@3
     unsigned int pDira;  // [sp+5Ch] [bp+8h]@11
 
     v3 = &pActors[uActorID];
@@ -1658,8 +1657,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
         }
     }
     v19 = v3->uActorHeight;
-    v7.z =
-        v3->vPosition.z - (unsigned int)(signed __int64)((double)v19 * -0.75);
+    v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
     if (sub_407A1C(v4, v5, v22, v7) ||
@@ -2485,7 +2483,7 @@ void Actor::PrepareSprites(char load_sounds_if_bit1_set) {
     MonsterInfo *v9;  // [sp+84h] [bp-10h]@1
 
     v3 = &pMonsterList->pMonsters[pMonsterInfo.uID - 1];
-    v9 = &pMonsterStats->pInfos[pMonsterInfo.uID - 1 + 1];
+    v9 = &pMonsterStats->pInfos[pMonsterInfo.uID /*- 1 + 1*/];
     // v12 = pSpriteIDs;
     // Source = (char *)v3->pSpriteNames;
     // do
@@ -3002,10 +3000,10 @@ void Actor::UpdateActorAI() {
                                  v35, 1);
             } else if (pActor->uAIState == AttackingRanged1) {
                 v34 = pActor->pMonsterInfo.uMissleAttack1Type;
-                Actor::AI_RangedAttack(actor_id, pDir, v34, 0);
+                Actor::AI_RangedAttack(actor_id, pDir, v34, 0);  // light missile
             } else if (pActor->uAIState == AttackingRanged2) {
                 v34 = pActor->pMonsterInfo.uMissleAttack2Type;
-                Actor::AI_RangedAttack(actor_id, pDir, v34, 1);
+                Actor::AI_RangedAttack(actor_id, pDir, v34, 1);  // arrow
             } else if (pActor->uAIState == AttackingRanged3) {
                 v65 = pActor->pMonsterInfo.uSpellSkillAndMastery1;
                 v33 = pActor->pMonsterInfo.uSpell1ID;
@@ -3088,7 +3086,7 @@ void Actor::UpdateActorAI() {
             if (target_pid_type == OBJECT_Actor)
                 v81 -= pActors[PID_ID(target_pid)].uActorRadius;
             if (v81 < 0) v81 = 0;
-            rand();
+            // rand();
             pActor->uAttributes &= ~ACTOR_UNKNOW5;  // ~0x40000
             if (v81 < 5120) {
                 v45 = pActor->special_ability_use_check(actor_id);
@@ -3672,8 +3670,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
         v43 = player->GetActualSkillLevel(PLAYER_SKILL_MACE);
         v45 = SkillToMastery(v43);
-        GameTime v46 = GameTime(pParty->GetPlayingTime() + GameTime(0, v43 & 63));  // ??
-        pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply(v46, v45, 0, 0, 0);
+        GameTime v46 = GameTime(0, v43 & 63);  // ??
+        pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), v45, 0, 0, 0);
         if (!engine->config->NoShowDamage()) {
             pMonsterName = player->pName;
 
@@ -4972,81 +4970,89 @@ int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
                                      int duration_game_seconds) {
     int result;     // eax@13
     int v10;               // ebx@16
-    const char *v15;       // [sp-4h] [bp-24h]@2
+    const char *cMonsterName;       // [sp-4h] [bp-24h]@2
     unsigned int uFaceID;  // [sp+8h] [bp-18h]@16
     int v19;               // [sp+Ch] [bp-14h]@16
-    size_t v20;            // [sp+10h] [bp-10h]@6
+    // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
     int v21;               // [sp+14h] [bp-Ch]@14
-    unsigned int v23;      // [sp+1Ch] [bp-4h]@6
+    unsigned int uMonsterID;      // [sp+1Ch] [bp-4h]@6
 
     if (caster_skill_level == 4)
-        v15 = "Elemental Light C";
+        cMonsterName = "Elemental Light C";
     else if (caster_skill_level == 3)
-        v15 = "Elemental Light B";
+        cMonsterName = "Elemental Light B";
     else
-        v15 = "Elemental Light A";
+        cMonsterName = "Elemental Light A";
 
-    v23 = pMonsterList->GetMonsterIDByName(v15);
-    v20 = 0;
-    for (v20; v20 < uNumActors; v20++) {
-        if (pActors[v20].uAIState == Removed) break;
+    uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
+
+    // find first free index
+    uint uActorIndex = 0;
+    for (uActorIndex; uActorIndex < uNumActors; uActorIndex++) {
+        if (pActors[uActorIndex].uAIState == Removed) break;
     }
 
     result = uNumActors + 1;
-    if (v20 != uNumActors || result < 500) {
+
+
+    // use free slot or first new slot
+    if (uActorIndex != uNumActors || result < 500) {
         v21 = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
             v21 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
                                      pParty->vPosition.z);
         v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
-        pActors[v20].Reset();
-        strcpy(pActors[v20].pActorName, pMonsterStats->pInfos[v23 + 1].pName);
-        pActors[v20].sCurrentHP = pMonsterStats->pInfos[v23 + 1].uHP;
-        memcpy(&pActors[v20].pMonsterInfo, &pMonsterStats->pInfos[v23 + 1],
+        pActors[uActorIndex].Reset();
+        strcpy(pActors[uActorIndex].pActorName, pMonsterStats->pInfos[uMonsterID + 1].pName);
+        pActors[uActorIndex].sCurrentHP = pMonsterStats->pInfos[uMonsterID + 1].uHP;
+        memcpy(&pActors[uActorIndex].pMonsterInfo, &pMonsterStats->pInfos[uMonsterID + 1],
                sizeof(MonsterInfo));
-        pActors[v20].word_000086_some_monster_id = v23 + 1;
-        pActors[v20].uActorRadius = pMonsterList->pMonsters[v23].uMonsterRadius;
-        pActors[v20].uActorHeight = pMonsterList->pMonsters[v23].uMonsterHeight;
-        pActors[v20].pMonsterInfo.uTreasureDiceRolls = 0;
-        pActors[v20].pMonsterInfo.uTreasureType = 0;
-        pActors[v20].pMonsterInfo.uExp = 0;
-        pActors[v20].uMovementSpeed =
-            pMonsterList->pMonsters[v23].uMovementSpeed;
+        pActors[uActorIndex].word_000086_some_monster_id = uMonsterID + 1;
+        pActors[uActorIndex].uActorRadius = pMonsterList->pMonsters[uMonsterID].uMonsterRadius;
+        pActors[uActorIndex].uActorHeight = pMonsterList->pMonsters[uMonsterID].uMonsterHeight;
+        pActors[uActorIndex].pMonsterInfo.uTreasureDiceRolls = 0;
+        pActors[uActorIndex].pMonsterInfo.uTreasureType = 0;
+        pActors[uActorIndex].pMonsterInfo.uExp = 0;
+        pActors[uActorIndex].uMovementSpeed =
+            pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
         v10 = rand() % 2048;
-        pActors[v20].vInitialPosition.x =
+        pActors[uActorIndex].vInitialPosition.x =
             pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v10), v19);
-        pActors[v20].vPosition.x = pActors[v20].vInitialPosition.x;
-        pActors[v20].vInitialPosition.y =
+        pActors[uActorIndex].vPosition.x = pActors[uActorIndex].vInitialPosition.x;
+        pActors[uActorIndex].vInitialPosition.y =
             pParty->vPosition.y + fixpoint_mul(stru_5C6E00->Sin(v10), v19);
-        pActors[v20].vPosition.y = pActors[v20].vInitialPosition.y;
-        pActors[v20].vInitialPosition.z = pParty->vPosition.z;
-        pActors[v20].vPosition.z = pActors[v20].vInitialPosition.z;
-        pActors[v20].uTetherDistance = 256;
-        pActors[v20].uSectorID = v21;
-        pActors[v20].PrepareSprites(0);
-        pActors[v20].pMonsterInfo.uHostilityType =
+        pActors[uActorIndex].vPosition.y = pActors[uActorIndex].vInitialPosition.y;
+        pActors[uActorIndex].vInitialPosition.z = pParty->vPosition.z;
+        pActors[uActorIndex].vPosition.z = pActors[uActorIndex].vInitialPosition.z;
+        pActors[uActorIndex].uTetherDistance = 256;
+        pActors[uActorIndex].uSectorID = v21;
+        pActors[uActorIndex].PrepareSprites(0);
+        pActors[uActorIndex].pMonsterInfo.uHostilityType =
             MonsterInfo::Hostility_Friendly;
-        pActors[v20].uAlly = 9999;
-        pActors[v20].uGroup = 0;
-        pActors[v20].uCurrentActionTime = 0;
-        pActors[v20].uAIState = Summoned;
-        pActors[v20].uCurrentActionLength = 256;
-        pActors[v20].UpdateAnimation();
+        pActors[uActorIndex].uAlly = 9999;
+        pActors[uActorIndex].uGroup = 0;
+        pActors[uActorIndex].uCurrentActionTime = 0;
+        pActors[uActorIndex].uAIState = Summoned;
+        pActors[uActorIndex].uCurrentActionLength = 256;
+        pActors[uActorIndex].UpdateAnimation();
 
-        result = pIndoor->GetSector(pActors[v20].vPosition.x,
-                                    pActors[v20].vPosition.y,
-                                    pActors[v20].vPosition.z);
+        result = pIndoor->GetSector(pActors[uActorIndex].vPosition.x,
+                                    pActors[uActorIndex].vPosition.y,
+                                    pActors[uActorIndex].vPosition.z);
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor ||
             result == v21 &&
                 (result = BLV_GetFloorLevel(
-                     pActors[v20].vPosition.x, pActors[v20].vPosition.y,
-                     pActors[v20].vPosition.z, result, &uFaceID),
+                     pActors[uActorIndex].vPosition.x, pActors[uActorIndex].vPosition.y,
+                     pActors[uActorIndex].vPosition.z, result, &uFaceID),
                  result != -30000) &&
                 (result = abs(result - pParty->vPosition.z), result <= 1024)) {
-            if (v20 == uNumActors) ++uNumActors;
-            pActors[v20].uSummonerID = PID(OBJECT_Player, spell_power);
-            result = pActors[v20].pActorBuffs[ACTOR_BUFF_SUMMONED].Apply(
-                GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(duration_game_seconds)),
+            if (uActorIndex == uNumActors) ++uNumActors;
+            pActors[uActorIndex].uSummonerID = PID(OBJECT_Player, spell_power);
+
+            GameTime spell_length = GameTime::FromSeconds(duration_game_seconds);
+
+            result = pActors[uActorIndex].pActorBuffs[ACTOR_BUFF_SUMMONED].Apply(
+                (pParty->GetPlayingTime() + spell_length),
                 caster_skill_level, spell_power, 0, 0);
         }
     }
@@ -5054,12 +5060,14 @@ int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
-                    int a5) {
+void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int a5) {
+    // a3 for abc modify
+    // a4 count
+
     int v7;                // eax@2
     char v8;               // zf@5
     int v12;               // edx@9
-    int v18;               // esi@31
+    // int v18;               // esi@31
     Actor *pMonster;       // esi@35
     int v23;               // edx@36
     int v24;        // edi@36
@@ -5083,7 +5091,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
     int v53;               // [sp+D4h] [bp-14h]@34
     int pSector;           // [sp+D8h] [bp-10h]@32
     int pPosX;             // [sp+DCh] [bp-Ch]@32
-    int v56;               // [sp+E0h] [bp-8h]@8
+    int NumToSpawn;               // [sp+E0h] [bp-8h]@8
     int v57;               // [sp+E4h] [bp-4h]@1
 
     // auto a2 = spawn;
@@ -5096,13 +5104,15 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
         v7 = pIndoor->dlv.field_C_alert;
     else
         v7 = 0;
+
     if (v7)
         v8 = (spawn->uAttributes & 1) == 0;
     else
         v8 = (spawn->uAttributes & 1) == 1;
     if (v8) return;
+
     // result = (void *)(spawn->uIndex - 1);
-    v56 = 1;
+    NumToSpawn = 1;
     switch (spawn->uIndex - 1) {
         case 0:
             // v9 = pMapInfo->uEncounterMonster1AtLeast;
@@ -5113,7 +5123,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                             pMapInfo->uEncounterMonster1AtLeast + 1);
             // v13 = pMapInfo->Dif_M1;
             v57 = pMapInfo->Dif_M1;
-            v56 = pMapInfo->uEncounterMonster1AtLeast + v12;
+            NumToSpawn = pMapInfo->uEncounterMonster1AtLeast + v12;
             strcpy(Source, pMapInfo->pEncounterMonster1Texture.c_str());
             break;
         case 3:
@@ -5140,7 +5150,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                             pMapInfo->uEncounterMonster2AtLeast + 1);
             // v13 = pMapInfo->Dif_M2;
             v57 = pMapInfo->Dif_M2;
-            v56 = pMapInfo->uEncounterMonster2AtLeast + v12;
+            NumToSpawn = pMapInfo->uEncounterMonster2AtLeast + v12;
             strcpy(Source, pMapInfo->pEncounterMonster2Texture.c_str());
             break;
         case 6:
@@ -5167,7 +5177,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                             pMapInfo->uEncounterMonster3AtLeast + 1);
             // v13 = pMapInfo->Dif_M3;
             v57 = pMapInfo->Dif_M3;
-            v56 = pMapInfo->uEncounterMonster3AtLeast + v12;
+            NumToSpawn = pMapInfo->uEncounterMonster3AtLeast + v12;
             strcpy(Source, pMapInfo->pEncounterMonster3Texture.c_str());
             break;
         case 9:
@@ -5188,13 +5198,17 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
         default:
             return;
     }
+
     if (Source[0] == '0') return;
+
     v57 += a3;
     if (v57 > 4) v57 = 4;
     strcpy(Str2, Source);
-    if (a4) v56 = a4;
-    v18 = v56;
-    if ((signed int)(v56 + uNumActors) >= 500) return;
+    if (a4) NumToSpawn = a4;
+    // v18 = NumToSpawn;
+    if (NumToSpawn <= 0) return;
+    if ((signed int)(NumToSpawn + uNumActors) >= 500) return;
+
     pSector = 0;
     pPosX = spawn->vPosition.x;
     a4 = spawn->vPosition.y;
@@ -5204,36 +5218,40 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                                      spawn->vPosition.z);
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
-    if (v18 <= 0) return;
-    for (int i = v53; i < v56; ++i) {
+
+    // spawning loop
+    for (int i = v53; i < NumToSpawn; ++i) {
         pMonster = &pActors[uNumActors];
         pActors[uNumActors].Reset();
+
+        // random monster levels ABC
         if (v57) {
             v23 = rand() % 100;
-            v24 = 3;
+            v24 = 3;  // 2 , 10 , 20
             v25 = (uint16_t)word_4E8152[3 * v57];
             if (v23 >= v25) {
                 if (v23 < v25 + (uint16_t)word_4E8152[3 * v57 + 1]) {
-                    v24 = 2;
+                    v24 = 2;  // 8 , 20 , 30
                 }
             } else {
-                v24 = 1;
+                v24 = 1;  // 90 , 70 , 50
             }
+
             if (v24 == 1) {
                 pTexture = Source;
                 v44 = "%s A";
+            } else if (v24 == 2) {
+                pTexture = Source;
+                v44 = "%s B";
             } else {
-                if (v24 == 2) {
-                    pTexture = Source;
-                    v44 = "%s B";
-                } else {
-                    if (v24 != 3) continue;
-                    pTexture = Source;
-                    v44 = "%s C";
-                }
+                if (v24 != 3) continue;
+                pTexture = Source;
+                v44 = "%s C";
             }
+
             sprintf(Str2, v44, pTexture);
         }
+
         v50 = pMonsterList->GetMonsterIDByName(Str2);
         pTexture = Str2;
         if ((signed __int16)v50 == -1) {
@@ -5243,6 +5261,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
                 pTexture);
             Engine_DeinitializeAndTerminate(0);
         }
+
         v27 = &pMonsterList->pMonsters[(signed __int16)v50];
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
         if (!v28) v28 = 1;
@@ -5294,13 +5313,13 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4,
         // v53 = (char *)v53 + 1;
         // result = v53;
     }
-    // while ( (signed int)v53 < v56 );
+    // while ( (signed int)v53 < NumToSpawn );
 }
 
 //----- (00438F8F) --------------------------------------------------------
-void area_of_effect__damage_evaluate() {
-    int attacker_type;         // ecx@3
-    signed int v3;             // eax@3
+void area_of_effect__damage_evaluate() {  // not damaging party correctly
+    int attacker_PID_type;         // ecx@3
+    signed int attacker_PID_id;             // eax@3
     unsigned int target_id;    // edi@6
     int target_type;           // eax@6
     int v10;                   // edi@8
@@ -5314,55 +5333,57 @@ void area_of_effect__damage_evaluate() {
     int v31;            // edx@29
     int v32;            // eax@29
     int v33;            // ST24_4@29
-    SpriteObject *v36;  // [sp+0h] [bp-28h]@0
-    int attacker_id;    // [sp+10h] [bp-18h]@1
+    SpriteObject *sprite_obj_ptr = nullptr;  // [sp+0h] [bp-28h]@0
+    int attack_index;    // [sp+10h] [bp-18h]@1
     int v44;            // [sp+14h] [bp-14h]@15
     // Vec3_int_ *pVelocity; // [sp+1Ch] [bp-Ch]@2
     signed int a1;  // [sp+20h] [bp-8h]@8
     int v48;        // [sp+24h] [bp-4h]@8
 
-    for (attacker_id = 0; attacker_id < AttackerInfo.count; ++attacker_id) {
-        attacker_type = PID_TYPE(AttackerInfo.pIDs[attacker_id]);
-        v3 = PID_ID(AttackerInfo.pIDs[attacker_id]);
+    for (attack_index = 0; attack_index < AttackerInfo.count; ++attack_index) {
+        attacker_PID_type = PID_TYPE(AttackerInfo.pIDs[attack_index]);
+        // pid types - enum ObjectType
+        attacker_PID_id = PID_ID(AttackerInfo.pIDs[attack_index]);
 
-        if (attacker_type == 2) {
-            v36 = &pSpriteObjects[v3];
-            attacker_type = PID_TYPE(pSpriteObjects[v3].spell_caster_pid);
-            v3 = PID_ID(pSpriteObjects[v3].spell_caster_pid);
+        // attacker is an item (sprite)
+        if (attacker_PID_type == OBJECT_Item) {
+            sprite_obj_ptr = &pSpriteObjects[attacker_PID_id];
+            attacker_PID_type = PID_TYPE(pSpriteObjects[attacker_PID_id].spell_caster_pid);
+            attacker_PID_id = PID_ID(pSpriteObjects[attacker_PID_id].spell_caster_pid);
         }
 
-        if (AttackerInfo.field_3EC[attacker_id] & 1) {
-            target_id = PID_ID(ai_near_actors_targets_pid[v3]);
-            target_type = PID_TYPE(ai_near_actors_targets_pid[v3]) - 3;
+        if (AttackerInfo.field_3EC[attack_index] & 1) {
+            target_id = PID_ID(ai_near_actors_targets_pid[attacker_PID_id]);
+            target_type = PID_TYPE(ai_near_actors_targets_pid[attacker_PID_id]) - 3;
             if (target_type) {
                 if (target_type == 1) {  // party damage from monsters(повреждения
                                          // группе от монстров)
-                    v10 = pParty->vPosition.y - AttackerInfo.pYs[attacker_id];
-                    a1 = pParty->vPosition.x - AttackerInfo.pXs[attacker_id];
-                    v48 = pParty->vPosition.y - AttackerInfo.pYs[attacker_id];
+                    v10 = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
+                    a1 = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
+                    v48 = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
                     if (a1 * a1 + v10 * v10 +
                             ((signed int)(pParty->vPosition.z +
                                           pParty->uPartyHeight) >>
-                             (1 - AttackerInfo.pZs[attacker_id])) *
+                             (1 - AttackerInfo.pZs[attack_index])) *
                                 ((signed int)(pParty->vPosition.z +
                                               pParty->uPartyHeight) >>
-                                 (1 - AttackerInfo.pZs[attacker_id])) <
-                        (unsigned int)((AttackerInfo.field_324[attacker_id] +
+                                 (1 - AttackerInfo.pZs[attack_index])) <
+                        (unsigned int)((AttackerInfo.field_324[attack_index] +
                                         32) *
-                                       (AttackerInfo.field_324[attacker_id] +
+                                       (AttackerInfo.field_324[attack_index] +
                                         32))) {
-                        attacker_coord.x = AttackerInfo.pXs[attacker_id];
-                        attacker_coord.y = AttackerInfo.pYs[attacker_id];
-                        attacker_coord.z = AttackerInfo.pZs[attacker_id];
+                        attacker_coord.x = AttackerInfo.pXs[attack_index];
+                        attacker_coord.y = AttackerInfo.pYs[attack_index];
+                        attacker_coord.z = AttackerInfo.pZs[attack_index];
                         if (sub_407A1C(pParty->vPosition.x, pParty->vPosition.y,
                                        pParty->vPosition.z + pParty->sEyelevel,
                                        attacker_coord))
                             DamagePlayerFromMonster(
-                                AttackerInfo.pIDs[attacker_id],
-                                AttackerInfo.field_450[attacker_id],
-                                &AttackerInfo.vec_4B4[attacker_id],
+                                AttackerInfo.pIDs[attack_index],
+                                AttackerInfo.field_450[attack_index],
+                                &AttackerInfo.vec_4B4[attack_index],
                                 stru_50C198.which_player_to_attack(
-                                    &pActors[v3]));
+                                    &pActors[attacker_PID_id]));
                     }
                 }
             } else {  // Actor damage from monsters(повреждение местного жителя)
@@ -5371,54 +5392,54 @@ void area_of_effect__damage_evaluate() {
                         .Active() ||
                     pActors[target_id].CanAct()) {
                     v15 = pActors[target_id].vPosition.y -
-                          AttackerInfo.pYs[attacker_id];
+                          AttackerInfo.pYs[attack_index];
                     a1 = pActors[target_id].vPosition.x -
-                         AttackerInfo.pXs[attacker_id];
+                         AttackerInfo.pXs[attack_index];
                     v44 = pActors[target_id].vPosition.z;
-                    v19 = AttackerInfo.field_324[attacker_id] +
+                    v19 = AttackerInfo.field_324[attack_index] +
                           pActors[target_id].uActorRadius;
                     v48 = v15;
                     if (a1 * a1 + v15 * v15 +
                             (pActors[target_id].vPosition.z +
                              (pActors[target_id].uActorHeight >> 1) -
-                             AttackerInfo.pZs[attacker_id]) *
+                             AttackerInfo.pZs[attack_index]) *
                                 (pActors[target_id].vPosition.z +
                                  (pActors[target_id].uActorHeight >> 1) -
-                                 AttackerInfo.pZs[attacker_id]) <
+                                 AttackerInfo.pZs[attack_index]) <
                         (unsigned int)(v19 * v19)) {
-                        attacker_coord.x = AttackerInfo.pXs[attacker_id];
-                        attacker_coord.y = AttackerInfo.pYs[attacker_id];
-                        attacker_coord.z = AttackerInfo.pZs[attacker_id];
+                        attacker_coord.x = AttackerInfo.pXs[attack_index];
+                        attacker_coord.y = AttackerInfo.pYs[attack_index];
+                        attacker_coord.z = AttackerInfo.pZs[attack_index];
                         if (sub_407A1C(pActors[target_id].vPosition.x,
                                        pActors[target_id].vPosition.y,
                                        pActors[target_id].vPosition.z + 50,
                                        attacker_coord)) {
                             Vec3_int_::Normalize(&a1, &v48, &v44);
-                            AttackerInfo.vec_4B4[attacker_id].x = a1;
-                            AttackerInfo.vec_4B4[attacker_id].y = v48;
-                            AttackerInfo.vec_4B4[attacker_id].z = v44;
+                            AttackerInfo.vec_4B4[attack_index].x = a1;
+                            AttackerInfo.vec_4B4[attack_index].y = v48;
+                            AttackerInfo.vec_4B4[attack_index].z = v44;
                             Actor::ActorDamageFromMonster(
-                                AttackerInfo.pIDs[attacker_id], target_id,
-                                &AttackerInfo.vec_4B4[attacker_id],
-                                AttackerInfo.field_450[attacker_id]);
+                                AttackerInfo.pIDs[attack_index], target_id,
+                                &AttackerInfo.vec_4B4[attack_index],
+                                AttackerInfo.field_450[attack_index]);
                         }
                     }
                 }
             }
         } else {  // damage from spells(повреждения от заклов(метеоритный дождь))
-            v23 = pParty->vPosition.y - AttackerInfo.pYs[attacker_id];
+            v23 = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
             v24 = ((signed int)pParty->uPartyHeight / 2) -
-                  AttackerInfo.pZs[attacker_id];
-            a1 = pParty->vPosition.x - AttackerInfo.pXs[attacker_id];
-            v48 = pParty->vPosition.y - AttackerInfo.pYs[attacker_id];
+                  AttackerInfo.pZs[attack_index];
+            a1 = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
+            v48 = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
             if (a1 * a1 + v23 * v23 +
                     (pParty->vPosition.z + v24) * (pParty->vPosition.z + v24) <
-                (unsigned int)((AttackerInfo.field_324[attacker_id] + 32) *
-                               (AttackerInfo.field_324[attacker_id] +
+                (unsigned int)((AttackerInfo.field_324[attack_index] + 32) *
+                               (AttackerInfo.field_324[attack_index] +
                                 32))) {  // party damage (повреждения группе)
-                attacker_coord.x = AttackerInfo.pXs[attacker_id];
-                attacker_coord.y = AttackerInfo.pYs[attacker_id];
-                attacker_coord.z = AttackerInfo.pZs[attacker_id];
+                attacker_coord.x = AttackerInfo.pXs[attack_index];
+                attacker_coord.y = AttackerInfo.pYs[attack_index];
+                attacker_coord.z = AttackerInfo.pZs[attack_index];
                 if (sub_407A1C(pParty->vPosition.x, pParty->vPosition.y,
                                pParty->vPosition.z + pParty->sEyelevel,
                                attacker_coord)) {
@@ -5430,9 +5451,9 @@ void area_of_effect__damage_evaluate() {
                             !pParty->pPlayers[i]
                                  .conditions_times[Condition_Eradicated]) {
                             DamagePlayerFromMonster(
-                                AttackerInfo.pIDs[attacker_id],
-                                AttackerInfo.field_450[attacker_id],
-                                &AttackerInfo.vec_4B4[attacker_id], i);
+                                AttackerInfo.pIDs[attack_index],
+                                AttackerInfo.field_450[attack_index],
+                                &AttackerInfo.vec_4B4[attack_index], i);
                         }
                     }
                 }
@@ -5444,53 +5465,53 @@ void area_of_effect__damage_evaluate() {
                      (signed int)actorID < (signed int)uNumActors; ++actorID) {
                     if (pActors[actorID].CanAct()) {
                         // v30 = pActors[actorID].vPosition.y -
-                        // AttackerInfo.pYs[attacker_id];
+                        // AttackerInfo.pYs[attack_index];
                         a1 = pActors[actorID].vPosition.x -
-                             AttackerInfo.pXs[attacker_id];
+                             AttackerInfo.pXs[attack_index];
                         v31 = pActors[actorID].vPosition.z;
                         v48 = pActors[actorID].vPosition.y -
-                              AttackerInfo.pYs[attacker_id];
+                              AttackerInfo.pYs[attack_index];
                         v44 = pActors[actorID].vPosition.z;
                         v32 = (pActors[actorID].uActorHeight / 2) -
-                              AttackerInfo.pZs[attacker_id];
+                              AttackerInfo.pZs[attack_index];
                         v33 = pActors[actorID].uActorRadius +
-                              AttackerInfo.field_324[attacker_id];
+                              AttackerInfo.field_324[attack_index];
                         if (a1 * a1 + v48 * v48 + (v31 + v32) * (v31 + v32) <
                             (unsigned int)(v33 * v33)) {
-                            attacker_coord.x = AttackerInfo.pXs[attacker_id];
-                            attacker_coord.y = AttackerInfo.pYs[attacker_id];
-                            attacker_coord.z = AttackerInfo.pZs[attacker_id];
+                            attacker_coord.x = AttackerInfo.pXs[attack_index];
+                            attacker_coord.y = AttackerInfo.pYs[attack_index];
+                            attacker_coord.z = AttackerInfo.pZs[attack_index];
                             if (sub_407A1C(pActors[actorID].vPosition.x,
                                            pActors[actorID].vPosition.y,
                                            pActors[actorID].vPosition.z + 50,
                                            attacker_coord)) {  // что делает ф-ция?
                                 Vec3_int_::Normalize(&a1, &v48, &v44);
-                                AttackerInfo.vec_4B4[attacker_id].x = a1;
-                                AttackerInfo.vec_4B4[attacker_id].y = v48;
-                                AttackerInfo.vec_4B4[attacker_id].z = v44;
-                                switch (attacker_type) {
+                                AttackerInfo.vec_4B4[attack_index].x = a1;
+                                AttackerInfo.vec_4B4[attack_index].y = v48;
+                                AttackerInfo.vec_4B4[attack_index].z = v44;
+                                switch (attacker_PID_type) {
                                     case OBJECT_Player:
                                         Actor::DamageMonsterFromParty(
-                                            AttackerInfo.pIDs[attacker_id],
+                                            AttackerInfo.pIDs[attack_index],
                                             actorID,
-                                            &AttackerInfo.vec_4B4[attacker_id]);
+                                            &AttackerInfo.vec_4B4[attack_index]);
                                         break;
                                     case OBJECT_Actor:
-                                        if (v36 &&
-                                            pActors[v3].GetActorsRelation(
+                                        if (sprite_obj_ptr &&
+                                            pActors[attacker_PID_id].GetActorsRelation(
                                                 &pActors[actorID]))
                                             Actor::ActorDamageFromMonster(
-                                                AttackerInfo.pIDs[attacker_id],
+                                                AttackerInfo.pIDs[attack_index],
                                                 actorID,
                                                 &AttackerInfo
-                                                     .vec_4B4[attacker_id],
-                                                v36->field_61);
+                                                     .vec_4B4[attack_index],
+                                                sprite_obj_ptr->field_61);
                                         break;
                                     case OBJECT_Item:
                                         ItemDamageFromActor(
-                                            AttackerInfo.pIDs[attacker_id],
+                                            AttackerInfo.pIDs[attack_index],
                                             actorID,
-                                            &AttackerInfo.vec_4B4[attacker_id]);
+                                            &AttackerInfo.vec_4B4[attack_index]);
                                         break;
                                 }
                             }

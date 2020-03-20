@@ -21,7 +21,7 @@ GUIWindow_QuickReference::GUIWindow_QuickReference()
     // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
-    current_screen_type = SCREEN_QUICK_REFERENCE;
+    current_screen_type = CURRENT_SCREEN::SCREEN_QUICK_REFERENCE;
 
     // paperdoll_dbrds[2] = assets->GetImage_16BitAlpha(L"BUTTEXI1");
 

@@ -9,7 +9,7 @@
 struct ArcomageCard {
     char pCardName[32];
     int slot;
-    char field_24;
+    char card_resource_type;  // 1- brick, 2-gems, 3-beasts
     char needed_quarry_level;
     char needed_magic_level;
     char needed_zoo_level;
@@ -18,7 +18,7 @@ struct ArcomageCard {
     char needed_beasts;
     bool can_be_discarded;
     int compare_param;
-    char field_30;
+    char field_30;  // play again
     char draw_extra_card_count;
     char to_player_quarry_lvl;
     char to_player_magic_lvl;
@@ -47,7 +47,7 @@ struct ArcomageCard {
     char to_pl_enm_buildings;
     char to_pl_enm_wall;
     char to_pl_enm_tower;
-    char field_4D;
+    char field_4D;  // play again 2
     char can_draw_extra_card2;
     char to_player_quarry_lvl2;
     char to_player_magic_lvl2;
@@ -76,22 +76,21 @@ struct ArcomageCard {
     char to_pl_enm_buildings2;
     char to_pl_enm_wall2;
     char to_pl_enm_tower2;
-    char field_6A;
-    char field_6B;
+    char field_6A;  // unused??
+    char field_6B;  // unused??
 };
 
 struct AcromageCardOnTable {
-    int uCardId;
-    int field_4;
-    Point field_8;
-    int field_10_xplus;
-    int field_14_y_plus;
-    Point field_18_point;
+    int uCardId = 0;
+    int discarded = 0;
+    Point table_pos;
+    sPoint hide_anim_spd;
+    Point hide_anim_pos;
 };
 
 struct ArcomagePlayer {
     char pPlayerName[32];
-    int IsHisTurn;
+    int IsHisTurn = 0;  // doesnt appear to be used correctly - always player 0 turn
     int tower_height;
     int wall_height;
     int quarry_level;
@@ -101,130 +100,131 @@ struct ArcomagePlayer {
     int resource_gems;
     int resource_beasts;
     int cards_at_hand[10];
-    Point card_shift[10];
+    sPoint card_shift[10];
 };
 
-struct ArcomageGame_stru1 {
-    int field_0;
+struct ArcomageGame_InputMSG {
+    int am_input_type;  // 1 - other key down, 3 - l mouse up, 4 - r mouse up, 7 - lmouse, 8 - r mouse
     int field_4;
-    int field_8;
+    int am_input_key;  // waht other key
 };
 
 class GUIFont;
 
 struct ArcomageGame {
-    ArcomageGame();
+    ArcomageGame() {}
 
-    static bool LoadBackground();
+    // static bool LoadBackground();
     static bool LoadSprites();
-    static bool MsgLoop(int a1, ArcomageGame_stru1 *a2);
+    static bool MsgLoop(int a1, ArcomageGame_InputMSG *a2);
     static void PlaySound(unsigned int event_id);
     static void OnMouseClick(char right_left, bool bDown);
     static void OnMouseMove(int x, int y);
     static void GetCardRect(unsigned int uCardID, Rect *pCardRect);
     static void PrepareArcomage();
-    static void DoBlt_Copy(uint16_t *pPixels);  // idb
+    // static void DoBlt_Copy(uint16_t *pPixels);  // idb
 
     static void Loop();
 
-    char field_0;
-    char field_1;
-    char field_2;
-    char field_3;
-    int field_4;
-    ArcomageGame_stru1 stru1;
-    int mouse_x;
-    int mouse_y;
-    char mouse_left;
-    char field_39;
-    char mouse_right;
-    char field_3B;
-    uint16_t *pBackgroundPixels;
-    uint16_t *pSpritesPixels;
-    uint16_t *pBlit_Copy_pixels;
-    GUIFont *pfntComic;  // ptr_48;
-    GUIFont *pfntArrus;  // ptr_4C;
-    int field_50;
-    int field_54;
-    Texture *pGameBackground;
-    Texture *pSprites;
-    int event_timer_time;
-    int uGameWinner;
-    int Victory_type;
-    char pPlayer1Name[32];
-    char pPlayer2Name[32];
-    char field_F4;
-    char GameOver;
-    char field_F6;
-    char prev_mouse_left;
-    char prev_mouse_right;
-    char field_F9;
-    char bGameInProgress;
+    char field_0 = 0;  // msg??
+    char field_1 = 0;  // msg??
+    char field_2 = 0;  // msg??
+    char field_3 = 0;  // msg??
+    int field_4 = 0;   // msg??
+    ArcomageGame_InputMSG stru1;   // msg??
+
+    int mouse_x = 0;
+    int mouse_y = 0;
+    char mouse_left = 0;
+    char field_39 = 0;
+    char mouse_right = 0;
+    char field_3B = 0;
+    // uint16_t *pBackgroundPixels = nullptr;
+    uint16_t *pSpritesPixels = nullptr;
+    uint16_t *pBlit_Copy_pixels = nullptr;
+    GUIFont *pfntComic = nullptr;  // ptr_48;
+    GUIFont *pfntArrus = nullptr;  // ptr_4C;
+    int field_50 = 0;
+    int field_54 = 0;  // blend mode ??
+    Texture *pGameBackground = nullptr;
+    Texture *pSprites = nullptr;
+    int event_timer_time = 0;
+    int uGameWinner = 0;
+    int Victory_type = 0;
+    char pPlayer1Name[32] = "";
+    char pPlayer2Name[32] = "";
+    char force_am_exit = 0;
+    char GameOver = 0;
+    char force_redraw_1 = 0;
+    char prev_mouse_left = 0;
+    char prev_mouse_right = 0;
+    char check_exit = 0;
+    char bGameInProgress = 0;
 };
 
 extern ArcomageGame *pArcomageGame;
 extern ArcomageCard pCards[87];
 extern void set_stru1_field_8_InArcomage(int inValue);
 
-struct stru272_stru1 {
-    int have_spark;
+struct spark_point_struct {
+    int spark_remaining_life;
     Point spark_position;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
+    int spark_x_unshift;
+    int spark_y_unshift;
+    int spark_x_speed;
+    int spark_y_speed;
 };
 
-struct stru272_stru2 {
+struct effect_params_struct {
     Rect effect_area;
-    int field_10;
-    int field_14;
-    int field_18;
-    float field_1Cf;
-    int field_20;
-    float field_24f;
-    float field_28f;
-    float field_2Cf;
-    int field_30;
-    int field_34;
-    stru272_stru1 *sparks_array;
+    int unused_param_1;
+    int unused_param_2;
+    int unused_param_3;
+    float gravity_acc;
+    int spark_array_size;
+    float create_per_frame;
+    float unused_acc_1;
+    float unused_acc_2;
+    int min_lifespan;
+    int max_lifespan;
+    spark_point_struct *sparks_array;
 };
 
-struct stru272_stru0 {  // ARCOMAGE stuff
-    static stru272_stru0 *New();
+struct explosion_effect_struct {
+    static explosion_effect_struct *New();
 
     int Free();
-    int StartFill(stru272_stru2 *a2);
-    int Clear(char a2, char a3);
-    int DrawEffect();
-    int _40E2A7();
+    int StartFill(effect_params_struct *params);
+    int Clear(char stop_init, char wipe);
+    int UpdateEffect();
+    int IsEffectActive();
 
-    int signature;
-    int field_4;
-    int position_in_sparks_arr;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
-    float field_28;
-    float field_2C;
-    float field_30;
-    int field_34;
-    int field_38;
-    int field_3C;
-    int field_40;
-    int field_44;
-    int field_48;
-    int field_4C;
-    int field_50;
-    stru272_stru1 *field_54;
-    char field_58;
-    char field_59;
-    char field_5A;
-    char field_5B;
+    int mem_signature;
+    int spark_array_size;
+    int remaining_sparks_to_init;
+    int start_x_min;
+    int start_y_max;
+    int start_x_max;
+    int start_y_min;
+    int unused_param_1;
+    int unused_param_2;
+    int unused_param_3;
+    float gravity_unshift;
+    float num_init_per_cycle;
+    float prev_init_overflow;
+    int unused_acc_1;
+    int unused_acc_2;
+    int min_lifespan;
+    int max_lifespan;
+    int unused_param_4;
+    int unused_param_5;
+    int unused_param_6;
+    int unused_param_7;
+    spark_point_struct *spark_array_ptr = nullptr;
+    char effect_active;
+    char params_filled;
+    char unused_param_8;
+    char unused_param_9;
 };
 
 #define DECK_SIZE 108
@@ -235,12 +235,12 @@ struct ArcomageDeck {
     int cards_IDs[DECK_SIZE];
 };
 
-struct stru272 {
-    char have_effect;
-    char effect_sign;
-    char _pad_2;
-    char _pad_3;
-    stru272_stru2 field_4;
-    stru272_stru0 *field_40;
-    stru272_stru1 effect_sparks[150];
+struct am_effects_struct {
+    char have_effect = 0;
+    char effect_sign = 0;
+    char _pad_2 = 0;
+    char _pad_3 = 0;
+    effect_params_struct eff_params;
+    explosion_effect_struct *explosion_eff = nullptr;
+    spark_point_struct effect_sparks[150];
 };

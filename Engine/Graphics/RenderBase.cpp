@@ -114,10 +114,13 @@ void RenderBase::DrawSpriteObjects_ODM() {
         // do
         //{
 
-        if (!object->uObjectDescID) {  // item probably pciked up
+        // if (object->uType == 601) __debugbreak();
+
+        if (!object->uObjectDescID) {  // item probably pciked up - this also gets wiped at end of sprite anims/ particle effects
             // __debugbreak();
             continue;
         }
+
 
         if (!object->HasSprite()) {
             // __debugbreak();
@@ -129,13 +132,21 @@ void RenderBase::DrawSpriteObjects_ODM() {
         //{
         // v2 = *((short *)v0 - 14)
         // v2 = object->uType;
-        if ((object->uType < 1000 || object->uType >= 10000) && (object->uType < 500 || object->uType >= 600) ||
-            spell_fx_renderer->RenderAsSprite(object)) {
+
+        // render as sprte 500 - 9081
+
+        if (spell_fx_renderer->RenderAsSprite(object) || ((object->uType < 1000 || object->uType >= 10000) && (object->uType < 500 || object->uType >= 600))) {
             // a5 = *(short *)v0;
             int x = object->vPosition.x;
             int y = object->vPosition.y;
             int z = object->vPosition.z;
             SpriteFrame *frame = object->GetSpriteFrame();
+
+            if (frame->icon_name == "null") {
+                __debugbreak();
+                continue;
+            }
+
             int a6 = frame->uGlowRadius * object->field_22_glow_radius_multiplier;
 
             // sprite angle to camera
@@ -147,8 +158,10 @@ void RenderBase::DrawSpriteObjects_ODM() {
             int v9 = ((int)(stru_5C6E00->uIntegerPi + ((int)stru_5C6E00->uIntegerPi >> 3) +
                             object->uFacing - v6) >> 8) & 7;
 
-             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[v9];
-
+            pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[v9];
+            // error catching
+            if (frame->hw_sprites[v9]->texture->GetHeight() == 0 || frame->hw_sprites[v9]->texture->GetWidth() == 0)
+                __debugbreak();
 
             if (frame->uFlags & 0x20) {
                 // v8 = v36;
@@ -264,6 +277,10 @@ unsigned int BlendColors(unsigned int a1, unsigned int a2) {
 void RenderBase::TransformBillboard(SoftwareBillboard *a2,
                                     RenderBillboard *pBillboard) {
     Sprite *pSprite = pBillboard->hwsprite;
+    // error catching
+    if (pSprite->texture->GetHeight() == 0 || pSprite->texture->GetWidth() == 0)
+        __debugbreak();
+
     int dimming_level = pBillboard->dimming_level;
 
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
@@ -335,6 +352,11 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     billboard->pQuads[3].texcoord.y = 0.f;
 
     billboard->uNumVertices = 4;
+
+    // error catching
+    if (pSprite->texture->GetHeight() == 0 || pSprite->texture->GetWidth() == 0)
+        __debugbreak();
+
     billboard->texture = pSprite->texture;
     billboard->z_order = a2->screen_space_z;
     billboard->field_90 = a2->field_44;

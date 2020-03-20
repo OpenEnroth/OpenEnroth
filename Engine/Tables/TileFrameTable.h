@@ -44,11 +44,11 @@ class TileDesc {
  public:
     inline TileDesc() : texture(nullptr) {}
 
-    String name;
-    uint16_t uTileID;
-    Tileset tileset;
-    uint16_t uSection;
-    uint16_t uAttributes;
+    String name = "";
+    uint16_t uTileID = 0;
+    Tileset tileset = Tileset_NULL;
+    uint16_t uSection = 0;
+    uint16_t uAttributes = 0;
 
     inline Texture *GetTexture() {
         if (!this->texture) {

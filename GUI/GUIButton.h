@@ -18,23 +18,23 @@ class GUIButton {
     bool Contains(unsigned int x, unsigned int y);
     void Release();
 
-    unsigned int uX;
-    unsigned int uY;
-    unsigned int uWidth;
-    unsigned int uHeight;
-    unsigned int uZ;
-    unsigned int uW;
-    int uButtonType;
-    int field_1C;  // may be pMessageType
-    UIMessageType msg;
-    unsigned int  msg_param;
-    int field_28;
-    bool field_2C_is_pushed;
-    GUIWindow *pParent;
+    unsigned int uX = 0;
+    unsigned int uY = 0;
+    unsigned int uWidth = 0;
+    unsigned int uHeight = 0;
+    unsigned int uZ = 0;
+    unsigned int uW = 0;
+    int uButtonType = 0;
+    int field_1C = 0;  // may be pMessageType
+    UIMessageType msg = UIMSG_0;
+    unsigned int  msg_param = 0;
+    int field_28 = 0;
+    bool field_2C_is_pushed = false;
+    GUIWindow *pParent = nullptr;
     std::vector<Image*> vTextures;
-    uint8_t uHotkey;
-    String sLabel;
-    String field_75;
+    uint8_t uHotkey = 0;
+    String sLabel = "";
+    String field_75 = "";
 };
 
 extern GUIButton *pBtn_CloseBook;

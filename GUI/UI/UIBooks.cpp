@@ -70,7 +70,7 @@ void GUIWindow_Book::BasicBookInitialization() {
     InitializeFonts();
     CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, 0,
                  localization->GetString(79));  // Close
-    current_screen_type = SCREEN_BOOKS;
+    current_screen_type = CURRENT_SCREEN::SCREEN_BOOKS;
     full_num_items_in_book = 0;
     books_primary_item_per_page = 0;
     books_page_number = 0;

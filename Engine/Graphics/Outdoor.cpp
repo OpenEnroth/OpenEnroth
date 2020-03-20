@@ -921,13 +921,23 @@ void OutdoorLocation::CreateDebugLocation() {
 
     free(this->pOMAP);
     this->pOMAP = (unsigned int *)malloc(0x10000);
-    memset(this->pOMAP, 0, 0x10000);
+    if (this->pOMAP == nullptr) {
+        log->Warning(L"Malloc error - pOMAP");
+        __debugbreak();
+    } else {
+        memset(this->pOMAP, 0, 0x10000);
+    }
 
     this->numFaceIDListElems = 0;
 
     free(this->pFaceIDLIST);
     this->pFaceIDLIST = (unsigned __int16 *)malloc(2);
-    this->pFaceIDLIST[0] = 0;
+    if (this->pFaceIDLIST == nullptr) {
+        logger->Warning(L"Malloc fail - pfaceidlist");
+        __debugbreak();
+    } else {
+        this->pFaceIDLIST[0] = 0;
+    }
 
     this->sky_texture_filename = pDefaultSkyTexture.data();
     this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
@@ -1073,7 +1083,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     // ******************Decorations**********************//
     memcpy(&uNumLevelDecorations, pSrc, 4);
     // uSourceLen = (char *)uSourceLen + 4;
-    if (uNumLevelDecorations > 3000) logger->Warning(L"Can't load file!");
+    if (uNumLevelDecorations > 3000) logger->Warning(L"Can't load file! Too many decorations");
 
     assert(sizeof(LevelDecoration) == 32);
     // pFilename = (char *)(32 * uNumLevelDecorations);
@@ -1727,7 +1737,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
     __int16 v62;       // [sp+5Ch] [bp-4h]@25
 
     for (int i = 0; i < uNumActors; ++i) {
-        pActors[i].uAttributes &= 0xFFFFFFF7;  // ~0x8
+        pActors[i].uAttributes &= ~ACTOR_VISIBLE;
         if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled) {
             continue;
         }
@@ -1756,10 +1766,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
             pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
 
-        int v9 = 0;
-        HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
+        // int v9 = 0;
+        // HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
         Sprite_Octant = ((signed int)(stru_5C6E00->uIntegerPi +
-                            ((signed int)stru_5C6E00->uIntegerPi >> 3) + v9 -
+                            ((signed int)stru_5C6E00->uIntegerPi >> 3) + pActors[i].uYawAngle -
                             Angle_To_Cam) >> 8) & 7;
 
 
@@ -1784,6 +1794,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
         else
             v14 = pSpriteFrameTable->GetFrame(
                 pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], Cur_Action_Time);
+
+        // no sprite frame to draw
+        if (v14->icon_name == "null") continue  /* __debugbreak()*/;
+        if (v14->hw_sprites[0] == nullptr) __debugbreak();
 
         v62 = 0;
         v15 = v14;
@@ -1811,8 +1825,12 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 ++uNumBillboardsToDraw;
                 ++uNumSpritesDrawnThisFrame;
 
-                pActors[i].uAttributes |= ACTOR_UNKNOW2;
+                pActors[i].uAttributes |= ACTOR_VISIBLE;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[Sprite_Octant];
+
+                if (v15->hw_sprites[Sprite_Octant]->texture->GetHeight() == 0 || v15->hw_sprites[Sprite_Octant]->texture->GetWidth() == 0)
+                    __debugbreak();
+
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
 
@@ -2000,7 +2018,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
         for (uint i = 1; i < v46; ++i) {
             next_floor_level = odm_floor_level[i];
             if (current_floor_level <= Z + 5) {
-                if (next_floor_level > current_floor_level &&
+                if (next_floor_level >= current_floor_level &&
                     next_floor_level <= Z + 5) {
                     current_floor_level = next_floor_level;
                     v29 = i;
@@ -2689,9 +2707,7 @@ void ODM_ProcessPartyActions() {
                     !(pParty->uFlags & 0x200)) {
                     // v126 = pParty->field_24 << 6;
                     hovering = true;
-                    fall_speed =
-                        (signed __int64)((double)(pParty->field_24 << 6) * 1.5 +
-                                         (double)fall_speed);
+                    fall_speed += pParty->field_24 * 96;
                 }
                 break;
 
@@ -2723,7 +2739,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartY = party_new_Z;
     } else if (party_new_Z < v111) {
         if (is_on_water && fall_speed)
-            SpriteObject::sub_42F960_create_object(pX, pY, v111);
+            SpriteObject::Create_Splash_Object(pX, pY, v111);
         fall_speed = 0;
         party_new_Z = v111;
         pParty->uFallStartY = v111;
@@ -3550,7 +3566,7 @@ void UpdateActors_ODM() {
                         if (Splash_Model_On)
                             Splash_Z = Splash_Floor + 30;
 
-                        SpriteObject::sub_42F960_create_object(
+                        SpriteObject::Create_Splash_Object(
                             pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y,
                             Splash_Z);
                         pActors[Actor_ITR].uAIState = Removed;

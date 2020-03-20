@@ -111,7 +111,7 @@ extern std::array<int, 182> dword_4F8580;
 extern int dword_4FA9B0[];
 extern int dword_4FA9B4[];
 
-extern char byte_4FAA24;
+// extern char am_turn_not_finished;
 // extern HWND dword_4FAA28; // idb
 
 extern std::array<unsigned int, 480> pSRZBufferLineOffsets;
@@ -334,8 +334,8 @@ extern unsigned int uLevelMapStatsID;
 #define GAME_SETTINGS_0400_MISC_TIMER 0x0400
 #define GAME_SETTINGS_0800 0x0800
 #define GAME_SETTINGS_1000 0x1000
-#define GAME_SETTINGS_2000 0x2000
-#define GAME_SETTINGS_4000 0x4000
+#define GAME_SETTINGS_2000 0x2000  // initialisation state - no respawning
+#define GAME_SETTINGS_4000 0x4000  // initialisation state
 extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
 
 extern float _6BE3A0_fov;

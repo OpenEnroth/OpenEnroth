@@ -290,7 +290,7 @@ void Engine::DrawGUI() {
     static uint last_frame_time = OS_GetTime();
     static uint framerate_time_elapsed = 0;
 
-    if (current_screen_type == SCREEN_GAME &&
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME &&
         uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         pWeather->Draw();  // Ritor1: my include
 
@@ -671,7 +671,7 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
 //----- (0044EB12) --------------------------------------------------------
 bool Engine::PickKeyboard(bool bOutline, Vis_SelectionFilter *sprite_filter,
                           Vis_SelectionFilter *face_filter) {
-    if (current_screen_type == SCREEN_GAME) {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
         bool r = vis->PickKeyboard(&vis->default_list, sprite_filter, face_filter);
 
         if (bOutline)
@@ -1306,6 +1306,16 @@ void PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2) {
 
     viewparams->_443365();
     PlayLevelMusic();
+
+    //  level decoration sound
+    if (_6807E0_num_decorations_with_sounds_6807B8) {
+        for (int i = 0; i < _6807E0_num_decorations_with_sounds_6807B8; i++) {
+            int ind = _6807B8_level_decorations_ids[i];
+            LevelDecoration dec = pLevelDecorations[ind];
+            DecorationDesc* decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
+            pAudioPlayer->PlaySound(SoundID(decoration->uSoundID), PID(OBJECT_Decoration, ind), 0, 0, 0, 0);
+        }
+    }
 }
 
 //----- (00464479) --------------------------------------------------------
@@ -1584,7 +1594,7 @@ void back_to_game() {
     no_rightlick_in_inventory = false;
 
     if (pGUIWindow_ScrollWindow) free_book_subwindow();
-    if (!current_screen_type && !pGUIWindow_CastTargetedSpell)
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME && !pGUIWindow_CastTargetedSpell)
         pEventTimer->Resume();
     viewparams->bRedrawGameUI = 1;
 }
@@ -1863,7 +1873,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     if (!party_condition_flag) {
-        if (current_screen_type != SCREEN_REST) {
+        if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
             for (uint pl = 1; pl <= 4; pl++) {
                 if (pPlayers[pl]->conditions_times[Condition_Sleep].Valid()) {
                     pPlayers[pl]->conditions_times[Condition_Sleep].Reset();
@@ -1877,7 +1887,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     if (uActiveCharacter) {  // выбор следующего после пропускающего ход
-        if (current_screen_type != SCREEN_REST) {
+        if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
             if (pPlayers[uActiveCharacter]->conditions_times[Condition_Sleep] ||
                 pPlayers[uActiveCharacter]
                     ->conditions_times[Condition_Paralyzed] ||
@@ -2425,13 +2435,13 @@ void sub_4452BB() {
 }
 
 bool _44100D_should_alter_right_panel() {
-    return current_screen_type == SCREEN_NPC_DIALOGUE ||
-           current_screen_type == SCREEN_CHARACTERS ||
-           current_screen_type == SCREEN_HOUSE ||
-           current_screen_type == SCREEN_E ||
-           current_screen_type == SCREEN_CHANGE_LOCATION ||
-           current_screen_type == SCREEN_INPUT_BLV ||
-           current_screen_type == SCREEN_CASTING;
+    return current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE ||
+           current_screen_type == CURRENT_SCREEN::SCREEN_CHARACTERS ||
+           current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE ||
+           current_screen_type == CURRENT_SCREEN::SCREEN_E ||
+           current_screen_type == CURRENT_SCREEN::SCREEN_CHANGE_LOCATION ||
+           current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV ||
+           current_screen_type == CURRENT_SCREEN::SCREEN_CASTING;
 }
 
 void Transition_StopSound_Autosave(const char *pMapName,
@@ -2507,7 +2517,7 @@ bool TeleportToNWCDungeon() {
 
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
     Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
-    current_screen_type = SCREEN_GAME;
+    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
     return true;
 }
 

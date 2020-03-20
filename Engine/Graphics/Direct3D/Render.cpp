@@ -126,8 +126,9 @@ Texture *Render::CreateSprite(const String &name, unsigned int palette_id,
 }
 
 void Render::WritePixel16(int x, int y, uint16_t color) {
-    // do not use this
+    // do not use this - slow
     __debugbreak();
+    logger->Info(L"Reduce use of WritePixel16");
 
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
@@ -840,6 +841,11 @@ void Render::PrepareDecorationsRenderList_ODM() {
 
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .hwsprite = frame->hw_sprites[(int)v37];
+
+                                // error catching
+                                if (frame->hw_sprites[(int)v37]->texture->GetHeight() == 0 || frame->hw_sprites[(int)v37]->texture->GetWidth() == 0)
+                                    __debugbreak();
+
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .world_x = pLevelDecorations[i].vPosition.x;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
@@ -1211,6 +1217,8 @@ void Render::Release() {
 
 void Present32(uint32_t *src, unsigned int src_pitch, uint32_t *dst,
                unsigned int dst_pitch) {
+     // return;
+
     for (uint y = 0; y < 8; ++y) {
         memcpy(dst + y * dst_pitch, src + y * src_pitch,
                src_pitch * sizeof(uint32_t));
@@ -1447,10 +1455,10 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
     return true;
 }
 
-void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
-    int blend_mode) {
+// blue mask
+void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
     uint16_t *pSrc;          // eax@2
-    int uSrcTotalWidth;      // ecx@4
+    int uSrcTotalWidth = 0;      // ecx@4
     unsigned int v10;        // esi@9
     int v21;                 // [sp+Ch] [bp-18h]@8
     uint16_t *src_surf_pos;  // [sp+10h] [bp-14h]@9
@@ -1458,14 +1466,17 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
     int32_t src_height;      // [sp+18h] [bp-Ch]@3
     int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
 
-    if (!pArcomageGame->pBlit_Copy_pixels) return;
+    if (!pArcomageGame->pBlit_Copy_pixels) {
+        __debugbreak();
+        return;
+    }
 
     src_width = pSrcRect->z - pSrcRect->x;
     src_height = pSrcRect->w - pSrcRect->y;
 
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
+    /*if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
         uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
+    else*/ if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
         uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
 
     pSrc = pArcomageGame->pBlit_Copy_pixels;
@@ -1497,82 +1508,19 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
         for (int i = 0; i < src_height; ++i) {
             for (int j = 0; j < src_width; ++j) {
                 if (*src_surf_pos != v10) {
-                    if (pTargetPoint->x + j >= 0 &&
-                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
-                        pTargetPoint->y + i >= 0 &&
-                        pTargetPoint->y + i <= window->GetHeight() - 1)
-                        temppix[j + i * src_width] = Color32((0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
-    render->DrawTextureAlphaNew(pTargetPoint->x / 640., pTargetPoint->y / 480., temp);
-    temp->Release();
-}
-
-void Render::am_Blt_Copy(Rect *pSrcRect, Point *pTargetPoint, int blend_mode) {
-    uint16_t *pSrc;          // eax@2
-    int uSrcTotalWidth;      // ecx@4
-    int v21;                 // [sp+Ch] [bp-18h]@8
-    uint16_t *src_surf_pos;  // [sp+10h] [bp-14h]@9
-    int32_t src_width;       // [sp+14h] [bp-10h]@3
-    int32_t src_height;      // [sp+18h] [bp-Ch]@3
-    int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
-
-    if (!pArcomageGame->pBlit_Copy_pixels) {
-        return;
-    }
-
-    src_width = pSrcRect->z - pSrcRect->x;
-    src_height = pSrcRect->w - pSrcRect->y;
-    if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pBackgroundPixels)
-        uSrcTotalWidth = pArcomageGame->pGameBackground->GetWidth();
-    else if (pArcomageGame->pBlit_Copy_pixels == pArcomageGame->pSpritesPixels)
-        uSrcTotalWidth = pArcomageGame->pSprites->GetWidth();
-
-    pSrc = pArcomageGame->pBlit_Copy_pixels;
-    uSrcPitch = uSrcTotalWidth;
-    src_surf_pos = &pSrc[pSrcRect->x + uSrcPitch * pSrcRect->y];
-    v21 = (uTargetGBits != 6 ? 0x31EF : 0x7BEF);
-
-    Image *temp = Image::Create(src_width, src_height, IMAGE_FORMAT_A8R8G8B8);
-    uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-    if (blend_mode == 2) {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i) {
-            for (int j = 0; j < src_width; ++j) {
-                if (*src_surf_pos != v21) {
-                    if (pTargetPoint->x + j >= 0 &&
-                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
-                        pTargetPoint->y + i >= 0 &&
-                        pTargetPoint->y + i <= window->GetHeight() - 1)
-                        temppix[j + i * src_width] = Color32(*src_surf_pos);
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    } else {
-        uSrcPitch = (uSrcPitch - src_width);
-        for (int i = 0; i < src_height; ++i) {
-            for (int j = 0; j < src_width; ++j) {
-                if (*src_surf_pos != v21) {
-                    if (pTargetPoint->x + j >= 0 &&
-                        pTargetPoint->x + j <= window->GetWidth() - 1 &&
-                        pTargetPoint->y + i >= 0 &&
-                        pTargetPoint->y + i <= window->GetHeight() - 1)
-                        temppix[j + i * src_width] = Color32((0x7BEF & (*src_surf_pos / 2)));
-                }
-                ++src_surf_pos;
-            }
-            src_surf_pos += uSrcPitch;
-        }
-    }
-    render->DrawTextureAlphaNew(pTargetPoint->x / 640., pTargetPoint->y / 480., temp);
-    temp->Release();
+                    if (pTargetPoint->x + j >= 0 &&//
+                        pTargetPoint->x + j <= window->GetWidth() - 1 &&//
+                        pTargetPoint->y + i >= 0 &&//
+                        pTargetPoint->y + i <= window->GetHeight() - 1)//
+                        temppix[j + i * src_width] = Color32((0x7BEF & (*src_surf_pos / 2)));//
+                }//
+                ++src_surf_pos;//
+            }//
+            src_surf_pos += uSrcPitch;//
+        }//
+    }//
+    render->DrawTextureAlphaNew(pTargetPoint->x / 640., pTargetPoint->y / 480., temp);//
+    temp->Release();//
 }
 
 bool Render::SwitchToWindow() {
@@ -1694,6 +1642,8 @@ bool Render::SwitchToWindow() {
 }
 
 void Render::RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t color) {
+    // change to 32bit clor input??
+
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
     unsigned int r = ((color >> 11) & 0x1F) << 3;
@@ -2058,7 +2008,21 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     if (lightmap_builder->StationaryLightsCount) {
         sCorrectedColor =  0xFFFFFFFF/*-1*/;
     }
-    engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+
+
+    // perception
+    // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+
+    if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_CAN_SATURATE_COLOR)) {
+        uint eightSeconds = OS_GetTime() % 3000;
+        float angle = (eightSeconds / 3000.0f) * 2 * 3.1415f;
+
+        int redstart = (sCorrectedColor & 0x00FF0000) >> 16;
+
+        int col = (redstart - 64) - (64 * cosf(angle));
+        // (a << 24) | (r << 16) | (g << 8) | b;
+        sCorrectedColor = (0xFF << 24) | (redstart << 16) | (col << 8) | col;
+    }
 
     if (pFace->uAttributes & FACE_OUTLINED) {
         if (OS_GetTime() % 300 >= 150)
@@ -2312,6 +2276,8 @@ void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].uNumVertices = 4;
     pBillboardRenderListD3D[v7].z_order = pSoftBillboard->screen_space_z;
     pBillboardRenderListD3D[v7].texture = pSprite->texture;
+
+    if (pSprite->texture->GetHeight() == 0 || pSprite->texture->GetWidth() == 0) __debugbreak();
 }
 
 void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -3557,8 +3523,8 @@ int ODM_FarClip(unsigned int uNumVertices) {
 
 void Render::DrawBuildingsD3D() {
     // int v27;  // eax@57
-    int v49;  // [sp+2Ch] [bp-2Ch]@10
-    int v50;  // [sp+30h] [bp-28h]@34
+    int farclip;  // [sp+2Ch] [bp-2Ch]@10
+    int nearclip;  // [sp+30h] [bp-28h]@34
     int v51;  // [sp+34h] [bp-24h]@35
     int v52;  // [sp+38h] [bp-20h]@36
     int v53;  // [sp+3Ch] [bp-1Ch]@8
@@ -3623,8 +3589,8 @@ void Render::DrawBuildingsD3D() {
             else if (poly->flags & 0x2000)
                 poly->sTextureDeltaU += flow_anim_timer & flow_u_mod;
 
-            v50 = 0;
-            v49 = 0;
+            nearclip = 0;
+            farclip = 0;
 
             for (uint vertex_id = 1; vertex_id <= face.uNumVertices;
                  vertex_id++) {
@@ -3654,9 +3620,9 @@ void Render::DrawBuildingsD3D() {
                         pIndoorCameraD3D->GetFarClip()) {
                     if (array_73D150[i - 1].vWorldViewPosition.x >=
                         pIndoorCameraD3D->GetNearClip())
-                        v49 = 1;
+                        farclip = 1;
                     else
-                        v50 = 1;
+                        nearclip = 1;
                 } else {
                     pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
                 }
@@ -3698,7 +3664,7 @@ void Render::DrawBuildingsD3D() {
                 lightmap_builder->StationaryLightsCount = 0;
                 int v31 = 0;
                 if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
-                    v31 = v50 ? 3 : v49 != 0 ? 5 : 0;
+                    v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
                     static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
                     if (decal_builder->uNumDecals > 0) {
                         decal_builder->ApplyDecals(
@@ -3709,15 +3675,16 @@ void Render::DrawBuildingsD3D() {
                     }
                 }
                 if (Lights.uNumLightsApplied > 0)
+                    // if (face.uAttributes & FACE_OUTLINED)
                     lightmap_builder->ApplyLights(
                         &Lights, &static_RenderBuildingsD3D_stru_73C834,
                         poly->uNumVertices, VertexRenderList, 0, (char)v31);
 
-                if (v50) {
+                if (nearclip) {
                     poly->uNumVertices = ODM_NearClip(face.uNumVertices);
                     ODM_Project(poly->uNumVertices);
                 }
-                if (v49) {
+                if (farclip) {
                     poly->uNumVertices = ODM_FarClip(face.uNumVertices);
                     ODM_Project(poly->uNumVertices);
                 }
@@ -3742,11 +3709,11 @@ void Render::DrawBuildingsD3D() {
 
 
 bool PauseGameDrawing() {
-    if (current_screen_type != SCREEN_GAME &&
-        current_screen_type != SCREEN_NPC_DIALOGUE &&
-        current_screen_type != SCREEN_CHANGE_LOCATION) {
-        if (current_screen_type == SCREEN_INPUT_BLV) return uCurrentHouse_Animation;
-        if (current_screen_type != SCREEN_BRANCHLESS_NPC_DIALOG) return true;
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
+        current_screen_type != CURRENT_SCREEN::SCREEN_NPC_DIALOGUE &&
+        current_screen_type != CURRENT_SCREEN::SCREEN_CHANGE_LOCATION) {
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV) return uCurrentHouse_Animation;
+        if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) return true;
     }
     return false;
 }
@@ -4142,7 +4109,7 @@ unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3,
     int v7;                // ecx@1
     __int16 v8;            // ST10_2@1
     int v9;                // edi@1
-    unsigned __int16 v10;  // dh@1@1
+    unsigned __int16 v10 = 0;  // dh@1@1
     int v11;               // ebx@1
     int v12;               // ebx@1
     __int16 a3a;           // [sp+1Ch] [bp+8h]@1
@@ -4950,7 +4917,7 @@ void _46E0B2_collide_against_decorations() {
 
 int _46F04E_collide_against_portals() {
     int a3;             // [sp+Ch] [bp-8h]@13
-    int v12;            // [sp+10h] [bp-4h]@15
+    int v12 = 0;            // [sp+10h] [bp-4h]@15
 
     unsigned int v1 = 0xFFFFFF;
     unsigned int v10 = 0xFFFFFF;

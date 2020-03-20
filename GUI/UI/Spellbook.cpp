@@ -52,7 +52,7 @@ std::array<std::array<Image *, 2>, 9> ui_spellbook_school_tabs;
 
 GUIWindow_Spellbook::GUIWindow_Spellbook()
     : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
-    current_screen_type = SCREEN_SPELL_BOOK;
+    current_screen_type = CURRENT_SCREEN::SCREEN_SPELL_BOOK;
     pEventTimer->Pause();
 
     InitializeSpellBookTextures();
@@ -294,12 +294,12 @@ void LoadSpellbook(unsigned int spell_school) {
             sprintf(pContainer, "SB%sS%02d",
                     spellbook_texture_filename_suffices[spell_school],
                     pSpellbookSpellIndices[spell_school][i]);
-            SBPageSSpellsTextureList[i] = assets->GetImage_Alpha(pContainer);
+            SBPageSSpellsTextureList[i] = assets->GetImage_Solid(pContainer);
 
             sprintf(pContainer, "SB%sC%02d",
                     spellbook_texture_filename_suffices[spell_school],
                     pSpellbookSpellIndices[spell_school][i]);
-            SBPageCSpellsTextureList[i] = assets->GetImage_Alpha(pContainer);
+            SBPageCSpellsTextureList[i] = assets->GetImage_Solid(pContainer);
         }
     }
 }

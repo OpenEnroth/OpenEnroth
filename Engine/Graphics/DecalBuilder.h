@@ -12,6 +12,15 @@ using EngineIoc = Engine_::IocContainer;
 #pragma pack(push, 1)
 struct Bloodsplat {
     inline Bloodsplat() {
+        this->x = 0;
+        this->y = 0;
+        this->z = 0;
+        this->radius = 0;
+        this->dot_dist = 0;
+        this->r = 0;
+        this->g = 0;
+        this->b = 0;
+        this->field_1B = 0;
         this->field_1C = 0;
         this->field_20 = 0;
         // this->field_24 = 0;
@@ -63,7 +72,7 @@ struct BloodsplatContainer {
 
     // void ( ***vdestructor_ptr)(BloodsplatContainer *, bool);
     Bloodsplat std__vector_pBloodsplats[64];
-    unsigned int std__vector_pBloodsplats_size;
+    unsigned int std__vector_pBloodsplats_size = 0;
     int uNumBloodsplats;
 };
 #pragma pack(pop)
@@ -152,17 +161,17 @@ struct DecalBuilder {
     int curent_decal_id;  // field_308008
     RenderVertexSoft pVertices[256];
     int std__vector_30B00C[1024];  // outdoor bloodsplats/decals
-    int uNumDecals;
-    float field_30C010;
-    float field_30C014;
-    float field_30C018;
-    float field_30C01C;
-    float field_30C020;
-    float field_30C024;
-    float field_30C028;
-    float field_30C02C;
-    float flt_30C030;
-    float field_30C034;
+    int uNumDecals = 0;
+    float field_30C010 = 0;
+    float field_30C014 = 0;
+    float field_30C018 = 0;
+    float field_30C01C = 0;
+    float field_30C020 = 0;
+    float field_30C024 = 0;
+    float field_30C028 = 0;
+    float field_30C02C = 0;
+    float flt_30C030 = 0;
+    float field_30C034 = 0;
 
     Log *log;
     BloodsplatContainer *bloodsplat_container;

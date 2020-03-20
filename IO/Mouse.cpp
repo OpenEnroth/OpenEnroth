@@ -256,7 +256,7 @@ void Mouse::SetMouseClick(int x, int y) {
 bool _507B98_ctrl_pressed = false;
 
 void Mouse::UI_OnMouseLeftClick() {
-    if (current_screen_type == SCREEN_VIDEO ||
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO ||
         sub_4637E0_is_there_popup_onscreen())
         return;
 
@@ -269,7 +269,7 @@ void Mouse::UI_OnMouseLeftClick() {
     unsigned int y = 0;
     GetClickPos(&x, &y);
 
-    if (GetCurrentMenuID() != -1 || current_screen_type != SCREEN_GAME ||
+    if (GetCurrentMenuID() != -1 || current_screen_type != CURRENT_SCREEN::SCREEN_GAME ||
         !OS_IfCtrlPressed() || !pViewport->Contains(x, y)) {
         for (GUIWindow *win : lWindowList) {
             if (win->Contains(x, y)) {
@@ -344,7 +344,7 @@ bool UI_OnVkKeyDown(unsigned int vkKey) {
                 int v12 = win->field_34;
                 if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
                     win->pCurrentPosActiveItem -= v12;
-                    if (current_screen_type == SCREEN_PARTY_CREATION) {
+                    if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
                         pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
                         // v2 = pMessageQueue_50CBD0->uNumMessages;
                     }
@@ -361,7 +361,7 @@ bool UI_OnVkKeyDown(unsigned int vkKey) {
                 if (v7 <
                     win->pNumPresenceButton + win->pStartingPosActiveItem) {
                     win->pCurrentPosActiveItem = v7;
-                    if (current_screen_type == SCREEN_PARTY_CREATION) {
+                    if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
                         pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0,
                                                 0, -1, 0, 0);
                         // v2 = pMessageQueue_50CBD0->uNumMessages;

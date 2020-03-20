@@ -380,8 +380,6 @@ class IRender {
     virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                         Texture *texture) = 0;
 
-    virtual void am_Blt_Copy(struct Rect *pSrcRect, struct Point *pTargetXY,
-                             int a3) = 0;
     virtual void am_Blt_Chroma(struct Rect *pSrcRect,
                                struct Point *pTargetPoint, int a3,
                                int blend_mode) = 0;

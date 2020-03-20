@@ -736,7 +736,7 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
     alSourcei(al_source, AL_LOOPING, AL_FALSE);
     alSourcef(al_source, AL_PITCH, 1.f);
     alSourcef(al_source, AL_GAIN, 1.f);
-    alSourcef(al_source, AL_REFERENCE_DISTANCE, 1.f);
+    alSourcef(al_source, AL_REFERENCE_DISTANCE, 6.5f);  // 300 / 50
     alSourcef(al_source, AL_MAX_DISTANCE, 2000.f);
     alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
     alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
@@ -825,7 +825,7 @@ bool AudioSample16::Play(bool loop_, bool positioned_) {
     positioned = positioned_;
 
     alSourcei(al_source, AL_SOURCE_RELATIVE, positioned ? AL_FALSE : AL_TRUE);
-    alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
+    // alSource3f(al_source, AL_POSITION, 0.f, 0.f, 0.f);
     alSource3f(al_source, AL_VELOCITY, 0.f, 0.f, 0.f);
 
     alSourcei(al_source, AL_LOOPING, loop ? AL_TRUE : AL_FALSE);
@@ -857,7 +857,18 @@ bool AudioSample16::Stop() {
     return true;
 }
 
-bool AudioSample16::SetVolume(float volume) { return false; }
+bool AudioSample16::SetVolume(float volume) {
+    if (!IsValid()) {
+        return false;
+    }
+
+    alSourcef(al_source, AL_GAIN, volume);
+    if (CheckError()) {
+        return false;
+    }
+
+    return true;
+}
 
 PAudioSample CreateAudioSample(PMemBuffer buffer) {
     std::shared_ptr<AudioSample16> sample = std::make_shared<AudioSample16>();

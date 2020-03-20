@@ -34,7 +34,7 @@ enum InputAction : int32_t {
     INPUT_StrafeRight = 0x1D,
 };
 
-enum KeyToggleType : int32_t {
+enum class KeyToggleType : int32_t {
     TOGGLE_Continuously = 0x0,
     TOGGLE_OneTimePress = 0x1,
 };

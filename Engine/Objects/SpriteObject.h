@@ -25,15 +25,15 @@ enum SPRITE_OBJECT_TYPE : unsigned __int16 {
     SPRITE_PROJECTILE_535_IMPACT = 536,
     SPRITE_PROJECTILE_540 = 540,  // gray bolt
     SPRITE_PROJECTILE_540_IMPACT = 541,
-    SPRITE_PROJECTILE_545 = 545,
+    SPRITE_PROJECTILE_545 = 545,  // arrow ??
     SPRITE_PROJECTILE_550 = 550,
-    SPRITE_PROJECTILE_555 = 555,
+    SPRITE_PROJECTILE_555 = 555,  // fireball
 
     SPRITE_556 = 556,  // some red mobile light applied
-    SPRITE_600 = 600,  // some reddish mobile light applied
-    SPRITE_601 = 601,
+    SPRITE_OBJECT_EXPLODE = 600,  // some reddish mobile light applied -  actor explode
+    SPRITE_OBJECT_EXPLODE_IMPACT = 601,
 
-    SPRITE_800 = 800,
+    SPRITE_WATER_SPLASH = 800,
 
     SPRITE_811 = 811,
     SPRITE_812 = 812,
@@ -214,7 +214,7 @@ struct SpriteObject {
     static bool sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x, int y,
                                       int z, int a4, int count, int a7,
                                       unsigned __int16 attributes, ItemGen *a9);
-    static void sub_42F960_create_object(int x, int y, int z);
+    static void Create_Splash_Object(int x, int y, int z);
     static void InitializeSpriteObjects();
 
     SPRITE_OBJECT_TYPE uType;

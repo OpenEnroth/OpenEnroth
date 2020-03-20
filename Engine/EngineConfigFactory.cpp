@@ -40,9 +40,9 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::CreateDefaultConfiguration() 
         break;
     }
 
-    cfg->sound_level = std::min(9, OS_GetAppInt("soundflag", 9));
-    cfg->music_level = std::min(9, OS_GetAppInt("musicflag", 9));
-    cfg->voice_level = std::min(9, OS_GetAppInt("CharVoices", 9));
+    cfg->sound_level = std::min(4, OS_GetAppInt("soundflag", 9));
+    cfg->music_level = std::min(3, OS_GetAppInt("musicflag", 9));
+    cfg->voice_level = std::min(4, OS_GetAppInt("CharVoices", 9));
 
     cfg->gamma = std::min(4, OS_GetAppInt("GammaPos", 4));
 

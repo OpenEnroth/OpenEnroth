@@ -1816,9 +1816,11 @@ void Player::Heal(int amount) {
 //----- (0048DC1E) --------------------------------------------------------
 int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
     SetAsleep(GameTime(0));  // wake up if asleep
-    signed int recieved_dmg =
-        CalculateIncommingDamage(dmg_type, amount);  // get damage
-    sHealth -= recieved_dmg;                         // reduce health
+    signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
+    // for no damage cheat - moved from elsewhere
+    if (!engine->config->NoDamage()) {
+        sHealth -= recieved_dmg;     // reduce health
+    }
 
     if (sHealth < 1) {  // player unconscious or if too hurt - dead
         if ((sHealth + uEndurance +
@@ -4359,7 +4361,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     }
 
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_SPELL_SCROLL) {
-        if (current_screen_type == SCREEN_CASTING) return;
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_CASTING) return;
         if (!playerAffected->CanAct()) {
             auto str = localization->FormatString(
                 382, localization->GetCharacterConditionName(
@@ -4381,13 +4383,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                 // ,Recharge Item ,Fire Aura
             mouse->RemoveHoldingItem();
             pGUIWindow_CurrentMenu->Release();
-            current_screen_type = SCREEN_GAME;
+            current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
             viewparams->bRedrawGameUI = 1;
             _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)scroll_id, player_num - 1, 0x85u, 1, 0);
         } else {
             mouse->RemoveHoldingItem();
             pMessageQueue_50C9E8->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
-            if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu &&
+            if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu &&
                 (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
             }
@@ -5734,7 +5736,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
         if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
             pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] =
                 pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText = 0) {
+            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText == 0) {
                 bFlashHistoryBook = 1;
                 PlayAwardSound();
             }
@@ -6962,12 +6964,27 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
     unsigned int uActorID;        // [sp+4Ch] [bp-8h]@1
 
     uActorID = PID_ID(uObjID);
-    if (PID_TYPE(uObjID) != 2) {
+    int pidtype = PID_TYPE(uObjID);
+
+    if (pidtype != 2) {
+        if (pidtype != 3) __debugbreak();
+
+        if (a4 == -1) __debugbreak();
+
         playerPtr = &pParty->pPlayers[a4];
         actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->sHealth;
         if (PID_TYPE(uObjID) != 3 || !actorPtr->ActorHitOrMiss(playerPtr))
             return;
+
+        if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
+            rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
+            auto str = localization->FormatString(637, playerPtr->pName);  // evades damage
+            GameUI_StatusBar_OnEvent(str);
+            playerPtr->PlaySound(SPEECH_6, 0);
+            return;
+        }
+
         ItemGen* equippedArmor = playerPtr->GetArmorItem();
         SoundID soundToPlay;
         if (!equippedArmor || equippedArmor->IsBroken() ||
@@ -7042,7 +7059,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                 damageType = 4;  // yes, the original just assigned the value 4
                 break;
         }
-        if (!engine->config->NoDamage()) {
+        // if (!engine->config->NoDamage()) {
             dmgToReceive =
                 playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
             if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
@@ -7095,7 +7112,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                 playerPtr->ReceiveSpecialAttackEffect(
                     actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
             }
-        }
+        //}
         if (!pParty->bTurnBasedModeOn) {
             int actEndurance = playerPtr->GetActualEndurance();
             int recoveryTime =
@@ -7115,7 +7132,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
         SpriteObject* v37 = &pSpriteObjects[uActorID];
         int uActorType = PID_TYPE(v37->spell_caster_pid);
         int uActorID = PID_ID(v37->spell_caster_pid);
-        if (uActorType == 2) {
+        if (uActorType == 2) {  // item
             Player* playerPtr;  // eax@81
             if (a4 != -1) {
                 playerPtr = &pParty->pPlayers[a4];
@@ -7154,28 +7171,26 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                 uSpeakingCharacter = uActorID + 1;
             }
             return;
-        } else if (uActorType == 3) {
+        } else if (uActorType == 3) {  // actor
             Actor* actorPtr = &pActors[uActorID];
             if (a4 == -1) a4 = stru_50C198.which_player_to_attack(actorPtr);
             Player* playerPtr = &pParty->pPlayers[a4];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             unsigned __int16 spriteType = v37->uType;
-            if (v37->uType == 545) {
-                // __int16 skillLevel =
-                // playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED);
-                if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >=
-                        4 &&
-                    rand() % 100 <
-                        playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
-                    auto str =
-                        localization->FormatString(637, playerPtr->pName);
+
+            if (v37->uType == 545) {  // arrows
+                // GM unarmed 1% chance to evade attack per skill point
+                logger->Info(L"Arrpow");
+                if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
+                    rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
+                    auto str = localization->FormatString(637, playerPtr->pName);  // evades damage
                     GameUI_StatusBar_OnEvent(str);
                     playerPtr->PlaySound(SPEECH_6, 0);
                     return;
                 }
-            } else if (spriteType == 555 || spriteType == 510 ||
+            } else if (spriteType == 555 || spriteType == 510 ||  // dragonflies firebolt
                        spriteType == 500 || spriteType == 515 ||
-                       spriteType == 505 || spriteType == 530 ||
+                       spriteType == 505 || spriteType == 530 ||  // all missile types?
                        spriteType == 525 || spriteType == 520 ||
                        spriteType == 535 || spriteType == 540) {
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
@@ -7235,7 +7250,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     damageType = 4;
                     break;
             }
-            if (!engine->config->NoDamage()) {
+            // if (!engine->config->NoDamage()) {
                 int reflectedDmg = playerPtr->ReceiveDamage(
                     dmgToReceive, (DAMAGE_TYPE)damageType);
                 if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
@@ -7281,7 +7296,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                         }
                     }
                 }
-            }
+            //}
             if (!dmgSource &&
                 !engine->config->NoDamage() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
@@ -7835,7 +7850,7 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
     SpriteObject a1a;
-    a1a.uType = SPRITE_600;
+    a1a.uType = SPRITE_OBJECT_EXPLODE;
     a1a.containing_item.Reset();
     a1a.spell_id = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;

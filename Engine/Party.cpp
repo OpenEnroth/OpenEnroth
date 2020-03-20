@@ -53,15 +53,15 @@ std::array<class UIAnimation *, 4>
      &_uianim._pUIAnum_Torchlight, &_uianim._pUIAnim_WizardEye};
 
 //----- (0044A56A) --------------------------------------------------------
-void Party::CountHirelings() {
-    field_70A = 0;
+void Party::CountHirelings() {  // non hired followers
+    cNonHireFollowers = 0;
 
     for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         NPCData *npc = &pNPCStats->pNewNPCData[i];
         if (npc->Hired() &&
             (!pHirelings[0].pName || strcmp(npc->pName, pHirelings[0].pName))) {
             if (!pHirelings[1].pName || strcmp(npc->pName, pHirelings[1].pName))
-                ++field_70A;
+                ++cNonHireFollowers;
         }
     }
 }
@@ -483,7 +483,7 @@ void Party::Reset() {
     uNumGold = 200;
     uNumFoodRations = 7;
 
-    alignment = PartyAlignment_Neutral;
+    alignment = PartyAlignment::PartyAlignment_Neutral;
     SetUserInterface(alignment, true);
 
     // game begins at 9 am
@@ -627,6 +627,8 @@ void Party::ResetPosMiscAndSpellBuffs() {
 //----- (004909F4) --------------------------------------------------------
 void Party::UpdatePlayersAndHirelingsEmotions() {
     int v4;  // edx@27
+
+    if (pParty->cNonHireFollowers < 0) pParty->CountHirelings();
 
     for (int i = 0; i < 4; ++i) {
         Player *player = &pPlayers[i];

@@ -239,6 +239,7 @@ MAP_TYPE MapStats::GetMapInfo(const String &Str2) {
 
 int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
     SpriteObject a1a;
+    a1a.containing_item.Reset();
 
     int v34 = 0;
     int v5 = rand() % 100;
@@ -285,7 +286,7 @@ int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
         if (!result) return result;
         a1a.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[a1a.containing_item.uItemID].uSpriteID;
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
-        a1a.containing_item.Reset();
+        a1a.containing_item.Reset();  // ?? this needs checking
     }
     a1a.vPosition.y = a2->vPosition.y;
     a1a.uAttributes = 0;

@@ -608,10 +608,7 @@ void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                           Texture *texture) {
     __debugbreak();
 }
-void RenderOpenGL::am_Blt_Copy(Rect *pSrcRect, Point *pTargetXY,
-                               int blend_mode) {
-    __debugbreak();
-}
+
 void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                  int blend_mode) {
     __debugbreak();
@@ -954,7 +951,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     unsigned __int8 *pixels = nullptr;
     if (native_format == IMAGE_FORMAT_R5G6B5) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8);
-    } else if (native_format == IMAGE_FORMAT_A1R5G5B5 || IMAGE_FORMAT_A8R8G8B8) {
+    } else if (native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);  // rgba
         gl_format = GL_RGBA;
     } else {
@@ -991,6 +988,8 @@ void _set_3d_projection_matrix() {
 
     // outdoors 60 - should be 75?
     // indoors 65?/
+    // something to do with ratio of screenwidth to viewport width
+
 
     gluPerspective(40, double(game_viewport_width/double(game_viewport_height))  // 65.0f
                    /*(GLfloat)window->GetWidth() / (GLfloat)window->GetHeight()*/,
