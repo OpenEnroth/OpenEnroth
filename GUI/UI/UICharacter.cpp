@@ -465,7 +465,7 @@ std::array<Image *, 16> paperdoll_dbrds;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     unsigned int uActiveCharacter, enum CURRENT_SCREEN screen)
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(),
+    : GUIWindow(WINDOW_CharacterRecord, 0, 0, window->GetWidth(), window->GetHeight(),
                 uActiveCharacter) {
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
@@ -473,8 +473,6 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = screen;
 
-    // auto wnd = new GUIWindow_CharacterRecord(0, 0, window->GetWidth(),
-    // window->GetHeight(), uActiveCharacter, 0);
     pCharacterScreen_StatsBtn = CreateButton(
         pViewport->uViewportTL_X + 12, pViewport->uViewportTL_Y + 308,
         paperdoll_dbrds[9]->GetWidth(), paperdoll_dbrds[9]->GetHeight(), 1, 0,
@@ -591,9 +589,11 @@ void GUIWindow_CharacterRecord::ShowStatsTab() {
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
     CharacterUI_ReleaseButtons();
     ReleaseAwardsScrollBar();
-    new OnButtonClick3(pCharacterScreen_StatsBtn->uX,
-                       pCharacterScreen_StatsBtn->uY, 0, 0,
-                       (int)pCharacterScreen_StatsBtn);
+    new OnButtonClick3(
+        WINDOW_CharacterWindow_Stats,
+        pCharacterScreen_StatsBtn->uX,
+        pCharacterScreen_StatsBtn->uY, 0, 0,
+        pCharacterScreen_StatsBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowSkillsTab() {
@@ -601,18 +601,22 @@ void GUIWindow_CharacterRecord::ShowSkillsTab() {
     CharacterUI_ReleaseButtons();
     ReleaseAwardsScrollBar();
     CharacterUI_SkillsTab_CreateButtons();
-    new OnButtonClick3(pCharacterScreen_SkillsBtn->uX,
-                       pCharacterScreen_SkillsBtn->uY, 0, 0,
-                       (int)pCharacterScreen_SkillsBtn);
+    new OnButtonClick3(
+        WINDOW_CharacterWindow_Skills,
+        pCharacterScreen_SkillsBtn->uX,
+        pCharacterScreen_SkillsBtn->uY, 0, 0,
+        pCharacterScreen_SkillsBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowInventoryTab() {
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     ReleaseAwardsScrollBar();
     CharacterUI_ReleaseButtons();
-    new OnButtonClick3(pCharacterScreen_InventoryBtn->uX,
-                       pCharacterScreen_InventoryBtn->uY, 0, 0,
-                       (int)pCharacterScreen_InventoryBtn);
+    new OnButtonClick3(
+        WINDOW_CharacterWindow_Inventory,
+        pCharacterScreen_InventoryBtn->uX,
+        pCharacterScreen_InventoryBtn->uY, 0, 0,
+        pCharacterScreen_InventoryBtn);
 }
 
 void GUIWindow_CharacterRecord::ShowAwardsTab() {
@@ -620,9 +624,11 @@ void GUIWindow_CharacterRecord::ShowAwardsTab() {
     CharacterUI_ReleaseButtons();
     CreateAwardsScrollBar();
     current_character_screen_window = WINDOW_CharacterWindow_Awards;
-    new OnButtonClick3(pCharacterScreen_AwardsBtn->uX,
-                       pCharacterScreen_AwardsBtn->uY, 0, 0,
-                       (int)pCharacterScreen_AwardsBtn);
+    new OnButtonClick3(
+        WINDOW_CharacterWindow_Awards,
+        pCharacterScreen_AwardsBtn->uX,
+        pCharacterScreen_AwardsBtn->uY, 0, 0,
+        pCharacterScreen_AwardsBtn);
     FillAwardsData();
 }
 

@@ -63,7 +63,7 @@ void GUIWindow_Book::Release() {
 }
 
 GUIWindow_Book::GUIWindow_Book()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {}
+    : GUIWindow(WINDOW_Book, 0, 0, window->GetWidth(), window->GetHeight(), 0) {}
 
 void GUIWindow_Book::BasicBookInitialization() {
     pAudioPlayer->StopChannels(-1, -1);

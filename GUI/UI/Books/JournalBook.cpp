@@ -20,8 +20,8 @@
 Image *ui_book_journal_background = nullptr;
 
 GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
-    this->ptr_1C =
-        (void *)WINDOW_JournalBook;  // inherited from GUIWindow::GUIWindow
+    eWindowType = WINDOW_JournalBook;
+    this->ptr_1C = (void *)WINDOW_JournalBook;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
     pEventTimer->Pause();

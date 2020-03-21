@@ -51,7 +51,7 @@ std::array<Image *, 9> ui_spellbook_school_backgrounds;
 std::array<std::array<Image *, 2>, 9> ui_spellbook_school_tabs;
 
 GUIWindow_Spellbook::GUIWindow_Spellbook()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_SpellBook, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     current_screen_type = CURRENT_SCREEN::SCREEN_SPELL_BOOK;
     pEventTimer->Pause();
 

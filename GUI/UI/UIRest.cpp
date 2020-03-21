@@ -55,7 +55,9 @@ void GUIWindow_RestWindow::Update() {
 void PrepareToLoadRestUI() {
     if (!_506F14_resting_stage) pAudioPlayer->StopChannels(-1, -1);
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
-        pGUIWindow_CurrentMenu->Release();
+        if (pGUIWindow_CurrentMenu) {
+            pGUIWindow_CurrentMenu->Release();
+        }
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
         viewparams->bRedrawGameUI = true;
     }
@@ -88,7 +90,7 @@ void PrepareToLoadRestUI() {
 
 //----- (0041F6C1) --------------------------------------------------------
 GUIWindow_Rest::GUIWindow_Rest()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_Rest, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     PrepareToLoadRestUI();
     current_screen_type = CURRENT_SCREEN::SCREEN_REST;
 

@@ -314,12 +314,12 @@ enum WindowType {
     WINDOW_ModalWindow = 70,
     WINDOW_50 = 80,  // Debug
     WINDOW_59 = 89,  // Debug: Item Generation Window
-    WINDOW_PressedButton2 = 90,
+    WINDOW_PressedButton2 = 90,      // OnButtonClick2?
     WINDOW_CharactersPressedButton = 91,
     WINDOW_PressedButton = 92,
     WINDOW_5D = 93,
     WINDOW_SaveLoadBtn = 94,
-    WINDOW_LoadGame_CancelBtn = 95,  // OnCancel3
+    WINDOW_LoadGame_CancelBtn = 95,  // OnCancel3?
     WINDOW_CloseRestWindowBtn = 96,
     WINDOW_ExitCharacterWindow = 97,  // OnCancel2
     WINDOW_RestWindow = 0x62,
@@ -328,7 +328,7 @@ enum WindowType {
     WINDOW_CharacterWindow_Skills = 0x65,
     WINDOW_CharacterWindow_Awards = 0x66,
     WINDOW_CharacterWindow_Inventory = 0x67,
-    WINDOW_68 = 104,
+    WINDOW_GameOptions = 104,
     WINDOW_KeyMappingOptions = 0x69,
     WINDOW_VideoOptions = 0x6A,
     WINDOW_LloydsBeacon = 177,
@@ -338,7 +338,87 @@ enum WindowType {
     WINDOW_MapsBook = 0xCA,
     WINDOW_CalendarBook = 0xCB,
     WINDOW_JournalBook = 0xE0,
+
+    WINDOW_Unknown,              // i wasnt able to find real value for those
+    WINDOW_CharacterCreation,    // new addition, because i wasnt able to find real value for this
+    WINDOW_CharacterCreationBtn, // new addition, because i wasnt able to find real value for this
+    WINDOW_GenericCancel,        // new addition, because i wasnt able to find real value for this
+    WINDOW_GameUI,               // new addition, because i wasnt able to find real value for this
+    WINDOW_Credits,              // new addition, because i wasnt able to find real value for this
+    WINDOW_Save,                 // new addition, because i wasnt able to find real value for this
+    WINDOW_Load,                 // new addition, because i wasnt able to find real value for this
+    WINDOW_DebugMenu,
+
+    // =======
+    // ToString updated until here
 };
+
+#define ENUM_TO_STRING_CASE(val) case val: return #val;
+inline const char* ToString(WindowType windowType) {
+    switch (windowType) {
+        ENUM_TO_STRING_CASE(WINDOW_null)
+        ENUM_TO_STRING_CASE(WINDOW_MainMenu)
+        ENUM_TO_STRING_CASE(WINDOW_GameMenu)
+        ENUM_TO_STRING_CASE(WINDOW_CharacterRecord)
+        ENUM_TO_STRING_CASE(WINDOW_Options)
+        ENUM_TO_STRING_CASE(WINDOW_8)
+        ENUM_TO_STRING_CASE(WINDOW_Book)
+        ENUM_TO_STRING_CASE(WINDOW_Dialogue)
+        ENUM_TO_STRING_CASE(WINDOW_QuickReference)
+        ENUM_TO_STRING_CASE(WINDOW_F)
+        ENUM_TO_STRING_CASE(WINDOW_Rest)
+        ENUM_TO_STRING_CASE(WINDOW_ChangeLocation)
+        ENUM_TO_STRING_CASE(WINDOW_SpellBook)
+        ENUM_TO_STRING_CASE(WINDOW_GreetingNPC)
+        ENUM_TO_STRING_CASE(WINDOW_Chest)
+        ENUM_TO_STRING_CASE(WINDOW_22)
+        ENUM_TO_STRING_CASE(WINDOW_SaveLoadButtons)
+        ENUM_TO_STRING_CASE(WINDOW_MainMenu_Load)
+        ENUM_TO_STRING_CASE(WINDOW_HouseInterior)
+        ENUM_TO_STRING_CASE(WINDOW_Transition)
+        ENUM_TO_STRING_CASE(WINDOW_CastSpell)
+        ENUM_TO_STRING_CASE(WINDOW_Scroll)
+        ENUM_TO_STRING_CASE(WINDOW_CastSpell_InInventory)
+        ENUM_TO_STRING_CASE(WINDOW_ModalWindow)
+        ENUM_TO_STRING_CASE(WINDOW_50)
+        ENUM_TO_STRING_CASE(WINDOW_59)
+        ENUM_TO_STRING_CASE(WINDOW_PressedButton2)
+        ENUM_TO_STRING_CASE(WINDOW_CharactersPressedButton)
+        ENUM_TO_STRING_CASE(WINDOW_PressedButton)
+        ENUM_TO_STRING_CASE(WINDOW_5D)
+        ENUM_TO_STRING_CASE(WINDOW_SaveLoadBtn)
+        ENUM_TO_STRING_CASE(WINDOW_LoadGame_CancelBtn)
+        ENUM_TO_STRING_CASE(WINDOW_CloseRestWindowBtn)
+        ENUM_TO_STRING_CASE(WINDOW_ExitCharacterWindow)
+        ENUM_TO_STRING_CASE(WINDOW_RestWindow)
+        ENUM_TO_STRING_CASE(WINDOW_BooksButtonOverlay)
+        ENUM_TO_STRING_CASE(WINDOW_CharacterWindow_Stats)
+        ENUM_TO_STRING_CASE(WINDOW_CharacterWindow_Skills)
+        ENUM_TO_STRING_CASE(WINDOW_CharacterWindow_Awards)
+        ENUM_TO_STRING_CASE(WINDOW_CharacterWindow_Inventory)
+        ENUM_TO_STRING_CASE(WINDOW_GameOptions)
+        ENUM_TO_STRING_CASE(WINDOW_KeyMappingOptions)
+        ENUM_TO_STRING_CASE(WINDOW_VideoOptions)
+        ENUM_TO_STRING_CASE(WINDOW_LloydsBeacon)
+        ENUM_TO_STRING_CASE(WINDOW_TownPortal)
+        ENUM_TO_STRING_CASE(WINDOW_QuestBook)
+        ENUM_TO_STRING_CASE(WINDOW_AutonotesBook)
+        ENUM_TO_STRING_CASE(WINDOW_MapsBook)
+        ENUM_TO_STRING_CASE(WINDOW_CalendarBook)
+        ENUM_TO_STRING_CASE(WINDOW_JournalBook)
+        ENUM_TO_STRING_CASE(WINDOW_Unknown)
+        ENUM_TO_STRING_CASE(WINDOW_CharacterCreation)
+        ENUM_TO_STRING_CASE(WINDOW_CharacterCreationBtn)
+        ENUM_TO_STRING_CASE(WINDOW_GenericCancel)
+        ENUM_TO_STRING_CASE(WINDOW_GameUI)
+        ENUM_TO_STRING_CASE(WINDOW_Credits)
+        ENUM_TO_STRING_CASE(WINDOW_Save)
+        ENUM_TO_STRING_CASE(WINDOW_Load)
+        ENUM_TO_STRING_CASE(WINDOW_DebugMenu)
+    }
+
+    return nullptr;
+}
 
 struct Texture_MM7;
 
@@ -353,7 +433,7 @@ class GUIButton;
 class GUIWindow {
  public:
     GUIWindow();
-    GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const String &hint = String());
+    GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, int pButton, const String &hint = String());
     virtual ~GUIWindow() {}
 
     GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
@@ -393,8 +473,9 @@ class GUIWindow {
     unsigned int uFrameW;
     WindowType eWindowType;
     union {
-        void *ptr_1C;  // sometimes BuildID_2Events - book open
-        unsigned int par1C;
+        void *ptr_1C;       // sometimes BuildID_2Events - book open, sometimes Button
+        unsigned int par1C; // in shops and houses - int parameter
+                            // sometimes WindowType
     };
     int field_24;
     int pNumPresenceButton;
@@ -414,7 +495,7 @@ class GUIWindow {
 class GUIWindow_Scroll : public GUIWindow {
  public:
     GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint) {
+        GUIWindow(WINDOW_Scroll, x, y, width, height, button, hint) {
         CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
         CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
         CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
@@ -429,7 +510,7 @@ class GUIWindow_Scroll : public GUIWindow {
 class OnButtonClick : public GUIWindow {
  public:
     OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String(), bool play_sound = true) :
-        GUIWindow(x, y, width, height, button, hint),
+        GUIWindow(WINDOW_CharacterCreationBtn, x, y, width, height, button, hint),
         bPlaySound(play_sound)
     {}
     virtual ~OnButtonClick() {}
@@ -442,7 +523,7 @@ class OnButtonClick : public GUIWindow {
 class OnButtonClick2 : public GUIWindow {
  public:
     OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String(), bool play_sound = true) :
-        GUIWindow(x, y, width, height, button, hint),
+        GUIWindow(WINDOW_PressedButton2, x, y, width, height, button, hint),
         bPlaySound(play_sound)
     {}
     virtual ~OnButtonClick2() {}
@@ -454,18 +535,21 @@ class OnButtonClick2 : public GUIWindow {
 
 class OnButtonClick3 : public GUIWindow {
  public:
-    OnButtonClick3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint)
-    {}
+    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
+        GUIWindow(windowType, x, y, width, height, (int)button, hint)
+    {
+    }
+
     virtual ~OnButtonClick3() {}
 
     virtual void Update();
 };
 
+// something debug? not really sure, unused
 class OnButtonClick4 : public GUIWindow {
  public:
     OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint)
+        GUIWindow(WINDOW_59, x, y, width, height, button, hint)
     {}
     virtual ~OnButtonClick4() {}
 
@@ -475,7 +559,7 @@ class OnButtonClick4 : public GUIWindow {
 class OnSaveLoad : public GUIWindow {
  public:
     OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint)
+        GUIWindow(WINDOW_SaveLoadBtn, x, y, width, height, button, hint)
     {}
     virtual ~OnSaveLoad() {}
 
@@ -485,7 +569,7 @@ class OnSaveLoad : public GUIWindow {
 class OnCancel : public GUIWindow {
  public:
     OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint)
+        GUIWindow(WINDOW_GenericCancel, x, y, width, height, button, hint)
     {}
     virtual ~OnCancel() {}
 
@@ -495,7 +579,7 @@ class OnCancel : public GUIWindow {
 class OnCancel2 : public GUIWindow {
  public:
     OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint)
+        GUIWindow(WINDOW_ExitCharacterWindow, x, y, width, height, button, hint)
     {}
     virtual ~OnCancel2() {}
 
@@ -505,7 +589,7 @@ class OnCancel2 : public GUIWindow {
 class OnCancel3 : public GUIWindow {
  public:
     OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint)
+        GUIWindow(WINDOW_LoadGame_CancelBtn, x, y, width, height, button, hint)
     {}
     virtual ~OnCancel3() {}
 

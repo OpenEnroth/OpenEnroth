@@ -18,7 +18,7 @@
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    GUIWindow(WINDOW_MainMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
 
     ui_mainmenu_new = assets->GetImage_ColorKey("title_new", 0x7FF);

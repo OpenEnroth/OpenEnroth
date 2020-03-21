@@ -5,7 +5,7 @@
 class GUIWindow_Inventory : public GUIWindow {
  public:
     GUIWindow_Inventory(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint = String()) :
-        GUIWindow(x, y, width, height, button, hint) {}
+        GUIWindow(WINDOW_CharacterWindow_Inventory, x, y, width, height, button, hint) {}
     virtual ~GUIWindow_Inventory() {}
 
     virtual void Update();

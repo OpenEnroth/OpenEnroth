@@ -169,11 +169,10 @@ void CreateAwardsScrollBar() {
 
 void UI_CreateEndConversationButton() {
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
         localization->GetString(74),  // "End Conversation"
         {{ui_exit_cancel_button_background}});
-    pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
-                                  UIMSG_BuyInShop_Identify_Repair, 0, 0, "");
+    pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "");
 }

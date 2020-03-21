@@ -29,7 +29,7 @@ Image *saveload_ui_x_d = nullptr;
 Image *scrollstop = nullptr;
 
 GUIWindow_Save::GUIWindow_Save() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    GUIWindow(WINDOW_Save, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     memset(&pSavegameUsedSlots, 0, sizeof(pSavegameUsedSlots));
     memset(&pSavegameThumbnails, 0, sizeof(pSavegameThumbnails));
 
@@ -115,7 +115,7 @@ void GUIWindow_Save::Update() {
 }
 
 GUIWindow_Load::GUIWindow_Load(bool ingame) :
-    GUIWindow(0, 0, 0, 0, 0) {
+    GUIWindow(WINDOW_Load, 0, 0, 0, 0, 0) {
     current_screen_type = CURRENT_SCREEN::SCREEN_LOADGAME;
 
     dword_6BE138 = -1;

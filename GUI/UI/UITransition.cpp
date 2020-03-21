@@ -74,7 +74,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                                            int x, int y, int z, int directiony,
                                            int directionx, int a8,
                                            const char *pLocationName)
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_Transition, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     dword_59117C_teleportx = x;
     dword_591178_teleporty = y;
     dword_591174_teleportz = z;
@@ -184,7 +184,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
 }
 
 GUIWindow_Travel::GUIWindow_Travel()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_ChangeLocation, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     String pContainer;  // [sp+0h] [bp-28h]@1
 
     pEventTimer->Pause();

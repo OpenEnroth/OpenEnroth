@@ -1085,7 +1085,7 @@ void NPCHireableDialogPrepare() {
     v1 = HouseNPCData[(unsigned int)((char *)pDialogueNPCCount +
                                      -(dword_591080 != 0))];  //- 1
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, 0);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
         localization->GetString(34),  // "Cancel"
@@ -1124,7 +1124,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
     if (_this + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
         pDialogueWindow->Release();
         pDialogueWindow =
-            new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
+            new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), window->GetHeight(), 0);
         transition_button_label = localization->FormatString(
             411, pMapStats->pInfos[uHouse_ExitPic].pName);  // Enter %s
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
@@ -1146,7 +1146,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
             for (i = 0; i < uNumDialogueNPCPortraits; ++i)
                 HouseNPCPortraitsButtonsList[i]->Release();
         }
-        pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0);
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
             localization->GetString(74),  // "End Conversation"

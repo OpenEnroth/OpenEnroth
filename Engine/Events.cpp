@@ -1070,9 +1070,11 @@ LABEL_47:
                                 current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                 viewparams->bRedrawGameUI = 1;
                                 pDialogueNPCCount = 0;
-                                pDialogueWindow->Release();
+                                if (pDialogueWindow) {
+                                    pDialogueWindow->Release();
+                                    pDialogueWindow = 0;
+                                }
                                 dialog_menu_id = HOUSE_DIALOGUE_NULL;
-                                pDialogueWindow = 0;
                                 pIcons_LOD->SyncLoadedFilesCount();
                             }
                             OnMapLeave();

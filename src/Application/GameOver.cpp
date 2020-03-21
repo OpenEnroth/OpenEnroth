@@ -60,8 +60,7 @@ void Application::GameOver_Loop(int v15) {
     background->Release();
     background = nullptr;
 
-    window_SpeakInHouse =
-        new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
+    window_SpeakInHouse = new GUIWindow(WINDOW_Unknown, 0, 0, window->GetWidth(), window->GetHeight(), 0);
     pWindow.uFrameX = 75;
     pWindow.uFrameY = 60;
     pWindow.uFrameWidth = 469;

@@ -1071,7 +1071,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
                     return;
             }
             pDialogueWindow->Release();
-            pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 345, 0);
+            pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
             pBtn_ExitCancel = pDialogueWindow->CreateButton(
                 526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 0,
                 localization->GetString(74),  // "End Conversation"
@@ -1094,7 +1094,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
                 uMessageParam != BuildingType_MindGuild) {
                 pDialogueWindow->Release();
                 pDialogueWindow =
-                    new GUIWindow(0, 0, window->GetWidth(), 345, 0);
+                    new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
                 pBtn_ExitCancel = pDialogueWindow->CreateButton(
                     526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 0,
                     localization->GetString(74),  // "End Conversation"
@@ -4349,7 +4349,7 @@ void GenerateStandartShopItems() {
 }
 
 GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
-    GUIWindow(x, y, width, height, button, hint) {
+    GUIWindow(WINDOW_HouseInterior, x, y, width, height, button, hint) {
     pEventTimer->Pause();  // pause timer so not attacked
     pAudioPlayer->StopChannels(-1, -1);
 

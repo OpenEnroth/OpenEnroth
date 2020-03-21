@@ -2079,18 +2079,15 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_ClickAwardsUpBtn:
-                    new OnButtonClick3(pBtn_Up->uX, pBtn_Up->uY, 0, 0,
-                                       (int)pBtn_Up);
+                    new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Up->uX, pBtn_Up->uY, 0, 0, pBtn_Up);
                     BtnUp_flag = 1;
                     continue;
                 case UIMSG_ClickAwardsDownBtn:
-                    new OnButtonClick3(pBtn_Down->uX, pBtn_Down->uY, 0, 0,
-                                       (int)pBtn_Down);
+                    new OnButtonClick3(WINDOW_CharacterWindow_Awards, pBtn_Down->uX, pBtn_Down->uY, 0, 0, pBtn_Down);
                     BtnDown_flag = 1;
                     continue;
                 case UIMSG_ChangeDetaliz:
-                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)
-                        ->ToggleRingsOverlay();
+                    ((GUIWindow_CharacterRecord *)pGUIWindow_CurrentMenu)->ToggleRingsOverlay();
                     continue;
                 case UIMSG_ClickPaperdoll:
                     OnPaperdollLeftClick();

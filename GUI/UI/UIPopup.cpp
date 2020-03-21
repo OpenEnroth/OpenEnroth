@@ -1257,8 +1257,7 @@ void CharacterUI_StatsTab_ShowHint() {
         {
             v15 = pPlayers[uActiveCharacter]->uLevel;
             do {
-                if ((signed __int64)pPlayers[uActiveCharacter]->uExperience <
-                    (unsigned int)GetExperienceRequiredForLevel(v15))
+                if (pPlayers[uActiveCharacter]->uExperience < GetExperienceRequiredForLevel(v15))
                     break;
                 ++v15;
             } while (v15 <= 10000);
@@ -1270,7 +1269,8 @@ void CharacterUI_StatsTab_ShowHint() {
             str2 = localization->FormatString(
                 LSTR_XP_UNTIL_NEXT_LEVEL,
                 (int)(GetExperienceRequiredForLevel(v15) - pPlayers[uActiveCharacter]->uExperience),
-                v15 + 1);
+                v15 + 1
+            );
             str1 += "\n" + str2;
 
             str2 = String(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
@@ -2259,9 +2259,9 @@ unsigned int GetSpellColor(signed int a1) {
 }
 
 //----- (004B46F8) --------------------------------------------------------
-__int64 GetExperienceRequiredForLevel(int level) {
-    __int64 v1 = 0;
+unsigned __int64 GetExperienceRequiredForLevel(int level) {
+    int effectiveLevel = 0;
     for (int i = 0; i < level; ++i)
-        v1 += __int64(i) + 1;
-    return 1000 * v1;
+        effectiveLevel += i + 1;
+    return (unsigned __int64)(1000 * effectiveLevel);
 }

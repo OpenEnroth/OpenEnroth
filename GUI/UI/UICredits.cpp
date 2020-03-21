@@ -13,7 +13,7 @@
 #include "Platform/OSWindow.h"
 
 GUICredits::GUICredits() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    GUIWindow(WINDOW_Credits, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL", NULL);
     pFontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL", NULL);
 

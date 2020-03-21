@@ -121,7 +121,7 @@ Image *game_ui_playerbuff_preservation = nullptr;
 Image *game_ui_playerbuff_bless = nullptr;
 
 GUIWindow_GameMenu::GUIWindow_GameMenu()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_GameMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     game_ui_menu_options = assets->GetImage_ColorKey("options", 0x7FF);
     game_ui_menu_new = assets->GetImage_ColorKey("new1", 0x7FF);
     game_ui_menu_load = assets->GetImage_ColorKey("load1", 0x7FF);
@@ -231,7 +231,7 @@ static unsigned int GameMenuUI_GetKeyBindingColor(int key_index) {
 }
 
 GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_KeyMappingOptions, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     game_ui_options_controls[0] = assets->GetImage_ColorKey("optkb", 0x7FF);
     game_ui_options_controls[1] = assets->GetImage_ColorKey("optkb_h", 0x7FF);
     game_ui_options_controls[2] = assets->GetImage_ColorKey("resume1", 0x7FF);
@@ -508,7 +508,7 @@ void GUIWindow_GameKeyBindings::Update() {
 }
 
 GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_VideoOptions, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     // -------------------------------------
     // GameMenuUI_OptionsVideo_Load --- part
     game_ui_menu_options_video_background =
@@ -638,7 +638,7 @@ void OptionsMenuSkin::Relaease() {
 }
 
 GUIWindow_GameOptions::GUIWindow_GameOptions()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_GameOptions, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     options_menu_skin.uTextureID_Background =
         assets->GetImage_ColorKey("ControlBG", 0x7FF);
     options_menu_skin.uTextureID_TurnSpeed[2] =
@@ -2443,7 +2443,7 @@ __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
 
 
 GUIWindow_DebugMenu::GUIWindow_DebugMenu()
-    : GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    : GUIWindow(WINDOW_DebugMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
 
     pEventTimer->Pause();
     int width = 108;

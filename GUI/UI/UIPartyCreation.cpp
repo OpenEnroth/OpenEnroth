@@ -711,7 +711,7 @@ void GUIWindow_PartyCreation::Update() {
 
 //----- (0049695A) --------------------------------------------------------
 GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
-    GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    GUIWindow(WINDOW_CharacterCreation, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     pMessageQueue_50CBD0->Flush();
 
     main_menu_background = assets->GetImage_PCXFromIconsLOD("makeme.pcx");

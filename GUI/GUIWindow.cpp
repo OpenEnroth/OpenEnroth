@@ -137,13 +137,13 @@ MENU_STATE GetCurrentMenuID() {
 OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     unsigned int width,
     unsigned int height, int button,
-    const String &hint)
-    : GUIWindow(x, y, width, height, button, hint) {
+    const String &hint
+)
+    : GUIWindow(WINDOW_CastSpell, x, y, width, height, button, hint) {
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     mouse->SetCursorImage("MICON2");
-    GameUI_StatusBar_OnEvent(
-        localization->GetString(39));  // Choose target / Выберите цель
+    GameUI_StatusBar_OnEvent(localization->GetString(39));  // Choose target / Выберите цель
 }
 
 void GUIMessageQueue::Flush() {
@@ -280,16 +280,16 @@ void GUIWindow::_41D08F_set_keyboard_control_group(int num_buttons, int a3,
 }
 
 void GUIWindow::Release() {
-    if (!this ||
-        this->eWindowType == WINDOW_null) {  // added check to avoid releasing
-                                             // windows already released
+    if (!this || this->eWindowType == WINDOW_null) {
+        // added the check to avoid releasing
+        // windows already released
         return;
     }
     DeleteButtons();
 
     lWindowList.remove(this);
 
-    log->Info(L"Window Release");
+    log->Info(L"Release window: %S", ToString(eWindowType));
 }
 
 void GUIWindow::DeleteButtons() {
@@ -756,13 +756,14 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
     this->log = EngineIoc::ResolveLogger();
 }
 
-GUIWindow::GUIWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
-    unsigned int uHeight, int pButton, const String &hint)
-    : eWindowType(WINDOW_MainMenu) {
+GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth,
+    unsigned int uHeight, int pButton, const String &hint
+)
+    : eWindowType(windowType) {
     this->mouse = EngineIoc::ResolveMouse();
     this->log = EngineIoc::ResolveLogger();
 
-    log->Info(L"New window");
+    log->Info(L"New window: %S", ToString(windowType));
     lWindowList.push_front(this);
     this->uFrameWidth = uWidth;
     this->uFrameHeight = uHeight;
@@ -784,7 +785,7 @@ void DrawJoinGuildWindow(int pEventCode) {
     current_npc_text = (char *)pNPCTopics[pEventCode + 99].pText;
     ContractSelectText(pEventCode);
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, pEventCode);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, pEventCode);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
         localization->GetString(34),
@@ -823,8 +824,7 @@ void OnButtonClick::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     GUIButton *pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[0]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -839,14 +839,7 @@ void OnButtonClick2::Update() {
     GUIButton *pButton = (GUIButton *)ptr_1C;
     if (pButton->uX >= 0 && pButton->uX <= window->GetWidth()) {
         if (pButton->uY >= 0 && pButton->uY <= window->GetHeight()) {
-            render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-                pButton->vTextures[0]);
-            viewparams->bRedrawGameUI = true;
-            if (!sHint.empty()) {
-                pButton->DrawLabel(sHint, pFontCreate, 0, 0);
-            }
-            Release();
-            return;
+            render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
         }
     }
     viewparams->bRedrawGameUI = true;
@@ -923,8 +916,7 @@ void OnCancel2::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[1]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -940,8 +932,7 @@ void OnCancel3::Update() {
     }
 
     auto pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[0]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -1673,7 +1664,7 @@ void _4B3FE5_training_dialogue(int a4) {
     String what = _4B254D_SkillMasteryTeacher(
         a4);  // might be needed because of contract_approved ?
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, a4);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, a4);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
         localization->GetString(34), { { ui_exit_cancel_button_background } });
@@ -1763,7 +1754,7 @@ void CheckBountyRespawnAndAward() {
 
     uDialogueType = 83;
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(0, 0, window->GetWidth(), 350, 0);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
         localization->GetString(34),  // "Cancel"
@@ -2566,7 +2557,7 @@ void UI_Create() {
     dialogue_ui_x_ok_u = assets->GetImage_ColorKey("x_ok_u", 0x7FF);
     ui_buttyes2 = assets->GetImage_Alpha("BUTTYES2");
 
-    pPrimaryWindow = new GUIWindow(0, 0, window->GetWidth(), window->GetHeight(), 0);
+    pPrimaryWindow = new GUIWindow(WINDOW_GameUI, 0, 0, window->GetWidth(), window->GetHeight(), 0);
     pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0, 0, "");
 
     pPrimaryWindow->CreateButton(61, 424, 31, 80, 2, 94, UIMSG_SelectCharacter, 1, '1', "");  // buttons for portraits
