@@ -1024,9 +1024,9 @@ void Game::EventLoop() {
                         SaveGame(1, 0);
                         pGameLoadingUI_ProgressBar->Progress();
                         RestAndHeal(24 * 60 * GetTravelTime());
-                        if (pParty->uNumFoodRations) {
+                        if (pParty->GetFood() > 0) {
                             pParty->RestAndHeal();
-                            if (pParty->uNumFoodRations < GetTravelTime()) {
+                            if (pParty->GetFood() < GetTravelTime()) {
                                 pPlayer7 = pParty->pPlayers.data();
                                 do {
                                     pPlayer7->SetCondition(1, 0);
@@ -1763,7 +1763,7 @@ void Game::EventLoop() {
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
-                    if (pParty->uNumFoodRations < uRestUI_FoodRequiredToRest) {
+                    if (pParty->GetFood() < uRestUI_FoodRequiredToRest) {
                         GameUI_StatusBar_OnEvent(localization->GetString(482));  // "You don't have enough food to rest"
                         if (uActiveCharacter &&
                             pPlayers[uActiveCharacter]->CanAct())
@@ -2198,7 +2198,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_ShowStatus_Funds: {
                     GameUI_StatusBar_Set(localization->FormatString(
-                        489, pParty->uNumGold + pParty->uNumGoldInBank,
+                        489, pParty->GetGold() + pParty->uNumGoldInBank,
                         pParty->uNumGoldInBank));  // You have %d total gold, %d in
                                                    // the Bank
                     continue;
@@ -2227,8 +2227,7 @@ void Game::EventLoop() {
                     continue;
 
                 case UIMSG_ShowStatus_Food: {
-                    GameUI_StatusBar_Set(localization->FormatString(
-                        501, pParty->uNumFoodRations));  // You have %lu food
+                    GameUI_StatusBar_Set(localization->FormatString(501, pParty->GetFood()));  // You have %lu food
                     continue;
                 }
 
@@ -2403,11 +2402,9 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_DebugTakeFood:
                     pParty->SetFood(0);
-                    pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugGiveFood:
-                    pParty->SetFood(pParty->uNumFoodRations + 20);
-                    pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+                    pParty->GiveFood(20);
                     continue;
                 case UIMSG_DebugTakeGold:
                     pParty->SetGold(0);
@@ -2616,7 +2613,7 @@ void Game::EventLoop() {
                     pPlayers[uActiveCharacter]->PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveGold:
-                    pParty->SetGold(pParty->uNumGold + 10000);
+                    Party::AddGold(10000);
                     continue;
                 case UIMSG_DebugTownPortal:
                     engine->ToggleDebugTownPortal();

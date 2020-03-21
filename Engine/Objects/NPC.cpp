@@ -1065,7 +1065,7 @@ const char *ContractSelectText(int pEventCode) {
             dword_F8B1AC_award_bit_number)) {
             return pNPCTopics[dialogue_base + 13].pText;
         } else {
-            if ((unsigned int)gold_transaction_amount <= pParty->uNumGold) {
+            if (gold_transaction_amount <= pParty->GetGold()) {
                 contract_approved = 1;
                 return pNPCTopics[pEventCode + dialogue_base].pText;
             } else {
@@ -1414,15 +1414,15 @@ int UseNPCSkill(NPCProf profession) {
         } break;
 
         case Cook: {
-            if (pParty->uNumFoodRations >= 13) return 1;
+            if (pParty->GetFood() >= 13) return 1;
 
             Party::GiveFood(1);
         } break;
 
         case Chef: {
-            if (pParty->uNumFoodRations >= 13) return 1;
+            if (pParty->GetFood() >= 13) return 1;
 
-            if (pParty->uNumFoodRations == 13)
+            if (pParty->GetFood() == 13)
                 Party::GiveFood(1);
             else
                 Party::GiveFood(2);
@@ -1460,16 +1460,13 @@ int UseNPCSkill(NPCProf profession) {
         } break;
 
         case Acolyte:
-            _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_BLESS, 0, 133, 0,
-                                                 0);
+            _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_BLESS, 0, 133, 0, 0);
             break;
         case Piper:
-            _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_HEROISM, 0, 133,
-                                                 0, 0);
+            _42777D_CastSpell_UseWand_ShootArrow(SPELL_SPIRIT_HEROISM, 0, 133, 0, 0);
             break;
         case FallenWizard:
-            _42777D_CastSpell_UseWand_ShootArrow(SPELL_LIGHT_HOUR_OF_POWER, 0,
-                                                 133, 0, 0);
+            _42777D_CastSpell_UseWand_ShootArrow(SPELL_LIGHT_HOUR_OF_POWER, 0, 133, 0, 0);
             break;
 
         case Teacher:

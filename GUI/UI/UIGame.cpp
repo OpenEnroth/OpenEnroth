@@ -1180,11 +1180,12 @@ void GameUI_DrawFoodAndGold() {
 
         pPrimaryWindow->DrawText(
             pFontSmallnum, 0, text_y, uGameUIFontMain,
-            StringPrintf("\r087%lu", pParty->uNumFoodRations), 0, 0,
+            StringPrintf("\r087%d", pParty->GetFood()), 0, 0,
             uGameUIFontShadow);
-        pPrimaryWindow->DrawText(pFontSmallnum, 0, text_y, uGameUIFontMain,
-                                 StringPrintf("\r028%lu", pParty->uNumGold), 0,
-                                 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(
+            pFontSmallnum, 0, text_y, uGameUIFontMain,
+            StringPrintf("\r028%d", pParty->GetGold()), 0, 0,
+            uGameUIFontShadow);
     }
 }
 

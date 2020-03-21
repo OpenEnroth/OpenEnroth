@@ -1266,16 +1266,14 @@ void CharacterUI_StatsTab_ShowHint() {
             String str1;
             String str2;
             if (v15 > pPlayers[uActiveCharacter]->uLevel)
-                str1 = StringPrintf(localization->GetString(147), v15);
+                str1 = localization->FormatString(LSTR_ELIGIBLE_TO_LEVELUP, v15);
             str2 = localization->FormatString(
-                538,
-                (GetExperienceRequiredForLevel(v15) -
-                    (int)pPlayers[uActiveCharacter]->uExperience),
-                char(v15 + 1));
+                LSTR_XP_UNTIL_NEXT_LEVEL,
+                (int)(GetExperienceRequiredForLevel(v15) - pPlayers[uActiveCharacter]->uExperience),
+                v15 + 1);
             str1 += "\n" + str2;
 
-            str2 =
-                String(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
+            str2 = String(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
 
             CharacterUI_DrawTooltip(localization->GetString(83), str2);
             break;

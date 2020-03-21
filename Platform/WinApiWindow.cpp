@@ -587,10 +587,10 @@ bool WinApiWindow::OnOSMenu(int item_id) {
 
         // SubMenu "Party"
     case 40006:
-        pParty->SetFood(pParty->uNumFoodRations + 20);
+        Party::GiveFood(20);
         break;
     case 40007:
-        pParty->SetGold(pParty->uNumGold + 10000);
+        Party::AddGold(10000);
         break;
     case 40008:
         pParty->GivePartyExp(20000);

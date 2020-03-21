@@ -694,11 +694,8 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
         } else {
             if (speakingNPC->uProfession != 51) {
                 // burglars have no hiring price
-                if (pParty->uNumGold <
-                    pNPCStats->pProfessions[speakingNPC->uProfession]
-                        .uHirePrice) {
-                    GameUI_StatusBar_OnEvent(localization->GetString(
-                        155));  // "You don't have enough gold"
+                if (pParty->GetGold() < pNPCStats->pProfessions[speakingNPC->uProfession].uHirePrice) {
+                    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                     dialogue_show_profession_details = false;
                     uDialogueType = 13;
                     if (uActiveCharacter)

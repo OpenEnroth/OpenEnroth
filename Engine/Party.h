@@ -177,13 +177,18 @@ struct Party {
         int _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal);
     void sub_421B2C_PlaceInInventory_or_DropPickedItem();
 
-    static void SetGold(unsigned int uNumGold);
-    static void TakeGold(unsigned int uNumGold);
-    static void SetFood(unsigned int uNumFood);
-    static void TakeFood(unsigned int uNumFood);
-    static void GiveFood(unsigned int _this);
+    int GetGold() const;
+    static void SetGold(int amount);
+    static void AddGold(int amount);
+    static void TakeGold(int amount);
+
+    int GetFood() const;
+    static void SetFood(int amount);
+    static void TakeFood(int amount);
+    static void GiveFood(int amount);
 
     static void Sleep8Hours();
+
 
     inline bool WizardEyeActive() {
         return bool(pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time);

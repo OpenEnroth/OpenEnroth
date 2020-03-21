@@ -325,10 +325,10 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->uCurrentHour = party->uCurrentHour;
     this->uCurrentMinute = party->uCurrentMinute;
     this->uCurrentTimeSecond = party->uCurrentTimeSecond;
-    this->uNumFoodRations = party->uNumFoodRations;
+    this->uNumFoodRations = party->GetFood();
     this->field_72C = party->field_72C;
     this->field_730 = party->field_730;
-    this->uNumGold = party->uNumGold;
+    this->uNumGold = party->GetGold();
     this->uNumGoldInBank = party->uNumGoldInBank;
     this->uNumDeaths = party->uNumDeaths;
     this->field_740 = party->field_740;

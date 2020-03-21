@@ -1,6 +1,10 @@
 #pragma once
 #include "Engine/Strings.h"
 
+#define LSTR_ELIGIBLE_TO_LEVELUP    147 // "You are eligible to train to %u."
+#define LSTR_NOT_ENOUGH_GOLD        155 // "You don't have enough gold"
+#define LSTR_XP_UNTIL_NEXT_LEVEL    538 // "You need %d more experience to train to level %d"
+
 class Localization {
  public:
     bool Initialize();

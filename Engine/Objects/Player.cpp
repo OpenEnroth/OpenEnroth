@@ -290,14 +290,13 @@ bool Player::CanCastSpell(unsigned int uRequiredMana) {
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Player::SalesProcess(unsigned int inventory_idnx, int item_index,
-                          int _2devent_idx) {
+void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2devent_idx) {
     float shop_mult = p2DEvents[_2devent_idx - 1].fPriceMultiplier;
     int sell_price = GetPriceSell(pOwnItems[item_index], shop_mult);
 
     // remove item and add gold
     RemoveItemAtInventoryIndex(inventory_idnx);
-    Party::SetGold(pParty->uNumGold + sell_price);
+    Party::AddGold(sell_price);
 }
 
 //----- (0043EEF3) --------------------------------------------------------
@@ -4747,9 +4746,9 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
             return pParty->GetPlayingTime().GetDays() % 7 == pValue;
 
         case VAR_FixedGold:
-            return pParty->uNumGold >= (unsigned int)pValue;
+            return pParty->GetGold() >= pValue;
         case VAR_FixedFood:
-            return pParty->uNumFoodRations >= (unsigned int)pValue;
+            return pParty->GetFood() >= pValue;
         case VAR_MightBonus:
             return this->uMightBonus >= pValue;
         case VAR_IntellectBonus:
@@ -6338,28 +6337,28 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             }
             return;
         case VAR_FixedGold:
-            if ((unsigned int)pValue > pParty->uNumGold) {
+            if (pValue > pParty->GetGold()) {
                 dword_5B65C4_cancelEventProcessing = 1;
                 return;
             }
-            Party::TakeGold((unsigned int)pValue);
+            Party::TakeGold(pValue);
             return;
         case VAR_RandomGold:
             randGold = rand() % (signed int)pValue + 1;
-            if ((unsigned int)randGold > pParty->uNumGold)
-                randGold = pParty->uNumGold;
+            if (randGold > pParty->GetGold())
+                randGold = pParty->GetGold();
             Party::TakeGold(randGold);
             GameUI_StatusBar_OnEvent(localization->FormatString(503, randGold));
             GameUI_DrawFoodAndGold();
             return;
         case VAR_FixedFood:
-            Party::TakeFood((unsigned int)pValue);
+            Party::TakeFood(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_RandomFood:
             randFood = rand() % (signed int)pValue + 1;
-            if ((unsigned int)randFood > pParty->uNumFoodRations)
-                randFood = pParty->uNumFoodRations;
+            if (randFood > pParty->GetFood())
+                randFood = pParty->GetFood();
             Party::TakeFood(randFood);
             GameUI_StatusBar_OnEvent(localization->FormatString(504, randFood));
             GameUI_DrawFoodAndGold();

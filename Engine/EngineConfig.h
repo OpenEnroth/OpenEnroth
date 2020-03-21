@@ -127,6 +127,8 @@ class EngineConfig {
     bool debug_lightmaps_decals = false;    // debug lightmap and decals outlines
     bool debug_terrain = false;
     bool debug_town_portal = true;
+    bool debug_infinite_gold = true;
+    bool debug_infinite_food = true;
 
     bool always_run = true;
     bool show_damage = true;

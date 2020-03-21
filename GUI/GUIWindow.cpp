@@ -1620,8 +1620,8 @@ void ClickNPCTopic(int uMessageParam) {
                          // other versions whether it's ok
         pPrice =
             pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].uHirePrice;
-        if (pParty->uNumGold < (unsigned int)pPrice) {
-            GameUI_StatusBar_OnEvent(localization->GetString(155));
+        if (pParty->GetGold() < (unsigned int)pPrice) {
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
             dialogue_show_profession_details = false;
             uDialogueType = 13;
             current_npc_text = BuildDialogueString(
@@ -1629,7 +1629,7 @@ void ClickNPCTopic(int uMessageParam) {
                 uActiveCharacter - 1, 0, 0, 0);
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
-            GameUI_StatusBar_OnEvent(localization->GetString(155));
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
             BackToHouseMenu();
             return;
         } else {
@@ -2155,7 +2155,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
         Error("Unknown skill");
     }
 
-    if (gold_transaction_amount > pParty->uNumGold)
+    if (gold_transaction_amount > pParty->GetGold())
         return String(pNPCTopics[124].pText);  // You don't have enough gold!
 
     contract_approved = 1;

@@ -1644,9 +1644,8 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
             [uMessageParam - 36]) {
                 if (!pPlayers[uActiveCharacter]
                     ->pActiveSkills[uMessageParam - 36]) {
-                    if (pParty->uNumGold < pPrice) {
-                        GameUI_StatusBar_OnEvent(
-                            localization->GetString(155));
+                    if (pParty->GetGold() < pPrice) {
+                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                         if (in_current_building_type ==
                             BuildingType_Training ||
                             in_current_building_type == BuildingType_Tavern)
@@ -1823,11 +1822,9 @@ void TravelByTransport() {
     } else {  //после нажатия топика
         if (dialog_menu_id >= HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_1 &&
             dialog_menu_id <= HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_4) {
-            if (pParty->uNumGold < pPrice) {
-                GameUI_StatusBar_OnEvent(
-                    localization->GetString(155));  //"У вас не хватает золота"
-                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-                    HouseSound_Greeting_2);
+            if (pParty->GetGold() < pPrice) {
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
@@ -2048,11 +2045,11 @@ void TownHallDialog() {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
-            if (v1 > pParty->uNumGold) {
+            if (v1 > pParty->GetGold()) {
                 PlayHouseSound(
                     (unsigned int)window_SpeakInHouse->ptr_1C,
                     HouseSound_NotEnoughMoney_TrainingSuccessful);
-                v2 = pParty->uNumGold;
+                v2 = pParty->GetGold();
             }
             if (v2 > pParty->uFine) v2 = pParty->uFine;
             Party::TakeGold(v2);
@@ -2104,8 +2101,7 @@ void BankDialog() {
     }
     case HOUSE_DIALOGUE_BANK_PUT_GOLD:
     {
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
                 StringPrintf("%s\n%s", localization->GetString(60),
@@ -2117,9 +2113,7 @@ void BankDialog() {
             bank_window.DrawFlashingInputCursor(
                 pFontArrus->GetLineWidth(
                     pKeyActionMap->pPressedKeysBuffer) /
-                2 +
-                80,
-                185, pFontArrus);
+                2 + 80, 185, pFontArrus);
             return;
         }
         if (window_SpeakInHouse->receives_keyboard_input_2 ==
@@ -2130,11 +2124,11 @@ void BankDialog() {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
-            if (entered_sum > pParty->uNumGold) {
+            if (entered_sum > pParty->GetGold()) {
                 PlayHouseSound(
                     (unsigned int)window_SpeakInHouse->ptr_1C,
                     HouseSound_NotEnoughMoney_TrainingSuccessful);
-                takes_sum = pParty->uNumGold;
+                takes_sum = pParty->GetGold();
             }
             if (takes_sum) {
                 Party::TakeGold(takes_sum);
@@ -2143,15 +2137,12 @@ void BankDialog() {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_81, 0);
                 }
             }
-            window_SpeakInHouse->receives_keyboard_input_2 =
-                WINDOW_INPUT_NONE;
+            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CANCELLED) {
-            window_SpeakInHouse->receives_keyboard_input_2 =
-                WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED) {
+            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         }
         return;
@@ -2176,10 +2167,8 @@ void BankDialog() {
                 185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CONFIRMED) {
-            window_SpeakInHouse->receives_keyboard_input_2 =
-                WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
+            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
             int entered_sum = atoi(pKeyActionMap->pPressedKeysBuffer);
             unsigned int takes_sum = entered_sum;
             if (entered_sum) {
@@ -2190,19 +2179,16 @@ void BankDialog() {
                     takes_sum = pParty->uNumGoldInBank;
                 }
                 if (takes_sum) {
-                    Party::SetGold(pParty->uNumGold + takes_sum);
+                    Party::AddGold(takes_sum);
                     pParty->uNumGoldInBank -= takes_sum;
                 }
             }
-            window_SpeakInHouse->receives_keyboard_input_2 =
-                WINDOW_INPUT_NONE;
+            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CANCELLED) {
-            window_SpeakInHouse->receives_keyboard_input_2 =
-                WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED) {
+            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         }
         return;
@@ -2428,7 +2414,7 @@ void TavernDialog() {
     }
     case HOUSE_DIALOGUE_TAVERN_REST:
     {
-        if (pParty->uNumGold >= pPriceRoom) {
+        if (pParty->GetGold() >= pPriceRoom) {
             Party::TakeGold(pPriceRoom);
             PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
                 HouseSound_NotEnoughMoney_TrainingSuccessful);
@@ -2436,24 +2422,14 @@ void TavernDialog() {
             HouseDialogPressCloseBtn();
             GetHouseGoodbyeSpeech();
             pMediaPlayer->Unload();
-            /*if ( pMessageQueue_50CBD0->uNumMessages )
-            pMessageQueue_50CBD0->uNumMessages =
-            pMessageQueue_50CBD0->pMessages[0].field_8 != 0;
-            pMessageQueue_50CBD0->pMessages[0].eType = UIMSG_RentRoom;
-            pMessageQueue_50CBD0->pMessages[0].param =
-            (int)window_SpeakInHouse->ptr_1C;//107
-            pMessageQueue_50CBD0->pMessages[0].field_8 = 1;
-            ++pMessageQueue_50CBD0->uNumMessages;*/
-            pMessageQueue_50CBD0->AddGUIMessage(
-                UIMSG_RentRoom, (int)window_SpeakInHouse->ptr_1C, 1);
+
+            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_RentRoom, (int)window_SpeakInHouse->ptr_1C, 1);
             window_SpeakInHouse->Release();
             window_SpeakInHouse = 0;
             return;
         }
-        GameUI_StatusBar_OnEvent(
-            localization->GetString(155));  //У вас не хватает золота
-        PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-            HouseSound_Goodbye);
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+        PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
@@ -2548,31 +2524,27 @@ void TavernDialog() {
 
     case HOUSE_DIALOGUE_TAVERN_BUY_FOOD:
     {
-        if ((double)pParty->uNumFoodRations >=
+        if ((double)pParty->GetFood() >=
             p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
             .fPriceMultiplier) {
-            GameUI_StatusBar_OnEvent(
-                localization->GetString(140));  //Вы уже купили еду!
+            GameUI_StatusBar_OnEvent(localization->GetString(140));  // You already bought food!
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_67, 0);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (pParty->uNumGold >= pPriceFood) {
+        if (pParty->GetGold() >= pPriceFood) {
             Party::TakeGold(pPriceFood);
-            pParty->uNumFoodRations =
-                (signed __int64)
+            Party::SetFood(
                 p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
-                .fPriceMultiplier;
-            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-                HouseSound_Greeting_2);
+                .fPriceMultiplier
+            );
+            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        GameUI_StatusBar_OnEvent(
-            localization->GetString(155));  // "You don't have enough gold"
-        PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-            HouseSound_Goodbye);
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+        PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
@@ -2712,11 +2684,9 @@ void TempleDialog() {
     //-------------------------------------------------
     if (dialog_menu_id == HOUSE_DIALOGUE_TEMPLE_HEAL) {
         if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) return;
-        if (pParty->uNumGold < pPrice) {
-            GameUI_StatusBar_OnEvent(
-                localization->GetString(155));  //"У вас не хватает золота"
-            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-                HouseSound_NotEnoughMoney_TrainingSuccessful);
+        if (pParty->GetGold() < pPrice) {
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_NotEnoughMoney_TrainingSuccessful);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2799,10 +2769,9 @@ void TempleDialog() {
     }
     //---------------------------------------------------
     if (dialog_menu_id == HOUSE_DIALOGUE_TEMPLE_DONATE) {
-        pPrice = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
-            .fPriceMultiplier;
-        if (pParty->uNumGold >= (unsigned int)pPrice) {
-            Party::TakeGold((unsigned int)pPrice);
+        pPrice = p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
+        if (pParty->GetGold() >= pPrice) {
+            Party::TakeGold(pPrice);
             v26 = &pOutdoor->ddm;
             if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v26 = &pIndoor->dlv;
             if (v26->uReputation > -5) {
@@ -2853,8 +2822,7 @@ void TempleDialog() {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        GameUI_StatusBar_OnEvent(
-            localization->GetString(155));  //"У вас не хватает золота"
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
         PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
             HouseSound_NotEnoughMoney_TrainingSuccessful);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -3050,20 +3018,14 @@ void TrainingDialog(const char *s) {
                                     v5)
                                     shop_option_str_container =
                                     localization->FormatString(
-                                        538,
-                                        (uint)(v5 -
-                                            pPlayers[uActiveCharacter]
-                                            ->uExperience),
-                                        pPlayers[uActiveCharacter]->uLevel +
-                                        1);  // "You need %d more
-                                             // experience to train to
-                                             // level %d"
+                                        LSTR_XP_UNTIL_NEXT_LEVEL,
+                                        (uint)(v5 - pPlayers[uActiveCharacter]->uExperience),
+                                        pPlayers[uActiveCharacter]->uLevel + 1);
                                 else
                                     shop_option_str_container =
                                     localization->FormatString(
                                         537,
-                                        pPlayers[uActiveCharacter]->uLevel +
-                                        1,
+                                        pPlayers[uActiveCharacter]->uLevel + 1,
                                         pPrice);  // "Train to level %d for
                                                   // %d gold"
                                 pShopOptions[index] =
@@ -3127,7 +3089,7 @@ void TrainingDialog(const char *s) {
                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
                 if ((signed __int64)pPlayers[uActiveCharacter]->uExperience >=
                     v5) {
-                    if (pParty->uNumGold >= pPrice) {
+                    if (pParty->GetGold() >= pPrice) {
                         Party::TakeGold(pPrice);
                         PlayHouseSound(
                             (unsigned int)window_SpeakInHouse->ptr_1C,
@@ -3177,19 +3139,15 @@ void TrainingDialog(const char *s) {
                         return;
                     }
 
-                    GameUI_StatusBar_OnEvent(localization->GetString(
-                        155));  // "You don't have enough gold"
-                    PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-                        (HouseSoundID)4);
+                    GameUI_StatusBar_OnEvent(localization->GetString( LSTR_NOT_ENOUGH_GOLD));
+                    PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)4);
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     return;
                 }
                 label = localization->FormatString(
-                    538,
-                    (unsigned int)(v5 -
-                        pPlayers[uActiveCharacter]->uExperience),
-                    pPlayers[uActiveCharacter]->uLevel +
-                    1);  // You need %d more experience to train to level %d
+                    LSTR_XP_UNTIL_NEXT_LEVEL,
+                    (unsigned int)(v5 - pPlayers[uActiveCharacter]->uExperience),
+                    pPlayers[uActiveCharacter]->uLevel + 1);
                 v36 =
                     (212 - pFontArrus->CalcTextHeight(
                         label, training_dialog_window.uFrameWidth, 0)) /
@@ -3450,17 +3408,15 @@ void sub_4B6478() {
                 *(short *)v6)) {
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
-            if (pParty->uNumGold < pPrice) {
-                GameUI_StatusBar_OnEvent(
-                    localization->GetString(155));  //У вас не хватает золота
+            if (pParty->GetGold() < pPrice) {
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                 v27 = 4;
             } else {
                 Party::TakeGold(pPrice);
                 *(short *)v6 = 1;
                 v27 = 2;
             }
-            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-                (HouseSoundID)v27);
+            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)v27);
         }
     } else {
         v5 = 0;

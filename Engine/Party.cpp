@@ -222,51 +222,79 @@ bool Party::HasItem(unsigned int uItemID) {
     return false;
 }
 
-//----- (00492AD5) --------------------------------------------------------
-void Party::SetFood(unsigned int uNumFood) {
+void ui_play_gold_anim() {
+    pUIAnim_Gold->uAnimTime = 0;
+    pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
+    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
+}
+
+void ui_play_food_anim() {
     pUIAnim_Food->uAnimTime = 0;
-    pParty->uNumFoodRations = uNumFood;
     pUIAnim_Food->uAnimLength = pUIAnim_Food->icon->GetAnimLength();
+    //pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+}
+
+//----- (00492AD5) --------------------------------------------------------
+void Party::SetFood(int amount) {
+    pParty->uNumFoodRations = amount;
+    ui_play_food_anim();
 }
 
 //----- (00492B03) --------------------------------------------------------
-void Party::TakeFood(unsigned int uNumFood) {
-    if (pParty->uNumFoodRations <= uNumFood)
+void Party::TakeFood(int amount) {
+    if (pParty->uNumFoodRations <= amount)
         pParty->uNumFoodRations = 0;
     else
-        pParty->uNumFoodRations -= uNumFood;
+        pParty->uNumFoodRations -= amount;
 
-    pUIAnim_Food->uAnimTime = 0;
-    pUIAnim_Food->uAnimLength = pUIAnim_Food->icon->GetAnimLength();
+    ui_play_food_anim();
 }
 
 //----- (00492B42) --------------------------------------------------------
-void Party::GiveFood(unsigned int num_food) {
-    pParty->uNumFoodRations += num_food;
+void Party::GiveFood(int amount) {
+    pParty->uNumFoodRations += amount;
 
-    if (pParty->uNumFoodRations > 0xFFFF) Party::SetFood(0xFFFFu);
+    if (pParty->uNumFoodRations > 0xFFFF)
+        Party::SetFood(0xFFFFu);
 
-    pUIAnim_Food->uAnimTime = 0;
-    pUIAnim_Food->uAnimLength = pUIAnim_Food->icon->GetAnimLength();
+    ui_play_food_anim();
+}
+
+int Party::GetGold() const {
+    if (engine->config->debug_infinite_gold) {
+        return 99999;
+    }
+
+    return uNumGold;
+}
+
+int Party::GetFood() const {
+    if (engine->config->debug_infinite_food) {
+        return 99999;
+    }
+
+    return uNumFoodRations;
 }
 
 //----- (00492B70) --------------------------------------------------------
-void Party::SetGold(unsigned int uNumGold) {
-    pParty->uNumGold = uNumGold;
-    pUIAnim_Gold->uAnimTime = 0;
-    pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
-    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
+void Party::SetGold(int amount) {
+    pParty->uNumGold = amount;
+
+    ui_play_gold_anim();
+}
+
+void Party::AddGold(int amount) {
+    SetGold(pParty->GetGold() + amount);
 }
 
 //----- (00492BB6) --------------------------------------------------------
-void Party::TakeGold(unsigned int uNumGold) {
-    if (uNumGold <= pParty->uNumGold)
-        pParty->uNumGold -= uNumGold;
+void Party::TakeGold(int amount) {
+    if (amount <= pParty->uNumGold)
+        pParty->uNumGold -= amount;
     else
         pParty->uNumGold = 0;
-    pUIAnim_Gold->uAnimTime = 0;
-    pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
-    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
+
+    ui_play_gold_anim();
 }
 
 //----- (0049135E) --------------------------------------------------------
@@ -945,14 +973,14 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
 
 //----- (00420C05) --------------------------------------------------------
 void Party::PartyFindsGold(
-    unsigned int uNumGold,
+    unsigned int amount,
     int _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal) {
     NPCData *v12;              // ecx@21
     unsigned int v13;          // ecx@23
     int hirelingCount;  // [sp+Ch] [bp-4h]@6
 
     int hirelingSalaries = 0;
-    unsigned int goldToGain = uNumGold;
+    unsigned int goldToGain = amount;
 
     String status;
     if (_1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal ==
@@ -961,7 +989,7 @@ void Party::PartyFindsGold(
         _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal ==
         1) {
         status =
-            localization->FormatString(467, uNumGold);  // You found %lu gold!
+            localization->FormatString(467, amount);  // You found %lu gold!
     } else {
         unsigned char buf[1024];
         hirelingCount = 0;
@@ -993,7 +1021,7 @@ void Party::PartyFindsGold(
             if (v13)
                 hirelingSalaries +=
                     pNPCStats->pProfessions[v13]
-                        .uHirePrice;  // *(&pNPCStats->field_13A58 + 5 * v13);
+                        .uHirePrice;
         }
         if (CheckHiredNPCSpeciality(Factor))
             goldToGain += (signed int)(10 * goldToGain) / 100;
@@ -1009,15 +1037,11 @@ void Party::PartyFindsGold(
                 466, goldToGain,
                 hirelingSalaries);  // You found %lu gold (followers take %lu)!
         } else {
-            status = localization->FormatString(
-                467, uNumGold);  // You found %lu gold!
+            status = localization->FormatString(467, amount);  // You found %lu gold!
         }
     }
-    this->uNumGold += goldToGain - hirelingSalaries;
-    pUIAnim_Gold->uAnimTime = 0;
-    pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
+    AddGold(goldToGain - hirelingSalaries);
     if (status.length() > 0) GameUI_StatusBar_OnEvent(status.c_str(), 2u);
-    pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
 }
 
 void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {

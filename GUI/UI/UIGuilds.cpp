@@ -277,13 +277,11 @@ void GuildDialog() {
         if (pPlayers[uActiveCharacter]->pActiveSkills[dialog_menu_id - 36]) {
             GameUI_StatusBar_OnEvent(localization->FormatString(
                 403,
-                localization->GetSkillName(
-                    dialog_menu_id - 36)));  // You already know the %s skill
+                localization->GetSkillName(dialog_menu_id - 36)));  // You already know the %s skill
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
-            if (pParty->uNumGold < pPrice) {
-                GameUI_StatusBar_OnEvent(localization->GetString(
-                    155));  // "You don't have enough gold"
+            if (pParty->GetGold() < pPrice) {
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                 PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
                                HouseSound_NotEnoughMoney_TrainingSuccessful);
             } else {

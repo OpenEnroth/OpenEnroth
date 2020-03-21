@@ -1133,6 +1133,15 @@ void Engine::SecondaryInitialization() {
 const char *FindMm7Directory(char *mm7_path) {
     bool mm7_installation_found = false;
 
+    // env variable override to a custom folder
+    if (!mm7_installation_found) {
+        if (const char *path = std::getenv("WOMM_PATH_OVERRIDE")) {
+            strcpy(mm7_path, path);
+            mm7_installation_found = true;
+            logger->Info(L"MM7 Custom Folder (ENV path override)");
+        }
+    }
+
     // standard 1.0 installation
     if (!mm7_installation_found) {
         mm7_installation_found = OS_GetAppString(
@@ -1163,15 +1172,6 @@ const char *FindMm7Directory(char *mm7_path) {
 
         if (mm7_installation_found) {
             logger->Info(L"GoG MM7 2018 build installation found");
-        }
-    }
-
-    if (!mm7_installation_found) {
-        char *path = getenv("WoMM_MM7_INSTALL_DIR");
-        if (path != nullptr) {
-            strcpy(mm7_path, path);
-            mm7_installation_found = true;
-            logger->Info(L"MM7 installation path from env var");
         }
     }
 
@@ -1643,7 +1643,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             for (uint i = 0; i < 4; ++i)
                 pParty->pPlayers[i].SetCondWeakWithBlockCheck(0);
 
-            if (pParty->uNumFoodRations) {
+            if (pParty->GetFood() > 0) {
                 Party::TakeFood(1);
             } else {
                 for (uint i = 0; i < 4; ++i) {

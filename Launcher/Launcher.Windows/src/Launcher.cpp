@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <stdlib.h>
 
 #include "Application.h"
 
@@ -64,6 +65,12 @@ bool OS_GetAppString(const char *path, char *out_string, int out_string_size) {
 
 void GetDefaultConfig(ApplicationConfig &config) {
     char mm7_path[2048];
+
+    if (const char *path_override = std::getenv("WOMM_PATH_OVERRIDE")) {
+        config.mm7_install_type = "Custom Folder (ENV path override)";
+        config.mm7_install_path = path_override;
+        return;
+    }
 
     bool gog_found = OS_GetAppString(
         "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",

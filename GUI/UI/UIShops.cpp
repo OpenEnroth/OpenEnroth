@@ -938,13 +938,11 @@ void UIShop_Buy_Identify_Repair() {
                             uPriceItemService = pPlayers[uActiveCharacter]->GetBuyingPrice(
                                     bought_item->GetValue(), pPriceMultiplier);
 
-                            if (pParty->uNumGold <
-                                uPriceItemService) {  // not enought gold
+                            if (pParty->GetGold() < uPriceItemService) {
                                 PlayHouseSound(
                                     (unsigned int)window_SpeakInHouse->ptr_1C,
                                     (HouseSoundID)2);
-                                GameUI_StatusBar_OnEvent(
-                                    localization->GetString(155));
+                                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                                 return;
                             }
 
@@ -1015,7 +1013,7 @@ void UIShop_Buy_Identify_Repair() {
 
             if (!(item->uAttributes & ITEM_IDENTIFIED)) {
                 if (item->MerchandiseTest((int)window_SpeakInHouse->ptr_1C)) {
-                    if (pParty->uNumGold >= uPriceItemService) {
+                    if (pParty->GetGold() >= uPriceItemService) {
                         dword_F8B1E4 = 1;
                         Party::TakeGold(uPriceItemService);
                         item->uAttributes |= ITEM_IDENTIFIED;
@@ -1055,7 +1053,7 @@ void UIShop_Buy_Identify_Repair() {
 
             if (item->uAttributes & ITEM_BROKEN) {
                 if (item->MerchandiseTest((int)window_SpeakInHouse->ptr_1C)) {
-                    if (pParty->uNumGold >= uPriceItemService) {
+                    if (pParty->GetGold() >= uPriceItemService) {
                         dword_F8B1E4 = 1;
                         Party::TakeGold(uPriceItemService);
                         item->uAttributes =
@@ -1256,15 +1254,13 @@ void UIShop_Buy_Identify_Repair() {
                 uNumSeconds = pPlayers[uActiveCharacter]->StealFromShop(
                     bought_item, a3, party_reputation, 0, &a6);
                 if (!uNumSeconds) {
-                    sub_4B1447_party_fine((int)window_SpeakInHouse->ptr_1C, 0,
-                                          a6);  // caught stealing no item
+                    // caught stealing no item
+                    sub_4B1447_party_fine((int)window_SpeakInHouse->ptr_1C, 0, a6);
                     return;
                 }
-            } else if (pParty->uNumGold < uPriceItemService) {
-                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-                               (HouseSoundID)2);
-                GameUI_StatusBar_OnEvent(localization->GetString(
-                    155));  // "You don't have enough gold"
+            } else if (pParty->GetGold() < uPriceItemService) {
+                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,(HouseSoundID)2);
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                 return;
             }
 
@@ -1320,9 +1316,8 @@ void UIShop_Buy_Identify_Repair() {
                         [pPlayers[uActiveCharacter]->classType][v42]) {
                     pSkill = &pPlayers[uActiveCharacter]->pActiveSkills[v42];
                     if (!*pSkill) {
-                        if (pParty->uNumGold < uPriceItemService) {
-                            GameUI_StatusBar_OnEvent(localization->GetString(
-                                155));  // "You don't have enough gold"
+                        if (pParty->GetGold() < uPriceItemService) {
+                            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                             if (in_current_building_type ==
                                 BuildingType_Training)
                                 v55 = 4;
@@ -1336,8 +1331,7 @@ void UIShop_Buy_Identify_Repair() {
                         Party::TakeGold(uPriceItemService);
                         dword_F8B1E4 = 1;
                         *pSkill = 1;
-                        pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)78,
-                                                              0);
+                        pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)78, 0);
                         return;
                     }
                 }
@@ -1670,17 +1664,15 @@ void GetHouseGoodbyeSpeech() {
             } else {
                 if (in_current_building_type != BuildingType_Temple) return;
             }
-            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-                           HouseSound_Greeting_2);
+            PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
             return;
         }
         if ((signed __int64)pParty->PartyTimes
                 ._shop_ban_times[(unsigned int)window_SpeakInHouse->ptr_1C] <=
             pParty->GetPlayingTime()) {
-            if (pParty->uNumGold <= 10000) {
+            if (pParty->GetGold() <= 10000) {
                 if (!dword_F8B1E4) return;
-                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
-                               HouseSound_Goodbye);
+                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
                 return;
             }
             PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,

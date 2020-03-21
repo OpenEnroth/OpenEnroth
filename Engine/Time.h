@@ -2,15 +2,13 @@
 
 #include <cstdint>
 
-#define TIME_QUANT 128
-#define TIME_SECONDS_PER_QUANT 30
-#define TIME_UNPACK_GAME_SECONDS \
-    (uint64_t) TIME_SECONDS_PER_QUANT / (double)TIME_QUANT
+#define TIME_QUANT                  128
+#define TIME_SECONDS_PER_QUANT      30
+#define TIME_UNPACK_GAME_SECONDS    (uint64_t)TIME_SECONDS_PER_QUANT / (double)TIME_QUANT
 // TIME_UNPACK_GAME_SECONDS = 0.234375
 // 30 game seconds per one time quant (128ms)   [128 * 0.234375 = 30]
 // seconds = game_time * TIME_UNPACK_GAME_SECONDS
-#define TIME_PACK_GAME_SECONDS \
-    (uint64_t) TIME_QUANT / (double)TIME_SECONDS_PER_QUANT
+#define TIME_PACK_GAME_SECONDS      (uint64_t)TIME_QUANT / (double)TIME_SECONDS_PER_QUANT
 // game_time += seconds * TIME_PACK_GAME_SECONDS
 
 struct GameTime {
