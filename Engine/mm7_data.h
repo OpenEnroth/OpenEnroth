@@ -237,7 +237,7 @@ extern int _5B65B4_npcdata_loword_house_or_other;
 extern int _5B65B8_npcdata_hiword_house_or_other;
 extern int dword_5B65BC;
 extern int dword_5B65C0;
-extern int dword_5B65C4_cancelEventProcessing;
+extern bool not_enough_gold_to_continue_script;
 extern int MapsLongTimers_count;  // dword_5B65C8
 extern int npcIdToDismissAfterDialogue;
 extern int dword_5B65D0_dialogue_actor_npc_id;

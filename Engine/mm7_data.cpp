@@ -626,7 +626,7 @@ int _5B65B4_npcdata_loword_house_or_other;
 int _5B65B8_npcdata_hiword_house_or_other;
 int dword_5B65BC;
 int dword_5B65C0;
-int dword_5B65C4_cancelEventProcessing;
+bool not_enough_gold_to_continue_script;
 int MapsLongTimers_count;  // dword_5B65C8 счётчик таймеров для колодцев,
                            // фаерволов-ловушек
 int npcIdToDismissAfterDialogue;

@@ -210,17 +210,13 @@ bool ODMFace::HasEventHint() {
 
     event_index = 0;
     if ((uLevelEVT_NumEvents - 1) <= 0) return false;
-    while (pLevelEVT_Index[event_index].uEventID != this->sCogTriggeredID) {
+    while (pLevelEVT_Index[event_index].event_id != this->sCogTriggeredID) {
         ++event_index;
         if (event_index >= (signed int)(uLevelEVT_NumEvents - 1)) return false;
     }
-    end_evt =
-        (_evt_raw
-             *)&pLevelEVT[pLevelEVT_Index[event_index + 1].uEventOffsetInEVT];
-    start_evt =
-        (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
-    if ((end_evt->_e_type != EVENT_Exit) ||
-        (start_evt->_e_type != EVENT_MouseOver))
+    end_evt = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index + 1].uEventOffsetInEVT];
+    start_evt = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
+    if ((end_evt->_e_type != EVENT_Exit) || (start_evt->_e_type != EVENT_MouseOver))
         return false;
     else
         return true;

@@ -4683,17 +4683,13 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
     int actStat;                           // ebx@161
     int baseStat;                          // eax@161
 
-    if ((signed int)VarNum >= VAR_MapPersistentVariable_0 &&
-        VarNum <= VAR_MapPersistentVariable_74)
-        return (unsigned __int8)stru_5E4C90_MapPersistVars
-                   .field_0[VarNum - VAR_MapPersistentVariable_0] >
-               0;  // originally (unsigned __int8)byte_5E4C15[VarNum];
-    if ((signed int)VarNum >= VAR_MapPersistentVariable_75 &&
-        VarNum <= VAR_MapPersistentVariable_99)
-        return (unsigned __int8)stru_5E4C90_MapPersistVars
-                   ._decor_events[VarNum - VAR_MapPersistentVariable_75] >
-               0;  // not really sure whether the number gets up to 99, but
-                   // can't ignore the possibility
+    if (VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74) {
+        return stru_5E4C90_MapPersistVars.field_0[VarNum - VAR_MapPersistentVariable_0] > 0;
+    }
+
+    if (VarNum >= VAR_MapPersistentVariable_75 && VarNum <= VAR_MapPersistentVariable_99) {
+        return stru_5E4C90_MapPersistVars._decor_events[VarNum - VAR_MapPersistentVariable_75] > 0;
+    }
 
     switch (VarNum) {
         case VAR_Sex:
@@ -4723,8 +4719,7 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
         case VAR_Award:
             return _449B57_test_bit(this->_achieved_awards_bits, pValue);
         case VAR_Experience:
-            return this->uExperience >=
-                   pValue;  // TODO(_) change pValue to long long
+            return this->uExperience >= pValue;
         case VAR_QBits_QuestsDone:
             return _449B57_test_bit(pParty->_quest_bits, pValue);
         case VAR_PlayerItemInHands:
@@ -5094,8 +5089,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
-            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] =
-                pParty->GetPlayingTime();
+            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
             if (pStorylineText->StoreLine[var_type - VAR_History_0].pText) {
                 bFlashHistoryBook = 1;
                 PlayAwardSound();
@@ -6338,7 +6332,7 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             return;
         case VAR_FixedGold:
             if (pValue > pParty->GetGold()) {
-                dword_5B65C4_cancelEventProcessing = 1;
+                not_enough_gold_to_continue_script = true;
                 return;
             }
             Party::TakeGold(pValue);
@@ -6770,7 +6764,7 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             if ((unsigned int)pValue <= pParty->uNumGoldInBank) {
                 pParty->uNumGoldInBank -= (unsigned int)pValue;
             } else {
-                dword_5B65C4_cancelEventProcessing = 1;
+                not_enough_gold_to_continue_script = true;
             }
             return;
         case VAR_NumDeaths:

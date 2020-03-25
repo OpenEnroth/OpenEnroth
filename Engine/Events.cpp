@@ -75,7 +75,7 @@ void Initialize_GlobalEVT() {
         unsigned char evt_size;
         unsigned char evt_id_l;
         unsigned char evt_id_h;
-        unsigned char evt_sequence_num;
+        unsigned char evt_step;
     };
     uint events_count;
     unsigned int offset_in;
@@ -90,10 +90,8 @@ void Initialize_GlobalEVT() {
     offset_in = 0;
     for (events_count = 0, offset_in = 0; offset_in < uGlobalEVT_Size;
          ++events_count) {
-        pGlobalEVT_Index[events_count].uEventID =
-            current_hdr->evt_id_l + (current_hdr->evt_id_h << 8);
-        pGlobalEVT_Index[events_count].event_sequence_num =
-            current_hdr->evt_sequence_num;
+        pGlobalEVT_Index[events_count].event_id = current_hdr->evt_id_l + (current_hdr->evt_id_h << 8);
+        pGlobalEVT_Index[events_count].event_step = current_hdr->evt_step;
         pGlobalEVT_Index[events_count].uEventOffsetInEVT = offset_in;
         offset_in += current_hdr->evt_size + 1;
 
@@ -128,10 +126,8 @@ void LoadLevel_InitializeLevelEvt() {
     offset_in = 0;
     for (events_count = 0, offset_in = 0; offset_in < uLevelEVT_Size;
          ++events_count) {
-        pLevelEVT_Index[events_count].uEventID =
-            current_hdr->evt_id_l + (current_hdr->evt_id_h << 8);
-        pLevelEVT_Index[events_count].event_sequence_num =
-            current_hdr->evt_sequence_num;
+        pLevelEVT_Index[events_count].event_id = current_hdr->evt_id_l + (current_hdr->evt_id_h << 8);
+        pLevelEVT_Index[events_count].event_step = current_hdr->evt_sequence_num;
         pLevelEVT_Index[events_count].uEventOffsetInEVT = offset_in;
         offset_in += current_hdr->evt_size + 1;
 
@@ -254,11 +250,205 @@ void LoadLevel_InitializeLevelEvt() {
       }
     2 return
     */
+} 
+
+std::string DisassembleEvent(int evt_id, int entry_line, bool is_global) {
+    std::string res = "Event #" + std::to_string(evt_id) + " in ";
+    if (is_global) {
+        res += "Global.evt";
+    } else {
+        res += pCurrentMapName;
+    }
+    res += "\n\n";
+
+    int target = (uActiveCharacter == 0) ? 6 : 4;
+
+    for (int i = 0; i < uSomeEVT_NumEvents; ++i) {
+        if (pSomeEVT_Events[i].event_id == evt_id) {
+            _evt_raw* _evt = (_evt_raw*)(pSomeEVT + pSomeEVT_Events[i].uEventOffsetInEVT);
+            int line = pSomeEVT_Events[i].event_step;
+
+            if (line == entry_line) {
+                res += "->";
+            }
+            res += "\t" + std::to_string(line) + "\t";
+
+            switch (_evt->_e_type) {
+                case EVENT_OnLongTimer: 
+                    res += "OnLongTimer\n";
+                    break;
+
+                case EVENT_MouseOver:
+                    res += "OnMouseOver\n";
+                    break;
+
+                case EVENT_Set: {
+                    VariableType variable = (enum VariableType)EVT_WORD(_evt->v5);
+                    int value = EVT_DWORD(_evt->v7);
+
+                    if (variable >= VAR_History_0 && variable <= VAR_History_28) {
+                        res += "Set JournalEntry[" + std::to_string(variable - VAR_History_0) + "] = Unlocked\n";
+                    }
+                    else if (variable >= VAR_MapPersistentVariable_0 && variable <= VAR_MapPersistentVariable_74) {
+                        res += "Set MapVariable[" + std::to_string(variable - VAR_MapPersistentVariable_0) + "] = " + std::to_string(value) + "\n";
+                    }
+                    else if (variable >= VAR_MapPersistentVariable_75 && variable <= VAR_MapPersistentVariable_99) {
+                        res += "Set DecorationVariable[" + std::to_string(variable - VAR_MapPersistentVariable_75) + "] = " + std::to_string(value) + "\n";
+                    }
+                    else if (variable >= VAR_UnknownTimeEvent0 && variable <= VAR_UnknownTimeEvent19) {
+                        res += "Set Party _s_times[" + std::to_string(variable - VAR_UnknownTimeEvent0) + "] = Now\n";
+                    } else {
+                        if (target >= 0 && target <= 6) {
+                            res += "Set "
+                                + (target <= 3
+                                    ? ("Player[" + std::to_string(target) + "]")
+                                    : target == 4 ? "Active Player"
+                                    : target == 5 ? "All Players"
+                                    : "Random Player")
+                                + " : " + ToString(variable) + " = " + std::to_string(value) + "\n";
+                        }
+                    }
+
+                    break;
+                }
+
+                case EVENT_Compare: {
+                    VariableType variable = (enum VariableType)EVT_WORD(_evt->v5);
+                    int value = EVT_DWORD(_evt->v7);
+                    int jumpTo = _evt->v11 - 1;
+
+                    if (variable >= VAR_MapPersistentVariable_0 && variable <= VAR_MapPersistentVariable_74) {
+                        res += "If MapVariable[" + std::to_string(variable - VAR_MapPersistentVariable_0) + "] > 0 goto " + std::to_string(jumpTo) + "\n";
+                    }
+                    else if (variable >= VAR_MapPersistentVariable_75 && variable <= VAR_MapPersistentVariable_99) {
+                        res += "If DecorationVariable[" + std::to_string(variable - VAR_MapPersistentVariable_75) + "] > 0 goto " + std::to_string(jumpTo) + "\n";
+                    }
+                    else {
+                        if (target >= 0 && target <= 6) {
+                            res += "If "
+                                + (target <= 3
+                                    ? ("Player[" + std::to_string(target) + "]")
+                                    : target == 4 ? "Active Player"
+                                    : target == 5 ? "All Players"
+                                    : "Random Player")
+                                + " : " + ToString(variable) + " >= " + std::to_string(value)
+                                + " goto " + std::to_string(jumpTo) + "\n";
+                        }
+                    }
+
+                    break;
+                }
+
+                case EVENT_Substract: {
+                    VariableType variable = (enum VariableType)EVT_WORD(_evt->v5);
+                    int value = EVT_DWORD(_evt->v7);
+
+                    if (variable >= VAR_MapPersistentVariable_0 && variable <= VAR_MapPersistentVariable_74) {
+                        res += "Sub MapVariable[" + std::to_string(variable - VAR_MapPersistentVariable_0) + "] - " + std::to_string(value) + "\n";
+                    }
+                    else if (variable >= VAR_MapPersistentVariable_75 && variable <= VAR_MapPersistentVariable_99) {
+                        res += "Sub DecorationVariable[" + std::to_string(variable - VAR_MapPersistentVariable_75) + "] - " + std::to_string(value) + "\n";
+                    }
+                    else {
+                        if (target >= 0 && target <= 6) {
+                            res += "Sub "
+                                + (target <= 3
+                                    ? ("Player[" + std::to_string(target) + "]")
+                                    : target == 4 ? "Active Player"
+                                    : target == 5 ? "All Players"
+                                    : "Random Player")
+                                + " : " + ToString(variable) + " - " + std::to_string(value) + "\n";
+                        }
+                    }
+
+                    break;
+                }
+
+                case EVENT_Add: {
+                    VariableType variable = (enum VariableType)EVT_WORD(_evt->v5);
+                    int value = EVT_DWORD(_evt->v7);
+
+                    if (variable >= VAR_MapPersistentVariable_0 && variable <= VAR_MapPersistentVariable_74) {
+                        res += "Add MapVariable[" + std::to_string(variable - VAR_MapPersistentVariable_0) + "] + " + std::to_string(value) + "\n";
+                    }
+                    else if (variable >= VAR_MapPersistentVariable_75 && variable <= VAR_MapPersistentVariable_99) {
+                        res += "Add DecorationVariable[" + std::to_string(variable - VAR_MapPersistentVariable_75) + "] + " + std::to_string(value) + "\n";
+                    }
+                    else {
+                        if (target >= 0 && target <= 6) {
+                            res += "Add "
+                                + (target <= 3
+                                    ? ("Player[" + std::to_string(target) + "]")
+                                    : target == 4 ? "Active Player"
+                                    : target == 5 ? "All Players"
+                                    : "Random Player")
+                                + " : " + ToString(variable) + " + " + std::to_string(value) + "\n";
+                        }
+                    }
+
+                    break;
+                }
+
+                case EVENT_StatusText: {
+                    int stringId = EVT_DWORD(_evt->v5);
+                    res += "StatusText #" + std::to_string(stringId) + " \"" + &pLevelStr[pLevelStrOffsets[stringId]] + "\"\n";
+                    break;
+                }
+
+                case EVENT_Exit: {
+                    res += "Return\n";
+                    break;
+                }
+
+                case EVENT_Jmp: {
+                    int jumpTo = _evt->v5;
+                    res += "Goto " + std::to_string(jumpTo) + "\n";
+                    break;
+                }
+
+                case EVENT_IsActorAlive: {
+                    int searchFor = EVT_BYTE(_evt->v5);
+                    int searchId = EVT_DWORD(_evt->v6);
+                    int expectedAmount = EVT_BYTE(_evt->v10);
+                    int jumpTo = _evt->v11;
+
+                    std::string searchForPart =
+                        searchFor == 0 ? "[Any Actors]" :
+                        searchFor == 1 ? "[Actors with GroupID=" + std::to_string(searchId) + "]" :
+                        searchFor == 2 ? "[Actors with MonsterID=" + std::to_string(searchId) + "]" :
+                        searchFor == 3 ? "[Actor ID=" + std::to_string(searchId) + "]" : "";
+
+                    std::string expectedAmountPart = expectedAmount == 0 ? " are all alive" :
+                        " at least " + std::to_string(expectedAmount) + " alive";
+
+                    res += "If " + searchForPart + expectedAmountPart + " goto " + std::to_string(jumpTo) + "\n";
+                    break;
+                }
+
+                case EVENT_SummonMonsters: {
+                    res += std::string("SummonMonsters")
+                        + " " + std::to_string(_evt->v5)
+                        + " " + std::to_string(_evt->v6)
+                        + " " + std::to_string(_evt->v7)
+                        + " " + std::to_string((int)EVT_DWORD(_evt->v8))
+                        + " " + std::to_string(EVT_DWORD(_evt->v12))
+                        + " " + std::to_string(EVT_DWORD(_evt->v16))
+                        + " " + std::to_string(EVT_DWORD(_evt->v20))
+                        + " " + std::to_string(EVT_DWORD(_evt->v24)) + "\n";
+                    break;
+                }
+
+                default:
+                    Assert(false);
+            }
+        }
+    }
+
+    return res;
 }
 
 //----- (0044684A) --------------------------------------------------------
-void EventProcessor(int uEventID, int targetObj, int canShowMessages,
-                    int entry_line) {
+void EventProcessor(int uEventID, int targetObj, int canShowMessages, int entry_line) {
     signed int v4;         // esi@7
     int v11;               // eax@14
     // char *v12;             // eax@15
@@ -322,19 +512,14 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
 
     v133 = 0;
     EvtTargetObj = targetObj;
-    dword_5B65C4_cancelEventProcessing = 0;
-    if (uEventID == 114) {  // for test script
-        // if (!lua->DoFile("out01.lua"))
-        //    logger->Warning(L"Error opening out01.lua\n");
-        // logger->Warning(L"being tested that well\n");
-        return;
-    }
+    not_enough_gold_to_continue_script = false;
+
     if (!uEventID) {
         if (!game_ui_status_bar_event_string_time_left)
-            GameUI_StatusBar_OnEvent(
-                localization->GetString(521));  // Nothing here
+            GameUI_StatusBar_OnEvent(localization->GetString(521));  // Nothing here
         return;
     }
+
     player_choose = (uActiveCharacter == 0)
                         ? 6
                         : 4;  // 4 - active or  6 - random player if active =0
@@ -343,22 +528,22 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     if (activeLevelDecoration) {
         uSomeEVT_NumEvents = uGlobalEVT_NumEvents;
         pSomeEVT = pGlobalEVT.data();
-        memcpy(pSomeEVT_Events.data(), pGlobalEVT_Index.data(),
-               sizeof(EventIndex) * 4400);  // 4400 evts
+        memcpy(pSomeEVT_Events.data(), pGlobalEVT_Index.data(), sizeof(EventIndex) * 4400);
     } else {
         uSomeEVT_NumEvents = uLevelEVT_NumEvents;
         pSomeEVT = pLevelEVT.data();
-        memcpy(pSomeEVT_Events.data(), pLevelEVT_Index.data(),
-               sizeof(EventIndex) * 4400);
+        memcpy(pSomeEVT_Events.data(), pLevelEVT_Index.data(), sizeof(EventIndex) * 4400);
     }
 
+    std::string disasm = DisassembleEvent(uEventID, entry_line, activeLevelDecoration);
+
     for (v4 = 0; v4 < uSomeEVT_NumEvents; ++v4) {
-        if (dword_5B65C4_cancelEventProcessing) {
+        if (not_enough_gold_to_continue_script) {
             if (v133 == 1) OnMapLeave();
             return;
         }
-        if (pSomeEVT_Events[v4].uEventID == uEventID &&
-            pSomeEVT_Events[v4].event_sequence_num == curr_seq_num) {
+        if (pSomeEVT_Events[v4].event_id == uEventID &&
+            pSomeEVT_Events[v4].event_step == curr_seq_num) {
             _evt_raw *_evt =
                 (_evt_raw *)(pSomeEVT + pSomeEVT_Events[v4].uEventOffsetInEVT);
 
@@ -678,47 +863,41 @@ LABEL_47:
                         _evt->v25, _evt->v26, 0, 0);
                     ++curr_seq_num;
                     break;
-                case EVENT_Compare:
+                case EVENT_Compare: {
                     pValue = EVT_DWORD(_evt->v7);
+
+                    VariableType variable = (enum VariableType)EVT_WORD(_evt->v5);
+                    int value = EVT_DWORD(_evt->v7);
+                    int jumpIfEquals = _evt->v11 - 1;
+
                     if (player_choose <= 3) {
-                        if (pPlayers[player_choose]->CompareVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5),
-                                pValue)) {
-                            // v124 = -1;
-                            curr_seq_num = _evt->v11 - 1;
+                        if (pPlayers[player_choose]->CompareVariable(variable, value)) {
+                            curr_seq_num = jumpIfEquals;
                         }
                     } else if (player_choose == 4) {  // active
                         if (uActiveCharacter) {
-                            if (pPlayers[uActiveCharacter]->CompareVariable(
-                                    (enum VariableType)EVT_WORD(_evt->v5),
-                                    pValue)) {
-                                // v124 = -1;
-                                curr_seq_num = _evt->v11 - 1;
+                            if (pPlayers[uActiveCharacter]->CompareVariable(variable, value)) {
+                                curr_seq_num = jumpIfEquals;
                             }
                         }
                     } else if (player_choose == 5) {  // all
                         v130 = 0;
                         for (int i = 1; i < 5; ++i) {
-                            if (pPlayers[i]->CompareVariable(
-                                    (enum VariableType)EVT_WORD(_evt->v5),
-                                    pValue)) {
-                                // v124 = -1;
-                                curr_seq_num = _evt->v11 - 1;
+                            if (pPlayers[i]->CompareVariable(variable, value)) {
+                                curr_seq_num = jumpIfEquals;
                                 break;
                             }
                             ++v130;
                         }
                     } else if (player_choose == 6) {  // random
-                        if (pPlayers[rand() % 4 + 1]->CompareVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5),
-                                pValue)) {
-                            // v124 = -1;
-                            curr_seq_num = _evt->v11 - 1;
+                        if (pPlayers[rand() % 4 + 1]->CompareVariable(variable, value)) {
+                            curr_seq_num = jumpIfEquals;
                         }
                     }
                     ++curr_seq_num;
-                    v4 = -1;
+                    v4 = -1; // start loop all over the events because devs were lazy to re-evaluate to the jump location
                     break;
+                }
                 case EVENT_IsActorAlive:
                     if (IsActorAlive(EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
                                      EVT_BYTE(_evt->v10))) {
@@ -728,82 +907,88 @@ LABEL_47:
                     ++curr_seq_num;
                     v4 = -1;
                     break;
-                case EVENT_Substract:
+                case EVENT_Substract: {
                     pValue = EVT_DWORD(_evt->v7);
+
+                    VariableType variable = (enum VariableType)EVT_WORD(_evt->v5);
+                    int value = EVT_DWORD(_evt->v7);
+
                     if (player_choose <= 3) {
-                        pParty->pPlayers[player_choose].SubtractVariable(
-                            (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        pParty->pPlayers[player_choose].SubtractVariable(variable, value);
                     } else if (player_choose == 4) {  // active
                         if (uActiveCharacter)
-                            pPlayers[uActiveCharacter]->SubtractVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                            pPlayers[uActiveCharacter]->SubtractVariable(variable, value);
                     } else if (player_choose == 5) {  // all
-                        if (EVT_WORD(_evt->v5) == VAR_PlayerItemInHands) {
+                        if (variable == VAR_PlayerItemInHands) {
                             for (int i = 1; i < 5; ++i) {
-                                if (pPlayers[i]->HasItem(pValue, 1)) {
-                                    pPlayers[i]->SubtractVariable(
-                                        (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                                if (pPlayers[i]->HasItem(value, true)) {
+                                    pPlayers[i]->SubtractVariable(variable, value);
                                     break;  // only take one item
                                 }
                             }
                         } else {
                             for (int i = 1; i < 5; ++i)
-                                pPlayers[i]->SubtractVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                                pPlayers[i]->SubtractVariable(variable, value);
                         }
                     } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[rand() % 4].SubtractVariable(
-                            (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        pParty->pPlayers[rand() % 4].SubtractVariable(variable, value);
                     }
                     ++curr_seq_num;
                     break;
-                case EVENT_Set:
-                    pValue = EVT_DWORD(_evt->v7);
+                }
+                case EVENT_Set: {
+                    pValue = EVT_DWORD(_evt->v7); // might be used in consequent events
+
+                    VariableType variable = (enum VariableType)EVT_WORD(_evt->v5);
+                    int value = pValue;
+                    // player_choose
+                    // 0..3 - set on a specific player
+                    // 4 - set on an active player
+                    // 5 - set on all players
+                    // 6 - set on random player
                     if (player_choose <= 3) {
-                        pParty->pPlayers[player_choose].SetVariable(
-                            (enum VariableType)EVT_WORD(_evt->v5), pValue);
-                    } else if (player_choose == 4) {  // active
-                        if (uActiveCharacter)
-                            pPlayers[uActiveCharacter]->SetVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5), pValue);
-                    } else if (player_choose == 5) {  // all
-                        // recheck v130
-                        for (int i = 1; i < 5; ++i)
-                            pPlayers[i]->SetVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        pParty->pPlayers[player_choose].SetVariable(variable, value);
+                    } else if (player_choose == 4 && uActiveCharacter > 0) {
+                        pPlayers[uActiveCharacter]->SetVariable(variable, value);
+                    } else if (player_choose == 5) {
+                        for (int i = 1; i < 5; ++i) {
+                            pPlayers[i]->SetVariable(variable, value);
+                        }
                     } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[rand() % 4].SetVariable(
-                            (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        pParty->pPlayers[rand() % 4].SetVariable(variable, value);
                     }
                     ++curr_seq_num;
                     break;
-                case EVENT_Add:
+                }
+                case EVENT_Add: {
                     pValue = EVT_DWORD(_evt->v7);
+
+                    VariableType variable = (VariableType)EVT_WORD(_evt->v5);
+                    int value = EVT_DWORD(_evt->v7);
                     if (player_choose <= 3) {
                         pPlayer = &pParty->pPlayers[player_choose];
-                        pPlayer->AddVariable(
-                            (enum VariableType)EVT_WORD(_evt->v5), pValue);
-                    } else if (player_choose == 4) {  // active
-                        if (uActiveCharacter)
-                            pPlayers[uActiveCharacter]->AddVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5), pValue);
-                    } else if (player_choose == 5) {  // all
-                        for (int i = 1; i < 5; ++i) {
-                            pPlayers[i]->AddVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5), pValue);
-                        }
-                    } else if (player_choose == 6) {  // random
-                        pParty->pPlayers[rand() % 4].AddVariable(
-                            (enum VariableType)EVT_WORD(_evt->v5), pValue);
+                        pPlayer->AddVariable(variable, value);
                     }
-                    v83 = EVT_WORD(_evt->v5);
-                    if (v83 == 21 ||  // gold well on emerald isle
-                        v83 == 22 || v83 == 23 || v83 == 24) {
-                        // __debugbreak(); // bonfire
+                    else if (player_choose == 4) {  // active
+                        if (uActiveCharacter)
+                            pPlayers[uActiveCharacter]->AddVariable(variable, value);
+                    }
+                    else if (player_choose == 5) {  // all
+                        for (int i = 1; i < 5; ++i) {
+                            pPlayers[i]->AddVariable(variable, value);
+                        }
+                    }
+                    else if (player_choose == 6) {  // random
+                        pParty->pPlayers[rand() % 4].AddVariable(variable, value);
+                    }
+
+                    if (variable == VAR_FixedGold || variable == VAR_RandomGold
+                        || variable == VAR_FixedFood || variable == VAR_RandomFood) {
                         viewparams->bRedrawGameUI = true;
                     }
                     ++curr_seq_num;
                     break;
+                }
                 case EVENT_InputString:
                     if (!entry_line) {
                         game_ui_status_bar_event_string =
@@ -905,12 +1090,9 @@ LABEL_47:
                     v90 = EVT_DWORD(_evt->v5);
                     if (activeLevelDecoration) {
                         if (activeLevelDecoration == (LevelDecoration *)1)
-                            current_npc_text =
-                                pNPCTopics[v90 - 1]
-                                    .pText;  // (&dword_721664)[8 * v90];
+                            current_npc_text = pNPCTopics[v90 - 1].pText;  // (&dword_721664)[8 * v90];
                         if (canShowMessages == 1) {
-                            v91 = pNPCTopics[v90 - 1]
-                                      .pText;  // (&dword_721664)[8 * v90];
+                            v91 = pNPCTopics[v90 - 1].pText;  // (&dword_721664)[8 * v90];
                             // LABEL_248:
                             GameUI_StatusBar_OnEvent(v91, 2);
                         }
@@ -959,8 +1141,6 @@ LABEL_47:
                     break;
                 case EVENT_MouseOver:
                 case EVENT_LocationName:
-                    --curr_seq_num;  // eh?
-                    ++curr_seq_num;
                     break;
                 case EVENT_ChangeDoorState:
                     Door_switch_animation(_evt->v5, _evt->v6);
@@ -1170,9 +1350,8 @@ char *GetEventHintString(unsigned int uEventID) {
 
     // v2 = (char *)&pLevelEVT_Index[0].uEventOffsetInEVT;
     while (1) {
-        if (pLevelEVT_Index[event_index].uEventID == uEventID) {
-            test_evt = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index]
-                                                  .uEventOffsetInEVT];
+        if (pLevelEVT_Index[event_index].event_id == uEventID) {
+            test_evt = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
             last_evt = test_evt;
             event_pos = pLevelEVT_Index[event_index + 1].uEventOffsetInEVT;
             if (test_evt->_e_type == EVENT_MouseOver) break;
@@ -1185,8 +1364,7 @@ char *GetEventHintString(unsigned int uEventID) {
         str_index = EVT_DWORD(test_evt->v5);
         result = (char *)p2DEvents[str_index - 1].pName;
     } else {
-        for (i = event_index + 1; pLevelEVT_Index[i].uEventID == uEventID;
-             ++i) {
+        for (i = event_index + 1; pLevelEVT_Index[i].event_id == uEventID; ++i) {
             event_pos = pLevelEVT_Index[i].uEventOffsetInEVT;
             test_evt = (_evt_raw *)&pLevelEVT[event_pos];
             if (test_evt->_e_type == EVENT_SpeakInHouse) {

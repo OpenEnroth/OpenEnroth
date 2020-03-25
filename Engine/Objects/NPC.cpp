@@ -1236,18 +1236,14 @@ int NPC_EventProcessor(int npc_event_id, int entry_line) {
     evt_seq_num = entry_line;
     pSomeOtherEVT = pGlobalEVT.data();
     uSomeOtherEVT_NumEvents = uGlobalEVT_NumEvents;
-    memcpy(pSomeOtherEVT_Events.data(), pGlobalEVT_Index.data(),
-           sizeof(EventIndex) * 4400);
+    memcpy(pSomeOtherEVT_Events.data(), pGlobalEVT_Index.data(), sizeof(EventIndex) * 4400);
     npc_activity = 1;
     ready_to_exit = false;
     if (uSomeOtherEVT_NumEvents <= 0) return 2;
     do {
-        if ((pSomeOtherEVT_Events[event_index].uEventID == npc_event_id) &&
-            (pSomeOtherEVT_Events[event_index].event_sequence_num ==
-             evt_seq_num)) {
-            _evt_raw *_evt =
-                (_evt_raw *)&pSomeOtherEVT[pSomeOtherEVT_Events[event_index]
-                                               .uEventOffsetInEVT];
+        if ((pSomeOtherEVT_Events[event_index].event_id == npc_event_id) &&
+            (pSomeOtherEVT_Events[event_index].event_step == evt_seq_num)) {
+            auto _evt = (_evt_raw *)&pSomeOtherEVT[pSomeOtherEVT_Events[event_index].uEventOffsetInEVT];
             switch (_evt->_e_type) {
                 case EVENT_Exit:
                     // exit

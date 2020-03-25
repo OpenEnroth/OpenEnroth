@@ -2296,11 +2296,10 @@ void OnMapLeave() {
     _evt_raw *test_event;
     if (uLevelEVT_NumEvents > 0) {
         for (uint i = 0; i < uLevelEVT_NumEvents; ++i) {
-            test_event =
-                (_evt_raw *)&pLevelEVT[pLevelEVT_Index[i].uEventOffsetInEVT];
+            test_event = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[i].uEventOffsetInEVT];
             if (test_event->_e_type == EVENT_OnMapLeave) {
-                EventProcessor(pLevelEVT_Index[i].uEventID, 0, 1,
-                               pLevelEVT_Index[i].event_sequence_num);
+                EventProcessor(pLevelEVT_Index[i].event_id, 0, 1,
+                               pLevelEVT_Index[i].event_step);
             }
         }
     }
@@ -2328,7 +2327,7 @@ void OnMapLoad() {
         //            pSoundList->LoadSound(EVT_DWORD(_evt->v5), 0);
         //        else
         if (_evt->_e_type == EVENT_OnMapReload) {
-            EventProcessor(pEvent.uEventID, 0, 0, pEvent.event_sequence_num);
+            EventProcessor(pEvent.event_id, 0, 0, pEvent.event_step);
         } else if (_evt->_e_type == EVENT_OnTimer ||
                  _evt->_e_type == EVENT_OnLongTimer) {
             // v3 = &MapsLongTimersList[MapsLongTimers_count];
@@ -2336,12 +2335,9 @@ void OnMapLoad() {
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
                 v20 = pIndoor->stru1.last_visit;
 
-            MapsLongTimersList[MapsLongTimers_count].timer_evt_type =
-                _evt->_e_type;
-            MapsLongTimersList[MapsLongTimers_count].timer_evt_ID =
-                pEvent.uEventID;
-            MapsLongTimersList[MapsLongTimers_count].timer_evt_seq_num =
-                pEvent.event_sequence_num;
+            MapsLongTimersList[MapsLongTimers_count].timer_evt_type = _evt->_e_type;
+            MapsLongTimersList[MapsLongTimers_count].timer_evt_ID = pEvent.event_id;
+            MapsLongTimersList[MapsLongTimers_count].timer_evt_seq_num = pEvent.event_step;
 
             MapsLongTimersList[MapsLongTimers_count].YearsInterval = _evt->v5;
             MapsLongTimersList[MapsLongTimers_count].MonthsInterval = _evt->v6;

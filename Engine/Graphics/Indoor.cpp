@@ -1483,7 +1483,7 @@ bool BLVFaceExtra::HasEventint() {
     if ((uLevelEVT_NumEvents - 1) <= 0) {
         return false;
     }
-    while (pLevelEVT_Index[event_index].uEventID != this->uEventID) {
+    while (pLevelEVT_Index[event_index].event_id != this->uEventID) {
         ++event_index;
         if (event_index >= (signed int)(uLevelEVT_NumEvents - 1)) return false;
     }
