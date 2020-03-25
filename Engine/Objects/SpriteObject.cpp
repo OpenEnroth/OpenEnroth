@@ -53,54 +53,48 @@ SpriteObject::SpriteObject() {
     field_54 = 0;
 }
 
-int SpriteObject::Create(int yaw, int pitch, int a4, int a5) {
-    // a4 is speed
-    // a5 is player casted
-
-    int angle = yaw;
+int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
+    // check for valid sprite object
     if (!uObjectDescID) {
         return -1;
     }
 
-    int v6 = 1000;
+    // find free sprite slot
+    int sprite_slot = 1000;
     for (unsigned int i = 0; i < MAX_SPRITE_OBJECTS; ++i) {
         if (!pSpriteObjects[i].uObjectDescID) {
-            v6 = i;
+            sprite_slot = i;
             break;
         }
     }
 
-    if (v6 >= 1000) {
+    // return if too many sprties already
+    if (sprite_slot >= MAX_SPRITE_OBJECTS) {
         return -1;
     }
+
+    // set initial position
     field_64.x = vPosition.x;
     field_64.y = vPosition.y;
     field_64.z = vPosition.z;
 
     assert(sizeof(SpriteObject) == 0x70);
 
-    switch (a5) {
+    // move sprite so it looks like it originates from char portrait
+    switch (which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            Vec3_int_::Rotate(24, stru_5C6E00->uIntegerHalfPi + uFacing, 0,
-                              vPosition, &vPosition.x, &vPosition.y,
-                              &vPosition.z);
+            Vec3_int_::Rotate((24<<16), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 2:
-            Vec3_int_::Rotate(8, stru_5C6E00->uIntegerHalfPi + uFacing, 0,
-                              vPosition, &vPosition.x, &vPosition.y,
-                              &vPosition.z);
+            Vec3_int_::Rotate((8<<16), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 3:
-            Vec3_int_::Rotate(8, uFacing - stru_5C6E00->uIntegerHalfPi, 0,
-                              vPosition, &vPosition.x, &vPosition.y,
-                              &vPosition.z);
+            Vec3_int_::Rotate((8<<16), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 4:
-            Vec3_int_::Rotate(24, uFacing - stru_5C6E00->uIntegerHalfPi, 0,
-                              vPosition, &vPosition.x, &vPosition.y,
-                              &vPosition.z);
+            Vec3_int_::Rotate((24<<16), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         default:
             assert(false);
@@ -108,25 +102,28 @@ int SpriteObject::Create(int yaw, int pitch, int a4, int a5) {
             break;
     }
 
-    if (a4) {
+    // set blank velocity
+    vVelocity.y = 0;
+    vVelocity.x = 0;
+    vVelocity.z = 0;
+
+    // calcualte angle velocity - could use rotate func here as above
+    if (speed) {
         long long v13 =
-            fixpoint_mul(stru_5C6E00->Cos(angle), stru_5C6E00->Cos(pitch));
+            fixpoint_mul(stru_5C6E00->Cos(yaw), stru_5C6E00->Cos(pitch));
         long long a5a =
-            fixpoint_mul(stru_5C6E00->Sin(angle), stru_5C6E00->Cos(pitch));
-        vVelocity.x = fixpoint_mul(v13, a4);
-        vVelocity.y = fixpoint_mul(a5a, a4);
-        vVelocity.z = fixpoint_mul(stru_5C6E00->Sin(pitch), a4);
-    } else {
-        vVelocity.y = 0;
-        vVelocity.x = 0;
-        vVelocity.z = 0;
+            fixpoint_mul(stru_5C6E00->Sin(yaw), stru_5C6E00->Cos(pitch));
+        vVelocity.x = fixpoint_mul(v13, speed);
+        vVelocity.y = fixpoint_mul(a5a, speed);
+        vVelocity.z = fixpoint_mul(stru_5C6E00->Sin(pitch), speed);
     }
 
-    memcpy(&pSpriteObjects[v6], this, sizeof(*this));
-    if (v6 >= (int)uNumSpriteObjects) {
-        uNumSpriteObjects = v6 + 1;
+    // copy sprite object into slot
+    memcpy(&pSpriteObjects[sprite_slot], this, sizeof(*this));
+    if (sprite_slot >= (int)uNumSpriteObjects) {
+        uNumSpriteObjects = sprite_slot + 1;
     }
-    return v6;
+    return sprite_slot;
 }
 
 //----- (00471C03) --------------------------------------------------------
@@ -299,7 +296,7 @@ LABEL_13:
             stru_721530.velocity.x = pSpriteObjects[uLayingItemID].vVelocity.x;
             stru_721530.velocity.y = pSpriteObjects[uLayingItemID].vVelocity.y;
             stru_721530.velocity.z = pSpriteObjects[uLayingItemID].vVelocity.z;
-            if (stru_721530._47050A(0)) return;
+            if (stru_721530.CalcMovementExtents(0)) return;
             _46E889_collide_against_bmodels(0);
             _46E26D_collide_against_sprites(
                 WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x),
@@ -464,33 +461,38 @@ LABEL_13:
 
 //----- (0047136C) --------------------------------------------------------
 void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
-    SpriteObject *pSpriteObject;  // esi@1
-    ObjectDesc *pObject;          // edi@1
+    SpriteObject *pSpriteObject = &pSpriteObjects[uLayingItemID];
+    ObjectDesc *pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
+
+    pSpriteObject->uSectorID = pIndoor->GetSector(pSpriteObject->vPosition.x,
+        pSpriteObject->vPosition.y,
+        pSpriteObject->vPosition.z);
+
+    unsigned int uFaceID;
+
+    int floor_lvl = BLV_GetFloorLevel(
+        pSpriteObject->vPosition.x, pSpriteObject->vPosition.y,
+        pSpriteObject->vPosition.z, pSpriteObject->uSectorID, &uFaceID);
+
+    // object out of bounds
+    if (abs(pSpriteObject->vPosition.x) > 32767 ||
+        abs(pSpriteObject->vPosition.y) > 32767 ||
+        abs(pSpriteObject->vPosition.z) > 20000 ||
+        floor_lvl <= -30000 && (pSpriteObject->uSectorID == 0)) {
+        SpriteObject::OnInteraction(uLayingItemID);
+        return;
+    }
+
     int v15;               // ebx@46
     int v17;                      // eax@50
     __int16 v22;                  // ax@57
     int v23;                      // edi@62
     Particle_sw Dst;              // [sp+Ch] [bp-84h]@18
-    unsigned int uFaceID;         // [sp+7Ch] [bp-14h]@4
+
     int v39;                      // [sp+80h] [bp-10h]@33
     int v40;                      // [sp+84h] [bp-Ch]@28
-    int v42;                      // [sp+8Ch] [bp-4h]@4
 
-    pSpriteObject = &pSpriteObjects[uLayingItemID];
-    pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
-    pSpriteObject->uSectorID = pIndoor->GetSector(pSpriteObject->vPosition.x,
-                                                  pSpriteObject->vPosition.y,
-                                                  pSpriteObject->vPosition.z);
-    v42 = BLV_GetFloorLevel(
-        pSpriteObject->vPosition.x, pSpriteObject->vPosition.y,
-        pSpriteObject->vPosition.z, pSpriteObject->uSectorID, &uFaceID);
-    if (abs(pSpriteObject->vPosition.x) > 32767 ||
-        abs(pSpriteObject->vPosition.y) > 32767 ||
-        abs(pSpriteObject->vPosition.z) > 20000 ||
-        v42 <= -30000 && (pSpriteObject->uSectorID == 0)) {
-        SpriteObject::OnInteraction(uLayingItemID);
-        return;
-    }
+
     if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {  //не падающие объекты
 LABEL_25:
         stru_721530.field_0 = 0;
@@ -499,7 +501,7 @@ LABEL_25:
         stru_721530.height = pObject->uHeight;
         stru_721530.field_8_radius = 0;
         stru_721530.field_70 = 0;
-        for (uFaceID = 0; uFaceID < 100; uFaceID++) {
+        for (int loop = 0; loop < 100; loop++) {
             stru_721530.position.x = pSpriteObject->vPosition.x;
             stru_721530.position.y = pSpriteObject->vPosition.y;
             stru_721530.position.z =
@@ -514,36 +516,34 @@ LABEL_25:
             stru_721530.velocity.z = pSpriteObject->vVelocity.z;
 
             stru_721530.uSectorID = pSpriteObject->uSectorID;
-            if (stru_721530._47050A(0)) return;
+            if (stru_721530.CalcMovementExtents(0)) return;
 
-            for (v40 = 0; v40 < 100; ++v40) {
+            for (int loop2 = 0; loop2 < 100; ++loop2) {
                 _46E44E_collide_against_faces_and_portals(0);
                 _46E0B2_collide_against_decorations();
+
                 if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Player)
                     _46EF01_collision_chech_player(1);
-                if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
-                    for (v42 = 0; v42 < (signed int)uNumActors; ++v42) {
-                        if (PID_ID(pSpriteObject->spell_caster_pid) != v42) {  // dont collide against self
-                            // not sure:
-                            // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
-                            int radius = 0;
-                            if (pActors[v42].word_000086_some_monster_id) {  // not always filled in from scripted monsters
-                                radius = pMonsterList->pMonsters[pActors[v42].word_000086_some_monster_id - 1].uToHitRadius;
-                            }
-                            Actor::_46DF1A_collide_against_actor(v42, radius);
-                        }
+
+                for (int actloop = 0; actloop < (signed int)uNumActors; ++actloop) {
+                    // dont collide against self
+                    if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
+                        if (PID_ID(pSpriteObject->spell_caster_pid) == actloop) continue;
                     }
-                } else {
-                    for (v42 = 0; v42 < (signed int)uNumActors; v42++) {
+
+                        // not sure:
+                        // pMonsterList->pMonsters[v39b->word_000086_some_monster_id-1].uToHitRadius
                         int radius = 0;
-                        if (pActors[v42].word_000086_some_monster_id) {  // not always filled in from scripted monsters
-                            radius = pMonsterList->pMonsters[pActors[v42].word_000086_some_monster_id - 1].uToHitRadius;
+                        if (pActors[actloop].word_000086_some_monster_id) {  // not always filled in from scripted monsters
+                            radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id - 1].uToHitRadius;
                         }
-                        Actor::_46DF1A_collide_against_actor(v42, radius);
-                    }
+                        Actor::_46DF1A_collide_against_actor(actloop, radius);
                 }
+
                 if (_46F04E_collide_against_portals()) break;
             }
+            // end loop2
+
             if (stru_721530.field_7C >= stru_721530.field_6C) {
                 pSpriteObject->vPosition.x = stru_721530.normal2.x;
                 pSpriteObject->vPosition.y = stru_721530.normal2.y;
@@ -587,21 +587,30 @@ LABEL_25:
             }
             // v40 = (unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.direction.x) >> 16;
+
             pSpriteObject->vPosition.x +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
+
             // v40 = (unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.direction.y) >> 16;
+
             pSpriteObject->vPosition.y +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
+
             // v40 = (unsigned __int64)(stru_721530.field_7C * (signed
             // __int64)stru_721530.direction.z) >> 16;
+
             pSpriteObject->vPosition.z +=
                 fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
+
             pSpriteObject->uSectorID = stru_721530.uSectorID;
             stru_721530.field_70 += stru_721530.field_7C;
+
+            // if weve collided but dont need to react return
             if (pObject->uFlags & OBJECT_DESC_INTERACTABLE &&
                 !_46BFFA_update_spell_fx(uLayingItemID, stru_721530.pid))
                 return;
+
             v15 = (signed int)stru_721530.pid >> 3;
             if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration) {
                 v40 = integer_sqrt(
@@ -620,25 +629,25 @@ LABEL_25:
             if (PID_TYPE(stru_721530.pid) == OBJECT_BModel) {
                 stru_721530.field_84 = (signed int)PID_ID(stru_721530.pid);
                 if (pIndoor->pFaces[v15].uPolygonType != POLYGON_Floor) {
-                    v42 = abs(pIndoor->pFaces[v15].pFacePlane_old.vNormal.x *
+                    floor_lvl = abs(pIndoor->pFaces[v15].pFacePlane_old.vNormal.x *
                                   pSpriteObject->vVelocity.x +
                               pIndoor->pFaces[v15].pFacePlane_old.vNormal.y *
                                   pSpriteObject->vVelocity.y +
                               pIndoor->pFaces[v15].pFacePlane_old.vNormal.z *
                                   pSpriteObject->vVelocity.z) >>
                           16;
-                    if ((stru_721530.speed >> 3) > v42)
-                        v42 = stru_721530.speed >> 3;
+                    if ((stru_721530.speed >> 3) > floor_lvl)
+                        floor_lvl = stru_721530.speed >> 3;
                     pSpriteObject->vVelocity.x +=
                         2 *
                         fixpoint_mul(
-                            v42, pIndoor->pFaces[v15].pFacePlane_old.vNormal.x);
+                            floor_lvl, pIndoor->pFaces[v15].pFacePlane_old.vNormal.x);
                     pSpriteObject->vVelocity.y +=
                         2 *
                         fixpoint_mul(
-                            v42, pIndoor->pFaces[v15].pFacePlane_old.vNormal.y);
+                            floor_lvl, pIndoor->pFaces[v15].pFacePlane_old.vNormal.y);
                     v39 = fixpoint_mul(
-                        v42, pIndoor->pFaces[v15].pFacePlane_old.vNormal.z);
+                        floor_lvl, pIndoor->pFaces[v15].pFacePlane_old.vNormal.z);
                     if (pIndoor->pFaces[v15].pFacePlane_old.vNormal.z <= 32000) {
                         v22 = 2 * v39;
                     } else {
@@ -708,16 +717,19 @@ LABEL_25:
             pSpriteObject->vVelocity.y = fixpoint_mul(58500, pSpriteObject->vVelocity.y);
             pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
         }
+        // end loop
     }
     //для падающих объектов(для примера выброс вещи из инвентаря)
-    if (v42 <= pSpriteObject->vPosition.z - 3) {
+    // fallen objects, eg thrown out of inventory
+    if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
         pSpriteObject->vVelocity.z -=
             (short)pEventTimer->uTimeElapsed * GetGravityStrength();
         goto LABEL_25;
     }
+
     if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) ||
         _46BFFA_update_spell_fx(uLayingItemID, 0)) {
-        pSpriteObject->vPosition.z = v42 + 1;
+        pSpriteObject->vPosition.z = floor_lvl + 1;
         if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
             pSpriteObject->vVelocity.z = 0;
         } else {

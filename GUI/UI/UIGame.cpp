@@ -275,10 +275,13 @@ void GUIWindow_GameKeyBindings::Update() {
     int v4;  // ecx@7
     int v5;  // eax@8
 
-    if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 ==
-        WINDOW_INPUT_CONFIRMED) {
-        pPrevVirtualCidesMapping[uGameMenuUI_CurentlySelectedKeyIdx] =
-            pKeyActionMap->pPressedKeysBuffer[0];
+    if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
+        // turn key press to caps
+        int keypr = pKeyActionMap->pPressedKeysBuffer[0];
+        if (keypr >= 97 && keypr <= 122) keypr -= 32;
+
+        pPrevVirtualCidesMapping[uGameMenuUI_CurentlySelectedKeyIdx] = keypr;
+           // pKeyActionMap->pPressedKeysBuffer[0];
         memset(GameMenuUI_InvaligKeyBindingsFlags.data(), 0,
                sizeof(GameMenuUI_InvaligKeyBindingsFlags));
         v4 = 0;
@@ -297,6 +300,7 @@ void GUIWindow_GameKeyBindings::Update() {
         uGameMenuUI_CurentlySelectedKeyIdx = -1;
         pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     }
+
     render->DrawTextureAlphaNew(
         8 / 640.0f, 8 / 480.0f,
         game_ui_options_controls[0]);  // draw base texture

@@ -517,10 +517,12 @@ void stru262_TurnBased::_406457(int a2) {
     v6 = 0;
     if (PID_TYPE(pQueue[a2].uPackedID) == OBJECT_Player) {
         v4 = PID_ID(pQueue[a2].uPackedID);
-        if (pParty->pTurnBasedPlayerRecoveryTimes[v4])
+        if (pParty->pTurnBasedPlayerRecoveryTimes[v4]) {
+            v6 = pParty->pTurnBasedPlayerRecoveryTimes[v4];
             pParty->pTurnBasedPlayerRecoveryTimes[v4] = 0;
-        else
+        } else {
             v6 = pPlayers[v4 + 1]->GetAttackRecoveryTime(0);
+        }
         if (v6 < 30) v6 = 30;
     } else {
         v6 =

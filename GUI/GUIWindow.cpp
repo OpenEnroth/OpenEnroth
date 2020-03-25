@@ -949,6 +949,7 @@ void GUI_UpdateWindows() {
     }
 
     std::list<GUIWindow *> tmpWindowList(lWindowList);
+    tmpWindowList.reverse();  // new windows are push front - but front should be drawn last?? testing
     for (GUIWindow *pWindow : tmpWindowList) {
         pWindow->Update();
     }

@@ -1259,7 +1259,7 @@ void UIShop_Buy_Identify_Repair() {
                     return;
                 }
             } else if (pParty->GetGold() < uPriceItemService) {
-                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,(HouseSoundID)2);
+                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
                 GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                 return;
             }

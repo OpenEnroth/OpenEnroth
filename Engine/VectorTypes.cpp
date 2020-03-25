@@ -20,7 +20,8 @@ uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z) {
 }
 
 void Vec3_float_::Normalize() {
-    this->x = (1.0 / sqrt(this->x * this->x + this->y * this->y + this->z * this->z)) * this->x;
-    this->y = (1.0 / sqrt(this->x * this->x + this->y * this->y + this->z * this->z)) * this->y;
-    this->z = (1.0 / sqrt(this->x * this->x + this->y * this->y + this->z * this->z)) * this->z;
+    float denom = (1.0 / sqrt(this->x * this->x + this->y * this->y + this->z * this->z));
+    this->x = denom * this->x;
+    this->y = denom * this->y;
+    this->z = denom * this->z;
 }

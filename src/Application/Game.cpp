@@ -922,55 +922,43 @@ void Game::EventLoop() {
                     if (pMovie_Track) pMediaPlayer->Unload();
                     DialogueEnding();
                     viewparams->bRedrawGameUI = true;
-                    if (dword_59117C_teleportx | dword_591178_teleporty |
-                        dword_591174_teleportz |
-                        dword_591170_teleport_directiony |
-                        dword_59116C_teleport_directionx |
-                        dword_591168_teleport_speedz) {
-                        if (dword_59117C_teleportx) {
-                            pParty->vPosition.x = dword_59117C_teleportx;
-                            _5B65A8_npcdata_uflags_or_other =
-                                dword_59117C_teleportx;
+
+                    if (Party_Teleport_X_Pos | Party_Teleport_Y_Pos |
+                        Party_Teleport_Z_Pos |
+                        Party_Teleport_Cam_Yaw |
+                        Party_Teleport_Cam_Pitch |
+                        Party_Teleport_Z_Speed) {
+                        if (Party_Teleport_X_Pos) {
+                            pParty->vPosition.x = Party_Teleport_X_Pos;
                         }
-                        if (dword_591178_teleporty) {
-                            pParty->vPosition.y = dword_591178_teleporty;
-                            _5B65AC_npcdata_fame_or_other =
-                                dword_591178_teleporty;
+                        if (Party_Teleport_Y_Pos) {
+                            pParty->vPosition.y = Party_Teleport_Y_Pos;
                         }
-                        if (dword_591174_teleportz) {
-                            pParty->vPosition.z = dword_591174_teleportz;
-                            _5B65B0_npcdata_rep_or_other =
-                                dword_591174_teleportz;
-                            pParty->uFallStartY = dword_591174_teleportz;
+                        if (Party_Teleport_Z_Pos) {
+                            pParty->vPosition.z = Party_Teleport_Z_Pos;
+                            pParty->uFallStartY = Party_Teleport_Z_Pos;
                         }
-                        if (dword_591170_teleport_directiony) {
-                            pParty->sRotationY =
-                                dword_591170_teleport_directiony;
-                            _5B65B4_npcdata_loword_house_or_other =
-                                dword_591170_teleport_directiony;
+                        if (Party_Teleport_Cam_Yaw) {
+                            pParty->sRotationY = Party_Teleport_Cam_Yaw;
                         }
-                        if (dword_59116C_teleport_directionx) {
-                            pParty->sRotationX =
-                                dword_59116C_teleport_directionx;
-                            _5B65B8_npcdata_hiword_house_or_other =
-                                dword_59116C_teleport_directionx;
-                            v38 = dword_591168_teleport_speedz;
-                            pParty->uFallSpeed = dword_591168_teleport_speedz;
-                            dword_5B65BC = dword_591168_teleport_speedz;
+                        if (Party_Teleport_Cam_Pitch) {
+                            pParty->sRotationX = Party_Teleport_Cam_Pitch;
+                            v38 = Party_Teleport_Z_Speed;
+                            pParty->uFallSpeed = Party_Teleport_Z_Speed;
                         } else {
-                            v38 = dword_5B65BC;
+                            v38 = Party_Teleport_Z_Speed;
                         }
-                        if (*dword_591164_teleport_map_name != 48) {
+                        if (*Party_Teleport_Map_Name != 48) {
                             pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                            dword_5B65C0 =
-                                _5B65A8_npcdata_uflags_or_other |
-                                _5B65AC_npcdata_fame_or_other |
-                                _5B65B0_npcdata_rep_or_other |
-                                _5B65B4_npcdata_loword_house_or_other |
-                                _5B65B8_npcdata_hiword_house_or_other | v38;
+                            Start_Party_Teleport_Flag =
+                                Party_Teleport_X_Pos |
+                                Party_Teleport_Y_Pos |
+                                Party_Teleport_Z_Pos |
+                                Party_Teleport_Cam_Yaw |
+                                Party_Teleport_Cam_Pitch | v38;
                             OnMapLeave();
                             Transition_StopSound_Autosave(
-                                dword_591164_teleport_map_name,
+                                Party_Teleport_Map_Name,
                                 MapStartPoint_Party);
                         }
                     } else {
@@ -1016,7 +1004,7 @@ void Game::EventLoop() {
                     } else {
                         pParty->field_6E4 = 0;
                         pParty->field_6E0 = 0;
-                        CastSpellInfoHelpers::_427D48();
+                        CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
                         DialogueEnding();
                         pEventTimer->Pause();
                         pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
@@ -1241,17 +1229,17 @@ void Game::EventLoop() {
                             ._quest_related;
                     if (v53 < 0) {
                         v54 = abs(v53) - 1;
-                        _5B65B8_npcdata_hiword_house_or_other = 0;
-                        dword_5B65BC = 0;
+                        Party_Teleport_Cam_Pitch = 0;
+                        Party_Teleport_Z_Speed = 0;
                         v55 = dword_4E4560[v54];
-                        _5B65AC_npcdata_fame_or_other = dword_4E4578[v54];
+                        Party_Teleport_Y_Pos = dword_4E4578[v54];
                         v56 = dword_4E4590[v54];
                         v57 = dword_4E45A8[v54];
-                        _5B65A8_npcdata_uflags_or_other = v55;
-                        _5B65B4_npcdata_loword_house_or_other = v57;
-                        _5B65B0_npcdata_rep_or_other = v56;
-                        dword_5B65C0 =
-                            v55 | _5B65AC_npcdata_fame_or_other | v56 | v57;
+                        Party_Teleport_X_Pos = v55;
+                        Party_Teleport_Cam_Yaw = v57;
+                        Party_Teleport_Z_Pos = v56;
+                        Start_Party_Teleport_Flag =
+                            v55 | Party_Teleport_Y_Pos | v56 | v57;
                     }
                     HouseDialogPressCloseBtn();
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1336,12 +1324,12 @@ void Game::EventLoop() {
                             pCurrentMapName = pGames_LOD->GetSubNodeName(pPlayer9->vBeacons[uMessageParam].SaveFileID);
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                             uGameState = GAME_STATE_CHANGE_LOCATION;
-                            _5B65A8_npcdata_uflags_or_other = pPlayer9->vBeacons[uMessageParam].PartyPos_X;
-                            _5B65AC_npcdata_fame_or_other = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
-                            _5B65B0_npcdata_rep_or_other = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
-                            _5B65B4_npcdata_loword_house_or_other = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
-                            _5B65B8_npcdata_hiword_house_or_other = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
-                            dword_5B65C0 = 1;
+                            Party_Teleport_X_Pos = pPlayer9->vBeacons[uMessageParam].PartyPos_X;
+                            Party_Teleport_Y_Pos = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
+                            Party_Teleport_Z_Pos = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
+                            Party_Teleport_Cam_Yaw = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
+                            Party_Teleport_Cam_Pitch = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
+                            Start_Party_Teleport_Flag = 1;
                         } else {
                             pParty->vPosition.x = pPlayer9->vBeacons[uMessageParam].PartyPos_X;
                             pParty->vPosition.y = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
@@ -1383,6 +1371,7 @@ void Game::EventLoop() {
                                     v64 =
                                         pMapStats->GetMapInfo(pCurrentMapName);
                                     v65 = uMessageParam;
+                                    // if in current map
                                     if (v64 == TownPortalList[uMessageParam]
                                                    .uMapInfoID) {
                                         pParty->vPosition.x =
@@ -1397,7 +1386,7 @@ void Game::EventLoop() {
                                             TownPortalList[v65].rot_y;
                                         pParty->sRotationX =
                                             TownPortalList[v65].rot_x;
-                                    } else {
+                                    } else {  // if change map
                                         SaveGame(1, 0);
                                         OnMapLeave();
                                         dword_6BE364_game_settings_1 |=
@@ -1406,18 +1395,18 @@ void Game::EventLoop() {
                                         pCurrentMapName =
                                                pMapStats->pInfos[TownPortalList[uMessageParam].uMapInfoID]
                                                    .pFilename;
-                                        dword_5B65C0 = 1;
-                                        _5B65A8_npcdata_uflags_or_other =
+                                        Start_Party_Teleport_Flag = 1;
+                                        Party_Teleport_X_Pos =
                                             TownPortalList[uMessageParam].pos.x;
-                                        _5B65AC_npcdata_fame_or_other =
+                                        Party_Teleport_Y_Pos =
                                             TownPortalList[uMessageParam].pos.y;
-                                        _5B65B0_npcdata_rep_or_other =
+                                        Party_Teleport_Z_Pos =
                                             TownPortalList[uMessageParam].pos.z;
                                         v66 =
                                             TownPortalList[uMessageParam].rot_x;
-                                        _5B65B4_npcdata_loword_house_or_other =
+                                        Party_Teleport_Cam_Yaw =
                                             TownPortalList[uMessageParam].rot_y;
-                                        _5B65B8_npcdata_hiword_house_or_other =
+                                        Party_Teleport_Cam_Pitch =
                                             v66;
                                         Actor::InitializeActors();
                                     }
@@ -2889,14 +2878,15 @@ void Game::GameLoop() {
                 pParty->uFallSpeed = 0;
                 pParty->field_6E4 = 0;
                 pParty->field_6E0 = 0;
+                // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;
-                    _5B65A8_npcdata_uflags_or_other = pParty->vPosition.x;
-                    _5B65AC_npcdata_fame_or_other = pParty->vPosition.y;
-                    _5B65B0_npcdata_rep_or_other = pParty->vPosition.z;
-                    _5B65B4_npcdata_loword_house_or_other = pParty->sRotationY;
-                    _5B65B8_npcdata_hiword_house_or_other = pParty->sRotationX;
-                    dword_5B65C0 = 1;
+                    Party_Teleport_X_Pos = pParty->vPosition.x;
+                    Party_Teleport_Y_Pos = pParty->vPosition.y;
+                    Party_Teleport_Z_Pos = pParty->vPosition.z;
+                    Party_Teleport_Cam_Yaw = pParty->sRotationY;
+                    Party_Teleport_Cam_Pitch = pParty->sRotationX;
+                    Start_Party_Teleport_Flag = 1;
                     PrepareWorld(1);
                 }
                 Actor::InitializeActors();
@@ -2926,7 +2916,6 @@ void Game::GameLoop() {
         pEventTimer->Pause();
         engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
-            sub_491E3A();
             GameUI_LoadPlayerPortraintsAndVoices();
             uGameState = GAME_STATE_PLAYING;
             bLoading = true;
@@ -2935,5 +2924,4 @@ void Game::GameLoop() {
         break;
     }
     current_screen_type = CURRENT_SCREEN::SCREEN_VIDEO;
-    sub_491E3A();
 }

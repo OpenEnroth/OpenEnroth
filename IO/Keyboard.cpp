@@ -301,7 +301,7 @@ const char *KeyboardActionMapping::GetVKeyDisplayName(unsigned char a1) {
         }
     }
 
-    strcpy(static_sub_45AE2C_string_69ADE0_keyName, "-НЕТ -");
+    strcpy(static_sub_45AE2C_string_69ADE0_keyName, "-BAD KEY-");
     return static_sub_45AE2C_string_69ADE0_keyName;
 }
 
@@ -535,7 +535,7 @@ void Keyboard::ProcessInputActions() {
                                         (signed __int64)(flt_6BE3A4_debug_recmod1 *
                                             (double)pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false) *
                                                         2.133333333333333));
-                                CastSpellInfoHelpers::_427D48();
+                                CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
                                 pTurnEngine->ApplyPlayerAction();
                             }
                         }

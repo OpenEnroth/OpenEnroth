@@ -2458,6 +2458,16 @@ void Render::DeleteTexture(Texture *texture) {
     // nothing
 }
 
+void Render::RemoveTextureFromDevice(Texture* texture) {
+    auto t = (TextureD3D*)texture;
+    if (t->initialized) {
+        IDirectDrawSurface* dds_get = t->GetDirectDrawSurface();
+        IDirect3DTexture2* d3dt_get = t->GetDirect3DTexture();
+        if (dds_get) dds_get->Release();
+        if (d3dt_get) d3dt_get->Release();
+    }
+}
+
 bool Render::MoveTextureToDevice(Texture *texture) {
     auto t = (TextureD3D *)texture;
     if (t) {
@@ -3665,6 +3675,9 @@ void Render::DrawBuildingsD3D() {
                 int v31 = 0;
                 if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
                     v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
+
+                   // if (face.uAttributes & FACE_OUTLINED) __debugbreak();
+
                     static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
                     if (decal_builder->uNumDecals > 0) {
                         decal_builder->ApplyDecals(
@@ -4830,8 +4843,8 @@ int _46EF01_collision_chech_player(int a1) {
             pParty->vPosition.y + (2 * pParty->field_14_radius) &&
         stru_721530.sMinY >=
             pParty->vPosition.y - (2 * pParty->field_14_radius) &&
-        stru_721530.sMaxZ <= pParty->vPosition.z + pParty->uPartyHeight &&
-        stru_721530.sMinZ >= pParty->vPosition.z) {
+        stru_721530.sMinZ/*sMaxZ*/ <= (pParty->vPosition.z + (int)pParty->uPartyHeight) &&
+        stru_721530.sMaxZ/*sMinZ*/ >= pParty->vPosition.z) {
         v3 = stru_721530.prolly_normal_d + (2 * pParty->field_14_radius);
         v11 = pParty->vPosition.x - stru_721530.normal.x;
         v4 = ((pParty->vPosition.x - stru_721530.normal.x) *

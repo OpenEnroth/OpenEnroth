@@ -1014,43 +1014,43 @@ LABEL_47:
                         if (v133 == 1) OnMapLeave();
                         return;
                     }
-                    _5B65AC_npcdata_fame_or_other =
+                    Party_Teleport_Y_Pos =
                         _evt->v9 +
                         ((_evt->v10 +
                           ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
                          << 8);
-                    _5B65A8_npcdata_uflags_or_other = v94;
-                    _5B65B0_npcdata_rep_or_other = v126;
+                    Party_Teleport_X_Pos = v94;
+                    Party_Teleport_Z_Pos = v126;
                     if (v129 == -1) {
-                        v98 = _5B65B4_npcdata_loword_house_or_other;
+                        v98 = Party_Teleport_Cam_Yaw;
                     } else {
                         v98 = v129 & stru_5C6E00->uDoublePiMask;
-                        _5B65B4_npcdata_loword_house_or_other =
+                        Party_Teleport_Cam_Yaw =
                             v129 & stru_5C6E00->uDoublePiMask;
                     }
                     v99 = (char *)&_evt->v31;
-                    _5B65B8_npcdata_hiword_house_or_other = v95;
-                    dword_5B65BC = v97;
+                    Party_Teleport_Cam_Pitch = v95;
+                    Party_Teleport_Z_Speed = v97;
                     v100 = v94 | v132 | v126 | v95 | v97 | v98;
-                    dword_5B65C0 = v100;
+                    Start_Party_Teleport_Flag = v100;
                     if (*v99 == 48) {
                         if (v100) {
                             pParty->vPosition.x = v135;
                             pParty->vPosition.y = v132;
                             pParty->vPosition.z = v126;
                             pParty->uFallStartY = v126;
-                            if (_5B65B4_npcdata_loword_house_or_other != -1)
+                            if (Party_Teleport_Cam_Yaw != -1)
                                 pParty->sRotationY =
-                                    _5B65B4_npcdata_loword_house_or_other;
-                            _5B65B4_npcdata_loword_house_or_other = -1;
+                                    Party_Teleport_Cam_Yaw;
+                            Party_Teleport_Cam_Yaw = -1;
                             pParty->sRotationX = v95;
                             pParty->uFallSpeed = v134;
-                            dword_5B65C0 = 0;
-                            dword_5B65BC = 0;
-                            _5B65B8_npcdata_hiword_house_or_other = 0;
-                            _5B65B0_npcdata_rep_or_other = 0;
-                            _5B65AC_npcdata_fame_or_other = 0;
-                            _5B65A8_npcdata_uflags_or_other = 0;
+                            Start_Party_Teleport_Flag = 0;
+                            Party_Teleport_Z_Speed = 0;
+                            Party_Teleport_Cam_Pitch = 0;
+                            Party_Teleport_Z_Pos = 0;
+                            Party_Teleport_Y_Pos = 0;
+                            Party_Teleport_X_Pos = 0;
                             v106 = 232;
                             pAudioPlayer->PlaySound((SoundID)v106, 0, 0, -1, 0, 0);
                         }

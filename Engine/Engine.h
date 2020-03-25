@@ -495,7 +495,6 @@ void SetDecorationSprite(uint16_t uCog, bool bHide,
                          const char *pFileName);  // idb
 void _494035_timed_effects__water_walking_damage__etc();
 void _493938_regenerate();
-void sub_491E3A();
 String GetReputationString(int reputation);
 unsigned int _494820_training_time(unsigned int a1);
 void LoadLevel_InitializeLevelStr();
@@ -508,7 +507,7 @@ void Transition_StopSound_Autosave(const char *pMapName,
                                    MapStartPoint point);  // sub_44987B idb
 
 void OnTimer(int);
-bool TeleportToNWCDungeon();
+void TeleportToNWCDungeon();
 
 void SetDataPath(const char *data_path);
 std::string MakeDataPath(const char *file_rel_path);

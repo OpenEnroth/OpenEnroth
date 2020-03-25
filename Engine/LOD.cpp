@@ -171,6 +171,8 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
     LoadSpriteFromFile(header, pContainerName);  // this line is not present here in the original.
                                                  // necessary for Grayface's mouse picking fix
 
+    // if (uNumLoadedSprites == 879) __debugbreak();
+
     pHardwareSprites[uNumLoadedSprites].pName = pContainerName;
     pHardwareSprites[uNumLoadedSprites].uBufferWidth = header->uWidth;
     pHardwareSprites[uNumLoadedSprites].uBufferHeight = header->uHeight;
@@ -231,6 +233,10 @@ void LODFile_Sprites::DeleteSomeOtherSprites() {
     int *v1 = (int *)&this->uNumLoadedSprites;
     int *v2 = &this->field_ECA0;
     DeleteSpritesRange(field_ECA0, uNumLoadedSprites);
+
+    // testing - do no reset sprite count as we are not clearing sprites
+    // see sprite::release below
+
     *v1 = *v2;
 }
 
@@ -323,7 +329,22 @@ void LODSprite::Release() {
     this->uSpriteSize = 0;
 }
 
-void Sprite::Release() {}
+void Sprite::Release() {
+    return;
+
+    // testing actually clearing sprites on release
+    // causes error - if sprite is requested multiple times asset manager can delete
+    // image which may be referenced elsewhere resulting in MAV
+
+    // bodge for the time being, not resetting loading sprites
+    // reduces memory leak on level transition
+
+    this->sprite_header->Release();
+    this->texture->Release();
+    this->texture = NULL;
+    this->pName = "NULL";
+    this->uPaletteID = 0;
+}
 
 bool LODFile_IconsBitmaps::Load(const String &pLODFilename, const String &pFolderName) {
     if (!Open(pLODFilename)) {

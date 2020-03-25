@@ -215,13 +215,15 @@ extern unsigned int uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern struct LevelDecoration *_591094_decoration;
 extern int uCurrentHouse_Animation;
-extern char *dword_591164_teleport_map_name;  // idb
-extern int dword_591168_teleport_speedz;
-extern int dword_59116C_teleport_directionx;
-extern int dword_591170_teleport_directiony;
-extern int dword_591174_teleportz;
-extern int dword_591178_teleporty;
-extern int dword_59117C_teleportx;
+
+
+// extern int Party_Teleport_Z_Speed;
+// extern int Party_Teleport_Cam_Pitch;
+// extern int Party_Teleport_Cam_Yaw;
+// extern int Party_Teleport_Z_Pos;
+// extern int Party_Teleport_Y_Pos;
+// extern int Party_Teleport_X_Pos;  // transition entry point
+
 extern std::array<std::array<char, 100>, 6> byte_591180;  // idb
 extern std::array<struct NPCData *, 7>
     HouseNPCData;  // 0this array size temporarily increased to 60 from 6 to
@@ -230,13 +232,16 @@ extern GUIButton *HouseNPCPortraitsButtonsList[6];
 extern String branchless_dialogue_str;
 extern int EvtTargetObj;
 extern int _unused_5B5924_is_travel_ui_drawn;  // 005B5924
-extern int _5B65A8_npcdata_uflags_or_other;
-extern int _5B65AC_npcdata_fame_or_other;
-extern int _5B65B0_npcdata_rep_or_other;
-extern int _5B65B4_npcdata_loword_house_or_other;
-extern int _5B65B8_npcdata_hiword_house_or_other;
-extern int dword_5B65BC;
-extern int dword_5B65C0;
+
+extern char* Party_Teleport_Map_Name;
+extern int Party_Teleport_X_Pos;
+extern int Party_Teleport_Y_Pos;
+extern int Party_Teleport_Z_Pos;
+extern int Party_Teleport_Cam_Yaw;
+extern int Party_Teleport_Cam_Pitch;
+extern int Party_Teleport_Z_Speed;
+extern int Start_Party_Teleport_Flag;
+
 extern int dword_5B65C4_cancelEventProcessing;
 extern int MapsLongTimers_count;  // dword_5B65C8
 extern int npcIdToDismissAfterDialogue;

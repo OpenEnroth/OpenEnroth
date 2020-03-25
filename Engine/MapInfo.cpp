@@ -349,27 +349,27 @@ void TeleportToStartingPoint(MapStartPoint point) {
                 }
             }
         }
-        if (dword_5B65C0) {
-            if (_5B65A8_npcdata_uflags_or_other)
-                pParty->vPosition.x = _5B65A8_npcdata_uflags_or_other;
-            if (_5B65AC_npcdata_fame_or_other)
-                pParty->vPosition.y = _5B65AC_npcdata_fame_or_other;
-            if (_5B65B0_npcdata_rep_or_other) {
-                pParty->vPosition.z = _5B65B0_npcdata_rep_or_other;
-                pParty->uFallStartY = _5B65B0_npcdata_rep_or_other;
+        if (Start_Party_Teleport_Flag) {
+            if (Party_Teleport_X_Pos)
+                pParty->vPosition.x = Party_Teleport_X_Pos;
+            if (Party_Teleport_Y_Pos)
+                pParty->vPosition.y = Party_Teleport_Y_Pos;
+            if (Party_Teleport_Z_Pos) {
+                pParty->vPosition.z = Party_Teleport_Z_Pos;
+                pParty->uFallStartY = Party_Teleport_Z_Pos;
             }
-            if (_5B65B4_npcdata_loword_house_or_other != -1)
-                pParty->sRotationY = _5B65B4_npcdata_loword_house_or_other;
-            if (_5B65B8_npcdata_hiword_house_or_other)
-                pParty->sRotationX = _5B65B8_npcdata_hiword_house_or_other;
-            if (dword_5B65BC) pParty->uFallSpeed = dword_5B65BC;
+            if (Party_Teleport_Cam_Yaw != -1)
+                pParty->sRotationY = Party_Teleport_Cam_Yaw;
+            if (Party_Teleport_Cam_Pitch)
+                pParty->sRotationX = Party_Teleport_Cam_Pitch;
+            if (Party_Teleport_Z_Speed) pParty->uFallSpeed = Party_Teleport_Z_Speed;
         }
-        _5B65B4_npcdata_loword_house_or_other = -1;
-        dword_5B65C0 = 0;
-        dword_5B65BC = 0;
-        _5B65B8_npcdata_hiword_house_or_other = 0;
-        _5B65B0_npcdata_rep_or_other = 0;
-        _5B65AC_npcdata_fame_or_other = 0;
-        _5B65A8_npcdata_uflags_or_other = 0;
+        Party_Teleport_Cam_Yaw = -1;
+        Start_Party_Teleport_Flag = 0;
+        Party_Teleport_Z_Speed = 0;
+        Party_Teleport_Cam_Pitch = 0;
+        Party_Teleport_Z_Pos = 0;
+        Party_Teleport_Y_Pos = 0;
+        Party_Teleport_X_Pos = 0;
     }
 }

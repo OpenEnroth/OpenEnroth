@@ -1844,15 +1844,15 @@ void TravelByTransport() {
                     pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
 
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
-                    _5B65B8_npcdata_hiword_house_or_other = 0;
-                    dword_5B65BC = 0;
-                    _5B65B4_npcdata_loword_house_or_other =
+                    Party_Teleport_Cam_Pitch = 0;
+                    Party_Teleport_Z_Speed = 0;
+                    Party_Teleport_Cam_Yaw =
                         pTravel->arrival_rot_y;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
-                    _5B65A8_npcdata_uflags_or_other = pTravel->arrival_x;
-                    _5B65AC_npcdata_fame_or_other = pTravel->arrival_y;
-                    _5B65B0_npcdata_rep_or_other = pTravel->arrival_z;
-                    dword_5B65C0 = pTravel->arrival_x | pTravel->arrival_y |
+                    Party_Teleport_X_Pos = pTravel->arrival_x;
+                    Party_Teleport_Y_Pos = pTravel->arrival_y;
+                    Party_Teleport_Z_Pos = pTravel->arrival_z;
+                    Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y |
                         pTravel->arrival_z | pTravel->arrival_rot_y;
                 } else {
                     pIndoorCameraD3D->sRotationY = 0;
@@ -2537,8 +2537,7 @@ void TavernDialog() {
             Party::TakeGold(pPriceFood);
             Party::SetFood(
                 p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
-                .fPriceMultiplier
-            );
+                .fPriceMultiplier);
             PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -3139,7 +3138,7 @@ void TrainingDialog(const char *s) {
                         return;
                     }
 
-                    GameUI_StatusBar_OnEvent(localization->GetString( LSTR_NOT_ENOUGH_GOLD));
+                    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                     PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)4);
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     return;

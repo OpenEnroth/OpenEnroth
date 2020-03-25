@@ -899,6 +899,8 @@ void RenderOpenGL::DeleteTexture(Texture *texture) {
     }
 }
 
+void RenderOpenGL::RemoveTextureFromDevice(Texture* texture) { __debugbreak(); }
+
 bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
     /*    return false;
@@ -991,7 +993,7 @@ void _set_3d_projection_matrix() {
     // something to do with ratio of screenwidth to viewport width
 
 
-    gluPerspective(40, double(game_viewport_width/double(game_viewport_height))  // 65.0f
+    gluPerspective(65, double(game_viewport_width/double(game_viewport_height))  // 65.0f
                    /*(GLfloat)window->GetWidth() / (GLfloat)window->GetHeight()*/,
                    near_clip, far_clip);
 }

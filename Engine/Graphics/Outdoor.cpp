@@ -2685,7 +2685,7 @@ void ODM_ProcessPartyActions() {
                 _angle_x = 0;
                 break;
 
-            case PARTY_LookUp:  //смотреть вверх
+            case PARTY_LookDown:  //смотреть вниз
                 _angle_x +=
                     (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
                 if (_angle_x > 128) _angle_x = 128;
@@ -2693,7 +2693,7 @@ void ODM_ProcessPartyActions() {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_63, 0);
                 break;
 
-            case PARTY_LookDown:  //смотреть вниз
+            case PARTY_LookUp:  //смотреть вверх
                 _angle_x +=
                     (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
                 if (_angle_x < -128) _angle_x = -128;
@@ -2833,7 +2833,7 @@ void ODM_ProcessPartyActions() {
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             v36 = 13312;
         }
-        if (stru_721530._47050A(v36)) break;
+        if (stru_721530.CalcMovementExtents(v36)) break;
         _46E889_collide_against_bmodels(1);
         // v37 = WorldPosToGridCellZ(pParty->vPosition.y);
         // v38 = WorldPosToGridCellX(pParty->vPosition.x);
@@ -3532,7 +3532,7 @@ void UpdateActors_ODM() {
             stru_721530.uSectorID = 0;
             stru_721530.velocity.y = pActors[Actor_ITR].vVelocity.y;
             stru_721530.velocity.z = pActors[Actor_ITR].vVelocity.z;
-            if (stru_721530._47050A(0)) break;
+            if (stru_721530.CalcMovementExtents(0)) break;
             _46E889_collide_against_bmodels(1);
             _46E26D_collide_against_sprites(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y));
             _46EF01_collision_chech_player(0);

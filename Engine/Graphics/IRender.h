@@ -282,6 +282,7 @@ class IRender {
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
                                 Texture *texture) = 0;
+    virtual void RemoveTextureFromDevice(Texture* texture) = 0;
     virtual bool MoveTextureToDevice(Texture *texture) = 0;
 
     virtual void Update_Texture(Texture *texture) = 0;

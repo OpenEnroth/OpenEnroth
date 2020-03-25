@@ -500,6 +500,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
     int spell_num_objects = 0;
     int spell_spray_arc;
     int spell_spray_angles;
+    int spriteid;
 
     switch (uSpellID) {
         case SPELL_FIRE_FIRE_BOLT:
@@ -518,10 +519,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
                 pObjectList
                     ->pObjects[(signed __int16)spell_sprites.uObjectDescID]
                     .uSpeed;
-            spell_sprites.Create(yaw, pitch, launch_speed, 0);
+            spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
             return;
         case SPELL_WATER_POISON_SPRAY:
             spell_num_objects = (skillMasteryPlusOne * 2) - 1;
@@ -532,7 +533,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
                     pObjectList
                         ->pObjects[(signed __int16)spell_sprites.uObjectDescID]
                         .uSpeed;
-                spell_sprites.Create(yaw, pitch, launch_speed, 0);
+                spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             } else {
                 spell_spray_arc =
                     (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
@@ -540,7 +541,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
                 for (int i = spell_spray_arc / -2; i <= spell_spray_arc / 2;
                      i += spell_spray_angles) {
                     spell_sprites.uFacing = i + yaw;
-                    spell_sprites.Create(
+                    spriteid = spell_sprites.Create(
                         i + yaw, pitch,
                         pObjectList->pObjects[spell_sprites.uObjectDescID]
                             .uSpeed,
@@ -549,7 +550,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             }
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
             return;
         case SPELL_AIR_SPARKS:
             spell_num_objects = (skillMasteryPlusOne * 2) + 1;
@@ -560,14 +561,14 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             for (int i = spell_spray_arc / -2; i <= spell_spray_arc / 2;
                  i += spell_spray_angles) {
                 spell_sprites.uFacing = i + yaw;
-                spell_sprites.Create(
+                spriteid = spell_sprites.Create(
                     i + yaw, pitch,
                     pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed,
                     0);
             }
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
             return;
         case SPELL_EARTH_DEATH_BLOSSOM:
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor) return;
@@ -575,10 +576,10 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             launch_speed =
                 pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed;
             launch_angle = stru_5C6E00->uIntegerHalfPi / 2;
-            spell_sprites.Create(yaw, launch_angle, launch_speed, 0);
+            spriteid = spell_sprites.Create(yaw, launch_angle, launch_speed, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);
-            pAudioPlayer->PlaySpellSound(uSpellID, 0);
+            pAudioPlayer->PlaySpellSound(uSpellID, PID(OBJECT_Item, spriteid));
             return;
 
         case SPELL_FIRE_HASTE:

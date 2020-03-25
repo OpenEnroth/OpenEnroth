@@ -929,7 +929,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY,
     int outy;  // [sp+98h] [bp-8h]@1
 
     pRotY = pIndoorCameraD3D->sRotationY + UnprojectX(fMouseX);
-    pRotX = pIndoorCameraD3D->sRotationX + UnprojectY(fMouseY);
+    pRotX = -pIndoorCameraD3D->sRotationX + UnprojectY(fMouseY);
 
     // log->Info(L"Roty: %d, Rotx: %d", pRotY, pRotX);
 

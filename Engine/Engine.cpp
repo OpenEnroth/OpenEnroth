@@ -766,7 +766,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     pEventTimer->Pause();
     pMiscTimer->Pause();
     pParty->uFlags = 2;
-    CastSpellInfoHelpers::_427D48();
+    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(0, (_0_box_loading_1_fullscreen == 0) + 1);
     pMiscTimer->Resume();
@@ -1175,8 +1175,9 @@ const char *FindMm7Directory(char *mm7_path) {
         }
     }
 
-    // Hack path fix - pskelton
+    // Hack path fix - if everything else fails, set your path here.
     if (!mm7_installation_found) {
+        __debugbreak();
         mm7_installation_found = 1;
         strcpy(mm7_path, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
         logger->Info(L"Hack Path MM7 installation found");
@@ -2239,9 +2240,6 @@ void _493938_regenerate() {  // immolation
     }
 }
 
-//----- (00491E3A) --------------------------------------------------------
-void sub_491E3A() {}
-
 //----- (00494820) --------------------------------------------------------
 unsigned int _494820_training_time(unsigned int a1) {
     signed int v1;  // eax@1
@@ -2447,7 +2445,9 @@ bool _44100D_should_alter_right_panel() {
 void Transition_StopSound_Autosave(const char *pMapName,
                                    MapStartPoint start_point) {
     pAudioPlayer->StopChannels(-1, -1);
-    pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
+
+    // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
+
     if (pCurrentMapName != pMapName) {
         SaveGame(1, 0);
     }
@@ -2502,36 +2502,24 @@ void OnTimer(int) {
 }
 
 //----- (0044C28F) --------------------------------------------------------
-bool TeleportToNWCDungeon() {
+void TeleportToNWCDungeon() {
+    // return if we are already in the NWC dungeon
     if ("nwc.blv" == pCurrentMapName) {
-        return false;
+        return;
     }
 
-    _5B65A8_npcdata_uflags_or_other = 0;
-    _5B65AC_npcdata_fame_or_other = 0;
-    _5B65B0_npcdata_rep_or_other = 0;
-    _5B65B4_npcdata_loword_house_or_other = 0;
-    _5B65B8_npcdata_hiword_house_or_other = 0;
-    dword_5B65BC = 0;
-    dword_5B65C0 = 0;
+    // reset party teleport
+    Party_Teleport_X_Pos = 0;
+    Party_Teleport_Y_Pos = 0;
+    Party_Teleport_Z_Pos = 0;
+    Party_Teleport_Cam_Yaw = 0;
+    Party_Teleport_Cam_Pitch = 0;
+    Party_Teleport_Z_Speed = 0;
+    Start_Party_Teleport_Flag = 0;
 
+    // start tranistion to dungeon
     pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
     Transition_StopSound_Autosave("nwc.blv", MapStartPoint_Party);
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-    return true;
+    return;
 }
-
-//----- (00401000) --------------------------------------------------------
-void mm7__vector_constructor(void *a1, int objSize, int numObjs,
-                             int (*constructor)(int)) {
-    void *v4;  // esi@2
-
-    if (numObjs > 0) {
-        v4 = a1;
-        for (int i = numObjs; i; --i) {
-            constructor((int)v4);
-            v4 = (char *)v4 + objSize;
-        }
-    }
-}
-

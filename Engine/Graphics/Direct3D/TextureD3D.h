@@ -24,5 +24,7 @@ class TextureD3D : public Texture {
     IDirectDrawSurface *dds;
     IDirect3DTexture2 *d3dt;
 
+    ~TextureD3D();
+
     virtual bool LoadImageData();
 };

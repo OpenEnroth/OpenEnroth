@@ -1092,7 +1092,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
 
     bool bResetSpawn = false;
     size_t dlv_size = 0;
-    rawData = pGames_LOD->LoadCompressed(dlv_filename, &dlv_size);
+    rawData = pNew_LOD->LoadCompressed(dlv_filename, &dlv_size);
     if (rawData != nullptr) {
         pData = (char*)rawData;
         memcpy(&dlv, pData, sizeof(DDM_DLV_Header));
@@ -1270,6 +1270,8 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
 
     memcpy(&stru1, pData, 0x38u);
     pData += 0x38;
+
+    free(rawData);
 
     return 0;
 }
@@ -1856,7 +1858,7 @@ void UpdateActors_BLV() {
                 stru_721530.velocity.y = pActors[actor_id].vVelocity.y;
                 stru_721530.velocity.z = pActors[actor_id].vVelocity.z;
                 stru_721530.uSectorID = pActors[actor_id].uSectorID;
-                if (!stru_721530._47050A(v22)) {
+                if (!stru_721530.CalcMovementExtents(v22)) {
                     v58 = 0;
                     v24 = 8 * actor_id;
                     HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor_id);
@@ -2891,8 +2893,10 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     if (v4->hw_sprites[v9]->texture->GetHeight() == 0 || v4->hw_sprites[v9]->texture->GetWidth() == 0)
                         __debugbreak();
 
+                    // centre sprite on coords
+                    int modz = pSpriteObjects[i].vPosition.z;
                     if (v4->uFlags & 0x20)
-                        pSpriteObjects[i].vPosition.z -= (int)(fixpoint_mul(v4->scale._internal, v4->hw_sprites[v9]->uBufferHeight) / 2);
+                       modz -= (int)(fixpoint_mul(v4->scale._internal, v4->hw_sprites[v9]->uBufferHeight) / 2);
 
                     int16_t v34 = 0;
                     if (v4->uFlags & 2) v34 = 2;
@@ -2918,7 +2922,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
 
                     bool visible = pIndoorCameraD3D->ViewClip(pSpriteObjects[i].vPosition.x,
                                                               pSpriteObjects[i].vPosition.y,
-                                                              pSpriteObjects[i].vPosition.z,
+                                                              modz,
                                                               &view_x, &view_y, &view_z);
 
                     view_x -= 0.005;
@@ -3295,6 +3299,7 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v) {
     int v_4c;         // [sp+8Ch] [bp+10h]@141
 
     // __debugbreak();срабатывает при стрельбе огненным шаром
+    // triggered by fireball
 
     v4 = stru_5C6E00->Atan2(v.x - x, v.y - y);
 
@@ -4646,57 +4651,6 @@ int GetPortalScreenCoord(unsigned int uFaceID) {
     return bottom_num_vertices;
 }
 
-//----- (004AAEA6) --------------------------------------------------------
-int sub_4AAEA6_transform(RenderVertexSoft *a1) {
-    double v4;  // st5@2
-    double v5;  // st4@3
-    double v11;  // [sp+8h] [bp-8h]@2
-    double v12;  // [sp+8h] [bp-8h]@6
-    double v13;  // [sp+Ch] [bp-4h]@2
-    double v14;  // [sp+Ch] [bp-4h]@6
-
-    if (pIndoorCameraD3D->sRotationX) {
-        v13 = a1->vWorldPosition.x - (double)pParty->vPosition.x;
-        v11 = a1->vWorldPosition.y - (double)pParty->vPosition.y;
-        v4 = a1->vWorldPosition.z - (double)pParty->vPosition.z;
-        // if ( render->pRenderD3D )
-        //{
-        v5 = v11 * pIndoorCameraD3D->fRotationYSine +
-             v13 * pIndoorCameraD3D->fRotationYCosine;
-        a1->vWorldViewPosition.y = v13 * pIndoorCameraD3D->fRotationYSine -
-                                   v11 * pIndoorCameraD3D->fRotationYCosine;
-        /*}
-        else
-        {
-          v5 = v13 * pBLVRenderParams->fCosineY - v11 *
-        pBLVRenderParams->fSineY; a1->vWorldViewPosition.y = v13 *
-        pBLVRenderParams->fSineY + v11 * pBLVRenderParams->fCosineY;
-        }*/
-        a1->vWorldViewPosition.x = v5 * pIndoorCameraD3D->fRotationXCosine -
-                                   v4 * pIndoorCameraD3D->fRotationXSine;
-        a1->vWorldViewPosition.z = v5 * pIndoorCameraD3D->fRotationXSine +
-                                   v4 * pIndoorCameraD3D->fRotationXCosine;
-    } else {
-        v14 = a1->vWorldPosition.x - (double)pParty->vPosition.x;
-        v12 = a1->vWorldPosition.y - (double)pParty->vPosition.y;
-        a1->vWorldViewPosition.z =
-            a1->vWorldPosition.z - (double)pParty->vPosition.z;
-        // if ( render->pRenderD3D )
-        //{
-        a1->vWorldViewPosition.x = v12 * pIndoorCameraD3D->fRotationYSine +
-                                   v14 * pIndoorCameraD3D->fRotationYCosine;
-        a1->vWorldViewPosition.y = v14 * pIndoorCameraD3D->fRotationYSine -
-                                   v12 * pIndoorCameraD3D->fRotationYCosine;
-        /*}
-        else
-        {
-          a1->vWorldViewPosition.x = v14 * pBLVRenderParams->fCosineY - v12 *
-        pBLVRenderParams->fSineY; a1->vWorldViewPosition.y = v14 *
-        pBLVRenderParams->fSineY + v12 * pBLVRenderParams->fCosineY;
-        }*/
-    }
-    return 0;
-}
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
     int v1;                   // ebx@1
@@ -4951,14 +4905,14 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
                 party_running_flag = true;
                 break;
-            case PARTY_LookUp:
+            case PARTY_LookDown:
                 _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
                 if (_view_angle > 128)
                     _view_angle = 128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_63, 0);
                 break;
-            case PARTY_LookDown:
+            case PARTY_LookUp:
                 _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
                 if (_view_angle < -128)
                     _view_angle = -128;
@@ -5039,7 +4993,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             v38 = 13312;
         }
-        if (stru_721530._47050A(v38)) break;
+        if (stru_721530.CalcMovementExtents(v38)) break;
         for (uint j = 0; j < 100; ++j) {
             _46E44E_collide_against_faces_and_portals(1);
             _46E0B2_collide_against_decorations();  //столкновения с декором
@@ -5740,7 +5694,7 @@ int collide_against_floor_approximate(int x, int y, int z,
 }
 
 //----- (0047050A) --------------------------------------------------------
-int stru141_actor_collision_object::_47050A(int dt) {
+int stru141_actor_collision_object::CalcMovementExtents(int dt) {
     int v7;             // eax@1
     signed int result;  // eax@4
     int v17;            // eax@5
