@@ -142,9 +142,9 @@ std::array<stru324_spell_id_to_sprite_mapping, 103>
       {SPRITE_SPELL_DARK_ARMAGEDDON, 0},
       {SPRITE_SPELL_DARK_SOULDRINKER, 0},
 
-      {SPRITE_SPELL_BOW_ARROW, 0},
-      {SPRITE_SPELL_101, 0},
-      {SPRITE_SPELL_LASER_PROJECTILE, 0}}};
+      { SPRITE_ARROW_PROJECTILE, 0},
+      { SPRITE_ARROW_PROJECTILE, 0},
+      { SPRITE_BLASTER_PROJECTILE, 0}}};
 
 SpellData::SpellData(__int16 innormalMana, __int16 inExpertLevelMana,
                      __int16 inMasterLevelMana, __int16 inMagisterLevelMana,

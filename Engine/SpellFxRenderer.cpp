@@ -761,13 +761,12 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             _4A75CC_single_spell_collision_particle(a2, 0x7E7E7E, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_545:
+        case SPRITE_ARROW_PROJECTILE:
         case SPRITE_PROJECTILE_550:
-        case SPRITE_PROJECTILE_555:
+        case SPRITE_BLASTER_PROJECTILE:
             return true;
 
-        case SPRITE_556:
-            __debugbreak();  // what kind of effect is this? ??blaster hydra??
+        case SPRITE_BLASTER_IMPACT:
             AddMobileLight(a2, 0xFF0000, 256);
             return false;
 

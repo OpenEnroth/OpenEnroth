@@ -1103,13 +1103,13 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-            if (pSpriteObjects[uLayingItemID].uType == SPRITE_PROJECTILE_555) {
+            if (pSpriteObjects[uLayingItemID].uType == SPRITE_BLASTER_PROJECTILE) {
                 pAudioPlayer->PlaySound(SOUND_fireBall, PID(OBJECT_Item, uLayingItemID), 0, -1, 0, 0);
             }
             return 0;
         }
 
-        case SPRITE_PROJECTILE_545:
+        case SPRITE_ARROW_PROJECTILE:
         case SPRITE_PROJECTILE_550: {
             if (pSpriteObjects[uLayingItemID].containing_item.uItemID != 405 &&
                 pSpriteObjects[uLayingItemID].containing_item.special_enchantment != 3) {
@@ -1219,10 +1219,10 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             return 0;
         }
 
-        case SPRITE_PROJECTILE_555: {
+        case SPRITE_BLASTER_PROJECTILE: {
             sub_43A97E(uLayingItemID, a2);
-            pSpriteObjects[uLayingItemID].uType = SPRITE_556;
-            pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_556);
+            pSpriteObjects[uLayingItemID].uType = SPRITE_BLASTER_IMPACT;
+            pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_BLASTER_IMPACT);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }

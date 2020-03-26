@@ -753,7 +753,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
 
     switch (type) {
         case 1:
-            a1.uType = SPRITE_PROJECTILE_545;
+            a1.uType = SPRITE_ARROW_PROJECTILE;
             break;
         case 2:
             a1.uType = SPRITE_PROJECTILE_550;
@@ -786,7 +786,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
             a1.uType = SPRITE_PROJECTILE_540;
             break;
         case 13:
-            a1.uType = SPRITE_PROJECTILE_555;
+            a1.uType = SPRITE_BLASTER_PROJECTILE;
             break;
         default:
             return;

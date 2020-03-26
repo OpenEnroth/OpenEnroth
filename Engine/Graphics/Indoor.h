@@ -767,17 +767,10 @@ extern BspRenderer_PortalViewportData stru_F8A590;
 struct BspRenderer_stru0 {
     //----- (0043F2BF) --------------------------------------------------------
     inline BspRenderer_stru0() {
-        // _eh_vector_constructor_iterator_(std__vector_0007AC, 24, 4,
-        //    (void ( *)(void *))IndoorCameraD3D_Vec4::IndoorCameraD3D_Vec4,
-        //    (void ( *)(void *))IndoorCameraD3D_Vec4::dtor);
-        // for (int i = 0; i < 4; ++i)
-        //  pVertices[i].flt_2C = 0.0f;
     }
 
     //----- (0043F2A9) --------------------------------------------------------
     ~BspRenderer_stru0() {
-        // _eh_vector_destructor_iterator_(this->std__vector_0007AC, 24, 4,
-        // IndoorCameraD3D_Vec4::dtor);
     }
 
     uint16_t uSectorID;
@@ -807,15 +800,11 @@ struct BspFace {
 struct BspRenderer {  // stru170
     //----- (0043F282) --------------------------------------------------------
     inline BspRenderer() {
-        // _eh_vector_constructor_iterator_(field_FA8, 2252, 150,
-        //    (void ( *)(void *))stru170_stru0::stru170_stru0,
-        //    (void ( *)(void *))stru170_stru0::dtor);
         num_faces = 0;
         num_nodes = 0;
         uNumVisibleNotEmptySectors = 0;
     }
 
-    // void AddFaceToRenderList_sw(unsigned int node_id, unsigned int uFaceID);
     void AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFaceID);
     void MakeVisibleSectorList();
     // void DrawFaceOutlines();
