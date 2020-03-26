@@ -48,7 +48,7 @@ if (NOT EXISTS "${LIBRARY_DIR}")
     if (NOT EXISTS "${DEPS_ZIP_FULL_PATH}")
         MESSAGE(STATUS "Downloading dependencies: ${DEPS_ZIP_FILENAME}")
         file(DOWNLOAD
-            "https://github.com/gp-alex/world-of-might-and-magic-deps/raw/547b5afc13584d1e17e25348b3738b244d84dc72/${DEPS_ZIP_FILENAME}"
+            "https://github.com/gp-alex/world-of-might-and-magic-deps/raw/e1f68f71952c7736e119c8f226d177aade6dd202/${DEPS_ZIP_FILENAME}"
             "${DEPS_ZIP_FULL_PATH}"
             SHOW_PROGRESS
             TIMEOUT 60  # seconds
