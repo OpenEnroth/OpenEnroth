@@ -83,3 +83,9 @@ bool TextureD3D::LoadImageData() {
 
     return this->initialized;
 }
+
+TextureD3D::~TextureD3D() {
+    render->RemoveTextureFromDevice(this);
+    this->d3dt = NULL;
+    this->dds = NULL;
+}

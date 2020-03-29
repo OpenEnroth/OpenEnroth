@@ -407,7 +407,9 @@ void Menu::EventLoop() {
                 viewparams->field_48 = 1;
 
                 if (current_screen_type == CURRENT_SCREEN::SCREEN_MENU) {
+                    pEventTimer->Resume();
                     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+                    viewparams->bRedrawGameUI = true;
                 } else if (current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
                            current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
                     // crt_deconstruct_ptr_6A0118();

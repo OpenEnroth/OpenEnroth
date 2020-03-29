@@ -75,13 +75,13 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                                            int directionx, int a8,
                                            const char *pLocationName)
     : GUIWindow(WINDOW_Transition, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
-    dword_59117C_teleportx = x;
-    dword_591178_teleporty = y;
-    dword_591174_teleportz = z;
-    dword_591170_teleport_directiony = directiony;
-    dword_59116C_teleport_directionx = directionx;
-    dword_591168_teleport_speedz = a8;
-    dword_591164_teleport_map_name = (char *)pLocationName;
+    Party_Teleport_X_Pos = x;
+    Party_Teleport_Y_Pos = y;
+    Party_Teleport_Z_Pos = z;
+    Party_Teleport_Cam_Yaw = directiony;
+    Party_Teleport_Cam_Pitch = directionx;
+    Party_Teleport_Z_Speed = a8;
+    Party_Teleport_Map_Name = (char *)pLocationName;
     uCurrentHouse_Animation = anim_id;
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
@@ -281,7 +281,7 @@ void GUIWindow_Travel::Update() {
 
 void GUIWindow_Transition::Update() {
     unsigned int v9 =
-        IndoorLocation::GetLocationIndex(dword_591164_teleport_map_name);
+        IndoorLocation::GetLocationIndex(Party_Teleport_Map_Name);
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
                                 (pNPCPortraits_y[0][0] - 4) / 480.0f,
@@ -293,8 +293,8 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
     unsigned int map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    if ((pMovie_Track || v9) && *dword_591164_teleport_map_name != ' ') {
-        map_id = pMapStats->GetMapInfo(dword_591164_teleport_map_name);
+    if ((pMovie_Track || v9) && *Party_Teleport_Map_Name != ' ') {
+        map_id = pMapStats->GetMapInfo(Party_Teleport_Map_Name);
     }
 
     GUIWindow transition_window = *pPrimaryWindow;

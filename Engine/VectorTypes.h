@@ -41,16 +41,18 @@ struct Vec3 : public Vec2<T> {
         float cosf_y = cos(pi * sRotY / 1024.0f);
         float sinf_y = sin(pi * sRotY / 1024.0f);
 
-        *outx = v.x + ((int64_t)(sinf_y * (int64_t)((int64_t)(cosf_x * (int64_t)sDepth) >> 16)));
-        *outy = v.y + ((int64_t)(cosf_y * (int64_t)((int64_t)(cosf_x * (int64_t)sDepth) >> 16)));
-        *outz = v.z + ((int64_t)(sinf_x * (int64_t)sDepth) >> 16);
+        *outx = v.x + (int)(sinf_y * cosf_x * (float)(sDepth >> 16));
+        *outy = v.y + (int)(cosf_y * cosf_x * (float)(sDepth >> 16));
+        *outz = v.z + (int)(sinf_x * (float)(sDepth >> 16));
     }
 
     static void Normalize(T *x, T *y, T *z) {
         extern int integer_sqrt(int val);
-        *x *= 65536 / (integer_sqrt(*y * *y + *z * *z + *x * *x) | 1);
-        *y *= 65536 / (integer_sqrt(*y * *y + *z * *z + *x * *x) | 1);
-        *z *= 65536 / (integer_sqrt(*y * *y + *z * *z + *x * *x) | 1);
+        int denom = *y * *y + *z * *z + *x * *x;
+        int mult = 65536 / (integer_sqrt(denom) | 1);
+        *x *= mult;
+        *y *= mult;
+        *z *= mult;
     }
 
     void Normalize_float() {

@@ -1269,8 +1269,7 @@ void CharacterUI_StatsTab_ShowHint() {
             str2 = localization->FormatString(
                 LSTR_XP_UNTIL_NEXT_LEVEL,
                 (int)(GetExperienceRequiredForLevel(v15) - pPlayers[uActiveCharacter]->uExperience),
-                v15 + 1
-            );
+                v15 + 1);
             str1 += "\n" + str2;
 
             str2 = String(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
@@ -1280,9 +1279,14 @@ void CharacterUI_StatsTab_ShowHint() {
         }
 
         case 15:  // Attack Bonus
-            if (pAttackBonusAttributeDescription)
+            if (pAttackBonusAttributeDescription) {
+                int meleerecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(0);
+                char recov[100];
+                sprintf(recov, "\n\nRecovery time: %d", meleerecov);
+                String test = String(pAttackBonusAttributeDescription) + String(recov);
                 CharacterUI_DrawTooltip(localization->GetString(587),
-                                        pAttackBonusAttributeDescription);
+                    /*pAttackBonusAttributeDescription*/test);
+            }
             break;
 
         case 16:  // Attack Damage
@@ -1292,9 +1296,14 @@ void CharacterUI_StatsTab_ShowHint() {
             break;
 
         case 17:  // Missle Bonus
-            if (pMissleBonusAttributeDescription)
+            if (pMissleBonusAttributeDescription) {
+                int missrecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(1);
+                char recovm[100];
+                sprintf(recovm, "\n\nRecovery time: %d", missrecov);
+                String test2 = String(pAttackBonusAttributeDescription) + String(recovm);
                 CharacterUI_DrawTooltip(localization->GetString(589),
-                                        pMissleBonusAttributeDescription);
+                    /*pMissleBonusAttributeDescription*/test2);
+            }
             break;
 
         case 18:  // Missle Damage

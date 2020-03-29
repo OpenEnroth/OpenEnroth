@@ -73,4 +73,5 @@ else()
 endif()
 
 add_library(graphics STATIC ${GRAPHICS_SOURCES} ${GRAPHICS_HEADERS})
+add_dependencies(graphics sdl2)
 target_check_style(graphics)

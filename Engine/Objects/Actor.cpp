@@ -1391,7 +1391,7 @@ void Actor::StealFrom(unsigned int uActorID) {
 
     pPlayer = &pParty->pPlayers[uActiveCharacter - 1];
     if (pPlayer->CanAct()) {
-        CastSpellInfoHelpers::_427D48();
+        CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
         v4 = 0;
         v5 = pMapStats->GetMapInfo(pCurrentMapName);
         if (v5) v4 = pMapStats->pInfos[v5]._steal_perm;

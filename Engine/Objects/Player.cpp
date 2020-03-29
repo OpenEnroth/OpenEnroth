@@ -2215,9 +2215,9 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
     } else if (HasItemEquipped(EQUIP_TWO_HANDED)) {
         weapon = GetMainHandItem();
         if (weapon->GetItemEquipType() == EQUIP_WAND) {
-            __debugbreak();  // looks like offset in player's inventory and
+            // __debugbreak();  // looks like offset in player's inventory and
                              // wand_lut much like case in 0042ECB5
-            __debugbreak();  // looks like wands were two-handed weapons once,
+            // __debugbreak();  // looks like wands were two-handed weapons once,
                              // or supposed to be. should not get here now
             weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_FIRE]].uExpertLevelRecovery;
         } else {
@@ -2306,6 +2306,7 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
 
     uint hasteRecoveryReduction = 0;
     if (pPlayerBuffs[PLAYER_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
+    if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
 
     uint weapon_enchantment_recovery_reduction = 0;
     if (weapon) {
@@ -3158,8 +3159,12 @@ int Player::GetActualSkillLevel(
     }
 
     // cap skill and bonus at 60
-    skill_value =
-        pActiveSkills[uSkillType] & 0x3F;
+    if (uSkillType == PLAYER_SKILL_MISC) {
+        skill_value = 0;
+    } else {
+        skill_value = pActiveSkills[uSkillType] & 0x3F;
+    }
+
     result = bonus_value + skill_value;
 
     if (result > 60) result = 60;
@@ -3606,6 +3611,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     uMightBonus = 0;
     uLevel = 1;
     uExperience = 251 + rand() % 100;
+    uSkillPoints = 0;
     uBirthYear = 1147 - rand() % 6;
     pActiveSkills.fill(0);
     memset(_achieved_awards_bits, 0, sizeof(_achieved_awards_bits));
@@ -3613,40 +3619,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
 
     for (uint i = 0; i < 37; ++i) {
         if (pSkillAvailabilityPerClass[classType / 4][i] != 2) continue;
-
         pActiveSkills[i] = 1;
-
-        /*   switch (i)
-           {
-             case PLAYER_SKILL_FIRE:
-               spellbook.pFireSpellbook.bIsSpellAvailable[0] = true;//its temporary, for test spells
-               break;
-             case PLAYER_SKILL_AIR:
-               spellbook.pAirSpellbook.bIsSpellAvailable[0] = true;
-               break;
-             case PLAYER_SKILL_WATER:
-               spellbook.pWaterSpellbook.bIsSpellAvailable[0] = true;
-               break;
-             case PLAYER_SKILL_EARTH:
-               spellbook.pEarthSpellbook.bIsSpellAvailable[0] = true;
-               break;
-             case PLAYER_SKILL_SPIRIT:
-               spellbook.pSpiritSpellbook.bIsSpellAvailable[0] = true;
-               break;
-             case PLAYER_SKILL_MIND:
-               spellbook.pMindSpellbook.bIsSpellAvailable[0] = true;
-               break;
-             case PLAYER_SKILL_BODY:
-               spellbook.pBodySpellbook.bIsSpellAvailable[0] = true;
-               break;
-             case PLAYER_SKILL_LIGHT:
-               spellbook.pLightSpellbook.bIsSpellAvailable[0] = true;
-               break;
-             case PLAYER_SKILL_DARK:
-               spellbook.pDarkSpellbook.bIsSpellAvailable[0] = true;
-               break;
-           }
-*/
     }
 
     memset(&pEquipment, 0, sizeof(PlayerEquipment));
@@ -7678,7 +7651,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
     Player* player = &pParty->pPlayers[uActiveCharacter - 1];
     if (!player->CanAct()) return;
 
-    CastSpellInfoHelpers::_427D48();
+    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
     // v3 = 0;
     if (pParty->Invisible())
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();

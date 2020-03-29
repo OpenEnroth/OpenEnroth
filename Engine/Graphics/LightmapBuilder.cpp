@@ -57,7 +57,7 @@ bool LightmapBuilder::ApplyLights_OutdoorFace(ODMFace *pFace) {
     for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         if (pSlot >= 20) break;
         ApplyLight_ODM((StationaryLight *)&pMobileLightsStack->pLights[i], pFace,
-                       (unsigned int *)&pSlot, true);
+                       (unsigned int *)&pSlot, false);
     }
     for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
         if (pSlot >= 20) break;
@@ -572,9 +572,9 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
 
     if (radius < 0.0f) return true;
 
-    lightmap = uLightType & 1 ? &StationaryLights[StationaryLightsCount]
-                              :                       // stationary
-                   &MobileLights[MobileLightsCount];  // mobile
+    lightmap = /*uLightType & 1 ?*/ &StationaryLights[StationaryLightsCount];
+                             /* :*/                       // stationary
+                 /*  &MobileLights[MobileLightsCount];*/  // mobile
     tex_light_radius = radius - dot_dist;
     // flt_3C8C28 = sqrt((radius + radius - tex_light_radius) * tex_light_radius);
     flt_3C8C28 = sqrt(radius * radius - dot_dist * dot_dist);
@@ -678,6 +678,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     }
     // Brightness(яркость)/////////////////////////////////////////////////////
 
+    // trim to surface
     if (!engine->pStru9Instance->_4980B9(
             a9, uNumVertices, FacePlaneNormals->Normal.x, FacePlaneNormals->Normal.y, FacePlaneNormals->Normal.z,
             lightmap->pVertices, &lightmap->NumVertices))
@@ -715,11 +716,11 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     }
 
     if (_a4) {
-        if (uLightType & 1) {
+        /*if (uLightType & 1) {*/
             if (StationaryLightsCount < 512 - 1) ++StationaryLightsCount;
-        } else {
+        /*} else {
             if (MobileLightsCount < 768 - 1) ++MobileLightsCount;
-        }
+        }*/
         // if ( v50 ^ v51 )
         //  *(unsigned int *)v48 = v49 + 1;
     }
@@ -837,7 +838,7 @@ void LightmapBuilder::Draw_183808_Lightmaps() {
 
     render->BeginLightmaps2();
 
-    DoDraw_183808_Lightmaps(0.00050000002*4);
+    DoDraw_183808_Lightmaps(0.0/*0.00050000002*/);
 
     render->EndLightmaps2();
 }

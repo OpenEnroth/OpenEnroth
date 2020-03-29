@@ -341,7 +341,7 @@ enum WindowType {
 
     WINDOW_Unknown,              // i wasnt able to find real value for those
     WINDOW_CharacterCreation,    // new addition, because i wasnt able to find real value for this
-    WINDOW_CharacterCreationBtn, // new addition, because i wasnt able to find real value for this
+    WINDOW_CharacterCreationBtn,  // new addition, because i wasnt able to find real value for this
     WINDOW_GenericCancel,        // new addition, because i wasnt able to find real value for this
     WINDOW_GameUI,               // new addition, because i wasnt able to find real value for this
     WINDOW_Credits,              // new addition, because i wasnt able to find real value for this
@@ -474,7 +474,7 @@ class GUIWindow {
     WindowType eWindowType;
     union {
         void *ptr_1C;       // sometimes BuildID_2Events - book open, sometimes Button
-        unsigned int par1C; // in shops and houses - int parameter
+        unsigned int par1C;  // in shops and houses - int parameter
                             // sometimes WindowType
     };
     int field_24;
@@ -536,8 +536,7 @@ class OnButtonClick2 : public GUIWindow {
 class OnButtonClick3 : public GUIWindow {
  public:
     OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
-        GUIWindow(windowType, x, y, width, height, (int)button, hint)
-    {
+        GUIWindow(windowType, x, y, width, height, (int)button, hint) {
     }
 
     virtual ~OnButtonClick3() {}

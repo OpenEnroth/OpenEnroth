@@ -42,13 +42,13 @@ class Image {
     bool Release();
 
  protected:
-    bool lazy_initialization;
-    bool initialized;
-    ImageLoader *loader;
+    bool lazy_initialization = 0;
+    bool initialized = 0;
+    ImageLoader *loader = NULL;
 
-    unsigned int width;
-    unsigned int height;
-    IMAGE_FORMAT native_format;
+    unsigned int width = 0;
+    unsigned int height = 0;
+    IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
     void *pixels[IMAGE_NUM_FORMATS];
 
     virtual bool LoadImageData();

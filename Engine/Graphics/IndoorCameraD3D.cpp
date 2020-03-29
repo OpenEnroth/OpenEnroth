@@ -1182,33 +1182,17 @@ double IndoorCameraD3D::GetPolygonMaxZ(RenderVertexSoft *pVertex,
 //         and ODMRenderParams::RotationToInts
 //         and BLVRenderParams::Reset
 void IndoorCameraD3D::CalculateRotations(int camera_rot_x, int camera_rot_y) {
-    sRotationX = camera_rot_x;
-    sRotationY = camera_rot_y;
+    sRotationX = camera_rot_x + 20;  // pitch
+    sRotationY = camera_rot_y;  // yaw
 
     fRotationYSine = sin((pi_double + pi_double) * (double)sRotationY / 2048.0);
     fRotationYCosine = cos((pi_double + pi_double) * (double)sRotationY / 2048.0);
 
-    /*if (_4D864C_force_sw_render_rules && engine->config->ForceLegacyProjection() ||
-        uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        fRotationXSine =
-            sin((pi_double + pi_double) * (double)-sRotationX / 2048.0);
-        fRotationXCosine =
-            cos((pi_double + pi_double) * (double)-sRotationX / 2048.0);
+    fRotationXSine = sin((pi_double + pi_double) * (double)sRotationX / 2048.0);
+    fRotationXCosine = cos((pi_double + pi_double) * (double)sRotationX / 2048.0);
 
-        int_sine_y = stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY);
-        int_cosine_y = stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY);
-        int_sine_x = stru_5C6E00->Sin(-pIndoorCameraD3D->sRotationX);
-        int_cosine_x = stru_5C6E00->Cos(-pIndoorCameraD3D->sRotationX);
-    } else*/ 
-    {
-        fRotationXSine =
-            sin((pi_double + pi_double) * (double)sRotationX / 2048.0);
-        fRotationXCosine =
-            cos((pi_double + pi_double) * (double)sRotationX / 2048.0);
-
-        int_sine_y = stru_5C6E00->Sin(pIndoorCameraD3D->sRotationY);
-        int_cosine_y = stru_5C6E00->Cos(pIndoorCameraD3D->sRotationY);
-        int_sine_x = stru_5C6E00->Sin(pIndoorCameraD3D->sRotationX);
-        int_cosine_x = stru_5C6E00->Cos(pIndoorCameraD3D->sRotationX);
-    }
+    int_sine_y = stru_5C6E00->Sin(sRotationY);
+    int_cosine_y = stru_5C6E00->Cos(sRotationY);
+    int_sine_x = stru_5C6E00->Sin(sRotationX);
+    int_cosine_x = stru_5C6E00->Cos(sRotationX);
 }

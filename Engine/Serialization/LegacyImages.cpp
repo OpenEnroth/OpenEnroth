@@ -785,112 +785,112 @@ void Player_Image_MM7::Deserialize(Player *player) {
 
     switch (this->classType) {
         case 0:
-            classType = PLAYER_CLASS_KNIGHT;
+            player->classType = PLAYER_CLASS_KNIGHT;
             break;
         case 1:
-            classType = PLAYER_CLASS_CHEVALIER;
+            player->classType = PLAYER_CLASS_CHEVALIER;
             break;
         case 2:
-            classType = PLAYER_CLASS_CHAMPION;
+            player->classType = PLAYER_CLASS_CHAMPION;
             break;
         case 3:
-            classType = PLAYER_CLASS_BLACK_KNIGHT;
+            player->classType = PLAYER_CLASS_BLACK_KNIGHT;
             break;
         case 4:
-            classType = PLAYER_CLASS_THEIF;
+            player->classType = PLAYER_CLASS_THEIF;
             break;
         case 5:
-            classType = PLAYER_CLASS_ROGUE;
+            player->classType = PLAYER_CLASS_ROGUE;
             break;
         case 6:
-            classType = PLAYER_CLASS_SPY;
+            player->classType = PLAYER_CLASS_SPY;
             break;
         case 7:
-            classType = PLAYER_CLASS_ASSASSIN;
+            player->classType = PLAYER_CLASS_ASSASSIN;
             break;
         case 8:
-            classType = PLAYER_CLASS_MONK;
+            player->classType = PLAYER_CLASS_MONK;
             break;
         case 9:
-            classType = PLAYER_CLASS_INITIATE;
+            player->classType = PLAYER_CLASS_INITIATE;
             break;
         case 10:
-            classType = PLAYER_CLASS_MASTER;
+            player->classType = PLAYER_CLASS_MASTER;
             break;
         case 11:
-            classType = PLAYER_CLASS_NINJA;
+            player->classType = PLAYER_CLASS_NINJA;
             break;
         case 12:
-            classType = PLAYER_CLASS_PALADIN;
+            player->classType = PLAYER_CLASS_PALADIN;
             break;
         case 13:
-            classType = PLAYER_CLASS_CRUSADER;
+            player->classType = PLAYER_CLASS_CRUSADER;
             break;
         case 14:
-            classType = PLAYER_CLASS_HERO;
+            player->classType = PLAYER_CLASS_HERO;
             break;
         case 15:
-            classType = PLAYER_CLASS_VILLIAN;
+            player->classType = PLAYER_CLASS_VILLIAN;
             break;
         case 16:
-            classType = PLAYER_CLASS_ARCHER;
+            player->classType = PLAYER_CLASS_ARCHER;
             break;
         case 17:
-            classType = PLAYER_CLASS_WARRIOR_MAGE;
+            player->classType = PLAYER_CLASS_WARRIOR_MAGE;
             break;
         case 18:
-            classType = PLAYER_CLASS_MASTER_ARCHER;
+            player->classType = PLAYER_CLASS_MASTER_ARCHER;
             break;
         case 19:
-            classType = PLAYER_CLASS_SNIPER;
+            player->classType = PLAYER_CLASS_SNIPER;
             break;
         case 20:
-            classType = PLAYER_CLASS_RANGER;
+            player->classType = PLAYER_CLASS_RANGER;
             break;
         case 21:
-            classType = PLAYER_CLASS_HUNTER;
+            player->classType = PLAYER_CLASS_HUNTER;
             break;
         case 22:
-            classType = PLAYER_CLASS_RANGER_LORD;
+            player->classType = PLAYER_CLASS_RANGER_LORD;
             break;
         case 23:
-            classType = PLAYER_CLASS_BOUNTY_HUNTER;
+            player->classType = PLAYER_CLASS_BOUNTY_HUNTER;
             break;
         case 24:
-            classType = PLAYER_CLASS_CLERIC;
+            player->classType = PLAYER_CLASS_CLERIC;
             break;
         case 25:
-            classType = PLAYER_CLASS_PRIEST;
+            player->classType = PLAYER_CLASS_PRIEST;
             break;
         case 26:
-            classType = PLAYER_CLASS_PRIEST_OF_SUN;
+            player->classType = PLAYER_CLASS_PRIEST_OF_SUN;
             break;
         case 27:
-            classType = PLAYER_CLASS_PRIEST_OF_MOON;
+            player->classType = PLAYER_CLASS_PRIEST_OF_MOON;
             break;
         case 28:
-            classType = PLAYER_CLASS_DRUID;
+            player->classType = PLAYER_CLASS_DRUID;
             break;
         case 29:
-            classType = PLAYER_CLASS_GREAT_DRUID;
+            player->classType = PLAYER_CLASS_GREAT_DRUID;
             break;
         case 30:
-            classType = PLAYER_CLASS_ARCH_DRUID;
+            player->classType = PLAYER_CLASS_ARCH_DRUID;
             break;
         case 31:
-            classType = PLAYER_CLASS_WARLOCK;
+            player->classType = PLAYER_CLASS_WARLOCK;
             break;
         case 32:
-            classType = PLAYER_CLASS_SORCERER;
+            player->classType = PLAYER_CLASS_SORCERER;
             break;
         case 33:
-            classType = PLAYER_CLASS_WIZARD;
+            player->classType = PLAYER_CLASS_WIZARD;
             break;
         case 34:
-            classType = PLAYER_CLASS_ARCHMAGE;
+            player->classType = PLAYER_CLASS_ARCHMAGE;
             break;
         case 35:
-            classType = PLAYER_CLASS_LICH;
+            player->classType = PLAYER_CLASS_LICH;
             break;
         default:
             Assert(false);

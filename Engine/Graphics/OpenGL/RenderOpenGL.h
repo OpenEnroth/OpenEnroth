@@ -65,6 +65,8 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
                                 Texture *texture);
+
+    virtual void RemoveTextureFromDevice(Texture* texture);
     virtual bool MoveTextureToDevice(Texture *texture);
 
     virtual void Update_Texture(Texture *texture);

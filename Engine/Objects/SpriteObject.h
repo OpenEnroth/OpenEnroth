@@ -234,7 +234,7 @@ struct SpriteObject {
     char field_60_distance_related_prolly_lod;
     char field_61;
     char field_62[2];
-    Vec3_int_ field_64;
+    Vec3_int_ field_64;  // starting position
 };
 #pragma pack(pop)
 

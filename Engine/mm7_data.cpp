@@ -605,13 +605,13 @@ unsigned int uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
 struct LevelDecoration *_591094_decoration;
 int uCurrentHouse_Animation;
-char *dword_591164_teleport_map_name;  // idb
-int dword_591168_teleport_speedz;
-int dword_59116C_teleport_directionx;
-int dword_591170_teleport_directiony;
-int dword_591174_teleportz;
-int dword_591178_teleporty;
-int dword_59117C_teleportx;
+char *Party_Teleport_Map_Name;
+// int Party_Teleport_Z_Speed;
+// int Party_Teleport_Cam_Pitch;
+// int Party_Teleport_Cam_Yaw;
+// int Party_Teleport_Z_Pos;
+// int Party_Teleport_Y_Pos;
+// int Party_Teleport_X_Pos;
 std::array<std::array<char, 100>, 6> byte_591180;  // idb
 std::array<struct NPCData *, 7>
     HouseNPCData;  // 0 zero element holds standart house npc
@@ -619,13 +619,13 @@ GUIButton *HouseNPCPortraitsButtonsList[6];  // dword_5913F4
 String branchless_dialogue_str;
 int EvtTargetObj;                               // 0x5B5920
 int _unused_5B5924_is_travel_ui_drawn = false;  // 005B5924
-int _5B65A8_npcdata_uflags_or_other;
-int _5B65AC_npcdata_fame_or_other;
-int _5B65B0_npcdata_rep_or_other;
-int _5B65B4_npcdata_loword_house_or_other;
-int _5B65B8_npcdata_hiword_house_or_other;
-int dword_5B65BC;
-int dword_5B65C0;
+int Party_Teleport_X_Pos;
+int Party_Teleport_Y_Pos;
+int Party_Teleport_Z_Pos;
+int Party_Teleport_Cam_Yaw;
+int Party_Teleport_Cam_Pitch;
+int Party_Teleport_Z_Speed;
+int Start_Party_Teleport_Flag;
 int dword_5B65C4_cancelEventProcessing;
 int MapsLongTimers_count;  // dword_5B65C8 счётчик таймеров для колодцев,
                            // фаерволов-ловушек

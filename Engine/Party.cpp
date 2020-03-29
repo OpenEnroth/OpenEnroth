@@ -231,7 +231,7 @@ void ui_play_gold_anim() {
 void ui_play_food_anim() {
     pUIAnim_Food->uAnimTime = 0;
     pUIAnim_Food->uAnimLength = pUIAnim_Food->icon->GetAnimLength();
-    //pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+    // pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
 }
 
 //----- (00492AD5) --------------------------------------------------------
@@ -573,7 +573,7 @@ void Party::Reset() {
         pPlayers[i].uExpressionTimeLength = rand() % 256 + 128;
     }
 
-    for (uint i = 1; i < 20; ++i) pPartyBuffs[i].Reset();
+    for (uint i = 0; i < 20; ++i) pPartyBuffs[i].Reset();
 
     current_character_screen_window =
         WINDOW_CharacterWindow_Stats;  // default character ui - stats

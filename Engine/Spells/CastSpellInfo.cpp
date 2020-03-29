@@ -134,7 +134,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
         if (pCastSpell->uFlags & ON_CAST_CastingInProgress) {
             if (!pParty->pPlayers[pCastSpell->uPlayerID].CanAct())
-                _427D48();  // this cancels the spell cast if the player can no
+                Cancel_Spell_Cast_In_Progress();  // this cancels the spell cast if the player can no
                             // longer act
 
             continue;
@@ -172,7 +172,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     0);  // target direciton
             } else {
                 target_direction.uYawAngle = pParty->sRotationY;  // spray infront of party
-                target_direction.uPitchAngle = pParty->sRotationX;
+                target_direction.uPitchAngle = -pParty->sRotationX;
             }
         }
 
@@ -4347,7 +4347,7 @@ size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
 }
 
 //----- (00427D48) --------------------------------------------------------
-void CastSpellInfoHelpers::_427D48() {  // reset failed/cancelled spell
+void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/cancelled spell
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
         if (pCastSpellInfo[i].uSpellID &&
             pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress) {
@@ -4530,7 +4530,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             }
     }
 
-    CastSpellInfoHelpers::_427D48();
+    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
 
     int result = PushCastSpellInfo(spell, uPlayerID, a4, flags, a6);
     if (result != -1) {

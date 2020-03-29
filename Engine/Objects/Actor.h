@@ -128,7 +128,7 @@ struct AIDirection {
     unsigned int uDistance;
     unsigned int uDistanceXZ;
     unsigned int uYawAngle;
-    unsigned int uPitchAngle;
+    /*un*/signed int uPitchAngle;
 };
 #pragma pack(pop)
 

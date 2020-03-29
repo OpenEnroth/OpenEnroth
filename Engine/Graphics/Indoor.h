@@ -146,7 +146,7 @@ struct stru316 {
 /*  134 */
 #pragma pack(push, 1)
 struct stru141_actor_collision_object {
-    int _47050A(int a2);
+    int CalcMovementExtents(int a2);
 
     int field_0;
     int prolly_normal_d;
@@ -165,11 +165,11 @@ struct stru141_actor_collision_object {
     Vec3_int_ direction;  // velocity's unit vector
     int speed;
     int inv_speed;
-    int field_6C;
-    int field_70;
+    int field_6C;  // some dist
+    int field_70;  // some dist modifier
     unsigned int uSectorID;
     unsigned int pid;
-    int field_7C;
+    int field_7C;  // mod speed
     int field_80;
     int field_84;
     int field_88;
@@ -177,8 +177,8 @@ struct stru141_actor_collision_object {
     int sMinX;
     int sMaxY;
     int sMinY;
-    int sMaxZ;
-    int sMinZ;
+    int sMaxZ;  // is this min
+    int sMinZ;  // is this max
     int field_A4;
 };
 #pragma pack(pop)
