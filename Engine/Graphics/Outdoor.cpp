@@ -4035,8 +4035,8 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_z) {
                                        y3     */
     }
 
-    int y_min = min(y1, min(y2, y3));  // не верно при подъёме на склон
-    int y_max = max(y1, max(y2, y3));
+    int y_min = std::min(y1, std::min(y2, y3));  // не верно при подъёме на склон
+    int y_max = std::max(y1, std::max(y2, y3));
     return (y_max - y_min) > 512;
 }
 

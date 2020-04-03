@@ -1,7 +1,9 @@
 #include "Engine/Engine.h"
 
+#ifdef _WINDOWS
 #include <direct.h>
 #include <io.h>
+#endif
 
 #include <algorithm>
 
@@ -130,6 +132,23 @@ std::shared_ptr<Engine> engine;
 
 
 
+uint32_t Color32(uint16_t color16) {
+    uint32_t c = color16;
+    uint32_t b = (c & 31) * 8;
+    uint32_t g = ((c >> 5) & 63) * 4;
+    uint32_t r = ((c >> 11) & 31) * 8;
+
+    return Color32(r, g, b);
+}
+
+uint32_t Color32(uint32_t r, uint32_t g, uint32_t b, uint32_t a) {
+    return (a << 24) | (r << 16) | (g << 8) | b;
+}
+
+uint16_t Color16(uint32_t r, uint32_t g, uint32_t b) {
+    return (b >> (8 - 5)) | 0x7E0 & (g << (6 + 5 - 8)) |
+        0xF800 & (r << (6 + 5 + 5 - 8));
+}
 
 bool FileExists(const char *fname) {
     return access(fname, 0) != -1;

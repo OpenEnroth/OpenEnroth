@@ -906,8 +906,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
             uCurrentHouse_Animation =
                 (signed __int16)p2DEvents[186].uAnimationID;
             uHouseID = HOUSE_JAIL;
-            pParty->GetPlayingTime() +=
-                GameTime::FromYears(1);  // += 123863040;
+            pParty->GetPlayingTime().AddYears(1);  // += 123863040;
             in_current_building_type =
                 (BuildingType)
                 pAnimatedRooms[p2DEvents[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE]
@@ -1171,7 +1170,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
                     int)((char *)window_SpeakInHouse->ptr_1C - 102)] =
                     GameTime((int64_t)((double)(309657600 *
                     (pParty->uCurrentMonth +
-                        12i64 *
+                        12ll *
                         pParty->uCurrentYear -
                         14015)) *
                         0.033333335));
@@ -2959,7 +2958,7 @@ void TrainingDialog(const char *s) {
     if (uActiveCharacter == 0)  // avoid nzi
         uActiveCharacter = pParty->GetFirstCanAct();
 
-    v5 = 1000ui64 * pPlayers[uActiveCharacter]->uLevel *
+    v5 = 1000ull * pPlayers[uActiveCharacter]->uLevel *
         (pPlayers[uActiveCharacter]->uLevel + 1) /
         2;  // E n = n(n + 1) / 2
             // v68 = pMaxLevelPerTrainingHallType[(unsigned

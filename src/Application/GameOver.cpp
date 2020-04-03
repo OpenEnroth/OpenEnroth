@@ -97,7 +97,7 @@ void Application::GameOver_Loop(int v15) {
     render->BeginScene();
     pWindow.DrawTitleText(pFont, 1, 0x23, 1, localization->GetString(9),
                           3);  // Congratulations!
-    v23 = 0i64;
+    v23 = 0ull;
     v20 = 0;
     for (uint i = 0; i < 4; i++) {
         pWindow.DrawTitleText(

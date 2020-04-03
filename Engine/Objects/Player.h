@@ -724,8 +724,8 @@ struct Player {
     int pure_might_used;
     union {  // 214h
         struct {
-            std::array<ItemGen, 126> pInventoryItemList;
-            std::array<ItemGen, 12> pEquippedItems;
+            ItemGen pInventoryItemList[126];
+            ItemGen pEquippedItems[12];
         };
         std::array<ItemGen, 138> pOwnItems;
     };

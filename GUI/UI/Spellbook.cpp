@@ -21,7 +21,7 @@ void InitializeSpellBookTextures();
 void OnCloseSpellBookPage();
 void OnCloseSpellBook();
 void LoadSpellbook(unsigned int spell_school);
-void BookUI_Spellbook_DrawCurrentSchoolBackground();
+static void BookUI_Spellbook_DrawCurrentSchoolBackground();
 
 std::array<char *, 9> spellbook_texture_filename_suffices = {
     {"f", "a", "w", "e", "s", "m", "b", "l", "d"}};

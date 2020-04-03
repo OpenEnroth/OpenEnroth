@@ -28,19 +28,19 @@
 unsigned int ModulateColor(unsigned int diffuse, float multiplier) {
     float alpha = multiplier * ((diffuse >> 24) & 0xFF);
     int a = (int)floorf(alpha + 0.5f);
-    a = max(0, min(255, a));
+    a = std::max(0, std::min(255, a));
 
     float red = multiplier * ((diffuse >> 16) & 0xFF);
     int r = (int)floorf(red + 0.5f);
-    r = max(0, min(255, r));
+    r = std::max(0, std::min(255, r));
 
     float green = multiplier * ((diffuse >> 8) & 0xFF);
     int g = (int)floorf(green + 0.5f);
-    g = max(0, min(255, g));
+    g = std::max(0, std::min(255, g));
 
     float blue = multiplier * ((diffuse >> 0) & 0xFF);
     int b = (int)floorf(blue + 0.5f);
-    b = max(0, min(255, b));
+    b = std::max(0, std::min(255, b));
 
     return (a << 24) | (r << 16) | (g << 8) | b;
 }

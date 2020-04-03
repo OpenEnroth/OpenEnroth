@@ -1,4 +1,5 @@
 #include "Engine/ZlibWrapper.h"
+#include <string.h>
 
 namespace zlib {
 #include <zlib.h>

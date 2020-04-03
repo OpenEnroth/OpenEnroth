@@ -1,5 +1,7 @@
 #include "Engine/Objects/Actor.h"
 
+#include <algorithm>
+
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
 #include "Engine/SpellFxRenderer.h"
@@ -2880,8 +2882,8 @@ void Actor::UpdateActorAI() {
             continue;
 
         // Calculate RecoveryTime
-        pActor->pMonsterInfo.uRecoveryTime = max(
-            pActor->pMonsterInfo.uRecoveryTime - pMiscTimer->uTimeElapsed, 0);
+        pActor->pMonsterInfo.uRecoveryTime = std::max((signed int)
+            (pActor->pMonsterInfo.uRecoveryTime - pMiscTimer->uTimeElapsed), 0);
 
         pActor->uCurrentActionTime += pMiscTimer->uTimeElapsed;
         if (pActor->uCurrentActionTime < pActor->uCurrentActionLength) continue;

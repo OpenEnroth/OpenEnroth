@@ -472,7 +472,7 @@ class Movie : public IMovie {
 
     int read(void *opaque, uint8_t *buf, int buf_size) {
         fseek(hFile, uFileOffset + uFilePos, SEEK_SET);
-        buf_size = min(buf_size, (int)uFileSize - (int)uFilePos);
+        buf_size = std::min(buf_size, (int)uFileSize - (int)uFilePos);
         buf_size = fread(buf, 1, buf_size, hFile);
         uFilePos += buf_size;
         return buf_size;
@@ -1160,7 +1160,7 @@ int AudioBufferDataSource::ReadPacket(uint8_t *buf, int buf_size) {
     if (size <= 0) {
         return 0;
     }
-    size = min(buf_size, size);
+    size = std::min(buf_size, size);
     memcpy(buf, buf_pos, size);
     buf_pos += size;
     return size;

@@ -67,9 +67,6 @@ typedef ull uint64;
 #define _LONGLONG __int128
 #endif
 
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-
 #define HEXRAYS_LOBYTE(x) (*((_BYTE *)&(x)))    // low byte
 #define HEXRAYS_LOWORD(x) (*((_WORD *)&(x)))    // low word
 #define HEXRAYS_LODWORD(x) (*((_DWORD *)&(x)))  // low dword

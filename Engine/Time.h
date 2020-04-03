@@ -48,6 +48,12 @@ struct GameTime {
     void SubtractHours(int hours) {
         this->value -= ((uint64_t)60 * 60 * hours * TIME_PACK_GAME_SECONDS);
     }
+    void AddDays(int days) {
+        this->value += ((uint64_t)60 * 60 * 24 * days * TIME_PACK_GAME_SECONDS);
+    }
+    void AddYears(int years) {
+        this->value += ((uint64_t)60 * 60 * 24 * 7 * 4 * 12 * years * TIME_PACK_GAME_SECONDS);
+    }
 
     void Reset() { this->value = 0; }
     bool Valid() const { return this->value > 0; }

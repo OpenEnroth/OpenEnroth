@@ -8,6 +8,7 @@ set(SPELLS_HEADERS CastSpellInfo.h
 
 if(WIN32)
 else()
+  set(CMAKE_CXX_FLAGS "-fpermissive ${CMAKE_CXX_FLAGS}")
 endif()
 
 add_library(spells STATIC ${SPELLS_SOURCES} ${SPELLS_HEADERS})

@@ -5742,7 +5742,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_CurrentHP:
-            this->sHealth = min(this->sHealth + val, this->GetMaxHealth());
+            this->sHealth = std::min(this->sHealth + val, this->GetMaxHealth());
             PlayAwardSound_Anim97();
             return;
         case VAR_MaxHP:
@@ -5751,7 +5751,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             this->sHealth = this->GetMaxHealth();
             return;
         case VAR_CurrentSP:
-            this->sMana = min(this->sMana + val, this->GetMaxMana());
+            this->sMana = std::min(this->sMana + val, this->GetMaxMana());
             PlayAwardSound_Anim97();
             return;
         case VAR_MaxSP:
@@ -5760,15 +5760,15 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             this->sMana = GetMaxMana();
             return;
         case VAR_ACModifier:
-            this->sACModifier = min(this->sACModifier + val, 255);
+            this->sACModifier = std::min(this->sACModifier + val, 255);
             PlayAwardSound_Anim97();
             return;
         case VAR_BaseLevel:
-            this->uLevel = min(this->uLevel + val, 255);
+            this->uLevel = std::min(this->uLevel + val, 255);
             PlayAwardSound_Anim97();
             return;
         case VAR_LevelModifier:
-            this->sLevelModifier = min(this->sLevelModifier + val, 255);
+            this->sLevelModifier = std::min(this->sLevelModifier + val, 255);
             PlayAwardSound_Anim97();
             return;
         case VAR_Age:
@@ -5782,7 +5782,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             _449B7E_toggle_bit(this->_achieved_awards_bits, val, 1);
             return;
         case VAR_Experience:
-            this->uExperience = min(this->uExperience + val, 4000000000);
+            this->uExperience = std::min((unsigned __int64)(this->uExperience + val), 4000000000ull);
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
@@ -5809,31 +5809,31 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             pParty->PartyFindsGold(val, 1);
             return;
         case VAR_BaseMight:
-            this->uMight = min(this->uMight + val, 255);
+            this->uMight = std::min(this->uMight + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_BaseIntellect:
-            this->uIntelligence = min(this->uIntelligence + val, 255);
+            this->uIntelligence = std::min(this->uIntelligence + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_BasePersonality:
-            this->uWillpower = min(this->uWillpower + val, 255);
+            this->uWillpower = std::min(this->uWillpower + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_BaseEndurance:
-            this->uEndurance = min(this->uEndurance + val, 255);
+            this->uEndurance = std::min(this->uEndurance + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_BaseSpeed:
-            this->uSpeed = min(this->uSpeed + val, 255);
+            this->uSpeed = std::min(this->uSpeed + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_BaseAccuracy:
-            this->uAccuracy = min(this->uAccuracy + val, 255);
+            this->uAccuracy = std::min(this->uAccuracy + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_BaseLuck:
-            this->uLuck = min(this->uLuck + val, 255);
+            this->uLuck = std::min(this->uLuck + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_FixedFood:
@@ -5845,117 +5845,117 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
-            this->uMightBonus = min(this->uMightBonus + val, 255);
+            this->uMightBonus = std::min(this->uMightBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
-            this->uIntelligenceBonus = min(this->uIntelligenceBonus + val, 255);
+            this->uIntelligenceBonus = std::min(this->uIntelligenceBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uWillpowerBonus = min(this->uWillpowerBonus + val, 255);
+            this->uWillpowerBonus = std::min(this->uWillpowerBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
-            this->uEnduranceBonus = min(this->uEnduranceBonus + val, 255);
+            this->uEnduranceBonus = std::min(this->uEnduranceBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
-            this->uSpeedBonus = min(this->uSpeedBonus + val, 255);
+            this->uSpeedBonus = std::min(this->uSpeedBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
-            this->uAccuracyBonus = min(this->uAccuracyBonus + val, 255);
+            this->uAccuracyBonus = std::min(this->uAccuracyBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
-            this->uLuckBonus = min(this->uLuckBonus + val, 255);
+            this->uLuckBonus = std::min(this->uLuckBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_FireResistance:
-            this->sResFireBase = min(this->sResFireBase + val, 255);
+            this->sResFireBase = std::min(this->sResFireBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_AirResistance:
-            this->sResAirBase = min(this->sResAirBase + val, 255);
+            this->sResAirBase = std::min(this->sResAirBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_WaterResistance:
-            this->sResWaterBase = min(this->sResWaterBase + val, 255);
+            this->sResWaterBase = std::min(this->sResWaterBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_EarthResistance:
-            this->sResEarthBase = min(this->sResEarthBase + val, 255);
+            this->sResEarthBase = std::min(this->sResEarthBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_SpiritResistance:
-            this->sResSpiritBase = min(this->sResSpiritBase + val, 255);
+            this->sResSpiritBase = std::min(this->sResSpiritBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_MindResistance:
-            this->sResMindBase = min(this->sResMindBase + val, 255);
+            this->sResMindBase = std::min(this->sResMindBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_BodyResistance:
-            this->sResBodyBase = min(this->sResBodyBase + val, 255);
+            this->sResBodyBase = std::min(this->sResBodyBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_LightResistance:
-            this->sResLightBase = min(this->sResLightBase + val, 255);
+            this->sResLightBase = std::min(this->sResLightBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_DarkResistance:
-            this->sResDarkBase = min(this->sResDarkBase + val, 255);
+            this->sResDarkBase = std::min(this->sResDarkBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_MagicResistance:
-            this->sResMagicBase = min(this->sResMagicBase + val, 255);
+            this->sResMagicBase = std::min(this->sResMagicBase + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_92);
             return;
         case VAR_FireResistanceBonus:
-            this->sResFireBonus = min(this->sResFireBonus + val, 255);
+            this->sResFireBonus = std::min(this->sResFireBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_AirResistanceBonus:
-            this->sResAirBonus = min(this->sResAirBonus + val, 255);
+            this->sResAirBonus = std::min(this->sResAirBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_WaterResistanceBonus:
-            this->sResWaterBonus = min(this->sResWaterBonus + val, 255);
+            this->sResWaterBonus = std::min(this->sResWaterBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_EarthResistanceBonus:
-            this->sResEarthBonus = min(this->sResEarthBonus + val, 255);
+            this->sResEarthBonus = std::min(this->sResEarthBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_SpiritResistanceBonus:
-            this->sResSpiritBonus = min(this->sResSpiritBonus + val, 255);
+            this->sResSpiritBonus = std::min(this->sResSpiritBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_MindResistanceBonus:
-            this->sResMindBonus = min(this->sResMindBonus + val, 255);
+            this->sResMindBonus = std::min(this->sResMindBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_BodyResistanceBonus:
-            this->sResBodyBonus = min(this->sResBodyBonus + val, 255);
+            this->sResBodyBonus = std::min(this->sResBodyBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_LightResistanceBonus:
-            this->sResLightBonus = min(this->sResLightBonus + val, 255);
+            this->sResLightBonus = std::min(this->sResLightBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_DarkResistanceBonus:
-            this->sResDarkBonus = min(this->sResDarkBonus + val, 255);
+            this->sResDarkBonus = std::min(this->sResDarkBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_MagicResistanceBonus:
-            this->sResMagicBonus = min(this->sResMagicBonus + val, 255);
+            this->sResMagicBonus = std::min(this->sResMagicBonus + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_91);
             return;
         case VAR_Cursed:
@@ -6219,7 +6219,7 @@ void Player::AddSkillByEvent(unsigned __int16 Player::*skillToSet,
         this->*skillToSet =
             (unsigned __int8)addSkillValue | this->*skillToSet & 63;
     } else {
-        this->*skillToSet = min(this->*skillToSet + addSkillValue, 60) |
+        this->*skillToSet = std::min(this->*skillToSet + addSkillValue, 60) |
                             this->*skillToSet & 0xC0;
     }
     PlayAwardSound_Anim97();
@@ -6254,7 +6254,7 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_CurrentSP:
-            this->sMana = max(this->sMana - pValue, 0);
+            this->sMana = std::max(this->sMana - pValue, 0);
             PlayAwardSound_Anim98();
             return;
         case VAR_ACModifier:

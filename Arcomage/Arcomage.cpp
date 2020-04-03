@@ -2252,13 +2252,13 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
 #define APPLY_TO_PLAYER(PLAYER, ENEMY, FIELD, VAL, RES)   \
     if (VAL != 0) {                                       \
         if (VAL == 99) {                                  \
-            if (PLAYER->##FIELD < ENEMY->##FIELD) {       \
-                PLAYER->##FIELD = ENEMY->##FIELD;         \
-                RES = ENEMY->##FIELD - PLAYER->##FIELD;   \
+            if (PLAYER->FIELD < ENEMY->FIELD) {           \
+                PLAYER->FIELD = ENEMY->FIELD;             \
+                RES = ENEMY->FIELD - PLAYER->FIELD;       \
             }                                             \
         } else {                                          \
-            PLAYER->##FIELD += (signed int)(VAL);         \
-            if (PLAYER->##FIELD < 0) PLAYER->##FIELD = 0; \
+            PLAYER->FIELD += (signed int)(VAL);           \
+            if (PLAYER->FIELD < 0) PLAYER->FIELD = 0;     \
             RES = (signed int)(VAL);                      \
         }                                                 \
     }
@@ -2269,23 +2269,23 @@ void ApplyCardToPlayer(int player_num, unsigned int uCardID) {
 #define APPLY_TO_BOTH(PLAYER, ENEMY, FIELD, VAL, RES_P, RES_E) \
     if (VAL != 0) {                                            \
         if (VAL == 99) {                                       \
-            if (PLAYER->##FIELD != ENEMY->##FIELD) {           \
-                if (PLAYER->##FIELD <= ENEMY->##FIELD) {       \
-                    PLAYER->##FIELD = ENEMY->##FIELD;          \
-                    RES_P = ENEMY->##FIELD - PLAYER->##FIELD;  \
+            if (PLAYER->FIELD != ENEMY->FIELD) {               \
+                if (PLAYER->FIELD <= ENEMY->FIELD) {           \
+                    PLAYER->FIELD = ENEMY->FIELD;              \
+                    RES_P = ENEMY->FIELD - PLAYER->FIELD;      \
                 } else {                                       \
-                    ENEMY->##FIELD = PLAYER->##FIELD;          \
-                    RES_E = PLAYER->##FIELD - ENEMY->##FIELD;  \
+                    ENEMY->FIELD = PLAYER->FIELD;              \
+                    RES_E = PLAYER->FIELD - ENEMY->FIELD;      \
                 }                                              \
             }                                                  \
         } else {                                               \
-            PLAYER->##FIELD += (signed int)(VAL);              \
-            ENEMY->##FIELD += (signed int)(VAL);               \
-            if (PLAYER->##FIELD < 0) {                         \
-                PLAYER->##FIELD = 0;                           \
+            PLAYER->FIELD += (signed int)(VAL);                \
+            ENEMY->FIELD += (signed int)(VAL);                 \
+            if (PLAYER->FIELD < 0) {                           \
+                PLAYER->FIELD = 0;                             \
             }                                                  \
-            if (ENEMY->##FIELD < 0) {                          \
-                ENEMY->##FIELD = 0;                            \
+            if (ENEMY->FIELD < 0) {                            \
+                ENEMY->FIELD = 0;                              \
             }                                                  \
             RES_P = (signed int)(VAL);                         \
             RES_E = (signed int)(VAL);                         \

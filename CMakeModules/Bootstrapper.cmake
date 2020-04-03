@@ -1,8 +1,5 @@
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/Common.cmake")
 
-
-SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
-
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
   set(BUILD_TYPE "x64")
@@ -33,15 +30,15 @@ include(CheckIncludeFile)
 include(CheckIncludeFileCXX)
 include(CheckIncludeFiles)
 
-
-
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 
+if (WIN32)
 # actual library dir for current build configuration
 set(LIBRARY_DIR "${LIB_DIR}/${BUILD_PLATFORM}/${BUILD_TYPE}")
 
 set(DEPS_ZIP_FILENAME "all_deps_${BUILD_PLATFORM}_${BUILD_TYPE}.zip")
 set(DEPS_ZIP_FULL_PATH "${LIB_DIR}/${DEPS_ZIP_FILENAME}")
+
 
 # resolve 3d party libs
 if (NOT EXISTS "${LIBRARY_DIR}")
@@ -61,9 +58,15 @@ if (NOT EXISTS "${LIBRARY_DIR}")
     )
 endif()
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/zlib.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/OpenAL.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/SDL2.cmake")
+
+else()  # WIN32
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/find)
+find_package(OpenGL REQUIRED)
+#find_package(OPENAL REQUIRED)
+endif()
+include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/zlib.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/sdl2.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/ffmpeg.cmake")
 
 

@@ -38,11 +38,6 @@ static Mouse *mouse = EngineIoc::ResolveMouse();
 ChestList *pChestList;
 std::vector<Chest> vChests;
 
-extern int pChestWidthsByType[8];
-extern int pChestHeightsByType[8];
-extern int pChestPixelOffsetX[8];
-extern int pChestPixelOffsetY[8];
-
 bool Chest::Open(int uChestID) {
     ODMFace *pODMFace;                // eax@19
     BLVFace *pBLVFace;                // eax@20

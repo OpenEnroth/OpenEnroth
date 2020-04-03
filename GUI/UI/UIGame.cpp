@@ -1337,7 +1337,7 @@ void GameUI_WritePointedObjectStatusString() {
                     GameUI_StatusBar_Set(pText);
                 } else {
                     char *hintString = GetEventHintString(pLevelDecorations[pickedObjectID].uEventID);
-                    if (hintString != '\0') {
+                    if (hintString[0] != '\0') {
                         GameUI_StatusBar_Set(hintString);
                     }
                 }  // intentional fallthrough

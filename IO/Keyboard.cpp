@@ -1,4 +1,12 @@
+#ifdef _WINDOWS
 #include <windows.h>
+#else
+#include "SDL.h"
+#include "IO/Mouse.h"
+
+// remove this after enabling SDLK_* keys
+inline int GetAsyncKeyState(int vKey) { return (int)SDL_GetKeyboardState(&vKey); }
+#endif
 #undef PlaySound  // conflicts with Player method
 
 #include <string>

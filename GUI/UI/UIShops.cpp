@@ -1,5 +1,4 @@
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 #include <stdlib.h>
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -1683,7 +1682,7 @@ void GetHouseGoodbyeSpeech() {
                     if (pPlayers[i]->CanAct()) v7[v5++] = i;
                 }
                 if (v5) {
-                    _A750D8_player_speech_timer = 256i64;
+                    _A750D8_player_speech_timer = 256;
                     PlayerSpeechID = SPEECH_80;
                     uSpeakingCharacter = v7[rand() % v5];
                     return;
@@ -1696,7 +1695,7 @@ void GetHouseGoodbyeSpeech() {
                     if (pPlayers[i]->CanAct()) v7[v2++] = i;
                 }
                 if (v2) {
-                    _A750D8_player_speech_timer = 256i64;
+                    _A750D8_player_speech_timer = 256;
                     PlayerSpeechID = SPEECH_80;
                     uSpeakingCharacter = v7[rand() % v2];
                     return;

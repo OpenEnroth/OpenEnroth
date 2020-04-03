@@ -176,19 +176,6 @@ struct PlayerSpells_Image_MM7 {
 
     union {
         struct {
-            /* 00 */ PlayerSpellbookChapter_Image_MM7 pFireSpellbook;
-            /* 0B */ PlayerSpellbookChapter_Image_MM7 pAirSpellbook;
-            /* 16 */ PlayerSpellbookChapter_Image_MM7 pWaterSpellbook;
-            /* 21 */ PlayerSpellbookChapter_Image_MM7 pEarthSpellbook;
-            /* 2C */ PlayerSpellbookChapter_Image_MM7 pSpiritSpellbook;
-            /* 37 */ PlayerSpellbookChapter_Image_MM7 pMindSpellbook;
-            /* 42 */ PlayerSpellbookChapter_Image_MM7 pBodySpellbook;
-            /* 4D */ PlayerSpellbookChapter_Image_MM7 pLightSpellbook;
-            /* 58 */ PlayerSpellbookChapter_Image_MM7 pDarkSpellbook;
-            /* 63 */ char _pad;
-            /* 64 */
-        };
-        struct {
             /* 00 */ PlayerSpellbookChapter_Image_MM7 pChapters[9];
             /* 63 */ char _pad1;
             /* 64 */
