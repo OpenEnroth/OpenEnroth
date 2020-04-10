@@ -253,7 +253,7 @@ int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {
     if (v13 < 7) {
         if (v5 < 20) return result;
         if (v5 >= 60) {
-            return sub_450521_ProllyDropItemAt(v13, rand() % 27 + 20,
+            return DropTreasureAt(v13, rand() % 27 + 20,
                                                a2->vPosition.x,
                                                a2->vPosition.y,
                                                a2->vPosition.z, 0);

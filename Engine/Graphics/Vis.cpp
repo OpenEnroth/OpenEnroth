@@ -306,7 +306,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                                 Vis_SelectionList *list,
                                 Vis_SelectionFilter *filter) {
     int v5;              // eax@1
-    signed int pFaceID;  // edi@2
+    // signed int pFaceID;  // edi@2
     // int v9; // eax@7
     unsigned int *pNumPointers;  // eax@7
     Vis_ObjectInfo *v12;         // edi@7
@@ -316,42 +316,44 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
 
     v5 = 0;
     v17 = 0;
-    for (a1.flt_2C = 0.0; v17 < (signed int)pBspRenderer->num_faces; ++v17) {
-        pFaceID = pBspRenderer->faces[v5].uFaceID;
-        if (pFaceID >= 0) {
-            if (pFaceID < (signed int)pIndoor->uNumFaces) {
-                BLVFace *face = &pIndoor->pFaces[pFaceID];
-                if (is_part_of_selection(face, filter)) {
-                    if (!pIndoorCameraD3D->IsCulled(face)) {
-                        if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &a1,
-                                               face, 0xFFFFFFFFu)) {
-                            pIndoorCameraD3D->ViewTransform(&a1, 1);
-                            // v9 = fixpoint_from_float(/*v8,
-                            // */a1.vWorldViewPosition.x); HEXRAYS_LOWORD(v9) =
-                            // 0; v15 = (void *)((PID(OBJECT_BModel,pFaceID)) +
-                            // v9);
-                            pNumPointers = &list->uNumPointers;
-                            v12 = &list->object_pool[list->uNumPointers];
-                            v12->object = &pIndoor->pFaces[pFaceID];
-                            v12->depth = a1.vWorldViewPosition.x;
-                            v12->object_pid = PID(OBJECT_BModel, pFaceID);
-                            v12->object_type = VisObjectType_Face;
-                            ++*pNumPointers;
-                            // logger->Info(L"raypass");
-                        } else {
-                           // __debugbreak();
-                            // logger->Info(L"rayfaile");
-                        }
-                    }
-                }
+    // for (a1.flt_2C = 0.0; v17 < (signed int)pBspRenderer->num_faces; ++v17) {
+    //     pFaceID = pBspRenderer->faces[v5].uFaceID;
+    //     if (pFaceID >= 0) {
+    //        if (pFaceID < (signed int)pIndoor->uNumFaces) {
 
-                if (face->uAttributes & FACE_PICKED)
-                    face->uAttributes |= FACE_OUTLINED;
-                else
-                    face->uAttributes &= ~FACE_OUTLINED;
-                face->uAttributes &= ~FACE_PICKED;
+    for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->uNumFaces; ++v17) {
+        BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
+        if (is_part_of_selection(face, filter)) {
+            if (!pIndoorCameraD3D->IsCulled(face)) {
+                if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &a1,
+                                        face, 0xFFFFFFFFu)) {
+                    pIndoorCameraD3D->ViewTransform(&a1, 1);
+                    // v9 = fixpoint_from_float(/*v8,
+                    // */a1.vWorldViewPosition.x); HEXRAYS_LOWORD(v9) =
+                    // 0; v15 = (void *)((PID(OBJECT_BModel,pFaceID)) +
+                    // v9);
+                    pNumPointers = &list->uNumPointers;
+                    v12 = &list->object_pool[list->uNumPointers];
+                    v12->object = &pIndoor->pFaces[/*pFaceID*/v17];
+                    v12->depth = a1.vWorldViewPosition.x;
+                    v12->object_pid = PID(OBJECT_BModel, /*pFaceID*/v17);
+                    v12->object_type = VisObjectType_Face;
+                    ++*pNumPointers;
+                    // logger->Info(L"raypass");
+                } else {
+                    // __debugbreak();
+                    // logger->Info(L"rayfaile");
+                }
             }
         }
+
+        if (face->uAttributes & FACE_PICKED)
+            face->uAttributes |= FACE_OUTLINED;
+        else
+            face->uAttributes &= ~FACE_OUTLINED;
+        face->uAttributes &= ~FACE_PICKED;
+           // }
+       // }
         v5 = v17 + 1;
     }
 }
@@ -918,8 +920,7 @@ int UnprojectY(int y) {
 }
 
 //----- (004C248E) --------------------------------------------------------
-void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY,
-                      float fPickDepth) {
+void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, float fPickDepth) {
     int pRotY;                // esi@1
     Vec3_int_ pStartR;        // ST08_12@1
     int pRotX;                // ST04_4@1

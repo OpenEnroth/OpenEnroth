@@ -572,9 +572,10 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
 
     if (radius < 0.0f) return true;
 
-    lightmap = /*uLightType & 1 ?*/ &StationaryLights[StationaryLightsCount];
-                             /* :*/                       // stationary
-                 /*  &MobileLights[MobileLightsCount];*/  // mobile
+    lightmap = uLightType & 1 ? &StationaryLights[StationaryLightsCount]
+                              :                       // stationary
+                   &MobileLights[MobileLightsCount];  // mobile
+
     tex_light_radius = radius - dot_dist;
     // flt_3C8C28 = sqrt((radius + radius - tex_light_radius) * tex_light_radius);
     flt_3C8C28 = sqrt(radius * radius - dot_dist * dot_dist);
@@ -700,12 +701,12 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
         if (uClipFlag & 2) {  // NeerClipFlag
             pIndoorCameraD3D->LightmapNeerClip(
                 lightmap->pVertices, lightmap->NumVertices, field_3C8C34, &_a4);
-            pIndoorCameraD3D->_437143(_a4, lightmap->pVertices, field_3C8C34,
+            pIndoorCameraD3D->LightmapProject(_a4, lightmap->pVertices, field_3C8C34,
                                       &lightmap->NumVertices);
         } else if (uClipFlag & 4) {  // FarClipFlag
             pIndoorCameraD3D->LightmapFarClip(
                 lightmap->pVertices, lightmap->NumVertices, field_3C8C34, &_a4);
-            pIndoorCameraD3D->_437143(_a4, lightmap->pVertices, field_3C8C34,
+            pIndoorCameraD3D->LightmapProject(_a4, lightmap->pVertices, field_3C8C34,
                                       &lightmap->NumVertices);
         } else {
             log->Warning(L"Undefined clip flag specified");
@@ -716,11 +717,11 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     }
 
     if (_a4) {
-        /*if (uLightType & 1) {*/
+        if (uLightType & 1) {
             if (StationaryLightsCount < 512 - 1) ++StationaryLightsCount;
-        /*} else {
+        } else {
             if (MobileLightsCount < 768 - 1) ++MobileLightsCount;
-        }*/
+        }
         // if ( v50 ^ v51 )
         //  *(unsigned int *)v48 = v49 + 1;
     }
@@ -838,7 +839,7 @@ void LightmapBuilder::Draw_183808_Lightmaps() {
 
     render->BeginLightmaps2();
 
-    DoDraw_183808_Lightmaps(0.0/*0.00050000002*/);
+    DoDraw_183808_Lightmaps(0.00050000002);
 
     render->EndLightmaps2();
 }

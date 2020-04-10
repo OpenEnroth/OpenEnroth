@@ -12,6 +12,7 @@ enum SoundID {
     SOUND_enter = 6,
     SOUND_WoodDoorClosing = 7,
     SOUND_fireBall = 8,
+    SOUND_BoatCreaking = 18,
     SOUND_ClickMinus = 20,
     SOUND_ClickMovingSelector = 21,
     SOUND_ClickPlus = 23,

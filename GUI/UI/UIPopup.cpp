@@ -1038,6 +1038,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, txt9,
             3);
     }
+
+    // ps - test to track ai states
+    auto txttest = StringPrintf("%d", pActors[uActorID].uAIState);
+    pFontSmallnum->GetLineWidth(txttest);
+    pWindow->DrawTitleText(
+        pFontSmallnum, 0,
+        pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, txttest,
+        3);
 }
 
 //----- (00417BB5) --------------------------------------------------------

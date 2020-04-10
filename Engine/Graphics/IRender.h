@@ -211,6 +211,7 @@ class IRender {
         pBeforePresentFunction = 0;
         memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
         uNumBillboardsToDraw = 0;
+        drawcalls = 0;
     }
     virtual ~IRender() {}
 
@@ -427,6 +428,8 @@ class IRender {
     void (*pBeforePresentFunction)();
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
+
+    int drawcalls;
 
     Log *log = nullptr;
     DecalBuilder *decal_builder = nullptr;
