@@ -1,57 +1,35 @@
 # Might and Magic Trilogy [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq) 
 
-Might and Magic VI-VIII engine remake using original data & code
+Might and Magic VI-VIII engine remake using original data & code.
+Allows playing original game + introduce dustomizations & modifications.
 
-![windows](https://github.com/gp-alex/world-of-might-and-magic/workflows/Windows_CI/badge.svg)
-
-![linux](https://github.com/gp-alex/world-of-might-and-magic/workflows/Linux_CI/badge.svg)
-
-[![Build Status](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
+![windows](https://github.com/gp-alex/world-of-might-and-magic/workflows/Windows_CI/badge.svg) ![linux](https://github.com/gp-alex/world-of-might-and-magic/workflows/Linux_CI/badge.svg) [![appveyour](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
 
 [![Coverity Status](https://scan.coverity.com/projects/16434/badge.svg)](https://scan.coverity.com/projects/world-of-might-and-magic)
 
+![](https://user-images.githubusercontent.com/24377109/79051217-491a7800-7c2f-11ea-85c7-f9120b7d79dd.png)
 
-![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/gamestart.PNG)
 
 
 
 Getting Started
 ---------------
-1. You will require a GoG or any older version of Might and Magic 7 installed for engine to guess game assets folder. You can override  assets/game path in launcher.
+1. You will require a GoG or any older version of Might and Magic 7 installed for engine to guess game assets folder. You can override  assets/game path in launcher or by using WOMM_PATH_OVERRIDE env variable.
 2. Use any IDE with CMake integration (Visual Studio is good).
 2. Build & run game directly, or via launcher.
 
-Getting Started (With IMAGES!)
---------------
-
-<details><summary>Images</summary>
-<p>
-
-#### Set up cache
-![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/install1.png)
-
-
-#### Select Start Launch
-![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/install2.png)
-
-### wait until The cache has completed creating. (takes a couple of seconds)
-![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/install3.png)
-
-### Make sure your CMAKE conf looks like this (please use Visual Studio 2019 specifically, NINJA generator fails often)
-![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/final.PNG)
-
-### Click Build All
-![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/install4.png)
-
-
-</p>
-</details>
-
 Development
 -----------
-See the HACKING document in the source code root for information on how to compile.
+See the [HACKING](HACKING.md) document for information on how to compile.
+Reference Issues section to see current backlog & how you can help.
+Reference Milestones section to see roadmap and future plans.
 
 GamePlay
 --------------
-![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/gameplay.PNG)
+![u1](https://user-images.githubusercontent.com/24377109/79051879-f04cde80-7c32-11ea-939d-1dcc97b46f5d.png)
 
+![u2](https://user-images.githubusercontent.com/24377109/79051881-f17e0b80-7c32-11ea-82cd-5e4993a1c071.png)
+
+![u3](https://user-images.githubusercontent.com/24377109/79051882-f3e06580-7c32-11ea-974f-414f68394190.png)
+
+![u4](https://user-images.githubusercontent.com/24377109/79051883-f5119280-7c32-11ea-801c-1595709d8060.png)
