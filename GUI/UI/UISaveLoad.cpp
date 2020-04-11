@@ -1,6 +1,10 @@
 #include "GUI/UI/UISaveLoad.h"
 
+#ifdef _WINDOWS
 #include <io.h>
+#else
+#include "Platform/Lin/Lin.h"
+#endif
 #include <string>
 
 #include "Engine/Engine.h"
@@ -22,7 +26,7 @@
 #include "Platform/Api.h"
 
 
-void UI_DrawSaveLoad(bool save);
+static void UI_DrawSaveLoad(bool save);
 
 Image *saveload_ui_ls_saved = nullptr;
 Image *saveload_ui_x_d = nullptr;

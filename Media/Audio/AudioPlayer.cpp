@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#include "Engine/MM7.h"
 #include "Engine/Party.h"
 #include "Engine/ZlibWrapper.h"
 
@@ -168,8 +167,8 @@ void AudioPlayer::SetMusicVolume(int vol) {
         return;
     }
 
-    vol = max(0, vol);
-    vol = min(9, vol);
+    vol = std::max(0, vol);
+    vol = std::min(9, vol);
     pCurrentMusicTrack->SetVolume(pSoundVolumeLevels[vol] * 2.f);
 }
 
@@ -182,8 +181,8 @@ float AudioPlayer::MusicGetVolume() {
 }
 
 void AudioPlayer::SetMasterVolume(int level) {
-    level = max(0, level);
-    level = min(9, level);
+    level = std::max(0, level);
+    level = std::min(9, level);
     uMasterVolume = (2.f * pSoundVolumeLevels[level]);
 }
 
@@ -383,7 +382,7 @@ void PlayLevelMusic() {
 }
 
 
-bool AudioPlayer::FindSound(const std::string &pName, struct SoundHeader *header) {
+bool AudioPlayer::FindSound(const std::string &pName, AudioPlayer::SoundHeader *header) {
     if (header == nullptr) {
         return false;
     }

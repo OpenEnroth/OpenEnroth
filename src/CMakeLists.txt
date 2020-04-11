@@ -20,7 +20,10 @@ set(GAME_HEADERS Application/Configuration.h
 
 if(WIN32)
 else()
+    set(CMAKE_CXX_FLAGS "-fpermissive ${CMAKE_CXX_FLAGS}")
 endif()
 
 add_library(game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
 target_check_style(game)
+
+target_link_libraries(game engine)

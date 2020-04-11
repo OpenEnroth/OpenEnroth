@@ -1,4 +1,6 @@
+#ifdef _WINDOWS
 #include <mbstring.h>
+#endif
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>

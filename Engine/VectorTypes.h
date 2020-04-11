@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cmath>
 #include <cstdint>
 
 #include "OurMath.h"

@@ -1,7 +1,7 @@
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
-
+#include "Engine/ErrorHandling.h"
 
 Texture *TextureOpenGL::Create(unsigned int width, unsigned int height,
     IMAGE_FORMAT format, const void *pixels = nullptr) {
@@ -26,7 +26,7 @@ Texture *TextureOpenGL::Create(unsigned int width, unsigned int height,
             // tex->pixels[format] = pixels;
             tex->initialized = render->MoveTextureToDevice(tex);
             if (!tex->initialized) {
-                __debugbreak;
+                __debugbreak();
             }
         }
     }
@@ -49,7 +49,7 @@ int TextureOpenGL::GetOpenGlTexture() {
     }
 
     if (this->ogl_texture < 0) {
-        __debugbreak;  // prob not loaded in as texture and recast so problems
+        __debugbreak();  // prob not loaded in as texture and recast so problems
     }
 
     return this->ogl_texture;
@@ -65,7 +65,7 @@ bool TextureOpenGL::LoadImageData() {
             this->pixels[native_format] = pixels;
             this->initialized = render->MoveTextureToDevice(this);
             if (!this->initialized) {
-                __debugbreak;
+                __debugbreak();
             }
         }
     }

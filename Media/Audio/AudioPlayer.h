@@ -138,7 +138,7 @@ class AudioPlayer {
     void StopChannels(int uStartChannel, int uEndChannel);
     void LoadAudioSnd();
     void MessWithChannels();
-    bool FindSound(const std::string &pName, struct SoundHeader *header);
+    bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
     PMemBuffer LoadSound(const std::string &pSoundName);
     PMemBuffer LoadSound(int uSoundID);
     void PlaySpellSound(unsigned int spell, unsigned int pid);

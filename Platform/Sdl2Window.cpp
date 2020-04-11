@@ -34,7 +34,7 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
             auto vkkey = SdlkToVk(key);
             if (ch != -1) {
                 gameCallback->OnChar(ch);
-            } else if ( vkkey == VK_RETURN || vkkey == VK_ESCAPE || vkkey == VK_TAB || vkkey == VK_BACK ) {
+            } else if ( key == SDLK_RETURN || key == SDLK_ESCAPE || key == SDLK_TAB || key == SDLK_BACKSPACE ) {
                 if (!gameCallback->OnChar(vkkey))
                     gameCallback->OnVkDown(vkkey, 0);
             } else {
@@ -115,7 +115,11 @@ void *Sdl2Window::GetWinApiHandle() {
     SDL_VERSION(&wmInfo.version);
 
     SDL_GetWindowWMInfo(sdlWindow, &wmInfo);
+#ifdef _WINDOWS
     return (void *)wmInfo.info.win.window;
+#else
+    return (void *)wmInfo.info.x11.window;
+#endif
 }
 
 
@@ -200,6 +204,8 @@ int Sdl2Window::SdlkToChar(SDL_Keycode key, bool uppercase) const {
 }
 
 int Sdl2Window::SdlkToVk(SDL_Keycode key) const {
+#ifdef _WINDOWS
+    // "Will be removed later"
     if (key >= SDLK_F1 && key <= SDLK_F12) {
         return VK_F1 + (key - SDLK_F1);
     }
@@ -227,6 +233,7 @@ int Sdl2Window::SdlkToVk(SDL_Keycode key) const {
             return sdlk2vk[i].vk;
         }
     }
+#endif
 
     return key & 0xFFFF;
 }

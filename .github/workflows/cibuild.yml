@@ -1,0 +1,50 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        Configuration: [Debug, Release]
+        Platform: [x86]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Build
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars32.bat"
+        cmake -G "NMake Makefiles" . -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
+        nmake check_style
+        nmake
+      shell: cmd
+
+  build-linux:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+        Platform: [x86]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Install
+      run: |
+        export CC=gcc-8 && export CXX=g++-8
+        if [ "${{ matrix.Platform }}" = "x64" ]; then
+        sudo apt-get update && sudo apt-get install -y libglu1-mesa-dev libavformat-dev libavcodec-dev libswscale-dev libopenal-dev libsdl2-dev zlib1g-dev
+        cmake . -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
+        fi
+        if [ "${{ matrix.Platform }}" = "x86" ]; then
+        sudo dpkg --add-architecture i386 && sudo apt-get -qq update && sudo apt-get install -y gcc-multilib g++-8-multilib libglu1-mesa-dev:i386 libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386 libopenal-dev:i386 libsdl2-dev:i386 zlib1g-dev:i386
+        CFLAGS="-m32" CXXFLAGS="-m32" cmake . -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
+        fi
+    - name: Build
+      run: |
+        export core_count=$(nproc || echo 4) && echo core_count = $core_count
+        make -j $core_count

@@ -1,7 +1,13 @@
 #pragma once
 
+#include <float.h>
+
 #include <memory>
 #include <string>
+#include <climits>
+#ifndef _WINDOWS
+#include "Platform/Lin/Lin.h"
+#endif
 
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineConfig.h"

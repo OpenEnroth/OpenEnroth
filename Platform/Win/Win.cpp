@@ -8,25 +8,13 @@
 
 #include "Platform/Api.h"
 
-#ifdef _WINDOWS
 #pragma comment(lib, "winmm.lib")
-#else
-#include <sys/time.h>
-#endif
 
 void OS_MsgBox(const char *msg, const char *title) {
     MessageBoxA(nullptr, msg, title, 0);
 }
 
-unsigned int OS_GetTime() {
-#ifdef _WINDOWS
-        return GetTickCount();
-#else
-        struct timeval tv;
-        gettimeofday(&tv, 0);
-        return unsigned((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
-#endif
-}
+unsigned int OS_GetTime() { return GetTickCount(); }
 
 unsigned __int64 OS_GetPrecisionTime() { return timeGetTime(); }
 

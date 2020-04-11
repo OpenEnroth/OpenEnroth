@@ -2,6 +2,7 @@
 
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
+#include "Engine/MM7.h"
 
 class RenderOpenGL : public RenderBase {
  public:

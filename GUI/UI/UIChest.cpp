@@ -69,8 +69,8 @@ void GUIWindow_Chest::Update() {
                 int itemPixelHeght = item_texture->GetHeight();
                 if (itemPixelWidth < 14) itemPixelWidth = 14;
                 if (itemPixelHeght < 14) itemPixelHeght = 14;
-                signed int X_offset = ((signed int((itemPixelWidth - 14) & 0xFFFFFFE0) + 32) - itemPixelWidth) / 2;
-                signed int Y_offset = ((signed int((itemPixelHeght - 14) & 0xFFFFFFE0) + 32) - itemPixelHeght) / 2;
+                signed int X_offset = (((signed int)((itemPixelWidth - 14) & 0xFFFFFFE0) + 32) - itemPixelWidth) / 2;
+                signed int Y_offset = (((signed int)((itemPixelHeght - 14) & 0xFFFFFFE0) + 32) - itemPixelHeght) / 2;
                 int itemPixelPosX = chest_offs_x + 32 * (item_counter % chestWidthCells) + X_offset;
                 int itemPixelPosY = chest_offs_y + 32 * (item_counter / chestHeghtCells) + Y_offset;
                 render->DrawTextureAlphaNew(itemPixelPosX / 640.0f,

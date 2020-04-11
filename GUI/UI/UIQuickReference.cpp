@@ -51,6 +51,7 @@ void GUIWindow_QuickReference::Update() {
     int pSkillsCount;         // ecx@27
     const char *pText;        // eax@38
     int pFontHeight;          // [sp+18h] [bp-14h]@1
+    String pTempString;
 
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
                                 ui_game_quickref_background);
@@ -75,9 +76,10 @@ void GUIWindow_QuickReference::Update() {
             pTextColor = player->GetExperienceDisplayColor();
         else
             pTextColor = ui_character_bonus_text_color;
+        pTempString = StringPrintf("%lu", player->GetActualLevel());
         pGUIWindow_CurrentMenu->DrawTextInRect(
             pFontArrus, pX, 47, pTextColor,
-            StringPrintf("%lu", player->GetActualLevel()), 84, 0);
+            pTempString, 84, 0);
 
         pY = pFontHeight + 47;
         if (i == 0)
@@ -95,8 +97,9 @@ void GUIWindow_QuickReference::Update() {
                                                    60, 0);  //Здор.
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(
             player->sHealth, player->GetMaxHealth());
+        pTempString = StringPrintf("%d", player->sHealth);
         pGUIWindow_CurrentMenu->DrawTextInRect(
-            pFontArrus, pX, pY, pTextColor, StringPrintf("%d", player->sHealth),
+            pFontArrus, pX, pY, pTextColor, pTempString,
             84, 0);
         pY = pFontHeight + pY;
 
@@ -106,8 +109,9 @@ void GUIWindow_QuickReference::Update() {
                                                    60, 0);  //Мана
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(
             player->sMana, player->GetMaxMana());
+        pTempString = StringPrintf("%d", player->sMana);
         pGUIWindow_CurrentMenu->DrawTextInRect(
-            pFontArrus, pX, pY, pTextColor, StringPrintf("%d", player->sMana),
+            pFontArrus, pX, pY, pTextColor, pTempString,
             84, 0);
         pY = pFontHeight + pY;
 
@@ -117,43 +121,48 @@ void GUIWindow_QuickReference::Update() {
                                                    60, 0);  //Класс брони
         pTextColor = UI_GetHealthManaAndOtherQualitiesStringColor(
             player->GetActualAC(), player->GetBaseAC());
+        pTempString = StringPrintf("%d", player->GetActualAC());
         pGUIWindow_CurrentMenu->DrawTextInRect(
             pFontArrus, pX, pY, pTextColor,
-            StringPrintf("%d", player->GetActualAC()), 84, 0);
+            pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0,
                                                    localization->GetString(18),
                                                    60, 0);  //Атака
+        pTempString = StringPrintf("%+d", player->GetActualAttack(false));
         pGUIWindow_CurrentMenu->DrawTextInRect(
             pFontArrus, pX, pY, 0,
-            StringPrintf("%+d", player->GetActualAttack(false)), 84, 0);
+            pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0,
                                                    localization->GetString(66),
                                                    60, 0);  // Damage   Повр.
+        pTempString = player->GetMeleeDamageString();
         pGUIWindow_CurrentMenu->DrawTextInRect(
-            pFontArrus, pX, pY, 0, player->GetMeleeDamageString(), 84, 0);
+            pFontArrus, pX, pY, 0, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0,
                                                    localization->GetString(203),
                                                    60, 0);  // Стрелять
+        pTempString = StringPrintf("%+d", player->GetRangedAttack());
         pGUIWindow_CurrentMenu->DrawTextInRect(
             pFontArrus, pX, pY, 0,
-            StringPrintf("%+d", player->GetRangedAttack()), 84, 0);
+            pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0,
                                                    localization->GetString(66),
                                                    60, 0);  //Повр.
+        pTempString = player->GetRangedDamageString();
         pGUIWindow_CurrentMenu->DrawTextInRect(
-            pFontArrus, pX, pY, 0, player->GetRangedDamageString(), 84, 0);
+            pFontArrus, pX, pY, 0, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
@@ -164,19 +173,21 @@ void GUIWindow_QuickReference::Update() {
         for (uint j = 0; j <= 36; ++j) {
             if (player->pActiveSkills[j]) ++pSkillsCount;
         }
+        pTempString = StringPrintf("%lu", pSkillsCount);
         pGUIWindow_CurrentMenu->DrawTextInRect(
-            pFontArrus, pX, pY, 0, StringPrintf("%lu", pSkillsCount), 84, 0);
+            pFontArrus, pX, pY, 0, pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 22, pY, 0,
                                                    localization->GetString(168),
                                                    60, 0);  //Очки
+        pTempString = StringPrintf("%lu", player->uSkillPoints);
         pGUIWindow_CurrentMenu->DrawTextInRect(
             pFontArrus, pX, pY,
             player->uSkillPoints ? ui_character_bonus_text_color
                                  : ui_character_default_text_color,
-            StringPrintf("%lu", player->uSkillPoints), 84, 0);
+            pTempString, 84, 0);
         pY = pFontHeight + pY;
 
         if (!i)

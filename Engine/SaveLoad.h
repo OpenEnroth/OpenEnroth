@@ -30,7 +30,7 @@ bool Initialize_GamesLOD_NewLOD();
 void SaveNewGame();
 
 extern unsigned int uNumSavegameFiles;
-extern constexpr unsigned int MAX_SAVE_SLOTS = 45;
+constexpr unsigned int MAX_SAVE_SLOTS = 45;
 extern std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 extern struct SavegameList *pSavegameList;
 extern std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;

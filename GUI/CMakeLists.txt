@@ -74,3 +74,5 @@ endif()
 
 add_library(gui STATIC ${GUI_SOURCES} ${GUI_HEADERS})
 target_check_style(gui)
+
+target_link_libraries(gui arcomage)

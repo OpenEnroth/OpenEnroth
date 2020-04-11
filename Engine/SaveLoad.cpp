@@ -1,7 +1,9 @@
 #include "Engine/SaveLoad.h"
 
+#ifdef _WINDOWS
 #include <direct.h>
 #include <io.h>
+#endif
 #include <stdlib.h>
 #include <vector>
 

@@ -42,7 +42,7 @@ void BloodsplatContainer::AddBloodsplat(float x, float y, float z, float radius,
     this->std__vector_pBloodsplats[i].r = r;
     this->std__vector_pBloodsplats[i].g = g;
     this->std__vector_pBloodsplats[i].b = b;
-    this->std__vector_pBloodsplats_size = min(this->std__vector_pBloodsplats_size + 1, 64);
+    this->std__vector_pBloodsplats_size = std::min(this->std__vector_pBloodsplats_size + 1, 64u);
     this->uNumBloodsplats++;
 }
 

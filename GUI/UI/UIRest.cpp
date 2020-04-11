@@ -1,5 +1,4 @@
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 #include <stdlib.h>
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -16,6 +15,7 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
+#include "GUI/UI/UITransition.h"
 #include "GUI/GUIFont.h"
 
 #include "Media/Audio/AudioPlayer.h"

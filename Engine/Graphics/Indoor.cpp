@@ -3326,14 +3326,14 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v) {
         v52 = dist_y * v50;
         v53 = dist_z * v50;
 
-        v123 = max(outx, sX);
-        v119 = min(outx, sX);
+        v123 = std::max(outx, sX);
+        v119 = std::min(outx, sX);
 
-        v131 = max(outy, sY);
-        v127 = min(outy, sY);
+        v131 = std::max(outy, sY);
+        v127 = std::min(outy, sY);
 
-        v139 = max(outz, sZ);
-        v135 = min(outz, sZ);
+        v139 = std::max(outz, sZ);
+        v135 = std::min(outz, sZ);
 
         for (a5b = 0; a5b < 2; a5b++) {
             if (a5b)
@@ -3433,14 +3433,14 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v) {
         v80 = dist_y * v78;
         v81 = dist_z * v78;
 
-        v120 = max(outx, sX);
-        v124 = min(outx, sX);
+        v120 = std::max(outx, sX);
+        v124 = std::min(outx, sX);
 
-        v132 = max(outy, sY);
-        v128 = min(outy, sY);
+        v132 = std::max(outy, sY);
+        v128 = std::min(outy, sY);
 
-        v140 = max(outz, sZ);
-        v136 = min(outz, sZ);
+        v140 = std::max(outz, sZ);
+        v136 = std::min(outz, sZ);
 
         for (a5c = 0; a5c < 2; a5c++) {
             if (v113) return !v114 || !v113;
@@ -3522,14 +3522,14 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v) {
         v12 = dist_z * v10;
         v121 = dist_y * v10;
 
-        v145 = max(outx, sX);
-        v149 = min(outx, sX);
+        v145 = std::max(outx, sX);
+        v149 = std::min(outx, sX);
 
-        v137 = max(outy, sY);
-        v141 = min(outy, sY);
+        v137 = std::max(outy, sY);
+        v141 = std::min(outy, sY);
 
-        v129 = max(outz, sZ);
-        v133 = min(outz, sZ);
+        v129 = std::max(outz, sZ);
+        v133 = std::min(outz, sZ);
 
         for (BSPModel &model : pOutdoor->pBModels) {
             if (sub_4088E9(sX, sY, outx, outy, model.vPosition.x,
@@ -3611,14 +3611,14 @@ bool sub_407A1C(int x, int y, int z, Vec3_int_ v) {
         v35 = dist_z * v33;
         v122 = dist_y * v33;
 
-        v146 = max(outx, sX);
-        v150 = min(outx, sX);
+        v146 = std::max(outx, sX);
+        v150 = std::min(outx, sX);
 
-        v138 = max(outy, sY);
-        v142 = min(outy, sY);
+        v138 = std::max(outy, sY);
+        v142 = std::min(outy, sY);
 
-        v130 = max(outz, sZ);
-        v134 = min(outz, sZ);
+        v130 = std::max(outz, sZ);
+        v134 = std::min(outz, sZ);
 
         for (BSPModel &model : pOutdoor->pBModels) {
             if (sub_4088E9(sX, sY, outx, outy, model.vPosition.x,

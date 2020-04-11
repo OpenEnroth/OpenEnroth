@@ -1,10 +1,7 @@
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 #include <stdlib.h>
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <io.h>
-
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
 #include "Engine/LOD.h"

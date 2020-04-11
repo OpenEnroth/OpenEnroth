@@ -1857,8 +1857,8 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
         if (width < 14) width = 14;
         if (height < 14) height = 14;
 
-        signed int X_offset = ((signed int((width - 14) & 0xFFFFFFE0) + 32) - width) / 2;
-        signed int Y_offset = ((signed int((height - 14) & 0xFFFFFFE0) + 32) - height) / 2;
+        signed int X_offset = (((signed int)((width - 14) & 0xFFFFFFE0) + 32) - width) / 2;
+        signed int Y_offset = (((signed int)((height - 14) & 0xFFFFFFE0) + 32) - height) / 2;
         CharacterUI_DrawItem(uCellX + X_offset, uCellY + Y_offset,
             &(player->pInventoryItemList[player->pInventoryMatrix[i] - 1]), 0);
     }

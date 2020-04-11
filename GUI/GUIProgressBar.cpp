@@ -81,7 +81,7 @@ void GUIProgressBar::Reset(uint8_t uMaxProgress) {
 }
 
 void GUIProgressBar::Progress() {
-    uProgressCurrent = min(uProgressCurrent + 1, uProgressMax);
+    uProgressCurrent = std::min((uint8_t)(uProgressCurrent + 1), uProgressMax);
     Draw();
 }
 

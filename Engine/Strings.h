@@ -2,6 +2,10 @@
 
 #include <string>
 #include <functional>
+#include <cstring>
+#ifndef _WINDOWS
+#include "Platform/Lin/Lin.h"
+#endif
 
 typedef std::string String;
 

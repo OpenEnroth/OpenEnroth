@@ -266,9 +266,9 @@ int SpriteFrameTable::BinarySearch(const char *pSpriteName) {
             return -1;
         }
         if (comparisonResult >= 0) {
-            startPos += max(((endPos - startPos) / 2), 1);
+            startPos += std::max(((endPos - startPos) / 2), 1);
         } else {
-            endPos = max(((endPos - startPos) / 2), 1) + startPos;
+            endPos = std::max(((endPos - startPos) / 2), 1) + startPos;
         }
     }
 }
