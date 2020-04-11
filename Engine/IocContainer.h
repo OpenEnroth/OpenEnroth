@@ -5,7 +5,6 @@ struct DecalBuilder;
 class LightmapBuilder;
 class Log;
 class Mouse;
-class Keyboard;
 class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
@@ -20,7 +19,6 @@ class IocContainer {
     static SpellFxRenderer *ResolveSpellFxRenderer();
     static LightmapBuilder *ResolveLightmapBuilder();
     static Mouse *ResolveMouse();
-    static Keyboard *ResolveKeyboard();
     static ParticleEngine *ResolveParticleEngine();
     static Vis *ResolveVis();
 
@@ -30,7 +28,6 @@ class IocContainer {
      static SpellFxRenderer *spell_fx_renderer;
      static LightmapBuilder *lightmap_builder;
      static Mouse *mouse;
-     static Keyboard *keyboard;
      static ParticleEngine *particle_engine;
      static Vis *vis;
 };

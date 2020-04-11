@@ -74,7 +74,6 @@ class Vis;
 class LightmapBuilder;
 class ParticleEngine;
 class Mouse;
-class Keyboard;
 class ThreadWard;
 class CShow;
 class GammaController;
@@ -462,7 +461,7 @@ struct Engine {
     SpellFxRenderer *spell_fx_renedrer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
     Mouse *mouse = nullptr;
-    Keyboard *keyboard = nullptr;
+    //Keyboard *keyboard = nullptr;
     ParticleEngine *particle_engine = nullptr;
     Vis *vis = nullptr;
 };

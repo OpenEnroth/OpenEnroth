@@ -44,6 +44,6 @@ class Sdl2Window : public OSWindow {
     SDL_GLContext sdlOpenGlContext = nullptr;
 
     void MessageProc(const SDL_Event &e);
-    int SdlkToChar(SDL_Keycode key, bool uppercase) const;
-    int SdlkToVk(SDL_Keycode key) const;
+    bool TryMapScanCode(SDL_Scancode code, GameKey* outKey) const;
+    bool TryMapKeyCode(SDL_Keycode key, bool uppercase, int *outKey) const;
 };

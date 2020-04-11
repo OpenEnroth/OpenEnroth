@@ -577,109 +577,17 @@ void Game::EventLoop() {
                             back_to_game();
                         }
                         continue;
-                    } else if (current_screen_type ==
-                        CURRENT_SCREEN::SCREEN_MENU) {
-/*
-    stru_506E40.Release();
-    Game_OnEscape();
-*/
+                    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_MENU) {
                         break;
                     } else if (
                         current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
                         current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
-/*
-                        // crt_deconstruct_ptr_6A0118();
-                        stru_506E40.Release();
-                        Game_OnEscape();
-*/
                         break;
-                    } else if (
-                        current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS) {
-/*
-                        options_menu_skin.Relaease();
-                        OS_SetAppInt("soundflag",
-                        (char)uSoundVolumeMultiplier);
-                        OS_SetAppInt("musicflag",
-                        (char)uMusicVolimeMultiplier);
-                        OS_SetAppInt("CharVoices",
-                        (char)uVoicesVolumeMultiplier);
-                        OS_SetAppInt("WalkSound", bWalkSound);
-                        OS_SetAppInt("ShowDamage",
-                        bShowDamage);
-                        // OS_SetAppInt("graphicsmode",
-                        (unsigned
-                        __int8)byte_6BE388_graphicsmode);
-                        OS_SetAppInt("valAlwaysRun",
-                        bAlwaysRun);
-                        OS_SetAppInt("FlipOnExit",
-                        bFlipOnExit); if (uTurnSpeed == 0)
-                        OS_SetAppInt("TurnDelta", 3);
-                        else if (uTurnSpeed == 64)
-                        OS_SetAppInt("TurnDelta", 2);
-                        else if (uTurnSpeed == 128)
-                        OS_SetAppInt("TurnDelta", 1);
-                        stru_506E40.Release();
-                        Game_OnEscape();
-*/
+                    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS) {
                         break;
-                    } else if (
-                        current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS) {
-/*
-                            // if ( render->pRenderD3D ) {
-                            OS_SetAppInt("Colored Lights",
-                            render->bUseColoredLights);
-                            OS_SetAppInt("Tinting",
-                            render->bTinting);
-                            OS_SetAppInt("Bloodsplats",
-                            (LOBYTE(engine->uFlags2) >> 5)
-                            & 1);
-                            }
-
-                            stru_506E40.Release();
-                            Game_OnEscape();
-*/
+                    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS) {
                         break;
                     } else if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
-                        /*v197 = 1;
-                        pKeyBindingFlag = false;
-                        for (uint i = 0; i < 28; ++i)
-                        {
-                        if (GameMenuUI_InvaligKeyBindingsFlags[i])
-                        pKeyBindingFlag = true;
-                        }
-                        if (!pKeyBindingFlag)
-                        {
-                        memset(&game_ui_options_controls, 0, 20);
-                        for (uint i = 0; i < 28; ++i)
-                        {
-                        if (pKeyActionMap->GetActionVKey((enum InputAction)i) !=
-                        pPrevVirtualCidesMapping[i])
-                        {
-                        if (v197)
-                        {
-                        GUI_ReplaceHotkey(pKeyActionMap->GetActionVKey((enum
-                        InputAction)i), LOBYTE(pPrevVirtualCidesMapping[i]), 1);
-                        v197 = 0;
-                        }
-                        else
-                        GUI_ReplaceHotkey(pKeyActionMap->GetActionVKey((enum
-                        InputAction)i), LOBYTE(pPrevVirtualCidesMapping[i]), 0);
-                        }
-                        if (i > 3 && i != 25 && i != 26)
-                        pKeyToggleType = TOGGLE_OneTimePress;
-                        else
-                        pKeyToggleType = TOGGLE_Continuously;
-                        pKeyActionMap->SetKeyMapping(i,
-                        pPrevVirtualCidesMapping[i], pKeyToggleType);
-                        }
-                        pKeyActionMap->StoreMappings();
-                        stru_506E40.Release();
-                        }
-                        else
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 
-                        0);
-
-                        Game_OnEscape();*/
                         break;
                     } else {
                         if (current_screen_type > CURRENT_SCREEN::SCREEN_67) {
@@ -1524,16 +1432,16 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_OnFinalWindowClose:
-                    __debugbreak();
                     uGameState = GAME_STATE_PLAYING;
-                    strcpy((char *)pKeyActionMap->pPressedKeysBuffer, "2");
-                    __debugbreak();  // missed break/continue?
+                    //strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
+                    //__debugbreak();  // missed break/continue?
+                    continue;
                 case UIMSG_DD: {
                     __debugbreak();
                     // sprintf(tmp_str.data(), "%s",
                     // pKeyActionMap->pPressedKeysBuffer);
                     FrameTableTxtLine frameTableTxtLine;
-                    txt_file_frametable_parser(pKeyActionMap->pPressedKeysBuffer, &frameTableTxtLine);
+                    txt_file_frametable_parser(userInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
                     String status_string;
                     if (frameTableTxtLine.uPropCount == 1) {
                         size_t map_index = atoi(frameTableTxtLine.pProperties[0]);
@@ -2706,7 +2614,7 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    engine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
+    engine->PickKeyboard(userInputHandler->IsKeyboardPickingOutlineToggled(), &vis_sprite_filter_3, &vis_door_filter);
     int pid = vis->get_picked_object_zbuf_val();
     if (pid != -1)
         DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
@@ -2762,7 +2670,7 @@ void Game::GameLoop() {
 
             engine->_44EEA7();  // pop up . mouse picking
             GameUI_WritePointedObjectStatusString();
-            keyboard->ProcessInputActions();
+            userInputHandler->GenerateInputActions();
             EventLoop();
             if (pArcomageGame->bGameInProgress) {
                 ArcomageGame::Loop();

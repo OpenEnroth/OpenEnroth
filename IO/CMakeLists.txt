@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-set(IO_SOURCES Keyboard.cpp
-               Mouse.cpp)
+set(IO_SOURCES
+    Keyboard.cpp
+    Mouse.cpp
+)
 
-set(IO_HEADERS Keyboard.h
-               Mouse.h)
+set(IO_HEADERS
+    GameKey.h
+    Keyboard.h
+    KeyboardStatefulInterface.h
+    Mouse.h
+)
 
 if(WIN32)
 else()

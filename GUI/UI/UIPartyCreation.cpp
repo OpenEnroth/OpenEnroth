@@ -19,6 +19,7 @@
 
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
+#include "IO/UserInputHandler.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -243,7 +244,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationChangeName:
             pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0);
             uPlayerCreationUI_SelectedCharacter = param;
-            pKeyActionMap->EnterText(0, 15, pGUIWindow_CurrentMenu);
+            userInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
             pGUIWindow_CurrentMenu->ptr_1C = (void *)param;
             break;
         case UIMSG_Escape:
@@ -415,25 +416,23 @@ void GUIWindow_PartyCreation::Update() {
                 v17 = pGUIWindow_CurrentMenu->DrawTextInRect(
                     pFontCreate,
                     159 * (int)pGUIWindow_CurrentMenu->ptr_1C + 18, 124, 0,
-                    pKeyActionMap->pPressedKeysBuffer, 120, 1);
+                    userInputHandler->GetTextInput().c_str(), 120, 1);
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(
                     159 * (unsigned int)pGUIWindow_CurrentMenu->ptr_1C +
                     v17 + 20,
                     124, pFontCreate);
                 break;
             case WINDOW_INPUT_CONFIRMED:  // press enter
-                pGUIWindow_CurrentMenu->receives_keyboard_input_2 =
-                    WINDOW_INPUT_NONE;
+                pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
                 v126 = 0;
                 for (int j = 0;
-                    j < strlen(pKeyActionMap->pPressedKeysBuffer);
+                    j < strlen(userInputHandler->GetTextInput().c_str());
                     ++j) {  // edit name
-                    if (pKeyActionMap->pPressedKeysBuffer[j] == ' ') ++v126;
+                    if (userInputHandler->GetTextInput().c_str()[j] == ' ') ++v126;
                 }
-                if (strlen(pKeyActionMap->pPressedKeysBuffer) &&
-                    v126 != strlen(pKeyActionMap->pPressedKeysBuffer))
-                    strcpy(pParty->pPlayers[i].pName,
-                        pKeyActionMap->pPressedKeysBuffer);
+                if (strlen(userInputHandler->GetTextInput().c_str()) > 0 &&
+                    v126 != strlen(userInputHandler->GetTextInput().c_str()))
+                    strcpy(pParty->pPlayers[i].pName, userInputHandler->GetTextInput().c_str());
                 pGUIWindow_CurrentMenu->DrawTextInRect(
                     pFontCreate, pIntervalX, 124, 0,
                     pParty->pPlayers[i].pName, 130, 0);
@@ -753,58 +752,58 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     uControlParam = 0;
     int uX = 8;
     do {
-        CreateButton(uX, 120, 145, 25, 1, 0, UIMSG_PlayerCreationChangeName, uControlParam, 0, "");
+        CreateButton(uX, 120, 145, 25, 1, 0, UIMSG_PlayerCreationChangeName, uControlParam);
         uX += 158;
         ++uControlParam;
     } while ((signed int)uX < window->GetWidth());
 
-    pCreationUI_BtnPressLeft[0] = CreateButton(10, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft[1] = CreateButton(169, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft[2] = CreateButton(327, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 2, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft[3] = CreateButton(486, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 3, 0, "", { { ui_partycreation_left } });
+    pCreationUI_BtnPressLeft[0] = CreateButton(10, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, GameKey::None, "", { { ui_partycreation_left } });
+    pCreationUI_BtnPressLeft[1] = CreateButton(169, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, GameKey::None, "", { { ui_partycreation_left } });
+    pCreationUI_BtnPressLeft[2] = CreateButton(327, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 2, GameKey::None, "", { { ui_partycreation_left } });
+    pCreationUI_BtnPressLeft[3] = CreateButton(486, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 3, GameKey::None, "", { { ui_partycreation_left } });
 
-    pCreationUI_BtnPressRight[0] = CreateButton(74, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 0, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight[1] = CreateButton(233, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 1, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight[2] = CreateButton(391, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 2, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight[3] = CreateButton(549, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 3, 0, "", { { ui_partycreation_right } });
+    pCreationUI_BtnPressRight[0] = CreateButton(74, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 0, GameKey::None, "", { { ui_partycreation_right } });
+    pCreationUI_BtnPressRight[1] = CreateButton(233, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 1, GameKey::None, "", { { ui_partycreation_right } });
+    pCreationUI_BtnPressRight[2] = CreateButton(391, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 2, GameKey::None, "", { { ui_partycreation_right } });
+    pCreationUI_BtnPressRight[3] = CreateButton(549, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FaceNext, 3, GameKey::None, "", { { ui_partycreation_right } });
 
-    pCreationUI_BtnPressLeft2[0] = CreateButton(10, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 0, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft2[1] = CreateButton(169, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 1, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft2[2] = CreateButton(327, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 2, 0, "", { { ui_partycreation_left } });
-    pCreationUI_BtnPressLeft2[3] = CreateButton(486, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 3, 0, "", { { ui_partycreation_left } });
+    pCreationUI_BtnPressLeft2[0] = CreateButton(10, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 0, GameKey::None, "", { { ui_partycreation_left } });
+    pCreationUI_BtnPressLeft2[1] = CreateButton(169, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 1, GameKey::None, "", { { ui_partycreation_left } });
+    pCreationUI_BtnPressLeft2[2] = CreateButton(327, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 2, GameKey::None, "", { { ui_partycreation_left } });
+    pCreationUI_BtnPressLeft2[3] = CreateButton(486, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoicePrev, 3, GameKey::None, "", { { ui_partycreation_left } });
 
-    pCreationUI_BtnPressRight2[0] = CreateButton(74, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 0, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight2[1] = CreateButton(233, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 1, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight2[2] = CreateButton(391, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 2, 0, "", { { ui_partycreation_right } });
-    pCreationUI_BtnPressRight2[3] = CreateButton(549, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 3, 0, "", { { ui_partycreation_right } });
+    pCreationUI_BtnPressRight2[0] = CreateButton(74, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 0, GameKey::None, "", { { ui_partycreation_right } });
+    pCreationUI_BtnPressRight2[1] = CreateButton(233, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 1, GameKey::None, "", { { ui_partycreation_right } });
+    pCreationUI_BtnPressRight2[2] = CreateButton(391, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 2, GameKey::None, "", { { ui_partycreation_right } });
+    pCreationUI_BtnPressRight2[3] = CreateButton(549, 103, 11, 13, 1, 0, UIMSG_PlayerCreation_VoiceNext, 3, GameKey::None, "", { { ui_partycreation_right } });
 
     uControlParam = 0;
     uX = 8;
     do {
-        CreateButton(uX, 308, 150, v0, 1, 0, UIMSG_48, uControlParam, 0, "");
-        CreateButton(uX, v0 + 308, 150, v0, 1, 0, UIMSG_49, uControlParam, 0, "");
-        CreateButton(uX, 2 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, uControlParam, 0, "");
-        CreateButton(uX, 3 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveDownSkill, uControlParam, 0, "");
+        CreateButton(uX, 308, 150, v0, 1, 0, UIMSG_48, uControlParam);
+        CreateButton(uX, v0 + 308, 150, v0, 1, 0, UIMSG_49, uControlParam);
+        CreateButton(uX, 2 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, uControlParam);
+        CreateButton(uX, 3 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveDownSkill, uControlParam);
 
         uX += 158;
         ++uControlParam;
     } while ((signed int)uX < window->GetWidth());
 
-    CreateButton(5, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, '1', "");
-    CreateButton(163, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 1, '2', "");
-    CreateButton(321, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 2, '3', "");
-    CreateButton(479, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 3, '4', "");
+    CreateButton(5, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, GameKey::Digit1);
+    CreateButton(163, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 1, GameKey::Digit2);
+    CreateButton(321, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 2, GameKey::Digit3);
+    CreateButton(479, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 3, GameKey::Digit4);
 
     uX = 23;
     uControlParam = 2;
     do {
-        CreateButton(uX, 169, 120, 20, 1, 0, UIMSG_0, uControlParam - 2, 0, "");
-        CreateButton(uX, v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam - 1, 0, "");
-        CreateButton(uX, 2 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam, 0, "");
-        CreateButton(uX, 3 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 1, 0, "");
-        CreateButton(uX, 4 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 2, 0, "");
-        CreateButton(uX, 5 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 3, 0, "");
-        CreateButton(uX, 6 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 4, 0, "");
+        CreateButton(uX, 169, 120, 20, 1, 0, UIMSG_0, uControlParam - 2);
+        CreateButton(uX, v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam - 1);
+        CreateButton(uX, 2 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam);
+        CreateButton(uX, 3 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 1);
+        CreateButton(uX, 4 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 2);
+        CreateButton(uX, 5 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 3);
+        CreateButton(uX, 6 * v0 + 169, 120, 20, 1, 0, UIMSG_0, uControlParam + 4);
 
         uControlParam += 7;
         uX += 158;
@@ -812,15 +811,15 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
     _41D08F_set_keyboard_control_group(28, 0, 7, 40);
 
-    CreateButton(323, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0, 0, "");
-    CreateButton(323, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0xC, 0, "");
-    CreateButton(323, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x14, 0, "");
-    CreateButton(388, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x18, 0, "");
-    CreateButton(388, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x1C, 0, "");
-    CreateButton(388, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x20, 0, "");
-    CreateButton(453, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x10, 0, "");
-    CreateButton(453, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 8, 0, "");
-    CreateButton(453, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 4, 0, "");
+    CreateButton(323, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0);
+    CreateButton(323, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0xC);
+    CreateButton(323, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x14);
+    CreateButton(388, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x18);
+    CreateButton(388, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x1C);
+    CreateButton(388, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x20);
+    CreateButton(453, 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 0x10);
+    CreateButton(453, v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 8);
+    CreateButton(453, 2 * v0 + 417, 65, v0, 1, 0, UIMSG_PlayerCreationSelectClass, 4);
 
     uControlParam = 0;
     do {
@@ -828,17 +827,17 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         if (uControlParam <= 3)
             uX = 0;
         CreateButton(100 * (uControlParam / 3) + uX + 17, v0 * (uControlParam % 3) + 417, 100, v0, 1, 0, UIMSG_PlayerCreationSelectActiveSkill,
-            uControlParam, 0, "");
+            uControlParam);
         ++uControlParam;
     } while (uControlParam < 9);
 
     ui_partycreation_buttmake = assets->GetImage_Alpha("BUTTMAKE");
     ui_partycreation_buttmake2 = assets->GetImage_Alpha("BUTTMAKE2");
 
-    pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, '\r', "", { { ui_partycreation_buttmake } });
-    pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, 'C', "", { { ui_partycreation_buttmake2 } });
-    pPlayerCreationUI_BtnMinus = CreateButton(523, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickMinus, 0, '-', "", { { ui_partycreation_minus } });
-    pPlayerCreationUI_BtnPlus = CreateButton(613, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickPlus, 1, '+', "", { { ui_partycreation_plus } });
+    pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, GameKey::Return, "", { { ui_partycreation_buttmake } });
+    pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, GameKey::C, "", { { ui_partycreation_buttmake2 } });
+    pPlayerCreationUI_BtnMinus = CreateButton(523, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickMinus, 0, GameKey::Subtract, "", { { ui_partycreation_minus } });
+    pPlayerCreationUI_BtnPlus = CreateButton(613, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickPlus, 1, GameKey::Add, "", { { ui_partycreation_plus } });
 
     ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL", NULL);
 }

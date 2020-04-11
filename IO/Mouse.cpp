@@ -13,6 +13,8 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
 
+#include "IO/Keyboard.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
 using EngineIoc = Engine_::IocContainer;
@@ -333,20 +335,19 @@ void Mouse::UI_OnMouseLeftClick() {
     }
 }
 
-bool UI_OnVkKeyDown(unsigned int vkKey) {
+bool UI_OnKeyDown(GameKey key) {
     for (GUIWindow *win : lWindowList) {
         if (!win->receives_keyboard_input) {
             continue;
         }
 
-        switch (vkKey) {
-            case VK_LEFT: {
+        switch (key) {
+            case GameKey::Left: {
                 int v12 = win->field_34;
                 if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - v12 >= 0) {
                     win->pCurrentPosActiveItem -= v12;
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
                         pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
-                        // v2 = pMessageQueue_50CBD0->uNumMessages;
                     }
                 }
                 if (win->field_30 != 0) {
@@ -356,27 +357,22 @@ bool UI_OnVkKeyDown(unsigned int vkKey) {
                 pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
                 break;
             }
-            case VK_RIGHT: {
+            case GameKey::Right: {
                 int v7 = win->pCurrentPosActiveItem + win->field_34;
-                if (v7 <
-                    win->pNumPresenceButton + win->pStartingPosActiveItem) {
+                if (v7 < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                     win->pCurrentPosActiveItem = v7;
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_PARTY_CREATION) {
-                        pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0,
-                                                0, -1, 0, 0);
-                        // v2 = pMessageQueue_50CBD0->uNumMessages;
+                        pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
                     }
                 }
                 if (win->field_30 != 0) {
                     break;
                 }
-                GUIButton *pButton =
-                    win->GetControl(win->pCurrentPosActiveItem);
-                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg,
-                                                    pButton->msg_param, 0);
+                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
                 break;
             }
-            case VK_DOWN: {
+            case GameKey::Down: {
                 int v17 = win->pStartingPosActiveItem;
                 int v18 = win->pCurrentPosActiveItem;
                 if (v18 >= win->pNumPresenceButton + v17 - 1)
@@ -384,13 +380,11 @@ bool UI_OnVkKeyDown(unsigned int vkKey) {
                 else
                     win->pCurrentPosActiveItem = v18 + 1;
                 if (win->field_30 != 0) return true;
-                GUIButton *pButton =
-                    win->GetControl(win->pCurrentPosActiveItem);
-                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg,
-                                                    pButton->msg_param, 0);
+                GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
+                pMessageQueue_50CBD0->AddGUIMessage(pButton->msg, pButton->msg_param, 0);
                 return true;
             }
-            case VK_SELECT: {
+            case GameKey::Select: {
                 unsigned int uClickX;
                 unsigned int uClickY;
                 EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
@@ -417,10 +411,9 @@ bool UI_OnVkKeyDown(unsigned int vkKey) {
                     win->pCurrentPosActiveItem = v4;
                     return true;
                 }
-                // v2 = pMessageQueue_50CBD0->uNumMessages;
                 break;
             }
-            case VK_UP: {
+            case GameKey::Up: {
                 int v22 = win->pCurrentPosActiveItem;
                 int v23 = win->pStartingPosActiveItem;
                 if (v22 <= v23)
@@ -435,14 +428,12 @@ bool UI_OnVkKeyDown(unsigned int vkKey) {
                                                     pButton->msg_param, 0);
                 return true;
             }
-            case VK_NEXT: {
-                if (win->field_30 != 0) {  // crashed at skill draw
+            case GameKey::PageDown: {
+                if (win->field_30 != 0) {
                     unsigned int uClickX;
                     unsigned int uClickY;
                     EngineIoc::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
-                    int v29 = win->pStartingPosActiveItem +
-                              win->pNumPresenceButton;  // num buttons more than
-                                                        // buttons
+                    int v29 = win->pStartingPosActiveItem + win->pNumPresenceButton;
                     for (int v4 = win->pStartingPosActiveItem; v4 < v29; ++v4) {
                         GUIButton *pButton = win->GetControl(v4);
                         if (!pButton) continue;

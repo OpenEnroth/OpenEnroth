@@ -92,14 +92,6 @@ Mouse *IocContainer::ResolveMouse() {
     return mouse;
 }
 
-Keyboard *IocContainer::keyboard = nullptr;
-Keyboard *IocContainer::ResolveKeyboard() {
-    if (!keyboard) {
-        keyboard = new Keyboard();
-    }
-    return keyboard;
-}
-
 ParticleEngine *IocContainer::ResolveParticleEngine() {
     if (!particle_engine) {
         particle_engine = new ParticleEngine();

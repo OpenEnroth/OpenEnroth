@@ -4540,17 +4540,17 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 0, 0, window->GetWidth(), window->GetHeight(),
                 (int)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
-                52, 422, 35, 0, 2, 0, UIMSG_CastSpell_Character_Big_Improvement,
-                0, 49, "");
+                52, 422, 35, 0, 2, 0,
+                UIMSG_CastSpell_Character_Big_Improvement, 0, GameKey::Digit1);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 165, 422, 35, 0, 2, 0,
-                UIMSG_CastSpell_Character_Big_Improvement, 1, 50, "");
+                UIMSG_CastSpell_Character_Big_Improvement, 1, GameKey::Digit2);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 280, 422, 35, 0, 2, 0,
-                UIMSG_CastSpell_Character_Big_Improvement, 2, 51, "");
+                UIMSG_CastSpell_Character_Big_Improvement, 2, GameKey::Digit3);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 390, 422, 35, 0, 2, 0,
-                UIMSG_CastSpell_Character_Big_Improvement, 3, 52, "");
+                UIMSG_CastSpell_Character_Big_Improvement, 3, GameKey::Digit4);
             pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
             return;
         }
@@ -4562,8 +4562,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 (int)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 game_viewport_x, game_viewport_y, game_viewport_width,
-                game_viewport_height, 1, 0, UIMSG_CastSpell_Shoot_Monster, 0, 0,
-                "");
+                game_viewport_height, 1, 0, UIMSG_CastSpell_Shoot_Monster, 0);
             pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
             return;
         }
@@ -4575,8 +4574,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 (int)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 game_viewport_x, game_viewport_y, game_viewport_width,
-                game_viewport_height, 1, 0, UIMSG_CastSpell_Telekinesis, 0, 0,
-                "");
+                game_viewport_height, 1, 0, UIMSG_CastSpell_Telekinesis, 0);
             pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
             return;
         }
@@ -4597,19 +4595,19 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 (int)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 0x34u, 0x1A6u, 0x23u, 0, 2, 0,
-                UIMSG_CastSpell_Character_Small_Improvement, 0, 0x31u, "");
+                UIMSG_CastSpell_Character_Small_Improvement, 0, GameKey::Digit1);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 0xA5u, 0x1A6u, 0x23u, 0, 2, 0,
-                UIMSG_CastSpell_Character_Small_Improvement, 1, 0x32u, "");
+                UIMSG_CastSpell_Character_Small_Improvement, 1, GameKey::Digit2);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 0x118u, 0x1A6u, 0x23u, 0, 2, 0,
-                UIMSG_CastSpell_Character_Small_Improvement, 2, 0x33u, "");
+                UIMSG_CastSpell_Character_Small_Improvement, 2, GameKey::Digit3);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 0x186u, 0x1A6u, 0x23u, 0, 2, 0,
-                UIMSG_CastSpell_Character_Small_Improvement, 3, 0x34u, "");
+                UIMSG_CastSpell_Character_Small_Improvement, 3, GameKey::Digit4);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 8, 8, game_viewport_width, game_viewport_height, 1, 0,
-                UIMSG_CastSpell_Monster_Improvement, 0, 0, "");
+                UIMSG_CastSpell_Monster_Improvement, 0);
             pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
         }
         if (flags & ON_CAST_DarkSacrifice && !pGUIWindow_CastTargetedSpell) {
@@ -4618,16 +4616,16 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 (int)&pCastSpellInfo[result]);
             pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton(
                 469, 178, ui_btn_npc_left->GetWidth(),
-                ui_btn_npc_left->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 0, 0,
+                ui_btn_npc_left->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 0, GameKey::None,
                 "", {{ui_btn_npc_left}});
             pBtn_NPCRight = pGUIWindow_CastTargetedSpell->CreateButton(
                 626, 178, ui_btn_npc_right->GetWidth(),
-                ui_btn_npc_right->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 1, 0,
+                ui_btn_npc_right->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 1, GameKey::None,
                 "", {{ui_btn_npc_right}});
             pGUIWindow_CastTargetedSpell->CreateButton(
-                491, 149, 64, 74, 1, 0, UIMSG_HiredNPC_CastSpell, 4, 0x35u, "");
+                491, 149, 64, 74, 1, 0, UIMSG_HiredNPC_CastSpell, 4, GameKey::Digit5);
             pGUIWindow_CastTargetedSpell->CreateButton(
-                561, 149, 64, 74, 1, 0, UIMSG_HiredNPC_CastSpell, 5, 0x36u, "");
+                561, 149, 64, 74, 1, 0, UIMSG_HiredNPC_CastSpell, 5, GameKey::Digit6);
         }
     }
 }

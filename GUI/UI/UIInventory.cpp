@@ -13,31 +13,34 @@
 
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
+#include "IO/UserInputHandler.h"
 
 void GUIWindow_Inventory::Update() {
     DrawMessageBox(0);
     DrawText(pFontLucida, 10, 20, 0, "Making item number", 0, 0, 0);
-    DrawText(pFontLucida, 10, 40, 0, pKeyActionMap->pPressedKeysBuffer, 0, 0, 0);
-    if (!pKeyActionMap->field_204) {
-        ItemGen ItemGen2;
-        ItemGen2.Reset();
-        Release();
-        pEventTimer->Resume();
-        current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
-        viewparams->bRedrawGameUI = 1;
-        int v39 = atoi(pKeyActionMap->pPressedKeysBuffer);
-        if (v39 > 0 && v39 < 800) {
-            SpawnActor(v39);
-        }
-    }
-}
+    DrawText(pFontLucida, 10, 40, 0, userInputHandler->GetTextInput().c_str(), 0, 0, 0);
 
-// GUIWindow_Inventory_CastSpell
+    // a hack to capture end of user input (enter) while avoiding listening to UI message handler
+    // redo this in a more clean way
+    __debugbreak();
+    //if (userInputHandler->inputType == TextInputType::None) {
+    //    ItemGen ItemGen2;
+    //    ItemGen2.Reset();
+    //    Release();
+    //    pEventTimer->Resume();
+    //    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    //    viewparams->bRedrawGameUI = 1;
+    //    int v39 = atoi(userInputHandler->GetTextInput().c_str());
+    //    if (v39 > 0 && v39 < 800) {
+    //        SpawnActor(v39);
+    //    }
+    //}
+}
 
 GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
     GUIWindow(WINDOW_CastSpell_InInventory, x, y, width, height, button, hint) {
     mouse->SetCursorImage("MICON2");
-    pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(34),  // Cancel
+    pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None, localization->GetString(34),  // Cancel
         { { ui_buttdesc2 } });
     GameUI_StatusBar_OnEvent(localization->GetString(39), 2);  // Choose target
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
