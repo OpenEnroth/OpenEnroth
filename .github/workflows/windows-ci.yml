@@ -1,0 +1,23 @@
+name: Windows_CI
+
+on: [push, pull_request]
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        Configuration: [Debug, Release]
+        Platform: [x86]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Build
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars32.bat"
+        cmake -G "NMake Makefiles" . -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
+        nmake check_style
+        nmake
+      shell: cmd
