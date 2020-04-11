@@ -43,7 +43,7 @@ GUICredits::GUICredits() :
     move_Y = 0;
     tick = 0;
 
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "");
+    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, GameKey::Escape);
 }
 
 GUICredits::~GUICredits() {

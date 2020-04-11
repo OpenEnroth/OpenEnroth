@@ -42,7 +42,7 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook()  // const char *a1)
     for (uint i = 0; i < 6; ++i)
         CreateButton(pTownPortalBook_xs[i], pTownPortalBook_ys[i],
                      pTownPortalBook_ws[i], pTownPortalBook_hs[i], 1, 182,
-                     UIMSG_ClickTownInTP, i, 0, "");
+                     UIMSG_ClickTownInTP, i);
 }
 
 void GUIWindow_TownPortalBook::Update() {

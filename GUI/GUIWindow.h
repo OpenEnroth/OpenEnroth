@@ -10,6 +10,8 @@
 #include "Engine/Strings.h"
 #include "Engine/Party.h"
 
+#include "IO/GameKey.h"
+
 enum UIMessageType : uint32_t {
     UIMSG_0 = 0,
 
@@ -437,7 +439,7 @@ class GUIWindow {
     virtual ~GUIWindow() {}
 
     GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-    UIMessageType msg, unsigned int msg_param, uint8_t hotkey, const String &label,
+    UIMessageType msg, unsigned int msg_param, GameKey hotkey = GameKey::None, const String &label = "",
     const std::vector<Image*> &textures = std::vector<Image*>());
 
     bool Contains(unsigned int x, unsigned int y);
@@ -496,11 +498,11 @@ class GUIWindow_Scroll : public GUIWindow {
  public:
     GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
         GUIWindow(WINDOW_Scroll, x, y, width, height, button, hint) {
-        CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
-        CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
-        CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
-        CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
-        CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "");
+        CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
+        CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
+        CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3, "");
+        CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4, "");
+        CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, GameKey::Tab, "");
     }
     virtual ~GUIWindow_Scroll() {}
 
@@ -736,7 +738,7 @@ unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos,
                                                           int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
 class GUIButton *GUI_HandleHotkey(uint8_t uHotkey);   // idb
-void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall);
+void GUI_ReplaceHotkey(GameKey oldKey, GameKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item);   // idb

@@ -1,6 +1,10 @@
+#include <map>
+
 #include "Platform/Sdl2Window.h"
 
 #include "SDL_syswm.h"
+
+#include "IO/Keyboard.h"
 
 void Sdl2Window::MessageProc(const SDL_Event &e) {
     switch (e.type) {
@@ -27,25 +31,27 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
         } break;
 
         case SDL_KEYDOWN: {
-            auto key = e.key.keysym.sym;
-            auto mods = e.key.keysym.mod;
+            GameKey mappedKey;
+            if (TryMapScanCode(e.key.keysym.scancode, &mappedKey)) {
+                if (IsKeyUsedInTextInput(mappedKey)) {
+                    // send key in case textinput waits for it
+                    gameCallback->OnChar(mappedKey, -1);
+                }
+                gameCallback->OnKey(mappedKey);
+            }
 
-            auto ch = SdlkToChar(key, (mods & KMOD_CAPS) != (mods & KMOD_SHIFT));
-            auto vkkey = SdlkToVk(key);
-            if (ch != -1) {
-                gameCallback->OnChar(ch);
-            } else if (key == SDLK_RETURN || key == SDLK_ESCAPE || key == SDLK_TAB || key == SDLK_BACKSPACE) {
-                if (!gameCallback->OnChar(vkkey))
-                    gameCallback->OnVkDown(vkkey, 0);
-            } else {
-                gameCallback->OnVkDown(vkkey, 0);
+            int mappedChar;
+            auto mods = e.key.keysym.mod;
+            if (TryMapKeyCode(e.key.keysym.sym, (mods & KMOD_CAPS) != (mods & KMOD_SHIFT), &mappedChar)) {
+                gameCallback->OnChar(GameKey::Char, mappedChar);
             }
         } break;
 
         case SDL_MOUSEMOTION: {
             gameCallback->OnMouseMove(
                 e.motion.x, e.motion.y,
-                e.motion.state & SDL_BUTTON_LMASK, e.motion.state & SDL_BUTTON_RMASK);
+                e.motion.state & SDL_BUTTON_LMASK, e.motion.state & SDL_BUTTON_RMASK
+            );
         } break;
 
         case SDL_MOUSEBUTTONDOWN: {
@@ -196,53 +202,135 @@ void Sdl2Window::Activate() {
 }
 
 
-int Sdl2Window::SdlkToChar(SDL_Keycode key, bool uppercase) const {
+bool Sdl2Window::TryMapKeyCode(SDL_Keycode key, bool uppercase, int* outKey) const {
     if (key >= SDLK_0 && key <= SDLK_9) {
-        return '0' + (key - SDLK_0);
+        if (outKey != nullptr) {
+            *outKey = '0' + (key - SDLK_0);
+            return true;
+        }
     }
     if (key >= SDLK_a && key <= SDLK_z) {
-        if (uppercase) {
-            return 'A' + (key - SDLK_a);
-        } else {
-            return 'a' + (key - SDLK_a);
+        if (outKey != nullptr) {
+            if (uppercase) {
+                *outKey = 'A' + (key - SDLK_a);
+            }
+            else {
+                *outKey = 'a' + (key - SDLK_a);
+            }
         }
+        return true;
     }
-    return -1;
+    return false;
 }
 
-int Sdl2Window::SdlkToVk(SDL_Keycode key) const {
-#ifdef _WINDOWS
-    // "Will be removed later"
-    if (key >= SDLK_F1 && key <= SDLK_F12) {
-        return VK_F1 + (key - SDLK_F1);
-    }
+static std::map<SDL_Scancode, GameKey> scancode_lookup =
+{
+    { SDL_SCANCODE_F1,              GameKey::F1 },
+    { SDL_SCANCODE_F2,              GameKey::F2 },
+    { SDL_SCANCODE_F3,              GameKey::F3 },
+    { SDL_SCANCODE_F4,              GameKey::F4 },
+    { SDL_SCANCODE_F5,              GameKey::F5 },
+    { SDL_SCANCODE_F6,              GameKey::F6 },
+    { SDL_SCANCODE_F7,              GameKey::F7 },
+    { SDL_SCANCODE_F8,              GameKey::F8 },
+    { SDL_SCANCODE_F9,              GameKey::F9 },
+    { SDL_SCANCODE_F10,             GameKey::F10 },
+    { SDL_SCANCODE_F11,             GameKey::F11 },
+    { SDL_SCANCODE_F12,             GameKey::F12 },
 
-    static struct {
-        SDL_Keycode sdlk;
-        int vk;
-    }
-    sdlk2vk[] = {
-        { SDLK_LEFT, VK_LEFT },
-        { SDLK_RIGHT, VK_RIGHT },
-        { SDLK_UP, VK_UP },
-        { SDLK_DOWN, VK_DOWN },
-        { SDLK_PRINTSCREEN, VK_PRINT },
-        { SDLK_INSERT, VK_INSERT },
-        { SDLK_HOME, VK_HOME },
-        { SDLK_PAGEUP, VK_PRIOR },
-        { SDLK_DELETE, VK_DELETE },
-        { SDLK_END, VK_END },
-        { SDLK_PAGEDOWN, VK_NEXT },
-    };
+    { SDL_SCANCODE_1,               GameKey::Digit1 },
+    { SDL_SCANCODE_2,               GameKey::Digit2 },
+    { SDL_SCANCODE_3,               GameKey::Digit3 },
+    { SDL_SCANCODE_4,               GameKey::Digit4 },
+    { SDL_SCANCODE_5,               GameKey::Digit5 },
+    { SDL_SCANCODE_6,               GameKey::Digit6 },
+    { SDL_SCANCODE_7,               GameKey::Digit7 },
+    { SDL_SCANCODE_8,               GameKey::Digit8 },
+    { SDL_SCANCODE_9,               GameKey::Digit9 },
+    { SDL_SCANCODE_0,               GameKey::Digit0 },
 
-    for (int i = 0; i < sizeof(sdlk2vk) / sizeof(*sdlk2vk); ++i) {
-        if (sdlk2vk[i].sdlk == key) {
-            return sdlk2vk[i].vk;
+    { SDL_SCANCODE_A,               GameKey::A },
+    { SDL_SCANCODE_B,               GameKey::B },
+    { SDL_SCANCODE_C,               GameKey::C },
+    { SDL_SCANCODE_D,               GameKey::D },
+    { SDL_SCANCODE_E,               GameKey::E },
+    { SDL_SCANCODE_F,               GameKey::F },
+    { SDL_SCANCODE_G,               GameKey::G },
+    { SDL_SCANCODE_H,               GameKey::H },
+    { SDL_SCANCODE_I,               GameKey::I },
+    { SDL_SCANCODE_J,               GameKey::J },
+    { SDL_SCANCODE_K,               GameKey::K },
+    { SDL_SCANCODE_L,               GameKey::L },
+    { SDL_SCANCODE_M,               GameKey::M },
+    { SDL_SCANCODE_N,               GameKey::N },
+    { SDL_SCANCODE_O,               GameKey::O },
+    { SDL_SCANCODE_P,               GameKey::P },
+    { SDL_SCANCODE_Q,               GameKey::Q },
+    { SDL_SCANCODE_E,               GameKey::R },
+    { SDL_SCANCODE_S,               GameKey::S },
+    { SDL_SCANCODE_T,               GameKey::T },
+    { SDL_SCANCODE_U,               GameKey::U },
+    { SDL_SCANCODE_V,               GameKey::V },
+    { SDL_SCANCODE_W,               GameKey::W },
+    { SDL_SCANCODE_X,               GameKey::X },
+    { SDL_SCANCODE_Y,               GameKey::Y },
+    { SDL_SCANCODE_Z,               GameKey::Z },
+
+    { SDL_SCANCODE_RETURN,          GameKey::Return },
+    { SDL_SCANCODE_ESCAPE,          GameKey::Escape },
+    { SDL_SCANCODE_TAB,             GameKey::Tab },
+    { SDL_SCANCODE_BACKSPACE,       GameKey::Backspace },
+    { SDL_SCANCODE_SPACE,           GameKey::Space },
+    { SDL_SCANCODE_DECIMALSEPARATOR,GameKey::Decimal },
+    { SDL_SCANCODE_SEMICOLON,       GameKey::Semicolon },
+    { SDL_SCANCODE_PERIOD,          GameKey::Period },
+    { SDL_SCANCODE_SLASH,           GameKey::Slash },
+    { SDL_SCANCODE_APOSTROPHE,      GameKey::SingleQuote },
+    { SDL_SCANCODE_BACKSLASH,       GameKey::BackSlash },
+
+    { SDL_SCANCODE_KP_MINUS,        GameKey::Subtract },
+    { SDL_SCANCODE_KP_PLUS,         GameKey::Add },
+    { SDL_SCANCODE_COMMA,           GameKey::Comma },
+    { SDL_SCANCODE_LEFTBRACKET,     GameKey::LeftBracket },
+    { SDL_SCANCODE_RIGHTBRACKET,    GameKey::RightBracket },
+
+    { SDL_SCANCODE_LEFT,            GameKey::Left },
+    { SDL_SCANCODE_RIGHT,           GameKey::Right },
+    { SDL_SCANCODE_UP,              GameKey::Up },
+    { SDL_SCANCODE_DOWN,            GameKey::Down },
+
+    { SDL_SCANCODE_PRINTSCREEN,     GameKey::PrintScreen },
+
+    { SDL_SCANCODE_INSERT,          GameKey::Insert },
+    { SDL_SCANCODE_HOME,            GameKey::Home },
+    { SDL_SCANCODE_END,             GameKey::End },
+    { SDL_SCANCODE_PAGEUP,          GameKey::PageUp },
+    { SDL_SCANCODE_PAGEDOWN,        GameKey::PageDown },
+    { SDL_SCANCODE_DELETE,          GameKey::Delete },
+    { SDL_SCANCODE_SELECT,          GameKey::Select },
+
+    { SDL_SCANCODE_LCTRL,           GameKey::Control },
+    { SDL_SCANCODE_RCTRL,           GameKey::Control },
+    { SDL_SCANCODE_LALT,            GameKey::Alt },
+    { SDL_SCANCODE_RALT,            GameKey::Alt },
+    { SDL_SCANCODE_LSHIFT,          GameKey::Shift },
+    { SDL_SCANCODE_RSHIFT,          GameKey::Shift },
+
+    { SDL_SCANCODE_KP_0,            GameKey::Numpad0 },
+};
+
+
+
+bool Sdl2Window::TryMapScanCode(SDL_Scancode code, GameKey *outKey) const {
+    auto mappedKey = scancode_lookup.find(code);
+    if (mappedKey != scancode_lookup.end()) {
+        if (outKey != nullptr) {
+            *outKey = mappedKey->second;
         }
+        return true;
     }
-#endif
 
-    return key & 0xFFFF;
+    return false;
 }
 
 
@@ -251,8 +339,6 @@ void Sdl2Window::OpenGlCreate() {
     //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-
 
     //  Turn on double buffering with a 24bit Z buffer.
     //  You may need to change this to 16 or 32 for your system

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "IO/GameKey.h"
+
 class Mouse;
 
 namespace Application {
@@ -18,8 +20,8 @@ class GameWindowHandler {
     void OnMouseMove(int x, int y, bool left_button, bool right_button);
     void OnScreenshot();
     void OnToggleFullscreen();
-    void OnVkDown(int vk, int vk_to_char);
-    bool OnChar(int c);
+    void OnKey(GameKey key);
+    bool OnChar(GameKey key, int c);
     void OnFocus();
     void OnFocusLost();
     void OnPaint();

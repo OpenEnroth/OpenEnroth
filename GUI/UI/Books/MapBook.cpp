@@ -52,29 +52,29 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     ui_book_button5_off = assets->GetImage_Alpha("tabEoff");
     ui_book_button6_off = assets->GetImage_Alpha("tabWoff");
 
-    pBtn_Book_1 = this->CreateButton(
+    pBtn_Book_1 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1,
-        0, UIMSG_ClickBooksBtn, 0, 0, localization->GetString(251),
+        0, UIMSG_ClickBooksBtn, 0, GameKey::None, localization->GetString(251),
         {{ui_book_button1_on}});  // "Zoom In"
-    pBtn_Book_2 = this->CreateButton(
+    pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 1, 0, localization->GetString(252),
+        1, 0, UIMSG_ClickBooksBtn, 1, GameKey::None, localization->GetString(252),
         {{ui_book_button2_on}});  // "Zoom Out"
-    pBtn_Book_3 = this->CreateButton(
+    pBtn_Book_3 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 113, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 2, 0,
+        1, 0, UIMSG_ClickBooksBtn, 2, GameKey::None,
         localization->GetString(192));  // Scroll Up
-    pBtn_Book_4 = this->CreateButton(
+    pBtn_Book_4 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 150, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 3, 0,
+        1, 0, UIMSG_ClickBooksBtn, 3, GameKey::None,
         localization->GetString(193));  // Scroll Down
-    pBtn_Book_5 = this->CreateButton(
+    pBtn_Book_5 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 4, 0,
+        1, 0, UIMSG_ClickBooksBtn, 4, GameKey::None,
         localization->GetString(573));  // "Scroll Right"
-    pBtn_Book_6 = this->CreateButton(
+    pBtn_Book_6 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 5, 0,
+        1, 0, UIMSG_ClickBooksBtn, 5, GameKey::None,
         localization->GetString(572));  // "Scroll Left"
 }
 

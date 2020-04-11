@@ -860,12 +860,6 @@ void FinalInitialization() {
                          viewparams->uSomeZ, viewparams->uSomeW);
     pViewport->SetFOV(_6BE3A0_fov);
 
-    // pIndoorCamera = new IndoorCamera;
-    // pIndoorCamera->Initialize(65, viewparams->uScreen_BttmR_X -
-    // viewparams->uScreen_topL_X + 1,
-    //                              viewparams->uScreen_BttmR_Y -
-    //                              viewparams->uScreen_topL_Y + 1);
-
     InitializeTurnBasedAnimations(&stru_50C198);
     pBitmaps_LOD->_inlined_sub1();
     pSprites_LOD->_inlined_sub1();
@@ -881,15 +875,13 @@ bool MM7_LoadLods(const char *mm7_path) {
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pEvents_LOD = new LODFile_IconsBitmaps;
-    if (!pEvents_LOD->Load(
-            StringPrintf("%s/data/events.lod", mm7_path).c_str(), "icons")) {
+    if (!pEvents_LOD->Load(StringPrintf("%s/data/events.lod", mm7_path).c_str(), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(
-            StringPrintf("%s/data/bitmaps.lod", mm7_path).c_str(), "bitmaps")) {
+    if (!pBitmaps_LOD->Load(StringPrintf("%s/data/bitmaps.lod", mm7_path).c_str(), "bitmaps")) {
         Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
@@ -941,8 +933,6 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
     pParty->uPartyHeight = pParty->uDefaultPartyHeight;
 
     MM6_Initialize();
-
-    pKeyActionMap = new KeyboardActionMapping;
 
     OnTimer(1);
     GameUI_StatusBar_Update(true);

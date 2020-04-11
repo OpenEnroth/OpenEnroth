@@ -537,8 +537,6 @@ int dword_506980_uW;
 int dword_506984_uZ;
 int dword_506988_uY;
 int dword_50698C_uX;
-int uGameMenuUI_CurentlySelectedKeyIdx;  // 506E68
-std::array<unsigned int, 28> pPrevVirtualCidesMapping;
 int KeyboardPageNum;
 int uRestUI_FoodRequiredToRest;
 int _506F14_resting_stage;

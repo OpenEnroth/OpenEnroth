@@ -13,6 +13,7 @@
 
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
+#include "IO/UserInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -153,11 +154,10 @@ void Application::GameOver_Loop(int v15) {
         window->PeekMessageLoop();
 
         pMessageQueue_50CBD0->Flush();
-        pKeyActionMap->ResetKeys();
-        pKeyActionMap->uLastKeyPressed = 0;
+        userInputHandler->ResetKeys();
         do {
             window->PeekMessageLoop();
-        } while (!pKeyActionMap->uLastKeyPressed);
+        } while (userInputHandler->LastPressedKey() != GameKey::Escape);
         pMessageQueue_50CBD0->Flush();
     }
     if (v15) {

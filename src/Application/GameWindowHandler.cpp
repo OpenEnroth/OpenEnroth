@@ -15,6 +15,7 @@
 
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
+#include "IO/UserInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -37,11 +38,11 @@ void GameWindowHandler::OnScreenshot() {
     }
 }
 
-bool GameWindowHandler::OnChar(int c) {
-    if (!pKeyActionMap->ProcessTextInput(c) && !viewparams->field_4C) {
+bool GameWindowHandler::OnChar(GameKey key, int c) {
+    if (!userInputHandler->ProcessTextInput(key, c) && !viewparams->field_4C && key == GameKey::Char) {
         return GUI_HandleHotkey(c);
     }
-    return 0;
+    return false;
 }
 
 void GameWindowHandler::OnMouseLeftClick(int x, int y) {
@@ -56,7 +57,7 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
         mouse->SetMouseClick(x, y);
 
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
-            UI_OnVkKeyDown(VK_SELECT);
+            UI_OnKeyDown(GameKey::Select);
         }
 
         if (engine) {
@@ -132,45 +133,48 @@ void GameWindowHandler::OnMouseMove(int x, int y, bool left_button, bool right_b
     }
 }
 
+
 extern bool _507B98_ctrl_pressed;
 
-void GameWindowHandler::OnVkDown(int vk, int vk_to_char) {
-    if (uGameMenuUI_CurentlySelectedKeyIdx != -1) {
-        pKeyActionMap->ProcessTextInput(vk);
+void GameWindowHandler::OnKey(GameKey key) {
+    extern InputAction currently_selected_action_for_binding;
+    if (currently_selected_action_for_binding != InputAction::Invalid) {
+        // we're setting a key binding in options
+        userInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 1;
 
-        set_stru1_field_8_InArcomage(vk_to_char);
-        if (vk == VK_ESCAPE) {
+        set_stru1_field_8_InArcomage(0);
+        if (key == GameKey::Escape) {
             pArcomageGame->stru1.am_input_type = 10;
         } else if (pArcomageGame->check_exit) {
            pArcomageGame->check_exit = 0;
            pArcomageGame->force_redraw_1 = 1;
         }
 
-        if (vk == VK_F3) {
+        if (key == GameKey::F3) {
             OnScreenshot();
-        } else if (vk == VK_F4 && !pMovie_Track) {
+        } else if (key == GameKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
             pArcomageGame->stru1.am_input_type = 9;
         }
     } else {
         pMediaPlayer->StopMovie();
-        if (vk == VK_RETURN) {
-            if (!viewparams->field_4C) UI_OnVkKeyDown(vk);
-        } else if (vk == VK_CONTROL) {
+        if (key == GameKey::Return) {
+            if (!viewparams->field_4C) UI_OnKeyDown(key);
+        } else if (key == GameKey::Control) {
             _507B98_ctrl_pressed = true;
-        } else if (vk == VK_ESCAPE) {
+        } else if (key == GameKey::Escape) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (vk == VK_F4 && !pMovie_Track) {
+        } else if (key == GameKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
-        } else if (vk == VK_NUMPAD0) {
+        } else if (key == GameKey::Numpad0) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
-        } else if (vk >= VK_LEFT && vk <= VK_DOWN) {
+        } else if (key == GameKey::Left || key == GameKey::Right || key == GameKey::Up || key == GameKey::Down) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
                 current_screen_type != CURRENT_SCREEN::SCREEN_MODAL_WINDOW) {
                 if (!viewparams->field_4C) {
-                    UI_OnVkKeyDown(vk);
+                    UI_OnKeyDown(key);
                 }
             }
         }

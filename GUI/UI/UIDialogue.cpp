@@ -21,6 +21,7 @@
 #include "Platform/OSWindow.h"
 
 #include "IO/Keyboard.h"
+#include "IO/UserInputHandler.h"
 
 void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     dword_A74CDC = -1;
@@ -101,19 +102,15 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
         ) {
             pDialogueWindow->CreateButton(
                 480, 250, 140, pFontArrus->GetHeight() - 3, 1, 0,
-                UIMSG_SelectNPCDialogueOption, 9, 0, "");
+                UIMSG_SelectNPCDialogueOption, 9);
             pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
         }
     }
 
-    pDialogueWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter,
-                                  1, '1', "");
-    pDialogueWindow->CreateButton(177, 424, 31, 40, 2, 94,
-                                  UIMSG_SelectCharacter, 2, '2', "");
-    pDialogueWindow->CreateButton(292, 424, 31, 40, 2, 94,
-                                  UIMSG_SelectCharacter, 3, '3', "");
-    pDialogueWindow->CreateButton(407, 424, 31, 40, 2, 94,
-                                  UIMSG_SelectCharacter, 4, '4', "");
+    pDialogueWindow->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
+    pDialogueWindow->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
+    pDialogueWindow->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
+    pDialogueWindow->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4);
 
     if (bPlayerSaysHello && uActiveCharacter && !pNPCInfo->Hired()) {
         if (pParty->uCurrentHour < 5 || pParty->uCurrentHour > 21)
@@ -130,7 +127,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_NPC_DIALOGUE;
     pBtn_ExitCancel =
-        CreateButton(0x1D7u, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
+        CreateButton(0x1D7u, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
                      localization->GetString(79),  // "Exit"
                      {{ui_exit_cancel_button_background}});
     if (par1C != 1) {
@@ -141,7 +138,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
             1) {  // QuestsNPC_greet
             if (speakingNPC->joins) {
                 CreateButton(480, 130, 140, v11, 1, 0,
-                             UIMSG_SelectNPCDialogueOption, 0xDu, 0, "");
+                             UIMSG_SelectNPCDialogueOption, 0xDu);
                 num_menu_buttons = 1;
             }
             if (speakingNPC->evt_A) {
@@ -150,7 +147,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     if (v14 == 1 || v14 == 2)
                         CreateButton(
                             0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x13u, 0, "");
+                            1, 0, UIMSG_SelectNPCDialogueOption, 0x13u);
                 }
             }
             if (speakingNPC->evt_B) {
@@ -159,7 +156,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     if (v16 == 1 || v16 == 2)
                         CreateButton(
                             0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x14u, 0, "");
+                            1, 0, UIMSG_SelectNPCDialogueOption, 0x14u);
                 }
             }
             if (speakingNPC->evt_C) {
@@ -168,7 +165,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     if (v18 == 1 || v18 == 2)
                         CreateButton(
                             0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x15u, 0, "");
+                            1, 0, UIMSG_SelectNPCDialogueOption, 0x15u);
                 }
             }
             if (speakingNPC->evt_D) {
@@ -177,7 +174,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     if (v20 == 1 || v20 == 2)
                         CreateButton(
                             0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x16u, 0, "");
+                            1, 0, UIMSG_SelectNPCDialogueOption, 0x16u);
                 }
             }
             if (speakingNPC->evt_E) {
@@ -186,7 +183,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     if (v22 == 1 || v22 == 2)
                         CreateButton(
                             0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x17u, 0, "");
+                            1, 0, UIMSG_SelectNPCDialogueOption, 0x17u);
                 }
             }
             if (speakingNPC->evt_F) {
@@ -195,24 +192,24 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     if (v24 == 1 || v24 == 2)
                         CreateButton(
                             0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x18u, 0, "");
+                            1, 0, UIMSG_SelectNPCDialogueOption, 0x18u);
                 }
             }
         } else {
             if (speakingNPC->joins) {
                 CreateButton(0x1E0u, 0x82u, 0x8Cu, v11, 1, 0,
-                             UIMSG_SelectNPCDialogueOption, 0x4Du, 0,
-                             localization->GetString(407));  // Подробнее
+                             UIMSG_SelectNPCDialogueOption, 0x4Du, GameKey::None,
+                             localization->GetString(407));  // Details / Подробнее
                 if (speakingNPC->Hired()) {
                     CreateButton(
                         0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0,
-                        UIMSG_SelectNPCDialogueOption, 0x4Cu, 0,
+                        UIMSG_SelectNPCDialogueOption, 0x4Cu, GameKey::None,
                         localization->FormatString(
                             408,
                             speakingNPC->pName));  // Release %s    Отпустить %s
                 } else {
                     CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0,
-                        UIMSG_SelectNPCDialogueOption, 0x4Cu, 0,
+                        UIMSG_SelectNPCDialogueOption, 0x4Cu, GameKey::None,
                         localization->GetString(406));  // Hire Нанять
                 }
                 num_menu_buttons = 2;
@@ -538,13 +535,13 @@ GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(
 )
     : GUIWindow(WINDOW_GreetingNPC, x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
-    pKeyActionMap->EnterText(0, 15, this);
+    userInputHandler->StartTextInput(TextInputType::Text, 15, this);
     current_screen_type = CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG;
 }
 
 void GUIWindow_GenericDialogue::Release() {
     current_screen_type = prev_screen_type;
-    pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    userInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
 
     GUIWindow::Release();
 }
@@ -585,7 +582,7 @@ void GUIWindow_GenericDialogue::Update() {
     if (pGUIWindow2->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS) {
         if (pGUIWindow2->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
             pGUIWindow2->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-            GameUI_StatusBar_OnInput(pKeyActionMap->pPressedKeysBuffer);
+            GameUI_StatusBar_OnInput(userInputHandler->GetTextInput().c_str());
             sub_4452BB();
             return;
         }
@@ -597,15 +594,13 @@ void GUIWindow_GenericDialogue::Update() {
         return;
     }
     if (pGUIWindow2->ptr_1C == (void *)26) {
-        auto str = StringPrintf("%s %s", GameUI_StatusBar_GetInput().c_str(),
-                                pKeyActionMap->pPressedKeysBuffer);
+        auto str = StringPrintf("%s %s", GameUI_StatusBar_GetInput().c_str(), userInputHandler->GetTextInput().c_str());
         pGUIWindow2->DrawText(pFontLucida, 13, 357, 0, str, 0, 0, 0);
-        pGUIWindow2->DrawFlashingInputCursor(
-            pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
+        pGUIWindow2->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
         return;
     }
-    if (pKeyActionMap->pPressedKeysBuffer[0]) {
-        pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_NONE);
+    if (!userInputHandler->GetTextInput().empty()) {
+        userInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
         GameUI_StatusBar_ClearInputString();
         sub_4452BB();
         return;
@@ -624,15 +619,11 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
         dword_5C341C = a2;
         _591094_decoration = activeLevelDecoration;
         pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(),
-                                                    window->GetHeight(), (GUIButton *)a4);
-        pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter,
-                                  1, '1', "");
-        pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94,
-                                  UIMSG_SelectCharacter, 2, '2', "");
-        pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94,
-                                  UIMSG_SelectCharacter, 3, '3', "");
-        pGUIWindow2->CreateButton(407, 424, 31, 40, 2, 94,
-                                  UIMSG_SelectCharacter, 4, '4', "");
+                                                    window->GetHeight(), a4);
+        pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
+        pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
+        pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
+        pGUIWindow2->CreateButton(407, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4);
     }
 }
 
@@ -647,12 +638,12 @@ void sub_4B3E1E() {
     if (pNPCStats->pProfessions[v0->uProfession]
             .pBenefits) {  // *(&pNPCStats->field_13A5C + 5 * v0->uProfession) )
         pDialogueWindow->CreateButton(
-            480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, 0,
+            480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, GameKey::None,
             localization->GetString(407));  // Details / Подробнее
         v1 = 1;
     }
     pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0,
-                                  UIMSG_SelectNPCDialogueOption, 76, 0,
+                                  UIMSG_SelectNPCDialogueOption, 76, GameKey::None,
                                   localization->GetString(406));  // Hire Нанять
     pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
 }
