@@ -1,7 +1,8 @@
 # Might and Magic Trilogy [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq) 
+
+Might and Magic VI-VIII engine remake using original data & code
 ![windows](https://github.com/gp-alex/world-of-might-and-magic/workflows/Windows_CI/badge.svg)
 ![linux](https://github.com/gp-alex/world-of-might-and-magic/workflows/Linux_CI/badge.svg)
-Might and Magic VI-VIII engine remake using original data & code
 
 ![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/gamestart.PNG)
 
