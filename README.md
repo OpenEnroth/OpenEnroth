@@ -1,8 +1,15 @@
 # Might and Magic Trilogy [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq) 
 
 Might and Magic VI-VIII engine remake using original data & code
+
 ![windows](https://github.com/gp-alex/world-of-might-and-magic/workflows/Windows_CI/badge.svg)
+
 ![linux](https://github.com/gp-alex/world-of-might-and-magic/workflows/Linux_CI/badge.svg)
+
+[![Build Status](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
+
+[![Coverity Status](https://scan.coverity.com/projects/16434/badge.svg)](https://scan.coverity.com/projects/world-of-might-and-magic)
+
 
 ![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/gamestart.PNG)
 
@@ -48,8 +55,3 @@ GamePlay
 --------------
 ![alt text](https://raw.githubusercontent.com/SourceCodeDeleted/world-of-might-and-magic/master/install_images/gameplay.PNG)
 
-Current build status
---------------------
-Master: [![Build Status](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
-
-Code analysis: [![Coverity Status](https://scan.coverity.com/projects/16434/badge.svg)](https://scan.coverity.com/projects/world-of-might-and-magic)
