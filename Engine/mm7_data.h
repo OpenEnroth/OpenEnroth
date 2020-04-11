@@ -147,9 +147,6 @@ extern int dword_506980_uW;
 extern int dword_506984_uZ;
 extern int dword_506988_uY;
 extern int dword_50698C_uX;
-extern int uGameMenuUI_CurentlySelectedKeyIdx;                   // 506E68
-extern std::array<bool, 28> GameMenuUI_InvaligKeyBindingsFlags;  // 506E6C
-extern std::array<unsigned int, 28> pPrevVirtualCidesMapping;
 extern int KeyboardPageNum;
 extern int uRestUI_FoodRequiredToRest;
 extern int _506F14_resting_stage;

@@ -76,17 +76,13 @@ void Arena_SelectionFightLevel() {
         uDialogueType = DIALOGUE_ARENA_WELCOME;
         pDialogueWindow->DeleteButtons();
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
+            471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
             localization->GetString(79),  // Close, Закрыть
             {{ui_exit_cancel_button_background}});
-        pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0,
-                                      UIMSG_SelectNPCDialogueOption, 85, 0, "");
-        pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0,
-                                      UIMSG_SelectNPCDialogueOption, 86, 0, "");
-        pDialogueWindow->CreateButton(480, 220, 0x8Cu, 0x1Eu, 1, 0,
-                                      UIMSG_SelectNPCDialogueOption, 87, 0, "");
-        pDialogueWindow->CreateButton(480, 250, 0x8Cu, 0x1Eu, 1, 0,
-                                      UIMSG_SelectNPCDialogueOption, 88, 0, "");
+        pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 85);
+        pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 86);
+        pDialogueWindow->CreateButton(480, 220, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 87);
+        pDialogueWindow->CreateButton(480, 250, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 88);
         pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
     }
 }

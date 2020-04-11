@@ -1087,20 +1087,19 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
+        471, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(34),  // "Cancel"
         {{ui_exit_cancel_button_background}});
-    pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
-                                  UIMSG_BuyInShop_Identify_Repair, 0, 0, "");
+    pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
     if (pNPCStats->pProfessions[v1->uProfession]
             .pBenefits) {  // *(&pNPCStats->field_13A5C + 5 * v1->uProfession) )
         pDialogueWindow->CreateButton(
-            480, 0xA0u, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Du, 0,
+            480, 0xA0u, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Du, GameKey::None,
             localization->GetString(407));  // "More Information"
         v0 = 1;
     }
     pDialogueWindow->CreateButton(0x1E0u, 30 * v0 + 160, 0x8Cu, 0x1Eu, 1, 0,
-                                  UIMSG_ClickNPCTopic, 0x4Cu, 0,
+                                  UIMSG_ClickNPCTopic, 0x4Cu, GameKey::None,
                                   localization->GetString(406));  // "Hire"
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
@@ -1128,15 +1127,15 @@ void _4B4224_UpdateNPCTopics(int _this) {
         transition_button_label = localization->FormatString(
             411, pMapStats->pInfos[uHouse_ExitPic].pName.c_str());  // Enter %s
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 'N',
+            566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::N,
             localization->GetString(34), {{ui_buttdesc2}});  // "Cancel"
         pBtn_YES = pDialogueWindow->CreateButton(
-            486, 445, 75, 33, 1, 0, UIMSG_BF, 1, 'Y',
+            486, 445, 75, 33, 1, 0, UIMSG_BF, 1, GameKey::Y,
             transition_button_label.c_str(), {{ui_buttyes2}});
         pDialogueWindow->CreateButton(
             pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63u, 73u, 1, 0,
-            UIMSG_BF, 1u, 0x20u, transition_button_label.c_str());
-        pDialogueWindow->CreateButton(8, 8, 460, 344, 1, 0, UIMSG_BF, 1, 0x59u,
+            UIMSG_BF, 1u, GameKey::Space, transition_button_label.c_str());
+        pDialogueWindow->CreateButton(8, 8, 460, 344, 1, 0, UIMSG_BF, 1, GameKey::Y,
                                       transition_button_label.c_str());
     } else {
         v17 = HouseNPCData[_this + 1 - ((dword_591080 != 0) ? 1 : 0)];  //+ 1
@@ -1148,26 +1147,23 @@ void _4B4224_UpdateNPCTopics(int _this) {
         }
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
+            471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
             localization->GetString(74),  // "End Conversation"
             {{ui_exit_cancel_button_background}});
-        pDialogueWindow->CreateButton(
-            8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "");
+        pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         if (pDialogueNPCCount == 1 && dword_591080) {
             InitializaDialogueOptions(in_current_building_type);
         } else {
             if (v17->joins) {
                 num_menu_buttons = 1;
-                pDialogueWindow->CreateButton(480u, 160u, 140u, 30, 1, 0,
-                                              UIMSG_ClickNPCTopic, 0xDu, 0, "");
+                pDialogueWindow->CreateButton(480u, 160u, 140u, 30, 1, 0, UIMSG_ClickNPCTopic, 0xDu);
             }
             if (v17->evt_A) {
                 if (num_menu_buttons < 4) {
                     v6 = NPC_EventProcessor(v17->evt_A);
                     if (v6 == 1 || v6 == 2)
                         pDialogueWindow->CreateButton(
-                            480u, 30 * num_menu_buttons++ + 160, 140u, 30u, 1,
-                            0, UIMSG_ClickNPCTopic, 0x13u, 0, "");
+                            480u, 30 * num_menu_buttons++ + 160, 140u, 30u, 1, 0, UIMSG_ClickNPCTopic, 0x13u);
                 }
             }
             if (v17->evt_B) {
@@ -1176,7 +1172,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
                     if (v8 == 1 || v8 == 2)
                         pDialogueWindow->CreateButton(
                             480u, 30 * num_menu_buttons++ + 160, 140u, 30u, 1,
-                            0, UIMSG_ClickNPCTopic, 0x14u, 0, "");
+                            0, UIMSG_ClickNPCTopic, 0x14u);
                 }
             }
             if (v17->evt_C) {
@@ -1185,7 +1181,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
                     if (v10 == 1 || v10 == 2)
                         pDialogueWindow->CreateButton(
                             480u, 30 * num_menu_buttons++ + 160, 140u, 30u, 1,
-                            0, UIMSG_ClickNPCTopic, 0x15u, 0, "");
+                            0, UIMSG_ClickNPCTopic, 0x15u);
                 }
             }
 
@@ -1195,7 +1191,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
                     if (v12 == 1 || v12 == 2)
                         pDialogueWindow->CreateButton(
                             0x1E0u, 30 * num_menu_buttons++ + 160, 0x8Cu, 0x1Eu,
-                            1, 0, UIMSG_ClickNPCTopic, 0x16u, 0, "");
+                            1, 0, UIMSG_ClickNPCTopic, 0x16u);
                 }
             }
             if (v17->evt_E) {
@@ -1204,7 +1200,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
                     if (v14 == 1 || v14 == 2)
                         pDialogueWindow->CreateButton(
                             0x1E0u, 30 * num_menu_buttons++ + 160, 0x8Cu, 0x1Eu,
-                            1, 0, UIMSG_ClickNPCTopic, 0x17u, 0, "");
+                            1, 0, UIMSG_ClickNPCTopic, 0x17u);
                 }
             }
             if (v17->evt_F) {
@@ -1213,7 +1209,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
                     if (v16 == 1 || v16 == 2)
                         pDialogueWindow->CreateButton(
                             0x1E0u, 30 * num_menu_buttons++ + 160, 0x8Cu, 0x1Eu,
-                            1, 0, UIMSG_ClickNPCTopic, 0x18u, 0, "");
+                            1, 0, UIMSG_ClickNPCTopic, 0x18u);
                 }
             }
             pDialogueWindow->_41D08F_set_keyboard_control_group(

@@ -30,7 +30,7 @@ GUIWindow_QuickReference::GUIWindow_QuickReference()
             assets->GetImage_ColorKey("quikref", 0x7FF);
 
     pBtn_ExitCancel =
-        CreateButton(0x187u, 0x13Cu, 0x4Bu, 0x21u, 1, 0, UIMSG_Escape, 0, 0,
+        CreateButton(0x187u, 0x13Cu, 0x4Bu, 0x21u, 1, 0, UIMSG_Escape, 0, GameKey::None,
                      localization->GetString(79),  // "Exit"
                      {{ui_buttdesc2}});            //, v179);
 }

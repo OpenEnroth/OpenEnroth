@@ -1,3 +1,5 @@
+#include <map>
+
 #include "GUI/UI/UIGame.h"
 
 #include "src/Application/Game.h"
@@ -120,6 +122,10 @@ Image *game_ui_playerbuff_hammerhands = nullptr;
 Image *game_ui_playerbuff_preservation = nullptr;
 Image *game_ui_playerbuff_bless = nullptr;
 
+extern InputAction currently_selected_action_for_binding; // 506E68
+extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
+extern std::map<InputAction, GameKey> prev_key_map;
+
 GUIWindow_GameMenu::GUIWindow_GameMenu()
     : GUIWindow(WINDOW_GameMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     game_ui_menu_options = assets->GetImage_ColorKey("options", 0x7FF);
@@ -131,26 +137,26 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     game_ui_menu_quit = assets->GetImage_ColorKey("quit1", 0x7FF);
 
     pBtn_NewGame = CreateButton(0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0,
-                                UIMSG_StartNewGame, 0, 0x4Eu,
+                                UIMSG_StartNewGame, 0, GameKey::N,
                                 localization->GetString(614),  // "New Game"
                                 {{game_ui_menu_new}});
     pBtn_SaveGame = CreateButton(0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0,
-                                 UIMSG_Game_OpenSaveGameDialog, 0, 0x53u,
+                                 UIMSG_Game_OpenSaveGameDialog, 0, GameKey::S,
                                  localization->GetString(615),  // "Save Game"
                                  {{game_ui_menu_save}});
     pBtn_LoadGame = CreateButton(19, 263, 0xD6u, 0x28u, 1, 0,
-                                 UIMSG_Game_OpenLoadGameDialog, 0, 0x4Cu,
+                                 UIMSG_Game_OpenLoadGameDialog, 0, GameKey::L,
                                  localization->GetString(616),  // "Load Game"
                                  {{game_ui_menu_load}});
     pBtn_GameControls = CreateButton(
-        241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0x43u,
+        241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, GameKey::C,
         localization->GetString(617),  // ""Sound, Keyboard, Game Options:""
         {{game_ui_menu_controls}});
-    pBtn_QuitGame = CreateButton(241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, 0x51u,
+    pBtn_QuitGame = CreateButton(241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, GameKey::Q,
                                  localization->GetString(618),  // "Quit"
                                  {{game_ui_menu_quit}});
     pBtn_Resume = CreateButton(
-        241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, 0x52u,
+        241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, GameKey::R,
         localization->GetString(619),  // "Return to Game"
         {{game_ui_menu_resume}});
     _41D08F_set_keyboard_control_group(6, 1, 0, 0);
@@ -207,15 +213,15 @@ void GameUI_ReloadPlayerPortraits(
     }
 }
 
-std::array<bool, 28> GameMenuUI_InvaligKeyBindingsFlags;  // 506E6C
+std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 //----- (00414D24) --------------------------------------------------------
-static unsigned int GameMenuUI_GetKeyBindingColor(int key_index) {
-    if (uGameMenuUI_CurentlySelectedKeyIdx == key_index) {
+static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
+    if (currently_selected_action_for_binding == action) {
         if (OS_GetTime() % 1000 < 500)
             return ui_gamemenu_keys_key_selection_blink_color_1;
         else
             return ui_gamemenu_keys_key_selection_blink_color_2;
-    } else if (GameMenuUI_InvaligKeyBindingsFlags[key_index]) {
+    } else if (key_map_conflicted[action]) {
         int intensity;
 
         int time = OS_GetTime() % 800;
@@ -238,36 +244,35 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
     game_ui_options_controls[3] = assets->GetImage_ColorKey("optkb_1", 0x7FF);
     game_ui_options_controls[4] = assets->GetImage_ColorKey("optkb_2", 0x7FF);
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0, "");
+    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0);
 
-    CreateButton(19, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage1, 0, 0, "");
-    CreateButton(127, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage2, 0, 0, "");
-    CreateButton(127, 324, 108, 20, 1, 0, UIMSG_ResetKeyMapping, 0, 0, "");
-    CreateButton(19, 324, 108, 20, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, 0,
-                 "");
+    CreateButton(19, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage1, 0);
+    CreateButton(127, 302, 108, 20, 1, 0, UIMSG_SelectKeyPage2, 0);
+    CreateButton(127, 324, 108, 20, 1, 0, UIMSG_ResetKeyMapping, 0);
+    CreateButton(19, 324, 108, 20, 1, 0, UIMSG_Game_OpenOptionsDialog, 0);
 
-    CreateButton(129, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 0, 0, "");
-    CreateButton(129, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 1, 0, "");
-    CreateButton(129, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 2, 0, "");
-    CreateButton(129, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 3, 0, "");
-    CreateButton(129, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 4, 0, "");
-    CreateButton(129, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 5, 0, "");
-    CreateButton(129, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 6, 0, "");
+    CreateButton(129, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 0);
+    CreateButton(129, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 1);
+    CreateButton(129, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 2);
+    CreateButton(129, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 3);
+    CreateButton(129, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 4);
+    CreateButton(129, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 5);
+    CreateButton(129, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 6);
 
-    CreateButton(350, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 7, 0, "");
-    CreateButton(350, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 8, 0, "");
-    CreateButton(350, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 9, 0, "");
-    CreateButton(350, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 10, 0, "");
-    CreateButton(350, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 11, 0, "");
-    CreateButton(350, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 12, 0, "");
-    CreateButton(350, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 13, 0, "");
+    CreateButton(350, 148, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 7);
+    CreateButton(350, 167, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 8);
+    CreateButton(350, 186, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 9);
+    CreateButton(350, 205, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 10);
+    CreateButton(350, 224, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 11);
+    CreateButton(350, 243, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 12);
+    CreateButton(350, 262, 70, 19, 1, 0, UIMSG_ChangeKeyButton, 13);
 
-    uGameMenuUI_CurentlySelectedKeyIdx = -1;
+    currently_selected_action_for_binding = InputAction::Invalid;
     KeyboardPageNum = 1;
-    memset(GameMenuUI_InvaligKeyBindingsFlags.data(), 0,
-           sizeof(GameMenuUI_InvaligKeyBindingsFlags));
-    memcpy(pPrevVirtualCidesMapping.data(),
-           pKeyActionMap->pVirtualKeyCodesMapping, 0x78u);
+    for (auto action : AllInputActions()) {
+        key_map_conflicted[action] = false;
+        prev_key_map[action] = keyboardActionMapping->GetKey(action);
+    }
 }
 
 //----- (004142D3) --------------------------------------------------------
@@ -276,238 +281,59 @@ void GUIWindow_GameKeyBindings::Update() {
     int v5;  // eax@8
 
     if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
-        // turn key press to caps
-        int keypr = pKeyActionMap->pPressedKeysBuffer[0];
-        if (keypr >= 97 && keypr <= 122) keypr -= 32;
+        InputAction action = currently_selected_action_for_binding;
+        GameKey newKey = userInputHandler->LastPressedKey();
+        prev_key_map[action] = newKey;
 
-        pPrevVirtualCidesMapping[uGameMenuUI_CurentlySelectedKeyIdx] = keypr;
-           // pKeyActionMap->pPressedKeysBuffer[0];
-        memset(GameMenuUI_InvaligKeyBindingsFlags.data(), 0,
-               sizeof(GameMenuUI_InvaligKeyBindingsFlags));
-        v4 = 0;
-        do {
-            v5 = 0;
-            do {
-                if (v4 != v5 && pPrevVirtualCidesMapping[v4] ==
-                                    pPrevVirtualCidesMapping[v5]) {
-                    GameMenuUI_InvaligKeyBindingsFlags[v4] = true;
-                    GameMenuUI_InvaligKeyBindingsFlags[v5] = true;
-                }
-                ++v5;
-            } while (v5 < 28);
-            ++v4;
-        } while (v4 < 28);
-        uGameMenuUI_CurentlySelectedKeyIdx = -1;
+        for (auto action : AllInputActions()) {
+            key_map_conflicted[action] = false;
+        }
+
+        for (auto x : prev_key_map) {
+            if (x.first != action && x.second == newKey) {
+                key_map_conflicted[action] = true;
+                key_map_conflicted[x.first] = true;
+            }
+        }
+
+        currently_selected_action_for_binding = InputAction::Invalid;
         pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     }
+    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, game_ui_options_controls[0]);  // draw base texture
 
-    render->DrawTextureAlphaNew(
-        8 / 640.0f, 8 / 480.0f,
-        game_ui_options_controls[0]);  // draw base texture
+    int base_controls_offset = 0;
     if (KeyboardPageNum == 1) {
-        render->DrawTextureAlphaNew(19 / 640.0f, 302 / 480.0f,
-                                    game_ui_options_controls[3]);
-
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "FORWARD", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 142, GameMenuUI_GetKeyBindingColor(0),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[0]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 163,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "BACKWARD", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 163, GameMenuUI_GetKeyBindingColor(1),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[1]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 184,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "LEFT", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 184, GameMenuUI_GetKeyBindingColor(2),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[2]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 205,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "RIGHT", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 205, GameMenuUI_GetKeyBindingColor(3),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[3]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 226,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "YELL", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 226, GameMenuUI_GetKeyBindingColor(4),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[4]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 247,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "JUMP", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 247, GameMenuUI_GetKeyBindingColor(5),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[5]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 268,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "COMBAT", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 268, GameMenuUI_GetKeyBindingColor(6),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[6]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 142,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "CAST READY", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 142, GameMenuUI_GetKeyBindingColor(7),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[7]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 163,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "ATTACK", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 163, GameMenuUI_GetKeyBindingColor(8),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[8]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 184,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "TRIGGER", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 184, GameMenuUI_GetKeyBindingColor(9),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[9]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 205,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "CAST", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 205, GameMenuUI_GetKeyBindingColor(10),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[10]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 226,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "PASS", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 226, GameMenuUI_GetKeyBindingColor(11),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[11]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 247,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "CHAR CYCLE", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 247, GameMenuUI_GetKeyBindingColor(12),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[12]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 268,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "QUEST", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 268, GameMenuUI_GetKeyBindingColor(13),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[13]), 0,
-            0, 0);
+        render->DrawTextureAlphaNew(19 / 640.0f, 302 / 480.0f, game_ui_options_controls[3]);
     } else {
-        render->DrawTextureAlphaNew(127 / 640.0f, 302 / 480.0f,
-                                    game_ui_options_controls[4]);
+        base_controls_offset = 14;
+        render->DrawTextureAlphaNew(127 / 640.0f, 302 / 480.0f, game_ui_options_controls[4]);
+    }
 
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 142,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "QUICK REF", 0, 0, 0);
+    for (int i = 0; i < 7; ++i) {
+        InputAction action1 = (InputAction)(base_controls_offset + i);
         pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 142, GameMenuUI_GetKeyBindingColor(14),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[14]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 163,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "REST", 0, 0, 0);
+            pFontLucida, 23, 142 + i * 21,
+            ui_gamemenu_keys_action_name_color,
+            GetDisplayName(action1).c_str(), 0, 0, 0
+        );
         pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 163, GameMenuUI_GetKeyBindingColor(15),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[15]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 184,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "TIME/CAL", 0, 0, 0);
+            pFontLucida, 127, 142 + i * 21,
+            GameMenuUI_GetKeyBindingColor(action1),
+            GetDisplayName(prev_key_map[action1]), 0, 0, 0
+        );
+
+        int j = i + 7;
+        InputAction action2 = (InputAction)(base_controls_offset + j);
         pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 184, GameMenuUI_GetKeyBindingColor(16),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[16]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 205,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "AUTONOTES", 0, 0, 0);
+            pFontLucida, 247, 142 + j * 21,
+            ui_gamemenu_keys_action_name_color,
+            GetDisplayName(action2).c_str(), 0, 0, 0
+        );
         pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 205, GameMenuUI_GetKeyBindingColor(17),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[17]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 226,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "MAP BOOK", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 226, GameMenuUI_GetKeyBindingColor(18),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[18]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 247,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "ALWAYS RUN", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 247, GameMenuUI_GetKeyBindingColor(19),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[19]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 23, 268,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "LOOK UP", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 127, 268, GameMenuUI_GetKeyBindingColor(20),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[20]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 142,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "LOOK DOWN", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 142, GameMenuUI_GetKeyBindingColor(21),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[21]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 163,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "CTR VIEW", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 163, GameMenuUI_GetKeyBindingColor(22),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[22]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 184,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "ZOOM IN", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 184, GameMenuUI_GetKeyBindingColor(23),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[23]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 205,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "ZOOM OUT", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 205, GameMenuUI_GetKeyBindingColor(24),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[24]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 226,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "FLY UP", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 226, GameMenuUI_GetKeyBindingColor(25),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[25]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 247,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "FLY DOWN", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 247, GameMenuUI_GetKeyBindingColor(26),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[26]), 0,
-            0, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontLucida, 247, 268,
-                                         ui_gamemenu_keys_action_name_color,
-                                         "LAND", 0, 0, 0);
-        pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 268, GameMenuUI_GetKeyBindingColor(27),
-            pKeyActionMap->GetVKeyDisplayName(pPrevVirtualCidesMapping[27]), 0,
-            0, 0);
+            pFontLucida, 350, 142,
+            GameMenuUI_GetKeyBindingColor(action1),
+            GetDisplayName(prev_key_map[action2]), 0, 0, 0
+        );
     }
 }
 
@@ -515,35 +341,21 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     : GUIWindow(WINDOW_VideoOptions, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
     // -------------------------------------
     // GameMenuUI_OptionsVideo_Load --- part
-    game_ui_menu_options_video_background =
-        assets->GetImage_ColorKey("optvid", 0x7FF);
-    game_ui_menu_options_video_bloodsplats =
-        assets->GetImage_ColorKey("opvdH-bs", 0x7FF);
-    game_ui_menu_options_video_coloredlights =
-        assets->GetImage_ColorKey("opvdH-cl", 0x7FF);
-    game_ui_menu_options_video_tinting =
-        assets->GetImage_ColorKey("opvdH-tn", 0x7FF);
+    game_ui_menu_options_video_background = assets->GetImage_ColorKey("optvid", 0x7FF);
+    game_ui_menu_options_video_bloodsplats = assets->GetImage_ColorKey("opvdH-bs", 0x7FF);
+    game_ui_menu_options_video_coloredlights = assets->GetImage_ColorKey("opvdH-cl", 0x7FF);
+    game_ui_menu_options_video_tinting = assets->GetImage_ColorKey("opvdH-tn", 0x7FF);
 
-    game_ui_menu_options_video_gamma_positions[0] =
-        assets->GetImage_ColorKey("convol10", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[1] =
-        assets->GetImage_ColorKey("convol20", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[2] =
-        assets->GetImage_ColorKey("convol30", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[3] =
-        assets->GetImage_ColorKey("convol40", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[4] =
-        assets->GetImage_ColorKey("convol50", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[5] =
-        assets->GetImage_ColorKey("convol60", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[6] =
-        assets->GetImage_ColorKey("convol70", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[7] =
-        assets->GetImage_ColorKey("convol80", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[8] =
-        assets->GetImage_ColorKey("convol90", 0x7FF);
-    game_ui_menu_options_video_gamma_positions[9] =
-        assets->GetImage_ColorKey("convol00", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[0] = assets->GetImage_ColorKey("convol10", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[1] = assets->GetImage_ColorKey("convol20", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[2] = assets->GetImage_ColorKey("convol30", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[3] = assets->GetImage_ColorKey("convol40", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[4] = assets->GetImage_ColorKey("convol50", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[5] = assets->GetImage_ColorKey("convol60", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[6] = assets->GetImage_ColorKey("convol70", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[7] = assets->GetImage_ColorKey("convol80", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[8] = assets->GetImage_ColorKey("convol90", 0x7FF);
+    game_ui_menu_options_video_gamma_positions[9] = assets->GetImage_ColorKey("convol00", 0x7FF);
     // not_available_bloodsplats_texture_id =
     // pIcons_LOD->LoadTexture("opvdG-bs", TEXTURE_16BIT_PALETTE);
     // not_available_us_colored_lights_texture_id =
@@ -551,15 +363,12 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     // not_available_tinting_texture_id = pIcons_LOD->LoadTexture("opvdG-tn",
     // TEXTURE_16BIT_PALETTE);
 
-    CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0, 0, "");
+    CreateButton(0xF1u, 0x12Eu, 0xD6u, 0x28u, 1, 0, UIMSG_Escape, 0);
     // if ( render->pRenderD3D )
     {
-        CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats,
-                     0, 0, "");
-        CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0,
-                     UIMSG_ToggleColoredLights, 0, 0, "");
-        CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0, 0,
-                     "");
+        CreateButton(0x13u, 0x118u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleBloodsplats, 0);
+        CreateButton(0x13u, 0x12Eu, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleColoredLights, 0);
+        CreateButton(0x13u, 0x144u, 0xD6u, 0x12u, 1, 0, UIMSG_ToggleTint, 0);
     }
 }
 
@@ -593,14 +402,11 @@ void GUIWindow_GameVideoOptions::Update() {
     }
 
     if (!engine->config->NoBloodsplats())
-        render->DrawTextureAlphaNew(20 / 640.0f, 281 / 480.0f,
-                                    game_ui_menu_options_video_bloodsplats);
+        render->DrawTextureAlphaNew(20 / 640.0f, 281 / 480.0f, game_ui_menu_options_video_bloodsplats);
     if (render->config->is_using_colored_lights)
-        render->DrawTextureAlphaNew(20 / 640.0f, 303 / 480.0f,
-                                    game_ui_menu_options_video_coloredlights);
+        render->DrawTextureAlphaNew(20 / 640.0f, 303 / 480.0f, game_ui_menu_options_video_coloredlights);
     if (render->config->is_tinting)
-        render->DrawTextureAlphaNew(20 / 640.0f, 325 / 480.0f,
-                                    game_ui_menu_options_video_tinting);
+        render->DrawTextureAlphaNew(20 / 640.0f, 325 / 480.0f, game_ui_menu_options_video_tinting);
 }
 
 OptionsMenuSkin options_menu_skin;  // 507C60
@@ -643,99 +449,78 @@ void OptionsMenuSkin::Relaease() {
 
 GUIWindow_GameOptions::GUIWindow_GameOptions()
     : GUIWindow(WINDOW_GameOptions, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
-    options_menu_skin.uTextureID_Background =
-        assets->GetImage_ColorKey("ControlBG", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[2] =
-        assets->GetImage_ColorKey("con_16x", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[1] =
-        assets->GetImage_ColorKey("con_32x", 0x7FF);
-    options_menu_skin.uTextureID_TurnSpeed[0] =
-        assets->GetImage_ColorKey("con_Smoo", 0x7FF);
+    options_menu_skin.uTextureID_Background = assets->GetImage_ColorKey("ControlBG", 0x7FF);
+    options_menu_skin.uTextureID_TurnSpeed[2] = assets->GetImage_ColorKey("con_16x", 0x7FF);
+    options_menu_skin.uTextureID_TurnSpeed[1] = assets->GetImage_ColorKey("con_32x", 0x7FF);
+    options_menu_skin.uTextureID_TurnSpeed[0] = assets->GetImage_ColorKey("con_Smoo", 0x7FF);
     options_menu_skin.uTextureID_ArrowLeft = assets->GetImage_Alpha("con_ArrL");
-    options_menu_skin.uTextureID_ArrowRight =
-        assets->GetImage_Alpha("con_ArrR");
-    options_menu_skin.uTextureID_SoundLevels[0] =
-        assets->GetImage_ColorKey("convol10", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[1] =
-        assets->GetImage_ColorKey("convol20", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[2] =
-        assets->GetImage_ColorKey("convol30", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[3] =
-        assets->GetImage_ColorKey("convol40", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[4] =
-        assets->GetImage_ColorKey("convol50", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[5] =
-        assets->GetImage_ColorKey("convol60", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[6] =
-        assets->GetImage_ColorKey("convol70", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[7] =
-        assets->GetImage_ColorKey("convol80", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[8] =
-        assets->GetImage_ColorKey("convol90", 0x7FF);
-    options_menu_skin.uTextureID_SoundLevels[9] =
-        assets->GetImage_ColorKey("convol00", 0x7FF);
-    options_menu_skin.uTextureID_FlipOnExit =
-        assets->GetImage_ColorKey("option04", 0x7FF);
-    options_menu_skin.uTextureID_AlwaysRun =
-        assets->GetImage_ColorKey("option03", 0x7FF);
-    options_menu_skin.uTextureID_ShowDamage =
-        assets->GetImage_ColorKey("option02", 0x7FF);
-    options_menu_skin.uTextureID_WalkSound =
-        assets->GetImage_ColorKey("option01", 0x7FF);
+    options_menu_skin.uTextureID_ArrowRight = assets->GetImage_Alpha("con_ArrR");
+    options_menu_skin.uTextureID_SoundLevels[0] = assets->GetImage_ColorKey("convol10", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[1] = assets->GetImage_ColorKey("convol20", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[2] = assets->GetImage_ColorKey("convol30", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[3] = assets->GetImage_ColorKey("convol40", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[4] = assets->GetImage_ColorKey("convol50", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[5] = assets->GetImage_ColorKey("convol60", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[6] = assets->GetImage_ColorKey("convol70", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[7] = assets->GetImage_ColorKey("convol80", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[8] = assets->GetImage_ColorKey("convol90", 0x7FF);
+    options_menu_skin.uTextureID_SoundLevels[9] = assets->GetImage_ColorKey("convol00", 0x7FF);
+    options_menu_skin.uTextureID_FlipOnExit = assets->GetImage_ColorKey("option04", 0x7FF);
+    options_menu_skin.uTextureID_AlwaysRun = assets->GetImage_ColorKey("option03", 0x7FF);
+    options_menu_skin.uTextureID_ShowDamage = assets->GetImage_ColorKey("option02", 0x7FF);
+    options_menu_skin.uTextureID_WalkSound = assets->GetImage_ColorKey("option01", 0x7FF);
 
     CreateButton(22, 270, options_menu_skin.uTextureID_TurnSpeed[2]->GetWidth(),
                  options_menu_skin.uTextureID_TurnSpeed[2]->GetHeight(), 1, 0,
-                 UIMSG_SetTurnSpeed, 0x80, 0, "");
+                 UIMSG_SetTurnSpeed, 0x80);
     CreateButton(93, 270, options_menu_skin.uTextureID_TurnSpeed[1]->GetWidth(),
                  options_menu_skin.uTextureID_TurnSpeed[1]->GetHeight(), 1, 0,
-                 UIMSG_SetTurnSpeed, 0x40u, 0, "");
+                 UIMSG_SetTurnSpeed, 0x40u);
     CreateButton(164, 270,
                  options_menu_skin.uTextureID_TurnSpeed[0]->GetWidth(),
                  options_menu_skin.uTextureID_TurnSpeed[0]->GetHeight(), 1, 0,
-                 UIMSG_SetTurnSpeed, 0, 0, "");
+                 UIMSG_SetTurnSpeed, 0);
 
     CreateButton(20, 303, options_menu_skin.uTextureID_WalkSound->GetWidth(),
                  options_menu_skin.uTextureID_WalkSound->GetHeight(), 1, 0,
-                 UIMSG_ToggleWalkSound, 0, 0, "");
+                 UIMSG_ToggleWalkSound, 0);
     CreateButton(128, 303, options_menu_skin.uTextureID_ShowDamage->GetWidth(),
                  options_menu_skin.uTextureID_ShowDamage->GetHeight(), 1, 0,
-                 UIMSG_ToggleShowDamage, 0, 0, "");
+                 UIMSG_ToggleShowDamage, 0);
     CreateButton(20, 325, options_menu_skin.uTextureID_AlwaysRun->GetWidth(),
                  options_menu_skin.uTextureID_AlwaysRun->GetHeight(), 1, 0,
-                 UIMSG_ToggleAlwaysRun, 0, 0, "");
+                 UIMSG_ToggleAlwaysRun, 0);
     CreateButton(128, 325, options_menu_skin.uTextureID_FlipOnExit->GetWidth(),
                  options_menu_skin.uTextureID_FlipOnExit->GetHeight(), 1, 0,
-                 UIMSG_ToggleFlipOnExit, 0, 0, "");
+                 UIMSG_ToggleFlipOnExit, 0);
 
-    pBtn_SliderLeft =
-        CreateButton(243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, 0, "",
-                     {{options_menu_skin.uTextureID_ArrowLeft}});
-    pBtn_SliderRight =
-        CreateButton(435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, 0, "",
-                     {{options_menu_skin.uTextureID_ArrowRight}});
-    CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0, 0, "");
+    pBtn_SliderLeft = CreateButton(
+        243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, GameKey::None, "",
+        {{options_menu_skin.uTextureID_ArrowLeft}});
+    pBtn_SliderRight = CreateButton(
+        435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, GameKey::None, "",
+        {{options_menu_skin.uTextureID_ArrowRight}});
+    CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0);
 
-    pBtn_SliderLeft =
-        CreateButton(243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, 0, "",
-                     {{options_menu_skin.uTextureID_ArrowLeft}});
-    pBtn_SliderRight =
-        CreateButton(435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, 0, "",
-                     {{options_menu_skin.uTextureID_ArrowRight}});
-    CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0, 0, "");
+    pBtn_SliderLeft = CreateButton(
+        243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, GameKey::None, "",
+        {{options_menu_skin.uTextureID_ArrowLeft}});
+    pBtn_SliderRight = CreateButton(
+        435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, GameKey::None, "",
+        {{options_menu_skin.uTextureID_ArrowRight}});
+    CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0);
 
-    pBtn_SliderLeft =
-        CreateButton(243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, 0, "",
-                     {{options_menu_skin.uTextureID_ArrowLeft}});
-    pBtn_SliderRight =
-        CreateButton(435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, 0, "",
-                     {{options_menu_skin.uTextureID_ArrowRight}});
-    CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0, 0, "");
+    pBtn_SliderLeft = CreateButton(
+        243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, GameKey::None, "",
+        {{options_menu_skin.uTextureID_ArrowLeft}});
+    pBtn_SliderRight = CreateButton(
+        435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, GameKey::None, "",
+        {{options_menu_skin.uTextureID_ArrowRight}});
+    CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0);
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, 0,
-                 localization->GetString(619));  // "Return to Game"
-    CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, 0x4Bu,
-                 "");
-    CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, 86, "");
+    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, GameKey::None, localization->GetString(619));  // "Return to Game"
+    CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, GameKey::K);
+    CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, GameKey::V);
 }
 
 void GUIWindow_GameOptions::Update() {
@@ -2454,42 +2239,42 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
 
     game_ui_menu_options = assets->GetImage_ColorKey("options", 0x7FF);
 
-    GUIButton *pBtn_DebugTownPortal = CreateButton(13, 140, width, height, 1, 0, UIMSG_DebugTownPortal, 0, 0, "DEBUG TOWN PORTAL");
-    GUIButton *pBtn_DebugGiveGold = CreateButton(127, 140, width, height, 1, 0, UIMSG_DebugGiveGold, 0, 0, "DEBUG GIVE GOLD (10000)");
-    GUIButton *pBtn_DebugGiveEXP = CreateButton(241, 140, width, height, 1, 0, UIMSG_DebugGiveEXP, 0, 0, "DEBUG GIVE EXP (20000)");
-    GUIButton *pBtn_DebugGiveSkillP = CreateButton(354, 140, width, height, 1, 0, UIMSG_DebugGiveSkillP, 0, 0, "DEBUG GIVE SKILL POINT (50)");
+    GUIButton *pBtn_DebugTownPortal = CreateButton(13, 140, width, height, 1, 0, UIMSG_DebugTownPortal, 0, GameKey::None, "DEBUG TOWN PORTAL");
+    GUIButton *pBtn_DebugGiveGold = CreateButton(127, 140, width, height, 1, 0, UIMSG_DebugGiveGold, 0, GameKey::None, "DEBUG GIVE GOLD (10000)");
+    GUIButton *pBtn_DebugGiveEXP = CreateButton(241, 140, width, height, 1, 0, UIMSG_DebugGiveEXP, 0, GameKey::None, "DEBUG GIVE EXP (20000)");
+    GUIButton *pBtn_DebugGiveSkillP = CreateButton(354, 140, width, height, 1, 0, UIMSG_DebugGiveSkillP, 0, GameKey::None, "DEBUG GIVE SKILL POINT (50)");
 
-    GUIButton *pBtn_DebugLearnSkill = CreateButton(13, 167, width, height, 1, 0, UIMSG_DebugLearnSkills, 0, 0, "DEBUG LEARN CLASS SKILLS");
-    GUIButton *pBtn_DebugRemoveGold = CreateButton(127, 167, width, height, 1, 0, UIMSG_DebugTakeGold, 0, 0, "DEBUG REMOVE GOLD");
-    GUIButton *pBtn_DebugAddFood = CreateButton(241, 167, width, height, 1, 0, UIMSG_DebugGiveFood, 0, 0, "DEBUG GIVE FOOD (20)");
-    GUIButton *pBtn_DebugTakeFood = CreateButton(354, 167, width, height, 1, 0, UIMSG_DebugTakeFood, 0, 0, "DEBUG REMOVE FOOD");
+    GUIButton *pBtn_DebugLearnSkill = CreateButton(13, 167, width, height, 1, 0, UIMSG_DebugLearnSkills, 0, GameKey::None, "DEBUG LEARN CLASS SKILLS");
+    GUIButton *pBtn_DebugRemoveGold = CreateButton(127, 167, width, height, 1, 0, UIMSG_DebugTakeGold, 0, GameKey::None, "DEBUG REMOVE GOLD");
+    GUIButton *pBtn_DebugAddFood = CreateButton(241, 167, width, height, 1, 0, UIMSG_DebugGiveFood, 0, GameKey::None, "DEBUG GIVE FOOD (20)");
+    GUIButton *pBtn_DebugTakeFood = CreateButton(354, 167, width, height, 1, 0, UIMSG_DebugTakeFood, 0, GameKey::None, "DEBUG REMOVE FOOD");
 
-    GUIButton *pBtn_DebugCycleAlign = CreateButton(13, 194, width, height, 1, 0, UIMSG_DebugCycleAlign, 0, 0, "DEBUG CYCLE ALIGNMENT");
-    GUIButton *pBtn_DebugWizardEye = CreateButton(127, 194, width, height, 1, 0, UIMSG_DebugWizardEye, 0, 0, "DEBUG TOGGLE WIZARD EYE");
-    GUIButton *pBtn_DebugAllMagic = CreateButton(241, 194, width, height, 1, 0, UIMSG_DebugAllMagic, 0, 0, "DEBUG TOGGLE All MAGIC");
-    GUIButton *pBtn_DebugTerrain = CreateButton(354, 194, width, height, 1, 0, UIMSG_DebugTerrain, 0, 0, "DEBUG TOGGLE TERRAIN");
+    GUIButton *pBtn_DebugCycleAlign = CreateButton(13, 194, width, height, 1, 0, UIMSG_DebugCycleAlign, 0, GameKey::None, "DEBUG CYCLE ALIGNMENT");
+    GUIButton *pBtn_DebugWizardEye = CreateButton(127, 194, width, height, 1, 0, UIMSG_DebugWizardEye, 0, GameKey::None, "DEBUG TOGGLE WIZARD EYE");
+    GUIButton *pBtn_DebugAllMagic = CreateButton(241, 194, width, height, 1, 0, UIMSG_DebugAllMagic, 0, GameKey::None, "DEBUG TOGGLE All MAGIC");
+    GUIButton *pBtn_DebugTerrain = CreateButton(354, 194, width, height, 1, 0, UIMSG_DebugTerrain, 0, GameKey::None, "DEBUG TOGGLE TERRAIN");
 
-    GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, 0, "DEBUG TOGGLE LIGHTMAP DECAL");
-    GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, 0, "DEBUG TOGGLE TURBO SPEED");
-    GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, 0, "DEBUG TOGGLE ACTORS");
-    GUIButton *pBtn_DebugDrawDist = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugDrawDist, 0, 0, "DEBUG TOGGLE EXTENDED DRAW DISTANCE");
+    GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, GameKey::None, "DEBUG TOGGLE LIGHTMAP DECAL");
+    GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, GameKey::None, "DEBUG TOGGLE TURBO SPEED");
+    GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, GameKey::None, "DEBUG TOGGLE ACTORS");
+    GUIButton *pBtn_DebugDrawDist = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugDrawDist, 0, GameKey::None, "DEBUG TOGGLE EXTENDED DRAW DISTANCE");
 
-    GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, 0, "DEBUG TOGGLE SNOW");
-    GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, 0, "DEBUG TOGGLE PORTAL OUTLINES");
-    GUIButton *pBtn_DebugPickedFace = CreateButton(241, 248, width, height, 1, 0, UIMSG_DebugPickedFace, 0, 0, "DEBUG TOGGLE SHOW PICKED FACE");
-    GUIButton *pBtn_DebugShowFPS = CreateButton(354, 248, width, height, 1, 0, UIMSG_DebugShowFPS, 0, 0, "DEBUG TOGGLE SHOW FPS");
+    GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, GameKey::None, "DEBUG TOGGLE SNOW");
+    GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, GameKey::None, "DEBUG TOGGLE PORTAL OUTLINES");
+    GUIButton *pBtn_DebugPickedFace = CreateButton(241, 248, width, height, 1, 0, UIMSG_DebugPickedFace, 0, GameKey::None, "DEBUG TOGGLE SHOW PICKED FACE");
+    GUIButton *pBtn_DebugShowFPS = CreateButton(354, 248, width, height, 1, 0, UIMSG_DebugShowFPS, 0, GameKey::None, "DEBUG TOGGLE SHOW FPS");
 
-    GUIButton *pBtn_DebugSeasonsChange = CreateButton(13, 275, width, height, 1, 0, UIMSG_DebugSeasonsChange, 0, 0, "DEBUG TOGGLE SEASONS CHANGE");
-    GUIButton *pBtn_DebugFarClipToggle = CreateButton(127, 275, width, height, 1, 0, UIMSG_DebugFarClip, 0, 0, "DEBUG TOGGLE FAR CLIP DISTANCE");
-    GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, 0, "DEBUG GENERATE RANDOM ITEM");
-    GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, 0, "DEBUG GENERATE RANDOM SPECIAL ITEM");
+    GUIButton *pBtn_DebugSeasonsChange = CreateButton(13, 275, width, height, 1, 0, UIMSG_DebugSeasonsChange, 0, GameKey::None, "DEBUG TOGGLE SEASONS CHANGE");
+    GUIButton *pBtn_DebugFarClipToggle = CreateButton(127, 275, width, height, 1, 0, UIMSG_DebugFarClip, 0, GameKey::None, "DEBUG TOGGLE FAR CLIP DISTANCE");
+    GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, GameKey::None, "DEBUG GENERATE RANDOM ITEM");
+    GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, GameKey::None, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
     //
 
-    GUIButton *pBtn_DebugKillChar = CreateButton(13, 329, width, height, 1, 0, UIMSG_DebugKillChar, 0, 0, "DEBUG KILL SELECTED CHARACTER");
-    GUIButton *pBtn_DebugEradicate = CreateButton(127, 329, width, height, 1, 0, UIMSG_DebugEradicate, 0, 0, "DEBUG ERADICATE SELECTED CHARACTER");
-    GUIButton *pBtn_DebugNoDamage = CreateButton(241, 329, width, height, 1, 0, UIMSG_DebugNoDamage, 0, 0, "DEBUG TOGGLE NO DAMAGE");
-    GUIButton *pBtn_DebugFullHeal = CreateButton(354, 329, width, height, 1, 0, UIMSG_DebugFullHeal, 0, 0, "DEBUG FULLY HEAL SELECTED CHARACTER");
+    GUIButton *pBtn_DebugKillChar = CreateButton(13, 329, width, height, 1, 0, UIMSG_DebugKillChar, 0, GameKey::None, "DEBUG KILL SELECTED CHARACTER");
+    GUIButton *pBtn_DebugEradicate = CreateButton(127, 329, width, height, 1, 0, UIMSG_DebugEradicate, 0, GameKey::None, "DEBUG ERADICATE SELECTED CHARACTER");
+    GUIButton *pBtn_DebugNoDamage = CreateButton(241, 329, width, height, 1, 0, UIMSG_DebugNoDamage, 0, GameKey::None, "DEBUG TOGGLE NO DAMAGE");
+    GUIButton *pBtn_DebugFullHeal = CreateButton(354, 329, width, height, 1, 0, UIMSG_DebugFullHeal, 0, GameKey::None, "DEBUG FULLY HEAL SELECTED CHARACTER");
 }
 
 void GUIWindow_DebugMenu::Update() {

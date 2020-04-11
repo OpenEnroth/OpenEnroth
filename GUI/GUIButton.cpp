@@ -116,7 +116,7 @@ bool GUIButton::Contains(unsigned int x, unsigned int y) {
 
 void CreateButtonInColumn(int column_pos, unsigned int control_id) {
     pDialogueWindow->CreateButton(480, 30 * column_pos + 146, 140, 30, 1, 0,
-                                  UIMSG_SelectShopDialogueOption, control_id, 0,
+                                  UIMSG_SelectShopDialogueOption, control_id, GameKey::None,
                                   "");
 }
 
@@ -158,12 +158,12 @@ void CreateAwardsScrollBar() {
         }
         pBtn_Up = pGUIWindow_CurrentMenu->CreateButton(
             438, 46, ui_ar_up_up->GetWidth(), ui_ar_up_up->GetHeight(), 1, 0,
-            UIMSG_ClickAwardsUpBtn, 0, 0, "", {{ui_ar_up_up, ui_ar_up_dn}});
+            UIMSG_ClickAwardsUpBtn, 0, GameKey::None, "", {{ui_ar_up_up, ui_ar_up_dn}});
         pBtn_Down = pGUIWindow_CurrentMenu->CreateButton(
             438, 292, ui_ar_dn_up->GetWidth(), ui_ar_dn_up->GetHeight(), 1, 0,
-            UIMSG_ClickAwardsDownBtn, 0, 0, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
+            UIMSG_ClickAwardsDownBtn, 0, GameKey::None, "", {{ui_ar_dn_up, ui_ar_dn_dn}});
         ptr_507BA4 = pGUIWindow_CurrentMenu->CreateButton(
-            440, 62, 16, 232, 1, 0, UIMSG_ClickAwardScrollBar, 0, 0, "");
+            440, 62, 16, 232, 1, 0, UIMSG_ClickAwardScrollBar, 0, GameKey::None, "");
     }
 }
 
@@ -171,8 +171,8 @@ void UI_CreateEndConversationButton() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(74),  // "End Conversation"
         {{ui_exit_cancel_button_background}});
-    pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, 0, "");
+    pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
 }
