@@ -2520,11 +2520,11 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
         pSRZBufferLineOffsets[i] = window->GetWidth() * i;
     }
 
-    pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL", nullptr);
-    pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL", nullptr);
-    pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL", nullptr);
-    pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL", nullptr);
-    pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL", nullptr);
+    pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL");
+    pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL");
+    pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL");
+    pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL");
+    pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL");
 }
 
 static void LoadPartyBuffIcons() {

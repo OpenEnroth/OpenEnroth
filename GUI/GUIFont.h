@@ -7,8 +7,7 @@ struct FontData;
 
 class GUIFont {
  public:
-    static GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette,
-                             ...);
+    static GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette);
 
     bool IsCharValid(unsigned char c) const;
     unsigned int GetHeight() const;

@@ -83,8 +83,8 @@ void GUIWindow_Book::InitializeFonts() {
 
     ui_book_map_frame = assets->GetImage_Alpha("mapbordr");
 
-    pBookFont = GUIFont::LoadFont("book.fnt", "FONTPAL", NULL);
-    pBook2Font = GUIFont::LoadFont("book2.fnt", "FONTPAL", NULL);
-    pAutonoteFont = GUIFont::LoadFont("autonote.fnt", "FONTPAL", NULL);
-    pSpellFont = GUIFont::LoadFont("spell.fnt", "FONTPAL", NULL);
+    pBookFont = GUIFont::LoadFont("book.fnt", "FONTPAL");
+    pBook2Font = GUIFont::LoadFont("book2.fnt", "FONTPAL");
+    pAutonoteFont = GUIFont::LoadFont("autonote.fnt", "FONTPAL");
+    pSpellFont = GUIFont::LoadFont("spell.fnt", "FONTPAL");
 }

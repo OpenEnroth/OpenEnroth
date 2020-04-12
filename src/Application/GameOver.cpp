@@ -67,7 +67,7 @@ void Application::GameOver_Loop(int v15) {
     pWindow.uFrameHeight = 338;
     pWindow.uFrameZ = 543;
     pWindow.uFrameW = 397;
-    pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL", NULL);
+    pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
     if (pParty->IsPartyGood())
         v1 = localization->GetString(
             675);  // "Splendid job!  With the activation of the Gate, a thousand

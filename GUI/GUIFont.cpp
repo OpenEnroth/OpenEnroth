@@ -53,27 +53,19 @@ struct FontData {
 };
 #pragma pack(pop)
 
-GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette, ...) {
+GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     // static_assert(sizeof(GUICharMetric) == 12, "Wrong GUICharMetric type size");
     // static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
 
-    unsigned int palletes_count = 0;
-    va_list palettes_ptr;
-
     GUIFont *pFont = new GUIFont;
     pFont->pData = (FontData*)pIcons_LOD->LoadCompressedTexture(pFontFile);
-    va_start(palettes_ptr, pFontFile);
 
-    while (NULL != (pFontPalette = va_arg(palettes_ptr, const char *))) {
-        int pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_24BIT_PALETTE);
-        if (pallete_index == -1)
-            Error("Unable to open %s", pFontPalette);
+    int pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_24BIT_PALETTE);
+    if (pallete_index == -1)
+        Error("Unable to open %s", pFontPalette);
 
-        pFont->pData->pFontPalettes[palletes_count] = pIcons_LOD->pTextures[pallete_index].pPalette24;
-        ++palletes_count;
-    }
-    va_end(palettes_ptr);
-    pFont->pData->palletes_count = palletes_count;
+    pFont->pData->pFontPalettes[0] = pIcons_LOD->pTextures[pallete_index].pPalette24;
+    pFont->pData->palletes_count = 1;
     return pFont;
 }
 
