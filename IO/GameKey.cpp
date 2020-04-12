@@ -95,9 +95,8 @@ bool TryParseDisplayName(const std::string& displayName, GameKey *outKey) {
     auto displayNameMapping = std::find_if(
         displayNames.begin(),
         displayNames.end(),
-        myMap.begin(), myMap.end(),
-        [displayNameStr](const std::pair<GameKey, const char*>& i) -> bool {
-            return stricmp(displayNameStr, t.second.x) == 0;
+        [displayNameStr](const std::pair<GameKey, const char *> &i) -> bool {
+            return stricmp(displayNameStr, i.second.x) == 0;
         }
     );
 

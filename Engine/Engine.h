@@ -23,6 +23,9 @@
 
 #include "Engine/Graphics/Polygon.h"
 
+#include "IO/Keyboard.h"
+#include "IO/UserInputHandler.h"
+
 void Engine_DeinitializeAndTerminate(int exitCode);
 
 bool FileExists(const char *fname);
@@ -117,7 +120,6 @@ struct Engine {
     bool AlterGamma_ODM(struct ODMFace *pFace, unsigned int *pColor);
     bool draw_debug_outlines();
     bool _44EEA7();
-    bool _44F07B();
     void PushStationaryLights(int a2);
     // void PrepareBloodsplats();
     void Deinitialize();
@@ -416,6 +418,11 @@ struct Engine {
     }
 
 
+    std::shared_ptr<UserInputHandler> GetUserInputHandler() const {
+        return userInputHandler;
+    }
+
+
     std::shared_ptr<const EngineConfig> config;
     Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];
@@ -470,6 +477,8 @@ struct Engine {
     //Keyboard *keyboard = nullptr;
     ParticleEngine *particle_engine = nullptr;
     Vis *vis = nullptr;
+    std::shared_ptr<UserInputHandler> userInputHandler;
+    std::shared_ptr<KeyboardActionMapping> keyboardActionMapping;
 };
 #pragma pack(pop)
 
