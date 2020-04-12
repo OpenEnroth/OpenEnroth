@@ -124,7 +124,7 @@ static std::string s_data_path;
 void SetDataPath(const char *data_path) { s_data_path = data_path; }
 
 std::string MakeDataPath(const char *file_rel_path) {
-    return s_data_path + "\\" + file_rel_path;
+    return s_data_path + "/" + file_rel_path;
 }
 
 std::shared_ptr<Engine> engine;
