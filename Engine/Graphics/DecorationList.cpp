@@ -8,6 +8,8 @@
 #include "Level/Decoration.h"
 #include "Sprites.h"
 
+#include "Platform/Api.h"
+
 struct DecorationList *pDecorationList;
 
 //----- (0045864C) --------------------------------------------------------
@@ -47,7 +49,7 @@ void DecorationList::InitializeDecorationSprite(unsigned int uDecID) {
 }
 
 void DecorationList::ToFile() {
-    FILE *file = fopen("data\\ddeclist.bin", "wb");
+    FILE *file = fcaseopen("data/ddeclist.bin", "wb");
     if (file == nullptr) {
         Error("Unable to save ddeclist.bin!", 0);
     }

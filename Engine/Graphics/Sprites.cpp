@@ -19,6 +19,9 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/PaletteManager.h"
 
+#include "Platform/Api.h"
+
+
 struct SpriteFrameTable *pSpriteFrameTable;
 
 //----- (0044D4D8) --------------------------------------------------------
@@ -335,7 +338,7 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
 }
 
 void SpriteFrameTable::ToFile() {
-    FILE *file = fopen("data\\dsft.bin", "wb");
+    FILE *file = fcaseopen("data/dsft.bin", "wb");
     if (file == nullptr) {
         Error("Unable to save dsft.bin!");
     }

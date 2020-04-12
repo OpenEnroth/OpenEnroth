@@ -15,7 +15,10 @@
 
 #include "Engine/Tables/FrameTableInc.h"
 
+#include "Platform/Api.h"
+
 #include "PaletteManager.h"
+
 
 struct TextureFrameTable *pTextureFrameTable;
 
@@ -71,7 +74,7 @@ Texture *TextureFrame::GetTexture() {
 
 void TextureFrameTable::ToFile() {
     TextureFrameTable *v1 = this;
-    FILE *file = fopen("data\\dtft.bin", "wb");
+    FILE *file = fcaseopen("data/dtft.bin", "wb");
     if (file == nullptr) {
         Error("Unable to save dtft.bin!", 0);
     }

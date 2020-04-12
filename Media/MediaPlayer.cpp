@@ -559,7 +559,7 @@ class VideoList {
             return;
         }
 
-        file = fopen(file_path.c_str(), "rb");
+        file = fcaseopen(file_path.c_str(), "rb");
         if (file == nullptr) {
             logger->Warning(L"Can't open video file: %S", file_path.c_str());
             return;
@@ -622,11 +622,11 @@ class VideoList {
 
 void MPlayer::Initialize() {
     might_list = new VideoList();
-    std::string filename = MakeDataPath("anims\\might7.vid");
+    std::string filename = MakeDataPath("anims/might7.vid");
     might_list->Initialize(filename);
 
     magic_list = new VideoList();
-    filename = MakeDataPath("anims\\magic7.vid");
+    filename = MakeDataPath("anims/magic7.vid");
     magic_list->Initialize(filename);
 }
 
@@ -789,8 +789,7 @@ bool MPlayer::StopMovie() {
     return false;
 }
 
-FILE *MPlayer::LoadMovie(const std::string &video_name, size_t &size,
-                         size_t &offset) {
+FILE *MPlayer::LoadMovie(const std::string &video_name, size_t &size, size_t &offset) {
     std::string pVideoNameBik = video_name + ".bik";
     std::transform(pVideoNameBik.begin(), pVideoNameBik.end(),
                    pVideoNameBik.begin(), ::tolower);

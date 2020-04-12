@@ -1134,7 +1134,7 @@ void Render::SaveWinnersCertificate(const char *file_name) {
 
 void Render::SavePCXImage32(const String &filename, uint16_t *picture_data,
                             int width, int height) {
-    FILE *result = fopen(filename.c_str(), "wb");
+    FILE *result = fcaseopen(filename.c_str(), "wb");
     if (result == nullptr) {
         return;
     }
@@ -1151,7 +1151,7 @@ void Render::SavePCXImage32(const String &filename, uint16_t *picture_data,
 
 void Render::SavePCXImage16(const String &filename, uint16_t *picture_data,
                             int width, int height) {
-    FILE *result = fopen(filename.c_str(), "wb");
+    FILE *result = fcaseopen(filename.c_str(), "wb");
     if (result == nullptr) {
         return;
     }

@@ -1,8 +1,10 @@
 #include "Engine/Point.h"
 
 #include <string>
+#include <cstring>
 #include <vector>
 
+#include <dirent.h>
 #include <sys/time.h>
 
 void OS_MsgBox(const char *msg, const char *title) {
@@ -96,41 +98,6 @@ int OS_GetAppInt(const char* pKey, int uDefValue) {
     cbData = 4;
     *(int *)Data = uDefValue;
 
-    /*
-    HKEY hKey;            // [sp+18h] [bp-10h]@1
-    HKEY phkResult;       // [sp+1Ch] [bp-Ch]@1
-    HKEY v10;             // [sp+20h] [bp-8h]@1
-    HKEY v11;             // [sp+24h] [bp-4h]@1
-
-    v11 = 0;
-    v10 = 0;
-    hKey = 0;
-    phkResult = 0;
-
-    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0,
-                       KEY_READ | KEY_WOW64_32KEY, &hKey)) {  // for 64 bit
-        if (!RegCreateKeyExA(hKey, "New World Computing", 0, "", 0,
-                             KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
-            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, "", 0,
-                                 KEY_ALL_ACCESS, 0, &v10, &dwDisposition)) {
-                if (!RegCreateKeyExA(v10, "1.0", 0, "", 0, KEY_ALL_ACCESS, 0,
-                                     &v11, &dwDisposition)) {
-                    LSTATUS status;
-                    if (status = RegQueryValueExA(v11, lpValueName, 0, 0, Data,
-                                                  &cbData)) {
-                        status;
-                        GetLastError();
-                        RegSetValueExA(v11, lpValueName, 0, 4, Data, 4);
-                    }
-                    RegCloseKey(v11);
-                }
-                RegCloseKey(v10);
-            }
-            RegCloseKey(phkResult);
-        }
-        RegCloseKey(hKey);
-    }
-    */
     return *(int *)Data;
 }
 
@@ -140,3 +107,90 @@ void OS_GetAppString(const char* pKeyName, char* pOutString, int uBufLen,
     const char* pDefaultValue) {}
 
 void OS_SetAppInt(const char* pKey, int val) {}
+
+
+// r must have strlen(path) + 2 bytes
+static int casepath(char const* path, char* r)
+{
+    size_t l = strlen(path);
+    char *p = (char*)alloca(l + 1);
+    strcpy(p, path);
+    size_t rl = 0;
+
+    DIR *d;
+    if (p[0] == '/')
+    {
+        d = opendir("/");
+        p = p + 1;
+    }
+    else
+    {
+        d = opendir(".");
+        r[0] = '.';
+        r[1] = 0;
+        rl = 1;
+    }
+
+    int last = 0;
+    char* c = strsep(&p, "/");
+    while (c)
+    {
+        if (!d)
+        {
+            return 0;
+        }
+
+        if (last)
+        {
+            closedir(d);
+            return 0;
+        }
+
+        r[rl] = '/';
+        rl += 1;
+        r[rl] = 0;
+
+        struct dirent *e = readdir(d);
+        while (e)
+        {
+            if (strcasecmp(c, e->d_name) == 0)
+            {
+                strcpy(r + rl, e->d_name);
+                rl += strlen(e->d_name);
+
+                closedir(d);
+                d = opendir(r);
+
+                break;
+            }
+
+            e = readdir(d);
+        }
+
+        if (!e)
+        {
+            strcpy(r + rl, c);
+            rl += strlen(c);
+            last = 1;
+        }
+
+        c = strsep(&p, "/");
+    }
+
+    if (d) closedir(d);
+    return 1;
+}
+
+FILE *fcaseopen(char const *path, char const *mode)
+{
+    FILE *f = fopen(path, mode);
+    if (!f)
+    {
+        char *r = (char*)alloca(strlen(path) + 2);
+        if (casepath(path, r))
+        {
+            f = fopen(r, mode);
+        }
+    }
+    return f;
+}

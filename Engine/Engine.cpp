@@ -124,7 +124,7 @@ static std::string s_data_path;
 void SetDataPath(const char *data_path) { s_data_path = data_path; }
 
 std::string MakeDataPath(const char *file_rel_path) {
-    return s_data_path + "\\" + file_rel_path;
+    return s_data_path + "/" + file_rel_path;
 }
 
 std::shared_ptr<Engine> engine;
@@ -868,8 +868,7 @@ void FinalInitialization() {
 
 bool MM7_LoadLods(const char *mm7_path) {
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(StringPrintf("%s\\data\\icons.lod", mm7_path),
-                          "icons")) {
+    if (!pIcons_LOD->Load(StringPrintf("%s/data/icons.lod", mm7_path), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
@@ -877,21 +876,20 @@ bool MM7_LoadLods(const char *mm7_path) {
 
     pEvents_LOD = new LODFile_IconsBitmaps;
     if (!pEvents_LOD->Load(
-            StringPrintf("%s\\data\\events.lod", mm7_path).c_str(), "icons")) {
+            StringPrintf("%s/data/events.lod", mm7_path).c_str(), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->Load(
-            StringPrintf("%s\\data\\bitmaps.lod", mm7_path).c_str(),
-            "bitmaps")) {
+            StringPrintf("%s/data/bitmaps.lod", mm7_path).c_str(), "bitmaps")) {
         Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(StringPrintf("%s\\data\\sprites.lod", mm7_path))) {
+    if (!pSprites_LOD->LoadSprites(StringPrintf("%s/data/sprites.lod", mm7_path))) {
         Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
@@ -949,8 +947,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
     localization->Initialize();
 
     {
-        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsft.bin")
-                                       : nullptr,
+        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsft.bin") : nullptr,
              *sft_mm8 = nullptr;
         void *sft_mm7 = pEvents_LOD->LoadCompressedTexture("dsft.bin");
         pSpriteFrameTable = new SpriteFrameTable;
@@ -959,8 +956,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(sft_mm7);
         free(sft_mm8);
 
-        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dtft.bin")
-                                       : nullptr,
+        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dtft.bin") : nullptr,
              *tft_mm8 = nullptr;
         void *tft_mm7 = pEvents_LOD->LoadCompressedTexture("dtft.bin");
         pTextureFrameTable = new TextureFrameTable;
@@ -970,8 +966,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(tft_mm8);
 
         void *tiles_mm6 = pIcons_LOD_mm6
-                              ? pIcons_LOD_mm6->LoadCompressedTexture("dtile.bin")
-                              : nullptr,
+                              ? pIcons_LOD_mm6->LoadCompressedTexture("dtile.bin") : nullptr,
              *tiles_mm8 = nullptr;
         void *tiles_mm7 = pEvents_LOD->LoadCompressedTexture("dtile.bin");
         pTileTable = new TileTable;
@@ -980,8 +975,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(tiles_mm7);
         free(tiles_mm8);
 
-        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dpft.bin")
-                                       : nullptr,
+        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dpft.bin") : nullptr,
              *pft_mm8 = nullptr;
         void *pft_mm7 = pEvents_LOD->LoadCompressedTexture("dpft.bin");
         pPlayerFrameTable = new PlayerFrameTable;
@@ -990,8 +984,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(pft_mm7);
         free(pft_mm8);
 
-        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dift.bin")
-                                       : nullptr,
+        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dift.bin") : nullptr,
              *ift_mm8 = nullptr;
         void *ift_mm7 = pEvents_LOD->LoadCompressedTexture("dift.bin");
         pIconsFrameTable = new IconFrameTable;
@@ -1000,9 +993,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(ift_mm7);
         free(ift_mm8);
 
-        void *decs_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadCompressedTexture("ddeclist.bin")
-                             : nullptr,
+        void *decs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("ddeclist.bin") : nullptr,
              *decs_mm8 = nullptr;
         void *decs_mm7 = pEvents_LOD->LoadCompressedTexture("ddeclist.bin");
         pDecorationList = new DecorationList;
@@ -1011,9 +1002,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(decs_mm7);
         free(decs_mm8);
 
-        void *objs_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadCompressedTexture("dobjlist.bin")
-                             : nullptr,
+        void *objs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dobjlist.bin") : nullptr,
              *objs_mm8 = nullptr;
         void *objs_mm7 = pEvents_LOD->LoadCompressedTexture("dobjlist.bin");
         pObjectList = new ObjectList;
@@ -1022,9 +1011,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(objs_mm7);
         free(objs_mm8);
 
-        void *mons_mm6 = pIcons_LOD_mm6
-                             ? pIcons_LOD_mm6->LoadCompressedTexture("dmonlist.bin")
-                             : nullptr,
+        void *mons_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dmonlist.bin") : nullptr,
              *mons_mm8 = nullptr;
         void *mons_mm7 = pEvents_LOD->LoadCompressedTexture("dmonlist.bin");
         pMonsterList = new MonsterList;
@@ -1033,9 +1020,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(mons_mm7);
         free(mons_mm8);
 
-        void *chests_mm6 = pIcons_LOD_mm6
-                               ? pIcons_LOD_mm6->LoadCompressedTexture("dchest.bin")
-                               : nullptr,
+        void *chests_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dchest.bin") : nullptr,
              *chests_mm8 = nullptr;
         void *chests_mm7 = pEvents_LOD->LoadCompressedTexture("dchest.bin");
         pChestList = new ChestList;
@@ -1044,9 +1029,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(chests_mm7);
         free(chests_mm8);
 
-        void *overlays_mm6 = pIcons_LOD_mm6
-                                 ? pIcons_LOD_mm6->LoadCompressedTexture("doverlay.bin")
-                                 : nullptr,
+        void *overlays_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("doverlay.bin") : nullptr,
              *overlays_mm8 = nullptr;
         void *overlays_mm7 = pEvents_LOD->LoadCompressedTexture("doverlay.bin");
         pOverlayList = new OverlayList;
@@ -1055,9 +1038,7 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
         free(overlays_mm7);
         free(overlays_mm8);
 
-        void *sounds_mm6 = pIcons_LOD_mm6
-                               ? pIcons_LOD_mm6->LoadCompressedTexture("dsounds.bin")
-                               : nullptr,
+        void *sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsounds.bin") : nullptr,
              *sounds_mm8 = nullptr;
         void *sounds_mm7 = pEvents_LOD->LoadCompressedTexture("dsounds.bin");
         pSoundList = new SoundList;
@@ -1106,10 +1087,8 @@ void Engine::SecondaryInitialization() {
         pSoundList->Initialize();
 
     for (uint i = 0; i < 4; ++i) {
-        static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA",
-                                              "wizeyeA"};
-        static unsigned short _4E98D0[4][4] = {
-            {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0}};
+        static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
+        static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
 
         // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
         pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
