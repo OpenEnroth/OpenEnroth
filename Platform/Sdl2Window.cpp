@@ -214,7 +214,7 @@ bool Sdl2Window::TryMapKeyCode(SDL_Keycode key, bool uppercase, int* outKey) con
     return false;
 }
 
-static std::map<SDL_Scancode, GameKey> scancode_lookup =
+std::map<SDL_Scancode, GameKey> scancode_lookup =
 {
     { SDL_SCANCODE_F1,              GameKey::F1 },
     { SDL_SCANCODE_F2,              GameKey::F2 },

@@ -105,6 +105,8 @@ void Game::Run() {
     ::engine = engine;
 
     engine->Initialize();
+    userInputHandler = engine->GetUserInputHandler();
+    //this->keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
 
     window->Activate();
 

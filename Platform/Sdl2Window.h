@@ -1,8 +1,10 @@
 #pragma once
+#include <memory>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "Platform/OSWindow.h"
+#include "Platform/Sdl2UserInputProvider.h";
 
 class Sdl2Window : public OSWindow {
  public:
@@ -33,6 +35,10 @@ class Sdl2Window : public OSWindow {
     void PeekMessageLoop() override;
 
     void *GetWinApiHandle() override;
+
+    std::shared_ptr<IUserInputProvider> GetUserInputProvider() override {
+        return std::make_shared<Sdl2UserInputProvider>();
+    }
 
     // window-renderer integration, probably should be a separate class
     void OpenGlCreate() override;

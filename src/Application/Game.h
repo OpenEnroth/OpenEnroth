@@ -30,8 +30,8 @@ class Game {
          //this->keyboardController = std::make_shared<KeyboardController>(/*std::make_shared<Keyboard>()*/nullptr);
          //::keyboardController = keyboardController.get();
 
-         this->keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
-         this->userInputHandler = std::make_shared<UserInputHandler>(/* get input provider from OI window */);
+         //this->keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
+         //this->userInputHandler = std::make_shared<UserInputHandler>(/* get input provider from OI window */);
      }
 
      bool Configure(std::shared_ptr<const Configuration> config);
@@ -52,8 +52,8 @@ class Game {
      Log *log = nullptr;
      Mouse *mouse = nullptr;
 
-     std::shared_ptr<KeyboardActionMapping> keyboardActionMapping;
-     std::shared_ptr<UserInputHandler> userInputHandler;
+     //std::shared_ptr<KeyboardActionMapping> keyboardActionMapping;
+     //std::shared_ptr<UserInputHandler> userInputHandler;
      DecalBuilder *decal_builder = nullptr;
      Vis *vis = nullptr;
 

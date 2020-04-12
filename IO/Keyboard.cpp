@@ -28,16 +28,6 @@ KeyboardActionMapping *keyboardActionMapping = nullptr;
 
 extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 
-//----- (0044F07B) --------------------------------------------------------
-bool Engine::_44F07B() {
-    if (!keyboard->IsKeyBeingHeld(GameKey::Shift) &&
-            !keyboard->IsKeyBeingHeld(GameKey::Shift) &&
-            !keyboard->IsKeyBeingHeld(GameKey::Shift) ||
-        (!keyboard->WasKeyPressed(GameKey::F11) && keyboard->WasKeyPressed(GameKey::F11)))
-        return true;
-    return false;
-}
-
 class CKeyListElement {
  public:
     std::string m_keyName;
