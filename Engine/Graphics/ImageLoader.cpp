@@ -9,6 +9,9 @@
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
 
+#include "Platform/Api.h"
+
+
 uint32_t *MakeImageSolid(unsigned int width, unsigned int height,
                          uint8_t *pixels, uint8_t *palette) {
     uint32_t *res = new uint32_t[width * height];
@@ -188,7 +191,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     *pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    FILE *file = fopen(this->resource_name.c_str(), "rb");
+    FILE *file = fcaseopen(this->resource_name.c_str(), "rb");
     if (!file) {
         log->Warning(L"Unable to load %s", this->resource_name.c_str());
         return false;

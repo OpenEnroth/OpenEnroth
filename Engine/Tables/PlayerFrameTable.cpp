@@ -2,7 +2,10 @@
 
 #include "Engine/Engine.h"
 
+#include "Platform/Api.h"
+
 #include "FrameTableInc.h"
+
 
 //----- (00494AED) --------------------------------------------------------
 unsigned int PlayerFrameTable::GetFrameIdByExpression(
@@ -67,7 +70,7 @@ void PlayerFrameTable::ToFile() {
     PlayerFrameTable *Str = this;
 
     v1 = Str;
-    v2 = fopen("data\\dpft.bin", "wb");
+    v2 = fcaseopen("data/dpft.bin", "wb");
     v3 = v2;
     if (!v2) Error("Unable to save dpft.bin");
     fwrite(v1, 4, 1, v2);
@@ -124,7 +127,7 @@ int PlayerFrameTable::FromFileTxt(const char *Args) {
 
     __debugbreak();  // Ritor1;
     // TileTable::dtor((TileTable *)this);
-    v3 = fopen(Args, "r");
+    v3 = fcaseopen(Args, "r");
     File = v3;
     if (!v3) Error("PlayerFrameTable::load - Unable to open file: %s.", Args);
     v4 = 0;

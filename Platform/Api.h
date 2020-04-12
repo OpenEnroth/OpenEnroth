@@ -33,3 +33,5 @@ bool OS_IfShiftPressed();
 bool OS_IfCtrlPressed();
 
 std::vector<std::string> OS_FindFiles(const std::string &folder, const std::string &mask);
+
+FILE* fcaseopen(char const* path, char const* mode);

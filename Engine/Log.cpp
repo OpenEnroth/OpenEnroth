@@ -49,7 +49,7 @@ void log_error(const char *pMessage) {
     FILE *v3;        // esi@1
 
     v1 = pMessage;
-    f = fopen("errorlog.txt", "a");
+    f = fcaseopen("errorlog.txt", "a");
     v3 = f;
     if (f) {
         fprintf(f, "%s\n", v1);

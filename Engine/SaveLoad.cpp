@@ -49,9 +49,9 @@ bool CopyFile(const String &from, const String &to) {
     int bytes_read = 0;
     int bytes_wrote = 0;
 
-    FILE *copy_from = fopen(from.c_str(), "rb");
+    FILE *copy_from = fcaseopen(from.c_str(), "rb");
     if (copy_from) {
-        FILE *copy_to = fopen(to.c_str(), "wb+");
+        FILE *copy_to = fcaseopen(to.c_str(), "wb+");
         if (copy_to) {
             fseek(copy_from, 0, SEEK_END);
             file_size = ftell(copy_from);
@@ -84,9 +84,9 @@ void LoadGame(unsigned int uSlot) {
 
     pNew_LOD->CloseWriteFile();
 
-    String filename = "saves\\" + pSavegameList->pFileList[uSlot];
+    String filename = "saves/" + pSavegameList->pFileList[uSlot];
     filename = MakeDataPath(filename.c_str());
-    String to_file_path = MakeDataPath("data\\new.lod");
+    String to_file_path = MakeDataPath("data/new.lod");
     remove(to_file_path.c_str());
     if (!CopyFile(filename, to_file_path)) {
         Error("Failed to copy: %s", filename.c_str());
@@ -410,22 +410,21 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
                 data_write_pos += 2;
             }
+
             memcpy(data_write_pos, &uNumActors, 4);
             data_write_pos += 4;
             memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
             data_write_pos += uNumActors * sizeof(Actor);
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
-            memcpy(data_write_pos, pSpriteObjects.data(),
-                   112 * uNumSpriteObjects);
+            memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
             data_write_pos += 112 * uNumSpriteObjects;
 
             data_write_pos = ChestsSerialize(data_write_pos);
 
             memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
             data_write_pos += 16000;
-            memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata,
-                   pIndoor->blv.uDoors_ddata_Size);
+            memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata, pIndoor->blv.uDoors_ddata_Size);
             data_write_pos += pIndoor->blv.uDoors_ddata_Size;
             memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
             data_write_pos += 200;
@@ -439,13 +438,11 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             }
             pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
             pOutdoor->ddm.uNumDecorations = uNumLevelDecorations;
-            memcpy(data_write_pos, &pOutdoor->ddm,
-                   sizeof(DDM_DLV_Header));  // 0x28
+            memcpy(data_write_pos, &pOutdoor->ddm, sizeof(DDM_DLV_Header));  // 0x28
             data_write_pos += sizeof(DDM_DLV_Header);
             memcpy(data_write_pos, pOutdoor->uFullyRevealedCellOnMap, 0x3C8);
             data_write_pos += 968;
-            memcpy(data_write_pos, pOutdoor->uPartiallyRevealedCellOnMap,
-                   0x3C8);
+            memcpy(data_write_pos, pOutdoor->uPartiallyRevealedCellOnMap, 0x3C8);
             data_write_pos += 968;
             for (BSPModel &model : pOutdoor->pBModels) {
                 for (ODMFace &face : model.pFaces) {
@@ -497,9 +494,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         free(compressed_buf);
     }
     free(uncompressed_buff);
+
     if (IsAutoSAve) {
-        if (!CopyFile(MakeDataPath("data\\new.lod"),
-                      MakeDataPath("saves\\autosave.mm7"))) {
+        if (!CopyFile(MakeDataPath("data/new.lod"), MakeDataPath("saves/autosave.mm7"))) {
             logger->Warning(L"Copy autosave.mm7 failed");
         }
     }
@@ -518,9 +515,9 @@ void DoSavegame(unsigned int uSlot) {
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
         pNew_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
         pNew_LOD->CloseWriteFile();  //закрыть
-        String file_path = StringPrintf("saves\\save%03d.mm7", uSlot);
+        String file_path = StringPrintf("saves/save%03d.mm7", uSlot);
         file_path = MakeDataPath(file_path.c_str());
-        CopyFile(MakeDataPath("data\\new.lod"), file_path);
+        CopyFile(MakeDataPath("data/new.lod"), file_path);
     }
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
@@ -568,7 +565,7 @@ void SaveNewGame() {
         pNew_LOD->CloseWriteFile();
     }
 
-    String file_path = MakeDataPath("data\\new.lod");
+    String file_path = MakeDataPath("data/new.lod");
     remove(file_path.c_str());  // удалить new.lod
 
     LOD::FileHeader header;  // заголовок

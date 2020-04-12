@@ -7,6 +7,8 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
 
+#include "Platform/Api.h"
+
 LODFile_IconsBitmaps *pEvents_LOD = nullptr;
 
 LODFile_IconsBitmaps *pIcons_LOD = nullptr;
@@ -271,7 +273,7 @@ int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
     dir.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
     pLODName = lod_name;
 
-    pFile = fopen(pLODName.c_str(), "wb+");
+    pFile = fcaseopen(pLODName.c_str(), "wb+");
     if (!pFile) return 3;
     fwrite(pHeader, sizeof(LOD::FileHeader), 1, pFile);
     fwrite(&dir, sizeof(LOD::Directory), 1, pFile);
@@ -463,7 +465,7 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     }
 
     String Filename = "lod.tmp";
-    FILE *tmp_file = fopen(Filename.c_str(), "wb+");
+    FILE *tmp_file = fcaseopen(Filename.c_str(), "wb+");
     if (tmp_file == nullptr) {
         return 5;
     }
@@ -520,7 +522,7 @@ int LOD::WriteableFile::CreateTempFile() {
 
     if (pIOBuffer && uIOBufferSize) {
         uNumSubDirs = 0;
-        pOutputFileHandle = fopen("lodapp.tmp", "wb+");
+        pOutputFileHandle = fcaseopen("lodapp.tmp", "wb+");
         return pOutputFileHandle ? 1 : 7;
     } else {
         return 5;
@@ -587,7 +589,7 @@ unsigned int LOD::WriteableFile::Write(const String &file_name, const void *pDir
 
     int size_correction = 0;
     String Filename = "lod.tmp";
-    FILE *tmp_file = fopen(Filename.c_str(), "wb+");
+    FILE *tmp_file = fcaseopen(Filename.c_str(), "wb+");
     if (!tmp_file) return 5;
     if (!bRewrite_data)
         size_correction = 0;
@@ -684,7 +686,7 @@ LOD::WriteableFile::WriteableFile() {
 }
 
 bool LOD::WriteableFile::LoadFile(const String &pFilename, bool bWriting) {
-    pFile = fopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
+    pFile = fcaseopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
     if (pFile == nullptr) {
         return false;  // возможно файл не закрыт, поэтому не открывается
     }
@@ -765,7 +767,7 @@ bool LOD::File::OpenFile(const String &sFilename) {
         Close();
     }
 
-    pFile = fopen(sFilename.c_str(), "rb");
+    pFile = fcaseopen(sFilename.c_str(), "rb");
     if (pFile == nullptr) {
         return false;
     }

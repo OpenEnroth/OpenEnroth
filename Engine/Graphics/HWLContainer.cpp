@@ -7,6 +7,9 @@
 #include "Engine/Log.h"
 #include "Engine/ZlibWrapper.h"
 
+#include "Platform/Api.h"
+
+
 #pragma pack(push, 1)
 struct HWLHeader {
     uint32_t uSignature;
@@ -26,7 +29,7 @@ HWLContainer::~HWLContainer() {
 }
 
 bool HWLContainer::Open(const String &pFilename) {
-    pFile = fopen(pFilename.c_str(), "rb");
+    pFile = fcaseopen(pFilename.c_str(), "rb");
     if (!pFile) {
         log->Warning(L"Failed to open file: %S", pFilename.c_str());
         return false;

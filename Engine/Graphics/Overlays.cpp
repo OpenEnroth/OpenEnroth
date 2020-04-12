@@ -14,7 +14,10 @@
 
 #include "GUI/GUIWindow.h"
 
+#include "Platform/Api.h"
+
 #include "Sprites.h"
+
 
 struct OtherOverlayList *pOtherOverlayList = new OtherOverlayList;  // idb
 struct OverlayList *pOverlayList = new OverlayList;
@@ -107,7 +110,7 @@ void OverlayList::ToFile() {
     FILE *v2;  // eax@1
     // FILE *v3; // edi@1
 
-    v2 = fopen("data\\doverlay.bin", "wb");
+    v2 = fcaseopen("data/doverlay.bin", "wb");
     // v3 = v2;
     if (!v2) Error("Unable to save doverlay.bin!");
     fwrite(this, 4, 1, v2);
@@ -152,7 +155,7 @@ bool OverlayList::FromFileTxt(const char *Args) {
     v3 = 0;
     this->pOverlays = nullptr;
     this->uNumOverlays = 0;
-    v4 = fopen(Args, "r");
+    v4 = fcaseopen(Args, "r");
     File = v4;
     if (!v4) Error("ObjectDescriptionList::load - Unable to open file: %s.");
 
