@@ -1,8 +1,10 @@
 #include "Engine/Point.h"
 
 #include <string>
+#include <cstring>
 #include <vector>
 
+#include <dirent.h>
 #include <sys/time.h>
 
 void OS_MsgBox(const char *msg, const char *title) {
@@ -111,7 +113,7 @@ void OS_SetAppInt(const char* pKey, int val) {}
 static int casepath(char const* path, char* r)
 {
     size_t l = strlen(path);
-    char* p = alloca(l + 1);
+    char *p = (char*)alloca(l + 1);
     strcpy(p, path);
     size_t rl = 0;
 
@@ -184,7 +186,7 @@ FILE *fcaseopen(char const *path, char const *mode)
     FILE *f = fopen(path, mode);
     if (!f)
     {
-        char *r = alloca(strlen(path) + 2);
+        char *r = (char*)alloca(strlen(path) + 2);
         if (casepath(path, r))
         {
             f = fopen(r, mode);
