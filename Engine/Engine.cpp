@@ -434,8 +434,6 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     lightmap_builder->MobileLightsCount = 0;
     decal_builder->DecalsCount = 0;
     decal_builder->curent_decal_id = 0;
-    if (!_44F07B())
-        return false;
 
     if (engine->config->DrawBlvDebugs())
         pStru10Instance->bDoNotDrawPortalFrustum = false;
@@ -904,22 +902,30 @@ bool Engine::MM7_Initialize(const std::string &mm7_path) {
     IRenderFactory renderFactory;
     render = renderFactory.Create(
         config->renderer_name,
-        !config->RunInWindow());
+        !config->RunInWindow()
+    );
 
     if (!render) {
         log->Warning("Render creation failed");
         return false;
-    } else {
-        window = OSWindowFactory().Create(
-            "Might and Magic® Trilogy",
-            render->config->render_width,
-            render->config->render_height);
-
-        if (!render->Initialize(window)) {
-            log->Warning("Render failed to initialize");
-            return false;
-        }
     }
+
+    window = OSWindowFactory().Create(
+        "Might and Magic® Trilogy",
+        render->config->render_width,
+        render->config->render_height
+    );
+
+    if (!render->Initialize(window)) {
+        log->Warning(L"Render failed to initialize");
+        return false;
+    }
+
+    userInputHandler = std::make_shared<UserInputHandler>(
+        window->GetUserInputProvider()
+    );
+    keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
+    ::keyboardActionMapping = keyboardActionMapping;
 
     game_starting_year = 1168;
 

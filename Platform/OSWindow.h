@@ -1,8 +1,12 @@
 #pragma once
+#include <memory>
+
 #include "Engine/Point.h"
 #include "Engine/Log.h"
 
 #include "src/Application/GameWindowHandler.h"
+
+#include "IO/IUserInputProvider.h"
 
 
 using Application::GameWindowHandler;
@@ -34,6 +38,8 @@ class OSWindow {
     virtual void PeekMessageLoop() = 0;
 
     virtual void *GetWinApiHandle() = 0;
+
+    virtual std::shared_ptr<IUserInputProvider> GetUserInputProvider() = 0;
 
     // window-renderer integration, probably should be a separate class
     virtual void OpenGlCreate() = 0;
