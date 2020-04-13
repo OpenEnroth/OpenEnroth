@@ -1,7 +1,12 @@
 #include "Media/Audio/OpenALSoundProvider.h"
 
+#ifdef __APPLE__
+#import <OpenAL/al.h>
+#import <OpenAL/alc.h>
+#else
 #include <AL/al.h>
 #include <AL/alc.h>
+#endif
 
 #include <atomic>
 #include <memory>
@@ -172,9 +177,9 @@ float OpenALSoundProvider::alBufferLength(unsigned int buffer) {
 OpenALSoundProvider::StreamingTrackBuffer *
 OpenALSoundProvider::CreateStreamingTrack16(int num_channels, int sample_rate,
                                             int bytes_per_sample) {
-    Assert(bytes_per_sample == 2,
-           "OpenALSoundProvider: unsupported sample size: %u",
-           bytes_per_sample);
+//    Assert(bytes_per_sample == 2,
+//           "OpenALSoundProvider: unsupported sample size: %u",
+//           bytes_per_sample);
 
     ALenum sound_format;
     switch (num_channels) {

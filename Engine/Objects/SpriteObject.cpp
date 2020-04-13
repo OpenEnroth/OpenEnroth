@@ -154,6 +154,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
     int v57;           // [sp+98h] [bp-10h]@1
     int v58;           // [sp+9Ch] [bp-Ch]@1
     int v60;           // [sp+A4h] [bp-4h]@11
+    bool v49;
 
     v58 = 0;
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
@@ -322,7 +323,7 @@ LABEL_13:
                     Actor::_46DF1A_collide_against_actor(i, 0);
             }
             v26 = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
-            bool v49 = false;
+            v49 = false;
             v27 = ODM_GetFloorLevel(
                 stru_721530.normal2.x, stru_721530.normal2.y,
                 stru_721530.normal2.z - stru_721530.prolly_normal_d - 1,

@@ -64,7 +64,7 @@
 
 message(STATUS "list custom SDL SEARCHES")
 
-set(_SDL_SEARCHES)
+set(_SDL_SEARCHES, "/usr/local/include/SDL2")
 
 # Search SDL_ROOT first when is set.
 if(SDL_ROOT)

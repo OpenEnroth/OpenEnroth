@@ -2085,7 +2085,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                                                  ->pSpecialEnchantments_count;
                                              ++_v733) {
                                             v279 =
-                                                (char)pItemsTable
+                                                (char)(int)pItemsTable
                                                     ->pSpecialEnchantments[v278]
                                                     .pBonusStatement;
                                             if (!v279 || v279 == 1) {
