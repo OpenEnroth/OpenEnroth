@@ -117,6 +117,8 @@ void *Sdl2Window::GetWinApiHandle() {
     SDL_GetWindowWMInfo(sdlWindow, &wmInfo);
 #ifdef _WINDOWS
     return (void *)wmInfo.info.win.window;
+#elif __APPLE__
+    return (void *)wmInfo.info.cocoa.window;
 #else
     return (void *)wmInfo.info.x11.window;
 #endif

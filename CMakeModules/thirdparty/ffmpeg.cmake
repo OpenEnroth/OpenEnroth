@@ -28,6 +28,9 @@ target_link_libraries(
 include_directories(
     "${FFMPEG_INCLUDE_DIR}"
 )
+include_directories(
+        "/usr/local/include"
+)
 
 ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/avcodec-58.dll")
 ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/avdevice-58.dll")

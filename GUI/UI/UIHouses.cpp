@@ -1775,7 +1775,7 @@ void TravelByTransport() {
                             0x44u);
                         String str = localization->FormatString(
                             404, travel_time,
-                            pMap.pName);  // Time - %d days, destination %s
+                            pMap.pName.c_str());  // Time - %d days, destination %s
                         strcat(pTopicArray[index], str.c_str());
                         strcat(pTopicArray[index], "\n \n");
                         pButton->uY = pRealTextHeight;
@@ -1988,7 +1988,7 @@ void TownHallDialog() {
                 "\f%05d%s\f%05d", Color16(0xFFu, 0xFFu, 0x9Bu),
                 pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting]
                 .pName,
-                Color16(0xFFu, 0xFFu, 0xFFu)),
+                Color16(0xFFu, 0xFFu, 0xFFu)).c_str(),
             100 *
             pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting]
             .uLevel);
@@ -3452,7 +3452,7 @@ void SimpleHouseDialog() {
         if (!pTransitionStrings[uHouse_ExitPic]) {
             auto str = localization->FormatString(
                 411, pMapStats->pInfos[uHouse_ExitPic]
-                .pName);  // Enter %s   /   Войти в ^Pv[%s]
+                .pName.c_str());  // Enter %s   /   Войти в ^Pv[%s]
             house_window.DrawTitleText(
                 pFontCreate, 0,
                 (212 - pFontCreate->CalcTextHeight(

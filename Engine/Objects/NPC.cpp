@@ -1126,7 +1126,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
         pDialogueWindow =
             new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), window->GetHeight(), 0);
         transition_button_label = localization->FormatString(
-            411, pMapStats->pInfos[uHouse_ExitPic].pName);  // Enter %s
+            411, pMapStats->pInfos[uHouse_ExitPic].pName.c_str());  // Enter %s
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 'N',
             localization->GetString(34), {{ui_buttdesc2}});  // "Cancel"

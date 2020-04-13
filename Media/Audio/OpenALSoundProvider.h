@@ -1,7 +1,12 @@
 #pragma once
 
+#ifdef __APPLE__
+#import <OpenAL/al.h>
+#import <OpenAL/alc.h>
+#else
 #include <AL/al.h>
 #include <AL/alc.h>
+#endif
 #include <memory>
 #include <string>
 

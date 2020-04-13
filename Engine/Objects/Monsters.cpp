@@ -1143,7 +1143,7 @@ void MonsterStats::Initialize() {
                                                         "Can't create random "
                                                         "monster: '%s' See "
                                                         "MapStats!",
-                                                        str.c_str()));
+                                                        str.c_str()).c_str());
                                             }
                                         }
                                         pInfos[curr_rec_num]

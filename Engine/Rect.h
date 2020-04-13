@@ -1,8 +1,8 @@
 #pragma once
 
 struct Rect {
-    int x;
-    int y;
-    int z;
-    int w;
+    unsigned int x;
+    unsigned int y;
+    unsigned int z;
+    unsigned int w;
 };
