@@ -17,7 +17,7 @@ struct stru319 {
 
     int which_player_to_attack(struct Actor *pActor);
     int _427546(int a2);
-    int FindClosestActor(int a2, int a3, int a4);
+    int FindClosestActor(int pick_depth, int a3, int target_undead);
 
     char field_0;
 

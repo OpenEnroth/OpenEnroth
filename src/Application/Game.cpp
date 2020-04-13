@@ -1619,7 +1619,7 @@ void Game::EventLoop() {
                 case UIMSG_STEALFROMACTOR:
                     if (!uActiveCharacter) continue;
                     if (!pParty->bTurnBasedModeOn) {
-                        if (pActors[uMessageParam].uAIState == 5)
+                        if (pActors[uMessageParam].uAIState == AIState::Dead)
                             pActors[uMessageParam].LootActor();
                         else
                             Actor::StealFrom(uMessageParam);
@@ -1629,7 +1629,7 @@ void Game::EventLoop() {
                         pTurnEngine->turn_stage == TE_MOVEMENT)
                         continue;
                     if (!(pTurnEngine->field_18 & TE_HAVE_PENDING_ACTIONS)) {
-                        if (pActors[uMessageParam].uAIState == 5)
+                        if (pActors[uMessageParam].uAIState == AIState::Dead)
                             pActors[uMessageParam].LootActor();
                         else
                             Actor::StealFrom(uMessageParam);
@@ -2700,7 +2700,7 @@ void Game::OnPressSpace() {
     engine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
     int pid = vis->get_picked_object_zbuf_val();
     if (pid != -1)
-        DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
+        DoInteractionWithTopmostZObject(pid & 0xFFFF);
 }
 
 void Game::GameLoop() {

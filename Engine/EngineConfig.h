@@ -67,7 +67,7 @@ class EngineConfig {
     inline bool ForceRedraw() const { return flags2 & GAME_FLAGS_2_FORCE_REDRAW; }
            void SetForceRedraw(bool redraw);
     inline bool AllowDynamicBrigtness() const { return flags2 & GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS; }
-    inline bool RunInWindow() const { return dword_6BE368_debug_settings_2 & DEBUG_SETTINGS_RUN_IN_WIDOW; }
+    inline bool RunInWindow() const { return run_in_window & DEBUG_SETTINGS_RUN_IN_WIDOW; }
 
     inline void ToggleDebugTownPortal() { debug_town_portal = !debug_town_portal; }
     inline void ToggleDebugWizardEye() { debug_wizard_eye = !debug_wizard_eye; }
@@ -85,7 +85,7 @@ class EngineConfig {
     inline void ToggleDebugSeasonsChange() { seasons_change = !seasons_change; }
 
     // DEBUG_SETTINGS_*
-    int dword_6BE368_debug_settings_2 = DEBUG_SETTINGS_RUN_IN_WIDOW;
+    int run_in_window = DEBUG_SETTINGS_RUN_IN_WIDOW;
 
     // GAME_FLAGS_1_*
     int flags1 = GAME_FLAGS_1_40 | GAME_FLAGS_1_800;

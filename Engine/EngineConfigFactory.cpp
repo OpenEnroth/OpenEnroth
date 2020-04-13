@@ -90,7 +90,7 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::CreateFromCommandLine(const s
     // config->renderer_name = "OpenGL";
 
     if (FindCaseInsensitive(cmd, "-window")) {
-        config->dword_6BE368_debug_settings_2 |= DEBUG_SETTINGS_RUN_IN_WIDOW;
+        config->run_in_window |= DEBUG_SETTINGS_RUN_IN_WIDOW;
     }
     if (FindCaseInsensitive(cmd, "-nointro")) {
         config->no_intro = true;

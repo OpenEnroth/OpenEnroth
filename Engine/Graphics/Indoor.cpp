@@ -848,7 +848,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         BLVFaceExtra *pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
 
         if (pFaceExtra->uEventID) {
-            if (pFaceExtra->HasEventint())
+            if (pFaceExtra->HasEventHint())
                 pFace->uAttributes |= FACE_HAS_EVENT;
             else
                 pFace->uAttributes &= ~FACE_HAS_EVENT;
@@ -1028,7 +1028,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         pData += 4;
 
         if (pFaceExtra->uEventID) {
-            if (pFaceExtra->HasEventint())
+            if (pFaceExtra->HasEventHint())
                 pFace->uAttributes |= FACE_HAS_EVENT;
             else
                 pFace->uAttributes &= ~FACE_HAS_EVENT;
@@ -1331,7 +1331,7 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     return;
 }
 
-bool BLVFaceExtra::HasEventint() {
+bool BLVFaceExtra::HasEventHint() {
     int event_index = 0;
     if ((uLevelEVT_NumEvents - 1) <= 0) {
         return false;
@@ -3337,33 +3337,35 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
     return (!LOS_Obscurred2 || !LOS_Obscurred);  // true if LOS clear
 }
 
-char DoInteractionWithTopmostZObject(int a1, int a2) {
-    uint32_t v17 = PID_ID(a1);
-    switch (PID_TYPE(a1)) {
+char DoInteractionWithTopmostZObject(int pid) {
+    auto id = PID_ID(pid);
+    auto type = PID_TYPE(pid);
+
+    switch (type) {
         case OBJECT_Item: {  // take the item
-            if (pSpriteObjects[v17].IsUnpickable() || v17 >= 1000 || !pSpriteObjects[v17].uObjectDescID) {
+            if (pSpriteObjects[id].IsUnpickable() || id >= MAX_SPRITE_OBJECTS || !pSpriteObjects[id].uObjectDescID) {
                 return 1;
             }
 
             extern void ItemInteraction(unsigned int item_id);
-            ItemInteraction(v17);
+            ItemInteraction(id);
             break;
         }
 
         case OBJECT_Actor:
-            if (pActors[v17].uAIState == Dying || pActors[v17].uAIState == Summoned)
+            if (pActors[id].uAIState == Dying || pActors[id].uAIState == Summoned)
                 return 1;
-            if (pActors[v17].uAIState == Dead) {
-                pActors[v17].LootActor();
+            if (pActors[id].uAIState == Dead) {
+                pActors[id].LootActor();
             } else {
                 extern bool ActorInteraction(unsigned int id);
-                ActorInteraction(v17);
+                ActorInteraction(id);
             }
             break;
 
         case OBJECT_Decoration:
             extern void DecorationInteraction(unsigned int id, unsigned int pid);
-            DecorationInteraction(v17, a1);
+            DecorationInteraction(id, pid);
             break;
 
         default:
@@ -3372,8 +3374,9 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
 
         case OBJECT_BModel:
             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                int bmodel_id = a1 >> 9;
-                int face_id = v17 & 0x3F;
+                int bmodel_id = pid >> 9;
+                int face_id = id & 0x3F;
+
                 if (bmodel_id >= pOutdoor->pBModels.size()) {
                     return 1;
                 }
@@ -3381,18 +3384,18 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
                     pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID == 0)
                     return 1;
                 EventProcessor((int16_t)pOutdoor->pBModels[bmodel_id].pFaces[face_id].sCogTriggeredID,
-                               a1, 1);
+                               pid, 1);
             } else {
-                if (!(pIndoor->pFaces[v17].uAttributes & FACE_CLICKABLE)) {
+                if (!(pIndoor->pFaces[id].uAttributes & FACE_CLICKABLE)) {
                     GameUI_StatusBar_NothingHere();
                     return 1;
                 }
-                if (pIndoor->pFaces[v17].uAttributes & FACE_HAS_EVENT ||
-                    !pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID)
+                if (pIndoor->pFaces[id].uAttributes & FACE_HAS_EVENT ||
+                    !pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID)
                     return 1;
                 if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG)
-                    EventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[v17].uFaceExtraID].uEventID,
-                                   a1, 1);
+                    EventProcessor((int16_t)pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID,
+                                   pid, 1);
             }
             return 0;
             break;
