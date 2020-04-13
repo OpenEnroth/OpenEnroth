@@ -840,7 +840,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     pPlayerCreationUI_BtnMinus = CreateButton(523, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickMinus, 0, '-', "", { { ui_partycreation_minus } });
     pPlayerCreationUI_BtnPlus = CreateButton(613, 393, 20, 35, 1, 0, UIMSG_PlayerCreationClickPlus, 1, '+', "", { { ui_partycreation_plus } });
 
-    ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL", NULL);
+    ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 }
 
 GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {

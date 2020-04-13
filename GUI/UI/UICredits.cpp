@@ -14,8 +14,8 @@
 
 GUICredits::GUICredits() :
     GUIWindow(WINDOW_Credits, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
-    pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL", NULL);
-    pFontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL", NULL);
+    pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL");
+    pFontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 
     mm6title = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
