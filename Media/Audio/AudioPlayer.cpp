@@ -343,9 +343,10 @@ struct SoundHeader_mm7 {
 void AudioPlayer::LoadAudioSnd() {
     static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
 
-    fAudioSnd.open(MakeDataPath("Sounds\\Audio.snd"), std::ios_base::binary);
+    std::string file_path = "Sounds" + OS_GetDirSeparator() + "Audio.snd";
+    fAudioSnd.open(MakeDataPath(file_path.c_str()), std::ios_base::binary);
     if (!fAudioSnd.good()) {
-        logger->Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
+        logger->Warning(L"Can't open file: %s", file_path.c_str());
         return;
     }
 
