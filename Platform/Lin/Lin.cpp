@@ -194,3 +194,7 @@ FILE *fcaseopen(char const *path, char const *mode)
     }
     return f;
 }
+
+std::string OS_GetDirSeparator() {
+    return "/";
+}
