@@ -48,15 +48,7 @@ Point OS_GetMouseCursorPos() {
 }
 
 bool OS_OpenConsole() {
-    /*if (AllocConsole()) {
-        freopen("conin$", "r", stdin);
-        freopen("conout$", "w", stdout);
-        freopen("conout$", "w", stderr);
-
-        return true;
-    }*/
-
-    return false;
+    return true;
 }
 
 std::vector<std::string> OS_FindFiles(const std::string& folder, const std::string& mask) {
