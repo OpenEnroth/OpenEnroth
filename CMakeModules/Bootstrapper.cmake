@@ -1,16 +1,16 @@
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/Common.cmake")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(APPLE TRUE)
+  set(APPLE TRUE)
 endif()
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-    set(BUILD_TYPE "x64")
-    set(BUILD_PLATFORM "win32")
+  set(BUILD_TYPE "x64")
+  set(BUILD_PLATFORM "win32")
 else ()
-    set(BUILD_TYPE "x86")
-    set(BUILD_PLATFORM "win32")
+  set(BUILD_TYPE "x86")
+  set(BUILD_PLATFORM "win32")
 endif ()
 
 DEBUG_PRINT("BUILD_TYPE     ${BUILD_TYPE}")
@@ -54,24 +54,18 @@ if (WIN32)
                     SHOW_PROGRESS
                     TIMEOUT 60  # seconds
                     )
-        endif()
-
-        execute_process(COMMAND ${CMAKE_COMMAND}
-                -E tar xzf "${DEPS_ZIP_FULL_PATH}"
-                WORKING_DIRECTORY ${LIB_DIR}
-                )
     endif()
 
     include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/OpenAL.cmake")
 
 else()  # WIN32
-    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/find)
-    #find_package(OpenGL REQUIRED)
-    #find_package(OPENAL REQUIRED)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/find)
+find_package(OpenGL REQUIRED)
+#find_package(OPENAL REQUIRED)
 
-    if(APPLE)
-        link_directories("/usr/local/lib")
-    endif()
+if(APPLE)
+    link_directories("/usr/local/lib")
+endif()
 endif()
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/zlib.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/sdl2.cmake")
