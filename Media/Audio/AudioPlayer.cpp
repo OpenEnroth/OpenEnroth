@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "Platform/Api.h"
+
 #include "Engine/Party.h"
 #include "Engine/ZlibWrapper.h"
 
@@ -117,11 +119,10 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         }
         currentMusicTrack = -1;
 
-        String file_path = StringPrintf("Music\\%d.mp3", eTrack);
+        String file_path = StringPrintf("Music%s%d.mp3", OS_GetDirSeparator().c_str(), eTrack);
         file_path = MakeDataPath(file_path.c_str());
-
         if (!FileExists(file_path.c_str())) {
-            logger->Warning(L"Music\\%d.mp3 not found", eTrack);
+            logger->Warning(L"Music%s%d.mp3 not found (%s)", OS_GetDirSeparator().c_str(), eTrack);
             return;
         }
 
@@ -342,9 +343,10 @@ struct SoundHeader_mm7 {
 void AudioPlayer::LoadAudioSnd() {
     static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
 
-    fAudioSnd.open(MakeDataPath("Sounds\\Audio.snd"), std::ios_base::binary);
+    std::string file_path = "Sounds" + OS_GetDirSeparator() + "Audio.snd";
+    fAudioSnd.open(MakeDataPath(file_path.c_str()), std::ios_base::binary);
     if (!fAudioSnd.good()) {
-        logger->Warning(L"Can't open file: %s", L"Sounds\\Audio.snd");
+        logger->Warning(L"Can't open file: %s", file_path.c_str());
         return;
     }
 
