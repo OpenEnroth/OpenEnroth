@@ -62,7 +62,6 @@ if (NOT EXISTS "${LIBRARY_DIR}")
     )
 endif()
 
-link_directories("/usr/local/lib")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/OpenAL.cmake")
 
 else()  # WIN32

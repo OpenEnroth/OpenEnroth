@@ -1,8 +1,8 @@
 # hack to be able to create a convenience library without sources
 file(WRITE ${LIB_DIR}/ffmpeg.c "")
 add_library(
-    ffmpeg STATIC
-    ${LIB_DIR}/ffmpeg.c
+ffmpeg STATIC
+${LIB_DIR}/ffmpeg.c
 )
 
 if (WIN32)
@@ -26,7 +26,7 @@ ffmpeg
 )
 
 include_directories(
-        "${FFMPEG_INCLUDE_DIR}"
+"${FFMPEG_INCLUDE_DIR}"
 )
 
 ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/avcodec-58.dll")
@@ -44,9 +44,10 @@ target_link_libraries(ffmpeg "${FFMPEG_LIBRARIES}")
 
 if (APPLE)
 include_directories(
-        "/usr/local/include"
+"/usr/local/include"
 )
 find_library(AVUTIL_LIBRARY avutil)
 find_library(SWRESAMPLE_LIBRARY swresample)
 endif()
+
 endif()
