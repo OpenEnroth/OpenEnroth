@@ -94,10 +94,6 @@ message(STATUS "OPENGL_glu_LIBRARY = ${OPENGL_glu_LIBRARY}")
 
 target_link_libraries(World_of_Might_and_Magic ${OPENGL_opengl_LIBRARY} ${OPENGL_glu_LIBRARY})
 
-if (APPLE)
-  target_link_libraries(World_of_Might_and_Magic ${AVUTIL_LIBRARY} ${SWRESAMPLE_LIBRARY})
-endif()
-
 endif()
 target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization)
 
