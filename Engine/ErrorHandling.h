@@ -14,7 +14,7 @@
     Assert_impl_(__FILE__, __FUNCTION__, __LINE__, condition, #condition, __VA_ARGS__)
 #elif __APPLE__
 #define Assert(condition, ...)                                      \
-    Assert_impl_(__FILE__, __FUNCTION__, __LINE__, condition, #condition __VA_ARGS__)
+    Assert_impl_(__FILE__, __FUNCTION__, __LINE__, condition, #condition, ##__VA_ARGS__)
 #else
 #define Assert(condition, ...)                                      \
     Assert_impl_(__FILE__, __FUNCTION__, __LINE__, condition, #condition __VA_OPT__(,) __VA_ARGS__)  //NOLINT

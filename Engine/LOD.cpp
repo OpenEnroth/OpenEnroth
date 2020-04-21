@@ -1208,7 +1208,7 @@ unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer,
 }
 
 Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
-//    Assert(idx < MAX_LOD_TEXTURES, "Texture_MM7 index out of bounds (%u)", idx);
+    Assert(idx < MAX_LOD_TEXTURES, "Texture_MM7 index out of bounds (%u)", idx);
     if (idx == -1) {
         // logger->Warning(L"Texture_MM7 id = %d missing", idx);
         return pTextures + LoadDummyTexture();

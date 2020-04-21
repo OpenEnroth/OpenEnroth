@@ -90,8 +90,7 @@ void TextureFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8)
 
     this->sNumTextures =
         /*num_mm6_frames + */ num_mm7_frames /*+ num_mm8_frames*/;
-    //Assert(sNumTextures, 0);
-    Assert(sNumTextures);
+    Assert(sNumTextures, 0);
     // Assert(!num_mm8_frames);
 
     TextureFrame_MM7 *frame_data =

@@ -1028,8 +1028,8 @@ void ItemGen::AddToMap(
     } else {
         currMap = key->second;
     }
-//    Assert(currMap->find(attrId) == currMap->end(),
-//           "Attribute %d already present for enchantment %d", attrId, enchId);
+    Assert(currMap->find(attrId) == currMap->end(),
+           "Attribute %d already present for enchantment %d", attrId, enchId);
     (*currMap)[attrId] = new CEnchantment(bonusValue, skillPtr);
 }
 

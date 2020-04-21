@@ -42,7 +42,7 @@ else()  # WIN32
     find_package(FFmpeg COMPONENTS AVCODEC AVFORMAT SWSCALE REQUIRED)
     target_link_libraries(ffmpeg "${FFMPEG_LIBRARIES}")
 
-    if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    if (APPLE)
         include_directories(
                 "/usr/local/include"
         )
