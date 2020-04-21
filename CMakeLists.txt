@@ -53,13 +53,31 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread -lavutil -lswresample")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
   set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+  #set(CMAKE_FIND_FRAMEWORK NEVER)
+  # 32-bit
+  set(CMAKE_OSX_ARCHITECTURES "i386")
+
+  # ffmpeg, openal, sdl custom build include
+  include_directories("/usr/local/include")
+  # openal custom build library
+  link_directories("/usr/local/lib")
+  #  set(CFLAGS "-m32")
+  #  set(CXXFLAGS "-m32")
+  #  set(CMAKE_C_FLAGS "-m32")
+  #  set(CMAKE_CXX_FLAGS "-m32")
+  #  set(CMAKE_SHARED_LINKER_FLAGS "-m32")
+  find_library(AVUTIL_LIBRARY avutil)
+  #  find_library(COCOA_LIBRARY Cocoa)
+  #  find_library(AVFORMAT_LIBRARY avformat)
+  find_library(SWRESAMPLE_LIBRARY swresample)
+  #add_library(glu /usr/local/Frameworks/OpenGL.framework/Headers/gl.h)
+  set(CMAKE_FRAMEWORK_PATH "/usr/local/Frameworks")
 else()
   add_definitions(-DWINDOWS_IGNORE_PACKING_MISMATCH="") # vs2019 complains about using #pragma pack()
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
 endif()
 
 include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-
 add_definitions(-DPACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-and-magic/issues")
 
 include(CppLint)
@@ -91,18 +109,26 @@ else()
   message(STATUS "FFMPEG_LIBRARIES = ${FFMPEG_LIBRARIES}")
   message(STATUS "OPENGL_opengl_LIBRARY = ${OPENGL_opengl_LIBRARY}")
   message(STATUS "OPENGL_glu_LIBRARY = ${OPENGL_glu_LIBRARY}")
+  message(STATUS "OPENGL = ${OPENGL}")
 
-  target_link_libraries(World_of_Might_and_Magic ${OPENGL_opengl_LIBRARY} ${OPENGL_glu_LIBRARY})
+  # Mac only?
+  target_link_libraries(World_of_Might_and_Magic ${AVUTIL_LIBRARY} ${AVFORMAT_LIBRARY} ${SWRESAMPLE_LIBRARY})
 
-  if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  #include_directories(/usr/local/Frameworks/OpenGL.framework/Headers)
+  #add_library(opengl STATIC /usr/local/Frameworks/OpenGL.framework/Libraries/libGL.dylib /usr/local/Frameworks/OpenGL.framework/Headers/gl)
+  #add_dependencies(World_of_Might_and_Magic /usr/local/Frameworks/OpenGL.framework/Versions/A/OpenGL)
+  target_link_libraries(World_of_Might_and_Magic /usr/local/Frameworks/OpenGL.framework)
+
+  #target_link_libraries(World_of_Might_and_Magic ${OPENGL_opengl_LIBRARY} ${OPENGL_glu_LIBRARY} ${OPENGL})
+
+  if (APPLE)
     target_link_libraries(World_of_Might_and_Magic ${AVUTIL_LIBRARY} ${SWRESAMPLE_LIBRARY})
   endif()
-
 endif()
 target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization)
 
 set_property(
-DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
 )
 
 
