@@ -555,10 +555,12 @@ int GetGender(char *ansi_name, int name_len) {
 
     GenderTableEntry *table = nullptr;
     unsigned int table_size = 0;
-    if (name[0] >= (unsigned char)'а' && name[0] <= (unsigned char)'я') {
+    // if ((unsigned char)name[0] >= (unsigned char)'а' && (unsigned char)name[0] <= (unsigned char)'я') {
+    if ((unsigned char)name[0] >= (unsigned char)0xe0 && (unsigned char)name[0] <= (unsigned char)0xff) {
         table = gender_table;
         table_size = sizeof(gender_table) / sizeof(*gender_table);
-    } else if (name[0] >= (unsigned char)'А' && name[0] <= (unsigned char)'Я') {
+    // } else if (name[0] >= (unsigned char)'А' && name[0] <= (unsigned char)'Я') {
+    } else if ((unsigned char)name[0] >= (unsigned char)0xc0 && (unsigned char)name[0] <= (unsigned char)0xdf) {
         table = gender_table_caps;
         table_size = sizeof(gender_table_caps) / sizeof(*gender_table_caps);
     } else {

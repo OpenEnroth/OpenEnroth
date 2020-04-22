@@ -609,9 +609,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         }
     }
 
-    Rect doll_rect = {pWindow->uFrameX + 13, pWindow->uFrameY + 52,
-                      (pWindow->uFrameX + 13) + 128,
-                      (pWindow->uFrameY + 52) + 128};
+    Rect doll_rect = {(signed int)(pWindow->uFrameX + 13), (signed int)(pWindow->uFrameY + 52),
+                      (signed int)((pWindow->uFrameX + 13) + 128),
+                      (signed int)((pWindow->uFrameY + 52) + 128)};
     {
         SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
             pActors[uActorID]

@@ -1,5 +1,9 @@
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/Common.cmake")
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(APPLE TRUE)
+endif()
+
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
   set(BUILD_TYPE "x64")
@@ -64,6 +68,9 @@ else()  # WIN32
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/find)
 find_package(OpenGL REQUIRED)
 #find_package(OPENAL REQUIRED)
+if(APPLE)
+    link_directories("/usr/local/lib")
+endif()
 endif()
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/zlib.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/sdl2.cmake")
