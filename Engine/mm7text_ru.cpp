@@ -579,7 +579,7 @@ int GetGender(char *ansi_name, int name_len) {
             left = match;
     }
 
-    logger->Warning(L"sprintfex: unknown gender: %S", name);
+    logger->Warning("sprintfex: unknown gender: %s", name);
     return 0;
 }
 

@@ -25,12 +25,12 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::CreateDefaultConfiguration() 
 
     switch (turn_type) {
     case 1:             // 16x
-        log->Warning(L"x16 Turn Speed");  // really shouldn't use this mode
+        log->Warning("x16 Turn Speed");  // really shouldn't use this mode
         cfg->turn_speed = 128;
         break;
 
     case 2:             // 32x
-        log->Warning(L"x32 Turn Speed");  // really shouldn't use this mode
+        log->Warning("x32 Turn Speed");  // really shouldn't use this mode
         cfg->turn_speed = 64;
         break;
 

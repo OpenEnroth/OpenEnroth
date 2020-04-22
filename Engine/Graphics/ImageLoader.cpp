@@ -193,7 +193,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
 
     FILE *file = fcaseopen(this->resource_name.c_str(), "rb");
     if (!file) {
-        log->Warning(L"Unable to load %s", this->resource_name.c_str());
+        log->Warning("Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
@@ -242,7 +242,7 @@ bool PCX_LOD_File_Loader::Load(unsigned int *width, unsigned int *height,
     size_t size;
     void *data = lod->LoadRaw(resource_name, &size);
     if (data == nullptr) {
-        log->Warning(L"Unable to load %s", this->resource_name.c_str());
+        log->Warning("Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
@@ -263,7 +263,7 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     size_t data_size = 0;
     void *pcx_data = lod->LoadCompressedTexture(resource_name, &data_size);
     if (pcx_data == nullptr) {
-        log->Warning(L"Unable to load %s", resource_name.c_str());
+        log->Warning("Unable to load %s", resource_name.c_str());
         return false;
     }
 

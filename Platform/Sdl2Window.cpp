@@ -256,12 +256,12 @@ void Sdl2Window::OpenGlCreate() {
 
     sdlOpenGlContext = SDL_GL_CreateContext(sdlWindow);
     if (!sdlOpenGlContext) {
-        log->Warning(L"OpenGL failed: %S", SDL_GetError());
+        log->Warning("OpenGL failed: %s", SDL_GetError());
     }
 
     //  Use Vsync
     if (SDL_GL_SetSwapInterval(1) < 0) {
-        log->Info(L"Unable to set VSync! SDL Error: %S\n", SDL_GetError());
+        log->Info("Unable to set VSync! SDL Error: %s\n", SDL_GetError());
     }
 }
 

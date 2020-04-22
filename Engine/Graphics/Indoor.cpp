@@ -862,7 +862,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
     if (bLoaded) {
-        log->Warning(L"BLV is already loaded");
+        log->Warning("BLV is already loaded");
         return true;
     }
 
@@ -1209,7 +1209,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     // v171 = blv.uDoors_ddata_Size;
     ptr_0002B4_doors_ddata = (uint16_t*)malloc(blv.uDoors_ddata_Size);  //, "L.DData");
     if (ptr_0002B4_doors_ddata == nullptr) {
-        log->Warning(L"Malloc error");
+        log->Warning("Malloc error");
         Error("Malloc");  // is this recoverable
     }
 
@@ -1305,7 +1305,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
             pSector->pBounding.z1 - 64 > sZ || pSector->pBounding.z2 + 64 < sZ)
             continue;  // outside sector
 
-        // logger->Warning(L"Sector[%u]", i);
+        // logger->Warning("Sector[%u]", i);
          int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
         if (!FloorsAndPortals) continue;
 
@@ -2972,7 +2972,7 @@ void AddBspNodeToRenderList(unsigned int node_id) {
     // if ( render->pRenderD3D )
     {
         for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
-            // logger->Warning(L"Non-BSP face: %X", v3->pFaceIDs[v2]);
+            // logger->Warning("Non-BSP face: %X", v3->pFaceIDs[v2]);
             pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);  // рекурсия\recursion
     }
     /*else
@@ -2995,7 +2995,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode) {
     __int16 v9;               // di@18
     BspRenderer_stru0 *node;  // [sp+18h] [bp-4h]@1
 
-    // logger->Warning(L"sub_4406BC(%u, %u)", a1, uFirstNode);
+    // logger->Warning("sub_4406BC(%u, %u)", a1, uFirstNode);
 
     // v10 = a1;
     node = &pBspRenderer->nodes[node_id];
@@ -3018,7 +3018,7 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode) {
         v7 = pNode->uCoplanarOffset;
         v8 = v7 + pNode->uCoplanarSize;
 
-        // logger->Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8,
+        // logger->Warning("Node %u: %X to %X (%hX)", uFirstNode, v7, v8,
         // v2->pFaceIDs[v7]);
 
         // if ( render->pRenderD3D )
@@ -3743,7 +3743,7 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
             break;
 
         default:
-            logger->Warning(L"Warning: Invalid ID reached!");
+            logger->Warning("Warning: Invalid ID reached!");
             return 1;
 
         case OBJECT_BModel:

@@ -325,8 +325,8 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     dword_5B65C4_cancelEventProcessing = 0;
     if (uEventID == 114) {  // for test script
         // if (!lua->DoFile("out01.lua"))
-        //    logger->Warning(L"Error opening out01.lua\n");
-        // logger->Warning(L"being tested that well\n");
+        //    logger->Warning("Error opening out01.lua\n");
+        // logger->Warning("being tested that well\n");
         return;
     }
     if (!uEventID) {

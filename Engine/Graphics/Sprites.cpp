@@ -91,7 +91,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 
                         if (v8 == -1) {  // should we set hw_sprites as nullptr in these cases??
                             // __debugbreak();
-                            logger->Warning(L"Sprite %S not loaded!", pSpriteSFrames[v3].texture_name.c_str());
+                            logger->Warning("Sprite %s not loaded!", pSpriteSFrames[v3].texture_name.c_str());
                         }
 
                         for (uint i = 0; i < 8; ++i) {
@@ -410,7 +410,7 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
             (SpriteFrame_MM7 *)((char *)data_mm7 + 8) + i);
 
         if (!res) {
-            logger->Warning(L"MM7 Sprite %u deserialization failed", i);
+            logger->Warning("MM7 Sprite %u deserialization failed", i);
         }
     }
 

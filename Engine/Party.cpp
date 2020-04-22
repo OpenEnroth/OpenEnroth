@@ -1131,7 +1131,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
             texture->Release();
         }
     } else {
-        logger->Warning(L"Invalid picture_name detected ::addItem()");
+        logger->Warning("Invalid picture_name detected ::addItem()");
     }
     return false;
 }

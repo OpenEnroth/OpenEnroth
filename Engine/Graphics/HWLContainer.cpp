@@ -31,14 +31,14 @@ HWLContainer::~HWLContainer() {
 bool HWLContainer::Open(const String &pFilename) {
     pFile = fcaseopen(pFilename.c_str(), "rb");
     if (!pFile) {
-        log->Warning(L"Failed to open file: %S", pFilename.c_str());
+        log->Warning("Failed to open file: %s", pFilename.c_str());
         return false;
     }
 
     HWLHeader header;
     fread(&header, sizeof(HWLHeader), 1, pFile);
     if (header.uSignature != 'TD3D') {
-        log->Warning(L"Invalid format: %S", pFilename.c_str());
+        log->Warning("Invalid format: %s", pFilename.c_str());
         return false;
     }
     fseek(pFile, header.uDataOffset, SEEK_SET);

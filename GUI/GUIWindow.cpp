@@ -127,7 +127,7 @@ const wchar_t *MENU_STATE_to_string(MENU_STATE m) {
 
 void SetCurrentMenuID(MENU_STATE uMenu) {
     sCurrentMenuID = uMenu;
-    logger->Warning(L"CurrentMenu = %s \n", MENU_STATE_to_string(uMenu));
+    logger->Warning("CurrentMenu = %s \n", MENU_STATE_to_string(uMenu));
 }
 
 MENU_STATE GetCurrentMenuID() {
@@ -299,7 +299,7 @@ void GUIWindow::Release() {
 
     lWindowList.remove(this);
 
-    log->Info(L"Release window: %S", ToString(eWindowType));
+    log->Info("Release window: %s", ToString(eWindowType));
 }
 
 void GUIWindow::DeleteButtons() {
@@ -774,7 +774,7 @@ GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, un
     this->mouse = EngineIoc::ResolveMouse();
     this->log = EngineIoc::ResolveLogger();
 
-    log->Info(L"New window: %S", ToString(windowType));
+    log->Info("New window: %s", ToString(windowType));
     lWindowList.push_front(this);
     this->uFrameWidth = uWidth;
     this->uFrameHeight = uHeight;
@@ -1348,7 +1348,7 @@ void DrawBuff_remaining_time_string(int uY, GUIWindow *window, GameTime remainin
 void GUIMessageQueue::AddMessageImpl(UIMessageType msg, int param,
     unsigned int a4, const char *file,
     int line) {
-    // logger->Warning(L"%s @ (%S %u)", UIMessage2String(msg), file, line);
+    // logger->Warning("%s @ (%S %u)", UIMessage2String(msg), file, line);
     GUIMessage message;
     message.eType = msg;
     message.param = param;

@@ -117,8 +117,7 @@ unsigned int ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
         return 73;
     } else {
         logger->Warning(
-            L"%S", StringPrintf("Unknown monster spell %s", tbl->pProperties[0])
-                       .c_str());
+            "Unknown monster spell %s", tbl->pProperties[0]);
         ++*next_token;
         return 0;
     }
@@ -1138,12 +1137,10 @@ void MonsterStats::Initialize() {
                                                     .field_3C_some_special_attack ==
                                                 -1) {
                                                 logger->Warning(
-                                                    L"%S",
-                                                    StringPrintf(
                                                         "Can't create random "
                                                         "monster: '%s' See "
                                                         "MapStats!",
-                                                        str.c_str()).c_str());
+                                                        str.c_str());
                                             }
                                         }
                                         pInfos[curr_rec_num]

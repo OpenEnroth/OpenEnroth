@@ -1909,7 +1909,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning(L"OpenGL error: (%u)", err);
+        log->Warning("OpenGL error: (%u)", err);
     }
 }
 
@@ -2424,7 +2424,7 @@ void RenderOpenGL::Update_Texture(Texture *texture) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning(L"OpenGL error: (%u)", err);
+        log->Warning("OpenGL error: (%u)", err);
     }
 }
 
@@ -2496,7 +2496,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);  // rgba
         gl_format = GL_RGBA;
     } else {
-        log->Warning(L"Image not loaded!");
+        log->Warning("Image not loaded!");
     }
 
     if (pixels) {
@@ -3195,7 +3195,7 @@ void RenderOpenGL::SetBillboardBlendOptions(
 
         default:
             log->Warning(
-                L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
+                "SetBillboardBlendOptions: invalid opacity type (%u)", a1);
             assert(false);
             break;
     }
@@ -3321,7 +3321,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning(L"OpenGL error: (%u)", err);
+        log->Warning("OpenGL error: (%u)", err);
     }
 
     // blank over same bit of this render_target_rgb to stop text overlaps
@@ -3741,7 +3741,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
 
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
-            log->Warning(L"OpenGL error: (%u)", err);
+            log->Warning("OpenGL error: (%u)", err);
         }
 
     } else {
@@ -4113,7 +4113,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning(L"OpenGL error: (%u)", err);
+        log->Warning("OpenGL error: (%u)", err);
     }
 }
 
