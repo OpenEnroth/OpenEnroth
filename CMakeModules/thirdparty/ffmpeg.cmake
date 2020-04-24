@@ -48,7 +48,7 @@ if (APPLE)
     )
     find_library(AVUTIL_LIBRARY avutil)
     find_library(SWRESAMPLE_LIBRARY swresample)
-    target_link_libraries(World_of_Might_and_Magic ${AVUTIL_LIBRARY} ${SWRESAMPLE_LIBRARY})
+    target_link_libraries(ffmpeg ${AVUTIL_LIBRARY} ${SWRESAMPLE_LIBRARY})
 endif()
 
 endif()
