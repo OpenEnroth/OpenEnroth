@@ -34,7 +34,7 @@ void GUIWindow_Inventory::Update() {
 
 // GUIWindow_Inventory_CastSpell
 
-GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :
+GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint) :
     GUIWindow(WINDOW_CastSpell_InInventory, x, y, width, height, button, hint) {
     mouse->SetCursorImage("MICON2");
     pBtn_ExitCancel = CreateButton(392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(34),  // Cancel

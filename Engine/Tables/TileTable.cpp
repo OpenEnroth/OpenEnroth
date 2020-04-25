@@ -352,8 +352,7 @@ int TileTable::FromFileTxt(const char *pFilename) {
                 } else if (!_stricmp(v35, "TTsect_DN")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_DN;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                }
-                if (!_stricmp(v35, "TTsect_DS")) {
+                } else if (!_stricmp(v35, "TTsect_DS")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_E1_DS;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
                 } else if (!_stricmp(v35, "TTsect_DW")) {

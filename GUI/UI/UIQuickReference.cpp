@@ -17,7 +17,7 @@
 Image *ui_game_quickref_background = nullptr;
 
 GUIWindow_QuickReference::GUIWindow_QuickReference()
-    : GUIWindow(WINDOW_QuickReference, 0, 0, window->GetWidth(), window->GetHeight(), 5) {
+    : GUIWindow(WINDOW_QuickReference, 0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)5) {
     // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);

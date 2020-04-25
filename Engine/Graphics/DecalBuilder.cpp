@@ -150,7 +150,7 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154 *a4,
             if (!this->_49B790_build_decal_geometry(
                 point_light_level, LocationFlags,
                 &bloodsplat_container->std__vector_pBloodsplats[this->std__vector_30B00C[i]],
-                (int)&BloodSplatX,
+                (int64_t)&BloodSplatX,
                 bloodsplat_container->std__vector_pBloodsplats[this->std__vector_30B00C[i]].radius,
                 ColourMult,
                 bloodsplat_container->std__vector_pBloodsplats[this->std__vector_30B00C[i]].dot_dist,
@@ -163,7 +163,7 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154 *a4,
 
 //----- (0049B790) --------------------------------------------------------
 char DecalBuilder::_49B790_build_decal_geometry(
-    int LightLevel, char LocationFlags, Bloodsplat *blood, int DecalXPos, float DecalRadius,
+    int LightLevel, char LocationFlags, Bloodsplat *blood, int64_t DecalXPos, float DecalRadius,
     unsigned int uColorMultiplier, float DecalDotDist, stru314 *FacetNormals, signed int a10,
     RenderVertexSoft *a11, char uClipFlags) {
 

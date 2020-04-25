@@ -1737,7 +1737,7 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
         v12 = BlendColors(pSoftBillboard->sTintColor, v11);
         if (v28)
             v12 =
-            (unsigned int)((char *)&array_77EC08[1852].pEdgeList1[17] + 3) &
+            (uint64_t)((char *)&array_77EC08[1852].pEdgeList1[17] + 3) &
             ((unsigned int)v12 >> 1);
     } else {
         v12 = ::GetActorTintColor(dimming_level, 0,
@@ -2204,7 +2204,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                         ((signed int)stru_5C6E00->uIntegerPi >>
                             3) +
                         pLevelDecorations[i].field_10_y_rot -
-                        (signed int)v10) >>
+                        (int64_t)v10) >>
                         8) &
                         7;
                     v37 = (unsigned __int16 *)v13;
@@ -2267,7 +2267,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                             int screen_space_half_width = 0;
                             screen_space_half_width =
                                 _v41.GetInt() *
-                                frame->hw_sprites[(int)v37]->uBufferWidth / 2;
+                                frame->hw_sprites[(int64_t)v37]->uBufferWidth / 2;
 
                             if (projected_x + screen_space_half_width >=
                                 (signed int)pViewport->uViewportTL_X &&
@@ -2278,7 +2278,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                                 ++uNumDecorationsDrawnThisFrame;
 
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .hwsprite = frame->hw_sprites[(int)v37];
+                                    .hwsprite = frame->hw_sprites[(int64_t)v37];
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]
                                     .world_x = pLevelDecorations[i].vPosition.x;
                                 pBillboardRenderList[::uNumBillboardsToDraw - 1]

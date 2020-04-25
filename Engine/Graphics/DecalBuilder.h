@@ -141,7 +141,7 @@ struct DecalBuilder {
                      struct RenderVertexSoft *a6,
                      struct IndoorCameraD3D_Vec4 *a7, char a8,
                      unsigned int uSectorID);
-    char _49B790_build_decal_geometry(int a2, char a3, Bloodsplat *a4, int a5,
+    char _49B790_build_decal_geometry(int a2, char a3, Bloodsplat *a4, int64_t a5,
                                       float a6, unsigned int uColorMultiplier,
                                       float a8, struct stru314 *a9,
                                       signed int a10,

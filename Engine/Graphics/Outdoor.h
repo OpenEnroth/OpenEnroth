@@ -161,7 +161,7 @@ struct OutdoorLocation {
     int field_D28;
     int field_D2C;
     Vec3_int_ vSunlight;
-    int field_D3C;
+    unsigned int *field_D3C;
     int field_D40;
     int field_D44;
     int field_D48;
@@ -188,7 +188,7 @@ void ODM_UpdateUserInputAndOther();
 int ODM_GetFloorLevel(int X, signed int Y, int Z, int, bool *pOnWater,
                       int *bmodel_pid, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
-                     int pFaceID);
+                     int *pFaceID);
 void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out);
 void UpdateActors_ODM();
 void ODM_ProcessPartyActions();

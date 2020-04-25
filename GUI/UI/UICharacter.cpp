@@ -466,7 +466,7 @@ std::array<Image *, 16> paperdoll_dbrds;
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     unsigned int uActiveCharacter, enum CURRENT_SCREEN screen)
     : GUIWindow(WINDOW_CharacterRecord, 0, 0, window->GetWidth(), window->GetHeight(),
-                uActiveCharacter) {
+                (GUIButton *)uActiveCharacter) {
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     bRingsShownInCharScreen = false;
@@ -664,7 +664,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;
     GUIWindow *CS_inventory_window = new GUIWindow_Inventory_CastSpell(
-        0, 0, window->GetWidth(), window->GetHeight(), (int)this, "");
+        0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(
         394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, 0,
         localization->GetString(79),  // Close

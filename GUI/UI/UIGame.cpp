@@ -937,9 +937,9 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 }
             }
         }
-        if ((signed int)((char *)_this + pParty->hirelingScrollPosition) < v1) {
+        if ((int64_t)((char *)_this + pParty->hirelingScrollPosition) < v1) {
             sDialogue_SpeakingActorNPC_ID =
-                -1 - pParty->hirelingScrollPosition - (int)_this;
+                -1 - pParty->hirelingScrollPosition - (int64_t)_this;
             pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
             if (pNPC) {
                 if (a2 == 57)
@@ -2432,7 +2432,7 @@ __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
                             v10.screen_space_y +=
                                 pFrame->hw_sprites[0]->sprite_header->uHeight /
                                 2;
-                        result = pFrame->hw_sprites[0]->sprite_header->_4AD2D1_overlays(&v10, 0);
+                        result = (int64_t)pFrame->hw_sprites[0]->sprite_header->_4AD2D1_overlays(&v10, 0);
                         ++v12;
                         if (v12 == 5) break;
                     }

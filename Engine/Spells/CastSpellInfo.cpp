@@ -61,7 +61,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     int v264;   // esi@521
     int v265;   // edx@521
 
-    int v267;              // eax@524
+    int *v267;              // eax@524
     int v268;              // eax@524
     int v278;              // ecx@548
     char v279;             // al@550
@@ -106,10 +106,12 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     int buff_resist;
     bool spell_sound_flag = false;  // [sp+E5Ch] [bp-28h]@1
     Player *pPlayer;                // [sp+E64h] [bp-20h]@8
-    int v730;                       // [sp+E68h] [bp-1Ch]@53
+    char *v730;                       // [sp+E68h] [bp-1Ch]@53
+    int v730_int;
     ItemGen *v730c;
     int skill_level = 0;  // [sp+E6Ch] [bp-18h]@48
-    signed int v732;      // [sp+E70h] [bp-14h]@325
+    int *v732;      // [sp+E70h] [bp-14h]@325
+    int v732_int;
 
     int spellduration;
     signed int spell_targeted_at = 0;  // [sp+E7Ch] [bp-8h]@14
@@ -1292,7 +1294,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 unsigned __int64 k = 0;
                 int j = 0;
                 if (meteor_num > 0) {
-                    v730 = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
+                    v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
                     for (meteor_num; meteor_num; meteor_num--) {
                         spell_targeted_at = rand() % 1000;
                         if (sqrt(((double)spell_targeted_at - 2500) *
@@ -1320,7 +1322,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         pSpellSprite.uSpriteFrameID = 0;
                         pSpellSprite.spell_caster_pid =
                             PID(OBJECT_Player, pCastSpell->uPlayerID);
-                        pSpellSprite.spell_target_pid = v730;
+                        pSpellSprite.spell_target_pid = v730_int;
                         pSpellSprite.field_60_distance_related_prolly_lod =
                             stru_50C198._427546(spell_targeted_at + 2500);
                         pSpellSprite.uFacing = v687;
@@ -1637,7 +1639,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
                 unsigned __int64 k = 0;
                 int j = 0;
-                v730 = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
+                v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
                 for (uint star_num = 20; star_num; star_num--) {
                     spell_targeted_at = rand() % 1000;
                     if (sqrt(((double)spell_targeted_at + (double)dist_Z -
@@ -1669,7 +1671,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pSpellSprite.uSpriteFrameID = 0;
                     pSpellSprite.spell_caster_pid =
                         PID(OBJECT_Player, pCastSpell->uPlayerID);
-                    pSpellSprite.spell_target_pid = v730;
+                    pSpellSprite.spell_target_pid = v730_int;
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         stru_50C198._427546(spell_targeted_at + 2500);
                     pSpellSprite.uFacing = v685;
@@ -1996,12 +1998,14 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                                     char v259;  // al@516
                                     int v679_array800[800];                  // [sp+14h] [bp-E70h]@515
                                     int v260;   // eax@518
-                                    int v261;   // esi@519
+                                    void * v261;   // esi@519
 
                                     if (pItemsTable->pSpecialEnchantments_count > 0) {
-                                        v730 = (int)&v679_array800;
+                                        v730 = (char *)&v679_array800;
                                         for (spec_ench_loop = 0; spec_ench_loop < pItemsTable->pSpecialEnchantments_count; ++spec_ench_loop) {
-                                            v259 = (int)pItemsTable->pSpecialEnchantments[v258 + 1].pBonusStatement;
+                                            // v259 = (int)pItemsTable->pSpecialEnchantments[v258 + 1].pBonusStatement;
+                                            __debugbreak();  // need to check the below after 64-bit conversion, because v259 is only char size
+                                            v259 = (int64_t)pItemsTable->pSpecialEnchantments[v258 + 1].pBonusStatement;
 
                                             if (!v259 || v259 == 1) {
                                                 v260 = *(&pItemsTable->pSpecialEnchantments[v258/*0*/].to_item_apply[spell_item_to_enchant->GetItemEquipType() + 4] /*+ v258 * 28*/);
@@ -2024,7 +2028,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
                                     if (v264 < v265) {
                                         for (int *ii = v679_array800; ; ii = (int *)v732) {
-                                            v267 = (int)(ii + 1);
+                                            v267 = (ii + 1);
                                             v732 = v267;
                                             v268 = *(int *)v267;
                                             *(int *)(spell_item_to_enchant + 12) = v268;
@@ -2039,7 +2043,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                                         int *_v730 = v679_array800;
 
                                         for (spec_ench_loop = 0; spec_ench_loop < pItemsTable->pSpecialEnchantments_count; ++spec_ench_loop) {
-                                            v279 = (char)pItemsTable->pSpecialEnchantments[v278].pBonusStatement;
+                                            v279 = (char)(int64_t)pItemsTable->pSpecialEnchantments[v278].pBonusStatement;
                                             if (!v279 || v279 == 1) {
                                                 v280 = *(&pItemsTable->pSpecialEnchantments[v278].to_item_apply[spell_item_to_enchant->GetItemEquipType()]);
                                                 spec_ench_loop += v280;
@@ -4203,13 +4207,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     v642 = rand() % 4096 - 2048;
                     v643 = rand();
                     bool bOnWater = false;
-                    v732 = GetTerrainHeightsAroundParty2(
+                    v732_int = GetTerrainHeightsAroundParty2(
                         v642 + pParty->vPosition.x,
                         pParty->vPosition.y + (v643 % 4096 - 2048), &bOnWater, 0);
                     SpriteObject::sub_42F7EB_DropItemAt(
                         SPRITE_SPELL_EARTH_ROCK_BLAST,
                         v642 + pParty->vPosition.x,
-                        pParty->vPosition.y + (v643 % 4096 - 2048), v732 + 16,
+                        pParty->vPosition.y + (v643 % 4096 - 2048), v732_int + 16,
                         rand() % 500 + 500, 1, 0, 0, 0);
                 }
                 spell_sound_flag = true;
@@ -4466,7 +4470,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             if (pGUIWindow_CastTargetedSpell) return;
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result]);
+                (GUIButton *)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 52, 422, 35, 0, 2, 0, UIMSG_CastSpell_Character_Big_Improvement,
                 0, 49, "");
@@ -4487,7 +4491,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
 
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result]);
+                (GUIButton *)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 game_viewport_x, game_viewport_y, game_viewport_width,
                 game_viewport_height, 1, 0, UIMSG_CastSpell_Shoot_Monster, 0, 0,
@@ -4500,7 +4504,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
 
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result]);
+                (GUIButton *)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 game_viewport_x, game_viewport_y, game_viewport_width,
                 game_viewport_height, 1, 0, UIMSG_CastSpell_Telekinesis, 0, 0,
@@ -4522,7 +4526,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             if (pGUIWindow_CastTargetedSpell) return;
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result]);
+                (GUIButton *)&pCastSpellInfo[result]);
             pGUIWindow_CastTargetedSpell->CreateButton(
                 0x34u, 0x1A6u, 0x23u, 0, 2, 0,
                 UIMSG_CastSpell_Character_Small_Improvement, 0, 0x31u, "");
@@ -4543,7 +4547,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
         if (flags & ON_CAST_DarkSacrifice && !pGUIWindow_CastTargetedSpell) {
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(
                 0, 0, window->GetWidth(), window->GetHeight(),
-                (int)&pCastSpellInfo[result]);
+                (GUIButton *)&pCastSpellInfo[result]);
             pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton(
                 469, 178, ui_btn_npc_left->GetWidth(),
                 ui_btn_npc_left->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 0, 0,

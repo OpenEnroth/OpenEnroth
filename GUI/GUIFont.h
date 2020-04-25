@@ -4,6 +4,7 @@
 class GUIWindow;
 class Image;
 struct FontData;
+struct FontData_MM7;
 
 class GUIFont {
  public:

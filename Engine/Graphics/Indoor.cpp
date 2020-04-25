@@ -563,7 +563,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                     }
                 } else if (pFace->IsTextureFrameTable()) {
                     face_texture = pTextureFrameTable->GetFrameTexture(
-                        (int)pFace->resource, pBLVRenderParams->field_0_timer_);
+                            (int64_t)pFace->resource, pBLVRenderParams->field_0_timer_);
                 } else {
                     ColourMask = 0xFF808080;
                     // v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
@@ -610,7 +610,7 @@ unsigned int FaceFlowTextureOffset(unsigned int uFaceID) {  // time texture offs
 Texture *BLVFace::GetTexture() {
     if (this->IsTextureFrameTable())
         return pTextureFrameTable->GetFrameTexture(
-            (int)this->resource, pBLVRenderParams->field_0_timer_);
+            (int64_t)this->resource, pBLVRenderParams->field_0_timer_);
     else
         return (Texture *)this->resource;
 }

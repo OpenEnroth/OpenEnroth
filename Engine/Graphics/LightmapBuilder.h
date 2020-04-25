@@ -58,9 +58,9 @@ class LightmapBuilder {
     bool ApplyLights_OutdoorFace(struct ODMFace *pFace);
     double _45CC0C_light(struct Vec3_float_ a1, float a2, float a3,
                          struct Vec3_float_ *pNormal, float a5, int uLightType);
-    int _45CBD4(struct RenderVertexSoft *a2, int a3, int *a4, int *a5);
+    int *_45CBD4(struct RenderVertexSoft *a2, int a3, int *a4, int *a5);
     int _45CB89(struct RenderVertexSoft *a1, int a2);
-    int _45CA88(struct LightsData *a2, struct RenderVertexSoft *a3, int a4,
+    int *_45CA88(struct LightsData *a2, struct RenderVertexSoft *a3, int a4,
                 struct Vec3_float_ *pNormal);
     bool ApplyLight_BLV(struct StationaryLight *pLight, struct BLVFace *a2,
                         unsigned int *pSlot, bool bLightBackfaces, char *a5);

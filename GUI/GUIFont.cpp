@@ -51,6 +51,21 @@ struct FontData {
     uint32_t font_pixels_offset[256];
     uint8_t pFontData[0];  // array of font pixels
 };
+
+struct FontData_MM7 {
+    uint8_t cFirstChar;  // 0
+    uint8_t cLastChar;   // 1
+    uint8_t field_2;
+    uint8_t field_3;
+    uint8_t field_4;
+    uint16_t uFontHeight;  // 5-6
+    uint8_t field_7;
+    uint32_t palletes_count;
+    uint32_t pFontPalettes[5];
+    GUICharMetric pMetrics[256];
+    uint32_t font_pixels_offset[256];
+    uint8_t pFontData[0];  // array of font pixels
+};
 #pragma pack(pop)
 
 GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
@@ -58,7 +73,13 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     // static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
 
     GUIFont *pFont = new GUIFont;
-    pFont->pData = (FontData*)pIcons_LOD->LoadCompressedTexture(pFontFile);
+
+    // pFont->pData = (FontData*)pIcons_LOD->LoadCompressedTexture(pFontFile);
+    FontData_MM7 *src = (FontData_MM7 *)pIcons_LOD->LoadCompressedTexture(pFontFile);
+    pFont->pData = (FontData *)malloc(sizeof(FontData));
+    memcpy(pFont->pData, src, 12);
+    memset((char *)pFont->pData + 12, 0, 40);
+    memcpy((char *)pFont->pData + 52, (char *)src + 32, 4096);
 
     int pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_24BIT_PALETTE);
     if (pallete_index == -1)

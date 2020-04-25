@@ -90,7 +90,7 @@ struct NPCData_Image_MM7 {
     void Serialize(struct NPCData *item);
     void Deserialize(struct NPCData *item);
 
-    /* 00 */ char *pName;
+    /* 00 */ int32_t pName; // char *pName;
     /* 04 */ unsigned int uPortraitID;
     /* 08 */ unsigned int
         uFlags;  // & 0x80    no greeting on dialogue start; looks like hired

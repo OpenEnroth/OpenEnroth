@@ -1335,14 +1335,14 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
                 pBillboardRenderList
                     [render
                          ->pBillboardRenderListD3D[(
-                             int)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
+                             int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
                          .sParentBillboardID]
                         .object_pid);
             int object_type = PID_TYPE(
                 pBillboardRenderList
                     [render
                          ->pBillboardRenderListD3D[(
-                             int)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
+                             int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
                          .sParentBillboardID]
                         .object_pid);
             if (filter->select_flags & 2) {

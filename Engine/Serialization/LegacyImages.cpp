@@ -123,7 +123,7 @@ void Timer_Image_MM7::Deserialize(Timer *timer) {
 void NPCData_Image_MM7::Serialize(NPCData *npc) {
     memset(this, 0, sizeof(*this));
 
-    this->pName = npc->pName;
+    // this->pName = npc->pName;
     this->uPortraitID = npc->uPortraitID;
     this->uFlags = npc->uFlags;
     this->fame = npc->fame;
@@ -145,7 +145,7 @@ void NPCData_Image_MM7::Serialize(NPCData *npc) {
 }
 
 void NPCData_Image_MM7::Deserialize(NPCData *npc) {
-    npc->pName = this->pName;
+    // npc->pName = this->pName;
     npc->uPortraitID = this->uPortraitID;
     npc->uFlags = this->uFlags;
     npc->fame = this->fame;

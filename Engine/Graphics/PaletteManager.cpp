@@ -595,13 +595,21 @@ int PaletteManager::ResetNonLocked() {
 
     v1 = this;
     v2 = 0;
-    v3 = (int)&v1->pBaseColors[0][0][1];
-    do {
-        *(char *)(v3 + 1) = v2;
-        *(char *)v3 = v2;
-        *(char *)(v3 - 1) = v2++;
-        v3 += 3;
-    } while (v2 < 256);
+
+//    v3 = (int)&v1->pBaseColors[0][0][1];
+//    do {
+//        *(char *)(v3 + 1) = v2;
+//        *(char *)v3 = v2;
+//        *(char *)(v3 - 1) = v2++;
+//        v3 += 3;
+//    } while (v2 < 256);
+
+    for (uint i = 0; i < 256; ++i) {
+        v1->pBaseColors[0][i][0] = i;
+        v1->pBaseColors[0][i][1] = i;
+        v1->pBaseColors[0][i][2] = i;
+    }
+
     CalcPalettes_LUT(0);
     result = v1->_num_locked;
     if (result < 50) {
@@ -626,13 +634,21 @@ int PaletteManager::ResetNonTestLocked() {
 
     v1 = this;
     v2 = 0;
-    v3 = (int)&v1->pBaseColors[0][0][1];
-    do {
-        *(char *)(v3 + 1) = v2;
-        *(char *)v3 = v2;
-        *(char *)(v3 - 1) = v2++;
-        v3 += 3;
-    } while (v2 < 256);
+
+//    v3 = (int)&v1->pBaseColors[0][0][1];
+//    do {
+//        *(char *)(v3 + 1) = v2;
+//        *(char *)v3 = v2;
+//        *(char *)(v3 - 1) = v2++;
+//        v3 += 3;
+//    } while (v2 < 256);
+
+    for (uint i = 0; i < 256; ++i) {
+        v1->pBaseColors[0][i][0] = i;
+        v1->pBaseColors[0][i][1] = i;
+        v1->pBaseColors[0][i][2] = i;
+    }
+
     CalcPalettes_LUT(0);
     result = v1->_pal_lock_test;
     if (result < 50) {
@@ -660,7 +676,7 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
     char Source[32];  // [sp+360h] [bp-40h]@4
     // PaletteManager *v15; // [sp+380h] [bp-20h]@1
     float v16;  // [sp+384h] [bp-1Ch]@7
-    int v17;    // [sp+388h] [bp-18h]@6
+    // int v17;    // [sp+388h] [bp-18h]@6
     float v18;  // [sp+38Ch] [bp-14h]@7
     float green;  // [sp+390h] [bp-10h]@7
     float red;   // [sp+394h] [bp-Ch]@7
@@ -682,7 +698,7 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
             if (pBitmaps_LOD->LoadTextureFromLOD(&tex, Source,
                                                  TEXTURE_24BIT_PALETTE) == 1) {
                 index = 0;
-                v17 = 1 - (int)&colourstore;
+                // v17 = 1 - (int)&colourstore;
                 do {
                     // LODWORD(a1) = tex.pPalette24[v4];
                     red = (double)tex.pPalette24[index] / 255.0f;
@@ -733,7 +749,7 @@ int PaletteManager::MakeBasePaletteLut(int idx, char *entries) {
     // PaletteManager *v3; // edi@1
     // signed int result; // eax@1
     // int *v5; // ecx@1
-    int v6;  // eax@4
+    int *v6;  // eax@4
     int v7;  // esi@4
     // int v8; // eax@9
     // signed int v9; // ecx@9
@@ -746,9 +762,9 @@ int PaletteManager::MakeBasePaletteLut(int idx, char *entries) {
     for (uint i = 0; i < 50; ++i)
         if (pPaletteIDs[i] == idx) return i;
 
-    v6 = (int)&pPaletteIDs[1];
+    v6 = &pPaletteIDs[1];
     v7 = 1;
-    while (*(int *)v6) {
+    while (*v6) {
         ++v7;
         v6 += 4;
         if (v7 >= 50) return 0;

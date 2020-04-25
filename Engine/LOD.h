@@ -201,7 +201,7 @@ struct LODSprite : public LODSpriteHeader {
     ~LODSprite();
 
     void Release();
-    int _4AD2D1_overlays(struct SoftwareBillboard *a2, int a3);
+    struct SoftwareBillboard *_4AD2D1_overlays(struct SoftwareBillboard *a2, int a3);
 
     uint8_t *bitmap;
 };

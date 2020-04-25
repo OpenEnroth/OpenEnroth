@@ -42,7 +42,7 @@ void GuildDialog() {
     working_window.uFrameZ = 334;
 
     int base_teach_price =
-        (p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
+        (p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
              .fPriceMultiplier *
          500.0);
     int pPrice = base_teach_price *
@@ -52,7 +52,7 @@ void GuildDialog() {
     if (dialog_menu_id == HOUSE_DIALOGUE_MAIN) {  // change to switch??
         if (!(uint16_t)_449B57_test_bit(
                 (uint8_t *)pPlayers[uActiveCharacter]->_achieved_awards_bits,
-                guild_mambership_flags[(unsigned int)
+                guild_mambership_flags[(uint64_t)
                                            window_SpeakInHouse->ptr_1C -
                                        139])) {  // you must me member
             pTextHeight = pFontArrus->CalcTextHeight(
@@ -255,7 +255,7 @@ void GuildDialog() {
                                     [pPlayers[uActiveCharacter]
                                          ->SelectPhrasesTransaction(
                                              item, BuildingType_MagicShop,
-                                             (int)window_SpeakInHouse->ptr_1C,
+                                             (int64_t)window_SpeakInHouse->ptr_1C,
                                              2)],
                                 uActiveCharacter - 1, item,
                                 (char *)window_SpeakInHouse->ptr_1C, 2);
@@ -282,7 +282,7 @@ void GuildDialog() {
         } else {
             if (pParty->GetGold() < pPrice) {
                 GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
-                PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C,
+                PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
                                HouseSound_NotEnoughMoney_TrainingSuccessful);
             } else {
                 Party::TakeGold(pPrice);
@@ -307,7 +307,7 @@ void SpellBookGenerator() {  // for GuildDialogs
                     word_4F0F30[(signed int)window_SpeakInHouse->par1C -
                     139] +
                     11 *
-                    p2DEvents[(unsigned int)window_SpeakInHouse->ptr_1C - 1]
+                    p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
                     .uType +
                     345;
             } else {
