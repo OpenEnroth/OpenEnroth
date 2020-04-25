@@ -1257,8 +1257,8 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     // memcpy(pActors.data(), pSrc + 4, uNumActors * sizeof(Actor));
 
     for (int i = 0; i < uNumActors; ++i) {
-        memcpy(&pActors[i], pSrc + 4 + i * 836,44);
-        memcpy( (char *)&pActors[i] + 44 + 2 * sizeof(void *), pSrc + 4 + i * 836 + 52,792);
+        memcpy(&pActors[i], pSrc + 4 + i * 836, 44);
+        memcpy( (char *)&pActors[i] + 44 + 2 * sizeof(void *), pSrc + 4 + i * 836 + 52, 792);
     }
 
     // pSrc += 4 + uNumActors * sizeof(Actor);
