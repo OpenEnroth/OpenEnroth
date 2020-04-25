@@ -5280,7 +5280,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         strcpy(pMonster->pActorName, Src->pName);
         pMonster->sCurrentHP = Src->uHP;
 
-        //assert(sizeof(MonsterInfo) == 88);
+        // assert(sizeof(MonsterInfo) == 88);
         assert(sizeof(MonsterInfo) == 80 + 2 * sizeof(void *));
 
         memcpy(&pMonster->pMonsterInfo, Src,
