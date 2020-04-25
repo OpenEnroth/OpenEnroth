@@ -156,7 +156,7 @@ bool FileExists(const char *fname) {
 
 void Engine_DeinitializeAndTerminate(int exitCode) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-    engine->Deinitialize(); // called twice?
+    engine->Deinitialize();  // called twice?
     render->Release();
     delete window;
     exit(exitCode);
