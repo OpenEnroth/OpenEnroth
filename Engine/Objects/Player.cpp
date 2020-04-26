@@ -7152,7 +7152,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
 
             if (v37->uType == 545) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
-                logger->Info(L"Arrpow");
+                logger->Info("Arrpow");
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
                     rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
                     auto str = localization->FormatString(637, playerPtr->pName);  // evades damage

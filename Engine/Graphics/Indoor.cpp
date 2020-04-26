@@ -734,7 +734,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
     if (bLoaded) {
-        log->Warning(L"BLV is already loaded");
+        log->Warning("BLV is already loaded");
         return true;
     }
 
@@ -1081,7 +1081,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     // v171 = blv.uDoors_ddata_Size;
     ptr_0002B4_doors_ddata = (uint16_t*)malloc(blv.uDoors_ddata_Size);  //, "L.DData");
     if (ptr_0002B4_doors_ddata == nullptr) {
-        log->Warning(L"Malloc error");
+        log->Warning("Malloc error");
         Error("Malloc");  // is this recoverable
     }
 
@@ -1172,9 +1172,9 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
             (pSector->pBounding.z1 - 64) > sZ || (pSector->pBounding.z2 + 64) < sZ)
             continue;  // outside sector bounding
 
-        // logger->Warning(L"Sector[%u]", i);
-
+        // logger->Warning("Sector[%u]", i);
         int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
+      
         // nothing in secotr to check against so skip
         if (!FloorsAndPortals) continue;
 
@@ -3367,7 +3367,7 @@ char DoInteractionWithTopmostZObject(int a1, int a2) {
             break;
 
         default:
-            logger->Warning(L"Warning: Invalid ID reached!");
+            logger->Warning("Warning: Invalid ID reached!");
             return 1;
 
         case OBJECT_BModel:

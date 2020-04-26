@@ -71,7 +71,7 @@ class AVStreamWrapper {
         if (dec_ctx != nullptr) {
             // Close the codec
             avcodec_close(dec_ctx);
-            logger->Warning(L"close decoder context file\n");
+            logger->Warning("close decoder context file\n");
             dec_ctx = nullptr;
         }
     }
@@ -127,7 +127,7 @@ class AVAudioStream : public AVStreamWrapper {
             dec_ctx->sample_rate, dec_ctx->channel_layout, dec_ctx->sample_fmt,
             dec_ctx->sample_rate, 0, nullptr);
         if (swr_init(converter) < 0) {
-            logger->Warning(L"swr_init: failed");
+            logger->Warning("swr_init: failed");
             swr_free(&converter);
             converter = nullptr;
             return false;
@@ -300,7 +300,7 @@ class Movie : public IMovie {
         if (format_ctx) {
             // Close the video file
             avformat_close_input(&format_ctx);
-            logger->Warning(L"close video format context file\n");
+            logger->Warning("close video format context file\n");
             format_ctx = nullptr;
         }
         if (avioContext) {
@@ -316,7 +316,7 @@ class Movie : public IMovie {
     bool Load(const char *filename) {  // Загрузка
         // Open video file
         if (avformat_open_input(&format_ctx, filename, nullptr, nullptr) < 0) {
-            logger->Warning(L"ffmpeg: Unable to open input file");
+            logger->Warning("ffmpeg: Unable to open input file");
             Close();
             return false;
         }
@@ -561,7 +561,7 @@ class VideoList {
 
         file = fcaseopen(file_path.c_str(), "rb");
         if (file == nullptr) {
-            logger->Warning(L"Can't open video file: %S", file_path.c_str());
+            logger->Warning("Can't open video file: %s", file_path.c_str());
             return;
         }
         fseek(file, 0, SEEK_END);
@@ -859,7 +859,7 @@ MPlayer::MPlayer() {
 
     if (!provider) {
         provider = new OpenALSoundProvider;
-        // logger->Warning(L"allocation dynamic memory for provider\n");
+        // logger->Warning("allocation dynamic memory for provider\n");
         provider->Initialize();
     }
 }

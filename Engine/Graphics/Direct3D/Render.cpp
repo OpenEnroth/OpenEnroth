@@ -117,7 +117,7 @@ Texture *Render::CreateSprite(const String &name, unsigned int palette_id,
 void Render::WritePixel16(int x, int y, uint16_t color) {
     // do not use this - slow
     __debugbreak();
-    logger->Info(L"Reduce use of WritePixel16");
+    logger->Info("Reduce use of WritePixel16");
 
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
@@ -1395,7 +1395,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
                           float z_bias) {
     // For outdoor terrain and indoor light (VII)(VII)
     if (pLightmap->NumVertices < 3) {
-        log->Warning(L"Lightmap uNumVertices < 3");
+        log->Warning("Lightmap uNumVertices < 3");
         return false;
     }
 
@@ -3302,7 +3302,7 @@ void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
 
         default: {
             log->Warning(
-                L"SetBillboardBlendOptions: invalid opacity type (%u)", a1);
+                "SetBillboardBlendOptions: invalid opacity type (%u)", a1);
             assert(false);  // fireball and impolision can crash here - maybe clipping related
             break;
         }
@@ -3989,7 +3989,7 @@ void Render::DrawDecal(Decal *pDecal, float z_bias) {
     RenderVertexD3D3 pVerticesD3D[64];  // [sp+20h] [bp-850h]@6
 
     if (pDecal->uNumVertices < 3) {
-        log->Warning(L"Decal has < 3 vertices");
+        log->Warning("Decal has < 3 vertices");
         return;
     }
 

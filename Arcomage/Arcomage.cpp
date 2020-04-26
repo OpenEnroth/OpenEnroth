@@ -208,7 +208,7 @@ void ArcomageGame::OnMouseMove(int x, int y) {
 explosion_effect_struct *explosion_effect_struct::New() {
     explosion_effect_struct *v2 = (explosion_effect_struct *)malloc(0x5Cu);
     if (v2 == nullptr) {
-        logger->Warning(L"Malloc error");
+        logger->Warning("Malloc error");
         Error("Malloc");  // is this recoverable
     }
     v2->mem_signature = SIG_MEMALOC;

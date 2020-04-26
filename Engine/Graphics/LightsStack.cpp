@@ -8,7 +8,7 @@ bool LightsStack_MobileLight_::AddLight(int16_t x, int16_t y, int16_t z,
                                         uint8_t r, uint8_t g,
                                         uint8_t b, char uLightType) {
     if (uNumLightsActive >= 400) {
-        log->Warning(L"Too many mobile lights!");
+        log->Warning("Too many mobile lights!");
         return false;
     }
 
@@ -32,7 +32,7 @@ bool LightsStack_StationaryLight_::AddLight(int16_t x, int16_t y, int16_t z,
                                             unsigned char g, unsigned char b,
                                             char uLightType) {
     if (uNumLightsActive >= 400) {
-        log->Warning(L"Too many stationary lights!");
+        log->Warning("Too many stationary lights!");
         return false;
     }
 

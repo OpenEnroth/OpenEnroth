@@ -316,6 +316,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
 
     v5 = 0;
     v17 = 0;
+
     // for (a1.flt_2C = 0.0; v17 < (signed int)pBspRenderer->num_faces; ++v17) {
     //     pFaceID = pBspRenderer->faces[v5].uFaceID;
     //     if (pFaceID >= 0) {
@@ -339,10 +340,10 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                     v12->object_pid = PID(OBJECT_BModel, /*pFaceID*/v17);
                     v12->object_type = VisObjectType_Face;
                     ++*pNumPointers;
-                    // logger->Info(L"raypass");
+                    // logger->Info("raypass");
                 } else {
                     // __debugbreak();
-                    // logger->Info(L"rayfaile");
+                    // logger->Info("rayfaile");
                 }
             }
         }
@@ -510,7 +511,7 @@ int Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
 
         default:
             log->Warning(
-                L"Undefined type requested for: CVis::get_object_zbuf_val()");
+                "Undefined type requested for: CVis::get_object_zbuf_val()");
             return -1;
     }
 }
@@ -932,7 +933,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     pRotY = pIndoorCameraD3D->sRotationY + UnprojectX(fMouseX);
     pRotX = -pIndoorCameraD3D->sRotationX + UnprojectY(fMouseY);
 
-    // log->Info(L"Roty: %d, Rotx: %d", pRotY, pRotX);
+    // log->Info("Roty: %d, Rotx: %d", pRotY, pRotX);
 
     pStartR.z = pIndoorCameraD3D->vPartyPos.z;
     pStartR.x = pIndoorCameraD3D->vPartyPos.x;
@@ -1000,8 +1001,8 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type) {
 
         default:
             logger->Warning(
-                L"Unknown pointer creation flag passed to "
-                L"::create_object_pointers()");
+                "Unknown pointer creation flag passed to "
+                "::create_object_pointers()");
     }
 }
 
@@ -1274,7 +1275,7 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
     default_list.uNumPointers = 0;
     CastPickRay(pMouseRay, fMouseX, fMouseY, fDepth);
 
-    // log->Info(L"Sx: %f, Sy: %f, Sz: %f \n Fx: %f, Fy: %f, Fz: %f", pMouseRay->vWorldPosition.x, pMouseRay->vWorldPosition.y, pMouseRay->vWorldPosition.z,
+    // log->Info("Sx: %f, Sy: %f, Sz: %f \n Fx: %f, Fy: %f, Fz: %f", pMouseRay->vWorldPosition.x, pMouseRay->vWorldPosition.y, pMouseRay->vWorldPosition.z,
     //     (pMouseRay+1)->vWorldPosition.x, (pMouseRay + 1)->vWorldPosition.y, (pMouseRay + 1)->vWorldPosition.z);
 
     PickBillboards_Mouse(fDepth, fMouseX, fMouseY, &default_list, sprite_filter);
@@ -1286,11 +1287,11 @@ bool Vis::PickMouse(float fDepth, float fMouseX, float fMouseY,
             false);
     } else {
         log->Warning(
-            L"Picking mouse in undefined level");  // picking in main menu is
-                                                   // default (buggy) game
-                                                   // behaviour. should've
-                                                   // returned false in
-                                                   // Game::PickMouse
+            "Picking mouse in undefined level");  // picking in main menu is
+                                                  // default (buggy) game
+                                                  // behaviour. should've
+                                                  // returned false in
+                                                  // Game::PickMouse
         return false;
     }
     default_list.create_object_pointers(Vis_SelectionList::All);
@@ -1353,8 +1354,8 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
                 if (object_type != filter->object_id) return true;
                 if (filter->object_id != OBJECT_Decoration) {
                     log->Warning(
-                        L"Unsupported \"exclusion if no event\" type in "
-                        L"CVis::is_part_of_selection");
+                        "Unsupported \"exclusion if no event\" type in "
+                        "CVis::is_part_of_selection");
                     return true;
                 }
                 if (pLevelDecorations[object_idx].uCog ||
@@ -1364,7 +1365,7 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
             }
             if (object_type == filter->object_id) {
                 if (object_type != OBJECT_Actor) {
-                    log->Warning(L"Default case reached in VIS");
+                    log->Warning("Default case reached in VIS");
                     return true;
                 }
 

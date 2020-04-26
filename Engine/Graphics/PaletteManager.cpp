@@ -349,7 +349,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
                 a2a = a2a * 31.0;
                 a3 = a3 * 31.0;
             } else if (v23 == 0) {
-                // logger->Warning(L"Calling palette manager with
+                // logger->Warning("Calling palette manager with
                 // num_target_bits == 0");
             } else {
                 Error("(%u)", v23);
@@ -396,7 +396,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
                 a2a = a2a * 31.0;
                 a3 = a3 * 31.0;
             } else if (v23 == 0) {
-                // logger->Warning(L"Calling palette manager with
+                // logger->Warning("Calling palette manager with
                 // num_target_bits == 0");
             } else {
                 Error("(%u)", v23);
@@ -444,7 +444,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
             a2a = a2a * 31.0;
             a3 = a3 * 31.0;
         } else if (v23 == 0) {
-            // logger->Warning(L"Calling palette manager with num_target_bits
+            // logger->Warning("Calling palette manager with num_target_bits
             // == 0");
         } else {
             Error("(%u)", v23);
@@ -514,7 +514,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
                 a2a = a2a * 31.0;
                 a3 = a3 * 31.0;
             } else if (v23 == 0) {
-                // logger->Warning(L"Calling palette manager with
+                // logger->Warning("Calling palette manager with
                 // num_target_bits == 0");
             } else {
                 Error("(%u)", v23);

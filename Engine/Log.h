@@ -5,8 +5,8 @@ class Log {
     inline Log() : initialized(false) {}
 
     bool Initialize();
-    void Info(const wchar_t *pFormat, ...);
-    void Warning(const wchar_t *pFormat, ...);
+    void Info(const char *pFormat, ...);
+    void Warning(const char *pFormat, ...);
 
  protected:
     bool initialized;

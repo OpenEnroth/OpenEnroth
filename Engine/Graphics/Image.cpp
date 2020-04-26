@@ -326,7 +326,7 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                     cvt_pixels = nullptr;
                 }
             } else {
-                logger->Warning(L"No ImageConverter defined from %s to %s",
+                logger->Warning("No ImageConverter defined from %s to %s",
                                 IMAGE_FORMAT_ToString(this->native_format),
                                 IMAGE_FORMAT_ToString(format));
             }

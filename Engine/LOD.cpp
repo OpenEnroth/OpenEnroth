@@ -713,13 +713,13 @@ bool LOD::WriteableFile::LoadFile(const String &pFilename, bool bWriting) {
 void LOD::WriteableFile::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
                                      unsigned int uBufferSize) {
     if (pSubIndices) {
-        logger->Warning(L"Attempt to reset a LOD subindex!");
+        logger->Warning("Attempt to reset a LOD subindex!");
         free(pSubIndices);
         pSubIndices = nullptr;
     }
     pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) * uNumSubIndices);
     if (pIOBuffer) {
-        logger->Warning(L"Attempt to reset a LOD IObuffer!");
+        logger->Warning("Attempt to reset a LOD IObuffer!");
         free(pIOBuffer);
         pIOBuffer = nullptr;
         uIOBufferSize = 0;
@@ -1210,7 +1210,7 @@ unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer,
 Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
     Assert(idx < MAX_LOD_TEXTURES, "Texture_MM7 index out of bounds (%u)", idx);
     if (idx == -1) {
-        // logger->Warning(L"Texture_MM7 id = %d missing", idx);
+        // logger->Warning("Texture_MM7 id = %d missing", idx);
         return pTextures + LoadDummyTexture();
     }
     return pTextures + idx;

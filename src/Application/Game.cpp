@@ -112,7 +112,7 @@ void Game::Run() {
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
-    // logger->Warning(L"MM: entering main loop");
+    // logger->Warning("MM: entering main loop");
     while (true) {
         GUIWindow_MainMenu::Loop();
         uGameState = GAME_STATE_PLAYING;

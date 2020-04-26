@@ -254,7 +254,7 @@ bool OutdoorLocation::Initialize(const String &filename, int days_played,
         pSpriteFrameTable->ResetSomeSpriteFlags();
 
         if (!this->Load(filename, days_played, respawn_interval_days, thisa)) {
-            logger->Warning(L"Couldn't Load Map!");
+            logger->Warning("Couldn't Load Map!");
             CreateDebugLocation();
         }
 
@@ -922,7 +922,7 @@ void OutdoorLocation::CreateDebugLocation() {
     free(this->pOMAP);
     this->pOMAP = (unsigned int *)malloc(0x10000);
     if (this->pOMAP == nullptr) {
-        log->Warning(L"Malloc error - pOMAP");
+        log->Warning("Malloc error - pOMAP");
         __debugbreak();
     } else {
         memset(this->pOMAP, 0, 0x10000);
@@ -933,7 +933,7 @@ void OutdoorLocation::CreateDebugLocation() {
     free(this->pFaceIDLIST);
     this->pFaceIDLIST = (unsigned __int16 *)malloc(2);
     if (this->pFaceIDLIST == nullptr) {
-        logger->Warning(L"Malloc fail - pfaceidlist");
+        logger->Warning("Malloc fail - pfaceidlist");
         __debugbreak();
     } else {
         this->pFaceIDLIST[0] = 0;
@@ -1083,7 +1083,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     // ******************Decorations**********************//
     memcpy(&uNumLevelDecorations, pSrc, 4);
     // uSourceLen = (char *)uSourceLen + 4;
-    if (uNumLevelDecorations > 3000) logger->Warning(L"Can't load file! Too many decorations");
+    if (uNumLevelDecorations > 3000) logger->Warning("Can't load file! Too many decorations");
 
     assert(sizeof(LevelDecoration) == 32);
     // pFilename = (char *)(32 * uNumLevelDecorations);
@@ -1246,7 +1246,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
 
     memcpy(&uNumActors, pSrc, 4);
-    if (uNumActors > 500) logger->Warning(L"Can't load file!");
+    if (uNumActors > 500) logger->Warning("Can't load file!");
 
     pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
 
@@ -2075,7 +2075,7 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out) {
         side1_dx = 0.0;  // (double)(grid_pos_x1 - grid_pos_x1);
         side1_dz = (double)(grid_pos_z1 - grid_pos_z2);  //       z1 - z2 yes
         side1_dy = (double)(x1z1_y - x1z2_y);
-        // logger->Warning(L"%S %S %u\n", __FILE__, __FUNCTION__, __LINE__);
+        // logger->Warning("%S %S %u\n", __FILE__, __FUNCTION__, __LINE__);
         /*       |\
            side1 |  \
                  |____\
@@ -3778,7 +3778,7 @@ void UpdateActors_ODM() {
                 if (!Tile_Test_Land) {
                     // no land found so drowning damage
                     // pActors[Actor_ITR].sCurrentHP -= 1;
-                    // logger->Warning(L"DROWNING");
+                    // logger->Warning("DROWNING");
                 }
             }
         }
@@ -3878,8 +3878,8 @@ unsigned int GetLevelFogColor() {
         if (pWeather->bNight) {  // night-time fog
             if (false) {
                 logger->Warning(
-                    L"decompilation can be inaccurate, please send savegame to "
-                    L"Nomad");
+                    "decompilation can be inaccurate, please send savegame to "
+                    "Nomad");
                 __debugbreak();
             }
             int v2 = -(pWeather->bNight != 1);

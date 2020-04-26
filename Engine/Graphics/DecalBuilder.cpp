@@ -129,7 +129,7 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154 *a4,
     if (!pIndoorCameraD3D->GetFacetOrientation(
             v16->polygonType, &static_AE4F60.Normal, &static_AE4F60.field_10,
             &static_AE4F60.field_1C))
-        log->Warning(L"Error: Failed to get the facet orientation");
+        log->Warning("Error: Failed to get the facet orientation");
 
     if (this->uNumDecals > 0) {
         // a6b = this->std__vector_30B00C;
@@ -155,7 +155,7 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154 *a4,
                 ColourMult,
                 bloodsplat_container->std__vector_pBloodsplats[this->std__vector_30B00C[i]].dot_dist,
                 &static_AE4F60, a5, a6, ClipFlags))
-                log->Warning(L"Error: Failed to build decal geometry");
+                log->Warning("Error: Failed to build decal geometry");
         }
     }
     return 1;
@@ -301,11 +301,11 @@ char DecalBuilder::_49B790_build_decal_geometry(
                                           this->pVertices,
                                           (signed int *)&decal->uNumVertices);
             } else {
-                log->Warning(L"Undefined clip flag specified");
+                log->Warning("Undefined clip flag specified");
             }
         } else {
             log->Warning(
-                L"Lightpoly builder native indoor clipping not implemented");
+                "Lightpoly builder native indoor clipping not implemented");
         }
         if (a8b != 0) {
             ++this->curent_decal_id;
@@ -452,7 +452,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon *a2, Vec3_float_ *_a3
                         // v29 = WorldYPosD;
                     }
                 } else {
-                    log->Warning(L"Uknown strip type detected!");
+                    log->Warning("Uknown strip type detected!");
                 }
                 // v21 = uStripType;
                 // v13 = pIndoorCameraD3D->GetPolygonMinZ(v8, uStripType);
