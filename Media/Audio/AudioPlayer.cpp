@@ -194,7 +194,7 @@ void AudioPlayer::StopAll(int sample_id) {
 }
 
 void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int source_x, int source_y, int sound_data_id) {
-    // logger->Warning(L"-------Trying to load sound \"%i\"--------", eSoundID);
+    logger->Warning("-------Trying to load sound \"%i\"--------", eSoundID);
 
     if (eSoundID == 206) __debugbreak();
 
@@ -209,6 +209,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     }
 
     SoundInfo &si = mapSounds[eSoundID];
+    logger->Warning("-------Playing sound sound \"%S\" --------", (si.sName).c_str());
 
     if (!si.sample) {
         PMemBuffer buffer;
@@ -329,7 +330,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         }
     }
 
-    // logger->Warning(L"-------END Trying to load sound \"%i\"--------", eSoundID);
+    logger->Warning("-------END Trying to load sound \"%i\"--------", eSoundID);
     return;
 }
 

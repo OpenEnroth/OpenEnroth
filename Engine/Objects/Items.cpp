@@ -310,12 +310,11 @@ void ItemsTable::Initialize() {
         pSpecialEnchantments[i].iTreasureLevel = (tolower(tokens[15][0]) - 97) | mask;
     }
 
-    pSpecialEnchantments_count = 71;
+    pSpecialEnchantments_count = 72;
     memset(&pSpecialEnchantmentsSumm, 0, 96);
     for (int i = 0; i < 12; ++i) {
-        for (unsigned int j = 0; j <= pSpecialEnchantments_count; ++j)
-            pSpecialEnchantmentsSumm[i] +=
-                pSpecialEnchantments[j].to_item_apply[i];
+        for (unsigned int j = 0; j < pSpecialEnchantments_count; ++j)
+            pSpecialEnchantmentsSumm[i] += pSpecialEnchantments[j].to_item_apply[i];
     }
 
     InitializeBuildingResidents();

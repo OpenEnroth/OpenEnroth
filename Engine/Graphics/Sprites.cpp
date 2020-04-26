@@ -32,16 +32,9 @@ void SpriteFrameTable::ReleaseSFrames() {
 }
 
 //----- (0044D4F6) --------------------------------------------------------
-void SpriteFrameTable::ResetSomeSpriteFlags() {
-    int v1;        // esi@1
-    signed int i;  // edx@1
-    char *v3;      // eax@2
-
-    v1 = 0;
-    for (i = 0; i < (signed int)this->uNumSpriteFrames; ++i) {
-        v3 = (char *)&this->pSpriteSFrames[v1].uFlags;
-        ++v1;
-        *v3 &= 0x7Fu;
+void SpriteFrameTable::ResetLoadedFlags() {
+    for (int i = 0; i < this->uNumSpriteFrames; ++i) {
+        this->pSpriteSFrames[i].uFlags &= ~0x80;
     }
 }
 
@@ -78,26 +71,25 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
             v3 = uSpriteID;
 
             int uFlags = pSpriteSFrames[v3].uFlags;
+
             if (!(uFlags & 0x0080)) {  // not loaded
                 pSpriteSFrames[v3].uFlags |= 0x80;  // set loaded
+
                 while (1) {
-                    pSpriteSFrames[v3].uPaletteIndex =
-                        pPaletteManager->LoadPalette(
-                            pSpriteSFrames[v3].uPaletteID);
+                    pSpriteSFrames[v3].uPaletteIndex = pPaletteManager->LoadPalette(pSpriteSFrames[v3].uPaletteID);
+
                     if (uFlags & 0x10) {  // single frame per frame sequence
-                        auto v8 = pSprites_LOD->LoadSprite(
-                            pSpriteSFrames[v3].texture_name.c_str(),
-                            pSpriteSFrames[v3].uPaletteID);
+                        auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[v3].texture_name.c_str(), pSpriteSFrames[v3].uPaletteID);
 
-                        if (v8 == -1) {  // should we set hw_sprites as nullptr in these cases??
-                            // __debugbreak();
+                        if (v8 == -1) {
                             logger->Warning("Sprite %s not loaded!", pSpriteSFrames[v3].texture_name.c_str());
-                        }
-
-                        for (uint i = 0; i < 8; ++i) {
-                            // pSpriteSFrames[v3].pHwSpriteIDs[i] = v8;
-                            pSpriteSFrames[v3].hw_sprites[i] =
-                                &pSprites_LOD->pHardwareSprites[v8];
+                            for (uint i = 0; i < 8; ++i) {
+                                pSpriteSFrames[v3].hw_sprites[i] = nullptr;
+                            }
+                        } else {
+                            for (uint i = 0; i < 8; ++i) {
+                                pSpriteSFrames[v3].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v8];
+                            }
                         }
 
                     } else if (uFlags & 0x10000) {
@@ -223,8 +215,7 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 }
                             }
 
-                            auto v12 = pSprites_LOD->LoadSprite(
-                                sprite_name, pSpriteSFrames[v3].uPaletteID);
+                            auto v12 = pSprites_LOD->LoadSprite(sprite_name, pSpriteSFrames[v3].uPaletteID);
                             // pSpriteSFrames[v3].pHwSpriteIDs[i]=v12;
 
                             if (v12 == -1) __debugbreak();

@@ -737,7 +737,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
                     }
 
-                    if (!frame) {
+                    if (!frame || frame->texture_name == "null") {
                         continue;
                     }
 
@@ -3767,6 +3767,7 @@ unsigned short *Render::MakeScreenshot(int width, int height) {
 Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
     auto pixels = MakeScreenshot(width, height);
     Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
+    free(pixels);
     return image;
 }
 

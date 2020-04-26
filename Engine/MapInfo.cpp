@@ -97,7 +97,7 @@ void MapStats::Initialize() {
                     pInfos[i].Trap_D20 = atoi(test_string);
                     break;
                 case 11:
-                    pInfos[i].Treasure_prob = atoi(test_string);
+                    pInfos[i].Treasure_prob = atoi(test_string);  // treasure levels 0-6
                     break;
                 case 12:
                     pInfos[i].Encounter_percent = atoi(test_string);

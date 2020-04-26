@@ -56,17 +56,6 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     double spell_recharge_factor;    // st7@478
     ItemGen *spell_item_to_enchant;  // edi@492
 
-    int v258 = 0;
-    int to_item_apply_sum = 0;
-    int spec_ench_loop;
-    char v259;  // al@516
-    int v679_array800[800];                  // [sp+14h] [bp-E70h]@515
-    int v260;   // eax@518
-    void *v261;   // esi@519
-    int v262;   // edx@521
-    int *v263;  // ecx@521
-    int v264;   // esi@521
-    int v265;   // edx@521
 
     int *v267;              // eax@524
     int v268;              // eax@524
@@ -80,7 +69,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     int v285;              // edx@555
     int *l;                // eax@556
     int v295;              // edx@575
-    char v313;             // al@606pGame->GetStru6()
+
     const char *v317;      // ecx@617
                            //  int v396; // eax@752
     __int16 v448;          // ax@864
@@ -1934,21 +1923,24 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
                 spell_item_to_enchant = &pPlayer->pInventoryItemList[spell_targeted_at - 1];
                 ItemDesc *_v725 = &pItemsTable->pItems[spell_item_to_enchant->uItemID];
+                char this_equip_type = _v725->uEquipType;
 
+                // refs
+                // https://www.gog.com/forum/might_and_magic_series/a_little_enchant_item_testing_in_mm7
+                // http://www.pottsland.com/mm6/enchant.shtml
+                // also see STDITEMS.tx and SPCITEMS.txt in Events.lod
 
+                if ((skill_level == 1 || skill_level == 2)) __debugbreak();
 
-                if ((skill_level == 1 ||
-                     skill_level == 2 /*&& _v725->uEquipType > EQUIP_BOW*/ ||
-                     skill_level == 3 || skill_level == 4) &&
+                if ((skill_level == 3 || skill_level == 4) &&
                     spell_item_to_enchant->uItemID <= 134 &&
                     spell_item_to_enchant->special_enchantment == 0 &&
                     spell_item_to_enchant->uEnchantmentType == 0 &&
                     spell_item_to_enchant->m_enchantmentStrength == 0 &&
                     !spell_item_to_enchant->IsBroken()) {  // требования к предмету
                     // break items with low value
-                    if ((spell_item_to_enchant->GetValue() < 450 && (skill_level == 1 || skill_level == 2)) ||
-                        (spell_item_to_enchant->GetValue() < 450 && (skill_level == 3 || skill_level == 4) && _v725->uEquipType >= EQUIP_SINGLE_HANDED && _v725->uEquipType <= EQUIP_BOW) ||  // weapon
-                        (spell_item_to_enchant->GetValue() < 250 && (skill_level == 3 || skill_level == 4) && _v725->uEquipType > EQUIP_BOW)) {  // armour - Условия поломки
+                    if ((spell_item_to_enchant->GetValue() < 450 && this_equip_type > EQUIP_BOW) ||  // armour
+                        (spell_item_to_enchant->GetValue() < 250 && this_equip_type >= EQUIP_SINGLE_HANDED && this_equip_type <= EQUIP_BOW)) {  // weapons
                         if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {  // предмет не сломан
                             spell_item_to_enchant->uAttributes |= ITEM_BROKEN;  //теперь сломан
                         }
@@ -1959,116 +1951,91 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED))  // предмет не сломан
                                 spell_item_to_enchant->uAttributes |= ITEM_BROKEN;  //теперь сломан
                         } else {
-                            if ((rnd < 80 && (skill_level == 3 || skill_level == 4)) ||
-                                spell_item_to_enchant->GetValue() < 450 ||
-                                (spell_item_to_enchant->GetValue() < 250 && (skill_level == 3 || skill_level == 4) && _v725->uEquipType >= EQUIP_SINGLE_HANDED && _v725->uEquipType <= EQUIP_BOW)) {
-                                v313 = _v725->uEquipType;
-
-                                if (_v725->uEquipType >= EQUIP_ARMOUR && _v725->uEquipType <= EQUIP_AMULET) {
+                            if (rnd < 80) {
+                                if (this_equip_type >= EQUIP_ARMOUR && this_equip_type <= EQUIP_AMULET) {  // armour gets std enchantments
                                     // ARMOUR, SHIELD, EQUIP_HELMET, BELT, CLOAK, GAUNTLETS, BOOTS, RING, AMULET
 
-                                    v295 = rand() % 10;  // ?? more than 10 std enchants STDITEMS.TXT
+                                    int ench_found = 0;
+                                    int to_item_apply_sum = 0;
+                                    int ench_array[100] = { 0 };
 
-                                    // pItemsTable->field_116D8[pItemsTable->pItems[_this->uItemID].uEquipType];
-                                    /*spell_item_to_enchant->uEnchantmentType =
-                                    0;
-                                    __debugbreak(); // castspellinfo.cpp(1971):
-                                    warning C4700: uninitialized local variable
-                                    'v294' used for ( kk =
-                                    pItemsTable->pEnchantments[0].to_item[spell_item_to_enchant->GetItemEquipType()
-                                    + 1];
-                                          ;
-                                          kk +=
-                                    pItemsTable->pEnchantments[v294->uEnchantmentType].to_item[spell_item_to_enchant->GetItemEquipType()
-                                    + 1] )
-                                    {
-                                      ++spell_item_to_enchant->uEnchantmentType;
-                                      if ( kk >= v295 )
-                                        break;
+                                    // finds how many possible enchaments and adds up to item apply values
+                                    // if (pItemsTable->pEnchantments_count > 0) {
+                                        for (int norm_ench_loop = 0; norm_ench_loop < 24; ++norm_ench_loop) {
+                                            char* this_bon_state = pItemsTable->pEnchantments[norm_ench_loop].pBonusStat;
+                                            if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
+                                                int this_to_apply = pItemsTable->pEnchantments[norm_ench_loop].to_item[this_equip_type - 3];
+                                                to_item_apply_sum += this_to_apply;
+                                                if (this_to_apply) {
+                                                    ench_array[ench_found] = norm_ench_loop;
+                                                    ench_found++;
+                                                }
+                                            }
+                                        }
+                                    // }
+
+                                    // pick a random ench
+                                    int item_apply_rand = rand() % to_item_apply_sum;
+                                    int target_item_apply_rand = item_apply_rand + 1;
+                                    int current_item_apply_sum = 0;
+                                    int step = 0;
+
+                                    // step through until we hit that ench
+                                    for (step = 0; step < ench_found; step++) {
+                                        current_item_apply_sum += pItemsTable->pEnchantments[ench_array[step]].to_item[this_equip_type - 3];
+                                        if (current_item_apply_sum >= target_item_apply_rand) break;
                                     }
-                                    v255 = 10;//pItemsTable->field_116D8[17];
-                                    v256 = 10;//pItemsTable->field_116D8[16];
-                                    spell_item_to_enchant->m_enchantmentStrength
-                                    = v256 + rand() % (v255 - v256 + 1);*/
-                                    spell_item_to_enchant->uEnchantmentType = v295;
-                                    spell_item_to_enchant->m_enchantmentStrength = pItemsTable->pEnchantments[v295].to_item[_v725->uEquipType -EQUIP_ARMOUR];
+
+                                    // assign ench and power
+                                    spell_item_to_enchant->uEnchantmentType = (ITEM_ENCHANTMENT)ench_array[step];
+
+                                    int ench_power = 0;
+                                    // master 3-8  - guess work needs checking
+                                    if (skill_level == 3) ench_power = (rand() % 6) + 3;
+                                    // gm 6-12   - guess work needs checking
+                                    if (skill_level == 4) ench_power = (rand() % 7) + 6;
+
+                                    spell_item_to_enchant->m_enchantmentStrength = ench_power;
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     _50C9A8_item_enchantment_timer = 256;
                                     spell_sound_flag = true;
                                     break;
-                                } else if (skill_level == 3 || skill_level == 4) {  // for master & GM not
-                                                     // refactored(для мастера и
-                                                     // гранда не отрефакторено)
+                                } else if (skill_level == 3 || skill_level == 4) {  // for weapons - get the special enchantments
+                                    int ench_found = 0;
+                                    int to_item_apply_sum = 0;
+                                    int ench_array[100] = { 0 };
 
+                                    // finds how many possible enchaments and adds up to item apply values
                                     if (pItemsTable->pSpecialEnchantments_count > 0) {
-                                        v730 = (char *)&v679_array800;
-                                        for (spec_ench_loop = 0; spec_ench_loop < pItemsTable->pSpecialEnchantments_count; ++spec_ench_loop) {
-                                            // v259 = (int)pItemsTable->pSpecialEnchantments[v258 + 1].pBonusStatement;
-                                            __debugbreak();  // need to check the below after 64-bit conversion, because v259 is only char size
-                                            v259 = (int64_t)pItemsTable->pSpecialEnchantments[v258 + 1].pBonusStatement;
-
-                                            if (!v259 || v259 == 1) {
-                                                v260 = *(&pItemsTable->pSpecialEnchantments[v258/*0*/].to_item_apply[spell_item_to_enchant->GetItemEquipType() + 4] /*+ v258 * 28*/);
-                                                to_item_apply_sum += v260;
-                                                if (v260) {
-                                                    v261 = v730;
-                                                    v730 += 4;  // nudge pointer to array along
-                                                    *(int *)v261 = spec_ench_loop;  // set array
+                                        for (int spec_ench_loop = 0; spec_ench_loop < pItemsTable->pSpecialEnchantments_count; ++spec_ench_loop) {
+                                            char *this_bon_state = pItemsTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
+                                            if (this_bon_state != NULL && (this_bon_state[0] != '\0')) {
+                                                if (pItemsTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) continue;
+                                                if (skill_level == 3 && (pItemsTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0)) continue;
+                                                int this_to_apply = pItemsTable->pSpecialEnchantments[spec_ench_loop].to_item_apply[this_equip_type];
+                                                to_item_apply_sum += this_to_apply;
+                                                if (this_to_apply) {
+                                                    ench_array[ench_found] = spec_ench_loop;
+                                                    ench_found++;
                                                 }
                                             }
-                                            ++v258;
                                         }
                                     }
 
-                                    v262 = rand() % to_item_apply_sum;
-                                    v263 = v679_array800;
-                                    spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)v679_array800[0];
-                                    v264 = pItemsTable->pSpecialEnchantments[*v263].to_item_apply[spell_item_to_enchant->GetItemEquipType() + 4];
-                                    v265 = v262 + 1;
+                                    // pick a random ench
+                                    int item_apply_rand = rand() % to_item_apply_sum;
+                                    int target_item_apply_rand = item_apply_rand + 1;
+                                    int current_item_apply_sum = 0;
+                                    int step = 0;
 
-                                    if (v264 < v265) {
-                                        for (int *ii = v679_array800; ; ii = (int *)v732) {
-                                            v267 = (ii + 1);
-                                            v732 = v267;
-                                            v268 = *(int *)v267;
-                                            *(int *)(spell_item_to_enchant + 12) = v268;
-                                            v264 += pItemsTable->pSpecialEnchantments[v268].to_item_apply[spell_item_to_enchant->GetItemEquipType() + 4];
-                                            if (v264 >= v265) break;
-                                        }
+                                    // step through until we hit that ench
+                                    for (step = 0; step < ench_found; step++) {
+                                        current_item_apply_sum += pItemsTable->pSpecialEnchantments[ench_array[step]].to_item_apply[this_equip_type];
+                                        if (current_item_apply_sum >= target_item_apply_rand) break;
                                     }
 
-                                    v278 = 0;
-                                    to_item_apply_sum = 0;
-                                    if (pItemsTable->pSpecialEnchantments_count > 0) {
-                                        int *_v730 = v679_array800;
-
-                                        for (spec_ench_loop = 0; spec_ench_loop < pItemsTable->pSpecialEnchantments_count; ++spec_ench_loop) {
-                                            v279 = (char)(int64_t)pItemsTable->pSpecialEnchantments[v278].pBonusStatement;
-                                            if (!v279 || v279 == 1) {
-                                                v280 = *(&pItemsTable->pSpecialEnchantments[v278].to_item_apply[spell_item_to_enchant->GetItemEquipType()]);
-                                                spec_ench_loop += v280;
-                                                if (v280) {
-                                                    v281 = _v730;
-                                                    ++_v730;
-                                                    *v281 = spec_ench_loop;
-                                                }
-                                            }
-                                            ++v278;
-                                        }
-                                    }
-
-                                    v282 = rand() % spec_ench_loop;
-                                    v283 = v679_array800;
-                                    spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)v679_array800[0];
-                                    v284 = pItemsTable->pSpecialEnchantments[*v283].to_item_apply[spell_item_to_enchant->GetItemEquipType()];
-                                    v285 = v282 + 1;
-
-                                    for (l = v679_array800; v284 < v285; ++l) {
-                                        spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT) * (l + 1);
-                                        v284 += pItemsTable->pSpecialEnchantments[*(l + 1)].to_item_apply[spell_item_to_enchant->GetItemEquipType()];
-                                    }
-
-                                    spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)(spell_item_to_enchant->special_enchantment + 1);
+                                    // set item ench
+                                    spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)ench_array[step];
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     _50C9A8_item_enchantment_timer = 256;
                                     spell_sound_flag = true;

@@ -149,6 +149,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     uNumBillboardsToDraw = 0;
 
     PrepareActorsDrawList();
+
     if (!pODMRenderParams->bDoNotRenderDecorations)
         render->PrepareDecorationsRenderList_ODM();
 
@@ -249,9 +250,10 @@ bool OutdoorLocation::Initialize(const String &filename, int days_played,
 
     if (!filename.empty()) {
         Release();
-        assets->ReleaseAllImages();
-        pSprites_LOD->DeleteSomeOtherSprites();
-        pSpriteFrameTable->ResetSomeSpriteFlags();
+        assets->ReleaseAllImages();  // dummy
+
+        // pSprites_LOD->DeleteSomeOtherSprites();
+        // pSpriteFrameTable->ResetLoadedFlags();
 
         if (!this->Load(filename, days_played, respawn_interval_days, thisa)) {
             logger->Warning("Couldn't Load Map!");

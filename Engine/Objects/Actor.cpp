@@ -3711,8 +3711,7 @@ void Actor::Arena_summon_actor(int monster_id, __int16 x, int y, int z) {
                pMonsterStats->pInfos[monster_id].pName);
         pActors[uNumActors].sCurrentHP =
             (short)pMonsterStats->pInfos[monster_id].uHP;
-        memcpy(&pActors[uNumActors].pMonsterInfo,
-               &pMonsterStats->pInfos[monster_id], 0x58u);
+        memcpy(&pActors[uNumActors].pMonsterInfo, &pMonsterStats->pInfos[monster_id], sizeof(MonsterInfo));
         pActors[uNumActors].word_000086_some_monster_id = monster_id;
         pActors[uNumActors].uActorRadius =
             pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;

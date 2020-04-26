@@ -29,18 +29,13 @@ These are now auto-resolved during CMake build.
 
 Instructions
 ------------
-You will require the following installed on your computer: Git, CMake and Visual Studio 2019.
+You will require the following installed on your computer: Git and Visual Studio 2019.
 
 * Clone, fork or download the repo "https://github.com/gp-alex/world-of-might-and-magic.git"
-* Move to folder and create a seperate build directory
-* Open CMake GUI and select the source directory and the build directory
-* Configure -> Select "Visual Studio 16 2019" for the generator and "Win32" as the optional platform
-* Generate
-* Open Project (Can now close CMake)
-* In Visual Studio 2019 Build the project
-* Once that completes set "World_of_Might_and_Magic" as the startup project and run
-
-NB - Always use a new empty folder for the build directory if you need to re-run CMake
+* Open the folder in Visual Studio
+* Select build configuration (x32 or x64) and wait for CMake cache to complete
+* Select startup item as World of Might and Magic
+* Run!
 
 Still having problems? Try the discord chat [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)
 
@@ -50,3 +45,6 @@ Coding style
 For the C++ code we are following the [Google C++ Style Guide](http://google.github.io/styleguide/cppguide.html).<br />
 Source code is automatically checked against it, and Pull Request will fail if you don't follow it.<br />
 For style check on Windows platform, you can use [Visual Studio Code cpplint plugin](https://marketplace.visualstudio.com/items?itemName=mine.cpplint).
+
+In visual studio, style can be checked (Python requred). Go to Solution Explorer->Change Views->CMake targets
+Right click and build check_style, errors will be listed in output

@@ -15,7 +15,7 @@ class OSWindow {
 
     virtual void SetFullscreenMode() = 0;
     virtual void SetWindowedMode(int new_window_width, int new_window_height) = 0;
-    virtual void SetCursor(const char *cursor_name) = 0;
+    virtual void SetCursor(bool on) = 0;
 
     virtual int GetX() const = 0;
     virtual int GetY() const = 0;

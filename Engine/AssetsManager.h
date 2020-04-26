@@ -12,8 +12,10 @@ class AssetsManager {
     AssetsManager() {}
 
     bool ReleaseAllImages();
+    bool ReleaseAllSprites();
 
     bool ReleaseImage(const String &name);
+    bool ReleaseSprite(const String& name);
 
     Texture *GetImage_ColorKey(const String &name, uint16_t colorkey);
     Texture *GetImage_Solid(const String &name);

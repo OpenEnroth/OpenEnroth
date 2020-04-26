@@ -115,6 +115,14 @@ void Party::Zero() {
     uNumArenaSquireWins = 0;
     uNumArenaKnightWins = 0;
     uNumArenaLordWins = 0;
+
+    for (int y = 0; y < 4; y++) {
+        auto player = &pPlayers[y];
+        for (int z = 0; z < player->vBeacons.size(); z++) {
+            player->vBeacons[z].image->Release();
+        }
+        player->vBeacons.clear();
+    }
 }
 
 // inlined

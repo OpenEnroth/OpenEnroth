@@ -136,6 +136,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     main_menu_background = nullptr;
     if (!ingame) {
         main_menu_background = assets->GetImage_PCXFromIconsLOD("lsave640.pcx");
+        render->DrawTextureNew(0, 0, main_menu_background);
     }
 
     // GUIWindow::GUIWindow

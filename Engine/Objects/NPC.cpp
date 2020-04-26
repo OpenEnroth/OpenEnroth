@@ -270,7 +270,7 @@ void NPCStats::InitializeNPCText() {
 }
 
 //----- (00476C60) --------------------------------------------------------
-void NPCStats::_476C60_on_load_game() {
+void NPCStats::OnLoadSetNPC_Names() {
     for (unsigned int i = 1; i < uNumNewNPCs; ++i)
         pNewNPCData[i].pName = pNPCUnicNames[i - 1];
 

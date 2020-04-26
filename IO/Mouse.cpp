@@ -18,8 +18,8 @@
 using EngineIoc = Engine_::IocContainer;
 
 void Mouse::GetClickPos(unsigned int *pX, unsigned int *pY) {
-    *pX = uMouseClickX;
-    *pY = uMouseClickY;
+    *pX = uMouseX;
+    *pY = uMouseY;
 }
 
 void Mouse::RemoveHoldingItem() {
@@ -49,9 +49,10 @@ void Mouse::SetCursorImage(const String &name) {
     if (name == "MICON1") {  // arrow
         this->bActive = false;
         this->field_C = 1;
-        window->SetCursor(name.c_str());
+        window->SetCursor(1);
+        this->cursor_img = nullptr;
     } else {  // cursor is item or another bitmap
-        this->cursor_img = assets->GetImage_ColorKey(name, 0x7FF);
+        this->cursor_img = assets->GetImage_ColorKey(name, 0/*0x7FF*/);
         this->AllocCursorSystemMem();
         this->field_C = 0;
         this->bRedraw = true;
@@ -68,8 +69,8 @@ void Mouse::_469AE4() {
     auto v3 = pt.y;
     auto v2 = pt.x;
 
-    this->uMouseClickX = v2;
-    this->uMouseClickY = v3;
+    this->uMouseX = v2;
+    this->uMouseY = v3;
 
     if (true /*render->bWindowMode*/ &&
         (v2 < 0 || v3 < 0 || v2 > window->GetWidth() - 1 ||
@@ -106,7 +107,7 @@ void Mouse::AllocCursorSystemMem() {
 void *Mouse::DoAllocCursorMem() { return nullptr; }
 
 Point Mouse::GetCursorPos() {
-    return Point(this->uMouseClickX, this->uMouseClickY);
+    return Point(this->uMouseX, this->uMouseY);
 }
 
 void Mouse::Initialize(OSWindow *window) {
@@ -114,15 +115,15 @@ void Mouse::Initialize(OSWindow *window) {
     this->bActive = false;
     this->bInitialized = true;
 
-    // this->field_8 = 0;//Ritor1: result incorrect uMouseClickX,
-    // this->uMouseClickY in _469AE4()
+    // this->field_8 = 0;//Ritor1: result incorrect uMouseX,
+    // this->uMouseY in _469AE4()
     this->uCursorBitmapPitch = 0;  // Ritor1: it's include
     for (uint i = 0; i < 13; i++) this->field_5C[i] = 0;
 
     this->pCursorBitmapPos.x = 0;
     this->pCursorBitmapPos.y = 0;
-    this->uMouseClickX = 0;
-    this->uMouseClickY = 0;
+    this->uMouseX = 0;
+    this->uMouseY = 0;
     this->pCursorBitmap_sysmem = nullptr;
     this->field_34 = 0;
     this->pCursorBitmap2_sysmem = nullptr;
@@ -141,6 +142,29 @@ void Mouse::Deactivate() {
 }
 
 void Mouse::DrawCursor() {
+    // get mouse pos
+    Point pos;
+    this->GetClickPos(&pos.x, &pos.y);
+
+    // for party held item
+    if (pParty->pPickedItem.uItemID) {
+        DrawPickedItem();
+    } else {
+        ClearPickedItem();
+
+        // for other cursor img ie target mouse
+        if (this->cursor_img) {
+            window->SetCursor(0);
+            // draw image - needs centering
+            pos.x -= (this->cursor_img->GetWidth()) / 2;
+            pos.y -= (this->cursor_img->GetHeight()) / 2;
+
+            render->DrawTextureAlphaNew(pos.x / 640., pos.y / 480., this->cursor_img);
+        } else {
+            window->SetCursor(1);
+        }
+    }
+
     /*
       if (this->bInitialized) {
         if (!this->field_8 && this->bActive && !this->field_C) //Uninitialized
@@ -149,18 +173,18 @@ void Mouse::DrawCursor() {
     0; return;
         }
 
-        if (this->uMouseClickX < 0 || this->uMouseClickY < 0 ||
-    this->uMouseClickX > window->GetWidth() - 1 || this->uMouseClickY >
+        if (this->uMouseX < 0 || this->uMouseY < 0 ||
+    this->uMouseX > window->GetWidth() - 1 || this->uMouseY >
     window->GetHeight() - 1) { this->field_F4 = 0; return;
         }
 
-        this->pCursorBitmapRect_x = this->uMouseClickX;
-        this->pCursorBitmapRect_w = this->uMouseClickY + this->field_5C[0];
+        this->pCursorBitmapRect_x = this->uMouseX;
+        this->pCursorBitmapRect_w = this->uMouseY + this->field_5C[0];
     //Ritor1: Maybe this->field_5C[0] - cursor width this->pCursorBitmapRect_y =
-    this->uMouseClickY; this->pCursorBitmapRect_z = this->uMouseClickX +
+    this->uMouseY; this->pCursorBitmapRect_z = this->uMouseX +
     this->uCursorBitmapPitch; //Ritor1: Maybe this->uCursorBitmapPitch - cursor
-    height if (this->uMouseClickX < 0) this->pCursorBitmapRect_x = 0; if
-    (this->uMouseClickY < 0) this->pCursorBitmapRect_y = 0; if
+    height if (this->uMouseX < 0) this->pCursorBitmapRect_x = 0; if
+    (this->uMouseY < 0) this->pCursorBitmapRect_y = 0; if
     (this->pCursorBitmapRect_z > window->GetWidth()) this->pCursorBitmapRect_z =
     window->GetWidth(); if (this->pCursorBitmapRect_w > window->GetHeight())
           this->pCursorBitmapRect_w = window->GetHeight();
@@ -195,6 +219,8 @@ void Mouse::Activate() { bActive = true; }
 void Mouse::ClearPickedItem() { pPickedItem = nullptr; }
 
 void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
+    return;
+
     if (pPickedItem == nullptr) {
         return;
     }
@@ -203,54 +229,25 @@ void Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
                                 uCursorWithItemY / 480.0f, pPickedItem);
 }
 
-void Mouse::ReadCursorWithItem() {
-    if (pParty->pPickedItem.uItemID) {
-        Image *pTexture =
-            assets->GetImage_Alpha(pParty->pPickedItem.GetIconName());
-        pTexture->GetWidth();
+void Mouse::DrawPickedItem() {
+    if (!pParty->pPickedItem.uItemID) return;
+    Image *pTexture = assets->GetImage_Alpha(pParty->pPickedItem.GetIconName());
+    if (!pTexture) return;
 
-        if ((int)uMouseClickX <= window->GetWidth() - 1 &&
-            (int)uMouseClickY <= window->GetHeight() - 1) {
-            int pTextureHeight;
-            int pTextureWidth;
-            if ((int)(pTexture->GetWidth() + uMouseClickX) <=
-                window->GetWidth())
-                pTextureWidth = pTexture->GetWidth();
-            else
-                pTextureWidth = window->GetWidth() - uMouseClickX;
-            if ((int)(pTexture->GetHeight() + uMouseClickY) <=
-                window->GetHeight())
-                pTextureHeight = pTexture->GetHeight();
-            else
-                pTextureHeight = window->GetHeight() - uMouseClickY;
-
-            pPickedItem = pTexture;
-            this->uCursorWithItemX = uMouseClickX;
-            this->uCursorWithItemY = uMouseClickY;
-
-            if (pParty->pPickedItem.IsBroken())
-                render->DrawTransparentRedShade(uMouseClickX / 640.0f,
-                                                uMouseClickY / 480.0f,
-                                                pTexture);
-            else if (!pParty->pPickedItem.IsIdentified())
-                render->DrawTransparentGreenShade(uMouseClickX / 640.0f,
-                                                  uMouseClickY / 480.0f,
-                                                  pTexture);
-            else
-                render->DrawTextureAlphaNew(uMouseClickX / 640.0f,
-                                            uMouseClickY / 480.0f,
-                                            pTexture);
-        }
+    if (pParty->pPickedItem.IsBroken()) {
+        render->DrawTransparentRedShade(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
+    } else if (!pParty->pPickedItem.IsIdentified()) {
+        render->DrawTransparentGreenShade(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
     } else {
-        ClearPickedItem();
+        render->DrawTextureAlphaNew(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
     }
 }
 
 void Mouse::ChangeActivation(int a1) { this->bActive = a1; }
 
 void Mouse::SetMouseClick(int x, int y) {
-    uMouseClickX = x;
-    uMouseClickY = y;
+    uMouseX = x;
+    uMouseY = y;
 }
 
 bool _507B98_ctrl_pressed = false;

@@ -285,8 +285,8 @@ class Mouse {
         pPickedItem = nullptr;
         ptr_90 = nullptr;
         pWard = nullptr;
-        uMouseClickX = 0;
-        uMouseClickY = 0;
+        uMouseX = 0;
+        uMouseY = 0;
     }
 
     void GetClickPos(unsigned int *pX, unsigned int *pY);
@@ -306,7 +306,7 @@ class Mouse {
     void Activate();
     void ClearPickedItem();
     void DrawCursorToTarget();
-    void ReadCursorWithItem();
+    void DrawPickedItem();
     void ChangeActivation(int a1);
     void SetMouseClick(int x, int y);
 
@@ -361,7 +361,7 @@ class Mouse {
     String cursor_name;  // char pCurrentCursorName[11];
     int field_100 = 0;
     int field_104 = 0;
-    unsigned int uMouseClickX;
-    unsigned int uMouseClickY;
+    unsigned int uMouseX;
+    unsigned int uMouseY;
     void /*ThreadWard*/ *pWard;
 };

@@ -239,9 +239,10 @@ void Engine::Draw() {
     pParty->UpdatePlayersAndHirelingsEmotions();
     _unused_5B5924_is_travel_ui_drawn = false;
 
-    if (v4)
+    // if (v4)
         mouse->bRedraw = true;
-    mouse->ReadCursorWithItem();
+
+    // mouse->DrawPickedItem();
     mouse->DrawCursor();
     mouse->Activate();
     render->EndScene();
@@ -1338,7 +1339,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
 
     pAudioPlayer->StopChannels(-1, -1);
     uCurrentlyLoadedLevelType = LEVEL_null;
-    pSpriteFrameTable->ResetSomeSpriteFlags();
+    pSpriteFrameTable->ResetLoadedFlags();
     pParty->armageddon_timer = 0;
 
     windowManager.DeleteAllVisibleWindows();

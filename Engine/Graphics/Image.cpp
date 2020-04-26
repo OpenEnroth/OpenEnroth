@@ -337,8 +337,8 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
 
 bool Image::Release() {
     if (loader) {
-        assets->ReleaseImage(
-            loader->GetResourceName());
+        assets->ReleaseImage(loader->GetResourceName());
+        assets->ReleaseSprite(loader->GetResourceName());
     }
 
     if (initialized) {

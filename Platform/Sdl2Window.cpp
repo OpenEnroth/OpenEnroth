@@ -34,19 +34,19 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
             auto vkkey = SdlkToVk(key);
             if (ch != -1) {
                 gameCallback->OnChar(ch);
-            } else if ( key == SDLK_RETURN || key == SDLK_ESCAPE || key == SDLK_TAB || key == SDLK_BACKSPACE ) {
+            } else if (key == SDLK_RETURN || key == SDLK_ESCAPE || key == SDLK_TAB || key == SDLK_BACKSPACE) {
                 if (!gameCallback->OnChar(vkkey))
                     gameCallback->OnVkDown(vkkey, 0);
             } else {
                 gameCallback->OnVkDown(vkkey, 0);
             }
-        }
+        } break;
 
         case SDL_MOUSEMOTION: {
             gameCallback->OnMouseMove(
                 e.motion.x, e.motion.y,
                 e.motion.state & SDL_BUTTON_LMASK, e.motion.state & SDL_BUTTON_RMASK);
-        }
+        } break;
 
         case SDL_MOUSEBUTTONDOWN: {
             int x = e.button.x;
@@ -131,7 +131,12 @@ void Sdl2Window::SetFullscreenMode() {
 void Sdl2Window::SetWindowedMode(int new_window_width, int new_window_height) {
 }
 
-void Sdl2Window::SetCursor(const char *cursor_name) {
+void Sdl2Window::SetCursor(bool on = 1) {
+    if (on) {
+        SDL_ShowCursor(SDL_ENABLE);
+    } else {
+        SDL_ShowCursor(SDL_DISABLE);
+    }
 }
 
 int Sdl2Window::GetX() const {
