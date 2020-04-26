@@ -135,7 +135,6 @@ bool Game::Loop() {
     while (1) {
         if (uGameState == GAME_FINISHED ||
             GetCurrentMenuID() == MENU_EXIT_GAME) {
-            engine->Deinitialize();
             return false;
         } else if (GetCurrentMenuID() == MENU_SAVELOAD) {
             MainMenuLoad_Loop();

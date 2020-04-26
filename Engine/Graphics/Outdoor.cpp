@@ -467,7 +467,7 @@ int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, int y, int z) {
             return 1;
         case Tileset_Snow:  // на снегу
             return 3;
-        case Tilset_Desert:  // на песке
+        case Tileset_Desert:  // на песке
             return 5;
         case Tileset_CooledLava:
         case Tileset_Dirt:  // на грязи
@@ -1337,7 +1337,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
                 //            pSoundList->LoadSound(SOUND_RunSnow, 0);  //по
                 //            снегу pSoundList->LoadSound(SOUND_WalkSnow, 0);
                 break;
-            case Tilset_Desert:
+            case Tileset_Desert:
                 //            pSoundList->LoadSound(SOUND_RunDesert, 0);  //по
                 //            пустыне pSoundList->LoadSound(SOUND_WalkDesert,
                 //            0);

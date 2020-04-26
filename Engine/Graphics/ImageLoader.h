@@ -9,9 +9,10 @@ using EngineIoc = Engine_::IocContainer;
 
 class ImageLoader {
  public:
-     inline ImageLoader() {
+    inline ImageLoader() {
          this->log = EngineIoc::ResolveLogger();
     }
+    virtual ~ImageLoader() {}
     virtual String GetResourceName() const { return this->resource_name; }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
