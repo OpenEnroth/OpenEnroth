@@ -176,7 +176,7 @@ void Engine::Draw() {
     // pIndoorCamera->Initialize2();
     pIndoorCameraD3D->CalculateRotations(pParty->sRotationX, pParty->sRotationY);
     pIndoorCameraD3D->CreateWorldMatrixAndSomeStuff();
-    pIndoorCameraD3D->_4374E8_ProllyBuildFrustrum();
+    pIndoorCameraD3D->BuildViewFrustum();
 
     if (pMovie_Track) {
         /*if ( !render->pRenderD3D )
@@ -334,10 +334,14 @@ void Engine::DrawGUI() {
                 0, 0);
         }
 
+        pPrimaryWindow->DrawText(pFontArrus, 300, 0, Color16(0, 0, 0),
+            StringPrintf("DrawCalls: %d", render->drawcalls), 0, 0, 0);
+        render->drawcalls = 0;
+
+
         int debug_info_offset = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            int sector_id = pIndoor->GetSector(
-                pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+            int sector_id = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
             pPrimaryWindow->DrawText(
                 pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255),
                 StringPrintf("Party Sector ID:        %u/%u\n", sector_id,
@@ -358,7 +362,7 @@ void Engine::DrawGUI() {
                 pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
             int floor_level = BLV_GetFloorLevel(
                 pParty->vPosition.x, pParty->vPosition.y,
-                pParty->vPosition.z + 40, sector_id, &uFaceID);
+                pParty->vPosition.z/* + 40*/, sector_id, &uFaceID);
             floor_level_str = StringPrintf(
                 "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -1175,7 +1179,7 @@ const char *FindMm7Directory(char *mm7_path) {
 
     // Hack path fix - if everything else fails, set your path here.
     if (!mm7_installation_found) {
-        __debugbreak();
+        // __debugbreak();
         mm7_installation_found = 1;
         strcpy(mm7_path, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
         logger->Info("Hack Path MM7 installation found");

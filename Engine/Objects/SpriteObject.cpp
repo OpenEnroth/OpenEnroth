@@ -280,24 +280,24 @@ LABEL_13:
         pSpriteObjects[uLayingItemID].vPosition.z = v8;
     if (_46BFFA_update_spell_fx(uLayingItemID, 0)) {
     LABEL_92:
-        stru_721530.field_0 = 0;
-        stru_721530.prolly_normal_d = object->uRadius;
-        stru_721530.height = object->uHeight;
-        stru_721530.field_8_radius = 0;
-        stru_721530.field_70 = 0;
+        _actor_collision_struct.field_0 = 0;
+        _actor_collision_struct.prolly_normal_d = object->uRadius;
+        _actor_collision_struct.height = object->uHeight;
+        _actor_collision_struct.field_8_radius = 0;
+        _actor_collision_struct.field_70 = 0;
         for (v55 = 0; v55 < 100; ++v55) {
-            stru_721530.position.x = pSpriteObjects[uLayingItemID].vPosition.x;
-            stru_721530.normal.x = stru_721530.position.x;
-            stru_721530.uSectorID = 0;
-            stru_721530.position.y = pSpriteObjects[uLayingItemID].vPosition.y;
-            stru_721530.normal.y = pSpriteObjects[uLayingItemID].vPosition.y;
-            stru_721530.position.z = pSpriteObjects[uLayingItemID].vPosition.z +
-                                     stru_721530.prolly_normal_d + 1;
-            stru_721530.normal.z = stru_721530.position.z;
-            stru_721530.velocity.x = pSpriteObjects[uLayingItemID].vVelocity.x;
-            stru_721530.velocity.y = pSpriteObjects[uLayingItemID].vVelocity.y;
-            stru_721530.velocity.z = pSpriteObjects[uLayingItemID].vVelocity.z;
-            if (stru_721530.CalcMovementExtents(0)) return;
+            _actor_collision_struct.position.x = pSpriteObjects[uLayingItemID].vPosition.x;
+            _actor_collision_struct.normal.x = _actor_collision_struct.position.x;
+            _actor_collision_struct.uSectorID = 0;
+            _actor_collision_struct.position.y = pSpriteObjects[uLayingItemID].vPosition.y;
+            _actor_collision_struct.normal.y = pSpriteObjects[uLayingItemID].vPosition.y;
+            _actor_collision_struct.position.z = pSpriteObjects[uLayingItemID].vPosition.z +
+                                     _actor_collision_struct.prolly_normal_d + 1;
+            _actor_collision_struct.normal.z = _actor_collision_struct.position.z;
+            _actor_collision_struct.velocity.x = pSpriteObjects[uLayingItemID].vVelocity.x;
+            _actor_collision_struct.velocity.y = pSpriteObjects[uLayingItemID].vVelocity.y;
+            _actor_collision_struct.velocity.z = pSpriteObjects[uLayingItemID].vVelocity.z;
+            if (_actor_collision_struct.CalcMovementExtents(0)) return;
             _46E889_collide_against_bmodels(0);
             _46E26D_collide_against_sprites(
                 WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x),
@@ -322,11 +322,11 @@ LABEL_13:
                 for (i = 0; i < (signed int)uNumActors; ++i)
                     Actor::_46DF1A_collide_against_actor(i, 0);
             }
-            v26 = stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
-            v49 = false;
+            v26 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+            bool v49 = false;
             v27 = ODM_GetFloorLevel(
-                stru_721530.normal2.x, stru_721530.normal2.y,
-                stru_721530.normal2.z - stru_721530.prolly_normal_d - 1,
+                _actor_collision_struct.normal2.x, _actor_collision_struct.normal2.y,
+                _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1,
                 object->uHeight, &v49, &v50, 0);
             if (on_water && v26 < v27 + 60) {
                 if (v50)
@@ -339,15 +339,15 @@ LABEL_13:
                 SpriteObject::OnInteraction(uLayingItemID);
                 return;
             }
-            if (stru_721530.field_7C >= stru_721530.field_6C) {
+            if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
                 pSpriteObjects[uLayingItemID].vPosition.x =
-                    stru_721530.normal2.x;
+                    _actor_collision_struct.normal2.x;
                 pSpriteObjects[uLayingItemID].vPosition.y =
-                    stru_721530.normal2.y;
+                    _actor_collision_struct.normal2.y;
                 pSpriteObjects[uLayingItemID].vPosition.z =
-                    stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
+                    _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
                 pSpriteObjects[uLayingItemID].uSectorID =
-                    (short)stru_721530.uSectorID;
+                    (short)_actor_collision_struct.uSectorID;
                 memset(&Dst, 0, 0x68u);
                 Dst.x = (double)pSpriteObjects[uLayingItemID].vPosition.x;
                 Dst.y = (double)pSpriteObjects[uLayingItemID].vPosition.y;
@@ -382,29 +382,29 @@ LABEL_13:
                 }
                 return;
             }
-            // v60 = ((unsigned __int64)(stru_721530.field_7C * (signed
-            // __int64)stru_721530.direction.x) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.x += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
-            // v60 = ((unsigned __int64)(stru_721530.field_7C * (signed
-            // __int64)stru_721530.direction.y) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.y += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
-            // v60 = ((unsigned __int64)(stru_721530.field_7C * (signed
-            // __int64)stru_721530.direction.z) >> 16);
-            v28 = (short)stru_721530.uSectorID;
-            pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
+            // v60 = ((unsigned __int64)(_actor_collision_struct.field_7C * (signed
+            // __int64)_actor_collision_struct.direction.x) >> 16);
+            pSpriteObjects[uLayingItemID].vPosition.x += fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
+            // v60 = ((unsigned __int64)(_actor_collision_struct.field_7C * (signed
+            // __int64)_actor_collision_struct.direction.y) >> 16);
+            pSpriteObjects[uLayingItemID].vPosition.y += fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.y);
+            // v60 = ((unsigned __int64)(_actor_collision_struct.field_7C * (signed
+            // __int64)_actor_collision_struct.direction.z) >> 16);
+            v28 = (short)_actor_collision_struct.uSectorID;
+            pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.z);
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
             pSpriteObjects[uLayingItemID].uSectorID = v28;
-            stru_721530.field_70 += stru_721530.field_7C;
+            _actor_collision_struct.field_70 += _actor_collision_struct.field_7C;
             if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
                 if (v29 < v54)
                     pSpriteObjects[uLayingItemID].vPosition.z = v54 + 1;
-                if (!_46BFFA_update_spell_fx(uLayingItemID, stru_721530.pid))
+                if (!_46BFFA_update_spell_fx(uLayingItemID, _actor_collision_struct.pid))
                     return;
             }
-            if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration) break;
-            if (PID_TYPE(stru_721530.pid) == OBJECT_BModel) {
-                bmodel = &pOutdoor->pBModels[(signed int)stru_721530.pid >> 9];
-                face = &bmodel->pFaces[PID_ID(stru_721530.pid) & 0x3F];
+            if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_Decoration) break;
+            if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_BModel) {
+                bmodel = &pOutdoor->pBModels[(signed int)_actor_collision_struct.pid >> 9];
+                face = &bmodel->pFaces[PID_ID(_actor_collision_struct.pid) & 0x3F];
                 if (face->uPolygonType == POLYGON_Floor) {
                     pSpriteObjects[uLayingItemID].vPosition.z =
                         bmodel->pVertices.pVertices[face->pVertexIDs[0]].z + 1;
@@ -422,8 +422,8 @@ LABEL_13:
                               face->pFacePlane.vNormal.y * pSpriteObjects[uLayingItemID].vVelocity.y +
                               face->pFacePlane.vNormal.z * pSpriteObjects[uLayingItemID].vVelocity.z) >>
                           16;
-                    if ((stru_721530.speed >> 3) > v56)
-                        v56 = stru_721530.speed >> 3;
+                    if ((_actor_collision_struct.speed >> 3) > v56)
+                        v56 = _actor_collision_struct.speed >> 3;
                     // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
                     // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
                     v60 = fixpoint_mul(v56, face->pFacePlane.vNormal.z);
@@ -450,8 +450,8 @@ LABEL_13:
         v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
                            pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y);
         v38 = stru_5C6E00->Atan2(
-            pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(stru_721530.pid)].vPosition.x,
-            pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(stru_721530.pid)].vPosition.y);
+            pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(_actor_collision_struct.pid)].vPosition.x,
+            pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(_actor_collision_struct.pid)].vPosition.y);
         pSpriteObjects[uLayingItemID].vVelocity.x =
             fixpoint_mul(stru_5C6E00->Cos(v38), v57);
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(
@@ -496,28 +496,28 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
 
     if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {  //не падающие объекты
 LABEL_25:
-        stru_721530.field_0 = 0;
-        stru_721530.prolly_normal_d = pObject->uRadius;
-        stru_721530.field_84 = -1;
-        stru_721530.height = pObject->uHeight;
-        stru_721530.field_8_radius = 0;
-        stru_721530.field_70 = 0;
+        _actor_collision_struct.field_0 = 0;
+        _actor_collision_struct.prolly_normal_d = pObject->uRadius;
+        _actor_collision_struct.field_84 = -1;
+        _actor_collision_struct.height = pObject->uHeight;
+        _actor_collision_struct.field_8_radius = 0;
+        _actor_collision_struct.field_70 = 0;
         for (int loop = 0; loop < 100; loop++) {
-            stru_721530.position.x = pSpriteObject->vPosition.x;
-            stru_721530.position.y = pSpriteObject->vPosition.y;
-            stru_721530.position.z =
-                stru_721530.prolly_normal_d + pSpriteObject->vPosition.z + 1;
+            _actor_collision_struct.position.x = pSpriteObject->vPosition.x;
+            _actor_collision_struct.position.y = pSpriteObject->vPosition.y;
+            _actor_collision_struct.position.z =
+                _actor_collision_struct.prolly_normal_d + pSpriteObject->vPosition.z + 1;
 
-            stru_721530.normal.x = stru_721530.position.x;
-            stru_721530.normal.y = stru_721530.position.y;
-            stru_721530.normal.z = stru_721530.position.z;
+            _actor_collision_struct.normal.x = _actor_collision_struct.position.x;
+            _actor_collision_struct.normal.y = _actor_collision_struct.position.y;
+            _actor_collision_struct.normal.z = _actor_collision_struct.position.z;
 
-            stru_721530.velocity.x = pSpriteObject->vVelocity.x;
-            stru_721530.velocity.y = pSpriteObject->vVelocity.y;
-            stru_721530.velocity.z = pSpriteObject->vVelocity.z;
+            _actor_collision_struct.velocity.x = pSpriteObject->vVelocity.x;
+            _actor_collision_struct.velocity.y = pSpriteObject->vVelocity.y;
+            _actor_collision_struct.velocity.z = pSpriteObject->vVelocity.z;
 
-            stru_721530.uSectorID = pSpriteObject->uSectorID;
-            if (stru_721530.CalcMovementExtents(0)) return;
+            _actor_collision_struct.uSectorID = pSpriteObject->uSectorID;
+            if (_actor_collision_struct.CalcMovementExtents(0)) return;
 
             for (int loop2 = 0; loop2 < 100; ++loop2) {
                 _46E44E_collide_against_faces_and_portals(0);
@@ -545,12 +545,12 @@ LABEL_25:
             }
             // end loop2
 
-            if (stru_721530.field_7C >= stru_721530.field_6C) {
-                pSpriteObject->vPosition.x = stru_721530.normal2.x;
-                pSpriteObject->vPosition.y = stru_721530.normal2.y;
+            if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
+                pSpriteObject->vPosition.x = _actor_collision_struct.normal2.x;
+                pSpriteObject->vPosition.y = _actor_collision_struct.normal2.y;
                 pSpriteObject->vPosition.z =
-                    stru_721530.normal2.z - stru_721530.prolly_normal_d - 1;
-                pSpriteObject->uSectorID = (short)stru_721530.uSectorID;
+                    _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+                pSpriteObject->uSectorID = (short)_actor_collision_struct.uSectorID;
                 if (!(pObject->uFlags & 0x100)) return;
                 memset(&Dst, 0, 0x68u);
                 Dst.x = (double)pSpriteObject->vPosition.x;
@@ -586,34 +586,34 @@ LABEL_25:
                 }
                 return;
             }
-            // v40 = (unsigned __int64)(stru_721530.field_7C * (signed
-            // __int64)stru_721530.direction.x) >> 16;
+            // v40 = (unsigned __int64)(_actor_collision_struct.field_7C * (signed
+            // __int64)_actor_collision_struct.direction.x) >> 16;
 
             pSpriteObject->vPosition.x +=
-                fixpoint_mul(stru_721530.field_7C, stru_721530.direction.x);
+                fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
 
-            // v40 = (unsigned __int64)(stru_721530.field_7C * (signed
-            // __int64)stru_721530.direction.y) >> 16;
+            // v40 = (unsigned __int64)(_actor_collision_struct.field_7C * (signed
+            // __int64)_actor_collision_struct.direction.y) >> 16;
 
             pSpriteObject->vPosition.y +=
-                fixpoint_mul(stru_721530.field_7C, stru_721530.direction.y);
+                fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.y);
 
-            // v40 = (unsigned __int64)(stru_721530.field_7C * (signed
-            // __int64)stru_721530.direction.z) >> 16;
+            // v40 = (unsigned __int64)(_actor_collision_struct.field_7C * (signed
+            // __int64)_actor_collision_struct.direction.z) >> 16;
 
             pSpriteObject->vPosition.z +=
-                fixpoint_mul(stru_721530.field_7C, stru_721530.direction.z);
+                fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.z);
 
-            pSpriteObject->uSectorID = stru_721530.uSectorID;
-            stru_721530.field_70 += stru_721530.field_7C;
+            pSpriteObject->uSectorID = _actor_collision_struct.uSectorID;
+            _actor_collision_struct.field_70 += _actor_collision_struct.field_7C;
 
             // if weve collided but dont need to react return
             if (pObject->uFlags & OBJECT_DESC_INTERACTABLE &&
-                !_46BFFA_update_spell_fx(uLayingItemID, stru_721530.pid))
+                !_46BFFA_update_spell_fx(uLayingItemID, _actor_collision_struct.pid))
                 return;
 
-            v15 = (signed int)stru_721530.pid >> 3;
-            if (PID_TYPE(stru_721530.pid) == OBJECT_Decoration) {
+            v15 = (signed int)_actor_collision_struct.pid >> 3;
+            if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_Decoration) {
                 v40 = integer_sqrt(
                     pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
                     pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y);
@@ -627,8 +627,8 @@ LABEL_25:
                 pSpriteObject->vVelocity.y =
                     fixpoint_mul(stru_5C6E00->Sin(v23), v40);
             }
-            if (PID_TYPE(stru_721530.pid) == OBJECT_BModel) {
-                stru_721530.field_84 = (signed int)PID_ID(stru_721530.pid);
+            if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_BModel) {
+                _actor_collision_struct.field_84 = (signed int)PID_ID(_actor_collision_struct.pid);
                 if (pIndoor->pFaces[v15].uPolygonType != POLYGON_Floor) {
                     floor_lvl = abs(pIndoor->pFaces[v15].pFacePlane_old.vNormal.x *
                                   pSpriteObject->vVelocity.x +
@@ -637,8 +637,8 @@ LABEL_25:
                               pIndoor->pFaces[v15].pFacePlane_old.vNormal.z *
                                   pSpriteObject->vVelocity.z) >>
                           16;
-                    if ((stru_721530.speed >> 3) > floor_lvl)
-                        floor_lvl = stru_721530.speed >> 3;
+                    if ((_actor_collision_struct.speed >> 3) > floor_lvl)
+                        floor_lvl = _actor_collision_struct.speed >> 3;
                     pSpriteObject->vVelocity.x +=
                         2 *
                         fixpoint_mul(

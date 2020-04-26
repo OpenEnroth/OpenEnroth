@@ -239,19 +239,19 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
     BLVFace face;      // [sp+Ch] [bp-7Ch]@1
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (stru_721530.sMaxX <= model.sMaxX &&
-            stru_721530.sMinX >= model.sMinX &&
-            stru_721530.sMaxY <= model.sMaxY &&
-            stru_721530.sMinY >= model.sMinY &&
-            stru_721530.sMaxZ <= model.sMaxZ &&
-            stru_721530.sMinZ >= model.sMinZ) {
+        if (_actor_collision_struct.sMaxX <= model.sMaxX &&
+            _actor_collision_struct.sMinX >= model.sMinX &&
+            _actor_collision_struct.sMaxY <= model.sMaxY &&
+            _actor_collision_struct.sMinY >= model.sMinY &&
+            _actor_collision_struct.sMaxZ <= model.sMaxZ &&
+            _actor_collision_struct.sMinZ >= model.sMinZ) {
             for (ODMFace &mface : model.pFaces) {
-                if (stru_721530.sMaxX <= mface.pBoundingBox.x2 &&
-                    stru_721530.sMinX >= mface.pBoundingBox.x1 &&
-                    stru_721530.sMaxY <= mface.pBoundingBox.y2 &&
-                    stru_721530.sMinY >= mface.pBoundingBox.y1 &&
-                    stru_721530.sMaxZ <= mface.pBoundingBox.z2 &&
-                    stru_721530.sMinZ >= mface.pBoundingBox.z1) {
+                if (_actor_collision_struct.sMaxX <= mface.pBoundingBox.x2 &&
+                    _actor_collision_struct.sMinX >= mface.pBoundingBox.x1 &&
+                    _actor_collision_struct.sMaxY <= mface.pBoundingBox.y2 &&
+                    _actor_collision_struct.sMinY >= mface.pBoundingBox.y1 &&
+                    _actor_collision_struct.sMaxZ <= mface.pBoundingBox.z2 &&
+                    _actor_collision_struct.sMinZ >= mface.pBoundingBox.z1) {
                     face.pFacePlane_old.vNormal.x = mface.pFacePlane.vNormal.x;
                     face.pFacePlane_old.vNormal.y = mface.pFacePlane.vNormal.y;
                     face.pFacePlane_old.vNormal.z = mface.pFacePlane.vNormal.z;
@@ -292,52 +292,52 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                     if (!face.Ethereal() && !face.Portal()) {
                         v8 = (face.pFacePlane_old.dist +
                               face.pFacePlane_old.vNormal.x *
-                                  stru_721530.normal.x +
+                                  _actor_collision_struct.normal.x +
                               face.pFacePlane_old.vNormal.y *
-                                  stru_721530.normal.y +
+                                  _actor_collision_struct.normal.y +
                               face.pFacePlane_old.vNormal.z *
-                                  stru_721530.normal.z) >>
+                                  _actor_collision_struct.normal.z) >>
                              16;
                         if (v8 > 0) {
                             v9 = (face.pFacePlane_old.dist +
                                   face.pFacePlane_old.vNormal.x *
-                                      stru_721530.normal2.x +
+                                      _actor_collision_struct.normal2.x +
                                   face.pFacePlane_old.vNormal.y *
-                                      stru_721530.normal2.y +
+                                      _actor_collision_struct.normal2.y +
                                   face.pFacePlane_old.vNormal.z *
-                                      stru_721530.normal2.z) >>
+                                      _actor_collision_struct.normal2.z) >>
                                  16;
-                            if (v8 <= stru_721530.prolly_normal_d ||
-                                v9 <= stru_721530.prolly_normal_d) {
+                            if (v8 <= _actor_collision_struct.prolly_normal_d ||
+                                v9 <= _actor_collision_struct.prolly_normal_d) {
                                 if (v9 <= v8) {
-                                    a2 = stru_721530.field_6C;
-                                    if (sub_4754BF(stru_721530.prolly_normal_d,
-                                                   &a2, stru_721530.normal.x,
-                                                   stru_721530.normal.y,
-                                                   stru_721530.normal.z,
-                                                   stru_721530.direction.x,
-                                                   stru_721530.direction.y,
-                                                   stru_721530.direction.z,
+                                    a2 = _actor_collision_struct.field_6C;
+                                    if (sub_4754BF(_actor_collision_struct.prolly_normal_d,
+                                                   &a2, _actor_collision_struct.normal.x,
+                                                   _actor_collision_struct.normal.y,
+                                                   _actor_collision_struct.normal.z,
+                                                   _actor_collision_struct.direction.x,
+                                                   _actor_collision_struct.direction.y,
+                                                   _actor_collision_struct.direction.z,
                                                    &face, model.index, ecx0)) {
                                         v10 = a2;
                                     } else {
-                                        a2 = stru_721530.prolly_normal_d +
-                                             stru_721530.field_6C;
+                                        a2 = _actor_collision_struct.prolly_normal_d +
+                                             _actor_collision_struct.field_6C;
                                         if (!sub_475F30(&a2, &face,
-                                                        stru_721530.normal.x,
-                                                        stru_721530.normal.y,
-                                                        stru_721530.normal.z,
-                                                        stru_721530.direction.x,
-                                                        stru_721530.direction.y,
-                                                        stru_721530.direction.z,
+                                                        _actor_collision_struct.normal.x,
+                                                        _actor_collision_struct.normal.y,
+                                                        _actor_collision_struct.normal.z,
+                                                        _actor_collision_struct.direction.x,
+                                                        _actor_collision_struct.direction.y,
+                                                        _actor_collision_struct.direction.z,
                                                         model.index))
                                             goto LABEL_29;
-                                        v10 = a2 - stru_721530.prolly_normal_d;
-                                        a2 -= stru_721530.prolly_normal_d;
+                                        v10 = a2 - _actor_collision_struct.prolly_normal_d;
+                                        a2 -= _actor_collision_struct.prolly_normal_d;
                                     }
-                                    if (v10 < stru_721530.field_7C) {
-                                        stru_721530.field_7C = v10;
-                                        stru_721530.pid = PID(
+                                    if (v10 < _actor_collision_struct.field_7C) {
+                                        _actor_collision_struct.field_7C = v10;
+                                        _actor_collision_struct.pid = PID(
                                             OBJECT_BModel,
                                             (mface.index | (model.index << 6)));
                                     }
@@ -345,64 +345,64 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                             }
                         }
                     LABEL_29:
-                        if (stru_721530.field_0 & 1) {
+                        if (_actor_collision_struct.field_0 & 1) {
                             v15 = (face.pFacePlane_old.dist +
                                    face.pFacePlane_old.vNormal.x *
-                                       stru_721530.position.x +
+                                       _actor_collision_struct.position.x +
                                    face.pFacePlane_old.vNormal.y *
-                                       stru_721530.position.y +
+                                       _actor_collision_struct.position.y +
                                    face.pFacePlane_old.vNormal.z *
-                                       stru_721530.position.z) >>
+                                       _actor_collision_struct.position.z) >>
                                   16;
                             if (v15 > 0) {
                                 v16 = (face.pFacePlane_old.dist +
                                        face.pFacePlane_old.vNormal.x *
-                                           stru_721530.field_4C +
+                                           _actor_collision_struct.field_4C +
                                        face.pFacePlane_old.vNormal.y *
-                                           stru_721530.field_50 +
+                                           _actor_collision_struct.field_50 +
                                        face.pFacePlane_old.vNormal.z *
-                                           stru_721530.field_54) >>
+                                           _actor_collision_struct.field_54) >>
                                       16;
-                                if (v15 <= stru_721530.prolly_normal_d ||
-                                    v16 <= stru_721530.prolly_normal_d) {
+                                if (v15 <= _actor_collision_struct.prolly_normal_d ||
+                                    v16 <= _actor_collision_struct.prolly_normal_d) {
                                     if (v16 <= v15) {
-                                        a2 = stru_721530.field_6C;
+                                        a2 = _actor_collision_struct.field_6C;
                                         if (sub_4754BF(
-                                                stru_721530.field_8_radius, &a2,
-                                                stru_721530.position.x,
-                                                stru_721530.position.y,
-                                                stru_721530.position.z,
-                                                stru_721530.direction.x,
-                                                stru_721530.direction.y,
-                                                stru_721530.direction.z, &face,
+                                                _actor_collision_struct.field_8_radius, &a2,
+                                                _actor_collision_struct.position.x,
+                                                _actor_collision_struct.position.y,
+                                                _actor_collision_struct.position.z,
+                                                _actor_collision_struct.direction.x,
+                                                _actor_collision_struct.direction.y,
+                                                _actor_collision_struct.direction.z, &face,
                                                 model.index, ecx0)) {
-                                            if (a2 < stru_721530.field_7C) {
-                                                stru_721530.field_7C = a2;
-                                                stru_721530.pid =
+                                            if (a2 < _actor_collision_struct.field_7C) {
+                                                _actor_collision_struct.field_7C = a2;
+                                                _actor_collision_struct.pid =
                                                     PID(OBJECT_BModel,
                                                         (mface.index |
                                                          (model.index << 6)));
                                             }
                                         } else {
-                                            a2 = stru_721530.field_6C +
-                                                 stru_721530.field_8_radius;
+                                            a2 = _actor_collision_struct.field_6C +
+                                                 _actor_collision_struct.field_8_radius;
                                             if (sub_475F30(
                                                     &a2, &face,
-                                                    stru_721530.position.x,
-                                                    stru_721530.position.y,
-                                                    stru_721530.position.z,
-                                                    stru_721530.direction.x,
-                                                    stru_721530.direction.y,
-                                                    stru_721530.direction.z,
+                                                    _actor_collision_struct.position.x,
+                                                    _actor_collision_struct.position.y,
+                                                    _actor_collision_struct.position.z,
+                                                    _actor_collision_struct.direction.x,
+                                                    _actor_collision_struct.direction.y,
+                                                    _actor_collision_struct.direction.z,
                                                     model.index)) {
                                                 v21 =
                                                     a2 -
-                                                    stru_721530.prolly_normal_d;
+                                                    _actor_collision_struct.prolly_normal_d;
                                                 a2 -=
-                                                    stru_721530.prolly_normal_d;
-                                                if (a2 < stru_721530.field_7C) {
-                                                    stru_721530.field_7C = v21;
-                                                    stru_721530.pid = PID(
+                                                    _actor_collision_struct.prolly_normal_d;
+                                                if (a2 < _actor_collision_struct.field_7C) {
+                                                    _actor_collision_struct.field_7C = v21;
+                                                    _actor_collision_struct.pid = PID(
                                                         OBJECT_BModel,
                                                         (mface.index |
                                                          (model.index << 6)));
@@ -432,38 +432,38 @@ int _46EF01_collision_chech_player(int a1) {
 
     result = pParty->vPosition.x;
     // device_caps = pParty->uPartyHeight;
-    if (stru_721530.sMaxX <=
+    if (_actor_collision_struct.sMaxX <=
             pParty->vPosition.x + (2 * pParty->field_14_radius) &&
-        stru_721530.sMinX >=
+        _actor_collision_struct.sMinX >=
             pParty->vPosition.x - (2 * pParty->field_14_radius) &&
-        stru_721530.sMaxY <=
+        _actor_collision_struct.sMaxY <=
             pParty->vPosition.y + (2 * pParty->field_14_radius) &&
-        stru_721530.sMinY >=
+        _actor_collision_struct.sMinY >=
             pParty->vPosition.y - (2 * pParty->field_14_radius) &&
-        stru_721530.sMinZ/*sMaxZ*/ <= (pParty->vPosition.z + (int)pParty->uPartyHeight) &&
-        stru_721530.sMaxZ/*sMinZ*/ >= pParty->vPosition.z) {
-        v3 = stru_721530.prolly_normal_d + (2 * pParty->field_14_radius);
-        v11 = pParty->vPosition.x - stru_721530.normal.x;
-        v4 = ((pParty->vPosition.x - stru_721530.normal.x) *
-                  stru_721530.direction.y -
-              (pParty->vPosition.y - stru_721530.normal.y) *
-                  stru_721530.direction.x) >>
+        _actor_collision_struct.sMinZ/*sMaxZ*/ <= (pParty->vPosition.z + (int)pParty->uPartyHeight) &&
+        _actor_collision_struct.sMaxZ/*sMinZ*/ >= pParty->vPosition.z) {
+        v3 = _actor_collision_struct.prolly_normal_d + (2 * pParty->field_14_radius);
+        v11 = pParty->vPosition.x - _actor_collision_struct.normal.x;
+        v4 = ((pParty->vPosition.x - _actor_collision_struct.normal.x) *
+                  _actor_collision_struct.direction.y -
+              (pParty->vPosition.y - _actor_collision_struct.normal.y) *
+                  _actor_collision_struct.direction.x) >>
              16;
-        v10 = pParty->vPosition.y - stru_721530.normal.y;
-        result = abs(((pParty->vPosition.x - stru_721530.normal.x) *
-                          stru_721530.direction.y -
-                      (pParty->vPosition.y - stru_721530.normal.y) *
-                          stru_721530.direction.x) >>
+        v10 = pParty->vPosition.y - _actor_collision_struct.normal.y;
+        result = abs(((pParty->vPosition.x - _actor_collision_struct.normal.x) *
+                          _actor_collision_struct.direction.y -
+                      (pParty->vPosition.y - _actor_collision_struct.normal.y) *
+                          _actor_collision_struct.direction.x) >>
                      16);
         if (result <=
-            stru_721530.prolly_normal_d + (2 * pParty->field_14_radius)) {
-            result = v10 * stru_721530.direction.y;
-            v5 = (v10 * stru_721530.direction.y +
-                  v11 * stru_721530.direction.x) >>
+            _actor_collision_struct.prolly_normal_d + (2 * pParty->field_14_radius)) {
+            result = v10 * _actor_collision_struct.direction.y;
+            v5 = (v10 * _actor_collision_struct.direction.y +
+                  v11 * _actor_collision_struct.direction.x) >>
                  16;
             if (v5 > 0) {
-                v6 = fixpoint_mul(stru_721530.direction.z, v5) +
-                     stru_721530.normal.z;
+                v6 = fixpoint_mul(_actor_collision_struct.direction.z, v5) +
+                     _actor_collision_struct.normal.z;
                 result = pParty->vPosition.z;
                 if (v6 >= pParty->vPosition.z) {
                     result = pParty->uPartyHeight + pParty->vPosition.z;
@@ -473,9 +473,9 @@ int _46EF01_collision_chech_player(int a1) {
                         result = integer_sqrt(v3 * v3 - v4 * v4);
                         v7 = v5 - integer_sqrt(v3 * v3 - v4 * v4);
                         if (v7 < 0) v7 = 0;
-                        if (v7 < stru_721530.field_7C) {
-                            stru_721530.field_7C = v7;
-                            stru_721530.pid = 4;
+                        if (v7 < _actor_collision_struct.field_7C) {
+                            _actor_collision_struct.field_7C = v7;
+                            _actor_collision_struct.pid = 4;
                         }
                     }
                 }
@@ -487,34 +487,34 @@ int _46EF01_collision_chech_player(int a1) {
 
 
 void _46E0B2_collide_against_decorations() {
-    BLVSector *sector = &pIndoor->pSectors[stru_721530.uSectorID];
+    BLVSector *sector = &pIndoor->pSectors[_actor_collision_struct.uSectorID];
     for (unsigned int i = 0; i < sector->uNumDecorations; ++i) {
         LevelDecoration *decor = &pLevelDecorations[sector->pDecorationIDs[i]];
         if (!(decor->uFlags & LEVEL_DECORATION_INVISIBLE)) {
             DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
             if (!decor_desc->CanMoveThrough()) {
-                if (stru_721530.sMaxX <= decor->vPosition.x + decor_desc->uRadius &&
-                    stru_721530.sMinX >= decor->vPosition.x - decor_desc->uRadius &&
-                    stru_721530.sMaxY <= decor->vPosition.y + decor_desc->uRadius &&
-                    stru_721530.sMinY >= decor->vPosition.y - decor_desc->uRadius &&
-                    stru_721530.sMaxZ <= decor->vPosition.z + decor_desc->uDecorationHeight &&
-                    stru_721530.sMinZ >= decor->vPosition.z) {
-                    int v16 = decor->vPosition.x - stru_721530.normal.x;
-                    int v15 = decor->vPosition.y - stru_721530.normal.y;
-                    int v8 = stru_721530.prolly_normal_d + decor_desc->uRadius;
-                    int v17 = ((decor->vPosition.x - stru_721530.normal.x) * stru_721530.direction.y -
-                               (decor->vPosition.y - stru_721530.normal.y) * stru_721530.direction.x) >> 16;
-                    if (abs(v17) <= stru_721530.prolly_normal_d + decor_desc->uRadius) {
-                        int v9 = (v16 * stru_721530.direction.x + v15 * stru_721530.direction.y) >> 16;
+                if (_actor_collision_struct.sMaxX <= decor->vPosition.x + decor_desc->uRadius &&
+                    _actor_collision_struct.sMinX >= decor->vPosition.x - decor_desc->uRadius &&
+                    _actor_collision_struct.sMaxY <= decor->vPosition.y + decor_desc->uRadius &&
+                    _actor_collision_struct.sMinY >= decor->vPosition.y - decor_desc->uRadius &&
+                    _actor_collision_struct.sMaxZ <= decor->vPosition.z + decor_desc->uDecorationHeight &&
+                    _actor_collision_struct.sMinZ >= decor->vPosition.z) {
+                    int v16 = decor->vPosition.x - _actor_collision_struct.normal.x;
+                    int v15 = decor->vPosition.y - _actor_collision_struct.normal.y;
+                    int v8 = _actor_collision_struct.prolly_normal_d + decor_desc->uRadius;
+                    int v17 = ((decor->vPosition.x - _actor_collision_struct.normal.x) * _actor_collision_struct.direction.y -
+                               (decor->vPosition.y - _actor_collision_struct.normal.y) * _actor_collision_struct.direction.x) >> 16;
+                    if (abs(v17) <= _actor_collision_struct.prolly_normal_d + decor_desc->uRadius) {
+                        int v9 = (v16 * _actor_collision_struct.direction.x + v15 * _actor_collision_struct.direction.y) >> 16;
                         if (v9 > 0) {
-                            int v11 = stru_721530.normal.z + fixpoint_mul(stru_721530.direction.z, v9);
+                            int v11 = _actor_collision_struct.normal.z + fixpoint_mul(_actor_collision_struct.direction.z, v9);
                             if (v11 >= decor->vPosition.z) {
                                 if (v11 <= decor_desc->uDecorationHeight + decor->vPosition.z) {
                                     int v12 = v9 - integer_sqrt(v8 * v8 - v17 * v17);
                                     if (v12 < 0) v12 = 0;
-                                    if (v12 < stru_721530.field_7C) {
-                                        stru_721530.field_7C = v12;
-                                        stru_721530.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
+                                    if (v12 < _actor_collision_struct.field_7C) {
+                                        _actor_collision_struct.field_7C = v12;
+                                        _actor_collision_struct.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
                                     }
                                 }
                             }
@@ -533,29 +533,29 @@ int _46F04E_collide_against_portals() {
 
     unsigned int v1 = 0xFFFFFF;
     unsigned int v10 = 0xFFFFFF;
-    for (unsigned int i = 0; i < pIndoor->pSectors[stru_721530.uSectorID].uNumPortals; ++i) {
-        if (pIndoor->pSectors[stru_721530.uSectorID].pPortals[i] !=
-            stru_721530.field_80) {
-            BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[stru_721530.uSectorID].pPortals[i]];
-            if (stru_721530.sMaxX <= face->pBounding.x2 &&
-                stru_721530.sMinX >= face->pBounding.x1 &&
-                stru_721530.sMaxY <= face->pBounding.y2 &&
-                stru_721530.sMinY >= face->pBounding.y1 &&
-                stru_721530.sMaxZ <= face->pBounding.z2 &&
-                stru_721530.sMinZ >= face->pBounding.z1) {
-                int v4 = (stru_721530.normal.x * face->pFacePlane_old.vNormal.x +
+    for (unsigned int i = 0; i < pIndoor->pSectors[_actor_collision_struct.uSectorID].uNumPortals; ++i) {
+        if (pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i] !=
+            _actor_collision_struct.field_80) {
+            BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i]];
+            if (_actor_collision_struct.sMaxX <= face->pBounding.x2 &&
+                _actor_collision_struct.sMinX >= face->pBounding.x1 &&
+                _actor_collision_struct.sMaxY <= face->pBounding.y2 &&
+                _actor_collision_struct.sMinY >= face->pBounding.y1 &&
+                _actor_collision_struct.sMaxZ <= face->pBounding.z2 &&
+                _actor_collision_struct.sMinZ >= face->pBounding.z1) {
+                int v4 = (_actor_collision_struct.normal.x * face->pFacePlane_old.vNormal.x +
                           face->pFacePlane_old.dist +
-                          stru_721530.normal.y * face->pFacePlane_old.vNormal.y +
-                          stru_721530.normal.z * face->pFacePlane_old.vNormal.z) >> 16;
-                int v5 = (stru_721530.normal2.z * face->pFacePlane_old.vNormal.z +
+                          _actor_collision_struct.normal.y * face->pFacePlane_old.vNormal.y +
+                          _actor_collision_struct.normal.z * face->pFacePlane_old.vNormal.z) >> 16;
+                int v5 = (_actor_collision_struct.normal2.z * face->pFacePlane_old.vNormal.z +
                           face->pFacePlane_old.dist +
-                          stru_721530.normal2.x * face->pFacePlane_old.vNormal.x +
-                          stru_721530.normal2.y * face->pFacePlane_old.vNormal.y) >> 16;
-                if ((v4 < stru_721530.prolly_normal_d || v5 < stru_721530.prolly_normal_d) &&
-                    (v4 > -stru_721530.prolly_normal_d || v5 > -stru_721530.prolly_normal_d) &&
-                    (a3 = stru_721530.field_6C, sub_475D85(&stru_721530.normal, &stru_721530.direction, &a3, face)) && a3 < (int)v10) {
+                          _actor_collision_struct.normal2.x * face->pFacePlane_old.vNormal.x +
+                          _actor_collision_struct.normal2.y * face->pFacePlane_old.vNormal.y) >> 16;
+                if ((v4 < _actor_collision_struct.prolly_normal_d || v5 < _actor_collision_struct.prolly_normal_d) &&
+                    (v4 > -_actor_collision_struct.prolly_normal_d || v5 > -_actor_collision_struct.prolly_normal_d) &&
+                    (a3 = _actor_collision_struct.field_6C, sub_475D85(&_actor_collision_struct.normal, &_actor_collision_struct.direction, &a3, face)) && a3 < (int)v10) {
                     v10 = a3;
-                    v12 = pIndoor->pSectors[stru_721530.uSectorID].pPortals[i];
+                    v12 = pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i];
                 }
             }
         }
@@ -565,14 +565,14 @@ int _46F04E_collide_against_portals() {
 
     int result = 1;
 
-    if (stru_721530.field_7C >= (int)v1 && (int)v1 <= stru_721530.field_6C) {
-        stru_721530.field_80 = v12;
-        if (pIndoor->pFaces[v12].uSectorID == stru_721530.uSectorID) {
-            stru_721530.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
+    if (_actor_collision_struct.field_7C >= (int)v1 && (int)v1 <= _actor_collision_struct.field_6C) {
+        _actor_collision_struct.field_80 = v12;
+        if (pIndoor->pFaces[v12].uSectorID == _actor_collision_struct.uSectorID) {
+            _actor_collision_struct.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
         } else {
-            stru_721530.uSectorID = pIndoor->pFaces[v12].uSectorID;
+            _actor_collision_struct.uSectorID = pIndoor->pFaces[v12].uSectorID;
         }
-        stru_721530.field_7C = 268435455;  // 0xFFFFFFF
+        _actor_collision_struct.field_7C = 268435455;  // 0xFFFFFFF
         result = 0;
     }
 
@@ -606,24 +606,24 @@ int _46E44E_collide_against_faces_and_portals(unsigned int b1) {
     int v32;                // [sp+2Ch] [bp-2Ch]@15
     int pSectorsArray[10];  // [sp+30h] [bp-28h]@1
 
-    pSector = &pIndoor->pSectors[stru_721530.uSectorID];
+    pSector = &pIndoor->pSectors[_actor_collision_struct.uSectorID];
     i = 1;
     a10 = b1;
-    pSectorsArray[0] = stru_721530.uSectorID;
+    pSectorsArray[0] = _actor_collision_struct.uSectorID;
     for (v2 = 0; v2 < pSector->uNumPortals; ++v2) {
         pFace = &pIndoor->pFaces[pSector->pPortals[v2]];
-        if (stru_721530.sMaxX <= pFace->pBounding.x2 &&
-            stru_721530.sMinX >= pFace->pBounding.x1 &&
-            stru_721530.sMaxY <= pFace->pBounding.y2 &&
-            stru_721530.sMinY >= pFace->pBounding.y1 &&
-            stru_721530.sMaxZ <= pFace->pBounding.z2 &&
-            stru_721530.sMinZ >= pFace->pBounding.z1 &&
+        if (_actor_collision_struct.sMaxX <= pFace->pBounding.x2 &&
+            _actor_collision_struct.sMinX >= pFace->pBounding.x1 &&
+            _actor_collision_struct.sMaxY <= pFace->pBounding.y2 &&
+            _actor_collision_struct.sMinY >= pFace->pBounding.y1 &&
+            _actor_collision_struct.sMaxZ <= pFace->pBounding.z2 &&
+            _actor_collision_struct.sMinZ >= pFace->pBounding.z1 &&
             abs((pFace->pFacePlane_old.dist +
-                 stru_721530.normal.x * pFace->pFacePlane_old.vNormal.x +
-                 stru_721530.normal.y * pFace->pFacePlane_old.vNormal.y +
-                 stru_721530.normal.z * pFace->pFacePlane_old.vNormal.z) >>
-                16) <= stru_721530.field_6C + 16) {
-            pNextSector = pFace->uSectorID == stru_721530.uSectorID
+                 _actor_collision_struct.normal.x * pFace->pFacePlane_old.vNormal.x +
+                 _actor_collision_struct.normal.y * pFace->pFacePlane_old.vNormal.y +
+                 _actor_collision_struct.normal.z * pFace->pFacePlane_old.vNormal.z) >>
+                16) <= _actor_collision_struct.field_6C + 16) {
+            pNextSector = pFace->uSectorID == _actor_collision_struct.uSectorID
                               ? pFace->uBackSectorID
                               : pFace->uSectorID;  // FrontSectorID
             pArrayNum = i++;
@@ -640,102 +640,102 @@ int _46E44E_collide_against_faces_and_portals(unsigned int b1) {
         for (v26 = 0; v26 < v32; v26++) {
             pFloor = pSector->pFloors[v26];
             pFace = &pIndoor->pFaces[pSector->pFloors[v26]];
-            if (!pFace->Portal() && stru_721530.sMaxX <= pFace->pBounding.x2 &&
-                stru_721530.sMinX >= pFace->pBounding.x1 &&
-                stru_721530.sMaxY <= pFace->pBounding.y2 &&
-                stru_721530.sMinY >= pFace->pBounding.y1 &&
-                stru_721530.sMaxZ <= pFace->pBounding.z2 &&
-                stru_721530.sMinZ >= pFace->pBounding.z1 &&
-                pFloor != stru_721530.field_84) {
+            if (!pFace->Portal() && _actor_collision_struct.sMaxX <= pFace->pBounding.x2 &&
+                _actor_collision_struct.sMinX >= pFace->pBounding.x1 &&
+                _actor_collision_struct.sMaxY <= pFace->pBounding.y2 &&
+                _actor_collision_struct.sMinY >= pFace->pBounding.y1 &&
+                _actor_collision_struct.sMaxZ <= pFace->pBounding.z2 &&
+                _actor_collision_struct.sMinZ >= pFace->pBounding.z1 &&
+                pFloor != _actor_collision_struct.field_84) {
                 v15 =
                     (pFace->pFacePlane_old.dist +
-                     stru_721530.normal.x * pFace->pFacePlane_old.vNormal.x +
-                     stru_721530.normal.y * pFace->pFacePlane_old.vNormal.y +
-                     stru_721530.normal.z * pFace->pFacePlane_old.vNormal.z) >>
+                     _actor_collision_struct.normal.x * pFace->pFacePlane_old.vNormal.x +
+                     _actor_collision_struct.normal.y * pFace->pFacePlane_old.vNormal.y +
+                     _actor_collision_struct.normal.z * pFace->pFacePlane_old.vNormal.z) >>
                     16;
                 if (v15 > 0) {
                     v16 = (pFace->pFacePlane_old.dist +
-                           stru_721530.normal2.x *
+                           _actor_collision_struct.normal2.x *
                                pFace->pFacePlane_old.vNormal.x +
-                           stru_721530.normal2.y *
+                           _actor_collision_struct.normal2.y *
                                pFace->pFacePlane_old.vNormal.y +
-                           stru_721530.normal2.z *
+                           _actor_collision_struct.normal2.z *
                                pFace->pFacePlane_old.vNormal.z) >>
                           16;
-                    if (v15 <= stru_721530.prolly_normal_d ||
-                        v16 <= stru_721530.prolly_normal_d) {
+                    if (v15 <= _actor_collision_struct.prolly_normal_d ||
+                        v16 <= _actor_collision_struct.prolly_normal_d) {
                         if (v16 <= v15) {
-                            a3 = stru_721530.field_6C;
+                            a3 = _actor_collision_struct.field_6C;
                             if (sub_47531C(
-                                    stru_721530.prolly_normal_d, &a3,
-                                    stru_721530.normal.x, stru_721530.normal.y,
-                                    stru_721530.normal.z,
-                                    stru_721530.direction.x,
-                                    stru_721530.direction.y,
-                                    stru_721530.direction.z, pFace, a10)) {
+                                    _actor_collision_struct.prolly_normal_d, &a3,
+                                    _actor_collision_struct.normal.x, _actor_collision_struct.normal.y,
+                                    _actor_collision_struct.normal.z,
+                                    _actor_collision_struct.direction.x,
+                                    _actor_collision_struct.direction.y,
+                                    _actor_collision_struct.direction.z, pFace, a10)) {
                                 v17 = a3;
                             } else {
-                                a3 = stru_721530.field_6C +
-                                     stru_721530.prolly_normal_d;
-                                if (!sub_475D85(&stru_721530.normal,
-                                                &stru_721530.direction, &a3,
+                                a3 = _actor_collision_struct.field_6C +
+                                     _actor_collision_struct.prolly_normal_d;
+                                if (!sub_475D85(&_actor_collision_struct.normal,
+                                                &_actor_collision_struct.direction, &a3,
                                                 pFace))
                                     goto LABEL_34;
-                                v17 = a3 - stru_721530.prolly_normal_d;
-                                a3 -= stru_721530.prolly_normal_d;
+                                v17 = a3 - _actor_collision_struct.prolly_normal_d;
+                                a3 -= _actor_collision_struct.prolly_normal_d;
                             }
-                            if (v17 < stru_721530.field_7C) {
-                                stru_721530.field_7C = v17;
+                            if (v17 < _actor_collision_struct.field_7C) {
+                                _actor_collision_struct.field_7C = v17;
                                 v18 = 8 * pSector->pFloors[v26];
                                 v18 |= 6;
-                                stru_721530.pid = v18;
+                                _actor_collision_struct.pid = v18;
                             }
                         }
                     }
                 }
             LABEL_34:
-                if (!(stru_721530.field_0 & 1) ||
+                if (!(_actor_collision_struct.field_0 & 1) ||
                     (v21 = (pFace->pFacePlane_old.dist +
-                            stru_721530.position.x *
+                            _actor_collision_struct.position.x *
                                 pFace->pFacePlane_old.vNormal.x +
-                            stru_721530.position.y *
+                            _actor_collision_struct.position.y *
                                 pFace->pFacePlane_old.vNormal.y +
-                            stru_721530.position.z *
+                            _actor_collision_struct.position.z *
                                 pFace->pFacePlane_old.vNormal.z) >>
                            16,
                      v21 <= 0) ||
                     (v22 = (pFace->pFacePlane_old.dist +
-                            stru_721530.field_4C *
+                            _actor_collision_struct.field_4C *
                                 pFace->pFacePlane_old.vNormal.x +
-                            stru_721530.field_50 *
+                            _actor_collision_struct.field_50 *
                                 pFace->pFacePlane_old.vNormal.y +
-                            stru_721530.field_54 *
+                            _actor_collision_struct.field_54 *
                                 pFace->pFacePlane_old.vNormal.z) >>
                            16,
-                     v21 > stru_721530.prolly_normal_d) &&
-                        v22 > stru_721530.prolly_normal_d ||
+                     v21 > _actor_collision_struct.prolly_normal_d) &&
+                        v22 > _actor_collision_struct.prolly_normal_d ||
                     v22 > v21)
                     continue;
-                a3 = stru_721530.field_6C;
-                if (sub_47531C(stru_721530.field_8_radius, &a3,
-                               stru_721530.position.x, stru_721530.position.y,
-                               stru_721530.position.z, stru_721530.direction.x,
-                               stru_721530.direction.y, stru_721530.direction.z,
+                a3 = _actor_collision_struct.field_6C;
+                if (sub_47531C(_actor_collision_struct.field_8_radius, &a3,
+                               _actor_collision_struct.position.x, _actor_collision_struct.position.y,
+                               _actor_collision_struct.position.z, _actor_collision_struct.direction.x,
+                               _actor_collision_struct.direction.y, _actor_collision_struct.direction.z,
                                pFace, a10)) {
                     v23 = a3;
                     goto LABEL_43;
                 }
-                a3 = stru_721530.field_6C + stru_721530.field_8_radius;
-                if (sub_475D85(&stru_721530.position, &stru_721530.direction,
+                a3 = _actor_collision_struct.field_6C + _actor_collision_struct.field_8_radius;
+                if (sub_475D85(&_actor_collision_struct.position, &_actor_collision_struct.direction,
                                &a3, pFace)) {
-                    v23 = a3 - stru_721530.prolly_normal_d;
-                    a3 -= stru_721530.prolly_normal_d;
+                    v23 = a3 - _actor_collision_struct.prolly_normal_d;
+                    a3 -= _actor_collision_struct.prolly_normal_d;
                 LABEL_43:
-                    if (v23 < stru_721530.field_7C) {
-                        stru_721530.field_7C = v23;
+                    if (v23 < _actor_collision_struct.field_7C) {
+                        _actor_collision_struct.field_7C = v23;
                         v24 = 8 * pSector->pFloors[v26];
                         v24 |= 6;
-                        stru_721530.pid = v24;
+                        _actor_collision_struct.pid = v24;
                     }
                 }
             }
@@ -883,43 +883,43 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         if (pSpriteObjects[i].uObjectDescID) {
             object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
             if (!(object->uFlags & OBJECT_DESC_NO_COLLISION)) {
-                if (stru_721530.sMaxX <=
+                if (_actor_collision_struct.sMaxX <=
                         pSpriteObjects[i].vPosition.x + object->uRadius &&
-                    stru_721530.sMinX >=
+                    _actor_collision_struct.sMinX >=
                         pSpriteObjects[i].vPosition.x - object->uRadius &&
-                    stru_721530.sMaxY <=
+                    _actor_collision_struct.sMaxY <=
                         pSpriteObjects[i].vPosition.y + object->uRadius &&
-                    stru_721530.sMinY >=
+                    _actor_collision_struct.sMinY >=
                         pSpriteObjects[i].vPosition.y - object->uRadius &&
-                    stru_721530.sMaxZ <=
+                    _actor_collision_struct.sMaxZ <=
                         pSpriteObjects[i].vPosition.z + object->uHeight &&
-                    stru_721530.sMinZ >= pSpriteObjects[i].vPosition.z) {
+                    _actor_collision_struct.sMinZ >= pSpriteObjects[i].vPosition.z) {
                     if (abs(((pSpriteObjects[i].vPosition.x -
-                              stru_721530.normal.x) *
-                                 stru_721530.direction.y -
+                              _actor_collision_struct.normal.x) *
+                                 _actor_collision_struct.direction.y -
                              (pSpriteObjects[i].vPosition.y -
-                              stru_721530.normal.y) *
-                                 stru_721530.direction.x) >>
+                              _actor_collision_struct.normal.y) *
+                                 _actor_collision_struct.direction.x) >>
                             16) <=
-                        object->uHeight + stru_721530.prolly_normal_d) {
+                        object->uHeight + _actor_collision_struct.prolly_normal_d) {
                         v10 = ((pSpriteObjects[i].vPosition.x -
-                                stru_721530.normal.x) *
-                                   stru_721530.direction.x +
+                                _actor_collision_struct.normal.x) *
+                                   _actor_collision_struct.direction.x +
                                (pSpriteObjects[i].vPosition.y -
-                                stru_721530.normal.y) *
-                                   stru_721530.direction.y) >>
+                                _actor_collision_struct.normal.y) *
+                                   _actor_collision_struct.direction.y) >>
                               16;
                         if (v10 > 0) {
-                            v11 = stru_721530.normal.z +
-                                  ((unsigned __int64)(stru_721530.direction.z *
+                            v11 = _actor_collision_struct.normal.z +
+                                  ((unsigned __int64)(_actor_collision_struct.direction.z *
                                                       (signed __int64)v10) >>
                                    16);
                             if (v11 >= pSpriteObjects[i].vPosition.z -
-                                           stru_721530.prolly_normal_d) {
+                                           _actor_collision_struct.prolly_normal_d) {
                                 if (v11 <= object->uHeight +
-                                               stru_721530.prolly_normal_d +
+                                               _actor_collision_struct.prolly_normal_d +
                                                pSpriteObjects[i].vPosition.z) {
-                                    if (v10 < stru_721530.field_7C) {
+                                    if (v10 < _actor_collision_struct.field_7C) {
                                         sub_46DEF2(_this, i);
                                     }
                                 }
@@ -1669,7 +1669,7 @@ void RenderOpenGL::BeginSceneD3D() {
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
 
-    glClearColor(0.9f, 0.5f, 0.1f, 1.0f);
+    glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -2531,8 +2531,10 @@ void _set_3d_projection_matrix() {
     // indoors 65?/
     // something to do with ratio of screenwidth to viewport width
 
+    int fov = 60;
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) fov = 50;
 
-    gluPerspective(65, double(game_viewport_width/double(game_viewport_height))  // 65.0f
+    gluPerspective(fov, double(game_viewport_width/double(game_viewport_height))  // 65.0f
                    /*(GLfloat)window->GetWidth() / (GLfloat)window->GetHeight()*/,
                    near_clip, far_clip);
 }
@@ -2551,7 +2553,7 @@ void _set_3d_modelview_matrix() {
               camera_x - pParty->y_rotation_granularity *
                       cosf(2 * 3.14159 * pParty->sRotationY / 2048.0) /*- 5*/,
               camera_y - pParty->y_rotation_granularity *
-                             sinf(2 * 3.14159 * (pParty->sRotationX/*-25*/) / 2048.0),
+                             sinf(2 * 3.14159 * (-pParty->sRotationX -20) / 2048.0),
               camera_z - pParty->y_rotation_granularity *
                              sinf(2 * 3.14159 * pParty->sRotationY / 2048.0),
 
@@ -3129,7 +3131,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
                              billboard->pQuads[j].texcoord.y);
 
                 float oneoz = 1. / (billboard->screen_space_z);
-                float oneon = 1. / (pIndoorCameraD3D->GetNearClip()+5);
+                float oneon = 1. / (pIndoorCameraD3D->GetNearClip()+4);
                 float oneof = 1. / pIndoorCameraD3D->GetFarClip();
 
                 glVertex3f(
@@ -3846,9 +3848,14 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
 void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     int uPackedID, unsigned int uColor,
     int a8) {
+
+
     if (uNumVertices < 3) {
         return;
     }
+
+    _set_ortho_projection(1);
+    _set_ortho_modelview();
 
     _set_3d_projection_matrix();
     _set_3d_modelview_matrix();
@@ -3897,20 +3904,8 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         lightmap_builder->DrawLightmaps(-1);
         */
     } else {
-        if (!lightmap_builder->StationaryLightsCount ||
-            _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
-            glEnable(GL_TEXTURE_2D);
-            glDisable(GL_BLEND);
-            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
-            // glDisable(GL_CULL_FACE);  // testing
-            // glDisable(GL_DEPTH_TEST);
-
-            // if (uNumVertices != 3 ) return; //3 ,4, 5 ,6
-
-            glBegin(GL_TRIANGLE_FAN);
-
-            for (uint i = 0; i < uNumVertices; ++i) {
+        if (!lightmap_builder->StationaryLightsCount || _4D864C_force_sw_render_rules && engine->config->Flag1_2() || true) {
+            for (uint i = 0; i < pFace->uNumVertices; ++i) {
                 d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
                 d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
                 d3d_vertex_buffer[i].pos.z =
@@ -3926,12 +3921,27 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                 d3d_vertex_buffer[i].texcoord.y =
                     array_507D30[i].v /
                     (double)pFace->GetTexture()->GetHeight();
+            }
 
+            glEnable(GL_TEXTURE_2D);
+            glDisable(GL_BLEND);
+            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
+            // glDisable(GL_CULL_FACE);  // testing
+            // glDisable(GL_DEPTH_TEST);
+
+            // if (uNumVertices != 3 ) return; //3 ,4, 5 ,6
+
+            glBegin(GL_TRIANGLE_FAN);
+
+            for (uint i = 0; i < pFace->uNumVertices; ++i) {
                 /*glTexCoord2f(d3d_vertex_buffer[i].texcoord.x,
                     d3d_vertex_buffer[i].texcoord.y);*/
 
-                glTexCoord2f((pFace->pVertexUIDs[i]/ (double)pFace->GetTexture()->GetWidth()), (pFace->pVertexVIDs[i]/ (double)pFace->GetTexture()->GetHeight()));
+                // Lights.pDeltaUV[0] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaU;
+                // Lights.pDeltaUV[1] = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].sTextureDeltaV;
+
+                glTexCoord2f(((pFace->pVertexUIDs[i]+ Lights.pDeltaUV[0])/ (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i]+ Lights.pDeltaUV[1])/ (double)pFace->GetTexture()->GetHeight()));
 
 
                  /*glColor4f(
@@ -3943,11 +3953,6 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                 : 1.0f);*/
 
                 glColor4f(1, 1, 1, 1);
-
-                /*glVertex3f(d3d_vertex_buffer[i].pos.x,
-                d3d_vertex_buffer[i].pos.z,
-                d3d_vertex_buffer[i].pos.y);*/
-
 
 
                 glVertex3f(pIndoor->pVertices[pFace->pVertexIDs[i]].x,

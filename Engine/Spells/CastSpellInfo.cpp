@@ -56,10 +56,6 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     double spell_recharge_factor;    // st7@478
     ItemGen *spell_item_to_enchant;  // edi@492
 
-    int v258;   // ecx@514
-    char v259;  // al@516
-    int v260;   // eax@518
-    int v261;   // esi@519
     int v262;   // edx@521
     int *v263;  // ecx@521
     int v264;   // esi@521
@@ -88,7 +84,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     // unsigned __int64 v663; // [sp+0h] [bp-E84h]@639
     int target_undead;              // [sp+4h] [bp-E80h]@12
     PLAYER_SKILL_TYPE which_skill;  // [sp+4h] [bp-E80h]@25
-    int v679[800];                  // [sp+14h] [bp-E70h]@515
+
     unsigned __int64 v685;          // [sp+D08h] [bp-17Ch]@416
     unsigned __int64 v687;          // [sp+D24h] [bp-160h]@327
     Vec3_int_ v688;                 // [sp+D2Ch] [bp-158h]@943
@@ -106,7 +102,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     int dist_Y;           // [sp+DD8h] [bp-ACh]@163
     int spell_level = 0;  // [sp+E4Ch] [bp-38h]@1
     ItemGen *_this = 0;   // [sp+E50h] [bp-34h]@23
-    int v725 = 0;         // [sp+E54h] [bp-30h]@23
+             // [sp+E54h] [bp-30h]@23
     int buff_resist;
     bool spell_sound_flag = false;  // [sp+E5Ch] [bp-28h]@1
     Player *pPlayer;                // [sp+E64h] [bp-20h]@8
@@ -1927,10 +1923,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 bool item_not_broken = true;
                 int rnd = rand() % 100;
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
-                spell_item_to_enchant =
-                    &pPlayer->pInventoryItemList[spell_targeted_at - 1];
-                ItemDesc *_v725 =
-                    &pItemsTable->pItems[spell_item_to_enchant->uItemID];
+                spell_item_to_enchant = &pPlayer->pInventoryItemList[spell_targeted_at - 1];
+                ItemDesc *_v725 = &pItemsTable->pItems[spell_item_to_enchant->uItemID];
+
+
+
                 if ((skill_level == 1 ||
                      skill_level == 2 /*&& _v725->uEquipType > EQUIP_BOW*/ ||
                      skill_level == 3 || skill_level == 4) &&
@@ -1939,41 +1936,31 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     spell_item_to_enchant->uEnchantmentType == 0 &&
                     spell_item_to_enchant->m_enchantmentStrength == 0 &&
                     !spell_item_to_enchant->IsBroken()) {  // требования к предмету
-                    if ((spell_item_to_enchant->GetValue() < 450 &&
-                         (skill_level == 1 || skill_level == 2)) ||
-                        (spell_item_to_enchant->GetValue() < 450 &&
-                         (skill_level == 3 || skill_level == 4) &&
-                         _v725->uEquipType >= EQUIP_SINGLE_HANDED &&
-                         _v725->uEquipType <= EQUIP_BOW) ||
-                        (spell_item_to_enchant->GetValue() < 250 &&
-                         (skill_level == 3 || skill_level == 4) &&
-                         _v725->uEquipType > EQUIP_BOW)) {  // Условия поломки
-                        if (!(spell_item_to_enchant->uAttributes &
-                              ITEM_HARDENED)) {  // предмет не сломан
-                            spell_item_to_enchant->uAttributes |=
-                                ITEM_BROKEN;  //теперь сломан
+                    // break items with low value
+                    if ((spell_item_to_enchant->GetValue() < 450 && (skill_level == 1 || skill_level == 2)) ||
+                        (spell_item_to_enchant->GetValue() < 450 && (skill_level == 3 || skill_level == 4) && _v725->uEquipType >= EQUIP_SINGLE_HANDED && _v725->uEquipType <= EQUIP_BOW) ||  // weapon
+                        (spell_item_to_enchant->GetValue() < 250 && (skill_level == 3 || skill_level == 4) && _v725->uEquipType > EQUIP_BOW)) {  // armour - Условия поломки
+                        if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {  // предмет не сломан
+                            spell_item_to_enchant->uAttributes |= ITEM_BROKEN;  //теперь сломан
                         }
                         item_not_broken = false;
                     } else {
+                        // random item break
                         if (rnd >= 10 * spell_level) {  // шанс на срабатывание
-                            if (!(spell_item_to_enchant->uAttributes &
-                                  0x200))  // предмет не сломан
-                                spell_item_to_enchant->uAttributes |=
-                                    2;  //теперь сломан
+                            if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED))  // предмет не сломан
+                                spell_item_to_enchant->uAttributes |= ITEM_BROKEN;  //теперь сломан
                         } else {
-                            if ((rnd < 80 &&
-                                 (skill_level == 3 || skill_level == 4)) ||
+                            if ((rnd < 80 && (skill_level == 3 || skill_level == 4)) ||
                                 spell_item_to_enchant->GetValue() < 450 ||
-                                (spell_item_to_enchant->GetValue() < 250 &&
-                                 (skill_level == 3 || skill_level == 4) &&
-                                 _v725->uEquipType >= EQUIP_SINGLE_HANDED &&
-                                 _v725->uEquipType <= EQUIP_BOW)) {
+                                (spell_item_to_enchant->GetValue() < 250 && (skill_level == 3 || skill_level == 4) && _v725->uEquipType >= EQUIP_SINGLE_HANDED && _v725->uEquipType <= EQUIP_BOW)) {
                                 v313 = _v725->uEquipType;
-                                if (_v725->uEquipType >= EQUIP_ARMOUR &&
-                                    _v725->uEquipType <= EQUIP_AMULET) {
-                                    v295 =
-                                        rand() %
-                                        10;  // pItemsTable->field_116D8[pItemsTable->pItems[_this->uItemID].uEquipType];
+
+                                if (_v725->uEquipType >= EQUIP_ARMOUR && _v725->uEquipType <= EQUIP_AMULET) {
+                                    // ARMOUR, SHIELD, EQUIP_HELMET, BELT, CLOAK, GAUNTLETS, BOOTS, RING, AMULET
+
+                                    v295 = rand() % 10;  // ?? more than 10 std enchants STDITEMS.TXT
+
+                                    // pItemsTable->field_116D8[pItemsTable->pItems[_this->uItemID].uEquipType];
                                     /*spell_item_to_enchant->uEnchantmentType =
                                     0;
                                     __debugbreak(); // castspellinfo.cpp(1971):
@@ -1994,145 +1981,91 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                                     v256 = 10;//pItemsTable->field_116D8[16];
                                     spell_item_to_enchant->m_enchantmentStrength
                                     = v256 + rand() % (v255 - v256 + 1);*/
-                                    spell_item_to_enchant->uEnchantmentType =
-                                        v295;
-                                    spell_item_to_enchant
-                                        ->m_enchantmentStrength =
-                                        pItemsTable->pEnchantments[v295]
-                                            .to_item[_v725->uEquipType -
-                                                     EQUIP_ARMOUR];
-                                    spell_item_to_enchant->uAttributes |= 0x20u;
+                                    spell_item_to_enchant->uEnchantmentType = v295;
+                                    spell_item_to_enchant->m_enchantmentStrength = pItemsTable->pEnchantments[v295].to_item[_v725->uEquipType -EQUIP_ARMOUR];
+                                    spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     _50C9A8_item_enchantment_timer = 256;
                                     spell_sound_flag = true;
                                     break;
-                                } else if (skill_level == 3 ||
-                                           skill_level ==
-                                               4) {  // for master & GM not
+                                } else if (skill_level == 3 || skill_level == 4) {  // for master & GM not
                                                      // refactored(для мастера и
                                                      // гранда не отрефакторено)
-                                    v258 = 0;
-                                    v725 = 0;
-                                    int _v733;
-                                    if (pItemsTable
-                                            ->pSpecialEnchantments_count > 0) {
-                                        v730 = (int)&v679;
-                                        for (_v733 = 0;
-                                             _v733 <
-                                             pItemsTable
-                                                 ->pSpecialEnchantments_count;
-                                             ++_v733) {
-                                            v259 = (int)pItemsTable
-                                                       ->pSpecialEnchantments
-                                                           [v258 + 1]
-                                                       .pBonusStatement;
+                                    int v258 = 0;
+                                    int to_item_apply_sum = 0;
+                                    int spec_ench_loop;
+                                    char v259;  // al@516
+                                    int v679_array800[800];                  // [sp+14h] [bp-E70h]@515
+                                    int v260;   // eax@518
+                                    int v261;   // esi@519
+
+                                    if (pItemsTable->pSpecialEnchantments_count > 0) {
+                                        v730 = (int)&v679_array800;
+                                        for (spec_ench_loop = 0; spec_ench_loop < pItemsTable->pSpecialEnchantments_count; ++spec_ench_loop) {
+                                            v259 = (int)pItemsTable->pSpecialEnchantments[v258 + 1].pBonusStatement;
+
                                             if (!v259 || v259 == 1) {
-                                                v260 = *(
-                                                    &pItemsTable
-                                                         ->pSpecialEnchantments
-                                                             [0]
-                                                         .to_item_apply
-                                                             [spell_item_to_enchant
-                                                                  ->GetItemEquipType() +
-                                                              4] +
-                                                    v258 * 28);
-                                                v725 += v260;
+                                                v260 = *(&pItemsTable->pSpecialEnchantments[v258/*0*/].to_item_apply[spell_item_to_enchant->GetItemEquipType() + 4] /*+ v258 * 28*/);
+                                                to_item_apply_sum += v260;
                                                 if (v260) {
                                                     v261 = v730;
-                                                    v730 += 4;
-                                                    *(int *)v261 = _v733;
+                                                    v730 += 4;  // nudge pointer to array along
+                                                    *(int *)v261 = spec_ench_loop;  // set array
                                                 }
                                             }
                                             ++v258;
                                         }
                                     }
-                                    v262 = rand() % v725;
-                                    v263 = v679;
-                                    spell_item_to_enchant->special_enchantment =
-                                        (ITEM_ENCHANTMENT)v679[0];
-                                    v264 =
-                                        pItemsTable->pSpecialEnchantments[*v263]
-                                            .to_item_apply
-                                                [spell_item_to_enchant
-                                                     ->GetItemEquipType() +
-                                                 4];
+
+                                    v262 = rand() % to_item_apply_sum;
+                                    v263 = v679_array800;
+                                    spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)v679_array800[0];
+                                    v264 = pItemsTable->pSpecialEnchantments[*v263].to_item_apply[spell_item_to_enchant->GetItemEquipType() + 4];
                                     v265 = v262 + 1;
+
                                     if (v264 < v265) {
-                                        for (int *ii = v679;;
-                                             ii = (int *)v732) {
+                                        for (int *ii = v679_array800; ; ii = (int *)v732) {
                                             v267 = (int)(ii + 1);
                                             v732 = v267;
                                             v268 = *(int *)v267;
-                                            *(int *)(spell_item_to_enchant +
-                                                     12) = v268;
-                                            v264 +=
-                                                pItemsTable
-                                                    ->pSpecialEnchantments[v268]
-                                                    .to_item_apply
-                                                        [spell_item_to_enchant
-                                                             ->GetItemEquipType() +
-                                                         4];
+                                            *(int *)(spell_item_to_enchant + 12) = v268;
+                                            v264 += pItemsTable->pSpecialEnchantments[v268].to_item_apply[spell_item_to_enchant->GetItemEquipType() + 4];
                                             if (v264 >= v265) break;
                                         }
                                     }
+
                                     v278 = 0;
-                                    v725 = 0;
-                                    if (pItemsTable
-                                            ->pSpecialEnchantments_count > 0) {
-                                        int *_v730 = v679;
-                                        for (_v733 = 0;
-                                             _v733 <
-                                             pItemsTable
-                                                 ->pSpecialEnchantments_count;
-                                             ++_v733) {
-                                            v279 =
-                                                (char)(int)pItemsTable
-                                                    ->pSpecialEnchantments[v278]
-                                                    .pBonusStatement;
+                                    to_item_apply_sum = 0;
+                                    if (pItemsTable->pSpecialEnchantments_count > 0) {
+                                        int *_v730 = v679_array800;
+
+                                        for (spec_ench_loop = 0; spec_ench_loop < pItemsTable->pSpecialEnchantments_count; ++spec_ench_loop) {
+                                            v279 = (char)pItemsTable->pSpecialEnchantments[v278].pBonusStatement;
                                             if (!v279 || v279 == 1) {
-                                                v280 = *(
-                                                    &pItemsTable
-                                                         ->pSpecialEnchantments
-                                                             [v278]
-                                                         .to_item_apply
-                                                             [spell_item_to_enchant
-                                                                  ->GetItemEquipType()]);
-                                                _v733 += v280;
+                                                v280 = *(&pItemsTable->pSpecialEnchantments[v278].to_item_apply[spell_item_to_enchant->GetItemEquipType()]);
+                                                spec_ench_loop += v280;
                                                 if (v280) {
                                                     v281 = _v730;
                                                     ++_v730;
-                                                    *v281 = _v733;
+                                                    *v281 = spec_ench_loop;
                                                 }
                                             }
                                             ++v278;
                                         }
                                     }
-                                    v282 = rand() % _v733;
-                                    v283 = v679;
-                                    spell_item_to_enchant->special_enchantment =
-                                        (ITEM_ENCHANTMENT)v679[0];
-                                    v284 =
-                                        pItemsTable->pSpecialEnchantments[*v283]
-                                            .to_item_apply
-                                                [spell_item_to_enchant
-                                                     ->GetItemEquipType()];
+
+                                    v282 = rand() % spec_ench_loop;
+                                    v283 = v679_array800;
+                                    spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)v679_array800[0];
+                                    v284 = pItemsTable->pSpecialEnchantments[*v283].to_item_apply[spell_item_to_enchant->GetItemEquipType()];
                                     v285 = v282 + 1;
-                                    for (l = v679; v284 < v285; ++l) {
-                                        spell_item_to_enchant
-                                            ->special_enchantment =
-                                            (ITEM_ENCHANTMENT) * (l + 1);
-                                        v284 +=
-                                            pItemsTable
-                                                ->pSpecialEnchantments[*(l + 1)]
-                                                .to_item_apply
-                                                    [spell_item_to_enchant
-                                                         ->GetItemEquipType()];
+
+                                    for (l = v679_array800; v284 < v285; ++l) {
+                                        spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT) * (l + 1);
+                                        v284 += pItemsTable->pSpecialEnchantments[*(l + 1)].to_item_apply[spell_item_to_enchant->GetItemEquipType()];
                                     }
-                                    spell_item_to_enchant->special_enchantment =
-                                        (ITEM_ENCHANTMENT)(
-                                            spell_item_to_enchant
-                                                ->special_enchantment +
-                                            1);
-                                    spell_item_to_enchant->uAttributes |= 0x20u;
+
+                                    spell_item_to_enchant->special_enchantment = (ITEM_ENCHANTMENT)(spell_item_to_enchant->special_enchantment + 1);
+                                    spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     _50C9A8_item_enchantment_timer = 256;
                                     spell_sound_flag = true;
                                     break;
@@ -2141,20 +2074,17 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         }
                     }
                 }
+
                 if (spell_sound_flag == 0) {
-                    v317 = localization->GetString(
-                        428);  // Spell failed    Не получилось!!!
+                    v317 = localization->GetString(428);  // Spell failed    Не получилось!!!
                     if (item_not_broken == false)
-                        v317 = localization->GetString(
-                            585);  // Item too lame     Предмет недостаточно
+                        v317 = localization->GetString(585);  // Item too lame     Предмет недостаточно
                                    // высокого качества
                     GameUI_StatusBar_OnEvent(v317, 2);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
-                                            0, 0);
+                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     // v318 =  &pParty->pPlayers[pCastSpell->uPlayerID_2];
                     pCastSpell->uSpellID = 0;
-                    pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(
-                        SPEECH_43, 0);
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_43, 0);
                 }
                 break;
             }
@@ -2190,10 +2120,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
                 if (pPlayer->sMana >= (signed int)uRequiredMana) {
                     pEventTimer->Pause();
-                    pMessageQueue_50CBD0->AddGUIMessage(
-                        UIMSG_OnCastLloydsBeacon, 0, 0);
-                    lloyds_beacon_spell_level =
-                        (signed int)(604800 * spell_level);
+                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OnCastLloydsBeacon, 0, 0);
+                    lloyds_beacon_spell_level = (signed int)(604800 * spell_level);
                     _506348_current_lloyd_playerid = pCastSpell->uPlayerID;
                     ::uRequiredMana = uRequiredMana;
                     ::sRecoveryTime = sRecoveryTime;

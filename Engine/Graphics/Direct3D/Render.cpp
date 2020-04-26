@@ -256,23 +256,23 @@ void Render::RenderTerrainD3D() {  // New function
                                      // 7-SouthEast(ЮВ)
     unsigned int Start_X, End_X, Start_Z, End_Z;
     if (direction >= 0 && direction < 1.0) {  // East(B) - NorthEast(CB)
-        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 128;
-        Start_Z = 0, End_Z = 128;
+        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 127;
+        Start_Z = 0, End_Z = 127;
     } else if (direction >= 1.0 &&
                direction < 3.0) {  // NorthEast(CB) - WestNorth(CЗ)
-        Start_X = 0, End_X = 128;
+        Start_X = 0, End_X = 127;
         Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellZ + 2;
     } else if (direction >= 3.0 &&
                direction < 5.0) {  // WestNorth(CЗ) - SouthWest(ЮЗ)
         Start_X = 0, End_X = pODMRenderParams->uMapGridCellX + 2;
-        Start_Z = 0, End_Z = 128;
+        Start_Z = 0, End_Z = 127;
     } else if (direction >= 5.0 &&
                direction < 7.0) {  // SouthWest(ЮЗ) - //SouthEast(ЮВ)
-        Start_X = 0, End_X = 128;
-        Start_Z = pODMRenderParams->uMapGridCellZ - 2, End_Z = 128;
+        Start_X = 0, End_X = 127;
+        Start_Z = pODMRenderParams->uMapGridCellZ - 2, End_Z = 127;
     } else {  // SouthEast(ЮВ) - East(B)
-        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 128;
-        Start_Z = 0, End_Z = 128;
+        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 127;
+        Start_Z = 0, End_Z = 127;
     }
 
     int camx = pODMRenderParams->uMapGridCellX;
@@ -967,6 +967,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+            drawcalls++;
         } else {
             for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].pos.x =
@@ -1003,6 +1004,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+            drawcalls++;
             // v50 = (const char *)v5->pRenderD3D->pDevice;
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
                                                        D3DCULL_NONE));
@@ -1028,6 +1030,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+            drawcalls++;
             if (config->is_using_specular) {
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
 
@@ -1048,6 +1051,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                     D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR |
                         D3DFVF_TEX1,
                     d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+                drawcalls++;
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(
                     D3DRENDERSTATE_FOGENABLE, TRUE));
                 // v40 = render->pRenderD3D->pDevice->lpVtbl;
@@ -1440,6 +1444,7 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
         D3DPT_TRIANGLEFAN,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
         pVerticesD3D, pLightmap->NumVertices, dwFlags));
+    drawcalls++;
 
     return true;
 }
@@ -1770,7 +1775,7 @@ unsigned int Render::GetParentBillboardID(unsigned int uBillboardID) {
 
 void Render::BeginSceneD3D() {
     if (!uNumD3DSceneBegins++) {
-        pRenderD3D->ClearTarget(true, 0x00F08020, true, 1.0);
+        pRenderD3D->ClearTarget(true, /*0x00F08020*/0x00000000, true, 1.0);
         render->uNumBillboardsToDraw = 0;
         pRenderD3D->pDevice->BeginScene();
 
@@ -1878,6 +1883,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             D3DPT_TRIANGLEFAN,
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT);
+        drawcalls++;
         if (transparent) {
             ErrD3D(pRenderD3D->pDevice->SetRenderState(
                 D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
@@ -1915,6 +1921,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             D3DPT_TRIANGLEFAN,  //рисуется текстурка с светом
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+        drawcalls++;
 
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
 
@@ -1937,6 +1944,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             D3DPT_TRIANGLEFAN,
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+        drawcalls++;
 
         if (config->is_using_specular) {
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
@@ -1957,6 +1965,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+            drawcalls++;
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE,
                                                        TRUE));
             v45 = GetLevelFogColor();
@@ -2018,6 +2027,11 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             uColor = sCorrectedColor = 0xFF20FF20;
         else
             uColor = sCorrectedColor = 0xFF109010;
+
+        /*for (int out = 0; out < uNumVertices; out++) {
+            log->Info(L"X: %.6f, Y: %.6f, Z: %.6f", array_507D30[out].vWorldViewProjX, array_507D30[out].vWorldViewProjY, array_507D30[out].vWorldViewPosition.x);
+        }
+        log->Info(L"FAce done");*/
     }
 
     if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
@@ -2047,6 +2061,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             D3DPT_TRIANGLEFAN,
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+        drawcalls++;
         lightmap_builder->DrawLightmaps(-1 /*, 0*/);
     } else {
         if (!lightmap_builder->StationaryLightsCount ||
@@ -2078,6 +2093,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+            drawcalls++;
         } else {
             for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
@@ -2103,6 +2119,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+            drawcalls++;
 
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
 
@@ -2124,6 +2141,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                 D3DPT_TRIANGLEFAN,
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
+            drawcalls++;
 
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
@@ -2360,6 +2378,7 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
         D3DPT_TRIANGLEFAN,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1, v29, 4,
         24));
+    drawcalls++;
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
                                                FALSE));
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
@@ -2575,6 +2594,7 @@ void Render::ScreenFade(unsigned int color, float t) {
         D3DPT_TRIANGLEFAN,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1, v36, 4,
         28));
+    drawcalls++;
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
                                                D3DBLEND_ONE));
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
@@ -3230,6 +3250,7 @@ void Render::DoRenderBillboards_D3D() {
             pBillboardRenderListD3D[i].pQuads,
             pBillboardRenderListD3D[i].uNumVertices,
             D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS));
+        drawcalls++;
     }
 
     if (config->is_using_fog) {
@@ -3886,6 +3907,7 @@ void Render::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
     ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
     ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_LINELIST, 452, vertices, 2,
                                               D3DDP_DONOTLIGHT));
+    drawcalls++;
 }
 
 void Render::DrawLines(const RenderVertexD3D3 *vertices,
@@ -3895,6 +3917,7 @@ void Render::DrawLines(const RenderVertexD3D3 *vertices,
         D3DPT_LINELIST,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
         (void *)vertices, num_vertices, D3DDP_DONOTLIGHT));
+    drawcalls++;
 }
 
 void Render::DrawFansTransparent(const RenderVertexD3D3 *vertices,
@@ -3915,6 +3938,7 @@ void Render::DrawFansTransparent(const RenderVertexD3D3 *vertices,
         D3DPT_TRIANGLEFAN,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
         (void *)vertices, num_vertices, 28));
+    drawcalls++;
 
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
                                                D3DBLEND_ONE));
@@ -4034,6 +4058,7 @@ void Render::DrawDecal(Decal *pDecal, float z_bias) {
         D3DPT_TRIANGLEFAN,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
         pVerticesD3D, pDecal->uNumVertices, dwFlags));
+    drawcalls++;
 }
 
 void Render::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
@@ -4059,6 +4084,7 @@ void Render::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
         D3DPT_TRIANGLEFAN,
         D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
         (void *)vertices, 4, 28));
+    drawcalls++;
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
                                                D3DBLEND_ONE));
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
@@ -4388,15 +4414,15 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
         return;
     }
     //---------------------------------------
-    v70 = (signed __int64)((double)(pBLVRenderParams->bsp_fov_rad *
+    v70 = (signed __int64)((double)(((int)(pIndoorCameraD3D->fov) << 16) *
         pIndoorCameraD3D->vPartyPos.z)  // 179
-        / (((double)pBLVRenderParams->bsp_fov_rad +
+        / (((double)((int)(pIndoorCameraD3D->fov) << 16) +
             16192.0) *
             65536.0) +
             (double)pBLVRenderParams->uViewportCenterY);
     v5 = (double)pIndoorCameraD3D->sRotationX * 0.0030664064;         // 0
     v6 = (signed __int64)((double)pBLVRenderParams->uViewportCenterY  // 183
-        - (double)pBLVRenderParams->bsp_fov_rad /
+        - (double)((int)(pIndoorCameraD3D->fov) << 16) /
         ((cos(v5) * 16192.0 + 0.0000001) * 65535.0) *
         (sin(v5) * -16192.0 -
         (double)pIndoorCameraD3D->vPartyPos.z));
@@ -4733,6 +4759,7 @@ void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             pVertices, uNumVertices,
             D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTLIGHT);
+        drawcalls++;
     }
 }
 
@@ -4769,5 +4796,6 @@ void Render::DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon)
             D3DPT_TRIANGLEFAN,
             D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
             d3d_vertex_buffer, uNumVertices, 28));
+        drawcalls++;
     }
 }

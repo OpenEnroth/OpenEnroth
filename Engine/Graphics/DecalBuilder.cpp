@@ -290,14 +290,14 @@ char DecalBuilder::_49B790_build_decal_geometry(
                 pIndoorCameraD3D->LightmapNeerClip(decal->pVertices,
                                                    decal->uNumVertices,
                                                    this->pVertices, &a8b);
-                pIndoorCameraD3D->_437143(a8b, decal->pVertices,
+                pIndoorCameraD3D->LightmapProject(a8b, decal->pVertices,
                                           this->pVertices,
                                           (signed int *)&decal->uNumVertices);
             } else if (uClipFlags & 4) {
                 pIndoorCameraD3D->LightmapFarClip(decal->pVertices,
                                                   decal->uNumVertices,
                                                   this->pVertices, &a8b);
-                pIndoorCameraD3D->_437143(a8b, decal->pVertices,
+                pIndoorCameraD3D->LightmapProject(a8b, decal->pVertices,
                                           this->pVertices,
                                           (signed int *)&decal->uNumVertices);
             } else {
