@@ -515,7 +515,7 @@ int lloyds_beacon_sound_id;  // dword_50633C
 signed int sRecoveryTime;    // idb
 unsigned int uRequiredMana;  // idb
 int _506348_current_lloyd_playerid;
-__int64 lloyds_beacon_spell_level;  // qword_506350
+__int64 lloyds_beacon_spell_level;  // qword_506350 604800 *sepell level
 int MapBookOpen;
 int books_page_number;
 int books_primary_item_per_page;

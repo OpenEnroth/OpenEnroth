@@ -1187,7 +1187,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
     v10.z = (int32_t)(pActors[uActorID].uActorHeight * 0.75 +
                       pActors[uActorID].vPosition.z);
 
-    if (sub_407A1C((int)v6, (int)v7, v23, v10)) {
+    if (Check_LineOfSight((int)v6, (int)v7, v23, v10)) {
         if (arg0 != nullptr) {
             v12 = arg0;
         } else {
@@ -1446,7 +1446,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
     v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (sub_407A1C(v4, v5, v21, v7)) {
+    if (Check_LineOfSight(v4, v5, v21, v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), a2, &a3, 0);
             v9 = &a3;
@@ -1519,7 +1519,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
     v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (sub_407A1C(v4, v5, v21, v7)) {
+    if (Check_LineOfSight(v4, v5, v21, v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -1593,7 +1593,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
     v7.z = v3->vPosition.z + (v18 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (sub_407A1C(v4, v5, v20, v7)) {
+    if (Check_LineOfSight(v4, v5, v20, v7)) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -1662,8 +1662,8 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     v7.z = v3->vPosition.z + (v19 * 0.75);
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
-    if (sub_407A1C(v4, v5, v22, v7) ||
-        sub_407A1C(v7.x, v7.y, v7.z, Vec3_int_(v4, v5, v22))) {
+    if (Check_LineOfSight(v4, v5, v22, v7) ||
+        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3_int_(v4, v5, v22))) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -2717,29 +2717,29 @@ bool Actor::_46DF1A_collide_against_actor(int a1, int a2) {
     v4 = v2->uActorRadius;
     if (a2) v4 = a2;
 
-    if (stru_721530.sMaxX > v2->vPosition.x + v4 ||
-        stru_721530.sMinX < v2->vPosition.x - v4 ||
-        stru_721530.sMaxY > v2->vPosition.y + v4 ||
-        stru_721530.sMinY < v2->vPosition.y - v4 ||
-        stru_721530.sMaxZ > v2->vPosition.z + v2->uActorHeight ||
-        stru_721530.sMinZ < v2->vPosition.z) {
+    if (_actor_collision_struct.sMaxX > v2->vPosition.x + v4 ||
+        _actor_collision_struct.sMinX < v2->vPosition.x - v4 ||
+        _actor_collision_struct.sMaxY > v2->vPosition.y + v4 ||
+        _actor_collision_struct.sMinY < v2->vPosition.y - v4 ||
+        _actor_collision_struct.sMaxZ > v2->vPosition.z + v2->uActorHeight ||
+        _actor_collision_struct.sMinZ < v2->vPosition.z) {
         return false;
     }
-    v8 = v2->vPosition.x - stru_721530.normal.x;
-    v9 = v2->vPosition.y - stru_721530.normal.y;
-    v10 = stru_721530.prolly_normal_d + v4;
-    v11 = (v8 * stru_721530.direction.y - v9 * stru_721530.direction.x) >> 16;
-    v12 = (v8 * stru_721530.direction.x + v9 * stru_721530.direction.y) >> 16;
+    v8 = v2->vPosition.x - _actor_collision_struct.normal.x;
+    v9 = v2->vPosition.y - _actor_collision_struct.normal.y;
+    v10 = _actor_collision_struct.prolly_normal_d + v4;
+    v11 = (v8 * _actor_collision_struct.direction.y - v9 * _actor_collision_struct.direction.x) >> 16;
+    v12 = (v8 * _actor_collision_struct.direction.x + v9 * _actor_collision_struct.direction.y) >> 16;
     if (abs(v11) > v10 || v12 <= 0) return false;
-    if (fixpoint_mul(stru_721530.direction.z, v12) + stru_721530.normal.z <
+    if (fixpoint_mul(_actor_collision_struct.direction.z, v12) + _actor_collision_struct.normal.z <
         v2->vPosition.z)
         return false;
 
     v13 = v12 - integer_sqrt(v10 * v10 - v11 * v11);
     if (v13 < 0) v13 = 0;
-    if (v13 < stru_721530.field_7C) {
-        stru_721530.field_7C = v13;
-        stru_721530.pid = PID(OBJECT_Actor, a1);
+    if (v13 < _actor_collision_struct.field_7C) {
+        _actor_collision_struct.field_7C = v13;
+        _actor_collision_struct.pid = PID(OBJECT_Actor, a1);
     }
     return true;
 }
@@ -4880,7 +4880,7 @@ bool sub_4070EF_prolly_detect_player(unsigned int uObjID,
 
             if (v58 < 0) continue;
 
-            if (!sub_4075DB(obj1_x + ((fixpoint_mul(v49, v58) + 32768) >> 16),
+            if (!PointInPolyIndoor(obj1_x + ((fixpoint_mul(v49, v58) + 32768) >> 16),
                             obj1_y + ((fixpoint_mul(v48, v58) + 32768) >> 16),
                             obj1_z + ((fixpoint_mul(v47, v58) + 32768) >> 16),
                             v29)) {
@@ -5204,7 +5204,10 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     if (Source[0] == '0') return;
 
     v57 += a3;
-    if (v57 > 4) v57 = 4;
+
+    // if (v57 == 4) __debugbreak();
+    if (v57 > 3) v57 = 3;
+
     strcpy(Str2, Source);
     if (a4) NumToSpawn = a4;
     // v18 = NumToSpawn;
@@ -5221,6 +5224,10 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
 
+
+
+    // if (v57 == 4) return;
+
     // spawning loop
     for (int i = v53; i < NumToSpawn; ++i) {
         pMonster = &pActors[uNumActors];
@@ -5228,15 +5235,17 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
 
         // random monster levels ABC
         if (v57) {
+            // if (v57 > 3) v57 = 3;
+
             v23 = rand() % 100;
-            v24 = 3;  // 2 , 10 , 20
-            v25 = (uint16_t)word_4E8152[3 * v57];
+            v24 = 3;  // 2 , 10 , 20 - C
+            v25 = (uint16_t)word_4E8152[3 * v57];  // v57 should be 1,2,3
             if (v23 >= v25) {
                 if (v23 < v25 + (uint16_t)word_4E8152[3 * v57 + 1]) {
-                    v24 = 2;  // 8 , 20 , 30
+                    v24 = 2;  // 8 , 20 , 30 - B
                 }
             } else {
-                v24 = 1;  // 90 , 70 , 50
+                v24 = 1;  // 90 , 70 , 50 - A
             }
 
             if (v24 == 1) {
@@ -5377,7 +5386,7 @@ void area_of_effect__damage_evaluate() {  // not damaging party correctly
                         attacker_coord.x = AttackerInfo.pXs[attack_index];
                         attacker_coord.y = AttackerInfo.pYs[attack_index];
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
-                        if (sub_407A1C(pParty->vPosition.x, pParty->vPosition.y,
+                        if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y,
                                        pParty->vPosition.z + pParty->sEyelevel,
                                        attacker_coord))
                             DamagePlayerFromMonster(
@@ -5412,7 +5421,7 @@ void area_of_effect__damage_evaluate() {  // not damaging party correctly
                         attacker_coord.x = AttackerInfo.pXs[attack_index];
                         attacker_coord.y = AttackerInfo.pYs[attack_index];
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
-                        if (sub_407A1C(pActors[target_id].vPosition.x,
+                        if (Check_LineOfSight(pActors[target_id].vPosition.x,
                                        pActors[target_id].vPosition.y,
                                        pActors[target_id].vPosition.z + 50,
                                        attacker_coord)) {
@@ -5442,7 +5451,7 @@ void area_of_effect__damage_evaluate() {  // not damaging party correctly
                 attacker_coord.x = AttackerInfo.pXs[attack_index];
                 attacker_coord.y = AttackerInfo.pYs[attack_index];
                 attacker_coord.z = AttackerInfo.pZs[attack_index];
-                if (sub_407A1C(pParty->vPosition.x, pParty->vPosition.y,
+                if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y,
                                pParty->vPosition.z + pParty->sEyelevel,
                                attacker_coord)) {
                     for (uint i = 0; i < 4; ++i) {
@@ -5483,7 +5492,7 @@ void area_of_effect__damage_evaluate() {  // not damaging party correctly
                             attacker_coord.x = AttackerInfo.pXs[attack_index];
                             attacker_coord.y = AttackerInfo.pYs[attack_index];
                             attacker_coord.z = AttackerInfo.pZs[attack_index];
-                            if (sub_407A1C(pActors[actorID].vPosition.x,
+                            if (Check_LineOfSight(pActors[actorID].vPosition.x,
                                            pActors[actorID].vPosition.y,
                                            pActors[actorID].vPosition.z + 50,
                                            attacker_coord)) {  // что делает ф-ция?

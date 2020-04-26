@@ -131,21 +131,21 @@ struct IndoorCameraD3D {
                          int uNumInVertices,
                          struct RenderVertexSoft *pOutVertices,
                          unsigned int *pOutNumVertices);
-    void _437143(unsigned int uNumInVertices,
+    void LightmapProject(unsigned int uNumInVertices,
                  struct RenderVertexSoft *pOutVertices,
                  struct RenderVertexSoft *pInVertices,
                  signed int *pOutNumVertices);
     bool _4371C3(struct RenderVertexSoft *pVertices,
                  unsigned int *pOutNumVertices, int _unused);
-    bool CalcPortalShape(struct RenderVertexSoft *a1,
+    bool CullFaceToFrustum(struct RenderVertexSoft *a1,
                          unsigned int *pOutNumVertices,
                          struct RenderVertexSoft *pVertices,
                          IndoorCameraD3D_Vec4 *a4, signed int uNumVertices,
                          char a6, int _unused);
     char _437376(struct stru154 *thisa, struct RenderVertexSoft *a2,
                  unsigned int *pOutNumVertices);
-    void _4374E8_ProllyBuildFrustrum();
-    void _437607(IndoorCameraD3D_Vec3 *a1, IndoorCameraD3D_Vec4 *a2);
+    void BuildViewFrustum();
+    void BuildFrustumPlane(IndoorCameraD3D_Vec3 *a1, IndoorCameraD3D_Vec4 *a2);
     void Vec3Transform(const IndoorCameraD3D_Vec3 *pVector,
                        IndoorCameraD3D_Vec3 *pOut);
     void CreateWorldMatrixAndSomeStuff();
@@ -173,10 +173,7 @@ struct IndoorCameraD3D {
                                 unsigned int uNumVertices,
                                 struct RenderVertexSoft *pOutVertices,
                                 struct LightsData *a5);
-    bool ApplyViewTransform_TrueIfStillVisible_BLV(int x, int y, int z,
-                                                   fixed *pOutX, fixed *pOutZ,
-                                                   fixed *pOutY,
-                                                   bool clip_plane_test);
+
     float GetPickDepth();
 
     void DebugDrawPortal(struct BLVFace *pFace);
@@ -185,7 +182,7 @@ struct IndoorCameraD3D {
     IndoorCameraD3D_Vec3 field_4[3];  // matrix for camera rotation transform
     // IndoorCameraD3D_Vec3 field_14;
     // IndoorCameraD3D_Vec3 field_24;
-    IndoorCameraD3D_Vec4 std__vector_000034_prolly_frustrum[6];
+    IndoorCameraD3D_Vec4 FrustumPlanes[6];
     float fov;
     float screenCenterX;
     float screenCenterY;

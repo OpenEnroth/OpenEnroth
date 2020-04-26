@@ -83,6 +83,7 @@ void LoadGame(unsigned int uSlot) {
     }
 
     pNew_LOD->CloseWriteFile();
+    // uCurrentlyLoadedLevelType = LEVEL_null;
 
     String filename = "saves/" + pSavegameList->pFileList[uSlot];
     filename = MakeDataPath(filename.c_str());

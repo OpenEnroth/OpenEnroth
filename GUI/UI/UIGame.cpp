@@ -2013,7 +2013,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
             // minimaptemp->Release();
         }
-    } else {  // uCurrentlyLoadedLevelType == LEVEL_Indoor
+    } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
 
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines->uNumOutlines; ++i) {

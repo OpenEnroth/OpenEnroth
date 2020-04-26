@@ -148,41 +148,41 @@ struct stru316 {
 struct stru141_actor_collision_object {
     int CalcMovementExtents(int a2);
 
-    int field_0;
+    int field_0;  // bool flag
     int prolly_normal_d;
-    int field_8_radius;
-    int height;
-    int field_10;
-    int field_14;
-    int field_18;
+    int field_8_radius;  // actor radius
+    int height;  // actor height
+    int field_10;  // unsued
+    int field_14;  // unsued
+    int field_18;  // unsued
     Vec3_int_ velocity;
     Vec3_int_ normal;
     Vec3_int_ position;
-    Vec3_int_ normal2;
-    int field_4C;
-    int field_50;
-    int field_54;
+    Vec3_int_ normal2;  // adjusted move positions after collisions?
+    int field_4C;  // unmod x
+    int field_50;  // unmod y
+    int field_54;  // unmod z
     Vec3_int_ direction;  // velocity's unit vector
     int speed;
     int inv_speed;
-    int field_6C;  // some dist
-    int field_70;  // some dist modifier
+    int field_6C;  // movement dist
+    int field_70;  // some dist modifier - blanked before coll links with field_7C- slows/stops movement
     unsigned int uSectorID;
     unsigned int pid;
-    int field_7C;  // mod speed
-    int field_80;
-    int field_84;
-    int field_88;
+    int field_7C;  // mod speed after collisions??
+    int field_80;  // portal id??
+    int field_84;  // pid of face
+    int field_88;  // unsued
     int sMaxX;
     int sMinX;
     int sMaxY;
     int sMinY;
     int sMaxZ;  // is this min
     int sMinZ;  // is this max
-    int field_A4;
+    int field_A4;  // unused
 };
 #pragma pack(pop)
-extern stru141_actor_collision_object stru_721530;
+extern stru141_actor_collision_object _actor_collision_struct;
 
 /*  378 */
 #pragma pack(push, 1)
@@ -197,7 +197,7 @@ struct stru337_stru0 {
 
 /*  377 */
 #pragma pack(push, 1)
-struct stru337 {
+struct stru337_unused {
     stru337_stru0 field_0;
     int field_14;
     int field_18;
@@ -210,7 +210,7 @@ struct stru337 {
     stru337_stru0 field_34;
 };
 #pragma pack(pop)
-extern stru337 stru_F81018;
+extern stru337_unused _DLV_header_unused;
 
 /*  291 */
 enum PolygonType : uint8_t {
@@ -469,8 +469,8 @@ struct BLVFace {  // 60h
 
     struct Plane_float_ pFacePlane;
     struct Plane_int_ pFacePlane_old;
-    int zCalc1;
-    int zCalc2;
+    int zCalc1;  // x
+    int zCalc2;  // y
     int zCalc3;
     unsigned int uAttributes;
     uint16_t *pVertexIDs;
@@ -520,7 +520,7 @@ struct BLVFaceExtra {  // 24h
 /*   95 */
 #pragma pack(push, 1)
 struct BLVSector {  // 0x74
-    int32_t field_0;
+    int32_t field_0;  // flags?? &8 is for check floor level against portals
     uint16_t uNumFloors;
     int16_t field_6;
     uint16_t *pFloors;
@@ -609,7 +609,7 @@ struct IndoorLocation {
     void ToggleLight(signed int uLightID, unsigned int bToggle);
 
     static unsigned int GetLocationIndex(const char *Str1);
-    void ExecDraw(bool bD3D);
+    void DrawIndoorFaces(bool bD3D);
     // static void ExecDraw_sw(unsigned int uFaceID);
     void ExecDraw_d3d(unsigned int uFaceID,
                              struct IndoorCameraD3D_Vec4 *pVertices,
@@ -689,8 +689,10 @@ struct BLVRenderParams {
                               // IndoorCameraD3D::fRotationSineY)
     float _unused_fCosineNegX;  // the same
     float _unused_fSineNegX;    // the same
-    int bsp_fov_rad;            // fixpoint FOV in radians for BSP calculation
-    int bsp_fov_rad_inv;
+
+    // int bsp_fov_rad;            // fixpoint FOV in radians for BSP calculation
+    // int bsp_fov_rad_inv;
+
     unsigned int uTargetWidth;
     unsigned int uTargetHeight;
     unsigned int uViewportX;
@@ -714,15 +716,15 @@ struct BLVRenderParams {
 #pragma pack(pop)
 extern BLVRenderParams *pBLVRenderParams;
 
-int GetPortalScreenCoord(unsigned int uFaceID);
-bool PortalFrustrum(int pNumVertices, struct BspRenderer_PortalViewportData *a2,
-                    struct BspRenderer_PortalViewportData *near_portal,
-                    int uFaceID);
-void PrepareBspRenderList_BLV();
-void AddBspNodeToRenderList(unsigned int node_id);
-void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
+// int GetPortalScreenCoord(unsigned int uFaceID);
+// bool PortalFrustrum(int pNumVertices, struct BspRenderer_PortalViewportData *a2,
+//                   struct BspRenderer_PortalViewportData *near_portal,
+//                    int uFaceID);
+// void PrepareBspRenderList_BLV();
+// void AddBspNodeToRenderList(unsigned int node_id);
+// void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
 char DoInteractionWithTopmostZObject(int a1, int a2);
-int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
+// int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
 unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
 void BLV_UpdateUserInputAndOther();
 int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
@@ -735,12 +737,11 @@ int sub_4088E9(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(unsigned int bLoading);
 int GetAlertStatus();
-int _45063B_spawn_some_monster(struct MapInfo *a1, int a2);
-int sub_450521_ProllyDropItemAt(int ecx0, signed int a2, int a3, int a4, int a5,
-                                uint16_t a6);
+int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
+int DropTreasureAt(int trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
 
-bool sub_4075DB(int a1, int a2, int a3, struct BLVFace *face);
-bool sub_4077F1(int a1, int a2, int a3, struct ODMFace *face,
+bool PointInPolyIndoor(int x, int y, int z, struct BLVFace *face);
+bool PointInPolyOutdoor(int a1, int a2, int a3, struct ODMFace *face,
                 struct BSPVertexBuffer *a5);
 
 #pragma once
@@ -760,7 +761,7 @@ struct BspRenderer_PortalViewportData {
     int16_t viewport_right_side[480];
 };
 #pragma pack(pop)
-extern BspRenderer_PortalViewportData stru_F8A590;
+extern BspRenderer_PortalViewportData _PortalViewportData_unused;
 
 /*  164 */
 #pragma pack(push, 1)
@@ -826,6 +827,6 @@ void FindBillboardsLightLevels_BLV();
 
 int collide_against_floor_approximate(int x, int y, int z,
                                       unsigned int *pSectorID,
-                                      unsigned int *pFaceID);  // idb
+                                      unsigned int *pFaceID);
 
-bool sub_407A1C(int x, int z, int y, struct Vec3_int_ v);  // idb
+bool Check_LineOfSight(int to_x, int to_y, int to_z, struct Vec3_int_ from);

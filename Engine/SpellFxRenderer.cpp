@@ -521,12 +521,11 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.g = 0.0f;
         local_0.b = 0.0f;
 
-        __debugbreak();  // fix float values
-        HEXRAYS_LODWORD(local_0.particle_size) = 0x40400000u;
+        local_0.particle_size = 3.0;
         local_0.timeToLive = (rand() & 0x3F) + 64;
         local_0.texture = a2->GetSpriteFrame()->hw_sprites[0]->texture;
         particle_engine->AddParticle(&local_0);
-        HEXRAYS_LODWORD(local_0.particle_size) = 0x40800000u;
+        local_0.particle_size = 4.0;
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
@@ -542,8 +541,7 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         array_4[a2->field_54 & 0x1F].flt_8_z = (float)a2->vPosition.z;
         local_0.type = ParticleType_Sprite;
         local_0.uDiffuse = 0xFFFFFF;
-       __debugbreak();  // fix float values
-        HEXRAYS_LODWORD(local_0.particle_size) = 0x40000000u;
+        local_0.particle_size = 2.0;
         local_0.x = (float)a2->vPosition.x;
         local_0.y = (float)a2->vPosition.y;
         local_0.z = (float)a2->vPosition.z;
