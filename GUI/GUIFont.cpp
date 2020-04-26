@@ -1,6 +1,7 @@
 #include "GUI/GUIFont.h"
 
 #include <cstdarg>
+#include <vector>
 
 #include <sstream>
 
