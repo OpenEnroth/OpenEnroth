@@ -56,6 +56,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     double spell_recharge_factor;    // st7@478
     ItemGen *spell_item_to_enchant;  // edi@492
 
+    int v258 = 0;
+    int to_item_apply_sum = 0;
+    int spec_ench_loop;
+    char v259;  // al@516
+    int v679_array800[800];                  // [sp+14h] [bp-E70h]@515
+    int v260;   // eax@518
+    void *v261;   // esi@519
     int v262;   // edx@521
     int *v263;  // ecx@521
     int v264;   // esi@521
@@ -1992,13 +1999,6 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                                 } else if (skill_level == 3 || skill_level == 4) {  // for master & GM not
                                                      // refactored(для мастера и
                                                      // гранда не отрефакторено)
-                                    int v258 = 0;
-                                    int to_item_apply_sum = 0;
-                                    int spec_ench_loop;
-                                    char v259;  // al@516
-                                    int v679_array800[800];                  // [sp+14h] [bp-E70h]@515
-                                    int v260;   // eax@518
-                                    void * v261;   // esi@519
 
                                     if (pItemsTable->pSpecialEnchantments_count > 0) {
                                         v730 = (char *)&v679_array800;

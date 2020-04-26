@@ -323,7 +323,7 @@ LABEL_13:
                     Actor::_46DF1A_collide_against_actor(i, 0);
             }
             v26 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
-            bool v49 = false;
+            v49 = false;
             v27 = ODM_GetFloorLevel(
                 _actor_collision_struct.normal2.x, _actor_collision_struct.normal2.y,
                 _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1,

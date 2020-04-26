@@ -396,7 +396,7 @@ int TileTable::FromFileTxt(const char *pFilename) {
                     } else if (!_stricmp(v72, "TTattr_Transition")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
                     } else {
-                        logger->Warning("%s", StringPrintf("Unknown tile attribute %s", v72).c_str());
+                        logger->Warning("%S", StringPrintf("Unknown tile attribute %s", v72).c_str());
                     }
                 }
                 ++v2->sNumTiles;
