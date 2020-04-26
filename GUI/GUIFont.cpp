@@ -84,6 +84,7 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     memcpy(pFont->pData, src, 12);
     memset((char *)pFont->pData + 12, 0, 40);
     memcpy((char *)pFont->pData + 52, (char *)src + 32, 4096);
+    pFont->pData->pFontData.assign((uint8_t *)src + 4128, (uint8_t *)src + read_bytes);
 
     // memcpy(&pFont->pData->pFontData, (uint8_t *)src + 4128, read_bytes - 4128);
     // pFont->pData->pFontData.assign((uint8_t *)src + 4128, (uint8_t *)src + read_bytes);
