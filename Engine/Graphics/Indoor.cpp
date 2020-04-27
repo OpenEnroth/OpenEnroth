@@ -1230,7 +1230,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
     // No face found - outside of level
     if (!NumFoundFaceStore) {
-        logger->Warning(L"Sector fail");
+        logger->Warning("Sector fail");
         return 0;
     }
 
@@ -2492,7 +2492,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
 
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
-        logger->Warning(L"Floorlvl fail");
+        logger->Warning("Floorlvl fail");
         return -30000;
     }
 
