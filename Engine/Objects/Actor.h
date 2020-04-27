@@ -148,6 +148,47 @@ class GUIWindow;
 
 /*   66 */
 #pragma pack(push, 1)
+struct Actor_MM7 {
+    char pActorName[32];
+    int16_t sNPC_ID;
+    int16_t field_22;
+    unsigned int uAttributes;
+    int16_t sCurrentHP;
+    char field_2A[2];
+    struct MonsterInfo_MM7 pMonsterInfo;
+    int16_t word_000084_range_attack;
+    int16_t word_000086_some_monster_id;  // base monster class monsterlist id
+    uint16_t uActorRadius;
+    uint16_t uActorHeight;
+    uint16_t uMovementSpeed;
+    struct Vec3_short_ vPosition;
+    struct Vec3_short_ vVelocity;
+    uint16_t uYawAngle;
+    uint16_t uPitchAngle;
+    int16_t uSectorID;
+    uint16_t uCurrentActionLength;
+    struct Vec3_short_ vInitialPosition;
+    struct Vec3_short_ vGuardingPosition;
+    uint16_t uTetherDistance;
+    AIState uAIState;
+    uint16_t uCurrentActionAnimation;
+    uint16_t uCarriedItemID;
+    char field_B6;
+    char field_B7;
+    unsigned int uCurrentActionTime;
+    uint16_t pSpriteIDs[8];
+    uint16_t pSoundSampleIDs[4];  // 1 die     3 bored
+    struct SpellBuff pActorBuffs[22];
+    struct ItemGen ActorHasItems[4];
+    unsigned int uGroup;
+    unsigned int uAlly;
+    struct ActorJob pScheduledJobs[8];
+    unsigned int uSummonerID;
+    unsigned int uLastCharacterIDToHit;
+    int dword_000334_unique_name;
+    char field_338[12];
+};
+
 struct Actor {
     //----- (0041F4C1) --------------------------------------------------------
     inline Actor() {
