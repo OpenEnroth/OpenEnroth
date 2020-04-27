@@ -230,7 +230,7 @@ int TileTable::FromFileTxt(const char *pFilename) {
                 } else if (!_stricmp(v9, "TTtype_RoadCityStone")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadCityStone;
                 } else {
-                    logger->Warning(L"%S", StringPrintf("Unknown tile type %s", v9).c_str());
+                    logger->Warning("%s", StringPrintf("Unknown tile type %s", v9).c_str());
                 }
 
                 v35 = v84.pProperties[4];
