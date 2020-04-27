@@ -227,7 +227,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
         si.sample = CreateAudioSample(buffer);
         if (!si.sample) {
-            logger->Warning(L"Failed to load - createaudiosample");
+            logger->Warning("Failed to load - createaudiosample");
             return;
         }
     }
@@ -455,7 +455,7 @@ PMemBuffer AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load soun
 PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
     SoundHeader header = { 0 };
     if (!FindSound(pSoundName, &header)) {
-        logger->Warning(L"Can't load sound header!");
+        logger->Warning("Can't load sound header!");
         return nullptr;
     }
 
