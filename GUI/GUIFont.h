@@ -36,7 +36,7 @@ struct FontData;
 
 class GUIFont {
  public:
-    GUIFont () : pData(new FontData()) {};
+    GUIFont () : pData(new FontData()) {}
     static GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette);
 
     bool IsCharValid(unsigned char c) const;
