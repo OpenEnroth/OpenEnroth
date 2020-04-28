@@ -8,6 +8,8 @@
 
 #include "Engine/VectorTypes.h"
 
+#include "GUI/GUIFont.h"
+
 /*
  *  Party, timers, NPCs and other stuff is binary dumped into resources/savegame
  * files, which limits ability to alter these structures without breaking
@@ -762,5 +764,27 @@ struct BLVSector_MM7 {  // 0x74
     int16_t uFirstBSPNode;
     int16_t exit_tag;
     BBox_short_ pBounding;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct FontData_MM7 {
+    FontData_MM7();
+
+    void Serialize(class FontData *);
+    void Deserialize(class FontData *, size_t size);
+
+    uint8_t cFirstChar;  // 0
+    uint8_t cLastChar;   // 1
+    uint8_t field_2;
+    uint8_t field_3;
+    uint8_t field_4;
+    uint16_t uFontHeight;  // 5-6
+    uint8_t field_7;
+    uint32_t palletes_count;
+    uint32_t pFontPalettes[5];
+    GUICharMetric pMetrics[256];
+    uint32_t font_pixels_offset[256];
+    uint8_t pFontData[0];  // array of font pixels
 };
 #pragma pack(pop)

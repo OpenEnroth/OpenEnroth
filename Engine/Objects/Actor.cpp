@@ -5280,7 +5280,6 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         Src = &pMonsterStats->pInfos[v28];
         strcpy(pMonster->pActorName, Src->pName);
         pMonster->sCurrentHP = Src->uHP;
-
         assert(sizeof(MonsterInfo_MM7) == 88);
 
         // memcpy(&pMonster->pMonsterInfo, Src, sizeof(MonsterInfo));  // Uninitialized portail memory access

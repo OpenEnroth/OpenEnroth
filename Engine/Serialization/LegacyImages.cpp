@@ -109,6 +109,11 @@ BLVSector_MM7::BLVSector_MM7() {
     memset(this, 0, sizeof(*this));
 }
 
+FontData_MM7::FontData_MM7() {
+    Assert(sizeof(*this) == 0x1020);
+    memset(this, 0, sizeof(*this));
+}
+
 void Timer_Image_MM7::Serialize(Timer *timer) {
     memset(this, 0, sizeof(*this));
 
@@ -1389,4 +1394,42 @@ void BLVSector_MM7::Deserialize(BLVSector *sector) {
     sector->uFirstBSPNode = this->uFirstBSPNode;
     sector->exit_tag = this->exit_tag;
     sector->pBounding = this->pBounding;
+}
+
+void FontData_MM7::Serialize(FontData *font) {
+    this->cFirstChar = font->cFirstChar;
+    this->cLastChar = font->cLastChar;
+    this->field_2 = font->field_2;
+    this->field_3 = font->field_3;
+    this->field_4 = font->field_4;
+    this->uFontHeight = font->uFontHeight;
+    this->field_7 = font->field_7;
+    this->palletes_count = font->palletes_count;
+
+    for (unsigned int i = 0; i < 256; ++i)
+        this->pMetrics[i] = font->pMetrics[i];
+
+    for (unsigned int i = 0; i < 256; ++i)
+        this->font_pixels_offset[i] = font->font_pixels_offset[i];
+
+    std::copy(font->pFontData.begin(), font->pFontData.end(), this->pFontData);
+}
+
+void FontData_MM7::Deserialize(FontData *font, size_t size) {
+    font->cFirstChar = this->cFirstChar;
+    font->cLastChar = this->cLastChar;
+    font->field_2 = this->field_2;
+    font->field_3 = this->field_3;
+    font->field_4 = this->field_4;
+    font->uFontHeight = this->uFontHeight;
+    font->field_7 = this->field_7;
+    font->palletes_count = this->palletes_count;
+
+    for (unsigned int i = 0; i < 256; ++i)
+        font->pMetrics[i] = this->pMetrics[i];
+
+    for (unsigned int i = 0; i < 256; ++i)
+        font->font_pixels_offset[i] = this->font_pixels_offset[i];
+
+    font->pFontData.assign(this->pFontData, &this->pFontData[size - 4128]);
 }
