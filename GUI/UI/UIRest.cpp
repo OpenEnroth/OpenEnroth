@@ -63,7 +63,7 @@ void PrepareToLoadRestUI() {
     }
     pEventTimer->Pause();
     if (_506F14_resting_stage != 2)
-        new OnButtonClick2(518, 450, 0, 0, (GUIButton *)pBtn_Rest);
+        new OnButtonClick2(518, 450, 0, 0, pBtn_Rest);
     _506F18_num_minutes_to_sleep = 0;
     _506F14_resting_stage = 0;
     uRestUI_FoodRequiredToRest = 2;

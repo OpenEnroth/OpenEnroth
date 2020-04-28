@@ -483,7 +483,7 @@ void Game::EventLoop() {
                                      // WINDOW_8, 0, 0);
                     continue;
                 case UIMSG_Cancel:
-                    new OnCancel(350, 302, 106, 42, (GUIButton *)pBtnCancel);
+                    new OnCancel(350, 302, 106, 42, pBtnCancel);
                     continue;
                 case UIMSG_OpenQuestBook:
                     pMessageQueue_50CBD0->Flush();
@@ -894,7 +894,7 @@ void Game::EventLoop() {
                 case UIMSG_ScrollNPCPanel:  // Right and Left button for
                                             // NPCPanel
                     if (uMessageParam) {
-                        new OnButtonClick2(626, 179, 0, 0, (GUIButton *)pBtn_NPCRight);
+                        new OnButtonClick2(626, 179, 0, 0, pBtn_NPCRight);
                         v37 = (pParty->pHirelings[0].pName != 0) +
                               (pParty->pHirelings[1].pName != 0) +
                               (unsigned __int8)pParty->cNonHireFollowers - 2;
@@ -903,7 +903,7 @@ void Game::EventLoop() {
                             ++pParty->hirelingScrollPosition;
                         }
                     } else {
-                        new OnButtonClick2(469, 179, 0, 0, (GUIButton *)pBtn_NPCLeft);
+                        new OnButtonClick2(469, 179, 0, 0, pBtn_NPCLeft);
                         if (pParty->hirelingScrollPosition > 0) {
                             --pParty->hirelingScrollPosition;
                         }
@@ -2000,7 +2000,7 @@ void Game::EventLoop() {
                         if (uActiveCharacter &&
                             !pPlayers[uActiveCharacter]->uTimeToRecovery) {
                             if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-                                new OnButtonClick2(476, 450, 0, 0, (GUIButton *)pBtn_CastSpell);
+                                new OnButtonClick2(476, 450, 0, 0, pBtn_CastSpell);
                                 pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
                                 continue;
                             }
@@ -2289,7 +2289,7 @@ void Game::EventLoop() {
                 case UIMSG_ClickZoomOutBtn:
                     if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
                     pParty->uFlags |= 2u;
-                    new OnButtonClick2(519, 136, 0, 0, (GUIButton *)pBtn_ZoomOut);
+                    new OnButtonClick2(519, 136, 0, 0, pBtn_ZoomOut);
                     uNumSeconds = 131072;
                     v118 = 2 * viewparams->uMinimapZoom;
                     ++viewparams->field_28;
@@ -2315,7 +2315,7 @@ void Game::EventLoop() {
                 case UIMSG_ClickZoomInBtn:
                     if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
                     pParty->uFlags |= 2u;
-                    new OnButtonClick2(574, 136, 0, 0, (GUIButton *)pBtn_ZoomIn);
+                    new OnButtonClick2(574, 136, 0, 0, pBtn_ZoomIn);
                     uNumSeconds = 32768;
                     v118 = (unsigned __int64)((signed __int64)(signed int)
                                                   viewparams->uMinimapZoom

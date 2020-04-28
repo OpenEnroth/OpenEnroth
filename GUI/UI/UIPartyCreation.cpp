@@ -93,7 +93,7 @@ void CreateParty_EventLoop() {
             } while (pParty->pPlayers[param].GetSexByVoice() != sex);
             auto pButton = pCreationUI_BtnPressLeft2[param];
 
-            new OnButtonClick(pButton->uX, pButton->uY, 0, 0, (GUIButton *)pButton,
+            new OnButtonClick(pButton->uX, pButton->uY, 0, 0, pButton,
                 String(), false);
             pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
@@ -107,7 +107,7 @@ void CreateParty_EventLoop() {
                     (pParty->pPlayers[param].uVoiceID + 1) % 20;
             } while (pParty->pPlayers[param].GetSexByVoice() != sex);
             auto pButton = pCreationUI_BtnPressRight2[param];
-            new OnButtonClick(pButton->uX, pButton->uY, 0, 0, (GUIButton *)pButton,
+            new OnButtonClick(pButton->uX, pButton->uY, 0, 0, pButton,
                 String(), false);
             pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);

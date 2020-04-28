@@ -87,21 +87,21 @@ void Menu::EventLoop() {
             case UIMSG_ArrowUp:
                 --pSaveListPosition;
                 if (pSaveListPosition < 0) pSaveListPosition = 0;
-                new OnButtonClick2(215, 199, 17, 17, (GUIButton *)pBtnArrowUp);
+                new OnButtonClick2(215, 199, 17, 17, pBtnArrowUp);
                 continue;
 
             case UIMSG_DownArrow:
                 ++pSaveListPosition;
                 if (pSaveListPosition > (param - 7) ) pSaveListPosition = (param - 7);
-                new OnButtonClick2(215, 323, 17, 17, (GUIButton *)pBtnDownArrow);
+                new OnButtonClick2(215, 323, 17, 17, pBtnDownArrow);
                 continue;
 
             case UIMSG_Cancel:
-                new OnCancel(350, 302, 106, 42, (GUIButton *)pBtnCancel);
+                new OnCancel(350, 302, 106, 42, pBtnCancel);
                 continue;
 
             case UIMSG_SaveLoadBtn:
-                new OnSaveLoad(241, 302, 106, 42, (GUIButton *)pBtnLoadSlot);
+                new OnSaveLoad(241, 302, 106, 42, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot: {
                 if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 ==
@@ -291,10 +291,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->music_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 216, 0, 0, (GUIButton *)pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 216, 0, 0, pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 216, 0, 0, (GUIButton *)pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 216, 0, 0, pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;  // for mouse
@@ -311,10 +311,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->sound_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 162, 0, 0, (GUIButton *)pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 162, 0, 0, pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 162, 0, 0, (GUIButton *)pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 162, 0, 0, pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;
@@ -342,10 +342,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->voice_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 270, 0, 0, (GUIButton *)pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 270, 0, 0, pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 270, 0, 0, (GUIButton *)pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 270, 0, 0, pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;
