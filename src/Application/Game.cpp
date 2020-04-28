@@ -1777,7 +1777,7 @@ void Game::EventLoop() {
                             v92 = pMapInfo->EncM1percent;
                             v93 = v91 + 1;
                             if (v93 > v92)
-                                encounter_index =v93 > v92 + pMapInfo->EncM2percent + 2;
+                                encounter_index = v93 > v92 + pMapInfo->EncM2percent + 2;
                             else
                                 encounter_index = 1;
 
