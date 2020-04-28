@@ -815,7 +815,6 @@ struct Particle_MM7 {
 /*  110 */
 #pragma pack(push, 1)
 class ParticleEngine_MM7 {
-public:
     ParticleEngine_MM7();
 
     Particle_MM7 pParticles[500];
