@@ -351,7 +351,7 @@ struct ItemGen {  // 0x24
     char uMaxCharges;             // 19
     char uHolderPlayer;           // 1A
     char field_1B;                // 1B
-    GameTime expirte_time;        // unsigned __int64 uExpireTime; //1C
+    GameTime uExpireTime;        // unsigned __int64 uExpireTime; //1C
 };
 #pragma pack(pop)
 

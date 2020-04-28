@@ -508,8 +508,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsig
     a9 = FaceVertexList;
     if (a6) {
         for (uint i = 0; i < uNumVertices; ++i)
-            memcpy(&static_69B140[i], FaceVertexList + i,
-                   sizeof(RenderVertexSoft));
+            memcpy(&static_69B140[i], FaceVertexList + i, sizeof(RenderVertexSoft));
 
         if (pIndoorCameraD3D->_437376(FacePlane, static_69B140, &uNumVertices) == 1) {
             if (!uNumVertices) return false;

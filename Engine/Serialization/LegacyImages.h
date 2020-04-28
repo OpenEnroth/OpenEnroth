@@ -1,5 +1,11 @@
 #pragma once
 
+#include "Engine/Graphics/ParticleEngine.h"
+
+#include "Engine/Objects/Actor.h"
+
+#include "Engine/Spells/Spells.h"
+
 #include "Engine/VectorTypes.h"
 
 /*
@@ -589,5 +595,336 @@ struct UIAnimation_MM7 {
     /* 008 */ int16_t x;
     /* 00A */ int16_t y;
     /* 00C */ char field_C;
+};
+#pragma pack(pop)
+
+/*  187 */
+#pragma pack(push, 1)
+struct MonsterInfo_MM7 {
+    MonsterInfo_MM7();
+
+    int32_t pName;
+    int32_t pPictureName;
+    uint8_t uLevel;
+    uint8_t uTreasureDropChance;
+    uint8_t uTreasureDiceRolls;
+    uint8_t uTreasureDiceSides;
+    uint8_t uTreasureLevel;
+    uint8_t uTreasureType;
+    uint8_t uFlying;
+    uint8_t uMovementType;
+    uint8_t uAIType;
+    uint8_t uHostilityType;
+    char field_12;
+    uint8_t uSpecialAttackType;
+    uint8_t uSpecialAttackLevel;
+    uint8_t uAttack1Type;
+    uint8_t uAttack1DamageDiceRolls;
+    uint8_t uAttack1DamageDiceSides;
+    uint8_t uAttack1DamageBonus;
+    uint8_t uMissleAttack1Type;
+    uint8_t uAttack2Chance;
+    uint8_t uAttack2Type;
+    uint8_t uAttack2DamageDiceRolls;
+    uint8_t uAttack2DamageDiceSides;
+    uint8_t uAttack2DamageBonus;
+    uint8_t uMissleAttack2Type;
+    uint8_t uSpell1UseChance;
+    uint8_t uSpell1ID;
+    uint8_t uSpell2UseChance;
+    uint8_t uSpell2ID;
+    uint8_t uResFire;
+    uint8_t uResAir;
+    uint8_t uResWater;
+    uint8_t uResEarth;
+    uint8_t uResMind;
+    uint8_t uResSpirit;
+    uint8_t uResBody;
+    uint8_t uResLight;
+    uint8_t uResDark;
+    uint8_t uResPhysical;
+    uint8_t uSpecialAbilityType;
+    uint8_t uSpecialAbilityDamageDiceRolls;
+    uint8_t uSpecialAbilityDamageDiceSides;
+    uint8_t uSpecialAbilityDamageDiceBonus;
+    uint8_t uNumCharactersAttackedPerSpecialAbility;
+    char field_33;
+    uint16_t uID;
+    uint16_t bQuestMonster;
+    uint16_t uSpellSkillAndMastery1;
+    uint16_t uSpellSkillAndMastery2;
+    int16_t field_3C_some_special_attack;
+    int16_t field_3E;
+    unsigned int uHP;
+    unsigned int uAC;
+    unsigned int uExp;
+    unsigned int uBaseSpeed;
+    signed int uRecoveryTime;
+    unsigned int uAttackPreference;
+};
+#pragma pack(pop)
+
+/*   66 */
+#pragma pack(push, 1)
+struct Actor_MM7 {
+    Actor_MM7();
+
+    void Serialize(class Actor *);
+    void Deserialize(class Actor *);
+
+    char pActorName[32];
+    int16_t sNPC_ID;
+    int16_t field_22;
+    unsigned int uAttributes;
+    int16_t sCurrentHP;
+    char field_2A[2];
+    struct MonsterInfo_MM7 pMonsterInfo;
+    int16_t word_000084_range_attack;
+    int16_t word_000086_some_monster_id;  // base monster class monsterlist id
+    uint16_t uActorRadius;
+    uint16_t uActorHeight;
+    uint16_t uMovementSpeed;
+    struct Vec3_short_ vPosition;
+    struct Vec3_short_ vVelocity;
+    uint16_t uYawAngle;
+    uint16_t uPitchAngle;
+    int16_t uSectorID;
+    uint16_t uCurrentActionLength;
+    struct Vec3_short_ vInitialPosition;
+    struct Vec3_short_ vGuardingPosition;
+    uint16_t uTetherDistance;
+    int16_t uAIState;
+    uint16_t uCurrentActionAnimation;
+    uint16_t uCarriedItemID;
+    char field_B6;
+    char field_B7;
+    unsigned int uCurrentActionTime;
+    uint16_t pSpriteIDs[8];
+    uint16_t pSoundSampleIDs[4];  // 1 die     3 bored
+    struct SpellBuff pActorBuffs[22];
+    struct ItemGen ActorHasItems[4];
+    unsigned int uGroup;
+    unsigned int uAlly;
+    struct ActorJob pScheduledJobs[8];
+    unsigned int uSummonerID;
+    unsigned int uLastCharacterIDToHit;
+    int dword_000334_unique_name;
+    char field_338[12];
+};
+#pragma pack(pop)
+
+/*  100 */
+#pragma pack(push, 1)
+struct BLVDoor_MM7 {  // 50h
+    BLVDoor_MM7();
+
+    unsigned int uAttributes;
+    unsigned int uDoorID;
+    unsigned int uTimeSinceTriggered;
+    Vec3_int_ vDirection;
+    int uMoveLength;
+    int uOpenSpeed;
+    int uCloseSpeed;
+    uint32_t pVertexIDs;
+    uint32_t pFaceIDs;
+    uint32_t pSectorIDs;
+    uint32_t pDeltaUs;
+    uint32_t pDeltaVs;
+    uint32_t pXOffsets;
+    uint32_t pYOffsets;
+    uint32_t pZOffsets;
+    uint16_t uNumVertices;
+    uint16_t uNumFaces;
+    int16_t field_48;
+    uint16_t uNumOffsets;
+    uint16_t uState;
+    int16_t field_4E;
+};
+#pragma pack(pop)
+
+/*  305 */
+#pragma pack(push, 1)
+struct Particle_sw_MM7 {
+    Particle_sw_MM7();
+
+    unsigned int type;
+    float x;
+    float y;
+    float z;
+    float r;
+    float g;
+    float b;
+    unsigned int uDiffuse;
+    int timeToLive;
+    uint32_t texture;  // bitmap IDirect3DTexture
+    // idx or sprite idx depending on type
+    float particle_size;  // flt_28
+    int field_2C;
+    int field_30;
+    int field_34;
+    int field_38[12];
+};
+#pragma pack(pop)
+
+/*  109 */
+#pragma pack(push, 1)
+struct Particle_MM7 {
+    Particle_MM7();
+
+    unsigned int type;
+    float x;
+    float y;
+    float z;
+    float flt_10;
+    float flt_14;
+    float flt_18;
+    union {
+        struct {
+            unsigned char r, g, b, a;
+        };
+        unsigned int uParticleColor;
+    };
+    int timeToLive;
+    uint32_t texture;  // bitmap IDirect3DTexture
+    // idx or sprite idx depending on type
+    float particle_size;  // field_28
+    float _x;
+    float _y;
+    float _z;
+    int rotation_speed;
+    int angle;
+    int uScreenSpaceX;
+    int uScreenSpaceY;
+    int uScreenSpaceZ;  // line end x
+    int uScreenSpaceW;  // line end y
+    union {
+        // int sZValue;
+        struct {
+            unsigned short object_pid;
+            short zbuffer_depth;
+        };
+    };
+    int sZValue2;             // line end z
+    fixed screenspace_scale;  // int _screenspace_scale;
+    float fov_x;
+    float fov_y;
+    int uLightColor_bgr;
+};
+#pragma pack(pop)
+
+/*  110 */
+#pragma pack(push, 1)
+class ParticleEngine_MM7 {
+public:
+    ParticleEngine_MM7();
+
+    Particle_MM7 pParticles[500];
+    stru2_LineList pLines;
+    char field_D160[4800];
+    float field_E420;
+    int uStartParticle;
+    int uEndParticle;
+    int uTimeElapsed;
+};
+#pragma pack(pop)
+
+/*  115 */
+#pragma pack(push, 1)
+struct Lightmap_MM7 {  // карта света, текстура для наложения теней
+    Lightmap_MM7();
+    uint32_t vdestructor_ptr;
+
+    signed int NumVertices;
+    RenderVertexSoft pVertices[64];
+    int16_t position_x;  //позиция источника света
+    int16_t position_y;
+    int16_t position_z;
+    int16_t field_C0E;  //нигде не используется
+    unsigned int uColorMask;
+    float fBrightness;  //яркость
+    int field_C18;      //нигде не используется
+};
+#pragma pack(pop)
+
+/*  136 */
+#pragma pack(push, 1)
+struct NPCData_MM7 {  // 4Ch
+    NPCData_MM7();
+
+    void Serialize(class NPCData *);
+    void Deserialize(class NPCData *);
+
+    uint32_t pName;               // 0
+    unsigned int uPortraitID;  // 4
+    unsigned int uFlags;  // 8    // & 0x80    no greeting on dialogue start;
+    // looks like hired
+    int fame;                  // c
+    int rep;                   // 10
+    unsigned int Location2D;   // 14
+    unsigned int uProfession;  // 18
+    int greet;                 // 1c
+    int joins;                 // 20
+    int field_24;
+    unsigned int evt_A;      // 28
+    unsigned int evt_B;      // 2c evtb
+    unsigned int evt_C;      //  30 evtc
+    unsigned int evt_D;      // 34
+    unsigned int evt_E;      // 38
+    unsigned int evt_F;      // 3c
+    unsigned int uSex;       // 40
+    int bHasUsedTheAbility;  // 44
+    int news_topic;          // 48
+};
+#pragma pack(pop)
+
+/*   95 */
+#pragma pack(push, 1)
+struct BLVSector_MM7 {  // 0x74
+    BLVSector_MM7();
+
+    void Serialize(class BLVSector *);
+    void Deserialize(class BLVSector *);
+
+    int32_t field_0;
+    uint16_t uNumFloors;
+    int16_t field_6;
+    uint32_t pFloors;
+    uint16_t uNumWalls;
+    int16_t field_E;
+    uint32_t pWalls;
+    uint16_t uNumCeilings;
+    int16_t field_16;
+    uint32_t pCeilings;
+    uint16_t uNumFluids;
+    int16_t field_1E;
+    uint32_t pFluids;
+    int16_t uNumPortals;
+    int16_t field_26;
+    uint32_t pPortals;
+    uint16_t uNumFaces;
+    uint16_t uNumNonBSPFaces;
+    uint32_t pFaceIDs;
+    uint16_t uNumCylinderFaces;
+    int16_t field_36;
+    int32_t pCylinderFaces;
+    uint16_t uNumCogs;
+    int16_t field_3E;
+    uint32_t pCogs;
+    uint16_t uNumDecorations;
+    int16_t field_46;
+    uint32_t pDecorationIDs;
+    uint16_t uNumMarkers;
+    int16_t field_4E;
+    uint32_t pMarkers;
+    uint16_t uNumLights;
+    int16_t field_56;
+    uint32_t pLights;
+    int16_t uWaterLevel;
+    int16_t uMistLevel;
+    int16_t uLightDistanceMultiplier;
+    int16_t uMinAmbientLightLevel;
+    int16_t uFirstBSPNode;
+    int16_t exit_tag;
+    BBox_short_ pBounding;
 };
 #pragma pack(pop)

@@ -932,7 +932,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         !pItemsTable->IsMaterialNonCommon(v730c)) {
                     v730c->special_enchantment = (ITEM_ENCHANTMENT)amount;
                     if (skill_level != 4) {
-                        v730c->expirte_time =
+                        v730c->uExpireTime =
                             GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(spellduration));
                         v730c->uAttributes |= ITEM_TEMP_BONUS;
@@ -3844,7 +3844,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
                 item->special_enchantment = ITEM_ENCHANTMENT_VAMPIRIC;
                 if (skill_level != 4) {
-                    item->expirte_time = GameTime(pParty->GetPlayingTime() +
+                    item->uExpireTime = GameTime(pParty->GetPlayingTime() +
                                          GameTime::FromSeconds(spellduration));
                     item->uAttributes |= 8;
                 }

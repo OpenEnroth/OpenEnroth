@@ -262,7 +262,7 @@ void SpellFxRenderer::
     float x;              // [sp+78h] [bp+8h]@2
 
     thisspellfxrend = this;
-    memset(&local_0, 0, 0x68u);
+    memset(&local_0, 0, sizeof(Particle_sw));
     v5 = a2;
     v6 = a2->field_54;
     if (v6) {
@@ -325,7 +325,7 @@ void SpellFxRenderer::_4A75CC_single_spell_collision_particle(
     signed int v5;        // edi@1
     Particle_sw local_0;  // [sp+8h] [bp-68h]@1
 
-    memset(&local_0, 0, 0x68u);
+    memset(&local_0, 0, sizeof(Particle_sw));
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
     local_0.x = (float)a1->vPosition.x;
     local_0.y = (float)a1->vPosition.y;
@@ -454,7 +454,7 @@ void SpellFxRenderer::
     float uDiffusea;      // [sp+78h] [bp+Ch]@1
     float uTextureIDa;    // [sp+7Ch] [bp+10h]@1
 
-    memset(&local_0, 0, 0x68u);
+    memset(&local_0, 0, sizeof(Particle_sw));
     local_0.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_1;
     local_0.x = (float)a1->vPosition.x;
     v5 = a1->vPosition.z;
@@ -580,7 +580,7 @@ void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(
     int v7;              // [sp+74h] [bp-4h]@2
     signed int pActora;  // [sp+80h] [bp+8h]@1
 
-    memset(&Dst, 0, 0x68u);
+    memset(&Dst, 0, sizeof(Particle_sw));
     Dst.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
     Dst.timeToLive = (rand() & 0x7F) + 128;
     v3 = pActor;

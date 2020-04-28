@@ -2314,7 +2314,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                     }
                 }
             } else {
-                memset(&local_0, 0, 0x68);
+                memset(&local_0, 0, sizeof(Particle_sw));
                 local_0.type = ParticleType_Bitmap | ParticleType_Rotating |
                     ParticleType_8;
                 local_0.uDiffuse = 0xFF3C1E;

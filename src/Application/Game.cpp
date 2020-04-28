@@ -398,7 +398,7 @@ void Game::EventLoop() {
     Player *pPlayer10;            // [sp+14h] [bp-5E8h]@641
     int uMessageParam;            // [sp+18h] [bp-5E4h]@7
     int uAction;                  // [sp+1Ch] [bp-5E0h]@18
-    NPCData *pNPCData4;           // [sp+20h] [bp-5DCh]@23
+    int encounter_index;           // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
                                   //    char v197; // [sp+2Bh] [bp-5D1h]@101
     enum UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
@@ -984,7 +984,7 @@ void Game::EventLoop() {
                     dword_50CDC8 = 1;
 
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
-                    // pNPCData4 = (NPCData *)GetTravelTime();
+                    // encounter_index = (NPCData *)GetTravelTime();
                     pOutdoor->level_filename = pCurrentMapName;
                     if (!engine->IsUnderwater() && pParty->bFlying ||
                         pOutdoor->GetTravelDestination(pParty->vPosition.x,
@@ -1777,17 +1777,14 @@ void Game::EventLoop() {
                             v92 = pMapInfo->EncM1percent;
                             v93 = v91 + 1;
                             if (v93 > v92)
-                                pNPCData4 =
-                                    (NPCData *)((v93 >
-                                                 v92 + pMapInfo->EncM2percent) +
-                                                2);
+                                encounter_index =v93 > v92 + pMapInfo->EncM2percent + 2;
                             else
-                                pNPCData4 = (NPCData *)1;
+                                encounter_index = 1;
 
-                            if (!SpawnEncounterMonsters(pMapInfo, (int64_t)pNPCData4))
-                                pNPCData4 = 0;
+                            if (!SpawnEncounterMonsters(pMapInfo, encounter_index))
+                                encounter_index = 0;
 
-                            if (pNPCData4) {
+                            if (encounter_index) {
                                 pPlayerNum = rand() % 4;
                                 pParty->pPlayers[pPlayerNum]
                                     .conditions_times[Condition_Sleep]

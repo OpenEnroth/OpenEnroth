@@ -613,8 +613,7 @@ char *Party_Teleport_Map_Name;
 // int Party_Teleport_Y_Pos;
 // int Party_Teleport_X_Pos;
 std::array<std::array<char, 100>, 6> byte_591180;  // idb
-std::array<struct NPCData *, 7>
-    HouseNPCData;  // 0 zero element holds standart house npc
+std::array<struct NPCData *, 7> HouseNPCData;  // 0 zero element holds standart house npc
 GUIButton *HouseNPCPortraitsButtonsList[6];  // dword_5913F4
 String branchless_dialogue_str;
 int EvtTargetObj;                               // 0x5B5920

@@ -107,7 +107,7 @@ enum SPECIAL_ATTACK_TYPE : uint8_t {
 /*  187 */
 #pragma pack(push, 1)
 struct MonsterInfo {
-    enum HostilityRadius : uint8_t {
+    enum HostilityRadius {
         Hostility_Friendly = 0,
         Hostility_Close = 1,
         Hostility_Short = 2,
@@ -161,78 +161,6 @@ struct MonsterInfo {
                                   // 1 SPECIAL_ABILITY_TYPE_SHOT
                                   // 2 SPECIAL_ABILITY_TYPE_SUMMON
                                   // 3 SPECIAL_ABILITY_TYPE_EXPLODE
-    uint8_t uSpecialAbilityDamageDiceRolls;
-    uint8_t uSpecialAbilityDamageDiceSides;
-    uint8_t uSpecialAbilityDamageDiceBonus;
-    uint8_t uNumCharactersAttackedPerSpecialAbility;
-    char field_33;
-    uint16_t uID;
-    uint16_t bQuestMonster;
-    uint16_t uSpellSkillAndMastery1;
-    uint16_t uSpellSkillAndMastery2;
-    int16_t field_3C_some_special_attack;
-    int16_t field_3E;
-    unsigned int uHP;
-    unsigned int uAC;
-    unsigned int uExp;
-    unsigned int uBaseSpeed;
-    signed int uRecoveryTime;
-    unsigned int uAttackPreference;
-};
-
-struct MonsterInfo_MM7 {
-    enum HostilityRadius : uint8_t {
-        Hostility_Friendly = 0,
-        Hostility_Close = 1,
-        Hostility_Short = 2,
-        Hostility_Medium = 3,
-        Hostility_Long = 4
-    };
-
-    int32_t pName;
-    int32_t pPictureName;
-    uint8_t uLevel;
-    uint8_t uTreasureDropChance;
-    uint8_t uTreasureDiceRolls;
-    uint8_t uTreasureDiceSides;
-    uint8_t uTreasureLevel;
-    uint8_t uTreasureType;
-    uint8_t uFlying;
-    uint8_t uMovementType;
-    uint8_t uAIType;
-    HostilityRadius uHostilityType;
-    char field_12;
-    SPECIAL_ATTACK_TYPE uSpecialAttackType;
-    uint8_t uSpecialAttackLevel;
-    uint8_t uAttack1Type;
-    uint8_t uAttack1DamageDiceRolls;
-    uint8_t uAttack1DamageDiceSides;
-    uint8_t uAttack1DamageBonus;
-    uint8_t uMissleAttack1Type;
-    uint8_t uAttack2Chance;
-    uint8_t uAttack2Type;
-    uint8_t uAttack2DamageDiceRolls;
-    uint8_t uAttack2DamageDiceSides;
-    uint8_t uAttack2DamageBonus;
-    uint8_t uMissleAttack2Type;
-    uint8_t uSpell1UseChance;
-    uint8_t uSpell1ID;
-    uint8_t uSpell2UseChance;
-    uint8_t uSpell2ID;
-    uint8_t uResFire;
-    uint8_t uResAir;
-    uint8_t uResWater;
-    uint8_t uResEarth;
-    uint8_t uResMind;
-    uint8_t uResSpirit;
-    uint8_t uResBody;
-    uint8_t uResLight;
-    uint8_t uResDark;
-    uint8_t uResPhysical;
-    uint8_t uSpecialAbilityType;  // 0 SPECIAL_ABILITY_TYPE_NONE
-    // 1 SPECIAL_ABILITY_TYPE_SHOT
-    // 2 SPECIAL_ABILITY_TYPE_SUMMON
-    // 3 SPECIAL_ABILITY_TYPE_EXPLODE
     uint8_t uSpecialAbilityDamageDiceRolls;
     uint8_t uSpecialAbilityDamageDiceSides;
     uint8_t uSpecialAbilityDamageDiceBonus;

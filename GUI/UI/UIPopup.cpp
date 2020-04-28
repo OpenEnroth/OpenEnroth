@@ -499,7 +499,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
             (inspect_item->special_enchantment ||
              inspect_item->uEnchantmentType)) {
-            v67.Initialize(inspect_item->expirte_time -
+            v67.Initialize(inspect_item->uExpireTime -
                            pParty->GetPlayingTime());
 
             String txt4 = "Duration:";
@@ -2045,7 +2045,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             }
 
-            item->expirte_time =
+            item->uExpireTime =
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v31));
             item->uAttributes = alchemy_skill_level | 0x18;
 

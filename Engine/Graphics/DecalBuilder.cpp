@@ -105,7 +105,7 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154 *a4,
     // a11 = a6;
     if (a7) {
         for (int i = 0; i < a5; i++) {
-            memcpy(&static_AE4F90[i], a6, 0x30u);
+            memcpy(&static_AE4F90[i], a6, sizeof(RenderVertexSoft));
             ++a6;
         }
         v16 = a4;

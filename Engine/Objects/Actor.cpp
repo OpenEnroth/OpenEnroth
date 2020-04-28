@@ -24,6 +24,7 @@
 #include "../LOD.h"
 #include "../OurMath.h"
 #include "../Party.h"
+#include "../Serialization/LegacyImages.h"
 #include "../Spells/CastSpellInfo.h"
 #include "../Tables/FactionTable.h"
 #include "../TurnEngine/TurnEngine.h"
@@ -5280,11 +5281,12 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         strcpy(pMonster->pActorName, Src->pName);
         pMonster->sCurrentHP = Src->uHP;
 
-        // assert(sizeof(MonsterInfo) == 88);
-        assert(sizeof(MonsterInfo) == 80 + 2 * sizeof(void *));
+        assert(sizeof(MonsterInfo_MM7) == 88);
 
-        memcpy(&pMonster->pMonsterInfo, Src,
-               sizeof(MonsterInfo));  // Uninitialized portail memory access
+        // memcpy(&pMonster->pMonsterInfo, Src, sizeof(MonsterInfo));  // Uninitialized portail memory access
+
+        pMonster->pMonsterInfo = pMonsterStats->pInfos[v28];
+
         pMonster->word_000086_some_monster_id = v50 + 1;
         pMonster->uActorRadius = v27->uMonsterRadius;
         pMonster->uActorHeight = v27->uMonsterHeight;

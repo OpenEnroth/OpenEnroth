@@ -71,7 +71,7 @@ void ParticleEngine::AddParticle(Particle_sw *a2) {
 
     if (!pMiscTimer->bPaused) {
         v2 = 0;
-        v3 = (Particle *)this;
+        v3 = this->pParticles;
         do {
             if (v3->type == ParticleType_Invalid) break;
             ++v2;
