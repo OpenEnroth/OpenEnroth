@@ -1644,12 +1644,11 @@ void ClickNPCTopic(int uMessageParam) {
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
     if (pParty->pHirelings[0].pName) {
-        memcpy(&pParty->pHirelings[1], pCurrentNPCInfo,
-            sizeof(pParty->pHirelings[1]));
+        memcpy(&pParty->pHirelings[1], pCurrentNPCInfo, sizeof(pParty->pHirelings[1]));
         v24 = pCurrentNPCInfo->pName;
         v22 = pParty->pHireling2Name;
     } else {
-        memcpy(pParty->pHirelings.data(), pCurrentNPCInfo, 0x4Cu);
+        memcpy(&pParty->pHirelings[0], pCurrentNPCInfo, sizeof(pParty->pHirelings[0]));
         v24 = pCurrentNPCInfo->pName;
         v22 = pParty->pHireling1Name;
     }

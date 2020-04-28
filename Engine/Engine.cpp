@@ -1119,7 +1119,7 @@ void Engine::SecondaryInitialization() {
     }
 
     pNPCStats = new NPCStats;
-    memset(pNPCStats->pNPCData, 0, 0x94BCu);
+    memset(pNPCStats->pNPCData, 0, sizeof(pNPCStats->pNPCData));
     pNPCStats->Initialize();
 
     Initialize_GlobalEVT();
