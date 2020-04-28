@@ -128,8 +128,7 @@ Vis *IocContainer::vis = nullptr;
 
 void IntegrityTest() {
     // ToDo(_): make platform independent
-    static_assert(sizeof(BLVSector_MM7) == 0x74, "Wrong type size");
-    static_assert(sizeof(BLVDoor_MM7) == 0x50, "Wrong type size");
+    // static_assert(sizeof(BLVDoor) == 0x50, "Wrong type size");
     // static_assert(sizeof(Particle_sw) == 0x68, "Wrong type size");
     // static_assert(sizeof(Particle) == 0x68, "Wrong type size");
     // static_assert(sizeof(ParticleEngine) == 0xE430, "Wrong type size");
@@ -150,10 +149,7 @@ void IntegrityTest() {
     // static_assert(sizeof(_2devent) == 0x34, "Wrong type size");
     // static_assert(sizeof(StorylineText) == 0x160, "Wrong type size");
     // static_assert(sizeof(Decal) == 0xC20, "Wrong type size");
-    static_assert(sizeof(MonsterInfo_MM7) == 0x58, "Wrong type size");
     // static_assert(sizeof(MonsterStats) == 0x5BA0, "Wrong type size");
-    static_assert(sizeof(BLVSector_MM7) == 116, "Wrong type size");
-    static_assert(sizeof(Actor_MM7) == 836, "Wrong type size");
 
     // ToDo(_): move to usage place
     static_assert(sizeof(OverlayDesc) == 8, "Wrong type size");

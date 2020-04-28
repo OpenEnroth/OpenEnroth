@@ -104,28 +104,8 @@ Actor_MM7::Actor_MM7() {
     memset(this, 0, sizeof(*this));
 }
 
-BLVDoor_MM7::BLVDoor_MM7() {
-    Assert(sizeof(*this) == 0x50);
-    memset(this, 0, sizeof(*this));
-}
-
-Particle_sw_MM7::Particle_sw_MM7() {
-    Assert(sizeof(*this) == 0x68);
-    memset(this, 0, sizeof(*this));
-}
-
-Particle_MM7::Particle_MM7() {
-    Assert(sizeof(*this) == 0x68);
-    memset(this, 0, sizeof(*this));
-}
-
-ParticleEngine_MM7::ParticleEngine_MM7() {
-    Assert(sizeof(*this) == 0xE430);
-    memset(this, 0, sizeof(*this));
-}
-
-Lightmap_MM7::Lightmap_MM7() {
-    Assert(sizeof(*this) == 0xC1C);
+BLVSector_MM7::BLVSector_MM7() {
+    Assert(sizeof(*this) == 0x74);
     memset(this, 0, sizeof(*this));
 }
 
