@@ -1230,7 +1230,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
                 if (face.HasEventHint()) {
                     face.uAttributes |= FACE_HAS_EVENT;
                 } else {
-                    face.uAttributes &= ~FACE_HAS_EVENT; 
+                    face.uAttributes &= ~FACE_HAS_EVENT;
                 }
             }
         }

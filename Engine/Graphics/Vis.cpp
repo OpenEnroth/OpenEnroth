@@ -20,13 +20,13 @@ using EngineIoc = Engine_::IocContainer;
 static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
 Vis_SelectionFilter vis_sprite_filter_1 = {
-    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType}; // 00F93E1C
+    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType};  // 00F93E1C
 Vis_SelectionFilter vis_sprite_filter_2 = {
-    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType}; // 00F93E30
+    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType};  // 00F93E30
 Vis_SelectionFilter vis_face_filter = {
-    VisObjectType_Face, OBJECT_Any, -1, 0, None}; // 00F93E44
+    VisObjectType_Face, OBJECT_Any, -1, 0, None};  // 00F93E44
 Vis_SelectionFilter vis_door_filter = {
-    VisObjectType_Face, OBJECT_BLVDoor, -1, FACE_HAS_EVENT, None }; // 00F93E58
+    VisObjectType_Face, OBJECT_BLVDoor, -1, FACE_HAS_EVENT, None };  // 00F93E58
 Vis_SelectionFilter vis_sprite_filter_3 = {
     VisObjectType_Sprite, OBJECT_Decoration, -1, 0, ExclusionIfNoEvent};  // 00F93E6C
 Vis_SelectionFilter vis_sprite_filter_4 = {
@@ -1373,7 +1373,7 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
                 if (only_target_undead && target_not_undead)
                     return false;
 
-                if (!(filter->select_flags & VisSelectFlags_1)) 
+                if (!(filter->select_flags & VisSelectFlags_1))
                     return true;
 
                 auto relation = pActors[object_idx].GetActorsRelation(nullptr);

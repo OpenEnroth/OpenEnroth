@@ -1174,7 +1174,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         // logger->Warning("Sector[%u]", i);
         int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
-      
+
         // nothing in secotr to check against so skip
         if (!FloorsAndPortals) continue;
 

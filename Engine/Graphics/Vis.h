@@ -9,7 +9,7 @@ enum VisObjectType : uint32_t {
 
 enum VisSelectFlags : uint32_t {
     None = 0,
-    VisSelectFlags_1 = 1, // not set in any of the standard filters. Used to check something that seems to be ally/enemy-based?
+    VisSelectFlags_1 = 1,  // not set in any of the standard filters. Used to check something that seems to be ally/enemy-based?
     ExcludeType = 2,
     ExclusionIfNoEvent = 4,
     TargetUndead = 8
