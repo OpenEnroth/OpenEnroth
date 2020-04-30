@@ -498,7 +498,7 @@ LABEL_47:
                                 pAudioPlayer->StopChannels(-1, -1);
                                 window_SpeakInHouse = new GUIWindow_House(
                                     0, 0, window->GetWidth(),
-                                    window->GetHeight(), 170, "");
+                                    window->GetHeight(), (GUIButton *)170, "");
                                 window_SpeakInHouse->CreateButton(
                                     61, 424, 31, 0, 2, 94,
                                     UIMSG_SelectCharacter, 1, '1', "");
@@ -594,7 +594,7 @@ LABEL_47:
                                 pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
                                 window_SpeakInHouse = new GUIWindow_House(
                                     0, 0, window->GetWidth(),
-                                    window->GetHeight(), 165, 0);
+                                    window->GetHeight(), (GUIButton *)165, 0);
                                 window_SpeakInHouse->DeleteButtons();
                             }
                             //          else {
@@ -1119,7 +1119,7 @@ LABEL_47:
                             v104 = EVT_DWORD(_evt->v5);
                         window_SpeakInHouse =
                             new GUIWindow_House(0, 0, window->GetWidth(),
-                                                window->GetHeight(), v104);
+                                                window->GetHeight(), (GUIButton *)v104);
                         window_SpeakInHouse->CreateButton(61, 424, 31, 0, 2, 94,
                                                           UIMSG_SelectCharacter,
                                                           1, '1', "");

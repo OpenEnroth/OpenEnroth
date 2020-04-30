@@ -156,7 +156,7 @@ bool FileExists(const char *fname) {
 
 void Engine_DeinitializeAndTerminate(int exitCode) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-    engine->Deinitialize();
+    engine->Deinitialize();  // called twice?
     render->Release();
     delete window;
     exit(exitCode);
@@ -1119,7 +1119,7 @@ void Engine::SecondaryInitialization() {
     }
 
     pNPCStats = new NPCStats;
-    memset(pNPCStats->pNPCData, 0, 0x94BCu);
+    memset(pNPCStats->pNPCData, 0, sizeof(pNPCStats->pNPCData));
     pNPCStats->Initialize();
 
     Initialize_GlobalEVT();

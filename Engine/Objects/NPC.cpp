@@ -1082,7 +1082,7 @@ void NPCHireableDialogPrepare() {
     NPCData *v1;    // edi@1
 
     v0 = 0;
-    v1 = HouseNPCData[(unsigned int)((char *)pDialogueNPCCount +
+    v1 = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount +
                                      -(dword_591080 != 0))];  //- 1
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
@@ -1346,7 +1346,7 @@ int GetGreetType(signed int SpeakingNPC_ID) {
         if (v6->pName) buf[v4++] = v5;
         ++v6;
         ++v5;
-    } while ((signed int)v6 < (signed int)&pParty->pPickedItem);
+    } while ((int64_t)v6 < (int64_t)&pParty->pPickedItem);
     if ((signed int)pNPCStats->uNumNewNPCs > 0) {
         v7 = &buf[v4];
         v8 = pNPCStats->pNewNPCData;

@@ -5,7 +5,7 @@
 #include "IO/Mouse.h"
 
 // remove this after enabling SDLK_* keys
-inline int GetAsyncKeyState(int vKey) { return (int)SDL_GetKeyboardState(&vKey); }
+inline int64_t GetAsyncKeyState(int vKey) { return (int64_t)SDL_GetKeyboardState(&vKey); }
 #endif
 #undef PlaySound  // conflicts with Player method
 

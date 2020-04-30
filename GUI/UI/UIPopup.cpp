@@ -409,11 +409,11 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
     iteminfo_window.uFrameW =
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-    Str = (char *)(3 * (pFontArrus->GetHeight() + 8));
+    int Str_int = (3 * (pFontArrus->GetHeight() + 8));
     v84 = &out_text[0];
     for (uint i = 1; i <= 3; i++) {
         if (*v84)
-            Str += pFontComic->CalcTextHeight(v84, iteminfo_window.uFrameWidth,
+            Str_int += pFontComic->CalcTextHeight(v84, iteminfo_window.uFrameWidth,
                                               100) +
                    3;
         v84 += 100;
@@ -427,8 +427,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         assets->GetImage_ColorKey(inspect_item->GetIconName(), 0x7FF)
             ->GetHeight() +
         v81 + 54;
-    if ((signed int)Str > (signed int)iteminfo_window.uFrameHeight)
-        iteminfo_window.uFrameHeight = (unsigned int)Str;
+    if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
+        iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
         (inspect_item->special_enchantment || inspect_item->uEnchantmentType))
         iteminfo_window.uFrameHeight += pFontComic->GetHeight();
@@ -499,7 +499,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
             (inspect_item->special_enchantment ||
              inspect_item->uEnchantmentType)) {
-            v67.Initialize(inspect_item->expirte_time -
+            v67.Initialize(inspect_item->uExpireTime -
                            pParty->GetPlayingTime());
 
             String txt4 = "Duration:";
@@ -843,7 +843,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                                       GetSpellColor(pTextColorID), pText, 0, 0,
                                       0);
                     pTextHeight =
-                        pTextHeight + *(char *)((int)pFontSmallnum + 5) - 3;
+                        pTextHeight + *(char *)((int64_t)pFontSmallnum + 5) - 3;
                 }
             }
         }
@@ -1564,7 +1564,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameY = 60;
                     pAudioPlayer->StopChannels(-1, -1);
                     GameUI_CharacterQuickRecord_Draw(
-                        &popup_window, pPlayers[(int)popup_window.ptr_1C + 1]);
+                        &popup_window, pPlayers[(int64_t)popup_window.ptr_1C + 1]);
                 }
             } else if ((int)pX > pViewport->uViewportBR_X) {
                 if (pY >= 130) {
@@ -2045,7 +2045,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             }
 
-            item->expirte_time =
+            item->uExpireTime =
                 GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v31));
             item->uAttributes = alchemy_skill_level | 0x18;
 

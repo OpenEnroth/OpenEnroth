@@ -85,7 +85,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
 
     pDialogueWindow = new GUIWindow_Dialogue(
         0, 0, window->GetWidth(), window->GetHeight(),
-        3);  // pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
+        (GUIButton *)3);  // pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
     if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility) {
         if (pNPCInfo->uProfession == 10 ||  // Healer
             pNPCInfo->uProfession == 11 ||  // Expert Healer
@@ -125,7 +125,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
 
 GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                                        unsigned int width, unsigned int height,
-                                       int button, const String &hint)
+                                       GUIButton *button, const String &hint)
     : GUIWindow(WINDOW_Dialogue, x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_NPC_DIALOGUE;
@@ -534,7 +534,7 @@ void GUIWindow_Dialogue::Update() {
 
 GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(
     unsigned int x, unsigned int y, unsigned int width, unsigned int height,
-    int button, const String &hint
+    GUIButton *button, const String &hint
 )
     : GUIWindow(WINDOW_GreetingNPC, x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
@@ -624,7 +624,7 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
         dword_5C341C = a2;
         _591094_decoration = activeLevelDecoration;
         pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(),
-                                                    window->GetHeight(), a4);
+                                                    window->GetHeight(), (GUIButton *)a4);
         pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter,
                                   1, '1', "");
         pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94,
@@ -643,7 +643,7 @@ void sub_4B3E1E() {
     pDialogueWindow->eWindowType = WINDOW_MainMenu;
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(),
-                                             window->GetHeight(), 1);
+                                             window->GetHeight(), (GUIButton *)1);
     if (pNPCStats->pProfessions[v0->uProfession]
             .pBenefits) {  // *(&pNPCStats->field_13A5C + 5 * v0->uProfession) )
         pDialogueWindow->CreateButton(

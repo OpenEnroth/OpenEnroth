@@ -107,7 +107,7 @@ enum SPECIAL_ATTACK_TYPE : uint8_t {
 /*  187 */
 #pragma pack(push, 1)
 struct MonsterInfo {
-    enum HostilityRadius : uint8_t {
+    enum HostilityRadius {
         Hostility_Friendly = 0,
         Hostility_Close = 1,
         Hostility_Short = 2,

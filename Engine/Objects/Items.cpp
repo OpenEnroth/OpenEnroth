@@ -139,13 +139,13 @@ void ItemGen::Reset() {
     this->uEnchantmentType = 0;
     this->uItemID = ITEM_NULL;
     this->uBodyAnchor = 0;
-    this->expirte_time.Reset();
+    this->uExpireTime.Reset();
 }
 
 //----- (00458260) --------------------------------------------------------
 void ItemGen::UpdateTempBonus(GameTime time) {
     if (this->uAttributes & ITEM_TEMP_BONUS) {
-        if (time > this->expirte_time) {
+        if (time > this->uExpireTime) {
             this->uEnchantmentType = 0;
             this->special_enchantment = ITEM_ENCHANTMENT_NULL;
             this->uAttributes &= ~ITEM_TEMP_BONUS;

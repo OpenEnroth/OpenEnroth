@@ -1,6 +1,14 @@
 #pragma once
 
+#include "Engine/Graphics/ParticleEngine.h"
+
+#include "Engine/Objects/Actor.h"
+
+#include "Engine/Spells/Spells.h"
+
 #include "Engine/VectorTypes.h"
+
+#include "GUI/GUIFont.h"
 
 /*
  *  Party, timers, NPCs and other stuff is binary dumped into resources/savegame
@@ -90,7 +98,7 @@ struct NPCData_Image_MM7 {
     void Serialize(struct NPCData *item);
     void Deserialize(struct NPCData *item);
 
-    /* 00 */ char *pName;
+    /* 00 */ int32_t pName;  // char *pName;
     /* 04 */ unsigned int uPortraitID;
     /* 08 */ unsigned int
         uFlags;  // & 0x80    no greeting on dialogue start; looks like hired
@@ -589,5 +597,194 @@ struct UIAnimation_MM7 {
     /* 008 */ int16_t x;
     /* 00A */ int16_t y;
     /* 00C */ char field_C;
+};
+#pragma pack(pop)
+
+/*  187 */
+#pragma pack(push, 1)
+struct MonsterInfo_MM7 {
+    MonsterInfo_MM7();
+
+    int32_t pName;
+    int32_t pPictureName;
+    uint8_t uLevel;
+    uint8_t uTreasureDropChance;
+    uint8_t uTreasureDiceRolls;
+    uint8_t uTreasureDiceSides;
+    uint8_t uTreasureLevel;
+    uint8_t uTreasureType;
+    uint8_t uFlying;
+    uint8_t uMovementType;
+    uint8_t uAIType;
+    uint8_t uHostilityType;
+    char field_12;
+    uint8_t uSpecialAttackType;
+    uint8_t uSpecialAttackLevel;
+    uint8_t uAttack1Type;
+    uint8_t uAttack1DamageDiceRolls;
+    uint8_t uAttack1DamageDiceSides;
+    uint8_t uAttack1DamageBonus;
+    uint8_t uMissleAttack1Type;
+    uint8_t uAttack2Chance;
+    uint8_t uAttack2Type;
+    uint8_t uAttack2DamageDiceRolls;
+    uint8_t uAttack2DamageDiceSides;
+    uint8_t uAttack2DamageBonus;
+    uint8_t uMissleAttack2Type;
+    uint8_t uSpell1UseChance;
+    uint8_t uSpell1ID;
+    uint8_t uSpell2UseChance;
+    uint8_t uSpell2ID;
+    uint8_t uResFire;
+    uint8_t uResAir;
+    uint8_t uResWater;
+    uint8_t uResEarth;
+    uint8_t uResMind;
+    uint8_t uResSpirit;
+    uint8_t uResBody;
+    uint8_t uResLight;
+    uint8_t uResDark;
+    uint8_t uResPhysical;
+    uint8_t uSpecialAbilityType;
+    uint8_t uSpecialAbilityDamageDiceRolls;
+    uint8_t uSpecialAbilityDamageDiceSides;
+    uint8_t uSpecialAbilityDamageDiceBonus;
+    uint8_t uNumCharactersAttackedPerSpecialAbility;
+    char field_33;
+    uint16_t uID;
+    uint16_t bQuestMonster;
+    uint16_t uSpellSkillAndMastery1;
+    uint16_t uSpellSkillAndMastery2;
+    int16_t field_3C_some_special_attack;
+    int16_t field_3E;
+    unsigned int uHP;
+    unsigned int uAC;
+    unsigned int uExp;
+    unsigned int uBaseSpeed;
+    signed int uRecoveryTime;
+    unsigned int uAttackPreference;
+};
+#pragma pack(pop)
+
+/*   66 */
+#pragma pack(push, 1)
+struct Actor_MM7 {
+    Actor_MM7();
+
+    void Serialize(class Actor *);
+    void Deserialize(class Actor *);
+
+    char pActorName[32];
+    int16_t sNPC_ID;
+    int16_t field_22;
+    unsigned int uAttributes;
+    int16_t sCurrentHP;
+    char field_2A[2];
+    struct MonsterInfo_MM7 pMonsterInfo;
+    int16_t word_000084_range_attack;
+    int16_t word_000086_some_monster_id;  // base monster class monsterlist id
+    uint16_t uActorRadius;
+    uint16_t uActorHeight;
+    uint16_t uMovementSpeed;
+    struct Vec3_short_ vPosition;
+    struct Vec3_short_ vVelocity;
+    uint16_t uYawAngle;
+    uint16_t uPitchAngle;
+    int16_t uSectorID;
+    uint16_t uCurrentActionLength;
+    struct Vec3_short_ vInitialPosition;
+    struct Vec3_short_ vGuardingPosition;
+    uint16_t uTetherDistance;
+    int16_t uAIState;
+    uint16_t uCurrentActionAnimation;
+    uint16_t uCarriedItemID;
+    char field_B6;
+    char field_B7;
+    unsigned int uCurrentActionTime;
+    uint16_t pSpriteIDs[8];
+    uint16_t pSoundSampleIDs[4];  // 1 die     3 bored
+    struct SpellBuff pActorBuffs[22];
+    struct ItemGen ActorHasItems[4];
+    unsigned int uGroup;
+    unsigned int uAlly;
+    struct ActorJob pScheduledJobs[8];
+    unsigned int uSummonerID;
+    unsigned int uLastCharacterIDToHit;
+    int dword_000334_unique_name;
+    char field_338[12];
+};
+#pragma pack(pop)
+
+/*   95 */
+#pragma pack(push, 1)
+struct BLVSector_MM7 {  // 0x74
+    BLVSector_MM7();
+
+    void Serialize(class BLVSector *);
+    void Deserialize(class BLVSector *);
+
+    int32_t field_0;
+    uint16_t uNumFloors;
+    int16_t field_6;
+    uint32_t pFloors;
+    uint16_t uNumWalls;
+    int16_t field_E;
+    uint32_t pWalls;
+    uint16_t uNumCeilings;
+    int16_t field_16;
+    uint32_t pCeilings;
+    uint16_t uNumFluids;
+    int16_t field_1E;
+    uint32_t pFluids;
+    int16_t uNumPortals;
+    int16_t field_26;
+    uint32_t pPortals;
+    uint16_t uNumFaces;
+    uint16_t uNumNonBSPFaces;
+    uint32_t pFaceIDs;
+    uint16_t uNumCylinderFaces;
+    int16_t field_36;
+    int32_t pCylinderFaces;
+    uint16_t uNumCogs;
+    int16_t field_3E;
+    uint32_t pCogs;
+    uint16_t uNumDecorations;
+    int16_t field_46;
+    uint32_t pDecorationIDs;
+    uint16_t uNumMarkers;
+    int16_t field_4E;
+    uint32_t pMarkers;
+    uint16_t uNumLights;
+    int16_t field_56;
+    uint32_t pLights;
+    int16_t uWaterLevel;
+    int16_t uMistLevel;
+    int16_t uLightDistanceMultiplier;
+    int16_t uMinAmbientLightLevel;
+    int16_t uFirstBSPNode;
+    int16_t exit_tag;
+    BBox_short_ pBounding;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct FontData_MM7 {
+    FontData_MM7();
+
+    void Serialize(class FontData *);
+    void Deserialize(class FontData *, size_t size);
+
+    uint8_t cFirstChar;  // 0
+    uint8_t cLastChar;   // 1
+    uint8_t field_2;
+    uint8_t field_3;
+    uint8_t field_4;
+    uint16_t uFontHeight;  // 5-6
+    uint8_t field_7;
+    uint32_t palletes_count;
+    uint32_t pFontPalettes[5];
+    GUICharMetric pMetrics[256];
+    uint32_t font_pixels_offset[256];
+    uint8_t pFontData[0];  // array of font pixels
 };
 #pragma pack(pop)

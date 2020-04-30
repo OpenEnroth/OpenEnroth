@@ -234,7 +234,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                  pSpriteObjects[uLayingItemID].vVelocity.x) < 400) {
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
-            memset(&Dst, 0, 0x68u);
+            memset(&Dst, 0, sizeof(Particle_sw));
             Dst.x = (double)pSpriteObjects[uLayingItemID].vPosition.x;
             Dst.y = (double)pSpriteObjects[uLayingItemID].vPosition.y;
             Dst.z = (double)pSpriteObjects[uLayingItemID].vPosition.z;
@@ -323,7 +323,7 @@ LABEL_13:
                     Actor::_46DF1A_collide_against_actor(i, 0);
             }
             v26 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
-            bool v49 = false;
+            v49 = false;
             v27 = ODM_GetFloorLevel(
                 _actor_collision_struct.normal2.x, _actor_collision_struct.normal2.y,
                 _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1,
@@ -348,7 +348,7 @@ LABEL_13:
                     _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
                 pSpriteObjects[uLayingItemID].uSectorID =
                     (short)_actor_collision_struct.uSectorID;
-                memset(&Dst, 0, 0x68u);
+                memset(&Dst, 0, sizeof(Particle_sw));
                 Dst.x = (double)pSpriteObjects[uLayingItemID].vPosition.x;
                 Dst.y = (double)pSpriteObjects[uLayingItemID].vPosition.y;
                 Dst.z = (double)pSpriteObjects[uLayingItemID].vPosition.z;
@@ -552,7 +552,7 @@ LABEL_25:
                     _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
                 pSpriteObject->uSectorID = (short)_actor_collision_struct.uSectorID;
                 if (!(pObject->uFlags & 0x100)) return;
-                memset(&Dst, 0, 0x68u);
+                memset(&Dst, 0, sizeof(Particle_sw));
                 Dst.x = (double)pSpriteObject->vPosition.x;
                 Dst.y = (double)pSpriteObject->vPosition.y;
                 Dst.z = (double)pSpriteObject->vPosition.z;
@@ -748,7 +748,7 @@ LABEL_25:
             pSpriteObject->vVelocity.y = 0;
             pSpriteObject->vVelocity.z = 0;
             if (!(pObject->uFlags & OBJECT_DESC_NO_SPRITE)) return;
-            memset(&Dst, 0, 0x68u);
+            memset(&Dst, 0, sizeof(Particle_sw));
             Dst.x = (double)pSpriteObject->vPosition.x;
             Dst.y = (double)pSpriteObject->vPosition.y;
             Dst.z = (double)pSpriteObject->vPosition.z;

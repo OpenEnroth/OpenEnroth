@@ -24,6 +24,7 @@
 #include "../LOD.h"
 #include "../OurMath.h"
 #include "../Party.h"
+#include "../Serialization/LegacyImages.h"
 #include "../Spells/CastSpellInfo.h"
 #include "../Tables/FactionTable.h"
 #include "../TurnEngine/TurnEngine.h"
@@ -1654,8 +1655,8 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
             v5 = pParty->vPosition.y;
             v22 = pParty->vPosition.z + pParty->sEyelevel;
         } else {
-            v4 = (int)pDir;
-            v5 = (int)pDir;
+            v4 = pDir->vDirection.x;
+            v5 = pDir->vDirection.x;
         }
     }
     v19 = v3->uActorHeight;
@@ -5279,9 +5280,12 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         Src = &pMonsterStats->pInfos[v28];
         strcpy(pMonster->pActorName, Src->pName);
         pMonster->sCurrentHP = Src->uHP;
-        assert(sizeof(MonsterInfo) == 88);
-        memcpy(&pMonster->pMonsterInfo, Src,
-               sizeof(MonsterInfo));  // Uninitialized portail memory access
+        assert(sizeof(MonsterInfo_MM7) == 88);
+
+        // memcpy(&pMonster->pMonsterInfo, Src, sizeof(MonsterInfo));  // Uninitialized portail memory access
+
+        pMonster->pMonsterInfo = pMonsterStats->pInfos[v28];
+
         pMonster->word_000086_some_monster_id = v50 + 1;
         pMonster->uActorRadius = v27->uMonsterRadius;
         pMonster->uActorHeight = v27->uMonsterHeight;

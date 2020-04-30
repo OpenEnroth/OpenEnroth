@@ -63,7 +63,7 @@ void PrepareToLoadRestUI() {
     }
     pEventTimer->Pause();
     if (_506F14_resting_stage != 2)
-        new OnButtonClick2(518, 450, 0, 0, (int)pBtn_Rest);
+        new OnButtonClick2(518, 450, 0, 0, pBtn_Rest);
     _506F18_num_minutes_to_sleep = 0;
     _506F14_resting_stage = 0;
     uRestUI_FoodRequiredToRest = 2;
@@ -225,7 +225,7 @@ void GUIWindow_Rest::Update() {
         if (_506F14_resting_stage) Party::Sleep8Hours();
     } else {
         new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0,
-            (int)pButton_RestUI_Exit,
+            (GUIButton *)pButton_RestUI_Exit,
             localization->GetString(81));  // "Exit Rest"
     }
 }

@@ -1,7 +1,11 @@
+#include <algorithm>
+
 #include "Engine/Serialization/LegacyImages.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/LOD.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/IconFrameTable.h"
@@ -92,6 +96,26 @@ UIAnimation_MM7::UIAnimation_MM7() {
     memset(this, 0, sizeof(*this));
 }
 
+MonsterInfo_MM7::MonsterInfo_MM7() {
+    Assert(sizeof(*this) == 0x58);
+    memset(this, 0, sizeof(*this));
+}
+
+Actor_MM7::Actor_MM7() {
+    Assert(sizeof(*this) == 0x344);
+    memset(this, 0, sizeof(*this));
+}
+
+BLVSector_MM7::BLVSector_MM7() {
+    Assert(sizeof(*this) == 0x74);
+    memset(this, 0, sizeof(*this));
+}
+
+FontData_MM7::FontData_MM7() {
+    Assert(sizeof(*this) == 0x1020);
+    memset(this, 0, sizeof(*this));
+}
+
 void Timer_Image_MM7::Serialize(Timer *timer) {
     memset(this, 0, sizeof(*this));
 
@@ -123,7 +147,7 @@ void Timer_Image_MM7::Deserialize(Timer *timer) {
 void NPCData_Image_MM7::Serialize(NPCData *npc) {
     memset(this, 0, sizeof(*this));
 
-    this->pName = npc->pName;
+    // this->pName = npc->pName;
     this->uPortraitID = npc->uPortraitID;
     this->uFlags = npc->uFlags;
     this->fame = npc->fame;
@@ -145,7 +169,7 @@ void NPCData_Image_MM7::Serialize(NPCData *npc) {
 }
 
 void NPCData_Image_MM7::Deserialize(NPCData *npc) {
-    npc->pName = this->pName;
+    // npc->pName = this->pName;
     npc->uPortraitID = this->uPortraitID;
     npc->uFlags = this->uFlags;
     npc->fame = this->fame;
@@ -241,7 +265,7 @@ void ItemGen_Image_MM7::Serialize(ItemGen *item) {
     this->uMaxCharges = item->uMaxCharges;
     this->uHolderPlayer = item->uHolderPlayer;
     this->field_1B = item->field_1B;
-    this->uExpireTime = item->expirte_time.value;
+    this->uExpireTime = item->uExpireTime.value;
 }
 
 void ItemGen_Image_MM7::Deserialize(ItemGen *item) {
@@ -255,7 +279,7 @@ void ItemGen_Image_MM7::Deserialize(ItemGen *item) {
     item->uMaxCharges = this->uMaxCharges;
     item->uHolderPlayer = this->uHolderPlayer;
     item->field_1B = this->field_1B;
-    item->expirte_time.value = this->uExpireTime;
+    item->uExpireTime.value = this->uExpireTime;
 }
 
 void Party_Image_MM7::Serialize(Party *party) {
@@ -1080,4 +1104,334 @@ void UIAnimation_MM7::Deserialize(UIAnimation *anim) {
     /* 008 */ anim->x = x;
     /* 00A */ anim->y = y;
     /* 00C */ anim->field_C = field_C;
+}
+
+void Actor_MM7::Serialize(Actor *actor) {
+    this->sNPC_ID = actor->sNPC_ID;
+    this->field_22 = actor->field_22;
+    this->uAttributes = actor->uAttributes;
+    this->sCurrentHP = actor->sCurrentHP;
+
+    for (unsigned int i = 0; i < 2; ++i)
+        this->field_2A[i] = actor->field_2A[i];
+
+    this->pMonsterInfo.uLevel = actor->pMonsterInfo.uLevel;
+    this->pMonsterInfo.uTreasureDropChance = actor->pMonsterInfo.uTreasureDropChance;
+    this->pMonsterInfo.uTreasureDiceRolls = actor->pMonsterInfo.uTreasureDiceRolls;
+    this->pMonsterInfo.uTreasureDiceSides = actor->pMonsterInfo.uTreasureDiceSides;
+    this->pMonsterInfo.uTreasureLevel = actor->pMonsterInfo.uTreasureLevel;
+    this->pMonsterInfo.uTreasureType = actor->pMonsterInfo.uTreasureType;
+    this->pMonsterInfo.uFlying = actor->pMonsterInfo.uFlying;
+    this->pMonsterInfo.uMovementType = actor->pMonsterInfo.uMovementType;
+    this->pMonsterInfo.uAIType = actor->pMonsterInfo.uAIType;
+    this->pMonsterInfo.uHostilityType = (uint8_t)actor->pMonsterInfo.uHostilityType;
+    this->pMonsterInfo.field_12 = actor->pMonsterInfo.field_12;
+    this->pMonsterInfo.uSpecialAttackType = actor->pMonsterInfo.uSpecialAttackType;
+    this->pMonsterInfo.uSpecialAttackLevel = actor->pMonsterInfo.uSpecialAttackLevel;
+    this->pMonsterInfo.uAttack1Type = actor->pMonsterInfo.uAttack1Type;
+    this->pMonsterInfo.uAttack1DamageDiceRolls = actor->pMonsterInfo.uAttack1DamageDiceRolls;
+    this->pMonsterInfo.uAttack1DamageDiceSides = actor->pMonsterInfo.uAttack1DamageDiceSides;
+    this->pMonsterInfo.uAttack1DamageBonus = actor->pMonsterInfo.uAttack1DamageBonus;
+    this->pMonsterInfo.uMissleAttack1Type = actor->pMonsterInfo.uMissleAttack1Type;
+    this->pMonsterInfo.uAttack2Chance = actor->pMonsterInfo.uAttack2Chance;
+    this->pMonsterInfo.uAttack2Type = actor->pMonsterInfo.uAttack2Type;
+    this->pMonsterInfo.uAttack2DamageDiceRolls = actor->pMonsterInfo.uAttack2DamageDiceRolls;
+    this->pMonsterInfo.uAttack2DamageDiceSides = actor->pMonsterInfo.uAttack2DamageDiceSides;
+    this->pMonsterInfo.uAttack2DamageBonus = actor->pMonsterInfo.uAttack2DamageBonus;
+    this->pMonsterInfo.uMissleAttack2Type = actor->pMonsterInfo.uMissleAttack2Type;
+    this->pMonsterInfo.uSpell1UseChance = actor->pMonsterInfo.uSpell1UseChance;
+    this->pMonsterInfo.uSpell1ID = actor->pMonsterInfo.uSpell1ID;
+    this->pMonsterInfo.uSpell2UseChance = actor->pMonsterInfo.uSpell2UseChance;
+    this->pMonsterInfo.uSpell2ID = actor->pMonsterInfo.uSpell2ID;
+    this->pMonsterInfo.uResFire = actor->pMonsterInfo.uResFire;
+    this->pMonsterInfo.uResAir = actor->pMonsterInfo.uResAir;
+    this->pMonsterInfo.uResWater = actor->pMonsterInfo.uResWater;
+    this->pMonsterInfo.uResEarth = actor->pMonsterInfo.uResEarth;
+    this->pMonsterInfo.uResMind = actor->pMonsterInfo.uResMind;
+    this->pMonsterInfo.uResSpirit = actor->pMonsterInfo.uResSpirit;
+    this->pMonsterInfo.uResBody = actor->pMonsterInfo.uResBody;
+    this->pMonsterInfo.uResLight = actor->pMonsterInfo.uResLight;
+    this->pMonsterInfo.uResDark = actor->pMonsterInfo.uResDark;
+    this->pMonsterInfo.uResPhysical = actor->pMonsterInfo.uResPhysical;
+    this->pMonsterInfo.uSpecialAbilityType = actor->pMonsterInfo.uSpecialAbilityType;
+    this->pMonsterInfo.uSpecialAbilityDamageDiceRolls = actor->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
+    this->pMonsterInfo.uSpecialAbilityDamageDiceSides = actor->pMonsterInfo.uSpecialAbilityDamageDiceSides;
+    this->pMonsterInfo.uSpecialAbilityDamageDiceBonus = actor->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
+    this->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = actor->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
+    this->pMonsterInfo.field_33 = actor->pMonsterInfo.field_33;
+    this->pMonsterInfo.uID = actor->pMonsterInfo.uID;
+    this->pMonsterInfo.bQuestMonster = actor->pMonsterInfo.bQuestMonster;
+    this->pMonsterInfo.uSpellSkillAndMastery1 = actor->pMonsterInfo.uSpellSkillAndMastery1;
+    this->pMonsterInfo.uSpellSkillAndMastery2 = actor->pMonsterInfo.uSpellSkillAndMastery2;
+    this->pMonsterInfo.field_3C_some_special_attack = actor->pMonsterInfo.field_3C_some_special_attack;
+    this->pMonsterInfo.field_3E = actor->pMonsterInfo.field_3E;
+    this->pMonsterInfo.uHP = actor->pMonsterInfo.uHP;
+    this->pMonsterInfo.uAC = actor->pMonsterInfo.uAC;
+    this->pMonsterInfo.uExp = actor->pMonsterInfo.uExp;
+    this->pMonsterInfo.uBaseSpeed = actor->pMonsterInfo.uBaseSpeed;
+    this->pMonsterInfo.uRecoveryTime = actor->pMonsterInfo.uRecoveryTime;
+    this->pMonsterInfo.uAttackPreference = actor->pMonsterInfo.uAttackPreference;
+    this->word_000084_range_attack = actor->word_000084_range_attack;
+    this->word_000086_some_monster_id = actor->word_000086_some_monster_id;  // base monster class monsterlist id
+    this->uActorRadius = actor->uActorRadius;
+    this->uActorHeight = actor->uActorHeight;
+    this->uMovementSpeed = actor->uMovementSpeed;
+    this->vPosition = actor->vPosition;
+    this->vVelocity = actor->vVelocity;
+    this->uYawAngle = actor->uYawAngle;
+    this->uPitchAngle = actor->uPitchAngle;
+    this->uSectorID = actor->uSectorID;
+    this->uCurrentActionLength = actor->uCurrentActionLength;
+    this->vInitialPosition = actor->vInitialPosition;
+    this->vGuardingPosition = actor->vGuardingPosition;
+    this->uTetherDistance = actor->uTetherDistance;
+    this->uAIState = actor->uAIState;
+    this->uCurrentActionAnimation = actor->uCurrentActionAnimation;
+    this->uCarriedItemID = actor->uCarriedItemID;
+    this->field_B6 = actor->field_B6;
+    this->field_B7 = actor->field_B7;
+    this->uCurrentActionTime = actor->uCurrentActionTime;
+
+    for (unsigned int i = 0; i < 8; ++i)
+        this->pSpriteIDs[i] = actor->pSpriteIDs[i];
+
+    for (unsigned int i = 0; i < 4; ++i)
+        this->pSoundSampleIDs[i] = actor->pSoundSampleIDs[i];
+
+    for (unsigned int i = 0; i < 22; ++i)
+        this->pActorBuffs[i] = actor->pActorBuffs[i];
+
+    for (unsigned int i = 0; i < 4; ++i)
+        this->ActorHasItems[i] = actor->ActorHasItems[i];
+
+    this->uGroup = actor->uGroup;
+    this->uAlly = actor->uAlly;
+
+    for (unsigned int i = 0; i < 8; ++i)
+        this->pScheduledJobs[i] = actor->pScheduledJobs[i];
+
+    this->uSummonerID = actor->uSummonerID;
+    this->uLastCharacterIDToHit = actor->uLastCharacterIDToHit;
+    this->dword_000334_unique_name = actor->dword_000334_unique_name;
+
+    for (unsigned int i = 0; i < 12; ++i)
+        this->field_338[i] = actor->field_338[i];
+}
+
+void Actor_MM7::Deserialize(Actor *actor) {
+    actor->sNPC_ID = this->sNPC_ID;
+    actor->field_22 = this->field_22;
+    actor->uAttributes = this->uAttributes;
+    actor->sCurrentHP = this->sCurrentHP;
+
+    for (unsigned int i = 0; i < 2; ++i)
+        actor->field_2A[i] = this->field_2A[i];
+
+    actor->pMonsterInfo.uLevel = this->pMonsterInfo.uLevel;
+    actor->pMonsterInfo.uTreasureDropChance = this->pMonsterInfo.uTreasureDropChance;
+    actor->pMonsterInfo.uTreasureDiceRolls = this->pMonsterInfo.uTreasureDiceRolls;
+    actor->pMonsterInfo.uTreasureDiceSides = this->pMonsterInfo.uTreasureDiceSides;
+    actor->pMonsterInfo.uTreasureLevel = this->pMonsterInfo.uTreasureLevel;
+    actor->pMonsterInfo.uTreasureType = this->pMonsterInfo.uTreasureType;
+    actor->pMonsterInfo.uFlying = this->pMonsterInfo.uFlying;
+    actor->pMonsterInfo.uMovementType = this->pMonsterInfo.uMovementType;
+    actor->pMonsterInfo.uAIType = this->pMonsterInfo.uAIType;
+    actor->pMonsterInfo.uHostilityType = (MonsterInfo::HostilityRadius)this->pMonsterInfo.uHostilityType;
+    actor->pMonsterInfo.field_12 = this->pMonsterInfo.field_12;
+    actor->pMonsterInfo.uSpecialAttackType = (SPECIAL_ATTACK_TYPE)this->pMonsterInfo.uSpecialAttackType;
+    actor->pMonsterInfo.uSpecialAttackLevel = this->pMonsterInfo.uSpecialAttackLevel;
+    actor->pMonsterInfo.uAttack1Type = this->pMonsterInfo.uAttack1Type;
+    actor->pMonsterInfo.uAttack1DamageDiceRolls = this->pMonsterInfo.uAttack1DamageDiceRolls;
+    actor->pMonsterInfo.uAttack1DamageDiceSides = this->pMonsterInfo.uAttack1DamageDiceSides;
+    actor->pMonsterInfo.uAttack1DamageBonus = this->pMonsterInfo.uAttack1DamageBonus;
+    actor->pMonsterInfo.uMissleAttack1Type = this->pMonsterInfo.uMissleAttack1Type;
+    actor->pMonsterInfo.uAttack2Chance = this->pMonsterInfo.uAttack2Chance;
+    actor->pMonsterInfo.uAttack2Type = this->pMonsterInfo.uAttack2Type;
+    actor->pMonsterInfo.uAttack2DamageDiceRolls = this->pMonsterInfo.uAttack2DamageDiceRolls;
+    actor->pMonsterInfo.uAttack2DamageDiceSides = this->pMonsterInfo.uAttack2DamageDiceSides;
+    actor->pMonsterInfo.uAttack2DamageBonus = this->pMonsterInfo.uAttack2DamageBonus;
+    actor->pMonsterInfo.uMissleAttack2Type = this->pMonsterInfo.uMissleAttack2Type;
+    actor->pMonsterInfo.uSpell1UseChance = this->pMonsterInfo.uSpell1UseChance;
+    actor->pMonsterInfo.uSpell1ID = this->pMonsterInfo.uSpell1ID;
+    actor->pMonsterInfo.uSpell2UseChance = this->pMonsterInfo.uSpell2UseChance;
+    actor->pMonsterInfo.uSpell2ID = this->pMonsterInfo.uSpell2ID;
+    actor->pMonsterInfo.uResFire = this->pMonsterInfo.uResFire;
+    actor->pMonsterInfo.uResAir = this->pMonsterInfo.uResAir;
+    actor->pMonsterInfo.uResWater = this->pMonsterInfo.uResWater;
+    actor->pMonsterInfo.uResEarth = this->pMonsterInfo.uResEarth;
+    actor->pMonsterInfo.uResMind = this->pMonsterInfo.uResMind;
+    actor->pMonsterInfo.uResSpirit = this->pMonsterInfo.uResSpirit;
+    actor->pMonsterInfo.uResBody = this->pMonsterInfo.uResBody;
+    actor->pMonsterInfo.uResLight = this->pMonsterInfo.uResLight;
+    actor->pMonsterInfo.uResDark = this->pMonsterInfo.uResDark;
+    actor->pMonsterInfo.uResPhysical = this->pMonsterInfo.uResPhysical;
+    actor->pMonsterInfo.uSpecialAbilityType = this->pMonsterInfo.uSpecialAbilityType;
+    actor->pMonsterInfo.uSpecialAbilityDamageDiceRolls = this->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
+    actor->pMonsterInfo.uSpecialAbilityDamageDiceSides = this->pMonsterInfo.uSpecialAbilityDamageDiceSides;
+    actor->pMonsterInfo.uSpecialAbilityDamageDiceBonus = this->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
+    actor->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility = this->pMonsterInfo.uNumCharactersAttackedPerSpecialAbility;
+    actor->pMonsterInfo.field_33 = this->pMonsterInfo.field_33;
+    actor->pMonsterInfo.uID = this->pMonsterInfo.uID;
+    actor->pMonsterInfo.bQuestMonster = this->pMonsterInfo.bQuestMonster;
+    actor->pMonsterInfo.uSpellSkillAndMastery1 = this->pMonsterInfo.uSpellSkillAndMastery1;
+    actor->pMonsterInfo.uSpellSkillAndMastery2 = this->pMonsterInfo.uSpellSkillAndMastery2;
+    actor->pMonsterInfo.field_3C_some_special_attack = this->pMonsterInfo.field_3C_some_special_attack;
+    actor->pMonsterInfo.field_3E = this->pMonsterInfo.field_3E;
+    actor->pMonsterInfo.uHP = this->pMonsterInfo.uHP;
+    actor->pMonsterInfo.uAC = this->pMonsterInfo.uAC;
+    actor->pMonsterInfo.uExp = this->pMonsterInfo.uExp;
+    actor->pMonsterInfo.uBaseSpeed = this->pMonsterInfo.uBaseSpeed;
+    actor->pMonsterInfo.uRecoveryTime = this->pMonsterInfo.uRecoveryTime;
+    actor->pMonsterInfo.uAttackPreference = this->pMonsterInfo.uAttackPreference;
+    actor->word_000084_range_attack = this->word_000084_range_attack;
+    actor->word_000086_some_monster_id = this->word_000086_some_monster_id;  // base monster class monsterlist id
+    actor->uActorRadius = this->uActorRadius;
+    actor->uActorHeight = this->uActorHeight;
+    actor->uMovementSpeed = this->uMovementSpeed;
+    actor->vPosition = this->vPosition;
+    actor->vVelocity = this->vVelocity;
+    actor->uYawAngle = this->uYawAngle;
+    actor->uPitchAngle = this->uPitchAngle;
+    actor->uSectorID = this->uSectorID;
+    actor->uCurrentActionLength = this->uCurrentActionLength;
+    actor->vInitialPosition = this->vInitialPosition;
+    actor->vGuardingPosition = this->vGuardingPosition;
+    actor->uTetherDistance = this->uTetherDistance;
+    actor->uAIState = (AIState)this->uAIState;
+    actor->uCurrentActionAnimation = this->uCurrentActionAnimation;
+    actor->uCarriedItemID = this->uCarriedItemID;
+    actor->field_B6 = this->field_B6;
+    actor->field_B7 = this->field_B7;
+    actor->uCurrentActionTime = this->uCurrentActionTime;
+
+    for (unsigned int i = 0; i < 8; ++i)
+        actor->pSpriteIDs[i] = this->pSpriteIDs[i];
+
+    for (unsigned int i = 0; i < 4; ++i)
+        actor->pSoundSampleIDs[i] = this->pSoundSampleIDs[i];
+
+    for (unsigned int i = 0; i < 22; ++i)
+        actor->pActorBuffs[i] = this->pActorBuffs[i];
+
+    for (unsigned int i = 0; i < 4; ++i)
+        actor->ActorHasItems[i] = this->ActorHasItems[i];
+
+    actor->uGroup = this->uGroup;
+    actor->uAlly = this->uAlly;
+
+    for (unsigned int i = 0; i < 8; ++i)
+        actor->pScheduledJobs[i] = this->pScheduledJobs[i];
+
+    actor->uSummonerID = this->uSummonerID;
+    actor->uLastCharacterIDToHit = this->uLastCharacterIDToHit;
+    actor->dword_000334_unique_name = this->dword_000334_unique_name;
+
+    for (unsigned int i = 0; i < 12; ++i)
+        actor->field_338[i] = this->field_338[i];
+}
+
+void BLVSector_MM7::Serialize(BLVSector *sector) {
+    this->field_0 = sector->field_0;
+    this->uNumFloors = sector->uNumFloors;
+    this->field_6 = sector->field_6;
+    this->uNumWalls = sector->uNumWalls;
+    this->field_E = sector->field_E;
+    this->uNumCeilings = sector->uNumCeilings;
+    this->field_16 = sector->field_16;
+    this->uNumFluids = sector->uNumFluids;
+    this->field_1E = sector->field_1E;
+    this->uNumPortals = sector->uNumPortals;
+    this->field_26 = sector->field_26;
+    this->uNumFaces = sector->uNumFaces;
+    this->uNumNonBSPFaces = sector->uNumNonBSPFaces;
+    this->uNumCylinderFaces = sector->uNumCylinderFaces;
+    this->field_36 = sector->field_36;
+    this->pCylinderFaces = sector->pCylinderFaces;
+    this->uNumCogs = sector->uNumCogs;
+    this->field_3E = sector->field_3E;
+    this->uNumDecorations = sector->uNumDecorations;
+    this->field_46 = sector->field_46;
+    this->uNumMarkers = sector->uNumMarkers;
+    this->field_4E = sector->field_4E;
+    this->uNumLights = sector->uNumLights;
+    this->field_56 = sector->field_56;
+    this->uWaterLevel = sector->uWaterLevel;
+    this->uMistLevel = sector->uMistLevel;
+    this->uLightDistanceMultiplier = sector->uLightDistanceMultiplier;
+    this->uMinAmbientLightLevel = sector->uMinAmbientLightLevel;
+    this->uFirstBSPNode = sector->uFirstBSPNode;
+    this->exit_tag = sector->exit_tag;
+    this->pBounding = sector->pBounding;
+}
+
+void BLVSector_MM7::Deserialize(BLVSector *sector) {
+    sector->field_0 = this->field_0;
+    sector->uNumFloors = this->uNumFloors;
+    sector->field_6 = this->field_6;
+    sector->uNumWalls = this->uNumWalls;
+    sector->field_E = this->field_E;
+    sector->uNumCeilings = this->uNumCeilings;
+    sector->field_16 = this->field_16;
+    sector->uNumFluids = this->uNumFluids;
+    sector->field_1E = this->field_1E;
+    sector->uNumPortals = this->uNumPortals;
+    sector->field_26 = this->field_26;
+    sector->uNumFaces = this->uNumFaces;
+    sector->uNumNonBSPFaces = this->uNumNonBSPFaces;
+    sector->uNumCylinderFaces = this->uNumCylinderFaces;
+    sector->field_36 = this->field_36;
+    sector->pCylinderFaces = this->pCylinderFaces;
+    sector->uNumCogs = this->uNumCogs;
+    sector->field_3E = this->field_3E;
+    sector->uNumDecorations = this->uNumDecorations;
+    sector->field_46 = this->field_46;
+    sector->uNumMarkers = this->uNumMarkers;
+    sector->field_4E = this->field_4E;
+    sector->uNumLights = this->uNumLights;
+    sector->field_56 = this->field_56;
+    sector->uWaterLevel = this->uWaterLevel;
+    sector->uMistLevel = this->uMistLevel;
+    sector->uLightDistanceMultiplier = this->uLightDistanceMultiplier;
+    sector->uMinAmbientLightLevel = this->uMinAmbientLightLevel;
+    sector->uFirstBSPNode = this->uFirstBSPNode;
+    sector->exit_tag = this->exit_tag;
+    sector->pBounding = this->pBounding;
+}
+
+void FontData_MM7::Serialize(FontData *font) {
+    this->cFirstChar = font->cFirstChar;
+    this->cLastChar = font->cLastChar;
+    this->field_2 = font->field_2;
+    this->field_3 = font->field_3;
+    this->field_4 = font->field_4;
+    this->uFontHeight = font->uFontHeight;
+    this->field_7 = font->field_7;
+    this->palletes_count = font->palletes_count;
+
+    for (unsigned int i = 0; i < 256; ++i)
+        this->pMetrics[i] = font->pMetrics[i];
+
+    for (unsigned int i = 0; i < 256; ++i)
+        this->font_pixels_offset[i] = font->font_pixels_offset[i];
+
+    std::copy(font->pFontData.begin(), font->pFontData.end(), this->pFontData);
+}
+
+void FontData_MM7::Deserialize(FontData *font, size_t size) {
+    font->cFirstChar = this->cFirstChar;
+    font->cLastChar = this->cLastChar;
+    font->field_2 = this->field_2;
+    font->field_3 = this->field_3;
+    font->field_4 = this->field_4;
+    font->uFontHeight = this->uFontHeight;
+    font->field_7 = this->field_7;
+    font->palletes_count = this->palletes_count;
+
+    for (unsigned int i = 0; i < 256; ++i)
+        font->pMetrics[i] = this->pMetrics[i];
+
+    for (unsigned int i = 0; i < 256; ++i)
+        font->font_pixels_offset[i] = this->font_pixels_offset[i];
+
+    font->pFontData.assign(this->pFontData, &this->pFontData[size - 4128]);
 }

@@ -585,7 +585,7 @@ void Party::Reset() {
 
     PartyTimes._shop_ban_times.fill(GameTime(0));
 
-    memcpy(pNPCStats->pNewNPCData, pNPCStats->pNPCData, 0x94BCu);
+    memcpy(pNPCStats->pNewNPCData, pNPCStats->pNPCData, sizeof(pNPCStats->pNPCData));
     memcpy(pNPCStats->pGroups_copy, pNPCStats->pGroups, 0x66u);
     pNPCStats->pNewNPCData[3].uFlags |= 128;  //|= 0x80u; Lady Margaret
     _494035_timed_effects__water_walking_damage__etc();

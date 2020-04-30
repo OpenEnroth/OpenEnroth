@@ -13,7 +13,11 @@
 #endif
 
 #if defined(MM_ARCH_X64)
+#ifdef __APPLE__
+typedef long long ULONG_PTR;
+#else
 typedef unsigned __int64 ULONG_PTR;
+#endif
 #else
 typedef unsigned long ULONG_PTR;
 #endif

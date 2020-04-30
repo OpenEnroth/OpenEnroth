@@ -872,7 +872,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                     }
                 }
             } else {
-                memset(&local_0, 0, 0x68);
+                memset(&local_0, 0, sizeof(Particle_sw));
                 local_0.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                 local_0.uDiffuse = 0xFF3C1E;
@@ -4561,7 +4561,7 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
         uint i = 0;
         for (v78 = pSkyPolygon.uNumVertices; v78; --v78) {
             ++HEXRAYS_LODWORD(v73);
-            memcpy(&VertexRenderList[i], &array_507D30[i], 0x30u);
+            memcpy(&VertexRenderList[i], &array_507D30[i], sizeof(RenderVertexSoft));
             HEXRAYS_LODWORD(v76) += 48;
             if (v28 < array_507D30[i].vWorldViewProjY |
                 v28 == array_507D30[i].vWorldViewProjY ||
@@ -4703,7 +4703,7 @@ LABEL_40:
             --HEXRAYS_HIDWORD(v69)) {
             if (v48 >= VertexRenderList[i].vWorldViewProjY) {
                 ++i;
-                memcpy(&array_507D30[i], &VertexRenderList[i], 0x30u);
+                memcpy(&array_507D30[i], &VertexRenderList[i], sizeof(RenderVertexSoft));
             }
         }
     }
@@ -4715,8 +4715,7 @@ LABEL_40:
         for (v80 = v73; v80 != 0.0; --HEXRAYS_LODWORD(v80)) {
             if (v51 <= VertexRenderList[pNumVertices].vWorldViewProjY) {
                 ++pNumVertices;
-                memcpy(&array_507D30[pNumVertices],
-                    &VertexRenderList[pNumVertices], 0x30u);
+                memcpy(&array_507D30[pNumVertices], &VertexRenderList[pNumVertices], sizeof(RenderVertexSoft));
             }
         }
     }

@@ -146,7 +146,7 @@ bool PauseGameDrawing() {
 
 OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     unsigned int width,
-    unsigned int height, int button,
+    unsigned int height, GUIButton *button,
     const String &hint
 )
     : GUIWindow(WINDOW_CastSpell, x, y, width, height, button, hint) {
@@ -514,7 +514,7 @@ void GUIWindow::HouseDialogManager() {
         game_ui_evtnpc);
     render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f,
         pNPCPortraits_y[0][0] / 480.0f,
-        pDialogueNPCPortraits[(int)v4]);
+        pDialogueNPCPortraits[(int64_t)v4]);
     if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
@@ -768,7 +768,7 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
 }
 
 GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth,
-    unsigned int uHeight, int pButton, const String &hint
+    unsigned int uHeight, GUIButton *pButton, const String &hint
 )
     : eWindowType(windowType) {
     this->mouse = EngineIoc::ResolveMouse();
@@ -796,7 +796,7 @@ void DrawJoinGuildWindow(int pEventCode) {
     current_npc_text = (char *)pNPCTopics[pEventCode + 99].pText;
     ContractSelectText(pEventCode);
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, pEventCode);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)pEventCode);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
         localization->GetString(34),
@@ -999,14 +999,14 @@ void CreateScrollWindow() {
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
     char *v1 =
-        pItemsTable->pItems[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C + 700]
+        pItemsTable->pItems[(uint64_t)pGUIWindow_ScrollWindow->ptr_1C + 700]
         .pName;
 
     a1.DrawTitleText(
         pFontCreate, 0, 0, 0,
         StringPrintf(format_4E2D80, Color16(0xFFu, 0xFFu, 0x9Bu), v1), 3);
     a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0,
-        pScrolls[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C], 0, 0,
+        pScrolls[(uint64_t)pGUIWindow_ScrollWindow->ptr_1C], 0, 0,
         0);
 }
 
@@ -1016,7 +1016,7 @@ void CreateMsgScrollWindow(signed int mscroll_id) {
         if (mscroll_id <= 782) {
             pGUIWindow_ScrollWindow =
                 new GUIWindow_Scroll(0, 0, window->GetWidth(),
-                    window->GetHeight(), mscroll_id - 700, "");
+                    window->GetHeight(), (GUIButton *)mscroll_id - 700, "");
         }
     }
 }
@@ -1561,8 +1561,8 @@ void ClickNPCTopic(int uMessageParam) {
                         v4->SetVariable(VAR_Award,
                             dword_F8B1AC_award_bit_number);
                         ++v4;
-                    } while ((signed int)v4 <
-                        (signed int)pParty->pHirelings.data());
+                    } while ((int64_t)v4 <
+                        (int64_t)pParty->pHirelings.data());
                     switch (dword_F8B1D8) {
                     case 19:
                         pEventNumber = pCurrentNPCInfo->evt_A;
@@ -1644,19 +1644,18 @@ void ClickNPCTopic(int uMessageParam) {
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
     if (pParty->pHirelings[0].pName) {
-        memcpy(&pParty->pHirelings[1], pCurrentNPCInfo,
-            sizeof(pParty->pHirelings[1]));
+        memcpy(&pParty->pHirelings[1], pCurrentNPCInfo, sizeof(pParty->pHirelings[1]));
         v24 = pCurrentNPCInfo->pName;
         v22 = pParty->pHireling2Name;
     } else {
-        memcpy(pParty->pHirelings.data(), pCurrentNPCInfo, 0x4Cu);
+        memcpy(&pParty->pHirelings[0], pCurrentNPCInfo, sizeof(pParty->pHirelings[0]));
         v24 = pCurrentNPCInfo->pName;
         v22 = pParty->pHireling1Name;
     }
     strcpy(v22, v24);
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
-    PrepareHouse((HOUSE_ID)(int)window_SpeakInHouse->ptr_1C);
+    PrepareHouse((HOUSE_ID)(int64_t)window_SpeakInHouse->ptr_1C);
     dialog_menu_id = HOUSE_DIALOGUE_MAIN;
 
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1676,7 +1675,7 @@ void _4B3FE5_training_dialogue(int a4) {
     String what = _4B254D_SkillMasteryTeacher(
         a4);  // might be needed because of contract_approved ?
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, a4);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)a4);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0,
         localization->GetString(34), { { ui_exit_cancel_button_background } });
@@ -1778,19 +1777,19 @@ void CheckBountyRespawnAndAward() {
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
     // get new monster for hunting
     if (pParty->PartyTimes.bountyHunting_next_generation_time[(
-        int)((char *)window_SpeakInHouse->ptr_1C - 102)] <
+        int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] <
         pParty->GetPlayingTime()) {
         pParty->monster_for_hunting_killed[(
-            int)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
+            int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
         pParty->PartyTimes.bountyHunting_next_generation_time[(
-            int)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+            int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
             GameTime((int64_t)((double)(0x12750000 *
             (pParty->uCurrentMonth +
                 12 * pParty->uCurrentYear - 14015)) *
                 0.033333335));
         for (i = rand();; i = rand()) {
             rand_monster_id = i % 258 + 1;
-            pParty->monster_id_for_hunting[(int)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+            pParty->monster_id_for_hunting[(int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
                 rand_monster_id;
             if ((uint16_t)rand_monster_id < 0x73u ||
                 (uint16_t)rand_monster_id > 0x84u) {
@@ -1807,22 +1806,22 @@ void CheckBountyRespawnAndAward() {
         }
     }
     bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[(
-        int)((char *)window_SpeakInHouse->ptr_1C - 102)];
+        int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)];
     if (!pParty->monster_for_hunting_killed[(
-        int)((char *)window_SpeakInHouse->ptr_1C - 102)]) {
+        int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)]) {
         bountyHunting_text = pNPCTopics[351].pText;
         if (!pParty->monster_id_for_hunting[(
-            int)((char *)window_SpeakInHouse->ptr_1C - 102)])
+            int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)])
             bountyHunting_text = pNPCTopics[353].pText;
     } else {  // get prize
         if (pParty->monster_id_for_hunting[(
-            int)((char *)window_SpeakInHouse->ptr_1C - 102)]) {
+            int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)]) {
             pParty->PartyFindsGold(
                 100 *
                 pMonsterStats
                 ->pInfos
                 [(unsigned __int16)pParty->monster_id_for_hunting[(
-                    int)((char *)window_SpeakInHouse->ptr_1C -
+                    int64_t)((char *)window_SpeakInHouse->ptr_1C -
                         102)]]
             .uLevel,
                 0);
@@ -1831,12 +1830,12 @@ void CheckBountyRespawnAndAward() {
             pParty->uNumBountiesCollected +=
                 100 * pMonsterStats
                 ->pInfos[pParty->monster_id_for_hunting[(
-                    int)((char *)window_SpeakInHouse->ptr_1C - 102)]]
+                    int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)]]
                 .uLevel;
             pParty->monster_id_for_hunting[(
-                int)((char *)window_SpeakInHouse->ptr_1C - 102)] = 0;
+                int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] = 0;
             pParty->monster_for_hunting_killed[(
-                int)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
+                int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
         }
         bountyHunting_text = pNPCTopics[352].pText;
     }
@@ -2211,7 +2210,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
 
     NPCData *npc = nullptr;
     if (dword_5C35D4)
-        npc = HouseNPCData[(unsigned int)((char *)pDialogueNPCCount +
+        npc = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount +
             -(dword_591080 != 0))];  //- 1
     else
         npc = GetNPCData(sDialogue_SpeakingActorNPC_ID);
@@ -2367,26 +2366,26 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
             case 25:  // base prices
                 v29 = pPlayer->GetBaseBuyingPrice(
                     a3->GetValue(),
-                    p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+                    p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
                 switch (shop_screen) {
                 case 3:
                     v29 = pPlayer->GetBaseSellingPrice(
                         a3->GetValue(),
-                        p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
                     break;
                 case 4:
                     v29 = pPlayer->GetBaseIdentifyPrice(
-                        p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
                     break;
                 case 5:
                     v29 = pPlayer->GetBaseRepairPrice(
                         a3->GetValue(),
-                        p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
                     break;
                 case 6:
                     v29 = pPlayer->GetBaseSellingPrice(
                         a3->GetValue(),
-                        p2DEvents[(signed int)a4 - 1]
+                        p2DEvents[(int64_t)a4 - 1]
                         .fPriceMultiplier) /
                         2;
                     break;
@@ -2398,13 +2397,13 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
             case 27:  // actual price
                 v29 = pPlayer->GetBuyingPrice(
                     a3->GetValue(),
-                    p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+                    p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
                 if (shop_screen == 3) {
                     // v29 = pPlayer->GetPriceSell(a3->GetValue(),
                     // p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
                     v29 = pPlayer->GetPriceSell(
                         *a3,
-                        p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
                     // if (a3->IsBroken())
                     // v29 = 1;
                     sprintf(v1, "%lu", v29);
@@ -2415,14 +2414,14 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                     if (shop_screen == 5) {
                         v29 = pPlayer->GetPriceRepair(
                             a3->GetValue(),
-                            p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+                            p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
                     } else {
                         if (shop_screen == 6) {
                             // v29 = pPlayer->GetPriceSell(a3->GetValue(),
                             // p2DEvents[(signed int)a4 -
                             // 1].fPriceMultiplier) / 2;
                             v29 = pPlayer->GetPriceSell(
-                                *a3, p2DEvents[(signed int)a4 - 1]
+                                *a3, p2DEvents[(int64_t)a4 - 1]
                                 .fPriceMultiplier) /
                                 2;
                             // if (a3->IsBroken())
@@ -2441,19 +2440,19 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                 sprintf(
                     v1, "%lu",
                     pPlayer->GetPriceIdentification(
-                        p2DEvents[(signed int)a4 - 1].fPriceMultiplier));
+                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier));
                 result += v1;
                 break;
 
             case 28:  // shop type - blacksmith ect..
-                result += p2DEvents[(signed int)a4 - 1].pProprieterTitle;
+                result += p2DEvents[(int64_t)a4 - 1].pProprieterTitle;
                 break;
 
             case 29:  // identify cost
                 sprintf(
                     v1, "%lu",
                     pPlayer->GetPriceIdentification(
-                        p2DEvents[(signed int)a4 - 1].fPriceMultiplier));
+                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier));
                 result += v1;
                 break;
             case 30:

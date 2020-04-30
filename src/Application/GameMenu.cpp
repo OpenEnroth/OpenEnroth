@@ -87,21 +87,21 @@ void Menu::EventLoop() {
             case UIMSG_ArrowUp:
                 --pSaveListPosition;
                 if (pSaveListPosition < 0) pSaveListPosition = 0;
-                new OnButtonClick2(215, 199, 17, 17, (int)pBtnArrowUp);
+                new OnButtonClick2(215, 199, 17, 17, pBtnArrowUp);
                 continue;
 
             case UIMSG_DownArrow:
                 ++pSaveListPosition;
                 if (pSaveListPosition > (param - 7) ) pSaveListPosition = (param - 7);
-                new OnButtonClick2(215, 323, 17, 17, (int)pBtnDownArrow);
+                new OnButtonClick2(215, 323, 17, 17, pBtnDownArrow);
                 continue;
 
             case UIMSG_Cancel:
-                new OnCancel(350, 302, 106, 42, (int)pBtnCancel);
+                new OnCancel(350, 302, 106, 42, pBtnCancel);
                 continue;
 
             case UIMSG_SaveLoadBtn:
-                new OnSaveLoad(241, 302, 106, 42, (int)pBtnLoadSlot);
+                new OnSaveLoad(241, 302, 106, 42, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot: {
                 if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 ==
@@ -252,7 +252,7 @@ void Menu::EventLoop() {
                     }
                     double v19 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                     // engine->pGammaController->Initialize(v19);
-                    new OnButtonClick2(21, 161, 0, 0, (int)pBtn_SliderLeft,
+                    new OnButtonClick2(21, 161, 0, 0, pBtn_SliderLeft,
                                        String(), false);
                     pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                     continue;
@@ -263,7 +263,7 @@ void Menu::EventLoop() {
                         double v21 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                         // engine->pGammaController->Initialize(v21);
                         new OnButtonClick2(213, 161, 0, 0,
-                                           (int)pBtn_SliderRight, String(),
+                                           pBtn_SliderRight, String(),
                                            false);
                         pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                         continue;
@@ -291,10 +291,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->music_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 216, 0, 0, (int)pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 216, 0, 0, pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 216, 0, 0, (int)pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 216, 0, 0, pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;  // for mouse
@@ -311,10 +311,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->sound_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 162, 0, 0, (int)pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 162, 0, 0, pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 162, 0, 0, (int)pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 162, 0, 0, pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;
@@ -342,10 +342,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->voice_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 270, 0, 0, (int)pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 270, 0, 0, pBtn_SliderLeft, String(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 270, 0, 0, (int)pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 270, 0, 0, pBtn_SliderRight, String(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;

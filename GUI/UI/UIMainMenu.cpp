@@ -89,19 +89,19 @@ void GUIWindow_MainMenu::EventLoop() {
 
         switch (pUIMessageType) {  // For buttons of window MainMenu
         case UIMSG_MainMenu_ShowPartyCreationWnd:
-            new OnButtonClick2(495, 172, 0, 0, (int)pBtnNew);
+            new OnButtonClick2(495, 172, 0, 0, pBtnNew);
             SetCurrentMenuID(MENU_NEWGAME);
             break;
         case UIMSG_MainMenu_ShowLoadWindow:
-            new OnButtonClick2(495, 227, 0, 0, (int)pBtnLoad);
+            new OnButtonClick2(495, 227, 0, 0, pBtnLoad);
             SetCurrentMenuID(MENU_SAVELOAD);
             break;
         case UIMSG_ShowCredits:
-            new OnButtonClick2(495, 282, 0, 0, (int)pBtnCredits);
+            new OnButtonClick2(495, 282, 0, 0, pBtnCredits);
             SetCurrentMenuID(MENU_CREDITS);
             break;
         case UIMSG_ExitToWindows:
-            new OnButtonClick2(495, 337, 0, 0, (int)pBtnExit);
+            new OnButtonClick2(495, 337, 0, 0, pBtnExit);
             SetCurrentMenuID(MENU_EXIT_GAME);
             break;
         case UIMSG_ChangeGameState:

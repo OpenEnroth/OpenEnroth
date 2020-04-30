@@ -725,18 +725,27 @@ bool IndoorCameraD3D::_4371C3(RenderVertexSoft *pVertices,  // function appears 
         pVerticesa = (char *)&static_4371C3_array_50E5E0[0].vWorldViewProjY -
                      (char *)pVertices;
         v8 = (char *)&static_4371C3_array_50E5E0[0].vWorldPosition.y;
-        v9 = (int)&v6->vWorldPosition.z;
-        do {
-            ++v12;
-            *((int *)v8 - 1) = *(int *)(v9 - 8);
-            *(int *)v8 = *(int *)(v9 - 4);
-            v8 += 48;
-            *(float *)(pOutNumVerticesa + v9) = *(float *)v9;
-            *(float *)(pVerticesa + v9) = *(float *)(v9 + 28);
-            *(float *)((char *)&static_4371C3_array_50E5E0[0]._rhw -
-                       (char *)v6 + v9) = *(float *)(v9 + 32);
-            v9 += 48;
-        } while (v12 < (signed int)*v7);
+//        v9 = (int)&v6->vWorldPosition.z;
+//        do {
+//            ++v12;
+//            *((int *)v8 - 1) = *(int *)(v9 - 8);
+//            *(int *)v8 = *(int *)(v9 - 4);
+//            v8 += 48;
+//            *(float *)(pOutNumVerticesa + v9) = *(float *)v9;
+//            *(float *)(pVerticesa + v9) = *(float *)(v9 + 28);
+//            *(float *)((char *)&static_4371C3_array_50E5E0[0]._rhw -
+//                       (char *)v6 + v9) = *(float *)(v9 + 32);
+//            v9 += 48;
+//        } while (v12 < (signed int)*v7);
+
+        for (uint i = 1; i < (signed int)*v7; ++i) {
+            static_4371C3_array_50E5E0[i].vWorldPosition.x = pVertices->vWorldPosition.x;
+            static_4371C3_array_50E5E0[i].vWorldPosition.y = pVertices->vWorldPosition.y;
+            static_4371C3_array_50E5E0[i].vWorldPosition.z = pVertices->vWorldPosition.z;
+            static_4371C3_array_50E5E0[i].vWorldViewProjX = pVertices->vWorldViewProjX;
+            static_4371C3_array_50E5E0[i].vWorldViewProjY = pVertices->vWorldViewProjY;
+            pVertices++;
+        }
     }
     return CullFaceToFrustum(static_4371C3_array_50E5E0, v7, v6,
                            thisa->FrustumPlanes, 4, 0,

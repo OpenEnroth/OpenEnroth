@@ -1,5 +1,34 @@
 #pragma once
+
+#include <vector>
+
 #include "Engine/Strings.h"
+
+#pragma pack(push, 1)
+struct GUICharMetric {
+    uint32_t uLeftSpacing;
+    uint32_t uWidth;
+    uint32_t uRightSpacing;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct FontData {
+    uint8_t cFirstChar;  // 0
+    uint8_t cLastChar;   // 1
+    uint8_t field_2;
+    uint8_t field_3;
+    uint8_t field_4;
+    uint16_t uFontHeight;  // 5-6
+    uint8_t field_7;
+    uint32_t palletes_count;
+    uint8_t *pFontPalettes[5];
+    GUICharMetric pMetrics[256];
+    uint32_t font_pixels_offset[256];
+    std::vector<uint8_t> pFontData;  // array of font pixels
+//    uint8_t pFontData[0];  // array of font pixels
+};
+#pragma pack(pop)
 
 class GUIWindow;
 class Image;
@@ -7,6 +36,7 @@ struct FontData;
 
 class GUIFont {
  public:
+    GUIFont () : pData(new FontData()) {}
     static GUIFont *LoadFont(const char *pFontFile, const char *pFontPalette);
 
     bool IsCharValid(unsigned char c) const;

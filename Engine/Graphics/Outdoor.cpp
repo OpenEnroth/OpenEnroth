@@ -404,7 +404,7 @@ void OutdoorLocation::MessWithLUN() {
     this->field_CF8 = 4;
     this->field_D00 = 4;
     this->field_CE8 = 0;
-    this->field_D3C = (int)this->pSpriteIDs_LUN;
+    this->field_D3C = this->pSpriteIDs_LUN;
     this->field_D40 = 0;
     this->field_D44 = 0;
     this->field_D48 = 0;
@@ -632,13 +632,13 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
     int v14;                      // edx@9
                                   //  int v15; // eax@15
     unsigned __int8 *pMapHeight;  // ebx@15
-    int v17;                      // eax@15
+    char *v17;                      // eax@15
     int v18;                      // ecx@15
     int v19;                      // esi@15
     int v20;                      // edi@15
     int v21;                      // edx@15
     int v22;                      // ecx@15
-    int v23;                      // ebx@15
+    char *v23;                      // ebx@15
     int v24;                      // ecx@15
     int v25;                      // ST28_4@15
     double v26;                   // st7@15
@@ -710,7 +710,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         // v15 = pOutLocTerrain->field_10;
                         // v55 = pOutLocTerrain->field_10;
                         pMapHeight = this->pHeightmap;
-                        v17 = (int)(&pMapHeight[v13 * this->field_10] + v14);
+                        v17 = (char *)(&pMapHeight[v13 * this->field_10] + v14);
                         v18 = -v13;
                         v19 = (64 - v13) << 9;
                         v20 = 32 * *(char *)v17;
@@ -718,7 +718,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
 
                         v22 = (v18 + 63) << 9;
                         v41 = v22;
-                        v23 = (int)(&pMapHeight[this->field_10 * (v13 + 1)] +
+                        v23 = (char *)(&pMapHeight[this->field_10 * (v13 + 1)] +
                                     v14);
                         v24 = v22 - v19;
                         v40 = 32 * *(char *)v23;
@@ -1250,10 +1250,20 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
 
-    assert(sizeof(Actor) == 836);
+    assert(sizeof(Actor_MM7) == 836);
+
     // pFilename = (char *)(836 * uNumActors);
-    memcpy(pActors.data(), pSrc + 4, uNumActors * sizeof(Actor));
-    pSrc += 4 + uNumActors * sizeof(Actor);
+    // memcpy(pActors.data(), pSrc + 4, uNumActors * sizeof(Actor));
+
+    Actor_MM7 *tmp_actor = (Actor_MM7 *)malloc(sizeof(Actor_MM7));
+
+    for (int i = 0; i < uNumActors; ++i) {
+        memcpy(tmp_actor, pSrc + 4 + i * sizeof(Actor_MM7), sizeof(Actor_MM7));
+        tmp_actor->Deserialize(&pActors[i]);
+    }
+    free(tmp_actor);
+
+    pSrc += 4 + uNumActors * sizeof(Actor_MM7);
     // v92 = (char *)v91 + (int)pFilename;
     pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
 
@@ -1266,6 +1276,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     // pFilename = (char *)(112 * uNumSpriteObjects);
     memcpy(pSpriteObjects.data(), pSrc + 4,
            uNumSpriteObjects * sizeof(SpriteObject));
+
     pSrc += 4 + uNumSpriteObjects * sizeof(SpriteObject);
 
     // v94 = (char *)v93 + (int)pFilename;
@@ -2241,7 +2252,7 @@ void ODM_ProcessPartyActions() {
     int v69;             // eax@263
     bool v77;            // edx@297
     bool v78;            // ecx@303
-    int v79;             // ecx@314
+    short *v79;             // ecx@314
     __int16 v80;         // dx@317
     int pTerrainHeight;  // eax@321
     int v87;             // [sp-20h] [bp-B4h]@248
@@ -2370,7 +2381,7 @@ void ODM_ProcessPartyActions() {
     if (pParty->bFlying)  //в полёте
         ceiling_height =
             GetCeilingHeight(pX, pY, party_new_Z + pParty->uPartyHeight,
-                             (int)&v102);  //высота потолка
+                             &v102);  //высота потолка
     // v107 = bmodel_standing_on_pid == 0;
     on_ground = v111 + 1;  //на земле
     //**************************************
@@ -3172,7 +3183,7 @@ void ODM_ProcessPartyActions() {
             // pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |=
             // 1u;
             v79 =
-                (int)&stru_5E4C90_MapPersistVars._decor_events
+                (short *)&stru_5E4C90_MapPersistVars._decor_events
                     [20 *
                          pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID +
                      119];
@@ -3253,7 +3264,7 @@ void ODM_ProcessPartyActions() {
 }
 
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
-                     int pFaceID) {
+                     int *pFaceID) {
     int v13;      // eax@25
     int v14;      // edx@27
     int v16;      // ST18_4@29

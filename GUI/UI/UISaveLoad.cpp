@@ -355,7 +355,7 @@ void MainMenuLoad_EventLoop() {
             break;
         }
         case UIMSG_SaveLoadBtn: {
-            new OnSaveLoad(pGUIWindow_CurrentMenu->uFrameX + 241, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, (int)pBtnLoadSlot);
+            new OnSaveLoad(pGUIWindow_CurrentMenu->uFrameX + 241, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, pBtnLoadSlot);
             break;
         }
         case UIMSG_DownArrow: {
@@ -364,18 +364,18 @@ void MainMenuLoad_EventLoop() {
                 pSaveListPosition = (param - 7);
             // if (pSaveListPosition < 1)
              //   pSaveListPosition = 0;
-            new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323, 0, 0, (int)pBtnDownArrow);
+            new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323, 0, 0, pBtnDownArrow);
             break;
         }
         case UIMSG_ArrowUp: {
             --pSaveListPosition;
             if (pSaveListPosition < 0)
                 pSaveListPosition = 0;
-            new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197, 0, 0, (int)pBtnArrowUp);
+            new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197, 0, 0, pBtnArrowUp);
             break;
         }
         case UIMSG_Cancel: {
-            new OnCancel3(pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, (int)pBtnCancel);
+            new OnCancel3(pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302, 61, 28, pBtnCancel);
             break;
         }
         case UIMSG_Escape: {

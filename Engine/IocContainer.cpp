@@ -32,6 +32,8 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/Player.h"
 
+#include "Engine/Serialization/LegacyImages.h"
+
 #include "Engine/Spells/CastSpellInfo.h"
 
 #include "Engine/Tables/FactionTable.h"
@@ -126,32 +128,28 @@ Vis *IocContainer::vis = nullptr;
 
 void IntegrityTest() {
     // ToDo(_): make platform independent
-    static_assert(sizeof(BLVSector) == 0x74, "Wrong type size");
-    static_assert(sizeof(BLVDoor) == 0x50, "Wrong type size");
-    static_assert(sizeof(Particle_sw) == 0x68, "Wrong type size");
-    static_assert(sizeof(Particle) == 0x68, "Wrong type size");
-    static_assert(sizeof(ParticleEngine) == 0xE430, "Wrong type size");
-    static_assert(sizeof(Lightmap) == 0xC1C, "Wrong type size");
-    static_assert(sizeof(Vis_SelectionList) == 0x2008, "Wrong type size");
+    // static_assert(sizeof(BLVDoor) == 0x50, "Wrong type size");
+    // static_assert(sizeof(Particle_sw) == 0x68, "Wrong type size");
+    // static_assert(sizeof(Particle) == 0x68, "Wrong type size");
+    // static_assert(sizeof(ParticleEngine) == 0xE430, "Wrong type size");
+    // static_assert(sizeof(Lightmap) == 0xC1C, "Wrong type size");
+    // static_assert(sizeof(Vis_SelectionList) == 0x2008, "Wrong type size");
     // static_assert(sizeof(Vis) == 0x20D0, "Wrong type size");
-    static_assert(sizeof(ProjectileAnim) == 0x1C, "Wrong type size");
-    static_assert(sizeof(IndoorCameraD3D_Vec3) == 0x10, "Wrong type size");
-    static_assert(sizeof(IndoorCameraD3D_Vec4) == 0x18, "Wrong type size");  // should be 14 (10 vec3 + 4 vdtor)  but 18 coz of
+    // static_assert(sizeof(ProjectileAnim) == 0x1C, "Wrong type size");
+    // static_assert(sizeof(IndoorCameraD3D_Vec3) == 0x10, "Wrong type size");
+    // static_assert(sizeof(IndoorCameraD3D_Vec4) == 0x18, "Wrong type size");  // should be 14 (10 vec3 + 4 vdtor)  but 18 coz of
                                                                              // his +4 from own vdtor, but it is odd since vdtor
                                                                              // already present from vec3
-    static_assert(sizeof(NPCData) == 0x4C, "Wrong type size");
-    static_assert(sizeof(NPCStats) == 0x17FFC, "Wrong type size");
-    static_assert(sizeof(BspRenderer) == 0x53740, "Wrong type size");
-    static_assert(sizeof(ViewingParams) == 0x26C, "Wrong type size");
-    static_assert(sizeof(Bloodsplat) == 0x28, "Wrong type size");
-    static_assert(sizeof(BloodsplatContainer) == 0xA0C, "Wrong type size");
-    static_assert(sizeof(_2devent) == 0x34, "Wrong type size");
-    static_assert(sizeof(StorylineText) == 0x160, "Wrong type size");
-    static_assert(sizeof(Decal) == 0xC20, "Wrong type size");
-    static_assert(sizeof(MonsterInfo) == 0x58, "Wrong type size");
-    static_assert(sizeof(MonsterStats) == 0x5BA0, "Wrong type size");
-    static_assert(sizeof(BLVSector) == 116, "Wrong type size");
-    static_assert(sizeof(Actor) == 836, "Wrong type size");
+    // static_assert(sizeof(NPCData) == 0x4C, "Wrong type size");
+    // static_assert(sizeof(NPCStats) == 0x17FFC, "Wrong type size");
+    // static_assert(sizeof(BspRenderer) == 0x53740, "Wrong type size");
+    // static_assert(sizeof(ViewingParams) == 0x26C, "Wrong type size");
+    // static_assert(sizeof(Bloodsplat) == 0x28, "Wrong type size");
+    // static_assert(sizeof(BloodsplatContainer) == 0xA0C, "Wrong type size");
+    // static_assert(sizeof(_2devent) == 0x34, "Wrong type size");
+    // static_assert(sizeof(StorylineText) == 0x160, "Wrong type size");
+    // static_assert(sizeof(Decal) == 0xC20, "Wrong type size");
+    // static_assert(sizeof(MonsterStats) == 0x5BA0, "Wrong type size");
 
     // ToDo(_): move to usage place
     static_assert(sizeof(OverlayDesc) == 8, "Wrong type size");

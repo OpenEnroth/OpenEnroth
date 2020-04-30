@@ -105,7 +105,7 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154 *a4,
     // a11 = a6;
     if (a7) {
         for (int i = 0; i < a5; i++) {
-            memcpy(&static_AE4F90[i], a6, 0x30u);
+            memcpy(&static_AE4F90[i], a6, sizeof(RenderVertexSoft));
             ++a6;
         }
         v16 = a4;
@@ -150,7 +150,7 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154 *a4,
             if (!this->_49B790_build_decal_geometry(
                 point_light_level, LocationFlags,
                 &bloodsplat_container->std__vector_pBloodsplats[this->std__vector_30B00C[i]],
-                (int)&BloodSplatX,
+                (int64_t)&BloodSplatX,
                 bloodsplat_container->std__vector_pBloodsplats[this->std__vector_30B00C[i]].radius,
                 ColourMult,
                 bloodsplat_container->std__vector_pBloodsplats[this->std__vector_30B00C[i]].dot_dist,
@@ -163,7 +163,7 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154 *a4,
 
 //----- (0049B790) --------------------------------------------------------
 char DecalBuilder::_49B790_build_decal_geometry(
-    int LightLevel, char LocationFlags, Bloodsplat *blood, int DecalXPos, float DecalRadius,
+    int LightLevel, char LocationFlags, Bloodsplat *blood, int64_t DecalXPos, float DecalRadius,
     unsigned int uColorMultiplier, float DecalDotDist, stru314 *FacetNormals, signed int a10,
     RenderVertexSoft *a11, char uClipFlags) {
 

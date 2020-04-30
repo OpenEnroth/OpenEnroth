@@ -18,7 +18,7 @@ int pChestWidthsByType[8] = {9, 9, 9, 9, 9, 9, 9, 9};
 int pChestHeightsByType[8] = {9, 9, 9, 9, 9, 9, 9, 9};
 
 GUIWindow_Chest::GUIWindow_Chest(unsigned int chest_id)
-    : GUIWindow(WINDOW_Chest, 0, 0, window->GetWidth(), window->GetHeight(), chest_id) {
+    : GUIWindow(WINDOW_Chest, 0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)chest_id) {
     CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
     CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
     CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
@@ -43,7 +43,7 @@ void GUIWindow_Chest::Update() {
                                     pBtn_ExitCancel->uY / 480.0f,
                                     ui_exit_cancel_button_background);
     } else if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
-        auto uChestID = (unsigned int)ptr_1C;
+        auto uChestID = (uint64_t)ptr_1C;
 
         int *v16 = render->pActiveZBuffer;
         render->ClearZBuffer(0, 479);

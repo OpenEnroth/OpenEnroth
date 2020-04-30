@@ -508,8 +508,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsig
     a9 = FaceVertexList;
     if (a6) {
         for (uint i = 0; i < uNumVertices; ++i)
-            memcpy(&static_69B140[i], FaceVertexList + i,
-                   sizeof(RenderVertexSoft));
+            memcpy(&static_69B140[i], FaceVertexList + i, sizeof(RenderVertexSoft));
 
         if (pIndoorCameraD3D->_437376(FacePlane, static_69B140, &uNumVertices) == 1) {
             if (!uNumVertices) return false;
@@ -846,9 +845,9 @@ void LightmapBuilder::Draw_183808_Lightmaps() {
 
 // //////////////////////OTHER////////////////////////////////////////////////////////
 // ----- (0045CA88) --------------------------------------------------------
-int LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
+int *LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
                              Vec3_float_ *pNormal) {
-    int result;            // eax@1
+    int *result;            // eax@1
     LightsData *v6;        // ecx@2
     RenderVertexSoft *v7;  // ebx@2
     double v8;             // st7@2
@@ -877,7 +876,7 @@ int LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
     // thisa = this;
     v20 = 0.0;
     result = _45CBD4(a3, a4, dword_69B010.data(), &v22);
-    for (i = 0; i < v22; result = i) {
+    for (i = 0; i < v22; result = (int *)i) {
         v6 = a2;
         a3a = 0;
         v7 = &a3[dword_69B010[i]];
@@ -967,14 +966,14 @@ int LightmapBuilder::_45CB89(RenderVertexSoft *a1, int a2) {
 }
 
 //----- (0045CBD4) --------------------------------------------------------
-int LightmapBuilder::_45CBD4(RenderVertexSoft *a2, int a3, int *a4, int *a5) {
-    int result;  // eax@1
+int *LightmapBuilder::_45CBD4(RenderVertexSoft *a2, int a3, int *a4, int *a5) {
+    int *result;  // eax@1
     int v6;      // edx@1
     int v7;      // ecx@2
     int v8;      // esi@2
 
     __debugbreak();  // Not used?
-    result = (int)a5;
+    result = a5;
     v6 = 0;
     for (*a5 = 0; v6 < a3; ++v6) {
         v7 = *a5;

@@ -9,6 +9,8 @@
 
 #include "Engine/Graphics/IRender.h"
 
+#include "Engine/Serialization/LegacyImages.h"
+
 #include "GUI/GUIWindow.h"
 
 extern LODFile_IconsBitmaps *pIcons_LOD;
@@ -28,37 +30,17 @@ char temp_string[2048];
 
 std::array<char, 10000> pTmpBuf3;
 
-#pragma pack(push, 1)
-struct GUICharMetric {
-    uint32_t uLeftSpacing;
-    uint32_t uWidth;
-    uint32_t uRightSpacing;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-struct FontData {
-    uint8_t cFirstChar;  // 0
-    uint8_t cLastChar;   // 1
-    uint8_t field_2;
-    uint8_t field_3;
-    uint8_t field_4;
-    uint16_t uFontHeight;  // 5-6
-    uint8_t field_7;
-    uint32_t palletes_count;
-    uint8_t *pFontPalettes[5];
-    GUICharMetric pMetrics[256];
-    uint32_t font_pixels_offset[256];
-    uint8_t pFontData[0];  // array of font pixels
-};
-#pragma pack(pop)
-
 GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
     // static_assert(sizeof(GUICharMetric) == 12, "Wrong GUICharMetric type size");
     // static_assert(sizeof(FontData) == 4128, "Wrong FontData type size");
 
     GUIFont *pFont = new GUIFont;
-    pFont->pData = (FontData*)pIcons_LOD->LoadCompressedTexture(pFontFile);
+
+    // pFont->pData = (FontData*)pIcons_LOD->LoadCompressedTexture(pFontFile);
+    size_t read_bytes;
+    FontData_MM7 *tmp_font = (FontData_MM7 *)pIcons_LOD->LoadCompressedTexture(pFontFile, &read_bytes);
+    tmp_font->Deserialize(pFont->pData, read_bytes);
+    free(tmp_font);
 
     int pallete_index = pIcons_LOD->LoadTexture(pFontPalette, TEXTURE_24BIT_PALETTE);
     if (pallete_index == -1)

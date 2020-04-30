@@ -563,7 +563,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                     }
                 } else if (pFace->IsTextureFrameTable()) {
                     face_texture = pTextureFrameTable->GetFrameTexture(
-                        (int)pFace->resource, pBLVRenderParams->field_0_timer_);
+                            (int64_t)pFace->resource, pBLVRenderParams->field_0_timer_);
                 } else {
                     ColourMask = 0xFF808080;
                     // v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
@@ -610,7 +610,7 @@ unsigned int FaceFlowTextureOffset(unsigned int uFaceID) {  // time texture offs
 Texture *BLVFace::GetTexture() {
     if (this->IsTextureFrameTable())
         return pTextureFrameTable->GetFrameTexture(
-            (int)this->resource, pBLVRenderParams->field_0_timer_);
+            (int64_t)this->resource, pBLVRenderParams->field_0_timer_);
     else
         return (Texture *)this->resource;
 }
@@ -858,7 +858,16 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
 
     memcpy(&uNumSectors, pData, 4);
-    memcpy(pSectors, pData + 4, uNumSectors * sizeof(BLVSector));
+
+    // memcpy(pSectors, pData + 4, uNumSectors * sizeof(BLVSector));
+
+    BLVSector_MM7 *tmp_sector = (BLVSector_MM7 *)malloc(sizeof(BLVSector_MM7));
+    for (int i = 0; i < uNumSectors; ++i) {
+        memcpy(tmp_sector, pData + 4 + i * sizeof(BLVSector_MM7), sizeof(BLVSector_MM7));
+        tmp_sector->Deserialize(&pSectors[i]);
+    }
+    free(tmp_sector);
+
     pData += 4 + uNumSectors * sizeof(BLVSector);
 
     pGameLoadingUI_ProgressBar->Progress();
@@ -1174,7 +1183,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         // logger->Warning("Sector[%u]", i);
         int FloorsAndPortals = pSector->uNumFloors + pSector->uNumPortals;
-      
+
         // nothing in secotr to check against so skip
         if (!FloorsAndPortals) continue;
 
@@ -2760,7 +2769,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
     if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
-        memset(&particle, 0, sizeof(particle));  // fire,  like at the Pit's tavern
+        memset(&particle, 0, sizeof(Particle_sw));  // fire,  like at the Pit's tavern
         particle.type =
             ParticleType_Bitmap | ParticleType_Rotating | ParticleType_8;
         particle.uDiffuse = 0xFF3C1E;

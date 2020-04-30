@@ -205,8 +205,8 @@ void LODFile_Sprites::ReleaseAll() {}
 
 void LODFile_Sprites::MoveSpritesToVideoMemory() {}
 
-int LODSprite::_4AD2D1_overlays(struct SoftwareBillboard *a2, int a3) {
-    int result = (int)a2;
+SoftwareBillboard *LODSprite::_4AD2D1_overlays(struct SoftwareBillboard *a2, int a3) {
+    SoftwareBillboard *result = a2;
     unsigned int v4 = a2->uTargetPitch;
 
     uint16_t *pTarget = (uint16_t*)a2->pTarget;
