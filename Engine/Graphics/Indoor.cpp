@@ -863,7 +863,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
 
     BLVSector_MM7 *tmp_sector = (BLVSector_MM7 *)malloc(sizeof(BLVSector_MM7));
     for (int i = 0; i < uNumSectors; ++i) {
-        memcpy(tmp_sector, pData + 4 + i * sizeof(BLVSector_MM7), uNumSectors * sizeof(BLVSector_MM7));
+        memcpy(tmp_sector, pData + 4 + i * sizeof(BLVSector_MM7), sizeof(BLVSector_MM7));
         tmp_sector->Deserialize(&pSectors[i]);
     }
     free(tmp_sector);
