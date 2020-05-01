@@ -1410,8 +1410,8 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
 
             if (filter->object_type != OBJECT_BLVDoor) return true;
 
-            auto what_is_this = face_attrib & filter->no_at_ai_state;
-            if (no_event || what_is_this)  // face_attrib = 0x2009408 incorrect
+            auto invalid_face_attrib = face_attrib & filter->no_at_ai_state;
+            if (no_event || invalid_face_attrib)  // face_attrib = 0x2009408 incorrect
                 return false;
             return (face_attrib & filter->at_ai_state) != 0;
         }
