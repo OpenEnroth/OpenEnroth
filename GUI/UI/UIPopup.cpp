@@ -420,7 +420,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     }
     v28 = pItemsTable->pItems[inspect_item->uItemID].pDescription;
     if (*v28)
-        Str += pFontSmallnum->CalcTextHeight(
+        Str_int += pFontSmallnum->CalcTextHeight(
             pItemsTable->pItems[inspect_item->uItemID].pDescription,
             iteminfo_window.uFrameWidth, 100);
     iteminfo_window.uFrameHeight =

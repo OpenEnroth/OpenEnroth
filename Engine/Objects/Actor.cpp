@@ -3644,7 +3644,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
             auto str = localization->FormatString(
                 175, player->pName, uDamageAmount,
-                pMonster);  // "%s inflicts %lu points killing %s"
+                pMonster->pActorName);  // "%s inflicts %lu points killing %s"
             GameUI_StatusBar_OnEvent(str);
         }
     }
