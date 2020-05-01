@@ -2713,7 +2713,6 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_Jump:  //прыжок
-                //pAudioPlayer->PlaySound(SOUND_batllest, 0, 0, -1, 0, 0);
                 if ((!partyAtHighSlope || bmodel_standing_on_pid) &&
                     !hovering && pParty->field_24 && !(pParty->uFlags & 4) &&
                     !(pParty->uFlags & 0x200)) {
