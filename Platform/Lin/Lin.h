@@ -16,7 +16,7 @@
 #ifdef __APPLE__
 typedef long long ULONG_PTR;
 #else
-typedef unsigned __int64 ULONG_PTR;
+typedef unsigned long long ULONG_PTR;
 #endif
 #else
 typedef unsigned long ULONG_PTR;
