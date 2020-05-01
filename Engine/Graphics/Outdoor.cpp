@@ -2819,7 +2819,7 @@ void ODM_ProcessPartyActions() {
         *(float *)&v128 = 0.0;
         v2 = 0;
     }
-    //--(столкновения)-------------------------------------------------------------------
+    // --(столкновения)-------------------------------------------------------------------
     _actor_collision_struct.field_84 = -1;
     _actor_collision_struct.field_70 = 0;
     _actor_collision_struct.prolly_normal_d = pParty->field_14_radius;
@@ -3086,7 +3086,7 @@ void ODM_ProcessPartyActions() {
     v122 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(v114_a, pMap_Y) / 2) & 1;
     v69 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, v66) / 2) & 1;
 
-    //-(обновление координат группы)---------------------------------------
+    // -(обновление координат группы)---------------------------------------
     v68 = 0;
     if (v114_a == pMap_X && v66 == pMap_Y && v122 && v69) v68 = 1;
     if (!is_not_on_bmodel)  // на bmodel,и
