@@ -214,7 +214,7 @@ GUIWindow_Travel::GUIWindow_Travel()
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
     pBtn_ExitCancel = CreateButton(
-        566, 445, 75, 33, 1, 0, UIMSG_CHANGE_LOCATION_ClickCencelBtn, 0, 'N',
+        566, 445, 75, 33, 1, 0, UIMSG_CHANGE_LOCATION_ClickCancelBtn, 0, 'N',
         localization->GetString(156),
         {{ui_buttdesc2}});  // Stay in this area / Остаться в этой области
     pBtn_YES = CreateButton(486, 445, 75, 33, 1, 0, UIMSG_OnTravelByFoot, 0,

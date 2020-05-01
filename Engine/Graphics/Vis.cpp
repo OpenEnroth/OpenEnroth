@@ -493,24 +493,34 @@ void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
     }
 }
 
+Vis_PIDAndDepth InvalidPIDAndDepth() {
+    Vis_PIDAndDepth result;
+    result.depth = 0;
+    result.object_pid = PID_INVALID;
+    return result;
+}
+
 //----- (004C1BAA) --------------------------------------------------------
-int Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
+Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
     switch (info->object_type) {
         case VisObjectType_Sprite:
         case VisObjectType_Face: {
-            return info->sZValue;
+            Vis_PIDAndDepth result;
+            result.depth = info->depth;
+            result.object_pid = info->object_pid;
+            return result;
         }
 
         default:
             log->Warning(
                 "Undefined type requested for: CVis::get_object_zbuf_val()");
-            return -1;
+            return InvalidPIDAndDepth();
     }
 }
 
 //----- (004C1BF1) --------------------------------------------------------
-int Vis::get_picked_object_zbuf_val() {
-    if (!default_list.uNumPointers) return -1;
+Vis_PIDAndDepth Vis::get_picked_object_zbuf_val() {
+    if (!default_list.uNumPointers) return InvalidPIDAndDepth();
 
     return get_object_zbuf_val(default_list.object_pointers[0]);
 }

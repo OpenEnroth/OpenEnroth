@@ -34,15 +34,17 @@ extern Vis_SelectionFilter vis_sprite_filter_3;  // 00F93E6C
 extern Vis_SelectionFilter vis_sprite_filter_4;  // static to sub_44EEA7
 
 #pragma pack(push, 1)
+struct Vis_PIDAndDepth {
+    uint16_t object_pid;
+    int16_t depth;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
 struct Vis_ObjectInfo {
     void *object;
-    union {
-        int sZValue;
-        struct {
-            uint16_t object_pid;
-            int16_t depth;
-        };
-    };
+    uint16_t object_pid;
+    int16_t depth;
     VisObjectType object_type;
 };
 #pragma pack(pop)
@@ -126,8 +128,8 @@ class Vis {
                                     VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);
     void _4C1A02();
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
-    int get_object_zbuf_val(Vis_ObjectInfo *info);
-    int get_picked_object_zbuf_val();
+    Vis_PIDAndDepth get_object_zbuf_val(Vis_ObjectInfo *info);
+    Vis_PIDAndDepth get_picked_object_zbuf_val();
     bool Intersect_Ray_Face(struct RenderVertexSoft *pRayStart,
                             struct RenderVertexSoft *pRayEnd, float *pDepth,
                             RenderVertexSoft *Intersection, BLVFace *pFace,

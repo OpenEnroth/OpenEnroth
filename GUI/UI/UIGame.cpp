@@ -1271,7 +1271,7 @@ void GameUI_WritePointedObjectStatusString() {
     int invmatrixindex;                // eax@41
     ItemGen *pItemGen;                 // ecx@44
     int v16;                           // ecx@46
-    signed int pickedObject;        // eax@55
+    Vis_PIDAndDepth pickedObject;        // eax@55
     signed int v18b;
     signed int pickedObjectID = 0;     // ecx@63
     BLVFace *pFace;                    // eax@69
@@ -1305,20 +1305,17 @@ void GameUI_WritePointedObjectStatusString() {
 
             // get_picked_object_zbuf_val contains both the pid and the depth
             pickedObject = vis->get_picked_object_zbuf_val();
-            pMouse->uPointingObjectID = (unsigned __int16)pickedObject;
-            pickedObjectID = (signed)PID_ID(pickedObject);
-            if (PID_TYPE(pickedObject) == OBJECT_Item) {
-                if (pObjectList
-                        ->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID]
-                        .uFlags &
-                    0x10) {
+            pMouse->uPointingObjectID = pickedObject.object_pid;
+            pickedObjectID = (signed)PID_ID(pickedObject.object_pid);
+            if (PID_TYPE(pickedObject.object_pid) == OBJECT_Item) {
+                if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     pMouse->uPointingObjectID = 0;
                     game_ui_status_bar_string.clear();
                     bForceDrawFooter = 1;
                     uLastPointedObjectID = 0;
                     return;
                 }
-                if (pickedObject >= 0x2000000u ||
+                if (pickedObject.depth >= 0x200u ||
                     pParty->pPickedItem.uItemID) {
                     GameUI_StatusBar_Set(pSpriteObjects[pickedObjectID]
                                              .containing_item.GetDisplayName());
@@ -1328,7 +1325,7 @@ void GameUI_WritePointedObjectStatusString() {
                         .containing_item.GetDisplayName()
                         .c_str()));  // Get %s
                 }  // intentional fallthrough
-            } else if (PID_TYPE(pickedObject) == OBJECT_Decoration) {
+            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events
@@ -1343,11 +1340,11 @@ void GameUI_WritePointedObjectStatusString() {
                         GameUI_StatusBar_Set(hintString);
                     }
                 }  // intentional fallthrough
-            } else if (PID_TYPE(pickedObject) == OBJECT_BModel) {
-                if (pickedObject < 0x2000000u) {
+            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_BModel) {
+                if (pickedObject.depth < 0x200u) {
                     char *newString = nullptr;
                     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {
-                        v18b = PID_ID(pickedObject) >> 6;
+                        v18b = PID_ID(pickedObject.object_pid) >> 6;
                         short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
                         if (triggeredId != 0) {
                             newString = GetEventHintString(
@@ -1384,8 +1381,8 @@ void GameUI_WritePointedObjectStatusString() {
                 bForceDrawFooter = 1;
                 uLastPointedObjectID = 0;
                 return;
-            } else if (PID_TYPE(pickedObject) == OBJECT_Actor) {
-                if (pickedObject >= 0x2000000) {
+            } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
+                if (pickedObject.depth >= 0x200u) {
                     pMouse->uPointingObjectID = 0;
                     if (uLastPointedObjectID != 0) {
                         game_ui_status_bar_string.clear();

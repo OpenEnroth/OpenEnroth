@@ -316,20 +316,21 @@ void Engine::OnGameViewportClick() {
     int pEventID;     // ecx@21
     SpriteObject a1;  // [sp+Ch] [bp-80h]@1
 
-    int clickable_distance = 512;
+    int16_t clickable_distance = 512;
 
     // bug fix - stops you entering shops while dialog still open.
     if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE)
         return;
 
-    int v0 = vis->get_picked_object_zbuf_val();
-    int distance = HEXRAYS_HIWORD(v0);
+    auto pidAndDepth = vis->get_picked_object_zbuf_val();
+    uint16_t pid = pidAndDepth.object_pid;
+    int16_t distance = pidAndDepth.depth;
     bool in_range = distance < clickable_distance;
     // else
     //  v0 = render->pActiveZBuffer[v1->x + pSRZBufferLineOffsets[v1->y]];
 
-    if (PID_TYPE(v0) == OBJECT_Item) {
-        int item_id = PID_ID(v0);
+    if (PID_TYPE(pid) == OBJECT_Item) {
+        int item_id = PID_ID(pid);
         // v21 = (signed int)(unsigned __int16)v0 >> 3;
         if (pSpriteObjects[item_id].IsUnpickable() ||
             item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
@@ -339,8 +340,8 @@ void Engine::OnGameViewportClick() {
         } else {
             ItemInteraction(item_id);
         }
-    } else if (PID_TYPE(v0) == OBJECT_Actor) {
-        int mon_id = PID_ID(v0);
+    } else if (PID_TYPE(pid) == OBJECT_Actor) {
+        int mon_id = PID_ID(pid);
         // a2.y = v16;
         if (pActors[mon_id].uAIState == Dead) {
             if (in_range)
@@ -364,18 +365,18 @@ void Engine::OnGameViewportClick() {
                 pPlayers[uActiveCharacter]->uQuickSpell)) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
         }
-    } else if (PID_TYPE(v0) == OBJECT_Decoration) {
-        int id = PID_ID(v0);
+    } else if (PID_TYPE(pid) == OBJECT_Decoration) {
+        int id = PID_ID(pid);
         if (distance - pDecorationList->GetDecoration(pLevelDecorations[id].uDecorationDescID)->uRadius >= clickable_distance) {
             if (pParty->pPickedItem.uItemID) {
                 DropHeldItem();
             }
         } else {
-            DecorationInteraction(id, v0);
+            DecorationInteraction(id, pid);
         }
-    } else if (PID_TYPE(v0) == OBJECT_BModel && in_range) {
+    } else if (PID_TYPE(pid) == OBJECT_BModel && in_range) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            if (!pIndoor->pFaces[PID_ID(v0)].Clickable()) {
+            if (!pIndoor->pFaces[PID_ID(pid)].Clickable()) {
                 if (!pParty->pPickedItem.uItemID) {
                     GameUI_StatusBar_NothingHere();
                     if (!pParty->pPickedItem.uItemID)
@@ -384,11 +385,11 @@ void Engine::OnGameViewportClick() {
                     DropHeldItem();
                 }
             } else {
-                pEventID = pIndoor->pFaceExtras[pIndoor->pFaces[PID_ID(v0)].uFaceExtraID].uEventID;
-                EventProcessor(pEventID, (unsigned __int16)v0, 1);
+                pEventID = pIndoor->pFaceExtras[pIndoor->pFaces[PID_ID(pid)].uFaceExtraID].uEventID;
+                EventProcessor(pEventID, pid, 1);
             }
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-            if (!pOutdoor->pBModels[(signed int)(v0 & 0xFFFF) >> 9].pFaces[PID_ID(v0) & 0x3F].Clickable()) {
+            if (!pOutdoor->pBModels[(signed int)(pid) >> 9].pFaces[PID_ID(pid) & 0x3F].Clickable()) {
                 if (!pParty->pPickedItem.uItemID) {
                     GameUI_StatusBar_NothingHere();
                     if (!pParty->pPickedItem.uItemID)
@@ -397,10 +398,10 @@ void Engine::OnGameViewportClick() {
                     DropHeldItem();
                 }
             } else {
-                pEventID = pOutdoor->pBModels[(signed int)(v0 & 0xFFFF) >> 9]
-                               .pFaces[PID_ID(v0) & 0x3F]
+                pEventID = pOutdoor->pBModels[(signed int)(pid) >> 9]
+                               .pFaces[PID_ID(pid) & 0x3F]
                                .sCogTriggeredID;
-                EventProcessor(pEventID, (unsigned __int16)v0, 1);
+                EventProcessor(pEventID, pid, 1);
             }
         }
     } else if (pParty->pPickedItem.uItemID) {
