@@ -1107,6 +1107,9 @@ void UIAnimation_MM7::Deserialize(UIAnimation *anim) {
 }
 
 void Actor_MM7::Serialize(Actor *actor) {
+    for (unsigned int i = 0; i < 32; ++i)
+        this->pActorName[i] = actor->pActorName[i];
+
     this->sNPC_ID = actor->sNPC_ID;
     this->field_22 = actor->field_22;
     this->uAttributes = actor->uAttributes;
@@ -1219,6 +1222,9 @@ void Actor_MM7::Serialize(Actor *actor) {
 }
 
 void Actor_MM7::Deserialize(Actor *actor) {
+    for (unsigned int i = 0; i < 32; ++i)
+        actor->pActorName[i] = this->pActorName[i];
+
     actor->sNPC_ID = this->sNPC_ID;
     actor->field_22 = this->field_22;
     actor->uAttributes = this->uAttributes;

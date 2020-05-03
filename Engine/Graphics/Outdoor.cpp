@@ -164,7 +164,7 @@ void OutdoorLocation::Draw() {
     pOutdoor->ExecDraw(redrawWorld);
 
     engine->DrawParticles();
-    // pWeather->Draw();//если раскомментировать скорость снега быстрее
+    // pWeather->Draw();// если раскомментировать скорость снега быстрее
     trail_particle_generator.UpdateParticles();
 }
 
@@ -342,9 +342,9 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
     mapNumberAsStr[2] = 0;
     mapNumberAsInt = atoi(mapNumberAsStr);
     if (a5 < 10 || this->level_filename.length() != 9 || mapNumberAsInt < 1 ||
-        mapNumberAsInt > 15)  //длина  .odm и количество локаций
+        mapNumberAsInt > 15)  // длина  .odm и количество локаций
         return 0;
-    if (sPartyX < -22528)  //граница карты
+    if (sPartyX < -22528)  // граница карты
         direction = 4;
     else if (sPartyX > 22528)
         direction = 3;
@@ -381,7 +381,7 @@ bool OutdoorLocation::GetTravelDestination(signed int sPartyX,
 
     uDefaultTravelTime_ByFoot = foot_travel_times[mapNumberAsInt - 1][direction - 1];
     uLevel_StartingPointType = foot_travel_arrival_points[mapNumberAsInt - 1][direction - 1];
-    sprintf(pOut, "out%02d.odm", destinationMap);  //локация направления
+    sprintf(pOut, "out%02d.odm", destinationMap);  // локация направления
     return true;
 }
 
@@ -890,7 +890,7 @@ bool OutdoorLocationTerrain::ZeroLandscape() {
 bool OutdoorLocationTerrain::Initialize() {
     pHeightmap = (unsigned __int8 *)malloc(0x4000);  // height map
     pTilemap = (unsigned __int8 *)malloc(0x4000);    // tile map
-    pAttributemap = (unsigned __int8 *)malloc(0x4000);  //карта атрибутов
+    pAttributemap = (unsigned __int8 *)malloc(0x4000);  // карта атрибутов
     pDmap = (struct DMap *)malloc(0x8000);
     if (pHeightmap && pTilemap && pAttributemap && pDmap)
         return true;
@@ -1066,11 +1066,11 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     memcpy(pTerrainSomeOtherData.data(), pSrc, 0x20000);
     pSrc += 0x20000;
 
-    memcpy(pTerrainNormalIndices.data(), pSrc, 0x10000);  //индексы нормалей
+    memcpy(pTerrainNormalIndices.data(), pSrc, 0x10000);  // индексы нормалей
     pSrc += 0x10000;
 
     pTerrainNormals = (Vec3_float_ *)malloc(
-        sizeof(Vec3_float_) * uNumTerrainNormals);  //карта нормалей
+        sizeof(Vec3_float_) * uNumTerrainNormals);  // карта нормалей
     memcpy(pTerrainNormals, pSrc, 12 * uNumTerrainNormals);
     pSrc += 12 * uNumTerrainNormals;
 
@@ -1119,7 +1119,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     pSrc += 4 + faceIDListSize;
 
     // uSourceLen = (char *)uSourceLen + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     free(pOMAP);
     // v69 = malloc(0, 0x10000u, "OMAP");
@@ -1134,7 +1134,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     memcpy(&uNumSpawnPoints, pSrc, 4);
     // uSourceLen = (char *)uSourceLen + 4;
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     assert(sizeof(SpawnPointMM7) == 24);
     uint spawnPointsSize = uNumSpawnPoints * sizeof(SpawnPointMM7);
@@ -1144,7 +1144,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     memcpy(pSpawnPoints, pSrc + 4, spawnPointsSize);
     pSrc += 4 + spawnPointsSize;
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ****************.ddm file*********************//
     free(pSrcMem);
@@ -1236,19 +1236,19 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         }
     }
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     for (uint i = 0; i < uNumLevelDecorations; ++i) {
         memcpy(&pLevelDecorations[i].uFlags, pSrc, 2);
         pSrc += 2;
     }
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     memcpy(&uNumActors, pSrc, 4);
     if (uNumActors > 500) logger->Warning("Can't load file!");
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     assert(sizeof(Actor_MM7) == 836);
 
@@ -1265,13 +1265,13 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     pSrc += 4 + uNumActors * sizeof(Actor_MM7);
     // v92 = (char *)v91 + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     memcpy(&uNumSpriteObjects, pSrc, 4);
     assert(uNumSpriteObjects <= 1000 && "Too many objects");
     assert(sizeof(SpriteObject) == 112);
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // pFilename = (char *)(112 * uNumSpriteObjects);
     memcpy(pSpriteObjects.data(), pSrc + 4,
@@ -1280,16 +1280,16 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     pSrc += 4 + uNumSpriteObjects * sizeof(SpriteObject);
 
     // v94 = (char *)v93 + (int)pFilename;
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     pSrc = (uint8_t*)ChestsDeserialize((char*)pSrc);
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     memcpy(&stru_5E4C90_MapPersistVars, pSrc, 0xC8);
     pSrc += 0xC8;
 
-    pGameLoadingUI_ProgressBar->Progress();  //прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
     memcpy(&loc_time, pSrc, 0x38u);
 
     free(pSrcMem);
@@ -2305,7 +2305,7 @@ void ODM_ProcessPartyActions() {
     pModel_ = false;
     bWaterWalk = false;
     //************************************
-    //Проверка падение пера
+    // Проверка падение пера
     if (!pParty->FeatherFallActive()) {
         bFeatherFall = false;
         for (int i = 0; i < 4; ++i)
@@ -2318,7 +2318,7 @@ void ODM_ProcessPartyActions() {
         bFeatherFall = true;
     }
     //************************************
-    //Проверка хождения по воде
+    // Проверка хождения по воде
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
     if (pParty->WaterWalkActive()) {
         bWaterWalk = true;
@@ -2332,23 +2332,23 @@ void ODM_ProcessPartyActions() {
             bWaterWalk = false;
     }
     //*************************************
-    //определение уровня пола
-    int bmodel_standing_on_pid;  //данные 3D model'и
-    bool is_on_water = false;     //на воду
+    // определение уровня пола
+    int bmodel_standing_on_pid;  // данные 3D model'и
+    bool is_on_water = false;     // на воду
     floor_level =
         ODM_GetFloorLevel(pX, pY, party_new_Z, pParty->uPartyHeight,
                           &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
-    int is_not_on_bmodel = bmodel_standing_on_pid == 0;  //не на 3D model
+    int is_not_on_bmodel = bmodel_standing_on_pid == 0;  // не на 3D model
 
-    v111 = floor_level;  //???
+    v111 = floor_level;  // ???
     //************************************
-    //определение высоты падения
-    if (bFeatherFall)  //падение пера
+    // определение высоты падения
+    if (bFeatherFall)  // падение пера
         pParty->uFallStartY = floor_level;
     else
         floor_level = pParty->uFallStartY;
     //*************************************
-    //падение на 3D Model
+    // падение на 3D Model
     if (floor_level - party_new_Z > 512 && !bFeatherFall &&
         party_new_Z <= v111 + 1) {
         if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
@@ -2376,17 +2376,17 @@ void ODM_ProcessPartyActions() {
         }
     }
     //*********************************
-    //определение высоты потолка
+    // определение высоты потолка
     ceiling_height = -1;
-    if (pParty->bFlying)  //в полёте
+    if (pParty->bFlying)  // в полёте
         ceiling_height =
             GetCeilingHeight(pX, pY, party_new_Z + pParty->uPartyHeight,
-                             &v102);  //высота потолка
+                             &v102);  // высота потолка
     // v107 = bmodel_standing_on_pid == 0;
-    on_ground = v111 + 1;  //на земле
+    on_ground = v111 + 1;  // на земле
     //**************************************
 
-    if (party_new_Z <= on_ground) {  //полёт: посадка
+    if (party_new_Z <= on_ground) {  // полёт: посадка
         ceiling_height = -1;
         pParty->bFlying = false;
     } else {
@@ -2453,7 +2453,7 @@ void ODM_ProcessPartyActions() {
         16;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
-            case PARTY_FlyUp:  //полёт вверх
+            case PARTY_FlyUp:  // полёт вверх
             {
                 if (!pParty->FlyActive() && !engine->IsUnderwater()) break;
 
@@ -2496,7 +2496,7 @@ void ODM_ProcessPartyActions() {
                 }
             } break;
 
-            case PARTY_FlyDown:  //полёт вниз
+            case PARTY_FlyDown:  // полёт вниз
                 if (pParty->FlyActive() || engine->IsUnderwater()) {
                     pParty->bFlying = false;
                     if (engine->IsUnderwater() ||
@@ -2518,7 +2518,7 @@ void ODM_ProcessPartyActions() {
                 }
                 break;
 
-            case PARTY_TurnLeft:  //поворот влево
+            case PARTY_TurnLeft:  // поворот влево
                 if (engine->config->turn_speed > 0)
                     _angle_y += engine->config->turn_speed;  // descrete turn
                 else
@@ -2527,7 +2527,7 @@ void ODM_ProcessPartyActions() {
                 _angle_y &= stru_5C6E00->uDoublePiMask;
                 break;
 
-            case PARTY_TurnRight:  //поворот вправо
+            case PARTY_TurnRight:  // поворот вправо
                 if (engine->config->turn_speed > 0)
                     _angle_y -= engine->config->turn_speed;
                 else
@@ -2536,7 +2536,7 @@ void ODM_ProcessPartyActions() {
                 _angle_y &= stru_5C6E00->uDoublePiMask;
                 break;
 
-            case PARTY_FastTurnLeft:  //быстрый поворот влево
+            case PARTY_FastTurnLeft:  // быстрый поворот влево
                 if (engine->config->turn_speed > 0)
                     _angle_y += engine->config->turn_speed;
                 else
@@ -2545,7 +2545,7 @@ void ODM_ProcessPartyActions() {
                 _angle_y &= stru_5C6E00->uDoublePiMask;
                 break;
 
-            case PARTY_FastTurnRight:  //быстрый поворот вправо
+            case PARTY_FastTurnRight:  // быстрый поворот вправо
                 if (engine->config->turn_speed > 0)
                     _angle_y -= engine->config->turn_speed;
                 else
@@ -2554,7 +2554,7 @@ void ODM_ProcessPartyActions() {
                 _angle_y &= stru_5C6E00->uDoublePiMask;
                 break;
 
-            case PARTY_StrafeLeft:  //хождение боком в влево
+            case PARTY_StrafeLeft:  // хождение боком в влево
             {
                 *(float *)&v128 = pParty->uWalkSpeed;
 
@@ -2570,7 +2570,7 @@ void ODM_ProcessPartyActions() {
                 party_walking_flag = true;
             } break;
 
-            case PARTY_StrafeRight:  //хождение боком в вправо
+            case PARTY_StrafeRight:  // хождение боком в вправо
             {
                 *(float *)&v128 = pParty->uWalkSpeed;
 
@@ -2608,7 +2608,7 @@ void ODM_ProcessPartyActions() {
                 party_walking_flag = true;
             } break;
 
-            case PARTY_RunForward:  //бежать вперёд
+            case PARTY_RunForward:  // бежать вперёд
             {
                 *(float *)&v128 = _walk_speed;
 
@@ -2669,7 +2669,7 @@ void ODM_ProcessPartyActions() {
                 party_walking_flag = true;
             } break;
 
-            case PARTY_RunBackward:  //бежать назад
+            case PARTY_RunBackward:  // бежать назад
             {
                 float sin_y = sinf(2 * pi_double * _angle_y / 2048.0);
                 float cos_y = cosf(2 * pi_double * _angle_y / 2048.0);
@@ -2692,11 +2692,11 @@ void ODM_ProcessPartyActions() {
                 }
             } break;
 
-            case PARTY_CenterView:  //смотреть прямо
+            case PARTY_CenterView:  // смотреть прямо
                 _angle_x = 0;
                 break;
 
-            case PARTY_LookDown:  //смотреть вниз
+            case PARTY_LookDown:  // смотреть вниз
                 _angle_x +=
                     (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
                 if (_angle_x > 128) _angle_x = 128;
@@ -2704,7 +2704,7 @@ void ODM_ProcessPartyActions() {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_63, 0);
                 break;
 
-            case PARTY_LookUp:  //смотреть вверх
+            case PARTY_LookUp:  // смотреть вверх
                 _angle_x +=
                     (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
                 if (_angle_x < -128) _angle_x = -128;
@@ -2712,8 +2712,7 @@ void ODM_ProcessPartyActions() {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_64, 0);
                 break;
 
-            case PARTY_Jump:  //прыжок
-                pAudioPlayer->PlaySound(SOUND_batllest, 0, 0, -1, 0, 0);
+            case PARTY_Jump:  // прыжок
                 if ((!partyAtHighSlope || bmodel_standing_on_pid) &&
                     !hovering && pParty->field_24 && !(pParty->uFlags & 4) &&
                     !(pParty->uFlags & 0x200)) {
@@ -2723,7 +2722,7 @@ void ODM_ProcessPartyActions() {
                 }
                 break;
 
-            case PARTY_Land:  //приземление(клавиша Home)
+            case PARTY_Land:  // приземление(клавиша Home)
                 if (pParty->bFlying) {
                     pParty->uFlags |= PARTY_FLAGS_1_LANDING;
                     pParty->uFallSpeed = 0;
@@ -2808,7 +2807,7 @@ void ODM_ProcessPartyActions() {
                             ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS) &&
                         pParty->pPlayers[i].CanAct())
                         pParty->pPlayers[i].PlaySound(SPEECH_Falling_scream,
-                                                      0);  //крик падения
+                                                      0);  // крик падения
                 }
             }
         }
@@ -2820,7 +2819,7 @@ void ODM_ProcessPartyActions() {
         *(float *)&v128 = 0.0;
         v2 = 0;
     }
-    //--(столкновения)-------------------------------------------------------------------
+    // --(столкновения)-------------------------------------------------------------------
     _actor_collision_struct.field_84 = -1;
     _actor_collision_struct.field_70 = 0;
     _actor_collision_struct.prolly_normal_d = pParty->field_14_radius;
@@ -3035,7 +3034,7 @@ void ODM_ProcessPartyActions() {
         fall_speed = fixpoint_mul(58500, fall_speed);
     }
 
-    //Воспроизведение звуков ходьбы/бега------------------------
+    // Воспроизведение звуков ходьбы/бега------------------------
     uint pX_ = abs(pParty->vPosition.x - pX);
     uint pY_ = abs(pParty->vPosition.y - pY);
     uint pZ_ = abs(pParty->vPosition.z - party_new_Z);
@@ -3046,12 +3045,12 @@ void ODM_ProcessPartyActions() {
                 if (!is_not_on_bmodel &&
                     pOutdoor->pBModels[pParty->floor_face_pid >> 9]
                     .pFaces[(pParty->floor_face_pid >> 3) & 0x3F].Visible()) {
-                    pAudioPlayer->PlaySound(SOUND_RunWood, -1 /*804*/, 1, -1, 0, 0);  //бег на 3D Modelи
+                    pAudioPlayer->PlaySound(SOUND_RunWood, -1 /*804*/, 1, -1, 0, 0);  // бег на 3D Modelи
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
                         WorldPosToGridCellX(pParty->vPosition.x),
                         WorldPosToGridCellZ(pParty->vPosition.y) - 1, 1);
-                    pAudioPlayer->PlaySound((SoundID)v87, -1 /*804*/, 1, -1, 0, 0);  //бег по земле 56
+                    pAudioPlayer->PlaySound((SoundID)v87, -1 /*804*/, 1, -1, 0, 0);  // бег по земле 56
                 }
                 pParty->walk_sound_timer = 96;  // таймер для бега
             }
@@ -3072,7 +3071,7 @@ void ODM_ProcessPartyActions() {
         }
     }
 
-    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  //отключить  звук ходьбы при остановке
+    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  // отключить  звук ходьбы при остановке
         pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
     if (!hovering || !not_high_fall)  //  или не высокое падение
@@ -3087,7 +3086,7 @@ void ODM_ProcessPartyActions() {
     v122 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(v114_a, pMap_Y) / 2) & 1;
     v69 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, v66) / 2) & 1;
 
-    //-(обновление координат группы)---------------------------------------
+    // -(обновление координат группы)---------------------------------------
     v68 = 0;
     if (v114_a == pMap_X && v66 == pMap_Y && v122 && v69) v68 = 1;
     if (!is_not_on_bmodel)  // на bmodel,и
@@ -3104,7 +3103,7 @@ void ODM_ProcessPartyActions() {
             pParty->vPosition.z = 8160;
         }
 
-        if (!trigger_id  //падение на землю
+        if (!trigger_id  // падение на землю
             || (EventProcessor(trigger_id, 0, 1), pParty->vPosition.x == pX) &&
                    pParty->vPosition.y == pY &&
                    pParty->vPosition.z == party_new_Z) {
@@ -3164,7 +3163,7 @@ void ODM_ProcessPartyActions() {
         if (v122_a) {
             v78 = v69 != 0;
         } else {
-            party_drowning_flag = true;  //утопление
+            party_drowning_flag = true;  // утопление
             v78 = true;
         }
     } else {
@@ -3215,12 +3214,12 @@ void ODM_ProcessPartyActions() {
     if (party_drowning_flag) {  // группа тонет
         bool onWater = false;
         pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->vPosition.x, pParty->vPosition.y, &onWater, 1);
-        if (pParty->vPosition.z <= pTerrainHeight + 1) {  //положение группы всегда +1
+        if (pParty->vPosition.z <= pTerrainHeight + 1) {  // положение группы всегда +1
             pParty->uFlags |= PARTY_FLAGS_1_WATER_DAMAGE;
         }
     }
 
-    if (!trigger_id  //падение на воду
+    if (!trigger_id  // падение на воду
         ||
         (EventProcessor(trigger_id, 0, 1), pParty->vPosition.x == pX) &&
             pParty->vPosition.y == pY && pParty->vPosition.z == party_new_Z) {
@@ -3283,7 +3282,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
     dword_720ED0[0] = -1;
     dword_720E80[0] = -1;
     v39 = 1;
-    ceiling_height_level[0] = 10000;  //нет потолка
+    ceiling_height_level[0] = 10000;  // нет потолка
     for (BSPModel &model : pOutdoor->pBModels) {
         if (Party_X <= model.sMaxX && Party_X >= model.sMinX &&
             Party_Y <= model.sMaxY && Party_Y >= model.sMinY) {
@@ -3379,7 +3378,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
     }
     if (v22) {
         *(int *)pFaceID = dword_720E80[v22] | (dword_720ED0[v22] << 6);
-        return ceiling_height_level[v22];  //если есть преграда
+        return ceiling_height_level[v22];  // если есть преграда
     }
     pFaceID = 0;
     return ceiling_height_level[v22];  // нет никакой преграды
