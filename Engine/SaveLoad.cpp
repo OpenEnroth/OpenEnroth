@@ -414,8 +414,18 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
             memcpy(data_write_pos, &uNumActors, 4);
             data_write_pos += 4;
-            memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
-            data_write_pos += uNumActors * sizeof(Actor);
+
+            // memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
+            // data_write_pos += uNumActors * sizeof(Actor);
+            Actor_MM7 *tmp_actor = (Actor_MM7 *)malloc(sizeof(Actor_MM7));
+
+            for (int i = 0; i < uNumActors; ++i) {
+                tmp_actor->Serialize(&pActors[i]);
+                memcpy(data_write_pos + i * sizeof(Actor_MM7), tmp_actor, sizeof(Actor_MM7));
+            }
+            free(tmp_actor);
+            data_write_pos += uNumActors * sizeof(Actor_MM7);
+
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
             memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
@@ -458,8 +468,18 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             }
             memcpy(data_write_pos, &uNumActors, 4);
             data_write_pos += 4;
-            memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
-            data_write_pos += uNumActors * sizeof(Actor);
+
+            // memcpy(data_write_pos, &pActors, uNumActors * sizeof(Actor));
+            // data_write_pos += uNumActors * sizeof(Actor);
+            Actor_MM7 *tmp_actor = (Actor_MM7 *)malloc(sizeof(Actor_MM7));
+
+            for (int i = 0; i < uNumActors; ++i) {
+                tmp_actor->Serialize(&pActors[i]);
+                memcpy(data_write_pos + i * sizeof(Actor_MM7), tmp_actor, sizeof(Actor_MM7));
+            }
+            free(tmp_actor);
+            data_write_pos += uNumActors * sizeof(Actor_MM7);
+
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
             memcpy(data_write_pos, &pSpriteObjects,

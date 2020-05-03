@@ -1054,8 +1054,18 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
 
     memcpy(&uNumActors, pData, 4);
-    memcpy(&pActors, pData + 4, uNumActors * sizeof(Actor));
-    pData += 4 + uNumActors * sizeof(Actor);
+
+    // memcpy(&pActors, pData + 4, uNumActors * sizeof(Actor));
+    // pData += 4 + uNumActors * sizeof(Actor);
+    Actor_MM7 *tmp_actor = (Actor_MM7 *)malloc(sizeof(Actor_MM7));
+
+    for (int i = 0; i < uNumActors; ++i) {
+        memcpy(tmp_actor, pData + 4 + i * sizeof(Actor_MM7), sizeof(Actor_MM7));
+        tmp_actor->Deserialize(&pActors[i]);
+    }
+    free(tmp_actor);
+
+    pData += 4 + uNumActors * sizeof(Actor_MM7);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
