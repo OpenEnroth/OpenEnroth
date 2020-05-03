@@ -494,7 +494,7 @@ struct BLVFace {  // 60h
 /*   94 */
 #pragma pack(push, 1)
 struct BLVFaceExtra {  // 24h
-    bool HasEventint();
+    bool HasEventHint();
 
     int16_t field_0;
     int16_t field_2;
@@ -723,7 +723,7 @@ extern BLVRenderParams *pBLVRenderParams;
 // void PrepareBspRenderList_BLV();
 // void AddBspNodeToRenderList(unsigned int node_id);
 // void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
-char DoInteractionWithTopmostZObject(int a1, int a2);
+char DoInteractionWithTopmostZObject(int pid);
 // int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
 unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
 void BLV_UpdateUserInputAndOther();

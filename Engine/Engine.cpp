@@ -403,8 +403,8 @@ void Engine::PushStationaryLights(int a2) {
 bool Engine::_44EEA7() {  // cursor picking - particle update
     float depth;               // ST00_4@9
     __int64 v6;                // kr00_8@21
-    Vis_SelectionFilter *v10;  // [sp+10h] [bp-18h]@2
-    Vis_SelectionFilter *v11;  // [sp+14h] [bp-14h]@2
+    Vis_SelectionFilter *sprite_filter;  // [sp+10h] [bp-18h]@2
+    Vis_SelectionFilter *face_filter;  // [sp+14h] [bp-14h]@2
 
     ++qword_5C6DF0;
     particle_engine->UpdateParticles();
@@ -413,22 +413,22 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     // x = cursor.y;
     // y = cursor.x;
     if (sub_4637E0_is_there_popup_onscreen()) {
-        v11 = &vis_face_filter;
-        v10 = &vis_sprite_filter_2;
+        face_filter = &vis_face_filter;
+        sprite_filter = &vis_sprite_filter_2;
         depth = pIndoorCameraD3D->GetPickDepth();
     } else {
         if (config->IsTargetingMode()) {
-            v11 = &vis_face_filter;
-            v10 = &vis_sprite_filter_1;
+            face_filter = &vis_face_filter;
+            sprite_filter = &vis_sprite_filter_1;
         } else {
-            v11 = &vis_face_filter;
-            v10 = &vis_sprite_filter_4;
+            face_filter = &vis_face_filter;
+            sprite_filter = &vis_sprite_filter_4;
         }
         depth = 5120.0;
     }
     // depth = v2;
 
-    PickMouse(depth, pt.x, pt.y, false, v10, v11);
+    PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
     lightmap_builder->StationaryLightsCount = 0;
     lightmap_builder->MobileLightsCount = 0;
     decal_builder->DecalsCount = 0;

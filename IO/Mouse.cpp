@@ -316,14 +316,14 @@ void Mouse::UI_OnMouseLeftClick() {
         return;
     }
 
-    int picked_object = EngineIoc::ResolveVis()->get_picked_object_zbuf_val();
+    Vis_PIDAndDepth picked_object = EngineIoc::ResolveVis()->get_picked_object_zbuf_val();
 
-    ObjectType type = PID_TYPE(picked_object);
-    if (type == OBJECT_Actor && uActiveCharacter && picked_object < 0x2000000 &&
+    ObjectType type = PID_TYPE(picked_object.object_pid);
+    if (type == OBJECT_Actor && uActiveCharacter && picked_object.depth < 0x200 &&
         pPlayers[uActiveCharacter]->CanAct() &&
         pPlayers[uActiveCharacter]->CanSteal()) {
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_STEALFROMACTOR,
-                                            PID_ID(picked_object), 0);
+                                            PID_ID(picked_object.object_pid), 0);
 
         if (pParty->bTurnBasedModeOn) {
             if (pTurnEngine->turn_stage == TE_MOVEMENT) {

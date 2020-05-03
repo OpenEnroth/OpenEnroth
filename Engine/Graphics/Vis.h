@@ -7,14 +7,23 @@ enum VisObjectType : uint32_t {
     VisObjectType_Face = 2
 };
 
+enum VisSelectFlags : uint32_t {
+    None = 0,
+    VisSelectFlags_1 = 1,  // not set in any of the standard filters. Used to check something that seems to be ally/enemy-based?
+    ExcludeType = 2,
+    ExclusionIfNoEvent = 4,
+    TargetUndead = 8
+};
+
 /*  150 */
 #pragma pack(push, 1)
+// NOTE: The variable names here are correct when the filter is used for VisObjectType_Sprite, but wrong for VisObjectType_Face
 struct Vis_SelectionFilter {  // stru157
-    VisObjectType object_type;
-    int object_id;  // OBJECT_Actor, OBJECT_Player etc
+    VisObjectType vis_object_type;
+    int object_type;  // OBJECT_Actor, OBJECT_Player etc
     int at_ai_state;
     int no_at_ai_state;
-    int select_flags;
+    VisSelectFlags select_flags;
 };
 #pragma pack(pop)
 extern Vis_SelectionFilter vis_sprite_filter_1;  // 00F93E1C
@@ -25,15 +34,17 @@ extern Vis_SelectionFilter vis_sprite_filter_3;  // 00F93E6C
 extern Vis_SelectionFilter vis_sprite_filter_4;  // static to sub_44EEA7
 
 #pragma pack(push, 1)
+struct Vis_PIDAndDepth {
+    uint16_t object_pid;
+    int16_t depth;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
 struct Vis_ObjectInfo {
     void *object;
-    union {
-        // int sZValue;
-        struct {
-            uint16_t object_pid;
-            int16_t depth;
-        };
-    };
+    uint16_t object_pid;
+    int16_t depth;
     VisObjectType object_type;
 };
 #pragma pack(pop)
@@ -114,11 +125,11 @@ class Vis {
     bool IsPointInsideD3DBillboard(struct RenderBillboardD3D *a1, float x,
                                    float y);
     unsigned short PickClosestActor(int object_id, unsigned int pick_depth,
-                                    int a4, int a5, int a6);
+                                    VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);
     void _4C1A02();
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);
-    int get_object_zbuf_val(Vis_ObjectInfo *info);
-    int get_picked_object_zbuf_val();
+    Vis_PIDAndDepth get_object_zbuf_val(Vis_ObjectInfo *info);
+    Vis_PIDAndDepth get_picked_object_zbuf_val();
     bool Intersect_Ray_Face(struct RenderVertexSoft *pRayStart,
                             struct RenderVertexSoft *pRayEnd, float *pDepth,
                             RenderVertexSoft *Intersection, BLVFace *pFace,

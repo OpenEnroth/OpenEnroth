@@ -3876,10 +3876,10 @@ int stru319::_427546(int a2) {
     return result;
 }
 //----- (0042F184) --------------------------------------------------------
-int stru319::FindClosestActor(int pick_depth, int a3, int a4) {
+int stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not targeting allies?*/, int target_undead) {
     int v4;       // edi@1
     stru319 *v5;  // esi@1
-    int v6;       // eax@2
+    int select_flags;       // eax@2
     int v7;       // eax@4
     //  int result; // eax@5
     //  int *v9; // edx@8
@@ -3912,9 +3912,9 @@ int stru319::FindClosestActor(int pick_depth, int a3, int a4) {
     v24 = this;
     // if ( render->pRenderD3D )
     {
-        v6 = a3 != 0;
-        if (a4) v6 |= 8;
-        v7 = vis->PickClosestActor(OBJECT_Actor, pick_depth, v6, 657456, -1);
+        select_flags = a3 != 0;
+        if (target_undead) select_flags |= TargetUndead;
+        v7 = vis->PickClosestActor(OBJECT_Actor, pick_depth, static_cast<VisSelectFlags>(select_flags), 657456, -1);
         if (v7 != -1)
             return (unsigned __int16)v7;
         else

@@ -73,7 +73,7 @@ enum UIMessageType : uint32_t {
     UIMSG_ClickInstallRemoveQuickSpellBtn = 88,
 
     UIMSG_OnTravelByFoot = 90,
-    UIMSG_CHANGE_LOCATION_ClickCencelBtn = 91,
+    UIMSG_CHANGE_LOCATION_ClickCancelBtn = 91,
     UIMSG_ShowStatus_DateTime = 92,
     UIMSG_ShowStatus_ManaHP = 93,
     UIMSG_ShowStatus_Player = 94,

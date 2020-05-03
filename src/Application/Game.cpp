@@ -359,7 +359,7 @@ void Game::EventLoop() {
     // int v77;                    // eax@537
     Player *pPlayer2;           // ecx@549
                                 // signed int v81; // eax@552
-    signed int v83;             // ecx@554
+    Vis_PIDAndDepth v83;             // ecx@554
     signed int v84;             // ecx@554
     GUIButton *pButton;         // eax@578
     unsigned int v86;           // eax@583
@@ -1070,7 +1070,7 @@ void Game::EventLoop() {
                     }
                     viewparams->bRedrawGameUI = 1;
                     continue;
-                case UIMSG_CHANGE_LOCATION_ClickCencelBtn:
+                case UIMSG_CHANGE_LOCATION_ClickCancelBtn:
                     CloseWindowBackground();
                     if (pParty->vPosition.x < -22528)
                         pParty->vPosition.x = -22528;
@@ -1085,7 +1085,7 @@ void Game::EventLoop() {
                     viewparams->bRedrawGameUI = true;
                     continue;
                 case UIMSG_CastSpell_Telekinesis:
-                    HEXRAYS_LOWORD(v42) = vis->get_picked_object_zbuf_val();
+                    HEXRAYS_LOWORD(v42) = vis->get_picked_object_zbuf_val().object_pid;
                     v44 = (unsigned __int16)v42;
                     v45 = PID_TYPE(v44);
                     uNumSeconds = v44;
@@ -1584,8 +1584,8 @@ void Game::EventLoop() {
                 case UIMSG_CastSpell_Shoot_Monster:  // FireBlow, Lightning, Ice
                                                      // Lightning, Swarm,
                     v83 = vis->get_picked_object_zbuf_val();
-                    v44 = (unsigned __int16)v83;
-                    v84 = v83 >> 16;
+                    v44 = v83.object_pid;
+                    v84 = v83.depth;
                     if (PID_TYPE(v44) != 3 || v84 >= 5120) continue;
                     pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
@@ -1619,7 +1619,7 @@ void Game::EventLoop() {
                 case UIMSG_STEALFROMACTOR:
                     if (!uActiveCharacter) continue;
                     if (!pParty->bTurnBasedModeOn) {
-                        if (pActors[uMessageParam].uAIState == 5)
+                        if (pActors[uMessageParam].uAIState == AIState::Dead)
                             pActors[uMessageParam].LootActor();
                         else
                             Actor::StealFrom(uMessageParam);
@@ -1629,7 +1629,7 @@ void Game::EventLoop() {
                         pTurnEngine->turn_stage == TE_MOVEMENT)
                         continue;
                     if (!(pTurnEngine->field_18 & TE_HAVE_PENDING_ACTIONS)) {
-                        if (pActors[uMessageParam].uAIState == 5)
+                        if (pActors[uMessageParam].uAIState == AIState::Dead)
                             pActors[uMessageParam].LootActor();
                         else
                             Actor::StealFrom(uMessageParam);
@@ -2269,7 +2269,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_F:  // what event?
                     __debugbreak();
-                    pButton2 = (GUIButton *)(unsigned __int16)vis->get_picked_object_zbuf_val();
+                    pButton2 = (GUIButton *)(unsigned __int16)vis->get_picked_object_zbuf_val().object_pid;
                     __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
                     continue;
                 case UIMSG_54:  // what event?
@@ -2695,9 +2695,9 @@ void Game::EventLoop() {
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
     engine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
-    int pid = vis->get_picked_object_zbuf_val();
+    int pid = vis->get_picked_object_zbuf_val().object_pid;
     if (pid != -1)
-        DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
+        DoInteractionWithTopmostZObject(pid);
 }
 
 void Game::GameLoop() {

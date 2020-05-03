@@ -1228,9 +1228,9 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         for (ODMFace &face : model.pFaces) {
             if (face.sCogTriggeredID) {
                 if (face.HasEventHint()) {
-                    face.uAttributes |= FACE_HAS_EVENT_HINT;
+                    face.uAttributes |= FACE_HAS_EVENT;
                 } else {
-                    face.uAttributes &= ~FACE_HAS_EVENT_HINT;  // ~0x00001000
+                    face.uAttributes &= ~FACE_HAS_EVENT;
                 }
             }
         }

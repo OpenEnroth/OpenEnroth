@@ -20,17 +20,17 @@ using EngineIoc = Engine_::IocContainer;
 static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
 Vis_SelectionFilter vis_sprite_filter_1 = {
-    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, 2};  // 00F93E1C
+    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType};  // 00F93E1C
 Vis_SelectionFilter vis_sprite_filter_2 = {
-    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, 2};  // 00F93E30
-Vis_SelectionFilter vis_face_filter = {VisObjectType_Face, OBJECT_Any, -1, 0,
-                                       0};  // 00F93E44
-Vis_SelectionFilter vis_door_filter = {VisObjectType_Face, OBJECT_BLVDoor, -1,
-                                       0x100000, 0};  // 00F93E58
+    VisObjectType_Sprite, OBJECT_Decoration, 0, 0, ExcludeType};  // 00F93E30
+Vis_SelectionFilter vis_face_filter = {
+    VisObjectType_Face, OBJECT_Any, -1, 0, None};  // 00F93E44
+Vis_SelectionFilter vis_door_filter = {
+    VisObjectType_Face, OBJECT_BLVDoor, -1, FACE_HAS_EVENT, None };  // 00F93E58
 Vis_SelectionFilter vis_sprite_filter_3 = {
-    VisObjectType_Sprite, OBJECT_Decoration, -1, 0, 4};  // 00F93E6C
-Vis_SelectionFilter vis_sprite_filter_4 = {VisObjectType_Any, OBJECT_Item, -1,
-                                           0, 0};  // static to sub_44EEA7
+    VisObjectType_Sprite, OBJECT_Decoration, -1, 0, ExclusionIfNoEvent};  // 00F93E6C
+Vis_SelectionFilter vis_sprite_filter_4 = {
+    VisObjectType_Any, OBJECT_Item, -1, 0, None };  // static to sub_44EEA7
 
 //----- (004C1026) --------------------------------------------------------
 Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
@@ -404,19 +404,19 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
 
 //----- (004C1944) --------------------------------------------------------
 unsigned short Vis::PickClosestActor(int object_id, unsigned int pick_depth,
-                                     int a4, int a5, int a6) {
-    Vis_SelectionFilter v8;  // [sp+18h] [bp-20h]@3
+                                     VisSelectFlags select_flags, int not_at_ai_state, int at_ai_state) {
+    Vis_SelectionFilter selectionFilter;  // [sp+18h] [bp-20h]@3
 
     static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
-    v8.object_type = VisObjectType_Sprite;
-    v8.object_id = object_id;
-    v8.at_ai_state = a6;
-    v8.no_at_ai_state = a5;
-    v8.select_flags = a4;
+    selectionFilter.vis_object_type = VisObjectType_Sprite;
+    selectionFilter.object_type = object_id;
+    selectionFilter.at_ai_state = at_ai_state;
+    selectionFilter.no_at_ai_state = not_at_ai_state;
+    selectionFilter.select_flags = select_flags;
     Vis_static_sub_4C1944_stru_F8BDE8.uNumPointers = 0;
     PickBillboards_Keyboard(pick_depth, &Vis_static_sub_4C1944_stru_F8BDE8,
-                            &v8);
+                            &selectionFilter);
     Vis_static_sub_4C1944_stru_F8BDE8.create_object_pointers(
         Vis_SelectionList::Unique);
     sort_object_pointers(Vis_static_sub_4C1944_stru_F8BDE8.object_pointers, 0,
@@ -493,32 +493,34 @@ void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
     }
 }
 
+Vis_PIDAndDepth InvalidPIDAndDepth() {
+    Vis_PIDAndDepth result;
+    result.depth = 0;
+    result.object_pid = PID_INVALID;
+    return result;
+}
+
 //----- (004C1BAA) --------------------------------------------------------
-int Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
+Vis_PIDAndDepth Vis::get_object_zbuf_val(Vis_ObjectInfo *info) {
     switch (info->object_type) {
         case VisObjectType_Sprite:
         case VisObjectType_Face: {
-            // return info->sZValue;
-
-            struct {
-                unsigned short object_pid;
-                short depth;
-            } res;
-            res.depth = info->depth;
-            res.object_pid = info->object_pid;
-            return *(int *)&res;
+            Vis_PIDAndDepth result;
+            result.depth = info->depth;
+            result.object_pid = info->object_pid;
+            return result;
         }
 
         default:
             log->Warning(
                 "Undefined type requested for: CVis::get_object_zbuf_val()");
-            return -1;
+            return InvalidPIDAndDepth();
     }
 }
 
 //----- (004C1BF1) --------------------------------------------------------
-int Vis::get_picked_object_zbuf_val() {
-    if (!default_list.uNumPointers) return -1;
+Vis_PIDAndDepth Vis::get_picked_object_zbuf_val() {
+    if (!default_list.uNumPointers) return InvalidPIDAndDepth();
 
     return get_object_zbuf_val(default_list.object_pointers[0]);
 }
@@ -1325,7 +1327,7 @@ void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
 //----- (004C0791) --------------------------------------------------------
 bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
                                Vis_SelectionFilter *filter) {
-    switch (filter->object_type) {
+    switch (filter->vis_object_type) {
         case VisObjectType_Any:
             return true;
 
@@ -1345,14 +1347,12 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
                              int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
                          .sParentBillboardID]
                         .object_pid);
-            if (filter->select_flags & 2) {
-                if (object_type == filter->object_id) return false;
-                return true;
+            if (filter->select_flags & ExcludeType) {
+                return object_type != filter->object_type;
             }
-            if (filter->select_flags & 4) {
-                // v8 = filter->object_id;
-                if (object_type != filter->object_id) return true;
-                if (filter->object_id != OBJECT_Decoration) {
+            if (filter->select_flags & ExclusionIfNoEvent) {
+                if (object_type != filter->object_type) return true;
+                if (filter->object_type != OBJECT_Decoration) {
                     log->Warning(
                         "Unsupported \"exclusion if no event\" type in "
                         "CVis::is_part_of_selection");
@@ -1363,25 +1363,31 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
                     return true;
                 return pLevelDecorations[object_idx].IsInteractive();
             }
-            if (object_type == filter->object_id) {
+            if (object_type == filter->object_type) {
                 if (object_type != OBJECT_Actor) {
                     log->Warning("Default case reached in VIS");
                     return true;
                 }
 
                 // v10 = &pActors[object_idx];
-                int result = 1 << HEXRAYS_LOBYTE(pActors[object_idx].uAIState);
-                if (result & filter->no_at_ai_state ||
-                    !(result & filter->at_ai_state) ||
-                    filter->select_flags & 8 &&
-                        (result = MonsterStats::BelongsToSupertype(
-                             pActors[object_idx].pMonsterInfo.uID,
-                             MONSTER_SUPERTYPE_UNDEAD)) == 0)
-                    return false;
-                if (!(filter->select_flags & 1)) return true;
+                int aiState = 1 << HEXRAYS_LOBYTE(pActors[object_idx].uAIState);
 
-                result = pActors[object_idx].GetActorsRelation(nullptr);
-                if (result == 0) return false;
+                if (aiState & filter->no_at_ai_state)
+                    return false;
+                if (!(aiState & filter->at_ai_state))
+                    return false;
+
+                auto only_target_undead = filter->select_flags & TargetUndead;
+                auto target_not_undead = MonsterStats::BelongsToSupertype(pActors[object_idx].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD) == 0;
+
+                if (only_target_undead && target_not_undead)
+                    return false;
+
+                if (!(filter->select_flags & VisSelectFlags_1))
+                    return true;
+
+                auto relation = pActors[object_idx].GetActorsRelation(nullptr);
+                if (relation == 0) return false;
                 return true;
             }
             return false;
@@ -1402,10 +1408,10 @@ bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
                 assert(false);
             }
 
-            if (filter->object_id != OBJECT_BLVDoor) return true;
-            if (no_event ||
-                face_attrib &
-                    filter->no_at_ai_state)  // face_attrib = 0x2009408 incorrect
+            if (filter->object_type != OBJECT_BLVDoor) return true;
+
+            auto invalid_face_attrib = face_attrib & filter->no_at_ai_state;
+            if (no_event || invalid_face_attrib)  // face_attrib = 0x2009408 incorrect
                 return false;
             return (face_attrib & filter->at_ai_state) != 0;
         }
