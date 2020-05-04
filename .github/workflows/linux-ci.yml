@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         configuration: [Debug, Release]
-        Platform: [x86]
+        Platform: [x64, x86]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -17,15 +17,23 @@ jobs:
     - name: Install
       run: |
         export CC=gcc-8 && export CXX=g++-8
+        mkdir out && cd out
         if [ "${{ matrix.Platform }}" = "x64" ]; then
-        sudo apt-get update && sudo apt-get install -y libglu1-mesa-dev libavformat-dev libavcodec-dev libswscale-dev libopenal-dev libsdl2-dev zlib1g-dev
-        cmake . -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
+        sudo apt-get update && sudo apt-get install -y gcc-8 g++-8 libglu1-mesa-dev libavformat-dev libavcodec-dev libswscale-dev libopenal-dev libsdl2-dev zlib1g-dev
+        cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
         fi
         if [ "${{ matrix.Platform }}" = "x86" ]; then
-        sudo dpkg --add-architecture i386 && sudo apt-get -qq update && sudo apt-get install -y gcc-multilib g++-8-multilib libglu1-mesa-dev:i386 libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386 libopenal-dev:i386 libsdl2-dev:i386 zlib1g-dev:i386
-        CFLAGS="-m32" CXXFLAGS="-m32" cmake . -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
+        export libxml2_ver=2.9.4+dfsg1-6.1ubuntu1.3
+        sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y libxml2=$libxml2_ver libxml2-dev=$libxml2_ver libxml2:i386=$libxml2_ver
+        sudo apt-get install -y gcc-multilib g++-8-multilib libglu1-mesa-dev:i386 libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386 libopenal-dev:i386 libsdl2-dev:i386 zlib1g-dev:i386
+        CFLAGS="-m32" CXXFLAGS="-m32" cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
         fi
     - name: Build
+      working-directory: out
       run: |
-        export core_count=$(nproc || echo 4) && echo core_count = $core_count
-        make -j $core_count
+        make -j$(nproc)
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: World_of_Might_and_Magic
+        path: out/World_of_Might_and_Magic

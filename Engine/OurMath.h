@@ -5,12 +5,14 @@
 #include <limits>
 #include <cstdint>
 
+#include "Engine/MM7.h"
+
 #define pi_double 3.14159265358979323846
 
-int64_t fixpoint_mul(int, int);
-int64_t fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
-int64_t fixpoint_div(int, int);
-int64_t fixpoint_sub_unknown(int, int);
+__int64 fixpoint_mul(int, int);
+__int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
+__int64 fixpoint_div(int, int);
+__int64 fixpoint_sub_unknown(int, int);
 int fixpoint_from_float(float value);
 int fixpoint_from_int(int lhv, int rhv);
 int integer_sqrt(int val);
