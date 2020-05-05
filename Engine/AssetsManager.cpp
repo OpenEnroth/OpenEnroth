@@ -11,12 +11,20 @@
 
 AssetsManager *assets = new AssetsManager();
 
-bool AssetsManager::ReleaseAllImages() { return true; }
+bool AssetsManager::ReleaseAllImages() {
+    return true;
+
+    // this will dereference things
+    for (auto it = images.cbegin(), next = it; it != images.cend(); it = next) {
+        next++;
+        it->second->Release();
+    }
+    return true;
+}
 
 bool AssetsManager::ReleaseImage(const String &name) {
     auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -24,7 +32,6 @@ bool AssetsManager::ReleaseImage(const String &name) {
     }
 
     images.erase(filename);
-
     return true;
 }
 
@@ -153,4 +160,28 @@ Texture *AssetsManager::GetSprite(const String &name, unsigned int palette_id,
     }
 
     return i->second;
+}
+
+bool AssetsManager::ReleaseSprite(const String& name) {
+    auto filename = name;
+    std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
+
+    auto i = sprites.find(filename);
+    if (i == sprites.end()) {
+        return false;
+    }
+
+    sprites.erase(filename);
+    return true;
+}
+
+bool AssetsManager::ReleaseAllSprites() {
+    return true;
+
+    // this will dereference things
+    for (auto it = sprites.cbegin(), next = it; it != sprites.cend(); it = next) {
+        next++;
+        it->second->Release();
+    }
+    return true;
 }

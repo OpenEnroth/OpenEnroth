@@ -14,7 +14,7 @@ class Sdl2Window : public OSWindow {
 
     void SetFullscreenMode() override;
     void SetWindowedMode(int new_window_width, int new_window_height) override;
-    void SetCursor(const char *cursor_name) override;
+    void SetCursor(bool on) override;
 
     int GetX() const override;
     int GetY() const override;

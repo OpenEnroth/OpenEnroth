@@ -147,6 +147,11 @@ void Timer_Image_MM7::Deserialize(Timer *timer) {
 void NPCData_Image_MM7::Serialize(NPCData *npc) {
     memset(this, 0, sizeof(*this));
 
+    if (npc->pName) {
+        this->pName = 1;
+    } else {
+        this->pName = 0;
+    }
     // this->pName = npc->pName;
     this->uPortraitID = npc->uPortraitID;
     this->uFlags = npc->uFlags;
@@ -169,6 +174,11 @@ void NPCData_Image_MM7::Serialize(NPCData *npc) {
 }
 
 void NPCData_Image_MM7::Deserialize(NPCData *npc) {
+    if (this->pName) {
+        npc->pName = "Dummy";
+    } else {
+        npc->pName = nullptr;
+    }
     // npc->pName = this->pName;
     npc->uPortraitID = this->uPortraitID;
     npc->uFlags = this->uFlags;
@@ -788,7 +798,7 @@ void Player_Image_MM7::Serialize(Player *player) {
     this->field_1B3B = player->field_1B3B;
 }
 
-void Player_Image_MM7::Deserialize(Player *player) {
+void Player_Image_MM7::Deserialize(Player* player) {
     for (unsigned int i = 0; i < 20; ++i)
         player->conditions_times[i].value = this->pConditions[i];
 
@@ -797,127 +807,127 @@ void Player_Image_MM7::Deserialize(Player *player) {
     strcpy(player->pName, this->pName);
 
     switch (this->uSex) {
-        case 0:
-            player->uSex = SEX_MALE;
-            break;
-        case 1:
-            player->uSex = SEX_FEMALE;
-            break;
-        default:
-            Assert(false);
+    case 0:
+        player->uSex = SEX_MALE;
+        break;
+    case 1:
+        player->uSex = SEX_FEMALE;
+        break;
+    default:
+        Assert(false);
     }
 
     switch (this->classType) {
-        case 0:
-            player->classType = PLAYER_CLASS_KNIGHT;
-            break;
-        case 1:
-            player->classType = PLAYER_CLASS_CHEVALIER;
-            break;
-        case 2:
-            player->classType = PLAYER_CLASS_CHAMPION;
-            break;
-        case 3:
-            player->classType = PLAYER_CLASS_BLACK_KNIGHT;
-            break;
-        case 4:
-            player->classType = PLAYER_CLASS_THEIF;
-            break;
-        case 5:
-            player->classType = PLAYER_CLASS_ROGUE;
-            break;
-        case 6:
-            player->classType = PLAYER_CLASS_SPY;
-            break;
-        case 7:
-            player->classType = PLAYER_CLASS_ASSASSIN;
-            break;
-        case 8:
-            player->classType = PLAYER_CLASS_MONK;
-            break;
-        case 9:
-            player->classType = PLAYER_CLASS_INITIATE;
-            break;
-        case 10:
-            player->classType = PLAYER_CLASS_MASTER;
-            break;
-        case 11:
-            player->classType = PLAYER_CLASS_NINJA;
-            break;
-        case 12:
-            player->classType = PLAYER_CLASS_PALADIN;
-            break;
-        case 13:
-            player->classType = PLAYER_CLASS_CRUSADER;
-            break;
-        case 14:
-            player->classType = PLAYER_CLASS_HERO;
-            break;
-        case 15:
-            player->classType = PLAYER_CLASS_VILLIAN;
-            break;
-        case 16:
-            player->classType = PLAYER_CLASS_ARCHER;
-            break;
-        case 17:
-            player->classType = PLAYER_CLASS_WARRIOR_MAGE;
-            break;
-        case 18:
-            player->classType = PLAYER_CLASS_MASTER_ARCHER;
-            break;
-        case 19:
-            player->classType = PLAYER_CLASS_SNIPER;
-            break;
-        case 20:
-            player->classType = PLAYER_CLASS_RANGER;
-            break;
-        case 21:
-            player->classType = PLAYER_CLASS_HUNTER;
-            break;
-        case 22:
-            player->classType = PLAYER_CLASS_RANGER_LORD;
-            break;
-        case 23:
-            player->classType = PLAYER_CLASS_BOUNTY_HUNTER;
-            break;
-        case 24:
-            player->classType = PLAYER_CLASS_CLERIC;
-            break;
-        case 25:
-            player->classType = PLAYER_CLASS_PRIEST;
-            break;
-        case 26:
-            player->classType = PLAYER_CLASS_PRIEST_OF_SUN;
-            break;
-        case 27:
-            player->classType = PLAYER_CLASS_PRIEST_OF_MOON;
-            break;
-        case 28:
-            player->classType = PLAYER_CLASS_DRUID;
-            break;
-        case 29:
-            player->classType = PLAYER_CLASS_GREAT_DRUID;
-            break;
-        case 30:
-            player->classType = PLAYER_CLASS_ARCH_DRUID;
-            break;
-        case 31:
-            player->classType = PLAYER_CLASS_WARLOCK;
-            break;
-        case 32:
-            player->classType = PLAYER_CLASS_SORCERER;
-            break;
-        case 33:
-            player->classType = PLAYER_CLASS_WIZARD;
-            break;
-        case 34:
-            player->classType = PLAYER_CLASS_ARCHMAGE;
-            break;
-        case 35:
-            player->classType = PLAYER_CLASS_LICH;
-            break;
-        default:
-            Assert(false);
+    case 0:
+        player->classType = PLAYER_CLASS_KNIGHT;
+        break;
+    case 1:
+        player->classType = PLAYER_CLASS_CHEVALIER;
+        break;
+    case 2:
+        player->classType = PLAYER_CLASS_CHAMPION;
+        break;
+    case 3:
+        player->classType = PLAYER_CLASS_BLACK_KNIGHT;
+        break;
+    case 4:
+        player->classType = PLAYER_CLASS_THEIF;
+        break;
+    case 5:
+        player->classType = PLAYER_CLASS_ROGUE;
+        break;
+    case 6:
+        player->classType = PLAYER_CLASS_SPY;
+        break;
+    case 7:
+        player->classType = PLAYER_CLASS_ASSASSIN;
+        break;
+    case 8:
+        player->classType = PLAYER_CLASS_MONK;
+        break;
+    case 9:
+        player->classType = PLAYER_CLASS_INITIATE;
+        break;
+    case 10:
+        player->classType = PLAYER_CLASS_MASTER;
+        break;
+    case 11:
+        player->classType = PLAYER_CLASS_NINJA;
+        break;
+    case 12:
+        player->classType = PLAYER_CLASS_PALADIN;
+        break;
+    case 13:
+        player->classType = PLAYER_CLASS_CRUSADER;
+        break;
+    case 14:
+        player->classType = PLAYER_CLASS_HERO;
+        break;
+    case 15:
+        player->classType = PLAYER_CLASS_VILLIAN;
+        break;
+    case 16:
+        player->classType = PLAYER_CLASS_ARCHER;
+        break;
+    case 17:
+        player->classType = PLAYER_CLASS_WARRIOR_MAGE;
+        break;
+    case 18:
+        player->classType = PLAYER_CLASS_MASTER_ARCHER;
+        break;
+    case 19:
+        player->classType = PLAYER_CLASS_SNIPER;
+        break;
+    case 20:
+        player->classType = PLAYER_CLASS_RANGER;
+        break;
+    case 21:
+        player->classType = PLAYER_CLASS_HUNTER;
+        break;
+    case 22:
+        player->classType = PLAYER_CLASS_RANGER_LORD;
+        break;
+    case 23:
+        player->classType = PLAYER_CLASS_BOUNTY_HUNTER;
+        break;
+    case 24:
+        player->classType = PLAYER_CLASS_CLERIC;
+        break;
+    case 25:
+        player->classType = PLAYER_CLASS_PRIEST;
+        break;
+    case 26:
+        player->classType = PLAYER_CLASS_PRIEST_OF_SUN;
+        break;
+    case 27:
+        player->classType = PLAYER_CLASS_PRIEST_OF_MOON;
+        break;
+    case 28:
+        player->classType = PLAYER_CLASS_DRUID;
+        break;
+    case 29:
+        player->classType = PLAYER_CLASS_GREAT_DRUID;
+        break;
+    case 30:
+        player->classType = PLAYER_CLASS_ARCH_DRUID;
+        break;
+    case 31:
+        player->classType = PLAYER_CLASS_WARLOCK;
+        break;
+    case 32:
+        player->classType = PLAYER_CLASS_SORCERER;
+        break;
+    case 33:
+        player->classType = PLAYER_CLASS_WIZARD;
+        break;
+    case 34:
+        player->classType = PLAYER_CLASS_ARCHMAGE;
+        break;
+    case 35:
+        player->classType = PLAYER_CLASS_LICH;
+        break;
+    default:
+        Assert(false);
     }
 
     player->uCurrentFace = this->uCurrentFace;
@@ -1045,6 +1055,11 @@ void Player_Image_MM7::Deserialize(Player *player) {
     player->field_1AA2 = this->field_1AA2;
     player->_expression21_animtime = this->_expression21_animtime;
     player->_expression21_frameset = this->_expression21_frameset;
+
+    for (int z = 0; z < player->vBeacons.size(); z++) {
+        player->vBeacons[z].image->Release();
+    }
+    player->vBeacons.clear();
 
     for (unsigned int i = 0; i < 5; ++i) {
         if (this->pInstalledBeacons[i].uBeaconTime != 0) {

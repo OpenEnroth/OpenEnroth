@@ -158,7 +158,7 @@ class LODFile_IconsBitmaps : public LOD::File {
     Texture_MM7 pTextures[MAX_LOD_TEXTURES];
     unsigned int uNumLoadedFiles;
     int dword_11B80;
-    int dword_11B84;
+    int dword_11B84;  // bitmaps lod reserved
     int dword_11B88;
     int uTextureRedBits;
     int uTextureGreenBits;
@@ -188,7 +188,7 @@ struct LODSpriteHeader {
     uint16_t uPaletteId;     // 14
     uint16_t word_16;        // 16
     uint16_t uTexturePitch;  // 18
-    uint16_t word_1A;        // 1a
+    uint16_t word_1A;        // 1a  flags - 1024 delete bitmap
     uint32_t uDecompressedSize;  // 1c
 };
 #pragma pack(pop)
@@ -226,8 +226,8 @@ class LODFile_Sprites : public LOD::File {
     void _inlined_sub1();
 
     unsigned int uNumLoadedSprites;
-    int field_ECA0;
-    int field_ECA4;
+    int field_ECA0;  // reserved sprites -522
+    int field_ECA4;  // 2nd init sprites
     int field_ECA8;
     // int can_load_hardware_sprites;
     Sprite *pHardwareSprites;

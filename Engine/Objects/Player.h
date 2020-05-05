@@ -263,11 +263,15 @@ struct LloydBeacon {
         SaveFileID = 0;
         image = nullptr;
     }
+
     ~LloydBeacon() {
-        if (image != nullptr) {
-            image->Release();
-        }
+        // if (image != nullptr) {
+        //    image->Release();
+        // }
+        // image release moved to install beacon to avoid de-refernce
+        image = nullptr;
     }
+
     GameTime uBeaconTime;
     int32_t PartyPos_X;
     int32_t PartyPos_Y;

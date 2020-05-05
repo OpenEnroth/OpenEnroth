@@ -582,7 +582,7 @@ void GUIWindow_PartyCreation::Update() {
         localization->GetClassName(12), 0, 0, 0);
 
     pColorText = Color16(0, 0xF7, 0xF7);
-    if (uClassType != PLAYER_CLASS_DRUID)
+    if (uClassType != PLAYER_CLASS_RANGER)
         pColorText = Color16(0xFF, 0xFF, 0xFF);
     pTextCenter =
         pFontCreate->AlignText_Center(65, localization->GetClassName(20));

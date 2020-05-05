@@ -1843,8 +1843,8 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
     ItemGen *item = nullptr;
 
-    int mousex = pMouse->uMouseClickX;  // condense
-    int mousey = pMouse->uMouseClickY;  // condense
+    int mousex = pMouse->uMouseX;  // condense
+    int mousey = pMouse->uMouseY;  // condense
 
     static int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
     static int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};

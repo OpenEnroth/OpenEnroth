@@ -45,7 +45,7 @@ class SpriteFrame {
 
     Sprite *hw_sprites[8];
     fixed scale;  // used in screen space scaling
-    int uFlags;
+    int uFlags;  // 128 for loaded
     int uGlowRadius;
     int uPaletteID;
     int uPaletteIndex;
@@ -64,7 +64,7 @@ struct SpriteFrameTable {
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     void ReleaseSFrames();
-    void ResetSomeSpriteFlags();
+    void ResetLoadedFlags();
     void InitializeSprite(signed int uSpriteID);
     int FastFindSprite(const char *pSpriteName);
     int BinarySearch(const char *pSpriteName);

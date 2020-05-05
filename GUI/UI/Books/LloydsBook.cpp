@@ -44,16 +44,20 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     int max_beacons = 1;
     int water_skill = pParty->pPlayers[_506348_current_lloyd_playerid]
                   .pActiveSkills[PLAYER_SKILL_WATER];
+
     if (water_skill & 0x100 || (water_skill & 0x80))
         max_beacons = 5;
     else if (water_skill & 0x40)
         max_beacons = 3;
+
+    if (engine->config->debug_all_magic) max_beacons = 5;
 
     for (int i = 0; i < max_beacons; ++i) {
         CreateButton(pLloydsBeaconsPreviewXs[i], pLloydsBeaconsPreviewYs[i], 92,
                      68, 1, UIMSG_HintBeaconSlot, UIMSG_InstallBeacon, i, 0, "");
     }
 
+    // purges expired beacons
     pParty->pPlayers[_506348_current_lloyd_playerid].CleanupBeacons();
 }
 
@@ -91,6 +95,7 @@ void GUIWindow_LloydsBook::Update() {
                                     pBtn_Book_2->uY / 480.0f,
                                     ui_book_button1_on);
     }
+
     int uNumMaxBeacons = 1;
     if ((pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x100) ||
         (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x80)) {
@@ -98,6 +103,7 @@ void GUIWindow_LloydsBook::Update() {
     } else if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x40) {
         uNumMaxBeacons = 3;
     }
+    if (engine->config->debug_all_magic) uNumMaxBeacons = 5;
 
     if (uNumMaxBeacons > 0) {
         for (size_t BeaconID = 0; BeaconID < uNumMaxBeacons; BeaconID++) {

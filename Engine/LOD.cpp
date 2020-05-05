@@ -45,7 +45,7 @@ void LODFile_IconsBitmaps::_inlined_sub1() {
     dword_11B84 = uNumLoadedFiles;
 }
 
-void LODFile_Sprites::_inlined_sub1() {
+void LODFile_Sprites::_inlined_sub1() {  // final init
     field_ECA0 = uNumLoadedSprites;
 }
 
@@ -54,7 +54,7 @@ void LODFile_IconsBitmaps::_inlined_sub0() {
     if (dword_11B84 < uNumLoadedFiles) dword_11B84 = uNumLoadedFiles;
 }
 
-void LODFile_Sprites::_inlined_sub0() {
+void LODFile_Sprites::_inlined_sub0() {  // 2nd init
     field_ECA4 = uNumLoadedSprites;
     if (field_ECA0 < uNumLoadedSprites) field_ECA0 = uNumLoadedSprites;
 }
@@ -232,14 +232,8 @@ void LODFile_IconsBitmaps::ReleaseAll2() {
 }
 
 void LODFile_Sprites::DeleteSomeOtherSprites() {
-    int *v1 = (int *)&this->uNumLoadedSprites;
-    int *v2 = &this->field_ECA0;
     DeleteSpritesRange(field_ECA0, uNumLoadedSprites);
-
-    // testing - do no reset sprite count as we are not clearing sprites
-    // see sprite::release below
-
-    *v1 = *v2;
+    uNumLoadedSprites = field_ECA0;
 }
 
 void LOD::File::Close() {
@@ -332,19 +326,10 @@ void LODSprite::Release() {
 }
 
 void Sprite::Release() {
-    return;
-
-    // testing actually clearing sprites on release
-    // causes error - if sprite is requested multiple times asset manager can delete
-    // image which may be referenced elsewhere resulting in MAV
-
-    // bodge for the time being, not resetting loading sprites
-    // reduces memory leak on level transition
-
     this->sprite_header->Release();
     this->texture->Release();
-    this->texture = NULL;
-    this->pName = "NULL";
+    this->texture = nullptr;
+    this->pName = "null";
     this->uPaletteID = 0;
 }
 

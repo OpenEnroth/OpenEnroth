@@ -523,8 +523,8 @@ void Game::EventLoop() {
                         GameUI_StatusBar_Clear();
                         break;
                     }
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
+                        // pGUIWindow_CurrentMenu->Release();
                     pGUIWindow_CurrentMenu = new GUIWindow_DebugMenu();
                     current_screen_type = CURRENT_SCREEN::SCREEN_DEBUG;
                     continue;
@@ -1035,7 +1035,7 @@ void Game::EventLoop() {
                             ++pParty->days_played_without_rest;
                         }
                         pPaletteManager->ResetNonLocked();
-                        pSpriteFrameTable->ResetSomeSpriteFlags();
+                        pSpriteFrameTable->ResetLoadedFlags();
                         pCurrentMapName = pOut;
                         char pLevelName[32];
                         strcpy(pLevelName, pCurrentMapName.c_str());
@@ -1298,9 +1298,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_InstallBeacon:
                     pPlayer9 = pPlayers[_506348_current_lloyd_playerid + 1];
-                    if (!pPlayer9->vBeacons[uMessageParam].uBeaconTime && bRecallingBeacon) {
-                        continue;
-                    }
+                    if ((pPlayer9->vBeacons.size() <= uMessageParam) && bRecallingBeacon) continue;
 
                     _506360_installing_beacon = true;
 
@@ -2717,7 +2715,7 @@ void Game::GameLoop() {
     extern bool use_music_folder;
     GameUI_LoadPlayerPortraintsAndVoices();
     pIcons_LOD->_inlined_sub1();
-    pAudioPlayer->SetMusicVolume(engine->config->music_level);
+    // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
     while (2) {
         v16 = 1;

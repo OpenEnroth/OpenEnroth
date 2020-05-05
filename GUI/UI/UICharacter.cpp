@@ -2253,7 +2253,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     current_Y += 2 * uCurrFontHeght - 6;
     for (int i = 0; i < 9; ++i) {
         skill_id = pMagicSkills[i];
-        if (curr_player->pActiveSkills[skill_id] & 0x3F && buttons_count < 15) {
+        if (curr_player->pActiveSkills[skill_id] & 0x3F /*&& buttons_count < 15*/) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
             pGUIWindow_CurrentMenu->CreateButton(
@@ -2710,8 +2710,8 @@ void WetsuitOff(unsigned int uPlayerID) {
 
 //----- (00468F8A) --------------------------------------------------------
 void OnPaperdollLeftClick() {
-    int mousex = pMouse->uMouseClickX;
-    int mousey = pMouse->uMouseClickY;
+    int mousex = pMouse->uMouseX;
+    int mousey = pMouse->uMouseY;
 
     static int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
     static int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
@@ -3047,9 +3047,9 @@ void OnPaperdollLeftClick() {
                            (pPlayers[uActiveCharacter]->GetActualSkillMastery(
                                 PLAYER_SKILL_SWORD) >
                             2)) {  // sword in left hand at master
-                    // v18 = pMouse->uMouseClickX;
-                    // v19 = pMouse->uMouseClickY;
-                    if ((signed int)pMouse->uMouseClickX >= 560) {
+                    // v18 = pMouse->uMouseX;
+                    // v19 = pMouse->uMouseY;
+                    if ((signed int)pMouse->uMouseX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {
                                 --shieldequip;
@@ -3302,8 +3302,8 @@ void OnPaperdollLeftClick() {
     } else {  // z picking as before
         v34 =
             render
-                ->pActiveZBuffer[pMouse->uMouseClickX +
-                                 pSRZBufferLineOffsets[pMouse->uMouseClickY]] &
+                ->pActiveZBuffer[pMouse->uMouseX +
+                                 pSRZBufferLineOffsets[pMouse->uMouseY]] &
             0xFFFF;
         if (v34) {
             // v36 = v34 - 1;

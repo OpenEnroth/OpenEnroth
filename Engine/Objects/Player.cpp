@@ -2322,7 +2322,12 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
                    hasteRecoveryReduction - sword_axe_bow_recovery_reduction -
                    player_speed_recovery_reduction;
 
-    if (recovery < 0) recovery = 0;
+    if (bRangedAttack || shooting_laser) {
+        if (recovery < 5) recovery = 5;
+    } else {
+        if (recovery < 30) recovery = 30;
+    }
+
     return recovery;
 }
 
@@ -8201,6 +8206,8 @@ bool Player::SetBeacon(size_t index, size_t power) {
     beacon.SaveFileID = file_index;
 
     if (index < vBeacons.size()) {
+        // overwrite so clear image
+        vBeacons[index].image->Release();
         vBeacons[index] = beacon;
     } else {
         vBeacons.push_back(beacon);
