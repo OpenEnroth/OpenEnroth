@@ -2,8 +2,7 @@
 
 #include <chrono>
 
-#include "IO/Keyboard.h"
-#include "IO/UserInputHandler.h"
+#include "Io/KeyboardInputHandler.h"
 
 Timer *pMiscTimer = new Timer;
 Timer *pEventTimer;
@@ -27,7 +26,7 @@ void Timer::Pause() {
 //----- (00426363) --------------------------------------------------------
 void Timer::Resume() {
     if (bPaused) {
-        userInputHandler->ResetKeys();
+        keyboardInputHandler->ResetKeys();
 
         bPaused = 0;
         uStartTime = Time();

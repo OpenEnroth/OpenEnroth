@@ -16,12 +16,14 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIArena.h"
 
+#include "Io/KeyboardInputHandler.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/OSWindow.h"
 
-#include "IO/Keyboard.h"
-#include "IO/UserInputHandler.h"
+using Io::TextInputType;
+
 
 void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     dword_A74CDC = -1;
@@ -532,16 +534,15 @@ void GUIWindow_Dialogue::Update() {
 GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(
     unsigned int x, unsigned int y, unsigned int width, unsigned int height,
     GUIButton *button, const String &hint
-)
-    : GUIWindow(WINDOW_GreetingNPC, x, y, width, height, button, hint) {
+) : GUIWindow(WINDOW_GreetingNPC, x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
-    userInputHandler->StartTextInput(TextInputType::Text, 15, this);
+    keyboardInputHandler->StartTextInput(TextInputType::Text, 15, this);
     current_screen_type = CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG;
 }
 
 void GUIWindow_GenericDialogue::Release() {
     current_screen_type = prev_screen_type;
-    userInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
 
     GUIWindow::Release();
 }
@@ -582,7 +583,7 @@ void GUIWindow_GenericDialogue::Update() {
     if (pGUIWindow2->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS) {
         if (pGUIWindow2->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
             pGUIWindow2->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-            GameUI_StatusBar_OnInput(userInputHandler->GetTextInput().c_str());
+            GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput().c_str());
             sub_4452BB();
             return;
         }
@@ -594,13 +595,13 @@ void GUIWindow_GenericDialogue::Update() {
         return;
     }
     if (pGUIWindow2->ptr_1C == (void *)26) {
-        auto str = StringPrintf("%s %s", GameUI_StatusBar_GetInput().c_str(), userInputHandler->GetTextInput().c_str());
+        auto str = StringPrintf("%s %s", GameUI_StatusBar_GetInput().c_str(), keyboardInputHandler->GetTextInput().c_str());
         pGUIWindow2->DrawText(pFontLucida, 13, 357, 0, str, 0, 0, 0);
         pGUIWindow2->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
         return;
     }
-    if (!userInputHandler->GetTextInput().empty()) {
-        userInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+    if (!keyboardInputHandler->GetTextInput().empty()) {
+        keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
         GameUI_StatusBar_ClearInputString();
         sub_4452BB();
         return;
@@ -618,8 +619,7 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
         dword_5C3418 = a1;
         dword_5C341C = a2;
         _591094_decoration = activeLevelDecoration;
-        pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(),
-                                                    window->GetHeight(), a4);
+        pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)a4);
         pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
         pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
         pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);

@@ -7,22 +7,20 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
-#include "Engine/Party.h"
-#include "Engine/SaveLoad.h"
-#include "Engine/stru159.h"
-
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Viewport.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/Monsters.h"
-
+#include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/stru159.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -34,13 +32,17 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
-#include "IO/UserInputHandler.h"
+#include "Io/Mouse.h"
+#include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
+
+using Io::TextInputType;
 using EngineIoc = Engine_::IocContainer;
 
 int uHouse_ExitPic;
@@ -846,8 +848,8 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
     pMessageQueue_50CBD0->Flush();
     viewparams->bRedrawGameUI = 1;
     uDialogueType = 0;
-    userInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-    userInputHandler->ResetKeys();
+    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->ResetKeys();
     if (uHouseID == HOUSE_600 || uHouseID == HOUSE_601) {
         Application::GameOver_Loop(0);
         return 0;
@@ -1429,14 +1431,14 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
                     pNPCTopics[352].pText;  //"Поздравляю! Вы успешно..."
             }
         } else if (uMessageParam == HOUSE_DIALOGUE_TOWNHALL_PAY_FINE) {
-            userInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
+            keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
         }
         break;
     }
     case BuildingType_Bank:
     {
         if (dialog_menu_id >= 7 && dialog_menu_id <= 8)
-            userInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
+            keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
         return;
         break;
     }
@@ -2023,15 +2025,14 @@ void TownHallDialog() {
                 3);  // "Pay"   "How Much?"
             townHall_window.DrawTitleText(
                 pFontArrus, 0, 186, Color16(0xFFu, 0xFFu, 0xFFu),
-                userInputHandler->GetTextInput().c_str(), 3);
+                keyboardInputHandler->GetTextInput().c_str(), 3);
             townHall_window.DrawFlashingInputCursor(
-                pFontArrus->GetLineWidth(userInputHandler->GetTextInput().c_str()) / 2 + 80,
+                pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80,
                 185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CONFIRMED) {
-            v1 = atoi(userInputHandler->GetTextInput().c_str());
+        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
+            v1 = atoi(keyboardInputHandler->GetTextInput().c_str());
             v2 = v1;
             if (v1 <= 0) {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2101,15 +2102,15 @@ void BankDialog() {
                 3);  // Deposit  How much?   /   "Положить" "Сколько?"
             bank_window.DrawTitleText(pFontArrus, 0, 186,
                 Color16(0xFFu, 0xFFu, 0xFFu),
-                userInputHandler->GetTextInput().c_str(), 3);
+                keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(
-                pFontArrus->GetLineWidth(userInputHandler->GetTextInput().c_str()) / 2 + 80,
+                pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80,
                 185, pFontArrus);
             return;
         }
         if (window_SpeakInHouse->receives_keyboard_input_2 ==
             WINDOW_INPUT_CONFIRMED) {
-            int entered_sum = atoi(userInputHandler->GetTextInput().c_str());
+            int entered_sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             unsigned int takes_sum = entered_sum;
             if (!entered_sum) {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2149,15 +2150,15 @@ void BankDialog() {
                 3);  // Withdraw  How much?   /   "Снять" "Сколько?"
             bank_window.DrawTitleText(pFontArrus, 0, 186,
                 Color16(0xFFu, 0xFFu, 0xFFu),
-                userInputHandler->GetTextInput().c_str(), 3);
+                keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(
-                pFontArrus->GetLineWidth(userInputHandler->GetTextInput().c_str()) / 2 + 80,
+                pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80,
                 185, pFontArrus);
             return;
         }
         if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
             window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-            int entered_sum = atoi(userInputHandler->GetTextInput().c_str());
+            int entered_sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             unsigned int takes_sum = entered_sum;
             if (entered_sum) {
                 if (entered_sum > pParty->uNumGoldInBank) {
@@ -3898,8 +3899,8 @@ void InitializeBuildingResidents() {
 
 int HouseDialogPressCloseBtn() {
     pMessageQueue_50CBD0->Flush();
-    userInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-    userInputHandler->ResetKeys();
+    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
     if (pDialogueNPCCount == 0) return 0;

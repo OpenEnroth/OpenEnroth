@@ -288,8 +288,7 @@ void RenderD3D::Release() {
     }
 }
 
-bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed,
-                             OSWindow *window) {
+bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, std::shared_ptr<OSWindow> window) {
     DWORD v26;                        // [sp-4h] [bp-DCh]@30
     DDSCAPS2 v27;                     // [sp+Ch] [bp-CCh]@37
     DDSURFACEDESC2 ddsd2;             // [sp+1Ch] [bp-BCh]@11

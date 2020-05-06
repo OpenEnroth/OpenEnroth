@@ -1,22 +1,13 @@
 #include "src/Application/GameFactory.h"
 
-#include "src/Application/Configuration.h"
 #include "src/Application/Game.h"
+#include "src/Application/GameConfig.h"
 
-using Application::GameFactory;
-using Application::Configuration;
 using Application::Game;
+using Application::GameConfig;
+using Application::GameFactory;
 
-std::shared_ptr<const Configuration> GameFactory::CreateConfiguration(const std::string &command_line) {
-    auto config = std::make_shared<Configuration>();
-    config->command_line = command_line;
-
-    return config;
-}
-
-std::shared_ptr<Game> GameFactory::CreateGame(const std::string &command_line) {
-    auto config = CreateConfiguration(command_line);
-
+std::shared_ptr<Game> GameFactory::CreateGame(const std::shared_ptr<const GameConfig> &config) {
     auto game = std::make_shared<Game>();
     if (game) {
         if (game->Configure(config)) {

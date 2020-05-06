@@ -6,19 +6,18 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Time.h"
 
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-
-#include "IO/GameKey.h"
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
-#include "IO/UserInputHandler.h"
+#include "Io/GameKey.h"
+#include "Io/InputAction.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
@@ -28,7 +27,14 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
+
 using Application::Menu;
+using Io::TextInputType;
+using Io::KeyToggleType;
+using Io::InputAction;
 
 
 InputAction currently_selected_action_for_binding = InputAction::Invalid; // 506E68
@@ -114,7 +120,7 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_SelectLoadSlot: {
                 if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
-                    userInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+                    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
 
                 int v10 = pSaveListPosition + param;
                 if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME ||
@@ -128,9 +134,9 @@ void Menu::EventLoop() {
                     uLoadGameUI_SelectedSlot = v10;
                     dword_6BE138 = v10;
                 } else {
-                    userInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
+                    keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
                     if (strcmp(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, localization->GetString(LSTR_EMPTY_SAVESLOT))) {
-                        userInputHandler->SetTextInput(pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
+                        keyboardInputHandler->SetTextInput(pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
                     }
                 }
             }
@@ -143,8 +149,8 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_SaveGame:
                 if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS) {
-                    userInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
-                    strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, userInputHandler->GetTextInput().c_str());
+                    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+                    strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
                 }
                 DoSavegame(uLoadGameUI_SelectedSlot);
                 continue;
@@ -192,7 +198,7 @@ void Menu::EventLoop() {
                     currently_selected_action_for_binding = (InputAction)param;
                     if (KeyboardPageNum != 1)
                         currently_selected_action_for_binding = (InputAction)(param + 14);
-                    userInputHandler->StartTextInput(TextInputType::Text, 1, pGUIWindow_CurrentMenu);
+                    keyboardInputHandler->StartTextInput(TextInputType::Text, 1, pGUIWindow_CurrentMenu);
                 }
                 continue;
             }
@@ -509,11 +515,8 @@ void Menu::MenuLoop() {
             current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS ||
             current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS ||
             current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS)) {
-        window->PeekMessageLoop();
-        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-            OS_WaitMessage();
-            continue;
-        }
+
+        MessageLoopWithWait();
 
         GameUI_WritePointedObjectStatusString();
         render->BeginScene();

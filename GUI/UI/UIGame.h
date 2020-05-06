@@ -30,7 +30,7 @@ class GUIWindow_GameKeyBindings : public GUIWindow {
     GUIWindow_GameKeyBindings();
     virtual ~GUIWindow_GameKeyBindings() {}
 
-    virtual void Update();
+    virtual void Update() override;
 };
 
 

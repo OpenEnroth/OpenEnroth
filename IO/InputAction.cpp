@@ -1,5 +1,6 @@
-#include "IO/InputAction.h"
+#include "Io/InputAction.h"
 
+using namespace Io;
 
 std::string GetDisplayName(InputAction action) {
     switch (action) {

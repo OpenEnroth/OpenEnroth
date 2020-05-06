@@ -1,27 +1,28 @@
 #include "Engine/Objects/NPC.h"
 
+#include "Engine/Autonotes.h"
 #include "Engine/Engine.h"
-#include "Engine/Localization.h"
-
-#include "GUI/UI/UITransition.h"
-
+#include "Engine/Awards.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/MapInfo.h"
-#include "Engine/Spells/CastSpellInfo.h"
-#include "GUI/UI/UIHouses.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Autonotes.h"
-#include "Engine/Awards.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
+#include "Engine/MapInfo.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
-#include "Media/Audio/AudioPlayer.h"
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/GUIButton.h"
+#include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UITransition.h"
+
+#include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 int pDialogueNPCCount;
 std::array<class Image *, 6> pDialogueNPCPortraits;

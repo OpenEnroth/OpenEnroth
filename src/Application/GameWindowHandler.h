@@ -1,12 +1,14 @@
 #pragma once
 
-#include "IO/GameKey.h"
+#include "Io/GameKey.h"
+#include "Io/Mouse.h"
 
-class Mouse;
+using Io::GameKey;
+using Io::Mouse;
 
 namespace Application {
 
-// Handles events from game window (OSWindow) and transforms it to game actions/events
+// Handles events from game window (OSWindow)
 class GameWindowHandler {
  public:
     GameWindowHandler();
@@ -29,7 +31,7 @@ class GameWindowHandler {
     void OnDeactivated();
 
  private:
-    Mouse *mouse = nullptr;
+    std::shared_ptr<Mouse> mouse = nullptr;
 };
 
 }  // namespace Application

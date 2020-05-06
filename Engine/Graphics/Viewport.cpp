@@ -1,26 +1,28 @@
 #include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Engine.h"
-#include "Engine/Localization.h"
-
-#include "DecorationList.h"
 #include "Engine/Events.h"
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Vis.h"
+#include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/stru123.h"
-#include "GUI/GUIWindow.h"
-#include "IO/Mouse.h"
-#include "Level/Decoration.h"
-#include "Outdoor.h"
-#include "Vis.h"
 
+#include "GUI/GUIWindow.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
+
+#include "Io/Mouse.h"
+
 
 //----- (004C0262) --------------------------------------------------------
 void Viewport::SetScreen(signed int sTL_X, signed int sTL_Y, signed int sBR_X,
@@ -348,21 +350,19 @@ void Engine::OnGameViewportClick() {
                 pActors[mon_id].LootActor();
             else if (pParty->pPickedItem.uItemID)
                 DropHeldItem();
-        } else if (!OS_IfShiftPressed()) {
+        } else if (!keyboardInputHandler->IsCastOnClickToggled()) {
             if (!in_range) {
                 if (pParty->pPickedItem.uItemID) DropHeldItem();
             } else if (!ActorInteraction(mon_id)) {
                 if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                    pTurnEngine->field_18 |= TE_FLAG_8;
+                    pTurnEngine->field_18 |= TE_FLAG_8_finished;
                 } else {
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Attack, 0, 0);
                 }
             }
         } else if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             pParty->uFlags |= PARTY_FLAGS_1_FALLING;
-        } else if (uActiveCharacter &&
-            sub_427769_isSpellQuickCastableOnShiftClick(
-                pPlayers[uActiveCharacter]->uQuickSpell)) {
+        } else if (uActiveCharacter != 0 && sub_427769_isSpellQuickCastableOnShiftClick(pPlayers[uActiveCharacter]->uQuickSpell)) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_CastQuickSpell, 0, 0);
         }
     } else if (PID_TYPE(pid) == OBJECT_Decoration) {

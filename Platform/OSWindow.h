@@ -6,13 +6,22 @@
 
 #include "src/Application/GameWindowHandler.h"
 
-#include "IO/IUserInputProvider.h"
+#include "Io/IKeyboardController.h"
+#include "Io/IMouseController.h"
 
 
 using Application::GameWindowHandler;
+using Io::IKeyboardController;
+using Io::IMouseController;
+
+#define MessageLoopWithWait()           \
+    window->HandleAllEvents();          \
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {    \
+        window->WaitSingleEvent();      \
+        continue;                       \
+    }                                   \
 
 
-class Mouse;
 class OSWindow {
  public:
     OSWindow();
@@ -25,8 +34,7 @@ class OSWindow {
     virtual int GetY() const = 0;
     virtual unsigned int GetWidth() const = 0;
     virtual unsigned int GetHeight() const = 0;
-
-    virtual Point TransformCursorPos(Point &pt) const = 0;  // screen to client
+    virtual void SetWindowArea(int width, int height) = 0;
 
     virtual bool OnOSMenu(int item_id) = 0;
 
@@ -34,12 +42,14 @@ class OSWindow {
     virtual bool Focused() = 0;
     virtual void Activate() = 0;
 
-    virtual void PeekSingleMessage() = 0;
-    virtual void PeekMessageLoop() = 0;
+    virtual void WaitSingleEvent() = 0;
+    virtual void HandleSingleEvent() = 0;
+    virtual void HandleAllEvents() = 0;
 
     virtual void *GetWinApiHandle() = 0;
 
-    virtual std::shared_ptr<IUserInputProvider> GetUserInputProvider() = 0;
+    virtual std::shared_ptr<IKeyboardController> GetKeyboardController() = 0;
+    virtual std::shared_ptr<IMouseController> GetMouseController() = 0;
 
     // window-renderer integration, probably should be a separate class
     virtual void OpenGlCreate() = 0;
@@ -50,4 +60,4 @@ class OSWindow {
     Log *log = nullptr;
 };
 
-extern OSWindow *window;
+extern std::shared_ptr<OSWindow> window;

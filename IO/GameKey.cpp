@@ -1,7 +1,12 @@
 #include <map>
-#include "IO/GameKey.h"
 
-std::map<GameKey, const char *> displayNames =
+#include "Io/GameKey.h"
+
+
+using namespace Io;
+
+
+static std::map<GameKey, const char *> displayNames =
 {
     { GameKey::F1, "F1" },
     { GameKey::F2, "F2" },
@@ -89,14 +94,14 @@ std::string GetDisplayName(GameKey key) {
     return "-NOT-SET-";
 }
 
-bool TryParseDisplayName(const std::string& displayName, GameKey *outKey) {
+bool TryParseDisplayName(const std::string &displayName, GameKey *outKey) {
     const char *displayNameStr = displayName.c_str();
 
     auto displayNameMapping = std::find_if(
         displayNames.begin(),
         displayNames.end(),
         [displayNameStr](const std::pair<GameKey, const char *> &i) -> bool {
-            return stricmp(displayNameStr, i.second.x) == 0;
+            return stricmp(displayNameStr, i.second) == 0;
         }
     );
 

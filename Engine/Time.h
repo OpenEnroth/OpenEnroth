@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+const int game_starting_year = 1168;
+
 #define TIME_QUANT                  128
 #define TIME_SECONDS_PER_QUANT      30
 #define TIME_UNPACK_GAME_SECONDS    (uint64_t)TIME_SECONDS_PER_QUANT / (double)TIME_QUANT
@@ -43,10 +45,10 @@ struct GameTime {
     int GetMonthsOfYear() const { return this->GetMonths() % 12; }
 
     void AddMinutes(int minutes) {
-        this->value += ((uint64_t)60 * minutes * TIME_PACK_GAME_SECONDS);
+        this->value += (uint64_t)((uint64_t)60 * minutes * TIME_PACK_GAME_SECONDS);
     }
     void SubtractHours(int hours) {
-        this->value -= ((uint64_t)60 * 60 * hours * TIME_PACK_GAME_SECONDS);
+        this->value -= (uint64_t)((uint64_t)60 * 60 * hours * TIME_PACK_GAME_SECONDS);
     }
     void AddDays(int days) {
         this->value += ((uint64_t)60 * 60 * 24 * days * TIME_PACK_GAME_SECONDS);

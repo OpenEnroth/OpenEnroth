@@ -2,27 +2,29 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Time.h"
 
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
-#include "IO/UserInputHandler.h"
-
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
+
+#include "Io/KeyboardInputHandler.h"
+#include "Io/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
+
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 //----- (004BF91E) --------------------------------------------------------
 void Application::GameOver_Loop(int v15) {
@@ -151,13 +153,13 @@ void Application::GameOver_Loop(int v15) {
         HEXRAYS_LODWORD(v23) = OS_GetTime() + 5000;
         while ((unsigned int)v23 > OS_GetTime());
 
-        window->PeekMessageLoop();
+        window->HandleAllEvents();
 
         pMessageQueue_50CBD0->Flush();
-        userInputHandler->ResetKeys();
+        keyboardInputHandler->ResetKeys();
         do {
-            window->PeekMessageLoop();
-        } while (userInputHandler->LastPressedKey() != GameKey::Escape);
+            window->HandleAllEvents();
+        } while (keyboardInputHandler->LastPressedKey() != GameKey::Escape);
         pMessageQueue_50CBD0->Flush();
     }
     if (v15) {

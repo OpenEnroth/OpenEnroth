@@ -9,18 +9,10 @@
 
 #include "src/Application/Game.h"
 
+#include "Arcomage/Arcomage.h"
+
 #include "Engine/EngineConfig.h"
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/MapsLongTimer.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/SaveLoad.h"
-#include "Engine/SpellFxRenderer.h"
-#include "Engine/Time.h"
-#include "Engine/stru123.h"
-
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/IRender.h"
@@ -39,26 +31,27 @@
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/stru10.h"
 #include "Engine/Graphics/stru9.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/MapsLongTimer.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
-
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
+#include "Engine/SpellFxRenderer.h"
+#include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/stru123.h"
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
-
+#include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-
-#include "Engine/Spells/CastSpellInfo.h"
-
-#include "Arcomage/Arcomage.h"
-
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -73,10 +66,13 @@
 #include "GUI/UI/UISaveLoad.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 #include "Platform/OSWindowFactory.h"
 
 using EngineIoc = Engine_::IocContainer;
@@ -121,7 +117,7 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 
 static std::string s_data_path;
 
-void SetDataPath(const char *data_path) { s_data_path = data_path; }
+void SetDataPath(const std::string &data_path) { s_data_path = data_path; }
 
 std::string MakeDataPath(const char *file_rel_path) {
     return s_data_path + OS_GetDirSeparator() + file_rel_path;
@@ -158,7 +154,7 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     engine->Deinitialize();  // called twice?
     render->Release();
-    delete window;
+    window = nullptr;
     exit(exitCode);
 }
 
@@ -277,13 +273,13 @@ void Engine::DrawGUI() {
                                                                 // transparent
                                                                 // color
 
-                if (!(config->renderer_name == "OpenGL")) {  // do not want in opengl mode
-                    render->FillRectFast(
-                        pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
-                        pViewport->uViewportBR_X - pViewport->uViewportTL_X,
-                        pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
-                        0x7FF);
-                }
+                //if (!(config->renderer_name == "OpenGL")) {  // do not want in opengl mode
+                //    render->FillRectFast(
+                //        pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
+                //        pViewport->uViewportBR_X - pViewport->uViewportTL_X,
+                //        pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
+                //        0x7FF);
+                //}
                 viewparams->field_48 = 0;
             }
         }
@@ -618,7 +614,6 @@ Engine::Engine() {
     this->spell_fx_renedrer = EngineIoc::ResolveSpellFxRenderer();
     this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
     this->mouse = EngineIoc::ResolveMouse();
-    this->keyboard = EngineIoc::ResolveKeyboard();
     this->particle_engine = EngineIoc::ResolveParticleEngine();
     this->vis = EngineIoc::ResolveVis();
 
@@ -864,28 +859,28 @@ void FinalInitialization() {
     pIcons_LOD->_inlined_sub1();
 }
 
-bool MM7_LoadLods(const char *mm7_path) {
+bool MM7_LoadLods() {
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(StringPrintf("%s/data/icons.lod", mm7_path), "icons")) {
+    if (!pIcons_LOD->Load(MakeDataPath("data/icons.lod"), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pEvents_LOD = new LODFile_IconsBitmaps;
-    if (!pEvents_LOD->Load(StringPrintf("%s/data/events.lod", mm7_path).c_str(), "icons")) {
+    if (!pEvents_LOD->Load(MakeDataPath("data/events.lod").c_str(), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(StringPrintf("%s/data/bitmaps.lod", mm7_path).c_str(), "bitmaps")) {
+    if (!pBitmaps_LOD->Load(MakeDataPath("data/bitmaps.lod").c_str(), "bitmaps")) {
         Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(StringPrintf("%s/data/sprites.lod", mm7_path))) {
+    if (!pSprites_LOD->LoadSprites(MakeDataPath("data/sprites.lod"))) {
         Error(localization->GetString(63), localization->GetString(184));
         return false;
     }
@@ -893,57 +888,32 @@ bool MM7_LoadLods(const char *mm7_path) {
     return true;
 }
 
+const int default_party_walk_speed = 384;
+const int default_party_eye_level = 160;
+const int default_party_height = 192;
+
 //----- (004651F4) --------------------------------------------------------
-bool Engine::MM7_Initialize(const std::string &mm7_path) {
+bool Engine::MM7_Initialize() {
     srand(OS_GetTime());
 
     pEventTimer = Timer::Create();
     pEventTimer->Initialize();
 
-    IRenderFactory renderFactory;
-    render = renderFactory.Create(
-        config->renderer_name,
-        !config->RunInWindow()
-    );
+    pParty = new Party();
 
-    if (!render) {
-        log->Warning("Render creation failed");
-        return false;
-    }
-
-    window = OSWindowFactory().Create(
-        "Might and Magic® Trilogy",
-        render->config->render_width,
-        render->config->render_height
-    );
-
-    if (!render->Initialize(window)) {
-        log->Warning(L"Render failed to initialize");
-        return false;
-    }
-
-    userInputHandler = std::make_shared<UserInputHandler>(
-        window->GetUserInputProvider()
-    );
-    keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
-    ::keyboardActionMapping = keyboardActionMapping;
-
-    game_starting_year = 1168;
-
-    pParty = new Party;
     memset(&pParty->pHirelings, 0, sizeof(pParty->pHirelings));
-    pParty->uWalkSpeed = 384;
-    pParty->uDefaultEyelevel = 160;
-    pParty->sEyelevel = pParty->uDefaultEyelevel;
-    pParty->uDefaultPartyHeight = 192;
-    pParty->uPartyHeight = pParty->uDefaultPartyHeight;
+    pParty->uWalkSpeed = default_party_walk_speed;
+    pParty->uDefaultEyelevel = default_party_eye_level;
+    pParty->sEyelevel = default_party_eye_level;
+    pParty->uDefaultPartyHeight = default_party_height;
+    pParty->uPartyHeight = default_party_height;
 
     MM6_Initialize();
 
     OnTimer(1);
     GameUI_StatusBar_Update(true);
 
-    MM7_LoadLods(mm7_path.c_str());
+    MM7_LoadLods();
 
     localization = new Localization();
     localization->Initialize();
@@ -1130,70 +1100,10 @@ void Engine::SecondaryInitialization() {
     dword_576E28 = 9;
 }
 
-const char *FindMm7Directory(char *mm7_path) {
-    bool mm7_installation_found = false;
-
-    // env variable override to a custom folder
-    if (!mm7_installation_found) {
-        if (const char *path = std::getenv("WOMM_PATH_OVERRIDE")) {
-            strcpy(mm7_path, path);
-            mm7_installation_found = true;
-            logger->Info("MM7 Custom Folder (ENV path override)");
-        }
-    }
-
-    // standard 1.0 installation
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
-            mm7_path, 2048);
-
-        if (mm7_installation_found) {
-            logger->Info("Standard MM7 installation found");
-        }
-    }
-
-    // GoG old version
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-            mm7_path, 2048);
-
-        if (mm7_installation_found) {
-            logger->Info("GoG MM7 installation found");
-        }
-    }
-
-    // GoG new version ( 2018 builds )
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path",
-            mm7_path, 2048);
-
-        if (mm7_installation_found) {
-            logger->Info("GoG MM7 2018 build installation found");
-        }
-    }
-
-    // Hack path fix - if everything else fails, set your path here.
-    if (!mm7_installation_found) {
-        // __debugbreak();
-        mm7_installation_found = 1;
-        strcpy(mm7_path, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
-        logger->Info("Hack Path MM7 installation found");
-    }
-
-    return mm7_path;
-}
-
-
 void Engine::Initialize() {
-    char mm7_path[2048];
-    FindMm7Directory(mm7_path);
-    SetDataPath(mm7_path);
-
-    if (!MM7_Initialize(std::string(mm7_path))) {
+    if (!MM7_Initialize()) {
         log->Warning("MM7_Initialize: failed");
+
         if (engine != nullptr) {
             engine->Deinitialize();
         }

@@ -4,7 +4,7 @@ enum TURN_ENGINE_FLAGS {
     TE_FLAG_1 = 1,
     TE_HAVE_PENDING_ACTIONS = 2,
     TE_PLAYER_TURN = 4,
-    TE_FLAG_8 = 8
+    TE_FLAG_8_finished = 8
 };
 
 enum TURN_ENGINE_AI_ACTION {

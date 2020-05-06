@@ -4,14 +4,13 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 #include "Engine/stru159.h"
-
-#include "Engine/Graphics/Outdoor.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UITransition.h"
@@ -24,6 +23,8 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 Image *transition_ui_icon = nullptr;
 

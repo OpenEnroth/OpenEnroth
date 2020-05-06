@@ -1,16 +1,15 @@
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
-#include "Engine/Time.h"
-
-#include "Engine/Graphics/IRender.h"
-
 #include "Engine/Objects/Chest.h"
+#include "Engine/Time.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIChest.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
 int pChestPixelOffsetX[8] = {42, 18, 18, 42, 42, 42, 18, 42};
 int pChestPixelOffsetY[8] = {34, 30, 30, 34, 34, 34, 30, 34};

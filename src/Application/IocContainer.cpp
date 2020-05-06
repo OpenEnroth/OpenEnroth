@@ -8,7 +8,6 @@ using Application::IocContainer;
 using Application::Menu;
 using Application::GameWindowHandler;
 
-
 Menu *IocContainer::menu = nullptr;
 Menu *IocContainer::ResolveGameMenu() {
     if (!menu) {

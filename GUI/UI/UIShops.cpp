@@ -5,17 +5,15 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
-#include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
-#include "Engine/Party.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
-
+#include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
 #include "Engine/Objects/Items.h"
+#include "Engine/Party.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -24,15 +22,20 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
 
 using EngineIoc = Engine_::IocContainer;
 
 Image *shop_ui_background = nullptr;
 
 std::array<Image *, 12> shop_ui_items_in_store;
+
+bool StealingMode(int adventurerId) {
+    return keyboardInputHandler->IsStealingToggled() && pPlayers[adventurerId]->CanSteal();
+}
 
 void ShopDialogMain(GUIWindow dialogwin) {
     if (HouseUI_CheckIfPlayerCanInteract()) {
@@ -367,7 +370,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
             }
         }
 
-        if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
+        if (StealingMode(uActiveCharacter))
             GameUI_StatusBar_DrawImmediate(
                 localization->GetString(185),
                 0);  // Steal item  /  Украсть предмет
@@ -400,8 +403,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                         if (pt.y >= weapons_Ypos[testx] + 30 &&
                             pt.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
                             String str;
-                            if (!OS_IfCtrlPressed() ||
-                                !pPlayers[uActiveCharacter]->CanSteal()) {
+                            if (!StealingMode(uActiveCharacter)) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
                                                  item, BuildingType_WeaponShop,
@@ -521,13 +523,11 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                 ++pItemCount;
         }
 
-        if (OS_IfCtrlPressed() == 0 ||
-            pPlayers[uActiveCharacter]->CanSteal() == 0)
-            GameUI_StatusBar_DrawImmediate(localization->GetString(195),
-                                           0);  // Select the Item to Buy
-        else
-            GameUI_StatusBar_DrawImmediate(localization->GetString(185),
-                                           0);  // Steal item
+        if (!StealingMode(uActiveCharacter)) {
+            GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);  // Select the Item to Buy
+        } else {
+            GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);  // Steal item
+        }
 
         if (pItemCount) {  // this should go into func??
             Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
@@ -567,8 +567,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                             // y is 126 to 126 + height low or 98-height to 98
 
                             String str;
-                            if (!OS_IfCtrlPressed() ||
-                                !pPlayers[uActiveCharacter]->CanSteal()) {
+                            if (!StealingMode(uActiveCharacter)) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases
                                         [pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
@@ -704,10 +703,11 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                 ++item_num;
         }
 
-        if (OS_IfCtrlPressed() && pPlayers[uActiveCharacter]->CanSteal())
+        if (StealingMode(uActiveCharacter)) {
             GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
-        else
+        } else {
             GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);
+        }
 
         if (item_num) {
             Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
@@ -743,15 +743,11 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                             // y is 152-h to 152 or 308-height to 308
 
                             String str;
-                            if (!OS_IfCtrlPressed() ||
-                                !pPlayers[uActiveCharacter]->CanSteal()) {
+                            if (!StealingMode(uActiveCharacter)) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases
                                         [pPlayers[uActiveCharacter]
-                                             ->SelectPhrasesTransaction(
-                                                 item, building,
-                                                 window_SpeakInHouse->par1C,
-                                                 2)],
+                                             ->SelectPhrasesTransaction(item, building, window_SpeakInHouse->par1C, 2)],
                                     uActiveCharacter - 1, item,
                                     (char *)window_SpeakInHouse->ptr_1C, 2);
                             } else {
@@ -1249,7 +1245,7 @@ void UIShop_Buy_Identify_Repair() {
                 a3 = pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
                          ._steal_perm;
             party_reputation = pParty->GetPartyReputation();
-            if (pPlayers[uActiveCharacter]->CanSteal() && OS_IfCtrlPressed()) {
+            if (StealingMode(uActiveCharacter)) {
                 uNumSeconds = pPlayers[uActiveCharacter]->StealFromShop(
                     bought_item, a3, party_reputation, 0, &a6);
                 if (!uNumSeconds) {

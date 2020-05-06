@@ -19,16 +19,17 @@
 
 #include "Platform/OSWindow.h"
 
-bool RenderBase::Initialize(OSWindow *window_) {
+
+bool RenderBase::Initialize() {
+    window->SetWindowArea(
+        config->render_width,
+        config->render_height
+    );
+
     if (!pD3DBitmaps.Open(MakeDataPath("data/d3dbitmap.hwl"))) {
         return false;
     }
     if (!pD3DSprites.Open(MakeDataPath("data/d3dsprite.hwl"))) {
-        return false;
-    }
-
-    window = window_;
-    if (window == nullptr) {
         return false;
     }
 

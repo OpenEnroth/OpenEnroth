@@ -2,14 +2,13 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/Party.h"
-
-#include "Engine/Objects/Items.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Party.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -18,7 +17,7 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -318,11 +317,8 @@ void SpellBookGenerator() {  // for GuildDialogs
                 else if (p2DEvents[window_SpeakInHouse->par1C - 1].uType == 16)
                     randomnum = rand() % 2 + 7;
                 if (p2DEvents[window_SpeakInHouse->par1C - 1].uType <= 16)
-                    pItemNum =
-                        rand() %
-                            word_4F0F30[(signed int)window_SpeakInHouse->par1C -
-                                        139] +
-                        11 * randomnum + 400;
+                    pItemNum = rand() %
+                            word_4F0F30[(signed int)window_SpeakInHouse->par1C - 139] + 11 * randomnum + 400;
             }
         }
 
@@ -331,15 +327,11 @@ void SpellBookGenerator() {  // for GuildDialogs
                 pItemNum = 486;
         }
 
-        ItemGen *item_spellbook =
-            &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i];
+        ItemGen *item_spellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i];
         item_spellbook->Reset();
-        pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i]
-            .uItemID = pItemNum;
-        pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i]
-            .IsIdentified();
+        pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].uItemID = pItemNum;
+        pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].IsIdentified();
 
-        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
-            pItemsTable->pItems[pItemNum].pIconName, 0x7FF);
+        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(pItemsTable->pItems[pItemNum].pIconName, 0x7FF);
     }
 }

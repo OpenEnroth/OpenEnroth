@@ -1,8 +1,8 @@
-#include "Engine/Conditions.h"
-
 #include <cstdlib>
 
-#include "Party.h"
+#include "Engine/Conditions.h"
+
+#include "Engine/Party.h"
 
 std::array<ConditionProcessor, 18> conditionArray = {{
     // hint: condname, protfrommagic, gmprot, enchantment, ...
