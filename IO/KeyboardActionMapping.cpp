@@ -1,30 +1,27 @@
-//#include <windows.h>
-//#undef PlaySound  // conflicts with Player method
-
 #include <string>
 #include <tuple>
 #include <vector>
 
-#include "IO/Keyboard.h"
+#include "Io/KeyboardActionMapping.h"
 
 #include "Engine/Engine.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Party.h"
-#include "Engine/Time.h"
-
-#include "Engine/TurnEngine/TurnEngine.h"
-
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-
+#include "Engine/Objects/Actor.h"
+#include "Engine/Party.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Time.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIWindow.h"
 
 #include "Platform/Api.h"
 
-KeyboardActionMapping *keyboardActionMapping = nullptr;
+using namespace Io;
+
+
+std::shared_ptr<KeyboardActionMapping> keyboardActionMapping = nullptr;
 
 extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 
@@ -84,6 +81,14 @@ void KeyboardActionMapping::MapKey(InputAction action, GameKey key, KeyToggleTyp
     keyToggleMap[action] = type;
 }
 
+GameKey KeyboardActionMapping::MapDefaultKey(InputAction action) {
+    for (size_t i = 0; i < keyMappingParams.size(); i++) {
+        if (keyMappingParams[i].m_cmdId == action) {
+            return keyMappingParams[i].m_key;
+        }
+    }
+}
+
 //----- (00459C82) --------------------------------------------------------
 GameKey KeyboardActionMapping::GetKey(InputAction action) const {
     return actionKeyMap.find(action)->second;
@@ -92,6 +97,7 @@ GameKey KeyboardActionMapping::GetKey(InputAction action) const {
 KeyToggleType KeyboardActionMapping::GetToggleType(InputAction action) const {
     return keyToggleMap.find(action)->second;
 }
+
 //----- (00459C8D) --------------------------------------------------------
 KeyboardActionMapping::KeyboardActionMapping() {
     SetDefaultMapping();

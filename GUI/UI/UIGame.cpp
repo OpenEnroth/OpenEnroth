@@ -7,19 +7,6 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/Time.h"
-#include "Engine/stru123.h"
-
-#include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/PlayerFrameTable.h"
-
-#include "Engine/TurnEngine/TurnEngine.h"
-
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Image.h"
@@ -30,14 +17,21 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
-
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Time.h"
+#include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/stru123.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -47,12 +41,17 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Io/InputAction.h"
+#include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
 
 using EngineIoc = Engine_::IocContainer;
-
-static Mouse *pMouse = EngineIoc::ResolveMouse();
+using Io::InputAction;
 
 Image *game_ui_statusbar = nullptr;
 Image *game_ui_rightframe = nullptr;
@@ -213,7 +212,7 @@ void GameUI_ReloadPlayerPortraits(
     }
 }
 
-std::map<InputAction, bool> key_map_conflicted;  // 506E6C
+extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 //----- (00414D24) --------------------------------------------------------
 static unsigned int GameMenuUI_GetKeyBindingColor(InputAction action) {
     if (currently_selected_action_for_binding == action) {
@@ -282,7 +281,7 @@ void GUIWindow_GameKeyBindings::Update() {
 
     if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
         InputAction action = currently_selected_action_for_binding;
-        GameKey newKey = userInputHandler->LastPressedKey();
+        GameKey newKey = keyboardInputHandler->LastPressedKey();
         prev_key_map[action] = newKey;
 
         for (auto action : AllInputActions()) {
@@ -325,12 +324,12 @@ void GUIWindow_GameKeyBindings::Update() {
         int j = i + 7;
         InputAction action2 = (InputAction)(base_controls_offset + j);
         pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 247, 142 + j * 21,
+            pFontLucida, 247, 142 + i * 21,
             ui_gamemenu_keys_action_name_color,
             GetDisplayName(action2).c_str(), 0, 0, 0
         );
         pGUIWindow_CurrentMenu->DrawText(
-            pFontLucida, 350, 142,
+            pFontLucida, 350, 142 + i * 21,
             GameMenuUI_GetKeyBindingColor(action1),
             GetDisplayName(prev_key_map[action2]), 0, 0, 0
         );
@@ -585,7 +584,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
             memcpy(&player->pInventoryItemList[slot - 1], &pParty->pPickedItem,
                    0x24u);
             viewparams->bRedrawGameUI = true;
-            pMouse->RemoveHoldingItem();
+            mouse->RemoveHoldingItem();
             return;
         }
 
@@ -794,7 +793,7 @@ String GameUI_GetMinimapHintText() {
     unsigned int pX;      // [sp+28h] [bp-4h]@1
 
     String result;
-    pMouse->GetClickPos(&pX, &pY);
+    mouse->GetClickPos(&pX, &pY);
     v3 = 1.0 / (float)((signed int)viewparams->uMinimapZoom * 0.000015258789);
     global_coord_X =
         (__int64)((double)(pX - 557) * v3 + (double)pParty->vPosition.x);
@@ -1068,8 +1067,8 @@ void GameUI_WritePointedObjectStatusString() {
 
     // int testing;
 
-    pMouse->uPointingObjectID = 0;
-    pMouse->GetClickPos(&pX, &pY);
+    mouse->uPointingObjectID = 0;
+    mouse->GetClickPos(&pX, &pY);
     if (pX < 0 || pX > window->GetWidth() - 1 || pY < 0 ||
         pY > window->GetHeight() - 1)
         return;
@@ -1090,11 +1089,11 @@ void GameUI_WritePointedObjectStatusString() {
 
             // get_picked_object_zbuf_val contains both the pid and the depth
             pickedObject = vis->get_picked_object_zbuf_val();
-            pMouse->uPointingObjectID = pickedObject.object_pid;
+            mouse->uPointingObjectID = pickedObject.object_pid;
             pickedObjectID = (signed)PID_ID(pickedObject.object_pid);
             if (PID_TYPE(pickedObject.object_pid) == OBJECT_Item) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
-                    pMouse->uPointingObjectID = 0;
+                    mouse->uPointingObjectID = 0;
                     game_ui_status_bar_string.clear();
                     bForceDrawFooter = 1;
                     uLastPointedObjectID = 0;
@@ -1152,23 +1151,23 @@ void GameUI_WritePointedObjectStatusString() {
                     }
                     if (newString) {
                         GameUI_StatusBar_Set(newString);
-                        if (pMouse->uPointingObjectID == 0 &&
+                        if (mouse->uPointingObjectID == 0 &&
                             uLastPointedObjectID != 0) {
                             game_ui_status_bar_string.clear();
                             bForceDrawFooter = 1;
                         }
-                        uLastPointedObjectID = pMouse->uPointingObjectID;
+                        uLastPointedObjectID = mouse->uPointingObjectID;
                         return;
                     }
                 }
-                pMouse->uPointingObjectID = 0;
+                mouse->uPointingObjectID = 0;
                 game_ui_status_bar_string.clear();
                 bForceDrawFooter = 1;
                 uLastPointedObjectID = 0;
                 return;
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
                 if (pickedObject.depth >= 0x200u) {
-                    pMouse->uPointingObjectID = 0;
+                    mouse->uPointingObjectID = 0;
                     if (uLastPointedObjectID != 0) {
                         game_ui_status_bar_string.clear();
                         bForceDrawFooter = 1;
@@ -1187,11 +1186,11 @@ void GameUI_WritePointedObjectStatusString() {
                             .pName;
                 GameUI_StatusBar_Set(pText);  // intentional fallthrough
             }
-            if (pMouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
+            if (mouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
                 game_ui_status_bar_string.clear();
                 bForceDrawFooter = 1;
             }
-            uLastPointedObjectID = pMouse->uPointingObjectID;
+            uLastPointedObjectID = mouse->uPointingObjectID;
             return;
         }
     } else if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {

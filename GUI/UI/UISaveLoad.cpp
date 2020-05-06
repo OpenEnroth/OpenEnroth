@@ -9,23 +9,25 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/LOD.h"
-#include "Engine/SaveLoad.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/MapInfo.h"
+#include "Engine/SaveLoad.h"
 
-#include "IO/Keyboard.h"
-#include "IO/UserInputHandler.h"
+#include "Io/KeyboardInputHandler.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIMainMenu.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
+
+using Io::TextInputType;
 
 static void UI_DrawSaveLoad(bool save);
 
@@ -271,13 +273,14 @@ static void UI_DrawSaveLoad(bool save) {
             localization->GetAmPm(am),
             savegame_time.GetDaysOfMonth() + 1,
             localization->GetMonthName(savegame_time.GetMonthsOfYear()),
-            savegame_time.GetYears() + game_starting_year);
+            savegame_time.GetYears() + game_starting_year
+        );
         save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, str, 3);
     }
 
     if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
         pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-        strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, userInputHandler->GetTextInput().c_str());
+        strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
     } else {
         if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED)
@@ -314,7 +317,7 @@ static void UI_DrawSaveLoad(bool save) {
             if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS || i != uLoadGameUI_SelectedSlot) {
                 pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, pSavegameHeader[i].pName, 185, 0);
             } else {
-                pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, userInputHandler->GetTextInput().c_str(), 175, 1) + 27,
+                pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, keyboardInputHandler->GetTextInput().c_str(), 175, 1) + 27,
                     slot_Y, pFontSmallnum);
             }
             slot_Y += 21;
@@ -338,7 +341,7 @@ void MainMenuLoad_EventLoop() {
         case UIMSG_SelectLoadSlot: {
             // main menu save/load wnd   clicking on savegame lines
             if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
-                userInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+                keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME || uLoadGameUI_SelectedSlot != param + pSaveListPosition) {
                 // load clicked line
                 int v26 = param + pSaveListPosition;
@@ -350,8 +353,8 @@ void MainMenuLoad_EventLoop() {
                 dword_6BE138 = v26;
             } else {
                 // typing in the line
-                userInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                userInputHandler->SetTextInput(pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
+                keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
+                keyboardInputHandler->SetTextInput(pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
             }
             break;
         }
@@ -402,11 +405,7 @@ void MainMenuLoad_Loop() {
     pGUIWindow_CurrentMenu = new GUIWindow_Load(false);
 
     while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
-        window->PeekMessageLoop();
-        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-            OS_WaitMessage();
-            continue;
-        }
+        MessageLoopWithWait();
 
         render->BeginScene();
         GUI_UpdateWindows();

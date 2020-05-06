@@ -1,4 +1,4 @@
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
 
 #include <cstdlib>
 
@@ -7,17 +7,22 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
 
-#include "IO/Keyboard.h"
-
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Platform/OSWindow.h"
+
+
 using EngineIoc = Engine_::IocContainer;
+
+std::shared_ptr<Mouse> mouse = nullptr;
+
 
 void Mouse::GetClickPos(unsigned int *pX, unsigned int *pY) {
     *pX = uMouseX;
@@ -65,8 +70,7 @@ void Mouse::SetCursorImage(const String &name) {
 void Mouse::_469AE4() {
     this->field_8 = 1;
 
-    Point pt = OS_GetMouseCursorPos();
-    pt = window->TransformCursorPos(pt);
+    Point pt = GetCursorPos();
 
     auto v3 = pt.y;
     auto v2 = pt.x;
@@ -112,7 +116,7 @@ Point Mouse::GetCursorPos() {
     return Point(this->uMouseX, this->uMouseY);
 }
 
-void Mouse::Initialize(OSWindow *window) {
+void Mouse::Initialize(std::shared_ptr<OSWindow> window) {
     this->window = window;
     this->bActive = false;
     this->bInitialized = true;
@@ -269,7 +273,7 @@ void Mouse::UI_OnMouseLeftClick() {
     GetClickPos(&x, &y);
 
     if (GetCurrentMenuID() != -1 || current_screen_type != CURRENT_SCREEN::SCREEN_GAME ||
-        !OS_IfCtrlPressed() || !pViewport->Contains(x, y)) {
+        !keyboardInputHandler->IsStealingToggled() || !pViewport->Contains(x, y)) {
         for (GUIWindow *win : lWindowList) {
             if (win->Contains(x, y)) {
                 for (GUIButton *control : win->vButtons) {
@@ -283,28 +287,22 @@ void Mouse::UI_OnMouseLeftClick() {
                         }
                         continue;
                     }
-                    if (control->uButtonType ==
-                        2) {  // когда нажимаешь на партреты персов
-                        if ((int)sqrt(
+                    if (control->uButtonType == 2) {  // adventurers portraits click
+                        if (sqrt(
                                 (double)((x - control->uX) * (x - control->uX) +
-                                         (y - control->uY) *
-                                             (y - control->uY))) <
-                            (int)control->uWidth) {
+                                         (y - control->uY) * (y - control->uY))) < (double)control->uWidth) {
                             control->field_2C_is_pushed = true;
                             pMessageQueue_50CBD0->Flush();
-                            pMessageQueue_50CBD0->AddGUIMessage(
-                                control->msg, control->msg_param, 0);
+                            pMessageQueue_50CBD0->AddGUIMessage(control->msg, control->msg_param, 0);
                             return;
                         }
                         continue;
                     }
-                    if (control->uButtonType ==
-                        3) {  // когда нажимаешь на скиллы
+                    if (control->uButtonType == 3) {  // clicking skills
                         if (control->Contains(x, y)) {
                             control->field_2C_is_pushed = true;
                             pMessageQueue_50CBD0->Flush();
-                            pMessageQueue_50CBD0->AddGUIMessage(
-                                control->msg, control->msg_param, 0);
+                            pMessageQueue_50CBD0->AddGUIMessage(control->msg, control->msg_param, 0);
                             return;
                         }
                         continue;
@@ -321,12 +319,15 @@ void Mouse::UI_OnMouseLeftClick() {
     if (type == OBJECT_Actor && uActiveCharacter && picked_object.depth < 0x200 &&
         pPlayers[uActiveCharacter]->CanAct() &&
         pPlayers[uActiveCharacter]->CanSteal()) {
-        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_STEALFROMACTOR,
-                                            PID_ID(picked_object.object_pid), 0);
+        pMessageQueue_50CBD0->AddGUIMessage(
+            UIMSG_STEALFROMACTOR,
+            PID_ID(picked_object.object_pid),
+            0
+        );
 
         if (pParty->bTurnBasedModeOn) {
             if (pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->field_18 |= TE_FLAG_8;
+                pTurnEngine->field_18 |= TE_FLAG_8_finished;
             }
         }
     }

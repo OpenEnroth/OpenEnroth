@@ -1,15 +1,6 @@
 #include "Engine/Events.h"
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
-#include "Engine/MapsLongTimer.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/stru123.h"
-#include "Engine/stru159.h"
-
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -17,12 +8,18 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
+#include "Engine/MapsLongTimer.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/SpriteObject.h"
-
-#include "IO/Mouse.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/stru123.h"
+#include "Engine/stru159.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIDialogue.h"
@@ -30,8 +27,13 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UITransition.h"
 
+#include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
+
+#include "Platform/OSWindow.h"
+
 
 std::array<EventIndex, 4400> pSomeOtherEVT_Events;
 signed int uSomeOtherEVT_NumEvents;

@@ -6,26 +6,30 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/Party.h"
-#include "Engine/Time.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Party.h"
 #include "Engine/Tables/IconFrameTable.h"
-
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
-#include "IO/UserInputHandler.h"
+#include "Engine/Time.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIPartyCreation.h"
 
+#include "Io/Mouse.h"
+#include "Io/KeyboardInputHandler.h"
+
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
+
+using Io::TextInputType;
 
 
 GUIFont *ui_partycreation_font;
@@ -243,7 +247,7 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationChangeName:
             pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0);
             uPlayerCreationUI_SelectedCharacter = param;
-            userInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
+            keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
             pGUIWindow_CurrentMenu->ptr_1C = (void *)param;
             break;
         case UIMSG_Escape:
@@ -415,7 +419,7 @@ void GUIWindow_PartyCreation::Update() {
                 v17 = pGUIWindow_CurrentMenu->DrawTextInRect(
                     pFontCreate,
                     159 * (int64_t)pGUIWindow_CurrentMenu->ptr_1C + 18, 124, 0,
-                    userInputHandler->GetTextInput().c_str(), 120, 1);
+                    keyboardInputHandler->GetTextInput().c_str(), 120, 1);
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(
                     159 * (uint64_t)pGUIWindow_CurrentMenu->ptr_1C +
                     v17 + 20,
@@ -425,13 +429,13 @@ void GUIWindow_PartyCreation::Update() {
                 pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
                 v126 = 0;
                 for (int j = 0;
-                    j < strlen(userInputHandler->GetTextInput().c_str());
+                    j < strlen(keyboardInputHandler->GetTextInput().c_str());
                     ++j) {  // edit name
-                    if (userInputHandler->GetTextInput().c_str()[j] == ' ') ++v126;
+                    if (keyboardInputHandler->GetTextInput().c_str()[j] == ' ') ++v126;
                 }
-                if (strlen(userInputHandler->GetTextInput().c_str()) > 0 &&
-                    v126 != strlen(userInputHandler->GetTextInput().c_str()))
-                    strcpy(pParty->pPlayers[i].pName, userInputHandler->GetTextInput().c_str());
+                if (strlen(keyboardInputHandler->GetTextInput().c_str()) > 0 &&
+                    v126 != strlen(keyboardInputHandler->GetTextInput().c_str()))
+                    strcpy(pParty->pPlayers[i].pName, keyboardInputHandler->GetTextInput().c_str());
                 pGUIWindow_CurrentMenu->DrawTextInRect(
                     pFontCreate, pIntervalX, 124, 0,
                     pParty->pPlayers[i].pName, 130, 0);
@@ -867,30 +871,27 @@ bool PartyCreationUI_LoopInternal() {
     pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     SetCurrentMenuID(MENU_CREATEPARTY);
     while (GetCurrentMenuID() == MENU_CREATEPARTY) {
-        window->PeekMessageLoop();
-        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-            OS_WaitMessage();
-        } else {
-            // PlayerCreationUI_Draw();
-            // MainMenu_EventLoop();
-            CreateParty_EventLoop();
-            render->BeginScene();
-            GUI_UpdateWindows();
-            render->EndScene();
-            render->Present();
-            if (uGameState ==
-                GAME_FINISHED) {  // if click Esc in PlayerCreation Window
-                party_not_creation_flag = true;
-                SetCurrentMenuID(MENU_MAIN);
-                continue;
-            }
-            if (uGameState ==
-                GAME_STATE_STARTING_NEW_GAME) {  // if click OK in PlayerCreation
-                                                 // Window
-                uGameState = GAME_STATE_PLAYING;
-                SetCurrentMenuID(MENU_NEWGAME);
-                continue;
-            }
+        MessageLoopWithWait();
+
+        // PlayerCreationUI_Draw();
+        // MainMenu_EventLoop();
+        CreateParty_EventLoop();
+        render->BeginScene();
+        GUI_UpdateWindows();
+        render->EndScene();
+        render->Present();
+        if (uGameState ==
+            GAME_FINISHED) {  // if click Esc in PlayerCreation Window
+            party_not_creation_flag = true;
+            SetCurrentMenuID(MENU_MAIN);
+            continue;
+        }
+        if (uGameState ==
+            GAME_STATE_STARTING_NEW_GAME) {  // if click OK in PlayerCreation
+                                             // Window
+            uGameState = GAME_STATE_PLAYING;
+            SetCurrentMenuID(MENU_NEWGAME);
+            continue;
         }
     }
 

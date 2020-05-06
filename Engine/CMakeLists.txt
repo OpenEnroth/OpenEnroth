@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 set(ENGINE_SOURCES AssetsManager.cpp
+                   CommandLine.cpp
                    Conditions.cpp
                    Events.cpp
                    ErrorHandling.cpp
@@ -28,6 +29,7 @@ set(ENGINE_SOURCES AssetsManager.cpp
 set(ENGINE_HEADERS AssetsManager.h
                    Autonotes.h
                    Awards.h
+                   CommandLine.cpp
                    Conditions.h
                    Engine.h
                    ErrorHandling.h

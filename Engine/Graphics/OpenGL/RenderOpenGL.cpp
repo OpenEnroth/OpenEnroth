@@ -1589,8 +1589,15 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
         this->CamVecFront_Y, this->field_8_party_dir_z);
 }
 
-RenderOpenGL::RenderOpenGL()
-    : RenderBase() {
+RenderOpenGL::RenderOpenGL(
+    std::shared_ptr<OSWindow> window,
+    DecalBuilder* decal_builder,
+    LightmapBuilder* lightmap_builder,
+    SpellFxRenderer* spellfx,
+    std::shared_ptr<ParticleEngine> particle_engine,
+    Vis* vis,
+    Log* logger
+) : RenderBase(window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
 }
 
 RenderOpenGL::~RenderOpenGL() { /*__debugbreak();*/ }
@@ -4028,14 +4035,13 @@ bool RenderOpenGL::SwitchToWindow() {
 }
 
 
-bool RenderOpenGL::Initialize(OSWindow *window_) {
-    if (!RenderBase::Initialize(window_)) {
+bool RenderOpenGL::Initialize() {
+    if (!RenderBase::Initialize()) {
         return false;
     }
 
     if (window != nullptr) {
         window->OpenGlCreate();
-
 
         glShadeModel(GL_SMOOTH);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background

@@ -55,17 +55,6 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::CreateDefaultConfiguration() 
     return cfg;
 }
 
-
-static bool FindCaseInsensitive(const std::string &haystack, const std::string &needle) {
-    auto i = std::search(
-        haystack.begin(), haystack.end(),
-        needle.begin(), needle.end(),
-        [](char c1, char c2) {return std::toupper(c1) == std::toupper(c2); });
-
-    return i != haystack.end();
-}
-
-
 std::shared_ptr<EngineConfig> EngineConfigFactory::Clone(std::shared_ptr<const EngineConfig> other) {
     return std::make_shared<EngineConfig>(*other.get());
 }
@@ -84,39 +73,29 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::Create() {
     return CreateDefaultConfiguration();
 }
 
-std::shared_ptr<EngineConfig> EngineConfigFactory::CreateFromCommandLine(const std::string &cmd) {
+std::shared_ptr<EngineConfig> EngineConfigFactory::Create(std::shared_ptr<CommandLine> command_line) {
     auto config = CreateDefaultConfiguration();
 
-    // config->renderer_name = "OpenGL";
-
-    if (FindCaseInsensitive(cmd, "-window")) {
+    if (command_line->TryFindKey("-window")) {
         config->run_in_window |= DEBUG_SETTINGS_RUN_IN_WIDOW;
     }
-    if (FindCaseInsensitive(cmd, "-nointro")) {
+    if (command_line->TryFindKey("-nointro")) {
         config->no_intro = true;
     }
-    if (FindCaseInsensitive(cmd, "-nologo")) {
+    if (command_line->TryFindKey("-nologo")) {
         config->no_logo = true;
     }
-    if (FindCaseInsensitive(cmd, "-nosound")) {
+    if (command_line->TryFindKey("-nosound")) {
         config->no_sound = true;
     }
-    if (FindCaseInsensitive(cmd, "-novideo")) {
+    if (command_line->TryFindKey("-novideo")) {
         config->no_video = true;
     }
-    if (FindCaseInsensitive(cmd, "-nowalksound")) {
+    if (command_line->TryFindKey("-nowalksound")) {
         config->no_walk_sound = true;
     }
-    if (FindCaseInsensitive(cmd, "-nomarg")) {
+    if (command_line->TryFindKey("-nomarg")) {
         config->no_margareth = true;
-    }
-    if (FindCaseInsensitive(cmd, "-render=")) {
-        if (FindCaseInsensitive(cmd, "-render=DirectDraw")) {
-            config->renderer_name = "DirectDraw";
-        }
-        if (FindCaseInsensitive(cmd, "-render=OpenGL")) {
-            config->renderer_name = "OpenGL";
-        }
     }
 
     return config;

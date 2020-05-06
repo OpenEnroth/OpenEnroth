@@ -4,7 +4,12 @@
 #include <vector>
 
 #include "Engine/Strings.h"
+
 #include "GUI/GUIWindow.h"
+
+#include "Io/GameKey.h"
+
+using Io::GameKey;
 
 class Image;
 

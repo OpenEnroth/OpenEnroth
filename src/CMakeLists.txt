@@ -1,16 +1,17 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-set(GAME_SOURCES Application/Configuration.cpp
-                 Application/Game.cpp
+set(GAME_SOURCES Application/Game.cpp
+                 Application/GameBootstrapper.cpp
+                 Application/GameConfig.cpp
                  Application/GameFactory.cpp
                  Application/GameMenu.cpp
                  Application/GameOver.cpp
-                 Application/IocContainer.cpp
                  Application/GameWindowHandler.cpp
+                 Application/IocContainer.cpp
                  tools/MemBuffer.cpp)
 
-set(GAME_HEADERS Application/Configuration.h
-                 Application/Game.h
+set(GAME_HEADERS Application/Game.h
+                 Application/GameConfig.h
                  Application/GameFactory.h
                  Application/GameMenu.h
                  Application/GameOver.h

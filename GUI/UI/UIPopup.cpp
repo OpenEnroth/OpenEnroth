@@ -4,38 +4,35 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/Party.h"
-#include "Engine/Time.h"
-
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Texture.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/Party.h"
+#include "Engine/Time.h"
 
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/MapBook.h"
+#include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "GUI/UI/UICharacter.h"
-
 #include "Media/Audio/AudioPlayer.h"
 
 using EngineIoc = Engine_::IocContainer;
-
-Mouse *pMouse = EngineIoc::ResolveMouse();
 
 Texture *parchment = nullptr;
 Image *messagebox_corner_x = nullptr;       // 5076AC
@@ -51,7 +48,7 @@ Image *messagebox_border_right = nullptr;   // 5076A0
 void CharacterUI_DrawTooltip(const char *title, String &content) {
     GUIWindow popup_window;  // [sp+Ch] [bp-5Ch]@1
 
-    Point pt = pMouse->GetCursorPos();
+    Point pt = mouse->GetCursorPos();
 
     memset(&popup_window, 0, 0x54u);
     popup_window.uFrameWidth = 384;
@@ -194,7 +191,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     iteminfo_window.uFrameHeight = 180;
     iteminfo_window.uFrameY = 40;
 
-    Point pt = pMouse->GetCursorPos();
+    Point pt = mouse->GetCursorPos();
     if (pt.x <= 320)
         v2 = pt.x + 30;
     else
@@ -505,8 +502,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             String txt4 = "Duration:";
             Str = (char *)(v67.field_18_expire_year - game_starting_year);
             if (v67.field_18_expire_year != 1168) {
-                txt4 += StringPrintf(
-                    " %d:yr", v67.field_18_expire_year - game_starting_year);
+                txt4 += StringPrintf(" %d:yr", v67.field_18_expire_year - game_starting_year);
             }
 
             if ((((v67.field_14_exprie_month || Str) &&
@@ -1135,7 +1131,7 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
 void CharacterUI_SkillsTab_ShowHint() {
     unsigned int pX = 0;
     unsigned int pY = 0;
-    pMouse->GetClickPos(&pX, &pY);
+    mouse->GetClickPos(&pX, &pY);
 
     if (pX < 24 || pX > 455 || pY < 18 || pY > 36) {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
@@ -1167,7 +1163,7 @@ void CharacterUI_StatsTab_ShowHint() {
     int pHour;              // [sp+14h] [bp-1Ch]@15
     unsigned int pDay;      // [sp+24h] [bp-Ch]@15
 
-    Point pt = pMouse->GetCursorPos();
+    Point pt = mouse->GetCursorPos();
     for (pStringNum = 0; pStringNum < stat_string_coord.size(); ++pStringNum) {
         if (pt.x >= stat_string_coord[pStringNum].x &&
             pt.x <= stat_string_coord[pStringNum].x +
@@ -1383,7 +1379,7 @@ void DrawSpellDescriptionPopup(int spell_index) {
     long v5;                      // ecx@4
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
-    Point pt = pMouse->GetCursorPos();
+    Point pt = mouse->GetCursorPos();
 
     spell =
         &pSpellStats
@@ -1843,8 +1839,8 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
     ItemGen *item = nullptr;
 
-    int mousex = pMouse->uMouseX;  // condense
-    int mousey = pMouse->uMouseY;  // condense
+    int mousex = mouse->uMouseX;  // condense
+    int mousey = mouse->uMouseY;  // condense
 
     static int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
     static int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
@@ -1858,7 +1854,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     int slot = 32;
     int pos = -1;
 
-    pMouse->GetClickPos(&pX, &pY);
+    mouse->GetClickPos(&pX, &pY);
     inventoryYCoord = (pY - 17) / 32;
     inventoryXCoord = (pX - 14) / 32;
     int invMatrixIndex =
@@ -1983,7 +1979,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 (signed __int64)((double)item->uMaxCharges -
                                  v31 * (double)item->uMaxCharges);
 
-            pMouse->RemoveHoldingItem();
+            mouse->RemoveHoldingItem();
             no_rightlick_in_inventory = 1;
             return;
         }
@@ -1997,7 +1993,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 item->uItemID >= ITEM_ARTIFACT_PUCK ||  // cant harden artifacts
                 item->GetItemEquipType() < EQUIP_SINGLE_HANDED ||
                 item->GetItemEquipType() > EQUIP_WAND) {
-                pMouse->RemoveHoldingItem();
+                mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = true;
                 return;
             }
@@ -2005,7 +2001,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             item->uAttributes |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
 
             _50C9A8_item_enchantment_timer = 256;
-            pMouse->RemoveHoldingItem();
+            mouse->RemoveHoldingItem();
             no_rightlick_in_inventory = true;
             return;
         }
@@ -2023,7 +2019,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 item->special_enchantment || item->uEnchantmentType ||
                 item->GetItemEquipType() >=
                     EQUIP_ARMOUR) {  // only melee weapons and bows
-                pMouse->RemoveHoldingItem();
+                mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = true;
                 return;
             }
@@ -2045,12 +2041,11 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             }
 
-            item->uExpireTime =
-                GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v31));
+            item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v31));
             item->uAttributes = alchemy_skill_level | 0x18;
 
             _50C9A8_item_enchantment_timer = 256;
-            pMouse->RemoveHoldingItem();
+            mouse->RemoveHoldingItem();
             no_rightlick_in_inventory = true;
             return;
         }
@@ -2099,7 +2094,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             default:
                 break;
         }
-        pMouse->RemoveHoldingItem();
+        mouse->RemoveHoldingItem();
         no_rightlick_in_inventory = 1;
         if (dword_4E455C) {
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_DO_POTION_FINE, 0);
@@ -2209,7 +2204,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     localization->GetString(444));  // Ouch!   Ой!
                 dword_4E455C = 0;
             }
-            pMouse->RemoveHoldingItem();
+            mouse->RemoveHoldingItem();
             no_rightlick_in_inventory = 1;
             return;
         } else {  // if ( damage_level == 0 )
@@ -2240,13 +2235,13 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 if (!(pItemsTable->pItems[item->uItemID].uItemID_Rep_St))
                     item->uAttributes |= 1;
                 if (!dword_4E455C) {
-                    pMouse->RemoveHoldingItem();
+                    mouse->RemoveHoldingItem();
                     no_rightlick_in_inventory = 1;
                     return;
                 }
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_DO_POTION_FINE, 0);
                 dword_4E455C = 0;
-                pMouse->RemoveHoldingItem();
+                mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = 1;
                 return;
             }

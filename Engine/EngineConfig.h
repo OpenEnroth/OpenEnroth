@@ -136,12 +136,6 @@ class EngineConfig {
 
     bool is_underwater = false;
     bool is_targeting = false;
-
-#ifdef _WINDOWS
-    std::string renderer_name = "DirectDraw";
-#else
-    std::string renderer_name = "OpenGL";
-#endif
 };
 
 }  // namespace Engine_

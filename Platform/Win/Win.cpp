@@ -18,22 +18,9 @@ unsigned int OS_GetTime() { return GetTickCount(); }
 
 unsigned __int64 OS_GetPrecisionTime() { return timeGetTime(); }
 
-bool OS_IfShiftPressed() { return GetAsyncKeyState(VK_SHIFT); }
-
-bool OS_IfCtrlPressed() { return GetAsyncKeyState(VK_CONTROL); }
-
 void OS_ShowCursor(bool show) { ShowCursor(show ? 1 : 0); }
 
-void OS_WaitMessage() { WaitMessage(); }
-
 void OS_Sleep(int ms) { Sleep(ms); }
-
-Point OS_GetMouseCursorPos() {
-    POINT pt;
-    GetCursorPos(&pt);
-
-    return Point(pt.x, pt.y);
-}
 
 bool OS_OpenConsole() {
     if (AllocConsole()) {

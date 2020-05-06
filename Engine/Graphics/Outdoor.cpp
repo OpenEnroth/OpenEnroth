@@ -4,35 +4,31 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
+#include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Weather.h"
 #include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/Serialization/LegacyImages.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/stru123.h"
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/ZlibWrapper.h"
-#include "Engine/stru123.h"
-
-#include "Engine/Graphics/DecalBuilder.h"
-
-#include "Engine/Serialization/LegacyImages.h"
-
-#include "Platform/Api.h"
-
-#include "DecorationList.h"
-#include "Level/Decoration.h"
-#include "LightmapBuilder.h"
-#include "Lights.h"
-#include "PaletteManager.h"
-#include "ParticleEngine.h"
-#include "Sprites.h"
-#include "Viewport.h"
-#include "Weather.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -40,6 +36,8 @@
 #include "GUI/UI/UITransition.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Platform/Api.h"
 
 using EngineIoc = Engine_::IocContainer;
 

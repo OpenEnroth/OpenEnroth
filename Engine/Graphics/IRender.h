@@ -1,18 +1,15 @@
 #pragma once
-
 #include <memory>
-
-#include "Engine/IocContainer.h"
-#include "Engine/OurMath.h"
-#include "Engine/Rect.h"
-#include "Engine/VectorTypes.h"
 
 #include "Engine/Graphics/IRenderConfig.h"
 #include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Texture.h"
+#include "Engine/OurMath.h"
+#include "Engine/Rect.h"
+#include "Engine/VectorTypes.h"
 
-using EngineIoc = Engine_::IocContainer;
+
 using Graphics::IRenderConfig;
 using Graphics::IRenderConfigFactory;
 
@@ -20,6 +17,12 @@ class OSWindow;
 class Sprite;
 class SpriteFrame;
 struct SoftwareBillboard;
+struct DecalBuilder;
+class LightmapBuilder;
+class ParticleEngine;
+struct SpellFxRenderer;
+class Vis;
+class Log;
 
 bool PauseGameDrawing();
 
@@ -154,8 +157,7 @@ struct RenderBillboardD3D {
         NoBlend = 0xFFFFFFFF
     };
 
-    Texture
-        *texture;  // void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
+    Texture *texture;  // void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
     unsigned int uNumVertices;
     RenderVertexD3D3 pQuads[4];
     float z_order;
@@ -194,14 +196,22 @@ class HWLTexture;
 
 class IRender {
  public:
-    inline IRender() {
-        this->log = EngineIoc::ResolveLogger();
-        this->decal_builder = EngineIoc::ResolveDecalBuilder();
-        this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
-        this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
-        this->particle_engine = EngineIoc::ResolveParticleEngine();
-        this->vis = EngineIoc::ResolveVis();
-
+    inline IRender(
+        std::shared_ptr<OSWindow> window,
+        DecalBuilder *decal_builder,
+        LightmapBuilder *lightmap_builder,
+        SpellFxRenderer *spellfx,
+        std::shared_ptr<ParticleEngine> particle_engine,
+        Vis *vis,
+        Log *logger
+    ) {
+        this->window = window;
+        this->decal_builder = decal_builder;
+        this->lightmap_builder = lightmap_builder;
+        this->spell_fx_renderer = spellfx;
+        this->particle_engine = particle_engine;
+        this->vis = vis;
+        this->log = logger;
 
         pActiveZBuffer = 0;
         uFogColor = 0;
@@ -220,7 +230,7 @@ class IRender {
         return true;
     }
 
-    virtual bool Initialize(OSWindow *window) = 0;
+    virtual bool Initialize() = 0;
 
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey) = 0;
     virtual Texture *CreateTexture_Solid(const String &name) = 0;
@@ -271,12 +281,10 @@ class IRender {
                                                   unsigned int uDiffuse,
                                                   int angle) = 0;
 
-    virtual void
-    DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
+    virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
     virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
                                       RenderBillboard *billboard) = 0;
-    virtual void _4A4CC9_AddSomeBillboard(
-        struct SpellFX_Billboard *a1, int diffuse) = 0;
+    virtual void _4A4CC9_AddSomeBillboard(struct SpellFX_Billboard *a1, int diffuse) = 0;
     virtual void TransformBillboardsAndSetPalettesODM() = 0;
     virtual void DrawBillboardList_BLV() = 0;
 
@@ -300,18 +308,13 @@ class IRender {
 
     virtual void DrawTextureNew(float u, float v, Image *) = 0;
     virtual void DrawTextureAlphaNew(float u, float v, Image *) = 0;
-    virtual void DrawTextureCustomHeight(float u, float v, Image *,
-                                         int height) = 0;
-    virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
-                                   Image *) = 0;
+    virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;
+    virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *) = 0;
     virtual void DrawImage(Image *, const Rect &rect) = 0;
 
-    virtual void ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture,
-                                int a5) = 0;
-    virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture,
-                                   int zVal) = 0;
-    virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
-                               int start_opacity, int end_opacity) = 0;
+    virtual void ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture, int a5) = 0;
+    virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) = 0;
+    virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) = 0;
     virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time) = 0;
     virtual void DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
@@ -320,10 +323,8 @@ class IRender {
                             uint16_t mask) = 0;
     virtual void DrawTextureGrayShade(float u, float v, Image *a4) = 0;
     virtual void DrawTransparentRedShade(float u, float v, Image *a4) = 0;
-    virtual void DrawTransparentGreenShade(float u, float v,
-                                           Image *pTexture) = 0;
-    virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices,
-                                     unsigned int num_vertices) = 0;
+    virtual void DrawTransparentGreenShade(float u, float v, Image *pTexture) = 0;
+    virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
     virtual void DrawTextAlpha(int x, int y, unsigned char *font_pixels, int a5,
                                unsigned int uFontHeight, uint8_t *pPalette,
@@ -339,8 +340,7 @@ class IRender {
 
     virtual void DrawBuildingsD3D() = 0;
 
-    virtual void DrawIndoorSky(unsigned int uNumVertices,
-                               unsigned int uFaceID = 0) = 0;
+    virtual void DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID = 0) = 0;
     virtual void DrawOutdoorSkyD3D() = 0;
 
     virtual void PrepareDecorationsRenderList_ODM() = 0;
@@ -435,8 +435,9 @@ class IRender {
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
-    ParticleEngine *particle_engine = nullptr;
+    std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
+    std::shared_ptr<OSWindow> window = nullptr;
 
     virtual void WritePixel16(int x, int y, uint16_t color) = 0;
 

@@ -2,80 +2,88 @@
 
 #include <string>
 
-// dont forget to add new values to sdl mappings
-enum class GameKey : int {
-    // usual text input
-    Char,
+namespace Io {
 
-    // scancodes (langauge and case neutral)
-    F1,
-    F2,
-    F3,
-    F4,
-    F5,
-    F6,
-    F7,
-    F8,
-    F9,
-    F10,
-    F11,
-    F12,
+    // dont forget to add new values to sdl mappings
+    enum class GameKey : int {
+        // usual text input
+        Char,
 
-    Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9, Digit0,
-    A, B, C, D, E, F, G,
-    H, I, J, K, L, M, N, O, P,
-    Q, R, S,
-    T, U, V,
-    W, X, Y, Z,
+        // scancodes (langauge and case neutral)
+        F1,
+        F2,
+        F3,
+        F4,
+        F5,
+        F6,
+        F7,
+        F8,
+        F9,
+        F10,
+        F11,
+        F12,
 
-    Return,
-    Escape,
-    Tab,
-    Backspace,
-    Space,
+        Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9, Digit0,
+        A, B, C, D, E, F, G,
+        H, I, J, K, L, M, N, O, P,
+        Q, R, S,
+        T, U, V,
+        W, X, Y, Z,
 
-    Add,
-    Subtract,
-    Comma,
-    LeftBracket,
-    RightBracket,
-    Decimal,
-    Semicolon,
-    Period,
-    Slash,
-    SingleQuote,
-    BackSlash,
+        Return,
+        Escape,
+        Tab,
+        Backspace,
+        Space,
 
-    Left,
-    Right,
-    Up,
-    Down,
+        Add,
+        Subtract,
+        Comma,
+        LeftBracket,
+        RightBracket,
+        Decimal,
+        Semicolon,
+        Period,
+        Slash,
+        SingleQuote,
+        BackSlash,
 
-    PrintScreen,
+        Left,
+        Right,
+        Up,
+        Down,
 
-    Insert,
-    Home,
-    End,
-    PageUp,
-    PageDown,
-    Delete,
-    Select,
+        PrintScreen,
 
-    Control,
-    Alt,
-    Shift,
+        Insert,
+        Home,
+        End,
+        PageUp,
+        PageDown,
+        Delete,
+        Select,
 
-    Numpad0,
+        Control,
+        Alt,
+        Shift,
 
-    None
-};
+        Numpad0,
 
-/// Some GameKeys are also used in textbox input so we should send them as char input as well
-inline bool IsKeyUsedInTextInput(GameKey key) {
-    return key == GameKey::Return
-        || key == GameKey::Escape
-        || key == GameKey::Backspace;
+        None
+    };
 }
 
-std::string GetDisplayName(GameKey key);
-bool TryParseDisplayName(const std::string &displayName, GameKey *outKey);
+/// Some GameKeys are also used in textbox input so we should send them as char input as well
+inline bool IsKeyUsedInTextInput(Io::GameKey key) {
+    return key == Io::GameKey::Return
+        || key == Io::GameKey::Escape
+        || key == Io::GameKey::Backspace;
+}
+
+inline bool IsKeyAlphaNumberic(Io::GameKey key) {
+    return key >= Io::GameKey::Digit1 && key <= Io::GameKey::Digit0
+        || key >= Io::GameKey::A && key <= Io::GameKey::Z;
+}
+
+std::string GetDisplayName(Io::GameKey key);
+bool TryParseDisplayName(const std::string &displayName, Io::GameKey *outKey);

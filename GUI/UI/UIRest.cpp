@@ -5,13 +5,12 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-
-#include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
@@ -21,6 +20,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 Image *rest_ui_btn_4 = nullptr;
 Image *rest_ui_btn_exit = nullptr;

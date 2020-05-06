@@ -1,10 +1,9 @@
 #pragma once
-
 #include <array>
 
-#include "Engine/Objects/SpriteObject.h"
-
+#include "Engine/Objects/SpriteObjectType.h"
 #include "Engine/VectorTypes.h"
+#include "Engine/Time.h"
 
 /*  360 */
 enum SPELL_TYPE {

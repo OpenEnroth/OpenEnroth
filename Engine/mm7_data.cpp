@@ -190,7 +190,6 @@ std::array<stat_coord, 26> stat_string_coord =  // 4E2940
 //-------------------------------------------------------------------------
 // Data declarations
 
-int game_starting_year = 0;
 unsigned int game_viewport_width;
 unsigned int game_viewport_height;
 int game_viewport_x;
@@ -704,8 +703,6 @@ float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
 float flt_6BE150_look_up_down_dangle = 1.0f;
-// HWND hWnd; // idb
-class OSWindow *window = nullptr;
 String pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;

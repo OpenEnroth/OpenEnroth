@@ -918,8 +918,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             AddProjectile(a2, 100, assets->GetBitmap(pContainer));
             return false;
         case SPRITE_SPELL_AIR_LIGHNING_BOLT_IMPACT:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-                a2, 0xC8C814, effpar02, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xC8C814, effpar02, 200.0);
             AddMobileLight(a2, 0xC8C814, 256);
             return false;
 
@@ -931,14 +930,12 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_AIR_STARBURST:
             return true;
         case SPRITE_SPELL_AIR_STARBURST_1:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-                a2, 0xC8C814, effpar01, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0xC8C814, effpar01, 200.0);
             AddMobileLight(a2, 0xC8C814, 256);
             return false;
 
         case SPRITE_SPELL_WATER_POISON_SPRAY:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, 0xAB450, effpar01);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xAB450, effpar01);
             AddMobileLight(a2, 0xAB450, 256);
             return false;
         case SPRITE_SPELL_WATER_POISON_SPRAY_IMPACT:
@@ -954,8 +951,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return false;
 
         case SPRITE_SPELL_WATER_ACID_BURST:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, 0x0AB450, effpar01);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x0AB450, effpar01);
             AddMobileLight(a2, 0x0AB450, 256);
             return false;
         case SPRITE_SPELL_WATER_ACID_BURST_IMPACT:
@@ -968,8 +964,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             AddMobileLight(a2, 0x9EB9F1, 256);
             return false;
         case SPRITE_SPELL_WATER_ICE_BLAST_FALLOUT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, 0x9EB9F1, effpar01);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x9EB9F1, effpar01);
             return false;
 
         case SPRITE_SPELL_EARTH_STUN:
@@ -998,16 +993,13 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return false;
 
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, 0x7E7E7E, effpar01);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x7E7E7E, effpar01);
             return true;
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM_IMPACT:
-            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(
-                a2, 0x7E7E7E, effpar01, 200.0);
+            _4A7A66_miltiple_spell_collision_partifles___like_after_sparks_or_lightning(a2, 0x7E7E7E, effpar01, 200.0);
             return false;
         case SPRITE_SPELL_EARTH_DEATH_BLOSSOM_FALLOUT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, 0x7E7E7E, effpar01);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0x7E7E7E, effpar01);
             return false;
 
         case SPRITE_SPELL_EARTH_MASS_DISTORTION:
@@ -1044,8 +1036,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             return false;
 
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT:
-            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
-                a2, 0xFFFFFF, effpar03);
+            _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(a2, 0xFFFFFF, effpar03);
             AddMobileLight(a2, 0xFFFFFF, 128);
             return false;
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT_IMPACT:
@@ -1225,7 +1216,7 @@ void SpellFxRenderer::FadeScreen__like_Turn_Undead_and_mb_Armageddon(
 }
 
 //----- (004A8BFC) --------------------------------------------------------
-int SpellFxRenderer::_4A8BFC() {  // for SPELL_LIGHT_PRISMATIC_LIGHT
+int SpellFxRenderer::_4A8BFC_prismatic_light() {  // for SPELL_LIGHT_PRISMATIC_LIGHT
     uAnimLength =
         8 * pSpriteFrameTable
                 ->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")]
@@ -1260,13 +1251,8 @@ void SpellFxRenderer::RenderSpecialEffects() {
     }
 
     if (uAnimLength > 0) {
-        v8 = 8 * pSpriteFrameTable
-                     ->pSpriteSFrames[pSpriteFrameTable->FastFindSprite(
-                         "spell84")]
-                     .uAnimLength -
-             uAnimLength;
-        v10 = pSpriteFrameTable->GetFrame(
-            pSpriteFrameTable->FastFindSprite("spell84"), v8);
+        v8 = 8 * pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
+        v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
 
         uAnimLength -= pEventTimer->uTimeElapsed;
         // if ( render->pRenderD3D )
@@ -1335,116 +1321,64 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
 
 //----- (004A90A0) --------------------------------------------------------
 void SpellFxRenderer::LoadAnimations() {
-    effpar01 = assets->GetBitmap(
-        "effpar01");  // pBitmaps_LOD->LoadTexture("effpar01");
-    effpar02 = assets->GetBitmap(
-        "effpar02");  // pBitmaps_LOD->LoadTexture("effpar02");
-    effpar03 = assets->GetBitmap(
-        "effpar03");  // pBitmaps_LOD->LoadTexture("effpar03");
+    effpar01 = assets->GetBitmap("effpar01");  // pBitmaps_LOD->LoadTexture("effpar01");
+    effpar02 = assets->GetBitmap("effpar02");  // pBitmaps_LOD->LoadTexture("effpar02");
+    effpar03 = assets->GetBitmap("effpar03");  // pBitmaps_LOD->LoadTexture("effpar03");
 
     // spell not implemented in the game
     // uSpriteID_sp57c = pSprites_LOD->LoadSprite("sp57c", 6);
 
     pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("zapp"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spheal1"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spheal2"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spheal3"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spboost1"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spboost2"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spboost3"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell03"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell05"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell14"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell17"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell21"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell25"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell27"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell36"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell38"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell46"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell51"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell55"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell58"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell69"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell71"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell73"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell75"));
-    pIconsFrameTable->InitializeAnimation(
-        pIconsFrameTable->FindIcon("spell96"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal1"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal2"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spheal3"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost1"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost2"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spboost3"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell03"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell05"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell14"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell17"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell21"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell25"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell27"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell36"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell38"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell46"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell51"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell55"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell58"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell69"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell71"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell73"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell75"));
+    pIconsFrameTable->InitializeAnimation(pIconsFrameTable->FindIcon("spell96"));
 
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell01"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell02"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell03"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell09"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell11"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell18"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell22"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell26"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell29"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell39"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell39c"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell41"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell57c"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell62"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell65"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell66"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell70"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell76"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell84"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell90"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell92"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell93"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell97"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell97c"));
-    pSpriteFrameTable->InitializeSprite(
-        pSpriteFrameTable->FastFindSprite("spell97c"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell01"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell02"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell03"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell09"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell11"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell18"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell22"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell26"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell29"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell39c"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell41"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell57c"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell62"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell65"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell66"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell70"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell76"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell84"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell90"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell92"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell93"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
+    pSpriteFrameTable->InitializeSprite(pSpriteFrameTable->FastFindSprite("spell97c"));
 }
 
 //----- (004775ED) --------------------------------------------------------
@@ -1452,43 +1386,37 @@ int SpellFX_Billboard::SpellFXNearClipAdjust(float NearClip) {  // near clip adj
     if (!uNumVertices) return 0;
 
     // copies first vert to position 4
-    field_64[4 * uNumVertices] = field_64[0];
-    field_64[4 * uNumVertices + 1] = field_64[1];
-    field_64[4 * uNumVertices + 2] = field_64[2];
-    field_64[4 * uNumVertices + 3] = field_64[3];
+    field_64[uNumVertices].x = field_64[0].x;
+    field_64[uNumVertices].y = field_64[0].y;
+    field_64[uNumVertices].z = field_64[0].z;
+    field_64[uNumVertices].diffuse = field_64[0].diffuse;
 
-    bool currvert = (field_64[0] <= NearClip);
+    bool currvert = (field_64[0].x <= NearClip);
     bool nextvert = false;
     int ProducedVerts = 0;
     double Tmult;
 
     for (int i = 0; i  < uNumVertices; ++i) {  // cycle through
-       nextvert = (field_64[(i+1) * 4] <= NearClip);
+       nextvert = (field_64[i + 1].x <= NearClip);
 
        if (currvert ^ nextvert) {  // XOR
            if (nextvert) {  // adjust verts and copy out
-               Tmult = (NearClip - field_64[i * 4]) / (field_64[(i+1) * 4] - field_64[i * 4]);
+               Tmult = (NearClip - field_64[i].x) / (field_64[i + 1].x - field_64[i].x);
 
                // x view = nearclip
-               field_B4[ProducedVerts * 4] = NearClip;
-               // y view
-               field_B4[ProducedVerts * 4 + 1] = (field_64[(i+1) * 4 + 1] - field_64[i * 4 + 1]) * Tmult + field_64[i * 4 + 1];
-               // z view
-               field_B4[ProducedVerts * 4 + 2] = (field_64[(i+1) * 4 + 2] - field_64[i * 4 + 2]) * Tmult + field_64[i * 4 + 2];
-               // diffuse
-               field_B4[ProducedVerts * 4 + 3] = field_64[i * 4 + 3];  // (field_64[(i+1) * 4 + 3] - field_64[i * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+               field_B4[ProducedVerts].x = NearClip;
+               field_B4[ProducedVerts].y = (field_64[i + 1].y - field_64[i].y) * Tmult + field_64[i].y;
+               field_B4[ProducedVerts].z = (field_64[i + 1].z - field_64[i].z) * Tmult + field_64[i].z;
+               field_B4[ProducedVerts].diffuse = field_64[i].diffuse;  // (field_64[(i+1) * 4 + 3] - field_64[i * 4 + 3]) * Tmult + field_64[i * 4 + 3];
 
            } else {  // currvert
-               Tmult = (NearClip - field_64[i * 4]) / (field_64[i * 4] - field_64[(i+1) * 4]);
+               Tmult = (NearClip - field_64[i].x) / (field_64[i].x - field_64[i + 1].x);
 
                // x view = nearclip
-               field_B4[ProducedVerts * 4] = NearClip;
-               // y view
-               field_B4[ProducedVerts * 4 + 1] = (field_64[i * 4 + 1] - field_64[(i + 1) * 4 + 1]) * Tmult + field_64[i * 4 + 1];
-               // z view
-               field_B4[ProducedVerts * 4 + 2] = (field_64[i * 4 + 2] - field_64[(i + 1) * 4 + 2]) * Tmult + field_64[i * 4 + 2];
-               // diffuse
-               field_B4[ProducedVerts * 4 + 3] = field_64[i * 4 + 3];  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+               field_B4[ProducedVerts].x = NearClip;
+               field_B4[ProducedVerts].y = (field_64[i].y - field_64[i + 1].y) * Tmult + field_64[i].y;
+               field_B4[ProducedVerts].z = (field_64[i].z - field_64[i + 1].z) * Tmult + field_64[i].z;
+               field_B4[ProducedVerts].diffuse = field_64[i].diffuse;  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
            }
            ++ProducedVerts;
        }
@@ -1496,14 +1424,10 @@ int SpellFX_Billboard::SpellFXNearClipAdjust(float NearClip) {  // near clip adj
        if (!nextvert) {
            // copy out - vert doesnt need adjusting
 
-           // x view
-           field_B4[ProducedVerts * 4] = field_64[(i + 1) * 4];
-           // y view
-           field_B4[ProducedVerts * 4 + 1] = field_64[(i + 1) * 4 + 1];
-           // z view
-           field_B4[ProducedVerts * 4 + 2] = field_64[(i + 1) * 4 + 2];
-           // diffuse
-           field_B4[ProducedVerts * 4 + 3] = field_64[(i + 1) * 4 + 3];
+           field_B4[ProducedVerts].x = field_64[i + 1].x;
+           field_B4[ProducedVerts].y = field_64[i + 1].y;
+           field_B4[ProducedVerts].z = field_64[i + 1].z;
+           field_B4[ProducedVerts].diffuse = field_64[i + 1].diffuse;
 
            ++ProducedVerts;
        }
@@ -1521,42 +1445,36 @@ int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust
     if (!uNumVertices) return 0;
 
     // copies first vert to position 4
-    field_64[4 * uNumVertices] = field_64[0];
-    field_64[4 * uNumVertices + 1] = field_64[1];
-    field_64[4 * uNumVertices + 2] = field_64[2];
-    field_64[4 * uNumVertices + 3] = field_64[3];
+    field_64[uNumVertices].x = field_64[0].x;
+    field_64[uNumVertices].y = field_64[0].y;
+    field_64[uNumVertices].z = field_64[0].z;
+    field_64[uNumVertices].diffuse = field_64[0].diffuse;
 
-    bool currvert = (field_64[0] >= farclip);
+    bool currvert = (field_64[0].x >= farclip);
     bool nextvert = false;
     int ProducedVerts = 0;
     double Tmult;
 
     for (int i = 0; i < uNumVertices; ++i) {  // cycle through
-        nextvert = (field_64[(i + 1) * 4] >= farclip);
+        nextvert = field_64[i + 1].x >= farclip;
 
         if (currvert ^ nextvert) {  // XOR
             if (nextvert) {  // adjust verts and copy out
-                Tmult = (farclip - field_64[i * 4]) / (field_64[(i + 1) * 4] - field_64[i * 4]);
+                Tmult = (farclip - field_64[i].x) / (field_64[i + 1].x - field_64[i].x);
 
                 // x view = nearclip
-                field_B4[ProducedVerts * 4] = farclip;
-                // y view
-                field_B4[ProducedVerts * 4 + 1] = (field_64[(i + 1) * 4 + 1] - field_64[i * 4 + 1]) * Tmult + field_64[i * 4 + 1];
-                // z view
-                field_B4[ProducedVerts * 4 + 2] = (field_64[(i + 1) * 4 + 2] - field_64[i * 4 + 2]) * Tmult + field_64[i * 4 + 2];
-                // diffuse
-                field_B4[ProducedVerts * 4 + 3] = field_64[i * 4 + 3];  // (field_64[(i+1) * 4 + 3] - field_64[i * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+                field_B4[ProducedVerts].x = farclip;
+                field_B4[ProducedVerts].y = (field_64[i + 1].y - field_64[i].y) * Tmult + field_64[i].y;
+                field_B4[ProducedVerts].z = (field_64[i + 1].z - field_64[i].z) * Tmult + field_64[i].z;
+                field_B4[ProducedVerts].diffuse = field_64[i].diffuse;  // (field_64[(i+1) * 4 + 3] - field_64[i * 4 + 3]) * Tmult + field_64[i * 4 + 3];
             } else {  // currvert
-                Tmult = (farclip - field_64[i * 4]) / (field_64[i * 4] - field_64[(i + 1) * 4]);
+                Tmult = (farclip - field_64[i].x) / (field_64[i].x - field_64[i + 1].x);
 
                 // x view = nearclip
-                field_B4[ProducedVerts * 4] = farclip;
-                // y view
-                field_B4[ProducedVerts * 4 + 1] = (field_64[i * 4 + 1] - field_64[(i + 1) * 4 + 1]) * Tmult + field_64[i * 4 + 1];
-                // z view
-                field_B4[ProducedVerts * 4 + 2] = (field_64[i * 4 + 2] - field_64[(i + 1) * 4 + 2]) * Tmult + field_64[i * 4 + 2];
-                // diffuse
-                field_B4[ProducedVerts * 4 + 3] = field_64[i * 4 + 3];  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
+                field_B4[ProducedVerts].x = farclip;
+                field_B4[ProducedVerts].y = (field_64[i].y - field_64[i + 1].y) * Tmult + field_64[i].y;
+                field_B4[ProducedVerts].z = (field_64[i].z - field_64[i + 1].z) * Tmult + field_64[i].z;
+                field_B4[ProducedVerts].diffuse = field_64[i * 4 + 3].diffuse;  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
             }
             ++ProducedVerts;
         }
@@ -1564,14 +1482,10 @@ int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust
         if (!nextvert) {
             // copy out - vert doesnt need adjusting
 
-            // x view
-            field_B4[ProducedVerts * 4] = field_64[(i + 1) * 4];
-            // y view
-            field_B4[ProducedVerts * 4 + 1] = field_64[(i + 1) * 4 + 1];
-            // z view
-            field_B4[ProducedVerts * 4 + 2] = field_64[(i + 1) * 4 + 2];
-            // diffuse
-            field_B4[ProducedVerts * 4 + 3] = field_64[(i + 1) * 4 + 3];
+            field_B4[ProducedVerts].x = field_64[i + 1].x;
+            field_B4[ProducedVerts].y = field_64[i + 1].y;
+            field_B4[ProducedVerts].z = field_64[i + 1].z;
+            field_B4[ProducedVerts].diffuse = field_64[i + 1].diffuse;
 
             ++ProducedVerts;
         }
@@ -1593,10 +1507,10 @@ int SpellFX_Billboard::SpellFXViewTransform() {  // view transform
             pIndoorCameraD3D->ViewTransform(field_14[v2].x, field_14[v2].y, field_14[v2].z, &ViewPosX, &ViewPosY, &ViewPosZ);
 
             // load into field 64
-            field_64[v2 * 4] = ViewPosX;
-            field_64[(v2 * 4) + 1] = ViewPosY;
-            field_64[(v2 * 4) + 2] = ViewPosZ;
-            field_64[(v2 * 4) + 3] = field_14[v2].diffuse;
+            field_64[v2].x = ViewPosX;
+            field_64[v2].y = ViewPosY;
+            field_64[v2].z = ViewPosZ;
+            field_64[v2].diffuse = field_14[v2].diffuse;
         }
     }
 
@@ -1612,13 +1526,13 @@ bool SpellFX_Billboard::SpellFXViewClip() {
     double FarClip = pIndoorCameraD3D->GetFarClip();
 
     if (this->uNumVertices <= 0) {  //  what?? behaviour needs investigating
-        memcpy(&this->field_B4[0]/*&this->field_14[40]*/, &this->field_64[0]/*&this->field_14[20]*/, 16 * this->uNumVertices);
+        memcpy(field_B4, field_64, uNumVertices * sizeof(local_01));
         return this->uNumVertices != 0;
     }
 
     for (int v6 = 0; v6 < this->uNumVertices; v6++) {
-        if (NearClip >= field_64[v6 * 4] || field_64[v6 * 4] >= FarClip) {
-            if (NearClip < field_64[v6 * 4])
+        if (NearClip >= field_64[v6].x || field_64[v6].x >= FarClip) {
+            if (NearClip < field_64[v6].x)
                 NeedFarClip = 1;
             else
                 NeedNearClip = 1;
@@ -1634,10 +1548,10 @@ bool SpellFX_Billboard::SpellFXViewClip() {
 
         // no clipping required- copy out
         for (int i = 0; i < uNumVertices; ++i) {
-            field_B4[i * 4] = field_64[i * 4];
-            field_B4[i * 4 + 1] = field_64[i * 4 + 1];
-            field_B4[i * 4 + 2] = field_64[i * 4 + 2];
-            field_B4[i * 4 + 3] = field_64[i * 4 + 3];
+            field_B4[i].x = field_64[i].x;
+            field_B4[i].y = field_64[i].y;
+            field_B4[i].z = field_64[i].z;
+            field_B4[i].diffuse = field_64[i].diffuse;
         }
         return this->uNumVertices != 0;
     }
@@ -1654,14 +1568,14 @@ int SpellFX_Billboard::SpellFXProject() {  // project to billboard coords
 
     for (int i = 0; i < this->uNumVertices; i++) {
         pIndoorCameraD3D->Project(
-            round_to_int(this->field_B4[i * 4]),
-            round_to_int(this->field_B4[i * 4 + 1]),
-            round_to_int(this->field_B4[i * 4 + 2]), &Yproj, &Xproj);
+            round_to_int(this->field_B4[i].x),
+            round_to_int(this->field_B4[i].y),
+            round_to_int(this->field_B4[i].z), &Yproj, &Xproj);
 
-        field_104[i].x = (double)Yproj;
-        field_104[i].y = (double)Xproj;
-        field_104[i].z = field_B4[i * 4];
-        field_104[i].diffuse = field_B4[i * 4 + 3];
+        field_104[i].x = (float)Yproj;
+        field_104[i].y = (float)Xproj;
+        field_104[i].z = field_B4[i].x;
+        field_104[i].diffuse = field_B4[i].diffuse;
 
         if (true)
         /*(double)(signed int)pViewport->uViewportTL_X <=
