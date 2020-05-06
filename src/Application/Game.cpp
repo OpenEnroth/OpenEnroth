@@ -3,27 +3,18 @@
 #include <algorithm>
 #include <string>
 
+#include "Arcomage/Arcomage.h"
+
 #include "src/Application/GameFactory.h"
 #include "src/Application/GameMenu.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineFactory.h"
-#include "Engine/Localization.h"
-#include "Engine/Time.h"
-
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Party.h"
-#include "Engine/SaveLoad.h"
-
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
-#include "Engine/Objects/SpriteObject.h"
-
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -31,20 +22,19 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-
-#include "Engine/Tables/FrameTableInc.h"
-
-#include "Engine/TurnEngine/TurnEngine.h"
-
+#include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
-
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
-
-#include "Arcomage/Arcomage.h"
-
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
+#include "Engine/Tables/FrameTableInc.h"
+#include "Engine/Time.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
@@ -72,41 +62,140 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Io/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
+
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+#include "Platform/OSWindowFactory.h"
+
+
 void ShowMM7IntroVideo_and_LoadingScreen();
 void IntegrityTest();
 
-using Application::GameFactory;
 using Application::Game;
-using Application::Configuration;
+using Application::GameConfig;
+using Application::GameFactory;
 using Engine_::EngineFactory;
+using Graphics::IRenderFactory;
 
-int MM_Main(const char *pCmdLine) {
-    GameFactory gameFactory;
 
-    auto game = gameFactory.CreateGame(std::string(pCmdLine));
-    game->Run();
 
-    return 0;
+
+std::string FindMm7Directory() {
+    bool mm7_installation_found = false;
+
+    // env variable override to a custom folder
+    if (!mm7_installation_found) {
+        if (const char* path = std::getenv("WOMM_PATH_OVERRIDE")) {
+            mm7_installation_found = true;
+            logger->Info(L"MM7 Custom Folder (ENV path override): %S", path);
+            return path;
+        }
+    }
+
+    // standard 1.0 installation
+    char path_buffer[2048];
+    if (!mm7_installation_found) {
+        mm7_installation_found = OS_GetAppString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
+            path_buffer,
+            sizeof(path_buffer)
+        );
+
+        if (mm7_installation_found) {
+            logger->Info(L"Standard MM7 installation found: %S", path_buffer);
+            return path_buffer;
+        }
+    }
+
+    // GoG old version
+    if (!mm7_installation_found) {
+        mm7_installation_found = OS_GetAppString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
+            path_buffer,
+            sizeof(path_buffer)
+        );
+
+        if (mm7_installation_found) {
+            logger->Info(L"GoG MM7 installation found: %S", path_buffer);
+            return path_buffer;
+        }
+    }
+
+    // GoG new version ( 2018 builds )
+    if (!mm7_installation_found) {
+        mm7_installation_found = OS_GetAppString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path",
+            path_buffer,
+            sizeof(path_buffer)
+        );
+
+        if (mm7_installation_found) {
+            logger->Info(L"GoG MM7 2018 build installation found: %S", path_buffer);
+            return path_buffer;
+        }
+    }
+
+    // Hack path fix - pskelton
+    if (!mm7_installation_found) {
+        mm7_installation_found = 1;
+        strcpy(path_buffer, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
+        logger->Info(L"Hack Path MM7 installation found: %S", path_buffer);
+        return path_buffer;
+    }
+
+    return "";
 }
-
-bool Game::Configure(std::shared_ptr<const Configuration> config) {
-    this->config = config;
-
-    return true;
-}
-
-
 
 void Game::Run() {
     IntegrityTest();
+
+    SetDataPath(FindMm7Directory());
+
+
+    window = OSWindowFactory().Create(
+        "World of Might and Magic®",
+        config->game_window_width,
+        config->game_window_height
+    );
+    ::window = window;
+
+    render = IRenderFactory().Create(
+        window,
+        config->renderer_name,
+        false
+    );
+    ::render = render;
+
+    if (!render) {
+        log->Warning(L"Render creation failed");
+        return;
+    }
+
+    if (!render->Initialize()) {
+        log->Warning(L"Render failed to initialize");
+        return;
+    }
+
+    keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
+    ::keyboardActionMapping = keyboardActionMapping;
+
+    keyboardInputHandler = std::make_shared<KeyboardInputHandler>(
+        window->GetKeyboardController(),
+        keyboardActionMapping
+    );
+
+    mouse = EngineIoc::ResolveMouse();
+    ::mouse = mouse;
 
     EngineFactory engineFactory;
     engine = engineFactory.CreateEngine(config->command_line);
     ::engine = engine;
 
     engine->Initialize();
-    userInputHandler = engine->GetUserInputHandler();
-    //this->keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
 
     window->Activate();
 
@@ -130,6 +219,7 @@ void Game::Run() {
         ::engine = nullptr;
     }
 }
+
 
 
 
@@ -897,7 +987,7 @@ void Game::EventLoop() {
                     viewparams->bRedrawGameUI = true;
                     continue;
                 case UIMSG_CycleCharacters:
-                    uActiveCharacter = CycleCharacter(OS_IfShiftPressed());
+                    uActiveCharacter = CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled());
                     viewparams->bRedrawGameUI = true;
                     continue;
                 case UIMSG_OnTravelByFoot:
@@ -926,7 +1016,7 @@ void Game::EventLoop() {
                     } else {
                         pParty->field_6E4 = 0;
                         pParty->field_6E0 = 0;
-                        CastSpellInfoHelpers::_427D48();
+                        CastSpellInfoHelpers::_427D48_reset_spell_reticle();
                         DialogueEnding();
                         pEventTimer->Pause();
                         pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
@@ -1443,7 +1533,7 @@ void Game::EventLoop() {
                     // sprintf(tmp_str.data(), "%s",
                     // pKeyActionMap->pPressedKeysBuffer);
                     FrameTableTxtLine frameTableTxtLine;
-                    txt_file_frametable_parser(userInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
+                    txt_file_frametable_parser(keyboardInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
                     String status_string;
                     if (frameTableTxtLine.uPropCount == 1) {
                         size_t map_index = atoi(frameTableTxtLine.pProperties[0]);
@@ -1844,7 +1934,7 @@ void Game::EventLoop() {
                         pAudioPlayer->PlaySound(
                             (SoundID)(rand() % 2 + SOUND_TurnPageU), 0, 0, -1, 0, 0);
                     } else {
-                        if (OS_IfShiftPressed()) {
+                        if (keyboardInputHandler->IsSpellBackcycleToggled()) {
                             --uAction;
                             if (uAction < 0)
                                 uAction = skill_count - 1;
@@ -2203,7 +2293,7 @@ void Game::EventLoop() {
                     pMessageQueue_50CBD0->Flush();
                     // if currently in a chest
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
-                        Chest::GrabItem(OS_IfCtrlPressed());
+                        Chest::GrabItem(keyboardInputHandler->IsTakeAllToggled());
                     } else {
                         OnPressSpace();
                     }
@@ -2616,7 +2706,7 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    engine->PickKeyboard(userInputHandler->IsKeyboardPickingOutlineToggled(), &vis_sprite_filter_3, &vis_door_filter);
+    engine->PickKeyboard(keyboardInputHandler->IsKeyboardPickingOutlineToggled(), &vis_sprite_filter_3, &vis_door_filter);
     int pid = vis->get_picked_object_zbuf_val();
     if (pid != -1)
         DoInteractionWithTopmostZObject(pid & 0xFFFF, PID_ID(pid));
@@ -2664,15 +2754,11 @@ void Game::GameLoop() {
 
         bool game_finished = false;
         do {
-            window->PeekMessageLoop();
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-                OS_WaitMessage();
-                // continue;
-            }
+            MessageLoopWithWait();
 
             engine->_44EEA7();  // pop up . mouse picking
             GameUI_WritePointedObjectStatusString();
-            userInputHandler->GenerateInputActions();
+            keyboardInputHandler->GenerateInputActions();
             EventLoop();
             if (pArcomageGame->bGameInProgress) {
                 ArcomageGame::Loop();

@@ -4,7 +4,8 @@
 #include <SDL.h>
 
 #include "Platform/OSWindow.h"
-#include "Platform/Sdl2UserInputProvider.h";
+#include "Platform/Sdl2KeyboardController.h"
+#include "Platform/Sdl2MouseController.h"
 
 class Sdl2Window : public OSWindow {
  public:
@@ -22,8 +23,7 @@ class Sdl2Window : public OSWindow {
     int GetY() const override;
     unsigned int GetWidth() const override;
     unsigned int GetHeight() const override;
-
-    Point TransformCursorPos(Point &pt) const override;  // screen to client
+    void SetWindowArea(int width, int height) override;
 
     bool OnOSMenu(int item_id) override;
 
@@ -31,13 +31,18 @@ class Sdl2Window : public OSWindow {
     bool Focused() override;
     void Activate() override;
 
-    void PeekSingleMessage() override;
-    void PeekMessageLoop() override;
+    void WaitSingleEvent() override;
+    void HandleSingleEvent() override;
+    void HandleAllEvents() override;
 
     void *GetWinApiHandle() override;
 
-    std::shared_ptr<IUserInputProvider> GetUserInputProvider() override {
-        return std::make_shared<Sdl2UserInputProvider>();
+    std::shared_ptr<IKeyboardController> GetKeyboardController() override {
+        return std::make_shared<Sdl2KeyboardController>();
+    }
+
+    std::shared_ptr<IMouseController> GetMouseController() override {
+        return std::make_shared<Sdl2MouseController>();
     }
 
     // window-renderer integration, probably should be a separate class

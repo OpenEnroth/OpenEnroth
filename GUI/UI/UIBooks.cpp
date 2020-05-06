@@ -16,6 +16,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 Image *ui_book_button8_off = nullptr;
 Image *ui_book_button8_on = nullptr;

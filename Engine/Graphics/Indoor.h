@@ -654,7 +654,7 @@ struct IndoorLocation {
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renderer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
-    ParticleEngine *particle_engine = nullptr;
+    std::shared_ptr<ParticleEngine> particle_engine = nullptr;
 };
 #pragma pack(pop)
 

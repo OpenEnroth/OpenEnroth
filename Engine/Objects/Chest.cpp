@@ -4,36 +4,32 @@
 #include <stdlib.h>
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/Time.h"
-
-#include "IO/Mouse.h"
-
-#include "GUI/UI/UIChest.h"
-#include "GUI/UI/UIStatusBar.h"
-
-#include "Media/Audio/AudioPlayer.h"
-
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
-
-#include "Engine/Tables/FrameTableInc.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Items.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/Tables/FrameTableInc.h"
+#include "Engine/Time.h"
+
+#include "GUI/UI/UIChest.h"
+#include "GUI/UI/UIStatusBar.h"
+
+#include "Io/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
 
 using EngineIoc = Engine_::IocContainer;
-
-// should be injected in Chest but struct size cant be altered
-static Mouse *mouse = EngineIoc::ResolveMouse();
 
 ChestList *pChestList;
 std::vector<Chest> vChests;

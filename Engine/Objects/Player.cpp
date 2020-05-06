@@ -3,32 +3,31 @@
 #include <algorithm>
 #include <functional>
 
+#include "Engine/Autonotes.h"
+#include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/Events.h"
+#include "Engine/Events2D.h"
+#include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/stru123.h"
+#include "Engine/stru298.h"
+#include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
-#include "../Autonotes.h"
-#include "../Awards.h"
-#include "../Events.h"
-#include "../Events2D.h"
-#include "../Graphics/Outdoor.h"
-#include "../Graphics/Viewport.h"
-#include "../LOD.h"
-#include "../Party.h"
-#include "../Tables/PlayerFrameTable.h"
-#include "../Tables/StorylineTextTable.h"
-#include "../TurnEngine/TurnEngine.h"
-#include "Actor.h"
-
-#include "../Graphics/DecalBuilder.h"
-#include "../OurMath.h"
-#include "../Spells/CastSpellInfo.h"
-#include "../stru123.h"
-#include "../stru298.h"
-#include "ObjectList.h"
-#include "SpriteObject.h"
-
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -38,8 +37,6 @@
 
 using EngineIoc = Engine_::IocContainer;
 
-// should be injected in Player but Party struct size cant be altered
-static Mouse *mouse = EngineIoc::ResolveMouse();
 static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
@@ -405,7 +402,7 @@ int Player::GetBuyingPrice(unsigned int uRealValue, float price_multiplier) {
 
 //----- (004B8179) --------------------------------------------------------
 int Player::GetPriceIdentification(float price_multiplier) {
-    signed int basecost = (price_multiplier * 50.0);
+    int basecost = (int)(price_multiplier * 50.0f);
     int actcost = basecost * (100 - GetMerchant()) / 100;
 
     if (actcost < basecost / 3)  // minimum price
@@ -419,7 +416,7 @@ int Player::GetPriceIdentification(float price_multiplier) {
 
 //----- (004B81C3) --------------------------------------------------------
 int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
-    signed int basecost = (uRealValue / (6.0 - price_multiplier));
+    int basecost = (int)(uRealValue / (6.0f - price_multiplier));
     int actcost = basecost * (100 - GetMerchant()) / 100;
 
     if (actcost < basecost / 3)  // min price
@@ -433,7 +430,7 @@ int Player::GetPriceRepair(int uRealValue, float price_multiplier) {
 
 //----- (004B8213) --------------------------------------------------------
 int Player::GetBaseSellingPrice(int uRealValue, float price_multiplier) {
-    signed int basecost = (uRealValue / (price_multiplier + 2.0));
+    int basecost = (int)(uRealValue / (price_multiplier + 2.0f));
 
     if (basecost < 1)  // min price
         basecost = 1;
@@ -443,7 +440,7 @@ int Player::GetBaseSellingPrice(int uRealValue, float price_multiplier) {
 
 //----- (004B8233) --------------------------------------------------------
 int Player::GetBaseBuyingPrice(int uRealValue, float price_multiplier) {
-    signed int basecost = uRealValue * price_multiplier;
+    int basecost = (int)(uRealValue * price_multiplier);
 
     if (basecost < 1)  // min price
         basecost = 1;
@@ -453,7 +450,7 @@ int Player::GetBaseBuyingPrice(int uRealValue, float price_multiplier) {
 
 //----- (004B824B) --------------------------------------------------------
 int Player::GetBaseIdentifyPrice(float price_multiplier) {
-    signed int basecost = price_multiplier * 50.0;
+    int basecost = (int)(price_multiplier * 50.0f);
 
     if (basecost < 1)  // min price
         basecost = 1;
@@ -463,7 +460,7 @@ int Player::GetBaseIdentifyPrice(float price_multiplier) {
 
 //----- (004B8265) --------------------------------------------------------
 int Player::GetBaseRepairPrice(int uRealValue, float price_multiplier) {
-    signed int basecost = (uRealValue / (6.0 - price_multiplier));
+    int basecost = (int)(uRealValue / (6.0f - price_multiplier));
 
     if (basecost < 1)  // min price
         basecost = 1;
@@ -2465,8 +2462,7 @@ int Player::GetActualAC() {
 
 //----- (0048E6DC) --------------------------------------------------------
 unsigned int Player::GetBaseAge() {
-    return pParty->GetPlayingTime().GetYears() - this->uBirthYear +
-           game_starting_year;
+    return pParty->GetPlayingTime().GetYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
@@ -2925,8 +2921,7 @@ int Player::GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr,
                                 v5 += currEquippedItem->m_enchantmentStrength;
                         }
                     } else {
-                        currEquippedItem->GetItemBonusSpecialEnchantment(
-                            this, attr, &v5, &v61);
+                        currEquippedItem->GetItemBonusSpecialEnchantment(this, attr, &v5, &v61);
                     }
                 }
             }
@@ -3495,15 +3490,15 @@ enum CHARACTER_RACE Player::GetRace() const {
 }
 
 String Player::GetRaceName() const {
-    switch (this->GetRace()) {
+    switch (GetRace()) {
         case 0:
-            return localization->GetString(99);  // "Human"
+            return localization->GetString(LSTR_RACE_HUMAN);
         case 1:
-            return localization->GetString(103);  // "Dwarf"
+            return localization->GetString(LSTR_RACE_DWARF);
         case 2:
-            return localization->GetString(106);  // "Goblin"
+            return localization->GetString(LSTR_RACE_GOBLIN);
         case 3:
-            return localization->GetString(101);  // "Elf"
+            return localization->GetString(LSTR_RACE_ELF);
     }
 }
 
@@ -7678,7 +7673,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
     Player* player = &pParty->pPlayers[uActiveCharacter - 1];
     if (!player->CanAct()) return;
 
-    CastSpellInfoHelpers::_427D48();
+    CastSpellInfoHelpers::_427D48_reset_spell_reticle();
     // v3 = 0;
     if (pParty->Invisible())
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();

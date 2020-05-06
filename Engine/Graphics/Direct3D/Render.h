@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 #include <d3d.h>
 #include <ddraw.h>
@@ -6,23 +7,30 @@
 #include <GdiPlus.h>
 #undef DrawText
 
-#include <memory>
-
+#include "Engine/Graphics/RenderBase.h"
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 
-#include "Engine/Graphics/RenderBase.h"
 
 struct ODMFace;
 class RenderD3D;
 class Image;
+class OSWindow;
 
 class Render : public RenderBase {
- public:
-    Render();
+public:
+    Render(
+        std::shared_ptr<OSWindow> window,
+        DecalBuilder* decal_builder,
+        LightmapBuilder* lightmap_builder,
+        SpellFxRenderer* spellfx,
+        std::shared_ptr<ParticleEngine> particle_engine,
+        Vis* vis,
+        Log* logger
+    );
     virtual ~Render();
 
-    virtual bool Initialize(OSWindow *window);
+    virtual bool Initialize();
 
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey);
     virtual Texture *CreateTexture_Solid(const String &name);
@@ -71,8 +79,7 @@ class Render : public RenderBase {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
                                       RenderBillboard *billboard);
-    virtual void _4A4CC9_AddSomeBillboard(
-        struct SpellFX_Billboard *a1, int diffuse);
+    virtual void _4A4CC9_AddSomeBillboard(struct SpellFX_Billboard *a1, int diffuse);
     virtual void DrawBillboardList_BLV();
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -221,7 +228,7 @@ class Render : public RenderBase {
     bool CheckTextureStages();
     void ParseTargetPixelFormat();
 
-    void CreateClipper(OSWindow *);
+    void CreateClipper();
 
     void SavePCXImage16(const String &filename, uint16_t *picture_data,
                         int width, int height);

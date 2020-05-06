@@ -1,10 +1,12 @@
 #include <map>
+#include <SDL_syswm.h>
 
 #include "Platform/Sdl2Window.h"
 
-#include "SDL_syswm.h"
+#include "Io/GameKey.h"
 
-#include "IO/Keyboard.h"
+using Io::GameKey;
+
 
 void Sdl2Window::MessageProc(const SDL_Event &e) {
     switch (e.type) {
@@ -104,14 +106,18 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
     }
 }
 
-void Sdl2Window::PeekMessageLoop() {
+void Sdl2Window::HandleAllEvents() {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         MessageProc(e);
     }
 }
 
-void Sdl2Window::PeekSingleMessage() {
+void Sdl2Window::WaitSingleEvent() {
+    SDL_WaitEvent(nullptr);
+}
+
+void Sdl2Window::HandleSingleEvent() {
     SDL_Event e;
     if (SDL_PollEvent(&e)) {
         MessageProc(e);
@@ -163,11 +169,9 @@ unsigned int Sdl2Window::GetHeight() const {
     return h;
 }
 
-Point Sdl2Window::TransformCursorPos(Point &pt) const {
-    SDL_Point p;
-    SDL_GetMouseState(&p.x, &p.y);
-
-    return Point(p.x, p.y);
+void Sdl2Window::SetWindowArea(int width, int height) {
+    SDL_SetWindowSize(sdlWindow, width, height);
+    HandleAllEvents();
 }
 
 bool Sdl2Window::OnOSMenu(int item_id) {
@@ -178,7 +182,7 @@ void Sdl2Window::Show() {
     SDL_ShowWindow(sdlWindow);
     SDL_RaiseWindow(sdlWindow);
 
-    PeekMessageLoop();
+    HandleAllEvents();
 }
 
 bool Sdl2Window::Focused() {
@@ -189,7 +193,7 @@ bool Sdl2Window::Focused() {
 void Sdl2Window::Activate() {
     SDL_RaiseWindow(sdlWindow);
 
-    PeekMessageLoop();
+    HandleAllEvents();
 }
 
 

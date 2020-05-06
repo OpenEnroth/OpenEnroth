@@ -5,15 +5,16 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
 
-#include "IO/Mouse.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
+
+#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
 #include "Platform/OSWindow.h"
+
 
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
@@ -149,11 +150,7 @@ void GUIWindow_MainMenu::Loop() {
     // window->Activate();
 
     while (GetCurrentMenuID() == MENU_MAIN) {
-        window->PeekMessageLoop();
-        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-            OS_WaitMessage();
-            continue;
-        }
+        MessageLoopWithWait();
 
         render->BeginScene();
         {

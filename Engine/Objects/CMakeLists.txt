@@ -16,6 +16,7 @@ set(OBJECTS_HEADERS Actor.h
                     NPC.h
                     ObjectList.h
                     Player.h
+                    PlayerEnums.h
                     SpriteObject.h)
 
 if(WIN32)

@@ -9,26 +9,21 @@
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/IocContainer.h"
-#include "Engine/Time.h"
-
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Chest.h"
-
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/IocContainer.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
-
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
+#include "Engine/Time.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -41,9 +36,17 @@
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Io/InputAction.h"
+#include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
+
 using EngineIoc = Engine_::IocContainer;
+using Io::InputAction;
 
 GUIWindow *pPrimaryWindow;
 GUIWindow *pChestWindow;
@@ -208,9 +211,8 @@ GUIButton *GUI_HandleHotkey(GameKey hotkey) {
                 return result;
             }
         }
-        if (!pWindow->uFrameX && !pWindow->uFrameY &&
-            (pWindow->uFrameWidth == window->GetWidth() &&
-                pWindow->uFrameHeight == window->GetWidth())) {
+        if (pWindow->uFrameX == 0 && pWindow->uFrameY == 0 &&
+            pWindow->uFrameWidth == window->GetWidth() && pWindow->uFrameHeight == window->GetWidth()) {
             break;
         }
     }
@@ -953,7 +955,7 @@ void GUI_UpdateWindows() {
         GameUI_DrawFoodAndGold();
     }
     if (sub_4637E0_is_there_popup_onscreen()) {
-        Mouse *mouse = EngineIoc::ResolveMouse();
+        std::shared_ptr<Mouse> mouse = EngineIoc::ResolveMouse();
         UI_OnMouseRightClick(mouse->GetCursorPos().x, mouse->GetCursorPos().y);
     }
 }
@@ -982,9 +984,7 @@ void CreateScrollWindow() {
     a1.uFrameHeight -= 12;
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
-    char *v1 =
-        pItemsTable->pItems[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C + 700]
-        .pName;
+    char *v1 = pItemsTable->pItems[(unsigned int)pGUIWindow_ScrollWindow->ptr_1C + 700].pName;
 
     a1.DrawTitleText(
         pFontCreate, 0, 0, 0,

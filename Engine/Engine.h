@@ -17,8 +17,13 @@
 
 #include "Engine/Graphics/Polygon.h"
 
-#include "IO/Keyboard.h"
-#include "IO/UserInputHandler.h"
+#include "Io/KeyboardActionMapping.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Io/Mouse.h"
+
+using Io::KeyboardActionMapping;
+using Io::KeyboardInputHandler;
+using Io::Mouse;
 
 void Engine_DeinitializeAndTerminate(int exitCode);
 
@@ -76,8 +81,6 @@ struct Game_Bloodsplat {
 class Vis;
 class LightmapBuilder;
 class ParticleEngine;
-class Mouse;
-class ThreadWard;
 class CShow;
 class GammaController;
 struct stru9;
@@ -124,7 +127,7 @@ struct Engine {
     void SecondaryInitialization();
     void _461103_load_level_sub();
     void DropHeldItem();
-    bool MM7_Initialize(const std::string &mm7_path);
+    bool MM7_Initialize();
 
     inline bool IsUnderwater() const { return config->IsUnderwater(); }
     inline bool CanSaturateFaces() const { return config->CanSaturateFaces(); }  // this is for perception - move to party
@@ -412,8 +415,8 @@ struct Engine {
     }
 
 
-    std::shared_ptr<UserInputHandler> GetUserInputHandler() const {
-        return userInputHandler;
+    std::shared_ptr<KeyboardInputHandler> GetKeyboardInputHandler() const {
+        return keyboardInputHandler;
     }
 
 
@@ -467,11 +470,11 @@ struct Engine {
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
-    Mouse *mouse = nullptr;
+    std::shared_ptr<Mouse> mouse = nullptr;
     //Keyboard *keyboard = nullptr;
-    ParticleEngine *particle_engine = nullptr;
+    std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
-    std::shared_ptr<UserInputHandler> userInputHandler;
+    std::shared_ptr<KeyboardInputHandler> keyboardInputHandler;
     std::shared_ptr<KeyboardActionMapping> keyboardActionMapping;
 };
 #pragma pack(pop)
@@ -518,59 +521,5 @@ void Transition_StopSound_Autosave(const char *pMapName,
 void OnTimer(int);
 bool TeleportToNWCDungeon();
 
-void SetDataPath(const char *data_path);
+void SetDataPath(const std::string &data_path);
 std::string MakeDataPath(const char *file_rel_path);
-
-enum CHARACTER_ATTRIBUTE_TYPE {
-    CHARACTER_ATTRIBUTE_STRENGTH = 0,
-    CHARACTER_ATTRIBUTE_INTELLIGENCE = 1,
-    CHARACTER_ATTRIBUTE_WILLPOWER = 2,
-    CHARACTER_ATTRIBUTE_ENDURANCE = 3,
-    CHARACTER_ATTRIBUTE_ACCURACY = 4,
-    CHARACTER_ATTRIBUTE_SPEED = 5,
-    CHARACTER_ATTRIBUTE_LUCK = 6,
-    CHARACTER_ATTRIBUTE_HEALTH = 7,
-    CHARACTER_ATTRIBUTE_MANA = 8,
-    CHARACTER_ATTRIBUTE_AC_BONUS = 9,
-
-    CHARACTER_ATTRIBUTE_RESIST_FIRE = 10,
-    CHARACTER_ATTRIBUTE_RESIST_AIR = 11,
-    CHARACTER_ATTRIBUTE_RESIST_WATER = 12,
-    CHARACTER_ATTRIBUTE_RESIST_EARTH = 13,
-    CHARACTER_ATTRIBUTE_RESIST_MIND = 14,
-    CHARACTER_ATTRIBUTE_RESIST_BODY = 15,
-
-    CHARACTER_ATTRIBUTE_SKILL_ALCHEMY = 16,
-    CHARACTER_ATTRIBUTE_SKILL_STEALING = 17,
-    CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM = 18,
-    CHARACTER_ATTRIBUTE_SKILL_ITEM_ID = 19,
-    CHARACTER_ATTRIBUTE_SKILL_MONSTER_ID = 20,
-    CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER = 21,
-    CHARACTER_ATTRIBUTE_SKILL_DODGE = 22,
-    CHARACTER_ATTRIBUTE_SKILL_UNARMED = 23,
-
-    CHARACTER_ATTRIBUTE_LEVEL = 24,
-    CHARACTER_ATTRIBUTE_ATTACK = 25,
-    CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS = 26,
-    CHARACTER_ATTRIBUTE_MELEE_DMG_MIN = 27,
-    CHARACTER_ATTRIBUTE_MELEE_DMG_MAX = 28,
-    CHARACTER_ATTRIBUTE_RANGED_ATTACK = 29,
-    CHARACTER_ATTRIBUTE_RANGED_DMG_BONUS = 30,
-    CHARACTER_ATTRIBUTE_RANGED_DMG_MIN = 31,
-    CHARACTER_ATTRIBUTE_RANGED_DMG_MAX = 32,
-    CHARACTER_ATTRIBUTE_RESIST_SPIRIT = 33,
-
-    CHARACTER_ATTRIBUTE_SKILL_FIRE = 34,
-    CHARACTER_ATTRIBUTE_SKILL_AIR = 35,
-    CHARACTER_ATTRIBUTE_SKILL_WATER = 36,
-    CHARACTER_ATTRIBUTE_SKILL_EARTH = 37,
-    CHARACTER_ATTRIBUTE_SKILL_SPIRIT = 38,
-    CHARACTER_ATTRIBUTE_SKILL_MIND = 39,
-    CHARACTER_ATTRIBUTE_SKILL_BODY = 40,
-    CHARACTER_ATTRIBUTE_SKILL_LIGHT = 41,
-    CHARACTER_ATTRIBUTE_SKILL_DARK = 42,
-    CHARACTER_ATTRIBUTE_SKILL_MEDITATION = 43,
-    CHARACTER_ATTRIBUTE_SKILL_BOW = 44,
-    CHARACTER_ATTRIBUTE_SKILL_SHIELD = 45,
-    CHARACTER_ATTRIBUTE_SKILL_LEARNING = 46
-};

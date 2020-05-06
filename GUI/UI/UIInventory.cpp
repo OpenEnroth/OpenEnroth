@@ -11,14 +11,13 @@
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
-#include "IO/UserInputHandler.h"
+#include "Io/Mouse.h"
+#include "Io/KeyboardInputHandler.h"
 
 void GUIWindow_Inventory::Update() {
     DrawMessageBox(0);
     DrawText(pFontLucida, 10, 20, 0, "Making item number", 0, 0, 0);
-    DrawText(pFontLucida, 10, 40, 0, userInputHandler->GetTextInput().c_str(), 0, 0, 0);
+    DrawText(pFontLucida, 10, 40, 0, keyboardInputHandler->GetTextInput().c_str(), 0, 0, 0);
 
     // a hack to capture end of user input (enter) while avoiding listening to UI message handler
     // redo this in a more clean way

@@ -10,7 +10,12 @@
 #include "Engine/Strings.h"
 #include "Engine/Party.h"
 
-#include "IO/GameKey.h"
+#include "Io/GameKey.h"
+#include "Io/Mouse.h"
+
+using Io::GameKey;
+using Io::Mouse;
+
 
 enum UIMessageType : uint32_t {
     UIMSG_0 = 0,
@@ -490,7 +495,7 @@ class GUIWindow {
     String sHint;
     std::vector<GUIButton*> vButtons;
 
-    Mouse *mouse = nullptr;
+    std::shared_ptr<Mouse> mouse = nullptr;
     Log *log = nullptr;
 };
 
@@ -738,7 +743,7 @@ void Inventory_ItemPopupAndAlchemy();
 unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos,
                                                           int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
-class GUIButton *GUI_HandleHotkey(uint8_t uHotkey);   // idb
+class GUIButton *GUI_HandleHotkey(GameKey hotkey);
 void GUI_ReplaceHotkey(GameKey oldKey, GameKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);

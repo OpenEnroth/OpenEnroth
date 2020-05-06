@@ -1,9 +1,27 @@
 #include "Engine/Objects/Actor.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Overlays.h"
+#include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/stru298.h"
+#include "Engine/Tables/FactionTable.h"
 #include "Engine/Time.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIGame.h"
@@ -11,23 +29,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "../Graphics/DecalBuilder.h"
-#include "../Graphics/Level/Decoration.h"
-#include "../Graphics/Outdoor.h"
-#include "../Graphics/Overlays.h"
-#include "../Graphics/PaletteManager.h"
-#include "../Graphics/Sprites.h"
-#include "../Graphics/Viewport.h"
-#include "../Graphics/Vis.h"
-#include "../LOD.h"
-#include "../OurMath.h"
-#include "../Party.h"
-#include "../Spells/CastSpellInfo.h"
-#include "../Tables/FactionTable.h"
-#include "../TurnEngine/TurnEngine.h"
-#include "../stru298.h"
-#include "ObjectList.h"
-#include "SpriteObject.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -1391,7 +1392,7 @@ void Actor::StealFrom(unsigned int uActorID) {
 
     pPlayer = &pParty->pPlayers[uActiveCharacter - 1];
     if (pPlayer->CanAct()) {
-        CastSpellInfoHelpers::_427D48();
+        CastSpellInfoHelpers::_427D48_reset_spell_reticle();
         v4 = 0;
         v5 = pMapStats->GetMapInfo(pCurrentMapName);
         if (v5) v4 = pMapStats->pInfos[v5]._steal_perm;

@@ -1,22 +1,22 @@
 #include "GUI/UI/UIArena.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Events.h"
+#include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Party.h"
 
-#include "../../Engine/Graphics/Sprites.h"
-
-#include "../../Engine/Events.h"
-#include "../../Engine/Graphics/Outdoor.h"
-#include "../../Engine/Graphics/Viewport.h"
-#include "../../Engine/LOD.h"
-#include "../../Engine/Objects/Actor.h"
-#include "../../Engine/Party.h"
-#include "../../GUI/GUIFont.h"
-#include "../../GUI/GUIWindow.h"
-#include "../../Media/Audio/AudioPlayer.h"
-
+#include "GUI/GUIFont.h"
+#include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIHouses.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
 
 std::array<Vec2_int_, 20> pMonsterArenaPlacements = {{
     Vec2_int_(1524, 8332),    Vec2_int_(2186, 8844),

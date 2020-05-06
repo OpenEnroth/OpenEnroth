@@ -136,8 +136,6 @@ class EngineConfig {
 
     bool is_underwater = false;
     bool is_targeting = false;
-
-    std::string renderer_name = "DirectDraw";
 };
 
 }  // namespace Engine_

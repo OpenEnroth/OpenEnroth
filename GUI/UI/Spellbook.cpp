@@ -2,20 +2,22 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-
-#include "IO/Mouse.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 
+#include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Platform/OSWindow.h"
+
 
 void InitializeSpellBookTextures();
 void OnCloseSpellBookPage();

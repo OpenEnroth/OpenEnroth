@@ -3,28 +3,28 @@
 #include <stdlib.h>
 
 #include "Engine/Engine.h"
-#include "Engine/Localization.h"
-#include "Engine/Time.h"
-
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Localization.h"
+#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
+#include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "GUI/GUIWindow.h"
-#include "IO/Mouse.h"
-#include "LOD.h"
-#include "Media/Audio/AudioPlayer.h"
 
+#include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"
 
-using EngineIoc = Engine_::IocContainer;
+#include "Io/Mouse.h"
 
-// should be injected in Party, but struct size cant be changed
-static Mouse *mouse = EngineIoc::ResolveMouse();
+#include "Media/Audio/AudioPlayer.h"
+
+using EngineIoc = Engine_::IocContainer;
+using Io::Mouse;
 
 Party *pParty = nullptr;
 
@@ -880,8 +880,7 @@ void RestAndHeal(int minutes) {
     pParty->uCurrentMonthWeek = pParty->GetPlayingTime().GetWeeksOfMonth();
     pParty->uCurrentDayOfMonth = pParty->GetPlayingTime().GetDaysOfMonth();
     pParty->uCurrentMonth = pParty->GetPlayingTime().GetMonthsOfYear();
-    pParty->uCurrentYear =
-        pParty->GetPlayingTime().GetYears() + game_starting_year;
+    pParty->uCurrentYear = pParty->GetPlayingTime().GetYears() + game_starting_year;
     pParty->RestAndHeal();
 
     for (int i = 0; i < 4; i++) {

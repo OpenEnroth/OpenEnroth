@@ -8,7 +8,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/TownPortalBook.h"
 
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
 
 static int pTownPortalBook_xs[6] = {260, 324, 147, 385, 390, 19};
 static int pTownPortalBook_ys[6] = {206, 84, 182, 239, 17, 283};

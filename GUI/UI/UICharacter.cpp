@@ -6,16 +6,15 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Party.h"
-#include "Engine/Time.h"
-
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/Time.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -23,13 +22,15 @@
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIInventory.h"
 
+#include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
 
-#include "IO/Mouse.h"
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 using EngineIoc = Engine_::IocContainer;
-
-static Mouse *pMouse = EngineIoc::ResolveMouse();
 
 void CharacterUI_LoadPaperdollTextures();
 void WetsuitOn(unsigned int uPlayerID);
@@ -1533,8 +1534,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                         }
                         render->BlendTextures(
                             item_X, item_Y,
-                            paperdoll_cloak_collar_texture[pBodyComplection]
-                                                          [index],
+                            paperdoll_cloak_collar_texture[pBodyComplection][index],
                             assets->GetImage_ColorKey(container, 0x7FF),
                             OS_GetTime() / 10, 0, 255);
                     } else if (item->uAttributes & ITEM_BROKEN) {
@@ -2706,8 +2706,8 @@ void WetsuitOff(unsigned int uPlayerID) {
 
 //----- (00468F8A) --------------------------------------------------------
 void OnPaperdollLeftClick() {
-    int mousex = pMouse->uMouseClickX;
-    int mousey = pMouse->uMouseClickY;
+    int mousex = mouse->uMouseClickX;
+    int mousey = mouse->uMouseClickY;
 
     static int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
     static int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
@@ -2861,7 +2861,7 @@ void OnPaperdollLeftClick() {
                                 pPlayers[uActiveCharacter]
                                     ->pEquipment.uRings[equippos] =
                                     freeslot + 1;
-                                pMouse->RemoveHoldingItem();
+                                mouse->RemoveHoldingItem();
                                 return;
                             }
                         }
@@ -2919,7 +2919,7 @@ void OnPaperdollLeftClick() {
                                                ->pInventoryItemList[freeslot]));
                                 pPlayers[uActiveCharacter]
                                     ->pEquipment.uRings[pos] = freeslot + 1;
-                                pMouse->RemoveHoldingItem();
+                                mouse->RemoveHoldingItem();
                                 return;
                             }
                         } else {  // item so swap out
@@ -2996,7 +2996,7 @@ void OnPaperdollLeftClick() {
                                sizeof(pPlayers[uActiveCharacter]
                                           ->pInventoryItemList[freeslot]));
                         pPlayers[uActiveCharacter]->pEquipment.uShield = v17;
-                        pMouse->RemoveHoldingItem();
+                        mouse->RemoveHoldingItem();
                         return;
                     }
                     mainhandequip--;  //ставим щит когда держит двуручный меч
@@ -3045,7 +3045,7 @@ void OnPaperdollLeftClick() {
                             2)) {  // sword in left hand at master
                     // v18 = pMouse->uMouseClickX;
                     // v19 = pMouse->uMouseClickY;
-                    if ((signed int)pMouse->uMouseClickX >= 560) {
+                    if ((signed int)mouse->uMouseClickX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {
                                 --shieldequip;
@@ -3079,7 +3079,7 @@ void OnPaperdollLeftClick() {
                                               ->pInventoryItemList[v23]));
                             pPlayers[uActiveCharacter]->pEquipment.uShield =
                                 v23 + 1;
-                            pMouse->RemoveHoldingItem();
+                            mouse->RemoveHoldingItem();
                             if (pEquipType != EQUIP_WAND) return;
                             v50 = pPlayers[uActiveCharacter]->pInventoryItemList[v23].uItemID;
                             break;
@@ -3096,7 +3096,7 @@ void OnPaperdollLeftClick() {
                            sizeof(pPlayers[uActiveCharacter]
                                       ->pInventoryItemList[v26]));
                     pPlayers[uActiveCharacter]->pEquipment.uMainHand = v26 + 1;
-                    pMouse->RemoveHoldingItem();
+                    mouse->RemoveHoldingItem();
                     if (pEquipType != EQUIP_WAND) return;
                     break;
                 }
@@ -3184,7 +3184,7 @@ void OnPaperdollLeftClick() {
                                               ->pInventoryItemList[freeslot]));
                             pPlayers[uActiveCharacter]->pEquipment.uMainHand =
                                 freeslot + 1;
-                            pMouse->RemoveHoldingItem();
+                            mouse->RemoveHoldingItem();
                         }
                     }
                 }
@@ -3255,7 +3255,7 @@ void OnPaperdollLeftClick() {
             ptr_50C9A4_ItemToEnchant = pitem;
             _50C9A0_IsEnchantingInProgress = 0;
             pMessageQueue_50CBD0->Flush();
-            pMouse->SetCursorImage("MICON1");
+            mouse->SetCursorImage("MICON1");
             _50C9D4_AfterEnchClickEventSecondParam = 0;
             _50C9D0_AfterEnchClickEventId = 113;
             _50C9D8_AfterEnchClickEventTimeout = 256;
@@ -3298,8 +3298,8 @@ void OnPaperdollLeftClick() {
     } else {  // z picking as before
         v34 =
             render
-                ->pActiveZBuffer[pMouse->uMouseClickX +
-                                 pSRZBufferLineOffsets[pMouse->uMouseClickY]] &
+                ->pActiveZBuffer[mouse->uMouseClickX +
+                                 pSRZBufferLineOffsets[mouse->uMouseClickY]] &
             0xFFFF;
         if (v34) {
             // v36 = v34 - 1;
@@ -3334,7 +3334,7 @@ void OnPaperdollLeftClick() {
                     &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];
                 _50C9A0_IsEnchantingInProgress = 0;
                 pMessageQueue_50CBD0->Flush();
-                pMouse->SetCursorImage("MICON1");
+                mouse->SetCursorImage("MICON1");
                 _50C9D4_AfterEnchClickEventSecondParam = 0;
                 _50C9D0_AfterEnchClickEventId = 113;
                 _50C9D8_AfterEnchClickEventTimeout = 256;

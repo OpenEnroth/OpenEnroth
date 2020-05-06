@@ -3,40 +3,38 @@
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/SpellFxRenderer.h"
-#include "Engine/Time.h"
-#include "Engine/stru123.h"
-
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Viewport.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
-
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/SpellFxRenderer.h"
+#include "Engine/stru123.h"
 #include "Engine/Tables/IconFrameTable.h"
-
+#include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIWindow.h"
-
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Platform/OSWindow.h"
+
+
 using EngineIoc = Engine_::IocContainer;
 
-static Mouse *mouse = EngineIoc::ResolveMouse();
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
 const size_t CastSpellInfoCount = 10;
@@ -128,14 +126,16 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
         if (pCastSpell->uSpellID == 0)
             continue;  // spell item blank skip to next
 
-        if (pParty->Invisible())
-            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY]
-            .Reset();  // no longer invisible
+        if (pParty->Invisible()) {
+            // casting a spell breaks invisibility
+            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+        }
 
         if (pCastSpell->uFlags & ON_CAST_CastingInProgress) {
-            if (!pParty->pPlayers[pCastSpell->uPlayerID].CanAct())
-                _427D48();  // this cancels the spell cast if the player can no
-                            // longer act
+            if (!pParty->pPlayers[pCastSpell->uPlayerID].CanAct()) {
+                // cancel the spell cast if the player can no longer act
+                _427D48_reset_spell_reticle();
+            }
 
             continue;
         }
@@ -152,8 +152,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             else
                 target_undead = 0;
 
-            spell_targeted_at = stru_50C198.FindClosestActor(
-                5120, 1, target_undead);  // find closest target
+            // find the closest target
+            spell_targeted_at = stru_50C198.FindClosestActor(5120, 1, target_undead);
             spell_pointed_target = mouse->uPointingObjectID;
 
             if (mouse->uPointingObjectID &&
@@ -176,8 +176,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             }
         }
 
-        if (pCastSpell->forced_spell_skill_level) {  // for spell scrolls - decode
-                                           // spell power and mastery
+        if (pCastSpell->forced_spell_skill_level) {
+            // for spell scrolls - decode spell power and mastery
             spell_level = (pCastSpell->forced_spell_skill_level) & 0x3F;  // 6 bytes
             skill_level = ((pCastSpell->forced_spell_skill_level) & 0x1C0) / 64 + 1;
         } else {
@@ -264,8 +264,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
         switch (pCastSpell->uSpellID) {
             case SPELL_101:
-                assert(false &&
-                       "Unknown spell effect #101 (prolly flaming bow arrow");
+                assert(false && "Unknown spell effect #101 (prolly flaming bow arrow");
 
             case SPELL_BOW_ARROW:  //стрельба из лука
             {
@@ -3605,7 +3604,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         _50BF30_actors_in_viewport_ids[monster_id], &v694);
                 }
                 // v537 = spell_fx_renderer;
-                spell_fx_renderer->_4A8BFC();
+                spell_fx_renderer->_4A8BFC_prismatic_light();
                 spell_sound_flag = true;
                 break;
             }
@@ -4347,7 +4346,7 @@ size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
 }
 
 //----- (00427D48) --------------------------------------------------------
-void CastSpellInfoHelpers::_427D48() {  // reset failed/cancelled spell
+void CastSpellInfoHelpers::_427D48_reset_spell_reticle() {  // reset failed/cancelled spell
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
         if (pCastSpellInfo[i].uSpellID &&
             pCastSpellInfo[i].uFlags & ON_CAST_CastingInProgress) {
@@ -4530,7 +4529,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             }
     }
 
-    CastSpellInfoHelpers::_427D48();
+    CastSpellInfoHelpers::_427D48_reset_spell_reticle();
 
     int result = PushCastSpellInfo(spell, uPlayerID, a4, flags, a6);
     if (result != -1) {

@@ -9,34 +9,33 @@
 #include <queue>
 #include <vector>
 
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/Audio/OpenALSoundProvider.h"
-
 #include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Log.h"
 
 #include "GUI/GUIWindow.h"
-#include "IO/Mouse.h"
+
+#include "Io/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/Audio/OpenALSoundProvider.h"
+
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libavutil/avutil.h"
-#include "libavutil/imgutils.h"
-#include "libavutil/mem.h"
-#include "libavutil/opt.h"
-#include "libswresample/swresample.h"
-#include "libswscale/swscale.h"
+    #include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libavutil/avutil.h>
+    #include <libavutil/imgutils.h>
+    #include <libavutil/mem.h>
+    #include <libavutil/opt.h>
+    #include <libswresample/swresample.h>
+    #include <libswscale/swscale.h>
 }
 
-#pragma comment(lib, "avcodec.lib")
-#pragma comment(lib, "avformat.lib")
-#pragma comment(lib, "avutil.lib")
-#pragma comment(lib, "swscale.lib")
-#pragma comment(lib, "swresample.lib")
 
 OpenALSoundProvider *provider = nullptr;
 
@@ -71,7 +70,7 @@ class AVStreamWrapper {
         if (dec_ctx != nullptr) {
             // Close the codec
             avcodec_close(dec_ctx);
-            logger->Warning(L"close decoder context file\n");
+            logger->Warning(L"close decoder context file");
             dec_ctx = nullptr;
         }
     }
@@ -300,7 +299,7 @@ class Movie : public IMovie {
         if (format_ctx) {
             // Close the video file
             avformat_close_input(&format_ctx);
-            logger->Warning(L"close video format context file\n");
+            logger->Warning(L"close video format context file");
             format_ctx = nullptr;
         }
         if (avioContext) {
@@ -561,7 +560,7 @@ class VideoList {
 
         file = fopen(file_path.c_str(), "rb");
         if (file == nullptr) {
-            logger->Warning(L"Can't open video file: %S", file_path.c_str());
+            logger->Warning(L"Can't open video file: %s", file_path.c_str());
             return;
         }
         fseek(file, 0, SEEK_END);
@@ -737,12 +736,9 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
 
     while (true) {
+        MessageLoopWithWait();
+
         render->BeginScene();
-
-        window->PeekMessageLoop();
-
-        // if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) continue;
-        // add pausing of movie when game lost focus
 
         OS_Sleep(2);
 

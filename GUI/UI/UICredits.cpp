@@ -102,11 +102,7 @@ void GUICredits::ExecuteCredits() {
     SetCurrentMenuID(MENU_CREDITSPROC);
 
     while (GetCurrentMenuID() == MENU_CREDITSPROC) {
-        window->PeekMessageLoop();
-        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-            OS_WaitMessage();
-            continue;
-        }
+        MessageLoopWithWait();
 
         render->BeginScene();
         {

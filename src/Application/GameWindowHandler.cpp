@@ -3,19 +3,18 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/IocContainer.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
-#include "Engine/Graphics/IndoorCameraD3D.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Graphics/Vis.h"
-
 #include "GUI/GUIWindow.h"
 
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
-#include "IO/UserInputHandler.h"
+#include "Io/InputAction.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -26,6 +25,7 @@
 using EngineIoc = Engine_::IocContainer;
 using ApplicationIoc = Application::IocContainer;
 using Application::GameWindowHandler;
+using Io::InputAction;
 
 
 GameWindowHandler::GameWindowHandler() {
@@ -39,8 +39,8 @@ void GameWindowHandler::OnScreenshot() {
 }
 
 bool GameWindowHandler::OnChar(GameKey key, int c) {
-    if (!userInputHandler->ProcessTextInput(key, c) && !viewparams->field_4C && key == GameKey::Char) {
-        return GUI_HandleHotkey(c);
+    if (!keyboardInputHandler->ProcessTextInput(key, c) && !viewparams->field_4C && IsKeyAlphaNumberic(key)) {
+        return GUI_HandleHotkey(key);
     }
     return false;
 }
@@ -137,7 +137,7 @@ void GameWindowHandler::OnKey(GameKey key) {
     extern InputAction currently_selected_action_for_binding;
     if (currently_selected_action_for_binding != InputAction::Invalid) {
         // we're setting a key binding in options
-        userInputHandler->ProcessTextInput(key, -1);
+        keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 1;
 
@@ -237,16 +237,21 @@ void GameWindowHandler::OnDeactivated() {
         // dword_4E98BC_bApplicationActive = 0;
 
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
-        if (pEventTimer->bPaused)
-            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
-        else
-            pEventTimer->Pause();
-        if (pMiscTimer->bPaused)
-            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
-        else
-            pMiscTimer->Pause();
+        if (pEventTimer != nullptr) {
+            if (pEventTimer->bPaused)
+                dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
+            else
+                pEventTimer->Pause();
+        }
 
-        if (pAudioPlayer) {
+        if (pMiscTimer != nullptr) {
+            if (pMiscTimer->bPaused)
+                dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
+            else
+                pMiscTimer->Pause();
+        }
+
+        if (pAudioPlayer != nullptr) {
             pAudioPlayer->StopChannels(-1, -1);
             pAudioPlayer->MusicPause();
         }

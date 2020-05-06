@@ -1,20 +1,20 @@
 #pragma once
-
 #include <memory>
 
-#include "src/Application/Configuration.h"
+#include "src/Application/GameConfig.h"
 #include "src/Application/GameMenu.h"
 #include "src/Application/IocContainer.h"
 
 #include "Engine/Engine.h"
 #include "Engine/IocContainer.h"
 
-#include "IO/Keyboard.h"
-#include "IO/UserInputHandler.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Io/Mouse.h"
 
 
 using EngineIoc = Engine_::IocContainer;
 using GameIoc = Application::IocContainer;
+using Io::Mouse;
 
 
 namespace Application {
@@ -23,18 +23,16 @@ class Game {
  public:
      inline Game() {
          this->log = EngineIoc::ResolveLogger();
-         this->mouse = EngineIoc::ResolveMouse();
          this->decal_builder = EngineIoc::ResolveDecalBuilder();
          this->vis = EngineIoc::ResolveVis();
          this->menu = GameIoc::ResolveGameMenu();
-         //this->keyboardController = std::make_shared<KeyboardController>(/*std::make_shared<Keyboard>()*/nullptr);
-         //::keyboardController = keyboardController.get();
-
-         //this->keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
-         //this->userInputHandler = std::make_shared<UserInputHandler>(/* get input provider from OI window */);
      }
 
-     bool Configure(std::shared_ptr<const Configuration> config);
+     bool Configure(std::shared_ptr<const GameConfig> config) {
+         this->config = config;
+         return true;
+     }
+
      void Run();
 
  private:
@@ -47,10 +45,12 @@ class Game {
      void ProcessInputActions();
 
 
-     std::shared_ptr<const Configuration> config;
+     std::shared_ptr<const GameConfig> config;
      std::shared_ptr<Engine> engine;
+     std::shared_ptr<OSWindow> window;
+     std::shared_ptr<IRender> render;
+     std::shared_ptr<Mouse> mouse = nullptr;
      Log *log = nullptr;
-     Mouse *mouse = nullptr;
 
      //std::shared_ptr<KeyboardActionMapping> keyboardActionMapping;
      //std::shared_ptr<UserInputHandler> userInputHandler;

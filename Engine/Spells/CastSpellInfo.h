@@ -6,7 +6,7 @@
 #include "Spells.h"
 
 namespace CastSpellInfoHelpers {
-void _427D48();
+void _427D48_reset_spell_reticle();
 void _427E01_cast_spell();
 };  // namespace CastSpellInfoHelpers
 

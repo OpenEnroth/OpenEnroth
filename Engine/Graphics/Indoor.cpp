@@ -4,27 +4,35 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/SpellFxRenderer.h"
-#include "Engine/Time.h"
-#include "Engine/ZlibWrapper.h"
-#include "Engine/stru367.h"
-
-#include "Engine/Serialization/LegacyImages.h"
-
 #include "Engine/Graphics/DecalBuilder.h"
+#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
+#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Texture.h"
+#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/stru10.h"
 #include "Engine/Graphics/stru9.h"
-
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
-
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/Serialization/LegacyImages.h"
+#include "Engine/SpellFxRenderer.h"
+#include "Engine/stru123.h"
+#include "Engine/stru367.h"
+#include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/ZlibWrapper.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -33,18 +41,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
-#include "../OurMath.h"
-#include "../Party.h"
-#include "../stru123.h"
-#include "DecorationList.h"
-#include "Level/Decoration.h"
-#include "Lights.h"
-#include "Outdoor.h"
-#include "Overlays.h"
-#include "ParticleEngine.h"
-#include "Sprites.h"
-#include "Viewport.h"
 
 IndoorLocation *pIndoor = new IndoorLocation;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
@@ -5513,12 +5511,11 @@ bool sub_4075DB(int x, int y, int z, BLVFace *face) {
                     // dword_4F5D98_xs[i],LODWORD(v26) = v25 << 16, HIDWORD(v26) =
                     // v25 >> 16, dword_4F5D98_xs[i] + ((signed int)(((unsigned
                     // __int64)(v26 / (dword_4F5CC4_ys[i + 2] - dword_4F5CC4_ys[i +
-                    // 1])* ((v8 - dword_4F5CC4_ys[i + 1]) << 16)) >> 16)
-                    //                + 32768) >> 16) >= a4a) )
+                    // 1])* ((v8 - dword_4F5CC4_ys[i + 1]) << 16)) >> 16) + 32768) >> 16) >= a4a) )
                 } else {
                     v25 = fixpoint_div(dword_4F5D98_xs[i + 1] - dword_4F5D98_xs[i],
                                        dword_4F5CC8_ys[i + 1] - dword_4F5CC8_ys[i]);
-                    if (dword_4F5D98_xs[i] + (fixpoint_mul(v25, (v8 - dword_4F5CC8_ys[i]) << 16) + 0x8000 >> 16) >= a4a)
+                    if (dword_4F5D98_xs[i] + ((fixpoint_mul(v25, (v8 - dword_4F5CC8_ys[i]) << 16) + 0x8000) >> 16) >= a4a)
                         ++a3a;
                 }
             }

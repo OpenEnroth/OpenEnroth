@@ -1,23 +1,17 @@
 #include "Engine/Graphics/Direct3D/Render.h"
 
+#include <algorithm>
+
 #include <d3d.h>
 #include <ddraw.h>
 
-#include <algorithm>
+#include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/SpellFxRenderer.h"
-#include "Engine/Time.h"
-
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
-#include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
+#include "Engine/Graphics/Direct3D/RenderD3D.h"
 #include "Engine/Graphics/Direct3D/TextureD3D.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -31,16 +25,21 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-
-#include "Engine/Graphics/Direct3D/RenderD3D.h"
+#include "Engine/LOD.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/SpellFxRenderer.h"
+#include "Engine/Time.h"
 
 #include "GUI/GUIWindow.h"
 
-#include "IO/Mouse.h"
-
-#include "Arcomage/Arcomage.h"
+#include "Io/Mouse.h"
 
 #include "Platform/Api.h"
+#include "Platform/OsWindow.h"
 
 #pragma comment(lib, "GdiPlus.lib")
 
@@ -1078,8 +1077,15 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
     }
 }
 
-Render::Render()
-    : RenderBase() {
+Render::Render(
+    std::shared_ptr<OSWindow> window,
+    DecalBuilder* decal_builder,
+    LightmapBuilder* lightmap_builder,
+    SpellFxRenderer* spellfx,
+    std::shared_ptr<ParticleEngine> particle_engine,
+    Vis* vis,
+    Log* logger
+) : RenderBase(window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;
@@ -1104,8 +1110,8 @@ Render::~Render() {
     Gdiplus::GdiplusShutdown(gdiplusToken);
 }
 
-bool Render::Initialize(OSWindow *window) {
-    if (!RenderBase::Initialize(window)) {
+bool Render::Initialize() {
+    if (!RenderBase::Initialize()) {
         return false;
     }
 
@@ -1741,7 +1747,7 @@ bool Render::LockSurface_DDraw4(IDirectDrawSurface4 *pSurface,
     return true;
 }
 
-void Render::CreateClipper(OSWindow *window) {
+void Render::CreateClipper() {
     ErrD3D(pDirectDraw4->CreateClipper(0, &pDDrawClipper, NULL));
     ErrD3D(pDDrawClipper->SetHWnd(0, (HWND)window->GetWinApiHandle()));
     ErrD3D(pFrontBuffer4->SetClipper(pDDrawClipper));
@@ -6091,26 +6097,21 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
             ++HEXRAYS_LODWORD(v73);
             memcpy(&VertexRenderList[i], &array_507D30[i], 0x30u);
             HEXRAYS_LODWORD(v76) += 48;
-            if (v28 < array_507D30[i].vWorldViewProjY |
-                v28 == array_507D30[i].vWorldViewProjY ||
+            if (v28 <= array_507D30[i].vWorldViewProjY ||
                 v28 >= array_507D30[i + 1].vWorldViewProjY) {
                 if (v28 >= array_507D30[i].vWorldViewProjY ||
                     v28 <= array_507D30[i + 1].vWorldViewProjY) {
                     i++;
                     continue;
                 }
-                v33 = (array_507D30[i + 1].vWorldViewProjX -
-                    array_507D30[i].vWorldViewProjX) *
+                v33 = (array_507D30[i + 1].vWorldViewProjX - array_507D30[i].vWorldViewProjX) *
                     v28 /
-                    (array_507D30[i + 1].vWorldViewProjY -
-                        array_507D30[i].vWorldViewProjY) +
+                    (array_507D30[i + 1].vWorldViewProjY - array_507D30[i].vWorldViewProjY) +
                     array_507D30[i + 1].vWorldViewProjX;
             } else {
-                v33 = (array_507D30[i].vWorldViewProjX -
-                    array_507D30[i + 1].vWorldViewProjX) *
+                v33 = (array_507D30[i].vWorldViewProjX - array_507D30[i + 1].vWorldViewProjX) *
                     v28 /
-                    (array_507D30[i].vWorldViewProjY -
-                        array_507D30[i + 1].vWorldViewProjY) +
+                    (array_507D30[i].vWorldViewProjY - array_507D30[i + 1].vWorldViewProjY) +
                     array_507D30[i].vWorldViewProjX;
             }
             VertexRenderList[i + 1].vWorldViewProjX = v33;

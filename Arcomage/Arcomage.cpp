@@ -1,14 +1,13 @@
+#include "Arcomage/Arcomage.h"
+
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Strings.h"
 #include "Engine/Time.h"
-
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Graphics/ImageLoader.h"
-
-#include "Arcomage/Arcomage.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
@@ -18,6 +17,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
 void SetStartConditions();
 void SetStartGameData();
@@ -572,7 +572,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
     pArcomageGame->field_0 = 0;
     pArcomageGame->stru1.am_input_type = 0;
 
-    window->PeekSingleMessage();
+    window->HandleSingleEvent();
 
     memcpy(v2, &pArcomageGame->stru1, 0xCu);
     return pArcomageGame->stru1.am_input_type != 0;

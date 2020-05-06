@@ -15,7 +15,6 @@ class GUIButton;
 //-------------------------------------------------------------------------
 // Data declarations
 
-extern int game_starting_year;
 extern unsigned int game_viewport_width;
 extern unsigned int game_viewport_height;
 extern int game_viewport_x;

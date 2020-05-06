@@ -1,14 +1,23 @@
 #pragma once
+#include <memory>
 
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
 
 class RenderOpenGL : public RenderBase {
  public:
-    RenderOpenGL();
+    RenderOpenGL(
+        std::shared_ptr<OSWindow> window,
+        DecalBuilder* decal_builder,
+        LightmapBuilder* lightmap_builder,
+        SpellFxRenderer* spellfx,
+        std::shared_ptr<ParticleEngine> particle_engine,
+        Vis* vis,
+        Log* logger
+    );
     virtual ~RenderOpenGL();
 
-    virtual bool Initialize(OSWindow *window);
+    virtual bool Initialize();
 
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey);
     virtual Texture *CreateTexture_Solid(const String &name);

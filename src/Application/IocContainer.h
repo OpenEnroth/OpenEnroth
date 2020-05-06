@@ -1,5 +1,10 @@
 #pragma once
 
+#include <memory>
+
+class OSWindow;
+class IRender;
+
 namespace Application {
 
 class Menu;

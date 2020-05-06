@@ -6,8 +6,6 @@
 #include "Engine/Point.h"
 #include "Engine/Strings.h"
 
-#include "Platform/OSWindow.h"
-
 int OS_GetAppInt(const char *pKey, int uDefValue);
 void OS_SetAppInt(const char *pKey, int val);
 
@@ -17,19 +15,13 @@ void OS_GetAppString(const char *pKeyName, char *pOutString, int uBufLen,
 void OS_SetAppString(const char *pKey, const char *pString);
 
 void OS_MsgBox(const char *msg, const char *title);
-void OS_WaitMessage();
 
 void OS_Sleep(int ms);
 void OS_ShowCursor(bool show);
 
 bool OS_OpenConsole();
 
-Point OS_GetMouseCursorPos();
-
 unsigned int OS_GetTime();
 uint64_t OS_GetPrecisionTime();
-
-bool OS_IfShiftPressed();
-bool OS_IfCtrlPressed();
 
 std::vector<std::string> OS_FindFiles(const std::string &folder, const std::string &mask);
