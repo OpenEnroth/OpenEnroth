@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <dirent.h>
+#include <fnmatch.h>
 #include <sys/time.h>
 
 void OS_MsgBox(const char *msg, const char *title) {
@@ -54,21 +55,17 @@ bool OS_OpenConsole() {
 std::vector<std::string> OS_FindFiles(const std::string& folder, const std::string& mask) {
     std::vector<std::string> result;
 
-    /*std::string path = folder + "\\" + mask;
+    struct dirent *entry;
+    DIR *dp;
+    int flags = FNM_PATHNAME | FNM_PERIOD | FNM_CASEFOLD;
 
-    WIN32_FIND_DATAA ffd = { 0 };
-    HANDLE hFind = FindFirstFileA(path.c_str(), &ffd);
-    if (INVALID_HANDLE_VALUE == hFind) {
-        return result;
+    dp = opendir(folder.c_str());
+    if (dp != NULL) {
+        while ((entry = readdir(dp)))
+            if (fnmatch(mask.c_str(), entry->d_name, flags) == 0)
+                result.push_back(entry->d_name);
+        closedir(dp);
     }
-
-    do {
-        if ((ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-            result.push_back(ffd.cFileName);
-        }
-    } while (FindNextFileA(hFind, &ffd) != 0);
-
-    FindClose(hFind);*/
 
     return result;
 }
