@@ -143,24 +143,11 @@ void KeyboardActionMapping::StoreMappings() {
     }
 }
 
-//----- (0045ABCA) --------------------------------------------------------
-//const unsigned __int8 KeyboardController::TranslateKeyNameToKeyCode(
-//    const char *Str) {
-//    if (strlen(Str) == 1) {
-//        if (Str[0] >= 65 && Str[0] <= 90)
-//            return *Str;
-//        else
-//            return 0xFF;
-//    }
-//
-//    for (size_t i = 0; i < keyNameToCodeTranslationMap.size(); i++) {
-//        if (!strcmp(Str, std::get<0>(keyNameToCodeTranslationMap[i])))
-//            return std::get<1>(keyNameToCodeTranslationMap[i]);
-//    }
-//    return 0xFF;
-//}
-
 KeyToggleType GetToggleType(InputAction action) {
+    if (action == InputAction::StrafeLeft || action == InputAction::StrafeRight) {
+        return KeyToggleType::TOGGLE_Continuously;
+    }
+
     int i = (int)action;
     if (i > 3 && i != 25 && i != 26)
         return KeyToggleType::TOGGLE_OneTimePress;

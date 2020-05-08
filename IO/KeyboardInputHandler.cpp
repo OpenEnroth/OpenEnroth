@@ -49,10 +49,11 @@ void KeyboardInputHandler::GeneratePausedActions() {
     for (auto action : AllInputActions()) {
 
         bool isTriggered = false;
+        GameKey key = actionMapping->GetKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
-            isTriggered = controller->IsKeyPressed(actionMapping->GetKey(action));
+            isTriggered = controller->IsKeyPressed(key);
         else
-            isTriggered = controller->IsKeyHeld(actionMapping->GetKey(action));
+            isTriggered = controller->IsKeyHeld(key);
 
         if (!isTriggered) {
             continue;
@@ -86,13 +87,14 @@ void KeyboardInputHandler::GeneratePausedActions() {
 }
 
 void KeyboardInputHandler::GenerateGameplayActions() {
-    for (auto action : AllInputActions()) {
+    for (InputAction action : AllInputActions()) {
 
         bool isTriggered = false;
+        GameKey key = actionMapping->GetKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
-            isTriggered = controller->IsKeyPressed(actionMapping->GetKey(action));
+            isTriggered = controller->IsKeyPressed(key);
         else
-            isTriggered = controller->IsKeyHeld(actionMapping->GetKey(action));
+            isTriggered = controller->IsKeyHeld(key);
 
         if (!isTriggered) {
             continue;
@@ -363,22 +365,26 @@ void KeyboardInputHandler::StartTextInput(TextInputType type, int max_string_len
     this->window = window;
 
     if (window != nullptr) {
-        window->receives_keyboard_input_2 = WINDOW_INPUT_IN_PROGRESS;
+        window->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_IN_PROGRESS;
+    }
+}
+
+void KeyboardInputHandler::EndTextInput() {
+    if (window != nullptr) {
+        window->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
     }
 }
 
 //----- (00459ED1) --------------------------------------------------------
-void KeyboardInputHandler::SetWindowInputStatus(int a2) {
+void KeyboardInputHandler::SetWindowInputStatus(WindowInputStatus status) {
     inputType = TextInputType::None;
     if (window) {
-        window->receives_keyboard_input_2 = a2;
+        window->keyboard_input_status = status;
     }
 }
 
 //----- (00459F10) --------------------------------------------------------
 bool KeyboardInputHandler::ProcessTextInput(GameKey key, int c) {
-    lastKeyPressed = key;
-
     if (currently_selected_action_for_binding == InputAction::Invalid) {
         if (inputType != TextInputType::Text && inputType != TextInputType::Number) {
             return false;
@@ -389,9 +395,9 @@ bool KeyboardInputHandler::ProcessTextInput(GameKey key, int c) {
                 pPressedKeysBuffer[--uNumKeysPressed] = 0;
             }
         } else if (key == GameKey::Return) {
-            SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
+            SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CONFIRMED);
         } else if (key == GameKey::Escape) {
-            SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+            SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
         } else if (key == GameKey::Char && this->uNumKeysPressed < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer[uNumKeysPressed++] = c;
@@ -401,10 +407,13 @@ bool KeyboardInputHandler::ProcessTextInput(GameKey key, int c) {
             }
         }
     } else {
-        // we're setting key binding in options
-        pPressedKeysBuffer[uNumKeysPressed++] = c;
-        pPressedKeysBuffer[uNumKeysPressed] = 0;
-        SetWindowInputStatus(WINDOW_INPUT_CONFIRMED);
+        if (key != GameKey::Char) {
+            // we're setting key binding in options
+            //pPressedKeysBuffer[uNumKeysPressed++] = c;
+            //pPressedKeysBuffer[uNumKeysPressed] = 0;
+            lastKeyPressed = key;
+            SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CONFIRMED);
+        }
     }
     return true;
 }
