@@ -5,6 +5,7 @@
 #include <io.h>
 #endif
 #include <stdlib.h>
+#include <filesystem>
 #include <vector>
 
 #include "Platform/Api.h"
@@ -570,7 +571,7 @@ void SavegameList::Initialize() {
 
     for (const auto & entry : std::filesystem::directory_iterator(saves_dir)){
         if(entry.path().extension() == ".mm7"){
-            pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename();
+            pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
         }
     }
 }

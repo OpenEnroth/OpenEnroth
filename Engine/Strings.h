@@ -22,12 +22,10 @@ inline char *RemoveQuotes(char *str) {
     return str;
 }
 
-struct ci_less : std::binary_function<std::string, std::string,
-                                      bool> {  // case insensitive comparator for
+struct ci_less {  // case insensitive comparator for
                                                // dictionaries
     // case-independent (ci) compare_less binary function
-    struct nocase_compare
-        : public std::binary_function<unsigned char, unsigned char, bool> {
+    struct nocase_compare {
         bool operator()(const unsigned char &c1,
                         const unsigned char &c2) const {
             return tolower(c1) < tolower(c2);
