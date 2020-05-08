@@ -119,17 +119,15 @@ void Menu::EventLoop() {
                 new OnSaveLoad(241, 302, 106, 42, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot: {
-                if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
-                    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+                if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS)
+                    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
 
                 int v10 = pSaveListPosition + param;
                 if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME ||
                     uLoadGameUI_SelectedSlot != v10) {
                     if (dword_6BE138 == pSaveListPosition + param) {
-                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn,
-                                                            0, 0);
-                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0,
-                                                            0);
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
                     }
                     uLoadGameUI_SelectedSlot = v10;
                     dword_6BE138 = v10;
@@ -148,8 +146,8 @@ void Menu::EventLoop() {
                 }
                 continue;
             case UIMSG_SaveGame:
-                if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS) {
-                    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+                if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
+                    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
                     strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
                 }
                 DoSavegame(uLoadGameUI_SelectedSlot);
@@ -158,9 +156,8 @@ void Menu::EventLoop() {
                 pGUIWindow_CurrentMenu->Release();
                 game_ui_status_bar_event_string_time_left = 0;
                 current_screen_type = CURRENT_SCREEN::SCREEN_SAVEGAME;
-                pGUIWindow_CurrentMenu =
-                    new GUIWindow_Save();  // SaveUI_Load(current_screen_type =
-                                           // SCREEN_SAVEGAME);
+                pGUIWindow_CurrentMenu = new GUIWindow_Save();
+                // SaveUI_Load(current_screen_type = SCREEN_SAVEGAME);
                 continue;
             }
             case UIMSG_Game_OpenOptionsDialog:  // Open
@@ -168,8 +165,7 @@ void Menu::EventLoop() {
                 pMessageQueue_50CBD0->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
-                pGUIWindow_CurrentMenu =
-                    new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
+                pGUIWindow_CurrentMenu = new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
 
                 viewparams->field_48 = 1;
                 current_screen_type = CURRENT_SCREEN::SCREEN_OPTIONS;
@@ -182,8 +178,7 @@ void Menu::EventLoop() {
                 pMessageQueue_50CBD0->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
-                pGUIWindow_CurrentMenu =
-                    new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
+                pGUIWindow_CurrentMenu = new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
 
                 viewparams->field_48 = 1;
                 current_screen_type = CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS;

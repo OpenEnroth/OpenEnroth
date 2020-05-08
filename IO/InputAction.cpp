@@ -38,7 +38,7 @@ std::string GetDisplayName(InputAction action) {
 
 const std::vector<InputAction> AllInputActions() {
     std::vector<InputAction> v;
-    for (int i = 0; i < (int)InputAction::StrafeRight; ++i) {
+    for (int i = 0; i <= (int)InputAction::StrafeRight; ++i) {
         v.push_back((InputAction)i);
     }
     return v;

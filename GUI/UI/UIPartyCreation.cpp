@@ -411,11 +411,10 @@ void GUIWindow_PartyCreation::Update() {
             (pIntervalX + 77) / 640.0f, 50 / 480.0f,
             ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
 
-        if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 !=
-            WINDOW_INPUT_NONE &&
+        if (pGUIWindow_CurrentMenu->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_NONE &&
             pGUIWindow_CurrentMenu->ptr_1C == (void *)i) {
-            switch (pGUIWindow_CurrentMenu->receives_keyboard_input_2) {
-            case WINDOW_INPUT_IN_PROGRESS:  // press name panel
+            switch (pGUIWindow_CurrentMenu->keyboard_input_status) {
+            case WindowInputStatus::WINDOW_INPUT_IN_PROGRESS:  // press name panel
                 v17 = pGUIWindow_CurrentMenu->DrawTextInRect(
                     pFontCreate,
                     159 * (int64_t)pGUIWindow_CurrentMenu->ptr_1C + 18, 124, 0,
@@ -425,8 +424,8 @@ void GUIWindow_PartyCreation::Update() {
                     v17 + 20,
                     124, pFontCreate);
                 break;
-            case WINDOW_INPUT_CONFIRMED:  // press enter
-                pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+            case WindowInputStatus::WINDOW_INPUT_CONFIRMED:  // press enter
+                pGUIWindow_CurrentMenu->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
                 v126 = 0;
                 for (int j = 0;
                     j < strlen(keyboardInputHandler->GetTextInput().c_str());
@@ -441,9 +440,8 @@ void GUIWindow_PartyCreation::Update() {
                     pParty->pPlayers[i].pName, 130, 0);
                 pParty->pPlayers[i].field_1988[27] = 1;
                 break;
-            case WINDOW_INPUT_CANCELLED:  // press escape
-                pGUIWindow_CurrentMenu->receives_keyboard_input_2 =
-                    WINDOW_INPUT_NONE;
+            case WindowInputStatus::WINDOW_INPUT_CANCELLED:  // press escape
+                pGUIWindow_CurrentMenu->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
                 pGUIWindow_CurrentMenu->DrawTextInRect(
                     pFontCreate, pIntervalX, 124, 0,
                     pParty->pPlayers[i].pName, 130, 0);
@@ -868,7 +866,7 @@ bool PartyCreationUI_LoopInternal() {
 
     party_not_creation_flag = false;
 
-    pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+    pGUIWindow_CurrentMenu->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
     SetCurrentMenuID(MENU_CREATEPARTY);
     while (GetCurrentMenuID() == MENU_CREATEPARTY) {
         MessageLoopWithWait();

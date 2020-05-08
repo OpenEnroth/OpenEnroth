@@ -67,7 +67,7 @@ void MapStats::Initialize() {
             strcpy(test_string, tmpString.c_str());
             switch (decode_step) {
                 case 1:
-                    pInfos[i].pName = RemoveQuotes(test_string);  // randoms crashes here
+                    pInfos[i].pName = RemoveQuotes(test_string);  // randoms crashes here  // got 1 too
                     break;
                 case 2:
                     pInfos[i].pFilename = MakeLower(RemoveQuotes(test_string));

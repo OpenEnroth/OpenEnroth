@@ -73,17 +73,5 @@ namespace Io {
     };
 }
 
-/// Some GameKeys are also used in textbox input so we should send them as char input as well
-inline bool IsKeyUsedInTextInput(Io::GameKey key) {
-    return key == Io::GameKey::Return
-        || key == Io::GameKey::Escape
-        || key == Io::GameKey::Backspace;
-}
-
-inline bool IsKeyAlphaNumberic(Io::GameKey key) {
-    return key >= Io::GameKey::Digit1 && key <= Io::GameKey::Digit0
-        || key >= Io::GameKey::A && key <= Io::GameKey::Z;
-}
-
 std::string GetDisplayName(Io::GameKey key);
 bool TryParseDisplayName(const std::string &displayName, Io::GameKey *outKey);

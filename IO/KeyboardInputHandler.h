@@ -7,6 +7,13 @@
 #include "Io/IKeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
 
+enum class WindowInputStatus : __int32 {
+    WINDOW_INPUT_NONE = 0,
+    WINDOW_INPUT_IN_PROGRESS = 1,
+    WINDOW_INPUT_CONFIRMED = 2,
+    WINDOW_INPUT_CANCELLED = 3,
+};
+
 class GUIWindow;
 namespace Io {
     // Handles events from OSWindow through GameWindowHandler/IKeyboardController
@@ -35,7 +42,7 @@ namespace Io {
 
         void GenerateInputActions();
 
-        void SetWindowInputStatus(int a2);
+        void SetWindowInputStatus(WindowInputStatus status);
         inline GameKey LastPressedKey() const {
             return lastKeyPressed;
         }
@@ -43,6 +50,7 @@ namespace Io {
 
         void StartTextInput(TextInputType type, int max_string_len, GUIWindow* pWindow);
         bool ProcessTextInput(GameKey key, int c);
+        void EndTextInput();
 
         std::string GetTextInput() const;
         void SetTextInput(const std::string& text);

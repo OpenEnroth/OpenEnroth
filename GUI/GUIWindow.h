@@ -12,6 +12,7 @@
 
 #include "Io/GameKey.h"
 #include "Io/Mouse.h"
+#include "Io/KeyboardInputHandler.h"
 
 using Io::GameKey;
 using Io::Mouse;
@@ -429,11 +430,6 @@ inline const char* ToString(WindowType windowType) {
 
 struct Texture_MM7;
 
-#define WINDOW_INPUT_NONE 0
-#define WINDOW_INPUT_IN_PROGRESS 1
-#define WINDOW_INPUT_CONFIRMED 2
-#define WINDOW_INPUT_CANCELLED 3
-
 class GUIFont;
 class GUIButton;
 
@@ -490,7 +486,7 @@ class GUIWindow {
     int field_30;
     int field_34;
     int pStartingPosActiveItem;
-    int receives_keyboard_input_2;  // 0  no input   1 currently typing   2 enter pressed   3 escape pressed
+    WindowInputStatus keyboard_input_status;
     bool receives_keyboard_input;
     String sHint;
     std::vector<GUIButton*> vButtons;

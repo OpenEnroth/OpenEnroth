@@ -278,13 +278,13 @@ static void UI_DrawSaveLoad(bool save) {
         save_load_window.DrawTitleText(pFontSmallnum, 0, 0, 0, str, 3);
     }
 
-    if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
-        pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+    if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+        pGUIWindow_CurrentMenu->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
         strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveGame, 0, 0);
     } else {
-        if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED)
-            pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+        if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED)
+            pGUIWindow_CurrentMenu->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
     }
 
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
@@ -314,7 +314,7 @@ static void UI_DrawSaveLoad(bool save) {
             if (slot_Y >= 346) {
                 break;
             }
-            if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS || i != uLoadGameUI_SelectedSlot) {
+            if (pGUIWindow_CurrentMenu->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_IN_PROGRESS || i != uLoadGameUI_SelectedSlot) {
                 pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, pSavegameHeader[i].pName, 185, 0);
             } else {
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, 27, slot_Y, i == uLoadGameUI_SelectedSlot ? Color16(0xFF, 0xFF, 0x64) : 0, keyboardInputHandler->GetTextInput().c_str(), 175, 1) + 27,
@@ -340,8 +340,8 @@ void MainMenuLoad_EventLoop() {
         }
         case UIMSG_SelectLoadSlot: {
             // main menu save/load wnd   clicking on savegame lines
-            if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS)
-                keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+            if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS)
+                keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
             if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME || uLoadGameUI_SelectedSlot != param + pSaveListPosition) {
                 // load clicked line
                 int v26 = param + pSaveListPosition;
