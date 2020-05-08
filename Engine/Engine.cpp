@@ -273,13 +273,13 @@ void Engine::DrawGUI() {
                                                                 // transparent
                                                                 // color
 
-                //if (!(config->renderer_name == "OpenGL")) {  // do not want in opengl mode
+                // if (!(config->renderer_name == "OpenGL")) {  // do not want in opengl mode
                 //    render->FillRectFast(
                 //        pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
                 //        pViewport->uViewportBR_X - pViewport->uViewportTL_X,
                 //        pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
                 //        0x7FF);
-                //}
+                // }
                 viewparams->field_48 = 0;
             }
         }
