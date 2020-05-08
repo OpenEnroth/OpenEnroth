@@ -542,7 +542,7 @@ GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(
 
 void GUIWindow_GenericDialogue::Release() {
     current_screen_type = prev_screen_type;
-    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
 
     GUIWindow::Release();
 }
@@ -580,16 +580,16 @@ void GUIWindow_GenericDialogue::Update() {
                                 BranchlessDlg_window.uFrameWidth, 12),
         0, 0, 0);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
-    if (pGUIWindow2->receives_keyboard_input_2 != WINDOW_INPUT_IN_PROGRESS) {
-        if (pGUIWindow2->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
-            pGUIWindow2->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+    if (pGUIWindow2->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
+        if (pGUIWindow2->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+            pGUIWindow2->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput().c_str());
             sub_4452BB();
             return;
         }
-        if (pGUIWindow2->receives_keyboard_input_2 != WINDOW_INPUT_CANCELLED)
+        if (pGUIWindow2->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_CANCELLED)
             return;
-        pGUIWindow2->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+        pGUIWindow2->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
         GameUI_StatusBar_ClearInputString();
         sub_4452BB();
         return;
@@ -601,7 +601,7 @@ void GUIWindow_GenericDialogue::Update() {
         return;
     }
     if (!keyboardInputHandler->GetTextInput().empty()) {
-        keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+        keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
         GameUI_StatusBar_ClearInputString();
         sub_4452BB();
         return;

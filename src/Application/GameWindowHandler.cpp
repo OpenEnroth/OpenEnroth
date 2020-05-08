@@ -39,8 +39,16 @@ void GameWindowHandler::OnScreenshot() {
 }
 
 bool GameWindowHandler::OnChar(GameKey key, int c) {
-    if (!keyboardInputHandler->ProcessTextInput(key, c) && !viewparams->field_4C && IsKeyAlphaNumberic(key)) {
-        return GUI_HandleHotkey(key);
+    bool textInputHandled = false;
+
+    // backspace, enter, esc (text input), controls binding
+    textInputHandled |= keyboardInputHandler->ProcessTextInput(key, c);
+
+    // regular text input
+    textInputHandled |= keyboardInputHandler->ProcessTextInput(GameKey::Char, c);
+
+    if (!textInputHandled && !viewparams->field_4C) {
+        return GUI_HandleHotkey(key); // try other hotkeys
     }
     return false;
 }

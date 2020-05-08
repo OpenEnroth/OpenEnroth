@@ -279,7 +279,7 @@ void GUIWindow_GameKeyBindings::Update() {
     int v4;  // ecx@7
     int v5;  // eax@8
 
-    if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
+    if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
         InputAction action = currently_selected_action_for_binding;
         GameKey newKey = keyboardInputHandler->LastPressedKey();
         prev_key_map[action] = newKey;
@@ -295,8 +295,8 @@ void GUIWindow_GameKeyBindings::Update() {
             }
         }
 
+        keyboardInputHandler->EndTextInput();
         currently_selected_action_for_binding = InputAction::Invalid;
-        pGUIWindow_CurrentMenu->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
     }
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, game_ui_options_controls[0]);  // draw base texture
 
@@ -330,7 +330,7 @@ void GUIWindow_GameKeyBindings::Update() {
         );
         pGUIWindow_CurrentMenu->DrawText(
             pFontLucida, 350, 142 + i * 21,
-            GameMenuUI_GetKeyBindingColor(action1),
+            GameMenuUI_GetKeyBindingColor(action2),
             GetDisplayName(prev_key_map[action2]), 0, 0, 0
         );
     }
@@ -653,8 +653,7 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         uActiveCharacter = uPlayerID;
         return;
     }
-    if (window_SpeakInHouse->receives_keyboard_input_2 ==
-        WINDOW_INPUT_IN_PROGRESS) {
+    if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
         return;
     }
     viewparams->bRedrawGameUI = true;

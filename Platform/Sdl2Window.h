@@ -35,8 +35,6 @@ class Sdl2Window : public OSWindow {
     void HandleSingleEvent() override;
     void HandleAllEvents() override;
 
-    void *GetWinApiHandle() override;
-
     std::shared_ptr<IKeyboardController> GetKeyboardController() override {
         return std::make_shared<Sdl2KeyboardController>();
     }
@@ -45,7 +43,11 @@ class Sdl2Window : public OSWindow {
         return std::make_shared<Sdl2MouseController>();
     }
 
-    // window-renderer integration, probably should be a separate class
+    // Sdl2Window-specific interface follows
+
+    void* GetWinApiHandle() override;
+
+    // window<->renderer integration, probably should be a separate class
     void OpenGlCreate() override;
     void OpenGlSwapBuffers() override;
 

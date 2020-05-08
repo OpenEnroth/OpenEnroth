@@ -848,7 +848,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
     pMessageQueue_50CBD0->Flush();
     viewparams->bRedrawGameUI = 1;
     uDialogueType = 0;
-    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
     if (uHouseID == HOUSE_600 || uHouseID == HOUSE_601) {
         Application::GameOver_Loop(0);
@@ -2017,8 +2017,7 @@ void TownHallDialog() {
     }
     case HOUSE_DIALOGUE_TOWNHALL_PAY_FINE:
     {
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             townHall_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
                 StringPrintf("%s\n%s", localization->GetString(606),
@@ -2032,7 +2031,7 @@ void TownHallDialog() {
                 185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
             v1 = atoi(keyboardInputHandler->GetTextInput().c_str());
             v2 = v1;
             if (v1 <= 0) {
@@ -2052,10 +2051,8 @@ void TownHallDialog() {
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_81, 0);
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CANCELLED) {
-            window_SpeakInHouse->receives_keyboard_input_2 =
-                WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED) {
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         }
         break;
@@ -2095,7 +2092,7 @@ void BankDialog() {
     }
     case HOUSE_DIALOGUE_BANK_PUT_GOLD:
     {
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
                 StringPrintf("%s\n%s", localization->GetString(60),
@@ -2109,8 +2106,7 @@ void BankDialog() {
                 185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CONFIRMED) {
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
             int entered_sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             unsigned int takes_sum = entered_sum;
             if (!entered_sum) {
@@ -2130,20 +2126,19 @@ void BankDialog() {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_81, 0);
                 }
             }
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED) {
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED) {
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         }
         return;
     }
     case HOUSE_DIALOGUE_BANK_GET_GOLD:
     {
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
                 StringPrintf("%s\n%s", localization->GetString(244),
@@ -2157,8 +2152,8 @@ void BankDialog() {
                 185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             int entered_sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             unsigned int takes_sum = entered_sum;
             if (entered_sum) {
@@ -2173,12 +2168,12 @@ void BankDialog() {
                     pParty->uNumGoldInBank -= takes_sum;
                 }
             }
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED) {
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED) {
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         }
         return;
@@ -3901,7 +3896,7 @@ void InitializeBuildingResidents() {
 
 int HouseDialogPressCloseBtn() {
     pMessageQueue_50CBD0->Flush();
-    keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
     keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
