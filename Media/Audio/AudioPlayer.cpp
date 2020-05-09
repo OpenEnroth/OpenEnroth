@@ -122,7 +122,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         String file_path = StringPrintf("Music%s%d.mp3", OS_GetDirSeparator().c_str(), eTrack);
         file_path = MakeDataPath(file_path.c_str());
         if (!FileExists(file_path.c_str())) {
-            logger->Warning("Music%s%d.mp3 not found (%s)", OS_GetDirSeparator().c_str(), eTrack);
+            logger->Warning("%s not found", file_path.c_str());
             return;
         }
 
