@@ -12,7 +12,7 @@ class OSWindow;
 
 namespace Io {
     class Mouse {
-    public:
+     public:
         inline Mouse() : cursor_img(nullptr), window(nullptr) {
             pCursorBitmap_sysmem = nullptr;
             field_34 = 0;
@@ -100,6 +100,6 @@ namespace Io {
 
         std::shared_ptr<IMouseController> mouseController = nullptr;
     };
-}
+}  // namespace Io
 
 extern std::shared_ptr<Io::Mouse> mouse;

@@ -22,7 +22,13 @@
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
             "inheritEnvironments": [ "msvc_x86" ],
-            "variables": []
+            "variables": [
+                {
+                    "name": "CPPLINT_COMMAND",
+                    "value": "C:/src/world-of-might-and-magic/out/build/x32-Debug/styleguide-gh-pages/cpplint/cpplint.py",
+                    "type": "FILEPATH"
+                }
+            ]
         }
     ]
 }

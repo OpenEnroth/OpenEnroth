@@ -22,7 +22,8 @@ void GUIWindow_Inventory::Update() {
     // a hack to capture end of user input (enter) while avoiding listening to UI message handler
     // redo this in a more clean way
     __debugbreak();
-    //if (userInputHandler->inputType == TextInputType::None) {
+
+    // if (userInputHandler->inputType == TextInputType::None) {
     //    ItemGen ItemGen2;
     //    ItemGen2.Reset();
     //    Release();
@@ -33,7 +34,7 @@ void GUIWindow_Inventory::Update() {
     //    if (v39 > 0 && v39 < 800) {
     //        SpawnActor(v39);
     //    }
-    //}
+    // }
 }
 
 GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, int button, const String &hint) :

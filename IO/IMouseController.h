@@ -3,8 +3,8 @@
 namespace Io {
     // Glue interface between Game and Platform-specific controller
     class IMouseController {
-    public:
+     public:
         virtual int GetCursorX() const = 0;
         virtual int GetCursorY() const = 0;
     };
-}
+}  // namespace Io

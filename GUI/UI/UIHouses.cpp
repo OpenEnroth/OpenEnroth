@@ -3123,7 +3123,7 @@ void TrainingDialog(const char *s) {
                         return;
                     }
 
-                    GameUI_StatusBar_OnEvent(localization->GetString( LSTR_NOT_ENOUGH_GOLD));
+                    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                     PlayHouseSound((unsigned int)window_SpeakInHouse->ptr_1C, (HouseSoundID)4);
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     return;

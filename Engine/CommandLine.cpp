@@ -8,8 +8,7 @@
 
 using Engine_::CommandLine;
 
-bool iequals(const std::string& a, const std::string& b)
-{
+bool iequals(const std::string& a, const std::string& b) {
     return std::equal(a.begin(), a.end(),
         b.begin(), b.end(),
         [](char a, char b) {
@@ -22,7 +21,10 @@ static inline bool starts_with(const std::string& haystack, const std::string& n
     auto i = std::search(
         haystack.begin(), haystack.end(),
         needle.begin(), needle.end(),
-        [](char c1, char c2) {return std::toupper(c1) == std::toupper(c2); });
+        [](char c1, char c2) {
+            return std::toupper(c1) == std::toupper(c2);
+        }
+    );
 
     return i == haystack.begin();
 }
@@ -41,15 +43,29 @@ static inline std::vector<std::string> split(const std::string& text, char sep) 
 }
 
 static inline void ltrim(std::string& s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
-        return !std::isspace(ch);
-    }));
+    s.erase(
+        s.begin(),
+        std::find_if(
+            s.begin(),
+            s.end(),
+            [](int ch) {
+                return !std::isspace(ch);
+            }
+        )
+    );
 }
 
 static inline void rtrim(std::string& s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
+    s.erase(
+        std::find_if(
+            s.rbegin(),
+            s.rend(),
+            [](int ch) {
+                return !std::isspace(ch);
+            }
+        ).base(),
+        s.end()
+    );
 }
 
 static inline void trim(std::string& s) {

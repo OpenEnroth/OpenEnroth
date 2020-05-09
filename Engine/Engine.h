@@ -471,7 +471,6 @@ struct Engine {
     SpellFxRenderer *spell_fx_renedrer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<Mouse> mouse = nullptr;
-    //Keyboard *keyboard = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
     std::shared_ptr<KeyboardInputHandler> keyboardInputHandler;

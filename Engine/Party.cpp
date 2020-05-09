@@ -231,7 +231,7 @@ void ui_play_gold_anim() {
 void ui_play_food_anim() {
     pUIAnim_Food->uAnimTime = 0;
     pUIAnim_Food->uAnimLength = pUIAnim_Food->icon->GetAnimLength();
-    //pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
+    // pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
 }
 
 //----- (00492AD5) --------------------------------------------------------

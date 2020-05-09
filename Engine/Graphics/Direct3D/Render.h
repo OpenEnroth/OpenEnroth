@@ -1,11 +1,11 @@
 #pragma once
-#include <memory>
-
 #include <d3d.h>
 #include <ddraw.h>
 
 #include <GdiPlus.h>
 #undef DrawText
+
+#include <memory>
 
 #include "Engine/Graphics/RenderBase.h"
 #include "Engine/Strings.h"
@@ -18,7 +18,7 @@ class Image;
 class OSWindow;
 
 class Render : public RenderBase {
-public:
+ public:
     Render(
         std::shared_ptr<OSWindow> window,
         DecalBuilder* decal_builder,

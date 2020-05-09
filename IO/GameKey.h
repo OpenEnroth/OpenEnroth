@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 
 namespace Io {
@@ -71,7 +70,7 @@ namespace Io {
 
         None
     };
-}
+}  // namespace Io
 
 std::string GetDisplayName(Io::GameKey key);
 bool TryParseDisplayName(const std::string &displayName, Io::GameKey *outKey);

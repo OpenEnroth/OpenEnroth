@@ -1525,8 +1525,8 @@ void Game::EventLoop() {
                 }
                 case UIMSG_OnFinalWindowClose:
                     uGameState = GAME_STATE_PLAYING;
-                    //strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
-                    //__debugbreak();  // missed break/continue?
+                    // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
+                    // __debugbreak();  // missed break/continue?
                     continue;
                 case UIMSG_DD: {
                     __debugbreak();

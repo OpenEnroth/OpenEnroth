@@ -37,7 +37,7 @@ using Io::KeyToggleType;
 using Io::InputAction;
 
 
-InputAction currently_selected_action_for_binding = InputAction::Invalid; // 506E68
+InputAction currently_selected_action_for_binding = InputAction::Invalid;  // 506E68
 std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 std::map<InputAction, GameKey> prev_key_map;
 
@@ -200,7 +200,7 @@ void Menu::EventLoop() {
 
             case UIMSG_ResetKeyMapping: {
                 int v197 = 1;
-                //keyboardController->SetDefaultMapping();
+                // keyboardController->SetDefaultMapping();
                 for (auto action : AllInputActions()) {
                     GameKey oldKey = keyboardActionMapping->GetKey(action);
                     GameKey newKey = keyboardActionMapping->MapDefaultKey(action);
@@ -508,7 +508,6 @@ void Menu::MenuLoop() {
             current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS ||
             current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS ||
             current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS)) {
-
         MessageLoopWithWait();
 
         GameUI_WritePointedObjectStatusString();
