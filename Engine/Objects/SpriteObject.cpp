@@ -1,5 +1,6 @@
 #include "Engine/Objects/SpriteObject.h"
 
+#include <memory>
 #include <utility>
 
 #include "Engine/Engine.h"

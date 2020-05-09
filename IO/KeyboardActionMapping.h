@@ -33,11 +33,11 @@ namespace Io {
         void StoreMappings();
         void SetDefaultMapping();
 
-    private:
+     private:
         std::map<InputAction, GameKey> actionKeyMap;
         std::map<InputAction, KeyToggleType> keyToggleMap;
     };
-}
+}  // namespace Io
 
 void OnPressSpace();
 Io::KeyToggleType GetToggleType(Io::InputAction action);

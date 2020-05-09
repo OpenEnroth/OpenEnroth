@@ -51,14 +51,9 @@ class Game {
      std::shared_ptr<IRender> render;
      std::shared_ptr<Mouse> mouse = nullptr;
      Log *log = nullptr;
-
-     //std::shared_ptr<KeyboardActionMapping> keyboardActionMapping;
-     //std::shared_ptr<UserInputHandler> userInputHandler;
      DecalBuilder *decal_builder = nullptr;
      Vis *vis = nullptr;
-
      Menu *menu = nullptr;
-
 };
 
 }  // namespace Application

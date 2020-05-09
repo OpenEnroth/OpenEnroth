@@ -1,8 +1,8 @@
 #pragma once
-
 #include <array>
 #include <cstdint>
 #include <list>
+#include <memory>
 #include <queue>
 #include <vector>
 
@@ -346,19 +346,17 @@ enum WindowType {
     WINDOW_MapsBook = 0xCA,
     WINDOW_CalendarBook = 0xCB,
     WINDOW_JournalBook = 0xE0,
-
-    WINDOW_Unknown,              // i wasnt able to find real value for those
-    WINDOW_CharacterCreation,    // new addition, because i wasnt able to find real value for this
+    WINDOW_Unknown,               // i wasnt able to find real value for those
+    WINDOW_CharacterCreation,     // new addition, because i wasnt able to find real value for this
     WINDOW_CharacterCreationBtn,  // new addition, because i wasnt able to find real value for this
-    WINDOW_GenericCancel,        // new addition, because i wasnt able to find real value for this
-    WINDOW_GameUI,               // new addition, because i wasnt able to find real value for this
-    WINDOW_Credits,              // new addition, because i wasnt able to find real value for this
-    WINDOW_Save,                 // new addition, because i wasnt able to find real value for this
-    WINDOW_Load,                 // new addition, because i wasnt able to find real value for this
+    WINDOW_GenericCancel,         // new addition, because i wasnt able to find real value for this
+    WINDOW_GameUI,                // new addition, because i wasnt able to find real value for this
+    WINDOW_Credits,               // new addition, because i wasnt able to find real value for this
+    WINDOW_Save,                  // new addition, because i wasnt able to find real value for this
+    WINDOW_Load,                  // new addition, because i wasnt able to find real value for this
     WINDOW_DebugMenu,
-
     // =======
-    // ToString updated until here
+    // ToString (below) is updated until this point
 };
 
 #define ENUM_TO_STRING_CASE(val) case val: return #val;
@@ -476,9 +474,9 @@ class GUIWindow {
     unsigned int uFrameW;
     WindowType eWindowType;
     union {
-        void *ptr_1C;       // sometimes BuildID_2Events - book open, sometimes Button
+        void *ptr_1C;        // sometimes BuildID_2Events - book open, sometimes Button
         unsigned int par1C;  // in shops and houses - int parameter
-                            // sometimes WindowType
+                             // sometimes WindowType
     };
     int field_24;
     int pNumPresenceButton;
@@ -538,8 +536,8 @@ class OnButtonClick2 : public GUIWindow {
 
 class OnButtonClick3 : public GUIWindow {
  public:
-    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
-        GUIWindow(windowType, x, y, width, height, button, hint) {
+    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String())
+        : GUIWindow(windowType, x, y, width, height, button, hint) {
     }
 
     virtual ~OnButtonClick3() {}

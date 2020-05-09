@@ -1,5 +1,4 @@
 #pragma once
-
 #include <memory>
 
 #include "Engine/CommandLine.h"
@@ -8,7 +7,7 @@
 
 namespace Engine_ {
     class EngineFactory {
-    public:
+     public:
         std::shared_ptr<Engine> CreateEngine(std::shared_ptr<CommandLine> command_line);
     };
 }  // Engine_

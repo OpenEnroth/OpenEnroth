@@ -9,11 +9,12 @@
 
 #include "GUI/GUIWindow.h"
 
-using namespace Io;
+using Io::InputAction;
+using Io::KeyboardInputHandler;
 
 std::shared_ptr<KeyboardInputHandler> keyboardInputHandler = nullptr;
 
-extern InputAction currently_selected_action_for_binding; // 506E68
+extern InputAction currently_selected_action_for_binding;  // 506E68
 
 static bool PartyDoTurnBasedAwareAction(PartyAction action) {
     if (pParty->bTurnBasedModeOn) {
@@ -47,7 +48,6 @@ static bool PartyMove(PartyAction direction) {
 
 void KeyboardInputHandler::GeneratePausedActions() {
     for (auto action : AllInputActions()) {
-
         bool isTriggered = false;
         GameKey key = actionMapping->GetKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
@@ -88,7 +88,6 @@ void KeyboardInputHandler::GeneratePausedActions() {
 
 void KeyboardInputHandler::GenerateGameplayActions() {
     for (InputAction action : AllInputActions()) {
-
         bool isTriggered = false;
         GameKey key = actionMapping->GetKey(action);
         if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
@@ -195,8 +194,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                         pParty->bTurnBasedModeOn = false;
                         pTurnEngine->End(true);
                     }
-                }
-                else {
+                } else {
                     pTurnEngine->Start();
                     pParty->bTurnBasedModeOn = true;
                 }
@@ -338,23 +336,6 @@ void KeyboardInputHandler::GenerateInputActions() {
     }
 }
 
-
-
-////----- (0045B06E) --------------------------------------------------------
-//bool Keyboard::IsShiftHeld() const {
-//    return (GetAsyncKeyState(VK_SHIFT) & 0x8001) != 0;
-//}
-
-////----- (0045B0A9) --------------------------------------------------------
-//bool Keyboard::IsKeyBeingHeld(int vKey) {
-//    return (GetAsyncKeyState(vKey) & 0x8001) != 0;
-//}
-//
-////----- (0045B0CE) --------------------------------------------------------
-//bool Keyboard::WasKeyPressed(int vKey) {
-//    return (GetAsyncKeyState(vKey) & 1) != 0;
-//}
-
 //----- (00459E5A) --------------------------------------------------------
 void KeyboardInputHandler::StartTextInput(TextInputType type, int max_string_len, GUIWindow* window) {
     memset(pPressedKeysBuffer, 0, 0x101u);
@@ -409,8 +390,8 @@ bool KeyboardInputHandler::ProcessTextInput(GameKey key, int c) {
     } else {
         if (key != GameKey::Char) {
             // we're setting key binding in options
-            //pPressedKeysBuffer[uNumKeysPressed++] = c;
-            //pPressedKeysBuffer[uNumKeysPressed] = 0;
+            // pPressedKeysBuffer[uNumKeysPressed++] = c;
+            // pPressedKeysBuffer[uNumKeysPressed] = 0;
             lastKeyPressed = key;
             SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CONFIRMED);
         }
@@ -434,9 +415,10 @@ void KeyboardInputHandler::SetTextInput(const char* text) {
 
 //----- (00459E3F) --------------------------------------------------------
 void KeyboardInputHandler::ResetKeys() {
-    //for (uint i = 0; i < 30; ++i) {
-    //    GetAsyncKeyState(pVirtualKeyCodesMapping[i]);
-    //}
+    for (auto action : AllInputActions()) {
+        // requesting KeyPressed will consume all the events due to how logic is designed in GetAsyncKeyState
+        controller->IsKeyPressed(actionMapping->GetKey(action));
+    }
 }
 
 bool KeyboardInputHandler::IsRunKeyToggled() const {

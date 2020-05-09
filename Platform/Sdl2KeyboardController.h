@@ -7,7 +7,7 @@ using Io::GameKey;
 
 
 class Sdl2KeyboardController : public Io::IKeyboardController {
-public:
+ public:
     bool IsKeyPressed(GameKey key) const override;
     bool IsKeyHeld(GameKey key) const override;
 };

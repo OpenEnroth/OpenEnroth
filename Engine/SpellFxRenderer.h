@@ -94,7 +94,7 @@ struct stru6_stru2 {
 #pragma pack(push, 1)
 struct SpellFxRenderer {
     //----- (004A7155) --------------------------------------------------------
-    inline SpellFxRenderer(std::shared_ptr<ParticleEngine> particle_engine) {
+    explicit inline SpellFxRenderer(std::shared_ptr<ParticleEngine> particle_engine) {
         this->particle_engine = particle_engine;
 
         this->field_204 = 0;

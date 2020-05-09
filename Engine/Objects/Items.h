@@ -1,5 +1,4 @@
 #pragma once
-
 #include <array>
 #include <map>
 #include <string>
@@ -66,7 +65,7 @@ struct ItemGen {  // 0x24
     int uItemID;                // 0
     int uEnchantmentType;       // 4
     int m_enchantmentStrength;  // 8
-    ITEM_ENCHANTMENT special_enchantment; // 0c
+    ITEM_ENCHANTMENT special_enchantment;  // 0c
                               // 25  +5 levels
                               // 16  Drain Hit Points from target.
                               // 35  Increases chance of disarming.
@@ -239,7 +238,7 @@ struct SummonedItem {
 
 
 class EquipemntPair {
-public:
+ public:
     ITEM_TYPE m_ItemId;
     ITEM_EQUIP_TYPE m_EquipSlot;
     EquipemntPair(ITEM_TYPE type, ITEM_EQUIP_TYPE slot) {
