@@ -544,7 +544,7 @@ void Party::Reset() {
     pPlayers[0].RandomizeName();
     strcpy(pPlayers[0].pName, localization->GetString(509));
 
-    pPlayers[1].Reset(PLAYER_CLASS_THEIF);
+    pPlayers[1].Reset(PLAYER_CLASS_THIEF);
     pPlayers[1].uCurrentFace = 3;
     pPlayers[1].uPrevVoiceID = 3;
     pPlayers[1].uVoiceID = 3;

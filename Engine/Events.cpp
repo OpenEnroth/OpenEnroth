@@ -493,7 +493,7 @@ LABEL_47:
                         if (pEventID == 78) {
                             HouseDialogPressCloseBtn();
                             window_SpeakInHouse->Release();
-                            pParty->uFlags &= ~2;
+                            pParty->uFlags &= ~PARTY_FLAGS_1_0002;
                             if (EnterHouse(HOUSE_DARK_GUILD_PIT)) {
                                 pAudioPlayer->StopChannels(-1, -1);
                                 window_SpeakInHouse = new GUIWindow_House(
@@ -588,7 +588,7 @@ LABEL_47:
                             HouseDialogPressCloseBtn();
                             pMediaPlayer->Unload();
                             window_SpeakInHouse->Release();
-                            pParty->uFlags &= ~2;
+                            pParty->uFlags &= ~PARTY_FLAGS_1_0002;
                             activeLevelDecoration = (LevelDecoration *)1;
                             if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
                                 pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);

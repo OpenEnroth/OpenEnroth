@@ -1856,7 +1856,7 @@ void TravelByTransport() {
                 } else {
                     pIndoorCameraD3D->sRotationY = 0;
 
-                    pParty->uFlags |= 2u;
+                    pParty->uFlags |= PARTY_FLAGS_1_0002;
                     pParty->vPosition.x = pTravel->arrival_x;
                     pParty->vPosition.y = pTravel->arrival_y;
                     pParty->vPosition.z = pTravel->arrival_z;
@@ -4412,7 +4412,7 @@ void GUIWindow_House::Release() {
         pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
         pIndoorCameraD3D->sRotationY = pParty->sRotationY;
     }
-    pParty->uFlags |= 2u;
+    pParty->uFlags |= PARTY_FLAGS_1_0002;
 
     GUIWindow::Release();
 }

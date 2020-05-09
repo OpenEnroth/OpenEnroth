@@ -192,7 +192,8 @@ void Engine::Draw() {
             pParty->sRotationX != pParty->sPrevRotationX ||
             pParty->vPosition.z != pParty->vPrevPosition.z ||
             pParty->sEyelevel != pParty->sPrevEyelevel)
-            pParty->uFlags |= 2u;
+            pParty->uFlags |= PARTY_FLAGS_1_0002;
+
         pParty->vPrevPosition.x = pParty->vPosition.x;
         pParty->vPrevPosition.y = pParty->vPosition.y;
         pParty->vPrevPosition.z = pParty->vPosition.z;
@@ -247,7 +248,7 @@ void Engine::Draw() {
     mouse->Activate();
     render->EndScene();
     render->Present();
-    pParty->uFlags &= ~2;
+    pParty->uFlags &= ~PARTY_FLAGS_1_0002;
 }
 
 void Engine::DrawGUI() {
@@ -789,7 +790,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 
     pEventTimer->Pause();
     pMiscTimer->Pause();
-    pParty->uFlags = 2;
+    pParty->uFlags = PARTY_FLAGS_1_0002;
     CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(0, (_0_box_loading_1_fullscreen == 0) + 1);
@@ -1285,8 +1286,7 @@ void MM7Initialization() {
     } else {
         viewparams->field_20 &= 0xFFFFFF00;
     }
-
-    pParty->uFlags |= 2;
+    pParty->uFlags |= PARTY_FLAGS_1_0002;
     viewparams->uSomeY = viewparams->uScreen_topL_Y;
     viewparams->uSomeX = viewparams->uScreen_topL_X;
     viewparams->uSomeZ = viewparams->uScreen_BttmR_X;
@@ -1364,7 +1364,7 @@ void Engine::_461103_load_level_sub() {
 
     GenerateItemsInChest();
     pGameLoadingUI_ProgressBar->Progress();
-    pParty->uFlags |= 2;
+    pParty->uFlags |= PARTY_FLAGS_1_0002;
     pParty->field_7B5_in_arena_quest = 0;
     dword_5C6DF8 = 1;
     pNPCStats->uNewlNPCBufPos = 0;
@@ -1533,7 +1533,7 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename) {
                 sub_44861E_set_texture_outdoor(uFaceCog, pFilename);
             }
 
-            pParty->uFlags |= 2;
+            pParty->uFlags |= PARTY_FLAGS_1_0002;
         }
     }
 }
@@ -1552,7 +1552,7 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
                             .uAttributes &= ~bit;
                 }
             }
-            pParty->uFlags |= 2;
+            pParty->uFlags |= PARTY_FLAGS_1_0002;
         } else {
             for (BSPModel &model : pOutdoor->pBModels) {
                 for (ODMFace &face : model.pFaces) {
@@ -1566,7 +1566,7 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
                 }
             }
         }
-        pParty->uFlags |= 2;
+        pParty->uFlags |= PARTY_FLAGS_1_0002;
     }
 }
 
@@ -1584,7 +1584,7 @@ void SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName) {
             else
                 pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
 
-            pParty->uFlags |= 2;
+            pParty->uFlags |= PARTY_FLAGS_1_0002;
         }
     }
 }
@@ -1680,7 +1680,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // water damage
-    if (pParty->uFlags & 4 &&
+    if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
         viewparams->bRedrawGameUI = true;
@@ -1695,7 +1695,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                     pPlayers[pl]->ReceiveDamage(
                         (int64_t)pPlayers[pl]->GetMaxHealth() * 0.1,
                         DMGT_FIRE);
-                    if (pParty->uFlags & 4) {
+                    if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
                         GameUI_StatusBar_OnEvent_128ms(
                             localization->GetString(660));  // You're drowning!
                     }
@@ -1707,7 +1707,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
     }
 
     // lava damage
-    if (pParty->uFlags & 0x200 &&
+    if (pParty->uFlags & PARTY_FLAGS_1_BURNING &&
         pParty->_6FC_water_lava_timer < pParty->GetPlayingTime().value) {
         viewparams->bRedrawGameUI = true;
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime().value + 128;
@@ -1715,7 +1715,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         for (uint pl = 1; pl <= 4; pl++) {
             pPlayers[pl]->ReceiveDamage(
                 (signed __int64)pPlayers[pl]->GetMaxHealth() * 0.1, DMGT_FIRE);
-            if (pParty->uFlags & 0x200) {
+            if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
                 GameUI_StatusBar_OnEvent_128ms(
                     localization->GetString(661));  // On fire!
             }

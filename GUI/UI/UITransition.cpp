@@ -117,7 +117,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                          .pName.c_str());  // Enter %s   Войти в ^Pv[%s]
 
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
-                pParty->uFlags & 0x30)
+                pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation =
@@ -130,7 +130,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                       // )
                       //  PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
-                pParty->uFlags & 0x30)
+                pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation =
@@ -146,7 +146,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                               // pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId
                               // ) PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
-                pParty->uFlags & 0x30)
+                pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation =
@@ -156,7 +156,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             // if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId
             // ) PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
-                pParty->uFlags & 0x30)
+                pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation =

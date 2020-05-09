@@ -2798,7 +2798,7 @@ void Actor::UpdateActorAI() {
             else if (pParty->sRotationX < -128)
                 pParty->sRotationX = -128;
 
-            pParty->uFlags |= 2u;
+            pParty->uFlags |= PARTY_FLAGS_1_0002;
             pParty->armageddon_timer -= pMiscTimer->uTimeElapsed;
             v4 = pParty->armageddonDamage + 50;
             if (pParty->armageddon_timer <= 0) {
@@ -4594,9 +4594,9 @@ int Actor::MakeActorAIList_BLV() {
             pActors[i].ResetHostile();  // ~0x01000000
             if (pActors[i].ActorEnemy() || pActors[i].GetActorsRelation(0)) {
                 pActors[i].uAttributes |= ACTOR_HOSTILE;
-                if (!(pParty->uFlags & 0x10) && (double)distance < 307.2)
+                if (!(pParty->GetRedAlert()) && (double)distance < 307.2)
                     pParty->SetRedAlert();
-                if (!(pParty->uFlags & 0x20) && distance < 5120)
+                if (!(pParty->GetYellowAlert()) && distance < 5120)
                     pParty->SetYellowAlert();
             }
             ai_near_actors_distances[v45] = distance;

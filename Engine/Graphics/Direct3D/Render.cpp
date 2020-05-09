@@ -1385,7 +1385,7 @@ bool Render::InitializeFullscreen() {
     pBeforePresentFunction = Present_NoColorKey;
 
     bWindowMode = 0;
-    pParty->uFlags |= 2;
+    pParty->uFlags |= PARTY_FLAGS_1_0002;
     pViewport->SetFOV(_6BE3A0_fov);
 
     return true;

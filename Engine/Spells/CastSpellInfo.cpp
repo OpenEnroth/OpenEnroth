@@ -1522,7 +1522,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     break;
                 for (uint pl_id = 0; pl_id < 4; pl_id++)
                     pOtherOverlayList->_4418B1(2040, pl_id + 100, 0, 65536);
-                pParty->uFlags |= 0x100;
+                pParty->uFlags |= PARTY_FLAGS_1_LANDING;
                 pParty->uFallSpeed = 1000;
                 spell_sound_flag = true;
                 break;
@@ -1550,8 +1550,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     default:
                         assert(false);
                 }
-                if (pParty->uFlags &
-                    (PARTY_FLAGS_1_ALERT_RED | PARTY_FLAGS_1_ALERT_YELLOW)) {
+                if (pParty->GetRedOrYellowAlert()) {
                     GameUI_StatusBar_OnEvent(localization->GetString(
                         638));  // There are hostile creatures nearby!
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);

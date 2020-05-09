@@ -234,7 +234,7 @@ MAP_TYPE MapStats::GetMapInfo(const String &Str2) {
     }
 
     Error("Map not found!");
-    return (MAP_TYPE)-1;
+    return (MAP_TYPE)-1; // @TODO: This should be MAP_INVALID!, as it's if'ed later.
 }
 
 int MapInfo::SpawnRandomTreasure(SpawnPointMM7 *a2) {

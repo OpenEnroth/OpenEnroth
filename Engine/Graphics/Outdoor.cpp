@@ -160,7 +160,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 //----- (00441CFF) --------------------------------------------------------
 void OutdoorLocation::Draw() {
     bool redrawWorld = true;
-    if (!(pParty->uFlags & 2) && !engine->config->ForceRedraw())
+    if (!(pParty->uFlags & PARTY_FLAGS_1_0002) && !engine->config->ForceRedraw())
         redrawWorld = false;
     pOutdoor->ExecDraw(redrawWorld);
 
@@ -245,7 +245,8 @@ int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
 
 //----- (00488F5C) --------------------------------------------------------
 bool OutdoorLocation::Initialize(const String &filename, int days_played,
-                                 int respawn_interval_days, int *thisa) {
+                                 int respawn_interval_days, 
+                                 bool *outdoors_was_respawned) {
     decal_builder->Reset(0);
 
     if (!filename.empty()) {
@@ -255,7 +256,7 @@ bool OutdoorLocation::Initialize(const String &filename, int days_played,
         // pSprites_LOD->DeleteSomeOtherSprites();
         // pSpriteFrameTable->ResetLoadedFlags();
 
-        if (!this->Load(filename, days_played, respawn_interval_days, thisa)) {
+        if (!this->Load(filename, days_played, respawn_interval_days, outdoors_was_respawned)) {
             logger->Warning("Couldn't Load Map!");
             CreateDebugLocation();
         }
@@ -460,7 +461,7 @@ int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, int y, int z) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
     ODM_GetFloorLevel(x, y, z, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
-    if (pParty->uFlags & 8 || bmodel_standing_on_pid || is_on_water)  // на bmodel, и или на воде
+    if (pParty->uFlags & PARTY_FLAGS_1_FALLING || bmodel_standing_on_pid || is_on_water)  // на bmodel, и или на воде
         return 2;
     int v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x),
                      WorldPosToGridCellZ(pParty->vPosition.y) - 1);
@@ -980,7 +981,8 @@ void OutdoorLocation::Release() {
 }
 
 bool OutdoorLocation::Load(const String &filename, int days_played,
-                           int respawn_interval_days, int *thisa) {
+                           int respawn_interval_days, 
+                           bool *outdoors_was_respawned) {
     if (engine->IsUnderwater()) {
         pPaletteManager->pPalette_tintColor[0] = 0x10;
         pPaletteManager->pPalette_tintColor[1] = 0xC2;
@@ -990,9 +992,9 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         pPaletteManager->pPalette_tintColor[0] = 0;
         pPaletteManager->pPalette_tintColor[1] = 0;
         pPaletteManager->pPalette_tintColor[2] = 0;
-        if (pPaletteManager->pPalette_mistColor[0] != 0x80 ||
-            pPaletteManager->pPalette_mistColor[1] != 0x80 ||
-            pPaletteManager->pPalette_mistColor[2] != 0x80) {
+        if (pPaletteManager->pPalette_mistColor[0] != 128 ||
+            pPaletteManager->pPalette_mistColor[1] != 128 ||
+            pPaletteManager->pPalette_mistColor[2] != 128) {
             pPaletteManager->SetMistColor(128, 128, 128);
             pPaletteManager->RecalculateAll();
         }
@@ -1055,11 +1057,9 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     memcpy(pTerrain.pAttributemap, pSrc, 0x4000);  // карта аттрибутов
     pSrc += 0x4000;
 
-    // v43 = (char *)v43 + 16384;
-    // v108 = (int)ptr_D4;
     free(pCmap);
     pCmap = malloc(0x8000);
-    pTerrain.FillDMap(0, 0, 128, 128);  //
+    pTerrain.FillDMap(0, 0, 128, 128);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
@@ -1088,15 +1088,12 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     if (uNumLevelDecorations > 3000) logger->Warning("Can't load file! Too many decorations");
 
     assert(sizeof(LevelDecoration) == 32);
-    // pFilename = (char *)(32 * uNumLevelDecorations);
     memcpy(pLevelDecorations.data(), pSrc + 4,
            uNumLevelDecorations * sizeof(LevelDecoration));
     pSrc += 4 + sizeof(LevelDecoration) * uNumLevelDecorations;
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    // v151 = 0;
-    // uSourceLen = (char *)uSourceLen + (int)pFilename;
     for (uint i = 0; i < uNumLevelDecorations; ++i) {
         char name[256];
         memcpy(name, pSrc, sizeof(LevelDecoration));
@@ -1109,8 +1106,6 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     memcpy(&numFaceIDListElems, pSrc, 4);
 
-    // uSourceLen = (char *)uSourceLen + 4;
-    // v108 = (int)pFaceIDLIST;
     free(pFaceIDLIST);
     pFaceIDLIST = nullptr;
 
@@ -1120,29 +1115,22 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     memcpy(pFaceIDLIST, pSrc + 4, faceIDListSize);
     pSrc += 4 + faceIDListSize;
 
-    // uSourceLen = (char *)uSourceLen + (int)pFilename;
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     free(pOMAP);
-    // v69 = malloc(0, 0x10000u, "OMAP");
     pOMAP = (unsigned int *)malloc(0x10000);
-    // v108 = 65536;
-    // pOMAP = (unsigned int *)v69;
     memcpy(pOMAP, pSrc, 65536);
     pSrc += 65536;
 
-    // uSourceLen = (char *)uSourceLen + 65536;
     pGameLoadingUI_ProgressBar->Progress();
 
     memcpy(&uNumSpawnPoints, pSrc, 4);
-    // uSourceLen = (char *)uSourceLen + 4;
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     assert(sizeof(SpawnPointMM7) == 24);
     uint spawnPointsSize = uNumSpawnPoints * sizeof(SpawnPointMM7);
     pSpawnPoints = (SpawnPointMM7 *)malloc(spawnPointsSize);
-    // v72 = uNumSpawnPoints;
-    // pSpawnPoints = v71;
+    
     memcpy(pSpawnPoints, pSrc + 4, spawnPointsSize);
     pSrc += 4 + spawnPointsSize;
 
@@ -1167,48 +1155,47 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         actualNumFacesInLevel += model.pFaces.size();
     }
 
-    bool Str2 = false;
-    if (ddm.uNumFacesInBModels) {
-        if (ddm.uNumBModels) {
-            if (ddm.uNumDecorations) {
-                if (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
-                    ddm.uNumBModels != pBModels.size() ||
-                    ddm.uNumDecorations != uNumLevelDecorations)
-                    Str2 = true;
-            }
-        }
-    }
+    //  The ddm.uNumX values are only written in SaveLoad::Save, and
+    //  only used for this check. Is it for forwards compatibility?
+    bool object_count_in_level_changed_since_save = 
+        ddm.uNumFacesInBModels &&
+        ddm.uNumBModels &&
+        ddm.uNumDecorations &&
+        (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
+         ddm.uNumBModels != pBModels.size() ||
+         ddm.uNumDecorations != uNumLevelDecorations);
 
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000) {
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
         respawn_interval_days = 0x1BAF800;
-    }
+
+    bool should_respawn = 
+        days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
+        !ddm.uLastRepawnDay;
 
     char Src[968];
     char Dst[968];
-    int v108;
 
-    if (Str2 || days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
-        !ddm.uLastRepawnDay) {
-        if (Str2) {
+    if (object_count_in_level_changed_since_save || should_respawn) {
+        if (object_count_in_level_changed_since_save) {
             memset(Dst, 0, 968);
             memset(Src, 0, 968);
         }
-        if (days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
-            !ddm.uLastRepawnDay) {
+        if (should_respawn) {
             memcpy(Dst, pSrc, 968);
             memcpy(Src, pSrc + 968, 968);
         }
         free(pSrcMem);
 
         ddm.uLastRepawnDay = days_played;
-        if (Str2 == 0) ++ddm.uNumRespawns;
-        v108 = 0;
-        *thisa = 1;
+        if (!object_count_in_level_changed_since_save) 
+            ++ddm.uNumRespawns;
+
+        *outdoors_was_respawned = true;
         pSrcMem = pGames_LOD->LoadCompressed(ddm_filename);
         pSrc = (uint8_t*)pSrcMem;
         pSrc += sizeof(DDM_DLV_Header);
     } else {
-        *thisa = 0;
+        *outdoors_was_respawned = 0;
     }
     memcpy(uFullyRevealedCellOnMap, pSrc, 968);
     memcpy(uPartiallyRevealedCellOnMap, pSrc + 968, 968);
@@ -1216,7 +1203,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    if (*thisa) {
+    if (*outdoors_was_respawned) {
         memcpy(uFullyRevealedCellOnMap, Dst, 968);
         memcpy(uPartiallyRevealedCellOnMap, Src, 968);
     }
@@ -1254,9 +1241,6 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     assert(sizeof(Actor_MM7) == 836);
 
-    // pFilename = (char *)(836 * uNumActors);
-    // memcpy(pActors.data(), pSrc + 4, uNumActors * sizeof(Actor));
-
     Actor_MM7 *tmp_actor = (Actor_MM7 *)malloc(sizeof(Actor_MM7));
 
     for (int i = 0; i < uNumActors; ++i) {
@@ -1266,7 +1250,6 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     free(tmp_actor);
 
     pSrc += 4 + uNumActors * sizeof(Actor_MM7);
-    // v92 = (char *)v91 + (int)pFilename;
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     memcpy(&uNumSpriteObjects, pSrc, 4);
@@ -1275,13 +1258,11 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    // pFilename = (char *)(112 * uNumSpriteObjects);
     memcpy(pSpriteObjects.data(), pSrc + 4,
            uNumSpriteObjects * sizeof(SpriteObject));
 
     pSrc += 4 + uNumSpriteObjects * sizeof(SpriteObject);
 
-    // v94 = (char *)v93 + (int)pFilename;
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     pSrc = (uint8_t*)ChestsDeserialize((char*)pSrc);
@@ -1318,11 +1299,12 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         strcpy(loc_time.sky_texture_name, "sky19");
     } else if (loc_time.last_visit) {
         if (loc_time.last_visit.GetDays() % 28 != pParty->uCurrentDayOfMonth) {
+            int sky_to_use;
             if (rand() % 100 >= 20)
-                v108 = dword_4EC268[rand() % dword_4EC2A8];
+                sky_to_use = dword_4EC268[rand() % dword_4EC2A8];
             else
-                v108 = dword_4EC28C[rand() % dword_4EC2AC];
-            sprintf(loc_time.sky_texture_name, "plansky%d", v108);
+                sky_to_use = dword_4EC28C[rand() % dword_4EC2AC];
+            sprintf(loc_time.sky_texture_name, "plansky%d", sky_to_use);
         }
     } else {
         strcpy(loc_time.sky_texture_name, "plansky3");
@@ -2716,9 +2698,11 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_Jump:  // прыжок
                 if ((!partyAtHighSlope || bmodel_standing_on_pid) &&
-                    !hovering && pParty->field_24 && !(pParty->uFlags & 4) &&
-                    !(pParty->uFlags & 0x200)) {
-                    // v126 = pParty->field_24 << 6;
+                    !hovering && 
+                    pParty->field_24 && 
+                    !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) && 
+                    !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
+
                     hovering = true;
                     fall_speed += pParty->field_24 * 96;
                 }
@@ -3799,7 +3783,7 @@ void UpdateActors_ODM() {
 
 //----- (0047A384) --------------------------------------------------------
 void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
-    MapInfo *v4;            // edi@4
+    MapInfo *map_info;            // edi@4
     // size_t v7;              // eax@19
 
     // thisa->AllocSoftwareDrawBuffers();
@@ -3809,40 +3793,38 @@ void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus();
     if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;
-    int v2 = pMapStats->GetMapInfo(pCurrentMapName);
+    int map_id = pMapStats->GetMapInfo(pCurrentMapName);
     unsigned int respawn_interval = 0;
-    if (v2) {
-        v4 = &pMapStats->pInfos[v2];
-        respawn_interval = v4->uRespawnIntervalDays;
-    } else {
-        v4 = (MapInfo*)1;
+    if (map_id) {
+        map_info = &pMapStats->pInfos[map_id];
+        respawn_interval = map_info->uRespawnIntervalDays;
     }
     day_attrib &= ~DAY_ATTRIB_FOG;
-    dword_6BE13C_uCurrentlyLoadedLocationID = v2;
-    int v;
-    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1, respawn_interval, &v);
-    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)) {
+    dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
+    bool outdoor_was_respawned;
+    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1, 
+        respawn_interval, &outdoor_was_respawned);
+    
+    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_2000;
-    // v5 = 0;
-    if (!v2) v = 0;
-    if (v == 1) {
-        // v13 = 0;
+    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
+
+    if (outdoor_was_respawned && map_id) {
         for (uint i = 0; i < pOutdoor->uNumSpawnPoints; ++i) {
             SpawnPointMM7 *spawn = pOutdoor->pSpawnPoints + i;
 
             if (spawn->IsMonsterSpawn())
-                SpawnEncounter(v4, spawn, 0, 0, 0);
+                SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
-                v4->SpawnRandomTreasure(spawn);
+                map_info->SpawnRandomTreasure(spawn);
         }
         RespawnGlobalDecorations();
     }
     pOutdoor->PrepareDecorations();
     pOutdoor->ArrangeSpriteObjects();
-    pOutdoor->InitalizeActors(v2);
+    pOutdoor->InitalizeActors(map_id);
     pOutdoor->MessWithLUN();
     pOutdoor->level_filename = pFilename;
     pWeather->Initialize();
