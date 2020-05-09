@@ -18,7 +18,8 @@
 
 #include "Platform/Api.h"
 
-using namespace Io;
+using Io::InputAction;
+using Io::KeyToggleType;
 
 
 std::shared_ptr<KeyboardActionMapping> keyboardActionMapping = nullptr;

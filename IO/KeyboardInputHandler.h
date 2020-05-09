@@ -19,7 +19,7 @@ namespace Io {
     // Handles events from OSWindow through GameWindowHandler/IKeyboardController
     //      and maps it to game actions/events using KeyboardActionMapping
     class KeyboardInputHandler {
-    public:
+     public:
         KeyboardInputHandler(std::shared_ptr<IKeyboardController> controller, std::shared_ptr<KeyboardActionMapping> actionMapping) {
             this->controller = controller;
             this->actionMapping = actionMapping;
@@ -56,7 +56,7 @@ namespace Io {
         void SetTextInput(const std::string& text);
         void SetTextInput(const char* text);
 
-    private:
+     private:
         void GeneratePausedActions();
         void GenerateGameplayActions();
 
@@ -72,7 +72,7 @@ namespace Io {
         TextInputType inputType;
         GUIWindow *window;
     };
-}
+}  // namespace Io
 
 
 bool UI_OnKeyDown(Io::GameKey key);

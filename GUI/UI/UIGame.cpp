@@ -121,7 +121,7 @@ Image *game_ui_playerbuff_hammerhands = nullptr;
 Image *game_ui_playerbuff_preservation = nullptr;
 Image *game_ui_playerbuff_bless = nullptr;
 
-extern InputAction currently_selected_action_for_binding; // 506E68
+extern InputAction currently_selected_action_for_binding;  // 506E68
 extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 extern std::map<InputAction, GameKey> prev_key_map;
 

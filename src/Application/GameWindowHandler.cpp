@@ -48,7 +48,7 @@ bool GameWindowHandler::OnChar(GameKey key, int c) {
     textInputHandled |= keyboardInputHandler->ProcessTextInput(GameKey::Char, c);
 
     if (!textInputHandled && !viewparams->field_4C) {
-        return GUI_HandleHotkey(key); // try other hotkeys
+        return GUI_HandleHotkey(key);  // try other hotkeys
     }
     return false;
 }

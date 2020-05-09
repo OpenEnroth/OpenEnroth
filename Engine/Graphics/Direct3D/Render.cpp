@@ -1,9 +1,9 @@
 #include "Engine/Graphics/Direct3D/Render.h"
 
-#include <algorithm>
-
 #include <d3d.h>
 #include <ddraw.h>
+
+#include <algorithm>
 
 #include "Arcomage/Arcomage.h"
 

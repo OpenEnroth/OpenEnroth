@@ -1,8 +1,8 @@
 #pragma once
-#include <memory>
-
 #include <d3d.h>
 #include <ddraw.h>
+
+#include <memory>
 
 #include "Engine/VectorTypes.h"
 

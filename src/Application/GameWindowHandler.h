@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 #include "Io/GameKey.h"
 #include "Io/Mouse.h"

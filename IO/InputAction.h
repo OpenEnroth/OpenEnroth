@@ -5,7 +5,7 @@
 
 namespace Io {
     enum class InputAction : int {
-        MoveForward, // = 0
+        MoveForward,  // = 0
         MoveBackwards,
         TurnLeft,
         TurnRight,
@@ -38,7 +38,7 @@ namespace Io {
 
         Invalid
     };
-}
+}  // namespace Io
 
 const std::vector<Io::InputAction> AllInputActions();
 std::string ToString(Io::InputAction action);

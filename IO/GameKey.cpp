@@ -1,13 +1,13 @@
 #include <map>
+#include <utility>
 
 #include "Io/GameKey.h"
 
 
-using namespace Io;
+using Io::GameKey;
 
 
-static std::map<GameKey, const char *> displayNames =
-{
+static std::map<GameKey, const char *> displayNames = {
     { GameKey::F1,              "F1" },
     { GameKey::F2,              "F2" },
     { GameKey::F3,              "F3" },
