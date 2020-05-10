@@ -3,7 +3,9 @@
 
 #include "Io/GameKey.h"
 
+#ifndef _WINDOWS
 #define _stricmp strcasecmp
+#endif
 
 using Io::GameKey;
 
