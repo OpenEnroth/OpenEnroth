@@ -3043,7 +3043,6 @@ void OnPaperdollLeftClick() {
                            (pPlayers[uActiveCharacter]->GetActualSkillMastery(
                                 PLAYER_SKILL_SWORD) >
                             2)) {  // sword in left hand at master
-
                     if ((signed int)mouse->uMouseX >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {

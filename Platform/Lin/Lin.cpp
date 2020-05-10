@@ -1,15 +1,17 @@
-#include "Engine/Point.h"
-
-#include <string>
-#include <cstring>
-#include <vector>
+#include "Platform/Lin/Lin.h"
 
 #include <dirent.h>
 #include <fnmatch.h>
 #include <sys/time.h>
 
+#include <string>
+#include <cstring>
+#include <vector>
+
+#include "Engine/Point.h"
+
 void OS_MsgBox(const char *msg, const char *title) {
-    //MessageBoxA(nullptr, msg, title, 0);
+    // MessageBoxA(nullptr, msg, title, 0);
 }
 
 unsigned int OS_GetTime() {
@@ -18,34 +20,12 @@ unsigned int OS_GetTime() {
     return unsigned((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-bool OS_IfShiftPressed() {
-    //return GetAsyncKeyState(VK_SHIFT);
-    return false;
-}
-
-bool OS_IfCtrlPressed() {
-    //return GetAsyncKeyState(VK_CONTROL);
-    return false;
-}
-
 void OS_ShowCursor(bool show) {
-    //ShowCursor(show ? 1 : 0);
-}
-
-void OS_WaitMessage() {
-    //WaitMessage();
+    // ShowCursor(show ? 1 : 0);
 }
 
 void OS_Sleep(int ms) {
-    //Sleep(ms);
-}
-
-Point OS_GetMouseCursorPos() {
-    //POINT pt;
-    //GetCursorPos(&pt);
-
-    //SDL or XQueryPointer
-    return Point(0, 0);
+    // Sleep(ms);
 }
 
 bool OS_OpenConsole() {
@@ -90,30 +70,29 @@ int OS_GetAppInt(const char* pKey, int uDefValue) {
     return *(int *)Data;
 }
 
-void OS_SetAppString(const char* pKey, const char* pString) {}
+void OS_SetAppString(const char* pKey, const char* pString) {
+}
 
 void OS_GetAppString(const char* pKeyName, char* pOutString, int uBufLen,
-    const char* pDefaultValue) {}
+    const char* pDefaultValue) {
+}
 
-void OS_SetAppInt(const char* pKey, int val) {}
+void OS_SetAppInt(const char* pKey, int val) {
+}
 
 
 // r must have strlen(path) + 2 bytes
-static int casepath(char const* path, char* r)
-{
+static int casepath(char const* path, char* r) {
     size_t l = strlen(path);
     char *p = (char*)alloca(l + 1);
     strcpy(p, path);
     size_t rl = 0;
 
     DIR *d;
-    if (p[0] == '/')
-    {
+    if (p[0] == '/') {
         d = opendir("/");
         p = p + 1;
-    }
-    else
-    {
+    } else {
         d = opendir(".");
         r[0] = '.';
         r[1] = 0;
@@ -122,15 +101,12 @@ static int casepath(char const* path, char* r)
 
     int last = 0;
     char* c = strsep(&p, "/");
-    while (c)
-    {
-        if (!d)
-        {
+    while (c) {
+        if (!d) {
             return 0;
         }
 
-        if (last)
-        {
+        if (last) {
             closedir(d);
             return 0;
         }
@@ -140,10 +116,8 @@ static int casepath(char const* path, char* r)
         r[rl] = 0;
 
         struct dirent *e = readdir(d);
-        while (e)
-        {
-            if (strcasecmp(c, e->d_name) == 0)
-            {
+        while (e) {
+            if (strcasecmp(c, e->d_name) == 0) {
                 strcpy(r + rl, e->d_name);
                 rl += strlen(e->d_name);
 
@@ -156,8 +130,7 @@ static int casepath(char const* path, char* r)
             e = readdir(d);
         }
 
-        if (!e)
-        {
+        if (!e) {
             strcpy(r + rl, c);
             rl += strlen(c);
             last = 1;
@@ -170,14 +143,11 @@ static int casepath(char const* path, char* r)
     return 1;
 }
 
-FILE *fcaseopen(char const *path, char const *mode)
-{
+FILE *fcaseopen(char const *path, char const *mode) {
     FILE *f = fopen(path, mode);
-    if (!f)
-    {
+    if (!f) {
         char *r = (char*)alloca(strlen(path) + 2);
-        if (casepath(path, r))
-        {
+        if (casepath(path, r)) {
             f = fopen(r, mode);
         }
     }
