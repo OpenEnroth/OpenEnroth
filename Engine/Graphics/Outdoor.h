@@ -95,7 +95,7 @@ struct OutdoorLocation {
     TileDesc *DoGetTile(int uX, int uZ);
     int GetHeightOnTerrain(int sX, int sZ);
     bool Initialize(const String &filename, int days_played,
-                    int respawn_interval_days, 
+                    int respawn_interval_days,
                     bool * outdoors_was_respawned);
     // bool Release2();
     bool GetTravelDestination(signed int sPartyX, signed int sPartyZ,

@@ -90,7 +90,7 @@ enum PlayerSpeech {
     SPEECH_44 = 44,
     SPEECH_45 = 45,
     SPEECH_46 = 46,
-    SPEECH_47 = 47, // Let's get out of here! (Plays when leaving an area when the party alert is red or yellow)
+    SPEECH_47 = 47,  // Let's get out of here! (Plays when leaving an area when the party alert is red or yellow)
     SPEECH_48 = 48,
     SPEECH_49 = 49,
     SPEECH_50 = 50,

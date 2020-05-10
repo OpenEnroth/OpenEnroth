@@ -245,7 +245,7 @@ int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
 
 //----- (00488F5C) --------------------------------------------------------
 bool OutdoorLocation::Initialize(const String &filename, int days_played,
-                                 int respawn_interval_days, 
+                                 int respawn_interval_days,
                                  bool *outdoors_was_respawned) {
     decal_builder->Reset(0);
 
@@ -981,7 +981,7 @@ void OutdoorLocation::Release() {
 }
 
 bool OutdoorLocation::Load(const String &filename, int days_played,
-                           int respawn_interval_days, 
+                           int respawn_interval_days,
                            bool *outdoors_was_respawned) {
     if (engine->IsUnderwater()) {
         pPaletteManager->pPalette_tintColor[0] = 0x10;
@@ -1130,7 +1130,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     assert(sizeof(SpawnPointMM7) == 24);
     uint spawnPointsSize = uNumSpawnPoints * sizeof(SpawnPointMM7);
     pSpawnPoints = (SpawnPointMM7 *)malloc(spawnPointsSize);
-    
+
     memcpy(pSpawnPoints, pSrc + 4, spawnPointsSize);
     pSrc += 4 + spawnPointsSize;
 
@@ -1157,7 +1157,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     //  The ddm.uNumX values are only written in SaveLoad::Save, and
     //  only used for this check. Is it for forwards compatibility?
-    bool object_count_in_level_changed_since_save = 
+    bool object_count_in_level_changed_since_save =
         ddm.uNumFacesInBModels &&
         ddm.uNumBModels &&
         ddm.uNumDecorations &&
@@ -1168,7 +1168,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
     if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
         respawn_interval_days = 0x1BAF800;
 
-    bool should_respawn = 
+    bool should_respawn =
         days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
         !ddm.uLastRepawnDay;
 
@@ -1187,7 +1187,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         free(pSrcMem);
 
         ddm.uLastRepawnDay = days_played;
-        if (!object_count_in_level_changed_since_save) 
+        if (!object_count_in_level_changed_since_save)
             ++ddm.uNumRespawns;
 
         *outdoors_was_respawned = true;
@@ -2698,11 +2698,10 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_Jump:  // прыжок
                 if ((!partyAtHighSlope || bmodel_standing_on_pid) &&
-                    !hovering && 
-                    pParty->field_24 && 
-                    !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) && 
+                    !hovering &&
+                    pParty->field_24 &&
+                    !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) &&
                     !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
-
                     hovering = true;
                     fall_speed += pParty->field_24 * 96;
                 }
@@ -3802,9 +3801,9 @@ void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
     day_attrib &= ~DAY_ATTRIB_FOG;
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
     bool outdoor_was_respawned;
-    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1, 
+    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().GetDays() + 1,
         respawn_interval, &outdoor_was_respawned);
-    
+
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
