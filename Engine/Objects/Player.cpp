@@ -6929,30 +6929,49 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
-                             Vec3_int_* pPos, signed int a4) {
+void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos, signed int targetchar) {
+    // target player? if any
+
     Player* playerPtr;            // ebx@3
     Actor* actorPtr;              // esi@3
     int spellId;                  // eax@38
     signed int recvdMagicDmg;     // eax@139
     int v72[4];                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
-    unsigned int uActorID;        // [sp+4Ch] [bp-8h]@1
 
-    uActorID = PID_ID(uObjID);
+
+    unsigned int uActorID = PID_ID(uObjID);
     int pidtype = PID_TYPE(uObjID);
 
-    if (pidtype != 2) {
+    /*    OBJECT_Any = 0x0,
+    OBJECT_BLVDoor = 0x1,
+    OBJECT_Item = 0x2,
+    OBJECT_Actor = 0x3,
+    OBJECT_Player = 0x4,
+    OBJECT_Decoration = 0x5,
+    OBJECT_BModel = 0x6,*/
+
+    if (pidtype != 2) {  // not an item
+        // hit by monster
         if (pidtype != 3) __debugbreak();
 
-        if (a4 == -1) __debugbreak();
+        if (targetchar == -1) __debugbreak();
 
-        playerPtr = &pParty->pPlayers[a4];
+        // test
+        if (/*uActorType == OBJECT_Player &&*/ !_A750D8_player_speech_timer) {
+            _A750D8_player_speech_timer = 256;
+            PlayerSpeechID = SPEECH_18;
+            uSpeakingCharacter = 1;
+        }
+        // test
+
+        playerPtr = &pParty->pPlayers[targetchar];
         actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->sHealth;
         if (PID_TYPE(uObjID) != 3 || !actorPtr->ActorHitOrMiss(playerPtr))
             return;
 
+        // GM unarmed 1% chance to evade attacks per skill point
         if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
             rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
             auto str = localization->FormatString(637, playerPtr->pName);  // evades damage
@@ -6961,6 +6980,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
             return;
         }
 
+        // play hit sound
         ItemGen* equippedArmor = playerPtr->GetArmorItem();
         SoundID soundToPlay;
         if (!equippedArmor || equippedArmor->IsBroken() ||
@@ -7002,7 +7022,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     Error("Unexpected sound value");
             }
         }
-        pAudioPlayer->PlaySound(soundToPlay, PID(OBJECT_Player, a4 + 80), 0, -1, 0, 0);
+        pAudioPlayer->PlaySound(soundToPlay, PID(OBJECT_Player, targetchar + 80), 0, -1, 0, 0);
+
+        // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
         if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
             __int16 spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
@@ -7027,91 +7049,94 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                 damageType = pSpellStats->pInfos[spellId].uSchool;
                 break;
             case 4:
-                damageType =
-                    actorPtr->pMonsterInfo.field_3C_some_special_attack;
+                damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
                 break;
             default:
             case 5:
-                damageType = 4;  // yes, the original just assigned the value 4
+                damageType = 4;  // DMGT_PHISYCAL
                 break;
         }
-        // if (!engine->config->NoDamage()) {
-            dmgToReceive =
-                playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
-            if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
-                int actorState = actorPtr->uAIState;
-                if (actorState != Dying && actorState != Dead) {
-                    int reflectedDamage = actorPtr->CalcMagicalDamageToActor(
-                        (DAMAGE_TYPE)damageType, dmgToReceive);
-                    actorPtr->sCurrentHP -= reflectedDamage;
-                    if (reflectedDamage >= 0) {
-                        if (actorPtr->sCurrentHP >= 1) {
-                            Actor::AI_Stun(
-                                uActorID, PID(OBJECT_Player, a4),
-                                0);  // todo extract this branch to a function
-                                     // once Actor::functions are changed to
-                                     // nonstatic actor functions
-                            Actor::AggroSurroundingPeasants(uActorID, 1);
-                        } else {
-                            if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
-                                !engine->config->NoBloodsplats()) {
-                                int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
-                                        ? 10 * actorPtr->uActorRadius
-                                        : actorPtr->uActorRadius;
-                                decal_builder->AddBloodsplat(
-                                    actorPtr->vPosition.x,
-                                    actorPtr->vPosition.y,
-                                    actorPtr->vPosition.z, 1.0, 0.0, 0.0,
-                                    (float)splatRadius, 0, 0);
-                            }
-                            Actor::Die(uActorID);
-                            Actor::ApplyFineForKillingPeasant(uActorID);
-                            Actor::AggroSurroundingPeasants(uActorID, 1);
-                            if (actorPtr->pMonsterInfo.uExp)
-                                pParty->GivePartyExp(
-                                    pMonsterStats
-                                        ->pInfos[actorPtr->pMonsterInfo.uID]
-                                        .uExp);
-                            int speechToPlay = SPEECH_51;
-                            if (rand() % 100 < 20)
-                                speechToPlay =
-                                    actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
-                            playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
+
+        // calc damage
+        dmgToReceive = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
+
+        // pain reflection back on attacker
+        if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
+            int actorState = actorPtr->uAIState;
+            if (actorState != Dying && actorState != Dead) {
+                int reflectedDamage = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, dmgToReceive);
+                actorPtr->sCurrentHP -= reflectedDamage;
+                if (reflectedDamage >= 0) {
+                    if (actorPtr->sCurrentHP >= 1) {
+                        Actor::AI_Stun(uActorID, PID(OBJECT_Player, targetchar), 0);  // todo extract this branch to a function
+                                    // once Actor::functions are changed to
+                                    // nonstatic actor functions
+                        Actor::AggroSurroundingPeasants(uActorID, 1);
+                    } else {
+                        // actor has died from retaliation
+                        // add bloodsplat
+                        if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 && !engine->config->NoBloodsplats()) {
+                            int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
+                                    ? 10 * actorPtr->uActorRadius
+                                    : actorPtr->uActorRadius;
+                            decal_builder->AddBloodsplat(
+                                actorPtr->vPosition.x,
+                                actorPtr->vPosition.y,
+                                actorPtr->vPosition.z, 1.0, 0.0, 0.0,
+                                (float)splatRadius, 0, 0);
                         }
+                        Actor::Die(uActorID);
+                        Actor::ApplyFineForKillingPeasant(uActorID);
+                        Actor::AggroSurroundingPeasants(uActorID, 1);
+                        if (actorPtr->pMonsterInfo.uExp)
+                            pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
+
+                        // kill speech
+                        int speechToPlay = SPEECH_51;
+                        if (rand() % 100 < 20)
+                            speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
+                        playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
                     }
                 }
             }
-            if (!engine->config->NoDamage() &&
-                actorPtr->pMonsterInfo.uSpecialAttackType &&
-                rand() % 100 < actorPtr->pMonsterInfo.uLevel *
-                                   actorPtr->pMonsterInfo.uSpecialAttackLevel) {
-                playerPtr->ReceiveSpecialAttackEffect(
-                    actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
-            }
-        //}
+        }
+
+        // special attack trigger
+        if (!engine->config->NoDamage() && actorPtr->pMonsterInfo.uSpecialAttackType &&
+            rand() % 100 < actorPtr->pMonsterInfo.uLevel *
+                                actorPtr->pMonsterInfo.uSpecialAttackLevel) {
+            playerPtr->ReceiveSpecialAttackEffect(actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
+        }
+
+        // add recovery after being hit
         if (!pParty->bTurnBasedModeOn) {
             int actEndurance = playerPtr->GetActualEndurance();
-            int recoveryTime =
-                (int)((20 - playerPtr->GetParameterBonus(actEndurance)) *
+            int recoveryTime = (int)((20 - playerPtr->GetParameterBonus(actEndurance)) *
                       flt_6BE3A4_debug_recmod1 * 2.133333333333333);
             playerPtr->SetRecoveryTime(recoveryTime);
         }
+
+        // badly hurt speech
         int yellThreshold = playerPtr->GetMaxHealth() / 4;
-        if (yellThreshold < playerPtr->sHealth &&
-            yellThreshold >= healthBeforeRecvdDamage &&
+        if (yellThreshold > playerPtr->sHealth &&
+            yellThreshold <= healthBeforeRecvdDamage &&
             playerPtr->sHealth > 0) {
             playerPtr->PlaySound(SPEECH_48, 0);
         }
+
         viewparams->bRedrawGameUI = 1;
         return;
-    } else {
-        SpriteObject* v37 = &pSpriteObjects[uActorID];
-        int uActorType = PID_TYPE(v37->spell_caster_pid);
-        int uActorID = PID_ID(v37->spell_caster_pid);
+    } else {  // is an item
+        SpriteObject* spritefrom = &pSpriteObjects[uActorID];
+        int uActorType = PID_TYPE(spritefrom->spell_caster_pid);
+        int uActorID = PID_ID(spritefrom->spell_caster_pid);
+
         if (uActorType == 2) {  // item
             Player* playerPtr;  // eax@81
-            if (a4 != -1) {
-                playerPtr = &pParty->pPlayers[a4];
+
+            // select char target or pick random
+            if (targetchar != -1) {
+                playerPtr = &pParty->pPlayers[targetchar];
             } else {
                 int activePlayerCounter = 0;
                 for (int i = 1; i <= 4; i++) {
@@ -7121,40 +7146,36 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     }
                 }
                 if (activePlayerCounter) {
-                    playerPtr =
-                        &pParty
-                             ->pPlayers[v72[rand() % activePlayerCounter] -
-                                        1];  // &stru_AA1058[3].pSounds[6972 *
-                                             // *(&v72 + rand() % v74) + 40552];
+                    playerPtr = &pParty->pPlayers[v72[rand() % activePlayerCounter] - 1];
                 }
             }
-            int v68;
-            int v69;
-            if (uActorType != OBJECT_Player ||
-                v37->spell_id != SPELL_BOW_ARROW) {
+
+            int damage;
+            int damagetype;
+            if (uActorType != OBJECT_Player ||spritefrom->spell_id != SPELL_BOW_ARROW) {
                 int playerMaxHp = playerPtr->GetMaxHealth();
-                v68 = _43AFE3_calc_spell_damage(v37->spell_id, v37->spell_level,
-                                                v37->spell_skill, playerMaxHp);
-                v69 = pSpellStats->pInfos[v37->spell_id].uSchool;
+                damage = _43AFE3_calc_spell_damage(spritefrom->spell_id, spritefrom->spell_level,
+                                                spritefrom->spell_skill, playerMaxHp);
+                damagetype = pSpellStats->pInfos[spritefrom->spell_id].uSchool;
             } else {
-                v68 = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
-                v69 = 0;
+                damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
+                damagetype = 0;
             }
-            playerPtr->ReceiveDamage(v68, (DAMAGE_TYPE)v69);
+            playerPtr->ReceiveDamage(damage, (DAMAGE_TYPE)damagetype);
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
                 PlayerSpeechID = SPEECH_44;
                 uSpeakingCharacter = uActorID + 1;
             }
             return;
-        } else if (uActorType == 3) {  // actor
+        } else if (uActorType == 3) {  // missile fired by actor
             Actor* actorPtr = &pActors[uActorID];
-            if (a4 == -1) a4 = stru_50C198.which_player_to_attack(actorPtr);
-            Player* playerPtr = &pParty->pPlayers[a4];
+            if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
+            Player* playerPtr = &pParty->pPlayers[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
-            unsigned __int16 spriteType = v37->uType;
+            unsigned __int16 spriteType = spritefrom->uType;
 
-            if (v37->uType == 545) {  // arrows
+            if (spritefrom->uType == 545) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
                 logger->Info("Arrpow");
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
@@ -7169,9 +7190,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                        spriteType == 505 || spriteType == 530 ||  // all missile types?
                        spriteType == 525 || spriteType == 520 ||
                        spriteType == 535 || spriteType == 540) {
+                // reduce missle damage with skills / armour
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
-                if (playerPtr->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active())
-                    dmgToReceive >>= 1;
+                if (playerPtr->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
                 if (playerPtr->HasEnchantedItemEquipped(36)) dmgToReceive >>= 1;
                 if (playerPtr->HasEnchantedItemEquipped(69)) dmgToReceive >>= 1;
                 if (playerPtr->HasItemEquipped(EQUIP_ARMOUR) &&
@@ -7197,11 +7218,12 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                         dmgToReceive >>= 1;
                 }
             }
+
             if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
-                int spellPower =
-                    actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
+                int spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
                 if (spellPower > 0) dmgToReceive /= spellPower;
             }
+
             int damageType;
             switch (dmgSource) {
                 case 0:
@@ -7219,68 +7241,62 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
                     damageType = pSpellStats->pInfos[spellId].uSchool;
                     break;
                 case 4:
-                    damageType =
-                        actorPtr->pMonsterInfo.field_3C_some_special_attack;
+                    damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
                     break;
                 case 5:
                     damageType = 4;
                     break;
             }
-            // if (!engine->config->NoDamage()) {
-                int reflectedDmg = playerPtr->ReceiveDamage(
-                    dmgToReceive, (DAMAGE_TYPE)damageType);
-                if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
-                        .Active()) {
-                    unsigned __int16 actorState = actorPtr->uAIState;
-                    if (actorState != Dying && actorState != Dead) {
-                        recvdMagicDmg = actorPtr->CalcMagicalDamageToActor(
-                            (DAMAGE_TYPE)damageType, reflectedDmg);
-                        actorPtr->sCurrentHP -= recvdMagicDmg;
-                        if (recvdMagicDmg >= 0) {
-                            if (actorPtr->sCurrentHP >= 1) {
-                                Actor::AI_Stun(uActorID, PID(OBJECT_Player, a4),
-                                               0);
-                                Actor::AggroSurroundingPeasants(uActorID, 1);
-                            } else {
-                                if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
-                                    !engine->config->NoBloodsplats()) {
-                                    int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
-                                            ? 10 * actorPtr->uActorRadius
-                                            : actorPtr->uActorRadius;
-                                    decal_builder->AddBloodsplat(
-                                        actorPtr->vPosition.x,
-                                        actorPtr->vPosition.y,
-                                        actorPtr->vPosition.z, 1.0, 0.0, 0.0,
-                                        (float)splatRadius, 0, 0);
-                                }
-                                Actor::Die(uActorID);
-                                Actor::ApplyFineForKillingPeasant(uActorID);
-                                Actor::AggroSurroundingPeasants(uActorID, 1);
-                                if (actorPtr->pMonsterInfo.uExp)
-                                    pParty->GivePartyExp(
-                                        pMonsterStats
-                                            ->pInfos[actorPtr->pMonsterInfo.uID]
-                                            .uExp);
-                                int speechToPlay = SPEECH_51;
-                                if (rand() % 100 < 20)
-                                    speechToPlay =
-                                        actorPtr->pMonsterInfo.uHP >= 100 ? 2
-                                                                          : 1;
-                                playerPtr->PlaySound((PlayerSpeech)speechToPlay,
-                                                     0);
+
+            int reflectedDmg = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
+            if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
+                unsigned __int16 actorState = actorPtr->uAIState;
+                if (actorState != Dying && actorState != Dead) {
+                    recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
+                    actorPtr->sCurrentHP -= recvdMagicDmg;
+
+                    if (recvdMagicDmg >= 0) {
+                        if (actorPtr->sCurrentHP >= 1) {
+                            Actor::AI_Stun(uActorID, PID(OBJECT_Player, targetchar), 0);
+                            Actor::AggroSurroundingPeasants(uActorID, 1);
+                        } else {
+                            // actor killed by retaliation
+                            if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
+                                !engine->config->NoBloodsplats()) {
+                                int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
+                                        ? 10 * actorPtr->uActorRadius
+                                        : actorPtr->uActorRadius;
+                                decal_builder->AddBloodsplat(
+                                    actorPtr->vPosition.x,
+                                    actorPtr->vPosition.y,
+                                    actorPtr->vPosition.z, 1.0, 0.0, 0.0,
+                                    (float)splatRadius, 0, 0);
                             }
+
+                            Actor::Die(uActorID);
+                            Actor::ApplyFineForKillingPeasant(uActorID);
+                            Actor::AggroSurroundingPeasants(uActorID, 1);
+                            if (actorPtr->pMonsterInfo.uExp)
+                                pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
+
+                            int speechToPlay = SPEECH_51;
+                            if (rand() % 100 < 20)
+                                speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
+                            playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
                         }
                     }
                 }
-            //}
-            if (!dmgSource &&
-                !engine->config->NoDamage() &&
+            }
+
+            // special attack trigger
+            if (!dmgSource && !engine->config->NoDamage() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
                 rand() % 100 < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
-                playerPtr->ReceiveSpecialAttackEffect(
-                    actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
+                playerPtr->ReceiveSpecialAttackEffect(actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
             }
+
+            // set recovery after hit
             if (!pParty->bTurnBasedModeOn) {
                 int actEnd = playerPtr->GetActualEndurance();
                 int recTime =
@@ -7290,6 +7306,28 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource,
             }
             return;
         } else {
+            // party hits self
+            Player* playerPtr = &pParty->pPlayers[targetchar];
+            int damage;
+            int damagetype;
+            if (uActorType != OBJECT_Player ||
+                spritefrom->spell_id != SPELL_BOW_ARROW) {
+                int playerMaxHp = playerPtr->GetMaxHealth();
+                damage = _43AFE3_calc_spell_damage(spritefrom->spell_id, spritefrom->spell_level,
+                    spritefrom->spell_skill, playerMaxHp);
+                damagetype = pSpellStats->pInfos[spritefrom->spell_id].uSchool;
+            } else {
+                damage = pParty->pPlayers[uActorID].CalculateRangedDamageTo(0);
+                damagetype = 0;
+            }
+
+            playerPtr->ReceiveDamage(damage, (DAMAGE_TYPE)damagetype);
+            if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
+                _A750D8_player_speech_timer = 256;
+                PlayerSpeechID = SPEECH_44;
+                uSpeakingCharacter = uActorID + 1;
+            }
+
             return;
         }
     }
@@ -7823,7 +7861,9 @@ void Player::_42ECB5_PlayerAttacksActor() {
 //----- (0042FA66) --------------------------------------------------------
 void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
                                          __int16 a5, signed int actchar) {
-    // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
+        // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
+
+    // a5 is range?
 
     SpriteObject a1a;
     a1a.uType = SPRITE_OBJECT_EXPLODE;

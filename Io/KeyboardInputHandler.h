@@ -64,8 +64,7 @@ namespace Io {
         std::shared_ptr<KeyboardActionMapping> actionMapping;
 
         GameKey lastKeyPressed;
-        int field_4;
-        int field_8;
+        int keydelaytimer;
         int max_input_string_len;
         char pPressedKeysBuffer[257];
         uint8_t uNumKeysPressed;

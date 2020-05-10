@@ -5332,33 +5332,13 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
 }
 
 //----- (00438F8F) --------------------------------------------------------
-void area_of_effect__damage_evaluate() {  // not damaging party correctly
-    int attacker_PID_type;         // ecx@3
-    signed int attacker_PID_id;             // eax@3
-    unsigned int target_id;    // edi@6
-    int target_type;           // eax@6
-    int v10;                   // edi@8
-    Vec3_int_ attacker_coord;  // ST04_12@9
-    //  int v12; // ST0C_4@10
-    int v15;  // edx@15
-    int v19;  // edi@15
-    int v23;  // edx@18
-    int v24;  // eax@18
-    //  int v30; // eax@29
-    int v31;            // edx@29
-    int v32;            // eax@29
-    int v33;            // ST24_4@29
-    SpriteObject *sprite_obj_ptr = nullptr;  // [sp+0h] [bp-28h]@0
-    int attack_index;    // [sp+10h] [bp-18h]@1
-    int v44;            // [sp+14h] [bp-14h]@15
-    // Vec3_int_ *pVelocity; // [sp+1Ch] [bp-Ch]@2
-    signed int a1;  // [sp+20h] [bp-8h]@8
-    int v48;        // [sp+24h] [bp-4h]@8
+void area_of_effect__damage_evaluate() {
+    Vec3_int_ attacker_coord;
+    SpriteObject *sprite_obj_ptr = nullptr;
 
-    for (attack_index = 0; attack_index < AttackerInfo.count; ++attack_index) {
-        attacker_PID_type = PID_TYPE(AttackerInfo.pIDs[attack_index]);
-        // pid types - enum ObjectType
-        attacker_PID_id = PID_ID(AttackerInfo.pIDs[attack_index]);
+    for (int attack_index = 0; attack_index < AttackerInfo.count; ++attack_index) {
+        int attacker_PID_type = PID_TYPE(AttackerInfo.pIDs[attack_index]);
+        int attacker_PID_id = PID_ID(AttackerInfo.pIDs[attack_index]);
 
         // attacker is an item (sprite)
         if (attacker_PID_type == OBJECT_Item) {
@@ -5367,166 +5347,135 @@ void area_of_effect__damage_evaluate() {  // not damaging party correctly
             attacker_PID_id = PID_ID(pSpriteObjects[attacker_PID_id].spell_caster_pid);
         }
 
-        if (AttackerInfo.field_3EC[attack_index] & 1) {
-            target_id = PID_ID(ai_near_actors_targets_pid[attacker_PID_id]);
-            target_type = PID_TYPE(ai_near_actors_targets_pid[attacker_PID_id]) - 3;
+        if (AttackerInfo.attack_type[attack_index] & 1) {  // melee attack
+            unsigned int target_id = PID_ID(ai_near_actors_targets_pid[attacker_PID_id]);
+            int target_type = PID_TYPE(ai_near_actors_targets_pid[attacker_PID_id]) - 3;
+
             if (target_type) {
-                if (target_type == 1) {  // party damage from monsters(повреждения
-                                         // группе от монстров)
-                    v10 = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
-                    a1 = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
-                    v48 = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
-                    if (a1 * a1 + v10 * v10 +
-                            ((signed int)(pParty->vPosition.z +
-                                          pParty->uPartyHeight) >>
-                             (1 - AttackerInfo.pZs[attack_index])) *
-                                ((signed int)(pParty->vPosition.z +
-                                              pParty->uPartyHeight) >>
-                                 (1 - AttackerInfo.pZs[attack_index])) <
-                        (unsigned int)((AttackerInfo.field_324[attack_index] +
-                                        32) *
-                                       (AttackerInfo.field_324[attack_index] +
-                                        32))) {
+                if (target_type == 1) {  // party damage from monsters(повреждения группе от монстров)
+                    int xdiff = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
+                    int xsq = xdiff * xdiff;
+                    int ydiff = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
+                    int ysq = ydiff * ydiff;
+                    int zdiff = ((pParty->uPartyHeight / 2) + pParty->vPosition.z) - AttackerInfo.pZs[attack_index];
+                    int zsq = zdiff * zdiff;
+                    unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + 32) * (AttackerInfo.attack_range[attack_index] + 32);
+
+                    // check range
+                    if (xsq + ysq + zsq < rangesq) {
                         attacker_coord.x = AttackerInfo.pXs[attack_index];
                         attacker_coord.y = AttackerInfo.pYs[attack_index];
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
-                        if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y,
-                                       pParty->vPosition.z + pParty->sEyelevel,
-                                       attacker_coord))
+
+                        // check line of sight
+                        if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z + pParty->sEyelevel, attacker_coord))
                             DamagePlayerFromMonster(
                                 AttackerInfo.pIDs[attack_index],
-                                AttackerInfo.field_450[attack_index],
+                                AttackerInfo.attack_special[attack_index],
                                 &AttackerInfo.vec_4B4[attack_index],
-                                stru_50C198.which_player_to_attack(
-                                    &pActors[attacker_PID_id]));
+                                stru_50C198.which_player_to_attack(&pActors[attacker_PID_id]));
                     }
                 }
             } else {  // Actor damage from monsters(повреждение местного жителя)
-                if (pActors[target_id]
-                        .pActorBuffs[ACTOR_BUFF_PARALYZED]
-                        .Active() ||
-                    pActors[target_id].CanAct()) {
-                    v15 = pActors[target_id].vPosition.y -
-                          AttackerInfo.pYs[attack_index];
-                    a1 = pActors[target_id].vPosition.x -
-                         AttackerInfo.pXs[attack_index];
-                    v44 = pActors[target_id].vPosition.z;
-                    v19 = AttackerInfo.field_324[attack_index] +
-                          pActors[target_id].uActorRadius;
-                    v48 = v15;
-                    if (a1 * a1 + v15 * v15 +
-                            (pActors[target_id].vPosition.z +
-                             (pActors[target_id].uActorHeight >> 1) -
-                             AttackerInfo.pZs[attack_index]) *
-                                (pActors[target_id].vPosition.z +
-                                 (pActors[target_id].uActorHeight >> 1) -
-                                 AttackerInfo.pZs[attack_index]) <
-                        (unsigned int)(v19 * v19)) {
+                if (pActors[target_id].pActorBuffs[ACTOR_BUFF_PARALYZED].Active() || pActors[target_id].CanAct()) {
+                    int xdiff = pActors[target_id].vPosition.x - AttackerInfo.pXs[attack_index];
+                    int xsq = xdiff * xdiff;
+                    int ydiff = pActors[target_id].vPosition.y - AttackerInfo.pYs[attack_index];
+                    int ysq = ydiff * ydiff;
+                    int zdiff = ((pActors[target_id].uActorHeight / 2) + pActors[target_id].vPosition.z) - AttackerInfo.pZs[attack_index];
+                    int zsq = zdiff * zdiff;
+                    unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + pActors[target_id].uActorRadius) * (AttackerInfo.attack_range[attack_index] + pActors[target_id].uActorRadius);
+                    int zvec = pActors[target_id].vPosition.z;
+
+                    // check range
+                    if (xsq + ysq + zsq < rangesq) {
                         attacker_coord.x = AttackerInfo.pXs[attack_index];
                         attacker_coord.y = AttackerInfo.pYs[attack_index];
                         attacker_coord.z = AttackerInfo.pZs[attack_index];
-                        if (Check_LineOfSight(pActors[target_id].vPosition.x,
-                                       pActors[target_id].vPosition.y,
-                                       pActors[target_id].vPosition.z + 50,
-                                       attacker_coord)) {
-                            Vec3_int_::Normalize(&a1, &v48, &v44);
-                            AttackerInfo.vec_4B4[attack_index].x = a1;
-                            AttackerInfo.vec_4B4[attack_index].y = v48;
-                            AttackerInfo.vec_4B4[attack_index].z = v44;
+
+                        // check line of sight
+                        if (Check_LineOfSight(pActors[target_id].vPosition.x, pActors[target_id].vPosition.y, pActors[target_id].vPosition.z + 50, attacker_coord)) {
+                            Vec3_int_::Normalize(&xdiff, &ydiff, &zvec);
+                            AttackerInfo.vec_4B4[attack_index].x = xdiff;
+                            AttackerInfo.vec_4B4[attack_index].y = ydiff;
+                            AttackerInfo.vec_4B4[attack_index].z = zvec;
                             Actor::ActorDamageFromMonster(
                                 AttackerInfo.pIDs[attack_index], target_id,
                                 &AttackerInfo.vec_4B4[attack_index],
-                                AttackerInfo.field_450[attack_index]);
+                                AttackerInfo.attack_special[attack_index]);
                         }
                     }
                 }
             }
         } else {  // damage from spells(повреждения от заклов(метеоритный дождь))
-            v23 = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
-            v24 = ((signed int)pParty->uPartyHeight / 2) -
-                  AttackerInfo.pZs[attack_index];
-            a1 = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
-            v48 = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
-            if (a1 * a1 + v23 * v23 +
-                    (pParty->vPosition.z + v24) * (pParty->vPosition.z + v24) <
-                (unsigned int)((AttackerInfo.field_324[attack_index] + 32) *
-                               (AttackerInfo.field_324[attack_index] +
-                                32))) {  // party damage (повреждения группе)
+            int xdiff = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
+            int xsq = xdiff * xdiff;
+            int ydiff = pParty->vPosition.y - AttackerInfo.pYs[attack_index];
+            int ysq = ydiff * ydiff;
+            int zdiff = ((pParty->uPartyHeight / 2) + pParty->vPosition.z) - AttackerInfo.pZs[attack_index];
+            int zsq = zdiff * zdiff;
+            unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + 32) * (AttackerInfo.attack_range[attack_index] + 32);
+
+            // check spell in range of party
+            if (xsq + ysq + zsq < rangesq) {  // party damage (повреждения группе)
                 attacker_coord.x = AttackerInfo.pXs[attack_index];
                 attacker_coord.y = AttackerInfo.pYs[attack_index];
                 attacker_coord.z = AttackerInfo.pZs[attack_index];
+
+                // check line of sight to party
                 if (Check_LineOfSight(pParty->vPosition.x, pParty->vPosition.y,
                                pParty->vPosition.z + pParty->sEyelevel,
                                attacker_coord)) {
                     for (uint i = 0; i < 4; ++i) {
-                        if (!pParty->pPlayers[i]
-                                 .conditions_times[Condition_Dead] &&
-                            !pParty->pPlayers[i]
-                                 .conditions_times[Condition_Pertified] &&
-                            !pParty->pPlayers[i]
-                                 .conditions_times[Condition_Eradicated]) {
+                        if (!pParty->pPlayers[i].conditions_times[Condition_Dead] &&
+                            !pParty->pPlayers[i].conditions_times[Condition_Pertified] &&
+                            !pParty->pPlayers[i].conditions_times[Condition_Eradicated]) {
                             DamagePlayerFromMonster(
                                 AttackerInfo.pIDs[attack_index],
-                                AttackerInfo.field_450[attack_index],
+                                AttackerInfo.attack_special[attack_index],
                                 &AttackerInfo.vec_4B4[attack_index], i);
                         }
                     }
                 }
             }
 
-            if (uNumActors >
-                0) {  // actors damage(повреждения другим участникам)
-                for (int actorID = 0;
-                     (signed int)actorID < (signed int)uNumActors; ++actorID) {
+            if (uNumActors > 0) {  // actors damage(повреждения другим участникам)
+                for (int actorID = 0; actorID < uNumActors; ++actorID) {
                     if (pActors[actorID].CanAct()) {
-                        // v30 = pActors[actorID].vPosition.y -
-                        // AttackerInfo.pYs[attack_index];
-                        a1 = pActors[actorID].vPosition.x -
-                             AttackerInfo.pXs[attack_index];
-                        v31 = pActors[actorID].vPosition.z;
-                        v48 = pActors[actorID].vPosition.y -
-                              AttackerInfo.pYs[attack_index];
-                        v44 = pActors[actorID].vPosition.z;
-                        v32 = (pActors[actorID].uActorHeight / 2) -
-                              AttackerInfo.pZs[attack_index];
-                        v33 = pActors[actorID].uActorRadius +
-                              AttackerInfo.field_324[attack_index];
-                        if (a1 * a1 + v48 * v48 + (v31 + v32) * (v31 + v32) <
-                            (unsigned int)(v33 * v33)) {
+                        int xdiff = pActors[actorID].vPosition.x - AttackerInfo.pXs[attack_index];
+                        int xsq = xdiff * xdiff;
+                        int ydiff = pActors[actorID].vPosition.y - AttackerInfo.pYs[attack_index];
+                        int ysq = ydiff * ydiff;
+                        int zdiff = ((pActors[actorID].uActorHeight / 2) + pActors[actorID].vPosition.z) - AttackerInfo.pZs[attack_index];
+                        int zsq = zdiff * zdiff;
+                        unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius) * (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius);
+                        int zvec = pActors[actorID].vPosition.z;
+
+                        // check range
+                        if (xsq + ysq + zsq < rangesq) {
                             attacker_coord.x = AttackerInfo.pXs[attack_index];
                             attacker_coord.y = AttackerInfo.pYs[attack_index];
                             attacker_coord.z = AttackerInfo.pZs[attack_index];
+
+                            // check line of sight
                             if (Check_LineOfSight(pActors[actorID].vPosition.x,
                                            pActors[actorID].vPosition.y,
                                            pActors[actorID].vPosition.z + 50,
-                                           attacker_coord)) {  // что делает ф-ция?
-                                Vec3_int_::Normalize(&a1, &v48, &v44);
-                                AttackerInfo.vec_4B4[attack_index].x = a1;
-                                AttackerInfo.vec_4B4[attack_index].y = v48;
-                                AttackerInfo.vec_4B4[attack_index].z = v44;
+                                           attacker_coord)) {
+                                Vec3_int_::Normalize(&xdiff, &ydiff, &zvec);
+                                AttackerInfo.vec_4B4[attack_index].x = xdiff;
+                                AttackerInfo.vec_4B4[attack_index].y = ydiff;
+                                AttackerInfo.vec_4B4[attack_index].z = zvec;
                                 switch (attacker_PID_type) {
                                     case OBJECT_Player:
-                                        Actor::DamageMonsterFromParty(
-                                            AttackerInfo.pIDs[attack_index],
-                                            actorID,
-                                            &AttackerInfo.vec_4B4[attack_index]);
+                                        Actor::DamageMonsterFromParty(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
                                         break;
                                     case OBJECT_Actor:
-                                        if (sprite_obj_ptr &&
-                                            pActors[attacker_PID_id].GetActorsRelation(
-                                                &pActors[actorID]))
-                                            Actor::ActorDamageFromMonster(
-                                                AttackerInfo.pIDs[attack_index],
-                                                actorID,
-                                                &AttackerInfo
-                                                     .vec_4B4[attack_index],
-                                                sprite_obj_ptr->field_61);
+                                        if (sprite_obj_ptr && pActors[attacker_PID_id].GetActorsRelation(&pActors[actorID]))
+                                            Actor::ActorDamageFromMonster(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index], sprite_obj_ptr->field_61);
                                         break;
                                     case OBJECT_Item:
-                                        ItemDamageFromActor(
-                                            AttackerInfo.pIDs[attack_index],
-                                            actorID,
-                                            &AttackerInfo.vec_4B4[attack_index]);
+                                        ItemDamageFromActor(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
                                         break;
                                 }
                             }

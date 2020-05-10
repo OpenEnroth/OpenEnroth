@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <cstdint>
 
 /*  167 */
 #pragma pack(push, 1)

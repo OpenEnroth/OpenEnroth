@@ -1,6 +1,7 @@
 #include "Engine/Graphics/Level/Decoration.h"
 
 #include <cstdlib>
+#include <algorithm>
 
 #include "../../Party.h"
 #include "Engine/Engine.h"

@@ -6,9 +6,9 @@
 
 #pragma pack(push, 1)
 struct GUICharMetric {
-    uint32_t uLeftSpacing;
-    uint32_t uWidth;
-    uint32_t uRightSpacing;
+    int32_t uLeftSpacing;
+    int32_t uWidth;
+    int32_t uRightSpacing;
 };
 #pragma pack(pop)
 

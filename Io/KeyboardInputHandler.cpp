@@ -87,13 +87,23 @@ void KeyboardInputHandler::GeneratePausedActions() {
 }
 
 void KeyboardInputHandler::GenerateGameplayActions() {
+    // delay press timer
+    bool resettimer = true;
     for (InputAction action : AllInputActions()) {
         bool isTriggered = false;
         GameKey key = actionMapping->GetKey(action);
-        if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
+        if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress) {
             isTriggered = controller->IsKeyPressed(key);
-        else
+        } else if (GetToggleType(action) == KeyToggleType::TOGGLE_Continuously) {
             isTriggered = controller->IsKeyHeld(key);
+        } else {
+            // delay press
+            if (controller->IsKeyHeld(key)) {
+                resettimer = false;
+                if (this->keydelaytimer == 0 || this->keydelaytimer >= 15)
+                    isTriggered = true;
+            }
+        }
 
         if (!isTriggered) {
             continue;
@@ -310,6 +320,12 @@ void KeyboardInputHandler::GenerateGameplayActions() {
         default:
             break;
         }
+    }
+
+    if (resettimer == true) {
+        this->keydelaytimer = 0;
+    } else {
+        if (this->keydelaytimer < 16) this->keydelaytimer++;
     }
 }
 
