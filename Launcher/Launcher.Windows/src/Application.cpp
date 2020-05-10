@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "resource.h"
+#include "Launcher/Launcher.Windows/resource.h"
 
 int __stdcall BrowseFolderCallback(HWND hwnd, UINT msg, LPARAM lparam, LPARAM data) {
     if (msg == BFFM_INITIALIZED) {
