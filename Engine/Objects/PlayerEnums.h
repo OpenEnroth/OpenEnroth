@@ -158,7 +158,7 @@ enum CHARACTER_RACE {
 #pragma warning(push)
 #pragma warning(disable : 4341)
 /*  328 */
-enum PLAYER_SKILL_TYPE : signed __int8 {
+enum PLAYER_SKILL_TYPE : int8_t {
     PLAYER_SKILL_STAFF = 0,
     PLAYER_SKILL_SWORD = 1,
     PLAYER_SKILL_DAGGER = 2,
@@ -203,7 +203,7 @@ enum PLAYER_SKILL_TYPE : signed __int8 {
 #pragma warning(pop)
 
 /*  329 */
-enum PLAYER_CLASS_TYPE : unsigned __int8 {
+enum PLAYER_CLASS_TYPE : uint8_t {
     PLAYER_CLASS_KNIGHT = 0,
     PLAYER_CLASS_CHEVALIER = 1,
     PLAYER_CLASS_CHAMPION = 2,
@@ -243,7 +243,7 @@ enum PLAYER_CLASS_TYPE : unsigned __int8 {
 };
 
 
-enum CHARACTER_EXPRESSION_ID : unsigned __int16 {
+enum CHARACTER_EXPRESSION_ID : uint16_t {
     CHARACTER_EXPRESSION_INVALID = 0,
     CHARACTER_EXPRESSION_1 = 1,
     CHARACTER_EXPRESSION_CURSED = 2,
