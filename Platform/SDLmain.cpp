@@ -3,7 +3,7 @@
 #include <SDL.h>
 
 
-int SDL_main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     std::string cmd;
     for (int i = 1; i < argc; ++i) {
         cmd += std::string(argv[i]) + " ";
