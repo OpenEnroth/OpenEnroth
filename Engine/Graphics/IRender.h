@@ -306,6 +306,8 @@ class IRender {
                                unsigned int uZ, unsigned int uW) = 0;
     virtual void ResetUIClipRect() = 0;
 
+    virtual void InvalidateGameViewport() = 0;
+
     virtual void DrawTextureNew(float u, float v, Image *) = 0;
     virtual void DrawTextureAlphaNew(float u, float v, Image *) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;

@@ -96,7 +96,7 @@ namespace Io {
         std::string cursor_name;
         int field_100 = 0;
         int field_104 = 0;
-        unsigned int uMouseY;
+        unsigned int uMouseX;
         unsigned int uMouseY;
 
         std::shared_ptr<IMouseController> mouseController = nullptr;

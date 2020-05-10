@@ -108,6 +108,9 @@ class RenderOpenGL : public RenderBase {
     virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time);
     virtual void DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait_Sprite, int Y_Offset);
 
+
+    virtual void InvalidateGameViewport();
+
     virtual void DrawMasked(float u, float v, class Image *img,
                             unsigned int color_dimming_level,
                             unsigned __int16 mask);

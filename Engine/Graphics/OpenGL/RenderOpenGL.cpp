@@ -34,31 +34,29 @@
 #include <memory>
 
 #include "Engine/Engine.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/SpellFxRenderer.h"
-
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Lights.h"
-#include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/Sprites.h"
-
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
-
+#include "Engine/Graphics/Weather.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/SpellFxRenderer.h"
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
-#include "Engine/Objects/ObjectList.h"
-#include "Engine/Graphics/Weather.h"
 
 RenderVertexSoft VertexRenderList[50];  // array_50AC10
 RenderVertexD3D3 d3d_vertex_buffer[50];
@@ -418,6 +416,10 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
             }
         }
     }
+}
+
+void RenderOpenGL::InvalidateGameViewport() {
+    // do not want in opengl mode
 }
 
 int _46EF01_collision_chech_player(int a1) {

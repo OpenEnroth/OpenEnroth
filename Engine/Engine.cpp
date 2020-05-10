@@ -268,18 +268,9 @@ void Engine::DrawGUI() {
     if (!pMovie_Track) {  // ! pVideoPlayer->pSmackerMovie)
         GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
         if (v4) {
-            if (!PauseGameDrawing() /*&& render->pRenderD3D*/) {  // clear game
-                                                                // viewport with
-                                                                // transparent
-                                                                // color
-
-                // if (!(config->renderer_name == "OpenGL")) {  // do not want in opengl mode
-                //    render->FillRectFast(
-                //        pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
-                //        pViewport->uViewportBR_X - pViewport->uViewportTL_X,
-                //        pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
-                //        0x7FF);
-                // }
+            if (!PauseGameDrawing() /*&& render->pRenderD3D*/) {
+                // clear game viewport with transparent color
+                render->InvalidateGameViewport();
                 viewparams->field_48 = 0;
             }
         }

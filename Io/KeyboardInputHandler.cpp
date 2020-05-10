@@ -180,7 +180,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                             flt_6BE3A4_debug_recmod1 * (double)pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false) * 2.133333333333333
                         );
                     }
-                    CastSpellInfoHelpers::_427D48_reset_spell_reticle();
+                    CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
                     pTurnEngine->ApplyPlayerAction();
                 }
             }
