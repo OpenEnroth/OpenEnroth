@@ -143,9 +143,9 @@ void GameWindowHandler::OnMouseMove(int x, int y, bool left_button, bool right_b
 
 
 extern bool _507B98_ctrl_pressed;
+extern InputAction currently_selected_action_for_binding;
 
 void GameWindowHandler::OnKey(GameKey key) {
-    extern InputAction currently_selected_action_for_binding;
     if (currently_selected_action_for_binding != InputAction::Invalid) {
         // we're setting a key binding in options
         keyboardInputHandler->ProcessTextInput(key, -1);
