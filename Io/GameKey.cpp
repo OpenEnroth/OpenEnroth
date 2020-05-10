@@ -3,6 +3,7 @@
 
 #include "Io/GameKey.h"
 
+#define _stricmp strcasecmp
 
 using Io::GameKey;
 
@@ -103,7 +104,7 @@ bool TryParseDisplayName(const std::string &displayName, GameKey *outKey) {
         displayNames.begin(),
         displayNames.end(),
         [displayNameStr](const std::pair<GameKey, const char *> &i) -> bool {
-            return stricmp(displayNameStr, i.second) == 0;
+            return _stricmp(displayNameStr, i.second) == 0;
         }
     );
 

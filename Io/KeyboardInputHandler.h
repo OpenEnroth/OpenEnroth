@@ -7,7 +7,7 @@
 #include "Io/IKeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
 
-enum class WindowInputStatus : __int32 {
+enum class WindowInputStatus : int32_t {
     WINDOW_INPUT_NONE = 0,
     WINDOW_INPUT_IN_PROGRESS = 1,
     WINDOW_INPUT_CONFIRMED = 2,

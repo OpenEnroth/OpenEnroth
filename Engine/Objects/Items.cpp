@@ -40,7 +40,7 @@ struct ItemsTable* pItemsTable;  // 005D29E0
 extern std::vector<char*> Tokenize(char* input, const char separator);
 
 
-void AddToMap(
+static void AddToMap(
     std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>& maptoadd,
     int enchId, CHARACTER_ATTRIBUTE_TYPE attrId, int bonusValue = 0,
     uint16_t Player::* skillPtr = nullptr);
