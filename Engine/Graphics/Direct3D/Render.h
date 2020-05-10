@@ -125,6 +125,8 @@ class Render : public RenderBase {
     virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices,
                                      unsigned int num_vertices);
 
+    virtual void InvalidateGameViewport();
+
     virtual void DrawTextAlpha(int x, int y, uint8_t *font_pixels, int a5,
                                unsigned int uFontHeight, uint8_t *pPalette,
                                bool present_time_transparency);

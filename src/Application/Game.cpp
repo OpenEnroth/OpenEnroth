@@ -91,7 +91,7 @@ std::string FindMm7Directory() {
     if (!mm7_installation_found) {
         if (const char* path = std::getenv("WOMM_PATH_OVERRIDE")) {
             mm7_installation_found = true;
-            logger->Info(L"MM7 Custom Folder (ENV path override): %S", path);
+            logger->Info("MM7 Custom Folder (ENV path override): %s", path);
             return path;
         }
     }
@@ -106,7 +106,7 @@ std::string FindMm7Directory() {
         );
 
         if (mm7_installation_found) {
-            logger->Info(L"Standard MM7 installation found: %S", path_buffer);
+            logger->Info("Standard MM7 installation found: %s", path_buffer);
             return path_buffer;
         }
     }
@@ -120,7 +120,7 @@ std::string FindMm7Directory() {
         );
 
         if (mm7_installation_found) {
-            logger->Info(L"GoG MM7 installation found: %S", path_buffer);
+            logger->Info("GoG MM7 installation found: %s", path_buffer);
             return path_buffer;
         }
     }
@@ -134,7 +134,7 @@ std::string FindMm7Directory() {
         );
 
         if (mm7_installation_found) {
-            logger->Info(L"GoG MM7 2018 build installation found: %S", path_buffer);
+            logger->Info("GoG MM7 2018 build installation found: %s", path_buffer);
             return path_buffer;
         }
     }
@@ -143,7 +143,7 @@ std::string FindMm7Directory() {
     if (!mm7_installation_found) {
         mm7_installation_found = 1;
         strcpy(path_buffer, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
-        logger->Info(L"Hack Path MM7 installation found: %S", path_buffer);
+        logger->Info("Hack Path MM7 installation found: %s", path_buffer);
         return path_buffer;
     }
 
@@ -171,12 +171,12 @@ void Game::Run() {
     ::render = render;
 
     if (!render) {
-        log->Warning(L"Render creation failed");
+        log->Warning("Render creation failed");
         return;
     }
 
     if (!render->Initialize()) {
-        log->Warning(L"Render failed to initialize");
+        log->Warning("Render failed to initialize");
         return;
     }
 
@@ -2018,7 +2018,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_QuickReference:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
+                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu != nullptr)
                         pGUIWindow_CurrentMenu->Release();
 
                     new OnButtonClick2(0x230u, 0x1C2u, 0, 0,

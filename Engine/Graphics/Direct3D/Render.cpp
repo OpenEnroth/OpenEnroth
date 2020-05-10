@@ -3413,6 +3413,15 @@ int ODM_NearClip(unsigned int num_vertices) {
     return out_num_vertices >= 3 ? out_num_vertices : 0;
 }
 
+void Render::InvalidateGameViewport() {
+    FillRectFast(
+        pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
+        pViewport->uViewportBR_X - pViewport->uViewportTL_X,
+        pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
+        0x7FF
+    );
+}
+
 int ODM_FarClip(unsigned int uNumVertices) {
     bool current_vertices_flag;     // [sp+Ch] [bp-28h]@6
     bool next_vertices_flag;        // edi@1
