@@ -1,6 +1,6 @@
 #pragma once
 
-enum SPRITE_OBJECT_TYPE : unsigned __int16 {
+enum SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_NULL = 0,
 
     SPRITE_SPELL_0 = 10,

@@ -58,9 +58,9 @@ struct ItemGen {  // 0x24
     ITEM_EQUIP_TYPE GetItemEquipType();
     unsigned char GetPlayerSkillType();
     char *GetIconName();
-    unsigned __int8 GetDamageDice();
-    unsigned __int8 GetDamageRoll();
-    unsigned __int8 GetDamageMod();
+    uint8_t GetDamageDice();
+    uint8_t GetDamageRoll();
+    uint8_t GetDamageMod();
     bool MerchandiseTest(int _2da_idx);
     int uItemID;                // 0
     int uEnchantmentType;       // 4
@@ -86,11 +86,11 @@ struct ItemGen {  // 0x24
                               // 72  Prevents falling damage.
     int uNumCharges;              // 10
     unsigned int uAttributes;     // 14
-    unsigned __int8 uBodyAnchor;  // 18
+    uint8_t uBodyAnchor;  // 18
     char uMaxCharges;             // 19
     char uHolderPlayer;           // 1A
     char field_1B;                // 1B
-    GameTime uExpireTime;        // unsigned __int64 uExpireTime; //1C
+    GameTime uExpireTime;        // uint64_t uExpireTime; //1C
 };
 #pragma pack(pop)
 
@@ -105,16 +105,16 @@ struct ItemDesc {  // 30h
     char *pUnidentifiedName;      // 8 c
     char *pDescription;           // 0c 10
     unsigned int uValue;          // 10 14
-    unsigned __int16 uSpriteID;   // 14 18
-    __int16 field_1A;             // 16
-    signed __int16 uEquipX;       // 18  1c
-    signed __int16 uEquipY;       // 1a  1e
+    uint16_t uSpriteID;   // 14 18
+    int16_t field_1A;             // 16
+    int16_t uEquipX;       // 18  1c
+    int16_t uEquipY;       // 1a  1e
     ITEM_EQUIP_TYPE uEquipType;   // 1c 20
-    unsigned __int8 uSkillType;   // 1d 21
-    unsigned __int8 uDamageDice;  // 1e 22
-    unsigned __int8 uDamageRoll;  // 1f 23
-    unsigned __int8 uDamageMod;   // 20 24
-    unsigned __int8 uMaterial;    // 21 25
+    uint8_t uSkillType;   // 1d 21
+    uint8_t uDamageDice;  // 1e 22
+    uint8_t uDamageRoll;  // 1f 23
+    uint8_t uDamageMod;   // 20 24
+    uint8_t uMaterial;    // 21 25
     char _additional_value;       // 22 26
     char _bonus_type;             // 23  27
     char _bonus_strength;         // 24 28
@@ -122,14 +122,14 @@ struct ItemDesc {  // 30h
     char field_26;                // 26   2A
     char field_27;                // 27   2b
     union {
-        unsigned __int8 uChanceByTreasureLvl[6];
+        uint8_t uChanceByTreasureLvl[6];
         struct {
-            unsigned __int8 uChanceByTreasureLvl1;  // 28  2c
-            unsigned __int8 uChanceByTreasureLvl2;  // 29  2d
-            unsigned __int8 uChanceByTreasureLvl3;  // 2A   2e
-            unsigned __int8 uChanceByTreasureLvl4;  // 2B  2f
-            unsigned __int8 uChanceByTreasureLvl5;  // 2C  30
-            unsigned __int8 uChanceByTreasureLvl6;  // 2D  32
+            uint8_t uChanceByTreasureLvl1;  // 28  2c
+            uint8_t uChanceByTreasureLvl2;  // 29  2d
+            uint8_t uChanceByTreasureLvl3;  // 2A   2e
+            uint8_t uChanceByTreasureLvl4;  // 2B  2f
+            uint8_t uChanceByTreasureLvl5;  // 2C  30
+            uint8_t uChanceByTreasureLvl6;  // 2D  32
         };
     };
     unsigned char uItemID_Rep_St;  // 2e 32
