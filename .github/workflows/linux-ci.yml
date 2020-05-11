@@ -16,7 +16,7 @@ jobs:
         fetch-depth: 0
     - name: Install
       run: |
-        export CC=gcc-8 && export CXX=g++-8
+        export CC=gcc-9 && export CXX=g++-9
         mkdir out && cd out
         if [ "${{ matrix.Platform }}" = "x64" ]; then
         sudo apt-get update && sudo apt-get install -y gcc-8 g++-8 libglu1-mesa-dev libavformat-dev libavcodec-dev libswscale-dev libopenal-dev libsdl2-dev zlib1g-dev
