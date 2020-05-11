@@ -2628,11 +2628,11 @@ void UI_Create() {
     bFlashQuestBook = 0;
     bFlashHistoryBook = 0;
 
-    pBtn_ZoomIn = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomin->GetWidth(),
+    pBtn_ZoomIn = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomin->GetWidth(),
         game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0, keyboardActionMapping->GetKey(InputAction::ZoomIn),
         localization->GetString(252), { { game_ui_btn_zoomin } });  // Zoom In
 
-    pBtn_ZoomOut = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomout->GetWidth(),
+    pBtn_ZoomOut = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomout->GetWidth(),
         game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0, keyboardActionMapping->GetKey(InputAction::ZoomOut),
         localization->GetString(251), { { game_ui_btn_zoomout } });  // Zoom Out
 

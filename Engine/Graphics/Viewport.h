@@ -63,7 +63,7 @@ struct ViewingParams {
     unsigned int uScreen_BttmR_Y;
     int field_20;
     unsigned int uMinimapZoom;
-    int field_28;
+    int field_28;  // zoom level in po2
     unsigned int uMapBookMapZoom;
     int sViewCenterX;
     int sViewCenterY;

@@ -1086,8 +1086,6 @@ void Engine::SecondaryInitialization() {
     pPaletteManager->LockAll();
 
     Initialize_GamesLOD_NewLOD();
-    _576E2C_current_minimap_zoom = 512;
-    dword_576E28 = 9;
 }
 
 void Engine::Initialize() {

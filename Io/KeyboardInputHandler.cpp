@@ -296,11 +296,11 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case InputAction::ZoomIn:
-            pMessageQueue_50C9E8->AddGUIMessage(UIMSG_ClickZoomOutBtn, 0, 0);
+            // pMessageQueue_50C9E8->AddGUIMessage(UIMSG_ClickZoomInBtn, 0, 0);
             break;
 
         case InputAction::ZoomOut:
-            pMessageQueue_50C9E8->AddGUIMessage(UIMSG_ClickZoomInBtn, 0, 0);
+            // pMessageQueue_50C9E8->AddGUIMessage(UIMSG_ClickZoomOutBtn, 0, 0);
             break;
 
         case InputAction::AlwaysRun:
