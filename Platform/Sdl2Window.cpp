@@ -1,4 +1,7 @@
 #include <SDL_syswm.h>
+#ifdef None
+#undef None
+#endif
 
 #include <map>
 #include <utility>
