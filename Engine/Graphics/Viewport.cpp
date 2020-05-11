@@ -217,8 +217,8 @@ void ViewingParams::_443365() {
     } else {
         indoor_center_x = 0;
         indoor_center_y = 0;
-        uMinimapZoom = _576E2C_current_minimap_zoom;
-        field_28 = dword_576E28;
+        uMinimapZoom = 512;
+        field_28 = 9;
     }
     uMapBookMapZoom = 384;
 }

@@ -203,8 +203,6 @@ extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 extern std::array<class Image *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
-extern int dword_576E28;
-extern int _576E2C_current_minimap_zoom;
 extern GameTime _5773B8_event_timer;  // 5773B8
 
 extern struct Actor *pDialogue_SpeakingActor;

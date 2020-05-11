@@ -593,8 +593,6 @@ std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
 std::array<class Image *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
-int dword_576E28;
-int _576E2C_current_minimap_zoom;
 GameTime _5773B8_event_timer;
 
 struct Actor *pDialogue_SpeakingActor;

@@ -2284,62 +2284,50 @@ void Game::EventLoop() {
                         OnPressSpace();
                     }
                     continue;
-                case UIMSG_ClickZoomOutBtn:
-                    if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
-                    pParty->uFlags |= 2u;
-                    new OnButtonClick2(519, 136, 0, 0, pBtn_ZoomOut);
-                    uNumSeconds = 131072;
-                    v118 = 2 * viewparams->uMinimapZoom;
-                    ++viewparams->field_28;
-                    viewparams->uMinimapZoom *= 2;
-                    if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) {
-                        if (v118 > 4096) {
-                            viewparams->uMinimapZoom = 4096;
-                            viewparams->field_28 = 12;
-                        }
-                        continue;
-                    }
-                    v119 = 2048;
-                    if ((signed int)v118 <= 2048) {
-                        _576E2C_current_minimap_zoom = v118;
-                        dword_576E28 = viewparams->field_28;
-                        break;
-                    }
-                    viewparams->field_28 = 11;
-                    viewparams->uMinimapZoom = v119;
-                    _576E2C_current_minimap_zoom = v119;
-                    dword_576E28 = viewparams->field_28;
-                    break;
                 case UIMSG_ClickZoomInBtn:
                     if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
                     pParty->uFlags |= 2u;
-                    new OnButtonClick2(574, 136, 0, 0, pBtn_ZoomIn);
-                    uNumSeconds = 32768;
-                    v118 = (unsigned __int64)((signed __int64)(signed int)
-                                                  viewparams->uMinimapZoom
-                                              << 15) >>
-                           16;
-                    --viewparams->field_28;
-                    viewparams->uMinimapZoom =
-                        (unsigned __int64)((signed __int64)(signed int)
-                                               viewparams->uMinimapZoom
-                                           << 15) >>
-                        16;
-                    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                        v119 = 512;
-                        if (v118 < 512) {
-                            viewparams->field_28 = 9;
-                            v118 = v119;
-                            viewparams->uMinimapZoom = v119;
+                    new OnButtonClick2(519, 136, 0, 0, pBtn_ZoomIn);
+                    uNumSeconds = 131072;
+
+                    ++viewparams->field_28;
+                    viewparams->uMinimapZoom *= 2;
+
+                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                        if (viewparams->uMinimapZoom > 4096) {
+                            viewparams->uMinimapZoom = 4096;
+                            viewparams->field_28 = 12;
                         }
-                        _576E2C_current_minimap_zoom = v118;
-                        dword_576E28 = viewparams->field_28;
                     } else {
-                        if ((signed int)v118 < 256) {
+                        if (viewparams->uMinimapZoom > 2048) {
+                            viewparams->uMinimapZoom = 2048;
+                            viewparams->field_28 = 11;
+                        }
+                    }
+
+                    break;
+                case UIMSG_ClickZoomOutBtn:
+                    if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
+                    pParty->uFlags |= 2u;
+                    new OnButtonClick2(574, 136, 0, 0, pBtn_ZoomOut);
+                    uNumSeconds = 32768;
+
+                    --viewparams->field_28;
+                    viewparams->uMinimapZoom /= 2;
+
+                    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                        if (viewparams->uMinimapZoom < 512) {
+                            viewparams->uMinimapZoom = 512;
+                            viewparams->field_28 = 9;
+                        }
+                    } else {
+                        if (viewparams->uMinimapZoom < 256) {
                             viewparams->uMinimapZoom = 256;
                             viewparams->field_28 = 8;
                         }
                     }
+
+                    break;
                 case UIMSG_DebugSpecialItem:
                     pItemID = rand() % 500;
                     for (uint i = 0; i < 500; ++i) {
