@@ -90,7 +90,7 @@ enum PlayerSpeech {
     SPEECH_44 = 44,
     SPEECH_45 = 45,
     SPEECH_46 = 46,
-    SPEECH_47 = 47,
+    SPEECH_47 = 47,  // Let's get out of here! (Plays when leaving an area when the party alert is red or yellow)
     SPEECH_48 = 48,
     SPEECH_49 = 49,
     SPEECH_50 = 50,
@@ -217,7 +217,7 @@ enum PLAYER_CLASS_TYPE : unsigned __int8 {
     PLAYER_CLASS_CHEVALIER = 1,
     PLAYER_CLASS_CHAMPION = 2,
     PLAYER_CLASS_BLACK_KNIGHT = 3,
-    PLAYER_CLASS_THEIF = 4,
+    PLAYER_CLASS_THIEF = 4,
     PLAYER_CLASS_ROGUE = 5,
     PLAYER_CLASS_SPY = 6,
     PLAYER_CLASS_ASSASSIN = 7,

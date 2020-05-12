@@ -217,7 +217,7 @@ void LoadGame(unsigned int uSlot) {
     pCurrentMapName = header->pLocationName;
     free(header);
 
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_2000 | GAME_SETTINGS_0001;
+    dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_0001;
 
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
         if (pSavegameThumbnails[i] != nullptr) {

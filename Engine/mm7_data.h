@@ -327,7 +327,7 @@ extern float flt_6BE150_look_up_down_dangle;
 extern String pCurrentMapName;
 extern unsigned int uLevelMapStatsID;
 
-#define GAME_SETTINGS_0001 0x0001
+#define GAME_SETTINGS_0001 0x0001  // Skip AI next frame due to changing levels etc.
 #define GAME_SETTINGS_INVALID_RESOLUTION 0x0002
 #define GAME_SETTINGS_NO_INTRO 0x0004
 #define GAME_SETTINGS_NO_LOGO 0x0008
@@ -340,7 +340,7 @@ extern unsigned int uLevelMapStatsID;
 #define GAME_SETTINGS_0400_MISC_TIMER 0x0400
 #define GAME_SETTINGS_0800 0x0800
 #define GAME_SETTINGS_1000 0x1000
-#define GAME_SETTINGS_2000 0x2000  // initialisation state - no respawning
+#define GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN 0x2000  // don't respawn the level we're loading because we're loading a saved game
 #define GAME_SETTINGS_4000 0x4000  // initialisation state
 extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
 

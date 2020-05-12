@@ -53,14 +53,17 @@ enum PARTY_QUEST_BITS : uint16_t {
 
 /*  355 */
 enum PARTY_FLAGS_1 : int32_t {
+    // Flag 0x2 is set or unset in a ton of places, only used in
+    // OutdoorLocation::Draw and UIDialogue::sub_4451A8_press_any_key
     PARTY_FLAGS_1_0002 = 0x0002,
     PARTY_FLAGS_1_WATER_DAMAGE = 0x0004,
     PARTY_FLAGS_1_FALLING = 0x0008,
     PARTY_FLAGS_1_ALERT_RED = 0x0010,
     PARTY_FLAGS_1_ALERT_YELLOW = 0x0020,
+    PARTY_FLAGS_1_ALERT_RED_OR_YELLOW = 0x0030,
     PARTY_FLAGS_1_STANDING_ON_WATER = 0x0080,
     PARTY_FLAGS_1_LANDING = 0x0100,
-    PARTY_FLAGS_1_BURNING = 0x200
+    PARTY_FLAGS_1_BURNING = 0x0200
 };
 enum PARTY_FLAGS_2 : int32_t {
     PARTY_FLAGS_2_RUNNING = 0x2,
@@ -226,6 +229,10 @@ struct Party {
         return (uFlags & PARTY_FLAGS_1_ALERT_YELLOW) != 0;
     }
     inline void SetYellowAlert() { uFlags |= PARTY_FLAGS_1_ALERT_YELLOW; }
+
+    inline bool GetRedOrYellowAlert() {
+        return (uFlags & PARTY_FLAGS_1_ALERT_RED_OR_YELLOW) != 0;
+    }
 
     GameTime &GetPlayingTime() { return this->playing_time; }
 

@@ -831,7 +831,7 @@ void Player_Image_MM7::Deserialize(Player* player) {
         player->classType = PLAYER_CLASS_BLACK_KNIGHT;
         break;
     case 4:
-        player->classType = PLAYER_CLASS_THEIF;
+        player->classType = PLAYER_CLASS_THIEF;
         break;
     case 5:
         player->classType = PLAYER_CLASS_ROGUE;

@@ -385,7 +385,7 @@ void IndoorLocation::Draw() {
     render->DrawBillboardList_BLV();
     //}
 
-    pParty->uFlags &= ~2;
+    pParty->uFlags &= ~PARTY_FLAGS_1_0002;
     engine->DrawParticles();
     trail_particle_generator.UpdateParticles();
 }
@@ -722,7 +722,7 @@ void IndoorLocation::ToggleLight(signed int sLightID, unsigned int bToggle) {
             pIndoor->pLights[sLightID].uAtributes &= 0xFFFFFFF7;
         else
             pIndoor->pLights[sLightID].uAtributes |= 8;
-        pParty->uFlags |= 2;
+        pParty->uFlags |= PARTY_FLAGS_1_0002;
     }
 }
 
@@ -990,7 +990,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         }
     }
 
-    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_2000) {
+    if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN) {
         respawn_interval_days = 0x1BAF800;
     }
 
@@ -2226,11 +2226,11 @@ void PrepareToLoadBLV(unsigned int bLoading) {
 
     if (v4 == 2) Error("Attempt to open new level before clearing old");
     if (v4 == 3) Error("Out of memory loading indoor level");
-    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_2000)) {
+    if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
-    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_2000;
+    dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
     if (!map_id) pDest = 0;
     if (pDest == 1) {
         for (uint i = 0; i < pIndoor->uNumSpawnPoints; ++i) {
