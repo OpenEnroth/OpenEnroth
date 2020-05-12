@@ -107,7 +107,7 @@ bool TryParseDisplayName(const std::string &displayName, GameKey *outKey) {
         displayNames.begin(),
         displayNames.end(),
         [displayNameStr](const std::pair<GameKey, const char *> &i) -> bool {
-            // TODO refactor this using STL to void using _stricmp and its pesky #ifndef WINDOWS
+            // TODO(alex-gee): refactor this using STL to void using _stricmp and its pesky #ifndef WINDOWS
             return _stricmp(displayNameStr, i.second) == 0;
         }
     );
