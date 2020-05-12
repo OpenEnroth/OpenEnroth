@@ -10,7 +10,7 @@
 using Io::GameKey;
 
 
-static std::map<GameKey, const char *> displayNames = {
+static std::map<GameKey, const char*> displayNames = {
     { GameKey::F1,              "F1" },
     { GameKey::F2,              "F2" },
     { GameKey::F3,              "F3" },
@@ -88,6 +88,7 @@ static std::map<GameKey, const char *> displayNames = {
     { GameKey::Control,         "CONTROL" },
     { GameKey::LeftBracket,     "L BRACKET" },
     { GameKey::RightBracket,    "R BRACKET" },
+    { GameKey::Tilde,           "~" },
 };
 
 std::string GetDisplayName(GameKey key) {
@@ -106,6 +107,7 @@ bool TryParseDisplayName(const std::string &displayName, GameKey *outKey) {
         displayNames.begin(),
         displayNames.end(),
         [displayNameStr](const std::pair<GameKey, const char *> &i) -> bool {
+            // TODO refactor this using STL to void using _stricmp and its pesky #ifndef WINDOWS
             return _stricmp(displayNameStr, i.second) == 0;
         }
     );

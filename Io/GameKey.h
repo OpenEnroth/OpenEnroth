@@ -47,6 +47,7 @@ namespace Io {
         Slash,
         SingleQuote,
         BackSlash,
+        Tilde,
 
         Left,
         Right,

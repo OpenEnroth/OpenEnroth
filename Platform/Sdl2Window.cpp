@@ -76,6 +76,7 @@ std::map<SDL_Scancode, GameKey> scancode_lookup = {
     { SDL_SCANCODE_SLASH,            GameKey::Slash },
     { SDL_SCANCODE_APOSTROPHE,       GameKey::SingleQuote },
     { SDL_SCANCODE_BACKSLASH,        GameKey::BackSlash },
+    { SDL_SCANCODE_GRAVE,            GameKey::Tilde },
 
     { SDL_SCANCODE_KP_MINUS,         GameKey::Subtract },
     { SDL_SCANCODE_KP_PLUS,          GameKey::Add },
