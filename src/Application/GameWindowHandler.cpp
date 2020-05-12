@@ -45,7 +45,9 @@ bool GameWindowHandler::OnChar(GameKey key, int c) {
     textInputHandled |= keyboardInputHandler->ProcessTextInput(key, c);
 
     // regular text input
-    textInputHandled |= keyboardInputHandler->ProcessTextInput(GameKey::Char, c);
+    if (c != -1) {
+        textInputHandled |= keyboardInputHandler->ProcessTextInput(GameKey::Char, c);
+    }
 
     if (!textInputHandled && !viewparams->field_4C) {
         return GUI_HandleHotkey(key);  // try other hotkeys
@@ -176,7 +178,7 @@ void GameWindowHandler::OnKey(GameKey key) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
         } else if (key == GameKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
-        } else if (key == GameKey::Numpad0) {
+        } else if (key == GameKey::Tilde) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
         } else if (key == GameKey::Left || key == GameKey::Right || key == GameKey::Up || key == GameKey::Down) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
