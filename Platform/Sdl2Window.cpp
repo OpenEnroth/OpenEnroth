@@ -199,9 +199,11 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
                 gameCallback->OnChar(mappedKey, mappedChar);
             }
 
-            scancode_pressed_state[e.key.keysym.scancode] = true;
-            scancode_pressed_state_single_report[e.key.keysym.scancode] = true;
-            scancode_pressed_time[e.key.keysym.scancode] = SDL_GetTicks();
+            if (e.key.keysym.scancode < 256) {
+                scancode_pressed_state[e.key.keysym.scancode] = true;
+                scancode_pressed_state_single_report[e.key.keysym.scancode] = true;
+                scancode_pressed_time[e.key.keysym.scancode] = SDL_GetTicks();
+            }
         } break;
 
         case SDL_MOUSEMOTION: {
