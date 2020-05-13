@@ -573,6 +573,8 @@ void SavegameList::Initialize() {
             pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename();
         }
     }
+
+    std::sort(&pSavegameList->pFileList[0],&pSavegameList->pFileList[uNumSavegameFiles]);
 }
 
 SavegameList::SavegameList() { Reset(); }
