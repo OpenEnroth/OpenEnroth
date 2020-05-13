@@ -8175,7 +8175,7 @@ Player::Player() {
 }
 
 void Player::CleanupBeacons() {
-    struct delete_beacon : public std::unary_function<const LloydBeacon&, bool> {
+    struct delete_beacon {
         bool operator()(const LloydBeacon &beacon) const {
             return (beacon.uBeaconTime < pParty->GetPlayingTime());
         }
