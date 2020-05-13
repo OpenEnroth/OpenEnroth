@@ -5,9 +5,8 @@
 #include <io.h>
 #endif
 #include <stdlib.h>
-
-#include <algorithm>
 #include <filesystem>
+#include <algorithm>
 #include <string>
 #include <vector>
 
