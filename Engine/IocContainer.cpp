@@ -31,6 +31,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/Player.h"
+#include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Serialization/LegacyImages.h"
 
@@ -40,11 +41,13 @@
 #include "Engine/Tables/PlayerFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 
-#include "IO/Mouse.h"
-#include "IO/Keyboard.h"
+#include "Io/Mouse.h"
+
+#include "Platform/OSWindow.h"
 
 
 using Engine_::IocContainer;
+using Io::Mouse;
 
 Log *logger = nullptr;
 
@@ -75,8 +78,9 @@ BloodsplatContainer *IocContainer::ResolveBloodsplatContainer() {
 
 SpellFxRenderer *IocContainer::ResolveSpellFxRenderer() {
     if (!spell_fx_renderer) {
-        spell_fx_renderer = new SpellFxRenderer();
+        spell_fx_renderer = new SpellFxRenderer(ResolveParticleEngine());
     }
+
     return spell_fx_renderer;
 }
 
@@ -87,25 +91,19 @@ LightmapBuilder *IocContainer::ResolveLightmapBuilder() {
     return lightmap_builder;
 }
 
-Mouse *IocContainer::ResolveMouse() {
+std::shared_ptr<Mouse> IocContainer::ResolveMouse() {
     if (!mouse) {
-        mouse = new Mouse();
+        mouse = std::make_shared<Mouse>();
     }
+
     return mouse;
 }
 
-Keyboard *IocContainer::keyboard = nullptr;
-Keyboard *IocContainer::ResolveKeyboard() {
-    if (!keyboard) {
-        keyboard = new Keyboard();
-    }
-    return keyboard;
-}
-
-ParticleEngine *IocContainer::ResolveParticleEngine() {
+std::shared_ptr<ParticleEngine> IocContainer::ResolveParticleEngine() {
     if (!particle_engine) {
-        particle_engine = new ParticleEngine();
+        particle_engine = std::make_shared<ParticleEngine>();
     }
+
     return particle_engine;
 }
 
@@ -120,8 +118,8 @@ DecalBuilder *IocContainer::decal_builder = nullptr;
 BloodsplatContainer *IocContainer::bloodspalt_container = nullptr;
 SpellFxRenderer *IocContainer::spell_fx_renderer = nullptr;
 LightmapBuilder *IocContainer::lightmap_builder = nullptr;
-Mouse *IocContainer::mouse = nullptr;
-ParticleEngine *IocContainer::particle_engine = nullptr;
+std::shared_ptr<Mouse> IocContainer::mouse = nullptr;
+std::shared_ptr<ParticleEngine> IocContainer::particle_engine = nullptr;
 Vis *IocContainer::vis = nullptr;
 
 

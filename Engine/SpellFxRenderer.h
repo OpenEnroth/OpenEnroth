@@ -1,12 +1,10 @@
 #pragma once
 
 #include <cstdint>
-
-#include "Engine/IocContainer.h"
-
-using EngineIoc = Engine_::IocContainer;
+#include <memory>
 
 class Texture;
+class ParticleEngine;
 
 /*  120 */
 #pragma pack(push, 1)
@@ -31,7 +29,7 @@ struct SpellFX_Billboard {
     void Initialize(int a2);
     void _47829F_sphere_particle(float x_offset, float y_offset, float z_offset,
                                  float scale, int diffuse);
-
+    // billboard quad vertex
     struct local_01 {
         float x;
         float y;
@@ -48,8 +46,8 @@ struct SpellFX_Billboard {
     // spellfx verts
     int uNumVertices;
     local_01 field_14[5];  // world coords of verts
-    int field_64[20];  // view coords
-    float field_B4[20];  // clipped view coords
+    local_01 field_64[5];  // view coords
+    local_01 field_B4[5];  // clipped view coords
     local_01 field_104[5];  // projected billboard coords
 };
 #pragma pack(pop)
@@ -96,8 +94,8 @@ struct stru6_stru2 {
 #pragma pack(push, 1)
 struct SpellFxRenderer {
     //----- (004A7155) --------------------------------------------------------
-    inline SpellFxRenderer() {
-        this->particle_engine = EngineIoc::ResolveParticleEngine();
+    explicit inline SpellFxRenderer(std::shared_ptr<ParticleEngine> particle_engine) {
+        this->particle_engine = particle_engine;
 
         this->field_204 = 0;
         this->uFadeTime = 0;
@@ -105,7 +103,7 @@ struct SpellFxRenderer {
         this->field_0 = 0;
         this->uAnimLength = 0;
 
-        pStru1 = new SpellFX_Billboard;
+        pStru1 = new SpellFX_Billboard();
         pStru1->Initialize(0xFF3C1Eu);
     }
     //----- (004A71DC) --------------------------------------------------------
@@ -142,7 +140,7 @@ struct SpellFxRenderer {
     void SetPlayerBuffAnim(uint16_t uSpellID, uint16_t uPlayerID);
     void FadeScreen__like_Turn_Undead_and_mb_Armageddon(
         unsigned int uDiffuseColor, unsigned int uFadeTime);
-    int _4A8BFC();
+    int _4A8BFC_prismatic_light();
     void RenderSpecialEffects();
     void DrawPlayerBuffAnims();
     void LoadAnimations();
@@ -169,6 +167,6 @@ struct SpellFxRenderer {
     unsigned int _unused_uSpriteID_sp57c;
     int field_5F4;
 
-    ParticleEngine *particle_engine = nullptr;
+    std::shared_ptr<ParticleEngine> particle_engine = nullptr;
 };
 #pragma pack(pop)

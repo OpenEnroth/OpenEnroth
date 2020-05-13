@@ -16,7 +16,6 @@ class GUIButton;
 //-------------------------------------------------------------------------
 // Data declarations
 
-extern int game_starting_year;
 extern unsigned int game_viewport_width;
 extern unsigned int game_viewport_height;
 extern int game_viewport_x;
@@ -147,9 +146,6 @@ extern int dword_506980_uW;
 extern int dword_506984_uZ;
 extern int dword_506988_uY;
 extern int dword_50698C_uX;
-extern int uGameMenuUI_CurentlySelectedKeyIdx;                   // 506E68
-extern std::array<bool, 28> GameMenuUI_InvaligKeyBindingsFlags;  // 506E6C
-extern std::array<unsigned int, 28> pPrevVirtualCidesMapping;
 extern int KeyboardPageNum;
 extern int uRestUI_FoodRequiredToRest;
 extern int _506F14_resting_stage;
@@ -207,8 +203,6 @@ extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 extern std::array<class Image *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
-extern int dword_576E28;
-extern int _576E2C_current_minimap_zoom;
 extern GameTime _5773B8_event_timer;  // 5773B8
 
 extern struct Actor *pDialogue_SpeakingActor;

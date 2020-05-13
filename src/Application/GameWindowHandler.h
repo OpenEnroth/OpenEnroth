@@ -1,10 +1,15 @@
 #pragma once
+#include <memory>
 
-class Mouse;
+#include "Io/GameKey.h"
+#include "Io/Mouse.h"
+
+using Io::GameKey;
+using Io::Mouse;
 
 namespace Application {
 
-// Handles events from game window (OSWindow) and transforms it to game actions/events
+// Handles events from game window (OSWindow)
 class GameWindowHandler {
  public:
     GameWindowHandler();
@@ -18,8 +23,8 @@ class GameWindowHandler {
     void OnMouseMove(int x, int y, bool left_button, bool right_button);
     void OnScreenshot();
     void OnToggleFullscreen();
-    void OnVkDown(int vk, int vk_to_char);
-    bool OnChar(int c);
+    void OnKey(GameKey key);
+    bool OnChar(GameKey key, int c);
     void OnFocus();
     void OnFocusLost();
     void OnPaint();
@@ -27,7 +32,7 @@ class GameWindowHandler {
     void OnDeactivated();
 
  private:
-    Mouse *mouse = nullptr;
+    std::shared_ptr<Mouse> mouse = nullptr;
 };
 
 }  // namespace Application

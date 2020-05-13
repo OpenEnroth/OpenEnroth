@@ -3,10 +3,10 @@
 #include <array>
 #include <cstdint>
 
-#include "Engine/Time.h"
-
+#include "Engine/Objects/Items.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/Player.h"
+#include "Engine/Time.h"
 
 #define PARTY_AUTONOTES_BIT__EMERALD_FIRE_FOUNTAIN 2
 
@@ -96,25 +96,25 @@ enum PARTY_BUFF_INDEX {
 /*  300 */
 enum PartyAction : uint32_t {
     PARTY_INVALID = 0,
-    PARTY_TurnLeft = 0x1,
-    PARTY_TurnRight = 0x2,
-    PARTY_StrafeLeft = 0x3,
-    PARTY_StrafeRight = 0x4,
-    PARTY_WalkForward = 0x5,
-    PARTY_WalkBackward = 0x6,
-    PARTY_LookUp = 0x7,
-    PARTY_LookDown = 0x8,
-    PARTY_CenterView = 0x9,
-    PARTY_unkA = 0xA,
-    PARTY_unkB = 0xB,
-    PARTY_Jump = 0xC,
-    PARTY_FlyUp = 0xD,
-    PARTY_FlyDown = 0xE,
-    PARTY_Land = 0xF,
-    PARTY_RunForward = 0x10,
-    PARTY_RunBackward = 0x11,
-    PARTY_FastTurnLeft = 0x12,
-    PARTY_FastTurnRight = 0x13,
+    PARTY_TurnLeft = 1,
+    PARTY_TurnRight = 2,
+    PARTY_StrafeLeft = 3,
+    PARTY_StrafeRight = 4,
+    PARTY_WalkForward = 5,
+    PARTY_WalkBackward = 6,
+    PARTY_LookUp = 7,
+    PARTY_LookDown = 8,
+    PARTY_CenterView = 9,
+    PARTY_unkA = 10,
+    PARTY_unkB = 11,
+    PARTY_Jump = 12,
+    PARTY_FlyUp = 13,
+    PARTY_FlyDown = 14,
+    PARTY_Land = 15,
+    PARTY_RunForward = 16,
+    PARTY_RunBackward = 17,
+    PARTY_FastTurnLeft = 18,
+    PARTY_FastTurnRight = 19,
 
     PARTY_dword = 0xFFFFFFFF
 };
@@ -133,11 +133,11 @@ struct ActionQueue {
 };
 #pragma pack(pop)
 
-typedef enum class PartyAlignment : uint32_t {
+enum class PartyAlignment : uint32_t {
     PartyAlignment_Good = 0,
     PartyAlignment_Neutral = 1,
     PartyAlignment_Evil = 2
-} PartyAlignment;
+};
 
 /*  208 */
 #pragma pack(push, 1)
@@ -193,39 +193,39 @@ struct Party {
     static void Sleep8Hours();
 
 
-    inline bool WizardEyeActive() {
-        return bool(pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time);
+    inline bool WizardEyeActive() const {
+        return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].expire_time.value > 0;
     }
-    inline int WizardEyeSkillLevel() {
+    inline int WizardEyeSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].uSkill;
     }
-    inline bool TorchlightActive() {
-        return bool(pPartyBuffs[PARTY_BUFF_TORCHLIGHT].expire_time);
+    inline bool TorchlightActive() const {
+        return pPartyBuffs[PARTY_BUFF_TORCHLIGHT].expire_time.value > 0;
     }
-    inline bool FlyActive() {
-        return bool(pPartyBuffs[PARTY_BUFF_FLY].expire_time);
+    inline bool FlyActive() const {
+        return pPartyBuffs[PARTY_BUFF_FLY].expire_time.value > 0;
     }
-    inline bool WaterWalkActive() {
-        return bool(pPartyBuffs[PARTY_BUFF_WATER_WALK].expire_time);
+    inline bool WaterWalkActive() const {
+        return pPartyBuffs[PARTY_BUFF_WATER_WALK].expire_time.value > 0;
     }
-    inline bool ImmolationActive() {
-        return bool(pPartyBuffs[PARTY_BUFF_IMMOLATION].expire_time);
+    inline bool ImmolationActive() const {
+        return pPartyBuffs[PARTY_BUFF_IMMOLATION].expire_time.value > 0;
     }
-    inline int ImmolationSkillLevel() {
+    inline int ImmolationSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_IMMOLATION].uSkill;
     }
-    inline bool FeatherFallActive() {
-        return bool(pPartyBuffs[PARTY_BUFF_FEATHER_FALL].expire_time);
+    inline bool FeatherFallActive() const {
+        return pPartyBuffs[PARTY_BUFF_FEATHER_FALL].expire_time.value > 0;
     }
-    inline bool Invisible() {
-        return bool(pPartyBuffs[PARTY_BUFF_INVISIBILITY].expire_time);
+    inline bool Invisible() const {
+        return pPartyBuffs[PARTY_BUFF_INVISIBILITY].expire_time.value > 0;
     }
 
-    inline bool GetRedAlert() {
+    inline bool GetRedAlert() const {
         return (uFlags & PARTY_FLAGS_1_ALERT_RED) != 0;
     }
     inline void SetRedAlert() { uFlags |= PARTY_FLAGS_1_ALERT_RED; }
-    inline bool GetYellowAlert() {
+    inline bool GetYellowAlert() const {
         return (uFlags & PARTY_FLAGS_1_ALERT_YELLOW) != 0;
     }
     inline void SetYellowAlert() { uFlags |= PARTY_FLAGS_1_ALERT_YELLOW; }

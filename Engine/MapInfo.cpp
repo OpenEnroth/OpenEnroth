@@ -1,14 +1,14 @@
-#include "Engine/MapInfo.h"
-
 #include <cstdlib>
 #include <sstream>
 
-#include "Engine/Engine.h"
+#include "Engine/MapInfo.h"
 
+#include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/LOD.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
-#include "LOD.h"
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -67,7 +67,7 @@ void MapStats::Initialize() {
             strcpy(test_string, tmpString.c_str());
             switch (decode_step) {
                 case 1:
-                    pInfos[i].pName = RemoveQuotes(test_string);  // randoms crashes here
+                    pInfos[i].pName = RemoveQuotes(test_string);  // randoms crashes here  // got 1 too
                     break;
                 case 2:
                     pInfos[i].pFilename = MakeLower(RemoveQuotes(test_string));

@@ -1,7 +1,8 @@
 #pragma once
-
 #include <d3d.h>
 #include <ddraw.h>
+
+#include <memory>
 
 #include "Engine/VectorTypes.h"
 
@@ -70,7 +71,7 @@ class RenderD3D {
 
     void GetAvailableDevices(RenderD3D__DevInfo **pOutDevices);
     void Release();
-    bool CreateDevice(unsigned int uDeviceID, int bWindowed, OSWindow *window);
+    bool CreateDevice(unsigned int uDeviceID, int bWindowed, std::shared_ptr<OSWindow> window);
     unsigned int GetDeviceCaps();
     void ClearTarget(unsigned int bClearColor, unsigned int uClearColor,
                      unsigned int bClearDepth, float z_clear);

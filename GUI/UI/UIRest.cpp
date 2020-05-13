@@ -5,13 +5,12 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
-
-#include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
@@ -21,6 +20,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 Image *rest_ui_btn_4 = nullptr;
 Image *rest_ui_btn_exit = nullptr;
@@ -106,18 +107,16 @@ GUIWindow_Rest::GUIWindow_Rest()
 
     // auto wnd = new GUIWindow_Rest(0, 0, window->GetWidth(),
     // window->GetHeight());
-    pButton_RestUI_Exit = CreateButton(280, 297, 154, 37, 1, 0, UIMSG_ExitRest,
-                                       0, 0, "", {{rest_ui_btn_exit}});
-    pButton_RestUI_Main = CreateButton(24, 154, 225, 37, 1, 0, UIMSG_Rest8Hour,
-                                       0, 'R', "", {{rest_ui_btn_4}});
-    pButton_RestUI_WaitUntilDawn =
-        CreateButton(61, 232, 154, 33, 1, 0, UIMSG_AlreadyResting, 0, 'D', "",
-                     {{rest_ui_btn_1}});
+    pButton_RestUI_Exit = CreateButton(
+        280, 297, 154, 37, 1, 0, UIMSG_ExitRest, 0, GameKey::None, "", {{rest_ui_btn_exit}});
+    pButton_RestUI_Main = CreateButton(
+        24, 154, 225, 37, 1, 0, UIMSG_Rest8Hour, 0, GameKey::R, "", {{rest_ui_btn_4}});
+    pButton_RestUI_WaitUntilDawn = CreateButton(
+        61, 232, 154, 33, 1, 0, UIMSG_AlreadyResting, 0, GameKey::D, "", {{rest_ui_btn_1}});
     pButton_RestUI_Wait1Hour = CreateButton(
-        61, 264, 154, 33, 1, 0, UIMSG_Wait1Hour, 0, 'H', "", {{rest_ui_btn_2}});
-    pButton_RestUI_Wait5Minutes =
-        CreateButton(61, 296, 154, 33, 1, 0, UIMSG_Wait5Minutes, 0, 'M', "",
-                     {{rest_ui_btn_3}});
+        61, 264, 154, 33, 1, 0, UIMSG_Wait1Hour, 0, GameKey::H, "", {{rest_ui_btn_2}});
+    pButton_RestUI_Wait5Minutes = CreateButton(
+        61, 296, 154, 33, 1, 0, UIMSG_Wait5Minutes, 0, GameKey::M, "", {{rest_ui_btn_3}});
 }
 
 //----- (0041FA01) --------------------------------------------------------

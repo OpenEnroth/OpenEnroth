@@ -190,7 +190,6 @@ std::array<stat_coord, 26> stat_string_coord =  // 4E2940
 //-------------------------------------------------------------------------
 // Data declarations
 
-int game_starting_year = 0;
 unsigned int game_viewport_width;
 unsigned int game_viewport_height;
 int game_viewport_x;
@@ -537,8 +536,6 @@ int dword_506980_uW;
 int dword_506984_uZ;
 int dword_506988_uY;
 int dword_50698C_uX;
-int uGameMenuUI_CurentlySelectedKeyIdx;  // 506E68
-std::array<unsigned int, 28> pPrevVirtualCidesMapping;
 int KeyboardPageNum;
 int uRestUI_FoodRequiredToRest;
 int _506F14_resting_stage;
@@ -596,8 +593,6 @@ std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
 std::array<class Image *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
-int dword_576E28;
-int _576E2C_current_minimap_zoom;
 GameTime _5773B8_event_timer;
 
 struct Actor *pDialogue_SpeakingActor;
@@ -706,8 +701,6 @@ float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
 float flt_6BE150_look_up_down_dangle = 1.0f;
-// HWND hWnd; // idb
-class OSWindow *window = nullptr;
 String pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;

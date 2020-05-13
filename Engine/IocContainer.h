@@ -1,11 +1,14 @@
 #pragma once
 
+#include <memory>
+
 struct BloodsplatContainer;
 struct DecalBuilder;
 class LightmapBuilder;
 class Log;
-class Mouse;
-class Keyboard;
+namespace Io {
+    class Mouse;
+}
 class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
@@ -19,9 +22,8 @@ class IocContainer {
     static BloodsplatContainer *ResolveBloodsplatContainer();
     static SpellFxRenderer *ResolveSpellFxRenderer();
     static LightmapBuilder *ResolveLightmapBuilder();
-    static Mouse *ResolveMouse();
-    static Keyboard *ResolveKeyboard();
-    static ParticleEngine *ResolveParticleEngine();
+    static std::shared_ptr<Io::Mouse> ResolveMouse();
+    static std::shared_ptr<ParticleEngine> ResolveParticleEngine();
     static Vis *ResolveVis();
 
  private:
@@ -29,9 +31,8 @@ class IocContainer {
      static BloodsplatContainer *bloodspalt_container;
      static SpellFxRenderer *spell_fx_renderer;
      static LightmapBuilder *lightmap_builder;
-     static Mouse *mouse;
-     static Keyboard *keyboard;
-     static ParticleEngine *particle_engine;
+     static std::shared_ptr<Io::Mouse> mouse;
+     static std::shared_ptr<ParticleEngine> particle_engine;
      static Vis *vis;
 };
 

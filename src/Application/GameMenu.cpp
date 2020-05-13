@@ -1,20 +1,23 @@
+#include <map>
+
 #include "src/Application/GameMenu.h"
 
 #include "src/Application/Game.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Time.h"
 
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
+#include "Io/GameKey.h"
+#include "Io/InputAction.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Io/Mouse.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
@@ -24,7 +27,19 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
+
 using Application::Menu;
+using Io::TextInputType;
+using Io::KeyToggleType;
+using Io::InputAction;
+
+
+InputAction currently_selected_action_for_binding = InputAction::Invalid;  // 506E68
+std::map<InputAction, bool> key_map_conflicted;  // 506E6C
+std::map<InputAction, GameKey> prev_key_map;
 
 void Game_StartNewGameWhilePlaying(bool force_start) {
     if (dword_6BE138 == 124 || force_start) {
@@ -104,29 +119,23 @@ void Menu::EventLoop() {
                 new OnSaveLoad(241, 302, 106, 42, pBtnLoadSlot);
                 continue;
             case UIMSG_SelectLoadSlot: {
-                if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 ==
-                    WINDOW_INPUT_IN_PROGRESS)
-                    pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_NONE);
+                if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS)
+                    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
 
                 int v10 = pSaveListPosition + param;
                 if (current_screen_type != CURRENT_SCREEN::SCREEN_SAVEGAME ||
                     uLoadGameUI_SelectedSlot != v10) {
                     if (dword_6BE138 == pSaveListPosition + param) {
-                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn,
-                                                            0, 0);
-                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0,
-                                                            0);
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
                     }
                     uLoadGameUI_SelectedSlot = v10;
                     dword_6BE138 = v10;
                 } else {
-                    pKeyActionMap->EnterText(0, 19, pGUIWindow_CurrentMenu);
-                    if (strcmp(pSavegameHeader[uLoadGameUI_SelectedSlot].pName,
-                               localization->GetString(72)))  // "Empty"
-                        strcpy(pKeyActionMap->pPressedKeysBuffer,
-                               pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
-                    pKeyActionMap->uNumKeysPressed =
-                        strlen(pKeyActionMap->pPressedKeysBuffer);
+                    keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
+                    if (strcmp(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, localization->GetString(LSTR_EMPTY_SAVESLOT))) {
+                        keyboardInputHandler->SetTextInput(pSavegameHeader[uLoadGameUI_SelectedSlot].pName);
+                    }
                 }
             }
                 continue;
@@ -137,11 +146,9 @@ void Menu::EventLoop() {
                 }
                 continue;
             case UIMSG_SaveGame:
-                if (pGUIWindow_CurrentMenu->receives_keyboard_input_2 ==
-                    WINDOW_INPUT_IN_PROGRESS) {
-                    pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_NONE);
-                    strcpy((char *)&pSavegameHeader[uLoadGameUI_SelectedSlot],
-                           pKeyActionMap->pPressedKeysBuffer);
+                if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
+                    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
+                    strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
                 }
                 DoSavegame(uLoadGameUI_SelectedSlot);
                 continue;
@@ -149,9 +156,8 @@ void Menu::EventLoop() {
                 pGUIWindow_CurrentMenu->Release();
                 game_ui_status_bar_event_string_time_left = 0;
                 current_screen_type = CURRENT_SCREEN::SCREEN_SAVEGAME;
-                pGUIWindow_CurrentMenu =
-                    new GUIWindow_Save();  // SaveUI_Load(current_screen_type =
-                                           // SCREEN_SAVEGAME);
+                pGUIWindow_CurrentMenu = new GUIWindow_Save();
+                // SaveUI_Load(current_screen_type = SCREEN_SAVEGAME);
                 continue;
             }
             case UIMSG_Game_OpenOptionsDialog:  // Open
@@ -159,8 +165,7 @@ void Menu::EventLoop() {
                 pMessageQueue_50CBD0->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
-                pGUIWindow_CurrentMenu =
-                    new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
+                pGUIWindow_CurrentMenu = new GUIWindow_GameOptions();  // GameMenuUI_Options_Load();
 
                 viewparams->field_48 = 1;
                 current_screen_type = CURRENT_SCREEN::SCREEN_OPTIONS;
@@ -173,8 +178,7 @@ void Menu::EventLoop() {
                 pMessageQueue_50CBD0->Flush();
 
                 pGUIWindow_CurrentMenu->Release();
-                pGUIWindow_CurrentMenu =
-                    new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
+                pGUIWindow_CurrentMenu = new GUIWindow_GameKeyBindings();  // GameMenuUI_OptionsKeymapping_Load();
 
                 viewparams->field_48 = 1;
                 current_screen_type = CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS;
@@ -183,41 +187,30 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ChangeKeyButton: {
-                if (uGameMenuUI_CurentlySelectedKeyIdx != -1) {
+                if (currently_selected_action_for_binding != InputAction::Invalid) {
                     pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                 } else {
-                    uGameMenuUI_CurentlySelectedKeyIdx = param;
+                    currently_selected_action_for_binding = (InputAction)param;
                     if (KeyboardPageNum != 1)
-                        uGameMenuUI_CurentlySelectedKeyIdx += 14;
-                    pKeyActionMap->EnterText(0, 1, pGUIWindow_CurrentMenu);
+                        currently_selected_action_for_binding = (InputAction)(param + 14);
+                    keyboardInputHandler->StartTextInput(TextInputType::Text, 1, pGUIWindow_CurrentMenu);
                 }
                 continue;
             }
 
             case UIMSG_ResetKeyMapping: {
                 int v197 = 1;
-                pKeyActionMap->SetDefaultMapping();
-                for (uint i = 0; i < 28; i++) {
-                    if (pKeyActionMap->GetActionVKey((enum InputAction)i) !=
-                        pPrevVirtualCidesMapping[i]) {
-                        if (v197) {
-                            GUI_ReplaceHotkey(
-                                (unsigned char)pPrevVirtualCidesMapping[i],
-                                pKeyActionMap->GetActionVKey(
-                                    (enum InputAction)i),
-                                1);
-                            v197 = 0;
-                        } else {
-                            GUI_ReplaceHotkey(
-                                (unsigned char)pPrevVirtualCidesMapping[i],
-                                pKeyActionMap->GetActionVKey(
-                                (enum InputAction)i),
-                                0);
-                        }
+                // keyboardController->SetDefaultMapping();
+                for (auto action : AllInputActions()) {
+                    GameKey oldKey = keyboardActionMapping->GetKey(action);
+                    GameKey newKey = keyboardActionMapping->MapDefaultKey(action);
+
+                    if (oldKey != newKey) {
+                        GUI_ReplaceHotkey(oldKey, newKey, v197);
+                        v197 = 0;
                     }
-                    pPrevVirtualCidesMapping[i] =
-                        pKeyActionMap->GetActionVKey((enum InputAction)i);
-                    GameMenuUI_InvaligKeyBindingsFlags[i] = false;
+                    prev_key_map[action] = oldKey;
+                    key_map_conflicted[action] = false;
                 }
                 pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
                 continue;
@@ -453,13 +446,16 @@ void Menu::EventLoop() {
                 } else if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
                     KeyToggleType pKeyToggleType;  // [sp+0h] [bp-5FCh]@287
                     int v197 = 1;
-                    bool pKeyBindingFlag = false;
+                    bool anyBindingErrors = false;
 
-                    for (uint i = 0; i < 28; ++i) {
-                        if (GameMenuUI_InvaligKeyBindingsFlags[i])
-                            pKeyBindingFlag = true;
+                    for (auto action : AllInputActions()) {
+                        if (key_map_conflicted[action]) {
+                            anyBindingErrors = true;
+                        }
                     }
-                    if (!pKeyBindingFlag) {
+                    if (anyBindingErrors) {
+                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                    } else {
                         for (uint i = 0; i < 5; i++) {
                             if (game_ui_options_controls[i]) {
                                 game_ui_options_controls[i]->Release();
@@ -467,37 +463,18 @@ void Menu::EventLoop() {
                             }
                         }
 
-                        for (uint i = 0; i < 28; ++i) {
-                            if (pKeyActionMap->GetActionVKey(
-                                    (enum InputAction)i) !=
-                                pPrevVirtualCidesMapping[i]) {
-                                if (v197) {
-                                    GUI_ReplaceHotkey(
-                                        pKeyActionMap->GetActionVKey(
-                                            (enum InputAction)i),
-                                        (unsigned char)
-                                            pPrevVirtualCidesMapping[i],
-                                        1);
-                                    v197 = 0;
-                                } else {
-                                    GUI_ReplaceHotkey(
-                                        pKeyActionMap->GetActionVKey(
-                                        (enum InputAction)i),
-                                            (unsigned char)
-                                        pPrevVirtualCidesMapping[i],
-                                        0);
-                                }
+                        for (auto action : AllInputActions()) {
+                            if (keyboardActionMapping->GetKey(action) != prev_key_map[action]) {
+                                GUI_ReplaceHotkey(
+                                    keyboardActionMapping->GetKey(action),
+                                    prev_key_map[action],
+                                    v197);
+                                v197 = 0;
                             }
-                            if (i > 3 && i != 25 && i != 26)
-                                pKeyToggleType = KeyToggleType::TOGGLE_OneTimePress;
-                            else
-                                pKeyToggleType = KeyToggleType::TOGGLE_Continuously;
-                            pKeyActionMap->SetKeyMapping(
-                                i, pPrevVirtualCidesMapping[i], pKeyToggleType);
+
+                            keyboardActionMapping->MapKey(action, prev_key_map[action], GetToggleType(action));
                         }
-                        pKeyActionMap->StoreMappings();
-                    } else {
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
+                        keyboardActionMapping->StoreMappings();
                     }
 
                     pGUIWindow_CurrentMenu->Release();
@@ -533,11 +510,7 @@ void Menu::MenuLoop() {
             current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS ||
             current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS ||
             current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS)) {
-        window->PeekMessageLoop();
-        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-            OS_WaitMessage();
-            continue;
-        }
+        MessageLoopWithWait();
 
         GameUI_WritePointedObjectStatusString();
         render->BeginScene();

@@ -43,7 +43,7 @@ GUICredits::GUICredits() :
     move_Y = 0;
     tick = 0;
 
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, 27, "");
+    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_Escape, 0, GameKey::Escape);
 }
 
 GUICredits::~GUICredits() {
@@ -102,11 +102,7 @@ void GUICredits::ExecuteCredits() {
     SetCurrentMenuID(MENU_CREDITSPROC);
 
     while (GetCurrentMenuID() == MENU_CREDITSPROC) {
-        window->PeekMessageLoop();
-        if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-            OS_WaitMessage();
-            continue;
-        }
+        MessageLoopWithWait();
 
         render->BeginScene();
         {

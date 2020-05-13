@@ -52,7 +52,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_CXX_FLAGS "-std=c++2a ${CMAKE_CXX_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread -lavutil -lswresample")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-  set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+  set(CMAKE_CXX_FLAGS "-std=c++17 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
 else()
   add_definitions(-DWINDOWS_IGNORE_PACKING_MISMATCH="") # vs2019 complains about using #pragma pack()
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
@@ -69,7 +69,7 @@ add_subdirectory(Arcomage)
 add_subdirectory(Engine)
 add_subdirectory(src)
 add_subdirectory(GUI)
-add_subdirectory(IO)
+add_subdirectory(Io)
 add_subdirectory(Launcher)
 add_subdirectory(Media)
 add_subdirectory(Platform)
@@ -114,6 +114,5 @@ target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media
 set_property(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
 )
-
 
 RESOLVE_DEPENDENCIES(World_of_Might_and_Magic)

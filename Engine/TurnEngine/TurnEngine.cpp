@@ -328,10 +328,10 @@ void stru262_TurnBased::AITurnBasedAction() {
         }
         NextTurn();
     } else if (turn_stage == TE_MOVEMENT) {
-        if ((uActionPointsLeft > 0) && (!(field_18 & TE_FLAG_8))) {
+        if ((uActionPointsLeft > 0) && (!(field_18 & TE_FLAG_8_finished))) {
             ActorAIChooseNewTargets();
         } else {
-            field_18 &= ~TE_FLAG_8;
+            field_18 &= ~TE_FLAG_8_finished;
             turn_stage = TE_WAIT;
             ai_turn_timer = 64;
         }

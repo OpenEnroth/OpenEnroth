@@ -5,6 +5,8 @@
 #include "src/Application/IocContainer.h"
 
 
+std::shared_ptr<OSWindow> window = nullptr;
+
 using EngineIoc = Engine_::IocContainer;
 using ApplicationIoc = Application::IocContainer;
 

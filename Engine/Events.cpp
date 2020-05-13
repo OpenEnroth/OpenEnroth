@@ -1,15 +1,6 @@
 #include "Engine/Events.h"
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
-#include "Engine/MapsLongTimer.h"
-#include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/stru123.h"
-#include "Engine/stru159.h"
-
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
@@ -17,12 +8,18 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
+#include "Engine/MapsLongTimer.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/SpriteObject.h"
-
-#include "IO/Mouse.h"
+#include "Engine/OurMath.h"
+#include "Engine/Party.h"
+#include "Engine/stru123.h"
+#include "Engine/stru159.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/UI/UIDialogue.h"
@@ -30,8 +27,13 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UITransition.h"
 
+#include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
+
+#include "Platform/OSWindow.h"
+
 
 std::array<EventIndex, 4400> pSomeOtherEVT_Events;
 signed int uSomeOtherEVT_NumEvents;
@@ -501,19 +503,19 @@ LABEL_47:
                                     window->GetHeight(), (GUIButton *)170, "");
                                 window_SpeakInHouse->CreateButton(
                                     61, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 1, '1', "");
+                                    UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
                                 window_SpeakInHouse->CreateButton(
                                     177, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 2, '2', "");
+                                    UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
                                 window_SpeakInHouse->CreateButton(
                                     292, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 3, '3', "");
+                                    UIMSG_SelectCharacter, 3, GameKey::Digit3, "");
                                 window_SpeakInHouse->CreateButton(
                                     407, 424, 31, 0, 2, 94,
-                                    UIMSG_SelectCharacter, 4, '4', "");
+                                    UIMSG_SelectCharacter, 4, GameKey::Digit4, "");
                                 window_SpeakInHouse->CreateButton(
                                     0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0,
-                                    '\t', "");
+                                    GameKey::Tab, "");
                                 current_npc_text = pNPCTopics[90].pText;
                             }
                         }
@@ -1122,19 +1124,19 @@ LABEL_47:
                                                 window->GetHeight(), (GUIButton *)v104);
                         window_SpeakInHouse->CreateButton(61, 424, 31, 0, 2, 94,
                                                           UIMSG_SelectCharacter,
-                                                          1, '1', "");
+                                                          1, GameKey::Digit1, "");
                         window_SpeakInHouse->CreateButton(
                             177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2,
-                            '2', "");
+                            GameKey::Digit2, "");
                         window_SpeakInHouse->CreateButton(
                             292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3,
-                            '3', "");
+                            GameKey::Digit3, "");
                         window_SpeakInHouse->CreateButton(
                             407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4,
-                            '4', "");
+                            GameKey::Digit4, "");
                         window_SpeakInHouse->CreateButton(0, 0, 0, 0, 1, 0,
                                                           UIMSG_CycleCharacters,
-                                                          0, '\t', "");
+                                                          0, GameKey::Tab, "");
                     }
                     ++curr_seq_num;
                     break;

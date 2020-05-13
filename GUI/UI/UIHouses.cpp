@@ -7,22 +7,20 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
-#include "Engine/MapInfo.h"
-#include "Engine/Party.h"
-#include "Engine/SaveLoad.h"
-#include "Engine/stru159.h"
-
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Viewport.h"
-
+#include "Engine/LOD.h"
+#include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/Monsters.h"
-
+#include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
+#include "Engine/stru159.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -34,12 +32,17 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
+#include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
+
+using Io::TextInputType;
 using EngineIoc = Engine_::IocContainer;
 
 int uHouse_ExitPic;
@@ -845,8 +848,8 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
     pMessageQueue_50CBD0->Flush();
     viewparams->bRedrawGameUI = 1;
     uDialogueType = 0;
-    pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-    pKeyActionMap->ResetKeys();
+    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->ResetKeys();
     if (uHouseID == HOUSE_600 || uHouseID == HOUSE_601) {
         Application::GameOver_Loop(0);
         return 0;
@@ -1072,35 +1075,30 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
             pDialogueWindow->Release();
             pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
             pBtn_ExitCancel = pDialogueWindow->CreateButton(
-                526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 0,
+                526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
                 localization->GetString(74),  // "End Conversation"
                 { { ui_buttdesc2 } });
             pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
-                UIMSG_BuyInShop_Identify_Repair, 0, 0,
-                "");
+                UIMSG_BuyInShop_Identify_Repair, 0);
         }
         if (in_current_building_type != BuildingType_Training) {
             if ((in_current_building_type == BuildingType_Stables ||
                 in_current_building_type == BuildingType_Boats) &&
                 transport_schedule
-                [transport_routes[(uint64_t)
-                window_SpeakInHouse->ptr_1C -
-                HOUSE_STABLES_HARMONDALE]
-                [uMessageParam -
-                HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_1]]
+                [transport_routes[(uint64_t)window_SpeakInHouse->ptr_1C - HOUSE_STABLES_HARMONDALE]
+                [uMessageParam - HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_1]]
             .pSchedule[pParty->uCurrentDayOfMonth % 7] ||
                 in_current_building_type != BuildingType_Temple ||
                 uMessageParam != BuildingType_MindGuild) {
                 pDialogueWindow->Release();
-                pDialogueWindow =
-                    new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
+                pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
                 pBtn_ExitCancel = pDialogueWindow->CreateButton(
-                    526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, 0,
+                    526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
                     localization->GetString(74),  // "End Conversation"
                     { { ui_buttdesc2 } });
                 pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
                     UIMSG_BuyInShop_Identify_Repair,
-                    0, 0, "");
+                    0);
             } else if (uActiveCharacter) {
                 if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple())
                     return;
@@ -1433,14 +1431,14 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
                     pNPCTopics[352].pText;  //"Поздравляю! Вы успешно..."
             }
         } else if (uMessageParam == HOUSE_DIALOGUE_TOWNHALL_PAY_FINE) {
-            pKeyActionMap->EnterText(1, 10, window_SpeakInHouse);
+            keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
         }
         break;
     }
     case BuildingType_Bank:
     {
         if (dialog_menu_id >= 7 && dialog_menu_id <= 8)
-            pKeyActionMap->EnterText(1, 10, window_SpeakInHouse);
+            keyboardInputHandler->StartTextInput(TextInputType::Number, 10, window_SpeakInHouse);
         return;
         break;
     }
@@ -2018,8 +2016,7 @@ void TownHallDialog() {
     }
     case HOUSE_DIALOGUE_TOWNHALL_PAY_FINE:
     {
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             townHall_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
                 StringPrintf("%s\n%s", localization->GetString(606),
@@ -2027,19 +2024,15 @@ void TownHallDialog() {
                 3);  // "Pay"   "How Much?"
             townHall_window.DrawTitleText(
                 pFontArrus, 0, 186, Color16(0xFFu, 0xFFu, 0xFFu),
-                pKeyActionMap->pPressedKeysBuffer, 3);
+                keyboardInputHandler->GetTextInput().c_str(), 3);
             townHall_window.DrawFlashingInputCursor(
-                pFontArrus->GetLineWidth(
-                    pKeyActionMap->pPressedKeysBuffer) /
-                2 +
-                80,
+                pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80,
                 185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CONFIRMED) {
-            v1 = atoi(pKeyActionMap->pPressedKeysBuffer);
-            v2 = atoi(pKeyActionMap->pPressedKeysBuffer);
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+            v1 = atoi(keyboardInputHandler->GetTextInput().c_str());
+            v2 = v1;
             if (v1 <= 0) {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
@@ -2057,10 +2050,8 @@ void TownHallDialog() {
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_81, 0);
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CANCELLED) {
-            window_SpeakInHouse->receives_keyboard_input_2 =
-                WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED) {
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         }
         break;
@@ -2100,7 +2091,7 @@ void BankDialog() {
     }
     case HOUSE_DIALOGUE_BANK_PUT_GOLD:
     {
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
                 StringPrintf("%s\n%s", localization->GetString(60),
@@ -2108,16 +2099,14 @@ void BankDialog() {
                 3);  // Deposit  How much?   /   "Положить" "Сколько?"
             bank_window.DrawTitleText(pFontArrus, 0, 186,
                 Color16(0xFFu, 0xFFu, 0xFFu),
-                pKeyActionMap->pPressedKeysBuffer, 3);
+                keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(
-                pFontArrus->GetLineWidth(
-                    pKeyActionMap->pPressedKeysBuffer) /
-                2 + 80, 185, pFontArrus);
+                pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80,
+                185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_CONFIRMED) {
-            int entered_sum = atoi(pKeyActionMap->pPressedKeysBuffer);
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+            int entered_sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             unsigned int takes_sum = entered_sum;
             if (!entered_sum) {
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2136,20 +2125,19 @@ void BankDialog() {
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_81, 0);
                 }
             }
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED) {
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED) {
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         }
         return;
     }
     case HOUSE_DIALOGUE_BANK_GET_GOLD:
     {
-        if (window_SpeakInHouse->receives_keyboard_input_2 ==
-            WINDOW_INPUT_IN_PROGRESS) {
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
                 StringPrintf("%s\n%s", localization->GetString(244),
@@ -2157,18 +2145,15 @@ void BankDialog() {
                 3);  // Withdraw  How much?   /   "Снять" "Сколько?"
             bank_window.DrawTitleText(pFontArrus, 0, 186,
                 Color16(0xFFu, 0xFFu, 0xFFu),
-                pKeyActionMap->pPressedKeysBuffer, 3);
+                keyboardInputHandler->GetTextInput().c_str(), 3);
             bank_window.DrawFlashingInputCursor(
-                pFontArrus->GetLineWidth(
-                    pKeyActionMap->pPressedKeysBuffer) /
-                2 +
-                80,
+                pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput().c_str()) / 2 + 80,
                 185, pFontArrus);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CONFIRMED) {
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
-            int entered_sum = atoi(pKeyActionMap->pPressedKeysBuffer);
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+            int entered_sum = atoi(keyboardInputHandler->GetTextInput().c_str());
             unsigned int takes_sum = entered_sum;
             if (entered_sum) {
                 if (entered_sum > pParty->uNumGoldInBank) {
@@ -2182,12 +2167,12 @@ void BankDialog() {
                     pParty->uNumGoldInBank -= takes_sum;
                 }
             }
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (window_SpeakInHouse->receives_keyboard_input_2 == WINDOW_INPUT_CANCELLED) {
-            window_SpeakInHouse->receives_keyboard_input_2 = WINDOW_INPUT_NONE;
+        if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED) {
+            window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         }
         return;
@@ -2226,8 +2211,7 @@ void TavernDialog() {
     dialog_window.uFrameX = 483;
     dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
-    v2 = p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
-        .fPriceMultiplier;
+    v2 = p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
 
     if (uActiveCharacter == 0)  // avoid nzi
         uActiveCharacter = pParty->GetFirstCanAct();
@@ -3910,8 +3894,8 @@ void InitializeBuildingResidents() {
 
 int HouseDialogPressCloseBtn() {
     pMessageQueue_50CBD0->Flush();
-    pKeyActionMap->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-    pKeyActionMap->ResetKeys();
+    keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
+    keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
     if (pDialogueNPCCount == 0) return 0;
@@ -3971,7 +3955,7 @@ int HouseDialogPressCloseBtn() {
                     window_SpeakInHouse->CreateButton(
                         pNPCPortraits_x[uNumDialogueNPCPortraits - 1][i],
                         pNPCPortraits_y[uNumDialogueNPCPortraits - 1][i],
-                        63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, 0,
+                        63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, i, GameKey::None,
                         byte_591180[i].data());
             }
         }
@@ -3999,20 +3983,11 @@ void BackToHouseMenu() {
         pParty->uFlags &= 0xFFFFFFFD;
         if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
             pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
-            window_SpeakInHouse = new GUIWindow_House(
-                0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)165, "");
-            window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94,
-                UIMSG_SelectCharacter, 1, 0x31,
-                "");
-            window_SpeakInHouse->CreateButton(0xB1u, 0x1A8u, 0x1Fu, 0, 2, 94,
-                UIMSG_SelectCharacter, 2, 0x32,
-                "");
-            window_SpeakInHouse->CreateButton(0x124u, 0x1A8u, 0x1Fu, 0, 2, 94,
-                UIMSG_SelectCharacter, 3, 0x33,
-                "");
-            window_SpeakInHouse->CreateButton(0x197u, 0x1A8u, 0x1Fu, 0, 2, 94,
-                UIMSG_SelectCharacter, 4, 0x34,
-                "");
+            window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), (GUIButton*)165, "");
+            window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
+            window_SpeakInHouse->CreateButton(0xB1u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
+            window_SpeakInHouse->CreateButton(0x124u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
+            window_SpeakInHouse->CreateButton(0x197u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4);
         }
         bGameoverLoop = false;
     }
@@ -4352,7 +4327,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
     pAudioPlayer->StopChannels(-1, -1);
 
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
-    pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, 0, localization->GetString(80),  // Quit building
+    pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None, localization->GetString(80),  // Quit building
         { { ui_exit_cancel_button_background } });
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
         const char *v29;
@@ -4370,7 +4345,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
         sprintf(byte_591180[v26].data(), v29, v30.c_str());
         HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],
             pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v26],
-            63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, 0, byte_591180[v26].data());
+            63, 73, 1, 0, UIMSG_ClickHouseNPCPortrait, v26, GameKey::None, byte_591180[v26].data());
     }
     if (uNumDialogueNPCPortraits == 1) {
         window_SpeakInHouse = this;

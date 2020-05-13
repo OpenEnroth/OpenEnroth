@@ -4,15 +4,13 @@
 #include <string>
 
 #include "src/Application/Game.h"
+#include "src/Application/GameConfig.h"
 
 namespace Application {
 
 class GameFactory {
  public:
-     std::shared_ptr<Game> CreateGame(const std::string &command_line);
-
- private:
-     std::shared_ptr<const Configuration> CreateConfiguration(const std::string &command_line);
+     std::shared_ptr<Game> CreateGame(const std::shared_ptr<const GameConfig> &config);
 };
 
 }  // namespace Application

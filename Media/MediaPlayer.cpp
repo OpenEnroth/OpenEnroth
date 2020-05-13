@@ -1,5 +1,16 @@
 #include "Media/MediaPlayer.h"
 
+extern "C" {
+    #include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libavutil/avutil.h>
+    #include <libavutil/imgutils.h>
+    #include <libavutil/mem.h>
+    #include <libavutil/opt.h>
+    #include <libswresample/swresample.h>
+    #include <libswscale/swscale.h>
+}
+
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -9,34 +20,21 @@
 #include <queue>
 #include <vector>
 
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/Audio/OpenALSoundProvider.h"
-
 #include "Engine/Engine.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Log.h"
 
 #include "GUI/GUIWindow.h"
-#include "IO/Mouse.h"
+
+#include "Io/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/Audio/OpenALSoundProvider.h"
+
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
 
-extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libavutil/avutil.h"
-#include "libavutil/imgutils.h"
-#include "libavutil/mem.h"
-#include "libavutil/opt.h"
-#include "libswresample/swresample.h"
-#include "libswscale/swscale.h"
-}
-
-#pragma comment(lib, "avcodec.lib")
-#pragma comment(lib, "avformat.lib")
-#pragma comment(lib, "avutil.lib")
-#pragma comment(lib, "swscale.lib")
-#pragma comment(lib, "swresample.lib")
 
 OpenALSoundProvider *provider = nullptr;
 
@@ -737,12 +735,9 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
 
     while (true) {
+        MessageLoopWithWait();
+
         render->BeginScene();
-
-        window->PeekMessageLoop();
-
-        // if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) continue;
-        // add pausing of movie when game lost focus
 
         OS_Sleep(2);
 

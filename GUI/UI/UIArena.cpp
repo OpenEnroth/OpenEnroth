@@ -1,22 +1,22 @@
 #include "GUI/UI/UIArena.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Events.h"
+#include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Party.h"
 
-#include "../../Engine/Graphics/Sprites.h"
-
-#include "../../Engine/Events.h"
-#include "../../Engine/Graphics/Outdoor.h"
-#include "../../Engine/Graphics/Viewport.h"
-#include "../../Engine/LOD.h"
-#include "../../Engine/Objects/Actor.h"
-#include "../../Engine/Party.h"
-#include "../../GUI/GUIFont.h"
-#include "../../GUI/GUIWindow.h"
-#include "../../Media/Audio/AudioPlayer.h"
-
+#include "GUI/GUIFont.h"
+#include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIHouses.h"
+
+#include "Media/Audio/AudioPlayer.h"
+
 
 std::array<Vec2_int_, 20> pMonsterArenaPlacements = {{
     Vec2_int_(1524, 8332),    Vec2_int_(2186, 8844),
@@ -76,17 +76,13 @@ void Arena_SelectionFightLevel() {
         uDialogueType = DIALOGUE_ARENA_WELCOME;
         pDialogueWindow->DeleteButtons();
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
-            471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, 0,
+            471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
             localization->GetString(79),  // Close, Закрыть
             {{ui_exit_cancel_button_background}});
-        pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0,
-                                      UIMSG_SelectNPCDialogueOption, 85, 0, "");
-        pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0,
-                                      UIMSG_SelectNPCDialogueOption, 86, 0, "");
-        pDialogueWindow->CreateButton(480, 220, 0x8Cu, 0x1Eu, 1, 0,
-                                      UIMSG_SelectNPCDialogueOption, 87, 0, "");
-        pDialogueWindow->CreateButton(480, 250, 0x8Cu, 0x1Eu, 1, 0,
-                                      UIMSG_SelectNPCDialogueOption, 88, 0, "");
+        pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 85);
+        pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 86);
+        pDialogueWindow->CreateButton(480, 220, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 87);
+        pDialogueWindow->CreateButton(480, 250, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 88);
         pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
     }
 }

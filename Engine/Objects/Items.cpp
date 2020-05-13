@@ -8,19 +8,20 @@
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemEnchantment.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/Monsters.h"
+#include "Engine/Objects/PlayerEnums.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-
-#include "GUI/GUIButton.h"
-#include "GUI/GUIWindow.h"
-
-#include "GUI/UI/UIHouses.h"
-
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 
-#include "Engine/Objects/Chest.h"
-#include "Engine/Objects/Monsters.h"
+#include "GUI/GUIButton.h"
+#include "GUI/GUIWindow.h"
+#include "GUI/UI/UIHouses.h"
+
 
 std::array<std::array<char, 14>, 7> byte_4E8168 = {{  // byte_4E8178 -treasure levles
     {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}},
@@ -37,6 +38,15 @@ ItemGen* ptr_50C9A4_ItemToEnchant;
 struct ItemsTable* pItemsTable;  // 005D29E0
 
 extern std::vector<char*> Tokenize(char* input, const char separator);
+
+
+static void AddToMap(
+    std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>& maptoadd,
+    int enchId, CHARACTER_ATTRIBUTE_TYPE attrId, int bonusValue = 0,
+    uint16_t Player::* skillPtr = nullptr);
+static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*> regularBonusMap;
+static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*> specialBonusMap;
+static std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*> artifactBonusMap;
 
 //----- (00439DF3) --------------------------------------------------------
 int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE* damage_type,
@@ -606,42 +616,40 @@ unsigned int ItemGen::GetValue() {
 }
 
 //----- (00456499) --------------------------------------------------------
-String ItemGen::GetDisplayName() {
+std::string ItemGen::GetDisplayName() {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
-        return String(pItemsTable->pItems[uItemID].pUnidentifiedName);
+        return pItemsTable->pItems[uItemID].pUnidentifiedName;
     }
 }
 
 //----- (004564B3) --------------------------------------------------------
-String ItemGen::GetIdentifiedName() {
+std::string ItemGen::GetIdentifiedName() {
     unsigned __int8 equip_type;
 
     equip_type = GetItemEquipType();
     if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
         (equip_type == EQUIP_GOLD)) {
-        return String(pItemsTable->pItems[uItemID].pName);
+        return pItemsTable->pItems[uItemID].pName;
     }
 
     if (uItemID == ITEM_LICH_JAR_FULL) {  // Lich Jar
-        if ((uHolderPlayer > 0) && (uHolderPlayer <= 4)) {
+        if (uHolderPlayer > 0 && uHolderPlayer <= 4) {
             auto player_name = pPlayers[uHolderPlayer]->pName;
             if (player_name[strlen(player_name) - 1] == 's')
-                return localization->FormatString(
-                    655, pPlayers[uHolderPlayer]->pName);  // "%s' Jar"
+                return localization->FormatString(655, pPlayers[uHolderPlayer]->pName);  // "%s' Jar"
             else
-                return localization->FormatString(
-                    654, pPlayers[uHolderPlayer]->pName);  // "%s's Jar"
+                return localization->FormatString(654, pPlayers[uHolderPlayer]->pName);  // "%s's Jar"
         }
     }
 
     if (!pItemsTable->IsMaterialNonCommon(this)) {
         if (uEnchantmentType) {
-            return String(pItemsTable->pItems[uItemID].pName) + " " +
+            return std::string(pItemsTable->pItems[uItemID].pName) + " " +
                    pItemsTable->pEnchantments[uEnchantmentType - 1].pOfName;
         } else if (!special_enchantment) {
-            return String(pItemsTable->pItems[uItemID].pName);
+            return pItemsTable->pItems[uItemID].pName;
         } else {
             if (special_enchantment == 16     // Drain Hit Points from target.
                 || special_enchantment == 39  // Double damage vs Demons.
@@ -660,19 +668,17 @@ String ItemGen::GetIdentifiedName() {
             ) {            // enchantment and name positions inverted!
                 return StringPrintf(
                     "%s %s",
-                    pItemsTable->pSpecialEnchantments[special_enchantment - 1]
-                        .pNameAdd,
-                    pItemsTable->pItems[uItemID].pName);
+                    pItemsTable->pSpecialEnchantments[special_enchantment - 1].pNameAdd,
+                    pItemsTable->pItems[uItemID].pName
+                );
             } else {
-                return String(pItemsTable->pItems[uItemID].pName) + " " +
-                       pItemsTable
-                           ->pSpecialEnchantments[special_enchantment - 1]
-                           .pNameAdd;
+                return std::string(pItemsTable->pItems[uItemID].pName) + " " +
+                       pItemsTable->pSpecialEnchantments[special_enchantment - 1].pNameAdd;
             }
         }
     }
 
-    return String(pItemsTable->pItems[uItemID].pName);
+    return pItemsTable->pItems[uItemID].pName;
 }
 
 //----- (00456620) --------------------------------------------------------
@@ -995,27 +1001,20 @@ bool ItemGen::GenerateArtifact() {
     }
 }
 
-std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>
-    ItemGen::regularBonusMap;
-std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>
-    ItemGen::specialBonusMap;
-std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>
-    ItemGen::artifactBonusMap;
-
 #define NEWBONUSINTOSPECIALLIST(x, y) \
-    AddToMap(ItemGen::specialBonusMap, enchId, x, y);
+    AddToMap(specialBonusMap, enchId, x, y);
 #define NEWBONUSINTOSPECIALLIST2(x, y, z) \
-    AddToMap(ItemGen::specialBonusMap, enchId, x, y, z);
+    AddToMap(specialBonusMap, enchId, x, y, z);
 
 #define NEWBONUSINTOREGULARLIST(x) \
-    AddToMap(ItemGen::regularBonusMap, enchId, x);
+    AddToMap(regularBonusMap, enchId, x);
 
 #define NEWBONUSINTOARTIFACTLIST(x, y) \
-    AddToMap(ItemGen::artifactBonusMap, itemId, x, y);
+    AddToMap(artifactBonusMap, itemId, x, y);
 #define NEWBONUSINTOARTIFACTLIST2(x, y, z) \
-    AddToMap(ItemGen::artifactBonusMap, itemId, x, y, z);
+    AddToMap(artifactBonusMap, itemId, x, y, z);
 
-void ItemGen::AddToMap(
+static void AddToMap(
     std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>& maptoadd,
     int enchId, CHARACTER_ATTRIBUTE_TYPE attrId, int bonusValue /*= 0*/,
     unsigned __int16 Player::*skillPtr /*= NULL*/) {
@@ -1027,8 +1026,7 @@ void ItemGen::AddToMap(
     } else {
         currMap = key->second;
     }
-    Assert(currMap->find(attrId) == currMap->end(),
-           "Attribute %d already present for enchantment %d", attrId, enchId);
+    Assert(currMap->find(attrId) == currMap->end(), "Attribute %d already present for enchantment %d", attrId, enchId);
     (*currMap)[attrId] = new CEnchantment(bonusValue, skillPtr);
 }
 
@@ -1448,12 +1446,11 @@ void ItemGen::GetItemBonusSpecialEnchantment(Player* owner,
                                              CHARACTER_ATTRIBUTE_TYPE attrToGet,
                                              int* additiveBonus,
                                              int* halfSkillBonus) {
-    auto bonusList = ItemGen::specialBonusMap.find(this->special_enchantment);
-    if (bonusList == ItemGen::specialBonusMap.end()) {
+    auto bonusList = specialBonusMap.find(this->special_enchantment);
+    if (bonusList == specialBonusMap.end()) {
         return;
     }
-    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList =
-        bonusList->second;
+    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList = bonusList->second;
     if (currList->find(attrToGet) != currList->end()) {
         CEnchantment* currBonus = (*currList)[attrToGet];
         if (currBonus->statPtr != NULL) {
@@ -1473,12 +1470,11 @@ void ItemGen::GetItemBonusSpecialEnchantment(Player* owner,
 void ItemGen::GetItemBonusArtifact(Player* owner,
                                    CHARACTER_ATTRIBUTE_TYPE attrToGet,
                                    int* bonusSum) {
-    auto bonusList = ItemGen::artifactBonusMap.find(this->uItemID);
-    if (bonusList == ItemGen::artifactBonusMap.end()) {
+    auto bonusList = artifactBonusMap.find(this->uItemID);
+    if (bonusList == artifactBonusMap.end()) {
         return;
     }
-    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList =
-        bonusList->second;
+    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList = bonusList->second;
     if (currList->find(attrToGet) != currList->end()) {
         CEnchantment* currBonus = (*currList)[attrToGet];
         if (currBonus->statPtr != NULL) {
@@ -1491,13 +1487,12 @@ void ItemGen::GetItemBonusArtifact(Player* owner,
 
 bool ItemGen::IsRegularEnchanmentForAttribute(
     CHARACTER_ATTRIBUTE_TYPE attrToGet) {
-    auto bonusList = ItemGen::specialBonusMap.find(this->uEnchantmentType);
-    if (bonusList == ItemGen::specialBonusMap.end()) {
+    auto bonusList = specialBonusMap.find(this->uEnchantmentType);
+    if (bonusList == specialBonusMap.end()) {
         return false;
     }
-    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList =
-        bonusList->second;
-    return (currList->find(attrToGet) != currList->end());
+    std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currList = bonusList->second;
+    return currList->find(attrToGet) != currList->end();
 }
 
 ITEM_EQUIP_TYPE ItemGen::GetItemEquipType() {

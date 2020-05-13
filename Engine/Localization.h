@@ -1,9 +1,15 @@
 #pragma once
 #include "Engine/Strings.h"
 
+#define LSTR_EMPTY_SAVESLOT         72   // "Empty"
+#define LSTR_RACE_HUMAN             99   // "Human"
+#define LSTR_RACE_ELF               101  // "Elf"
+#define LSTR_RACE_DWARF             103  // "Dwarf"
+#define LSTR_RACE_GOBLIN            106  // "Goblin"
 #define LSTR_ELIGIBLE_TO_LEVELUP    147  // "You are eligible to train to %u."
 #define LSTR_NOT_ENOUGH_GOLD        155  // "You don't have enough gold"
 #define LSTR_XP_UNTIL_NEXT_LEVEL    538  // "You need %d more experience to train to level %d"
+
 
 class Localization {
  public:

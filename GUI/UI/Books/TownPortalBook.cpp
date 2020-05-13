@@ -8,7 +8,7 @@
 #include "GUI/GUIFont.h"
 #include "GUI/UI/Books/TownPortalBook.h"
 
-#include "IO/Mouse.h"
+#include "Io/Mouse.h"
 
 static int pTownPortalBook_xs[6] = {260, 324, 147, 385, 390, 19};
 static int pTownPortalBook_ys[6] = {206, 84, 182, 239, 17, 283};
@@ -42,7 +42,7 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook()  // const char *a1)
     for (uint i = 0; i < 6; ++i)
         CreateButton(pTownPortalBook_xs[i], pTownPortalBook_ys[i],
                      pTownPortalBook_ws[i], pTownPortalBook_hs[i], 1, 182,
-                     UIMSG_ClickTownInTP, i, 0, "");
+                     UIMSG_ClickTownInTP, i);
 }
 
 void GUIWindow_TownPortalBook::Update() {

@@ -1,5 +1,6 @@
 #include "Engine/Objects/SpriteObject.h"
 
+#include <memory>
 #include <utility>
 
 #include "Engine/Engine.h"
@@ -14,6 +15,7 @@
 #include "Engine/stru298.h"
 
 #include "Engine/Objects/Actor.h"
+#include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 
 #include "Engine/Graphics/BSPModel.h"
@@ -28,7 +30,7 @@ using EngineIoc = Engine_::IocContainer;
 
 // should be injected in SpriteObject but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
-static ParticleEngine *particle_engine = EngineIoc::ResolveParticleEngine();
+static std::shared_ptr<ParticleEngine> particle_engine = EngineIoc::ResolveParticleEngine();
 
 size_t uNumSpriteObjects;
 std::array<SpriteObject, MAX_SPRITE_OBJECTS> pSpriteObjects;

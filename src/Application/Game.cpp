@@ -3,27 +3,18 @@
 #include <algorithm>
 #include <string>
 
+#include "Arcomage/Arcomage.h"
+
 #include "src/Application/GameFactory.h"
 #include "src/Application/GameMenu.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineFactory.h"
-#include "Engine/Localization.h"
-#include "Engine/Time.h"
-
 #include "Engine/Events.h"
-#include "Engine/LOD.h"
-#include "Engine/Party.h"
-#include "Engine/SaveLoad.h"
-
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Chest.h"
-#include "Engine/Objects/ObjectList.h"
-#include "Engine/Objects/SpriteObject.h"
-
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -31,20 +22,19 @@
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-
-#include "Engine/Tables/FrameTableInc.h"
-
-#include "Engine/TurnEngine/TurnEngine.h"
-
+#include "Engine/Localization.h"
+#include "Engine/LOD.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Objects/Chest.h"
+#include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/SpriteObject.h"
+#include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Spells/CastSpellInfo.h"
-
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
-
-#include "Arcomage/Arcomage.h"
-
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
+#include "Engine/Tables/FrameTableInc.h"
+#include "Engine/Time.h"
+#include "Engine/TurnEngine/TurnEngine.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
@@ -72,33 +62,134 @@
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Io/Mouse.h"
+
+#include "Media/Audio/AudioPlayer.h"
+#include "Media/MediaPlayer.h"
+
+#include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+#include "Platform/OSWindowFactory.h"
+
+
 void ShowMM7IntroVideo_and_LoadingScreen();
 void IntegrityTest();
 
-using Application::GameFactory;
 using Application::Game;
-using Application::Configuration;
+using Application::GameConfig;
+using Application::GameFactory;
 using Engine_::EngineFactory;
+using Graphics::IRenderFactory;
 
-int MM_Main(const char *pCmdLine) {
-    GameFactory gameFactory;
 
-    auto game = gameFactory.CreateGame(std::string(pCmdLine));
-    game->Run();
 
-    return 0;
+
+std::string FindMm7Directory() {
+    bool mm7_installation_found = false;
+
+    // env variable override to a custom folder
+    if (!mm7_installation_found) {
+        if (const char* path = std::getenv("WOMM_PATH_OVERRIDE")) {
+            mm7_installation_found = true;
+            logger->Info("MM7 Custom Folder (ENV path override): %s", path);
+            return path;
+        }
+    }
+
+    // standard 1.0 installation
+    char path_buffer[2048];
+    if (!mm7_installation_found) {
+        mm7_installation_found = OS_GetAppString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
+            path_buffer,
+            sizeof(path_buffer)
+        );
+
+        if (mm7_installation_found) {
+            logger->Info("Standard MM7 installation found: %s", path_buffer);
+            return path_buffer;
+        }
+    }
+
+    // GoG old version
+    if (!mm7_installation_found) {
+        mm7_installation_found = OS_GetAppString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
+            path_buffer,
+            sizeof(path_buffer)
+        );
+
+        if (mm7_installation_found) {
+            logger->Info("GoG MM7 installation found: %s", path_buffer);
+            return path_buffer;
+        }
+    }
+
+    // GoG new version ( 2018 builds )
+    if (!mm7_installation_found) {
+        mm7_installation_found = OS_GetAppString(
+            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path",
+            path_buffer,
+            sizeof(path_buffer)
+        );
+
+        if (mm7_installation_found) {
+            logger->Info("GoG MM7 2018 build installation found: %s", path_buffer);
+            return path_buffer;
+        }
+    }
+
+    // Hack path fix - pskelton
+    if (!mm7_installation_found) {
+        mm7_installation_found = 1;
+        strcpy(path_buffer, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
+        logger->Info("Hack Path MM7 installation found: %s", path_buffer);
+        return path_buffer;
+    }
+
+    return "";
 }
-
-bool Game::Configure(std::shared_ptr<const Configuration> config) {
-    this->config = config;
-
-    return true;
-}
-
-
 
 void Game::Run() {
     IntegrityTest();
+
+    SetDataPath(FindMm7Directory());
+
+
+    window = OSWindowFactory().Create(
+        "World of Might and Magic®",
+        config->game_window_width,
+        config->game_window_height
+    );
+    ::window = window;
+
+    render = IRenderFactory().Create(
+        window,
+        config->renderer_name,
+        false
+    );
+    ::render = render;
+
+    if (!render) {
+        log->Warning("Render creation failed");
+        return;
+    }
+
+    if (!render->Initialize()) {
+        log->Warning("Render failed to initialize");
+        return;
+    }
+
+    keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
+    ::keyboardActionMapping = keyboardActionMapping;
+
+    keyboardInputHandler = std::make_shared<KeyboardInputHandler>(
+        window->GetKeyboardController(),
+        keyboardActionMapping
+    );
+
+    mouse = EngineIoc::ResolveMouse();
+    ::mouse = mouse;
 
     EngineFactory engineFactory;
     engine = engineFactory.CreateEngine(config->command_line);
@@ -128,6 +219,7 @@ void Game::Run() {
         ::engine = nullptr;
     }
 }
+
 
 
 
@@ -578,109 +670,17 @@ void Game::EventLoop() {
                             back_to_game();
                         }
                         continue;
-                    } else if (current_screen_type ==
-                        CURRENT_SCREEN::SCREEN_MENU) {
-/*
-    stru_506E40.Release();
-    Game_OnEscape();
-*/
+                    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_MENU) {
                         break;
                     } else if (
                         current_screen_type == CURRENT_SCREEN::SCREEN_SAVEGAME ||
                         current_screen_type == CURRENT_SCREEN::SCREEN_LOADGAME) {
-/*
-                        // crt_deconstruct_ptr_6A0118();
-                        stru_506E40.Release();
-                        Game_OnEscape();
-*/
                         break;
-                    } else if (
-                        current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS) {
-/*
-                        options_menu_skin.Relaease();
-                        OS_SetAppInt("soundflag",
-                        (char)uSoundVolumeMultiplier);
-                        OS_SetAppInt("musicflag",
-                        (char)uMusicVolimeMultiplier);
-                        OS_SetAppInt("CharVoices",
-                        (char)uVoicesVolumeMultiplier);
-                        OS_SetAppInt("WalkSound", bWalkSound);
-                        OS_SetAppInt("ShowDamage",
-                        bShowDamage);
-                        // OS_SetAppInt("graphicsmode",
-                        (unsigned
-                        __int8)byte_6BE388_graphicsmode);
-                        OS_SetAppInt("valAlwaysRun",
-                        bAlwaysRun);
-                        OS_SetAppInt("FlipOnExit",
-                        bFlipOnExit); if (uTurnSpeed == 0)
-                        OS_SetAppInt("TurnDelta", 3);
-                        else if (uTurnSpeed == 64)
-                        OS_SetAppInt("TurnDelta", 2);
-                        else if (uTurnSpeed == 128)
-                        OS_SetAppInt("TurnDelta", 1);
-                        stru_506E40.Release();
-                        Game_OnEscape();
-*/
+                    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS) {
                         break;
-                    } else if (
-                        current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS) {
-/*
-                            // if ( render->pRenderD3D ) {
-                            OS_SetAppInt("Colored Lights",
-                            render->bUseColoredLights);
-                            OS_SetAppInt("Tinting",
-                            render->bTinting);
-                            OS_SetAppInt("Bloodsplats",
-                            (LOBYTE(engine->uFlags2) >> 5)
-                            & 1);
-                            }
-
-                            stru_506E40.Release();
-                            Game_OnEscape();
-*/
+                    } else if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS) {
                         break;
                     } else if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
-                        /*v197 = 1;
-                        pKeyBindingFlag = false;
-                        for (uint i = 0; i < 28; ++i)
-                        {
-                        if (GameMenuUI_InvaligKeyBindingsFlags[i])
-                        pKeyBindingFlag = true;
-                        }
-                        if (!pKeyBindingFlag)
-                        {
-                        memset(&game_ui_options_controls, 0, 20);
-                        for (uint i = 0; i < 28; ++i)
-                        {
-                        if (pKeyActionMap->GetActionVKey((enum InputAction)i) !=
-                        pPrevVirtualCidesMapping[i])
-                        {
-                        if (v197)
-                        {
-                        GUI_ReplaceHotkey(pKeyActionMap->GetActionVKey((enum
-                        InputAction)i), LOBYTE(pPrevVirtualCidesMapping[i]), 1);
-                        v197 = 0;
-                        }
-                        else
-                        GUI_ReplaceHotkey(pKeyActionMap->GetActionVKey((enum
-                        InputAction)i), LOBYTE(pPrevVirtualCidesMapping[i]), 0);
-                        }
-                        if (i > 3 && i != 25 && i != 26)
-                        pKeyToggleType = TOGGLE_OneTimePress;
-                        else
-                        pKeyToggleType = TOGGLE_Continuously;
-                        pKeyActionMap->SetKeyMapping(i,
-                        pPrevVirtualCidesMapping[i], pKeyToggleType);
-                        }
-                        pKeyActionMap->StoreMappings();
-                        stru_506E40.Release();
-                        }
-                        else
-                        pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 
-                        0);
-
-                        Game_OnEscape();*/
                         break;
                     } else {
                         if (current_screen_type > CURRENT_SCREEN::SCREEN_67) {
@@ -976,7 +976,7 @@ void Game::EventLoop() {
                     viewparams->bRedrawGameUI = true;
                     continue;
                 case UIMSG_CycleCharacters:
-                    uActiveCharacter = CycleCharacter(OS_IfShiftPressed());
+                    uActiveCharacter = CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled());
                     viewparams->bRedrawGameUI = true;
                     continue;
                 case UIMSG_OnTravelByFoot:
@@ -1511,16 +1511,16 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_OnFinalWindowClose:
-                    __debugbreak();
                     uGameState = GAME_STATE_PLAYING;
-                    strcpy((char *)pKeyActionMap->pPressedKeysBuffer, "2");
-                    __debugbreak();  // missed break/continue?
+                    // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
+                    // __debugbreak();  // missed break/continue?
+                    continue;
                 case UIMSG_DD: {
                     __debugbreak();
                     // sprintf(tmp_str.data(), "%s",
                     // pKeyActionMap->pPressedKeysBuffer);
                     FrameTableTxtLine frameTableTxtLine;
-                    txt_file_frametable_parser(pKeyActionMap->pPressedKeysBuffer, &frameTableTxtLine);
+                    txt_file_frametable_parser(keyboardInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
                     String status_string;
                     if (frameTableTxtLine.uPropCount == 1) {
                         size_t map_index = atoi(frameTableTxtLine.pProperties[0]);
@@ -1920,7 +1920,7 @@ void Game::EventLoop() {
                         pAudioPlayer->PlaySound(
                             (SoundID)(rand() % 2 + SOUND_TurnPageU), 0, 0, -1, 0, 0);
                     } else {
-                        if (OS_IfShiftPressed()) {
+                        if (keyboardInputHandler->IsSpellBackcycleToggled()) {
                             --uAction;
                             if (uAction < 0)
                                 uAction = skill_count - 1;
@@ -2018,7 +2018,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_QuickReference:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
+                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu != nullptr)
                         pGUIWindow_CurrentMenu->Release();
 
                     new OnButtonClick2(0x230u, 0x1C2u, 0, 0,
@@ -2279,67 +2279,55 @@ void Game::EventLoop() {
                     pMessageQueue_50CBD0->Flush();
                     // if currently in a chest
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST) {
-                        Chest::GrabItem(OS_IfCtrlPressed());
+                        Chest::GrabItem(keyboardInputHandler->IsTakeAllToggled());
                     } else {
                         OnPressSpace();
                     }
                     continue;
-                case UIMSG_ClickZoomOutBtn:
-                    if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
-                    pParty->uFlags |= 2u;
-                    new OnButtonClick2(519, 136, 0, 0, pBtn_ZoomOut);
-                    uNumSeconds = 131072;
-                    v118 = 2 * viewparams->uMinimapZoom;
-                    ++viewparams->field_28;
-                    viewparams->uMinimapZoom *= 2;
-                    if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) {
-                        if (v118 > 4096) {
-                            viewparams->uMinimapZoom = 4096;
-                            viewparams->field_28 = 12;
-                        }
-                        continue;
-                    }
-                    v119 = 2048;
-                    if ((signed int)v118 <= 2048) {
-                        _576E2C_current_minimap_zoom = v118;
-                        dword_576E28 = viewparams->field_28;
-                        break;
-                    }
-                    viewparams->field_28 = 11;
-                    viewparams->uMinimapZoom = v119;
-                    _576E2C_current_minimap_zoom = v119;
-                    dword_576E28 = viewparams->field_28;
-                    break;
                 case UIMSG_ClickZoomInBtn:
                     if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
                     pParty->uFlags |= 2u;
-                    new OnButtonClick2(574, 136, 0, 0, pBtn_ZoomIn);
-                    uNumSeconds = 32768;
-                    v118 = (unsigned __int64)((signed __int64)(signed int)
-                                                  viewparams->uMinimapZoom
-                                              << 15) >>
-                           16;
-                    --viewparams->field_28;
-                    viewparams->uMinimapZoom =
-                        (unsigned __int64)((signed __int64)(signed int)
-                                               viewparams->uMinimapZoom
-                                           << 15) >>
-                        16;
-                    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                        v119 = 512;
-                        if (v118 < 512) {
-                            viewparams->field_28 = 9;
-                            v118 = v119;
-                            viewparams->uMinimapZoom = v119;
+                    new OnButtonClick2(519, 136, 0, 0, pBtn_ZoomIn);
+                    uNumSeconds = 131072;
+
+                    ++viewparams->field_28;
+                    viewparams->uMinimapZoom *= 2;
+
+                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+                        if (viewparams->uMinimapZoom > 4096) {
+                            viewparams->uMinimapZoom = 4096;
+                            viewparams->field_28 = 12;
                         }
-                        _576E2C_current_minimap_zoom = v118;
-                        dword_576E28 = viewparams->field_28;
                     } else {
-                        if ((signed int)v118 < 256) {
+                        if (viewparams->uMinimapZoom > 2048) {
+                            viewparams->uMinimapZoom = 2048;
+                            viewparams->field_28 = 11;
+                        }
+                    }
+
+                    break;
+                case UIMSG_ClickZoomOutBtn:
+                    if (!(current_screen_type == CURRENT_SCREEN::SCREEN_GAME)) continue;
+                    pParty->uFlags |= 2u;
+                    new OnButtonClick2(574, 136, 0, 0, pBtn_ZoomOut);
+                    uNumSeconds = 32768;
+
+                    --viewparams->field_28;
+                    viewparams->uMinimapZoom /= 2;
+
+                    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+                        if (viewparams->uMinimapZoom < 512) {
+                            viewparams->uMinimapZoom = 512;
+                            viewparams->field_28 = 9;
+                        }
+                    } else {
+                        if (viewparams->uMinimapZoom < 256) {
                             viewparams->uMinimapZoom = 256;
                             viewparams->field_28 = 8;
                         }
                     }
+
+                    break;
                 case UIMSG_DebugSpecialItem:
                     pItemID = rand() % 500;
                     for (uint i = 0; i < 500; ++i) {
@@ -2692,7 +2680,8 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    engine->PickKeyboard(Keyboard::IsKeyBeingHeld(VK_CONTROL), &vis_sprite_filter_3, &vis_door_filter);
+    engine->PickKeyboard(keyboardInputHandler->IsKeyboardPickingOutlineToggled(), &vis_sprite_filter_3, &vis_door_filter);
+
     int pid = vis->get_picked_object_zbuf_val().object_pid;
     if (pid != -1)
         DoInteractionWithTopmostZObject(pid);
@@ -2740,15 +2729,11 @@ void Game::GameLoop() {
 
         bool game_finished = false;
         do {
-            window->PeekMessageLoop();
-            if (dword_6BE364_game_settings_1 & GAME_SETTINGS_APP_INACTIVE) {
-                OS_WaitMessage();
-                // continue;
-            }
+            MessageLoopWithWait();
 
             engine->_44EEA7();  // pop up . mouse picking
             GameUI_WritePointedObjectStatusString();
-            keyboard->ProcessInputActions();
+            keyboardInputHandler->GenerateInputActions();
             EventLoop();
             if (pArcomageGame->bGameInProgress) {
                 ArcomageGame::Loop();

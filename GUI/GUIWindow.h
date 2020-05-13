@@ -1,14 +1,22 @@
 #pragma once
-
 #include <array>
 #include <cstdint>
 #include <list>
+#include <memory>
 #include <queue>
 #include <vector>
 
 #include "Engine/Objects/Player.h"
 #include "Engine/Strings.h"
 #include "Engine/Party.h"
+
+#include "Io/GameKey.h"
+#include "Io/Mouse.h"
+#include "Io/KeyboardInputHandler.h"
+
+using Io::GameKey;
+using Io::Mouse;
+
 
 enum UIMessageType : uint32_t {
     UIMSG_0 = 0,
@@ -338,19 +346,17 @@ enum WindowType {
     WINDOW_MapsBook = 0xCA,
     WINDOW_CalendarBook = 0xCB,
     WINDOW_JournalBook = 0xE0,
-
-    WINDOW_Unknown,              // i wasnt able to find real value for those
-    WINDOW_CharacterCreation,    // new addition, because i wasnt able to find real value for this
+    WINDOW_Unknown,               // i wasnt able to find real value for those
+    WINDOW_CharacterCreation,     // new addition, because i wasnt able to find real value for this
     WINDOW_CharacterCreationBtn,  // new addition, because i wasnt able to find real value for this
-    WINDOW_GenericCancel,        // new addition, because i wasnt able to find real value for this
-    WINDOW_GameUI,               // new addition, because i wasnt able to find real value for this
-    WINDOW_Credits,              // new addition, because i wasnt able to find real value for this
-    WINDOW_Save,                 // new addition, because i wasnt able to find real value for this
-    WINDOW_Load,                 // new addition, because i wasnt able to find real value for this
+    WINDOW_GenericCancel,         // new addition, because i wasnt able to find real value for this
+    WINDOW_GameUI,                // new addition, because i wasnt able to find real value for this
+    WINDOW_Credits,               // new addition, because i wasnt able to find real value for this
+    WINDOW_Save,                  // new addition, because i wasnt able to find real value for this
+    WINDOW_Load,                  // new addition, because i wasnt able to find real value for this
     WINDOW_DebugMenu,
-
     // =======
-    // ToString updated until here
+    // ToString (below) is updated until this point
 };
 
 #define ENUM_TO_STRING_CASE(val) case val: return #val;
@@ -422,11 +428,6 @@ inline const char* ToString(WindowType windowType) {
 
 struct Texture_MM7;
 
-#define WINDOW_INPUT_NONE 0
-#define WINDOW_INPUT_IN_PROGRESS 1
-#define WINDOW_INPUT_CONFIRMED 2
-#define WINDOW_INPUT_CANCELLED 3
-
 class GUIFont;
 class GUIButton;
 
@@ -437,7 +438,7 @@ class GUIWindow {
     virtual ~GUIWindow() {}
 
     GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-    UIMessageType msg, unsigned int msg_param, uint8_t hotkey, const String &label,
+    UIMessageType msg, unsigned int msg_param, GameKey hotkey = GameKey::None, const String &label = "",
     const std::vector<Image*> &textures = std::vector<Image*>());
 
     bool Contains(unsigned int x, unsigned int y);
@@ -473,9 +474,9 @@ class GUIWindow {
     unsigned int uFrameW;
     WindowType eWindowType;
     union {
-        void *ptr_1C;       // sometimes BuildID_2Events - book open, sometimes Button
+        void *ptr_1C;        // sometimes BuildID_2Events - book open, sometimes Button
         unsigned int par1C;  // in shops and houses - int parameter
-                            // sometimes WindowType
+                             // sometimes WindowType
     };
     int field_24;
     int pNumPresenceButton;
@@ -483,12 +484,12 @@ class GUIWindow {
     int field_30;
     int field_34;
     int pStartingPosActiveItem;
-    int receives_keyboard_input_2;  // 0  no input   1 currently typing   2 enter pressed   3 escape pressed
+    WindowInputStatus keyboard_input_status;
     bool receives_keyboard_input;
     String sHint;
     std::vector<GUIButton*> vButtons;
 
-    Mouse *mouse = nullptr;
+    std::shared_ptr<Mouse> mouse = nullptr;
     Log *log = nullptr;
 };
 
@@ -496,11 +497,11 @@ class GUIWindow_Scroll : public GUIWindow {
  public:
     GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
         GUIWindow(WINDOW_Scroll, x, y, width, height, button, hint) {
-        CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, '1', "");
-        CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, '2', "");
-        CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, '3', "");
-        CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, '4', "");
-        CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, '\t', "");
+        CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
+        CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
+        CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3, "");
+        CreateButton(407, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 4, GameKey::Digit4, "");
+        CreateButton(0, 0, 0, 0, 1, 0, UIMSG_CycleCharacters, 0, GameKey::Tab, "");
     }
     virtual ~GUIWindow_Scroll() {}
 
@@ -535,8 +536,8 @@ class OnButtonClick2 : public GUIWindow {
 
 class OnButtonClick3 : public GUIWindow {
  public:
-    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
-        GUIWindow(windowType, x, y, width, height, button, hint) {
+    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String())
+        : GUIWindow(windowType, x, y, width, height, button, hint) {
     }
 
     virtual ~OnButtonClick3() {}
@@ -735,8 +736,8 @@ void Inventory_ItemPopupAndAlchemy();
 unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int current_pos,
                                                           int base_pos);
 unsigned int GetSizeInInventorySlots(unsigned int uNumPixels);
-class GUIButton *GUI_HandleHotkey(uint8_t uHotkey);   // idb
-void GUI_ReplaceHotkey(uint8_t uOldHotkey, uint8_t uNewHotkey, char bFirstCall);
+class GUIButton *GUI_HandleHotkey(GameKey hotkey);
+void GUI_ReplaceHotkey(GameKey oldKey, GameKey newKey, char bFirstCall);
 void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item);   // idb

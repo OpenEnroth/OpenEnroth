@@ -15,6 +15,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/OSWindow.h"
+
 
 Image *ui_book_button8_off = nullptr;
 Image *ui_book_button8_on = nullptr;
@@ -67,7 +69,7 @@ GUIWindow_Book::GUIWindow_Book()
 void GUIWindow_Book::BasicBookInitialization() {
     pAudioPlayer->StopChannels(-1, -1);
     InitializeFonts();
-    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, 0,
+    CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, GameKey::None,
                  localization->GetString(79));  // Close
     current_screen_type = CURRENT_SCREEN::SCREEN_BOOKS;
     full_num_items_in_book = 0;

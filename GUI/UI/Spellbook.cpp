@@ -2,20 +2,22 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IRender.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Viewport.h"
-
-#include "IO/Mouse.h"
-
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 
+#include "Io/Mouse.h"
+
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Platform/OSWindow.h"
+
 
 void InitializeSpellBookTextures();
 void OnCloseSpellBookPage();
@@ -84,8 +86,7 @@ void GUIWindow_Spellbook::OpenSpellbook() {
     // v3 = 0;
     a2 = 0;
 
-    PlayerSpellbookChapter *chapter =
-        &pPlayer->spellbook.pChapters[pPlayer->lastOpenedSpellbookPage];
+    PlayerSpellbookChapter *chapter = &pPlayer->spellbook.pChapters[pPlayer->lastOpenedSpellbookPage];
     for (uint i = 0; i < 11; ++i) {
         if (!chapter->bIsSpellAvailable[i] && !engine->config->debug_all_magic)
             continue;
@@ -93,60 +94,57 @@ void GUIWindow_Spellbook::OpenSpellbook() {
         v4 = pPlayer->lastOpenedSpellbookPage;
         // v4 = (12 * pPlayer->lastOpenedSpellbookPage +
         // pSpellbookSpellIndices[pPlayer->lastOpenedSpellbookPage][i + 1]);
-        CreateButton(pViewport->uViewportTL_X +
-                         pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Xpos,
-                     pViewport->uViewportTL_Y +
-                         pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]]
-                             .Ypos,  // dword_4E20D0
+        CreateButton(pViewport->uViewportTL_X + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Xpos,
+                     pViewport->uViewportTL_Y + pIconPos[v4][pSpellbookSpellIndices[v4][i + 1]].Ypos,  // dword_4E20D0
                      SBPageSSpellsTextureList[i + 1]->GetWidth(),
                      SBPageSSpellsTextureList[i + 1]->GetHeight(), 1, 79,
-                     UIMSG_SelectSpell, i, 0, "");
+                     UIMSG_SelectSpell, i);
         ++a2;
         // ++v3;
     }
     // while ( (signed int)v3 < 11 );
 
-    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_SpellBook_PressTab, 0, '\t', "");
+    CreateButton(0, 0, 0, 0, 1, 0, UIMSG_SpellBook_PressTab, 0, GameKey::Tab);
     if (a2) _41D08F_set_keyboard_control_group(a2, 0, 0, 0);
 
     if (pPlayer->pActiveSkills[PLAYER_SKILL_FIRE] || engine->config->debug_all_magic)
-        CreateButton(399, 10, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 0, 0,
+        CreateButton(399, 10, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 0, GameKey::None,
                      localization->GetSpellSchoolName(0));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_AIR] || engine->config->debug_all_magic)
-        CreateButton(399, 46, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 1, 0,
+        CreateButton(399, 46, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 1, GameKey::None,
                      localization->GetSpellSchoolName(1));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] || engine->config->debug_all_magic)
-        CreateButton(399, 83, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 2, 0,
+        CreateButton(399, 83, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 2, GameKey::None,
                      localization->GetSpellSchoolName(2));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_EARTH] || engine->config->debug_all_magic)
-        CreateButton(399, 121, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 3, 0,
+        CreateButton(399, 121, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 3, GameKey::None,
                      localization->GetSpellSchoolName(3));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_SPIRIT] || engine->config->debug_all_magic)
-        CreateButton(399, 158, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 4, 0,
+        CreateButton(399, 158, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 4, GameKey::None,
                      localization->GetSpellSchoolName(5));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_MIND] || engine->config->debug_all_magic)
-        CreateButton(400, 196, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 5, 0,
+        CreateButton(400, 196, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 5, GameKey::None,
                      localization->GetSpellSchoolName(4));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_BODY] || engine->config->debug_all_magic)
-        CreateButton(400, 234, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 6, 0,
+        CreateButton(400, 234, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 6, GameKey::None,
                      localization->GetSpellSchoolName(6));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_LIGHT] || engine->config->debug_all_magic)
-        CreateButton(400, 271, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 7, 0,
+        CreateButton(400, 271, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 7, GameKey::None,
                      localization->GetSpellSchoolName(7));
     if (pPlayer->pActiveSkills[PLAYER_SKILL_DARK] || engine->config->debug_all_magic)
-        CreateButton(400, 307, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 8, 0,
+        CreateButton(400, 307, 50, 36, 1, 0, UIMSG_OpenSpellbookPage, 8, GameKey::None,
                      localization->GetSpellSchoolName(8));
 
     CreateButton(476, 450, ui_spellbook_btn_quckspell->GetWidth(),
                  ui_spellbook_btn_quckspell->GetHeight(), 1, 78,
-                 UIMSG_ClickInstallRemoveQuickSpellBtn, 0, 0, "");
+                 UIMSG_ClickInstallRemoveQuickSpellBtn, 0);
     pBtn_InstallRemoveSpell = CreateButton(
-        476, 450, 48, 32, 1, 78, UIMSG_ClickInstallRemoveQuickSpellBtn, 0, 0,
+        476, 450, 48, 32, 1, 78, UIMSG_ClickInstallRemoveQuickSpellBtn, 0, GameKey::None,
         "", {{ui_spellbook_btn_quckspell_click}});
     CreateButton(561, 450, ui_spellbook_btn_close->GetWidth(),
-                 ui_spellbook_btn_close->GetHeight(), 1, 0, UIMSG_Escape, 0, 0,
+                 ui_spellbook_btn_close->GetHeight(), 1, 0, UIMSG_Escape, 0, GameKey::None,
                  localization->GetString(79));
-    pBtn_CloseBook = CreateButton(561, 450, 48, 32, 1, 0, UIMSG_Escape, 0, 0,
+    pBtn_CloseBook = CreateButton(561, 450, 48, 32, 1, 0, UIMSG_Escape, 0, GameKey::None,
                                   localization->GetString(79),
                                   {{ui_spellbook_btn_close_click}});
 }

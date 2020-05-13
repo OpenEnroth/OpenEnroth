@@ -3,18 +3,18 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/IocContainer.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
 
-#include "Engine/Graphics/IndoorCameraD3D.h"
-#include "Engine/Graphics/Viewport.h"
-#include "Engine/Graphics/Vis.h"
-
 #include "GUI/GUIWindow.h"
 
-#include "IO/Keyboard.h"
-#include "IO/Mouse.h"
+#include "Io/InputAction.h"
+#include "Io/KeyboardInputHandler.h"
+#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
@@ -25,6 +25,7 @@
 using EngineIoc = Engine_::IocContainer;
 using ApplicationIoc = Application::IocContainer;
 using Application::GameWindowHandler;
+using Io::InputAction;
 
 
 GameWindowHandler::GameWindowHandler() {
@@ -37,11 +38,21 @@ void GameWindowHandler::OnScreenshot() {
     }
 }
 
-bool GameWindowHandler::OnChar(int c) {
-    if (!pKeyActionMap->ProcessTextInput(c) && !viewparams->field_4C) {
-        return GUI_HandleHotkey(c);
+bool GameWindowHandler::OnChar(GameKey key, int c) {
+    bool textInputHandled = false;
+
+    // backspace, enter, esc (text input), controls binding
+    textInputHandled |= keyboardInputHandler->ProcessTextInput(key, c);
+
+    // regular text input
+    if (c != -1) {
+        textInputHandled |= keyboardInputHandler->ProcessTextInput(GameKey::Char, c);
     }
-    return 0;
+
+    if (!textInputHandled && !viewparams->field_4C) {
+        return GUI_HandleHotkey(key);  // try other hotkeys
+    }
+    return false;
 }
 
 void GameWindowHandler::OnMouseLeftClick(int x, int y) {
@@ -56,7 +67,7 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
         mouse->SetMouseClick(x, y);
 
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
-            UI_OnVkKeyDown(VK_SELECT);
+            UI_OnKeyDown(GameKey::Select);
         }
 
         if (engine) {
@@ -132,45 +143,48 @@ void GameWindowHandler::OnMouseMove(int x, int y, bool left_button, bool right_b
     }
 }
 
-extern bool _507B98_ctrl_pressed;
 
-void GameWindowHandler::OnVkDown(int vk, int vk_to_char) {
-    if (uGameMenuUI_CurentlySelectedKeyIdx != -1) {
-        pKeyActionMap->ProcessTextInput(vk);
+extern bool _507B98_ctrl_pressed;
+extern InputAction currently_selected_action_for_binding;
+
+void GameWindowHandler::OnKey(GameKey key) {
+    if (currently_selected_action_for_binding != InputAction::Invalid) {
+        // we're setting a key binding in options
+        keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
         pArcomageGame->stru1.am_input_type = 1;
 
-        set_stru1_field_8_InArcomage(vk_to_char);
-        if (vk == VK_ESCAPE) {
+        set_stru1_field_8_InArcomage(0);
+        if (key == GameKey::Escape) {
             pArcomageGame->stru1.am_input_type = 10;
         } else if (pArcomageGame->check_exit) {
            pArcomageGame->check_exit = 0;
            pArcomageGame->force_redraw_1 = 1;
         }
 
-        if (vk == VK_F3) {
+        if (key == GameKey::F3) {
             OnScreenshot();
-        } else if (vk == VK_F4 && !pMovie_Track) {
+        } else if (key == GameKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
             pArcomageGame->stru1.am_input_type = 9;
         }
     } else {
         pMediaPlayer->StopMovie();
-        if (vk == VK_RETURN) {
-            if (!viewparams->field_4C) UI_OnVkKeyDown(vk);
-        } else if (vk == VK_CONTROL) {
+        if (key == GameKey::Return) {
+            if (!viewparams->field_4C) UI_OnKeyDown(key);
+        } else if (key == GameKey::Control) {
             _507B98_ctrl_pressed = true;
-        } else if (vk == VK_ESCAPE) {
+        } else if (key == GameKey::Escape) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (vk == VK_F4 && !pMovie_Track) {
+        } else if (key == GameKey::F4 && !pMovie_Track) {
             OnToggleFullscreen();
-        } else if (vk == VK_NUMPAD0) {
+        } else if (key == GameKey::Tilde) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
-        } else if (vk >= VK_LEFT && vk <= VK_DOWN) {
+        } else if (key == GameKey::Left || key == GameKey::Right || key == GameKey::Up || key == GameKey::Down) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
                 current_screen_type != CURRENT_SCREEN::SCREEN_MODAL_WINDOW) {
                 if (!viewparams->field_4C) {
-                    UI_OnVkKeyDown(vk);
+                    UI_OnKeyDown(key);
                 }
             }
         }
@@ -235,16 +249,21 @@ void GameWindowHandler::OnDeactivated() {
         // dword_4E98BC_bApplicationActive = 0;
 
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_APP_INACTIVE;
-        if (pEventTimer->bPaused)
-            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
-        else
-            pEventTimer->Pause();
-        if (pMiscTimer->bPaused)
-            dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
-        else
-            pMiscTimer->Pause();
+        if (pEventTimer != nullptr) {
+            if (pEventTimer->bPaused)
+                dword_6BE364_game_settings_1 |= GAME_SETTINGS_0200_EVENT_TIMER;
+            else
+                pEventTimer->Pause();
+        }
 
-        if (pAudioPlayer) {
+        if (pMiscTimer != nullptr) {
+            if (pMiscTimer->bPaused)
+                dword_6BE364_game_settings_1 |= GAME_SETTINGS_0400_MISC_TIMER;
+            else
+                pMiscTimer->Pause();
+        }
+
+        if (pAudioPlayer != nullptr) {
             pAudioPlayer->StopChannels(-1, -1);
             pAudioPlayer->MusicPause();
         }

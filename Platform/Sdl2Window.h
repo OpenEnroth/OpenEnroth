@@ -1,8 +1,11 @@
 #pragma once
+#include <memory>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "Platform/OSWindow.h"
+#include "Platform/Sdl2KeyboardController.h"
+#include "Platform/Sdl2MouseController.h"
 
 class Sdl2Window : public OSWindow {
  public:
@@ -20,8 +23,7 @@ class Sdl2Window : public OSWindow {
     int GetY() const override;
     unsigned int GetWidth() const override;
     unsigned int GetHeight() const override;
-
-    Point TransformCursorPos(Point &pt) const override;  // screen to client
+    void SetWindowArea(int width, int height) override;
 
     bool OnOSMenu(int item_id) override;
 
@@ -29,12 +31,23 @@ class Sdl2Window : public OSWindow {
     bool Focused() override;
     void Activate() override;
 
-    void PeekSingleMessage() override;
-    void PeekMessageLoop() override;
+    void WaitSingleEvent() override;
+    void HandleSingleEvent() override;
+    void HandleAllEvents() override;
 
-    void *GetWinApiHandle() override;
+    std::shared_ptr<IKeyboardController> GetKeyboardController() override {
+        return std::make_shared<Sdl2KeyboardController>();
+    }
 
-    // window-renderer integration, probably should be a separate class
+    std::shared_ptr<IMouseController> GetMouseController() override {
+        return std::make_shared<Sdl2MouseController>();
+    }
+
+    // Sdl2Window-specific interface follows
+
+    void* GetWinApiHandle() override;
+
+    // window<->renderer integration, probably should be a separate class
     void OpenGlCreate() override;
     void OpenGlSwapBuffers() override;
 
@@ -44,6 +57,6 @@ class Sdl2Window : public OSWindow {
     SDL_GLContext sdlOpenGlContext = nullptr;
 
     void MessageProc(const SDL_Event &e);
-    int SdlkToChar(SDL_Keycode key, bool uppercase) const;
-    int SdlkToVk(SDL_Keycode key) const;
+    bool TryMapScanCode(SDL_Scancode code, GameKey* outKey) const;
+    bool TryMapKeyCode(SDL_Keycode key, bool uppercase, int *outKey) const;
 };

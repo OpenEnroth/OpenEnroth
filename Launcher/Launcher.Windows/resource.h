@@ -1,4 +1,4 @@
-//{{NO_DEPENDENCIES}}
+//{{NO_DEPENDENCIES}} // NOLINT
 // Microsoft Visual C++ generated include file.
 // Used by Resource.rc
 //
@@ -17,7 +17,7 @@
 #define IDC_RADIO_RENDERER_OPENGL       1007
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        112

@@ -4,7 +4,12 @@
 #include <vector>
 
 #include "Engine/Strings.h"
+
 #include "GUI/GUIWindow.h"
+
+#include "Io/GameKey.h"
+
+using Io::GameKey;
 
 class Image;
 
@@ -32,7 +37,7 @@ class GUIButton {
     bool field_2C_is_pushed = false;
     GUIWindow *pParent = nullptr;
     std::vector<Image*> vTextures;
-    uint8_t uHotkey = 0;
+    GameKey hotkey = GameKey::None;
     String sLabel = "";
     String field_75 = "";
 };

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <array>
 
 #include "Engine/Objects/Items.h"
@@ -26,22 +25,7 @@ enum Condition : uint32_t {
     Condition_Good = 18
 };
 
-class EquipemntPair {
- public:
-    ITEM_TYPE m_ItemId;
-    ITEM_EQUIP_TYPE m_EquipSlot;
-    EquipemntPair(ITEM_TYPE type, ITEM_EQUIP_TYPE slot) {
-        m_ItemId = type;
-        m_EquipSlot = slot;
-    }
-    EquipemntPair() {
-        m_ItemId = (ITEM_TYPE)0;
-        m_EquipSlot = (ITEM_EQUIP_TYPE)0;
-    }
-};
-
 struct Player;
-
 class ConditionProcessor {
  public:
     bool m_IsBlockedByProtFromMagic;
