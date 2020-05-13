@@ -174,9 +174,10 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
             } else if (e.key.keysym.sym == SDLK_PRINTSCREEN) {
                 gameCallback->OnScreenshot();
             }
-
-            scancode_pressed_state[e.key.keysym.scancode] = false;
-            scancode_pressed_time[e.key.keysym.scancode] = 0;
+            if (e.key.keysym.scancode < 256) {
+                scancode_pressed_state[e.key.keysym.scancode] = false;
+                scancode_pressed_time[e.key.keysym.scancode] = 0;
+            }
         } break;
 
         case SDL_KEYDOWN: {
