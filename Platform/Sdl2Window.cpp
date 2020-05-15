@@ -337,7 +337,6 @@ unsigned int Sdl2Window::GetHeight() const {
 
 void Sdl2Window::SetWindowArea(int width, int height) {
     SDL_SetWindowSize(sdlWindow, width, height);
-    HandleAllEvents();
 }
 
 bool Sdl2Window::OnOSMenu(int item_id) {
