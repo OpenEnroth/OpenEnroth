@@ -8180,7 +8180,11 @@ void Player::CleanupBeacons() {
             return (beacon.uBeaconTime < pParty->GetPlayingTime());
         }
     };
-    vBeacons.erase(std::remove_if(vBeacons.begin(), vBeacons.end(), delete_beacon()), vBeacons.end());
+    vBeacons.erase(std::remove_if(vBeacons.begin(), vBeacons.end(),
+        [](const LloydBeacon &beacon) {
+            return (beacon.uBeaconTime < pParty->GetPlayingTime());
+        }), vBeacons.end()
+    );
 }
 
 bool Player::SetBeacon(size_t index, size_t power) {
