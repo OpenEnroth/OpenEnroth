@@ -19,7 +19,7 @@ static inline bool starts_with(const std::string& haystack, const std::string& n
         }
     );
 
-    return i == haystack.begin();
+    return i != haystack.end();
 }
 
 static inline std::vector<std::string> split(const std::string& text, char sep) {
@@ -88,7 +88,7 @@ bool CommandLine::TryGetValue(const std::string& key, std::shared_ptr<std::strin
         if (starts_with(token, key)) {
             if (out_value != nullptr) {
                 auto key_value_pair = split(token, '=');
-                if (iequals(token, key) && key_value_pair.size() > 1) {
+                if (iequals(key_value_pair[0], key) && key_value_pair.size() > 1) {
                     std::string value = key_value_pair[1];
                     trim(value);
                     if (value.empty()) {
