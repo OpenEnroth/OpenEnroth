@@ -5,6 +5,9 @@
 #include <io.h>
 #endif
 #include <stdlib.h>
+#include <filesystem>
+#include <algorithm>
+#include <string>
 #include <vector>
 
 #include "Platform/Api.h"
@@ -566,11 +569,16 @@ void SavegameList::Initialize() {
     pSavegameList->Reset();
     uNumSavegameFiles = 0;
 
-    String saves_dir = MakeDataPath("Saves");
-    std::vector<String> files = OS_FindFiles(saves_dir, "*.mm7");
-    for (const String &path : files) {
-        pSavegameList->pFileList[uNumSavegameFiles++] = path;
+    String saves_dir = MakeDataPath("saves");
+
+    for (const auto & entry : std::filesystem::directory_iterator(saves_dir)) {
+        if(entry.path().extension() == ".mm7") {
+            pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
+            if (uNumSavegameFiles == MAX_SAVE_SLOTS) break;
+        }
     }
+
+    std::sort(&pSavegameList->pFileList[0], &pSavegameList->pFileList[uNumSavegameFiles]);
 }
 
 SavegameList::SavegameList() { Reset(); }

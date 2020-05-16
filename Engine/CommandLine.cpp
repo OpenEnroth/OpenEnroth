@@ -6,16 +6,9 @@
 
 #include "Engine/CommandLine.h"
 
-using Engine_::CommandLine;
+#include "Engine/Strings.h"
 
-bool iequals(const std::string& a, const std::string& b) {
-    return std::equal(a.begin(), a.end(),
-        b.begin(), b.end(),
-        [](char a, char b) {
-            return tolower(a) == tolower(b);
-        }
-    );
-}
+using Engine_::CommandLine;
 
 static inline bool starts_with(const std::string& haystack, const std::string& needle) {
     auto i = std::search(

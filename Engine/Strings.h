@@ -22,21 +22,20 @@ inline char *RemoveQuotes(char *str) {
     return str;
 }
 
-struct ci_less : std::binary_function<std::string, std::string,
-                                      bool> {  // case insensitive comparator for
-                                               // dictionaries
-    // case-independent (ci) compare_less binary function
-    struct nocase_compare
-        : public std::binary_function<unsigned char, unsigned char, bool> {
-        bool operator()(const unsigned char &c1,
-                        const unsigned char &c2) const {
-            return tolower(c1) < tolower(c2);
+inline bool iequals(const std::string& a, const std::string& b) {
+    return std::equal(a.begin(), a.end(), b.begin(), b.end(),
+        [](const unsigned char &a, const unsigned char &b) {
+            return tolower(a) == tolower(b);
         }
-    };
-    bool operator()(const std::string &s1, const std::string &s2) const {
-        return std::lexicographical_compare(s1.begin(),
-                                            s1.end(),  // source range
-                                            s2.begin(), s2.end(),  // dest range
-                                            nocase_compare());     // comparison
-    }
-};
+    );
+}
+
+inline bool iless(const std::string& a, const std::string& b) {
+    return std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end(),
+        [](const unsigned char &a, const unsigned char &b) {
+          return tolower(a) < tolower(b);
+        }
+    );
+}
+
+inline auto iless_functor = std::function <bool (const std::string&, const std::string&)>(iless);

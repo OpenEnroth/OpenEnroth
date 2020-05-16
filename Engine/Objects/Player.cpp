@@ -8175,12 +8175,16 @@ Player::Player() {
 }
 
 void Player::CleanupBeacons() {
-    struct delete_beacon : public std::unary_function<const LloydBeacon&, bool> {
+    struct delete_beacon {
         bool operator()(const LloydBeacon &beacon) const {
             return (beacon.uBeaconTime < pParty->GetPlayingTime());
         }
     };
-    vBeacons.erase(std::remove_if(vBeacons.begin(), vBeacons.end(), delete_beacon()), vBeacons.end());
+    vBeacons.erase(std::remove_if(vBeacons.begin(), vBeacons.end(),
+        [](const LloydBeacon &beacon) {
+            return (beacon.uBeaconTime < pParty->GetPlayingTime());
+        }), vBeacons.end()
+    );
 }
 
 bool Player::SetBeacon(size_t index, size_t power) {

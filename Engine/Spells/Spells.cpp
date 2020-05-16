@@ -383,7 +383,7 @@ bool SpellBuff::Apply(GameTime expire_time, unsigned __int16 uSkillLevel,
 
 //----- (0045384A) --------------------------------------------------------
 void SpellStats::Initialize() {
-    std::map<String, SPELL_SCHOOL, ci_less> spellSchoolMaps;
+    std::map<String, SPELL_SCHOOL, decltype(iless_functor)> spellSchoolMaps(iless_functor);
     spellSchoolMaps["fire"] = SPELL_SCHOOL_FIRE;
     spellSchoolMaps["air"] = SPELL_SCHOOL_AIR;
     spellSchoolMaps["water"] = SPELL_SCHOOL_WATER;
