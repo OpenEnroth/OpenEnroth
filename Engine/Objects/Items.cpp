@@ -189,7 +189,7 @@ void ItemsTable::Release() {
 
 //----- (00456D84) --------------------------------------------------------
 void ItemsTable::Initialize() {
-    std::map<std::string, ITEM_EQUIP_TYPE, ci_less> equipStatMap;
+    std::map<std::string, ITEM_EQUIP_TYPE, decltype(iequals_functor)> equipStatMap(iequals_functor);
     equipStatMap["weapon"] = EQUIP_SINGLE_HANDED;
     equipStatMap["weapon2"] = EQUIP_TWO_HANDED;
     equipStatMap["weapon1or2"] = EQUIP_SINGLE_HANDED;
@@ -214,7 +214,7 @@ void ItemsTable::Initialize() {
     equipStatMap["gold"] = EQUIP_GOLD;
     equipStatMap["gem"] = EQUIP_GEM;
 
-    std::map<std::string, PLAYER_SKILL_TYPE, ci_less> equipSkillMap;
+    std::map<std::string, PLAYER_SKILL_TYPE, decltype(iequals_functor)> equipSkillMap(iequals_functor);
     equipSkillMap["staff"] = PLAYER_SKILL_STAFF;
     equipSkillMap["sword"] = PLAYER_SKILL_SWORD;
     equipSkillMap["dagger"] = PLAYER_SKILL_DAGGER;
@@ -229,7 +229,7 @@ void ItemsTable::Initialize() {
     equipSkillMap["plate"] = PLAYER_SKILL_PLATE;
     equipSkillMap["club"] = PLAYER_SKILL_CLUB;
 
-    std::map<std::string, ITEM_MATERIAL, ci_less> materialMap;
+    std::map<std::string, ITEM_MATERIAL, decltype(iequals_functor)> materialMap(iequals_functor);
     materialMap["artifact"] = MATERIAL_ARTEFACT;
     materialMap["relic"] = MATERIAL_RELIC;
     materialMap["special"] = MATERIAL_SPECIAL;

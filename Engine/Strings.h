@@ -22,14 +22,22 @@ inline char *RemoveQuotes(char *str) {
     return str;
 }
 
-struct ci_less {  // case insensitive comparator for
-                                               // dictionaries
-    bool operator()(const std::string &s1, const std::string &s2) const {
-        return std::lexicographical_compare(s1.begin(),
-                                            s1.end(),  // source range
-                                            s2.begin(), s2.end(),  // dest range
-                                            [](char a, char b) {
-                                                return tolower(a) == tolower(b);
-                                            });     // comparison
-    }
+inline bool iequals(const std::string& a, const std::string& b) {
+    return std::equal(a.begin(), a.end(),
+                      b.begin(), b.end(),
+                      [](char a, char b) {
+                          return tolower(a) == tolower(b);
+                      }
+    );
 };
+
+inline bool iequals2(const std::string& a, const std::string& b) {
+    return std::lexicographical_compare(a.begin(), a.end(),
+                      b.begin(), b.end(),
+                      [](char a, char b) {
+                          return tolower(a) == tolower(b);
+                      }
+    );
+};
+
+inline auto iequals_functor = std::function <bool (const std::string&,const std::string&)>(iequals2);
