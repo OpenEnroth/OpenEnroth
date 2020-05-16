@@ -29,7 +29,7 @@ inline bool iequals(const std::string& a, const std::string& b) {
                           return tolower(a) == tolower(b);
                       }
     );
-};
+}
 
 inline bool iequals2(const std::string& a, const std::string& b) {
     return std::lexicographical_compare(a.begin(), a.end(),
@@ -38,6 +38,6 @@ inline bool iequals2(const std::string& a, const std::string& b) {
                           return tolower(a) == tolower(b);
                       }
     );
-};
+}
 
-inline auto iequals_functor = std::function <bool (const std::string&,const std::string&)>(iequals2);
+inline auto iequals_functor = std::function <bool (const std::string&, const std::string&)>(iequals2);
