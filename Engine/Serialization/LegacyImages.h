@@ -51,12 +51,12 @@ struct BLVFace_MM7 {  // 60h
     int zCalc2;
     int zCalc3;
     unsigned int uAttributes;
-    uint16_t *pVertexIDs;
-    int16_t *pXInterceptDisplacements;
-    int16_t *pYInterceptDisplacements;
-    int16_t *pZInterceptDisplacements;
-    int16_t *pVertexUIDs;
-    int16_t *pVertexVIDs;
+    int32_t pVertexIDs;
+    int32_t pXInterceptDisplacements;
+    int32_t pYInterceptDisplacements;
+    int32_t pZInterceptDisplacements;
+    int32_t pVertexUIDs;
+    int32_t pVertexVIDs;
     uint16_t uFaceExtraID;
     uint16_t uBitmapID;
     uint16_t uSectorID;

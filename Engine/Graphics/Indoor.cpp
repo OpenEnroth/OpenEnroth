@@ -78,12 +78,12 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     this->zCalc2 = data->zCalc2;
     this->zCalc3 = data->zCalc3;
     this->uAttributes = data->uAttributes;
-    this->pVertexIDs = data->pVertexIDs;
-    this->pXInterceptDisplacements = data->pXInterceptDisplacements;
-    this->pYInterceptDisplacements = data->pYInterceptDisplacements;
-    this->pZInterceptDisplacements = data->pZInterceptDisplacements;
-    this->pVertexUIDs = data->pVertexUIDs;
-    this->pVertexVIDs = data->pVertexVIDs;
+    this->pVertexIDs = (uint16_t *)data->pVertexIDs;
+    this->pXInterceptDisplacements = (int16_t *)data->pXInterceptDisplacements;
+    this->pYInterceptDisplacements = (int16_t *)data->pYInterceptDisplacements;
+    this->pZInterceptDisplacements = (int16_t *)data->pZInterceptDisplacements;
+    this->pVertexUIDs = (int16_t *)data->pVertexUIDs;
+    this->pVertexVIDs = (int16_t *)data->pVertexVIDs;
     this->uFaceExtraID = data->uFaceExtraID;
     // unsigned __int16  uBitmapID;
     this->uSectorID = data->uSectorID;
@@ -778,8 +778,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     }
 
     pLFaces = (unsigned __int16 *)malloc(blv.uFaces_fdata_Size);
-    memcpy(pLFaces, pData += uNumFaces * sizeof(BLVFace_MM7),
-           blv.uFaces_fdata_Size);
+    memcpy(pLFaces, pData += uNumFaces * sizeof(BLVFace_MM7), blv.uFaces_fdata_Size);
 
     for (uint i = 0, j = 0; i < uNumFaces; ++i) {
         BLVFace *pFace = &pFaces[i];
@@ -866,7 +865,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     }
     free(tmp_sector);
 
-    pData += 4 + uNumSectors * sizeof(BLVSector);
+    pData += 4 + uNumSectors * sizeof(BLVSector_MM7);
 
     pGameLoadingUI_ProgressBar->Progress();
 
