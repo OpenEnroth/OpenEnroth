@@ -574,6 +574,7 @@ void SavegameList::Initialize() {
     for (const auto & entry : std::filesystem::directory_iterator(saves_dir)) {
         if(entry.path().extension() == ".mm7") {
             pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
+            if (uNumSavegameFiles == MAX_SAVE_SLOTS) break;
         }
     }
 

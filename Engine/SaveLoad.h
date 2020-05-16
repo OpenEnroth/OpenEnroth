@@ -4,13 +4,15 @@
 #include "Engine/Time.h"
 #include "Engine/Strings.h"
 
+constexpr unsigned int MAX_SAVE_SLOTS = 45;
+
 struct SavegameList {
     static void Initialize();
     SavegameList();
 
     void Reset();
 
-    std::array<String, 45> pFileList;
+    std::array<String, MAX_SAVE_SLOTS> pFileList;
 };
 
 /*  244 */
@@ -30,7 +32,6 @@ bool Initialize_GamesLOD_NewLOD();
 void SaveNewGame();
 
 extern unsigned int uNumSavegameFiles;
-constexpr unsigned int MAX_SAVE_SLOTS = 45;
 extern std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 extern struct SavegameList *pSavegameList;
 extern std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
