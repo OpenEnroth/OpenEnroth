@@ -25,19 +25,10 @@ inline char *RemoveQuotes(char *str) {
 inline bool iequals(const std::string& a, const std::string& b) {
     return std::equal(a.begin(), a.end(),
                       b.begin(), b.end(),
-                      [](char a, char b) {
-                          return tolower(a) == tolower(b);
+                      [](const unsigned char &a, const unsigned char &b) {
+                          return tolower(a) < tolower(b);
                       }
     );
 }
 
-inline bool iequals2(const std::string& a, const std::string& b) {
-    return std::lexicographical_compare(a.begin(), a.end(),
-                      b.begin(), b.end(),
-                      [](char a, char b) {
-                          return tolower(a) == tolower(b);
-                      }
-    );
-}
-
-inline auto iequals_functor = std::function <bool (const std::string&, const std::string&)>(iequals2);
+inline auto iequals_functor = std::function <bool (const std::string&, const std::string&)>(iequals);
