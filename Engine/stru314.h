@@ -17,15 +17,17 @@ struct stru314 {  // facet normals face / wall / celings
         this->field_1C.y = 0.0;
         this->field_1C.z = 0.0;
         // this->vdestructor_ptr = &stru314_pvdtor;
+
+        this->dist = 0;
     }
 
     //----- (00489B96) --------------------------------------------------------
     inline ~stru314() {}
 
-    void (***vdestructor_ptr)(stru314 *, bool);
+    void (***vdestructor_ptr)(stru314 *, bool) = nullptr;
     Vec3_float_ Normal;
     Vec3_float_ field_10;
     Vec3_float_ field_1C;
-    float dist;
+    float dist = 0;
 };
 #pragma pack(pop)

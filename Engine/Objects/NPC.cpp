@@ -66,7 +66,7 @@ NPCData *GetNPCData(signed int npcid) {
     } else {
         v3 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
         v4 = 0;
-        char buf[1024];
+        char buf[1024]{};
 
         for (i = 0; i < 2; ++i) {
             if (pParty->pHirelings[i].pName) buf[v4++] = i;
@@ -126,7 +126,7 @@ struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
     } else {
         v5 = abs(sDialogue_SpeakingActorNPC_ID) - 1;
         v6 = 0;
-        char buf[1024];
+        char buf[1024]{};
 
         for (int i = 0; i < 2; ++i) {
             if (pParty->pHirelings[i].pName) buf[v6++] = i;
@@ -449,7 +449,7 @@ void NPCStats::Initialize() {
     unsigned char c;
     bool break_loop;
     unsigned int temp_str_len;
-    char *tmp_pos;
+    char *tmp_pos = nullptr;
     int decode_step;
 
     InitializeNPCData();
@@ -1338,7 +1338,7 @@ int GetGreetType(signed int SpeakingNPC_ID) {
     v5 = 0;
     v6 = pParty->pHirelings.data();
 
-    char buf[1024];
+    char buf[1024]{};
     do {
         if (v6->pName) buf[v4++] = v5;
         ++v6;

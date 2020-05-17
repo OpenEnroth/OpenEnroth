@@ -276,8 +276,8 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
 
 //----- (004142D3) --------------------------------------------------------
 void GUIWindow_GameKeyBindings::Update() {
-    int v4;  // ecx@7
-    int v5;  // eax@8
+    // int v4;  // ecx@7
+    // int v5;  // eax@8
 
     if (pGUIWindow_CurrentMenu->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
         InputAction action = currently_selected_action_for_binding;
@@ -419,7 +419,9 @@ OptionsMenuSkin::OptionsMenuSkin()
       uTextureID_FlipOnExit(0),
       uTextureID_AlwaysRun(0),
       uTextureID_WalkSound(0),
-      uTextureID_ShowDamage(0) {
+      uTextureID_ShowDamage(0),
+      uTextureID_TurnSpeed(),
+      uTextureID_SoundLevels() {
     for (uint i = 0; i < 3; ++i) uTextureID_TurnSpeed[i] = 0;
     for (uint i = 0; i < 10; ++i) uTextureID_SoundLevels[i] = 0;
 }
@@ -1053,7 +1055,7 @@ void GameUI_WritePointedObjectStatusString() {
     enum UIMessageType pMessageType1;  // esi@24
     int invmatrixindex;                // eax@41
     ItemGen *pItemGen;                 // ecx@44
-    int v16;                           // ecx@46
+    // int v16;                           // ecx@46
     Vis_PIDAndDepth pickedObject;        // eax@55
     signed int v18b;
     signed int pickedObjectID = 0;     // ecx@63
@@ -1698,7 +1700,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
 void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         unsigned int uW, unsigned int uZoom,
                         unsigned int bRedrawOdmMinimap) {
-    signed int pW;   // ebx@23
+    // signed int pW;   // ebx@23
     int LineGreyDim;         // eax@23
     double startx;      // st7@30
     signed int ypix;  // eax@37
@@ -1707,12 +1709,12 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     int pPoint_X;         // edi@72
     int pPoint_Y;         // ebx@72
     // unsigned int lPitch;  // [sp+20h] [bp-34h]@1
-    signed int pY;        // [sp+20h] [bp-34h]@23
-    signed int pX;        // [sp+24h] [bp-30h]@23
+    // signed int pY;        // [sp+20h] [bp-34h]@23
+    // signed int pX;        // [sp+24h] [bp-30h]@23
     signed int xpixoffset16;       // [sp+24h] [bp-30h]@37
     signed int ypixoffset16;    // [sp+28h] [bp-2Ch]@37
     int map_scale;              // [sp+2Ch] [bp-28h]@30
-    signed int pZ;        // [sp+60h] [bp+Ch]@23
+    // signed int pZ;        // [sp+60h] [bp+Ch]@23
     double starty;            // [sp+60h] [bp+Ch]@30
     unsigned int pColor;
 

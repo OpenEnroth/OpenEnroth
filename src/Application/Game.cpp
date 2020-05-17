@@ -155,7 +155,6 @@ void Game::Run() {
 
     SetDataPath(FindMm7Directory());
 
-
     window = OSWindowFactory().Create(
         "World of Might and Magic®",
         config->game_window_width,
@@ -470,8 +469,8 @@ void Game::EventLoop() {
     short *v105;                   // eax@718
     Player *pPlayer5;           // ST78_4@758
     // unsigned int v115;          // eax@764
-    unsigned int v118;          // eax@785
-    unsigned int v119;          // ecx@786
+    // unsigned int v118;          // eax@785
+    // unsigned int v119;          // ecx@786
                         //    unsigned int v121; // [sp-28h] [bp-624h]@711
                         //    unsigned int v123; // [sp-24h] [bp-620h]@711
                         //    unsigned int v125; // [sp-20h] [bp-61Ch]@711

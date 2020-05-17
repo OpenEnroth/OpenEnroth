@@ -69,8 +69,8 @@ struct Vis_SelectionList {
     }
 
     void (***vdestructor_ptr)(Vis_SelectionList *, bool);
-    Vis_ObjectInfo object_pool[512];
-    Vis_ObjectInfo *object_pointers[512];
+    Vis_ObjectInfo object_pool[512] {};
+    Vis_ObjectInfo* object_pointers[512] {};
     unsigned int uNumPointers;
 };
 #pragma pack(pop)

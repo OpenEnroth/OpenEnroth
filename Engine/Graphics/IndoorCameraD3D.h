@@ -22,7 +22,7 @@ struct IndoorCameraD3D_Vec3 {
             float y;
             float z;
         };
-        float v[3];
+        float v[3] {};
     };
 };
 #pragma pack(pop)
@@ -36,8 +36,8 @@ struct IndoorCameraD3D_Vec4 : public IndoorCameraD3D_Vec3 {
     //----- (00498069) --------------------------------------------------------
     virtual ~IndoorCameraD3D_Vec4() {}
 
-    float dot;
-    int _wtf;  // sizeof vec4 is 18 and first member is vdtor, but vdtor is
+    float dot = 0;
+    int _wtf = 0;  // sizeof vec4 is 18 and first member is vdtor, but vdtor is
                // already included in vec3 so very weird
 };
 #pragma pack(pop)
@@ -68,29 +68,29 @@ struct IndoorCameraD3D_stru1 {
     //----- (004363A2) --------------------------------------------------------
     IndoorCameraD3D_stru1() { this->flt_2C = 0.0; }
 
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
-    int field_18;
-    int field_1C;
-    int field_20;
-    int field_24;
-    int field_28;
-    float flt_2C;
+    int field_0 = 0;
+    int field_4 = 0;
+    int field_8 = 0;
+    int field_C = 0;
+    int field_10 = 0;
+    int field_14 = 0;
+    int field_18 = 0;
+    int field_1C = 0;
+    int field_20 = 0;
+    int field_24 = 0;
+    int field_28 = 0;
+    float flt_2C = 0;
 };
 #pragma pack(pop)
 
 /*  198 */
 #pragma pack(push, 1)
 struct IndoorCameraD3D_stru2 {
-    unsigned int mm7__vector_000004_size;
-    IndoorCameraD3D_stru1 mm7__vector_000004[64];
-    int field_C04;
-    int field_C08;
-    int field_C0C;
+    unsigned int mm7__vector_000004_size = 0;
+    IndoorCameraD3D_stru1 mm7__vector_000004[64] {};
+    int field_C04 = 0;
+    int field_C08 = 0;
+    int field_C0C = 0;
 };
 #pragma pack(pop)
 
@@ -179,85 +179,85 @@ struct IndoorCameraD3D {
     void DebugDrawPortal(struct BLVFace *pFace);
 
     // void ( ***vdestructor_ptr)(IndoorCameraD3D *, bool);
-    IndoorCameraD3D_Vec3 field_4[3];  // matrix for camera rotation transform
+    IndoorCameraD3D_Vec3 field_4[3] {};  // matrix for camera rotation transform
     // IndoorCameraD3D_Vec3 field_14;
     // IndoorCameraD3D_Vec3 field_24;
-    IndoorCameraD3D_Vec4 FrustumPlanes[6];
-    float fov;
-    float screenCenterX;
-    float screenCenterY;
-    float fov_x;
-    float fov_y;
-    float inv_fov;
-    float _unused_blv_party_x;
-    float _unused_blv_party_y;
-    float _unused_blv_party_z;
-    char field_E8[32];
-    float field_108;
-    float _unused_blv_party_x_2;
-    float _unused_blv_party_y_2;
-    float _unused_blv_party_z_2;
-    char field_118[32];
-    float field_138;
-    char field_13C[44];
-    float field_168;
-    char field_16C[44];
-    float field_198;
-    char field_19C[44];
-    float field_1C8;
-    char field_1CC[44];
-    float field_1F8;
-    char field_1FC[44];
-    float field_228;
-    char field_22C[44];
-    float field_258;
-    char field_25C[44];
-    float field_288;
-    char field_28C[44];
-    float field_2B8;
-    float field_2BC;
-    float field_2C0;
-    float field_2C4;
-    char field_2C8[32];
-    float field_2E8;
-    float field_2EC;
-    float field_2F0;
-    float field_2F4;
-    char field_2F8[32];
-    float field_318;
-    float field_31C;
-    float field_320;
-    float field_324;
-    char field_328[32];
-    float field_348;
-    float field_34C;
-    float field_350;
-    float field_354;
-    char field_358[32];
-    float field_378;
-    IndoorCameraD3D_stru3 list_0037C[16384];
-    unsigned int list_0037C_size;
-    IndoorCameraD3D_stru2 list_E0380[256];
-    int list_E0380_size;
+    IndoorCameraD3D_Vec4 FrustumPlanes[6] {};
+    float fov = 0;
+    float screenCenterX = 0;
+    float screenCenterY = 0;
+    float fov_x = 0;
+    float fov_y = 0;
+    float inv_fov = 0;
+    // float _unused_blv_party_x;
+    // float _unused_blv_party_y;
+    // float _unused_blv_party_z;
+    char field_E8[32] {};
+    float field_108 = 0;
+    // float _unused_blv_party_x_2;
+    // float _unused_blv_party_y_2;
+    // float _unused_blv_party_z_2;
+    char field_118[32] {};
+    float field_138 = 0;
+    char field_13C[44] {};
+    float field_168 = 0;
+    char field_16C[44] {};
+    float field_198 = 0;
+    char field_19C[44] {};
+    float field_1C8 = 0;
+    char field_1CC[44] {};
+    float field_1F8 = 0;
+    char field_1FC[44] {};
+    float field_228 = 0;
+    char field_22C[44] {};
+    float field_258 = 0;
+    char field_25C[44] {};
+    float field_288 = 0;
+    char field_28C[44] {};
+    float field_2B8 = 0;
+    float field_2BC = 0;
+    float field_2C0 = 0;
+    float field_2C4 = 0;
+    char field_2C8[32] {};
+    float field_2E8 = 0;
+    float field_2EC = 0;
+    float field_2F0 = 0;
+    float field_2F4 = 0;
+    char field_2F8[32] {};
+    float field_318 = 0;
+    float field_31C = 0;
+    float field_320 = 0;
+    float field_324 = 0;
+    char field_328[32] {};
+    float field_348 = 0;
+    float field_34C = 0;
+    float field_350 = 0;
+    float field_354 = 0;
+    char field_358[32] {};
+    float field_378 = 0;
+    IndoorCameraD3D_stru3 list_0037C[16384] {};
+    unsigned int list_0037C_size = 0;
+    IndoorCameraD3D_stru2 list_E0380[256] {};
+    int list_E0380_size = 0;
 
     void CalculateRotations(int camera_rot_x, int camera_rot_y);
-    int sRotationY;          // moved  from 157 struct IndoorCamera::18
-    int sRotationX;          // moved  from 157 struct IndoorCamera::14
-    float fRotationYSine;    // moved  from 157 struct IndoorCamera::2C
-    float fRotationYCosine;  // moved  from 157 struct IndoorCamera::30
-    float fRotationXSine;    // moved  from 157 struct IndoorCamera::34
-    float fRotationXCosine;  // moved  from 157 struct IndoorCamera::38
-    Vec3<int> vPartyPos;     // moved  from 157 struct IndoorCamera::00
+    int sRotationY = 0;          // moved  from 157 struct IndoorCamera::18
+    int sRotationX = 0;          // moved  from 157 struct IndoorCamera::14
+    float fRotationYSine = 0;    // moved  from 157 struct IndoorCamera::2C
+    float fRotationYCosine = 0;  // moved  from 157 struct IndoorCamera::30
+    float fRotationXSine = 0;    // moved  from 157 struct IndoorCamera::34
+    float fRotationXCosine = 0;  // moved  from 157 struct IndoorCamera::38
+    Vec3<int> vPartyPos {};     // moved  from 157 struct IndoorCamera::00
                              // merged from 162 struct BLVRenderParams::08
-    int debug_flags;         // moved  from 157 struct IndoorCamera::4C
+    int debug_flags = 0;         // moved  from 157 struct IndoorCamera::4C
                              // merged from 162 struct BLVRenderParams::04
-    int int_sine_y;          // moved  from 157 struct ODMRenderParams::1C
+    int int_sine_y = 0;          // moved  from 157 struct ODMRenderParams::1C
                              // merged from 162 struct BLVRenderParams::24
-    int int_cosine_y;        // moved  from 157 struct ODMRenderParams::20
+    int int_cosine_y = 0;        // moved  from 157 struct ODMRenderParams::20
                              // merged from 162 struct BLVRenderParams::20
-    int int_sine_x;          // moved  from 157 struct ODMRenderParams::24
+    int int_sine_x = 0;          // moved  from 157 struct ODMRenderParams::24
                              // merged from 162 struct BLVRenderParams::2C
-    int int_cosine_x;        // moved  from 157 struct ODMRenderParams::28
+    int int_cosine_x = 0;        // moved  from 157 struct ODMRenderParams::28
                              // merged from 162 struct BLVRenderParams::28
 
     float GetNearClip() const;

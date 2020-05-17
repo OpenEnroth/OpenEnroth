@@ -55,6 +55,18 @@ IndoorCameraD3D::IndoorCameraD3D() {
     list_0037C_size = 0;
     for (uint i = 0; i < 256; ++i) list_E0380[i].mm7__vector_000004_size = 0;
     list_E0380_size = 0;
+
+    debug_flags = 0;
+    fRotationXCosine = 0;
+    fRotationXSine = 0;
+    fRotationYCosine = 0;
+    fRotationYSine = 0;
+    for (uint i = 0; i < 32; ++i)
+        field_118[i] = 0;
+    for (uint i = 0; i < 44; ++i)
+        field_13C[i] = 0;
+    for (uint i = 0; i < 44; ++i)
+        field_16C[i] = 0;
 }
 
 //----- (0043643E) --------------------------------------------------------
@@ -699,7 +711,7 @@ bool IndoorCameraD3D::_4371C3(RenderVertexSoft *pVertices,  // function appears 
     RenderVertexSoft *v6;           // esi@5
     unsigned int *v7;               // edi@5
     char *v8;                       // ecx@6
-    int v9;                         // eax@6
+    // int v9;                         // eax@6
     IndoorCameraD3D *thisa;         // [sp+0h] [bp-Ch]@1
     signed int v12;                 // [sp+4h] [bp-8h]@5
     unsigned int pVerticesa;        // [sp+14h] [bp+8h]@6

@@ -45,10 +45,10 @@ struct SpellFX_Billboard {
 
     // spellfx verts
     int uNumVertices;
-    local_01 field_14[5];  // world coords of verts
-    local_01 field_64[5];  // view coords
-    local_01 field_B4[5];  // clipped view coords
-    local_01 field_104[5];  // projected billboard coords
+    local_01 field_14[5]{};  // world coords of verts
+    local_01 field_64[5]{};  // view coords
+    local_01 field_B4[5]{};  // clipped view coords
+    local_01 field_104[5]{};  // projected billboard coords
 };
 #pragma pack(pop)
 
@@ -58,11 +58,11 @@ struct PlayerBuffAnim {
     inline PlayerBuffAnim()
         : bRender(false), uSpellAnimTime(0), uSpellIconID(0) {}
 
-    int16_t bRender;
-    int16_t field_2;
-    int uSpellAnimTimeElapsed;
-    int uSpellAnimTime;
-    int uSpellIconID;
+    int16_t bRender = 0;
+    int16_t field_2 = 0;
+    int uSpellAnimTimeElapsed = 0;
+    int uSpellAnimTime = 0;
+    int uSpellIconID = 0;
 };
 #pragma pack(pop)
 
@@ -146,7 +146,7 @@ struct SpellFxRenderer {
     void LoadAnimations();
 
     int field_0;
-    stru6_stru2 array_4[31];
+    stru6_stru2 array_4[32];
     int field_1F4;
     int field_1F8;
     int field_1FC;

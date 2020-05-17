@@ -874,7 +874,7 @@ void UIShop_Buy_Identify_Repair() {
     // int v18;                   // ecx@37
     float pPriceMultiplier;    // ST1C_4@38
     int taken_item;            // eax@40
-    ItemGen *bought_item;      // esi@51
+    ItemGen *bought_item = nullptr;      // esi@51
     int party_reputation;      // eax@55
     int v39;                   // eax@63
     int v42;                   // esi@74

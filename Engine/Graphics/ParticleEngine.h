@@ -38,32 +38,32 @@ struct Particle_sw {
 /*  109 */
 #pragma pack(push, 1)
 struct Particle {
-    unsigned int type;
-    float x;
-    float y;
-    float z;
-    float flt_10;
-    float flt_14;
-    float flt_18;
+    unsigned int type = 0;
+    float x = 0;
+    float y = 0;
+    float z = 0;
+    float flt_10 = 0;
+    float flt_14 = 0;
+    float flt_18 = 0;
     union {
         struct {
             unsigned char r, g, b, a;
         };
         unsigned int uParticleColor;
     };
-    int timeToLive;
-    Texture *texture;  // unsigned int resource_id;// bitmap IDirect3DTexture
+    int timeToLive = 0;
+    Texture *texture = nullptr;  // unsigned int resource_id;// bitmap IDirect3DTexture
                        // idx or sprite idx depending on type
-    float particle_size;  // field_28
-    float _x;
-    float _y;
-    float _z;
-    int rotation_speed;
-    int angle;
-    int uScreenSpaceX;
-    int uScreenSpaceY;
-    int uScreenSpaceZ;  // line end x
-    int uScreenSpaceW;  // line end y
+    float particle_size = 0;  // field_28
+    float _x = 0;
+    float _y = 0;
+    float _z = 0;
+    int rotation_speed = 0;
+    int angle = 0;
+    int uScreenSpaceX = 0;
+    int uScreenSpaceY = 0;
+    int uScreenSpaceZ = 0;  // line end x
+    int uScreenSpaceW = 0;  // line end y
     union {
         // int sZValue;
         struct {
@@ -71,20 +71,20 @@ struct Particle {
             short zbuffer_depth;
         };
     };
-    int sZValue2;             // line end z
-    fixed screenspace_scale;  // int _screenspace_scale;
-    float fov_x;
-    float fov_y;
-    int uLightColor_bgr;
+    int sZValue2 = 0;             // line end z
+    fixed screenspace_scale {};  // int _screenspace_scale;
+    float fov_x = 0;
+    float fov_y = 0;
+    int uLightColor_bgr = 0;
 };
 #pragma pack(pop)
 
 /*  111 */
 #pragma pack(push, 1)
 struct stru2_LineList {
-    unsigned int uNumLines;
-    RenderVertexD3D3 pLineVertices[48];
-    char field_604[60];
+    unsigned int uNumLines = 0;
+    RenderVertexD3D3 pLineVertices[48] {};
+    char field_604[60] {};
 };
 #pragma pack(pop)
 
@@ -123,24 +123,24 @@ struct TrailParticle {  // stru167
         bgr16 = 0;
     }
 
-    char field_0;
-    char field_1;
-    char field_2;
-    char field_3;
-    char field_4;
-    char field_5;
-    int16_t x;
-    int16_t y;
-    int16_t z;
-    int16_t time_left;
-    int16_t time_to_live;
-    char field_10;
-    char field_11;
-    char field_12;
-    char field_13;
-    int16_t bgr16;
-    char field_16;
-    char field_17;
+    char field_0 = 0;
+    char field_1 = 0;
+    char field_2 = 0;
+    char field_3 = 0;
+    char field_4 = 0;
+    char field_5 = 0;
+    int16_t x = 0;
+    int16_t y = 0;
+    int16_t z = 0;
+    int16_t time_left = 0;
+    int16_t time_to_live = 0;
+    char field_10 = 0;
+    char field_11 = 0;
+    char field_12 = 0;
+    char field_13 = 0;
+    int16_t bgr16 = 0;
+    char field_16 = 0;
+    char field_17 = 0;
 };
 #pragma pack(pop)
 
@@ -158,7 +158,7 @@ struct TrailParticleGenerator {  // stru167_wrap
 
     TrailParticle particles[100];
     int num_particles;
-    int field_964;
+    int field_964 = 0;
 };
 #pragma pack(pop)
 extern TrailParticleGenerator trail_particle_generator;  // 005118E8

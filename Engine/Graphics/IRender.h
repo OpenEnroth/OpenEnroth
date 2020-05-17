@@ -78,35 +78,35 @@ struct ODMRenderParams {
     int shading_dist_shademist;
     int near_clip;
     int far_clip;  // far clip (shading_dist_mist in M&M6 terms)
-    unsigned int uCameraFovInDegrees;
-    int int_fov_rad;      // 157 struct IndoorCamera::fov_rad
-    int int_fov_rad_inv;  // 157 struct IndoorCamera::fov_rad_inv
-    int _unused_camera_rotation_y_int_sine;    // merged with BLVRenderParams
+    unsigned int uCameraFovInDegrees = 0;
+    int int_fov_rad = 0;      // 157 struct IndoorCamera::fov_rad
+    int int_fov_rad_inv = 0;  // 157 struct IndoorCamera::fov_rad_inv
+    int _unused_camera_rotation_y_int_sine = 0;    // merged with BLVRenderParams
                                                // equivalents
-    int _unused_camera_rotation_y_int_cosine;  // into IndoorCameraD3D
-    int _unused_camera_rotation_x_int_sine;    // --//--
-    int _unused_camera_rotation_x_int_cosine;  // --//--
-    int uNumPolygons;
-    unsigned int _unused_uNumEdges;
-    unsigned int _unused_uNumSurfs;
-    unsigned int _unused_uNumSpans;
-    unsigned int uNumBillboards;
-    float field_40;
+    int _unused_camera_rotation_y_int_cosine = 0;  // into IndoorCameraD3D
+    int _unused_camera_rotation_x_int_sine = 0;    // --//--
+    int _unused_camera_rotation_x_int_cosine = 0;  // --//--
+    int uNumPolygons = 0;
+    unsigned int _unused_uNumEdges = 0;
+    unsigned int _unused_uNumSurfs = 0;
+    unsigned int _unused_uNumSpans = 0;
+    unsigned int uNumBillboards = 0;
+    float field_40 = 0;
     // int field_44;
-    int outdoor_grid_band_3;
-    int field_4C;
-    int field_50;
+    int outdoor_grid_band_3 = 0;
+    int field_4C = 0;
+    int field_50 = 0;
     unsigned int bNoSky;
     unsigned int bDoNotRenderDecorations;
     int field_5C;
     int field_60;
     int outdoor_no_wavy_water;
     int outdoor_no_mist;
-    int building_gamme;
-    int terrain_gamma;
+    int building_gamme = 0;
+    int terrain_gamma = 0;
 
-    unsigned int uMapGridCellX;  // moved from 157 struct IndoorCamera::0C
-    unsigned int uMapGridCellZ;  // moved from 157 struct IndoorCamera::10
+    unsigned int uMapGridCellX = 0;  // moved from 157 struct IndoorCamera::0C
+    unsigned int uMapGridCellZ = 0;  // moved from 157 struct IndoorCamera::10
 };
 #pragma pack(pop)
 extern ODMRenderParams *pODMRenderParams;
@@ -116,25 +116,25 @@ extern ODMRenderParams *pODMRenderParams;
 struct RenderVertexSoft {
     inline RenderVertexSoft() : flt_2C(0.0f) {}
 
-    Vec3_float_ vWorldPosition;
-    Vec3_float_ vWorldViewPosition;
-    float vWorldViewProjX;
-    float vWorldViewProjY;
-    float _rhw;
-    float u;
-    float v;
-    float flt_2C;
+    Vec3_float_ vWorldPosition {};
+    Vec3_float_ vWorldViewPosition {};
+    float vWorldViewProjX = 0;
+    float vWorldViewProjY = 0;
+    float _rhw = 0;
+    float u = 0;
+    float v = 0;
+    float flt_2C = 0;
 };
 #pragma pack(pop)
 
 /*  112 */
 #pragma pack(push, 1)
 struct RenderVertexD3D3 {
-    Vec3_float_ pos;
-    float rhw;
-    unsigned int diffuse;
-    unsigned int specular;
-    Vec2_float_ texcoord;
+    Vec3_float_ pos {};
+    float rhw = 0;
+    unsigned int diffuse = 0;
+    unsigned int specular = 0;
+    Vec2_float_ texcoord {};
 };
 #pragma pack(pop)
 

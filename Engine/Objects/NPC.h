@@ -161,23 +161,23 @@ struct NPCStats {
     char *sub_495366_MispronounceName(uint8_t firstLetter,
                                       uint8_t genderId);
 
-    NPCData pNPCData[501];     // 0 - 94BCh count from 1
-    NPCData pNewNPCData[501];  // 94BCh- 12978h count from 1
+    NPCData pNPCData[501]{};     // 0 - 94BCh count from 1
+    NPCData pNewNPCData[501]{};  // 94BCh- 12978h count from 1
     char *pNPCNames[540][2];
-    NPCProfession pProfessions[59];  // count from 1
-    NPCData pAdditionalNPC[100];
+    NPCProfession pProfessions[59]{};  // count from 1
+    NPCData pAdditionalNPC[100]{};
     char *pCatchPhrases[52];   // 15CA4h
     char *pNPCUnicNames[500];  // from first batch
     NPCProfessionChance
         pProfessionChance[77];  // 16544h profession chance in each area
-    int field_17884;
-    int field_17888;
-    NPCGreeting pNPCGreetings[205];
+    int field_17884 = 0;
+    int field_17888 = 0;
+    NPCGreeting pNPCGreetings[206];
     uint16_t pGroups[51];
     uint16_t pGroups_copy[51];
     unsigned int uNewlNPCBufPos;
     unsigned int uNumNewNPCs;
-    int field_17FC8;
+    int field_17FC8 = 0;
     unsigned int uNumNPCProfessions;
     unsigned int uNumNPCNames[2];  // 0 male 1 female
     char *pNPCDataTXT_Raw;

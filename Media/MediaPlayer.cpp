@@ -186,6 +186,8 @@ class AVVideoStream : public AVStreamWrapper {
         frame_len = 0.;
         frames_per_second = 0.;
         converter = nullptr;
+        height = 0;
+        width = 0;
     }
 
     virtual bool open(AVFormatContext *format_ctx) {
@@ -279,6 +281,11 @@ class Movie : public IMovie {
 
         looping = false;
         playing = false;
+
+        uFileSize = 0;
+        uFilePos = 0;
+        uFileOffset = 0;
+        hFile = nullptr;
     }
 
     virtual ~Movie() { Close(); }
@@ -851,6 +858,8 @@ MPlayer::MPlayer() {
     }
 
     pMovie_Track = nullptr;
+    might_list = nullptr;
+    magic_list = nullptr;
 
     if (!provider) {
         provider = new OpenALSoundProvider;

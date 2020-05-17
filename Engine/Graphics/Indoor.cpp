@@ -100,7 +100,7 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
     int TorchLightPower;           // eax@4
-    unsigned int v7;  // ebx@8
+    // unsigned int v7;  // ebx@8
     BLVSector *v8;    // esi@8
 
     pBLVRenderParams->Reset();
@@ -2536,7 +2536,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
     int v6;           // esi@5
     int v8;           // eax@10
     SpriteFrame *v9;  // eax@16
-    int v12;          // ecx@28
+    // int v12;          // ecx@28
     __int16 v41;      // [sp+3Ch] [bp-18h]@18
     // int z; // [sp+48h] [bp-Ch]@32
     // signed int y; // [sp+4Ch] [bp-8h]@32

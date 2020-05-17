@@ -43,14 +43,14 @@ class SpriteFrame {
     String icon_name;
     String texture_name;
 
-    Sprite *hw_sprites[8];
-    fixed scale;  // used in screen space scaling
-    int uFlags;  // 128 for loaded
-    int uGlowRadius;
-    int uPaletteID;
-    int uPaletteIndex;
-    int uAnimTime;
-    int uAnimLength;
+    Sprite* hw_sprites[8] {};
+    fixed scale {};  // used in screen space scaling
+    int uFlags = 0;  // 128 for loaded
+    int uGlowRadius = 0;
+    int uPaletteID = 0;
+    int uPaletteIndex = 0;
+    int uAnimTime = 0;
+    int uAnimLength = 0;
 };
 
 #pragma pack(push, 1)
@@ -72,8 +72,8 @@ struct SpriteFrameTable {
     SpriteFrame *GetFrameBy_x(unsigned int uSpriteID, signed int a3);
 
     int uNumSpriteFrames;
-    unsigned int uNumEFrames;      // field_4;
-    int unused_field;              // field_8
+    unsigned int uNumEFrames = 0;      // field_4;
+    int unused_field = 0;              // field_8
     SpriteFrame *pSpriteSFrames;   // 0c  new SpriteFrame[X]
     SpriteFrame **pSpritePFrames;  // 10h  pSpritePFrames[i] = &pSpriteSFrames[pSpriteEFrames[i]];
     int16_t *pSpriteEFrames;       // 14h

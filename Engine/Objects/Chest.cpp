@@ -37,8 +37,8 @@ std::vector<Chest> vChests;
 bool Chest::Open(int uChestID) {
     ODMFace *pODMFace;                // eax@19
     BLVFace *pBLVFace;                // eax@20
-    int pObjectX;                     // ebx@21
-    int pObjectZ;                     // edi@21
+    int pObjectX = 0;                     // ebx@21
+    int pObjectZ = 0;                     // edi@21
     double dir_x;                     // st7@23
     double dir_y;                     // st6@23
     double length_vector;             // st7@23
@@ -47,7 +47,7 @@ bool Chest::Open(int uChestID) {
     bool flag_shout;                  // edi@28
     SPRITE_OBJECT_TYPE pSpriteID[4];  // [sp+84h] [bp-40h]@16
     Vec3_int_ pOut;                   // [sp+A0h] [bp-24h]@28
-    int pObjectY;                     // [sp+B0h] [bp-14h]@21
+    int pObjectY = 0;                     // [sp+B0h] [bp-14h]@21
     int sRotX;                        // [sp+B4h] [bp-10h]@23
     float dir_z;                      // [sp+BCh] [bp-8h]@23
     int sRotY;                        // [sp+C0h] [bp-4h]@8
@@ -557,7 +557,7 @@ void Chest::OnChestLeftClick() {
                 chestindex = chest->pInventoryIndices[invMatrixIndex];
             }
 
-            if (chestindex) {
+            if (chestindex > 0) {
                 int itemindex = chestindex - 1;
 
                 if (chest->igChestItems[itemindex].GetItemEquipType() == EQUIP_GOLD) {

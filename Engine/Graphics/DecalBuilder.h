@@ -160,7 +160,7 @@ struct DecalBuilder {
     unsigned int DecalsCount;
     int curent_decal_id;  // field_308008
     RenderVertexSoft pVertices[256];
-    int std__vector_30B00C[1024];  // outdoor bloodsplats/decals
+    int std__vector_30B00C[1024] {};  // outdoor bloodsplats/decals
     int uNumDecals = 0;
     float field_30C010 = 0;
     float field_30C014 = 0;

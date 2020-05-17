@@ -391,7 +391,7 @@ void Engine::PushStationaryLights(int a2) {
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7() {  // cursor picking - particle update
     float depth;               // ST00_4@9
-    __int64 v6;                // kr00_8@21
+    // __int64 v6;                // kr00_8@21
     Vis_SelectionFilter *sprite_filter;  // [sp+10h] [bp-18h]@2
     Vis_SelectionFilter *face_filter;  // [sp+14h] [bp-14h]@2
 
@@ -800,7 +800,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     LoadLevel_InitializeLevelEvt();
     strcpy(Str1, pCurrentMapName.c_str());
     _strrev(Str1);
-    strtok(Str1, ".");
+    v3 = strtok(Str1, ".");
     _strrev(Str1);
 
     for (uint i = 0; i < 1000; ++i)
@@ -1245,11 +1245,11 @@ void Engine::_461103_load_level_sub() {
     int v4;          // edx@8
     int v6;   // esi@14
     int v8;   // ecx@16
-    int v12;         // esi@25
-    int v13;         // eax@26
+    // int v12;         // esi@25
+    // int v13;         // eax@26
     __int16 v14;     // ax@41
     int v17;  // [sp+14h] [bp-48h]@3
-    int v18;  // [sp+14h] [bp-48h]@23
+    // int v18;  // [sp+14h] [bp-48h]@23
     int v19;         // [sp+18h] [bp-44h]@1
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16];     // [sp+1Ch] [bp-40h]@17
@@ -1811,7 +1811,7 @@ void _493938_regenerate() {  // immolation
     int v4;                               // eax@2
     int v5;                               // edi@5
     int v9;                               // edi@15
-    signed int v10;                       // eax@15
+    // signed int v10;                       // eax@15
     int numberOfActorsAffected;           // ebx@20
     unsigned int v14;                     // esi@21
     signed int v19;                       // eax@21

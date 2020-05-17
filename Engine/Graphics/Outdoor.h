@@ -56,12 +56,12 @@ struct OutdoorLocationTerrain {
     uint8_t *pTilemap;
     uint8_t *pAttributemap;
     struct DMap *pDmap;
-    int16_t field_10;
-    int16_t field_12;
-    int16_t field_14;
-    int16_t field_16;
-    int field_18;
-    int field_1C;
+    int16_t field_10 = 0;
+    int16_t field_12 = 0;
+    int16_t field_14 = 0;
+    int16_t field_16 = 0;
+    int field_18 = 0;
+    int field_1C = 0;
 };
 #pragma pack(pop)
 

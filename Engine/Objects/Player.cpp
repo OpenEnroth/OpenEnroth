@@ -1907,7 +1907,11 @@ int Player::ReceiveSpecialAttackEffect(
 
         case SPECIAL_ATTACK_BREAK_ANY:
             for (int i = 0; i < 138; i++) {
-                itemtocheck = &this->pInventoryItemList[i];
+                if (i < 126) {
+                    itemtocheck = &this->pInventoryItemList[i];
+                } else {
+                    itemtocheck = &this->pEquippedItems[i - 126];
+                }
 
                 if (itemtocheck->uItemID > 0 && itemtocheck->uItemID <= 134 &&
                     !itemtocheck->IsBroken())
@@ -7700,7 +7704,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         target_id = PID_ID(target_pid);
     }
 
-    Actor* actor;
+    Actor* actor = nullptr;
     if (target_id < 500) {
         actor = &pActors[target_id];  // prevent crash
     }
@@ -7782,9 +7786,9 @@ void Player::_42ECB5_PlayerAttacksActor() {
         v34 = 7;
     } else {
         int main_hand_idx = player->pEquipment.uMainHand;
-        if (player->HasItemEquipped(EQUIP_TWO_HANDED))
-            v34 = player->pInventoryItemList[main_hand_idx - 1]
-                      .GetPlayerSkillType();
+        if (player->HasItemEquipped(EQUIP_TWO_HANDED) & main_hand_idx)
+            v34 = player->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
+
         pTurnEngine->ApplyPlayerAction();
     }
 

@@ -53,6 +53,10 @@ SpriteObject::SpriteObject() {
     spell_level = 0;
     spell_id = 0;
     field_54 = 0;
+    uSectorID = 0;
+    uAttributes = 0;
+    spell_target_pid = 0;
+    spell_caster_pid = 0;
 }
 
 int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {

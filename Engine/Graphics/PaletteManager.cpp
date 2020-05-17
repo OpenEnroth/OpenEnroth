@@ -588,7 +588,7 @@ PaletteManager::PaletteManager()
 int PaletteManager::ResetNonLocked() {
     PaletteManager *v1;  // esi@1
     signed int v2;       // ecx@1
-    int v3;              // eax@1
+    // int v3;              // eax@1
     signed int result;   // eax@3
     void *v5;            // edi@4
     int v6;              // ecx@4
@@ -627,7 +627,7 @@ int PaletteManager::ResetNonLocked() {
 int PaletteManager::ResetNonTestLocked() {
     PaletteManager *v1;  // esi@1
     signed int v2;       // ecx@1
-    int v3;              // eax@1
+    // int v3;              // eax@1
     signed int result;   // eax@3
     void *v5;            // edi@4
     int v6;              // ecx@4
@@ -667,9 +667,9 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
     signed int index;      // esi@6
     double v5;          // st7@7
     double v6;          // st7@12
-    double v7;          // st6@17
-    signed __int64 v8;  // qax@17
-    double v9;          // st6@17
+    // double v7;          // st6@17
+    // signed __int64 v8;  // qax@17
+    // double v9;          // st6@17
     char colourstore[768];      // [sp+18h] [bp-388h]@6
     // char v11; // [sp+19h] [bp-387h]@17
     // char v12[766]; // [sp+1Ah] [bp-386h]@17

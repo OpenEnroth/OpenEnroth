@@ -444,7 +444,7 @@ void Menu::EventLoop() {
                     current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == CURRENT_SCREEN::SCREEN_KEYBOARD_OPTIONS) {
-                    KeyToggleType pKeyToggleType;  // [sp+0h] [bp-5FCh]@287
+                    // KeyToggleType pKeyToggleType;  // [sp+0h] [bp-5FCh]@287
                     int v197 = 1;
                     bool anyBindingErrors = false;
 

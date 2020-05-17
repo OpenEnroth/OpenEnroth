@@ -52,36 +52,36 @@ struct ViewingParams {
     void AdjustPosition();
     void _443365();
 
-    int uSomeX;  // game viewport co ords
-    int uSomeY;
-    int uSomeZ;
-    int uSomeW;
+    int uSomeX = 0;  // game viewport co ords
+    int uSomeY = 0;
+    int uSomeZ = 0;
+    int uSomeW = 0;
 
-    unsigned int uScreen_topL_X;
-    unsigned int uScreen_topL_Y;
-    unsigned int uScreen_BttmR_X;
-    unsigned int uScreen_BttmR_Y;
-    int field_20;
-    unsigned int uMinimapZoom;
-    int field_28;  // zoom level in po2
-    unsigned int uMapBookMapZoom;
-    int sViewCenterX;
-    int sViewCenterY;
-    int16_t indoor_center_x;
-    int16_t indoor_center_y;
-    int field_3C;
-    class Image *location_minimap;  // unsigned int uTextureID_LocationMap; ::40
-    int bRedrawGameUI;
-    int field_48;
-    int field_4C;
-    int draw_sw_outlines;
-    int draw_d3d_outlines;
-    int field_58;
-    int field_5C;
-    int field_60;
-    int field_64;
-    int field_68;
-    uint16_t pPalette[256];
+    unsigned int uScreen_topL_X = 0;
+    unsigned int uScreen_topL_Y = 0;
+    unsigned int uScreen_BttmR_X = 0;
+    unsigned int uScreen_BttmR_Y = 0;
+    int field_20 = 0;
+    unsigned int uMinimapZoom = 0;
+    int field_28 = 0;  // zoom level in po2
+    unsigned int uMapBookMapZoom = 0;
+    int sViewCenterX = 0;
+    int sViewCenterY = 0;
+    int16_t indoor_center_x = 0;
+    int16_t indoor_center_y = 0;
+    int field_3C = 0;
+    class Image *location_minimap = nullptr;  // unsigned int uTextureID_LocationMap; ::40
+    int bRedrawGameUI = 1;
+    int field_48 = 0;
+    int field_4C = 0;
+    int draw_sw_outlines = 0;
+    int draw_d3d_outlines = 0;
+    int field_58 = 0;
+    int field_5C = 0;
+    int field_60 = 0;
+    int field_64 = 0;
+    int field_68 = 0;
+    uint16_t pPalette[256] {};
 };
 #pragma pack(pop)
 
