@@ -145,12 +145,13 @@ void KeyboardActionMapping::StoreMappings() {
 }
 
 KeyToggleType GetToggleType(InputAction action) {
-    if (action == InputAction::StrafeLeft || action == InputAction::StrafeRight) {
+    if (action == InputAction::StrafeLeft || action == InputAction::StrafeRight
+        || action == InputAction::FlyUp || action == InputAction::FlyDown) {
         return KeyToggleType::TOGGLE_Continuously;
     }
 
     int i = (int)action;
-    if (i > 3 && i != 25 && i != 26)
+    if (i > 3)
         return KeyToggleType::TOGGLE_OneTimePress;
     else
         return KeyToggleType::TOGGLE_Continuously;
