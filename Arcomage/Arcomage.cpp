@@ -1269,7 +1269,7 @@ bool IsGameOver() {
 }
 
 char PlayerTurn(int player_num) {
-    Rect pSrcXYZW;
+    // Rect pSrcXYZW;
     Point pTargetXY;
     ArcomageGame_InputMSG get_message;
 

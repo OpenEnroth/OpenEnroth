@@ -49,7 +49,7 @@ class Image {
     unsigned int width = 0;
     unsigned int height = 0;
     IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
-    void *pixels[IMAGE_NUM_FORMATS];
+    void* pixels[IMAGE_NUM_FORMATS]{};
 
     virtual bool LoadImageData();
 };

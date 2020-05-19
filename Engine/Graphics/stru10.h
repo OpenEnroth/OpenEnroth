@@ -28,7 +28,7 @@ struct stru10 {
     void _49CE9E(struct BLVFace *pFace, struct RenderVertexSoft *pVertices,
                  unsigned int uNumVertices, RenderVertexSoft *pOutLimits);
 
-    void (***vdestructor_ptr)(stru10 *, bool);
+    void (***vdestructor_ptr)(stru10 *, bool) = nullptr;
     int bDoNotDrawPortalFrustum;
 };
 #pragma pack(pop)

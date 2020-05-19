@@ -132,7 +132,7 @@ void stru10::CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
         float x;
         float y;
         int c;
-    } v46[40];  // [sp+0C];
+    } v46[40]{};  // [sp+0C];
 
     if (pFace->uAttributes & FACE_XY_PLANE) {
         for (uint i = 0; i < pFace->uNumVertices; ++i) {
@@ -297,11 +297,11 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
             Error("Invalid polygon type (%u)", pFace->uPolygonType);
     }
 
-    float face_center_x;
-    float face_center_y;
-    float face_center_z;
-    float a3;
-    float var_8;
+    float face_center_x = 0;
+    float face_center_y = 0;
+    float face_center_z = 0;
+    float a3 = 0;
+    float var_8 = 0;
 
     if (pFace->uAttributes & FACE_XY_PLANE) {
         face_center_x = (pFaceLimits[0].vWorldPosition.x +

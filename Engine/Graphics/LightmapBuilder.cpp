@@ -23,6 +23,12 @@ Lightmap::Lightmap() {
     for (uint i = 0; i < 64; ++i) pVertices[i].flt_2C = 0.0f;
     this->field_C18 = 0;
     // this->vdestructor_ptr = &Lightmap_pvdtor;
+    uColorMask = 0;
+    position_z = 0;
+    position_y = 0;
+    position_x = 0;
+    field_C0E = 0;
+    fBrightness = 0;
 }
 
 //----- (0045BB06) --------------------------------------------------------
@@ -41,6 +47,18 @@ LightmapBuilder::LightmapBuilder() {
 
     for (int i = 0; i < 256; i++)
         this->field_3C8C34[i].flt_2C = 0.0f;
+
+    uFlags = 0;
+    tex_light_radius = 0;
+    light_radius = 0;
+    light_length_z2 = 0;
+    light_length_z = 0;
+    light_length_y2 = 0;
+    light_length_y = 0;
+    light_length_x2 = 0;
+    light_length_x = 0;
+    flt_3C8C28 = 0;
+    flt_3C8C2C_lightmaps_brightness = 0;
 }
 
 // ////////////////////////OUTDOOR/LIGHT////////////////////////////////////////////

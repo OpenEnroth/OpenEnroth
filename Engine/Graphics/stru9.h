@@ -22,11 +22,11 @@ struct stru312 {
     //----- (004BE6D1) --------------------------------------------------------
     inline stru312() {}
 
-    float x;
-    float y;
-    float z;
-    char field_C;
-    char pad[3];
+    float x = 0;
+    float y = 0;
+    float z = 0;
+    char field_C = 0;
+    char pad[3]{};
 };
 #pragma pack(pop)
 
@@ -60,6 +60,6 @@ struct stru9 {
     bool DoDecalVertsNeedClipping(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                  struct RenderVertexSoft *a3, struct stru312 *a4);
 
-    void (***vdestructor_ptr)(stru9 *, bool);
+    void (***vdestructor_ptr)(stru9 *, bool) = nullptr;
 };
 #pragma pack(pop)

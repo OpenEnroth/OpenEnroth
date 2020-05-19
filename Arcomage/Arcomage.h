@@ -89,18 +89,18 @@ struct AcromageCardOnTable {
 };
 
 struct ArcomagePlayer {
-    char pPlayerName[32];
+    char pPlayerName[32] {};
     int IsHisTurn = 0;  // doesnt appear to be used correctly - always player 0 turn
-    int tower_height;
-    int wall_height;
-    int quarry_level;
-    int magic_level;
-    int zoo_level;
-    int resource_bricks;
-    int resource_gems;
-    int resource_beasts;
-    int cards_at_hand[10];
-    sPoint card_shift[10];
+    int tower_height = 0;
+    int wall_height = 0;
+    int quarry_level = 0;
+    int magic_level = 0;
+    int zoo_level = 0;
+    int resource_bricks = 0;
+    int resource_gems = 0;
+    int resource_beasts = 0;
+    int cards_at_hand[10] {};
+    sPoint card_shift[10] {};
 };
 
 struct ArcomageGame_InputMSG {
@@ -167,12 +167,12 @@ extern ArcomageCard pCards[87];
 extern void set_stru1_field_8_InArcomage(int inValue);
 
 struct spark_point_struct {
-    int spark_remaining_life;
-    Point spark_position;
-    int spark_x_unshift;
-    int spark_y_unshift;
-    int spark_x_speed;
-    int spark_y_speed;
+    int spark_remaining_life = 0;
+    Point spark_position {};
+    int spark_x_unshift = 0;
+    int spark_y_unshift = 0;
+    int spark_x_speed = 0;
+    int spark_y_speed = 0;
 };
 
 struct effect_params_struct {
@@ -240,7 +240,7 @@ struct am_effects_struct {
     char effect_sign = 0;
     char _pad_2 = 0;
     char _pad_3 = 0;
-    effect_params_struct eff_params;
+    effect_params_struct eff_params {};
     explosion_effect_struct *explosion_eff = nullptr;
-    spark_point_struct effect_sparks[150];
+    spark_point_struct effect_sparks[150] {};
 };

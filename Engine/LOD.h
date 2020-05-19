@@ -181,15 +181,15 @@ struct LODSpriteHeader {
         word_1A = 0;
     }
 
-    char pName[12];         // 0
-    uint32_t uSpriteSize;        // C
-    uint16_t uWidth;         // 10  SW width (as opposed to Sprite::BufferWidth)
-    uint16_t uHeight;        // 12  SW height
-    uint16_t uPaletteId;     // 14
-    uint16_t word_16;        // 16
-    uint16_t uTexturePitch;  // 18
-    uint16_t word_1A;        // 1a  flags - 1024 delete bitmap
-    uint32_t uDecompressedSize;  // 1c
+    char pName[12] {};         // 0
+    uint32_t uSpriteSize = 0;        // C
+    uint16_t uWidth = 0;         // 10  SW width (as opposed to Sprite::BufferWidth)
+    uint16_t uHeight = 0;        // 12  SW height
+    uint16_t uPaletteId = 0;     // 14
+    uint16_t word_16 = 0;        // 16
+    uint16_t uTexturePitch = 0;  // 18
+    uint16_t word_1A = 0;        // 1a  flags - 1024 delete bitmap
+    uint32_t uDecompressedSize = 0;  // 1c
 };
 #pragma pack(pop)
 

@@ -117,7 +117,7 @@ inline int bankersRounding<float>(const float &inValue) {
 #undef max
 template <>
 inline int bankersRounding<double>(const double &inValue) {
-    double maxValue = std::numeric_limits<int>::max();
+    constexpr double maxValue = std::numeric_limits<int>::max();
     assert(maxValue - 6755399441055744.0 >= inValue);
     union Cast {
         double d;

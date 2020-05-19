@@ -159,6 +159,8 @@ void RenderBase::DrawSpriteObjects_ODM() {
             int v9 = ((int)(stru_5C6E00->uIntegerPi + ((int)stru_5C6E00->uIntegerPi >> 3) +
                             object->uFacing - v6) >> 8) & 7;
 
+            if (::uNumBillboardsToDraw == 500) break;
+
             pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[v9];
             // error catching
             if (frame->hw_sprites[v9]->texture->GetHeight() == 0 || frame->hw_sprites[v9]->texture->GetWidth() == 0)
@@ -220,9 +222,10 @@ void RenderBase::DrawSpriteObjects_ODM() {
                     //            }
                     //          }
 
-                    assert(::uNumBillboardsToDraw < 500);
+                    assert(::uNumBillboardsToDraw < 499);
                     ++::uNumBillboardsToDraw;
                     ++uNumSpritesDrawnThisFrame;
+
                // }
             }
         }

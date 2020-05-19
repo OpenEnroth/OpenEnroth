@@ -28,7 +28,7 @@ Texture *TextureD3D::Create(unsigned int width, unsigned int height,
             // tex->pixels[format] = pixels;
             // tex->initialized = render->MoveTextureToDevice(tex); nope
             if (!tex->initialized) {
-                __debugbreak;
+                __debugbreak();
             }
         }
     }

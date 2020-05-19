@@ -129,7 +129,7 @@ struct ActionQueue {
     PartyAction Next();
 
     unsigned int uNumActions;
-    PartyAction pActions[30];
+    PartyAction pActions[30]{};
 };
 #pragma pack(pop)
 

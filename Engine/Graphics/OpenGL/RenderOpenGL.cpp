@@ -1600,6 +1600,11 @@ RenderOpenGL::RenderOpenGL(
     Vis* vis,
     Log* logger
 ) : RenderBase(window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+    clip_w = 0;
+    clip_x = 0;
+    clip_y = 0;
+    clip_z = 0;
+    render_target_rgb = nullptr;
 }
 
 RenderOpenGL::~RenderOpenGL() { /*__debugbreak();*/ }
@@ -2614,7 +2619,7 @@ void RenderOpenGL::RenderTerrainD3D() {
     if (left > 2048) left -= 2048;
     if (right < 0) right += 2048;
 
-    float Light_tile_dist;
+    // float Light_tile_dist;
 
 
     for (int z = 0; z < 128 - 1; ++z) {

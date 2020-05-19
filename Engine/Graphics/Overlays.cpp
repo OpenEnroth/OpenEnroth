@@ -68,7 +68,7 @@ int OtherOverlayList::_4418B6(int uOverlayID, __int16 a3, int a4, int a5,
 
 //----- (00441964) --------------------------------------------------------
 void OtherOverlayList::DrawTurnBasedIcon(int a2) {
-    Icon *frame;      // eax@12
+    Icon *frame = nullptr;      // eax@12
     unsigned int v5;  // [sp-8h] [bp-Ch]@4
 
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME || !pParty->bTurnBasedModeOn) return;

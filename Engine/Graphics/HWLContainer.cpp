@@ -45,7 +45,7 @@ bool HWLContainer::Open(const String &pFilename) {
 
     typedef struct HWLNode {
         String sName;
-        size_t uOffset;
+        size_t uOffset = 0;
     } HWLNode;
     std::vector<HWLNode> vNodes;
 

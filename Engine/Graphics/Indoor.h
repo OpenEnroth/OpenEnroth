@@ -82,26 +82,18 @@ extern LightsData Lights;  // idb
 #pragma pack(push, 1)
 struct DDM_DLV_Header {
     //----- (00462607) --------------------------------------------------------
-    inline DDM_DLV_Header() {
-        this->uLastRepawnDay = 0;
-        this->uNumRespawns = 0;
-        this->uReputation = 0;
-        this->field_C_alert = 0;
-        this->uNumFacesInBModels = 0;
-        this->uNumDecorations = 0;
-        this->uNumBModels = 0;
-    }
+    inline DDM_DLV_Header() {}
 
-    int uNumRespawns;
-    int uLastRepawnDay;
-    int uReputation;
-    int field_C_alert;
-    unsigned int uNumFacesInBModels;
-    unsigned int uNumDecorations;
-    unsigned int uNumBModels;
-    int field_1C;
-    int field_20;
-    int field_24;
+    int uNumRespawns = 0;
+    int uLastRepawnDay = 0;
+    int uReputation = 0;
+    int field_C_alert = 0;
+    unsigned int uNumFacesInBModels = 0;
+    unsigned int uNumDecorations = 0;
+    unsigned int uNumBModels = 0;
+    int field_1C = 0;
+    int field_20 = 0;
+    int field_24 = 0;
 };
 #pragma pack(pop)
 
@@ -164,22 +156,22 @@ struct stru141_actor_collision_object {
     int field_50;  // unmod y
     int field_54;  // unmod z
     Vec3_int_ direction;  // velocity's unit vector
-    int speed;
+    int speed = 0;
     int inv_speed;
     int field_6C;  // movement dist
     int field_70;  // some dist modifier - blanked before coll links with field_7C- slows/stops movement
-    unsigned int uSectorID;
+    unsigned int uSectorID = 0;
     unsigned int pid;
     int field_7C;  // mod speed after collisions??
     int field_80;  // portal id??
     int field_84;  // pid of face
     int field_88;  // unsued
-    int sMaxX;
-    int sMinX;
-    int sMaxY;
-    int sMinY;
-    int sMaxZ;  // is this min
-    int sMinZ;  // is this max
+    int sMaxX = 0;
+    int sMinX = 0;
+    int sMaxY = 0;
+    int sMinY = 0;
+    int sMaxZ = 0;  // is this min
+    int sMinZ = 0;  // is this max
     int field_A4;  // unused
 };
 #pragma pack(pop)
@@ -241,11 +233,11 @@ struct stru154 {
                       struct Vec3_float_ *pOutNormal, float *pOutDist);
 
     void (***vdestructor_ptr)(stru154 *, bool);
-    Plane_float_ face_plane;
-    PolygonType polygonType;
-    char field_15;
-    char field_16;
-    char field_17;
+    Plane_float_ face_plane {};
+    PolygonType polygonType {};
+    char field_15 = 0;
+    char field_16 = 0;
+    char field_17 = 0;
 };
 #pragma pack(pop)
 
@@ -272,12 +264,12 @@ struct stru352 {
 
 #pragma pack(push, 1)
 struct LocationTime_stru1 {
-    GameTime last_visit;
-    char sky_texture_name[12];
-    int day_attrib;
-    int day_fogrange_1;
-    int day_fogrange_2;
-    char field_2F4[24];
+    GameTime last_visit {};
+    char sky_texture_name[12] {};
+    int day_attrib = 0;
+    int day_fogrange_1 = 0;
+    int day_fogrange_2 = 0;
+    char field_2F4[24] {};
 };
 #pragma pack(pop)
 
@@ -468,27 +460,27 @@ struct BLVFace {  // 60h
                                 : this->uAttributes | FACE_TEXTURE_FRAME;
     }
 
-    struct Plane_float_ pFacePlane;
+    struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
     int zCalc1;  // x
     int zCalc2;  // y
     int zCalc3;
     unsigned int uAttributes;
-    uint16_t *pVertexIDs;
+    uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
     int16_t *pYInterceptDisplacements;
     int16_t *pZInterceptDisplacements;
-    int16_t *pVertexUIDs;
-    int16_t *pVertexVIDs;
+    int16_t *pVertexUIDs = nullptr;
+    int16_t *pVertexVIDs = nullptr;
     uint16_t uFaceExtraID;
     void *resource;  // unsigned __int16  uBitmapID;
     uint16_t uSectorID;
     int16_t uBackSectorID;
-    struct BBox_short_ pBounding;
+    struct BBox_short_ pBounding {};
     PolygonType uPolygonType;
     uint8_t uNumVertices;
-    char field_5E;
-    char field_5F;
+    char field_5E = 0;
+    char field_5F = 0;
 };
 #pragma pack(pop)
 
@@ -673,46 +665,46 @@ struct BLVRenderParams {
 
     void Reset();
 
-    int field_0_timer_;
-    int _unused_uFlags;  // & INDOOR_CAMERA_DRAW_D3D_OUTLINES:  render d3d
+    int field_0_timer_ = 0;
+    int _unused_uFlags = 0;  // & INDOOR_CAMERA_DRAW_D3D_OUTLINES:  render d3d
                          // outlines
     Vec3_int_ _unused_vPartyPos;
-    int _unused_sPartyRotY;
-    int _unused_sPartyRotX;
-    int uPartySectorID;
-    int _unused_sCosineY;     // matches ODMRenderParams::int sines and cosines
-    int _unused_sSineY;       // computed in 0048600E
-    int _unused_sCosineNegX;  // merged into IndoorCameraD3D
-    int _unused_sSineNegX;    // --//--
-    float _unused_fCosineY;   // matches old IndoorCamera::fRotationCosineY (new
+    int _unused_sPartyRotY = 0;
+    int _unused_sPartyRotX = 0;
+    int uPartySectorID = 0;
+    int _unused_sCosineY = 0;     // matches ODMRenderParams::int sines and cosines
+    int _unused_sSineY = 0;       // computed in 0048600E
+    int _unused_sCosineNegX = 0;  // merged into IndoorCameraD3D
+    int _unused_sSineNegX = 0;    // --//--
+    float _unused_fCosineY = 0;   // matches old IndoorCamera::fRotationCosineY (new
                               // IndoorCameraD3D::fRotationCosineY)
-    float _unused_fSineY;     // matches old IndoorCamera::fRotationSineY   (new
+    float _unused_fSineY = 0;     // matches old IndoorCamera::fRotationSineY   (new
                               // IndoorCameraD3D::fRotationSineY)
-    float _unused_fCosineNegX;  // the same
-    float _unused_fSineNegX;    // the same
+    float _unused_fCosineNegX = 0;  // the same
+    float _unused_fSineNegX = 0;    // the same
 
     // int bsp_fov_rad;            // fixpoint FOV in radians for BSP calculation
     // int bsp_fov_rad_inv;
 
-    unsigned int uTargetWidth;
-    unsigned int uTargetHeight;
+    unsigned int uTargetWidth = 0;
+    unsigned int uTargetHeight = 0;
     unsigned int uViewportX;
     unsigned int uViewportY;
     unsigned int uViewportZ;
     unsigned int uViewportW;
-    int fov;
-    int *pTargetZBuffer;
-    int uViewportHeight;
-    int uViewportWidth;
-    int uViewportCenterX;
-    int uViewportCenterY;
-    struct BspRenderer_PortalViewportData *field_7C;
-    unsigned int uNumFacesRenderedThisFrame;
-    int field_84;
-    int field_88;
-    int field_8C;
-    int field_90;
-    int field_94;
+    int fov = 0;
+    int *pTargetZBuffer = nullptr;
+    int uViewportHeight = 0;
+    int uViewportWidth = 0;
+    int uViewportCenterX = 0;
+    int uViewportCenterY = 0;
+    struct BspRenderer_PortalViewportData *field_7C = nullptr;
+    unsigned int uNumFacesRenderedThisFrame = 0;
+    int field_84 = 0;
+    int field_88 = 0;
+    int field_8C = 0;
+    int field_90 = 0;
+    int field_94 = 0;
 };
 #pragma pack(pop)
 extern BLVRenderParams *pBLVRenderParams;
@@ -775,15 +767,15 @@ struct BspRenderer_stru0 {
     ~BspRenderer_stru0() {
     }
 
-    uint16_t uSectorID;
+    uint16_t uSectorID = 0;
     uint16_t uViewportX;
     uint16_t uViewportY;
     uint16_t uViewportZ;
     uint16_t uViewportW;
-    int16_t field_A;
-    BspRenderer_PortalViewportData PortalScreenData;
+    int16_t field_A = 0;
+    BspRenderer_PortalViewportData PortalScreenData {};
     uint16_t uFaceID;
-    int16_t field_7A6;
+    int16_t field_7A6 = 0;
     unsigned int viewing_portal_id;  // portal through which we're seeing this node
     IndoorCameraD3D_Vec4 std__vector_0007AC[4];  // frustum planes
     RenderVertexSoft pPortalBounding[4];
@@ -813,12 +805,12 @@ struct BspRenderer {  // stru170
 
     unsigned int num_faces;
     // __int16 pFaceIDs[2000];
-    BspFace faces[1000];
+    BspFace faces[1000] {};
     // char field_130[3700];
     unsigned int num_nodes;
     BspRenderer_stru0 nodes[150];
     unsigned int uNumVisibleNotEmptySectors;
-    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6];
+    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6] {};
 };
 #pragma pack(pop)
 

@@ -55,18 +55,18 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     ItemGen *spell_item_to_enchant;  // edi@492
 
 
-    int *v267;              // eax@524
-    int v268;              // eax@524
-    int v278;              // ecx@548
-    char v279;             // al@550
-    int v280;              // eax@552
-    int *v281;             // esi@553
-    int v282;              // edx@555
-    int *v283;             // ecx@555
-    int v284;              // esi@555
-    int v285;              // edx@555
-    int *l;                // eax@556
-    int v295;              // edx@575
+    // int *v267;              // eax@524
+    // int v268;              // eax@524
+    // int v278;              // ecx@548
+    // char v279;             // al@550
+    // int v280;              // eax@552
+    // int *v281;             // esi@553
+    // int v282;              // edx@555
+    // int *v283;             // ecx@555
+    // int v284;              // esi@555
+    // int v285;              // edx@555
+    // int *l;                // eax@556
+    // int v295;              // edx@575
 
     const char *v317;      // ecx@617
                            //  int v396; // eax@752
@@ -100,11 +100,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     int buff_resist;
     bool spell_sound_flag = false;  // [sp+E5Ch] [bp-28h]@1
     Player *pPlayer;                // [sp+E64h] [bp-20h]@8
-    char *v730;                       // [sp+E68h] [bp-1Ch]@53
+    // char *v730;                       // [sp+E68h] [bp-1Ch]@53
     int v730_int;
     ItemGen *v730c;
     int skill_level = 0;  // [sp+E6Ch] [bp-18h]@48
-    int *v732;      // [sp+E70h] [bp-14h]@325
+    // int *v732;      // [sp+E70h] [bp-14h]@325
     int v732_int;
 
     int spellduration;

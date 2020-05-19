@@ -7,15 +7,15 @@ struct stru160 {
     inline stru160(float a, float b, float c)
         : field_0(a), field_4(b), field_8(c) {}
 
-    float field_0;
-    float field_4;
-    float field_8;
+    float field_0 = 0;
+    float field_4 = 0;
+    float field_8 = 0;
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct stru16x : public stru160 {
-    float field_C;
+    float field_C = 0;
 };
 #pragma pack(pop)
 

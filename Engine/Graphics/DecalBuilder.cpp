@@ -396,7 +396,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon *a2, Vec3_float_ *_a3
     // Vec3_float_ *v9; // ebx@3
     // Bloodsplat *v10; // esi@3
     // float v11; // eax@5
-    float WorldYPosD;  // eax@6
+    float WorldYPosD = 0;  // eax@6
     // double v13; // st7@13
     double v14;  // st7@19
     // short v15; // eax@20
@@ -410,14 +410,14 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon *a2, Vec3_float_ *_a3
     unsigned int NumBloodsplats;  // [sp+14h] [bp-28h]@1
     // DecalBuilder *v24; // [sp+18h] [bp-24h]@1
     // int v25; // [sp+1Ch] [bp-20h]@19
-    float WorldMaxZ;  // [sp+20h] [bp-1Ch]@12
+    float WorldMaxZ = 0;  // [sp+20h] [bp-1Ch]@12
                 //  int v27; // [sp+24h] [bp-18h]@12
-    float WorldMinZ;  // [sp+28h] [bp-14h]@13
+    float WorldMinZ = 0;  // [sp+28h] [bp-14h]@13
     // float v29; // [sp+2Ch] [bp-10h]@7
-    float WorldYPosU;  // [sp+30h] [bp-Ch]@6
-    float WorldXPosL;  // [sp+34h] [bp-8h]@6
+    float WorldYPosU = 0;  // [sp+30h] [bp-Ch]@6
+    float WorldXPosL = 0;  // [sp+34h] [bp-8h]@6
     // bool v32; // [sp+38h] [bp-4h]@2
-    float WorldXPosR;
+    float WorldXPosR = 0;
 
     this->uNumDecals = 0;
 

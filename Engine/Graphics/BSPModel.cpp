@@ -101,6 +101,7 @@ uint8_t *BSPModelList::Load(uint8_t *data) {
 
         unsigned int facesOrderingSize = model.uNumFaces * sizeof(short);
         new_model.pFacesOrdering = (uint16_t *)malloc(facesOrderingSize);
+
         memcpy(new_model.pFacesOrdering, data, facesOrderingSize);
         data += facesOrderingSize;
 

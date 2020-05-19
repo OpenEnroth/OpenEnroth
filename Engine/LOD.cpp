@@ -393,6 +393,7 @@ LODFile_Sprites::LODFile_Sprites() : LOD::File() {
     // can_load_hardware_sprites = 0;
     field_ECB4 = 0;
     uNumLoadedSprites = 0;
+    field_ECA8 = 0;
 }
 
 LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
@@ -428,6 +429,8 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
     this->uTextureRedBits = 0;
     this->uTextureGreenBits = 0;
     this->uTextureBlueBits = 0;
+    this->pFacesLock = 0;
+    this->dword_11B88 = 0;
 }
 
 bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
@@ -667,6 +670,8 @@ unsigned int LOD::WriteableFile::Write(const String &file_name, const void *pDir
 LOD::WriteableFile::WriteableFile() {
     pIOBuffer = nullptr;
     uIOBufferSize = 0;
+    uLODDataSize = 0;
+    pOutputFileHandle = nullptr;
 }
 
 bool LOD::WriteableFile::LoadFile(const String &pFilename, bool bWriting) {

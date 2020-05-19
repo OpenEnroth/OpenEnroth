@@ -118,7 +118,7 @@ bool Application::ValidateConfig(std::string &out_errors) {
 }
 
 void Application::Run() {
-    CoInitializeEx(0, COINIT_APARTMENTTHREADED);  // SHBrowseForFolder
+    int init = CoInitializeEx(0, COINIT_APARTMENTTHREADED);  // SHBrowseForFolder
 
     auto module = GetModuleHandleA(nullptr);
     HWND dialog = CreateDialogParamA(module, MAKEINTRESOURCEA(IDD_FORMVIEW),
@@ -152,4 +152,10 @@ void Application::Run() {
         womm_filename.c_str(), cmd.data(), nullptr, nullptr, FALSE,
         NORMAL_PRIORITY_CLASS, nullptr,
         config.mm7_install_path.c_str(), &si, &pi);
+
+    // Wait until child process exits.
+    WaitForSingleObject(pi.hProcess, INFINITE);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
 }

@@ -8,26 +8,26 @@ using EngineIoc = Engine_::IocContainer;
 /*  257 */
 #pragma pack(push, 1)
 struct StationaryLight {
-    Vec3_short_ vPosition;
-    int16_t uRadius;
-    uint8_t uLightColorR;
-    uint8_t uLightColorG;
-    uint8_t uLightColorB;
-    char uLightType;
+    Vec3_short_ vPosition {};
+    int16_t uRadius = 0;
+    uint8_t uLightColorR = 0;
+    uint8_t uLightColorG = 0;
+    uint8_t uLightColorB = 0;
+    char uLightType = 0;
 };
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 struct MobileLight {
-    Vec3_short_ vPosition;
-    int16_t uRadius;
-    uint8_t uLightColorR;
-    uint8_t uLightColorG;
-    uint8_t uLightColorB;
-    char uLightType;
-    int16_t field_C;
-    int16_t uSectorID;
-    int16_t field_10;
+    Vec3_short_ vPosition {};
+    int16_t uRadius = 0;
+    uint8_t uLightColorR = 0;
+    uint8_t uLightColorG = 0;
+    uint8_t uLightColorB = 0;
+    char uLightType = 0;
+    int16_t field_C = 0;
+    int16_t uSectorID = 0;
+    int16_t field_10 = 0;
 };
 #pragma pack(pop)
 

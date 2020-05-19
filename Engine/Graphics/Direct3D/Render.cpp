@@ -156,8 +156,8 @@ bool Render::CheckTextureStages() {
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_MINFILTER, 2));
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_MIPFILTER, 1));
 
-    DWORD v4 = 0;
-    if (!pRenderD3D->pDevice->ValidateDevice(&v4) && v4 == 1) {
+    DWORD v4 = 0;  // num passes
+    if (SUCCEEDED(pRenderD3D->pDevice->ValidateDevice(&v4)) && v4 == 1) {
         bResult = true;
     }
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_COLOROP, 1));
@@ -1089,11 +1089,21 @@ Render::Render(
     this->uNumD3DSceneBegins = 0;
     this->bRequiredTextureStagesAvailable = 0;
 
+    this->uDesiredDirect3DDevice = 0;
+    this->uMaxDeviceTextureDim = 0;
+    this->uMinDeviceTextureDim = 0;
+
+    this->uTargetBBits = 0;
+    this->uTargetGBits = 0;
+    this->uTargetRBits = 0;
+
     uNumBillboardsToDraw = 0;
 
     hd_water_tile_id = -1;
     hd_water_current_frame = 0;
 
+    this->p2DGraphics = nullptr;
+    this->p2DSurface = nullptr;
     Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 }
 

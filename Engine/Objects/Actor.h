@@ -19,7 +19,7 @@ struct stru319 {
     int _427546(int a2);
     int FindClosestActor(int pick_depth, int a3, int target_undead);
 
-    char field_0;
+    char field_0 = 0;
 
     Vis *vis = nullptr;
 };
@@ -124,11 +124,11 @@ enum ActorAnimation : __int32 {
 /*  247 */
 #pragma pack(push, 1)
 struct AIDirection {
-    Vec3_int_ vDirection;
-    unsigned int uDistance;
-    unsigned int uDistanceXZ;
-    unsigned int uYawAngle;
-    /*un*/signed int uPitchAngle;
+    Vec3_int_ vDirection{};
+    unsigned int uDistance = 0;
+    unsigned int uDistanceXZ = 0;
+    unsigned int uYawAngle = 0;
+    /*un*/signed int uPitchAngle = 0;
 };
 #pragma pack(pop)
 
@@ -136,11 +136,11 @@ struct AIDirection {
 #pragma pack(push, 1)
 struct ActorJob {
     struct Vec3_short_ vPos;
-    unsigned __int16 uAttributes;
-    unsigned __int8 uAction;
-    unsigned __int8 uHour;
-    unsigned __int8 uDay;
-    unsigned __int8 uMonth;
+    unsigned __int16 uAttributes = 0;
+    unsigned __int8 uAction = 0;
+    unsigned __int8 uHour = 0;
+    unsigned __int8 uDay = 0;
+    unsigned __int8 uMonth = 0;
 };
 #pragma pack(pop)
 

@@ -27,23 +27,23 @@ class Icon {
     Texture *GetTexture();
 
     ///* 000 */ char pAnimationName[12];
-    /* 00C */ char pTextureName[12];
+    /* 00C */ char pTextureName[12]{};
     ///* 018 */ int16_t uAnimTime;
     ///* 01A */ int16_t uAnimLength;
-    /* 01C */ int16_t uFlags;
+    /* 01C */ int16_t uFlags = 0;
     ///* 01E */ uint16_t uTextureID;
-    int id;
+    int id = 0;
 
  protected:
-    char anim_name[64];
+     char anim_name[64]{};
     // char texture_name[64];
     // unsigned int anim_time;
-    unsigned int anim_length;
-    unsigned int anim_time;
+    unsigned int anim_length = 0;
+    unsigned int anim_time = 0;
     // unsigned int flags;
     // unsigned int texture_id;
 
-    Texture *img;
+    Texture *img = nullptr;
 };
 
 /*   45 */

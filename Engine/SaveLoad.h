@@ -18,10 +18,10 @@ struct SavegameList {
 /*  244 */
 #pragma pack(push, 1)
 struct SavegameHeader {
-    char pName[20];
-    char pLocationName[20];
-    GameTime playing_time;  // unsigned __int64 uWordTime;
-    char field_30[52];
+    char pName[20]{};
+    char pLocationName[20]{};
+    GameTime playing_time{};  // unsigned __int64 uWordTime;
+    char field_30[52]{};
 };
 #pragma pack(pop)
 
