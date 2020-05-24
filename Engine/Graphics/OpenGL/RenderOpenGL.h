@@ -144,6 +144,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool AreRenderSurfacesOk();
 
+    unsigned short *MakeScreenshot(int width, int height);
     virtual Image *TakeScreenshot(unsigned int width, unsigned int height);
     virtual void SaveScreenshot(const String &filename, unsigned int width,
                                 unsigned int height);
