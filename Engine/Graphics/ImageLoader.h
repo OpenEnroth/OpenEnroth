@@ -77,9 +77,8 @@ class PCX_Loader : public ImageLoader {
 
 class PCX_File_Loader : public PCX_Loader {
  public:
-    inline PCX_File_Loader(LODFile_IconsBitmaps *lod, const String &filename) {
+    explicit inline PCX_File_Loader(const String &filename) {
         this->resource_name = filename;
-        this->lod = lod;
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
@@ -95,7 +94,7 @@ class PCX_File_Loader : public PCX_Loader {
 class PCX_LOD_File_Loader : public PCX_File_Loader {
  public:
     inline PCX_LOD_File_Loader(LOD::File *lod, const String &filename)
-        : PCX_File_Loader(nullptr, filename) {
+        : PCX_File_Loader(filename) {
         this->lod = lod;
     }
 

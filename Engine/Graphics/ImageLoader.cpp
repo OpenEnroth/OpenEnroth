@@ -201,7 +201,13 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     size_t filesize = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    bool res = InternalLoad(file, filesize, width, height, pixels, format);
+    uint8_t *buffer = (uint8_t *)malloc(filesize);
+
+    fread(buffer, filesize, 1, file);
+
+    bool res = InternalLoad(buffer, filesize, width, height, pixels, format);
+
+    free(buffer);
 
     fclose(file);
 
