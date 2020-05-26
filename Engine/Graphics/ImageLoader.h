@@ -73,6 +73,9 @@ class PCX_Loader : public ImageLoader {
  protected:
     bool DecodePCX(const void *pcx_data, uint16_t *pOutPixels,
                    unsigned int *width, unsigned int *height);
+    bool InternalLoad(void *file, size_t size, unsigned int *width,
+                      unsigned int *height, void **pixels,
+                      IMAGE_FORMAT *format);
 };
 
 class PCX_File_Loader : public PCX_Loader {
@@ -84,17 +87,13 @@ class PCX_File_Loader : public PCX_Loader {
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
                       IMAGE_FORMAT *format);
 
- protected:
-    bool InternalLoad(void *file, size_t size, unsigned int *width,
-                      unsigned int *height, void **pixels,
-                      IMAGE_FORMAT *format);
     LODFile_IconsBitmaps *lod;
 };
 
-class PCX_LOD_File_Loader : public PCX_File_Loader {
+class PCX_LOD_Raw_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_File_Loader(LOD::File *lod, const String &filename)
-        : PCX_File_Loader(filename) {
+    inline PCX_LOD_Raw_Loader(LOD::File *lod, const String &filename) {
+        this->resource_name = filename;
         this->lod = lod;
     }
 
@@ -105,9 +104,9 @@ class PCX_LOD_File_Loader : public PCX_File_Loader {
     LOD::File *lod;
 };
 
-class PCX_LOD_Loader : public PCX_Loader {
+class PCX_LOD_Compressed_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Loader(LOD::File *lod, const String &filename) {
+    inline PCX_LOD_Compressed_Loader(LOD::File *lod, const String &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }

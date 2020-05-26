@@ -2470,11 +2470,11 @@ Texture *RenderOpenGL::CreateTexture_Alpha(const String &name) {
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const String &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Loader(pIcons_LOD, name));
+    return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pIcons_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromNewLOD(const String &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Loader(pNew_LOD, name));
+    return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pNew_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromFile(const String &name) {
@@ -2482,7 +2482,7 @@ Texture *RenderOpenGL::CreateTexture_PCXFromFile(const String &name) {
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureOpenGL::Create(new PCX_LOD_File_Loader((LOD::File *)pLOD, name));
+    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height,
