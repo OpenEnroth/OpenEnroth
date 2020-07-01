@@ -130,14 +130,35 @@ inline bool Image_R5G6B5_to_R8G8B8(unsigned int num_pixels,
 inline unsigned int A1R5G5B5_extract_A(uint16_t c) {
     return c & 0x8000 ? 255 : 0;
 }
+
 inline unsigned int A1R5G5B5_extract_R(uint16_t c) {
     return 8 * ((c >> 10) & 0x1F);
 }
+
 inline unsigned int A1R5G5B5_extract_G(uint16_t c) {
     return 8 * ((c >> 5) & 0x1F);
 }
+
 inline unsigned int A1R5G5B5_extract_B(uint16_t c) {
     return 8 * ((c >> 0) & 0x1F);
+}
+
+inline bool Image_A1R5G5B5_to_A8R8G8B8(
+    unsigned int num_pixels,
+    const void* src_pixels,
+    void* dst_pixels
+) {
+    auto src = (uint16_t*)src_pixels;
+    auto dst = (uint8_t*)dst_pixels;
+
+    for (unsigned int i = 0; i < num_pixels; ++i) {
+        dst[i * 4 + 0] = A1R5G5B5_extract_A(src[i]);
+        dst[i * 4 + 1] = A1R5G5B5_extract_R(src[i]);
+        dst[i * 4 + 2] = A1R5G5B5_extract_G(src[i]);
+        dst[i * 4 + 3] = A1R5G5B5_extract_B(src[i]);
+    }
+
+    return true;
 }
 
 inline bool Image_A1R5G5B5_to_R8G8B8A8(unsigned int num_pixels,

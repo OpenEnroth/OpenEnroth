@@ -107,14 +107,14 @@ class EngineConfig {
     bool no_logo = false;
 
     bool no_sound = false;
-    bool no_video = false;
+    bool no_video = true;
     bool no_walk_sound = false;
     bool no_margareth = false;
     bool no_bloodsplats = false;
     bool no_actors = false;
     bool no_decorations = false;
     bool no_damage = false;
-    bool seasons_change = true;             // change sprites and tiles according to season
+    bool seasons_change = false;             // change sprites and tiles according to season
     bool allow_lightmaps = true;
     bool allow_snow = false;
     bool extended_draw_distance = true;    // 2.5x draw distance

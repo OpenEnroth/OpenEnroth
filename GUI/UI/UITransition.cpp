@@ -228,6 +228,7 @@ GUIWindow_Travel::GUIWindow_Travel()
 
 void GUIWindow_Travel::Update() {
     char pDestinationMapName[32];
+    pDestinationMapName[0] = 0;
 
     pOutdoor->GetTravelDestination(pParty->vPosition.x, pParty->vPosition.y,
                                    pDestinationMapName, 20);

@@ -591,8 +591,9 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_OpenMapBook:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
+                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu) {
                         pGUIWindow_CurrentMenu->Release();
+                    }
                     pGUIWindow_CurrentMenu = new GUIWindow_MapBook();
                     continue;
                 case UIMSG_OpenCalendar:

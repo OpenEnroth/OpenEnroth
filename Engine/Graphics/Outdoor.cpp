@@ -78,8 +78,232 @@ std::array<int, 7> dword_4EC28C = {{3, 3, 3, 3, 3, 3, 3}};
 int dword_4EC2A8 = 9;
 int dword_4EC2AC = 7;
 
+
+
+
+
+
+
+#pragma pack(push, 1)
+typedef struct {
+        char  idlength;
+        char  colourmaptype;
+        char  datatypecode;
+        short int colourmaporigin;
+        short int colourmaplength;
+        char  colourmapdepth;
+        short int x_origin;
+        short int y_origin;
+        short width;
+        short height;
+        char  bitsperpixel;
+        char  imagedescriptor;
+} tga;
+#pragma pack(pop)
+
+FILE *CreateTga(const char *filename, int image_width, int image_height)
+{
+        auto f = fopen(filename, "w+b");
+
+        tga tga_header;
+        memset(&tga_header, 0, sizeof(tga_header));
+
+        tga_header.colourmaptype = 0;
+        tga_header.datatypecode = 2;
+        //tga_header.colourmaporigin = 0;
+        //tga_header.colourmaplength = image_width * image_height;
+        //tga_header.colourmapdepth = 32;
+        tga_header.x_origin = 0;
+        tga_header.y_origin = 0;
+        tga_header.width = image_width;
+        tga_header.height = image_height;
+        tga_header.bitsperpixel = 32;
+        tga_header.imagedescriptor = 32; // top-down
+        fwrite(&tga_header, 1, sizeof(tga_header), f);
+
+        return f;
+}
+
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+inline bool exists_test0(const std::string& name) {
+    std::ifstream f(name.c_str());
+    return f.good();
+}
+
+void ExportTexture(const std::string &filename, Texture* tex) {
+    std::string tgaFilename = filename + ".tga";
+    if (exists_test0(tgaFilename)) return;
+    auto tga = CreateTga(tgaFilename.c_str(), tex->GetWidth(), tex->GetHeight());
+    {
+        auto pixels = tex->GetPixels(IMAGE_FORMAT::IMAGE_FORMAT_R8G8B8A8);
+        for (int i = 0; i < tex->GetWidth() * tex->GetHeight(); ++i) {
+            // to abgr (tga)
+            int* p = (int*)pixels + i;
+            unsigned char* src_r = (unsigned char*)p;
+            unsigned char* src_g = (unsigned char*)p + 1;
+            unsigned char* src_b = (unsigned char*)p + 2;
+            unsigned char* src_a = (unsigned char*)p + 3;
+
+            unsigned char* dst_a = src_a;
+            unsigned char* dst_r = src_b;
+            unsigned char* dst_g = src_g;
+            unsigned char* dst_b = src_r;
+
+            int a = *src_a, r = *src_r, g = *src_g, b = *src_b;
+
+            *dst_r = r;
+            *dst_g = g;
+            *dst_b = b;
+            *dst_a = a;
+        }
+        fwrite(pixels, 4 * tex->GetWidth() * tex->GetHeight(), 1, tga);
+        fclose(tga);
+    }
+}
+
+void ExportTile(TileDesc *tile) {
+    ExportTexture(
+        tile->name,
+        tile->GetTexture()
+    );
+}
+
+void ExportBModel(const BSPModel& model) {
+    std::ofstream obj(model.pModelName + ".obj", std::ios::out | std::ios::trunc);
+    std::ofstream mtl(model.pModelName + ".mtl", std::ios::out | std::ios::trunc);
+
+    int idx = 1;
+    for (const ODMFace& face : model.pFaces) {
+        auto tex = face.GetTexture();
+        //std::string filename = "";
+        //ExportTexture(std::tmpnam(nullptr), tex);
+        //face.resource;
+        //obj << "usemtl " << << std::endl;
+
+        for (int i = 0; i < face.uNumVertices; ++i) {
+            Vec3<int32_t> v = model.pVertices.pVertices[face.pVertexIDs[i]];
+            obj << "v " << v.x << " " << v.z << " " << v.y << std::endl;
+            obj << "vt "
+                << (face.pTextureUIDs[i] + face.sTextureDeltaU) / (float)tex->GetWidth() << " "
+                << (face.pTextureVIDs[i] + face.sTextureDeltaV) / (float)tex->GetHeight() << std::endl;
+        }
+
+        obj << "f";
+        for (int i = 0; i < face.uNumVertices; ++i) {
+            obj << " " << idx << "/" << idx;
+            idx++;
+        }
+        obj << std::endl;
+    }
+}
+
+void ExportOdm() {
+    //return;
+    std::string objName = pOutdoor->level_filename + ".obj";
+    std::string mtlName = pOutdoor->level_filename + ".mtl";
+    FILE* f = fopen(objName.c_str(), "w+t");
+    FILE* m = fopen(mtlName.c_str(), "w+t");
+
+    std::stringstream obj;
+    std::stringstream mtl;
+
+    obj << "mtllib " << mtlName << std::endl << std::endl;
+
+    std::vector<std::string> usedTextureTiles;
+
+    int idx = 1;
+
+    int cellScale = 512;
+    int heightScale = 32;
+    //int cell_z = 0; {
+    //for (unsigned int cell_z = 0; cell_z < 15; ++cell_z) {
+    for (unsigned int cell_z = 0; cell_z < 127; ++cell_z) {
+        for (unsigned int cell_x = 0; cell_x < 127; ++cell_x) {
+            int x1 = (-64 + (signed)cell_x) * cellScale;
+            int z1 = (64 - (signed)cell_z) * cellScale;
+
+            auto tile = pOutdoor->GetTile(x1, z1);
+            if (std::find(std::begin(usedTextureTiles), std::end(usedTextureTiles), tile->name) == std::end(usedTextureTiles)) {
+                usedTextureTiles.push_back(tile->name);
+
+                mtl << "newmtl " << tile->name << std::endl;
+                mtl << "Kd 1.000 1.000 1.000     # white" << std::endl;
+                mtl << "map_Kd " << tile->name << ".tga" << std::endl;
+
+                ExportTile(tile);
+            }
+
+
+            int x2 = (-64 + (signed)(cell_x + 1)) * cellScale;
+            int z2 = (64 - (signed)(cell_z + 1)) * cellScale;
+
+            int y1 = heightScale * pOutdoor->pTerrain.pHeightmap[cell_z * 128 + cell_x];
+            int y2 = heightScale * pOutdoor->pTerrain.pHeightmap[cell_z * 128 + cell_x + 1];
+            int y3 = heightScale * pOutdoor->pTerrain.pHeightmap[(cell_z + 1) * 128 + cell_x];
+            int y4 = heightScale * pOutdoor->pTerrain.pHeightmap[(cell_z + 1) * 128 + cell_x + 1];
+
+            // triangles
+            //obj << "v " << x1 << " " << y1 << " " << z1 << std::endl;
+            //obj << "v " << x1 << " " << y3 << " " << z2 << std::endl;
+            //obj << "v " << x2 << " " << y2 << " " << z1 << std::endl;
+            //obj << "v " << x2 << " " << y4 << " " << z2 << std::endl;
+
+            //obj << "vt " << 1.0f << " " << 1.0f << std::endl;  //1 4     00   3
+            //obj << "vt " << 1.0f << " " << 0.0f << std::endl;  //2 1     01   4
+            //obj << "vt " << 0.0f << " " << 1.0f << std::endl;  //4 3     10   2
+            //obj << "vt " << 0.0f << " " << 0.0f << std::endl;  //3 2     11   1
+
+            //obj << "usemtl " << tile->name << std::endl;
+            //obj << "f " << idx + 0 << "/" << idx + 0 << " " << idx + 1 << "/" << idx + 1 << " " << idx + 2 << "/" << idx + 2 << std::endl;
+            //obj << "f " << idx + 2 << "/" << idx + 2 << " " << idx + 1 << "/" << idx + 1 << " " << idx + 3 << "/" << idx + 3 << std::endl;
+
+            obj << "v " << x1 << " " << y1 << " " << z1 << std::endl;
+            obj << "v " << x2 << " " << y2 << " " << z1 << std::endl;
+            obj << "v " << x2 << " " << y4 << " " << z2 << std::endl;
+            obj << "v " << x1 << " " << y3 << " " << z2 << std::endl;
+
+            obj << "vt " << 0.0f << " " << 1.0f << std::endl;
+            obj << "vt " << 1.0f << " " << 1.0f << std::endl;
+            obj << "vt " << 1.0f << " " << 0.0f << std::endl;
+            obj << "vt " << 0.0f << " " << 0.0f << std::endl;
+
+            obj << "usemtl " << tile->name << std::endl;
+            obj << StringPrintf(
+                "f %d/%d %d/%d %d/%d %d/%d",
+                idx + 0, idx + 0,
+                idx + 1, idx + 1,
+                idx + 2, idx + 2,
+                idx + 3, idx + 3
+            );
+            obj << std::endl;
+            //obj << "f " << idx + 0 << "/" << idx + 0 << " " << idx + 1 << "/" << idx + 1 << " " << idx + 2 << "/" << idx + 2 << std::endl;
+
+            idx += 4;
+        }
+    }
+
+    for (auto material : usedTextureTiles) {
+    }
+
+    fprintf(f, "%s", obj.str().c_str());
+    fclose(f);
+
+    fprintf(m, "%s", mtl.str().c_str());
+    fclose(m);
+
+
+    for (BSPModel& model : pOutdoor->pBModels) {
+        ExportBModel(model);
+    }
+
+}
+
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
+ExportOdm();
     pIndoorCameraD3D->debug_flags = 0;
     if (viewparams->draw_d3d_outlines)
         pIndoorCameraD3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;

@@ -113,7 +113,7 @@ struct ODMFace {
     }
     inline bool Ethereal() const { return (uAttributes & FACE_ETHEREAL) != 0; }
 
-    inline bool IsTextureFrameTable() {
+    inline bool IsTextureFrameTable() const {
         return this->uAttributes & FACE_TEXTURE_FRAME;
     }
     inline void ToggleIsTextureFrameTable() {
@@ -123,7 +123,7 @@ struct ODMFace {
     }
 
     void SetTexture(const String &filename);
-    Texture *GetTexture();
+    Texture *GetTexture() const;
 
     bool Deserialize(struct ODMFace_MM7 *);
 

@@ -143,7 +143,7 @@ void BSPModel::Release() {
 
 // ODMFace
 
-Texture *ODMFace::GetTexture() {
+Texture *ODMFace::GetTexture() const {
     if (this->IsTextureFrameTable()) {
         return pTextureFrameTable->GetFrameTexture(
             (int64_t)this->resource, pEventTimer->uTotalGameTimeElapsed);
