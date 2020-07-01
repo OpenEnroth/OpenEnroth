@@ -46,7 +46,8 @@ class OSWindow {
     virtual void HandleSingleEvent() = 0;
     virtual void HandleAllEvents() = 0;
 
-    virtual void *GetWinApiHandle() = 0;
+    virtual void* GetApiHandle() = 0;
+    virtual void* GetWinApiHandle() = 0;
 
     virtual std::shared_ptr<IKeyboardController> GetKeyboardController() = 0;
     virtual std::shared_ptr<IMouseController> GetMouseController() = 0;

@@ -35,6 +35,7 @@ include(CheckIncludeFileCXX)
 include(CheckIncludeFiles)
 
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib")
+include_directories("${LIB_DIR}/submodules")
 
 if (WIN32)
 # actual library dir for current build configuration
@@ -76,6 +77,7 @@ endif()
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/zlib.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/sdl2.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/ffmpeg.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/imgui.cmake")
 
 
 # we add the sub-directories that we want CMake to scan

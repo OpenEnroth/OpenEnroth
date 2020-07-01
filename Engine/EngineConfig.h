@@ -103,8 +103,13 @@ class EngineConfig {
     int gamma = 4;
     int max_flight_height = 4000;
 
+#if NDEBUG
     bool no_intro = false;
     bool no_logo = false;
+#else
+    bool no_intro = true;
+    bool no_logo = true;
+#endif
 
     bool no_sound = false;
     bool no_video = false;

@@ -45,6 +45,10 @@ class Sdl2Window : public OSWindow {
 
     // Sdl2Window-specific interface follows
 
+    virtual void* GetApiHandle() override {
+        return sdlWindow;
+    }
+
     void* GetWinApiHandle() override;
 
     // window<->renderer integration, probably should be a separate class

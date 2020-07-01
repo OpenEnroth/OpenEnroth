@@ -7,6 +7,7 @@
 
 #include "src/Application/GameFactory.h"
 #include "src/Application/GameMenu.h"
+#include "src/Application/Ui/Ui.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -197,6 +198,12 @@ void Game::Run() {
     engine->Initialize();
 
     window->Activate();
+    InitializeUi(window);
+
+    ChangeState(Intro);
+    while (GetState() != End) {
+        ExecuteState();
+    }
 
     ShowMM7IntroVideo_and_LoadingScreen();
 

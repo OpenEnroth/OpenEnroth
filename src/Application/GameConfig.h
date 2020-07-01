@@ -13,11 +13,11 @@ namespace Application {
 
         std::shared_ptr<CommandLine> command_line;
         std::string renderer_name =
-#ifdef _WINDOWS
-            "DirectDraw";
-#else
+//#ifdef _WINDOWS
+//            "DirectDraw";
+//#else
             "OpenGL";
-#endif
+//#endif
         int game_window_width = 640;
         int game_window_height = 480;
     };
