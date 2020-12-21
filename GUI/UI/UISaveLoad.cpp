@@ -75,7 +75,7 @@ GUIWindow_Save::GUIWindow_Save() :
                 strcpy(pSavegameHeader[i].pName, test.c_str());
             }
 
-            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_File_Loader(&pLODFile, "image.pcx"));
+            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(&pLODFile, "image.pcx"));
             if (pSavegameThumbnails[i]->GetWidth() == 0) {
                 pSavegameThumbnails[i]->Release();
                 pSavegameThumbnails[i] = nullptr;
@@ -183,7 +183,9 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             strcpy(pSavegameHeader[i].pName, test.c_str());
         }
 
-        pSavegameThumbnails[i] = Image::Create(new PCX_LOD_File_Loader(&pLODFile, "image.pcx"));
+        // pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(&pLODFile, "image.pcx"));
+        pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
+
         if (pSavegameThumbnails[i]->GetWidth() == 0) {
             pSavegameThumbnails[i]->Release();
             pSavegameThumbnails[i] = nullptr;

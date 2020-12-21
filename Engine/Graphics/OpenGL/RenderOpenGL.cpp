@@ -44,6 +44,7 @@
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
+#include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Weather.h"
@@ -2120,12 +2121,81 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices,
     __debugbreak();
 }
 
-Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) { return nullptr; }
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
-void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width,
-                                  unsigned int height) {
-    // __debugbreak();
+
+unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
+    GLubyte* sPixels = new GLubyte[3 * 640 * 480];
+
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        pIndoor->Draw();
+    } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+        pOutdoor->Draw();
+    }
+    DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+
+    glReadPixels(0, 0, 640, 480, GL_RGB, GL_UNSIGNED_BYTE, sPixels);
+
+    uint16_t *for_pixels;  // ebx@1
+
+    float interval_x = game_viewport_width / (double)width;
+    float interval_y = game_viewport_height / (double)height;
+
+    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * height * width);
+    memset(pPixels, 0, sizeof(uint16_t) * height * width);
+
+    for_pixels = pPixels;
+
+    if (uCurrentlyLoadedLevelType == LEVEL_null) {
+        memset(&for_pixels, 0, sizeof(for_pixels));
+    } else {
+        for (uint y = 0; y < (unsigned int)height; ++y) {
+            for (uint x = 0; x < (unsigned int)width; ++x) {
+                unsigned __int8 *p;
+
+                p = sPixels + 3 * (int)(x * interval_x + 8.0) + 3 * (int)(480 - (y * interval_y) - 8.0) * 640;
+
+                *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
+                ++for_pixels;
+            }
+        }
+    }
+
+    return pPixels;
 }
+
+Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
+    auto pixels = MakeScreenshot(width, height);
+    Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
+    free(pixels);
+    return image;
+}
+
+void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) {
+    auto pixels = MakeScreenshot(width, height);
+
+    FILE *result = fcaseopen(filename.c_str(), "wb");
+    if (result == nullptr) {
+        return;
+    }
+
+    unsigned int pcx_data_size = width * height * 5;
+    uint8_t *pcx_data = new uint8_t[pcx_data_size];
+    unsigned int pcx_data_real_size = 0;
+    PCX::Encode16(pixels, width, height, pcx_data, pcx_data_size, &pcx_data_real_size);
+    fwrite(pcx_data, pcx_data_real_size, 1, result);
+    delete[] pcx_data;
+    fclose(result);
+}
+
+void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height,
+                                  void *out_data, unsigned int data_size,
+                                  unsigned int *screenshot_size) {
+    auto pixels = MakeScreenshot(width, height);
+    SaveScreenshot("save.pcx", width, height);
+    PCX::Encode16(pixels, 150, 112, out_data, 1000000, screenshot_size);
+    free(pixels);
+}
+
 void RenderOpenGL::SavePCXScreenshot() { __debugbreak(); }
 int RenderOpenGL::GetActorsInViewport(int pDepth) {
     __debugbreak();
@@ -2400,15 +2470,19 @@ Texture *RenderOpenGL::CreateTexture_Alpha(const String &name) {
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const String &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Loader(pIcons_LOD, name));
+    return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pIcons_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromNewLOD(const String &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Loader(pNew_LOD, name));
+    return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pNew_LOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromFile(const String &name) {
-    return TextureOpenGL::Create(new PCX_File_Loader(pIcons_LOD, name));
+    return TextureOpenGL::Create(new PCX_File_Loader(name));
+}
+
+Texture *RenderOpenGL::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
+    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height,
@@ -2504,9 +2578,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         // native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
 
     unsigned __int8 *pixels = nullptr;
-    if (native_format == IMAGE_FORMAT_R5G6B5) {
-        pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8);
-    } else if (native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8) {
+    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);  // rgba
         gl_format = GL_RGBA;
     } else {
@@ -3215,14 +3287,6 @@ void RenderOpenGL::SetBillboardBlendOptions(
             assert(false);
             break;
     }
-}
-
-void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height,
-                                  void *out_data, unsigned int data_size,
-                                  unsigned int *screenshot_size) {
-    /*auto pixels = MakeScreenshot(150, 112);
-    PackPCXpicture(pixels, 150, 112, data, 1000000, out_screenshot_size);
-    free(pixels);*/
 }
 
 void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,

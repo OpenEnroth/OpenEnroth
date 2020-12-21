@@ -120,7 +120,7 @@ void LoadGame(unsigned int uSlot) {
                     }
                     LloydBeacon &beacon = player->vBeacons[j];
                     String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
-                    beacon.image = Image::Create(new PCX_LOD_File_Loader(pNew_LOD, str));
+                    beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
                     beacon.image->GetWidth();
                 }
             }

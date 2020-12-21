@@ -184,6 +184,29 @@ bool PCX_Loader::DecodePCX(const void *pcx_data, uint16_t *pOutPixels,
     return PCX::Decode(pcx_data, pOutPixels, width, height);
 }
 
+bool PCX_Loader::InternalLoad(void *file, size_t filesize,
+                                   unsigned int *width, unsigned int *height,
+                                   void **pixels, IMAGE_FORMAT *format) {
+    if (!PCX::IsValid(file)) {
+        return false;
+    }
+
+    PCX::GetSize(file, width, height);
+    unsigned int num_pixels = *width * *height;
+    *pixels = new uint16_t[num_pixels + 2];
+
+    if (pixels) {
+        if (!this->DecodePCX(file, (uint16_t*)*pixels, width, height)) {
+            delete[] *(uint16_t**)pixels;
+            *pixels = nullptr;
+        } else {
+            *format = IMAGE_FORMAT_R5G6B5;
+        }
+    }
+
+    return *pixels != nullptr;
+}
+
 bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
                            void **pixels, IMAGE_FORMAT *format) {
     *width = 0;
@@ -201,39 +224,21 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     size_t filesize = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    bool res = InternalLoad(file, filesize, width, height, pixels, format);
+    uint8_t *buffer = (uint8_t *)malloc(filesize);
+
+    fread(buffer, filesize, 1, file);
+
+    bool res = InternalLoad(buffer, filesize, width, height, pixels, format);
+
+    free(buffer);
 
     fclose(file);
 
     return res;
 }
 
-bool PCX_File_Loader::InternalLoad(void *file, size_t filesize,
-                                   unsigned int *width, unsigned int *height,
-                                   void **pixels, IMAGE_FORMAT *format) {
-    if (!PCX::IsValid(file)) {
-        return false;
-    }
-
-    PCX::GetSize(file, width, height);
-    unsigned int num_pixels = *width * *height;
-    *pixels = new uint16_t[num_pixels + 2];
-
-    if (pixels) {
-        if (!this->DecodePCX(file, (uint16_t*)*pixels, width,
-                             height)) {
-            delete[] *(uint16_t**)pixels;
-            *pixels = nullptr;
-        } else {
-            *format = IMAGE_FORMAT_R5G6B5;
-        }
-    }
-
-    return *pixels != nullptr;
-}
-
-bool PCX_LOD_File_Loader::Load(unsigned int *width, unsigned int *height,
-                               void **pixels, IMAGE_FORMAT *format) {
+bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,
+                              void **pixels, IMAGE_FORMAT *format) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -253,8 +258,8 @@ bool PCX_LOD_File_Loader::Load(unsigned int *width, unsigned int *height,
     return res;
 }
 
-bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height,
-                          void **pixels, IMAGE_FORMAT *format) {
+bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
+                                     void **pixels, IMAGE_FORMAT *format) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -267,28 +272,11 @@ bool PCX_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         return false;
     }
 
-    if (!PCX::IsValid(pcx_data)) {
-        free(pcx_data);
-        return false;
-    }
-
-    PCX::GetSize(pcx_data, width, height);
-    unsigned int num_pixels = *width * *height;
-    *pixels = new uint16_t[num_pixels + 2];
-
-    if (pixels) {
-        if (!this->DecodePCX(pcx_data, (uint16_t*)*pixels, width,
-                             height)) {
-            delete[] *(uint16_t**)pixels;
-            *pixels = nullptr;
-        } else {
-            *format = IMAGE_FORMAT_R5G6B5;
-        }
-    }
+    bool res = InternalLoad(pcx_data, data_size, width, height, pixels, format);
 
     free(pcx_data);
 
-    return *pixels != nullptr;
+    return res;
 }
 
 bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,

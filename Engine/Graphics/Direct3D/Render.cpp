@@ -84,15 +84,19 @@ Texture *Render::CreateTexture_Alpha(const String &name) {
 }
 
 Texture *Render::CreateTexture_PCXFromIconsLOD(const String &name) {
-    return TextureD3D::Create(new PCX_LOD_Loader(pIcons_LOD, name));
+    return TextureD3D::Create(new PCX_LOD_Compressed_Loader(pIcons_LOD, name));
 }
 
 Texture *Render::CreateTexture_PCXFromNewLOD(const String &name) {
-    return TextureD3D::Create(new PCX_LOD_Loader(pNew_LOD, name));
+    return TextureD3D::Create(new PCX_LOD_Compressed_Loader(pNew_LOD, name));
 }
 
 Texture *Render::CreateTexture_PCXFromFile(const String &name) {
-    return TextureD3D::Create(new PCX_File_Loader(pIcons_LOD, name));
+    return TextureD3D::Create(new PCX_File_Loader(name));
+}
+
+Texture *Render::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
+    return TextureD3D::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
 }
 
 Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
