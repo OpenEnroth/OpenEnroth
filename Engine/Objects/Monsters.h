@@ -167,7 +167,7 @@ struct MonsterInfo {
     uint8_t uNumCharactersAttackedPerSpecialAbility = 0;
     char field_33 = 0;
     uint16_t uID = 0;
-    uint16_t bQuestMonster = 0;
+    uint16_t bQuestMonster = 0;  // &1 for bloodsplat on death
     uint16_t uSpellSkillAndMastery1 = 0;
     uint16_t uSpellSkillAndMastery2 = 0;
     int16_t field_3C_some_special_attack = 0;

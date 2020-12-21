@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 enum SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_NULL = 0,

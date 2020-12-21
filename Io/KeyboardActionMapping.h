@@ -11,6 +11,7 @@ namespace Io {
     enum class KeyToggleType {
         TOGGLE_Continuously = 0,
         TOGGLE_OneTimePress = 1,
+        TOGGLE_DelayContinuous = 2,
     };
 
     enum class TextInputType {

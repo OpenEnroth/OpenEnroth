@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 
 enum NPCProf {
     Smith = 1,       // GM Weapon Repair;

@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstring>
+#include <cstdint>
 
 class Texture;
 

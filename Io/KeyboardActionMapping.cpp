@@ -150,6 +150,9 @@ KeyToggleType GetToggleType(InputAction action) {
         return KeyToggleType::TOGGLE_Continuously;
     }
 
+    if (action == InputAction::Attack || action == InputAction::CastReady)
+        return KeyToggleType::TOGGLE_DelayContinuous;
+
     int i = (int)action;
     if (i > 3)
         return KeyToggleType::TOGGLE_OneTimePress;
