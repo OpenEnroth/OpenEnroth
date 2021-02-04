@@ -244,8 +244,8 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(
     /*pParticle->screenspace_scale = fixed::FromFloat(pParticle->particle_size) *
                                    fixed::FromFloat(pParticle->fov_x) / x;*/
 
-    pParticle->screenspace_scale = fixed::FromFloat(pParticle->particle_size) *
-        fixed::FromFloat(pParticle->fov_x) / fixed::FromInt(xt);
+    pParticle->screenspace_scale = /*fixed::FromFloat*/(pParticle->particle_size) *
+        /*fixed::FromFloat*/(pParticle->fov_x) / /*fixed::FromInt*/(xt);
 
     /*pParticle->zbuffer_depth = x.GetInt();*/
     pParticle->zbuffer_depth = xt;
@@ -261,7 +261,7 @@ void ParticleEngine::DrawParticles_BLV() {
 
     v15.sParentBillboardID = -1;
 
-    for (uint i = uStartParticle; i < uEndParticle; ++i) {
+    for (uint i = uStartParticle; i <= uEndParticle; ++i) {
         Particle *p = &pParticles[i];
 
         if (p->type == ParticleType_Invalid) continue;
@@ -275,8 +275,8 @@ void ParticleEngine::DrawParticles_BLV() {
             p->uScreenSpaceY < pBLVRenderParams->uViewportW) { */
             if (p->type & ParticleType_Diffuse) {
                 // v14 = &pParticles[i];
-                v15.screenspace_projection_factor_x = p->screenspace_scale.GetFloat();
-                v15.screenspace_projection_factor_y = p->screenspace_scale.GetFloat();
+                v15.screenspace_projection_factor_x = p->screenspace_scale;
+                v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
@@ -314,8 +314,8 @@ void ParticleEngine::DrawParticles_BLV() {
                         .texcoord.y = 0.0;
                 }
             } else if (p->type & ParticleType_Bitmap) {
-                v15.screenspace_projection_factor_x = p->screenspace_scale.GetFloat();
-                v15.screenspace_projection_factor_y = p->screenspace_scale.GetFloat();
+                v15.screenspace_projection_factor_x = p->screenspace_scale;
+                v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;
@@ -323,8 +323,8 @@ void ParticleEngine::DrawParticles_BLV() {
                 render->MakeParticleBillboardAndPush(
                     &v15, p->texture, p->uLightColor_bgr, p->angle);
             } else if (p->type & ParticleType_Sprite) {
-                v15.screenspace_projection_factor_x = p->screenspace_scale.GetFloat();
-                v15.screenspace_projection_factor_y = p->screenspace_scale.GetFloat();
+                v15.screenspace_projection_factor_x = p->screenspace_scale;
+                v15.screenspace_projection_factor_y = p->screenspace_scale;
                 v15.screen_space_x = p->uScreenSpaceX;
                 v15.screen_space_y = p->uScreenSpaceY;
                 v15.object_pid = p->object_pid;

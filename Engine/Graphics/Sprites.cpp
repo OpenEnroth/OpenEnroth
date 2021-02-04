@@ -354,7 +354,7 @@ bool SpriteFrame::Deserialize(const struct SpriteFrame_MM7 *data) {
             this->hw_sprites[i] = nullptr;
         }
 
-        this->scale = fixed(data->scale);
+        this->scale = data->scale / 65536.0;
         this->uFlags = data->uFlags;
 
         this->uGlowRadius = data->uGlowRadius;

@@ -255,7 +255,7 @@ struct Party {
     GameTime last_regenerated;
     PartyTimeStruct PartyTimes;
     Vec3_int_ vPosition;
-    int sRotationY;
+    int sRotationZ;
     int sRotationX;
     Vec3_int_ vPrevPosition;
     int sPrevRotationY;

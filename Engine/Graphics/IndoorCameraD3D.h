@@ -240,20 +240,20 @@ struct IndoorCameraD3D {
     IndoorCameraD3D_stru2 list_E0380[256] {};
     int list_E0380_size = 0;
 
-    void CalculateRotations(int camera_rot_x, int camera_rot_y);
-    int sRotationY = 0;          // moved  from 157 struct IndoorCamera::18
+    void CalculateRotations(int camera_rot_x, int camera_rot_z);
+    int sRotationZ = 0;        // z rotation   // moved  from 157 struct IndoorCamera::18
     int sRotationX = 0;          // moved  from 157 struct IndoorCamera::14
-    float fRotationYSine = 0;    // moved  from 157 struct IndoorCamera::2C
-    float fRotationYCosine = 0;  // moved  from 157 struct IndoorCamera::30
+    float fRotationZSine = 0;  // z rotation  // moved  from 157 struct IndoorCamera::2C
+    float fRotationZCosine = 0;  // z rotatio  // moved  from 157 struct IndoorCamera::30
     float fRotationXSine = 0;    // moved  from 157 struct IndoorCamera::34
     float fRotationXCosine = 0;  // moved  from 157 struct IndoorCamera::38
     Vec3<int> vPartyPos {};     // moved  from 157 struct IndoorCamera::00
                              // merged from 162 struct BLVRenderParams::08
     int debug_flags = 0;         // moved  from 157 struct IndoorCamera::4C
                              // merged from 162 struct BLVRenderParams::04
-    int int_sine_y = 0;          // moved  from 157 struct ODMRenderParams::1C
+    int int_sine_Z = 0;          // moved  from 157 struct ODMRenderParams::1C
                              // merged from 162 struct BLVRenderParams::24
-    int int_cosine_y = 0;        // moved  from 157 struct ODMRenderParams::20
+    int int_cosine_Z = 0;        // moved  from 157 struct ODMRenderParams::20
                              // merged from 162 struct BLVRenderParams::20
     int int_sine_x = 0;          // moved  from 157 struct ODMRenderParams::24
                              // merged from 162 struct BLVRenderParams::2C

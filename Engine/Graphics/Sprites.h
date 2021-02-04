@@ -44,7 +44,7 @@ class SpriteFrame {
     String texture_name;
 
     Sprite* hw_sprites[8] {};
-    fixed scale {};  // used in screen space scaling
+    float scale = 1.0;
     int uFlags = 0;  // 128 for loaded
     int uGlowRadius = 0;
     int uPaletteID = 0;

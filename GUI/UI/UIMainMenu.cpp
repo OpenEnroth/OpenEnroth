@@ -75,7 +75,7 @@ void GUIWindow_MainMenu::Update() {
                         pY = 337;
                         break;
                 }
-                render->DrawTextureAlphaNew(495 / 640.0f, pY / 480.0f, pTexture);
+                render->DrawTextureAlphaNew(495 / float(render->GetRenderWidth()), pY / float(render->GetRenderHeight()), pTexture);
             }
         }
     }

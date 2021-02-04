@@ -164,7 +164,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     spell_targeted_at, &target_direction,
                     0);  // target direciton
             } else {
-                target_direction.uYawAngle = pParty->sRotationY;  // spray infront of party
+                target_direction.uYawAngle = pParty->sRotationZ;  // spray infront of party
                 target_direction.uPitchAngle = -pParty->sRotationX;
             }
         }
@@ -442,7 +442,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pSpellSprite.uAttributes |= 4;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationY,
+                if (pSpellSprite.Create(pParty->sRotationZ,
                     pParty->sRotationX + 10, v659,
                     pCastSpell->uPlayerID + 1) != -1 &&
                     pParty->bTurnBasedModeOn) {
@@ -1279,10 +1279,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 } else {
                     dist_X = pParty->vPosition.x +
                              fixpoint_mul(2048,
-                                          stru_5C6E00->Cos(pParty->sRotationY));
+                                          TrigLUT->Cos(pParty->sRotationZ));
                     dist_Y = pParty->vPosition.y +
                              fixpoint_mul(2048,
-                                          stru_5C6E00->Sin(pParty->sRotationY));
+                                          TrigLUT->Sin(pParty->sRotationZ));
                     dist_Z = pParty->vPosition.z;
                 }
                 unsigned __int64 k = 0;
@@ -1297,10 +1297,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             HEXRAYS_LODWORD(v687) = 0;
                             HEXRAYS_HIDWORD(v687) = 0;
                         } else {
-                            HEXRAYS_HIDWORD(v687) = stru_5C6E00->Atan2(
+                            HEXRAYS_HIDWORD(v687) = TrigLUT->Atan2(
                                 (signed __int64)sqrt((float)(j * j + k * k)),
                                 (double)spell_targeted_at - 2500);
-                            HEXRAYS_LODWORD(v687) = stru_5C6E00->Atan2(j, k);
+                            HEXRAYS_LODWORD(v687) = TrigLUT->Atan2(j, k);
                         }
                         pSpellSprite.containing_item.Reset();
                         pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1465,7 +1465,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v726 = (int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+                int _v726 = (int)(60 * TrigLUT->uIntegerDoublePi) / 360;
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
@@ -1624,10 +1624,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 } else {
                     dist_X = pParty->vPosition.x +
                              fixpoint_mul(2048,
-                                          stru_5C6E00->Cos(pParty->sRotationY));
+                                          TrigLUT->Cos(pParty->sRotationZ));
                     dist_Y = pParty->vPosition.y +
                              fixpoint_mul(2048,
-                                          stru_5C6E00->Sin(pParty->sRotationY));
+                                          TrigLUT->Sin(pParty->sRotationZ));
                     dist_Z = pParty->vPosition.z;
                 }
                 unsigned __int64 k = 0;
@@ -1643,11 +1643,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         HEXRAYS_LODWORD(v685) = 0;
                         HEXRAYS_HIDWORD(v685) = 0;
                     } else {
-                        HEXRAYS_HIDWORD(v685) = stru_5C6E00->Atan2(
+                        HEXRAYS_HIDWORD(v685) = TrigLUT->Atan2(
                             (signed __int64)sqrt((float)(j * j + k * k)),
                             ((double)spell_targeted_at + (double)dist_Z -
                              (double)(dist_Z + 2500)));
-                        HEXRAYS_LODWORD(v685) = stru_5C6E00->Atan2(j, k);
+                        HEXRAYS_LODWORD(v685) = TrigLUT->Atan2(j, k);
                     }
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1744,7 +1744,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v733 = (int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+                int _v733 = (int)(60 * TrigLUT->uIntegerDoublePi) / 360;
                 if (amount == 1) {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -2160,13 +2160,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod =
                     target_direction.uDistance;
-                pSpellSprite.uFacing = pParty->sRotationY;
+                pSpellSprite.uFacing = pParty->sRotationZ;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationY, pParty->sRotationX,
+                if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationX,
                     v659,
                     pCastSpell->uPlayerID + 1) != -1 &&
                     pParty->bTurnBasedModeOn) {
@@ -2204,13 +2204,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_caster_pid =
                     PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
-                pSpellSprite.uFacing = (short)pParty->sRotationY;
+                pSpellSprite.uFacing = (short)pParty->sRotationZ;
                 pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes = 4;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationY, stru_5C6E00->uIntegerHalfPi / 2, v659, 0) != -1 &&
+                if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT->uIntegerHalfPi / 2, v659, 0) != -1 &&
                     pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
@@ -3838,7 +3838,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 signed int _v726 =
-                    ((signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360);
+                    ((signed int)(60 * TrigLUT->uIntegerDoublePi) / 360);
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;

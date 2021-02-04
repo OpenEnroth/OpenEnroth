@@ -109,9 +109,9 @@ bool Chest::Open(int uChestID) {
                 *(float*)&sRotY = 0.0;
             } else {
                 sRotY = (int64_t)sqrt(dir_x * dir_x + dir_y * dir_y);
-                sRotX = stru_5C6E00->Atan2((int64_t)dir_x, (int64_t)dir_y);
+                sRotX = TrigLUT->Atan2((int64_t)dir_x, (int64_t)dir_y);
                 sRotY =
-                    stru_5C6E00->Atan2(dir_y * dir_y, (int64_t)dir_z);
+                    TrigLUT->Atan2(dir_y * dir_y, (int64_t)dir_z);
             }
             pDepth = 256;
             if (length_vector < 256.0)

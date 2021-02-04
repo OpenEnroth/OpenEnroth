@@ -91,16 +91,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            Vec3_int_::Rotate((24<<16), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3_int_::Rotate((24/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 2:
-            Vec3_int_::Rotate((8<<16), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3_int_::Rotate((8/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 3:
-            Vec3_int_::Rotate((8<<16), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3_int_::Rotate((8/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 4:
-            Vec3_int_::Rotate((24<<16), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3_int_::Rotate((24/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         default:
             assert(false);
@@ -116,12 +116,12 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {
         long long v13 =
-            fixpoint_mul(stru_5C6E00->Cos(yaw), stru_5C6E00->Cos(pitch));
+            fixpoint_mul(TrigLUT->Cos(yaw), TrigLUT->Cos(pitch));
         long long a5a =
-            fixpoint_mul(stru_5C6E00->Sin(yaw), stru_5C6E00->Cos(pitch));
+            fixpoint_mul(TrigLUT->Sin(yaw), TrigLUT->Cos(pitch));
         vVelocity.x = fixpoint_mul(v13, speed);
         vVelocity.y = fixpoint_mul(a5a, speed);
-        vVelocity.z = fixpoint_mul(stru_5C6E00->Sin(pitch), speed);
+        vVelocity.z = fixpoint_mul(TrigLUT->Sin(pitch), speed);
     }
 
     // copy sprite object into slot
@@ -455,13 +455,13 @@ LABEL_13:
         }
         v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
                            pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y);
-        v38 = stru_5C6E00->Atan2(
+        v38 = TrigLUT->Atan2(
             pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(_actor_collision_struct.pid)].vPosition.x,
             pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(_actor_collision_struct.pid)].vPosition.y);
         pSpriteObjects[uLayingItemID].vVelocity.x =
-            fixpoint_mul(stru_5C6E00->Cos(v38), v57);
+            fixpoint_mul(TrigLUT->Cos(v38), v57);
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(
-            stru_5C6E00->Sin(v38 - stru_5C6E00->uIntegerHalfPi), v57);
+            TrigLUT->Sin(v38 - TrigLUT->uIntegerHalfPi), v57);
         goto LABEL_74;
     }
 }
@@ -624,14 +624,14 @@ LABEL_25:
                     pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
                     pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y);
                 v23 =
-                    stru_5C6E00->Atan2(pSpriteObject->vPosition.x -
+                    TrigLUT->Atan2(pSpriteObject->vPosition.x -
                                            pLevelDecorations[v15].vPosition.x,
                                        pSpriteObject->vPosition.y -
                                            pLevelDecorations[v15].vPosition.y);
                 pSpriteObject->vVelocity.x =
-                    fixpoint_mul(stru_5C6E00->Cos(v23), v40);
+                    fixpoint_mul(TrigLUT->Cos(v23), v40);
                 pSpriteObject->vVelocity.y =
-                    fixpoint_mul(stru_5C6E00->Sin(v23), v40);
+                    fixpoint_mul(TrigLUT->Sin(v23), v40);
             }
             if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_BModel) {
                 _actor_collision_struct.field_84 = (signed int)PID_ID(_actor_collision_struct.pid);
@@ -977,11 +977,11 @@ bool SpriteObject::sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x,
     if (a7) {
         if (count > 0) {
             for (uint i = count; i; --i) {
-                pSpellObject.uFacing = rand() % (int)stru_5C6E00->uIntegerDoublePi;
+                pSpellObject.uFacing = rand() % (int)TrigLUT->uIntegerDoublePi;
                 pSpellObject.Create(
                     (int16_t)pSpellObject.uFacing,
-                    ((int)stru_5C6E00->uIntegerHalfPi / 2) +
-                        (rand() % ((signed int)stru_5C6E00->uIntegerHalfPi / 2)),
+                    ((int)TrigLUT->uIntegerHalfPi / 2) +
+                        (rand() % ((signed int)TrigLUT->uIntegerHalfPi / 2)),
                     a4, 0);
             }
         }
@@ -990,7 +990,7 @@ bool SpriteObject::sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x,
         if (count > 0) {
             for (uint i = count; i; --i) {
                 pSpellObject.Create((int16_t)pSpellObject.uFacing,
-                                    stru_5C6E00->uIntegerHalfPi, a4, 0);
+                                    TrigLUT->uIntegerHalfPi, a4, 0);
             }
         }
     }
@@ -1265,9 +1265,9 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             if (pSpriteObjects[uLayingItemID].spell_skill == 4) {
                 v65 = 9;
             }
-            int v64 = pSpriteObjects[uLayingItemID].uFacing - stru_5C6E00->uIntegerDoublePi;
+            int v64 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT->uIntegerDoublePi;
             for (int i = 0; i < v65; i++) {
-                v64 += (int)stru_5C6E00->uIntegerHalfPi / 2;
+                v64 += (int)TrigLUT->uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v64, 0, 1000, 0);
             }
             SpriteObject::OnInteraction(uLayingItemID);
@@ -1353,13 +1353,13 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             pSpriteObjects[uLayingItemID].vVelocity.z = 0;
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
-            int v89 = pSpriteObjects[uLayingItemID].uFacing - stru_5C6E00->uIntegerDoublePi;
+            int v89 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT->uIntegerDoublePi;
             for (int i = 0; i < 8; i++) {
                 pRnd->SetRange(-128, 128);
                 v90 = pRnd->GetInRange();
                 pRnd->SetRange(5, 500);
                 v91 = pRnd->GetInRange();
-                v89 += stru_5C6E00->uIntegerHalfPi / 2;
+                v89 += TrigLUT->uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v90 + v89, 0, v91, 0);
             }
             SpriteObject::OnInteraction(uLayingItemID);

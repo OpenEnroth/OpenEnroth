@@ -22,6 +22,8 @@ std::shared_ptr<IRender> IRenderFactory::Create(
 ) {
     IRenderConfigFactory renderConfigFactory;
     auto config = renderConfigFactory.Create(renderer_name, is_fullscreen);
+    config->render_width = window->GetWidth();
+    config->render_height = window->GetHeight();
 
     std::shared_ptr<IRender> renderer;
     switch (config->renderer_type) {

@@ -59,8 +59,8 @@ IndoorCameraD3D::IndoorCameraD3D() {
     debug_flags = 0;
     fRotationXCosine = 0;
     fRotationXSine = 0;
-    fRotationYCosine = 0;
-    fRotationYSine = 0;
+    fRotationZCosine = 0;
+    fRotationZSine = 0;
     for (uint i = 0; i < 32; ++i)
         field_118[i] = 0;
     for (uint i = 0; i < 44; ++i)
@@ -181,14 +181,14 @@ void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVert
         double vCamToVertexZ = (double)a1->vWorldPosition.z - (double)pIndoorCameraD3D->vPartyPos.z;
 
         if (pIndoorCameraD3D->sRotationX) {
-            double v5 = vCamToVertexY * (double)fRotationYSine + (double)fRotationYCosine * vCamToVertexX;
+            double v5 = vCamToVertexY * (double)fRotationZSine + (double)fRotationZCosine * vCamToVertexX;
 
             a1->vWorldViewPosition.x = v5 * (double)fRotationXCosine /*+*/ - (double)fRotationXSine * vCamToVertexZ;
-            a1->vWorldViewPosition.y = (double)fRotationYCosine * vCamToVertexY - (double)fRotationYSine * vCamToVertexX;
+            a1->vWorldViewPosition.y = (double)fRotationZCosine * vCamToVertexY - (double)fRotationZSine * vCamToVertexX;
             a1->vWorldViewPosition.z = (double)fRotationXCosine * vCamToVertexZ /*-*/ + v5 * (double)fRotationXSine;
         } else {
-            a1->vWorldViewPosition.x = (double)fRotationYSine * vCamToVertexY + (double)fRotationYCosine * vCamToVertexX;
-            a1->vWorldViewPosition.y = (double)fRotationYCosine * vCamToVertexY - (double)fRotationYSine * vCamToVertexX;
+            a1->vWorldViewPosition.x = (double)fRotationZSine * vCamToVertexY + (double)fRotationZCosine * vCamToVertexX;
+            a1->vWorldViewPosition.y = (double)fRotationZCosine * vCamToVertexY - (double)fRotationZSine * vCamToVertexX;
             a1->vWorldViewPosition.z = vCamToVertexZ;
         }
     }
@@ -485,7 +485,7 @@ void IndoorCameraD3D::CreateWorldMatrixAndSomeStuff() {
     m4._32 = -sin_x1;
     m4._33 = cos_x1;
 
-    float cos_y1 = fRotationYCosine, sin_y1 = fRotationYSine;
+    float cos_y1 = fRotationZCosine, sin_y1 = fRotationZSine;
     // RotationY(some_angle) - yaw
     m3._11 = cos_y1;
     m3._12 = 0;
@@ -1128,18 +1128,18 @@ double IndoorCameraD3D::GetPolygonMaxZ(RenderVertexSoft *pVertex,
 // merged from IndoorCamera::Initialize2
 //         and ODMRenderParams::RotationToInts
 //         and BLVRenderParams::Reset
-void IndoorCameraD3D::CalculateRotations(int camera_rot_x, int camera_rot_y) {
+void IndoorCameraD3D::CalculateRotations(int camera_rot_x, int camera_rot_z) {
     sRotationX = camera_rot_x + 20;  // pitch
-    sRotationY = camera_rot_y;  // yaw
+    sRotationZ = camera_rot_z;  // yaw
 
-    fRotationYSine = sin((pi_double + pi_double) * (double)sRotationY / 2048.0);
-    fRotationYCosine = cos((pi_double + pi_double) * (double)sRotationY / 2048.0);
+    fRotationZSine = sin((pi_double + pi_double) * (double)sRotationZ / 2048.0);
+    fRotationZCosine = cos((pi_double + pi_double) * (double)sRotationZ / 2048.0);
 
     fRotationXSine = sin((pi_double + pi_double) * (double)sRotationX / 2048.0);
     fRotationXCosine = cos((pi_double + pi_double) * (double)sRotationX / 2048.0);
 
-    int_sine_y = stru_5C6E00->Sin(sRotationY);
-    int_cosine_y = stru_5C6E00->Cos(sRotationY);
-    int_sine_x = stru_5C6E00->Sin(sRotationX);
-    int_cosine_x = stru_5C6E00->Cos(sRotationX);
+    int_sine_Z = TrigLUT->Sin(sRotationZ);
+    int_cosine_Z = TrigLUT->Cos(sRotationZ);
+    int_sine_x = TrigLUT->Sin(sRotationX);
+    int_cosine_x = TrigLUT->Cos(sRotationX);
 }

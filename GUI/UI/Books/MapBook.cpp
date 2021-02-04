@@ -79,7 +79,7 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
 }
 
 void GUIWindow_MapBook::Update() {
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(471 /  640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
     render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_map_background);
 
     if (BtnUp_flag || viewparams->uMapBookMapZoom / 128 >= 12)  // Button 1
@@ -301,7 +301,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
 
     if (DrawArrow == 1) {
         int ArrowOctant = 0;
-        int PartyDirection = pParty->sRotationY & stru_5C6E00->uDoublePiMask;
+        int PartyDirection = pParty->sRotationZ & TrigLUT->uDoublePiMask;
         if ((signed int)PartyDirection <= 1920) ArrowOctant = 6;
         if ((signed int)PartyDirection < 1664) ArrowOctant = 5;
         if ((signed int)PartyDirection <= 1408) ArrowOctant = 4;

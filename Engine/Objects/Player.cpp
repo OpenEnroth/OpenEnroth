@@ -6958,11 +6958,11 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         if (targetchar == -1) __debugbreak();
 
         // test
-        if (/*uActorType == OBJECT_Player &&*/ !_A750D8_player_speech_timer) {
-            _A750D8_player_speech_timer = 256;
-            PlayerSpeechID = SPEECH_18;
-            uSpeakingCharacter = 1;
-        }
+        //if (/*uActorType == OBJECT_Player &&*/ !_A750D8_player_speech_timer) {
+        //    _A750D8_player_speech_timer = 256;
+        //    PlayerSpeechID = SPEECH_18;
+        //    uSpeakingCharacter = 1;
+        //}
         // test
 
         playerPtr = &pParty->pPlayers[targetchar];
@@ -8244,7 +8244,7 @@ bool Player::SetBeacon(size_t index, size_t power) {
     beacon.PartyPos_X = pParty->vPosition.x;
     beacon.PartyPos_Y = pParty->vPosition.y;
     beacon.PartyPos_Z = pParty->vPosition.z;
-    beacon.PartyRot_X = pParty->sRotationY;
+    beacon.PartyRot_X = pParty->sRotationZ;
     beacon.PartyRot_Y = pParty->sRotationX;
     beacon.SaveFileID = file_index;
 

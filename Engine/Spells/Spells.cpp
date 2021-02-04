@@ -456,8 +456,8 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
         int64_t ySquared = y_coord_delta * y_coord_delta;
         int64_t xSquared = x_coord_delta * x_coord_delta;
         int xy_distance = (int)sqrt((long double)(xSquared + ySquared));
-        yaw = stru_5C6E00->Atan2((int)x_coord_delta, (int)y_coord_delta);
-        pitch = stru_5C6E00->Atan2(xy_distance, (int)z_coord_delta);
+        yaw = TrigLUT->Atan2((int)x_coord_delta, (int)y_coord_delta);
+        pitch = TrigLUT->Atan2(xy_distance, (int)z_coord_delta);
     }
 
     SpriteObject spell_sprites;
@@ -536,7 +536,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
                 spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             } else {
                 spell_spray_arc =
-                    (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+                    (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360;
                 spell_spray_angles = spell_spray_arc / (spell_num_objects - 1);
                 for (int i = spell_spray_arc / -2; i <= spell_spray_arc / 2;
                      i += spell_spray_angles) {
@@ -555,7 +555,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
         case SPELL_AIR_SPARKS:
             spell_num_objects = (skillMasteryPlusOne * 2) + 1;
             spell_spray_arc =
-                (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+                (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360;
             spell_spray_angles = spell_spray_arc / (spell_num_objects - 1);
             spell_sprites.spell_target_pid = 4;
             for (int i = spell_spray_arc / -2; i <= spell_spray_arc / 2;
@@ -575,7 +575,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_sprites.spell_target_pid = 4;
             launch_speed =
                 pObjectList->pObjects[spell_sprites.uObjectDescID].uSpeed;
-            launch_angle = stru_5C6E00->uIntegerHalfPi / 2;
+            launch_angle = TrigLUT->uIntegerHalfPi / 2;
             spriteid = spell_sprites.Create(yaw, launch_angle, launch_speed, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
             //    0, 0, fromx, fromy, 0, 0, 0);

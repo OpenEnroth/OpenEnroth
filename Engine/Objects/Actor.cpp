@@ -102,6 +102,8 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
     render->DrawTextureAlphaNew(uX / 640.0f, (window->uFrameY + 34) / 480.0f,
                                 bar_image);
 
+   
+
     // draw hp bar ends
     render->ResetUIClipRect();
     render->DrawTextureAlphaNew((uX - 5) / 640.0f,
@@ -346,8 +348,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     pitch = 0;
                 } else {
                     v31 = (signed __int64)sqrt((float)(v119 + v120));
-                    v32 = stru_5C6E00->Atan2(spellnumb, (int)v28);
-                    pitch = stru_5C6E00->Atan2(v31, (int)spellnumc);
+                    v32 = TrigLUT->Atan2(spellnumb, (int)v28);
+                    pitch = TrigLUT->Atan2(v31, (int)spellnumc);
                 }
                 a1.containing_item.Reset();
                 a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
@@ -399,9 +401,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v10 = 9;
             else
                 v10 = 3;
-            spellnuma = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+            spellnuma = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360;
             a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-            v118 = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360 /
+            v118 = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360 /
                    (v10 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
 
@@ -634,9 +636,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             else
                 v70 = 3;
 
-            spellnume = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+            spellnume = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360;
             a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-            v116 = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360 /
+            v116 = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360 /
                    (v70 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
@@ -933,7 +935,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 break;
             }
             if (v4 == 4) {
-                v18 = pParty->sRotationY - stru_5C6E00->uIntegerHalfPi;
+                v18 = pParty->sRotationZ - TrigLUT->uIntegerHalfPi;
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
@@ -942,7 +944,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 break;
             }
             if (v4 == 3) {
-                v18 = pParty->sRotationY - stru_5C6E00->uIntegerHalfPi;
+                v18 = pParty->sRotationZ - TrigLUT->uIntegerHalfPi;
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
@@ -953,7 +955,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             if (v4 == 2) {
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                v18 = stru_5C6E00->uIntegerHalfPi + pParty->sRotationY;
+                v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
                 Vec3_int_::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
@@ -962,7 +964,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             if (v4 == 1) {
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                v18 = stru_5C6E00->uIntegerHalfPi + pParty->sRotationY;
+                v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
                 Vec3_int_::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
@@ -1066,9 +1068,9 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         pOut->uDistance = (uint)v33;
         pOut->uDistanceXZ = (uint)sqrt(outy2 + outx2);
         pOut->uYawAngle =
-            stru_5C6E00->Atan2((signed __int64)v31, (signed __int64)v32);
+            TrigLUT->Atan2((signed __int64)v31, (signed __int64)v32);
         pOut->uPitchAngle =
-            stru_5C6E00->Atan2(pOut->uDistanceXZ, (signed __int64)a4a);
+            TrigLUT->Atan2(pOut->uDistanceXZ, (signed __int64)a4a);
     }
 }
 
@@ -1730,7 +1732,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
         return;
     }
     absx += ((rand() & 0xF) * radius) / 16;
-    v9 = (stru_5C6E00->uIntegerDoublePi - 1) & stru_5C6E00->Atan2(x, y);
+    v9 = (TrigLUT->uIntegerDoublePi - 1) & TrigLUT->Atan2(x, y);
     if (rand() % 100 < 25) {
         Actor::StandAwhile(uActor_id);
         return;
@@ -1871,10 +1873,10 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
         8 * pSpriteFrameTable->pSpriteSFrames[actor->pSpriteIDs[ANIM_Bored]]
                 .uAnimLength;
 
-    v7 = stru_5C6E00->Atan2(actor->vPosition.x - pIndoorCameraD3D->vPartyPos.x,
+    v7 = TrigLUT->Atan2(actor->vPosition.x - pIndoorCameraD3D->vPartyPos.x,
                             actor->vPosition.y - pIndoorCameraD3D->vPartyPos.y);
-    v9 = stru_5C6E00->uIntegerPi + actor->uYawAngle +
-         ((signed int)stru_5C6E00->uIntegerPi >> 3) - v7;
+    v9 = TrigLUT->uIntegerPi + actor->uYawAngle +
+         ((signed int)TrigLUT->uIntegerPi >> 3) - v7;
 
     if (v9 & 0x700) {  // turned away - just stand
         Actor::AI_Stand(uActorID, uObjID, actor->uCurrentActionLength, a4);
@@ -2050,17 +2052,9 @@ void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
     else
         v18 = 16;
 
-    v7->uYawAngle = stru_5C6E00->Atan2(
-        pParty->vPosition.x +
-            (int)fixpoint_mul(stru_5C6E00->Cos(v18 + stru_5C6E00->uIntegerPi +
-                                               v10->uYawAngle),
-                              v10->uDistanceXZ) -
-            v7->vPosition.x,
-        pParty->vPosition.y +
-            (int)fixpoint_mul(stru_5C6E00->Sin(v18 + stru_5C6E00->uIntegerPi +
-                                               v10->uYawAngle),
-                              v10->uDistanceXZ) -
-            v7->vPosition.y);
+    v7->uYawAngle = TrigLUT->Atan2(
+        pParty->vPosition.x + (int)fixpoint_mul(TrigLUT->Cos(v18 + TrigLUT->uIntegerPi + v10->uYawAngle), v10->uDistanceXZ) - v7->vPosition.x,
+        pParty->vPosition.y + (int)fixpoint_mul(TrigLUT->Sin(v18 + TrigLUT->uIntegerPi + v10->uYawAngle), v10->uDistanceXZ) - v7->vPosition.y);
     if (uActionLength)
         v7->uCurrentActionLength = uActionLength;
     else
@@ -2102,10 +2096,10 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
                 v5->uCurrentActionLength = 0;
             if (v5->uCurrentActionLength > 256) v5->uCurrentActionLength = 256;
             v5->uYawAngle =
-                (short)stru_5C6E00->uIntegerHalfPi + (short)a4->uYawAngle;
+                (short)TrigLUT->uIntegerHalfPi + (short)a4->uYawAngle;
             v5->uYawAngle =
-                (short)stru_5C6E00->uDoublePiMask &
-                (v5->uYawAngle + rand() % (signed int)stru_5C6E00->uIntegerPi);
+                (short)TrigLUT->uDoublePiMask &
+                (v5->uYawAngle + rand() % (signed int)TrigLUT->uIntegerPi);
             v5->uCurrentActionTime = 0;
             v5->uPitchAngle = (short)a4->uPitchAngle;
             v5->uAIState = Fleeing;
@@ -2636,8 +2630,8 @@ void Actor::SummonMinion(int summonerId) {
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
     v13 = rand() % 2048;
-    v15 = fixpoint_mul(stru_5C6E00->Cos(v13), v27) + this->vPosition.x;
-    v17 = fixpoint_mul(stru_5C6E00->Sin(v13), v27) + this->vPosition.y;
+    v15 = fixpoint_mul(TrigLUT->Cos(v13), v27) + this->vPosition.x;
+    v17 = fixpoint_mul(TrigLUT->Sin(v13), v27) + this->vPosition.y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
@@ -2791,8 +2785,8 @@ void Actor::UpdateActorAI() {
         if (pParty->armageddon_timer > 417) {
             pParty->armageddon_timer = 0;
         } else {
-            pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) &
-                                 (pParty->sRotationY + rand() % 16 - 8);
+            pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) &
+                                 (pParty->sRotationZ + rand() % 16 - 8);
             pParty->sRotationX = pParty->sRotationX + rand() % 16 - 8;
             if (pParty->sRotationX > 128)
                 pParty->sRotationX = 128;
@@ -4756,6 +4750,7 @@ bool sub_4070EF_prolly_detect_player(unsigned int uObjID,
         default:
             return 0;
     }
+
     v12 = PID_ID(uObj2ID);
     switch (PID_TYPE(uObj2ID)) {
         case OBJECT_Decoration:
@@ -4790,6 +4785,7 @@ bool sub_4070EF_prolly_detect_player(unsigned int uObjID,
         default:
             return 0;
     }
+
     dist_x = obj2_x - obj1_x;
     dist_z = obj2_z - obj1_z;
     dist_y = obj2_y - obj1_y;
@@ -4945,7 +4941,7 @@ bool SpawnActor(unsigned int uMonsterID) {
         actor.uActorHeight = pMonsterList->pMonsters[v1].uMonsterHeight;
         actor.uMovementSpeed = pMonsterList->pMonsters[v1].uMovementSpeed;
 
-        Vec3_int_::Rotate(200, pParty->sRotationY, 0, pParty->vPosition,
+        Vec3_int_::Rotate(200, pParty->sRotationZ, 0, pParty->vPosition,
                           &pOut.x, &pOut.z, &pOut.y);
         actor.vInitialPosition.x = pOut.x;
         actor.vPosition.x = pOut.x;
@@ -5020,10 +5016,10 @@ int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
             pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
         v10 = rand() % 2048;
         pActors[uActorIndex].vInitialPosition.x =
-            pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v10), v19);
+            pParty->vPosition.x + fixpoint_mul(TrigLUT->Cos(v10), v19);
         pActors[uActorIndex].vPosition.x = pActors[uActorIndex].vInitialPosition.x;
         pActors[uActorIndex].vInitialPosition.y =
-            pParty->vPosition.y + fixpoint_mul(stru_5C6E00->Sin(v10), v19);
+            pParty->vPosition.y + fixpoint_mul(TrigLUT->Sin(v10), v19);
         pActors[uActorIndex].vPosition.y = pActors[uActorIndex].vInitialPosition.y;
         pActors[uActorIndex].vInitialPosition.z = pParty->vPosition.z;
         pActors[uActorIndex].vPosition.z = pActors[uActorIndex].vInitialPosition.z;
@@ -5302,9 +5298,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         pMonster->PrepareSprites(0);
         pMonster->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
         v32 = rand();
-        a3 = fixpoint_mul(stru_5C6E00->Cos(v32 % 2048), v52);
+        a3 = fixpoint_mul(TrigLUT->Cos(v32 % 2048), v52);
         pPosX = a3 + spawn->vPosition.x;
-        a3 = fixpoint_mul(stru_5C6E00->Sin(v32 % 2048), v52);
+        a3 = fixpoint_mul(TrigLUT->Sin(v32 % 2048), v52);
         a4 = a3 + spawn->vPosition.y;
         a3 = spawn->vPosition.z;
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {

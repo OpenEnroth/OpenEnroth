@@ -87,7 +87,7 @@ void Party::Zero() {
     vPosition.y = 0;
     vPosition.z = 0;
     uFallStartY = 0;
-    sRotationY = 0;
+    sRotationZ = 0;
     sRotationX = 0;
     uFallSpeed = 0;
     field_28 = 0;
@@ -637,7 +637,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->vPosition.z = 0;
     this->vPosition.x = 0;
     this->uFallStartY = 0;
-    this->sRotationY = 0;
+    this->sRotationZ = 0;
     this->sRotationX = 0;
     this->uFallSpeed = 0;
     this->field_28 = 0;
@@ -1088,7 +1088,7 @@ void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {
             object.uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
                                                   pParty->sEyelevel + pParty->vPosition.z);
             memcpy(&object.containing_item, &pParty->pPickedItem, sizeof(object.containing_item));
-            object.Create(pParty->sRotationY, 184, 200, 0);
+            object.Create(pParty->sRotationZ, 184, 200, 0);
             mouse->RemoveHoldingItem();
         }
     }
