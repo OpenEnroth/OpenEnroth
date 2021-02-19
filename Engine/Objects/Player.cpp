@@ -6958,11 +6958,11 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         if (targetchar == -1) __debugbreak();
 
         // test
-        //if (/*uActorType == OBJECT_Player &&*/ !_A750D8_player_speech_timer) {
+        // if (/*uActorType == OBJECT_Player &&*/ !_A750D8_player_speech_timer) {
         //    _A750D8_player_speech_timer = 256;
         //    PlayerSpeechID = SPEECH_18;
         //    uSpeakingCharacter = 1;
-        //}
+        // }
         // test
 
         playerPtr = &pParty->pPlayers[targetchar];

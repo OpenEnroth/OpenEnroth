@@ -102,8 +102,6 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
     render->DrawTextureAlphaNew(uX / 640.0f, (window->uFrameY + 34) / 480.0f,
                                 bar_image);
 
-   
-
     // draw hp bar ends
     render->ResetUIClipRect();
     render->DrawTextureAlphaNew((uX - 5) / 640.0f,

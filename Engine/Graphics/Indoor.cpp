@@ -3203,7 +3203,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                     v18 = fixpoint_mul(rayynorm, face.pFacePlane.vNormal.y);
                     v19 = fixpoint_mul(rayznorm, face.pFacePlane.vNormal.z);
 
-                    FaceIsParallel = v17 + v18 + v19 == 0; // dot product implies face normal is perpendicular - face is parallel to LOS
+                    FaceIsParallel = v17 + v18 + v19 == 0;  // dot product implies face normal is perpendicular - face is parallel to LOS
 
                     dot_ray2 = v17 + v18 + v19;
                     dot_ray = v17 + v18 + v19;
@@ -3231,7 +3231,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                                 ShiftedTargetY * face.pFacePlane.vNormal.y +
                                 ShiftedTargetZ * face.pFacePlane.vNormal.z <
                             0)
-                            continue; // can never hit
+                            continue;  // can never hit
                     } else {
                         // angle acute - is target above plane
                         if (face.pFacePlane.dist +
@@ -3250,7 +3250,6 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
 
                     // maybe some sort of epsilon check?
                     if (v24 <= abs(dot_ray2)) {
-
                         // calc how far along line interesction is
                         v110 = fixpoint_div(v23, dot_ray);
 

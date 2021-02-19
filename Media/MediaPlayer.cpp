@@ -446,6 +446,116 @@ class Movie : public IMovie {
         return video.last_frame;
     }
 
+    virtual void PlayBink() {
+        // fix for #39 - choppy sound with bink
+
+        AVPacket packet;
+
+        Rect rect;
+        rect.x = 0;
+        rect.y = 0;
+        rect.z = rect.x + window->GetWidth();
+        rect.w = rect.y + window->GetHeight();
+
+        // create texture
+        Texture* tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
+
+        // holds decoded audio
+        std::queue<PMemBuffer, std::deque<PMemBuffer>> buffq;
+
+        // loop through once and add all audio packets to queue
+        while (av_read_frame(format_ctx, &packet) >= 0) {
+            if (packet.stream_index == audio.stream_idx) {
+                PMemBuffer buffer = audio.decode_frame(&packet);
+                if (buffer) buffq.push(buffer);
+            }
+        }
+        logger->Info("Audio Packets Queued");
+
+        // reset video to start
+        int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+        if (err < 0) {
+            logger->Info("Seek to start failed! - Exit Movie");
+            return;
+        }
+        start_time = std::chrono::system_clock::now();
+        logger->Info("Video stream reset");
+
+        int lastvideopts = -1;
+        int desired_frame_number;
+        auto current_time = std::chrono::system_clock::now();
+        int audioupdaterate = (30.0f * video.frame_len) / 1000.0f;
+
+        // loop through and do video
+        while (av_read_frame(format_ctx, &packet) >= 0) {
+            do {
+                // get playback time - and wait till we need the next frame
+                current_time = std::chrono::system_clock::now();
+                playback_time = (std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time)).count();
+                desired_frame_number = (int)((playback_time / video.frame_len)/* + 0.25*/);
+                OS_Sleep(5);
+            } while (lastvideopts == desired_frame_number);
+
+            // ignore audio packets
+            if (packet.stream_index == audio.stream_idx) { continue; }
+
+            if (packet.stream_index == video.stream_idx) {
+                // check if anymore sound frames still in decoder
+                PMemBuffer buffer = audio.decode_frame(NULL);
+                if (buffer) buffq.push(buffer);
+
+                // stream required sound frames
+                // nwc and intro are 15fps vid but need 30fps sound
+                // jvc is 10fps video but need 30 fps sound
+                for (int i = 0; i < audioupdaterate; i++) {
+                    if (!buffq.empty()) {
+                        provider->Stream16(audio_data_in_device,
+                                            buffq.front()->GetSize() / 2,
+                                            buffq.front()->GetData());
+                        buffq.pop();
+                    }
+                }
+
+                // Decode video frame and show
+                lastvideopts = packet.pts;
+                video.decode_frame(&packet);
+                PMemBuffer tmp_buf = video.last_frame;
+
+                render->BeginScene();
+                // update pixels from buffer
+                uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+                unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
+                unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
+                memcpy(pix, tmp_buf->GetData(), num_pixels_bytes);
+
+                // update texture
+                render->Update_Texture(tex);
+                render->DrawImage(tex, rect);
+                render->EndScene();
+                render->Present();
+            }
+
+            MessageLoopWithWait();
+
+            av_packet_unref(&packet);
+
+            // exit movie
+            if (!playing) break;
+        }
+        // hold for frame length at end of packets
+        OS_Sleep(video.frame_len);
+
+        // clean up
+        while (!buffq.empty()) buffq.pop();
+        tex->Release();
+
+        return;
+    }
+
+    virtual String GetFormat() {
+        return format_ctx->iformat->name;
+    }
+
     virtual unsigned int GetWidth() const { return width; }
 
     virtual unsigned int GetHeight() const { return height; }
@@ -462,7 +572,7 @@ class Movie : public IMovie {
         return false;
     }
 
-    virtual bool IsPlaing() const { return playing; }
+    virtual bool IsPlaying() const { return playing; }
 
  protected:
     static int s_read(void *opaque, uint8_t *buf, int buf_size) {
@@ -660,7 +770,7 @@ void MPlayer::HouseMovieLoop() {
         return;
     }
 
-    if (!pMovie_Track->IsPlaing()) {
+    if (!pMovie_Track->IsPlaying()) {
         pMovie_Track->Play(false);
     }
 
@@ -735,36 +845,41 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
     Rect rect;
     rect.x = 0;
     rect.y = 0;
-    rect.z = rect.x + 640;
-    rect.w = rect.y + 480;
+    rect.z = rect.x + window->GetWidth();
+    rect.w = rect.y + window->GetHeight();
 
     // create texture
     Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
 
-    while (true) {
-        MessageLoopWithWait();
+    if (pMovie->GetFormat() == "bink") {
+        logger->Info("bink file");
+        pMovie->PlayBink();
+    } else {
+        while (true) {
+            MessageLoopWithWait();
 
-        render->BeginScene();
+            render->BeginScene();
 
-        OS_Sleep(2);
+            OS_Sleep(30);
 
-        PMemBuffer buffer = pMovie_Track->GetFrame();
-        if (!buffer) {
-            break;
+            PMemBuffer buffer = pMovie_Track->GetFrame();
+            if (!buffer) {
+                break;
+            }
+
+            // update pixels from buffer
+            uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+            unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
+            unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
+            memcpy(pix, buffer->GetData(), num_pixels_bytes);
+
+            // update texture
+            render->Update_Texture(tex);
+            render->DrawImage(tex, rect);
+
+            render->EndScene();
+            render->Present();
         }
-
-        // update pixels from buffer
-        uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-        unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
-        unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
-        memcpy(pix, buffer->GetData(), num_pixels_bytes);
-
-        // update texture
-        render->Update_Texture(tex);
-        render->DrawImage(tex, rect);
-
-        render->EndScene();
-        render->Present();
     }
 
     // release texture
@@ -781,7 +896,7 @@ bool MPlayer::IsMoviePlaying() const {
         return false;
     }
 
-    return pMovie_Track->IsPlaing();
+    return pMovie_Track->IsPlaying();
 }
 
 bool MPlayer::StopMovie() {

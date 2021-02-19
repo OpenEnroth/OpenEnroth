@@ -733,7 +733,6 @@ void Render::PrepareDecorationsRenderList_ODM() {
                     v7 = abs(pLevelDecorations[i].vPosition.x +
                              pLevelDecorations[i].vPosition.y);
 
-                    
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                                                         v6 + v7);
 
@@ -4258,7 +4257,7 @@ void Render::DrawOutdoorSkyD3D() {
         float v18x, v18y, v18z;
         /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pIndoorCameraD3D->sRotationX + 16) /65536.0;
         /*pSkyPolygon.v_18.y*/ v18y = 0;
-        /*pSkyPolygon.v_18.z*/ v18z= -TrigLUT->Cos(pIndoorCameraD3D->sRotationX + 16) /65536.0;
+        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pIndoorCameraD3D->sRotationX + 16) /65536.0;
 
         // sky wiew position(положение неба на
         // экране)------------------------------------------
@@ -4324,9 +4323,9 @@ void Render::DrawOutdoorSkyD3D() {
             float top_y_proj = /*pSkyPolygon.v_18.x*/v18x + v9;
             if (top_y_proj > 0) top_y_proj = 0;
 
-            /*v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0;*/
-            //v14 = widthperpixel * (horizon_height_offset - v32);
-            //while (1) {
+            /* v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0; */
+            // v14 = widthperpixel * (horizon_height_offset - v32);
+            // while (1) {
             //    if (top_y_proj) {
             //        v37 = 0.03125;  // abs((int)cam_vec_up >> 14);
             //        v15 = abs(top_y_proj);
@@ -4339,7 +4338,7 @@ void Render::DrawOutdoorSkyD3D() {
             //    --v32;
             //    v14 += widthperpixel;
             //    top_y_proj = /*pSkyPolygon.v_18.x*/v18x + v16;
-            //}
+            // }
 
             float worldviewdepth = -64.0 / top_y_proj;
             if (worldviewdepth < 0) worldviewdepth = pIndoorCameraD3D->GetFarClip();

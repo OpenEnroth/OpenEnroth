@@ -1536,10 +1536,10 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     // transform to odd axis??
 
 
-    float cosz = pIndoorCameraD3D->fRotationZCosine; //int_cosine_Z;
-    float cosx = pIndoorCameraD3D->fRotationXCosine; //int_cosine_x;
-    float sinz = pIndoorCameraD3D->fRotationZSine; //int_sine_Z;
-    float sinx = pIndoorCameraD3D->fRotationXSine; //int_sine_x;
+    float cosz = pIndoorCameraD3D->fRotationZCosine;  // int_cosine_Z;
+    float cosx = pIndoorCameraD3D->fRotationXCosine;  // int_cosine_x;
+    float sinz = pIndoorCameraD3D->fRotationZSine;  // int_sine_Z;
+    float sinx = pIndoorCameraD3D->fRotationXSine;  // int_sine_x;
 
     // positions all minus ?
     float v11 = cosz * -pIndoorCameraD3D->vPartyPos.x + sinz * -pIndoorCameraD3D->vPartyPos.y;
@@ -1586,7 +1586,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
         (this->CamVecLeft_X * this->field_0_party_dir_x) +
         (this->CamVecLeft_Z * this->field_4_party_dir_y) +
         (this->CamVecLeft_Y * this->field_8_party_dir_z);
-    this->CamFrontDot = 
+    this->CamFrontDot =
         (this->CamVecFront_X * this->field_0_party_dir_x) +
         (this->CamVecFront_Z * this->field_4_party_dir_y) +
         (this->CamVecFront_Y * this->field_8_party_dir_z);
@@ -2636,8 +2636,7 @@ void _set_3d_modelview_matrix() {
               camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationZ / 2048.0) /*- 5*/,
               camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationZ / 2048.0),
               camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * (-pParty->sRotationX - 20) / 2048.0),
-
-              0, 0, 1);  // wrong - z should be up 
+              0, 0, 1);
 }
 
 void _set_ortho_projection(bool gameviewport = false) {

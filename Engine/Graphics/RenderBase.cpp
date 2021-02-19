@@ -385,7 +385,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     unsigned int billboard_index = Billboard_ProbablyAddToListAndSortByZOrder(a2->screen_space_z);
     RenderBillboardD3D *billboard = &pBillboardRenderListD3D[billboard_index];
 
-    billboard->opacity = RenderBillboardD3D::Transparent;//Opaque_1;
+    billboard->opacity = RenderBillboardD3D::Transparent;  // Opaque_1;
     billboard->field_90 = a2->field_44;
     billboard->screen_space_z = a2->screen_space_z;
     billboard->object_pid = a2->object_pid;

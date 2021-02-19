@@ -141,24 +141,24 @@ __int64 fixpoint_mul(int a1, int a2) {
     return ((__int64)a1 * (__int64)a2) >> 16;
 }
 
-//__int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2) {
+// __int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2) {
 //    return fixpoint_mul(x1, x2) + fixpoint_mul(y1, y2) + fixpoint_mul(z1, z2);
-//}
+// }
 
 //----- (004A1780) mm6_chinese---------------------------------------------
 __int64 fixpoint_div(int a1, int a2) { return ((__int64)a1 << 16) / a2; }
 
-//__int64 fixpoint_sub_unknown(int a1, int a2) {
+// __int64 fixpoint_sub_unknown(int a1, int a2) {
 //    return (((__int64)a1 << 16) * a2) >> 16;
-//}
+// }
 
 ////----- (0048B561) --------------------------------------------------------
-//int fixpoint_from_float(float val) {
+// int fixpoint_from_float(float val) {
 //    //  float X.Yf -> int XXXX YYYY
 //    int left = floorf((val - 0.5f) + 0.5f);
 //    int right = floorf((val - left) * 65536.0f);
 //    return (left << 16) | right;
-//}
+// }
 
 // int fixpoint_from_int(int lhv, int rhv) { return (lhv << 16) | rhv; }
 

@@ -314,12 +314,12 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
     render->PresentBlackScreen();
     if (!engine->config->NoVideo()) {
         if (!engine->config->no_logo) {
-            pMediaPlayer->PlayFullscreenMovie("3dologo");  // works
-            pMediaPlayer->PlayFullscreenMovie("new world logo");  // choppy
-            pMediaPlayer->PlayFullscreenMovie("jvc"); // choppy
+            pMediaPlayer->PlayFullscreenMovie("3dologo");
+            pMediaPlayer->PlayFullscreenMovie("new world logo");
+            pMediaPlayer->PlayFullscreenMovie("jvc");
         }
         if (!engine->config->no_intro) {
-            pMediaPlayer->PlayFullscreenMovie("Intro");  // choppy
+            pMediaPlayer->PlayFullscreenMovie("Intro");
         }
     }
 

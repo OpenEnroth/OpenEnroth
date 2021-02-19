@@ -12,7 +12,7 @@
 __int64 fixpoint_mul(int, int);
 __int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
 __int64 fixpoint_div(int, int);
-//__int64 fixpoint_sub_unknown(int, int);
+// __int64 fixpoint_sub_unknown(int, int);
 // int fixpoint_from_float(float value);
 // int fixpoint_from_int(int lhv, int rhv);
 
@@ -20,8 +20,8 @@ int integer_sqrt(int val);
 int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides);  // idb
 inline int round_to_int(float x) { return (int)floor(x + 0.5f); }
 
-//#pragma pack(push, 1)
-//struct fixed {  // fixed-point decimal
+// #pragma pack(push, 1)
+// struct fixed {  // fixed-point decimal
 //    inline fixed() : _internal(0) {}
 //    explicit fixed(int _bits) : _internal(_bits) {}
 //
@@ -74,8 +74,8 @@ inline int round_to_int(float x) { return (int)floor(x + 0.5f); }
 //    }
 //
 //    int32_t _internal;
-//};
-//#pragma pack(pop)
+// };
+// #pragma pack(pop)
 
 /*  186 */
 #pragma pack(push, 1)

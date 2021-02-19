@@ -83,7 +83,9 @@ class IMovie {
 
     virtual bool Play(bool loop = false) = 0;
     virtual bool Stop() = 0;
-    virtual bool IsPlaing() const = 0;
+    virtual bool IsPlaying() const = 0;
     virtual PMemBuffer GetFrame() = 0;
+    virtual std::string GetFormat() = 0;
+    virtual void PlayBink() = 0;
 };
 typedef std::shared_ptr<IMovie> PMovie;

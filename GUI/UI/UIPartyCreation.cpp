@@ -748,7 +748,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         CreateButton(uX, 120, 145, 25, 1, 0, UIMSG_PlayerCreationChangeName, uControlParam);
         uX += 158;
         ++uControlParam;
-    } while ((signed int)uX < 640); // 640
+    } while ((signed int)uX < 640);  // 640
 
     pCreationUI_BtnPressLeft[0] = CreateButton(10, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, GameKey::None, "", { { ui_partycreation_left } });
     pCreationUI_BtnPressLeft[1] = CreateButton(169, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, GameKey::None, "", { { ui_partycreation_left } });
