@@ -78,44 +78,40 @@ void Polygon::_normalize_v_18() {
 }
 
 bool IsBModelVisible(BSPModel *model, int *reachable) {
-    int v11;      // esi@6
-    int v12;      // esi@8
-    bool result;  // eax@9
+    // checks if model is visible in FOV cone
+    float halfangle = (pODMRenderParams->uCameraFovInDegrees * pi_double / 180.0f) / 2;
+    float rayx = model->vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
+    float rayy = model->vBoundingCenter.y - pIndoorCameraD3D->vPartyPos.y;
 
-    int angle = (int)(pODMRenderParams->uCameraFovInDegrees << 11) / 360 / 2;
-    int v3 = model->vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
-    int v4 = model->vBoundingCenter.y - pIndoorCameraD3D->vPartyPos.y;
-    TrigLUT->Sin(pIndoorCameraD3D->sRotationX);
-    int v17 = v3 * TrigLUT->Cos(pIndoorCameraD3D->sRotationZ) +
-              v4 * TrigLUT->Sin(pIndoorCameraD3D->sRotationZ);
-    if (pIndoorCameraD3D->sRotationX) {
-        v17 = fixpoint_mul(v17, TrigLUT->Cos(pIndoorCameraD3D->sRotationX));
-    }
-    int v19 = v4 * TrigLUT->Cos(pIndoorCameraD3D->sRotationZ) -
-              v3 * TrigLUT->Sin(pIndoorCameraD3D->sRotationZ);
-    int v9 = int_get_vector_length(abs(v3), abs(v4), 0);
-    // v10 = v14 * 188;
-    // v22 = device_caps;
+    // approx distance
+    int dist = int_get_vector_length(abs(rayx), abs(rayy), 0);
     *reachable = false;
-    if (v9 < model->sBoundingRadius + 256) *reachable = true;
-    if (v19 >= 0)
-        v11 = fixpoint_mul(TrigLUT->Sin(angle), v17) -
-              fixpoint_mul(TrigLUT->Cos(angle), v19);
-    else
-        v11 = fixpoint_mul(TrigLUT->Cos(angle), v19) +
-              fixpoint_mul(TrigLUT->Sin(angle), v17);
-    v12 = v11 >> 16;
-    if (v9 <= pIndoorCameraD3D->GetFarClip() + 2048) {
-        // if ( abs(v12) > *(int *)((char *)&pOutdoor->pBModels->sBoundingRadius
-        // + v10) + 512 )
-        if (abs(v12) > model->sBoundingRadius + 512) {
-            result = v12 < 0;
-            HEXRAYS_LOBYTE(result) = v12 >= 0;
-            return result;
-        } else {
-            return true;
-        }
+    if (dist < model->sBoundingRadius + 256) *reachable = true;
+
+    // dot product of camvec and ray - size in forward
+    float frontvec = rayx * pIndoorCameraD3D->fRotationZCosine + rayy * pIndoorCameraD3D->fRotationZSine;
+    if (pIndoorCameraD3D->sRotationX) { frontvec *= pIndoorCameraD3D->fRotationXCosine;}
+
+    // dot product of camvec and ray - size in left
+    float leftvec = rayy * pIndoorCameraD3D->fRotationZCosine - rayx * pIndoorCameraD3D->fRotationZSine;
+
+    // which half fov is ray in direction of - compare slopes
+    float sloperem = 0.0;
+    if (leftvec >= 0) {  // acute - left
+        sloperem = frontvec * sin(halfangle) - leftvec * cos(halfangle);
+    } else {  // obtuse - right
+        sloperem = frontvec * sin(halfangle) + leftvec * cos(halfangle);
     }
+
+    // view range check
+    if (dist <= pIndoorCameraD3D->GetFarClip() + 2048) {
+        // boudning point inside cone
+        if (sloperem >= 0) return true;
+        // bounding radius inside cone
+        if (abs(sloperem) < model->sBoundingRadius + 512) return true;
+    }
+
+    // not visible
     return false;
 }
 
@@ -1675,6 +1671,7 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
     glBegin(GL_LINES);
     glVertex3f(uX, uY, 0);
     glVertex3f(uZ+.5, uW+.5, 0);
+    drawcalls++;
     glEnd();
 }
 
@@ -1916,6 +1913,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    drawcalls++;
 
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -2906,6 +2904,7 @@ void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent,
         glColor3f(dim, dim, dim);
         glVertex3f((x2 - 64) * terrain_block_scale, (64 - z1) * terrain_block_scale, y21 * terrain_height_scale);
     }
+    drawcalls++;
     glEnd();
 
     if (transparent) {
@@ -2914,67 +2913,48 @@ void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent,
 }
 
 void RenderOpenGL::DrawOutdoorSkyD3D() {
-    int v9;                      // eax@4
-    int top_y_proj;                     // ebx@4
-    int v13;                     // edi@6
-    int v14;                     // ecx@6
-    int v15;                     // eax@8
-    int v16;                     // eax@12
-    signed __int64 v17;          // qtt@13
-    signed int v18;              // ecx@13
-    struct Polygon pSkyPolygon;  // [sp+14h] [bp-150h]@1
-    int horizon_height_offset;                     // [sp+134h] [bp-30h]@1
-    int v32;                     // [sp+13Ch] [bp-28h]@6
-    int v33;                     // [sp+140h] [bp-24h]@2
-    signed __int64 v34;          // [sp+144h] [bp-20h]@1
-    int v35;                     // [sp+148h] [bp-1Ch]@4
-    int v36;                     // [sp+14Ch] [bp-18h]@2
-    int v37;                     // [sp+154h] [bp-10h]@8
-    int bot_y_proj;                     // [sp+158h] [bp-Ch]@1
-    int v39;                    // [sp+15Ch] [bp-8h]@4
-
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
-    horizon_height_offset =
-        (signed __int64)((double)(pODMRenderParams->int_fov_rad *
-            pIndoorCameraD3D->vPartyPos.z) /
-            ((double)pODMRenderParams->int_fov_rad + 8192.0) +
-            (double)(pViewport->uScreenCenterY));
+    float  horizon_height_offset = ((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
+        / ((double)pODMRenderParams->int_fov_rad + 8192.0)
+        + (double)(pViewport->uScreenCenterY));
 
     // magnitude in up direction
-    v34 = cos((double)pIndoorCameraD3D->sRotationX * rot_to_rads) *
-        pIndoorCameraD3D->GetFarClip();
+    float cam_vec_up = cos((double)pIndoorCameraD3D->sRotationX * rot_to_rads) *
+    pIndoorCameraD3D->GetFarClip();
 
-    bot_y_proj = (signed __int64)((double)(pViewport->uScreenCenterY) -
+    float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
         (double)pODMRenderParams->int_fov_rad /
-        (v34 + 0.0000001) *
+        (cam_vec_up + 0.0000001) *
         (sin((double)pIndoorCameraD3D->sRotationX * rot_to_rads)
             *
-            -pIndoorCameraD3D->GetFarClip() -
+            pIndoorCameraD3D->GetFarClip() -
             (double)pIndoorCameraD3D->vPartyPos.z));
 
-    // pSkyPolygon.Create_48607B(&SkyBillboard);  //заполняется ptr_38
-                                              // pSkyPolygon.ptr_38->_48694B_frustum_sky();
+    struct Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;
     pSkyPolygon.ptr_38 = &SkyBillboard;
 
-                                              // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
-                                              // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
-                                              // else
-                                              // pSkyPolygon.uTileBitmapID = pOutdoor->sSky_TextureID;//179(original 166)
-                                              // pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ?
-                                              // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
+
+    // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
+    // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
+    // else
+    // pSkyPolygon.uTileBitmapID = pOutdoor->sSky_TextureID;//179(original 166)
+    // pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ?
+    // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
+
     pSkyPolygon.texture = pOutdoor->sky_texture;
     if (pSkyPolygon.texture) {
         pSkyPolygon.dimming_level = 0;
         pSkyPolygon.uNumVertices = 4;
+
         // centering(центруем)-----------------------------------------------------------------
-        pSkyPolygon.v_18.x =
-            -TrigLUT->Sin(pIndoorCameraD3D->sRotationX + 16);
-        pSkyPolygon.v_18.y = 0;
-        pSkyPolygon.v_18.z =
-            -TrigLUT->Cos(pIndoorCameraD3D->sRotationX + 16);
+        // plane of sky polygon rotation vector
+        float v18x, v18y, v18z;
+        /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pIndoorCameraD3D->sRotationX + 16) / 65536.0;
+        /*pSkyPolygon.v_18.y*/ v18y = 0;
+        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pIndoorCameraD3D->sRotationX + 16) / 65536.0;
 
         // sky wiew position(положение неба на
         // экране)------------------------------------------
@@ -2988,38 +2968,26 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         //  |8,351                468,351 |
         // 1._____________________________.2
         //
-        VertexRenderList[0].vWorldViewProjX =
-            (double)(signed int)pViewport->uViewportTL_X;  // 8
-        VertexRenderList[0].vWorldViewProjY =
-            (double)(signed int)pViewport->uViewportTL_Y;  // 8
+        VertexRenderList[0].vWorldViewProjX = (double)(signed int)pViewport->uViewportTL_X;  // 8
+        VertexRenderList[0].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;  // 8
 
-        VertexRenderList[1].vWorldViewProjX =
-            (double)(signed int)pViewport->uViewportTL_X;   // 8
-        VertexRenderList[1].vWorldViewProjY = (double)bot_y_proj;  // 247
+        VertexRenderList[1].vWorldViewProjX = (double)(signed int)pViewport->uViewportTL_X;   // 8
+        VertexRenderList[1].vWorldViewProjY = (double)bot_y_proj + 1;  // 247
 
-        VertexRenderList[2].vWorldViewProjX =
-            (double)(signed int)pViewport->uViewportBR_X;   // 468
-        VertexRenderList[2].vWorldViewProjY = (double)bot_y_proj;  // 247
+        VertexRenderList[2].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;   // 468
+        VertexRenderList[2].vWorldViewProjY = (double)bot_y_proj + 1;  // 247
 
-        VertexRenderList[3].vWorldViewProjX =
-            (double)(signed int)pViewport->uViewportBR_X;  // 468
-        VertexRenderList[3].vWorldViewProjY =
-            (double)(signed int)pViewport->uViewportTL_Y;  // 8
-
-        pSkyPolygon.sTextureDeltaU =
-            224 * pMiscTimer->uTotalGameTimeElapsed;  // 7168
-        pSkyPolygon.sTextureDeltaV =
-            224 * pMiscTimer->uTotalGameTimeElapsed;  // 7168
-
-        pSkyPolygon.field_24 = 0x2000000;  // maybe attributes
+        VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;  // 468
+        VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;  // 8
 
         double half_fov_angle_rads = ((pODMRenderParams->uCameraFovInDegrees - 1) * pi_double) / 360;
 
         // far width per pixel??
-        v33 = 65536 /
-            (signed int)(signed __int64)(((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2)
+        float widthperpixel = 1 /
+            (((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2)
                 / tan(half_fov_angle_rads) +
                 0.5);
+
         for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i) {
             // rotate skydome(вращение купола
             // неба)--------------------------------------
@@ -3029,80 +2997,73 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
             // соответствует угол 90. две переменные хранят данные по углу
             // обзора. field_14 по западу и востоку. field_20 по югу и северу от
             // -25080 до 25080
-            v39 = fixpoint_mul(
-                pSkyPolygon.ptr_38->CamVecLeft_Y,
-                v33 * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-            v35 = v39 + pSkyPolygon.ptr_38->CamVecLeft_Z;
 
-            v39 = fixpoint_mul(
-                pSkyPolygon.ptr_38->CamVecFront_Y,
-                v33 * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
-            v36 = v39 + pSkyPolygon.ptr_38->CamVecFront_Z;
+            float v13 = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
 
-            v9 = fixpoint_mul(
-                pSkyPolygon.v_18.z,
-                v33 * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-            top_y_proj = pSkyPolygon.v_18.x + v9;
+
+            float v39 = (pSkyPolygon.ptr_38->CamVecLeft_Y * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+            float v35 = v39 + pSkyPolygon.ptr_38->CamVecLeft_Z;
+
+            float skyfinalleft = v35 + (pSkyPolygon.ptr_38->CamVecLeft_X * v13);
+
+            v39 = (pSkyPolygon.ptr_38->CamVecFront_Y * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
+            float v36 = v39 + pSkyPolygon.ptr_38->CamVecFront_Z;
+
+            float finalskyfront = v36 + (pSkyPolygon.ptr_38->CamVecFront_X * v13);
+
+
+            float v9 = (/*pSkyPolygon.v_18.z*/v18z * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+
+
+
+
+            float top_y_proj = /*pSkyPolygon.v_18.x*/v18x + v9;
             if (top_y_proj > 0) top_y_proj = 0;
-            v13 = v33 * (pViewport->uScreenCenterX -
-                (signed __int64)VertexRenderList[i].vWorldViewProjX);
-            v34 = -pSkyPolygon.field_24;
-            v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0;
-            v14 = v33 * (horizon_height_offset - v32);
-            while (1) {
-                if (top_y_proj) {
-                    v37 = abs((int)v34 >> 14);
-                    v15 = abs(top_y_proj);
-                    if (v37 <= v15 ||
-                        v32 <= (signed int)pViewport->uViewportTL_Y) {
-                        if (top_y_proj <= 0) break;
-                    }
-                }
-                v16 = fixpoint_mul(pSkyPolygon.v_18.z, v14);
-                --v32;
-                v14 += v33;
-                top_y_proj = pSkyPolygon.v_18.x + v16;
-            }
-            HEXRAYS_LODWORD(v17) = HEXRAYS_LODWORD(v34) << 16;
-            HEXRAYS_HIDWORD(v17) = v34 >> 16;
-            v18 = v17 / top_y_proj;
-            if (v18 < 0) v18 = pIndoorCameraD3D->GetFarClip();
-            v37 = v35 + fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_X, v13);
-            v35 = 224 * pMiscTimer->uTotalGameTimeElapsed +
-                ((signed int)fixpoint_mul(v37, v18) >> 3);
-            VertexRenderList[i].u =
-                (double)v35 /
-                ((double)pSkyPolygon.texture->GetWidth() * 65536.0);
 
-            v36 = v36 + fixpoint_mul(pSkyPolygon.ptr_38->CamVecFront_X, v13);
-            v35 = 224 * pMiscTimer->uTotalGameTimeElapsed +
-                ((signed int)fixpoint_mul(v36, v18) >> 3);
-            VertexRenderList[i].v =
-                (double)v35 /
-                ((double)pSkyPolygon.texture->GetHeight() * 65536.0);
+            /* v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0; */
+            // v14 = widthperpixel * (horizon_height_offset - v32);
+            // while (1) {
+            //    if (top_y_proj) {
+            //        v37 = 0.03125;  // abs((int)cam_vec_up >> 14);
+            //        v15 = abs(top_y_proj);
+            //        if (v37 <= v15 ||
+            //            v32 <= (signed int)pViewport->uViewportTL_Y) {
+            //            if (top_y_proj <= 0) break;
+            //        }
+            //    }
+            //    v16 = (/*pSkyPolygon.v_18.z*/v18z * v14);  // does this bit ever get called?
+            //    --v32;
+            //    v14 += widthperpixel;
+            //    top_y_proj = /*pSkyPolygon.v_18.x*/v18x + v16;
+            // }
+
+            float worldviewdepth = -64.0 / top_y_proj;
+            if (worldviewdepth < 0) worldviewdepth = pIndoorCameraD3D->GetFarClip();
+
+            float texoffset_U = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((skyfinalleft * worldviewdepth));
+            VertexRenderList[i].u = texoffset_U / ((float)pSkyPolygon.texture->GetWidth());
+
+            float texoffset_V = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((finalskyfront * worldviewdepth));
+            VertexRenderList[i].v = texoffset_V / ((float)pSkyPolygon.texture->GetHeight());
 
             VertexRenderList[i].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
-            VertexRenderList[i]._rhw = 1.0 / (double)(v18 >> 16);
+            VertexRenderList[i]._rhw = 1.0 / (double)(worldviewdepth);
         }
 
         _set_ortho_projection(1);
         _set_ortho_modelview();
 
-        VertexRenderList[1].vWorldViewProjY =
-            VertexRenderList[1].vWorldViewProjY + 80.0;
-        VertexRenderList[2].vWorldViewProjY =
-            VertexRenderList[2].vWorldViewProjY + 80.0;
+        DrawOutdoorSkyPolygon(&pSkyPolygon);
 
-        this->DrawOutdoorSkyPolygon(&pSkyPolygon);
+        // adjust and draw again to fill gap below horizon
+        // could mirror over??
 
-        VertexRenderList[0].vWorldViewProjY = (double)top_y_proj;
-        VertexRenderList[1].vWorldViewProjY =
-            VertexRenderList[1].vWorldViewProjY + 30.0;
-        VertexRenderList[2].vWorldViewProjY =
-            VertexRenderList[2].vWorldViewProjY + 30.0;
-        VertexRenderList[3].vWorldViewProjY = (double)top_y_proj;
+        // VertexRenderList[0].vWorldViewProjY += 60;
+        // VertexRenderList[1].vWorldViewProjY += 60;
+        // VertexRenderList[2].vWorldViewProjY += 60;
+        // VertexRenderList[3].vWorldViewProjY += 60;
 
-        // this->DrawOutdoorSkyPolygon(&pSkyPolygon);
+        // DrawOutdoorSkyPolygon(&pSkyPolygon);
     }
 }
 
@@ -3112,8 +3073,8 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
     VertexRenderList[0].u = 0 - (float)pParty->sRotationZ / 512;
     VertexRenderList[1].u = 0 - (float)pParty->sRotationZ / 512;
@@ -3132,7 +3093,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 256;
     }
 
-    glBegin(GL_QUADS);
+    glBegin(GL_TRIANGLE_FAN);
     {
         for (int i = 0; i < pSkyPolygon->uNumVertices; ++i) {
             unsigned int diffuse = ::GetActorTintColor(
@@ -3143,13 +3104,14 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
                       (diffuse & 0xFF) / 255.0f, 1.0f);
 
             glTexCoord2f(VertexRenderList[i].u,
-                         /*max_v*/ -VertexRenderList[i].v);
+                         /*max_v*/ /*-*/VertexRenderList[i].v);
 
             glVertex3f(VertexRenderList[i].vWorldViewProjX,
                 VertexRenderList[i].vWorldViewProjY,
                 0.99989998);  // z is negative in OpenGL
         }
     }
+    drawcalls++;
     glEnd();
 }
 
@@ -3213,6 +3175,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
                     (oneoz - oneon)/(oneof - oneon) );  // depth is  non linear  proportional to reciprocal of distance
             }
         }
+        drawcalls++;
         glEnd();
     }
 
@@ -3236,8 +3199,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
 }
 
 //----- (004A1DA8) --------------------------------------------------------
-void RenderOpenGL::SetBillboardBlendOptions(
-    RenderBillboardD3D::OpacityType a1) {
+void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
     switch (a1) {
         case RenderBillboardD3D::Transparent: {
             if (config->is_using_fog) {
@@ -3265,7 +3227,7 @@ void RenderOpenGL::SetBillboardBlendOptions(
                 }
             }
 
-            glBlendFunc(GL_ONE, GL_ZERO);
+            glBlendFunc(GL_ONE, GL_ONE);  // zero
         } break;
 
         default:
@@ -3343,7 +3305,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
     int w = y + height;
 
     // check bounds
-    if (x >= window->GetWidth() || x >= clipz || y >= window->GetHeight() || y >= clipw) return;
+    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
     // check for overlap
     if ((clipx < z && clipz > x && clipy > w && clipw < y)) return;
 
@@ -3380,6 +3342,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
     glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    drawcalls++;
 
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -3803,7 +3766,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *poly) {
                        ogl_draw_buildings_vertices[i].vWorldPosition.y,
                        ogl_draw_buildings_vertices[i].vWorldPosition.z);
         }
-
+        drawcalls++;
         glEnd();
 
         GLenum err;
@@ -4021,9 +3984,10 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
 
 
                 glVertex3f(pIndoor->pVertices[pFace->pVertexIDs[i]].x,
-                    pIndoor->pVertices[pFace->pVertexIDs[i]].z,
-                    pIndoor->pVertices[pFace->pVertexIDs[i]].y);
+                    pIndoor->pVertices[pFace->pVertexIDs[i]].y,
+                    pIndoor->pVertices[pFace->pVertexIDs[i]].z);
             }
+            drawcalls++;
 
             glEnd();
         } else {
@@ -4178,6 +4142,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, Vertices);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    drawcalls++;
     glDisableClientState(GL_VERTEX_ARRAY);
 
     GLenum err;

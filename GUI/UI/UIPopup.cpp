@@ -2196,7 +2196,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             int rot_x, rot_y, rot_z;
             Vec3_int_::Rotate(64, pParty->sRotationZ, pParty->sRotationX, v39,
                               &rot_x, &rot_y, &rot_z);
-            SpriteObject::sub_42F7EB_DropItemAt(
+            SpriteObject::Drop_Item_At(
                 SPRITE_SPELL_FIRE_FIREBALL_IMPACT, rot_x, rot_y, rot_z, 0, 1, 0,
                 0, 0);
             if (dword_4E455C) {

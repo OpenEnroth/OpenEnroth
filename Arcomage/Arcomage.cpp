@@ -894,6 +894,9 @@ bool OpponentsAITurn(int player_num) {
 }
 
 void ArcomageGame::Loop() {
+    // reset timer
+    pArcomageGame->event_timer_time = (int)pEventTimer->Time();
+
     bool am_turn_not_finished = 0;
     while (!pArcomageGame->GameOver) {
         pArcomageGame->force_redraw_1 = 1;

@@ -121,7 +121,7 @@ bool Chest::Open(int uChestID) {
             v.z = pObjectZ;
             Vec3_int_::Rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z,
                               &pOut.y);
-            SpriteObject::sub_42F7EB_DropItemAt(pSpriteID[pRandom], pOut.x,
+            SpriteObject::Drop_Item_At(pSpriteID[pRandom], pOut.x,
                                                 pOut.z, pOut.y, 0, 1, 0, 48, 0);
 
             pSpellObject.containing_item.Reset();

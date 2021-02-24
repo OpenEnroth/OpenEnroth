@@ -392,7 +392,7 @@ void GUIWindow_PartyCreation::Update() {
     pIntervalX = 18;
     pIntervalY = pFontCreate->GetHeight() - 2;
     uX = 32;
-    pX_Numbers = 493;
+    pX_Numbers = window->GetWidth() - 147;  // 493;
 
     for (int i = 0; i < 4; ++i) {
         pGUIWindow_CurrentMenu->DrawText(
@@ -744,11 +744,11 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     int uControlParam = 0;
     uControlParam = 0;
     int uX = 8;
-    do {
+    for (int i = 0; i < 4; i++) {
         CreateButton(uX, 120, 145, 25, 1, 0, UIMSG_PlayerCreationChangeName, uControlParam);
         uX += 158;
         ++uControlParam;
-    } while ((signed int)uX < 640);  // 640
+    }
 
     pCreationUI_BtnPressLeft[0] = CreateButton(10, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, GameKey::None, "", { { ui_partycreation_left } });
     pCreationUI_BtnPressLeft[1] = CreateButton(169, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, GameKey::None, "", { { ui_partycreation_left } });
@@ -772,7 +772,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
     uControlParam = 0;
     uX = 8;
-    do {
+    for (int i = 0 ; i < 4; i++) {
         CreateButton(uX, 308, 150, v0, 1, 0, UIMSG_48, uControlParam);
         CreateButton(uX, v0 + 308, 150, v0, 1, 0, UIMSG_49, uControlParam);
         CreateButton(uX, 2 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, uControlParam);
@@ -780,7 +780,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
         uX += 158;
         ++uControlParam;
-    } while ((signed int)uX < 640);  // 640
+    }
 
     CreateButton(5, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, GameKey::Digit1);
     CreateButton(163, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 1, GameKey::Digit2);

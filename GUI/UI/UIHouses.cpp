@@ -1612,7 +1612,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
     case HOUSE_DIALOGUE_SHOP_REPAIR:
     {
         dialog_menu_id = (HOUSE_DIALOGUE_MENU)uMessageParam;
-        pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+        pParty->PickedItem_PlaceInInventory_or_Drop();
         break;
     }
     case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT:

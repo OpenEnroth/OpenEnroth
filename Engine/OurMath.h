@@ -10,7 +10,7 @@
 #define pi_double 3.14159265358979323846
 
 __int64 fixpoint_mul(int, int);
-__int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
+// __int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
 __int64 fixpoint_div(int, int);
 // __int64 fixpoint_sub_unknown(int, int);
 // int fixpoint_from_float(float value);

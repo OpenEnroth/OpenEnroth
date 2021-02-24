@@ -4204,28 +4204,16 @@ void sr_485F53(Vec2_int_ *v) {
 }
 
 void Render::DrawOutdoorSkyD3D() {
-    float v13;                     // edi@6
-    float v14;                     // ecx@6
-    float v15;                     // eax@8
-    float v16;                     // eax@12
-    float v32;                     // [sp+13Ch] [bp-28h]@6
-    float v35;                     // [sp+148h] [bp-1Ch]@4
-    float v36;                     // [sp+14Ch] [bp-18h]@2
-    float v37;                     // [sp+154h] [bp-10h]@8
-    float v39;                     // [sp+15Ch] [bp-8h]@4
-
-
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
-    float  horizon_height_offset =
-        ((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
-            / ((double)pODMRenderParams->int_fov_rad + 8192.0)
-            + (double)(pViewport->uScreenCenterY));
+    float  horizon_height_offset = ((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
+                                    / ((double)pODMRenderParams->int_fov_rad + 8192.0)
+                                    + (double)(pViewport->uScreenCenterY));
 
     // magnitude in up direction
     float cam_vec_up = cos((double)pIndoorCameraD3D->sRotationX * rot_to_rads) *
-        pIndoorCameraD3D->GetFarClip();
+                        pIndoorCameraD3D->GetFarClip();
 
     float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
         (double)pODMRenderParams->int_fov_rad /
@@ -4301,16 +4289,16 @@ void Render::DrawOutdoorSkyD3D() {
             // обзора. field_14 по западу и востоку. field_20 по югу и северу от
             // -25080 до 25080
 
-            v13 = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
+            float v13 = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
 
 
-            v39 = (pSkyPolygon.ptr_38->CamVecLeft_Y * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-            v35 = v39 + pSkyPolygon.ptr_38->CamVecLeft_Z;
+            float v39 = (pSkyPolygon.ptr_38->CamVecLeft_Y * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
+            float v35 = v39 + pSkyPolygon.ptr_38->CamVecLeft_Z;
 
             float skyfinalleft = v35 + (pSkyPolygon.ptr_38->CamVecLeft_X * v13);
 
             v39 = (pSkyPolygon.ptr_38->CamVecFront_Y * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
-            v36 = v39 + pSkyPolygon.ptr_38->CamVecFront_Z;
+            float v36 = v39 + pSkyPolygon.ptr_38->CamVecFront_Z;
 
             float finalskyfront = v36 + (pSkyPolygon.ptr_38->CamVecFront_X * v13);
 
@@ -4358,12 +4346,12 @@ void Render::DrawOutdoorSkyD3D() {
         // adjust and draw again to fill gap below horizon
         // could mirror over??
 
-        VertexRenderList[0].vWorldViewProjY += 60;
-        VertexRenderList[1].vWorldViewProjY += 60;
-        VertexRenderList[2].vWorldViewProjY += 60;
-        VertexRenderList[3].vWorldViewProjY += 60;
+        // VertexRenderList[0].vWorldViewProjY += 60;
+        // VertexRenderList[1].vWorldViewProjY += 60;
+        // VertexRenderList[2].vWorldViewProjY += 60;
+        // VertexRenderList[3].vWorldViewProjY += 60;
 
-        DrawOutdoorSkyPolygon(&pSkyPolygon);
+        // DrawOutdoorSkyPolygon(&pSkyPolygon);
     }
 }
 

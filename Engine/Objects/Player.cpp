@@ -1772,7 +1772,7 @@ int Player::StealFromActor(
                         this->pName,
                         pItemsTable->pItems[carriedItemId].pUnidentifiedName));
 
-                    pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();  // drop or place picked item
+                    pParty->PickedItem_PlaceInInventory_or_Drop();  // drop or place picked item
 
                     memcpy(
                         &pParty->pPickedItem, &tempItem,

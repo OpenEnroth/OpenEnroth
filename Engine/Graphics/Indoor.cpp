@@ -394,18 +394,10 @@ void BLVFace::FromODM(ODMFace *face) {
     this->pFacePlane_old.vNormal.y = face->pFacePlane.vNormal.y;
     this->pFacePlane_old.vNormal.z = face->pFacePlane.vNormal.z;
     this->pFacePlane_old.dist = face->pFacePlane.dist;
-    this->pFacePlane.vNormal.x =
-        (double)(face->pFacePlane.vNormal.x & 0xFFFF) * 0.000015259022 +
-        (double)(face->pFacePlane.vNormal.x >> 16);
-    this->pFacePlane.vNormal.y =
-        (double)(face->pFacePlane.vNormal.y & 0xFFFF) * 0.000015259022 +
-        (double)(face->pFacePlane.vNormal.y >> 16);
-    this->pFacePlane.vNormal.z =
-        (double)(face->pFacePlane.vNormal.z & 0xFFFF) * 0.000015259022 +
-        (double)(face->pFacePlane.vNormal.z >> 16);
-    this->pFacePlane.dist =
-        (double)(face->pFacePlane.dist & 0xFFFF) * 0.000015259022 +
-        (double)(face->pFacePlane.dist >> 16);
+    this->pFacePlane.vNormal.x = (double)(face->pFacePlane.vNormal.x) / 65536.0;
+    this->pFacePlane.vNormal.y = (double)(face->pFacePlane.vNormal.y) / 65536.0;
+    this->pFacePlane.vNormal.z = (double)(face->pFacePlane.vNormal.z) / 65536.0;
+    this->pFacePlane.dist = (double)(face->pFacePlane.dist) / 65536.0;
     this->uAttributes = face->uAttributes;
     this->pBounding.x1 = face->pBoundingBox.x1;
     this->pBounding.y1 = face->pBoundingBox.y1;
@@ -654,7 +646,9 @@ void IndoorLocation::Release() {
     free(this->pVertices);
     this->pVertices = NULL;
 
-    free(this->pFaces);
+    //  pfaces alloc by new during load
+    //  free(this->pFaces);
+    delete[] this->pFaces;
     this->pFaces = NULL;
 
     free(this->pFaceExtras);
@@ -681,18 +675,20 @@ void IndoorLocation::Release() {
 //----- (00498C45) --------------------------------------------------------
 bool IndoorLocation::Alloc() {
     pVertices = (Vec3_short_ *)malloc(15000 * sizeof(Vec3_short_));  // 0x15F90u
-    pFaces = (BLVFace *)malloc(10000 * sizeof(BLVFace));             // 0xEA600u
-    pFaceExtras =
-        (BLVFaceExtra *)malloc(5000 * sizeof(BLVFaceExtra));     // 0x2BF20u
+
+    //  pfaces alloc by new during load
+    //  pFaces = (BLVFace *)malloc(10000 * sizeof(BLVFace));             // 0xEA600u
+
+    pFaceExtras = (BLVFaceExtra *)malloc(5000 * sizeof(BLVFaceExtra));     // 0x2BF20u
     pSectors = (BLVSector *)malloc(512 * sizeof(BLVSector));     // 0xE800u
     pLights = (BLVLightMM7 *)malloc(400 * sizeof(BLVLightMM7));  // 0x1900u
     pDoors = (BLVDoor *)malloc(200 * sizeof(BLVDoor));           // 0x3E80u
     pNodes = (BSPNode *)malloc(5000 * sizeof(BSPNode));          // 0x9C40u
     pMapOutlines = (BLVMapOutlines *)malloc(sizeof(BLVMapOutlines));  // 0x14824u
-    if (pVertices && pFaces && pFaceExtras && pSectors && pLights && pDoors &&
+    if (pVertices /*&& pFaces*/ && pFaceExtras && pSectors && pLights && pDoors &&
         pNodes && pMapOutlines) {
         memset(pVertices, 0, 15000 * sizeof(Vec3_short_));
-        memset(pFaces, 0, 10000 * sizeof(BLVFace));
+        //  memset(pFaces, 0, 10000 * sizeof(BLVFace));
         memset(pFaceExtras, 0, 5000 * sizeof(BLVFaceExtra));
         memset(pSectors, 0, 512 * sizeof(BLVSector));
         memset(pLights, 0, 400 * sizeof(BLVLightMM7));
@@ -701,6 +697,7 @@ bool IndoorLocation::Alloc() {
         memset(pMapOutlines, 0, sizeof(BLVMapOutlines));
         return true;
     } else {
+        __debugbreak();
         return false;
     }
 }
@@ -2875,7 +2872,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     }
 }
 
-bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_From) {  // target xyz from position v - possible line of sight check? - true on clear
+bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_From) {  // target xyz from position v true on clear
     int dist_y;       // edi@2
     int dist_z;       // ebx@2
     int dist_x;       // esi@2

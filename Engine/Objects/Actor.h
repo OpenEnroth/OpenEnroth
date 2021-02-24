@@ -335,9 +335,9 @@ int IsActorAlive(unsigned int uType, unsigned int uParam,
 void sub_448518_npc_set_item(int npc, unsigned int item, int a3);
 void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
                           unsigned int bToggle);
-bool sub_4070EF_prolly_detect_player(unsigned int uObjID, unsigned int uObj2ID);
+bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
-int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
+int Spawn_Light_Elemental(int spell_power, int caster_skill_level,
                                      int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, struct SpawnPointMM7 *spawn,
                     int a3, int a4, int a5);

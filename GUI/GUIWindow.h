@@ -63,10 +63,10 @@ enum UIMessageType : uint32_t {
     UIMSG_CastSpell_Character_Big_Improvement = 69,
     UIMSG_CastSpell_Shoot_Monster = 70,
     UIMSG_ClickBooksBtn = 71,
-    UIMSG_48 = 72,
-    UIMSG_49 = 73,
-    UIMSG_PlayerCreationRemoveUpSkill = 74,
-    UIMSG_PlayerCreationRemoveDownSkill = 75,
+    UIMSG_48 = 72,  // fixed skill 1
+    UIMSG_49 = 73,  // fixed skill 2
+    UIMSG_PlayerCreationRemoveUpSkill = 74,  // choice skill 1
+    UIMSG_PlayerCreationRemoveDownSkill = 75,  // choice skill 2
 
     UIMSG_HintSelectRemoveQuickSpellBtn = 78,
     UIMSG_SPellbook_ShowHightlightedSpellInfo = 79,

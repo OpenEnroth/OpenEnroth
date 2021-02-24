@@ -655,7 +655,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_SummonItem:
-                    SpriteObject::sub_42F7EB_DropItemAt(
+                    SpriteObject::Drop_Item_At(
                         (SPRITE_OBJECT_TYPE)(
                             _evt->v5 +
                             ((_evt->v6 +

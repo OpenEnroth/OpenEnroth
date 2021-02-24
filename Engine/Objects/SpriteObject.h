@@ -28,7 +28,7 @@ struct SpriteObject {
     static void UpdateObject_fn0_BLV(unsigned int uLayingItemID);
     static void UpdateObject_fn0_ODM(unsigned int uLayingItemID);
     static void OnInteraction(unsigned int uLayingItemID);
-    static bool sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x, int y,
+    static bool Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x, int y,
                                       int z, int a4, int count, int a7,
                                       unsigned __int16 attributes, ItemGen *a9);
     static void Create_Splash_Object(int x, int y, int z);
@@ -66,4 +66,4 @@ extern size_t uNumSpriteObjects;
 extern std::array<SpriteObject, MAX_SPRITE_OBJECTS> pSpriteObjects;
 
 bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2);
-void sub_43A97E(unsigned int uLayingItemID, signed int a2);  // idb
+void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int a2);  // idb

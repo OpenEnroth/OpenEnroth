@@ -941,7 +941,7 @@ void SpriteObject::_46BEF1_apply_spells_aoe() {
 }
 
 //----- (0042F7EB) --------------------------------------------------------
-bool SpriteObject::sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x,
+bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
                                          int y, int z, int a4, int count,
                                          int a7, unsigned __int16 attributes,
                                          ItemGen *a9) {
@@ -1068,7 +1068,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
                 return 1;
             }
             if (PID_TYPE(a2) != OBJECT_Item) {
-                sub_43A97E(uLayingItemID, a2);
+                Apply_Spell_Sprite_Damage(uLayingItemID, a2);
                 pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
                 pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
                 if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1112,7 +1112,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_PROJECTILE_530:
         case SPRITE_PROJECTILE_535:
         case SPRITE_PROJECTILE_540: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1136,7 +1136,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
                 pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-                sub_43A97E(uLayingItemID, a2);
+                Apply_Spell_Sprite_Damage(uLayingItemID, a2);
                 SpriteObject::OnInteraction(uLayingItemID);
                 int v16 = 0;
                 if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
@@ -1213,7 +1213,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_EARTH_MASS_DISTORTION:
         case SPRITE_SPELL_MIND_MIND_BLAST:
         case SPRITE_SPELL_MIND_PSYCHIC_SHOCK: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1239,7 +1239,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         }
 
         case SPRITE_BLASTER_PROJECTILE: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = SPRITE_BLASTER_IMPACT;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_BLASTER_IMPACT);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1296,7 +1296,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             int v16 = 0;
             if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
                 v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1412,7 +1412,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             if (PID_TYPE(a2) == OBJECT_Actor &&
                 MonsterStats::BelongsToSupertype(pActors[PID_ID(a2)].pMonsterInfo.uID,
                                                  MONSTER_SUPERTYPE_UNDEAD)) {
-                                                 sub_43A97E(uLayingItemID, a2);
+                                                 Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             }
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_LIGHT_DESTROY_UNDEAD_1;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_LIGHT_DESTROY_UNDEAD_1);
@@ -1443,7 +1443,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_BODY_FLYING_FIST:
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT:
         case SPRITE_SPELL_LIGHT_SUNRAY: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1597,7 +1597,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         }
 
         case SPRITE_SPELL_DARK_SHARPMETAL: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_DARK_SHARPMETAL_IMPACT;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1711,7 +1711,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
 }
 
 //----- (0043A97E) --------------------------------------------------------
-void sub_43A97E(unsigned int uLayingItemID, int a2) {
+void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
     if (PID_TYPE(a2) == OBJECT_Player) {
         layingitem_vel_50FDFC.x = pSpriteObjects[uLayingItemID].vVelocity.x;
         layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
