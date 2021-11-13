@@ -1,7 +1,12 @@
 #include "Platform/Win/Win.h"
 
-bool OS_GetAppStringRecursive(HKEY parent_key, const char *path,
-                              char *out_string, int out_string_size) {
+bool OS_GetAppStringRecursive(
+    HKEY parent_key,
+    const char *path,
+    char *out_string,
+    int out_string_size,
+    int flags = 0
+) {
     char current_key[128];
     char path_tail[1024];
 
@@ -37,21 +42,32 @@ bool OS_GetAppStringRecursive(HKEY parent_key, const char *path,
             }
         }
 
+        if (!strcmp(current_key, "WOW6432Node")) {
+            return OS_GetAppStringRecursive(
+                parent_key,
+                path_tail,
+                out_string,
+                out_string_size,
+                KEY_WOW64_32KEY
+            );
+        }
+
         bool result = false;
         HKEY key;
-        if (!RegOpenKeyExA(parent_key, current_key, 0,
-                           KEY_READ | KEY_WOW64_32KEY, &key)) {
-            /*int idx = 0, r;
-            do {
-            char value_name[1024];
-            DWORD value_name_size = sizeof(value_name);
-            r = RegEnumValueA(key, idx++, value_name, &value_name_size, nullptr,
-            nullptr, nullptr, nullptr);
-            __debugbreak();
-            } while (r == ERROR_SUCCESS);*/
-
-            result = OS_GetAppStringRecursive(key, path_tail, out_string,
-                                              out_string_size);
+        if (!RegOpenKeyExA(
+                parent_key,
+                current_key,
+                0,
+                KEY_READ | flags,
+                &key
+            )
+        ) {
+            result = OS_GetAppStringRecursive(
+                key,
+                path_tail,
+                out_string,
+                out_string_size
+            );
             RegCloseKey(key);
         }
 
