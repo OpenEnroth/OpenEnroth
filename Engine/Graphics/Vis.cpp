@@ -587,8 +587,7 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart,
 }
 
 //----- (004C1D2B) --------------------------------------------------------
-bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint,
-                               signed int sModelID) {
+bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint, signed int sModelID) {
     int v5;          // esi@10
     bool v6;         // edi@10
     signed int v10;  // ebx@14
@@ -614,6 +613,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint,
         BLV_CreateIntersectFacesVertexCoordList(
             &a, &b, intersect_face_vertex_coords_list_a.data(),
             intersect_face_vertex_coords_list_b.data(), &IntersectPoint, pFace);
+
     v5 = 2 * pFace->uNumVertices;
     v16 = 0;
     intersect_face_vertex_coords_list_a[v5] =
@@ -634,18 +634,10 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint,
                 if (!v10) {
                     ++v16;
                 } else {
-                    int _v1 = fixpoint_div(
-                        intersect_face_vertex_coords_list_a[i + 1] -
-                            intersect_face_vertex_coords_list_a[i],
-                        intersect_face_vertex_coords_list_b[i + 1] -
-                            intersect_face_vertex_coords_list_b[i]);
-                    int _v2 =
-                        fixpoint_mul(b - intersect_face_vertex_coords_list_b[i],
-                                     _v1) +
-                        32768;
+                    float _v1 = ((intersect_face_vertex_coords_list_a[i + 1] - intersect_face_vertex_coords_list_a[i])) / (intersect_face_vertex_coords_list_b[i + 1] - intersect_face_vertex_coords_list_b[i]);
+                    int _v2 = (b - intersect_face_vertex_coords_list_b[i]) * _v1 + 0.5;
 
-                    if (intersect_face_vertex_coords_list_a[i] + (_v2 >> 16) >=
-                        a)
+                    if (intersect_face_vertex_coords_list_a[i] + (_v2) >= a)
                         ++v16;
                 }
             }
@@ -902,8 +894,8 @@ int UnprojectX(int x) {
     } else {
         v3 = pODMRenderParams->int_fov_rad;
     }
-    return stru_5C6E00->Atan2(x - pViewport->uScreenCenterX, v3) -
-           stru_5C6E00->uIntegerHalfPi;
+    return TrigLUT->Atan2(x - pViewport->uScreenCenterX, v3) -
+           TrigLUT->uIntegerHalfPi;
 }
 
 //----- (0046A0F6) --------------------------------------------------------
@@ -918,8 +910,8 @@ int UnprojectY(int y) {
     } else {
         v3 = pODMRenderParams->int_fov_rad;
     }
-    return stru_5C6E00->Atan2(y - pViewport->uScreenCenterY, v3) -
-           stru_5C6E00->uIntegerHalfPi;
+    return TrigLUT->Atan2(y - pViewport->uScreenCenterY, v3) -
+           TrigLUT->uIntegerHalfPi;
 }
 
 //----- (004C248E) --------------------------------------------------------
@@ -932,7 +924,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     int outz;  // [sp+94h] [bp-Ch]@1
     int outy;  // [sp+98h] [bp-8h]@1
 
-    pRotY = pIndoorCameraD3D->sRotationY + UnprojectX(fMouseX);
+    pRotY = pIndoorCameraD3D->sRotationZ + UnprojectX(fMouseX);
     pRotX = -pIndoorCameraD3D->sRotationX + UnprojectY(fMouseY);
 
     // log->Info("Roty: %d, Rotx: %d", pRotY, pRotX);
@@ -945,7 +937,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     v11[1].vWorldPosition.y = (double)pIndoorCameraD3D->vPartyPos.y;
     v11[1].vWorldPosition.z = (double)pIndoorCameraD3D->vPartyPos.z;
 
-    int depth = fixpoint_from_float(fPickDepth);
+    int depth = /*fixpoint_from_float*/(fPickDepth);
     Vec3_int_::Rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
 
     v11[0].vWorldPosition.x = (double)outx;

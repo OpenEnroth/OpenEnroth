@@ -180,7 +180,7 @@ void BLVRenderParams::Reset() {
     // this->vPartyPos.z = a2->vPosition.z;
     // v4 = this->vPartyPos.z;
     // v5 = this->vPartyPos.y;
-    // this->sPartyRotY = a2->sRotationY;
+    // this->sPartyRotY = a2->sRotationZ;
     // v6 = this->vPartyPos.x;
     // this->sPartyRotX = a2->sRotationX;
     int v7 = pIndoor->GetSector(pIndoorCameraD3D->vPartyPos.x,
@@ -394,18 +394,10 @@ void BLVFace::FromODM(ODMFace *face) {
     this->pFacePlane_old.vNormal.y = face->pFacePlane.vNormal.y;
     this->pFacePlane_old.vNormal.z = face->pFacePlane.vNormal.z;
     this->pFacePlane_old.dist = face->pFacePlane.dist;
-    this->pFacePlane.vNormal.x =
-        (double)(face->pFacePlane.vNormal.x & 0xFFFF) * 0.000015259022 +
-        (double)(face->pFacePlane.vNormal.x >> 16);
-    this->pFacePlane.vNormal.y =
-        (double)(face->pFacePlane.vNormal.y & 0xFFFF) * 0.000015259022 +
-        (double)(face->pFacePlane.vNormal.y >> 16);
-    this->pFacePlane.vNormal.z =
-        (double)(face->pFacePlane.vNormal.z & 0xFFFF) * 0.000015259022 +
-        (double)(face->pFacePlane.vNormal.z >> 16);
-    this->pFacePlane.dist =
-        (double)(face->pFacePlane.dist & 0xFFFF) * 0.000015259022 +
-        (double)(face->pFacePlane.dist >> 16);
+    this->pFacePlane.vNormal.x = (double)(face->pFacePlane.vNormal.x) / 65536.0;
+    this->pFacePlane.vNormal.y = (double)(face->pFacePlane.vNormal.y) / 65536.0;
+    this->pFacePlane.vNormal.z = (double)(face->pFacePlane.vNormal.z) / 65536.0;
+    this->pFacePlane.dist = (double)(face->pFacePlane.dist) / 65536.0;
     this->uAttributes = face->uAttributes;
     this->pBounding.x1 = face->pBoundingBox.x1;
     this->pBounding.y1 = face->pBoundingBox.y1;
@@ -547,7 +539,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                     {
                         face_texture = (Texture *)pFace->resource;
                         // auto v24 = GetTickCount() / 4;
-                        // auto v25 = v24 - stru_5C6E00->uIntegerHalfPi;
+                        // auto v25 = v24 - TrigLUT->uIntegerHalfPi;
                         uint eightSeconds = OS_GetTime() % 8000;
                         float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
 
@@ -555,7 +547,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                         for (uint i = 0; i < uNumVerticesa; ++i)
                             // array_507D30[i].v +=
                             // (double)(pBitmaps_LOD->pTextures[pFace->uBitmapID].uHeightMinus1
-                            // & (unsigned int)(stru_5C6E00->SinCos(v25) >> 8));
+                            // & (unsigned int)(TrigLUT->SinCos(v25) >> 8));
                             array_507D30[i].v +=
                                 (face_texture->GetHeight() - 1) * cosf(angle);
                     }
@@ -654,7 +646,9 @@ void IndoorLocation::Release() {
     free(this->pVertices);
     this->pVertices = NULL;
 
-    free(this->pFaces);
+    //  pfaces alloc by new during load
+    //  free(this->pFaces);
+    delete[] this->pFaces;
     this->pFaces = NULL;
 
     free(this->pFaceExtras);
@@ -681,18 +675,20 @@ void IndoorLocation::Release() {
 //----- (00498C45) --------------------------------------------------------
 bool IndoorLocation::Alloc() {
     pVertices = (Vec3_short_ *)malloc(15000 * sizeof(Vec3_short_));  // 0x15F90u
-    pFaces = (BLVFace *)malloc(10000 * sizeof(BLVFace));             // 0xEA600u
-    pFaceExtras =
-        (BLVFaceExtra *)malloc(5000 * sizeof(BLVFaceExtra));     // 0x2BF20u
+
+    //  pfaces alloc by new during load
+    //  pFaces = (BLVFace *)malloc(10000 * sizeof(BLVFace));             // 0xEA600u
+
+    pFaceExtras = (BLVFaceExtra *)malloc(5000 * sizeof(BLVFaceExtra));     // 0x2BF20u
     pSectors = (BLVSector *)malloc(512 * sizeof(BLVSector));     // 0xE800u
     pLights = (BLVLightMM7 *)malloc(400 * sizeof(BLVLightMM7));  // 0x1900u
     pDoors = (BLVDoor *)malloc(200 * sizeof(BLVDoor));           // 0x3E80u
     pNodes = (BSPNode *)malloc(5000 * sizeof(BSPNode));          // 0x9C40u
     pMapOutlines = (BLVMapOutlines *)malloc(sizeof(BLVMapOutlines));  // 0x14824u
-    if (pVertices && pFaces && pFaceExtras && pSectors && pLights && pDoors &&
+    if (pVertices /*&& pFaces*/ && pFaceExtras && pSectors && pLights && pDoors &&
         pNodes && pMapOutlines) {
         memset(pVertices, 0, 15000 * sizeof(Vec3_short_));
-        memset(pFaces, 0, 10000 * sizeof(BLVFace));
+        //  memset(pFaces, 0, 10000 * sizeof(BLVFace));
         memset(pFaceExtras, 0, 5000 * sizeof(BLVFaceExtra));
         memset(pSectors, 0, 512 * sizeof(BLVSector));
         memset(pLights, 0, 400 * sizeof(BLVLightMM7));
@@ -701,6 +697,7 @@ bool IndoorLocation::Alloc() {
         memset(pMapOutlines, 0, sizeof(BLVMapOutlines));
         return true;
     } else {
+        __debugbreak();
         return false;
     }
 }
@@ -1666,12 +1663,12 @@ void UpdateActors_BLV() {
                                       flt_6BE3AC_debug_recmod1_x_1_6);
             if (v6 > 1000) v6 = 1000;
             pActors[actor_id].vVelocity.x =
-                fixpoint_mul(stru_5C6E00->Cos(pActors[actor_id].uYawAngle), v6);
+                fixpoint_mul(TrigLUT->Cos(pActors[actor_id].uYawAngle), v6);
             pActors[actor_id].vVelocity.y =
-                fixpoint_mul(stru_5C6E00->Sin(pActors[actor_id].uYawAngle), v6);
+                fixpoint_mul(TrigLUT->Sin(pActors[actor_id].uYawAngle), v6);
             if (v62)
                 pActors[actor_id].vVelocity.z = fixpoint_mul(
-                    stru_5C6E00->Sin(pActors[actor_id].uPitchAngle), v6);
+                    TrigLUT->Sin(pActors[actor_id].uPitchAngle), v6);
         } else {  // actor is not moving(актор не двигается)
             pActors[actor_id].vVelocity.x =
                 fixpoint_mul(55000, pActors[actor_id].vVelocity.x);
@@ -1964,16 +1961,16 @@ void UpdateActors_BLV() {
                                             pActors[actor_id].vVelocity.x +
                                         pActors[actor_id].vVelocity.y *
                                             pActors[actor_id].vVelocity.y);
-                                    v45 = stru_5C6E00->Atan2(
+                                    v45 = TrigLUT->Atan2(
                                         pActors[actor_id].vPosition.x -
                                             pLevelDecorations[v37].vPosition.x,
                                         pActors[actor_id].vPosition.y -
                                             pLevelDecorations[v37].vPosition.y);
                                     pActors[actor_id].vVelocity.x =
-                                        fixpoint_mul(stru_5C6E00->Cos(v45),
+                                        fixpoint_mul(TrigLUT->Cos(v45),
                                                      _this);
                                     pActors[actor_id].vVelocity.y =
-                                        fixpoint_mul(stru_5C6E00->Sin(v45),
+                                        fixpoint_mul(TrigLUT->Sin(v45),
                                                      _this);
                                     pActors[actor_id].vVelocity.x =
                                         fixpoint_mul(
@@ -2105,7 +2102,7 @@ void UpdateActors_BLV() {
                                                             .vNormal.z);
                                             }
                                             pActors[actor_id]
-                                                .uYawAngle = stru_5C6E00->Atan2(
+                                                .uYawAngle = TrigLUT->Atan2(
                                                 pActors[actor_id].vVelocity.x,
                                                 pActors[actor_id].vVelocity.y);
                                         }
@@ -2368,7 +2365,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     this_.PrepareSprites(0);
     if (!bLoading) {
         pParty->sRotationX = 0;
-        pParty->sRotationY = 0;
+        pParty->sRotationZ = 0;
         pParty->vPosition.z = 0;
         pParty->vPosition.y = 0;
         pParty->vPosition.x = 0;
@@ -2546,12 +2543,12 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
         if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled)
             continue;
 
-        v4 = stru_5C6E00->Atan2(
+        v4 = TrigLUT->Atan2(
             pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
         v6 = ((signed int)(pActors[i].uYawAngle +
-                           ((signed int)stru_5C6E00->uIntegerPi >> 3) - v4 +
-                           stru_5C6E00->uIntegerPi) >>
+                           ((signed int)TrigLUT->uIntegerPi >> 3) - v4 +
+                           TrigLUT->uIntegerPi) >>
               8) &
              7;
         v8 = pActors[i].uCurrentActionTime;
@@ -2623,12 +2620,9 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
                         pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
 
-                        auto _v18_over_x =
-                            fixed::FromInt(
-                                floorf(pIndoorCameraD3D->fov_x + 0.5f)) /
-                            fixed::FromInt(view_x);
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v9->scale.GetFloat() * _v18_over_x.GetFloat();
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v9->scale.GetFloat() * _v18_over_x.GetFloat();
+                        float _v18_over_x = v9->scale * floorf(pIndoorCameraD3D->fov_x + 0.5f) / (view_x);
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =  _v18_over_x;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v18_over_x;
 
                         if (pActors[i].pActorBuffs[ACTOR_BUFF_MASS_DISTORTION].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = spell_fx_renderer->_4A806F_get_mass_distortion_value(&pActors[i]) *
@@ -2678,10 +2672,10 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     spell_fx_renderer->RenderAsSprite(&pSpriteObjects[i])) {
                     SpriteFrame *v4 = pSpriteObjects[i].GetSpriteFrame();
                     int a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
-                    v6 = stru_5C6E00->Atan2(pSpriteObjects[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
+                    v6 = TrigLUT->Atan2(pSpriteObjects[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
                                             pSpriteObjects[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
                     int v7 = pSpriteObjects[i].uFacing;
-                    int v9 = ((int)(stru_5C6E00->uIntegerPi + ((int)stru_5C6E00->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
+                    int v9 = ((int)(TrigLUT->uIntegerPi + ((int)TrigLUT->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
 
                     pBillboardRenderList[uNumBillboardsToDraw].hwsprite = v4->hw_sprites[v9];
                     // error catching
@@ -2691,7 +2685,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     // centre sprite on coords
                     int modz = pSpriteObjects[i].vPosition.z;
                     if (v4->uFlags & 0x20)
-                       modz -= (int)(fixpoint_mul(v4->scale._internal, v4->hw_sprites[v9]->uBufferHeight) / 2);
+                       modz -= (int)((v4->scale, v4->hw_sprites[v9]->uBufferHeight) / 2);
 
                     int16_t v34 = 0;
                     if (v4->uFlags & 2) v34 = 2;
@@ -2740,9 +2734,9 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =
-                                v4->scale.GetFloat() * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
+                                v4->scale * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                                v4->scale.GetFloat() * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
+                                v4->scale * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
                         }
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
@@ -2798,12 +2792,12 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     }
 
     v8 = pLevelDecorations[uDecorationID].field_10_y_rot +
-         ((signed int)stru_5C6E00->uIntegerPi >> 3) -
-         stru_5C6E00->Atan2(pLevelDecorations[uDecorationID].vPosition.x -
+         ((signed int)TrigLUT->uIntegerPi >> 3) -
+         TrigLUT->Atan2(pLevelDecorations[uDecorationID].vPosition.x -
                                 pIndoorCameraD3D->vPartyPos.x,
                             pLevelDecorations[uDecorationID].vPosition.y -
                                 pIndoorCameraD3D->vPartyPos.y);
-    v9 = ((signed int)(stru_5C6E00->uIntegerPi + v8) >> 8) & 7;
+    v9 = ((signed int)(TrigLUT->uIntegerPi + v8) >> 8) & 7;
     int v37 = pBLVRenderParams->field_0_timer_;
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalGameTimeElapsed;
     v10 = abs(pLevelDecorations[uDecorationID].vPosition.x +
@@ -2854,8 +2848,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                 pIndoorCameraD3D->fov_x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y =
                 pIndoorCameraD3D->fov_y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v11->scale.GetFloat() * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v11->scale.GetFloat() * (int)floorf(pIndoorCameraD3D->fov_y + 0.5f) / view_x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v11->scale * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v11->scale * (int)floorf(pIndoorCameraD3D->fov_y + 0.5f) / view_x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
                 pLevelDecorations[uDecorationID].vPosition.x;
@@ -2878,18 +2872,18 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     }
 }
 
-bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_From) {  // target xyz from position v - possible line of sight check? - true on clear
+bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_From) {  // target xyz from position v true on clear
     int dist_y;       // edi@2
     int dist_z;       // ebx@2
     int dist_x;       // esi@2
     int v9;           // ecx@2
     int v10;          // eax@2
-    int v12;          // eax@4
+    int rayznorm;          // eax@4
     int v17;          // ST34_4@25
     int v18;          // ST38_4@25
     int v19;          // eax@25
     char FaceIsParallel;         // zf@25
-    int v21;          // ebx@25
+    int dot_ray2;          // ebx@25
     int v23;          // edi@26
     int v24;          // ST34_4@30
     int v32;          // ecx@37
@@ -2921,39 +2915,39 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
 
     int v107;         // [sp+10h] [bp-6Ch]@98
     int v108;         // [sp+10h] [bp-6Ch]@104
-    int v109;         // [sp+18h] [bp-64h]@25
+    int dot_ray;         // [sp+18h] [bp-64h]@25
     int v110;         // [sp+18h] [bp-64h]@31
     // int LOS_Obscurred;         // [sp+20h] [bp-5Ch]@1
     // int LOS_Obscurred2;         // [sp+24h] [bp-58h]@1
     int Min_x;         // [sp+34h] [bp-48h]@75
     int v120;         // [sp+34h] [bp-48h]@113
-    int v121;         // [sp+38h] [bp-44h]@4
+    int rayynorm;         // [sp+38h] [bp-44h]@4
     int v122;         // [sp+38h] [bp-44h]@39
     int Max_x;         // [sp+38h] [bp-44h]@76
     int v124;         // [sp+38h] [bp-44h]@114
-    int v125;         // [sp+3Ch] [bp-40h]@4
+    int rayxnorm;         // [sp+3Ch] [bp-40h]@4
     int v126;         // [sp+3Ch] [bp-40h]@39
     int Min_y;         // [sp+3Ch] [bp-40h]@77
     int v128;         // [sp+3Ch] [bp-40h]@115
-    int v129;         // [sp+40h] [bp-3Ch]@11
+    int zmax;         // [sp+40h] [bp-3Ch]@11
     int v130;         // [sp+40h] [bp-3Ch]@46
     int Max_y;         // [sp+40h] [bp-3Ch]@78
     int v132;         // [sp+40h] [bp-3Ch]@116
-    int v133;         // [sp+44h] [bp-38h]@10
+    int zmin;         // [sp+44h] [bp-38h]@10
     int v134;         // [sp+44h] [bp-38h]@45
     int Min_z;         // [sp+44h] [bp-38h]@81
     int v136;         // [sp+44h] [bp-38h]@119
-    int v137;         // [sp+48h] [bp-34h]@7
+    int ymax;         // [sp+48h] [bp-34h]@7
     int v138;         // [sp+48h] [bp-34h]@42
     int Max_z;         // [sp+48h] [bp-34h]@82
     int v140;         // [sp+48h] [bp-34h]@120
-    int v141;         // [sp+4Ch] [bp-30h]@6
+    int ymin;         // [sp+4Ch] [bp-30h]@6
     int v142;         // [sp+4Ch] [bp-30h]@41
     int X_VecDist;         // [sp+4Ch] [bp-30h]@75
     int v144;         // [sp+4Ch] [bp-30h]@113
-    int v145;         // [sp+50h] [bp-2Ch]@5
+    int xmax;         // [sp+50h] [bp-2Ch]@5
     int v146;         // [sp+50h] [bp-2Ch]@40
-    int v149;         // [sp+54h] [bp-28h]@4
+    int xmin;         // [sp+54h] [bp-28h]@4
     int v150;         // [sp+54h] [bp-28h]@39
     // int FaceLoop;      // [sp+58h] [bp-24h]@90
     // int TargetFromFlip;          // [sp+5Ch] [bp-20h]@83
@@ -2982,7 +2976,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
      // __debugbreak(); // срабатывает при стрельбе огненным шаром
     // triggered by fireball
 
-     unsigned int AngleToTarget = stru_5C6E00->Atan2(Pos_From.x - target_x, Pos_From.y - target_y);
+     unsigned int AngleToTarget = TrigLUT->Atan2(Pos_From.x - target_x, Pos_From.y - target_y);
 
     bool LOS_Obscurred = 0;
     bool LOS_Obscurred2 = 0;
@@ -2994,8 +2988,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         // offset 32 to side and check LOS
-        Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -3083,8 +3077,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
         }
 
         // offset other side and repeat check
-        Vec3_int_::Rotate(32, AngleToTarget - stru_5C6E00->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, AngleToTarget - stru_5C6E00->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -3175,83 +3169,93 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
     // outdooor
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         // offset 32 to side and check LOS
-        Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, stru_5C6E00->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
+
         v9 = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
         v10 = 65536;
         if (v9) v10 = 65536 / v9;
-        v125 = dist_x * v10;
-        v12 = dist_z * v10;
-        v121 = dist_y * v10;
 
-        v145 = std::max(ShiftedFromX, ShiftedTargetX);
-        v149 = std::min(ShiftedFromX, ShiftedTargetX);
+        // normalising
+        rayxnorm = dist_x * v10;
+        rayznorm = dist_z * v10;
+        rayynorm = dist_y * v10;
 
-        v137 = std::max(ShiftedFromY, ShiftedTargetY);
-        v141 = std::min(ShiftedFromY, ShiftedTargetY);
+        xmax = std::max(ShiftedFromX, ShiftedTargetX);
+        xmin = std::min(ShiftedFromX, ShiftedTargetX);
 
-        v129 = std::max(ShiftedFromz, ShiftedTargetZ);
-        v133 = std::min(ShiftedFromz, ShiftedTargetZ);
+        ymax = std::max(ShiftedFromY, ShiftedTargetY);
+        ymin = std::min(ShiftedFromY, ShiftedTargetY);
+
+        zmax = std::max(ShiftedFromz, ShiftedTargetZ);
+        zmin = std::min(ShiftedFromz, ShiftedTargetZ);
 
         for (BSPModel &model : pOutdoor->pBModels) {
-            if (sub_4088E9(ShiftedTargetX, ShiftedTargetY, ShiftedFromX, ShiftedFromY, model.vPosition.x,
-                           model.vPosition.y) <= model.sBoundingRadius + 128) {
+            if (CalcDistPointToLine(ShiftedTargetX, ShiftedTargetY, ShiftedFromX, ShiftedFromY, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
                 for (ODMFace &face : model.pFaces) {
-                    v17 = fixpoint_mul(v125, face.pFacePlane.vNormal.x);
-                    v18 = fixpoint_mul(v121, face.pFacePlane.vNormal.y);
-                    v19 = fixpoint_mul(v12, face.pFacePlane.vNormal.z);
-                    FaceIsParallel = v17 + v18 + v19 == 0;
-                    v21 = v17 + v18 + v19;
-                    v109 = v17 + v18 + v19;
-                    if (v149 > face.pBoundingBox.x2 ||
-                        v145 < face.pBoundingBox.x1 ||
-                        v141 > face.pBoundingBox.y2 ||
-                        v137 < face.pBoundingBox.y1 ||
-                        v133 > face.pBoundingBox.z2 ||
-                        v129 < face.pBoundingBox.z1 || FaceIsParallel)
+                    v17 = fixpoint_mul(rayxnorm, face.pFacePlane.vNormal.x);
+                    v18 = fixpoint_mul(rayynorm, face.pFacePlane.vNormal.y);
+                    v19 = fixpoint_mul(rayznorm, face.pFacePlane.vNormal.z);
+
+                    FaceIsParallel = v17 + v18 + v19 == 0;  // dot product implies face normal is perpendicular - face is parallel to LOS
+
+                    dot_ray2 = v17 + v18 + v19;
+                    dot_ray = v17 + v18 + v19;
+
+                    // bounds check
+                    if (xmin > face.pBoundingBox.x2 ||
+                        xmax < face.pBoundingBox.x1 ||
+                        ymin > face.pBoundingBox.y2 ||
+                        ymax < face.pBoundingBox.y1 ||
+                        zmin > face.pBoundingBox.z2 ||
+                        zmax < face.pBoundingBox.z1 || FaceIsParallel)
                         continue;
+
+                    // point to plane distacne
                     v23 = -(face.pFacePlane.dist +
                             ShiftedTargetX * face.pFacePlane.vNormal.x +
                             ShiftedTargetY * face.pFacePlane.vNormal.y +
                             ShiftedTargetZ * face.pFacePlane.vNormal.z);
-                    if (v21 <= 0) {
+
+                    // are we on same side of plane
+                    if (dot_ray2 <= 0) {
+                        // angle obtuse - is target underneath plane
                         if (face.pFacePlane.dist +
                                 ShiftedTargetX * face.pFacePlane.vNormal.x +
                                 ShiftedTargetY * face.pFacePlane.vNormal.y +
                                 ShiftedTargetZ * face.pFacePlane.vNormal.z <
                             0)
-                            continue;
+                            continue;  // can never hit
                     } else {
+                        // angle acute - is target above plane
                         if (face.pFacePlane.dist +
                                 ShiftedTargetX * face.pFacePlane.vNormal.x +
                                 ShiftedTargetY * face.pFacePlane.vNormal.y +
                                 ShiftedTargetZ * face.pFacePlane.vNormal.z >
                             0)
-                            continue;
+                            continue;  // can never hit
                     }
+
                     v24 = abs(-(face.pFacePlane.dist +
                                 ShiftedTargetX * face.pFacePlane.vNormal.x +
                                 ShiftedTargetY * face.pFacePlane.vNormal.y +
                                 ShiftedTargetZ * face.pFacePlane.vNormal.z)) >>
                           14;
-                    if (v24 <= abs(v21)) {
-                        v110 = fixpoint_div(v23, v109);
+
+                    // maybe some sort of epsilon check?
+                    if (v24 <= abs(dot_ray2)) {
+                        // calc how far along line interesction is
+                        v110 = fixpoint_div(v23, dot_ray);
+
+                        // less than zero means intersection is behind target point
                         if (v110 >= 0) {
                             if (PointInPolyOutdoor(
-                                    ShiftedTargetX +
-                                        ((signed int)(fixpoint_mul(v110, v125) +
-                                                      0x8000) >>
-                                         16),
-                                    ShiftedTargetY +
-                                        ((signed int)(fixpoint_mul(v110, v121) +
-                                                      0x8000) >>
-                                         16),
-                                    ShiftedTargetZ + ((signed int)(fixpoint_mul(v110, v12) +
-                                                       0x8000) >>
-                                          16),
+                                    ShiftedTargetX + ((signed int)(fixpoint_mul(v110, rayxnorm) + 0x8000) >> 16),
+                                    ShiftedTargetY + ((signed int)(fixpoint_mul(v110, rayynorm) + 0x8000) >> 16),
+                                    ShiftedTargetZ + ((signed int)(fixpoint_mul(v110, rayznorm) + 0x8000) >> 16),
                                     &face, &model.pVertices)) {
                                 LOS_Obscurred2 = 1;
                                 break;
@@ -3263,8 +3267,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
         }
 
         // offset 32 to other side and check LOS
-        Vec3_int_::Rotate(32, AngleToTarget - stru_5C6E00->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, AngleToTarget - stru_5C6E00->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -3285,7 +3289,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
         v134 = std::min(ShiftedFromz, ShiftedTargetZ);
 
         for (BSPModel &model : pOutdoor->pBModels) {
-            if (sub_4088E9(ShiftedTargetX, ShiftedTargetY, ShiftedFromX, ShiftedFromY, model.vPosition.x,
+            if (CalcDistPointToLine(ShiftedTargetX, ShiftedTargetY, ShiftedFromX, ShiftedFromY, model.vPosition.x,
                            model.vPosition.y) <= model.sBoundingRadius + 128) {
                 for (ODMFace &face : model.pFaces) {
                     ya = fixpoint_mul(v126, face.pFacePlane.vNormal.x);
@@ -3612,13 +3616,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         on_water = true;
 
     // v81 = pParty->uWalkSpeed;
-    angle = pParty->sRotationY;
+    angle = pParty->sRotationZ;
     _view_angle = pParty->sRotationX;
     v82 =
         (unsigned __int64)(pEventTimer->dt_in_some_format *
                            (signed __int64)((signed int)(pParty
                                                              ->y_rotation_speed *
-                                                         stru_5C6E00
+                                                         TrigLUT
                                                              ->uIntegerPi) /
                                             180)) >>
         16;
@@ -3626,59 +3630,59 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
                 if (engine->config->turn_speed > 0)
-                    angle = stru_5C6E00->uDoublePiMask & (angle + engine->config->turn_speed);
+                    angle = TrigLUT->uDoublePiMask & (angle + engine->config->turn_speed);
                 else
-                    angle = stru_5C6E00->uDoublePiMask & (angle + (int)(v82 * fTurnSpeedMultiplier));
+                    angle = TrigLUT->uDoublePiMask & (angle + (int)(v82 * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
                 if (engine->config->turn_speed > 0)
-                    angle = stru_5C6E00->uDoublePiMask & (angle - engine->config->turn_speed);
+                    angle = TrigLUT->uDoublePiMask & (angle - engine->config->turn_speed);
                 else
-                    angle = stru_5C6E00->uDoublePiMask & (angle - (int)(v82 * fTurnSpeedMultiplier));
+                    angle = TrigLUT->uDoublePiMask & (angle - (int)(v82 * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
                 if (engine->config->turn_speed > 0)
-                    angle = stru_5C6E00->uDoublePiMask & (angle + engine->config->turn_speed);
+                    angle = TrigLUT->uDoublePiMask & (angle + engine->config->turn_speed);
                 else
-                    angle = stru_5C6E00->uDoublePiMask & (angle + (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
+                    angle = TrigLUT->uDoublePiMask & (angle + (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
                 break;
 
             case PARTY_FastTurnRight:
                 if (engine->config->turn_speed > 0)
-                    angle = stru_5C6E00->uDoublePiMask & (angle - engine->config->turn_speed);
+                    angle = TrigLUT->uDoublePiMask & (angle - engine->config->turn_speed);
                 else
-                    angle = stru_5C6E00->uDoublePiMask & (angle - (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
+                    angle = TrigLUT->uDoublePiMask & (angle - (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
                 break;
 
             case PARTY_StrafeLeft:
-                v2 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-                v1 += fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                v2 -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                v1 += fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
                 party_walking_flag = true;
                 break;
             case PARTY_StrafeRight:
-                v2 += fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-                v1 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                v2 += fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                v1 -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
                 party_walking_flag = true;
                 break;
             case PARTY_WalkForward:
-                v2 += fixpoint_mul(stru_5C6E00->Cos(angle), /*2 **/ pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                v1 += fixpoint_mul(stru_5C6E00->Sin(angle), /*2 **/ pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v2 += fixpoint_mul(TrigLUT->Cos(angle), /*2 **/ pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v1 += fixpoint_mul(TrigLUT->Sin(angle), /*2 **/ pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_walking_flag = true;
                 break;
             case PARTY_WalkBackward:
-                v2 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-                v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                v2 -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                v1 -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
                 party_walking_flag = true;
                 break;
             case PARTY_RunForward:  //Бег вперёд
-                v2 += fixpoint_mul(stru_5C6E00->Cos(angle), /*5*/2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                v1 += fixpoint_mul(stru_5C6E00->Sin(angle), /*5*/2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v2 += fixpoint_mul(TrigLUT->Cos(angle), /*5*/2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                v1 += fixpoint_mul(TrigLUT->Sin(angle), /*5*/2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_running_flag = true;
                 break;
             case PARTY_RunBackward:
-                v2 -= fixpoint_mul(stru_5C6E00->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-                v1 -= fixpoint_mul(stru_5C6E00->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                v2 -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                v1 -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
                 party_running_flag = true;
                 break;
             case PARTY_LookDown:
@@ -3710,7 +3714,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
         }
     }
-    pParty->sRotationY = angle;
+    pParty->sRotationZ = angle;
     pParty->sRotationX = _view_angle;
     if (hovering) {  // парящие
         pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed *
@@ -3820,14 +3824,14 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         } else if (PID_TYPE(_actor_collision_struct.pid) ==
                    OBJECT_Decoration) {  // decoration collision   /   при
                                          // столкновении с декорацией
-            v54 = stru_5C6E00->Atan2(
+            v54 = TrigLUT->Atan2(
                 new_party_x -
                     pLevelDecorations[_actor_collision_struct.pid >> 3].vPosition.x,
                 new_party_y -
                     pLevelDecorations[_actor_collision_struct.pid >> 3].vPosition.y);
-            v2 = fixpoint_mul(stru_5C6E00->Cos(v54),
+            v2 = fixpoint_mul(TrigLUT->Cos(v54),
                               integer_sqrt(v2 * v2 + v1 * v1));
-            v1 = fixpoint_mul(stru_5C6E00->Sin(v54),
+            v1 = fixpoint_mul(TrigLUT->Sin(v54),
                               integer_sqrt(v2 * v2 + v1 * v1));
         } else if (PID_TYPE(_actor_collision_struct.pid) ==
                    OBJECT_BModel) {  // при столкновении с bmodel
@@ -4050,13 +4054,17 @@ void Door_switch_animation(unsigned int uDoorID, int a2) {
 }
 
 //----- (004088E9) --------------------------------------------------------
-int sub_4088E9(int x1, int y1, int x2, int y2, int x3, int y3) {
-    signed int result;  // eax@1
+int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
+    // calculates distance from point x3y3 to line x1y1->x2y2
 
-    result =
-        integer_sqrt(abs(x2 - x1) * abs(x2 - x1) + abs(y2 - y1) * abs(y2 - y1));
+    signed int result;
+    // calc line length
+    result = integer_sqrt(abs(x2 - x1) * abs(x2 - x1) + abs(y2 - y1) * abs(y2 - y1));
+
+    // orthogonal projection from line to point
     if (result)
         result = abs(((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / result);
+
     return result;
 }
 
@@ -4093,7 +4101,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         for (loop_cnt; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
             dist_from_party = rand() % 1024 + 512;
-            angle_from_party = ((rand() % (signed int)stru_5C6E00->uIntegerDoublePi) * 2 * pi) / stru_5C6E00->uIntegerDoublePi;
+            angle_from_party = ((rand() % (signed int)TrigLUT->uIntegerDoublePi) * 2 * pi) / TrigLUT->uIntegerDoublePi;
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;
@@ -4131,7 +4139,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         for (loop_cnt = 0; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
             dist_from_party = rand() % 512 + 256;
-            angle_from_party = ((rand() % (signed int)stru_5C6E00->uIntegerDoublePi) * 2 * pi) / stru_5C6E00->uIntegerDoublePi;
+            angle_from_party = ((rand() % (signed int)TrigLUT->uIntegerDoublePi) * 2 * pi) / TrigLUT->uIntegerDoublePi;
             enc_spawn_point.vPosition.x = pParty->vPosition.x + cos(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.y = pParty->vPosition.y + sin(angle_from_party) * dist_from_party;
             enc_spawn_point.vPosition.z = pParty->vPosition.z;

@@ -16,7 +16,7 @@
 #include "MapInfo.h"
 #include "OurMath.h"
 
-struct stru193_math *stru_5C6E00 = new stru193_math;
+struct TrigTableLookup* TrigLUT = new TrigTableLookup;
 struct MapStats *pMapStats;
 struct Viewport *pViewport = new Viewport;
 struct ViewingParams *viewparams = new ViewingParams;
@@ -27,6 +27,7 @@ std::array<Award, 105> pAwards;
 std::array<AwardType, 1000> achieved_awards;
 int num_achieved_awards;
 int full_num_items_in_book;
+
 std::array<stru160, 66> array_4EB8B8 = {  // vertices for spheres
     {stru160(0.0000000f, 0.0000000f, 1.0000000f),
      stru160(0.0000000f, 0.3826830f, 0.9238799f),

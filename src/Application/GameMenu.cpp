@@ -351,7 +351,7 @@ void Menu::EventLoop() {
             }
             case UIMSG_SetTurnSpeed:
                 if (param)
-                    pParty->sRotationY = param * pParty->sRotationY / param;
+                    pParty->sRotationZ = param * pParty->sRotationZ / param;
                 engine->SetTurnSpeed(param);
                 continue;
 

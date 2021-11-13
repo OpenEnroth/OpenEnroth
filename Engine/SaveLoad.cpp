@@ -232,7 +232,7 @@ void LoadGame(unsigned int uSlot) {
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
     // pAudioPlayer->SetMasterVolume(engine->config->sound_level);
     if (engine->config->turn_speed > 0) {
-        pParty->sRotationY = engine->config->turn_speed * pParty->sRotationY / engine->config->turn_speed;
+        pParty->sRotationZ = engine->config->turn_speed * pParty->sRotationZ / engine->config->turn_speed;
     }
     MM7Initialization();
     bFlashQuestBook = false;
@@ -250,7 +250,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     int pPositionX = pParty->vPosition.x;
     int pPositionY = pParty->vPosition.y;
     int pPositionZ = pParty->vPosition.z;
-    int sPRotationY = pParty->sRotationY;
+    int sPRotationY = pParty->sRotationZ;
     int sPRotationX = pParty->sRotationX;
     pParty->vPosition.x = pParty->vPrevPosition.x;
     pParty->vPosition.z = pParty->vPrevPosition.z;
@@ -258,7 +258,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
     pParty->uFallStartY = pParty->vPrevPosition.z;
 
-    pParty->sRotationY = pParty->sPrevRotationY;
+    pParty->sRotationZ = pParty->sPrevRotationY;
     pParty->sRotationX = pParty->sPrevRotationX;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         pIndoor->stru1.last_visit = pParty->GetPlayingTime();
@@ -528,7 +528,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->vPosition.y = pPositionY;
     pParty->vPosition.z = pPositionZ;
     pParty->uFallStartY = pPositionZ;
-    pParty->sRotationY = sPRotationY;
+    pParty->sRotationZ = sPRotationY;
     pParty->sRotationX = sPRotationX;
 }
 
@@ -635,7 +635,7 @@ void SaveNewGame() {
         pParty->sPrevRotationY = 512;
 
         pParty->sRotationX = 0;
-        pParty->sRotationY = 512;
+        pParty->sRotationZ = 512;
 
         SaveGame(1, 1);
     }

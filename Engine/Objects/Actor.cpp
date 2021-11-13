@@ -346,8 +346,8 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     pitch = 0;
                 } else {
                     v31 = (signed __int64)sqrt((float)(v119 + v120));
-                    v32 = stru_5C6E00->Atan2(spellnumb, (int)v28);
-                    pitch = stru_5C6E00->Atan2(v31, (int)spellnumc);
+                    v32 = TrigLUT->Atan2(spellnumb, (int)v28);
+                    pitch = TrigLUT->Atan2(v31, (int)spellnumc);
                 }
                 a1.containing_item.Reset();
                 a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
@@ -399,9 +399,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 v10 = 9;
             else
                 v10 = 3;
-            spellnuma = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+            spellnuma = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360;
             a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-            v118 = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360 /
+            v118 = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360 /
                    (v10 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
 
@@ -634,9 +634,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             else
                 v70 = 3;
 
-            spellnume = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+            spellnume = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360;
             a1.uType = spell_sprite_mapping[uSpellID].uSpriteType;
-            v116 = (signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360 /
+            v116 = (signed int)(60 * TrigLUT->uIntegerDoublePi) / 360 /
                    (v70 - 1);
             a1.uObjectDescID = GetObjDescId(uSpellID);
             a1.containing_item.Reset();
@@ -933,7 +933,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 break;
             }
             if (v4 == 4) {
-                v18 = pParty->sRotationY - stru_5C6E00->uIntegerHalfPi;
+                v18 = pParty->sRotationZ - TrigLUT->uIntegerHalfPi;
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
@@ -942,7 +942,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 break;
             }
             if (v4 == 3) {
-                v18 = pParty->sRotationY - stru_5C6E00->uIntegerHalfPi;
+                v18 = pParty->sRotationZ - TrigLUT->uIntegerHalfPi;
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
@@ -953,7 +953,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             if (v4 == 2) {
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                v18 = stru_5C6E00->uIntegerHalfPi + pParty->sRotationY;
+                v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
                 Vec3_int_::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
@@ -962,7 +962,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
             if (v4 == 1) {
                 v37.z =
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
-                v18 = stru_5C6E00->uIntegerHalfPi + pParty->sRotationY;
+                v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
                 Vec3_int_::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
@@ -1066,9 +1066,9 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         pOut->uDistance = (uint)v33;
         pOut->uDistanceXZ = (uint)sqrt(outy2 + outx2);
         pOut->uYawAngle =
-            stru_5C6E00->Atan2((signed __int64)v31, (signed __int64)v32);
+            TrigLUT->Atan2((signed __int64)v31, (signed __int64)v32);
         pOut->uPitchAngle =
-            stru_5C6E00->Atan2(pOut->uDistanceXZ, (signed __int64)a4a);
+            TrigLUT->Atan2(pOut->uDistanceXZ, (signed __int64)a4a);
     }
 }
 
@@ -1730,7 +1730,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
         return;
     }
     absx += ((rand() & 0xF) * radius) / 16;
-    v9 = (stru_5C6E00->uIntegerDoublePi - 1) & stru_5C6E00->Atan2(x, y);
+    v9 = (TrigLUT->uIntegerDoublePi - 1) & TrigLUT->Atan2(x, y);
     if (rand() % 100 < 25) {
         Actor::StandAwhile(uActor_id);
         return;
@@ -1871,10 +1871,10 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
         8 * pSpriteFrameTable->pSpriteSFrames[actor->pSpriteIDs[ANIM_Bored]]
                 .uAnimLength;
 
-    v7 = stru_5C6E00->Atan2(actor->vPosition.x - pIndoorCameraD3D->vPartyPos.x,
+    v7 = TrigLUT->Atan2(actor->vPosition.x - pIndoorCameraD3D->vPartyPos.x,
                             actor->vPosition.y - pIndoorCameraD3D->vPartyPos.y);
-    v9 = stru_5C6E00->uIntegerPi + actor->uYawAngle +
-         ((signed int)stru_5C6E00->uIntegerPi >> 3) - v7;
+    v9 = TrigLUT->uIntegerPi + actor->uYawAngle +
+         ((signed int)TrigLUT->uIntegerPi >> 3) - v7;
 
     if (v9 & 0x700) {  // turned away - just stand
         Actor::AI_Stand(uActorID, uObjID, actor->uCurrentActionLength, a4);
@@ -1963,7 +1963,7 @@ void Actor::Die(unsigned int uActorID) {
     }
 
     if (rand() % 100 < 20 && drop.uItemID != 0) {
-        SpriteObject::sub_42F7EB_DropItemAt(
+        SpriteObject::Drop_Item_At(
             (SPRITE_OBJECT_TYPE)pItemsTable->pItems[drop.uItemID].uSpriteID,
             actor->vPosition.x, actor->vPosition.y, actor->vPosition.z + 16,
             rand() % 200 + 200, 1, 1, 0, &drop);
@@ -2050,17 +2050,9 @@ void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
     else
         v18 = 16;
 
-    v7->uYawAngle = stru_5C6E00->Atan2(
-        pParty->vPosition.x +
-            (int)fixpoint_mul(stru_5C6E00->Cos(v18 + stru_5C6E00->uIntegerPi +
-                                               v10->uYawAngle),
-                              v10->uDistanceXZ) -
-            v7->vPosition.x,
-        pParty->vPosition.y +
-            (int)fixpoint_mul(stru_5C6E00->Sin(v18 + stru_5C6E00->uIntegerPi +
-                                               v10->uYawAngle),
-                              v10->uDistanceXZ) -
-            v7->vPosition.y);
+    v7->uYawAngle = TrigLUT->Atan2(
+        pParty->vPosition.x + (int)fixpoint_mul(TrigLUT->Cos(v18 + TrigLUT->uIntegerPi + v10->uYawAngle), v10->uDistanceXZ) - v7->vPosition.x,
+        pParty->vPosition.y + (int)fixpoint_mul(TrigLUT->Sin(v18 + TrigLUT->uIntegerPi + v10->uYawAngle), v10->uDistanceXZ) - v7->vPosition.y);
     if (uActionLength)
         v7->uCurrentActionLength = uActionLength;
     else
@@ -2102,10 +2094,10 @@ void Actor::AI_Flee(unsigned int uActorID, signed int sTargetPid,
                 v5->uCurrentActionLength = 0;
             if (v5->uCurrentActionLength > 256) v5->uCurrentActionLength = 256;
             v5->uYawAngle =
-                (short)stru_5C6E00->uIntegerHalfPi + (short)a4->uYawAngle;
+                (short)TrigLUT->uIntegerHalfPi + (short)a4->uYawAngle;
             v5->uYawAngle =
-                (short)stru_5C6E00->uDoublePiMask &
-                (v5->uYawAngle + rand() % (signed int)stru_5C6E00->uIntegerPi);
+                (short)TrigLUT->uDoublePiMask &
+                (v5->uYawAngle + rand() % (signed int)TrigLUT->uIntegerPi);
             v5->uCurrentActionTime = 0;
             v5->uPitchAngle = (short)a4->uPitchAngle;
             v5->uAIState = Fleeing;
@@ -2283,7 +2275,7 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
         v27 = abs(thisActor->vPosition.y - actor->vPosition.y);
         v12 = abs(thisActor->vPosition.z - actor->vPosition.z);
         if (v23 <= v11 && v27 <= v11 && v12 <= v11 &&
-            sub_4070EF_prolly_detect_player(PID(OBJECT_Actor, i),
+            Detect_Between_Objects(PID(OBJECT_Actor, i),
                                             PID(OBJECT_Actor, uActorID)) &&
             v23 * v23 + v27 * v27 + v12 * v12 < lowestRadius) {
             lowestRadius = v23 * v23 + v27 * v27 + v12 * v12;
@@ -2636,8 +2628,8 @@ void Actor::SummonMinion(int summonerId) {
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
     v13 = rand() % 2048;
-    v15 = fixpoint_mul(stru_5C6E00->Cos(v13), v27) + this->vPosition.x;
-    v17 = fixpoint_mul(stru_5C6E00->Sin(v13), v27) + this->vPosition.y;
+    v15 = fixpoint_mul(TrigLUT->Cos(v13), v27) + this->vPosition.x;
+    v17 = fixpoint_mul(TrigLUT->Sin(v13), v27) + this->vPosition.y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
@@ -2791,8 +2783,8 @@ void Actor::UpdateActorAI() {
         if (pParty->armageddon_timer > 417) {
             pParty->armageddon_timer = 0;
         } else {
-            pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) &
-                                 (pParty->sRotationY + rand() % 16 - 8);
+            pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) &
+                                 (pParty->sRotationZ + rand() % 16 - 8);
             pParty->sRotationX = pParty->sRotationX + rand() % 16 - 8;
             if (pParty->sRotationX > 128)
                 pParty->sRotationX = 128;
@@ -4074,7 +4066,7 @@ void Actor::LootActor() {
     bool itemFound;      // [sp+30h] [bp-8h]@1
     int v14;             // [sp+34h] [bp-4h]@1
 
-    pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+    pParty->PickedItem_PlaceInInventory_or_Drop();
     Dst.Reset();
     v2 = 0;
     itemFound = false;
@@ -4119,14 +4111,14 @@ void Actor::LootActor() {
         this->uCarriedItemID = 0;
         if (this->ActorHasItems[0].uItemID) {
             if (!pParty->AddItemToParty(this->ActorHasItems)) {
-                pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+                pParty->PickedItem_PlaceInInventory_or_Drop();
                 pParty->SetHoldingItem(this->ActorHasItems);
             }
             this->ActorHasItems[0].Reset();
         }
         if (this->ActorHasItems[1].uItemID) {
             if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
-                pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+                pParty->PickedItem_PlaceInInventory_or_Drop();
                 pParty->SetHoldingItem(&this->ActorHasItems[1]);
             }
             this->ActorHasItems[1].Reset();
@@ -4173,7 +4165,7 @@ void Actor::LootActor() {
     }
     if (this->ActorHasItems[0].uItemID) {
         if (!pParty->AddItemToParty(this->ActorHasItems)) {
-            pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+            pParty->PickedItem_PlaceInInventory_or_Drop();
             pParty->SetHoldingItem(this->ActorHasItems);
             itemFound = true;
         }
@@ -4181,7 +4173,7 @@ void Actor::LootActor() {
     }
     if (this->ActorHasItems[1].uItemID) {
         if (!pParty->AddItemToParty(&this->ActorHasItems[1])) {
-            pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+            pParty->PickedItem_PlaceInInventory_or_Drop();
             pParty->SetHoldingItem(&this->ActorHasItems[1]);
             itemFound = true;
         }
@@ -4628,8 +4620,8 @@ int Actor::MakeActorAIList_BLV() {
     v19 = 0;
     for (i = 0; i < v45; i++) {
         if (pActors[ai_near_actors_ids[i]].ActorNearby() ||
-            sub_4070EF_prolly_detect_player(
-                PID(OBJECT_Actor, ai_near_actors_ids[i]), 4)) {
+            Detect_Between_Objects(
+                PID(OBJECT_Actor, ai_near_actors_ids[i]), OBJECT_Player)) {
             pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_NEARBY;
             ai_array_4F6638_actor_ids[v19] = ai_near_actors_ids[i];
             ai_array_4F5E68[v19++] = ai_near_actors_distances[i];
@@ -4688,211 +4680,166 @@ int Actor::MakeActorAIList_BLV() {
 }
 
 //----- (004070EF) --------------------------------------------------------
-bool sub_4070EF_prolly_detect_player(unsigned int uObjID,
-                                     unsigned int uObj2ID) {
-    signed int v2;               // eax@1
-    int obj1_sector;             // eax@4
-    float v8;                    // ST24_4@5
-    signed int v12;              // eax@7
-    int obj2_z;                  // edi@11
-    int obj2_x;                  // esi@11
-    int obj2_sector;             // eax@13
-    float v20;                   // ST24_4@14
-    int dist_x;                  // ebx@16
-    signed int dist_3d;          // ecx@16
-    int v25;                     // eax@18
-    BLVFace *v29;                // ebx@32
-    Vec3_short_ *v30;            // esi@32
-    int v31;                     // eax@32
-    int v32;                     // ST50_4@44
-    int v33;                     // ST54_4@44
-    int v34;                     // eax@44
-    int v38;              // esi@45
-    __int16 next_sector;         // bx@58
-    int v47;                     // [sp+18h] [bp-50h]@20
-    int v48;                     // [sp+1Ch] [bp-4Ch]@20
-    int v49;                     // [sp+20h] [bp-48h]@20
-    int dist_z;                  // [sp+24h] [bp-44h]@16
-    int higher_z;         // [sp+24h] [bp-44h]@27
-    int lower_z;          // [sp+28h] [bp-40h]@26
-    int higher_y;         // [sp+2Ch] [bp-3Ch]@23
-    int lower_y;          // [sp+30h] [bp-38h]@22
-    int higher_x;         // [sp+34h] [bp-34h]@21
-    int lower_x;          // [sp+38h] [bp-30h]@20
-    int sectors_visited;  // [sp+3Ch] [bp-2Ch]@28
-    int v58;                     // [sp+44h] [bp-24h]@50
-    int v59;                     // [sp+48h] [bp-20h]@44
-    int obj2_y;                  // [sp+50h] [bp-18h]@11
-    int obj1_x;                  // [sp+58h] [bp-10h]@4
-    int obj1_y;                  // [sp+5Ch] [bp-Ch]@4
-    int obj1_z;                  // [sp+60h] [bp-8h]@4
-    int current_sector;          // [sp+64h] [bp-4h]@7
-    int dist_y;
-    int v70;
+bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
+    // get object 1 info
+    int obj1_pid = PID_ID(uObjID);
+    int obj1_x, obj1_y, obj1_z, eyeheight;
+    int obj1_sector;
 
-    v2 = PID_ID(uObjID);
     switch (PID_TYPE(uObjID)) {
         case OBJECT_Decoration:
-            obj1_x = pLevelDecorations[v2].vPosition.x;
-            obj1_y = pLevelDecorations[v2].vPosition.y;
-            obj1_z = pLevelDecorations[v2].vPosition.z;
+            obj1_x = pLevelDecorations[obj1_pid].vPosition.x;
+            obj1_y = pLevelDecorations[obj1_pid].vPosition.y;
+            obj1_z = pLevelDecorations[obj1_pid].vPosition.z;
             obj1_sector = pIndoor->GetSector(obj1_x, obj1_y, obj1_z);
             break;
         case OBJECT_Actor:
-            obj1_x = pActors[v2].vPosition.x;
-            obj1_y = pActors[v2].vPosition.y;
-            v8 = (float)pActors[v2].uActorHeight * 0.69999999;
-            // v9 = v8 + 6.7553994e15;
-            // obj1_z = LODWORD(v9) + pActors[v2].vPosition.z;
-            obj1_z = (int)v8 + pActors[v2].vPosition.z;
-            obj1_sector = pActors[v2].uSectorID;
+            obj1_x = pActors[obj1_pid].vPosition.x;
+            obj1_y = pActors[obj1_pid].vPosition.y;
+            eyeheight = (float)pActors[obj1_pid].uActorHeight * 0.69999999;
+            obj1_z = eyeheight + pActors[obj1_pid].vPosition.z;
+            obj1_sector = pActors[obj1_pid].uSectorID;
             break;
         case OBJECT_Item:
-            obj1_x = pSpriteObjects[v2].vPosition.x;
-            obj1_y = pSpriteObjects[v2].vPosition.y;
-            obj1_z = pSpriteObjects[v2].vPosition.z;
-            obj1_sector = pSpriteObjects[v2].uSectorID;
+            obj1_x = pSpriteObjects[obj1_pid].vPosition.x;
+            obj1_y = pSpriteObjects[obj1_pid].vPosition.y;
+            obj1_z = pSpriteObjects[obj1_pid].vPosition.z;
+            obj1_sector = pSpriteObjects[obj1_pid].uSectorID;
             break;
         default:
             return 0;
     }
-    v12 = PID_ID(uObj2ID);
+
+    // get object 2 info
+    int obj2_pid = PID_ID(uObj2ID);
+    int obj2_x, obj2_y, obj2_z, eyeheight2;
+    int obj2_sector;
+
     switch (PID_TYPE(uObj2ID)) {
         case OBJECT_Decoration:
-            obj2_z = pLevelDecorations[v12].vPosition.z;
-            obj2_x = pLevelDecorations[v12].vPosition.x;
-            obj2_y = pLevelDecorations[v12].vPosition.y;
+            obj2_z = pLevelDecorations[obj2_pid].vPosition.z;
+            obj2_x = pLevelDecorations[obj2_pid].vPosition.x;
+            obj2_y = pLevelDecorations[obj2_pid].vPosition.y;
             obj2_sector = pIndoor->GetSector(obj2_x, obj2_y, obj2_z);
             break;
         case OBJECT_Player:
             obj2_x = pParty->vPosition.x;
             obj2_z = pParty->sEyelevel + pParty->vPosition.z;
             obj2_y = pParty->vPosition.y;
-            obj2_sector =
-                pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
-                                   pParty->sEyelevel + pParty->vPosition.z);
+            obj2_sector = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->sEyelevel + pParty->vPosition.z);
             break;
         case OBJECT_Actor:
-            obj2_y = pActors[v12].vPosition.y;
-            obj2_x = pActors[v12].vPosition.x;
-            v20 = (float)pActors[v12].uActorHeight * 0.69999999;
-            // v21 = v20 + 6.7553994e15;
-            // obj2_z = LODWORD(v21) + pActors[v12].vPosition.z;
-            obj2_z = (int)v20 + pActors[v12].vPosition.z;
-            obj2_sector = pActors[v12].uSectorID;
+            obj2_y = pActors[obj2_pid].vPosition.y;
+            obj2_x = pActors[obj2_pid].vPosition.x;
+            eyeheight2 = (float)pActors[obj2_pid].uActorHeight * 0.69999999;
+            obj2_z = eyeheight2 + pActors[obj2_pid].vPosition.z;
+            obj2_sector = pActors[obj2_pid].uSectorID;
             break;
         case OBJECT_Item:
-            obj2_x = pSpriteObjects[v12].vPosition.x;
-            obj2_z = pSpriteObjects[v12].vPosition.z;
-            obj2_y = pSpriteObjects[v12].vPosition.y;
-            obj2_sector = pSpriteObjects[v12].uSectorID;
+            obj2_x = pSpriteObjects[obj2_pid].vPosition.x;
+            obj2_z = pSpriteObjects[obj2_pid].vPosition.z;
+            obj2_y = pSpriteObjects[obj2_pid].vPosition.y;
+            obj2_sector = pSpriteObjects[obj2_pid].uSectorID;
             break;
         default:
             return 0;
     }
-    dist_x = obj2_x - obj1_x;
-    dist_z = obj2_z - obj1_z;
-    dist_y = obj2_y - obj1_y;
-    dist_3d = integer_sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
+
+    // get distance between objects
+    float dist_x = obj2_x - obj1_x;
+    float dist_y = obj2_y - obj1_y;
+    float dist_z = obj2_z - obj1_z;
+    float dist_3d = sqrt(dist_x * dist_x + dist_y * dist_y + dist_z * dist_z);
     // range check
     if (dist_3d > 5120) return 0;
+
+    // if in range always detected outdoors
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) return 1;
-    v25 = 65536;
-    if (dist_3d) v25 = 65536 / dist_3d;
-    v49 = dist_x * v25;
-    v47 = dist_z * v25;
-    v48 = dist_y * v25;
-    if (obj1_x < obj2_x) {
-        lower_x = obj1_x;
-        higher_x = obj2_x;
-    } else {
-        lower_x = obj2_x;
-        higher_x = obj1_x;
-    }
-    if (obj1_y < obj2_y) {
-        lower_y = obj1_y;
-        higher_y = obj2_y;
-    } else {
-        lower_y = obj2_y;
-        higher_y = obj1_y;
-    }
-    if (obj1_z < obj2_z) {
-        lower_z = obj1_z;
-        higher_z = obj2_z;
-    } else {
-        lower_z = obj2_z;
-        higher_z = obj1_z;
-    }
-    sectors_visited = 0;
-    // monster in same sector with player
+
+    // monster in same sector with player/ monster
     if (obj1_sector == obj2_sector) return 1;
-    // search starts from monster
-    current_sector = obj1_sector;
-    for (int current_portal = 0;
-         current_portal < pIndoor->pSectors[current_sector].uNumPortals;
-         current_portal++) {
-        v29 = &pIndoor->pFaces[pIndoor->pSectors[current_sector]
-                                   .pPortals[current_portal]];
-        v30 = &pIndoor->pVertices[*v29->pVertexIDs];
-        v31 = v29->pFacePlane_old.vNormal.z * (v30->z - obj1_z) +
-              v29->pFacePlane_old.vNormal.y * (v30->y - obj1_y) +
-              v29->pFacePlane_old.vNormal.x * (v30->x - obj1_x);
 
-        if (current_sector != v29->uSectorID) v31 = -v31;
+    // normalising
+    float rayxnorm = dist_x / dist_3d;
+    float rayynorm = dist_y / dist_3d;
+    float rayznorm = dist_z / dist_3d;
 
-        if (v31 >= 0 && v30->x != obj1_x && v30->y != obj1_y &&
-            v30->z != obj1_z)
+    // extents for boundary checks
+    int higher_z = std::max(obj1_z, obj2_z);
+    int lower_z = std::min(obj1_z, obj2_z);
+    int higher_y = std::max(obj1_y, obj2_y);
+    int lower_y = std::min(obj1_y, obj2_y);
+    int higher_x = std::max(obj1_x, obj2_x);
+    int lower_x = std::min(obj1_x, obj2_x);
+
+    // search starts for object
+    int sectors_visited = 0;
+    int current_sector = obj1_sector;
+    int next_sector = 0;
+    BLVFace* portalface;
+    Vec3_short_* portalverts;
+
+    // loop through portals
+    for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {
+        portalface = &pIndoor->pFaces[pIndoor->pSectors[current_sector].pPortals[current_portal]];
+        portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
+
+        // fixpoint   ray ob1 to portal dot normal
+        float obj1portaldot = portalface->pFacePlane.vNormal.z * (portalverts->z - obj1_z) +
+              portalface->pFacePlane.vNormal.y * (portalverts->y - obj1_y) +
+              portalface->pFacePlane.vNormal.x * (portalverts->x - obj1_x);
+
+        // flip norm if we are not looking out from current sector
+        if (current_sector != portalface->uSectorID) obj1portaldot = -obj1portaldot;
+
+        // obj1 sees back of, but is not on the portal so skip
+        if (obj1portaldot >= 0 && portalverts->x != obj1_x && portalverts->y != obj1_y && portalverts->z != obj1_z)
             continue;
 
-        if (lower_x > v29->pBounding.x2 || higher_x < v29->pBounding.x1 ||
-            lower_y > v29->pBounding.y2 || higher_y < v29->pBounding.y1 ||
-            lower_z > v29->pBounding.z2 || higher_z < v29->pBounding.z1) {
+        // bounds check
+        if (lower_x > portalface->pBounding.x2 || higher_x < portalface->pBounding.x1 ||
+            lower_y > portalface->pBounding.y2 || higher_y < portalface->pBounding.y1 ||
+            lower_z > portalface->pBounding.z2 || higher_z < portalface->pBounding.z1) {
             continue;
         }
 
-        v32 = fixpoint_mul(v29->pFacePlane_old.vNormal.x, v49);
-        v34 = fixpoint_mul(v29->pFacePlane_old.vNormal.y, v48);
-        v33 = fixpoint_mul(v29->pFacePlane_old.vNormal.z, v47);
+        // dot plane normal with obj ray
+        float v32 = portalface->pFacePlane.vNormal.x * rayxnorm;
+        float v34 = portalface->pFacePlane.vNormal.y * rayynorm;
+        float v33 = portalface->pFacePlane.vNormal.z * rayznorm;
 
-        v59 = v32 + v33 + v34;
-        if (v59) {
-            v70 = v29->pFacePlane_old.dist +
-                  obj1_z * v29->pFacePlane_old.vNormal.z +
-                  obj1_x * v29->pFacePlane_old.vNormal.x +
-                  obj1_y * v29->pFacePlane_old.vNormal.y;
-            v38 = -v70;
+        // if face is parallel == 0 dont check LOS  -- add epsilon?
+        float facenotparallel = v32 + v33 + v34;
+        if (facenotparallel) {
+            // point to plance distance
+            float pointplanedist = -(portalface->pFacePlane.dist +
+                  obj1_z * portalface->pFacePlane.vNormal.z +
+                  obj1_x * portalface->pFacePlane.vNormal.x +
+                  obj1_y * portalface->pFacePlane.vNormal.y);
 
-            // if ( v59 <= 0 ^ v70 <= 0 )
+            // epsilon check?
+            if (abs(pointplanedist) / 16384.0 > abs(facenotparallel)) continue;
 
-            /* TEMPORARY
-            if ( v59 <= 0 && v70 <= 0 )
-            {
-                    continue;
-            }
-            if ( !(v59 <= 0 && v70 <= 0) )
-            {
-                    continue;
-            }
-            */
+            // how far along line intersection is
+            float intersect = pointplanedist / facenotparallel;
 
-            if (abs(v38) >> 14 > abs(v59)) continue;
+            // less than zero and intersection is behind target
+            if (intersect < 0) continue;
 
-            v58 = fixpoint_div(v38, v59);
-
-            if (v58 < 0) continue;
-
-            if (!PointInPolyIndoor(obj1_x + ((fixpoint_mul(v49, v58) + 32768) >> 16),
-                            obj1_y + ((fixpoint_mul(v48, v58) + 32768) >> 16),
-                            obj1_z + ((fixpoint_mul(v47, v58) + 32768) >> 16),
-                            v29)) {
+            // check if point along ray is in portal face
+            if (!PointInPolyIndoor(obj1_x + (rayxnorm * intersect) + 0.5,
+                            obj1_y + (rayynorm * intersect) + 0.5,
+                            obj1_z + (rayznorm * intersect) + 0.5,
+                            portalface)) {
+                // not visible through this portal
                 continue;
             }
 
             // if there is no next sector turn back
-            if (v29->uSectorID == current_sector)
-                next_sector = v29->uBackSectorID;
+            if (portalface->uSectorID == current_sector)
+                next_sector = portalface->uBackSectorID;
             else
-                next_sector = v29->uSectorID;
+                next_sector = portalface->uSectorID;
 
             // no more portals, quit
             if (next_sector == current_sector) break;
@@ -4900,15 +4847,14 @@ bool sub_4070EF_prolly_detect_player(unsigned int uObjID,
             ++sectors_visited;
             current_sector = next_sector;
 
-            // found player, quit
+            // found object / player / monster, quit
             if (next_sector == obj2_sector) return 1;
 
             current_sector = next_sector;
 
             // did we hit limit for portals?
             // does the next room have portals?
-            if (sectors_visited < 30 &&
-                pIndoor->pSectors[current_sector].uNumPortals > 0) {
+            if (sectors_visited < 30 && pIndoor->pSectors[current_sector].uNumPortals > 0) {
                 current_portal = -1;
                 continue;
             } else {
@@ -4916,7 +4862,7 @@ bool sub_4070EF_prolly_detect_player(unsigned int uObjID,
             }
         }
     }
-    // did we stop in the sector where player is?
+    // did we stop in the sector where object is?
     if (current_sector != obj2_sector) return 0;
     return 1;
 }
@@ -4945,7 +4891,7 @@ bool SpawnActor(unsigned int uMonsterID) {
         actor.uActorHeight = pMonsterList->pMonsters[v1].uMonsterHeight;
         actor.uMovementSpeed = pMonsterList->pMonsters[v1].uMovementSpeed;
 
-        Vec3_int_::Rotate(200, pParty->sRotationY, 0, pParty->vPosition,
+        Vec3_int_::Rotate(200, pParty->sRotationZ, 0, pParty->vPosition,
                           &pOut.x, &pOut.z, &pOut.y);
         actor.vInitialPosition.x = pOut.x;
         actor.vPosition.x = pOut.x;
@@ -4969,8 +4915,7 @@ bool SpawnActor(unsigned int uMonsterID) {
 }
 
 //----- (0044FA4C) --------------------------------------------------------
-int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
-                                     int duration_game_seconds) {
+int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_game_seconds) {
     int result;     // eax@13
     int v10;               // ebx@16
     const char *cMonsterName;       // [sp-4h] [bp-24h]@2
@@ -5020,10 +4965,10 @@ int sub_44FA4C_spawn_light_elemental(int spell_power, int caster_skill_level,
             pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
         v10 = rand() % 2048;
         pActors[uActorIndex].vInitialPosition.x =
-            pParty->vPosition.x + fixpoint_mul(stru_5C6E00->Cos(v10), v19);
+            pParty->vPosition.x + fixpoint_mul(TrigLUT->Cos(v10), v19);
         pActors[uActorIndex].vPosition.x = pActors[uActorIndex].vInitialPosition.x;
         pActors[uActorIndex].vInitialPosition.y =
-            pParty->vPosition.y + fixpoint_mul(stru_5C6E00->Sin(v10), v19);
+            pParty->vPosition.y + fixpoint_mul(TrigLUT->Sin(v10), v19);
         pActors[uActorIndex].vPosition.y = pActors[uActorIndex].vInitialPosition.y;
         pActors[uActorIndex].vInitialPosition.z = pParty->vPosition.z;
         pActors[uActorIndex].vPosition.z = pActors[uActorIndex].vInitialPosition.z;
@@ -5302,9 +5247,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         pMonster->PrepareSprites(0);
         pMonster->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
         v32 = rand();
-        a3 = fixpoint_mul(stru_5C6E00->Cos(v32 % 2048), v52);
+        a3 = fixpoint_mul(TrigLUT->Cos(v32 % 2048), v52);
         pPosX = a3 + spawn->vPosition.x;
-        a3 = fixpoint_mul(stru_5C6E00->Sin(v32 % 2048), v52);
+        a3 = fixpoint_mul(TrigLUT->Sin(v32 % 2048), v52);
         a4 = a3 + spawn->vPosition.y;
         a3 = spawn->vPosition.z;
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {

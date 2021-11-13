@@ -151,12 +151,12 @@ void RenderBase::DrawSpriteObjects_ODM() {
             int a6 = frame->uGlowRadius * object->field_22_glow_radius_multiplier;
 
             // sprite angle to camera
-            unsigned int v6 = stru_5C6E00->Atan2(
+            unsigned int v6 = TrigLUT->Atan2(
                 object->vPosition.x - pIndoorCameraD3D->vPartyPos.x,
                 object->vPosition.y - pIndoorCameraD3D->vPartyPos.y);
             // LOWORD(v7) = object->uFacing;
             // v8 = v36;
-            int v9 = ((int)(stru_5C6E00->uIntegerPi + ((int)stru_5C6E00->uIntegerPi >> 3) +
+            int v9 = ((int)(TrigLUT->uIntegerPi + ((int)TrigLUT->uIntegerPi >> 3) +
                             object->uFacing - v6) >> 8) & 7;
 
             if (::uNumBillboardsToDraw == 500) break;
@@ -168,7 +168,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
 
             if (frame->uFlags & 0x20) {
                 // v8 = v36;
-                z -= fixpoint_mul(frame->scale._internal, frame->hw_sprites[v9]->uBufferHeight) / 2;
+                z -= (frame->scale * frame->hw_sprites[v9]->uBufferHeight) / 2;
             }
             int16_t v46 = 0;
             if (frame->uFlags & 2) v46 = 2;
@@ -197,8 +197,8 @@ void RenderBase::DrawSpriteObjects_ODM() {
                     pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
                     pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = frame->scale.GetFloat() * pODMRenderParams->int_fov_rad / view_x;
-                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = frame->scale.GetFloat() * pODMRenderParams->int_fov_rad / view_x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = frame->scale * pODMRenderParams->int_fov_rad / view_x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = frame->scale * pODMRenderParams->int_fov_rad / view_x;
 
                     pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
                     pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;

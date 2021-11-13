@@ -153,7 +153,7 @@ bool FileExists(const char *fname) {
 void Engine_DeinitializeAndTerminate(int exitCode) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     engine->Deinitialize();  // called twice?
-    render->Release();
+    if (render) render->Release();
     window = nullptr;
     exit(exitCode);
 }
@@ -164,13 +164,13 @@ void Engine::Draw() {
         pParty->_497FC5_check_party_perception_against_level());
 
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;
-    pIndoorCameraD3D->sRotationY = pParty->sRotationY;
-    pIndoorCameraD3D->vPartyPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationY / 2048.0);
-    pIndoorCameraD3D->vPartyPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationY / 2048.0);
+    pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
+    pIndoorCameraD3D->vPartyPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
+    pIndoorCameraD3D->vPartyPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
     pIndoorCameraD3D->vPartyPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
-    pIndoorCameraD3D->CalculateRotations(pParty->sRotationX, pParty->sRotationY);
+    pIndoorCameraD3D->CalculateRotations(pParty->sRotationX, pParty->sRotationZ);
     pIndoorCameraD3D->CreateWorldMatrixAndSomeStuff();
     pIndoorCameraD3D->BuildViewFrustum();
 
@@ -183,7 +183,7 @@ void Engine::Draw() {
         }*/
     } else {
         if (pParty->vPosition.x != pParty->vPrevPosition.x ||
-            pParty->sRotationY != pParty->sPrevRotationY ||
+            pParty->sRotationZ != pParty->sPrevRotationY ||
             pParty->vPosition.y != pParty->vPrevPosition.y ||
             pParty->sRotationX != pParty->sPrevRotationX ||
             pParty->vPosition.z != pParty->vPrevPosition.z ||
@@ -194,7 +194,7 @@ void Engine::Draw() {
         pParty->vPrevPosition.y = pParty->vPosition.y;
         pParty->vPrevPosition.z = pParty->vPosition.z;
         // v0 = &render;
-        pParty->sPrevRotationY = pParty->sRotationY;
+        pParty->sPrevRotationY = pParty->sRotationZ;
         pParty->sPrevRotationX = pParty->sRotationX;
 
         pParty->sPrevEyelevel = pParty->sEyelevel;
@@ -1348,7 +1348,7 @@ void Engine::_461103_load_level_sub() {
     pIndoorCameraD3D->vPartyPos.y = 0;
     pIndoorCameraD3D->vPartyPos.z = 100;
     pIndoorCameraD3D->sRotationX = 0;
-    pIndoorCameraD3D->sRotationY = 0;
+    pIndoorCameraD3D->sRotationZ = 0;
     viewparams->bRedrawGameUI = true;
     uLevel_StartingPointType = MapStartPoint_Party;
     pSprites_LOD->_461397();

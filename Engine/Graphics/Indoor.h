@@ -726,7 +726,7 @@ void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
 void Door_switch_animation(unsigned int uDoorID, int a2);  // idb: sub_449A49
-int sub_4088E9(int a1, int a2, int a3, int a4, int a5, int a6);
+int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(unsigned int bLoading);
 int GetAlertStatus();

@@ -328,70 +328,61 @@ void GUIWindow_PartyCreation::Update() {
     int pIntervalX;
     int pCorrective;
 
+    float renwidth = render->GetRenderWidth();
+    float renheight = render->GetRenderHeight();
+
     // move sky
     render->BeginScene();
     render->DrawTextureNew(0, 0, main_menu_background);
     int sky_slider_anim_timer = (OS_GetTime() % (window->GetWidth() * 20)) / 20;
-    render->DrawTextureAlphaNew(sky_slider_anim_timer / 640.0f, 2 / 480.0f,
-        ui_partycreation_sky_scroller);
-    render->DrawTextureAlphaNew(
-        (sky_slider_anim_timer - (int)window->GetWidth()) / 640.0f, 2 / 480.0f,
-        ui_partycreation_sky_scroller);
+    render->DrawTextureAlphaNew(sky_slider_anim_timer / renwidth, 2 / renheight, ui_partycreation_sky_scroller);
+    render->DrawTextureAlphaNew((sky_slider_anim_timer - (int)window->GetWidth()) / renwidth, 2 / renheight, ui_partycreation_sky_scroller);
     render->DrawTextureAlphaNew(0, 0, ui_partycreation_top);
 
-    uPlayerCreationUI_SelectedCharacter =
-        (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
-            pGUIWindow_CurrentMenu->pStartingPosActiveItem) /
-        7;
+    uPlayerCreationUI_SelectedCharacter = (pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) / 7;
     switch (uPlayerCreationUI_SelectedCharacter) {
-    case 0:
-        pX = 12;
-        break;
-    case 1:
-        pX = 171;
-        break;
-    case 2:
-        pX = 329;
-        break;
-    case 3:
-        pX = 488;
-        break;
-    default:
-        Error("Invalid selected character");
+        case 0:
+            pX = 12;
+            break;
+        case 1:
+            pX = 171;
+            break;
+        case 2:
+            pX = 329;
+            break;
+        case 3:
+            pX = 488;
+            break;
+        default:
+            Error("Invalid selected character");
     }
 
-    pTextCenter = ui_partycreation_font->AlignText_Center(
-        window->GetWidth(), localization->GetString(51));
+    pTextCenter = ui_partycreation_font->AlignText_Center(640, localization->GetString(51));   // 640
     pGUIWindow_CurrentMenu->DrawText(
         ui_partycreation_font, pTextCenter + 1, 0, 0,
         localization->GetString(51), 0, 0,
         0);  // CREATE PARTY / С О З Д А Т Ь  О Т Р Я Д
+
     render->DrawTextureAlphaNew(
-        17 / 640.0f, 35 / 480.0f,
+        17 / renwidth, 35 / renheight,
         ui_partycreation_portraits[pParty->pPlayers[0].uCurrentFace]);
     render->DrawTextureAlphaNew(
-        176 / 640.0f, 35 / 480.0f,
+        176 / renwidth, 35 / renheight,
         ui_partycreation_portraits[pParty->pPlayers[1].uCurrentFace]);
     render->DrawTextureAlphaNew(
-        335 / 640.0f, 35 / 480.0f,
+        335 / renwidth, 35 / renheight,
         ui_partycreation_portraits[pParty->pPlayers[2].uCurrentFace]);
     render->DrawTextureAlphaNew(
-        494 / 640.0f, 35 / 480.0f,
+        494 / renwidth, 35 / renheight,
         ui_partycreation_portraits[pParty->pPlayers[3].uCurrentFace]);
 
     // arrows
-    pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame,
-        pEventTimer->uStartTime);
-    render->DrawTextureAlphaNew(pX / 640.0f, 29 / 480.0f, pFrame->GetTexture());
-    uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(
-        pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
+    pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->uStartTime);
+    render->DrawTextureAlphaNew(pX / renwidth, 29 / renheight, pFrame->GetTexture());
+    uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     uPlayerCreationUI_ArrowAnim = 18 - (OS_GetTime() % 450) / 25;
-    render->DrawTextureAlphaNew(
-        (uPosActiveItem->uZ - 4) / 640.0f, uPosActiveItem->uY / 480.0f,
-        ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
-    render->DrawTextureAlphaNew(
-        (uPosActiveItem->uX - 12) / 640.0f, uPosActiveItem->uY / 480.0f,
-        ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
+    render->DrawTextureAlphaNew((uPosActiveItem->uZ - 4) / renwidth, uPosActiveItem->uY / renheight, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
+    render->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / renwidth, uPosActiveItem->uY / renheight, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
 
     memset(pText, 0, 200);
     strcpy(pText, localization->GetString(205));  // "Skills"
@@ -401,14 +392,14 @@ void GUIWindow_PartyCreation::Update() {
     pIntervalX = 18;
     pIntervalY = pFontCreate->GetHeight() - 2;
     uX = 32;
-    pX_Numbers = 493;
+    pX_Numbers = window->GetWidth() - 147;  // 493;
 
     for (int i = 0; i < 4; ++i) {
         pGUIWindow_CurrentMenu->DrawText(
             pFontCreate, pIntervalX + 73, 100, 0,
             localization->GetClassName(pParty->pPlayers[i].classType), 0, 0, 0);
         render->DrawTextureAlphaNew(
-            (pIntervalX + 77) / 640.0f, 50 / 480.0f,
+            (pIntervalX + 77) / renwidth, 50 / renheight,
             ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
 
         if (pGUIWindow_CurrentMenu->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_NONE &&
@@ -753,11 +744,11 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     int uControlParam = 0;
     uControlParam = 0;
     int uX = 8;
-    do {
+    for (int i = 0; i < 4; i++) {
         CreateButton(uX, 120, 145, 25, 1, 0, UIMSG_PlayerCreationChangeName, uControlParam);
         uX += 158;
         ++uControlParam;
-    } while ((signed int)uX < window->GetWidth());
+    }
 
     pCreationUI_BtnPressLeft[0] = CreateButton(10, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 0, GameKey::None, "", { { ui_partycreation_left } });
     pCreationUI_BtnPressLeft[1] = CreateButton(169, 32, 11, 13, 1, 0, UIMSG_PlayerCreation_FacePrev, 1, GameKey::None, "", { { ui_partycreation_left } });
@@ -781,7 +772,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
     uControlParam = 0;
     uX = 8;
-    do {
+    for (int i = 0 ; i < 4; i++) {
         CreateButton(uX, 308, 150, v0, 1, 0, UIMSG_48, uControlParam);
         CreateButton(uX, v0 + 308, 150, v0, 1, 0, UIMSG_49, uControlParam);
         CreateButton(uX, 2 * v0 + 308, 150, v0, 1, 0, UIMSG_PlayerCreationRemoveUpSkill, uControlParam);
@@ -789,7 +780,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
         uX += 158;
         ++uControlParam;
-    } while ((signed int)uX < window->GetWidth());
+    }
 
     CreateButton(5, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 0, GameKey::Digit1);
     CreateButton(163, 21, 153, 365, 1, 0, UIMSG_PlayerCreation_SelectAttribute, 1, GameKey::Digit2);

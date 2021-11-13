@@ -330,7 +330,7 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->vPosition.x = party->vPosition.x;
     this->vPosition.y = party->vPosition.y;
     this->vPosition.z = party->vPosition.z;
-    this->sRotationY = party->sRotationY;
+    this->sRotationZ = party->sRotationZ;
     this->sRotationX = party->sRotationX;
     this->vPrevPosition.x = party->vPrevPosition.x;
     this->vPrevPosition.y = party->vPrevPosition.y;
@@ -495,7 +495,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->vPosition.x = this->vPosition.x;
     party->vPosition.y = this->vPosition.y;
     party->vPosition.z = this->vPosition.z;
-    party->sRotationY = this->sRotationY;
+    party->sRotationZ = this->sRotationZ;
     party->sRotationX = this->sRotationX;
     party->vPrevPosition.x = this->vPrevPosition.x;
     party->vPrevPosition.y = this->vPrevPosition.y;

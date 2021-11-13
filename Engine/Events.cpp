@@ -655,7 +655,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_SummonItem:
-                    SpriteObject::sub_42F7EB_DropItemAt(
+                    SpriteObject::Drop_Item_At(
                         (SPRITE_OBJECT_TYPE)(
                             _evt->v5 +
                             ((_evt->v6 +
@@ -1026,9 +1026,9 @@ LABEL_47:
                     if (v129 == -1) {
                         v98 = Party_Teleport_Cam_Yaw;
                     } else {
-                        v98 = v129 & stru_5C6E00->uDoublePiMask;
+                        v98 = v129 & TrigLUT->uDoublePiMask;
                         Party_Teleport_Cam_Yaw =
-                            v129 & stru_5C6E00->uDoublePiMask;
+                            v129 & TrigLUT->uDoublePiMask;
                     }
                     v99 = (char *)&_evt->v31;
                     Party_Teleport_Cam_Pitch = v95;
@@ -1042,7 +1042,7 @@ LABEL_47:
                             pParty->vPosition.z = v126;
                             pParty->uFallStartY = v126;
                             if (Party_Teleport_Cam_Yaw != -1)
-                                pParty->sRotationY =
+                                pParty->sRotationZ =
                                     Party_Teleport_Cam_Yaw;
                             Party_Teleport_Cam_Yaw = -1;
                             pParty->sRotationX = v95;

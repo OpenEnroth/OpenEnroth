@@ -1612,7 +1612,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
     case HOUSE_DIALOGUE_SHOP_REPAIR:
     {
         dialog_menu_id = (HOUSE_DIALOGUE_MENU)uMessageParam;
-        pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+        pParty->PickedItem_PlaceInInventory_or_Drop();
         break;
     }
     case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT:
@@ -1852,7 +1852,7 @@ void TravelByTransport() {
                     Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y |
                         pTravel->arrival_z | pTravel->arrival_rot_y;
                 } else {
-                    pIndoorCameraD3D->sRotationY = 0;
+                    pIndoorCameraD3D->sRotationZ = 0;
 
                     pParty->uFlags |= PARTY_FLAGS_1_0002;
                     pParty->vPosition.x = pTravel->arrival_x;
@@ -1860,7 +1860,7 @@ void TravelByTransport() {
                     pParty->vPosition.z = pTravel->arrival_z;
                     pParty->uFallStartY = pParty->vPosition.z;
                     pParty->sRotationX = 0;
-                    pParty->sRotationY = pTravel->arrival_rot_y;
+                    pParty->sRotationZ = pTravel->arrival_rot_y;
                 }
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
                     HouseSound_NotEnoughMoney_TrainingSuccessful);
@@ -4384,8 +4384,8 @@ void GUIWindow_House::Release() {
 
     dword_5C35D4 = 0;
     if (engine->config->flip_on_exit) {
-        pParty->sRotationY = (stru_5C6E00->uIntegerDoublePi - 1) & (stru_5C6E00->uIntegerPi + pParty->sRotationY);
-        pIndoorCameraD3D->sRotationY = pParty->sRotationY;
+        pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) & (TrigLUT->uIntegerPi + pParty->sRotationZ);
+        pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
     }
     pParty->uFlags |= PARTY_FLAGS_1_0002;
 

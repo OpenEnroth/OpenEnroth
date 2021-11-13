@@ -87,7 +87,7 @@ void Party::Zero() {
     vPosition.y = 0;
     vPosition.z = 0;
     uFallStartY = 0;
-    sRotationY = 0;
+    sRotationZ = 0;
     sRotationX = 0;
     uFallSpeed = 0;
     field_28 = 0;
@@ -156,7 +156,7 @@ bool Party::_497FC5_check_party_perception_against_level() {
 
 //----- (004936E1) --------------------------------------------------------
 void Party::SetHoldingItem(ItemGen *pItem) {
-    sub_421B2C_PlaceInInventory_or_DropPickedItem();
+    PickedItem_PlaceInInventory_or_Drop();
     memcpy(&pPickedItem, pItem, sizeof(pPickedItem));
     mouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
 }
@@ -637,7 +637,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->vPosition.z = 0;
     this->vPosition.x = 0;
     this->uFallStartY = 0;
-    this->sRotationY = 0;
+    this->sRotationZ = 0;
     this->sRotationX = 0;
     this->uFallSpeed = 0;
     this->field_28 = 0;
@@ -1052,28 +1052,34 @@ void Party::PartyFindsGold(
     if (status.length() > 0) GameUI_StatusBar_OnEvent(status.c_str(), 2u);
 }
 
-void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {
+void Party::PickedItem_PlaceInInventory_or_Drop() {
+    // no picked item
     if (!pParty->pPickedItem.uItemID) {
         return;
     }
 
     auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), 0x7FF);
 
-    int v2 = ::pPlayers[uActiveCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
-    if (uActiveCharacter && v2 != 0) {
-        memcpy(&::pPlayers[uActiveCharacter]->pInventoryItemList[v2 - 1], &pParty->pPickedItem, 0x24u);
+    // check if active player has room in inventory
+    int InventIndex = ::pPlayers[uActiveCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
+    if (uActiveCharacter && InventIndex != 0) {
+        memcpy(&::pPlayers[uActiveCharacter]->pInventoryItemList[InventIndex - 1], &pParty->pPickedItem, 0x24u);
         mouse->RemoveHoldingItem();
     } else {
-        int v12 = 0;
-        for (v12 = 0; v12 < 4; v12++) {
-            int v4 = pParty->pPlayers[v12].AddItem(-1, pParty->pPickedItem.uItemID);
-            if (v4) {
-                memcpy(&pParty->pPlayers[v12].pInventoryItemList[v4 - 1], &pParty->pPickedItem, sizeof(ItemGen));
+        // see if any other char has room
+        int CharIndex = 0;
+        for (CharIndex = 0; CharIndex < 4; CharIndex++) {
+            int InventIndex = pParty->pPlayers[CharIndex].AddItem(-1, pParty->pPickedItem.uItemID);
+            if (InventIndex) {
+                // found room so give char item
+                memcpy(&pParty->pPlayers[CharIndex].pInventoryItemList[InventIndex - 1], &pParty->pPickedItem, sizeof(ItemGen));
                 mouse->RemoveHoldingItem();
                 break;
             }
         }
-        if (v12 == 4) {
+
+        // no chars have room so drop
+        if (CharIndex == 4) {
             SpriteObject object;
             object.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
             object.spell_caster_pid = OBJECT_Player;
@@ -1088,7 +1094,7 @@ void Party::sub_421B2C_PlaceInInventory_or_DropPickedItem() {
             object.uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
                                                   pParty->sEyelevel + pParty->vPosition.z);
             memcpy(&object.containing_item, &pParty->pPickedItem, sizeof(object.containing_item));
-            object.Create(pParty->sRotationY, 184, 200, 0);
+            object.Create(pParty->sRotationZ, 184, 200, 0);
             mouse->RemoveHoldingItem();
         }
     }

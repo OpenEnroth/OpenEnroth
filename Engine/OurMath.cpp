@@ -2,7 +2,9 @@
 #include "Engine/Engine.h"
 
 //----- (00452969) --------------------------------------------------------
-stru193_math::stru193_math() {
+TrigTableLookup::TrigTableLookup() {
+    // populates tables
+
     double v3;  // ST18_8@2
 
     this->pTanTable[0] = 0;
@@ -25,7 +27,7 @@ stru193_math::stru193_math() {
 }
 
 //----- (00402CAE) --------------------------------------------------------
-int stru193_math::Cos(int angle) {
+int TrigTableLookup::Cos(int angle) {
     int v2;  // eax@1
 
     // a2: (angle - uIntegerHalfPi)    for  sin(angle)
@@ -43,7 +45,7 @@ int stru193_math::Cos(int angle) {
 //----- (0045281E) --------------------------------------------------------
 //    Calculates atan2(y/x)
 // return value: angle in integer format (multiplier of Pi/1024)
-unsigned int stru193_math::Atan2(int x, int y) {
+unsigned int TrigTableLookup::Atan2(int x, int y) {
     signed int quadrant;
     __int64 dividend;
     int quotient;
@@ -130,7 +132,7 @@ unsigned int stru193_math::Atan2(int x, int y) {
 }
 
 //----- (0042EBDB) --------------------------------------------------------
-int stru193_math::Sin(int angle) { return Cos(angle - this->uIntegerHalfPi); }
+int TrigTableLookup::Sin(int angle) { return Cos(angle - this->uIntegerHalfPi); }
 
 //----- (0042EBBE) --------------------------------------------------------
 //----- (004453C0) mm6-----------------------------------------------------
@@ -139,32 +141,38 @@ __int64 fixpoint_mul(int a1, int a2) {
     return ((__int64)a1 * (__int64)a2) >> 16;
 }
 
-__int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2) {
-    return fixpoint_mul(x1, x2) + fixpoint_mul(y1, y2) + fixpoint_mul(z1, z2);
-}
+// __int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2) {
+//    return fixpoint_mul(x1, x2) + fixpoint_mul(y1, y2) + fixpoint_mul(z1, z2);
+// }
 
 //----- (004A1780) mm6_chinese---------------------------------------------
 __int64 fixpoint_div(int a1, int a2) { return ((__int64)a1 << 16) / a2; }
 
-__int64 fixpoint_sub_unknown(int a1, int a2) {
-    return (((__int64)a1 << 16) * a2) >> 16;
-}
+// __int64 fixpoint_sub_unknown(int a1, int a2) {
+//    return (((__int64)a1 << 16) * a2) >> 16;
+// }
 
-//----- (0048B561) --------------------------------------------------------
-int fixpoint_from_float(float val) {
-    //  float X.Yf -> int XXXX YYYY
-    int left = floorf((val - 0.5f) + 0.5f);
-    int right = floorf((val - left) * 65536.0f);
-    return (left << 16) | right;
-}
+////----- (0048B561) --------------------------------------------------------
+// int fixpoint_from_float(float val) {
+//    //  float X.Yf -> int XXXX YYYY
+//    int left = floorf((val - 0.5f) + 0.5f);
+//    int right = floorf((val - left) * 65536.0f);
+//    return (left << 16) | right;
+// }
 
-int fixpoint_from_int(int lhv, int rhv) { return (lhv << 16) | rhv; }
+// int fixpoint_from_int(int lhv, int rhv) { return (lhv << 16) | rhv; }
 
 //----- (00452A9E) --------------------------------------------------------
 int integer_sqrt(int val) {
     ///////////////////////////////
     //Получение квадратного корня//
     ///////////////////////////////
+
+    return int(sqrt(val));
+
+    // binary square root algo
+    // (int) sqrt(i) probably faster?
+
 
     int result;       // eax@2
     unsigned int v2;  // edx@3

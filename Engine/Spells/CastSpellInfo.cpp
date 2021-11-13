@@ -164,7 +164,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     spell_targeted_at, &target_direction,
                     0);  // target direciton
             } else {
-                target_direction.uYawAngle = pParty->sRotationY;  // spray infront of party
+                target_direction.uYawAngle = pParty->sRotationZ;  // spray infront of party
                 target_direction.uPitchAngle = -pParty->sRotationX;
             }
         }
@@ -442,7 +442,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pSpellSprite.uAttributes |= 4;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationY,
+                if (pSpellSprite.Create(pParty->sRotationZ,
                     pParty->sRotationX + 10, v659,
                     pCastSpell->uPlayerID + 1) != -1 &&
                     pParty->bTurnBasedModeOn) {
@@ -1277,12 +1277,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     dist_Y = pActors[monster_id].vPosition.y;
                     dist_Z = pActors[monster_id].vPosition.z;
                 } else {
-                    dist_X = pParty->vPosition.x +
-                             fixpoint_mul(2048,
-                                          stru_5C6E00->Cos(pParty->sRotationY));
-                    dist_Y = pParty->vPosition.y +
-                             fixpoint_mul(2048,
-                                          stru_5C6E00->Sin(pParty->sRotationY));
+                    dist_X = pParty->vPosition.x + 2048 * pIndoorCameraD3D->fRotationZCosine;
+                    dist_Y = pParty->vPosition.y + 2048 * pIndoorCameraD3D->fRotationZSine;
                     dist_Z = pParty->vPosition.z;
                 }
                 unsigned __int64 k = 0;
@@ -1297,10 +1293,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             HEXRAYS_LODWORD(v687) = 0;
                             HEXRAYS_HIDWORD(v687) = 0;
                         } else {
-                            HEXRAYS_HIDWORD(v687) = stru_5C6E00->Atan2(
+                            HEXRAYS_HIDWORD(v687) = TrigLUT->Atan2(
                                 (signed __int64)sqrt((float)(j * j + k * k)),
                                 (double)spell_targeted_at - 2500);
-                            HEXRAYS_LODWORD(v687) = stru_5C6E00->Atan2(j, k);
+                            HEXRAYS_LODWORD(v687) = TrigLUT->Atan2(j, k);
                         }
                         pSpellSprite.containing_item.Reset();
                         pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1465,7 +1461,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v726 = (int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+                int _v726 = (int)(60 * TrigLUT->uIntegerDoublePi) / 360;
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
@@ -1622,12 +1618,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     dist_Y = pActors[monster_id].vPosition.y;
                     dist_Z = pActors[monster_id].vPosition.z;
                 } else {
-                    dist_X = pParty->vPosition.x +
-                             fixpoint_mul(2048,
-                                          stru_5C6E00->Cos(pParty->sRotationY));
-                    dist_Y = pParty->vPosition.y +
-                             fixpoint_mul(2048,
-                                          stru_5C6E00->Sin(pParty->sRotationY));
+                    dist_X = pParty->vPosition.x + 2048 * pIndoorCameraD3D->fRotationZCosine;
+                    dist_Y = pParty->vPosition.y + 2048 * pIndoorCameraD3D->fRotationZSine;
                     dist_Z = pParty->vPosition.z;
                 }
                 unsigned __int64 k = 0;
@@ -1643,11 +1635,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         HEXRAYS_LODWORD(v685) = 0;
                         HEXRAYS_HIDWORD(v685) = 0;
                     } else {
-                        HEXRAYS_HIDWORD(v685) = stru_5C6E00->Atan2(
+                        HEXRAYS_HIDWORD(v685) = TrigLUT->Atan2(
                             (signed __int64)sqrt((float)(j * j + k * k)),
                             ((double)spell_targeted_at + (double)dist_Z -
                              (double)(dist_Z + 2500)));
-                        HEXRAYS_LODWORD(v685) = stru_5C6E00->Atan2(j, k);
+                        HEXRAYS_LODWORD(v685) = TrigLUT->Atan2(j, k);
                     }
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -1744,7 +1736,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                int _v733 = (int)(60 * stru_5C6E00->uIntegerDoublePi) / 360;
+                int _v733 = (int)(60 * TrigLUT->uIntegerDoublePi) / 360;
                 if (amount == 1) {
                     pSpellSprite.containing_item.Reset();
                     pSpellSprite.spell_id = pCastSpell->uSpellID;
@@ -2160,13 +2152,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod =
                     target_direction.uDistance;
-                pSpellSprite.uFacing = pParty->sRotationY;
+                pSpellSprite.uFacing = pParty->sRotationZ;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes |= 4;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationY, pParty->sRotationX,
+                if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationX,
                     v659,
                     pCastSpell->uPlayerID + 1) != -1 &&
                     pParty->bTurnBasedModeOn) {
@@ -2204,13 +2196,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_caster_pid =
                     PID(OBJECT_Player, pCastSpell->uPlayerID);
                 pSpellSprite.spell_target_pid = spell_targeted_at;
-                pSpellSprite.uFacing = (short)pParty->sRotationY;
+                pSpellSprite.uFacing = (short)pParty->sRotationZ;
                 pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
                     pSpellSprite.uAttributes = 4;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationY, stru_5C6E00->uIntegerHalfPi / 2, v659, 0) != -1 &&
+                if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT->uIntegerHalfPi / 2, v659, 0) != -1 &&
                     pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
                 }
@@ -3405,7 +3397,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     continue;
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                sub_44FA4C_spawn_light_elemental(pCastSpell->uPlayerID,
+                Spawn_Light_Elemental(pCastSpell->uPlayerID,
                                                  skill_level, spellduration);
                 spell_sound_flag = true;
                 break;
@@ -3838,7 +3830,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 signed int _v726 =
-                    ((signed int)(60 * stru_5C6E00->uIntegerDoublePi) / 360);
+                    ((signed int)(60 * TrigLUT->uIntegerDoublePi) / 360);
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;
@@ -4174,7 +4166,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     v732_int = GetTerrainHeightsAroundParty2(
                         v642 + pParty->vPosition.x,
                         pParty->vPosition.y + (v643 % 4096 - 2048), &bOnWater, 0);
-                    SpriteObject::sub_42F7EB_DropItemAt(
+                    SpriteObject::Drop_Item_At(
                         SPRITE_SPELL_EARTH_ROCK_BLAST,
                         v642 + pParty->vPosition.x,
                         pParty->vPosition.y + (v643 % 4096 - 2048), v732_int + 16,
@@ -4447,7 +4439,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             pGUIWindow_CastTargetedSpell->CreateButton(
                 390, 422, 35, 0, 2, 0,
                 UIMSG_CastSpell_Character_Big_Improvement, 3, GameKey::Digit4);
-            pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+            pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_TargetCrosshair) {
@@ -4459,7 +4451,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             pGUIWindow_CastTargetedSpell->CreateButton(
                 game_viewport_x, game_viewport_y, game_viewport_width,
                 game_viewport_height, 1, 0, UIMSG_CastSpell_Shoot_Monster, 0);
-            pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+            pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_Telekenesis) {
@@ -4471,7 +4463,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             pGUIWindow_CastTargetedSpell->CreateButton(
                 game_viewport_x, game_viewport_y, game_viewport_width,
                 game_viewport_height, 1, 0, UIMSG_CastSpell_Telekinesis, 0);
-            pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+            pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_Enchantment) {
@@ -4481,7 +4473,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                 pCastSpellInfo[result].GetCastSpellInInventoryWindow();
             _50C9A0_IsEnchantingInProgress = 1;
             some_active_character = uActiveCharacter;
-            pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+            pParty->PickedItem_PlaceInInventory_or_Drop();
             return;
         }
         if (flags & ON_CAST_MonsterSparkles) {
@@ -4504,7 +4496,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             pGUIWindow_CastTargetedSpell->CreateButton(
                 8, 8, game_viewport_width, game_viewport_height, 1, 0,
                 UIMSG_CastSpell_Monster_Improvement, 0);
-            pParty->sub_421B2C_PlaceInInventory_or_DropPickedItem();
+            pParty->PickedItem_PlaceInInventory_or_Drop();
         }
         if (flags & ON_CAST_DarkSacrifice && !pGUIWindow_CastTargetedSpell) {
             pGUIWindow_CastTargetedSpell = new OnCastTargetedSpell(

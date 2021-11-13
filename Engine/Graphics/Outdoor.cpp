@@ -119,7 +119,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 
     // if (render->pRenderD3D) // d3d - redraw always
     {
-        SkyBillboard.CalcSkyFrustumVec(65536, 0, 0, 0, 65536, 0);  // sky box frustum
+        SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);  // sky box frustum
         render->DrawOutdoorSkyD3D();
         render->RenderTerrainD3D();
         render->DrawBuildingsD3D();
@@ -435,9 +435,9 @@ void OutdoorLocation::UpdateSunlightVectors() {
         v3 = pParty->uCurrentMinute + 60 * (pParty->uCurrentHour - 5);
         this->inv_sunlight_y = 0;
         this->inv_sunlight_x =
-            stru_5C6E00->Cos((v3 * stru_5C6E00->uIntegerPi) / 960);
+            TrigLUT->Cos((v3 * TrigLUT->uIntegerPi) / 960);
         this->inv_sunlight_z =
-            stru_5C6E00->Sin((v3 * stru_5C6E00->uIntegerPi) / 960);
+            TrigLUT->Sin((v3 * TrigLUT->uIntegerPi) / 960);
         this->vSunlight.x = -this->inv_sunlight_x;
         this->vSunlight.y = -this->inv_sunlight_y;
         this->vSunlight.z = -this->inv_sunlight_z;
@@ -1755,14 +1755,14 @@ void OutdoorLocation::PrepareActorsDrawList() {
             }
         }
 
-        Angle_To_Cam = stru_5C6E00->Atan2(
+        Angle_To_Cam = TrigLUT->Atan2(
             pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
             pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
 
         // int v9 = 0;
         // HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
-        Sprite_Octant = ((signed int)(stru_5C6E00->uIntegerPi +
-                            ((signed int)stru_5C6E00->uIntegerPi >> 3) + pActors[i].uYawAngle -
+        Sprite_Octant = ((signed int)(TrigLUT->uIntegerPi +
+                            ((signed int)TrigLUT->uIntegerPi >> 3) + pActors[i].uYawAngle -
                             Angle_To_Cam) >> 8) & 7;
 
 
@@ -1827,10 +1827,10 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
 
-                auto _v26 = fixed::FromInt(pODMRenderParams->int_fov_rad) /
-                            fixed::FromInt(view_x);
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v15->scale.GetFloat() * _v26.GetFloat();
-                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v15->scale.GetFloat() * _v26.GetFloat();
+                float _v26 = v15->scale * (pODMRenderParams->int_fov_rad) /
+                            (view_x);
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =  _v26;
+                pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v26;
 
                 if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() &&
                     pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0) {
@@ -2194,11 +2194,11 @@ void ODMRenderParams::Initialize() {  // this seems to be called several times d
 
     this->uCameraFovInDegrees = 75;
 
-    v1 = stru_5C6E00->uPiMask & 0xD5;
-    if (v1 >= (signed int)stru_5C6E00->uIntegerHalfPi)
-        v2 = -stru_5C6E00->pTanTable[stru_5C6E00->uIntegerPi - v1];
+    v1 = TrigLUT->uPiMask & 0xD5;
+    if (v1 >= (signed int)TrigLUT->uIntegerHalfPi)
+        v2 = -TrigLUT->pTanTable[TrigLUT->uIntegerPi - v1];
     else
-        v2 = stru_5C6E00->pTanTable[v1];
+        v2 = TrigLUT->pTanTable[v1];
     HEXRAYS_LODWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 31;
     HEXRAYS_HIDWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 15 >> 16;
     v4 = (signed int)(v3 / v2) >> 16;
@@ -2417,19 +2417,19 @@ void ODM_ProcessPartyActions() {
     }
     //***********************************************
     _walk_speed = pParty->uWalkSpeed;
-    _angle_y = pParty->sRotationY;
+    _angle_y = pParty->sRotationZ;
     _angle_x = pParty->sRotationX;
     // v126 = pEventTimer->dt_in_some_format;
     /*v119 = (Player **)((unsigned __int64)(pEventTimer->dt_in_some_format
                                         * (signed __int64)((signed
        int)(pParty->field_20_prolly_turn_speed
                                                                       *
-       stru_5C6E00->uIntegerPi) / 180)) >> 16);*/
+       TrigLUT->uIntegerPi) / 180)) >> 16);*/
     __int64 dturn =
         (unsigned __int64)(pEventTimer->dt_in_some_format *
                            (signed __int64)((signed int)(pParty
                                                              ->y_rotation_speed *
-                                                         stru_5C6E00
+                                                         TrigLUT
                                                              ->uIntegerPi) /
                                             180)) >>
         16;
@@ -2506,7 +2506,7 @@ void ODM_ProcessPartyActions() {
                 else
                     _angle_y += dturn * fTurnSpeedMultiplier;  // time-based smooth turn
 
-                _angle_y &= stru_5C6E00->uDoublePiMask;
+                _angle_y &= TrigLUT->uDoublePiMask;
                 break;
 
             case PARTY_TurnRight:  // поворот вправо
@@ -2515,7 +2515,7 @@ void ODM_ProcessPartyActions() {
                 else
                     _angle_y -= dturn * fTurnSpeedMultiplier;
 
-                _angle_y &= stru_5C6E00->uDoublePiMask;
+                _angle_y &= TrigLUT->uDoublePiMask;
                 break;
 
             case PARTY_FastTurnLeft:  // быстрый поворот влево
@@ -2524,7 +2524,7 @@ void ODM_ProcessPartyActions() {
                 else
                     _angle_y += 2.0f * fTurnSpeedMultiplier * (double)dturn;
 
-                _angle_y &= stru_5C6E00->uDoublePiMask;
+                _angle_y &= TrigLUT->uDoublePiMask;
                 break;
 
             case PARTY_FastTurnRight:  // быстрый поворот вправо
@@ -2533,7 +2533,7 @@ void ODM_ProcessPartyActions() {
                 else
                     _angle_y -= 2.0f * fTurnSpeedMultiplier * (double)dturn;
 
-                _angle_y &= stru_5C6E00->uDoublePiMask;
+                _angle_y &= TrigLUT->uDoublePiMask;
                 break;
 
             case PARTY_StrafeLeft:  // хождение боком в влево
@@ -2613,11 +2613,11 @@ void ODM_ProcessPartyActions() {
                     v128 = v1;
                     party_walking_flag = true;
                 } else {
-                    /*v2 += (unsigned __int64)(stru_5C6E00->Cos(_angle_y)
+                    /*v2 += (unsigned __int64)(TrigLUT->Cos(_angle_y)
                                      * (signed __int64)(signed int)(2 *
                     (unsigned __int64)(signed __int64)((double)_walk_speed *
                     fWalkSpeedMultiplier))) >> 16; v1 += (unsigned
-                    __int64)((signed int)stru_5C6E00->Sin(_angle_y)
+                    __int64)((signed int)TrigLUT->Sin(_angle_y)
                                      * (signed __int64)(signed int)(2 *
                     (unsigned __int64)(signed __int64)((double)_walk_speed *
                     fWalkSpeedMultiplier))) >> 16;*/
@@ -2719,11 +2719,11 @@ void ODM_ProcessPartyActions() {
         }
     }
 
-    pParty->sRotationY = _angle_y;
+    pParty->sRotationZ = _angle_y;
     pParty->sRotationX = _angle_x;
     //-------------------------------------------
     if (pParty->bFlying) {
-        v129 = fixpoint_mul(4, stru_5C6E00->Cos(OS_GetTime()));
+        v129 = fixpoint_mul(4, TrigLUT->Cos(OS_GetTime()));
         party_new_Z = v113 + v129;
         if (pModel_) party_new_Z = v113;
         if (pParty->FlyActive())
@@ -2910,16 +2910,16 @@ void ODM_ProcessPartyActions() {
         }
 
         if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_Decoration) {
-            v129 = stru_5C6E00->Atan2(
+            v129 = TrigLUT->Atan2(
                 _angle_x - pLevelDecorations[(signed int)_actor_collision_struct.pid >> 3]
                                .vPosition.x,
                 _angle_y - pLevelDecorations[(signed int)_actor_collision_struct.pid >> 3]
                                .vPosition.y);
-            v2 = fixpoint_mul(stru_5C6E00->Cos(v129),
+            v2 = fixpoint_mul(TrigLUT->Cos(v129),
                               integer_sqrt(v2 * v2 + v128 * v128));
-            v122 = fixpoint_mul(stru_5C6E00->Sin(v129),
+            v122 = fixpoint_mul(TrigLUT->Sin(v129),
                                 integer_sqrt(v2 * v2 + v128 * v128));
-            v128 = fixpoint_mul(stru_5C6E00->Sin(v129),
+            v128 = fixpoint_mul(TrigLUT->Sin(v129),
                                 integer_sqrt(v2 * v2 + v128 * v128));
         }
 
@@ -3432,12 +3432,12 @@ void UpdateActors_ODM() {
             if (Actor_Speed > 1000) Actor_Speed = 1000;
 
             pActors[Actor_ITR].vVelocity.x =
-                fixpoint_mul(stru_5C6E00->Cos(pActors[Actor_ITR].uYawAngle), Actor_Speed);
+                fixpoint_mul(TrigLUT->Cos(pActors[Actor_ITR].uYawAngle), Actor_Speed);
             pActors[Actor_ITR].vVelocity.y =
-                fixpoint_mul(stru_5C6E00->Sin(pActors[Actor_ITR].uYawAngle), Actor_Speed);
+                fixpoint_mul(TrigLUT->Sin(pActors[Actor_ITR].uYawAngle), Actor_Speed);
             if (uIsFlying) {
                 pActors[Actor_ITR].vVelocity.z = fixpoint_mul(
-                    stru_5C6E00->Sin(pActors[Actor_ITR].uPitchAngle), Actor_Speed);
+                    TrigLUT->Sin(pActors[Actor_ITR].uPitchAngle), Actor_Speed);
             }
         } else {
             pActors[Actor_ITR].vVelocity.x =
@@ -3633,16 +3633,16 @@ void UpdateActors_ODM() {
                     Coll_Speed = integer_sqrt(
                         pActors[Actor_ITR].vVelocity.x * pActors[Actor_ITR].vVelocity.x +
                         pActors[Actor_ITR].vVelocity.y * pActors[Actor_ITR].vVelocity.y);
-                    Angle_To_Decor = stru_5C6E00->Atan2(
+                    Angle_To_Decor = TrigLUT->Atan2(
                         pActors[Actor_ITR].vPosition.x -
                             pLevelDecorations[v39].vPosition.x,
                         pActors[Actor_ITR].vPosition.y -
                             pLevelDecorations[v39].vPosition.y);
 
                     pActors[Actor_ITR].vVelocity.x =
-                        fixpoint_mul(stru_5C6E00->Cos(Angle_To_Decor), Coll_Speed);
+                        fixpoint_mul(TrigLUT->Cos(Angle_To_Decor), Coll_Speed);
                     pActors[Actor_ITR].vVelocity.y =
-                        fixpoint_mul(stru_5C6E00->Sin(Angle_To_Decor), Coll_Speed);
+                        fixpoint_mul(TrigLUT->Sin(Angle_To_Decor), Coll_Speed);
                     break;
                 case OBJECT_BModel:
                     ODMFace * face = &pOutdoor->pBModels[_actor_collision_struct.pid >> 9]
@@ -3698,7 +3698,7 @@ void UpdateActors_ODM() {
                                     pActors[Actor_ITR].vPosition.z += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.z);
                                 }
-                                pActors[Actor_ITR].uYawAngle = stru_5C6E00->Atan2(
+                                pActors[Actor_ITR].uYawAngle = TrigLUT->Atan2(
                                     pActors[Actor_ITR].vVelocity.x,
                                     pActors[Actor_ITR].vVelocity.y);
                             }
@@ -3754,7 +3754,7 @@ void UpdateActors_ODM() {
                             int target_x = GridCellToWorldPosX(i);
                             int target_y = GridCellToWorldPosZ(j - 1);
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
-                                pActors[Actor_ITR].uYawAngle = stru_5C6E00->Atan2(target_x -
+                                pActors[Actor_ITR].uYawAngle = TrigLUT->Atan2(target_x -
                                     pActors[Actor_ITR].vPosition.x, target_y -
                                     pActors[Actor_ITR].vPosition.y);
                                 pActors[Actor_ITR].uCurrentActionTime = 0;
@@ -3825,7 +3825,7 @@ void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
     pOutdoor->MessWithLUN();
     pOutdoor->level_filename = pFilename;
     pWeather->Initialize();
-    pIndoorCameraD3D->sRotationY = pParty->sRotationY;
+    pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;
     // pODMRenderParams->RotationToInts();
     pOutdoor->UpdateSunlightVectors();

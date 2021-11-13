@@ -939,7 +939,7 @@ void Game::EventLoop() {
                             pParty->uFallStartY = Party_Teleport_Z_Pos;
                         }
                         if (Party_Teleport_Cam_Yaw) {
-                            pParty->sRotationY = Party_Teleport_Cam_Yaw;
+                            pParty->sRotationZ = Party_Teleport_Cam_Yaw;
                         }
                         if (Party_Teleport_Cam_Pitch) {
                             pParty->sRotationX = Party_Teleport_Cam_Pitch;
@@ -1332,7 +1332,7 @@ void Game::EventLoop() {
                             pParty->vPosition.y = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
                             pParty->vPosition.z = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
                             pParty->uFallStartY = pParty->vPosition.z;
-                            pParty->sRotationY = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
+                            pParty->sRotationZ = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
                             pParty->sRotationX = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
                         }
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1379,7 +1379,7 @@ void Game::EventLoop() {
                                             TownPortalList[v65].pos.z;
                                         pParty->uFallStartY =
                                             pParty->vPosition.z;
-                                        pParty->sRotationY =
+                                        pParty->sRotationZ =
                                             TownPortalList[v65].rot_y;
                                         pParty->sRotationX =
                                             TownPortalList[v65].rot_x;
@@ -2843,13 +2843,13 @@ void Game::GameLoop() {
                     pParty->vPosition.x = -17331;  // respawn in harmondale
                     pParty->vPosition.y = 12547;
                     pParty->vPosition.z = 465;
-                    pParty->sRotationY = 0;
+                    pParty->sRotationZ = 0;
                     pLocationName = "out02.odm";
                 } else {
                     pParty->vPosition.x = 12552;  // respawn on emerald isle
                     pParty->vPosition.y = 1816;
                     pParty->vPosition.z = 0;
-                    pParty->sRotationY = 512;
+                    pParty->sRotationZ = 512;
                     pLocationName = "out01.odm";
                 }
                 strcpy(Source, pLocationName);
@@ -2864,7 +2864,7 @@ void Game::GameLoop() {
                     Party_Teleport_X_Pos = pParty->vPosition.x;
                     Party_Teleport_Y_Pos = pParty->vPosition.y;
                     Party_Teleport_Z_Pos = pParty->vPosition.z;
-                    Party_Teleport_Cam_Yaw = pParty->sRotationY;
+                    Party_Teleport_Cam_Yaw = pParty->sRotationZ;
                     Party_Teleport_Cam_Pitch = pParty->sRotationX;
                     Start_Party_Teleport_Flag = 1;
                     PrepareWorld(1);

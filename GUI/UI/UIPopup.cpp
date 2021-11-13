@@ -92,6 +92,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     render->SetUIClipRect(uX, uY, uX + uWidth, uY + uHeight);
 
+    float renwidth = render->GetRenderWidth();
+    float renheight = render->GetRenderHeight();
+
     unsigned int parchment_width = parchment->GetWidth();
     unsigned int parchment_height = parchment->GetHeight();
 
@@ -102,22 +105,22 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         coord_x = uX - parchment_width;
         for (uint i = uNumTiles + 1; i; --i) {
             coord_x += parchment_width;
-            render->DrawTextureNew(coord_x / 640.0f, coord_y / 480.0f,
+            render->DrawTextureNew(coord_x / renwidth, coord_y / renheight,
                                    parchment);
         }
         coord_y += parchment_height;
     }
 
-    render->DrawTextureAlphaNew(uX / 640.0f, uY / 480.0f, messagebox_corner_x);
+    render->DrawTextureAlphaNew(uX / renwidth, uY / renheight, messagebox_corner_x);
     render->DrawTextureAlphaNew(
-        uX / 640.0f, (uY + uHeight - messagebox_corner_y->GetHeight()) / 480.0f,
+        uX / renwidth, (uY + uHeight - messagebox_corner_y->GetHeight()) / renheight,
         messagebox_corner_y);
     render->DrawTextureAlphaNew(
-        (uX + uWidth - messagebox_corner_z->GetWidth()) / 640.0f, uY / 480.0f,
+        (uX + uWidth - messagebox_corner_z->GetWidth()) / renwidth, uY / renheight,
         messagebox_corner_z);
     render->DrawTextureAlphaNew(
-        (uX + uWidth - messagebox_corner_z->GetWidth()) / 640.0f,
-        (uY + uHeight - messagebox_corner_y->GetHeight()) / 480.0f,
+        (uX + uWidth - messagebox_corner_z->GetWidth()) / renwidth,
+        (uY + uHeight - messagebox_corner_y->GetHeight()) / renheight,
         messagebox_corner_w);
 
     if (uWidth >
@@ -130,11 +133,11 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         for (unsigned int x = uX + messagebox_corner_x->GetWidth();
              x < uX + uWidth - messagebox_corner_x->GetWidth();
              x += messagebox_border_top->GetWidth()) {
-            render->DrawTextureAlphaNew(x / 640.0f, uY / 480.0f,
+            render->DrawTextureAlphaNew(x / renwidth, uY / renheight,
                                         messagebox_border_top);
             render->DrawTextureAlphaNew(
-                x / 640.0f,
-                (uY + uHeight - messagebox_border_bottom->GetHeight()) / 480.0f,
+                x / renwidth,
+                (uY + uHeight - messagebox_border_bottom->GetHeight()) / renheight,
                 messagebox_border_bottom);
         }
     }
@@ -149,12 +152,12 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         for (unsigned int y = uY + messagebox_corner_x->GetHeight();
              y < uY + uHeight - messagebox_corner_y->GetHeight();
              y += messagebox_border_top->GetHeight()) {
-            render->DrawTextureAlphaNew(uX / 640.0f, y / 480.0f,
+            render->DrawTextureAlphaNew(uX / renwidth, y / renheight,
                                         messagebox_border_left);
             render->DrawTextureAlphaNew(
                 (uX + uWidth - messagebox_border_right->GetWidth() - 1) /
-                    640.0f,
-                y / 480.0f, messagebox_border_right);
+                    renwidth,
+                y / renheight, messagebox_border_right);
         }
     }
     render->ResetUIClipRect();
@@ -2191,9 +2194,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             v39.y = pParty->vPosition.y;
 
             int rot_x, rot_y, rot_z;
-            Vec3_int_::Rotate(64, pParty->sRotationY, pParty->sRotationX, v39,
+            Vec3_int_::Rotate(64, pParty->sRotationZ, pParty->sRotationX, v39,
                               &rot_x, &rot_y, &rot_z);
-            SpriteObject::sub_42F7EB_DropItemAt(
+            SpriteObject::Drop_Item_At(
                 SPRITE_SPELL_FIRE_FIREBALL_IMPACT, rot_x, rot_y, rot_z, 0, 1, 0,
                 0, 0);
             if (dword_4E455C) {

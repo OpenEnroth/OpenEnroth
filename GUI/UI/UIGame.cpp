@@ -1838,7 +1838,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     // draw arrow on the minimap(include. Ritor1)
     uint arrow_idx;
-    unsigned int rotate = pParty->sRotationY & stru_5C6E00->uDoublePiMask;
+    unsigned int rotate = pParty->sRotationZ & TrigLUT->uDoublePiMask;
     if ((signed int)rotate <= 1920) arrow_idx = 6;
     if ((signed int)rotate < 1664) arrow_idx = 5;
     if ((signed int)rotate <= 1408) arrow_idx = 4;
@@ -1980,7 +1980,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_minimap_frame);
     render->SetUIClipRect(541, 0, 567, 480);
-    render->DrawTextureAlphaNew((floorf(((double)pParty->sRotationY * 0.1171875) + 0.5f) + 285) / 640.0f,
+    render->DrawTextureAlphaNew((floorf(((double)pParty->sRotationZ * 0.1171875) + 0.5f) + 285) / 640.0f,
         136 / 480.0f, game_ui_minimap_compass);
     render->ResetUIClipRect();
 }
@@ -2202,8 +2202,8 @@ __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
                             pOtherOverlayList->pOverlays[i].screen_space_x;
                         v10.screen_space_y =
                             pOtherOverlayList->pOverlays[i].screen_space_y;
-                        v10.screenspace_projection_factor_x = v11 * pFrame->scale.GetFloat();
-                        v10.screenspace_projection_factor_y = v11 * pFrame->scale.GetFloat();
+                        v10.screenspace_projection_factor_x = v11 * pFrame->scale;
+                        v10.screenspace_projection_factor_y = v11 * pFrame->scale;
                         v10.pPalette = PaletteManager::Get_Dark_or_Red_LUT(
                             pFrame->uPaletteIndex, 0, 1);
                         v8 = pOtherOverlayList->pOverlays[i].field_2;

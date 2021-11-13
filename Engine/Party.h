@@ -178,7 +178,7 @@ struct Party {
     void PartyFindsGold(
         unsigned int uNumGold,
         int _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal);
-    void sub_421B2C_PlaceInInventory_or_DropPickedItem();
+    void PickedItem_PlaceInInventory_or_Drop();
 
     int GetGold() const;
     static void SetGold(int amount);
@@ -255,7 +255,7 @@ struct Party {
     GameTime last_regenerated;
     PartyTimeStruct PartyTimes;
     Vec3_int_ vPosition;
-    int sRotationY;
+    int sRotationZ;
     int sRotationX;
     Vec3_int_ vPrevPosition;
     int sPrevRotationY;

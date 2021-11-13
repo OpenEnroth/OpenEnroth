@@ -91,16 +91,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            Vec3_int_::Rotate((24<<16), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3_int_::Rotate((24/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 2:
-            Vec3_int_::Rotate((8<<16), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3_int_::Rotate((8/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 3:
-            Vec3_int_::Rotate((8<<16), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3_int_::Rotate((8/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 4:
-            Vec3_int_::Rotate((24<<16), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3_int_::Rotate((24/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         default:
             assert(false);
@@ -116,12 +116,12 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {
         long long v13 =
-            fixpoint_mul(stru_5C6E00->Cos(yaw), stru_5C6E00->Cos(pitch));
+            fixpoint_mul(TrigLUT->Cos(yaw), TrigLUT->Cos(pitch));
         long long a5a =
-            fixpoint_mul(stru_5C6E00->Sin(yaw), stru_5C6E00->Cos(pitch));
+            fixpoint_mul(TrigLUT->Sin(yaw), TrigLUT->Cos(pitch));
         vVelocity.x = fixpoint_mul(v13, speed);
         vVelocity.y = fixpoint_mul(a5a, speed);
-        vVelocity.z = fixpoint_mul(stru_5C6E00->Sin(pitch), speed);
+        vVelocity.z = fixpoint_mul(TrigLUT->Sin(pitch), speed);
     }
 
     // copy sprite object into slot
@@ -455,13 +455,13 @@ LABEL_13:
         }
         v57 = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
                            pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y);
-        v38 = stru_5C6E00->Atan2(
+        v38 = TrigLUT->Atan2(
             pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(_actor_collision_struct.pid)].vPosition.x,
             pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(_actor_collision_struct.pid)].vPosition.y);
         pSpriteObjects[uLayingItemID].vVelocity.x =
-            fixpoint_mul(stru_5C6E00->Cos(v38), v57);
+            fixpoint_mul(TrigLUT->Cos(v38), v57);
         pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(
-            stru_5C6E00->Sin(v38 - stru_5C6E00->uIntegerHalfPi), v57);
+            TrigLUT->Sin(v38 - TrigLUT->uIntegerHalfPi), v57);
         goto LABEL_74;
     }
 }
@@ -624,14 +624,14 @@ LABEL_25:
                     pSpriteObject->vVelocity.x * pSpriteObject->vVelocity.x +
                     pSpriteObject->vVelocity.y * pSpriteObject->vVelocity.y);
                 v23 =
-                    stru_5C6E00->Atan2(pSpriteObject->vPosition.x -
+                    TrigLUT->Atan2(pSpriteObject->vPosition.x -
                                            pLevelDecorations[v15].vPosition.x,
                                        pSpriteObject->vPosition.y -
                                            pLevelDecorations[v15].vPosition.y);
                 pSpriteObject->vVelocity.x =
-                    fixpoint_mul(stru_5C6E00->Cos(v23), v40);
+                    fixpoint_mul(TrigLUT->Cos(v23), v40);
                 pSpriteObject->vVelocity.y =
-                    fixpoint_mul(stru_5C6E00->Sin(v23), v40);
+                    fixpoint_mul(TrigLUT->Sin(v23), v40);
             }
             if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_BModel) {
                 _actor_collision_struct.field_84 = (signed int)PID_ID(_actor_collision_struct.pid);
@@ -941,7 +941,7 @@ void SpriteObject::_46BEF1_apply_spells_aoe() {
 }
 
 //----- (0042F7EB) --------------------------------------------------------
-bool SpriteObject::sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x,
+bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
                                          int y, int z, int a4, int count,
                                          int a7, unsigned __int16 attributes,
                                          ItemGen *a9) {
@@ -977,11 +977,11 @@ bool SpriteObject::sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x,
     if (a7) {
         if (count > 0) {
             for (uint i = count; i; --i) {
-                pSpellObject.uFacing = rand() % (int)stru_5C6E00->uIntegerDoublePi;
+                pSpellObject.uFacing = rand() % (int)TrigLUT->uIntegerDoublePi;
                 pSpellObject.Create(
                     (int16_t)pSpellObject.uFacing,
-                    ((int)stru_5C6E00->uIntegerHalfPi / 2) +
-                        (rand() % ((signed int)stru_5C6E00->uIntegerHalfPi / 2)),
+                    ((int)TrigLUT->uIntegerHalfPi / 2) +
+                        (rand() % ((signed int)TrigLUT->uIntegerHalfPi / 2)),
                     a4, 0);
             }
         }
@@ -990,7 +990,7 @@ bool SpriteObject::sub_42F7EB_DropItemAt(SPRITE_OBJECT_TYPE sprite, int x,
         if (count > 0) {
             for (uint i = count; i; --i) {
                 pSpellObject.Create((int16_t)pSpellObject.uFacing,
-                                    stru_5C6E00->uIntegerHalfPi, a4, 0);
+                                    TrigLUT->uIntegerHalfPi, a4, 0);
             }
         }
     }
@@ -1068,7 +1068,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
                 return 1;
             }
             if (PID_TYPE(a2) != OBJECT_Item) {
-                sub_43A97E(uLayingItemID, a2);
+                Apply_Spell_Sprite_Damage(uLayingItemID, a2);
                 pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
                 pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
                 if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1112,7 +1112,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_PROJECTILE_530:
         case SPRITE_PROJECTILE_535:
         case SPRITE_PROJECTILE_540: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1136,7 +1136,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
                 pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-                sub_43A97E(uLayingItemID, a2);
+                Apply_Spell_Sprite_Damage(uLayingItemID, a2);
                 SpriteObject::OnInteraction(uLayingItemID);
                 int v16 = 0;
                 if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
@@ -1213,7 +1213,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_EARTH_MASS_DISTORTION:
         case SPRITE_SPELL_MIND_MIND_BLAST:
         case SPRITE_SPELL_MIND_PSYCHIC_SHOCK: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1239,7 +1239,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         }
 
         case SPRITE_BLASTER_PROJECTILE: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = SPRITE_BLASTER_IMPACT;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_BLASTER_IMPACT);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1265,9 +1265,9 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             if (pSpriteObjects[uLayingItemID].spell_skill == 4) {
                 v65 = 9;
             }
-            int v64 = pSpriteObjects[uLayingItemID].uFacing - stru_5C6E00->uIntegerDoublePi;
+            int v64 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT->uIntegerDoublePi;
             for (int i = 0; i < v65; i++) {
-                v64 += (int)stru_5C6E00->uIntegerHalfPi / 2;
+                v64 += (int)TrigLUT->uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v64, 0, 1000, 0);
             }
             SpriteObject::OnInteraction(uLayingItemID);
@@ -1296,7 +1296,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             int v16 = 0;
             if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
                 v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1353,13 +1353,13 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             pSpriteObjects[uLayingItemID].vVelocity.z = 0;
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
-            int v89 = pSpriteObjects[uLayingItemID].uFacing - stru_5C6E00->uIntegerDoublePi;
+            int v89 = pSpriteObjects[uLayingItemID].uFacing - TrigLUT->uIntegerDoublePi;
             for (int i = 0; i < 8; i++) {
                 pRnd->SetRange(-128, 128);
                 v90 = pRnd->GetInRange();
                 pRnd->SetRange(5, 500);
                 v91 = pRnd->GetInRange();
-                v89 += stru_5C6E00->uIntegerHalfPi / 2;
+                v89 += TrigLUT->uIntegerHalfPi / 2;
                 pSpriteObjects[uLayingItemID].Create(v90 + v89, 0, v91, 0);
             }
             SpriteObject::OnInteraction(uLayingItemID);
@@ -1412,7 +1412,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             if (PID_TYPE(a2) == OBJECT_Actor &&
                 MonsterStats::BelongsToSupertype(pActors[PID_ID(a2)].pMonsterInfo.uID,
                                                  MONSTER_SUPERTYPE_UNDEAD)) {
-                                                 sub_43A97E(uLayingItemID, a2);
+                                                 Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             }
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_LIGHT_DESTROY_UNDEAD_1;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_LIGHT_DESTROY_UNDEAD_1);
@@ -1443,7 +1443,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_BODY_FLYING_FIST:
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT:
         case SPRITE_SPELL_LIGHT_SUNRAY: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1597,7 +1597,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         }
 
         case SPRITE_SPELL_DARK_SHARPMETAL: {
-            sub_43A97E(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_DARK_SHARPMETAL_IMPACT;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1711,7 +1711,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
 }
 
 //----- (0043A97E) --------------------------------------------------------
-void sub_43A97E(unsigned int uLayingItemID, int a2) {
+void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
     if (PID_TYPE(a2) == OBJECT_Player) {
         layingitem_vel_50FDFC.x = pSpriteObjects[uLayingItemID].vVelocity.x;
         layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;

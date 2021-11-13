@@ -436,7 +436,7 @@ struct Party_Image_MM7 {
     /* 00034 */ int64_t uLastRegenerationTime;
     /* 0003C */ PartyTimeStruct_Image_MM7 PartyTimes;
     /* 006B4 */ Vec3_int_ vPosition;
-    /* 006C0 */ int sRotationY;
+    /* 006C0 */ int sRotationZ;
     /* 006C4 */ int sRotationX;
     /* 006C8 */ Vec3_int_ vPrevPosition;
     /* 006D4 */ int sPrevRotationY;

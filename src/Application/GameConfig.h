@@ -14,7 +14,7 @@ namespace Application {
         std::shared_ptr<CommandLine> command_line;
         std::string renderer_name =
 #ifdef _WINDOWS
-            "DirectDraw";  //  "OpenGL";
+            "OpenGL";  // "DirectDraw";  //  "OpenGL";
 #else
             "OpenGL";
 #endif

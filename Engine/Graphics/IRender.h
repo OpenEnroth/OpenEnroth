@@ -472,17 +472,17 @@ int ODM_FarClip(unsigned int uNumVertices);
 struct SkyBillboardStruct {
     void CalcSkyFrustumVec(int a2, int a3, int a4, int a5, int a6, int a7);
 
-    int field_0_party_dir_x;
-    int field_4_party_dir_y;
-    int field_8_party_dir_z;
-    int CamVecLeft_Z;
-    int CamVecLeft_X;
-    int CamVecLeft_Y;
-    int CamVecFront_Z;
-    int CamVecFront_X;
-    int CamVecFront_Y;
-    int CamLeftDot;
-    int CamFrontDot;
+    float field_0_party_dir_x;  // cam view transform
+    float field_4_party_dir_y;
+    float field_8_party_dir_z;
+    float CamVecLeft_Z;
+    float CamVecLeft_X;
+    float CamVecLeft_Y;
+    float CamVecFront_Z;
+    float CamVecFront_X;
+    float CamVecFront_Y;
+    float CamLeftDot;
+    float CamFrontDot;
 };
 #pragma pack(pop)
 extern SkyBillboardStruct SkyBillboard;
