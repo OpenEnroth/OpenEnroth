@@ -1,6 +1,9 @@
 #pragma once
 
-enum NPCProf : __int32 {
+#include <cstdint>
+
+
+enum NPCProf : int32_t {
     Smith = 1,       // GM Weapon Repair;
     Armorer = 2,     // GM Armor Repair;
     Alchemist = 3,   // GM Potion Repair;

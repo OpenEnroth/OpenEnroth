@@ -229,7 +229,7 @@ void GUIWindow_Dialogue::Update() {
     if (pNPC->profession) {
         assert(pNPC->profession < 59);  // sometimes buffer overflows; errors emerge both here and
                                          // in dialogue text
-        title = localization->FormatString( // ^Pi[%s] %s
+        title = localization->FormatString(  // ^Pi[%s] %s
             429, pNPC->pName, localization->GetNpcProfessionName(pNPC->profession)
         );
     } else if (pNPC->pName) {
@@ -278,7 +278,7 @@ void GUIWindow_Dialogue::Update() {
             break;
 
         case DIALOGUE_ARENA_REWARD:
-            dialogue_string = localization->FormatString(LSTR_ARENA_REWARD, gold_transaction_amount);  
+            dialogue_string = localization->FormatString(LSTR_ARENA_REWARD, gold_transaction_amount);
             break;
 
         case DIALOGUE_ARENA_ALREADY_WON:
