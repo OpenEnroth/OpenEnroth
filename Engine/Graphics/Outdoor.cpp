@@ -459,7 +459,7 @@ int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, int y, int z) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
     ODM_GetFloorLevel(x, y, z, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
-    if (pParty->uFlags & PARTY_FLAGS_1_FALLING || bmodel_standing_on_pid || is_on_water)  // на bmodel, и или на воде
+    if (pParty->IsAriborne() || bmodel_standing_on_pid || is_on_water)
         return 2;
     int v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x),
                      WorldPosToGridCellZ(pParty->vPosition.y) - 1);
@@ -2116,9 +2116,8 @@ void ODM_UpdateUserInputAndOther() {
         pOutdoor->level_filename = pCurrentMapName;
         v0 = pOutdoor->GetTravelDestination(pParty->vPosition.x,
                                             pParty->vPosition.y, pOut, 32);
-        if (!engine->IsUnderwater() && (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER |
-                                               PARTY_FLAGS_1_FALLING | 0x04) ||
-                             pParty->uFlags & 0x0200 || pParty->bFlying) ||
+        if (!engine->IsUnderwater() && (pParty->IsAriborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
+                             pParty->uFlags & PARTY_FLAGS_1_BURNING || pParty->bFlying) ||
             !v0) {
             if (pParty->vPosition.x < -22528) pParty->vPosition.x = -22528;
             if (pParty->vPosition.x > 22528) pParty->vPosition.x = 22528;
@@ -3057,10 +3056,10 @@ void ODM_ProcessPartyActions() {
     if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  // отключить  звук ходьбы при остановке
         pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
-    if (!hovering || !not_high_fall)  //  или не высокое падение
-        pParty->uFlags &= ~PARTY_FLAGS_1_FALLING;
+    if (!hovering || !not_high_fall)
+        pParty->SetAirborne(false);
     else
-        pParty->uFlags |= PARTY_FLAGS_1_FALLING;
+        pParty->SetAirborne(true);
     int pMap_X = WorldPosToGridCellX(pParty->vPosition.x);
     int pMap_Y = WorldPosToGridCellZ(pParty->vPosition.y) - 1;
     unsigned int v114_a = WorldPosToGridCellX(pX);

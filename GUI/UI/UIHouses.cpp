@@ -1076,7 +1076,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
             pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
             pBtn_ExitCancel = pDialogueWindow->CreateButton(
                 526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
-                localization->GetString(74),  // "End Conversation"
+                localization->GetString(LSTR_END_CONVERSATION),
                 { { ui_buttdesc2 } });
             pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
                 UIMSG_BuyInShop_Identify_Repair, 0);
@@ -1094,11 +1094,10 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
                 pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
                 pBtn_ExitCancel = pDialogueWindow->CreateButton(
                     526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
-                    localization->GetString(74),  // "End Conversation"
+                    localization->GetString(LSTR_END_CONVERSATION),
                     { { ui_buttdesc2 } });
                 pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
-                    UIMSG_BuyInShop_Identify_Repair,
-                    0);
+                    UIMSG_BuyInShop_Identify_Repair, 0);
             } else if (uActiveCharacter) {
                 if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple())
                     return;

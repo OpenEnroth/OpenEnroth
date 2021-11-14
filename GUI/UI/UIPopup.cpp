@@ -1049,19 +1049,13 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
     char Source[120];  // [sp+4BCh] [bp-88h]@7
     int v35;           // [sp+53Ch] [bp-8h]@1
 
-    v35 = pFontSmallnum->GetLineWidth(localization->GetString(431));  // Normal
-    if (pFontSmallnum->GetLineWidth(localization->GetString(433)) >
-        (signed int)v35)
-        v35 = pFontSmallnum->GetLineWidth(
-            localization->GetString(433));  // Expert
-    if (pFontSmallnum->GetLineWidth(localization->GetString(432)) >
-        (signed int)v35)
-        v35 = pFontSmallnum->GetLineWidth(
-            localization->GetString(432));  // Master
-    if (pFontSmallnum->GetLineWidth(localization->GetString(96)) >
-        (signed int)v35)
-        v35 =
-            pFontSmallnum->GetLineWidth(localization->GetString(96));  // Grand
+    v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)) > (signed int)v35)
+        v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)) > (signed int)v35)
+        v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)) > (signed int)v35)
+        v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
 
     char static_sub_417BB5_out_string[1200];
     a2[0] = 0;
@@ -1092,15 +1086,15 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
          0x3F)) {
         sprintf(static_sub_417BB5_out_string, a2,
                 localization->GetSkillDescription(uPlayerSkillType),
-                localization->GetString(431), v35 + 3, v35 + 15,
-                localization->GetSkillDescriptionNormal(
-                    uPlayerSkillType),  // changed from 5 to 15 to add space
-                                        // after ':'
-                localization->GetString(433), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_NORMAL), v35 + 3, v35 + 15,
+                localization->GetSkillDescriptionNormal(uPlayerSkillType),
+                // changed from 5 to 15 to add space
+                // after ':'
+                localization->GetString(LSTR_EXPERT), v35 + 3, v35 + 15,
                 localization->GetSkillDescriptionExpert(uPlayerSkillType),
-                localization->GetString(432), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_MASTER), v35 + 3, v35 + 15,
                 localization->GetSkillDescriptionMaster(uPlayerSkillType),
-                localization->GetString(96), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_GRAND), v35 + 3, v35 + 15,
                 localization->GetSkillDescriptionGrand(uPlayerSkillType));
     } else {
         sprintf(Source, "\f%05d", Color16(0xFFu, 0xFFu, 0xFFu));
@@ -1109,13 +1103,13 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
         sprintf(
             static_sub_417BB5_out_string, a2,
             localization->GetSkillDescription(uPlayerSkillType),
-            localization->GetString(431), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_NORMAL), v35 + 3, v35 + 5,
             localization->GetSkillDescriptionNormal(uPlayerSkillType),
-            localization->GetString(433), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_EXPERT), v35 + 3, v35 + 5,
             localization->GetSkillDescriptionExpert(uPlayerSkillType),
-            localization->GetString(432), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_MASTER), v35 + 3, v35 + 5,
             localization->GetSkillDescriptionMaster(uPlayerSkillType),
-            localization->GetString(96), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_GRAND), v35 + 3, v35 + 5,
             localization->GetSkillDescriptionGrand(uPlayerSkillType),
             localization->GetString(623),  // Bonus
             (pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) &
@@ -1395,41 +1389,34 @@ void DrawSpellDescriptionPopup(int spell_index) {
     spell_info_window.uFrameZ = 417;
     spell_info_window.uFrameW = v3 + 67;
     spell_info_window.sHint.clear();
-    v5 = pFontSmallnum->GetLineWidth(localization->GetString(431));  // Normal
-    if (pFontSmallnum->GetLineWidth(localization->GetString(432)) >
-        v5)  // Master
-        v5 = pFontSmallnum->GetLineWidth(
-            localization->GetString(432));  // Master
-    if (pFontSmallnum->GetLineWidth(localization->GetString(433)) >
-        v5)  // Expert
-        v5 = pFontSmallnum->GetLineWidth(
-            localization->GetString(433));  // Expert
-    if (pFontSmallnum->GetLineWidth(localization->GetString(96)) > v5)  // Grand
-        v5 = pFontSmallnum->GetLineWidth(localization->GetString(96));
+    v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)) > v5)
+        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)) > v5)
+        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)) > v5)
+        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
 
     String str = StringPrintf(
         "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%"
         "s\t000\n%s\t%03d:\t%03d%s",
-        spell->pDescription, localization->GetString(431), v5 + 3, v5 + 10,
-        spell->pBasicSkillDesc,  // Normal
-        localization->GetString(433), v5 + 3, v5 + 10,
-        spell->pExpertSkillDesc,  // Expert
-        localization->GetString(432), v5 + 3, v5 + 10,
-        spell->pMasterSkillDesc,  // Master
-        localization->GetString(96), v5 + 3, v5 + 10,
-        spell->pGrandmasterSkillDesc);  // Grand
-    spell_info_window.uFrameHeight +=
-        pFontSmallnum->CalcTextHeight(str, spell_info_window.uFrameWidth, 0);
+        spell->pDescription,
+        localization->GetString(LSTR_NORMAL), v5 + 3, v5 + 10, spell->pBasicSkillDesc,
+        localization->GetString(LSTR_EXPERT), v5 + 3, v5 + 10, spell->pExpertSkillDesc,
+        localization->GetString(LSTR_MASTER), v5 + 3, v5 + 10, spell->pMasterSkillDesc,
+        localization->GetString(LSTR_GRAND), v5 + 3, v5 + 10, spell->pGrandmasterSkillDesc
+    );
+    spell_info_window.uFrameHeight += pFontSmallnum->CalcTextHeight(
+        str, spell_info_window.uFrameWidth, 0
+    );
     if ((signed int)spell_info_window.uFrameHeight < 150)
         spell_info_window.uFrameHeight = 150;
     spell_info_window.uFrameWidth = game_viewport_width;
     spell_info_window.DrawMessageBox(0);
     spell_info_window.uFrameWidth -= 12;
     spell_info_window.uFrameHeight -= 12;
-    spell_info_window.uFrameZ =
-        spell_info_window.uFrameX + spell_info_window.uFrameWidth - 1;
-    spell_info_window.uFrameW =
-        spell_info_window.uFrameHeight + spell_info_window.uFrameY - 1;
+    spell_info_window.uFrameZ = spell_info_window.uFrameX + spell_info_window.uFrameWidth - 1;
+    spell_info_window.uFrameW = spell_info_window.uFrameHeight + spell_info_window.uFrameY - 1;
     spell_info_window.DrawTitleText(
         pFontArrus, 0x78u, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), spell->pName, 3);
     spell_info_window.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);

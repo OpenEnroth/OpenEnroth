@@ -172,7 +172,7 @@ void UI_CreateEndConversationButton() {
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
-        localization->GetString(74),  // "End Conversation"
+        localization->GetString(LSTR_END_CONVERSATION),
         {{ui_exit_cancel_button_background}});
     pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
 }

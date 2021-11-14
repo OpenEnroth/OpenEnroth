@@ -716,8 +716,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
             if (player->uSkillPoints > skill_level)
                 skill_color = ui_character_skill_upgradeable_color;
 
-            if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem ==
-                j) {  // this needs to reset??
+            if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem == j) {  // this needs to reset??
                 if (player->uSkillPoints > skill_level)
                     skill_mastery_color = ui_character_bonus_text_color;
                 else
@@ -726,24 +725,26 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
             }
 
             if (player->GetActualSkillMastery(skill) == 1) {
-                auto Strsk = StringPrintf("%s\r%03d%2d",
-                                          localization->GetSkillName(skill),
-                                          right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY,
-                                                 skill_color, Strsk, 0, 0, 0);
+                auto Strsk = StringPrintf(
+                    "%s\r%03d%2d",
+                        localization->GetSkillName(skill), right_margin, skill_level
+                );
+                pGUIWindow_CurrentMenu->DrawText(
+                    pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0
+                );
             } else {
                 const char *skill_level_str = nullptr;
 
                 switch (player->GetActualSkillMastery(skill)) {
                     case 4:
-                        skill_level_str = localization->GetString(96);
-                        break;  // Grand
+                        skill_level_str = localization->GetString(LSTR_GRAND);
+                        break;
                     case 3:
-                        skill_level_str = localization->GetString(432);
-                        break;  // Master
+                        skill_level_str = localization->GetString(LSTR_MASTER);
+                        break;
                     case 2:
-                        skill_level_str = localization->GetString(433);
-                        break;  // Expert
+                        skill_level_str = localization->GetString(LSTR_EXPERT);
+                        break;
                 }
 
                 if (!skill_mastery_color)
@@ -752,9 +753,11 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 auto Strsk = StringPrintf(
                     "%s \f%05d%s\f%05d\r%03d%2d",
                     localization->GetSkillName(skill), skill_mastery_color,
-                    skill_level_str, skill_color, right_margin, skill_level);
-                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY,
-                                                 skill_color, Strsk, 0, 0, 0);
+                    skill_level_str, skill_color, right_margin, skill_level
+                );
+                pGUIWindow_CurrentMenu->DrawText(
+                    pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0
+                );
             }
         }
     }

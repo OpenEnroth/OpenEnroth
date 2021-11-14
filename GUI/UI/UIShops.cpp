@@ -1599,10 +1599,10 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     a1.uFrameX = 90;
     a1.uFrameZ = 417;
     a1.uFrameW = v3 + 67;
-    a2.y = pFontSmallnum->GetLineWidth(localization->GetString(431));
-    v14 = pFontSmallnum->GetLineWidth(localization->GetString(433));
-    v13 = pFontSmallnum->GetLineWidth(localization->GetString(432));
-    v4 = pFontSmallnum->GetLineWidth(localization->GetString(96));
+    a2.y = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
+    v14 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
+    v13 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
+    v4 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
     v5 = a2.y;
     if (v14 > a2.y) v5 = v14;
     if (v13 > v5) v5 = v13;
@@ -1612,14 +1612,11 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
         "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%"
         "s\t000\n%s\t%03d:\t%03d%s",
         pSpellStats->pInfos[spellId].pDescription,
-        localization->GetString(431),  // "Normal"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc,
-        localization->GetString(433),  // "Expert"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc,
-        localization->GetString(432),  // "Master"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc,
-        localization->GetString(96),  // "Grand"
-        v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc);
+        localization->GetString(LSTR_NORMAL), v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pBasicSkillDesc,
+        localization->GetString(LSTR_EXPERT), v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pExpertSkillDesc,
+        localization->GetString(LSTR_MASTER), v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pMasterSkillDesc,
+        localization->GetString(LSTR_GRAND), v5 + 3, v5 + 10, pSpellStats->pInfos[spellId].pGrandmasterSkillDesc
+    );
     v6 = pFontSmallnum->CalcTextHeight(str, a1.uFrameWidth, 0);
     a1.uFrameHeight += v6;
     if (a1.uFrameHeight < 150) {
