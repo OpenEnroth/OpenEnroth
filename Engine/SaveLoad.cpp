@@ -558,10 +558,10 @@ void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv")
         pNew_LOD->_4621A7();
     else
-        GameUI_StatusBar_OnEvent(localization->GetString(583), 2);  // "No saving in the Arena"
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NO_SAVING_IN_ARENA), 2);
 
     pEventTimer->Resume();
-    GameUI_StatusBar_OnEvent(localization->GetString(656), 2);  // "Game Saved!"
+    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_GAME_SAVED), 2);
     viewparams->bRedrawGameUI = true;
 }
 

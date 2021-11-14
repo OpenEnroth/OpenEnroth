@@ -328,7 +328,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->hirelingScrollPosition = 0;
     memset(&pHirelings, 0, sizeof(pHirelings));
 
-    strcpy(this->pPlayers[0].pName, localization->GetString(509));  // Zoltan
+    strcpy(this->pPlayers[0].pName, localization->GetString(LSTR_PC_NAME_ZOLTAN));
     this->pPlayers[0].uPrevFace = 17;
     this->pPlayers[0].uCurrentFace = 17;
     this->pPlayers[0].uPrevVoiceID = 17;
@@ -345,7 +345,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[0].pActiveSkills[PLAYER_SKILL_BOW] = 1;
     this->pPlayers[0].pActiveSkills[PLAYER_SKILL_SWORD] = 1;
 
-    strcpy(this->pPlayers[1].pName, localization->GetString(506));  // Roderic
+    strcpy(this->pPlayers[1].pName, localization->GetString(LSTR_PC_NAME_RODERIC));
     this->pPlayers[1].uPrevFace = 3;
     this->pPlayers[1].uCurrentFace = 3;
     this->pPlayers[1].uPrevVoiceID = 3;
@@ -362,7 +362,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[1].pActiveSkills[PLAYER_SKILL_DAGGER] = 1;
     this->pPlayers[1].pActiveSkills[PLAYER_SKILL_TRAP_DISARM] = 1;
 
-    strcpy(this->pPlayers[2].pName, localization->GetString(508));  // Serena
+    strcpy(this->pPlayers[2].pName, localization->GetString(LSTR_PC_NAME_SERENA));
     this->pPlayers[2].uPrevFace = 14;
     this->pPlayers[2].uCurrentFace = 14;
     this->pPlayers[2].uPrevVoiceID = 14;
@@ -379,7 +379,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
     this->pPlayers[2].pActiveSkills[PLAYER_SKILL_BODY] = 1;
     this->pPlayers[2].pActiveSkills[PLAYER_SKILL_MACE] = 1;
 
-    strcpy(this->pPlayers[3].pName, localization->GetString(507));  // Alexis
+    strcpy(this->pPlayers[3].pName, localization->GetString(LSTR_PC_NAME_ALEXIS));
     this->pPlayers[3].uPrevFace = 10;
     this->pPlayers[3].uCurrentFace = 10;
     this->pPlayers[3].uEndurance = 13;
@@ -542,7 +542,7 @@ void Party::Reset() {
 
     pPlayers[0].uSex = pPlayers[0].GetSexByVoice();
     pPlayers[0].RandomizeName();
-    strcpy(pPlayers[0].pName, localization->GetString(509));
+    strcpy(pPlayers[0].pName, localization->GetString(LSTR_PC_NAME_ZOLTAN));
 
     pPlayers[1].Reset(PLAYER_CLASS_THIEF);
     pPlayers[1].uCurrentFace = 3;
@@ -551,7 +551,7 @@ void Party::Reset() {
     pPlayers[1].SetInitialStats();
     pPlayers[1].uSex = pPlayers[1].GetSexByVoice();
     pPlayers[1].RandomizeName();
-    strcpy(pPlayers[1].pName, localization->GetString(506));
+    strcpy(pPlayers[1].pName, localization->GetString(LSTR_PC_NAME_RODERIC));
 
     pPlayers[2].Reset(PLAYER_CLASS_CLERIC);
     pPlayers[2].uCurrentFace = 14;
@@ -560,7 +560,7 @@ void Party::Reset() {
     pPlayers[2].SetInitialStats();
     pPlayers[2].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[2].RandomizeName();
-    strcpy(pPlayers[2].pName, localization->GetString(508));
+    strcpy(pPlayers[2].pName, localization->GetString(LSTR_PC_NAME_SERENA));
 
     pPlayers[3].Reset(PLAYER_CLASS_SORCERER);
     pPlayers[3].uCurrentFace = 10;
@@ -569,7 +569,7 @@ void Party::Reset() {
     pPlayers[3].SetInitialStats();
     pPlayers[3].uSex = pPlayers[3].GetSexByVoice();
     pPlayers[3].RandomizeName();
-    strcpy(pPlayers[3].pName, localization->GetString(507));
+    strcpy(pPlayers[3].pName, localization->GetString(LSTR_PC_NAME_ALEXIS));
 
     for (uint i = 0; i < 4; ++i) {
         pPlayers[i].uTimeToRecovery = 0;

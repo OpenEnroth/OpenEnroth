@@ -1415,12 +1415,11 @@ String Player::GetMeleeDamageString() {
 
     if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_FIRE) &&
         (mainHandItem->uItemID <= ITEM_WAND_INCENERATION)) {
-        return String(localization->GetString(595));  // Wand
+        return String(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
                 mainHandItem->uItemID == ITEM_LASER_RIFLE)) {
-        min_damage =
-            GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
+        min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
         max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX, true);
     } else {
         min_damage = GetMeleeDamageMinimal();  // weapons
@@ -1443,12 +1442,11 @@ String Player::GetRangedDamageString() {
 
     if (mainHandItem != nullptr && (mainHandItem->uItemID >= 135) &&
         (mainHandItem->uItemID <= 159)) {
-        return String(localization->GetString(595));  // Wand
+        return String(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
                 mainHandItem->uItemID == ITEM_LASER_RIFLE)) {
-        min_damage =
-            GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
+        min_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
         max_damage = GetItemsBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_MAX, true);
     } else {
         min_damage = GetRangedDamageMin();  // weaposn
@@ -3505,14 +3503,10 @@ enum CHARACTER_RACE Player::GetRace() const {
 
 String Player::GetRaceName() const {
     switch (GetRace()) {
-        case 0:
-            return localization->GetString(LSTR_RACE_HUMAN);
-        case 1:
-            return localization->GetString(LSTR_RACE_DWARF);
-        case 2:
-            return localization->GetString(LSTR_RACE_GOBLIN);
-        case 3:
-            return localization->GetString(LSTR_RACE_ELF);
+        case 0: return localization->GetString(LSTR_RACE_HUMAN);
+        case 1: return localization->GetString(LSTR_RACE_DWARF);
+        case 2: return localization->GetString(LSTR_RACE_GOBLIN);
+        case 3: return localization->GetString(LSTR_RACE_ELF);
     }
 }
 
@@ -4340,15 +4334,16 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         if (current_screen_type == CURRENT_SCREEN::SCREEN_CASTING) return;
         if (!playerAffected->CanAct()) {
             auto str = localization->FormatString(
-                382, localization->GetCharacterConditionName(
-                         playerAffected->GetMajorConditionIdx()));
+                382,
+                localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx())
+            );
             GameUI_StatusBar_OnEvent(str);
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
         if (engine->IsUnderwater()) {
-            GameUI_StatusBar_OnEvent(localization->GetString(652));  // You can not do that while you are underwater!
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_DO_UNDERWATER));
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
@@ -4485,67 +4480,76 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uMight += thisa;
                     status = StringPrintf(
                         "+%u %s %s", thisa, v74,
-                        localization->GetString(121));  // "Permanent"
+                        localization->GetString(LSTR_PERMANENT)
+                    );
                     break;
                 case 1:
                     playerAffected->uIntelligence += thisa;
                     status = StringPrintf(
                         "+%u %s %s", thisa, v74,
-                        localization->GetString(121));  // "Permanent"
+                        localization->GetString(LSTR_PERMANENT)
+                    );
                     break;
                 case 2:
                     playerAffected->uWillpower += thisa;
                     status = StringPrintf(
                         "+%u %s %s", thisa, v74,
-                        localization->GetString(121));  // "Permanent"
+                        localization->GetString(LSTR_PERMANENT)
+                    );
                     break;
                 case 3:
                     playerAffected->uEndurance += thisa;
                     status = StringPrintf(
                         "+%u %s %s", thisa, v74,
-                        localization->GetString(121));  // "Permanent"
+                        localization->GetString(LSTR_PERMANENT)
+                    );
                     break;
                 case 4:
                     playerAffected->uAccuracy += thisa;
                     status = StringPrintf(
                         "+%u %s %s", thisa, v74,
-                        localization->GetString(121));  // "Permanent"
+                        localization->GetString(LSTR_PERMANENT)
+                    );
                     break;
                 case 5:
                     playerAffected->uSpeed += thisa;
                     status = StringPrintf(
                         "+%u %s %s", thisa, v74,
-                        localization->GetString(121));  // "Permanent"
+                        localization->GetString(LSTR_PERMANENT)
+                    );
                     break;
                 case 6:
                     playerAffected->uLuck += thisa;
                     status = StringPrintf(
                         "+%u %s %s", thisa, v74,
-                        localization->GetString(121));  // "Permanent"
+                        localization->GetString(LSTR_PERMANENT)
+                    );
                     break;
                 case 7:
                     pParty->PartyFindsGold(1000 * thisa, 0);
-                    status =
-                        StringPrintf("+%u %s", 1000 * thisa,
-                                     localization->GetString(97));  // "Gold"
+                    status = StringPrintf(
+                        "+%u %s", 1000 * thisa, localization->GetString(LSTR_GOLD)
+                    );
                     break;
                 case 8:
                     Party::GiveFood(5 * thisa);
-                    status =
-                        StringPrintf("+%u %s", 5 * thisa,
-                                     localization->GetString(653));  // "Food"
+                    status = StringPrintf(
+                        "+%u %s", 5 * thisa, localization->GetString(LSTR_FOOD)
+                    );
                     break;
                 case 9u:
                     playerAffected->uSkillPoints += 2 * thisa;
                     status = StringPrintf(
                         "+%u %s", 2 * thisa,
-                        localization->GetString(207));  // Skill Points
+                        localization->GetString(LSTR_SKILL_POINTS)
+                    );
                     break;
                 case 10:
                     playerAffected->uExperience += 2500 * thisa;
                     status = StringPrintf(
                         "+%u %s", 2500 * thisa,
-                        localization->GetString(83));  // Experience
+                        localization->GetString(LSTR_EXPERIENCE)
+                    );
                     break;
                 case 11: {
                     v8 = rand() % 6;
@@ -4578,7 +4582,8 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     }
                     status = StringPrintf(
                         "+%u %s %s", thisa, spell_school_name,
-                        localization->GetString(121));  // Permanent
+                        localization->GetString(LSTR_PERMANENT)
+                    );
                     break;
                 }
             }
