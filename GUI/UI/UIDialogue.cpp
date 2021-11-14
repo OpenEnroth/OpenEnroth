@@ -87,20 +87,20 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     if (sDialogue_SpeakingActorNPC_ID < 0) v9 = 4;
 
     pDialogueWindow = new GUIWindow_Dialogue(
-        0, 0, window->GetWidth(), window->GetHeight(),
-        (GUIButton *)3);  // pNumberContacts = 1, v9 = 0; pNumberContacts = 2, v9 = 3;
+        0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)3
+    );
     if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility) {
-        if (pNPCInfo->uProfession == 10 ||  // Healer
-            pNPCInfo->uProfession == 11 ||  // Expert Healer
-            pNPCInfo->uProfession == 12 ||  // Master Healer
-            pNPCInfo->uProfession == 33 ||  // Cook
-            pNPCInfo->uProfession == 34 ||  // Chef
-            pNPCInfo->uProfession == 39 ||  // Wind Master
-            pNPCInfo->uProfession == 40 ||  // Water Master
-            pNPCInfo->uProfession == 41 ||  // Gate Master
-            pNPCInfo->uProfession == 42 ||  // Chaplain
-            pNPCInfo->uProfession == 43 ||  // Piper
-            pNPCInfo->uProfession == 52     // Fallen Wizard
+        if (pNPCInfo->profession == Healer ||
+            pNPCInfo->profession == ExpertHealer ||
+            pNPCInfo->profession == MasterHealer ||
+            pNPCInfo->profession == Cook ||
+            pNPCInfo->profession == Chef ||
+            pNPCInfo->profession == WindMaster ||
+            pNPCInfo->profession == WaterMaster ||
+            pNPCInfo->profession == GateMaster ||
+            pNPCInfo->profession == Acolyte ||  // or Chaplain? mb discrepancy between game versions?
+            pNPCInfo->profession == Piper ||
+            pNPCInfo->profession == FallenWizard
         ) {
             pDialogueWindow->CreateButton(
                 480, 250, 140, pFontArrus->GetHeight() - 3, 1, 0,
@@ -142,7 +142,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
             if (speakingNPC->is_joinable) {
                 CreateButton(
                     480, 130, 140, text_line_height, 1, 0,
-                    UIMSG_SelectNPCDialogueOption, DIALOGUE_13
+                    UIMSG_SelectNPCDialogueOption, DIALOGUE_13_hire
                 );
                 num_dialugue_options = 1;
             }
@@ -226,11 +226,11 @@ void GUIWindow_Dialogue::Update() {
                                 pDialogueNPCPortraits[0]);
 
     String title;
-    if (pNPC->uProfession) {
-        assert(pNPC->uProfession < 59);  // sometimes buffer overflows; errors emerge both here and
+    if (pNPC->profession) {
+        assert(pNPC->profession < 59);  // sometimes buffer overflows; errors emerge both here and
                                          // in dialogue text
         title = localization->FormatString( // ^Pi[%s] %s
-            429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession)
+            429, pNPC->pName, localization->GetNpcProfessionName(pNPC->profession)
         );
     } else if (pNPC->pName) {
         title = pNPC->pName;
@@ -243,25 +243,29 @@ void GUIWindow_Dialogue::Update() {
 
     String dialogue_string;
     switch (uDialogueType) {
-        case DIALOGUE_13:
+        case DIALOGUE_13_hire:
             dialogue_string = BuildDialogueString(
-                pNPCStats->pProfessions[pNPC->uProfession].pJoinText,
+                pNPCStats->pProfessions[pNPC->profession].pJoinText,
                 uActiveCharacter - 1, 0, 0, 0);
             break;
 
         case DIALOGUE_PROFESSION_DETAILS: {
-            if (dialogue_show_profession_details)
+            if (dialogue_show_profession_details) {
                 dialogue_string = BuildDialogueString(
-                    pNPCStats->pProfessions[pNPC->uProfession].pBenefits,
-                    uActiveCharacter - 1, 0, 0, 0);
-            else if (pNPC->Hired())
+                    pNPCStats->pProfessions[pNPC->profession].pBenefits,
+                    uActiveCharacter - 1, 0, 0, 0
+                );
+            } else if (pNPC->Hired()) {
                 dialogue_string = BuildDialogueString(
-                    pNPCStats->pProfessions[pNPC->uProfession].pDismissText,
-                    uActiveCharacter - 1, 0, 0, 0);
-            else
+                    pNPCStats->pProfessions[pNPC->profession].pDismissText,
+                    uActiveCharacter - 1, 0, 0, 0
+                );
+            } else {
                 dialogue_string = BuildDialogueString(
-                    pNPCStats->pProfessions[pNPC->uProfession].pJoinText,
-                    uActiveCharacter - 1, 0, 0, 0);
+                    pNPCStats->pProfessions[pNPC->profession].pJoinText,
+                    uActiveCharacter - 1, 0, 0, 0
+                );
+            }
             break;
         }
 
@@ -295,8 +299,7 @@ void GUIWindow_Dialogue::Update() {
                             pNPCStats->pNPCGreetings[pNPC->greet].pGreeting1;
                 }
             } else if (pGreetType == 2) {  // HiredNPC_greet
-                NPCProfession *prof =
-                    &pNPCStats->pProfessions[pNPC->uProfession];
+                NPCProfession *prof = &pNPCStats->pProfessions[pNPC->profession];
 
                 if (pNPC->Hired())
                     dialogue_string = BuildDialogueString(
@@ -374,15 +377,15 @@ void GUIWindow_Dialogue::Update() {
                 pButton->sLabel = pNPCTopics[pNPC->dialogue_6_evt_id].pTopic;
             }
         } else if (pButton->msg_param == DIALOGUE_USE_NPC_ABILITY) {
-            pButton->sLabel = GetProfessionActionText(pNPC->uProfession);
-        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_1) {  // Scavenger Hunt
+            pButton->sLabel = GetProfessionActionText(pNPC->profession);
+        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_1) {
             if (!pNPC->dialogue_1_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
             } else {
                 pButton->sLabel = pNPCTopics[pNPC->dialogue_1_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_2) {  // Scavenger Hunt
+        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_2) {
             if (!pNPC->dialogue_2_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
@@ -390,7 +393,6 @@ void GUIWindow_Dialogue::Update() {
                 pButton->sLabel = pNPCTopics[pNPC->dialogue_2_evt_id].pTopic;
             }
         } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_3) {
-            // __debugbreak(); // learn conditions of this event
             if (!pNPC->dialogue_3_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
@@ -398,7 +400,6 @@ void GUIWindow_Dialogue::Update() {
                 pButton->sLabel = pNPCTopics[pNPC->dialogue_3_evt_id].pTopic;
             }
         } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_4) {
-            // __debugbreak(); // learn conditions of this event
             if (!pNPC->dialogue_4_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
@@ -406,14 +407,13 @@ void GUIWindow_Dialogue::Update() {
                 pButton->sLabel = pNPCTopics[pNPC->dialogue_4_evt_id].pTopic;
             }
         } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_5) {
-            // __debugbreak(); // learn conditions of this event
             if (!pNPC->dialogue_5_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
             } else {
                 pButton->sLabel = pNPCTopics[pNPC->dialogue_5_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == DIALOGUE_13) {
+        } else if (pButton->msg_param == DIALOGUE_13_hire) {
             if (pNPC->Hired()) {
                 pButton->sLabel = StringPrintf(localization->GetString(408),
                                                pNPC->pName);  // Release %s
@@ -591,8 +591,7 @@ void sub_4B3E1E() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(),
                                              window->GetHeight(), (GUIButton *)1);
-    if (pNPCStats->pProfessions[v0->uProfession]
-            .pBenefits) {  // *(&pNPCStats->field_13A5C + 5 * v0->uProfession) )
+    if (pNPCStats->pProfessions[v0->profession].pBenefits) {
         pDialogueWindow->CreateButton(
             480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, GameKey::None,
             localization->GetString(407));  // Details / Подробнее
@@ -639,9 +638,9 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
         if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
             GameUI_StatusBar_OnEvent(localization->GetString(LSTR_HIRE_NO_ROOM));
         } else {
-            if (speakingNPC->uProfession != 51) {
+            if (speakingNPC->profession != Burglar) {
                 // burglars have no hiring price
-                if (pParty->GetGold() < pNPCStats->pProfessions[speakingNPC->uProfession].uHirePrice) {
+                if (pParty->GetGold() < pNPCStats->pProfessions[speakingNPC->profession].uHirePrice) {
                     GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                     dialogue_show_profession_details = false;
                     uDialogueType = 13;
@@ -652,8 +651,8 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
                     return;
                 }
                 Party::TakeGold(
-                    pNPCStats->pProfessions[speakingNPC->uProfession]
-                        .uHirePrice);
+                    pNPCStats->pProfessions[speakingNPC->profession].uHirePrice
+                );
             }
             speakingNPC->uFlags |= 0x80u;
             if (pParty->pHirelings[0].pName) {
@@ -677,15 +676,15 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
         ArenaFight();
         return;
     } else if (newDialogueType == DIALOGUE_USE_NPC_ABILITY) {
-        if (UseNPCSkill((NPCProf)speakingNPC->uProfession) == 0) {
-            if (speakingNPC->uProfession != GateMaster) {
+        if (UseNPCSkill(speakingNPC->profession) == 0) {
+            if (speakingNPC->profession != GateMaster) {
                 speakingNPC->bHasUsedTheAbility = 1;
             }
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         } else {
             GameUI_StatusBar_OnEvent(localization->GetString(LSTR_RATIONS_FULL));
         }
-    } else if (newDialogueType == DIALOGUE_13) {
+    } else if (newDialogueType == DIALOGUE_13_hire) {
         if (!speakingNPC->Hired()) {
             sub_4B3E1E();
             dialogue_show_profession_details = false;

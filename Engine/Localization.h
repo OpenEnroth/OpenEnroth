@@ -1,5 +1,7 @@
 #pragma once
 #include "Engine/Strings.h"
+#include "Engine/Objects/NPCProf.h"
+
 
 #define LSTR_EMPTY_SAVESLOT             72   // "Empty"
 #define LSTR_DIALOGUE_EXIT              79   // "Exit"
@@ -104,8 +106,9 @@ class Localization {
         return this->GetString(472 + index);
     }
 
-    const char *GetNpcProfessionName(unsigned int index) const {
-        return this->npc_profession_names[index];
+    const char *GetNpcProfessionName(NPCProf prof) const {
+        Assert((int)prof >= 0 && (int)prof < 59);
+        return this->npc_profession_names[prof];
     }
 
  public:

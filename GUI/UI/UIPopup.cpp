@@ -639,25 +639,21 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     // Draw name and profession
     String str;
     if (pActors[uActorID].sNPC_ID) {
-        if (GetNPCData(pActors[uActorID].sNPC_ID)->uProfession)
-            str = localization->FormatString(
+        if (GetNPCData(pActors[uActorID].sNPC_ID)->profession)
+            str = localization->FormatString(   // "%s the %s"   /   ^Pi[%s] %s
                 429, GetNPCData(pActors[uActorID].sNPC_ID)->pName,
                 localization->GetNpcProfessionName(
-                    GetNPCData(pActors[uActorID].sNPC_ID)
-                        ->uProfession));  // "%s the %s"   /   ^Pi[%s] %s
+                    GetNPCData(pActors[uActorID].sNPC_ID)->profession)
+            );
         else
             str = GetNPCData(pActors[uActorID].sNPC_ID)->pName;
     } else {
         if (pActors[uActorID].dword_000334_unique_name)
-            str =
-                pMonsterStats
-                    ->pPlaceStrings[pActors[uActorID].dword_000334_unique_name];
+            str = pMonsterStats->pPlaceStrings[pActors[uActorID].dword_000334_unique_name];
         else
-            str =
-                pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID].pName;
+            str = pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID].pName;
     }
-    pWindow->DrawTitleText(pFontComic, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu),
-                           str, 3);
+    pWindow->DrawTitleText(pFontComic, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
 
     // health bar
     Actor::DrawHealthBar(&pActors[uActorID], pWindow);

@@ -322,7 +322,7 @@ void NPCStats::InitializeNPCData() {
                         pNPCData[i + 1].Location2D = atoi(test_string);
                         break;
                     case 7:
-                        pNPCData[i + 1].uProfession = atoi(test_string);
+                        pNPCData[i + 1].profession = (NPCProf)atoi(test_string);
                         break;
                     case 8:
                         pNPCData[i + 1].greet = atoi(test_string);
@@ -699,7 +699,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
                                   .professionChancePerArea[gen_profession++];
         while (test_prof_summ < max_prof_cap);
     }
-    pNPCDataBuff->uProfession = gen_profession - 1;
+    pNPCDataBuff->profession = (NPCProf)(gen_profession - 1);
     pNPCDataBuff->Location2D = uLocation2D;
     pNPCDataBuff->field_24 = 1;
     pNPCDataBuff->is_joinable = 1;
@@ -752,20 +752,17 @@ bool PartyHasDragon() { return pNPCStats->pNewNPCData[57].Hired(); }
 
 //----- (00476395) --------------------------------------------------------
 // 0x26 Wizard eye at skill level 2
-bool CheckHiredNPCSpeciality(unsigned int uProfession) {
-    if (bNoNPCHiring == 1) return 0;
+bool CheckHiredNPCSpeciality(NPCProf prof) {
+    if (bNoNPCHiring == 1) return false;
 
     for (uint i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
-        if (pNPCStats->pNewNPCData[i].uProfession == uProfession &&
-            (pNPCStats->pNewNPCData[i].uFlags &
-             0x80))  // Uninitialized memory access
+        if (pNPCStats->pNewNPCData[i].profession == prof &&
+            (pNPCStats->pNewNPCData[i].uFlags & 0x80)) {
             return true;
+        }
     }
-    if (pParty->pHirelings[0].uProfession == uProfession ||
-        pParty->pHirelings[1].uProfession == uProfession)
-        return true;
-    else
-        return false;
+    return pParty->pHirelings[0].profession == prof
+        || pParty->pHirelings[1].profession == prof;
 }
 
 //----- (004763E0) --------------------------------------------------------
@@ -1092,11 +1089,12 @@ void NPCHireableDialogPrepare() {
         localization->GetString(34),  // "Cancel"
         {{ui_exit_cancel_button_background}});
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
-    if (pNPCStats->pProfessions[v1->uProfession]
+    if (pNPCStats->pProfessions[v1->profession]
             .pBenefits) {  // *(&pNPCStats->field_13A5C + 5 * v1->uProfession) )
         pDialogueWindow->CreateButton(
             480, 0xA0u, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Du, GameKey::None,
-            localization->GetString(407));  // "More Information"
+            localization->GetString(407)  // "More Information"
+        );
         v0 = 1;
     }
     pDialogueWindow->CreateButton(0x1E0u, 30 * v0 + 160, 0x8Cu, 0x1Eu, 1, 0,
@@ -1158,7 +1156,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
         } else {
             if (v17->is_joinable) {
                 num_menu_buttons = 1;
-                pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13);
+                pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hire);
             }
 
             #define AddScriptedDialogueLine(EVENT_ID, MSG_PARAM) \
@@ -1323,12 +1321,23 @@ int GetGreetType(signed int SpeakingNPC_ID) {
 }
 
 //----- (00445308) --------------------------------------------------------
-const char *GetProfessionActionText(int a1) {
-    if (a1 == 10 || a1 == 11 || a1 == 12 || a1 == 33 || a1 == 34 || a1 == 39 ||
-        a1 == 40 || a1 == 41 || a1 == 42 || a1 == 43 || a1 == 52)
-        return pNPCStats->pProfessions[a1 - 1].pActionText;
-    else
-        return pNPCTopics[407].pTopic;
+const char *GetProfessionActionText(NPCProf prof) {
+    switch (prof) {
+    case Healer:
+    case ExpertHealer:
+    case MasterHealer:
+    case Cook:
+    case Chef:
+    case WindMaster:
+    case WaterMaster:
+    case GateMaster:
+    case Acolyte:
+    case Piper:
+    case FallenWizard:
+        return pNPCStats->pProfessions[(int)prof - 1].pActionText;
+    }
+
+    return pNPCTopics[407].pTopic;
 }
 
 //----- (004BB756) --------------------------------------------------------

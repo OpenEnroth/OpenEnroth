@@ -4971,7 +4971,7 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
                 return true;
             return false;
         case VAR_HiredNPCHasSpeciality:
-            return CheckHiredNPCSpeciality(pValue);
+            return CheckHiredNPCSpeciality((NPCProf)pValue);
         case VAR_CircusPrises:  // isn't used in MM6 since 0x1D6u is a book of
                                 // regeneration
             v4 = 0;
@@ -6717,14 +6717,16 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             return;
         case VAR_HiredNPCHasSpeciality:
             for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
-                if (pNPCStats->pNewNPCData[i].uProfession == pValue) {
+                if (pNPCStats->pNewNPCData[i].profession == (NPCProf)pValue) {
                     pNPCStats->pNewNPCData[(int)pValue].uFlags &= 0xFFFFFF7F;
                 }
             }
-            if (pParty->pHirelings[0].uProfession == pValue)
+            if (pParty->pHirelings[0].profession == (NPCProf)pValue) {
                 memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
-            if (pParty->pHirelings[1].uProfession == pValue)
+            }
+            if (pParty->pHirelings[1].profession == (NPCProf)pValue) {
                 memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
+            }
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
             return;

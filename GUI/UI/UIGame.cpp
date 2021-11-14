@@ -730,14 +730,10 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                 if (a2 == 57)
                     pText = pNPCTopics[512].pText;  // Baby dragon
                 else
-                    pText =
-                        (const char *)pNPCStats->pProfessions[pNPC->uProfession]
-                            .pBenefits;
+                    pText = pNPCStats->pProfessions[pNPC->profession].pBenefits;
                 lpsz = pText;
                 if (!pText) {
-                    lpsz =
-                        (const char *)pNPCStats->pProfessions[pNPC->uProfession]
-                            .pJoinText;
+                    lpsz = pNPCStats->pProfessions[pNPC->profession].pJoinText;
                     if (!lpsz) lpsz = "";
                 }
                 popup_window.sHint.clear();
@@ -762,10 +758,10 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     assets->GetImage_ColorKey(tex_name, 0x7FF));
 
                 String title;
-                if (pNPC->uProfession) {
+                if (pNPC->profession) {
                     title = localization->FormatString(
                         429, pNPC->pName,
-                        localization->GetNpcProfessionName(pNPC->uProfession));
+                        localization->GetNpcProfessionName(pNPC->profession));
                 } else {
                     title = pNPC->pName;
                 }
@@ -776,8 +772,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     popup_window.uFrameX + popup_window.uFrameWidth - 1;
                 popup_window.DrawText(
                     pFontArrus, 100, 36, 0,
-                    BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0,
-                                        0, 0));
+                    BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
             }
         }
     }

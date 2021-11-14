@@ -1025,11 +1025,9 @@ void Party::PartyFindsGold(
                 v12 = &this->pHirelings[thisBufId];
             else
                 v12 = &pNPCStats->pNPCData[thisBufId + 499];
-            v13 = v12->uProfession;
+            v13 = v12->profession;
             if (v13)
-                hirelingSalaries +=
-                    pNPCStats->pProfessions[v13]
-                        .uHirePrice;
+                hirelingSalaries += pNPCStats->pProfessions[v13].uHirePrice;
         }
         if (CheckHiredNPCSpeciality(Factor))
             goldToGain += (signed int)(10 * goldToGain) / 100;

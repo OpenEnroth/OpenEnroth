@@ -3463,11 +3463,11 @@ void SimpleHouseDialog() {
         -(dword_591080 != 0))];  //- 1
 
     String npc_name;
-    if (pNPC->uProfession)
-        npc_name = localization->FormatString(
+    if (pNPC->profession)
+        npc_name = localization->FormatString(   // %s %s   /   ^Pi[%s] %s
             429, pNPC->pName,
-            localization->GetNpcProfessionName(
-                pNPC->uProfession));  // %s %s   /   ^Pi[%s] %s
+            localization->GetNpcProfessionName(pNPC->profession)
+        );
     else
         npc_name = pNPC->pName;
     house_window.DrawTitleText(pFontCreate, 483, 113,
@@ -3603,11 +3603,11 @@ void SimpleHouseDialog() {
             pButton->sLabel.clear();
             continue;
         }
-        if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13) {
-            pButton->sLabel = localization->GetString(122);  // Вступить
+        if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13_hire) {
+            pButton->sLabel = localization->GetString(122);  // Join
             continue;
         }
-        if (pButton->msg_param > DIALOGUE_13 && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
+        if (pButton->msg_param > DIALOGUE_13_hire && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
             pButton->sLabel.clear();
             continue;
         }

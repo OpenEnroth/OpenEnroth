@@ -158,7 +158,7 @@ void NPCData_Image_MM7::Serialize(NPCData *npc) {
     this->fame = npc->fame;
     this->rep = npc->rep;
     this->Location2D = npc->Location2D;
-    this->uProfession = npc->uProfession;
+    this->uProfession = npc->profession;
     this->greet = npc->greet;
     this->joins = npc->is_joinable;
     this->field_24 = npc->field_24;
@@ -185,7 +185,7 @@ void NPCData_Image_MM7::Deserialize(NPCData *npc) {
     npc->fame = this->fame;
     npc->rep = this->rep;
     npc->Location2D = this->Location2D;
-    npc->uProfession = this->uProfession;
+    npc->profession = (NPCProf)this->uProfession;
     npc->greet = this->greet;
     npc->is_joinable = this->joins;
     npc->field_24 = this->field_24;

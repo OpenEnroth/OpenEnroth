@@ -1422,9 +1422,9 @@ void ClickNPCTopic(int uMessageParam) {
         HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];  //- 1
     if (uMessageParam <= 24) {
         switch (uMessageParam) {
-        case DIALOGUE_13:
+        case DIALOGUE_13_hire:
             current_npc_text = BuildDialogueString(
-                pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText,
+                pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                 uActiveCharacter - 1, 0, 0, 0
             );
             NPCHireableDialogPrepare();
@@ -1496,12 +1496,12 @@ void ClickNPCTopic(int uMessageParam) {
                              // other versions whether it's ok
             if (dialogue_show_profession_details) {
                 current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->uProfession]
+                    pNPCStats->pProfessions[pCurrentNPCInfo->profession]
                     .pJoinText,
                     uActiveCharacter - 1, 0, 0, 0);
             } else {
                 current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->uProfession]
+                    pNPCStats->pProfessions[pCurrentNPCInfo->profession]
                     .pBenefits,
                     uActiveCharacter - 1, 0, 0, 0);
             }
@@ -1613,19 +1613,19 @@ void ClickNPCTopic(int uMessageParam) {
         return;
     }
 
-    if (pCurrentNPCInfo->uProfession != 51) {  // burglars have no hiring price
+    if (pCurrentNPCInfo->profession != Burglar) {  // burglars have no hiring price
         __debugbreak();  // probably hirelings found in buildings, not present
                          // in MM7, changed "pCurrentNPCInfo->uProfession - 1"
                          // to "pCurrentNPCInfo->uProfession", have to check in
                          // other versions whether it's ok
         pPrice =
-            pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].uHirePrice;
+            pNPCStats->pProfessions[pCurrentNPCInfo->profession].uHirePrice;
         if (pParty->GetGold() < (unsigned int)pPrice) {
             GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
             dialogue_show_profession_details = false;
             uDialogueType = 13;
             current_npc_text = BuildDialogueString(
-                pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText,
+                pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                 uActiveCharacter - 1, 0, 0, 0);
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
@@ -2326,10 +2326,8 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                 break;
             case 17:  // hired npc text   текст наёмного НПС
             {
-                uint pay_percentage =
-                    pNPCStats->pProfessions[npc->uProfession].uHirePrice /
-                    100;
-                if (!pay_percentage) pay_percentage = 1;
+                uint pay_percentage = pNPCStats->pProfessions[npc->profession].uHirePrice / 100;
+                if (pay_percentage == 0) pay_percentage = 1;
                 sprintf(v1, "%lu", pay_percentage);
                 result += v1;
                 break;
