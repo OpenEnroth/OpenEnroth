@@ -1239,8 +1239,8 @@ int NPC_EventProcessor(int npc_event_id, int entry_line) {
     ready_to_exit = false;
     if (uSomeOtherEVT_NumEvents <= 0) return 2;
     do {
-        if ((pSomeOtherEVT_Events[event_index].uEventID == npc_event_id) &&
-            (pSomeOtherEVT_Events[event_index].event_sequence_num ==
+        if ((pSomeOtherEVT_Events[event_index].event_id == npc_event_id) &&
+            (pSomeOtherEVT_Events[event_index].event_step ==
              evt_seq_num)) {
             _evt_raw *_evt =
                 (_evt_raw *)&pSomeOtherEVT[pSomeOtherEVT_Events[event_index]

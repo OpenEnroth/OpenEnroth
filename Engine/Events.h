@@ -5,8 +5,8 @@
 /*  167 */
 #pragma pack(push, 1)
 struct EventIndex {
-    int uEventID;
-    int event_sequence_num;
+    int event_id;
+    int event_step;
     unsigned int uEventOffsetInEVT;
 };
 #pragma pack(pop)

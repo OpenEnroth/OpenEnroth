@@ -92,10 +92,8 @@ void Initialize_GlobalEVT() {
     offset_in = 0;
     for (events_count = 0, offset_in = 0; offset_in < uGlobalEVT_Size;
          ++events_count) {
-        pGlobalEVT_Index[events_count].uEventID =
-            current_hdr->evt_id_l + (current_hdr->evt_id_h << 8);
-        pGlobalEVT_Index[events_count].event_sequence_num =
-            current_hdr->evt_sequence_num;
+        pGlobalEVT_Index[events_count].event_id = current_hdr->evt_id_l + (current_hdr->evt_id_h << 8);
+        pGlobalEVT_Index[events_count].event_step = current_hdr->evt_sequence_num;
         pGlobalEVT_Index[events_count].uEventOffsetInEVT = offset_in;
         offset_in += current_hdr->evt_size + 1;
 
@@ -130,10 +128,8 @@ void LoadLevel_InitializeLevelEvt() {
     offset_in = 0;
     for (events_count = 0, offset_in = 0; offset_in < uLevelEVT_Size;
          ++events_count) {
-        pLevelEVT_Index[events_count].uEventID =
-            current_hdr->evt_id_l + (current_hdr->evt_id_h << 8);
-        pLevelEVT_Index[events_count].event_sequence_num =
-            current_hdr->evt_sequence_num;
+        pLevelEVT_Index[events_count].event_id = current_hdr->evt_id_l + (current_hdr->evt_id_h << 8);
+        pLevelEVT_Index[events_count].event_step = current_hdr->evt_sequence_num;
         pLevelEVT_Index[events_count].uEventOffsetInEVT = offset_in;
         offset_in += current_hdr->evt_size + 1;
 
@@ -359,10 +355,9 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
             if (v133 == 1) OnMapLeave();
             return;
         }
-        if (pSomeEVT_Events[v4].uEventID == uEventID &&
-            pSomeEVT_Events[v4].event_sequence_num == curr_seq_num) {
-            _evt_raw *_evt =
-                (_evt_raw *)(pSomeEVT + pSomeEVT_Events[v4].uEventOffsetInEVT);
+        if (pSomeEVT_Events[v4].event_id == uEventID &&
+            pSomeEVT_Events[v4].event_step == curr_seq_num) {
+            _evt_raw *_evt = (_evt_raw *)(pSomeEVT + pSomeEVT_Events[v4].uEventOffsetInEVT);
 
             switch (_evt->_e_type) {
                 case EVENT_CheckSeason:
@@ -1172,9 +1167,8 @@ char *GetEventHintString(unsigned int uEventID) {
 
     // v2 = (char *)&pLevelEVT_Index[0].uEventOffsetInEVT;
     while (1) {
-        if (pLevelEVT_Index[event_index].uEventID == uEventID) {
-            test_evt = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index]
-                                                  .uEventOffsetInEVT];
+        if (pLevelEVT_Index[event_index].event_id == uEventID) {
+            test_evt = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
             last_evt = test_evt;
             event_pos = pLevelEVT_Index[event_index + 1].uEventOffsetInEVT;
             if (test_evt->_e_type == EVENT_MouseOver) break;
@@ -1187,7 +1181,7 @@ char *GetEventHintString(unsigned int uEventID) {
         str_index = EVT_DWORD(test_evt->v5);
         result = (char *)p2DEvents[str_index - 1].pName;
     } else {
-        for (i = event_index + 1; pLevelEVT_Index[i].uEventID == uEventID;
+        for (i = event_index + 1; pLevelEVT_Index[i].event_id == uEventID;
              ++i) {
             event_pos = pLevelEVT_Index[i].uEventOffsetInEVT;
             test_evt = (_evt_raw *)&pLevelEVT[event_pos];
@@ -1216,13 +1210,12 @@ void init_event_triggers() {
 //----- (0046CC4B) --------------------------------------------------------
 void check_event_triggers() {
     for (size_t i = 0; i < num_event_triggers; i++) {
-        if (pLevelDecorations[event_triggers[i]].uFlags &
-                LEVEL_DECORATION_TRIGGERED_BY_TOUCH &&
-            pLevelDecorations[event_triggers[i]].vPosition.GetDistanceTo(
-                pParty->vPosition) <
+        if (pLevelDecorations[event_triggers[i]].uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH &&
+            pLevelDecorations[event_triggers[i]].vPosition.GetDistanceTo(pParty->vPosition) <
                 pLevelDecorations[event_triggers[i]].uTriggerRange) {
             EventProcessor(pLevelDecorations[event_triggers[i]].uEventID,
-                           PID(OBJECT_Decoration, i), 1);
+                           PID(OBJECT_Decoration, i), 1
+            );
         } else if (pLevelDecorations[event_triggers[i]].uFlags &
                    LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
             for (size_t j = 0; j < uNumActors; j++) {
@@ -1230,7 +1223,8 @@ void check_event_triggers() {
                         .vPosition.GetDistanceTo(pActors[j].vPosition) <
                     pLevelDecorations[event_triggers[i]].uTriggerRange)
                     EventProcessor(
-                        pLevelDecorations[event_triggers[i]].uEventID, 0, 1);
+                        pLevelDecorations[event_triggers[i]].uEventID, 0, 1
+                    );
             }
         } else if (pLevelDecorations[event_triggers[i]].uFlags &
                    LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
@@ -1239,7 +1233,8 @@ void check_event_triggers() {
                         .vPosition.GetDistanceTo(pSpriteObjects[j].vPosition) <
                     pLevelDecorations[event_triggers[i]].uTriggerRange)
                     EventProcessor(
-                        pLevelDecorations[event_triggers[i]].uEventID, 0, 1);
+                        pLevelDecorations[event_triggers[i]].uEventID, 0, 1
+                    );
             }
         }
     }
