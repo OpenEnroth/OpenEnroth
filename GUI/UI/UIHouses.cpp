@@ -3517,16 +3517,16 @@ void SimpleHouseDialog() {
         ++i) {
         pButton = right_panel_window.GetControl(i);
         switch (pButton->msg_param) {
-        case 19:  // evt_A
-            v15 = (char *)pNPCTopics[pNPC->evt_A].pTopic;
+        case DIALOGUE_SCRIPTED_LINE_1:
+            v15 = (char *)pNPCTopics[pNPC->dialogue_1_evt_id].pTopic;
             if (!v15) {
                 pButton->msg_param = 0;
                 v15 = "";
             }
             pButton->sLabel = v15;
             continue;
-        case 20:  // evt_B
-            v15 = (char *)pNPCTopics[pNPC->evt_B].pTopic;
+        case DIALOGUE_SCRIPTED_LINE_2:
+            v15 = (char *)pNPCTopics[pNPC->dialogue_2_evt_id].pTopic;
             if (!v15) {
                 pButton->msg_param = 0;
                 v15 = "";
@@ -3545,58 +3545,52 @@ void SimpleHouseDialog() {
             pButton->sLabel = v15;
             continue;
 
-        case 21:  // evt_C
-            v15 = (char *)pNPCTopics[pNPC->evt_C].pTopic;
+        case DIALOGUE_SCRIPTED_LINE_3:
+            v15 = (char *)pNPCTopics[pNPC->dialogue_3_evt_id].pTopic;
             if (!v15) {
                 pButton->msg_param = 0;
                 v15 = "";
             }
             pButton->sLabel = v15;
             continue;
-        case 22:  // evt_D
-            v15 = (char *)pNPCTopics[pNPC->evt_D].pTopic;
+        case DIALOGUE_SCRIPTED_LINE_4:
+            v15 = (char *)pNPCTopics[pNPC->dialogue_4_evt_id].pTopic;
             if (!v15) {
                 pButton->msg_param = 0;
                 v15 = "";
             }
             pButton->sLabel = v15;
             continue;
-        case 23:  // evt_E
-            v15 = (char *)pNPCTopics[pNPC->evt_E].pTopic;
+        case DIALOGUE_SCRIPTED_LINE_5:
+            v15 = (char *)pNPCTopics[pNPC->dialogue_5_evt_id].pTopic;
             if (!v15) {
                 pButton->msg_param = 0;
                 v15 = "";
             }
             pButton->sLabel = v15;
             continue;
-        case 24:  // evt_F
-            v15 = (char *)pNPCTopics[pNPC->evt_F].pTopic;
+        case DIALOGUE_SCRIPTED_LINE_6:
+            v15 = (char *)pNPCTopics[pNPC->dialogue_6_evt_id].pTopic;
             if (!v15) {
                 pButton->msg_param = 0;
                 v15 = "";
             }
             pButton->sLabel = v15;
             continue;
-        case 76:
-            pButton->sLabel =
-                localization->GetString(406);  // Hire / Нанять
+        case DIALOGUE_HIRE_FIRE:
+            pButton->sLabel = localization->GetString(LSTR_HIRE);
             continue;
-        case 77:
-            pButton->sLabel =
-                localization->GetString(407);  // Details / Подробнее
+        case DIALOGUE_PROFESSION_DETAILS:
+            pButton->sLabel = localization->GetString(LSTR_HIRE_DETAILS);
             continue;
-        case 79:
-            pButton->sLabel =
-                _4B254D_SkillMasteryTeacher((int64_t)right_panel_window.ptr_1C);
+        case DIALOGUE_79_mastery_teacher:
+            pButton->sLabel = _4B254D_SkillMasteryTeacher((int64_t)right_panel_window.ptr_1C);
             continue;
-        case 82:
-            pButton->sLabel =
-                ContractSelectText((int64_t)right_panel_window.ptr_1C);
+        case DIALOGUE_82:
+            pButton->sLabel = ContractSelectText((int64_t)right_panel_window.ptr_1C);
             continue;
-        case 83:
-            v29 =
-                pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting]
-                .pName;
+        case DIALOGUE_83_bounty_hunting:
+            v29 = pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName;
             v31 = *(int *)v29;
 
             current_npc_text = StringPrintf(
@@ -3609,15 +3603,15 @@ void SimpleHouseDialog() {
             pButton->sLabel.clear();
             continue;
         }
-        if (pButton->msg_param > 0 && pButton->msg_param < 13) {
+        if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13) {
             pButton->sLabel = localization->GetString(122);  // Вступить
             continue;
         }
-        if (pButton->msg_param > 13 && pButton->msg_param < 19) {
+        if (pButton->msg_param > DIALOGUE_13 && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
             pButton->sLabel.clear();
             continue;
         }
-        if (pButton->msg_param != 93) {
+        if (pButton->msg_param != DIALOGUE_93) {
             pButton->sLabel.clear();
             continue;
         }

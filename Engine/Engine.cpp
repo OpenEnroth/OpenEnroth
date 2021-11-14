@@ -280,7 +280,7 @@ void Engine::DrawGUI() {
     pOtherOverlayList->bRedraw = 0;
 
     GameUI_DrawPartySpells();
-    if (v4 || pParty->pHirelings[0].evt_C || pParty->pHirelings[1].evt_C)
+    if (v4 || pParty->pHirelings[0].dialogue_3_evt_id || pParty->pHirelings[1].dialogue_3_evt_id)
         GameUI_DrawHiredNPCs();
     GameUI_DrawPortraits(v4);
     GameUI_DrawLifeManaBars();

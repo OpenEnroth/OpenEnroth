@@ -779,13 +779,13 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
 
     for (int i = 0; i < 2; ++i) {
         NPCData *hireling = &pParty->pHirelings[i];
-        if (!hireling->evt_C) continue;
+        if (!hireling->dialogue_3_evt_id) continue;
 
-        hireling->evt_B += pMiscTimer->uTimeElapsed;
-        if (hireling->evt_B >= hireling->evt_C) {
-            hireling->evt_A = 0;
-            hireling->evt_B = 0;
-            hireling->evt_C = 0;
+        hireling->dialogue_2_evt_id += pMiscTimer->uTimeElapsed;
+        if (hireling->dialogue_2_evt_id >= hireling->dialogue_3_evt_id) {
+            hireling->dialogue_1_evt_id = 0;
+            hireling->dialogue_2_evt_id = 0;
+            hireling->dialogue_3_evt_id = 0;
 
             Assert(sizeof(NPCData) == 0x4C);
             memset(hireling, 0, sizeof(*hireling));

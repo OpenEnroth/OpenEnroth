@@ -1422,32 +1422,32 @@ void ClickNPCTopic(int uMessageParam) {
         HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];  //- 1
     if (uMessageParam <= 24) {
         switch (uMessageParam) {
-        case 13:
+        case DIALOGUE_13:
             current_npc_text = BuildDialogueString(
-                pNPCStats->pProfessions[pCurrentNPCInfo->uProfession]
-                .pJoinText,
-                uActiveCharacter - 1, 0, 0, 0);
+                pNPCStats->pProfessions[pCurrentNPCInfo->uProfession].pJoinText,
+                uActiveCharacter - 1, 0, 0, 0
+            );
             NPCHireableDialogPrepare();
             dialogue_show_profession_details = false;
             BackToHouseMenu();
             return;
-        case 19:
-            pEventNumber = pCurrentNPCInfo->evt_A;
+        case DIALOGUE_SCRIPTED_LINE_1:
+            pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
             break;
-        case 20:
-            pEventNumber = pCurrentNPCInfo->evt_B;
+        case DIALOGUE_SCRIPTED_LINE_2:
+            pEventNumber = pCurrentNPCInfo->dialogue_2_evt_id;
             break;
-        case 21:
-            pEventNumber = pCurrentNPCInfo->evt_C;
+        case DIALOGUE_SCRIPTED_LINE_3:
+            pEventNumber = pCurrentNPCInfo->dialogue_3_evt_id;
             break;
-        case 22:
-            pEventNumber = pCurrentNPCInfo->evt_D;
+        case DIALOGUE_SCRIPTED_LINE_4:
+            pEventNumber = pCurrentNPCInfo->dialogue_4_evt_id;
             break;
-        case 23:
-            pEventNumber = pCurrentNPCInfo->evt_E;
+        case DIALOGUE_SCRIPTED_LINE_5:
+            pEventNumber = pCurrentNPCInfo->dialogue_5_evt_id;
             break;
-        case 24:
-            pEventNumber = pCurrentNPCInfo->evt_F;
+        case DIALOGUE_SCRIPTED_LINE_6:
+            pEventNumber = pCurrentNPCInfo->dialogue_6_evt_id;
             break;
         default:
             BackToHouseMenu();
@@ -1562,34 +1562,34 @@ void ClickNPCTopic(int uMessageParam) {
                         (int64_t)pParty->pHirelings.data());
                     switch (dword_F8B1D8) {
                     case 19:
-                        pEventNumber = pCurrentNPCInfo->evt_A;
+                        pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
-                            pCurrentNPCInfo->evt_A = 0;
+                            pCurrentNPCInfo->dialogue_1_evt_id = 0;
                         break;
                     case 20:
-                        pEventNumber = pCurrentNPCInfo->evt_B;
+                        pEventNumber = pCurrentNPCInfo->dialogue_2_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
-                            pCurrentNPCInfo->evt_B = 0;
+                            pCurrentNPCInfo->dialogue_2_evt_id = 0;
                         break;
                     case 21:
-                        pEventNumber = pCurrentNPCInfo->evt_C;
+                        pEventNumber = pCurrentNPCInfo->dialogue_3_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
-                            pCurrentNPCInfo->evt_C = 0;
+                            pCurrentNPCInfo->dialogue_3_evt_id = 0;
                         break;
                     case 22:
-                        pEventNumber = pCurrentNPCInfo->evt_D;
+                        pEventNumber = pCurrentNPCInfo->dialogue_4_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
-                            pCurrentNPCInfo->evt_D = 0;
+                            pCurrentNPCInfo->dialogue_4_evt_id = 0;
                         break;
                     case 23:
-                        pEventNumber = pCurrentNPCInfo->evt_E;
+                        pEventNumber = pCurrentNPCInfo->dialogue_5_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
-                            pCurrentNPCInfo->evt_E = 0;
+                            pCurrentNPCInfo->dialogue_5_evt_id = 0;
                         break;
                     case 24:
-                        pEventNumber = pCurrentNPCInfo->evt_F;
+                        pEventNumber = pCurrentNPCInfo->dialogue_6_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
-                            pCurrentNPCInfo->evt_F = 0;
+                            pCurrentNPCInfo->dialogue_6_evt_id = 0;
                         break;
                     }
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);

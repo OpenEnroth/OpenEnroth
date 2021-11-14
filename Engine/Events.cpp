@@ -480,12 +480,12 @@ LABEL_47:
                          << 8);
                     pIndex = _evt->v9;
                     pNPC = &pNPCStats->pNewNPCData[pNPC_ID];
-                    if (pIndex == 0) pNPC->evt_A = pEventID;
-                    if (pIndex == 1) pNPC->evt_B = pEventID;
-                    if (pIndex == 2) pNPC->evt_C = pEventID;
-                    if (pIndex == 3) pNPC->evt_D = pEventID;
-                    if (pIndex == 4) pNPC->evt_E = pEventID;
-                    if (pIndex == 5) pNPC->evt_F = pEventID;
+                    if (pIndex == 0) pNPC->dialogue_1_evt_id = pEventID;
+                    if (pIndex == 1) pNPC->dialogue_2_evt_id = pEventID;
+                    if (pIndex == 2) pNPC->dialogue_3_evt_id = pEventID;
+                    if (pIndex == 3) pNPC->dialogue_4_evt_id = pEventID;
+                    if (pIndex == 4) pNPC->dialogue_5_evt_id = pEventID;
+                    if (pIndex == 5) pNPC->dialogue_6_evt_id = pEventID;
                     if (pNPC_ID == 8) {
                         if (pEventID == 78) {
                             HouseDialogPressCloseBtn();

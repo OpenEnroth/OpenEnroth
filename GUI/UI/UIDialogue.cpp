@@ -122,102 +122,73 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     }
 }
 
+
 GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                                        unsigned int width, unsigned int height,
                                        GUIButton *button, const String &hint)
     : GUIWindow(WINDOW_Dialogue, x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_NPC_DIALOGUE;
-    pBtn_ExitCancel =
-        CreateButton(0x1D7u, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
-                     localization->GetString(79),  // "Exit"
-                     {{ui_exit_cancel_button_background}});
+    pBtn_ExitCancel = CreateButton(
+        0x1D7u, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        localization->GetString(LSTR_DIALOGUE_EXIT),
+        {{ui_exit_cancel_button_background}}
+    );
     if (par1C != 1) {
-        int num_menu_buttons = 0;
-        int v11 = pFontArrus->GetHeight() - 3;
+        int num_dialugue_options = 0;
+        int text_line_height = pFontArrus->GetHeight() - 3;
         NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-        if (GetGreetType(sDialogue_SpeakingActorNPC_ID) ==
-            1) {  // QuestsNPC_greet
-            if (speakingNPC->joins) {
-                CreateButton(480, 130, 140, v11, 1, 0,
-                             UIMSG_SelectNPCDialogueOption, 0xDu);
-                num_menu_buttons = 1;
+        if (GetGreetType(sDialogue_SpeakingActorNPC_ID) == 1) {  // QuestsNPC_greet
+            if (speakingNPC->is_joinable) {
+                CreateButton(
+                    480, 130, 140, text_line_height, 1, 0,
+                    UIMSG_SelectNPCDialogueOption, DIALOGUE_13
+                );
+                num_dialugue_options = 1;
             }
-            if (speakingNPC->evt_A) {
-                if (num_menu_buttons < 4) {
-                    int v14 = NPC_EventProcessor(speakingNPC->evt_A);
-                    if (v14 == 1 || v14 == 2)
-                        CreateButton(
-                            0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x13u);
+
+            #define AddScriptedDialogueLine(DIALOGUE_EVENT_ID, MSG_PARAM) \
+                if (DIALOGUE_EVENT_ID) { \
+                    if (num_dialugue_options < 4) { \
+                        int res = NPCDialogueEventProcessor(DIALOGUE_EVENT_ID); \
+                        if (res == 1 || res == 2) \
+                            CreateButton( \
+                                480, 130 + num_dialugue_options++ * text_line_height, \
+                                140, text_line_height, \
+                                1, 0, UIMSG_SelectNPCDialogueOption, MSG_PARAM \
+                            ); \
+                    } \
                 }
-            }
-            if (speakingNPC->evt_B) {
-                if (num_menu_buttons < 4) {
-                    int v16 = NPC_EventProcessor(speakingNPC->evt_B);
-                    if (v16 == 1 || v16 == 2)
-                        CreateButton(
-                            0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x14u);
-                }
-            }
-            if (speakingNPC->evt_C) {
-                if (num_menu_buttons < 4) {
-                    int v18 = NPC_EventProcessor(speakingNPC->evt_C);
-                    if (v18 == 1 || v18 == 2)
-                        CreateButton(
-                            0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x15u);
-                }
-            }
-            if (speakingNPC->evt_D) {
-                if (num_menu_buttons < 4) {
-                    int v20 = NPC_EventProcessor(speakingNPC->evt_D);
-                    if (v20 == 1 || v20 == 2)
-                        CreateButton(
-                            0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x16u);
-                }
-            }
-            if (speakingNPC->evt_E) {
-                if (num_menu_buttons < 4) {
-                    int v22 = NPC_EventProcessor(speakingNPC->evt_E);
-                    if (v22 == 1 || v22 == 2)
-                        CreateButton(
-                            0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x17u);
-                }
-            }
-            if (speakingNPC->evt_F) {
-                if (num_menu_buttons < 4) {
-                    int v24 = NPC_EventProcessor(speakingNPC->evt_F);
-                    if (v24 == 1 || v24 == 2)
-                        CreateButton(
-                            0x1E0u, num_menu_buttons++ * v11 + 130, 0x8Cu, v11,
-                            1, 0, UIMSG_SelectNPCDialogueOption, 0x18u);
-                }
-            }
+
+            AddScriptedDialogueLine(speakingNPC->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
+            AddScriptedDialogueLine(speakingNPC->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
+            AddScriptedDialogueLine(speakingNPC->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
+            AddScriptedDialogueLine(speakingNPC->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
+            AddScriptedDialogueLine(speakingNPC->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
+            AddScriptedDialogueLine(speakingNPC->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
         } else {
-            if (speakingNPC->joins) {
-                CreateButton(0x1E0u, 0x82u, 0x8Cu, v11, 1, 0,
-                             UIMSG_SelectNPCDialogueOption, 0x4Du, GameKey::None,
-                             localization->GetString(407));  // Details / Подробнее
+            if (speakingNPC->is_joinable) {
+                CreateButton(
+                    480, 0x82u, 140, text_line_height, 1, 0,
+                    UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, GameKey::None,
+                    localization->GetString(LSTR_HIRE_DETAILS)
+                );
                 if (speakingNPC->Hired()) {
                     CreateButton(
-                        0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0,
-                        UIMSG_SelectNPCDialogueOption, 0x4Cu, GameKey::None,
-                        localization->FormatString(
-                            408,
-                            speakingNPC->pName));  // Release %s    Отпустить %s
+                        480, 130 + text_line_height, 140, text_line_height, 1, 0,
+                        UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, GameKey::None,
+                        localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName)
+                    );
                 } else {
-                    CreateButton(0x1E0u, v11 + 130, 0x8Cu, v11, 1, 0,
-                        UIMSG_SelectNPCDialogueOption, 0x4Cu, GameKey::None,
-                        localization->GetString(406));  // Hire Нанять
+                    CreateButton(480, 130 + text_line_height, 140, text_line_height, 1, 0,
+                        UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, GameKey::None,
+                        localization->GetString(LSTR_HIRE)
+                    );
                 }
-                num_menu_buttons = 2;
+                num_dialugue_options = 2;
             }
         }
-        _41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 1);
+        _41D08F_set_keyboard_control_group(num_dialugue_options, 1, 0, 1);
     }
 }
 
@@ -256,13 +227,11 @@ void GUIWindow_Dialogue::Update() {
 
     String title;
     if (pNPC->uProfession) {
-        assert(pNPC->uProfession <
-               59);  // sometimes buffer overflows; errors emerge both here and
-                     // in dialogue text
-        title =
-            localization->FormatString(429, pNPC->pName,
-                                       localization->GetNpcProfessionName(
-                                           pNPC->uProfession));  // ^Pi[%s] %s
+        assert(pNPC->uProfession < 59);  // sometimes buffer overflows; errors emerge both here and
+                                         // in dialogue text
+        title = localization->FormatString( // ^Pi[%s] %s
+            429, pNPC->pName, localization->GetNpcProfessionName(pNPC->uProfession)
+        );
     } else if (pNPC->pName) {
         title = pNPC->pName;
     }
@@ -281,8 +250,6 @@ void GUIWindow_Dialogue::Update() {
             break;
 
         case DIALOGUE_PROFESSION_DETAILS: {
-            // auto prof = pNPCStats->pProfessions[pNPC->uProfession];
-
             if (dialogue_show_profession_details)
                 dialogue_string = BuildDialogueString(
                     pNPCStats->pProfessions[pNPC->uProfession].pBenefits,
@@ -299,32 +266,23 @@ void GUIWindow_Dialogue::Update() {
         }
 
         case DIALOGUE_ARENA_WELCOME:
-            dialogue_string = localization->GetString(
-                574);  // "Welcome to the Arena of Life and Death.  Remember,
-                       // you are only allowed one arena combat per visit.  To
-                       // fight an arena battle, select the option that best
-                       // describes your abilities and return to me- if you
-                       // survive:"
+            dialogue_string = localization->GetString(LSTR_ARENA_WELCOME);
             break;
 
         case DIALOGUE_ARENA_FIGHT_NOT_OVER_YET:
-            dialogue_string =
-                localization->GetString(577);  // "Get back in there you wimps:"
+            dialogue_string = localization->GetString(LSTR_ARENA_PREMATURE_EXIT);
             break;
 
         case DIALOGUE_ARENA_REWARD:
-            dialogue_string = localization->FormatString(
-                576, gold_transaction_amount);  // "Congratulations on your win:
-                                                // here's your stuff: %u gold."
+            dialogue_string = localization->FormatString(LSTR_ARENA_REWARD, gold_transaction_amount);  
             break;
 
         case DIALOGUE_ARENA_ALREADY_WON:
-            dialogue_string = localization->GetString(
-                582);  // "You already won this trip to the Arena:"
+            dialogue_string = localization->GetString(LSTR_ARENA_AREADY_WON);
             break;
 
         default:
-            if (uDialogueType > DIALOGUE_18 && uDialogueType < DIALOGUE_EVT_E &&
+            if (uDialogueType >= DIALOGUE_SCRIPTED_LINE_1 && uDialogueType < DIALOGUE_SCRIPTED_LINE_6 &&
                 branchless_dialogue_str.empty()) {
                 dialogue_string = current_npc_text;
             } else if (pGreetType == 1) {  // QuestNPC_greet
@@ -358,13 +316,11 @@ void GUIWindow_Dialogue::Update() {
         window.uFrameZ = 452;
         GUIFont *font = pFontArrus;
         pTextHeight = pFontArrus->CalcTextHeight(dialogue_string,
-                                                 window.uFrameWidth, 13) +
-                      7;
+                                                 window.uFrameWidth, 13) + 7;
         if (352 - pTextHeight < 8) {
             font = pFontCreate;
             pTextHeight = pFontCreate->CalcTextHeight(dialogue_string,
-                                                      window.uFrameWidth, 13) +
-                          7;
+                                                      window.uFrameWidth, 13) + 7;
         }
 
         if (ui_leather_mm7)
@@ -390,74 +346,74 @@ void GUIWindow_Dialogue::Update() {
         GUIButton *pButton = window.GetControl(i);
         if (!pButton) break;
 
-        if (pButton->msg_param > 88) {
+        if (pButton->msg_param > DIALOGUE_ARENA_SELECT_CHAMPION) {
             pButton->sLabel.clear();
-        } else if (pButton->msg_param == 88) {
-            pButton->sLabel = localization->GetString(581);  // Lord
-        } else if (pButton->msg_param == 87) {
-            pButton->sLabel = localization->GetString(580);  // Knight
-        } else if (pButton->msg_param == 86) {
-            pButton->sLabel = localization->GetString(579);  // Squire
-        } else if (pButton->msg_param == 85) {
-            pButton->sLabel = localization->GetString(578);  // Page
-        } else if (pButton->msg_param == 77) {
-            pButton->sLabel = localization->GetString(407);  // Details
-        } else if (pButton->msg_param == 76) {
+        } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_CHAMPION) {
+            pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_LORD);
+        } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_KNIGHT) {
+            pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_KNIGHT);
+        } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_SQUIRE) {
+            pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_SQUIRE);
+        } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_PAGE) {
+            pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_PAGE);
+        } else if (pButton->msg_param == DIALOGUE_PROFESSION_DETAILS) {
+            pButton->sLabel = localization->GetString(LSTR_HIRE_DETAILS);
+        } else if (pButton->msg_param == DIALOGUE_HIRE_FIRE) {
             if (pNPC->Hired()) {
-                pButton->sLabel = StringPrintf(localization->GetString(408),
-                                               pNPC->pName);  // Release %s
+                pButton->sLabel = StringPrintf(
+                    localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName
+                );
             } else {
-                pButton->sLabel = localization->GetString(406);  // Hire
+                pButton->sLabel = localization->GetString(LSTR_HIRE);
             }
-        } else if (pButton->msg_param == 24) {
-            __debugbreak();  // learn conditions of this event
-            if (!pNPC->evt_F) {
+        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_6) {
+            if (!pNPC->dialogue_6_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
             } else {
-                pButton->sLabel = pNPCTopics[pNPC->evt_F].pTopic;
+                pButton->sLabel = pNPCTopics[pNPC->dialogue_6_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == 9) {
+        } else if (pButton->msg_param == DIALOGUE_USE_NPC_ABILITY) {
             pButton->sLabel = GetProfessionActionText(pNPC->uProfession);
-        } else if (pButton->msg_param == 19) {  // Scavenger Hunt
-            if (!pNPC->evt_A) {
+        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_1) {  // Scavenger Hunt
+            if (!pNPC->dialogue_1_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
             } else {
-                pButton->sLabel = pNPCTopics[pNPC->evt_A].pTopic;
+                pButton->sLabel = pNPCTopics[pNPC->dialogue_1_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == 20) {  // Scavenger Hunt
-            if (!pNPC->evt_B) {
+        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_2) {  // Scavenger Hunt
+            if (!pNPC->dialogue_2_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
             } else {
-                pButton->sLabel = pNPCTopics[pNPC->evt_B].pTopic;
+                pButton->sLabel = pNPCTopics[pNPC->dialogue_2_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == 21) {
+        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_3) {
             // __debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_C) {
+            if (!pNPC->dialogue_3_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
             } else {
-                pButton->sLabel = pNPCTopics[pNPC->evt_C].pTopic;
+                pButton->sLabel = pNPCTopics[pNPC->dialogue_3_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == 22) {
+        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_4) {
             // __debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_D) {
+            if (!pNPC->dialogue_4_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
             } else {
-                pButton->sLabel = pNPCTopics[pNPC->evt_D].pTopic;
+                pButton->sLabel = pNPCTopics[pNPC->dialogue_4_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == 23) {
+        } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_5) {
             // __debugbreak(); // learn conditions of this event
-            if (!pNPC->evt_E) {
+            if (!pNPC->dialogue_5_evt_id) {
                 pButton->sLabel.clear();
                 pButton->msg_param = 0;
             } else {
-                pButton->sLabel = pNPCTopics[pNPC->evt_E].pTopic;
+                pButton->sLabel = pNPCTopics[pNPC->dialogue_5_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == 13) {
+        } else if (pButton->msg_param == DIALOGUE_13) {
             if (pNPC->Hired()) {
                 pButton->sLabel = StringPrintf(localization->GetString(408),
                                                pNPC->pName);  // Release %s
@@ -657,7 +613,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
     if (!speakingNPC->uFlags) speakingNPC->uFlags = 1;
     if (newDialogueType == DIALOGUE_PROFESSION_DETAILS) {
         dialogue_show_profession_details = ~dialogue_show_profession_details;
-    } else if (newDialogueType == DIALOGUE_76) {
+    } else if (newDialogueType == DIALOGUE_HIRE_FIRE) {
         if (speakingNPC->Hired()) {
             if ((signed int)pNPCStats->uNumNewNPCs > 0) {
                 for (uint i = 0; i < (unsigned int)pNPCStats->uNumNewNPCs;
@@ -681,8 +637,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             return;
         }
         if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
-            GameUI_StatusBar_OnEvent(localization->GetString(
-                533));  // "I cannot join you, you're party is full"
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_HIRE_NO_ROOM));
         } else {
             if (speakingNPC->uProfession != 51) {
                 // burglars have no hiring price
@@ -691,8 +646,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
                     dialogue_show_profession_details = false;
                     uDialogueType = 13;
                     if (uActiveCharacter)
-                        pPlayers[uActiveCharacter]->PlaySound(
-                            SPEECH_NotEnoughGold, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
                     if (!dword_7241C8) engine->Draw();
                     dword_7241C8 = 0;
                     return;
@@ -703,12 +657,10 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             }
             speakingNPC->uFlags |= 0x80u;
             if (pParty->pHirelings[0].pName) {
-                memcpy(&pParty->pHirelings[1], speakingNPC,
-                       sizeof(pParty->pHirelings[1]));
+                memcpy(&pParty->pHirelings[1], speakingNPC, sizeof(pParty->pHirelings[1]));
                 v13 = pParty->pHireling2Name;
             } else {
-                memcpy(&pParty->pHirelings[0], speakingNPC,
-                       sizeof(pParty->pHirelings[0]));
+                memcpy(&pParty->pHirelings[0], speakingNPC, sizeof(pParty->pHirelings[0]));
                 v13 = pParty->pHireling1Name;
             }
             strcpy(v13, speakingNPC->pName);
@@ -720,9 +672,8 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_61, 0);
         }
-    } else if ((int)newDialogueType > DIALOGUE_84 &&
-               (int)newDialogueType <=
-                   DIALOGUE_ARENA_SELECT_CHAMPION) {  // выбор уровня сложности боя
+    } else if ((int)newDialogueType >= DIALOGUE_ARENA_SELECT_PAGE &&
+               (int)newDialogueType <= DIALOGUE_ARENA_SELECT_CHAMPION) {
         ArenaFight();
         return;
     } else if (newDialogueType == DIALOGUE_USE_NPC_ABILITY) {
@@ -732,8 +683,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             }
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         } else {
-            GameUI_StatusBar_OnEvent(
-                localization->GetString(140));  // "Your packs are already full!"
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_RATIONS_FULL));
         }
     } else if (newDialogueType == DIALOGUE_13) {
         if (!speakingNPC->Hired()) {
@@ -758,31 +708,31 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             dword_7241C8 = 0;
             return;
         }
-    } else if (newDialogueType >= DIALOGUE_EVT_A &&
-               newDialogueType <= DIALOGUE_EVT_F) {
+    } else if (newDialogueType >= DIALOGUE_SCRIPTED_LINE_1 &&
+               newDialogueType <= DIALOGUE_SCRIPTED_LINE_6) {
         switch (newDialogueType) {
-            case DIALOGUE_EVT_A:
-                npc_event_id = speakingNPC->evt_A;
+            case DIALOGUE_SCRIPTED_LINE_1:
+                npc_event_id = speakingNPC->dialogue_1_evt_id;
                 break;
-            case DIALOGUE_EVT_B:
-                npc_event_id = speakingNPC->evt_B;
+            case DIALOGUE_SCRIPTED_LINE_2:
+                npc_event_id = speakingNPC->dialogue_2_evt_id;
                 break;
-            case DIALOGUE_EVT_C:
-                npc_event_id = speakingNPC->evt_C;
+            case DIALOGUE_SCRIPTED_LINE_3:
+                npc_event_id = speakingNPC->dialogue_3_evt_id;
                 break;
-            case DIALOGUE_EVT_D:
-                npc_event_id = speakingNPC->evt_D;
+            case DIALOGUE_SCRIPTED_LINE_4:
+                npc_event_id = speakingNPC->dialogue_4_evt_id;
                 break;
-            case DIALOGUE_EVT_E:
-                npc_event_id = speakingNPC->evt_E;
+            case DIALOGUE_SCRIPTED_LINE_5:
+                npc_event_id = speakingNPC->dialogue_5_evt_id;
                 break;
-            case DIALOGUE_EVT_F:
-                npc_event_id = speakingNPC->evt_F;
+            case DIALOGUE_SCRIPTED_LINE_6:
+                npc_event_id = speakingNPC->dialogue_6_evt_id;
                 break;
         }
         if ((npc_event_id >= 200) && (npc_event_id <= 310)) {
-            _4B3FE5_training_dialogue(npc_event_id);                // 200-310
-        } else if ((npc_event_id >= 400) && (npc_event_id <= 410)) {  // 400-410
+            _4B3FE5_training_dialogue(npc_event_id);
+        } else if ((npc_event_id >= 400) && (npc_event_id <= 410)) {
             dword_F8B1D8 = newDialogueType;
             DrawJoinGuildWindow(npc_event_id - 400);
         } else {

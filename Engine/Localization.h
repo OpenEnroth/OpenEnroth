@@ -1,15 +1,33 @@
 #pragma once
 #include "Engine/Strings.h"
 
-#define LSTR_EMPTY_SAVESLOT         72   // "Empty"
-#define LSTR_RACE_HUMAN             99   // "Human"
-#define LSTR_RACE_ELF               101  // "Elf"
-#define LSTR_RACE_DWARF             103  // "Dwarf"
-#define LSTR_RACE_GOBLIN            106  // "Goblin"
-#define LSTR_ELIGIBLE_TO_LEVELUP    147  // "You are eligible to train to %u."
-#define LSTR_NOT_ENOUGH_GOLD        155  // "You don't have enough gold"
-#define LSTR_XP_UNTIL_NEXT_LEVEL    538  // "You need %d more experience to train to level %d"
-
+#define LSTR_EMPTY_SAVESLOT             72  // "Empty"
+#define LSTR_DIALOGUE_EXIT              79  // "Exit"
+#define LSTR_RACE_HUMAN                 99  // "Human"
+#define LSTR_RACE_ELF                   101 // "Elf"
+#define LSTR_RACE_DWARF                 103 // "Dwarf"
+#define LSTR_RACE_GOBLIN                106 // "Goblin"
+#define LSTR_RATIONS_FULL               140 // "Your packs are already full!"
+#define LSTR_ELIGIBLE_TO_LEVELUP        147 // "You are eligible to train to %u."
+#define LSTR_NOT_ENOUGH_GOLD            155 // "You don't have enough gold"
+#define LSTR_HIRE                       406 // "Hire"
+#define LSTR_HIRE_DETAILS               407 // "Details"
+#define LSTR_HIRE_RELEASE               408 // "Release %s"
+#define LSTR_SPELL_FAILED               428 // "Spell failed"
+#define LSTR_HIRE_NO_ROOM               533 // "I cannot join you, you're party is full"
+#define LSTR_XP_UNTIL_NEXT_LEVEL        538 // "You need %d more experience to train to level %d"
+#define LSTR_ARENA_WELCOME              574 // "Welcome to the Arena of Life and Death.  Remember,
+                                            // you are only allowed one arena combat per visit.  To
+                                            // fight an arena battle, select the option that best
+                                            // describes your abilities and return to me- if you
+                                            // survive"
+#define LSTR_ARENA_REWARD               576 // "Congratulations on your win. Here's your stuff: %u gold."
+#define LSTR_ARENA_PREMATURE_EXIT       577 // "Get back in there you wimps"
+#define LSTR_ARENA_DIFFICULTY_PAGE      578 // "Page"
+#define LSTR_ARENA_DIFFICULTY_SQUIRE    579 // "Squire"
+#define LSTR_ARENA_DIFFICULTY_KNIGHT    580 // "Knight"
+#define LSTR_ARENA_DIFFICULTY_LORD      581 // "Lord"
+#define LSTR_ARENA_AREADY_WON           582 // "You already won this trip to the Arena"
 
 class Localization {
  public:

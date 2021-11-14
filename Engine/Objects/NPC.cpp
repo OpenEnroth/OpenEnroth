@@ -328,25 +328,25 @@ void NPCStats::InitializeNPCData() {
                         pNPCData[i + 1].greet = atoi(test_string);
                         break;
                     case 9:
-                        pNPCData[i + 1].joins = (*test_string == 'y') ? 1 : 0;
+                        pNPCData[i + 1].is_joinable = (*test_string == 'y') ? 1 : 0;
                         break;
                     case 10:
-                        pNPCData[i + 1].evt_A = atoi(test_string);
+                        pNPCData[i + 1].dialogue_1_evt_id = atoi(test_string);
                         break;
                     case 11:
-                        pNPCData[i + 1].evt_B = atoi(test_string);
+                        pNPCData[i + 1].dialogue_2_evt_id = atoi(test_string);
                         break;
                     case 12:
-                        pNPCData[i + 1].evt_C = atoi(test_string);
+                        pNPCData[i + 1].dialogue_3_evt_id = atoi(test_string);
                         break;
                     case 13:
-                        pNPCData[i + 1].evt_D = atoi(test_string);
+                        pNPCData[i + 1].dialogue_4_evt_id = atoi(test_string);
                         break;
                     case 14:
-                        pNPCData[i + 1].evt_E = atoi(test_string);
+                        pNPCData[i + 1].dialogue_5_evt_id = atoi(test_string);
                         break;
                     case 15:
-                        pNPCData[i + 1].evt_F = atoi(test_string);
+                        pNPCData[i + 1].dialogue_6_evt_id = atoi(test_string);
                         break;
                 }
             }
@@ -702,13 +702,13 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
     pNPCDataBuff->uProfession = gen_profession - 1;
     pNPCDataBuff->Location2D = uLocation2D;
     pNPCDataBuff->field_24 = 1;
-    pNPCDataBuff->joins = 1;
-    pNPCDataBuff->evt_A = 0;
-    pNPCDataBuff->evt_B = 0;
-    pNPCDataBuff->evt_C = 0;
-    pNPCDataBuff->evt_D = 0;
-    pNPCDataBuff->evt_E = 0;
-    pNPCDataBuff->evt_F = 0;
+    pNPCDataBuff->is_joinable = 1;
+    pNPCDataBuff->dialogue_1_evt_id = 0;
+    pNPCDataBuff->dialogue_2_evt_id = 0;
+    pNPCDataBuff->dialogue_3_evt_id = 0;
+    pNPCDataBuff->dialogue_4_evt_id = 0;
+    pNPCDataBuff->dialogue_5_evt_id = 0;
+    pNPCDataBuff->dialogue_6_evt_id = 0;
 }
 
 //----- (00495366) --------------------------------------------------------
@@ -1150,158 +1150,118 @@ void _4B4224_UpdateNPCTopics(int _this) {
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
             localization->GetString(74),  // "End Conversation"
-            {{ui_exit_cancel_button_background}});
+            {{ui_exit_cancel_button_background}}
+        );
         pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         if (pDialogueNPCCount == 1 && dword_591080) {
             InitializaDialogueOptions(in_current_building_type);
         } else {
-            if (v17->joins) {
+            if (v17->is_joinable) {
                 num_menu_buttons = 1;
-                pDialogueWindow->CreateButton(480u, 160u, 140u, 30, 1, 0, UIMSG_ClickNPCTopic, 0xDu);
-            }
-            if (v17->evt_A) {
-                if (num_menu_buttons < 4) {
-                    v6 = NPC_EventProcessor(v17->evt_A);
-                    if (v6 == 1 || v6 == 2)
-                        pDialogueWindow->CreateButton(
-                            480u, 30 * num_menu_buttons++ + 160, 140u, 30u, 1, 0, UIMSG_ClickNPCTopic, 0x13u);
-                }
-            }
-            if (v17->evt_B) {
-                if (num_menu_buttons < 4) {
-                    v8 = NPC_EventProcessor(v17->evt_B);
-                    if (v8 == 1 || v8 == 2)
-                        pDialogueWindow->CreateButton(
-                            480u, 30 * num_menu_buttons++ + 160, 140u, 30u, 1,
-                            0, UIMSG_ClickNPCTopic, 0x14u);
-                }
-            }
-            if (v17->evt_C) {
-                if (num_menu_buttons < 4) {
-                    v10 = NPC_EventProcessor(v17->evt_C);
-                    if (v10 == 1 || v10 == 2)
-                        pDialogueWindow->CreateButton(
-                            480u, 30 * num_menu_buttons++ + 160, 140u, 30u, 1,
-                            0, UIMSG_ClickNPCTopic, 0x15u);
-                }
+                pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13);
             }
 
-            if (v17->evt_D) {
-                if (num_menu_buttons < 4) {
-                    v12 = NPC_EventProcessor(v17->evt_D);
-                    if (v12 == 1 || v12 == 2)
-                        pDialogueWindow->CreateButton(
-                            0x1E0u, 30 * num_menu_buttons++ + 160, 0x8Cu, 0x1Eu,
-                            1, 0, UIMSG_ClickNPCTopic, 0x16u);
+            #define AddScriptedDialogueLine(EVENT_ID, MSG_PARAM) \
+                if (EVENT_ID) { \
+                    if (num_menu_buttons < 4) { \
+                        int res = NPCDialogueEventProcessor(EVENT_ID); \
+                        if (res == 1 || res == 2) \
+                            pDialogueWindow->CreateButton( \
+                                480, 160 + 30 * num_menu_buttons++, 140, 30, \
+                                1, 0, UIMSG_ClickNPCTopic, MSG_PARAM \
+                            ); \
+                    } \
                 }
-            }
-            if (v17->evt_E) {
-                if (num_menu_buttons < 4) {
-                    v14 = NPC_EventProcessor(v17->evt_E);
-                    if (v14 == 1 || v14 == 2)
-                        pDialogueWindow->CreateButton(
-                            0x1E0u, 30 * num_menu_buttons++ + 160, 0x8Cu, 0x1Eu,
-                            1, 0, UIMSG_ClickNPCTopic, 0x17u);
-                }
-            }
-            if (v17->evt_F) {
-                if (num_menu_buttons < 4) {
-                    v16 = NPC_EventProcessor(v17->evt_F);
-                    if (v16 == 1 || v16 == 2)
-                        pDialogueWindow->CreateButton(
-                            0x1E0u, 30 * num_menu_buttons++ + 160, 0x8Cu, 0x1Eu,
-                            1, 0, UIMSG_ClickNPCTopic, 0x18u);
-                }
-            }
-            pDialogueWindow->_41D08F_set_keyboard_control_group(
-                num_menu_buttons, 1, 0, 2);
+
+            AddScriptedDialogueLine(v17->dialogue_1_evt_id, DIALOGUE_SCRIPTED_LINE_1);
+            AddScriptedDialogueLine(v17->dialogue_2_evt_id, DIALOGUE_SCRIPTED_LINE_2);
+            AddScriptedDialogueLine(v17->dialogue_3_evt_id, DIALOGUE_SCRIPTED_LINE_3);
+            AddScriptedDialogueLine(v17->dialogue_4_evt_id, DIALOGUE_SCRIPTED_LINE_4);
+            AddScriptedDialogueLine(v17->dialogue_5_evt_id, DIALOGUE_SCRIPTED_LINE_5);
+            AddScriptedDialogueLine(v17->dialogue_6_evt_id, DIALOGUE_SCRIPTED_LINE_6);
+
+            pDialogueWindow->_41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 2);
             dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
         }
         dialog_menu_id = HOUSE_DIALOGUE_MAIN;
     }
 }
-//----- (004466C4) --------------------------------------------------------
-int NPC_EventProcessor(int npc_event_id, int entry_line) {
-    signed int event_index;   // ebp@1
-    int evt_seq_num;          // esi@3
-    bool ready_to_exit;       // [sp+Ch] [bp-Ch]@3
-    signed int npc_activity;  // [sp+10h] [bp-8h]@3
-    int result;
 
-    event_index = 0;
+//----- (004466C4) --------------------------------------------------------
+// Quest NPC dialogue processor:
+//      Margareth (id=504)
+//          line1=7  Greetings
+//          line2=9  Contest
+//          line3=43 Tour On / Tour Off
+//          line4=line5=line6=0
+//      Lord Markham/Emerald Island
+//          line1=1
+//          line2=2
+//          line3=3
+//          line4=34
+//          line5=187
+int NPCDialogueEventProcessor(int npc_event_id, int entry_line) {
     if (!npc_event_id) return 0;
-    evt_seq_num = entry_line;
+
+    int event_index = 0;
+    int evt_seq_num = entry_line;
     pSomeOtherEVT = pGlobalEVT.data();
     uSomeOtherEVT_NumEvents = uGlobalEVT_NumEvents;
-    memcpy(pSomeOtherEVT_Events.data(), pGlobalEVT_Index.data(),
-           sizeof(EventIndex) * 4400);
-    npc_activity = 1;
-    ready_to_exit = false;
-    if (uSomeOtherEVT_NumEvents <= 0) return 2;
+    memcpy(
+        pSomeOtherEVT_Events.data(),
+        pGlobalEVT_Index.data(),
+        sizeof(EventIndex) * pGlobalEVT_Index.size()
+    );
+
+    if (uSomeOtherEVT_NumEvents <= 0) {
+        return 2;
+    }
+
+    int npc_activity = 1;
+    bool ready_to_exit = false;
     do {
-        if ((pSomeOtherEVT_Events[event_index].event_id == npc_event_id) &&
-            (pSomeOtherEVT_Events[event_index].event_step ==
-             evt_seq_num)) {
-            _evt_raw *_evt =
-                (_evt_raw *)&pSomeOtherEVT[pSomeOtherEVT_Events[event_index]
-                                               .uEventOffsetInEVT];
+        auto& evt = pSomeOtherEVT_Events[event_index];
+        if (evt.event_id == npc_event_id && evt.event_step == evt_seq_num) {
+            _evt_raw *_evt = (_evt_raw *)&pSomeOtherEVT[evt.uEventOffsetInEVT];
             switch (_evt->_e_type) {
                 case EVENT_Exit:
-                    // exit
                     if (ready_to_exit)
-                        result = npc_activity != 0;
+                        return npc_activity != 0;
                     else
-                        result = 2;
-                    return result;
-                    break;
+                        return 2;
+
                 case EVENT_OnCanShowDialogItemCmp:
                     ready_to_exit = true;
-                    // v8 = (unsigned __int8)v7[7] + (((unsigned __int8)v7[8] +
-                    // (((unsigned __int8)v7[9] + ((unsigned __int8)v7[10] << 8))
-                    // << 8)) << 8);
                     for (int i = 0; i < 4; ++i) {
-                        //  if (pParty->pPlayers[i].CompareVariable((enum
-                        //  VariableType)((unsigned __int8)pSomeOtherEVT[v6 + 5]
-                        //  + ((unsigned __int8)pSomeOtherEVT[v6 + 6] << 8)),
-                        //  v8))
                         if (pParty->pPlayers[i].CompareVariable(
-                                (enum VariableType)EVT_WORD(_evt->v5),
-                                EVT_DWORD(_evt->v7))) {
+                                (enum VariableType)EVT_WORD(_evt->v5), EVT_DWORD(_evt->v7)
+                            )
+                        ) {
                             event_index = -1;
-                            evt_seq_num =
-                                EVT_BYTE(_evt->v11) -
-                                1;  // (unsigned __int8)pSomeOtherEVT[v6 + 11] -
-                                    // 1;
+                            evt_seq_num = EVT_BYTE(_evt->v11) - 1;
                             break;
                         }
                     }
                     break;
+
                 case EVENT_EndCanShowDialogItem:
                     if (ready_to_exit)
-                        result = npc_activity != 0;
+                        return npc_activity != 0;
                     else
-                        result = 2;
-                    return result;
-                    break;
+                        return 2;
+
                 case EVENT_SetCanShowDialogItem:
                     ready_to_exit = true;
-                    npc_activity =
-                        EVT_BYTE(_evt->v5);  // (unsigned __int8)v7[5];
+                    npc_activity = EVT_BYTE(_evt->v5);
                     break;
+
                 case EVENT_IsActorAssasinated:
-                    //  if (IsActorAlive( (unsigned __int8)v7[5],
-                    //   (unsigned __int8)v7[6] + (((unsigned __int8)v7[7] +
-                    // (((unsigned __int8)v7[8] + ((unsigned __int8)v7[9] << 8))
-                    // << 8)) << 8),
-                    //  (unsigned __int8)v7[10]) )
                     if (IsActorAlive(
                             EVT_BYTE(_evt->v5), EVT_DWORD(_evt->v6),
-                            EVT_BYTE(_evt->v10))) {  // drop linear sequense,
+                            EVT_BYTE(_evt->v10))) {  // drop linear sequence,
                                                      // going to new seq
                         event_index = -1;
-                        evt_seq_num =
-                            EVT_BYTE(_evt->v11) -
-                            1;  // (unsigned __int8)pSomeOtherEVT[v6 + 11] - 1;
+                        evt_seq_num = EVT_BYTE(_evt->v11) - 1;
                     }
                     break;
             }
@@ -1309,11 +1269,11 @@ int NPC_EventProcessor(int npc_event_id, int entry_line) {
         }
         ++event_index;
     } while (event_index < uSomeOtherEVT_NumEvents);
+
     if (ready_to_exit)
-        result = npc_activity != 0;
+        return npc_activity != 0;
     else
-        result = 2;
-    return result;
+        return 2;
 }
 //----- (00445C8B) --------------------------------------------------------
 int GetGreetType(signed int SpeakingNPC_ID) {

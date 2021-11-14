@@ -89,14 +89,14 @@ struct NPCData {  // 4Ch
     unsigned int Location2D;   // 14
     unsigned int uProfession;  // 18
     int greet;                 // 1c
-    int joins;                 // 20
+    int is_joinable;           // 20
     int field_24;
-    unsigned int evt_A;      // 28
-    unsigned int evt_B;      // 2c evtb
-    unsigned int evt_C;      //  30 evtc
-    unsigned int evt_D;      // 34
-    unsigned int evt_E;      // 38
-    unsigned int evt_F;      // 3c
+    unsigned int dialogue_1_evt_id; // dialogue options that are defined by script
+    unsigned int dialogue_2_evt_id; // = 0  == unused
+    unsigned int dialogue_3_evt_id; // can also be idx in pNPCTopics
+    unsigned int dialogue_4_evt_id; // and absolutely crazy stuff when it's in party hierlings (npc2)
+    unsigned int dialogue_5_evt_id;
+    unsigned int dialogue_6_evt_id;
     unsigned int uSex;       // 40
     int bHasUsedTheAbility;  // 44
     int news_topic;          // 48
@@ -212,4 +212,4 @@ const char *GetProfessionActionText(int a1);
 struct NPCData *GetNPCData(signed int npcid);
 struct NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
 int GetGreetType(signed int SpeakingNPC_ID);
-int NPC_EventProcessor(int npc_event_id, int entry_line = 0);
+int NPCDialogueEventProcessor(int npc_event_id, int entry_line = 0);

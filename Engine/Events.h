@@ -2,6 +2,12 @@
 #include <array>
 #include <cstdint>
 
+
+#define EVT_ID_MARGARETH_DIALOGUE_LINE_1    7
+#define EVT_ID_MARGARETH_DIALOGUE_LINE_2    9
+#define EVT_ID_MARGARETH_DIALOGUE_LINE_3    43
+
+
 /*  167 */
 #pragma pack(push, 1)
 struct EventIndex {

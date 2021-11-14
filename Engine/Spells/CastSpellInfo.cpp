@@ -3952,41 +3952,26 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 int hired_npc = 0;
                 memset(&achieved_awards, 0, 4000);
-                for (uint npc_id = 0; npc_id < 2;
-                     npc_id++) {  // количество нанятых НПС
-                    if (pParty->pHirelings[npc_id].pName != 0)
+                for (uint npc_id = 0; npc_id < 2; npc_id++) {
+                    if (pParty->pHirelings[npc_id].pName != nullptr)
                         achieved_awards[hired_npc++] = (AwardType)(npc_id + 1);
                 }
 
-                if (pCastSpell->uPlayerID_2 != 4 &&
-                        pCastSpell->uPlayerID_2 != 5 ||
+                if (pCastSpell->uPlayerID_2 != 4 && pCastSpell->uPlayerID_2 != 5 ||
                     achieved_awards[pCastSpell->uPlayerID_2 - 4] <= 0 ||
                     achieved_awards[pCastSpell->uPlayerID_2 - 4] >= 3) {
-                    GameUI_StatusBar_OnEvent(
-                        localization->GetString(428));  // Spell failed
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
-                                            0, 0);
+                    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_SPELL_FAILED));
+                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
                 }
-                pParty
-                    ->pHirelings[achieved_awards[pCastSpell->uPlayerID_2 - 4] -
-                                 1]
-                    .evt_A = 1;
-                pParty
-                    ->pHirelings[achieved_awards[pCastSpell->uPlayerID_2 - 4] -
-                                 1]
-                    .evt_B = 0;
-                pParty
-                    ->pHirelings[achieved_awards[pCastSpell->uPlayerID_2 - 4] -
-                                 1]
-                    .evt_C =
-                    pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
+                int hireling_idx = achieved_awards[pCastSpell->uPlayerID_2 - 4] - 1;
+                pParty->pHirelings[hireling_idx].dialogue_1_evt_id = 1;
+                pParty->pHirelings[hireling_idx].dialogue_2_evt_id = 0;
+                pParty->pHirelings[hireling_idx].dialogue_3_evt_id = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                    pParty->pPlayers[pl_id].sHealth =
-                        pParty->pPlayers[pl_id].GetMaxHealth();
-                    pParty->pPlayers[pl_id].sMana =
-                        pParty->pPlayers[pl_id].GetMaxMana();
+                    pParty->pPlayers[pl_id].sHealth = pParty->pPlayers[pl_id].GetMaxHealth();
+                    pParty->pPlayers[pl_id].sMana = pParty->pPlayers[pl_id].GetMaxMana();
                 }
                 v613 = &pOutdoor->ddm;
                 if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
@@ -3996,7 +3981,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 spell_sound_flag = true;
                 break;
             }
-            case SPELL_DARK_PAIN_REFLECTION:  //Отражение боли
+            case SPELL_DARK_PAIN_REFLECTION:
             {
                 switch (skill_level) {
                     case 1:
@@ -4017,8 +4002,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 amount = spell_level + 5;
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (skill_level != 3 && skill_level != 4) {
-                    spell_fx_renderer->SetPlayerBuffAnim(
-                        pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
+                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
                         .Apply(GameTime(pParty->GetPlayingTime() +
@@ -4028,8 +4012,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     break;
                 }
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                    spell_fx_renderer->SetPlayerBuffAnim(
-                        pCastSpell->uSpellID, pl_id);
+                    spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_id);
                     pParty->pPlayers[pl_id]
                         .pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION]
                         .Apply(GameTime(pParty->GetPlayingTime() +
@@ -4039,7 +4022,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 spell_sound_flag = true;
                 break;
             }
-            case SPELL_DARK_SOULDRINKER:  //Испить душу
+            case SPELL_DARK_SOULDRINKER:
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
 

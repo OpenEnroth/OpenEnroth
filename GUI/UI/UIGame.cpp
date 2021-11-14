@@ -2062,24 +2062,20 @@ void GameUI_DrawHiredNPCs() {
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
                     assets->GetImage_ColorKey(pContainer, 0x7FF));
-                if (pParty->pHirelings[(unsigned __int8)buf[i]].evt_A == 1) {
-                    uFrameID =
-                        pParty->pHirelings[(unsigned __int8)buf[i]].evt_B;
+                if (pParty->pHirelings[(unsigned __int8)buf[i]].dialogue_1_evt_id == 1) {
+                    uFrameID = pParty->pHirelings[(unsigned __int8)buf[i]].dialogue_2_evt_id;
                     v13 = 0;
                     if (pIconsFrameTable->uNumIcons) {
-                        for (v13 = 0; v13 < pIconsFrameTable->uNumIcons;
-                             ++v13) {
+                        for (v13 = 0; v13 < pIconsFrameTable->uNumIcons; ++v13) {
                             if (!_stricmp("spell96",
-                                          pIconsFrameTable->pIcons[v13]
-                                              .GetAnimationName()))
+                                          pIconsFrameTable->pIcons[v13].GetAnimationName()))
                                 break;
                         }
                     }
                     render->DrawTextureAlphaNew(
                         pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                         pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
-                        pIconsFrameTable->GetFrame(v13, uFrameID)
-                            ->GetTexture());
+                        pIconsFrameTable->GetFrame(v13, uFrameID)->GetTexture());
                 }
             }
             ++pNPC_limit_ID;
