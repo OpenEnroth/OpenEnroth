@@ -681,10 +681,10 @@ Re-installing will not destroy your save games." LOCSTR_DETAIL_TOGGLE = 64,
 +		[9]	0x04102de1 "Congratulations!"	unsigned char *
 
 +		[11]	0x04102e06 "Armor"	unsigned char *
-+		[0xc]	0x04102e10 "Armor Class"	unsigned char *
++		[12]	0x04102e10 "Armor Class"	unsigned char *
 
-+		[0xe]	0x04102e2d "Asleep"	unsigned char *
-+		[0xf]	0x04102e38 "Assertion failed at %d in %s"
++		[14]	0x04102e2d "Asleep"	unsigned char *
++		[15]	0x04102e38 "Assertion failed at %d in %s"
 unsigned char *
 
 +		[17]	0x04102e66 "Exp."	unsigned char *
@@ -751,7 +751,7 @@ char *
 +		[0x4c]	0x04103280 "Eradicated"	unsigned char *
 +		[0x4d]	0x0410328f "Unarmed"	unsigned char *
 +		[0x4e]	0x0410329b "Calendar"	unsigned char *
-+		[0x4f]	0x041032a8 "Exit"	unsigned char *
++		[79]	0x041032a8 "Exit"	unsigned char *
 
 +		[81]	0x041032c3 "Exit Rest"	unsigned char *
 +		[82]	0x041032d1 "Are you sure?  Click again to quit" unsigned

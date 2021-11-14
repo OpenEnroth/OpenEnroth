@@ -77,7 +77,7 @@ void Arena_SelectionFightLevel() {
         pDialogueWindow->DeleteButtons();
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             471, 445, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
-            localization->GetString(79),  // Close, Закрыть
+            localization->GetString(LSTR_DIALOGUE_EXIT),
             {{ui_exit_cancel_button_background}});
         pDialogueWindow->CreateButton(480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 85);
         pDialogueWindow->CreateButton(480, 190, 0x8Cu, 0x1Eu, 1, 0, UIMSG_SelectNPCDialogueOption, 86);

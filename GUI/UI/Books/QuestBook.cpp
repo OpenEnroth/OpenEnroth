@@ -117,7 +117,7 @@ void GUIWindow_QuestBook::Update() {
     questbook_window.uFrameW = game_viewport_w;
     questbook_window.DrawTitleText(
         pBook2Font, 0, 22, ui_book_quests_title_color,
-        localization->GetString(174), 3);  // "Current Quests"
+        localization->GetString(LSTR_CURRENT_QUESTS), 3);
 
     // for other text
     questbook_window.uFrameX = 48;

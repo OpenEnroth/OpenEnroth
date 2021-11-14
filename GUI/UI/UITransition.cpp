@@ -124,44 +124,36 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                 uCurrentHouse_Animation =
                     IndoorLocation::GetLocationIndex(pLocationName);
         } else {
-            transition_button_label = localization->GetString(
-                73);  // Enter    Войти
-                      // if (
-                      // pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId
-                      // )
-                      //  PlayHouseSound(anim_id, HouseSound_Greeting);
+            transition_button_label = localization->GetString(LSTR_ENTER);
+            if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
+                PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
                 pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
-                uCurrentHouse_Animation =
-                    IndoorLocation::GetLocationIndex(pLocationName);
+                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         }
     } else if (!IndoorLocation::GetLocationIndex(pLocationName)) {
         if (pMapStats->GetMapInfo(pCurrentMapName)) {
-            transition_button_label = localization->FormatString(
-                410,
+            transition_button_label = localization->FormatString(410,
                 pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
                     .pName.c_str());  // "Leave %s"
-                              // if (
-                              // pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId
-                              // ) PlayHouseSound(anim_id, HouseSound_Greeting);
+            if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
+                PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
                 pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
-                uCurrentHouse_Animation =
-                    IndoorLocation::GetLocationIndex(pLocationName);
+                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         } else {
-            transition_button_label = localization->GetString(79);
-            // if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId
-            // ) PlayHouseSound(anim_id, HouseSound_Greeting);
+            transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
+            if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
+                PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
                 pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_47, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
-                uCurrentHouse_Animation =
-                    IndoorLocation::GetLocationIndex(pLocationName);
+                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         }
     }
 
@@ -171,7 +163,8 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     current_screen_type = CURRENT_SCREEN::SCREEN_INPUT_BLV;
     pBtn_ExitCancel = CreateButton(
         0x236u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionWindowCloseBtn, 0,
-        GameKey::N, localization->GetString(34), {{ui_buttdesc2}});  // Cancel / Отмена
+        GameKey::N, localization->GetString(LSTR_CANCEL), {{ui_buttdesc2}}
+    );
     pBtn_YES = CreateButton(
         0x1E6u, 0x1BDu, 0x4Bu, 0x21u, 1, 0,
         UIMSG_TransitionUI_Confirm, 0, GameKey::Y, hint, {{ui_buttyes2}});
@@ -209,7 +202,7 @@ GUIWindow_Travel::GUIWindow_Travel()
             410, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
                      .pName.c_str());  // "Leave %s"
     else
-        transition_button_label = localization->GetString(79);  // Exit
+        transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
 
     String hint = this->sHint = transition_button_label;
 
@@ -217,8 +210,8 @@ GUIWindow_Travel::GUIWindow_Travel()
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
     pBtn_ExitCancel = CreateButton(
         566, 445, 75, 33, 1, 0, UIMSG_CHANGE_LOCATION_ClickCancelBtn, 0, GameKey::N,
-        localization->GetString(156),
-        {{ui_buttdesc2}});  // Stay in this area / Остаться в этой области
+        localization->GetString(LSTR_STAY_IN_THIS_AREA), {{ui_buttdesc2}}
+    );
     pBtn_YES = CreateButton(486, 445, 75, 33, 1, 0, UIMSG_OnTravelByFoot, 0,
         GameKey::Y, hint, {{ui_buttyes2}});
     CreateButton(pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63, 73, 1, 0,

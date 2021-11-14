@@ -2236,10 +2236,10 @@ void Game::EventLoop() {
                         StringPrintf("%d / %d %s    %d / %d %s",
                                      pPlayers[uMessageParam]->GetHealth(),
                                      pPlayers[uMessageParam]->GetMaxHealth(),
-                                     localization->GetString(108),
+                                     localization->GetString(LSTR_HIT_POINTS),
                                      pPlayers[uMessageParam]->GetMana(),
                                      pPlayers[uMessageParam]->GetMaxMana(),
-                                     localization->GetString(212)));
+                                     localization->GetString(LSTR_SPELL_POINTS)));
                     continue;
                 }
 

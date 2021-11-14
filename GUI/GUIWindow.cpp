@@ -156,7 +156,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     mouse->SetCursorImage("MICON2");
-    GameUI_StatusBar_OnEvent(localization->GetString(39));  // Choose target / Выберите цель
+    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CHOOSE_TARGET));
 }
 
 void GUIMessageQueue::Flush() {
@@ -247,7 +247,7 @@ void GUIWindow::_41D73D_draw_buff_tooltip() {
     DrawMessageBox(0);
     DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(451), 3);
     if (!string_count)
-        DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(153), 3);
+        DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(LSTR_NONE), 3);
 
     string_count = 0;
     for (int i = 0; i < 20; ++i) {
@@ -612,29 +612,29 @@ String MakeDateTimeString(GameTime time) {
 
     String str = "";
     if (days) {
-        auto day_str = localization->GetString(57);            // Days
-        if (days <= 1) day_str = localization->GetString(56);  // Day
+        auto day_str = localization->GetString(LSTR_DAYS);
+        if (days <= 1) day_str = localization->GetString(LSTR_DAY);
 
         str += StringPrintf("%d %s ", days, day_str);
     }
 
     if (hours) {
-        auto hour_str = localization->GetString(110);             // Hours
-        if (hours <= 1) hour_str = localization->GetString(109);  // Hour
+        auto hour_str = localization->GetString(LSTR_HOURS);
+        if (hours <= 1) hour_str = localization->GetString(LSTR_HOUR);
 
         str += StringPrintf("%d %s ", hours, hour_str);
     }
 
     if (minutes && !days) {
-        auto minute_str = localization->GetString(436);               // Minutes
-        if (minutes <= 1) minute_str = localization->GetString(437);  // Minute
+        auto minute_str = localization->GetString(LSTR_MINUTES);
+        if (minutes <= 1) minute_str = localization->GetString(LSTR_MINUTE);
 
         str += StringPrintf("%d %s ", minutes, minute_str);
     }
 
     if (seconds && !hours) {
-        auto seconds_str = localization->GetString(438);  // Seconds
-        if (seconds <= 1) seconds_str = localization->GetString(439);  // Second
+        auto seconds_str = localization->GetString(LSTR_SECONDS);
+        if (seconds <= 1) seconds_str = localization->GetString(LSTR_SECOND);
 
         str += StringPrintf("%d %s ", seconds, seconds_str);
     }
@@ -797,8 +797,9 @@ void DrawJoinGuildWindow(int pEventCode) {
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)pEventCode);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
-        localization->GetString(34),
-        { { ui_exit_cancel_button_background } });  // Cancel
+        localization->GetString(LSTR_CANCEL),
+        { { ui_exit_cancel_button_background } }
+    );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
@@ -1675,7 +1676,8 @@ void _4B3FE5_training_dialogue(int a4) {
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)a4);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
-        localization->GetString(34), { { ui_exit_cancel_button_background } });
+        localization->GetString(LSTR_CANCEL), { { ui_exit_cancel_button_background } }
+    );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(
@@ -1765,8 +1767,9 @@ void CheckBountyRespawnAndAward() {
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
-        localization->GetString(34),  // "Cancel"
-        { { ui_exit_cancel_button_background } });
+        localization->GetString(LSTR_CANCEL),
+        { { ui_exit_cancel_button_background } }
+    );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_0, 83, GameKey::None, "");
@@ -2172,7 +2175,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount);
     } else if (masteryLevelBeingTaught == 4) {
         return localization->FormatString(534,
-            localization->GetString(225),  // Grandmaster
+            localization->GetString(LSTR_GRANDMASTER),
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount);
     }
@@ -2582,7 +2585,7 @@ void UI_Create() {
         game_ui_tome_quests->GetWidth(),
         game_ui_tome_quests->GetHeight(),
         1, 0, UIMSG_OpenQuestBook, 0, keyboardActionMapping->GetKey(InputAction::Quest),
-        localization->GetString(174), { { game_ui_tome_quests } });  // Quests
+        localization->GetString(LSTR_CURRENT_QUESTS), { { game_ui_tome_quests } });
 
     game_ui_tome_autonotes = assets->GetImage_ColorKey("ib-td2-A", 0x7FF);
     pBtn_Autonotes = pPrimaryWindow->CreateButton(
@@ -2590,7 +2593,7 @@ void UI_Create() {
         game_ui_tome_autonotes->GetWidth(),
         game_ui_tome_autonotes->GetHeight(),
         1, 0, UIMSG_OpenAutonotes, 0, keyboardActionMapping->GetKey(InputAction::Autonotes),
-        localization->GetString(154), { { game_ui_tome_autonotes } });  // Autonotes
+        localization->GetString(LSTR_AUTONOTES), { { game_ui_tome_autonotes } });
 
     game_ui_tome_maps = assets->GetImage_ColorKey("ib-td3-A", 0x7FF);
     pBtn_Maps = pPrimaryWindow->CreateButton(
@@ -2598,7 +2601,7 @@ void UI_Create() {
         game_ui_tome_maps->GetWidth(),
         game_ui_tome_maps->GetHeight(),
         1, 0, UIMSG_OpenMapBook, 0, keyboardActionMapping->GetKey(InputAction::Mapbook),
-        localization->GetString(139), { { game_ui_tome_maps } });  // Maps
+        localization->GetString(LSTR_MAPS), { { game_ui_tome_maps } });
 
     game_ui_tome_calendar = assets->GetImage_ColorKey("ib-td4-A", 0x7FF);
     pBtn_Calendar = pPrimaryWindow->CreateButton(
@@ -2622,12 +2625,15 @@ void UI_Create() {
     bFlashHistoryBook = 0;
 
     pBtn_ZoomIn = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomin->GetWidth(),
-        game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0, keyboardActionMapping->GetKey(InputAction::ZoomIn),
-        localization->GetString(252), { { game_ui_btn_zoomin } });  // Zoom In
+        game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0,
+        keyboardActionMapping->GetKey(InputAction::ZoomIn),
+        localization->GetString(LSTR_ZOOM_IN), { { game_ui_btn_zoomin } }
+    );
 
     pBtn_ZoomOut = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomout->GetWidth(),
-        game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0, keyboardActionMapping->GetKey(InputAction::ZoomOut),
-        localization->GetString(251), { { game_ui_btn_zoomout } });  // Zoom Out
+        game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0,
+        keyboardActionMapping->GetKey(InputAction::ZoomOut),
+        localization->GetString(LSTR_ZOOM_OUT), { { game_ui_btn_zoomout } });
 
     pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0);
     pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, GameKey::Digit5);

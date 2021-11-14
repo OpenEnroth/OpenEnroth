@@ -206,8 +206,9 @@ void GUIWindow_Rest::Update() {
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168,
                                          Color16(10, 0, 0), str2, 0, 0,
                                          Color16(230, 214, 193));
-        auto str3 = StringPrintf("%s\r190%d", localization->GetString(56),
-                                 pParty->uCurrentDayOfMonth + 1);  //День
+        auto str3 = StringPrintf(
+            "%s\r190%d", localization->GetString(LSTR_DAY), pParty->uCurrentDayOfMonth + 1
+        );
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190,
                                          Color16(10, 0, 0), str3, 0, 0,
                                          Color16(230, 214, 193));

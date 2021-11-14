@@ -113,15 +113,14 @@ void Application::GameOver_Loop(int v15) {
                 pParty->pPlayers[i].GetBaseLevel(),
                 localization->GetClassName(
                     pParty->pPlayers[i].classType)), 3);  // %s the Level %u %s
-        v23 += pParty->pPlayers[i]
-                   .uExperience;  // __PAIR__(*(int *)(i - 4), *(int *)(i - 8));
+        v23 += pParty->pPlayers[i].uExperience;
     }
     v23 = (signed __int64)v23 / v19;
     String v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), 1, v6, 0);
 
-    v7 = localization->GetString(56);
-    if (v17 != 1) v7 = localization->GetString(57);
+    v7 = localization->GetString(LSTR_DAY);
+    if (v17 != 1) v7 = localization->GetString(LSTR_DAYS);
 
     v8 = localization->GetString(146);                // Month
     if (v18 != 1) v8 = localization->GetString(148);  // Months

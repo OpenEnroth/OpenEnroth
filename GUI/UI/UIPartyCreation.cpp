@@ -385,8 +385,8 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / renwidth, uPosActiveItem->uY / renheight, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
 
     memset(pText, 0, 200);
-    strcpy(pText, localization->GetString(205));  // "Skills"
-    for (int i = strlen(pText) - 1; i >= 0; i--)  //???
+    strcpy(pText, localization->GetString(LSTR_SKILLS));
+    for (int i = strlen(pText) - 1; i >= 0; i--)
         pText[i] = toupper((uint8_t)pText[i]);
 
     pIntervalX = 18;
@@ -545,7 +545,7 @@ void GUIWindow_PartyCreation::Update() {
         uX += 158;
     }
 
-    strcpy(pText, localization->GetString(41));  // "Class"
+    strcpy(pText, localization->GetString(LSTR_CLASS));
     for (int i = strlen(pText) - 1; i >= 0; i--)
         pText[i] = toupper((unsigned __int8)pText[i]);
 

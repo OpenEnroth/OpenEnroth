@@ -482,7 +482,7 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     pCharacterScreen_SkillsBtn = CreateButton(
         pViewport->uViewportTL_X + 102, pViewport->uViewportTL_Y + 308,
         paperdoll_dbrds[7]->GetWidth(), paperdoll_dbrds[7]->GetHeight(), 1, 0,
-        UIMSG_ClickSkillsBtn, 0, GameKey::K, localization->GetString(205),  // Skills
+        UIMSG_ClickSkillsBtn, 0, GameKey::K, localization->GetString(LSTR_SKILLS),
         {{paperdoll_dbrds[8], paperdoll_dbrds[7]}});
     pCharacterScreen_InventoryBtn = CreateButton(
         pViewport->uViewportTL_X + 192, pViewport->uViewportTL_Y + 308,
@@ -499,7 +499,7 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
         pViewport->uViewportTL_X + 371, pViewport->uViewportTL_Y + 308,
         paperdoll_dbrds[1]->GetWidth(), paperdoll_dbrds[1]->GetHeight(), 1, 0,
         UIMSG_ClickExitCharacterWindowBtn, 0, GameKey::None,
-        localization->GetString(79),  // Exit
+        localization->GetString(LSTR_DIALOGUE_EXIT),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CreateButton(0, 0, 476, 345, 1, 122, UIMSG_InventoryLeftClick, 0);
     pCharacterScreen_DetalizBtn =
@@ -664,7 +664,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
         0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(
         394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, GameKey::None,
-        localization->GetString(79),  // Close
+        localization->GetString(LSTR_DIALOGUE_EXIT),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CS_inventory_window->CreateButton(0, 0, 0x1DCu, 0x159u, 1, 122,
                                       UIMSG_InventoryLeftClick, 0);
@@ -689,7 +689,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     int y_offset = y;
 
     auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin,
-                            localization->GetString(131));  // "Magic"    "Level"
+                            localization->GetString(LSTR_LEVEL));
     pGUIWindow_CurrentMenu->DrawText(
         pFontArrus, x, y, ui_character_header_text_color, str, 0, 0, 0);
 
@@ -765,8 +765,8 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     if (!num_skills_drawn) {
         y_offset += pFontLucida->GetHeight() - 3;
         pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, y_offset, 0,
-                                         localization->GetString(153), 0, 0,
-                                         0);  // None
+                                         localization->GetString(LSTR_NONE), 0, 0,
+                                         0);
     }
 
     return y_offset;
@@ -2375,7 +2375,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     if (player->GetMaxHealth() >= 1000)
         text_format = "%s\f%05u\r388%d\f00000 / %d\n";
     pY += 2 * pFontArrus->GetHeight() + 5;
-    auto str9 = StringPrintf(text_format, localization->GetString(108),
+    auto str9 = StringPrintf(text_format, localization->GetString(LSTR_HIT_POINTS),
                              UI_GetHealthManaAndOtherQualitiesStringColor(
                                  player->sHealth, player->GetMaxHealth()),
                              player->sHealth, player->GetMaxHealth());
@@ -2385,7 +2385,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     if (player->GetMaxMana() >= 1000)
         text_format = "%s\f%05u\r388%d\f00000 / %d\n";
     pY += pFontArrus->GetHeight() - 2;
-    auto str10 = StringPrintf(text_format, localization->GetString(212),
+    auto str10 = StringPrintf(text_format, localization->GetString(LSTR_SPELL_POINTS),
                               UI_GetHealthManaAndOtherQualitiesStringColor(
                                   player->sMana, player->GetMaxMana()),
                               player->sMana, player->GetMaxMana());
@@ -2393,7 +2393,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     pY += pFontArrus->GetHeight() - 2;
     auto str11 = StringPrintf("%s\f%05u\r424%d\f00000 /\t185%d\n\n",
-                              localization->GetString(12),
+                              localization->GetString(LSTR_ARMOR_CLASS),
                               UI_GetHealthManaAndOtherQualitiesStringColor(
                                   player->GetActualAC(), player->GetBaseAC()),
                               player->GetActualAC(), player->GetBaseAC());
@@ -2402,7 +2402,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pY += 2 * pFontArrus->GetHeight() - 2;
     auto str12 =
         StringPrintf("%s: \f%05d%s\n",
-                     localization->GetString(47),  // Condition   /   Состояние
+                     localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
                      localization->GetCharacterConditionName(
                          player->GetMajorConditionIdx()));
@@ -2410,11 +2410,10 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                                            0);
 
     pY += pFontArrus->GetHeight() + -1;
-    pText = localization->GetString(153);  // Нет
+    pText = localization->GetString(LSTR_NONE);
     if (player->uQuickSpell)
         pText = pSpellStats->pInfos[player->uQuickSpell].pShortName;
-    auto str13 = StringPrintf("%s: %s", localization->GetString(172),
-                              pText);  // Б. применение
+    auto str13 = StringPrintf("%s: %s", localization->GetString(LSTR_QUICK_SPELL), pText);
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str13, 226,
                                            0);
 
@@ -2423,7 +2422,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetActualAge() > 99)
         text_format = Stat_string_format_2_column_over_100;
-    auto str14 = StringPrintf(text_format, localization->GetString(5),
+    auto str14 = StringPrintf(text_format, localization->GetString(LSTR_AGE),
                               UI_GetHealthManaAndOtherQualitiesStringColor(
                                   player->GetActualAge(), player->GetBaseAge()),
                               player->GetActualAge(), player->GetBaseAge());
@@ -2435,7 +2434,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
 
     pY += pFontArrus->GetHeight() - 2;
     auto str15 =
-        StringPrintf(text_format, localization->GetString(131),  // Уров.
+        StringPrintf(text_format, localization->GetString(LSTR_LEVEL),
                      UI_GetHealthManaAndOtherQualitiesStringColor(
                          player->GetActualLevel(), player->GetBaseLevel()),
                      player->GetActualLevel(), player->GetBaseLevel());
@@ -2451,7 +2450,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str16);
 
     pY += 2 * pFontArrus->GetHeight();
-    auto str17 = StringPrintf("%s\t100%+d\n", localization->GetString(18),
+    auto str17 = StringPrintf("%s\t100%+d\n", localization->GetString(LSTR_ATTACK),
                               player->GetActualAttack(false));
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str17);
 
@@ -2464,7 +2463,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
     pY += pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(
         pFontArrus, 266, pY, 0,
-        StringPrintf("%s\t100%+d\n", localization->GetString(203),
+        StringPrintf("%s\t100%+d\n", localization->GetString(LSTR_SHOOT),
                      player->GetRangedAttack()));
 
     pY += pFontArrus->GetHeight() - 2;

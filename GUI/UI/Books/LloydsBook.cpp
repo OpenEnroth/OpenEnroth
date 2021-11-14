@@ -140,11 +140,11 @@ void GUIWindow_LloydsBook::Update() {
                 unsigned int pDays = RemainingTime.GetDays();
                 String str;
                 if (pDays > 1) {
-                    str = StringPrintf("%lu %s", pDays + 1, localization->GetString(57));  // days
+                    str = StringPrintf("%lu %s", pDays + 1, localization->GetString(LSTR_DAYS));
                 } else if (pHours + 1 <= 23) {
                     str = StringPrintf("%lu %s", pHours + 1, localization->GetString((pHours < 1) ? 109 : 110));
                 } else {
-                    str = StringPrintf("%lu %s", pDays + 1, localization->GetString(56));  // Day
+                    str = StringPrintf("%lu %s", pDays + 1, localization->GetString(LSTR_DAY));
                 }
                 pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
                 pWindow.DrawTitleText(pSpellFont, 0, 0, 1, str, 3);

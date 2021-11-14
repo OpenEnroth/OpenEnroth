@@ -308,7 +308,7 @@ void GUIWindow_AutonotesBook::Update() {
     autonotes_window.uFrameW = game_viewport_w;
     autonotes_window.DrawTitleText(
         pBook2Font, 0, 22, ui_book_autonotes_title_color,
-        localization->GetString(154), 3);  // "Auto notes"
+        localization->GetString(LSTR_AUTONOTES), 3);
 
     // for other text
     autonotes_window.uFrameX = 48;

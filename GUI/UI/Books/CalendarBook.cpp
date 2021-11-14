@@ -48,7 +48,7 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
 //----- (00413D3C) --------------------------------------------------------
 static const char *GetDayPart() {
     if (pParty->uCurrentHour > 5 && pParty->uCurrentHour < 20)
-        return localization->GetString(56);  // "Day"
+        return localization->GetString(LSTR_DAY);
     else if (pParty->uCurrentHour == 5)
         return localization->GetString(55);  // "Dawn"
     else if (pParty->uCurrentHour == 20)
@@ -103,7 +103,7 @@ void GUIWindow_CalendarBook::Update() {
 
     str = StringPrintf(
         "%s\t100:\t110%d - %s",
-        localization->GetString(56),  // "Day"
+        localization->GetString(LSTR_DAY),
         pParty->uCurrentDayOfMonth + 1,
         localization->GetDayName(pParty->uCurrentDayOfMonth % 7));
     calendar_window.DrawText(pBookFont, 70, 2 * pBookFont->GetHeight() + 49, ui_book_calendar_day_color, str, 0, 0, 0);
