@@ -241,8 +241,7 @@ struct Party {
     inline void SetAirborne(bool new_state) {
         if (new_state) {
             uFlags |= PARTY_FLAGS_1_AIRBORNE;
-        }
-        else {
+        } else {
             uFlags &= ~PARTY_FLAGS_1_AIRBORNE;
         }
     }
