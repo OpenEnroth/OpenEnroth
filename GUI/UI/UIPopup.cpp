@@ -385,12 +385,12 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             );
         } else if (inspect_item->uEnchantmentType) {
             sprintf(
-                out_text + 200, "%s: %s +%d", localization->GetString(LSTR_SPECIAL),
+                out_text + 200, "%s: %s +%d", localization->GetString(LSTR_SPECIAL_2),
                 pItemsTable->pEnchantments[inspect_item->uEnchantmentType - 1].pBonusStat,
                 inspect_item->m_enchantmentStrength);
         } else if (inspect_item->special_enchantment) {
             sprintf(
-                out_text + 200, "%s: %s", localization->GetString(LSTR_SPECIAL),
+                out_text + 200, "%s: %s", localization->GetString(LSTR_SPECIAL_2),
                 pItemsTable
                 ->pSpecialEnchantments[inspect_item->special_enchantment - 1]
                 .pBonusStatement);

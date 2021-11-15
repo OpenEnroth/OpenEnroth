@@ -139,7 +139,7 @@
 #define LSTR_SKILLS_FOR                 206  // "Skills for"
 #define LSTR_SKILL_POINTS               207  // "Skill Points"
 #define LSTR_SP                         209  // "SP"
-#define LSTR_SPECIAL                    210  // "Special"
+#define LSTR_SPECIAL_2                  210  // "Special"
 #define LSTR_SPEED                      211  // "Speed"
 #define LSTR_SPELL_POINTS               212  // "Spell Points"
 #define LSTR_STATS                      216  // "Stats"
