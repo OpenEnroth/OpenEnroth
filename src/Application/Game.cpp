@@ -1492,18 +1492,16 @@ void Game::EventLoop() {
                     continue;
                 }
                 case UIMSG_ShowFinalWindow: {
-                    static String
-                        final_message;  // static due to GUIWindow_Modal not
-                                        // holding a reference and text ptr will
-                                        // be destroyed upon exiting scope
+                    // static due to GUIWindow_Modal not
+                    // holding a reference and text ptr will
+                    // be destroyed upon exiting scope
+                    static String final_message;
 
-                    final_message = StringPrintf("%s\n \n%s\n \n%s", localization->GetString(151),  // Congratulations Adventurer.
-                        localization->GetString(118),  // We hope that you've enjoyed playing Might
-                                                       // and Magic VII as much as we did making it.
-                                                       // We have saved this screen as MM7_WIN.PCX
-                                                       // in your MM7 directory. You can print it
-                                                       // out as proof of your accomplishment.
-                        localization->GetString(167));  // - The Might and Magic VII Development Team.
+                    final_message = StringPrintf(
+                        "%s\n \n%s\n \n%s",
+                        localization->GetString(LSTR_CONGRATULATIONS_ADVENTURER),
+                        localization->GetString(LSTR_WE_HOPE_YOU_ENJOYED_MM7),
+                        localization->GetString(LSTR_THE_MM7_DEV_TEAM));
 
                     pModalWindow = new GUIWindow_Modal(final_message.c_str(), UIMSG_OnFinalWindowClose);
                     uGameState = GAME_STATE_FINAL_WINDOW;
@@ -1514,6 +1512,7 @@ void Game::EventLoop() {
                     // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
                     // __debugbreak();  // missed break/continue?
                     continue;
+
                 case UIMSG_DD: {
                     __debugbreak();
                     // sprintf(tmp_str.data(), "%s",
@@ -1563,7 +1562,7 @@ void Game::EventLoop() {
                 }
                 case UIMSG_CastQuickSpell: {
                     if (engine->IsUnderwater()) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(652));  // "You can not do that while you are // underwater!"
+                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_DO_UNDERWATER));
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
@@ -1649,12 +1648,12 @@ void Game::EventLoop() {
                     new OnCancel(pButton_RestUI_Exit->uX,
                                  pButton_RestUI_Exit->uY, 0, 0,
                                  (GUIButton *)pButton_RestUI_Exit,
-                                 localization->GetString(81));  // "Exit Rest"
+                                 localization->GetString(LSTR_EXIT_REST));
                     continue;
                 case UIMSG_Wait5Minutes:
                     if (_506F14_resting_stage == 2) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            477));  // "You are already resting!"
+                        GameUI_StatusBar_OnEvent(
+                            localization->GetString(LSTR_ALREADY_RESTING));
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
@@ -1662,14 +1661,14 @@ void Game::EventLoop() {
                         pButton_RestUI_Wait5Minutes->uX,
                         pButton_RestUI_Wait5Minutes->uY, 0, 0,
                         (GUIButton *)pButton_RestUI_Wait5Minutes,
-                        localization->GetString(238));  // "Wait 5 Minutes"
+                        localization->GetString(LSTR_WAIT_5_MINUTES));
                     _506F14_resting_stage = 1;
                     _506F18_num_minutes_to_sleep = 5;
                     continue;
                 case UIMSG_Wait1Hour:
                     if (_506F14_resting_stage == 2) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            477));  // "You are already resting!"
+                        GameUI_StatusBar_OnEvent(
+                            localization->GetString(LSTR_ALREADY_RESTING));
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
@@ -1677,7 +1676,7 @@ void Game::EventLoop() {
                         pButton_RestUI_Wait1Hour->uX,
                         pButton_RestUI_Wait1Hour->uY, 0, 0,
                         (GUIButton *)pButton_RestUI_Wait1Hour,
-                        localization->GetString(239));  // "Wait 1 Hour"
+                        localization->GetString(LSTR_WAIT_1_HOUR));
                     _506F14_resting_stage = 1;
                     _506F18_num_minutes_to_sleep = 60;
                     continue;
@@ -1706,22 +1705,19 @@ void Game::EventLoop() {
                     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
                     if (CheckActors_proximity()) {
                         if (pParty->bTurnBasedModeOn) {
-                            GameUI_StatusBar_OnEvent(localization->GetString(478));  // "You can't rest in turn-based mode!"
+                            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_REST_IN_TURN_BASED));
                             continue;
                         }
-                        v88 = localization->GetString(
-                            480);  // "There are hostile enemies near!"
+                        v88 = localization->GetString(LSTR_HOSTILE_ENEMIES_NEARBY);
                         if (pParty->uFlags & 0x88)
-                            v88 = localization->GetString(
-                                479);  // "You can't rest here!"
+                            v88 = localization->GetString(LSTR_CANT_REST_HERE);
                         GameUI_StatusBar_OnEvent(v88);
                         if (!uActiveCharacter) continue;
-                        pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)13,
-                                                              0);
+                        pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)13, 0);
                         continue;
                     }
                     if (pParty->bTurnBasedModeOn) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(478));  // "You can't rest in turn-based mode!"
+                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_REST_IN_TURN_BASED));
                         continue;
                     }
                     if (!(pParty->uFlags & 0x88)) {
@@ -1729,32 +1725,28 @@ void Game::EventLoop() {
                         continue;
                     }
                     if (pParty->bTurnBasedModeOn) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(478));  // "You can't rest in turn-based mode!"
+                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_REST_IN_TURN_BASED));
                         continue;
                     }
-                    v88 = localization->GetString(
-                        480);  // "There are hostile enemies near!"
+                    v88 = localization->GetString(LSTR_HOSTILE_ENEMIES_NEARBY);
                     if (pParty->uFlags & 0x88)
-                        v88 = localization->GetString(
-                            479);  // "You can't rest here!"
+                        v88 = localization->GetString(LSTR_CANT_REST_HERE);
                     GameUI_StatusBar_OnEvent(v88);
                     if (!uActiveCharacter) continue;
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantRestHere,
-                                                          0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantRestHere, 0);
                     continue;
                 case UIMSG_Rest8Hour:
                     if (_506F14_resting_stage != 0) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            477));  // "You are already resting!"
+                        GameUI_StatusBar_OnEvent(
+                            localization->GetString(LSTR_ALREADY_RESTING));
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
                     if (pParty->GetFood() < uRestUI_FoodRequiredToRest) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(482));  // "You don't have enough food to rest"
+                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_FOOD));
                         if (uActiveCharacter &&
                             pPlayers[uActiveCharacter]->CanAct())
-                            pPlayers[uActiveCharacter]->PlaySound(SPEECH_108,
-                                                                  0);
+                            pPlayers[uActiveCharacter]->PlaySound(SPEECH_108, 0);
                     } else {
                         pParty->pPlayers[3].conditions_times[Condition_Sleep] =
                             pParty->GetPlayingTime();
@@ -1794,8 +1786,7 @@ void Game::EventLoop() {
                                 pMessageQueue_50CBD0->AddGUIMessage(
                                     UIMSG_Escape, 0, 0);
                                 GameUI_StatusBar_OnEvent(
-                                    localization->GetString(
-                                        481));  // "Encounter!"
+                                    localization->GetString(LSTR_ENCOUNTER));
                                 pAudioPlayer->PlaySound(SOUND_encounter, 0, 0,
                                                         -1, 0, 0);
                                 continue;
@@ -1814,8 +1805,8 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_AlreadyResting:
                     if (_506F14_resting_stage == 2) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(
-                            477));  // "You are already resting!"
+                        GameUI_StatusBar_OnEvent(
+                            localization->GetString(LSTR_ALREADY_RESTING));
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
@@ -1823,7 +1814,7 @@ void Game::EventLoop() {
                         pButton_RestUI_WaitUntilDawn->uX,
                         pButton_RestUI_WaitUntilDawn->uY, 0, 0,
                         (GUIButton *)pButton_RestUI_WaitUntilDawn,
-                        localization->GetString(237));  // "Wait until Dawn"
+                        localization->GetString(LSTR_WAIT_UNTIL_DAWN));
                     v97 = _494820_training_time(pParty->uCurrentHour);
                     _506F14_resting_stage = 1;
                     _506F18_num_minutes_to_sleep =
@@ -1841,13 +1832,11 @@ void Game::EventLoop() {
                                 .pName));
                     } else {
                         if (pPlayers[uActiveCharacter]->uQuickSpell)
-                            GameUI_StatusBar_Set(localization->GetString(
-                                584));  // "Click here to remove your Quick
-                                        // Spell"
+                            GameUI_StatusBar_Set(
+                                localization->GetString(LSTR_CLICK_TO_REMOVE_QUICKSPELL));
                         else
-                            GameUI_StatusBar_Set(localization->GetString(
-                                484));  // "Select a spell then click here to
-                                        // set a QuickSpell"
+                            GameUI_StatusBar_Set(
+                                localization->GetString(LSTR_CLICK_TO_SET_QUICKSPELL));
                     }
                     continue;
                 }
@@ -1990,7 +1979,7 @@ void Game::EventLoop() {
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
                     if (engine->IsUnderwater()) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(652));  // "You can not do that while you are underwater!"
+                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_DO_UNDERWATER));
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     } else {
                         pMessageQueue_50CBD0->Flush();
@@ -2083,8 +2072,7 @@ void Game::EventLoop() {
                     HEXRAYS_LOWORD(v2) = *(short *)v105;
                     uNumSeconds = v2;
                     if (pPlayer4->uSkillPoints < (v2 & 0x3F) + 1) {
-                        v87 = localization->GetString(
-                            488);  // "You don't have enough skill points!"
+                        v87 = localization->GetString(LSTR_NOT_ENOUGH_SKILL_POINTS);
                     } else {
                         if ((uNumSeconds & 0x3F) < 0x3C) {
                             *(short *)v105 = uNumSeconds + 1;
@@ -2095,8 +2083,7 @@ void Game::EventLoop() {
                                                     -1, 0, 0);
                             continue;
                         }
-                        v87 = localization->GetString(
-                            487);  // "You have already mastered this skill!"
+                        v87 = localization->GetString(LSTR_SKILL_ALREADY_MASTERED);
                     }
                     GameUI_StatusBar_OnEvent(v87);
                     continue;
@@ -2884,9 +2871,7 @@ void Game::GameLoop() {
                     pParty->pPlayers[idx].PlaySound(SPEECH_99, 0);
                 }
 
-                GameUI_StatusBar_OnEvent(localization->GetString(
-                    524));  // "Once again you've cheated death!.." "Вы снова
-                            // обхитрили смерть! …"
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CHEATED_THE_DEATH));
                 uGameState = GAME_STATE_PLAYING;
 
                 // need to flush messages here??

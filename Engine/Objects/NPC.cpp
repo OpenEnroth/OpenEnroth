@@ -1093,7 +1093,7 @@ void NPCHireableDialogPrepare() {
         pDialogueWindow->CreateButton(
             480, 0xA0u, 0x8Cu, 0x1Eu, 1, 0,
             UIMSG_ClickNPCTopic, 0x4Du, GameKey::None,
-            localization->GetString(LSTR_HIRE_DETAILS)
+            localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }

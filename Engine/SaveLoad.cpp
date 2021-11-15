@@ -285,9 +285,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     //        pFontSmallnum, text_pos + 25, 259, 0,
     //        pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
     //    text_pos =
-    //        pFontSmallnum->AlignText_Center(186, localization->GetString(165));
+    //        pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT));
     //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0,
-    //        localization->GetString(165), 0, 0,
+    //        localization->GetString(LSTR_PLEASE_WAIT), 0, 0,
     //        0);  // Пожалуйста, подождите
     //    render->Present();
     //}

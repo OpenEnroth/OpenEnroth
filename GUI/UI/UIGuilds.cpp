@@ -76,8 +76,8 @@ void GuildDialog() {
              ++i) {
             if (pDialogueWindow->GetControl(i)->msg_param == 18) {
                 all_text_height += pFontArrus->CalcTextHeight(
-                    localization->GetString(400), working_window.uFrameWidth,
-                    0);  // "Buy Spells"
+                    localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth,
+                    0);
                 dialogopts++;
             } else {
                 if (byte_4ED970_skill_learn_ability_by_class_table
@@ -133,7 +133,7 @@ void GuildDialog() {
             if (pButton->msg_param == 18) {
                 pButton->uY = textspacings + textoffset;
                 pTextHeight =
-                    pFontArrus->CalcTextHeight(localization->GetString(400),
+                    pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS),
                                                working_window.uFrameWidth, 0);
                 pButton->uHeight = pTextHeight;
                 textoffset = pButton->uY + pTextHeight - 1;
@@ -144,7 +144,7 @@ void GuildDialog() {
                 }
                 working_window.DrawTitleText(
                     pFontArrus, 0, pButton->uY, pTextColor,
-                    localization->GetString(400), 3);  // "Buy Spells"
+                    localization->GetString(LSTR_BUY_SPELLS), 3);
             } else {
                 if (byte_4ED970_skill_learn_ability_by_class_table
                         [pPlayers[uActiveCharacter]->classType]
@@ -210,8 +210,8 @@ void GuildDialog() {
                     ++itemcount;
             }
 
-            GameUI_StatusBar_DrawImmediate(localization->GetString(195),
-                                           0);  // "Select the Item to Buy"
+            GameUI_StatusBar_DrawImmediate(
+                localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
 
             if (!itemcount) {  // shop empty
                 working_window.DrawShops_next_generation_time_string(

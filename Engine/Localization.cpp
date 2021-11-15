@@ -723,7 +723,7 @@ unsigned char * +		[38]	0x04102f8b "Cast Spell"	unsigned char *
 +		[50]	0x0410302e "Dodging"	unsigned char *
 
 +		[52]	0x04103056 "Cursed"	unsigned char *
-+		[0x35]	0x04103061 "Damage"	unsigned char *
++		[53]	0x04103061 "Damage"	unsigned char *
 +		[0x36]	0x0410306c "Dark"	unsigned char *
 
 

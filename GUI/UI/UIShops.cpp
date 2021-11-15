@@ -39,10 +39,10 @@ bool StealingMode(int adventurerId) {
 
 void ShopDialogMain(GUIWindow dialogwin) {
     if (HouseUI_CheckIfPlayerCanInteract()) {
-        pShopOptions[0] = localization->GetString(134);  // standard
-        pShopOptions[1] = localization->GetString(152);  // special
-        pShopOptions[2] = localization->GetString(159);  // display
-        pShopOptions[3] = localization->GetString(160);  // learn
+        pShopOptions[0] = localization->GetString(LSTR_STANDARD);
+        pShopOptions[1] = localization->GetString(LSTR_SPECIAL);
+        pShopOptions[2] = localization->GetString(LSTR_DISPLAY);
+        pShopOptions[3] = localization->GetString(LSTR_LEARN_SKILLS);
 
         int all_text_height = 0;
         for (int i = 0; i < 4; ++i)
@@ -86,9 +86,9 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin,
     draw_leather();
     CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
 
-    pShopOptions[0] = localization->GetString(200);  // sell
-    pShopOptions[1] = localization->GetString(113);  // identify
-    pShopOptions[2] = localization->GetString(179);  // repair - not for alchemy
+    pShopOptions[0] = localization->GetString(LSTR_SELL);
+    pShopOptions[1] = localization->GetString(LSTR_IDENTIFY);
+    pShopOptions[2] = localization->GetString(LSTR_REPAIR);
 
     int options;
     if (building == BuildingType_AlchemistShop) {
@@ -137,7 +137,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
     CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(199), 0);
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), 0);
 
         Point pt = dialogwin.mouse->GetCursorPos();
 
@@ -170,7 +170,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
     CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(197), 0);
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), 0);
 
         Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
@@ -206,7 +206,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
     CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
-        GameUI_StatusBar_DrawImmediate(localization->GetString(198), 0);
+        GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), 0);
 
         Point pt = dialogwin.mouse->GetCursorPos();
 
@@ -311,19 +311,15 @@ void ShopDialogLearn(GUIWindow dialogwin) {
         }
 
         // seek knowledge elsewhere
-        auto str =
-            localization->FormatString(
-                544, pPlayers[uActiveCharacter]->pName,
-                localization->GetClassName(
-                    pPlayers[uActiveCharacter]->classType)) +
-            "\n \n" +
-            localization->GetString(528);  //Больше ничего не могу предложить.
-        dialogwin.DrawTitleText(pFontArrus, 0,
-                                (174 - pFontArrus->CalcTextHeight(
-                                           str, dialogwin.uFrameWidth, 0, 0)) /
-                                        2 +
-                                    138,
-                                Color16(0xE1u, 0xCDu, 0x23u), str, 3);
+        auto str = localization->FormatString(544,
+            pPlayers[uActiveCharacter]->pName, localization->GetClassName(
+                    pPlayers[uActiveCharacter]->classType)
+        ) + "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
+        dialogwin.DrawTitleText(
+            pFontArrus, 0,
+            (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0, 0)) / 2 + 138,
+            Color16(0xE1u, 0xCDu, 0x23u), str, 3
+        );
     }
 }
 
@@ -372,12 +368,10 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
 
         if (StealingMode(uActiveCharacter))
             GameUI_StatusBar_DrawImmediate(
-                localization->GetString(185),
-                0);  // Steal item  /  Украсть предмет
+                localization->GetString(LSTR_STEAL_ITEM), 0);
         else
             GameUI_StatusBar_DrawImmediate(
-                localization->GetString(195),
-                0);  // Buy item  /  Выберите предмет для покупки
+                localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
 
         if (item_num) {  // this shoudl go into func??
             Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
@@ -412,7 +406,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                                     (char *)window_SpeakInHouse->ptr_1C, 2);
                             } else {
                                 str = BuildDialogueString(
-                                    localization->GetString(181),
+                                    localization->GetString(LSTR_STEAL_ITEM_FMT),
                                     uActiveCharacter - 1, item,
                                     (char *)window_SpeakInHouse->ptr_1C, 2);
                             }
@@ -524,9 +518,11 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
         }
 
         if (!StealingMode(uActiveCharacter)) {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);  // Select the Item to Buy
+            GameUI_StatusBar_DrawImmediate(
+                localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
         } else {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);  // Steal item
+            GameUI_StatusBar_DrawImmediate(
+                localization->GetString(LSTR_STEAL_ITEM), 0);
         }
 
         if (pItemCount) {  // this should go into func??
@@ -576,10 +572,9 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                                     (char *)window_SpeakInHouse->ptr_1C, 2);
                             } else {
                                 str = BuildDialogueString(
-                                    localization->GetString(181),
+                                    localization->GetString(LSTR_STEAL_ITEM_FMT),
                                     uActiveCharacter - 1, item,
-                                    (char *)window_SpeakInHouse->ptr_1C,
-                                    2);  // "Steal %24"
+                                    (char *)window_SpeakInHouse->ptr_1C, 2);
                             }
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
@@ -704,9 +699,9 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
         }
 
         if (StealingMode(uActiveCharacter)) {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(185), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_STEAL_ITEM), 0);
         } else {
-            GameUI_StatusBar_DrawImmediate(localization->GetString(195), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
         }
 
         if (item_num) {
@@ -752,10 +747,9 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                                     (char *)window_SpeakInHouse->ptr_1C, 2);
                             } else {
                                 str = BuildDialogueString(
-                                    localization->GetString(181),
+                                    localization->GetString(LSTR_STEAL_ITEM_FMT),
                                     uActiveCharacter - 1, item,
-                                    (char *)window_SpeakInHouse->ptr_1C,
-                                    2);  // "Steal %24"
+                                    (char *)window_SpeakInHouse->ptr_1C, 2);
                             }
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
@@ -959,7 +953,7 @@ void UIShop_Buy_Identify_Repair() {
                             }
 
                             pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-                            GameUI_StatusBar_OnEvent(localization->GetString(563));  // "Pack is Full!"
+                            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_INVENTORY_IS_FULL));
                             break;
                         }
                     }
@@ -1013,7 +1007,7 @@ void UIShop_Buy_Identify_Repair() {
                         Party::TakeGold(uPriceItemService);
                         item->uAttributes |= ITEM_IDENTIFIED;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_73, 0);
-                        GameUI_StatusBar_OnEvent(localization->GetString(569));
+                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_DONE));
                         return;
                     }
 
@@ -1054,7 +1048,7 @@ void UIShop_Buy_Identify_Repair() {
                         item->uAttributes =
                             (item->uAttributes & 0xFFFFFFFD) | 1;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_74, 0);
-                        GameUI_StatusBar_OnEvent(localization->GetString(570));
+                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_GOOD_AS_NEW));
                         return;
                     }
 
@@ -1283,7 +1277,7 @@ void UIShop_Buy_Identify_Repair() {
             } else {
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
                 GameUI_StatusBar_OnEvent(
-                    localization->GetString(563));  // "Pack is Full!"
+                    localization->GetString(LSTR_INVENTORY_IS_FULL));
                 return;
             }
             break;
@@ -1637,8 +1631,8 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0,
                      localization->GetSkillName(spellSchool / 4 + 12), 3u);
 
-    str = StringPrintf("%s\n%d", localization->GetString(522),
-                       *(&pSpellDatas[0].uNormalLevelMana + 10 * spellId));
+    str = StringPrintf("%s\n%d", localization->GetString(LSTR_SP_COST),
+                       pSpellDatas[spellId].uNormalLevelMana);
     a1.DrawTitleText(pFontComic, 0xCu,
                      a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
 }

@@ -36,10 +36,10 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
 
     pBtn_Book_1 = CreateButton(
         415, 13, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 0,
-        GameKey::None, localization->GetString(375));  // Set Beacon
+        GameKey::None, localization->GetString(LSTR_SET_BEACON));
     pBtn_Book_2 = CreateButton(
         415, 48, 39, 36, 1, 0, UIMSG_LloydsBeacon_FlippingBtn, 1,
-        GameKey::None, localization->GetString(523));  // Recall Beacon
+        GameKey::None, localization->GetString(LSTR_RECALL_BEACON));
 
     int max_beacons = 1;
     int water_skill = pParty->pPlayers[_506348_current_lloyd_playerid]
@@ -62,11 +62,13 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
 }
 
 void GUIWindow_LloydsBook::Update() {
-    render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
+    render->DrawTextureAlphaNew(
+        471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
     Player *pPlayer = &pParty->pPlayers[_506348_current_lloyd_playerid];
-    render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
-    String pText = localization->GetString(523);  // Recall Beacon
+    render->DrawTextureAlphaNew(
+        8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
+    String pText = localization->GetString(LSTR_RECALL_BEACON);
 
     GUIWindow pWindow;
     pWindow.uFrameX = game_viewport_x;
@@ -76,7 +78,7 @@ void GUIWindow_LloydsBook::Update() {
     pWindow.uFrameZ = 435;
     pWindow.uFrameW = game_viewport_w;
     if (!bRecallingBeacon) {
-        pText = localization->GetString(375);  // Set Beacon
+        pText = localization->GetString(LSTR_SET_BEACON);
     }
 
     pWindow.DrawTitleText(pBook2Font, 0, 22, 0, pText, 3);
@@ -142,17 +144,18 @@ void GUIWindow_LloydsBook::Update() {
                 if (pDays > 1) {
                     str = StringPrintf("%lu %s", pDays + 1, localization->GetString(LSTR_DAYS));
                 } else if (pHours + 1 <= 23) {
-                    str = StringPrintf("%lu %s", pHours + 1, localization->GetString((pHours < 1) ? 109 : 110));
+                    str = StringPrintf("%lu %s", pHours + 1, localization->GetString((pHours < 1) ? LSTR_HOUR : LSTR_HOURS));
                 } else {
                     str = StringPrintf("%lu %s", pDays + 1, localization->GetString(LSTR_DAY));
                 }
                 pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
                 pWindow.DrawTitleText(pSpellFont, 0, 0, 1, str, 3);
             } else {
-                unsigned int pTextHeight = pSpellFont->CalcTextHeight(localization->GetString(19), pWindow.uFrameWidth, 0);
+                unsigned int pTextHeight = pSpellFont->CalcTextHeight(
+                    localization->GetString(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
                 pWindow.DrawTitleText(pSpellFont, 0,
                     (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, 1,
-                    localization->GetString(19), 3);  // Доступно
+                    localization->GetString(LSTR_AVAILABLE), 3);
             }
         }
     }

@@ -245,7 +245,7 @@ void GUIWindow::_41D73D_draw_buff_tooltip() {
     uFrameZ = uFrameWidth + uFrameX - 1;
     uFrameW = uFrameY + uFrameHeight - 1;
     DrawMessageBox(0);
-    DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(451), 3);
+    DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(LSTR_ACTIVE_PARTY_SPELLS), 3);
     if (!string_count)
         DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(LSTR_NONE), 3);
 
@@ -648,7 +648,9 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
     this->DrawTitleText(
         pFontArrus, 0,
         (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101,
-        Color16(0xFFu, 0xFFu, 0x9Bu), localization->GetString(532) + str, 3);
+        Color16(0xFFu, 0xFFu, 0x9Bu),
+        localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3
+    );
 }
 
 void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
@@ -803,7 +805,7 @@ void DrawJoinGuildWindow(int pEventCode) {
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-        82, GameKey::None, localization->GetString(122));
+        82, GameKey::None, localization->GetString(LSTR_JOIN));
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -1608,8 +1610,7 @@ void ClickNPCTopic(int uMessageParam) {
     }
 
     if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
-        GameUI_StatusBar_OnEvent(localization->GetString(
-            533));  // ""I cannot join you, you're party is full""
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_HIRE_NO_ROOM));
         BackToHouseMenu();
         return;
     }
@@ -1682,7 +1683,7 @@ void _4B3FE5_training_dialogue(int a4) {
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(
         480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Fu, GameKey::None,
-        contract_approved ? localization->GetString(535) : "");
+        contract_approved ? localization->GetString(LSTR_LEARN) : "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -2644,19 +2645,23 @@ void UI_Create() {
     pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
         game_ui_btn_cast->GetWidth(),
         game_ui_btn_cast->GetHeight(),
-        1, 0, UIMSG_SpellBookWindow, 0, GameKey::C, localization->GetString(38), { { game_ui_btn_cast } });
+        1, 0, UIMSG_SpellBookWindow, 0, GameKey::C,
+        localization->GetString(LSTR_CAST_SPELL), { { game_ui_btn_cast } });
     pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
         game_ui_btn_rest->GetWidth(),
         game_ui_btn_rest->GetHeight(),
-        1, 0, UIMSG_RestWindow, 0, GameKey::R, localization->GetString(182), { { game_ui_btn_rest } });
+        1, 0, UIMSG_RestWindow, 0, GameKey::R,
+        localization->GetString(LSTR_REST), { { game_ui_btn_rest } });
     pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
         game_ui_btn_quickref->GetWidth(),
         game_ui_btn_quickref->GetHeight(),
-        1, 0, UIMSG_QuickReference, 0, GameKey::Z, localization->GetString(173), { { game_ui_btn_quickref } });
+        1, 0, UIMSG_QuickReference, 0, GameKey::Z,
+        localization->GetString(LSTR_QUICK_REFERENCE), { { game_ui_btn_quickref } });
     pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
         game_ui_btn_settings->GetWidth(),
         game_ui_btn_settings->GetHeight(),
-        1, 0, UIMSG_GameMenuButton, 0, GameKey::None, localization->GetString(93), { { game_ui_btn_settings } });
+        1, 0, UIMSG_GameMenuButton, 0, GameKey::None,
+        localization->GetString(LSTR_GAME_OPTIONS), { { game_ui_btn_settings } });
 
     pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
         ui_btn_npc_left->GetWidth(),

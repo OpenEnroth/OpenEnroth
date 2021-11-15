@@ -150,7 +150,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     this->uFrameZ = uFrameX + uFrameWidth - 1;
     this->uFrameW = uFrameY + uFrameHeight - 1;
 
-    DrawText(pFontSmallnum, 25, 199, 0, localization->GetString(505), 0, 0, 0);  // "Reading..."
+    DrawText(pFontSmallnum, 25, 199, 0, localization->GetString(LSTR_READING), 0, 0, 0);
     render->Present();
 
     pSavegameList->Initialize();
@@ -172,8 +172,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         if (!pLODFile.Open(str)) __debugbreak();
         void *data = pLODFile.LoadRaw("header.bin");
         memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
-        if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(613))) {  // "AutoSave.MM7"
-            strcpy(pSavegameHeader[i].pName, localization->GetString(16));  // "Autosave"
+        if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(LSTR_AUTOSAVE_MM7))) {
+            strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_AUTOSAVE));
         }
 
         if (pSavegameHeader[i].pName[0] == '\0') {
@@ -290,12 +290,18 @@ static void UI_DrawSaveLoad(bool save) {
     }
 
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
-        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, localization->GetString(135)) + 25,
-            220, 0, localization->GetString(135), 0, 0, 0);  // Çàãðóçêà
-        pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, pFontSmallnum->AlignText_Center(186,
-            pSavegameHeader[uLoadGameUI_SelectedSlot].pName) + 25, 0x106, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
-        pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, pFontSmallnum->AlignText_Center(186, localization->GetString(165)) + 25,
-            304, 0, localization->GetString(165), 0, 0, 0);  // Ïîæàëóéñòà, ïîæîæäèòå
+        pGUIWindow_CurrentMenu->DrawText(
+            pFontSmallnum, pFontSmallnum->AlignText_Center(
+                186, localization->GetString(LSTR_LOADING)
+            ) + 25, 220, 0, localization->GetString(LSTR_LOADING), 0, 0, 0);
+        pGUIWindow_CurrentMenu->DrawTextInRect(
+            pFontSmallnum, pFontSmallnum->AlignText_Center(
+                186, pSavegameHeader[uLoadGameUI_SelectedSlot].pName
+            ) + 25, 0x106, 0, pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
+        pGUIWindow_CurrentMenu->DrawText(
+            pFontSmallnum, pFontSmallnum->AlignText_Center(
+                186, localization->GetString(LSTR_PLEASE_WAIT)
+            ) + 25, 304, 0, localization->GetString(LSTR_PLEASE_WAIT), 0, 0, 0);
     } else {
         if (save) {
             pSaveFiles = MAX_SAVE_SLOTS;

@@ -49,8 +49,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
         viewparams->bRedrawGameUI = 1;
     } else {
-        GameUI_StatusBar_OnEvent(localization->GetString(
-            201));  // "Are you sure?  Click again to start a New Game"
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_START_NEW_GAME_PROMPT));
         pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0);
         dword_6BE138 = 124;
     }
@@ -65,8 +64,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
         pAudioPlayer->PlaySound(SOUND_WoodDoorClosing, 0, 0, -1, 0, 0);
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
     } else {
-        GameUI_StatusBar_OnEvent(localization->GetString(
-            82));  // "Are you sure?  Click again to quit"
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_EXIT_GAME_PROMPT));
         pAudioPlayer->PlaySound(SOUND_quest, 0, 0, -1, 0, 0);
         dword_6BE138 = 132;
     }

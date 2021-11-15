@@ -111,9 +111,9 @@ void ArenaFight() {
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
-    v0 = pFontArrus->CalcTextHeight(localization->GetString(575),
-                                    window.uFrameWidth, 13) +
-         7;  // Пожалуйста, подождите пока я вызываю существ. Удачи.
+    v0 = pFontArrus->CalcTextHeight(
+        localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON),
+        window.uFrameWidth, 13) + 7;
     render->BeginSceneD3D();
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
@@ -135,8 +135,8 @@ void ArenaFight() {
     render->DrawTextureAlphaNew(8 / 640.0f, (347 - v0) / 480.0f,
                                 _591428_endcap);
     String v1 = pFontArrus->FitTextInAWindow(
-        localization->GetString(575), window.uFrameWidth,
-        0xDu);  // Пожалуйста, подождите пока я вызываю существ. Удачи.
+        localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth,
+        13);
     pDialogueWindow->DrawText(pFontArrus, 13, 354 - v0, 0, v1, 0, 0, 0);
     render->EndScene();
     render->Present();

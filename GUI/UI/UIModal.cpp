@@ -20,7 +20,7 @@ GUIWindow_Modal::GUIWindow_Modal(const char *message,
 void GUIWindow_Modal::Update() {
     GUIWindow pWindow;
     pWindow.sHint = StringPrintf("%s\n \n%s", pModalWindow->sHint.c_str(),
-                                 localization->GetString(61));
+                                 localization->GetString(LSTR_PRESS_ESCAPE));
     pWindow.uFrameWidth = 400;
     pWindow.uFrameHeight = 100;
     pWindow.uFrameX = 120;
