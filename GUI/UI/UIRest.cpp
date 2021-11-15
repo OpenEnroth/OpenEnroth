@@ -47,8 +47,8 @@ void GUIWindow_RestWindow::Update() {
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
                                 *((Image **)ptr_1C + 15));
     viewparams->bRedrawGameUI = 1;
-    GUIButton2.DrawLabel(localization->GetString(183), pFontCreate, 0,
-                         0);  // Rest & Heal 8 hrs / Отдых и лечение 8 часов
+    GUIButton2.DrawLabel(
+        localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, 0, 0);
     GUIButton2.pParent = 0;
     Release();
 }
@@ -172,18 +172,26 @@ void GUIWindow_Rest::Update() {
         tmp_button.uWidth = 171;
         tmp_button.uHeight = 37;
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(localization->GetString(183), pFontCreate,
-                             Color16(10, 0, 0),
-                             Color16(230, 214, 193));  //Отдых и лечение 8 часов
+        tmp_button.DrawLabel(
+            localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate,
+            Color16(10, 0, 0), Color16(230, 214, 193));
         tmp_button.pParent = 0;
 
         auto str1 = StringPrintf("\r408%d", uRestUI_FoodRequiredToRest);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 0, 164, Color16(10, 0, 0), str1, 0, 0, Color16(230, 214, 193));
 
-        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(237), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));  // Ждать до рассвета
-        pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(239), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));  // Ждать 1 час
-        pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(238), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));  // Ждать 5 минут
-        pButton_RestUI_Exit->DrawLabel(localization->GetString(81), pFontCreate, Color16(10, 0, 0), Color16(230, 214, 193));  // Закончить отдыхать
+        pButton_RestUI_WaitUntilDawn->DrawLabel(
+            localization->GetString(LSTR_WAIT_UNTIL_DAWN), pFontCreate,
+            Color16(10, 0, 0), Color16(230, 214, 193));
+        pButton_RestUI_Wait1Hour->DrawLabel(
+            localization->GetString(LSTR_WAIT_1_HOUR), pFontCreate,
+            Color16(10, 0, 0), Color16(230, 214, 193));
+        pButton_RestUI_Wait5Minutes->DrawLabel(
+            localization->GetString(LSTR_WAIT_5_MINUTES), pFontCreate,
+            Color16(10, 0, 0), Color16(230, 214, 193));
+        pButton_RestUI_Exit->DrawLabel(
+            localization->GetString(LSTR_EXIT_REST), pFontCreate,
+            Color16(10, 0, 0), Color16(230, 214, 193));
         tmp_button.uX = 45;
         tmp_button.uY = 199;
 
@@ -194,30 +202,32 @@ void GUIWindow_Rest::Update() {
         tmp_button.uHeight = 30;
 
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(localization->GetString(236), pFontCreate,
-                             Color16(10, 0, 0),
-                             Color16(230, 214, 193));  //Ждать без лечения
+        tmp_button.DrawLabel(
+            localization->GetString(LSTR_WAIT_WITHOUT_HEALING), pFontCreate,
+           Color16(10, 0, 0), Color16(230, 214, 193));
         tmp_button.pParent = 0;
         auto str2 = StringPrintf(
             "%d:%02d %s", am_pm_hours, pParty->uCurrentMinute,
             localization->GetAmPm(
-                (pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1
-                                                                          : 0));
+                (pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168,
                                          Color16(10, 0, 0), str2, 0, 0,
                                          Color16(230, 214, 193));
-        auto str3 = StringPrintf("%s\r190%d", localization->GetString(56),
-                                 pParty->uCurrentDayOfMonth + 1);  //День
+        auto str3 = StringPrintf(
+            "%s\r190%d", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1
+        );
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190,
                                          Color16(10, 0, 0), str3, 0, 0,
                                          Color16(230, 214, 193));
-        auto str4 = StringPrintf("%s\r190%d", localization->GetString(146),
-                                 pParty->uCurrentMonth + 1);  //Месяц
+        auto str4 = StringPrintf(
+            "%s\r190%d", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1
+        );
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 222,
                                          Color16(10, 0, 0), str4, 0, 0,
                                          Color16(230, 214, 193));
-        auto str5 = StringPrintf("%s\r190%d", localization->GetString(245),
-                                 pParty->uCurrentYear);  //Год
+        auto str5 = StringPrintf(
+            "%s\r190%d", localization->GetString(LSTR_YEAR), pParty->uCurrentYear
+        );
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 254,
                                          Color16(10, 0, 0), str5, 0, 0,
                                          Color16(230, 214, 193));
@@ -225,6 +235,6 @@ void GUIWindow_Rest::Update() {
     } else {
         new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0,
             (GUIButton *)pButton_RestUI_Exit,
-            localization->GetString(81));  // "Exit Rest"
+            localization->GetString(LSTR_EXIT_REST));
     }
 }

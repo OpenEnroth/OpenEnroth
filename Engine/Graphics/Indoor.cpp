@@ -3946,9 +3946,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pAudioPlayer->StopAll(804);
     //-------------------------------------------------------------
     if (!hovering || !not_high_fall)
-        pParty->uFlags &= ~PARTY_FLAGS_1_FALLING;
+        pParty->SetAirborne(false);
     else
-        pParty->uFlags |= PARTY_FLAGS_1_FALLING;
+        pParty->SetAirborne(true);
     pParty->uFlags &= ~PARTY_FLAGS_1_BURNING;
     pParty->vPosition.x = new_party_x;
     pParty->vPosition.z = new_party_z;

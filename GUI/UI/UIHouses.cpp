@@ -812,10 +812,9 @@ bool HouseUI_CheckIfPlayerCanInteract() {
         window.uFrameWidth = 143;
         window.uFrameZ = 334;
 
-        String str = localization->FormatString(
-            427,  // %s is in no condition to %s
+        String str = localization->FormatString(427,  // %s is in no condition to %s
             pPlayers[uActiveCharacter]->pName,
-            localization->GetString(562));  // do anything
+            localization->GetString(LSTR_DO_ANYTHING));
         window.DrawTitleText(
             pFontArrus, 0,
             (212 - pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0)) / 2 +
@@ -894,8 +893,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
                     pParty->GetPlayingTime())) {
                 pParty->PartyTimes._shop_ban_times[uHouseID] = GameTime(0);
             } else {
-                GameUI_StatusBar_OnEvent(localization->GetString(
-                    191));  // "You've been banned from this shop!"
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_BANNED_FROM_SHOP));
                 return 0;
             }
         }
@@ -1076,7 +1074,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
             pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
             pBtn_ExitCancel = pDialogueWindow->CreateButton(
                 526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
-                localization->GetString(74),  // "End Conversation"
+                localization->GetString(LSTR_END_CONVERSATION),
                 { { ui_buttdesc2 } });
             pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
                 UIMSG_BuyInShop_Identify_Repair, 0);
@@ -1094,11 +1092,10 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
                 pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
                 pBtn_ExitCancel = pDialogueWindow->CreateButton(
                     526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
-                    localization->GetString(74),  // "End Conversation"
+                    localization->GetString(LSTR_END_CONVERSATION),
                     { { ui_buttdesc2 } });
                 pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
-                    UIMSG_BuyInShop_Identify_Repair,
-                    0);
+                    UIMSG_BuyInShop_Identify_Repair, 0);
             } else if (uActiveCharacter) {
                 if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple())
                     return;
@@ -1806,13 +1803,12 @@ void TravelByTransport() {
                     3);
             } else {
                 travel_window.DrawTitleText(
-                    pFontArrus, 0,
-                    (174 -
-                        pFontArrus->CalcTextHeight(localization->GetString(561),
-                            travel_window.uFrameWidth, 0)) /
-                    2 +
-                    138,  //"Извините, приходите в другой день"
-                    Color16(255, 255, 255), localization->GetString(561), 3);
+                    pFontArrus, 0, (174 -
+                        pFontArrus->CalcTextHeight(
+                            localization->GetString(LSTR_COME_BACK_ANOTHER_DAY),
+                            travel_window.uFrameWidth, 0)) / 2 + 138,
+                    Color16(255, 255, 255),
+                    localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
                 pAudioPlayer->StopChannels(-1, -1);
             }
         }
@@ -1928,9 +1924,8 @@ void TownHallDialog() {
     townHall_window.uFrameWidth = 143;
     townHall_window.uFrameZ = 334;
 
-    auto fine_str =
-        StringPrintf("%s: %d", localization->GetString(605),
-            pParty->uFine);  // Fine: %d   /   Текущий штраф: %d
+    auto fine_str = StringPrintf(
+        "%s: %d", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(pFontArrus, 0, 260,
         Color16(0xFFu, 0xFFu, 0x9Bu), fine_str, 3);
 
@@ -1939,11 +1934,9 @@ void TownHallDialog() {
     {
         pStringSum = 1;
         pTextHeight = 0;
-        pShopOptions[0] = localization->GetString(
-            604);  // Bounty Hunting     Охота за вознаграждение
+        pShopOptions[0] = localization->GetString(LSTR_BOUNTY_HUNT);
         if (pParty->uFine > 0) {
-            pShopOptions[1] = localization->GetString(
-                603);  // Pay fine     Заплатить штраф
+            pShopOptions[1] = localization->GetString(LSTR_PAY_FINE);
             pStringSum = 2;
         }
         for (uint i = 0; i < pStringSum; ++i)
@@ -2019,9 +2012,10 @@ void TownHallDialog() {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             townHall_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
-                StringPrintf("%s\n%s", localization->GetString(606),
-                    localization->GetString(112)),
-                3);  // "Pay"   "How Much?"
+                StringPrintf(
+                    "%s\n%s", localization->GetString(LSTR_PAY),
+                    localization->GetString(LSTR_HOW_MUCH)),
+                3);
             townHall_window.DrawTitleText(
                 pFontArrus, 0, 186, Color16(0xFFu, 0xFFu, 0xFFu),
                 keyboardInputHandler->GetTextInput().c_str(), 3);
@@ -2069,9 +2063,9 @@ void BankDialog() {
     bank_window.uFrameZ = 334;
     bank_window.DrawTitleText(
         pFontArrus, 0, 220, Color16(0xFFu, 0xFFu, 0x9Bu),
-        StringPrintf("%s: %d", localization->GetString(25),
-            pParty->uNumGoldInBank),
-        3);  // Balance   /   Баланс
+        StringPrintf(
+            "%s: %d", localization->GetString(LSTR_BALANCE), pParty->uNumGoldInBank),
+        3);
     switch (dialog_menu_id) {
     case HOUSE_DIALOGUE_MAIN:
     {
@@ -2080,13 +2074,13 @@ void BankDialog() {
             pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
         }
         bank_window.DrawTitleText(pFontArrus, 0, 146, pColorText,
-            localization->GetString(60), 3);
+            localization->GetString(LSTR_DEPOSIT), 3);
         pColorText = Color16(0xFFu, 0xFFu, 0x9Bu);
         if (pDialogueWindow->pCurrentPosActiveItem != 3) {
             pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
         }
         bank_window.DrawTitleText(pFontArrus, 0, 176, pColorText,
-            localization->GetString(244), 3);
+            localization->GetString(LSTR_WITHDRAW), 3);
         break;
     }
     case HOUSE_DIALOGUE_BANK_PUT_GOLD:
@@ -2094,9 +2088,9 @@ void BankDialog() {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
-                StringPrintf("%s\n%s", localization->GetString(60),
-                    localization->GetString(112)),
-                3);  // Deposit  How much?   /   "Положить" "Сколько?"
+                StringPrintf("%s\n%s", localization->GetString(LSTR_DEPOSIT),
+                    localization->GetString(LSTR_HOW_MUCH)),
+                3);
             bank_window.DrawTitleText(pFontArrus, 0, 186,
                 Color16(0xFFu, 0xFFu, 0xFFu),
                 keyboardInputHandler->GetTextInput().c_str(), 3);
@@ -2140,9 +2134,9 @@ void BankDialog() {
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_IN_PROGRESS) {
             bank_window.DrawTitleText(
                 pFontArrus, 0, 146, Color16(0xFFu, 0xFFu, 0x9Bu),
-                StringPrintf("%s\n%s", localization->GetString(244),
-                    localization->GetString(112)),
-                3);  // Withdraw  How much?   /   "Снять" "Сколько?"
+                StringPrintf("%s\n%s", localization->GetString(LSTR_WITHDRAW),
+                    localization->GetString(LSTR_HOW_MUCH)),
+                3);
             bank_window.DrawTitleText(pFontArrus, 0, 186,
                 Color16(0xFFu, 0xFFu, 0xFFu),
                 keyboardInputHandler->GetTextInput().c_str(), 3);
@@ -2262,7 +2256,7 @@ void TavernDialog() {
                 pDialogueWindow->pCurrentPosActiveItem == 4
                 ? Color16(0xFFu, 0xFFu, 0x9Bu)
                 : Color16(0xFFu, 0xFFu, 0xFFu)) +
-            localization->GetString(160);  // Learn Skills
+            localization->GetString(LSTR_LEARN_SKILLS);
         pTopic3Height = pFontArrus->CalcTextHeight(
             topic3, dialog_window.uFrameWidth, 0);
 
@@ -2274,7 +2268,7 @@ void TavernDialog() {
                     pDialogueWindow->pCurrentPosActiveItem == 5
                     ? Color16(0xFFu, 0xFFu, 0x9Bu)
                     : Color16(0xFFu, 0xFFu, 0xFFu)) +
-                localization->GetString(611);  // Play Arcomage
+                localization->GetString(LSTR_PLAY_ARCOMAGE);
             pTopic4Height = pFontArrus->CalcTextHeight(
                 topic4, dialog_window.uFrameWidth, 0);
         }
@@ -2380,11 +2374,11 @@ void TavernDialog() {
         if (pArcomageGame->bGameInProgress == 1) return;
         if (pArcomageGame->uGameWinner) {
             if (pArcomageGame->uGameWinner == 1)
-                pText = localization->GetString(640);  // You won!
+                pText = localization->GetString(LSTR_YOU_WON);
             else
-                pText = localization->GetString(641);  // You lost!
+                pText = localization->GetString(LSTR_YOU_LOST);
         } else {
-            pText = localization->GetString(639);  // A tie!
+            pText = localization->GetString(LSTR_A_TIE);
         }
         dialog_window.DrawTitleText(
             pFontArrus, 0,
@@ -2487,15 +2481,13 @@ void TavernDialog() {
             return;
         }
 
-        String str = localization->FormatString(
-            544, pPlayers[uActiveCharacter]->pName,
+        String str = localization->FormatString(544,
+            pPlayers[uActiveCharacter]->pName,
             localization->GetClassName(
                 pPlayers[uActiveCharacter]
                 ->classType)) +  // Советую вам %s %s поискать
                                  // знания еще где-нибудь
-            "\n \n" +
-            localization->GetString(
-                528);  //Больше ничего не могу предложить.
+            "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
         pTextHeight = (174 - pFontArrus->CalcTextHeight(
             str, dialog_window.uFrameWidth, 0)) /
             2 +
@@ -2508,9 +2500,8 @@ void TavernDialog() {
     case HOUSE_DIALOGUE_TAVERN_BUY_FOOD:
     {
         if ((double)pParty->GetFood() >=
-            p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
-            .fPriceMultiplier) {
-            GameUI_StatusBar_OnEvent(localization->GetString(140));  // You already bought food!
+            p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier) {
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_RATIONS_FULL));
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_67, 0);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2535,12 +2526,10 @@ void TavernDialog() {
     {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             pOptionsCount = 2;
-            pShopOptions[0] = localization->GetString(620);  //Правила
-            pShopOptions[1] =
-                localization->GetString(622);  //Условия победы
-            if (pParty->HasItem(
-                651)) {  // 651 - Колода для игры в АркоМэйдж в Items.txt
-                pShopOptions[2] = localization->GetString(621);  //Играть
+            pShopOptions[0] = localization->GetString(LSTR_RULES);
+            pShopOptions[1] = localization->GetString(LSTR_VICTORY_CONDITIONS);
+            if (pParty->HasItem(ITEM_ARCOMAGE_DECK)) {
+                pShopOptions[2] = localization->GetString(LSTR_PLAY);
                 pOptionsCount = 3;
             }
             for (i = 0; i < pOptionsCount; ++i)
@@ -2612,13 +2601,14 @@ void TempleDialog() {
         if (pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) {
             static String shop_option_container;
             shop_option_container =
-                StringPrintf("%s %d %s", localization->GetString(104), pPrice,
-                    localization->GetString(97));  //"Лечить" "Золото"
+                StringPrintf("%s %d %s",
+                    localization->GetString(LSTR_HEAL), pPrice,
+                    localization->GetString(LSTR_GOLD));
             pShopOptions[0] = shop_option_container.c_str();
             index = 0;
         }
-        pShopOptions[1] = localization->GetString(68);  //"Пожертвовать"
-        pShopOptions[2] = localization->GetString(160);  //"Обучиться навыкам"
+        pShopOptions[1] = localization->GetString(LSTR_DONATE);
+        pShopOptions[2] = localization->GetString(LSTR_LEARN_SKILLS);
         all_text_height = 0;
         if (index < pDialogueWindow->pNumPresenceButton) {
             uint i = index;
@@ -2799,8 +2789,7 @@ void TempleDialog() {
             }
             ++byte_F8B1EF[uActiveCharacter];
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_83, 0);
-            GameUI_StatusBar_OnEvent(
-                localization->GetString(527));  // "Thank You!"
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_THANK_YOU));
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2894,15 +2883,14 @@ void TempleDialog() {
                 }
             } else {
                 String str =
-                    localization->FormatString(
-                        544, pPlayers[uActiveCharacter]->pName,
+                    localization->FormatString(544,
+                        pPlayers[uActiveCharacter]->pName,
                         localization->GetClassName(
                             pPlayers[uActiveCharacter]
                             ->classType)) +  // Советую вам %s %s поискать
                                              // знания еще где-нибудь
                     "\n \n" +
-                    localization->GetString(
-                        528);  //Больше ничего не могу предложить.
+                    localization->GetString(LSTR_NO_FURTHER_OFFERS);
 
                 pTextHeight = pFontArrus->CalcTextHeight(
                     str, tample_window.uFrameWidth, 0);
@@ -2969,7 +2957,7 @@ void TrainingDialog(const char *s) {
                 pShopOptions[0] = s;  // set first item to fucntion param - this
                                       // always gets overwritten below??
                 pShopOptions[1] =
-                    localization->GetString(160);  // "Learn Skills"
+                    localization->GetString(LSTR_LEARN_SKILLS);
                 if (pDialogueWindow->pStartingPosActiveItem <
                     pDialogueWindow->pStartingPosActiveItem +
                     pDialogueWindow->pNumPresenceButton) {
@@ -2984,16 +2972,11 @@ void TrainingDialog(const char *s) {
                                 pMaxLevelPerTrainingHallType
                                 [(uint64_t)window_SpeakInHouse->ptr_1C -
                                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
-                                shop_option_str_container =
-                                    String(localization->GetString(536)) +
-                                    "\n \n" +
-                                    localization->GetString(
-                                        529);  // "With your skills, you should
-                                               // be working here as a teacher."
-                                               // "Sorry, but we are unable to
-                                               // train you."
-                                pShopOptions[index] =
-                                    shop_option_str_container.c_str();
+                                shop_option_str_container = StringPrintf(
+                                    "%s\n \n%s",
+                                    localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
+                                    localization->GetString(LSTR_CANT_TRAIN_FURTHER));
+                                pShopOptions[index] = shop_option_str_container.c_str();
 
                             } else {
                                 if (pPlayers[uActiveCharacter]->uExperience <
@@ -3138,11 +3121,8 @@ void TrainingDialog(const char *s) {
             } else {
                 label = StringPrintf(
                     "%s\n \n%s",
-                    localization->GetString(
-                        536),  // With your skills, you should be working here
-                               // as a teacher.
-                    localization->GetString(
-                        529));  // Sorry, but we are unable to train you.
+                    localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
+                    localization->GetString(LSTR_CANT_TRAIN_FURTHER));
                 v36 =
                     (212 - pFontArrus->CalcTextHeight(
                         label, training_dialog_window.uFrameWidth, 0)) /
@@ -3227,15 +3207,13 @@ void TrainingDialog(const char *s) {
                     }
                 }
             } else {
-                auto label = localization->FormatString(
-                    544, pPlayers[uActiveCharacter]->pName,
+                auto label = localization->FormatString(544,
+                    pPlayers[uActiveCharacter]->pName,
                     localization->GetClassName(
                         pPlayers[uActiveCharacter]
                         ->classType)) +  // Seek knowledge
                                          // elsewhere %s the %s
-                    "\n \n" +
-                    localization->GetString(
-                        528);  // I can offer you nothing further.
+                    "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
                 auto label_height = pFontArrus->CalcTextHeight(
                     label, training_dialog_window.uFrameWidth, 0);
                 training_dialog_window.DrawTitleText(
@@ -3312,13 +3290,11 @@ void sub_4B6478() {
             }
         }
         if (!index) {
-            String str = localization->FormatString(
-                544, pPlayers[uActiveCharacter]->pName,
+            String str = localization->FormatString(544,
+                pPlayers[uActiveCharacter]->pName,
                 localization->GetClassName(
                     pPlayers[uActiveCharacter]->classType)) +
-                "\n \n" +
-                localization->GetString(
-                    528);  // Больше ничего не могу предложить.
+                "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
             pTextHeight =
                 pFontArrus->CalcTextHeight(str, dialog_window.uFrameWidth, 0);
             dialog_window.DrawTitleText(pFontArrus, 0,
@@ -3581,7 +3557,7 @@ void SimpleHouseDialog() {
             pButton->sLabel = localization->GetString(LSTR_HIRE);
             continue;
         case DIALOGUE_PROFESSION_DETAILS:
-            pButton->sLabel = localization->GetString(LSTR_HIRE_DETAILS);
+            pButton->sLabel = localization->GetString(LSTR_MORE_INFORMATION);
             continue;
         case DIALOGUE_79_mastery_teacher:
             pButton->sLabel = _4B254D_SkillMasteryTeacher((int64_t)right_panel_window.ptr_1C);
@@ -3604,7 +3580,7 @@ void SimpleHouseDialog() {
             continue;
         }
         if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13_hire) {
-            pButton->sLabel = localization->GetString(122);  // Join
+            pButton->sLabel = localization->GetString(LSTR_JOIN);
             continue;
         }
         if (pButton->msg_param > DIALOGUE_13_hire && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
@@ -3680,14 +3656,10 @@ void JailDialog() {
     jail_dialogue_window.uFrameZ = 334;
     jail_dialogue_window.DrawTitleText(
         pFontArrus, 0,
-        (310 - pFontArrus->CalcTextHeight(localization->GetString(672),
+        (310 - pFontArrus->CalcTextHeight(localization->GetString(LSTR_ONE_YEAR_SENTENCE),
             jail_dialogue_window.uFrameWidth,
-            0)) /
-        2 +
-        18,
-        Color16(0xFFu, 0xFFu, 0x9Bu), localization->GetString(672),
-        3);  //"За многочисленные преступления и злодеяния вы были приговорены к
-             //одному году заключения."
+            0)) / 2 + 18,
+        Color16(0xFFu, 0xFFu, 0x9Bu), localization->GetString(LSTR_ONE_YEAR_SENTENCE), 3);
 }
 
 void InitializeBuildingResidents() {
@@ -4201,7 +4173,7 @@ void FillAviableSkillsToTeach(BuildingType type) {
             v30 = localization->GetSkillName(35);
             break;
         default:
-            v30 = localization->GetString(127);  // "No Text!"
+            v30 = localization->GetString(LSTR_NO_TEXT);
         }
         pShopOptions[_F8B1DC_currentShopOption] = v30;
         ++_F8B1DC_currentShopOption;
@@ -4321,20 +4293,22 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
     pAudioPlayer->StopChannels(-1, -1);
 
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
-    pBtn_ExitCancel = CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None, localization->GetString(80),  // Quit building
+    pBtn_ExitCancel = CreateButton(
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        localization->GetString(LSTR_EXIT_BUILDING),
         { { ui_exit_cancel_button_background } });
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
         const char *v29;
         String v30;
         if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
-            v29 = localization->GetString(411);  // Enter %s
+            v29 = localization->GetString(LSTR_ENTER_FMT);
         } else {
             if (v26 || !dword_591080)
                 v30 = HouseNPCData[v26 + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
             else
                 v30 = p2DEvents[(int64_t)button - 1].pProprieterName;
-            v29 = localization->GetString(435);
+            v29 = localization->GetString(LSTR_CONVERSE_WITH_FMT);
         }
         sprintf(byte_591180[v26].data(), v29, v30.c_str());
         HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],

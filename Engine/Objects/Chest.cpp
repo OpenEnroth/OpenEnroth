@@ -619,8 +619,8 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
         sprintf(out, "You found %d item(s) and %d Gold!", grabcount, goldamount);
         GameUI_StatusBar_OnEvent(out);
     }
-    if (grabcount == 0 && goldcount == 0) {  // nothing here
-        GameUI_StatusBar_OnEvent(localization->GetString(521));
+    if (grabcount == 0 && goldcount == 0) {
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOTHING_HERE));
     }
 }
 

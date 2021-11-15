@@ -171,7 +171,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                 CreateButton(
                     480, 0x82u, 140, text_line_height, 1, 0,
                     UIMSG_SelectNPCDialogueOption, DIALOGUE_PROFESSION_DETAILS, GameKey::None,
-                    localization->GetString(LSTR_HIRE_DETAILS)
+                    localization->GetString(LSTR_MORE_INFORMATION)
                 );
                 if (speakingNPC->Hired()) {
                     CreateButton(
@@ -360,7 +360,7 @@ void GUIWindow_Dialogue::Update() {
         } else if (pButton->msg_param == DIALOGUE_ARENA_SELECT_PAGE) {
             pButton->sLabel = localization->GetString(LSTR_ARENA_DIFFICULTY_PAGE);
         } else if (pButton->msg_param == DIALOGUE_PROFESSION_DETAILS) {
-            pButton->sLabel = localization->GetString(LSTR_HIRE_DETAILS);
+            pButton->sLabel = localization->GetString(LSTR_MORE_INFORMATION);
         } else if (pButton->msg_param == DIALOGUE_HIRE_FIRE) {
             if (pNPC->Hired()) {
                 pButton->sLabel = StringPrintf(
@@ -415,10 +415,10 @@ void GUIWindow_Dialogue::Update() {
             }
         } else if (pButton->msg_param == DIALOGUE_13_hire) {
             if (pNPC->Hired()) {
-                pButton->sLabel = StringPrintf(localization->GetString(408),
-                                               pNPC->pName);  // Release %s
+                pButton->sLabel = StringPrintf(
+                    localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName);
             } else {
-                pButton->sLabel = localization->GetString(122);  // Join
+                pButton->sLabel = localization->GetString(LSTR_JOIN);
             }
         } else {
             pButton->sLabel.clear();
@@ -438,8 +438,7 @@ void GUIWindow_Dialogue::Update() {
                 }
             }
             if (num_dead_actors == uNumActors) {
-                pButton->sLabel =
-                    localization->GetString(658);  // Collect Prize
+                pButton->sLabel = localization->GetString(LSTR_COLLECT_PRIZE);
             }
         }
     }
@@ -594,12 +593,12 @@ void sub_4B3E1E() {
     if (pNPCStats->pProfessions[v0->profession].pBenefits) {
         pDialogueWindow->CreateButton(
             480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, GameKey::None,
-            localization->GetString(407));  // Details / Подробнее
+            localization->GetString(LSTR_MORE_INFORMATION));
         v1 = 1;
     }
     pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0,
                                   UIMSG_SelectNPCDialogueOption, 76, GameKey::None,
-                                  localization->GetString(406));  // Hire Нанять
+                                  localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
 }
 

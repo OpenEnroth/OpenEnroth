@@ -56,7 +56,7 @@ void GameUI_StatusBar_ClearInputString() {
 
 void GameUI_StatusBar_NothingHere() {
     if (!game_ui_status_bar_event_string_time_left) {
-        GameUI_StatusBar_OnEvent(localization->GetString(521));  // Nothing here
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOTHING_HERE));
     }
 }
 

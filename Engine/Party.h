@@ -57,7 +57,7 @@ enum PARTY_FLAGS_1 : int32_t {
     // OutdoorLocation::Draw and UIDialogue::sub_4451A8_press_any_key
     PARTY_FLAGS_1_0002 = 0x0002,
     PARTY_FLAGS_1_WATER_DAMAGE = 0x0004,
-    PARTY_FLAGS_1_FALLING = 0x0008,
+    PARTY_FLAGS_1_AIRBORNE = 0x0008,
     PARTY_FLAGS_1_ALERT_RED = 0x0010,
     PARTY_FLAGS_1_ALERT_YELLOW = 0x0020,
     PARTY_FLAGS_1_ALERT_RED_OR_YELLOW = 0x0030,
@@ -232,6 +232,18 @@ struct Party {
 
     inline bool GetRedOrYellowAlert() {
         return (uFlags & PARTY_FLAGS_1_ALERT_RED_OR_YELLOW) != 0;
+    }
+
+    inline bool IsAirborne() const {
+        return uFlags & PARTY_FLAGS_1_AIRBORNE;
+    }
+
+    inline void SetAirborne(bool new_state) {
+        if (new_state) {
+            uFlags |= PARTY_FLAGS_1_AIRBORNE;
+        } else {
+            uFlags &= ~PARTY_FLAGS_1_AIRBORNE;
+        }
     }
 
     GameTime &GetPlayingTime() { return this->playing_time; }

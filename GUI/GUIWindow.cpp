@@ -156,7 +156,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     mouse->SetCursorImage("MICON2");
-    GameUI_StatusBar_OnEvent(localization->GetString(39));  // Choose target / Выберите цель
+    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CHOOSE_TARGET));
 }
 
 void GUIMessageQueue::Flush() {
@@ -245,9 +245,9 @@ void GUIWindow::_41D73D_draw_buff_tooltip() {
     uFrameZ = uFrameWidth + uFrameX - 1;
     uFrameW = uFrameY + uFrameHeight - 1;
     DrawMessageBox(0);
-    DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(451), 3);
+    DrawTitleText(pFontArrus, 0, 12, 0, localization->GetString(LSTR_ACTIVE_PARTY_SPELLS), 3);
     if (!string_count)
-        DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(153), 3);
+        DrawTitleText(pFontComic, 0, 40, 0, localization->GetString(LSTR_NONE), 3);
 
     string_count = 0;
     for (int i = 0; i < 20; ++i) {
@@ -612,29 +612,29 @@ String MakeDateTimeString(GameTime time) {
 
     String str = "";
     if (days) {
-        auto day_str = localization->GetString(57);            // Days
-        if (days <= 1) day_str = localization->GetString(56);  // Day
+        auto day_str = localization->GetString(LSTR_DAYS);
+        if (days <= 1) day_str = localization->GetString(LSTR_DAY_CAPITALIZED);
 
         str += StringPrintf("%d %s ", days, day_str);
     }
 
     if (hours) {
-        auto hour_str = localization->GetString(110);             // Hours
-        if (hours <= 1) hour_str = localization->GetString(109);  // Hour
+        auto hour_str = localization->GetString(LSTR_HOURS);
+        if (hours <= 1) hour_str = localization->GetString(LSTR_HOUR);
 
         str += StringPrintf("%d %s ", hours, hour_str);
     }
 
     if (minutes && !days) {
-        auto minute_str = localization->GetString(436);               // Minutes
-        if (minutes <= 1) minute_str = localization->GetString(437);  // Minute
+        auto minute_str = localization->GetString(LSTR_MINUTES);
+        if (minutes <= 1) minute_str = localization->GetString(LSTR_MINUTE);
 
         str += StringPrintf("%d %s ", minutes, minute_str);
     }
 
     if (seconds && !hours) {
-        auto seconds_str = localization->GetString(438);  // Seconds
-        if (seconds <= 1) seconds_str = localization->GetString(439);  // Second
+        auto seconds_str = localization->GetString(LSTR_SECONDS);
+        if (seconds <= 1) seconds_str = localization->GetString(LSTR_SECOND);
 
         str += StringPrintf("%d %s ", seconds, seconds_str);
     }
@@ -648,7 +648,9 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
     this->DrawTitleText(
         pFontArrus, 0,
         (212 - pFontArrus->CalcTextHeight(str, this->uFrameWidth, 0)) / 2 + 101,
-        Color16(0xFFu, 0xFFu, 0x9Bu), localization->GetString(532) + str, 3);
+        Color16(0xFFu, 0xFFu, 0x9Bu),
+        localization->GetString(LSTR_PLEASE_TRY_BACK_IN) + str, 3
+    );
 }
 
 void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
@@ -797,12 +799,13 @@ void DrawJoinGuildWindow(int pEventCode) {
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)pEventCode);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
-        localization->GetString(34),
-        { { ui_exit_cancel_button_background } });  // Cancel
+        localization->GetString(LSTR_CANCEL),
+        { { ui_exit_cancel_button_background } }
+    );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-        82, GameKey::None, localization->GetString(122));
+        82, GameKey::None, localization->GetString(LSTR_JOIN));
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -1607,8 +1610,7 @@ void ClickNPCTopic(int uMessageParam) {
     }
 
     if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
-        GameUI_StatusBar_OnEvent(localization->GetString(
-            533));  // ""I cannot join you, you're party is full""
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_HIRE_NO_ROOM));
         BackToHouseMenu();
         return;
     }
@@ -1675,12 +1677,13 @@ void _4B3FE5_training_dialogue(int a4) {
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)a4);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
-        localization->GetString(34), { { ui_exit_cancel_button_background } });
+        localization->GetString(LSTR_CANCEL), { { ui_exit_cancel_button_background } }
+    );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(
         480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Fu, GameKey::None,
-        contract_approved ? localization->GetString(535) : "");
+        contract_approved ? localization->GetString(LSTR_LEARN) : "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -1765,8 +1768,9 @@ void CheckBountyRespawnAndAward() {
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
-        localization->GetString(34),  // "Cancel"
-        { { ui_exit_cancel_button_background } });
+        localization->GetString(LSTR_CANCEL),
+        { { ui_exit_cancel_button_background } }
+    );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_0, 83, GameKey::None, "");
@@ -2159,22 +2163,20 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
 
     contract_approved = 1;
     if (masteryLevelBeingTaught == 2) {
-        return localization->FormatString(
-            534,  // Получить степень ^Pr[%s] в навыке ^Pr[%s] за ^I[%lu]
+        return localization->FormatString(534,
+                  // Получить степень ^Pr[%s] в навыке ^Pr[%s] за ^I[%lu]
                   // золот^L[ой;ых;ых]
-            localization->GetString(433),  // Expert
+            localization->GetString(LSTR_EXPERT),
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount);
     } else if (masteryLevelBeingTaught == 3) {
-        return localization->FormatString(
-            534,
-            localization->GetString(432),  // Master
+        return localization->FormatString(534,
+            localization->GetString(LSTR_MASTER),
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount);
     } else if (masteryLevelBeingTaught == 4) {
-        return localization->FormatString(
-            534,
-            localization->GetString(225),  // Grandmaster
+        return localization->FormatString(534,
+            localization->GetString(LSTR_GRANDMASTER),
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount);
     }
@@ -2239,31 +2241,31 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                 break;
             case 5:
                 v18 = pParty->GetPlayingTime().GetHoursOfDay();
-                pText = localization->GetString(397);  // "evening"
+                pText = localization->GetString(LSTR_EVENING);
                 if (HEXRAYS_SHIDWORD(v18) <= 0 &&
                     HEXRAYS_SHIDWORD(v18) >= 0 && (unsigned int)v18 >= 5 &&
                     HEXRAYS_SHIDWORD(v18) <= 0) {
                     if (HEXRAYS_SHIDWORD(v18) >= 0 &&
                         (unsigned int)v18 >= 11) {
                         if (v18 < 20)
-                            pText = localization->GetString(396);  // "day"
+                            pText = localization->GetString(LSTR_DAY);
                     } else {
-                        pText = localization->GetString(395);  // "morning"
+                        pText = localization->GetString(LSTR_MORNING);
                     }
                 }
                 result += pText;
                 break;
             case 6:
                 if (pPlayer->uSex)
-                    result += localization->GetString(387);  // "lady"
+                    result += localization->GetString(LSTR_LADY_LOWERCASE);
                 else
-                    result += localization->GetString(385);  // "sir"
+                    result += localization->GetString(LSTR_SIR_LOWERCASE);
                 break;
             case 7:
                 if (pPlayer->uSex)
-                    result += localization->GetString(389);  // "Lady"
+                    result += localization->GetString(LSTR_LADY);
                 else
-                    result += localization->GetString(386);  // "Sir"
+                    result += localization->GetString(LSTR_SIR);
                 break;
             case 8:
                 v63 = 0;
@@ -2289,15 +2291,15 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                 break;
             case 9:
                 if (npc->uSex)
-                    result += localization->GetString(384);  // "her"
+                    result += localization->GetString(LSTR_HER);
                 else
-                    result += localization->GetString(383);  // "his"
+                    result += localization->GetString(LSTR_HIS);
                 break;
             case 10:
                 if (pPlayer->uSex)
-                    result += localization->GetString(389);  // "Lady"
+                    result += localization->GetString(LSTR_LADY);
                 else
-                    result += localization->GetString(388);  // "Lord"
+                    result += localization->GetString(LSTR_LORD);
                 break;
             case 11:
                 result += GetReputationString(pParty->GetPartyReputation());
@@ -2306,25 +2308,24 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                 result += GetReputationString(npc->rep);
                 break;
             case 13:
-                result += pNPCStats->sub_495366_MispronounceName(
-                    pPlayer->pName[0], pPlayer->uSex);
+                result += pNPCStats->sub_495366_MispronounceName(pPlayer->pName[0], pPlayer->uSex);
                 break;
             case 14:
                 if (npc->uSex)
-                    result += localization->GetString(391);  // "sister"
+                    result += localization->GetString(LSTR_SISTER);
                 else
-                    result += localization->GetString(390);  // "brother"
+                    result += localization->GetString(LSTR_BROTHER);
                 break;
             case 15:
-                result += localization->GetString(393);  // "daughter"
+                result += localization->GetString(LSTR_DAUGHTER);
                 break;
             case 16:
                 if (npc->uSex)
-                    result += localization->GetString(391);  // "sister"
+                    result += localization->GetString(LSTR_SISTER);
                 else
-                    result += localization->GetString(390);  // "brother"
+                    result += localization->GetString(LSTR_BROTHER);
                 break;
-            case 17:  // hired npc text   текст наёмного НПС
+            case 17:  // hired npc text
             {
                 uint pay_percentage = pNPCStats->pProfessions[npc->profession].uHirePrice / 100;
                 if (pay_percentage == 0) pay_percentage = 1;
@@ -2344,33 +2345,30 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                 break;
             case 23:
                 if (pMapStats->GetMapInfo(pCurrentMapName))
-                    result +=
-                    pMapStats
-                    ->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
-                    .pName;
+                    result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName;
                 else
-                    result += localization->GetString(394);  // "Unknown"
+                    result += localization->GetString(LSTR_UNKNOWN);
                 break;
 
             case 24:  // item name
-                sprintf(v1, format_4E2D80, Color16(255, 255, 155),
-                    a3->GetDisplayName().c_str());
+                sprintf(v1, format_4E2D80, Color16(255, 255, 155), a3->GetDisplayName().c_str());
                 result += v1;
                 break;
 
             case 25:  // base prices
                 v29 = pPlayer->GetBaseBuyingPrice(
-                    a3->GetValue(),
-                    p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
+                    a3->GetValue(), p2DEvents[(int64_t)a4 - 1].fPriceMultiplier
+                );
                 switch (shop_screen) {
                 case 3:
                     v29 = pPlayer->GetBaseSellingPrice(
-                        a3->GetValue(),
-                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
+                        a3->GetValue(), p2DEvents[(int64_t)a4 - 1].fPriceMultiplier
+                    );
                     break;
                 case 4:
                     v29 = pPlayer->GetBaseIdentifyPrice(
-                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
+                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier
+                    );
                     break;
                 case 5:
                     v29 = pPlayer->GetBaseRepairPrice(
@@ -2588,7 +2586,7 @@ void UI_Create() {
         game_ui_tome_quests->GetWidth(),
         game_ui_tome_quests->GetHeight(),
         1, 0, UIMSG_OpenQuestBook, 0, keyboardActionMapping->GetKey(InputAction::Quest),
-        localization->GetString(174), { { game_ui_tome_quests } });  // Quests
+        localization->GetString(LSTR_CURRENT_QUESTS), { { game_ui_tome_quests } });
 
     game_ui_tome_autonotes = assets->GetImage_ColorKey("ib-td2-A", 0x7FF);
     pBtn_Autonotes = pPrimaryWindow->CreateButton(
@@ -2596,7 +2594,7 @@ void UI_Create() {
         game_ui_tome_autonotes->GetWidth(),
         game_ui_tome_autonotes->GetHeight(),
         1, 0, UIMSG_OpenAutonotes, 0, keyboardActionMapping->GetKey(InputAction::Autonotes),
-        localization->GetString(154), { { game_ui_tome_autonotes } });  // Autonotes
+        localization->GetString(LSTR_AUTONOTES), { { game_ui_tome_autonotes } });
 
     game_ui_tome_maps = assets->GetImage_ColorKey("ib-td3-A", 0x7FF);
     pBtn_Maps = pPrimaryWindow->CreateButton(
@@ -2604,7 +2602,7 @@ void UI_Create() {
         game_ui_tome_maps->GetWidth(),
         game_ui_tome_maps->GetHeight(),
         1, 0, UIMSG_OpenMapBook, 0, keyboardActionMapping->GetKey(InputAction::Mapbook),
-        localization->GetString(139), { { game_ui_tome_maps } });  // Maps
+        localization->GetString(LSTR_MAPS), { { game_ui_tome_maps } });
 
     game_ui_tome_calendar = assets->GetImage_ColorKey("ib-td4-A", 0x7FF);
     pBtn_Calendar = pPrimaryWindow->CreateButton(
@@ -2612,7 +2610,7 @@ void UI_Create() {
         game_ui_tome_calendar->GetWidth(),
         game_ui_tome_calendar->GetHeight(),
         1, 0, UIMSG_OpenCalendar, 0, keyboardActionMapping->GetKey(InputAction::TimeCal),
-        localization->GetString(78), { { game_ui_tome_calendar } });  // Calendar
+        localization->GetString(LSTR_CALENDAR), { { game_ui_tome_calendar } });
 
     game_ui_tome_storyline = assets->GetImage_ColorKey("ib-td5-A", 0x7FF);
     pBtn_History = pPrimaryWindow->CreateButton(
@@ -2620,19 +2618,23 @@ void UI_Create() {
         game_ui_tome_storyline->GetWidth(),
         game_ui_tome_storyline->GetHeight(),
         1, 0, UIMSG_OpenHistoryBook, 0, GameKey::H,
-        localization->GetString(602), { { game_ui_tome_storyline } });  // History
+        localization->GetString(LSTR_HISTORY), { { game_ui_tome_storyline } }
+    );
 
     bFlashAutonotesBook = 0;
     bFlashQuestBook = 0;
     bFlashHistoryBook = 0;
 
     pBtn_ZoomIn = pPrimaryWindow->CreateButton(519, 136, game_ui_btn_zoomin->GetWidth(),
-        game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0, keyboardActionMapping->GetKey(InputAction::ZoomIn),
-        localization->GetString(252), { { game_ui_btn_zoomin } });  // Zoom In
+        game_ui_btn_zoomin->GetHeight(), 2, 0, UIMSG_ClickZoomInBtn, 0,
+        keyboardActionMapping->GetKey(InputAction::ZoomIn),
+        localization->GetString(LSTR_ZOOM_IN), { { game_ui_btn_zoomin } }
+    );
 
     pBtn_ZoomOut = pPrimaryWindow->CreateButton(574, 136, game_ui_btn_zoomout->GetWidth(),
-        game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0, keyboardActionMapping->GetKey(InputAction::ZoomOut),
-        localization->GetString(251), { { game_ui_btn_zoomout } });  // Zoom Out
+        game_ui_btn_zoomout->GetHeight(), 2, 0, UIMSG_ClickZoomOutBtn, 0,
+        keyboardActionMapping->GetKey(InputAction::ZoomOut),
+        localization->GetString(LSTR_ZOOM_OUT), { { game_ui_btn_zoomout } });
 
     pPrimaryWindow->CreateButton(481, 0, 153, 67, 1, 92, UIMSG_0, 0);
     pPrimaryWindow->CreateButton(491, 149, 64, 74, 1, 0, UIMSG_StartHireling1Dialogue, 0, GameKey::Digit5);
@@ -2643,19 +2645,23 @@ void UI_Create() {
     pBtn_CastSpell = pPrimaryWindow->CreateButton(476, 450,
         game_ui_btn_cast->GetWidth(),
         game_ui_btn_cast->GetHeight(),
-        1, 0, UIMSG_SpellBookWindow, 0, GameKey::C, localization->GetString(38), { { game_ui_btn_cast } });
+        1, 0, UIMSG_SpellBookWindow, 0, GameKey::C,
+        localization->GetString(LSTR_CAST_SPELL), { { game_ui_btn_cast } });
     pBtn_Rest = pPrimaryWindow->CreateButton(518, 450,
         game_ui_btn_rest->GetWidth(),
         game_ui_btn_rest->GetHeight(),
-        1, 0, UIMSG_RestWindow, 0, GameKey::R, localization->GetString(182), { { game_ui_btn_rest } });
+        1, 0, UIMSG_RestWindow, 0, GameKey::R,
+        localization->GetString(LSTR_REST), { { game_ui_btn_rest } });
     pBtn_QuickReference = pPrimaryWindow->CreateButton(560, 450,
         game_ui_btn_quickref->GetWidth(),
         game_ui_btn_quickref->GetHeight(),
-        1, 0, UIMSG_QuickReference, 0, GameKey::Z, localization->GetString(173), { { game_ui_btn_quickref } });
+        1, 0, UIMSG_QuickReference, 0, GameKey::Z,
+        localization->GetString(LSTR_QUICK_REFERENCE), { { game_ui_btn_quickref } });
     pBtn_GameSettings = pPrimaryWindow->CreateButton(602, 450,
         game_ui_btn_settings->GetWidth(),
         game_ui_btn_settings->GetHeight(),
-        1, 0, UIMSG_GameMenuButton, 0, GameKey::None, localization->GetString(93), { { game_ui_btn_settings } });
+        1, 0, UIMSG_GameMenuButton, 0, GameKey::None,
+        localization->GetString(LSTR_GAME_OPTIONS), { { game_ui_btn_settings } });
 
     pBtn_NPCLeft = pPrimaryWindow->CreateButton(469, 178,
         ui_btn_npc_left->GetWidth(),

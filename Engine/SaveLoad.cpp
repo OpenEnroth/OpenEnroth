@@ -285,9 +285,9 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     //        pFontSmallnum, text_pos + 25, 259, 0,
     //        pSavegameHeader[uLoadGameUI_SelectedSlot].pName, 185, 0);
     //    text_pos =
-    //        pFontSmallnum->AlignText_Center(186, localization->GetString(165));
+    //        pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT));
     //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0,
-    //        localization->GetString(165), 0, 0,
+    //        localization->GetString(LSTR_PLEASE_WAIT), 0, 0,
     //        0);  // Пожалуйста, подождите
     //    render->Present();
     //}
@@ -558,10 +558,10 @@ void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv")
         pNew_LOD->_4621A7();
     else
-        GameUI_StatusBar_OnEvent(localization->GetString(583), 2);  // "No saving in the Arena"
+        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NO_SAVING_IN_ARENA), 2);
 
     pEventTimer->Resume();
-    GameUI_StatusBar_OnEvent(localization->GetString(656), 2);  // "Game Saved!"
+    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_GAME_SAVED), 2);
     viewparams->bRedrawGameUI = true;
 }
 

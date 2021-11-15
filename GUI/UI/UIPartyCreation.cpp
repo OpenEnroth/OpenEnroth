@@ -357,11 +357,12 @@ void GUIWindow_PartyCreation::Update() {
             Error("Invalid selected character");
     }
 
-    pTextCenter = ui_partycreation_font->AlignText_Center(640, localization->GetString(51));   // 640
+    pTextCenter = ui_partycreation_font->AlignText_Center(
+        640, localization->GetString(LSTR_CREATE_PARTY_FANCY));
     pGUIWindow_CurrentMenu->DrawText(
         ui_partycreation_font, pTextCenter + 1, 0, 0,
-        localization->GetString(51), 0, 0,
-        0);  // CREATE PARTY / С О З Д А Т Ь  О Т Р Я Д
+        localization->GetString(LSTR_CREATE_PARTY_FANCY), 0, 0,
+        0);
 
     render->DrawTextureAlphaNew(
         17 / renwidth, 35 / renheight,
@@ -385,8 +386,8 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / renwidth, uPosActiveItem->uY / renheight, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
 
     memset(pText, 0, 200);
-    strcpy(pText, localization->GetString(205));  // "Skills"
-    for (int i = strlen(pText) - 1; i >= 0; i--)  //???
+    strcpy(pText, localization->GetString(LSTR_SKILLS));
+    for (int i = strlen(pText) - 1; i >= 0; i--)
         pText[i] = toupper((uint8_t)pText[i]);
 
     pIntervalX = 18;
@@ -456,50 +457,50 @@ void GUIWindow_PartyCreation::Update() {
             0, 0, 0);  // Skills
 
         auto str1 =
-            StringPrintf("%s\r%03d%d", localization->GetString(144), pX_Numbers,
-                pParty->pPlayers[i].GetActualMight());  // "Might"
+            StringPrintf("%s\r%03d%d", localization->GetString(LSTR_MIGHT), pX_Numbers,
+                pParty->pPlayers[i].GetActualMight());
         pStatColor = pParty->pPlayers[i].GetStatColor(0);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 169, pStatColor,
             str1);
 
         auto str2 = StringPrintf(
-            "%s\r%03d%d", localization->GetString(116), pX_Numbers,
-            pParty->pPlayers[i].GetActualIntelligence());  // "Intellect"
+            "%s\r%03d%d", localization->GetString(LSTR_INTELLECT), pX_Numbers,
+            pParty->pPlayers[i].GetActualIntelligence());
         pStatColor = pParty->pPlayers[i].GetStatColor(1);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, pIntervalY + 169,
             pStatColor, str2);
 
         auto str3 = StringPrintf(
-            "%s\r%03d%d", localization->GetString(163), pX_Numbers,
-            pParty->pPlayers[i].GetActualWillpower());  // "Personality"
+            "%s\r%03d%d", localization->GetString(LSTR_PERSONALITY), pX_Numbers,
+            pParty->pPlayers[i].GetActualWillpower());
         pStatColor = pParty->pPlayers[i].GetStatColor(2);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 2 * pIntervalY + 169,
             pStatColor, str3);
 
         auto str4 = StringPrintf(
-            "%s\r%03d%d", localization->GetString(75), pX_Numbers,
-            pParty->pPlayers[i].GetActualEndurance());  // "Endurance"
+            "%s\r%03d%d", localization->GetString(LSTR_ENDURANCE), pX_Numbers,
+            pParty->pPlayers[i].GetActualEndurance());
         pStatColor = pParty->pPlayers[i].GetStatColor(3);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 3 * pIntervalY + 169,
             pStatColor, str4);
 
         auto str5 = StringPrintf(
-            "%s\r%03d%d", localization->GetString(1), pX_Numbers,
-            pParty->pPlayers[i].GetActualAccuracy());  // "Accuracy"
+            "%s\r%03d%d", localization->GetString(LSTR_ACCURACY), pX_Numbers,
+            pParty->pPlayers[i].GetActualAccuracy());
         pStatColor = pParty->pPlayers[i].GetStatColor(4);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 4 * pIntervalY + 169,
             pStatColor, str5);
 
         auto str6 =
-            StringPrintf("%s\r%03d%d", localization->GetString(211), pX_Numbers,
-                pParty->pPlayers[i].GetActualSpeed());  // "Speed"
+            StringPrintf("%s\r%03d%d", localization->GetString(LSTR_SPEED), pX_Numbers,
+                pParty->pPlayers[i].GetActualSpeed());
         pStatColor = pParty->pPlayers[i].GetStatColor(5);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 5 * pIntervalY + 169,
             pStatColor, str6);
 
         auto str7 =
-            StringPrintf("%s\r%03d%d", localization->GetString(136), pX_Numbers,
-                pParty->pPlayers[i].GetActualLuck());  // "Luck"
+            StringPrintf("%s\r%03d%d", localization->GetString(LSTR_LUCK), pX_Numbers,
+                pParty->pPlayers[i].GetActualLuck());
         pStatColor = pParty->pPlayers[i].GetStatColor(6);
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, uX, 6 * pIntervalY + 169,
             pStatColor, str7);
@@ -545,7 +546,7 @@ void GUIWindow_PartyCreation::Update() {
         uX += 158;
     }
 
-    strcpy(pText, localization->GetString(41));  // "Class"
+    strcpy(pText, localization->GetString(LSTR_CLASS));
     for (int i = strlen(pText) - 1; i >= 0; i--)
         pText[i] = toupper((unsigned __int8)pText[i]);
 
@@ -636,10 +637,10 @@ void GUIWindow_PartyCreation::Update() {
         localization->GetClassName(4), 0, 0, 0);
 
     pTextCenter = pFontCreate->AlignText_Center(
-        236, localization->GetString(20));  // "Available Skills"
+        236, localization->GetString(LSTR_AVAILABLE_SKILLS));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, pTextCenter + 37, 395,
         Color16(0xD1, 0xBB, 0x61),
-        localization->GetString(20), 0, 0, 0);
+        localization->GetString(LSTR_AVAILABLE_SKILLS), 0, 0, 0);
     for (uint i = 0; i < 9; ++i) {
         pSkillId = pParty->pPlayers[uPlayerCreationUI_SelectedCharacter]
             .GetSkillIdxByOrder(i + 4);
@@ -670,10 +671,10 @@ void GUIWindow_PartyCreation::Update() {
     }
 
     pTextCenter = pFontCreate->AlignText_Center(
-        0x5C, localization->GetString(30));  // "Bonus"
+        0x5C, localization->GetString(LSTR_BONUS));
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, pTextCenter + 533, 394,
         Color16(0xD1, 0xBB, 0x61),
-        localization->GetString(30), 0, 0, 0);
+        localization->GetString(LSTR_BONUS), 0, 0, 0);
     pBonusNum = PlayerCreation_GetUnspentAttributePointCount();
 
     auto unspent_attribute_bonus_label = StringPrintf("%d", pBonusNum);
@@ -683,13 +684,9 @@ void GUIWindow_PartyCreation::Update() {
         Color16(0xFF, 0xFF, 0xFF),
         unspent_attribute_bonus_label);
     if (game_ui_status_bar_event_string_time_left > OS_GetTime()) {
-        message_window.sHint = localization->GetString(
-            412);  // "Create Party cannot be completed unless you have assigned
-                   // all characters 2 extra skills and have spent all of your
-                   // bonus points."
+        message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
         if (pBonusNum < 0)
-            message_window.sHint = localization->GetString(
-                413);  // "You can't spend more than 50 points."
+            message_window.sHint = localization->GetString(LSTR_PARTY_TOO_MUCH_POINTS);
         message_window.uFrameWidth = 300;
         message_window.uFrameHeight = 100;
         message_window.uFrameX = 170;

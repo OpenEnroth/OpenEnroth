@@ -98,6 +98,6 @@ void GUIWindow_TownPortalBook::Update() {
                                         pTownPortalBook_ys[v3 - 1] / 480.0f,
                                         ui_book_townportal_icons[v3 - 1]);
     }
-    TownPortalWindow.DrawTitleText(pBook2Font, 0, 22, 0,
-                                   localization->GetString(10), 3);
+    TownPortalWindow.DrawTitleText(
+        pBook2Font, 0, 22, 0, localization->GetString(LSTR_TOWN_PORTAL), 3);
 }

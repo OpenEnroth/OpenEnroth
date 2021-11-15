@@ -1080,26 +1080,28 @@ void NPCHireableDialogPrepare() {
     NPCData *v1;    // edi@1
 
     v0 = 0;
-    v1 = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount +
-                                     -(dword_591080 != 0))];  //- 1
+    v1 = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount + -(dword_591080 != 0))];  //- 1
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
-        localization->GetString(34),  // "Cancel"
-        {{ui_exit_cancel_button_background}});
+        localization->GetString(LSTR_CANCEL),
+        {{ui_exit_cancel_button_background}}
+    );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
-    if (pNPCStats->pProfessions[v1->profession]
-            .pBenefits) {  // *(&pNPCStats->field_13A5C + 5 * v1->uProfession) )
+    if (pNPCStats->pProfessions[v1->profession].pBenefits) {
         pDialogueWindow->CreateButton(
-            480, 0xA0u, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Du, GameKey::None,
-            localization->GetString(407)  // "More Information"
+            480, 0xA0u, 0x8Cu, 0x1Eu, 1, 0,
+            UIMSG_ClickNPCTopic, 0x4Du, GameKey::None,
+            localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
-    pDialogueWindow->CreateButton(0x1E0u, 30 * v0 + 160, 0x8Cu, 0x1Eu, 1, 0,
-                                  UIMSG_ClickNPCTopic, 0x4Cu, GameKey::None,
-                                  localization->GetString(406));  // "Hire"
+    pDialogueWindow->CreateButton(
+        0x1E0u, 30 * v0 + 160, 0x8Cu, 0x1Eu, 1, 0,
+        UIMSG_ClickNPCTopic, 0x4Cu, GameKey::None,
+        localization->GetString(LSTR_HIRE)
+    );
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -1121,21 +1123,23 @@ void _4B4224_UpdateNPCTopics(int _this) {
     pDialogueNPCCount = (_this + 1);
     if (_this + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
         pDialogueWindow->Release();
-        pDialogueWindow =
-            new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), window->GetHeight(), 0);
+        pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), window->GetHeight(), 0);
         transition_button_label = localization->FormatString(
             411, pMapStats->pInfos[uHouse_ExitPic].pName.c_str());  // Enter %s
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::N,
-            localization->GetString(34), {{ui_buttdesc2}});  // "Cancel"
+            localization->GetString(LSTR_CANCEL), {{ui_buttdesc2}}
+        );
         pBtn_YES = pDialogueWindow->CreateButton(
             486, 445, 75, 33, 1, 0, UIMSG_BF, 1, GameKey::Y,
             transition_button_label.c_str(), {{ui_buttyes2}});
         pDialogueWindow->CreateButton(
             pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63u, 73u, 1, 0,
             UIMSG_BF, 1u, GameKey::Space, transition_button_label.c_str());
-        pDialogueWindow->CreateButton(8, 8, 460, 344, 1, 0, UIMSG_BF, 1, GameKey::Y,
-                                      transition_button_label.c_str());
+        pDialogueWindow->CreateButton(
+            8, 8, 460, 344, 1, 0, UIMSG_BF, 1, GameKey::Y,
+            transition_button_label.c_str()
+        );
     } else {
         v17 = HouseNPCData[_this + 1 - ((dword_591080 != 0) ? 1 : 0)];  //+ 1
         if (dialog_menu_id == HOUSE_DIALOGUE_OTHER) {
@@ -1147,7 +1151,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 345, 0);
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
-            localization->GetString(74),  // "End Conversation"
+            localization->GetString(LSTR_END_CONVERSATION),
             {{ui_exit_cancel_button_background}}
         );
         pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
@@ -1156,7 +1160,9 @@ void _4B4224_UpdateNPCTopics(int _this) {
         } else {
             if (v17->is_joinable) {
                 num_menu_buttons = 1;
-                pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hire);
+                pDialogueWindow->CreateButton(
+                    480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hire
+                );
             }
 
             #define AddScriptedDialogueLine(EVENT_ID, MSG_PARAM) \
@@ -1396,9 +1402,7 @@ int UseNPCSkill(NPCProf profession) {
 
         case WindMaster: {
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                GameUI_StatusBar_OnEvent(localization->GetString(
-                    494));  // Can't fly indoors     Нельзя применить знание
-                            // Полет в помещении!
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_FLY_INDOORS));
                 pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0);
             } else {
                 int v19 = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);

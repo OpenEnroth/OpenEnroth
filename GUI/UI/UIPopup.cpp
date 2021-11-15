@@ -218,8 +218,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                 inspect_item->SetIdentified();
             v83 = SPEECH_9;
             if (!inspect_item->IsIdentified()) {
-                GameUI_StatusBar_OnEvent(
-                    localization->GetString(446));  // Identify Failed
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_IDENTIFY_FAILED));
             } else {
                 v83 = SPEECH_8;
                 if (inspect_item->GetValue() <
@@ -227,8 +226,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                     v83 = SPEECH_7;
             }
             if (dword_4E455C) {
-                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)(int)v83,
-                                                      0);
+                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)(int)v83, 0);
                 dword_4E455C = 0;
             }
         }
@@ -241,8 +239,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             if (!inspect_item->IsBroken())
                 v83 = SPEECH_10;
             else
-                GameUI_StatusBar_OnEvent(
-                    localization->GetString(448));  // Repair Failed
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_REPAIR_FAILED));
             if (dword_4E455C) {
                 pPlayers[uActiveCharacter]->PlaySound(v83, 0);
                 dword_4E455C = 0;
@@ -272,11 +269,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         iteminfo_window.DrawTitleText(
             pFontArrus, 0x64u,
             ((signed int)iteminfo_window.uFrameHeight >> 1) -
-                pFontArrus->CalcTextHeight(localization->GetString(32),
-                                           iteminfo_window.uFrameWidth, 0) /
-                    2,
-            Color16(0xFFu, 0x19u, 0x19u), localization->GetString(32),
-            3);  // "Broken Item"
+                pFontArrus->CalcTextHeight(localization->GetString(LSTR_BROKEN_ITEM),
+                                           iteminfo_window.uFrameWidth, 0) / 2,
+            Color16(0xFFu, 0x19u, 0x19u), localization->GetString(LSTR_BROKEN_ITEM), 3);
         render->ResetUIClipRect();
 
         if (inspect_item_image) {
@@ -307,11 +302,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         iteminfo_window.DrawTitleText(
             pFontArrus, 0x64u,
             ((int)iteminfo_window.uFrameHeight >> 1) -
-                pFontArrus->CalcTextHeight(localization->GetString(232),
-                                           iteminfo_window.uFrameWidth, 0) /
-                    2,
-            Color16(0xFFu, 0x19u, 0x19u), localization->GetString(232),
-            3);  // Not Identified
+                pFontArrus->CalcTextHeight(localization->GetString(LSTR_NOT_IDENTIFIED),
+                                           iteminfo_window.uFrameWidth, 0) / 2,
+            Color16(0xFFu, 0x19u, 0x19u), localization->GetString(LSTR_NOT_IDENTIFIED), 3);
         render->ResetUIClipRect();
 
         if (inspect_item_image) {
@@ -333,11 +326,11 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         case EQUIP_SINGLE_HANDED:
         case EQUIP_TWO_HANDED: {
             sprintf(out_text + 100, "%s: +%d   %s: %dd%d",
-                    localization->GetString(18),  // Attack
+                    localization->GetString(LSTR_ATTACK),
                     (int)inspect_item->GetDamageMod(),
-                    localization->GetString(53),
+                    localization->GetString(LSTR_DAMAGE),
                     (int)inspect_item->GetDamageDice(),
-                    (int)inspect_item->GetDamageRoll());  // "Damage"
+                    (int)inspect_item->GetDamageRoll());
             if (inspect_item->GetDamageMod()) {
                 char mod[16];
                 sprintf(mod, "+%d", (int)inspect_item->GetDamageMod());
@@ -348,9 +341,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
         case EQUIP_BOW:
             sprintf(out_text + 100, "%s: +%d   %s: %dd%d",
-                    localization->GetString(203),  // "Shoot"
+                    localization->GetString(LSTR_SHOOT),
                     (int)inspect_item->GetDamageMod(),
-                    localization->GetString(53),  // "Damage"
+                    localization->GetString(LSTR_DAMAGE),
                     (int)inspect_item->GetDamageDice(),
                     (int)inspect_item->GetDamageRoll());
             if (inspect_item->GetDamageMod()) {
@@ -369,38 +362,43 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         case EQUIP_BOOTS:
         case EQUIP_RING:
         case EQUIP_AMULET:
-            if (inspect_item->GetDamageDice())  // "Armor"
-                sprintf(out_text + 100, "%s: +%d", localization->GetString(11),
-                        inspect_item->GetDamageDice() +
-                            inspect_item->GetDamageMod());
+            if (inspect_item->GetDamageDice())
+                sprintf(
+                    out_text + 100, "%s: +%d", localization->GetString(LSTR_ARMOR),
+                    inspect_item->GetDamageDice() + inspect_item->GetDamageMod()
+                );
             break;
     }
 
     if (!v77) {
-        if (inspect_item->GetItemEquipType() ==
-            EQUIP_POTION) {  // this is CORRECT! do not move to switch!
+        // this is CORRECT! do not move to switch!
+        if (inspect_item->GetItemEquipType() == EQUIP_POTION) {
             if (inspect_item->uEnchantmentType)
-                sprintf(out_text + 200, "%s: %d", localization->GetString(449),
-                        inspect_item->uEnchantmentType);  // "Power"
+                sprintf(
+                    out_text + 200, "%s: %d", localization->GetString(LSTR_POWER),
+                    inspect_item->uEnchantmentType
+                );
         } else if (inspect_item->GetItemEquipType() == EQUIP_REAGENT) {
-            sprintf(out_text + 200, "%s: %d", localization->GetString(449),
-                inspect_item->GetDamageDice());  // "Power"
+            sprintf(
+                out_text + 200, "%s: %d", localization->GetString(LSTR_POWER),
+                inspect_item->GetDamageDice()
+            );
         } else if (inspect_item->uEnchantmentType) {
             sprintf(
-                out_text + 200, "%s: %s +%d", localization->GetString(210),
-                pItemsTable->pEnchantments[inspect_item->uEnchantmentType - 1]
-                .pBonusStat,
-                inspect_item->m_enchantmentStrength);  // "Special"
+                out_text + 200, "%s: %s +%d", localization->GetString(LSTR_SPECIAL_2),
+                pItemsTable->pEnchantments[inspect_item->uEnchantmentType - 1].pBonusStat,
+                inspect_item->m_enchantmentStrength);
         } else if (inspect_item->special_enchantment) {
             sprintf(
-                out_text + 200, "%s: %s", localization->GetString(210),
+                out_text + 200, "%s: %s", localization->GetString(LSTR_SPECIAL_2),
                 pItemsTable
-                ->pSpecialEnchantments[inspect_item->special_enchantment -
-                1]
+                ->pSpecialEnchantments[inspect_item->special_enchantment - 1]
                 .pBonusStatement);
         } else if (inspect_item->uNumCharges) {
-            sprintf(out_text + 200, "%s: %lu", localization->GetString(464),
-                inspect_item->uNumCharges);  // "Charges"
+            sprintf(
+                out_text + 200, "%s: %lu", localization->GetString(LSTR_CHARGES),
+                inspect_item->uNumCharges
+            );
         }
     }
     iteminfo_window.uFrameWidth -= 12;
@@ -487,8 +485,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     iteminfo_window.uFrameWidth += 24;
     iteminfo_window.uFrameX -= 12;
     if (v77) {
-        auto txt = StringPrintf("%s: %lu", localization->GetString(465),
-                                v77);  // Value
+        auto txt = StringPrintf("%s: %lu", localization->GetString(LSTR_VALUE), v77);
         iteminfo_window.DrawText(
             pFontComic, 100,
             iteminfo_window.uFrameHeight - pFontComic->GetHeight(), 0, txt, 0,
@@ -530,8 +527,10 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                 txt4.data(), 0, 0, 0);
         }
 
-        auto txt2 = StringPrintf("%s: %lu", localization->GetString(465),
-                                 inspect_item->GetValue());
+        auto txt2 = StringPrintf(
+            "%s: %lu", localization->GetString(LSTR_VALUE),
+            inspect_item->GetValue()
+        );
         iteminfo_window.DrawText(
             pFontComic, 100,
             iteminfo_window.uFrameHeight - pFontComic->GetHeight(), 0,
@@ -539,13 +538,13 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
         String txt3;
         if (inspect_item->uAttributes & ITEM_STOLEN) {
-            txt3 = localization->GetString(187);  // "Stolen"
+            txt3 = localization->GetString(LSTR_STOLEN);
         } else {
             if (!(inspect_item->uAttributes & ITEM_HARDENED)) {
                 render->ResetUIClipRect();
                 return;
             }
-            txt3 = localization->GetString(651);  // "Hardened"
+            txt3 = localization->GetString(LSTR_HARDENED);
         }
 
         int tempatt = (inspect_item->uAttributes & 0xFFFF0000) | r_mask;
@@ -734,11 +733,11 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     const char *pText = nullptr;
     int pTextColorID = 0;
     pWindow->DrawText(pFontSmallnum, 12, 196, Color16(0xE1u, 255, 0x9Bu),
-                      localization->GetString(631), 0, 0, 0);  // Effects
-    if (!for_effects && false) {
+                      localization->GetString(LSTR_EFFECTS), 0, 0, 0);
+    if (!for_effects) {
         pWindow->DrawText(pFontSmallnum, 28, pFontSmallnum->GetHeight() + 193,
                           Color16(0xE1u, 255, 0x9Bu),
-                          localization->GetString(630), 0, 0, 0);  //?
+                          localization->GetString(LSTR_UNKNOWN_VALUE), 0, 0, 0);
     } else {
         pText = "";
         pTextHeight = pFontSmallnum->GetHeight() + 193;
@@ -747,34 +746,34 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 switch (i) {
                     case ACTOR_BUFF_CHARM:
                         pTextColorID = 60;
-                        pText = localization->GetString(591);  // Charmed
+                        pText = localization->GetString(LSTR_CHARMED);
                         break;
                     case ACTOR_BUFF_SUMMONED:
                         pTextColorID = 82;
-                        pText = localization->GetString(649);  // Summoned
+                        pText = localization->GetString(LSTR_SUMMONED);
                         break;
                     case ACTOR_BUFF_SHRINK:
                         pTextColorID = 92;
-                        pText = localization->GetString(592);  // Shrunk
+                        pText = localization->GetString(LSTR_SHRUNK);
                         break;
                     case ACTOR_BUFF_AFRAID:
                         pTextColorID = 63;
-                        pText = localization->GetString(4);  // Afraid
+                        pText = localization->GetString(LSTR_AFRAID);
                         break;
                     case ACTOR_BUFF_STONED:
-                        pText = localization->GetString(220);  // Stoned
+                        pText = localization->GetString(LSTR_STONED);
                         pTextColorID = 81;
                         break;
                     case ACTOR_BUFF_PARALYZED:
-                        pText = localization->GetString(162);  // Paralyzed
+                        pText = localization->GetString(LSTR_PARALYZED);
                         pTextColorID = 81;
                         break;
                     case ACTOR_BUFF_SLOWED:
-                        pText = localization->GetString(593);  // Slowed
+                        pText = localization->GetString(LSTR_SLOWED);
                         pTextColorID = 35;
                         break;
                     case ACTOR_BUFF_BERSERK:
-                        pText = localization->GetString(608);  // Berserk
+                        pText = localization->GetString(LSTR_BERSERK);
                         pTextColorID = 62;
                         break;
                     case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:
@@ -784,49 +783,49 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         continue;
                     case ACTOR_BUFF_FATE:
                         pTextColorID = 47;
-                        pText = localization->GetString(221);  // Fate
+                        pText = localization->GetString(LSTR_FATE);
                         break;
                     case ACTOR_BUFF_ENSLAVED:
                         pTextColorID = 66;
-                        pText = localization->GetString(607);  // Enslaved
+                        pText = localization->GetString(LSTR_ENSLAVED);
                         break;
                     case ACTOR_BUFF_DAY_OF_PROTECTION:
                         pTextColorID = 85;
                         pText =
-                            localization->GetString(610);  // Day of Protection
+                            localization->GetString(LSTR_DAY_OF_PROTECTION);
                         break;
                     case ACTOR_BUFF_HOUR_OF_POWER:
                         pTextColorID = 86;
-                        pText = localization->GetString(609);  // Hour of Power
+                        pText = localization->GetString(LSTR_HOUR_OF_POWER);
                         break;
                     case ACTOR_BUFF_SHIELD:
                         pTextColorID = 17;
-                        pText = localization->GetString(279);  // Shield
+                        pText = localization->GetString(LSTR_SHIELD);
                         break;
                     case ACTOR_BUFF_STONESKIN:
                         pTextColorID = 38;
-                        pText = localization->GetString(442);  // Stoneskin
+                        pText = localization->GetString(LSTR_STONESKIN);
                         break;
                     case ACTOR_BUFF_BLESS:
                         pTextColorID = 46;
-                        pText = localization->GetString(443);  // Bless
+                        pText = localization->GetString(LSTR_BLESS);
                         break;
                     case ACTOR_BUFF_HEROISM:
                         pTextColorID = 51;
-                        pText = localization->GetString(440);  // Heroism
+                        pText = localization->GetString(LSTR_HEROISM);
                         break;
                     case ACTOR_BUFF_HASTE:
                         pTextColorID = 5;
-                        pText = localization->GetString(441);  // Haste
+                        pText = localization->GetString(LSTR_HASTE);
                         break;
                     case ACTOR_BUFF_PAIN_REFLECTION:
                         pTextColorID = 95;
                         pText =
-                            localization->GetString(229);  // Pain Reflection
+                            localization->GetString(LSTR_PAIN_REFLECTION);
                         break;
                     case ACTOR_BUFF_PAIN_HAMMERHANDS:
                         pTextColorID = 73;
-                        pText = localization->GetString(228);  // Hammerhands
+                        pText = localization->GetString(LSTR_HAMMERHANDS);
                         break;
                     default:
                         pText = "";
@@ -844,31 +843,29 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if (!_stricmp(pText, ""))
             pWindow->DrawText(pFontSmallnum, 28, pTextHeight,
                               Color16(0xE1u, 255, 0x9Bu),
-                              localization->GetString(153), 0, 0, 0);  // Нет
+                              localization->GetString(LSTR_NONE), 0, 0, 0);
     }
 
     String txt2;
     if (normal_level) {
         auto str =
-            StringPrintf("%s\f%05u\t100%d\n", localization->GetString(108), 0,
+            StringPrintf("%s\f%05u\t100%d\n", localization->GetString(LSTR_HIT_POINTS), 0,
                          pActors[uActorID].pMonsterInfo.uHP);
         pWindow->DrawText(pFontSmallnum, 150, (int)doll_rect.y,
                           Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
         pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
-        txt2 = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(12), 0,
-                            pActors[uActorID].pMonsterInfo.uAC);  // Armor Class
+        txt2 = StringPrintf("%s\f%05u\t100%d\n", localization->GetString(LSTR_ARMOR_CLASS), 0,
+                            pActors[uActorID].pMonsterInfo.uAC);
     } else {
         auto str = StringPrintf(
-            "%s\f%05u\t100%s\n", localization->GetString(108), 0,
-            localization->GetString(
-                630));  //?   - [630] actually displays a question mark
+            "%s\f%05u\t100%s\n", localization->GetString(LSTR_HIT_POINTS), 0,
+            localization->GetString(LSTR_UNKNOWN_VALUE));
         pWindow->DrawText(pFontSmallnum, 150, (int)doll_rect.y,
                           Color16(0xE1u, 255, 0x9Bu), str, 0, 0, 0);
         pTextHeight = doll_rect.y + pFontSmallnum->GetHeight() - 3;
         txt2 = StringPrintf(
-            "%s\f%05u\t100%s\n", localization->GetString(12), 0,
-            localization->GetString(
-                630));  //?   - [630] actually displays a question mark
+            "%s\f%05u\t100%s\n", localization->GetString(LSTR_ARMOR_CLASS), 0,
+            localization->GetString(LSTR_UNKNOWN_VALUE));
     }
     pWindow->DrawText(pFontSmallnum, 150, pTextHeight,
                       Color16(0xE1u, 255, 0x9Bu), txt2, 0, 0, 0);
@@ -880,8 +877,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     content[1] = localization->GetSpellSchoolName(1);
     content[2] = localization->GetSpellSchoolName(2);
     content[3] = localization->GetSpellSchoolName(3);
-    content[4] = localization->GetString(624);  // Physical
-    content[5] = localization->GetString(138);  // Magic
+    content[4] = localization->GetString(LSTR_PHYSICAL);
+    content[5] = localization->GetString(LSTR_MAGIC);
     content[6] = localization->GetSpellSchoolName(5);
     content[7] = localization->GetSpellSchoolName(4);
     content[8] = localization->GetSpellSchoolName(6);
@@ -891,32 +888,35 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     String txt4;
     if (expert_level) {
         auto txt3 = StringPrintf(
-            "%s\f%05u\t080%s\n", localization->GetString(18), 0,
-            content[pActors[uActorID].pMonsterInfo.uAttack1Type]);  // Attack
+            "%s\f%05u\t080%s\n", localization->GetString(LSTR_ATTACK), 0,
+            content[pActors[uActorID].pMonsterInfo.uAttack1Type]);
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
                           Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
 
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
         if (pActors[uActorID].pMonsterInfo.uAttack1DamageBonus)
             txt4 = StringPrintf(
-                "%s\f%05u\t080%dd%d+%d\n", localization->GetString(53), 0,
+                "%s\f%05u\t080%dd%d+%d\n", localization->GetString(LSTR_DAMAGE), 0,
                 pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls,
                 pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides,
                 pActors[uActorID].pMonsterInfo.uAttack1DamageBonus);
         else
             txt4 = StringPrintf(
-                "%s\f%05u\t080%dd%d\n", localization->GetString(53), 0,
+                "%s\f%05u\t080%dd%d\n", localization->GetString(LSTR_DAMAGE), 0,
                 pActors[uActorID].pMonsterInfo.uAttack1DamageDiceRolls,
                 pActors[uActorID].pMonsterInfo.uAttack1DamageDiceSides);
     } else {
-        auto txt3 =
-            StringPrintf("%s\f%05u\t080%s\n", localization->GetString(18), 0,
-                         localization->GetString(630));
+        auto txt3 = StringPrintf(
+            "%s\f%05u\t080%s\n", localization->GetString(LSTR_ATTACK), 0,
+            localization->GetString(LSTR_UNKNOWN_VALUE)
+        );
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
                           Color16(0xE1u, 255, 0x9Bu), txt3, 0, 0, 0);
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-        txt4 = StringPrintf("%s\f%05u\t080%s\n", localization->GetString(53), 0,
-                            localization->GetString(630));
+        txt4 = StringPrintf(
+            "%s\f%05u\t080%s\n", localization->GetString(LSTR_DAMAGE), 0,
+            localization->GetString(LSTR_UNKNOWN_VALUE)
+        );
     }
     pWindow->DrawText(pFontSmallnum, 150, pTextHeight,
                       Color16(0xE1u, 255, 0x9Bu), txt4, 0, 0, 0);
@@ -924,22 +924,23 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 6 +
                   pFontSmallnum->GetHeight();
     if (!master_level) {
-        auto txt5 =
-            StringPrintf("%s\f%05u\t080%s\n", localization->GetString(628), 0,
-                         localization->GetString(630));  // "Spell" "?"
+        auto txt5 = StringPrintf(
+            "%s\f%05u\t080%s\n", localization->GetString(LSTR_SPELL), 0,
+            localization->GetString(LSTR_UNKNOWN_VALUE)
+        );
         pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
                           Color16(0xE1u, 255, 0x9Bu), txt5, 0, 0, 0);
         pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
     } else {
-        pText = localization->GetString(628);  // Spell
+        pText = localization->GetString(LSTR_SPELL);
         if (pActors[uActorID].pMonsterInfo.uSpell1ID &&
             pActors[uActorID].pMonsterInfo.uSpell2ID)
-            pText = localization->GetString(629);  // Spells
+            pText = localization->GetString(LSTR_SPELLS);
         if (pActors[uActorID].pMonsterInfo.uSpell1ID) {
             auto txt6 = StringPrintf(
                 "%s\f%05u\t070%s\n", pText, 0,
-                pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID]
-                    .pShortName);  // "%s\f%05u\t060%s\n"
+                pSpellStats->pInfos[pActors[uActorID].pMonsterInfo.uSpell1ID].pShortName
+            );  // "%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
                               Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
@@ -956,8 +957,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if (!pActors[uActorID].pMonsterInfo.uSpell1ID &&
             !pActors[uActorID].pMonsterInfo.uSpell2ID) {
             auto txt6 = StringPrintf(
-                "%s\f%05u\t070%s\n", localization->GetString(628), 0,
-                localization->GetString(153));  // "%s\f%05u\t060%s\n"
+                "%s\f%05u\t070%s\n", localization->GetString(LSTR_SPELL), 0,
+                localization->GetString(LSTR_NONE));  // "%s\f%05u\t060%s\n"
             pWindow->DrawText(pFontSmallnum, 150, (int)pTextHeight,
                               Color16(0xE1u, 255, 0x9Bu), txt6, 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
@@ -965,9 +966,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
 
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(pFontSmallnum, 150, pTextHeight,
-                      Color16(0xE1u, 255, 0x9Bu), localization->GetString(626),
-                      0, 0, 0);  // Immune
+    pWindow->DrawText(
+        pFontSmallnum, 150, pTextHeight,
+        Color16(0xE1u, 255, 0x9Bu), localization->GetString(LSTR_RESISTANCES), 0, 0, 0);
     pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
 
     const char *string_name[10] = {0};
@@ -980,7 +981,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     string_name[6] = localization->GetSpellSchoolName(6);
     string_name[7] = localization->GetSpellSchoolName(7);
     string_name[8] = localization->GetSpellSchoolName(8);
-    string_name[9] = localization->GetString(624);  // Physical
+    string_name[9] = localization->GetString(LSTR_PHYSICAL);
 
     unsigned char resistances[11] = {0};
     resistances[0] = pActors[uActorID].pMonsterInfo.uResFire;
@@ -997,12 +998,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (grandmaster_level) {
         for (uint i = 0; i < 10; i++) {
             if (resistances[i] == 200) {
-                pText = localization->GetString(625);  // Immune
+                pText = localization->GetString(LSTR_IMMUNE);
             } else {
                 if (resistances[i])
-                    pText = localization->GetString(627);  // Resistant
+                    pText = localization->GetString(LSTR_RESISTANT);
                 else
-                    pText = localization->GetString(153);  // None
+                    pText = localization->GetString(LSTR_NONE);
             }
 
             auto txt7 =
@@ -1014,7 +1015,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         for (uint i = 0; i < 10; ++i) {
             auto txt8 = StringPrintf("%s\f%05u\t070%s\n", string_name[i], 0,
-                                     localization->GetString(630));  // "?"
+                                     localization->GetString(LSTR_UNKNOWN_VALUE));
             pWindow->DrawText(pFontSmallnum, 170, pTextHeight,
                               Color16(0xE1u, 255, 0x9Bu), txt8, 0, 0, 0);
             pTextHeight = pTextHeight + pFontSmallnum->GetHeight() - 3;
@@ -1024,8 +1025,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     // cast spell: Detect life
     if (pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active()) {
         auto txt9 =
-            StringPrintf("%s: %d", localization->GetString(650),
-                         pActors[uActorID].sCurrentHP);  // Current Hit Points
+            StringPrintf("%s: %d", localization->GetString(LSTR_CURRENT_HIT_POINTS),
+                         pActors[uActorID].sCurrentHP);
         pFontSmallnum->GetLineWidth(txt9);
         pWindow->DrawTitleText(
             pFontSmallnum, 0,
@@ -1049,19 +1050,13 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
     char Source[120];  // [sp+4BCh] [bp-88h]@7
     int v35;           // [sp+53Ch] [bp-8h]@1
 
-    v35 = pFontSmallnum->GetLineWidth(localization->GetString(431));  // Normal
-    if (pFontSmallnum->GetLineWidth(localization->GetString(433)) >
-        (signed int)v35)
-        v35 = pFontSmallnum->GetLineWidth(
-            localization->GetString(433));  // Expert
-    if (pFontSmallnum->GetLineWidth(localization->GetString(432)) >
-        (signed int)v35)
-        v35 = pFontSmallnum->GetLineWidth(
-            localization->GetString(432));  // Master
-    if (pFontSmallnum->GetLineWidth(localization->GetString(96)) >
-        (signed int)v35)
-        v35 =
-            pFontSmallnum->GetLineWidth(localization->GetString(96));  // Grand
+    v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)) > (signed int)v35)
+        v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)) > (signed int)v35)
+        v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)) > (signed int)v35)
+        v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
 
     char static_sub_417BB5_out_string[1200];
     a2[0] = 0;
@@ -1092,15 +1087,15 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
          0x3F)) {
         sprintf(static_sub_417BB5_out_string, a2,
                 localization->GetSkillDescription(uPlayerSkillType),
-                localization->GetString(431), v35 + 3, v35 + 15,
-                localization->GetSkillDescriptionNormal(
-                    uPlayerSkillType),  // changed from 5 to 15 to add space
-                                        // after ':'
-                localization->GetString(433), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_NORMAL), v35 + 3, v35 + 15,
+                localization->GetSkillDescriptionNormal(uPlayerSkillType),
+                // changed from 5 to 15 to add space
+                // after ':'
+                localization->GetString(LSTR_EXPERT), v35 + 3, v35 + 15,
                 localization->GetSkillDescriptionExpert(uPlayerSkillType),
-                localization->GetString(432), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_MASTER), v35 + 3, v35 + 15,
                 localization->GetSkillDescriptionMaster(uPlayerSkillType),
-                localization->GetString(96), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_GRAND), v35 + 3, v35 + 15,
                 localization->GetSkillDescriptionGrand(uPlayerSkillType));
     } else {
         sprintf(Source, "\f%05d", Color16(0xFFu, 0xFFu, 0xFFu));
@@ -1109,15 +1104,15 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
         sprintf(
             static_sub_417BB5_out_string, a2,
             localization->GetSkillDescription(uPlayerSkillType),
-            localization->GetString(431), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_NORMAL), v35 + 3, v35 + 5,
             localization->GetSkillDescriptionNormal(uPlayerSkillType),
-            localization->GetString(433), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_EXPERT), v35 + 3, v35 + 5,
             localization->GetSkillDescriptionExpert(uPlayerSkillType),
-            localization->GetString(432), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_MASTER), v35 + 3, v35 + 5,
             localization->GetSkillDescriptionMaster(uPlayerSkillType),
-            localization->GetString(96), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_GRAND), v35 + 3, v35 + 5,
             localization->GetSkillDescriptionGrand(uPlayerSkillType),
-            localization->GetString(623),  // Bonus
+            localization->GetString(LSTR_BONUS_2),
             (pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) &
              0x3F) -
                 (pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] &
@@ -1145,9 +1140,8 @@ void CharacterUI_SkillsTab_ShowHint() {
         }
     } else {
         CharacterUI_DrawTooltip(
-            localization->GetString(207),
-            pSkillPointsAttributeDescription);  // Skill points   /   Очки
-                                                // навыков
+            localization->GetString(LSTR_SKILL_POINTS),
+            pSkillPointsAttributeDescription);
     }
 }
 
@@ -1187,17 +1181,18 @@ void CharacterUI_StatsTab_ShowHint() {
             break;
         case 7:  // Health Points
             if (pHealthPointsAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(108),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS),
                                         pHealthPointsAttributeDescription);
             break;
         case 8:  // Spell Points
             if (pSpellPointsAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(212),
-                                        pSpellPointsAttributeDescription);
+                CharacterUI_DrawTooltip(
+                    localization->GetString(LSTR_SPELL_POINTS), pSpellPointsAttributeDescription
+                );
             break;
-        case 9:  // Armor Class
+        case 9:
             if (pArmourClassAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(12),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_ARMOR_CLASS),
                                         pArmourClassAttributeDescription);
             break;
         case 10:  // Player Condition
@@ -1222,37 +1217,38 @@ void CharacterUI_StatsTab_ShowHint() {
                                         localization->GetCharacterConditionName(
                                             pConditionImportancyTable[i]));
                     if (pHour && pHour <= 1)
-                        pHourWord = localization->GetString(109);
+                        pHourWord = localization->GetString(LSTR_HOUR);
                     else
-                        pHourWord = localization->GetString(110);
+                        pHourWord = localization->GetString(LSTR_HOURS);
                     if (!pDay ||
-                        (pDayWord = localization->GetString(56), pDay > 1))
-                        pDayWord = localization->GetString(57);
-                    str += StringPrintf("%lu %s, %lu %s", pDay, pDayWord, pHour,
-                                        pHourWord);
+                        (pDayWord = localization->GetString(LSTR_DAY_CAPITALIZED), pDay > 1))
+                        pDayWord = localization->GetString(LSTR_DAYS);
+                    str += StringPrintf(
+                        "%lu %s, %lu %s", pDay, pDayWord, pHour, pHourWord
+                    );
                 }
             }
 
             if (!str.empty())
-                CharacterUI_DrawTooltip(localization->GetString(47), str);
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_CONDITION), str);
             break;
         }
 
         case 11:  // Fast Spell
             if (pFastSpellAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(172),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_QUICK_SPELL),
                                         pFastSpellAttributeDescription);
             break;
 
         case 12:  // Player Age
             if (pPlayerAgeAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(5),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_AGE),
                                         pPlayerAgeAttributeDescription);
             break;
 
         case 13:  // Player Level
             if (pPlayerLevelAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(131),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_LEVEL),
                                         pPlayerLevelAttributeDescription);
             break;
 
@@ -1277,7 +1273,7 @@ void CharacterUI_StatsTab_ShowHint() {
 
             str2 = String(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
 
-            CharacterUI_DrawTooltip(localization->GetString(83), str2);
+            CharacterUI_DrawTooltip(localization->GetString(LSTR_EXPERIENCE), str2);
             break;
         }
 
@@ -1287,15 +1283,17 @@ void CharacterUI_StatsTab_ShowHint() {
                 char recov[100];
                 sprintf(recov, "\n\nRecovery time: %d", meleerecov);
                 String test = String(pAttackBonusAttributeDescription) + String(recov);
-                CharacterUI_DrawTooltip(localization->GetString(587),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS),
                     /*pAttackBonusAttributeDescription*/test);
             }
             break;
 
         case 16:  // Attack Damage
             if (pAttackDamageAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(588),
-                                        pAttackDamageAttributeDescription);
+                CharacterUI_DrawTooltip(
+                    localization->GetString(LSTR_ATTACK_DAMAGE),
+                    pAttackDamageAttributeDescription
+                );
             break;
 
         case 17:  // Missle Bonus
@@ -1304,56 +1302,56 @@ void CharacterUI_StatsTab_ShowHint() {
                 char recovm[100];
                 sprintf(recovm, "\n\nRecovery time: %d", missrecov);
                 String test2 = String(pAttackBonusAttributeDescription) + String(recovm);
-                CharacterUI_DrawTooltip(localization->GetString(589),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS),
                     /*pMissleBonusAttributeDescription*/test2);
             }
             break;
 
         case 18:  // Missle Damage
             if (pMissleDamageAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(590),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_DAMAGE),
                                         pMissleDamageAttributeDescription);
             break;
 
         case 19:  // Fire Resistance
             if (pFireResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(87),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_FIRE),
                                         pFireResistanceAttributeDescription);
             break;
 
         case 20:  // Air Resistance
             if (pAirResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(6),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_AIR),
                                         pAirResistanceAttributeDescription);
             break;
 
         case 21:  // Water Resistance
             if (pWaterResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(240),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_WATER),
                                         pWaterResistanceAttributeDescription);
             break;
 
         case 22:  // Earth Resistance
             if (pEarthResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(70),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_EARTH),
                                         pEarthResistanceAttributeDescription);
             break;
 
         case 23:  // Mind Resistance
             if (pMindResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(142),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_MIND),
                                         pMindResistanceAttributeDescription);
             break;
 
         case 24:  // Body Resistance
             if (pBodyResistanceAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(29),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_BODY),
                                         pBodyResistanceAttributeDescription);
             break;
 
         case 25:  // Skill Points
             if (pSkillPointsAttributeDescription)
-                CharacterUI_DrawTooltip(localization->GetString(207),
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_SKILL_POINTS),
                                         pSkillPointsAttributeDescription);
             break;
 
@@ -1395,41 +1393,34 @@ void DrawSpellDescriptionPopup(int spell_index) {
     spell_info_window.uFrameZ = 417;
     spell_info_window.uFrameW = v3 + 67;
     spell_info_window.sHint.clear();
-    v5 = pFontSmallnum->GetLineWidth(localization->GetString(431));  // Normal
-    if (pFontSmallnum->GetLineWidth(localization->GetString(432)) >
-        v5)  // Master
-        v5 = pFontSmallnum->GetLineWidth(
-            localization->GetString(432));  // Master
-    if (pFontSmallnum->GetLineWidth(localization->GetString(433)) >
-        v5)  // Expert
-        v5 = pFontSmallnum->GetLineWidth(
-            localization->GetString(433));  // Expert
-    if (pFontSmallnum->GetLineWidth(localization->GetString(96)) > v5)  // Grand
-        v5 = pFontSmallnum->GetLineWidth(localization->GetString(96));
+    v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)) > v5)
+        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)) > v5)
+        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER));
+    if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)) > v5)
+        v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
 
     String str = StringPrintf(
         "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%"
         "s\t000\n%s\t%03d:\t%03d%s",
-        spell->pDescription, localization->GetString(431), v5 + 3, v5 + 10,
-        spell->pBasicSkillDesc,  // Normal
-        localization->GetString(433), v5 + 3, v5 + 10,
-        spell->pExpertSkillDesc,  // Expert
-        localization->GetString(432), v5 + 3, v5 + 10,
-        spell->pMasterSkillDesc,  // Master
-        localization->GetString(96), v5 + 3, v5 + 10,
-        spell->pGrandmasterSkillDesc);  // Grand
-    spell_info_window.uFrameHeight +=
-        pFontSmallnum->CalcTextHeight(str, spell_info_window.uFrameWidth, 0);
+        spell->pDescription,
+        localization->GetString(LSTR_NORMAL), v5 + 3, v5 + 10, spell->pBasicSkillDesc,
+        localization->GetString(LSTR_EXPERT), v5 + 3, v5 + 10, spell->pExpertSkillDesc,
+        localization->GetString(LSTR_MASTER), v5 + 3, v5 + 10, spell->pMasterSkillDesc,
+        localization->GetString(LSTR_GRAND), v5 + 3, v5 + 10, spell->pGrandmasterSkillDesc
+    );
+    spell_info_window.uFrameHeight += pFontSmallnum->CalcTextHeight(
+        str, spell_info_window.uFrameWidth, 0
+    );
     if ((signed int)spell_info_window.uFrameHeight < 150)
         spell_info_window.uFrameHeight = 150;
     spell_info_window.uFrameWidth = game_viewport_width;
     spell_info_window.DrawMessageBox(0);
     spell_info_window.uFrameWidth -= 12;
     spell_info_window.uFrameHeight -= 12;
-    spell_info_window.uFrameZ =
-        spell_info_window.uFrameX + spell_info_window.uFrameWidth - 1;
-    spell_info_window.uFrameW =
-        spell_info_window.uFrameHeight + spell_info_window.uFrameY - 1;
+    spell_info_window.uFrameZ = spell_info_window.uFrameX + spell_info_window.uFrameWidth - 1;
+    spell_info_window.uFrameW = spell_info_window.uFrameHeight + spell_info_window.uFrameY - 1;
     spell_info_window.DrawTitleText(
         pFontArrus, 0x78u, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), spell->pName, 3);
     spell_info_window.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
@@ -1445,10 +1436,9 @@ void DrawSpellDescriptionPopup(int spell_index) {
         3);
 
     auto str2 = StringPrintf(
-        "%s\n%d", localization->GetString(522),  // SP Cost
+        "%s\n%d", localization->GetString(LSTR_SP_COST),
         pSpellDatas[spell_index +
-                    11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage +
-                    1]
+                    11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 1]
             .mana_per_skill[skill_level - 1]);
     spell_info_window.DrawTitleText(
         pFontComic, 12,
@@ -1501,10 +1491,10 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         case CURRENT_SCREEN::SCREEN_CHEST: {
             if (!pPlayers[uActiveCharacter]->CanAct()) {
                 static String hint_reference;
-                hint_reference = localization->FormatString(
-                    427, pPlayers[uActiveCharacter]->pName,
-                    localization->GetString(
-                        541));  // %s не в состоянии %s Опознать предметы
+                hint_reference = localization->FormatString(427,
+                    pPlayers[uActiveCharacter]->pName,
+                    localization->GetString(LSTR_IDENTIFY_ITEMS)
+                );  // %s не в состоянии %s
 
                 popup_window.sHint = hint_reference;
                 popup_window.uFrameWidth = 384;
@@ -1681,24 +1671,21 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     (signed int)pY < (signed int)pButton->uW) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
-                            popup_window.sHint =
-                                localization->GetAttributeDescription(
-                                    (int)pButton->msg_param % 7);
+                            popup_window.sHint = localization->GetAttributeDescription(
+                                (int)pButton->msg_param % 7);
                             pStr = localization->GetAttirubteName(
                                 (int)pButton->msg_param % 7);
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
-                            pStr = localization->GetString(670);  //Добавить
+                            pStr = localization->GetString(LSTR_ADD);
                             popup_window.sHint = localization->GetString(
-                                671);  //"Добавляет очко к выделенному навыку,
-                                       //забирая его из накопителя очков"
+                                LSTR_SKILL_INCREASE_HINT);
                             break;
                         case UIMSG_PlayerCreationClickMinus:  // Minus button
                                                               // info
-                            pStr = localization->GetString(668);  //Вычесть
+                            pStr = localization->GetString(LSTR_SUBTRACT);
                             popup_window.sHint = localization->GetString(
-                                669);  //"Вычитает очко из выделенного навыка,
-                                       //возвращая его в накопитель очков"
+                                LSTR_SKILL_DECREASE_HINT);
                             break;
                         case UIMSG_PlayerCreationSelectActiveSkill:  // Available
                                                                      // skill
@@ -1728,16 +1715,13 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreationClickOK:  // OK Info
                             popup_window.sHint = localization->GetString(
-                                664);  //Щелкните здесь для утверждения состава
-                                       //отряда и продолжения игры.
-                            pStr = localization->GetString(665);  //Кнопка ОК
+                                LSTR_ACCEPT_PARTY_HINT);
+                            pStr = localization->GetString(LSTR_OK_BUTTON);
                             break;
                         case UIMSG_PlayerCreationClickReset:  // Clear info
                             popup_window.sHint = localization->GetString(
-                                666);  //Сбрасывает все параметры и навыки
-                                       //отряда.
-                            pStr =
-                                localization->GetString(667);  //Кнопка Очистить
+                                LSTR_RESET_HINT);
+                            pStr = localization->GetString(LSTR_CLEAR_BUTTON);
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
                                                                     // info
@@ -1930,10 +1914,10 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     // check character condition(проверка состояния персонажа)
     if (!pPlayers[uActiveCharacter]->CanAct()) {
         static String hint_reference;
-        hint_reference = localization->FormatString(
-            427, pPlayers[uActiveCharacter]->pName,
-            localization->GetString(
-                541));  // %s не в состоянии %s Опознать предметы
+        hint_reference = localization->FormatString(427,
+            pPlayers[uActiveCharacter]->pName,
+            localization->GetString(LSTR_IDENTIFY_ITEMS)
+        );  // %s не в состоянии %s Опознать предметы
 
         message_window.sHint = hint_reference;
         message_window.uFrameWidth = 384;
@@ -2166,19 +2150,15 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 invMatrixIndex);  // pOut_y); ?? quickfix needs checking
 
             if (damage_level == 1) {
-                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 11 + 10,
-                                                          DMGT_FIRE);
+                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 11 + 10, DMGT_FIRE);
             } else if (damage_level == 2) {
-                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 71 + 30,
-                                                          DMGT_FIRE);
+                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 71 + 30, DMGT_FIRE);
                 pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(1);  // break 1
             } else if (damage_level == 3) {
-                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 201 + 50,
-                                                          DMGT_FIRE);
+                pPlayers[uActiveCharacter]->ReceiveDamage(rand() % 201 + 50, DMGT_FIRE);
                 pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(5);  // break 5
             } else if (damage_level >= 4) {
-                pPlayers[uActiveCharacter]->SetCondition(Condition_Eradicated,
-                                                         0);
+                pPlayers[uActiveCharacter]->SetCondition(Condition_Eradicated, 0);
                 pPlayers[uActiveCharacter]->ItemsPotionDmgBreak(
                     0);  // break everything
             }
@@ -2198,8 +2178,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             if (dword_4E455C) {
                 if (pPlayers[uActiveCharacter]->CanAct())
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_17, 0);
-                GameUI_StatusBar_OnEvent(
-                    localization->GetString(444));  // Ouch!   Ой!
+                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_OOPS));
                 dword_4E455C = 0;
             }
             mouse->RemoveHoldingItem();

@@ -55,36 +55,42 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
 
     pBtn_Book_1 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1,
-        0, UIMSG_ClickBooksBtn, 11, GameKey::None, localization->GetString(193),
+        0, UIMSG_ClickBooksBtn, 11, GameKey::None, localization->GetString(LSTR_SCROLL_DOWN),
         {{ui_book_button1_on}});
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 10, GameKey::None, localization->GetString(192),
+        1, 0, UIMSG_ClickBooksBtn, 10, GameKey::None, localization->GetString(LSTR_SCROLL_UP),
         {{ui_book_button2_on}});
     pBtn_Book_3 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 113, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 2, GameKey::None, localization->GetString(85),
-        {{ui_book_button3_on}});  // "Potion Notes"
+        1, 0, UIMSG_ClickBooksBtn, 2, GameKey::None,
+        localization->GetString(LSTR_POTION_NOTES),
+        {{ui_book_button3_on}});
     pBtn_Book_4 = CreateButton(
         pViewport->uViewportTL_X + 399, pViewport->uViewportTL_Y + 150, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 3, GameKey::None, localization->GetString(137),
-        {{ui_book_button4_on}});  // "Fountain Notes"
+        1, 0, UIMSG_ClickBooksBtn, 3, GameKey::None,
+        localization->GetString(LSTR_FOUNTAIN_NOTES),
+        {{ui_book_button4_on}});
     pBtn_Book_5 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 188, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 4, GameKey::None, localization->GetString(8),
-        {{ui_book_button5_on}});  // "Obelisk Notes"
+        1, 0, UIMSG_ClickBooksBtn, 4, GameKey::None,
+        localization->GetString(LSTR_OBELISK_NOTES),
+        {{ui_book_button5_on}});
     pBtn_Book_6 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 5, GameKey::None, localization->GetString(141),
-        {{ui_book_button6_on}});  // "Seer Notes"
+        1, 0, UIMSG_ClickBooksBtn, 5, GameKey::None,
+        localization->GetString(LSTR_SEER_NOTES),
+        {{ui_book_button6_on}});
     pBtn_Autonotes_Misc = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 264, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 6, GameKey::None, localization->GetString(123),
-        {{ui_book_button7_on}});  // "Miscellaneous Notes"
+        1, 0, UIMSG_ClickBooksBtn, 6, GameKey::None,
+        localization->GetString(LSTR_MISC_NOTES),
+        {{ui_book_button7_on}});
     pBtn_Autonotes_Instructors = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 302, 50, 34,
-        1, 0, UIMSG_ClickBooksBtn, 7, GameKey::None, localization->GetString(662),
-        {{ui_book_button8_on}});  // "Instructors"
+        1, 0, UIMSG_ClickBooksBtn, 7, GameKey::None,
+        localization->GetString(LSTR_INSTRUCTORS),
+        {{ui_book_button8_on}});
 
     int num_achieved_awards = 0;
     for (uint i = books_primary_item_per_page; i < 196; ++i) {
@@ -308,7 +314,7 @@ void GUIWindow_AutonotesBook::Update() {
     autonotes_window.uFrameW = game_viewport_w;
     autonotes_window.DrawTitleText(
         pBook2Font, 0, 22, ui_book_autonotes_title_color,
-        localization->GetString(154), 3);  // "Auto notes"
+        localization->GetString(LSTR_AUTONOTES), 3);
 
     // for other text
     autonotes_window.uFrameX = 48;

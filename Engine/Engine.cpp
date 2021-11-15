@@ -843,8 +843,12 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
 
 //----- (004647AB) --------------------------------------------------------
 void FinalInitialization() {
-    pViewport->SetScreen(viewparams->uSomeX, viewparams->uSomeY,
-                         viewparams->uSomeZ, viewparams->uSomeW);
+    pViewport->SetScreen(
+        viewparams->uSomeX,
+        viewparams->uSomeY,
+        viewparams->uSomeZ,
+        viewparams->uSomeW
+    );
     pViewport->SetFOV(_6BE3A0_fov);
 
     InitializeTurnBasedAnimations(&stru_50C198);
@@ -869,13 +873,19 @@ bool MM7_LoadLods() {
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
     if (!pBitmaps_LOD->Load(MakeDataPath("data/bitmaps.lod").c_str(), "bitmaps")) {
-        Error(localization->GetString(63), localization->GetString(184));
+        Error(
+            localization->GetString(LSTR_PLEASE_REINSTALL),
+            localization->GetString(LSTR_REINSTALL_NECESSARY)
+        );
         return false;
     }
 
     pSprites_LOD = new LODFile_Sprites;
     if (!pSprites_LOD->LoadSprites(MakeDataPath("data/sprites.lod"))) {
-        Error(localization->GetString(63), localization->GetString(184));
+        Error(
+            localization->GetString(LSTR_PLEASE_REINSTALL),
+            localization->GetString(LSTR_REINSTALL_NECESSARY)
+        );
         return false;
     }
 
@@ -1594,8 +1604,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                         (int64_t)pPlayers[pl]->GetMaxHealth() * 0.1,
                         DMGT_FIRE);
                     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
-                        GameUI_StatusBar_OnEvent_128ms(
-                            localization->GetString(660));  // You're drowning!
+                        GameUI_StatusBar_OnEvent_128ms(localization->GetString(LSTR_YOURE_DROWNING));
                     }
                 } else {
                     pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_37, 0);
@@ -1614,8 +1623,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             pPlayers[pl]->ReceiveDamage(
                 (signed __int64)pPlayers[pl]->GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
-                GameUI_StatusBar_OnEvent_128ms(
-                    localization->GetString(661));  // On fire!
+                GameUI_StatusBar_OnEvent_128ms(localization->GetString(LSTR_ON_FIRE));
             }
         }
     }

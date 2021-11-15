@@ -329,8 +329,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     }
     if (!uEventID) {
         if (!game_ui_status_bar_event_string_time_left)
-            GameUI_StatusBar_OnEvent(
-                localization->GetString(521));  // Nothing here
+            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOTHING_HERE));
         return;
     }
     player_choose = (uActiveCharacter == 0)

@@ -137,26 +137,26 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
 
     pBtn_NewGame = CreateButton(0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0,
                                 UIMSG_StartNewGame, 0, GameKey::N,
-                                localization->GetString(614),  // "New Game"
+                                localization->GetString(LSTR_NEW_GAME),
                                 {{game_ui_menu_new}});
     pBtn_SaveGame = CreateButton(0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0,
                                  UIMSG_Game_OpenSaveGameDialog, 0, GameKey::S,
-                                 localization->GetString(615),  // "Save Game"
+                                 localization->GetString(LSTR_SAVE_GAME),
                                  {{game_ui_menu_save}});
     pBtn_LoadGame = CreateButton(19, 263, 0xD6u, 0x28u, 1, 0,
                                  UIMSG_Game_OpenLoadGameDialog, 0, GameKey::L,
-                                 localization->GetString(616),  // "Load Game"
+                                 localization->GetString(LSTR_LOAD_GAME),
                                  {{game_ui_menu_load}});
     pBtn_GameControls = CreateButton(
         241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, GameKey::C,
-        localization->GetString(617),  // ""Sound, Keyboard, Game Options:""
-        {{game_ui_menu_controls}});
+        localization->GetString(LSTR_OPTIONS), {{game_ui_menu_controls}}
+    );
     pBtn_QuitGame = CreateButton(241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, GameKey::Q,
-                                 localization->GetString(618),  // "Quit"
+                                 localization->GetString(LSTR_QUIT),
                                  {{game_ui_menu_quit}});
     pBtn_Resume = CreateButton(
         241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, GameKey::R,
-        localization->GetString(619),  // "Return to Game"
+        localization->GetString(LSTR_RETURN_TO_GAME),
         {{game_ui_menu_resume}});
     _41D08F_set_keyboard_control_group(6, 1, 0, 0);
 }
@@ -395,9 +395,8 @@ void GUIWindow_GameVideoOptions::Update() {
         msg_window.uFrameW = 268;
         msg_window.DrawTitleText(
             pFontSmallnum, 0, 0, ui_gamemenu_video_gamma_title_color,
-            localization->GetString(226),
-            3);  // "Gamma controls the relative ""brightness"" of the game. May
-                 // vary depending on your monitor."
+            localization->GetString(LSTR_GAMMA_DESCRIPTION), 3
+        );
     }
 
     if (!engine->config->NoBloodsplats())
@@ -519,7 +518,7 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
         {{options_menu_skin.uTextureID_ArrowRight}});
     CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0);
 
-    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, GameKey::None, localization->GetString(619));  // "Return to Game"
+    CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, GameKey::None, localization->GetString(LSTR_RETURN_TO_GAME));
     CreateButton(19, 140, 214, 40, 1, 0, UIMSG_OpenKeyMappingOptions, 0, GameKey::K);
     CreateButton(19, 194, 214, 40, 1, 0, UIMSG_OpenVideoOptions, 0, GameKey::V);
 }
@@ -885,17 +884,17 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
             localization->GetClassName(player->classType))  // "%s the %s"
         + "\f00000\n" +
         StringPrintf("%s : \f%05u%d\f00000 / %d\n",
-                     localization->GetString(108),  // "Hit Points"
+                     localization->GetString(LSTR_HIT_POINTS),
                      UI_GetHealthManaAndOtherQualitiesStringColor(
                          player->sHealth, player->GetMaxHealth()),
                      player->sHealth, player->GetMaxHealth()) +
         StringPrintf("%s : \f%05u%d\f00000 / %d\n",
-                     localization->GetString(212),  // "Spell Points"
+                     localization->GetString(LSTR_SPELL_POINTS),
                      UI_GetHealthManaAndOtherQualitiesStringColor(
                          player->sMana, player->GetMaxMana()),
                      player->sMana, player->GetMaxMana()) +
         StringPrintf("%s: \f%05d%s\f00000\n",
-                     localization->GetString(47),  // Condition
+                     localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
                      localization->GetCharacterConditionName(
                          player->GetMajorConditionIdx()));
@@ -903,10 +902,9 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
     if (player->uQuickSpell)
         v29 = pSpellStats->pInfos[player->uQuickSpell].pShortName;
     else
-        v29 = localization->GetString(153);
+        v29 = localization->GetString(LSTR_NONE);
 
-    str += StringPrintf("%s: %s", localization->GetString(172),
-                        v29);  // "Quick Spell"
+    str += StringPrintf("%s: %s", localization->GetString(LSTR_QUICK_SPELL), v29);
 
     window->DrawText(pFontArrus, 120, 22, 0, str, 0, 0, 0);
 
@@ -926,7 +924,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
 
     auto active_spells = localization->FormatString(
         450,  // Active Spells: %s
-        uFramesetIDa == 0 ? localization->GetString(153) : "");  // "None"
+        uFramesetIDa == 0 ? localization->GetString(LSTR_NONE) : "");
     window->DrawText(pFontArrus, 14, 114, 0, active_spells, 0, 0, 0);
 }
 
@@ -2134,15 +2132,15 @@ int GetConditionDrawColor(unsigned int uConditionIdx) {
 //----- (00495430) --------------------------------------------------------
 String GetReputationString(int reputation) {
     if (reputation >= 25)
-        return localization->GetString(379);  // Hated
+        return localization->GetString(LSTR_REPUTATION_HATED);
     else if (reputation >= 6)
-        return localization->GetString(392);  // Unfriendly
+        return localization->GetString(LSTR_REPUTATION_UNFRIENDLY);
     else if (reputation >= -5)
-        return localization->GetString(399);  // Neutral
+        return localization->GetString(LSTR_REPUTATION_NEUTRAL);
     else if (reputation >= -24)
-        return localization->GetString(402);  // Friendly
+        return localization->GetString(LSTR_REPUTATION_FRIENDLY);
     else
-        return localization->GetString(434);  // Respected
+        return localization->GetString(LSTR_REPUTATION_RESPECTED);
 }
 
 __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing

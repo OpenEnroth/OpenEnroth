@@ -171,10 +171,10 @@ void DrawMM7CopyrightWindow() {
     Dst.uFrameWidth = 624;
     Dst.uFrameHeight = 256;
     Dst.uFrameX = 8;
-    Dst.uFrameY = 30;                             // c 1999 The 3DO Company.
-    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(localization->GetString(157), Dst.uFrameWidth, 24, 0)
-        + 2 * (unsigned char)pFontSmallnum->GetHeight()
-        + 24;
+    Dst.uFrameY = 30;
+    Dst.uFrameHeight = pFontSmallnum->CalcTextHeight(
+        localization->GetString(LSTR_3DO_COPYRIGHT), Dst.uFrameWidth, 24, 0)
+        + 2 * (unsigned char)pFontSmallnum->GetHeight() + 24;
     Dst.uFrameY = 470 - Dst.uFrameHeight;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
     Dst.uFrameW = 469;
@@ -186,5 +186,7 @@ void DrawMM7CopyrightWindow() {
     Dst.uFrameHeight -= 12;
     Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
     Dst.uFrameW = Dst.uFrameY + Dst.uFrameHeight - 1;
-    Dst.DrawTitleText(pFontSmallnum, 0, 12, ui_mainmenu_copyright_color, localization->GetString(157), 3);
+    Dst.DrawTitleText(
+        pFontSmallnum, 0, 12, ui_mainmenu_copyright_color,
+        localization->GetString(LSTR_3DO_COPYRIGHT), 3);
 }

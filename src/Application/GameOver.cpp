@@ -72,19 +72,9 @@ void Application::GameOver_Loop(int v15) {
     pWindow.uFrameW = 397;
     pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
     if (pParty->IsPartyGood())
-        v1 = localization->GetString(
-            675);  // "Splendid job!  With the activation of the Gate, a thousand
-                   // worlds lie at your feet.  Perhaps on one of them you will
-                   // find the Ancients themselves, and return with the fruits
-                   // their great civilization has to offer your world and your
-                   // kingdom."
+        v1 = localization->GetString(LSTR_GOOD_ENDING);
     else if (pParty->IsPartyEvil())
-        v1 = localization->GetString(
-            676);  // "Brilliant!  The completion of the Heavenly Forge has
-                   // provided enough Ancient weapons to crush all resistance to
-                   // your plans.  Soon the world will bow to your every whim!
-                   // Still, you can't help but wonder what was beyond the Gate
-                   // the other side was trying so hard to build."
+        v1 = localization->GetString(LSTR_EVIL_ENDING);
     else
         return;
     pInString = v1;
@@ -98,8 +88,9 @@ void Application::GameOver_Loop(int v15) {
     v17 = play_time.GetDaysOfMonth();
     if (!v19) v19 = 1;
     render->BeginScene();
-    pWindow.DrawTitleText(pFont, 1, 0x23, 1, localization->GetString(9),
-                          3);  // Congratulations!
+    pWindow.DrawTitleText(
+        pFont, 1, 0x23, 1, localization->GetString(LSTR_CONGRATULATIONS), 3
+    );
     v23 = 0ull;
     v20 = 0;
     for (uint i = 0; i < 4; i++) {
@@ -113,28 +104,27 @@ void Application::GameOver_Loop(int v15) {
                 pParty->pPlayers[i].GetBaseLevel(),
                 localization->GetClassName(
                     pParty->pPlayers[i].classType)), 3);  // %s the Level %u %s
-        v23 += pParty->pPlayers[i]
-                   .uExperience;  // __PAIR__(*(int *)(i - 4), *(int *)(i - 8));
+        v23 += pParty->pPlayers[i].uExperience;
     }
     v23 = (signed __int64)v23 / v19;
     String v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), 1, v6, 0);
 
-    v7 = localization->GetString(56);
-    if (v17 != 1) v7 = localization->GetString(57);
+    v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
+    if (v17 != 1) v7 = localization->GetString(LSTR_DAYS);
 
-    v8 = localization->GetString(146);                // Month
-    if (v18 != 1) v8 = localization->GetString(148);  // Months
+    v8 = localization->GetString(LSTR_MONTH);
+    if (v18 != 1) v8 = localization->GetString(LSTR_MONTHS);
 
-    v9 = localization->GetString(245);
-    if (v14 != 1) v9 = localization->GetString(132);
+    v9 = localization->GetString(LSTR_YEAR);
+    if (v14 != 1) v9 = localization->GetString(LSTR_YEARS);
 
-    pWindow.DrawTitleText(pFont, 1,
-                          pWindow.uFrameHeight - 2 * pFont->GetHeight() - 5, 1,
-                          localization->GetString(37) +
-                              StringPrintf(" %lu %s, %lu %s, %lu %s ", v14, v9,
-                                           v18, v8, v17, v7),  // Total Time:
-                          3);
+    pWindow.DrawTitleText(
+        pFont, 1, pWindow.uFrameHeight - 2 * pFont->GetHeight() - 5, 1,
+        localization->GetString(LSTR_TOTAL_TIME) + StringPrintf(
+            " %lu %s, %lu %s, %lu %s ", v14, v9, v18, v8, v17, v7),
+        3
+    );
 
     pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, 1,
                           localization->FormatString(94, v23), 3);
