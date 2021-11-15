@@ -110,7 +110,7 @@ void Application::GameOver_Loop(int v15) {
     String v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), 1, v6, 0);
 
-    v7 = localization->GetString(LSTR_DAY);
+    v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
     if (v17 != 1) v7 = localization->GetString(LSTR_DAYS);
 
     v8 = localization->GetString(LSTR_MONTH);

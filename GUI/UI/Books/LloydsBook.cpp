@@ -146,7 +146,7 @@ void GUIWindow_LloydsBook::Update() {
                 } else if (pHours + 1 <= 23) {
                     str = StringPrintf("%lu %s", pHours + 1, localization->GetString((pHours < 1) ? LSTR_HOUR : LSTR_HOURS));
                 } else {
-                    str = StringPrintf("%lu %s", pDays + 1, localization->GetString(LSTR_DAY));
+                    str = StringPrintf("%lu %s", pDays + 1, localization->GetString(LSTR_DAY_CAPITALIZED));
                 }
                 pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
                 pWindow.DrawTitleText(pSpellFont, 0, 0, 1, str, 3);

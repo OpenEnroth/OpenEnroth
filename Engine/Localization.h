@@ -34,7 +34,7 @@
 #define LSTR_CREATE_PARTY_FANCY         51   // "C R E A T E   P A R T Y"
 #define LSTR_DAMAGE                     53   // "Damage"
 #define LSTR_DAWN                       55   // "Dawn"
-#define LSTR_DAY                        56   // "Day"
+#define LSTR_DAY_CAPITALIZED            56   // "Day"
 #define LSTR_DAYS                       57   // "Days"
 #define LSTR_DEPOSIT                    60   // "Deposit"
 #define LSTR_PRESS_ESCAPE               61   // "Press Escape"

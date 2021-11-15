@@ -214,7 +214,7 @@ void GUIWindow_Rest::Update() {
                                          Color16(10, 0, 0), str2, 0, 0,
                                          Color16(230, 214, 193));
         auto str3 = StringPrintf(
-            "%s\r190%d", localization->GetString(LSTR_DAY), pParty->uCurrentDayOfMonth + 1
+            "%s\r190%d", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1
         );
         pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190,
                                          Color16(10, 0, 0), str3, 0, 0,

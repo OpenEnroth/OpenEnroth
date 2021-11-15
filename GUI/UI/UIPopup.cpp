@@ -1221,7 +1221,7 @@ void CharacterUI_StatsTab_ShowHint() {
                     else
                         pHourWord = localization->GetString(LSTR_HOURS);
                     if (!pDay ||
-                        (pDayWord = localization->GetString(LSTR_DAY), pDay > 1))
+                        (pDayWord = localization->GetString(LSTR_DAY_CAPITALIZED), pDay > 1))
                         pDayWord = localization->GetString(LSTR_DAYS);
                     str += StringPrintf(
                         "%lu %s, %lu %s", pDay, pDayWord, pHour, pHourWord

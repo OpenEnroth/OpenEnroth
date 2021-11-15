@@ -613,7 +613,7 @@ String MakeDateTimeString(GameTime time) {
     String str = "";
     if (days) {
         auto day_str = localization->GetString(LSTR_DAYS);
-        if (days <= 1) day_str = localization->GetString(LSTR_DAY);
+        if (days <= 1) day_str = localization->GetString(LSTR_DAY_CAPITALIZED);
 
         str += StringPrintf("%d %s ", days, day_str);
     }
