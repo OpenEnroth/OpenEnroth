@@ -1256,7 +1256,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     break;
                 obj_type = PID_TYPE(spell_targeted_at);
                 monster_id = PID_ID(spell_targeted_at);
-                if (obj_type == OBJECT_Actor) { // quick cast can specify target
+                if (obj_type == OBJECT_Actor) {  // quick cast can specify target
                     dist_X = pActors[monster_id].vPosition.x;
                     dist_Y = pActors[monster_id].vPosition.y;
                     dist_Z = pActors[monster_id].vPosition.z;
