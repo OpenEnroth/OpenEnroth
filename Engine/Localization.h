@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Engine/Strings.h"
 #include "Engine/Objects/NPCProf.h"
 
@@ -100,7 +100,7 @@
 #define LSTR_AUTONOTES                  154  // "Autonotes"
 #define LSTR_NOT_ENOUGH_GOLD            155  // "You don't have enough gold"
 #define LSTR_STAY_IN_THIS_AREA          156  // "Stay in this Area"
-#define LSTR_3DO_COPYRIGHT              157  // ""� 1999 The 3DO Company.All Rights
+#define LSTR_3DO_COPYRIGHT              157  // ""© 1999 The 3DO Company.All Rights
                                              // Reserved.Might and Magic, Bloodand Honor, New World Computing, 3DO, and their
                                              // respective logos, are trademarksand /or service marks of The 3DO Company in the
                                              // U.S. and other countries.All other trademarks belong to their respective
