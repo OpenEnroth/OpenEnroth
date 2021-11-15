@@ -459,7 +459,7 @@ int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, int y, int z) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
     ODM_GetFloorLevel(x, y, z, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
-    if (pParty->IsAriborne() || bmodel_standing_on_pid || is_on_water)
+    if (pParty->IsAirborne() || bmodel_standing_on_pid || is_on_water)
         return 2;
     int v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x),
                      WorldPosToGridCellZ(pParty->vPosition.y) - 1);
@@ -2116,7 +2116,7 @@ void ODM_UpdateUserInputAndOther() {
         pOutdoor->level_filename = pCurrentMapName;
         v0 = pOutdoor->GetTravelDestination(pParty->vPosition.x,
                                             pParty->vPosition.y, pOut, 32);
-        if (!engine->IsUnderwater() && (pParty->IsAriborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
+        if (!engine->IsUnderwater() && (pParty->IsAirborne() || (pParty->uFlags & (PARTY_FLAGS_1_STANDING_ON_WATER | PARTY_FLAGS_1_WATER_DAMAGE)) ||
                              pParty->uFlags & PARTY_FLAGS_1_BURNING || pParty->bFlying) ||
             !v0) {
             if (pParty->vPosition.x < -22528) pParty->vPosition.x = -22528;

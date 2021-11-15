@@ -234,7 +234,7 @@ struct Party {
         return (uFlags & PARTY_FLAGS_1_ALERT_RED_OR_YELLOW) != 0;
     }
 
-    inline bool IsAriborne() const {
+    inline bool IsAirborne() const {
         return uFlags & PARTY_FLAGS_1_AIRBORNE;
     }
 

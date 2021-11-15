@@ -1476,7 +1476,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
             case SPELL_AIR_JUMP:
             {
-                if (pParty->IsAriborne()) {
+                if (pParty->IsAirborne()) {
                     GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_JUMP_AIRBORNE));
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
