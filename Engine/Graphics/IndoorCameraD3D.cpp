@@ -684,7 +684,7 @@ bool IndoorCameraD3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
         FrustumPlaneVec.y = CameraFrustrum[i].y;
         FrustumPlaneVec.z = CameraFrustrum[i].z;
 
-        engine->pStru9Instance->AdjustVerticesToFrustumPlane(
+        engine->pStru9Instance->ClipVertsToFrustumPlane(
             v15, *pOutNumVertices, v14, pOutNumVertices, &FrustumPlaneVec, CameraFrustrum[i].dot,
             (char *)&VertsAdjusted, _unused);
 

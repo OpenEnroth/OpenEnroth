@@ -1,4 +1,5 @@
 #include <map>
+#include <algorithm>
 
 #include "GUI/UI/UIGame.h"
 
@@ -1698,7 +1699,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     int uWizardEyeSkillLevel = pParty->WizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer)) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = 2;
+        uWizardEyeSkillLevel = std::max(2, uWizardEyeSkillLevel);
     }
 
     if (engine->config->debug_wizard_eye) {

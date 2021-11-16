@@ -213,8 +213,7 @@ void Render::RenderTerrainD3D() {  // New function
     // warning: the game uses CW culling by default, ccw is incosistent
     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
 
-    static RenderVertexSoft
-        pTerrainVertices[128 * 128];  // vertexCountX and vertexCountZ
+    static RenderVertexSoft pTerrainVertices[128 * 128];  // vertexCountX and vertexCountY
 
     //Генерация местоположения
     //вершин-------------------------------------------------------------------------
@@ -264,7 +263,7 @@ void Render::RenderTerrainD3D() {  // New function
     } else if (direction >= 1.0 &&
                direction < 3.0) {  // NorthEast(CB) - WestNorth(CЗ)
         Start_X = 0, End_X = 127;
-        Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellZ + 2;
+        Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellY + 2;
     } else if (direction >= 3.0 &&
                direction < 5.0) {  // WestNorth(CЗ) - SouthWest(ЮЗ)
         Start_X = 0, End_X = pODMRenderParams->uMapGridCellX + 2;
@@ -272,14 +271,14 @@ void Render::RenderTerrainD3D() {  // New function
     } else if (direction >= 5.0 &&
                direction < 7.0) {  // SouthWest(ЮЗ) - //SouthEast(ЮВ)
         Start_X = 0, End_X = 127;
-        Start_Z = pODMRenderParams->uMapGridCellZ - 2, End_Z = 127;
+        Start_Z = pODMRenderParams->uMapGridCellY - 2, End_Z = 127;
     } else {  // SouthEast(ЮВ) - East(B)
         Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 127;
         Start_Z = 0, End_Z = 127;
     }
 
     int camx = pODMRenderParams->uMapGridCellX;
-    int camz = pODMRenderParams->uMapGridCellZ - 1;
+    int camz = pODMRenderParams->uMapGridCellY - 1;
     int tilerange = (pIndoorCameraD3D->GetFarClip() / blockScale) + 1;
 
     float Light_tile_dist;
@@ -2054,34 +2053,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     }
 
     if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
-        __debugbreak();
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false));
-        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-        for (uint i = 0; i < uNumVertices; ++i) {
-            d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-            d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-            d3d_vertex_buffer[i].pos.z =
-                1.0 -
-                1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-            d3d_vertex_buffer[i].rhw =
-                1.0 / array_507D30[i].vWorldViewPosition.x;
-            d3d_vertex_buffer[i].diffuse = sCorrectedColor;
-            d3d_vertex_buffer[i].specular = 0;
-            d3d_vertex_buffer[i].texcoord.x =
-                array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
-            d3d_vertex_buffer[i].texcoord.y =
-                array_507D30[i].v / (double)pFace->GetTexture()->GetHeight();
-        }
-
-        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                         D3DTADDRESS_WRAP));
-        ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
-        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
-            D3DPT_TRIANGLEFAN,
-            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-            d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
-        drawcalls++;
-        lightmap_builder->DrawLightmaps(-1 /*, 0*/);
+        // __debugbreak();
     } else {
         if (!lightmap_builder->StationaryLightsCount ||
             _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
@@ -4016,6 +3988,10 @@ void Render::EndDecals() {
 }
 
 void Render::DrawDecal(Decal *pDecal, float z_bias) {
+    // decals need recalculating here now
+    pIndoorCameraD3D->ViewTransform(pDecal->pVertices, (unsigned int)pDecal->uNumVertices);
+    pIndoorCameraD3D->Project(pDecal->pVertices, pDecal->uNumVertices, 0);
+
     int dwFlags;                        // [sp+Ch] [bp-864h]@15
     RenderVertexD3D3 pVerticesD3D[64];  // [sp+20h] [bp-850h]@6
 
@@ -4025,17 +4001,16 @@ void Render::DrawDecal(Decal *pDecal, float z_bias) {
     }
 
     float color_mult;
-    if (pDecal->field_C1C & 1)
+    if (!(pDecal->decal_flags & 1))
         color_mult = 1.0;
     else
-        color_mult = pDecal->field_C18->_43B570_get_color_mult_by_time();
+        color_mult = pDecal->Fade_by_time();
 
-    // temp - bloodsplat persistance
-    color_mult = 1;
+    if (color_mult == 0.0) return;
 
     for (uint i = 0; i < (unsigned int)pDecal->uNumVertices; ++i) {
         uint uTint =
-            Render::GetActorTintColor(pDecal->field_C14, 0, pDecal->pVertices[i].vWorldViewPosition.x, 0, nullptr);
+            Render::GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[i].vWorldViewPosition.x, 0, nullptr);
 
         uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF,
              uTintB = uTint & 0xFF;

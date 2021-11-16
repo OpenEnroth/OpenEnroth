@@ -508,7 +508,7 @@ std::array<int, 182> dword_4F8580 = {};
 char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
 
-std::array<unsigned int, 480> pSRZBufferLineOffsets;
+// std::array<unsigned int, 480> pSRZBufferLineOffsets;
 std::array<char, 777> books_num_items_per_page;
 int lloyds_beacon_spell_id;  // dword_506338
 int lloyds_beacon_sound_id;  // dword_50633C

@@ -160,8 +160,7 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 
 //----- (0044103C) --------------------------------------------------------
 void Engine::Draw() {
-    SetSaturateFaces(
-        pParty->_497FC5_check_party_perception_against_level());
+    SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
     pIndoorCameraD3D->sRotationX = pParty->sRotationX;
     pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
@@ -426,8 +425,12 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     PickMouse(depth, pt.x, pt.y, false, sprite_filter, face_filter);
     lightmap_builder->StationaryLightsCount = 0;
     lightmap_builder->MobileLightsCount = 0;
-    decal_builder->DecalsCount = 0;
-    decal_builder->curent_decal_id = 0;
+
+    // decal reset but actually want bloodsplat reset
+    // decal_builder->DecalsCount = 0;
+    // decal_builder->curent_decal_id = 0;
+    decal_builder->bloodsplat_container->uNumBloodsplats = 0;
+
 
     if (engine->config->DrawBlvDebugs())
         pStru10Instance->bDoNotDrawPortalFrustum = false;
