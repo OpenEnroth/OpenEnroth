@@ -1766,8 +1766,8 @@ int Player::StealFromActor(
                     0) {  // looks odd in current context, but avoids accessing
                           // zeroth element of pItemsTable->pItems
 
-                    __debugbreak(); // no %s stole %s fmt string
-                                    // the below would case a stack corruption
+                    __debugbreak();  // no %s stole %s fmt string
+                                     // the below would case a stack corruption
                     GameUI_SetStatusBar(localization->FormatString(
                         LSTR_OFFICIAL,
                         this->pName,
