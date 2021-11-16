@@ -1125,7 +1125,9 @@ void _4B4224_UpdateNPCTopics(int _this) {
         pDialogueWindow->Release();
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), window->GetHeight(), 0);
         transition_button_label = localization->FormatString(
-            411, pMapStats->pInfos[uHouse_ExitPic].pName.c_str());  // Enter %s
+            LSTR_FMT_ENTER_S,
+            pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
+        );
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::N,
             localization->GetString(LSTR_CANCEL), {{ui_buttdesc2}}
@@ -1402,7 +1404,7 @@ int UseNPCSkill(NPCProf profession) {
 
         case WindMaster: {
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CANT_FLY_INDOORS));
+                GameUI_SetStatusBar(localization->GetString(LSTR_CANT_FLY_INDOORS));
                 pAudioPlayer->PlaySound(SOUND_fizzle, 0, 0, -1, 0, 0);
             } else {
                 int v19 = pOtherOverlayList->_4418B1(10008, 203, 0, 65536);

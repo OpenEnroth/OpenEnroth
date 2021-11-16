@@ -234,93 +234,33 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
 }
 
 void ShopDialogLearn(GUIWindow dialogwin) {
-    if (HouseUI_CheckIfPlayerCanInteract()) {
-        uint item_num = 0;
-        int all_text_height = 0;
+    if (!HouseUI_CheckIfPlayerCanInteract()) return;
 
-        int baseprice = (signed __int64)(p2DEvents[(int64_t)window_SpeakInHouse->ptr_1C - 1] .flt_24 * 500.0);
-        int pPrice = baseprice * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
-        if (pPrice < baseprice / 3)
-            pPrice = baseprice / 3;
+    uint item_num = 0;
+    int all_text_height = 0;
 
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-             i < pDialogueWindow->pNumPresenceButton +
-                     pDialogueWindow->pStartingPosActiveItem;
-             ++i) {
-            if (byte_4ED970_skill_learn_ability_by_class_table
-                    [pPlayers[uActiveCharacter]->classType]
-                    [pDialogueWindow->GetControl(i)->msg_param - 36] &&
-                !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36]) {
-                all_text_height += pFontArrus->CalcTextHeight(
-                    localization->GetSkillName(
-                        pDialogueWindow->GetControl(i)->msg_param - 36),
-                    dialogwin.uFrameWidth, 0);
-                item_num++;
-            }
+    int baseprice = (signed __int64)(p2DEvents[(int64_t)window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+    int pPrice = baseprice * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+    if (pPrice < baseprice / 3)
+        pPrice = baseprice / 3;
+
+    for (int i = pDialogueWindow->pStartingPosActiveItem;
+        i < pDialogueWindow->pNumPresenceButton +
+        pDialogueWindow->pStartingPosActiveItem;
+        ++i) {
+        if (byte_4ED970_skill_learn_ability_by_class_table
+            [pPlayers[uActiveCharacter]->classType]
+        [pDialogueWindow->GetControl(i)->msg_param - 36] &&
+            !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36]) {
+            all_text_height += pFontArrus->CalcTextHeight(
+                localization->GetSkillName(
+                    pDialogueWindow->GetControl(i)->msg_param - 36),
+                dialogwin.uFrameWidth, 0);
+            item_num++;
         }
-
-        if (item_num) {
-            auto str = localization->FormatString(
-                401, pPrice);  // Skill price: %lu   /   Стоимость навыка: %lu
-            dialogwin.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
-
-            int textspacings = (149 - all_text_height) / item_num;
-            if (textspacings > 32)
-                textspacings = 32;
-
-            int textoffset = 162 - textspacings / 2;
-
-            GUIButton *pButton;
-            int pColorText;
-
-            for (uint i = pDialogueWindow->pStartingPosActiveItem;
-                 i < pDialogueWindow->pNumPresenceButton +
-                         pDialogueWindow->pStartingPosActiveItem;
-                 ++i) {
-                pButton = pDialogueWindow->GetControl(i);
-
-                if (!byte_4ED970_skill_learn_ability_by_class_table
-                        [pPlayers[uActiveCharacter]->classType]
-                        [pButton->msg_param - 36] ||
-                    pPlayers[uActiveCharacter]
-                        ->pActiveSkills[pButton->msg_param - 36]) {
-                    pButton->uW = 0;
-                    pButton->uHeight = 0;
-                    pButton->uY = 0;
-                } else {
-                    pButton->uY = textspacings + textoffset;
-                    pButton->uHeight = pFontArrus->CalcTextHeight(
-                        localization->GetSkillName(pButton->msg_param - 36),
-                        dialogwin.uFrameWidth, 0);
-                    textoffset =
-                        pButton->uY +
-                        pFontArrus->CalcTextHeight(
-                            localization->GetSkillName(pButton->msg_param - 36),
-                            dialogwin.uFrameWidth, 0) -
-                        1;
-                    pButton->uW = textoffset + 6;
-                    pColorText = Color16(0xE1u, 0xCDu, 0x23u);
-                    if (pDialogueWindow->pCurrentPosActiveItem != i)
-                        pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
-                    dialogwin.DrawTitleText(
-                        pFontArrus, 0, pButton->uY, pColorText,
-                        localization->GetSkillName(pButton->msg_param - 36), 3);
-                }
-            }
-            return;
-        }
-
-        // seek knowledge elsewhere
-        auto str = localization->FormatString(544,
-            pPlayers[uActiveCharacter]->pName, localization->GetClassName(
-                    pPlayers[uActiveCharacter]->classType)
-        ) + "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
-        dialogwin.DrawTitleText(
-            pFontArrus, 0,
-            (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0, 0)) / 2 + 138,
-            Color16(0xE1u, 0xCDu, 0x23u), str, 3
-        );
     }
+
+    SkillTrainingDialogue(&dialogwin, item_num, all_text_height, pPrice);
 }
 
 void WeaponShopWares(GUIWindow dialogwin, bool special) {
@@ -931,7 +871,7 @@ void UIShop_Buy_Identify_Repair() {
                                 PlayHouseSound(
                                     (uint64_t)window_SpeakInHouse->ptr_1C,
                                     (HouseSoundID)2);
-                                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                                 return;
                             }
 
@@ -953,7 +893,7 @@ void UIShop_Buy_Identify_Repair() {
                             }
 
                             pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-                            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_INVENTORY_IS_FULL));
+                            GameUI_SetStatusBar(localization->GetString(LSTR_INVENTORY_IS_FULL));
                             break;
                         }
                     }
@@ -1007,7 +947,7 @@ void UIShop_Buy_Identify_Repair() {
                         Party::TakeGold(uPriceItemService);
                         item->uAttributes |= ITEM_IDENTIFIED;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_73, 0);
-                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_DONE));
+                        GameUI_SetStatusBar(localization->GetString(LSTR_DONE));
                         return;
                     }
 
@@ -1048,7 +988,7 @@ void UIShop_Buy_Identify_Repair() {
                         item->uAttributes =
                             (item->uAttributes & 0xFFFFFFFD) | 1;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_74, 0);
-                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_GOOD_AS_NEW));
+                        GameUI_SetStatusBar(localization->GetString(LSTR_GOOD_AS_NEW));
                         return;
                     }
 
@@ -1249,7 +1189,7 @@ void UIShop_Buy_Identify_Repair() {
                 }
             } else if (pParty->GetGold() < uPriceItemService) {
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                 return;
             }
 
@@ -1276,8 +1216,7 @@ void UIShop_Buy_Identify_Repair() {
                 return;
             } else {
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-                GameUI_StatusBar_OnEvent(
-                    localization->GetString(LSTR_INVENTORY_IS_FULL));
+                GameUI_SetStatusBar(localization->GetString(LSTR_INVENTORY_IS_FULL));
                 return;
             }
             break;
@@ -1306,7 +1245,7 @@ void UIShop_Buy_Identify_Repair() {
                     pSkill = &pPlayers[uActiveCharacter]->pActiveSkills[v42];
                     if (!*pSkill) {
                         if (pParty->GetGold() < uPriceItemService) {
-                            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                             if (in_current_building_type ==
                                 BuildingType_Training)
                                 v55 = 4;

@@ -812,7 +812,8 @@ bool HouseUI_CheckIfPlayerCanInteract() {
         window.uFrameWidth = 143;
         window.uFrameZ = 334;
 
-        String str = localization->FormatString(427,  // %s is in no condition to %s
+        String str = localization->FormatString(
+            LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
             pPlayers[uActiveCharacter]->pName,
             localization->GetString(LSTR_DO_ANYTHING));
         window.DrawTitleText(
@@ -843,7 +844,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
                           // unsigned int v24; // [sp+34h] [bp-8h]@5
 
     GameUI_StatusBar_Clear();
-    GameUI_StatusBar_OnEvent("");
+    GameUI_SetStatusBar("");
     pMessageQueue_50CBD0->Flush();
     viewparams->bRedrawGameUI = 1;
     uDialogueType = 0;
@@ -878,9 +879,11 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
             am_pm_flag_close = 1;
         }
 
-        GameUI_StatusBar_OnEvent(localization->FormatString(
-            414,  // This place is open from %d%s to %d%s
-            uOpenTime, localization->GetAmPm(am_pm_flag_open), uCloseTime,
+        GameUI_SetStatusBar(localization->FormatString(
+            LSTR_FMT_OPEN_TIME,
+            uOpenTime,
+            localization->GetAmPm(am_pm_flag_open),
+            uCloseTime,
             localization->GetAmPm(am_pm_flag_close)));
         if (uActiveCharacter)
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_3, 0);
@@ -893,7 +896,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
                     pParty->GetPlayingTime())) {
                 pParty->PartyTimes._shop_ban_times[uHouseID] = GameTime(0);
             } else {
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_BANNED_FROM_SHOP));
+                GameUI_SetStatusBar(localization->GetString(LSTR_BANNED_FROM_SHOP));
                 return 0;
             }
         }
@@ -1639,7 +1642,7 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
                 if (!pPlayers[uActiveCharacter]
                     ->pActiveSkills[uMessageParam - 36]) {
                     if (pParty->GetGold() < pPrice) {
-                        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                         if (in_current_building_type ==
                             BuildingType_Training ||
                             in_current_building_type == BuildingType_Tavern)
@@ -1705,8 +1708,8 @@ void TravelByTransport() {
             index = 0;
             strcpy(pTopicArray[4], "");
 
-            String str =
-                localization->FormatString(405, pPrice);  // Price: %lu gold
+            String str = localization->FormatString(
+                LSTR_FMT_TRAVEL_COST_D_GOLD, pPrice);
             pTextHeight =
                 pFontArrus->CalcTextHeight(str, travel_window.uFrameWidth, 0);
             pRealTextHeight = pTextHeight + (pFontArrus->GetHeight() - 3) + 146;
@@ -1722,8 +1725,7 @@ void TravelByTransport() {
                 pButton = pDialogueWindow->GetControl(i);
 
                 if (schedule_id != 255) {
-                    // if (schedule_id >= 25)
-                    // logger->Warning("Transport UI: schedule overflow");
+                    Assert(schedule_id < 35);
                     if (pCurrentButton >= 6)
                         v25 = true;
                     else
@@ -1740,13 +1742,10 @@ void TravelByTransport() {
                                              // одного направления путешествия
                                              // get color for current string(определение цвета текущей
                                              // строки)----------
-                    if (pDialogueWindow->pCurrentPosActiveItem ==
-                        pCurrentButton)
-                        sprintf(pTopicArray[index], "\f%05d",
-                            Color16(255, 255, 155));
+                    if (pDialogueWindow->pCurrentPosActiveItem == pCurrentButton)
+                        sprintf(pTopicArray[index], "\f%05d", Color16(255, 255, 155));
                     else
-                        sprintf(pTopicArray[index], "\f%05d",
-                            Color16(255, 255, 255));
+                        sprintf(pTopicArray[index], "\f%05d", Color16(255, 255, 255));
                     // hired NPC premium(премия наёмного
                     // НПС)----------------------------------
                     travel_time = transport_schedule[schedule_id].uTravelTime;
@@ -1769,8 +1768,9 @@ void TravelByTransport() {
                             .uMapInfoID],
                             0x44u);
                         String str = localization->FormatString(
-                            404, travel_time,
-                            pMap.pName.c_str());  // Time - %d days, destination %s
+                            LSTR_FMT_D_DAYS_TO_S,
+                            travel_time,
+                            pMap.pName.c_str());
                         strcat(pTopicArray[index], str.c_str());
                         strcat(pTopicArray[index], "\n \n");
                         pButton->uY = pRealTextHeight;
@@ -1778,8 +1778,7 @@ void TravelByTransport() {
                             str, travel_window.uFrameWidth, 0);
                         pButton->uHeight = pTextHeight;
                         pButton->uW = pButton->uY + pTextHeight - 1 + 6;
-                        pRealTextHeight +=
-                            (pFontArrus->GetHeight() - 3) + pTextHeight;
+                        pRealTextHeight += (pFontArrus->GetHeight() - 3) + pTextHeight;
                     }
                 } else {
                     strcpy(pTopicArray[index], "");
@@ -1816,7 +1815,7 @@ void TravelByTransport() {
         if (dialog_menu_id >= HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_1 &&
             dialog_menu_id <= HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_4) {
             if (pParty->GetGold() < pPrice) {
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
@@ -2184,15 +2183,12 @@ void TavernDialog() {
     double v2;                // st7@1
     int pNumString;           // edi@16
     signed int v9;            // esi@16
-    unsigned int pColorText;  // eax@57
     GUIButton *pButton;       // eax@65
     int pSkillCount;
     signed int pOptionsCount;       // edi@77
     signed int i;                   // esi@79
                                     //  signed int v53; // edi@81
-    int v54;                        // edi@81
     const char *pText;              // [sp-4h] [bp-278h]@93
-    int v91;                        // [sp+270h] [bp-4h]@3
     unsigned int pTopic1Height;     // [sp+26Fh] [bp-5h]@55
     unsigned __int8 pTopic2Height;  // [sp+267h] [bp-Dh]@57
     unsigned __int8 pTopic3Height;  // [sp+253h] [bp-21h]@59
@@ -2227,38 +2223,32 @@ void TavernDialog() {
     {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
 
-        String topic1 =
-            StringPrintf("\f%05d",
+        String topic1 = StringPrintf("\f%05d",
                 pDialogueWindow->pCurrentPosActiveItem == 2
                 ? Color16(0xFFu, 0xFFu, 0x9Bu)
                 : Color16(0xFFu, 0xFFu, 0xFFu)) +
             localization->FormatString(
-                178, pPriceRoom);  // Rent room for %d gold
+                LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom);
         pTopic1Height = pFontArrus->CalcTextHeight(
             topic1, dialog_window.uFrameWidth, 0);
 
-        String topic2 =
-            StringPrintf("\f%05d",
+        String topic2 = StringPrintf("\f%05d",
                 pDialogueWindow->pCurrentPosActiveItem == 3
                 ? Color16(0xFFu, 0xFFu, 0x9Bu)
-                : Color16(0xFFu, 0xFFu, 0xFFu)) +
-            localization->FormatString(
-                86,  // Buy food for %d days for %d gold
+                : Color16(0xFFu, 0xFFu, 0xFFu))
+            + localization->FormatString(
+                LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD,
                 (unsigned int)
-                p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
-                .fPriceMultiplier,
+                p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier,
                 pPriceFood);
-        pTopic2Height = pFontArrus->CalcTextHeight(
-            topic2, dialog_window.uFrameWidth, 0);
+        pTopic2Height = pFontArrus->CalcTextHeight(topic2, dialog_window.uFrameWidth, 0);
 
-        String topic3 =
-            StringPrintf("\f%05d",
+        String topic3 = StringPrintf("\f%05d",
                 pDialogueWindow->pCurrentPosActiveItem == 4
                 ? Color16(0xFFu, 0xFFu, 0x9Bu)
                 : Color16(0xFFu, 0xFFu, 0xFFu)) +
             localization->GetString(LSTR_LEARN_SKILLS);
-        pTopic3Height = pFontArrus->CalcTextHeight(
-            topic3, dialog_window.uFrameWidth, 0);
+        pTopic3Height = pFontArrus->CalcTextHeight(topic3, dialog_window.uFrameWidth, 0);
 
         String topic4;
         if ((signed int)window_SpeakInHouse->par1C >= 108 &&
@@ -2405,7 +2395,7 @@ void TavernDialog() {
             window_SpeakInHouse = 0;
             return;
         }
-        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
         PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
@@ -2416,12 +2406,8 @@ void TavernDialog() {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
         pSkillCount = 0;
         v9 = (signed __int64)(p2DEvents[(uint64_t)
-            window_SpeakInHouse->ptr_1C -
-            1]
-            .flt_24 *
-            500.0);
-        pPriceSkill =
-            v9 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+            window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+        pPriceSkill = v9 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
         if (pPriceSkill < v9 / 3) pPriceSkill = v9 / 3;
         all_text_height = 0;
         for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -2440,60 +2426,7 @@ void TavernDialog() {
                 pSkillCount++;
             }
         }
-        if (pSkillCount) {
-            auto label = localization->FormatString(
-                401, pPriceSkill);  //Стоимость навыка: %lu
-            dialog_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, label, 3);
-            v91 = (149 - all_text_height) / pSkillCount;
-            if ((149 - all_text_height) / pSkillCount > 32) v91 = 32;
-            v54 = (149 - pSkillCount * v91 - all_text_height) / 2 -
-                v91 / 2 + 162;
-            for (int i = pDialogueWindow->pStartingPosActiveItem;
-                i < pDialogueWindow->pStartingPosActiveItem +
-                pDialogueWindow->pNumPresenceButton;
-                i++) {
-                pButton = pDialogueWindow->GetControl(i);
-                if (!byte_4ED970_skill_learn_ability_by_class_table
-                    [pPlayers[uActiveCharacter]->classType]
-                [pButton->msg_param - 36] ||
-                    pPlayers[uActiveCharacter]
-                    ->pActiveSkills[pButton->msg_param - 36]) {
-                    pButton->uW = 0;
-                    pButton->uHeight = 0;
-                    pButton->uY = 0;
-                } else {
-                    pButton->uY = v91 + v54;
-                    pTextHeight = pFontArrus->CalcTextHeight(
-                        localization->GetSkillName(pButton->msg_param - 36),
-                        dialog_window.uFrameWidth, 0);
-                    pButton->uHeight = pTextHeight;
-                    v54 = pTextHeight + pButton->uY - 1;
-                    pButton->uW = v54 + 6;
-                    pColorText = Color16(0xFFu, 0xFFu, 0x9Bu);
-                    if (pDialogueWindow->pCurrentPosActiveItem != i)
-                        pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
-                    dialog_window.DrawTitleText(
-                        pFontArrus, 0, pButton->uY, pColorText,
-                        localization->GetSkillName(pButton->msg_param - 36),
-                        3);
-                }
-            }
-            return;
-        }
-
-        String str = localization->FormatString(544,
-            pPlayers[uActiveCharacter]->pName,
-            localization->GetClassName(
-                pPlayers[uActiveCharacter]
-                ->classType)) +  // Советую вам %s %s поискать
-                                 // знания еще где-нибудь
-            "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
-        pTextHeight = (174 - pFontArrus->CalcTextHeight(
-            str, dialog_window.uFrameWidth, 0)) /
-            2 +
-            138;
-        dialog_window.DrawTitleText(pFontArrus, 0, pTextHeight,
-            Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
+        SkillTrainingDialogue(&dialog_window, pSkillCount, all_text_height, pPriceSkill);
         return;
     }
 
@@ -2501,7 +2434,7 @@ void TavernDialog() {
     {
         if ((double)pParty->GetFood() >=
             p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier) {
-            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_RATIONS_FULL));
+            GameUI_SetStatusBar(localization->GetString(LSTR_RATIONS_FULL));
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_67, 0);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2516,7 +2449,7 @@ void TavernDialog() {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
         PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
@@ -2537,7 +2470,7 @@ void TavernDialog() {
                     pShopOptions[i], dialog_window.uFrameWidth, 0);
             all_text_height = (174 - all_text_height) / pOptionsCount;
 
-            v54 = (174 -
+            int v54 = (174 -
                 pOptionsCount * (174 - all_text_height) / pOptionsCount -
                 all_text_height) /
                 2 -
@@ -2554,7 +2487,7 @@ void TavernDialog() {
                 pButton->uHeight = pTextHeight;
                 v54 = pButton->uY + pTextHeight - 1;
                 pButton->uW = v54 + 6;
-                pColorText = Color16(0xFFu, 0xFFu, 0x9Bu);
+                int pColorText = Color16(0xFFu, 0xFFu, 0x9Bu);
                 if (pDialogueWindow->pCurrentPosActiveItem != pItemNum)
                     pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
                 dialog_window.DrawTitleText(pFontArrus, 0, pButton->uY,
@@ -2657,7 +2590,7 @@ void TempleDialog() {
     if (dialog_menu_id == HOUSE_DIALOGUE_TEMPLE_HEAL) {
         if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) return;
         if (pParty->GetGold() < pPrice) {
-            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
             PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_NotEnoughMoney_TrainingSuccessful);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2789,11 +2722,11 @@ void TempleDialog() {
             }
             ++byte_F8B1EF[uActiveCharacter];
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_83, 0);
-            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_THANK_YOU));
+            GameUI_SetStatusBar(localization->GetString(LSTR_THANK_YOU));
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
         PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
             HouseSound_NotEnoughMoney_TrainingSuccessful);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2832,72 +2765,8 @@ void TempleDialog() {
                     ++pCurrentItem;
                 }
             }
-            if (pCurrentItem) {
-                auto str = localization->FormatString(401, v64);
-                tample_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, str, 3);
-                v64 = (149 - (signed int)all_text_height) /
-                    (signed int)pCurrentItem;
-                if (v64 > 32) v64 = 32;
-                all_text_height = (signed int)(149 - pCurrentItem * v64 -
-                    (int)all_text_height) /
-                    2 -
-                    v64 / 2 + 162;
-                if (pDialogueWindow->pStartingPosActiveItem <
-                    pDialogueWindow->pStartingPosActiveItem +
-                    pDialogueWindow->pNumPresenceButton) {
-                    pCurrentItem = 2;
-                    for (int i = pDialogueWindow->pStartingPosActiveItem;
-                        i < pDialogueWindow->pNumPresenceButton +
-                        pDialogueWindow->pStartingPosActiveItem;
-                        ++i) {
-                        pButton = pDialogueWindow->GetControl(i);
-                        if (!byte_4ED970_skill_learn_ability_by_class_table
-                            [pPlayers[uActiveCharacter]->classType]
-                        [pButton->msg_param - 36] ||
-                            pPlayers[uActiveCharacter]
-                            ->pActiveSkills[pButton->msg_param - 36]) {
-                            pButton->uW = 0;
-                            pButton->uHeight = 0;
-                            pButton->uY = 0;
-                        } else {
-                            pButton->uY = v64 + all_text_height;
-                            pTextHeight = pFontArrus->CalcTextHeight(
-                                localization->GetSkillName(pButton->msg_param -
-                                    36),
-                                tample_window.uFrameWidth, 0);
-                            pButton->uHeight = pTextHeight;
-                            pButton->uW = pButton->uY + pTextHeight - 1 + 6;
-                            all_text_height = pButton->uW;
-                            pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
-                            if (pDialogueWindow->pCurrentPosActiveItem !=
-                                pCurrentItem)
-                                pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
-                            tample_window.DrawTitleText(
-                                pFontArrus, 0, pButton->uY, pTextColor,
-                                localization->GetSkillName(pButton->msg_param -
-                                    36),
-                                3);
-                        }
-                        pCurrentItem++;
-                    }
-                }
-            } else {
-                String str =
-                    localization->FormatString(544,
-                        pPlayers[uActiveCharacter]->pName,
-                        localization->GetClassName(
-                            pPlayers[uActiveCharacter]
-                            ->classType)) +  // Советую вам %s %s поискать
-                                             // знания еще где-нибудь
-                    "\n \n" +
-                    localization->GetString(LSTR_NO_FURTHER_OFFERS);
 
-                pTextHeight = pFontArrus->CalcTextHeight(
-                    str, tample_window.uFrameWidth, 0);
-                tample_window.DrawTitleText(
-                    pFontArrus, 0, (174 - pTextHeight) / 2 + 138,
-                    Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
-            }
+            SkillTrainingDialogue(&tample_window, pCurrentItem, all_text_height, v64);
         }
     }
 }
@@ -2909,7 +2778,6 @@ void TrainingDialog(const char *s) {
     signed int v10;       // esi@6
     int pPrice = 0;           // ecx@6
     int v14;              // esi@14
-    int v19;              // ecx@24
     int v33;              // eax@36
     unsigned int v36;     // eax@38
     unsigned int v42;     // eax@46
@@ -2918,9 +2786,7 @@ void TrainingDialog(const char *s) {
     int v49;                      // ebx@69
     GUIButton *pButton;           // eax@71
     int pTextHeight;              // eax@71
-    unsigned __int16 pTextColor;  // ax@71
     int v69;                      // [sp+70h] [bp-14h]@6
-    int v73;                      // [sp+80h] [bp-4h]@14
 
     GUIWindow training_dialog_window = *window_SpeakInHouse;
     training_dialog_window.uFrameX = 483;
@@ -2979,22 +2845,17 @@ void TrainingDialog(const char *s) {
                                 pShopOptions[index] = shop_option_str_container.c_str();
 
                             } else {
-                                if (pPlayers[uActiveCharacter]->uExperience <
-                                    v5)
-                                    shop_option_str_container =
-                                    localization->FormatString(
+                                if (pPlayers[uActiveCharacter]->uExperience < v5)
+                                    shop_option_str_container = localization->FormatString(
                                         LSTR_XP_UNTIL_NEXT_LEVEL,
                                         (uint)(v5 - pPlayers[uActiveCharacter]->uExperience),
                                         pPlayers[uActiveCharacter]->uLevel + 1);
                                 else
-                                    shop_option_str_container =
-                                    localization->FormatString(
-                                        537,
+                                    shop_option_str_container = localization->FormatString(
+                                        LSTR_FMT_TRAIN_LEVEL_D_FOR_D_GOLD,
                                         pPlayers[uActiveCharacter]->uLevel + 1,
-                                        pPrice);  // "Train to level %d for
-                                                  // %d gold"
-                                pShopOptions[index] =
-                                    shop_option_str_container.c_str();
+                                        pPrice);
+                                pShopOptions[index] = shop_option_str_container.c_str();
                             }
                         }
                         all_text_height += pFontArrus->CalcTextHeight(
@@ -3023,7 +2884,7 @@ void TrainingDialog(const char *s) {
                         pButton->uHeight = pTextHeight;
                         pButton->uW = pTextHeight + pButton->uY - 1 + 6;
                         v49 = pButton->uW;
-                        pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
+                        int pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
                         if (pDialogueWindow->pCurrentPosActiveItem != i)
                             pTextColor = Color16(255, 255, 255);
                         training_dialog_window.DrawTitleText(
@@ -3093,18 +2954,18 @@ void TrainingDialog(const char *s) {
                         }
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_87, 0);
 
-                        GameUI_StatusBar_OnEvent(localization->FormatString(
-                            430, pPlayers[uActiveCharacter]->pName,
+                        GameUI_SetStatusBar(localization->FormatString(
+                            LSTR_FMT_S_NOW_LEVEL_D,
+                            pPlayers[uActiveCharacter]->pName,
                             pPlayers[uActiveCharacter]->uLevel,
-                            pPlayers[uActiveCharacter]->uLevel / 10 +
-                            5));  // %s is now Level %lu and has earned %lu
-                                  // Skill Points!
+                            pPlayers[uActiveCharacter]->uLevel / 10 + 5)
+                        );
 
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                         return;
                     }
 
-                    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                    GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                     PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, (HouseSoundID)4);
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     return;
@@ -3143,12 +3004,8 @@ void TrainingDialog(const char *s) {
     if (dialog_menu_id == HOUSE_DIALOGUE_LEARN_SKILLS) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             v14 = (signed __int64)(p2DEvents[(uint64_t)
-                window_SpeakInHouse->ptr_1C -
-                1]
-                .flt_24 *
-                500.0);
-            pPrice =
-                v14 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+                window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+            pPrice = v14 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
             if (pPrice < v14 / 3) pPrice = v14 / 3;
             index = 0;
             for (int i = pDialogueWindow->pStartingPosActiveItem;
@@ -3167,59 +3024,8 @@ void TrainingDialog(const char *s) {
                     ++index;
                 }
             }
-            if (index) {
-                training_dialog_window.DrawTitleText(
-                    pFontArrus, 0, 0x92u, 0,
-                    localization->FormatString(401, pPrice),
-                    3);  // "Skill Cost: %lu"
-                v73 = (signed int)(149 - all_text_height) / index;
-                if (v73 > 32) v73 = 32;
-                v19 = (signed int)(149 - index * v73 - all_text_height) / 2 -
-                    v73 / 2 + 162;
-                for (int i = pDialogueWindow->pStartingPosActiveItem;
-                    (signed int)i < pDialogueWindow->pStartingPosActiveItem +
-                    pDialogueWindow->pNumPresenceButton;
-                    ++i) {
-                    pButton = pDialogueWindow->GetControl(i);
-                    if (!byte_4ED970_skill_learn_ability_by_class_table
-                        [pPlayers[uActiveCharacter]->classType]
-                    [pButton->msg_param - 36] ||
-                        pPlayers[uActiveCharacter]
-                        ->pActiveSkills[pButton->msg_param - 36]) {
-                        pButton->uW = 0;
-                        pButton->uHeight = 0;
-                        pButton->uY = 0;
-                    } else {
-                        pButton->uY = v73 + v19;
-                        pTextHeight = pFontArrus->CalcTextHeight(
-                            localization->GetSkillName(pButton->msg_param - 36),
-                            training_dialog_window.uFrameWidth, 0);
-                        pButton->uHeight = pTextHeight;
-                        pButton->uW = pButton->uY + pTextHeight - 1 + 6;
-                        v19 = pButton->uY + pTextHeight - 1;
-                        pTextColor = Color16(0xE1u, 0xCDu, 0x23u);
-                        if (pDialogueWindow->pCurrentPosActiveItem != i)
-                            pTextColor = Color16(255, 255, 255);
-                        training_dialog_window.DrawTitleText(
-                            pFontArrus, 0, pButton->uY, pTextColor,
-                            localization->GetSkillName(pButton->msg_param - 36),
-                            3);
-                    }
-                }
-            } else {
-                auto label = localization->FormatString(544,
-                    pPlayers[uActiveCharacter]->pName,
-                    localization->GetClassName(
-                        pPlayers[uActiveCharacter]
-                        ->classType)) +  // Seek knowledge
-                                         // elsewhere %s the %s
-                    "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
-                auto label_height = pFontArrus->CalcTextHeight(
-                    label, training_dialog_window.uFrameWidth, 0);
-                training_dialog_window.DrawTitleText(
-                    pFontArrus, 0, (174 - label_height) / 2 + 138,
-                    Color16(0xE1u, 0xCDu, 0x23u), label, 3);
-            }
+
+            SkillTrainingDialogue(&training_dialog_window, index, all_text_height, pPrice);
         }
     }
     return;
@@ -3243,23 +3049,16 @@ void sub_4B6478() {
     dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
-    v32 =
-        (unsigned __int8)(((p2DEvents
+    v32 = (unsigned __int8)(((p2DEvents
             [(uint64_t)window_SpeakInHouse->ptr_1C - 1]
-    .uType != 18) -
-            1) &
-            0x96) +
-        100;
+    .uType != 18) - 1) & 0x96) + 100;
     v3 = (signed __int64)((double)v32 *
-        p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C -
-        1]
-        .fPriceMultiplier);
+        p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier);
     pPrice = v3 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
     if (pPrice < v3 / 3) pPrice = v3 / 3;
     if (dialog_menu_id == HOUSE_DIALOGUE_MAIN) {
         if (!(unsigned __int16)_449B57_test_bit(
-            (unsigned __int8 *)pPlayers[uActiveCharacter]
-            ->_achieved_awards_bits,
+            (unsigned __int8 *)pPlayers[uActiveCharacter]->_achieved_awards_bits,
             word_4F0754[2 * (uint64_t)window_SpeakInHouse->ptr_1C])) {
             pTextHeight = pFontArrus->CalcTextHeight(
                 pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
@@ -3289,69 +3088,15 @@ void sub_4B6478() {
                 ++index;
             }
         }
-        if (!index) {
-            String str = localization->FormatString(544,
-                pPlayers[uActiveCharacter]->pName,
-                localization->GetClassName(
-                    pPlayers[uActiveCharacter]->classType)) +
-                "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
-            pTextHeight =
-                pFontArrus->CalcTextHeight(str, dialog_window.uFrameWidth, 0);
-            dialog_window.DrawTitleText(pFontArrus, 0,
-                (174 - pTextHeight) / 2 + 138,
-                Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
-            return;
-        }
 
-        auto skill_price_label =
-            localization->FormatString(401, pPrice);  //Стоимость навыка: %lu
-        dialog_window.DrawTitleText(pFontArrus, 0, 0x92u, 0, skill_price_label,
-            3);
 
-        v32 = (149 - all_text_height) / index;
-        if (v32 > 32) v32 = 32;
-        index = (149 - index * v32 - all_text_height) / 2 - v32 / 2 + 162;
-        if (pDialogueWindow->pStartingPosActiveItem <
-            pDialogueWindow->pStartingPosActiveItem +
-            pDialogueWindow->pNumPresenceButton) {
-            for (int i = pDialogueWindow->pStartingPosActiveItem;
-                i < pDialogueWindow->pNumPresenceButton +
-                pDialogueWindow->pStartingPosActiveItem;
-                ++i) {
-                pButton = pDialogueWindow->GetControl(i);
-                if (byte_4ED970_skill_learn_ability_by_class_table
-                    [pPlayers[uActiveCharacter]->classType / 3]
-                [pButton->msg_param - 36]) {
-                    if (!pPlayers[uActiveCharacter]
-                        ->pActiveSkills[pButton->msg_param - 36]) {
-                        pButton->uY = v32 + index;
-                        pTextHeight = pFontArrus->CalcTextHeight(
-                            localization->GetSkillName(pButton->msg_param - 36),
-                            dialog_window.uFrameWidth, 0);
-                        pButton->uHeight = pTextHeight;
-                        pButton->uW = pButton->uY + pTextHeight - 1 + 6;
-                        index = pButton->uY + pTextHeight - 1;
-                        pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
-                        if (pDialogueWindow->pCurrentPosActiveItem != i)
-                            pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
-                        dialog_window.DrawTitleText(
-                            pFontArrus, 0, pButton->uY, pTextColor,
-                            localization->GetSkillName(pButton->msg_param - 36),
-                            3);
-                    }
-                } else {
-                    pButton->uW = 0;
-                    pButton->uHeight = 0;
-                    pButton->uY = 0;
-                }
-            }
-        }
+        SkillTrainingDialogue(&dialog_window, index, all_text_height, pPrice);
         return;
     }
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         v5 = 0;
-        __debugbreak();
+        __debugbreak(); // what type of house that even is?
         // pSkillAvailabilityPerClass[8 + v58->uClass][4 + v23]
         // or
         // byte_4ED970_skill_learn_ability_by_class_table[v58->uClass][v23 - 36]
@@ -3367,7 +3112,7 @@ void sub_4B6478() {
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
             if (pParty->GetGold() < pPrice) {
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                 v27 = 4;
             } else {
                 Party::TakeGold(pPrice);
@@ -3380,7 +3125,6 @@ void sub_4B6478() {
         v5 = 0;
     }
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, v5);
-    return;  // void func
 }
 
 void SimpleHouseDialog() {
@@ -3411,8 +3155,9 @@ void SimpleHouseDialog() {
         house_window.uFrameZ = 334;
         if (!pTransitionStrings[uHouse_ExitPic]) {
             auto str = localization->FormatString(
-                411, pMapStats->pInfos[uHouse_ExitPic]
-                .pName.c_str());  // Enter %s   /   Войти в ^Pv[%s]
+                LSTR_FMT_ENTER_S,
+                pMapStats->pInfos[uHouse_ExitPic].pName.c_str()
+            );
             house_window.DrawTitleText(
                 pFontCreate, 0,
                 (212 - pFontCreate->CalcTextHeight(
@@ -3435,19 +3180,10 @@ void SimpleHouseDialog() {
     }
     house_window.uFrameWidth -= 10;
     house_window.uFrameZ -= 10;
-    pNPC = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount +
-        -(dword_591080 != 0))];  //- 1
+    pNPC = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount + -(dword_591080 != 0))];  //- 1
 
-    String npc_name;
-    if (pNPC->profession)
-        npc_name = localization->FormatString(   // %s %s   /   ^Pi[%s] %s
-            429, pNPC->pName,
-            localization->GetNpcProfessionName(pNPC->profession)
-        );
-    else
-        npc_name = pNPC->pName;
     house_window.DrawTitleText(pFontCreate, 483, 113,
-        Color16(0x15u, 0x99u, 0xE9u), npc_name, 3);
+        Color16(0x15u, 0x99u, 0xE9u), NameAndTitle(pNPC), 3);
 
     if (!dword_591080) {
         if (!uDialogueType) {
@@ -4302,13 +4038,13 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
         String v30;
         if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
-            v29 = localization->GetString(LSTR_ENTER_FMT);
+            v29 = localization->GetString(LSTR_FMT_ENTER_S);
         } else {
             if (v26 || !dword_591080)
                 v30 = HouseNPCData[v26 + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
             else
                 v30 = p2DEvents[(int64_t)button - 1].pProprieterName;
-            v29 = localization->GetString(LSTR_CONVERSE_WITH_FMT);
+            v29 = localization->GetString(LSTR_FMT_CONVERSE_WITH_S);
         }
         sprintf(byte_591180[v26].data(), v29, v30.c_str());
         HouseNPCPortraitsButtonsList[v26] = CreateButton(pNPCPortraits_x[uNumDialogueNPCPortraits - 1][v26],

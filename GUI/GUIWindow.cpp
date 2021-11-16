@@ -156,7 +156,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     mouse->SetCursorImage("MICON2");
-    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_CHOOSE_TARGET));
+    GameUI_SetStatusBar(localization->GetString(LSTR_CHOOSE_TARGET));
 }
 
 void GUIMessageQueue::Flush() {
@@ -533,9 +533,10 @@ void GUIWindow::HouseDialogManager() {
     } else {
         pWindow.DrawTitleText(
             pFontCreate, 0x1E3u, 0x71u, pColor2,
-            localization->FormatString(
-                429, p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterName,
-                p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterTitle), 3);
+            NameAndTitle(
+                p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterName,
+                p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterTitle
+            ), 3);
         switch (in_current_building_type) {
         case BuildingType_WeaponShop:
             WeaponShopDialog();
@@ -1610,7 +1611,7 @@ void ClickNPCTopic(int uMessageParam) {
     }
 
     if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
-        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_HIRE_NO_ROOM));
+        GameUI_SetStatusBar(localization->GetString(LSTR_HIRE_NO_ROOM));
         BackToHouseMenu();
         return;
     }
@@ -1623,7 +1624,7 @@ void ClickNPCTopic(int uMessageParam) {
         pPrice =
             pNPCStats->pProfessions[pCurrentNPCInfo->profession].uHirePrice;
         if (pParty->GetGold() < (unsigned int)pPrice) {
-            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
             dialogue_show_profession_details = false;
             uDialogueType = 13;
             current_npc_text = BuildDialogueString(
@@ -1631,7 +1632,7 @@ void ClickNPCTopic(int uMessageParam) {
                 uActiveCharacter - 1, 0, 0, 0);
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
-            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
             BackToHouseMenu();
             return;
         } else {
@@ -1871,49 +1872,34 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             [skillBeingTaught] >=
             masteryLevelBeingTaught) {
             return localization->FormatString(
-                633, localization->GetClassName(
-                    classBaseId +
-                    1));  // You have to be promoted to %s to learn this
-                          // skill level.   /   Вы должны достичь звания %s
-                          // для обучения этому уровню навыка.
+                LSTR_FMT_HAVE_TO_BE_PROMOTED,
+                localization->GetClassName(classBaseId + 1));
         } else if (byte_4ED970_skill_learn_ability_by_class_table
-            [classBaseId + 2][skillBeingTaught] >=
-            masteryLevelBeingTaught &&
+            [classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught &&
             byte_4ED970_skill_learn_ability_by_class_table
-            [classBaseId + 3][skillBeingTaught] >=
-            masteryLevelBeingTaught) {
+            [classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught) {
             return localization->FormatString(
-                634, localization->GetClassName(classBaseId + 2),
-                localization->GetClassName(
-                    classBaseId +
-                    3));  // You have to be promoted to %s or %s to learn this
-                          // skill level.   /   Вы должны достичь звания %s или
-                          // %s для обучения этому уровню навыка.
+                LSTR_FMT_HAVE_TO_BE_PROMOTED_2,
+                localization->GetClassName(classBaseId + 2),
+                localization->GetClassName(classBaseId + 3)
+            );
         } else if (byte_4ED970_skill_learn_ability_by_class_table
-            [classBaseId + 2][skillBeingTaught] >=
-            masteryLevelBeingTaught) {
+            [classBaseId + 2][skillBeingTaught] >= masteryLevelBeingTaught) {
             return localization->FormatString(
-                633, localization->GetClassName(
-                    classBaseId +
-                    2));  // You have to be promoted to %s to learn this
-                          // skill level.   /   Вы должны достичь звания %s
-                          // для обучения этому уровню навыка.
+                LSTR_FMT_HAVE_TO_BE_PROMOTED,
+                localization->GetClassName(classBaseId + 2)
+            );
         } else if (byte_4ED970_skill_learn_ability_by_class_table
-            [classBaseId + 3][skillBeingTaught] >=
-            masteryLevelBeingTaught) {
+            [classBaseId + 3][skillBeingTaught] >= masteryLevelBeingTaught) {
             return localization->FormatString(
-                633, localization->GetClassName(
-                    classBaseId +
-                    3));  // You have to be promoted to %s to learn this
-                          // skill level.   /   Вы должны достичь звания %s
-                          // для обучения этому уровню навыка.
+                LSTR_FMT_HAVE_TO_BE_PROMOTED,
+                localization->GetClassName(classBaseId + 3)
+            );
         } else {
             return localization->FormatString(
-                632,
-                localization->GetClassName(
-                    pClassType));  // This skill level can not be learned by the
-                                   // %s class.   /   Этот уровень навыка не
-                                   // может быть постигнут классом %s.
+                LSTR_FMT_SKILL_CANT_BE_LEARNED,
+                localization->GetClassName(pClassType)
+            );
         }
     }
 
@@ -2163,19 +2149,20 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
 
     contract_approved = 1;
     if (masteryLevelBeingTaught == 2) {
-        return localization->FormatString(534,
-                  // Получить степень ^Pr[%s] в навыке ^Pr[%s] за ^I[%lu]
-                  // золот^L[ой;ых;ых]
+        return localization->FormatString(
+            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_EXPERT),
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount);
     } else if (masteryLevelBeingTaught == 3) {
-        return localization->FormatString(534,
+        return localization->FormatString(
+            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_MASTER),
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount);
     } else if (masteryLevelBeingTaught == 4) {
-        return localization->FormatString(534,
+        return localization->FormatString(
+            LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_GRANDMASTER),
             localization->GetSkillName(dword_F8B1AC_award_bit_number),
             gold_transaction_amount);
@@ -2455,9 +2442,10 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                 }
                 v56.Initialize(*a6);
                 result += localization->FormatString(
-                    378,
+                    LSTR_FMT_S_D_D,
                     localization->GetMonthName(v56.field_14_exprie_month),
-                    v56.field_C_expire_day + 1, v56.field_18_expire_year);
+                    v56.field_C_expire_day + 1,
+                    v56.field_18_expire_year);
                 break;
             case 31:
             case 32:
@@ -2479,9 +2467,10 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
 
                 v56.Initialize(pParty->PartyTimes._s_times[v17 - 51]);
                 result += localization->FormatString(
-                    378,
+                    LSTR_FMT_S_D_D,
                     localization->GetMonthName(v56.field_14_exprie_month),
-                    v56.field_C_expire_day + 1, v56.field_18_expire_year);
+                    v56.field_C_expire_day + 1,
+                    v56.field_18_expire_year);
                 break;
             }
         }
@@ -2673,4 +2662,137 @@ void UI_Create() {
         1, 0, UIMSG_ScrollNPCPanel, 1, GameKey::None, "", { { ui_btn_npc_right } });
 
     LoadPartyBuffIcons();
+}
+
+
+String NameAndTitle(const char* name, const char* title) {
+    return localization->FormatString(
+        LSTR_FMT_S_THE_S,
+        name,
+        title
+    );
+}
+
+
+String NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
+    return NameAndTitle(
+        name,
+        localization->GetClassName(class_type)
+    );
+}
+
+
+String NameAndTitle(const char* name, NPCProf profession) {
+    return NameAndTitle(
+        name,
+        localization->GetNpcProfessionName(profession)
+    );
+}
+
+
+String NameAndTitle(NPCData* npc) {
+    if (npc->pName) {
+        if (npc->profession) {
+            Assert(npc->profession < 59);
+            return NameAndTitle(npc->pName, npc->profession);
+        }
+
+        return npc->pName;
+    }
+
+    return String("");
+}
+
+
+String GetDisplayName(Actor* actor) {
+    if (actor->dword_000334_unique_name)
+        return pMonsterStats->pPlaceStrings[actor->dword_000334_unique_name];
+    else
+        return pMonsterStats->pInfos[actor->pMonsterInfo.uID].pName;
+}
+
+
+static String SeekKnowledgeElswhereString(Player *player) {
+    return localization->FormatString(
+        LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE,
+        player->pName,
+        localization->GetClassName(player->classType)
+    )
+    + "\n \n"
+    + localization->GetString(LSTR_NO_FURTHER_OFFERS);
+}
+
+void SeekKnowledgeElswhereDialogueOption(GUIWindow* dialogue, Player* player) {
+    String str = SeekKnowledgeElswhereString(pPlayers[uActiveCharacter]);
+    int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
+
+    dialogue->DrawTitleText(
+        pFontArrus,
+        0,
+        (174 - text_height) / 2 + 138,
+        Color16(0xFFu, 0xFFu, 0x9Bu),
+        str,
+        3
+    );
+}
+
+
+void SkillTrainingDialogue(
+    GUIWindow *dialogue,
+    int num_skills_avaiable,
+    int all_text_height,
+    int skill_price
+) {
+    if (!num_skills_avaiable) {
+        SeekKnowledgeElswhereDialogueOption(
+            dialogue,
+            pPlayers[uActiveCharacter]
+        );
+
+        return;
+    }
+
+    auto skill_price_label = localization->FormatString(
+        LSTR_FMT_SKILL_COST_D, skill_price
+    );
+    dialogue->DrawTitleText(pFontArrus, 0, 146, 0, skill_price_label, 3);
+
+    int textspacings = (149 - all_text_height) / num_skills_avaiable;
+    if (textspacings > 32) textspacings = 32;
+    int textoffset = (149 - num_skills_avaiable * textspacings - all_text_height) / 2
+            - textspacings / 2 + 162;
+    for (int i = pDialogueWindow->pStartingPosActiveItem;
+        i < pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
+        ++i
+    ) {
+        auto pButton = pDialogueWindow->GetControl(i);
+        int skill_id = pButton->msg_param - DIALOGUE_LEARN_STAFF;
+
+        if (!byte_4ED970_skill_learn_ability_by_class_table
+            [pPlayers[uActiveCharacter]->classType][skill_id]
+        || pPlayers[uActiveCharacter]->pActiveSkills[skill_id]) {
+            pButton->uW = 0;
+            pButton->uHeight = 0;
+            pButton->uY = 0;
+        } else {
+            auto skill_name_label = localization->GetSkillName(skill_id);
+            int line_height = pFontArrus->CalcTextHeight(
+                skill_name_label,
+                dialogue->uFrameWidth,
+                0
+            );
+            pButton->uY = textspacings + textoffset;
+            pButton->uHeight = line_height;
+            pButton->uW = pButton->uY + line_height + 6 - 1;
+            textoffset += textspacings + line_height - 1;
+            int text_color = Color16(225, 205, 35);
+            if (pDialogueWindow->pCurrentPosActiveItem != i)
+                text_color = Color16(255, 255, 255);
+            dialogue->DrawTitleText(
+                pFontArrus, 0, pButton->uY, text_color,
+                skill_name_label,
+                3
+            );
+        }
+    }
 }

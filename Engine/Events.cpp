@@ -329,7 +329,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     }
     if (!uEventID) {
         if (!game_ui_status_bar_event_string_time_left)
-            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOTHING_HERE));
+            GameUI_SetStatusBar(localization->GetString(LSTR_NOTHING_HERE));
         return;
     }
     player_choose = (uActiveCharacter == 0)
@@ -908,12 +908,12 @@ LABEL_47:
                             v91 = pNPCTopics[v90 - 1]
                                       .pText;  // (&dword_721664)[8 * v90];
                             // LABEL_248:
-                            GameUI_StatusBar_OnEvent(v91, 2);
+                            GameUI_SetStatusBar(v91);
                         }
                     } else {
                         if (canShowMessages == 1) {
                             v91 = &pLevelStr[pLevelStrOffsets[v90]];
-                            GameUI_StatusBar_OnEvent(v91, 2);
+                            GameUI_SetStatusBar(v91);
                         }
                     }
                     ++curr_seq_num;

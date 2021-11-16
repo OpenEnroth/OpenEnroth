@@ -1409,7 +1409,6 @@ void Actor::StealFrom(unsigned int uActorID) {
                 (int)(flt_6BE3A4_debug_recmod1 * v8 * 2.133333333333333));
         pTurnEngine->ApplyPlayerAction();
     }
-    return;
 }
 
 //----- (00403A60) --------------------------------------------------------
@@ -3384,7 +3383,6 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     unsigned __int16 v45;            // ax@132
     // unsigned __int64 v46; // [sp+Ch] [bp-60h]@6
     char *pPlayerName;                // [sp+18h] [bp-54h]@12
-    char *pMonsterName;               // [sp+1Ch] [bp-50h]@6
     signed int a4;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
     int v61;                          // [sp+58h] [bp-14h]@1
@@ -3601,13 +3599,19 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             String str;
             if (projectileSprite)
                 str = localization->FormatString(
-                    189, player->pName, pMonster->pActorName,
-                    uDamageAmount);  // "%s shoots %s for %lu points"
+                    LSTR_FMT_S_SHOOTS_S_FOR_U,
+                    player->pName,
+                    pMonster->pActorName,
+                    uDamageAmount
+                );
             else
                 str = localization->FormatString(
-                    164, player->pName, pMonster->pActorName,
-                    uDamageAmount);  // "%s hits %s for %lu damage"
-            GameUI_StatusBar_OnEvent(str);
+                    LSTR_FMT_S_HITS_S_FOR_U,
+                    player->pName,
+                    pMonster->pActorName,
+                    uDamageAmount
+                );
+            GameUI_SetStatusBar(str);
         }
     } else {
         if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster & 1) {
@@ -3632,13 +3636,15 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             v40 = ((signed int)pMonster->pMonsterInfo.uHP >= 100) + 1;
         player->PlaySound((PlayerSpeech)v40, 0);
         if (!engine->config->NoShowDamage()) {
-            pMonsterName = (char *)uDamageAmount;
             pPlayerName = player->pName;
 
             auto str = localization->FormatString(
-                175, player->pName, uDamageAmount,
-                pMonster->pActorName);  // "%s inflicts %lu points killing %s"
-            GameUI_StatusBar_OnEvent(str);
+                LSTR_FMT_S_INFLICTS_U_KILLING_S,
+                player->pName,
+                uDamageAmount,
+                pMonster->pActorName
+            );
+            GameUI_SetStatusBar(str);
         }
     }
     if (pMonster->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Active() &&
@@ -3651,15 +3657,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         extraRecoveryTime = 20;
         knockbackValue = 10;
         if (!pParty->bTurnBasedModeOn)
-            extraRecoveryTime =
-                (int)(flt_6BE3A8_debug_recmod2 * 42.66666666666666);
+            extraRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * 42.66666666666666);
         pMonster->pMonsterInfo.uRecoveryTime += extraRecoveryTime;
         if (!engine->config->NoShowDamage()) {
-            pMonsterName = player->pName;
-
-            auto str = localization->FormatString(635, player->pName,
-                                                  pMonster);  // "%s stuns %s"
-            GameUI_StatusBar_OnEvent(str);
+            GameUI_SetStatusBar(localization->FormatString(
+                LSTR_FMT_S_STUNS_S,
+                player->pName,
+                pMonster
+            ));
         }
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
@@ -3669,11 +3674,12 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         GameTime v46 = GameTime(0, v43 & 63);  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), v45, 0, 0, 0);
         if (!engine->config->NoShowDamage()) {
-            pMonsterName = player->pName;
-
             auto str = localization->FormatString(
-                636, player->pName, pMonster);  // "%s paralyzes %s"
-            GameUI_StatusBar_OnEvent(str);
+                LSTR_FMT_S_PARALYZES_S,
+                player->pName,
+                pMonster
+            );
+            GameUI_SetStatusBar(str);
         }
     }
     if (knockbackValue > 10) knockbackValue = 10;
@@ -4055,13 +4061,31 @@ bool CheckActors_proximity() {
     return false;
 }
 
+
+void StatusBarItemFound(int v14, const char * item_unidentified_name) {
+    if (v14) {
+        GameUI_SetStatusBar(
+            localization->FormatString(
+                LSTR_FMT_YOU_FOUND_GOLD_AND_ITEM,
+                v14,
+                item_unidentified_name
+            )
+        );
+    } else {
+        GameUI_SetStatusBar(
+            localization->FormatString(
+                LSTR_FMT_YOU_FOUND_ITEM,
+                item_unidentified_name
+            )
+        );
+    }
+}
+
+
 //----- (00426A5A) --------------------------------------------------------
 void Actor::LootActor() {
     signed int v2;       // edi@1
     unsigned __int8 v7;  // al@30
-    char *v9;            // [sp-4h] [bp-3Ch]@10
-    char *v10;           // [sp-4h] [bp-3Ch]@31
-                         //  char *v11; // [sp-4h] [bp-3Ch]@38
     ItemGen Dst;         // [sp+Ch] [bp-2Ch]@1
     bool itemFound;      // [sp+30h] [bp-8h]@1
     int v14;             // [sp+34h] [bp-4h]@1
@@ -4092,12 +4116,11 @@ void Actor::LootActor() {
     if (this->uCarriedItemID) {
         Dst.Reset();
         Dst.uItemID = this->uCarriedItemID;
-        v9 = pItemsTable->pItems[Dst.uItemID].pUnidentifiedName;
 
-        if (v14)
-            GameUI_StatusBar_OnEvent(localization->FormatString(490, v14, v9));
-        else
-            GameUI_StatusBar_OnEvent(localization->FormatString(471, v9));
+        StatusBarItemFound(
+            v14,
+            pItemsTable->pItems[Dst.uItemID].pUnidentifiedName
+        );
 
         if (Dst.GetItemEquipType() == 12) {
             Dst.uNumCharges = rand() % 6 + Dst.GetDamageMod() + 1;
@@ -4130,15 +4153,11 @@ void Actor::LootActor() {
         if (this->ActorHasItems[3].uItemID) {
             memcpy(&Dst, &this->ActorHasItems[3], sizeof(Dst));
             this->ActorHasItems[3].Reset();
-            // v11 = pItemsTable->pItems[Dst.uItemID].pUnidentifiedName;
 
-            if (v14)
-                GameUI_StatusBar_OnEvent(localization->FormatString(
-                    490, v14,
-                    pItemsTable->pItems[Dst.uItemID].pUnidentifiedName));
-            else
-                GameUI_StatusBar_OnEvent(localization->FormatString(
-                    471, pItemsTable->pItems[Dst.uItemID].pUnidentifiedName));
+            StatusBarItemFound(
+                v14,
+                pItemsTable->pItems[Dst.uItemID].pUnidentifiedName
+            );
 
             if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
             itemFound = true;
@@ -4148,16 +4167,11 @@ void Actor::LootActor() {
             (v7 = this->pMonsterInfo.uTreasureLevel) != 0) {
             pItemsTable->GenerateItem(v7, this->pMonsterInfo.uTreasureType,
                                       &Dst);
-            v10 = pItemsTable->pItems[Dst.uItemID].pUnidentifiedName;
 
-            if (v14)
-                GameUI_StatusBar_OnEvent(localization->FormatString(
-                    490, v14,
-                    v10));  // You found %d gold and an item (%s)!   Вы нашли
-                            // ^I[%d] золот^L[ой;ых;ых] и предмет (%s)!
-            else
-                GameUI_StatusBar_OnEvent(localization->FormatString(
-                    471, v10));  // You found %s!   Вы нашли ^Pv[%s]!
+            StatusBarItemFound(
+                v14,
+                pItemsTable->pItems[Dst.uItemID].pUnidentifiedName
+            );
 
             if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
             itemFound = true;

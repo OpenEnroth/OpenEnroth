@@ -247,6 +247,7 @@ void Engine::Draw() {
     pParty->uFlags &= ~PARTY_FLAGS_1_0002;
 }
 
+
 void Engine::DrawGUI() {
     render->ResetUIClipRect();
 
@@ -356,14 +357,19 @@ void Engine::DrawGUI() {
                 "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
             bool on_water = false;
-            int _a6;
+            int bmodel_pid;
             int floor_level = ODM_GetFloorLevel(
                 pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z,
-                0, &on_water, &_a6, false);
+                0, &on_water, &bmodel_pid, false);
             floor_level_str = StringPrintf(
-                "ODM_GetFloorLevel: %d   on_water: %s    a6 = %d\n",
-                floor_level, on_water ? "true" : "false", _a6);
+                "ODM_GetFloorLevel: %d   on_water: %s  on: %s\n",
+                floor_level, on_water ? "true" : "false",
+                bmodel_pid == 0
+                    ? "---"
+                    : StringPrintf("BModel=%d Face=%d", bmodel_pid >> 6, bmodel_pid & 0x3F).c_str()
+            );
         }
+
         pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16 + 16,
             Color16(255, 255, 255), floor_level_str, 0, 0,
             0);
@@ -1604,7 +1610,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                         (int64_t)pPlayers[pl]->GetMaxHealth() * 0.1,
                         DMGT_FIRE);
                     if (pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) {
-                        GameUI_StatusBar_OnEvent_128ms(localization->GetString(LSTR_YOURE_DROWNING));
+                        GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_YOURE_DROWNING));
                     }
                 } else {
                     pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_37, 0);
@@ -1623,7 +1629,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             pPlayers[pl]->ReceiveDamage(
                 (signed __int64)pPlayers[pl]->GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
-                GameUI_StatusBar_OnEvent_128ms(localization->GetString(LSTR_ON_FIRE));
+                GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_ON_FIRE));
             }
         }
     }

@@ -101,13 +101,15 @@ void LoadGame(unsigned int uSlot) {
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
     SavegameHeader *header = (SavegameHeader*)pNew_LOD->LoadRaw("header.bin");
     if (header == nullptr) {
-        logger->Warning(localization->FormatString(612, 100).c_str());  // Savegame damaged! Code=%d
+        logger->Warning(localization->FormatString(
+            LSTR_FMT_SAVEGAME_CORRUPTED, 100).c_str());
     }
 
     {
         Party_Image_MM7 *serialization = (Party_Image_MM7*)pNew_LOD->LoadRaw("party.bin");
         if (serialization == nullptr) {
-            logger->Warning(localization->FormatString(612, 101).c_str());  // Savegame damaged! Code=%d
+            logger->Warning(localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 101).c_str());
         } else {
             serialization->Deserialize(pParty);
             free(serialization);
@@ -130,7 +132,8 @@ void LoadGame(unsigned int uSlot) {
     {
         Timer_Image_MM7 *serialization = (Timer_Image_MM7*)pNew_LOD->LoadRaw("clock.bin");
         if (serialization == nullptr) {
-            logger->Warning(localization->FormatString(612, 102).c_str());  // Savegame damaged! Code=%d
+            logger->Warning(localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 102).c_str());
         } else {
             serialization->Deserialize(pEventTimer);
             free(serialization);
@@ -140,7 +143,8 @@ void LoadGame(unsigned int uSlot) {
     {
         OtherOverlayList_Image_MM7 *serialization = (OtherOverlayList_Image_MM7*)pNew_LOD->LoadRaw("overlay.bin");
         if (serialization == nullptr) {
-            logger->Warning(localization->FormatString(612, 103).c_str());  // Savegame damaged! Code=%d
+            logger->Warning(localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 103).c_str());
         } else {
             serialization->Deserialize(pOtherOverlayList);
             free(serialization);
@@ -150,7 +154,8 @@ void LoadGame(unsigned int uSlot) {
     {
         NPCData_Image_MM7 *serialization = (NPCData_Image_MM7*)pNew_LOD->LoadRaw("npcdata.bin");
         if (serialization == nullptr) {
-            logger->Warning(localization->FormatString(612, 104).c_str());  // Savegame damaged! Code=%d
+            logger->Warning(localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 104).c_str());
         } else {
             for (unsigned int i = 0; i < 501; ++i) {
                 serialization[i].Deserialize(pNPCStats->pNewNPCData + i);
@@ -163,7 +168,8 @@ void LoadGame(unsigned int uSlot) {
     {
         void *npcgroup = pNew_LOD->LoadRaw("npcgroup.bin");
         if (npcgroup == nullptr) {
-            logger->Warning(localization->FormatString(612, 105).c_str());  // Savegame damaged! Code=%d
+            logger->Warning(localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 105).c_str());
             __debugbreak();
         } else if (sizeof(pNPCStats->pGroups_copy) != 102) {
             logger->Warning("NPCStats: deserialization warning");
@@ -293,7 +299,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     //}
 
     if (pNew_LOD->Write("image.pcx", uncompressed_buff, buf_size, 0)) {
-        auto error_message = localization->FormatString(612, 200);  // Savegame damaged! Code=%d
+        auto error_message = localization->FormatString(
+            LSTR_FMT_SAVEGAME_CORRUPTED, 200);
         logger->Warning(error_message.c_str());
     }
 
@@ -305,7 +312,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     strcpy(save_header.pLocationName, pCurrentMapName.c_str());
     save_header.playing_time = pParty->GetPlayingTime();
     if (pNew_LOD->Write("header.bin", &save_header, sizeof(SavegameHeader), 0)) {
-        auto error_message = localization->FormatString(612, 201);
+        auto error_message = localization->FormatString(
+            LSTR_FMT_SAVEGAME_CORRUPTED, 201);
         logger->Warning(error_message.c_str());
     }
 
@@ -314,7 +322,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         serialization.Serialize(pParty);
 
         if (pNew_LOD->Write("party.bin", &serialization, sizeof(serialization), 0)) {
-            auto error_message = localization->FormatString(612, 202);
+            auto error_message = localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 202);
             logger->Warning(error_message.c_str());
         }
     }
@@ -324,7 +333,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         serialization.Serialize(pEventTimer);
 
         if (pNew_LOD->Write("clock.bin", &serialization, sizeof(serialization), 0)) {
-            auto error_message = localization->FormatString(612, 203);
+            auto error_message = localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 203);
             logger->Warning(error_message.c_str());
         }
     }
@@ -334,7 +344,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         serialization.Serialize(pOtherOverlayList);
 
         if (pNew_LOD->Write("overlay.bin", &serialization, sizeof(serialization), 0)) {
-            auto error_message = localization->FormatString(612, 204);
+            auto error_message = localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 204);
             logger->Warning(error_message.c_str());
         }
     }
@@ -346,13 +357,15 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         }
 
         if (pNew_LOD->Write("npcdata.bin", serialization, sizeof(serialization), 0)) {
-            auto error_message = localization->FormatString(612, 205);
+            auto error_message = localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 205);
             logger->Warning(error_message.c_str());
         }
     }
 
     if (pNew_LOD->Write("npcgroup.bin", pNPCStats->pGroups_copy, sizeof(pNPCStats->pGroups_copy), 0)) {
-        auto error_message = localization->FormatString(612, 206);
+        auto error_message = localization->FormatString(
+            LSTR_FMT_SAVEGAME_CORRUPTED, 206);
         logger->Warning(error_message.c_str());
     }
 
@@ -372,7 +385,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                               pcx_data, pcx_data_size, &pcx_data_size);
                 String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
                 if (pNew_LOD->Write(str, pcx_data, pcx_data_size, 0)) {
-                    auto error_message = localization->FormatString(612, 207);
+                    auto error_message = localization->FormatString(
+                        LSTR_FMT_SAVEGAME_CORRUPTED, 207);
                     logger->Warning(error_message.c_str());
                 }
                 free(pcx_data);
@@ -512,7 +526,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
         if (pNew_LOD->Write(file_name, compressed_buf, compressed_block_size + sizeof(ODMHeader), 0)) {
-            auto error_message = localization->FormatString(612, 208);
+            auto error_message = localization->FormatString(
+                LSTR_FMT_SAVEGAME_CORRUPTED, 208);
             logger->Warning(error_message.c_str());
         }
         free(compressed_buf);
@@ -558,10 +573,10 @@ void DoSavegame(unsigned int uSlot) {
     if (pCurrentMapName != "d05.blv")
         pNew_LOD->_4621A7();
     else
-        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NO_SAVING_IN_ARENA), 2);
+        GameUI_SetStatusBar(localization->GetString(LSTR_NO_SAVING_IN_ARENA));
 
     pEventTimer->Resume();
-    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_GAME_SAVED), 2);
+    GameUI_SetStatusBar(localization->GetString(LSTR_GAME_SAVED));
     viewparams->bRedrawGameUI = true;
 }
 

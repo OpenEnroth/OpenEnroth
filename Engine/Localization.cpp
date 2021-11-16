@@ -22,7 +22,7 @@ String Localization::FormatString(unsigned int index, ...) const {
 
     va_start(args_ptr, index);  // ?? sometimes args_ptr has junk at start ??
                                 // args must pass as type c_str() ??
-    { vsprintf(buf, format, args_ptr); }
+    vsprintf(buf, format, args_ptr);
     va_end(args_ptr);
 
     extern int sprintfex_internal(char *str);

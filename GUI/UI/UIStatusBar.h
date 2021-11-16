@@ -8,8 +8,9 @@ void GameUI_StatusBar_DrawForced();
 void GameUI_StatusBar_Set(const String &str);
 void GameUI_StatusBar_Clear();
 
-void GameUI_StatusBar_OnEvent(const String &str, unsigned int num_seconds = 2);
-void GameUI_StatusBar_OnEvent_128ms(const String &str);
+void GameUI_SetStatusBar(const String &str);
+void GameUI_SetStatusBar(int localization_string_id, ...);
+void GameUI_SetStatusBarShortNotification(const String &str);
 void GameUI_StatusBar_ClearEventString();
 
 String GameUI_StatusBar_GetInput();
