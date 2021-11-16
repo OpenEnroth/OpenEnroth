@@ -3096,7 +3096,7 @@ void sub_4B6478() {
 
     if (HouseUI_CheckIfPlayerCanInteract()) {
         v5 = 0;
-        __debugbreak(); // what type of house that even is?
+        __debugbreak();  // what type of house that even is?
         // pSkillAvailabilityPerClass[8 + v58->uClass][4 + v23]
         // or
         // byte_4ED970_skill_learn_ability_by_class_table[v58->uClass][v23 - 36]

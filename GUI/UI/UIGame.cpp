@@ -1401,7 +1401,7 @@ void GameUI_WritePointedObjectStatusString() {
                         break;
                     case 3:
                         // is this one needed?
-                        __debugbreak(); // how does this work?
+                        __debugbreak();  // how does this work?
                              /*                if (pX >= pButton->uX && pX <=
                              pButton->uZ
                              && pY >= pButton->uY && pY <= pButton->uW)
