@@ -2766,33 +2766,54 @@ void SkillTrainingDialogue(
         ++i
     ) {
         auto pButton = pDialogueWindow->GetControl(i);
-        int skill_id = pButton->msg_param - DIALOGUE_LEARN_STAFF;
-
-        if (!byte_4ED970_skill_learn_ability_by_class_table
-            [pPlayers[uActiveCharacter]->classType][skill_id]
-        || pPlayers[uActiveCharacter]->pActiveSkills[skill_id]) {
-            pButton->uW = 0;
-            pButton->uHeight = 0;
-            pButton->uY = 0;
-        } else {
-            auto skill_name_label = localization->GetSkillName(skill_id);
+        if (pButton->msg_param == DIALOGUE_18_buy_spells) {
+            pButton->uY = textspacings + textoffset;
             int line_height = pFontArrus->CalcTextHeight(
-                skill_name_label,
+                localization->GetString(LSTR_BUY_SPELLS),
                 dialogue->uFrameWidth,
                 0
             );
-            pButton->uY = textspacings + textoffset;
             pButton->uHeight = line_height;
-            pButton->uW = pButton->uY + line_height + 6 - 1;
-            textoffset += textspacings + line_height - 1;
-            int text_color = Color16(225, 205, 35);
-            if (pDialogueWindow->pCurrentPosActiveItem != i)
+            textoffset = pButton->uY + line_height - 1;
+            pButton->uW = textoffset + 6;
+            int text_color = Color16(255, 255, 155);
+            if (pDialogueWindow->pCurrentPosActiveItem != i) {
                 text_color = Color16(255, 255, 255);
+            }
             dialogue->DrawTitleText(
                 pFontArrus, 0, pButton->uY, text_color,
-                skill_name_label,
+                localization->GetString(LSTR_BUY_SPELLS),
                 3
             );
+        } else {
+            int skill_id = pButton->msg_param - DIALOGUE_LEARN_STAFF;
+
+            if (!byte_4ED970_skill_learn_ability_by_class_table
+                [pPlayers[uActiveCharacter]->classType][skill_id]
+                || pPlayers[uActiveCharacter]->pActiveSkills[skill_id]) {
+                pButton->uW = 0;
+                pButton->uHeight = 0;
+                pButton->uY = 0;
+            } else {
+                auto skill_name_label = localization->GetSkillName(skill_id);
+                int line_height = pFontArrus->CalcTextHeight(
+                    skill_name_label,
+                    dialogue->uFrameWidth,
+                    0
+                );
+                pButton->uY = textspacings + textoffset;
+                pButton->uHeight = line_height;
+                pButton->uW = pButton->uY + line_height + 6 - 1;
+                textoffset += textspacings + line_height - 1;
+                int text_color = Color16(225, 205, 35);
+                if (pDialogueWindow->pCurrentPosActiveItem != i)
+                    text_color = Color16(255, 255, 255);
+                dialogue->DrawTitleText(
+                    pFontArrus, 0, pButton->uY, text_color,
+                    skill_name_label,
+                    3
+                );
+            }
         }
     }
 }

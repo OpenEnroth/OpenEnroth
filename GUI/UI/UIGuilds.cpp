@@ -95,41 +95,7 @@ void GuildDialog() {
             }
         }
 
-        if (pSkillFlag) {
-            SkillTrainingDialogue(&working_window, dialogopts, all_text_height, pPrice);
-            return;
-        }
-
-        textspacings = (149 - all_text_height) / dialogopts;
-        if (textspacings > 32) {
-            textspacings = 32;
-        }
-
-        textoffset = 162 - textspacings / 2;
-
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-             i < pDialogueWindow->pNumPresenceButton +
-                     pDialogueWindow->pStartingPosActiveItem;
-             ++i) {
-            pButton = pDialogueWindow->GetControl(i);
-
-            if (pButton->msg_param == DIALOGUE_18_buy_spells) {
-                pButton->uY = textspacings + textoffset;
-                pTextHeight =
-                    pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS),
-                                               working_window.uFrameWidth, 0);
-                pButton->uHeight = pTextHeight;
-                textoffset = pButton->uY + pTextHeight - 1;
-                pButton->uW = textoffset + 6;
-                pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
-                if (pDialogueWindow->pCurrentPosActiveItem != i) {
-                    pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
-                }
-                working_window.DrawTitleText(
-                    pFontArrus, 0, pButton->uY, pTextColor,
-                    localization->GetString(LSTR_BUY_SPELLS), 3);
-            }
-        }
+        SkillTrainingDialogue(&working_window, dialogopts, all_text_height, pPrice);
         return;
     }
 

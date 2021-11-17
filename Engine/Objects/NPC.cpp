@@ -1342,7 +1342,7 @@ const char *GetProfessionActionText(NPCProf prof) {
     case Acolyte:
     case Piper:
     case FallenWizard:
-        return pNPCStats->pProfessions[(int)prof - 1].pActionText;
+        return pNPCStats->pProfessions[(int)prof].pActionText;
     }
 
     return pNPCTopics[407].pTopic;
