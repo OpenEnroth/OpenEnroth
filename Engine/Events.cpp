@@ -329,7 +329,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     }
     if (!uEventID) {
         if (!game_ui_status_bar_event_string_time_left)
-            GameUI_SetStatusBar(localization->GetString(LSTR_NOTHING_HERE));
+            GameUI_SetStatusBar(LSTR_NOTHING_HERE);
         return;
     }
     player_choose = (uActiveCharacter == 0)
@@ -901,13 +901,9 @@ LABEL_47:
                     v90 = EVT_DWORD(_evt->v5);
                     if (activeLevelDecoration) {
                         if (activeLevelDecoration == (LevelDecoration *)1)
-                            current_npc_text =
-                                pNPCTopics[v90 - 1]
-                                    .pText;  // (&dword_721664)[8 * v90];
+                            current_npc_text = pNPCTopics[v90 - 1].pText;
                         if (canShowMessages == 1) {
-                            v91 = pNPCTopics[v90 - 1]
-                                      .pText;  // (&dword_721664)[8 * v90];
-                            // LABEL_248:
+                            v91 = pNPCTopics[v90 - 1].pText;
                             GameUI_SetStatusBar(v91);
                         }
                     } else {
@@ -920,9 +916,7 @@ LABEL_47:
                     break;
                 case EVENT_ShowMessage:
                     if (activeLevelDecoration) {
-                        current_npc_text =
-                            pNPCTopics[EVT_DWORD(_evt->v5) - 1]
-                                .pText;  // (&dword_721664)[8 * v92];
+                        current_npc_text = pNPCTopics[EVT_DWORD(_evt->v5) - 1].pText;
                         branchless_dialogue_str.clear();
                     } else {
                         branchless_dialogue_str = &pLevelStr[pLevelStrOffsets[EVT_DWORD(_evt->v5)]];

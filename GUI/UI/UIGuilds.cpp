@@ -198,13 +198,14 @@ void GuildDialog() {
 
     if (HouseUI_CheckIfPlayerCanInteract()) {  // buy skills
         if (pPlayers[uActiveCharacter]->pActiveSkills[dialog_menu_id - 36]) {
-            GameUI_SetStatusBar(localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_ALREADY_KNOW_THE_S_SKILL,
-                localization->GetSkillName(dialog_menu_id - 36)));
+                localization->GetSkillName(dialog_menu_id - 36)
+            );
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
             if (pParty->GetGold() < pPrice) {
-                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
                                HouseSound_NotEnoughMoney_TrainingSuccessful);
             } else {

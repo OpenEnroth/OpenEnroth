@@ -3596,22 +3596,20 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         Actor::AI_Stun(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
         if (!engine->config->NoShowDamage()) {
-            String str;
             if (projectileSprite)
-                str = localization->FormatString(
+                GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
                     player->pName,
                     pMonster->pActorName,
                     uDamageAmount
                 );
             else
-                str = localization->FormatString(
+                GameUI_SetStatusBar(
                     LSTR_FMT_S_HITS_S_FOR_U,
                     player->pName,
                     pMonster->pActorName,
                     uDamageAmount
                 );
-            GameUI_SetStatusBar(str);
         }
     } else {
         if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster & 1) {
@@ -3636,15 +3634,12 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             v40 = ((signed int)pMonster->pMonsterInfo.uHP >= 100) + 1;
         player->PlaySound((PlayerSpeech)v40, 0);
         if (!engine->config->NoShowDamage()) {
-            pPlayerName = player->pName;
-
-            auto str = localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
                 player->pName,
                 uDamageAmount,
                 pMonster->pActorName
             );
-            GameUI_SetStatusBar(str);
         }
     }
     if (pMonster->pActorBuffs[ACTOR_BUFF_PAIN_REFLECTION].Active() &&
@@ -3652,19 +3647,18 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         player->ReceiveDamage(uDamageAmount, attackElement);
     int knockbackValue = 20 * v61 / (signed int)pMonster->pMonsterInfo.uHP;
     if ((player->GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_FORCE) ||
-         hit_will_stun) &&
-        pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
+         hit_will_stun) && pMonster->DoesDmgTypeDoDamage(DMGT_EARTH)) {
         extraRecoveryTime = 20;
         knockbackValue = 10;
         if (!pParty->bTurnBasedModeOn)
             extraRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * 42.66666666666666);
         pMonster->pMonsterInfo.uRecoveryTime += extraRecoveryTime;
         if (!engine->config->NoShowDamage()) {
-            GameUI_SetStatusBar(localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_S_STUNS_S,
                 player->pName,
                 pMonster
-            ));
+            );
         }
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
@@ -3674,12 +3668,11 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         GameTime v46 = GameTime(0, v43 & 63);  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), v45, 0, 0, 0);
         if (!engine->config->NoShowDamage()) {
-            auto str = localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
                 player->pName,
                 pMonster
             );
-            GameUI_SetStatusBar(str);
         }
     }
     if (knockbackValue > 10) knockbackValue = 10;
@@ -4062,21 +4055,17 @@ bool CheckActors_proximity() {
 }
 
 
-void StatusBarItemFound(int v14, const char * item_unidentified_name) {
-    if (v14) {
+void StatusBarItemFound(int num_gold_found, const char * item_unidentified_name) {
+    if (num_gold_found != 0) {
         GameUI_SetStatusBar(
-            localization->FormatString(
-                LSTR_FMT_YOU_FOUND_GOLD_AND_ITEM,
-                v14,
-                item_unidentified_name
-            )
+            LSTR_FMT_YOU_FOUND_GOLD_AND_ITEM,
+            num_gold_found,
+            item_unidentified_name
         );
     } else {
         GameUI_SetStatusBar(
-            localization->FormatString(
-                LSTR_FMT_YOU_FOUND_ITEM,
-                item_unidentified_name
-            )
+            LSTR_FMT_YOU_FOUND_ITEM,
+            item_unidentified_name
         );
     }
 }

@@ -74,8 +74,8 @@ void GameUI_StatusBar_ClearInputString() {
 }
 
 void GameUI_StatusBar_NothingHere() {
-    if (!game_ui_status_bar_event_string_time_left) {
-        GameUI_SetStatusBar(localization->GetString(LSTR_NOTHING_HERE));
+    if (game_ui_status_bar_event_string_time_left == 0) {
+        GameUI_SetStatusBar(LSTR_NOTHING_HERE);
     }
 }
 

@@ -233,17 +233,13 @@ void ItemInteraction(unsigned int item_id) {
         if (pParty->pPickedItem.uItemID) return;
 
         GameUI_SetStatusBar(
-            localization->FormatString(
-                LSTR_FMT_YOU_FOUND_ITEM,
-                pItemsTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName
-            )
+            LSTR_FMT_YOU_FOUND_ITEM,
+            pItemsTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName
         );
 
-        if (pSpriteObjects[item_id].containing_item.uItemID ==
-            ITEM_ARTIFACT_SPLITTER)
+        if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_ARTIFACT_SPLITTER)
             _449B7E_toggle_bit(pParty->_quest_bits, 184, 1);
-        if (pSpriteObjects[item_id].containing_item.uItemID ==
-            ITEM_SPELLBOOK_MIND_REMOVE_FEAR)
+        if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_MIND_REMOVE_FEAR)
             _449B7E_toggle_bit(pParty->_quest_bits, 185, 1);
         if (!pParty->AddItemToParty(&pSpriteObjects[item_id].containing_item))
             pParty->SetHoldingItem(&pSpriteObjects[item_id].containing_item);
