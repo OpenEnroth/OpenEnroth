@@ -820,8 +820,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     String str = StringPrintf(
         "%s \f%05d",
         localization->GetString(LSTR_AWARDS_FOR), ui_character_header_text_color)
-        + localization->FormatString(429, player->pName,
-              localization->GetClassName(player->classType))  // %s the %s
+        + NameAndTitle(player->pName, player->classType)
         + "\f00000";
 
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 24, 18, 0, str, 0, 0, 0);
@@ -2300,11 +2299,8 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                                 ui_character_stats_background);
 
     auto str1 =
-        StringPrintf("\f%05d", ui_character_header_text_color) +
-        localization->FormatString(
-            429, player->pName,
-            localization->GetClassName(
-                player->classType))  // "^Pi[%s] %s" / "%s the %s"
+        StringPrintf("\f%05d", ui_character_header_text_color)
+        + NameAndTitle(player->pName, player->classType)
         + StringPrintf("\f00000\r180%s: \f%05d%d\f00000\n\n\n",
                        localization->GetString(LSTR_SKILL_POINTS),
                        player->uSkillPoints ? ui_character_bonus_text_color

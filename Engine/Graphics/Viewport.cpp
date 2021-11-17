@@ -232,10 +232,12 @@ void ItemInteraction(unsigned int item_id) {
     } else {
         if (pParty->pPickedItem.uItemID) return;
 
-        GameUI_StatusBar_OnEvent(localization->FormatString(
-            471,
-            pItemsTable->pItems[pSpriteObjects[item_id].containing_item.uItemID]
-                .pUnidentifiedName));  // You found an item (%s)!
+        GameUI_SetStatusBar(
+            localization->FormatString(
+                LSTR_FMT_YOU_FOUND_ITEM,
+                pItemsTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName
+            )
+        );
 
         if (pSpriteObjects[item_id].containing_item.uItemID ==
             ITEM_ARTIFACT_SPLITTER)

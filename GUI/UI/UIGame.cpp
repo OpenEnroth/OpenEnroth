@@ -756,16 +756,8 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     (popup_window.uFrameY + 36) / 480.0f,
                     assets->GetImage_ColorKey(tex_name, 0x7FF));
 
-                String title;
-                if (pNPC->profession) {
-                    title = localization->FormatString(
-                        429, pNPC->pName,
-                        localization->GetNpcProfessionName(pNPC->profession));
-                } else {
-                    title = pNPC->pName;
-                }
                 popup_window.DrawTitleText(
-                    pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), title, 3);
+                    pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ =
                     popup_window.uFrameX + popup_window.uFrameWidth - 1;
@@ -878,22 +870,20 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
                                 (window->uFrameY + 24) / 480.0f, v13);
 
     auto str =
-        StringPrintf("\f%05d", ui_character_header_text_color) +
-        localization->FormatString(
-            429, player->pName,
-            localization->GetClassName(player->classType))  // "%s the %s"
-        + "\f00000\n" +
-        StringPrintf("%s : \f%05u%d\f00000 / %d\n",
+        StringPrintf("\f%05d", ui_character_header_text_color)
+        + NameAndTitle(player->pName, player->classType)
+        + "\f00000\n"
+        + StringPrintf("%s : \f%05u%d\f00000 / %d\n",
                      localization->GetString(LSTR_HIT_POINTS),
                      UI_GetHealthManaAndOtherQualitiesStringColor(
                          player->sHealth, player->GetMaxHealth()),
-                     player->sHealth, player->GetMaxHealth()) +
-        StringPrintf("%s : \f%05u%d\f00000 / %d\n",
+                     player->sHealth, player->GetMaxHealth())
+        + StringPrintf("%s : \f%05u%d\f00000 / %d\n",
                      localization->GetString(LSTR_SPELL_POINTS),
                      UI_GetHealthManaAndOtherQualitiesStringColor(
                          player->sMana, player->GetMaxMana()),
-                     player->sMana, player->GetMaxMana()) +
-        StringPrintf("%s: \f%05d%s\f00000\n",
+                     player->sMana, player->GetMaxMana())
+        + StringPrintf("%s: \f%05d%s\f00000\n",
                      localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
                      localization->GetCharacterConditionName(
@@ -923,7 +913,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
     }
 
     auto active_spells = localization->FormatString(
-        450,  // Active Spells: %s
+        LSTR_FMT_ACTIVE_SPELLS_S,
         uFramesetIDa == 0 ? localization->GetString(LSTR_NONE) : "");
     window->DrawText(pFontArrus, 14, 114, 0, active_spells, 0, 0, 0);
 }
@@ -1099,9 +1089,9 @@ void GameUI_WritePointedObjectStatusString() {
                                              .containing_item.GetDisplayName());
                 } else {
                     GameUI_StatusBar_Set(localization->FormatString(
-                        470, pSpriteObjects[pickedObjectID]
-                        .containing_item.GetDisplayName()
-                        .c_str()));  // Get %s
+                        LSTR_FMT_GET_S,
+                        pSpriteObjects[pickedObjectID].containing_item.GetDisplayName()
+                        .c_str()));
                 }  // intentional fallthrough
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
@@ -1169,15 +1159,7 @@ void GameUI_WritePointedObjectStatusString() {
                     uLastPointedObjectID = 0;
                     return;
                 }
-                if (pActors[pickedObjectID].dword_000334_unique_name)
-                    pText = pMonsterStats
-                                ->pPlaceStrings[pActors[pickedObjectID]
-                                                    .dword_000334_unique_name];
-                else
-                    pText =
-                        pMonsterStats
-                            ->pInfos[pActors[pickedObjectID].pMonsterInfo.uID]
-                            .pName;
+                pText = GetDisplayName(&pActors[pickedObjectID]).c_str();
                 GameUI_StatusBar_Set(pText);  // intentional fallthrough
             }
             if (mouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
@@ -1306,21 +1288,13 @@ void GameUI_WritePointedObjectStatusString() {
                                 if (pPlayers[uActiveCharacter]->uSkillPoints <
                                     requiredSkillpoints)
                                     str = localization->FormatString(
-                                        469,
+                                        LSTR_FMT_NEED_MORE_SKILL_POINTS,
                                         requiredSkillpoints -
-                                            pPlayers[uActiveCharacter]
-                                                ->uSkillPoints);  // "You need
-                                                                  // %d more
-                                                                  // Skill
-                                                                  // Points to
-                                                                  // advance
-                                                                  // here"
+                                            pPlayers[uActiveCharacter]->uSkillPoints);
                                 else
                                     str = localization->FormatString(
-                                        468,
-                                        requiredSkillpoints);  // "Clicking here
-                                                               // will spend %d
-                                                               // Skill Points"
+                                        LSTR_FMT_CLICKING_WILL_SPEND_POINTS,
+                                        requiredSkillpoints);
 
                                 GameUI_StatusBar_Set(str);
                                 uLastPointedObjectID = 1;
@@ -1425,7 +1399,9 @@ void GameUI_WritePointedObjectStatusString() {
                             }
                         }
                         break;
-                    case 3:  // is this one needed?
+                    case 3:
+                        // is this one needed?
+                        __debugbreak();  // how does this work?
                              /*                if (pX >= pButton->uX && pX <=
                              pButton->uZ
                              && pY >= pButton->uY && pY <= pButton->uW)
@@ -1437,11 +1413,12 @@ void GameUI_WritePointedObjectStatusString() {
                              String str;
                              if (pPlayers[uActiveCharacter]->uSkillPoints <
                              requiredSkillpoints)      str =
-                             localization->FormatString(469, requiredSkillpoints -
-                             pPlayers[uActiveCharacter]->uSkillPoints);// "You need
-                             %d more Skill Points to advance here"      else      str =
-                             localization->FormatString(468, requiredSkillpoints);//
-                             "Clicking here will spend %d Skill Points"
+                             localization->FormatString(
+                             LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints -
+                             pPlayers[uActiveCharacter]->uSkillPoints);
+                             else      str =
+                             localization->FormatString(
+                             LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints);
                              GameUI_StatusBar_Set(str);
                              uLastPointedObjectID = 1;
                              return;

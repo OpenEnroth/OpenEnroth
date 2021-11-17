@@ -170,7 +170,8 @@ void GUIWindow_MapBook::Update() {
     if (map_id)
         map_window.DrawTitleText(pBook2Font, -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].pName, 3);
 
-    auto party_coordinates = localization->FormatString(659, pParty->vPosition.x, pParty->vPosition.y);  // "x: %d  y: %d"
+    auto party_coordinates = localization->FormatString(
+        LSTR_FMT_X_D_Y_D, pParty->vPosition.x, pParty->vPosition.y);
 
     map_window.uFrameX = 0;
     map_window.DrawTitleText(pFontComic, 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);

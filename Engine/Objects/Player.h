@@ -103,6 +103,12 @@ union PlayerEquipment {
 };
 #pragma pack(pop)
 
+
+#define STEAL_BUSTED   0
+#define STEAL_NOTHING  1
+#define STEAL_SUCCESS  2
+
+
 struct Player {
     static const unsigned int INVETORYSLOTSWIDTH = 14;
     static const unsigned int INVETORYSLOTSHEIGHT = 9;

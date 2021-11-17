@@ -991,13 +991,11 @@ void Party::PartyFindsGold(
     unsigned int goldToGain = amount;
 
     String status;
-    if (_1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal ==
-      2) {
+    if (_1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal == 2) {
     } else if (
-        _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal ==
-        1) {
-        status =
-            localization->FormatString(467, amount);  // You found %lu gold!
+        _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal == 1) {
+        status = localization->FormatString(
+            LSTR_FMT_YOU_FOUND_D_GOLD, amount);
     } else {
         unsigned char buf[1024];
         hirelingCount = 0;
@@ -1010,11 +1008,9 @@ void Party::PartyFindsGold(
         for (uint i = 0; i < pNPCStats->uNumNewNPCs; i++) {
             if (pNPCStats->pNewNPCData[i].uFlags & 0x80 &&
                 (!this->pHirelings[0].pName ||
-                 strcmp(pNPCStats->pNewNPCData[i].pName,
-                        this->pHirelings[0].pName)) &&
+                 strcmp(pNPCStats->pNewNPCData[i].pName, this->pHirelings[0].pName)) &&
                 (!this->pHirelings[1].pName ||
-                 strcmp(pNPCStats->pNewNPCData[i].pName,
-                        this->pHirelings[1].pName))) {
+                 strcmp(pNPCStats->pNewNPCData[i].pName, this->pHirelings[1].pName))) {
                 hirelingCount++;
                 buf[hirelingCount] = i + 2;
             }
@@ -1040,14 +1036,15 @@ void Party::PartyFindsGold(
                 (signed int)(goldToGain * hirelingSalaries / 100) / 100;
             if (hirelingSalaries < 1) hirelingSalaries = 1;
             status = localization->FormatString(
-                466, goldToGain,
-                hirelingSalaries);  // You found %lu gold (followers take %lu)!
+                LSTR_FMT_YOU_FOUND_D_GOLD_FOLLOWERS, goldToGain,
+                hirelingSalaries);
         } else {
-            status = localization->FormatString(467, amount);  // You found %lu gold!
+            status = localization->FormatString(
+                LSTR_FMT_YOU_FOUND_D_GOLD, amount);
         }
     }
     AddGold(goldToGain - hirelingSalaries);
-    if (status.length() > 0) GameUI_StatusBar_OnEvent(status.c_str(), 2u);
+    if (status.length() > 0) GameUI_SetStatusBar(status.c_str());
 }
 
 void Party::PickedItem_PlaceInInventory_or_Drop() {

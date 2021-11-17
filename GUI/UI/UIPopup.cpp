@@ -218,7 +218,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                 inspect_item->SetIdentified();
             v83 = SPEECH_9;
             if (!inspect_item->IsIdentified()) {
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_IDENTIFY_FAILED));
+                GameUI_SetStatusBar(localization->GetString(LSTR_IDENTIFY_FAILED));
             } else {
                 v83 = SPEECH_8;
                 if (inspect_item->GetValue() <
@@ -239,7 +239,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             if (!inspect_item->IsBroken())
                 v83 = SPEECH_10;
             else
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_REPAIR_FAILED));
+                GameUI_SetStatusBar(localization->GetString(LSTR_REPAIR_FAILED));
             if (dword_4E455C) {
                 pPlayers[uActiveCharacter]->PlaySound(v83, 0);
                 dword_4E455C = 0;
@@ -315,8 +315,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     }
 
     String str = localization->FormatString(
-        463, pItemsTable->pItems[inspect_item->uItemID]
-                 .pUnidentifiedName);  // "Type: %s"
+        LSTR_FMT_TYPE_S,
+        pItemsTable->pItems[inspect_item->uItemID].pUnidentifiedName);
 
     strcpy(out_text, str.c_str());
     out_text[100] = 0;
@@ -638,19 +638,9 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     // Draw name and profession
     String str;
     if (pActors[uActorID].sNPC_ID) {
-        if (GetNPCData(pActors[uActorID].sNPC_ID)->profession)
-            str = localization->FormatString(   // "%s the %s"   /   ^Pi[%s] %s
-                429, GetNPCData(pActors[uActorID].sNPC_ID)->pName,
-                localization->GetNpcProfessionName(
-                    GetNPCData(pActors[uActorID].sNPC_ID)->profession)
-            );
-        else
-            str = GetNPCData(pActors[uActorID].sNPC_ID)->pName;
+        str = NameAndTitle(GetNPCData(pActors[uActorID].sNPC_ID));
     } else {
-        if (pActors[uActorID].dword_000334_unique_name)
-            str = pMonsterStats->pPlaceStrings[pActors[uActorID].dword_000334_unique_name];
-        else
-            str = pMonsterStats->pInfos[pActors[uActorID].pMonsterInfo.uID].pName;
+        GetDisplayName(&pActors[uActorID]);
     }
     pWindow->DrawTitleText(pFontComic, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
 
@@ -1264,7 +1254,8 @@ void CharacterUI_StatsTab_ShowHint() {
             String str1;
             String str2;
             if (v15 > pPlayers[uActiveCharacter]->uLevel)
-                str1 = localization->FormatString(LSTR_ELIGIBLE_TO_LEVELUP, v15);
+                str1 = localization->FormatString(
+                    LSTR_ELIGIBLE_TO_LEVELUP, v15);
             str2 = localization->FormatString(
                 LSTR_XP_UNTIL_NEXT_LEVEL,
                 (int)(GetExperienceRequiredForLevel(v15) - pPlayers[uActiveCharacter]->uExperience),
@@ -1491,10 +1482,11 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         case CURRENT_SCREEN::SCREEN_CHEST: {
             if (!pPlayers[uActiveCharacter]->CanAct()) {
                 static String hint_reference;
-                hint_reference = localization->FormatString(427,
+                hint_reference = localization->FormatString(
+                    LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
                     pPlayers[uActiveCharacter]->pName,
                     localization->GetString(LSTR_IDENTIFY_ITEMS)
-                );  // %s не в состоянии %s
+                );
 
                 popup_window.sHint = hint_reference;
                 popup_window.uFrameWidth = 384;
@@ -1914,10 +1906,11 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     // check character condition(проверка состояния персонажа)
     if (!pPlayers[uActiveCharacter]->CanAct()) {
         static String hint_reference;
-        hint_reference = localization->FormatString(427,
+        hint_reference = localization->FormatString(
+            LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
             pPlayers[uActiveCharacter]->pName,
             localization->GetString(LSTR_IDENTIFY_ITEMS)
-        );  // %s не в состоянии %s Опознать предметы
+        );
 
         message_window.sHint = hint_reference;
         message_window.uFrameWidth = 384;
@@ -1936,7 +1929,6 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     int alchemy_skill_level =
         pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_ALCHEMY);
 
-    // for potion bottle(простая бутылка)
     if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(item);
         return;
@@ -1946,19 +1938,16 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM) {
         if (item->uItemID < ITEM_POTION_BOTTLE ||
             item->uItemID > ITEM_POTION_REJUVENATION) {  // all potions
-            if (item->GetItemEquipType() !=
-                EQUIP_WAND) {  // can recharge only wands
+            if (item->GetItemEquipType() != EQUIP_WAND) {  // can recharge only wands
                 pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                 return;
             }
 
             v31 = (70.0 - (double)pParty->pPickedItem.uEnchantmentType) * 0.01;
             if (v31 < 0.0) v31 = 0.0;
-            item->uMaxCharges =
-                (signed __int64)((double)item->uMaxCharges -
+            item->uMaxCharges = (signed __int64)((double)item->uMaxCharges -
                                  v31 * (double)item->uMaxCharges);
-            item->uNumCharges =
-                (signed __int64)((double)item->uMaxCharges -
+            item->uNumCharges = (signed __int64)((double)item->uMaxCharges -
                                  v31 * (double)item->uMaxCharges);
 
             mouse->RemoveHoldingItem();
@@ -2178,7 +2167,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             if (dword_4E455C) {
                 if (pPlayers[uActiveCharacter]->CanAct())
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_17, 0);
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_OOPS));
+                GameUI_SetStatusBar(localization->GetString(LSTR_OOPS));
                 dword_4E455C = 0;
             }
             mouse->RemoveHoldingItem();

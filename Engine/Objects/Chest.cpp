@@ -601,7 +601,11 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             if (uActiveCharacter && (InventSlot = pPlayers[uActiveCharacter]->AddItem(-1, chestitem.uItemID)) != 0) {  // can place
                 memcpy(&pPlayers[uActiveCharacter]->pInventoryItemList[InventSlot - 1], &chestitem, 0x24u);
                 grabcount++;
-                GameUI_StatusBar_OnEvent(localization->FormatString(471, pItemsTable->pItems[chestitem.uItemID].pUnidentifiedName));  // You found an item (%s)!
+                GameUI_SetStatusBar(
+                    localization->FormatString(
+                        LSTR_FMT_YOU_FOUND_ITEM,
+                        pItemsTable->pItems[chestitem.uItemID].pUnidentifiedName)
+                );
             } else {  // no room so set as holding item
                 pParty->SetHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
@@ -617,10 +621,10 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
     if (grabcount > 1 || goldcount > 1) {  // found items
         char out[200];
         sprintf(out, "You found %d item(s) and %d Gold!", grabcount, goldamount);
-        GameUI_StatusBar_OnEvent(out);
+        GameUI_SetStatusBar(out);
     }
     if (grabcount == 0 && goldcount == 0) {
-        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOTHING_HERE));
+        GameUI_SetStatusBar(localization->GetString(LSTR_NOTHING_HERE));
     }
 }
 

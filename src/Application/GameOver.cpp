@@ -100,10 +100,11 @@ void Application::GameOver_Loop(int v15) {
                 (unsigned char)pFont->GetHeight() + 46,
             1,
             localization->FormatString(
-                129, pParty->pPlayers[i].pName,
+                LSTR_FMT_S_THE_LEVEL_D_S,
+                pParty->pPlayers[i].pName,
                 pParty->pPlayers[i].GetBaseLevel(),
-                localization->GetClassName(
-                    pParty->pPlayers[i].classType)), 3);  // %s the Level %u %s
+                localization->GetClassName(pParty->pPlayers[i].classType)),
+            3);
         v23 += pParty->pPlayers[i].uExperience;
     }
     v23 = (signed __int64)v23 / v19;
@@ -127,7 +128,7 @@ void Application::GameOver_Loop(int v15) {
     );
 
     pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, 1,
-                          localization->FormatString(94, v23), 3);
+                          localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
     render->EndScene();
     render->Present();

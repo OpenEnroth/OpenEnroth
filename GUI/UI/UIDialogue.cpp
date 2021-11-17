@@ -177,7 +177,8 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     CreateButton(
                         480, 130 + text_line_height, 140, text_line_height, 1, 0,
                         UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, GameKey::None,
-                        localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName)
+                        localization->FormatString(
+                            LSTR_HIRE_RELEASE, speakingNPC->pName)
                     );
                 } else {
                     CreateButton(480, 130 + text_line_height, 140, text_line_height, 1, 0,
@@ -225,19 +226,9 @@ void GUIWindow_Dialogue::Update() {
                                 pNPCPortraits_y[0][0] / 480.0f,
                                 pDialogueNPCPortraits[0]);
 
-    String title;
-    if (pNPC->profession) {
-        assert(pNPC->profession < 59);  // sometimes buffer overflows; errors emerge both here and
-                                         // in dialogue text
-        title = localization->FormatString(  // ^Pi[%s] %s
-            429, pNPC->pName, localization->GetNpcProfessionName(pNPC->profession)
-        );
-    } else if (pNPC->pName) {
-        title = pNPC->pName;
-    }
-
-    window.DrawTitleText(pFontArrus, 483, 112, ui_game_dialogue_npc_name_color,
-                         title, 3);
+    window.DrawTitleText(
+        pFontArrus, 483, 112, ui_game_dialogue_npc_name_color, NameAndTitle(pNPC), 3
+    );
 
     pParty->GetPartyFame();
 
@@ -278,7 +269,8 @@ void GUIWindow_Dialogue::Update() {
             break;
 
         case DIALOGUE_ARENA_REWARD:
-            dialogue_string = localization->FormatString(LSTR_ARENA_REWARD, gold_transaction_amount);
+            dialogue_string = localization->FormatString(
+                LSTR_ARENA_REWARD, gold_transaction_amount);
             break;
 
         case DIALOGUE_ARENA_ALREADY_WON:
@@ -635,12 +627,12 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             return;
         }
         if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
-            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_HIRE_NO_ROOM));
+            GameUI_SetStatusBar(localization->GetString(LSTR_HIRE_NO_ROOM));
         } else {
             if (speakingNPC->profession != Burglar) {
                 // burglars have no hiring price
                 if (pParty->GetGold() < pNPCStats->pProfessions[speakingNPC->profession].uHirePrice) {
-                    GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                    GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                     dialogue_show_profession_details = false;
                     uDialogueType = 13;
                     if (uActiveCharacter)
@@ -681,7 +673,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             }
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         } else {
-            GameUI_StatusBar_OnEvent(localization->GetString(LSTR_RATIONS_FULL));
+            GameUI_SetStatusBar(localization->GetString(LSTR_RATIONS_FULL));
         }
     } else if (newDialogueType == DIALOGUE_13_hire) {
         if (!speakingNPC->Hired()) {

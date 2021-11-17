@@ -306,7 +306,8 @@ struct Actor {
     uint16_t uTetherDistance;
     AIState uAIState;
     uint16_t uCurrentActionAnimation;
-    uint16_t uCarriedItemID;
+    uint16_t uCarriedItemID;  // carried items are special items the
+                              // ncp carries (ie lute from bard)
     char field_B6;
     char field_B7;
     unsigned int uCurrentActionTime;

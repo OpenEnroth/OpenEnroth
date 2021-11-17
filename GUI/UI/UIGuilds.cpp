@@ -95,83 +95,7 @@ void GuildDialog() {
             }
         }
 
-        if (!dialogopts) {  // code never gets here??
-            String str = localization->FormatString(
-                             544, pPlayers[uActiveCharacter]->pName,
-                             localization->GetClassName(
-                                 pPlayers[uActiveCharacter]->classType)) +
-                         "\n \n"  // Seek knowledge elsewhere %s the %s
-                         + localization->GetString(
-                               528);  // "I can offer you nothing further."
-            pTextHeight =
-                pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
-            working_window.DrawTitleText(pFontArrus, 0,
-                                         (174 - pTextHeight) / 2 + 138,
-                                         Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
-            return;
-        }
-
-        if (pSkillFlag) {
-            working_window.DrawTitleText(
-                pFontArrus, 0, 0x92u, 0,
-                localization->FormatString(401, pPrice), 3);  // Skill Cost: %lu
-        }
-
-        textspacings = (149 - all_text_height) / dialogopts;
-        if (textspacings > 32) {
-            textspacings = 32;
-        }
-
-        textoffset = 162 - textspacings / 2;
-
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-             i < pDialogueWindow->pNumPresenceButton +
-                     pDialogueWindow->pStartingPosActiveItem;
-             ++i) {
-            pButton = pDialogueWindow->GetControl(i);
-
-            if (pButton->msg_param == 18) {
-                pButton->uY = textspacings + textoffset;
-                pTextHeight =
-                    pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS),
-                                               working_window.uFrameWidth, 0);
-                pButton->uHeight = pTextHeight;
-                textoffset = pButton->uY + pTextHeight - 1;
-                pButton->uW = textoffset + 6;
-                pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
-                if (pDialogueWindow->pCurrentPosActiveItem != i) {
-                    pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
-                }
-                working_window.DrawTitleText(
-                    pFontArrus, 0, pButton->uY, pTextColor,
-                    localization->GetString(LSTR_BUY_SPELLS), 3);
-            } else {
-                if (byte_4ED970_skill_learn_ability_by_class_table
-                        [pPlayers[uActiveCharacter]->classType]
-                        [pButton->msg_param - 36] &&
-                    !pPlayers[uActiveCharacter]
-                         ->pActiveSkills[pButton->msg_param - 36]) {
-                    pButton->uY = textspacings + textoffset;
-                    pTextHeight = pFontArrus->CalcTextHeight(
-                        localization->GetSkillName(pButton->msg_param - 36),
-                        working_window.uFrameWidth, 0);
-                    pButton->uHeight = pTextHeight;
-                    textoffset = pButton->uY + pTextHeight - 1;
-                    pButton->uW = textoffset + 6;
-                    pTextColor = Color16(0xFFu, 0xFFu, 0x9Bu);
-                    if (pDialogueWindow->pCurrentPosActiveItem != i) {
-                        pTextColor = Color16(0xFFu, 0xFFu, 0xFFu);
-                    }
-                    working_window.DrawTitleText(
-                        pFontArrus, 0, pButton->uY, pTextColor,
-                        localization->GetSkillName(pButton->msg_param - 36), 3);
-                } else {
-                    pButton->uW = 0;
-                    pButton->uHeight = 0;
-                    pButton->uY = 0;
-                }
-            }
-        }
+        SkillTrainingDialogue(&working_window, dialogopts, all_text_height, pPrice);
         return;
     }
 
@@ -274,13 +198,13 @@ void GuildDialog() {
 
     if (HouseUI_CheckIfPlayerCanInteract()) {  // buy skills
         if (pPlayers[uActiveCharacter]->pActiveSkills[dialog_menu_id - 36]) {
-            GameUI_StatusBar_OnEvent(localization->FormatString(
-                403,
-                localization->GetSkillName(dialog_menu_id - 36)));  // You already know the %s skill
+            GameUI_SetStatusBar(localization->FormatString(
+                LSTR_FMT_ALREADY_KNOW_THE_S_SKILL,
+                localization->GetSkillName(dialog_menu_id - 36)));
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
             if (pParty->GetGold() < pPrice) {
-                GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
                                HouseSound_NotEnoughMoney_TrainingSuccessful);
             } else {

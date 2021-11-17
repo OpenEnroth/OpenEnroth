@@ -1,3 +1,5 @@
+#include <stdarg.h>
+
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Engine/AssetsManager.h"
@@ -30,11 +32,28 @@ void GameUI_StatusBar_OnEvent_Internal(const String &str, unsigned int ms) {
     game_ui_status_bar_event_string_time_left = OS_GetTime() + ms;
 }
 
-void GameUI_StatusBar_OnEvent(const String &str, unsigned int num_seconds) {
-    GameUI_StatusBar_OnEvent_Internal(str, 1000 * num_seconds);
+void GameUI_SetStatusBar(const String &str) {
+    GameUI_StatusBar_OnEvent_Internal(str, 2 * 1000);
 }
 
-void GameUI_StatusBar_OnEvent_128ms(const String &str) {
+
+void GameUI_SetStatusBar(int localization_string_id, ...) {
+    va_list args_ptr;
+
+    const char* format = localization->GetString(localization_string_id);
+    char buf[4096];
+
+    va_start(args_ptr, localization_string_id);
+    vsprintf(buf, format, args_ptr);
+    va_end(args_ptr);
+
+    extern int sprintfex_internal(char* str);
+    sprintfex_internal(buf);
+    GameUI_SetStatusBar(buf);
+}
+
+
+void GameUI_SetStatusBarShortNotification(const String &str) {
     GameUI_StatusBar_OnEvent_Internal(str, 128);
 }
 
@@ -56,7 +75,7 @@ void GameUI_StatusBar_ClearInputString() {
 
 void GameUI_StatusBar_NothingHere() {
     if (!game_ui_status_bar_event_string_time_left) {
-        GameUI_StatusBar_OnEvent(localization->GetString(LSTR_NOTHING_HERE));
+        GameUI_SetStatusBar(localization->GetString(LSTR_NOTHING_HERE));
     }
 }
 

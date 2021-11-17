@@ -109,13 +109,14 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                 1);
 
         String v15 = pLocationName;
-        if (*pLocationName == 48) {
+        if (*pLocationName == '0') {
             v15 = pCurrentMapName;
         }
         if (pMapStats->GetMapInfo(v15)) {
             transition_button_label = localization->FormatString(
-                411, pMapStats->pInfos[pMapStats->GetMapInfo(v15)]
-                         .pName.c_str());  // Enter %s   Войти в ^Pv[%s]
+                LSTR_FMT_ENTER_S,
+                pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str()
+            );
 
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
                 pParty->GetRedOrYellowAlert())
@@ -124,7 +125,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                 uCurrentHouse_Animation =
                     IndoorLocation::GetLocationIndex(pLocationName);
         } else {
-            transition_button_label = localization->GetString(LSTR_ENTER);
+            transition_button_label = localization->FormatString(
+                LSTR_FMT_ENTER_S,
+                pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
             if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
@@ -135,9 +138,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
         }
     } else if (!IndoorLocation::GetLocationIndex(pLocationName)) {
         if (pMapStats->GetMapInfo(pCurrentMapName)) {
-            transition_button_label = localization->FormatString(410,
-                pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
-                    .pName.c_str());  // "Leave %s"
+            transition_button_label = localization->FormatString(
+                LSTR_FMT_LEAVE_S,
+                pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
             if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
             if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
@@ -199,8 +202,8 @@ GUIWindow_Travel::GUIWindow_Travel()
     transition_ui_icon = assets->GetImage_Solid("outside");
     if (pMapStats->GetMapInfo(pCurrentMapName))
         transition_button_label = localization->FormatString(
-            410, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)]
-                     .pName.c_str());  // "Leave %s"
+            LSTR_FMT_LEAVE_S,
+            pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
     else
         transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
 
@@ -246,18 +249,18 @@ void GUIWindow_Travel::Update() {
         String str;
         if (GetTravelTime() == 1) {
             str = localization->FormatString(
-                663, 1,
-                pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)]
-                    .pName.c_str());  // It will take %d day to cross to %s.
+                LSTR_FMT_IT_TAKES_D_DAY_TO_S,
+                1,
+                pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName.c_str());
         } else {
             str = localization->FormatString(
-                128, GetTravelTime(),
-                pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)]
-                    .pName.c_str());  // It will take %d days to travel to %s.
+                LSTR_FMT_IT_TAKES_D_DAYS_TO_S,
+                GetTravelTime(),
+                pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].pName.c_str());
         }
         str += "\n \n";
         str += localization->FormatString(
-            126,
+            LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S,
             pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
 
         travel_window.DrawTitleText(
@@ -311,11 +314,10 @@ void GUIWindow_Transition::Update() {
             3);
     } else if (map_id) {
         String str = localization->FormatString(
-            409, pMapStats->pInfos[map_id].pName.c_str());  // Do you wish to leave %s?
+            LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S_2,
+            pMapStats->pInfos[map_id].pName.c_str());
         unsigned int v4 = (212 - pFontCreate->CalcTextHeight(
-                                     str, transition_window.uFrameWidth, 0)) /
-                              2 +
-                          101;
+                                     str, transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(pFontCreate, 0, v4, 0, str, 3);
     } else {
         Error("Troubles in da house");

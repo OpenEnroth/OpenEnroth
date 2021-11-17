@@ -274,13 +274,20 @@ enum MENU_STATE : __int32 {
 enum DIALOGUE_TYPE {
     DIALOGUE_USE_NPC_ABILITY = 9,
     DIALOGUE_13_hire = 13,
-    DIALOGUE_18 = 18,
+    DIALOGUE_18_buy_spells = 18,
     DIALOGUE_SCRIPTED_LINE_1 = 19,
     DIALOGUE_SCRIPTED_LINE_2 = 20,
     DIALOGUE_SCRIPTED_LINE_3 = 21,
     DIALOGUE_SCRIPTED_LINE_4 = 22,
     DIALOGUE_SCRIPTED_LINE_5 = 23,
     DIALOGUE_SCRIPTED_LINE_6 = 0x18,
+
+    // in order of Localization::skill_names
+    DIALOGUE_LEARN_STAFF = 36,
+    // ...
+    DIALOGUE_LEARN_BOW = 41,
+    // ...
+
     DIALOGUE_HIRE_FIRE = 76,
     DIALOGUE_PROFESSION_DETAILS = 77,
     DIALOGUE_SKILL_TRAINER = 78,
@@ -766,6 +773,17 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID,
                            struct ItemGen *a3, char *a4, int shop_screen,
                            GameTime *a6 = nullptr);
 int const_2();
+
+
+String NameAndTitle(const char *name, const char *title);
+String NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type);
+String NameAndTitle(const char* name, NPCProf profession);
+String NameAndTitle(NPCData *npc);
+
+String GetDisplayName(Actor* actor);
+
+void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player* player);
+void SkillTrainingDialogue(GUIWindow* dialogue, int num_skills_avaiable, int all_text_height, int skill_price);
 
 extern GUIWindow *pPrimaryWindow;
 extern GUIWindow *pChestWindow;

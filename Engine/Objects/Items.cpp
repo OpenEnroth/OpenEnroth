@@ -638,9 +638,13 @@ std::string ItemGen::GetIdentifiedName() {
         if (uHolderPlayer > 0 && uHolderPlayer <= 4) {
             auto player_name = pPlayers[uHolderPlayer]->pName;
             if (player_name[strlen(player_name) - 1] == 's')
-                return localization->FormatString(655, pPlayers[uHolderPlayer]->pName);  // "%s' Jar"
+                return localization->FormatString(
+                    LSTR_FMT_JAR,
+                    pPlayers[uHolderPlayer]->pName);
             else
-                return localization->FormatString(654, pPlayers[uHolderPlayer]->pName);  // "%s's Jar"
+                return localization->FormatString(
+                    LSTR_FMT_JAR_2,
+                    pPlayers[uHolderPlayer]->pName);
         }
     }
 
