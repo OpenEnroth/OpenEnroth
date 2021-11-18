@@ -395,7 +395,7 @@ extern std::array<int, 4> player_levels;
 extern std::array<int16_t, 6> weapons_Ypos;  // word_F8B158
 extern int16_t bountyHunting_monster_id_for_hunting;
 extern const char *bountyHunting_text;  // idb
-extern int contract_approved;
+extern int guild_membership_approved;
 extern int dword_F8B1AC_award_bit_number;  // idb
 extern int dword_F8B1B0_MasteryBeingTaught;
 extern int gold_transaction_amount;  // F8B1B4

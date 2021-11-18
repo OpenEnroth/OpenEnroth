@@ -1047,25 +1047,24 @@ void InitializeQuests() {
 }
 
 //----- (004B29F2) --------------------------------------------------------
-const char *ContractSelectText(int pEventCode) {
+const char *GetJoinGuildDialogueOption(int guild_id) {
     static const int dialogue_base = 110;
-    contract_approved = 0;
-    dword_F8B1AC_award_bit_number = pEventCode + 50;
-    gold_transaction_amount = price_for_membership[pEventCode];
+    guild_membership_approved = false;
+    dword_F8B1AC_award_bit_number = guild_id + 50;
+    gold_transaction_amount = price_for_membership[guild_id];
 
     if (uActiveCharacter == 0)
         uActiveCharacter = pParty->GetFirstCanAct();  // avoid nzi
 
     if (pPlayers[uActiveCharacter]->CanAct()) {
         if ((uint16_t)_449B57_test_bit(
-            (uint8_t*)pPlayers[uActiveCharacter]
-            ->_achieved_awards_bits,
+            (uint8_t*)pPlayers[uActiveCharacter]->_achieved_awards_bits,
             dword_F8B1AC_award_bit_number)) {
             return pNPCTopics[dialogue_base + 13].pText;
         } else {
             if (gold_transaction_amount <= pParty->GetGold()) {
-                contract_approved = 1;
-                return pNPCTopics[pEventCode + dialogue_base].pText;
+                guild_membership_approved = true;
+                return pNPCTopics[guild_id + dialogue_base].pText;
             } else {
                 return pNPCTopics[dialogue_base + 14].pText;
             }
@@ -1163,7 +1162,8 @@ void _4B4224_UpdateNPCTopics(int _this) {
             if (v17->is_joinable) {
                 num_menu_buttons = 1;
                 pDialogueWindow->CreateButton(
-                    480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_13_hire
+                    480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
+                    HOUSE_DIALOGUE_13_hiring_related
                 );
             }
 

@@ -3024,7 +3024,8 @@ void SimpleHouseDialog() {
                 current_npc_text.c_str(),
                 StringPrintf("\f%05d%s\f00000\n",
                     Color16(0xE1u, 0xCDu, 0x23u),
-                    pItemsTable->pItems[contract_approved]
+                    // gets set to item_id in OracleDialogue (weird)
+                    pItemsTable->pItems[guild_membership_approved]
                     .pUnidentifiedName)
                 .c_str());
             pButton->sLabel = v15;
@@ -3071,8 +3072,8 @@ void SimpleHouseDialog() {
         case DIALOGUE_79_mastery_teacher:
             pButton->sLabel = _4B254D_SkillMasteryTeacher((int64_t)right_panel_window.ptr_1C);
             continue;
-        case DIALOGUE_82:
-            pButton->sLabel = ContractSelectText((int64_t)right_panel_window.ptr_1C);
+        case DIALOGUE_82_join_guild:
+            pButton->sLabel = GetJoinGuildDialogueOption((int64_t)right_panel_window.ptr_1C);
             continue;
         case DIALOGUE_83_bounty_hunting:
             v29 = pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName;
@@ -3088,11 +3089,11 @@ void SimpleHouseDialog() {
             pButton->sLabel.clear();
             continue;
         }
-        if (pButton->msg_param > 0 && pButton->msg_param < DIALOGUE_13_hire) {
+        if (pButton->msg_param > 0 && pButton->msg_param < HOUSE_DIALOGUE_13_hiring_related) {
             pButton->sLabel = localization->GetString(LSTR_JOIN);
             continue;
         }
-        if (pButton->msg_param > DIALOGUE_13_hire && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
+        if (pButton->msg_param > HOUSE_DIALOGUE_13_hiring_related && pButton->msg_param < DIALOGUE_SCRIPTED_LINE_1) {
             pButton->sLabel.clear();
             continue;
         }
@@ -3101,6 +3102,7 @@ void SimpleHouseDialog() {
             continue;
         }
     }
+    // DIALOGUE_93 fallthrough
     index = 0;
     all_text_height = 0;
     for (int i = pDialogueWindow->pStartingPosActiveItem;

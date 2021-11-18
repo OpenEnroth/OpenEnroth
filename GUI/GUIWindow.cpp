@@ -793,9 +793,9 @@ GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, un
 
 //----- (004B3EF0) --------------------------------------------------------
 void DrawJoinGuildWindow(int pEventCode) {
-    uDialogueType = 81;  // enum JoinGuildDialog
+    uDialogueType = DIALOGUE_81_join_guild;
     current_npc_text = (char *)pNPCTopics[pEventCode + 99].pText;
-    ContractSelectText(pEventCode);
+    GetJoinGuildDialogueOption(pEventCode);
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)pEventCode);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
@@ -806,7 +806,7 @@ void DrawJoinGuildWindow(int pEventCode) {
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-        DIALOGUE_82, GameKey::None, localization->GetString(LSTR_JOIN));
+        DIALOGUE_82_join_guild, GameKey::None, localization->GetString(LSTR_JOIN));
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -1424,9 +1424,9 @@ void ClickNPCTopic(int uMessageParam) {
     uDialogueType = uMessageParam + 1;
     NPCData *pCurrentNPCInfo =
         HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];  //- 1
-    if (uMessageParam <= 24) {
+    if (uMessageParam <= DIALOGUE_SCRIPTED_LINE_6) {
         switch (uMessageParam) {
-        case DIALOGUE_13_hire:
+        case HOUSE_DIALOGUE_13_hiring_related:
             current_npc_text = BuildDialogueString(
                 pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                 uActiveCharacter - 1, 0, 0, 0
@@ -1512,31 +1512,27 @@ void ClickNPCTopic(int uMessageParam) {
             dialogue_show_profession_details =
                 ~dialogue_show_profession_details;
         } else {
-            if (uMessageParam == 79) {
-                if (contract_approved) {
+            if (uMessageParam == DIALOGUE_79_mastery_teacher) {
+                if (guild_membership_approved) {
                     Party::TakeGold(gold_transaction_amount);
                     if (uActiveCharacter) {
-                        v12 =
-                            (char *)&pPlayers[uActiveCharacter]
+                        v12 = (char *)&pPlayers[uActiveCharacter]
                             ->pActiveSkills[dword_F8B1AC_award_bit_number];
                         *(short *)v12 &= 0x3Fu;
                         switch (dword_F8B1B0_MasteryBeingTaught) {
                         case 2:
                             v15 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills
-                                [dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
                             *v15 |= 0x40u;
                             break;
                         case 3:
                             v14 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills
-                                [dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
                             *v14 |= 0x80u;
                             break;
                         case 4:
                             v13 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills
-                                [dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
                             v13[1] |= 1u;
                             break;
                         }
@@ -1555,7 +1551,8 @@ void ClickNPCTopic(int uMessageParam) {
                     }*/
                 }
             } else {
-                if (uMessageParam == 82 && contract_approved) {  // join guild
+                if (uMessageParam == DIALOGUE_82_join_guild && guild_membership_approved) {
+                    // join guild
                     Party::TakeGold(gold_transaction_amount);
                     v4 = pParty->pPlayers.data();
                     do {
@@ -1666,14 +1663,11 @@ void ClickNPCTopic(int uMessageParam) {
     BackToHouseMenu();
 }
 
-// Originally called _4B254D_SkillMasteryTeacher to have contract_approved
-// assigned, to be able to set some button name. But it the name gets immediately
-// overwritten
+
 void _4B3FE5_training_dialogue(int a4) {
     uDialogueType = DIALOGUE_SKILL_TRAINER;
     current_npc_text = String(pNPCTopics[a4 + 168].pText);
-    String what = _4B254D_SkillMasteryTeacher(
-        a4);  // might be needed because of contract_approved ?
+    _4B254D_SkillMasteryTeacher(a4); // checks whether the facility can be used
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)a4);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
@@ -1683,8 +1677,9 @@ void _4B3FE5_training_dialogue(int a4) {
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(
-        480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_79_mastery_teacher, GameKey::None,
-        contract_approved ? localization->GetString(LSTR_LEARN) : "");
+        480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic,
+        DIALOGUE_79_mastery_teacher, GameKey::None,
+        guild_membership_approved ? localization->GetString(LSTR_LEARN) : "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -1699,7 +1694,7 @@ void OracleDialogue() {
     signed int v10;  // [sp+10h] [bp-8h]@13
     int v11;         // [sp+14h] [bp-4h]@1
 
-    contract_approved = 0;
+    guild_membership_approved = 0;
     v11 = 0;
     uDialogueType = 84;
     current_npc_text = (char *)pNPCTopics[667].pText;
@@ -1719,10 +1714,10 @@ void OracleDialogue() {
         current_npc_text = (char *)pNPCTopics[666]
             .pText;  // Here's %s that you lost. Be careful
         v4 = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
-        contract_approved = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
+        guild_membership_approved = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
         pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, v4);
     }
-    if (contract_approved == 601) {
+    if (guild_membership_approved == ITEM_LICH_JAR_FULL) {
         v5 = 0;
         // v12 = pParty->pPlayers.data();//[0].uClass;
         v9 = 0;
@@ -1734,16 +1729,12 @@ void OracleDialogue() {
                 // pParty->pPlayers.data();//[0].pInventoryItems[0].field_1A;
                 for (uint pl = 0; pl < 4; pl++) {
                     for (v8 = 0; v8 < 126; v8++) {  // 138
-                        if (pParty->pPlayers[pl]
-                            .pInventoryItemList[v8]
+                        if (pParty->pPlayers[pl].pInventoryItemList[v8]
                             .uItemID == ITEM_LICH_JAR_FULL) {
-                            if (!pParty->pPlayers[pl]
-                                .pInventoryItemList[v8]
+                            if (!pParty->pPlayers[pl].pInventoryItemList[v8]
                                 .uHolderPlayer)
-                                v9 = &pParty->pPlayers[pl]
-                                .pInventoryItemList[v8];
-                            if (pParty->pPlayers[pl]
-                                .pInventoryItemList[v8]
+                                v9 = &pParty->pPlayers[pl].pInventoryItemList[v8];
+                            if (pParty->pPlayers[pl].pInventoryItemList[v8]
                                 .uHolderPlayer == v5)
                                 v10 = 1;
                         }
@@ -1764,7 +1755,7 @@ void CheckBountyRespawnAndAward() {
     int i;                // eax@2
     int rand_monster_id;  // edx@3
 
-    uDialogueType = 83;
+    uDialogueType = DIALOGUE_83_bounty_hunting;
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
@@ -1774,7 +1765,8 @@ void CheckBountyRespawnAndAward() {
     );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
-    pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_0, 83, GameKey::None, "");
+    pDialogueWindow->CreateButton(480, 160, 140, 30,
+        1, 0, UIMSG_0, DIALOGUE_83_bounty_hunting, GameKey::None, "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
     // get new monster for hunting
@@ -1855,7 +1847,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
     unsigned __int16 pointsInSkill;  // [sp+1Ch] [bp-10h]@7
     int masteryLevelBeingTaught;     // [sp+24h] [bp-8h]@7
 
-    contract_approved = 0;
+    guild_membership_approved = false;
     teacherLevel = (trainerInfo - 200) % 3;
     skillBeingTaught = (trainerInfo - 200) / 3;
     Player *activePlayer = pPlayers[uActiveCharacter];
@@ -2147,7 +2139,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
     if (gold_transaction_amount > pParty->GetGold())
         return String(pNPCTopics[124].pText);  // You don't have enough gold!
 
-    contract_approved = 1;
+    guild_membership_approved = true;
     if (masteryLevelBeingTaught == 2) {
         return localization->FormatString(
             LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,

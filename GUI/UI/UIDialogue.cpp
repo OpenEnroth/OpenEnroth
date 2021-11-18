@@ -104,7 +104,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
         ) {
             pDialogueWindow->CreateButton(
                 480, 250, 140, pFontArrus->GetHeight() - 3, 1, 0,
-                UIMSG_SelectNPCDialogueOption, 9);
+                UIMSG_SelectNPCDialogueOption, HOUSE_DIALOGUE_USE_HIRED_NPC_ABILITY);
             pDialogueWindow->_41D08F_set_keyboard_control_group(4, 1, 0, 1);
         }
     }
@@ -142,7 +142,8 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
             if (speakingNPC->is_joinable) {
                 CreateButton(
                     480, 130, 140, text_line_height, 1, 0,
-                    UIMSG_SelectNPCDialogueOption, DIALOGUE_13_hire
+                    UIMSG_SelectNPCDialogueOption,
+                    HOUSE_DIALOGUE_13_hiring_related
                 );
                 num_dialugue_options = 1;
             }
@@ -177,8 +178,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                     CreateButton(
                         480, 130 + text_line_height, 140, text_line_height, 1, 0,
                         UIMSG_SelectNPCDialogueOption, DIALOGUE_HIRE_FIRE, GameKey::None,
-                        localization->FormatString(
-                            LSTR_HIRE_RELEASE, speakingNPC->pName)
+                        localization->FormatString(LSTR_HIRE_RELEASE, speakingNPC->pName)
                     );
                 } else {
                     CreateButton(480, 130 + text_line_height, 140, text_line_height, 1, 0,
@@ -234,7 +234,7 @@ void GUIWindow_Dialogue::Update() {
 
     String dialogue_string;
     switch (uDialogueType) {
-        case DIALOGUE_13_hire:
+        case HOUSE_DIALOGUE_13_hiring_related:
             dialogue_string = BuildDialogueString(
                 pNPCStats->pProfessions[pNPC->profession].pJoinText,
                 uActiveCharacter - 1, 0, 0, 0);
@@ -405,10 +405,10 @@ void GUIWindow_Dialogue::Update() {
             } else {
                 pButton->sLabel = pNPCTopics[pNPC->dialogue_5_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == DIALOGUE_13_hire) {
+        } else if (pButton->msg_param == HOUSE_DIALOGUE_13_hiring_related) {
             if (pNPC->Hired()) {
-                pButton->sLabel = StringPrintf(
-                    localization->GetString(LSTR_HIRE_RELEASE), pNPC->pName);
+                pButton->sLabel = localization->FormatString(
+                    LSTR_HIRE_RELEASE, pNPC->pName);
             } else {
                 pButton->sLabel = localization->GetString(LSTR_JOIN);
             }
@@ -574,8 +574,8 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
     }
 }
 
-void sub_4B3E1E() {
-    __debugbreak();
+
+void BuildHireableNpcDialogue() {
     NPCData *v0 = GetNPCData(sDialogue_SpeakingActorNPC_ID);
     int v1 = 0;
     pDialogueWindow->eWindowType = WINDOW_MainMenu;
@@ -584,13 +584,15 @@ void sub_4B3E1E() {
                                              window->GetHeight(), (GUIButton *)1);
     if (pNPCStats->pProfessions[v0->profession].pBenefits) {
         pDialogueWindow->CreateButton(
-            480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption, 77, GameKey::None,
+            480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption,
+            DIALOGUE_PROFESSION_DETAILS, GameKey::None,
             localization->GetString(LSTR_MORE_INFORMATION));
         v1 = 1;
     }
     pDialogueWindow->CreateButton(480, 30 * v1 + 160, 140, 30, 1, 0,
-                                  UIMSG_SelectNPCDialogueOption, 76, GameKey::None,
-                                  localization->GetString(LSTR_HIRE));
+        UIMSG_SelectNPCDialogueOption,
+        DIALOGUE_HIRE_FIRE, GameKey::None,
+        localization->GetString(LSTR_HIRE));
     pDialogueWindow->_41D08F_set_keyboard_control_group(v1 + 1, 1, 0, 1);
 }
 
@@ -675,9 +677,9 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
         } else {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
         }
-    } else if (newDialogueType == DIALOGUE_13_hire) {
+    } else if (newDialogueType == HOUSE_DIALOGUE_13_hiring_related) {
         if (!speakingNPC->Hired()) {
-            sub_4B3E1E();
+            BuildHireableNpcDialogue();
             dialogue_show_profession_details = false;
         } else {
             for (uint i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {
