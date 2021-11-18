@@ -368,7 +368,7 @@ void GUIWindow_Dialogue::Update() {
             } else {
                 pButton->sLabel = pNPCTopics[pNPC->dialogue_6_evt_id].pTopic;
             }
-        } else if (pButton->msg_param == DIALOGUE_USE_NPC_ABILITY) {
+        } else if (pButton->msg_param == HOUSE_DIALOGUE_USE_HIRED_NPC_ABILITY) {
             pButton->sLabel = GetProfessionActionText(pNPC->profession);
         } else if (pButton->msg_param == DIALOGUE_SCRIPTED_LINE_1) {
             if (!pNPC->dialogue_1_evt_id) {
@@ -666,7 +666,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
                (int)newDialogueType <= DIALOGUE_ARENA_SELECT_CHAMPION) {
         ArenaFight();
         return;
-    } else if (newDialogueType == DIALOGUE_USE_NPC_ABILITY) {
+    } else if (newDialogueType == HOUSE_DIALOGUE_USE_HIRED_NPC_ABILITY) {
         if (UseNPCSkill(speakingNPC->profession) == 0) {
             if (speakingNPC->profession != GateMaster) {
                 speakingNPC->bHasUsedTheAbility = 1;

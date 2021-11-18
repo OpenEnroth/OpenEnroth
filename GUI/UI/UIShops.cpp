@@ -248,13 +248,14 @@ void ShopDialogLearn(GUIWindow dialogwin) {
         i < pDialogueWindow->pNumPresenceButton +
         pDialogueWindow->pStartingPosActiveItem;
         ++i) {
+        auto skill = GetLearningDialogueSkill(
+            (HOUSE_DIALOGUE_MENU)pDialogueWindow->GetControl(i)->msg_param
+        );
         if (byte_4ED970_skill_learn_ability_by_class_table
-            [pPlayers[uActiveCharacter]->classType]
-        [pDialogueWindow->GetControl(i)->msg_param - 36] &&
-            !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36]) {
+            [pPlayers[uActiveCharacter]->classType][skill] &&
+            !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
             all_text_height += pFontArrus->CalcTextHeight(
-                localization->GetSkillName(
-                    pDialogueWindow->GetControl(i)->msg_param - 36),
+                localization->GetSkillName(skill),
                 dialogwin.uFrameWidth, 0);
             item_num++;
         }
@@ -1222,22 +1223,12 @@ void UIShop_Buy_Identify_Repair() {
         }
         default:  // if click video screen in shop
         {
-            if (dialog_menu_id >= 36 && dialog_menu_id <= 72) {
-                __debugbreak();  // please do record these dialogue ids to the
-                                 // HOUSE_DIALOGUE_MENU  enum
-
-                v42 = dialog_menu_id - 36;
-                // v43 = (signed __int64)(*(float *)&p2DEvents_minus1__24[13 *
-                // (unsigned int)ptr_507BC0->ptr_1C] * 500.0);
-                v43 =
-                    (signed __int64)(p2DEvents[(uint64_t)
-                                                   window_SpeakInHouse->ptr_1C -
-                                               1]
-                                         .flt_24 *
-                                     500.0);
-                uPriceItemService =
-                    v43 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) /
-                    100;
+            if (IsSkillLearningDialogue(dialog_menu_id)) {
+                v42 = GetLearningDialogueSkill(dialog_menu_id);
+                v43 = (signed __int64)(p2DEvents[(uint64_t)
+                    window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+                uPriceItemService = v43 *
+                    (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
                 if (uPriceItemService < v43 / 3) uPriceItemService = v43 / 3;
                 if (byte_4ED970_skill_learn_ability_by_class_table
                         [pPlayers[uActiveCharacter]->classType][v42]) {
@@ -1246,9 +1237,9 @@ void UIShop_Buy_Identify_Repair() {
                         if (pParty->GetGold() < uPriceItemService) {
                             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                             if (in_current_building_type == BuildingType_Training)
-                                v55 = 4;
+                                v55 = HouseSound_Goodbye;
                             else
-                                v55 = 2;
+                                v55 = HouseSound_NotEnoughMoney_TrainingSuccessful;
                             PlayHouseSound(
                                 (uint64_t)window_SpeakInHouse->ptr_1C,
                                 (HouseSoundID)v55);

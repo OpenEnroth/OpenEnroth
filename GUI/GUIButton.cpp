@@ -8,6 +8,7 @@
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
+#include "GUI/UI/UIHouseDialogueMenu.h"
 
 #include "Platform/OSWindow.h"
 
@@ -114,10 +115,19 @@ bool GUIButton::Contains(unsigned int x, unsigned int y) {
     return (x >= uX && x <= uZ && y >= uY && y <= uW);
 }
 
-void CreateButtonInColumn(int column_pos, unsigned int control_id) {
-    pDialogueWindow->CreateButton(480, 30 * column_pos + 146, 140, 30, 1, 0,
-                                  UIMSG_SelectShopDialogueOption, control_id, GameKey::None,
-                                  "");
+void CreateButtonAtRow(int row, HOUSE_DIALOGUE_MENU menu) {
+    pDialogueWindow->CreateButton(
+        480,
+        146 + 30 * row,
+        140,
+        30,
+        1,
+        0,
+        UIMSG_SelectShopDialogueOption,
+        menu,
+        GameKey::None,
+        ""
+    );
 }
 
 void ReleaseAwardsScrollBar() {

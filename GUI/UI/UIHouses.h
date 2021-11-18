@@ -93,7 +93,7 @@ void WeaponShopDialog();
 void AlchemistDialog();
 void ArmorShopDialog();
 void SimpleHouseDialog();
-void OnSelectShopDialogueOption(signed int uMessageParam);
+void OnSelectShopDialogueOption(HOUSE_DIALOGUE_MENU option);
 void PrepareHouse(enum HOUSE_ID house);  // idb
 bool EnterHouse(enum HOUSE_ID uHouseID);
 void BackToHouseMenu();

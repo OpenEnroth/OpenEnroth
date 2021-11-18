@@ -1092,14 +1092,14 @@ void NPCHireableDialogPrepare() {
     if (pNPCStats->pProfessions[v1->profession].pBenefits) {
         pDialogueWindow->CreateButton(
             480, 0xA0u, 0x8Cu, 0x1Eu, 1, 0,
-            UIMSG_ClickNPCTopic, 0x4Du, GameKey::None,
+            UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, GameKey::None,
             localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
     pDialogueWindow->CreateButton(
         0x1E0u, 30 * v0 + 160, 0x8Cu, 0x1Eu, 1, 0,
-        UIMSG_ClickNPCTopic, 0x4Cu, GameKey::None,
+        UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, GameKey::None,
         localization->GetString(LSTR_HIRE)
     );
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);

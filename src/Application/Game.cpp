@@ -551,7 +551,7 @@ void Game::EventLoop() {
                     ClickNPCTopic(uMessageParam);
                     continue;
                 case UIMSG_SelectShopDialogueOption:
-                    OnSelectShopDialogueOption(uMessageParam);
+                    OnSelectShopDialogueOption((HOUSE_DIALOGUE_MENU)uMessageParam);
                     continue;
                 case UIMSG_SelectNPCDialogueOption:
                     OnSelectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);

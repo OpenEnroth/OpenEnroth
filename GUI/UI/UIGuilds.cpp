@@ -74,20 +74,20 @@ void GuildDialog() {
              i < pDialogueWindow->pNumPresenceButton +
                      pDialogueWindow->pStartingPosActiveItem;
              ++i) {
-            if (pDialogueWindow->GetControl(i)->msg_param == 18) {
+            if (pDialogueWindow->GetControl(i)->msg_param == HOUSE_DIALOGUE_GUILD_BUY_BOOKS) {
                 all_text_height += pFontArrus->CalcTextHeight(
                     localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth,
                     0);
                 dialogopts++;
             } else {
+                auto skill = GetLearningDialogueSkill(
+                    (HOUSE_DIALOGUE_MENU)pDialogueWindow->GetControl(i)->msg_param
+                );
                 if (byte_4ED970_skill_learn_ability_by_class_table
-                        [pPlayers[uActiveCharacter]->classType]
-                        [pDialogueWindow->GetControl(i)->msg_param - 36] &&
-                    !pPlayers[uActiveCharacter]->pActiveSkills
-                         [pDialogueWindow->GetControl(i)->msg_param - 36]) {
+                        [pPlayers[uActiveCharacter]->classType][skill] &&
+                    !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
-                        localization->GetSkillName(
-                            pDialogueWindow->GetControl(i)->msg_param - 36),
+                        localization->GetSkillName(skill),
                         working_window.uFrameWidth, 0, 0);
                     dialogopts++;
                     pSkillFlag = true;
@@ -197,10 +197,11 @@ void GuildDialog() {
     }
 
     if (HouseUI_CheckIfPlayerCanInteract()) {  // buy skills
-        if (pPlayers[uActiveCharacter]->pActiveSkills[dialog_menu_id - 36]) {
+        auto skill = GetLearningDialogueSkill(dialog_menu_id);
+        if (pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
             GameUI_SetStatusBar(
                 LSTR_FMT_ALREADY_KNOW_THE_S_SKILL,
-                localization->GetSkillName(dialog_menu_id - 36)
+                localization->GetSkillName(skill)
             );
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
@@ -210,8 +211,7 @@ void GuildDialog() {
                                HouseSound_NotEnoughMoney_TrainingSuccessful);
             } else {
                 Party::TakeGold(pPrice);
-                pPlayers[uActiveCharacter]->pActiveSkills[dialog_menu_id - 36] =
-                    1;
+                pPlayers[uActiveCharacter]->pActiveSkills[skill] = 1;
             }
         }
     }

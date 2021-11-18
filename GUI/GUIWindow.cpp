@@ -806,7 +806,7 @@ void DrawJoinGuildWindow(int pEventCode) {
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-        82, GameKey::None, localization->GetString(LSTR_JOIN));
+        DIALOGUE_82, GameKey::None, localization->GetString(LSTR_JOIN));
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
 }
@@ -1683,7 +1683,7 @@ void _4B3FE5_training_dialogue(int a4) {
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(
-        480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Fu, GameKey::None,
+        480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, DIALOGUE_79_mastery_teacher, GameKey::None,
         contract_approved ? localization->GetString(LSTR_LEARN) : "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = HOUSE_DIALOGUE_OTHER;
@@ -2766,7 +2766,7 @@ void SkillTrainingDialogue(
         ++i
     ) {
         auto pButton = pDialogueWindow->GetControl(i);
-        if (pButton->msg_param == DIALOGUE_18_buy_spells) {
+        if (pButton->msg_param == HOUSE_DIALOGUE_GUILD_BUY_BOOKS) {
             pButton->uY = textspacings + textoffset;
             int line_height = pFontArrus->CalcTextHeight(
                 localization->GetString(LSTR_BUY_SPELLS),
@@ -2786,7 +2786,9 @@ void SkillTrainingDialogue(
                 3
             );
         } else {
-            int skill_id = pButton->msg_param - DIALOGUE_LEARN_STAFF;
+            auto skill_id = GetLearningDialogueSkill(
+                (HOUSE_DIALOGUE_MENU)pButton->msg_param
+            );
 
             if (!byte_4ED970_skill_learn_ability_by_class_table
                 [pPlayers[uActiveCharacter]->classType][skill_id]

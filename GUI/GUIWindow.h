@@ -272,7 +272,7 @@ enum MENU_STATE : __int32 {
 };
 
 enum DIALOGUE_TYPE {
-    DIALOGUE_USE_NPC_ABILITY = 9,
+    //DIALOGUE_USE_NPC_ABILITY = 9,
     DIALOGUE_13_hire = 13,
     DIALOGUE_18_buy_spells = 18,
     DIALOGUE_SCRIPTED_LINE_1 = 19,
@@ -281,12 +281,6 @@ enum DIALOGUE_TYPE {
     DIALOGUE_SCRIPTED_LINE_4 = 22,
     DIALOGUE_SCRIPTED_LINE_5 = 23,
     DIALOGUE_SCRIPTED_LINE_6 = 0x18,
-
-    // in order of Localization::skill_names & or (36 + PLAYER_SKILL_xxx)
-    DIALOGUE_LEARN_STAFF = 36,
-    // ...
-    DIALOGUE_LEARN_BOW = 41,
-    // ...
 
     DIALOGUE_HIRE_FIRE = 76,
     DIALOGUE_PROFESSION_DETAILS = 77,
