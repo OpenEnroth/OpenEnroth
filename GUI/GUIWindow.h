@@ -282,7 +282,7 @@ enum DIALOGUE_TYPE {
     DIALOGUE_SCRIPTED_LINE_5 = 23,
     DIALOGUE_SCRIPTED_LINE_6 = 0x18,
 
-    // in order of Localization::skill_names
+    // in order of Localization::skill_names & or (36 + PLAYER_SKILL_xxx)
     DIALOGUE_LEARN_STAFF = 36,
     // ...
     DIALOGUE_LEARN_BOW = 41,

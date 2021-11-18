@@ -48,6 +48,7 @@ set(GUI_HEADERS GUIButton.h
                 UI/UIGame.h
                 UI/UIGuilds.h
                 UI/UIInventory.h
+                UI/UIHouseDialogueMenu.h
                 UI/UIHouses.h
                 UI/UIMainMenu.h
                 UI/UIModal.h
