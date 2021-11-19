@@ -1646,7 +1646,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
 void _4B3FE5_training_dialogue(int a4) {
     uDialogueType = DIALOGUE_SKILL_TRAINER;
     current_npc_text = String(pNPCTopics[a4 + 168].pText);
-    _4B254D_SkillMasteryTeacher(a4); // checks whether the facility can be used
+    _4B254D_SkillMasteryTeacher(a4);  // checks whether the facility can be used
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)a4);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
@@ -2796,18 +2796,15 @@ const char* GetJoinGuildDialogueOption(GUILD_ID guild_id) {
             (uint8_t*)pPlayers[uActiveCharacter]->_achieved_awards_bits,
             dword_F8B1AC_award_bit_number)) {
             return pNPCTopics[dialogue_base + 13].pText;
-        }
-        else {
+        } else {
             if (gold_transaction_amount <= pParty->GetGold()) {
                 guild_membership_approved = true;
                 return pNPCTopics[dialogue_base + guild_id].pText;
-            }
-            else {
+            } else {
                 return pNPCTopics[dialogue_base + 14].pText;
             }
         }
-    }
-    else {
+    } else {
         return pNPCTopics[dialogue_base + 12].pText;
     }
 }
