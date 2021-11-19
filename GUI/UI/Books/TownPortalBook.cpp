@@ -79,9 +79,9 @@ void GUIWindow_TownPortalBook::Update() {
     TownPortalWindow.uFrameW = game_viewport_w;
 
     const uint fountain_bits_lut[] = {
-        PARTY_QUEST_FOUNTAIN_HARMONDALE, PARTY_QUEST_FOUNTAIN_PIERPONT,
-        PARTY_QUEST_FOUNTAIN_NIGHON,     PARTY_QUEST_FOUNTAIN_EVENMORN_ISLE,
-        PARTY_QUEST_FOUNTAIN_CELESTIA,   PARTY_QUEST_FOUNTAIN_THE_PIT};
+        QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED, QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED,
+        QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED,     QBIT_FOUNTAIN_IN_EVENMORN_ISLE_ACTIVATED,
+        QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED,   QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED};
     for (uint i = 0; i < 6; ++i) {
         if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[i]) || engine->config->debug_town_portal)
             render->ZDrawTextureAlpha(pTownPortalBook_xs[i] / 640.0f,

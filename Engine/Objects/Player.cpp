@@ -5207,8 +5207,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_QBits_QuestsDone:
-            if (!_449B57_test_bit(pParty->_quest_bits, var_value) &&
-                pQuestTable[var_value - 1]) {
+            if (!_449B57_test_bit(pParty->_quest_bits, var_value) && pQuestTable[var_value - 1]) {
                 bFlashQuestBook = 1;
                 spell_fx_renderer->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
                 PlayAwardSound();
@@ -5812,8 +5811,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
-            if (!_449B57_test_bit(pParty->_quest_bits, val) &&
-                pQuestTable[val]) {
+            if (!_449B57_test_bit(pParty->_quest_bits, val) && pQuestTable[val]) {
                 bFlashQuestBook = 1;
                 PlayAwardSound_Anim97_Face(SPEECH_93);
             }
@@ -8025,33 +8023,42 @@ void Player::PlayEmotion(CHARACTER_EXPRESSION_ID new_expression, int duration) {
 }
 
 //----- (0049327B) --------------------------------------------------------
-bool Player::ProfessionOrGuildFlagsCorrect(unsigned int uClass, int a3) {
-    if (this->classType == uClass) {
+bool Player::IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
+    if (classType == class_type) {
         return true;
-    } else {
-        if (!a3) {
-            return false;
-        }
-        switch (uClass) {
-            case PLAYER_CLASS_PRIEST_OF_SUN:
-                return (_449B57_test_bit(
-                    (unsigned __int8*)this->_achieved_awards_bits, 65));
-            case PLAYER_CLASS_PRIEST_OF_MOON:
-                return (_449B57_test_bit(
-                    (unsigned __int8*)this->_achieved_awards_bits, 67));
-            case PLAYER_CLASS_ARCHMAGE:
-                return (_449B57_test_bit(
-                    (unsigned __int8*)this->_achieved_awards_bits, 77));
-            case PLAYER_CLASS_LICH:
-                return (_449B57_test_bit(
-                    (unsigned __int8*)this->_achieved_awards_bits, 79));
-                break;
-            default:
-                Error("Should not be able to get here (%u)", uClass);
-                break;
-        }
+    }
+
+    if (!check_honorary) {
         return false;
     }
+
+    switch (class_type) {
+    case PLAYER_CLASS_PRIEST_OF_SUN:
+        return _449B57_test_bit(
+            (unsigned __int8*)_achieved_awards_bits,
+            Award_Promotion_PriestOfLight_Honorary
+        );
+    case PLAYER_CLASS_PRIEST_OF_MOON:
+        return _449B57_test_bit(
+            (unsigned __int8*)_achieved_awards_bits,
+            Award_Promotion_PriestOfDark_Honorary
+        );
+    case PLAYER_CLASS_ARCHMAGE:
+        return _449B57_test_bit(
+            (unsigned __int8*)_achieved_awards_bits,
+            Award_Promotion_Archmage_Honorary
+        );
+    case PLAYER_CLASS_LICH:
+        return _449B57_test_bit(
+            (unsigned __int8*)_achieved_awards_bits,
+            Award_Promotion_Lich_Honorary
+        );
+        break;
+    default:
+        Error("Should not be able to get here (%u)", class_type);
+        break;
+    }
+    return false;
 }
 
 //----- (00490EEE) --------------------------------------------------------

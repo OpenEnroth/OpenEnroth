@@ -238,7 +238,7 @@ void ItemInteraction(unsigned int item_id) {
         );
 
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_ARTIFACT_SPLITTER)
-            _449B7E_toggle_bit(pParty->_quest_bits, 184, 1);
+            _449B7E_toggle_bit(pParty->_quest_bits, QBIT_SPLITTER_FOUND, 1);
         if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_MIND_REMOVE_FEAR)
             _449B7E_toggle_bit(pParty->_quest_bits, 185, 1);
         if (!pParty->AddItemToParty(&pSpriteObjects[item_id].containing_item))

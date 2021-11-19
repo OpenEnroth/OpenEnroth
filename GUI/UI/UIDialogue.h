@@ -2,6 +2,7 @@
 
 #include "GUI/GUIWindow.h"
 
+
 class GUIWindow_Dialogue : public GUIWindow {
  public:
     GUIWindow_Dialogue(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String());
@@ -24,4 +25,4 @@ class GUIWindow_GenericDialogue : public GUIWindow {
 
 void sub_4451A8_press_any_key(int a1, int a2, int a4);
 
-void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType);
+void OnSelectNPCDialogueOption(DIALOGUE_TYPE option);

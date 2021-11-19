@@ -1046,33 +1046,6 @@ void InitializeQuests() {
     }
 }
 
-//----- (004B29F2) --------------------------------------------------------
-const char *GetJoinGuildDialogueOption(int guild_id) {
-    static const int dialogue_base = 110;
-    guild_membership_approved = false;
-    dword_F8B1AC_award_bit_number = guild_id + 50;
-    gold_transaction_amount = price_for_membership[guild_id];
-
-    if (uActiveCharacter == 0)
-        uActiveCharacter = pParty->GetFirstCanAct();  // avoid nzi
-
-    if (pPlayers[uActiveCharacter]->CanAct()) {
-        if ((uint16_t)_449B57_test_bit(
-            (uint8_t*)pPlayers[uActiveCharacter]->_achieved_awards_bits,
-            dword_F8B1AC_award_bit_number)) {
-            return pNPCTopics[dialogue_base + 13].pText;
-        } else {
-            if (gold_transaction_amount <= pParty->GetGold()) {
-                guild_membership_approved = true;
-                return pNPCTopics[guild_id + dialogue_base].pText;
-            } else {
-                return pNPCTopics[dialogue_base + 14].pText;
-            }
-        }
-    } else {
-        return pNPCTopics[dialogue_base + 12].pText;
-    }
-}
 //----- (004B40E6) --------------------------------------------------------
 void NPCHireableDialogPrepare() {
     signed int v0;  // ebx@1
@@ -1102,7 +1075,7 @@ void NPCHireableDialogPrepare() {
         localization->GetString(LSTR_HIRE)
     );
     pDialogueWindow->_41D08F_set_keyboard_control_group(v0 + 1, 1, 0, 2);
-    dialog_menu_id = HOUSE_DIALOGUE_OTHER;
+    dialog_menu_id = DIALOGUE_OTHER;
 }
 
 //----- (004B4224) --------------------------------------------------------
@@ -1143,7 +1116,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
         );
     } else {
         v17 = HouseNPCData[_this + 1 - ((dword_591080 != 0) ? 1 : 0)];  //+ 1
-        if (dialog_menu_id == HOUSE_DIALOGUE_OTHER) {
+        if (dialog_menu_id == DIALOGUE_OTHER) {
             pDialogueWindow->Release();
         } else {
             for (i = 0; i < uNumDialogueNPCPortraits; ++i)
@@ -1163,7 +1136,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
                 num_menu_buttons = 1;
                 pDialogueWindow->CreateButton(
                     480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-                    HOUSE_DIALOGUE_13_hiring_related
+                    DIALOGUE_13_hiring_related
                 );
             }
 
@@ -1189,7 +1162,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
             pDialogueWindow->_41D08F_set_keyboard_control_group(num_menu_buttons, 1, 0, 2);
             dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
         }
-        dialog_menu_id = HOUSE_DIALOGUE_MAIN;
+        dialog_menu_id = DIALOGUE_MAIN;
     }
 }
 

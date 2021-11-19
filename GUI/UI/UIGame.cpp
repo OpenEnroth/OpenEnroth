@@ -662,8 +662,8 @@ void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
         uActiveCharacter = uPlayerID;
         return;
     }
-    if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD ||
-        dialog_menu_id == HOUSE_DIALOGUE_SHOP_6) {
+    if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
+        dialog_menu_id == DIALOGUE_SHOP_6) {
         __debugbreak();  // fix indexing
         current_character_screen_window = WINDOW_CharacterWindow_Inventory;
         pGUIWindow_CurrentMenu = new GUIWindow_CharacterRecord(
@@ -1329,7 +1329,7 @@ void GameUI_WritePointedObjectStatusString() {
         /* if (current_screen_type == SCREEN_HOUSE)  // this is required
         when displaying inventory in a house/shop??
         {
-        if (dialog_menu_id != HOUSE_DIALOGUE_SHOP_BUY_STANDARD
+        if (dialog_menu_id != DIALOGUE_SHOP_BUY_STANDARD
         || (v16 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]], v16 ==
         0)
         || v16 == -65536)

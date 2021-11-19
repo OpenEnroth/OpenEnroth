@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UIHouseDialogueMenu.h"
 
 #include "Engine/Events2D.h"
 
@@ -93,7 +92,7 @@ void WeaponShopDialog();
 void AlchemistDialog();
 void ArmorShopDialog();
 void SimpleHouseDialog();
-void OnSelectShopDialogueOption(HOUSE_DIALOGUE_MENU option);
+void OnSelectShopDialogueOption(DIALOGUE_TYPE option);
 void PrepareHouse(enum HOUSE_ID house);  // idb
 bool EnterHouse(enum HOUSE_ID uHouseID);
 void BackToHouseMenu();
@@ -106,7 +105,7 @@ void InitializeBuildingResidents();
 extern int uHouse_ExitPic;
 extern int dword_591080;
 extern BuildingType in_current_building_type;  // 00F8B198
-extern HOUSE_DIALOGUE_MENU dialog_menu_id;     // 00F8B19C
+extern DIALOGUE_TYPE dialog_menu_id;     // 00F8B19C
 
 int HouseDialogPressCloseBtn();
 

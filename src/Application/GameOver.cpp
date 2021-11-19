@@ -52,7 +52,7 @@ void Application::GameOver_Loop(int v15) {
     render->EndScene();
     render->Present();
     // pMediaPlayer->pResetflag = 0;
-    _449B57_test_bit(pParty->_quest_bits, 99);
+    _449B57_test_bit(pParty->_quest_bits, QBIT_LIGHT_PATH);
 
     Image *background = assets->GetImage_PCXFromIconsLOD("winbg.pcx");
     {

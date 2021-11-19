@@ -314,26 +314,25 @@ bool LevelDecoration::IsObeliskChestActive() {
     // LevelDecoration *v2; // edi@1
 
     static const std::array<const PARTY_QUEST_BITS, 14> aObeliskQuests = {{
-        PARTY_QUEST_OBELISK_HARMONDALE,
-        PARTY_QUEST_OBELISK_ERATHIA,
-        PARTY_QUEST_OBELISK_TULAREAN_FOREST,
-        PARTY_QUEST_OBELISK_DEYJA,
-        PARTY_QUEST_OBELISK_BRACADA_DESERT,
-        PARTY_QUEST_OBELISK_CELESTE,
-        PARTY_QUEST_OBELISK_THE_PIT,
-        PARTY_QUEST_OBELISK_EVENMORN_ISLAND,
-        PARTY_QUEST_OBELISK_MOUNT_NIGHON,
-        PARTY_QUEST_OBELISK_BARROW_DOWNS,
-        PARTY_QUEST_OBELISK_LAND_OF_THE_GIANTS,
-        PARTY_QUEST_OBELISK_TATALIA,
-        PARTY_QUEST_OBELISK_AVLEE,
-        PARTY_QUEST_OBELISK_STONE_CITY
+        QBIT_OBELISK_IN_HARMONDALE_FOUND,
+        QBIT_OBELISK_IN_ERATHIA_FOUND,
+        QBIT_OBELISK_IN_TULAREAN_FOREST_FOUND,
+        QBIT_OBELISK_IN_DEYJA_FOUND,
+        QBIT_OBELISK_IN_BRACADA_DESERT_FOUND,
+        QBIT_OBELISK_IN_CELESTE_FOUND,
+        QBIT_OBELISK_IN_THE_PIT_FOUND,
+        QBIT_OBELISK_IN_EVENMORN_ISLAND_FOUND,
+        QBIT_OBELISK_IN_MOUNT_NIGHON_FOUND,
+        QBIT_OBELISK_IN_BARROW_DOWNS_FOUND,
+        QBIT_OBELISK_IN_LAND_OF_THE_GIANTS_FOUND,
+        QBIT_OBELISK_IN_TATALIA_FOUND,
+        QBIT_OBELISK_IN_AVLEE_FOUND,
+        QBIT_OBELISK_IN_STONE_CITY_FOUND
     }};
 
     if (pParty->uCurrentHour == 0 &&
-        !TestPartyQuestBit(PARTY_QUEST_OBELISK_TREASURE_FOUND) &&
-        std::all_of(aObeliskQuests.begin(), aObeliskQuests.end(),
-                    TestPartyQuestBit)) {
+        !TestPartyQuestBit(QBIT_OBELISK_TREASURE_FOUND) &&
+        std::all_of(aObeliskQuests.begin(), aObeliskQuests.end(), TestPartyQuestBit)) {
         this->uFlags &= ~LEVEL_DECORATION_INVISIBLE;
         return true;
     }

@@ -246,8 +246,10 @@ bool Game::Loop() {
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (engine->config->NoMargareth())
-                _449B7E_toggle_bit(pParty->_quest_bits, PARTY_QUEST_EMERALD_MARGARETH_OFF, 1);
+            if (engine->config->NoMargareth()) {
+                _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_MARGARETH_OFF, 1);
+            }
+
             GameLoop();
             if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
                 SetCurrentMenuID(MENU_NEWGAME);
@@ -541,17 +543,16 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_StartHireling1Dialogue:
                 case UIMSG_StartHireling2Dialogue:
-                    Game_StartHirelingDialogue(uMessage -
-                                               UIMSG_StartHireling1Dialogue);
+                    Game_StartHirelingDialogue(uMessage - UIMSG_StartHireling1Dialogue);
                     continue;
                 case UIMSG_BuyInShop_Identify_Repair:
                     UIShop_Buy_Identify_Repair();
                     continue;
                 case UIMSG_ClickNPCTopic:
-                    ClickNPCTopic(uMessageParam);
+                    ClickNPCTopic((DIALOGUE_TYPE)uMessageParam);
                     continue;
                 case UIMSG_SelectShopDialogueOption:
-                    OnSelectShopDialogueOption((HOUSE_DIALOGUE_MENU)uMessageParam);
+                    OnSelectShopDialogueOption((DIALOGUE_TYPE)uMessageParam);
                     continue;
                 case UIMSG_SelectNPCDialogueOption:
                     OnSelectNPCDialogueOption((DIALOGUE_TYPE)uMessageParam);
@@ -783,9 +784,10 @@ void Game::EventLoop() {
                                         current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_HOUSE:
-                                        if (uDialogueType) uDialogueType = 0;
-                                        if (uGameState ==
-                                            GAME_STATE_CHANGE_LOCATION) {
+                                        if (uDialogueType != DIALOGUE_NULL) {
+                                            uDialogueType = DIALOGUE_NULL;
+                                        }
+                                        if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                                             while (HouseDialogPressCloseBtn());
                                         } else {
                                             if (HouseDialogPressCloseBtn())
@@ -795,21 +797,18 @@ void Game::EventLoop() {
                                         pAudioPlayer->PlaySound(
                                             SOUND_WoodDoorClosing, 814, 0, -1, 0, 0);
                                         pMediaPlayer->Unload();
-                                        pGUIWindow_CurrentMenu =
-                                            window_SpeakInHouse;
+                                        pGUIWindow_CurrentMenu = window_SpeakInHouse;
 
                                         OnEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_INPUT_BLV:  // click escape
                                         if (uCurrentHouse_Animation == 153)
-                                            PlayHouseSound(
-                                                0x99u, HouseSound_Greeting_2);
+                                            PlayHouseSound(0x99u, HouseSound_Greeting_2);
                                         pMediaPlayer->Unload();
                                         if (npcIdToDismissAfterDialogue) {
                                             pParty->hirelingScrollPosition = 0;
                                             pNPCStats
-                                                ->pNewNPCData
-                                                    [npcIdToDismissAfterDialogue]
+                                                ->pNewNPCData[npcIdToDismissAfterDialogue]
                                                 .uFlags &= 0xFFFFFF7F;
                                             pParty->CountHirelings();
                                             viewparams->bRedrawGameUI = true;
@@ -823,8 +822,7 @@ void Game::EventLoop() {
                                         if (npcIdToDismissAfterDialogue) {
                                             pParty->hirelingScrollPosition = 0;
                                             pNPCStats
-                                                ->pNewNPCData
-                                                    [npcIdToDismissAfterDialogue]
+                                                ->pNewNPCData[npcIdToDismissAfterDialogue]
                                                 .uFlags &= 0xFFFFFF7F;
                                             pParty->CountHirelings();
                                             viewparams->bRedrawGameUI = true;
@@ -1019,8 +1017,7 @@ void Game::EventLoop() {
                                 do {
                                     pPlayer7->SetCondition(1, 0);
                                     ++pPlayer7;
-                                } while ((int64_t)pPlayer7 <
-                                         (int64_t)pParty->pHirelings.data());
+                                } while ((int64_t)pPlayer7 < (int64_t)pParty->pHirelings.data());
                                 ++pParty->days_played_without_rest;
                             }
                             Party::TakeFood(GetTravelTime());
@@ -1224,9 +1221,7 @@ void Game::EventLoop() {
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     // v53 = p2DEvents_minus1_::30[26 * (unsigned
                     // int)ptr_507BC0->ptr_1C];
-                    v53 =
-                        p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
-                            ._quest_related;
+                    v53 = p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]._quest_bit;
                     if (v53 < 0) {
                         v54 = abs(v53) - 1;
                         Party_Teleport_Cam_Pitch = 0;
@@ -1432,8 +1427,8 @@ void Game::EventLoop() {
                     } else {
                         v63 = 206;
                     }
-                    if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits,
-                                                            v63) && !engine->config->debug_town_portal)
+                    if (!_449B57_test_bit(pParty->_quest_bits, v63)
+                        && !engine->config->debug_town_portal)
                         return;
                     goto LABEL_486;
                 case UIMSG_HintTownPortal: {
@@ -1460,7 +1455,8 @@ void Game::EventLoop() {
                         v68 = 206;
                     }
 
-                    if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, v68) && !engine->config->debug_town_portal) {
+                    if (!_449B57_test_bit(pParty->_quest_bits, v68)
+                        && !engine->config->debug_town_portal) {
                         render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
@@ -2503,7 +2499,7 @@ void Game::EventLoop() {
                                     break;
                                 case 27:  // PLAYER_SKILL_DIPLOMACY = 27,
                                     break;
-                                case 28:  // PLAYER_SKILL_TIEVERY = 28,
+                                case 28:  // PLAYER_SKILL_THIEVERY = 28,
                                     break;
                                 case 29:  // PLAYER_SKILL_TRAP_DISARM = 29,
                                     if (pPlayers[i]->skillDisarmTrap == 0)
@@ -2818,8 +2814,7 @@ void Game::GameLoop() {
                     pPlayers[i]->sHealth = 1;
                     uActiveCharacter = 1;
                 }
-                if (_449B57_test_bit(pParty->_quest_bits,
-                                     PARTY_QUEST_FINISHED_EMERALD_ISLE)) {
+                if (_449B57_test_bit(pParty->_quest_bits, QBIT_ESCAPED_EMERALD_ISLE)) {
                     pParty->vPosition.x = -17331;  // respawn in harmondale
                     pParty->vPosition.y = 12547;
                     pParty->vPosition.z = 465;

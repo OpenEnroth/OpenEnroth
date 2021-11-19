@@ -7,6 +7,8 @@
 #include "Engine/Time.h"
 #include "Engine/MM7.h"
 
+#include "GUI/GUIDialogues.h"
+
 #include "NZIArray.h"
 
 #include "VectorTypes.h"
@@ -206,7 +208,7 @@ extern unsigned int uIconIdx_WaterWalk;
 extern GameTime _5773B8_event_timer;  // 5773B8
 
 extern struct Actor *pDialogue_SpeakingActor;
-extern unsigned int uDialogueType;
+extern DIALOGUE_TYPE uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern struct LevelDecoration *_591094_decoration;
 extern int uCurrentHouse_Animation;
@@ -396,11 +398,9 @@ extern std::array<int16_t, 6> weapons_Ypos;  // word_F8B158
 extern int16_t bountyHunting_monster_id_for_hunting;
 extern const char *bountyHunting_text;  // idb
 extern int guild_membership_approved;
-extern int dword_F8B1AC_award_bit_number;  // idb
 extern int dword_F8B1B0_MasteryBeingTaught;
 extern int gold_transaction_amount;  // F8B1B4
 extern std::array<const char *, 4> pShopOptions;
-extern int dword_F8B1D8;
 extern int dword_F8B1E0;
 extern int dword_F8B1E4;
 extern String current_npc_text;  // F8B1E8

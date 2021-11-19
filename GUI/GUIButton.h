@@ -6,7 +6,6 @@
 #include "Engine/Strings.h"
 
 #include "GUI/GUIWindow.h"
-#include "GUI/UI/UIHouseDialogueMenu.h"
 
 #include "Io/GameKey.h"
 
@@ -125,5 +124,5 @@ extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft2;
 extern std::array<GUIButton*, 4> pCreationUI_BtnPressLeft;
 extern std::array<GUIButton*, 4> pCreationUI_BtnPressRight;
 
-void CreateButtonAtRow(int row_index, HOUSE_DIALOGUE_MENU menu);
+void CreateShopDialogueButtonAtRow(int row_index, DIALOGUE_TYPE type);
 void UI_CreateEndConversationButton();

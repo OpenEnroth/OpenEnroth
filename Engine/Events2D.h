@@ -56,7 +56,7 @@ struct _2devent {
     uint16_t uCloseTime;
     int16_t uExitPicID;
     int16_t uExitMapID;
-    int16_t _quest_related;
+    int16_t _quest_bit;
     int16_t field_32;
 };
 #pragma pack(pop)

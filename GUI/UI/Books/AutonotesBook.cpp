@@ -94,11 +94,9 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
 
     int num_achieved_awards = 0;
     for (uint i = books_primary_item_per_page; i < 196; ++i) {
-        if (_506568_autonote_type ==
-            pAutonoteTxt[i].eType) {  // dword_72371C[2 * v10] )
+        if (_506568_autonote_type == pAutonoteTxt[i].eType) {
             if (i) {
-                if (_449B57_test_bit(pParty->_autonote_bits, i) &&
-                    pAutonoteTxt[i].pText) {
+                if (_449B57_test_bit(pParty->_autonote_bits, i) && pAutonoteTxt[i].pText) {
                     achieved_awards[num_achieved_awards] = (AwardType)i;
                     ++num_achieved_awards;
                 }
@@ -330,9 +328,8 @@ void GUIWindow_AutonotesBook::Update() {
         num_achieved_awards = 0;
         for (uint i = 1; i <= 195; ++i) {
             if (pAutonoteTxt[i].eType == _506568_autonote_type) {
-                if ((unsigned __int16)_449B57_test_bit(pParty->_autonote_bits,
-                                                       i) &&
-                    (char *)pAutonoteTxt[i].pText)
+                if ((unsigned __int16)_449B57_test_bit(pParty->_autonote_bits, i)
+                    && (char *)pAutonoteTxt[i].pText)
                     achieved_awards[num_achieved_awards++] = (AwardType)i;
             }
         }
@@ -340,12 +337,9 @@ void GUIWindow_AutonotesBook::Update() {
     } else {  // not change bookmark(не меняется закладка)
         if (BtnDown_flag) {  // press Down bookmark(нажатие закладки пролистать
                              // дальше)
-            if (num_achieved_awards + books_primary_item_per_page <
-                full_num_items_in_book) {
-                books_num_items_per_page[books_page_number++] =
-                    num_achieved_awards;
-                books_primary_item_per_page =
-                    num_achieved_awards + books_primary_item_per_page;
+            if (num_achieved_awards + books_primary_item_per_page < full_num_items_in_book) {
+                books_num_items_per_page[books_page_number++] = num_achieved_awards;
+                books_primary_item_per_page = num_achieved_awards + books_primary_item_per_page;
                 pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
             }
         }

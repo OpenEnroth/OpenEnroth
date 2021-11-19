@@ -227,7 +227,7 @@ struct Player {
     bool CanSteal();
     bool CanEquip_RaceAndAlignmentCheck(unsigned int uItemID);
     void SetCondition(unsigned int uConditionIdx, int blockable);
-    bool ProfessionOrGuildFlagsCorrect(unsigned int uClass, int a3);
+    bool IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true);
     void PlaySound(PlayerSpeech speech, int a3);
     void PlayEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
     void ItemsPotionDmgBreak(int enchant_count);

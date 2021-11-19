@@ -24,7 +24,7 @@ struct NPCData {  // 4Ch
                           // looks like hired
     int fame;                  // c
     int rep;                   // 10
-    unsigned int Location2D;   // 14
+    unsigned int Location2D;   // 14  house_id
     NPCProf profession;  // 18
     int greet;                 // 1c
     int is_joinable;           // 20
@@ -143,7 +143,6 @@ bool PartyHasDragon();
 bool CheckHiredNPCSpeciality(NPCProf prof);
 
 int UseNPCSkill(NPCProf profession);
-const char * GetJoinGuildDialogueOption(int guild_id);
 void NPCHireableDialogPrepare();
 void _4B4224_UpdateNPCTopics(int _this);
 const char *GetProfessionActionText(NPCProf prof);

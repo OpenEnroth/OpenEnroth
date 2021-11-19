@@ -1144,9 +1144,9 @@ bool Party::AddItemToParty(ItemGen *pItem) {
     return false;
 }
 
-bool Party::IsPartyEvil() { return _449B57_test_bit(_quest_bits, 100); }
+bool Party::IsPartyEvil() { return _449B57_test_bit(_quest_bits, QBIT_DARK_PATH); }
 
-bool Party::IsPartyGood() { return _449B57_test_bit(_quest_bits, 99); }
+bool Party::IsPartyGood() { return _449B57_test_bit(_quest_bits, QBIT_LIGHT_PATH); }
 
 //----- (0046A89E) --------------------------------------------------------
 int Party::_46A89E_immolation_effect(int *affected, int affectedArrSize,

@@ -35,6 +35,7 @@ set(GUI_SOURCES GUIButton.cpp
 )
 
 set(GUI_HEADERS GUIButton.h
+                GUIDialogues.h
                 GUIFont.h
                 GUIProgressBar.h
                 GUIWindow.h
@@ -48,7 +49,6 @@ set(GUI_HEADERS GUIButton.h
                 UI/UIGame.h
                 UI/UIGuilds.h
                 UI/UIInventory.h
-                UI/UIHouseDialogueMenu.h
                 UI/UIHouses.h
                 UI/UIMainMenu.h
                 UI/UIModal.h
