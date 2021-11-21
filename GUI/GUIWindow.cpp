@@ -156,7 +156,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
     mouse->SetCursorImage("MICON2");
-    GameUI_SetStatusBar(localization->GetString(LSTR_CHOOSE_TARGET));
+    GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
 }
 
 void GUIMessageQueue::Flush() {
@@ -1611,7 +1611,7 @@ void ClickNPCTopic(int uMessageParam) {
     }
 
     if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
-        GameUI_SetStatusBar(localization->GetString(LSTR_HIRE_NO_ROOM));
+        GameUI_SetStatusBar(LSTR_HIRE_NO_ROOM);
         BackToHouseMenu();
         return;
     }
@@ -1624,7 +1624,7 @@ void ClickNPCTopic(int uMessageParam) {
         pPrice =
             pNPCStats->pProfessions[pCurrentNPCInfo->profession].uHirePrice;
         if (pParty->GetGold() < (unsigned int)pPrice) {
-            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             dialogue_show_profession_details = false;
             uDialogueType = 13;
             current_npc_text = BuildDialogueString(
@@ -1632,7 +1632,7 @@ void ClickNPCTopic(int uMessageParam) {
                 uActiveCharacter - 1, 0, 0, 0);
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughGold, 0);
-            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             BackToHouseMenu();
             return;
         } else {

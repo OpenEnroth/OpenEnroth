@@ -871,7 +871,7 @@ void UIShop_Buy_Identify_Repair() {
                                 PlayHouseSound(
                                     (uint64_t)window_SpeakInHouse->ptr_1C,
                                     (HouseSoundID)2);
-                                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                                 return;
                             }
 
@@ -893,7 +893,7 @@ void UIShop_Buy_Identify_Repair() {
                             }
 
                             pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-                            GameUI_SetStatusBar(localization->GetString(LSTR_INVENTORY_IS_FULL));
+                            GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                             break;
                         }
                     }
@@ -947,7 +947,7 @@ void UIShop_Buy_Identify_Repair() {
                         Party::TakeGold(uPriceItemService);
                         item->uAttributes |= ITEM_IDENTIFIED;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_73, 0);
-                        GameUI_SetStatusBar(localization->GetString(LSTR_DONE));
+                        GameUI_SetStatusBar(LSTR_DONE);
                         return;
                     }
 
@@ -988,7 +988,7 @@ void UIShop_Buy_Identify_Repair() {
                         item->uAttributes =
                             (item->uAttributes & 0xFFFFFFFD) | 1;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_74, 0);
-                        GameUI_SetStatusBar(localization->GetString(LSTR_GOOD_AS_NEW));
+                        GameUI_SetStatusBar(LSTR_GOOD_AS_NEW);
                         return;
                     }
 
@@ -1189,7 +1189,7 @@ void UIShop_Buy_Identify_Repair() {
                 }
             } else if (pParty->GetGold() < uPriceItemService) {
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, (HouseSoundID)2);
-                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                 return;
             }
 
@@ -1211,12 +1211,11 @@ void UIShop_Buy_Identify_Repair() {
                 viewparams->bRedrawGameUI = 1;
                 bought_item->Reset();
                 render->ClearZBuffer(0, 479);
-                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_75,
-                                                      0);
+                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_75, 0);
                 return;
             } else {
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
-                GameUI_SetStatusBar(localization->GetString(LSTR_INVENTORY_IS_FULL));
+                GameUI_SetStatusBar(LSTR_INVENTORY_IS_FULL);
                 return;
             }
             break;
@@ -1245,9 +1244,8 @@ void UIShop_Buy_Identify_Repair() {
                     pSkill = &pPlayers[uActiveCharacter]->pActiveSkills[v42];
                     if (!*pSkill) {
                         if (pParty->GetGold() < uPriceItemService) {
-                            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
-                            if (in_current_building_type ==
-                                BuildingType_Training)
+                            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                            if (in_current_building_type == BuildingType_Training)
                                 v55 = 4;
                             else
                                 v55 = 2;

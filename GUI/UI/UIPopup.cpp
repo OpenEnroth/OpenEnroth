@@ -218,7 +218,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                 inspect_item->SetIdentified();
             v83 = SPEECH_9;
             if (!inspect_item->IsIdentified()) {
-                GameUI_SetStatusBar(localization->GetString(LSTR_IDENTIFY_FAILED));
+                GameUI_SetStatusBar(LSTR_IDENTIFY_FAILED);
             } else {
                 v83 = SPEECH_8;
                 if (inspect_item->GetValue() <
@@ -239,7 +239,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             if (!inspect_item->IsBroken())
                 v83 = SPEECH_10;
             else
-                GameUI_SetStatusBar(localization->GetString(LSTR_REPAIR_FAILED));
+                GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
             if (dword_4E455C) {
                 pPlayers[uActiveCharacter]->PlaySound(v83, 0);
                 dword_4E455C = 0;
@@ -2167,7 +2167,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             if (dword_4E455C) {
                 if (pPlayers[uActiveCharacter]->CanAct())
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_17, 0);
-                GameUI_SetStatusBar(localization->GetString(LSTR_OOPS));
+                GameUI_SetStatusBar(LSTR_OOPS);
                 dword_4E455C = 0;
             }
             mouse->RemoveHoldingItem();

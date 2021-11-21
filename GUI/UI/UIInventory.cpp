@@ -53,7 +53,7 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(
         localization->GetString(LSTR_CANCEL),
         { { ui_buttdesc2 } }
     );
-    GameUI_SetStatusBar(localization->GetString(LSTR_CHOOSE_TARGET));
+    GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;
     current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;
 }

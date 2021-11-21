@@ -1567,7 +1567,7 @@ void Game::EventLoop() {
                 }
                 case UIMSG_CastQuickSpell: {
                     if (engine->IsUnderwater()) {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_CANT_DO_UNDERWATER));
+                        GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
@@ -1657,8 +1657,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_Wait5Minutes:
                     if (_506F14_resting_stage == 2) {
-                        GameUI_SetStatusBar(
-                            localization->GetString(LSTR_ALREADY_RESTING));
+                        GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
@@ -1672,8 +1671,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_Wait1Hour:
                     if (_506F14_resting_stage == 2) {
-                        GameUI_SetStatusBar(
-                            localization->GetString(LSTR_ALREADY_RESTING));
+                        GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
@@ -1710,19 +1708,21 @@ void Game::EventLoop() {
                     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
                     if (CheckActors_proximity()) {
                         if (pParty->bTurnBasedModeOn) {
-                            GameUI_SetStatusBar(localization->GetString(LSTR_CANT_REST_IN_TURN_BASED));
+                            GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
                             continue;
                         }
-                        v88 = localization->GetString(LSTR_HOSTILE_ENEMIES_NEARBY);
+
                         if (pParty->uFlags & 0x88)
-                            v88 = localization->GetString(LSTR_CANT_REST_HERE);
-                        GameUI_SetStatusBar(v88);
+                            GameUI_SetStatusBar(LSTR_CANT_REST_HERE);
+                        else
+                            GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
+
                         if (!uActiveCharacter) continue;
                         pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)13, 0);
                         continue;
                     }
                     if (pParty->bTurnBasedModeOn) {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_CANT_REST_IN_TURN_BASED));
+                        GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
                         continue;
                     }
                     if (!(pParty->uFlags & 0x88)) {
@@ -1730,25 +1730,26 @@ void Game::EventLoop() {
                         continue;
                     }
                     if (pParty->bTurnBasedModeOn) {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_CANT_REST_IN_TURN_BASED));
+                        GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
                         continue;
                     }
-                    v88 = localization->GetString(LSTR_HOSTILE_ENEMIES_NEARBY);
+
                     if (pParty->uFlags & 0x88)
-                        v88 = localization->GetString(LSTR_CANT_REST_HERE);
-                    GameUI_SetStatusBar(v88);
+                        GameUI_SetStatusBar(LSTR_CANT_REST_HERE);
+                    else
+                        GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
+
                     if (!uActiveCharacter) continue;
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantRestHere, 0);
                     continue;
                 case UIMSG_Rest8Hour:
                     if (_506F14_resting_stage != 0) {
-                        GameUI_SetStatusBar(
-                            localization->GetString(LSTR_ALREADY_RESTING));
+                        GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
                     if (pParty->GetFood() < uRestUI_FoodRequiredToRest) {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_FOOD));
+                        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_FOOD);
                         if (uActiveCharacter &&
                             pPlayers[uActiveCharacter]->CanAct())
                             pPlayers[uActiveCharacter]->PlaySound(SPEECH_108, 0);
@@ -1788,12 +1789,9 @@ void Game::EventLoop() {
                                 _506F18_num_minutes_to_sleep = 0;
                                 _506F14_resting_stage = 0;
 
-                                pMessageQueue_50CBD0->AddGUIMessage(
-                                    UIMSG_Escape, 0, 0);
-                                GameUI_SetStatusBar(
-                                    localization->GetString(LSTR_ENCOUNTER));
-                                pAudioPlayer->PlaySound(SOUND_encounter, 0, 0,
-                                                        -1, 0, 0);
+                                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                                GameUI_SetStatusBar(LSTR_ENCOUNTER);
+                                pAudioPlayer->PlaySound(SOUND_encounter, 0, 0, -1, 0, 0);
                                 continue;
                             }
                         }
@@ -1810,8 +1808,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_AlreadyResting:
                     if (_506F14_resting_stage == 2) {
-                        GameUI_SetStatusBar(
-                            localization->GetString(LSTR_ALREADY_RESTING));
+                        GameUI_SetStatusBar(LSTR_ALREADY_RESTING);
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                         continue;
                     }
@@ -1977,7 +1974,7 @@ void Game::EventLoop() {
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
                     if (engine->IsUnderwater()) {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_CANT_DO_UNDERWATER));
+                        GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     } else {
                         pMessageQueue_50CBD0->Flush();
@@ -2867,7 +2864,7 @@ void Game::GameLoop() {
                     pParty->pPlayers[idx].PlaySound(SPEECH_99, 0);
                 }
 
-                GameUI_SetStatusBar(localization->GetString(LSTR_CHEATED_THE_DEATH));
+                GameUI_SetStatusBar(LSTR_CHEATED_THE_DEATH);
                 uGameState = GAME_STATE_PLAYING;
 
                 // need to flush messages here??

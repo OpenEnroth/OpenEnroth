@@ -879,12 +879,13 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
             am_pm_flag_close = 1;
         }
 
-        GameUI_SetStatusBar(localization->FormatString(
+        GameUI_SetStatusBar(
             LSTR_FMT_OPEN_TIME,
             uOpenTime,
             localization->GetAmPm(am_pm_flag_open),
             uCloseTime,
-            localization->GetAmPm(am_pm_flag_close)));
+            localization->GetAmPm(am_pm_flag_close)
+        );
         if (uActiveCharacter)
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_3, 0);
         return 0;
@@ -896,7 +897,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
                     pParty->GetPlayingTime())) {
                 pParty->PartyTimes._shop_ban_times[uHouseID] = GameTime(0);
             } else {
-                GameUI_SetStatusBar(localization->GetString(LSTR_BANNED_FROM_SHOP));
+                GameUI_SetStatusBar(LSTR_BANNED_FROM_SHOP);
                 return 0;
             }
         }
@@ -1628,27 +1629,19 @@ void OnSelectShopDialogueOption(signed int uMessageParam) {
             uMessageParam <= HOUSE_DIALOGUE_GUILD_LEARN_SKILL) {
             v36 =
                 (signed __int64)(p2DEvents[(uint64_t)
-                    window_SpeakInHouse->ptr_1C -
-                    1]
-                    .flt_24 *
-                    500.0);
-            pPrice = v36 *
-                (100 - pPlayers[uActiveCharacter]->GetMerchant()) /
-                100;
+                    window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+            pPrice = v36 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
             if (pPrice < v36 / 3) pPrice = v36 / 3;
             if (byte_4ED970_skill_learn_ability_by_class_table
                 [pPlayers[uActiveCharacter]->classType]
             [uMessageParam - 36]) {
-                if (!pPlayers[uActiveCharacter]
-                    ->pActiveSkills[uMessageParam - 36]) {
+                if (!pPlayers[uActiveCharacter]->pActiveSkills[uMessageParam - 36]) {
                     if (pParty->GetGold() < pPrice) {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
-                        if (in_current_building_type ==
-                            BuildingType_Training ||
-                            in_current_building_type == BuildingType_Tavern)
+                        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
+                        if (in_current_building_type == BuildingType_Training
+                            || in_current_building_type == BuildingType_Tavern)
                             PlayHouseSound(
-                            (uint64_t)window_SpeakInHouse->ptr_1C,
-                                HouseSound_Goodbye);
+                            (uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
                         else
                             PlayHouseSound(
                             (uint64_t)window_SpeakInHouse->ptr_1C,
@@ -1815,7 +1808,7 @@ void TravelByTransport() {
         if (dialog_menu_id >= HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_1 &&
             dialog_menu_id <= HOUSE_DIALOGUE_TRANSPORT_SCHEDULE_4) {
             if (pParty->GetGold() < pPrice) {
-                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
@@ -2395,7 +2388,7 @@ void TavernDialog() {
             window_SpeakInHouse = 0;
             return;
         }
-        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
@@ -2434,7 +2427,7 @@ void TavernDialog() {
     {
         if ((double)pParty->GetFood() >=
             p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier) {
-            GameUI_SetStatusBar(localization->GetString(LSTR_RATIONS_FULL));
+            GameUI_SetStatusBar(LSTR_RATIONS_FULL);
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_67, 0);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2449,7 +2442,7 @@ void TavernDialog() {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
@@ -2590,7 +2583,7 @@ void TempleDialog() {
     if (dialog_menu_id == HOUSE_DIALOGUE_TEMPLE_HEAL) {
         if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) return;
         if (pParty->GetGold() < pPrice) {
-            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_NotEnoughMoney_TrainingSuccessful);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2722,11 +2715,11 @@ void TempleDialog() {
             }
             ++byte_F8B1EF[uActiveCharacter];
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_83, 0);
-            GameUI_SetStatusBar(localization->GetString(LSTR_THANK_YOU));
+            GameUI_SetStatusBar(LSTR_THANK_YOU);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+        GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
         PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
             HouseSound_NotEnoughMoney_TrainingSuccessful);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -2954,18 +2947,18 @@ void TrainingDialog(const char *s) {
                         }
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_87, 0);
 
-                        GameUI_SetStatusBar(localization->FormatString(
+                        GameUI_SetStatusBar(
                             LSTR_FMT_S_NOW_LEVEL_D,
                             pPlayers[uActiveCharacter]->pName,
                             pPlayers[uActiveCharacter]->uLevel,
-                            pPlayers[uActiveCharacter]->uLevel / 10 + 5)
+                            pPlayers[uActiveCharacter]->uLevel / 10 + 5
                         );
 
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                         return;
                     }
 
-                    GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                     PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, (HouseSoundID)4);
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     return;
@@ -2974,27 +2967,20 @@ void TrainingDialog(const char *s) {
                     LSTR_XP_UNTIL_NEXT_LEVEL,
                     (unsigned int)(v5 - pPlayers[uActiveCharacter]->uExperience),
                     pPlayers[uActiveCharacter]->uLevel + 1);
-                v36 =
-                    (212 - pFontArrus->CalcTextHeight(
-                        label, training_dialog_window.uFrameWidth, 0)) /
-                    2 +
-                    88;
+                v36 = (212 - pFontArrus->CalcTextHeight(
+                        label, training_dialog_window.uFrameWidth, 0)) / 2 + 88;
             } else {
                 label = StringPrintf(
                     "%s\n \n%s",
                     localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW),
                     localization->GetString(LSTR_CANT_TRAIN_FURTHER));
-                v36 =
-                    (212 - pFontArrus->CalcTextHeight(
-                        label, training_dialog_window.uFrameWidth, 0)) /
-                    2 +
-                    101;
+                v36 = (212 - pFontArrus->CalcTextHeight(
+                        label, training_dialog_window.uFrameWidth, 0)) / 2 + 101;
             }
             training_dialog_window.DrawTitleText(
                 pFontArrus, 0, v36, Color16(0xE1u, 0xCDu, 0x23u), label, 3);
 
-            PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
-                (HouseSoundID)3);
+            PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, (HouseSoundID)3);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -3112,7 +3098,7 @@ void sub_4B6478() {
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
             if (pParty->GetGold() < pPrice) {
-                GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                 v27 = 4;
             } else {
                 Party::TakeGold(pPrice);

@@ -228,7 +228,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW &&
             pPlayer->sMana < uRequiredMana) {
-            GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_SPELLPOINTS));
+            GameUI_SetStatusBar(LSTR_NOT_ENOUGH_SPELLPOINTS);
             pCastSpell->uSpellID = 0;
             continue;
         }
@@ -244,7 +244,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pTurnEngine->ApplyPlayerAction();
             }
 
-            GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+            GameUI_SetStatusBar(LSTR_SPELL_FAILED);
             pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
             pCastSpellInfo[n].uSpellID = 0;
             pPlayer->sMana -= uRequiredMana;
@@ -407,7 +407,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         ++_v733;
                 }
                 if (_v733 > amount) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -454,7 +454,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 monster_id = PID_ID(spell_targeted_at);
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 if (!spell_targeted_at) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -570,7 +570,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!MonsterStats::BelongsToSupertype(
                         pActors[PID_ID(spell_targeted_at)].pMonsterInfo.uID,
                         MONSTER_SUPERTYPE_UNDEAD)) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -684,7 +684,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor ||
                     uCurrentlyLoadedLevelType == LEVEL_Outdoor &&
                         (pParty->uCurrentHour < 5 || pParty->uCurrentHour >= 21)) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -921,14 +921,13 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 _50C9D0_AfterEnchClickEventId = 113;
                 _50C9D4_AfterEnchClickEventSecondParam = 0;
                 _50C9D8_AfterEnchClickEventTimeout = 1;
-                GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
-                pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0,
-                                        0);
+                GameUI_SetStatusBar(LSTR_SPELL_FAILED);
+                pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                 pCastSpell->uSpellID = 0;
                 continue;
             }
 
-            case SPELL_BODY_REGENERATION:  //Регенерация
+            case SPELL_BODY_REGENERATION:
             {
                 switch (skill_level) {
                     case 1:
@@ -1152,7 +1151,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             monster_id, &v701);
                         spell_sound_flag = true;
                     } else {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                        GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                         pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                         pCastSpell->uSpellID = 0;
                     }
@@ -1247,7 +1246,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 else
                     meteor_num = 16;
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_CANT_METEOR_SHOWER_INDOORS));
+                    GameUI_SetStatusBar(LSTR_CANT_METEOR_SHOWER_INDOORS);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -1318,7 +1317,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             case SPELL_FIRE_INFERNO:
             {
                 if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_CANT_INFERNO_OUTDOORS));
+                    GameUI_SetStatusBar(LSTR_CANT_INFERNO_OUTDOORS);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -1477,7 +1476,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             case SPELL_AIR_JUMP:
             {
                 if (pParty->IsAirborne()) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_CANT_JUMP_AIRBORNE));
+                    GameUI_SetStatusBar(LSTR_CANT_JUMP_AIRBORNE);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
                 }
@@ -1514,7 +1513,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         assert(false);
                 }
                 if (pParty->GetRedOrYellowAlert()) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_HOSTILE_CREATURES_NEARBY));
+                    GameUI_SetStatusBar(LSTR_HOSTILE_CREATURES_NEARBY);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -1535,12 +1534,12 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             case SPELL_AIR_FLY:  //Полёт
             {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_CANT_FLY_INDOORS));
+                    GameUI_SetStatusBar(LSTR_CANT_FLY_INDOORS);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
                 }
                 if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() && !engine->config->debug_all_magic) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
                 }
@@ -1563,7 +1562,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             case SPELL_AIR_STARBURST:
             {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_CANT_STARBURST_INDOORS));
+                    GameUI_SetStatusBar(LSTR_CANT_STARBURST_INDOORS);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -1778,7 +1777,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             case SPELL_WATER_WATER_WALK:
             {
                 if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana()) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
                 }
@@ -1819,7 +1818,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -1842,7 +1841,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     spell_level = spell_level;
@@ -1987,10 +1986,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
 
                 if (spell_sound_flag == 0) {
-                    v317 = localization->GetString(LSTR_SPELL_FAILED);
                     if (item_not_broken == false)
-                        v317 = localization->GetString(LSTR_ITEM_TOO_LAME);
-                    GameUI_SetStatusBar(v317);
+                        GameUI_SetStatusBar(LSTR_ITEM_TOO_LAME);
+                    else
+                        GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_43, 0);
@@ -2006,7 +2005,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                                       PARTY_FLAGS_1_ALERT_YELLOW) &&
                         skill_level != 4 ||
                     rand() % 100 >= amount && skill_level != 4) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
                                             0, 0);
                     pCastSpell->uSpellID = 0;
@@ -2021,7 +2020,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
             case SPELL_WATER_LLOYDS_BEACON: {
                 if (pCurrentMapName == "d05.blv") {  // Arena
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -2118,9 +2117,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
             case SPELL_EARTH_DEATH_BLOSSOM: {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
-                                            0, 0);
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
+                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
                 }
@@ -2657,12 +2655,12 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                                 "(%s), and %d gold",
                                 item.GetDisplayName().c_str(), gold_num));
                         else
-                            GameUI_SetStatusBar(
-                                StringPrintf("%d gold", gold_num));
+                            GameUI_SetStatusBar(StringPrintf(
+                                "%d gold", gold_num));
                     } else {
                         if (item.uItemID) {
                             GameUI_SetStatusBar(StringPrintf(
-                                "(%s)", item.GetDisplayName().c_str()));
+                                "(%s)", item.GetDisplayName()));
                         } else {
                             GameUI_SetStatusBar("nothing");
                         }
@@ -2955,10 +2953,10 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         viewparams->bRedrawGameUI = true;
                     } else {
                         GameUI_SetStatusBar(
-                            localization->FormatString(
-                                LSTR_FMT_YOU_FOUND_ITEM,
-                                pItemsTable->pItems[pSpriteObjects[obj_id]
-                                                  .containing_item.uItemID].pUnidentifiedName));
+                            LSTR_FMT_YOU_FOUND_ITEM,
+                            pItemsTable->pItems[pSpriteObjects[obj_id]
+                                .containing_item.uItemID].pUnidentifiedName
+                        );
                         if (!pParty->AddItemToParty(
                                 &pSpriteObjects[obj_id].containing_item))
                             pParty->SetHoldingItem(
@@ -3333,9 +3331,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         ++mon_num;
                 }
                 if (mon_num >= amount) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SUMMONS_LIMIT_REACHED));
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
-                                            0, 0);
+                    GameUI_SetStatusBar(LSTR_SUMMONS_LIMIT_REACHED);
+                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
                 }
@@ -3386,9 +3383,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
             case SPELL_LIGHT_PRISMATIC_LIGHT: {
                 if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_CANT_PRISMATIC_OUTDOORS));
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1,
-                                            0, 0);
+                    GameUI_SetStatusBar(LSTR_CANT_PRISMATIC_OUTDOORS);
+                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
                 }
@@ -3551,7 +3547,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
             case SPELL_LIGHT_DIVINE_INTERVENTION: {
                 if (pPlayer->uNumDivineInterventionCastsThisDay >= 3) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -3616,7 +3612,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
                 monster_id = PID_ID(pCastSpell->spell_target_pid);
                 if (monster_id == -1) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_NO_VALID_SPELL_TARGET));
+                    GameUI_SetStatusBar(LSTR_NO_VALID_SPELL_TARGET);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -3624,7 +3620,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (pActors[monster_id].sCurrentHP > 0 ||
                     pActors[monster_id].uAIState != Dead &&
                         pActors[monster_id].uAIState != Dying) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -3691,7 +3687,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -3802,7 +3798,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             MONSTER_SUPERTYPE_UNDEAD))
                         break;
                     if (!pActors[monster_id].DoesDmgTypeDoDamage(DMGT_DARK)) {
-                        GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                        GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                         pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                         pCastSpell->uSpellID = 0;
                         continue;
@@ -3855,7 +3851,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (pCastSpell->uPlayerID_2 != 4 && pCastSpell->uPlayerID_2 != 5 ||
                     achieved_awards[pCastSpell->uPlayerID_2 - 4] <= 0 ||
                     achieved_awards[pCastSpell->uPlayerID_2 - 4] >= 3) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -3996,7 +3992,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             case SPELL_DARK_ARMAGEDDON:
             {
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_CANT_ARMAGEDDON_INDOORS));
+                    GameUI_SetStatusBar(LSTR_CANT_ARMAGEDDON_INDOORS);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;
@@ -4007,7 +4003,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     amount = 3;
                 if (pPlayer->uNumArmageddonCasts >= amount ||
                     pParty->armageddon_timer > 0) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_SPELL_FAILED));
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
                     continue;

@@ -627,12 +627,12 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             return;
         }
         if (pParty->pHirelings[0].pName && pParty->pHirelings[1].pName) {
-            GameUI_SetStatusBar(localization->GetString(LSTR_HIRE_NO_ROOM));
+            GameUI_SetStatusBar(LSTR_HIRE_NO_ROOM);
         } else {
             if (speakingNPC->profession != Burglar) {
                 // burglars have no hiring price
                 if (pParty->GetGold() < pNPCStats->pProfessions[speakingNPC->profession].uHirePrice) {
-                    GameUI_SetStatusBar(localization->GetString(LSTR_NOT_ENOUGH_GOLD));
+                    GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                     dialogue_show_profession_details = false;
                     uDialogueType = 13;
                     if (uActiveCharacter)
@@ -673,7 +673,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE newDialogueType) {
             }
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         } else {
-            GameUI_SetStatusBar(localization->GetString(LSTR_RATIONS_FULL));
+            GameUI_SetStatusBar(LSTR_RATIONS_FULL);
         }
     } else if (newDialogueType == DIALOGUE_13_hire) {
         if (!speakingNPC->Hired()) {

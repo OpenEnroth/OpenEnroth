@@ -1044,7 +1044,7 @@ void Party::PartyFindsGold(
         }
     }
     AddGold(goldToGain - hirelingSalaries);
-    if (status.length() > 0) GameUI_SetStatusBar(status.c_str());
+    if (status.length() > 0) GameUI_SetStatusBar(status);
 }
 
 void Party::PickedItem_PlaceInInventory_or_Drop() {

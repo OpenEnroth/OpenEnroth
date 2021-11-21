@@ -776,8 +776,10 @@ int Player::HasSkill(unsigned int uSkillType) {
     if (uSkillType >= 37 || this->pActiveSkills[uSkillType]) {
         return 1;
     } else {
-        GameUI_SetStatusBar(localization->FormatString(
-            LSTR_FMT_S_DOES_NOT_HAVE_SKILL, this->pName));
+        GameUI_SetStatusBar(
+            LSTR_FMT_S_DOES_NOT_HAVE_SKILL,
+            this->pName
+        );
         return 0;
     }
 }
@@ -1685,19 +1687,21 @@ int Player::StealFromActor(
     if (rand() % 100 < 5 || fineIfFailed > currMaxItemValue ||
         actroPtr->ActorEnemy()) {  // busted
         Actor::AggroSurroundingPeasants(uActorID, 1);
-        GameUI_SetStatusBar(localization->FormatString(
+        GameUI_SetStatusBar(
             LSTR_FMT_S_WAS_CAUGHT_STEALING,
-            this->pName));
+            this->pName
+        );
         return STEAL_BUSTED;
     } else {
         int random = rand();
 
         if (random % 100 >= 70) {  // stealing gold
             if (actroPtr->ActorHasItems[3].GetItemEquipType() != EQUIP_GOLD) {
-                // no gold to steal fail
-                GameUI_SetStatusBar(localization->FormatString(
+                // no gold to steal - fail
+                GameUI_SetStatusBar(
                     LSTR_FMT_S_FAILED_TO_STEAL,
-                    this->pName));
+                    this->pName
+                );
                 return STEAL_NOTHING;
             }
 
@@ -1722,13 +1726,15 @@ int Player::StealFromActor(
 
             if (enchBonusSum) {
                 pParty->PartyFindsGold(enchBonusSum, 2);
-                GameUI_SetStatusBar(localization->FormatString(
+                GameUI_SetStatusBar(
                     LSTR_FMT_S_STOLE_D_GOLD,
-                    this->pName, enchBonusSum));
+                    this->pName, enchBonusSum
+                );
             } else {
-                GameUI_SetStatusBar(localization->FormatString(
+                GameUI_SetStatusBar(
                     LSTR_FMT_S_FAILED_TO_STEAL,
-                    this->pName));
+                    this->pName
+                );
             }
 
             return STEAL_SUCCESS;
@@ -1768,10 +1774,11 @@ int Player::StealFromActor(
 
                     __debugbreak();  // no %s stole %s fmt string
                                      // the below would case a stack corruption
-                    GameUI_SetStatusBar(localization->FormatString(
+                    GameUI_SetStatusBar(
                         LSTR_OFFICIAL,
                         this->pName,
-                        pItemsTable->pItems[carriedItemId].pUnidentifiedName));
+                        pItemsTable->pItems[carriedItemId].pUnidentifiedName
+                    );
 
                     pParty->PickedItem_PlaceInInventory_or_Drop();  // drop or place picked item
 
@@ -1784,9 +1791,10 @@ int Player::StealFromActor(
             }
         }
 
-        GameUI_SetStatusBar(localization->FormatString(
+        GameUI_SetStatusBar(
             LSTR_FMT_S_FAILED_TO_STEAL,
-            this->pName));
+            this->pName
+        );
         return STEAL_NOTHING;
     }
 }
@@ -3894,9 +3902,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             playerAffected->Heal(2);
             playerAffected->PlaySound(SPEECH_36, 0);
         } else {
-            GameUI_SetStatusBar(localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_S_CANT_BE_USED_THIS_WAY,
-                pParty->pPickedItem.GetDisplayName().c_str()));
+                pParty->pPickedItem.GetDisplayName().c_str()
+            );
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
@@ -4307,9 +4316,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
 
             default:
-                GameUI_SetStatusBar(localization->FormatString(
+                GameUI_SetStatusBar(
                     LSTR_FMT_S_CANT_BE_USED_THIS_WAY,
-                    pParty->pPickedItem.GetDisplayName().c_str()));
+                    pParty->pPickedItem.GetDisplayName().c_str()
+                );
 
                 pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                 return;
@@ -4340,18 +4350,18 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_SPELL_SCROLL) {
         if (current_screen_type == CURRENT_SCREEN::SCREEN_CASTING) return;
         if (!playerAffected->CanAct()) {
-            auto str = localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_THAT_PLAYER_IS_S,
                 localization->GetCharacterConditionName(
-                    playerAffected->GetMajorConditionIdx())
+                    playerAffected->GetMajorConditionIdx()
+                )
             );
-            GameUI_SetStatusBar(str);
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
         if (engine->IsUnderwater()) {
-            GameUI_SetStatusBar(localization->GetString(LSTR_CANT_DO_UNDERWATER));
+            GameUI_SetStatusBar(LSTR_CANT_DO_UNDERWATER);
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
@@ -4380,20 +4390,21 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         v15 = pParty->pPickedItem.uItemID - 400;
         v72 = playerAffected->spellbook.bHaveSpell[pParty->pPickedItem.uItemID - 400];
         if (v72) {
-            auto str = localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL,
-                pParty->pPickedItem.GetDisplayName().c_str());
-            GameUI_SetStatusBar(str);
+                pParty->pPickedItem.GetDisplayName().c_str()
+            );
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
         }
         if (!playerAffected->CanAct()) {
-            auto str = localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_THAT_PLAYER_IS_S,
                 localization->GetCharacterConditionName(
-                    playerAffected->GetMajorConditionIdx()));
-            GameUI_SetStatusBar(str);
+                    playerAffected->GetMajorConditionIdx()
+                )
+            );
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
@@ -4419,10 +4430,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
         }
 
         if (v16 > v67 || !v17) {
-            auto str = localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_DONT_HAVE_SKILL_TO_LEAN_S,
-                pParty->pPickedItem.GetDisplayName().c_str());
-            GameUI_SetStatusBar(str);
+                pParty->pPickedItem.GetDisplayName().c_str()
+            );
 
             playerAffected->PlaySound((PlayerSpeech)20, 0);
             return;
@@ -4464,11 +4475,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             return;
         }
 
-        auto str = localization->FormatString(
+        GameUI_SetStatusBar(
             LSTR_FMT_THAT_PLAYER_IS_S,
             localization->GetCharacterConditionName(
-                playerAffected->GetMajorConditionIdx()));
-        GameUI_SetStatusBar(str);
+                playerAffected->GetMajorConditionIdx()
+            )
+        );
 
         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         return;
@@ -4634,10 +4646,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             TeleportToNWCDungeon();
             return;
         } else {
-            auto str = localization->FormatString(
+            GameUI_SetStatusBar(
                 LSTR_FMT_S_CANT_BE_USED_THIS_WAY,
-                pParty->pPickedItem.GetDisplayName().c_str());
-            GameUI_SetStatusBar(str);
+                pParty->pPickedItem.GetDisplayName().c_str()
+            );
 
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             return;
@@ -5219,9 +5231,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
         case VAR_RandomGold:
             v6 = rand() % var_value + 1;
             Party::SetGold(v6);
-            GameUI_SetStatusBar(
-                localization->FormatString(
-                    LSTR_FMT_YOU_HAVE_D_GOLD, v6));
+            GameUI_SetStatusBar(LSTR_FMT_YOU_HAVE_D_GOLD, v6);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_FixedFood:
@@ -5745,10 +5755,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             if (val == 0) val = 1;
             v7 = rand() % val + 1;
             Party::GiveFood(v7);
-            GameUI_SetStatusBar(
-                localization->FormatString(
-                    LSTR_FMT_YOU_FIND_D_FOOD, v7));
-
+            GameUI_SetStatusBar(LSTR_FMT_YOU_FIND_D_FOOD, v7);
             GameUI_DrawFoodAndGold();
             PlayAwardSound();
             return;
@@ -5857,10 +5864,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             return;
         case VAR_FixedFood:
             Party::GiveFood(val);
-            GameUI_SetStatusBar(
-                localization->FormatString(
-                    LSTR_FMT_YOU_FIND_D_FOOD, val));
-
+            GameUI_SetStatusBar(LSTR_FMT_YOU_FIND_D_FOOD, val);
             PlayAwardSound();
             return;
         case VAR_MightBonus:
@@ -6341,8 +6345,7 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             if (randGold > pParty->GetGold())
                 randGold = pParty->GetGold();
             Party::TakeGold(randGold);
-            GameUI_SetStatusBar(localization->FormatString(
-                LSTR_FMT_YOU_LOSE_D_GOLD, randGold));
+            GameUI_SetStatusBar(LSTR_FMT_YOU_LOSE_D_GOLD, randGold);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_FixedFood:
@@ -6354,8 +6357,7 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             if (randFood > pParty->GetFood())
                 randFood = pParty->GetFood();
             Party::TakeFood(randFood);
-            GameUI_SetStatusBar(localization->FormatString(
-                LSTR_FMT_YOU_LOSE_D_FOOD, randFood));
+            GameUI_SetStatusBar(LSTR_FMT_YOU_LOSE_D_FOOD, randFood);
             GameUI_DrawFoodAndGold();
             PlayAwardSound_Anim98();
             return;
@@ -6994,9 +6996,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         // GM unarmed 1% chance to evade attacks per skill point
         if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
             rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
-            auto str = localization->FormatString(
-                LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName);
-            GameUI_SetStatusBar(str);
+            GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName);
             playerPtr->PlaySound(SPEECH_6, 0);
             return;
         }
@@ -7201,9 +7201,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                 logger->Info("Arrpow");
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
                     rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
-                    auto str = localization->FormatString(
-                        LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName);
-                    GameUI_SetStatusBar(str);
+                    GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName);
                     playerPtr->PlaySound(SPEECH_6, 0);
                     return;
                 }
