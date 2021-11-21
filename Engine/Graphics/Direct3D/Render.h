@@ -25,6 +25,7 @@ class Render : public RenderBase {
         LightmapBuilder* lightmap_builder,
         SpellFxRenderer* spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
+        std::shared_ptr<AssetLocator> asset_locator,
         Vis* vis,
         Log* logger
     );

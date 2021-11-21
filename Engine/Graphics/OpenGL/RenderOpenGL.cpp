@@ -1596,9 +1596,13 @@ RenderOpenGL::RenderOpenGL(
     LightmapBuilder* lightmap_builder,
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
+    std::shared_ptr<AssetLocator> asset_locator,
     Vis* vis,
     Log* logger
-) : RenderBase(window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(
+    window, decal_builder, lightmap_builder, spellfx, particle_engine,
+    asset_locator, vis, logger
+) {
     clip_w = 0;
     clip_x = 0;
     clip_y = 0;

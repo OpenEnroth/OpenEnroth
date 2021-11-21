@@ -67,13 +67,11 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 #include "Platform/OSWindowFactory.h"
 
 
 void ShowMM7IntroVideo_and_LoadingScreen();
-void IntegrityTest();
 
 using Application::Game;
 using Application::GameConfig;
@@ -82,79 +80,7 @@ using Engine_::EngineFactory;
 using Graphics::IRenderFactory;
 
 
-
-
-std::string FindMm7Directory() {
-    bool mm7_installation_found = false;
-
-    // env variable override to a custom folder
-    if (!mm7_installation_found) {
-        if (const char* path = std::getenv("WOMM_PATH_OVERRIDE")) {
-            mm7_installation_found = true;
-            logger->Info("MM7 Custom Folder (ENV path override): %s", path);
-            return path;
-        }
-    }
-
-    // standard 1.0 installation
-    char path_buffer[2048];
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/New World Computing/Might and Magic VII/1.0/AppPath",
-            path_buffer,
-            sizeof(path_buffer)
-        );
-
-        if (mm7_installation_found) {
-            logger->Info("Standard MM7 installation found: %s", path_buffer);
-            return path_buffer;
-        }
-    }
-
-    // GoG old version
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/GOG.com/GOGMM7/PATH",
-            path_buffer,
-            sizeof(path_buffer)
-        );
-
-        if (mm7_installation_found) {
-            logger->Info("GoG MM7 installation found: %s", path_buffer);
-            return path_buffer;
-        }
-    }
-
-    // GoG new version ( 2018 builds )
-    if (!mm7_installation_found) {
-        mm7_installation_found = OS_GetAppString(
-            "HKEY_LOCAL_MACHINE/SOFTWARE/WOW6432Node/GOG.com/Games/1207658916/Path",
-            path_buffer,
-            sizeof(path_buffer)
-        );
-
-        if (mm7_installation_found) {
-            logger->Info("GoG MM7 2018 build installation found: %s", path_buffer);
-            return path_buffer;
-        }
-    }
-
-    // Hack path fix - pskelton
-    if (!mm7_installation_found) {
-        mm7_installation_found = 1;
-        strcpy(path_buffer, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
-        logger->Info("Hack Path MM7 installation found: %s", path_buffer);
-        return path_buffer;
-    }
-
-    return "";
-}
-
 void Game::Run() {
-    IntegrityTest();
-
-    SetDataPath(FindMm7Directory());
-
     window = OSWindowFactory().Create(
         "World of Might and Magic®",
         config->window_x,

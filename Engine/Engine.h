@@ -519,11 +519,7 @@ void OnMapLoad();
 void Level_LoadEvtAndStr(const char *pLevelName);
 void sub_4452BB();
 bool _44100D_should_alter_right_panel();
-void Transition_StopSound_Autosave(const char *pMapName,
-                                   MapStartPoint point);  // sub_44987B idb
+void Transition_StopSound_Autosave(const char *pMapName, MapStartPoint point);  // sub_44987B idb
 
 void OnTimer(int);
 void TeleportToNWCDungeon();
-
-void SetDataPath(const std::string &data_path);
-std::string MakeDataPath(const char *file_rel_path);

@@ -9,12 +9,12 @@ using Engine_::CommandLine;
 namespace Application {
     class GameConfig {
      public:
-        explicit GameConfig(const std::string& comamnd_line);
+        explicit GameConfig(const std::shared_ptr<CommandLine> comamnd_line);
 
         std::shared_ptr<CommandLine> command_line;
         std::string renderer_name =
 #ifdef _WINDOWS
-            "OpenGL";  // "DirectDraw";  //  "OpenGL";
+            "DirectDraw";  //  "OpenGL";
 #else
             "OpenGL";
 #endif

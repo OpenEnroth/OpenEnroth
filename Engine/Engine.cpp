@@ -115,13 +115,6 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 
 */
 
-static std::string s_data_path;
-
-void SetDataPath(const std::string &data_path) { s_data_path = data_path; }
-
-std::string MakeDataPath(const char *file_rel_path) {
-    return s_data_path + OS_GetDirSeparator() + file_rel_path;
-}
 
 std::shared_ptr<Engine> engine;
 

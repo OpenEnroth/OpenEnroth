@@ -1078,9 +1078,13 @@ Render::Render(
     LightmapBuilder* lightmap_builder,
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
+    std::shared_ptr<AssetLocator> asset_locator,
     Vis* vis,
     Log* logger
-) : RenderBase(window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(
+    window, decal_builder, lightmap_builder, spellfx, particle_engine,
+    asset_locator, vis, logger
+) {
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;

@@ -35,6 +35,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(
                 EngineIoc::ResolveLightmapBuilder(),
                 EngineIoc::ResolveSpellFxRenderer(),
                 EngineIoc::ResolveParticleEngine(),
+                EngineIoc::ResolveAssetLocator(),
                 EngineIoc::ResolveVis(),
                 EngineIoc::ResolveLogger()
             );
@@ -48,6 +49,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(
                 EngineIoc::ResolveLightmapBuilder(),
                 EngineIoc::ResolveSpellFxRenderer(),
                 EngineIoc::ResolveParticleEngine(),
+                EngineIoc::ResolveAssetLocator(),
                 EngineIoc::ResolveVis(),
                 EngineIoc::ResolveLogger()
             );

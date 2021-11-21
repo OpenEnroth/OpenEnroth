@@ -2,8 +2,9 @@
 
 using Application::GameConfig;
 
-GameConfig::GameConfig(const std::string& command_line_str) {
-    command_line = std::make_shared<CommandLine>(command_line_str);
+
+GameConfig::GameConfig(const std::shared_ptr<CommandLine> comamnd_line) {
+    this->command_line = comamnd_line;
 
     std::shared_ptr<std::string> value;
     if (command_line->TryGetValue("render", &value)) {

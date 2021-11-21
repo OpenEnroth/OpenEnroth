@@ -2,6 +2,7 @@
 
 #include <memory>
 
+
 struct BloodsplatContainer;
 struct DecalBuilder;
 class LightmapBuilder;
@@ -10,6 +11,7 @@ namespace Io {
     class Mouse;
 }
 class ParticleEngine;
+class AssetLocator;
 struct SpellFxRenderer;
 class Vis;
 
@@ -24,6 +26,7 @@ class IocContainer {
     static LightmapBuilder *ResolveLightmapBuilder();
     static std::shared_ptr<Io::Mouse> ResolveMouse();
     static std::shared_ptr<ParticleEngine> ResolveParticleEngine();
+    static std::shared_ptr<AssetLocator> ResolveAssetLocator();
     static Vis *ResolveVis();
 
  private:

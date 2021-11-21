@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-set(ENGINE_SOURCES AssetsManager.cpp
+set(ENGINE_SOURCES AssetLocator.cpp
+                   AssetsManager.cpp
                    CommandLine.cpp
                    Conditions.cpp
                    Events.cpp
@@ -26,7 +27,8 @@ set(ENGINE_SOURCES AssetsManager.cpp
                    EngineConfigFactory.cpp
                    EngineFactory.cpp)
 
-set(ENGINE_HEADERS AssetsManager.h
+set(ENGINE_HEADERS AssetLocator.h
+                   AssetsManager.h
                    Autonotes.h
                    Awards.h
                    CommandLine.cpp
@@ -65,9 +67,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    EngineConfigFactory.h
                    EngineFactory.h)
 
-if(WIN32)
-else()
-endif()
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)

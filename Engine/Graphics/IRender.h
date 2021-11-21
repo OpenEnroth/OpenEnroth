@@ -1,13 +1,14 @@
 #pragma once
 #include <memory>
 
+#include "Engine/AssetLocator.h"
+#include "Engine/OurMath.h"
+#include "Engine/Rect.h"
+#include "Engine/VectorTypes.h"
 #include "Engine/Graphics/IRenderConfig.h"
 #include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Texture.h"
-#include "Engine/OurMath.h"
-#include "Engine/Rect.h"
-#include "Engine/VectorTypes.h"
 
 
 using Graphics::IRenderConfig;
@@ -202,6 +203,7 @@ class IRender {
         LightmapBuilder *lightmap_builder,
         SpellFxRenderer *spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
+        std::shared_ptr<AssetLocator> asset_locator,
         Vis *vis,
         Log *logger
     ) {
@@ -210,6 +212,7 @@ class IRender {
         this->lightmap_builder = lightmap_builder;
         this->spell_fx_renderer = spellfx;
         this->particle_engine = particle_engine;
+        this->asset_locator = asset_locator;
         this->vis = vis;
         this->log = logger;
 
@@ -442,6 +445,7 @@ class IRender {
     SpellFxRenderer *spell_fx_renderer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
+    std::shared_ptr<AssetLocator> asset_locator = nullptr;
     Vis *vis = nullptr;
     std::shared_ptr<OSWindow> window = nullptr;
 
