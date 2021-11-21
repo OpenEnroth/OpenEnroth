@@ -35,6 +35,7 @@ set(GUI_SOURCES GUIButton.cpp
 )
 
 set(GUI_HEADERS GUIButton.h
+                GUIDialogues.h
                 GUIFont.h
                 GUIProgressBar.h
                 GUIWindow.h

@@ -10,13 +10,30 @@
 #include "Engine/Strings.h"
 #include "Engine/Party.h"
 
+#include "GUI/GUIDialogues.h"
+
 #include "Io/GameKey.h"
 #include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
 
+
 using Io::GameKey;
 using Io::Mouse;
 
+
+enum GUILD_ID : int32_t {
+    GUILD_OF_ELEMENTS = 0,
+    GUILD_OF_SELF = 1,
+    GUILD_OF_AIR = 2,
+    GUILD_OF_EARTH = 3,
+    GUILD_OF_FIRE = 4,
+    GUILD_OF_WATER = 5,
+    GUILD_OF_BODY = 6,
+    GUILD_OF_MIND = 7,
+    GUILD_OF_SPIRIT = 8,
+    GUILD_OF_LIGHT = 9,
+    GUILD_OF_DARK = 10,
+};
 
 enum UIMessageType : uint32_t {
     UIMSG_0 = 0,
@@ -271,40 +288,6 @@ enum MENU_STATE : __int32 {
     MENU_MMT_MAIN_MENU = 12,
 };
 
-enum DIALOGUE_TYPE {
-    DIALOGUE_USE_NPC_ABILITY = 9,
-    DIALOGUE_13_hire = 13,
-    DIALOGUE_18_buy_spells = 18,
-    DIALOGUE_SCRIPTED_LINE_1 = 19,
-    DIALOGUE_SCRIPTED_LINE_2 = 20,
-    DIALOGUE_SCRIPTED_LINE_3 = 21,
-    DIALOGUE_SCRIPTED_LINE_4 = 22,
-    DIALOGUE_SCRIPTED_LINE_5 = 23,
-    DIALOGUE_SCRIPTED_LINE_6 = 0x18,
-
-    // in order of Localization::skill_names
-    DIALOGUE_LEARN_STAFF = 36,
-    // ...
-    DIALOGUE_LEARN_BOW = 41,
-    // ...
-
-    DIALOGUE_HIRE_FIRE = 76,
-    DIALOGUE_PROFESSION_DETAILS = 77,
-    DIALOGUE_SKILL_TRAINER = 78,
-    DIALOGUE_79_mastery_teacher = 79,
-    DIALOGUE_82 = 82,
-    DIALOGUE_83_bounty_hunting = 83,
-    DIALOGUE_84 = 84,
-    DIALOGUE_ARENA_SELECT_PAGE = 85,
-    DIALOGUE_ARENA_SELECT_SQUIRE = 86,
-    DIALOGUE_ARENA_SELECT_KNIGHT = 87,
-    DIALOGUE_ARENA_SELECT_CHAMPION = 88,
-    DIALOGUE_ARENA_WELCOME = 89,
-    DIALOGUE_ARENA_FIGHT_NOT_OVER_YET = 90,
-    DIALOGUE_ARENA_REWARD = 91,
-    DIALOGUE_ARENA_ALREADY_WON = 92,
-    DIALOGUE_93 = 93,
-};
 
 enum WindowType {
     WINDOW_null = 0,
@@ -758,10 +741,11 @@ void CreateMsgScrollWindow(signed int mscroll_id);
 void free_book_subwindow();
 void CreateScrollWindow();
 void OnPaperdollLeftClick();
-void DrawJoinGuildWindow(int pEventCode);
+void DrawJoinGuildWindow(GUILD_ID guild_id);
+const char* GetJoinGuildDialogueOption(GUILD_ID guild_id);
 void DialogueEnding();
 char sub_4637E0_is_there_popup_onscreen();
-void ClickNPCTopic(int uMessageParam);
+void ClickNPCTopic(DIALOGUE_TYPE topic);
 void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
 void CheckBountyRespawnAndAward();
@@ -879,3 +863,5 @@ MENU_STATE GetCurrentMenuID();
 
 extern enum CURRENT_SCREEN current_screen_type;
 extern enum CURRENT_SCREEN prev_screen_type;
+
+extern DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;

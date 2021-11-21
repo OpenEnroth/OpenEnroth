@@ -1,5 +1,6 @@
 #include "Arcomage/Arcomage.h"
 
+#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
@@ -2936,47 +2937,40 @@ void GameResultsApply() {
         }
     }
 
-    //подведение итогов
     pArcomageGame->Victory_type = victory_type;
     pArcomageGame->uGameWinner = winner;
-    if (winner == 1) {  //победитель игрок 1(мы)
-        if ((window_SpeakInHouse->par1C >= 108) &&
-            (window_SpeakInHouse->par1C <= 120)) {  //таверны
+    if (winner == 1) {
+        // 108..120 - tavern ids
+        if ((window_SpeakInHouse->par1C >= 108) && (window_SpeakInHouse->par1C <= 120)) {
             if (!pParty->pArcomageWins[window_SpeakInHouse->par1C - 108]) {
                 pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] = 1;
                 pParty->PartyFindsGold(
-                    p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier *
-                        100.0,
-                    0);  //вознаграждение
-            }
+                    p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);            }
         }
-        //проверка выполнен ли квест по аркомагу
+
+        // arcomage quest test
         tavern_num = 0;
         for (uint i = 108; i <= 120; ++i) {
             if (!pParty->pArcomageWins[i - 108]) break;
             tavern_num++;
         }
         if (tavern_num == 13)
-            _449B7E_toggle_bit(pParty->_quest_bits, 238,
-                               1);  // 238 - Won all Arcomage games
+            _449B7E_toggle_bit(pParty->_quest_bits, QBIT_ARCOMAGE_CHAMPION, 1);
 
-        for (int i = 0; i < 4; ++i) {  //внесение записи в Заслуги
-            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__FINED))
-                _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits,
-                                   PLAYER_GUILD_BITS__ARCOMAGE_WIN, 1);
+        for (int i = 0; i < 4; ++i) {
+            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, Award_Fine))
+                _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, Award_ArcomageWins, 1);
         }
         ++pParty->uNumArcomageWins;
-        if (pParty->uNumArcomageWins > 1000000)  //ограничение количества побед
+        if (pParty->uNumArcomageWins > 1000000)
             pParty->uNumArcomageWins = 1000000;
     } else {  //проигрыш
-        for (int i = 0; i < 4; ++i) {  //внесение записи в Заслуги
-            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, PLAYER_GUILD_BITS__FINED))
-                _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits,
-                                   PLAYER_GUILD_BITS__ARCOMAGE_LOSE, 1);
+        for (int i = 0; i < 4; ++i) {
+            if (!_449B57_test_bit(pParty->pPlayers[i]._achieved_awards_bits, Award_Fine))
+                _449B7E_toggle_bit(pParty->pPlayers[i]._achieved_awards_bits, Award_ArcomageLoses, 1);
         }
         ++pParty->uNumArcomageLoses;
-        if (pParty->uNumArcomageLoses >
-            1000000)  //ограничение количества проигрышей
+        if (pParty->uNumArcomageLoses > 1000000)
             pParty->uNumArcomageLoses = 1000000;
     }
 }

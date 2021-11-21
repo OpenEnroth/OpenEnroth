@@ -3,6 +3,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
 #include "Engine/Graphics/IRender.h"
@@ -248,13 +249,14 @@ void ShopDialogLearn(GUIWindow dialogwin) {
         i < pDialogueWindow->pNumPresenceButton +
         pDialogueWindow->pStartingPosActiveItem;
         ++i) {
+        auto skill = GetLearningDialogueSkill(
+            (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
+        );
         if (byte_4ED970_skill_learn_ability_by_class_table
-            [pPlayers[uActiveCharacter]->classType]
-        [pDialogueWindow->GetControl(i)->msg_param - 36] &&
-            !pPlayers[uActiveCharacter]->pActiveSkills[pDialogueWindow->GetControl(i)->msg_param - 36]) {
+            [pPlayers[uActiveCharacter]->classType][skill] &&
+            !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
             all_text_height += pFontArrus->CalcTextHeight(
-                localization->GetSkillName(
-                    pDialogueWindow->GetControl(i)->msg_param - 36),
+                localization->GetSkillName(skill),
                 dialogwin.uFrameWidth, 0);
             item_num++;
         }
@@ -377,35 +379,35 @@ void WeaponShopDialog() {
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
-        case HOUSE_DIALOGUE_MAIN: {
+        case DIALOGUE_MAIN: {
             ShopDialogMain(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+        case DIALOGUE_SHOP_BUY_STANDARD: {
             WeaponShopWares(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+        case DIALOGUE_SHOP_BUY_SPECIAL: {
             WeaponShopWares(dialog_window, 1);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_SELL: {
+        case DIALOGUE_SHOP_SELL: {
             ShopDialogSellEquip(dialog_window, BuildingType_WeaponShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+        case DIALOGUE_SHOP_IDENTIFY: {
             ShopDialogIdentify(dialog_window, BuildingType_WeaponShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_REPAIR: {
+        case DIALOGUE_SHOP_REPAIR: {
             ShopDialogRepair(dialog_window, BuildingType_WeaponShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+        case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
             ShopDialogDisplayEquip(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_LEARN_SKILLS: {
+        case DIALOGUE_LEARN_SKILLS: {
             ShopDialogLearn(dialog_window);
             break;
         }
@@ -540,35 +542,35 @@ void ArmorShopDialog() {
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
-        case HOUSE_DIALOGUE_MAIN: {
+        case DIALOGUE_MAIN: {
             ShopDialogMain(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+        case DIALOGUE_SHOP_BUY_STANDARD: {
             ArmorShopWares(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+        case DIALOGUE_SHOP_BUY_SPECIAL: {
             ArmorShopWares(dialog_window, 1);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+        case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
             ShopDialogDisplayEquip(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_SELL: {
+        case DIALOGUE_SHOP_SELL: {
             ShopDialogSellEquip(dialog_window, BuildingType_ArmorShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+        case DIALOGUE_SHOP_IDENTIFY: {
             ShopDialogIdentify(dialog_window, BuildingType_ArmorShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_REPAIR: {
+        case DIALOGUE_SHOP_REPAIR: {
             ShopDialogRepair(dialog_window, BuildingType_ArmorShop);
             break;
         }
-        case HOUSE_DIALOGUE_LEARN_SKILLS: {
+        case DIALOGUE_LEARN_SKILLS: {
             ShopDialogLearn(dialog_window);
             break;
         }
@@ -588,11 +590,9 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
 
     for (uint i = 0; i < 12; ++i) {
         if ((special == 0 &&
-             pParty->StandartItemsInShops[window_SpeakInHouse->par1C][i]
-                 .uItemID) ||
+             pParty->StandartItemsInShops[window_SpeakInHouse->par1C][i].uItemID) ||
             (special == 1 &&
-             pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][i]
-                 .uItemID)) {
+             pParty->SpecialItemsInShops[window_SpeakInHouse->par1C][i].uItemID)) {
             if (i >= 6) {  // low row
                 itemy = 308 - shop_ui_items_in_store[i]->GetHeight();
                 if (itemy < 0) itemy = 0;
@@ -719,31 +719,31 @@ void AlchemistDialog() {
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
-        case HOUSE_DIALOGUE_MAIN: {
+        case DIALOGUE_MAIN: {
             ShopDialogMain(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+        case DIALOGUE_SHOP_BUY_STANDARD: {
             AlchemyMagicShopWares(dialog_window, BuildingType_AlchemistShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+        case DIALOGUE_SHOP_BUY_SPECIAL: {
             AlchemyMagicShopWares(dialog_window, BuildingType_AlchemistShop, 1);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_SELL: {
+        case DIALOGUE_SHOP_SELL: {
             ShopDialogSellEquip(dialog_window, BuildingType_AlchemistShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+        case DIALOGUE_SHOP_IDENTIFY: {
             ShopDialogIdentify(dialog_window, BuildingType_AlchemistShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+        case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
             ShopDialogDisplayEquip(dialog_window, BuildingType_AlchemistShop);
             break;
         }
-        case HOUSE_DIALOGUE_LEARN_SKILLS: {
+        case DIALOGUE_LEARN_SKILLS: {
             ShopDialogLearn(dialog_window);
             break;
         }
@@ -761,35 +761,35 @@ void MagicShopDialog() {
     dialog_window.uFrameZ = 334;
 
     switch (dialog_menu_id) {
-        case HOUSE_DIALOGUE_MAIN: {
+        case DIALOGUE_MAIN: {
             ShopDialogMain(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_BUY_STANDARD: {
+        case DIALOGUE_SHOP_BUY_STANDARD: {
             AlchemyMagicShopWares(dialog_window, BuildingType_MagicShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+        case DIALOGUE_SHOP_BUY_SPECIAL: {
             AlchemyMagicShopWares(dialog_window, BuildingType_MagicShop, 1);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+        case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
             ShopDialogDisplayEquip(dialog_window);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_SELL: {
+        case DIALOGUE_SHOP_SELL: {
             ShopDialogSellEquip(dialog_window, BuildingType_MagicShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+        case DIALOGUE_SHOP_IDENTIFY: {
             ShopDialogIdentify(dialog_window, BuildingType_MagicShop);
             break;
         }
-        case HOUSE_DIALOGUE_SHOP_REPAIR: {
+        case DIALOGUE_SHOP_REPAIR: {
             ShopDialogRepair(dialog_window, BuildingType_MagicShop);
             break;
         }
-        case HOUSE_DIALOGUE_LEARN_SKILLS: {
+        case DIALOGUE_LEARN_SKILLS: {
             ShopDialogLearn(dialog_window);
             break;
         }
@@ -834,13 +834,13 @@ void UIShop_Buy_Identify_Repair() {
     Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
 
     switch (dialog_menu_id) {
-        case HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
+        case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
             current_character_screen_window = WINDOW_CharacterWindow_Inventory;
             pPlayers[uActiveCharacter]->OnInventoryLeftClick();
             break;
         }
 
-        case HOUSE_DIALOGUE_GUILD_BUY_BOOKS: {
+        case DIALOGUE_GUILD_BUY_BOOKS: {
             int testx = (pt.x - 32) / 70;
             if (testx >= 0 && testx < 6) {
                 if (pt.y >= 250) {
@@ -904,7 +904,7 @@ void UIShop_Buy_Identify_Repair() {
             break;
         }
 
-        case HOUSE_DIALOGUE_SHOP_SELL: {
+        case DIALOGUE_SHOP_SELL: {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
                 (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex),
@@ -928,7 +928,7 @@ void UIShop_Buy_Identify_Repair() {
             break;
         }
 
-        case HOUSE_DIALOGUE_SHOP_IDENTIFY: {
+        case DIALOGUE_SHOP_IDENTIFY: {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
                 (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(invindex),
@@ -965,7 +965,7 @@ void UIShop_Buy_Identify_Repair() {
             break;
         }
 
-        case HOUSE_DIALOGUE_SHOP_REPAIR: {
+        case DIALOGUE_SHOP_REPAIR: {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
                 (pItemID = pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
@@ -1006,8 +1006,8 @@ void UIShop_Buy_Identify_Repair() {
             break;
         }
 
-        case HOUSE_DIALOGUE_SHOP_BUY_STANDARD:
-        case HOUSE_DIALOGUE_SHOP_BUY_SPECIAL: {
+        case DIALOGUE_SHOP_BUY_STANDARD:
+        case DIALOGUE_SHOP_BUY_SPECIAL: {
             int testx;
             int testpos;
 
@@ -1016,7 +1016,7 @@ void UIShop_Buy_Identify_Repair() {
 
                     testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
-                        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
                             bought_item =
                                 (ItemGen *)&pParty->StandartItemsInShops
                                     [(int64_t)window_SpeakInHouse->ptr_1C][testx];
@@ -1061,7 +1061,7 @@ void UIShop_Buy_Identify_Repair() {
                             testx += 4;
                         }
 
-                        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
                             bought_item =
                                 (ItemGen *)&pParty->StandartItemsInShops
                                     [(int64_t)window_SpeakInHouse->ptr_1C][testx];
@@ -1116,7 +1116,7 @@ void UIShop_Buy_Identify_Repair() {
                             testx += 6;
                         }
 
-                        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
                             bought_item =
                                 (ItemGen *)&pParty->StandartItemsInShops
                                     [(int64_t)window_SpeakInHouse->ptr_1C][testx];
@@ -1222,22 +1222,12 @@ void UIShop_Buy_Identify_Repair() {
         }
         default:  // if click video screen in shop
         {
-            if (dialog_menu_id >= 36 && dialog_menu_id <= 72) {
-                __debugbreak();  // please do record these dialogue ids to the
-                                 // HOUSE_DIALOGUE_MENU  enum
-
-                v42 = dialog_menu_id - 36;
-                // v43 = (signed __int64)(*(float *)&p2DEvents_minus1__24[13 *
-                // (unsigned int)ptr_507BC0->ptr_1C] * 500.0);
-                v43 =
-                    (signed __int64)(p2DEvents[(uint64_t)
-                                                   window_SpeakInHouse->ptr_1C -
-                                               1]
-                                         .flt_24 *
-                                     500.0);
-                uPriceItemService =
-                    v43 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) /
-                    100;
+            if (IsSkillLearningDialogue(dialog_menu_id)) {
+                v42 = GetLearningDialogueSkill(dialog_menu_id);
+                v43 = (signed __int64)(p2DEvents[(uint64_t)
+                    window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+                uPriceItemService = v43 *
+                    (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
                 if (uPriceItemService < v43 / 3) uPriceItemService = v43 / 3;
                 if (byte_4ED970_skill_learn_ability_by_class_table
                         [pPlayers[uActiveCharacter]->classType][v42]) {
@@ -1246,9 +1236,9 @@ void UIShop_Buy_Identify_Repair() {
                         if (pParty->GetGold() < uPriceItemService) {
                             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                             if (in_current_building_type == BuildingType_Training)
-                                v55 = 4;
+                                v55 = HouseSound_Goodbye;
                             else
-                                v55 = 2;
+                                v55 = HouseSound_NotEnoughMoney_TrainingSuccessful;
                             PlayHouseSound(
                                 (uint64_t)window_SpeakInHouse->ptr_1C,
                                 (HouseSoundID)v55);
@@ -1274,19 +1264,19 @@ void ShowPopupShopItem() {
     int testpos;
 
     if (in_current_building_type <= 0) return;
-    if (dialog_menu_id < HOUSE_DIALOGUE_SHOP_BUY_STANDARD) return;
+    if (dialog_menu_id < DIALOGUE_SHOP_BUY_STANDARD) return;
 
     Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
     int testx;
 
     if (in_current_building_type <= BuildingType_AlchemistShop) {
-        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD ||
-            dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL) {
+        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD ||
+            dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) {
             switch (in_current_building_type) {
                 case BuildingType_WeaponShop: {
                     testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
-                        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
                             item =
                                 (ItemGen *)&pParty->StandartItemsInShops
                                     [(int64_t)window_SpeakInHouse->ptr_1C][testx];
@@ -1329,7 +1319,7 @@ void ShowPopupShopItem() {
                             testx += 4;
                         }
 
-                        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
                             item =
                                 (ItemGen *)&pParty->StandartItemsInShops
                                     [(int64_t)window_SpeakInHouse->ptr_1C][testx];
@@ -1383,7 +1373,7 @@ void ShowPopupShopItem() {
                             testx += 6;
                         }
 
-                        if (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_STANDARD)
+                        if (dialog_menu_id == DIALOGUE_SHOP_BUY_STANDARD)
                             item =
                                 (ItemGen *)&pParty->StandartItemsInShops
                                     [(int64_t)window_SpeakInHouse->ptr_1C][testx];
@@ -1436,7 +1426,7 @@ void ShowPopupShopItem() {
                     // return;
                     // v7 = &pParty->StandartItemsInShops[(unsigned
                     // int)window_SpeakInHouse->ptr_1C][v3 - 1]; if
-                    // (dialog_menu_id == HOUSE_DIALOGUE_SHOP_BUY_SPECIAL) v7 =
+                    // (dialog_menu_id == DIALOGUE_SHOP_BUY_SPECIAL) v7 =
                     // &pParty->SpecialItemsInShops[(unsigned
                     // int)window_SpeakInHouse->ptr_1C][v3 - 1];
                     // GameUI_DrawItemInfo(v7);
@@ -1445,9 +1435,9 @@ void ShowPopupShopItem() {
             }
         }
 
-        if (dialog_menu_id >= HOUSE_DIALOGUE_SHOP_SELL &&
-                dialog_menu_id <= HOUSE_DIALOGUE_SHOP_REPAIR ||
-            dialog_menu_id == HOUSE_DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
+        if (dialog_menu_id >= DIALOGUE_SHOP_SELL &&
+                dialog_menu_id <= DIALOGUE_SHOP_REPAIR ||
+            dialog_menu_id == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
             invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462 ||
                 !pPlayers[uActiveCharacter]->GetItemListAtInventoryIndex(
@@ -1461,7 +1451,7 @@ void ShowPopupShopItem() {
     }
 
     if (in_current_building_type <= BuildingType_16 &&
-        dialog_menu_id == HOUSE_DIALOGUE_GUILD_BUY_BOOKS) {
+        dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {
@@ -1646,8 +1636,8 @@ void sub_4B1447_party_fine(int shopId, int stealingResult,
         }
         if (pParty->uFine) {
             for (uint i = 1; i <= 4; ++i) {
-                if (!_449B57_test_bit(pPlayers[i]->_achieved_awards_bits, PLAYER_GUILD_BITS__FINED))
-                    _449B7E_toggle_bit(pPlayers[i]->_achieved_awards_bits, PLAYER_GUILD_BITS__FINED, 1);
+                if (!_449B57_test_bit(pPlayers[i]->_achieved_awards_bits, Award_Fine))
+                    _449B7E_toggle_bit(pPlayers[i]->_achieved_awards_bits, Award_Fine, 1);
             }
         }
         if (stealingResult == 1)
@@ -1655,9 +1645,8 @@ void sub_4B1447_party_fine(int shopId, int stealingResult,
         else
             v3 = 1;
 
-        pParty->PartyTimes._shop_ban_times[shopId] =
-            GameTime(pParty->GetPlayingTime() +
-            GameTime::FromDays(1));  // only ban when caught
+        pParty->PartyTimes._shop_ban_times[shopId] = GameTime(pParty->GetPlayingTime()
+            + GameTime::FromDays(1));  // only ban when caught
     } else {
         v3 = 2;
     }

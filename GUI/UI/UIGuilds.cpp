@@ -48,12 +48,11 @@ void GuildDialog() {
                  (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
     if (pPrice < base_teach_price / 3) pPrice = base_teach_price / 3;
 
-    if (dialog_menu_id == HOUSE_DIALOGUE_MAIN) {  // change to switch??
-        if (!(uint16_t)_449B57_test_bit(
+    if (dialog_menu_id == DIALOGUE_MAIN) {  // change to switch??
+        if (!_449B57_test_bit(
                 (uint8_t *)pPlayers[uActiveCharacter]->_achieved_awards_bits,
-                guild_mambership_flags[(uint64_t)
-                                           window_SpeakInHouse->ptr_1C -
-                                       139])) {  // you must me member
+                guild_mambership_flags[(uint64_t)window_SpeakInHouse->ptr_1C - 139])) {
+            // you must be a member
             pTextHeight = pFontArrus->CalcTextHeight(
                 pNPCTopics[121].pText, working_window.uFrameWidth, 0);
             working_window.DrawTitleText(
@@ -74,20 +73,20 @@ void GuildDialog() {
              i < pDialogueWindow->pNumPresenceButton +
                      pDialogueWindow->pStartingPosActiveItem;
              ++i) {
-            if (pDialogueWindow->GetControl(i)->msg_param == 18) {
+            if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
                 all_text_height += pFontArrus->CalcTextHeight(
                     localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth,
                     0);
                 dialogopts++;
             } else {
+                auto skill = GetLearningDialogueSkill(
+                    (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
+                );
                 if (byte_4ED970_skill_learn_ability_by_class_table
-                        [pPlayers[uActiveCharacter]->classType]
-                        [pDialogueWindow->GetControl(i)->msg_param - 36] &&
-                    !pPlayers[uActiveCharacter]->pActiveSkills
-                         [pDialogueWindow->GetControl(i)->msg_param - 36]) {
+                        [pPlayers[uActiveCharacter]->classType][skill] &&
+                    !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
                     all_text_height += pFontArrus->CalcTextHeight(
-                        localization->GetSkillName(
-                            pDialogueWindow->GetControl(i)->msg_param - 36),
+                        localization->GetSkillName(skill),
                         working_window.uFrameWidth, 0, 0);
                     dialogopts++;
                     pSkillFlag = true;
@@ -99,18 +98,16 @@ void GuildDialog() {
         return;
     }
 
-    if (dialog_menu_id == HOUSE_DIALOGUE_GUILD_BUY_BOOKS) {  // buy books
+    if (dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
         render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
         int itemxind = 0;
 
-        for (pX = 32; pX < 452; pX += 70) {  //расположение в верхнем ряду
-            if (pParty
-                    ->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139]
-                                        [itemxind]
-                    .uItemID) {
+        for (pX = 32; pX < 452; pX += 70) {  // top row
+            if (pParty->SpellBooksInGuilds
+                [window_SpeakInHouse->par1C - 139][itemxind].uItemID) {
                 render->DrawTextureAlphaNew(
                     pX / 640.0f, 90 / 480.0f,
-                    shop_ui_items_in_store[itemxind]);  // top row
+                    shop_ui_items_in_store[itemxind]);
             }
             if (pParty
                     ->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139]
@@ -127,10 +124,8 @@ void GuildDialog() {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             int itemcount = 0;
             for (uint i = 0; i < 12; ++i) {
-                if (pParty
-                        ->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139]
-                                            [i]
-                        .uItemID > 0)
+                if (pParty->SpellBooksInGuilds
+                    [window_SpeakInHouse->par1C - 139][i].uItemID > 0)
                     ++itemcount;
             }
 
@@ -197,10 +192,11 @@ void GuildDialog() {
     }
 
     if (HouseUI_CheckIfPlayerCanInteract()) {  // buy skills
-        if (pPlayers[uActiveCharacter]->pActiveSkills[dialog_menu_id - 36]) {
+        auto skill = GetLearningDialogueSkill(dialog_menu_id);
+        if (pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
             GameUI_SetStatusBar(
                 LSTR_FMT_ALREADY_KNOW_THE_S_SKILL,
-                localization->GetSkillName(dialog_menu_id - 36)
+                localization->GetSkillName(skill)
             );
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
         } else {
@@ -210,8 +206,7 @@ void GuildDialog() {
                                HouseSound_NotEnoughMoney_TrainingSuccessful);
             } else {
                 Party::TakeGold(pPrice);
-                pPlayers[uActiveCharacter]->pActiveSkills[dialog_menu_id - 36] =
-                    1;
+                pPlayers[uActiveCharacter]->pActiveSkills[skill] = 1;
             }
         }
     }
@@ -226,14 +221,10 @@ void SpellBookGenerator() {  // for GuildDialogs
     for (int i = 0; i < 12; ++i) {
         if (p2DEvents[window_SpeakInHouse->par1C - 1].uType >= 5) {
             if (p2DEvents[window_SpeakInHouse->par1C - 1].uType <= 13) {
-                pItemNum =
-                    rand() %
-                    word_4F0F30[(signed int)window_SpeakInHouse->par1C -
-                    139] +
-                    11 *
-                    p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
-                    .uType +
-                    345;
+                pItemNum = rand() %
+                    word_4F0F30[(signed int)window_SpeakInHouse->par1C - 139]
+                    + 11 * p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].uType
+                    + 345;
             } else {
                 if (p2DEvents[window_SpeakInHouse->par1C - 1].uType == 14)
                     randomnum = rand() % 4;
@@ -243,13 +234,14 @@ void SpellBookGenerator() {  // for GuildDialogs
                     randomnum = rand() % 2 + 7;
                 if (p2DEvents[window_SpeakInHouse->par1C - 1].uType <= 16)
                     pItemNum = rand() %
-                            word_4F0F30[(signed int)window_SpeakInHouse->par1C - 139] + 11 * randomnum + 400;
+                        word_4F0F30[(signed int)window_SpeakInHouse->par1C - 139]
+                        + 11 * randomnum + 400;
             }
         }
 
-        if (pItemNum == 487) {  // divine intervention check
-            if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, 239))
-                pItemNum = 486;
+        if (pItemNum == ITEM_SPELLBOOK_LIGHT_DIVINE_INTERVENTION) {
+            if (!_449B57_test_bit(pParty->_quest_bits, QBIT_DIVINE_INTERVENTION_RETRIEVED))
+                pItemNum = ITEM_SPELLBOOK_LIGHT_SUN_BURST;
         }
 
         ItemGen *item_spellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i];
@@ -257,6 +249,7 @@ void SpellBookGenerator() {  // for GuildDialogs
         pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].uItemID = pItemNum;
         pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].IsIdentified();
 
-        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(pItemsTable->pItems[pItemNum].pIconName, 0x7FF);
+        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
+            pItemsTable->pItems[pItemNum].pIconName, 0x7FF);
     }
 }

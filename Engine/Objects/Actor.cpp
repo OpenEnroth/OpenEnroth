@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -1251,8 +1252,8 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
 
     if (pParty->uFine) {
         for (int i = 1; i <= 4; i++) {
-            if (!_449B57_test_bit(pPlayers[i]->_achieved_awards_bits, PLAYER_GUILD_BITS__FINED))
-                _449B7E_toggle_bit(pPlayers[i]->_achieved_awards_bits, PLAYER_GUILD_BITS__FINED, 1u);
+            if (!_449B57_test_bit(pPlayers[i]->_achieved_awards_bits, Award_Fine))
+                _449B7E_toggle_bit(pPlayers[i]->_achieved_awards_bits, Award_Fine, 1);
         }
     }
 }

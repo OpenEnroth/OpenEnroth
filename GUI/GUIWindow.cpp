@@ -108,6 +108,10 @@ Image *ui_ar_up_up = nullptr;
 Image *ui_leather_mm6 = nullptr;
 Image *ui_leather_mm7 = nullptr;
 
+DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
+AwardType dword_F8B1AC_award_bit_number;
+
+
 const wchar_t *MENU_STATE_to_string(MENU_STATE m) {
     switch (m) {
     case -1: return L"-1";
@@ -792,12 +796,12 @@ GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, un
 }
 
 //----- (004B3EF0) --------------------------------------------------------
-void DrawJoinGuildWindow(int pEventCode) {
-    uDialogueType = 81;  // enum JoinGuildDialog
-    current_npc_text = (char *)pNPCTopics[pEventCode + 99].pText;
-    ContractSelectText(pEventCode);
+void DrawJoinGuildWindow(GUILD_ID guild_id) {
+    uDialogueType = DIALOGUE_81_join_guild;
+    current_npc_text = (char *)pNPCTopics[guild_id + 99].pText;
+    GetJoinGuildDialogueOption(guild_id);
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)pEventCode);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)guild_id);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_CANCEL),
@@ -806,9 +810,9 @@ void DrawJoinGuildWindow(int pEventCode) {
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_ClickNPCTopic,
-        82, GameKey::None, localization->GetString(LSTR_JOIN));
+        DIALOGUE_82_join_guild, GameKey::None, localization->GetString(LSTR_JOIN));
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-    dialog_menu_id = HOUSE_DIALOGUE_OTHER;
+    dialog_menu_id = DIALOGUE_OTHER;
 }
 
 void DialogueEnding() {
@@ -1410,7 +1414,7 @@ unsigned int GetSkillColor(unsigned int uPlayerClass,
     Error("Invalid player class: %u", uPlayerClass);
 }
 
-void ClickNPCTopic(int uMessageParam) {
+void ClickNPCTopic(DIALOGUE_TYPE topic) {
     int pEventNumber;  // ecx@8
     Player *v4;        // esi@20
     char *v12;         // eax@53
@@ -1421,12 +1425,12 @@ void ClickNPCTopic(int uMessageParam) {
     char *v22;         // [sp-Ch] [bp-18h]@73
     char *v24;         // [sp-8h] [bp-14h]@73
 
-    uDialogueType = uMessageParam + 1;
+    uDialogueType = (DIALOGUE_TYPE)(topic + 1);
     NPCData *pCurrentNPCInfo =
         HouseNPCData[pDialogueNPCCount - ((dword_591080 != 0) ? 1 : 0)];  //- 1
-    if (uMessageParam <= 24) {
-        switch (uMessageParam) {
-        case DIALOGUE_13_hire:
+    if (topic <= DIALOGUE_SCRIPTED_LINE_6) {
+        switch (topic) {
+        case DIALOGUE_13_hiring_related:
             current_npc_text = BuildDialogueString(
                 pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                 uActiveCharacter - 1, 0, 0, 0
@@ -1457,15 +1461,7 @@ void ClickNPCTopic(int uMessageParam) {
             BackToHouseMenu();
             return;
         }
-        /*switch ( pEventNumber )
-        {
-        case 139:
-        OracleDialogue();
-        goto _return;
-        case 311:
-        CheckBountyRespawnAndAward();
-        goto _return;
-        }*/
+
         if (pEventNumber < 200 || pEventNumber > 310) {
             if (pEventNumber < 400 || pEventNumber > 410) {
                 if (pEventNumber == 139) {
@@ -1481,8 +1477,8 @@ void ClickNPCTopic(int uMessageParam) {
                     }
                 }
             } else {
-                dword_F8B1D8 = uMessageParam;
-                DrawJoinGuildWindow(pEventNumber - 400);
+                _dword_F8B1D8_last_npc_topic_menu = topic;
+                DrawJoinGuildWindow((GUILD_ID)(pEventNumber - 400));
             }
         } else {
             _4B3FE5_training_dialogue(pEventNumber);
@@ -1490,8 +1486,8 @@ void ClickNPCTopic(int uMessageParam) {
         BackToHouseMenu();
         return;
     }
-    if (uMessageParam != 76) {
-        if (uMessageParam == 77) {
+    if (topic != DIALOGUE_HIRE_FIRE) {
+        if (topic == DIALOGUE_PROFESSION_DETAILS) {
             // uBoxHeight = pCurrentNPCInfo->uProfession;
             __debugbreak();  // probably hirelings found in buildings, not
                              // present in MM7, changed
@@ -1500,97 +1496,79 @@ void ClickNPCTopic(int uMessageParam) {
                              // other versions whether it's ok
             if (dialogue_show_profession_details) {
                 current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->profession]
-                    .pJoinText,
+                    pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                     uActiveCharacter - 1, 0, 0, 0);
             } else {
                 current_npc_text = BuildDialogueString(
-                    pNPCStats->pProfessions[pCurrentNPCInfo->profession]
-                    .pBenefits,
+                    pNPCStats->pProfessions[pCurrentNPCInfo->profession].pBenefits,
                     uActiveCharacter - 1, 0, 0, 0);
             }
-            dialogue_show_profession_details =
-                ~dialogue_show_profession_details;
+            dialogue_show_profession_details = ~dialogue_show_profession_details;
         } else {
-            if (uMessageParam == 79) {
-                if (contract_approved) {
+            if (topic == DIALOGUE_79_mastery_teacher) {
+                if (guild_membership_approved) {
                     Party::TakeGold(gold_transaction_amount);
                     if (uActiveCharacter) {
-                        v12 =
-                            (char *)&pPlayers[uActiveCharacter]
+                        v12 = (char *)&pPlayers[uActiveCharacter]
                             ->pActiveSkills[dword_F8B1AC_award_bit_number];
                         *(short *)v12 &= 0x3Fu;
                         switch (dword_F8B1B0_MasteryBeingTaught) {
                         case 2:
                             v15 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills
-                                [dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
                             *v15 |= 0x40u;
                             break;
                         case 3:
                             v14 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills
-                                [dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
                             *v14 |= 0x80u;
                             break;
                         case 4:
                             v13 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills
-                                [dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
                             v13[1] |= 1u;
                             break;
                         }
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_85, 0);
                     }
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-                    /*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
-                    {
-                    pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].eType
-                    = UIMSG_Escape;
-                    pMessageQueue_50CBD0->pMessages[pMessageQueue_50CBD0->uNumMessages].param
-                    = 1;
-                    *(&pMessageQueue_50CBD0->uNumMessages + 3 *
-                    pMessageQueue_50CBD0->uNumMessages + 3) = 0;
-                    ++pMessageQueue_50CBD0->uNumMessages;
-                    }*/
                 }
             } else {
-                if (uMessageParam == 82 && contract_approved) {  // join guild
+                if (topic == DIALOGUE_82_join_guild && guild_membership_approved) {
+                    // join guild
                     Party::TakeGold(gold_transaction_amount);
                     v4 = pParty->pPlayers.data();
                     do {
-                        v4->SetVariable(VAR_Award,
-                            dword_F8B1AC_award_bit_number);
+                        v4->SetVariable(VAR_Award, dword_F8B1AC_award_bit_number);
                         ++v4;
-                    } while ((int64_t)v4 <
-                        (int64_t)pParty->pHirelings.data());
-                    switch (dword_F8B1D8) {
-                    case 19:
+                    } while ((int64_t)v4 < (int64_t)pParty->pHirelings.data());
+                    switch (_dword_F8B1D8_last_npc_topic_menu) {
+                    case DIALOGUE_SCRIPTED_LINE_1:
                         pEventNumber = pCurrentNPCInfo->dialogue_1_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
                             pCurrentNPCInfo->dialogue_1_evt_id = 0;
                         break;
-                    case 20:
+                    case DIALOGUE_SCRIPTED_LINE_2:
                         pEventNumber = pCurrentNPCInfo->dialogue_2_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
                             pCurrentNPCInfo->dialogue_2_evt_id = 0;
                         break;
-                    case 21:
+                    case DIALOGUE_SCRIPTED_LINE_3:
                         pEventNumber = pCurrentNPCInfo->dialogue_3_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
                             pCurrentNPCInfo->dialogue_3_evt_id = 0;
                         break;
-                    case 22:
+                    case DIALOGUE_SCRIPTED_LINE_4:
                         pEventNumber = pCurrentNPCInfo->dialogue_4_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
                             pCurrentNPCInfo->dialogue_4_evt_id = 0;
                         break;
-                    case 23:
+                    case DIALOGUE_SCRIPTED_LINE_5:
                         pEventNumber = pCurrentNPCInfo->dialogue_5_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
                             pCurrentNPCInfo->dialogue_5_evt_id = 0;
                         break;
-                    case 24:
+                    case DIALOGUE_SCRIPTED_LINE_6:
                         pEventNumber = pCurrentNPCInfo->dialogue_6_evt_id;
                         if (pEventNumber >= 400 && pEventNumber <= 416)
                             pCurrentNPCInfo->dialogue_6_evt_id = 0;
@@ -1598,8 +1576,7 @@ void ClickNPCTopic(int uMessageParam) {
                     }
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     if (uActiveCharacter) {
-                        pPlayers[uActiveCharacter]->PlaySound(
-                            (PlayerSpeech)SPEECH_86, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_86, 0);
                         BackToHouseMenu();
                         return;
                     }
@@ -1626,7 +1603,7 @@ void ClickNPCTopic(int uMessageParam) {
         if (pParty->GetGold() < (unsigned int)pPrice) {
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
             dialogue_show_profession_details = false;
-            uDialogueType = 13;
+            uDialogueType = DIALOGUE_13_hiring_related;
             current_npc_text = BuildDialogueString(
                 pNPCStats->pProfessions[pCurrentNPCInfo->profession].pJoinText,
                 uActiveCharacter - 1, 0, 0, 0);
@@ -1656,24 +1633,20 @@ void ClickNPCTopic(int uMessageParam) {
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
     PrepareHouse((HOUSE_ID)(int64_t)window_SpeakInHouse->ptr_1C);
-    dialog_menu_id = HOUSE_DIALOGUE_MAIN;
+    dialog_menu_id = DIALOGUE_MAIN;
 
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
     if (uActiveCharacter)
         pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)61, 0);
 
-// _return:
     BackToHouseMenu();
 }
 
-// Originally called _4B254D_SkillMasteryTeacher to have contract_approved
-// assigned, to be able to set some button name. But it the name gets immediately
-// overwritten
+
 void _4B3FE5_training_dialogue(int a4) {
     uDialogueType = DIALOGUE_SKILL_TRAINER;
     current_npc_text = String(pNPCTopics[a4 + 168].pText);
-    String what = _4B254D_SkillMasteryTeacher(
-        a4);  // might be needed because of contract_approved ?
+    _4B254D_SkillMasteryTeacher(a4);  // checks whether the facility can be used
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)a4);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
@@ -1683,10 +1656,11 @@ void _4B3FE5_training_dialogue(int a4) {
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
     pDialogueWindow->CreateButton(
-        480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic, 0x4Fu, GameKey::None,
-        contract_approved ? localization->GetString(LSTR_LEARN) : "");
+        480, 160, 0x8Cu, 0x1Eu, 1, 0, UIMSG_ClickNPCTopic,
+        DIALOGUE_79_mastery_teacher, GameKey::None,
+        guild_membership_approved ? localization->GetString(LSTR_LEARN) : "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-    dialog_menu_id = HOUSE_DIALOGUE_OTHER;
+    dialog_menu_id = DIALOGUE_OTHER;
 }
 
 //----- (004B1ECE) --------------------------------------------------------
@@ -1699,30 +1673,28 @@ void OracleDialogue() {
     signed int v10;  // [sp+10h] [bp-8h]@13
     int v11;         // [sp+14h] [bp-4h]@1
 
-    contract_approved = 0;
+    guild_membership_approved = 0;
     v11 = 0;
-    uDialogueType = 84;
+    uDialogueType = DIALOGUE_84_oracle;
     current_npc_text = (char *)pNPCTopics[667].pText;
     v0 = _4F0882_evt_VAR_PlayerItemInHands_vals.data();
 
     for (uint i = 0; i <= 53; i++) {
         if ((unsigned __int16)_449B57_test_bit(pParty->_quest_bits, *v0)) {
             for (uint pl = 0; pl < 4; pl++) {
-                if (pParty->pPlayers[pl].CompareVariable(VAR_PlayerItemInHands,
-                    *(v0 + 1)))
+                if (pParty->pPlayers[pl].CompareVariable(VAR_PlayerItemInHands, *(v0 + 1)))
                     break;
             }
         }
         ++v11;
     }
     if (v0 <= &_4F0882_evt_VAR_PlayerItemInHands_vals[53]) {
-        current_npc_text = (char *)pNPCTopics[666]
-            .pText;  // Here's %s that you lost. Be careful
+        current_npc_text = (char *)pNPCTopics[666].pText;  // Here's %s that you lost. Be careful
         v4 = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
-        contract_approved = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
+        guild_membership_approved = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
         pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, v4);
     }
-    if (contract_approved == 601) {
+    if (guild_membership_approved == ITEM_LICH_JAR_FULL) {
         v5 = 0;
         // v12 = pParty->pPlayers.data();//[0].uClass;
         v9 = 0;
@@ -1734,17 +1706,10 @@ void OracleDialogue() {
                 // pParty->pPlayers.data();//[0].pInventoryItems[0].field_1A;
                 for (uint pl = 0; pl < 4; pl++) {
                     for (v8 = 0; v8 < 126; v8++) {  // 138
-                        if (pParty->pPlayers[pl]
-                            .pInventoryItemList[v8]
-                            .uItemID == ITEM_LICH_JAR_FULL) {
-                            if (!pParty->pPlayers[pl]
-                                .pInventoryItemList[v8]
-                                .uHolderPlayer)
-                                v9 = &pParty->pPlayers[pl]
-                                .pInventoryItemList[v8];
-                            if (pParty->pPlayers[pl]
-                                .pInventoryItemList[v8]
-                                .uHolderPlayer == v5)
+                        if (pParty->pPlayers[pl].pInventoryItemList[v8].uItemID == ITEM_LICH_JAR_FULL) {
+                            if (!pParty->pPlayers[pl].pInventoryItemList[v8].uHolderPlayer)
+                                v9 = &pParty->pPlayers[pl].pInventoryItemList[v8];
+                            if (pParty->pPlayers[pl].pInventoryItemList[v8].uHolderPlayer == v5)
                                 v10 = 1;
                         }
                     }
@@ -1764,7 +1729,7 @@ void CheckBountyRespawnAndAward() {
     int i;                // eax@2
     int rand_monster_id;  // edx@3
 
-    uDialogueType = 83;
+    uDialogueType = DIALOGUE_83_bounty_hunting;
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
@@ -1774,9 +1739,10 @@ void CheckBountyRespawnAndAward() {
     );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0,
         UIMSG_BuyInShop_Identify_Repair, 0, GameKey::None, "");
-    pDialogueWindow->CreateButton(480, 160, 140, 30, 1, 0, UIMSG_0, 83, GameKey::None, "");
+    pDialogueWindow->CreateButton(480, 160, 140, 30,
+        1, 0, UIMSG_0, DIALOGUE_83_bounty_hunting, GameKey::None, "");
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
-    dialog_menu_id = HOUSE_DIALOGUE_OTHER;
+    dialog_menu_id = DIALOGUE_OTHER;
     // get new monster for hunting
     if (pParty->PartyTimes.bountyHunting_next_generation_time[(
         int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] <
@@ -1855,7 +1821,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
     unsigned __int16 pointsInSkill;  // [sp+1Ch] [bp-10h]@7
     int masteryLevelBeingTaught;     // [sp+24h] [bp-8h]@7
 
-    contract_approved = 0;
+    guild_membership_approved = false;
     teacherLevel = (trainerInfo - 200) % 3;
     skillBeingTaught = (trainerInfo - 200) / 3;
     Player *activePlayer = pPlayers[uActiveCharacter];
@@ -1919,7 +1885,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             pNPCTopics[teacherLevel + 128]
             .pText);  // You are already an SKILLLEVEL in this skill.
 
-    dword_F8B1AC_award_bit_number = skillBeingTaught;
+    dword_F8B1AC_award_bit_number = (AwardType)skillBeingTaught;
     if (masteryLevelBeingTaught == 2 && pointsInSkillWOutMastery < 4 ||
         masteryLevelBeingTaught == 3 && pointsInSkillWOutMastery < 7 ||
         masteryLevelBeingTaught == 4 && pointsInSkillWOutMastery < 10)
@@ -2002,15 +1968,13 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 2000;
             break;
         case 3:
-            if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits,
-                114))
+            if (!_449B57_test_bit(pParty->_quest_bits, 114))
                 return String(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
         case 4:
-            if (!activePlayer->ProfessionOrGuildFlagsCorrect(0x22u,
-                1) ||
-                !activePlayer->ProfessionOrGuildFlagsCorrect(0x1Au, 1))
+            if (!activePlayer->IsClass(PLAYER_CLASS_ARCHMAGE) ||
+                !activePlayer->IsClass(PLAYER_CLASS_PRIEST_OF_SUN))
                 return String(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -2022,15 +1986,13 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 2000;
             break;
         case 3:
-            if (!(unsigned __int16)_449B57_test_bit(pParty->_quest_bits,
-                110))
+            if (!_449B57_test_bit(pParty->_quest_bits, 110))
                 return String(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
         case 4:
-            if (!activePlayer->ProfessionOrGuildFlagsCorrect(0x23u,
-                1) ||
-                !activePlayer->ProfessionOrGuildFlagsCorrect(0x1Bu, 1))
+            if (!activePlayer->IsClass(PLAYER_CLASS_LICH) ||
+                !activePlayer->IsClass(PLAYER_CLASS_PRIEST_OF_MOON))
                 return String(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -2089,7 +2051,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
     case PLAYER_SKILL_DIPLOMACY:
         Error("Diplomacy not used");
         break;
-    case PLAYER_SKILL_TIEVERY:
+    case PLAYER_SKILL_THIEVERY:
         Error("Thievery not used");
         break;
     case PLAYER_SKILL_DODGE:
@@ -2101,8 +2063,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case 4:
-            if ((activePlayer->pActiveSkills[PLAYER_SKILL_UNARMED] &
-                63) < 0xA)
+            if ((activePlayer->pActiveSkills[PLAYER_SKILL_UNARMED] & 63) < 0xA)
                 return String(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -2117,8 +2078,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount = 5000;
             break;
         case 4:
-            if ((activePlayer->pActiveSkills[PLAYER_SKILL_DODGE] & 63) <
-                0xA)
+            if ((activePlayer->pActiveSkills[PLAYER_SKILL_DODGE] & 63) < 0xA)
                 return String(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
@@ -2147,7 +2107,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
     if (gold_transaction_amount > pParty->GetGold())
         return String(pNPCTopics[124].pText);  // You don't have enough gold!
 
-    contract_approved = 1;
+    guild_membership_approved = true;
     if (masteryLevelBeingTaught == 2) {
         return localization->FormatString(
             LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
@@ -2258,7 +2218,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
                 v63 = 0;
                 v20 = (unsigned __int8 *)pPlayer->_achieved_awards_bits;
                 for (uint _i = 0; _i < 28; ++_i) {
-                    if ((unsigned __int16)_449B57_test_bit(
+                    if (_449B57_test_bit(
                         v20, word_4EE150[i])) {
                         v21 = v63;
                         ++v63;
@@ -2766,7 +2726,7 @@ void SkillTrainingDialogue(
         ++i
     ) {
         auto pButton = pDialogueWindow->GetControl(i);
-        if (pButton->msg_param == DIALOGUE_18_buy_spells) {
+        if (pButton->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
             pButton->uY = textspacings + textoffset;
             int line_height = pFontArrus->CalcTextHeight(
                 localization->GetString(LSTR_BUY_SPELLS),
@@ -2786,7 +2746,9 @@ void SkillTrainingDialogue(
                 3
             );
         } else {
-            int skill_id = pButton->msg_param - DIALOGUE_LEARN_STAFF;
+            auto skill_id = GetLearningDialogueSkill(
+                (DIALOGUE_TYPE)pButton->msg_param
+            );
 
             if (!byte_4ED970_skill_learn_ability_by_class_table
                 [pPlayers[uActiveCharacter]->classType][skill_id]
@@ -2815,5 +2777,34 @@ void SkillTrainingDialogue(
                 );
             }
         }
+    }
+}
+
+
+//----- (004B29F2) --------------------------------------------------------
+const char* GetJoinGuildDialogueOption(GUILD_ID guild_id) {
+    static const int dialogue_base = 110;
+    guild_membership_approved = false;
+    dword_F8B1AC_award_bit_number = (AwardType)(Award_Membership_ElementalGuilds + guild_id);
+    gold_transaction_amount = price_for_membership[guild_id];
+
+    if (uActiveCharacter == 0)
+        uActiveCharacter = pParty->GetFirstCanAct();  // avoid nzi
+
+    if (pPlayers[uActiveCharacter]->CanAct()) {
+        if (_449B57_test_bit(
+            (uint8_t*)pPlayers[uActiveCharacter]->_achieved_awards_bits,
+            dword_F8B1AC_award_bit_number)) {
+            return pNPCTopics[dialogue_base + 13].pText;
+        } else {
+            if (gold_transaction_amount <= pParty->GetGold()) {
+                guild_membership_approved = true;
+                return pNPCTopics[dialogue_base + guild_id].pText;
+            } else {
+                return pNPCTopics[dialogue_base + 14].pText;
+            }
+        }
+    } else {
+        return pNPCTopics[dialogue_base + 12].pText;
     }
 }

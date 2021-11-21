@@ -1051,7 +1051,7 @@ LABEL_47:
                         if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
                             if (uGameState == GAME_STATE_CHANGE_LOCATION) {
                                 pAudioPlayer->StopChannels(-1, -1);
-                                dialog_menu_id = HOUSE_DIALOGUE_NULL;
+                                dialog_menu_id = DIALOGUE_NULL;
                                 while (HouseDialogPressCloseBtn());
                                 pMediaPlayer->Unload();
                                 window_SpeakInHouse->Release();
@@ -1064,7 +1064,7 @@ LABEL_47:
                                     pDialogueWindow->Release();
                                     pDialogueWindow = 0;
                                 }
-                                dialog_menu_id = HOUSE_DIALOGUE_NULL;
+                                dialog_menu_id = DIALOGUE_NULL;
                                 pIcons_LOD->SyncLoadedFilesCount();
                             }
                             OnMapLeave();
