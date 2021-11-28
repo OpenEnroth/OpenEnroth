@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include "Engine/LOD.h"
 
 #include "Engine/Engine.h"
@@ -24,10 +26,149 @@ LODFile_Sprites *pSprites_LOD_mm6 = nullptr;
 LODFile_Sprites *pSprites_LOD_mm8 = nullptr;
 
 LOD::WriteableFile *pNew_LOD = nullptr;
-LOD::File *pGames_LOD = nullptr;
+LOD::Container* pGames_LOD = nullptr;
 
 int _6A0CA4_lod_binary_search;
 int _6A0CA8_lod_unused;
+
+
+static int _get_file_header_length(LOD_VERSION lod_version) {
+    switch (lod_version) {
+    case LOD_VERSION_MM6: return sizeof(LOD::File_Image_Mm6);
+    case LOD_VERSION_MM8: return sizeof(LOD::File_Image_Mm8);
+    default: Error("Unsupported LOD write format: %d", lod_version);
+    }
+}
+
+
+static int _get_directory_write_size(LOD_VERSION lod_version) {
+    switch (lod_version) {
+    case LOD_VERSION_MM6: return sizeof(LOD::Directory_Image_Mm6);
+    case LOD_VERSION_MM8: return sizeof(LOD::Directory_Image_Mm6);
+    default: Error("Unsupported LOD write format: %d", lod_version);
+    }
+}
+
+
+static std::vector<LOD::File> _read_directory_files(
+    const std::shared_ptr<LOD::Directory>& dir,
+    FILE *f,
+    int num_files,
+    LOD_VERSION lod_version
+) {
+    std::vector<LOD::File> files;
+
+    fseek(f, dir->files_start, SEEK_SET);
+    for (int i = 0; i < num_files; ++i) {
+        switch (lod_version) {
+        case LOD_VERSION_MM6: {
+            LOD::File_Image_Mm6 mm6;
+            Assert(1 == fread(&mm6, sizeof(mm6), 1, f));
+
+            LOD::File file;
+            file.name = mm6.name;
+            file.offset = mm6.data_offset;
+            file.size = mm6.size;
+            files.push_back(file);
+            continue;
+        }
+        case LOD_VERSION_MM8: {
+            LOD::File_Image_Mm8 mm8;
+            Assert(1 == fread(&mm8, sizeof(mm8), 1, f));
+
+            LOD::File file;
+            file.name = mm8.name;
+            file.offset = mm8.unk_10;
+            file.size = mm8.unk_11;
+            files.push_back(file);
+            continue;
+
+        }
+        default: Error("Unsupported LOD file version: %d", (int)lod_version);
+        }
+    }
+
+    Assert(files.size() == num_files);
+    return files;
+}
+
+
+static void _write_file(
+    FILE* f,
+    LOD_VERSION lod_version
+) {
+    Assert(false);
+
+    switch (lod_version) {
+    case LOD_VERSION_MM6: {
+    }
+    case LOD_VERSION_MM8: {
+    }
+    default: Error("Cannot write LOD file version: %d", (int)lod_version);
+    }
+
+}
+
+
+static void _write_directory(
+    FILE* f,
+    LOD_VERSION lod_version,
+    const LOD::Directory& dir
+) {
+    LOD::Directory_Image_Mm6 dir_image;
+    strcpy_s(dir_image.pFilename, dir.name.c_str());
+    dir_image.data_offset = dir.files_start;
+    dir_image.uDataSize = dir.size_in_bytes();
+    dir_image.dword_000018 = 0;
+    dir_image.num_items = dir.files.size();
+    dir_image.priority = 0;
+    Assert(1 == fwrite(&dir_image, sizeof(dir_image), 1, f));
+
+    if (dir.files.size() > 0) {
+        fseek(f, dir.files_start, SEEK_SET);
+        for (const auto& file : dir.files) {
+            _write_file(f, lod_version);
+        }
+    }
+}
+
+static void _write_directories(
+    FILE *f,
+    LOD_VERSION lod_version,
+    int num_items,
+    LOD::Directory *items
+) {
+    int write_size = _get_directory_write_size(lod_version);
+    for (int i = 0; i < num_items; ++i) {
+        fwrite(
+            items + i,
+            write_size,
+            1,
+            f
+        );
+    }
+}
+
+
+static int _read_directories(
+    FILE* f,
+    LOD_VERSION lod_version,
+    int num_items,
+    LOD::Directory* items
+) {
+    int write_size = _get_directory_write_size(lod_version);
+    int items_read = 0;
+    for (int i = 0; i < num_items; ++i) {
+        items_read += fread(
+            items + i,
+            write_size,
+            1,
+            f
+        );
+    }
+    return items_read;
+}
+
 
 inline int LODFile_IconsBitmaps::LoadDummyTexture() {
     for (unsigned int i = 0; i < uNumLoadedFiles; ++i)
@@ -145,7 +286,7 @@ bool LODFile_Sprites::LoadSprites(const String &pFilename) {
         return false;
     }
 
-    return LoadSubIndices("sprites08");
+    return OpenFolder("sprites08");
 }
 
 int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPaletteID) {
@@ -236,59 +377,59 @@ void LODFile_Sprites::DeleteSomeOtherSprites() {
     uNumLoadedSprites = field_ECA0;
 }
 
-void LOD::File::Close() {
+void LOD::Container::Close() {
     if (!isFileOpened) {
         return;
     }
 
-    pContainerName.clear();
-    pRoot.clear();
-    free(pSubIndices);
-    pSubIndices = nullptr;
+    _current_folder == nullptr;
+    _index.clear();
+
     fclose(pFile);
     isFileOpened = false;
     _6A0CA8_lod_unused = 0;
 }
 
-int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
-                                     const String &root_name, const String &lod_name) {
+int LOD::WriteableFile::CreateEmptyLod(
+    LOD::FileHeader* pHeader,
+    const std::string& root_name,
+    const std::string& lod_name
+) {
     if (isFileOpened) return 1;
     if (root_name.empty()) {
         return 2;
     }
-    strcpy(pHeader->pSignature, "LOD");
-    pHeader->LODSize = 100;
-    pHeader->uNumIndices = 1;
 
-    LOD::Directory dir;
-    strcpy(dir.pFilename, root_name.c_str());
-    dir.field_F = 0;
-    dir.uDataSize = 0;
-    dir.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
+    pFile = fcaseopen(lod_name.c_str(), "wb+");
+    if (!pFile) return 3;
+
     pLODName = lod_name;
 
-    pFile = fcaseopen(pLODName.c_str(), "wb+");
-    if (!pFile) return 3;
+    strcpy(pHeader->pSignature, "LOD");
+    pHeader->LODSize = 100;
+    pHeader->num_directories = 1;
+
+    LOD::Directory dir;
+    dir.name = root_name;
+    dir.files_start = sizeof(LOD::FileHeader) + 1 * _get_directory_write_size(GetVersion());
+
     fwrite(pHeader, sizeof(LOD::FileHeader), 1, pFile);
-    fwrite(&dir, sizeof(LOD::Directory), 1, pFile);
+    _write_directory(pFile, GetVersion(), dir);
     fclose(pFile);
     pFile = nullptr;
     return 0;
 }
 
-void LOD::File::ResetSubIndices() {
+void LOD::Container::ResetSubIndices() {
     if (!isFileOpened) {
         return;
     }
 
-    pContainerName.clear();
-    uOffsetToSubIndex = 0;
-    free(pSubIndices);
-    pSubIndices = nullptr;
+    _current_folder = nullptr;
 }
 
 void LOD::WriteableFile::ResetSubIndices() {
-    LOD::File::ResetSubIndices();
+    LOD::Container::ResetSubIndices();
     uLODDataSize = 0;
 }
 
@@ -333,12 +474,8 @@ void Sprite::Release() {
     this->uPaletteID = 0;
 }
 
-bool LODFile_IconsBitmaps::Load(const String &pLODFilename, const String &pFolderName) {
-    if (!Open(pLODFilename)) {
-        return false;
-    }
-
-    return LoadSubIndices(pFolderName);
+bool LODFile_IconsBitmaps::Load(const std::string& filename, const String& folder) {
+    return Open(filename) && OpenFolder(folder);
 }
 
 void LODFile_IconsBitmaps::ReleaseAll() {
@@ -386,7 +523,7 @@ LODSprite::~LODSprite() {
     bitmap = nullptr;
 }
 
-LODFile_Sprites::LODFile_Sprites() : LOD::File() {
+LODFile_Sprites::LODFile_Sprites() : LOD::Container() {
     field_ECA4 = 0;
     field_ECA0 = 0;
     pHardwareSprites = 0;
@@ -403,10 +540,9 @@ LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
     free(this->pHardwareSurfaces);
     free(this->pHardwareTextures);
     free(this->ptr_011BB4);
-    // LOD::File::vdtor((LOD::File *)v1);
 }
 
-LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
+LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::Container() {
     /*v2 = v1->pTextures;
     v3 = 1000;
     do
@@ -440,17 +576,16 @@ bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить з
 }
 
 int LOD::WriteableFile::FixDirectoryOffsets() {
-    unsigned int total_size = 0;
-    for (int i = 0; i < uNumSubDirs; i++) {
-        total_size += pSubIndices[i].uDataSize;
-    }
+    size_t total_size = _current_folder->size_in_bytes();
 
     // fix offsets
-    int temp_offset = sizeof(LOD::Directory) * uNumSubDirs;
-    for (int i = 0; i < uNumSubDirs; i++) {
-        pSubIndices[i].uOfsetFromSubindicesStart = temp_offset;
-        temp_offset += pSubIndices[i].uDataSize;
-    }
+    Assert(false); // fix this mess
+    //int temp_offset = sizeof(LOD::FileHeader)
+    //    + _current_folder->files.size() * _get_directory_write_size(GetVersion());
+    //for (int i = 0; i < _current_folder_num_items; i++) {
+    //    _current_folder_items[i].data_offset = temp_offset;
+    //    temp_offset += _current_folder_items[i].uDataSize;
+    //}
 
     String Filename = "lod.tmp";
     FILE *tmp_file = fcaseopen(Filename.c_str(), "wb+");
@@ -458,18 +593,21 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
         return 5;
     }
 
-    fwrite((const void *)&header, sizeof(LOD::FileHeader), 1, tmp_file);
+    fwrite(&_header, sizeof(LOD::FileHeader), 1, tmp_file);
 
-    LOD::Directory Lindx;
-    strcpy(Lindx.pFilename, "chapter");
-    Lindx.uOfsetFromSubindicesStart = uOffsetToSubIndex;  // 10h 16
-    Lindx.uDataSize =
-        sizeof(LOD::Directory) * uNumSubDirs + total_size;  // 14h 20
-    Lindx.dword_000018 = 0;                                 // 18h 24
-    Lindx.uNumSubIndices = uNumSubDirs;                     // 1ch 28
-    Lindx.priority = 0;                                  // 1Eh 30
-    fwrite(&Lindx, sizeof(LOD::Directory), 1, tmp_file);
-    fwrite(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, tmp_file);
+    LOD::Directory chapter;
+    chapter.name = "chapter";
+    chapter.files_start = _current_folder->files_start;
+    //LOD::Directory Lindx;
+    //strcpy(Lindx.pFilename, "chapter");
+    //Lindx.data_offset = _current_folder_ptr;              // 10h 16
+    //Lindx.uDataSize = _current_folder_num_items * _get_directory_write_size(GetVersion())
+    //    + total_size;                                     // 14h 20
+    //Lindx.dword_000018 = 0;                               // 18h 24
+    //Lindx.num_items = _current_folder_num_items;          // 1ch 28
+    //Lindx.priority = 0;                                   // 1Eh 30
+    //_write_directories(tmp_file, GetVersion(), 1, &Lindx);
+    //_write_directories(tmp_file, GetVersion(), _current_folder_num_items, _current_folder_items);
     fseek(pOutputFileHandle, 0, 0);
     while (total_size > 0) {
         int write_size = uIOBufferSize;
@@ -493,15 +631,19 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     return 0;
 }
 
-bool LOD::WriteableFile::AppendDirectory(const String &file_name, const void *pData, size_t data_size) {
-    Assert(uNumSubDirs < 299);
+bool LOD::WriteableFile::AppendFileToCurrentDirectory(
+    const std::string &file_name,
+    const void* file_bytes,
+    size_t file_size
+) {
+    LOD::File file;
+    file.name = file_name;
+    file.size = file_size;
+    file.offset = 0;
 
-    LOD::Directory dir;
-    strcpy(dir.pFilename, file_name.c_str());
-    dir.uDataSize = data_size;
+    _current_folder->files.push_back(file);
 
-    memcpy(&pSubIndices[uNumSubDirs++], &dir, sizeof(LOD::Directory));
-    fwrite(pData, 1, dir.uDataSize, pOutputFileHandle);
+    fwrite(file_bytes, 1, file.size, pOutputFileHandle);
     return true;
 }
 
@@ -509,7 +651,7 @@ int LOD::WriteableFile::CreateTempFile() {
     if (!isFileOpened) return 1;
 
     if (pIOBuffer && uIOBufferSize) {
-        uNumSubDirs = 0;
+        _current_folder->files.clear();
         pOutputFileHandle = fcaseopen("lodapp.tmp", "wb+");
         return pOutputFileHandle ? 1 : 7;
     } else {
@@ -519,7 +661,7 @@ int LOD::WriteableFile::CreateTempFile() {
 
 void LOD::WriteableFile::CloseWriteFile() {
     if (isFileOpened) {
-        pContainerName[0] = 0;
+        _current_folder = nullptr;
         _6A0CA8_lod_unused = 0;
 
         isFileOpened = false;
@@ -531,106 +673,141 @@ void LOD::WriteableFile::CloseWriteFile() {
     // __debugbreak();
 }
 
-unsigned int LOD::WriteableFile::Write(const String &file_name, const void *pDirData, size_t size, int a4) {
-    LOD::Directory dir;
-    strcpy(dir.pFilename, file_name.c_str());
-    dir.uDataSize = size;
-
-    // insert new data in sorted index lod file
-    bool bRewrite_data = false;
-    int insert_index = -1;
-    if (!isFileOpened) {  // sometimes gives crash
-        return 1;
-    }
-    if (!pSubIndices) {
-        return 2;
+bool LOD::WriteableFile::AddFileToCurrentDirectory(
+    const String &file_name,
+    const void *file_bytes,
+    size_t file_size,
+    int _unused
+) {
+    if (!isFileOpened || _current_folder == nullptr) {
+        return false;
     }
     if (!pIOBuffer || !uIOBufferSize) {
-        return 3;
+        return false;
     }
 
-    for (size_t i = 0; i < uNumSubDirs; i++) {
-        int comp_res = _stricmp(pSubIndices[i].pFilename, dir.pFilename);
+    FILE* tmp_file = fcaseopen("lod.tmp", "wb+");
+    if (!tmp_file) {
+        return false;
+    }
+
+    LOD::File file;
+    file.name = file_name;
+    file.size = file_size;
+
+    // insert new data in sorted index lod file
+    bool overwriting = false;
+    int insert_index = -1;
+
+    // find a file to replace or break when in order alphabetically
+    for (size_t i = 0; i < _current_folder->files.size(); i++) {
+        int comp_res = _stricmp(
+            _current_folder->files[i].name.c_str(),
+            file.name.c_str()
+        );
         if (comp_res == 0) {
+            // replacing a file
             insert_index = i;
-            if (a4 == 0) {
-                bRewrite_data = true;
-                break;
-            }
-            if (a4 == 1) {
-                if (pSubIndices[i].uNumSubIndices < dir.uNumSubIndices) {
-                    if (pSubIndices[i].priority < dir.priority)
-                        return 4;
-                } else {
-                    bRewrite_data = true;
-                }
-                break;
-            }
-            if (a4 == 2) return 4;
+            overwriting = true;
+            break;
         } else if (comp_res > 0) {
-            if (insert_index == -1) {
-                insert_index = i;
-                break;
-            }
+            // past alphabetic order now
+            insert_index = i;
+            break;
         }
     }
 
-    int size_correction = 0;
-    String Filename = "lod.tmp";
-    FILE *tmp_file = fcaseopen(Filename.c_str(), "wb+");
-    if (!tmp_file) return 5;
-    if (!bRewrite_data)
+    if (insert_index == -1) {
+        // in case we had 0 files to compare to
+        insert_index = 0;
+    }
+
+    int num_old_files = _current_folder->files.size();
+    int num_new_files = num_old_files + (overwriting ? 0 : 1);
+    size_t files_write_ptr = sizeof(LOD::FileHeader)
+        + sizeof(LOD::Directory_Image_Mm6)
+        + num_new_files * _get_file_header_length(GetVersion());
+
+    fwrite(&_header, sizeof(LOD::FileHeader), 1, tmp_file);
+
+    LOD::Directory chapter;
+    chapter.name = "chapter";
+    chapter.files_start = sizeof(LOD::FileHeader)
+        + sizeof(LOD::Directory_Image_Mm6);
+    chapter.files = _current_folder->files;
+
+
+    Assert(false); // need to read and write right away actual file data here
+    if (overwriting) {
+        file.offset = chapter.files[insert_index].offset;
+        chapter.files[insert_index] = file;
+    } else {
+        chapter.files.insert(chapter.files.begin() + insert_index, file);
+        chapter.recalculate_file_offsets(files_write_ptr);
+    }
+
+    _write_directory(tmp_file, GetVersion(), chapter);
+    Assert(false); // delete the below
+    return true;
+
+
+    size_t size_correction = 0;
+    if (!overwriting)
         size_correction = 0;
     else
-        size_correction = pSubIndices[insert_index].uDataSize;
+        size_correction = _current_folder->files[insert_index].size;
 
+    LOD::Directory chapter;
+    chapter.name = "chapter";
+    chapter.files_start = sizeof(LOD::FileHeader)
+        + sizeof(LOD::Directory_Image_Mm6);
     // create chapter index
-    LOD::Directory Lindx;
-    strcpy(Lindx.pFilename, "chapter");
-    Lindx.dword_000018 = 0;
-    Lindx.priority = 0;
-    Lindx.uNumSubIndices = uNumSubDirs;
-    Lindx.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
+    //LOD::Directory Lindx;
+    //strcpy(Lindx.pFilename, "chapter");
+    //Lindx.dword_000018 = 0;
+    //Lindx.priority = 0;
+    Lindx.num_items = _current_folder_num_items;
+    Lindx.data_offset = sizeof(LOD::FileHeader) + _get_directory_write_size(GetVersion());
     int total_data_size = uLODDataSize + dir.uDataSize - size_correction;
-    if (!bRewrite_data) {
-        total_data_size += sizeof(LOD::Directory);
-        Lindx.uNumSubIndices++;
+    if (!overwriting) {
+        total_data_size += _get_directory_write_size(GetVersion());
+        Lindx.num_items++;
     }
 
     Lindx.uDataSize = total_data_size;
-    uNumSubDirs = Lindx.uNumSubIndices;
+    _current_folder_num_items = Lindx.num_items;
     // move indexes +1 after insert point
-    if (!bRewrite_data &&
-        (insert_index < uNumSubDirs)) {  // перезаписывание файлов для освобождения
-                                         // места для нового ф-ла
-        for (int i = uNumSubDirs; i > insert_index; --i)
-            memcpy(&pSubIndices[i], &pSubIndices[i - 1],
-                   sizeof(LOD::Directory));  // Uninitialized memory access
+    if (!overwriting &&
+        (insert_index < _current_folder_num_items)) {
+        // перезаписывание файлов для освобождения
+        // места для нового ф-ла
+        for (int i = _current_folder_num_items; i > insert_index; --i)
+            memcpy(&_current_folder_items[i], &_current_folder_items[i - 1], sizeof(LOD::Directory));
     }
     // insert
-    memcpy(&pSubIndices[insert_index], &dir, sizeof(LOD::Directory));  // записать текущий файл
+    memcpy(&_current_folder_items[insert_index], &dir, sizeof(LOD::Directory));
     // correct offsets to data
-    if (uNumSubDirs > 0) {
-        size_t offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;
-        for (int i = 0; i < uNumSubDirs; i++) {
-            pSubIndices[i].uOfsetFromSubindicesStart = offset_to_data;
-            offset_to_data += pSubIndices[i].uDataSize;
+    if (_current_folder_num_items > 0) {
+        size_t offset_to_data = _current_folder_num_items * _get_directory_write_size(GetVersion());
+        for (int i = 0; i < _current_folder_num_items; i++) {
+            _current_folder_items[i].data_offset = offset_to_data;
+            offset_to_data += _current_folder_items[i].uDataSize;
         }
     }
 
     // construct lod file with added data
-    fwrite(&header, sizeof(LOD::FileHeader), 1, tmp_file);
-    fwrite(&Lindx, sizeof(LOD::Directory), 1, tmp_file);
-    fseek(pFile, Lindx.uOfsetFromSubindicesStart, SEEK_SET);
-    fwrite(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, tmp_file);
+    fwrite(&_header, sizeof(LOD::FileHeader), 1, tmp_file);
+    _write_directories(tmp_file, GetVersion(), 1, &Lindx);
+    fseek(pFile, Lindx.data_offset, SEEK_SET);
+    _write_directories(tmp_file, GetVersion(), _current_folder_num_items, _current_folder_items);
 
-    size_t offset_to_data = sizeof(LOD::Directory) * uNumSubDirs;
-    if (!bRewrite_data) offset_to_data -= sizeof(LOD::Directory);
+    size_t offset_to_data = _current_folder_num_items * _get_directory_write_size(GetVersion());
+    if (!overwriting) offset_to_data -= _get_directory_write_size(GetVersion());
 
     fseek(pFile, offset_to_data, SEEK_CUR);
     // copy from open lod to temp lod first half
-    int to_copy_size = pSubIndices[insert_index].uOfsetFromSubindicesStart -
-                       pSubIndices[0].uOfsetFromSubindicesStart;
+    int to_copy_size = _current_folder_items[insert_index].data_offset
+        - _current_folder_items[0].data_offset;
     while (to_copy_size > 0) {
         int read_size = uIOBufferSize;
         if (to_copy_size <= uIOBufferSize) read_size = to_copy_size;
@@ -639,8 +816,8 @@ unsigned int LOD::WriteableFile::Write(const String &file_name, const void *pDir
         to_copy_size -= read_size;
     }
     // add container data
-    fwrite(pDirData, 1, dir.uDataSize, tmp_file);  // Uninitialized memory access(tmp_file)
-    if (bRewrite_data) fseek(pFile, size_correction, SEEK_CUR);
+    fwrite(file_bytes, 1, dir.uDataSize, tmp_file);  // Uninitialized memory access(tmp_file)
+    if (overwriting) fseek(pFile, size_correction, SEEK_CUR);
 
     // add remainng data  last half
     int curr_position = ftell(pFile);
@@ -677,37 +854,37 @@ LOD::WriteableFile::WriteableFile() {
 bool LOD::WriteableFile::LoadFile(const String &pFilename, bool bWriting) {
     pFile = fcaseopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
     if (pFile == nullptr) {
-        return false;  // возможно файл не закрыт, поэтому не открывается
+        return false;
     }
 
     pLODName = pFilename;
     fread(&header, sizeof(LOD::FileHeader), 1, pFile);
 
     LOD::Directory lod_indx;
-    fread(&lod_indx, sizeof(LOD::Directory), 1, pFile);
+    fread(&lod_indx, _get_directory_write_size(GetVersion()), 1, pFile);
 
     fseek(pFile, 0, SEEK_SET);
     isFileOpened = true;
-    pContainerName = "chapter";
+    _current_folder = "chapter";
     uLODDataSize = lod_indx.uDataSize;
-    uNumSubDirs = lod_indx.uNumSubIndices;
-    Assert(uNumSubDirs <= 300);
+    _current_folder_num_items = lod_indx.num_items;
+    Assert(_current_folder_num_items <= 300);
 
-    uOffsetToSubIndex = lod_indx.uOfsetFromSubindicesStart;
-    fseek(pFile, uOffsetToSubIndex, SEEK_SET);
-
-    fread(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, pFile);
+    _current_folder_ptr = lod_indx.data_offset;
+    fseek(pFile, _current_folder_ptr, SEEK_SET);
+    _read_directories(pFile, GetVersion(), _current_folder_num_items, _current_folder_items);
     return true;
 }
 
 void LOD::WriteableFile::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
                                      unsigned int uBufferSize) {
-    if (pSubIndices) {
+    if (_current_folder_items) {
         logger->Warning("Attempt to reset a LOD subindex!");
-        free(pSubIndices);
-        pSubIndices = nullptr;
+        delete [] _current_folder_items;
+        _current_folder_items = nullptr;
     }
-    pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) * uNumSubIndices);
+
+    _current_folder_items = new LOD::Directory[uNumSubIndices];
     if (pIOBuffer) {
         logger->Warning("Attempt to reset a LOD IObuffer!");
         free(pIOBuffer);
@@ -721,25 +898,26 @@ void LOD::WriteableFile::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
 }
 
 void LOD::WriteableFile::FreeSubIndexAndIO() {
-    free(pSubIndices);
-    pSubIndices = nullptr;
+    delete[] _current_folder_items;
+    _current_folder_items = nullptr;
+
     free(pIOBuffer);
     pIOBuffer = nullptr;
 }
 
-LOD::File::File() : isFileOpened(false) {
+LOD::Container::Container() : isFileOpened(false) {
     pFile = nullptr;
-    pSubIndices = nullptr;
+    _current_folder_items = nullptr;
     Close();
 }
 
-LOD::File::~File() {
+LOD::Container::~Container() {
     if (isFileOpened) {
         fclose(pFile);
     }
 }
 
-bool LOD::File::Open(const String &sFilename) {
+bool LOD::Container::Open(const std::string& sFilename) {
     if (!OpenFile(sFilename)) {
         return false;
     }
@@ -748,10 +926,10 @@ bool LOD::File::Open(const String &sFilename) {
         return false;
     }
 
-    return LoadSubIndices(pRoot.front().pFilename);
+    return OpenFolder(_index.front().pFilename);
 }
 
-bool LOD::File::OpenFile(const String &sFilename) {
+bool LOD::Container::OpenFile(const String &sFilename) {
     if (isFileOpened) {
         Close();
     }
@@ -766,7 +944,7 @@ bool LOD::File::OpenFile(const String &sFilename) {
     return true;
 }
 
-bool LOD::File::LoadHeader() {
+bool LOD::Container::LoadHeader() {
     if (pFile == nullptr) {
         return false;
     }
@@ -776,13 +954,13 @@ bool LOD::File::LoadHeader() {
     if (fread(&header, sizeof(LOD::FileHeader), 1, pFile) != 1) {
         return false;
     }
-    for (unsigned int i = 0; i < header.uNumIndices; i++) {
+    for (unsigned int i = 0; i < header.num_directories; i++) {
         LOD::Directory dir;
-        if (fread(&dir, sizeof(LOD::Directory), 1, pFile) != 1) {
-            pRoot.clear();
+        if (_read_directories(pFile, GetVersion(), 1, &dir) != 1) {
+            _index.clear();
             return false;
         }
-        pRoot.push_back(dir);
+        _index.push_back(dir);
     }
 
     fseek(pFile, 0, SEEK_SET);
@@ -792,38 +970,50 @@ bool LOD::File::LoadHeader() {
     return true;
 }
 
-bool LOD::File::LoadSubIndices(const String &pContainer) {
+bool LOD::Container::OpenFolder(const std::string& folder) {
+    if (_current_folder && folder == _current_folder->name) {
+        return true;
+    }
+
     ResetSubIndices();
 
-    for (LOD::Directory &dir : pRoot) {
-        if (!_stricmp(pContainer.c_str(), dir.pFilename)) {
-            pContainerName = pContainer;
-            uOffsetToSubIndex = dir.uOfsetFromSubindicesStart;
-            uNumSubDirs = dir.uNumSubIndices;
-            fseek(pFile, uOffsetToSubIndex, SEEK_SET);
-            pSubIndices = (LOD::Directory *)malloc(sizeof(LOD::Directory) * uNumSubDirs);
-
-            if (pSubIndices) {
-                fread(pSubIndices, sizeof(LOD::Directory), uNumSubDirs, pFile);
-            }
-            return true;
+    for (const LOD::Directory_Image_Mm6& dir : _index) {
+        if (_stricmp(folder.c_str(), dir.pFilename)) {
+            continue;
         }
+
+        _current_folder = std::make_shared<Directory>();
+        _current_folder->name = dir.pFilename;
+        _current_folder->files_start = dir.data_offset;
+        _current_folder->files = _read_directory_files(
+            _current_folder,
+            pFile,
+            dir.num_items,
+            GetVersion()
+        );
+
+        //_current_folder_ptr = dir.data_offset;
+        //_current_folder_num_items = dir.num_items;
+        //_current_folder_items = new LOD::Directory[_current_folder_num_items];
+
+        //fseek(pFile, _current_folder_ptr, SEEK_SET);
+        //Assert(
+        //    _current_folder_num_items == _read_directories(
+        //        pFile,
+        //        GetVersion(),
+        //        _current_folder_num_items,
+        //        _current_folder_items
+        //    )
+        //);
+        return true;
     }
     return false;
 }
 
-LOD::Directory::Directory() {
-    memset(pFilename, 0, 16);
-    this->uOfsetFromSubindicesStart = 0;
-    this->uDataSize = 0;
-    this->uNumSubIndices = 0;
-    this->dword_000018 = 0;
-    this->priority = 0;
-}
 
-bool LOD::File::DoesContainerExist(const String &pContainer) {
-    for (size_t i = 0; i < uNumSubDirs; ++i) {
-        if (!_stricmp(pContainer.c_str(), pSubIndices[i].pFilename)) {
+bool LOD::Container::DoesContainerExist(const String &pContainer) {
+    for (size_t i = 0; i < _current_folder_num_items; ++i) {
+        if (!_stricmp(pContainer.c_str(), _current_folder_items[i].pFilename)) {
             return true;
         }
     }
@@ -839,7 +1029,7 @@ int LODFile_Sprites::_461397() {
     return this->uNumLoadedSprites;
 }
 
-FILE *LOD::File::FindContainer(const String &pContainer_Name, size_t *data_size) {
+FILE *LOD::Container::FindContainer(const String &pContainer_Name, size_t *data_size) {
     if (!isFileOpened) {
         return nullptr;
     }
@@ -847,14 +1037,20 @@ FILE *LOD::File::FindContainer(const String &pContainer_Name, size_t *data_size)
         *data_size = 0;
     }
 
-    for (uint i = 0; i < uNumSubDirs; ++i) {
-        if (!_stricmp(pContainer_Name.c_str(), pSubIndices[i].pFilename)) {
-            fseek(pFile, uOffsetToSubIndex + pSubIndices[i].uOfsetFromSubindicesStart, SEEK_SET);
-            if (data_size != nullptr) {
-                *data_size = pSubIndices[i].uDataSize;
-            }
-            return pFile;
+    for (uint i = 0; i < _current_folder_num_items; ++i) {
+        if (_stricmp(pContainer_Name.c_str(), _current_folder_items[i].pFilename)) {
+            continue;
         }
+
+        fseek(
+            pFile,
+            _current_folder_ptr + _current_folder_items[i].data_offset,
+            SEEK_SET
+        );
+        if (data_size != nullptr) {
+            *data_size = _current_folder_items[i].uDataSize;
+        }
+        return pFile;
     }
 
     return nullptr;
@@ -883,7 +1079,7 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
     }
 }
 
-void *LOD::File::LoadRaw(const String &pContainer, size_t *data_size) {
+void *LOD::Container::LoadRaw(const String &pContainer, size_t *data_size) {
     if (data_size != nullptr) {
         *data_size = 0;
     }
@@ -909,7 +1105,7 @@ void *LOD::File::LoadRaw(const String &pContainer, size_t *data_size) {
     return result;
 }
 
-void *LOD::File::LoadCompressedTexture(const String &pContainer, size_t *data_size) {
+void *LOD::Container::LoadCompressed2(const String &pContainer, size_t *data_size) {
     void *result = nullptr;
     if (data_size != nullptr) {
         *data_size = 0;
@@ -953,7 +1149,7 @@ struct CompressedHeader {
 };
 #pragma pack(pop)
 
-void *LOD::File::LoadCompressed(const String &pContainer, size_t *data_size) {
+void *LOD::Container::LoadCompressed(const String &pContainer, size_t *data_size) {
     static_assert(sizeof(CompressedHeader) == 16, "Wrong type size");
 
     void *result = nullptr;
@@ -993,9 +1189,9 @@ void *LOD::File::LoadCompressed(const String &pContainer, size_t *data_size) {
     return result;
 }
 
-int LOD::File::GetSubNodeIndex(const String &name) const {
-    for (size_t index = 0; index < uNumSubDirs; index++) {
-        if (name == pSubIndices[index].pFilename) {
+int LOD::Container::GetSubNodeIndex(const String &name) const {
+    for (size_t index = 0; index < _current_folder_num_items; index++) {
+        if (name == _current_folder_items[index].pFilename) {
             return index;
         }
     }
@@ -1207,8 +1403,8 @@ Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
 }
 
 bool Initialize_GamesLOD_NewLOD() {
-    pGames_LOD = new LOD::File();
-    if (pGames_LOD->Open(asset_locator->LocateDataFile("games.lod"))) {
+    pGames_LOD = new LOD::Container();
+    if (pGames_LOD->Open(assets_locator->LocateDataFile("games.lod"))) {
         pNew_LOD = new LOD::WriteableFile;
         pNew_LOD->AllocSubIndicesAndIO(300, 100000);
         return true;

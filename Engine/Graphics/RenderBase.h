@@ -2,7 +2,6 @@
 #include <memory>
 #include <string>
 
-#include "Engine/AssetLocator.h"
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 
@@ -15,10 +14,10 @@ class RenderBase : public IRender {
         LightmapBuilder* lightmap_builder,
         SpellFxRenderer* spellfx,
         std::shared_ptr<ParticleEngine> particle_engine,
-        std::shared_ptr<AssetLocator> asset_locator,
+        std::shared_ptr<AssetsLocator> assets_locator,
         Vis* vis,
         Log* logger
-    ) : IRender(window, decal_builder, lightmap_builder, spellfx, particle_engine, asset_locator, vis, logger) {
+    ) : IRender(window, decal_builder, lightmap_builder, spellfx, particle_engine, assets_locator, vis, logger) {
     }
 
     virtual bool Initialize();

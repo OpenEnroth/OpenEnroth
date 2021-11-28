@@ -1596,12 +1596,12 @@ RenderOpenGL::RenderOpenGL(
     LightmapBuilder* lightmap_builder,
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
-    std::shared_ptr<AssetLocator> asset_locator,
+    std::shared_ptr<AssetsLocator> assets_locator,
     Vis* vis,
     Log* logger
 ) : RenderBase(
     window, decal_builder, lightmap_builder, spellfx, particle_engine,
-    asset_locator, vis, logger
+    assets_locator, vis, logger
 ) {
     clip_w = 0;
     clip_x = 0;
@@ -2773,7 +2773,7 @@ Texture *RenderOpenGL::CreateTexture_PCXFromFile(const String &name) {
 }
 
 Texture *RenderOpenGL::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
+    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader((LOD::Container*)pLOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height,

@@ -737,11 +737,11 @@ class VideoList {
 
 void MPlayer::Initialize() {
     might_list = new VideoList();
-    std::string filename = asset_locator->LocateCutsceneFile("might7.vid");
+    std::string filename = assets_locator->LocateCutsceneFile("might7.vid");
     might_list->Initialize(filename);
 
     magic_list = new VideoList();
-    filename = asset_locator->LocateCutsceneFile("magic7.vid");
+    filename = assets_locator->LocateCutsceneFile("magic7.vid");
     magic_list->Initialize(filename);
 }
 

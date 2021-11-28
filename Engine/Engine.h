@@ -102,14 +102,13 @@ struct Engine {
     Engine();
     virtual ~Engine();
 
-    // void _44E904_gamma_saturation_adjust();
-    // bool InitializeGammaController();
     inline bool Configure(std::shared_ptr<const EngineConfig> config) {
         this->config = config;
         return true;
     }
 
     void Initialize();
+    bool VersionSpecificInitialization();
     bool PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
                    bool bOutline, struct Vis_SelectionFilter *sprite_filter,
                    struct Vis_SelectionFilter *face_filter);
@@ -133,7 +132,6 @@ struct Engine {
     void SecondaryInitialization();
     void _461103_load_level_sub();
     void DropHeldItem();
-    bool MM7_Initialize();
 
     inline bool IsUnderwater() const { return config->IsUnderwater(); }
     inline bool CanSaturateFaces() const { return config->CanSaturateFaces(); }  // this is for perception - move to party

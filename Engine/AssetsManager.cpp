@@ -9,7 +9,60 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Texture.h"
 
-AssetsManager *assets = new AssetsManager();
+
+AssetsManager* assets = nullptr;
+
+
+static LODFile_IconsBitmaps* _load_icons_lod(const char* lod_name) {
+    auto lod = new LODFile_IconsBitmaps();
+    if (!lod->Load(assets_locator->LocateDataFile(lod_name), "icons")) {
+        Error("%s missing\n\nPlease Reinstall.", lod_name);
+    }
+
+    return lod;
+}
+
+
+/*static */LODFile_IconsBitmaps* get_icons_lod() {
+    static LODFile_IconsBitmaps* lod = nullptr;
+    if (!lod) {
+        lod = _load_icons_lod("icons.lod");
+    }
+
+    return lod;
+}
+
+
+/*static */LODFile_IconsBitmaps* get_events_lod() {
+    static LODFile_IconsBitmaps* lod = nullptr;
+    if (!lod) {
+        lod = _load_icons_lod("Events.lod");
+    }
+
+    return lod;
+}
+
+
+static LOD::Container* get_english_t_lod() {
+    static LOD::Container* lod = nullptr;
+    if (!lod) {
+        const char* lod_name = "EnglishT.lod";
+        const char* lod_indices = "language";
+
+        auto l = new LOD::Container();
+        if (!l->Open(assets_locator->LocateDataFile(lod_name))) {
+            Error("%s missing\n\nPlease Reinstall.", lod_name);
+        }
+
+        if (!l->OpenFolder(lod_indices)) {
+            Error("%s is missing %s\n\nPlease Reinstall.", lod_name, lod_indices);
+        }
+
+        lod = l;
+    }
+
+    return lod;
+}
 
 bool AssetsManager::ReleaseAllImages() {
     return true;
@@ -184,4 +237,16 @@ bool AssetsManager::ReleaseAllSprites() {
         it->second->Release();
     }
     return true;
+}
+
+
+void* AssetsManager::GetLocalization() {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return get_icons_lod()->LoadCompressed2("global.txt");
+    case Mm7Assets:
+        return get_events_lod()->LoadCompressed2("global.txt");
+    case Mm8Assets:
+        return get_english_t_lod()->LoadCompressed2("global.txt");
+    }
 }

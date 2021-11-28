@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-set(ENGINE_SOURCES AssetLocator.cpp
+set(ENGINE_SOURCES AssetsLocator.cpp
                    AssetsManager.cpp
                    CommandLine.cpp
                    Conditions.cpp
@@ -27,7 +27,8 @@ set(ENGINE_SOURCES AssetLocator.cpp
                    EngineConfigFactory.cpp
                    EngineFactory.cpp)
 
-set(ENGINE_HEADERS AssetLocator.h
+set(ENGINE_HEADERS AssetsClass.h
+                   AssetsLocator.h
                    AssetsManager.h
                    Autonotes.h
                    Awards.h

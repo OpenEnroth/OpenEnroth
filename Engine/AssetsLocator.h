@@ -3,17 +3,12 @@
 #include <string>
 #include <memory>
 
-
-enum AssetClass {
-    Mm6Assets,
-    Mm7Assets,
-    Mm8Assets,
-};
+#include "Engine/AssetsClass.h"
 
 
-class AssetLocator {
+class AssetsLocator {
 public:
-    void SetBaseGameRoot(AssetClass game_type, const std::string& path);
+    void SetBaseGameRoot(AssetsClass game_type, const std::string& path);
     std::string ResolvePath(const std::string& subpath);
     std::string LocateDataFile(const std::string& filename);
     std::string LocateSaveFileDirectory();
@@ -23,9 +18,9 @@ public:
     std::string LocateCutsceneFile(const std::string& filename);
 
 private:
-    AssetClass  _game_type;
+    AssetsClass _game_type;
     std::string _game_path;
 };
 
 
-extern std::shared_ptr<AssetLocator> asset_locator;
+extern std::shared_ptr<AssetsLocator> assets_locator;

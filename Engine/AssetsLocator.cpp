@@ -1,27 +1,27 @@
 #include <filesystem>
 
-#include "Engine/AssetLocator.h"
+#include "Engine/AssetsLocator.h"
 
 #include "Platform/Api.h"
 
 
-extern std::shared_ptr<AssetLocator> asset_locator = std::make_shared<AssetLocator>();
+extern std::shared_ptr<AssetsLocator> assets_locator = std::make_shared<AssetsLocator>();
 
 
-void AssetLocator::SetBaseGameRoot(AssetClass game_type, const std::string& path) {
+void AssetsLocator::SetBaseGameRoot(AssetsClass game_type, const std::string& path) {
     _game_type = game_type;
     _game_path = path;
 }
 
-std::string AssetLocator::ResolvePath(const std::string& subpath) {
+std::string AssetsLocator::ResolvePath(const std::string& subpath) {
     return _game_path + OS_GetDirSeparator() + subpath;
 }
 
-std::string AssetLocator::LocateDataFile(const std::string& filename) {
+std::string AssetsLocator::LocateDataFile(const std::string& filename) {
     return _game_path + OS_GetDirSeparator() + "data" + OS_GetDirSeparator() + filename;
 }
 
-std::string AssetLocator::LocateSaveFileDirectory() {
+std::string AssetsLocator::LocateSaveFileDirectory() {
     std::string saves_dir = _game_path + OS_GetDirSeparator() + "saves";
 
     // ensure directory structure exists
@@ -29,18 +29,18 @@ std::string AssetLocator::LocateSaveFileDirectory() {
     return saves_dir;
 }
 
-std::string AssetLocator::LocateSaveFile(const std::string& filename) {
+std::string AssetsLocator::LocateSaveFile(const std::string& filename) {
     return LocateSaveFileDirectory() + OS_GetDirSeparator() + filename;
 }
 
-std::string AssetLocator::LocateMusicFile(const std::string& filename) {
+std::string AssetsLocator::LocateMusicFile(const std::string& filename) {
     return _game_path + OS_GetDirSeparator() + "music" + OS_GetDirSeparator() + filename;
 }
 
-std::string AssetLocator::LocateSoundFile(const std::string& filename) {
+std::string AssetsLocator::LocateSoundFile(const std::string& filename) {
     return _game_path + OS_GetDirSeparator() + "sounds" + OS_GetDirSeparator() + filename;
 }
 
-std::string AssetLocator::LocateCutsceneFile(const std::string& filename) {
+std::string AssetsLocator::LocateCutsceneFile(const std::string& filename) {
     return _game_path + OS_GetDirSeparator() + "anims" + OS_GetDirSeparator() + filename;
 }

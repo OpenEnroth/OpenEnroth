@@ -26,12 +26,12 @@ bool RenderBase::Initialize() {
         config->render_height
     );
 
-    if (!pD3DBitmaps.Open(asset_locator->ResolvePath("data/d3dbitmap.hwl"))) {
-        return false;
-    }
-    if (!pD3DSprites.Open(asset_locator->ResolvePath("data/d3dsprite.hwl"))) {
-        return false;
-    }
+    //if (!pD3DBitmaps.Open(assets_locator->ResolvePath("data/d3dbitmap.hwl"))) {
+    //    return false;
+    //}
+    //if (!pD3DSprites.Open(assets_locator->ResolvePath("data/d3dsprite.hwl"))) {
+    //    return false;
+    //}
 
     return true;
 }

@@ -50,11 +50,11 @@ GUIWindow_Save::GUIWindow_Save() :
     pSaveListPosition = 0;
     uLoadGameUI_SelectedSlot = 0;
 
-    LOD::File pLODFile;
+    LOD::Container pLODFile;
     for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
         // String file_name = pSavegameList->pFileList[i];
         String save_name = StringPrintf("save%03d.mm7", i);
-        std::string save_filename = asset_locator->LocateSaveFile(save_name);
+        std::string save_filename = assets_locator->LocateSaveFile(save_name);
 
         if (_access(save_filename.c_str(), 0) || _access(save_filename.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
@@ -154,10 +154,10 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         pSaveListPosition = 0;
         uLoadGameUI_SelectedSlot = 0;
     //}
-    LOD::File pLODFile;
+    LOD::Container pLODFile;
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
-        std::string save_filename = asset_locator->LocateSaveFile(
+        std::string save_filename = assets_locator->LocateSaveFile(
             pSavegameList->pFileList[i]
         );
         if (_access(save_filename.c_str(), 6)) {

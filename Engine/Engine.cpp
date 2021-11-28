@@ -860,19 +860,23 @@ void FinalInitialization() {
 }
 
 bool MM7_LoadLods() {
-    pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(asset_locator->LocateDataFile("icons.lod"), "icons")) {
-        Error("Some files are missing\n\nPlease Reinstall.");
-    }
-    pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
+    extern LODFile_IconsBitmaps* get_icons_lod();
+    pIcons_LOD = get_icons_lod();
+    //pIcons_LOD = new LODFile_IconsBitmaps;
+    //if (!pIcons_LOD->Load(assets_locator->LocateDataFile("icons.lod"), "icons")) {
+    //    Error("Some files are missing\n\nPlease Reinstall.");
+    //}
+    //pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
-    pEvents_LOD = new LODFile_IconsBitmaps;
-    if (!pEvents_LOD->Load(asset_locator->LocateDataFile("events.lod"), "icons")) {
-        Error("Some files are missing\n\nPlease Reinstall.");
-    }
+    extern LODFile_IconsBitmaps* get_events_lod();
+    pEvents_LOD = get_events_lod();
+    //pEvents_LOD = new LODFile_IconsBitmaps;
+    //if (!pEvents_LOD->Load(assets_locator->LocateDataFile("events.lod"), "icons")) {
+    //    Error("Some files are missing\n\nPlease Reinstall.");
+    //}
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(asset_locator->LocateDataFile("bitmaps.lod"), "bitmaps")) {
+    if (!pBitmaps_LOD->Load(assets_locator->LocateDataFile("bitmaps.lod"), "bitmaps")) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)
@@ -880,7 +884,7 @@ bool MM7_LoadLods() {
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(asset_locator->LocateDataFile("sprites.lod"))) {
+    if (!pSprites_LOD->LoadSprites(assets_locator->LocateDataFile("sprites.lod"))) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)
@@ -895,7 +899,7 @@ const int default_party_eye_level = 160;
 const int default_party_height = 192;
 
 //----- (004651F4) --------------------------------------------------------
-bool Engine::MM7_Initialize() {
+bool Engine::VersionSpecificInitialization() {
     srand(OS_GetTime());
 
     pEventTimer = Timer::Create();
@@ -915,24 +919,24 @@ bool Engine::MM7_Initialize() {
     OnTimer(1);
     GameUI_StatusBar_Update(true);
 
-    MM7_LoadLods();
+    //MM7_LoadLods();
 
     localization = new Localization();
     localization->Initialize();
 
-    {
-        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsft.bin") : nullptr,
+    /*{
+        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dsft.bin") : nullptr,
              *sft_mm8 = nullptr;
-        void *sft_mm7 = pEvents_LOD->LoadCompressedTexture("dsft.bin");
+        void *sft_mm7 = pEvents_LOD->LoadCompressed2("dsft.bin");
         pSpriteFrameTable = new SpriteFrameTable;
         pSpriteFrameTable->FromFile(sft_mm6, sft_mm7, sft_mm8);
         free(sft_mm6);
         free(sft_mm7);
         free(sft_mm8);
 
-        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dtft.bin") : nullptr,
+        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dtft.bin") : nullptr,
              *tft_mm8 = nullptr;
-        void *tft_mm7 = pEvents_LOD->LoadCompressedTexture("dtft.bin");
+        void *tft_mm7 = pEvents_LOD->LoadCompressed2("dtft.bin");
         pTextureFrameTable = new TextureFrameTable;
         pTextureFrameTable->FromFile(tft_mm6, tft_mm7, tft_mm8);
         free(tft_mm6);
@@ -940,81 +944,81 @@ bool Engine::MM7_Initialize() {
         free(tft_mm8);
 
         void *tiles_mm6 = pIcons_LOD_mm6
-                              ? pIcons_LOD_mm6->LoadCompressedTexture("dtile.bin") : nullptr,
+                              ? pIcons_LOD_mm6->LoadCompressed2("dtile.bin") : nullptr,
              *tiles_mm8 = nullptr;
-        void *tiles_mm7 = pEvents_LOD->LoadCompressedTexture("dtile.bin");
+        void *tiles_mm7 = pEvents_LOD->LoadCompressed2("dtile.bin");
         pTileTable = new TileTable;
         pTileTable->FromFile(tiles_mm6, tiles_mm7, tiles_mm8);
         free(tiles_mm6);
         free(tiles_mm7);
         free(tiles_mm8);
 
-        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dpft.bin") : nullptr,
+        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dpft.bin") : nullptr,
              *pft_mm8 = nullptr;
-        void *pft_mm7 = pEvents_LOD->LoadCompressedTexture("dpft.bin");
+        void *pft_mm7 = pEvents_LOD->LoadCompressed2("dpft.bin");
         pPlayerFrameTable = new PlayerFrameTable;
         pPlayerFrameTable->FromFile(pft_mm6, pft_mm7, pft_mm8);
         free(pft_mm6);
         free(pft_mm7);
         free(pft_mm8);
 
-        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dift.bin") : nullptr,
+        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dift.bin") : nullptr,
              *ift_mm8 = nullptr;
-        void *ift_mm7 = pEvents_LOD->LoadCompressedTexture("dift.bin");
+        void *ift_mm7 = pEvents_LOD->LoadCompressed2("dift.bin");
         pIconsFrameTable = new IconFrameTable;
         pIconsFrameTable->FromFile(ift_mm6, ift_mm7, ift_mm8);
         free(ift_mm6);
         free(ift_mm7);
         free(ift_mm8);
 
-        void *decs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("ddeclist.bin") : nullptr,
+        void *decs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("ddeclist.bin") : nullptr,
              *decs_mm8 = nullptr;
-        void *decs_mm7 = pEvents_LOD->LoadCompressedTexture("ddeclist.bin");
+        void *decs_mm7 = pEvents_LOD->LoadCompressed2("ddeclist.bin");
         pDecorationList = new DecorationList;
         pDecorationList->FromFile(decs_mm6, decs_mm7, decs_mm8);
         free(decs_mm6);
         free(decs_mm7);
         free(decs_mm8);
 
-        void *objs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dobjlist.bin") : nullptr,
+        void *objs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dobjlist.bin") : nullptr,
              *objs_mm8 = nullptr;
-        void *objs_mm7 = pEvents_LOD->LoadCompressedTexture("dobjlist.bin");
+        void *objs_mm7 = pEvents_LOD->LoadCompressed2("dobjlist.bin");
         pObjectList = new ObjectList;
         pObjectList->FromFile(objs_mm6, objs_mm7, objs_mm8);
         free(objs_mm6);
         free(objs_mm7);
         free(objs_mm8);
 
-        void *mons_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dmonlist.bin") : nullptr,
+        void *mons_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dmonlist.bin") : nullptr,
              *mons_mm8 = nullptr;
-        void *mons_mm7 = pEvents_LOD->LoadCompressedTexture("dmonlist.bin");
+        void *mons_mm7 = pEvents_LOD->LoadCompressed2("dmonlist.bin");
         pMonsterList = new MonsterList;
         pMonsterList->FromFile(mons_mm6, mons_mm7, mons_mm8);
         free(mons_mm6);
         free(mons_mm7);
         free(mons_mm8);
 
-        void *chests_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dchest.bin") : nullptr,
+        void *chests_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dchest.bin") : nullptr,
              *chests_mm8 = nullptr;
-        void *chests_mm7 = pEvents_LOD->LoadCompressedTexture("dchest.bin");
+        void *chests_mm7 = pEvents_LOD->LoadCompressed2("dchest.bin");
         pChestList = new ChestList;
         pChestList->FromFile(chests_mm6, chests_mm7, chests_mm8);
         free(chests_mm6);
         free(chests_mm7);
         free(chests_mm8);
 
-        void *overlays_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("doverlay.bin") : nullptr,
+        void *overlays_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("doverlay.bin") : nullptr,
              *overlays_mm8 = nullptr;
-        void *overlays_mm7 = pEvents_LOD->LoadCompressedTexture("doverlay.bin");
+        void *overlays_mm7 = pEvents_LOD->LoadCompressed2("doverlay.bin");
         pOverlayList = new OverlayList;
         pOverlayList->FromFile(overlays_mm6, overlays_mm7, overlays_mm8);
         free(overlays_mm6);
         free(overlays_mm7);
         free(overlays_mm8);
 
-        void *sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture("dsounds.bin") : nullptr,
+        void *sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dsounds.bin") : nullptr,
              *sounds_mm8 = nullptr;
-        void *sounds_mm7 = pEvents_LOD->LoadCompressedTexture("dsounds.bin");
+        void *sounds_mm7 = pEvents_LOD->LoadCompressed2("dsounds.bin");
         pSoundList = new SoundList;
         pSoundList->FromFile(sounds_mm6, sounds_mm7, sounds_mm8);
         free(sounds_mm6);
@@ -1026,7 +1030,7 @@ bool Engine::MM7_Initialize() {
         pAudioPlayer->Initialize();
 
     pMediaPlayer = new MPlayer();
-    pMediaPlayer->Initialize();
+    pMediaPlayer->Initialize();*/
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
@@ -1101,8 +1105,8 @@ void Engine::SecondaryInitialization() {
 }
 
 void Engine::Initialize() {
-    if (!MM7_Initialize()) {
-        log->Warning("MM7_Initialize: failed");
+    if (!VersionSpecificInitialization()) {
+        log->Warning("VersionSpecificInitialization failed");
 
         if (engine != nullptr) {
             engine->Deinitialize();

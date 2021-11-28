@@ -5,7 +5,7 @@
 #include "src/Application/GameConfig.h"
 #include "src/Application/GameFactory.h"
 
-#include "Engine/AssetLocator.h"
+#include "Engine/AssetsLocator.h"
 #include "Engine/CommandLine.h"
 
 #include "Platform/Api.h"
@@ -27,27 +27,29 @@ int MM_Main(const std::string &args) {
 
     auto command_line = std::make_shared<CommandLine>(args);
 
-    asset_locator = std::make_shared<AssetLocator>();
     if (command_line->TryFindKey("-mm6")) {
-        asset_locator->SetBaseGameRoot(
+        assets_locator->SetBaseGameRoot(
             Mm6Assets,
             FindMm6Directory()
         );
+        assets = new AssetsManager(Mm6Assets);
     } else if (command_line->TryFindKey("-mm8")) {
-        asset_locator->SetBaseGameRoot(
+        assets_locator->SetBaseGameRoot(
             Mm8Assets,
             FindMm8Directory()
         );
+        assets = new AssetsManager(Mm8Assets);
     } else {
         // defaults to mm7
-        asset_locator->SetBaseGameRoot(
+        assets_locator->SetBaseGameRoot(
             Mm7Assets,
             FindMm7Directory()
         );
+        assets = new AssetsManager(Mm7Assets);
     }
 
     std::shared_ptr<const GameConfig> gameConfig = std::make_shared<GameConfig>(command_line);
-    auto game = GameFactory().CreateGame(gameConfig, asset_locator);
+    auto game = GameFactory().CreateGame(gameConfig, assets_locator);
     game->Run();
 
     return 0;

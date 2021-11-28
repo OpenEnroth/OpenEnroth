@@ -61,7 +61,7 @@ _2devent p2DEvents[525];
 unsigned int LoadEventsToBuffer(const char *pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
     size_t size = 0;
-    void *ptr = pEvents_LOD->LoadCompressedTexture(pContainerName, &size);
+    void *ptr = pEvents_LOD->LoadCompressed2(pContainerName, &size);
     if ((ptr == nullptr) || (size > uBufferSize)) {
         Error("File %s Size %lu - Buffer size %lu", pContainerName, size, uBufferSize);
     }

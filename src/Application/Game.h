@@ -5,7 +5,7 @@
 #include "src/Application/GameMenu.h"
 #include "src/Application/IocContainer.h"
 
-#include "Engine/AssetLocator.h"
+#include "Engine/AssetsLocator.h"
 #include "Engine/Engine.h"
 #include "Engine/IocContainer.h"
 
@@ -31,10 +31,10 @@ class Game {
 
      bool Configure(
          std::shared_ptr<const GameConfig> config,
-         std::shared_ptr<AssetLocator> asset_locator
+         std::shared_ptr<AssetsLocator> assets_locator
      ) {
          this->config = config;
-         this->asset_locator = asset_locator;
+         this->assets_locator = assets_locator;
          return true;
      }
 
@@ -51,7 +51,7 @@ class Game {
 
 
      std::shared_ptr<const GameConfig> config;
-     std::shared_ptr<AssetLocator> asset_locator;
+     std::shared_ptr<AssetsLocator> assets_locator;
      std::shared_ptr<Engine> engine;
      std::shared_ptr<OSWindow> window;
      std::shared_ptr<IRender> render;

@@ -19,7 +19,7 @@ GUICredits::GUICredits() :
 
     mm6title = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
 
-    char *text = (char *)pEvents_LOD->LoadCompressedTexture("credits.txt");
+    char *text = (char *)pEvents_LOD->LoadCompressed2("credits.txt");
 
     GUIWindow credit_window;
     credit_window.uFrameWidth = 250;

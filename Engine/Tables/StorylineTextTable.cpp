@@ -14,7 +14,7 @@ void StorylineText::Initialize() {
     char *test_string;
 
     free(pHistoryTXT_Raw);
-    pHistoryTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("history.txt");
+    pHistoryTXT_Raw = (char*)pEvents_LOD->LoadCompressed2("history.txt");
     strtok(pHistoryTXT_Raw, "\r");
 
     StoreLine[0].pText = nullptr;

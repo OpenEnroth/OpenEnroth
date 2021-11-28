@@ -38,7 +38,7 @@ bool Localization::Initialize() {
     int temp_str_len;  // ecx@5
     bool string_end;   // [sp+14h] [bp-4h]@4
 
-    this->localization_raw = (char *)pEvents_LOD->LoadCompressedTexture("global.txt");
+    this->localization_raw = (char *)assets->GetLocalization();
     if (!this->localization_raw) {
         return false;
     }
@@ -281,7 +281,7 @@ void Localization::InitializeSkillNames() {
     this->skill_names[36] = this->localization_strings[301];
     this->skill_names[37] = this->localization_strings[153];  // Nothing
 
-    skill_desc_raw = (char *)pEvents_LOD->LoadCompressedTexture("skilldes.txt");
+    skill_desc_raw = (char *)pEvents_LOD->LoadCompressed2("skilldes.txt");
     strtok(skill_desc_raw, "\r");
     for (int i = 0; i < 37; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
@@ -343,7 +343,7 @@ void Localization::InitializeClassNames() {
     this->class_names[34] = this->localization_strings[261];  // Archmage
     this->class_names[35] = this->localization_strings[49];   // Lich
 
-    this->class_desc_raw = (char *)pEvents_LOD->LoadCompressedTexture("class.txt");
+    this->class_desc_raw = (char *)pEvents_LOD->LoadCompressed2("class.txt");
     strtok(this->class_desc_raw, "\r");
     for (int i = 0; i < 36; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
@@ -424,7 +424,7 @@ void Localization::InitializeAttributeNames() {
     this->attribute_names[5] = this->localization_strings[211];  // Speed
     this->attribute_names[6] = this->localization_strings[136];  // Luck
 
-    this->attribute_desc_raw = (char *)pEvents_LOD->LoadCompressedTexture("stats.txt");
+    this->attribute_desc_raw = (char *)pEvents_LOD->LoadCompressed2("stats.txt");
     strtok(this->attribute_desc_raw, "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;

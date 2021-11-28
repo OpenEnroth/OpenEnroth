@@ -3166,7 +3166,7 @@ void InitializeBuildingResidents() {
     int decode_step;
 
     free(p2DEventsTXT_Raw);
-    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("2dEvents.txt");
+    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadCompressed2("2dEvents.txt");
     strtok(p2DEventsTXT_Raw, "\r");
     strtok(NULL, "\r");
 

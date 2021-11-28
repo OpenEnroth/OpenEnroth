@@ -120,7 +120,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         }
         currentMusicTrack = -1;
 
-        String file_path = asset_locator->LocateMusicFile(
+        String file_path = assets_locator->LocateMusicFile(
             StringPrintf("%d.mp3", (int)eTrack)
         );
         if (!FileExists(file_path.c_str())) {
@@ -359,7 +359,7 @@ struct SoundHeader_mm7 {
 void AudioPlayer::LoadAudioSnd() {
     static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
 
-    std::string file_path = asset_locator->LocateSoundFile("Audio.snd");
+    std::string file_path = assets_locator->LocateSoundFile("Audio.snd");
     fAudioSnd.open(file_path.c_str(), std::ios_base::binary);
     if (!fAudioSnd.good()) {
         logger->Warning("Can't open file: %s", file_path.c_str());

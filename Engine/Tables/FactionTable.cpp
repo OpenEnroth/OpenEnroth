@@ -16,7 +16,7 @@ void FactionTable::Initialize() {
     //  int item_counter;
 
     free(pHostileTXT_Raw);
-    pHostileTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("hostile.txt");
+    pHostileTXT_Raw = (char*)pEvents_LOD->LoadCompressed2("hostile.txt");
     strtok(pHostileTXT_Raw, "\r");
     for (i = 0; i < 89; ++i) {
         test_string = strtok(NULL, "\r") + 1;

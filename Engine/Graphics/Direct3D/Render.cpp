@@ -96,7 +96,7 @@ Texture *Render::CreateTexture_PCXFromFile(const String &name) {
 }
 
 Texture *Render::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureD3D::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
+    return TextureD3D::Create(new PCX_LOD_Raw_Loader((LOD::Container*)pLOD, name));
 }
 
 Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
@@ -1078,12 +1078,12 @@ Render::Render(
     LightmapBuilder* lightmap_builder,
     SpellFxRenderer* spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
-    std::shared_ptr<AssetLocator> asset_locator,
+    std::shared_ptr<AssetsLocator> assets_locator,
     Vis* vis,
     Log* logger
 ) : RenderBase(
     window, decal_builder, lightmap_builder, spellfx, particle_engine,
-    asset_locator, vis, logger
+    assets_locator, vis, logger
 ) {
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;

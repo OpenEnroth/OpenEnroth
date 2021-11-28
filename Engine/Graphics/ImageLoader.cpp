@@ -266,7 +266,7 @@ bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
 
     size_t data_size = 0;
-    void *pcx_data = lod->LoadCompressedTexture(resource_name, &data_size);
+    void *pcx_data = lod->LoadCompressed2(resource_name, &data_size);
     if (pcx_data == nullptr) {
         log->Warning("Unable to load %s", resource_name.c_str());
         return false;

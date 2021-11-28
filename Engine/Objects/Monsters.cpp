@@ -460,7 +460,7 @@ void MonsterStats::InitializePlacements() {
     int decode_step;
     //  int item_counter;
 
-    pMonsterPlacementTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("placemon.txt");
+    pMonsterPlacementTXT_Raw = (char *)pEvents_LOD->LoadCompressed2("placemon.txt");
     strtok(pMonsterPlacementTXT_Raw, "\r");
     for (i = 1; i < 31; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -506,7 +506,7 @@ void MonsterStats::Initialize() {
     String str;
 
     free(pMonstersTXT_Raw);
-    pMonstersTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("monsters.txt");
+    pMonstersTXT_Raw = (char *)pEvents_LOD->LoadCompressed2("monsters.txt");
     strtok(pMonstersTXT_Raw, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");

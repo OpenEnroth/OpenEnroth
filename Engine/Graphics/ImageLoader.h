@@ -92,7 +92,7 @@ class PCX_File_Loader : public PCX_Loader {
 
 class PCX_LOD_Raw_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Raw_Loader(LOD::File *lod, const String &filename) {
+    inline PCX_LOD_Raw_Loader(LOD::Container*lod, const String &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -101,12 +101,12 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
                       IMAGE_FORMAT *format);
 
  protected:
-    LOD::File *lod;
+    LOD::Container *lod;
 };
 
 class PCX_LOD_Compressed_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Compressed_Loader(LOD::File *lod, const String &filename) {
+    inline PCX_LOD_Compressed_Loader(LOD::Container*lod, const String &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -115,7 +115,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
                       void **out_pixels, IMAGE_FORMAT *format);
 
  protected:
-    LOD::File *lod;
+    LOD::Container*lod;
 };
 
 class Bitmaps_LOD_Loader : public ImageLoader {
