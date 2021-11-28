@@ -3621,7 +3621,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 decal_builder->AddBloodsplat((float)pMonster->vPosition.x,
                                              (float)pMonster->vPosition.y,
                                              (float)pMonster->vPosition.z, 1.0,
-                                             0.0, 0.0, (float)v33, 0, 0);
+                                             0.0, 0.0, (float)v33);
             }
         }
         Actor::Die(uActorID_Monster);

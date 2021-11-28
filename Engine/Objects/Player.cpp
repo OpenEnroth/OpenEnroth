@@ -7102,7 +7102,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                                 actorPtr->vPosition.x,
                                 actorPtr->vPosition.y,
                                 actorPtr->vPosition.z, 1.0, 0.0, 0.0,
-                                (float)splatRadius, 0, 0);
+                                (float)splatRadius);
                         }
                         Actor::Die(uActorID);
                         Actor::ApplyFineForKillingPeasant(uActorID);
@@ -7288,7 +7288,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                                     actorPtr->vPosition.x,
                                     actorPtr->vPosition.y,
                                     actorPtr->vPosition.z, 1.0, 0.0, 0.0,
-                                    (float)splatRadius, 0, 0);
+                                    (float)splatRadius);
                             }
 
                             Actor::Die(uActorID);

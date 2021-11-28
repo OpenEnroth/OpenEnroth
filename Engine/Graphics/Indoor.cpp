@@ -456,7 +456,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
 
     if (decal_builder->bloodsplat_container->uNumBloodsplats) {
         decal_builder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
-        if (decal_builder->uNumDecals) {
+        if (decal_builder->uNumSplatsThisFace) {
             FacePlaneHolder.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
             FacePlaneHolder.polygonType = pFace->uPolygonType;
             FacePlaneHolder.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
@@ -476,9 +476,9 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             }
 
             // blood draw
-            decal_builder->ApplyDecals(HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel), 1, &FacePlaneHolder,
+            decal_builder->BuildAndApplyDecals(HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel), 1, &FacePlaneHolder,
                 pFace->uNumVertices, static_vertices_buff_in,
-                0, 0, pFace->uSectorID);
+                0, pFace->uSectorID);
         }
     }
 
@@ -547,7 +547,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                 pIndoorCameraD3D->Project(array_507D30, uNumVerticesa, 0);
 
                 lightmap_builder->StationaryLightsCount = 0;
-                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     FacePlaneHolder.face_plane.vNormal.x =
                         pFace->pFacePlane.vNormal.x;
                     FacePlaneHolder.polygonType = pFace->uPolygonType;

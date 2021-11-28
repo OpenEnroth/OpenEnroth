@@ -7,9 +7,19 @@
 
 using EngineIoc = Engine_::IocContainer;
 
+enum DecalFlags {
+    DecalFlagsNone = 0x0,
+    DecalFlagsFade = 0x1
+};
+
+enum LocationFlags {
+    LocationNone = 0x0,
+    LocationIndoors = 0x1,
+    LocationBuildings = 0x2,
+    LocationTerrain = 0x4
+};
 
 // bloodsplats are created at enemy death as locations of where blood decal needs to be applied
-#pragma pack(push, 1)
 struct Bloodsplat {
     inline Bloodsplat() {
         this->x = 0;
@@ -20,7 +30,7 @@ struct Bloodsplat {
         this->r = 0;
         this->g = 0;
         this->b = 0;
-        this->blood_flags = 0;
+        this->blood_flags = DecalFlagsNone;
         this->fade_timer = 0;
     }
 
@@ -34,13 +44,11 @@ struct Bloodsplat {
     unsigned char r;
     unsigned char g;
     unsigned char b;
-    int blood_flags;  // &1 for fade
+    int blood_flags;
     uint64_t fade_timer;
 };
-#pragma pack(pop)
 
 // store for all the bloodsplats to be applied
-#pragma pack(push, 1)
 struct BloodsplatContainer {
     inline BloodsplatContainer() {
         uNumBloodsplats = 0;
@@ -48,24 +56,18 @@ struct BloodsplatContainer {
 
     virtual ~BloodsplatContainer() { }
 
-    void AddBloodsplat(float x, float y, float z, float r, float g, float b,
-        float radius, int a8, int a9);
-    void AddBloodsplat(float x, float y, float z, float radius, unsigned char r,
-        unsigned char g, unsigned char b);
+    void AddBloodsplat(float x, float y, float z, float radius, unsigned char r, unsigned char g, unsigned char b);
 
     Bloodsplat pBloodsplats_to_apply[64];
     uint uNumBloodsplats;  // this loops round so old bloodsplats are replaced
 };
-#pragma pack(pop)
-
 
 // decal is the created geometry to display
-#pragma pack(push, 1)
 struct Decal {
     void Decal_base_ctor();
     inline Decal() {
         Decal_base_ctor();
-        decal_flags = 0;
+        decal_flags = DecalFlagsNone;
     }
     double Fade_by_time();
 
@@ -80,40 +82,29 @@ struct Decal {
     int DimmingLevel;
 
     uint64_t fadetime;
-    int decal_flags;  // & 1 for fade
+    int decal_flags;
 };
-#pragma pack(pop)
 
 // contains all of above
-#pragma pack(push, 1)
 struct DecalBuilder {
     DecalBuilder() {
         this->log = EngineIoc::ResolveLogger();
         this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
-
         this->DecalsCount = 0;
-        /*for (unsigned int i = 0; i < 256; ++i) {
-            this->pVertices[i].flt_2C = 0.0f;
-        }*/
     }
 
     virtual ~DecalBuilder() {}
 
-    void AddBloodsplat(float x, float y, float z, float r, float g, float b,
-        float radius, int a8, int a9);
+    void AddBloodsplat(float x, float y, float z, float r, float g, float b, float radius);
     void Reset(bool bPreserveBloodsplats);
-    char ApplyDecals(int light_level, char a3, struct stru154* a4, int a5,
-        struct RenderVertexSoft* a6,
-        struct IndoorCameraD3D_Vec4* a7, char a8,
-        unsigned int uSectorID);
-    char _49B790_build_decal_geometry(int a2, char a3, Bloodsplat* a4, int64_t a5,
-        float a6, unsigned int uColorMultiplier,
-        float a8, struct stru314* a9,
-        signed int a10,
-        struct RenderVertexSoft* a11,
-        char uClipFlags);
+    char BuildAndApplyDecals(int light_level, char LocationFlags, struct stru154* FacePlane, int NumFaceVerts,
+        RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID);
+    bool Build_Decal_Geometry(
+        int LightLevel, char LocationFlags, Bloodsplat* blood, float DecalRadius,
+        unsigned int uColorMultiplier, float DecalDotDist, struct stru314* FacetNormals, signed int numfaceverts,
+        RenderVertexSoft* faceverts, char uClipFlags);
     bool ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID);
-    char ApplyDecals_OutdoorFace(ODMFace* pFace);
+    bool ApplyBloodSplat_OutdoorFace(ODMFace* pFace);
     bool ApplyBloodSplatToTerrain(struct Polygon* a2, Vec3_float_* a3, float* a4,
         struct RenderVertexSoft* a5, unsigned int uStripType, char a7);
     void DrawDecals(float z_bias);
@@ -123,10 +114,9 @@ struct DecalBuilder {
     Decal Decals[1024];  // actual decal geom store
     unsigned int DecalsCount;  // number of decals
 
-
     // for building decal geom
-    int uNumDecals = 0;  // numeber of bloodsplats that overlap this face
-    int std__vector_30B00C[1024]{};  // stores which ith element of blodsplats to apply outdoor bloodsplats/decals store for calc
+    int uNumSplatsThisFace = 0;  // numeber of bloodsplats that overlap this face
+    int WhichSplatsOnThisFace[1024]{};  // stores which ith element of blodsplats to apply outdoor bloodsplats/decals store for calc
 
     // sizes for building decal geometry
     float field_30C010 = 0;
@@ -143,4 +133,3 @@ struct DecalBuilder {
     Log* log;
     BloodsplatContainer* bloodsplat_container;
 };
-#pragma pack(pop)

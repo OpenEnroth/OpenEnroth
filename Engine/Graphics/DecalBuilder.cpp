@@ -16,7 +16,7 @@
 //----- (0043B570) --------------------------------------------------------
 double Decal::Fade_by_time() {
     // splats dont fade
-    if (!(decal_flags & 1)) return 1.0;
+    if (!(decal_flags & DecalFlagsFade)) return 1.0;
 
     // splats fade
     int64_t delta = fadetime - pEventTimer->Time();
@@ -27,8 +27,7 @@ double Decal::Fade_by_time() {
 
 //----- (0043B6EF) --------------------------------------------------------
 void BloodsplatContainer::AddBloodsplat(float x, float y, float z, float radius,
-    unsigned char r, unsigned char g,
-    unsigned char b) {
+    unsigned char r, unsigned char g, unsigned char b) {
 
     // this adds to store of bloodsplats to apply
     this->pBloodsplats_to_apply[this->uNumBloodsplats].x = x;
@@ -39,7 +38,7 @@ void BloodsplatContainer::AddBloodsplat(float x, float y, float z, float radius,
     this->pBloodsplats_to_apply[this->uNumBloodsplats].g = g;
     this->pBloodsplats_to_apply[this->uNumBloodsplats].b = b;
     this->pBloodsplats_to_apply[this->uNumBloodsplats].dot_dist = 0;
-    this->pBloodsplats_to_apply[this->uNumBloodsplats].blood_flags = 0;
+    this->pBloodsplats_to_apply[this->uNumBloodsplats].blood_flags = DecalFlagsNone;
     this->pBloodsplats_to_apply[this->uNumBloodsplats].fade_timer = 0;
 
     this->uNumBloodsplats++;
@@ -47,11 +46,7 @@ void BloodsplatContainer::AddBloodsplat(float x, float y, float z, float radius,
 }
 
 //----- (0049B490) --------------------------------------------------------
-void DecalBuilder::AddBloodsplat(float x, float y, float z, float r, float g,
-    float b, float radius, int a8, int a9) {
-    // a8 never used
-    // a9 never used
-
+void DecalBuilder::AddBloodsplat(float x, float y, float z, float r, float g, float b, float radius) {
     bloodsplat_container->AddBloodsplat(
         x, y, z, radius, bankersRounding(r * 255.0f),
         bankersRounding(g * 255.0f), bankersRounding(b * 255.0f));
@@ -66,105 +61,39 @@ void DecalBuilder::Reset(bool bPreserveBloodsplats) {
 }
 
 //----- (0049B540) --------------------------------------------------------
-char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154* a4, int a5,
-    RenderVertexSoft* a6, IndoorCameraD3D_Vec4* a7,
-    char ClipFlags, unsigned int uSectorID) {
+char DecalBuilder::BuildAndApplyDecals(int light_level, char LocationFlags, stru154* FacePlane, int NumFaceVerts,
+    RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID) {
 
-    // actually build decal geom and apply it
+    if (!NumFaceVerts) return 0;
 
-    // LocationFlags  1 indoors 2 buildings 4 terrain
-    // a4 classified polygon
-    // a5 number verts
-    // a6 vertices store
-    // a7 camera
-
-
-    stru154* v16;  // esi@12
-    int BloodSplatX;       // ebx@21
-    int ColourMult;       // [sp+3Ch] [bp-Ch]@21
-    // DecalBuilder *thisa; // [sp+40h] [bp-8h]@1
-    // RenderVertexSoft *a11; // [sp+44h] [bp-4h]@8
-    //  int a6a;
-    // int *a6b;
-
-    //  __debugbreak();
-
-    // auto a2 = light_level;
-    // auto a9 = uSectorID;
-
-    // thisa = this;
-    if (!a5) return 0;
-
-    static RenderVertexSoft static_AE4F90[64];
-    static bool __init_flag1 = false;
-    if (!__init_flag1) {
-        __init_flag1 = true;
-
-        for (uint i = 0; i < 64; ++i) static_AE4F90[i].flt_2C = 0.0f;
-    }
-
-    static stru314 static_AE4F60;  // idb
-    /*static bool __init_flag2 = false;
-    if (!__init_flag2)
-    {
-      __init_flag2 = true;
-      stru314::stru314(&static_AE4F60);
-    }*/
-
-    // a11 = a6;
-    if (a7) {
-        for (int i = 0; i < a5; i++) {
-            memcpy(&static_AE4F90[i], a6, sizeof(RenderVertexSoft));
-            ++a6;
-        }
-        v16 = a4;
-        if (pIndoorCameraD3D->_437376(a4, static_AE4F90, (unsigned int*)&a5) ==
-            1) {
-            if (!a5) return 0;
-            a6 = static_AE4F90;
-        }
-    } else {
-        v16 = a4;
-    }
-
-    // v18 = v16->face_plane.vNormal.z;
-    // v19 = v16->face_plane.vNormal.y;
-    // v20 = v16->face_plane.vNormal.x;
-    // v37 = (int)&static_AE4F60.field_1C;
-    static_AE4F60.Normal.y = v16->face_plane.vNormal.y;
-    static_AE4F60.Normal.x = v16->face_plane.vNormal.x;
-    // LODWORD(v36) = (DWORD)&static_AE4F60.field_10;
-    static_AE4F60.Normal.z = v16->face_plane.vNormal.z;
-    static_AE4F60.dist = v16->face_plane.dist;
+    static stru314 static_FacePlane;
+    static_FacePlane.Normal.y = FacePlane->face_plane.vNormal.y;
+    static_FacePlane.Normal.x = FacePlane->face_plane.vNormal.x;
+    static_FacePlane.Normal.z = FacePlane->face_plane.vNormal.z;
+    static_FacePlane.dist = FacePlane->face_plane.dist;
     if (!pIndoorCameraD3D->GetFacetOrientation(
-        v16->polygonType, &static_AE4F60.Normal, &static_AE4F60.field_10,
-        &static_AE4F60.field_1C))
+        FacePlane->polygonType, &static_FacePlane.Normal, &static_FacePlane.field_10,
+        &static_FacePlane.field_1C))
         log->Warning("Error: Failed to get the facet orientation");
 
-    if (this->uNumDecals > 0) {
-        // a6b = this->std__vector_30B00C;
-        for (int i = 0; i < this->uNumDecals; ++i) {
-            // v21 = &pBloodsplatContainer->pBloodsplats_to_apply[*a6b];
-            int point_light_level =
-                _43F5C8_get_point_light_level_with_respect_to_lights(
+    if (this->uNumSplatsThisFace > 0) {
+        for (int i = 0; i < this->uNumSplatsThisFace; ++i) {
+            int thissplat = this->WhichSplatsOnThisFace[i];
+            Bloodsplat* buildsplat = &bloodsplat_container->pBloodsplats_to_apply[thissplat];
+            int point_light_level = _43F5C8_get_point_light_level_with_respect_to_lights(
                     light_level, uSectorID,
-                    bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].x,
-                    bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].y,
-                    bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].z);
+                    buildsplat->x, buildsplat->y, buildsplat->z);
 
-            ColourMult = bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].b |
-                ((unsigned int)bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].g << 8) |
-                ((unsigned int)bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].r << 16);
-            BloodSplatX = (signed __int64)bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].x;
+            int ColourMult = buildsplat->b | (buildsplat->g << 8) | (buildsplat->r << 16);
+            int BloodSplatX = (signed __int64)buildsplat->x;
 
-            if (!this->_49B790_build_decal_geometry(
+            if (!this->Build_Decal_Geometry(
                 point_light_level, LocationFlags,
-                &bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]],
-                (int64_t)&BloodSplatX,
-                bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].radius,
+                buildsplat,
+                buildsplat->radius,
                 ColourMult,
-                bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].dot_dist,
-                &static_AE4F60, a5, a6, ClipFlags))
+                buildsplat->dot_dist,
+                &static_FacePlane, NumFaceVerts, FaceVerts, ClipFlags))
                 log->Warning("Error: Failed to build decal geometry");
         }
     }
@@ -172,37 +101,18 @@ char DecalBuilder::ApplyDecals(int light_level, char LocationFlags, stru154* a4,
 }
 
 //----- (0049B790) --------------------------------------------------------
-char DecalBuilder::_49B790_build_decal_geometry(
-    int LightLevel, char LocationFlags, Bloodsplat* blood, int64_t DecalXPos, float DecalRadius,
+bool DecalBuilder::Build_Decal_Geometry(
+    int LightLevel, char LocationFlags, Bloodsplat* blood, float DecalRadius,
     unsigned int uColorMultiplier, float DecalDotDist, stru314* FacetNormals, signed int numfaceverts,
     RenderVertexSoft* faceverts, char uClipFlags) {
 
-    // LocationFlags  1 indoors 2 buildings 4 terrain
-
-    /*this->_49B790_build_decal_geometry(
-                point_light_level, LocationFlags,
-                &bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]],
-                (int)&BloodSplatX,
-                bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].radius,
-                ColourMult,
-                bloodsplat_container->pBloodsplats_to_apply[this->std__vector_30B00C[i]].dot_dist,
-                &static_AE4F60, a5, a6, a8))*/
-
-    Decal* decal;     // edi@2
-    double v28;       // st7@5
-    char result;      // al@6
-    int v34;          // eax@19
-    // std::string v37;  // [sp-4h] [bp-24h]@15
-
-    unsigned int a8b = 0;
-
     if (DecalRadius == 0.0f) return 1;
-    decal = &this->Decals[this->DecalsCount];
-    this->Decals[this->DecalsCount].fadetime = blood->fade_timer;
-    this->Decals[this->DecalsCount].decal_flags = blood->blood_flags;
+    Decal* decal = &this->Decals[this->DecalsCount];
+    decal->fadetime = blood->fade_timer;
+    decal->decal_flags = blood->blood_flags;
 
     // buildings decals dont fade ??
-    if (LocationFlags & 2) this->Decals[this->DecalsCount].decal_flags = 0;
+    if (LocationFlags & LocationBuildings) decal->decal_flags = DecalFlagsNone;
 
     this->field_30C028 = DecalRadius - DecalDotDist;
     this->field_30C02C = sqrt((DecalRadius + DecalRadius - this->field_30C028) * this->field_30C028);
@@ -247,18 +157,17 @@ char DecalBuilder::_49B790_build_decal_geometry(
     decal->pVertices[3].u = 1.0;
     decal->pVertices[3].v = 0.0;
 
-
-    //
+    // adjust to plane dist
     for (uint i = 0; i < 4; ++i) {
-        v28 = FacetNormals->Normal.x * decal->pVertices[i].vWorldPosition.x +
-            FacetNormals->Normal.y * decal->pVertices[i].vWorldPosition.y +
-            FacetNormals->Normal.z * decal->pVertices[i].vWorldPosition.z + FacetNormals->dist;
+        double dotdist = FacetNormals->Normal.x * (double)decal->pVertices[i].vWorldPosition.x +
+            FacetNormals->Normal.y * (double)decal->pVertices[i].vWorldPosition.y +
+            FacetNormals->Normal.z * (double)decal->pVertices[i].vWorldPosition.z + FacetNormals->dist;
         decal->pVertices[i].vWorldPosition.x =
-            decal->pVertices[i].vWorldPosition.x - v28 * FacetNormals->Normal.x;
+            decal->pVertices[i].vWorldPosition.x - dotdist * FacetNormals->Normal.x;
         decal->pVertices[i].vWorldPosition.y =
-            decal->pVertices[i].vWorldPosition.y - v28 * FacetNormals->Normal.y;
+            decal->pVertices[i].vWorldPosition.y - dotdist * FacetNormals->Normal.y;
         decal->pVertices[i].vWorldPosition.z =
-            decal->pVertices[i].vWorldPosition.z - v28 * FacetNormals->Normal.z;
+            decal->pVertices[i].vWorldPosition.z - dotdist * FacetNormals->Normal.z;
     }
 
     decal->uColorMultiplier = uColorMultiplier;
@@ -266,49 +175,18 @@ char DecalBuilder::_49B790_build_decal_geometry(
     decal->DimmingLevel = LightLevel;
 
     // clip decals to face
-    result = engine->pStru9Instance->ClipVertsToFace(
+    bool result = engine->pStru9Instance->ClipVertsToFace(
         faceverts, numfaceverts, FacetNormals->Normal.x, FacetNormals->Normal.y, FacetNormals->Normal.z, decal->pVertices,
         (signed int*)&decal->uNumVertices);
 
     if (result) {
+        // no verts then discard
         if (!decal->uNumVertices) return 1;
 
-        // pIndoorCameraD3D->ViewTransform(decal->pVertices, (unsigned int)decal->uNumVertices);
-        // pIndoorCameraD3D->Project(decal->pVertices, decal->uNumVertices, 0);
-
-        // if (!(uClipFlags & 1)) {
-            this->DecalsCount++;
-            if (this->DecalsCount == 1024) this->DecalsCount = 0;
-            return 1;
-        // }
-
-        // if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        //    if (uClipFlags & 2) {
-        //        pIndoorCameraD3D->LightmapNeerClip(decal->pVertices, decal->uNumVertices, this->pVertices, &a8b);
-        //        pIndoorCameraD3D->LightmapProject(a8b, decal->pVertices, this->pVertices, (signed int*)&decal->uNumVertices);
-        //    }
-        //    else if (uClipFlags & 4) {
-        //        pIndoorCameraD3D->LightmapFarClip(decal->pVertices, decal->uNumVertices, this->pVertices, &a8b);
-        //        pIndoorCameraD3D->LightmapProject(a8b, decal->pVertices, this->pVertices, (signed int*)&decal->uNumVertices);
-        //    }
-        //    else {
-        //        log->Warning("Undefined clip flag specified");
-        //    }
-        // } else {
-        //    log->Warning("Lightpoly builder native indoor clipping not implemented");
-        // }
-
-        // if (a8b != 0) {
-        //    ++this->curent_decal_id;
-        //    v34 = 1024;
-        //    if (this->curent_decal_id == 1024) this->curent_decal_id = 0;
-        //    if ((signed int)(this->DecalsCount + 1) <= 1024)
-        //        v34 = this->DecalsCount + 1;
-        //    this->DecalsCount = v34;
-        //    return 1;
-        // }
-
-        // result = 1;
+        // otherwise keep this decal
+        this->DecalsCount++;
+        if (this->DecalsCount == 1024) this->DecalsCount = 0;
+        return 1;
     }
 
     return result;
@@ -316,11 +194,8 @@ char DecalBuilder::_49B790_build_decal_geometry(
 
 //----- (0049BBBD) --------------------------------------------------------
 bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
-    double v7;  // st7@12
-
-    uNumDecals = 0;
-    if (!bloodsplat_container->uNumBloodsplats) return true;
-
+    // reset splat count
+    uNumSplatsThisFace = 0;
     BLVFace* pFace = &pIndoor->pFaces[uFaceID];
 
     if (pFace->Indoor_sky() || pFace->Fluid()) return true;
@@ -332,13 +207,14 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
             pFace->pBounding.y2 + pBloodsplat->radius > pBloodsplat->y &&
             pFace->pBounding.z1 - pBloodsplat->radius < pBloodsplat->z &&
             pFace->pBounding.z2 + pBloodsplat->radius > pBloodsplat->z) {
-            v7 = pFace->pFacePlane.vNormal.z * pBloodsplat->z +
-                pFace->pFacePlane.vNormal.y * pBloodsplat->y +
-                pFace->pFacePlane.vNormal.x * pBloodsplat->x +
+            double dotdist = pFace->pFacePlane.vNormal.z * (double)pBloodsplat->z +
+                pFace->pFacePlane.vNormal.y * (double)pBloodsplat->y +
+                pFace->pFacePlane.vNormal.x * (double)pBloodsplat->x +
                 pFace->pFacePlane.dist;
-            if (v7 <= pBloodsplat->radius) {
-                pBloodsplat->dot_dist = v7;
-                std__vector_30B00C[uNumDecals++] = i;
+            if (dotdist <= pBloodsplat->radius) {
+                // store splat
+                pBloodsplat->dot_dist = dotdist;
+                WhichSplatsOnThisFace[uNumSplatsThisFace++] = i;
             }
         }
     }
@@ -347,35 +223,34 @@ bool DecalBuilder::ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID) {
 }
 
 //----- (0049BCEB) --------------------------------------------------------
-char DecalBuilder::ApplyDecals_OutdoorFace(ODMFace* pFace) {
-    double v8;  // st7@12
-    // unsigned int v10; // [sp+20h] [bp-1Ch]@1
+bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace* pFace) {
+    // reset splat count
+    this->uNumSplatsThisFace = 0;
 
-    Bloodsplat* pBloodsplat;
-
-    this->uNumDecals = 0;
-    // v10 = pBloodsplatContainer->std__vector_pBloodsplats_size;
+    // loop through and check
     if (!pFace->Indoor_sky() && !pFace->Fluid()) {
         for (int i = 0; i < bloodsplat_container->uNumBloodsplats; i++) {
-            pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
+            Bloodsplat* pBloodsplat = &bloodsplat_container->pBloodsplats_to_apply[i];
             if ((double)pFace->pBoundingBox.x1 - pBloodsplat->radius < pBloodsplat->x &&
                 (double)pFace->pBoundingBox.x2 + pBloodsplat->radius > pBloodsplat->x &&
                 (double)pFace->pBoundingBox.y1 - pBloodsplat->radius < pBloodsplat->y &&
                 (double)pFace->pBoundingBox.y2 + pBloodsplat->radius > pBloodsplat->y &&
                 (double)pFace->pBoundingBox.z1 - pBloodsplat->radius < pBloodsplat->z &&
                 (double)pFace->pBoundingBox.z2 + pBloodsplat->radius > pBloodsplat->z) {
-                v8 = (double)((pFace->pFacePlane.dist +
+                double dotdist = (double)((pFace->pFacePlane.dist +
                     round_to_int(pBloodsplat->x) * pFace->pFacePlane.vNormal.x +
                     round_to_int(pBloodsplat->y) * pFace->pFacePlane.vNormal.y +
                     round_to_int(pBloodsplat->z) * pFace->pFacePlane.vNormal.z) >> 16);
-                if (v8 <= pBloodsplat->radius) {
-                    pBloodsplat->dot_dist = v8;
-                    this->std__vector_30B00C[this->uNumDecals++] = i;
+                if (dotdist <= pBloodsplat->radius) {
+                    // store splat
+                    pBloodsplat->dot_dist = dotdist;
+                    this->WhichSplatsOnThisFace[this->uNumSplatsThisFace++] = i;
                 }
             }
         }
     }
-    return 1;
+
+    return true;
 }
 
 //----- (0049BE8A) --------------------------------------------------------
@@ -391,7 +266,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3_float
     float planedist = 0;
 
     // tracks how many decals are applied to this tri
-    this->uNumDecals = 0;
+    this->uNumSplatsThisFace = 0;
 
     if (!bloodsplat_container->uNumBloodsplats) return false;
     unsigned int NumBloodsplats = bloodsplat_container->uNumBloodsplats;
@@ -452,8 +327,8 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3_float
                         // check if water or something else (maybe should be border tile or swampy>)
                         if (terrpoly->flags & 2 || terrpoly->flags & 0x100) {
                             // apply fade flags
-                            if (!(bloodsplat_container->pBloodsplats_to_apply[i].blood_flags & 1)) {
-                                bloodsplat_container->pBloodsplats_to_apply[i].blood_flags |= 1;
+                            if (!(bloodsplat_container->pBloodsplats_to_apply[i].blood_flags & DecalFlagsFade)) {
+                                bloodsplat_container->pBloodsplats_to_apply[i].blood_flags |= DecalFlagsFade;
                                 bloodsplat_container->pBloodsplats_to_apply[i].fade_timer = pEventTimer->Time();
                             }
                         }
@@ -462,8 +337,8 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3_float
                         bloodsplat_container->pBloodsplats_to_apply[i].dot_dist = planedist;
 
                         // store this decal to apply
-                        this->std__vector_30B00C[this->uNumDecals] = i;
-                        ++this->uNumDecals;
+                        this->WhichSplatsOnThisFace[this->uNumSplatsThisFace] = i;
+                        ++this->uNumSplatsThisFace;
                     }
                 }
             }
@@ -484,17 +359,14 @@ void DecalBuilder::DrawBloodsplats() {
     if (!DecalsCount) return;
 
     render->BeginDecals();
-
-    DrawDecals(0.00039999999);  // 0.00039999999
-
+    DrawDecals(0.00039999999);
     render->EndDecals();
 }
 
 //----- (0049C550) --------------------------------------------------------
 void DecalBuilder::DrawDecalDebugOutlines() {
     for (int i = 0; i < DecalsCount; i++)
-        pIndoorCameraD3D->debug_outline_sw(
-            Decals[i].pVertices, Decals[i].uNumVertices, 0xC86400u, 0.0f);
+        pIndoorCameraD3D->debug_outline_sw(Decals[i].pVertices, Decals[i].uNumVertices, 0xC86400u, 0.0f);
 }
 
 //----- (0040E4C2) --------------------------------------------------------

@@ -2298,11 +2298,8 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
         return;
     }
 
-    float color_mult;
-    if (pDecal->decal_flags & 1)
-        color_mult = 1.0;
-    else
-        color_mult = pDecal->Fade_by_time();
+    float color_mult = pDecal->Fade_by_time();
+    if (color_mult == 0.0) return;
 
     // temp - bloodsplat persistance
     // color_mult = 1;
@@ -2941,17 +2938,17 @@ void RenderOpenGL::RenderTerrainD3D() {
                 int uClipFlag = 0;
                 static stru154 static_sub_0048034E_stru_154;
                 lightmap_builder->StationaryLightsCount = 0;
-                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     if (neer_clip)
                         uClipFlag = 3;
                     else
                         uClipFlag = far_clip != 0 ? 5 : 0;
                     static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
 
-                    if (decal_builder->uNumDecals > 0)
-                        decal_builder->ApplyDecals(31 - pTilePolygon->dimming_level,
+                    if (decal_builder->uNumSplatsThisFace > 0)
+                        decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level,
                             4, &static_sub_0048034E_stru_154,
-                            3, VertexRenderList, 0,
+                            3, VertexRenderList,
                             *(float*)&uClipFlag, -1);
                     if (Lights.uNumLightsApplied > 0)
                         lightmap_builder->ApplyLights(
@@ -3067,17 +3064,17 @@ void RenderOpenGL::RenderTerrainD3D() {
                 int uClipFlag_2 = 0;
                 static stru154 static_sub_0048034E_stru_154_2;
                 lightmap_builder->StationaryLightsCount = 0;
-                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     if (neer_clip_2)
                         uClipFlag_2 = 3;
                     else
                         uClipFlag_2 = far_clip_2 != 0 ? 5 : 0;
                     static_sub_0048034E_stru_154_2.ClassifyPolygon(norm2, Light_tile_dist);
 
-                    if (decal_builder->uNumDecals > 0)
-                        decal_builder->ApplyDecals(31 - pTilePolygon->dimming_level,
+                    if (decal_builder->uNumSplatsThisFace > 0)
+                        decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level,
                             4, &static_sub_0048034E_stru_154_2,
-                            3, VertexRenderList, 0,
+                            3, VertexRenderList,
                             *(float*)&uClipFlag_2, -1);
                     if (Lights.uNumLightsApplied > 0)
                         lightmap_builder->ApplyLights(
@@ -3170,17 +3167,17 @@ void RenderOpenGL::RenderTerrainD3D() {
                 int uClipFlag = 0;
                 static stru154 static_sub_0048034E_stru_154;
                 lightmap_builder->StationaryLightsCount = 0;
-                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     // if (neer_clip)
                      //   uClipFlag = 3;
                     // else
                         // uClipFlag = far_clip != 0 ? 5 : 0;
                     static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
 
-                    if (decal_builder->uNumDecals > 0)
-                        decal_builder->ApplyDecals(31 - pTilePolygon->dimming_level,
+                    if (decal_builder->uNumSplatsThisFace > 0)
+                        decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level,
                             4, &static_sub_0048034E_stru_154,
-                            a5, VertexRenderList, 0,
+                            a5, VertexRenderList,
                             *(float*)&uClipFlag, -1);
 
                     if (Lights.uNumLightsApplied > 0)
@@ -4141,20 +4138,20 @@ void RenderOpenGL::DrawBuildingsD3D() {
                 static stru154 static_RenderBuildingsD3D_stru_73C834;
 
                 lightmap_builder->ApplyLights_OutdoorFace(&face);
-                decal_builder->ApplyDecals_OutdoorFace(&face);
+                decal_builder->ApplyBloodSplat_OutdoorFace(&face);
                 lightmap_builder->StationaryLightsCount = 0;
                 int v31 = 0;
-                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
 
                     // if (face.uAttributes & FACE_OUTLINED) __debugbreak();
 
                     static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
-                    if (decal_builder->uNumDecals > 0) {
-                        decal_builder->ApplyDecals(
+                    if (decal_builder->uNumSplatsThisFace > 0) {
+                        decal_builder->BuildAndApplyDecals(
                             31 - poly->dimming_level, 2,
                             &static_RenderBuildingsD3D_stru_73C834,
-                            face.uNumVertices, VertexRenderList, 0, (char)v31,
+                            face.uNumVertices, VertexRenderList, (char)v31,
                             -1);
                     }
                 }
