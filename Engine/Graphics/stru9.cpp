@@ -5,11 +5,17 @@
 #include "IndoorCameraD3D.h"
 
 //----- (00498377) --------------------------------------------------------
-bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,  // test skipping this
+bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test skipping this
                     unsigned int uNumVertices,
                     IndoorCameraD3D_Vec4 *pVertices,
                     RenderVertexSoft *pVertices2,
                     unsigned int *pOutNumVertices) {
+    // portal corners
+    // 4
+    // node
+    // faceverts
+    // num face verts
+
     int result;             // eax@7
     RenderVertexSoft *v9;   // ecx@9
     RenderVertexSoft *v19;  // [sp+14h] [bp-14h]@0
@@ -84,7 +90,7 @@ bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,  // test skipping 
                 if (result) {
                     if (DoDecalVertsNeedClipping(&pVertices2[i], &pVertices2[i], pPortalBounding,
                                 &static_AE3FA4) &&
-                        ClipDecalVertsToFace(&pVertices2[i], &pVertices2[i], pPortalBounding,
+                        AdjustVertToClipEdge(&pVertices2[i], &pVertices2[i], pPortalBounding,
                                 &static_AE3FA4, &static_AE3FB4))
                         AddVertex(&static_AE33A0, &static_AE3FB4);
                 } else {
@@ -104,7 +110,7 @@ bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,  // test skipping 
             }
             if (DoDecalVertsNeedClipping(&pVertices2[result], v19, pPortalBounding,
                         &static_AE3FA4) &&
-                ClipDecalVertsToFace(&pVertices2[result], v19, pPortalBounding,
+                AdjustVertToClipEdge(&pVertices2[result], v19, pPortalBounding,
                         &static_AE3FA4, &static_AE3FB4))
                 AddVertex(&static_AE33A0, &static_AE3FB4);
 
@@ -161,7 +167,7 @@ bool stru9::_498377(struct RenderVertexSoft *pPortalBounding,  // test skipping 
     return true;
 }
 
-bool stru9::AdjustVerticesToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
+bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
                             RenderVertexSoft *pOutVertices,
                             unsigned int *pOutNumVertices,
                             struct Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
@@ -246,8 +252,10 @@ void stru9::AddVertex(struct VertexBuffer *pVertexBuffer,
     ++pVertexBuffer->uNumVertices;
 }
 
+
+// this adjusts the vert to the face
 //----- (00498774) --------------------------------------------------------
-bool stru9::ClipDecalVertsToFace(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
+bool stru9::AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                     struct RenderVertexSoft *a3, struct stru312 *a4,
                     struct RenderVertexSoft *a5) {
     // this looks like it is meant to clip the light map / decal verts to the face plane verts
@@ -375,8 +383,9 @@ bool stru9::DoDecalVertsNeedClipping(struct RenderVertexSoft *a1, struct RenderV
     return result;
 }
 
+// for clipping lightmaps and decals to face
 //----- (004980B9) --------------------------------------------------------
-bool stru9::_4980B9(RenderVertexSoft *a1, unsigned int uNumVertices,
+bool stru9::ClipVertsToFace(RenderVertexSoft *a1, unsigned int uNumVertices,
                     float pNormalX, float pNormalY, float pNormalZ,
                     RenderVertexSoft *pOutVertices,
                     signed int *pOutNumVertices) {
@@ -421,7 +430,7 @@ bool stru9::_4980B9(RenderVertexSoft *a1, unsigned int uNumVertices,
                 if (j) {
                     if (DoDecalVertsNeedClipping(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
                                 &static_sub_4980B9_stru_AE4BEC) &&
-                        ClipDecalVertsToFace(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
+                        AdjustVertToClipEdge(&pOutVertices[j - 1], &pOutVertices[j], &a1[i],
                                 &static_sub_4980B9_stru_AE4BEC, &stru_AE4BFC))
                         AddVertex(&static_sub_4980B9_stru_AE3FE8, &stru_AE4BFC);
                 }
@@ -437,7 +446,7 @@ bool stru9::_4980B9(RenderVertexSoft *a1, unsigned int uNumVertices,
             }
             if (DoDecalVertsNeedClipping(&pOutVertices[*pOutNumVertices - 1], &pOutVertices[0],
                         &a1[i], &static_sub_4980B9_stru_AE4BEC) &&
-                ClipDecalVertsToFace(&pOutVertices[*pOutNumVertices - 1], &pOutVertices[0],
+                AdjustVertToClipEdge(&pOutVertices[*pOutNumVertices - 1], &pOutVertices[0],
                         &a1[i], &static_sub_4980B9_stru_AE4BEC, &stru_AE4BFC))
                 AddVertex(&static_sub_4980B9_stru_AE3FE8, &stru_AE4BFC);
 

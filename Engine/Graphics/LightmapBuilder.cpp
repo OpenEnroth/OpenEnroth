@@ -697,7 +697,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     // Brightness(яркость)/////////////////////////////////////////////////////
 
     // trim to surface
-    if (!engine->pStru9Instance->_4980B9(
+    if (!engine->pStru9Instance->ClipVertsToFace(
             a9, uNumVertices, FacePlaneNormals->Normal.x, FacePlaneNormals->Normal.y, FacePlaneNormals->Normal.z,
             lightmap->pVertices, &lightmap->NumVertices))
         return false;

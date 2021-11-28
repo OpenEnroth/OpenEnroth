@@ -1,6 +1,7 @@
 #include "Engine/Graphics/BSPModel.h"
 
 #include <cstdlib>
+#include <algorithm>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Events.h"
@@ -163,6 +164,8 @@ void ODMFace::SetTexture(const String &filename) {
         this->ToggleIsTextureFrameTable();
     }
 
+    this->resourcename = filename;
+    std::transform(this->resourcename.begin(), this->resourcename.end(), this->resourcename.begin(), ::tolower);
     this->resource = assets->GetBitmap(filename);
 }
 

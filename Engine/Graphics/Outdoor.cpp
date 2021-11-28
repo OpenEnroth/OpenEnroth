@@ -103,9 +103,9 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     //}
 
     pODMRenderParams->uMapGridCellX = WorldPosToGridCellX(pParty->vPosition.x);
-    pODMRenderParams->uMapGridCellZ = WorldPosToGridCellZ(pParty->vPosition.y);
+    pODMRenderParams->uMapGridCellY = WorldPosToGridCellZ(pParty->vPosition.y);
 
-    assert(pODMRenderParams->uMapGridCellX <= 127 && pODMRenderParams->uMapGridCellZ <= 127);
+    assert(pODMRenderParams->uMapGridCellX <= 127 && pODMRenderParams->uMapGridCellY <= 127);
 
     // if (bRedraw) {
         // sub_487DA9(); // wipes poly array feild 108 doesnt do anything

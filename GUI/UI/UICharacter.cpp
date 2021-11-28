@@ -3295,8 +3295,7 @@ void OnPaperdollLeftClick() {
     } else {  // z picking as before
         v34 =
             render
-                ->pActiveZBuffer[mouse->uMouseX +
-                                 pSRZBufferLineOffsets[mouse->uMouseY]] & 0xFFFF;
+                ->pActiveZBuffer[mouse->uMouseX + mouse->uMouseY * render->GetRenderWidth()] & 0xFFFF;
         if (v34) {
             // v36 = v34 - 1;
             // v38 = &pPlayers[uActiveCharacter]->pInventoryItemList[v34 - 1];

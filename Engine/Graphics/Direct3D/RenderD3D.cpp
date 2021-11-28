@@ -560,8 +560,8 @@ bool RenderD3D::CreateDevice(unsigned int uDeviceID, int bWindowed, std::shared_
 
     ddsd2.dwFlags = DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
     ddsd2.ddsCaps.dwCaps = DDSCAPS_ZBUFFER;
-    ddsd2.dwWidth = 640;
-    ddsd2.dwHeight = 480;
+    ddsd2.dwWidth = game_width;
+    ddsd2.dwHeight = game_height;
     if (pDirect3D->EnumZBufferFormats(
             *pAvailableDevices[uDeviceID].pGUID,
             (HRESULT(__stdcall *)(DDPIXELFORMAT *,
@@ -749,9 +749,8 @@ void RenderD3D::Present(bool bForceBlit) {
 
     source_rect.left = 0;
     source_rect.top = 0;
-    source_rect.bottom =
-        480;  // window->GetHeight(); //Ritor1: проблема с кнопкой "развернуть"
-    source_rect.right = 640;  // window->GetWidth();
+    source_rect.bottom = window->GetHeight();
+    source_rect.right = window->GetWidth();
 
     if (bWindowed || bForceBlit) {
         RECT dest_rect;

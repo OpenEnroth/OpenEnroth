@@ -2457,9 +2457,9 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
     pPaletteManager->SetColorChannelInfo(5, 6, 5);
     pPaletteManager->RecalculateAll();
 
-    for (uint i = 0; i < 480; ++i) {  // must be 480 - needs sorting
-        pSRZBufferLineOffsets[i] = 640 * i;  // must be 640 - needs sorting
-    }
+    // for (uint i = 0; i < 480; ++i) {  // must be 480 - needs sorting
+    //     pSRZBufferLineOffsets[i] = 640 * i;  // must be 640 - needs sorting
+    // }
 
     pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL");
     pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL");

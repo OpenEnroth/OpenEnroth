@@ -36,23 +36,23 @@ struct stru9 {
     //----- (00498093) --------------------------------------------------------
     inline stru9() {}
 
-    bool _4980B9(struct RenderVertexSoft *a1, unsigned int uNumVertices,
+    bool ClipVertsToFace(struct RenderVertexSoft *a1, unsigned int uNumVertices,
                  float a3, float a4, float a5,
                  struct RenderVertexSoft *pOutVertices,
                  signed int *pOutNumVertices);
-    bool _498377(struct RenderVertexSoft *pPortalBounding,
+    bool ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,
                  unsigned int uNumVertices,
                  struct IndoorCameraD3D_Vec4 *pVertices,
                  struct RenderVertexSoft *pVertices2,
                  unsigned int *pOutNumVertices);
-    bool AdjustVerticesToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
+    bool ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
         RenderVertexSoft *pOutVertices,
         unsigned int *pOutNumVertices,
         struct Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
         int unused);
     void AddVertex(struct VertexBuffer *pVertexBuffer,
                    struct RenderVertexSoft *pVertex);
-    bool ClipDecalVertsToFace(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
+    bool AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                  struct RenderVertexSoft *a3, struct stru312 *a4,
                  struct RenderVertexSoft *a5);
     bool AreVectorsCollinear(struct RenderVertexSoft *a1,

@@ -106,7 +106,7 @@ struct ODMRenderParams {
     int terrain_gamma = 0;
 
     unsigned int uMapGridCellX = 0;  // moved from 157 struct IndoorCamera::0C
-    unsigned int uMapGridCellZ = 0;  // moved from 157 struct IndoorCamera::10
+    unsigned int uMapGridCellY = 0;  // moved from 157 struct IndoorCamera::10
 };
 #pragma pack(pop)
 extern ODMRenderParams *pODMRenderParams;

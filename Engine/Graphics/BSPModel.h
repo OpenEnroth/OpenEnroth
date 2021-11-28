@@ -140,6 +140,8 @@ struct ODMFace {
     int16_t pYInterceptDisplacements[20] {};
     int16_t pZInterceptDisplacements[20] {};
     void *resource = nullptr;  // __int16 uTextureID;
+    String resourcename;
+
     int16_t sTextureDeltaU = 0;
     int16_t sTextureDeltaV = 0;
     struct BBox_short_ pBoundingBox {};

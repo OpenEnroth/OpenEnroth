@@ -1840,7 +1840,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
         if (!ringscreenactive()) {  // rings not displayd
             int item_pid =
-                (render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]] &
+                (render->pActiveZBuffer[pX + pY * render->GetRenderWidth()] &
                  0xFFFF) -
                 1;
             // zbuffer still used for paperdolls

@@ -422,6 +422,8 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                                   IndoorCameraD3D_Vec4 *pVertices,
                                   unsigned int uNumVertices,
                                   RenderVertexSoft *pPortalBounding) {
+    // faceid, node, 4, portalbounding
+
     int ColourMask;  // ebx@25
     // IDirect3DTexture2 *v27; // eax@42
     unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
@@ -448,6 +450,38 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
     if (pFace->Invisible()) {
         return;
     }
+
+
+    // stack decals outside of clipping now
+
+    if (decal_builder->bloodsplat_container->uNumBloodsplats) {
+        decal_builder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
+        if (decal_builder->uNumSplatsThisFace) {
+            FacePlaneHolder.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
+            FacePlaneHolder.polygonType = pFace->uPolygonType;
+            FacePlaneHolder.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
+            FacePlaneHolder.face_plane.vNormal.z = pFace->pFacePlane.vNormal.z;
+            FacePlaneHolder.face_plane.dist = pFace->pFacePlane.dist;
+
+            // copy to buff in
+            for (uint i = 0; i < pFace->uNumVertices; ++i) {
+                static_vertices_buff_in[i].vWorldPosition.x =
+                    pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+                static_vertices_buff_in[i].vWorldPosition.y =
+                    pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+                static_vertices_buff_in[i].vWorldPosition.z =
+                    pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+                static_vertices_buff_in[i].u = (signed short)pFace->pVertexUIDs[i];
+                static_vertices_buff_in[i].v = (signed short)pFace->pVertexVIDs[i];
+            }
+
+            // blood draw
+            decal_builder->BuildAndApplyDecals(HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel), 1, &FacePlaneHolder,
+                pFace->uNumVertices, static_vertices_buff_in,
+                0, pFace->uSectorID);
+        }
+    }
+
 
     ++pBLVRenderParams->uNumFacesRenderedThisFrame;
 
@@ -484,12 +518,14 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
         }
 
         // 498377 always true - appears to be anothe function to clip vertices to portal planes??
-        if (!pVertices || true/*(engine->pStru9Instance->_498377(pPortalBounding, 4, pVertices, static_vertices_buff_in, &uNumVerticesa), uNumVerticesa)*/) {
+        if (!pVertices || true/*(engine->pStru9Instance->ClipVertsToPortal(pPortalBounding, 4, pVertices, static_vertices_buff_in, &uNumVerticesa), uNumVerticesa)*/) {
             if (pIndoorCameraD3D->CullFaceToFrustum(  // clips vertices to the frustum planes
                     static_vertices_buff_in, &uNumVerticesa,
                     static_vertices_calc_out,
                     pIndoorCameraD3D->FrustumPlanes, 4,
                     false, 0) != 1 || uNumVerticesa) {
+                // memcpy(static_vertices_calc_out, static_vertices_buff_in, uNumVerticesa * sizeof(RenderVertexSoft));
+
                 LightLevel = HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel);
                 ColourMask =
                     (248 -
@@ -511,7 +547,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                 pIndoorCameraD3D->Project(array_507D30, uNumVerticesa, 0);
 
                 lightmap_builder->StationaryLightsCount = 0;
-                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumDecals > 0) {
+                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     FacePlaneHolder.face_plane.vNormal.x =
                         pFace->pFacePlane.vNormal.x;
                     FacePlaneHolder.polygonType = pFace->uPolygonType;
@@ -525,10 +561,10 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                 if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
                     lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, /*pVertices*/0, 0);
 
-                if (decal_builder->uNumDecals > 0)  // blood draw
-                    decal_builder->ApplyDecals(LightLevel, 1, &FacePlaneHolder,
-                                               uNumVerticesa, array_507D30,
-                                               pVertices, 0, pFace->uSectorID);
+                // if (decal_builder->uNumDecals > 0)  // blood draw
+                //    decal_builder->ApplyDecals(LightLevel, 1, &FacePlaneHolder,
+                //                               uNumVerticesa, array_507D30,
+                //                               pVertices, 0, pFace->uSectorID);
 
                 Texture *face_texture = pFace->GetTexture();
                 if (pFace->Fluid()) {

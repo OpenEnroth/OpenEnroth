@@ -90,7 +90,7 @@ void GUIWindow_TownPortalBook::Update() {
     }
 
     Point pt = mouse->GetCursorPos();
-    v3 = render->pActiveZBuffer[pt.x + pSRZBufferLineOffsets[pt.y]] & 0xFFFF;
+    v3 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderWidth()] & 0xFFFF;
 
     if (v3) {
         if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]) || engine->config->debug_town_portal)
