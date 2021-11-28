@@ -53,18 +53,14 @@ GUIWindow_Save::GUIWindow_Save() :
     LOD::File pLODFile;
     for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
         // String file_name = pSavegameList->pFileList[i];
-        String file_name = StringPrintf("save%03d.mm7", i);
-        if (file_name.empty()) {
-            file_name = "1.mm7";
-        }
+        String save_name = StringPrintf("save%03d.mm7", i);
+        std::string save_filename = asset_locator->LocateSaveFile(save_name);
 
-        String str = "saves/" + file_name;
-        str = MakeDataPath(str.c_str());
-        if (_access(str.c_str(), 0) || _access(str.c_str(), 6)) {
+        if (_access(save_filename.c_str(), 0) || _access(save_filename.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
         } else {
-            pLODFile.Open(str);
+            pLODFile.Open(save_filename);
             void *data = pLODFile.LoadRaw("header.bin");
             memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
 
@@ -161,15 +157,19 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     LOD::File pLODFile;
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
-        String str = "saves/" + pSavegameList->pFileList[i];
-        str = MakeDataPath(str.c_str());
-        if (_access(str.c_str(), 6)) {
+        std::string save_filename = asset_locator->LocateSaveFile(
+            pSavegameList->pFileList[i]
+        );
+        if (_access(save_filename.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
             continue;
         }
 
-        if (!pLODFile.Open(str)) __debugbreak();
+        if (!pLODFile.Open(save_filename)) {
+            logger->Warning("Unable to open %s", save_filename.c_str());
+            __debugbreak();
+        }
         void *data = pLODFile.LoadRaw("header.bin");
         memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
         if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(LSTR_AUTOSAVE_MM7))) {

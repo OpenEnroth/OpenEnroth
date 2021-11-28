@@ -1208,7 +1208,7 @@ Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
 
 bool Initialize_GamesLOD_NewLOD() {
     pGames_LOD = new LOD::File();
-    if (pGames_LOD->Open(MakeDataPath("data/games.lod"))) {
+    if (pGames_LOD->Open(asset_locator->LocateDataFile("games.lod"))) {
         pNew_LOD = new LOD::WriteableFile;
         pNew_LOD->AllocSubIndicesAndIO(300, 100000);
         return true;

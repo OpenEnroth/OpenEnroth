@@ -89,14 +89,14 @@ void LoadGame(unsigned int uSlot) {
     // uCurrentlyLoadedLevelType = LEVEL_null;
 
     String filename = "saves/" + pSavegameList->pFileList[uSlot];
-    filename = MakeDataPath(filename.c_str());
-    String to_file_path = MakeDataPath("data/new.lod");
-    remove(to_file_path.c_str());
-    if (!CopyFile(filename, to_file_path)) {
+    filename = asset_locator->LocateSaveFile(pSavegameList->pFileList[uSlot]);
+    String new_lod = asset_locator->LocateDataFile("new.lod");
+    remove(new_lod.c_str());
+    if (!CopyFile(filename, new_lod)) {
         Error("Failed to copy: %s", filename.c_str());
     }
 
-    pNew_LOD->LoadFile(to_file_path, 0);
+    pNew_LOD->LoadFile(new_lod, 0);
 
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
     SavegameHeader *header = (SavegameHeader*)pNew_LOD->LoadRaw("header.bin");
@@ -535,8 +535,11 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     free(uncompressed_buff);
 
     if (IsAutoSAve) {
-        if (!CopyFile(MakeDataPath("data/new.lod"), MakeDataPath("saves/autosave.mm7"))) {
-            logger->Warning("Copy autosave.mm7 failed");
+        if (!CopyFile(
+            asset_locator->LocateDataFile("new.lod"),
+            asset_locator->LocateSaveFile("autosave.mm7"))
+        ) {
+            logger->Warning("Unable to write autosave.mm7");
         }
     }
     pParty->vPosition.x = pPositionX;
@@ -553,10 +556,13 @@ void DoSavegame(unsigned int uSlot) {
         strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName.c_str());
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
         pNew_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
-        pNew_LOD->CloseWriteFile();  //закрыть
-        String file_path = StringPrintf("saves/save%03d.mm7", uSlot);
-        file_path = MakeDataPath(file_path.c_str());
-        CopyFile(MakeDataPath("data/new.lod"), file_path);
+        pNew_LOD->CloseWriteFile();
+        String save_filename = asset_locator->LocateSaveFile(
+            StringPrintf("save%03d.mm7", uSlot)
+        );
+        if (!CopyFile(asset_locator->LocateDataFile("new.lod"), save_filename)) {
+            logger->Warning("Unable to write %s", save_filename.c_str());
+        }
     }
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
@@ -584,7 +590,7 @@ void SavegameList::Initialize() {
     pSavegameList->Reset();
     uNumSavegameFiles = 0;
 
-    String saves_dir = MakeDataPath("saves");
+    String saves_dir = asset_locator->LocateSaveFileDirectory();
 
     for (const auto & entry : std::filesystem::directory_iterator(saves_dir)) {
         if(entry.path().extension() == ".mm7") {
@@ -609,10 +615,10 @@ void SaveNewGame() {
         pNew_LOD->CloseWriteFile();
     }
 
-    String file_path = MakeDataPath("data/new.lod");
-    remove(file_path.c_str());  // удалить new.lod
+    String file_path = asset_locator->LocateDataFile("new.lod");
+    remove(file_path.c_str());
 
-    LOD::FileHeader header;  // заголовок
+    LOD::FileHeader header;
     strcpy(header.LodVersion, "MMVII");
     strcpy(header.LodDescription, "newmaps for MMVII");
     header.LODSize = 100;

@@ -50,7 +50,6 @@ using Engine_::IocContainer;
 using Io::Mouse;
 
 Log *logger = nullptr;
-extern std::shared_ptr<AssetLocator> asset_locator;
 
 
 std::shared_ptr<AssetLocator> IocContainer::ResolveAssetLocator() {

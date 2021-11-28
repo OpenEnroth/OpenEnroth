@@ -15,7 +15,6 @@ using Application::Game;
 using Application::GameConfig;
 using Application::GameFactory;
 
-std::shared_ptr<AssetLocator> asset_locator;
 
 std::string FindMm6Directory();
 std::string FindMm7Directory();
