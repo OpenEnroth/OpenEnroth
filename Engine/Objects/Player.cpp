@@ -617,55 +617,55 @@ void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
 
     switch (uConditionIdx) {  // conditions noises
         case Condition_Cursed:
-            PlaySound(SPEECH_30, 0);
+            PlaySound(SPEECH_Cursed, 0);
             break;
         case Condition_Weak:
-            PlaySound(SPEECH_25, 0);
+            PlaySound(SPEECH_Weak, 0);
             break;
         case Condition_Sleep:
             break;  // nosound
         case Condition_Fear:
-            PlaySound(SPEECH_26, 0);
+            PlaySound(SPEECH_Fear, 0);
             break;
         case Condition_Drunk:
-            PlaySound(SPEECH_31, 0);
+            PlaySound(SPEECH_Drunk, 0);
             break;
         case Condition_Insane:
-            PlaySound(SPEECH_29, 0);
+            PlaySound(SPEECH_Insane, 0);
             break;
 
         case Condition_Poison_Weak:
         case Condition_Poison_Medium:
         case Condition_Poison_Severe:
-            PlaySound(SPEECH_27, 0);
+            PlaySound(SPEECH_Poisoned, 0);
             break;
 
         case Condition_Disease_Weak:
         case Condition_Disease_Medium:
         case Condition_Disease_Severe:
-            PlaySound(SPEECH_28, 0);
+            PlaySound(SPEECH_Diseased, 0);
             break;
 
         case Condition_Paralyzed:
             break;  // nosound
 
         case Condition_Unconcious:
-            PlaySound(SPEECH_32, 0);
+            PlaySound(SPEECH_Unconscious, 0);
             if (sHealth > 0) sHealth = 0;
             break;
 
         case Condition_Dead:
-            PlaySound(SPEECH_33, 0);
+            PlaySound(SPEECH_Dead, 0);
             if (sHealth > 0) sHealth = 0;
             if (sMana > 0) sMana = 0;
             break;
 
         case Condition_Pertified:
-            PlaySound(SPEECH_34, 0);
+            PlaySound(SPEECH_Petrified, 0);
             break;
 
         case Condition_Eradicated:
-            PlaySound(SPEECH_35, 0);
+            PlaySound(SPEECH_Eradicated, 0);
             if (sHealth > 0) sHealth = 0;
             if (sMana > 0) sMana = 0;
             break;
@@ -689,7 +689,7 @@ void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
                 uVoiceID = 24;
             }
 
-            PlaySound(SPEECH_99, 0);
+            PlaySound(SPEECH_CheatedDeath, 0);
             break;
     }
 
@@ -715,7 +715,7 @@ void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
         (players_after ==
          1))  // if was 2 and now down to 1 - "its just you and me now"
         pPlayers[remainig_player]->PlaySound(
-            SPEECH_107, 0);  //скорее всего обнадёжывающий возглас последнего
+            SPEECH_LastManStanding, 0);  //скорее всего обнадёжывающий возглас последнего
 
     return;
 }
@@ -1849,7 +1849,7 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
         }
     }
 
-    if (recieved_dmg && CanAct()) PlaySound(SPEECH_24, 0);  // oww
+    if (recieved_dmg && CanAct()) PlaySound(SPEECH_Damaged, 0);  // oww
 
     return recieved_dmg;
 }
@@ -2144,7 +2144,7 @@ int Player::ReceiveSpecialAttackEffect(
             case SPECIAL_ATTACK_BREAK_ARMOR:
             case SPECIAL_ATTACK_BREAK_WEAPON:
                 if (!(itemtobreak->uAttributes & ITEM_HARDENED)) {
-                    PlaySound(SPEECH_40, 0);
+                    PlaySound(SPEECH_ItemBroken, 0);
                     itemtobreak->SetBroken();
                     pAudioPlayer->PlaySound(SOUND_metal_vs_metal03h, 0, 0, -1, 0, 0);
                 }
@@ -2153,7 +2153,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_STEAL:
-                PlaySound(SPEECH_40, 0);
+                PlaySound(SPEECH_ItemBroken, 0);
                 void* actoritems;
                 actoritems = pActor->ActorHasItems;
                 if (pActor->ActorHasItems[0].uItemID) {
@@ -2175,7 +2175,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_AGING:
-                PlaySound(SPEECH_42, 0);
+                PlaySound(SPEECH_Aging, 0);
                 ++this->sAgeModifier;
                 pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
@@ -2183,7 +2183,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_MANA_DRAIN:
-                PlaySound(SPEECH_41, 0);
+                PlaySound(SPEECH_SPDrained, 0);
                 this->sMana = 0;
                 pAudioPlayer->PlaySound(SOUND_eleccircle, 0, 0, -1, 0, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
@@ -3897,10 +3897,10 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             new_mana_val += 2;
             if (new_mana_val > playerAffected->GetMaxMana())
                 new_mana_val = playerAffected->GetMaxMana();
-            playerAffected->PlaySound(SPEECH_36, 0);
+            playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
         } else if (pParty->pPickedItem.uItemID == ITEM_162) {
             playerAffected->Heal(2);
-            playerAffected->PlaySound(SPEECH_36, 0);
+            playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
         } else {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_CANT_BE_USED_THIS_WAY,
@@ -3938,7 +3938,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             case 222:  // Cure Wounds
                 v25 = pParty->pPickedItem.uEnchantmentType + 10;
                 playerAffected->Heal(v25);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 223:  // Magic Potion
@@ -3947,13 +3947,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 new_mana_val += v26;
                 if (new_mana_val > playerAffected->GetMaxMana())
                     new_mana_val = playerAffected->GetMaxMana();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 playerAffected->sMana = new_mana_val;
                 break;
 
             case 224:  // Cure Weakness
                 playerAffected->conditions_times[Condition_Weak].Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 225:  // Cure Disease
@@ -3963,7 +3963,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     .Reset();
                 playerAffected->conditions_times[Condition_Disease_Weak]
                     .Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 226:  // Cure Poison
@@ -3972,12 +3972,12 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 playerAffected->conditions_times[Condition_Poison_Medium]
                     .Reset();
                 playerAffected->conditions_times[Condition_Poison_Weak].Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 227:  // Awaken
                 playerAffected->conditions_times[Condition_Sleep].Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 228:  // Haste
@@ -3987,7 +3987,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                         pParty->pPickedItem.uEnchantmentType);
                     playerAffected->pPlayerBuffs[PLAYER_BUFF_HASTE].Apply(
                         pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
-                    playerAffected->PlaySound(SPEECH_36, 0);
+                    playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 }
                 break;
 
@@ -3998,7 +3998,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_HEROISM].Apply(
                     pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4009,7 +4009,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_BLESS].Apply(
                     pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4021,7 +4021,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4033,7 +4033,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_SHIELD].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4044,7 +4044,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Apply(
                     pParty->GetPlayingTime() + duration, 3, 5, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4060,15 +4060,15 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
             case 237:  // Remove Fear
                 playerAffected->conditions_times[Condition_Fear].Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 238:  // Remove Curse
                 playerAffected->conditions_times[Condition_Cursed].Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 239:  // Cure Insanity
                 playerAffected->conditions_times[Condition_Insane].Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 240:  // Might Boost
@@ -4079,7 +4079,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                                     pParty->pPickedItem.uEnchantmentType);
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_STRENGTH].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4091,7 +4091,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_INTELLIGENCE].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4103,7 +4103,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_WILLPOWER].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4115,7 +4115,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_ENDURANCE].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4127,7 +4127,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_SPEED].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4139,13 +4139,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_ACCURACY].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
             case 251:  // Cure Paralysis
                 playerAffected->conditions_times[Condition_Paralyzed].Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 252:  // Divine Restoration
@@ -4156,13 +4156,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 playerAffected->conditions_times[Condition_Dead] = GameTime(v30);
                 playerAffected->conditions_times[Condition_Pertified] = GameTime(v32);
                 playerAffected->conditions_times[Condition_Eradicated] = GameTime(v34);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 253:  // Divine Cure
                 v25 = 5 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->Heal(v25);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 254:  // Divine Power
                 v26 = 5 * pParty->pPickedItem.uEnchantmentType;
@@ -4170,7 +4170,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 new_mana_val += v26;
                 if (new_mana_val > playerAffected->GetMaxMana())
                     new_mana_val = playerAffected->GetMaxMana();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 255:  // Luck Boost
             {
@@ -4180,7 +4180,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_LUCK].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4192,7 +4192,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_FIRE].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4204,7 +4204,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_AIR].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4216,7 +4216,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_WATER].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4228,7 +4228,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_EARTH].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4240,7 +4240,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_MIND].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
@@ -4252,13 +4252,13 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 v50 = 3 * pParty->pPickedItem.uEnchantmentType;
                 playerAffected->pPlayerBuffs[PLAYER_BUFF_RESIST_BODY].Apply(
                     pParty->GetPlayingTime() + duration, 0, v50, 0, 0);
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             }
 
             case 262:  // Stone to Flesh
                 playerAffected->conditions_times[Condition_Pertified].Reset();
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 264:  // Pure Luck
@@ -4266,53 +4266,53 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     playerAffected->uLuck += 50;
                     playerAffected->pure_luck_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 265:  // Pure Speed
                 if (!playerAffected->pure_speed_used) {
                     playerAffected->uSpeed += 50;
                     playerAffected->pure_speed_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 266:  // Pure Intellect
                 if (!playerAffected->pure_intellect_used) {
                     playerAffected->uIntelligence += 50;
                     playerAffected->pure_intellect_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 267:  // Pure Endurance
                 if (!playerAffected->pure_endurance_used) {
                     playerAffected->uEndurance += 50;
                     playerAffected->pure_endurance_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 268:  // Pure Personality
                 if (!playerAffected->pure_willpower_used) {
                     playerAffected->uWillpower += 50;
                     playerAffected->pure_willpower_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 269:  // Pure Accuracy
                 if (!playerAffected->pure_accuracy_used) {
                     playerAffected->uAccuracy += 50;
                     playerAffected->pure_accuracy_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 270:  // Pure Might
                 if (!playerAffected->pure_might_used) {
                     playerAffected->uMight += 50;
                     playerAffected->pure_might_used = 1;
                 }
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 271:  // Rejuvenation
                 playerAffected->sAgeModifier = 0;
-                playerAffected->PlaySound(SPEECH_36, 0);
+                playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             default:
@@ -4435,11 +4435,11 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pParty->pPickedItem.GetDisplayName().c_str()
             );
 
-            playerAffected->PlaySound((PlayerSpeech)20, 0);
+            playerAffected->PlaySound(SPEECH_CantLearnSpell, 0);
             return;
         }
         playerAffected->spellbook.bHaveSpell[pParty->pPickedItem.uItemID - 400] = 1;
-        playerAffected->PlaySound(SPEECH_21, 0);
+        playerAffected->PlaySound(SPEECH_LearnSpell, 0);
         v73 = 0;
 
         if (pGUIWindow_CurrentMenu &&
@@ -4471,7 +4471,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     if (pParty->pPickedItem.GetItemEquipType() == EQUIP_MESSAGE_SCROLL) {
         if (playerAffected->CanAct()) {
             CreateMsgScrollWindow(pParty->pPickedItem.uItemID);
-            playerAffected->PlaySound(SPEECH_37, 0);
+            playerAffected->PlaySound(SPEECH_ReadScroll, 0);
             return;
         }
 
@@ -4609,7 +4609,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
             mouse->RemoveHoldingItem();
             spell_fx_renderer->SetPlayerBuffAnim(SPELL_QUEST_COMPLETED, player_num - 1);
-            playerAffected->PlaySound(SPEECH_93, 0);
+            playerAffected->PlaySound(SPEECH_QuestGot, 0);
             pAudioPlayer->PlaySound(SOUND_chimes, 0, 0, -1, 0, 0);
             if (pParty->uCurrentDayOfMonth == 6 ||
                 pParty->uCurrentDayOfMonth == 20) {
@@ -5198,7 +5198,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             if (!_449B57_test_bit(this->_achieved_awards_bits, var_value) &&
                 pAwards[var_value].pText) {
                 PlayAwardSound_Anim();
-                this->PlaySound(SPEECH_96, 0);
+                this->PlaySound(SPEECH_AwardGot, 0);
             }
             _449B7E_toggle_bit(this->_achieved_awards_bits, var_value, 1u);
             return;
@@ -5211,7 +5211,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
                 bFlashQuestBook = 1;
                 spell_fx_renderer->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
                 PlayAwardSound();
-                this->PlaySound(SPEECH_93, 0);
+                this->PlaySound(SPEECH_QuestGot, 0);
             }
             _449B7E_toggle_bit(pParty->_quest_bits, var_value, 1u);
             return;
@@ -5248,149 +5248,149 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             return;
         case VAR_BaseMight:
             this->uMight = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseIntellect:
             this->uIntelligence = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BasePersonality:
             this->uWillpower = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseEndurance:
             this->uEndurance = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseSpeed:
             this->uSpeed = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseAccuracy:
             this->uAccuracy = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseLuck:
             this->uLuck = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
             this->uMightBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
             this->uIntelligenceBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
             this->uWillpowerBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
             this->uEnduranceBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
             this->uSpeedBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
             this->uAccuracyBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
             this->uLuckBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistance:
             this->sResFireBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_AirResistance:
             this->sResAirBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_WaterResistance:
             this->sResWaterBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_EarthResistance:
             this->sResEarthBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_SpiritResistance:
             this->sResSpiritBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MindResistance:
             this->sResMindBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BodyResistance:
             this->sResBodyBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_LightResistance:
             this->sResLightBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_DarkResistance:
             this->sResDarkBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MagicResistance:
             this->sResMagicBase = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_92);
+            PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistanceBonus:
             this->sResFireBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_AirResistanceBonus:
             this->sResAirBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_WaterResistanceBonus:
             this->sResWaterBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EarthResistanceBonus:
             this->sResEarthBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpiritResistanceBonus:
             this->sResSpiritBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_MindResistanceBonus:
             this->sResMindBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_BodyResistanceBonus:
             this->sResBodyBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_LightResistanceBonus:
             this->sResLightBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_DarkResistanceBonus:
             this->sResDarkBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_PhysicalResistanceBonus:
             Error("Physical res. bonus not used");
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus = (unsigned __int8)var_value;
-            PlayAwardSound_Anim_Face(SPEECH_91);
+            PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_Cursed:
             this->SetCondition(Condition_Cursed, 1);
@@ -5468,7 +5468,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             if (!_449B57_test_bit(pParty->_autonote_bits, var_value) &&
                 pAutonoteTxt[var_value - 1].pText) {
                 spell_fx_renderer->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
-                this->PlaySound(SPEECH_96, 0);
+                this->PlaySound(SPEECH_AwardGot, 0);
                 bFlashAutonotesBook = 1;
                 _506568_autonote_type = pAutonoteTxt[var_value - 1].eType;  // dword_72371C[2 * a3];
             }
@@ -5802,7 +5802,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
         case VAR_Award:
             if (_449B57_test_bit(this->_achieved_awards_bits, val) &&
                 pAwards[val].pText) {
-                PlayAwardSound_Anim97_Face(SPEECH_96);
+                PlayAwardSound_Anim97_Face(SPEECH_AwardGot);
             }
             _449B7E_toggle_bit(this->_achieved_awards_bits, val, 1);
             return;
@@ -5813,7 +5813,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
         case VAR_QBits_QuestsDone:
             if (!_449B57_test_bit(pParty->_quest_bits, val) && pQuestTable[val]) {
                 bFlashQuestBook = 1;
-                PlayAwardSound_Anim97_Face(SPEECH_93);
+                PlayAwardSound_Anim97_Face(SPEECH_QuestGot);
             }
             _449B7E_toggle_bit(pParty->_quest_bits, val, 1);
             return;
@@ -5834,31 +5834,31 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             return;
         case VAR_BaseMight:
             this->uMight = std::min(this->uMight + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseIntellect:
             this->uIntelligence = std::min(this->uIntelligence + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BasePersonality:
             this->uWillpower = std::min(this->uWillpower + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseEndurance:
             this->uEndurance = std::min(this->uEndurance + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseSpeed:
             this->uSpeed = std::min(this->uSpeed + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseAccuracy:
             this->uAccuracy = std::min(this->uAccuracy + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseLuck:
             this->uLuck = std::min(this->uLuck + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FixedFood:
             Party::GiveFood(val);
@@ -5868,117 +5868,117 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
         case VAR_MightBonus:
         case VAR_ActualMight:
             this->uMightBonus = std::min(this->uMightBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
             this->uIntelligenceBonus = std::min(this->uIntelligenceBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
             this->uWillpowerBonus = std::min(this->uWillpowerBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
             this->uEnduranceBonus = std::min(this->uEnduranceBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
             this->uSpeedBonus = std::min(this->uSpeedBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
             this->uAccuracyBonus = std::min(this->uAccuracyBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
             this->uLuckBonus = std::min(this->uLuckBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_FireResistance:
             this->sResFireBase = std::min(this->sResFireBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_AirResistance:
             this->sResAirBase = std::min(this->sResAirBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_WaterResistance:
             this->sResWaterBase = std::min(this->sResWaterBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_EarthResistance:
             this->sResEarthBase = std::min(this->sResEarthBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_SpiritResistance:
             this->sResSpiritBase = std::min(this->sResSpiritBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MindResistance:
             this->sResMindBase = std::min(this->sResMindBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BodyResistance:
             this->sResBodyBase = std::min(this->sResBodyBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_LightResistance:
             this->sResLightBase = std::min(this->sResLightBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_DarkResistance:
             this->sResDarkBase = std::min(this->sResDarkBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MagicResistance:
             this->sResMagicBase = std::min(this->sResMagicBase + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_92);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistanceBonus:
             this->sResFireBonus = std::min(this->sResFireBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_AirResistanceBonus:
             this->sResAirBonus = std::min(this->sResAirBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_WaterResistanceBonus:
             this->sResWaterBonus = std::min(this->sResWaterBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EarthResistanceBonus:
             this->sResEarthBonus = std::min(this->sResEarthBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpiritResistanceBonus:
             this->sResSpiritBonus = std::min(this->sResSpiritBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_MindResistanceBonus:
             this->sResMindBonus = std::min(this->sResMindBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_BodyResistanceBonus:
             this->sResBodyBonus = std::min(this->sResBodyBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_LightResistanceBonus:
             this->sResLightBonus = std::min(this->sResLightBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_DarkResistanceBonus:
             this->sResDarkBonus = std::min(this->sResDarkBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus = std::min(this->sResMagicBonus + val, 255);
-            PlayAwardSound_Anim97_Face(SPEECH_91);
+            PlayAwardSound_Anim97_Face(SPEECH_StatBonusInc);
             return;
         case VAR_Cursed:
             this->SetCondition(Condition_Cursed, 1);
@@ -6055,7 +6055,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
         case VAR_AutoNotes:
             if (!_449B57_test_bit(pParty->_autonote_bits, val) &&
                 pAutonoteTxt[val].pText) {
-                this->PlaySound(SPEECH_96, 0);
+                this->PlaySound(SPEECH_AwardGot, 0);
                 bFlashAutonotesBook = 1;
                 _506568_autonote_type = pAutonoteTxt[val].eType;
                 spell_fx_renderer->SetPlayerBuffAnim(0x97u, GetPlayerIndex());
@@ -6304,7 +6304,7 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             return;
         case VAR_QBits_QuestsDone:
             _449B7E_toggle_bit(pParty->_quest_bits, (__int16)pValue, 0);
-            this->PlaySound(SPEECH_96, 0);
+            this->PlaySound(SPEECH_AwardGot, 0);
             return;
         case VAR_PlayerItemInHands:
             for (uint i = 0; i < 16; ++i) {
@@ -6362,145 +6362,145 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
         case VAR_MightBonus:
         case VAR_ActualMight:
             this->uMightBonus -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
             this->uIntelligenceBonus -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
             this->uWillpowerBonus -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
             this->uEnduranceBonus -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
             this->uSpeedBonus -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
             this->uAccuracyBonus -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
             this->uLuckBonus -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_BaseMight:
             this->uMight -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseIntellect:
             this->uIntelligence -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BasePersonality:
             this->uWillpower -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseEndurance:
             this->uEndurance -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseSpeed:
             this->uSpeed -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseAccuracy:
             this->uAccuracy -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseLuck:
             this->uLuck -= (unsigned __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistance:
             this->sResFireBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_AirResistance:
             this->sResAirBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_WaterResistance:
             this->sResWaterBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_EarthResistance:
             this->sResEarthBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_SpiritResistance:
             this->sResSpiritBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MindResistance:
             this->sResMindBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BodyResistance:
             this->sResBodyBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_LightResistance:
             this->sResLightBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_DarkResistance:
             this->sResDarkBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MagicResistance:
             this->sResMagicBase -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistanceBonus:
             this->sResFireBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_AirResistanceBonus:
             this->sResAirBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_92);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_WaterResistanceBonus:
             this->sResWaterBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EarthResistanceBonus:
             this->sResEarthBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpiritResistanceBonus:
             this->sResSpiritBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_MindResistanceBonus:
             this->sResMindBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_BodyResistanceBonus:
             this->sResBodyBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_LightResistanceBonus:
             this->sResLightBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_DarkResistanceBonus:
             this->sResDarkBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_MagicResistanceBonus:
             this->sResMagicBonus -= (signed __int16)pValue;
-            this->PlayAwardSound_Anim98_Face(SPEECH_91);
+            this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_StaffSkill:
             this->skillStaff -= (unsigned __int8)pValue;
@@ -6980,7 +6980,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         // test
         // if (/*uActorType == OBJECT_Player &&*/ !_A750D8_player_speech_timer) {
         //    _A750D8_player_speech_timer = 256;
-        //    PlayerSpeechID = SPEECH_18;
+        //    PlayerSpeechID = SPEECH_DoorLocked;
         //    uSpeakingCharacter = 1;
         // }
         // test
@@ -6995,7 +6995,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
             rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
             GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName);
-            playerPtr->PlaySound(SPEECH_6, 0);
+            playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
             return;
         }
 
@@ -7111,7 +7111,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                             pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
 
                         // kill speech
-                        int speechToPlay = SPEECH_51;
+                        int speechToPlay = SPEECH_AttackHit;
                         if (rand() % 100 < 20)
                             speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
                         playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
@@ -7140,7 +7140,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         if (yellThreshold > playerPtr->sHealth &&
             yellThreshold <= healthBeforeRecvdDamage &&
             playerPtr->sHealth > 0) {
-            playerPtr->PlaySound(SPEECH_48, 0);
+            playerPtr->PlaySound(SPEECH_BadlyHurt, 0);
         }
 
         viewparams->bRedrawGameUI = 1;
@@ -7183,7 +7183,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
             playerPtr->ReceiveDamage(damage, (DAMAGE_TYPE)damagetype);
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
-                PlayerSpeechID = SPEECH_44;
+                PlayerSpeechID = SPEECH_DamagedParty;
                 uSpeakingCharacter = uActorID + 1;
             }
             return;
@@ -7200,7 +7200,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                 if (playerPtr->GetActualSkillMastery(PLAYER_SKILL_UNARMED) >= 4 &&
                     rand() % 100 < playerPtr->GetActualSkillLevel(PLAYER_SKILL_UNARMED)) {
                     GameUI_SetStatusBar(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->pName);
-                    playerPtr->PlaySound(SPEECH_6, 0);
+                    playerPtr->PlaySound(SPEECH_AvoidDamage, 0);
                     return;
                 }
             } else if (spriteType == 555 || spriteType == 510 ||  // dragonflies firebolt
@@ -7297,7 +7297,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                             if (actorPtr->pMonsterInfo.uExp)
                                 pParty->GivePartyExp(pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].uExp);
 
-                            int speechToPlay = SPEECH_51;
+                            int speechToPlay = SPEECH_AttackHit;
                             if (rand() % 100 < 20)
                                 speechToPlay = actorPtr->pMonsterInfo.uHP >= 100 ? 2 : 1;
                             playerPtr->PlaySound((PlayerSpeech)speechToPlay, 0);
@@ -7342,7 +7342,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
             playerPtr->ReceiveDamage(damage, (DAMAGE_TYPE)damagetype);
             if (uActorType == OBJECT_Player && !_A750D8_player_speech_timer) {
                 _A750D8_player_speech_timer = 256;
-                PlayerSpeechID = SPEECH_44;
+                PlayerSpeechID = SPEECH_DamagedParty;
                 uSpeakingCharacter = uActorID + 1;
             }
 
@@ -7837,7 +7837,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         return;
     } else if (shooting_bow) {
         v34 = 5;
-        player->PlaySound(SPEECH_50, 0);
+        player->PlaySound(SPEECH_Shoot, 0);
     } else if (shotting_laser) {
         v34 = 7;
     } else {
@@ -7933,8 +7933,7 @@ unsigned int SkillToMastery(unsigned int skill_value) {
 }
 
 //----- (004948B1) --------------------------------------------------------
-void Player::PlaySound(PlayerSpeech speech,
-                       int a3) {         // ?? need to swith over to openal
+void Player::PlaySound(PlayerSpeech speech, int a3) {
     int speechCount = 0;                 // esi@4
     int expressionCount = 0;             // esi@4
     int pickedVariant;                   // esi@10

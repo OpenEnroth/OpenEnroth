@@ -148,7 +148,7 @@ bool Chest::Open(int uChestID) {
             if (uActiveCharacter && !_A750D8_player_speech_timer &&
                 !OpenedTelekinesis) {
                 _A750D8_player_speech_timer = 256;
-                PlayerSpeechID = SPEECH_5;
+                PlayerSpeechID = SPEECH_TrapExploded;
                 uSpeakingCharacter = uActiveCharacter;
             }
             OpenedTelekinesis = false;
@@ -161,7 +161,7 @@ bool Chest::Open(int uChestID) {
     pAudioPlayer->PlaySound(SOUND_openchest0101, 0, 0, -1, 0, 0);
     if (flag_shout == true) {
         if (!OpenedTelekinesis)
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_4, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_TrapDisarmed, 0);
     }
     OpenedTelekinesis = false;
     pChestWindow = pGUIWindow_CurrentMenu = new GUIWindow_Chest(uChestID);

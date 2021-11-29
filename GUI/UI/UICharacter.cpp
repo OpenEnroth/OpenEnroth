@@ -2762,7 +2762,7 @@ void OnPaperdollLeftClick() {
                 if (pPlayers[uActiveCharacter]->GetActualSkillMastery(
                         PLAYER_SKILL_SPEAR) <
                     3) {  // cant use spear in one hand till master
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
 
                     return;
                 }
@@ -2779,7 +2779,7 @@ void OnPaperdollLeftClick() {
                 if (pPlayers[uActiveCharacter]->GetActualSkillMastery(
                         PLAYER_SKILL_SPEAR) <
                     3) {  // cant use spear in one hand till master
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
             }
@@ -2787,7 +2787,7 @@ void OnPaperdollLeftClick() {
 
         if (!pPlayers[uActiveCharacter]->CanEquip_RaceAndAlignmentCheck(
                 pickeditem)) {  // special item checks
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
             return;
         }
 
@@ -2810,7 +2810,7 @@ void OnPaperdollLeftClick() {
 
                 if (!pPlayers[uActiveCharacter]->HasSkill(
                         pSkillType)) {  // hasnt got the skill to use that
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
 
@@ -2961,7 +2961,7 @@ void OnPaperdollLeftClick() {
                 }
                 if (!pPlayers[uActiveCharacter]->HasSkill(
                         pSkillType)) {  // нет навыка
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
                 if (shieldequip) {  // смена щита щитом
@@ -3029,7 +3029,7 @@ void OnPaperdollLeftClick() {
                     return;
                 }
                 if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
                 v50 = 0;
@@ -3124,7 +3124,7 @@ void OnPaperdollLeftClick() {
                     return;
                 }
                 if (!pPlayers[uActiveCharacter]->HasSkill(pSkillType)) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_39, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantEquip, 0);
                     return;
                 }
                 if (mainhandequip) {  // взять двуручный меч когда нет

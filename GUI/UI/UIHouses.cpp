@@ -712,7 +712,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
             localization->GetAmPm(am_pm_flag_close)
         );
         if (uActiveCharacter)
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_3, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_StoreClosed, 0);
         return 0;
     } else {
         // v10 = uHouseID;
@@ -1433,7 +1433,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         Party::TakeGold(pPrice);
                         dword_F8B1E4 = 1;
                         pPlayers[uActiveCharacter]->pActiveSkills[skill] = 1;
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_78, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_SkillLearned, 0);
                     }
                 }
             }
@@ -1628,13 +1628,13 @@ void TravelByTransport() {
                     HouseSound_NotEnoughMoney_TrainingSuccessful);
                 v12 = pTravel->uTravelTime;
                 if ((int64_t)window_SpeakInHouse->ptr_1C >= 63) {
-                    pSpeech = SPEECH_SetSail;
+                    pSpeech = SPEECH_TravelBoat;
                     v13 = 2500;
                     if (CheckHiredNPCSpeciality(Sailor)) v12 -= 2;
                     if (CheckHiredNPCSpeciality(Navigator)) v12 -= 3;
                     if (CheckHiredNPCSpeciality(Pirate)) v12 -= 2;
                 } else {
-                    pSpeech = SPEECH_CarriageReady;
+                    pSpeech = SPEECH_TravelHorse;
                     v13 = 1500;
                     if (CheckHiredNPCSpeciality(Horseman)) v12 -= 2;
                 }
@@ -1808,7 +1808,7 @@ void TownHallDialog() {
             pParty->uFine -= v2;
             if (pParty->uFine < 0) pParty->uFine = 0;
             if (uActiveCharacter)
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_81, 0);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_BankDeposit, 0);
         }
         if (window_SpeakInHouse->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CANCELLED) {
             window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
@@ -1882,7 +1882,7 @@ void BankDialog() {
                 Party::TakeGold(takes_sum);
                 pParty->uNumGoldInBank += takes_sum;
                 if (uActiveCharacter) {
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_81, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_BankDeposit, 0);
                 }
             }
             window_SpeakInHouse->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
@@ -2203,7 +2203,7 @@ void TavernDialog() {
             p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier) {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
             if (uActiveCharacter)
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_67, 0);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_PacksFull, 0);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2386,7 +2386,7 @@ void TempleDialog() {
                     pPlayers[uActiveCharacter]->uPrevFace);
             }
             pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_82, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
             pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2408,7 +2408,7 @@ void TempleDialog() {
                 ->conditions_times[Condition_Dead]
                 .Valid()) {
                 pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_82, 0);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
                 pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
@@ -2434,7 +2434,7 @@ void TempleDialog() {
         pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie] =
             pParty->GetPlayingTime();
         pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
-        pPlayers[uActiveCharacter]->PlaySound(SPEECH_82, 0);
+        pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
         pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
@@ -2488,7 +2488,7 @@ void TempleDialog() {
                 }
             }
             ++byte_F8B1EF[uActiveCharacter];
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_83, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleDonate, 0);
             GameUI_SetStatusBar(LSTR_THANK_YOU);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
@@ -2719,7 +2719,7 @@ void TrainingDialog(const char *s) {
                             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
                                 pOutdoor->SetFog();
                         }
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_87, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_LevelUp, 0);
 
                         GameUI_SetStatusBar(
                             LSTR_FMT_S_NOW_LEVEL_D,

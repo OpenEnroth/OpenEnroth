@@ -55,6 +55,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Arcomage/Arcomage.h"
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
@@ -2094,13 +2095,13 @@ void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int co
 
     for (unsigned int dy = 0; dy < pTexture->GetHeight(); ++dy) {
         for (unsigned int dx = 0; dx < width; ++dx) {
-            if (*pixels & 0xFF000000)
-                /*temppix[dx + dy * width] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
-                (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
-                &  Color32(mask);*/
-                render_target_rgb[x+dx + window->GetWidth()*(y+dy)] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
-                (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
-                &  Color32(mask);
+            if (*pixels & 0xFF000000) {
+                if ((x + dx) < window->GetWidth() && (y + dy) < window->GetHeight()) {
+                    render_target_rgb[x + dx + window->GetWidth() * (y + dy)] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
+                        (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
+                        & Color32(mask);
+                }
+            }
             ++pixels;
         }
     }
@@ -2349,9 +2350,92 @@ void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
     __debugbreak();
 }
 
-void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
-                                 int blend_mode) {
-    __debugbreak();
+void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
+    // want to draw psrcrect section @ point
+    // __debugbreak();
+
+
+    // need to add blue masking
+
+
+    glEnable(GL_TEXTURE_2D);
+    float col = (blend_mode == 2) ? 1 : 0.5;
+
+    glColor3f(col, col, col);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    auto texture = (TextureOpenGL*)pArcomageGame->pSprites;
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    int clipx = this->clip_x;
+    int clipy = this->clip_y;
+    int clipw = this->clip_w;
+    int clipz = this->clip_z;
+
+    int texwidth = texture->GetWidth();
+    int texheight = texture->GetHeight();
+
+    int width = pSrcRect->z - pSrcRect->x;
+    int height = pSrcRect->w - pSrcRect->y;
+
+    int x = pTargetPoint->x;  // u* window->GetWidth();
+    int y = pTargetPoint->y;  // v* window->GetHeight();
+    int z = x + width;
+    int w = y + height;
+
+    // check bounds
+    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
+    // check for overlap
+    if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
+
+    int drawx = x;  // std::max(x, clipx);
+    int drawy = y;  // std::max(y, clipy);
+    int draww = w;  // std::min(w, clipw);
+    int drawz = z;  // std::min(z, clipz);
+
+    float depth = 0;
+
+    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
+        (float)drawz, (float)drawy, depth,
+        (float)drawz, (float)draww, depth,
+        (float)drawx, (float)draww, depth };
+
+    float texx = pSrcRect->x / float(texwidth);  // (drawx - x) / float(width);
+    float texy = pSrcRect->y / float(texheight);  //  (drawy - y) / float(height);
+    float texz = pSrcRect->z / float(texwidth);  //  (width - (z - drawz)) / float(width);
+    float texw = pSrcRect->w / float(texheight);  // (height - (w - draww)) / float(height);
+
+    GLfloat TexCoord[] = { texx, texy,
+        texz, texy,
+        texz, texw,
+        texx, texw,
+    };
+
+    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    drawcalls++;
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glDisable(GL_BLEND);
+
+
+    // blank over same bit of this render_target_rgb to stop text overlaps
+    for (int ys = drawy; ys < draww; ys++) {
+        memset(this->render_target_rgb + (ys * window->GetWidth() + drawx), 0x00000000, (drawz - drawx) * 4);
+    }
+
+    return;
 }
 
 
@@ -2773,7 +2857,7 @@ void RenderOpenGL::RenderTerrainD3D() {
 
     // tile culling maths
     int camx = WorldPosToGridCellX(pIndoorCameraD3D->vPartyPos.x);
-    int camz = WorldPosToGridCellZ(pIndoorCameraD3D->vPartyPos.y);
+    int camy = WorldPosToGridCellY(pIndoorCameraD3D->vPartyPos.y);
     int tilerange = (pIndoorCameraD3D->GetFarClip() / terrain_block_scale)+1;
 
     int camfacing = 2048 - pIndoorCameraD3D->sRotationZ;
@@ -2789,7 +2873,7 @@ void RenderOpenGL::RenderTerrainD3D() {
         for (int x = 0; x < 128 - 1; ++x) {
             // tile culling
             int xdist = camx - x;
-            int zdist = camz - z;
+            int zdist = camy - z;
 
             if (xdist > tilerange || zdist > tilerange) continue;
 
@@ -3899,10 +3983,10 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img,
     }
 }
 
-void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
+void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
                             unsigned int uCharWidth, unsigned int uCharHeight,
-                            uint8_t *pFontPalette, unsigned __int16 uFaceColor,
-                            unsigned __int16 uShadowColor) {
+                            uint8_t* pFontPalette, uint16_t uFaceColor,
+                            uint16_t uShadowColor) {
     // needs limits checks adding
 
     // Image *fonttemp = Image::Create(uCharWidth, uCharHeight, IMAGE_FORMAT_A8R8G8B8);

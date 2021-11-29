@@ -1127,7 +1127,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
                 memcpy(&v9->pInventoryItemList[v10 - 1], pItem, 0x24u);
                 pItem->Reset();
                 pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
-                v9->PlaySound(SPEECH_60, 0);
+                v9->PlaySound(SPEECH_FoundItem, 0);
 
                 if (texture) {
                     texture->Release();

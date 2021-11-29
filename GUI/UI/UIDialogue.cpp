@@ -662,7 +662,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             if (sDialogue_SpeakingActorNPC_ID >= 0)
                 pDialogue_SpeakingActor->uAIState = Removed;
             if (uActiveCharacter)
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_61, 0);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_HireNPC, 0);
         }
     } else if (option >= DIALOGUE_ARENA_SELECT_PAGE && option <= DIALOGUE_ARENA_SELECT_CHAMPION) {
         ArenaFight();

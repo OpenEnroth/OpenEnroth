@@ -307,7 +307,7 @@ LABEL_13:
             _46E889_collide_against_bmodels(0);
             _46E26D_collide_against_sprites(
                 WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x),
-                WorldPosToGridCellZ(pSpriteObjects[uLayingItemID].vPosition.y));
+                WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y));
             if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) !=
                 OBJECT_Player)
                 _46EF01_collision_chech_player(0);
@@ -834,7 +834,7 @@ void SpriteObject::ExplosionTraps() {
         for (unsigned int i = 1; i <= 4; ++i) {
             int v13 = pPlayers[i]->GetPerception() + 20;
             if (pPlayers[i]->CanAct() && (rand() % v13 > 20))
-                pPlayers[i]->PlaySound(SPEECH_6, 0);
+                pPlayers[i]->PlaySound(SPEECH_AvoidDamage, 0);
             else
                 pPlayers[i]->ReceiveDamage(v11, pDamageType);
         }

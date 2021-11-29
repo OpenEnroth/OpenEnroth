@@ -165,15 +165,13 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
 //----- (0041D895) --------------------------------------------------------
 void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
-    unsigned int v2;     // eax@3
+    unsigned int frameXpos;     // eax@3
     const char *v28;     // edi@69
     int v34;             // esi@81
     char out_text[300];  // [sp+8h] [bp-270h]@40
     SummonedItem v67;
     int v77;                    // [sp+200h] [bp-78h]@12
-    int v78;                    // [sp+204h] [bp-74h]@5
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
-    int v81;                    // [sp+264h] [bp-14h]@5
     PlayerSpeech v83;           // [sp+26Ch] [bp-Ch]@18
     char *v84;
     int v85;
@@ -185,8 +183,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     if (!inspect_item->uItemID) return;
 
-    auto inspect_item_image =
-        assets->GetImage_ColorKey(inspect_item->GetIconName(), 0x7FF);
+    auto inspect_item_image = assets->GetImage_ColorKey(inspect_item->GetIconName(), 0x7FF);
 
     iteminfo_window.sHint.clear();
     iteminfo_window.uFrameWidth = 384;
@@ -195,35 +192,42 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     Point pt = mouse->GetCursorPos();
     if (pt.x <= 320)
-        v2 = pt.x + 30;
+        frameXpos = pt.x + 30;
     else
-        v2 = pt.x - iteminfo_window.uFrameWidth - 30;
-    iteminfo_window.uFrameX = v2;
-    v78 = 100 - inspect_item_image->GetWidth();
-    v81 = 144 - inspect_item_image->GetHeight();
-    if (v78 > 0) v78 = v78 / 2;
-    if (v81 <= 0)
-        v81 = 0;
+        frameXpos = pt.x - iteminfo_window.uFrameWidth - 30;
+
+    iteminfo_window.uFrameX = frameXpos;
+    int itemXspacing = 100 - inspect_item_image->GetWidth();
+    int itemYspacing = 144 - inspect_item_image->GetHeight();
+    if (itemXspacing > 0) itemXspacing = itemXspacing / 2;
+    if (itemYspacing <= 0)
+        itemYspacing = 0;
     else
-        v81 = v81 / 2;
+        itemYspacing = itemYspacing / 2;
+
+    // added so window is correct size with broken items
+    iteminfo_window.uFrameHeight = inspect_item_image->GetHeight() + itemYspacing + 54;
+
     if (!pItemsTable->pItems[inspect_item->uItemID].uItemID_Rep_St)
         inspect_item->SetIdentified();
+
     v77 = 0;
     if (inspect_item->GetItemEquipType() == EQUIP_GOLD)
         v77 = inspect_item->special_enchantment;
+
     if (uActiveCharacter) {
         // try to identify
         if (!inspect_item->IsIdentified()) {
             if (pPlayers[uActiveCharacter]->CanIdentify(inspect_item) == 1)
                 inspect_item->SetIdentified();
-            v83 = SPEECH_9;
+            v83 = SPEECH_IndentifyItemFail;
             if (!inspect_item->IsIdentified()) {
                 GameUI_SetStatusBar(LSTR_IDENTIFY_FAILED);
             } else {
-                v83 = SPEECH_8;
+                v83 = SPEECH_IndentifyItemStrong;
                 if (inspect_item->GetValue() <
                     100 * (pPlayers[uActiveCharacter]->uLevel + 5))
-                    v83 = SPEECH_7;
+                    v83 = SPEECH_IndentifyItemWeak;
             }
             if (dword_4E455C) {
                 pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)(int)v83, 0);
@@ -235,9 +239,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             if (pPlayers[uActiveCharacter]->CanRepair(inspect_item) == 1)
                 inspect_item->uAttributes =
                     inspect_item->uAttributes & 0xFFFFFFFD | 1;
-            v83 = SPEECH_11;
+            v83 = SPEECH_RepairFail;
             if (!inspect_item->IsBroken())
-                v83 = SPEECH_10;
+                v83 = SPEECH_RepairSuccess;
             else
                 GameUI_SetStatusBar(LSTR_REPAIR_FAILED);
             if (dword_4E455C) {
@@ -246,6 +250,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             }
         }
     }
+
     if (inspect_item->IsBroken()) {
         iteminfo_window.DrawMessageBox(0);
         render->SetUIClipRect(
@@ -260,8 +265,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
 
         render->DrawTransparentRedShade(
-            (iteminfo_window.uFrameX + v78) / 640.0f,
-            (v81 + iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
+            (iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
+            (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
 
         iteminfo_window.DrawTitleText(
             pFontArrus, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu),
@@ -281,6 +286,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
         return;
     }
+
     if (!inspect_item->IsIdentified()) {
         iteminfo_window.DrawMessageBox(0);
         render->SetUIClipRect(
@@ -294,8 +300,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         iteminfo_window.uFrameW =
             iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
         render->DrawTextureAlphaNew(
-            (iteminfo_window.uFrameX + v78) / 640.0f,
-            (v81 + iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
+            (iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
+            (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
         iteminfo_window.DrawTitleText(
             pFontArrus, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu),
             pItemsTable->pItems[inspect_item->uItemID].pUnidentifiedName, 3);
@@ -420,10 +426,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         Str_int += pFontSmallnum->CalcTextHeight(
             pItemsTable->pItems[inspect_item->uItemID].pDescription,
             iteminfo_window.uFrameWidth, 100);
-    iteminfo_window.uFrameHeight =
-        assets->GetImage_ColorKey(inspect_item->GetIconName(), 0x7FF)
-            ->GetHeight() +
-        v81 + 54;
+    iteminfo_window.uFrameHeight = inspect_item_image->GetHeight() + itemYspacing + 54;
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
@@ -455,11 +458,11 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
     iteminfo_window.uFrameW =
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
-    render->DrawTextureAlphaNew((iteminfo_window.uFrameX + v78) / 640.0f,
+    render->DrawTextureAlphaNew((iteminfo_window.uFrameX + (float)itemXspacing) / 640.0f,
                                 (iteminfo_window.uFrameY +
-                                 (signed int)(iteminfo_window.uFrameHeight -
+                                    (float)(iteminfo_window.uFrameHeight -
                                               inspect_item_image->GetHeight()) /
-                                     2) /
+                                     2.) /
                                     480.0f,
                                 inspect_item_image);
 
@@ -547,7 +550,8 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             txt3 = localization->GetString(LSTR_HARDENED);
         }
 
-        int tempatt = (inspect_item->uAttributes & 0xFFFF0000) | r_mask;
+        // mixing 32 with 16 mask??
+        int tempatt = (((inspect_item->uAttributes & 0xFFFF0000)) | (r_mask));
 
         iteminfo_window.DrawText(
             pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
@@ -640,7 +644,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pActors[uActorID].sNPC_ID) {
         str = NameAndTitle(GetNPCData(pActors[uActorID].sNPC_ID));
     } else {
-        GetDisplayName(&pActors[uActorID]);
+        str = GetDisplayName(&pActors[uActorID]);
     }
     pWindow->DrawTitleText(pFontComic, 0, 0xCu, Color16(0xFFu, 0xFFu, 0x9Bu), str, 3);
 
@@ -695,14 +699,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         !dword_507BF0_is_there_popup_onscreen &&
         pPlayers[uActiveCharacter]->GetActualSkillLevel(
             PLAYER_SKILL_MONSTER_ID)) {
-        if (normal_level | expert_level | master_level | grandmaster_level) {
+        if (normal_level || expert_level || master_level || grandmaster_level) {
             if (pActors[uActorID].pMonsterInfo.uLevel >=
                 pPlayers[uActiveCharacter]->uLevel - 5)
-                speech = SPEECH_IDENTIFY_MONSTER_STRONGER;
+                speech = SPEECH_IDMonsterStrong;
             else
-                speech = SPEECH_IDENTIFY_MONSTER_WEAKER;
+                speech = SPEECH_IDMonsterWeak;
         } else {
-            speech = SPEECH_IDENTIFY_MONSTER_106;
+            speech = SPEECH_IDMonsterFail;
         }
         pPlayers[uActiveCharacter]->PlaySound(speech, 0);
     }
@@ -2068,7 +2072,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
         mouse->RemoveHoldingItem();
         no_rightlick_in_inventory = 1;
         if (dword_4E455C) {
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_DO_POTION_FINE, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_PotionSuccess, 0);
             dword_4E455C = 0;
         }
         return;
@@ -2166,7 +2170,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                 0, 0);
             if (dword_4E455C) {
                 if (pPlayers[uActiveCharacter]->CanAct())
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_17, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_PotionExplode, 0);
                 GameUI_SetStatusBar(LSTR_OOPS);
                 dword_4E455C = 0;
             }
@@ -2205,7 +2209,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
                     no_rightlick_in_inventory = 1;
                     return;
                 }
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_DO_POTION_FINE, 0);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_PotionSuccess, 0);
                 dword_4E455C = 0;
                 mouse->RemoveHoldingItem();
                 no_rightlick_in_inventory = 1;

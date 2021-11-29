@@ -103,7 +103,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     //}
 
     pODMRenderParams->uMapGridCellX = WorldPosToGridCellX(pParty->vPosition.x);
-    pODMRenderParams->uMapGridCellY = WorldPosToGridCellZ(pParty->vPosition.y);
+    pODMRenderParams->uMapGridCellY = WorldPosToGridCellY(pParty->vPosition.y);
 
     assert(pODMRenderParams->uMapGridCellX <= 127 && pODMRenderParams->uMapGridCellY <= 127);
 
@@ -134,7 +134,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     // engine->PrepareBloodsplats(); // not used?
     if (bRedraw)
         UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
-                             WorldPosToGridCellZ(pParty->vPosition.y),
+                             WorldPosToGridCellY(pParty->vPosition.y),
                              1);
     engine->SetForceRedraw(false);
     if (render->IsUsingSpecular())
@@ -200,12 +200,12 @@ int OutdoorLocation::GetSomeOtherTileInfo(int sX, int sY) {
                       //  int result; // eax@5
 
     /*  v3 = this;
-      v4 = WorldPosToGridCellZ(sY);
+      v4 = WorldPosToGridCellY(sY);
       v5 = WorldPosToGridCellX(sX);
       if ( (v5 & 0x80000000u) != 0 || (signed int)v5 > 127 || (v4 & 0x80000000u)
       != 0 || (signed int)v4 > 127 ) result = 0; else result =
       ActuallyGetSomeOtherTileInfo(v5, v4); return result;*/
-    v4 = WorldPosToGridCellZ(sY);
+    v4 = WorldPosToGridCellY(sY);
     v5 = WorldPosToGridCellX(sX);
     if (v5 < 0 || v5 > 127 || v4 < 0 || v4 > 127) return 0;
     return ActuallyGetSomeOtherTileInfo(v5, v4);
@@ -216,7 +216,7 @@ TileDesc *OutdoorLocation::GetTile(signed int sX, signed int sY) {
     signed int v4;  // edi@1
     signed int v5;  // eax@1
 
-    v4 = WorldPosToGridCellZ(sY);
+    v4 = WorldPosToGridCellY(sY);
     v5 = WorldPosToGridCellX(sX);
     if (v5 < 0 || v5 > 127 || v4 < 0 || v4 > 127) return nullptr;
 
@@ -462,7 +462,7 @@ int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, int y, int z) {
     if (pParty->IsAirborne() || bmodel_standing_on_pid || is_on_water)
         return 2;
     int v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x),
-                     WorldPosToGridCellZ(pParty->vPosition.y) - 1);
+                     WorldPosToGridCellY(pParty->vPosition.y) - 1);
     switch (pTileTable->pTiles[GetTileIdByTileMapId(v7)].tileset) {
         case Tileset_Grass:  // на траве
             return 1;
@@ -2044,7 +2044,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
 //----- (0046DCC8) --------------------------------------------------------
 void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out) {
     uint grid_x = WorldPosToGridCellX(pos_x);
-    uint grid_z = WorldPosToGridCellZ(pos_z) - 1;
+    uint grid_z = WorldPosToGridCellY(pos_z) - 1;
 
     int grid_pos_x1 = GridCellToWorldPosX(grid_x);
     int grid_pos_x2 = GridCellToWorldPosX(grid_x + 1);
@@ -2682,7 +2682,7 @@ void ODM_ProcessPartyActions() {
                     (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
                 if (_angle_x > 128) _angle_x = 128;
                 if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_63, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
 
             case PARTY_LookUp:  // смотреть вверх
@@ -2690,7 +2690,7 @@ void ODM_ProcessPartyActions() {
                     (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
                 if (_angle_x < -128) _angle_x = -128;
                 if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_64, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookDown, 0);
                 break;
 
             case PARTY_Jump:  // прыжок
@@ -2788,7 +2788,7 @@ void ODM_ProcessPartyActions() {
                         !pParty->pPlayers[i].WearsItem(
                             ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS) &&
                         pParty->pPlayers[i].CanAct())
-                        pParty->pPlayers[i].PlaySound(SPEECH_Falling_scream,
+                        pParty->pPlayers[i].PlaySound(SPEECH_Falling,
                                                       0);  // крик падения
                 }
             }
@@ -2828,11 +2828,11 @@ void ODM_ProcessPartyActions() {
         }
         if (_actor_collision_struct.CalcMovementExtents(v36)) break;
         _46E889_collide_against_bmodels(1);
-        // v37 = WorldPosToGridCellZ(pParty->vPosition.y);
+        // v37 = WorldPosToGridCellY(pParty->vPosition.y);
         // v38 = WorldPosToGridCellX(pParty->vPosition.x);
         _46E26D_collide_against_sprites(
             WorldPosToGridCellX(pParty->vPosition.x),
-            WorldPosToGridCellZ(pParty->vPosition.y));
+            WorldPosToGridCellY(pParty->vPosition.y));
         _46ED8A_collide_against_sprite_objects(4);
         for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
             Actor::_46DF1A_collide_against_actor(actor_id, 0);
@@ -3031,7 +3031,7 @@ void ODM_ProcessPartyActions() {
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
                         WorldPosToGridCellX(pParty->vPosition.x),
-                        WorldPosToGridCellZ(pParty->vPosition.y) - 1, 1);
+                        WorldPosToGridCellY(pParty->vPosition.y) - 1, 1);
                     pAudioPlayer->PlaySound((SoundID)v87, -1 /*804*/, 1, -1, 0, 0);  // бег по земле 56
                 }
                 pParty->walk_sound_timer = 96;  // таймер для бега
@@ -3045,7 +3045,7 @@ void ODM_ProcessPartyActions() {
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
                         WorldPosToGridCellX(pParty->vPosition.x),
-                        WorldPosToGridCellZ(pParty->vPosition.y) - 1, 0);
+                        WorldPosToGridCellY(pParty->vPosition.y) - 1, 0);
                     pAudioPlayer->PlaySound((SoundID)v87, -1 /*804*/, 1, -1, 0, 0);  // хождение по земле
                 }
                 pParty->walk_sound_timer = 144;  // таймер для ходьбы
@@ -3061,9 +3061,9 @@ void ODM_ProcessPartyActions() {
     else
         pParty->SetAirborne(true);
     int pMap_X = WorldPosToGridCellX(pParty->vPosition.x);
-    int pMap_Y = WorldPosToGridCellZ(pParty->vPosition.y) - 1;
+    int pMap_Y = WorldPosToGridCellY(pParty->vPosition.y) - 1;
     unsigned int v114_a = WorldPosToGridCellX(pX);
-    v66 = WorldPosToGridCellZ(pY) - 1;
+    v66 = WorldPosToGridCellY(pY) - 1;
     unsigned int v122_a = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, pMap_Y) / 2) & 1;
     v122 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(v114_a, pMap_Y) / 2) & 1;
     v69 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, v66) / 2) & 1;
@@ -3527,7 +3527,7 @@ void UpdateActors_ODM() {
             _actor_collision_struct.velocity.z = pActors[Actor_ITR].vVelocity.z;
             if (_actor_collision_struct.CalcMovementExtents(0)) break;
             _46E889_collide_against_bmodels(1);
-            _46E26D_collide_against_sprites(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y));
+            _46E26D_collide_against_sprites(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y));
             _46EF01_collision_chech_player(0);
             _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, Actor_ITR));
             int v31 = 0;
@@ -3721,12 +3721,12 @@ void UpdateActors_ODM() {
             // tile on (1) tile heading (2)
             unsigned int Tile_1_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
                 WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x),
-                WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y) - 1) >>
+                WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y) - 1) >>
                 1) & 1;
             unsigned int Tile_2_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
                 WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x +
                     pActors[Actor_ITR].vVelocity.x),
-                WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y +
+                WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y +
                     pActors[Actor_ITR].vVelocity.y) - 1) >>
                 1) & 1;
 
@@ -3743,7 +3743,7 @@ void UpdateActors_ODM() {
                 // on water and shouldnt be
                 unsigned int Tile_Test_Land = 0;  // reset land found
                 int Grid_X = WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x);
-                int Grid_Z = WorldPosToGridCellZ(pActors[Actor_ITR].vPosition.y);
+                int Grid_Z = WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y);
                 for (int i = Grid_X - 1; i <= Grid_X + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = Grid_Z - 1; j <= Grid_Z + 1; j++) {
@@ -3950,8 +3950,8 @@ unsigned int WorldPosToGridCellX(int sWorldPosX) {
 }
 
 //----- (0047F458) --------------------------------------------------------
-unsigned int WorldPosToGridCellZ(int sWorldPosZ) {
-    return 64 - (sWorldPosZ >>
+unsigned int WorldPosToGridCellY(int sWorldPosY) {
+    return 64 - (sWorldPosY >>
                  9);  // sar is in original exe, resulting -880 / 512 = -1
                       //                               and -880 sar 9 = -2
 }
@@ -3979,7 +3979,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_z) {
     // v12 = a1;
     // v11 = a2;
     unsigned int grid_x = WorldPosToGridCellX(pos_x);
-    unsigned int grid_z = WorldPosToGridCellZ(pos_z) - 1;
+    unsigned int grid_z = WorldPosToGridCellY(pos_z) - 1;
 
     int party_grid_x1 = GridCellToWorldPosX(grid_x);
     // dword_76D56C_terrain_cell_world_pos_around_party_x =
@@ -4042,7 +4042,7 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     int v15;         // [sp+24h] [bp+Ch]@11
 
     unsigned int grid_x = WorldPosToGridCellX(a1);
-    unsigned int grid_z = WorldPosToGridCellZ(a2) - 1;
+    unsigned int grid_z = WorldPosToGridCellY(a2) - 1;
 
     int grid_x1 = GridCellToWorldPosX(grid_x),
         grid_x2 = GridCellToWorldPosX(grid_x + 1);
@@ -4054,7 +4054,7 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
         y_x2z2 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1),
         y_x1z2 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z + 1);
     // v4 = WorldPosToGridCellX(a1);
-    // v5 = WorldPosToGridCellZ(v12) - 1;
+    // v5 = WorldPosToGridCellY(v12) - 1;
     // dword_76D538_terrain_cell_world_pos_around_party_x =
     // GridCellToWorldPosX(v4);
     // dword_76D53C_terrain_cell_world_pos_around_party_x =

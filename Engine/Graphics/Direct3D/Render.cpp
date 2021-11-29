@@ -1203,10 +1203,8 @@ void Render::Present() {
 
 void Render::CreateZBuffer() {
     if (!pDefaultZBuffer) {
-        pDefaultZBuffer = pActiveZBuffer = (int *)malloc(0x12C000);
-        memset32(pActiveZBuffer, 0xFFFF0000,
-                 0x4B000u);  //    // inlined Render::ClearActiveZBuffer
-                             //    (mm8::004A085B)
+        pDefaultZBuffer = pActiveZBuffer = (int *)malloc(window->GetWidth() * window->GetHeight() * sizeof(int));
+        memset32(pActiveZBuffer, 0xFFFF0000, window->GetWidth() * window->GetHeight());
     }
 }
 
@@ -1226,33 +1224,32 @@ void Render::Release() {
     }
 }
 
-void Present32(uint32_t *src, unsigned int src_pitch, uint32_t *dst,
-               unsigned int dst_pitch) {
-     // return;
-
-    for (uint y = 0; y < 8; ++y) {
-        memcpy(dst + y * dst_pitch, src + y * src_pitch,
-               src_pitch * sizeof(uint32_t));
+// copies in 2d elements - dst is 3d level
+void Present32(uint32_t* src, unsigned int src_pitch, uint32_t* dst, unsigned int dst_pitch) {
+    // y 0 - viewport start
+    for (uint y = 0; y < pViewport->uViewportTL_Y; ++y) {
+        memcpy(dst + y * dst_pitch, src + y * src_pitch, src_pitch * sizeof(uint32_t));
     }
 
-    for (uint y = 8; y < 352; ++y) {
+    // y viewport start - vewport end
+    for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y; ++y) {
+        // x 0 - 8
         memcpy(dst + y * dst_pitch, src + y * src_pitch, 8 * sizeof(uint32_t));
-        memcpy(dst + 8 + game_viewport_width + y * dst_pitch,
-               src + 8 + game_viewport_width + y * src_pitch,
-               174 /*172*/ * sizeof(uint32_t));
+        // x edge viewport - screen wodth
+        memcpy(dst + pViewport->uViewportBR_X + y * dst_pitch,
+            src + pViewport->uViewportBR_X + y * src_pitch,
+            (window->GetWidth() - pViewport->uViewportBR_X) * sizeof(uint32_t));
     }
 
-    for (uint y = 352; y < 480; ++y) {
-        memcpy(dst + y * dst_pitch, src + y * src_pitch,
-               src_pitch * sizeof(uint32_t));
+    // y viewport end to screen height
+    for (uint y = pViewport->uViewportBR_Y; y < window->GetHeight(); ++y) {
+        memcpy(dst + y * dst_pitch, src + y * src_pitch, src_pitch * sizeof(uint32_t));
     }
 
-    for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y + 1;
-         ++y) {
-        for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X;
-             ++x) {
-            if (src[x + y * src_pitch] !=
-                0xFF00FCF8) {  // FFF8FCF8 =  Color32(Color16(g_mask | b_mask))
+    // mask for 2d elements over viewport
+    for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y; ++y) {
+        for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X; ++x) {
+            if (src[x + y * src_pitch] != 0xFF00FCF8) {
                 dst[x + y * dst_pitch] = src[x + y * src_pitch];
             }
         }
@@ -1664,7 +1661,7 @@ void Render::RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t color) {
 }
 
 void Render::ClearZBuffer(int a2, int a3) {
-    memset32(this->pActiveZBuffer, -65536, 0x4B000);
+    memset32(this->pActiveZBuffer, -65536, window->GetWidth() * window->GetHeight());
 }
 
 void Render::ParseTargetPixelFormat() {
@@ -2541,7 +2538,7 @@ void Render::ScreenFade(unsigned int color, float t) {
 
     v36[1].specular = 0;
     v36[1].pos.x = pViewport->uViewportTL_X;
-    v36[1].pos.y = (double)(pViewport->uViewportBR_Y + 1);
+    v36[1].pos.y = (double)(pViewport->uViewportBR_Y);
     v36[1].pos.z = 0.0;
     v36[1].diffuse = v7;
     v36[1].rhw = 1.0;
@@ -2550,7 +2547,7 @@ void Render::ScreenFade(unsigned int color, float t) {
 
     v36[2].specular = 0;
     v36[2].pos.x = (double)pViewport->uViewportBR_X;
-    v36[2].pos.y = (double)(pViewport->uViewportBR_Y + 1);
+    v36[2].pos.y = (double)(pViewport->uViewportBR_Y);
     v36[2].pos.z = 0.0;
     v36[2].diffuse = v7;
     v36[2].rhw = 1.0;
@@ -3402,7 +3399,7 @@ void Render::InvalidateGameViewport() {
     FillRectFast(
         pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
         pViewport->uViewportBR_X - pViewport->uViewportTL_X,
-        pViewport->uViewportBR_Y - pViewport->uViewportTL_Y + 1,
+        pViewport->uViewportBR_Y - pViewport->uViewportTL_Y,
         0x7FF
     );
 }

@@ -1529,7 +1529,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                             v13[1] |= 1u;
                             break;
                         }
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_85, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_SkillMasteryInc, 0);
                     }
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 }
@@ -1576,7 +1576,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     }
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     if (uActiveCharacter) {
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_86, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_JoinedGuild, 0);
                         BackToHouseMenu();
                         return;
                     }
@@ -1637,7 +1637,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
 
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
     if (uActiveCharacter)
-        pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)61, 0);
+        pPlayers[uActiveCharacter]->PlaySound(SPEECH_HireNPC, 0);
 
     BackToHouseMenu();
 }

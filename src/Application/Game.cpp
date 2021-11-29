@@ -1714,7 +1714,7 @@ void Game::EventLoop() {
                             GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
 
                         if (!uActiveCharacter) continue;
-                        pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)13, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_CantRestHere, 0);
                         continue;
                     }
                     if (pParty->bTurnBasedModeOn) {
@@ -1748,7 +1748,7 @@ void Game::EventLoop() {
                         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_FOOD);
                         if (uActiveCharacter &&
                             pPlayers[uActiveCharacter]->CanAct())
-                            pPlayers[uActiveCharacter]->PlaySound(SPEECH_108, 0);
+                            pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughFood, 0);
                     } else {
                         pParty->pPlayers[3].conditions_times[Condition_Sleep] =
                             pParty->GetPlayingTime();
@@ -1876,7 +1876,7 @@ void Game::EventLoop() {
                     }
                     pPlayers[uActiveCharacter]->uQuickSpell =
                         quick_spell_at_page + 11 * pPlayers[uActiveCharacter]->lastOpenedSpellbookPage;
-                    if (uActiveCharacter) pPlayer10->PlaySound(SPEECH_12, 0);
+                    if (uActiveCharacter) pPlayer10->PlaySound(SPEECH_SetQuickSpell, 0);
                     byte_506550 = 0;
                     continue;
                 }
@@ -2069,7 +2069,7 @@ void Game::EventLoop() {
                             *(short *)v105 = uNumSeconds + 1;
                             pPlayer4->uSkillPoints -=
                                 pPlayer4->pActiveSkills[uMessageParam] & 0x3F;
-                            pPlayer4->PlaySound(SPEECH_14, 0);
+                            pPlayer4->PlaySound(SPEECH_SkillIncrease, 0);
                             pAudioPlayer->PlaySound((SoundID)SOUND_quest, 0, 0,
                                                     -1, 0, 0);
                             continue;
@@ -2856,7 +2856,7 @@ void Game::GameLoop() {
                     int idx =
                         conscious_players_ids[rand() % num_conscious_players];
                     Assert(idx >= 0);
-                    pParty->pPlayers[idx].PlaySound(SPEECH_99, 0);
+                    pParty->pPlayers[idx].PlaySound(SPEECH_CheatedDeath, 0);
                 }
 
                 GameUI_SetStatusBar(LSTR_CHEATED_THE_DEATH);

@@ -92,8 +92,8 @@ const ArcomageStartConditions start_conditions[13] = {
     {125, 350, 10, 20, 3, 1, 2, 15, 5, 10, 1},
     {100, 300, 50, 50, 5, 3, 5, 20, 10, 20, 0}};
 
-#define SIG_MEMALOC 0x67707274  // memory allocated
-#define SIG_MEMFREE 0x78787878  // memory free
+constexpr auto SIG_MEMALOC = 0x67707274;  // memory allocated;
+constexpr auto SIG_MEMFREE = 0x78787878;  // memory free;
 
 ArcomageGame *pArcomageGame = new ArcomageGame;
 
@@ -170,12 +170,12 @@ struct arcomage_mouse {
     bool Update();
     bool Inside(Rect* pXYZW);
 
-    int x;
-    int y;
-    char curr_mouse_left;
-    char mouse_left_state_changed;
-    char curr_mouse_right;
-    char mouse_right_state_changed;
+    int x = 0;
+    int y = 0;
+    char curr_mouse_left = 0;
+    char mouse_left_state_changed = 0;
+    char curr_mouse_right = 0;
+    char mouse_right_state_changed = 0;
 };
 
 bool arcomage_mouse::Update() {
@@ -452,7 +452,7 @@ void DrawSparks() {
 
             if (width && height) {
                 // create temp image
-                Image* temp = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
+                Texture* temp = render->CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
                 uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
                 // set the pixel color
@@ -483,6 +483,7 @@ void DrawSparks() {
                     }
                 }
 
+                render->Update_Texture(temp);
                 // draw created image to xmin,ymin
                 render->DrawTextureAlphaNew(xmin / 640., ymin / 480., temp);
                 temp->Release();
@@ -929,7 +930,7 @@ void ArcomageGame::Loop() {
     if (pArcomageGame->check_exit == 0) {
         // add in pause till keypress here
         ArcomageGame_InputMSG v10;
-        int frame_quant_time;
+        int frame_quant_time = 0;
         int cnt = 0;
         while (1) {
             // frame limiter apprx 32fps 128 / 32 = 4
@@ -1097,7 +1098,7 @@ void SetStartGameData() {
 
 void FillPlayerDeck() {
     int m;
-    int rand_deck_pos;
+    int rand_deck_pos = 0;
     char card_taken_flags[DECK_SIZE];
     int i, j;
 
@@ -1289,7 +1290,7 @@ char PlayerTurn(int player_num) {
     if (drawn_card_slot_index != -1) drawn_card_anim_start = 1;
 
     // timing and loop
-    int frame_quant_time;
+    int frame_quant_time = 0;
     bool break_loop = false;
     do {
         // frame limiter apprx 32fps 128 / 32 = 4
@@ -2162,7 +2163,7 @@ signed int DrawCardsRectangles(int player_num) {
     return -1;
 }
 
-bool DiscardCard(int player_num, signed int card_slot_index) {
+bool DiscardCard(int player_num, int card_slot_index) {
     // check for valid card slot
     if (card_slot_index <= -1) return false;
 

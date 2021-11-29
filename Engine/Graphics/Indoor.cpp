@@ -2419,7 +2419,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
         if (v30) {
             if (pDest) {
                 _A750D8_player_speech_timer = 256;
-                PlayerSpeechID = SPEECH_46;
+                PlayerSpeechID = SPEECH_EnterDungeon;
                 uSpeakingCharacter = v34[rand() % v30];
             }
         }
@@ -3726,14 +3726,14 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (_view_angle > 128)
                     _view_angle = 128;
                 if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_63, 0);
+                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_LookUp, 0);
                 break;
             case PARTY_LookUp:
                 _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
                 if (_view_angle < -128)
                     _view_angle = -128;
                 if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_64, 0);
+                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_LookDown, 0);
                 break;
             case PARTY_CenterView:
                 _view_angle = 0;
