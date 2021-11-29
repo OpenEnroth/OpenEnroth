@@ -4,10 +4,10 @@
 
 #include "Engine/Engine.h"
 #include "Engine/ZlibWrapper.h"
-
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
 
@@ -34,8 +34,8 @@ int _6A0CA8_lod_unused;
 
 static int _get_file_header_length(LOD_VERSION lod_version) {
     switch (lod_version) {
-    case LOD_VERSION_MM6: return sizeof(LOD::File_Image_Mm6);
-    case LOD_VERSION_MM8: return sizeof(LOD::File_Image_Mm8);
+    case LOD_VERSION_MM6: return sizeof(File_Image_Mm6);
+    case LOD_VERSION_MM8: return sizeof(File_Image_Mm8);
     default: Error("Unsupported LOD write format: %d", lod_version);
     }
 }
@@ -43,26 +43,26 @@ static int _get_file_header_length(LOD_VERSION lod_version) {
 
 static int _get_directory_write_size(LOD_VERSION lod_version) {
     switch (lod_version) {
-    case LOD_VERSION_MM6: return sizeof(LOD::Directory_Image_Mm6);
-    case LOD_VERSION_MM8: return sizeof(LOD::Directory_Image_Mm6);
+    case LOD_VERSION_MM6: return sizeof(Directory_Image_Mm6);
+    case LOD_VERSION_MM8: return sizeof(Directory_Image_Mm6);
     default: Error("Unsupported LOD write format: %d", lod_version);
     }
 }
 
 
 static std::vector<LOD::File> _read_directory_files(
-    const std::shared_ptr<LOD::Directory>& dir,
+    const LOD::Directory& dir,
     FILE *f,
     int num_files,
     LOD_VERSION lod_version
 ) {
     std::vector<LOD::File> files;
 
-    fseek(f, dir->files_start, SEEK_SET);
+    fseek(f, dir.files_start, SEEK_SET);
     for (int i = 0; i < num_files; ++i) {
         switch (lod_version) {
         case LOD_VERSION_MM6: {
-            LOD::File_Image_Mm6 mm6;
+            File_Image_Mm6 mm6;
             Assert(1 == fread(&mm6, sizeof(mm6), 1, f));
 
             LOD::File file;
@@ -73,13 +73,13 @@ static std::vector<LOD::File> _read_directory_files(
             continue;
         }
         case LOD_VERSION_MM8: {
-            LOD::File_Image_Mm8 mm8;
+            File_Image_Mm8 mm8;
             Assert(1 == fread(&mm8, sizeof(mm8), 1, f));
 
             LOD::File file;
             file.name = mm8.name;
-            file.offset = mm8.unk_10;
-            file.size = mm8.unk_11;
+            file.offset = mm8.unk_12;
+            file.size = mm8.unk_13;
             files.push_back(file);
             continue;
 
@@ -92,21 +92,75 @@ static std::vector<LOD::File> _read_directory_files(
     return files;
 }
 
-
-static void _write_file(
+static LOD::Directory _read_directory(
     FILE* f,
     LOD_VERSION lod_version
 ) {
-    Assert(false);
+    Directory_Image_Mm6 img;
+    fread(&img, sizeof(img), 1, f);
 
+    LOD::Directory dir;
+    dir.name = img.pFilename;
+    dir.files_start = img.data_offset;
+    dir.files = _read_directory_files(dir, f, img.num_items, lod_version);
+
+    return dir;
+}
+
+
+static void _write_file_header(
+    FILE* f,
+    LOD_VERSION lod_version,
+    const LOD::File& file
+) {
     switch (lod_version) {
     case LOD_VERSION_MM6: {
-    }
-    case LOD_VERSION_MM8: {
+        File_Image_Mm6 file_image;
+        strcpy_s(file_image.name, file.name.c_str());
+        file_image.data_offset = file.offset;
+        file_image.size = file.size;
+        file_image.dword_000018 = 0;
+        file_image.num_items = 0;
+        file_image.priority = 0;
+
+        Assert(1 == fwrite(&file_image, sizeof(file_image), 1, f));
+        break;
     }
     default: Error("Cannot write LOD file version: %d", (int)lod_version);
     }
+}
 
+
+static void _write_file(
+    FILE* f,
+    LOD_VERSION lod_version,
+    const LOD::File& file,
+    size_t file_header_write_ptr,
+    const void *file_bytes
+) {
+    // write header
+    fseek(f, file_header_write_ptr, SEEK_SET);
+    _write_file_header(f, lod_version, file);
+
+    // write bytes
+    fseek(f, file.offset, SEEK_SET);
+    fwrite(file_bytes, 1, file.size, f);
+}
+
+
+static void _write_directory_header(
+    FILE* f,
+    LOD_VERSION lod_version,
+    const LOD::Directory& dir
+) {
+    Directory_Image_Mm6 dir_image;
+    strcpy_s(dir_image.pFilename, dir.name.c_str());
+    dir_image.data_offset = dir.files_start;
+    dir_image.uDataSize = dir.size_in_bytes();
+    dir_image.dword_000018 = 0;
+    dir_image.num_items = dir.files.size();
+    dir_image.priority = 0;
+    Assert(1 == fwrite(&dir_image, sizeof(dir_image), 1, f));
 }
 
 
@@ -115,19 +169,12 @@ static void _write_directory(
     LOD_VERSION lod_version,
     const LOD::Directory& dir
 ) {
-    LOD::Directory_Image_Mm6 dir_image;
-    strcpy_s(dir_image.pFilename, dir.name.c_str());
-    dir_image.data_offset = dir.files_start;
-    dir_image.uDataSize = dir.size_in_bytes();
-    dir_image.dword_000018 = 0;
-    dir_image.num_items = dir.files.size();
-    dir_image.priority = 0;
-    Assert(1 == fwrite(&dir_image, sizeof(dir_image), 1, f));
+    _write_directory_header(f, lod_version, dir);
 
     if (dir.files.size() > 0) {
         fseek(f, dir.files_start, SEEK_SET);
         for (const auto& file : dir.files) {
-            _write_file(f, lod_version);
+            _write_file_header(f, lod_version, file);
         }
     }
 }
@@ -150,23 +197,33 @@ static void _write_directories(
 }
 
 
-static int _read_directories(
+static std::vector<std::shared_ptr<LOD::Directory>> _read_directories(
     FILE* f,
     LOD_VERSION lod_version,
-    int num_items,
-    LOD::Directory* items
+    int num_expected_directories
 ) {
+    std::vector<std::shared_ptr<LOD::Directory>> dirs;
+
     int write_size = _get_directory_write_size(lod_version);
     int items_read = 0;
-    for (int i = 0; i < num_items; ++i) {
-        items_read += fread(
-            items + i,
-            write_size,
-            1,
-            f
-        );
+
+    size_t dir_read_ptr = ftell(f);
+    for (int i = 0; i < num_expected_directories; ++i) {
+        Directory_Image_Mm6 img;
+        fseek(f, dir_read_ptr, SEEK_SET);
+        items_read += fread(&img, write_size, 1, f);
+        dir_read_ptr += write_size;
+
+        auto dir = std::make_shared<LOD::Directory>();
+        dir->name = img.pFilename;
+        dir->files_start = img.data_offset;
+        dir->files = _read_directory_files(*dir, f, img.num_items, lod_version);
+
+        dirs.push_back(dir);
     }
-    return items_read;
+
+    Assert(num_expected_directories == items_read);
+    return dirs;
 }
 
 
@@ -239,7 +296,7 @@ struct LODSpriteLine {
 #pragma pack(pop)
 
 int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const String &pContainer) {
-    FILE *File = FindContainer(pContainer, 0);
+    FILE *File = FindFile(pContainer, 0);
     if (File == nullptr) {
         return -1;
     }
@@ -303,7 +360,7 @@ int LODFile_Sprites::LoadSprite(const char *pContainerName, unsigned int uPalett
         pHardwareSprites = new Sprite[MAX_LOD_SPRITES];
     }
 
-    FILE *sprite_file = FindContainer(pContainerName, 0);
+    FILE *sprite_file = FindFile(pContainerName, 0);
     if (!sprite_file) {
         return -1;
     }
@@ -587,7 +644,7 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     //    temp_offset += _current_folder_items[i].uDataSize;
     //}
 
-    String Filename = "lod.tmp";
+    /*String Filename = "lod.tmp";
     FILE *tmp_file = fcaseopen(Filename.c_str(), "wb+");
     if (tmp_file == nullptr) {
         return 5;
@@ -626,7 +683,7 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     remove(pLODName.c_str());
     rename(Filename.c_str(), pLODName.c_str());
     CloseWriteFile();
-    LoadFile(pLODName.c_str(), 0);
+    LoadFile(pLODName, false);*/
 
     return 0;
 }
@@ -650,13 +707,9 @@ bool LOD::WriteableFile::AppendFileToCurrentDirectory(
 int LOD::WriteableFile::CreateTempFile() {
     if (!isFileOpened) return 1;
 
-    if (pIOBuffer && uIOBufferSize) {
-        _current_folder->files.clear();
-        pOutputFileHandle = fcaseopen("lodapp.tmp", "wb+");
-        return pOutputFileHandle ? 1 : 7;
-    } else {
-        return 5;
-    }
+    _current_folder = nullptr;
+    pOutputFileHandle = fcaseopen("lodapp.tmp", "wb+");
+    return pOutputFileHandle ? 1 : 7;
 }
 
 void LOD::WriteableFile::CloseWriteFile() {
@@ -669,8 +722,6 @@ void LOD::WriteableFile::CloseWriteFile() {
         fclose(pFile);
         pFile = nullptr;
     }
-    // else
-    // __debugbreak();
 }
 
 bool LOD::WriteableFile::AddFileToCurrentDirectory(
@@ -679,14 +730,13 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
     size_t file_size,
     int _unused
 ) {
+    const char *tmp_filename = "lod.tmp";
+
     if (!isFileOpened || _current_folder == nullptr) {
         return false;
     }
-    if (!pIOBuffer || !uIOBufferSize) {
-        return false;
-    }
 
-    FILE* tmp_file = fcaseopen("lod.tmp", "wb+");
+    FILE* tmp_file = fcaseopen(tmp_filename, "wb+");
     if (!tmp_file) {
         return false;
     }
@@ -724,190 +774,102 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
 
     int num_old_files = _current_folder->files.size();
     int num_new_files = num_old_files + (overwriting ? 0 : 1);
-    size_t files_write_ptr = sizeof(LOD::FileHeader)
-        + sizeof(LOD::Directory_Image_Mm6)
+
+    // start offset to write file headers
+    size_t file_header_write_ptr = sizeof(LOD::FileHeader)
+        + sizeof(Directory_Image_Mm6);
+
+    // start offset to write file data
+    size_t file_data_write_ptr = sizeof(LOD::FileHeader)
+        + sizeof(Directory_Image_Mm6)
         + num_new_files * _get_file_header_length(GetVersion());
 
     fwrite(&_header, sizeof(LOD::FileHeader), 1, tmp_file);
 
     LOD::Directory chapter;
     chapter.name = "chapter";
-    chapter.files_start = sizeof(LOD::FileHeader)
-        + sizeof(LOD::Directory_Image_Mm6);
+    chapter.files_start = file_header_write_ptr;
     chapter.files = _current_folder->files;
+    _write_directory_header(tmp_file, GetVersion(), chapter);
 
+    // copy all files along with a new one
+    for (int i = 0; i < num_old_files; ++i) {
+        // write new file outright
+        if (i == insert_index) {
+            LOD::File file;
+            file.name = file_name;
+            file.size = file_size;
+            file.offset = file_data_write_ptr;
 
-    Assert(false); // need to read and write right away actual file data here
-    if (overwriting) {
-        file.offset = chapter.files[insert_index].offset;
-        chapter.files[insert_index] = file;
-    } else {
-        chapter.files.insert(chapter.files.begin() + insert_index, file);
-        chapter.recalculate_file_offsets(files_write_ptr);
-    }
+            _write_file(
+                tmp_file, GetVersion(), file, file_header_write_ptr, file_bytes
+            );
 
-    _write_directory(tmp_file, GetVersion(), chapter);
-    Assert(false); // delete the below
-    return true;
-
-
-    size_t size_correction = 0;
-    if (!overwriting)
-        size_correction = 0;
-    else
-        size_correction = _current_folder->files[insert_index].size;
-
-    LOD::Directory chapter;
-    chapter.name = "chapter";
-    chapter.files_start = sizeof(LOD::FileHeader)
-        + sizeof(LOD::Directory_Image_Mm6);
-    // create chapter index
-    //LOD::Directory Lindx;
-    //strcpy(Lindx.pFilename, "chapter");
-    //Lindx.dword_000018 = 0;
-    //Lindx.priority = 0;
-    Lindx.num_items = _current_folder_num_items;
-    Lindx.data_offset = sizeof(LOD::FileHeader) + _get_directory_write_size(GetVersion());
-    int total_data_size = uLODDataSize + dir.uDataSize - size_correction;
-    if (!overwriting) {
-        total_data_size += _get_directory_write_size(GetVersion());
-        Lindx.num_items++;
-    }
-
-    Lindx.uDataSize = total_data_size;
-    _current_folder_num_items = Lindx.num_items;
-    // move indexes +1 after insert point
-    if (!overwriting &&
-        (insert_index < _current_folder_num_items)) {
-        // перезаписывание файлов для освобождения
-        // места для нового ф-ла
-        for (int i = _current_folder_num_items; i > insert_index; --i)
-            memcpy(&_current_folder_items[i], &_current_folder_items[i - 1], sizeof(LOD::Directory));
-    }
-    // insert
-    memcpy(&_current_folder_items[insert_index], &dir, sizeof(LOD::Directory));
-    // correct offsets to data
-    if (_current_folder_num_items > 0) {
-        size_t offset_to_data = _current_folder_num_items * _get_directory_write_size(GetVersion());
-        for (int i = 0; i < _current_folder_num_items; i++) {
-            _current_folder_items[i].data_offset = offset_to_data;
-            offset_to_data += _current_folder_items[i].uDataSize;
+            file_header_write_ptr += _get_file_header_length(GetVersion());
+            file_data_write_ptr += file_size;
         }
+
+        // skip the original file if overwritten
+        if (i == insert_index && overwriting) {
+            continue;
+        }
+
+        // write any other file (including original, if not overwriting)
+        LOD::File file = _current_folder->files[i];
+        file.offset = file_data_write_ptr;
+
+        _write_file(
+            tmp_file, GetVersion(), file, file_header_write_ptr, file_bytes
+        );
+
+        file_header_write_ptr += _get_file_header_length(GetVersion());
+        file_data_write_ptr += file_size;
     }
 
-    // construct lod file with added data
-    fwrite(&_header, sizeof(LOD::FileHeader), 1, tmp_file);
-    _write_directories(tmp_file, GetVersion(), 1, &Lindx);
-    fseek(pFile, Lindx.data_offset, SEEK_SET);
-    _write_directories(tmp_file, GetVersion(), _current_folder_num_items, _current_folder_items);
-
-    size_t offset_to_data = _current_folder_num_items * _get_directory_write_size(GetVersion());
-    if (!overwriting) offset_to_data -= _get_directory_write_size(GetVersion());
-
-    fseek(pFile, offset_to_data, SEEK_CUR);
-    // copy from open lod to temp lod first half
-    int to_copy_size = _current_folder_items[insert_index].data_offset
-        - _current_folder_items[0].data_offset;
-    while (to_copy_size > 0) {
-        int read_size = uIOBufferSize;
-        if (to_copy_size <= uIOBufferSize) read_size = to_copy_size;
-        fread(pIOBuffer, 1, read_size, pFile);
-        fwrite(pIOBuffer, 1, read_size, tmp_file);
-        to_copy_size -= read_size;
-    }
-    // add container data
-    fwrite(file_bytes, 1, dir.uDataSize, tmp_file);  // Uninitialized memory access(tmp_file)
-    if (overwriting) fseek(pFile, size_correction, SEEK_CUR);
-
-    // add remainng data  last half
-    int curr_position = ftell(pFile);
-    fseek(pFile, 0, SEEK_END);
-    to_copy_size = ftell(pFile) - curr_position;
-    fseek(pFile, curr_position, SEEK_SET);
-    while (to_copy_size > 0) {
-        int read_size = uIOBufferSize;
-        if (to_copy_size <= uIOBufferSize) read_size = to_copy_size;
-        fread(pIOBuffer, 1, read_size, pFile);
-        fwrite(pIOBuffer, 1, read_size, tmp_file);
-        to_copy_size -= read_size;
-    }
+    fclose(tmp_file);
 
     // replace old file by new with added data
-    fclose(tmp_file);
     CloseWriteFile();
     remove(pLODName.c_str());
-    rename(Filename.c_str(), pLODName.c_str());
-    CloseWriteFile();
+    rename(tmp_filename, pLODName.c_str());
 
     // reload new
     LoadFile(pLODName, 0);  // isFileOpened == true, next file
-    return 0;
+    return true;
 }
 
 LOD::WriteableFile::WriteableFile() {
-    pIOBuffer = nullptr;
-    uIOBufferSize = 0;
     uLODDataSize = 0;
     pOutputFileHandle = nullptr;
 }
 
-bool LOD::WriteableFile::LoadFile(const String &pFilename, bool bWriting) {
-    pFile = fcaseopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
+bool LOD::WriteableFile::LoadFile(const std::string& filename, bool bWriting) {
+    pFile = fcaseopen(filename.c_str(), bWriting ? "rb" : "rb+");
     if (pFile == nullptr) {
         return false;
     }
 
-    pLODName = pFilename;
-    fread(&header, sizeof(LOD::FileHeader), 1, pFile);
+    pLODName = filename;
+    fread(&_header, sizeof(LOD::FileHeader), 1, pFile);
 
-    LOD::Directory lod_indx;
-    fread(&lod_indx, _get_directory_write_size(GetVersion()), 1, pFile);
+    auto chapter = std::make_shared<LOD::Directory>();
+    *chapter = _read_directory(pFile, GetVersion());
 
-    fseek(pFile, 0, SEEK_SET);
     isFileOpened = true;
-    _current_folder = "chapter";
-    uLODDataSize = lod_indx.uDataSize;
-    _current_folder_num_items = lod_indx.num_items;
-    Assert(_current_folder_num_items <= 300);
+    uLODDataSize = chapter->size_in_bytes();
 
-    _current_folder_ptr = lod_indx.data_offset;
-    fseek(pFile, _current_folder_ptr, SEEK_SET);
-    _read_directories(pFile, GetVersion(), _current_folder_num_items, _current_folder_items);
+    _current_folder = chapter;
     return true;
 }
 
-void LOD::WriteableFile::AllocSubIndicesAndIO(unsigned int uNumSubIndices,
-                                     unsigned int uBufferSize) {
-    if (_current_folder_items) {
-        logger->Warning("Attempt to reset a LOD subindex!");
-        delete [] _current_folder_items;
-        _current_folder_items = nullptr;
-    }
-
-    _current_folder_items = new LOD::Directory[uNumSubIndices];
-    if (pIOBuffer) {
-        logger->Warning("Attempt to reset a LOD IObuffer!");
-        free(pIOBuffer);
-        pIOBuffer = nullptr;
-        uIOBufferSize = 0;
-    }
-    if (uBufferSize) {
-        pIOBuffer = (uint8_t*)malloc(uBufferSize);
-        uIOBufferSize = uBufferSize;
-    }
-}
 
 void LOD::WriteableFile::FreeSubIndexAndIO() {
-    delete[] _current_folder_items;
-    _current_folder_items = nullptr;
-
-    free(pIOBuffer);
-    pIOBuffer = nullptr;
+    _current_folder = nullptr;
 }
 
 LOD::Container::Container() : isFileOpened(false) {
     pFile = nullptr;
-    _current_folder_items = nullptr;
+    _current_folder = nullptr;
     Close();
 }
 
@@ -926,7 +888,7 @@ bool LOD::Container::Open(const std::string& sFilename) {
         return false;
     }
 
-    return OpenFolder(_index.front().pFilename);
+    return OpenFolder(_index.front()->name);
 }
 
 bool LOD::Container::OpenFile(const String &sFilename) {
@@ -951,17 +913,10 @@ bool LOD::Container::LoadHeader() {
 
     fseek(pFile, 0, SEEK_SET);
 
-    if (fread(&header, sizeof(LOD::FileHeader), 1, pFile) != 1) {
+    if (fread(&_header, sizeof(LOD::FileHeader), 1, pFile) != 1) {
         return false;
     }
-    for (unsigned int i = 0; i < header.num_directories; i++) {
-        LOD::Directory dir;
-        if (_read_directories(pFile, GetVersion(), 1, &dir) != 1) {
-            _index.clear();
-            return false;
-        }
-        _index.push_back(dir);
-    }
+    _index = _read_directories(pFile, GetVersion(), _header.num_directories);
 
     fseek(pFile, 0, SEEK_SET);
 
@@ -977,43 +932,21 @@ bool LOD::Container::OpenFolder(const std::string& folder) {
 
     ResetSubIndices();
 
-    for (const LOD::Directory_Image_Mm6& dir : _index) {
-        if (_stricmp(folder.c_str(), dir.pFilename)) {
+    for (auto& dir : _index) {
+        if (_stricmp(folder.c_str(), dir->name.c_str())) {
             continue;
         }
 
-        _current_folder = std::make_shared<Directory>();
-        _current_folder->name = dir.pFilename;
-        _current_folder->files_start = dir.data_offset;
-        _current_folder->files = _read_directory_files(
-            _current_folder,
-            pFile,
-            dir.num_items,
-            GetVersion()
-        );
-
-        //_current_folder_ptr = dir.data_offset;
-        //_current_folder_num_items = dir.num_items;
-        //_current_folder_items = new LOD::Directory[_current_folder_num_items];
-
-        //fseek(pFile, _current_folder_ptr, SEEK_SET);
-        //Assert(
-        //    _current_folder_num_items == _read_directories(
-        //        pFile,
-        //        GetVersion(),
-        //        _current_folder_num_items,
-        //        _current_folder_items
-        //    )
-        //);
+        _current_folder = dir;
         return true;
     }
     return false;
 }
 
 
-bool LOD::Container::DoesContainerExist(const String &pContainer) {
-    for (size_t i = 0; i < _current_folder_num_items; ++i) {
-        if (!_stricmp(pContainer.c_str(), _current_folder_items[i].pFilename)) {
+bool LOD::Container::FileExists(const std::string& filename) {
+    for (const auto& file : _current_folder->files) {
+        if (!_stricmp(file.name.c_str(), filename.c_str())) {
             return true;
         }
     }
@@ -1029,26 +962,22 @@ int LODFile_Sprites::_461397() {
     return this->uNumLoadedSprites;
 }
 
-FILE *LOD::Container::FindContainer(const String &pContainer_Name, size_t *data_size) {
+FILE *LOD::Container::FindFile(const std::string& filename, size_t *out_file_size) {
     if (!isFileOpened) {
         return nullptr;
     }
-    if (data_size != nullptr) {
-        *data_size = 0;
+    if (out_file_size != nullptr) {
+        *out_file_size = 0;
     }
 
-    for (uint i = 0; i < _current_folder_num_items; ++i) {
-        if (_stricmp(pContainer_Name.c_str(), _current_folder_items[i].pFilename)) {
+    for (const auto& file : _current_folder->files) {
+        if (_stricmp(file.name.c_str(), filename.c_str())) {
             continue;
         }
 
-        fseek(
-            pFile,
-            _current_folder_ptr + _current_folder_items[i].data_offset,
-            SEEK_SET
-        );
-        if (data_size != nullptr) {
-            *data_size = _current_folder_items[i].uDataSize;
+        fseek(pFile, _current_folder->files_start + file.offset, SEEK_SET);
+        if (out_file_size != nullptr) {
+            *out_file_size = file.size;
         }
         return pFile;
     }
@@ -1067,10 +996,10 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
         this->uTextureBlueBits = uTargetBBits;
         for (unsigned int i = 0; i < this->uNumLoadedFiles; ++i) {
             if (this->pTextures[i].pPalette24) {
-                FILE *File = FindContainer(this->pTextures[i].header.pName);
+                FILE *File = FindFile(this->pTextures[i].header.pName);
                 if (File) {
-                    TextureHeader DstBuf;
-                    fread(&DstBuf, 1, sizeof(TextureHeader), File);
+                    TextureHeader_Mm6 DstBuf;
+                    fread(&DstBuf, 1, sizeof(TextureHeader_Mm6), File);
                     fseek(File, DstBuf.uTextureSize, 1);
                     fread(this->pTextures[i].pPalette24, 1, 0x300, File);
                 }
@@ -1085,7 +1014,7 @@ void *LOD::Container::LoadRaw(const String &pContainer, size_t *data_size) {
     }
 
     size_t size = 0;
-    FILE *File = FindContainer(pContainer, &size);
+    FILE *File = FindFile(pContainer, &size);
     if (!File) {
         Error("Unable to load %s", pContainer.c_str());
         return nullptr;
@@ -1105,36 +1034,52 @@ void *LOD::Container::LoadRaw(const String &pContainer, size_t *data_size) {
     return result;
 }
 
-void *LOD::Container::LoadCompressed2(const String &pContainer, size_t *data_size) {
-    void *result = nullptr;
-    if (data_size != nullptr) {
-        *data_size = 0;
+void *LOD::Container::LoadCompressed2(const std::string& flename, size_t* out_file_size) {
+    if (out_file_size != nullptr) {
+        *out_file_size = 0;
     }
 
-    FILE *File = FindContainer(pContainer, 0);
+    FILE *File = FindFile(flename);
     if (!File) {
-        Error("Unable to load %s", pContainer.c_str());
-        return nullptr;
+        Error("Unable to load %s", flename.c_str());
     }
 
-    TextureHeader DstBuf;
-    fread(&DstBuf, 1, sizeof(TextureHeader), File);
+    int compressed_size = 0;
+    unsigned int decompressed_size = 0;
+    switch (GetVersion()) {
+    case LOD_VERSION_MM6: {
+        TextureHeader_Mm6 DstBuf;
+        fread(&DstBuf, 1, sizeof(TextureHeader_Mm6), File);
+        compressed_size = DstBuf.uTextureSize;
+        decompressed_size = DstBuf.uDecompressedSize;
+        break;
+    }
+    case LOD_VERSION_MM8: {
+        TextureHeader_Mm8 DstBuf;
+        fread(&DstBuf, 1, sizeof(TextureHeader_Mm8), File);
+        compressed_size = DstBuf.uTextureSize;
+        decompressed_size = DstBuf.uDecompressedSize;
+        break;
+    }
+    default: Error("Unsupported LoadCompressed2 version: %d", (int)GetVersion());
+    }
 
-    if (DstBuf.uDecompressedSize) {
-        result = malloc(DstBuf.uDecompressedSize);
-        void *tmp_buf = malloc(DstBuf.uTextureSize);
-        fread(tmp_buf, 1, DstBuf.uTextureSize, File);
-        zlib::Uncompress(result, &DstBuf.uDecompressedSize, tmp_buf,
-                         DstBuf.uTextureSize);
-        DstBuf.uTextureSize = DstBuf.uDecompressedSize;
+    void* result = nullptr;
+    if (decompressed_size) {
+        result = malloc(decompressed_size);
+        void *tmp_buf = malloc(compressed_size);
+        fread(tmp_buf, 1, compressed_size, File);
+        zlib::Uncompress(result, &decompressed_size, tmp_buf, compressed_size);
+        compressed_size = decompressed_size;
         free(tmp_buf);
     } else {
-        result = malloc(DstBuf.uTextureSize);
-        fread(result, 1, DstBuf.uTextureSize, File);
+        decompressed_size = compressed_size;
+        result = malloc(decompressed_size);
+        fread(result, 1, decompressed_size, File);
     }
 
-    if (data_size != nullptr) {
-        *data_size = DstBuf.uTextureSize;
+    if (out_file_size != nullptr) {
+        *out_file_size = decompressed_size;
     }
 
     return result;
@@ -1157,7 +1102,7 @@ void *LOD::Container::LoadCompressed(const String &pContainer, size_t *data_size
         *data_size = 0;
     }
 
-    FILE *File = FindContainer(pContainer, 0);
+    FILE *File = FindFile(pContainer, 0);
     if (!File) {
         Error("Unable to load %s", pContainer.c_str());
         return nullptr;
@@ -1189,9 +1134,9 @@ void *LOD::Container::LoadCompressed(const String &pContainer, size_t *data_size
     return result;
 }
 
-int LOD::Container::GetSubNodeIndex(const String &name) const {
-    for (size_t index = 0; index < _current_folder_num_items; index++) {
-        if (name == _current_folder_items[index].pFilename) {
+int LOD::Container::GetSubNodeIndex(const std::string& name) const {
+    for (size_t index = 0; index < _current_folder->files.size(); index++) {
+        if (name == _current_folder->files[index].name) {
             return index;
         }
     }
@@ -1214,7 +1159,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
     void *DstBufa;    // [sp+1Ch] [bp+8h]@10
     void *Sourcea;    // [sp+20h] [bp+Ch]@10
 
-    FILE *File = FindContainer(pContainer);
+    FILE *File = FindFile(pContainer);
     if (File == nullptr) {
         return -1;
     }
@@ -1256,15 +1201,15 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
     // const void *v23;   // ecx@29
 
     size_t data_size = 0;
-    FILE *pFile = FindContainer(pContainer, &data_size);
+    FILE *pFile = FindFile(pContainer, &data_size);
     if (pFile == nullptr) {
         return -1;
     }
 
-    TextureHeader *header = &pOutTex->header;
-    fread(header, 1, sizeof(TextureHeader), pFile);
+    TextureHeader_Mm6* header = &pOutTex->header;
+    fread(header, 1, sizeof(TextureHeader_Mm6), pFile);
     strncpy(header->pName, pContainer, 16);
-    data_size -= sizeof(TextureHeader);
+    data_size -= sizeof(TextureHeader_Mm6);
 
     // BITMAPS
     if ((header->pBits & 2) && strcmp(header->pName, "sptext01")) {
@@ -1406,7 +1351,6 @@ bool Initialize_GamesLOD_NewLOD() {
     pGames_LOD = new LOD::Container();
     if (pGames_LOD->Open(assets_locator->LocateDataFile("games.lod"))) {
         pNew_LOD = new LOD::WriteableFile;
-        pNew_LOD->AllocSubIndicesAndIO(300, 100000);
         return true;
     }
     return false;

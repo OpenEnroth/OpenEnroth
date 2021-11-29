@@ -74,8 +74,9 @@ class ImageHelper {
     }
 };
 
+
 #pragma pack(push, 1)
-struct TextureHeader {
+struct TextureHeader_Mm6 {
     char pName[16];
     uint32_t uSizeOfMaxLevelOfDetail;
     uint32_t uTextureSize;
@@ -94,11 +95,33 @@ struct TextureHeader {
 };
 #pragma pack(pop)
 
+
+#pragma pack(push, 1)
+struct TextureHeader_Mm8 {
+    char pName[64];
+    uint32_t uSizeOfMaxLevelOfDetail;
+    uint32_t uTextureSize;
+    uint16_t uTextureWidth;
+    uint16_t uTextureHeight;
+    int16_t uWidthLn2;
+    int16_t uHeightLn2;
+    int16_t uWidthMinus1;
+    int16_t uHeightMinus1;
+    int16_t palette_id1;
+    int16_t palette_id2;
+    uint32_t uDecompressedSize;
+    uint32_t pBits;  // 0x0002 - generate mipmaps
+                     // 0x0200 - 0th palette entry is transparent, else colorkey
+                     // (7FF)
+};
+#pragma pack(pop)
+
+
 struct Texture_MM7 {
     Texture_MM7();
     void Release();
 
-    TextureHeader header;
+    TextureHeader_Mm6 header;
     uint8_t *paletted_pixels;
     uint8_t *pLevelOfDetail1;
     uint8_t *pPalette24;

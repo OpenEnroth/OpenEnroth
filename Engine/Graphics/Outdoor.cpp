@@ -1002,7 +1002,7 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     assert(sizeof(BSPModelData) == 188);
 
-    if (!pGames_LOD->DoesContainerExist(filename)) {
+    if (!pGames_LOD->FileExists(filename)) {
         Error("Unable to find %s in Games.LOD", filename.c_str());
     }
 

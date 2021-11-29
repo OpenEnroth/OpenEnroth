@@ -47,15 +47,15 @@ static LOD::Container* get_english_t_lod() {
     static LOD::Container* lod = nullptr;
     if (!lod) {
         const char* lod_name = "EnglishT.lod";
-        const char* lod_indices = "language";
+        const char* lod_folder = "language";
 
         auto l = new LOD::Container();
         if (!l->Open(assets_locator->LocateDataFile(lod_name))) {
             Error("%s missing\n\nPlease Reinstall.", lod_name);
         }
 
-        if (!l->OpenFolder(lod_indices)) {
-            Error("%s is missing %s\n\nPlease Reinstall.", lod_name, lod_indices);
+        if (!l->OpenFolder(lod_folder)) {
+            Error("%s is missing %s\n\nPlease Reinstall.", lod_name, lod_folder);
         }
 
         lod = l;

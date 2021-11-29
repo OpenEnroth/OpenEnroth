@@ -1446,7 +1446,8 @@ void Game::EventLoop() {
                     continue;
 
                 case UIMSG_DD: {
-                    __debugbreak();
+                    // debug function to work with raw txt files
+                    /*__debugbreak();
                     // sprintf(tmp_str.data(), "%s",
                     // pKeyActionMap->pPressedKeysBuffer);
                     FrameTableTxtLine frameTableTxtLine;
@@ -1490,7 +1491,7 @@ void Game::EventLoop() {
                         status_string = "Can't jump to that location!";
                     }
                     GameUI_SetStatusBar(status_string);
-                    continue;
+                    continue;*/
                 }
                 case UIMSG_CastQuickSpell: {
                     if (engine->IsUnderwater()) {

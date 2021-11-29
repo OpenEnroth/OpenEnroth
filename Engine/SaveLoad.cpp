@@ -219,7 +219,7 @@ void LoadGame(unsigned int uSlot) {
     pEventTimer->Resume();
     pEventTimer->StopGameTime();
 
-    if (!pGames_LOD->DoesContainerExist(header->pLocationName)) {
+    if (!pGames_LOD->FileExists(header->pLocationName)) {
         Error("Unable to find: %s!", header->pLocationName);
     }
 

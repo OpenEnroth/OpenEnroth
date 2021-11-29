@@ -50,57 +50,6 @@ struct FileHeader {
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
-struct Directory_Image_Mm6 {
-    inline Directory_Image_Mm6() {
-        memset(this, 0, sizeof(this));
-    }
-
-    char pFilename[16];
-    uint32_t data_offset;
-    uint32_t uDataSize;
-    uint32_t dword_000018;
-    uint16_t num_items;
-    uint16_t priority;
-};
-
-
-struct File_Image_Mm6 {
-    inline File_Image_Mm6() {
-        memset(this, 0, sizeof(this));
-    }
-
-    char name[16];
-    uint32_t data_offset;
-    uint32_t size;
-    uint32_t dword_000018;
-    uint16_t num_items;
-    uint16_t priority;
-};
-
-struct File_Image_Mm8 {
-    inline File_Image_Mm8() {
-        memset(this, 0, sizeof(this));
-    }
-
-    char name[16];
-    int32_t unk_0;
-    int32_t unk_1;
-    int32_t unk_2;
-    int32_t unk_3;
-    int32_t unk_4;
-    int32_t unk_5;
-    int32_t unk_6;
-    int32_t unk_7;
-    int32_t unk_8;
-    int32_t unk_9;
-    int32_t unk_10;
-    int32_t unk_11;
-    int32_t unk_12;
-    int32_t unk_13;
-    int32_t unk_14;
-};
-#pragma pack(pop)
 
 struct File {
     std::string name;
@@ -124,13 +73,6 @@ struct Directory {
             }
         );
     }
-
-    inline void recalculate_file_offsets(size_t start_file_offset) {
-        for (auto& file : files) {
-            file.offset = start_file_offset;
-            start_file_offset += file.size;
-        }
-    }
 };
 
 
@@ -143,10 +85,10 @@ class Container {
     bool OpenFolder(const std::string& folder);
     void Close();
 
+    bool FileExists(const std::string& filename);
     void *LoadRaw(const std::string& pContainer, size_t *data_size = nullptr);
-    void *LoadCompressed2(const std::string& pContainer, size_t *data_size = nullptr);
+    void *LoadCompressed2(const std::string& filename, size_t *out_file_size = nullptr);
     void *LoadCompressed(const std::string& pContainer, size_t *data_size = nullptr);
-    bool DoesContainerExist(const std::string& filename);
 
     std::string GetSubNodeName(size_t index) const { return _current_folder->files[index].name; }
     size_t GetSubNodesCount() const { return _current_folder->files.size(); }
@@ -168,8 +110,8 @@ class Container {
     }
 
  protected:
-    FILE *FindContainer(const String &filename, size_t *data_size = nullptr);
-    virtual bool OpenFile(const String &sFilename);
+    FILE *FindFile(const std::string& filename, size_t *out_file_size = nullptr);
+    virtual bool OpenFile(const std::string& sFilename);
     bool LoadHeader();
     virtual void ResetSubIndices();
 
@@ -179,7 +121,7 @@ class Container {
     bool isFileOpened;
 
     struct FileHeader _header;
-    std::vector<Directory_Image_Mm6> _index;
+    std::vector<std::shared_ptr<Directory>> _index;
     std::shared_ptr<Directory> _current_folder;
     //unsigned int _current_folder_ptr;
     //unsigned int _current_folder_num_items;
@@ -200,7 +142,6 @@ class WriteableFile : public Container {
     bool _4621A7();
     int CreateEmptyLod(LOD::FileHeader *pHeader, const String &root_name, const String &Source);
 
-    void AllocSubIndicesAndIO(unsigned int uNumSubIndices, unsigned int uBufferSize);
     void FreeSubIndexAndIO();
 
     void ClearSubNodes() { _current_folder->files.clear(); }
@@ -209,8 +150,6 @@ class WriteableFile : public Container {
     virtual void ResetSubIndices();
 
  protected:
-    uint8_t * pIOBuffer;
-    unsigned int uIOBufferSize;
     FILE *pOutputFileHandle;
     unsigned int uLODDataSize;
 };
