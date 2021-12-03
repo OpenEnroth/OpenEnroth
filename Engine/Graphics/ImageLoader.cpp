@@ -72,29 +72,42 @@ uint32_t *MakeImageColorKey(unsigned int width, unsigned int height,
     return res;
 }
 
-bool ColorKey_LOD_Loader::Load(unsigned int *out_width,
-                               unsigned int *out_height, void **out_pixels,
-                               IMAGE_FORMAT *out_format) {
+bool ColorKey_LOD_Loader::Load(
+    unsigned int *out_width,
+    unsigned int *out_height,
+    void **out_pixels,
+    IMAGE_FORMAT *out_format
+) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
     *out_format = IMAGE_INVALID_FORMAT;
 
-    Texture_MM7 *tex = lod->GetTexture(
-        lod->LoadTexture(resource_name.c_str(), TEXTURE_24BIT_PALETTE));
-    if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
-        (tex->paletted_pixels == nullptr)) {
+    LodTexture *tex = lod->GetTexture(
+        lod->LoadTexture(resource_name.c_str(), TEXTURE_24BIT_PALETTE)
+    );
+    if (
+        tex == nullptr
+        || tex->pPalette24 == nullptr
+        || tex->paletted_pixels == nullptr
+    ) {
         return false;
     }
 
     if (tex->header.pBits & 512) {
-        *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
-                                     tex->header.uTextureHeight,
-                                     tex->paletted_pixels, tex->pPalette24);
+        *out_pixels = MakeImageAlpha(
+            tex->header.uTextureWidth,
+            tex->header.uTextureHeight,
+            tex->paletted_pixels, tex->pPalette24
+        );
     } else {
         *out_pixels = MakeImageColorKey(
-            tex->header.uTextureWidth, tex->header.uTextureHeight,
-            tex->paletted_pixels, tex->pPalette24, colorkey);
+            tex->header.uTextureWidth,
+            tex->header.uTextureHeight,
+            tex->paletted_pixels,
+            tex->pPalette24,
+            colorkey
+        );
     }
 
     if (*out_pixels == nullptr) {
@@ -116,7 +129,7 @@ bool Image16bit_LOD_Loader::Load(unsigned int *out_width,
     *out_pixels = nullptr;
     *out_format = IMAGE_INVALID_FORMAT;
 
-    Texture_MM7 *tex = lod->GetTexture(
+    LodTexture *tex = lod->GetTexture(
         lod->LoadTexture(resource_name.c_str(), TEXTURE_24BIT_PALETTE));
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
         (tex->paletted_pixels == nullptr)) {
@@ -151,7 +164,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
     *out_pixels = nullptr;
     *out_format = IMAGE_INVALID_FORMAT;
 
-    Texture_MM7 *tex = lod->GetTexture(
+    LodTexture *tex = lod->GetTexture(
         lod->LoadTexture(resource_name.c_str(), TEXTURE_24BIT_PALETTE));
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
         (tex->paletted_pixels == nullptr)) {

@@ -715,6 +715,7 @@ struct Actor_MM7 {
 };
 #pragma pack(pop)
 
+
 /*   95 */
 #pragma pack(push, 1)
 struct BLVSector_MM7 {  // 0x74
@@ -767,6 +768,7 @@ struct BLVSector_MM7 {  // 0x74
 };
 #pragma pack(pop)
 
+
 #pragma pack(push, 1)
 struct FontData_MM7 {
     FontData_MM7();
@@ -818,6 +820,7 @@ struct File_Image_Mm6 {
     uint16_t priority;
 };
 
+
 struct File_Image_Mm8 {
     inline File_Image_Mm8() {
         memset(this, 0, sizeof(this));
@@ -841,3 +844,26 @@ struct File_Image_Mm8 {
     int32_t unk_14;
 };
 #pragma pack(pop)
+
+/*
+
+
+#pragma pack(push, 1)
+struct Texture_MM7 {
+    TextureHeader_Mm6 header;
+    uint8_t* paletted_pixels;
+    uint8_t* pLevelOfDetail1;
+    uint8_t* pPalette24;
+};
+#pragma pack(pop)
+
+
+#pragma pack(push, 1)
+struct Texture_MM8 {
+    TextureHeader_Mm8 header;
+    uint8_t* paletted_pixels;
+    uint8_t* pLevelOfDetail1;
+    uint8_t* pPalette24;
+};
+#pragma pack(pop)
+*/

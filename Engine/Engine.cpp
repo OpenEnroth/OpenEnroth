@@ -866,7 +866,6 @@ bool MM7_LoadLods() {
     //if (!pIcons_LOD->Load(assets_locator->LocateDataFile("icons.lod"), "icons")) {
     //    Error("Some files are missing\n\nPlease Reinstall.");
     //}
-    //pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     extern LODFile_IconsBitmaps* get_events_lod();
     pEvents_LOD = get_events_lod();

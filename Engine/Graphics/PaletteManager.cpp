@@ -692,7 +692,7 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
         if (result >= 50) {  // not found in list so load
             sprintf(Source, "pal%03i", uPaletteID);
 
-            Texture_MM7 tex;  // [sp+318h] [bp-88h]@4
+            LodTexture tex;  // [sp+318h] [bp-88h]@4
             // Texture_MM7::Texture_MM7(&tex);
 
             if (pBitmaps_LOD->LoadTextureFromLOD(&tex, Source,

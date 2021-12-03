@@ -2,7 +2,9 @@
 
 #include <vector>
 
-#include "../LOD.h"
+#include "Engine/LOD.h"
+#include "Engine/Strings.h"
+
 
 char *pHistoryTXT_Raw;
 struct StorylineText *pStorylineText;

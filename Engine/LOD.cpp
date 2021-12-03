@@ -11,25 +11,17 @@
 
 #include "Platform/Api.h"
 
+
 LODFile_IconsBitmaps *pEvents_LOD = nullptr;
 
 LODFile_IconsBitmaps *pIcons_LOD = nullptr;
-LODFile_IconsBitmaps *pIcons_LOD_mm6 = nullptr;
-LODFile_IconsBitmaps *pIcons_LOD_mm8 = nullptr;
-
 LODFile_IconsBitmaps *pBitmaps_LOD = nullptr;
-LODFile_IconsBitmaps *pBitmaps_LOD_mm6 = nullptr;
-LODFile_IconsBitmaps *pBitmaps_LOD_mm8 = nullptr;
-
 LODFile_Sprites *pSprites_LOD = nullptr;
-LODFile_Sprites *pSprites_LOD_mm6 = nullptr;
-LODFile_Sprites *pSprites_LOD_mm8 = nullptr;
 
 LOD::WriteableFile *pNew_LOD = nullptr;
 LOD::Container* pGames_LOD = nullptr;
 
 int _6A0CA4_lod_binary_search;
-int _6A0CA8_lod_unused;
 
 
 static int _get_file_header_length(LOD_VERSION lod_version) {
@@ -227,11 +219,150 @@ static std::vector<std::shared_ptr<LOD::Directory>> _read_directories(
 }
 
 
+
+#pragma pack(push, 1)
+struct LodTextureHeader_Mm6 {
+    char pName[16];
+    uint32_t uSizeOfMaxLevelOfDetail;
+    uint32_t uTextureSize;
+    uint16_t uTextureWidth;
+    uint16_t uTextureHeight;
+    int16_t uWidthLn2;
+    int16_t uHeightLn2;
+    int16_t uWidthMinus1;
+    int16_t uHeightMinus1;
+    int16_t palette_id1;
+    int16_t palette_id2;
+    uint32_t uDecompressedSize;
+    uint32_t pBits;  // 0x0002 - generate mipmaps
+                     // 0x0200 - 0th palette entry is transparent, else colorkey
+                     // (7FF)
+};
+#pragma pack(pop)
+
+
+#pragma pack(push, 1)
+struct LodTextureHeader_Mm8 {
+    char pName[64];
+    uint32_t uSizeOfMaxLevelOfDetail;
+    uint32_t uTextureSize;
+    uint16_t uTextureWidth;
+    uint16_t uTextureHeight;
+    int16_t uWidthLn2;
+    int16_t uHeightLn2;
+    int16_t uWidthMinus1;
+    int16_t uHeightMinus1;
+    int16_t palette_id1;
+    int16_t palette_id2;
+    uint32_t uDecompressedSize;
+    uint32_t pBits;  // 0x0002 - generate mipmaps
+                     // 0x0200 - 0th palette entry is transparent, else colorkey
+                     // (7FF)
+};
+#pragma pack(pop)
+
+
+LodTextureHeader _load_header(LOD_VERSION lod_version, FILE *f) {
+    switch (lod_version) {
+    case LOD_VERSION_MM6: {
+        LodTextureHeader_Mm6 header;
+        Assert(1 == fread(&header, sizeof(header), 1, f));
+
+        LodTextureHeader h;
+        h.name = header.pName;
+        h.uSizeOfMaxLevelOfDetail = header.uSizeOfMaxLevelOfDetail;
+        h.uTextureSize = header.uTextureSize;
+        h.uTextureWidth = header.uTextureWidth;
+        h.uTextureHeight = header.uTextureHeight;
+        h.uWidthLn2 = header.uWidthLn2;
+        h.uHeightLn2 = header.uHeightLn2;
+        h.uWidthMinus1 = header.uWidthMinus1;
+        h.uHeightMinus1 = header.uHeightMinus1;
+        h.palette_id1 = header.palette_id1;
+        h.palette_id2 = header.palette_id2;
+        h.uDecompressedSize = header.uDecompressedSize;
+        h.pBits = header.pBits;
+        return h;
+    }
+
+    case LOD_VERSION_MM8: {
+        LodTextureHeader_Mm8 header;
+        Assert(1 == fread(&header, sizeof(header), 1, f));
+
+        LodTextureHeader h;
+        h.name = header.pName;
+        h.uSizeOfMaxLevelOfDetail = header.uSizeOfMaxLevelOfDetail;
+        h.uTextureSize = header.uTextureSize;
+        h.uTextureWidth = header.uTextureWidth;
+        h.uTextureHeight = header.uTextureHeight;
+        h.uWidthLn2 = header.uWidthLn2;
+        h.uHeightLn2 = header.uHeightLn2;
+        h.uWidthMinus1 = header.uWidthMinus1;
+        h.uHeightMinus1 = header.uHeightMinus1;
+        h.palette_id1 = header.palette_id1;
+        h.palette_id2 = header.palette_id2;
+        h.uDecompressedSize = header.uDecompressedSize;
+        h.pBits = header.pBits;
+        return h;
+    }
+    default: Error("Cannot read item header LOD file version: %d", (int)lod_version);
+    }
+}
+
+
+void _load_palette(
+    LOD_VERSION lod_version,
+    LodTexture& tex,
+    FILE* f
+) {
+    const int palette_size = 3 * 256;
+
+    LodTextureHeader header = _load_header(lod_version, f);
+    fseek(f, header.uTextureSize, 1);
+    Assert(1 == fread(tex.pPalette24, palette_size, 1, f));
+}
+
+
+void* _load_compressed_item(LOD_VERSION lod_version, FILE *f, size_t* out_file_size) {
+    LodTextureHeader header = _load_header(lod_version, f);
+    int compressed_size = header.uTextureSize;
+    unsigned int decompressed_size = header.uDecompressedSize;
+
+
+    void* result = nullptr;
+    if (decompressed_size) {
+        result = malloc(decompressed_size);
+        void* tmp_buf = malloc(compressed_size);
+        fread(tmp_buf, 1, compressed_size, f);
+        zlib::Uncompress(result, &decompressed_size, tmp_buf, compressed_size);
+        compressed_size = decompressed_size;
+        free(tmp_buf);
+    }
+    else {
+        decompressed_size = compressed_size;
+        result = malloc(decompressed_size);
+        fread(result, 1, decompressed_size, f);
+    }
+
+    if (out_file_size != nullptr) {
+        *out_file_size = decompressed_size;
+    }
+
+    return result;
+}
+
+
 inline int LODFile_IconsBitmaps::LoadDummyTexture() {
     for (unsigned int i = 0; i < uNumLoadedFiles; ++i)
-        if (!strcmp(pTextures[i].header.pName, "pending")) return i;
-    return LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending",
-                              TEXTURE_24BIT_PALETTE);
+        if (!strcmp(pTextures[i].header.name.c_str(), "pending")) {
+            return i;
+        }
+
+    return LoadTextureFromLOD(
+        &pTextures[uNumLoadedFiles],
+        "pending",
+        TEXTURE_24BIT_PALETTE
+    );
 }
 
 void LODFile_IconsBitmaps::_inlined_sub2() {
@@ -435,16 +566,13 @@ void LODFile_Sprites::DeleteSomeOtherSprites() {
 }
 
 void LOD::Container::Close() {
-    if (!isFileOpened) {
-        return;
+    if (_file) {
+        fclose(_file);
+        _file = nullptr;
     }
 
-    _current_folder == nullptr;
     _index.clear();
-
-    fclose(pFile);
-    isFileOpened = false;
-    _6A0CA8_lod_unused = 0;
+    _current_folder = nullptr;
 }
 
 int LOD::WriteableFile::CreateEmptyLod(
@@ -452,15 +580,20 @@ int LOD::WriteableFile::CreateEmptyLod(
     const std::string& root_name,
     const std::string& lod_name
 ) {
-    if (isFileOpened) return 1;
     if (root_name.empty()) {
         return 2;
     }
 
-    pFile = fcaseopen(lod_name.c_str(), "wb+");
-    if (!pFile) return 3;
+    if (_file) {
+        return 1;
+    }
 
-    pLODName = lod_name;
+    _file = fcaseopen(lod_name.c_str(), "wb+");
+    if (!_file) {
+        return 3;
+    }
+
+    _filename = lod_name;
 
     strcpy(pHeader->pSignature, "LOD");
     pHeader->LODSize = 100;
@@ -468,20 +601,19 @@ int LOD::WriteableFile::CreateEmptyLod(
 
     LOD::Directory dir;
     dir.name = root_name;
-    dir.files_start = sizeof(LOD::FileHeader) + 1 * _get_directory_write_size(GetVersion());
+    dir.files_start = sizeof(LOD::FileHeader)
+        + 1 * _get_directory_write_size(GetVersion());
 
-    fwrite(pHeader, sizeof(LOD::FileHeader), 1, pFile);
-    _write_directory(pFile, GetVersion(), dir);
-    fclose(pFile);
-    pFile = nullptr;
+    fwrite(pHeader, sizeof(LOD::FileHeader), 1, _file);
+    _write_directory(_file, GetVersion(), dir);
+
+    fclose(_file);
+    _file = nullptr;
+
     return 0;
 }
 
 void LOD::Container::ResetSubIndices() {
-    if (!isFileOpened) {
-        return;
-    }
-
     _current_folder = nullptr;
 }
 
@@ -548,16 +680,18 @@ void LODFile_IconsBitmaps::ReleaseAll() {
 
 unsigned int LODFile_IconsBitmaps::FindTextureByName(const char *pName) {
     for (uint i = 0; i < this->uNumLoadedFiles; i++) {
-        if (!_stricmp(this->pTextures[i].header.pName, pName)) return i;
+        if (!_stricmp(this->pTextures[i].header.name.c_str(), pName)) {
+            return i;
+        }
     }
     return -1;
 }
 
 void LODFile_IconsBitmaps::SyncLoadedFilesCount() {
-    Texture_MM7 *pTex;  // edx@1
+    LodTexture *tex;  // edx@1
 
     int loaded_files = this->uNumLoadedFiles;
-    for (pTex = &this->pTextures[loaded_files]; !pTex->header.pName[0]; --pTex)
+    for (tex = &this->pTextures[loaded_files]; !tex->header.name.empty(); --tex)
         --loaded_files;
     if (loaded_files < (signed int)this->uNumLoadedFiles) {
         ++loaded_files;
@@ -596,7 +730,6 @@ LODFile_IconsBitmaps::~LODFile_IconsBitmaps() {
     }
     free(this->pHardwareSurfaces);
     free(this->pHardwareTextures);
-    free(this->ptr_011BB4);
 }
 
 LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::Container() {
@@ -614,11 +747,9 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::Container() {
     this->dword_11B84 = 0;
     this->dword_11B80 = 0;
     this->uNumLoadedFiles = 0;
-    this->_011BA4_debug_paletted_pixels_uncompressed = false;
     // this->can_load_hardware_sprites = 0;
     this->pHardwareSurfaces = 0;
     this->pHardwareTextures = 0;
-    this->ptr_011BB4 = 0;
     this->uTextureRedBits = 0;
     this->uTextureGreenBits = 0;
     this->uTextureBlueBits = 0;
@@ -626,10 +757,9 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::Container() {
     this->dword_11B88 = 0;
 }
 
-bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
-                                    // сохранении)
+bool LOD::WriteableFile::_4621A7() {  // reload file (for saving) -- but why??
     CloseWriteFile();
-    return LoadFile(pLODName, 0);
+    return LoadFile(_filename, 0);
 }
 
 int LOD::WriteableFile::FixDirectoryOffsets() {
@@ -705,7 +835,9 @@ bool LOD::WriteableFile::AppendFileToCurrentDirectory(
 }
 
 int LOD::WriteableFile::CreateTempFile() {
-    if (!isFileOpened) return 1;
+    if (!_file) {
+        return 1;
+    }
 
     _current_folder = nullptr;
     pOutputFileHandle = fcaseopen("lodapp.tmp", "wb+");
@@ -713,26 +845,24 @@ int LOD::WriteableFile::CreateTempFile() {
 }
 
 void LOD::WriteableFile::CloseWriteFile() {
-    if (isFileOpened) {
-        _current_folder = nullptr;
-        _6A0CA8_lod_unused = 0;
+    _current_folder = nullptr;
 
-        isFileOpened = false;
-        fflush(pFile);
-        fclose(pFile);
-        pFile = nullptr;
+    if (_file) {
+        fflush(_file);
+        fclose(_file);
+        _file = nullptr;
     }
 }
 
 bool LOD::WriteableFile::AddFileToCurrentDirectory(
-    const String &file_name,
+    const std::string& file_name,
     const void *file_bytes,
     size_t file_size,
     int _unused
 ) {
     const char *tmp_filename = "lod.tmp";
 
-    if (!isFileOpened || _current_folder == nullptr) {
+    if (!_file || _current_folder == nullptr) {
         return false;
     }
 
@@ -830,11 +960,11 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
 
     // replace old file by new with added data
     CloseWriteFile();
-    remove(pLODName.c_str());
-    rename(tmp_filename, pLODName.c_str());
+    remove(_filename.c_str());
+    rename(tmp_filename, _filename.c_str());
 
     // reload new
-    LoadFile(pLODName, 0);  // isFileOpened == true, next file
+    LoadFile(_filename, 0);  // isFileOpened == true, next file
     return true;
 }
 
@@ -843,19 +973,18 @@ LOD::WriteableFile::WriteableFile() {
     pOutputFileHandle = nullptr;
 }
 
-bool LOD::WriteableFile::LoadFile(const std::string& filename, bool bWriting) {
-    pFile = fcaseopen(filename.c_str(), bWriting ? "rb" : "rb+");
-    if (pFile == nullptr) {
+bool LOD::WriteableFile::LoadFile(const std::string& filename, bool writing) {
+    _file = fcaseopen(filename.c_str(), writing ? "rb" : "rb+");
+    if (_file == nullptr) {
         return false;
     }
 
-    pLODName = filename;
-    fread(&_header, sizeof(LOD::FileHeader), 1, pFile);
+    _filename = filename;
+    fread(&_header, sizeof(LOD::FileHeader), 1, _file);
 
     auto chapter = std::make_shared<LOD::Directory>();
-    *chapter = _read_directory(pFile, GetVersion());
+    *chapter = _read_directory(_file, GetVersion());
 
-    isFileOpened = true;
     uLODDataSize = chapter->size_in_bytes();
 
     _current_folder = chapter;
@@ -867,15 +996,14 @@ void LOD::WriteableFile::FreeSubIndexAndIO() {
     _current_folder = nullptr;
 }
 
-LOD::Container::Container() : isFileOpened(false) {
-    pFile = nullptr;
-    _current_folder = nullptr;
+LOD::Container::Container() {
     Close();
 }
 
 LOD::Container::~Container() {
-    if (isFileOpened) {
-        fclose(pFile);
+    if (_file) {
+        fclose(_file);
+        _file = nullptr;
     }
 }
 
@@ -891,36 +1019,34 @@ bool LOD::Container::Open(const std::string& sFilename) {
     return OpenFolder(_index.front()->name);
 }
 
-bool LOD::Container::OpenFile(const String &sFilename) {
-    if (isFileOpened) {
+bool LOD::Container::OpenFile(const std::string& filename) {
+    if (_file) {
         Close();
     }
 
-    pFile = fcaseopen(sFilename.c_str(), "rb");
-    if (pFile == nullptr) {
+    _file = fcaseopen(filename.c_str(), "rb");
+    if (_file == nullptr) {
         return false;
     }
 
-    pLODName = sFilename;
+    _filename = filename;
 
     return true;
 }
 
 bool LOD::Container::LoadHeader() {
-    if (pFile == nullptr) {
+    if (_file == nullptr) {
         return false;
     }
 
-    fseek(pFile, 0, SEEK_SET);
+    fseek(_file, 0, SEEK_SET);
 
-    if (fread(&_header, sizeof(LOD::FileHeader), 1, pFile) != 1) {
+    if (fread(&_header, sizeof(LOD::FileHeader), 1, _file) != 1) {
         return false;
     }
-    _index = _read_directories(pFile, GetVersion(), _header.num_directories);
+    _index = _read_directories(_file, GetVersion(), _header.num_directories);
 
-    fseek(pFile, 0, SEEK_SET);
-
-    isFileOpened = true;
+    fseek(_file, 0, SEEK_SET);
 
     return true;
 }
@@ -963,7 +1089,7 @@ int LODFile_Sprites::_461397() {
 }
 
 FILE *LOD::Container::FindFile(const std::string& filename, size_t *out_file_size) {
-    if (!isFileOpened) {
+    if (!_file) {
         return nullptr;
     }
     if (out_file_size != nullptr) {
@@ -975,40 +1101,38 @@ FILE *LOD::Container::FindFile(const std::string& filename, size_t *out_file_siz
             continue;
         }
 
-        fseek(pFile, _current_folder->files_start + file.offset, SEEK_SET);
+        fseek(_file, _current_folder->files_start + file.offset, SEEK_SET);
         if (out_file_size != nullptr) {
             *out_file_size = file.size;
         }
-        return pFile;
+        return _file;
     }
 
     return nullptr;
 }
+
 
 void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
                                          unsigned int uTargetGBits,
                                          unsigned int uTargetBBits) {
     if (this->uTextureRedBits != uTargetRBits ||
         this->uTextureGreenBits != uTargetGBits ||
-        this->uTextureBlueBits != uTargetBBits) {  // Uninitialized memory access
+        this->uTextureBlueBits != uTargetBBits) {
         this->uTextureRedBits = uTargetRBits;
         this->uTextureGreenBits = uTargetGBits;
         this->uTextureBlueBits = uTargetBBits;
         for (unsigned int i = 0; i < this->uNumLoadedFiles; ++i) {
             if (this->pTextures[i].pPalette24) {
-                FILE *File = FindFile(this->pTextures[i].header.pName);
+                FILE* File = FindFile(this->pTextures[i].header.name.c_str());
                 if (File) {
-                    TextureHeader_Mm6 DstBuf;
-                    fread(&DstBuf, 1, sizeof(TextureHeader_Mm6), File);
-                    fseek(File, DstBuf.uTextureSize, 1);
-                    fread(this->pTextures[i].pPalette24, 1, 0x300, File);
+                    _load_palette(GetVersion(), pTextures[i], File);
                 }
             }
         }
     }
 }
 
-void *LOD::Container::LoadRaw(const String &pContainer, size_t *data_size) {
+void *LOD::Container::LoadRaw(const std::string& pContainer, size_t *data_size) {
     if (data_size != nullptr) {
         *data_size = 0;
     }
@@ -1044,45 +1168,7 @@ void *LOD::Container::LoadCompressed2(const std::string& flename, size_t* out_fi
         Error("Unable to load %s", flename.c_str());
     }
 
-    int compressed_size = 0;
-    unsigned int decompressed_size = 0;
-    switch (GetVersion()) {
-    case LOD_VERSION_MM6: {
-        TextureHeader_Mm6 DstBuf;
-        fread(&DstBuf, 1, sizeof(TextureHeader_Mm6), File);
-        compressed_size = DstBuf.uTextureSize;
-        decompressed_size = DstBuf.uDecompressedSize;
-        break;
-    }
-    case LOD_VERSION_MM8: {
-        TextureHeader_Mm8 DstBuf;
-        fread(&DstBuf, 1, sizeof(TextureHeader_Mm8), File);
-        compressed_size = DstBuf.uTextureSize;
-        decompressed_size = DstBuf.uDecompressedSize;
-        break;
-    }
-    default: Error("Unsupported LoadCompressed2 version: %d", (int)GetVersion());
-    }
-
-    void* result = nullptr;
-    if (decompressed_size) {
-        result = malloc(decompressed_size);
-        void *tmp_buf = malloc(compressed_size);
-        fread(tmp_buf, 1, compressed_size, File);
-        zlib::Uncompress(result, &decompressed_size, tmp_buf, compressed_size);
-        compressed_size = decompressed_size;
-        free(tmp_buf);
-    } else {
-        decompressed_size = compressed_size;
-        result = malloc(decompressed_size);
-        fread(result, 1, decompressed_size, File);
-    }
-
-    if (out_file_size != nullptr) {
-        *out_file_size = decompressed_size;
-    }
-
-    return result;
+    return _load_compressed_item(GetVersion(), File, out_file_size);
 }
 
 #pragma pack(push, 1)
@@ -1094,7 +1180,7 @@ struct CompressedHeader {
 };
 #pragma pack(pop)
 
-void *LOD::Container::LoadCompressed(const String &pContainer, size_t *data_size) {
+void *LOD::Container::LoadCompressed(const std::string& pContainer, size_t *data_size) {
     static_assert(sizeof(CompressedHeader) == 16, "Wrong type size");
 
     void *result = nullptr;
@@ -1148,8 +1234,11 @@ void LODFile_IconsBitmaps::ReleaseHardwareTextures() {}
 
 void LODFile_IconsBitmaps::ReleaseLostHardwareTextures() {}
 
-int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
-                                        const char *pContainer, int mode) {
+int LODFile_IconsBitmaps::ReloadTexture(
+    LodTexture *pDst,
+    const std::string& pContainer,
+    int mode
+) {
     unsigned int v7;  // ebx@6
     unsigned int v8;  // ecx@6
     int result;       // eax@7
@@ -1164,13 +1253,12 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
         return -1;
     }
 
-    Texture_MM7 *v6 = pDst;
+    LodTexture *v6 = pDst;
     if (pDst->paletted_pixels && mode == 2 && pDst->pPalette24 &&
         (v7 = pDst->header.uTextureSize, fread(pDst, 1, 0x30u, File),
-         strcpy(pDst->header.pName, pContainer),
+         pDst->header.name = pContainer,
          v8 = pDst->header.uTextureSize, (int)v8 <= (int)v7)) {
-        if (!pDst->header.uDecompressedSize ||
-            this->_011BA4_debug_paletted_pixels_uncompressed) {
+        if (!pDst->header.uDecompressedSize) {
             fread(pDst->paletted_pixels, 1, pDst->header.uTextureSize, File);
         } else {
             Sourcea = malloc(pDst->header.uDecompressedSize);
@@ -1180,8 +1268,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
                              v6->header.uTextureSize);
             v6->header.uTextureSize = pDst->header.uDecompressedSize;
             free(DstBufa);
-            memcpy(v6->paletted_pixels, Sourcea,
-                   pDst->header.uDecompressedSize);
+            memcpy(v6->paletted_pixels, Sourcea, pDst->header.uDecompressedSize);
             free(Sourcea);
         }
         fread(pDst->pPalette24, 1, 0x300, File);
@@ -1192,9 +1279,11 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
     return result;
 }
 
-int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
-                                             const char *pContainer,
-                                             enum TEXTURE_TYPE eTextureType) {
+int LODFile_IconsBitmaps::LoadTextureFromLOD(
+    LodTexture *pOutTex,
+    const std::string& pContainer,
+    TEXTURE_TYPE eTextureType
+) {
     int result;        // esi@14
     unsigned int v14;  // eax@21
     // size_t v22;        // ST2C_4@29
@@ -1206,25 +1295,24 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
         return -1;
     }
 
-    TextureHeader_Mm6* header = &pOutTex->header;
-    fread(header, 1, sizeof(TextureHeader_Mm6), pFile);
-    strncpy(header->pName, pContainer, 16);
-    data_size -= sizeof(TextureHeader_Mm6);
+    size_t data_ptr = ftell(pFile);
+    pOutTex->header = _load_header(GetVersion(), pFile);
+    pOutTex->header.name = pContainer;
+    data_size -= ftell(pFile) - data_ptr;
+
+    auto header = &pOutTex->header;
 
     // BITMAPS
-    if ((header->pBits & 2) && strcmp(header->pName, "sptext01")) {
+    if ((header->pBits & 2) && strcmp(header->name.c_str(), "sptext01")) {
         if (!pHardwareSurfaces || !pHardwareTextures) {
             pHardwareSurfaces = new IDirectDrawSurface *[1000];
             memset(pHardwareSurfaces, 0, 1000 * sizeof(IDirectDrawSurface *));
 
             pHardwareTextures = new IDirect3DTexture2 *[1000];
             memset(pHardwareTextures, 0, 1000 * sizeof(IDirect3DTexture2 *));
-
-            ptr_011BB4 = new char[1000];
-            memset(ptr_011BB4, 0, 1000);
         }
-        if (_strnicmp(pContainer, "wtrdr", 5)) {
-            if (_strnicmp(pContainer, "WtrTyl", 6)) {
+        if (_strnicmp(pContainer.c_str(), "wtrdr", 5)) {
+            if (_strnicmp(pContainer.c_str(), "WtrTyl", 6)) {
                 v14 = uNumLoadedFiles;
             } else {
                 render->hd_water_tile_id = uNumLoadedFiles;
@@ -1236,9 +1324,9 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
             result = 1;
         } else {
             char *temp_container;
-            temp_container = (char *)malloc(strlen(pContainer) + 2);
+            temp_container = (char *)malloc(pContainer.size() + 2);
             *temp_container = 104;  // 'h'
-            strcpy(temp_container + 1, pContainer);
+            strcpy(temp_container + 1, pContainer.c_str());
             result = 1;
             free((void *)temp_container);
         }
@@ -1246,8 +1334,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
     }
 
     // ICONS
-    if (!header->uDecompressedSize ||
-        _011BA4_debug_paletted_pixels_uncompressed) {
+    if (!header->uDecompressedSize) {
         if (header->uTextureSize > data_size) {
             assert(false);
         }
@@ -1305,8 +1392,10 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
     return 1;
 }
 
-Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(
-    const char *pContainer, enum TEXTURE_TYPE uTextureType) {
+LodTexture *LODFile_IconsBitmaps::LoadTexturePtr(
+    const std::string& pContainer,
+    enum TEXTURE_TYPE uTextureType
+) {
     uint id = LoadTexture(pContainer, uTextureType);
 
     Assert(id != -1 && L"Texture_MM7 not found");
@@ -1314,10 +1403,12 @@ Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(
     return &pTextures[id];
 }
 
-unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer,
-                                               enum TEXTURE_TYPE uTextureType) {
+unsigned int LODFile_IconsBitmaps::LoadTexture(
+    const std::string& pContainer,
+    TEXTURE_TYPE uTextureType
+) {
     for (uint i = 0; i < uNumLoadedFiles; ++i) {
-        if (!_stricmp(pContainer, pTextures[i].header.pName)) {
+        if (!_stricmp(pContainer.c_str(), pTextures[i].header.name.c_str())) {
             return i;
         }
     }
@@ -1327,7 +1418,7 @@ unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer,
     if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer,
                            uTextureType) == -1) {
         for (uint i = 0; i < uNumLoadedFiles; ++i) {
-            if (!_stricmp(pTextures[i].header.pName, "pending")) {
+            if (!_stricmp(pTextures[i].header.name.c_str(), "pending")) {
                 return i;
             }
         }
@@ -1338,8 +1429,8 @@ unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer,
     return uNumLoadedFiles++;
 }
 
-Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
-    Assert(idx < MAX_LOD_TEXTURES, "Texture_MM7 index out of bounds (%u)", idx);
+LodTexture* LODFile_IconsBitmaps::GetTexture(int idx) {
+    Assert(idx < MAX_LOD_TEXTURES, "LodTexture index out of bounds (%u, max=%u)", idx, MAX_LOD_TEXTURES);
     if (idx == -1) {
         // logger->Warning("Texture_MM7 id = %d missing", idx);
         return pTextures + LoadDummyTexture();

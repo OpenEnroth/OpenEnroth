@@ -165,10 +165,10 @@ Texture *TextureFrameTable::GetFrameTexture(int64_t uFrameID, signed int a3) {
     }
 }
 
-void Texture_MM7::Release() {
-    header.pName[0] = 0;
+void LodTexture::Release() {
+    header.name = "";
 
-    if (header.pBits & 0x0400) {
+    if (header.pBits & 0x0400) { // ???
         __debugbreak();
     }
 
@@ -187,12 +187,6 @@ void Texture_MM7::Release() {
     memset(&header, 0, sizeof(header));
 }
 
-Texture_MM7::Texture_MM7() {
-    memset(&header, 0, sizeof(header));
-    paletted_pixels = nullptr;
-    pLevelOfDetail1 = nullptr;
-    pPalette24 = nullptr;
-}
 
 Image *Image::Create(ImageLoader *loader) {
     Image *img = new Image();
@@ -222,12 +216,9 @@ unsigned int Image::GetWidth() {
         LoadImageData();
     }
 
-    if (initialized) {
-        if (width == 0) __debugbreak();
-        return width;
-    }
-
-    return 0;
+    Assert(initialized);
+    Assert(width != 0);
+    return width;
 }
 
 unsigned int Image::GetHeight() {
@@ -235,12 +226,9 @@ unsigned int Image::GetHeight() {
         LoadImageData();
     }
 
-    if (initialized) {
-        if (height == 0) __debugbreak();
-        return height;
-    }
-
-    return 0;
+    Assert(initialized);
+    Assert(height != 0);
+    return height;
 }
 
 Image *Image::Create(unsigned int width, unsigned int height,
@@ -275,62 +263,69 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
         LoadImageData();
     }
 
-    if (initialized) {
-        if (this->pixels[format]) {
-            return this->pixels[format];
+    Assert(initialized);
+
+    if (this->pixels[format]) {
+        return this->pixels[format];
+    }
+
+    auto native_pixels = this->pixels[this->native_format];
+    Assert(native_pixels);
+
+    static ImageFormatConverter converters[IMAGE_NUM_FORMATS][IMAGE_NUM_FORMATS] = {
+        // IMAGE_FORMAT_R5G6B5 ->
+        {
+            nullptr,                   // IMAGE_FORMAT_R5G6B5
+            nullptr,                   // IMAGE_FORMAT_A1R5G5B5
+            Image_R5G6B5_to_A8R8G8B8,  // IMAGE_FORMAT_A8R8G8B8
+            Image_R5G6B5_to_R8G8B8,    // IMAGE_FORMAT_R8G8B8
+            Image_R5G6B5_to_R8G8B8A8,  // IMAGE_FORMAT_R8G8B8A8
+        },
+
+        // IMAGE_FORMAT_A1R5G5B5 ->
+        {
+            nullptr,                     // IMAGE_FORMAT_R5G6B5
+            nullptr,                     // IMAGE_FORMAT_A1R5G5B5
+            nullptr,                     // IMAGE_FORMAT_A8R8G8B8
+            nullptr,                     // IMAGE_FORMAT_R8G8B8
+            Image_A1R5G5B5_to_R8G8B8A8,  // IMAGE_FORMAT_R8G8B8A8
+        },
+
+        // IMAGE_FORMAT_A8R8G8B8 ->
+        {
+            Image_A8R8G8B8_to_R5G6B5,   // IMAGE_FORMAT_R5G6B5
+            Image_A8R8G8B8_to_A1R5G5B5, // IMAGE_FORMAT_A1R5G5B5
+            nullptr,                    // IMAGE_FORMAT_A8R8G8B8
+            nullptr,                    // IMAGE_FORMAT_R8G8B8
+            Image_A8R8G8B8_to_R8G8B8A8, // IMAGE_FORMAT_R8G8B8A8
+        },
+    };
+
+    ImageFormatConverter cvt = converters[this->native_format][format];
+    if (cvt) {
+        unsigned int num_pixels = this->GetWidth() * this->GetHeight();
+
+        void *cvt_pixels = new unsigned char[
+            num_pixels * IMAGE_FORMAT_BytesPerPixel(format)
+        ];
+        if (cvt(width * height, native_pixels, cvt_pixels)) {
+            return this->pixels[format] = cvt_pixels;
+        } else {
+            delete[] cvt_pixels;
+            cvt_pixels = nullptr;
+
+            logger->Warning(
+                "Image format Conversion failed from %s to %s",
+                IMAGE_FORMAT_ToString(this->native_format),
+                IMAGE_FORMAT_ToString(format)
+            );
         }
-
-        auto native_pixels = this->pixels[this->native_format];
-        if (native_pixels) {
-            static ImageFormatConverter
-                converters[IMAGE_NUM_FORMATS][IMAGE_NUM_FORMATS] = {
-                    // IMAGE_FORMAT_R5G6B5 ->
-                    {
-                        nullptr,                   // IMAGE_FORMAT_R5G6B5
-                        nullptr,                   // IMAGE_FORMAT_A1R5G5B5
-                        Image_R5G6B5_to_A8R8G8B8,  // IMAGE_FORMAT_A8R8G8B8
-                        Image_R5G6B5_to_R8G8B8,    // IMAGE_FORMAT_R8G8B8
-                        Image_R5G6B5_to_R8G8B8A8,                   // IMAGE_FORMAT_R8G8B8A8
-                    },
-
-                    // IMAGE_FORMAT_A1R5G5B5 ->
-                    {
-                        nullptr,                     // IMAGE_FORMAT_R5G6B5
-                        nullptr,                     // IMAGE_FORMAT_A1R5G5B5
-                        nullptr,                     // IMAGE_FORMAT_A8R8G8B8
-                        nullptr,                     // IMAGE_FORMAT_R8G8B8
-                        Image_A1R5G5B5_to_R8G8B8A8,  // IMAGE_FORMAT_R8G8B8A8
-                    },
-
-                    // IMAGE_FORMAT_A8R8G8B8 ->
-                    {
-                        Image_A8R8G8B8_to_R5G6B5,  // IMAGE_FORMAT_R5G6B5
-                        Image_A8R8G8B8_to_A1R5G5B5,  // IMAGE_FORMAT_A1R5G5B5
-                        nullptr,                   // IMAGE_FORMAT_A8R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8
-                        Image_A8R8G8B8_to_R8G8B8A8,       // IMAGE_FORMAT_R8G8B8A8
-                    },
-                };
-
-            ImageFormatConverter cvt = converters[this->native_format][format];
-            if (cvt) {
-                unsigned int num_pixels = this->GetWidth() * this->GetHeight();
-
-                void *cvt_pixels =
-                    new unsigned char[num_pixels *
-                                      IMAGE_FORMAT_BytesPerPixel(format)];
-                if (cvt(width * height, native_pixels, cvt_pixels)) {
-                    return this->pixels[format] = cvt_pixels;
-                } else {
-                    delete[] cvt_pixels;
-                    cvt_pixels = nullptr;
-                }
-            } else {
-                logger->Warning("No ImageConverter defined from %s to %s",
-                                IMAGE_FORMAT_ToString(this->native_format),
-                                IMAGE_FORMAT_ToString(format));
-            }
-        }
+    } else {
+        logger->Warning(
+            "No ImageConverter defined from %s to %s",
+            IMAGE_FORMAT_ToString(this->native_format),
+            IMAGE_FORMAT_ToString(format)
+        );
     }
     return nullptr;
 }

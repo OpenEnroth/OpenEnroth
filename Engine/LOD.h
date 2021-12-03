@@ -6,8 +6,8 @@
 #include <vector>
 
 #include "Engine/ErrorHandling.h"
-#include "Engine/Strings.h"
-#include "Engine/Graphics/Image.h"
+#include "Engine/LodTexture.h"
+
 
 class Sprite;
 
@@ -77,8 +77,8 @@ struct Directory {
 
 
 class Container {
- public:
-     Container();
+public:
+    Container();
     virtual ~Container();
 
     bool Open(const std::string& pFilename);
@@ -109,29 +109,25 @@ class Container {
         Error("Unknown LOD version: %s", version);
     }
 
- protected:
+protected:
     FILE *FindFile(const std::string& filename, size_t *out_file_size = nullptr);
     virtual bool OpenFile(const std::string& sFilename);
     bool LoadHeader();
     virtual void ResetSubIndices();
 
- protected:
-    FILE *pFile;
-    String pLODName;
-    bool isFileOpened;
+protected:
+    std::string _filename;
+    FILE *_file = nullptr;
 
     struct FileHeader _header;
     std::vector<std::shared_ptr<Directory>> _index;
-    std::shared_ptr<Directory> _current_folder;
-    //unsigned int _current_folder_ptr;
-    //unsigned int _current_folder_num_items;
-    //Directory *_current_folder_items;
+    std::shared_ptr<Directory> _current_folder = nullptr;
 };
 
 class WriteableFile : public Container {
  public:
     WriteableFile();
-    bool LoadFile(const String &pFilename, bool bWriting);
+    bool LoadFile(const std::string &filename, bool writing);
 
     bool AppendFileToCurrentDirectory(const std::string& file_name, const void* file_bytes, size_t file_size);
     bool AddFileToCurrentDirectory(const std::string& file_name, const void *file_bytes, size_t file_size, int flags = 0);
@@ -140,7 +136,7 @@ class WriteableFile : public Container {
     int CreateTempFile();
     int FixDirectoryOffsets();
     bool _4621A7();
-    int CreateEmptyLod(LOD::FileHeader *pHeader, const String &root_name, const String &Source);
+    int CreateEmptyLod(LOD::FileHeader *pHeader, const std::string& root_name, const std::string& Source);
 
     void FreeSubIndexAndIO();
 
@@ -161,17 +157,12 @@ class LODFile_IconsBitmaps : public LOD::Container {
     virtual ~LODFile_IconsBitmaps();
     void SyncLoadedFilesCount();
     unsigned int FindTextureByName(const char *pName);
-    bool Load(const String &pFilename, const String &pFolderName);
+    bool Load(const std::string& pFilename, const std::string& pFolderName);
     void ReleaseAll();
-    unsigned int LoadTexture(const char *pContainer,
-                             enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    struct Texture_MM7 *LoadTexturePtr(
-        const char *pContainer,
-        enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const char *pContainer,
-                           enum TEXTURE_TYPE eTextureType);
-    int ReloadTexture(struct Texture_MM7 *pDst, const char *pContainer,
-                      int mode);
+    unsigned int LoadTexture(const std::string& pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
+    LodTexture *LoadTexturePtr(const std::string& pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
+    int LoadTextureFromLOD(LodTexture* pOutTex, const std::string& pContainer, TEXTURE_TYPE eTextureType);
+    int ReloadTexture(LodTexture* pDst, const std::string& pContainer, int mode);
     void ReleaseHardwareTextures();
     void ReleaseLostHardwareTextures();
     // void _410423_move_textures_to_device();
@@ -186,9 +177,9 @@ class LODFile_IconsBitmaps : public LOD::Container {
 
     int LoadDummyTexture();
 
-    Texture_MM7 *GetTexture(int idx);
+    LodTexture* GetTexture(int idx);
 
-    Texture_MM7 pTextures[MAX_LOD_TEXTURES];
+    LodTexture pTextures[MAX_LOD_TEXTURES];
     unsigned int uNumLoadedFiles;
     int dword_11B80;
     int dword_11B84;  // bitmaps lod reserved
@@ -199,11 +190,9 @@ class LODFile_IconsBitmaps : public LOD::Container {
     int uNumPrevLoadedFiles;
     int uTexturePacksCount;
     int pFacesLock;
-    int _011BA4_debug_paletted_pixels_uncompressed;
     // int can_load_hardware_sprites;
     struct IDirectDrawSurface **pHardwareSurfaces;
     struct IDirect3DTexture2 **pHardwareTextures;
-    char *ptr_011BB4;
 };
 
 #pragma pack(push, 1)
@@ -228,15 +217,12 @@ struct LODSpriteHeader {
 
 #pragma pack(push, 1)
 struct LODSprite : public LODSpriteHeader {
-    inline LODSprite() {
-        bitmap = nullptr;
-    }
     ~LODSprite();
 
     void Release();
     struct SoftwareBillboard *_4AD2D1_overlays(struct SoftwareBillboard *a2, int a3);
 
-    uint8_t *bitmap;
+    uint8_t *bitmap = nullptr;
 };
 #pragma pack(pop)
 
@@ -249,8 +235,8 @@ class LODFile_Sprites : public LOD::Container {
     void DeleteSpritesRange(int uStartIndex, int uStopIndex);
     int _461397();
     void DeleteSomeOtherSprites();
-    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const String &pContainer);
-    bool LoadSprites(const String &pFilename);
+    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string& pContainer);
+    bool LoadSprites(const std::string& pFilename);
     int LoadSprite(const char *pContainerName, unsigned int uPaletteID);
     void ReleaseLostHardwareSprites();
     void ReleaseAll();
@@ -268,18 +254,9 @@ class LODFile_Sprites : public LOD::Container {
 };
 
 extern LODFile_IconsBitmaps *pEvents_LOD;
-
 extern LODFile_IconsBitmaps *pIcons_LOD;
-extern LODFile_IconsBitmaps *pIcons_LOD_mm6;
-extern LODFile_IconsBitmaps *pIcons_LOD_mm8;
-
 extern LODFile_IconsBitmaps *pBitmaps_LOD;
-extern LODFile_IconsBitmaps *pBitmaps_LOD_mm6;
-extern LODFile_IconsBitmaps *pBitmaps_LOD_mm8;
-
 extern LODFile_Sprites *pSprites_LOD;
-extern LODFile_Sprites *pSprites_LOD_mm6;
-extern LODFile_Sprites *pSprites_LOD_mm8;
 
 extern LOD::WriteableFile *pNew_LOD;
 extern LOD::Container *pGames_LOD;
