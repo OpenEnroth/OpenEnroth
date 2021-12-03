@@ -262,7 +262,7 @@ class IRender {
 
     virtual bool SwitchToWindow() = 0;
     virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t uColor) = 0;
-    virtual void ClearZBuffer(int a2, int a3) = 0;
+    virtual void ClearZBuffer() = 0;
     virtual void RestoreFrontBuffer() = 0;
     virtual void RestoreBackBuffer() = 0;
     virtual void BltBackToFontFast(int a2, int a3, Rect *a4) = 0;
@@ -307,7 +307,7 @@ class IRender {
                                unsigned int uZ, unsigned int uW) = 0;
     virtual void ResetUIClipRect() = 0;
 
-    virtual void InvalidateGameViewport() = 0;
+    virtual void MaskGameViewport() = 0;
 
     virtual void DrawTextureNew(float u, float v, Image *) = 0;
     virtual void DrawTextureAlphaNew(float u, float v, Image *) = 0;
@@ -432,6 +432,9 @@ class IRender {
     RenderBillboardD3D pBillboardRenderListD3D[1000];
     unsigned int uNumBillboardsToDraw;
 
+    const uint16_t teal_mask_16 = 0x7FF;
+    const uint32_t teal_mask_32 = 0xFF00FCF8;
+
     int drawcalls;
 
     Log *log = nullptr;
@@ -519,3 +522,4 @@ bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6,
 class BSPModel;
 
 bool IsBModelVisible(BSPModel *model, int *unused);
+inline uint32_t PixelDim(uint32_t pix, int dimming);

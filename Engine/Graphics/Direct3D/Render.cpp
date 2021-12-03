@@ -1204,8 +1204,12 @@ void Render::Present() {
 void Render::CreateZBuffer() {
     if (!pDefaultZBuffer) {
         pDefaultZBuffer = pActiveZBuffer = (int *)malloc(window->GetWidth() * window->GetHeight() * sizeof(int));
-        memset32(pActiveZBuffer, 0xFFFF0000, window->GetWidth() * window->GetHeight());
+        ClearZBuffer();
     }
+}
+
+void Render::ClearZBuffer() {
+    memset32(this->pActiveZBuffer, 0xFFFF0000, window->GetWidth() * window->GetHeight());
 }
 
 void Render::Release() {
@@ -1249,7 +1253,7 @@ void Present32(uint32_t* src, unsigned int src_pitch, uint32_t* dst, unsigned in
     // mask for 2d elements over viewport
     for (uint y = pViewport->uViewportTL_Y; y < pViewport->uViewportBR_Y; ++y) {
         for (uint x = pViewport->uViewportTL_X; x < pViewport->uViewportBR_X; ++x) {
-            if (src[x + y * src_pitch] != 0xFF00FCF8) {
+            if (src[x + y * src_pitch] != render->teal_mask_32) {
                 dst[x + y * dst_pitch] = src[x + y * src_pitch];
             }
         }
@@ -1660,9 +1664,7 @@ void Render::RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t color) {
     p2DGraphics->DrawLine(&pen, uX, uY, uZ, uW);
 }
 
-void Render::ClearZBuffer(int a2, int a3) {
-    memset32(this->pActiveZBuffer, -65536, window->GetWidth() * window->GetHeight());
-}
+
 
 void Render::ParseTargetPixelFormat() {
     int v2 = 0;
@@ -2891,9 +2893,7 @@ void Render::DrawTextAlpha(int x, int y, uint8_t *font_pixels, int uCharWidth,
             for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
                 uint16_t color = (*font_pixels)
                                      ? pPalette[*font_pixels]
-                                     : 0x7FF;  // transparent color 16bit
-                                               // render->uTargetGMask |
-                                               // render->uTargetBMask;
+                                     : teal_mask_16;
                 fontpix[dx + dy * uCharWidth] = Color32(color);
                 ++font_pixels;
             }
@@ -2937,9 +2937,7 @@ void Render::DrawMasked(float u, float v, Image *pTexture,
     for (unsigned int dy = 0; dy < pTexture->GetHeight(); ++dy) {
         for (unsigned int dx = 0; dx < width; ++dx) {
             if (*pixels & 0xFF000000)
-                temppix[dx + dy * width] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
-                    (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
-                    &  Color32(mask);
+                temppix[dx + dy * width] = PixelDim(*pixels, color_dimming_level) & Color32(mask);
             ++pixels;
         }
     }
@@ -3395,12 +3393,12 @@ int ODM_NearClip(unsigned int num_vertices) {
     return out_num_vertices >= 3 ? out_num_vertices : 0;
 }
 
-void Render::InvalidateGameViewport() {
+void Render::MaskGameViewport() {
     FillRectFast(
         pViewport->uViewportTL_X, pViewport->uViewportTL_Y,
         pViewport->uViewportBR_X - pViewport->uViewportTL_X,
         pViewport->uViewportBR_Y - pViewport->uViewportTL_Y,
-        0x7FF
+        teal_mask_16
     );
 }
 

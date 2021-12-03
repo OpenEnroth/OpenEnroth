@@ -649,7 +649,7 @@ void Game::EventLoop() {
                         pModalWindow = nullptr;
                         continue;
                     }
-                    render->ClearZBuffer(0, 479);
+                    render->ClearZBuffer();
                     viewparams->bRedrawGameUI = true;
                     viewparams->field_48 = 1;
                     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {

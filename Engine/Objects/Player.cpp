@@ -723,7 +723,7 @@ void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
 //----- (00492528) --------------------------------------------------------
 bool Player::CanFitItem(unsigned int uSlot, unsigned int uItemID) {
     auto img = assets->GetImage_ColorKey(pItemsTable->pItems[uItemID].pIconName,
-                                         0x7FF);
+                                         render->teal_mask_16);
     unsigned int slotWidth = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slotHeight = GetSizeInInventorySlots(img->GetHeight());
 
@@ -870,7 +870,7 @@ void Player::PutItemArInventoryIndex(
     int index) {  // originally accepted ItemGen* but needed only its uItemID
 
     auto img = assets->GetImage_ColorKey(pItemsTable->pItems[uItemID].pIconName,
-                                         0x7FF);
+                                         render->teal_mask_16);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
@@ -892,7 +892,7 @@ void Player::PutItemArInventoryIndex(
 void Player::RemoveItemAtInventoryIndex(unsigned int index) {
     ItemGen* item_in_slot = this->GetItemAtInventoryIndex(index);
 
-    auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName(), 0x7FF);
+    auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName(), render->teal_mask_16);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 

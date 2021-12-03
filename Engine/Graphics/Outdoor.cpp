@@ -2144,7 +2144,7 @@ void OutdoorLocation::LoadActualSkyFrame() {
 
     rest_ui_sky_frame_current = assets->GetImage_ColorKey(
         StringPrintf("TERRA%03d", pParty->uCurrentMinute / 6 + 10 * pParty->uCurrentHour),
-        0x7FF);
+        render->teal_mask_16);
 }
 
 OutdoorLocation::OutdoorLocation() {
@@ -3785,7 +3785,7 @@ void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
     // thisa->AllocSoftwareDrawBuffers();
     pODMRenderParams->Initialize();
     pWeather->bRenderSnow = false;
-    render->ClearZBuffer(0, 479);
+    render->ClearZBuffer();
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus();
     if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;

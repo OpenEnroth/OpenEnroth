@@ -170,7 +170,6 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     int v34;             // esi@81
     char out_text[300];  // [sp+8h] [bp-270h]@40
     SummonedItem v67;
-    int v77;                    // [sp+200h] [bp-78h]@12
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
     PlayerSpeech v83;           // [sp+26Ch] [bp-Ch]@18
     char *v84;
@@ -183,7 +182,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
 
     if (!inspect_item->uItemID) return;
 
-    auto inspect_item_image = assets->GetImage_ColorKey(inspect_item->GetIconName(), 0x7FF);
+    auto inspect_item_image = assets->GetImage_ColorKey(inspect_item->GetIconName(), render->teal_mask_16);
 
     iteminfo_window.sHint.clear();
     iteminfo_window.uFrameWidth = 384;
@@ -211,9 +210,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
     if (!pItemsTable->pItems[inspect_item->uItemID].uItemID_Rep_St)
         inspect_item->SetIdentified();
 
-    v77 = 0;
+    int GoldAmount = 0;
     if (inspect_item->GetItemEquipType() == EQUIP_GOLD)
-        v77 = inspect_item->special_enchantment;
+        GoldAmount = inspect_item->special_enchantment;
 
     if (uActiveCharacter) {
         // try to identify
@@ -376,7 +375,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             break;
     }
 
-    if (!v77) {
+    if (!GoldAmount) {
         // this is CORRECT! do not move to switch!
         if (inspect_item->GetItemEquipType() == EQUIP_POTION) {
             if (inspect_item->uEnchantmentType)
@@ -487,8 +486,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                                   inspect_item->GetIdentifiedName(), 3);
     iteminfo_window.uFrameWidth += 24;
     iteminfo_window.uFrameX -= 12;
-    if (v77) {
-        auto txt = StringPrintf("%s: %lu", localization->GetString(LSTR_VALUE), v77);
+
+    if (GoldAmount) {
+        auto txt = StringPrintf("%s: %lu", localization->GetString(LSTR_VALUE), GoldAmount);
         iteminfo_window.DrawText(
             pFontComic, 100,
             iteminfo_window.uFrameHeight - pFontComic->GetHeight(), 0, txt, 0,
@@ -550,12 +550,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             txt3 = localization->GetString(LSTR_HARDENED);
         }
 
-        // mixing 32 with 16 mask??
-        int tempatt = (((inspect_item->uAttributes & 0xFFFF0000)) | (r_mask));
-
         iteminfo_window.DrawText(
             pFontComic, pFontComic->GetLineWidth(txt2.data()) + 132,
-            iteminfo_window.uFrameHeight - pFontComic->GetHeight(), tempatt,
+            iteminfo_window.uFrameHeight - pFontComic->GetHeight(), r_mask,
             txt3, 0, 0, 0);
         render->ResetUIClipRect();
     }

@@ -417,7 +417,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
     }
 }
 
-void RenderOpenGL::InvalidateGameViewport() {
+void RenderOpenGL::MaskGameViewport() {
     // do not want in opengl mode
 }
 
@@ -1637,7 +1637,7 @@ unsigned int RenderOpenGL::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int RenderOpenGL::GetRenderHeight() const { return window->GetHeight(); }
 
 void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
-    ClearZBuffer(0, 479);  // dummy params
+    ClearZBuffer();
     ClearTarget(0);
 }
 
@@ -1645,14 +1645,17 @@ void RenderOpenGL::ClearTarget(unsigned int uColor) {
     memset32(render_target_rgb, Color32(uColor), (window->GetWidth() * window->GetHeight()));
 }
 
-void RenderOpenGL::ClearZBuffer(int, int) {
-    // parameter alwyas 0 + 479 but never used
-    memset32(this->pActiveZBuffer, -65536, 0x4B000);
-}
+
 
 void RenderOpenGL::CreateZBuffer() {
-    pActiveZBuffer = (int *)malloc(window->GetWidth() * window->GetHeight() * sizeof(int));  // 640 * 480 * 4
-    memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u);      // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
+    if (!pActiveZBuffer) {
+        pActiveZBuffer = (int*)malloc(window->GetWidth() * window->GetHeight() * sizeof(int));
+        ClearZBuffer();
+    }
+}
+
+void RenderOpenGL::ClearZBuffer() {
+    memset32(this->pActiveZBuffer, 0xFFFF0000, window->GetWidth() * window->GetHeight());
 }
 
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
@@ -1957,9 +1960,87 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
 
 
 
-void RenderOpenGL::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
-                                 int start_opacity, int end_opacity) {
-    __debugbreak();
+void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, int time, int start_opacity,
+    int end_opacity) {
+    // thrown together as a crude estimate of the enchaintg
+                          // effects
+
+      // leaves gap where it shouldnt on dark pixels currently
+      // doesnt use opacity params
+
+    const uint32_t* pixelpoint;
+    const uint32_t* pixelpointblend;
+
+    if (imgin && imgblend) {  // 2 images to blend
+        pixelpoint = (const uint32_t*)imgin->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        pixelpointblend =
+            (const uint32_t*)imgblend->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+        int Width = imgin->GetWidth();
+        int Height = imgin->GetHeight();
+        // Image* temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
+        // uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+        uint32_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
+        unsigned int bmax = (c & 0xFF);
+        unsigned int gmax = ((c >> 8) & 0xFF);
+        unsigned int rmax = ((c >> 16) & 0xFF);
+
+        unsigned int bmin = bmax / 10;
+        unsigned int gmin = gmax / 10;
+        unsigned int rmin = rmax / 10;
+
+        unsigned int bstep = (bmax - bmin) / 128;
+        unsigned int gstep = (gmax - gmin) / 128;
+        unsigned int rstep = (rmax - rmin) / 128;
+
+        for (int ydraw = 0; ydraw < Height; ++ydraw) {
+            for (int xdraw = 0; xdraw < Width; ++xdraw) {
+                // should go blue -> black -> blue reverse
+                // patchy -> solid -> patchy
+
+                if (*pixelpoint) {  // check orig item not got blakc pixel
+                    uint32_t nudge =
+                        (xdraw % imgblend->GetWidth()) +
+                        (ydraw % imgblend->GetHeight()) * imgblend->GetWidth();
+                    uint32_t pixcol = *(pixelpointblend + nudge);
+
+                    unsigned int bcur = (pixcol & 0xFF);
+                    unsigned int gcur = ((pixcol >> 8) & 0xFF);
+                    unsigned int rcur = ((pixcol >> 16) & 0xFF);
+
+                    int steps = (time) % 128;
+
+                    if ((time) % 256 >= 128) {  // step down
+                        bcur += bstep * (128 - steps);
+                        gcur += gstep * (128 - steps);
+                        rcur += rstep * (128 - steps);
+                    } else {  // step up
+                        bcur += bstep * steps;
+                        gcur += gstep * steps;
+                        rcur += rstep * steps;
+                    }
+
+                    if (bcur > bmax) bcur = bmax;  // limit check
+                    if (gcur > gmax) gcur = gmax;
+                    if (rcur > rmax) rcur = rmax;
+                    if (bcur < bmin) bcur = bmin;
+                    if (gcur < gmin) gcur = gmin;
+                    if (rcur < rmin) rcur = rmin;
+
+                    // temppix[xdraw + ydraw * Width] = Color32(rcur, gcur, bcur);
+                    render_target_rgb[x + xdraw + (render->GetRenderWidth() * (y + ydraw))] = Color32(rcur, gcur, bcur);
+                }
+
+                pixelpoint++;
+            }
+
+            pixelpoint += imgin->GetWidth() - Width;
+        }
+        // draw image
+        // render->DrawTextureAlphaNew(x / float(window->GetWidth()), y / float(window->GetHeight()), temp);
+        // temp->Release();
+    }
 }
 
 
@@ -2081,6 +2162,12 @@ void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices,
     __debugbreak();
 }
 
+inline uint32_t PixelDim(uint32_t pix, int dimming) {
+    return Color32((((pix >> 16) & 0xFF) >> dimming),
+        (((pix >> 8) & 0xFF) >> dimming),
+        ((pix & 0xFF) >> dimming));
+}
+
 void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level,
                               unsigned __int16 mask) {
     if (!pTexture) {
@@ -2097,9 +2184,7 @@ void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int co
         for (unsigned int dx = 0; dx < width; ++dx) {
             if (*pixels & 0xFF000000) {
                 if ((x + dx) < window->GetWidth() && (y + dy) < window->GetHeight()) {
-                    render_target_rgb[x + dx + window->GetWidth() * (y + dy)] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
-                        (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
-                        & Color32(mask);
+                    render_target_rgb[x + dx + window->GetWidth() * (y + dy)] = PixelDim(*pixels, color_dimming_level) & Color32(mask);
                 }
             }
             ++pixels;
@@ -2109,13 +2194,17 @@ void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int co
     // temp->Release();;
 }
 
+
+
 void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) {
-    __debugbreak();
+    DrawMasked(a2, a3, a4, 1, 0x7BEF);
 }
+
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices,
                                  unsigned int uFaceID) {
     __debugbreak();
 }
+
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices,
                                         struct Polygon *pSkyPolygon) {
     __debugbreak();
@@ -4023,7 +4112,7 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
             for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
                 uint16_t color = (*font_pixels)
                     ? pPalette[*font_pixels]
-                    : 0x7FF;  // transparent color 16bit
+                    : teal_mask_16;  // transparent color 16bit
                               // render->uTargetGMask |
                               // render->uTargetBMask;
                 this->render_target_rgb[(x + dx) + (y + dy) * window->GetWidth()] = Color32(color);

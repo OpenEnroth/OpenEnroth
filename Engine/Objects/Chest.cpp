@@ -207,7 +207,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
             /*
 
             auto img = assets->GetImage_16BitColorKey(item->GetIconName(),
-            0x7FF);
+            render->teal_mask_16);
 
             int imgwidth = img->GetWidth();
             int imgheight = img->GetHeight();
@@ -263,7 +263,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, int item_id, int uChestID) {
     int chest_cell_heght = pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
-    auto img = assets->GetImage_ColorKey(pItemsTable->pItems[item_id].pIconName, 0x7FF);
+    auto img = assets->GetImage_ColorKey(pItemsTable->pItems[item_id].pIconName, render->teal_mask_16);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 
@@ -336,7 +336,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
         }
     }
 
-    Image *texture = assets->GetImage_ColorKey(put_item->GetIconName(), 0x7FF);
+    Image *texture = assets->GetImage_ColorKey(put_item->GetIconName(), render->teal_mask_16);
     unsigned int slot_width = GetSizeInInventorySlots(texture->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(texture->GetHeight());
 
@@ -387,7 +387,7 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
 void Chest::PlaceItems(int uChestID) {  // only sued for setup
     char chest_cells_map[144];   // [sp+Ch] [bp-A0h]@1
 
-    render->ClearZBuffer(0, 479);
+    render->ClearZBuffer();
     int uChestArea = pChestWidthsByType[vChests[uChestID].uChestBitmapID] *
                      pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     memset(chest_cells_map, 0, 144);
@@ -512,7 +512,7 @@ void RemoveItemAtChestIndex(int index) {
     int chestindex = chest->pInventoryIndices[index];
     ItemGen *item_in_slot = &chest->igChestItems[chestindex - 1];
 
-    auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName(), 0x7FF);
+    auto img = assets->GetImage_ColorKey(item_in_slot->GetIconName(), render->teal_mask_16);
     unsigned int slot_width = GetSizeInInventorySlots(img->GetWidth());
     unsigned int slot_height = GetSizeInInventorySlots(img->GetHeight());
 

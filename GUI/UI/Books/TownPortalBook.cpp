@@ -32,12 +32,12 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook()  // const char *a1)
     // 00411BFC GUIWindow::InitializeBookView -- part
     ui_book_townportal_background = assets->GetImage_Solid("townport");
 
-    ui_book_townportal_icons[0] = assets->GetImage_ColorKey("tpharmndy", 0x7FF);
-    ui_book_townportal_icons[1] = assets->GetImage_ColorKey("tpelf", 0x7FF);
-    ui_book_townportal_icons[2] = assets->GetImage_ColorKey("tpwarlock", 0x7FF);
-    ui_book_townportal_icons[3] = assets->GetImage_ColorKey("tpisland", 0x7FF);
-    ui_book_townportal_icons[4] = assets->GetImage_ColorKey("tpheaven", 0x7FF);
-    ui_book_townportal_icons[5] = assets->GetImage_ColorKey("tphell", 0x7FF);
+    ui_book_townportal_icons[0] = assets->GetImage_ColorKey("tpharmndy", render->teal_mask_16);
+    ui_book_townportal_icons[1] = assets->GetImage_ColorKey("tpelf", render->teal_mask_16);
+    ui_book_townportal_icons[2] = assets->GetImage_ColorKey("tpwarlock", render->teal_mask_16);
+    ui_book_townportal_icons[3] = assets->GetImage_ColorKey("tpisland", render->teal_mask_16);
+    ui_book_townportal_icons[4] = assets->GetImage_ColorKey("tpheaven", render->teal_mask_16);
+    ui_book_townportal_icons[5] = assets->GetImage_ColorKey("tphell", render->teal_mask_16);
 
     for (uint i = 0; i < 6; ++i)
         CreateButton(pTownPortalBook_xs[i], pTownPortalBook_ys[i],
@@ -65,7 +65,7 @@ void GUIWindow_TownPortalBook::Update() {
     int v3;                      // edi@17
     GUIWindow TownPortalWindow;  // [sp+Ch] [bp-64h]@1
 
-    render->ClearZBuffer(0, 479);
+    render->ClearZBuffer();
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f,
                            ui_book_townportal_background);
     render->DrawTextureAlphaNew(471 / 640.0f, 445 / 480.0f,

@@ -250,6 +250,6 @@ void SpellBookGenerator() {  // for GuildDialogs
         pParty->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].IsIdentified();
 
         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
-            pItemsTable->pItems[pItemNum].pIconName, 0x7FF);
+            pItemsTable->pItems[pItemNum].pIconName, render->teal_mask_16);
     }
 }

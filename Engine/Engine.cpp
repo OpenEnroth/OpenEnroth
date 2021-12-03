@@ -270,7 +270,7 @@ void Engine::DrawGUI() {
         if (v4) {
             if (!PauseGameDrawing() /*&& render->pRenderD3D*/) {
                 // clear game viewport with transparent color
-                render->InvalidateGameViewport();
+                render->MaskGameViewport();
                 viewparams->field_48 = 0;
             }
         }

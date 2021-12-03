@@ -124,7 +124,7 @@ void ArenaFight() {
     render->DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
     render->BeginScene();
     // if ( render->pRenderD3D )
-    render->InvalidateGameViewport();
+    render->MaskGameViewport();
 
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - v0) / 480.0f,
                                     ui_leather_mm7, v0);

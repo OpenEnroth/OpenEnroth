@@ -35,7 +35,7 @@ GUIWindow_Chest::GUIWindow_Chest(unsigned int chest_id)
 
 void GUIWindow_Chest::Update() {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_CHEST_INVENTORY) {
-        render->ClearZBuffer(0, 479);
+        render->ClearZBuffer();
         draw_leather();
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
         render->DrawTextureAlphaNew(pBtn_ExitCancel->uX / 640.0f,
@@ -45,7 +45,7 @@ void GUIWindow_Chest::Update() {
         auto uChestID = (uint64_t)ptr_1C;
 
         int *v16 = render->pActiveZBuffer;
-        render->ClearZBuffer(0, 479);
+        render->ClearZBuffer();
         int chestBitmapId = vChests[uChestID].uChestBitmapID;
         int chest_offs_x = pChestPixelOffsetX[chestBitmapId];
         int chest_offs_y = pChestPixelOffsetY[chestBitmapId];
@@ -53,7 +53,7 @@ void GUIWindow_Chest::Update() {
         int chestHeghtCells = pChestHeightsByType[chestBitmapId];
 
         Image *chest_background = assets->GetImage_ColorKey(
-            StringPrintf("chest%02d", pChestList->vChests[chestBitmapId].uTextureID), 0x7FF);
+            StringPrintf("chest%02d", pChestList->vChests[chestBitmapId].uTextureID), render->teal_mask_16);
         render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, chest_background);
 
         for (int item_counter = 0;
@@ -62,7 +62,7 @@ void GUIWindow_Chest::Update() {
             if (chest_item_index > 0) {
                 auto item_texture = assets->GetImage_ColorKey(
                     vChests[uChestID].igChestItems[chest_item_index - 1].GetIconName(),
-                    0x7FF);
+                    render->teal_mask_16);
 
                 int itemPixelWidth = item_texture->GetWidth();
                 int itemPixelHeght = item_texture->GetHeight();

@@ -886,7 +886,7 @@ void UIShop_Buy_Identify_Repair() {
                                 Party::TakeGold(uPriceItemService);
                                 viewparams->bRedrawGameUI = 1;
                                 bought_item->Reset();
-                                render->ClearZBuffer(0, 479);
+                                render->ClearZBuffer();
                                 pPlayers[uActiveCharacter]->PlaySound(
                                     (PlayerSpeech)SPEECH_ItemBuy, 0);
                                 return;
@@ -918,7 +918,7 @@ void UIShop_Buy_Identify_Repair() {
                 pPlayers[uActiveCharacter]->SalesProcess(
                     invindex, pItemID - 1, (int64_t)window_SpeakInHouse->ptr_1C);
                 viewparams->bRedrawGameUI = 1;
-                render->ClearZBuffer(0, 479);
+                render->ClearZBuffer();
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_ItemSold, 0);
                 return;
             }
@@ -1210,7 +1210,7 @@ void UIShop_Buy_Identify_Repair() {
                 }
                 viewparams->bRedrawGameUI = 1;
                 bought_item->Reset();
-                render->ClearZBuffer(0, 479);
+                render->ClearZBuffer();
                 pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_ItemBuy, 0);
                 return;
             } else {

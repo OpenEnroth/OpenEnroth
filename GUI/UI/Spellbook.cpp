@@ -167,7 +167,7 @@ void GUIWindow_Spellbook::Update() {
 
     BookUI_Spellbook_DrawCurrentSchoolBackground();
 
-    render->ClearZBuffer(0, 479);
+    render->ClearZBuffer();
 
     for (unsigned int i = 0; i < 9; i++) {
         if (player->pActiveSkills[PLAYER_SKILL_FIRE + i] || engine->config->debug_all_magic) {
@@ -331,7 +331,7 @@ void InitializeSpellBookTextures() {
 
     for (unsigned int i = 0; i < 9; ++i) {
         ui_spellbook_school_backgrounds[i] =
-            assets->GetImage_ColorKey(texNames[i], 0x7FF);
+            assets->GetImage_ColorKey(texNames[i], render->teal_mask_16);
         ui_spellbook_school_tabs[i][0] =
             assets->GetImage_Alpha(StringPrintf("tab%da", i + 1));
         ui_spellbook_school_tabs[i][1] =

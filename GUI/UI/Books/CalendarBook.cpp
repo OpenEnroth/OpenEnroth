@@ -37,12 +37,12 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
     // ----------------------------------------------
     // 00411BFC GUIWindow::InitializeBookView -- part
     ui_book_calendar_background =
-        assets->GetImage_ColorKey("sbdate-time", 0x7FF);
-    ui_book_calendar_moon_new = assets->GetImage_ColorKey("moon_new", 0x7FF);
-    ui_book_calendar_moon_4 = assets->GetImage_ColorKey("moon_4", 0x7FF);
-    ui_book_calendar_moon_2 = assets->GetImage_ColorKey("moon_2", 0x7FF);
-    ui_book_calendar_moon_2_2 = assets->GetImage_ColorKey("moon_2", 0x7FF);
-    ui_book_calendar_moon_full = assets->GetImage_ColorKey("moon_ful", 0x7FF);
+        assets->GetImage_ColorKey("sbdate-time", render->teal_mask_16);
+    ui_book_calendar_moon_new = assets->GetImage_ColorKey("moon_new", render->teal_mask_16);
+    ui_book_calendar_moon_4 = assets->GetImage_ColorKey("moon_4", render->teal_mask_16);
+    ui_book_calendar_moon_2 = assets->GetImage_ColorKey("moon_2", render->teal_mask_16);
+    ui_book_calendar_moon_2_2 = assets->GetImage_ColorKey("moon_2", render->teal_mask_16);
+    ui_book_calendar_moon_full = assets->GetImage_ColorKey("moon_ful", render->teal_mask_16);
 }
 
 //----- (00413D3C) --------------------------------------------------------

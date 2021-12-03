@@ -158,7 +158,7 @@ void GUIWindow_Rest::Update() {
 
         {
             rest_ui_hourglass_frame_current = assets->GetImage_ColorKey(
-                StringPrintf("hglas%03d", hourglass_icon_idx), 0x7FF);
+                StringPrintf("hglas%03d", hourglass_icon_idx), render->teal_mask_16);
             render->DrawTextureAlphaNew(267 / 640.0f, 159 / 480.0f,
                                         rest_ui_hourglass_frame_current);
         }

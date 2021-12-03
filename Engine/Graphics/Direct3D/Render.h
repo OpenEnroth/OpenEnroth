@@ -62,7 +62,7 @@ class Render : public RenderBase {
 
     virtual bool SwitchToWindow();
     virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t uColor);
-    virtual void ClearZBuffer(int a2, int a3);
+    virtual void ClearZBuffer();
     virtual void RestoreFrontBuffer();
     virtual void RestoreBackBuffer();
     virtual void BltBackToFontFast(int a2, int a3, Rect *pSrcRect);
@@ -126,7 +126,7 @@ class Render : public RenderBase {
     virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices,
                                      unsigned int num_vertices);
 
-    virtual void InvalidateGameViewport();
+    virtual void MaskGameViewport();
 
     virtual void DrawTextAlpha(int x, int y, uint8_t *font_pixels, int a5,
                                unsigned int uFontHeight, uint8_t *pPalette,

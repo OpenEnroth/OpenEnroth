@@ -685,7 +685,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
     dword_F8B1E4 = 0;
     memset(byte_F8B1F0.data(), 0, 4);
     memset(player_levels.data(), 0, 16);
-    render->ClearZBuffer(0, 479);
+    render->ClearZBuffer();
 
     if (((uCloseTime - 1 <= uOpenTime) &&
         ((pParty->uCurrentHour < uOpenTime) &&
@@ -845,13 +845,13 @@ void PrepareHouse(HOUSE_ID house) {
 
     for (int i = 0; i < uNumDialogueNPCPortraits; ++i) {
         pDialogueNPCPortraits[i] = assets->GetImage_ColorKey(
-            StringPrintf("npc%03u", npc_id_arr[i]), 0x7FF);
+            StringPrintf("npc%03u", npc_id_arr[i]), render->teal_mask_16);
     }
 
     if (uHouse_ExitPic) {
         pDialogueNPCPortraits[uNumDialogueNPCPortraits] =
             assets->GetImage_ColorKey(pHouse_ExitPictures[uHouse_ExitPic],
-                0x7FF);
+                render->teal_mask_16);
         ++uNumDialogueNPCPortraits;
         uHouse_ExitPic = p2DEvents[house - 1].uExitMapID;
     }
@@ -877,7 +877,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     int pPrice;                     // ecx@227
 
     if (!pDialogueWindow->pNumPresenceButton) return;
-    render->ClearZBuffer(0, 479);
+    render->ClearZBuffer();
 
     if (dialog_menu_id == DIALOGUE_MAIN) {
         if (in_current_building_type == BuildingType_Training) {
@@ -930,7 +930,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         if (in_current_building_type < BuildingType_19) {
             shop_ui_background = assets->GetImage_ColorKey(
                 _4F03B8_shop_background_names[(int)in_current_building_type],
-                0x7FF);
+                render->teal_mask_16);
         }
     }
 
@@ -958,7 +958,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                         pParty->SpellBooksInGuilds
                         [window_SpeakInHouse->par1C - 139][i].GetIconName(),
-                        0x7FF);
+                        render->teal_mask_16);
             }
         } else {  // generation new books
             SpellBookGenerator();
@@ -1328,7 +1328,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                             pParty->StandartItemsInShops
                             [(int64_t)window_SpeakInHouse->ptr_1C][i].GetIconName(),
-                        0x7FF);
+                        render->teal_mask_16);
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
@@ -1369,7 +1369,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                             pParty->SpecialItemsInShops
                             [(uint64_t)window_SpeakInHouse->ptr_1C][i].GetIconName(),
-                            0x7FF);
+                            render->teal_mask_16);
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
