@@ -261,25 +261,6 @@ extern std::array<char, 100> Journal_limitation_factor;
 extern int ui_current_text_color;
 extern int64_t qword_5C6DF0;
 extern int dword_5C6DF8;
-extern char *pHealthPointsAttributeDescription;
-extern char *pSpellPointsAttributeDescription;
-extern char *pArmourClassAttributeDescription;
-extern char *pPlayerConditionAttributeDescription;  // idb
-extern char *pFastSpellAttributeDescription;
-extern char *pPlayerAgeAttributeDescription;
-extern char *pPlayerLevelAttributeDescription;
-extern char *pPlayerExperienceAttributeDescription;
-extern char *pAttackBonusAttributeDescription;
-extern char *pAttackDamageAttributeDescription;
-extern char *pMissleBonusAttributeDescription;
-extern char *pMissleDamageAttributeDescription;
-extern char *pFireResistanceAttributeDescription;
-extern char *pAirResistanceAttributeDescription;
-extern char *pWaterResistanceAttributeDescription;
-extern char *pEarthResistanceAttributeDescription;
-extern char *pMindResistanceAttributeDescription;
-extern char *pBodyResistanceAttributeDescription;
-extern char *pSkillPointsAttributeDescription;
 extern struct FactionTable *pFactionTable;
 
 extern char *pMonstersTXT_Raw;

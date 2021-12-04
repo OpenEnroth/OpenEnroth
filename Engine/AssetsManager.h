@@ -42,7 +42,9 @@ public:
     Texture *GetSprite(const std::string& name, unsigned int palette_id,
                        unsigned int lod_sprite_id);
 
-    void* GetLocalization();
+    char* GetLocalization(size_t* out_data_size);
+    char* GetLocalizedClassDescriptions(size_t* out_data_size);
+    char* GetLocalizedStatsDescriptions(size_t* out_data_size);
 
 protected:
     AssetsClass _asset_source;

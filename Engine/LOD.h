@@ -16,6 +16,7 @@ class Sprite;
 
 enum LOD_VERSION {
     LOD_VERSION_MM6,
+    LOD_VERSION_GAME_MM6,
     LOD_VERSION_MM7,
     LOD_VERSION_MM8,
 };
@@ -94,20 +95,6 @@ public:
     size_t GetSubNodesCount() const { return _current_folder->files.size(); }
     int GetSubNodeIndex(const std::string& name) const;
 
-    LOD_VERSION GetVersion() const {
-        static std::map<std::string, LOD_VERSION> version_map = {
-            {"MMVI", LOD_VERSION_MM6},
-            {"MMVII", LOD_VERSION_MM7},
-            {"MMVIII", LOD_VERSION_MM8},
-        };
-
-        const char* version = _header.LodVersion;
-        auto it = version_map.find(version);
-        if (it != version_map.end()) {
-            return it->second;
-        }
-        Error("Unknown LOD version: %s", version);
-    }
 
 protected:
     FILE *FindFile(const std::string& filename, size_t *out_file_size = nullptr);
@@ -133,20 +120,24 @@ class WriteableFile : public Container {
     bool AddFileToCurrentDirectory(const std::string& file_name, const void *file_bytes, size_t file_size, int flags = 0);
     
     void CloseWriteFile();
-    int CreateTempFile();
+    int OpenTmpWriteFile();
     int FixDirectoryOffsets();
     bool _4621A7();
-    int CreateEmptyLod(LOD::FileHeader *pHeader, const std::string& root_name, const std::string& Source);
+    int CreateEmptyLod(LOD::FileHeader *pHeader, const std::string& lod_name, const std::string& folder_name);
 
     void FreeSubIndexAndIO();
 
-    void ClearSubNodes() { _current_folder->files.clear(); }
+    void ClearSubNodes() {
+        if (_current_folder) {
+            _current_folder->files.clear();
+        }
+    }
 
  protected:
     virtual void ResetSubIndices();
 
  protected:
-    FILE *pOutputFileHandle;
+    FILE *_tmp_write_file;
     unsigned int uLODDataSize;
 };
 };  // namespace LOD

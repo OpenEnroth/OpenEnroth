@@ -240,13 +240,37 @@ bool AssetsManager::ReleaseAllSprites() {
 }
 
 
-void* AssetsManager::GetLocalization() {
+char* AssetsManager::GetLocalization(size_t* out_data_size) {
     switch (_asset_source) {
     case Mm6Assets:
-        return get_icons_lod()->LoadCompressed2("global.txt");
+        return (char*)get_icons_lod()->LoadCompressed2("global.txt", out_data_size);
     case Mm7Assets:
-        return get_events_lod()->LoadCompressed2("global.txt");
+        return (char*)get_events_lod()->LoadCompressed2("global.txt", out_data_size);
     case Mm8Assets:
-        return get_english_t_lod()->LoadCompressed2("global.txt");
+        return (char*)get_english_t_lod()->LoadCompressed2("global.txt", out_data_size);
+    }
+}
+
+
+char* AssetsManager::GetLocalizedClassDescriptions(size_t* out_data_size) {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return (char*)get_icons_lod()->LoadCompressed2("Class.txt", out_data_size);
+    case Mm7Assets:
+        return (char*)get_events_lod()->LoadCompressed2("CLASS.TXT", out_data_size);
+    case Mm8Assets:
+        return (char*)get_english_t_lod()->LoadCompressed2("class.txt", out_data_size);
+    }
+}
+
+
+char* AssetsManager::GetLocalizedStatsDescriptions(size_t* out_data_size) {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return (char*)get_icons_lod()->LoadCompressed2("stats.txt", out_data_size);
+    case Mm7Assets:
+        return (char*)get_events_lod()->LoadCompressed2("STATS.TXT", out_data_size);
+    case Mm8Assets:
+        return (char*)get_english_t_lod()->LoadCompressed2("stats.txt", out_data_size);
     }
 }

@@ -4490,7 +4490,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             if (pParty->uCurrentMonth >= 7)
                 v74 = nullptr;
             else
-                v74 = localization->GetAttirubteName(pParty->uCurrentMonth);
+                v74 = localization->GetAttributeName(pParty->uCurrentMonth);
 
             String status;
             switch (pParty->uCurrentMonth) {

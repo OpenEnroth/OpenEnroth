@@ -644,25 +644,6 @@ std::array<char, 100> Journal_limitation_factor;
 int ui_current_text_color;
 int64_t qword_5C6DF0;
 int dword_5C6DF8;
-char *pHealthPointsAttributeDescription;
-char *pSpellPointsAttributeDescription;
-char *pArmourClassAttributeDescription;
-char *pPlayerConditionAttributeDescription;  // idb
-char *pFastSpellAttributeDescription;
-char *pPlayerAgeAttributeDescription;
-char *pPlayerLevelAttributeDescription;
-char *pPlayerExperienceAttributeDescription;
-char *pAttackBonusAttributeDescription;
-char *pAttackDamageAttributeDescription;
-char *pMissleBonusAttributeDescription;
-char *pMissleDamageAttributeDescription;
-char *pFireResistanceAttributeDescription;
-char *pAirResistanceAttributeDescription;
-char *pWaterResistanceAttributeDescription;
-char *pEarthResistanceAttributeDescription;
-char *pMindResistanceAttributeDescription;
-char *pBodyResistanceAttributeDescription;
-char *pSkillPointsAttributeDescription;
 
 struct FactionTable *pFactionTable;
 // std::array<char, 777> byte_5C8D1A;

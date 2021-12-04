@@ -5,7 +5,7 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 
-#define MAX_LOC_STRINGS 677
+#define MAX_LOC_STRINGS 750  // mm8: 750, mm7: 677, mm6: 596
 extern std::vector<char *> Tokenize(char *input, const char separator);
 
 Localization *localization = nullptr;
@@ -38,18 +38,23 @@ bool Localization::Initialize() {
     int temp_str_len;  // ecx@5
     bool string_end;   // [sp+14h] [bp-4h]@4
 
-    this->localization_raw = (char *)assets->GetLocalization();
-    if (!this->localization_raw) {
+    size_t data_size{ 0 };
+    localization_raw = assets->GetLocalization(&data_size);
+    if (!localization_raw) {
         return false;
     }
-
-    this->localization_strings = new const char *[MAX_LOC_STRINGS];
-
-    strtok(this->localization_raw, "\r");
+    strtok(localization_raw, "\r");
     strtok(NULL, "\r");
 
-    for (int i = 0; i < MAX_LOC_STRINGS; ++i) {
-        char *test_string = strtok(NULL, "\r") + 1;
+    int num_strings = 0;
+    localization_strings = new const char *[MAX_LOC_STRINGS];
+    //for (int i = 0; i < MAX_LOC_STRINGS; ++i) {
+    while (true) {
+        char* test_string = strtok(NULL, "\r") + 1;
+        if (test_string >= localization_raw + data_size) {
+            break;
+        }
+
         step = 0;
         string_end = false;
         do {
@@ -69,36 +74,33 @@ bool Localization::Initialize() {
             if (temp_str_len == 0) {
                 string_end = true;
             } else {
-                if (step == 1)
-                    this->localization_strings[i] = RemoveQuotes(test_string);
+                if (step == 1) {
+                    localization_strings[num_strings] = RemoveQuotes(test_string);
+                    num_strings++;
+                }
             }
             ++step;
             test_string = tmp_pos + 1;
         } while (step <= 2 && !string_end);
     }
 
-    InitializeMm6ItemCategories();
-
+    InitializeItemCategories();
     InitializeMonthNames();
     InitializeDayNames();
     InitializeMoonPhaseNames();
-
     InitializeClassNames();
     InitializeAttributeNames();
     InitializeSkillNames();
     InitializeCharacterConditionNames();
-
     InitializeSpellSchoolNames();
     InitializeSpellNames();
-
     InitializeNpcProfessionNames();
 
     return true;
 }
 
 void Localization::InitializeSpellNames() {
-    this->spell_names[0] =
-        this->localization_strings[202];  // Protection from Air
+    this->spell_names[0] = this->localization_strings[202];  // Protection from Air
     this->spell_names[1] = this->localization_strings[204];
     this->spell_names[2] = this->localization_strings[219];
     this->spell_names[3] = this->localization_strings[215];
@@ -118,14 +120,12 @@ void Localization::InitializeSpellNames() {
     this->spell_names[17] = this->localization_strings[194];
     this->spell_names[18] = this->localization_strings[456];
     this->spell_names[19] = this->localization_strings[453];
-    this->spell_names[20] =
-        this->localization_strings[202];  // Protection from Air
+    this->spell_names[20] = this->localization_strings[202];  // Protection from Air
     this->spell_names[21] = this->localization_strings[443];
     this->spell_names[22] = this->localization_strings[204];
     this->spell_names[23] = this->localization_strings[208];
     this->spell_names[24] = this->localization_strings[221];
-    this->spell_names[25] =
-        this->localization_strings[24];  // Protection from Fire
+    this->spell_names[25] = this->localization_strings[24];  // Protection from Fire
     this->spell_names[26] = this->localization_strings[228];
     this->spell_names[27] = this->localization_strings[441];
     this->spell_names[28] = this->localization_strings[440];
@@ -135,14 +135,12 @@ void Localization::InitializeSpellNames() {
     this->spell_names[32] = this->localization_strings[234];
     this->spell_names[33] = this->localization_strings[279];
     this->spell_names[34] = this->localization_strings[442];
-    this->spell_names[35] =
-        this->localization_strings[235];  // Temporary Accuracy
+    this->spell_names[35] = this->localization_strings[235];  // Temporary Accuracy
     this->spell_names[36] = this->localization_strings[246];
     this->spell_names[37] = this->localization_strings[247];
     this->spell_names[38] = this->localization_strings[248];
     this->spell_names[39] = this->localization_strings[674];
-    this->spell_names[40] =
-        this->localization_strings[249];  // Temporary Willpower
+    this->spell_names[40] = this->localization_strings[249];  // Temporary Willpower
     this->spell_names[41] = this->localization_strings[258];
     this->spell_names[42] = this->localization_strings[194];
     this->spell_names[43] = this->localization_strings[657];  // Water Breathing
@@ -151,8 +149,7 @@ void Localization::InitializeSpellNames() {
 void Localization::InitializeNpcProfessionNames() {
     this->npc_profession_names[0] = this->localization_strings[153];  // Nothing
     this->npc_profession_names[1] = this->localization_strings[308];  // smith
-    this->npc_profession_names[2] =
-        this->localization_strings[309];  // armsmaster
+    this->npc_profession_names[2] = this->localization_strings[309];  // armsmaster
     this->npc_profession_names[3] = this->localization_strings[7];  // alchemist
     this->npc_profession_names[4] = this->localization_strings[306];
     this->npc_profession_names[5] = this->localization_strings[310];
@@ -218,25 +215,17 @@ void Localization::InitializeCharacterConditionNames() {
     this->character_conditions[3] = this->localization_strings[4];    // Fear
     this->character_conditions[4] = this->localization_strings[69];   // Drunk
     this->character_conditions[5] = this->localization_strings[117];  // Insane
-    this->character_conditions[6] =
-        this->localization_strings[166];                             // Poisoned
+    this->character_conditions[6] = this->localization_strings[166];                             // Poisoned
     this->character_conditions[7] = this->localization_strings[65];  // Diseased
-    this->character_conditions[8] =
-        this->localization_strings[166];                             // Poisoned
+    this->character_conditions[8] = this->localization_strings[166];                             // Poisoned
     this->character_conditions[9] = this->localization_strings[65];  // Diseased
-    this->character_conditions[10] =
-        this->localization_strings[166];  // Poisoned
-    this->character_conditions[11] =
-        this->localization_strings[65];  // Diseased
-    this->character_conditions[12] =
-        this->localization_strings[162];  // Paralyzed
-    this->character_conditions[13] =
-        this->localization_strings[231];  // Unconcious
+    this->character_conditions[10] = this->localization_strings[166];  // Poisoned
+    this->character_conditions[11] = this->localization_strings[65];  // Diseased
+    this->character_conditions[12] = this->localization_strings[162];  // Paralyzed
+    this->character_conditions[13] = this->localization_strings[231];  // Unconcious
     this->character_conditions[14] = this->localization_strings[58];  // Dead
-    this->character_conditions[15] =
-        this->localization_strings[220];  // Pertified
-    this->character_conditions[16] =
-        this->localization_strings[76];  // Eradicated
+    this->character_conditions[15] = this->localization_strings[220];  // Pertified
+    this->character_conditions[16] = this->localization_strings[76];  // Eradicated
     this->character_conditions[17] = this->localization_strings[601];  // Zombie
     this->character_conditions[18] = this->localization_strings[98];   // Good
 }
@@ -298,10 +287,39 @@ void Localization::InitializeSkillNames() {
 }
 
 void Localization::InitializeClassNames() {
-    this->class_names[0] = this->localization_strings[253];  // Knight
-    this->class_names[1] = this->localization_strings[254];  // Cavalier
-    this->class_names[2] = this->localization_strings[255];  // Champion
-    this->class_names[3] = this->localization_strings[2];    // Black Knight
+    int num_classes = 0;
+
+    size_t data_size = 0;
+    class_desc_raw = assets->GetLocalizedClassDescriptions(&data_size);
+
+    strtok(this->class_desc_raw, "\r");
+    while (true) {
+        char* test_string = strtok(NULL, "\r") + 1;
+        if (test_string >= class_desc_raw + data_size) {
+            break;
+        }
+
+        auto tokens = Tokenize(test_string, '\t');
+        // mm7 and 8 also have a Notes column which contains
+        // the base class name - we dont care
+        Assert(tokens.size() >= 2, "Invalid number of tokens");
+
+        const char* class_name = RemoveQuotes(tokens[0]);
+        if (!stricmp(class_name, "Delete me")) {
+            // mm8 weird class.txt
+            continue;
+        }
+
+        class_names[num_classes] = class_name;
+        class_desciptions[num_classes] = RemoveQuotes(tokens[1]);
+        num_classes++;
+    }
+
+/* leaving here to convert to LSTR_ later
+    this->class_names[0] = this->localization_strings[LSTR_KNIGHT];
+    this->class_names[1] = this->localization_strings[LSTR_CAVALIER];
+    this->class_names[2] = this->localization_strings[LSTR_CHAMPION];
+    this->class_names[3] = this->localization_strings[LSTR_BLACK_KNIGHT];
 
     this->class_names[4] = this->localization_strings[307];  // Thief
     this->class_names[5] = this->localization_strings[114];  // Rogue
@@ -342,36 +360,25 @@ void Localization::InitializeClassNames() {
     this->class_names[33] = this->localization_strings[260];  // Wizard
     this->class_names[34] = this->localization_strings[261];  // Archmage
     this->class_names[35] = this->localization_strings[49];   // Lich
-
-    this->class_desc_raw = (char *)pEvents_LOD->LoadCompressed2("class.txt");
-    strtok(this->class_desc_raw, "\r");
-    for (int i = 0; i < 36; ++i) {
-        char *test_string = strtok(NULL, "\r") + 1;
-        auto tokens = Tokenize(test_string, '\t');
-        Assert(tokens.size() == 3, "Invalid number of tokens");
-        class_desciptions[i] = RemoveQuotes(tokens[1]);
-    }
+*/
 }
 
 //----- (00452B95) --------------------------------------------------------
-void Localization::InitializeMm6ItemCategories() {
-    this->mm6_item_categories[0] = this->localization_strings[568];  // Club
-    this->mm6_item_categories[1] = this->localization_strings[271];  // Staff
-    this->mm6_item_categories[2] = this->localization_strings[272];  // Sword
-    this->mm6_item_categories[3] = this->localization_strings[273];  // Dagger
-    this->mm6_item_categories[4] = this->localization_strings[274];  // Axe
-    this->mm6_item_categories[5] = this->localization_strings[275];  // Spear
-    this->mm6_item_categories[6] = this->localization_strings[276];  // Bow
-    this->mm6_item_categories[7] = this->localization_strings[277];  // Mace
-    this->mm6_item_categories[8] = this->localization_strings[278];  // Blaster
-    this->mm6_item_categories[9] = this->localization_strings[279];  // Shield
-    this->mm6_item_categories[10] =
-        this->localization_strings[280];  // Leather armour
-    this->mm6_item_categories[11] =
-        this->localization_strings[281];  // Chainmail
-    this->mm6_item_categories[12] =
-        this->localization_strings[282];  // Plate armour
-    this->mm6_item_categories[13] = this->localization_strings[143];  // Other
+void Localization::InitializeItemCategories() {
+    item_categories[0] = localization_strings[LSTR_CLUB];
+    item_categories[1] = localization_strings[LSTR_STAFF];
+    item_categories[2] = localization_strings[LSTR_SWORD];
+    item_categories[3] = localization_strings[LSTR_DAGGER];
+    item_categories[4] = localization_strings[LSTR_AXE];
+    item_categories[5] = localization_strings[LSTR_SPEAR];
+    item_categories[6] = localization_strings[LSTR_BOW];
+    item_categories[7] = localization_strings[LSTR_MACE];
+    item_categories[8] = localization_strings[LSTR_BLASTER];
+    item_categories[9] = localization_strings[LSTR_SHIELD];
+    item_categories[10] = localization_strings[LSTR_LEATHER];
+    item_categories[11] = localization_strings[LSTR_CHAIN];
+    item_categories[12] = localization_strings[LSTR_PLATE];
+    item_categories[13] = localization_strings[LSTR_MISC];
 }
 
 //----- (00413FF1) --------------------------------------------------------
@@ -416,21 +423,34 @@ void Localization::InitializeSpellSchoolNames() {
 
 //----- (0041411B) --------------------------------------------------------
 void Localization::InitializeAttributeNames() {
-    this->attribute_names[0] = this->localization_strings[144];  // Might
-    this->attribute_names[1] = this->localization_strings[116];  // Intelligence
-    this->attribute_names[2] = this->localization_strings[163];  // Willpower
-    this->attribute_names[3] = this->localization_strings[75];   // Endurance
-    this->attribute_names[4] = this->localization_strings[1];    // Accuracy
-    this->attribute_names[5] = this->localization_strings[211];  // Speed
-    this->attribute_names[6] = this->localization_strings[136];  // Luck
+    //this->attribute_names[0] = this->localization_strings[LSTR_MIGHT];
+    //this->attribute_names[1] = this->localization_strings[LSTR_INTELLECT];
+    //this->attribute_names[2] = this->localization_strings[LSTR_PERSONALITY];
+    //this->attribute_names[3] = this->localization_strings[LSTR_ENDURANCE];
+    //this->attribute_names[4] = this->localization_strings[LSTR_ACCURACY];
+    //this->attribute_names[5] = this->localization_strings[LSTR_SPEED];
+    //this->attribute_names[6] = this->localization_strings[LSTR_LUCK];
 
-    this->attribute_desc_raw = (char *)pEvents_LOD->LoadCompressed2("stats.txt");
+    int num_attributes = 0;
+
+    size_t data_size{ 0 };
+    attribute_desc_raw = assets->GetLocalizedStatsDescriptions(&data_size);
+
     strtok(this->attribute_desc_raw, "\r");
-    for (int i = 0; i < 26; ++i) {
+    while (true) {
+    //for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
+        if (test_string >= attribute_desc_raw + data_size) {
+            break;
+        }
+
         auto tokens = Tokenize(test_string, '\t');
         Assert(tokens.size() == 2, "Invalid number of tokens");
-        switch (i) {
+
+        attribute_names[num_attributes] = RemoveQuotes(tokens[0]);
+        attribute_descriptions[num_attributes] = RemoveQuotes(tokens[1]);
+        num_attributes++;
+        /*switch (i) {
             case 0:
             case 1:
             case 2:
@@ -497,7 +517,7 @@ void Localization::InitializeAttributeNames() {
             case 25:
                 pSkillPointsAttributeDescription = RemoveQuotes(tokens[1]);
                 break;
-        }
+        }*/
     }
 }
 

@@ -4,6 +4,7 @@
 
 #define LSTR_AC                               0   // "AC"
 #define LSTR_ACCURACY                         1   // "Accuracy"
+#define LSTR_BLACK_KNIGHT                     2   // "Black Knight"
 #define LSTR_AFRAID                           4   // "Afraid"
 #define LSTR_AGE                              5   // "Age"
 #define LSTR_AIR                              6   // "Air"
@@ -171,8 +172,22 @@
 #define LSTR_YEAR                           245  // "Year"
 #define LSTR_ZOOM_IN                        251  // "Zoom In"
 #define LSTR_ZOOM_OUT                       252  // "Zoom Out"
+#define LSTR_KNIGHT                         253  // "Knight"
+#define LSTR_CAVALIER                       254  // "Cavalier"
+#define LSTR_CHAMPION                       255  // "Champion"
 #define LSTR_ARCOMAGE_CARD_DISCARD          266  // "DISCARD A CARD"
+#define LSTR_STAFF                          271  // "Staff"
+#define LSTR_SWORD                          272  // "Sword"
+#define LSTR_DAGGER                         273  // "Dagger"
+#define LSTR_AXE                            274  // "Axe"
+#define LSTR_SPEAR                          275  // "Spear"
+#define LSTR_BOW                            276  // "Bow"
+#define LSTR_MACE                           277  // "Mace"
+#define LSTR_BLASTER                        278  // "Blaster"
 #define LSTR_SHIELD                         279  // "Shield"
+#define LSTR_LEATHER                        280  // "Leather"
+#define LSTR_CHAIN                          281  // "Chain"
+#define LSTR_PLATE                          282  // "Plate"
 #define LSTR_OFFICIAL                       304  // "Official"
 #define LSTR_FMT_S_STOLE_D_GOLD             320  // "%s stole %d gold!"
 #define LSTR_SET_BEACON                     375  // "Set Beacon"
@@ -310,6 +325,7 @@
 #define LSTR_INVENTORY_IS_FULL              563  // "Pack is Full!"
 #define LSTR_DUSK                           566  // "Dusk"
 #define LSTR_NIGHT                          567  // "Night"
+#define LSTR_CLUB                           568  // "Club"
 #define LSTR_DONE                           569  // "Done!"
 #define LSTR_GOOD_AS_NEW                    570  // "Good as New!"
 #define LSTR_SCROLL_LEFT                    572  // "Scroll Left"
@@ -449,12 +465,12 @@ class Localization {
         return this->class_desciptions[index];
     }
 
-    const char *GetAttirubteName(unsigned int index) const {
+    const char *GetAttributeName(unsigned int index) const {
         return this->attribute_names[index];
     }
 
-    const char *GetAttributeDescription(unsigned int index) const {
-        return this->attribute_descriptions[index];
+    std::string GetAttributeDescription(unsigned int index) const {
+        return attribute_descriptions[index];
     }
 
     const char *GetSkillName(unsigned int index) const {
@@ -503,20 +519,16 @@ class Localization {
           skill_desc_raw(nullptr) {}
 
  private:
-    void InitializeMm6ItemCategories();
-
+    void InitializeItemCategories();
     void InitializeMonthNames();
     void InitializeDayNames();
     void InitializeMoonPhaseNames();
-
     void InitializeSpellSchoolNames();
     void InitializeSpellNames();
-
     void InitializeClassNames();
     void InitializeAttributeNames();
     void InitializeSkillNames();
     void InitializeCharacterConditionNames();
-
     void InitializeNpcProfessionNames();
 
  private:
@@ -526,7 +538,7 @@ class Localization {
     char *attribute_desc_raw;
     char *skill_desc_raw;
 
-    const char* mm6_item_categories[14]{};
+    const char* item_categories[14]{};
     const char* month_names[12]{};
     const char* day_names[7]{};
     const char* moon_phase_names[5]{};
@@ -534,8 +546,8 @@ class Localization {
     const char* spell_names[44]{};
     const char* class_names[36]{};
     const char* class_desciptions[36]{};
-    const char* attribute_names[7]{};
-    const char* attribute_descriptions[7]{};
+    const char* attribute_names[26]{};
+    const char* attribute_descriptions[26]{};
     const char* skill_names[38]{};
     const char* skill_descriptions[38]{};
     const char* skill_descriptions_normal[38]{};

@@ -624,9 +624,10 @@ void SaveNewGame() {
     header.LODSize = 100;
     header.dword_0000A8 = 0;
 
-    pNew_LOD->CreateEmptyLod(&header, "current", file_path);
+
+    pNew_LOD->CreateEmptyLod(&header, file_path, "current");
     if (pNew_LOD->LoadFile(file_path, false)) {
-        pNew_LOD->CreateTempFile();
+        pNew_LOD->OpenTmpWriteFile();
         pNew_LOD->ClearSubNodes();
 
         for (size_t i = pGames_LOD->GetSubNodesCount() / 2; i < pGames_LOD->GetSubNodesCount(); ++i) {  // копирование файлов с 76 по 151

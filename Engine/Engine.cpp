@@ -918,13 +918,13 @@ bool Engine::VersionSpecificInitialization() {
     OnTimer(1);
     GameUI_StatusBar_Update(true);
 
-    //MM7_LoadLods();
+    MM7_LoadLods();
 
     localization = new Localization();
     localization->Initialize();
 
-    /*{
-        void *sft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dsft.bin") : nullptr,
+    {
+        void *sft_mm6 = nullptr,
              *sft_mm8 = nullptr;
         void *sft_mm7 = pEvents_LOD->LoadCompressed2("dsft.bin");
         pSpriteFrameTable = new SpriteFrameTable;
@@ -933,7 +933,7 @@ bool Engine::VersionSpecificInitialization() {
         free(sft_mm7);
         free(sft_mm8);
 
-        void *tft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dtft.bin") : nullptr,
+        void *tft_mm6 = nullptr,
              *tft_mm8 = nullptr;
         void *tft_mm7 = pEvents_LOD->LoadCompressed2("dtft.bin");
         pTextureFrameTable = new TextureFrameTable;
@@ -942,8 +942,7 @@ bool Engine::VersionSpecificInitialization() {
         free(tft_mm7);
         free(tft_mm8);
 
-        void *tiles_mm6 = pIcons_LOD_mm6
-                              ? pIcons_LOD_mm6->LoadCompressed2("dtile.bin") : nullptr,
+        void *tiles_mm6 = nullptr,
              *tiles_mm8 = nullptr;
         void *tiles_mm7 = pEvents_LOD->LoadCompressed2("dtile.bin");
         pTileTable = new TileTable;
@@ -952,7 +951,7 @@ bool Engine::VersionSpecificInitialization() {
         free(tiles_mm7);
         free(tiles_mm8);
 
-        void *pft_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dpft.bin") : nullptr,
+        void *pft_mm6 = nullptr,
              *pft_mm8 = nullptr;
         void *pft_mm7 = pEvents_LOD->LoadCompressed2("dpft.bin");
         pPlayerFrameTable = new PlayerFrameTable;
@@ -961,7 +960,7 @@ bool Engine::VersionSpecificInitialization() {
         free(pft_mm7);
         free(pft_mm8);
 
-        void *ift_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dift.bin") : nullptr,
+        void *ift_mm6 = nullptr,
              *ift_mm8 = nullptr;
         void *ift_mm7 = pEvents_LOD->LoadCompressed2("dift.bin");
         pIconsFrameTable = new IconFrameTable;
@@ -970,7 +969,7 @@ bool Engine::VersionSpecificInitialization() {
         free(ift_mm7);
         free(ift_mm8);
 
-        void *decs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("ddeclist.bin") : nullptr,
+        void *decs_mm6 = nullptr,
              *decs_mm8 = nullptr;
         void *decs_mm7 = pEvents_LOD->LoadCompressed2("ddeclist.bin");
         pDecorationList = new DecorationList;
@@ -979,7 +978,7 @@ bool Engine::VersionSpecificInitialization() {
         free(decs_mm7);
         free(decs_mm8);
 
-        void *objs_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dobjlist.bin") : nullptr,
+        void *objs_mm6 = nullptr,
              *objs_mm8 = nullptr;
         void *objs_mm7 = pEvents_LOD->LoadCompressed2("dobjlist.bin");
         pObjectList = new ObjectList;
@@ -988,7 +987,7 @@ bool Engine::VersionSpecificInitialization() {
         free(objs_mm7);
         free(objs_mm8);
 
-        void *mons_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dmonlist.bin") : nullptr,
+        void *mons_mm6 = nullptr,
              *mons_mm8 = nullptr;
         void *mons_mm7 = pEvents_LOD->LoadCompressed2("dmonlist.bin");
         pMonsterList = new MonsterList;
@@ -997,7 +996,7 @@ bool Engine::VersionSpecificInitialization() {
         free(mons_mm7);
         free(mons_mm8);
 
-        void *chests_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dchest.bin") : nullptr,
+        void *chests_mm6 = nullptr,
              *chests_mm8 = nullptr;
         void *chests_mm7 = pEvents_LOD->LoadCompressed2("dchest.bin");
         pChestList = new ChestList;
@@ -1006,7 +1005,7 @@ bool Engine::VersionSpecificInitialization() {
         free(chests_mm7);
         free(chests_mm8);
 
-        void *overlays_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("doverlay.bin") : nullptr,
+        void *overlays_mm6 = nullptr,
              *overlays_mm8 = nullptr;
         void *overlays_mm7 = pEvents_LOD->LoadCompressed2("doverlay.bin");
         pOverlayList = new OverlayList;
@@ -1015,7 +1014,7 @@ bool Engine::VersionSpecificInitialization() {
         free(overlays_mm7);
         free(overlays_mm8);
 
-        void *sounds_mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressed2("dsounds.bin") : nullptr,
+        void *sounds_mm6 = nullptr,
              *sounds_mm8 = nullptr;
         void *sounds_mm7 = pEvents_LOD->LoadCompressed2("dsounds.bin");
         pSoundList = new SoundList;
@@ -1029,7 +1028,7 @@ bool Engine::VersionSpecificInitialization() {
         pAudioPlayer->Initialize();
 
     pMediaPlayer = new MPlayer();
-    pMediaPlayer->Initialize();*/
+    pMediaPlayer->Initialize();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 

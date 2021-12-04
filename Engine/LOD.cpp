@@ -24,6 +24,23 @@ LOD::Container* pGames_LOD = nullptr;
 int _6A0CA4_lod_binary_search;
 
 
+static inline LOD_VERSION _get_version(const LOD::FileHeader& header) {
+    static std::map<std::string, LOD_VERSION> version_map = {
+        {"MMVI", LOD_VERSION_MM6},
+        {"GameMMVI", LOD_VERSION_GAME_MM6},
+        {"MMVII", LOD_VERSION_MM7},
+        {"MMVIII", LOD_VERSION_MM8},
+    };
+
+    const char* version = header.LodVersion;
+    auto it = version_map.find(version);
+    if (it != version_map.end()) {
+        return it->second;
+    }
+    Error("Unknown LOD version: %s", version);
+}
+
+
 static int _get_file_header_length(LOD_VERSION lod_version) {
     switch (lod_version) {
     case LOD_VERSION_MM6: return sizeof(File_Image_Mm6);
@@ -35,7 +52,9 @@ static int _get_file_header_length(LOD_VERSION lod_version) {
 
 static int _get_directory_write_size(LOD_VERSION lod_version) {
     switch (lod_version) {
-    case LOD_VERSION_MM6: return sizeof(Directory_Image_Mm6);
+    case LOD_VERSION_MM6:
+    case LOD_VERSION_GAME_MM6:
+    case LOD_VERSION_MM7:
     case LOD_VERSION_MM8: return sizeof(Directory_Image_Mm6);
     default: Error("Unsupported LOD write format: %d", lod_version);
     }
@@ -53,7 +72,8 @@ static std::vector<LOD::File> _read_directory_files(
     fseek(f, dir.files_start, SEEK_SET);
     for (int i = 0; i < num_files; ++i) {
         switch (lod_version) {
-        case LOD_VERSION_MM6: {
+        case LOD_VERSION_MM6: 
+        case LOD_VERSION_GAME_MM6: {
             File_Image_Mm6 mm6;
             Assert(1 == fread(&mm6, sizeof(mm6), 1, f));
 
@@ -325,9 +345,8 @@ void _load_palette(
 
 void* _load_compressed_item(LOD_VERSION lod_version, FILE *f, size_t* out_file_size) {
     LodTextureHeader header = _load_header(lod_version, f);
-    int compressed_size = header.uTextureSize;
+    unsigned int compressed_size = header.uTextureSize;
     unsigned int decompressed_size = header.uDecompressedSize;
-
 
     void* result = nullptr;
     if (decompressed_size) {
@@ -337,8 +356,7 @@ void* _load_compressed_item(LOD_VERSION lod_version, FILE *f, size_t* out_file_s
         zlib::Uncompress(result, &decompressed_size, tmp_buf, compressed_size);
         compressed_size = decompressed_size;
         free(tmp_buf);
-    }
-    else {
+    } else {
         decompressed_size = compressed_size;
         result = malloc(decompressed_size);
         fread(result, 1, decompressed_size, f);
@@ -577,10 +595,10 @@ void LOD::Container::Close() {
 
 int LOD::WriteableFile::CreateEmptyLod(
     LOD::FileHeader* pHeader,
-    const std::string& root_name,
-    const std::string& lod_name
+    const std::string& lod_name,
+    const std::string& folder_name
 ) {
-    if (root_name.empty()) {
+    if (folder_name.empty()) {
         return 2;
     }
 
@@ -600,12 +618,12 @@ int LOD::WriteableFile::CreateEmptyLod(
     pHeader->num_directories = 1;
 
     LOD::Directory dir;
-    dir.name = root_name;
+    dir.name = folder_name;
     dir.files_start = sizeof(LOD::FileHeader)
-        + 1 * _get_directory_write_size(GetVersion());
+        + 1 * _get_directory_write_size(_get_version(*pHeader));
 
     fwrite(pHeader, sizeof(LOD::FileHeader), 1, _file);
-    _write_directory(_file, GetVersion(), dir);
+    _write_directory(_file, _get_version(*pHeader), dir);
 
     fclose(_file);
     _file = nullptr;
@@ -795,19 +813,19 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     //Lindx.priority = 0;                                   // 1Eh 30
     //_write_directories(tmp_file, GetVersion(), 1, &Lindx);
     //_write_directories(tmp_file, GetVersion(), _current_folder_num_items, _current_folder_items);
-    fseek(pOutputFileHandle, 0, 0);
+    fseek(_tmp_write_file, 0, 0);
     while (total_size > 0) {
         int write_size = uIOBufferSize;
         if (total_size <= uIOBufferSize) {
             write_size = total_size;
         }
-        fread(pIOBuffer, 1, write_size, pOutputFileHandle);
+        fread(pIOBuffer, 1, write_size, _tmp_write_file);
         fwrite(pIOBuffer, 1, write_size, tmp_file);
         total_size -= write_size;
     }
 
     fclose(tmp_file);
-    fclose(pOutputFileHandle);
+    fclose(_tmp_write_file);
     CloseWriteFile();
     remove("lodapp.tmp");
     remove(pLODName.c_str());
@@ -830,18 +848,18 @@ bool LOD::WriteableFile::AppendFileToCurrentDirectory(
 
     _current_folder->files.push_back(file);
 
-    fwrite(file_bytes, 1, file.size, pOutputFileHandle);
+    fwrite(file_bytes, 1, file.size, _tmp_write_file);
     return true;
 }
 
-int LOD::WriteableFile::CreateTempFile() {
+int LOD::WriteableFile::OpenTmpWriteFile() {
     if (!_file) {
         return 1;
     }
 
     _current_folder = nullptr;
-    pOutputFileHandle = fcaseopen("lodapp.tmp", "wb+");
-    return pOutputFileHandle ? 1 : 7;
+    _tmp_write_file = fcaseopen("lodapp.tmp", "wb+");
+    return _tmp_write_file ? 1 : 7;
 }
 
 void LOD::WriteableFile::CloseWriteFile() {
@@ -912,7 +930,7 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
     // start offset to write file data
     size_t file_data_write_ptr = sizeof(LOD::FileHeader)
         + sizeof(Directory_Image_Mm6)
-        + num_new_files * _get_file_header_length(GetVersion());
+        + num_new_files * _get_file_header_length(_get_version(_header));
 
     fwrite(&_header, sizeof(LOD::FileHeader), 1, tmp_file);
 
@@ -920,7 +938,7 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
     chapter.name = "chapter";
     chapter.files_start = file_header_write_ptr;
     chapter.files = _current_folder->files;
-    _write_directory_header(tmp_file, GetVersion(), chapter);
+    _write_directory_header(tmp_file, _get_version(_header), chapter);
 
     // copy all files along with a new one
     for (int i = 0; i < num_old_files; ++i) {
@@ -932,10 +950,11 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
             file.offset = file_data_write_ptr;
 
             _write_file(
-                tmp_file, GetVersion(), file, file_header_write_ptr, file_bytes
+                tmp_file, _get_version(_header), file,
+                file_header_write_ptr, file_bytes
             );
 
-            file_header_write_ptr += _get_file_header_length(GetVersion());
+            file_header_write_ptr += _get_file_header_length(_get_version(_header));
             file_data_write_ptr += file_size;
         }
 
@@ -949,10 +968,11 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
         file.offset = file_data_write_ptr;
 
         _write_file(
-            tmp_file, GetVersion(), file, file_header_write_ptr, file_bytes
+            tmp_file, _get_version(_header), file, file_header_write_ptr,
+            file_bytes
         );
 
-        file_header_write_ptr += _get_file_header_length(GetVersion());
+        file_header_write_ptr += _get_file_header_length(_get_version(_header));
         file_data_write_ptr += file_size;
     }
 
@@ -970,7 +990,7 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
 
 LOD::WriteableFile::WriteableFile() {
     uLODDataSize = 0;
-    pOutputFileHandle = nullptr;
+    _tmp_write_file = nullptr;
 }
 
 bool LOD::WriteableFile::LoadFile(const std::string& filename, bool writing) {
@@ -983,7 +1003,7 @@ bool LOD::WriteableFile::LoadFile(const std::string& filename, bool writing) {
     fread(&_header, sizeof(LOD::FileHeader), 1, _file);
 
     auto chapter = std::make_shared<LOD::Directory>();
-    *chapter = _read_directory(_file, GetVersion());
+    *chapter = _read_directory(_file, _get_version(_header));
 
     uLODDataSize = chapter->size_in_bytes();
 
@@ -1044,7 +1064,9 @@ bool LOD::Container::LoadHeader() {
     if (fread(&_header, sizeof(LOD::FileHeader), 1, _file) != 1) {
         return false;
     }
-    _index = _read_directories(_file, GetVersion(), _header.num_directories);
+    _index = _read_directories(
+        _file, _get_version(_header), _header.num_directories
+    );
 
     fseek(_file, 0, SEEK_SET);
 
@@ -1125,7 +1147,7 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
             if (this->pTextures[i].pPalette24) {
                 FILE* File = FindFile(this->pTextures[i].header.name.c_str());
                 if (File) {
-                    _load_palette(GetVersion(), pTextures[i], File);
+                    _load_palette(_get_version(_header), pTextures[i], File);
                 }
             }
         }
@@ -1168,7 +1190,7 @@ void *LOD::Container::LoadCompressed2(const std::string& flename, size_t* out_fi
         Error("Unable to load %s", flename.c_str());
     }
 
-    return _load_compressed_item(GetVersion(), File, out_file_size);
+    return _load_compressed_item(_get_version(_header), File, out_file_size);
 }
 
 #pragma pack(push, 1)
@@ -1296,7 +1318,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(
     }
 
     size_t data_ptr = ftell(pFile);
-    pOutTex->header = _load_header(GetVersion(), pFile);
+    pOutTex->header = _load_header(_get_version(_header), pFile);
     pOutTex->header.name = pContainer;
     data_size -= ftell(pFile) - data_ptr;
 
