@@ -59,7 +59,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     uNumDialogueNPCPortraits = 1;
 
     filename = StringPrintf("npc%03u", pNPCInfo->uPortraitID);
-    pDialogueNPCPortraits[0] = assets->GetImage_ColorKey(filename, 0x7FF);
+    pDialogueNPCPortraits[0] = assets->GetImage_ColorKey(filename, render->teal_mask_16);
 
     int pNumberContacts = 0;
     int v9 = 0;
@@ -662,7 +662,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
             if (sDialogue_SpeakingActorNPC_ID >= 0)
                 pDialogue_SpeakingActor->uAIState = Removed;
             if (uActiveCharacter)
-                pPlayers[uActiveCharacter]->PlaySound(SPEECH_61, 0);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_HireNPC, 0);
         }
     } else if (option >= DIALOGUE_ARENA_SELECT_PAGE && option <= DIALOGUE_ARENA_SELECT_CHAMPION) {
         ArenaFight();

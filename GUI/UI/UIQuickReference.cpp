@@ -30,7 +30,7 @@ GUIWindow_QuickReference::GUIWindow_QuickReference()
 
     if (!ui_game_quickref_background)
         ui_game_quickref_background =
-            assets->GetImage_ColorKey("quikref", 0x7FF);
+            assets->GetImage_ColorKey("quikref", render->teal_mask_16);
 
     pBtn_ExitCancel = CreateButton(
         0x187u, 0x13Cu, 0x4Bu, 0x21u, 1, 0, UIMSG_Escape, 0, GameKey::None,

@@ -1267,7 +1267,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
         vd3d[0].texcoord.y = 0.0;
 
         vd3d[1].pos.x = (double)(signed int)pViewport->uViewportTL_X;
-        vd3d[1].pos.y = (double)(pViewport->uViewportBR_Y + 1);
+        vd3d[1].pos.y = (double)(pViewport->uViewportBR_Y);
         vd3d[1].pos.z = 0.0;
         vd3d[1].diffuse = 0x7F7F7Fu;
         vd3d[1].specular = 0;
@@ -1276,7 +1276,7 @@ void SpellFxRenderer::RenderSpecialEffects() {
         vd3d[1].texcoord.y = 1.0;
 
         vd3d[2].pos.x = (double)(signed int)pViewport->uViewportBR_X;
-        vd3d[2].pos.y = (double)(pViewport->uViewportBR_Y + 1);
+        vd3d[2].pos.y = (double)(pViewport->uViewportBR_Y);
         vd3d[2].pos.z = 0.0;
         vd3d[2].diffuse = 0x7F7F7Fu;
         vd3d[2].specular = 0;

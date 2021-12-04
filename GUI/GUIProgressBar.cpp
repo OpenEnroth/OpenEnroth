@@ -56,13 +56,13 @@ bool GUIProgressBar::Initialize(Type type) {
     } else {
         switch (pParty->alignment) {
             case PartyAlignment::PartyAlignment_Good:
-                progressbar_dungeon = assets->GetImage_ColorKey("bardata-b", 0x7FF);
+                progressbar_dungeon = assets->GetImage_ColorKey("bardata-b", render->teal_mask_16);
                 break;
             case PartyAlignment::PartyAlignment_Neutral:
-                progressbar_dungeon = assets->GetImage_ColorKey("bardata", 0x7FF);
+                progressbar_dungeon = assets->GetImage_ColorKey("bardata", render->teal_mask_16);
                 break;
             case PartyAlignment::PartyAlignment_Evil:
-                progressbar_dungeon = assets->GetImage_ColorKey("bardata-c", 0x7FF);
+                progressbar_dungeon = assets->GetImage_ColorKey("bardata-c", render->teal_mask_16);
                 break;
             default:
                 Error("Invalid alignment type: %u", pParty->alignment);

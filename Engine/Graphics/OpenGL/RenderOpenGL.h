@@ -52,7 +52,7 @@ class RenderOpenGL : public RenderBase {
     virtual bool SwitchToWindow();
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
                               signed int uW, unsigned __int16 uColor);
-    virtual void ClearZBuffer(int a2, int a3);
+    virtual void ClearZBuffer();
     virtual void RestoreFrontBuffer();
     virtual void RestoreBackBuffer();
     virtual void BltBackToFontFast(int a2, int a3, Rect *pSrcRect);
@@ -110,7 +110,7 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait_Sprite, int Y_Offset);
 
 
-    virtual void InvalidateGameViewport();
+    virtual void MaskGameViewport();
 
     virtual void DrawMasked(float u, float v, class Image *img,
                             unsigned int color_dimming_level,

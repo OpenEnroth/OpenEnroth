@@ -59,7 +59,7 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(
 }
 
 void GUIWindow_Inventory_CastSpell::Update() {
-    render->ClearZBuffer(0, 479);
+    render->ClearZBuffer();
     draw_leather();
     CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
     CharacterUI_DrawPaperdoll(pPlayers[uActiveCharacter]);

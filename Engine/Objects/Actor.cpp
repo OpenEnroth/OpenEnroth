@@ -3450,7 +3450,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         uDamageAmount = player->CalculateMeleeDamageTo(
             false, false, pMonster->pMonsterInfo.uID);
         if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
-            player->PlaySound(SPEECH_52, 0);
+            player->PlaySound(SPEECH_AttackMiss, 0);
             return;
         }
     } else {
@@ -3478,7 +3478,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 attackElement = DMGT_PHISYCAL;
                 uDamageAmount = player->CalculateMeleeDamageTo(true, true, 0);
                 if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
-                    player->PlaySound(SPEECH_52, 0);
+                    player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
                 break;
@@ -3489,7 +3489,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = true;
                 if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
-                    player->PlaySound(SPEECH_52, 0);
+                    player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
                 break;
@@ -3504,7 +3504,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     uDamageAmount >>= 1;
                 IsAdditionalDamagePossible = false;
                 if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
-                    player->PlaySound(SPEECH_52, 0);
+                    player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
                 break;
@@ -3513,7 +3513,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 attackElement = DMGT_PHISYCAL;
                 hit_will_stun = 1;
                 if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
-                    player->PlaySound(SPEECH_52, 0);
+                    player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
                 break;
@@ -3529,7 +3529,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                         3) {  // of carnage
                     attackElement = DMGT_FIRE;
                 } else if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
-                    player->PlaySound(SPEECH_52, 0);
+                    player->PlaySound(SPEECH_AttackMiss, 0);
                     return;
                 }
                 break;
@@ -3590,7 +3590,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     }
     pMonster->sCurrentHP -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
-        player->PlaySound(SPEECH_52, 0);
+        player->PlaySound(SPEECH_AttackMiss, 0);
         return;
     }
     if (pMonster->sCurrentHP > 0) {
@@ -3630,7 +3630,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (pMonster->pMonsterInfo.uExp)
             pParty->GivePartyExp(
                 pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].uExp);
-        v40 = SPEECH_51;
+        v40 = SPEECH_AttackHit;
         if (rand() % 100 < 20)
             v40 = ((signed int)pMonster->pMonsterInfo.uHP >= 100) + 1;
         player->PlaySound((PlayerSpeech)v40, 0);

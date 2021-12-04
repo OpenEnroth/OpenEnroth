@@ -59,7 +59,7 @@ void Mouse::SetCursorImage(const String &name) {
         window->SetCursor(1);
         this->cursor_img = nullptr;
     } else {  // cursor is item or another bitmap
-        this->cursor_img = assets->GetImage_ColorKey(name, 0/*0x7FF*/);
+        this->cursor_img = assets->GetImage_ColorKey(name, 0/*render->teal_mask_16*/);
         this->AllocCursorSystemMem();
         this->field_C = 0;
         this->bRedraw = true;

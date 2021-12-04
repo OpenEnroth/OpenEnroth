@@ -1053,7 +1053,7 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
         return;
     }
 
-    auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), 0x7FF);
+    auto texture = assets->GetImage_ColorKey(pParty->pPickedItem.GetIconName(), render->teal_mask_16);
 
     // check if active player has room in inventory
     int InventIndex = ::pPlayers[uActiveCharacter]->AddItem(-1, pParty->pPickedItem.uItemID);
@@ -1115,7 +1115,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
 
     v5 = pItemsTable->pItems[v2].pIconName;
     if (v5) {
-        auto texture = assets->GetImage_ColorKey(v5, 0x7FF);
+        auto texture = assets->GetImage_ColorKey(v5, render->teal_mask_16);
         v8 = 0;
         uint current_player = uActiveCharacter;
         for (int i = 0; i < 4; i++) {
@@ -1127,7 +1127,7 @@ bool Party::AddItemToParty(ItemGen *pItem) {
                 memcpy(&v9->pInventoryItemList[v10 - 1], pItem, 0x24u);
                 pItem->Reset();
                 pAudioPlayer->PlaySound(SOUND_gold01, 0, 0, -1, 0, 0);
-                v9->PlaySound(SPEECH_60, 0);
+                v9->PlaySound(SPEECH_FoundItem, 0);
 
                 if (texture) {
                     texture->Release();

@@ -1658,14 +1658,14 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                             pParty->pPlayers[i]
                                 .conditions_times[Condition_Sleep]
                                 .Reset();
-                            pParty->pPlayers[i].PlaySound(SPEECH_103, 0);
+                            pParty->pPlayers[i].PlaySound(SPEECH_Awaken, 0);
                         }
                     } else {
                         if (pParty->pPlayers[i]
                                 .DiscardConditionIfLastsLongerThan(
                                     Condition_Sleep,
                                     GameTime(pParty->GetPlayingTime() - GameTime::FromSeconds(amount))))
-                            pParty->pPlayers[i].PlaySound(SPEECH_103, 0);
+                            pParty->pPlayers[i].PlaySound(SPEECH_Awaken, 0);
                     }
                 }
                 spell_sound_flag = true;
@@ -1992,7 +1992,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
-                    pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_43, 0);
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_SpellFailed, 0);
                 }
                 break;
             }
@@ -2488,7 +2488,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                              .conditions_times[Condition_Weak]
                              .Valid())
                         pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(
-                            SPEECH_25, 0);
+                            SPEECH_Weak, 0);
                     if (skill_level == 4) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2]
                             .conditions_times[Condition_Eradicated]
@@ -2903,7 +2903,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                              .conditions_times[Condition_Weak]
                              .Valid())
                         pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(
-                            SPEECH_25, 0);
+                            SPEECH_Weak, 0);
                     if (skill_level == 4)
                         pParty->pPlayers[pCastSpell->uPlayerID_2]
                             .conditions_times[Condition_Insane]
@@ -4053,7 +4053,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pPlayer->SetRecoveryTime((int64_t)(flt_6BE3A4_debug_recmod1 *
                     (double)sRecoveryTime * 2.133333333333333));
             }
-            pPlayer->PlaySound(SPEECH_49, 0);
+            pPlayer->PlaySound(SPEECH_CastSpell, 0);
         }
         if (spell_sound_flag) {
             pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, 0);

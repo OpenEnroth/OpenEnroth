@@ -393,7 +393,7 @@ void Menu::EventLoop() {
                     pModalWindow = nullptr;
                     continue;
                 }
-                render->ClearZBuffer(0, 479);
+                render->ClearZBuffer();
                 viewparams->bRedrawGameUI = true;
                 viewparams->field_48 = 1;
 

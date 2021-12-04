@@ -55,6 +55,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
+#include "Arcomage/Arcomage.h"
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
@@ -416,7 +417,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
     }
 }
 
-void RenderOpenGL::InvalidateGameViewport() {
+void RenderOpenGL::MaskGameViewport() {
     // do not want in opengl mode
 }
 
@@ -1636,7 +1637,7 @@ unsigned int RenderOpenGL::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int RenderOpenGL::GetRenderHeight() const { return window->GetHeight(); }
 
 void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
-    ClearZBuffer(0, 479);  // dummy params
+    ClearZBuffer();
     ClearTarget(0);
 }
 
@@ -1644,14 +1645,17 @@ void RenderOpenGL::ClearTarget(unsigned int uColor) {
     memset32(render_target_rgb, Color32(uColor), (window->GetWidth() * window->GetHeight()));
 }
 
-void RenderOpenGL::ClearZBuffer(int, int) {
-    // parameter alwyas 0 + 479 but never used
-    memset32(this->pActiveZBuffer, -65536, 0x4B000);
-}
+
 
 void RenderOpenGL::CreateZBuffer() {
-    pActiveZBuffer = (int *)malloc(window->GetWidth() * window->GetHeight() * sizeof(int));  // 640 * 480 * 4
-    memset32(pActiveZBuffer, 0xFFFF0000, 0x4B000u);      // inlined Render::ClearActiveZBuffer  (mm8::004A085B)
+    if (!pActiveZBuffer) {
+        pActiveZBuffer = (int*)malloc(window->GetWidth() * window->GetHeight() * sizeof(int));
+        ClearZBuffer();
+    }
+}
+
+void RenderOpenGL::ClearZBuffer() {
+    memset32(this->pActiveZBuffer, 0xFFFF0000, window->GetWidth() * window->GetHeight());
 }
 
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
@@ -1956,9 +1960,87 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
 
 
 
-void RenderOpenGL::BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
-                                 int start_opacity, int end_opacity) {
-    __debugbreak();
+void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, int time, int start_opacity,
+    int end_opacity) {
+    // thrown together as a crude estimate of the enchaintg
+                          // effects
+
+      // leaves gap where it shouldnt on dark pixels currently
+      // doesnt use opacity params
+
+    const uint32_t* pixelpoint;
+    const uint32_t* pixelpointblend;
+
+    if (imgin && imgblend) {  // 2 images to blend
+        pixelpoint = (const uint32_t*)imgin->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        pixelpointblend =
+            (const uint32_t*)imgblend->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+        int Width = imgin->GetWidth();
+        int Height = imgin->GetHeight();
+        // Image* temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
+        // uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+        uint32_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
+        unsigned int bmax = (c & 0xFF);
+        unsigned int gmax = ((c >> 8) & 0xFF);
+        unsigned int rmax = ((c >> 16) & 0xFF);
+
+        unsigned int bmin = bmax / 10;
+        unsigned int gmin = gmax / 10;
+        unsigned int rmin = rmax / 10;
+
+        unsigned int bstep = (bmax - bmin) / 128;
+        unsigned int gstep = (gmax - gmin) / 128;
+        unsigned int rstep = (rmax - rmin) / 128;
+
+        for (int ydraw = 0; ydraw < Height; ++ydraw) {
+            for (int xdraw = 0; xdraw < Width; ++xdraw) {
+                // should go blue -> black -> blue reverse
+                // patchy -> solid -> patchy
+
+                if (*pixelpoint) {  // check orig item not got blakc pixel
+                    uint32_t nudge =
+                        (xdraw % imgblend->GetWidth()) +
+                        (ydraw % imgblend->GetHeight()) * imgblend->GetWidth();
+                    uint32_t pixcol = *(pixelpointblend + nudge);
+
+                    unsigned int bcur = (pixcol & 0xFF);
+                    unsigned int gcur = ((pixcol >> 8) & 0xFF);
+                    unsigned int rcur = ((pixcol >> 16) & 0xFF);
+
+                    int steps = (time) % 128;
+
+                    if ((time) % 256 >= 128) {  // step down
+                        bcur += bstep * (128 - steps);
+                        gcur += gstep * (128 - steps);
+                        rcur += rstep * (128 - steps);
+                    } else {  // step up
+                        bcur += bstep * steps;
+                        gcur += gstep * steps;
+                        rcur += rstep * steps;
+                    }
+
+                    if (bcur > bmax) bcur = bmax;  // limit check
+                    if (gcur > gmax) gcur = gmax;
+                    if (rcur > rmax) rcur = rmax;
+                    if (bcur < bmin) bcur = bmin;
+                    if (gcur < gmin) gcur = gmin;
+                    if (rcur < rmin) rcur = rmin;
+
+                    // temppix[xdraw + ydraw * Width] = Color32(rcur, gcur, bcur);
+                    render_target_rgb[x + xdraw + (render->GetRenderWidth() * (y + ydraw))] = Color32(rcur, gcur, bcur);
+                }
+
+                pixelpoint++;
+            }
+
+            pixelpoint += imgin->GetWidth() - Width;
+        }
+        // draw image
+        // render->DrawTextureAlphaNew(x / float(window->GetWidth()), y / float(window->GetHeight()), temp);
+        // temp->Release();
+    }
 }
 
 
@@ -2080,6 +2162,12 @@ void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices,
     __debugbreak();
 }
 
+inline uint32_t PixelDim(uint32_t pix, int dimming) {
+    return Color32((((pix >> 16) & 0xFF) >> dimming),
+        (((pix >> 8) & 0xFF) >> dimming),
+        ((pix & 0xFF) >> dimming));
+}
+
 void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level,
                               unsigned __int16 mask) {
     if (!pTexture) {
@@ -2094,13 +2182,11 @@ void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int co
 
     for (unsigned int dy = 0; dy < pTexture->GetHeight(); ++dy) {
         for (unsigned int dx = 0; dx < width; ++dx) {
-            if (*pixels & 0xFF000000)
-                /*temppix[dx + dy * width] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
-                (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
-                &  Color32(mask);*/
-                render_target_rgb[x+dx + window->GetWidth()*(y+dy)] = Color32((((*pixels >> 16) & 0xFF) >> color_dimming_level),
-                (((*pixels >> 8) & 0xFF) >> color_dimming_level), ((*pixels & 0xFF) >> color_dimming_level))
-                &  Color32(mask);
+            if (*pixels & 0xFF000000) {
+                if ((x + dx) < window->GetWidth() && (y + dy) < window->GetHeight()) {
+                    render_target_rgb[x + dx + window->GetWidth() * (y + dy)] = PixelDim(*pixels, color_dimming_level) & Color32(mask);
+                }
+            }
             ++pixels;
         }
     }
@@ -2108,13 +2194,17 @@ void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int co
     // temp->Release();;
 }
 
+
+
 void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) {
-    __debugbreak();
+    DrawMasked(a2, a3, a4, 1, 0x7BEF);
 }
+
 void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices,
                                  unsigned int uFaceID) {
     __debugbreak();
 }
+
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices,
                                         struct Polygon *pSkyPolygon) {
     __debugbreak();
@@ -2349,9 +2439,92 @@ void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
     __debugbreak();
 }
 
-void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
-                                 int blend_mode) {
-    __debugbreak();
+void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
+    // want to draw psrcrect section @ point
+    // __debugbreak();
+
+
+    // need to add blue masking
+
+
+    glEnable(GL_TEXTURE_2D);
+    float col = (blend_mode == 2) ? 1 : 0.5;
+
+    glColor3f(col, col, col);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    auto texture = (TextureOpenGL*)pArcomageGame->pSprites;
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    int clipx = this->clip_x;
+    int clipy = this->clip_y;
+    int clipw = this->clip_w;
+    int clipz = this->clip_z;
+
+    int texwidth = texture->GetWidth();
+    int texheight = texture->GetHeight();
+
+    int width = pSrcRect->z - pSrcRect->x;
+    int height = pSrcRect->w - pSrcRect->y;
+
+    int x = pTargetPoint->x;  // u* window->GetWidth();
+    int y = pTargetPoint->y;  // v* window->GetHeight();
+    int z = x + width;
+    int w = y + height;
+
+    // check bounds
+    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
+    // check for overlap
+    if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
+
+    int drawx = x;  // std::max(x, clipx);
+    int drawy = y;  // std::max(y, clipy);
+    int draww = w;  // std::min(w, clipw);
+    int drawz = z;  // std::min(z, clipz);
+
+    float depth = 0;
+
+    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
+        (float)drawz, (float)drawy, depth,
+        (float)drawz, (float)draww, depth,
+        (float)drawx, (float)draww, depth };
+
+    float texx = pSrcRect->x / float(texwidth);  // (drawx - x) / float(width);
+    float texy = pSrcRect->y / float(texheight);  //  (drawy - y) / float(height);
+    float texz = pSrcRect->z / float(texwidth);  //  (width - (z - drawz)) / float(width);
+    float texw = pSrcRect->w / float(texheight);  // (height - (w - draww)) / float(height);
+
+    GLfloat TexCoord[] = { texx, texy,
+        texz, texy,
+        texz, texw,
+        texx, texw,
+    };
+
+    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    drawcalls++;
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glDisable(GL_BLEND);
+
+
+    // blank over same bit of this render_target_rgb to stop text overlaps
+    for (int ys = drawy; ys < draww; ys++) {
+        memset(this->render_target_rgb + (ys * window->GetWidth() + drawx), 0x00000000, (drawz - drawx) * 4);
+    }
+
+    return;
 }
 
 
@@ -2773,7 +2946,7 @@ void RenderOpenGL::RenderTerrainD3D() {
 
     // tile culling maths
     int camx = WorldPosToGridCellX(pIndoorCameraD3D->vPartyPos.x);
-    int camz = WorldPosToGridCellZ(pIndoorCameraD3D->vPartyPos.y);
+    int camy = WorldPosToGridCellY(pIndoorCameraD3D->vPartyPos.y);
     int tilerange = (pIndoorCameraD3D->GetFarClip() / terrain_block_scale)+1;
 
     int camfacing = 2048 - pIndoorCameraD3D->sRotationZ;
@@ -2789,7 +2962,7 @@ void RenderOpenGL::RenderTerrainD3D() {
         for (int x = 0; x < 128 - 1; ++x) {
             // tile culling
             int xdist = camx - x;
-            int zdist = camz - z;
+            int zdist = camy - z;
 
             if (xdist > tilerange || zdist > tilerange) continue;
 
@@ -3899,10 +4072,10 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img,
     }
 }
 
-void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
+void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
                             unsigned int uCharWidth, unsigned int uCharHeight,
-                            uint8_t *pFontPalette, unsigned __int16 uFaceColor,
-                            unsigned __int16 uShadowColor) {
+                            uint8_t* pFontPalette, uint16_t uFaceColor,
+                            uint16_t uShadowColor) {
     // needs limits checks adding
 
     // Image *fonttemp = Image::Create(uCharWidth, uCharHeight, IMAGE_FORMAT_A8R8G8B8);
@@ -3939,7 +4112,7 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
             for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
                 uint16_t color = (*font_pixels)
                     ? pPalette[*font_pixels]
-                    : 0x7FF;  // transparent color 16bit
+                    : teal_mask_16;  // transparent color 16bit
                               // render->uTargetGMask |
                               // render->uTargetBMask;
                 this->render_target_rgb[(x + dx) + (y + dy) * window->GetWidth()] = Color32(color);

@@ -202,7 +202,7 @@ void ODM_LoadAndInitialize(const String &pLevelFilename,
 unsigned int GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int a1, int a2, float a3);
 unsigned int WorldPosToGridCellX(int);
-unsigned int WorldPosToGridCellZ(int);
+unsigned int WorldPosToGridCellY(int);
 int GridCellToWorldPosX(int);
 int GridCellToWorldPosZ(int);
 void sub_481ED9_MessWithODMRenderParams();

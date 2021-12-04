@@ -11,7 +11,7 @@
 
 Texture *Icon::GetTexture() {
     if (!this->img) {
-        this->img = assets->GetImage_ColorKey(this->pTextureName, 0x7FF);
+        this->img = assets->GetImage_ColorKey(this->pTextureName, render->teal_mask_16);
     }
 
     return this->img;

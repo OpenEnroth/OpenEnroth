@@ -25,8 +25,7 @@
 
 
 //----- (004C0262) --------------------------------------------------------
-void Viewport::SetScreen(signed int sTL_X, signed int sTL_Y, signed int sBR_X,
-                         signed int sBR_Y) {
+void Viewport::SetScreen(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {
     unsigned int tl_x;  // edx@1
     unsigned int br_x;  // esi@1
     unsigned int tl_y;  // edi@3

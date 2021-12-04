@@ -270,7 +270,7 @@ void Engine::DrawGUI() {
         if (v4) {
             if (!PauseGameDrawing() /*&& render->pRenderD3D*/) {
                 // clear game viewport with transparent color
-                render->InvalidateGameViewport();
+                render->MaskGameViewport();
                 viewparams->field_48 = 0;
             }
         }
@@ -1136,9 +1136,9 @@ void MM6_Initialize() {
     game_viewport_x = viewparams->uScreen_topL_X = 8;
     game_viewport_y = viewparams->uScreen_topL_Y = 8;
     game_viewport_z = viewparams->uScreen_BttmR_X = 468;
-    game_viewport_w = viewparams->uScreen_BttmR_Y = 351;
+    game_viewport_w = viewparams->uScreen_BttmR_Y = 352;
     game_viewport_width = game_viewport_z - game_viewport_x;
-    game_viewport_height = game_viewport_w - game_viewport_y + 1;
+    game_viewport_height = game_viewport_w - game_viewport_y;
 
     pAudioPlayer = new AudioPlayer;
 

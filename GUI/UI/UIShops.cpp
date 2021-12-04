@@ -886,9 +886,9 @@ void UIShop_Buy_Identify_Repair() {
                                 Party::TakeGold(uPriceItemService);
                                 viewparams->bRedrawGameUI = 1;
                                 bought_item->Reset();
-                                render->ClearZBuffer(0, 479);
+                                render->ClearZBuffer();
                                 pPlayers[uActiveCharacter]->PlaySound(
-                                    (PlayerSpeech)SPEECH_75, 0);
+                                    (PlayerSpeech)SPEECH_ItemBuy, 0);
                                 return;
                             }
 
@@ -918,12 +918,12 @@ void UIShop_Buy_Identify_Repair() {
                 pPlayers[uActiveCharacter]->SalesProcess(
                     invindex, pItemID - 1, (int64_t)window_SpeakInHouse->ptr_1C);
                 viewparams->bRedrawGameUI = 1;
-                render->ClearZBuffer(0, 479);
-                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)77, 0);
+                render->ClearZBuffer();
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_ItemSold, 0);
                 return;
             }
 
-            pPlayers[uActiveCharacter]->PlaySound(SPEECH_79, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_WrongShop, 0);
             pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
             break;
         }
@@ -946,7 +946,7 @@ void UIShop_Buy_Identify_Repair() {
                         dword_F8B1E4 = 1;
                         Party::TakeGold(uPriceItemService);
                         item->uAttributes |= ITEM_IDENTIFIED;
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_73, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_ShopIdentify, 0);
                         GameUI_SetStatusBar(LSTR_DONE);
                         return;
                     }
@@ -957,11 +957,11 @@ void UIShop_Buy_Identify_Repair() {
                 }
 
                 pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
-                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)79, 0);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_WrongShop, 0);
                 return;
             }
 
-            pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)76, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_AlreadyIdentified, 0);
             break;
         }
 
@@ -987,7 +987,7 @@ void UIShop_Buy_Identify_Repair() {
                         Party::TakeGold(uPriceItemService);
                         item->uAttributes =
                             (item->uAttributes & 0xFFFFFFFD) | 1;
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_74, 0);
+                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_ShopRepair, 0);
                         GameUI_SetStatusBar(LSTR_GOOD_AS_NEW);
                         return;
                     }
@@ -998,11 +998,11 @@ void UIShop_Buy_Identify_Repair() {
                 }
 
                 pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
-                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)79, 0);
+                pPlayers[uActiveCharacter]->PlaySound(SPEECH_WrongShop, 0);
                 return;
             }
 
-            pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)76, 0);
+            pPlayers[uActiveCharacter]->PlaySound(SPEECH_AlreadyIdentified, 0);
             break;
         }
 
@@ -1210,8 +1210,8 @@ void UIShop_Buy_Identify_Repair() {
                 }
                 viewparams->bRedrawGameUI = 1;
                 bought_item->Reset();
-                render->ClearZBuffer(0, 479);
-                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_75, 0);
+                render->ClearZBuffer();
+                pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_ItemBuy, 0);
                 return;
             } else {
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_NoRoom, 0);
@@ -1597,7 +1597,7 @@ void GetHouseGoodbyeSpeech() {
                 }
                 if (v5) {
                     _A750D8_player_speech_timer = 256;
-                    PlayerSpeechID = SPEECH_80;
+                    PlayerSpeechID = SPEECH_ShopRude;
                     uSpeakingCharacter = v7[rand() % v5];
                     return;
                 }
@@ -1610,7 +1610,7 @@ void GetHouseGoodbyeSpeech() {
                 }
                 if (v2) {
                     _A750D8_player_speech_timer = 256;
-                    PlayerSpeechID = SPEECH_80;
+                    PlayerSpeechID = SPEECH_ShopRude;
                     uSpeakingCharacter = v7[rand() % v2];
                     return;
                 }

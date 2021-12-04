@@ -34,7 +34,7 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
     unsigned int page_count;   // esi@12
     GUIWindow journal_window;  // [sp+18h] [bp-54h]@8
 
-    ui_book_journal_background = assets->GetImage_ColorKey("sbplayrnot", 0x7FF);
+    ui_book_journal_background = assets->GetImage_ColorKey("sbplayrnot", render->teal_mask_16);
 
     ui_book_button1_on = assets->GetImage_Alpha("tab-an-6b");
     ui_book_button2_on = assets->GetImage_Alpha("tab-an-7b");
