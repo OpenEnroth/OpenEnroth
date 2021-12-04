@@ -157,8 +157,13 @@ void Game::Run() {
 
     window = OSWindowFactory().Create(
         "World of Might and Magic®",
-        config->game_window_width,
-        config->game_window_height
+        config->window_x,
+        config->window_y,
+        config->window_width,
+        config->window_height,
+        config->display,
+        config->fullscreen,
+        config->borderless
     );
     ::window = window;
 

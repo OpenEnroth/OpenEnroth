@@ -18,7 +18,12 @@ namespace Application {
 #else
             "OpenGL";
 #endif
-        int game_window_width = 640;
-        int game_window_height = 480;
+        int display = 0;
+        int fullscreen = 0;
+        int borderless = 0;
+        int window_width = 640;
+        int window_height = 480;
+        int window_x = -1;
+        int window_y = -1;
     };
 }  // namespace Application

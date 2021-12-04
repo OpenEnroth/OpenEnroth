@@ -5,5 +5,5 @@
 class OSWindow;
 class OSWindowFactory {
  public:
-    std::shared_ptr<OSWindow> Create(const char *title, int window_width, int window_height);
+    std::shared_ptr<OSWindow> Create(const char* title, int x, int y, int width, int height, int display, int fullscreen, int borderless);
 };
