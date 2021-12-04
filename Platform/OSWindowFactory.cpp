@@ -1,5 +1,7 @@
 #include "Platform/OSWindowFactory.h"
 
+#include <vector>
+
 #include "Platform/Api.h"
 #include "Platform/Sdl2Window.h"
 
