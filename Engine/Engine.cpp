@@ -484,8 +484,6 @@ void Engine::Deinitialize() {
 
     render = nullptr;
 
-    pNew_LOD->FreeSubIndexAndIO();
-
     delete pEventTimer;
 }
 

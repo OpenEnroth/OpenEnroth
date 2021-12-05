@@ -143,6 +143,12 @@ static int casepath(char const* path, char* r) {
     return 1;
 }
 
+
+FILE* fcaseopen(const std::string& path, char const* mode) {
+    return fcaseopen(path.c_str(), mode);
+}
+
+
 FILE *fcaseopen(char const *path, char const *mode) {
     FILE *f = fopen(path, mode);
     if (!f) {

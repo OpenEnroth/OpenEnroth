@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <map>
 #include <memory>
 #include <numeric>
@@ -56,13 +57,14 @@ struct File {
     std::string name;
     size_t offset;
     size_t size;
+    void* data;
 };
 
 
 struct Directory {
     std::string name;
     std::vector<File> files;
-    size_t files_start;
+    size_t files_start = 0;
 
     inline size_t size_in_bytes() const {
         return std::accumulate(
@@ -74,6 +76,27 @@ struct Directory {
             }
         );
     }
+
+    inline void sort_files() {
+        std::sort(
+            files.begin(),
+            files.end(),
+            [](const auto& a, const auto& b) {
+                return _stricmp(
+                    a.name.c_str(),
+                    b.name.c_str()
+                );
+            }
+        );
+    }
+
+    inline void recalculate_offsets(size_t files_write_ptr) {
+        files_start = files_write_ptr;
+        for (auto& file : files) {
+            file.offset = files_write_ptr;
+            files_write_ptr += file.size;
+        }
+    }
 };
 
 
@@ -84,16 +107,28 @@ public:
 
     bool Open(const std::string& pFilename);
     bool OpenFolder(const std::string& folder);
-    void Close();
+    virtual void Close();
 
     bool FileExists(const std::string& filename);
     void *LoadRaw(const std::string& pContainer, size_t *data_size = nullptr);
+    void DisposeRaw(void *data_ptr);
     void *LoadCompressed2(const std::string& filename, size_t *out_file_size = nullptr);
     void *LoadCompressed(const std::string& pContainer, size_t *data_size = nullptr);
 
     std::string GetSubNodeName(size_t index) const { return _current_folder->files[index].name; }
     size_t GetSubNodesCount() const { return _current_folder->files.size(); }
     int GetSubNodeIndex(const std::string& name) const;
+
+    size_t GetTotalNumFiles() const {
+        return std::accumulate(
+            _index.begin(),
+            _index.end(),
+            size_t{ 0 },
+            [](const size_t sum, const std::shared_ptr<const Directory>& dir) {
+                return sum + dir->files.size();
+            }
+        );
+    }
 
 
 protected:
@@ -106,39 +141,48 @@ protected:
     std::string _filename;
     FILE *_file = nullptr;
 
-    struct FileHeader _header;
+    FileHeader _header;
     std::vector<std::shared_ptr<Directory>> _index;
     std::shared_ptr<Directory> _current_folder = nullptr;
 };
 
+
 class WriteableFile : public Container {
  public:
-    WriteableFile();
-    bool LoadFile(const std::string &filename, bool writing);
+    //WriteableFile();
+    bool NewLod(const std::string& filename, LOD_VERSION version, const std::string& description);
+    bool AddDirectory(const std::string& name, bool open = true);
+    bool AddFile(const std::string& filename, const void* file_ptr, size_t file_size);
+    bool LoadFile(const std::string &filename, bool readonly);
 
     bool AppendFileToCurrentDirectory(const std::string& file_name, const void* file_bytes, size_t file_size);
-    bool AddFileToCurrentDirectory(const std::string& file_name, const void *file_bytes, size_t file_size, int flags = 0);
-    
+    //bool AddFileToCurrentDirectory(const std::string& file_name, const void *file_bytes, size_t file_size, int flags = 0);
+
+    virtual void Close() override;
     void CloseWriteFile();
-    int OpenTmpWriteFile();
-    int FixDirectoryOffsets();
+    //int OpenTmpWriteFile();
+    //int FixDirectoryOffsets();
     bool _4621A7();
-    int CreateEmptyLod(LOD::FileHeader *pHeader, const std::string& lod_name, const std::string& folder_name);
+    //int CreateEmptyLod(LOD::FileHeader *pHeader, const std::string& lod_name, const std::string& folder_name);
 
-    void FreeSubIndexAndIO();
+    //void FreeSubIndexAndIO();
 
-    void ClearSubNodes() {
-        if (_current_folder) {
-            _current_folder->files.clear();
-        }
-    }
+    //void ClearSubNodes() {
+    //    if (_current_folder) {
+    //        _current_folder->files.clear();
+    //    }
+    //}
 
  protected:
     virtual void ResetSubIndices();
+    void Flush();
+    void SortDirectories();
 
  protected:
     FILE *_tmp_write_file;
-    unsigned int uLODDataSize;
+    unsigned int uLODDataSize = 0;
+
+    //std::vector<std::tuple<std::shared_ptr<Directory>, std::string, const void*, size_t>> _pending_files;
 };
 };  // namespace LOD
 

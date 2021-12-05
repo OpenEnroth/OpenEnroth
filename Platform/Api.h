@@ -27,5 +27,7 @@ uint64_t OS_GetPrecisionTime();
 std::vector<std::string> OS_FindFiles(const std::string &folder, const std::string &mask);
 
 FILE* fcaseopen(char const* path, char const* mode);
+FILE* fcaseopen(const std::string& path, char const* mode);
+
 
 std::string OS_GetDirSeparator(void);

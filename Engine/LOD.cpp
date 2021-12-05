@@ -1,5 +1,3 @@
-#include <numeric>
-
 #include "Engine/LOD.h"
 
 #include "Engine/Engine.h"
@@ -24,6 +22,16 @@ LOD::Container* pGames_LOD = nullptr;
 int _6A0CA4_lod_binary_search;
 
 
+static inline const char* to_string(LOD_VERSION lod_version) {
+    switch (lod_version) {
+    case LOD_VERSION_MM6: return "MMVI";
+    case LOD_VERSION_GAME_MM6: return "GameMMVI";
+    case LOD_VERSION_MM7: return "MMVII";
+    case LOD_VERSION_MM8: return "MMVIII";
+    default: Error("Unsupported LOD version: %d", (int)lod_version);
+    }
+}
+
 static inline LOD_VERSION _get_version(const LOD::FileHeader& header) {
     static std::map<std::string, LOD_VERSION> version_map = {
         {"MMVI", LOD_VERSION_MM6},
@@ -37,15 +45,15 @@ static inline LOD_VERSION _get_version(const LOD::FileHeader& header) {
     if (it != version_map.end()) {
         return it->second;
     }
-    Error("Unknown LOD version: %s", version);
+    Error("Unknown LOD version: %s", (int)version);
 }
 
 
-static int _get_file_header_length(LOD_VERSION lod_version) {
+static int _get_file_header_size(LOD_VERSION lod_version) {
     switch (lod_version) {
     case LOD_VERSION_MM6: return sizeof(File_Image_Mm6);
     case LOD_VERSION_MM8: return sizeof(File_Image_Mm8);
-    default: Error("Unsupported LOD write format: %d", lod_version);
+    default: Error("Unsupported LOD write format: %d", (int)lod_version);
     }
 }
 
@@ -56,7 +64,7 @@ static int _get_directory_write_size(LOD_VERSION lod_version) {
     case LOD_VERSION_GAME_MM6:
     case LOD_VERSION_MM7:
     case LOD_VERSION_MM8: return sizeof(Directory_Image_Mm6);
-    default: Error("Unsupported LOD write format: %d", lod_version);
+    default: Error("Unsupported LOD write format: %d", (int)lod_version);
     }
 }
 
@@ -163,14 +171,14 @@ static void _write_file(
 static void _write_directory_header(
     FILE* f,
     LOD_VERSION lod_version,
-    const LOD::Directory& dir
+    const std::shared_ptr<const LOD::Directory> dir
 ) {
     Directory_Image_Mm6 dir_image;
-    strcpy_s(dir_image.pFilename, dir.name.c_str());
-    dir_image.data_offset = dir.files_start;
-    dir_image.uDataSize = dir.size_in_bytes();
+    strcpy_s(dir_image.pFilename, dir->name.c_str());
+    dir_image.data_offset = dir->files_start;
+    dir_image.uDataSize = dir->size_in_bytes();
     dir_image.dword_000018 = 0;
-    dir_image.num_items = dir.files.size();
+    dir_image.num_items = dir->files.size();
     dir_image.priority = 0;
     Assert(1 == fwrite(&dir_image, sizeof(dir_image), 1, f));
 }
@@ -179,14 +187,22 @@ static void _write_directory_header(
 static void _write_directory(
     FILE* f,
     LOD_VERSION lod_version,
-    const LOD::Directory& dir
+    const std::shared_ptr<const LOD::Directory> dir,
+    size_t dir_header_write_ptr,
+    size_t file_header_write_ptr,
+    size_t file_data_write_ptr
 ) {
+    fseek(f, dir_header_write_ptr, SEEK_SET);
     _write_directory_header(f, lod_version, dir);
 
-    if (dir.files.size() > 0) {
-        fseek(f, dir.files_start, SEEK_SET);
-        for (const auto& file : dir.files) {
+    if (dir->files.size() > 0) {
+        fseek(f, dir->files_start, SEEK_SET);
+        for (const auto& file : dir->files) {
+            fseek(f, file_header_write_ptr, SEEK_SET);
             _write_file_header(f, lod_version, file);
+
+            fseek(f, file_data_write_ptr, SEEK_SET);
+            Assert(1 == fwrite(file.data, file.size, 1, f));
         }
     }
 }
@@ -593,7 +609,7 @@ void LOD::Container::Close() {
     _current_folder = nullptr;
 }
 
-int LOD::WriteableFile::CreateEmptyLod(
+/*int LOD::WriteableFile::CreateEmptyLod(
     LOD::FileHeader* pHeader,
     const std::string& lod_name,
     const std::string& folder_name
@@ -629,7 +645,7 @@ int LOD::WriteableFile::CreateEmptyLod(
     _file = nullptr;
 
     return 0;
-}
+}*/
 
 void LOD::Container::ResetSubIndices() {
     _current_folder = nullptr;
@@ -776,11 +792,11 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::Container() {
 }
 
 bool LOD::WriteableFile::_4621A7() {  // reload file (for saving) -- but why??
-    CloseWriteFile();
+    Close();
     return LoadFile(_filename, 0);
 }
 
-int LOD::WriteableFile::FixDirectoryOffsets() {
+/*int LOD::WriteableFile::FixDirectoryOffsets() {
     size_t total_size = _current_folder->size_in_bytes();
 
     // fix offsets
@@ -792,7 +808,7 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     //    temp_offset += _current_folder_items[i].uDataSize;
     //}
 
-    /*String Filename = "lod.tmp";
+    String Filename = "lod.tmp";
     FILE *tmp_file = fcaseopen(Filename.c_str(), "wb+");
     if (tmp_file == nullptr) {
         return 5;
@@ -831,10 +847,10 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     remove(pLODName.c_str());
     rename(Filename.c_str(), pLODName.c_str());
     CloseWriteFile();
-    LoadFile(pLODName, false);*/
+    LoadFile(pLODName, false);
 
     return 0;
-}
+}*/
 
 bool LOD::WriteableFile::AppendFileToCurrentDirectory(
     const std::string &file_name,
@@ -852,7 +868,7 @@ bool LOD::WriteableFile::AppendFileToCurrentDirectory(
     return true;
 }
 
-int LOD::WriteableFile::OpenTmpWriteFile() {
+/*int LOD::WriteableFile::OpenTmpWriteFile() {
     if (!_file) {
         return 1;
     }
@@ -870,9 +886,13 @@ void LOD::WriteableFile::CloseWriteFile() {
         fclose(_file);
         _file = nullptr;
     }
+}*/
+
+void LOD::WriteableFile::CloseWriteFile() {
+    Assert(false);
 }
 
-bool LOD::WriteableFile::AddFileToCurrentDirectory(
+/*bool LOD::WriteableFile::AddFileToCurrentDirectory(
     const std::string& file_name,
     const void *file_bytes,
     size_t file_size,
@@ -988,13 +1008,14 @@ bool LOD::WriteableFile::AddFileToCurrentDirectory(
     return true;
 }
 
+
 LOD::WriteableFile::WriteableFile() {
     uLODDataSize = 0;
     _tmp_write_file = nullptr;
-}
+}*/
 
-bool LOD::WriteableFile::LoadFile(const std::string& filename, bool writing) {
-    _file = fcaseopen(filename.c_str(), writing ? "rb" : "rb+");
+bool LOD::WriteableFile::LoadFile(const std::string& filename, bool readonly) {
+    _file = fcaseopen(filename.c_str(), readonly ? "rb" : "rb+");
     if (_file == nullptr) {
         return false;
     }
@@ -1011,10 +1032,6 @@ bool LOD::WriteableFile::LoadFile(const std::string& filename, bool writing) {
     return true;
 }
 
-
-void LOD::WriteableFile::FreeSubIndexAndIO() {
-    _current_folder = nullptr;
-}
 
 LOD::Container::Container() {
     Close();
@@ -1153,6 +1170,12 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
         }
     }
 }
+
+
+void LOD::Container::DisposeRaw(void* data_ptr) {
+    free(data_ptr);
+}
+
 
 void *LOD::Container::LoadRaw(const std::string& pContainer, size_t *data_size) {
     if (data_size != nullptr) {
@@ -1467,4 +1490,132 @@ bool Initialize_GamesLOD_NewLOD() {
         return true;
     }
     return false;
+}
+
+
+bool LOD::WriteableFile::NewLod(
+    const std::string& filename,
+    LOD_VERSION version,
+    const std::string& description
+) {
+    _file = fcaseopen(filename, "w+b");
+    if (!_file) {
+        return false;
+    }
+
+    _filename = filename;
+    strcpy_s(_header.pSignature, "LOD");
+    strcpy_s(_header.LodVersion, to_string(version));
+    strcpy_s(_header.LodDescription, description.c_str());
+    _header.LODSize = 100;
+    _header.dword_0000A8 = 0;
+
+    return true;
+}
+
+
+bool LOD::WriteableFile::AddDirectory(const std::string& name, bool open) {
+    if (_file == nullptr) {
+        return false;
+    }
+
+    auto dir = std::make_shared<LOD::Directory>();
+    if (!dir) {
+        return false;
+    }
+
+    dir->name = name;
+    _index.push_back(dir);
+
+    if (open) {
+        _current_folder = dir;
+    }
+
+    return true;
+}
+
+
+bool LOD::WriteableFile::AddFile(
+    const std::string& filename,
+    const void* file_ptr,
+    size_t file_size
+) {
+    if (_file == nullptr || _current_folder == nullptr) {
+        return false;
+    }
+
+    void* data_copy = new unsigned char[file_size];
+    if (!data_copy) {
+        return false;
+    }
+
+    File file;
+    file.name = filename;
+    file.offset = 0;
+    file.size = file_size;
+    file.data = data_copy;
+    memcpy(data_copy, file_ptr, file_size);
+
+    _current_folder->files.push_back(file);
+    return true;
+}
+
+
+void LOD::WriteableFile::Close() {
+    Flush();
+    for (auto& dir : _index) {
+        for (auto& file : dir->files) {
+            if (file.data != nullptr) {
+                delete[] file.data;
+                file.data = nullptr;
+            }
+        }
+    }
+
+    Container::Close();
+}
+
+
+void LOD::WriteableFile::SortDirectories() {
+    std::sort(
+        _index.begin(),
+        _index.end(),
+        [](const auto& a, const auto& b) {
+            return _stricmp(
+                a->name.c_str(),
+                b->name.c_str()
+            );
+        }
+    );
+}
+
+
+void LOD::WriteableFile::Flush() {
+    fseek(_file, 0, SEEK_SET);
+    Assert(1 == fwrite(&_header, sizeof(_header), 1, _file));
+
+    size_t dir_header_write_ptr = sizeof(LOD::FileHeader);
+    size_t file_header_write_ptr = dir_header_write_ptr
+        + _index.size() * _get_directory_write_size(_get_version(_header));
+    size_t file_data_write_ptr = file_header_write_ptr
+        + GetTotalNumFiles() * _get_file_header_size(_get_version(_header));
+
+    SortDirectories();
+    for (auto& dir : _index) {
+        dir->sort_files();
+        dir->recalculate_offsets(file_data_write_ptr);
+
+        _write_directory(
+            _file,
+            _get_version(_header),
+            dir,
+            dir_header_write_ptr,
+            file_header_write_ptr,
+            file_data_write_ptr
+        );
+
+        dir_header_write_ptr += _get_directory_write_size(_get_version(_header));
+        file_header_write_ptr += dir->files.size() * _get_file_header_size(_get_version(_header));
+        file_data_write_ptr += dir->size_in_bytes();
+    }
 }
