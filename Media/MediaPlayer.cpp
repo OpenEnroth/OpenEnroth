@@ -1061,13 +1061,25 @@ bool AudioBaseDataSource::Open() {
         return false;
     }
 
+    if (!pCodecContext->channel_layout) {
+        switch (pCodecContext->channels) {
+            case(1):
+                pCodecContext->channel_layout = AV_CH_LAYOUT_MONO;
+                break;
+            case(2):
+                pCodecContext->channel_layout = AV_CH_LAYOUT_STEREO;
+                break;
+            default:
+                __debugbreak();
+                break;
+        }
+    }
+
     pConverter = swr_alloc_set_opts(
         pConverter,
-        pCodecContext->channel_layout ? pCodecContext->channel_layout
-                                      : AV_CH_LAYOUT_MONO,
+        pCodecContext->channel_layout,
         AV_SAMPLE_FMT_S16, pCodecContext->sample_rate,
-        pCodecContext->channel_layout ? pCodecContext->channel_layout
-                                      : AV_CH_LAYOUT_MONO,
+        pCodecContext->channel_layout,
         pCodecContext->sample_fmt, pCodecContext->sample_rate, 0, nullptr);
     if (swr_init(pConverter) < 0) {
         Close();

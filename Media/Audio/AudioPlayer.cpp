@@ -197,8 +197,6 @@ void AudioPlayer::StopAll(int sample_id) {
 void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int source_x, int source_y, int sound_data_id) {
     logger->Warning("-------Trying to load sound \"%i\"--------", eSoundID);
 
-    if (eSoundID == 206) __debugbreak();
-
     if (!bPlayerReady || engine->config->sound_level < 1 ||
         (eSoundID == SOUND_Invalid)) {
         return;
