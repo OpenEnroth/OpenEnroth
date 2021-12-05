@@ -256,7 +256,7 @@ bool ActorInteraction(unsigned int id) {
             if (pNPCStats->pGroups_copy[pActors[id].uGroup]) {
                 if (pNPCStats->pCatchPhrases
                         [pNPCStats->pGroups_copy[pActors[id].uGroup]]) {
-                    pParty->uFlags |= PARTY_FLAGS_1_0002;
+                    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                     branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]];
                     sub_4451A8_press_any_key(0, 0, 0);
                 }
@@ -318,7 +318,7 @@ void Engine::OnGameViewportClick() {
     int16_t clickable_distance = 512;
 
     // bug fix - stops you entering shops while dialog still open.
-    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE)
+    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME /*CURRENT_SCREEN::SCREEN_NPC_DIALOGUE*/)
         return;
 
     auto pidAndDepth = vis->get_picked_object_zbuf_val();

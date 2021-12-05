@@ -348,11 +348,11 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
             }
         }
 
-        if (face->uAttributes & FACE_PICKED)
+        if (face->uAttributes & FACE_IsPicked)
             face->uAttributes |= FACE_OUTLINED;
         else
             face->uAttributes &= ~FACE_OUTLINED;
-        face->uAttributes &= ~FACE_PICKED;
+        face->uAttributes &= ~FACE_IsPicked;
            // }
        // }
         v5 = v17 + 1;
@@ -392,11 +392,11 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                                     intersection.vWorldViewPosition.x, pid);
                 }
 
-                if (blv_face.uAttributes & FACE_PICKED)
+                if (blv_face.uAttributes & FACE_IsPicked)
                     face.uAttributes |= FACE_OUTLINED;
                 else
                     face.uAttributes &= ~FACE_OUTLINED;
-                blv_face.uAttributes &= ~FACE_PICKED;
+                blv_face.uAttributes &= ~FACE_IsPicked;
             }
         }
     }
@@ -648,7 +648,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint, signe
     if (v16 != 1) return false;
 
     if (engine->config->show_picked_face)
-        pFace->uAttributes |= FACE_PICKED;
+        pFace->uAttributes |= FACE_IsPicked;
 
 
     return true;

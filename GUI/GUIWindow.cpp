@@ -1511,22 +1511,22 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     if (uActiveCharacter) {
                         v12 = (char *)&pPlayers[uActiveCharacter]
                             ->pActiveSkills[dword_F8B1AC_award_bit_number];
-                        *(short *)v12 &= 0x3Fu;
+                        *(short *)v12 &= 0x3Fu;  // erase current mastery
                         switch (dword_F8B1B0_MasteryBeingTaught) {
                         case 2:
                             v15 = (char *)&pPlayers[uActiveCharacter]
                                 ->pActiveSkills[dword_F8B1AC_award_bit_number];
-                            *v15 |= 0x40u;
+                            *v15 |= 0x40u;  // expert
                             break;
                         case 3:
                             v14 = (char *)&pPlayers[uActiveCharacter]
                                 ->pActiveSkills[dword_F8B1AC_award_bit_number];
-                            *v14 |= 0x80u;
+                            *v14 |= 0x80u;  // master
                             break;
                         case 4:
                             v13 = (char *)&pPlayers[uActiveCharacter]
                                 ->pActiveSkills[dword_F8B1AC_award_bit_number];
-                            v13[1] |= 1u;
+                            v13[1] |= 1u;  // grandmaster
                             break;
                         }
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_SkillMasteryInc, 0);

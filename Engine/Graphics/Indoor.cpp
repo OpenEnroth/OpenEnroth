@@ -383,7 +383,7 @@ void IndoorLocation::Draw() {
     render->DrawBillboardList_BLV();
     //}
 
-    pParty->uFlags &= ~PARTY_FLAGS_1_0002;
+    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
     engine->DrawParticles();
     trail_particle_generator.UpdateParticles();
 }
@@ -493,7 +493,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
 
     // check against adjacent sectors and any vertex
     if (/*(pBLVRenderParams->uPartySectorID == pFace->uSectorID || pBLVRenderParams->uPartySectorID == pFace->uBackSectorID) && */(dist < 2000)) {
-        pFace->uAttributes |= FACE_RENDERED;
+        pFace->uAttributes |= FACE_SeenByParty;
     } else {
         // return;
     }
@@ -617,15 +617,15 @@ unsigned int FaceFlowTextureOffset(unsigned int uFaceID) {  // time texture offs
 
     unsigned int offset = OS_GetTime() >> 3;
 
-    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_DIAGONAL) {
+    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowDown) {
         Lights.pDeltaUV[1] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);
-    } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_VERTICAL) {
+    } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowUp) {
         Lights.pDeltaUV[1] += offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetHeight() - 1);
     }
 
-    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FLOW_HORIZONTAL) {
+    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowRight) {
         Lights.pDeltaUV[0] -= offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetWidth() - 1);
-    } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_DONT_CACHE_TEXTURE) {
+    } else if (pIndoor->pFaces[uFaceID].uAttributes & FACE_FlowLeft) {
         Lights.pDeltaUV[0] += offset & (((Texture *)pIndoor->pFaces[uFaceID].resource)->GetWidth() - 1);
     }
 
@@ -753,7 +753,7 @@ void IndoorLocation::ToggleLight(signed int sLightID, unsigned int bToggle) {
             pIndoor->pLights[sLightID].uAtributes &= 0xFFFFFFF7;
         else
             pIndoor->pLights[sLightID].uAtributes |= 8;
-        pParty->uFlags |= PARTY_FLAGS_1_0002;
+        pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     }
 }
 
@@ -1240,11 +1240,13 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 pFace->uPolygonType != POLYGON_InBetweenFloorAndWall)
                 continue;
 
+            if (pFace->uNumVertices > 49) __debugbreak();
+
             // classic crossing multiplication point in poly algorithm
             float pointy = sY;
             float pointx = sX;
-            float pointsy[50] = {0};
-            float pointsx[50] = {0};
+            static float pointsy[100] = {0};
+            static float pointsx[100] = {0};
 
             // use intercept displacements to create a slightly larger poly - this covers the gap in badly stitched triangles
             for (uint j = 0; j < pFace->uNumVertices; ++j) {
@@ -1367,12 +1369,12 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
         }
     }
     // LABEL_12:
-    if (this->uAttributes & FACE_UNKNOW3) {
+    if (this->uAttributes & FACE_FlipNormalU) {
         a2->x = -a2->x;
         a2->y = -a2->y;
         a2->z = -a2->z;
     }
-    if (this->uAttributes & FACE_UNKNOW4) {
+    if (this->uAttributes & FACE_FlipNormalV) {
         a3->x = -a3->x;
         a3->y = -a3->y;
         a3->z = -a3->z;
@@ -1453,10 +1455,10 @@ void BLV_UpdateDoors() {
             if (v89 >= door->uMoveLength) {
                 v89 = door->uMoveLength;
                 door->uState = BLVDoor::Open;
-                if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices != 0)
+                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0)
                     pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1), PID(OBJECT_BLVDoor, i), 0, -1, 0, 0);
                 // goto LABEL_18;
-            } else if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices) {
+            } else if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices) {
                 pAudioPlayer->PlaySound(eDoorSoundID, PID(OBJECT_BLVDoor, i), 1, -1, 0, 0);
             }
         } else {  // door closing
@@ -1465,14 +1467,14 @@ void BLV_UpdateDoors() {
             if (v5 >= door->uMoveLength) {
                 v89 = 0;
                 door->uState = BLVDoor::Closed;
-                if (!(door->uAttributes & FACE_UNKNOW5) &&
+                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) &&
                     door->uNumVertices != 0)
                     pAudioPlayer->PlaySound((SoundID)((int)eDoorSoundID + 1),
                                             PID(OBJECT_BLVDoor, i), 0, -1, 0, 0);
                 // goto LABEL_18;
             } else {
                 v89 = door->uMoveLength - v5;
-                if (!(door->uAttributes & FACE_UNKNOW5) && door->uNumVertices)
+                if (!(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices)
                     pAudioPlayer->PlaySound(eDoorSoundID,
                                             PID(OBJECT_BLVDoor, i), 1, -1, 0, 0);
             }
@@ -1517,13 +1519,13 @@ void BLV_UpdateDoors() {
                 HEXRAYS_HIDWORD(v27) = face->pFacePlane_old.dist >> 16;
                 face->zCalc3 = -v27 / face->pFacePlane_old.vNormal.z;
             }
-            // if ( face->uAttributes & FACE_TEXTURE_FLOW || render->pRenderD3D
+            // if ( face->uAttributes & FACE_TexMoveByDoor || render->pRenderD3D
             // )
             face->_get_normals(&v70, &v67);
             v28 = &pIndoor->pFaceExtras[face->uFaceExtraID];
             /*if ( !render->pRenderD3D )
             {
-            if ( !(face->uAttributes & FACE_TEXTURE_FLOW) )
+            if ( !(face->uAttributes & FACE_TexMoveByDoor) )
             continue;
             v83 = (unsigned __int64)(door->vDirection.x * (signed __int64)v70.x)
             >> 16; v85 = (unsigned __int64)(door->vDirection.y * (signed
@@ -1570,10 +1572,10 @@ void BLV_UpdateDoors() {
                 face->pVertexUIDs[j] = v76;
                 face->pVertexVIDs[j] = v77;
             }
-            if (face->uAttributes & 0x00001000) {
+            if (face->uAttributes & FACE_TexAlignLeft) {
                 v28->sTextureDeltaU -= v39;
             } else {
-                if (face->uAttributes & 0x8000) {
+                if (face->uAttributes & FACE_TexAlignRight) {
                     if (face->resource) {
                         // v28->sTextureDeltaU -= v84 +
                         // pBitmaps_LOD->pTextures[face->uBitmapID].uTextureWidth;
@@ -1582,10 +1584,10 @@ void BLV_UpdateDoors() {
                     }
                 }
             }
-            if (face->uAttributes & FACE_UNKNOW6) {
+            if (face->uAttributes & FACE_TexAlignDown) {
                 v28->sTextureDeltaV -= v40;
             } else {
-                if (face->uAttributes & FACE_INDOOR_DOOR) {
+                if (face->uAttributes & FACE_TexAlignBottom) {
                     v28->sTextureDeltaV -=
                         v84 + ((Texture *)face->resource)->GetHeight();
                     // if (face->uBitmapID != -1)
@@ -1593,7 +1595,7 @@ void BLV_UpdateDoors() {
                     //    pBitmaps_LOD->GetTexture(face->uBitmapID)->uTextureHeight;
                 }
             }
-            if (face->uAttributes & FACE_TEXTURE_FLOW) {
+            if (face->uAttributes & FACE_TexMoveByDoor) {
                 v84 = fixpoint_mul(door->vDirection.x, v70.x);
                 v82 = fixpoint_mul(door->vDirection.y, v70.y);
                 v83 = fixpoint_mul(door->vDirection.z, v70.z);
@@ -2144,7 +2146,7 @@ void UpdateActors_BLV() {
                                         }
                                     }
                                     if (pIndoor->pFaces[v37].uAttributes &
-                                        FACE_UNKNOW1)
+                                        FACE_TriggerByMonster)
                                         EventProcessor(
                                             pIndoor
                                                 ->pFaceExtras[pIndoor
@@ -3990,7 +3992,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     pParty->vPosition.z = new_party_z;
     pParty->vPosition.y = new_party_y;
     // pParty->uFallSpeed = v89;
-    if (!hovering && pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_LAVA)
+    if (!hovering && pIndoor->pFaces[uFaceID].uAttributes & FACE_IsLava)
         pParty->uFlags |= PARTY_FLAGS_1_BURNING;  // 0x200
     if (uFaceEvent) EventProcessor(uFaceEvent, 0, 1);
 }

@@ -5672,9 +5672,9 @@ void Player::SetSkillByEvent(unsigned __int16 Player::*skillToSet,
                              unsigned __int16 skillValue) {
     unsigned __int16 currSkillValue = this->*skillToSet;
     if (skillValue > 63) {  // the original had the condition reversed which was probably wrong
-        this->*skillToSet = skillValue | currSkillValue & 63;
+        this->*skillToSet = skillValue | (currSkillValue & 63);
     } else {
-        this->*skillToSet = skillValue | currSkillValue & 0xC0;
+        this->*skillToSet = skillValue | (currSkillValue & 0xC0);
     }
     int playerIndex = GetPlayerIndex();
     spell_fx_renderer->SetPlayerBuffAnim(0x96u, playerIndex);

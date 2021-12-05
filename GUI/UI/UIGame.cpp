@@ -1708,13 +1708,24 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
-        map_scale = (1 << (loc_power + 16)) / (signed int)uZoom;
-        startx = (double)(pParty->vPosition.x + 32768) /
-              (double)(1 << (16 - loc_power));
-        starty = (double)(32768 - pParty->vPosition.y) /
-              (double)(1 << (16 - loc_power));
-        switch (uZoom) {
+        static Texture* minimaptemp;
+        if (!minimaptemp) {
+            minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
+        }
+
+        static unsigned __int16 pOdmMinimap[117][137];
+        assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
+
+        bool partymoved = pParty->uFlags & PARTY_FLAGS_1_ForceRedraw;
+
+        if (partymoved) {
+            int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
+            map_scale = (1 << (loc_power + 16)) / (signed int)uZoom;
+            startx = (double)(pParty->vPosition.x + 32768) /
+                (double)(1 << (16 - loc_power));
+            starty = (double)(32768 - pParty->vPosition.y) /
+                (double)(1 << (16 - loc_power));
+            switch (uZoom) {
             case 512: {
                 startx = startx - (double)(uWidth / 2);
                 starty = starty - (double)(uHeight / 2);
@@ -1729,44 +1740,38 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             } break;
             default:
                 assert(false);
-        }
-
-        static unsigned __int16 pOdmMinimap[117][137];
-        assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
-
-        static Texture *minimaptemp;
-        if (!minimaptemp) {
-            minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
-        }
-
-        xpixoffset16 = floorf(startx * 65536.0 + 0.5f);     // LODWORD(v24);
-        ypixoffset16 = floorf(starty * 65536.0 + 0.5f);  // LODWORD(v25);
-        ypix = ypixoffset16 >> 16;
-        xpix = xpixoffset16 >> 16;
-        // v28 = &render->pTargetSurface[uX + uY * lPitch];
-
-        if (/*pMapLod0 && */ bRedrawOdmMinimap) {
-            assert(uWidth == 137 && uHeight == 117);
-
-            ushort MapImgWidth = viewparams->location_minimap->GetWidth();
-            auto pMapLod0Line =
-                (unsigned __int32 *)viewparams->location_minimap->GetPixels(
-                    IMAGE_FORMAT_A8R8G8B8);
-           // Image *minimaptemp = Image::Create(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
-           auto minitempix = (unsigned __int32 *)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-            for (int y = 0; y < uHeight; ++y) {
-                for (int x = 0; x < uWidth; ++x) {
-                   minitempix[x + y*uWidth] = pMapLod0Line[xpix + ypix * MapImgWidth];
-                   xpix = (xpixoffset16 + x * map_scale) >> 16;
-                }
-                ypixoffset16 += map_scale;
-                ypix = ypixoffset16 >> 16;
             }
-            // draw image
-            render->Update_Texture(minimaptemp);
+
+            xpixoffset16 = floorf(startx * 65536.0 + 0.5f);     // LODWORD(v24);
+            ypixoffset16 = floorf(starty * 65536.0 + 0.5f);  // LODWORD(v25);
+            ypix = ypixoffset16 >> 16;
+            xpix = xpixoffset16 >> 16;
+            // v28 = &render->pTargetSurface[uX + uY * lPitch];
+
+            if (/*pMapLod0 && */ bRedrawOdmMinimap) {
+                assert(uWidth == 137 && uHeight == 117);
+
+                ushort MapImgWidth = viewparams->location_minimap->GetWidth();
+                auto pMapLod0Line = (unsigned __int32*)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+                // Image *minimaptemp = Image::Create(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
+                auto minitempix = (unsigned __int32*)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+                for (int y = 0; y < uHeight; ++y) {
+                    for (int x = 0; x < uWidth; ++x) {
+                        minitempix[x + y * uWidth] = pMapLod0Line[xpix + ypix * MapImgWidth];
+                        xpix = (xpixoffset16 + x * map_scale) >> 16;
+                    }
+                    ypixoffset16 += map_scale;
+                    ypix = ypixoffset16 >> 16;
+                }
+                // draw image
+                render->Update_Texture(minimaptemp);
+                render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
+                // minimaptemp->Release();
+            }
+        } else {
+            // no need to update map - just redraw
             render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
-            // minimaptemp->Release();
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
@@ -1776,8 +1781,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
             if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
                 pIndoor->pFaces[pOutline->uFace2ID].Visible()) {
-                if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_RENDERED ||
-                    pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_RENDERED) {
+                if (pIndoor->pFaces[pOutline->uFace1ID].uAttributes & FACE_SeenByParty ||
+                    pIndoor->pFaces[pOutline->uFace2ID].uAttributes & FACE_SeenByParty) {
                     pOutline->uFlags = pOutline->uFlags | 1;
                     pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 

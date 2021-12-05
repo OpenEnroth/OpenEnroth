@@ -435,11 +435,11 @@ struct BLVFace {  // 60h
     bool Deserialize(struct BLVFace_MM7 *);
 
     inline bool Invisible() const {
-        return (uAttributes & FACE_INVISIBLE) != 0;
+        return (uAttributes & FACE_IsInvisible) != 0;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return (uAttributes & FACE_PORTAL) != 0; }
-    inline bool Fluid() const { return (uAttributes & FACE_FLUID) != 0; }
+    inline bool Portal() const { return (uAttributes & FACE_IsPortal) != 0; }
+    inline bool Fluid() const { return (uAttributes & FACE_IsFluid) != 0; }
     inline bool Indoor_sky() const {
         return (uAttributes & FACE_INDOOR_SKY) != 0;
     }

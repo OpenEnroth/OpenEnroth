@@ -557,7 +557,7 @@ void GUIWindow_GenericDialogue::Update() {
 
 void sub_4451A8_press_any_key(int a1, int a2, int a4) {
     if (!pGUIWindow2) {
-        if (pParty->uFlags & PARTY_FLAGS_1_0002) {
+        if (pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) {
             engine->Draw();
         }
         pAudioPlayer->StopChannels(-1, -1);

@@ -416,7 +416,7 @@ LABEL_13:
                         bmodel->pVertices.pVertices[face->pVertexIDs[0]].z + 1;
                     if (pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
                             pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y >= 400) {
-                        if (face->uAttributes & FACE_UNKNOW2)
+                        if (face->uAttributes & FACE_TriggerByObject)
                             EventProcessor(face->sCogTriggeredID, 0, 1);
                     } else {
                         pSpriteObjects[uLayingItemID].vVelocity.z = 0;
@@ -444,7 +444,7 @@ LABEL_13:
                         v37 = fixpoint_mul(32000, v36);
                     }
                     pSpriteObjects[uLayingItemID].vVelocity.z += v37;
-                    if (face->uAttributes & FACE_UNKNOW2)
+                    if (face->uAttributes & FACE_TriggerByObject)
                         EventProcessor(face->sCogTriggeredID, 0, 1);
                 }
             }
@@ -662,7 +662,7 @@ LABEL_25:
                         v22 = fixpoint_mul(32000, v39);
                     }
                     pSpriteObject->vVelocity.z += v22;
-                    if (pIndoor->pFaces[v15].uAttributes & FACE_UNKNOW2)
+                    if (pIndoor->pFaces[v15].uAttributes & FACE_TriggerByObject)
                         EventProcessor(
                             pIndoor
                                 ->pFaceExtras[pIndoor->pFaces[v15].uFaceExtraID]
@@ -681,7 +681,7 @@ LABEL_25:
                     pSpriteObject->vVelocity.z = v17;
                     if ((signed __int16)v17 < 10)
                         pSpriteObject->vVelocity.z = 0;
-                    if (pIndoor->pFaces[v15].uAttributes & FACE_UNKNOW2)
+                    if (pIndoor->pFaces[v15].uAttributes & FACE_TriggerByObject)
                         EventProcessor(
                             pIndoor
                                 ->pFaceExtras[pIndoor->pFaces[v15].uFaceExtraID]
@@ -700,7 +700,7 @@ LABEL_25:
                         pSpriteObject->vVelocity.y *
                             pSpriteObject->vVelocity.y >=
                     400) {
-                    if (pIndoor->pFaces[v15].uAttributes & FACE_UNKNOW2)
+                    if (pIndoor->pFaces[v15].uAttributes & FACE_TriggerByObject)
                         EventProcessor(
                             pIndoor
                                 ->pFaceExtras[pIndoor->pFaces[v15].uFaceExtraID]

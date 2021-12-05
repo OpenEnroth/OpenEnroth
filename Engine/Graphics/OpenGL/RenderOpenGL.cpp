@@ -2561,7 +2561,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
                     }
 
-                    if (!frame) {
+                    if (!frame || frame->texture_name == "null" || frame->hw_sprites[0] == NULL) {
                         continue;
                     }
 
@@ -4200,17 +4200,17 @@ void RenderOpenGL::DrawBuildingsD3D() {
             poly->field_32 = 0;
             poly->texture = face.GetTexture();
 
-            if (face.uAttributes & FACE_FLUID) poly->flags |= 2;
+            if (face.uAttributes & FACE_IsFluid) poly->flags |= 2;
             if (face.uAttributes & FACE_INDOOR_SKY) poly->flags |= 0x400;
 
-            if (face.uAttributes & FACE_FLOW_DIAGONAL)
+            if (face.uAttributes & FACE_FlowDown)
                 poly->flags |= 0x400;
-            else if (face.uAttributes & FACE_FLOW_VERTICAL)
+            else if (face.uAttributes & FACE_FlowUp)
                 poly->flags |= 0x800;
 
-            if (face.uAttributes & FACE_FLOW_HORIZONTAL)
+            if (face.uAttributes & FACE_FlowRight)
                 poly->flags |= 0x2000;
-            else if (face.uAttributes & FACE_DONT_CACHE_TEXTURE)
+            else if (face.uAttributes & FACE_FlowLeft)
                 poly->flags |= 0x1000;
 
             poly->sTextureDeltaU = face.sTextureDeltaU;
@@ -4734,7 +4734,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
 }
 
 bool RenderOpenGL::SwitchToWindow() {
-    // pParty->uFlags |= PARTY_FLAGS_1_0002;
+    // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pViewport->SetFOV(_6BE3A0_fov);
     CreateZBuffer();
 
