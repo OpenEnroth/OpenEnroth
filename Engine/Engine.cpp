@@ -115,18 +115,26 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 
 */
 
+std::shared_ptr<Engine> engine;
 static std::string s_data_path;
 
 void SetDataPath(const std::string &data_path) { s_data_path = data_path; }
 
-std::string MakeDataPath(const char *file_rel_path) {
-    return s_data_path + OS_GetDirSeparator() + file_rel_path;
+std::string MakeDataPath(std::initializer_list<std::string_view> paths)
+{
+    std::string res = s_data_path;
+    std::string sep = OS_GetDirSeparator();
+    for (auto p : paths) {
+        if (!p.empty()) {
+            if (!res.empty())
+                res += sep;
+
+            res += p;
+        }
+    }
+
+    return res;
 }
-
-std::shared_ptr<Engine> engine;
-
-
-
 
 uint32_t Color32(uint16_t color16) {
     uint32_t c = color16;
@@ -868,20 +876,20 @@ void FinalInitialization() {
 
 bool MM7_LoadLods() {
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(MakeDataPath("data/icons.lod"), "icons")) {
+    if (!pIcons_LOD->Load(MakeDataPath("data", "icons.lod"), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pEvents_LOD = new LODFile_IconsBitmaps;
-    if (!pEvents_LOD->Load(MakeDataPath("data/events.lod").c_str(), "icons")) {
+    if (!pEvents_LOD->Load(MakeDataPath("data", "events.lod"), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(MakeDataPath("data/bitmaps.lod").c_str(), "bitmaps")) {
+    if (!pBitmaps_LOD->Load(MakeDataPath("data", "bitmaps.lod"), "bitmaps")) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)
@@ -890,7 +898,7 @@ bool MM7_LoadLods() {
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(MakeDataPath("data/sprites.lod"))) {
+    if (!pSprites_LOD->LoadSprites(MakeDataPath("data", "sprites.lod"))) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)

@@ -120,8 +120,8 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         }
         currentMusicTrack = -1;
 
-        String file_path = StringPrintf("Music%s%d.mp3", OS_GetDirSeparator().c_str(), eTrack);
-        file_path = MakeDataPath(file_path.c_str());
+        String file_path = StringPrintf("%d.mp3", eTrack);
+        file_path = MakeDataPath("music", file_path);
         if (!FileExists(file_path.c_str())) {
             logger->Warning("%s not found", file_path.c_str());
             return;
@@ -358,8 +358,8 @@ struct SoundHeader_mm7 {
 void AudioPlayer::LoadAudioSnd() {
     static_assert(sizeof(SoundHeader_mm7) == 52, "Wrong type size");
 
-    std::string file_path = "Sounds" + OS_GetDirSeparator() + "Audio.snd";
-    fAudioSnd.open(MakeDataPath(file_path.c_str()), std::ios_base::binary);
+    std::string file_path = MakeDataPath("sounds", "audio.snd");
+    fAudioSnd.open(MakeDataPath("sounds", "audio.snd"), std::ios_base::binary);
     if (!fAudioSnd.good()) {
         logger->Warning("Can't open file: %s", file_path.c_str());
         return;

@@ -61,7 +61,7 @@ bool OpenALSoundProvider::Initialize() {
     if (device_names) {
         for (const char *device_name = device_names; device_name[0];
              device_name += strlen(device_name) + 1) {
-            log("al: device found \"%s\"", device_name);
+            log("al: device found \"%s\"\n", device_name);
         }
     }
 
@@ -70,7 +70,7 @@ bool OpenALSoundProvider::Initialize() {
     device = alcOpenDevice(defname);
     if (device == nullptr) {
         CheckError();
-        log("al: Default sound device not present");
+        log("al: Default sound device not present\n");
         return false;
     }
 
@@ -246,11 +246,11 @@ void OpenALSoundProvider::Stream16(StreamingTrackBuffer *buffer,
         alSourceUnqueueBuffers(buffer->source_id, num_processed_buffers,
                                processed_buffer_ids);
         if (CheckError()) {
-            log("OpenAL: Faile to get played buffers.");
+            log("OpenAL: Failed to get played buffers\n");
         } else {
             alDeleteBuffers(num_processed_buffers, processed_buffer_ids);
             if (CheckError()) {
-                log("OpenAL: Faile to delete played buffers.");
+                log("OpenAL: Failed to delete played buffers\n");
             }
         }
         delete[] processed_buffer_ids;

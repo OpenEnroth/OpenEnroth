@@ -88,9 +88,8 @@ void LoadGame(unsigned int uSlot) {
     pNew_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_null;
 
-    String filename = "saves/" + pSavegameList->pFileList[uSlot];
-    filename = MakeDataPath(filename.c_str());
-    String to_file_path = MakeDataPath("data/new.lod");
+    String filename = MakeDataPath("saves", pSavegameList->pFileList[uSlot]);
+    String to_file_path = MakeDataPath("data", "new.lod");
     remove(to_file_path.c_str());
     if (!CopyFile(filename, to_file_path)) {
         Error("Failed to copy: %s", filename.c_str());
@@ -535,7 +534,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     free(uncompressed_buff);
 
     if (IsAutoSAve) {
-        if (!CopyFile(MakeDataPath("data/new.lod"), MakeDataPath("saves/autosave.mm7"))) {
+        if (!CopyFile(MakeDataPath("data", "new.lod"), MakeDataPath("saves", "autosave.mm7"))) {
             logger->Warning("Copy autosave.mm7 failed");
         }
     }
@@ -554,9 +553,8 @@ void DoSavegame(unsigned int uSlot) {
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
         pNew_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
         pNew_LOD->CloseWriteFile();  //закрыть
-        String file_path = StringPrintf("saves/save%03d.mm7", uSlot);
-        file_path = MakeDataPath(file_path.c_str());
-        CopyFile(MakeDataPath("data/new.lod"), file_path);
+        String file_name = StringPrintf("save%03d.mm7", uSlot);
+        CopyFile(MakeDataPath("data", "new.lod"), MakeDataPath("saves", file_name));
     }
     GUI_UpdateWindows();
     pGUIWindow_CurrentMenu->Release();
@@ -614,7 +612,7 @@ void SaveNewGame() {
         pNew_LOD->CloseWriteFile();
     }
 
-    String file_path = MakeDataPath("data/new.lod");
+    String file_path = MakeDataPath("data", "new.lod");
     remove(file_path.c_str());  // удалить new.lod
 
     LOD::FileHeader header;  // заголовок
