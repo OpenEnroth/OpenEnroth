@@ -9,10 +9,8 @@
 
 class Sdl2Window : public OSWindow {
  public:
-    inline Sdl2Window(SDL_Window *sdlWindow, SDL_Surface *sdlWindowSurface)
+    inline Sdl2Window()
         : OSWindow() {
-        this->sdlWindow = sdlWindow;
-        this->sdlWindowSurface = sdlWindowSurface;
     }
 
     void SetFullscreenMode() override;
@@ -44,8 +42,12 @@ class Sdl2Window : public OSWindow {
     }
 
     // Sdl2Window-specific interface follows
-
     void* GetWinApiHandle() override;
+    SDL_Window* getSDLWindow();
+    SDL_Surface* getSDLWindowSurface();
+    SDL_GLContext* getSDLOpenGlContext();
+    SDL_Window* CreateSDLWindow();
+    void DestroySDLWindow();
 
     // window<->renderer integration, probably should be a separate class
     void OpenGlCreate() override;

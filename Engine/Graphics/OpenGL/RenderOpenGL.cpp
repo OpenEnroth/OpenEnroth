@@ -19,16 +19,13 @@
     #endif
 #endif
 
+#include "glad/glad.h"
+
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
-#include <OpenGL/gl.h>
 #else
 #include <GL/glu.h>
-#include <GL/gl.h>
 #endif
-
-#include <SDL.h>
-#include <SDL_opengl_glext.h>
 
 #include <algorithm>
 #include <memory>

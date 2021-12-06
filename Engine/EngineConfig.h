@@ -136,6 +136,23 @@ class EngineConfig {
 
     bool is_underwater = false;
     bool is_targeting = false;
+
+    bool no_grab = false;
+
+    int window_x = 0;
+    int window_y = 0;
+    int window_width = 640;
+    int window_height = 480;
+    int display = 0;
+    int fullscreen = 0;
+    int borderless = 0;
+    std::string renderer_name =
+#ifdef _WINDOWS
+            "OpenGL";  // "DirectDraw";
+#else
+            "OpenGL";
+#endif
+    std::string window_title = "World of Might and Magic®";
 };
 
 }  // namespace Engine_

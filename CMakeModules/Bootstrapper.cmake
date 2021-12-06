@@ -67,7 +67,7 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/thirdparty/OpenAL.cmake")
 else()  # WIN32
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/find)
 find_package(OpenGL REQUIRED)
-#find_package(OPENAL REQUIRED)
+find_package(OpenAL REQUIRED)
 if(APPLE)
     link_directories("/usr/local/lib")
     link_directories("/usr/local/opt/openal-soft/lib")

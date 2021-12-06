@@ -5,10 +5,14 @@
 
 #include <map>
 #include <utility>
+#include <vector>
 
+#include "Engine/Engine.h"
 #include "Platform/Sdl2Window.h"
 
 #include "Io/GameKey.h"
+
+#include "glad/glad.h"
 
 using Io::GameKey;
 
@@ -152,6 +156,80 @@ int SDL_GetAsyncKeyState(GameKey key, bool consume) {
     return 0;
 }
 
+SDL_Window* Sdl2Window::CreateSDLWindow(/*const char* title, int x, int y, int width, int height, int display, int fullscreen, int borderless*/) {
+    std::vector<SDL_Rect> displayBounds;
+    Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+
+    int x = engine->config->window_x;
+    int y = engine->config->window_y;
+    int display = engine->config->display;
+    int displays = SDL_GetNumVideoDisplays();
+    if (displays < display)
+        display = 0;
+
+    for (int i = 0; i < displays; i++) {
+        displayBounds.push_back(SDL_Rect());
+        SDL_GetDisplayBounds(i, &displayBounds.back());
+        log->Info("display %d: x=%d, y=%d, w=%d, h=%d", i,
+            displayBounds[i].x, displayBounds[i].y,
+            displayBounds[i].w, displayBounds[i].h);
+    }
+
+    if (engine->config->fullscreen) {
+        if (engine->config->borderless)
+            flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        else
+            flags |= SDL_WINDOW_FULLSCREEN;
+
+        x = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
+        y = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
+    }
+    else {
+        if (engine->config->borderless)
+            flags |= SDL_WINDOW_BORDERLESS;
+
+        if (x >= 0 && x < displayBounds[display].w)
+            x += displayBounds[display].x;
+        else
+            x = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
+
+        if (y >= 0 && y < displayBounds[display].h)
+            y += displayBounds[display].y;
+        else
+            y = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
+    }
+
+    displayBounds.clear();
+
+    sdlWindow = SDL_CreateWindow(
+        engine->config->window_title.c_str(),
+        x, y,
+        engine->config->window_width, engine->config->window_height,
+        flags
+    );
+
+    if (!sdlWindow)
+        return nullptr;
+
+    if (!engine->config->no_grab)
+        SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
+
+    sdlWindowSurface = SDL_GetWindowSurface(sdlWindow);
+    if (!sdlWindowSurface) {
+        DestroySDLWindow();
+        return nullptr;
+    }
+
+    return sdlWindow;
+}
+
+void Sdl2Window::DestroySDLWindow() {
+    if (sdlWindow) {
+        SDL_DestroyWindow(sdlWindow);
+        sdlWindow = nullptr;
+    }
+}
+
 void Sdl2Window::MessageProc(const SDL_Event &e) {
     switch (e.type) {
         case SDL_QUIT: {
@@ -293,11 +371,31 @@ void *Sdl2Window::GetWinApiHandle() {
 #endif
 }
 
+SDL_GLContext* Sdl2Window::getSDLOpenGlContext() {
+    return &sdlOpenGlContext;
+}
+
+SDL_Window* Sdl2Window::getSDLWindow() {
+    return sdlWindow;
+}
+SDL_Surface* Sdl2Window::getSDLWindowSurface() {
+    return sdlWindowSurface;
+}
 
 void Sdl2Window::SetFullscreenMode() {
+    Uint32 flags;
+
+    if (engine->config->borderless)
+        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    else
+        flags |= SDL_WINDOW_FULLSCREEN;
+
+    SDL_SetWindowFullscreen(sdlWindow, flags);
 }
 
 void Sdl2Window::SetWindowedMode(int new_window_width, int new_window_height) {
+    if (!SDL_SetWindowDisplayMode(sdlWindow, 0))
+        SDL_SetWindowSize(sdlWindow, new_window_height, new_window_height);
 }
 
 void Sdl2Window::SetCursor(bool on = 1) {
@@ -394,22 +492,30 @@ bool Sdl2Window::TryMapScanCode(SDL_Scancode code, GameKey *outKey) const {
     return false;
 }
 
-
 void Sdl2Window::OpenGlCreate() {
     //  Use OpenGL 3.3 core - requires all fixed pipeline code to be modernised
-    //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
     //  Turn on double buffering with a 24bit Z buffer.
     //  You may need to change this to 16 or 32 for your system
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
     sdlOpenGlContext = SDL_GL_CreateContext(sdlWindow);
     if (!sdlOpenGlContext) {
-        log->Warning("OpenGL failed: %s", SDL_GetError());
+        log->Warning("Failed to initialize SDL with OpenGL: %s", SDL_GetError());
     }
+
+    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+        log->Warning("Failed to initialize the OpenGL loader");
+    }
+
+    log->Info("Supported OpenGL: %s", glGetString(GL_VERSION));
+    log->Info("Supported GLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    log->Info("OpenGL version: %d.%d", GLVersion.major, GLVersion.minor);
 
     //  Use Vsync
     if (SDL_GL_SetSwapInterval(1) < 0) {

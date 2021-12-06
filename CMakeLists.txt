@@ -61,13 +61,14 @@ else()
   set(CXX_STANDARD_REQUIRED ON)
 endif()
 
-include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} glad/include)
 
 add_definitions(-DPACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-and-magic/issues")
 
 include(CppLint)
 enable_check_style()
 
+add_subdirectory(glad)
 add_subdirectory(Arcomage)
 add_subdirectory(Engine)
 add_subdirectory(src)
@@ -85,13 +86,14 @@ target_compile_features (World_of_Might_and_Magic
 )
 target_check_style(World_of_Might_and_Magic)
 
-target_link_libraries(World_of_Might_and_Magic zlib sdl2 ffmpeg)
+target_link_libraries(World_of_Might_and_Magic zlib sdl2 ffmpeg glad)
 if(WIN32)
 target_link_libraries(World_of_Might_and_Magic ddraw.lib dxguid.lib)
 else()
 message(STATUS "ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
 message(STATUS "SDL_LIBRARIES = ${SDL_LIBRARIES}")
 message(STATUS "FFMPEG_LIBRARIES = ${FFMPEG_LIBRARIES}")
+message(STATUS "OpenAL_LIBRARY = ${OPENAL_LIBRARY}")
 message(STATUS "OPENGL_opengl_LIBRARY = ${OPENGL_opengl_LIBRARY}")
 message(STATUS "OPENGL_glu_LIBRARY = ${OPENGL_glu_LIBRARY}")
 

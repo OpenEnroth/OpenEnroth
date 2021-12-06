@@ -155,21 +155,26 @@ void Game::Run() {
 
     SetDataPath(FindMm7Directory());
 
-    window = OSWindowFactory().Create(
-        "World of Might and Magic®",
-        config->window_x,
-        config->window_y,
-        config->window_width,
-        config->window_height,
-        config->display,
-        config->fullscreen,
-        config->borderless
-    );
+    EngineFactory engineFactory;
+    engine = engineFactory.CreateEngine(config->command_line);
+    ::engine = engine;
+
+    if (!engine) {
+        log->Warning("Engine creation failed");
+        return;
+    }
+
+    window = OSWindowFactory().Create();
     ::window = window;
+
+    if (!window) {
+        log->Warning("Window creation failed");
+        return;
+    }
 
     render = IRenderFactory().Create(
         window,
-        config->renderer_name,
+        engine->config->renderer_name,
         false
     );
     ::render = render;
@@ -194,10 +199,6 @@ void Game::Run() {
 
     mouse = EngineIoc::ResolveMouse();
     ::mouse = mouse;
-
-    EngineFactory engineFactory;
-    engine = engineFactory.CreateEngine(config->command_line);
-    ::engine = engine;
 
     engine->Initialize();
 
