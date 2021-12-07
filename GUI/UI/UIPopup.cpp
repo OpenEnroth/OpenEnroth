@@ -49,7 +49,7 @@ void CharacterUI_DrawTooltip(const char *title, String &content) {
 
     Point pt = mouse->GetCursorPos();
 
-    memset(&popup_window, 0, 0x54u);
+    popup_window.Init();
     popup_window.uFrameWidth = 384;
     popup_window.uFrameHeight = 256;
     popup_window.uFrameX = 128;

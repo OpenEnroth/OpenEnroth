@@ -459,6 +459,7 @@ class GUIWindow {
     void DeleteButtons();
 
     static void InitializeGUI();
+    void Init();
 
     unsigned int uFrameX;
     unsigned int uFrameY;
