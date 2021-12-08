@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ==============================================================
  *
@@ -269,7 +268,7 @@ nk_chart_end(struct nk_context *ctx)
 
     win = ctx->current;
     chart = &win->layout->chart;
-    NK_MEMSET(chart, 0, sizeof(*chart));
+    nk_memset(chart, 0, sizeof(*chart));
     return;
 }
 NK_API void

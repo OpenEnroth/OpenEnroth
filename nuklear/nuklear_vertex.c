@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ===============================================================
  *
@@ -16,8 +15,8 @@ nk_draw_list_init(struct nk_draw_list *list)
     nk_zero(list, sizeof(*list));
     for (i = 0; i < NK_LEN(list->circle_vtx); ++i) {
         const float a = ((float)i / (float)NK_LEN(list->circle_vtx)) * 2 * NK_PI;
-        list->circle_vtx[i].x = (float)NK_COS(a);
-        list->circle_vtx[i].y = (float)NK_SIN(a);
+        list->circle_vtx[i].x = (float)nk_cos(a);
+        list->circle_vtx[i].y = (float)nk_sin(a);
     }
 }
 NK_API void
@@ -282,19 +281,19 @@ nk_draw_vertex_color(void *attr, const float *vals,
     case NK_FORMAT_R8G8B8A8:
     case NK_FORMAT_R8G8B8: {
         struct nk_color col = nk_rgba_fv(val);
-        NK_MEMCPY(attr, &col.r, sizeof(col));
+        nk_memcopy(attr, &col.r, sizeof(col));
     } break;
     case NK_FORMAT_B8G8R8A8: {
         struct nk_color col = nk_rgba_fv(val);
         struct nk_color bgra = nk_rgba(col.b, col.g, col.r, col.a);
-        NK_MEMCPY(attr, &bgra, sizeof(bgra));
+        nk_memcopy(attr, &bgra, sizeof(bgra));
     } break;
     case NK_FORMAT_R16G15B16: {
         nk_ushort col[3];
         col[0] = (nk_ushort)(val[0]*(float)NK_USHORT_MAX);
         col[1] = (nk_ushort)(val[1]*(float)NK_USHORT_MAX);
         col[2] = (nk_ushort)(val[2]*(float)NK_USHORT_MAX);
-        NK_MEMCPY(attr, col, sizeof(col));
+        nk_memcopy(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_R16G15B16A16: {
         nk_ushort col[4];
@@ -302,14 +301,14 @@ nk_draw_vertex_color(void *attr, const float *vals,
         col[1] = (nk_ushort)(val[1]*(float)NK_USHORT_MAX);
         col[2] = (nk_ushort)(val[2]*(float)NK_USHORT_MAX);
         col[3] = (nk_ushort)(val[3]*(float)NK_USHORT_MAX);
-        NK_MEMCPY(attr, col, sizeof(col));
+        nk_memcopy(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_R32G32B32: {
         nk_uint col[3];
         col[0] = (nk_uint)(val[0]*(float)NK_UINT_MAX);
         col[1] = (nk_uint)(val[1]*(float)NK_UINT_MAX);
         col[2] = (nk_uint)(val[2]*(float)NK_UINT_MAX);
-        NK_MEMCPY(attr, col, sizeof(col));
+        nk_memcopy(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_R32G32B32A32: {
         nk_uint col[4];
@@ -317,10 +316,10 @@ nk_draw_vertex_color(void *attr, const float *vals,
         col[1] = (nk_uint)(val[1]*(float)NK_UINT_MAX);
         col[2] = (nk_uint)(val[2]*(float)NK_UINT_MAX);
         col[3] = (nk_uint)(val[3]*(float)NK_UINT_MAX);
-        NK_MEMCPY(attr, col, sizeof(col));
+        nk_memcopy(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_R32G32B32A32_FLOAT:
-        NK_MEMCPY(attr, val, sizeof(float)*4);
+        nk_memcopy(attr, val, sizeof(float)*4);
         break;
     case NK_FORMAT_R32G32B32A32_DOUBLE: {
         double col[4];
@@ -328,13 +327,13 @@ nk_draw_vertex_color(void *attr, const float *vals,
         col[1] = (double)val[1];
         col[2] = (double)val[2];
         col[3] = (double)val[3];
-        NK_MEMCPY(attr, col, sizeof(col));
+        nk_memcopy(attr, col, sizeof(col));
     } break;
     case NK_FORMAT_RGB32:
     case NK_FORMAT_RGBA32: {
         struct nk_color col = nk_rgba_fv(val);
         nk_uint color = nk_color_u32(col);
-        NK_MEMCPY(attr, &color, sizeof(color));
+        nk_memcopy(attr, &color, sizeof(color));
     } break; }
 }
 NK_INTERN void
@@ -351,41 +350,41 @@ nk_draw_vertex_element(void *dst, const float *values, int value_count,
         default: NK_ASSERT(0 && "invalid vertex layout format"); break;
         case NK_FORMAT_SCHAR: {
             char value = (char)NK_CLAMP((float)NK_SCHAR_MIN, values[value_index], (float)NK_SCHAR_MAX);
-            NK_MEMCPY(attribute, &value, sizeof(value));
+            nk_memcopy(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(char));
         } break;
         case NK_FORMAT_SSHORT: {
             nk_short value = (nk_short)NK_CLAMP((float)NK_SSHORT_MIN, values[value_index], (float)NK_SSHORT_MAX);
-            NK_MEMCPY(attribute, &value, sizeof(value));
+            nk_memcopy(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(value));
         } break;
         case NK_FORMAT_SINT: {
             nk_int value = (nk_int)NK_CLAMP((float)NK_SINT_MIN, values[value_index], (float)NK_SINT_MAX);
-            NK_MEMCPY(attribute, &value, sizeof(value));
+            nk_memcopy(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(nk_int));
         } break;
         case NK_FORMAT_UCHAR: {
             unsigned char value = (unsigned char)NK_CLAMP((float)NK_UCHAR_MIN, values[value_index], (float)NK_UCHAR_MAX);
-            NK_MEMCPY(attribute, &value, sizeof(value));
+            nk_memcopy(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(unsigned char));
         } break;
         case NK_FORMAT_USHORT: {
             nk_ushort value = (nk_ushort)NK_CLAMP((float)NK_USHORT_MIN, values[value_index], (float)NK_USHORT_MAX);
-            NK_MEMCPY(attribute, &value, sizeof(value));
+            nk_memcopy(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(value));
             } break;
         case NK_FORMAT_UINT: {
             nk_uint value = (nk_uint)NK_CLAMP((float)NK_UINT_MIN, values[value_index], (float)NK_UINT_MAX);
-            NK_MEMCPY(attribute, &value, sizeof(value));
+            nk_memcopy(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(nk_uint));
         } break;
         case NK_FORMAT_FLOAT:
-            NK_MEMCPY(attribute, &values[value_index], sizeof(values[value_index]));
+            nk_memcopy(attribute, &values[value_index], sizeof(values[value_index]));
             attribute = (void*)((char*)attribute + sizeof(float));
             break;
         case NK_FORMAT_DOUBLE: {
             double value = (double)values[value_index];
-            NK_MEMCPY(attribute, &value, sizeof(value));
+            nk_memcopy(attribute, &value, sizeof(value));
             attribute = (void*)((char*)attribute + sizeof(double));
             } break;
         }
@@ -845,11 +844,11 @@ nk_draw_list_path_arc_to(struct nk_draw_list *list, struct nk_vec2 center,
         [1] https://en.wikipedia.org/wiki/List_of_trigonometric_identities#Angle_sum_and_difference_identities
     */
     {const float d_angle = (a_max - a_min) / (float)segments;
-    const float sin_d = (float)NK_SIN(d_angle);
-    const float cos_d = (float)NK_COS(d_angle);
+    const float sin_d = (float)nk_sin(d_angle);
+    const float cos_d = (float)nk_cos(d_angle);
 
-    float cx = (float)NK_COS(a_min) * radius;
-    float cy = (float)NK_SIN(a_min) * radius;
+    float cx = (float)nk_cos(a_min) * radius;
+    float cy = (float)nk_sin(a_min) * radius;
     for(i = 0; i <= segments; ++i) {
         float new_cx, new_cy;
         const float x = center.x + cx;

@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ===============================================================
  *
@@ -169,11 +168,11 @@ nk_do_property(nk_flags *ws,
             num_len = nk_strlen(string);
             break;
         case NK_PROPERTY_FLOAT:
-            NK_DTOA(string, (double)variant->value.f);
+            nk_dtoa(string, (double)variant->value.f);
             num_len = nk_string_float_limit(string, NK_MAX_FLOAT_PRECISION);
             break;
         case NK_PROPERTY_DOUBLE:
-            NK_DTOA(string, variant->value.d);
+            nk_dtoa(string, variant->value.d);
             num_len = nk_string_float_limit(string, NK_MAX_FLOAT_PRECISION);
             break;
         }
@@ -229,7 +228,7 @@ nk_do_property(nk_flags *ws,
     }
     if (old != NK_PROPERTY_EDIT && (*state == NK_PROPERTY_EDIT)) {
         /* property has been activated so setup buffer */
-        NK_MEMCPY(buffer, dst, (nk_size)*length);
+        nk_memcopy(buffer, dst, (nk_size)*length);
         *cursor = nk_utf_len(buffer, *length);
         *len = *length;
         length = len;
@@ -392,7 +391,7 @@ nk_property(struct nk_context *ctx, const char *name, struct nk_property_variant
     if (in && *state != NK_PROPERTY_DEFAULT && !win->property.active) {
         /* current property is now hot */
         win->property.active = 1;
-        NK_MEMCPY(win->property.buffer, buffer, (nk_size)*len);
+        nk_memcopy(win->property.buffer, buffer, (nk_size)*len);
         win->property.length = *len;
         win->property.cursor = *cursor;
         win->property.state = *state;

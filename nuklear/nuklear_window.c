@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ===============================================================
  *
@@ -177,7 +176,7 @@ nk_begin_titled(struct nk_context *ctx, const char *name, const char *title,
         win->bounds = bounds;
         win->name = name_hash;
         name_length = NK_MIN(name_length, NK_WINDOW_MAX_NAME-1);
-        NK_MEMCPY(win->name_string, name, name_length);
+        nk_memcopy(win->name_string, name, name_length);
         win->name_string[name_length] = 0;
         win->popup.win = 0;
         if (!ctx->active)

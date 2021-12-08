@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ==============================================================
  *
@@ -122,7 +121,7 @@ nk_clear(struct nk_context *ctx)
     ctx->memory.calls = 0;
     ctx->last_widget_state = 0;
     ctx->style.cursor_active = ctx->style.cursors[NK_CURSOR_ARROW];
-    NK_MEMSET(&ctx->overlay, 0, sizeof(ctx->overlay));
+    nk_memset(&ctx->overlay, 0, sizeof(ctx->overlay));
 
     /* garbage collector */
     iter = ctx->begin;

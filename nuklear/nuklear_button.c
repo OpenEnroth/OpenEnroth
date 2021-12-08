@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ==============================================================
  *
@@ -234,8 +233,8 @@ nk_draw_button_image(struct nk_command_buffer *out,
     const struct nk_rect *bounds, const struct nk_rect *content,
     nk_flags state, const struct nk_style_button *style, const struct nk_image *img)
 {
-    nk_draw_button(out, bounds, state, style);
     nk_draw_image(out, *content, img, nk_white);
+    nk_draw_button(out, bounds, state, style);
 }
 NK_LIB nk_bool
 nk_do_button_image(nk_flags *state,
@@ -350,8 +349,8 @@ nk_draw_button_text_image(struct nk_command_buffer *out,
     else text.text = style->text_normal;
 
     text.padding = nk_vec2(0,0);
-    nk_widget_text(out, *label, str, len, &text, NK_TEXT_CENTERED, font);
     nk_draw_image(out, *image, img, nk_white);
+    nk_widget_text(out, *label, str, len, &text, NK_TEXT_CENTERED, font);
 }
 NK_LIB nk_bool
 nk_do_button_text_image(nk_flags *state,

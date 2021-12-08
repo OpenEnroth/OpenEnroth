@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 #ifdef NK_INCLUDE_FONT_BAKING
 /* -------------------------------------------------------------
@@ -95,7 +94,7 @@ nk_font_cyrillic_glyph_ranges(void)
 {
     NK_STORAGE const nk_rune ranges[] = {
         0x0020, 0x00FF,
-        0x0400, 0x052F,
+        0x0410, 0x052F,
         0x2DE0, 0x2DFF,
         0xA640, 0xA69F,
         0
@@ -736,7 +735,7 @@ nk__lit(unsigned char *data, unsigned int length)
     NK_ASSERT (nk__dout + length <= nk__barrier);
     if (nk__dout + length > nk__barrier) { nk__dout += length; return; }
     if (data < nk__barrier2) { nk__dout = nk__barrier+1; return; }
-    NK_MEMCPY(nk__dout, data, length);
+    nk_memcopy(nk__dout, data, length);
     nk__dout += length;
 }
 NK_INTERN unsigned char*
@@ -957,7 +956,7 @@ nk_font_atlas_add(struct nk_font_atlas *atlas, const struct nk_font_config *conf
     /* allocate font config  */
     cfg = (struct nk_font_config*)
         atlas->permanent.alloc(atlas->permanent.userdata,0, sizeof(struct nk_font_config));
-    NK_MEMCPY(cfg, config, sizeof(*config));
+    nk_memcopy(cfg, config, sizeof(*config));
     cfg->n = cfg;
     cfg->p = cfg;
 
@@ -1013,7 +1012,7 @@ nk_font_atlas_add(struct nk_font_atlas *atlas, const struct nk_font_config *conf
             atlas->font_num++;
             return 0;
         }
-        NK_MEMCPY(cfg->ttf_blob, config->ttf_blob, cfg->ttf_size);
+        nk_memcopy(cfg->ttf_blob, config->ttf_blob, cfg->ttf_size);
         cfg->ttf_data_owned_by_atlas = 1;
     }
     atlas->font_num++;
@@ -1185,7 +1184,7 @@ nk_font_atlas_bake(struct nk_font_atlas *atlas, int *width, int *height,
     tmp = atlas->temporary.alloc(atlas->temporary.userdata,0, tmp_size);
     NK_ASSERT(tmp);
     if (!tmp) goto failed;
-    NK_MEMSET(tmp,0,tmp_size);
+    nk_memset(tmp,0,tmp_size);
 
     /* allocate glyph memory for all fonts */
     baker = nk_font_baker(tmp, atlas->glyph_count, atlas->font_num, &atlas->temporary);

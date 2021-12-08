@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ===============================================================
  *
@@ -729,7 +728,7 @@ nk_textedit_discard_undo(struct nk_text_undo_state *state)
             int n = state->undo_rec[0].insert_length, i;
             /* delete n characters from all other records */
             state->undo_char_point = (short)(state->undo_char_point - n);
-            NK_MEMCPY(state->undo_char, state->undo_char + n,
+            nk_memcopy(state->undo_char, state->undo_char + n,
                 (nk_size)state->undo_char_point*sizeof(nk_rune));
             for (i=0; i < state->undo_point; ++i) {
                 if (state->undo_rec[i].char_storage >= 0)
@@ -738,7 +737,7 @@ nk_textedit_discard_undo(struct nk_text_undo_state *state)
             }
         }
         --state->undo_point;
-        NK_MEMCPY(state->undo_rec, state->undo_rec+1,
+        nk_memcopy(state->undo_rec, state->undo_rec+1,
             (nk_size)((nk_size)state->undo_point * sizeof(state->undo_rec[0])));
     }
 }
@@ -758,7 +757,7 @@ nk_textedit_discard_redo(struct nk_text_undo_state *state)
             /* delete n characters from all other records */
             state->redo_char_point = (short)(state->redo_char_point + n);
             num = (nk_size)(NK_TEXTEDIT_UNDOCHARCOUNT - state->redo_char_point);
-            NK_MEMCPY(state->undo_char + state->redo_char_point,
+            nk_memcopy(state->undo_char + state->redo_char_point,
                 state->undo_char + state->redo_char_point-n, num * sizeof(char));
             for (i = state->redo_point; i < k; ++i) {
                 if (state->undo_rec[i].char_storage >= 0) {
@@ -769,7 +768,7 @@ nk_textedit_discard_redo(struct nk_text_undo_state *state)
         }
         ++state->redo_point;
         num = (nk_size)(NK_TEXTEDIT_UNDOSTATECOUNT - state->redo_point);
-        if (num) NK_MEMCPY(state->undo_rec + state->redo_point-1,
+        if (num) nk_memcopy(state->undo_rec + state->redo_point-1,
             state->undo_rec + state->redo_point, num * sizeof(state->undo_rec[0]));
     }
 }
@@ -987,7 +986,7 @@ nk_textedit_init_fixed(struct nk_text_edit *state, void *memory, nk_size size)
     NK_ASSERT(state);
     NK_ASSERT(memory);
     if (!state || !memory || !size) return;
-    NK_MEMSET(state, 0, sizeof(struct nk_text_edit));
+    nk_memset(state, 0, sizeof(struct nk_text_edit));
     nk_textedit_clear_state(state, NK_TEXT_EDIT_SINGLE_LINE, 0);
     nk_str_init_fixed(&state->string, memory, size);
 }
@@ -997,7 +996,7 @@ nk_textedit_init(struct nk_text_edit *state, struct nk_allocator *alloc, nk_size
     NK_ASSERT(state);
     NK_ASSERT(alloc);
     if (!state || !alloc) return;
-    NK_MEMSET(state, 0, sizeof(struct nk_text_edit));
+    nk_memset(state, 0, sizeof(struct nk_text_edit));
     nk_textedit_clear_state(state, NK_TEXT_EDIT_SINGLE_LINE, 0);
     nk_str_init(&state->string, alloc, size);
 }
@@ -1007,7 +1006,7 @@ nk_textedit_init_default(struct nk_text_edit *state)
 {
     NK_ASSERT(state);
     if (!state) return;
-    NK_MEMSET(state, 0, sizeof(struct nk_text_edit));
+    nk_memset(state, 0, sizeof(struct nk_text_edit));
     nk_textedit_clear_state(state, NK_TEXT_EDIT_SINGLE_LINE, 0);
     nk_str_init_default(&state->string);
 }

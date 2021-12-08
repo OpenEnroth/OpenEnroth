@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ==============================================================
  *
@@ -110,7 +109,7 @@ nk_buffer_realloc(struct nk_buffer *b, nk_size capacity, nk_size *size)
 
     *size = capacity;
     if (temp != b->memory.ptr) {
-        NK_MEMCPY(temp, b->memory.ptr, buffer_size);
+        nk_memcopy(temp, b->memory.ptr, buffer_size);
         b->pool.free(b->pool.userdata, b->memory.ptr);
     }
 
@@ -125,7 +124,7 @@ nk_buffer_realloc(struct nk_buffer *b, nk_size capacity, nk_size *size)
         back_size = buffer_size - b->size;
         dst = nk_ptr_add(void, temp, capacity - back_size);
         src = nk_ptr_add(void, temp, b->size);
-        NK_MEMCPY(dst, src, back_size);
+        nk_memcopy(dst, src, back_size);
         b->size = capacity - back_size;
     }
     return temp;
@@ -188,7 +187,7 @@ nk_buffer_push(struct nk_buffer *b, enum nk_buffer_allocation_type type,
 {
     void *mem = nk_buffer_alloc(b, type, size, align);
     if (!mem) return;
-    NK_MEMCPY(mem, memory, size);
+    nk_memcopy(mem, memory, size);
 }
 NK_API void
 nk_buffer_mark(struct nk_buffer *buffer, enum nk_buffer_allocation_type type)

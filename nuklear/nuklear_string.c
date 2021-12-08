@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ===============================================================
  *
@@ -40,7 +39,7 @@ nk_str_append_text_char(struct nk_str *s, const char *str, int len)
     if (!s || !str || !len) return 0;
     mem = (char*)nk_buffer_alloc(&s->buffer, NK_BUFFER_FRONT, (nk_size)len * sizeof(char), 0);
     if (!mem) return 0;
-    NK_MEMCPY(mem, str, (nk_size)len * sizeof(char));
+    nk_memcopy(mem, str, (nk_size)len * sizeof(char));
     s->len += nk_utf_len(str, len);
     return len;
 }
@@ -142,7 +141,7 @@ nk_str_insert_at_char(struct nk_str *s, int pos, const char *str, int len)
     src = nk_ptr_add(char, s->buffer.memory.ptr, pos + (copylen-1));
     for (i = 0; i < copylen; ++i) *dst-- = *src--;
     mem = nk_ptr_add(void, s->buffer.memory.ptr, pos);
-    NK_MEMCPY(mem, str, (nk_size)len * sizeof(char));
+    nk_memcopy(mem, str, (nk_size)len * sizeof(char));
     s->len = nk_utf_len((char *)s->buffer.memory.ptr, (int)s->buffer.allocated);
     return 1;
 }
@@ -282,7 +281,7 @@ nk_str_delete_chars(struct nk_str *s, int pos, int len)
         /* memmove */
         char *dst = nk_ptr_add(char, s->buffer.memory.ptr, pos);
         char *src = nk_ptr_add(char, s->buffer.memory.ptr, pos + len);
-        NK_MEMCPY(dst, src, s->buffer.allocated - (nk_size)(pos + len));
+        nk_memcopy(dst, src, s->buffer.allocated - (nk_size)(pos + len));
         NK_ASSERT(((int)s->buffer.allocated - (int)len) >= 0);
         s->buffer.allocated -= (nk_size)len;
     } else nk_str_remove_chars(s, len);

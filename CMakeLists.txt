@@ -69,6 +69,7 @@ include(CppLint)
 enable_check_style()
 
 add_subdirectory(glad)
+add_subdirectory(nuklear)
 add_subdirectory(Arcomage)
 add_subdirectory(Engine)
 add_subdirectory(src)
@@ -86,7 +87,7 @@ target_compile_features (World_of_Might_and_Magic
 )
 target_check_style(World_of_Might_and_Magic)
 
-target_link_libraries(World_of_Might_and_Magic zlib sdl2 ffmpeg glad luajit)
+target_link_libraries(World_of_Might_and_Magic zlib sdl2 ffmpeg glad luajit nuklear)
 if(WIN32)
 target_link_libraries(World_of_Might_and_Magic ddraw.lib dxguid.lib)
 else()

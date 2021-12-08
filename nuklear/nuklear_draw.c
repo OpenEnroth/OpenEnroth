@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ==============================================================
  *
@@ -54,7 +53,7 @@ nk_command_buffer_push(struct nk_command_buffer* b,
     memory = NK_ALIGN_PTR(unaligned, align);
     alignment = (nk_size)((nk_byte*)memory - (nk_byte*)unaligned);
 #ifdef NK_ZERO_COMMAND_MEMORY
-    NK_MEMSET(cmd, 0, size + alignment);
+    nk_memset(cmd, 0, size + alignment);
 #endif
 
     cmd->type = t;
@@ -552,7 +551,7 @@ nk_draw_text(struct nk_command_buffer *b, struct nk_rect r,
     cmd->font = font;
     cmd->length = length;
     cmd->height = font->height;
-    NK_MEMCPY(cmd->string, string, (nk_size)length);
+    nk_memcopy(cmd->string, string, (nk_size)length);
     cmd->string[length] = '\0';
 }
 

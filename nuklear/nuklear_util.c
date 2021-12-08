@@ -1,5 +1,4 @@
-#include "nuklear.h"
-#include "nuklear_internal.h"
+#include "nuklear_config.h"
 
 /* ===============================================================
  *
@@ -72,8 +71,8 @@ done:
     return (dst0);
 }
 #endif
-#ifndef NK_MEMSET
-#define NK_MEMSET nk_memset
+#ifndef nk_memset
+#define nk_memset nk_memset
 NK_LIB void
 nk_memset(void *ptr, int c0, nk_size size)
 {
@@ -130,7 +129,7 @@ NK_LIB void
 nk_zero(void *ptr, nk_size size)
 {
     NK_ASSERT(ptr);
-    NK_MEMSET(ptr, 0, size);
+    nk_memset(ptr, 0, size);
 }
 NK_API int
 nk_strlen(const char *str)
@@ -499,8 +498,6 @@ nk_itoa(char *s, long n)
     nk_strrev_ascii(s);
     return s;
 }
-#ifndef NK_DTOA
-#define NK_DTOA nk_dtoa
 NK_LIB char*
 nk_dtoa(char *s, double n)
 {
@@ -579,7 +576,6 @@ nk_dtoa(char *s, double n)
     *(c) = '\0';
     return s;
 }
-#endif
 #ifdef NK_INCLUDE_STANDARD_VARARGS
 #ifndef NK_INCLUDE_STANDARD_IO
 NK_INTERN int
@@ -837,7 +833,7 @@ nk_vsnprintf(char *buf, int buf_size, const char *fmt, va_list args)
             int padding = 0;
 
             NK_ASSERT(arg_type == NK_ARG_TYPE_DEFAULT);
-            NK_DTOA(number_buffer, value);
+            nk_dtoa(number_buffer, value);
             num_len = nk_strlen(number_buffer);
 
             /* calculate padding */
