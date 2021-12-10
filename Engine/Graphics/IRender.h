@@ -232,6 +232,13 @@ class IRender {
 
     virtual bool Initialize() = 0;
 
+    virtual bool NuklearInitialize() = 0;
+    virtual bool NuklearCreateDevice() = 0;
+    virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) = 0;
+    virtual void NuklearRelease() = 0;
+    virtual struct nk_font* NuklearLoadFont(const char *font_path, size_t font_size) = 0;
+    virtual struct nk_image NuklearImageLoad(Image* img, int w, int h) = 0;
+
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey) = 0;
     virtual Texture *CreateTexture_Solid(const String &name) = 0;
     virtual Texture *CreateTexture_Alpha(const String &name) = 0;

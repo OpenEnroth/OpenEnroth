@@ -11,6 +11,7 @@
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 
+#include "nuklear/nuklear_config.h"
 
 struct ODMFace;
 class RenderD3D;
@@ -32,6 +33,13 @@ class Render : public RenderBase {
 
     virtual bool Initialize();
 
+    virtual bool NuklearInitialize();
+    virtual bool NuklearCreateDevice();
+    virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer);
+    virtual void NuklearRelease();
+    virtual struct nk_font* NuklearLoadFont(const char *font_path, size_t font_size);
+    virtual struct nk_image NuklearImageLoad(Image *img, int w, int h);
+
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey);
     virtual Texture *CreateTexture_Solid(const String &name);
     virtual Texture *CreateTexture_Alpha(const String &name);
@@ -40,7 +48,7 @@ class Render : public RenderBase {
     virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name);
     virtual Texture *CreateTexture_PCXFromNewLOD(const String &name);
     virtual Texture *CreateTexture_PCXFromLOD(void *pLOD, const String &name);
-
+    
     virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
         IMAGE_FORMAT format, const void *pixels = nullptr);
 
