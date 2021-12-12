@@ -1404,7 +1404,7 @@ bool Render::InitializeFullscreen() {
     pBeforePresentFunction = Present_NoColorKey;
 
     bWindowMode = 0;
-    pParty->uFlags |= PARTY_FLAGS_1_0002;
+    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pViewport->SetFOV(_6BE3A0_fov);
 
     return true;
@@ -1537,7 +1537,7 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blen
 }
 
 bool Render::SwitchToWindow() {
-    // pParty->uFlags |= PARTY_FLAGS_1_0002;
+    // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pViewport->SetFOV(_6BE3A0_fov);
     Release();
 
@@ -2028,7 +2028,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     // perception
     // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
-    if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_CAN_SATURATE_COLOR)) {
+    if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_IsSecret)) {
         uint eightSeconds = OS_GetTime() % 3000;
         float angle = (eightSeconds / 3000.0f) * 2 * 3.1415f;
 
@@ -3548,17 +3548,17 @@ void Render::DrawBuildingsD3D() {
             poly->field_32 = 0;
             poly->texture = face.GetTexture();
 
-            if (face.uAttributes & FACE_FLUID) poly->flags |= 2;
+            if (face.uAttributes & FACE_IsFluid) poly->flags |= 2;
             if (face.uAttributes & FACE_INDOOR_SKY) poly->flags |= 0x400;
 
-            if (face.uAttributes & FACE_FLOW_DIAGONAL)
+            if (face.uAttributes & FACE_FlowDown)
                 poly->flags |= 0x400;
-            else if (face.uAttributes & FACE_FLOW_VERTICAL)
+            else if (face.uAttributes & FACE_FlowUp)
                 poly->flags |= 0x800;
 
-            if (face.uAttributes & FACE_FLOW_HORIZONTAL)
+            if (face.uAttributes & FACE_FlowRight)
                 poly->flags |= 0x2000;
-            else if (face.uAttributes & FACE_DONT_CACHE_TEXTURE)
+            else if (face.uAttributes & FACE_FlowLeft)
                 poly->flags |= 0x1000;
 
             poly->sTextureDeltaU = face.sTextureDeltaU;

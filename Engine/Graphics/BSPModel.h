@@ -5,38 +5,44 @@
 #include "../VectorTypes.h"
 #include "Engine/Strings.h"
 
-#define FACE_PORTAL             0x00000001  // portal/two-sided
-#define FACE_CAN_SATURATE_COLOR 0x00000002  // guess at perception faces
-#define FACE_FLOW_DIAGONAL      0x00000004  // Diagonal flow of the lava or water
-#define FACE_UNKNOW5            0x00000006
-#define FACE_UNKNOW6            0x00000008
-#define FACE_FLUID              0x00000010          // wavy animated water or lava
-#define FACE_FLOW_VERTICAL      0x00000020  // Vertical flow of the lava or water
-#define FACE_DONT_CACHE_TEXTURE 0x00000040  // do not load face texture if it isn't loaded already
-#define FACE_RENDERED           0x00000080  // face has been rendered - ie seen by party
+#define FACE_IsPortal           0x00000001
+#define FACE_IsSecret           0x00000002
+#define FACE_FlowDown           0x00000004
+#define FACE_TexAlignDown       0x00000008
+#define FACE_IsFluid            0x00000010
+#define FACE_FlowUp             0x00000020
+#define FACE_FlowLeft           0x00000040
+#define FACE_SeenByParty        0x00000080
 #define FACE_XY_PLANE           0x00000100
 #define FACE_XZ_PLANE           0x00000200
 #define FACE_YZ_PLANE           0x00000400
-#define FACE_FLOW_HORIZONTAL    0x00000800  // Horizontal flow of the lava or water
-#define FACE_HAS_EVENT_HINT     0x00001000
-#define FACE_INVISIBLE          0x00002000
+#define FACE_FlowRight          0x00000800
+#define FACE_TexAlignLeft       0x00001000
+#define FACE_IsInvisible        0x00002000
 #define FACE_TEXTURE_FRAME      0x00004000  // Texture ID is a frameset from TextureFrameTable, otherwise BitmapID
-#define FACE_OUTLINED           0x00010000  // outline face edges
-#define FACE_INDOOR_DOOR        0x00020000
-#define FACE_TEXTURE_FLOW       0x00040000  // The texture moves slowly. For horizontal facets only.
+#define FACE_TexAlignRight      0x00008000
+#define FACE_OUTLINED           0x00010000  // outline face debug
+#define FACE_TexAlignBottom     0x00020000
+#define FACE_TexMoveByDoor      0x00040000
+#define FACE_UNKOWN_10          0x00080000
 #define FACE_HAS_EVENT          0x00100000
 #define FACE_INDOOR_CARPET      0x00200000
 #define FACE_INDOOR_SKY         0x00400000
-#define FACE_UNKNOW3            0x00800000
-#define FACE_UNKNOW4            0x01000000
+#define FACE_FlipNormalU        0x00800000
+#define FACE_FlipNormalV        0x01000000
 #define FACE_CLICKABLE          0x02000000  // Event can be triggered by clicking on the facet.
 #define FACE_PRESSURE_PLATE     0x04000000  // Event can be triggered by stepping on the facet.
-#define FACE_INDICATE           0x06000000  // Event can be triggered by indicating on the facet.
-#define FACE_UNKNOW1            0x08000000
-#define FACE_UNKNOW2            0x10000000
+#define FACE_INDICATE           0x06000000  // face has status bar string on hover
+#define FACE_TriggerByMonster   0x08000000
+#define FACE_TriggerByObject    0x10000000
 #define FACE_ETHEREAL           0x20000000  // Untouchable. You can pass through it.
-#define FACE_INDOOR_LAVA        0x40000000
-#define FACE_PICKED             0x80000000
+#define FACE_IsLava             0x40000000
+#define FACE_IsPicked           0x80000000  // mouse is hovering
+
+// door attr
+#define DOOR_TRIGGERED          0x00000001
+#define DOOR_SETTING_UP         0x00000002
+#define DOOR_NOSOUND            0x00000004
 
 #pragma pack(push, 1)
 struct BSPNode {
@@ -97,11 +103,11 @@ struct ODMFace {
                                     struct Polygon *polygon);
 
     inline bool Invisible() const {
-        return (uAttributes & FACE_INVISIBLE) != 0;
+        return (uAttributes & FACE_IsInvisible) != 0;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return (uAttributes & FACE_PORTAL) != 0; }
-    inline bool Fluid() const { return (uAttributes & FACE_FLUID) != 0; }
+    inline bool Portal() const { return (uAttributes & FACE_IsPortal) != 0; }
+    inline bool Fluid() const { return (uAttributes & FACE_IsFluid) != 0; }
     inline bool Indoor_sky() const {
         return (uAttributes & FACE_INDOOR_SKY) != 0;
     }

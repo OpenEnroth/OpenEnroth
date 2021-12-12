@@ -61,9 +61,7 @@ enum PARTY_QUEST_BITS : uint16_t {
 
 /*  355 */
 enum PARTY_FLAGS_1 : int32_t {
-    // Flag 0x2 is set or unset in a ton of places, only used in
-    // OutdoorLocation::Draw and UIDialogue::sub_4451A8_press_any_key
-    PARTY_FLAGS_1_0002 = 0x0002,
+    PARTY_FLAGS_1_ForceRedraw = 0x0002,
     PARTY_FLAGS_1_WATER_DAMAGE = 0x0004,
     PARTY_FLAGS_1_AIRBORNE = 0x0008,
     PARTY_FLAGS_1_ALERT_RED = 0x0010,

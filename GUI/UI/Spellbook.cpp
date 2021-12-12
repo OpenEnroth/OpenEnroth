@@ -243,7 +243,7 @@ void GUIWindow_Spellbook::Update() {
     // }
 
     Point pt = mouse->GetCursorPos();
-    if (pt.x < 640 && pt.y < 480) {
+    if (pt.x < window->GetWidth() && pt.y < window->GetHeight()) {
         v10 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderWidth()] & 0xFFFF;
         if (v10) {
             if (SBPageCSpellsTextureList[v10]) {

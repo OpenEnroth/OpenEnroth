@@ -584,16 +584,21 @@ void SavegameList::Initialize() {
     pSavegameList->Reset();
     uNumSavegameFiles = 0;
 
-    String saves_dir = MakeDataPath("saves");
+    String saves_dir = MakeDataPath("Saves");
 
-    for (const auto & entry : std::filesystem::directory_iterator(saves_dir)) {
-        if(entry.path().extension() == ".mm7") {
-            pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
-            if (uNumSavegameFiles == MAX_SAVE_SLOTS) break;
+    if (std::filesystem::exists(saves_dir)) {
+        for (const auto& entry : std::filesystem::directory_iterator(saves_dir)) {
+            if (entry.path().extension() == ".mm7") {
+                pSavegameList->pFileList[uNumSavegameFiles++] = entry.path().filename().string();
+                if (uNumSavegameFiles == MAX_SAVE_SLOTS) break;
+            }
         }
+    } else {
+        logger->Warning("Couldn't find saves directory!");
     }
 
-    std::sort(&pSavegameList->pFileList[0], &pSavegameList->pFileList[uNumSavegameFiles]);
+    if (uNumSavegameFiles)
+        std::sort(&pSavegameList->pFileList[0], &pSavegameList->pFileList[uNumSavegameFiles]);
 }
 
 SavegameList::SavegameList() { Reset(); }

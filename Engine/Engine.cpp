@@ -187,7 +187,7 @@ void Engine::Draw() {
             pParty->sRotationX != pParty->sPrevRotationX ||
             pParty->vPosition.z != pParty->vPrevPosition.z ||
             pParty->sEyelevel != pParty->sPrevEyelevel)
-            pParty->uFlags |= PARTY_FLAGS_1_0002;
+            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 
         pParty->vPrevPosition.x = pParty->vPosition.x;
         pParty->vPrevPosition.y = pParty->vPosition.y;
@@ -243,7 +243,7 @@ void Engine::Draw() {
     mouse->Activate();
     render->EndScene();
     render->Present();
-    pParty->uFlags &= ~PARTY_FLAGS_1_0002;
+    pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
 }
 
 
@@ -457,7 +457,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
 
 //----- (0044EDE4) --------------------------------------------------------
 bool Engine::AlterGamma_BLV(BLVFace *pFace, unsigned int *pColor) {
-    if (CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (CanSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -466,7 +466,7 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, unsigned int *pColor) {
 }
 
 bool Engine::AlterGamma_ODM(ODMFace *pFace, unsigned int *pColor) {
-    if (engine->CanSaturateFaces() && pFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine->CanSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -521,7 +521,7 @@ int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
     float a4b;  // [sp+1Ch] [bp+10h]@11
 
     if (CanSaturateFaces() && a2->field_59 == 5 &&
-        a2->pODMFace->uAttributes & FACE_CAN_SATURATE_COLOR) {
+        a2->pODMFace->uAttributes & FACE_IsSecret) {
         v4 = (double)a4;
         a2a = v4;
         *a3 |= 2u;
@@ -572,7 +572,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     float v14;  // [sp+1Ch] [bp+10h]@8
     float v15;  // [sp+1Ch] [bp+10h]@10
 
-    if (engine->CanSaturateFaces() && a2->uAttributes & FACE_CAN_SATURATE_COLOR) {
+    if (engine->CanSaturateFaces() && a2->uAttributes & FACE_IsSecret) {
         v4 = (double)a4;
         v11 = v4;
         *a3 |= 2u;
@@ -786,7 +786,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 
     pEventTimer->Pause();
     pMiscTimer->Pause();
-    pParty->uFlags = PARTY_FLAGS_1_0002;
+    pParty->uFlags = PARTY_FLAGS_1_ForceRedraw;
     CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(0, (_0_box_loading_1_fullscreen == 0) + 1);
@@ -1203,7 +1203,7 @@ void MM7Initialization() {
     } else {
         viewparams->field_20 &= 0xFFFFFF00;
     }
-    pParty->uFlags |= PARTY_FLAGS_1_0002;
+    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     viewparams->uSomeY = viewparams->uScreen_topL_Y;
     viewparams->uSomeX = viewparams->uScreen_topL_X;
     viewparams->uSomeZ = viewparams->uScreen_BttmR_X;
@@ -1281,7 +1281,7 @@ void Engine::_461103_load_level_sub() {
 
     GenerateItemsInChest();
     pGameLoadingUI_ProgressBar->Progress();
-    pParty->uFlags |= PARTY_FLAGS_1_0002;
+    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pParty->field_7B5_in_arena_quest = 0;
     dword_5C6DF8 = 1;
     pNPCStats->uNewlNPCBufPos = 0;
@@ -1450,7 +1450,7 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename) {
                 sub_44861E_set_texture_outdoor(uFaceCog, pFilename);
             }
 
-            pParty->uFlags |= PARTY_FLAGS_1_0002;
+            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         }
     }
 }
@@ -1469,7 +1469,7 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
                             .uAttributes &= ~bit;
                 }
             }
-            pParty->uFlags |= PARTY_FLAGS_1_0002;
+            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         } else {
             for (BSPModel &model : pOutdoor->pBModels) {
                 for (ODMFace &face : model.pFaces) {
@@ -1483,7 +1483,7 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
                 }
             }
         }
-        pParty->uFlags |= PARTY_FLAGS_1_0002;
+        pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     }
 }
 
@@ -1501,7 +1501,7 @@ void SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName) {
             else
                 pLevelDecorations[i].uFlags |= LEVEL_DECORATION_INVISIBLE;
 
-            pParty->uFlags |= PARTY_FLAGS_1_0002;
+            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
         }
     }
 }

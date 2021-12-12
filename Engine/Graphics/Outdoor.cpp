@@ -158,7 +158,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 //----- (00441CFF) --------------------------------------------------------
 void OutdoorLocation::Draw() {
     bool redrawWorld = true;
-    if (!(pParty->uFlags & PARTY_FLAGS_1_0002) && !engine->config->ForceRedraw())
+    if (!(pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) && !engine->config->ForceRedraw())
         redrawWorld = false;
     pOutdoor->ExecDraw(redrawWorld);
 

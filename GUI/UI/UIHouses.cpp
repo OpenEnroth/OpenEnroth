@@ -859,13 +859,15 @@ void PrepareHouse(HOUSE_ID house) {
 
 //----- (004B1E92) --------------------------------------------------------
 void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
-    if (pAnimatedRooms[p2DEvents[uHouseID-1].uAnimationID].uRoomSoundId)
-        pAudioPlayer->PlaySound(
-        (SoundID)(sound +
-            100 * (pAnimatedRooms[p2DEvents[uHouseID-1].uAnimationID]
-                .uRoomSoundId +
-                300)),
-            806, 0, -1, 0, 0);
+    if (uHouseID > 0) {
+        if (pAnimatedRooms[p2DEvents[uHouseID - 1].uAnimationID].uRoomSoundId)
+            pAudioPlayer->PlaySound(
+                (SoundID)(sound +
+                    100 * (pAnimatedRooms[p2DEvents[uHouseID - 1].uAnimationID]
+                        .uRoomSoundId +
+                        300)),
+                806, 0, -1, 0, 0);
+    }
 }
 
 //----- (004BCACC) --------------------------------------------------------
@@ -1433,7 +1435,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         Party::TakeGold(pPrice);
                         dword_F8B1E4 = 1;
                         pPlayers[uActiveCharacter]->pActiveSkills[skill] = 1;
-                        pPlayers[uActiveCharacter]->PlaySound(SPEECH_SkillLearned, 0);
+                        pPlayers[uActiveCharacter]->PlayAwardSound_Anim97_Face(SPEECH_SkillLearned);
                     }
                 }
             }
@@ -1616,7 +1618,7 @@ void TravelByTransport() {
                 } else {
                     pIndoorCameraD3D->sRotationZ = 0;
 
-                    pParty->uFlags |= PARTY_FLAGS_1_0002;
+                    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                     pParty->vPosition.x = pTravel->arrival_x;
                     pParty->vPosition.y = pTravel->arrival_y;
                     pParty->vPosition.z = pTravel->arrival_z;
@@ -3823,7 +3825,7 @@ void GUIWindow_House::Release() {
         pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) & (TrigLUT->uIntegerPi + pParty->sRotationZ);
         pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
     }
-    pParty->uFlags |= PARTY_FLAGS_1_0002;
+    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 
     GUIWindow::Release();
 }

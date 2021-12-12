@@ -2791,7 +2791,7 @@ void Actor::UpdateActorAI() {
             else if (pParty->sRotationX < -128)
                 pParty->sRotationX = -128;
 
-            pParty->uFlags |= PARTY_FLAGS_1_0002;
+            pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
             pParty->armageddon_timer -= pMiscTimer->uTimeElapsed;
             v4 = pParty->armageddonDamage + 50;
             if (pParty->armageddon_timer <= 0) {
