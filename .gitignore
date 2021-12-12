@@ -15,6 +15,7 @@ Build/Visual Studio 2017/Debug
 
 # cmake
 out
+build
 
 # 3d-party libs are auto-resolved by cmake
 lib
