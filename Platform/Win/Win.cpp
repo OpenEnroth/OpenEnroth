@@ -1,7 +1,5 @@
 #include "Platform/Win/Win.h"
 
-#include <SDL2/SDL.h>
-
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -11,10 +9,6 @@
 #include "Platform/Api.h"
 
 #pragma comment(lib, "winmm.lib")
-
-void OS_MsgBox(const char *msg, const char *title) {
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, nullptr);
-}
 
 unsigned int OS_GetTime() { return GetTickCount(); }
 

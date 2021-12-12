@@ -3,17 +3,12 @@
 #include <dirent.h>
 #include <fnmatch.h>
 #include <sys/time.h>
-#include <SDL2/SDL.h>
 
 #include <string>
 #include <cstring>
 #include <vector>
 
 #include "Engine/Point.h"
-
-void OS_MsgBox(const char *msg, const char *title) {
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, nullptr);
-}
 
 unsigned int OS_GetTime() {
     struct timeval tv;

@@ -14,8 +14,6 @@ void OS_GetAppString(const char *pKeyName, char *pOutString, int uBufLen,
                      const char *pDefaultValue);
 void OS_SetAppString(const char *pKey, const char *pString);
 
-void OS_MsgBox(const char *msg, const char *title);
-
 void OS_Sleep(int ms);
 void OS_ShowCursor(bool show);
 
