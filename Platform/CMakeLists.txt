@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
 set(PLATFORM_SOURCES OSWindow.cpp
                      OSWindowFactory.cpp
+                     Sdl2Platform.cpp
                      Sdl2KeyboardController.cpp
                      Sdl2MouseController.cpp
                      Sdl2Window.cpp
@@ -11,6 +12,7 @@ set(PLATFORM_SOURCES OSWindow.cpp
 set(PLATFORM_HEADERS Api.h
                      OSWindow.h
                      OSWindowFactory.h
+                     Sdl2Platform.h
                      Sdl2KeyboardController.h
                      Sdl2MouseController.h
                      Sdl2Window.h

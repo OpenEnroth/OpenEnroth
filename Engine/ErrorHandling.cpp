@@ -1,7 +1,5 @@
 #include "Engine/ErrorHandling.h"
 
-#include <SDL2/SDL.h>
-
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
@@ -25,7 +23,8 @@ void Error_impl_(const char *filename, const char *functionname,
         out << "\n\n" << msg_body;
     }
 
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", out.str().c_str(), nullptr);
+    extern void OS_MsgBox(const char *, const char *);
+    OS_MsgBox(out.str().c_str(), "Error");
 }
 
 void Assert_impl_(const char *filename, const char *functionname,
@@ -48,7 +47,8 @@ void Assert_impl_(const char *filename, const char *functionname,
         out << "\n\n" << msg_body;
     }
 
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Assertion", out.str().c_str(), nullptr);
+    extern void OS_MsgBox(const char *, const char *);
+    OS_MsgBox(out.str().c_str(), "Assertion");
 
     assert(false);
 }
