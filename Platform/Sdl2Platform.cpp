@@ -1,5 +1,3 @@
-#include "Platform/Sdl2Platform.h"
-
 #include <SDL2/SDL.h>
 
 void OS_MsgBox(const char *msg, const char *title) {
