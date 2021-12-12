@@ -3,6 +3,7 @@
 #include <dirent.h>
 #include <fnmatch.h>
 #include <sys/time.h>
+#include <SDL2/SDL.h>
 
 #include <string>
 #include <cstring>
@@ -11,7 +12,7 @@
 #include "Engine/Point.h"
 
 void OS_MsgBox(const char *msg, const char *title) {
-    // MessageBoxA(nullptr, msg, title, 0);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, nullptr);
 }
 
 unsigned int OS_GetTime() {
