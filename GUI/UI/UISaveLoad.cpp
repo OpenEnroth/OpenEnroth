@@ -239,7 +239,6 @@ static void UI_DrawSaveLoad(bool save) {
     unsigned int pSaveFiles;
 
     if (pSavegameUsedSlots[uLoadGameUI_SelectedSlot]) {
-        memset(&save_load_window, 0, 0x54);
         save_load_window.uFrameX = pGUIWindow_CurrentMenu->uFrameX + 240;
         save_load_window.uFrameWidth = 220;
         save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - pFontSmallnum->GetHeight()) + 157;
