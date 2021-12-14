@@ -1,5 +1,6 @@
 #include "Platform/Lin/Lin.h"
 
+#include <SDL.h>
 #include <dirent.h>
 #include <fnmatch.h>
 #include <sys/time.h>
@@ -9,6 +10,10 @@
 #include <vector>
 
 #include "Engine/Point.h"
+
+void OS_MsgBox(const char *msg, const char *title) {
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, nullptr);
+}
 
 unsigned int OS_GetTime() {
     struct timeval tv;
