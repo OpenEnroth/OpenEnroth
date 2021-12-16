@@ -148,7 +148,7 @@ void Menu::EventLoop() {
                     keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
                     strcpy(pSavegameHeader[uLoadGameUI_SelectedSlot].pName, keyboardInputHandler->GetTextInput().c_str());
                 }
-                DoSavegame(uLoadGameUI_SelectedSlot);
+                SaveGameToSlot(uLoadGameUI_SelectedSlot);
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
                 pGUIWindow_CurrentMenu->Release();

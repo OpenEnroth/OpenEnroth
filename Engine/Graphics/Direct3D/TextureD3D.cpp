@@ -66,10 +66,11 @@ bool TextureD3D::LoadImageData() {
     if (!this->initialized) {
         void *pixels;
 
-        this->initialized =
-            this->loader->Load(&width, &height, &pixels, &native_format);
+        this->initialized = this->loader->Load(
+            &width, &height, &pixels, &native_format
+        );
 
-        if (width == 0 || height == 0) __debugbreak();
+        Assert(width > 0 && height > 0);
 
         if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT) {
             this->pixels[native_format] = pixels;

@@ -85,7 +85,7 @@ void LoadGame(unsigned int uSlot) {
         return;
     }
 
-    pNew_LOD->CloseWriteFile();
+    //pNew_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_null;
 
     String filename = "saves/" + pSavegameList->pFileList[uSlot];
@@ -96,7 +96,11 @@ void LoadGame(unsigned int uSlot) {
         Error("Failed to copy: %s", filename.c_str());
     }
 
-    pNew_LOD->LoadFile(new_lod, 0);
+    pNew_LOD->Close();
+    delete pNew_LOD;
+
+    pNew_LOD = new LOD::WriteableFile();
+    pNew_LOD->Open(new_lod);
 
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
     SavegameHeader *header = (SavegameHeader*)pNew_LOD->LoadRaw("header.bin");
@@ -245,7 +249,22 @@ void LoadGame(unsigned int uSlot) {
     viewparams->bRedrawGameUI = true;
 }
 
-void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
+
+void Autosave(bool NotSaveWorld) {
+    SaveGame(NotSaveWorld);
+    pNew_LOD->Commit();
+
+    bool success = CopyFile(
+        assets_locator->LocateDataFile("new.lod"),
+        assets_locator->LocateSaveFile("autosave.mm7")
+    );
+
+    if (!success) {
+        logger->Warning("Unable to write autosave.mm7");
+    }
+}
+
+void SaveGame(bool NotSaveWorld) {
     s_SavedMapName = pCurrentMapName;
     if (pCurrentMapName == "d05.blv") {  // arena
         return;
@@ -542,15 +561,15 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->sRotationX = sPRotationX;
 }
 
-void DoSavegame(unsigned int uSlot) {
+void SaveGameToSlot(int slot) {
     if (pCurrentMapName != "d05.blv") {  // Not Arena(не Арена)
-        SaveGame(0, 0);
-        strcpy(pSavegameHeader[uSlot].pLocationName, pCurrentMapName.c_str());
-        pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
-        pNew_LOD->AddFile("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader));
+        SaveGame(0);
+        strcpy(pSavegameHeader[slot].pLocationName, pCurrentMapName.c_str());
+        pSavegameHeader[slot].playing_time = pParty->GetPlayingTime();
+        pNew_LOD->AddFile("header.bin", &pSavegameHeader[slot], sizeof(SavegameHeader));
         pNew_LOD->CloseWriteFile();
         String save_filename = assets_locator->LocateSaveFile(
-            StringPrintf("save%03d.mm7", uSlot)
+            StringPrintf("save%03d.mm7", slot)
         );
         if (!CopyFile(assets_locator->LocateDataFile("new.lod"), save_filename)) {
             logger->Warning("Unable to write %s", save_filename.c_str());
@@ -569,7 +588,7 @@ void DoSavegame(unsigned int uSlot) {
     }
 
     if (pCurrentMapName != "d05.blv")
-        pNew_LOD->_4621A7();
+        pNew_LOD->Commit();
     else
         GameUI_SetStatusBar(LSTR_NO_SAVING_IN_ARENA);
 
@@ -604,6 +623,7 @@ void SavegameList::Reset() {
 
 
 static const char* mm7_default_game[] = {
+    // see MAPSTATS.txt
     "d01.dlv",
     "d02.dlv",
     "d03.dlv",
@@ -683,7 +703,7 @@ static const char* mm7_default_game[] = {
 };
 
 
-void SaveNewGame() {
+void AutosaveOnNewGame() {
     // this is about to go into a new game save, that why...
     // but weird place for this logic nontheless
     pParty->vPrevPosition.x = 12552;
@@ -705,18 +725,12 @@ void SaveNewGame() {
     std::string file_path = assets_locator->LocateDataFile("new.lod");
     remove(file_path.c_str());
 
-    LOD::FileHeader header;
-    strcpy(header.LodVersion, "MMVII");
-    strcpy(header.LodDescription, "newmaps for MMVII");
-    header.LODSize = 100;
-    header.dword_0000A8 = 0;
-
     if (!pNew_LOD->NewLod(file_path, LOD_VERSION_MM7, "newmaps for MMVII")) {
         logger->Warning("Can't create %s", file_path.c_str());
         return;
     }
-    if (!pNew_LOD->AddDirectory("current")) {
-        logger->Warning("Can't create %s/%s", file_path.c_str(), "current");
+    if (!pNew_LOD->AddDirectory("chapter")) {
+        logger->Warning("Can't create %s/%s", file_path.c_str(), "chapter");
         return;
     }
 
@@ -727,39 +741,6 @@ void SaveNewGame() {
         pNew_LOD->AddFile(filename, data, data_size);
         pGames_LOD->DisposeRaw(data);
     }
-    SaveGame(1, 1);
 
-    pNew_LOD->Close();
-
-    /*
-    pNew_LOD->CreateEmptyLod(&header, file_path, "current");
-    if (pNew_LOD->LoadFile(file_path, false)) {
-        pNew_LOD->OpenTmpWriteFile();
-        pNew_LOD->ClearSubNodes();
-
-        for (size_t i = pGames_LOD->GetSubNodesCount() / 2; i < pGames_LOD->GetSubNodesCount(); ++i) {  // копирование файлов с 76 по 151
-            // mm7:
-            // d01.dlv      .. d37.dlv
-            // mdk01.dlv    .. mdk05.dlv
-            // mdr01.dlv    .. mdr05.dlv
-            // mdt01.dlv    .. mdt05.dlv
-            // mdt09.dlv    .. mdt15.dlv
-            // nwc.dlv
-            // out01.ddm    .. out15.ddm
-            // t01.dlv      .. t04.dlv
-            String name = pGames_LOD->GetSubNodeName(i);
-            size_t size = 0;
-            void *data = pGames_LOD->LoadRaw(name, &size);
-            pNew_LOD->AppendFileToCurrentDirectory(name, data, size);
-            pGames_LOD->DisposeRaw(data);
-        }
-
-        strcpy(pSavegameHeader[0].pLocationName, "out01.odm");
-        pNew_LOD->AppendFileToCurrentDirectory("header.bin", &pSavegameHeader[0], sizeof(SavegameHeader));
-
-        pNew_LOD->FixDirectoryOffsets();
-        
-
-        SaveGame(1, 1);
-    }*/
+    Autosave(1);
 }

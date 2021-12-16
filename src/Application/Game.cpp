@@ -176,7 +176,7 @@ bool Game::Loop() {
             pCurrentMapName = pStartingMapName;
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
-            SaveNewGame();
+            AutosaveOnNewGame();
             if (engine->config->NoMargareth()) {
                 _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_MARGARETH_OFF, 1);
             }
@@ -938,7 +938,7 @@ void Game::EventLoop() {
                         pEventTimer->Pause();
                         pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                         pGameLoadingUI_ProgressBar->Progress();
-                        SaveGame(1, 0);
+                        Autosave(0);
                         pGameLoadingUI_ProgressBar->Progress();
                         RestAndHeal(24 * 60 * GetTravelTime());
                         if (pParty->GetFood() > 0) {
@@ -1146,7 +1146,7 @@ void Game::EventLoop() {
                     __debugbreak();
                     dword_50CDC8 = 1;
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
-                    SaveGame(1, 0);
+                    Autosave(0);
                     pCurrentMapName = pMapStats->pInfos[uHouse_ExitPic].pFilename;
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
@@ -1245,7 +1245,7 @@ void Game::EventLoop() {
                     pAudioPlayer->PlaySpellSound(lloyds_beacon_spell_id, 0);
                     if (bRecallingBeacon) {
                         if (pCurrentMapName != pGames_LOD->GetSubNodeName(pPlayer9->vBeacons[uMessageParam].SaveFileID)) {
-                            SaveGame(1, 0);
+                            Autosave(0);
                             OnMapLeave();
                             pCurrentMapName = pGames_LOD->GetSubNodeName(pPlayer9->vBeacons[uMessageParam].SaveFileID);
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
@@ -1293,7 +1293,7 @@ void Game::EventLoop() {
                             default:
                                 if (uMessageParam != 5) {
                                 LABEL_486:
-                                    SaveGame(1, 0);
+                                    Autosave(0);
                                     v64 =
                                         pMapStats->GetMapInfo(pCurrentMapName);
                                     v65 = uMessageParam;
@@ -1313,7 +1313,7 @@ void Game::EventLoop() {
                                         pParty->sRotationX =
                                             TownPortalList[v65].rot_x;
                                     } else {  // if change map
-                                        SaveGame(1, 0);
+                                        Autosave(0);
                                         OnMapLeave();
                                         dword_6BE364_game_settings_1 |=
                                             GAME_SETTINGS_0001;
@@ -2720,7 +2720,7 @@ void Game::GameLoop() {
                 }
                 pMediaPlayer->PlayFullscreenMovie("losegame");
                 if (pMovie_Track) pMediaPlayer->Unload();
-                SaveGame(0, 0);
+                SaveGame(0);
                 ++pParty->uNumDeaths;
                 for (uint i = 0; i < 4; ++i)
                     pParty->pPlayers[i].SetVariable(VAR_Award, 85);

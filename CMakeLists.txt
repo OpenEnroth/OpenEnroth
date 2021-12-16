@@ -112,7 +112,23 @@ if (APPLE)
 endif()
 
 endif()
-target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization)
+target_link_libraries(
+    World_of_Might_and_Magic
+    game
+    arcomage
+    engine
+    gui
+    io
+    media
+    platform
+    objects
+    spells
+    tables
+    graphics
+    turnengine
+    serialization
+    lod
+)
 
 set_property(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic

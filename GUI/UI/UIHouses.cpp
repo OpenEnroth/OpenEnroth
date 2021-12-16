@@ -1599,7 +1599,7 @@ void TravelByTransport() {
                 DIALOGUE_TRANSPORT_SCHEDULE_1]];
             if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
                 if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {
-                    SaveGame(1, 0);
+                    Autosave(0);
                     pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].pFilename;
 
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;

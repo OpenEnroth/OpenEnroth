@@ -39,7 +39,6 @@ set(ENGINE_HEADERS AssetsClass.h
                    Events.h
                    Events2D.h
                    Localization.h
-                   LOD.h
                    Log.h
                    MapInfo.h
                    MapsLongTimer.h
@@ -76,6 +75,7 @@ target_link_libraries(engine zlib)
 target_link_libraries(engine game)
 
 add_subdirectory(Graphics)
+add_subdirectory(Lod)
 add_subdirectory(Objects)
 add_subdirectory(Serialization)
 add_subdirectory(Spells)

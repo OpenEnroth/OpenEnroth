@@ -2355,7 +2355,7 @@ void Transition_StopSound_Autosave(const char *pMapName,
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
     if (pCurrentMapName != pMapName) {
-        SaveGame(1, 0);
+        Autosave(0);
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;

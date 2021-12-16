@@ -25,11 +25,12 @@ struct SavegameHeader {
 };
 #pragma pack(pop)
 
+void SaveGame(bool NotSaveWorld);
+void SaveGameToSlot(int slot);
+void Autosave(bool NotSaveWorld);
+void AutosaveOnNewGame();
 void LoadGame(unsigned int uSlot);
-void SaveGame(bool IsAutoSAve, bool NotSaveWorld);
-void DoSavegame(unsigned int uSlot);
 bool Initialize_GamesLOD_NewLOD();
-void SaveNewGame();
 
 extern unsigned int uNumSavegameFiles;
 extern std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
