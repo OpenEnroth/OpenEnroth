@@ -21,8 +21,8 @@ GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
     GUIWindow(WINDOW_MainMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
 
-    pNuklear->Create(WINDOW_MainMenu);
-    if (pNuklear->Mode(WINDOW_MainMenu) == pNuklear->NUKLEAR_EXCLUSIVE)
+    nuklear->Create(WINDOW_MainMenu);
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
         return;
 
     main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
@@ -43,8 +43,8 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-    if (pNuklear->Mode(WINDOW_MainMenu) == pNuklear->NUKLEAR_EXCLUSIVE)
-        goto pNuklear;
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
+        goto nuklear;
 
     ui_mainmenu_new->Release();
     ui_mainmenu_load->Release();
@@ -52,14 +52,14 @@ GUIWindow_MainMenu::~GUIWindow_MainMenu() {
     ui_mainmenu_exit->Release();
     main_menu_background->Release();
 
-pNuklear:
-    pNuklear->Release(WINDOW_MainMenu);
+nuklear:
+    nuklear->Release(WINDOW_MainMenu);
 }
 
 void GUIWindow_MainMenu::Update() {
-    pNuklear->Draw(pNuklear->NUKLEAR_PRE, WINDOW_MainMenu, 2);
-    if (pNuklear->Mode(WINDOW_MainMenu) == pNuklear->NUKLEAR_EXCLUSIVE)
-        goto pNuklear;
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu, 2);
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
+        goto nuklear;
 
     render->DrawTextureNew(0, 0, main_menu_background);
 
@@ -95,12 +95,12 @@ void GUIWindow_MainMenu::Update() {
         }
     }
 
-pNuklear:
-    pNuklear->Draw(pNuklear->NUKLEAR_POST, WINDOW_MainMenu, 2);
+nuklear:
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu, 2);
 }
 
 void GUIWindow_MainMenu::EventLoop() {
-    if (pNuklear->Mode(WINDOW_MainMenu) == pNuklear->NUKLEAR_EXCLUSIVE)
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
         return;
 
     while (!pMessageQueue_50CBD0->Empty()) {
@@ -139,8 +139,7 @@ static bool first_initialization = true;
 
 void GUIWindow_MainMenu::Loop() {
     Image *tex;
-    pNuklear->Initialize();
-    pNuklear->Create(WINDOW_MainMenu_Load);
+    nuklear->Create(WINDOW_MainMenu_Load);
 
     pAudioPlayer->StopChannels(-1, -1);
     pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
@@ -148,31 +147,31 @@ void GUIWindow_MainMenu::Loop() {
     if (first_initialization) {
         first_initialization = false;
 
-        if (pNuklear->Mode(WINDOW_MainMenu_Load) != pNuklear->NUKLEAR_EXCLUSIVE) {
+        if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
             tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
         }
 
         render->ResetUIClipRect();
         render->BeginScene();
         {
-            pNuklear->Draw(pNuklear->NUKLEAR_PRE, WINDOW_MainMenu_Load, 1);
-            if (pNuklear->Mode(WINDOW_MainMenu_Load) != pNuklear->NUKLEAR_EXCLUSIVE) {
+            nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu_Load, 1);
+            if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
                 render->DrawTextureNew(0, 0, tex);
                 DrawMM7CopyrightWindow();
             }
-            pNuklear->Draw(pNuklear->NUKLEAR_POST, WINDOW_MainMenu_Load, 1);
+            nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu_Load, 1);
             render->EndScene();
             render->Present();
 
             engine->SecondaryInitialization();
             FinalInitialization();
 
-            if (pNuklear->Mode(WINDOW_MainMenu_Load) != pNuklear->NUKLEAR_EXCLUSIVE) {
+            if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
                 tex->Release();
             }
         }
     }
-    pNuklear->Release(WINDOW_MainMenu_Load);
+    nuklear->Release(WINDOW_MainMenu_Load);
 
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
@@ -195,9 +194,9 @@ void GUIWindow_MainMenu::Loop() {
         render->Present();
     }
 
-    pNuklear->Release(WINDOW_MainMenu);
+    nuklear->Release(WINDOW_MainMenu);
     pWindow_MainMenu->Release();
-//    delete pWindow_MainMenu;
+    delete pWindow_MainMenu;
     pWindow_MainMenu = nullptr;
 }
 

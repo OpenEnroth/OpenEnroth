@@ -388,6 +388,7 @@ void GUIWindow_GameVideoOptions::Update() {
             game_ui_menu_options_video_gamma_positions[uGammaPos]);
 
         render->DrawTextureNew(274 / 640.0f, 169 / 480.0f, gamma_preview_image);
+        msg_window.Init();
         msg_window.uFrameX = 22;
         msg_window.uFrameY = 190;
         msg_window.uFrameWidth = 211;
@@ -736,6 +737,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     lpsz = pNPCStats->pProfessions[pNPC->profession].pJoinText;
                     if (!lpsz) lpsz = "";
                 }
+                popup_window.Init();
                 popup_window.sHint.clear();
                 popup_window.uFrameX = 38;
                 popup_window.uFrameY = 60;

@@ -38,6 +38,7 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -1875,7 +1876,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
 
 void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
                                      Image *pTexture) {
-    DrawTextureNew((pX - move_X)/window->GetWidth(), (pY - move_Y)/window->GetHeight(), pTexture);
+    DrawTextureNew((float)(pX - move_X)/window->GetWidth(), (float)(pY - move_Y)/window->GetHeight(), pTexture);
 }
 
 
@@ -1924,7 +1925,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL error: (%u)", err);
+        log->Warning("OpenGL: draw image error: (%u)", err);
     }
 }
 
@@ -2796,7 +2797,7 @@ void RenderOpenGL::Update_Texture(Texture *texture) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL error: (%u)", err);
+        log->Warning("OpenGL: update texture error: (%u)", err);
     }
 }
 
@@ -4002,7 +4003,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL error: (%u)", err);
+        log->Warning("OpenGL: draw texture error: (%u)", err);
     }
 
     // blank over same bit of this render_target_rgb to stop text overlaps
@@ -4829,12 +4830,12 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL error: (%u)", err);
+        log->Warning("OpenGL: fill rectangle error: (%u)", err);
     }
 }
 
 bool RenderOpenGL::NuklearInitialize() {
-    struct nk_context* nk_ctx = (struct nk_context*)window->GetNuklearContext();
+    struct nk_context* nk_ctx = nuklear->ctx;
     if (!nk_ctx) {
         log->Warning("Nuklear context is not available");
         return false;
@@ -4847,7 +4848,7 @@ bool RenderOpenGL::NuklearInitialize() {
     }
 
     nk_font_atlas_init_default(&nk_dev.atlas);
-    nk_dev.atlas.default_font = NuklearLoadFont(NULL, 12);
+    nk_dev.atlas.default_font = NuklearLoadFont(NULL, 16);
     if (!nk_dev.atlas.default_font) {
         log->Warning("Nuklear default font loading failed");
         NuklearRelease();
@@ -4950,7 +4951,7 @@ bool RenderOpenGL::NuklearCreateDevice() {
 }
 
 bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) {
-    struct nk_context* nk_ctx = (struct nk_context*)window->GetNuklearContext();
+    struct nk_context *nk_ctx = nuklear->ctx;
     if (!nk_ctx)
         return false;
 
@@ -5063,7 +5064,6 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
 
 void RenderOpenGL::NuklearRelease() {
     nk_font_atlas_clear(&nk_dev.atlas);
-//    nk_free(&ctx);
 
     glDetachShader(nk_dev.prog, nk_dev.vert_shdr);
     glDetachShader(nk_dev.prog, nk_dev.frag_shdr);
@@ -5113,19 +5113,27 @@ struct nk_font* RenderOpenGL::NuklearLoadFont(const char* font_path, size_t font
     return font;
 }
 
-struct nk_image RenderOpenGL::NuklearImageLoad(Image *img, int w, int h)
+struct nk_image RenderOpenGL::NuklearImageLoad(Image *img)
 {
-    GLuint tex;
+    GLuint texid;
     auto t = (TextureOpenGL *)img;
     unsigned __int8 *pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);
 
-    glGenTextures(1, &tex);
-    t->SetOpenGlTexture(tex);
-    glBindTexture(GL_TEXTURE_2D, tex);
+    glGenTextures(1, &texid);
+    t->SetOpenGlTexture(texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t->GetWidth(), t->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return nk_image_id(tex);
+    return nk_image_id(texid);
+}
+
+void RenderOpenGL::NuklearImageFree(Image *img) {
+    auto t = (TextureOpenGL *)img;
+    GLuint texid = t->GetOpenGlTexture();
+    if (texid != -1) {
+        glDeleteTextures(1, &texid);
+    }
 }

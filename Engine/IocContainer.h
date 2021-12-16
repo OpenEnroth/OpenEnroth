@@ -9,6 +9,7 @@ class Log;
 namespace Io {
     class Mouse;
 }
+class Nuklear;
 class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
@@ -23,6 +24,7 @@ class IocContainer {
     static SpellFxRenderer *ResolveSpellFxRenderer();
     static LightmapBuilder *ResolveLightmapBuilder();
     static std::shared_ptr<Io::Mouse> ResolveMouse();
+    static std::shared_ptr<Nuklear> ResolveNuklear();
     static std::shared_ptr<ParticleEngine> ResolveParticleEngine();
     static Vis *ResolveVis();
 
@@ -32,6 +34,7 @@ class IocContainer {
      static SpellFxRenderer *spell_fx_renderer;
      static LightmapBuilder *lightmap_builder;
      static std::shared_ptr<Io::Mouse> mouse;
+     static std::shared_ptr<Nuklear> nuklear;
      static std::shared_ptr<ParticleEngine> particle_engine;
      static Vis *vis;
 };

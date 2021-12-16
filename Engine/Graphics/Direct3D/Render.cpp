@@ -4765,5 +4765,6 @@ bool Render::NuklearInitialize() { return false; }
 bool Render::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) { return false; }
 void Render::NuklearRelease() {}
 struct nk_font* Render::NuklearLoadFont(const char *font_path, size_t font_size) { return NULL; }
-struct nk_image Render::NuklearImageLoad(Image* img, int w, int h) { return nk_image_id(0);  }
+struct nk_image Render::NuklearImageLoad(Image* img) { return nk_image_id(0);  }
+void Render::NuklearImageFree(Image *img) {}
 

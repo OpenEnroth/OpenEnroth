@@ -53,13 +53,10 @@ class Sdl2Window : public OSWindow {
     void OpenGlCreate() override;
     void OpenGlSwapBuffers() override;
 
-    // nuklear context integration
-    void *GetNuklearContext();
  private:
     SDL_Window *sdlWindow = nullptr;
     SDL_Surface *sdlWindowSurface = nullptr;
     SDL_GLContext sdlOpenGlContext = nullptr;
-    struct nk_context *nk_ctx = nullptr;
 
     bool NuklearEventHandler(const SDL_Event &e);
     void MessageProc(const SDL_Event &e);

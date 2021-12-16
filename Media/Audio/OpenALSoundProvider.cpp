@@ -23,15 +23,9 @@
 #include <cstring>
 
 #include "Engine/ErrorHandling.h"
+#include "Engine/Engine.h"
 #include "Engine/Log.h"
 #include "Media/MediaPlayer.h"
-
-void log(const char *format, ...) {
-    va_list va;
-    va_start(va, format);
-    vprintf(format, va);
-    va_end(va);
-}
 
 bool CheckError() {
     ALenum code1 = alGetError();
@@ -40,7 +34,7 @@ bool CheckError() {
     }
 
     const char *message = alGetString(code1);
-    log("al: error #%d \"%s\"\n", code1, message);
+    logger->Warning("OpenAL: error #%d \"%s\"", code1, message);
 
     return true;
 }
@@ -61,7 +55,7 @@ bool OpenALSoundProvider::Initialize() {
     if (device_names) {
         for (const char *device_name = device_names; device_name[0];
              device_name += strlen(device_name) + 1) {
-            log("al: device found \"%s\"\n", device_name);
+            logger->Info("OpenAL: device found \"%s\"", device_name);
         }
     }
 
@@ -70,7 +64,7 @@ bool OpenALSoundProvider::Initialize() {
     device = alcOpenDevice(defname);
     if (device == nullptr) {
         CheckError();
-        log("al: Default sound device not present\n");
+        logger->Warning("OpenAL: Default sound device not present");
         return false;
     }
 
@@ -246,11 +240,11 @@ void OpenALSoundProvider::Stream16(StreamingTrackBuffer *buffer,
         alSourceUnqueueBuffers(buffer->source_id, num_processed_buffers,
                                processed_buffer_ids);
         if (CheckError()) {
-            log("OpenAL: Failed to get played buffers\n");
+            logger->Warning("OpenAL: Failed to get played buffers");
         } else {
             alDeleteBuffers(num_processed_buffers, processed_buffer_ids);
             if (CheckError()) {
-                log("OpenAL: Failed to delete played buffers\n");
+                logger->Warning("OpenAL: Failed to delete played buffers");
             }
         }
         delete[] processed_buffer_ids;
@@ -379,7 +373,7 @@ void OpenALSoundProvider::PlayTrack16(TrackBuffer *buffer, bool loop,
         do {
             float track_offset = 0;
             alGetSourcef(buffer->source_id, AL_SEC_OFFSET, &track_offset);
-            log("playing: %.4f/%.4f\n", track_offset, track_length);
+            logger->Info("OpenAL: playing %.4f/%.4f\n", track_offset, track_length);
 
             alGetSourcei(buffer->source_id, AL_SOURCE_STATE, (int *)&status);
         } while (status == AL_PLAYING);
@@ -605,20 +599,20 @@ void AudioTrackS16::DrainBuffers() {
 
     ALuint *processed_buffer_ids = new ALuint[num_processed_buffers];
     if (CheckError()) {
-        log("OpenAL: Faile to get played buffers.");
+        logger->Warning("OpenAL: Failed to get played buffers");
     } else {
         for (ALint i = 0; i < num_processed_buffers; i++) {
             ALuint buffer = processed_buffer_ids[i];
             alSourceUnqueueBuffers(al_source, 1, &buffer);
             if (CheckError()) {
-                log("OpenAL: Faile to unqueue played buffer.");
+                logger->Warning("OpenAL: Failed to unqueue played buffer");
             } else {
                 ALint size = 0;
                 alGetBufferi(buffer, AL_SIZE, &size);
                 uiReservedData -= size;
                 alDeleteBuffers(1, &buffer);
                 if (CheckError()) {
-                    log("OpenAL: Faile to delete played buffer.");
+                    logger->Warning("OpenAL: Failed to delete played buffer");
                 }
             }
         }

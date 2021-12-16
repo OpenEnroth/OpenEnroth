@@ -680,6 +680,7 @@ void GUIWindow_PartyCreation::Update() {
         Color16(0xFF, 0xFF, 0xFF),
         unspent_attribute_bonus_label);
     if (game_ui_status_bar_event_string_time_left > OS_GetTime()) {
+        message_window.Init();
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
         if (pBonusNum < 0)
             message_window.sHint = localization->GetString(LSTR_PARTY_TOO_MUCH_POINTS);

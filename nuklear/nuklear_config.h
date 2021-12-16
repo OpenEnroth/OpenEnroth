@@ -9,5 +9,10 @@
 #define NK_INCLUDE_DEFAULT_FONT
 #define NK_IMPLEMENTATION
 
+#ifdef _DEBUG
+#define STBTT_malloc malloc
+#define STBTT_free free
+#endif
+
 #include "nuklear.h"
 #include "nuklear_internal.h"

@@ -16,6 +16,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -172,6 +173,14 @@ void Game::Run() {
         return;
     }
 
+    nuklear = Nuklear().Initialize();
+    ::nuklear = nuklear;
+
+    if (!nuklear) {
+        log->Warning("Nuklear creation failed");
+        return;
+    }
+
     render = IRenderFactory().Create(
         window,
         engine->config->renderer_name,
@@ -188,6 +197,12 @@ void Game::Run() {
         log->Warning("Render failed to initialize");
         return;
     }
+
+    if (!render->NuklearInitialize()) {
+        log->Warning("Nuklear failed to initialize in render");
+        return;
+    }
+
 
     keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
     ::keyboardActionMapping = keyboardActionMapping;

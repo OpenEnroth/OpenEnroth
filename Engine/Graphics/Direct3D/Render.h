@@ -38,7 +38,8 @@ class Render : public RenderBase {
     virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer);
     virtual void NuklearRelease();
     virtual struct nk_font* NuklearLoadFont(const char *font_path, size_t font_size);
-    virtual struct nk_image NuklearImageLoad(Image *img, int w, int h);
+    virtual struct nk_image NuklearImageLoad(Image *img);
+    virtual void NuklearImageFree(Image *img);
 
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey);
     virtual Texture *CreateTexture_Solid(const String &name);

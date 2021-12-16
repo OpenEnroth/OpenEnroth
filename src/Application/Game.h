@@ -54,6 +54,7 @@ class Game {
      DecalBuilder *decal_builder = nullptr;
      Vis *vis = nullptr;
      Menu *menu = nullptr;
+     std::shared_ptr<Nuklear> nuklear = nullptr;
 };
 
 }  // namespace Application

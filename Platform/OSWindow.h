@@ -54,9 +54,7 @@ class OSWindow {
     // window-renderer integration, probably should be a separate class
     virtual void OpenGlCreate() = 0;
     virtual void OpenGlSwapBuffers() = 0;
-
-    // nuklear context integration
-    virtual void *GetNuklearContext() = 0;
+ 
  protected:
     GameWindowHandler *gameCallback = nullptr;
     Log *log = nullptr;

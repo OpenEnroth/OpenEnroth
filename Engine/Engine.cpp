@@ -622,6 +622,7 @@ Engine::Engine() {
     this->spell_fx_renedrer = EngineIoc::ResolveSpellFxRenderer();
     this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
     this->mouse = EngineIoc::ResolveMouse();
+    this->nuklear = EngineIoc::ResolveNuklear();
     this->particle_engine = EngineIoc::ResolveParticleEngine();
     this->vis = EngineIoc::ResolveVis();
 

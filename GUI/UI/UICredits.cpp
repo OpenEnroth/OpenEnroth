@@ -22,6 +22,7 @@ GUICredits::GUICredits() :
     char *text = (char *)pEvents_LOD->LoadCompressedTexture("credits.txt");
 
     GUIWindow credit_window;
+    credit_window.Init();
     credit_window.uFrameWidth = 250;
     credit_window.uFrameHeight = 440;
     credit_window.uFrameX = 389;
@@ -53,6 +54,7 @@ GUICredits::~GUICredits() {
 
 void GUICredits::Update() {
     GUIWindow credit_window;
+    credit_window.Init();
     credit_window.uFrameWidth = 250;
     credit_window.uFrameHeight = 440;
     credit_window.uFrameX = 389;

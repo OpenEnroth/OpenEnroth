@@ -287,6 +287,7 @@ struct nk_allocator {
     nk_handle userdata;
     nk_plugin_alloc alloc;
     nk_plugin_free free;
+    void *_free_dbg;
 };
 enum nk_symbol_type {
     NK_SYMBOL_NONE,

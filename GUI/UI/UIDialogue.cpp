@@ -503,6 +503,7 @@ void GUIWindow_GenericDialogue::Update() {
     if (current_npc_text.length() > 0 && branchless_dialogue_str.empty())
         branchless_dialogue_str = current_npc_text.c_str();
 
+    BranchlessDlg_window.Init();
     BranchlessDlg_window.uFrameWidth = game_viewport_width;
     BranchlessDlg_window.uFrameZ = 452;
     pTextHeight =

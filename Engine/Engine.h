@@ -13,6 +13,7 @@
 #include "Engine/EngineConfig.h"
 #include "Engine/EngineConfigFactory.h"
 #include "Engine/ErrorHandling.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Log.h"
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
@@ -477,6 +478,7 @@ struct Engine {
     SpellFxRenderer *spell_fx_renedrer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<Mouse> mouse = nullptr;
+    std::shared_ptr<Nuklear> nuklear = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
     std::shared_ptr<KeyboardInputHandler> keyboardInputHandler;
