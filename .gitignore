@@ -13,8 +13,12 @@ Build/Visual Studio 2017/Debug
 .vscode/*
 *.code-workspace
 
-# cmake
+# CMake
+## Default output folder used by Visual Studio
 out
+
+## Output folder on Linux as described in HACKING
+build
 
 # 3d-party libs are auto-resolved by cmake
 lib
