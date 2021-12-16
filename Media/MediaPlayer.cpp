@@ -860,7 +860,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
             render->BeginScene();
 
-            OS_Sleep(30);
+            OS_Sleep(2);
 
             PMemBuffer buffer = pMovie_Track->GetFrame();
             if (!buffer) {

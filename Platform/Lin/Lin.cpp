@@ -22,11 +22,11 @@ unsigned int OS_GetTime() {
 }
 
 void OS_ShowCursor(bool show) {
-    // ShowCursor(show ? 1 : 0);
+    SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
 void OS_Sleep(int ms) {
-    // Sleep(ms);
+    SDL_Delay(ms);
 }
 
 bool OS_OpenConsole() {
