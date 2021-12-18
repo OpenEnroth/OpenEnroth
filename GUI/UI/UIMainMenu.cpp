@@ -43,8 +43,10 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
-        goto nuklear;
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        nuklear->Release(WINDOW_MainMenu);
+        return;
+    }
 
     ui_mainmenu_new->Release();
     ui_mainmenu_load->Release();
@@ -52,14 +54,15 @@ GUIWindow_MainMenu::~GUIWindow_MainMenu() {
     ui_mainmenu_exit->Release();
     main_menu_background->Release();
 
-nuklear:
     nuklear->Release(WINDOW_MainMenu);
 }
 
 void GUIWindow_MainMenu::Update() {
     nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu, 2);
-    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
-        goto nuklear;
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu, 2);
+        return;
+    }
 
     render->DrawTextureNew(0, 0, main_menu_background);
 
@@ -95,7 +98,6 @@ void GUIWindow_MainMenu::Update() {
         }
     }
 
-nuklear:
     nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu, 2);
 }
 

@@ -4,6 +4,7 @@
 #include "Engine/Graphics/IRenderConfig.h"
 #include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"

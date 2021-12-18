@@ -13,7 +13,6 @@
 #include "Engine/EngineConfig.h"
 #include "Engine/EngineConfigFactory.h"
 #include "Engine/ErrorHandling.h"
-#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Log.h"
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
@@ -28,6 +27,7 @@
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
 
+class Nuklear;
 using Io::KeyboardActionMapping;
 using Io::KeyboardInputHandler;
 using Io::Mouse;

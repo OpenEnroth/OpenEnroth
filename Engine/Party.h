@@ -139,7 +139,7 @@ struct ActionQueue {
 };
 #pragma pack(pop)
 
-enum class PartyAlignment : uint32_t {
+enum class PartyAlignment: __int32 {
     PartyAlignment_Good = 0,
     PartyAlignment_Neutral = 1,
     PartyAlignment_Evil = 2

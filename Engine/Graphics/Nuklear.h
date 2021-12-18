@@ -1,15 +1,10 @@
 #pragma once
 
-#include <cstdint>
-#include <string>
-
+#include "GUI/GUIWindow.h"
 #include "Io/GameKey.h"
 
 #include <lua.hpp>
-#include "nuklear/nuklear_config.h"
-
-class Image;
-class GUIWindow;
+#include <nuklear/nuklear_config.h>
 
 class Nuklear {
  public:
@@ -18,13 +13,13 @@ class Nuklear {
          NUKLEAR_MODE_EXCLUSIVE
      };
 
-     enum NUKLEAR_ACTION : __int32 {
+     enum NUKLEAR_ACTION: __int32 {
          NUKLEAR_ACTION_CREATE = 1,
          NUKLEAR_ACTION_DRAW,
          NUKLEAR_ACTION_RELEASE
      };
 
-     enum NUKLEAR_STAGE : __int32 {
+     enum NUKLEAR_STAGE: __int32 {
          NUKLEAR_STAGE_PRE = 1,
          NUKLEAR_STAGE_POST
      };

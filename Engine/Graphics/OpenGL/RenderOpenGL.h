@@ -1,11 +1,10 @@
 #pragma once
 #include <memory>
 
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
 #include "Engine/MM7.h"
-
-#include "nuklear/nuklear_config.h"
 
 #ifdef __APPLE__
 #define NK_SHADER_VERSION "#version 150\n"

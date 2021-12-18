@@ -6,7 +6,6 @@
 #include <queue>
 #include <vector>
 
-#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Objects/Player.h"
 #include "Engine/Strings.h"
 #include "Engine/Party.h"

@@ -14,13 +14,10 @@
 #include "Platform/OSWindow.h"
 #include "Platform/Api.h"
 
-#include "nuklear/nuklear_config.h"
-
 using Io::GameKey;
 
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
-#define MAX_RATIO_ELEMENTS 16
 
 lua_State *lua = nullptr;
 std::shared_ptr<Nuklear> nuklear;
@@ -49,14 +46,14 @@ struct windows {
     std::vector<struct img *> img;
     WindowType winType;
     WIN_STATE state;
-    char *tmpl;
+    const char *tmpl;
     Nuklear::NUKLEAR_MODE mode;
-    
 };
+
 struct windows wins[WINDOW_DebugMenu] = {};
 WindowType currentWin = WINDOW_null;
 
-static enum lua_nk_style_type: __int32 {
+enum lua_nk_style_type {
     lua_nk_style_type_unknown,
     lua_nk_style_type_align,
     lua_nk_style_type_bool,
@@ -74,19 +71,19 @@ static enum lua_nk_style_type: __int32 {
 };
 
 struct lua_nk_property {
-    char *property;
+    const char *property;
     void *ptr;
     enum lua_nk_style_type type;
 };
 
 struct lua_nk_style {
-    char *component;
+    const char *component;
     std::vector<struct lua_nk_property> props;
 };
 
 std::vector<struct lua_nk_style> lua_nk_styles;
 
-#define PUSH_STYLE(element, component, property, type) element.push_back({ #property, &nuklear->ctx->style.##component##.##property, type});
+#define PUSH_STYLE(element, component, property, type) element.push_back({ #property, &nuklear->ctx->style.component.property, type});
 
 std::shared_ptr<Nuklear> Nuklear::Initialize() {
     nuklear = std::make_shared<Nuklear>();
@@ -919,7 +916,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
 
     name = wins[winType].tmpl;
     currentWin = winType;
-    int status = luaL_loadfile(lua, MakeDataPath("UI", name + ".lua").c_str());
+    int status = luaL_loadfile(lua, MakeDataPath("ui", name + ".lua").c_str());
     if (status) {
         wins[winType].state = WINDOW_TEMPLATE_ERROR;
         logger->Warning("Nuklear: [%s] couldn't load lua template: %s", wins[winType].tmpl, lua_tostring(lua, -1));
@@ -999,8 +996,6 @@ static int lua_nk_is_hex(char c)
 }
 
 static int lua_nk_parse_ratio(lua_State *L, int idx, std::vector<float> *ratio) {
-    float floats[MAX_RATIO_ELEMENTS] = { 0 };
-
     if (lua_istable(L, idx)) {
         lua_pushvalue(L, idx);
         lua_pushnil(L);
@@ -2059,7 +2054,7 @@ bool Nuklear::LuaInit() {
     lua_gc(lua, LUA_GCRESTART, -1);
 
     lua_getglobal(lua, "package");
-    lua_pushfstring(lua, MakeDataPath("UI", "?.lua").c_str());
+    lua_pushfstring(lua, MakeDataPath("ui", "?.lua").c_str());
     lua_setfield(lua, -2, "path");
     lua_pushstring(lua, "");
     lua_setfield(lua, -2, "cpath");
@@ -2143,7 +2138,7 @@ bool Nuklear::LuaInit() {
     lua_pushinteger(lua, NUKLEAR_MODE_EXCLUSIVE);
     lua_setglobal(lua, "NUKLEAR_MODE_EXCLUSIVE");
 
-    int status = luaL_loadfile(lua, MakeDataPath("UI", "init.lua").c_str());
+    int status = luaL_loadfile(lua, MakeDataPath("ui", "init.lua").c_str());
     if (status) {
         logger->Warning("Nuklear: couldn't load init template: %s", lua_tostring(lua, -1));
         lua_pop(lua, 1);

@@ -7,11 +7,10 @@
 
 #include <memory>
 
+#include "Engine/Graphics/Nuclear.h"
 #include "Engine/Graphics/RenderBase.h"
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
-
-#include "nuklear/nuklear_config.h"
 
 struct ODMFace;
 class RenderD3D;

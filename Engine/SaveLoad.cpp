@@ -582,7 +582,7 @@ void SavegameList::Initialize() {
     pSavegameList->Reset();
     uNumSavegameFiles = 0;
 
-    String saves_dir = MakeDataPath("Saves");
+    String saves_dir = MakeDataPath("saves");
 
     if (std::filesystem::exists(saves_dir)) {
         for (const auto& entry : std::filesystem::directory_iterator(saves_dir)) {
