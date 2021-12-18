@@ -13,7 +13,7 @@
 
 #include "Io/GameKey.h"
 
-#include "glad/glad.h"
+#include "glad/gl.h"
 
 using Io::GameKey;
 
@@ -174,7 +174,7 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
     int y = engine->config->window_y;
     int display = engine->config->display;
     int displays = SDL_GetNumVideoDisplays();
-    if (displays < display)
+    if (display > displays - 1)
         display = 0;
 
     for (int i = 0; i < displays; i++) {
@@ -605,6 +605,8 @@ bool Sdl2Window::TryMapScanCode(SDL_Scancode code, GameKey *outKey) const {
 }
 
 void Sdl2Window::OpenGlCreate() {
+    int version;
+
     //  Use OpenGL 3.3 core - requires all fixed pipeline code to be modernised
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -621,13 +623,13 @@ void Sdl2Window::OpenGlCreate() {
         log->Warning("Failed to initialize SDL with OpenGL: %s", SDL_GetError());
     }
 
-    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+    if (!(version = gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress))) {
         log->Warning("Failed to initialize the OpenGL loader");
     }
 
     log->Info("Supported OpenGL: %s", glGetString(GL_VERSION));
     log->Info("Supported GLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-    log->Info("OpenGL version: %d.%d", GLVersion.major, GLVersion.minor);
+    log->Info("OpenGL version: %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
     //  Use Vsync
     if (SDL_GL_SetSwapInterval(1) < 0) {

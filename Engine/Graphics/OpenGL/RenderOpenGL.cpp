@@ -19,7 +19,7 @@
     #endif
 #endif
 
-#include "glad/glad.h"
+#include "glad/gl.h"
 
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
