@@ -2,10 +2,12 @@
 
 #include <dirent.h>
 #include <fnmatch.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 
 #include <string>
 #include <cstring>
+#include <sstream>
 #include <vector>
 
 #include "Engine/Point.h"
@@ -80,49 +82,73 @@ void OS_GetAppString(const char* pKeyName, char* pOutString, int uBufLen,
 void OS_SetAppInt(const char* pKey, int val) {
 }
 
+char OS_GetDirSeparator() {
+    return '/';
+}
 
-// r must have strlen(path) + 2 bytes
-static int casepath(char const* path, char* r) {
-    size_t l = strlen(path);
-    char *p = (char*)alloca(l + 1);
-    strcpy(p, path);
-    size_t rl = 0;
+std::string OS_casepath(std::string path) {
+    std::string r;
+    std::string sep;
+    std::vector<std::string> tokens;
 
-    DIR *d;
-    if (p[0] == '/') {
+    sep.push_back(OS_GetDirSeparator());
+    size_t pos = 0;
+
+    DIR *d = nullptr;
+    if (!path.substr(0, 1).compare(sep)) {
+        r = sep;
         d = opendir("/");
-        p = p + 1;
     } else {
         d = opendir(".");
-        r[0] = '.';
-        r[1] = 0;
-        rl = 1;
     }
 
-    int last = 0;
-    char* c = strsep(&p, "/");
-    while (c) {
+    std::stringstream ss (path);
+    std::string s;
+
+    while (std::getline(ss, s, OS_GetDirSeparator())) {
+        tokens.push_back(s);
+    }
+
+    int i = 0;
+    for (auto it = tokens.begin(); it < tokens.end(); it++, i++) {
+        s = *it;
+
+        if (s.empty())
+            continue;
+
         if (!d) {
-            return 0;
+            if (!r.empty() && r.compare(sep))
+                r += sep;
+            r += s;
+
+            continue;
         }
 
-        if (last) {
-            closedir(d);
-            return 0;
-        }
-
-        r[rl] = '/';
-        rl += 1;
-        r[rl] = 0;
-
+        bool found = false;
         struct dirent *e = readdir(d);
         while (e) {
-            if (strcasecmp(c, e->d_name) == 0) {
-                strcpy(r + rl, e->d_name);
-                rl += strlen(e->d_name);
+            if (strcasecmp(s.c_str(), e->d_name) == 0) {
+                found = true;
+
+                if (!r.empty() && r.compare(sep))
+                    r += sep;
+                r += e->d_name;
 
                 closedir(d);
-                d = opendir(r);
+
+                // some filesystems like reiserfs don't set entry type and we need additional step
+                if (e->d_type == DT_UNKNOWN) {
+                    struct stat st;
+                    if (stat(r.c_str(), &st) != -1) {
+                        if (S_ISDIR(st.st_mode))
+                            e->d_type = DT_DIR;
+                    }
+                }
+
+                if (e->d_type == DT_DIR) {
+                    d = opendir(r.c_str());
+                } else
+                    d = nullptr;
 
                 break;
             }
@@ -130,30 +156,15 @@ static int casepath(char const* path, char* r) {
             e = readdir(d);
         }
 
-        if (!e) {
-            strcpy(r + rl, c);
-            rl += strlen(c);
-            last = 1;
-        }
-
-        c = strsep(&p, "/");
-    }
-
-    if (d) closedir(d);
-    return 1;
-}
-
-FILE *fcaseopen(char const *path, char const *mode) {
-    FILE *f = fopen(path, mode);
-    if (!f) {
-        char *r = (char*)alloca(strlen(path) + 2);
-        if (casepath(path, r)) {
-            f = fopen(r, mode);
+        if (!found) {
+            if (!r.empty() && r.compare(sep))
+                r += sep;
+            r += s;
         }
     }
-    return f;
-}
 
-std::string OS_GetDirSeparator() {
-    return "/";
+    if (d)
+        closedir(d);
+
+    return r;
 }

@@ -52,9 +52,9 @@ bool CopyFile(const String &from, const String &to) {
     int bytes_read = 0;
     int bytes_wrote = 0;
 
-    FILE *copy_from = fcaseopen(from.c_str(), "rb");
+    FILE *copy_from = fopen(from.c_str(), "rb");
     if (copy_from) {
-        FILE *copy_to = fcaseopen(to.c_str(), "wb+");
+        FILE *copy_to = fopen(to.c_str(), "wb+");
         if (copy_to) {
             fseek(copy_from, 0, SEEK_END);
             file_size = ftell(copy_from);

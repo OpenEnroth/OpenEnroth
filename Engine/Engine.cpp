@@ -123,7 +123,10 @@ void SetDataPath(const std::string &data_path) { s_data_path = data_path; }
 std::string MakeDataPath(std::initializer_list<std::string_view> paths)
 {
     std::string res = s_data_path;
-    std::string sep = OS_GetDirSeparator();
+    std::string sep;
+
+    sep.push_back(OS_GetDirSeparator());
+
     for (auto p : paths) {
         if (!p.empty()) {
             if (!res.empty())
@@ -132,6 +135,8 @@ std::string MakeDataPath(std::initializer_list<std::string_view> paths)
             res += p;
         }
     }
+
+    res = OS_casepath(res);
 
     return res;
 }

@@ -674,7 +674,7 @@ class VideoList {
             return;
         }
 
-        file = fcaseopen(file_path.c_str(), "rb");
+        file = fopen(file_path.c_str(), "rb");
         if (file == nullptr) {
             logger->Warning("Can't open video file: %s", file_path.c_str());
             return;

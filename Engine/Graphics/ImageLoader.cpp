@@ -214,7 +214,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     *pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    FILE *file = fcaseopen(this->resource_name.c_str(), "rb");
+    FILE *file = fopen(this->resource_name.c_str(), "rb");
     if (!file) {
         log->Warning("Unable to load %s", this->resource_name.c_str());
         return false;

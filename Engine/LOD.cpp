@@ -267,7 +267,7 @@ int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
     dir.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
     pLODName = lod_name;
 
-    pFile = fcaseopen(pLODName.c_str(), "wb+");
+    pFile = fopen(pLODName.c_str(), "wb+");
     if (!pFile) return 3;
     fwrite(pHeader, sizeof(LOD::FileHeader), 1, pFile);
     fwrite(&dir, sizeof(LOD::Directory), 1, pFile);
@@ -452,8 +452,8 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
         temp_offset += pSubIndices[i].uDataSize;
     }
 
-    String Filename = "lod.tmp";
-    FILE *tmp_file = fcaseopen(Filename.c_str(), "wb+");
+    String Filename = MakeDataPath("lod.tmp");
+    FILE *tmp_file = fopen(Filename.c_str(), "wb+");
     if (tmp_file == nullptr) {
         return 5;
     }
@@ -484,7 +484,7 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
     fclose(tmp_file);
     fclose(pOutputFileHandle);
     CloseWriteFile();
-    remove("lodapp.tmp");
+    remove(MakeDataPath("lodapp.tmp").c_str());
     remove(pLODName.c_str());
     rename(Filename.c_str(), pLODName.c_str());
     CloseWriteFile();
@@ -510,7 +510,7 @@ int LOD::WriteableFile::CreateTempFile() {
 
     if (pIOBuffer && uIOBufferSize) {
         uNumSubDirs = 0;
-        pOutputFileHandle = fcaseopen("lodapp.tmp", "wb+");
+        pOutputFileHandle = fopen(MakeDataPath("lodapp.tmp").c_str(), "wb+");
         return pOutputFileHandle ? 1 : 7;
     } else {
         return 5;
@@ -576,8 +576,8 @@ unsigned int LOD::WriteableFile::Write(const String &file_name, const void *pDir
     }
 
     int size_correction = 0;
-    String Filename = "lod.tmp";
-    FILE *tmp_file = fcaseopen(Filename.c_str(), "wb+");
+    String Filename = MakeDataPath("lod.tmp");
+    FILE *tmp_file = fopen(Filename.c_str(), "wb+");
     if (!tmp_file) return 5;
     if (!bRewrite_data)
         size_correction = 0;
@@ -675,7 +675,7 @@ LOD::WriteableFile::WriteableFile() {
 }
 
 bool LOD::WriteableFile::LoadFile(const String &pFilename, bool bWriting) {
-    pFile = fcaseopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
+    pFile = fopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
     if (pFile == nullptr) {
         return false;  // возможно файл не закрыт, поэтому не открывается
     }
@@ -756,7 +756,7 @@ bool LOD::File::OpenFile(const String &sFilename) {
         Close();
     }
 
-    pFile = fcaseopen(sFilename.c_str(), "rb");
+    pFile = fopen(sFilename.c_str(), "rb");
     if (pFile == nullptr) {
         return false;
     }

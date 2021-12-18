@@ -140,14 +140,6 @@ std::string FindMm7Directory() {
         }
     }
 
-    // Hack path fix - pskelton
-    if (!mm7_installation_found) {
-        mm7_installation_found = 1;
-        strcpy(path_buffer, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
-        logger->Info("Hack Path MM7 installation found: %s", path_buffer);
-        return path_buffer;
-    }
-
     return "";
 }
 

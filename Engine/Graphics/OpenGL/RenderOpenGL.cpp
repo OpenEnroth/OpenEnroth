@@ -2260,7 +2260,7 @@ Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
 void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) {
     auto pixels = MakeScreenshot(width, height);
 
-    FILE *result = fcaseopen(filename.c_str(), "wb");
+    FILE *result = fopen(filename.c_str(), "wb");
     if (result == nullptr) {
         return;
     }

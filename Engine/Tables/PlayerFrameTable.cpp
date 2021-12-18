@@ -70,7 +70,7 @@ void PlayerFrameTable::ToFile() {
     PlayerFrameTable *Str = this;
 
     v1 = Str;
-    v2 = fcaseopen("data/dpft.bin", "wb");
+    v2 = fopen(MakeDataPath("data", "dpft.bin").c_str(), "wb");
     v3 = v2;
     if (!v2) Error("Unable to save dpft.bin");
     fwrite(v1, 4, 1, v2);

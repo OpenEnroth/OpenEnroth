@@ -56,11 +56,6 @@ std::vector<std::string> OS_FindFiles(const std::string &folder, const std::stri
     return result;
 }
 
-
-FILE *fcaseopen(char const *path, char const *mode) {
-    return fopen(path, mode);
-}
-
-std::string OS_GetDirSeparator() {
-    return "\\";
+char OS_GetDirSeparator() {
+    return '\\';
 }

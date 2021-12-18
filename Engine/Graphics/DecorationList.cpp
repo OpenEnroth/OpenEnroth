@@ -49,7 +49,7 @@ void DecorationList::InitializeDecorationSprite(unsigned int uDecID) {
 }
 
 void DecorationList::ToFile() {
-    FILE *file = fcaseopen("data/ddeclist.bin", "wb");
+    FILE *file = fopen(MakeDataPath("data", "ddeclist.bin").c_str(), "wb");
     if (file == nullptr) {
         Error("Unable to save ddeclist.bin!", 0);
     }

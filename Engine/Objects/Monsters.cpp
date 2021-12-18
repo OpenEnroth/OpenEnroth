@@ -310,7 +310,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
     int Argsb;              // [sp+310h] [bp+8h]@16
 
     v2 = this;
-    v3 = fcaseopen(Args, "r");
+    v3 = fopen(Args, "r");
     File = v3;
     if (!v3) Error("MonsterRaceListStruct::load - Unable to open file: %s.");
 
@@ -430,7 +430,7 @@ void MonsterList::ToFile() {
     FILE *v3;         // edi@1
 
     v1 = this;
-    v2 = fcaseopen("data/dmonlist.bin", "wb");
+    v2 = fopen(MakeDataPath("data", "dmonlist.bin").c_str(), "wb");
     v3 = v2;
     if (!v2) Error("Unable to save dmonlist.bin!");
     fwrite(v1, 4u, 1u, v2);

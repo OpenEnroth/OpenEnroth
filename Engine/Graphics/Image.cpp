@@ -74,7 +74,7 @@ Texture *TextureFrame::GetTexture() {
 
 void TextureFrameTable::ToFile() {
     TextureFrameTable *v1 = this;
-    FILE *file = fcaseopen("data/dtft.bin", "wb");
+    FILE *file = fopen(MakeDataPath("data", "dtft.bin").c_str(), "wb");
     if (file == nullptr) {
         Error("Unable to save dtft.bin!", 0);
     }

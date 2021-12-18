@@ -29,7 +29,7 @@ HWLContainer::~HWLContainer() {
 }
 
 bool HWLContainer::Open(const String &pFilename) {
-    pFile = fcaseopen(pFilename.c_str(), "rb");
+    pFile = fopen(pFilename.c_str(), "rb");
     if (!pFile) {
         log->Warning("Failed to open file: %s", pFilename.c_str());
         return false;

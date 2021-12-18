@@ -81,7 +81,7 @@ void TileTable::ToFile() {
     TileTable *Str = this;
 
     v1 = Str;
-    v2 = fcaseopen("data/dtile.bin", "wb");
+    v2 = fopen(MakeDataPath("data", "dtile.bin").c_str(), "wb");
     v3 = v2;
     if (!v2) Error("Unable to save dtile.bin!");
     fwrite(v1, 4u, 1u, v2);
@@ -145,7 +145,7 @@ int TileTable::FromFileTxt(const char *pFilename) {
     char Buf;               // [sp+100h] [bp-1F4h]@4
 
     v2 = this;
-    v3 = fcaseopen(pFilename, "r");
+    v3 = fopen(pFilename, "r");
     File = v3;
     if (!v3) Error("TileTable::load - Unable to open file: %s.");
     v4 = 0;

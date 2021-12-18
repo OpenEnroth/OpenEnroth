@@ -329,7 +329,7 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
 }
 
 void SpriteFrameTable::ToFile() {
-    FILE *file = fcaseopen("data/dsft.bin", "wb");
+    FILE *file = fopen(MakeDataPath("data", "dsft.bin").c_str(), "wb");
     if (file == nullptr) {
         Error("Unable to save dsft.bin!");
     }
