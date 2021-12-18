@@ -8,7 +8,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Objects/ItemTable.h"
@@ -1486,8 +1485,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 }
             }
         }
-        // ----------------------------------------------(Cloak collar/воротник
-        // плаща)-------------------------------------
+        // ---------------------------- Cloak collar
         if (player->GetItem(&PlayerEquipment::uCloak)) {
             item = player->GetCloakItem();
             switch (item->uItemID) {
@@ -1541,20 +1539,17 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     } else if (item->uAttributes & ITEM_BROKEN) {
                         render->DrawTransparentRedShade(
                             item_X / 640.0f, item_Y / 480.0f,
-                            paperdoll_cloak_collar_texture[pBodyComplection]
-                            [index]);
+                            paperdoll_cloak_collar_texture[pBodyComplection][index]);
                     } else {
                         render->DrawTextureAlphaNew(
                             item_X / 640.0f, item_Y / 480.0f,
-                            paperdoll_cloak_collar_texture[pBodyComplection]
-                            [index]);
+                            paperdoll_cloak_collar_texture[pBodyComplection][index]);
                     }
 
                     if (!bRingsShownInCharScreen)
                         render->ZDrawTextureAlpha(
                             item_X / 640.0f, item_Y / 480.0f,
-                            paperdoll_cloak_collar_texture[pBodyComplection]
-                                                          [index],
+                            paperdoll_cloak_collar_texture[pBodyComplection][index],
                             player->pEquipment.uCloak);
                 }
             }

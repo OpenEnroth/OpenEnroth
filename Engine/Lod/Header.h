@@ -3,5 +3,5 @@
 #include <cstdint>
 
 
-namespace LOD {
-};  // namespace LOD
+namespace Lod {
+};  // namespace Lod

@@ -7,7 +7,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"

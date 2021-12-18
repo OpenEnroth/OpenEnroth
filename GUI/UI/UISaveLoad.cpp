@@ -9,13 +9,13 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Localization.h"
+#include "Engine/MapInfo.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/Localization.h"
-#include "Engine/LOD.h"
-#include "Engine/MapInfo.h"
-#include "Engine/SaveLoad.h"
+#include "Engine/Lod/Reader.h"
 
 #include "Io/KeyboardInputHandler.h"
 
@@ -50,7 +50,6 @@ GUIWindow_Save::GUIWindow_Save() :
     pSaveListPosition = 0;
     uLoadGameUI_SelectedSlot = 0;
 
-    LOD::Container pLODFile;
     for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
         // String file_name = pSavegameList->pFileList[i];
         String save_name = StringPrintf("save%03d.mm7", i);
@@ -60,8 +59,8 @@ GUIWindow_Save::GUIWindow_Save() :
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
         } else {
-            pLODFile.Open(save_filename);
-            void *data = pLODFile.LoadRaw("header.bin");
+            auto lod = Lod::Reader::Open(save_filename);
+            void *data = lod->LoadRaw("header.bin");
             memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
 
             if (pSavegameHeader[i].pName[0] == '\0') {
@@ -71,7 +70,7 @@ GUIWindow_Save::GUIWindow_Save() :
                 strcpy(pSavegameHeader[i].pName, test.c_str());
             }
 
-            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(&pLODFile, "image.pcx"));
+            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(lod.get(), "image.pcx"));
             if (pSavegameThumbnails[i]->GetWidth() == 0) {
                 pSavegameThumbnails[i]->Release();
                 pSavegameThumbnails[i] = nullptr;
@@ -154,7 +153,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         pSaveListPosition = 0;
         uLoadGameUI_SelectedSlot = 0;
     //}
-    LOD::Container pLODFile;
+
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
         std::string save_filename = assets_locator->LocateSaveFile(
@@ -166,11 +165,12 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             continue;
         }
 
-        if (!pLODFile.Open(save_filename)) {
+        auto lod = Lod::Reader::Open(save_filename);
+        if (!lod) {
             logger->Warning("Unable to open %s", save_filename.c_str());
             __debugbreak();
         }
-        void *data = pLODFile.LoadRaw("header.bin");
+        void *data = lod->LoadRaw("header.bin");
         memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
         if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(LSTR_AUTOSAVE_MM7))) {
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_AUTOSAVE));
@@ -184,7 +184,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         }
 
         // pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(&pLODFile, "image.pcx"));
-        pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
+        pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(lod.get(), "image.pcx");
 
         if (pSavegameThumbnails[i]->GetWidth() == 0) {
             pSavegameThumbnails[i]->Release();

@@ -36,7 +36,6 @@ public:
 
     Texture *GetImage_PCXFromFile(const std::string& name);
     Texture *GetImage_PCXFromIconsLOD(const std::string& name);
-    Texture *GetImage_PCXFromNewLOD(const std::string& name);
 
     Texture *GetBitmap(const std::string& name);
     Texture *GetSprite(const std::string& name, unsigned int palette_id,

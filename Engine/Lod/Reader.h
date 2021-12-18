@@ -3,19 +3,22 @@
 #include <memory>
 #include <numeric>
 #include <string>
+#include <vector>
 
+#include "Engine/Log.h"
+#include "Engine/Lod/Directory.h"
 #include "Engine/Lod/Version.h"
 
 
 
-namespace LOD {
-class Lod {
+namespace Lod {
+class Reader {
 public:
-    Lod();
-    virtual ~Lod();
+    Reader();
+    virtual ~Reader();
 
     // Lod file factory
-    static shared_ptr<Lod> Open(const std::string& filename);
+    static std::shared_ptr<Reader> Open(const std::string& filename);
 
     bool OpenFolder(const std::string& folder);
     virtual void Close();
@@ -55,8 +58,10 @@ protected:
     std::vector<std::shared_ptr<Directory>> _index;
     std::shared_ptr<Directory> _current_folder = nullptr;
     FILE* _file = nullptr;
+
+    Log* _log = nullptr;
 };
-};  // namespace LOD
+};  // namespace Lod
 
 
-extern LOD::Lod* pGames_LOD;
+extern Lod::Reader* pGames_LOD;

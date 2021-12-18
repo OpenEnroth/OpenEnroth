@@ -2,8 +2,8 @@
 
 #include "Engine/OurMath.h"
 #include "Engine/Strings.h"
-
 #include "Engine/Graphics/DecorationList.h"
+#include "Engine/Lod/LodSprites.h"  // for Sprite::sprite_header - refactor
 
 class Texture;
 
@@ -37,7 +37,7 @@ class Sprite {
 };
 
 class SpriteFrame {
- public:
+public:
     bool Deserialize(const struct SpriteFrame_MM7 *);
 
     String icon_name;

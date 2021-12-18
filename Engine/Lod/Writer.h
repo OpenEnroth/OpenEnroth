@@ -2,14 +2,14 @@
 #include <memory>
 #include <string>
 
-#include "Engine/Lod/Lod.h"
+#include "Engine/Lod/Reader.h"
 
 
-namespace LOD {
-class LodWriter : public Lod {
+namespace Lod {
+class Writer : public Reader {
 public:
     //WriteableFile();
-    static std::shared_ptr<LodWriter> New(const std::string& filename, LOD_VERSION version, const std::string& description);
+    static std::shared_ptr<Writer> NewContainer(const std::string& filename, LOD_VERSION version, const std::string& description);
     bool AddDirectory(const std::string& name, bool open = true);
     bool AddFile(const std::string& filename, const void* file_ptr, size_t file_size);
     //bool LoadFile(const std::string &filename, bool readonly);
@@ -36,7 +36,7 @@ protected:
     //virtual void ResetSubIndices();
     void SortDirectories();
 };
-};  // namespace LOD
+};  // namespace Lod
 
 
-extern LOD::WriteableFile* pNew_LOD;
+extern Lod::Writer* pNew_LOD;

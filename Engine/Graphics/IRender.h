@@ -241,7 +241,6 @@ class IRender {
 
     virtual Texture *CreateTexture_PCXFromFile(const String &name) = 0;
     virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name) = 0;
-    virtual Texture *CreateTexture_PCXFromNewLOD(const String &name) = 0;
     virtual Texture *CreateTexture_PCXFromLOD(void *pLOD, const String &name) = 0;
 
     virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,

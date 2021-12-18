@@ -793,40 +793,44 @@ struct FontData_MM7 {
 
 
 #pragma pack(push, 1)
-struct Directory_Image_Mm6 {
-    inline Directory_Image_Mm6() {
+struct LodDirectory_Image_Mm6 {
+    inline LodDirectory_Image_Mm6() {
         memset(this, 0, sizeof(this));
     }
 
-    char pFilename[16];
+    uint8_t filename[16];
     uint32_t data_offset;
     uint32_t uDataSize;
     uint32_t dword_000018;
     uint16_t num_items;
     uint16_t priority;
 };
+#pragma pack(pop)
 
 
-struct File_Image_Mm6 {
-    inline File_Image_Mm6() {
+#pragma pack(push, 1)
+struct LodFile_Image_Mm6 {
+    inline LodFile_Image_Mm6() {
         memset(this, 0, sizeof(this));
     }
 
-    char name[16];
+    uint8_t name[16];
     uint32_t data_offset;
     uint32_t size;
     uint32_t dword_000018;
     uint16_t num_items;
     uint16_t priority;
 };
+#pragma pack(pop)
 
 
-struct File_Image_Mm8 {
-    inline File_Image_Mm8() {
+#pragma pack(push, 1)
+struct LodFile_Image_Mm8 {
+    inline LodFile_Image_Mm8() {
         memset(this, 0, sizeof(this));
     }
 
-    char name[16];
+    uint8_t name[16];
     int32_t unk_0;
     int32_t unk_1;
     int32_t unk_2;
@@ -845,9 +849,25 @@ struct File_Image_Mm8 {
 };
 #pragma pack(pop)
 
+
+#pragma pack(push, 1)
+struct LodHeader_Image_Mm6 {
+    inline LodHeader_Image_Mm6() {
+        memset(this, 0, sizeof(this));
+    }
+
+    uint8_t signature[4];
+    uint8_t version[80];
+    uint8_t description[80];
+    uint32_t size;
+    uint32_t dword_0000A8;
+    uint32_t num_directories;
+    uint8_t array_0000B0[80];
+};
+#pragma pack(pop)
+
+
 /*
-
-
 #pragma pack(push, 1)
 struct Texture_MM7 {
     TextureHeader_Mm6 header;

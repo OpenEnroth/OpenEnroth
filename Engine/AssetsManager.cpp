@@ -153,21 +153,6 @@ Texture *AssetsManager::GetImage_PCXFromIconsLOD(const String &name) {
     return i->second;
 }
 
-Texture *AssetsManager::GetImage_PCXFromNewLOD(const String &name) {
-    auto filename = name;
-    std::transform(filename.begin(), filename.end(), filename.begin(),
-                   ::tolower);
-
-    auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = render->CreateTexture_PCXFromNewLOD(name);
-        images[filename] = image;
-        return image;
-    }
-
-    return i->second;
-}
-
 Texture *AssetsManager::GetImage_PCXFromFile(const String &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),

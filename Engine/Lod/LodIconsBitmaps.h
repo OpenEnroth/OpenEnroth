@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Engine/LodTexture.h"
-
-#include "Engine/Lod/Lod.h"
+#include "Engine/Lod/Reader.h"
 
 
 enum TEXTURE_TYPE {
@@ -14,7 +13,7 @@ enum TEXTURE_TYPE {
 
 #define MAX_LOD_TEXTURES 1000
 
-class LODFile_IconsBitmaps : public LOD::Lod {
+class LODFile_IconsBitmaps : public Lod::Reader {
 public:
     LODFile_IconsBitmaps();
     virtual ~LODFile_IconsBitmaps();

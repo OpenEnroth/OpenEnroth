@@ -1,4 +1,6 @@
 #include "Engine/Graphics/Direct3D/TextureD3D.h"
+
+#include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
 

@@ -5,7 +5,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Party.h"

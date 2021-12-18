@@ -1,14 +1,11 @@
 #include "GUI/GUIFont.h"
 
 #include <cstdarg>
-
 #include <sstream>
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
-
+#include "Engine/Lod/LodIconsBitmaps.h"
 #include "Engine/Graphics/IRender.h"
-
 #include "Engine/Serialization/LegacyImages.h"
 
 #include "GUI/GUIWindow.h"

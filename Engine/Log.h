@@ -1,13 +1,13 @@
 #pragma once
 
 class Log {
- public:
+public:
     inline Log() : initialized(false) {}
 
     bool Initialize();
     void Info(const char *pFormat, ...);
     void Warning(const char *pFormat, ...);
 
- protected:
+protected:
     bool initialized;
 };

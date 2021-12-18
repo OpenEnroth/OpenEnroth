@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Lod/Lod.h"
+#include "Engine/Lod/Reader.h"
 
 
 #pragma pack(push, 1)
@@ -38,7 +38,7 @@ struct LODSprite : public LODSpriteHeader {
 #define MAX_LOD_SPRITES 1500
 class Sprite;
 
-class LODFile_Sprites : public LOD::Lod {
+class LODFile_Sprites : public Lod::Reader {
 public:
     LODFile_Sprites();
     virtual ~LODFile_Sprites();

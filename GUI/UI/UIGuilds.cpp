@@ -4,7 +4,6 @@
 #include "Engine/Events2D.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ItemTable.h"

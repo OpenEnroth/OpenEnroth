@@ -43,60 +43,6 @@ static int _get_file_header_img_size(LOD_VERSION lod_version) {
 }
 
 
-static int _get_directory_header_img_size(LOD_VERSION lod_version) {
-    switch (lod_version) {
-    case LOD_VERSION_MM6:
-    case LOD_VERSION_GAME_MM6:
-    case LOD_VERSION_MM7:
-    case LOD_VERSION_MM8: return sizeof(Directory_Image_Mm6);
-    default: Error("Unsupported LOD write format: %d", (int)lod_version);
-    }
-}
-
-
-static inline void _read_directory_files(
-    FILE* f,
-    LOD_VERSION lod_version,
-    std::shared_ptr<LOD::Directory> dir,
-    int num_expected_files
-) {
-    dir->files.clear();
-
-    fseek(f, dir->file_headers_offset, SEEK_SET);
-    for (int i = 0; i < num_expected_files; ++i) {
-        switch (lod_version) {
-        case LOD_VERSION_MM6: 
-        case LOD_VERSION_GAME_MM6:
-        case LOD_VERSION_MM7: {
-            File_Image_Mm6 mm6;
-            Assert(1 == fread(&mm6, sizeof(mm6), 1, f));
-
-            LOD::File file;
-            file.name = mm6.name;
-            file.offset = mm6.data_offset;
-            file.size = mm6.size;
-            dir->files.push_back(file);
-            continue;
-        }
-        case LOD_VERSION_MM8: {
-            File_Image_Mm8 mm8;
-            Assert(1 == fread(&mm8, sizeof(mm8), 1, f));
-
-            LOD::File file;
-            file.name = mm8.name;
-            file.offset = mm8.unk_12;
-            file.size = mm8.unk_13;
-            dir->files.push_back(file);
-            continue;
-
-        }
-        default: Error("Unsupported LOD file version: %d", (int)lod_version);
-        }
-    }
-
-    Assert(dir->files.size() == num_expected_files);
-}
-
 static inline std::shared_ptr<LOD::Directory> _read_directory(
     FILE* f,
     LOD_VERSION lod_version
@@ -213,37 +159,6 @@ static inline void _write_directories(
         );
     }
 }
-
-
-static std::vector<std::shared_ptr<LOD::Directory>> _read_directories(
-    FILE* f,
-    LOD_VERSION lod_version,
-    int num_expected_directories
-) {
-    std::vector<std::shared_ptr<LOD::Directory>> dirs;
-
-    int read_size = _get_directory_header_img_size(lod_version);
-    int items_read = 0;
-
-    size_t dir_read_ptr = ftell(f);
-    for (int i = 0; i < num_expected_directories; ++i) {
-        Directory_Image_Mm6 img;
-        fseek(f, dir_read_ptr, SEEK_SET);
-        items_read += fread(&img, read_size, 1, f);
-        dir_read_ptr += read_size;
-
-        auto dir = std::make_shared<LOD::Directory>();
-        dir->name = img.pFilename;
-        dir->file_headers_offset = img.data_offset;
-        _read_directory_files(f, lod_version, dir, img.num_items);
-
-        dirs.push_back(dir);
-    }
-
-    Assert(num_expected_directories == items_read);
-    return dirs;
-}
-
 
 
 #pragma pack(push, 1)
@@ -1013,18 +928,6 @@ LOD::WriteableFile::WriteableFile() {
     _current_folder = _read_directory(_file, _get_version(_header));
     return true;
 }*/
-
-
-LOD::Container::Container() {
-    Close();
-}
-
-LOD::Container::~Container() {
-    if (_file) {
-        fclose(_file);
-        _file = nullptr;
-    }
-}
 
 
 bool LOD::Container::OpenFolder(const std::string& folder) {

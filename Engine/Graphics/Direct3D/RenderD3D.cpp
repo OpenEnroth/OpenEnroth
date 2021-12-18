@@ -2,9 +2,11 @@
 
 #include <cstdio>
 
+#include "Engine/Lod/LodIconsBitmaps.h"
+#include "Engine/Lod/LodSprites.h"
+
 #include "Platform/OSWindow.h"
 
-#include "Engine/LOD.h"
 
 HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc,
                                               __int16 *found_compatible_mode) {

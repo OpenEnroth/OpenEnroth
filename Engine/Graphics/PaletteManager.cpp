@@ -1,10 +1,12 @@
 #include "Engine/Graphics/PaletteManager.h"
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/OurMath.h"
+#include "Engine/Lod/LodIconsBitmaps.h"
+
 
 PaletteManager *pPaletteManager = new PaletteManager;
+
 
 //----- (00452AE2) --------------------------------------------------------
 int MakeColorMaskFromBitDepth(int a1) {

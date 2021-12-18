@@ -18,7 +18,9 @@
 #include "Engine/Graphics/stru10.h"
 #include "Engine/Graphics/stru9.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/LOD.h"
+#include "Engine/Lod/Reader.h"
+#include "Engine/Lod/Writer.h"
+#include "Engine/Lod/LodIconsBitmaps.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ItemTable.h"
@@ -869,8 +871,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         if (!strcmp(pTexName, ""))
             pFaceExtras[i].uAdditionalBitmapID = -1;
         else
-            pFaceExtras[i].uAdditionalBitmapID =
-                pBitmaps_LOD->LoadTexture(pTexName);
+            pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(pTexName);
     }
 
     for (uint i = 0; i < uNumFaces; ++i) {

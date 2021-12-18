@@ -8,8 +8,9 @@
 #include "Engine/Lod/File.h"
 
 
-namespace LOD {
+namespace Lod {
 class Directory {
+public:
     std::string name;
     std::vector<File> files;
     size_t file_headers_offset = 0;
@@ -49,4 +50,4 @@ class Directory {
         }
     }
 };
-};  // namespace LOD
+};  // namespace Lod

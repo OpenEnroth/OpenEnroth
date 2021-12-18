@@ -9,21 +9,21 @@
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
 #include "Engine/Events.h"
+#include "Engine/Localization.h"
+#include "Engine/Party.h"
+#include "Engine/IocContainer.h"
+#include "Engine/Time.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/LOD.h"
-#include "Engine/Localization.h"
+#include "Engine/Lod/LodIconsBitmaps.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/OurMath.h"
-#include "Engine/Party.h"
-#include "Engine/IocContainer.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Time.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -1045,12 +1045,10 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
     if (align == PartyAlignment::PartyAlignment_Evil) {
         if (bReplace) {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-C.pcx");
-            game_ui_bottomframe =
-                assets->GetImage_PCXFromIconsLOD("ib-b-C.pcx");
+            game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD("ib-b-C.pcx");
             game_ui_topframe = assets->GetImage_PCXFromIconsLOD("ib-t-C.pcx");
             game_ui_leftframe = assets->GetImage_PCXFromIconsLOD("ib-l-C.pcx");
-            game_ui_statusbar =
-                assets->GetImage_PCXFromIconsLOD("IB-Foot-c.pcx");
+            game_ui_statusbar = assets->GetImage_PCXFromIconsLOD("IB-Foot-c.pcx");
 
             game_ui_right_panel_frame = assets->GetImage_Alpha("ib-mb-C");
 
@@ -1105,12 +1103,10 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             _591428_endcap = assets->GetImage_ColorKey("endcap-c", render->teal_mask_16);
         } else {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-C.pcx");
-            game_ui_bottomframe =
-                assets->GetImage_PCXFromIconsLOD("ib-b-c.pcx");
+            game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD("ib-b-c.pcx");
             game_ui_topframe = assets->GetImage_PCXFromIconsLOD("ib-t-C.pcx");
             game_ui_leftframe = assets->GetImage_PCXFromIconsLOD("ib-l-C.pcx");
-            game_ui_statusbar =
-                assets->GetImage_PCXFromIconsLOD("IB-Foot-c.pcx");
+            game_ui_statusbar = assets->GetImage_PCXFromIconsLOD("IB-Foot-c.pcx");
 
             game_ui_right_panel_frame = assets->GetImage_Alpha("ib-mb-C");
             game_ui_minimap_frame = assets->GetImage_Alpha("ib-autmask-c");
@@ -1159,12 +1155,10 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
     } else if (align == PartyAlignment::PartyAlignment_Neutral) {
         if (bReplace) {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-a.pcx");
-            game_ui_bottomframe =
-                assets->GetImage_PCXFromIconsLOD("ib-b-a.pcx");
+            game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD("ib-b-a.pcx");
             game_ui_topframe = assets->GetImage_PCXFromIconsLOD("ib-t-a.pcx");
             game_ui_leftframe = assets->GetImage_PCXFromIconsLOD("ib-l-a.pcx");
-            game_ui_statusbar =
-                assets->GetImage_PCXFromIconsLOD("IB-Foot-a.pcx");
+            game_ui_statusbar = assets->GetImage_PCXFromIconsLOD("IB-Foot-a.pcx");
 
             game_ui_right_panel_frame = assets->GetImage_Alpha("ib-mb-a");
             game_ui_minimap_frame = assets->GetImage_Alpha("ib-autmask-a");
@@ -1218,12 +1212,10 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
             _591428_endcap = assets->GetImage_ColorKey("endcap", render->teal_mask_16);
         } else {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-A.pcx");
-            game_ui_bottomframe =
-                assets->GetImage_PCXFromIconsLOD("ib-b-A.pcx");
+            game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD("ib-b-A.pcx");
             game_ui_topframe = assets->GetImage_PCXFromIconsLOD("ib-t-A.pcx");
             game_ui_leftframe = assets->GetImage_PCXFromIconsLOD("ib-l-A.pcx");
-            game_ui_statusbar =
-                assets->GetImage_PCXFromIconsLOD("IB-Foot-a.pcx");
+            game_ui_statusbar = assets->GetImage_PCXFromIconsLOD("IB-Foot-a.pcx");
 
             game_ui_right_panel_frame = assets->GetImage_Alpha("ib-mb-A");
             game_ui_minimap_frame = assets->GetImage_Alpha("ib-autmask-a");
@@ -1281,12 +1273,10 @@ void SetUserInterface(PartyAlignment align, bool bReplace) {
     } else if (align == PartyAlignment::PartyAlignment_Good) {
         if (bReplace) {
             game_ui_rightframe = assets->GetImage_PCXFromIconsLOD("ib-r-B.pcx");
-            game_ui_bottomframe =
-                assets->GetImage_PCXFromIconsLOD("ib-b-B.pcx");
+            game_ui_bottomframe = assets->GetImage_PCXFromIconsLOD("ib-b-B.pcx");
             game_ui_topframe = assets->GetImage_PCXFromIconsLOD("ib-t-B.pcx");
             game_ui_leftframe = assets->GetImage_PCXFromIconsLOD("ib-l-B.pcx");
-            game_ui_statusbar =
-                assets->GetImage_PCXFromIconsLOD("IB-Foot-b.pcx");
+            game_ui_statusbar = assets->GetImage_PCXFromIconsLOD("IB-Foot-b.pcx");
 
             game_ui_right_panel_frame = assets->GetImage_Alpha("ib-mb-B");
             game_ui_minimap_frame = assets->GetImage_Alpha("ib-autmask-b");

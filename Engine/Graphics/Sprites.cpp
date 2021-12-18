@@ -5,19 +5,15 @@
 #include <algorithm>
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/OurMath.h"
-
-#include "Engine/Objects/Actor.h"
-
-#include "Engine/Tables/FrameTableInc.h"
-
-#include "Engine/Serialization/LegacyImages.h"
-
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/PaletteManager.h"
+#include "Engine/Lod/LodSprites.h"
+#include "Engine/Objects/Actor.h"
+#include "Engine/Tables/FrameTableInc.h"
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
 

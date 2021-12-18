@@ -25,7 +25,8 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/LOD.h"
+#include "Engine/Lod/LodIconsBitmaps.h"
+#include "Engine/Lod/LodSprites.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -87,16 +88,12 @@ Texture *Render::CreateTexture_PCXFromIconsLOD(const String &name) {
     return TextureD3D::Create(new PCX_LOD_Compressed_Loader(pIcons_LOD, name));
 }
 
-Texture *Render::CreateTexture_PCXFromNewLOD(const String &name) {
-    return TextureD3D::Create(new PCX_LOD_Compressed_Loader(pNew_LOD, name));
-}
-
 Texture *Render::CreateTexture_PCXFromFile(const String &name) {
     return TextureD3D::Create(new PCX_File_Loader(name));
 }
 
 Texture *Render::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureD3D::Create(new PCX_LOD_Raw_Loader((LOD::Container*)pLOD, name));
+    return TextureD3D::Create(new PCX_LOD_Raw_Loader((Lod::Reader*)pLOD, name));
 }
 
 Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
@@ -151,8 +148,7 @@ bool Render::CheckTextureStages() {
     ErrD3D(pRenderD3D->pDevice->SetTexture(0, pTexture2));
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_ADDRESS,
                                                      D3DTADDRESS_CLAMP));
-    ErrD3D(
-        pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1));
+    ErrD3D(pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1));
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_COLOROP, 7));
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_COLORARG1, 2));
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(1, D3DTSS_COLORARG2, 1));

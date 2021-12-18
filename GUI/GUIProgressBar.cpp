@@ -4,14 +4,13 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/Party.h"
-
 #include "Engine/Graphics/IRender.h"
-
 #include "Engine/Tables/IconFrameTable.h"
 
+
 GUIProgressBar *pGameLoadingUI_ProgressBar = new GUIProgressBar();
+
 
 GUIProgressBar::GUIProgressBar() {
     progressbar_dungeon = nullptr;
