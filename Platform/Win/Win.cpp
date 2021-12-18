@@ -59,3 +59,7 @@ std::vector<std::string> OS_FindFiles(const std::string &folder, const std::stri
 char OS_GetDirSeparator() {
     return '\\';
 }
+
+std::string OS_casepath(std::string path) {
+    return path;
+}

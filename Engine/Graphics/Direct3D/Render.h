@@ -7,7 +7,6 @@
 
 #include <memory>
 
-#include "Engine/Graphics/Nuclear.h"
 #include "Engine/Graphics/RenderBase.h"
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
@@ -16,6 +15,7 @@ struct ODMFace;
 class RenderD3D;
 class Image;
 class OSWindow;
+class Nuklear;
 
 class Render : public RenderBase {
  public:

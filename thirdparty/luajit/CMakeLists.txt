@@ -9,9 +9,6 @@ set(LUAJIT_TOP_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/luajit)
 
 project(luajit)
 
-message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}/extra")
-message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}/luajit")
-
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_CURRENT_SOURCE_DIR}/luajit")
 
