@@ -217,7 +217,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
         if (si.sName == "") {  // enable this for bonus sound effects
             //logger->Info("AudioPlayer: trying to load bonus sound %u", eSoundID);
-            buffer = LoadSound(int(eSoundID));
+            //buffer = LoadSound(int(eSoundID));
         } else {
             buffer = LoadSound(si.sName);
         }
