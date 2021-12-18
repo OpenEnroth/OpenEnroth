@@ -152,7 +152,7 @@ class EngineConfig {
 #else
             "OpenGL";
 #endif
-    std::string window_title = "World of Might and Magic®";
+    std::string window_title = "World of Might and Magic";
 };
 
 }  // namespace Engine_

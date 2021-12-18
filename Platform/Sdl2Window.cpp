@@ -166,7 +166,7 @@ int SDL_GetAsyncKeyState(GameKey key, bool consume) {
     return 0;
 }
 
-SDL_Window* Sdl2Window::CreateSDLWindow(/*const char* title, int x, int y, int width, int height, int display, int fullscreen, int borderless*/) {
+SDL_Window* Sdl2Window::CreateSDLWindow() {
     std::vector<SDL_Rect> displayBounds;
     Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 
