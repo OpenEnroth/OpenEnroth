@@ -29,6 +29,7 @@ install:
 
 build_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
+  - cmd: git submodule update --init
   - cmd: cmake -G "NMake Makefiles" . -DCMAKE_BUILD_TYPE=%configuration%
   - cmd: nmake check_style
   - cmd: nmake
