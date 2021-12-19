@@ -9,6 +9,7 @@
 #include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Texture.h"
+#include "Engine/Lod/Reader.h"
 
 
 using Graphics::IRenderConfig;
@@ -241,7 +242,7 @@ class IRender {
 
     virtual Texture *CreateTexture_PCXFromFile(const String &name) = 0;
     virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name) = 0;
-    virtual Texture *CreateTexture_PCXFromLOD(void *pLOD, const String &name) = 0;
+    virtual Texture *CreateTexture_PCXFromLOD(std::shared_ptr<Lod::Reader> lod, const std::string& texture_name) = 0;
 
     virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
         IMAGE_FORMAT format, const void *pixels = nullptr) = 0;

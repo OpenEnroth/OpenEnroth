@@ -14,7 +14,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineConfig.h"
-#include "Engine/LOD.h"
+#include "Engine/Lod/Writer.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time.h"
@@ -88,35 +88,34 @@ void LoadGame(unsigned int uSlot) {
     //pNew_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_null;
 
-    String filename = "saves/" + pSavegameList->pFileList[uSlot];
+    std::string filename = "saves/" + pSavegameList->pFileList[uSlot];
     filename = assets_locator->LocateSaveFile(pSavegameList->pFileList[uSlot]);
-    String new_lod = assets_locator->LocateDataFile("new.lod");
+    std::string new_lod = assets_locator->LocateDataFile("new.lod");
     remove(new_lod.c_str());
     if (!CopyFile(filename, new_lod)) {
         Error("Failed to copy: %s", filename.c_str());
     }
 
+    __debugbreak(); // seems like a simple file reload - not creating a new file here
     pNew_LOD->Close();
-    delete pNew_LOD;
-
-    pNew_LOD = new LOD::WriteableFile();
-    pNew_LOD->Open(new_lod);
+    pNew_LOD = Lod::Writer::NewContainer(new_lod, Lod::Version::Mm7, "");
 
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
-    SavegameHeader *header = (SavegameHeader*)pNew_LOD->LoadRaw("header.bin");
+    auto header_data = pNew_LOD->LoadRaw("header.bin");
+    SavegameHeader* header = (SavegameHeader*)header_data.get();
     if (header == nullptr) {
         logger->Warning(localization->FormatString(
             LSTR_FMT_SAVEGAME_CORRUPTED, 100).c_str());
     }
 
     {
-        Party_Image_MM7 *serialization = (Party_Image_MM7*)pNew_LOD->LoadRaw("party.bin");
+        auto data = pNew_LOD->LoadRaw("party.bin");
+        Party_Image_MM7* serialization = (Party_Image_MM7*)data.get();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 101).c_str());
         } else {
             serialization->Deserialize(pParty);
-            free(serialization);
 
             for (size_t i = 0; i < 4; i++) {
                 Player *player = &pParty->pPlayers[i];
@@ -134,29 +133,30 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        Timer_Image_MM7 *serialization = (Timer_Image_MM7*)pNew_LOD->LoadRaw("clock.bin");
+        auto data = pNew_LOD->LoadRaw("clock.bin");
+        Timer_Image_MM7 *serialization = (Timer_Image_MM7*)data.get();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 102).c_str());
         } else {
             serialization->Deserialize(pEventTimer);
-            free(serialization);
         }
     }
 
     {
-        OtherOverlayList_Image_MM7 *serialization = (OtherOverlayList_Image_MM7*)pNew_LOD->LoadRaw("overlay.bin");
+        auto data = pNew_LOD->LoadRaw("overlay.bin");
+        OtherOverlayList_Image_MM7* serialization = (OtherOverlayList_Image_MM7*)data.get();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 103).c_str());
         } else {
             serialization->Deserialize(pOtherOverlayList);
-            free(serialization);
         }
     }
 
     {
-        NPCData_Image_MM7 *serialization = (NPCData_Image_MM7*)pNew_LOD->LoadRaw("npcdata.bin");
+        auto data = pNew_LOD->LoadRaw("npcdata.bin");
+        NPCData_Image_MM7* serialization = (NPCData_Image_MM7*)data.get();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 104).c_str());
@@ -165,12 +165,11 @@ void LoadGame(unsigned int uSlot) {
                 serialization[i].Deserialize(pNPCStats->pNewNPCData + i);
             }
             pNPCStats->OnLoadSetNPC_Names();
-            free(serialization);
         }
     }
 
     {
-        void *npcgroup = pNew_LOD->LoadRaw("npcgroup.bin");
+        auto npcgroup = pNew_LOD->LoadRaw("npcgroup.bin");
         if (npcgroup == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 105).c_str());
@@ -178,9 +177,8 @@ void LoadGame(unsigned int uSlot) {
         } else if (sizeof(pNPCStats->pGroups_copy) != 102) {
             logger->Warning("NPCStats: deserialization warning");
         } else {
-            memcpy(pNPCStats->pGroups_copy, npcgroup, sizeof(pNPCStats->pGroups_copy));
+            memcpy(pNPCStats->pGroups_copy, npcgroup.get(), sizeof(pNPCStats->pGroups_copy));
         }
-        free(npcgroup);
     }
 
     uActiveCharacter = 0;
@@ -228,7 +226,6 @@ void LoadGame(unsigned int uSlot) {
     }
 
     pCurrentMapName = header->pLocationName;
-    free(header);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_0001;
 
@@ -725,7 +722,8 @@ void AutosaveOnNewGame() {
     std::string file_path = assets_locator->LocateDataFile("new.lod");
     remove(file_path.c_str());
 
-    if (!pNew_LOD->NewLod(file_path, LOD_VERSION_MM7, "newmaps for MMVII")) {
+    pNew_LOD = Lod::Writer::NewContainer(file_path, Lod::Version::Mm7, "newmaps for MMVII");
+    if (!pNew_LOD) {
         logger->Warning("Can't create %s", file_path.c_str());
         return;
     }
@@ -736,10 +734,9 @@ void AutosaveOnNewGame() {
 
     for (const char* filename : mm7_default_game) {
         size_t data_size{ 0 };
-        void* data = pGames_LOD->LoadRaw(filename, &data_size);
+        auto data = pGames_LOD->LoadRaw(filename, &data_size);
 
-        pNew_LOD->AddFile(filename, data, data_size);
-        pGames_LOD->DisposeRaw(data);
+        pNew_LOD->AddFile(filename, data.get(), data_size);
     }
 
     Autosave(1);

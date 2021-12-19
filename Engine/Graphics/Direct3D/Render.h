@@ -39,7 +39,7 @@ class Render : public RenderBase {
 
     virtual Texture *CreateTexture_PCXFromFile(const String &name);
     virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name);
-    virtual Texture *CreateTexture_PCXFromLOD(void *pLOD, const String &name);
+    virtual Texture *CreateTexture_PCXFromLOD(std::shared_ptr<Lod::Reader> lod, const std::string& texture_name);
 
     virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
         IMAGE_FORMAT format, const void *pixels = nullptr);

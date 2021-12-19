@@ -111,7 +111,7 @@ public:
 
 class PCX_LOD_Raw_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Raw_Loader(Lod::Reader* lod, const std::string &filename) {
+    inline PCX_LOD_Raw_Loader(std::shared_ptr<Lod::Reader> lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -121,7 +121,7 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
     );
 
  protected:
-    Lod::Reader* lod;
+    std::shared_ptr<Lod::Reader> lod;
 };
 
 class PCX_LOD_Compressed_Loader : public PCX_Loader {

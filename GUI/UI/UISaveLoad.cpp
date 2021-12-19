@@ -60,8 +60,8 @@ GUIWindow_Save::GUIWindow_Save() :
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
         } else {
             auto lod = Lod::Reader::Open(save_filename);
-            void *data = lod->LoadRaw("header.bin");
-            memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
+            auto data = lod->LoadRaw("header.bin");
+            memcpy(&pSavegameHeader[i], data.get(), sizeof(SavegameHeader));
 
             if (pSavegameHeader[i].pName[0] == '\0') {
                 // blank so add something - suspect quicksaves
@@ -70,7 +70,7 @@ GUIWindow_Save::GUIWindow_Save() :
                 strcpy(pSavegameHeader[i].pName, test.c_str());
             }
 
-            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(lod.get(), "image.pcx"));
+            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(lod, "image.pcx"));
             if (pSavegameThumbnails[i]->GetWidth() == 0) {
                 pSavegameThumbnails[i]->Release();
                 pSavegameThumbnails[i] = nullptr;
@@ -170,8 +170,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
             logger->Warning("Unable to open %s", save_filename.c_str());
             __debugbreak();
         }
-        void *data = lod->LoadRaw("header.bin");
-        memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
+        auto data = lod->LoadRaw("header.bin");
+        memcpy(&pSavegameHeader[i], data.get(), sizeof(SavegameHeader));
         if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(LSTR_AUTOSAVE_MM7))) {
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_AUTOSAVE));
         }
@@ -184,7 +184,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         }
 
         // pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(&pLODFile, "image.pcx"));
-        pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(lod.get(), "image.pcx");
+        pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(lod, "image.pcx");
 
         if (pSavegameThumbnails[i]->GetWidth() == 0) {
             pSavegameThumbnails[i]->Release();

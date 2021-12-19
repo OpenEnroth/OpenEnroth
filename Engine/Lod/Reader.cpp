@@ -83,3 +83,46 @@ Reader::~Reader() {
         _file = nullptr;
     }
 }
+
+
+std::shared_ptr<void> Reader::LoadRaw(
+    const std::string& filename,
+    size_t *out_file_size,
+    bool fail_if_missing
+) {
+    if (out_file_size != nullptr) {
+        *out_file_size = 0;
+    }
+
+    size_t size = 0;
+    FILE *f = FindFile(filename, &size);
+    if (!f) {
+        if (fail_if_missing) {
+            Error("Unable to load %s", filename.c_str());
+        } else {
+            _log->Warning("Unable to load %s", filename.c_str());
+            return nullptr;
+        }
+    }
+
+    std::shared_ptr<unsigned char> bytes(new unsigned char[size]);
+    if (!bytes) {
+        _log->Warning("Unable to allocate %zu bytes to load %s", size, filename.c_str());
+        return nullptr;
+    }
+
+    size_t read = fread(bytes.get(), 1, size, f);
+    if (read < size) {
+        _log->Warning(
+            "Byte count is less than expected when reading %s: %zu/%zu",
+            filename.c_str(), read, size
+        );
+        return nullptr;
+    }
+
+    if (out_file_size != nullptr) {
+        *out_file_size = size;
+    }
+
+    return bytes;
+}

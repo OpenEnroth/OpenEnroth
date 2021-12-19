@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <string>
+
 #include "Engine/Objects/NPCProf.h"
 
 
@@ -431,11 +433,11 @@
                                                  // the other side was trying so hard to build."
 
 class Localization {
- public:
+public:
     bool Initialize();
 
     const char *GetString(unsigned int index) const;
-    String FormatString(unsigned int index, ...) const;
+    std::string FormatString(unsigned int index, ...) const;
 
     const char *GetDayName(unsigned int index) const {
         return this->day_names[index];
@@ -510,7 +512,7 @@ class Localization {
         return this->npc_profession_names[prof];
     }
 
- public:
+public:
     Localization()
         : localization_raw(nullptr),
           localization_strings(nullptr),
@@ -518,7 +520,7 @@ class Localization {
           attribute_desc_raw(nullptr),
           skill_desc_raw(nullptr) {}
 
- private:
+private:
     void InitializeItemCategories();
     void InitializeMonthNames();
     void InitializeDayNames();
@@ -531,7 +533,7 @@ class Localization {
     void InitializeCharacterConditionNames();
     void InitializeNpcProfessionNames();
 
- private:
+private:
     char *localization_raw;
     const char **localization_strings;
     char *class_desc_raw;

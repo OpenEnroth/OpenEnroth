@@ -9,7 +9,7 @@ namespace Lod {
 class Writer : public Reader {
 public:
     //WriteableFile();
-    static std::shared_ptr<Writer> NewContainer(const std::string& filename, LOD_VERSION version, const std::string& description);
+    static std::shared_ptr<Writer> NewContainer(const std::string& filename, Version version, const std::string& description);
     bool AddDirectory(const std::string& name, bool open = true);
     bool AddFile(const std::string& filename, const void* file_ptr, size_t file_size);
     //bool LoadFile(const std::string &filename, bool readonly);
@@ -39,4 +39,4 @@ protected:
 };  // namespace Lod
 
 
-extern Lod::Writer* pNew_LOD;
+extern std::shared_ptr<Lod::Writer> pNew_LOD;

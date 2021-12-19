@@ -9,12 +9,12 @@
 using namespace Lod;
 
 
-static inline LOD_VERSION _get_version(const std::string& version_string) {
-    static std::map<std::string, LOD_VERSION> version_map = {
-        {"MMVI", LOD_VERSION_MM6},
-        {"GameMMVI", LOD_VERSION_GAME_MM6},
-        {"MMVII", LOD_VERSION_MM7},
-        {"MMVIII", LOD_VERSION_MM8},
+static inline Version _get_version(const std::string& version_string) {
+    static std::map<std::string, Version> version_map = {
+        {"MMVI", Version::Mm6},
+        {"GameMMVI", Version::GameMm6},
+        {"MMVII", Version::Mm7},
+        {"MMVIII", Version::Mm8},
     };
 
     auto it = version_map.find(version_string);
@@ -26,12 +26,12 @@ static inline LOD_VERSION _get_version(const std::string& version_string) {
 }
 
 
-int _get_directory_header_img_size(LOD_VERSION lod_version) {
+static inline int _get_directory_header_img_size(Version lod_version) {
     switch (lod_version) {
-    case LOD_VERSION_MM6:
-    case LOD_VERSION_GAME_MM6:
-    case LOD_VERSION_MM7:
-    case LOD_VERSION_MM8: return sizeof(LodDirectory_Image_Mm6);
+    case Version::Mm6:
+    case Version::GameMm6:
+    case Version::Mm7:
+    case Version::Mm8: return sizeof(LodDirectory_Image_Mm6);
     default: Error("Unsupported LOD write format: %d", (int)lod_version);
     }
 }
@@ -39,11 +39,11 @@ int _get_directory_header_img_size(LOD_VERSION lod_version) {
 
 bool _read_lod_header(
     FILE* f,
-    LOD_VERSION& out_lod_version,
+    Version& out_lod_version,
     std::string& out_description,
     size_t& out_num_directories
 ) {
-    out_lod_version = (LOD_VERSION)-1;
+    out_lod_version = (Version)-1;
     out_description = "";
     out_num_directories = 0;
 
@@ -63,7 +63,7 @@ bool _read_lod_header(
 
 static inline void _read_directory_files(
     FILE* f,
-    LOD_VERSION lod_version,
+    Version lod_version,
     std::shared_ptr<Directory> dir,
     int num_expected_files
 ) {
@@ -72,9 +72,9 @@ static inline void _read_directory_files(
     fseek(f, dir->file_headers_offset, SEEK_SET);
     for (int i = 0; i < num_expected_files; ++i) {
         switch (lod_version) {
-        case LOD_VERSION_MM6:
-        case LOD_VERSION_GAME_MM6:
-        case LOD_VERSION_MM7: {
+        case Version::Mm6:
+        case Version::GameMm6:
+        case Version::Mm7: {
             LodFile_Image_Mm6 mm6;
             Assert(1 == fread(&mm6, sizeof(mm6), 1, f));
 
@@ -85,7 +85,7 @@ static inline void _read_directory_files(
             dir->files.push_back(file);
             continue;
         }
-        case LOD_VERSION_MM8: {
+        case Version::Mm8: {
             LodFile_Image_Mm8 mm8;
             Assert(1 == fread(&mm8, sizeof(mm8), 1, f));
 
@@ -107,7 +107,7 @@ static inline void _read_directory_files(
 
 std::vector<std::shared_ptr<Directory>> _read_directories(
     FILE* f,
-    LOD_VERSION lod_version,
+    Version lod_version,
     int num_expected_directories
 ) {
     std::vector<std::shared_ptr<Directory>> dirs;

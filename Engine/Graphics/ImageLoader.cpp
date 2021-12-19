@@ -258,15 +258,13 @@ bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
 
     size_t size;
-    void *data = lod->LoadRaw(resource_name, &size);
+    auto data = lod->LoadRaw(resource_name, &size);
     if (data == nullptr) {
         log->Warning("Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
-    bool res = InternalLoad(data, size, width, height, pixels, format);
-
-    free(data);
+    bool res = InternalLoad(data.get(), size, width, height, pixels, format);
 
     return res;
 }

@@ -24,10 +24,9 @@ public:
     virtual void Close();
 
     bool FileExists(const std::string& filename);
-    void* LoadRaw(const std::string& pContainer, size_t* data_size = nullptr);
+    std::shared_ptr<void> LoadRaw(const std::string& filename, size_t* out_file_size = nullptr, bool fail_if_missing = false);
     void* LoadCompressed2(const std::string& filename, size_t* out_file_size = nullptr);
-    void* LoadCompressed(const std::string& pContainer, size_t* data_size = nullptr);
-    void Dispose(void* data_ptr);
+    void* LoadCompressed(const std::string& pContainer, size_t* out_file_size = nullptr);
 
     std::string GetSubNodeName(size_t index) const { return _current_folder->files[index].name; }
     size_t GetSubNodesCount() const { return _current_folder->files.size(); }
@@ -49,11 +48,11 @@ protected:
     FILE* FindFile(const std::string& filename, size_t* out_file_size = nullptr);
     bool OpenContainerFile(const std::string& filename);
     bool ParseHeader();
-    //virtual void ResetSubIndices();
+
 
 protected:
     std::string _filename;
-    LOD_VERSION _version;
+    Version _version;
     std::string _description;
     std::vector<std::shared_ptr<Directory>> _index;
     std::shared_ptr<Directory> _current_folder = nullptr;

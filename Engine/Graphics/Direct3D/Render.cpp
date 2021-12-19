@@ -92,8 +92,11 @@ Texture *Render::CreateTexture_PCXFromFile(const String &name) {
     return TextureD3D::Create(new PCX_File_Loader(name));
 }
 
-Texture *Render::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureD3D::Create(new PCX_LOD_Raw_Loader((Lod::Reader*)pLOD, name));
+Texture *Render::CreateTexture_PCXFromLOD(
+    std::shared_ptr<Lod::Reader> lod,
+    const std::string& texture_name
+) {
+    return TextureD3D::Create(new PCX_LOD_Raw_Loader(lod, texture_name));
 }
 
 Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,

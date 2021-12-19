@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
+#include "Engine/Lod/LodIconsBitmaps.h"
 
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageLoader.h"
@@ -43,14 +43,14 @@ static LODFile_IconsBitmaps* _load_icons_lod(const char* lod_name) {
 }
 
 
-static LOD::Container* get_english_t_lod() {
-    static LOD::Container* lod = nullptr;
+static std::shared_ptr<Lod::Reader> get_english_t_lod() {
+    static std::shared_ptr<Lod::Reader> lod = nullptr;
     if (!lod) {
         const char* lod_name = "EnglishT.lod";
         const char* lod_folder = "language";
 
-        auto l = new LOD::Container();
-        if (!l->Open(assets_locator->LocateDataFile(lod_name))) {
+        auto l = Lod::Reader::Open(assets_locator->LocateDataFile(lod_name));
+        if (!l) {
             Error("%s missing\n\nPlease Reinstall.", lod_name);
         }
 

@@ -2,17 +2,19 @@
 #include <vector>
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/Localization.h"
+
 
 #define MAX_LOC_STRINGS 750  // mm8: 750, mm7: 677, mm6: 596
 extern std::vector<char *> Tokenize(char *input, const char separator);
 
 Localization *localization = nullptr;
 
+
 const char *Localization::GetString(unsigned int index) const {
     return this->localization_strings[index];
 }
+
 
 String Localization::FormatString(unsigned int index, ...) const {
     va_list args_ptr;
