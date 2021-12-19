@@ -4,7 +4,6 @@
 
 #include "Platform/Api.h"
 
-#include "../LOD.h"
 #include "../Tables/FrameTableInc.h"
 
 
@@ -460,8 +459,15 @@ void MonsterStats::InitializePlacements() {
     int decode_step;
     //  int item_counter;
 
-    pMonsterPlacementTXT_Raw = (char *)pEvents_LOD->LoadCompressed2("placemon.txt");
-    strtok(pMonsterPlacementTXT_Raw, "\r");
+    num_unique_monster_names = 0;
+
+    char* placemon = assets->GetUniqueMonsterNames();
+    if (placemon == nullptr) {
+        // no placemon for mm6
+        return;
+    }
+
+    strtok(placemon, "\r");
     for (i = 1; i < 31; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -477,8 +483,10 @@ void MonsterStats::InitializePlacements() {
             if (*tmp_pos == 0) break_loop = true;
             *tmp_pos = 0;
             if (temp_str_len) {
-                if (decode_step == 1)
-                    pPlaceStrings[i] = RemoveQuotes(test_string);
+                if (decode_step == 1) {
+                    unique_monster_names[i] = RemoveQuotes(test_string);
+                    num_unique_monster_names++;
+                }
             } else {
                 break_loop = true;
             }
@@ -486,7 +494,6 @@ void MonsterStats::InitializePlacements() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 3) && !break_loop);
     }
-    uNumPlacements = 31;
 }
 
 //----- (0045501E) --------------------------------------------------------
@@ -1158,18 +1165,13 @@ void MonsterStats::Initialize() {
                                                 .uSpecialAbilityType = 0;
                                     }
                                 } else if (!_stricmp(
-                                               parsed_field.pProperties[0],
-                                               "explode")) {
-                                    pInfos[curr_rec_num].uSpecialAbilityType =
-                                        3;
+                                               parsed_field.pProperties[0], "explode")) {
+                                    pInfos[curr_rec_num].uSpecialAbilityType = 3;
                                     ParseDamage(
                                         (char *)parsed_field.pProperties[1],
-                                        &pInfos[curr_rec_num]
-                                             .uSpecialAbilityDamageDiceRolls,
-                                        &pInfos[curr_rec_num]
-                                             .uSpecialAbilityDamageDiceSides,
-                                        &pInfos[curr_rec_num]
-                                             .uSpecialAbilityDamageDiceBonus);
+                                        &pInfos[curr_rec_num].uSpecialAbilityDamageDiceRolls,
+                                        &pInfos[curr_rec_num].uSpecialAbilityDamageDiceSides,
+                                        &pInfos[curr_rec_num].uSpecialAbilityDamageDiceBonus);
                                     pInfos[curr_rec_num]
                                         .field_3C_some_special_attack =
                                         ParseAttackType(test_string);
@@ -1196,69 +1198,37 @@ signed __int16 MonsterList::GetMonsterIDByName(const char *pMonsterName) {
     }
     Error("Monster not found: %s", pMonsterName);
 }
+
 //----- (00438BDF) --------------------------------------------------------
 bool MonsterStats::BelongsToSupertype(unsigned int uMonsterInfoID,
                                       enum MONSTER_SUPERTYPE eSupertype) {
     switch (eSupertype) {
         case MONSTER_SUPERTYPE_UNDEAD:
-            if ((signed int)uMonsterInfoID >= MONSTER_GHOST_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_GHOST_3  // 70<=id<=72
-                || (signed int)uMonsterInfoID >= MONSTER_LICH_1 &&
-                       (signed int)uMonsterInfoID <= MONSTER_LICH_3  // 91-93
-                ||
-                (signed int)uMonsterInfoID >= MONSTER_SKELETON_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_SKELETON_3  // 199-201
-                ||
-                (signed int)uMonsterInfoID >= MONSTER_VAMPIRE_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_VAMPIRE_3  // 217-219
-                || (signed int)uMonsterInfoID >= MONSTER_WIGHT_1 &&
-                       (signed int)uMonsterInfoID <= MONSTER_WIGHT_3  // 223-225
-                ||
-                (signed int)uMonsterInfoID >= MONSTER_ZOMBIE_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_ZOMBIE_3  // 229-231
-                ||
-                (signed int)uMonsterInfoID >= MONSTER_GHOUL_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_GHOUL_3)  // 256-258
-                return true;
-            return false;
+            return uMonsterInfoID >= MONSTER_GHOST_1 && uMonsterInfoID <= MONSTER_GHOST_3
+                || uMonsterInfoID >= MONSTER_LICH_1 && uMonsterInfoID <= MONSTER_LICH_3
+                || uMonsterInfoID >= MONSTER_SKELETON_1 && uMonsterInfoID <= MONSTER_SKELETON_3
+                || uMonsterInfoID >= MONSTER_VAMPIRE_1 && uMonsterInfoID <= MONSTER_VAMPIRE_3
+                || uMonsterInfoID >= MONSTER_WIGHT_1 && uMonsterInfoID <= MONSTER_WIGHT_3
+                || uMonsterInfoID >= MONSTER_ZOMBIE_1 && uMonsterInfoID <= MONSTER_ZOMBIE_3
+                || uMonsterInfoID >= MONSTER_GHOUL_1 && uMonsterInfoID <= MONSTER_GHOUL_3;
         case MONSTER_SUPERTYPE_KREEGAN:
-            if ((signed int)uMonsterInfoID >= MONSTER_DEVIL_1 &&
-                (signed int)uMonsterInfoID <= MONSTER_DEVIL_3)  // 22-24
-                return true;
-            return false;
+            return uMonsterInfoID >= MONSTER_DEVIL_1 && uMonsterInfoID <= MONSTER_DEVIL_3;
         case MONSTER_SUPERTYPE_ELF:
-            if ((signed int)uMonsterInfoID >= MONSTER_PEASANT_ELF_FEMALE_1_1 &&
-                    (signed int)uMonsterInfoID <=
-                        MONSTER_PEASANT_ELF_MALE_3_3  // 133 - 150
-                ||
-                (signed int)uMonsterInfoID >= MONSTER_ELF_ARCHER_1 &&
-                    (signed int)uMonsterInfoID <= MONSTER_ELF_ARCHER_3  // 49-51
-                || (signed int)uMonsterInfoID >= MONSTER_ELF_SPEARMAN_1 &&
-                       (signed int)uMonsterInfoID <=
-                           MONSTER_ELF_SPEARMAN_3)  // 52-54
-                return true;
-            return false;
+            return uMonsterInfoID >= MONSTER_PEASANT_ELF_FEMALE_1_1 && uMonsterInfoID <= MONSTER_PEASANT_ELF_MALE_3_3
+                || uMonsterInfoID >= MONSTER_ELF_ARCHER_1 && uMonsterInfoID <= MONSTER_ELF_ARCHER_3
+                || uMonsterInfoID >= MONSTER_ELF_SPEARMAN_1 && uMonsterInfoID <= MONSTER_ELF_SPEARMAN_3;
         case MONSTER_SUPERTYPE_DRAGON:
-            if ((signed int)uMonsterInfoID >= MONSTER_DRAGON_1 &&
-                (signed int)uMonsterInfoID <= MONSTER_DRAGON_3)  // 25-27
-                return true;
-            return false;
+            return uMonsterInfoID >= MONSTER_DRAGON_1
+                && uMonsterInfoID <= MONSTER_DRAGON_3;
         case MONSTER_SUPERTYPE_WATER_ELEMENTAL:
-            if ((signed int)uMonsterInfoID >= MONSTER_ELEMENTAL_WATER_1 &&
-                (signed int)uMonsterInfoID <=
-                    MONSTER_ELEMENTAL_WATER_3)  // 46-48
-                return true;
-            return false;
+            return uMonsterInfoID >= MONSTER_ELEMENTAL_WATER_1
+                && uMonsterInfoID <= MONSTER_ELEMENTAL_WATER_3;
         case MONSTER_SUPERTYPE_TREANT:
-            if ((signed int)uMonsterInfoID >= MONSTER_TREANT_1 &&
-                (signed int)uMonsterInfoID <= MONSTER_TREANT_3)  // 253-255
-                return true;
-            return false;
+            return uMonsterInfoID >= MONSTER_TREANT_1
+                && uMonsterInfoID <= MONSTER_TREANT_3;
         case MONSTER_SUPERTYPE_TITAN:
-            if ((signed int)uMonsterInfoID >= MONSTER_TITAN_1 &&
-                (signed int)uMonsterInfoID <= MONSTER_TITAN_3)  // 211-213
-                return true;
-            return false;
+            return uMonsterInfoID >= MONSTER_TITAN_1
+                && uMonsterInfoID <= MONSTER_TITAN_3;
         default:
             return false;
     }

@@ -272,7 +272,8 @@ void Localization::InitializeSkillNames() {
     this->skill_names[36] = this->localization_strings[301];
     this->skill_names[37] = this->localization_strings[153];  // Nothing
 
-    skill_desc_raw = (char *)pEvents_LOD->LoadCompressed2("skilldes.txt");
+    size_t data_size{ 0 };
+    skill_desc_raw = assets->GetLocalizedSkillDescriptions(&data_size);
     strtok(skill_desc_raw, "\r");
     for (int i = 0; i < 37; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;

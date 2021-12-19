@@ -42,8 +42,14 @@ public:
                        unsigned int lod_sprite_id);
 
     char* GetLocalization(size_t* out_data_size);
-    char* GetLocalizedClassDescriptions(size_t* out_data_size);
-    char* GetLocalizedStatsDescriptions(size_t* out_data_size);
+    char* GetLocalizedClassDescriptions(size_t* out_data_size = nullptr);
+    char* GetLocalizedStatsDescriptions(size_t* out_data_size = nullptr);
+    char* GetLocalizedSkillDescriptions(size_t* out_data_size = nullptr);
+    char* GetMapStats(size_t* out_data_size = nullptr);
+    char* Get2DEvents(size_t* out_data_size = nullptr);
+    char* GetSpells(size_t* out_data_size = nullptr);
+    char* GetFactions(size_t* out_data_size = nullptr);
+    char* GetUniqueMonsterNames(size_t* out_data_size = nullptr);
 
 protected:
     AssetsClass _asset_source;

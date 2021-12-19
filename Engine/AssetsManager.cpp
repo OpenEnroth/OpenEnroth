@@ -259,3 +259,75 @@ char* AssetsManager::GetLocalizedStatsDescriptions(size_t* out_data_size) {
         return (char*)get_english_t_lod()->LoadCompressed2("stats.txt", out_data_size);
     }
 }
+
+
+char* AssetsManager::GetLocalizedSkillDescriptions(size_t* out_data_size) {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return (char*)get_icons_lod()->LoadCompressed2("SKILLDES.TXT", out_data_size);
+    case Mm7Assets:
+        return (char*)get_events_lod()->LoadCompressed2("skilldes.txt", out_data_size);
+    case Mm8Assets:
+        return (char*)get_english_t_lod()->LoadCompressed2("Skilldes.txt", out_data_size);
+    }
+}
+
+
+char* AssetsManager::GetMapStats(size_t* out_data_size) {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return (char*)get_icons_lod()->LoadCompressed2("MapStats.txt", out_data_size);
+    case Mm7Assets:
+        return (char*)get_events_lod()->LoadCompressed2("MapStats.txt", out_data_size);
+    case Mm8Assets:
+        return (char*)get_english_t_lod()->LoadCompressed2("mapstats.txt", out_data_size);
+    }
+}
+
+
+char* AssetsManager::Get2DEvents(size_t* out_data_size) {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return (char*)get_icons_lod()->LoadCompressed2("2DEvents.txt", out_data_size);
+    case Mm7Assets:
+        return (char*)get_events_lod()->LoadCompressed2("2DEvents.txt", out_data_size);
+    case Mm8Assets:
+        return (char*)get_english_t_lod()->LoadCompressed2("2DEvents.txt", out_data_size);
+    }
+}
+
+
+char* AssetsManager::GetSpells(size_t* out_data_size) {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return (char*)get_icons_lod()->LoadCompressed2("Spells.txt", out_data_size);
+    case Mm7Assets:
+        return (char*)get_events_lod()->LoadCompressed2("SPELLS.TXT", out_data_size);
+    case Mm8Assets:
+        return (char*)get_english_t_lod()->LoadCompressed2("Spells.txt", out_data_size);
+    }
+}
+
+
+char* AssetsManager::GetFactions(size_t* out_data_size) {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return nullptr;
+    case Mm7Assets:
+        return (char*)get_events_lod()->LoadCompressed2("Hostile.txt", out_data_size);
+    case Mm8Assets:
+        return (char*)get_english_t_lod()->LoadCompressed2("hostile.txt", out_data_size);
+    }
+}
+
+
+char* AssetsManager::GetUniqueMonsterNames(size_t* out_data_size) {
+    switch (_asset_source) {
+    case Mm6Assets:
+        return nullptr;
+    case Mm7Assets:
+        return (char*)get_events_lod()->LoadCompressed2("PlaceMon.txt", out_data_size);
+    case Mm8Assets:
+        return (char*)get_english_t_lod()->LoadCompressed2("placemon.txt", out_data_size);
+    }
+}

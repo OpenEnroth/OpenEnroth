@@ -4,6 +4,7 @@
 #include <list>
 #include <memory>
 #include <queue>
+#include <string>
 #include <vector>
 
 #include "Engine/Objects/Player.h"
@@ -759,12 +760,12 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID,
 int const_2();
 
 
-String NameAndTitle(const char *name, const char *title);
-String NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type);
-String NameAndTitle(const char* name, NPCProf profession);
-String NameAndTitle(NPCData *npc);
+std::string NameAndTitle(const char *name, const char *title);
+std::string NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type);
+std::string NameAndTitle(const char* name, NPCProf profession);
+std::string NameAndTitle(NPCData *npc);
 
-String GetDisplayName(Actor* actor);
+std::string GetDisplayName(Actor* actor);
 
 void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player* player);
 void SkillTrainingDialogue(GUIWindow* dialogue, int num_skills_avaiable, int all_text_height, int skill_price);

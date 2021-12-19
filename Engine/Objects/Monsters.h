@@ -192,9 +192,9 @@ struct MonsterStats {
                                    enum MONSTER_SUPERTYPE eSupertype);
 
     MonsterInfo pInfos[265];      // 0 - 5b18h
-    char *pPlaceStrings[31];      // 5B18h placement counts from 1
+    const char *unique_monster_names[31];      // 5B18h placement counts from 1
     unsigned int uNumMonsters;    // 5B94h
-    unsigned int uNumPlacements;  // 5B98h
+    int num_unique_monster_names;  // 5B98h
     int field_5B9C;
 };
 #pragma pack(pop)

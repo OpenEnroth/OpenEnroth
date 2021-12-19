@@ -3164,8 +3164,8 @@ void InitializeBuildingResidents() {
     char *tmp_pos;
     int decode_step;
 
-    free(p2DEventsTXT_Raw);
-    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadCompressed2("2dEvents.txt");
+
+    p2DEventsTXT_Raw = assets->Get2DEvents();
     strtok(p2DEventsTXT_Raw, "\r");
     strtok(NULL, "\r");
 
@@ -3296,12 +3296,10 @@ void InitializeBuildingResidents() {
                     p2DEvents[i].pName = RemoveQuotes(test_string);
                     break;
                 case 6:
-                    p2DEvents[i].pProprieterName =
-                        RemoveQuotes(test_string);
+                    p2DEvents[i].pProprieterName = RemoveQuotes(test_string);
                     break;
                 case 7:
-                    p2DEvents[i].pProprieterTitle =
-                        RemoveQuotes(test_string);
+                    p2DEvents[i].pProprieterTitle = RemoveQuotes(test_string);
                     break;
                 case 8:
                     p2DEvents[i].field_14 = atoi(test_string);
@@ -3322,8 +3320,7 @@ void InitializeBuildingResidents() {
                     p2DEvents[i].flt_24 = atof(test_string);
                     break;
                 case 15:
-                    p2DEvents[i].generation_interval_days =
-                        atoi(test_string);
+                    p2DEvents[i].generation_interval_days = atoi(test_string);
                     break;
                 case 18:
                     p2DEvents[i].uOpenTime = atoi(test_string);

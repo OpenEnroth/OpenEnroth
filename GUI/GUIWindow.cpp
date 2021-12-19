@@ -2615,7 +2615,7 @@ void UI_Create() {
 }
 
 
-String NameAndTitle(const char* name, const char* title) {
+std::string NameAndTitle(const char* name, const char* title) {
     return localization->FormatString(
         LSTR_FMT_S_THE_S,
         name,
@@ -2624,7 +2624,7 @@ String NameAndTitle(const char* name, const char* title) {
 }
 
 
-String NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
+std::string NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
     return NameAndTitle(
         name,
         localization->GetClassName(class_type)
@@ -2632,7 +2632,7 @@ String NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
 }
 
 
-String NameAndTitle(const char* name, NPCProf profession) {
+std::string NameAndTitle(const char* name, NPCProf profession) {
     return NameAndTitle(
         name,
         localization->GetNpcProfessionName(profession)
@@ -2640,7 +2640,7 @@ String NameAndTitle(const char* name, NPCProf profession) {
 }
 
 
-String NameAndTitle(NPCData* npc) {
+std::string NameAndTitle(NPCData* npc) {
     if (npc->pName) {
         if (npc->profession) {
             Assert(npc->profession < 59);
@@ -2650,19 +2650,19 @@ String NameAndTitle(NPCData* npc) {
         return npc->pName;
     }
 
-    return String("");
+    return std::string("");
 }
 
 
-String GetDisplayName(Actor* actor) {
+std::string GetDisplayName(Actor* actor) {
     if (actor->dword_000334_unique_name)
-        return pMonsterStats->pPlaceStrings[actor->dword_000334_unique_name];
+        return pMonsterStats->unique_monster_names[actor->dword_000334_unique_name];
     else
         return pMonsterStats->pInfos[actor->pMonsterInfo.uID].pName;
 }
 
 
-static String SeekKnowledgeElswhereString(Player *player) {
+static std::string SeekKnowledgeElswhereString(Player *player) {
     return localization->FormatString(
         LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE,
         player->pName,
@@ -2673,7 +2673,7 @@ static String SeekKnowledgeElswhereString(Player *player) {
 }
 
 void SeekKnowledgeElswhereDialogueOption(GUIWindow* dialogue, Player* player) {
-    String str = SeekKnowledgeElswhereString(pPlayers[uActiveCharacter]);
+    std::string str = SeekKnowledgeElswhereString(pPlayers[uActiveCharacter]);
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
     dialogue->DrawTitleText(

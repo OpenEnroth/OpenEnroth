@@ -264,7 +264,6 @@ extern int dword_5C6DF8;
 extern struct FactionTable *pFactionTable;
 
 extern char *pMonstersTXT_Raw;
-extern char *pMonsterPlacementTXT_Raw;
 extern char *pSpellsTXT_Raw;
 extern char *pMapStatsTXT_Raw;
 extern char *pHostileTXT_Raw;

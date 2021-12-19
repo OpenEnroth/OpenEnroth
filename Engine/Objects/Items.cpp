@@ -6,7 +6,6 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ItemEnchantment.h"
@@ -166,7 +165,6 @@ void ItemGen::UpdateTempBonus(GameTime time) {
 //----- (0045814E) --------------------------------------------------------
 void ItemsTable::Release() {
     free(pMonstersTXT_Raw);
-    free(pMonsterPlacementTXT_Raw);
     free(pSpcItemsTXT_Raw);
     free(pStdItemsTXT_Raw);
     free(pRndItemsTXT_Raw);
@@ -176,7 +174,6 @@ void ItemsTable::Release() {
     free(pPotionsTXT_Raw);
     free(pPotionNotesTXT_Raw);
     pMonstersTXT_Raw = nullptr;
-    pMonsterPlacementTXT_Raw = nullptr;
     pSpcItemsTXT_Raw = nullptr;
     pStdItemsTXT_Raw = nullptr;
     pRndItemsTXT_Raw = nullptr;

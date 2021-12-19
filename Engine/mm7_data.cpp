@@ -651,7 +651,6 @@ struct FactionTable *pFactionTable;
 std::array<char, 777> byte_5E4C15;
 
 char *pMonstersTXT_Raw;
-char *pMonsterPlacementTXT_Raw;
 char *pSpellsTXT_Raw;
 char *pMapStatsTXT_Raw;
 char *pHostileTXT_Raw;

@@ -7,7 +7,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Localization.h"
-#include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"

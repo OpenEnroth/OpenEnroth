@@ -14,8 +14,12 @@ void FactionTable::Initialize() {
     int decode_step;
     //  int item_counter;
 
-    free(pHostileTXT_Raw);
-    pHostileTXT_Raw = (char*)pEvents_LOD->LoadCompressed2("hostile.txt");
+    pHostileTXT_Raw = assets->GetFactions();
+    if (!pHostileTXT_Raw) {
+        // no faction table for mm6
+        return;
+    }
+
     strtok(pHostileTXT_Raw, "\r");
     for (i = 0; i < 89; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -41,6 +45,4 @@ void FactionTable::Initialize() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 92) && !break_loop);
     }
-    free(pHostileTXT_Raw);
-    pHostileTXT_Raw = nullptr;
 }

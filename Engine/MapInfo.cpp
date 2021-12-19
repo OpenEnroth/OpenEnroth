@@ -45,9 +45,10 @@ const char *location_type[] = {
 };
 
 void MapStats::Initialize() {
-    String pMapStatsTXT = (char*)pEvents_LOD->LoadCompressed2("MapStats.txt");
-    std::stringstream stream(pMapStatsTXT);
-    String tmpString;
+    size_t data_size{ 0 };
+    std::string map_stats_txt = assets->GetMapStats(&data_size);
+    std::stringstream stream(map_stats_txt);
+    std::string tmpString;
     std::getline(stream, tmpString);
     std::getline(stream, tmpString);
     std::getline(stream, tmpString);

@@ -394,15 +394,13 @@ void SpellStats::Initialize() {
     spellSchoolMaps["dark"] = SPELL_SCHOOL_DARK;
     spellSchoolMaps["magic"] = SPELL_SCHOOL_MAGIC;
 
-    char *test_string;
 
-    free(pSpellsTXT_Raw);
-    pSpellsTXT_Raw = (char *)pEvents_LOD->LoadCompressed2("spells.txt");
+    pSpellsTXT_Raw = assets->GetSpells();
 
     strtok(pSpellsTXT_Raw, "\r");
     for (int i = 1; i < 100; ++i) {
         if (((i % 11) - 1) == 0) strtok(NULL, "\r");
-        test_string = strtok(NULL, "\r") + 1;
+        char* test_string = strtok(NULL, "\r") + 1;
 
         extern std::vector<char *> Tokenize(char *input, const char separator);
         auto tokens = Tokenize(test_string, '\t');
