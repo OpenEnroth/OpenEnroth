@@ -4959,10 +4959,10 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
     int display_width, display_height;
     struct nk_vec2 scale;
     GLfloat ortho[4][4] = {
-        {2.0f, 0.0f, 0.0f, 0.0f},
-        {0.0f,-2.0f, 0.0f, 0.0f},
-        {0.0f, 0.0f,-1.0f, 0.0f},
-        {-1.0f,1.0f, 0.0f, 1.0f},
+        { 2.0f,  0.0f,  0.0f,  0.0f },
+        { 0.0f, -2.0f,  0.0f,  0.0f },
+        { 0.0f,  0.0f, -1.0f,  0.0f },
+        { -1.0f, 1.0f,  0.0f,  1.0f },
     };
 
     height = window->GetHeight();
@@ -5113,8 +5113,7 @@ struct nk_font* RenderOpenGL::NuklearLoadFont(const char* font_path, size_t font
     return font;
 }
 
-struct nk_image RenderOpenGL::NuklearImageLoad(Image *img)
-{
+struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
     GLuint texid;
     auto t = (TextureOpenGL *)img;
     unsigned __int8 *pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);

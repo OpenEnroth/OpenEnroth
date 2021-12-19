@@ -1,4 +1,7 @@
 #include <algorithm>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -981,15 +984,13 @@ static int lua_nk_parse_vec2(lua_State *L, int idx, struct nk_vec2 *vec) {
 
         lua_pop(L, 1);
     } else {
-        const char *msg = lua_pushfstring(L, "vec2 format is wrong");
-        return luaL_argerror(L, -1, msg);
+        return luaL_argerror(L, -1, lua_pushfstring(L, "vec2 format is wrong"));
     }
 
     return 0;
 }
 
-static int lua_nk_is_hex(char c)
-{
+static int lua_nk_is_hex(char c) {
     return (c >= '0' && c <= '9')
         || (c >= 'a' && c <= 'f')
         || (c >= 'A' && c <= 'F');
@@ -1009,8 +1010,7 @@ static int lua_nk_parse_ratio(lua_State *L, int idx, std::vector<float> *ratio) 
 
         lua_pop(L, 1);
     } else {
-        const char *msg = lua_pushfstring(L, "ratio format is wrong");
-        return luaL_argerror(L, -1, msg);
+        return luaL_argerror(L, -1, lua_pushfstring(L, "ratio format is wrong"));
     }
 
     return 0;
@@ -1042,8 +1042,7 @@ static int lua_nk_parse_rect(lua_State *L, int idx, struct nk_rect *rect) {
 
         lua_pop(L, 1);
     } else {
-        const char *msg = lua_pushfstring(L, "rect format is wrong");
-        return luaL_argerror(L, -1, msg);
+        return luaL_argerror(L, -1, lua_pushfstring(L, "rect format is wrong"));
     }
 
     return 0;
@@ -1104,8 +1103,7 @@ static int lua_nk_parse_color(lua_State *L, int idx, nk_color *color) {
         }
     }
 
-    const char *msg = lua_pushfstring(L, "unrecognized color format");
-    return luaL_argerror(L, -1, msg);
+    return luaL_argerror(L, -1, lua_pushfstring(L, "unrecognized color format"));
 }
 
 static int lua_nk_parse_image(lua_State *L, int idx, struct nk_image **image) {
@@ -1115,8 +1113,7 @@ static int lua_nk_parse_image(lua_State *L, int idx, struct nk_image **image) {
         return 0;
     }
 
-    const char *msg = lua_pushfstring(L, "asset is wrong");
-    return luaL_argerror(L, -1, msg);
+    return luaL_argerror(L, -1, lua_pushfstring(L, "asset is wrong"));
 }
 
 static int lua_nk_parse_image_asset(lua_State *L, int idx, struct Image **asset) {
@@ -1126,8 +1123,7 @@ static int lua_nk_parse_image_asset(lua_State *L, int idx, struct Image **asset)
         return 0;
     }
 
-    const char *msg = lua_pushfstring(L, "asset is wrong");
-    return luaL_argerror(L, -1, msg);
+    return luaL_argerror(L, -1, lua_pushfstring(L, "asset is wrong"));
 }
 
 static int lua_nk_parse_style(lua_State *L, int cidx, int pidx, lua_nk_style_type **type, void **ptr) {
@@ -1149,13 +1145,11 @@ static int lua_nk_parse_style(lua_State *L, int cidx, int pidx, lua_nk_style_typ
                 }
             }
 
-            const char *msg = lua_pushfstring(L, "unknown property '%s'", property);
-            return luaL_argerror(L, -1, msg);
+            return luaL_argerror(L, -1, lua_pushfstring(L, "unknown property '%s'", property));
         }
     }
 
-    const char *msg = lua_pushfstring(L, "unknown component '%s", component);
-    return luaL_argerror(L, -1, msg);
+    return luaL_argerror(L, -1, lua_pushfstring(L, "unknown component '%s", component));
 }
 
 static int lua_nk_parse_style_button(lua_State *L, int idx, nk_style_button *style) {
@@ -1181,8 +1175,7 @@ static int lua_nk_parse_style_button(lua_State *L, int idx, nk_style_button *sty
             }
         }
     } else {
-        const char *msg = lua_pushfstring(L, "wrong button style argument");
-        return luaL_argerror(L, -1, msg);
+        return luaL_argerror(L, -1, lua_pushfstring(L, "wrong button style argument"));
     }
 
     return 0;
@@ -1216,14 +1209,11 @@ static int lua_nk_parse_window_flags(lua_State *L, int idx, nk_flags *flags) {
                 *flags |= NK_WINDOW_SCALE_LEFT;
             else if (!strcmp(flag, "no_input"))
                 *flags |= NK_WINDOW_NO_INPUT;
-            else {
-                const char *msg = lua_pushfstring(L, "unrecognized window flag '%s'", flag);
-                return luaL_argerror(L, -1, msg);
-            }
+            else
+                return luaL_argerror(L, -1, lua_pushfstring(L, "unrecognized window flag '%s'", flag));
         }
     } else {
-        const char *msg = lua_pushfstring(L, "wrong window flag argument");
-        return luaL_argerror(L, -1, msg);
+        return luaL_argerror(L, -1, lua_pushfstring(L, "wrong window flag argument"));
     }
 
     lua_pop(lua, 1);
@@ -1618,14 +1608,13 @@ static int lua_nk_layout_row(lua_State *L) {
 
     enum nk_layout_format fmt;
 
-    if (!strcmp(strfmt, "dynamic"))
+    if (!strcmp(strfmt, "dynamic")) {
         fmt = NK_DYNAMIC;
-    else if (!strcmp(strfmt, "static"))
+    } else if (!strcmp(strfmt, "static")) {
         fmt = NK_STATIC;
-    else {
+    } else {
         free(floats);
-        const char *msg = lua_pushfstring(L, "unrecognized format flag '%s'", strfmt);
-        return luaL_argerror(L, -1, msg);
+        return luaL_argerror(L, -1, lua_pushfstring(L, "unrecognized format flag '%s'", strfmt));
     }
 
     nk_layout_row(nuklear->ctx, fmt, height, cols, floats);
@@ -2060,8 +2049,7 @@ bool Nuklear::LuaInit() {
     lua_setfield(lua, -2, "cpath");
     lua_pop(lua, 1);
 
-    static const luaL_Reg log[] =
-    {
+    static const luaL_Reg log[] = {
         { "info", lua_log_info },
         { "warning", lua_log_warning },
         { NULL, NULL }
@@ -2070,8 +2058,7 @@ bool Nuklear::LuaInit() {
     luaL_newlib(lua, log);
     lua_setglobal(lua, "log");
 
-    static const luaL_Reg ui[] =
-    {
+    static const luaL_Reg ui[] = {
         { "nk_begin", lua_nk_begin },
         { "nk_button_color", lua_nk_button_color },
         { "nk_button_image", lua_nk_button_image },
@@ -2109,8 +2096,7 @@ bool Nuklear::LuaInit() {
     luaL_newlib(lua, ui);
     lua_setglobal(lua, "ui");
 
-    static const luaL_Reg game[] =
-    {
+    static const luaL_Reg game[] = {
         { "set_current_menu", lua_set_game_current_menu },
         { "set_hotkey", lua_set_hotkey },
         { "unset_hotkey", lua_unset_hotkey },
@@ -2120,8 +2106,7 @@ bool Nuklear::LuaInit() {
     luaL_newlib(lua, game);
     lua_setglobal(lua, "game");
 
-    static const luaL_Reg window[] =
-    {
+    static const luaL_Reg window[] = {
         { "dimensions", lua_window_dimensions },
         { NULL, NULL }
     };

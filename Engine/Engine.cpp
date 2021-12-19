@@ -120,8 +120,7 @@ static std::string s_data_path;
 
 void SetDataPath(const std::string &data_path) { s_data_path = data_path; }
 
-std::string MakeDataPath(std::initializer_list<std::string_view> paths)
-{
+std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
     std::string res = s_data_path;
     std::string sep;
 

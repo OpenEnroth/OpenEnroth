@@ -193,8 +193,7 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
 
         x = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
         y = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
-    }
-    else {
+    } else {
         if (engine->config->borderless)
             flags |= SDL_WINDOW_BORDERLESS;
 
@@ -253,19 +252,19 @@ bool Sdl2Window::NuklearEventHandler(const SDL_Event &e) {
                 return 1;
         }
 
-        if (sym == SDLK_BACKQUOTE && state[SDL_SCANCODE_LCTRL] && !down)
+        if (sym == SDLK_BACKQUOTE && state[SDL_SCANCODE_LCTRL] && !down) {
             nuklear->Reload();
-        else if (sym == SDLK_RSHIFT || sym == SDLK_LSHIFT)
+        } else if (sym == SDLK_RSHIFT || sym == SDLK_LSHIFT) {
             nk_input_key(nuklear->ctx, NK_KEY_SHIFT, down);
-        else if (sym == SDLK_DELETE)
+        } else if (sym == SDLK_DELETE) {
             nk_input_key(nuklear->ctx, NK_KEY_DEL, down);
-        else if (sym == SDLK_RETURN)
+        } else if (sym == SDLK_RETURN) {
             nk_input_key(nuklear->ctx, NK_KEY_ENTER, down);
-        else if (sym == SDLK_TAB)
+        } else if (sym == SDLK_TAB) {
             nk_input_key(nuklear->ctx, NK_KEY_TAB, down);
-        else if (sym == SDLK_BACKSPACE)
+        } else if (sym == SDLK_BACKSPACE) {
             nk_input_key(nuklear->ctx, NK_KEY_BACKSPACE, down);
-        else if (sym == SDLK_HOME) {
+        } else if (sym == SDLK_HOME) {
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_START, down);
             nk_input_key(nuklear->ctx, NK_KEY_SCROLL_START, down);
         } else if (sym == SDLK_END) {
@@ -275,34 +274,38 @@ bool Sdl2Window::NuklearEventHandler(const SDL_Event &e) {
             nk_input_key(nuklear->ctx, NK_KEY_SCROLL_DOWN, down);
         } else if (sym == SDLK_PAGEUP) {
             nk_input_key(nuklear->ctx, NK_KEY_SCROLL_UP, down);
-        } else if (sym == SDLK_z && state[SDL_SCANCODE_LCTRL])
+        } else if (sym == SDLK_z && state[SDL_SCANCODE_LCTRL]) {
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_UNDO, down);
-        else if (sym == SDLK_r && state[SDL_SCANCODE_LCTRL])
+        } else if (sym == SDLK_r && state[SDL_SCANCODE_LCTRL]) {
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_REDO, down);
-        else if (sym == SDLK_c && state[SDL_SCANCODE_LCTRL])
+        } else if (sym == SDLK_c && state[SDL_SCANCODE_LCTRL]) {
             nk_input_key(nuklear->ctx, NK_KEY_COPY, down);
-        else if (sym == SDLK_v && state[SDL_SCANCODE_LCTRL])
+        } else if (sym == SDLK_v && state[SDL_SCANCODE_LCTRL]) {
             nk_input_key(nuklear->ctx, NK_KEY_PASTE, down);
-        else if (sym == SDLK_x && state[SDL_SCANCODE_LCTRL])
+        } else if (sym == SDLK_x && state[SDL_SCANCODE_LCTRL]) {
             nk_input_key(nuklear->ctx, NK_KEY_CUT, down);
-        else if (sym == SDLK_b && state[SDL_SCANCODE_LCTRL])
+        } else if (sym == SDLK_b && state[SDL_SCANCODE_LCTRL]) {
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_START, down);
-        else if (sym == SDLK_e && state[SDL_SCANCODE_LCTRL])
+        } else if (sym == SDLK_e && state[SDL_SCANCODE_LCTRL]) {
             nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_END, down);
-        else if (sym == SDLK_UP)
+        } else if (sym == SDLK_UP) {
             nk_input_key(nuklear->ctx, NK_KEY_UP, down);
-        else if (sym == SDLK_DOWN)
+        } else if (sym == SDLK_DOWN) {
             nk_input_key(nuklear->ctx, NK_KEY_DOWN, down);
-        else if (sym == SDLK_LEFT) {
+        } else if (sym == SDLK_LEFT) {
             if (state[SDL_SCANCODE_LCTRL])
                 nk_input_key(nuklear->ctx, NK_KEY_TEXT_WORD_LEFT, down);
-            else nk_input_key(nuklear->ctx, NK_KEY_LEFT, down);
+            else
+                nk_input_key(nuklear->ctx, NK_KEY_LEFT, down);
         } else if (sym == SDLK_RIGHT) {
             if (state[SDL_SCANCODE_LCTRL])
                 nk_input_key(nuklear->ctx, NK_KEY_TEXT_WORD_RIGHT, down);
-            else nk_input_key(nuklear->ctx, NK_KEY_RIGHT, down);
-        } else
+            else
+                nk_input_key(nuklear->ctx, NK_KEY_RIGHT, down);
+        } else {
             return 0;
+        }
+
         return 1;
     } else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
         /* mouse button */
@@ -311,30 +314,39 @@ bool Sdl2Window::NuklearEventHandler(const SDL_Event &e) {
         if (e.button.button == SDL_BUTTON_LEFT) {
             if (e.button.clicks > 1)
                 nk_input_button(nuklear->ctx, NK_BUTTON_DOUBLE, x, y, down);
+
             nk_input_button(nuklear->ctx, NK_BUTTON_LEFT, x, y, down);
-        } else if (e.button.button == SDL_BUTTON_MIDDLE)
+        } else if (e.button.button == SDL_BUTTON_MIDDLE) {
             nk_input_button(nuklear->ctx, NK_BUTTON_MIDDLE, x, y, down);
-        else if (e.button.button == SDL_BUTTON_RIGHT)
+        } else if (e.button.button == SDL_BUTTON_RIGHT) {
             nk_input_button(nuklear->ctx, NK_BUTTON_RIGHT, x, y, down);
+        }
+
         return 1;
     } else if (e.type == SDL_MOUSEMOTION) {
         /* mouse motion */
         if (nuklear->ctx->input.mouse.grabbed) {
             int x = (int)nuklear->ctx->input.mouse.prev.x, y = (int)nuklear->ctx->input.mouse.prev.y;
             nk_input_motion(nuklear->ctx, x + e.motion.xrel, y + e.motion.yrel);
-        } else nk_input_motion(nuklear->ctx, e.motion.x, e.motion.y);
+        } else {
+            nk_input_motion(nuklear->ctx, e.motion.x, e.motion.y);
+        }
+
         return 1;
     } else if (e.type == SDL_TEXTINPUT) {
         /* text input */
         nk_glyph glyph;
         memcpy(glyph, e.text.text, NK_UTF_SIZE);
         nk_input_glyph(nuklear->ctx, glyph);
+
         return 1;
     } else if (e.type == SDL_MOUSEWHEEL) {
         /* mouse wheel */
         nk_input_scroll(nuklear->ctx, nk_vec2((float)e.wheel.x, (float)e.wheel.y));
+
         return 1;
     }
+
     return 0;
 }
 

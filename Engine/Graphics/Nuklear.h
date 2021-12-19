@@ -1,10 +1,12 @@
 #pragma once
 
+#include <memory>
+
 #include "GUI/GUIWindow.h"
 #include "Io/GameKey.h"
 
 #include <lua.hpp>
-#include <nuklear/nuklear_config.h>
+#include "nuklear/nuklear_config.h"
 
 class Nuklear {
  public:
