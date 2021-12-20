@@ -1616,7 +1616,7 @@ void TravelByTransport() {
                     Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y |
                         pTravel->arrival_z | pTravel->arrival_rot_y;
                 } else {
-                    pIndoorCameraD3D->sRotationZ = 0;
+                    pCamera3D->sRotationZ = 0;
 
                     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                     pParty->vPosition.x = pTravel->arrival_x;
@@ -3821,7 +3821,7 @@ void GUIWindow_House::Release() {
     dword_5C35D4 = 0;
     if (engine->config->flip_on_exit) {
         pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) & (TrigLUT->uIntegerPi + pParty->sRotationZ);
-        pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
+        pCamera3D->sRotationZ = pParty->sRotationZ;
     }
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 

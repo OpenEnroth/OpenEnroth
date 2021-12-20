@@ -235,7 +235,7 @@ void stru10::CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
 bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
                               unsigned int uNumVertices,
                               RenderVertexSoft *pOutBounding) {
-    // IndoorCameraD3D *v6; // edi@1
+    // Camera3D *v6; // edi@1
     // PolygonType v7; // al@1
     // unsigned int v8; // edx@7
     // char v10; // zf@10
@@ -252,7 +252,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     // float v24; // ST14_4@31
     // RenderVertexSoft v25; // [sp+10h] [bp-90h]@24
     // RenderVertexSoft v26; // [sp+40h] [bp-60h]@20
-    // IndoorCameraD3D *thisa; // [sp+70h] [bp-30h]@1
+    // Camera3D *thisa; // [sp+70h] [bp-30h]@1
     // stru10 *v31; // [sp+84h] [bp-1Ch]@1
     // float v32; // [sp+88h] [bp-18h]@8
     Vec3_float_ a1;  // [sp+8Ch] [bp-14h]@1
@@ -263,7 +263,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
 
     // _ESI = a3;
     // v31 = this;
-    // v6 = pIndoorCameraD3D;
+    // v6 = pCamera3D;
     // v7 = a3->uPolygonType;
 
     a1.x = 0.0f;
@@ -654,9 +654,9 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     RenderVertexSoft v25;  // [sp+10h] [bp-90h]@20
     memcpy(&v25, pOutBounding, sizeof(RenderVertexSoft));
 
-    float _dp = (v25.vWorldPosition.x - pIndoorCameraD3D->vPartyPos.x) * a1.x +
-                (v25.vWorldPosition.y - pIndoorCameraD3D->vPartyPos.y) * a1.y +
-                (v25.vWorldPosition.z - pIndoorCameraD3D->vPartyPos.z) * a1.z;
+    float _dp = (v25.vWorldPosition.x - pCamera3D->vPartyPos.x) * a1.x +
+                (v25.vWorldPosition.y - pCamera3D->vPartyPos.y) * a1.y +
+                (v25.vWorldPosition.z - pCamera3D->vPartyPos.z) * a1.z;
     if (fabs(_dp) < 1e-6f) {
         memcpy(&v25, &pOutBounding[1], sizeof(RenderVertexSoft));
         memcpy(&pOutBounding[1], &pOutBounding[3], sizeof(RenderVertexSoft));
@@ -673,17 +673,17 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
             v26.vWorldPosition.z =
                 pParty->vPosition.z + pParty->sEyelevel;  // frustum
 
-            pIndoorCameraD3D->do_draw_debug_line_sw(&v26, 0xFF0000u, &pOutBounding[0], 0xFF0000u, 0, 0);
-            pIndoorCameraD3D->do_draw_debug_line_sw(&v26, 0xFF00u, &pOutBounding[1], 0xFF00u, 0, 0);
-            pIndoorCameraD3D->do_draw_debug_line_sw(&v26, 0xFFu, &pOutBounding[2], 0xFFu, 0, 0);
-            pIndoorCameraD3D->do_draw_debug_line_sw(&v26, 0xFFFFFFu, &pOutBounding[3], 0xFFFFFFu, 0, 0);
+            pCamera3D->do_draw_debug_line_sw(&v26, 0xFF0000u, &pOutBounding[0], 0xFF0000u, 0, 0);
+            pCamera3D->do_draw_debug_line_sw(&v26, 0xFF00u, &pOutBounding[1], 0xFF00u, 0, 0);
+            pCamera3D->do_draw_debug_line_sw(&v26, 0xFFu, &pOutBounding[2], 0xFFu, 0, 0);
+            pCamera3D->do_draw_debug_line_sw(&v26, 0xFFFFFFu, &pOutBounding[3], 0xFFFFFFu, 0, 0);
             bDoNotDrawPortalFrustum = true;
         }
-        pIndoorCameraD3D->debug_outline_sw(pOutBounding, uNumVertices, 0x1EFF1Eu, 0.00019999999);  // bounding
+        pCamera3D->debug_outline_sw(pOutBounding, uNumVertices, 0x1EFF1Eu, 0.00019999999);  // bounding
     }
     //}
 
-    // pIndoorCameraD3D->debug_outline_sw(pFaceLimits,  4, 0xFFF14040,
+    // pCamera3D->debug_outline_sw(pFaceLimits,  4, 0xFFF14040,
     // 0.000099999997);     // limits
 
     /*if ( _4D864C_force_sw_render_rules && engine->config->DrawBlvDebugs())
@@ -693,7 +693,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
       v26.vWorldPosition.y = face_center_y;
       v26.vWorldPosition.z = face_center_z;
 
-      pIndoorCameraD3D->do_draw_debug_line_sw(pFaceLimits, 0xFF00u, &v26,
+      pCamera3D->do_draw_debug_line_sw(pFaceLimits, 0xFF00u, &v26,
     0xFF0000u, 0, 0);
     }*/
 
@@ -713,7 +713,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
         v26.vWorldPosition.z = face_center_z + a1.z * 400.0f;
 
         if (engine->config->debug_portal_outlines)
-            pIndoorCameraD3D->do_draw_debug_line_sw(&v25, -1, &v26, 0xFFFF00u, 0, 0);
+            pCamera3D->do_draw_debug_line_sw(&v25, -1, &v26, 0xFFFF00u, 0, 0);
     }
     //}
 
@@ -735,7 +735,7 @@ char stru10::_49C5DA(BLVFace *pFace, RenderVertexSoft *pVertices,
     _49CE9E(pFace, pVertices, *pNumVertices, pLimits);
 
     // if ( _4D864C_force_sw_render_rules && engine->config->DrawBlvDebugs())
-    //  pIndoorCameraD3D->debug_outline_sw(a4a, 4u, 0xFF1E1Eu, 0.000099999997);
+    //  pCamera3D->debug_outline_sw(a4a, 4u, 0xFF1E1Eu, 0.000099999997);
     if (CalcFaceBounding(pFace, pLimits, 4, pOutBounding))
         return _49C720(pOutBounding, a5);
     return false;
@@ -750,7 +750,7 @@ bool stru10::CalcPortalShape(BLVFace *pFace,
 
     CalcPolygonLimits(pFace, pLimits);  //определение границ портала
     // if ( _4D864C_force_sw_render_rules && engine->config->DrawBlvDebugs())
-    //   pIndoorCameraD3D->debug_outline_sw(pLimits, 4, 0xFF1E1E,
+    //   pCamera3D->debug_outline_sw(pLimits, 4, 0xFF1E1E,
     //   0.000099999997);
     if (CalcFaceBounding(pFace, pLimits, 4, pOutBounding))
         return _49C720(pOutBounding, pPortalDataFrustum) != 0;
@@ -763,9 +763,9 @@ bool stru10::CalcPortalShape(BLVFace *pFace,
 char stru10::_49C720(RenderVertexSoft *pFaceBounding,
                      IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
     Vec3_float_ pRayStart;  // [sp+4h] [bp-34h]@1
-    pRayStart.x = (double)pIndoorCameraD3D->vPartyPos.x;
-    pRayStart.y = (double)pIndoorCameraD3D->vPartyPos.y;
-    pRayStart.z = (double)pIndoorCameraD3D->vPartyPos.z;
+    pRayStart.x = (double)pCamera3D->vPartyPos.x;
+    pRayStart.y = (double)pCamera3D->vPartyPos.y;
+    pRayStart.z = (double)pCamera3D->vPartyPos.z;
 
     if (FindFaceNormal(&pFaceBounding[0], &pFaceBounding[1], &pRayStart,
                        &pPortalDataFrustum[0]) &&

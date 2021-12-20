@@ -101,11 +101,11 @@ struct IndoorCameraD3D_stru2 {
 
 /*  123 */
 #pragma pack(push, 1)
-struct IndoorCameraD3D {
-    IndoorCameraD3D();
+struct Camera3D {
+    Camera3D();
 
     //----- (004363C6) --------------------------------------------------------
-    virtual ~IndoorCameraD3D() {}
+    virtual ~Camera3D() {}
 
     void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
     void ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices);
@@ -177,17 +177,24 @@ struct IndoorCameraD3D {
 
     void DebugDrawPortal(struct BLVFace *pFace);
 
-    // void ( ***vdestructor_ptr)(IndoorCameraD3D *, bool);
+    // void ( ***vdestructor_ptr)(Camera3D *, bool);
     IndoorCameraD3D_Vec3 field_4[3] {};  // matrix for camera rotation transform
     // IndoorCameraD3D_Vec3 field_14;
     // IndoorCameraD3D_Vec3 field_24;
     IndoorCameraD3D_Vec4 FrustumPlanes[6] {};
+
     float fov = 0;
+    float inv_fov = 0;
     float screenCenterX = 0;
     float screenCenterY = 0;
-    float fov_x = 0;
-    float fov_y = 0;
-    float inv_fov = 0;
+    float ViewPlaneDist_X = 0;
+    float ViewPlaneDist_Y = 0;  // doesnt quite make sense
+
+    int odm_fov_deg = 75;
+    float odm_fov_rad = odm_fov_deg * pi / 180.0;
+    int blv_fov_deg = 60;
+    float blv_fov_rad = blv_fov_deg * pi / 180.0;
+    
     // float _unused_blv_party_x;
     // float _unused_blv_party_y;
     // float _unused_blv_party_z;
@@ -259,9 +266,11 @@ struct IndoorCameraD3D {
     int int_cosine_x = 0;        // moved  from 157 struct ODMRenderParams::28
                              // merged from 162 struct BLVRenderParams::28
 
+    
+
     float GetNearClip() const;
     float GetFarClip() const;
 };
 #pragma pack(pop)
 
-extern IndoorCameraD3D *pIndoorCameraD3D;
+extern Camera3D *pCamera3D;

@@ -3,7 +3,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
-#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/IocContainer.h"
@@ -93,7 +93,7 @@ void GameWindowHandler::OnMouseRightClick(int x, int y) {
         mouse->SetMouseClick(x, y);
 
         if (engine) {
-            engine->PickMouse(pIndoorCameraD3D->GetPickDepth(), x, y, 0, &vis_sprite_filter_2, &vis_door_filter);
+            engine->PickMouse(pCamera3D->GetPickDepth(), x, y, 0, &vis_sprite_filter_2, &vis_door_filter);
         }
 
         UI_OnMouseRightClick(x, y);

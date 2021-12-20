@@ -2,7 +2,7 @@
 
 #include "Engine/Engine.h"
 
-#include "IndoorCameraD3D.h"
+#include "Camera.h"
 
 //----- (00498377) --------------------------------------------------------
 bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test skipping this

@@ -8,7 +8,7 @@
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Camera.h"
 
 struct IndoorLocation;
 
@@ -686,23 +686,7 @@ struct BLVRenderParams {
     int field_0_timer_ = 0;
     int _unused_uFlags = 0;  // & INDOOR_CAMERA_DRAW_D3D_OUTLINES:  render d3d
                          // outlines
-    Vec3_int_ _unused_vPartyPos;
-    int _unused_sPartyRotY = 0;
-    int _unused_sPartyRotX = 0;
     int uPartySectorID = 0;
-    int _unused_sCosineY = 0;     // matches ODMRenderParams::int sines and cosines
-    int _unused_sSineY = 0;       // computed in 0048600E
-    int _unused_sCosineNegX = 0;  // merged into IndoorCameraD3D
-    int _unused_sSineNegX = 0;    // --//--
-    float _unused_fCosineY = 0;   // matches old IndoorCamera::fRotationCosineY (new
-                              // IndoorCameraD3D::fRotationCosineY)
-    float _unused_fSineY = 0;     // matches old IndoorCamera::fRotationSineY   (new
-                              // IndoorCameraD3D::fRotationSineY)
-    float _unused_fCosineNegX = 0;  // the same
-    float _unused_fSineNegX = 0;    // the same
-
-    // int bsp_fov_rad;            // fixpoint FOV in radians for BSP calculation
-    // int bsp_fov_rad_inv;
 
     unsigned int uTargetWidth = 0;
     unsigned int uTargetHeight = 0;

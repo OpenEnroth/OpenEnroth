@@ -241,13 +241,13 @@ void Render::RenderTerrainD3D() {  // New function
                 (64 - (signed)z) * blockScale;
             pTerrainVertices[z * 128 + x].vWorldPosition.z =
                 heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
-            pIndoorCameraD3D->ViewTransform(&pTerrainVertices[z * 128 + x], 1);
-            pIndoorCameraD3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
+            pCamera3D->ViewTransform(&pTerrainVertices[z * 128 + x], 1);
+            pCamera3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
         }
     }
     //-------(Отсечение невидимой части
     //карты)------------------------------------------------------------------------------------------
-    float direction = (float)(pIndoorCameraD3D->sRotationZ /
+    float direction = (float)(pCamera3D->sRotationZ /
                               256);  // direction of the camera(напрвление
                                      // камеры) 0-East(B) 1-NorthEast(CB)
                                      // 2-North(C)
@@ -279,7 +279,7 @@ void Render::RenderTerrainD3D() {  // New function
 
     int camx = pODMRenderParams->uMapGridCellX;
     int camz = pODMRenderParams->uMapGridCellY - 1;
-    int tilerange = (pIndoorCameraD3D->GetFarClip() / blockScale) + 1;
+    int tilerange = (pCamera3D->GetFarClip() / blockScale) + 1;
 
     float Light_tile_dist;
 
@@ -365,16 +365,16 @@ void Render::RenderTerrainD3D() {  // New function
             pTilePolygon->uNumVertices = 4;
             pTilePolygon->field_59 = 5;
 
-            if (array_73D150[0].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() &&
-                array_73D150[1].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() &&
-                array_73D150[2].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip() &&
-                array_73D150[3].vWorldViewPosition.x < pIndoorCameraD3D->GetNearClip())
+            if (array_73D150[0].vWorldViewPosition.x < pCamera3D->GetNearClip() &&
+                array_73D150[1].vWorldViewPosition.x < pCamera3D->GetNearClip() &&
+                array_73D150[2].vWorldViewPosition.x < pCamera3D->GetNearClip() &&
+                array_73D150[3].vWorldViewPosition.x < pCamera3D->GetNearClip())
                 continue;
 
-            if (pIndoorCameraD3D->GetFarClip() < array_73D150[0].vWorldViewPosition.x &&
-                pIndoorCameraD3D->GetFarClip() < array_73D150[1].vWorldViewPosition.x &&
-                pIndoorCameraD3D->GetFarClip() < array_73D150[2].vWorldViewPosition.x &&
-                pIndoorCameraD3D->GetFarClip() < array_73D150[3].vWorldViewPosition.x)
+            if (pCamera3D->GetFarClip() < array_73D150[0].vWorldViewPosition.x &&
+                pCamera3D->GetFarClip() < array_73D150[1].vWorldViewPosition.x &&
+                pCamera3D->GetFarClip() < array_73D150[2].vWorldViewPosition.x &&
+                pCamera3D->GetFarClip() < array_73D150[3].vWorldViewPosition.x)
                 continue;
 
             //----------------------------------------------------------------------------
@@ -455,8 +455,8 @@ void Render::RenderTerrainD3D() {  // New function
                 unsigned int a5 = 4;
 
                 // ---------Draw distance(Дальность отрисовки)-------------------------------
-                int far_clip_distance = pIndoorCameraD3D->GetFarClip();
-                float near_clip_distance = pIndoorCameraD3D->GetNearClip();
+                int far_clip_distance = pCamera3D->GetFarClip();
+                float near_clip_distance = pCamera3D->GetNearClip();
 
 
                 bool neer_clip = array_73D150[0].vWorldViewPosition.x < near_clip_distance ||
@@ -557,8 +557,8 @@ void Render::RenderTerrainD3D() {  // New function
                     unsigned int a5_2 = 4;
 
                     // ---------Draw distance(Дальность отрисовки)-------------------------------
-                    int far_clip_distance_2 = pIndoorCameraD3D->GetFarClip();
-                    float near_clip_distance_2 = pIndoorCameraD3D->GetNearClip();
+                    int far_clip_distance_2 = pCamera3D->GetFarClip();
+                    float near_clip_distance_2 = pCamera3D->GetNearClip();
 
 
                     bool neer_clip_2 = array_73D150[0].vWorldViewPosition.x < near_clip_distance_2 ||
@@ -631,8 +631,8 @@ void Render::RenderTerrainD3D() {  // New function
                 unsigned int a5 = 4;
 
                 // ---------Draw distance(Дальность отрисовки)-------------------------------
-                int far_clip_distance = pIndoorCameraD3D->GetFarClip();
-                float near_clip_distance = pIndoorCameraD3D->GetNearClip();
+                int far_clip_distance = pCamera3D->GetFarClip();
+                float near_clip_distance = pCamera3D->GetNearClip();
 
                 if (engine->config->extended_draw_distance)
                     far_clip_distance = 0x5000;
@@ -748,9 +748,9 @@ void Render::PrepareDecorationsRenderList_ODM() {
 
                     v10 = (unsigned __int16 *)TrigLUT->Atan2(
                         pLevelDecorations[i].vPosition.x -
-                            pIndoorCameraD3D->vPartyPos.x,
+                            pCamera3D->vPartyPos.x,
                         pLevelDecorations[i].vPosition.y -
-                            pIndoorCameraD3D->vPartyPos.y);
+                            pCamera3D->vPartyPos.y);
                     v38 = 0;
                     v13 = ((signed int)(TrigLUT->uIntegerPi +
                                         ((signed int)TrigLUT->uIntegerPi >>
@@ -784,20 +784,20 @@ void Render::PrepareDecorationsRenderList_ODM() {
                     }  // for light
 
                     // v17 = (pLevelDecorations[i].vPosition.x -
-                    // pIndoorCameraD3D->vPartyPos.x) << 16; v40 =
+                    // pCamera3D->vPartyPos.x) << 16; v40 =
                     // (pLevelDecorations[i].vPosition.y -
-                    // pIndoorCameraD3D->vPartyPos.y) << 16;
+                    // pCamera3D->vPartyPos.y) << 16;
                     int party_to_decor_x = pLevelDecorations[i].vPosition.x -
-                                           pIndoorCameraD3D->vPartyPos.x;
+                                           pCamera3D->vPartyPos.x;
                     int party_to_decor_y = pLevelDecorations[i].vPosition.y -
-                                           pIndoorCameraD3D->vPartyPos.y;
+                                           pCamera3D->vPartyPos.y;
                     int party_to_decor_z = pLevelDecorations[i].vPosition.z -
-                                           pIndoorCameraD3D->vPartyPos.z;
+                                           pCamera3D->vPartyPos.z;
 
                     int view_x = 0;
                     int view_y = 0;
                     int view_z = 0;
-                    bool visible = pIndoorCameraD3D->ViewClip(
+                    bool visible = pCamera3D->ViewClip(
                         pLevelDecorations[i].vPosition.x,
                         pLevelDecorations[i].vPosition.y,
                         pLevelDecorations[i].vPosition.z, &view_x, &view_y,
@@ -807,12 +807,12 @@ void Render::PrepareDecorationsRenderList_ODM() {
                         // if (2 * abs(view_x) >= abs(view_y)) {
                             int projected_x = 0;
                             int projected_y = 0;
-                            pIndoorCameraD3D->Project(view_x, view_y, view_z,
+                            pCamera3D->Project(view_x, view_y, view_z,
                                                       &projected_x,
                                                       &projected_y);
 
                             float _v41 = frame->scale *
-                               pODMRenderParams->int_fov_rad /
+                                pCamera3D->ViewPlaneDist_X /
                                 view_x;
 
                             int screen_space_half_width = 0;
@@ -933,7 +933,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 d3d_vertex_buffer[i].pos.z =
                     1.0 -
                     1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                           pIndoorCameraD3D->GetFarClip());
+                           pCamera3D->GetFarClip());
                 d3d_vertex_buffer[i].rhw =
                     1.0 /
                     (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
@@ -978,7 +978,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 d3d_vertex_buffer[i].pos.z =
                     1.0 -
                     1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                           pIndoorCameraD3D->GetFarClip());
+                           pCamera3D->GetFarClip());
                 d3d_vertex_buffer[i].rhw =
                     1.0 /
                     (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
@@ -1405,7 +1405,7 @@ bool Render::InitializeFullscreen() {
 
     bWindowMode = 0;
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-    pViewport->SetFOV(_6BE3A0_fov);
+    pViewport->ResetScreen();
 
     return true;
 }
@@ -1538,7 +1538,7 @@ void Render::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blen
 
 bool Render::SwitchToWindow() {
     // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-    pViewport->SetFOV(_6BE3A0_fov);
+    pViewport->ResetScreen();
     Release();
 
     pBackBuffer4 = nullptr;
@@ -1880,7 +1880,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
             d3d_vertex_buffer[i].pos.z =
                 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                             pIndoorCameraD3D->GetFarClip());
+                             pCamera3D->GetFarClip());
             d3d_vertex_buffer[i].rhw =
                 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
             d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(
@@ -1915,7 +1915,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
             d3d_vertex_buffer[i].pos.z =
                 1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                             pIndoorCameraD3D->GetFarClip());
+                             pCamera3D->GetFarClip());
             d3d_vertex_buffer[i].rhw =
                 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
             d3d_vertex_buffer[i].diffuse = GetActorTintColor(a4->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
@@ -1998,9 +1998,9 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
 
     // if (pIndoorCamera->flags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES ||
     // pBLVRenderParams->uFlags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES) if
-    // (pIndoorCameraD3D->debug_flags & ODM_RENDER_DRAW_TERRAIN_OUTLINES)
+    // (pCamera3D->debug_flags & ODM_RENDER_DRAW_TERRAIN_OUTLINES)
     if (engine->config->debug_terrain)
-        pIndoorCameraD3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices,
+        pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices,
                                             0x00FFFFFF, 0.0);
 }
 
@@ -2301,8 +2301,8 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
     double v17 = (double)yDifference * v16 * a4;
     double v18 = (double)xDifference * v16 * a4;
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        v20 = a3 * 1000.0 / pIndoorCameraD3D->GetFarClip();
-        v25 = a7 * 1000.0 / pIndoorCameraD3D->GetFarClip();
+        v20 = a3 * 1000.0 / pCamera3D->GetFarClip();
+        v25 = a7 * 1000.0 / pCamera3D->GetFarClip();
     } else {
         v20 = a3 * 0.061758894;
         v25 = a7 * 0.061758894;
@@ -2412,7 +2412,7 @@ void Render::_4A4CC9_AddSomeBillboard(SpellFX_Billboard *a1,
 
         // if (a1->field_104[i].z < 17) a1->field_104[i].z = 17;
         float rhw = 1.f / a1->field_104[i].z;
-        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pIndoorCameraD3D->GetFarClip());
+        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pCamera3D->GetFarClip());
 
 
 
@@ -2420,7 +2420,7 @@ void Render::_4A4CC9_AddSomeBillboard(SpellFX_Billboard *a1,
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             v10 *= 1000.f / 16192.f;
         } else {
-            v10 *= 1000.f / pIndoorCameraD3D->GetFarClip();
+            v10 *= 1000.f / pCamera3D->GetFarClip();
         }
 
 
@@ -3288,7 +3288,7 @@ void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
 }
 
 int ODM_NearClip(unsigned int num_vertices) {
-    float nearclip = pIndoorCameraD3D->GetNearClip();
+    float nearclip = pCamera3D->GetNearClip();
     bool current_vertices_flag;  // edi@1
     bool next_vertices_flag;     // [sp+Ch] [bp-24h]@6
     double t;                    // st6@10
@@ -3409,13 +3409,13 @@ int ODM_FarClip(unsigned int uNumVertices) {
     depth_num_vertices = 0;
     current_vertices_flag = false;
     if (VertexRenderList[0].vWorldViewPosition.x >=
-        pIndoorCameraD3D->GetFarClip())
+        pCamera3D->GetFarClip())
         current_vertices_flag =
             true;  //настоящая вершина больше границы видимости
     if ((signed int)uNumVertices <= 0) return 0;
     for (uint i = 0; i < uNumVertices; ++i) {  // есть ли пограничные вершины
         if (VertexRenderList[i].vWorldViewPosition.x <
-            pIndoorCameraD3D->GetFarClip()) {
+            pCamera3D->GetFarClip()) {
             bFound = true;
             break;
         }
@@ -3434,7 +3434,7 @@ int ODM_FarClip(unsigned int uNumVertices) {
 
     for (uint i = 0; i < uNumVertices; ++i) {
         next_vertices_flag = VertexRenderList[i + 1].vWorldViewPosition.x >=
-                             pIndoorCameraD3D->GetFarClip();
+                             pCamera3D->GetFarClip();
         if (current_vertices_flag ^
             next_vertices_flag) {  // одна из граней за границей видимости
             if (next_vertices_flag) {  // следующая вершина больше границы
@@ -3442,12 +3442,12 @@ int ODM_FarClip(unsigned int uNumVertices) {
                                        // границы видимости) - v3
                 // t = far_clip - v2.x / v3.x - v2.x (формула получения точки
                 // пересечения отрезка с плоскостью)
-                t = (pIndoorCameraD3D->GetFarClip() -
+                t = (pCamera3D->GetFarClip() -
                      VertexRenderList[i].vWorldViewPosition.x) /
                     (VertexRenderList[i].vWorldViewPosition.x -
                      VertexRenderList[i + 1].vWorldViewPosition.x);
                 array_507D30[depth_num_vertices].vWorldViewPosition.x =
-                    pIndoorCameraD3D->GetFarClip();
+                    pCamera3D->GetFarClip();
                 // New_y = v2.y + (v3.y - v2.y)*t
                 array_507D30[depth_num_vertices].vWorldViewPosition.y =
                     VertexRenderList[i].vWorldViewPosition.y +
@@ -3467,16 +3467,16 @@ int ODM_FarClip(unsigned int uNumVertices) {
                     VertexRenderList[i].v +
                     (VertexRenderList[i].v - VertexRenderList[i + 1].v) * t;
                 array_507D30[depth_num_vertices]._rhw =
-                    1.0 / pIndoorCameraD3D->GetFarClip();
+                    1.0 / pCamera3D->GetFarClip();
             } else {  // настоящая вершина больше границы видимости(следующая
                       // вершина меньше границы видимости) - v0
                 // t = far_clip - v1.x / v0.x - v1.x
-                t = (pIndoorCameraD3D->GetFarClip() -
+                t = (pCamera3D->GetFarClip() -
                      VertexRenderList[i].vWorldViewPosition.x) /
                     (VertexRenderList[i + 1].vWorldViewPosition.x -
                      VertexRenderList[i].vWorldViewPosition.x);
                 array_507D30[depth_num_vertices].vWorldViewPosition.x =
-                    pIndoorCameraD3D->GetFarClip();
+                    pCamera3D->GetFarClip();
                 // New_y = (v0.y - v1.y)*t + v1.y
                 array_507D30[depth_num_vertices].vWorldViewPosition.y =
                     VertexRenderList[i].vWorldViewPosition.y +
@@ -3496,7 +3496,7 @@ int ODM_FarClip(unsigned int uNumVertices) {
                     VertexRenderList[i].v +
                     (VertexRenderList[i + 1].v - VertexRenderList[i].v) * t;
                 array_507D30[depth_num_vertices]._rhw =
-                    1.0 / pIndoorCameraD3D->GetFarClip();
+                    1.0 / pCamera3D->GetFarClip();
             }
             ++depth_num_vertices;
         }
@@ -3602,18 +3602,18 @@ void Render::DrawBuildingsD3D() {
                 if (model.pVertices.pVertices[face.pVertexIDs[0]].z ==
                     array_73D150[i - 1].vWorldPosition.z)
                     ++v53;
-                pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
+                pCamera3D->ViewTransform(&array_73D150[i - 1], 1);
                 if (array_73D150[i - 1].vWorldViewPosition.x <
-                        pIndoorCameraD3D->GetNearClip() ||
+                        pCamera3D->GetNearClip() ||
                     array_73D150[i - 1].vWorldViewPosition.x >
-                        pIndoorCameraD3D->GetFarClip()) {
+                        pCamera3D->GetFarClip()) {
                     if (array_73D150[i - 1].vWorldViewPosition.x >=
-                        pIndoorCameraD3D->GetNearClip())
+                        pCamera3D->GetNearClip())
                         farclip = 1;
                     else
                         nearclip = 1;
                 } else {
-                    pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
+                    pCamera3D->Project(&array_73D150[i - 1], 1, 0);
                 }
             }
 
@@ -3824,7 +3824,7 @@ void Render::BeginLightmaps() {
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
 
     // ErrD3D(pRenderD3D->pDevice->SetTexture(0,
-    // pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("effpar03")));
+    // pCamera3D->LoadTextureAndGetHardwarePtr("effpar03")));
     auto effpar03 = assets->GetBitmap("effpar03");
     ErrD3D(pRenderD3D->pDevice->SetTexture(
         0, ((TextureD3D *)effpar03)->GetDirect3DTexture()));
@@ -3858,7 +3858,7 @@ void Render::BeginLightmaps2() {
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
 
     // ErrD3D(pRenderD3D->pDevice->SetTexture(0,
-    // pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("effpar03")));
+    // pCamera3D->LoadTextureAndGetHardwarePtr("effpar03")));
     auto effpar03 = assets->GetBitmap("effpar03");
     ErrD3D(pRenderD3D->pDevice->SetTexture(
         0, ((TextureD3D *)effpar03)->GetDirect3DTexture()));
@@ -3956,7 +3956,7 @@ void Render::BeginDecals() {
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
 
     // ErrD3D(pRenderD3D->pDevice->SetTexture(0,
-    // pIndoorCameraD3D->LoadTextureAndGetHardwarePtr("hwsplat04")));
+    // pCamera3D->LoadTextureAndGetHardwarePtr("hwsplat04")));
     auto hwsplat04 = assets->GetBitmap("hwsplat04");
     ErrD3D(pRenderD3D->pDevice->SetTexture(0, ((TextureD3D *)hwsplat04)->GetDirect3DTexture()));
 }
@@ -3976,8 +3976,8 @@ void Render::EndDecals() {
 
 void Render::DrawDecal(Decal *pDecal, float z_bias) {
     // decals need recalculating here now
-    pIndoorCameraD3D->ViewTransform(pDecal->pVertices, (unsigned int)pDecal->uNumVertices);
-    pIndoorCameraD3D->Project(pDecal->pVertices, pDecal->uNumVertices, 0);
+    pCamera3D->ViewTransform(pDecal->pVertices, (unsigned int)pDecal->uNumVertices);
+    pCamera3D->Project(pDecal->pVertices, pDecal->uNumVertices, 0);
 
     int dwFlags;                        // [sp+Ch] [bp-864h]@15
     RenderVertexD3D3 pVerticesD3D[64];  // [sp+20h] [bp-850h]@6
@@ -4015,11 +4015,11 @@ void Render::DrawDecal(Decal *pDecal, float z_bias) {
         float v15;
         if (fabs(z_bias) < 1e-5) {
             v15 = 1.0 -
-                1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) *
+                1.0 / ((1.0f / pCamera3D->GetFarClip()) *
                     pDecal->pVertices[i].vWorldViewPosition.x * 1000.0);
         } else {
             v15 = 1.0 -
-                  1.0 / ((1.0f / pIndoorCameraD3D->GetFarClip()) *
+                  1.0 / ((1.0f / pCamera3D->GetFarClip()) *
                          pDecal->pVertices[i].vWorldViewPosition.x * 1000.0) -
                   z_bias;
             if (v15 < 0.000099999997) v15 = 0.000099999997;
@@ -4164,21 +4164,21 @@ void Render::DrawOutdoorSkyD3D() {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
-    float  horizon_height_offset = ((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
-                                    / ((double)pODMRenderParams->int_fov_rad + 8192.0)
+    float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vPartyPos.z)
+                                    / ((double)pCamera3D->ViewPlaneDist_X + 8192.0)
                                     + (double)(pViewport->uScreenCenterY));
 
     // magnitude in up direction
-    float cam_vec_up = cos((double)pIndoorCameraD3D->sRotationX * rot_to_rads) *
-                        pIndoorCameraD3D->GetFarClip();
+    float cam_vec_up = cos((double)pCamera3D->sRotationX * rot_to_rads) *
+                        pCamera3D->GetFarClip();
 
     float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
-        (double)pODMRenderParams->int_fov_rad /
+        (double)pCamera3D->ViewPlaneDist_X /
         (cam_vec_up + 0.0000001) *
-        (sin((double)pIndoorCameraD3D->sRotationX * rot_to_rads)
+        (sin((double)pCamera3D->sRotationX * rot_to_rads)
             *
-            pIndoorCameraD3D->GetFarClip() -
-            (double)pIndoorCameraD3D->vPartyPos.z));
+            pCamera3D->GetFarClip() -
+            (double)pCamera3D->vPartyPos.z));
 
     struct Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;
@@ -4200,9 +4200,9 @@ void Render::DrawOutdoorSkyD3D() {
         // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector
         float v18x, v18y, v18z;
-        /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pIndoorCameraD3D->sRotationX + 16) /65536.0;
+        /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pCamera3D->sRotationX + 16) /65536.0;
         /*pSkyPolygon.v_18.y*/ v18y = 0;
-        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pIndoorCameraD3D->sRotationX + 16) /65536.0;
+        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pCamera3D->sRotationX + 16) /65536.0;
 
         // sky wiew position(положение неба на
         // экране)------------------------------------------
@@ -4228,7 +4228,7 @@ void Render::DrawOutdoorSkyD3D() {
         VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;  // 468
         VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;  // 8
 
-        double half_fov_angle_rads = ((pODMRenderParams->uCameraFovInDegrees - 1) * pi_double) / 360;
+        double half_fov_angle_rads = ((pCamera3D->odm_fov_deg) * pi_double) / 360;
 
         // far width per pixel??
         float widthperpixel = 1 /
@@ -4286,7 +4286,7 @@ void Render::DrawOutdoorSkyD3D() {
             // }
 
             float worldviewdepth = -64.0 / top_y_proj;
-            if (worldviewdepth < 0) worldviewdepth = pIndoorCameraD3D->GetFarClip();
+            if (worldviewdepth < 0) worldviewdepth = pCamera3D->GetFarClip();
 
             float texoffset_U = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((skyfinalleft * worldviewdepth));
             VertexRenderList[i].u = texoffset_U / ((float)pSkyPolygon.texture->GetWidth());
@@ -4294,7 +4294,7 @@ void Render::DrawOutdoorSkyD3D() {
             float texoffset_V = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0)  + ((finalskyfront * worldviewdepth));
             VertexRenderList[i].v = texoffset_V / ((float)pSkyPolygon.texture->GetHeight());
 
-            VertexRenderList[i].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
+            VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
             VertexRenderList[i]._rhw = 1.0 / (double)(worldviewdepth);
         }
 
@@ -4361,8 +4361,8 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
     // for floor and wall(for example Selesta)-------------------
     if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall ||
         pFace->uPolygonType == POLYGON_Floor) {
-        int v69 = (OS_GetTime() / 32) - pIndoorCameraD3D->vPartyPos.x;
-        int v55 = (OS_GetTime() / 32) + pIndoorCameraD3D->vPartyPos.y;
+        int v69 = (OS_GetTime() / 32) - pCamera3D->vPartyPos.x;
+        int v55 = (OS_GetTime() / 32) + pCamera3D->vPartyPos.y;
         for (uint i = 0; i < uNumVertices; ++i) {
             array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
             array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
@@ -4372,18 +4372,18 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
         return;
     }
     //---------------------------------------
-    v70 = (signed __int64)((double)(((int)(pIndoorCameraD3D->fov) << 16) *
-        pIndoorCameraD3D->vPartyPos.z)  // 179
-        / (((double)((int)(pIndoorCameraD3D->fov) << 16) +
+    v70 = (signed __int64)((double)(((int)(pCamera3D->ViewPlaneDist_X) << 16) *
+        pCamera3D->vPartyPos.z)  // 179
+        / (((double)((int)(pCamera3D->ViewPlaneDist_X) << 16) +
             16192.0) *
             65536.0) +
             (double)pBLVRenderParams->uViewportCenterY);
-    v5 = (double)pIndoorCameraD3D->sRotationX * 0.0030664064;         // 0
+    v5 = (double)pCamera3D->sRotationX * 0.0030664064;         // 0
     v6 = (signed __int64)((double)pBLVRenderParams->uViewportCenterY  // 183
-        - (double)((int)(pIndoorCameraD3D->fov) << 16) /
+        - (double)((int)(pCamera3D->ViewPlaneDist_X) << 16) /
         ((cos(v5) * 16192.0 + 0.0000001) * 65535.0) *
         (sin(v5) * -16192.0 -
-        (double)pIndoorCameraD3D->vPartyPos.z));
+        (double)pCamera3D->vPartyPos.z));
 
     SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
     // CalcSkyFrustumVec use as same
@@ -4401,21 +4401,16 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
     pSkyPolygon.dimming_level = 0;
     pSkyPolygon.uNumVertices = uNumVertices;
 
-    pSkyPolygon.v_18.x = -TrigLUT->Sin(pIndoorCameraD3D->sRotationX + 16);
+    pSkyPolygon.v_18.x = -TrigLUT->Sin(pCamera3D->sRotationX + 16);
     pSkyPolygon.v_18.y = 0;
-    pSkyPolygon.v_18.z = -TrigLUT->Cos(pIndoorCameraD3D->sRotationX + 16);
+    pSkyPolygon.v_18.z = -TrigLUT->Cos(pCamera3D->sRotationX + 16);
 
     memcpy(&array_507D30[uNumVertices], array_507D30,
         sizeof(array_507D30[uNumVertices]));
     pSkyPolygon.field_24 = 0x2000000;
 
-    extern float _calc_fov(int viewport_width, int angle_degree);
-    // v64 = (double)(signed int)(pBLVRenderParams->uViewportZ -
-    // pBLVRenderParams->uViewportX) * 0.5; v72 = 65536 / (signed int)(signed
-    // __int64)(v64 / tan(0.6457717418670654) + 0.5);
-    v72 = 65536.0f /
-        _calc_fov(pBLVRenderParams->uViewportZ - pBLVRenderParams->uViewportX,
-            74);
+    v72 = 65536.0f / pCamera3D->ViewPlaneDist_X;
+        
     v12 = pSkyPolygon.texture->GetWidth() - 1;
     v13 = pSkyPolygon.texture->GetHeight() - 1;
     // v67 = 1.0 / (double)pSkyPolygon.pTexture->uTextureWidth;

@@ -221,25 +221,19 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(
     /*fixed x, y, z;*/
     int xt, yt, zt;
 
-    /*if (!pIndoorCameraD3D->ApplyViewTransform_TrueIfStillVisible_BLV(
+    /*if (!pCamera3D->ApplyViewTransform_TrueIfStillVisible_BLV(
             x_int, y_int_, z_int_, &x, &y, &z, 1))
         return false;*/
-    if (!pIndoorCameraD3D->ViewClip(x_int, y_int_, z_int_, &xt, &yt, &zt, 0)) return false;
+    if (!pCamera3D->ViewClip(x_int, y_int_, z_int_, &xt, &yt, &zt, 0)) return false;
 
-    /*pIndoorCameraD3D->Project(x.GetInt(), y.GetInt(), z.GetInt(),
+    /*pCamera3D->Project(x.GetInt(), y.GetInt(), z.GetInt(),
                               &pParticle->uScreenSpaceX,
                               &pParticle->uScreenSpaceY);*/
-    pIndoorCameraD3D->Project(xt, yt, zt, &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
+    pCamera3D->Project(xt, yt, zt, &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        pParticle->fov_x = pIndoorCameraD3D->fov_x;
-    } else {
-        pParticle->fov_x = pODMRenderParams->int_fov_rad;
-    }
-
-
-    // pParticle->fov_x = pIndoorCameraD3D->fov_x; //
-    pParticle->fov_y = pIndoorCameraD3D->fov_y;
+    
+    pParticle->fov_x = pCamera3D->ViewPlaneDist_X;
+    pParticle->fov_y = pCamera3D->ViewPlaneDist_Y;
 
     /*pParticle->screenspace_scale = fixed::FromFloat(pParticle->particle_size) *
                                    fixed::FromFloat(pParticle->fov_x) / x;*/

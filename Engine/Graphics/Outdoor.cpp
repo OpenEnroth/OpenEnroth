@@ -80,9 +80,9 @@ int dword_4EC2AC = 7;
 
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
-    pIndoorCameraD3D->debug_flags = 0;
+    pCamera3D->debug_flags = 0;
     if (viewparams->draw_d3d_outlines)
-        pIndoorCameraD3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;
+        pCamera3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;
 
     // if (bRedraw || true /*render->pRenderD3D*/) {
         // pODMRenderParams->RotationToInts();
@@ -115,7 +115,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         pOutdoor->UpdateSunlightVectors();
 
     pOutdoor->UpdateFog();
-    // pIndoorCameraD3D->sr_Reset_list_0037C();
+    // pCamera3D->sr_Reset_list_0037C();
 
     // if (render->pRenderD3D) // d3d - redraw always
     {
@@ -566,10 +566,10 @@ bool ODMFace::IsBackfaceNotCulled(RenderVertexSoft *a2,
         currVertex--;
     }
 
-    if (((double)pIndoorCameraD3D->vPartyPos.x - a2->vWorldPosition.x) * v26 +
-            ((double)pIndoorCameraD3D->vPartyPos.z - a2->vWorldPosition.z) *
+    if (((double)pCamera3D->vPartyPos.x - a2->vWorldPosition.x) * v26 +
+            ((double)pCamera3D->vPartyPos.z - a2->vWorldPosition.z) *
                 v25 +
-            ((double)pIndoorCameraD3D->vPartyPos.y - a2->vWorldPosition.y) *
+            ((double)pCamera3D->vPartyPos.y - a2->vWorldPosition.y) *
                 v24 >
         0.0) {
         v19 = a2[1].vWorldViewPosition.x - a2->vWorldViewPosition.x;
@@ -1756,8 +1756,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
         }
 
         Angle_To_Cam = TrigLUT->Atan2(
-            pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-            pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+            pActors[i].vPosition.x - pCamera3D->vPartyPos.x,
+            pActors[i].vPosition.y - pCamera3D->vPartyPos.y);
 
         // int v9 = 0;
         // HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
@@ -1805,13 +1805,13 @@ void OutdoorLocation::PrepareActorsDrawList() {
         }
 
         int view_x = 0, view_y = 0, view_z = 0;
-        bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+        bool visible = pCamera3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
 
         if (visible) {
             if (abs(view_x) >= abs(view_y)) {
                 int projected_x = 0;
                 int projected_y = 0;
-                pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x,
+                pCamera3D->Project(view_x, view_y, view_z, &projected_x,
                                           &projected_y);
 
                 if (uNumBillboardsToDraw >= 500) return;
@@ -1827,8 +1827,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
 
-                float _v26 = v15->scale * (pODMRenderParams->int_fov_rad) /
-                            (view_x);
+                float _v26 = v15->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
                 pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =  _v26;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v26;
 
@@ -2170,43 +2169,19 @@ void OutdoorLocation::subconstuctor() {
 
 //----- (00481E55) --------------------------------------------------------
 void ODM_Project(unsigned int uNumVertices) {
+    // __debugbreak();
     for (uint i = 0; i < uNumVertices; i++) {
         memcpy(&VertexRenderList[i], &array_507D30[i],
                sizeof(VertexRenderList[i]));
         VertexRenderList[i].vWorldViewProjX =
             (double)pViewport->uScreenCenterX -
-            ((double)pODMRenderParams->int_fov_rad * array_507D30[i]._rhw) *
+            ((double)pCamera3D->ViewPlaneDist_X * array_507D30[i]._rhw) *
                 array_507D30[i].vWorldViewPosition.y;
         VertexRenderList[i].vWorldViewProjY =
             (double)pViewport->uScreenCenterY -
-            ((double)pODMRenderParams->int_fov_rad * array_507D30[i]._rhw) *
+            ((double)pCamera3D->ViewPlaneDist_X * array_507D30[i]._rhw) *
                 array_507D30[i].vWorldViewPosition.z;
     }
-}
-
-//----- (00485F64) --------------------------------------------------------
-void ODMRenderParams::Initialize() {  // this seems to be called several times during loading
-    int v1;             // eax@1
-    int v2;             // eax@2
-    signed __int64 v3;  // qtt@4
-    int v4;             // eax@4
-
-    this->uCameraFovInDegrees = 75;
-
-    v1 = TrigLUT->uPiMask & 0xD5;
-    if (v1 >= (signed int)TrigLUT->uIntegerHalfPi)
-        v2 = -TrigLUT->pTanTable[TrigLUT->uIntegerPi - v1];
-    else
-        v2 = TrigLUT->pTanTable[v1];
-    HEXRAYS_LODWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 31;
-    HEXRAYS_HIDWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 15 >> 16;
-    v4 = (signed int)(v3 / v2) >> 16;
-    this->int_fov_rad = v4;
-    this->field_4C = 360000;
-    this->int_fov_rad_inv = 65536 / v4;
-    this->field_50 = 115;
-    // sr_6BE060[1] = 1;
-    // RotationToInts();
 }
 
 //----- (00473893) --------------------------------------------------------
@@ -3760,7 +3735,6 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     // size_t v7;              // eax@19
 
     // thisa->AllocSoftwareDrawBuffers();
-    pODMRenderParams->Initialize();
     pWeather->bRenderSnow = false;
     render->ClearZBuffer();
     // thisa = (ODMRenderParams *)1;
@@ -3801,31 +3775,10 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     pOutdoor->MessWithLUN();
     pOutdoor->level_filename = pFilename;
     pWeather->Initialize();
-    pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
-    pIndoorCameraD3D->sRotationX = pParty->sRotationX;
+    pCamera3D->sRotationZ = pParty->sRotationZ;
+    pCamera3D->sRotationX = pParty->sRotationX;
     // pODMRenderParams->RotationToInts();
     pOutdoor->UpdateSunlightVectors();
-
-    float fov_rad;
-    float fov_rad_inv;
-    //----- (0042394D) --------------------------------------------------------
-    // void IndoorCamera::Initialize(int degFov, unsigned int uViewportWidth,
-    // unsigned int uViewportHeight)
-    {
-        // pIndoorCamera->Initialize(65, viewparams->uScreen_BttmR_X -
-        // viewparams->uScreen_topL_X + 1,
-        //                              viewparams->uScreen_BttmR_Y -
-        //                              viewparams->uScreen_topL_Y + 1);
-
-        int uViewportWidth =
-            viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X + 1;
-
-        extern float _calc_fov(int viewport_width, int angle_degree);
-        fov_rad = _calc_fov(uViewportWidth, 65);
-        fov_rad_inv = 65536.0 / fov_rad;
-    }
-    pODMRenderParams->int_fov_rad = (signed __int64)fov_rad;
-    pODMRenderParams->int_fov_rad_inv = (signed __int64)fov_rad_inv;
 
     for (int i = 0; i < 20000; ++i) {
         array_77EC08[i].ptr_38 = &SkyBillboard;

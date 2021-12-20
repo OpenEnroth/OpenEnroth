@@ -81,9 +81,9 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
         assert(false);
     }
 
-    pIndoorCameraD3D->ViewTransform(
+    pCamera3D->ViewTransform(
         static_DetermineFacetIntersection_array_F8F200, face->uNumVertices);
-    pIndoorCameraD3D->Project(static_DetermineFacetIntersection_array_F8F200,
+    pCamera3D->Project(static_DetermineFacetIntersection_array_F8F200,
                               face->uNumVertices, 1);
 
     SortVectors_x(static_DetermineFacetIntersection_array_F8F200, 0,
@@ -320,10 +320,10 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->uNumFaces; ++v17) {
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
-            if (!pIndoorCameraD3D->IsCulled(face)) {
+            if (!pCamera3D->IsCulled(face)) {
                 if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &a1,
                                         face, 0xFFFFFFFFu)) {
-                    pIndoorCameraD3D->ViewTransform(&a1, 1);
+                    pCamera3D->ViewTransform(&a1, 1);
                     // v9 = fixpoint_from_float(/*v8,
                     // */a1.vWorldViewPosition.x); HEXRAYS_LOWORD(v9) =
                     // 0; v15 = (void *)((PID(OBJECT_BModel,pFaceID)) +
@@ -376,7 +376,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                 RenderVertexSoft intersection;
                 if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &intersection,
                                        &blv_face, model.index)) {
-                    pIndoorCameraD3D->ViewTransform(&intersection, 1);
+                    pCamera3D->ViewTransform(&intersection, 1);
                     // int v13 = fixpoint_from_float(/*v12,
                     // */intersection.vWorldViewPosition.x); v13 &= 0xFFFF0000;
                     // v13 += PID(OBJECT_BModel, j | (i << 6));
@@ -878,32 +878,16 @@ void Vis::ODM_CreateIntersectFacesVertexCoordList(
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    int v3;  // [sp-4h] [bp-8h]@5
+    int v3 = pCamera3D->ViewPlaneDist_X;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        // if ( render->pRenderD3D )
-        v3 = pIndoorCameraD3D->fov;
-        // else
-        //  v3 = pIndoorCamera->fov_rad;
-    } else {
-        v3 = pODMRenderParams->int_fov_rad;
-    }
     return TrigLUT->Atan2(x - pViewport->uScreenCenterX, v3) -
            TrigLUT->uIntegerHalfPi;
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    int v3;  // [sp-4h] [bp-8h]@5
+    int v3 = pCamera3D->ViewPlaneDist_X;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        // if ( render->pRenderD3D )
-        v3 = pIndoorCameraD3D->fov;
-        // else
-        //  v3 = pIndoorCamera->fov_rad;
-    } else {
-        v3 = pODMRenderParams->int_fov_rad;
-    }
     return TrigLUT->Atan2(y - pViewport->uScreenCenterY, v3) -
            TrigLUT->uIntegerHalfPi;
 }
@@ -918,18 +902,18 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     int outz;  // [sp+94h] [bp-Ch]@1
     int outy;  // [sp+98h] [bp-8h]@1
 
-    pRotY = pIndoorCameraD3D->sRotationZ + UnprojectX(fMouseX);
-    pRotX = -pIndoorCameraD3D->sRotationX + UnprojectY(fMouseY);
+    pRotY = pCamera3D->sRotationZ + UnprojectX(fMouseX);
+    pRotX = -pCamera3D->sRotationX + UnprojectY(fMouseY);
 
     // log->Info("Roty: %d, Rotx: %d", pRotY, pRotX);
 
-    pStartR.z = pIndoorCameraD3D->vPartyPos.z;
-    pStartR.x = pIndoorCameraD3D->vPartyPos.x;
-    pStartR.y = pIndoorCameraD3D->vPartyPos.y;
+    pStartR.z = pCamera3D->vPartyPos.z;
+    pStartR.x = pCamera3D->vPartyPos.x;
+    pStartR.y = pCamera3D->vPartyPos.y;
 
-    v11[1].vWorldPosition.x = (double)pIndoorCameraD3D->vPartyPos.x;
-    v11[1].vWorldPosition.y = (double)pIndoorCameraD3D->vPartyPos.y;
-    v11[1].vWorldPosition.z = (double)pIndoorCameraD3D->vPartyPos.z;
+    v11[1].vWorldPosition.x = (double)pCamera3D->vPartyPos.x;
+    v11[1].vWorldPosition.y = (double)pCamera3D->vPartyPos.y;
+    v11[1].vWorldPosition.z = (double)pCamera3D->vPartyPos.z;
 
     int depth = /*fixpoint_from_float*/(fPickDepth);
     Vec3_int_::Rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
@@ -1565,16 +1549,24 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
     // This is not a very efficient implementation. Instead of iterating through all faces we could be iterating
     // only through the ones that have an event assigned. That would require some work in IndoorLocation.
 
-    for (size_t i = 0; i < pIndoor->uNumFaces; ++i) {
-        BLVFace *pFace = &pIndoor->pFaces[i];
-        if (!pIndoorCameraD3D->IsCulled(pFace)) {
-            if (is_part_of_selection(pFace, filter)) {
-                Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, PID(OBJECT_BModel, i), pick_depth);
-                if (v8)
-                    list->AddObject(v8->object, v8->object_type,
-                                    v8->depth, v8->object_pid);
+    result = 0;
+    for (i = 0; i < (signed int)pBspRenderer->num_faces; ++i) {
+        pFaceID = pBspRenderer->faces[result].uFaceID;
+        if (pFaceID >= 0) {
+            if (pFaceID < (signed int)pIndoor->uNumFaces) {
+                pFace = &pIndoor->pFaces[pFaceID];
+                if (!pCamera3D->IsCulled(&pIndoor->pFaces[pFaceID])) {
+                    if (is_part_of_selection(pFace, filter)) {
+                        v8 = DetermineFacetIntersection(
+                            pFace, PID(OBJECT_BModel, pFaceID), pick_depth);
+                        if (v8)
+                            list->AddObject(v8->object, v8->object_type,
+                                            v8->depth, v8->object_pid);
+                    }
+                }
             }
         }
+        result = i + 1;
     }
 }
 

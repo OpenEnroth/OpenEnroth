@@ -145,8 +145,8 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
         log->Warning("Uknown strip type detected!");
     }
 
-    minz = pIndoorCameraD3D->GetPolygonMinZ(TerrainVertices, uStripType);
-    maxz = pIndoorCameraD3D->GetPolygonMaxZ(TerrainVertices, uStripType);
+    minz = pCamera3D->GetPolygonMinZ(TerrainVertices, uStripType);
+    maxz = pCamera3D->GetPolygonMaxZ(TerrainVertices, uStripType);
 
     float bounding_x1 = tX_0 - (float)pLight->uRadius;  // 13 976 - 128 =
                                                         // 13848.0
@@ -517,7 +517,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsig
         for (uint i = 0; i < uNumVertices; ++i)
             memcpy(&static_69B140[i], FaceVertexList + i, sizeof(RenderVertexSoft));
 
-        if (pIndoorCameraD3D->_437376(FacePlane, static_69B140, &uNumVertices) == 1) {
+        if (pCamera3D->_437376(FacePlane, static_69B140, &uNumVertices) == 1) {
             if (!uNumVertices) return false;
             a9 = static_69B140;
         }
@@ -528,7 +528,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsig
     static_69B110.Normal.y = FacePlane->face_plane.vNormal.y;
     static_69B110.Normal.z = FacePlane->face_plane.vNormal.z;
     static_69B110.dist = FacePlane->face_plane.dist;
-    if (!pIndoorCameraD3D->GetFacetOrientation(
+    if (!pCamera3D->GetFacetOrientation(
         FacePlane->polygonType, &static_69B110.Normal, &static_69B110.field_10,
             &static_69B110.field_1C)) {
         log->Warning("Error: Failed to get the facet orientation");
@@ -697,22 +697,22 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     v45 = _45C6D6(uNumVertices, a9, lightmap);
     if (v45 != uNumVertices && v45 > 0) _45C4B9(uNumVertices, a9, lightmap);
 
-    pIndoorCameraD3D->ViewTransform(lightmap->pVertices, lightmap->NumVertices);
-    pIndoorCameraD3D->Project(lightmap->pVertices, lightmap->NumVertices, 0);
+    pCamera3D->ViewTransform(lightmap->pVertices, lightmap->NumVertices);
+    pCamera3D->Project(lightmap->pVertices, lightmap->NumVertices, 0);
 
     unsigned int _a4 = 0;
     if (!(uClipFlag & 1)) {  // NoClipFlag
         _a4 = 1;
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         if (uClipFlag & 2) {  // NeerClipFlag
-            pIndoorCameraD3D->LightmapNeerClip(
+            pCamera3D->LightmapNeerClip(
                 lightmap->pVertices, lightmap->NumVertices, field_3C8C34, &_a4);
-            pIndoorCameraD3D->LightmapProject(_a4, lightmap->pVertices, field_3C8C34,
+            pCamera3D->LightmapProject(_a4, lightmap->pVertices, field_3C8C34,
                                       &lightmap->NumVertices);
         } else if (uClipFlag & 4) {  // FarClipFlag
-            pIndoorCameraD3D->LightmapFarClip(
+            pCamera3D->LightmapFarClip(
                 lightmap->pVertices, lightmap->NumVertices, field_3C8C34, &_a4);
-            pIndoorCameraD3D->LightmapProject(_a4, lightmap->pVertices, field_3C8C34,
+            pCamera3D->LightmapProject(_a4, lightmap->pVertices, field_3C8C34,
                                       &lightmap->NumVertices);
         } else {
             log->Warning("Undefined clip flag specified");
@@ -1085,13 +1085,13 @@ void LightmapBuilder::DrawDebugOutlines(
     char bit_one_for_list1__bit_two_for_list2) {
     if (bit_one_for_list1__bit_two_for_list2 & 1) {
         for (int i = 0; i < this->StationaryLightsCount; ++i)
-            pIndoorCameraD3D->debug_outline_sw(
+            pCamera3D->debug_outline_sw(
                 this->StationaryLights[i].pVertices,
                 this->StationaryLights[i].NumVertices, 0xFF00, 0.0f);
     }
     if (bit_one_for_list1__bit_two_for_list2 & 2) {
         for (uint i = 0; i < this->MobileLightsCount; ++i)
-            pIndoorCameraD3D->debug_outline_sw(
+            pCamera3D->debug_outline_sw(
                 this->MobileLights[i].pVertices,
                 this->MobileLights[i].NumVertices, 0xC04000, 0.00019999999f);
     }

@@ -6,12 +6,11 @@
 #pragma pack(push, 1)
 struct Viewport {
     inline Viewport() {
-        field_of_view = 65536 / 2;
         SetScreen(0, 0, 639, 479);
     }
 
+    void ResetScreen();
     void SetScreen(int uX, int uY, int uZ, int uW);
-    void SetFOV(float fov);
     void SetViewport(int uX, int uY, int uZ, int uW);
     bool Contains(unsigned int x, unsigned int y);
 
@@ -27,7 +26,6 @@ struct Viewport {
     int uScreenHeight;
     int uScreenCenterX;
     int uScreenCenterY;
-    int field_of_view;
 };
 #pragma pack(pop)
 

@@ -249,7 +249,7 @@ bool Game::Loop() {
             if (!PartyCreationUI_Loop()) {
                 break;
             }
-
+            
             pParty->pPickedItem.uItemID = 0;
 
             pCurrentMapName = pStartingMapName;

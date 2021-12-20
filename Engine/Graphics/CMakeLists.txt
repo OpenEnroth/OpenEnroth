@@ -6,7 +6,7 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      Image.cpp
                      ImageLoader.cpp
                      Indoor.cpp
-                     IndoorCameraD3D.cpp
+                     "Camera.cpp"
                      LightmapBuilder.cpp
                      LightsStack.cpp
                      Outdoor.cpp
@@ -37,7 +37,7 @@ set(GRAPHICS_HEADERS BSPModel.h
                      ImageFormatConverter.h
                      ImageLoader.h
                      Indoor.h
-                     IndoorCameraD3D.h
+                     "Camera.h"
                      IRender.h
                      LightmapBuilder.h
                      Lights.h

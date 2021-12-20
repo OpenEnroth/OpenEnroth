@@ -485,7 +485,7 @@ struct Engine {
     // LightmapBuilder *pLightmapBuilder;
     // Vis *pVisInstance;
     // struct SpellFxRenderer *spellfx;
-    // IndoorCameraD3D *pIndoorCameraD3D;
+    // Camera3D *pCamera3D;
     stru9 *pStru9Instance;
     stru10 *pStru10Instance;
     // void stru11 *pStru11Instance;

@@ -1,4 +1,4 @@
-#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Camera.h"
 
 #include <cstdlib>
 
@@ -12,16 +12,10 @@
 
 #include "Engine/Graphics/stru9.h"
 
-// calculates FOV (Field of View) angle in radians for IndoorCamera::Initialize
-// and BLVRenderParams::Reset
-float _calc_fov(int viewport_width, int angle_degree) {
-    return viewport_width * 0.5f / tan(angle_degree / 2 * 0.01745329f) + 0.5f;
-}
-
-IndoorCameraD3D *pIndoorCameraD3D = new IndoorCameraD3D;
+Camera3D *pCamera3D = new Camera3D;
 
 //----- (004361EF) --------------------------------------------------------
-IndoorCameraD3D::IndoorCameraD3D() {
+Camera3D::Camera3D() {
     this->field_108 = 0.0;
     this->field_138 = 0.0;
     this->field_168 = 0.0;
@@ -70,7 +64,7 @@ IndoorCameraD3D::IndoorCameraD3D() {
 }
 
 //----- (0043643E) --------------------------------------------------------
-float IndoorCameraD3D::GetPickDepth() {
+float Camera3D::GetPickDepth() {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         return pODMRenderParams->uPickDepth;
     else
@@ -78,7 +72,7 @@ float IndoorCameraD3D::GetPickDepth() {
 }
 
 //----- (004364C5) --------------------------------------------------------
-void IndoorCameraD3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices,
+void Camera3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices,
                                              unsigned int uNumVertices,
                                              RenderVertexSoft *pOutVertices,
                                              LightsData *a5) {
@@ -94,7 +88,7 @@ void IndoorCameraD3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices,
 }
 
 //----- (00436455) --------------------------------------------------------
-bool IndoorCameraD3D::IsCulled(BLVFace *pFace) {
+bool Camera3D::IsCulled(BLVFace *pFace) {
     RenderVertexSoft v;  // [sp+8h] [bp-30h]@1
 
     //----- (0043648F) --------------------------------------------------------
@@ -112,7 +106,7 @@ bool IndoorCameraD3D::IsCulled(BLVFace *pFace) {
     return is_face_faced_to_camera(pFace, &v);
 }
 
-float IndoorCameraD3D::GetNearClip() const {
+float Camera3D::GetNearClip() const {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         if (pODMRenderParams) {
             return pODMRenderParams->near_clip;
@@ -125,7 +119,7 @@ float IndoorCameraD3D::GetNearClip() const {
     }
 }
 
-float IndoorCameraD3D::GetFarClip() const {
+float Camera3D::GetFarClip() const {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         if (pODMRenderParams) {
             return pODMRenderParams->far_clip;
@@ -138,7 +132,7 @@ float IndoorCameraD3D::GetFarClip() const {
 }
 
 // ViewTransformAndClipTest
-bool IndoorCameraD3D::ViewClip(int x, int y, int z, int *transformed_x,
+bool Camera3D::ViewClip(int x, int y, int z, int *transformed_x,
                                int *transformed_y, int *transformed_z,
                                bool dont_show) {
     this->ViewTransform(x, y, z, transformed_x, transformed_y, transformed_z);
@@ -150,7 +144,7 @@ bool IndoorCameraD3D::ViewClip(int x, int y, int z, int *transformed_x,
            *transformed_x <= this->GetFarClip();
 }
 
-void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z) {
+void Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z) {
     RenderVertexSoft v;
     v.vWorldPosition.x = x;
     v.vWorldPosition.y = y;
@@ -168,15 +162,15 @@ void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x, int
 }
 
 //----- (00436523) --------------------------------------------------------
-void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
+void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
     for (uint i = 0; i < uNumVertices; ++i) {
         RenderVertexSoft *a1 = &a1a[i];
 
-        double vCamToVertexX = (double)a1->vWorldPosition.x - (double)pIndoorCameraD3D->vPartyPos.x;
-        double vCamToVertexY = (double)a1->vWorldPosition.y - (double)pIndoorCameraD3D->vPartyPos.y;
-        double vCamToVertexZ = (double)a1->vWorldPosition.z - (double)pIndoorCameraD3D->vPartyPos.z;
+        double vCamToVertexX = (double)a1->vWorldPosition.x - (double)pCamera3D->vPartyPos.x;
+        double vCamToVertexY = (double)a1->vWorldPosition.y - (double)pCamera3D->vPartyPos.y;
+        double vCamToVertexZ = (double)a1->vWorldPosition.z - (double)pCamera3D->vPartyPos.z;
 
-        if (pIndoorCameraD3D->sRotationX) {
+        if (pCamera3D->sRotationX) {
             double v5 = vCamToVertexY * (double)fRotationZSine + (double)fRotationZCosine * vCamToVertexX;
 
             a1->vWorldViewPosition.x = v5 * (double)fRotationXCosine /*+*/ - (double)fRotationXSine * vCamToVertexZ;
@@ -189,17 +183,10 @@ void IndoorCameraD3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVert
         }
     }
 
-        // this tranforms to odd axis
-        // x would usually be z (depth)
-        // y would usually be x
-        // z would usually be y
-
-        // above is corrected back to normal during projection - sort later
-    // invert xrotation in calc rotations rather than transform
 }
 
 //----- (00436932) --------------------------------------------------------
-bool IndoorCameraD3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
+bool Camera3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
                                           Vec3_float_ *a3, Vec3_float_ *a4) {
     switch ((PolygonType)polyType) {
         case POLYGON_VerticalWall: {
@@ -254,17 +241,17 @@ bool IndoorCameraD3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
 }
 
 //----- (00438258) --------------------------------------------------------
-bool IndoorCameraD3D::is_face_faced_to_camera(BLVFace *pFace,
+bool Camera3D::is_face_faced_to_camera(BLVFace *pFace,
                                               RenderVertexSoft *a2) {
     if (pFace->Portal()) return false;
 
     // really strange cull; dot(to_cam, normal) < 0 means we see the BACK face,
     // not font %_%
-    if ((a2->vWorldPosition.z - (double)pIndoorCameraD3D->vPartyPos.z) *
+    if ((a2->vWorldPosition.z - (double)pCamera3D->vPartyPos.z) *
                 (double)pFace->pFacePlane_old.vNormal.z +
-            (a2->vWorldPosition.y - (double)pIndoorCameraD3D->vPartyPos.y) *
+            (a2->vWorldPosition.y - (double)pCamera3D->vPartyPos.y) *
                 (double)pFace->pFacePlane_old.vNormal.y +
-            (a2->vWorldPosition.x - (double)pIndoorCameraD3D->vPartyPos.x) *
+            (a2->vWorldPosition.x - (double)pCamera3D->vPartyPos.x) *
                 (double)pFace->pFacePlane_old.vNormal.x <
         0.0)
         return false;
@@ -273,7 +260,7 @@ bool IndoorCameraD3D::is_face_faced_to_camera(BLVFace *pFace,
 }
 
 //----- (00437AB5) --------------------------------------------------------
-void IndoorCameraD3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
+void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
                                             signed int sStartDiffuse,
                                             RenderVertexSoft *pLineEnd,
                                             signed int sEndDiffuse,
@@ -352,7 +339,7 @@ void IndoorCameraD3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
 }
 
 //----- (00437A55) --------------------------------------------------------
-void IndoorCameraD3D::debug_outline_d3d(const RenderVertexD3D3 *pLineVertices,
+void Camera3D::debug_outline_d3d(const RenderVertexD3D3 *pLineVertices,
                                         unsigned int uNumLines, int uDiffuse,
                                         float z_stuff) {
     for (int i = 0; i < uNumLines - 1; ++i)
@@ -364,7 +351,7 @@ void IndoorCameraD3D::debug_outline_d3d(const RenderVertexD3D3 *pLineVertices,
 }
 
 //----- (004379EE) --------------------------------------------------------
-void IndoorCameraD3D::debug_outline_sw(RenderVertexSoft *a2,
+void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
                                        unsigned int uNumVertices,
                                        unsigned int uDiffuse, float a5) {
     if (!uNumVertices) return;
@@ -376,7 +363,7 @@ void IndoorCameraD3D::debug_outline_sw(RenderVertexSoft *a2,
     do_draw_debug_line_sw(&a2[uNumVertices - 1], uDiffuse, a2, uDiffuse, 0, a5);
 }
 
-void IndoorCameraD3D::DebugDrawPortal(BLVFace *pFace) {
+void Camera3D::DebugDrawPortal(BLVFace *pFace) {
     Assert(pFace->uNumVertices <= 32);
 
     RenderVertexSoft sw[32];
@@ -407,7 +394,7 @@ void IndoorCameraD3D::DebugDrawPortal(BLVFace *pFace) {
 }
 
 //----- (00437906) --------------------------------------------------------
-void IndoorCameraD3D::PrepareAndDrawDebugOutline(BLVFace *pFace,
+void Camera3D::PrepareAndDrawDebugOutline(BLVFace *pFace,
                                                  unsigned int uDiffuse) {
     static RenderVertexSoft static_sub_437906_array_50CDD0[64];
     static bool __init_flag1 = false;
@@ -436,7 +423,7 @@ void IndoorCameraD3D::PrepareAndDrawDebugOutline(BLVFace *pFace,
 // 50D9D0: using guessed type char static_sub_437906_byte_50D9D0_init_flag;
 
 //----- (004378BA) --------------------------------------------------------
-void IndoorCameraD3D::MatrixMultiply(Matrix3x3_float_ *ma, Matrix3x3_float_ *mb,
+void Camera3D::MatrixMultiply(Matrix3x3_float_ *ma, Matrix3x3_float_ *mb,
                                      Matrix3x3_float_ *m_out) {
     float sum;
 
@@ -451,7 +438,7 @@ void IndoorCameraD3D::MatrixMultiply(Matrix3x3_float_ *ma, Matrix3x3_float_ *mb,
 }
 
 //----- (004376E7) --------------------------------------------------------
-void IndoorCameraD3D::CreateWorldMatrixAndSomeStuff() {
+void Camera3D::CreateWorldMatrixAndSomeStuff() {
     Matrix3x3_float_ m1;  // [sp+10h] [bp-B8h]@1
     Matrix3x3_float_ m2;  // [sp+34h] [bp-94h]@1
     Matrix3x3_float_ m3;  // [sp+58h] [bp-70h]@1
@@ -502,22 +489,22 @@ void IndoorCameraD3D::CreateWorldMatrixAndSomeStuff() {
         field_4[2].v[i] = m2.v[2][i];
     }
 
-    // indoor outdoor fov different
-    fov = 0.8/*0.8814736*/;  // .77
+    // fov projection calcs
+    fov = 0.5 / tan(odm_fov_rad / 2.0);
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+        fov = 0.5 / tan(blv_fov_rad / 2.0);
+
     inv_fov = 1.0 / fov;
 
-    fov_x = (double)pViewport->uScreenWidth * fov;
-    fov_y = (double)pViewport->uScreenHeight * fov;
-
-    fov = fov_y;
-    if (fov_x > fov) fov = fov_x;
+    ViewPlaneDist_X = (double)pViewport->uScreenWidth * fov;
+    ViewPlaneDist_Y = (double)pViewport->uScreenHeight * fov;
 
     screenCenterX = (double)pViewport->uScreenCenterX;
     screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uScreen_TL_Y;  //- pViewport->uScreen_TL_Y);
 }
 
 //----- (00437691) --------------------------------------------------------
-void IndoorCameraD3D::Vec3Transform(const IndoorCameraD3D_Vec3 *pVector,
+void Camera3D::Vec3Transform(const IndoorCameraD3D_Vec3 *pVector,
                                     IndoorCameraD3D_Vec3 *pOut) {
     pOut->y = field_4[1].x * pVector->x + field_4[0].x * pVector->y +
               field_4[2].x * pVector->z;
@@ -528,13 +515,13 @@ void IndoorCameraD3D::Vec3Transform(const IndoorCameraD3D_Vec3 *pVector,
 }
 
 //----- (00437607) --------------------------------------------------------
-void IndoorCameraD3D::BuildFrustumPlane(IndoorCameraD3D_Vec3 *a1,
+void Camera3D::BuildFrustumPlane(IndoorCameraD3D_Vec3 *a1,
                               IndoorCameraD3D_Vec4 *a2) {
     IndoorCameraD3D_Vec3 v8;
 
-    v8.x = (double)pIndoorCameraD3D->vPartyPos.x;
-    v8.y = (double)pIndoorCameraD3D->vPartyPos.y;
-    v8.z = (double)pIndoorCameraD3D->vPartyPos.z;
+    v8.x = (double)pCamera3D->vPartyPos.x;
+    v8.y = (double)pCamera3D->vPartyPos.y;
+    v8.z = (double)pCamera3D->vPartyPos.z;
     Vec3Transform(a1, a2);
 
     double DotDist = v8.x * a2->x + v8.y * a2->y + v8.z * a2->z;
@@ -542,9 +529,9 @@ void IndoorCameraD3D::BuildFrustumPlane(IndoorCameraD3D_Vec3 *a1,
 }
 
 //----- (004374E8) --------------------------------------------------------
-void IndoorCameraD3D::BuildViewFrustum() {
-    double HalfAngleX = atan(2.0 / inv_fov * fov / fov_x);
-    double HalfAngleY = atan(2.0 / inv_fov * fov / (fov_y + 0.5));
+void Camera3D::BuildViewFrustum() {
+    double HalfAngleX = atan(2.0 / inv_fov * fov / ViewPlaneDist_X);
+    double HalfAngleY = atan(2.0 / inv_fov * fov / (ViewPlaneDist_Y + 0.5));
     IndoorCameraD3D_Vec3 PlaneVec;
 
     PlaneVec.x = -sin(HalfAngleX);
@@ -565,7 +552,7 @@ void IndoorCameraD3D::BuildViewFrustum() {
 }
 
 //----- (00437376) --------------------------------------------------------
-char IndoorCameraD3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
+char Camera3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
                               unsigned int *pOutNumVertices) {
     double v6;             // st7@3
     int previous;          // esi@6
@@ -583,11 +570,11 @@ char IndoorCameraD3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
     memcpy(&a2[*pOutNumVertices + 1], &a2[1], sizeof(a2[*pOutNumVertices + 1]));
 
     if ((signed int)*pOutNumVertices <= 3 ||
-        (((v18.vWorldPosition.z - (double)pIndoorCameraD3D->vPartyPos.z) *
+        (((v18.vWorldPosition.z - (double)pCamera3D->vPartyPos.z) *
                   thisa->face_plane.vNormal.z +
-              (v18.vWorldPosition.y - (double)pIndoorCameraD3D->vPartyPos.y) *
+              (v18.vWorldPosition.y - (double)pCamera3D->vPartyPos.y) *
                   thisa->face_plane.vNormal.y +
-              (v18.vWorldPosition.x - (double)pIndoorCameraD3D->vPartyPos.x) *
+              (v18.vWorldPosition.x - (double)pCamera3D->vPartyPos.x) *
                   thisa->face_plane.vNormal.x <
           0.0)
              ? (v6 = 1.0)
@@ -633,7 +620,7 @@ char IndoorCameraD3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
 }
 
 //----- (00437285) --------------------------------------------------------
-bool IndoorCameraD3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
+bool Camera3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
                                       unsigned int *pOutNumVertices,
                                       RenderVertexSoft *pVertices,
                                       IndoorCameraD3D_Vec4 *CameraFrustrum,
@@ -698,7 +685,7 @@ bool IndoorCameraD3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
 }
 
 //----- (004371C3) --------------------------------------------------------
-bool IndoorCameraD3D::_4371C3(RenderVertexSoft *pVertices,  // function appears unsued
+bool Camera3D::_4371C3(RenderVertexSoft *pVertices,  // function appears unsued
                               unsigned int *pOutNumVertices, int _unused) {
     __debugbreak();
 
@@ -708,7 +695,7 @@ bool IndoorCameraD3D::_4371C3(RenderVertexSoft *pVertices,  // function appears 
     unsigned int *v7;               // edi@5
     char *v8;                       // ecx@6
     // int v9;                         // eax@6
-    IndoorCameraD3D *thisa;         // [sp+0h] [bp-Ch]@1
+    Camera3D *thisa;         // [sp+0h] [bp-Ch]@1
     signed int v12;                 // [sp+4h] [bp-8h]@5
     unsigned int pVerticesa;        // [sp+14h] [bp+8h]@6
     unsigned int pOutNumVerticesa;  // [sp+18h] [bp+Ch]@6
@@ -762,7 +749,7 @@ bool IndoorCameraD3D::_4371C3(RenderVertexSoft *pVertices,  // function appears 
 // 50F1E0: using guessed type char static_sub_4371C3_byte_50F1E0_init_flags;
 
 //----- (00437143) --------------------------------------------------------
-void IndoorCameraD3D::LightmapProject(unsigned int uNumInVertices,  // lightmap project
+void Camera3D::LightmapProject(unsigned int uNumInVertices,  // lightmap project
                               RenderVertexSoft *pOutVertices,
                               RenderVertexSoft *pInVertices,
                               signed int *pOutNumVertices) {
@@ -774,7 +761,7 @@ void IndoorCameraD3D::LightmapProject(unsigned int uNumInVertices,  // lightmap 
         pInVertices[i]._rhw =
             1.0 / (pInVertices[i].vWorldViewPosition.x + 0.0000001);
         memcpy(&pOutVertices[i], &pInVertices[i], sizeof(pOutVertices[i]));
-        v9 = (double)pODMRenderParams->int_fov_rad * pInVertices[i]._rhw;
+        v9 = (double)pCamera3D->ViewPlaneDist_X * pInVertices[i]._rhw;
         pOutVertices[i].vWorldViewProjX =
             (double)pViewport->uScreenCenterX -
             v9 * pInVertices[i].vWorldViewPosition.y;
@@ -787,7 +774,7 @@ void IndoorCameraD3D::LightmapProject(unsigned int uNumInVertices,  // lightmap 
 }
 
 //----- (00436F09) --------------------------------------------------------
-void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices,
+void Camera3D::LightmapFarClip(RenderVertexSoft *pInVertices,
                                       int uNumInVertices,
                                       RenderVertexSoft *pOutVertices,
                                       unsigned int *pOutNumVertices) {
@@ -800,7 +787,7 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices,
            sizeof(pInVertices[uNumInVertices]));
     depth_num_vertices = 0;
     current_vertices_flag = false;
-    if (pInVertices[0].vWorldViewPosition.x >= pIndoorCameraD3D->GetFarClip())
+    if (pInVertices[0].vWorldViewPosition.x >= pCamera3D->GetFarClip())
         current_vertices_flag =
             true;  //настоящая вершина больше границы видимости
     if ((signed int)uNumInVertices <= 0) return;
@@ -817,7 +804,7 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices,
 
     for (uint i = 0; i < uNumInVertices; ++i) {
         next_vertices_flag = pInVertices[i + 1].vWorldViewPosition.x >=
-                             pIndoorCameraD3D->GetFarClip();
+                             pCamera3D->GetFarClip();
         if (current_vertices_flag ^
             next_vertices_flag) {  // одна из граней за границей видимости
             if (next_vertices_flag) {  // следующая вершина больше границы
@@ -825,12 +812,12 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices,
                                        // границы видимости) - v3
                 // t = far_clip - v2.x / v3.x - v2.x (формула получения точки
                 // пересечения отрезка с плоскостью)
-                t = (pIndoorCameraD3D->GetFarClip() -
+                t = (pCamera3D->GetFarClip() -
                      pInVertices[i].vWorldViewPosition.x) /
                     (pInVertices[i].vWorldViewPosition.x -
                      pInVertices[i + 1].vWorldViewPosition.x);
                 pOutVertices[depth_num_vertices].vWorldViewPosition.x =
-                    pIndoorCameraD3D->GetFarClip();
+                    pCamera3D->GetFarClip();
                 // New_y = v2.y + (v3.y - v2.y)*t
                 pOutVertices[depth_num_vertices].vWorldViewPosition.y =
                     pInVertices[i].vWorldViewPosition.y +
@@ -850,16 +837,16 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices,
                     pInVertices[i].v +
                     (pInVertices[i].v - pInVertices[i + 1].v) * t;
                 pOutVertices[depth_num_vertices]._rhw =
-                    1.0 / pIndoorCameraD3D->GetFarClip();
+                    1.0 / pCamera3D->GetFarClip();
             } else {  // настоящая вершина больше границы видимости(следующая
                       // вершина меньше границы видимости) - v0
                 // t = far_clip - v1.x / v0.x - v1.x
-                t = (pIndoorCameraD3D->GetFarClip() -
+                t = (pCamera3D->GetFarClip() -
                      pInVertices[i].vWorldViewPosition.x) /
                     (pInVertices[i + 1].vWorldViewPosition.x -
                      pInVertices[i].vWorldViewPosition.x);
                 pOutVertices[depth_num_vertices].vWorldViewPosition.x =
-                    pIndoorCameraD3D->GetFarClip();
+                    pCamera3D->GetFarClip();
                 // New_y = (v0.y - v1.y)*t + v1.y
                 pOutVertices[depth_num_vertices].vWorldViewPosition.y =
                     pInVertices[i].vWorldViewPosition.y +
@@ -879,7 +866,7 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices,
                     pInVertices[i].v +
                     (pInVertices[i + 1].v - pInVertices[i].v) * t;
                 pOutVertices[depth_num_vertices]._rhw =
-                    1.0 / pIndoorCameraD3D->GetFarClip();
+                    1.0 / pCamera3D->GetFarClip();
             }
             ++depth_num_vertices;
         }
@@ -897,11 +884,11 @@ void IndoorCameraD3D::LightmapFarClip(RenderVertexSoft *pInVertices,
 }
 
 //----- (00436CDC) --------------------------------------------------------
-void IndoorCameraD3D::LightmapNeerClip(RenderVertexSoft *pInVertices,
+void Camera3D::LightmapNeerClip(RenderVertexSoft *pInVertices,
                                        int uNumInVertices,
                                        RenderVertexSoft *pOutVertices,
                                        unsigned int *pOutNumVertices) {
-    float nearclip = pIndoorCameraD3D->GetNearClip();
+    float nearclip = pCamera3D->GetNearClip();
 
     double t;                    // st6@11
     bool current_vertices_flag;  // esi@2
@@ -998,7 +985,7 @@ void IndoorCameraD3D::LightmapNeerClip(RenderVertexSoft *pInVertices,
 }
 
 //----- (00436BB7) --------------------------------------------------------
-void IndoorCameraD3D::Project(RenderVertexSoft *pVertices,
+void Camera3D::Project(RenderVertexSoft *pVertices,
                               unsigned int uNumVertices,
                               bool fit_into_viewport) {
     // double v7;   // st7@7
@@ -1012,37 +999,18 @@ void IndoorCameraD3D::Project(RenderVertexSoft *pVertices,
     double v2;
 
     for (uint i = 0; i < uNumVertices; ++i) {
-        /*if (_4D864C_force_sw_render_rules && engine->config->ForceLegacyProjection() ||
-            uCurrentlyLoadedLevelType == LEVEL_Indoor) {
 
-            v1 = 1.0 / pVertices[i].vWorldViewPosition.x;
-
-            pVertices[i].vWorldViewProjX =
-                pVertices[i].vWorldViewPosition.y * fov * v1 + screenCenterX;
-
-            pVertices[i].vWorldViewProjY =
-                (signed int)pViewport->uViewportBR_Y -
-                (pVertices[i].vWorldViewPosition.z * fov * v1 + screenCenterY);
-
-        } else {*/
             auto v = pVertices + i;
 
 
             v1 = 1.0 / (v->vWorldViewPosition.x + 0.0000001);
             v->_rhw = v1;
-
-            // if indoors use fov - if outdoors use as below - fix later
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                v2 = v1 * fov;
-            } else {
-                v2 = v1 * (double)pODMRenderParams->int_fov_rad;
-            }
+            v2 = v1 * ViewPlaneDist_X;
 
             v->vWorldViewProjX = (double)pViewport->uScreenCenterX -
                                  v2 * (double)v->vWorldViewPosition.y;
             v->vWorldViewProjY = (double)pViewport->uScreenCenterY -
                                  v2 * (double)v->vWorldViewPosition.z;
-        //}
 
         if (fit_into_viewport) {
             // __debugbreak();
@@ -1077,7 +1045,7 @@ void IndoorCameraD3D::Project(RenderVertexSoft *pVertices,
     }
 }
 
-void IndoorCameraD3D::Project(int x, int y, int z, int *screenspace_x,
+void Camera3D::Project(int x, int y, int z, int *screenspace_x,
                               int *screenspace_y) {
     RenderVertexSoft v;
     v.vWorldViewPosition.x = x;
@@ -1096,7 +1064,7 @@ void IndoorCameraD3D::Project(int x, int y, int z, int *screenspace_x,
 }
 
 //----- (00436A6D) --------------------------------------------------------
-float IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripType) {
+float Camera3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripType) {
     float result = FLT_MAX;
     for (uint i = 0; i < uStripType; i++) {
         if (pVertices[i].vWorldPosition.z < result) {
@@ -1107,8 +1075,8 @@ float IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int 
 }
 
 //----- (00436A40) --------------------------------------------------------
-float IndoorCameraD3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uStripType) {
-    float result = FLT_MIN;
+float Camera3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uStripType) {
+    float result; = FLT_MIN;
     for (uint i = 0; i < uStripType; i++) {
         if (pVertex[i].vWorldPosition.z > result)
             result = pVertex[i].vWorldPosition.z;
@@ -1120,7 +1088,7 @@ float IndoorCameraD3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uS
 // merged from IndoorCamera::Initialize2
 //         and ODMRenderParams::RotationToInts
 //         and BLVRenderParams::Reset
-void IndoorCameraD3D::CalculateRotations(int camera_rot_x, int camera_rot_z) {
+void Camera3D::CalculateRotations(int camera_rot_x, int camera_rot_z) {
     sRotationX = camera_rot_x + 20;  // pitch
     sRotationZ = camera_rot_z;  // yaw
 

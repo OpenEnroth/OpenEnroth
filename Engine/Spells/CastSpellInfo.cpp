@@ -1259,8 +1259,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     dist_Y = pActors[monster_id].vPosition.y;
                     dist_Z = pActors[monster_id].vPosition.z;
                 } else {
-                    dist_X = pParty->vPosition.x + 2048 * pIndoorCameraD3D->fRotationZCosine;
-                    dist_Y = pParty->vPosition.y + 2048 * pIndoorCameraD3D->fRotationZSine;
+                    dist_X = pParty->vPosition.x + 2048 * pCamera3D->fRotationZCosine;
+                    dist_Y = pParty->vPosition.y + 2048 * pCamera3D->fRotationZSine;
                     dist_Z = pParty->vPosition.z;
                 }
                 unsigned __int64 k = 0;
@@ -1574,8 +1574,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     dist_Y = pActors[monster_id].vPosition.y;
                     dist_Z = pActors[monster_id].vPosition.z;
                 } else {
-                    dist_X = pParty->vPosition.x + 2048 * pIndoorCameraD3D->fRotationZCosine;
-                    dist_Y = pParty->vPosition.y + 2048 * pIndoorCameraD3D->fRotationZSine;
+                    dist_X = pParty->vPosition.x + 2048 * pCamera3D->fRotationZCosine;
+                    dist_Y = pParty->vPosition.y + 2048 * pCamera3D->fRotationZSine;
                     dist_Z = pParty->vPosition.z;
                 }
                 unsigned __int64 k = 0;
@@ -3919,7 +3919,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
 
                 int mon_num = render->GetActorsInViewport(
-                    (int64_t)pIndoorCameraD3D->GetPickDepth());
+                    (int64_t)pCamera3D->GetPickDepth());
                 v707.x = 0;
                 v707.y = 0;
                 v707.z = 0;

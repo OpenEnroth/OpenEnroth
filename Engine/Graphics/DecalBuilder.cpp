@@ -71,7 +71,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, char LocationFlags, stru
     static_FacePlane.Normal.x = FacePlane->face_plane.vNormal.x;
     static_FacePlane.Normal.z = FacePlane->face_plane.vNormal.z;
     static_FacePlane.dist = FacePlane->face_plane.dist;
-    if (!pIndoorCameraD3D->GetFacetOrientation(
+    if (!pCamera3D->GetFacetOrientation(
         FacePlane->polygonType, &static_FacePlane.Normal, &static_FacePlane.field_10,
         &static_FacePlane.field_1C))
         log->Warning("Error: Failed to get the facet orientation");
@@ -294,8 +294,8 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3_float
                 log->Warning("Uknown strip type detected!");
             }
 
-            WorldMinZ = pIndoorCameraD3D->GetPolygonMinZ(triverts, uStripType);
-            WorldMaxZ = pIndoorCameraD3D->GetPolygonMaxZ(triverts, uStripType);
+            WorldMinZ = pCamera3D->GetPolygonMinZ(triverts, uStripType);
+            WorldMaxZ = pCamera3D->GetPolygonMaxZ(triverts, uStripType);
 
             // check xy bounds
             if (WorldXPosR - bloodsplat_container->pBloodsplats_to_apply[i].radius <
@@ -364,7 +364,7 @@ void DecalBuilder::DrawBloodsplats() {
 //----- (0049C550) --------------------------------------------------------
 void DecalBuilder::DrawDecalDebugOutlines() {
     for (int i = 0; i < DecalsCount; i++)
-        pIndoorCameraD3D->debug_outline_sw(Decals[i].pVertices, Decals[i].uNumVertices, 0xC86400u, 0.0f);
+        pCamera3D->debug_outline_sw(Decals[i].pVertices, Decals[i].uNumVertices, 0xC86400u, 0.0f);
 }
 
 //----- (0040E4C2) --------------------------------------------------------

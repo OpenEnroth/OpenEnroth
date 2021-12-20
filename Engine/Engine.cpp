@@ -170,16 +170,16 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 void Engine::Draw() {
     SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
-    pIndoorCameraD3D->sRotationX = pParty->sRotationX;
-    pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
-    pIndoorCameraD3D->vPartyPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    pIndoorCameraD3D->vPartyPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    pIndoorCameraD3D->vPartyPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
+    pCamera3D->sRotationX = pParty->sRotationX;
+    pCamera3D->sRotationZ = pParty->sRotationZ;
+    pCamera3D->vPartyPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
+    pCamera3D->vPartyPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
+    pCamera3D->vPartyPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
-    pIndoorCameraD3D->CalculateRotations(pParty->sRotationX, pParty->sRotationZ);
-    pIndoorCameraD3D->CreateWorldMatrixAndSomeStuff();
-    pIndoorCameraD3D->BuildViewFrustum();
+    pCamera3D->CalculateRotations(pParty->sRotationX, pParty->sRotationZ);
+    pCamera3D->CreateWorldMatrixAndSomeStuff();
+    pCamera3D->BuildViewFrustum();
 
     if (pMovie_Track) {
         /*if ( !render->pRenderD3D )
@@ -425,7 +425,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     if (sub_4637E0_is_there_popup_onscreen()) {
         face_filter = &vis_face_filter;
         sprite_filter = &vis_sprite_filter_2;
-        depth = pIndoorCameraD3D->GetPickDepth();
+        depth = pCamera3D->GetPickDepth();
     } else {
         if (config->IsTargetingMode()) {
             face_filter = &vis_face_filter;
@@ -643,7 +643,7 @@ Engine::Engine() {
     // pLightmapBuilder = new LightmapBuilder;
     // pVisInstance = new Vis;
     // spellfx = new SpellFxRenderer;
-    pIndoorCameraD3D = new IndoorCameraD3D;
+    pCamera3D = new Camera3D;
     pStru9Instance = new stru9;
     pStru10Instance = new stru10;
     // pStru11Instance = new stru11;
@@ -668,7 +668,7 @@ Engine::~Engine() {
     delete pStru11Instance;*/
     delete pStru10Instance;
     delete pStru9Instance;
-    delete pIndoorCameraD3D;
+    delete pCamera3D;
     // delete spellfx;
     // delete pVisInstance;
     // delete pLightmapBuilder;
@@ -872,7 +872,7 @@ void FinalInitialization() {
         viewparams->uSomeZ,
         viewparams->uSomeW
     );
-    pViewport->SetFOV(_6BE3A0_fov);
+    pViewport->ResetScreen();
 
     InitializeTurnBasedAnimations(&stru_50C198);
     pBitmaps_LOD->_inlined_sub1();
@@ -1228,8 +1228,6 @@ void MM7Initialization() {
     pViewport->SetScreen(viewparams->uScreen_topL_X, viewparams->uScreen_topL_Y,
                          viewparams->uScreen_BttmR_X,
                          viewparams->uScreen_BttmR_Y);
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        pODMRenderParams->Initialize();
 }
 
 //----- (004610AA) --------------------------------------------------------
@@ -1379,11 +1377,11 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pIndoorCameraD3D->vPartyPos.x = 0;
-    pIndoorCameraD3D->vPartyPos.y = 0;
-    pIndoorCameraD3D->vPartyPos.z = 100;
-    pIndoorCameraD3D->sRotationX = 0;
-    pIndoorCameraD3D->sRotationZ = 0;
+    pCamera3D->vPartyPos.x = 0;
+    pCamera3D->vPartyPos.y = 0;
+    pCamera3D->vPartyPos.z = 100;
+    pCamera3D->sRotationX = 0;
+    pCamera3D->sRotationZ = 0;
     viewparams->bRedrawGameUI = true;
     uLevel_StartingPointType = MapStartPoint_Party;
     pSprites_LOD->_461397();

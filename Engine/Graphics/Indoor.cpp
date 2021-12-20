@@ -136,8 +136,8 @@ void PrepareDrawLists_BLV() {
         //   return clamp(0, 1, lastIntensity + (rand() - .3) / 100)
 
         pMobileLightsStack->AddLight(
-            pIndoorCameraD3D->vPartyPos.x, pIndoorCameraD3D->vPartyPos.y,
-            pIndoorCameraD3D->vPartyPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
+            pCamera3D->vPartyPos.x, pCamera3D->vPartyPos.y,
+            pCamera3D->vPartyPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
             floorf(pParty->flt_TorchlightColorR + 0.5f),
             floorf(pParty->flt_TorchlightColorG + 0.5f),
             floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
@@ -161,11 +161,11 @@ void PrepareDrawLists_BLV() {
 void BLVRenderParams::Reset() {
     this->field_0_timer_ = pEventTimer->uTotalGameTimeElapsed;
 
-    pIndoorCameraD3D->debug_flags = 0;
+    pCamera3D->debug_flags = 0;
     if (viewparams->draw_sw_outlines)
-        pIndoorCameraD3D->debug_flags |= BLV_RENDER_DRAW_SW_OUTLINES;
+        pCamera3D->debug_flags |= BLV_RENDER_DRAW_SW_OUTLINES;
     if (viewparams->draw_d3d_outlines)
-        pIndoorCameraD3D->debug_flags |= BLV_RENDER_DRAW_D3D_OUTLINES;
+        pCamera3D->debug_flags |= BLV_RENDER_DRAW_D3D_OUTLINES;
 
     // v2 = a2;
     // this->field_0_timer_ = a2->field_0_timer;
@@ -178,9 +178,9 @@ void BLVRenderParams::Reset() {
     // this->sPartyRotY = a2->sRotationZ;
     // v6 = this->vPartyPos.x;
     // this->sPartyRotX = a2->sRotationX;
-    int v7 = pIndoor->GetSector(pIndoorCameraD3D->vPartyPos.x,
-                            pIndoorCameraD3D->vPartyPos.y,
-                            pIndoorCameraD3D->vPartyPos.z);
+    int v7 = pIndoor->GetSector(pCamera3D->vPartyPos.x,
+                            pCamera3D->vPartyPos.y,
+                            pCamera3D->vPartyPos.z);
     this->uPartySectorID = v7;
     if (!v7) {
         __debugbreak();  // shouldnt happen, please provide savegame
@@ -194,7 +194,7 @@ void BLVRenderParams::Reset() {
     }
     // if ( render->pRenderD3D )
     {
-        this->fov = pViewport->field_of_view;
+        // this->fov = pViewport->field_of_view;
 
         this->uViewportX = pViewport->uScreen_TL_X;
         this->uViewportY = pViewport->uScreen_TL_Y;
@@ -436,7 +436,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
 
     if (pFace->Portal()) {
-        // pIndoorCameraD3D->DebugDrawPortal(pFace);
+        // pCamera3D->DebugDrawPortal(pFace);
         return;
     }
 
@@ -497,7 +497,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
         return;
     }
 
-    if (!pIndoorCameraD3D->IsCulled(pFace)) {
+    if (!pCamera3D->IsCulled(pFace)) {
         uNumVerticesa = pFace->uNumVertices;
 
         // copy to buff in
@@ -514,10 +514,10 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
 
         // 498377 always true - appears to be anothe function to clip vertices to portal planes??
         if (!pVertices || true/*(engine->pStru9Instance->ClipVertsToPortal(pPortalBounding, 4, pVertices, static_vertices_buff_in, &uNumVerticesa), uNumVerticesa)*/) {
-            if (pIndoorCameraD3D->CullFaceToFrustum(  // clips vertices to the frustum planes
+            if (pCamera3D->CullFaceToFrustum(  // clips vertices to the frustum planes
                     static_vertices_buff_in, &uNumVerticesa,
                     static_vertices_calc_out,
-                    pIndoorCameraD3D->FrustumPlanes, 4,
+                    pCamera3D->FrustumPlanes, 4,
                     false, 0) != 1 || uNumVerticesa) {
                 // memcpy(static_vertices_calc_out, static_vertices_buff_in, uNumVerticesa * sizeof(RenderVertexSoft));
 
@@ -537,9 +537,9 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                 lightmap_builder->ApplyLights_IndoorFace(uFaceID);
                 decal_builder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
 
-                pIndoorCameraD3D->ViewTransfrom_OffsetUV(static_vertices_calc_out, uNumVerticesa, array_507D30, &Lights);
+                pCamera3D->ViewTransfrom_OffsetUV(static_vertices_calc_out, uNumVerticesa, array_507D30, &Lights);
 
-                pIndoorCameraD3D->Project(array_507D30, uNumVerticesa, 0);
+                pCamera3D->Project(array_507D30, uNumVerticesa, 0);
 
                 lightmap_builder->StationaryLightsCount = 0;
                 if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
@@ -2332,8 +2332,8 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
             continue;
 
         v4 = TrigLUT->Atan2(
-            pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-            pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+            pActors[i].vPosition.x - pCamera3D->vPartyPos.x,
+            pActors[i].vPosition.y - pCamera3D->vPartyPos.y);
         v6 = ((signed int)(pActors[i].uYawAngle +
                            ((signed int)TrigLUT->uIntegerPi >> 3) - v4 +
                            TrigLUT->uIntegerPi) >> 8) & 7;
@@ -2377,14 +2377,14 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
                 int view_x = 0;
                 int view_y = 0;
                 int view_z = 0;
-                bool visible = pIndoorCameraD3D->ViewClip(
+                bool visible = pCamera3D->ViewClip(
                     pActors[i].vPosition.x, pActors[i].vPosition.y,
                     pActors[i].vPosition.z, &view_x, &view_y, &view_z);
                 if (visible) {
                     if (abs(view_x) >= abs(view_y)) {
                         int projected_x = 0;
                         int projected_y = 0;
-                        pIndoorCameraD3D->Project(view_x, view_y, view_z,
+                        pCamera3D->Project(view_x, view_y, view_z,
                                                   &projected_x, &projected_y);
 
                         if (uNumBillboardsToDraw >= 500) break;
@@ -2403,10 +2403,10 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
                             .uPalette = v9->uPaletteIndex;
                         pBillboardRenderList[uNumBillboardsToDraw - 1] .uIndoorSectorID = pActors[i].uSectorID;
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pCamera3D->ViewPlaneDist_X;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pCamera3D->ViewPlaneDist_Y;
 
-                        float _v18_over_x = v9->scale * floorf(pIndoorCameraD3D->fov_x + 0.5f) / (view_x);
+                        float _v18_over_x = v9->scale * floorf(pCamera3D->ViewPlaneDist_X + 0.5f) / (view_x);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =  _v18_over_x;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v18_over_x;
 
@@ -2455,8 +2455,8 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     spell_fx_renderer->RenderAsSprite(&pSpriteObjects[i])) {
                     SpriteFrame *v4 = pSpriteObjects[i].GetSpriteFrame();
                     int a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
-                    v6 = TrigLUT->Atan2(pSpriteObjects[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-                                            pSpriteObjects[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                    v6 = TrigLUT->Atan2(pSpriteObjects[i].vPosition.x - pCamera3D->vPartyPos.x,
+                                            pSpriteObjects[i].vPosition.y - pCamera3D->vPartyPos.y);
                     int v7 = pSpriteObjects[i].uFacing;
                     int v9 = ((int)(TrigLUT->uIntegerPi + ((int)TrigLUT->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
 
@@ -2492,7 +2492,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     int view_y = 0;
                     int view_z = 0;
 
-                    bool visible = pIndoorCameraD3D->ViewClip(pSpriteObjects[i].vPosition.x,
+                    bool visible = pCamera3D->ViewClip(pSpriteObjects[i].vPosition.x,
                                                               pSpriteObjects[i].vPosition.y,
                                                               modz,
                                                               &view_x, &view_y, &view_z);
@@ -2503,7 +2503,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     if (visible) {
                         int projected_x = 0;
                         int projected_y = 0;
-                        pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+                        pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
                         assert(uNumBillboardsToDraw < 499);
                         ++uNumBillboardsToDraw;
@@ -2514,12 +2514,12 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
                         // if ( render->pRenderD3D )
                         {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pIndoorCameraD3D->fov_x;
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pIndoorCameraD3D->fov_y;
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pCamera3D->ViewPlaneDist_X;
+                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pCamera3D->ViewPlaneDist_Y;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =
-                                v4->scale * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
+                                v4->scale * (int)floorf(pCamera3D->ViewPlaneDist_X + 0.5f) / view_x;
                             pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                                v4->scale * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
+                                v4->scale * (int)floorf(pCamera3D->ViewPlaneDist_X + 0.5f) / view_x;
                         }
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
@@ -2577,9 +2577,9 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v8 = pLevelDecorations[uDecorationID].field_10_y_rot +
          ((signed int)TrigLUT->uIntegerPi >> 3) -
          TrigLUT->Atan2(pLevelDecorations[uDecorationID].vPosition.x -
-                                pIndoorCameraD3D->vPartyPos.x,
+                                pCamera3D->vPartyPos.x,
                             pLevelDecorations[uDecorationID].vPosition.y -
-                                pIndoorCameraD3D->vPartyPos.y);
+                                pCamera3D->vPartyPos.y);
     v9 = ((signed int)(TrigLUT->uIntegerPi + v8) >> 8) & 7;
     int v37 = pBLVRenderParams->field_0_timer_;
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalGameTimeElapsed;
@@ -2600,7 +2600,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     int view_y = 0;
     int view_z = 0;
     bool visible =
-        pIndoorCameraD3D->ViewClip(pLevelDecorations[uDecorationID].vPosition.x,
+        pCamera3D->ViewClip(pLevelDecorations[uDecorationID].vPosition.x,
                                    pLevelDecorations[uDecorationID].vPosition.y,
                                    pLevelDecorations[uDecorationID].vPosition.z,
                                    &view_x, &view_y, &view_z);
@@ -2609,7 +2609,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
         if (abs(view_x) >= abs(view_y)) {
             int projected_x = 0;
             int projected_y = 0;
-            pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x,
+            pCamera3D->Project(view_x, view_y, view_z, &projected_x,
                                       &projected_y);
 
             assert(uNumBillboardsToDraw < 500);
@@ -2628,11 +2628,11 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                 uSectorID;
 
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x =
-                pIndoorCameraD3D->fov_x;
+                pCamera3D->ViewPlaneDist_X;
             pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y =
-                pIndoorCameraD3D->fov_y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v11->scale * (int)floorf(pIndoorCameraD3D->fov_x + 0.5f) / view_x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v11->scale * (int)floorf(pIndoorCameraD3D->fov_y + 0.5f) / view_x;
+                pCamera3D->ViewPlaneDist_Y;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v11->scale * (int)floorf(pCamera3D->ViewPlaneDist_X + 0.5f) / view_x;
+            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v11->scale * (int)floorf(pCamera3D->ViewPlaneDist_Y + 0.5f) / view_x;
             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
             pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
                 pLevelDecorations[uDecorationID].vPosition.x;

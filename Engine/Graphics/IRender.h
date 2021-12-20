@@ -68,7 +68,6 @@ struct ODMRenderParams {
         shading_dist_shademist = 0x1000;
         this->near_clip = 4;
         this->far_clip = 2 * 0x2000;
-        int_fov_rad = 0;
         this->bNoSky = 0;
         this->bDoNotRenderDecorations = 0;
         this->field_5C = 0;
@@ -77,31 +76,18 @@ struct ODMRenderParams {
         this->outdoor_no_mist = 0;
     }
 
-    void Initialize();
-
     int uPickDepth;
     int shading_dist_shade;
     int shading_dist_shademist;
     int near_clip;
     int far_clip;  // far clip (shading_dist_mist in M&M6 terms)
-    unsigned int uCameraFovInDegrees = 0;
-    int int_fov_rad = 0;      // 157 struct IndoorCamera::fov_rad
-    int int_fov_rad_inv = 0;  // 157 struct IndoorCamera::fov_rad_inv
-    int _unused_camera_rotation_y_int_sine = 0;    // merged with BLVRenderParams
-                                               // equivalents
-    int _unused_camera_rotation_y_int_cosine = 0;  // into IndoorCameraD3D
-    int _unused_camera_rotation_x_int_sine = 0;    // --//--
-    int _unused_camera_rotation_x_int_cosine = 0;  // --//--
     int uNumPolygons = 0;
     unsigned int _unused_uNumEdges = 0;
     unsigned int _unused_uNumSurfs = 0;
     unsigned int _unused_uNumSpans = 0;
     unsigned int uNumBillboards = 0;
     float field_40 = 0;
-    // int field_44;
     int outdoor_grid_band_3 = 0;
-    int field_4C = 0;
-    int field_50 = 0;
     unsigned int bNoSky;
     unsigned int bDoNotRenderDecorations;
     int field_5C;

@@ -232,14 +232,14 @@ void SpellFxRenderer::DrawProjectiles() {
         v[1].vWorldPosition.x = p->dstX;
         v[1].vWorldPosition.y = p->dstY;
         v[1].vWorldPosition.z = p->dstZ;
-        pIndoorCameraD3D->ViewTransform(v, 2);
+        pCamera3D->ViewTransform(v, 2);
 
         sr_42620A(v);
 
-        pIndoorCameraD3D->Project(v, 2, 0);
+        pCamera3D->Project(v, 2, 0);
 
-        v10 = pIndoorCameraD3D->fov_x / v[1].vWorldViewPosition.x * 20.0f;
-        v11 = pIndoorCameraD3D->fov_x / v[0].vWorldViewPosition.x * 20.0f;
+        v10 = pCamera3D->ViewPlaneDist_X / v[1].vWorldViewPosition.x * 20.0f;
+        v11 = pCamera3D->ViewPlaneDist_X / v[0].vWorldViewPosition.x * 20.0f;
         render->DrawProjectile(v[0].vWorldViewProjX, v[0].vWorldViewProjY,
                                v[0].vWorldViewPosition.x, v11,
                                v[1].vWorldViewProjX, v[1].vWorldViewProjY,
@@ -1504,7 +1504,7 @@ int SpellFX_Billboard::SpellFXViewTransform() {  // view transform
     if (this->uNumVertices > 0) {
         for (int v2 = 0; v2 < this->uNumVertices; ++v2) {
             // view tranfrom
-            pIndoorCameraD3D->ViewTransform(field_14[v2].x, field_14[v2].y, field_14[v2].z, &ViewPosX, &ViewPosY, &ViewPosZ);
+            pCamera3D->ViewTransform(field_14[v2].x, field_14[v2].y, field_14[v2].z, &ViewPosX, &ViewPosY, &ViewPosZ);
 
             // load into field 64
             field_64[v2].x = ViewPosX;
@@ -1522,8 +1522,8 @@ int SpellFX_Billboard::SpellFXViewTransform() {  // view transform
 bool SpellFX_Billboard::SpellFXViewClip() {
     bool NeedNearClip = 0;
     bool NeedFarClip = 0;
-    double NearClip = pIndoorCameraD3D->GetNearClip();
-    double FarClip = pIndoorCameraD3D->GetFarClip();
+    double NearClip = pCamera3D->GetNearClip();
+    double FarClip = pCamera3D->GetFarClip();
 
     if (this->uNumVertices <= 0) {  //  what?? behaviour needs investigating
         memcpy(field_B4, field_64, uNumVertices * sizeof(local_01));
@@ -1567,7 +1567,7 @@ int SpellFX_Billboard::SpellFXProject() {  // project to billboard coords
     int Xproj, Yproj;
 
     for (int i = 0; i < this->uNumVertices; i++) {
-        pIndoorCameraD3D->Project(
+        pCamera3D->Project(
             round_to_int(this->field_B4[i].x),
             round_to_int(this->field_B4[i].y),
             round_to_int(this->field_B4[i].z), &Yproj, &Xproj);
