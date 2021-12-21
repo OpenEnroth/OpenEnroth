@@ -16,51 +16,11 @@ Camera3D *pCamera3D = new Camera3D;
 
 //----- (004361EF) --------------------------------------------------------
 Camera3D::Camera3D() {
-    this->field_108 = 0.0;
-    this->field_138 = 0.0;
-    this->field_168 = 0.0;
-    this->field_198 = 0.0;
-    this->field_1C8 = 0.0;
-    this->field_1F8 = 0.0;
-    this->field_228 = 0.0;
-    this->field_258 = 0.0;
-    this->field_288 = 0.0;
-    this->field_2B8 = 0.0;
-    this->field_2E8 = 0.0;
-    this->field_2BC = 0.0;
-    this->field_2C0 = 0.0;
-    this->field_2C4 = 0.0;
-    this->field_318 = 0.0;
-    this->field_2EC = 0.0;
-    this->field_2F0 = 0.0;
-    this->field_2F4 = 0.0;
-    this->field_348 = 0.0;
-    this->field_31C = 0.0;
-    this->field_320 = 0.0;
-    this->field_324 = 0.0;
-    this->field_378 = 0.0;
-    this->field_34C = 0.0;
-    this->field_350 = 0.0;
-    this->field_354 = 0.0;
-    for (uint i = 0; i < 16384; ++i) {
-        list_0037C[i].field_0 = 0;
-        list_0037C[i].flt_30 = 0.0f;
-    }
-    list_0037C_size = 0;
-    for (uint i = 0; i < 256; ++i) list_E0380[i].mm7__vector_000004_size = 0;
-    list_E0380_size = 0;
-
     debug_flags = 0;
     fRotationXCosine = 0;
     fRotationXSine = 0;
     fRotationZCosine = 0;
     fRotationZSine = 0;
-    for (uint i = 0; i < 32; ++i)
-        field_118[i] = 0;
-    for (uint i = 0; i < 44; ++i)
-        field_13C[i] = 0;
-    for (uint i = 0; i < 44; ++i)
-        field_16C[i] = 0;
 }
 
 //----- (0043643E) --------------------------------------------------------
@@ -166,9 +126,11 @@ void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
     for (uint i = 0; i < uNumVertices; ++i) {
         RenderVertexSoft *a1 = &a1a[i];
 
-        double vCamToVertexX = (double)a1->vWorldPosition.x - (double)pCamera3D->vPartyPos.x;
-        double vCamToVertexY = (double)a1->vWorldPosition.y - (double)pCamera3D->vPartyPos.y;
-        double vCamToVertexZ = (double)a1->vWorldPosition.z - (double)pCamera3D->vPartyPos.z;
+        double vCamToVertexX = (double)a1->vWorldPosition.x - (double)pCamera3D->vCameraPos.x;
+        double vCamToVertexY = (double)a1->vWorldPosition.y - (double)pCamera3D->vCameraPos.y;
+        double vCamToVertexZ = (double)a1->vWorldPosition.z - (double)pCamera3D->vCameraPos.z;
+
+        glm::vec3 camtovert(vCamToVertexX, vCamToVertexY, vCamToVertexZ);
 
         if (pCamera3D->sRotationX) {
             double v5 = vCamToVertexY * (double)fRotationZSine + (double)fRotationZCosine * vCamToVertexX;
@@ -181,6 +143,9 @@ void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
             a1->vWorldViewPosition.y = (double)fRotationZCosine * vCamToVertexY - (double)fRotationZSine * vCamToVertexX;
             a1->vWorldViewPosition.z = vCamToVertexZ;
         }
+
+        //camtovert = camtovert * camrotation;
+        //int y = 7;
     }
 
 }
@@ -247,11 +212,11 @@ bool Camera3D::is_face_faced_to_camera(BLVFace *pFace,
 
     // really strange cull; dot(to_cam, normal) < 0 means we see the BACK face,
     // not font %_%
-    if ((a2->vWorldPosition.z - (double)pCamera3D->vPartyPos.z) *
+    if ((a2->vWorldPosition.z - (double)pCamera3D->vCameraPos.z) *
                 (double)pFace->pFacePlane_old.vNormal.z +
-            (a2->vWorldPosition.y - (double)pCamera3D->vPartyPos.y) *
+            (a2->vWorldPosition.y - (double)pCamera3D->vCameraPos.y) *
                 (double)pFace->pFacePlane_old.vNormal.y +
-            (a2->vWorldPosition.x - (double)pCamera3D->vPartyPos.x) *
+            (a2->vWorldPosition.x - (double)pCamera3D->vCameraPos.x) *
                 (double)pFace->pFacePlane_old.vNormal.x <
         0.0)
         return false;
@@ -308,8 +273,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
     a1[1].vWorldPosition.x = pLineEnd->vWorldPosition.x;
     a1[1].vWorldPosition.y = pLineEnd->vWorldPosition.y;
     a1[1].vWorldPosition.z = pLineEnd->vWorldPosition.z;
-    if (CullFaceToFrustum(a1, &uOutNumVertices, pVertices,
-                        this->FrustumPlanes, 4, 1,
+    if (CullFaceToFrustum(a1, &uOutNumVertices, pVertices, 4, 1,
                         0) != 1 ||
         (signed int)uOutNumVertices >= 2) {
         ViewTransform(pVertices, 2);
@@ -445,6 +409,14 @@ void Camera3D::CreateWorldMatrixAndSomeStuff() {
     Matrix3x3_float_ m4;  // [sp+7Ch] [bp-4Ch]@1
     Matrix3x3_float_ m5;  // [sp+A0h] [bp-28h]@1
 
+    // axis on view transform not typical - matrices joggled round to reflect this
+    // x -> z, y -> x, z -> y 
+
+    // if axis typical
+    // glm::mat3x3 roll(cosf(0), sinf(0), 0, -sinf(0), cosf(0), 0, 0, 0, 1);
+    // axis womm - no roll - identity
+    glm::mat3x3 roll = glm::mat3(1);
+
     // RotationZ(0) - roll
     m5._11 = cosf(0);
     m5._12 = sinf(0);
@@ -456,7 +428,16 @@ void Camera3D::CreateWorldMatrixAndSomeStuff() {
     m5._32 = 0;
     m5._33 = 1;
 
+    
+
     float cos_x1 = fRotationXCosine, sin_x1 = fRotationXSine;
+    float cos_y1 = fRotationZCosine, sin_y1 = fRotationZSine;
+
+    // if axis typical
+    // glm::mat3x3 pitch(1, 0, 0, 0 , cos_x1, sin_x1, 0, -sin_x1, cos_x1);
+    // axis WOMM
+    glm::mat3x3 pitch(0, -sin_x1, cos_x1, 1, 0, 0, 0, cos_x1, sin_x1);
+
     // RotationX(x) - pitch
     m4._11 = 1;
     m4._12 = 0;
@@ -468,7 +449,14 @@ void Camera3D::CreateWorldMatrixAndSomeStuff() {
     m4._32 = -sin_x1;
     m4._33 = cos_x1;
 
-    float cos_y1 = fRotationZCosine, sin_y1 = fRotationZSine;
+    
+
+
+    // if axis typical
+    // glm::mat3x3 yaw(cos_y1, 0, -sin_y1, 0, 1, 0, sin_y1, 0, cos_y1);
+    // axis womm
+    glm::mat3x3 yaw(-sin_y1, cos_y1, 0, 0, 0, 1, cos_y1, sin_y1, 0);
+
     // RotationY(some_angle) - yaw
     m3._11 = cos_y1;
     m3._12 = 0;
@@ -483,10 +471,20 @@ void Camera3D::CreateWorldMatrixAndSomeStuff() {
     MatrixMultiply(&m5, &m3, &m1);
     MatrixMultiply(&m4, &m1, &m2);
 
+    camrotation = yaw * roll * pitch;
+    //camrotation[0] = finmat[2];
+    //amrotation[1] = finmat[0];
+    //camrotation[2] = finmat[1];
+
+    // this flips the axis around to keep wierd transform
     for (uint i = 0; i < 3; ++i) {
-        field_4[0].v[i] = m2.v[1][i];
-        field_4[1].v[i] = m2.v[0][i];
-        field_4[2].v[i] = m2.v[2][i];
+        m3x3_cam_rotation[0].v[i] = m2.v[1][i];
+        m3x3_cam_rotation[1].v[i] = m2.v[0][i];
+        m3x3_cam_rotation[2].v[i] = m2.v[2][i];
+
+        //camrotation[0][i] = m2.v[1][i];
+        //camrotation[1][i] = m2.v[0][i];
+        //camrotation[2][i] = m2.v[2][i];
     }
 
     // fov projection calcs
@@ -504,35 +502,41 @@ void Camera3D::CreateWorldMatrixAndSomeStuff() {
 }
 
 //----- (00437691) --------------------------------------------------------
-void Camera3D::Vec3Transform(const IndoorCameraD3D_Vec3 *pVector,
-                                    IndoorCameraD3D_Vec3 *pOut) {
-    pOut->y = field_4[1].x * pVector->x + field_4[0].x * pVector->y +
-              field_4[2].x * pVector->z;
-    pOut->z = field_4[1].y * pVector->x + field_4[0].y * pVector->y +
-              field_4[2].y * pVector->z;
-    pOut->x = field_4[1].z * pVector->x + field_4[0].z * pVector->y +
-              field_4[2].z * pVector->z;
+void Camera3D::Vec3Transform(const glm::vec3 *pVector, glm::vec3 *pOut) {
+    pOut->y = m3x3_cam_rotation[1].x * pVector->x + m3x3_cam_rotation[0].x * pVector->y +
+        m3x3_cam_rotation[2].x * pVector->z;
+    pOut->z = m3x3_cam_rotation[1].y * pVector->x + m3x3_cam_rotation[0].y * pVector->y +
+        m3x3_cam_rotation[2].y * pVector->z;
+    pOut->x = m3x3_cam_rotation[1].z * pVector->x + m3x3_cam_rotation[0].z * pVector->y +
+        m3x3_cam_rotation[2].z * pVector->z;
+
+
+    // need normals in correct XYZ so swizzle from odd cam view matrix
+    pOut[0] = *pVector * camrotation;
+    
+    int t = 7;
 }
 
 //----- (00437607) --------------------------------------------------------
-void Camera3D::BuildFrustumPlane(IndoorCameraD3D_Vec3 *a1,
-                              IndoorCameraD3D_Vec4 *a2) {
-    IndoorCameraD3D_Vec3 v8;
-
-    v8.x = (double)pCamera3D->vPartyPos.x;
-    v8.y = (double)pCamera3D->vPartyPos.y;
-    v8.z = (double)pCamera3D->vPartyPos.z;
-    Vec3Transform(a1, a2);
-
-    double DotDist = v8.x * a2->x + v8.y * a2->y + v8.z * a2->z;
-    a2->dot = DotDist + 0.000099999997;
+void Camera3D::BuildFrustumPlane(glm::vec3 *a1, glm::vec4 *a2) {
+    glm::vec3 a23(*a2);
+    Vec3Transform(a1, &a23);
+    a2->x = a23.x;
+    a2->y = a23.y;
+    a2->z = a23.z;
+    a2->w = glm::dot(vCameraPos, a23) + 0.000099999997;
 }
 
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
-    double HalfAngleX = atan(2.0 / inv_fov * fov / ViewPlaneDist_X);
-    double HalfAngleY = atan(2.0 / inv_fov * fov / (ViewPlaneDist_Y + 0.5));
-    IndoorCameraD3D_Vec3 PlaneVec;
+    float HalfAngleX = odm_fov_rad / 2.0;
+    float HalfAngleY = atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X);
+    
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        HalfAngleX = blv_fov_rad / 2.0;
+    }
+
+    glm::vec3 PlaneVec;
 
     PlaneVec.x = -sin(HalfAngleX);
     PlaneVec.y = 0.0;
@@ -552,7 +556,8 @@ void Camera3D::BuildViewFrustum() {
 }
 
 //----- (00437376) --------------------------------------------------------
-char Camera3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
+// culls vertices to face plane
+char Camera3D::CullVertsToPlane(stru154 *faceplane, RenderVertexSoft *vertices,
                               unsigned int *pOutNumVertices) {
     double v6;             // st7@3
     int previous;          // esi@6
@@ -564,18 +569,18 @@ char Camera3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
                            //  signed int thisb; // [sp+48h] [bp+8h]@6
     bool result;           // [sp+4Fh] [bp+Fh]@5
 
-    memcpy(&v18, a2, sizeof(v18));
+    memcpy(&v18, vertices, sizeof(v18));
     result = false;
-    memcpy(&a2[*pOutNumVertices], a2, sizeof(a2[*pOutNumVertices]));
-    memcpy(&a2[*pOutNumVertices + 1], &a2[1], sizeof(a2[*pOutNumVertices + 1]));
+    memcpy(&vertices[*pOutNumVertices], vertices, sizeof(vertices[*pOutNumVertices]));
+    memcpy(&vertices[*pOutNumVertices + 1], &vertices[1], sizeof(vertices[*pOutNumVertices + 1]));
 
     if ((signed int)*pOutNumVertices <= 3 ||
-        (((v18.vWorldPosition.z - (double)pCamera3D->vPartyPos.z) *
-                  thisa->face_plane.vNormal.z +
-              (v18.vWorldPosition.y - (double)pCamera3D->vPartyPos.y) *
-                  thisa->face_plane.vNormal.y +
-              (v18.vWorldPosition.x - (double)pCamera3D->vPartyPos.x) *
-                  thisa->face_plane.vNormal.x <
+        (((v18.vWorldPosition.z - (double)pCamera3D->vCameraPos.z) *
+            faceplane->face_plane.vNormal.z +
+              (v18.vWorldPosition.y - (double)pCamera3D->vCameraPos.y) *
+            faceplane->face_plane.vNormal.y +
+              (v18.vWorldPosition.x - (double)pCamera3D->vCameraPos.x) *
+            faceplane->face_plane.vNormal.x <
           0.0)
              ? (v6 = 1.0)
              : (v6 = -1.0),
@@ -596,10 +601,10 @@ char Camera3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
         if (next >= (signed int)*pOutNumVertices) next -= *pOutNumVertices;
 
         if (-0.009999999776482582 <
-            ((a2[current].vWorldViewProjX - a2[previous].vWorldViewProjX) *
-                 (a2[next].vWorldViewProjY - a2[previous].vWorldViewProjY) -
-             (a2[current].vWorldViewProjY - a2[previous].vWorldViewProjY) *
-                 (a2[next].vWorldViewProjX - a2[previous].vWorldViewProjX)) *
+            ((vertices[current].vWorldViewProjX - vertices[previous].vWorldViewProjX) *
+                 (vertices[next].vWorldViewProjY - vertices[previous].vWorldViewProjY) -
+             (vertices[current].vWorldViewProjY - vertices[previous].vWorldViewProjY) *
+                 (vertices[next].vWorldViewProjX - vertices[previous].vWorldViewProjX)) *
                 v6) {
             v13 = next;
             if (next >= (signed int)*pOutNumVertices)
@@ -607,7 +612,7 @@ char Camera3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
 
             if (v13 < (signed int)*pOutNumVertices) {
                 for (v14 = v13; v14 < (signed int)*pOutNumVertices; ++v14)
-                    memcpy(&a2[v14], &a2[v14 + 1], sizeof(a2[v14]));
+                    memcpy(&vertices[v14], &vertices[v14 + 1], sizeof(vertices[v14]));
             }
             result = true;
             --*pOutNumVertices;
@@ -623,7 +628,6 @@ char Camera3D::_437376(stru154 *thisa, RenderVertexSoft *a2,
 bool Camera3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
                                       unsigned int *pOutNumVertices,
                                       RenderVertexSoft *pVertices,
-                                      IndoorCameraD3D_Vec4 *CameraFrustrum,
                                       signed int NumFrustumPlanes, char DebugLines,
                                       int _unused) {
     // NumFrustumPlanes usually 4 - top, bottom, left, right - near and far done elsewhere
@@ -663,12 +667,12 @@ bool Camera3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
             v14 = sr_vertices_50D9D8;
         }
         if (i == NumFrustumPlanes - 1) v14 = pVertices;
-        FrustumPlaneVec.x = CameraFrustrum[i].x;
-        FrustumPlaneVec.y = CameraFrustrum[i].y;
-        FrustumPlaneVec.z = CameraFrustrum[i].z;
+        FrustumPlaneVec.x = FrustumPlanes[i].x;
+        FrustumPlaneVec.y = FrustumPlanes[i].y;
+        FrustumPlaneVec.z = FrustumPlanes[i].z;
 
         engine->pStru9Instance->ClipVertsToFrustumPlane(
-            v15, *pOutNumVertices, v14, pOutNumVertices, &FrustumPlaneVec, CameraFrustrum[i].dot,
+            v15, *pOutNumVertices, v14, pOutNumVertices, &FrustumPlaneVec, FrustumPlanes[i].w,
             (char *)&VertsAdjusted, _unused);
 
         // v12 = *pOutNumVertices;
@@ -683,70 +687,6 @@ bool Camera3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
     }
     return VertsAdjusted;
 }
-
-//----- (004371C3) --------------------------------------------------------
-bool Camera3D::_4371C3(RenderVertexSoft *pVertices,  // function appears unsued
-                              unsigned int *pOutNumVertices, int _unused) {
-    __debugbreak();
-
-    //  char *v4; // eax@2
-    //  signed int v5; // ecx@2
-    RenderVertexSoft *v6;           // esi@5
-    unsigned int *v7;               // edi@5
-    char *v8;                       // ecx@6
-    // int v9;                         // eax@6
-    Camera3D *thisa;         // [sp+0h] [bp-Ch]@1
-    signed int v12;                 // [sp+4h] [bp-8h]@5
-    unsigned int pVerticesa;        // [sp+14h] [bp+8h]@6
-    unsigned int pOutNumVerticesa;  // [sp+18h] [bp+Ch]@6
-
-    thisa = this;
-
-    static RenderVertexSoft static_4371C3_array_50E5E0[64];
-    static bool __init_flag1 = false;
-    if (!__init_flag1) {
-        __init_flag1 = true;
-
-        for (uint i = 0; i < 64; ++i)
-            static_4371C3_array_50E5E0[i].flt_2C = 0.0f;
-    }
-
-    v12 = 0;
-    v6 = pVertices;
-    v7 = pOutNumVertices;
-    if ((int)*pOutNumVertices > 0) {
-        pOutNumVerticesa =
-            (char *)static_4371C3_array_50E5E0 - (char *)pVertices;
-        pVerticesa = (char *)&static_4371C3_array_50E5E0[0].vWorldViewProjY -
-                     (char *)pVertices;
-        v8 = (char *)&static_4371C3_array_50E5E0[0].vWorldPosition.y;
-//        v9 = (int)&v6->vWorldPosition.z;
-//        do {
-//            ++v12;
-//            *((int *)v8 - 1) = *(int *)(v9 - 8);
-//            *(int *)v8 = *(int *)(v9 - 4);
-//            v8 += 48;
-//            *(float *)(pOutNumVerticesa + v9) = *(float *)v9;
-//            *(float *)(pVerticesa + v9) = *(float *)(v9 + 28);
-//            *(float *)((char *)&static_4371C3_array_50E5E0[0]._rhw -
-//                       (char *)v6 + v9) = *(float *)(v9 + 32);
-//            v9 += 48;
-//        } while (v12 < (signed int)*v7);
-
-        for (uint i = 1; i < (signed int)*v7; ++i) {
-            static_4371C3_array_50E5E0[i].vWorldPosition.x = pVertices->vWorldPosition.x;
-            static_4371C3_array_50E5E0[i].vWorldPosition.y = pVertices->vWorldPosition.y;
-            static_4371C3_array_50E5E0[i].vWorldPosition.z = pVertices->vWorldPosition.z;
-            static_4371C3_array_50E5E0[i].vWorldViewProjX = pVertices->vWorldViewProjX;
-            static_4371C3_array_50E5E0[i].vWorldViewProjY = pVertices->vWorldViewProjY;
-            pVertices++;
-        }
-    }
-    return CullFaceToFrustum(static_4371C3_array_50E5E0, v7, v6,
-                           thisa->FrustumPlanes, 4, 0,
-                           _unused);
-}
-// 50F1E0: using guessed type char static_sub_4371C3_byte_50F1E0_init_flags;
 
 //----- (00437143) --------------------------------------------------------
 void Camera3D::LightmapProject(unsigned int uNumInVertices,  // lightmap project

@@ -136,8 +136,8 @@ void PrepareDrawLists_BLV() {
         //   return clamp(0, 1, lastIntensity + (rand() - .3) / 100)
 
         pMobileLightsStack->AddLight(
-            pCamera3D->vPartyPos.x, pCamera3D->vPartyPos.y,
-            pCamera3D->vPartyPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
+            pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y,
+            pCamera3D->vCameraPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
             floorf(pParty->flt_TorchlightColorR + 0.5f),
             floorf(pParty->flt_TorchlightColorG + 0.5f),
             floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
@@ -178,9 +178,9 @@ void BLVRenderParams::Reset() {
     // this->sPartyRotY = a2->sRotationZ;
     // v6 = this->vPartyPos.x;
     // this->sPartyRotX = a2->sRotationX;
-    int v7 = pIndoor->GetSector(pCamera3D->vPartyPos.x,
-                            pCamera3D->vPartyPos.y,
-                            pCamera3D->vPartyPos.z);
+    int v7 = pIndoor->GetSector(pCamera3D->vCameraPos.x,
+                            pCamera3D->vCameraPos.y,
+                            pCamera3D->vCameraPos.z);
     this->uPartySectorID = v7;
     if (!v7) {
         __debugbreak();  // shouldnt happen, please provide savegame
@@ -517,7 +517,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             if (pCamera3D->CullFaceToFrustum(  // clips vertices to the frustum planes
                     static_vertices_buff_in, &uNumVerticesa,
                     static_vertices_calc_out,
-                    pCamera3D->FrustumPlanes, 4,
+                    4,
                     false, 0) != 1 || uNumVerticesa) {
                 // memcpy(static_vertices_calc_out, static_vertices_buff_in, uNumVerticesa * sizeof(RenderVertexSoft));
 
@@ -2332,8 +2332,8 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
             continue;
 
         v4 = TrigLUT->Atan2(
-            pActors[i].vPosition.x - pCamera3D->vPartyPos.x,
-            pActors[i].vPosition.y - pCamera3D->vPartyPos.y);
+            pActors[i].vPosition.x - pCamera3D->vCameraPos.x,
+            pActors[i].vPosition.y - pCamera3D->vCameraPos.y);
         v6 = ((signed int)(pActors[i].uYawAngle +
                            ((signed int)TrigLUT->uIntegerPi >> 3) - v4 +
                            TrigLUT->uIntegerPi) >> 8) & 7;
@@ -2455,8 +2455,8 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     spell_fx_renderer->RenderAsSprite(&pSpriteObjects[i])) {
                     SpriteFrame *v4 = pSpriteObjects[i].GetSpriteFrame();
                     int a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
-                    v6 = TrigLUT->Atan2(pSpriteObjects[i].vPosition.x - pCamera3D->vPartyPos.x,
-                                            pSpriteObjects[i].vPosition.y - pCamera3D->vPartyPos.y);
+                    v6 = TrigLUT->Atan2(pSpriteObjects[i].vPosition.x - pCamera3D->vCameraPos.x,
+                                            pSpriteObjects[i].vPosition.y - pCamera3D->vCameraPos.y);
                     int v7 = pSpriteObjects[i].uFacing;
                     int v9 = ((int)(TrigLUT->uIntegerPi + ((int)TrigLUT->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
 
@@ -2577,9 +2577,9 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v8 = pLevelDecorations[uDecorationID].field_10_y_rot +
          ((signed int)TrigLUT->uIntegerPi >> 3) -
          TrigLUT->Atan2(pLevelDecorations[uDecorationID].vPosition.x -
-                                pCamera3D->vPartyPos.x,
+                                pCamera3D->vCameraPos.x,
                             pLevelDecorations[uDecorationID].vPosition.y -
-                                pCamera3D->vPartyPos.y);
+                                pCamera3D->vCameraPos.y);
     v9 = ((signed int)(TrigLUT->uIntegerPi + v8) >> 8) & 7;
     int v37 = pBLVRenderParams->field_0_timer_;
     if (pParty->bTurnBasedModeOn) v37 = pMiscTimer->uTotalGameTimeElapsed;

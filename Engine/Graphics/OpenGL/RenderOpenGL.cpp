@@ -81,8 +81,8 @@ void Polygon::_normalize_v_18() {
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // checks if model is visible in FOV cone
     float halfangle = (pCamera3D->odm_fov_rad) / 2.0;
-    float rayx = model->vBoundingCenter.x - pCamera3D->vPartyPos.x;
-    float rayy = model->vBoundingCenter.y - pCamera3D->vPartyPos.y;
+    float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
+    float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
 
     // approx distance
     int dist = int_get_vector_length(abs(rayx), abs(rayy), 0);
@@ -1344,18 +1344,18 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     float sinx = pCamera3D->fRotationXSine;  // int_sine_x;
 
     // positions all minus ?
-    float v11 = cosz * -pCamera3D->vPartyPos.x + sinz * -pCamera3D->vPartyPos.y;
-    float v24 = cosz * -pCamera3D->vPartyPos.y - sinz * -pCamera3D->vPartyPos.x;
+    float v11 = cosz * -pCamera3D->vCameraPos.x + sinz * -pCamera3D->vCameraPos.y;
+    float v24 = cosz * -pCamera3D->vCameraPos.y - sinz * -pCamera3D->vCameraPos.x;
 
     // cam position transform
     if (pCamera3D->sRotationX) {
-        this->field_0_party_dir_x = (v11 * cosx) + (-pCamera3D->vPartyPos.z * sinx);
+        this->field_0_party_dir_x = (v11 * cosx) + (-pCamera3D->vCameraPos.z * sinx);
         this->field_4_party_dir_y = v24;
-        this->field_8_party_dir_z = (-pCamera3D->vPartyPos.z * cosx) /*-*/ + (v11 * sinx);
+        this->field_8_party_dir_z = (-pCamera3D->vCameraPos.z * cosx) /*-*/ + (v11 * sinx);
     } else {
         this->field_0_party_dir_x = v11;
         this->field_4_party_dir_y = v24;
-        this->field_8_party_dir_z = (-pCamera3D->vPartyPos.z);
+        this->field_8_party_dir_z = (-pCamera3D->vCameraPos.z);
     }
 
     // set 1 position transfrom (6 0 0) looks like cam left vector
@@ -2381,9 +2381,9 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
 
                     v10 = (unsigned __int16 *)TrigLUT->Atan2(
                         pLevelDecorations[i].vPosition.x -
-                        pCamera3D->vPartyPos.x,
+                        pCamera3D->vCameraPos.x,
                         pLevelDecorations[i].vPosition.y -
-                        pCamera3D->vPartyPos.y);
+                        pCamera3D->vCameraPos.y);
                     v38 = 0;
                     v13 = ((signed int)(TrigLUT->uIntegerPi +
                         ((signed int)TrigLUT->uIntegerPi >>
@@ -2417,15 +2417,15 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                     }  // for light
 
                        // v17 = (pLevelDecorations[i].vPosition.x -
-                       // pCamera3D->vPartyPos.x) << 16; v40 =
+                       // pCamera3D->vCameraPos.x) << 16; v40 =
                        // (pLevelDecorations[i].vPosition.y -
-                       // pCamera3D->vPartyPos.y) << 16;
+                       // pCamera3D->vCameraPos.y) << 16;
                     int party_to_decor_x = pLevelDecorations[i].vPosition.x -
-                        pCamera3D->vPartyPos.x;
+                        pCamera3D->vCameraPos.x;
                     int party_to_decor_y = pLevelDecorations[i].vPosition.y -
-                        pCamera3D->vPartyPos.y;
+                        pCamera3D->vCameraPos.y;
                     int party_to_decor_z = pLevelDecorations[i].vPosition.z -
-                        pCamera3D->vPartyPos.z;
+                        pCamera3D->vCameraPos.z;
 
                     int view_x = 0;
                     int view_y = 0;
@@ -2746,8 +2746,8 @@ void RenderOpenGL::RenderTerrainD3D() {
     GLint thistex = -1;
 
     // tile culling maths
-    int camx = WorldPosToGridCellX(pCamera3D->vPartyPos.x);
-    int camy = WorldPosToGridCellY(pCamera3D->vPartyPos.y);
+    int camx = WorldPosToGridCellX(pCamera3D->vCameraPos.x);
+    int camy = WorldPosToGridCellY(pCamera3D->vCameraPos.y);
     int tilerange = (pCamera3D->GetFarClip() / terrain_block_scale)+1;
 
     int camfacing = 2048 - pCamera3D->sRotationZ;
@@ -3370,7 +3370,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
-    float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vPartyPos.z)
+    float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vCameraPos.z)
         / ((double)pCamera3D->ViewPlaneDist_X + 8192.0)
         + (double)(pViewport->uScreenCenterY));
 
@@ -3384,7 +3384,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         (sin((double)pCamera3D->sRotationX * rot_to_rads)
             *
             pCamera3D->GetFarClip() -
-            (double)pCamera3D->vPartyPos.z));
+            (double)pCamera3D->vCameraPos.z));
 
     struct Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;

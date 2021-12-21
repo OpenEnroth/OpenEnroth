@@ -172,9 +172,9 @@ void Engine::Draw() {
 
     pCamera3D->sRotationX = pParty->sRotationX;
     pCamera3D->sRotationZ = pParty->sRotationZ;
-    pCamera3D->vPartyPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    pCamera3D->vPartyPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    pCamera3D->vPartyPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
+    pCamera3D->vCameraPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
+    pCamera3D->vCameraPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
     pCamera3D->CalculateRotations(pParty->sRotationX, pParty->sRotationZ);
@@ -1377,9 +1377,9 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pCamera3D->vPartyPos.x = 0;
-    pCamera3D->vPartyPos.y = 0;
-    pCamera3D->vPartyPos.z = 100;
+    pCamera3D->vCameraPos.x = 0;
+    pCamera3D->vCameraPos.y = 0;
+    pCamera3D->vCameraPos.z = 100;
     pCamera3D->sRotationX = 0;
     pCamera3D->sRotationZ = 0;
     viewparams->bRedrawGameUI = true;

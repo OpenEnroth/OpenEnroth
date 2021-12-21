@@ -1872,8 +1872,8 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
         8 * pSpriteFrameTable->pSpriteSFrames[actor->pSpriteIDs[ANIM_Bored]]
                 .uAnimLength;
 
-    v7 = TrigLUT->Atan2(actor->vPosition.x - pCamera3D->vPartyPos.x,
-                            actor->vPosition.y - pCamera3D->vPartyPos.y);
+    v7 = TrigLUT->Atan2(actor->vPosition.x - pCamera3D->vCameraPos.x,
+                            actor->vPosition.y - pCamera3D->vCameraPos.y);
     v9 = TrigLUT->uIntegerPi + actor->uYawAngle +
          ((signed int)TrigLUT->uIntegerPi >> 3) - v7;
 

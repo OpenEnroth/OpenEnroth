@@ -566,10 +566,10 @@ bool ODMFace::IsBackfaceNotCulled(RenderVertexSoft *a2,
         currVertex--;
     }
 
-    if (((double)pCamera3D->vPartyPos.x - a2->vWorldPosition.x) * v26 +
-            ((double)pCamera3D->vPartyPos.z - a2->vWorldPosition.z) *
+    if (((double)pCamera3D->vCameraPos.x - a2->vWorldPosition.x) * v26 +
+            ((double)pCamera3D->vCameraPos.z - a2->vWorldPosition.z) *
                 v25 +
-            ((double)pCamera3D->vPartyPos.y - a2->vWorldPosition.y) *
+            ((double)pCamera3D->vCameraPos.y - a2->vWorldPosition.y) *
                 v24 >
         0.0) {
         v19 = a2[1].vWorldViewPosition.x - a2->vWorldViewPosition.x;
@@ -1756,8 +1756,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
         }
 
         Angle_To_Cam = TrigLUT->Atan2(
-            pActors[i].vPosition.x - pCamera3D->vPartyPos.x,
-            pActors[i].vPosition.y - pCamera3D->vPartyPos.y);
+            pActors[i].vPosition.x - pCamera3D->vCameraPos.x,
+            pActors[i].vPosition.y - pCamera3D->vCameraPos.y);
 
         // int v9 = 0;
         // HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;

@@ -152,8 +152,8 @@ void RenderBase::DrawSpriteObjects_ODM() {
 
             // sprite angle to camera
             unsigned int v6 = TrigLUT->Atan2(
-                object->vPosition.x - pCamera3D->vPartyPos.x,
-                object->vPosition.y - pCamera3D->vPartyPos.y);
+                object->vPosition.x - pCamera3D->vCameraPos.x,
+                object->vPosition.y - pCamera3D->vCameraPos.y);
             // LOWORD(v7) = object->uFacing;
             // v8 = v36;
             int v9 = ((int)(TrigLUT->uIntegerPi + ((int)TrigLUT->uIntegerPi >> 3) +

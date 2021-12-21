@@ -748,9 +748,9 @@ void Render::PrepareDecorationsRenderList_ODM() {
 
                     v10 = (unsigned __int16 *)TrigLUT->Atan2(
                         pLevelDecorations[i].vPosition.x -
-                            pCamera3D->vPartyPos.x,
+                            pCamera3D->vCameraPos.x,
                         pLevelDecorations[i].vPosition.y -
-                            pCamera3D->vPartyPos.y);
+                            pCamera3D->vCameraPos.y);
                     v38 = 0;
                     v13 = ((signed int)(TrigLUT->uIntegerPi +
                                         ((signed int)TrigLUT->uIntegerPi >>
@@ -784,15 +784,15 @@ void Render::PrepareDecorationsRenderList_ODM() {
                     }  // for light
 
                     // v17 = (pLevelDecorations[i].vPosition.x -
-                    // pCamera3D->vPartyPos.x) << 16; v40 =
+                    // pCamera3D->vCameraPos.x) << 16; v40 =
                     // (pLevelDecorations[i].vPosition.y -
-                    // pCamera3D->vPartyPos.y) << 16;
+                    // pCamera3D->vCameraPos.y) << 16;
                     int party_to_decor_x = pLevelDecorations[i].vPosition.x -
-                                           pCamera3D->vPartyPos.x;
+                                           pCamera3D->vCameraPos.x;
                     int party_to_decor_y = pLevelDecorations[i].vPosition.y -
-                                           pCamera3D->vPartyPos.y;
+                                           pCamera3D->vCameraPos.y;
                     int party_to_decor_z = pLevelDecorations[i].vPosition.z -
-                                           pCamera3D->vPartyPos.z;
+                                           pCamera3D->vCameraPos.z;
 
                     int view_x = 0;
                     int view_y = 0;
@@ -4164,7 +4164,7 @@ void Render::DrawOutdoorSkyD3D() {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
-    float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vPartyPos.z)
+    float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vCameraPos.z)
                                     / ((double)pCamera3D->ViewPlaneDist_X + 8192.0)
                                     + (double)(pViewport->uScreenCenterY));
 
@@ -4178,7 +4178,7 @@ void Render::DrawOutdoorSkyD3D() {
         (sin((double)pCamera3D->sRotationX * rot_to_rads)
             *
             pCamera3D->GetFarClip() -
-            (double)pCamera3D->vPartyPos.z));
+            (double)pCamera3D->vCameraPos.z));
 
     struct Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;
@@ -4361,8 +4361,8 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
     // for floor and wall(for example Selesta)-------------------
     if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall ||
         pFace->uPolygonType == POLYGON_Floor) {
-        int v69 = (OS_GetTime() / 32) - pCamera3D->vPartyPos.x;
-        int v55 = (OS_GetTime() / 32) + pCamera3D->vPartyPos.y;
+        int v69 = (OS_GetTime() / 32) - pCamera3D->vCameraPos.x;
+        int v55 = (OS_GetTime() / 32) + pCamera3D->vCameraPos.y;
         for (uint i = 0; i < uNumVertices; ++i) {
             array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
             array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
@@ -4373,7 +4373,7 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
     }
     //---------------------------------------
     v70 = (signed __int64)((double)(((int)(pCamera3D->ViewPlaneDist_X) << 16) *
-        pCamera3D->vPartyPos.z)  // 179
+        pCamera3D->vCameraPos.z)  // 179
         / (((double)((int)(pCamera3D->ViewPlaneDist_X) << 16) +
             16192.0) *
             65536.0) +
@@ -4383,7 +4383,7 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
         - (double)((int)(pCamera3D->ViewPlaneDist_X) << 16) /
         ((cos(v5) * 16192.0 + 0.0000001) * 65535.0) *
         (sin(v5) * -16192.0 -
-        (double)pCamera3D->vPartyPos.z));
+        (double)pCamera3D->vCameraPos.z));
 
     SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
     // CalcSkyFrustumVec use as same

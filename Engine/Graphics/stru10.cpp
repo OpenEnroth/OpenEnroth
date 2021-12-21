@@ -654,9 +654,9 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     RenderVertexSoft v25;  // [sp+10h] [bp-90h]@20
     memcpy(&v25, pOutBounding, sizeof(RenderVertexSoft));
 
-    float _dp = (v25.vWorldPosition.x - pCamera3D->vPartyPos.x) * a1.x +
-                (v25.vWorldPosition.y - pCamera3D->vPartyPos.y) * a1.y +
-                (v25.vWorldPosition.z - pCamera3D->vPartyPos.z) * a1.z;
+    float _dp = (v25.vWorldPosition.x - pCamera3D->vCameraPos.x) * a1.x +
+                (v25.vWorldPosition.y - pCamera3D->vCameraPos.y) * a1.y +
+                (v25.vWorldPosition.z - pCamera3D->vCameraPos.z) * a1.z;
     if (fabs(_dp) < 1e-6f) {
         memcpy(&v25, &pOutBounding[1], sizeof(RenderVertexSoft));
         memcpy(&pOutBounding[1], &pOutBounding[3], sizeof(RenderVertexSoft));
@@ -763,9 +763,9 @@ bool stru10::CalcPortalShape(BLVFace *pFace,
 char stru10::_49C720(RenderVertexSoft *pFaceBounding,
                      IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
     Vec3_float_ pRayStart;  // [sp+4h] [bp-34h]@1
-    pRayStart.x = (double)pCamera3D->vPartyPos.x;
-    pRayStart.y = (double)pCamera3D->vPartyPos.y;
-    pRayStart.z = (double)pCamera3D->vPartyPos.z;
+    pRayStart.x = (double)pCamera3D->vCameraPos.x;
+    pRayStart.y = (double)pCamera3D->vCameraPos.y;
+    pRayStart.z = (double)pCamera3D->vCameraPos.z;
 
     if (FindFaceNormal(&pFaceBounding[0], &pFaceBounding[1], &pRayStart,
                        &pPortalDataFrustum[0]) &&

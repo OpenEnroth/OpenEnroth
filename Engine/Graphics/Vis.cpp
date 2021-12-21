@@ -907,13 +907,13 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
 
     // log->Info("Roty: %d, Rotx: %d", pRotY, pRotX);
 
-    pStartR.z = pCamera3D->vPartyPos.z;
-    pStartR.x = pCamera3D->vPartyPos.x;
-    pStartR.y = pCamera3D->vPartyPos.y;
+    pStartR.z = pCamera3D->vCameraPos.z;
+    pStartR.x = pCamera3D->vCameraPos.x;
+    pStartR.y = pCamera3D->vCameraPos.y;
 
-    v11[1].vWorldPosition.x = (double)pCamera3D->vPartyPos.x;
-    v11[1].vWorldPosition.y = (double)pCamera3D->vPartyPos.y;
-    v11[1].vWorldPosition.z = (double)pCamera3D->vPartyPos.z;
+    v11[1].vWorldPosition.x = (double)pCamera3D->vCameraPos.x;
+    v11[1].vWorldPosition.y = (double)pCamera3D->vCameraPos.y;
+    v11[1].vWorldPosition.z = (double)pCamera3D->vCameraPos.z;
 
     int depth = /*fixpoint_from_float*/(fPickDepth);
     Vec3_int_::Rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
