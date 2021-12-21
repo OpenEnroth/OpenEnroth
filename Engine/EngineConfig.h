@@ -83,6 +83,7 @@ class EngineConfig {
     inline void ToggleDebugPickedFace() { show_picked_face = !show_picked_face; }
     inline void ToggleDebugShowFPS() { show_fps = !show_fps; }
     inline void ToggleDebugSeasonsChange() { seasons_change = !seasons_change; }
+    inline void ToggleFullscreen() { fullscreen = !fullscreen; }
 
     // DEBUG_SETTINGS_*
     int run_in_window = DEBUG_SETTINGS_RUN_IN_WIDOW;
@@ -139,8 +140,8 @@ class EngineConfig {
 
     bool no_grab = false;
 
-    int window_x = 0;
-    int window_y = 0;
+    int window_x = -1;
+    int window_y = -1;
     int window_width = 640;
     int window_height = 480;
     int display = 0;

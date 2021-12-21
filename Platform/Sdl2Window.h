@@ -54,10 +54,17 @@ class Sdl2Window : public OSWindow {
     void OpenGlSwapBuffers() override;
 
  private:
+    struct Sdl2WinParams {
+        Uint32 flags;
+        int x;
+        int y;
+        int display;
+    };
     SDL_Window *sdlWindow = nullptr;
     SDL_Surface *sdlWindowSurface = nullptr;
     SDL_GLContext sdlOpenGlContext = nullptr;
 
+    Sdl2WinParams *CalculateWindowParameters();
     bool NuklearEventHandler(const SDL_Event &e);
     void MessageProc(const SDL_Event &e);
     bool TryMapScanCode(SDL_Scancode code, GameKey* outKey) const;

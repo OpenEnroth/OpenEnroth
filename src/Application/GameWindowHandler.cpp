@@ -19,6 +19,8 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Platform/OSWindow.h"
+
 #include "src/Application/IocContainer.h"
 
 
@@ -271,5 +273,9 @@ void GameWindowHandler::OnDeactivated() {
 }
 
 void GameWindowHandler::OnToggleFullscreen() {
-    __debugbreak();
+    engine->ToggleFullscreen();
+    if (engine->config->fullscreen)
+        window->SetFullscreenMode();
+    else
+        window->SetWindowedMode(engine->config->window_width, engine->config->window_height);
 }

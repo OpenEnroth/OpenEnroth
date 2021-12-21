@@ -354,7 +354,7 @@ void MainMenuLoad_EventLoop() {
                 int v26 = param + pSaveListPosition;
                 if (dword_6BE138 == v26) {
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
-                    // Breaks UI interaction after game load
+                    // Breaks UI interaction after save load
                     // pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
                 }
                 uLoadGameUI_SelectedSlot = v26;

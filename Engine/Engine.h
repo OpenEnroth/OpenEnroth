@@ -232,6 +232,26 @@ struct Engine {
                 cfg->allow_lightmaps = allow_lightmaps;
             });
     }
+    inline void SetConfigWindowDisplay(int display) {
+        MutateConfig(
+            [display](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->display = display;
+            });
+    }
+    inline void SetConfigWindowPosition(int window_x, int window_y) {
+        MutateConfig(
+            [window_x, window_y](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->window_x = window_x;
+                cfg->window_y = window_y;
+            });
+    }
+    inline void SetConfigWindowDimensions(int window_width, int window_height) {
+        MutateConfig(
+            [window_width, window_height](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->window_width = window_width;
+                cfg->window_height = window_height;
+            });
+    }
     inline void SetDebugLightmapsDecals(bool debug_lightmaps_decals) {
         MutateConfig(
             [debug_lightmaps_decals](std::shared_ptr<EngineConfig> &cfg) {
@@ -254,6 +274,12 @@ struct Engine {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->ToggleFlipOnExit();
+            });
+    }
+    inline void ToggleFullscreen() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleFullscreen();
             });
     }
     inline void ToggleWalkSound() {

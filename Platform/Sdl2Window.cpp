@@ -166,56 +166,67 @@ int SDL_GetAsyncKeyState(GameKey key, bool consume) {
     return 0;
 }
 
-SDL_Window* Sdl2Window::CreateSDLWindow() {
+Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
     std::vector<SDL_Rect> displayBounds;
-    Uint32 flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+    Sdl2Window::Sdl2WinParams *params = new(Sdl2WinParams);
 
-    int x = engine->config->window_x;
-    int y = engine->config->window_y;
-    int display = engine->config->display;
+    params->flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+    params->x = engine->config->window_x;
+    params->y = engine->config->window_y;
+    params->display = engine->config->display;
     int displays = SDL_GetNumVideoDisplays();
-    if (display > displays - 1)
-        display = 0;
+    if (params->display > displays - 1)
+        params->display = 0;
 
     for (int i = 0; i < displays; i++) {
         displayBounds.push_back(SDL_Rect());
         SDL_GetDisplayBounds(i, &displayBounds.back());
-        log->Info("SDL2 display %d: x=%d, y=%d, w=%d, h=%d", i,
+        log->Info("SDL2: display %d, x=%d, y=%d, w=%d, h=%d", i,
             displayBounds[i].x, displayBounds[i].y,
             displayBounds[i].w, displayBounds[i].h);
     }
 
     if (engine->config->fullscreen) {
         if (engine->config->borderless)
-            flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+            params->flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         else
-            flags |= SDL_WINDOW_FULLSCREEN;
+            params->flags |= SDL_WINDOW_FULLSCREEN;
 
-        x = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
-        y = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
+        params->x = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
+        params->y = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
     } else {
         if (engine->config->borderless)
-            flags |= SDL_WINDOW_BORDERLESS;
+            params->flags |= SDL_WINDOW_BORDERLESS;
 
-        if (x >= 0 && x < displayBounds[display].w)
-            x += displayBounds[display].x;
+        if (params->x >= 0 && params->x < displayBounds[params->display].w)
+            params->x += displayBounds[params->display].x;
         else
-            x = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
+            params->x = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
 
-        if (y >= 0 && y < displayBounds[display].h)
-            y += displayBounds[display].y;
+        if (params->y >= 0 && params->y < displayBounds[params->display].h)
+            params->y += displayBounds[params->display].y;
         else
-            y = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
+            params->y = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
     }
 
     displayBounds.clear();
 
+    return params;
+}
+
+SDL_Window* Sdl2Window::CreateSDLWindow() {
+    Sdl2Window::Sdl2WinParams *params = CalculateWindowParameters();
+
     sdlWindow = SDL_CreateWindow(
         engine->config->window_title.c_str(),
-        x, y,
+        params->x, params->y,
         engine->config->window_width, engine->config->window_height,
-        flags
+        params->flags
     );
+
+    engine->SetConfigWindowDisplay(params->display);
+
+    delete params;
 
     if (!sdlWindow)
         return nullptr;
@@ -510,16 +521,29 @@ void Sdl2Window::SetFullscreenMode() {
     Uint32 flags;
 
     if (engine->config->borderless)
-        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
     else
-        flags |= SDL_WINDOW_FULLSCREEN;
+        flags = SDL_WINDOW_FULLSCREEN;
 
-    SDL_SetWindowFullscreen(sdlWindow, flags);
+    if (SDL_SetWindowFullscreen(sdlWindow, flags) < 0)
+        log->Warning("SDL2: unable to enter fullscreen mode: %s", SDL_GetError());
 }
 
 void Sdl2Window::SetWindowedMode(int new_window_width, int new_window_height) {
-    if (!SDL_SetWindowDisplayMode(sdlWindow, 0))
-        SDL_SetWindowSize(sdlWindow, new_window_height, new_window_height);
+    if (SDL_SetWindowFullscreen(sdlWindow, 0) < 0) {
+        log->Warning("SDL2: unable to leave fullscreen mode: %s", SDL_GetError());
+        return;
+    }
+
+    Sdl2WinParams *params = CalculateWindowParameters();
+
+    SDL_SetWindowSize(sdlWindow, new_window_width, new_window_height);
+    SDL_SetWindowPosition(sdlWindow, params->x, params->y);
+
+    engine->SetConfigWindowDisplay(params->display);
+    engine->SetConfigWindowDimensions(new_window_width, new_window_height);
+
+    delete params;
 }
 
 void Sdl2Window::SetCursor(bool on = 1) {
@@ -632,20 +656,20 @@ void Sdl2Window::OpenGlCreate() {
 
     sdlOpenGlContext = SDL_GL_CreateContext(sdlWindow);
     if (!sdlOpenGlContext) {
-        log->Warning("Failed to initialize SDL with OpenGL: %s", SDL_GetError());
+        log->Warning("SDL2: failed to initialize SDL with OpenGL: %s", SDL_GetError());
     }
 
     if (!(version = gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress))) {
-        log->Warning("Failed to initialize the OpenGL loader");
+        log->Warning("SDL2: failed to initialize the OpenGL loader");
     }
 
-    log->Info("Supported OpenGL: %s", glGetString(GL_VERSION));
-    log->Info("Supported GLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
-    log->Info("OpenGL version: %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+    log->Info("SDL2: supported OpenGL: %s", glGetString(GL_VERSION));
+    log->Info("SDL2: supported GLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    log->Info("SDL2: OpenGL version: %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
     //  Use Vsync
     if (SDL_GL_SetSwapInterval(1) < 0) {
-        log->Info("Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+        log->Info("SDL2: unable to set VSync: %s\n", SDL_GetError());
     }
 }
 
