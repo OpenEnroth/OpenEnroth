@@ -832,8 +832,8 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
                                                : GUIProgressBar::TYPE_Box);
     size_t pos = pCurrentMapName.rfind('.');
     String mapName = pCurrentMapName.substr(0, pos);
-    String mapExt = pCurrentMapName.substr(pos + 1); // This magically works even when pos == String::npos, in this case
-                                                     // maxExt == pCurrentMapName.
+    String mapExt = pCurrentMapName.substr(pos + 1);  // This magically works even when pos == String::npos, in this case
+                                                      // maxExt == pCurrentMapName.
 
     Level_LoadEvtAndStr(mapName);
     LoadLevel_InitializeLevelEvt();

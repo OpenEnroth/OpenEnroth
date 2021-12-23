@@ -1214,7 +1214,7 @@ void TurnChange() {
 
             v11.y = 200;
             v11.x = 320;  // - 12 * v0 / 2;
-            am_DrawText("The Next Player is: ", &v11); // "След"
+            am_DrawText("The Next Player is: ", &v11);  // "След"
             hide_card_anim_start = 1;
             ++current_player_num;
             if (current_player_num >= 2) current_player_num = 0;
