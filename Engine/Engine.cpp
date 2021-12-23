@@ -835,7 +835,7 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     String mapExt = pCurrentMapName.substr(pos + 1); // This magically works even when pos == String::npos, in this case
                                                      // maxExt == pCurrentMapName.
 
-    Level_LoadEvtAndStr(mapName.c_str());
+    Level_LoadEvtAndStr(mapName);
     LoadLevel_InitializeLevelEvt();
 
     for (uint i = 0; i < 1000; ++i)
@@ -2266,15 +2266,9 @@ void OnMapLoad() {
     }
 }
 
-void Level_LoadEvtAndStr(const char *pLevelName) {
-    char pContainerName[120];  // [sp+8h] [bp-98h]@1
-
-    sprintf(pContainerName, "%s.evt", pLevelName);
-    uLevelEVT_Size = LoadEventsToBuffer(pContainerName, pLevelEVT.data(), 9216);
-
-    sprintf(pContainerName, "%s.str", pLevelName);
-    uLevelStrFileSize =
-        LoadEventsToBuffer(pContainerName, pLevelStr.data(), 9216);
+void Level_LoadEvtAndStr(const String& pLevelName) {
+    uLevelEVT_Size = LoadEventsToBuffer(pLevelName + ".evt", pLevelEVT.data(), 9216);
+    uLevelStrFileSize = LoadEventsToBuffer(pLevelName + ".str", pLevelStr.data(), 9216);
     if (uLevelStrFileSize) LoadLevel_InitializeLevelStr();
 }
 

@@ -58,12 +58,12 @@ std::array<EventIndex, 4400> pLevelEVT_Index;
 
 _2devent p2DEvents[525];
 
-unsigned int LoadEventsToBuffer(const char *pContainerName, char *pBuffer,
+unsigned int LoadEventsToBuffer(const String& pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
     size_t size = 0;
     void *ptr = pEvents_LOD->LoadCompressedTexture(pContainerName, &size);
     if ((ptr == nullptr) || (size > uBufferSize)) {
-        Error("File %s Size %lu - Buffer size %lu", pContainerName, size, uBufferSize);
+        Error("File %s Size %lu - Buffer size %lu", pContainerName.c_str(), size, uBufferSize);
     }
 
     memcpy(pBuffer, ptr, size);

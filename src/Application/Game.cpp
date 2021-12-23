@@ -1042,7 +1042,7 @@ void Game::EventLoop() {
                         pPaletteManager->ResetNonLocked();
                         pSpriteFrameTable->ResetLoadedFlags();
                         pCurrentMapName = pOut;
-                        Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')).c_str());
+                        Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')));
                         decal_builder->Reset(0);
                         LoadLevel_InitializeLevelEvt();
                         uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);

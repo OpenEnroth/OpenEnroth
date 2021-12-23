@@ -2,6 +2,7 @@
 #include <array>
 #include <cstdint>
 
+#include "Strings.h"
 
 #define EVT_ID_MARGARETH_DIALOGUE_LINE_1    7
 #define EVT_ID_MARGARETH_DIALOGUE_LINE_2    9
@@ -328,7 +329,7 @@ extern std::array<char, 9216> pLevelStr;
 extern std::array<char, 9216> pLevelEVT;
 extern std::array<EventIndex, 4400> pLevelEVT_Index;
 
-unsigned int LoadEventsToBuffer(const char *pContainerName, char *pBuffer,
+unsigned int LoadEventsToBuffer(const String& pContainerName, char *pBuffer,
                                 unsigned int uBufferSize);
 void Initialize_GlobalEVT();
 void LoadLevel_InitializeLevelEvt();
