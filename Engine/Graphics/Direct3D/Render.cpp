@@ -95,8 +95,8 @@ Texture *Render::CreateTexture_PCXFromFile(const String &name) {
     return TextureD3D::Create(new PCX_File_Loader(name));
 }
 
-Texture *Render::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureD3D::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
+Texture *Render::CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) {
+    return TextureD3D::Create(new PCX_LOD_Raw_Loader(pLOD, name));
 }
 
 Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,

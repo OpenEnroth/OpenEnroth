@@ -2773,8 +2773,8 @@ Texture *RenderOpenGL::CreateTexture_PCXFromFile(const String &name) {
     return TextureOpenGL::Create(new PCX_File_Loader(name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
+Texture *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) {
+    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader(pLOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height,
@@ -3942,12 +3942,17 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
     if (!tex) __debugbreak();
 
+    TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(tex);
+    if (!texture) {
+        __debugbreak();
+        return;
+    }
+
     glEnable(GL_TEXTURE_2D);
     glColor3f(1, 1, 1);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    auto texture = (TextureOpenGL *)tex;
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
     int clipx = this->clip_x;
