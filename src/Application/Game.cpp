@@ -2688,10 +2688,10 @@ void Game::GameLoop() {
         pMessageQueue_50CBD0->Flush();
 
         pPartyActionQueue->uNumActions = 0;
-        if (pParty->bTurnBasedModeOn) {
-            pTurnEngine->End(false);
-            pParty->bTurnBasedModeOn = false;
-        }
+
+        pTurnEngine->End(false);
+        pParty->bTurnBasedModeOn = false;  // Make sure turn engine and party turn based mode flag are in sync.
+
         DoPrepareWorld(bLoading, 1);
         pEventTimer->Resume();
         dword_6BE364_game_settings_1 |=

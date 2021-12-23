@@ -86,6 +86,9 @@ void OtherOverlayList::DrawTurnBasedIcon(int a2) {
     } else if (pTurnEngine->turn_stage == TE_ATTACK) {  //группа атакует(ладонь)
         frame = pIconsFrameTable->GetFrame(uIconID_TurnStop,
             pEventTimer->uStartTime);
+    } else {
+        __debugbreak();
+        return;
     }
     // if ( render->pRenderD3D )
     render->DrawTextureAlphaNew(394 / 640.0f, 288 / 480.0f,
