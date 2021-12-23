@@ -143,7 +143,7 @@ std::string FindMm7Directory() {
     return "";
 }
 
-void Game::Run() {
+int Game::Run() {
     IntegrityTest();
 
     SetDataPath(FindMm7Directory());
@@ -174,12 +174,12 @@ void Game::Run() {
 
     if (!render) {
         log->Warning("Render creation failed");
-        return;
+        return -1;
     }
 
     if (!render->Initialize()) {
         log->Warning("Render failed to initialize");
-        return;
+        return -1;
     }
 
     nuklear = Nuklear().Initialize();
@@ -225,6 +225,8 @@ void Game::Run() {
         engine = nullptr;
         ::engine = nullptr;
     }
+
+    return 0;
 }
 
 
