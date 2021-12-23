@@ -3519,8 +3519,8 @@ void Render::DrawBuildingsD3D() {
     int v53;  // [sp+3Ch] [bp-1Ch]@8
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        int reachable;
-        if (!IsBModelVisible(&model, &reachable)) {
+        bool reachable;
+        if (!IsBModelVisible(&model, 256, &reachable)) {
             continue;
         }
         model.field_40 |= 1;

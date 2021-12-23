@@ -366,8 +366,8 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     if (!pOutdoor) return;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        int reachable;
-        if (!IsBModelVisible(&model, &reachable)) {
+        bool reachable;
+        if (!IsBModelVisible(&model, fDepth, &reachable)) {
             continue;
         }
         if (!reachable && only_reachable) {
@@ -1601,8 +1601,8 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
 void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                                     Vis_SelectionFilter *filter) {
     for (BSPModel &model : pOutdoor->pBModels) {
-        int reachable;
-        if (IsBModelVisible(&model, &reachable)) {
+        bool reachable;
+        if (IsBModelVisible(&model, pick_depth, &reachable)) {
             if (reachable) {
                 for (ODMFace &face : model.pFaces) {
                     if (is_part_of_selection(&face, filter)) {

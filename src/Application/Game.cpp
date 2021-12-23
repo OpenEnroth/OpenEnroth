@@ -2659,8 +2659,8 @@ void Game::EventLoop() {
 void Game::OnPressSpace() {
     engine->PickKeyboard(keyboardInputHandler->IsKeyboardPickingOutlineToggled(), &vis_sprite_filter_3, &vis_door_filter);
 
-    int pid = vis->get_picked_object_zbuf_val().object_pid;
-    if (pid != -1)
+    uint16_t pid = vis->get_picked_object_zbuf_val().object_pid;
+    if (pid != PID_INVALID)
         DoInteractionWithTopmostZObject(pid);
 }
 

@@ -3,10 +3,10 @@
 
 typedef unsigned int uint;
 
-#define PID(type, id) (uint32_t)((((8 * (id))) | (type)) & 0xFFFF)  // packed id
+#define PID(type, id) (uint16_t)((((8 * (id))) | (type)) & 0xFFFF)  // packed id
 #define PID_TYPE(pid) (ObjectType)((pid)&7)          // extract type
 #define PID_ID(pid) (uint32_t)(((pid)&0xFFFF) >> 3)  // extract value
-#define PID_INVALID (-1)
+#define PID_INVALID (uint16_t)(-1)
 
 // typedef char _UNKNOWN;
 typedef unsigned int uint;

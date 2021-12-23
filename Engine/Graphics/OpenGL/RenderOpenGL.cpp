@@ -77,7 +77,7 @@ void Polygon::_normalize_v_18() {
     }
 }
 
-bool IsBModelVisible(BSPModel *model, int *reachable) {
+bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // checks if model is visible in FOV cone
     float halfangle = (pODMRenderParams->uCameraFovInDegrees * pi_double / 180.0f) / 2;
     float rayx = model->vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
@@ -86,7 +86,7 @@ bool IsBModelVisible(BSPModel *model, int *reachable) {
     // approx distance
     int dist = int_get_vector_length(abs(rayx), abs(rayy), 0);
     *reachable = false;
-    if (dist < model->sBoundingRadius + 256) *reachable = true;
+    if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
 
     // dot product of camvec and ray - size in forward
     float frontvec = rayx * pIndoorCameraD3D->fRotationZCosine + rayy * pIndoorCameraD3D->fRotationZSine;
@@ -4189,8 +4189,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
     int v53;  // [sp+3Ch] [bp-1Ch]@8
 
     for (BSPModel& model : pOutdoor->pBModels) {
-        int reachable;
-        if (!IsBModelVisible(&model, &reachable)) {
+        bool reachable;
+        if (!IsBModelVisible(&model, 256, &reachable)) {
             continue;
         }
         model.field_40 |= 1;
