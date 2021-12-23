@@ -428,7 +428,6 @@ void Game::EventLoop() {
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
     int v38;                    // eax@358
-    char *v41;                  // eax@380
     int v42;                    // eax@396
     signed int v44;             // eax@398
     int v45;                    // edx@398
@@ -1043,11 +1042,7 @@ void Game::EventLoop() {
                         pPaletteManager->ResetNonLocked();
                         pSpriteFrameTable->ResetLoadedFlags();
                         pCurrentMapName = pOut;
-                        char pLevelName[32];
-                        strcpy(pLevelName, pCurrentMapName.c_str());
-                        v41 = strtok(pLevelName, ".");
-                        strcpy(pLevelName, v41);
-                        Level_LoadEvtAndStr(pLevelName);
+                        Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')).c_str());
                         decal_builder->Reset(0);
                         LoadLevel_InitializeLevelEvt();
                         uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
