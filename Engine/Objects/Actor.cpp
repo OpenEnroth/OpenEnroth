@@ -5031,13 +5031,13 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     int v39;               // edi@52
     String v40;       // [sp-18h] [bp-100h]@60
     const char *v44;       // [sp-8h] [bp-F0h]@13
-    char *pTexture;        // [sp-4h] [bp-ECh]@9
+    String pTexture;        // [sp-4h] [bp-ECh]@9
                            //  char Str[32]; // [sp+Ch] [bp-DCh]@60
-    char Str2[120];        // [sp+2Ch] [bp-BCh]@29
+    String Str2;           // [sp+2Ch] [bp-BCh]@29
     unsigned int uFaceID;  // [sp+A4h] [bp-44h]@52
     MonsterInfo *Src;      // [sp+A8h] [bp-40h]@50
     int v50;               // [sp+ACh] [bp-3Ch]@47
-    char Source[32];       // [sp+B0h] [bp-38h]@20
+    String Source;         // [sp+B0h] [bp-38h]@20
     int v52;               // [sp+D0h] [bp-18h]@34
     int v53;               // [sp+D4h] [bp-14h]@34
     int pSector;           // [sp+D8h] [bp-10h]@32
@@ -5075,22 +5075,22 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
             // v13 = pMapInfo->Dif_M1;
             v57 = pMapInfo->Dif_M1;
             NumToSpawn = pMapInfo->uEncounterMonster1AtLeast + v12;
-            strcpy(Source, pMapInfo->pEncounterMonster1Texture.c_str());
+            Source = pMapInfo->pEncounterMonster1Texture;
             break;
         case 3:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s A";
-            sprintf(Source, "%s A", pMapInfo->pEncounterMonster1Texture.c_str());
+            Source = pMapInfo->pEncounterMonster1Texture + " A";
             break;
         case 4:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s A";
-            sprintf(Source, "%s A", pMapInfo->pEncounterMonster2Texture.c_str());
+            Source = pMapInfo->pEncounterMonster2Texture + " A";
             break;
         case 5:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s A";
-            sprintf(Source, "%s A", pMapInfo->pEncounterMonster3Texture.c_str());
+            Source = pMapInfo->pEncounterMonster3Texture + " A";
             break;
         case 1:
             // v9 = pMapInfo->uEncounterMonster2AtLeast;
@@ -5102,22 +5102,22 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
             // v13 = pMapInfo->Dif_M2;
             v57 = pMapInfo->Dif_M2;
             NumToSpawn = pMapInfo->uEncounterMonster2AtLeast + v12;
-            strcpy(Source, pMapInfo->pEncounterMonster2Texture.c_str());
+            Source = pMapInfo->pEncounterMonster2Texture;
             break;
         case 6:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s B";
-            sprintf(Source, "%s B", pMapInfo->pEncounterMonster1Texture.c_str());
+            Source = pMapInfo->pEncounterMonster1Texture + " B";
             break;
         case 7:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s B";
-            sprintf(Source, "%s B", pMapInfo->pEncounterMonster2Texture.c_str());
+            Source = pMapInfo->pEncounterMonster2Texture + " B";
             break;
         case 8:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s B";
-            sprintf(Source, "%s B", pMapInfo->pEncounterMonster3Texture.c_str());
+            Source = pMapInfo->pEncounterMonster3Texture + " B";
             break;
         case 2:
             // v9 = pMapInfo->uEncounterMonster3AtLeast;
@@ -5129,22 +5129,22 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
             // v13 = pMapInfo->Dif_M3;
             v57 = pMapInfo->Dif_M3;
             NumToSpawn = pMapInfo->uEncounterMonster3AtLeast + v12;
-            strcpy(Source, pMapInfo->pEncounterMonster3Texture.c_str());
+            Source = pMapInfo->pEncounterMonster3Texture;
             break;
         case 9:
             // pTexture = pMapInfo->pEncounterMonster1Texture;
             // v44 = "%s C";
-            sprintf(Source, "%s C", pMapInfo->pEncounterMonster1Texture.c_str());
+            Source = pMapInfo->pEncounterMonster1Texture + " C";
             break;
         case 10:
             // pTexture = pMapInfo->pEncounterMonster2Texture;
             // v44 = "%s C";
-            sprintf(Source, "%s C", pMapInfo->pEncounterMonster2Texture.c_str());
+            Source = pMapInfo->pEncounterMonster2Texture + " C";
             break;
         case 11:
             // pTexture = pMapInfo->pEncounterMonster3Texture;
             // v44 = "%s C";
-            sprintf(Source, "%s C", pMapInfo->pEncounterMonster3Texture.c_str());
+            Source = pMapInfo->pEncounterMonster3Texture + " C";
             break;
         default:
             return;
@@ -5157,7 +5157,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     // if (v57 == 4) __debugbreak();
     if (v57 > 3) v57 = 3;
 
-    strcpy(Str2, Source);
+    Str2 = Source;
     if (a4) NumToSpawn = a4;
     // v18 = NumToSpawn;
     if (NumToSpawn <= 0) return;
@@ -5198,32 +5198,27 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
             }
 
             if (v24 == 1) {
-                pTexture = Source;
-                v44 = "%s A";
+                Str2 = Source + " A";
             } else if (v24 == 2) {
-                pTexture = Source;
-                v44 = "%s B";
+                Str2 = Source + " B";
             } else {
                 if (v24 != 3) continue;
-                pTexture = Source;
-                v44 = "%s C";
+                Str2 = Source + " C";
             }
-
-            sprintf(Str2, v44, pTexture);
         }
 
-        v50 = pMonsterList->GetMonsterIDByName(Str2);
+        v50 = pMonsterList->GetMonsterIDByName(Str2.c_str());
         pTexture = Str2;
         if ((signed __int16)v50 == -1) {
             logger->Warning(
                 "Can't create random monster: '%s'! See MapStats.txt and "
                 "Monsters.txt!",
-                pTexture);
+                pTexture.c_str());
             Engine_DeinitializeAndTerminate(0);
         }
 
         v27 = &pMonsterList->pMonsters[(signed __int16)v50];
-        v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
+        v28 = pMonsterStats->FindMonsterByTextureName(pTexture.c_str());
         if (!v28) v28 = 1;
         Src = &pMonsterStats->pInfos[v28];
         strcpy(pMonster->pActorName, Src->pName);
