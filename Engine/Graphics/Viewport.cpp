@@ -246,25 +246,26 @@ void ItemInteraction(unsigned int item_id) {
     SpriteObject::OnInteraction(item_id);
 }
 
-bool ActorInteraction(unsigned int id) {
-    if (!pActors[id].GetActorsRelation(0) && pActors[id].ActorFriend() &&
-        pActors[id].CanAct()) {
-        Actor::AI_FaceObject(id, 4, 0, 0);
-        if (pActors[id].sNPC_ID) {
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_StartNPCDialogue, id, 0);
-        } else {
-            if (pNPCStats->pGroups_copy[pActors[id].uGroup]) {
-                if (pNPCStats->pCatchPhrases
-                        [pNPCStats->pGroups_copy[pActors[id].uGroup]]) {
-                    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-                    branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]];
-                    sub_4451A8_press_any_key(0, 0, 0);
-                }
+bool CanInteractWithActor(unsigned int id) {
+    return !pActors[id].GetActorsRelation(0) && pActors[id].ActorFriend() && pActors[id].CanAct();
+}
+
+void InteractWithActor(unsigned int id) {
+    assert(CanInteractWithActor(id));
+
+    Actor::AI_FaceObject(id, 4, 0, 0);
+    if (pActors[id].sNPC_ID) {
+        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_StartNPCDialogue, id, 0);
+    } else {
+        if (pNPCStats->pGroups_copy[pActors[id].uGroup]) {
+            if (pNPCStats->pCatchPhrases
+                    [pNPCStats->pGroups_copy[pActors[id].uGroup]]) {
+                pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
+                branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]];
+                sub_4451A8_press_any_key(0, 0, 0);
             }
         }
-        return true;
     }
-    return false;
 }
 
 void DecorationInteraction(unsigned int id, unsigned int pid) {
@@ -348,9 +349,13 @@ void Engine::OnGameViewportClick() {
             else if (pParty->pPickedItem.uItemID)
                 DropHeldItem();
         } else if (!keyboardInputHandler->IsCastOnClickToggled()) {
-            if (!in_range) {
-                if (pParty->pPickedItem.uItemID) DropHeldItem();
-            } else if (!ActorInteraction(mon_id)) {
+            if (CanInteractWithActor(mon_id)) {
+                if (in_range) {
+                    InteractWithActor(mon_id);
+                } else if (pParty->pPickedItem.uItemID) {
+                    DropHeldItem();
+                }
+            } else {
                 if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
                     pTurnEngine->field_18 |= TE_FLAG_8_finished;
                 } else {

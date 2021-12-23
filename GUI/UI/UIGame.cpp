@@ -1046,7 +1046,6 @@ void GameUI_WritePointedObjectStatusString() {
     signed int v18b;
     signed int pickedObjectID = 0;     // ecx@63
     BLVFace *pFace;                    // eax@69
-    const char *pText;                 // ecx@79
     enum UIMessageType pMessageType2;  // esi@110
     enum UIMessageType pMessageType3;  // edx@117
     unsigned int pX;                   // [sp+D4h] [bp-Ch]@1
@@ -1098,6 +1097,7 @@ void GameUI_WritePointedObjectStatusString() {
                 }  // intentional fallthrough
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
+                    const char* pText;                 // ecx@79
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[stru_5E4C90_MapPersistVars._decor_events
                                            [pLevelDecorations[pickedObjectID]._idx_in_stru123 -
@@ -1162,8 +1162,7 @@ void GameUI_WritePointedObjectStatusString() {
                     uLastPointedObjectID = 0;
                     return;
                 }
-                String pDisplayName = GetDisplayName(&pActors[pickedObjectID]).c_str();
-                GameUI_StatusBar_Set(pDisplayName.c_str());
+                GameUI_StatusBar_Set(GetDisplayName(&pActors[pickedObjectID]));
             } else if (mouse->uPointingObjectID == 0xFFFF) {
                 mouse->uPointingObjectID = 0;
             }
@@ -1414,7 +1413,7 @@ void GameUI_WritePointedObjectStatusString() {
                              requiredSkillpoints =
                              (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param]
                              & 0x3F) + 1;
-     
+
                              String str;
                              if (pPlayers[uActiveCharacter]->uSkillPoints <
                              requiredSkillpoints)      str =

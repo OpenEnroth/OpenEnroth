@@ -3416,8 +3416,10 @@ char DoInteractionWithTopmostZObject(int pid) {
             if (pActors[id].uAIState == Dead) {
                 pActors[id].LootActor();
             } else {
-                extern bool ActorInteraction(unsigned int id);
-                ActorInteraction(id);
+                extern bool CanInteractWithActor(unsigned int id);
+                extern void InteractWithActor(unsigned int id);
+                if (CanInteractWithActor(id))
+                    InteractWithActor(id);
             }
             break;
 
