@@ -37,4 +37,9 @@ inline bool iless(const std::string& a, const std::string& b) {
     );
 }
 
-inline auto iless_functor = &iless;
+struct ILess {
+    bool operator()(const std::string& a, const std::string& b) const {
+        return iless(a, b);
+    }
+};
+
