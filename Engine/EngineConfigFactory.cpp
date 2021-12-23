@@ -126,6 +126,19 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::Create(std::shared_ptr<Comman
     if (command_line->TryGetValue("borderless", &value)) {
         config->borderless = std::stoi(*value);
     }
+    if (command_line->TryFindKey("-nodebug")) {
+        config->show_fps = false;
+        config->show_picked_face = false;
+        config->debug_all_magic = false;
+        config->debug_wizard_eye = false;
+        config->debug_portal_outlines = false;
+        config->debug_turbo_speed = false;
+        config->debug_lightmaps_decals = false;
+        config->debug_terrain = false;
+        config->debug_town_portal = false;
+        config->debug_infinite_gold = false;
+        config->debug_infinite_food = false;
+    }
 
     return config;
 }
