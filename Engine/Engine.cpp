@@ -830,16 +830,13 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
                                                ? GUIProgressBar::TYPE_Fullscreen
                                                : GUIProgressBar::TYPE_Box);
-    char Str1[20];    // [sp+Ch] [bp-18h]@1
-    strcpy(Str1, pCurrentMapName.c_str());
-    v3 = strtok(Str1, ".");
-    strcpy(Str1, v3);
-    Level_LoadEvtAndStr(Str1);
+    size_t pos = pCurrentMapName.rfind('.');
+    String mapName = pCurrentMapName.substr(0, pos);
+    String mapExt = pCurrentMapName.substr(pos + 1); // This magically works even when pos == String::npos, in this case
+                                                     // maxExt == pCurrentMapName.
+
+    Level_LoadEvtAndStr(mapName.c_str());
     LoadLevel_InitializeLevelEvt();
-    strcpy(Str1, pCurrentMapName.c_str());
-    _strrev(Str1);
-    v3 = strtok(Str1, ".");
-    _strrev(Str1);
 
     for (uint i = 0; i < 1000; ++i)
         pSpriteObjects[i].uObjectDescID = 0;
@@ -851,10 +848,10 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     engine->SetUnderwater(Is_out15odm_underwater());
 
     pParty->floor_face_pid = 0;
-    if (_stricmp(Str1, "blv"))
-        PrepareToLoadODM(bLoading, 0);
-    else
+    if (iequals(mapExt, "blv"))
         PrepareToLoadBLV(bLoading);
+    else
+        PrepareToLoadODM(bLoading, 0);
 
     engine->_461103_load_level_sub();
     if ((pCurrentMapName == "d11.blv") ||
