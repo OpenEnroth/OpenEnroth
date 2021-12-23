@@ -671,8 +671,8 @@ struct MonsterInfo_MM7 {
 struct Actor_MM7 {
     Actor_MM7();
 
-    void Serialize(class Actor *);
-    void Deserialize(class Actor *);
+    void Serialize(Actor *);
+    void Deserialize(Actor *);
 
     char pActorName[32];
     int16_t sNPC_ID;
