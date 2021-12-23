@@ -89,7 +89,7 @@ struct AcromageCardOnTable {
 };
 
 struct ArcomagePlayer {
-    char pPlayerName[32] {};
+    String pPlayerName;
     int IsHisTurn = 0;  // doesnt appear to be used correctly - always player 0 turn
     int tower_height = 0;
     int wall_height = 0;
@@ -151,8 +151,8 @@ struct ArcomageGame {
     int event_timer_time = 0;
     int uGameWinner = 0;
     int Victory_type = 0;
-    char pPlayer1Name[32] = "";
-    char pPlayer2Name[32] = "";
+    String pPlayer1Name;
+    String pPlayer2Name;
     char force_am_exit = 0;
     char GameOver = 0;
     char force_redraw_1 = 0;
