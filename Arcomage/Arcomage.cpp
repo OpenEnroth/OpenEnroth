@@ -1060,7 +1060,7 @@ void SetStartGameData() {
             }
         }
     }
-    strcpy(deckMaster.name, "Master Deck");
+    deckMaster.name = "Master Deck";
     for (i = 0, card_dispenser_counter = -2, card_id_counter = 0; i < DECK_SIZE;
          ++i, ++card_dispenser_counter) {
         deckMaster.cardsInUse[i] = 0;

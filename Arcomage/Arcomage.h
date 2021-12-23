@@ -230,7 +230,7 @@ struct explosion_effect_struct {
 #define DECK_SIZE 108
 
 struct ArcomageDeck {
-    char name[32];
+    String name;
     char cardsInUse[DECK_SIZE];
     int cards_IDs[DECK_SIZE];
 };
