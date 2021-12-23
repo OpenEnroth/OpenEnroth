@@ -232,7 +232,7 @@ struct stru154 {
     void GetFacePlane(struct ODMFace *pFace, struct BSPVertexBuffer *pVertices,
                       struct Vec3_float_ *pOutNormal, float *pOutDist);
 
-    void (***vdestructor_ptr)(stru154 *, bool);
+    void (***vdestructor_ptr)(stru154 *, bool) = nullptr;
     Plane_float_ face_plane {};
     PolygonType polygonType {};
     char field_15 = 0;
