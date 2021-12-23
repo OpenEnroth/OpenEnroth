@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <functional>
 #include <cstring>
 #ifndef _WINDOWS
 #include "Platform/Lin/Lin.h"
@@ -38,4 +37,4 @@ inline bool iless(const std::string& a, const std::string& b) {
     );
 }
 
-inline auto iless_functor = std::function <bool (const std::string&, const std::string&)>(iless);
+inline auto iless_functor = &iless;
