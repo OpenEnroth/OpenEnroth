@@ -18,17 +18,17 @@ class RenderBase : public IRender {
     ) : IRender(window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     }
 
-    virtual bool Initialize();
+    virtual bool Initialize() override;
 
-    virtual void TransformBillboardsAndSetPalettesODM();
-    virtual void DrawSpriteObjects_ODM();
+    virtual void TransformBillboardsAndSetPalettesODM() override;
+    virtual void DrawSpriteObjects_ODM() override;
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
                                                   unsigned int uDiffuse,
-                                                  int angle);
+                                                  int angle) override;
 
-    virtual HWLTexture *LoadHwlBitmap(const std::string &name);
-    virtual HWLTexture *LoadHwlSprite(const std::string &name);
+    virtual HWLTexture *LoadHwlBitmap(const std::string &name) override;
+    virtual HWLTexture *LoadHwlSprite(const std::string &name) override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);

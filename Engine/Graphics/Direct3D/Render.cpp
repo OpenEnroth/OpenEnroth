@@ -2441,14 +2441,6 @@ void Render::_4A4CC9_AddSomeBillboard(SpellFX_Billboard *a1,
     }
 }
 
-HWLTexture *Render::LoadHwlBitmap(const char *name) {
-    return pD3DBitmaps.LoadTexture(name);
-}
-
-HWLTexture *Render::LoadHwlSprite(const char *name) {
-    return pD3DSprites.LoadTexture(name);
-}
-
 void Render::Update_Texture(Texture *texture) {
     // nothing
 }
