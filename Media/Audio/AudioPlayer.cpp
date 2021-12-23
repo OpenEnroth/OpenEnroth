@@ -333,7 +333,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 void AudioPlayer::MessWithChannels() { pAudioPlayer->StopChannels(-1, -1); }
 
 void AudioPlayer::UpdateSounds() {
-    float pitch = pi * (float)pParty->sRotationX / 1024.f;
+    float pitch = pi * (float)pParty->sRotationY / 1024.f;
     float yaw = pi * (float)pParty->sRotationZ / 1024.f;
     provider->SetOrientation(yaw, pitch);
     provider->SetListenerPosition(pParty->vPosition.x / 50.f,

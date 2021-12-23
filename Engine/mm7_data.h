@@ -338,8 +338,6 @@ extern unsigned int uLevelMapStatsID;
 #define GAME_SETTINGS_4000 0x4000  // initialisation state
 extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
 
-extern float _6BE3A0_fov;
-
 /** Recovery multiplier for non-combat actions, e.g. receiving fall damage, casting buffs,
  * and receiving damage from monsters. */
 extern float debug_non_combat_recovery_mul;
@@ -350,6 +348,9 @@ extern float debug_combat_recovery_mul;
 /** Speed multiplier for monsters in turn-based mode. It does affect actual move distance, but setting a high value
  * doesn't make monsters dart like crazy because monster speed is capped at 1000. Doh. */
 extern float debug_turn_based_monster_movespeed_mul;
+
+// 2.1333
+extern float flt_debugrecmod3;
 
 extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
@@ -409,7 +410,6 @@ extern int dword_F8B1E4;
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
 extern std::array<char, 777> byte_F8B1EF;
-extern std::array<char, 4> byte_F8B1F0;
 
 extern int bGameoverLoop;
 extern std::array<int16_t, 104> intersect_face_vertex_coords_list_a;  // word_F8BC48

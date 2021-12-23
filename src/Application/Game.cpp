@@ -948,7 +948,7 @@ void Game::EventLoop() {
                             pParty->sRotationZ = Party_Teleport_Cam_Yaw;
                         }
                         if (Party_Teleport_Cam_Pitch) {
-                            pParty->sRotationX = Party_Teleport_Cam_Pitch;
+                            pParty->sRotationY = Party_Teleport_Cam_Pitch;
                             v38 = Party_Teleport_Z_Speed;
                             pParty->uFallSpeed = Party_Teleport_Z_Speed;
                         } else {
@@ -1313,7 +1313,7 @@ void Game::EventLoop() {
                         pPlayer9->SetRecoveryTime(
                             (__int64)(debug_non_combat_recovery_mul *
                                              (double)sRecoveryTime *
-                                             2.133333333333333));
+                                             flt_debugrecmod3));
                     }
                     pAudioPlayer->PlaySpellSound(lloyds_beacon_spell_id, 0);
                     if (bRecallingBeacon) {
@@ -1335,7 +1335,7 @@ void Game::EventLoop() {
                             pParty->vPosition.z = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
                             pParty->uFallStartZ = pParty->vPosition.z;
                             pParty->sRotationZ = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
-                            pParty->sRotationX = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
+                            pParty->sRotationY = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
                         }
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                         if (pBooksButtonOverlay != nullptr) {
@@ -1383,7 +1383,7 @@ void Game::EventLoop() {
                                             pParty->vPosition.z;
                                         pParty->sRotationZ =
                                             TownPortalList[v65].rot_y;
-                                        pParty->sRotationX =
+                                        pParty->sRotationY =
                                             TownPortalList[v65].rot_x;
                                     } else {  // if change map
                                         SaveGame(1, 0);
@@ -2832,7 +2832,7 @@ void Game::GameLoop() {
                 }
                 strcpy(Source, pLocationName);
                 pParty->uFallStartZ = pParty->vPosition.z;
-                pParty->sRotationX = 0;
+                pParty->sRotationY = 0;
                 pParty->uFallSpeed = 0;
                 pParty->field_6E4 = 0;
                 pParty->field_6E0 = 0;
@@ -2843,7 +2843,7 @@ void Game::GameLoop() {
                     Party_Teleport_Y_Pos = pParty->vPosition.y;
                     Party_Teleport_Z_Pos = pParty->vPosition.z;
                     Party_Teleport_Cam_Yaw = pParty->sRotationZ;
-                    Party_Teleport_Cam_Pitch = pParty->sRotationX;
+                    Party_Teleport_Cam_Pitch = pParty->sRotationY;
                     Start_Party_Teleport_Flag = 1;
                     PrepareWorld(1);
                 }

@@ -451,6 +451,7 @@ void Vis::_4C1A02() {
     memcpy(&this->stru_206C, &v4, 0x60u);
 }
 
+// depth sort
 //----- (004C1ABA) --------------------------------------------------------
 void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
     int left_sort_index;          // ebx@2
@@ -903,7 +904,7 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     int outy;  // [sp+98h] [bp-8h]@1
 
     pRotY = pCamera3D->sRotationZ + UnprojectX(fMouseX);
-    pRotX = -pCamera3D->sRotationX + UnprojectY(fMouseY);
+    pRotX = -pCamera3D->sRotationY + UnprojectY(fMouseY);
 
     // log->Info("Roty: %d, Rotx: %d", pRotY, pRotX);
 

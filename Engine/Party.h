@@ -285,10 +285,10 @@ struct Party {
     PartyTimeStruct PartyTimes;
     Vec3_int_ vPosition;
     int sRotationZ;
-    int sRotationX;
+    int sRotationY;
     Vec3_int_ vPrevPosition;
+    int sPrevRotationZ;
     int sPrevRotationY;
-    int sPrevRotationX;
     int sPrevEyelevel;
     int field_6E0;
     int field_6E4;

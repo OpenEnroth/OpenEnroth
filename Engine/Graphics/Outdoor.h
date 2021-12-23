@@ -108,6 +108,9 @@ struct OutdoorLocation {
     void SetFog();
     void Draw();
 
+    double GetPolygonMaxZ(struct RenderVertexSoft* pVertex, unsigned int unumverts);
+    double GetPolygonMinZ(struct RenderVertexSoft* pVertices, unsigned int unumverts);
+
     static void LoadActualSkyFrame();
 
     std::string level_filename;
@@ -196,7 +199,6 @@ void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
 char Is_out15odm_underwater();
 void SetUnderwaterFog();
-void ODM_Project(unsigned int uNumVertices);
 void sub_487DA9();
 void ODM_LoadAndInitialize(const std::string &pLevelFilename,
                            struct ODMRenderParams *thisa);

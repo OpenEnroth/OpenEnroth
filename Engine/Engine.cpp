@@ -170,15 +170,15 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 void Engine::Draw() {
     SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
-    pCamera3D->sRotationX = pParty->sRotationX;
+    pCamera3D->sRotationY = pParty->sRotationY;
     pCamera3D->sRotationZ = pParty->sRotationZ;
     pCamera3D->vCameraPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
     pCamera3D->vCameraPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
     pCamera3D->vCameraPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
-    pCamera3D->CalculateRotations(pParty->sRotationX, pParty->sRotationZ);
-    pCamera3D->CreateWorldMatrixAndSomeStuff();
+    pCamera3D->CalculateRotations(pParty->sRotationY, pParty->sRotationZ);
+    pCamera3D->CreateViewMatrixAndProjectionScale();
     pCamera3D->BuildViewFrustum();
 
     if (pMovie_Track) {
@@ -190,9 +190,9 @@ void Engine::Draw() {
         }*/
     } else {
         if (pParty->vPosition.x != pParty->vPrevPosition.x ||
-            pParty->sRotationZ != pParty->sPrevRotationY ||
+            pParty->sRotationZ != pParty->sPrevRotationZ ||
             pParty->vPosition.y != pParty->vPrevPosition.y ||
-            pParty->sRotationX != pParty->sPrevRotationX ||
+            pParty->sRotationY != pParty->sPrevRotationY ||
             pParty->vPosition.z != pParty->vPrevPosition.z ||
             pParty->sEyelevel != pParty->sPrevEyelevel)
             pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
@@ -201,8 +201,8 @@ void Engine::Draw() {
         pParty->vPrevPosition.y = pParty->vPosition.y;
         pParty->vPrevPosition.z = pParty->vPosition.z;
         // v0 = &render;
-        pParty->sPrevRotationY = pParty->sRotationZ;
-        pParty->sPrevRotationX = pParty->sRotationX;
+        pParty->sPrevRotationZ = pParty->sRotationZ;
+        pParty->sPrevRotationY = pParty->sRotationY;
 
         pParty->sPrevEyelevel = pParty->sEyelevel;
         render->BeginSceneD3D();
@@ -1183,6 +1183,8 @@ void MM6_Initialize() {
     // this makes very little sense, but apparently this is how it was done in the original binary.
     debug_turn_based_monster_movespeed_mul = debug_non_combat_recovery_mul * 1.666666666666667;
 
+    flt_debugrecmod3 = 2.133333333333333;
+
     v3 = 0;
     if (strlen(pDefaultSkyTexture.data())) {
         do {
@@ -1380,7 +1382,7 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->vCameraPos.x = 0;
     pCamera3D->vCameraPos.y = 0;
     pCamera3D->vCameraPos.z = 100;
-    pCamera3D->sRotationX = 0;
+    pCamera3D->sRotationY = 0;
     pCamera3D->sRotationZ = 0;
     viewparams->bRedrawGameUI = true;
     uLevel_StartingPointType = MapStartPoint_Party;

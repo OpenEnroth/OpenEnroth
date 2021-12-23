@@ -294,8 +294,8 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3_float
                 log->Warning("Uknown strip type detected!");
             }
 
-            WorldMinZ = pCamera3D->GetPolygonMinZ(triverts, uStripType);
-            WorldMaxZ = pCamera3D->GetPolygonMaxZ(triverts, uStripType);
+            WorldMinZ = pOutdoor->GetPolygonMinZ(triverts, uStripType);
+            WorldMaxZ = pOutdoor->GetPolygonMaxZ(triverts, uStripType);
 
             // check xy bounds
             if (WorldXPosR - bloodsplat_container->pBloodsplats_to_apply[i].radius <

@@ -90,7 +90,7 @@ void Party::Zero() {
     vPosition.z = 0;
     uFallStartZ = 0;
     sRotationZ = 0;
-    sRotationX = 0;
+    sRotationY = 0;
     uFallSpeed = 0;
     field_28 = 0;
     uDefaultPartyHeight = 192;
@@ -640,7 +640,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->vPosition.x = 0;
     this->uFallStartZ = 0;
     this->sRotationZ = 0;
-    this->sRotationX = 0;
+    this->sRotationY = 0;
     this->uFallSpeed = 0;
     this->field_28 = 0;
     this->uDefaultPartyHeight = 120;

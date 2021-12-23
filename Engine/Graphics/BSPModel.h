@@ -99,9 +99,6 @@ class Texture;
 struct ODMFace {
     bool HasEventHint();
 
-    static bool IsBackfaceNotCulled(struct RenderVertexSoft *a2,
-                                    struct Polygon *polygon);
-
     inline bool Invisible() const {
         return (uAttributes & FACE_IsInvisible) != 0;
     }

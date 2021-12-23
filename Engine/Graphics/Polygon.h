@@ -29,7 +29,7 @@ struct Polygon {
     float field_10 = 0;
     unsigned int uNumVertices;
     Vec3_int_ v_18;
-    int field_24 = 0;
+    int field_24 = 0; // dot dist
     int sTextureDeltaU = 0;
     int sTextureDeltaV = 0;
     __int16 flags = 0;  // &2 -> Water  &3C00 still water (no anim)

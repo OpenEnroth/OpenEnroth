@@ -91,12 +91,8 @@ struct Camera3D {
     char CullVertsToPlane(struct stru154 *thisa, struct RenderVertexSoft *a2,
                  unsigned int *pOutNumVertices);
     void BuildViewFrustum();
-    void BuildFrustumPlane(glm::vec3 *a1, glm::vec4 *a2);
-    void Vec3Transform(const glm::vec3 *pVector, glm::vec3 *pOut);
-    void CreateWorldMatrixAndSomeStuff();
-    void MatrixMultiply(struct Matrix3x3_float_ *a1,
-                        struct Matrix3x3_float_ *a2,
-                        struct Matrix3x3_float_ *a3);
+    void CreateViewMatrixAndProjectionScale();
+
     void PrepareAndDrawDebugOutline(struct BLVFace *pFace,
                                     unsigned int uDiffuse);
     void debug_outline_sw(struct RenderVertexSoft *a2,
@@ -109,8 +105,8 @@ struct Camera3D {
                                struct RenderVertexSoft *pLineEnd,
                                signed int sEndDiffuse,
                                unsigned int uOutNumVertices, float z_stuff);
-    bool is_face_faced_to_camera(struct BLVFace *pFace,
-                                 struct RenderVertexSoft *a2);
+    bool is_face_faced_to_camera(struct BLVFace *pFace, struct RenderVertexSoft *a2);
+    bool is_face_faced_to_cameraODM(struct ODMFace* pFace, struct RenderVertexSoft* a2);
     bool GetFacetOrientation(char polyType, struct Vec3_float_ *a2,
                              struct Vec3_float_ *a3, struct Vec3_float_ *a4);
     bool IsCulled(struct BLVFace *pFace);
@@ -119,12 +115,14 @@ struct Camera3D {
                                 struct RenderVertexSoft *pOutVertices,
                                 struct LightsData *a5);
 
+    void CullByNearClip(struct RenderVertexSoft* pverts, uint* unumverts);
+    void CullByFarClip(struct RenderVertexSoft* pverts, uint* unumverts);
+
     float GetPickDepth();
 
     void DebugDrawPortal(struct BLVFace *pFace);
 
-    glm::mat3x3 camrotation;
-    IndoorCameraD3D_Vec3 m3x3_cam_rotation[3] {};
+    glm::mat3x3 ViewMatrix;
     // using w comp of vec4 for dotdist
     glm::vec4 FrustumPlanes[6] {};
 
@@ -140,17 +138,17 @@ struct Camera3D {
     int blv_fov_deg = 60;
     float blv_fov_rad = (float)blv_fov_deg * pi / 180.0;
     
-    void CalculateRotations(int camera_rot_x, int camera_rot_z);
+    void CalculateRotations(int camera_rot_y, int camera_rot_z);
     int sRotationZ = 0;
-    int sRotationX = 0;
+    int sRotationY = 0;
     float fRotationZSine = 0;
     float fRotationZCosine = 0;
-    float fRotationXSine = 0;
-    float fRotationXCosine = 0;
+    float fRotationYSine = 0;
+    float fRotationYCosine = 0;
     int int_sine_Z = 0;
     int int_cosine_Z = 0;
-    int int_sine_x = 0;
-    int int_cosine_x = 0;
+    int int_sine_y = 0;
+    int int_cosine_y = 0;
 
     glm::vec3 vCameraPos {};
 

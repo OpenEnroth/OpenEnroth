@@ -177,7 +177,7 @@ void BLVRenderParams::Reset() {
     // v5 = this->vPartyPos.y;
     // this->sPartyRotY = a2->sRotationZ;
     // v6 = this->vPartyPos.x;
-    // this->sPartyRotX = a2->sRotationX;
+    // this->sPartyRotX = a2->sRotationY;
     int v7 = pIndoor->GetSector(pCamera3D->vCameraPos.x,
                             pCamera3D->vCameraPos.y,
                             pCamera3D->vCameraPos.z);
@@ -419,7 +419,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                                   RenderVertexSoft *pPortalBounding) {
     // faceid, node, 4, portalbounding
 
-    int ColourMask;  // ebx@25
+    uint ColourMask;  // ebx@25
     // IDirect3DTexture2 *v27; // eax@42
     unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
     int LightLevel;                     // [sp+34h] [bp+Ch]@25
@@ -521,16 +521,13 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                     false, 0) != 1 || uNumVerticesa) {
                 // memcpy(static_vertices_calc_out, static_vertices_buff_in, uNumVerticesa * sizeof(RenderVertexSoft));
 
-                LightLevel = HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel);
-                ColourMask =
-                    (248 -
-                     (HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel) << 3)) |
-                    (((248 - (HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel)
-                              << 3)) |
-                      ((248 - (HEXRAYS_SHIWORD(Lights.uCurrentAmbientLightLevel)
-                               << 3))
-                       << 8))
-                     << 8);
+                LightLevel = Lights.uCurrentAmbientLightLevel & 31;
+                // lightlevel is 0 to 31
+                if (LightLevel < 5) LightLevel = 5;
+
+                ColourMask = ((LightLevel << 3)) |
+                            ((LightLevel << 3)) << 8 |
+                            ((LightLevel << 3)) << 16;
 
                 FaceFlowTextureOffset(uFaceID);
 
@@ -586,7 +583,8 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                     face_texture = pTextureFrameTable->GetFrameTexture(
                             (int64_t)pFace->resource, pBLVRenderParams->field_0_timer_);
                 } else {
-                    ColourMask = 0xFF808080;
+                    // this overrides colourmask - is this correct??
+                    // ColourMask = 0xFF808080;
                     // v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
                 }
 
@@ -2205,7 +2203,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     this_.pMonsterInfo.uID = 45;
     this_.PrepareSprites(0);
     if (!bLoading) {
-        pParty->sRotationX = 0;
+        pParty->sRotationY = 0;
         pParty->sRotationZ = 0;
         pParty->vPosition.z = 0;
         pParty->vPosition.y = 0;
@@ -3244,7 +3242,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 // TODO: this can become negative, and there is an assert for that in SetRecoveryTime.
                 pParty->pPlayers[i].SetRecoveryTime(
                     (20 - pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualEndurance())) *
-                    debug_non_combat_recovery_mul * 2.133333333333333);
+                    debug_non_combat_recovery_mul * flt_debugrecmod3);
             }
         }
     }
@@ -3284,7 +3282,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int angle = pParty->sRotationZ;
 
     // Vertical party angle (basically azimuthal angle in polar coordinates).
-    int vertical_angle = pParty->sRotationX;
+    int vertical_angle = pParty->sRotationY;
 
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     int rotation =
@@ -3398,7 +3396,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     pParty->sRotationZ = angle;
-    pParty->sRotationX = vertical_angle;
+    pParty->sRotationY = vertical_angle;
 
     if (hovering) {
         pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();

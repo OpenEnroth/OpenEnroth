@@ -164,7 +164,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     0);  // target direciton
             } else {
                 target_direction.uYawAngle = pParty->sRotationZ;  // spray infront of party
-                target_direction.uPitchAngle = -pParty->sRotationX;
+                target_direction.uPitchAngle = -pParty->sRotationY;
             }
         }
 
@@ -236,7 +236,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             rand() % 100 < 50) {  //неудачное кастование - player is cursed
             if (!pParty->bTurnBasedModeOn) {
                 pPlayer->SetRecoveryTime(
-                    (int64_t)(debug_non_combat_recovery_mul * 213.3333333333333));
+                    (int64_t)(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0));
             } else {
                 pParty->pTurnBasedPlayerRecoveryTimes[pCastSpellInfo[n].uPlayerID] = 100;
                 pPlayer->SetRecoveryTime(sRecoveryTime);
@@ -439,7 +439,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(pParty->sRotationZ,
-                    pParty->sRotationX + 10, v659,
+                    pParty->sRotationY + 10, v659,
                     pCastSpell->uPlayerID + 1) != -1 &&
                     pParty->bTurnBasedModeOn) {
                     ++pTurnEngine->pending_actions;
@@ -2104,7 +2104,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pSpellSprite.uAttributes |= 4;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationX,
+                if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY,
                     v659,
                     pCastSpell->uPlayerID + 1) != -1 &&
                     pParty->bTurnBasedModeOn) {
@@ -4050,7 +4050,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 if (!some_active_character) pTurnEngine->ApplyPlayerAction();
             } else {
                 pPlayer->SetRecoveryTime((int64_t)(debug_non_combat_recovery_mul *
-                    (double)sRecoveryTime * 2.133333333333333));
+                    (double)sRecoveryTime * flt_debugrecmod3));
             }
             pPlayer->PlaySound(SPEECH_CastSpell, 0);
         }

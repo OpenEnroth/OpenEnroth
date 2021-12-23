@@ -344,7 +344,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
                     if (pLevelDecorations[i].field_10_y_rot)
                         pParty->sRotationZ =
                             pLevelDecorations[i].field_10_y_rot;
-                    pParty->sRotationX = 0;
+                    pParty->sRotationY = 0;
                     pParty->uFallSpeed = 0;
                 }
             }
@@ -361,7 +361,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
             if (Party_Teleport_Cam_Yaw != -1)
                 pParty->sRotationZ = Party_Teleport_Cam_Yaw;
             if (Party_Teleport_Cam_Pitch)
-                pParty->sRotationX = Party_Teleport_Cam_Pitch;
+                pParty->sRotationY = Party_Teleport_Cam_Pitch;
             if (Party_Teleport_Z_Speed) pParty->uFallSpeed = Party_Teleport_Z_Speed;
         }
         Party_Teleport_Cam_Yaw = -1;

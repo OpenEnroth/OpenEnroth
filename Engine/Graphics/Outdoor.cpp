@@ -519,83 +519,6 @@ void OutdoorLocation::SetFog() {
     pOutdoor->loc_time.day_attrib = ::day_attrib;
 }
 
-//----- (00482170) --------------------------------------------------------
-bool ODMFace::IsBackfaceNotCulled(RenderVertexSoft *a2,
-                                  struct Polygon *polygon) {
-    unsigned int numOfVertices;    // edx@1
-    RenderVertexSoft *currVertex;  // ecx@2
-    double v7;                     // st7@5
-    double v8;                     // st6@5
-    double v9;                     // st5@5
-    float v18;                     // [sp+8h] [bp-38h]@5
-    float v19;                     // [sp+10h] [bp-30h]@5
-    float v20;                     // [sp+14h] [bp-2Ch]@5
-    float v21;                     // [sp+18h] [bp-28h]@5
-    float v22;                     // [sp+1Ch] [bp-24h]@5
-    float v23;                     // [sp+24h] [bp-1Ch]@5
-    float v24;                     // [sp+28h] [bp-18h]@5
-    float v25;                     // [sp+30h] [bp-10h]@5
-    float v26;                     // [sp+34h] [bp-Ch]@5
-    float v27;                     // [sp+38h] [bp-8h]@5
-    float v28;                     // [sp+3Ch] [bp-4h]@5
-    float a3a;                     // [sp+48h] [bp+8h]@5
-    float a3b;                     // [sp+48h] [bp+8h]@17
-    float a3c;                     // [sp+48h] [bp+8h]@17
-    float a3d;                     // [sp+48h] [bp+8h]@17
-    float a3e;                     // [sp+48h] [bp+8h]@17
-
-    numOfVertices = polygon->uNumVertices;
-    if (numOfVertices < 3) return false;
-    currVertex = &a2[numOfVertices - 1];
-    if (a2->vWorldPosition.z == a2[1].vWorldPosition.z &&
-        a2[1].vWorldPosition.z == currVertex->vWorldPosition.z)
-        polygon->flags |= 0x10u;
-
-    v28 = a2[1].vWorldPosition.x - a2->vWorldPosition.x;
-    v27 = a2[1].vWorldPosition.y - a2->vWorldPosition.y;
-    a3a = a2[1].vWorldPosition.z - a2->vWorldPosition.z;
-
-    for (int i = 0; i < numOfVertices; i++) {
-        v7 = currVertex->vWorldPosition.x - a2->vWorldPosition.x;
-        v8 = currVertex->vWorldPosition.y - a2->vWorldPosition.y;
-        v9 = currVertex->vWorldPosition.z - a2->vWorldPosition.z;
-        v26 = v27 * v9 - v8 * a3a;
-        v24 = v7 * a3a - v9 * v28;
-        v25 = v8 * v28 - v7 * v27;
-        if (v24 != 0.0 || v25 != 0.0 || v26 != 0.0) break;
-        currVertex--;
-    }
-
-    if (((double)pCamera3D->vCameraPos.x - a2->vWorldPosition.x) * v26 +
-            ((double)pCamera3D->vCameraPos.z - a2->vWorldPosition.z) *
-                v25 +
-            ((double)pCamera3D->vCameraPos.y - a2->vWorldPosition.y) *
-                v24 >
-        0.0) {
-        v19 = a2[1].vWorldViewPosition.x - a2->vWorldViewPosition.x;
-        v18 = a2[1].vWorldViewPosition.y - a2->vWorldViewPosition.y;
-        v20 = a2[1].vWorldViewPosition.z - a2->vWorldViewPosition.z;
-        v21 = currVertex->vWorldViewPosition.x - a2->vWorldViewPosition.x;
-        v22 = currVertex->vWorldViewPosition.y - a2->vWorldViewPosition.y;
-        v23 = currVertex->vWorldViewPosition.z - a2->vWorldViewPosition.z;
-
-        a3b = v23 * v18 - v22 * v20;
-        polygon->v_18.x = bankersRounding(a3b);
-        a3c = v21 * v20 - v23 * v19;
-        polygon->v_18.y = bankersRounding(a3c);
-        a3d = v22 * v19 - v21 * v18;
-        polygon->v_18.z = bankersRounding(a3d);
-        polygon->_normalize_v_18();
-        a3e = -((double)polygon->v_18.x * a2->vWorldViewPosition.x) -
-              (double)polygon->v_18.y * a2->vWorldViewPosition.y -
-              (double)polygon->v_18.z * a2->vWorldViewPosition.z;
-        polygon->field_24 = bankersRounding(a3e);
-        return true;
-    } else {
-        return false;
-    }
-}
-
 //----- (0047C7A9) --------------------------------------------------------
 void OutdoorLocationTerrain::_47C7A9() {
     this->field_10 = 0;
@@ -2167,23 +2090,6 @@ void OutdoorLocation::subconstuctor() {
     pOMAP = 0;
 }
 
-//----- (00481E55) --------------------------------------------------------
-void ODM_Project(unsigned int uNumVertices) {
-    // __debugbreak();
-    for (uint i = 0; i < uNumVertices; i++) {
-        memcpy(&VertexRenderList[i], &array_507D30[i],
-               sizeof(VertexRenderList[i]));
-        VertexRenderList[i].vWorldViewProjX =
-            (double)pViewport->uScreenCenterX -
-            ((double)pCamera3D->ViewPlaneDist_X * array_507D30[i]._rhw) *
-                array_507D30[i].vWorldViewPosition.y;
-        VertexRenderList[i].vWorldViewProjY =
-            (double)pViewport->uScreenCenterY -
-            ((double)pCamera3D->ViewPlaneDist_X * array_507D30[i]._rhw) *
-                array_507D30[i].vWorldViewPosition.z;
-    }
-}
-
 //----- (00473893) --------------------------------------------------------
 void ODM_ProcessPartyActions() {
     int v1;            // edi@1
@@ -2315,7 +2221,7 @@ void ODM_ProcessPartyActions() {
                     pParty->pPlayers[i].SetRecoveryTime(
                         (signed __int64)((double)bonus *
                             debug_non_combat_recovery_mul *
-                            2.133333333333333));
+                            flt_debugrecmod3));
                 }
             }
         }
@@ -2381,7 +2287,7 @@ void ODM_ProcessPartyActions() {
     //***********************************************
     _walk_speed = pParty->uWalkSpeed;
     _angle_y = pParty->sRotationZ;
-    _angle_x = pParty->sRotationX;
+    _angle_x = pParty->sRotationY;
     // v126 = pEventTimer->dt_fixpoint;
     /*v119 = (Player **)((unsigned __int64)(pEventTimer->dt_fixpoint
                                         * (signed __int64)((signed
@@ -2681,7 +2587,7 @@ void ODM_ProcessPartyActions() {
     }
 
     pParty->sRotationZ = _angle_y;
-    pParty->sRotationX = _angle_x;
+    pParty->sRotationY = _angle_x;
     //-------------------------------------------
     if (pParty->bFlying) {
         v129 = fixpoint_mul(4, TrigLUT->Cos(OS_GetTime()));
@@ -3071,7 +2977,7 @@ void ODM_ProcessPartyActions() {
                             pPlayers[i]->SetRecoveryTime(
                                 (signed __int64)((double)v110 *
                                                  debug_non_combat_recovery_mul *
-                                                 2.133333333333333));
+                                                 flt_debugrecmod3));
                         }
                         // v73 = pParty->vPosition.z;
                     }
@@ -3185,7 +3091,7 @@ void ODM_ProcessPartyActions() {
                         pPlayers[i]->SetRecoveryTime(
                             (signed __int64)((double)v110 *
                                              debug_non_combat_recovery_mul *
-                                             2.133333333333333));
+                                             flt_debugrecmod3));
                     }
                     // v82 = pParty->vPosition.z;
                 }
@@ -3776,7 +3682,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     pOutdoor->level_filename = pFilename;
     pWeather->Initialize();
     pCamera3D->sRotationZ = pParty->sRotationZ;
-    pCamera3D->sRotationX = pParty->sRotationX;
+    pCamera3D->sRotationY = pParty->sRotationY;
     // pODMRenderParams->RotationToInts();
     pOutdoor->UpdateSunlightVectors();
 
@@ -4033,4 +3939,25 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     } else {
         return y_x1z1;
     }
+}
+
+//----- (00436A6D) --------------------------------------------------------
+double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft* pVertices, unsigned int unumverts) {
+    double result = FLT_MAX;
+    for (uint i = 0; i < unumverts; i++) {
+        if (pVertices[i].vWorldPosition.z < result) {
+            result = pVertices[i].vWorldPosition.z;
+        }
+    }
+    return result;
+}
+
+//----- (00436A40) --------------------------------------------------------
+double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft* pVertex, unsigned int unumverts) {
+    double result = FLT_MIN;
+    for (uint i = 0; i < unumverts; i++) {
+        if (pVertex[i].vWorldPosition.z > result)
+            result = pVertex[i].vWorldPosition.z;
+    }
+    return result;
 }

@@ -91,7 +91,7 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
 
     // dot product of camvec and ray - size in forward
     float frontvec = rayx * pCamera3D->fRotationZCosine + rayy * pCamera3D->fRotationZSine;
-    if (pCamera3D->sRotationX) { frontvec *= pCamera3D->fRotationXCosine;}
+    if (pCamera3D->sRotationY) { frontvec *= pCamera3D->fRotationYCosine;}
 
     // dot product of camvec and ray - size in left
     float leftvec = rayy * pCamera3D->fRotationZCosine - rayx * pCamera3D->fRotationZSine;
@@ -1339,16 +1339,16 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
 
 
     float cosz = pCamera3D->fRotationZCosine;  // int_cosine_Z;
-    float cosx = pCamera3D->fRotationXCosine;  // int_cosine_x;
+    float cosx = pCamera3D->fRotationYCosine;  // int_cosine_y;
     float sinz = pCamera3D->fRotationZSine;  // int_sine_Z;
-    float sinx = pCamera3D->fRotationXSine;  // int_sine_x;
+    float sinx = pCamera3D->fRotationYSine;  // int_sine_y;
 
     // positions all minus ?
     float v11 = cosz * -pCamera3D->vCameraPos.x + sinz * -pCamera3D->vCameraPos.y;
     float v24 = cosz * -pCamera3D->vCameraPos.y - sinz * -pCamera3D->vCameraPos.x;
 
     // cam position transform
-    if (pCamera3D->sRotationX) {
+    if (pCamera3D->sRotationY) {
         this->field_0_party_dir_x = (v11 * cosx) + (-pCamera3D->vCameraPos.z * sinx);
         this->field_4_party_dir_y = v24;
         this->field_8_party_dir_z = (-pCamera3D->vCameraPos.z * cosx) /*-*/ + (v11 * sinx);
@@ -1359,7 +1359,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     }
 
     // set 1 position transfrom (6 0 0) looks like cam left vector
-    if (pCamera3D->sRotationX) {
+    if (pCamera3D->sRotationY) {
         float v17 = (x1 * cosz) + (y1 * sinz);
 
         this->CamVecLeft_Z = (v17 * cosx) + (z1 * sinx);  // dz
@@ -1372,7 +1372,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     }
 
     // set 2 position transfrom (0 6 0) looks like cam front vector
-    if (pCamera3D->sRotationX) {
+    if (pCamera3D->sRotationY) {
         float v19 = (x2 * cosz) + (y2 * sinz);
 
         this->CamVecFront_Z = (v19 * cosx) + (z2 * sinx);  // dz
@@ -2683,7 +2683,7 @@ void _set_3d_modelview_matrix() {
 
               camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationZ / 2048.0) /*- 5*/,
               camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationZ / 2048.0),
-              camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * (-pParty->sRotationX - 20) / 2048.0),
+              camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * (-pParty->sRotationY - 20) / 2048.0),
               0, 0, 1);
 }
 
@@ -3375,13 +3375,13 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         + (double)(pViewport->uScreenCenterY));
 
     // magnitude in up direction
-    float cam_vec_up = cos((double)pCamera3D->sRotationX * rot_to_rads) *
+    float cam_vec_up = cos((double)pCamera3D->sRotationY * rot_to_rads) *
     pCamera3D->GetFarClip();
 
     float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
         (double)pCamera3D->ViewPlaneDist_X /
         (cam_vec_up + 0.0000001) *
-        (sin((double)pCamera3D->sRotationX * rot_to_rads)
+        (sin((double)pCamera3D->sRotationY * rot_to_rads)
             *
             pCamera3D->GetFarClip() -
             (double)pCamera3D->vCameraPos.z));
@@ -3406,9 +3406,9 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector
         float v18x, v18y, v18z;
-        /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pCamera3D->sRotationX + 16) / 65536.0;
+        /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pCamera3D->sRotationY + 16) / 65536.0;
         /*pSkyPolygon.v_18.y*/ v18y = 0;
-        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pCamera3D->sRotationX + 16) / 65536.0;
+        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pCamera3D->sRotationY + 16) / 65536.0;
 
         // sky wiew position(положение неба на
         // экране)------------------------------------------
@@ -3535,16 +3535,16 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     VertexRenderList[2].u = 1 - (float)pParty->sRotationZ / 512;
     VertexRenderList[3].u = 1 - (float)pParty->sRotationZ / 512;
 
-    if (pParty->sRotationX > 0) {
-        VertexRenderList[0].v = 0 - (float)pParty->sRotationX / 1024;
-        VertexRenderList[1].v = 1 - (float)pParty->sRotationX / 1024;
-        VertexRenderList[2].v = 1 - (float)pParty->sRotationX / 1024;
-        VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 1024;
+    if (pParty->sRotationY > 0) {
+        VertexRenderList[0].v = 0 - (float)pParty->sRotationY / 1024;
+        VertexRenderList[1].v = 1 - (float)pParty->sRotationY / 1024;
+        VertexRenderList[2].v = 1 - (float)pParty->sRotationY / 1024;
+        VertexRenderList[3].v = 0 - (float)pParty->sRotationY / 1024;
     } else {
-        VertexRenderList[0].v = 0 - (float)pParty->sRotationX / 256;
-        VertexRenderList[1].v = 1 - (float)pParty->sRotationX / 256;
-        VertexRenderList[2].v = 1 - (float)pParty->sRotationX / 256;
-        VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 256;
+        VertexRenderList[0].v = 0 - (float)pParty->sRotationY / 256;
+        VertexRenderList[1].v = 1 - (float)pParty->sRotationY / 256;
+        VertexRenderList[2].v = 1 - (float)pParty->sRotationY / 256;
+        VertexRenderList[3].v = 0 - (float)pParty->sRotationY / 256;
     }
 
     glBegin(GL_TRIANGLE_FAN);
@@ -4098,7 +4098,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
             if (poly->dimming_level < 0) poly->dimming_level = 0;
             if (poly->dimming_level > 31) poly->dimming_level = 31;
             if (pODMRenderParams->uNumPolygons >= 1999 + 5000) return;
-            if (ODMFace::IsBackfaceNotCulled(array_73D150, poly)) {
+            if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                 face.bVisible = 1;
                 poly->uBModelFaceID = face.index;
                 poly->uBModelID = model.index;
@@ -4443,12 +4443,11 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                 // glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
                 glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
 
-
-                 glColor4f(
-                ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                1.0f);
+                glColor4f(
+                     (float)((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
+                     (float)((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
+                     (float)((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
+                    1.0f);
 
                 glVertex3f(pIndoor->pVertices[pFace->pVertexIDs[i]].x,
                     pIndoor->pVertices[pFace->pVertexIDs[i]].y,

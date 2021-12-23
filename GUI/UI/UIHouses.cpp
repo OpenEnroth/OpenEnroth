@@ -683,7 +683,6 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
     uCloseTime = p2DEvents[uHouseID - 1].uCloseTime;
     current_npc_text.clear();
     dword_F8B1E4 = 0;
-    memset(byte_F8B1F0.data(), 0, 4);
     memset(player_levels.data(), 0, 16);
     render->ClearZBuffer();
 
@@ -1623,7 +1622,7 @@ void TravelByTransport() {
                     pParty->vPosition.y = pTravel->arrival_y;
                     pParty->vPosition.z = pTravel->arrival_z;
                     pParty->uFallStartZ = pParty->vPosition.z;
-                    pParty->sRotationX = 0;
+                    pParty->sRotationY = 0;
                     pParty->sRotationZ = pTravel->arrival_rot_y;
                 }
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,

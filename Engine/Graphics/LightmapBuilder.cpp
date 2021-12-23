@@ -145,8 +145,8 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
         log->Warning("Uknown strip type detected!");
     }
 
-    minz = pCamera3D->GetPolygonMinZ(TerrainVertices, uStripType);
-    maxz = pCamera3D->GetPolygonMaxZ(TerrainVertices, uStripType);
+    minz = pOutdoor->GetPolygonMinZ(TerrainVertices, uStripType);
+    maxz = pOutdoor->GetPolygonMaxZ(TerrainVertices, uStripType);
 
     float bounding_x1 = tX_0 - (float)pLight->uRadius;  // 13 976 - 128 =
                                                         // 13848.0
@@ -700,28 +700,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     pCamera3D->ViewTransform(lightmap->pVertices, lightmap->NumVertices);
     pCamera3D->Project(lightmap->pVertices, lightmap->NumVertices, 0);
 
-    unsigned int _a4 = 0;
-    if (!(uClipFlag & 1)) {  // NoClipFlag
-        _a4 = 1;
-    } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        if (uClipFlag & 2) {  // NeerClipFlag
-            pCamera3D->LightmapNeerClip(
-                lightmap->pVertices, lightmap->NumVertices, field_3C8C34, &_a4);
-            pCamera3D->LightmapProject(_a4, lightmap->pVertices, field_3C8C34,
-                                      &lightmap->NumVertices);
-        } else if (uClipFlag & 4) {  // FarClipFlag
-            pCamera3D->LightmapFarClip(
-                lightmap->pVertices, lightmap->NumVertices, field_3C8C34, &_a4);
-            pCamera3D->LightmapProject(_a4, lightmap->pVertices, field_3C8C34,
-                                      &lightmap->NumVertices);
-        } else {
-            log->Warning("Undefined clip flag specified");
-        }
-    } else {
-        log->Warning(
-        "Lightpoly builder native indoor clipping not implemented");
-    }
-
+    unsigned int _a4 = 1;  //  0;
     if (_a4) {
         if (uLightType & 1) {
             if (StationaryLightsCount < 512 - 1) ++StationaryLightsCount;

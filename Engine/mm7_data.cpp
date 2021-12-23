@@ -703,10 +703,12 @@ float fTurnSpeedMultiplier = 1.0f;
 std::string pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
-float _6BE3A0_fov = 0.55000001f;
+
 float debug_non_combat_recovery_mul;
 float debug_combat_recovery_mul;
 float debug_turn_based_monster_movespeed_mul;
+float flt_debugrecmod3;
+
 std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 std::array<int, 100> dword_720020_zvalues;
@@ -765,7 +767,6 @@ int dword_F8B1E4;
 std::string current_npc_text;                        // F8B1E8
 char dialogue_show_profession_details = false;  // F8B1EC
 std::array<char, 777> byte_F8B1EF;
-std::array<char, 4> byte_F8B1F0;
 
 int bGameoverLoop = 0;
 std::array<int16_t, 104> intersect_face_vertex_coords_list_a;  // word_F8BC48
