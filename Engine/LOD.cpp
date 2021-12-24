@@ -1176,8 +1176,7 @@ Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(
     return &pTextures[id];
 }
 
-unsigned int LODFile_IconsBitmaps::LoadTexture(const String &pContainer,
-                                               enum TEXTURE_TYPE uTextureType) {
+unsigned int LODFile_IconsBitmaps::LoadTexture(const String &pContainer, enum TEXTURE_TYPE uTextureType) {
     for (uint i = 0; i < uNumLoadedFiles; ++i) {
         if (iequals(pContainer, pTextures[i].header.pName)) {
             return i;
@@ -1186,15 +1185,13 @@ unsigned int LODFile_IconsBitmaps::LoadTexture(const String &pContainer,
 
     Assert(uNumLoadedFiles < 1000);
 
-    if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer,
-                           uTextureType) == -1) {
+    if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer, uTextureType) == -1) {
         for (uint i = 0; i < uNumLoadedFiles; ++i) {
             if (iequals(pTextures[i].header.pName, "pending")) {
                 return i;
             }
         }
-        LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending",
-                           uTextureType);
+        LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", uTextureType);
     }
 
     return uNumLoadedFiles++;
