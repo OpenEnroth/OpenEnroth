@@ -706,8 +706,6 @@ int PaletteManager::MakeBasePaletteLut(int uPaletteID, char *entries) {
     // PaletteManager *v3; // edi@1
     // signed int result; // eax@1
     // int *v5; // ecx@1
-    int *v6;  // eax@4
-    int v7;  // esi@4
     // int v8; // eax@9
     // signed int v9; // ecx@9
     // int v10; // edx@9
@@ -716,16 +714,21 @@ int PaletteManager::MakeBasePaletteLut(int uPaletteID, char *entries) {
     // result = 0;
     // v5 = this->pPaletteIDs;
 
-    for (uint i = 0; i < 50; ++i)
-        if (pPaletteIDs[i] == uPaletteID) return i;
+    for (int i = 0; i < 50; ++i)
+        if (pPaletteIDs[i] == uPaletteID)
+            return i;
 
-    v6 = &pPaletteIDs[1];
-    v7 = 1;
-    while (*v6) {
-        ++v7;
-        v6 += 4;
-        if (v7 >= 50) return 0;
+    // Starting from 1 as palette at 0 is a grayscale palette
+    int freeIdx = 0;
+    for (int i = 1; i < 50; i++) {
+        if (pPaletteIDs[i] == 0) {
+            freeIdx = i;
+            break;
+        }
     }
+    if (freeIdx == 0)
+        return 0;
+
     /*v8 = (int)pBaseColors[v7];//(int)((char *)v3 + 768 * v7);
     v9 = 768;
     v10 = (int)(entries - v8);
@@ -736,12 +739,11 @@ int PaletteManager::MakeBasePaletteLut(int uPaletteID, char *entries) {
       --v9;
     }
     while ( v9 );*/
-    unsigned __int8 *dst = (unsigned __int8 *)pBaseColors[v7];
-    for (uint i = 0; i < 768; ++i) dst[i] = entries[i];
+    memcpy(&pBaseColors[freeIdx][0][0], entries, 768);
 
-    pPaletteIDs[v7] = uPaletteID;
-    CalcPalettes_LUT(v7);
-    return v7;
+    pPaletteIDs[freeIdx] = uPaletteID;
+    CalcPalettes_LUT(freeIdx);
+    return freeIdx;
 }
 
 // inlined
