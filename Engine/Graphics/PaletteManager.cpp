@@ -82,7 +82,7 @@ bool HSV2RGB(float *redo, float *greeno, float *blueo, float hin, float sin, flo
 }
 
 //----- (0048A7AA) --------------------------------------------------------
-void RGB2HSV(float *outh, float *outs, float redin, float greenin, float bluein, float *outv) {
+void RGB2HSV(float redin, float greenin, float bluein, float* outh, float* outs, float *outv) {
     // RGB inputs 0-1
     if (redin > 1 || greenin > 1 || bluein > 1) __debugbreak();
 
@@ -246,9 +246,9 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
     unsigned int v60;  // eax@63
     char v61;          // cl@63
     // int result; // eax@63
-    float v63[256];  // [sp+1Ch] [bp-C38h]@5
-    float v64[256];  // [sp+41Ch] [bp-838h]@5
-    float a6[256];   // [sp+81Ch] [bp-438h]@5
+    float local_s[256];  // [sp+1Ch] [bp-C38h]@5
+    float local_h[256];  // [sp+41Ch] [bp-838h]@5
+    float local_v[256];   // [sp+81Ch] [bp-438h]@5
                      //  int v66; // [sp+C1Ch] [bp-38h]@43
     float v67;       // [sp+C20h] [bp-34h]@43
     float v68;       // [sp+C24h] [bp-30h]@43
@@ -274,19 +274,18 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         // i = 0;
 
         for (uint i = 0; i < 256; ++i)
-            RGB2HSV(&v64[i], &v63[i],
-                    (pBaseColors[a2][i][0] + pPalette_tintColor[0]) /
+            RGB2HSV((pBaseColors[a2][i][0] + pPalette_tintColor[0]) /
                         (255.0f + 255.0f),  // Uninitialized memory access
                     (pBaseColors[a2][i][1] + pPalette_tintColor[1]) /
                         (255.0f + 255.0f),
                     (pBaseColors[a2][i][2] + pPalette_tintColor[2]) /
                         (255.0f + 255.0f),
-                    &a6[i]);
+                    &local_h[i], &local_s[i], &local_v[i]);
         // do
         //{
-        // v9 = (float *)((char *)v63 + v8);
-        // v10 = (float *)((char *)a6 + v8);
-        // v11 = (float *)((char *)v64 + v8);
+        // v9 = (float *)((char *)local_s + v8);
+        // v10 = (float *)((char *)local_v + v8);
+        // v11 = (float *)((char *)local_h + v8);
         // v12 = pPalette_tintColor[1];
         // LODWORD(v75) = pPalette_tintColor[2] + (unsigned __int8)v3[2];
         // v13 = pPalette_tintColor[1] + (unsigned __int8)v3[1];
@@ -296,7 +295,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         // __int8)*v3 + pPalette_tintColor[0]; v16 = (double)((unsigned
         // __int8)v3[1] + pPalette_tintColor[1]) / 510.0f; v17 =
         // (double)((unsigned __int8)*v3 + pPalette_tintColor[0]) / 510.0f;
-        // RGB2HSV(&v64[i], &v63[i], v17, v16, v15, &a6[i]);
+        // RGB2HSV(v17, v16, v15, &local_h[i], &local_s[i], &local_v[i]);
         // v3 += 3;
         // v8 = i + 4;
         // v19 = __OFSUB__(i + 4, 1024);
@@ -306,9 +305,9 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         // while ( i <  );
     } else {
         for (uint i = 0; i < 256; ++i)
-            RGB2HSV(&v64[i], &v63[i], pBaseColors[a2][i][0] / 255.0f,
+            RGB2HSV(pBaseColors[a2][i][0] / 255.0f,
                     pBaseColors[a2][i][1] / 255.0f,
-                    pBaseColors[a2][i][2] / 255.0f, &a6[i]);
+                    pBaseColors[a2][i][2] / 255.0f, &local_h[i], &local_s[i], &local_v[i]);
         /*v4 = 0;
         do
         {
@@ -318,7 +317,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
           v6 = (double)SLODWORD(v75) * 0.00392156862745098;
           LODWORD(v75) = (unsigned __int8)*v3;
           v7 = (double)SLODWORD(v75) * 0.00392156862745098;
-          RGB2HSV(&v64[v4], &v63[v4], v7, v6, v5, &a6[v4]);
+          RGB2HSV(v7, v6, v5, &local_h[v4], &local_s[v4], &local_v[v4]);
           ++v4;
           v3 += 3;
         }
@@ -334,11 +333,11 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         // v71 = 1.0 - (double)v72 / 31.0f;
         // do
         for (uint j = 0; j < 256; ++j) {
-            v21 = a6[j] * (1.0f - i / 32.0f);
+            v21 = local_v[j] * (1.0f - i / 32.0f);
             if (v21 < 0.0) v21 = 0.0;
 
             // v22 = v21;
-            HSV2RGB(&a1, &a2a, &a3, v64[j], v63[j], v21);
+            HSV2RGB(&a1, &a2a, &a3, local_h[j], local_s[j], v21);
             v23 = v2->uNumTargetGBits;
             if (v23 == 6) {  // r5g6b5
                 a1 = a1 * 31.0;
@@ -381,7 +380,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         // v71 = 1.0 - (double)v72 / 31.0f;
         // do
         for (uint j = 0; j < 256; ++j) {
-            v26 = a6[j] * (1.0 - i / 31.0f);
+            v26 = local_v[j] * (1.0 - i / 31.0f);
             if (v26 < 0.0) v26 = 0.0;
 
             // v27 = v26;
@@ -426,14 +425,14 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
     // v31 = 0;
     // i = 0;
     for (uint i = 0; i < 256; ++i) {
-        // v32 = (*(float *)((char *)a6 + v31) - 0.8) * 0.8387096774193549 +
+        // v32 = (*(float *)((char *)local_v + v31) - 0.8) * 0.8387096774193549 +
         // 0.8;
-        v32 = (a6[i] - 0.8f) * 0.8387096774193549 + 0.8;
+        v32 = (local_v[i] - 0.8f) * 0.8387096774193549 + 0.8;
         if (v32 < 0.0) v32 = 0.0;
 
         // v33 = v32;
-        // v34 = v63[i] * 0.7034339229968783;
-        HSV2RGB(&a1, &a2a, &a3, v64[i], v63[i] * 0.7034339229968783, v32);
+        // v34 = local_s[i] * 0.7034339229968783;
+        HSV2RGB(&a1, &a2a, &a3, local_h[i], local_s[i] * 0.7034339229968783, v32);
         v35 = v2->uNumTargetGBits;
         if (v35 == 6) {
             a1 = a1 * 31.0;
@@ -489,7 +488,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         mist_c = pPalette_mistColor[2] / 255.0f;
 
         float unused;
-        RGB2HSV(&v68, &v67, mist_a, mist_b, mist_c, &unused);
+        RGB2HSV(mist_a, mist_b, mist_c, &v68, &v67, &unused);
     }
 
     // v72 = 0;
@@ -499,11 +498,11 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         // v48 = 0;
         // for ( i = 0; ; v48 = i )
         for (uint j = 0; j < 256; ++j) {
-            v49 = v63[j];
+            v49 = local_s[j];
             if (v49 < 0.0) v49 = 0.0;
 
             // v50 = v49;
-            HSV2RGB(&a1, &a2a, &a3, v64[j], v49, a6[j]);
+            HSV2RGB(&a1, &a2a, &a3, local_h[j], v49, local_v[j]);
             // v51 = v2->uNumTargetGBits;
             if (v2->uNumTargetGBits == 6) {
                 a1 = a1 * 31.0;
@@ -707,7 +706,7 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
                     green = (double)tex.pPalette24[index + 1] / 255.0f;
                     // a3 = tex.pPalette24[v4 + 2];
                     blue = (double)tex.pPalette24[index + 2] / 255.0f;
-                    RGB2HSV(&v16, &v18, red, green, blue, &a6);
+                    RGB2HSV(red, green, blue, &v16, &v18, &a6);
 
                     v5 = a6 * 1.1;
                     if (v5 >= 0.0 && v5 >= 1.0) {
@@ -862,7 +861,7 @@ int ReplaceHSV(unsigned int uColor, float h_replace, float s_replace, float v_re
           b = (uColor & 0x000000FF) / 255.0f;
 
     float h, s, v;
-    RGB2HSV(&h, &s, r, g, b, &v);
+    RGB2HSV(r, g, b, &h, &s, &v);
 
     if (h_replace != -1.0) h = h_replace;
     if (s_replace != -1.0) s = s_replace;
