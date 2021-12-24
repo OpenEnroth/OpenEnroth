@@ -272,10 +272,10 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     *out_pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    auto tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
+    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
 
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
-    auto pixels = new uint16_t[num_pixels];
+    uint16_t *pixels = new uint16_t[num_pixels];
     if (pixels) {
         *width = tex->header.uTextureWidth;
         *height = tex->header.uTextureHeight;
