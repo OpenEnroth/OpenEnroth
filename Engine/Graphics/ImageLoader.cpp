@@ -283,7 +283,7 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
             pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 2];
             pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
             pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 0];
-            pixels[p * 4 + 3] = 255;
+            pixels[p * 4 + 3] = (pal == 0) ? 0 : 255;
         }
 
         *format = IMAGE_FORMAT_A8R8G8B8;
