@@ -1057,7 +1057,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
 int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
                                              const String &pContainer,
                                              enum TEXTURE_TYPE eTextureType) {
-    int result;        // esi@14
+    //int result;        // esi@14
     unsigned int v14;  // eax@21
     // size_t v22;        // ST2C_4@29
     // const void *v23;   // ecx@29
@@ -1074,7 +1074,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
     data_size -= sizeof(TextureHeader);
 
     // BITMAPS
-    if ((header->pBits & 2) && strcmp(header->pName, "sptext01")) {
+    if ((header->pBits & 2) && pContainer != "sptext01") {
         if (!pHardwareSurfaces || !pHardwareTextures) {
             pHardwareSurfaces = new IDirectDrawSurface *[1000];
             memset(pHardwareSurfaces, 0, 1000 * sizeof(IDirectDrawSurface *));
@@ -1086,30 +1086,26 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
             memset(ptr_011BB4, 0, 1000);
         }
         if (!iequals(pContainer, "wtrdr")) {
-            if (!iequals(pContainer, "WtrTyl")) {
-                v14 = uNumLoadedFiles;
-            } else {
+            if (iequals(pContainer, "WtrTyl"))
                 render->hd_water_tile_id = uNumLoadedFiles;
-                v14 = uNumLoadedFiles;
-            }
+            v14 = uNumLoadedFiles;
             // result = render->LoadTexture(pContainer, pOutTex->palette_id1,
             // (void **)&pHardwareSurfaces[v14], (void
             // **)&pHardwareTextures[v14]);
-            result = 1;
+            //result = 1;
         } else {
             char *temp_container;
             temp_container = (char *)malloc(pContainer.size() + 2);
             *temp_container = 104;  // 'h'
             strcpy(temp_container + 1, pContainer.c_str());
-            result = 1;
+            //result = 1;
             free((void *)temp_container);
         }
-        return result;
+        //return result;
     }
 
     // ICONS
-    if (!header->uDecompressedSize ||
-        _011BA4_debug_paletted_pixels_uncompressed) {
+    if (!header->uDecompressedSize || _011BA4_debug_paletted_pixels_uncompressed) {
         if (header->uTextureSize > data_size) {
             assert(false);
         }

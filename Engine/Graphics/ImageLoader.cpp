@@ -2,6 +2,7 @@
 
 #include "Engine/ZlibWrapper.h"
 
+#include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
@@ -267,43 +268,61 @@ bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
 
 bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
                               void **out_pixels, IMAGE_FORMAT *format) {
-    *width = 0;
-    *height = 0;
-    *out_pixels = nullptr;
-    *format = IMAGE_INVALID_FORMAT;
-
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
-
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
-    uint16_t *pixels = new uint16_t[num_pixels];
-    if (pixels) {
+
+    if (tex->header.pBits & 2) {  // hardware bitmap
+#if 1
+        Assert(tex->paletted_pixels);
+        Assert(tex->pPalette24);
+
+        uint8_t* pixels = new uint8_t[num_pixels * 4];
+
+        for (size_t p = 0; p < num_pixels; p++) {
+            int pal = tex->paletted_pixels[p];
+            pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 2];
+            pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
+            pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 0];
+            pixels[p * 4 + 3] = 255;
+        }
+
+        *format = IMAGE_FORMAT_A8R8G8B8;
         *width = tex->header.uTextureWidth;
         *height = tex->header.uTextureHeight;
-        *format = IMAGE_FORMAT_A1R5G5B5;
+        *out_pixels = pixels;
+        return true;
+#else
+        uint16_t* pixels = new uint16_t[num_pixels];
 
-        if (tex->header.pBits & 2) {  // hardware bitmap
-            HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name);
-            if (hwl) {
-                // linear scaling
-                for (int s = 0; s < tex->header.uTextureHeight; ++s) {
-                    for (int t = 0; t < tex->header.uTextureWidth; ++t) {
-                        unsigned int resampled_x = t * hwl->uWidth / tex->header.uTextureWidth,
-                                     resampled_y = s * hwl->uHeight / tex->header.uTextureHeight;
-                        unsigned short sample = hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
+        HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name);
+        if (hwl) {
+            // linear scaling
+            for (int s = 0; s < tex->header.uTextureHeight; ++s) {
+                for (int t = 0; t < tex->header.uTextureWidth; ++t) {
+                    unsigned int resampled_x = t * hwl->uWidth / tex->header.uTextureWidth,
+                                    resampled_y = s * hwl->uHeight / tex->header.uTextureHeight;
+                    unsigned short sample = hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
 
-                        pixels[s * tex->header.uTextureWidth + t] = sample;
-                    }
+                    pixels[s * tex->header.uTextureWidth + t] = sample;
                 }
-
-                delete[] hwl->pPixels;
-                delete hwl;
             }
 
-            *out_pixels = pixels;
-            return true;
+            delete[] hwl->pPixels;
+            delete hwl;
         }
+
+        *format = IMAGE_FORMAT_A1R5G5B5;
+        *width = tex->header.uTextureWidth;
+        *height = tex->header.uTextureHeight;
+        *out_pixels = pixels;
+        return true;
+#endif
     }
 
+    *width = 0;
+    *height = 0;
+    *format = IMAGE_INVALID_FORMAT;
+    *out_pixels = nullptr;
     return false;
 }
 
