@@ -266,6 +266,55 @@ bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
     return res;
 }
 
+static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,
+                                    size_t x, size_t y, size_t w, size_t h, uint8_t* bgra) {
+    size_t count = 0;
+    size_t r = 0, g = 0, b = 0;
+
+    auto processPixel = [&](size_t x, size_t y) {
+        int pal = pixels[y * w + x];
+        if (pal != 0) {
+            count++;
+            r += palette[3 * pal + 0];
+            g += palette[3 * pal + 1];
+            b += palette[3 * pal + 2];
+        }
+    };
+
+    bool canDecX = x > 0;
+    bool canIncX = x < w - 1;
+    bool canDecY = y > 0;
+    bool canIncY = y < h - 1;
+
+    if (canDecX & canDecY)
+        processPixel(x - 1, y - 1);
+    if (canDecX)
+        processPixel(x - 1, y);
+    if (canDecX & canIncY)
+        processPixel(x - 1, y + 1);
+    if (canDecY)
+        processPixel(x, y - 1);
+    if (canIncY)
+        processPixel(x, y + 1);
+    if (canIncX & canDecY)
+        processPixel(x + 1, y - 1);
+    if (canIncX)
+        processPixel(x + 1, y);
+    if (canIncX & canIncY)
+        processPixel(x + 1, y + 1);
+
+    if (count != 0) {
+        r /= count;
+        g /= count;
+        b /= count;
+    }
+
+    bgra[0] = b;
+    bgra[1] = g;
+    bgra[2] = r;
+    bgra[3] = 0;
+}
+
 bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
                               void **out_pixels, IMAGE_FORMAT *format) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
@@ -277,13 +326,23 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         Assert(tex->pPalette24);
 
         uint8_t* pixels = new uint8_t[num_pixels * 4];
+        size_t w = tex->header.uTextureWidth;
+        size_t h = tex->header.uTextureHeight;
 
-        for (size_t p = 0; p < num_pixels; p++) {
-            int pal = tex->paletted_pixels[p];
-            pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 2];
-            pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
-            pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 0];
-            pixels[p * 4 + 3] = (pal == 0) ? 0 : 255;
+        for (size_t y = 0; y < h; y++) {
+            for (size_t x = 0; x < w; x++) {
+                size_t p = y * w + x;
+
+                int pal = tex->paletted_pixels[p];
+                if (pal != 0) {
+                    pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 2];
+                    pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
+                    pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 0];
+                    pixels[p * 4 + 3] = 255;
+                } else {
+                    ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
+                }
+            }
         }
 
         *format = IMAGE_FORMAT_A8R8G8B8;
