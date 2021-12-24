@@ -1,5 +1,4 @@
 #ifdef _WINDOWS
-    #define NOMINMAX
     #include <Windows.h>
 
     #pragma comment(lib, "opengl32.lib")
