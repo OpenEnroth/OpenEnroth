@@ -68,7 +68,6 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     // int *l;                // eax@556
     // int v295;              // edx@575
 
-    const char *v317;      // ecx@617
                            //  int v396; // eax@752
     __int16 v448;          // ax@864
     DDM_DLV_Header *v613;  // eax@1108

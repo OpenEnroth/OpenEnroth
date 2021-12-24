@@ -24,11 +24,7 @@
 using EngineIoc = Engine_::IocContainer;
 
 void GuildDialog() {
-    int textoffset;               // ecx@47
-    GUIButton *pButton;           // eax@49
     int pTextHeight;              // eax@55
-    unsigned __int16 pTextColor;  // ax@55
-    int textspacings;             // [sp+2D4h] [bp-18h]@1
     bool pSkillFlag;              // [sp+2DCh] [bp-10h]@35
     int dialogopts;               // [sp+2E0h] [bp-Ch]@35
 

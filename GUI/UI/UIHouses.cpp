@@ -2800,9 +2800,7 @@ void sub_4B6478() {
     unsigned int v5;              // esi@5
     short *v6;                       // edi@6
     int all_text_height;          // eax@20
-    GUIButton *pButton;           // esi@27
     int pTextHeight;              // eax@29
-    unsigned __int16 pTextColor;  // ax@29
     int v27;                      // [sp-4h] [bp-80h]@8
     int v32;                      // [sp+6Ch] [bp-10h]@1
     int index;                    // [sp+74h] [bp-8h]@17

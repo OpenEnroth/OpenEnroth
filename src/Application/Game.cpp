@@ -466,7 +466,6 @@ void Game::EventLoop() {
     GUIButton *pButton;         // eax@578
     unsigned int v86;           // eax@583
     const char *v87;            // ecx@595
-    const char *v88;            // ecx@596
     unsigned int v90;           // eax@602
     int v91;                    // edx@605
     int v92;                    // eax@605

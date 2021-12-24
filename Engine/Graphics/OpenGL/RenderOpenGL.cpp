@@ -3419,7 +3419,6 @@ void RenderOpenGL::RenderTerrainD3D() {
 
 void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bool clampAtTextureBorders) {
     int v11;           // eax@5
-    unsigned int v45;  // eax@28
 
     unsigned int uNumVertices = poly->uNumVertices;
 
@@ -4377,7 +4376,6 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    unsigned int v41;     // eax@29
     unsigned int sCorrectedColor;  // [sp+64h] [bp-4h]@4
 
     auto texture = (TextureOpenGL*)pPolygon->texture;
