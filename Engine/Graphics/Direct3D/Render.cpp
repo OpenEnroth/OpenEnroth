@@ -2294,8 +2294,8 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
     int yDifference = bankersRounding(dstY - srcY);
     int absYDifference = abs(yDifference);
     int absXDifference = abs(xDifference);
-    unsigned int smallerabsdiff = min(absXDifference, absYDifference);
-    unsigned int largerabsdiff = max(absXDifference, absYDifference);
+    unsigned int smallerabsdiff = std::min(absXDifference, absYDifference);
+    unsigned int largerabsdiff = std::max(absXDifference, absYDifference);
     int v32 = (11 * smallerabsdiff >> 5) + largerabsdiff;
     double v16 = 1.0 / (double)v32;
     double v17 = (double)yDifference * v16 * a4;
