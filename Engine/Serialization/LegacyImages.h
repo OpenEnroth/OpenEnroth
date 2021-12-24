@@ -771,8 +771,8 @@ struct BLVSector_MM7 {  // 0x74
 struct FontData_MM7 {
     FontData_MM7();
 
-    void Serialize(class FontData *);
-    void Deserialize(class FontData *, size_t size);
+    void Serialize(FontData *);
+    void Deserialize(FontData *, size_t size);
 
     uint8_t cFirstChar;  // 0
     uint8_t cLastChar;   // 1
