@@ -1570,8 +1570,8 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 //----- (004C0D32) --------------------------------------------------------
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                                    Vis_SelectionFilter *filter) {
-    // This is not a very efficient implementations. One option would be to cache a list of all faces that have an
-    // action assigned, and iterate through it, instead of a list of all faces.
+    // This is not a very efficient implementation. Instead of iterating through all faces we could be iterating
+    // only through the ones that have an event assigned. That would require some work in IndoorLocation.
 
     for (size_t i = 0; i < pIndoor->uNumFaces; ++i) {
         BLVFace *pFace = &pIndoor->pFaces[i];
