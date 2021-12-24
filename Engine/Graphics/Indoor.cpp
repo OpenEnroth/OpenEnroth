@@ -3941,7 +3941,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 }
             }
         }
-        v2 = fixpoint_mul(58500, v2);
+        v2 = fixpoint_mul(58500, v2);  // 58500 is roughly 0.89
         v1 = fixpoint_mul(58500, v1);
         pParty->uFallSpeed = fixpoint_mul(58500, pParty->uFallSpeed);
     }
@@ -4569,7 +4569,7 @@ int stru141_actor_collision_object::CalcMovementExtents(int dt) {  // true if no
         this->field_80 = -1;
         this->field_88 = -1;
         // this->sMinZ = v27;
-        this->field_7C = 0xFFFFFFu;
+        this->field_7C = 0xFFFFFFu;  // 255.0 fixpoint
         result = 0;
     }
     return result;
