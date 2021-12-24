@@ -661,85 +661,43 @@ int PaletteManager::ResetNonTestLocked() {
 
 //----- (0048A3BC) --------------------------------------------------------
 int PaletteManager::LoadPalette(unsigned int uPaletteID) {
-    unsigned int *v2;   // ecx@1
-    signed int result;  // eax@1
-    signed int index;      // esi@6
-    double v5;          // st7@7
-    double v6;          // st7@12
-    // double v7;          // st6@17
-    // signed __int64 v8;  // qax@17
-    // double v9;          // st6@17
-    char colourstore[768];      // [sp+18h] [bp-388h]@6
-    // char v11; // [sp+19h] [bp-387h]@17
-    // char v12[766]; // [sp+1Ah] [bp-386h]@17
-    char Source[32];  // [sp+360h] [bp-40h]@4
-    // PaletteManager *v15; // [sp+380h] [bp-20h]@1
-    float v16;  // [sp+384h] [bp-1Ch]@7
-    // int v17;    // [sp+388h] [bp-18h]@6
-    float v18;  // [sp+38Ch] [bp-14h]@7
-    float green;  // [sp+390h] [bp-10h]@7
-    float red;   // [sp+394h] [bp-Ch]@7
-    float a6;   // [sp+398h] [bp-8h]@7
-    float blue;   // [sp+39Ch] [bp-4h]@7
+    // Search through loaded palettes first.
+    // Start at 1 as palette 0 is a grayscale palette.
+    for (int i = 1; i < 50; i++)
+        if (this->pPaletteIDs[i] == uPaletteID)
+            return i;
 
-    // v15 = this;
-    v2 = (unsigned int *)&this->pPaletteIDs[1];
-    result = 1;
-    while (*v2 != uPaletteID) {  // search through loaded palettes
-        ++result;
-        ++v2;
-        if (result >= 50) {  // not found in list so load
-            sprintf(Source, "pal%03i", uPaletteID);
+    // not found in list so load
+    char Source[32];
+    sprintf(Source, "pal%03i", uPaletteID);
 
-            Texture_MM7 tex;  // [sp+318h] [bp-88h]@4
-            // Texture_MM7::Texture_MM7(&tex);
+    Texture_MM7 tex;
+    if (pBitmaps_LOD->LoadTextureFromLOD(&tex, Source, TEXTURE_24BIT_PALETTE) != 1)
+        return 0;
 
-            if (pBitmaps_LOD->LoadTextureFromLOD(&tex, Source,
-                                                 TEXTURE_24BIT_PALETTE) == 1) {
-                index = 0;
-                // v17 = 1 - (int)&colourstore;
-                do {
-                    // LODWORD(a1) = tex.pPalette24[v4];
-                    red = (double)tex.pPalette24[index] / 255.0f;
-                    /*HEXRAYS_LODWORD(green) = (unsigned __int8)*(
-                        &v10 + v4 + v17 + (unsigned int)tex.pPalette24);*/
-                    green = (double)tex.pPalette24[index + 1] / 255.0f;
-                    // a3 = tex.pPalette24[v4 + 2];
-                    blue = (double)tex.pPalette24[index + 2] / 255.0f;
-                    RGB2HSV(red, green, blue, &v16, &v18, &a6);
+    char colourstore[768];
+    for (int index = 0; index < 768; index += 3) {
+        float red = tex.pPalette24[index] / 255.0f;
+        float green = tex.pPalette24[index + 1] / 255.0f;
+        float blue = tex.pPalette24[index + 2] / 255.0f;
 
-                    v5 = a6 * 1.1;
-                    if (v5 >= 0.0 && v5 >= 1.0) {
-                        v5 = 1.0;
-                    } else {
-                        if (v5 < 0.0) v5 = 0.0;
-                    }
-                    a6 = v5;
-                    v6 = v18 * 0.64999998;
-                    if (v6 >= 0.0 && v6 >= 1.0) {
-                        v6 = 1.0;
-                    } else {
-                        if (v6 < 0.0) v6 = 0.0;
-                    }
-                    v18 = v6;
+        float hue;
+        float saturation;
+        float value;
+        RGB2HSV(red, green, blue, &hue, &saturation, &value);
 
-                    // covert back and store
-                    HSV2RGB(&red, &green, &blue, v16, v18, a6);
-                    colourstore[index] = (signed __int64)(red * 255.0);
-                    colourstore[index + 1] = (signed __int64)(green * 255.0);
-                    colourstore[index + 2] = (signed __int64)(blue * 255.0);
-                    index += 3;
-                } while (index < 768);
+        value = std::clamp(value * 1.1f, 0.0f, 1.0f);
+        saturation = std::clamp(saturation * 0.64999998f, 0.0f, 1.0f);
 
-                tex.Release();
-                result = this->MakeBasePaletteLut(uPaletteID, colourstore);
-            } else {
-                result = 0;
-            }
-            return result;
-        }
+        // covert back and store
+        HSV2RGB(&red, &green, &blue, hue, saturation, value);
+        colourstore[index] = static_cast<uint8_t>(red * 255.0);
+        colourstore[index + 1] = static_cast<uint8_t>(green * 255.0);
+        colourstore[index + 2] = static_cast<uint8_t>(blue * 255.0);
     }
-    return result;
+
+    tex.Release();
+    return this->MakeBasePaletteLut(uPaletteID, colourstore);
 }
 // 48A3BC: using guessed type char var_386[766];
 
