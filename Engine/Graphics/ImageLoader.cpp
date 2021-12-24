@@ -81,7 +81,7 @@ bool ColorKey_LOD_Loader::Load(unsigned int *out_width,
     *out_format = IMAGE_INVALID_FORMAT;
 
     Texture_MM7 *tex = lod->GetTexture(
-        lod->LoadTexture(resource_name.c_str(), TEXTURE_24BIT_PALETTE));
+        lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
         (tex->paletted_pixels == nullptr)) {
         return false;
@@ -117,7 +117,7 @@ bool Image16bit_LOD_Loader::Load(unsigned int *out_width,
     *out_format = IMAGE_INVALID_FORMAT;
 
     Texture_MM7 *tex = lod->GetTexture(
-        lod->LoadTexture(resource_name.c_str(), TEXTURE_24BIT_PALETTE));
+        lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
         (tex->paletted_pixels == nullptr)) {
         return false;
@@ -152,7 +152,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
     *out_format = IMAGE_INVALID_FORMAT;
 
     Texture_MM7 *tex = lod->GetTexture(
-        lod->LoadTexture(resource_name.c_str(), TEXTURE_24BIT_PALETTE));
+        lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
     if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
         (tex->paletted_pixels == nullptr)) {
         return false;
@@ -272,7 +272,7 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     *out_pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    auto tex = lod->GetTexture(lod->LoadTexture(this->resource_name.c_str()));
+    auto tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
 
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
     auto pixels = new uint16_t[num_pixels];
@@ -282,7 +282,7 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         *format = IMAGE_FORMAT_A1R5G5B5;
 
         if (tex->header.pBits & 2) {  // hardware bitmap
-            HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name.c_str());
+            HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name);
             if (hwl) {
                 // linear scaling
                 for (int s = 0; s < tex->header.uTextureHeight; ++s) {
@@ -314,7 +314,7 @@ bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     *out_pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    HWLTexture *hwl = render->LoadHwlSprite(this->resource_name.c_str());
+    HWLTexture *hwl = render->LoadHwlSprite(this->resource_name);
     if (hwl) {
         int dst_width = hwl->uWidth;
         int dst_height = hwl->uHeight;
