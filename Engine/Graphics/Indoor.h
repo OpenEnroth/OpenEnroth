@@ -799,10 +799,6 @@ struct BspRenderer {  // stru170
         uNumVisibleNotEmptySectors = 0;
     }
 
-    void AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFaceID);
-    void MakeVisibleSectorList();
-    // void DrawFaceOutlines();
-
     unsigned int num_faces;
     // __int16 pFaceIDs[2000];
     BspFace faces[1000] {};
