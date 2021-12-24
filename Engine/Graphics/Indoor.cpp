@@ -51,8 +51,6 @@ LEVEL_TYPE uCurrentlyLoadedLevelType = LEVEL_null;
 
 LightsData Lights;
 stru337_unused _DLV_header_unused;
-BspRenderer_PortalViewportData _PortalViewportData_unused;
-BspRenderer *pBspRenderer = new BspRenderer;
 stru141_actor_collision_object _actor_collision_struct;
 // std::array<stru352, 480> stru_F83B80;
 
@@ -147,16 +145,11 @@ void PrepareDrawLists_BLV() {
     pIndoor->PrepareItemsRenderList_BLV();
     pIndoor->PrepareActorRenderList_BLV();
 
-    // for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
-    //     v7 = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
-    //     v8 = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
-
     for (int i = 1; i < pIndoor->uNumSectors; i++) {
         v8 = &pIndoor->pSectors[i];
         for (uint j = 0; j < v8->uNumDecorations; ++j)
             pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], i);
     }
-        // }
 
     FindBillboardsLightLevels_BLV();
     // engine->PrepareBloodsplats();

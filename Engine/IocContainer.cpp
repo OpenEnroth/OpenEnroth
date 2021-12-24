@@ -150,7 +150,6 @@ void IntegrityTest() {
                                                                              // already present from vec3
     // static_assert(sizeof(NPCData) == 0x4C, "Wrong type size");
     // static_assert(sizeof(NPCStats) == 0x17FFC, "Wrong type size");
-    // static_assert(sizeof(BspRenderer) == 0x53740, "Wrong type size");
     // static_assert(sizeof(ViewingParams) == 0x26C, "Wrong type size");
     // static_assert(sizeof(Bloodsplat) == 0x28, "Wrong type size");
     // static_assert(sizeof(BloodsplatContainer) == 0xA0C, "Wrong type size");

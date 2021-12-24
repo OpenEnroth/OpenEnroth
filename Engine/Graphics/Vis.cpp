@@ -317,11 +317,6 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     v5 = 0;
     v17 = 0;
 
-    // for (a1.flt_2C = 0.0; v17 < (signed int)pBspRenderer->num_faces; ++v17) {
-    //     pFaceID = pBspRenderer->faces[v5].uFaceID;
-    //     if (pFaceID >= 0) {
-    //        if (pFaceID < (signed int)pIndoor->uNumFaces) {
-
     for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->uNumFaces; ++v17) {
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
@@ -353,8 +348,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
         else
             face->uAttributes &= ~FACE_OUTLINED;
         face->uAttributes &= ~FACE_IsPicked;
-           // }
-       // }
+
         v5 = v17 + 1;
     }
 }
