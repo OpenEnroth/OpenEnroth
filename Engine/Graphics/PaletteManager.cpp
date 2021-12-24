@@ -184,7 +184,7 @@ void PaletteManager::SetColorChannelInfo(int uNumRBits, int uNumGBits,
 }
 
 //----- (00489BE0) --------------------------------------------------------
-void PaletteManager::CalcPalettes_LUT(int a2) {
+void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
     PaletteManager *v2;  // esi@1
     // char *v3; // edi@1
     // signed int v4; // ebx@4
@@ -267,18 +267,18 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
     int v81;  // [sp+C5Ch] [bp+8h]@57
 
     v2 = this;
-    // v3 = (char *)pBaseColors[a2];
+    // v3 = (char *)pBaseColors[paletteIdx];
     if (pPalette_tintColor[0] || pPalette_tintColor[1] ||
         pPalette_tintColor[2]) {
         // v8 = 0;
         // i = 0;
 
         for (uint i = 0; i < 256; ++i)
-            RGB2HSV((pBaseColors[a2][i][0] + pPalette_tintColor[0]) /
+            RGB2HSV((pBaseColors[paletteIdx][i][0] + pPalette_tintColor[0]) /
                         (255.0f + 255.0f),  // Uninitialized memory access
-                    (pBaseColors[a2][i][1] + pPalette_tintColor[1]) /
+                    (pBaseColors[paletteIdx][i][1] + pPalette_tintColor[1]) /
                         (255.0f + 255.0f),
-                    (pBaseColors[a2][i][2] + pPalette_tintColor[2]) /
+                    (pBaseColors[paletteIdx][i][2] + pPalette_tintColor[2]) /
                         (255.0f + 255.0f),
                     &local_h[i], &local_s[i], &local_v[i]);
         // do
@@ -305,9 +305,9 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         // while ( i <  );
     } else {
         for (uint i = 0; i < 256; ++i)
-            RGB2HSV(pBaseColors[a2][i][0] / 255.0f,
-                    pBaseColors[a2][i][1] / 255.0f,
-                    pBaseColors[a2][i][2] / 255.0f, &local_h[i], &local_s[i], &local_v[i]);
+            RGB2HSV(pBaseColors[paletteIdx][i][0] / 255.0f,
+                    pBaseColors[paletteIdx][i][1] / 255.0f,
+                    pBaseColors[paletteIdx][i][2] / 255.0f, &local_h[i], &local_s[i], &local_v[i]);
         /*v4 = 0;
         do
         {
@@ -324,9 +324,9 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         while ( v4 < 256 );*/
     }
 
-    // v69 = (PaletteManager *)((char *)v2 + 16384 * a2);
+    // v69 = (PaletteManager *)((char *)v2 + 16384 * paletteIdx);
     // v72 = 0;
-    // v73 = (int)pPalette1[a2];
+    // v73 = (int)pPalette1[paletteIdx];
     for (uint i = 0; i < 32; ++i) {
         // v20 = 0;
         // i = 0;
@@ -357,7 +357,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
             // v2->uNumTargetBBits) | ((unsigned __int32)a1 <<
             // (v2->uNumTargetBBits + v2->uNumTargetGBits)); v25 = v73; v73 += 2;
             // *(short *)v25 = v24;
-            pPalette1[a2][i][j] =
+            pPalette1[paletteIdx][i][j] =
                 (unsigned __int32)a3 |
                 ((unsigned __int32)a2a << v2->uNumTargetBBits) |
                 ((unsigned __int32)a1
@@ -410,7 +410,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
             // v19 = __OFSUB__(i, 256);
             // v18 = i - 256 < 0;
             // *v30 = v29;
-            field_199600_palettes[a2][i][j] =
+            field_199600_palettes[paletteIdx][i][j] =
                 (unsigned __int64)(signed __int64)a3 |
                 ((unsigned __int16)(signed __int64)a2a << v2->uNumTargetBBits) |
                 (unsigned __int16)((unsigned __int16)(signed __int64)a1
@@ -421,7 +421,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
     }
     // while ( v72 < 32 );
 
-    // v73 = (int)((char *)v2 + 512 * (a2 + 4875));   // field_261600[a2]
+    // v73 = (int)((char *)v2 + 512 * (paletteIdx + 4875));   // field_261600[paletteIdx]
     // v31 = 0;
     // i = 0;
     for (uint i = 0; i < 256; ++i) {
@@ -464,7 +464,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
         v44 = v37 << (v39 + v2->uNumTargetGBits);
         // v73 += 2;
         // *(short *)v43 = v79 | ((short)v40 << v39) | (unsigned __int16)v44;
-        field_261600[a2][i] =
+        field_261600[paletteIdx][i] =
             v79 | ((unsigned short)v40 << v39) | (unsigned __int16)v44;
         // v31 = i + 4;
         // v19 = __OFSUB__(i + 4, 1024);
@@ -554,7 +554,7 @@ void PaletteManager::CalcPalettes_LUT(int a2) {
             // v18 = i - 1024 < 0;
             // *(short *)result = v81 | ((short)v53 << uNumTargetBBits) | (v52 <<
             // v61);
-            field_D1600[a2][i][j] =
+            field_D1600[paletteIdx][i][j] =
                 v81 | ((short)v53 << uNumTargetBBits) | (v52 << v61);
             // if ( !(v18 ^ v19) )
             //  break;
@@ -744,7 +744,7 @@ int PaletteManager::LoadPalette(unsigned int uPaletteID) {
 // 48A3BC: using guessed type char var_386[766];
 
 //----- (0048A5A4) --------------------------------------------------------
-int PaletteManager::MakeBasePaletteLut(int idx, char *entries) {
+int PaletteManager::MakeBasePaletteLut(int uPaletteID, char *entries) {
     // PaletteManager *v3; // edi@1
     // signed int result; // eax@1
     // int *v5; // ecx@1
@@ -759,7 +759,7 @@ int PaletteManager::MakeBasePaletteLut(int idx, char *entries) {
     // v5 = this->pPaletteIDs;
 
     for (uint i = 0; i < 50; ++i)
-        if (pPaletteIDs[i] == idx) return i;
+        if (pPaletteIDs[i] == uPaletteID) return i;
 
     v6 = &pPaletteIDs[1];
     v7 = 1;
@@ -781,7 +781,7 @@ int PaletteManager::MakeBasePaletteLut(int idx, char *entries) {
     unsigned __int8 *dst = (unsigned __int8 *)pBaseColors[v7];
     for (uint i = 0; i < 768; ++i) dst[i] = entries[i];
 
-    pPaletteIDs[v7] = idx;
+    pPaletteIDs[v7] = uPaletteID;
     CalcPalettes_LUT(v7);
     return v7;
 }
@@ -800,57 +800,58 @@ void PaletteManager::RecalculateAll() {
     CalcPalettes_LUT(0);
 
     for (uint i = 1; i < 50; ++i)
-        if (pPaletteIDs[i]) CalcPalettes_LUT(i);
+        if (pPaletteIDs[i])
+            CalcPalettes_LUT(i);
 }
 
 //----- (0047BE67) --------------------------------------------------------
-unsigned __int16 *PaletteManager::Get(int a1) {
-    return (unsigned __int16 *)pPaletteManager->field_199600_palettes[a1];
+uint16_t *PaletteManager::Get(int paletteIdx) {
+    return &pPaletteManager->field_199600_palettes[paletteIdx][0][0];
 }
 
 //----- (0047BE72) --------------------------------------------------------
-unsigned __int16 *PaletteManager::Get_Mist_or_Red_LUT(int a1, int a2, char a3) {
+uint16_t *PaletteManager::Get_Mist_or_Red_LUT(int paletteIdx, int a2, char a3) {
     int v3;  // eax@4
 
     if (a3 & 2 || _4D864C_force_sw_render_rules && engine->config->AlterPalettes())
-        v3 = 32 * a1 + a2 + 3275;
+        v3 = 32 * paletteIdx + a2 + 3275;
     else
-        v3 = 32 * a1 + a2 + 1675;
+        v3 = 32 * paletteIdx + a2 + 1675;
     return (unsigned __int16 *)((char *)&pPaletteManager + 512 * v3);
 }
 // 4D864C: using guessed type char _4D864C_force_sw_render_rules;
 
 //----- (0041F50D) --------------------------------------------------------
-unsigned __int16 *PaletteManager::Get_Dark_or_Red_LUT(int a1, int a2, char a3) {
+uint16_t *PaletteManager::Get_Dark_or_Red_LUT(int paletteIdx, int a2, char a3) {
     int v3;  // eax@4
 
     if (a3 & 2 || _4D864C_force_sw_render_rules && engine->config->AlterPalettes())
-        v3 = 32 * a1 + a2 + 3275;
+        v3 = 32 * paletteIdx + a2 + 3275;
     else
-        v3 = 32 * a1 + a2 + 75;
+        v3 = 32 * paletteIdx + a2 + 75;
     return (unsigned __int16 *)((char *)&pPaletteManager + 512 * v3);
 }
 // 4D864C: using guessed type char _4D864C_force_sw_render_rules;
 
 //----- (0047C30E) --------------------------------------------------------
-unsigned __int16 *PaletteManager::_47C30E_get_palette(int a1, char a2) {
+uint16_t *PaletteManager::_47C30E_get_palette(int paletteIdx, char a2) {
     char *result;  // eax@4
 
     if (a2 & 2 || _4D864C_force_sw_render_rules && engine->config->AlterPalettes())
-        result = (char *)pPaletteManager->field_199600_palettes[a1];
+        result = (char *)pPaletteManager->field_199600_palettes[paletteIdx];
     else
-        result = (char *)pPaletteManager->field_D1600[a1];
+        result = (char *)pPaletteManager->field_D1600[paletteIdx];
     return (unsigned __int16 *)result;
 }
 
 //----- (0047C33F) --------------------------------------------------------
-unsigned __int16 *PaletteManager::_47C33F_get_palette(int a1, char a2) {
+uint16_t *PaletteManager::_47C33F_get_palette(int paletteIdx, char a2) {
     unsigned __int16 *result;  // eax@4
 
     if (a2 & 2 || _4D864C_force_sw_render_rules && engine->config->AlterPalettes())
-        result = (unsigned __int16 *)pPaletteManager->field_199600_palettes[a1];
+        result = (unsigned __int16 *)pPaletteManager->field_199600_palettes[paletteIdx];
     else
-        result = (unsigned __int16 *)pPaletteManager->pPalette1[a1];
+        result = (unsigned __int16 *)pPaletteManager->pPalette1[paletteIdx];
     return result;
 }
 
