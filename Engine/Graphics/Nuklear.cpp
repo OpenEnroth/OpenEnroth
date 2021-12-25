@@ -1311,6 +1311,7 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
     nk_color color;
     float value;
     struct nk_image *img;
+    nk_style_item item;
     std::vector<struct lua_nk_property> buttons_styles;
 
     PUSH_BUTTON_STYLE(buttons_styles, style, active, lua_nk_style_type_item);
@@ -1385,10 +1386,12 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
                         case(lua_nk_style_type_item):
                             if (lua_isnumber(L, -1)) {
                                 lua_check_ret(lua_nk_parse_image(w, L, -1, &img));
-                                memcpy(prop.ptr, &nk_style_item_image(*img), sizeof(nk_style_item));
+                                item = nk_style_item_image(*img);
+                                memcpy(prop.ptr, &item, sizeof(nk_style_item));
                             } else if (lua_istable(L, -1) || lua_isstring(L, -1)) {
                                 lua_check_ret(lua_nk_parse_color(L, -1, &color));
-                                memcpy(prop.ptr, &nk_style_item_color(color), sizeof(nk_style_item));
+                                item = nk_style_item_color(color);
+                                memcpy(prop.ptr, &item, sizeof(nk_style_item));
                             } else {
                                 // TODO: nine slice
                                 return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented yet"));
@@ -1691,7 +1694,7 @@ static int lua_nk_chart_push(lua_State *L) {
 
     nk_flags flags = nk_chart_push(nuklear->ctx, value);
 
-    char *str = "";
+    const char *str = "";
     if (flags & NK_CHART_CLICKED)
         str = "clicked";
     else if (flags & NK_CHART_HOVERING)
@@ -2565,6 +2568,7 @@ static int lua_nk_style_set(lua_State *L) {
     nk_color color;
     float value;
     struct nk_image *img;
+    nk_style_item item;
 
     lua_check_ret(lua_nk_parse_style(L, 2, 3, &type, &ptr));
 
@@ -2585,10 +2589,12 @@ static int lua_nk_style_set(lua_State *L) {
         case(lua_nk_style_type_item):
             if (lua_isnumber(L, 4)) {
                 lua_check_ret(lua_nk_parse_image(w, L, 4, &img));
-                memcpy(ptr, &nk_style_item_image(*img), sizeof(nk_style_item));
+                item = nk_style_item_image(*img);
+                memcpy(ptr, &item, sizeof(nk_style_item));
             } else if (lua_istable(L, 4) || lua_isstring(L, 4)) {
                 lua_check_ret(lua_nk_parse_color(L, 4, &color));
-                memcpy(ptr, &nk_style_item_color(color), sizeof(nk_style_item));
+                item = nk_style_item_color(color);
+                memcpy(ptr, &item, sizeof(nk_style_item));
             } else {
                 // TODO: nine slice
                 return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented yet"));
