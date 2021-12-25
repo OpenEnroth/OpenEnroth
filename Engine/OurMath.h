@@ -115,8 +115,6 @@ inline int bankersRounding<float>(const float &inValue) {
     return c.l;
 }
 
-#pragma push_macro("max")
-#undef max
 template <>
 inline int bankersRounding<double>(const double &inValue) {
     constexpr double maxValue = std::numeric_limits<int>::max();
@@ -129,6 +127,5 @@ inline int bankersRounding<double>(const double &inValue) {
     c.d = inValue + 6755399441055744.0;
     return c.l;
 }
-#pragma pop_macro("max")
 
 extern struct TrigTableLookup *TrigLUT;
