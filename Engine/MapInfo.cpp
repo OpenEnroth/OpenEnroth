@@ -64,7 +64,7 @@ void MapStats::Initialize() {
         while (!line.eof()) {
             std::getline(line, tmpString, '\t');
             char test_string[1024];
-            strcpy(test_string, tmpString.c_str());
+            strncpy(test_string, tmpString.c_str(), sizeof(test_string) - 1);
             switch (decode_step) {
                 case 1:
                     pInfos[i].pName = RemoveQuotes(test_string);  // randoms crashes here  // got 1 too

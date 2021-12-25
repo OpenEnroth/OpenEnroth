@@ -89,7 +89,6 @@ char OS_GetDirSeparator() {
 std::string OS_casepath(std::string path) {
     std::string r;
     std::string sep;
-    std::vector<std::string> tokens;
 
     sep.push_back(OS_GetDirSeparator());
     size_t pos = 0;
@@ -106,13 +105,6 @@ std::string OS_casepath(std::string path) {
     std::string s;
 
     while (std::getline(ss, s, OS_GetDirSeparator())) {
-        tokens.push_back(s);
-    }
-
-    int i = 0;
-    for (auto it = tokens.begin(); it < tokens.end(); it++, i++) {
-        s = *it;
-
         if (s.empty())
             continue;
 

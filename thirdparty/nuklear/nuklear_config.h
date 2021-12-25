@@ -14,5 +14,7 @@
 #define STBTT_free free
 #endif
 
+#define STBTT_RASTERIZER_VERSION 1
+
 #include "nuklear.h"
 #include "nuklear_internal.h"

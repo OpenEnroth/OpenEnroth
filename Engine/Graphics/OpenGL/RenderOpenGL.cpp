@@ -4848,7 +4848,7 @@ bool RenderOpenGL::NuklearInitialize() {
     }
 
     nk_font_atlas_init_default(&nk_dev.atlas);
-    nk_dev.atlas.default_font = NuklearLoadFont(NULL, 16);
+    nk_dev.atlas.default_font = NuklearLoadFont(NULL, 13);
     if (!nk_dev.atlas.default_font) {
         log->Warning("Nuklear default font loading failed");
         NuklearRelease();
@@ -5088,9 +5088,12 @@ struct nk_font* RenderOpenGL::NuklearLoadFont(const char* font_path, size_t font
     cfg.merge_mode = nk_false;
     cfg.coord_type = NK_COORD_UV;
     cfg.spacing = nk_vec2(0, 0);
-    cfg.oversample_h = 8;
-    cfg.oversample_v = 8;
+    cfg.oversample_h = 3;
+    cfg.oversample_v = 1;
     cfg.range = nk_font_cyrillic_glyph_ranges();
+    cfg.size = font_size;
+    cfg.pixel_snap = 0;
+    cfg.fallback_glyph = '?';
 
     nk_font_atlas_begin(&nk_dev.atlas);
 

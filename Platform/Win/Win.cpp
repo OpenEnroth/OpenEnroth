@@ -1,6 +1,7 @@
 #include "Platform/Win/Win.h"
 
 #include <cstdio>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -61,5 +62,23 @@ char OS_GetDirSeparator() {
 }
 
 std::string OS_casepath(std::string path) {
-    return path;
+    std::string r;
+    std::string sep;
+
+    sep.push_back(OS_GetDirSeparator());
+
+    std::stringstream ss(path);
+    std::string s;
+
+    while (std::getline(ss, s, OS_GetDirSeparator())) {
+        if (s.empty())
+            continue;
+
+        if (!r.empty())
+            r += sep;
+
+        r += s;
+    }
+
+    return r;
 }

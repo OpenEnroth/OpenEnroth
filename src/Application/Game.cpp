@@ -165,14 +165,6 @@ void Game::Run() {
         return;
     }
 
-    nuklear = Nuklear().Initialize();
-    ::nuklear = nuklear;
-
-    if (!nuklear) {
-        log->Warning("Nuklear creation failed");
-        return;
-    }
-
     render = IRenderFactory().Create(
         window,
         engine->config->renderer_name,
@@ -190,11 +182,11 @@ void Game::Run() {
         return;
     }
 
-    if (!render->NuklearInitialize()) {
-        log->Warning("Nuklear failed to initialize in render");
-        return;
+    nuklear = Nuklear().Initialize();
+    if (!nuklear) {
+        log->Warning("Nuklear failed to initialize");
     }
-
+    ::nuklear = nuklear;
 
     keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
     ::keyboardActionMapping = keyboardActionMapping;
@@ -207,6 +199,9 @@ void Game::Run() {
     mouse = EngineIoc::ResolveMouse();
     ::mouse = mouse;
 
+    engine->keyboardActionMapping = keyboardActionMapping;
+    engine->keyboardInputHandler = keyboardInputHandler;
+        
     engine->Initialize();
 
     window->Activate();
