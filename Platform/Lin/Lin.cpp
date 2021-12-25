@@ -137,9 +137,9 @@ std::string OS_casepath(std::string path) {
                     }
                 }
 
-                if (e->d_type == DT_DIR) {
+                if (e->d_type == DT_DIR)
                     d = opendir(r.c_str());
-                } else
+                else
                     d = nullptr;
 
                 break;

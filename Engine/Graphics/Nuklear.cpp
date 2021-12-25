@@ -2694,7 +2694,7 @@ static int lua_nk_window_is_closed(lua_State *L) {
     assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
 
     const char *title = luaL_checkstring(L, 2);
-    
+
     bool ret = nk_window_is_closed(nuklear->ctx, title);
 
     lua_pushboolean(L, ret);

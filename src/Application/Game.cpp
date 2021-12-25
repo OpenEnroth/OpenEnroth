@@ -201,7 +201,7 @@ void Game::Run() {
 
     engine->keyboardActionMapping = keyboardActionMapping;
     engine->keyboardInputHandler = keyboardInputHandler;
-        
+
     engine->Initialize();
 
     window->Activate();
