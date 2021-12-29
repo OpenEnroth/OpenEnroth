@@ -477,37 +477,21 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
         }
     }
 
-
-    ++pBLVRenderParams->uNumFacesRenderedThisFrame;
-
-    int xd = pParty->vPosition.x - pIndoor->pVertices[pFace->pVertexIDs[0]].x;
-    int yd = pParty->vPosition.y - pIndoor->pVertices[pFace->pVertexIDs[0]].y;
-    int zd = pParty->vPosition.z - pIndoor->pVertices[pFace->pVertexIDs[0]].z;
-
-    int dist = sqrt(xd * xd + yd * yd + zd * zd);
-
-    // check against adjacent sectors and any vertex
-    if (/*(pBLVRenderParams->uPartySectorID == pFace->uSectorID || pBLVRenderParams->uPartySectorID == pFace->uBackSectorID) && */(dist < 2000)) {
-        pFace->uAttributes |= FACE_SeenByParty;
-    } else {
-        // return;
-    }
-
     if (!pFace->GetTexture()) {
         return;
     }
 
-    if (!pCamera3D->IsCulled(pFace)) {
+
+
+
+    if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
         uNumVerticesa = pFace->uNumVertices;
 
         // copy to buff in
         for (uint i = 0; i < pFace->uNumVertices; ++i) {
-            static_vertices_buff_in[i].vWorldPosition.x =
-                pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-            static_vertices_buff_in[i].vWorldPosition.y =
-                pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-            static_vertices_buff_in[i].vWorldPosition.z =
-                pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+            static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+            static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+            static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
             static_vertices_buff_in[i].u = (signed short)pFace->pVertexUIDs[i];
             static_vertices_buff_in[i].v = (signed short)pFace->pVertexVIDs[i];
         }
@@ -519,6 +503,26 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                     static_vertices_calc_out,
                     4,
                     false, 0) != 1 || uNumVerticesa) {
+
+
+                ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+
+                int xd = pParty->vPosition.x - pIndoor->pVertices[pFace->pVertexIDs[0]].x;
+                int yd = pParty->vPosition.y - pIndoor->pVertices[pFace->pVertexIDs[0]].y;
+                int zd = pParty->vPosition.z - pIndoor->pVertices[pFace->pVertexIDs[0]].z;
+
+                int dist = sqrt(xd * xd + yd * yd + zd * zd);
+
+                // check against adjacent sectors and any vertex
+                if (/*(pBLVRenderParams->uPartySectorID == pFace->uSectorID || pBLVRenderParams->uPartySectorID == pFace->uBackSectorID) && */(dist < 2000)) {
+                    pFace->uAttributes |= FACE_SeenByParty;
+                }
+                else {
+                    // return;
+                }
+
+
+
                 // memcpy(static_vertices_calc_out, static_vertices_buff_in, uNumVerticesa * sizeof(RenderVertexSoft));
 
                 LightLevel = Lights.uCurrentAmbientLightLevel & 31;

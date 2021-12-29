@@ -45,11 +45,6 @@ struct stru9 {
                  struct IndoorCameraD3D_Vec4 *pVertices,
                  struct RenderVertexSoft *pVertices2,
                  unsigned int *pOutNumVertices);
-    bool ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
-        RenderVertexSoft *pOutVertices,
-        unsigned int *pOutNumVertices,
-        struct Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
-        int unused);
     void AddVertex(struct VertexBuffer *pVertexBuffer,
                    struct RenderVertexSoft *pVertex);
     bool AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,

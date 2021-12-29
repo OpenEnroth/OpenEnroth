@@ -320,7 +320,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->uNumFaces; ++v17) {
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
-            if (!pCamera3D->IsCulled(face)) {
+            if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
                 if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &a1,
                                         face, 0xFFFFFFFFu)) {
                     pCamera3D->ViewTransform(&a1, 1);
@@ -1556,7 +1556,7 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
         if (pFaceID >= 0) {
             if (pFaceID < (signed int)pIndoor->uNumFaces) {
                 pFace = &pIndoor->pFaces[pFaceID];
-                if (!pCamera3D->IsCulled(&pIndoor->pFaces[pFaceID])) {
+                if (pCamera3D->is_face_faced_to_cameraBLV(&pIndoor->pFaces[pFaceID])) {
                     if (is_part_of_selection(pFace, filter)) {
                         v8 = DetermineFacetIntersection(
                             pFace, PID(OBJECT_BModel, pFaceID), pick_depth);

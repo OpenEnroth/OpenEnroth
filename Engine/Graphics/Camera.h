@@ -105,11 +105,10 @@ struct Camera3D {
                                struct RenderVertexSoft *pLineEnd,
                                signed int sEndDiffuse,
                                unsigned int uOutNumVertices, float z_stuff);
-    bool is_face_faced_to_camera(struct BLVFace *pFace, struct RenderVertexSoft *a2);
+    bool is_face_faced_to_cameraBLV(struct BLVFace *pFace);
     bool is_face_faced_to_cameraODM(struct ODMFace* pFace, struct RenderVertexSoft* a2);
     bool GetFacetOrientation(char polyType, struct Vec3_float_ *a2,
                              struct Vec3_float_ *a3, struct Vec3_float_ *a4);
-    bool IsCulled(struct BLVFace *pFace);
     void ViewTransfrom_OffsetUV(struct RenderVertexSoft *pVertices,
                                 unsigned int uNumVertices,
                                 struct RenderVertexSoft *pOutVertices,

@@ -47,25 +47,6 @@ void Camera3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices,
     ViewTransform(pOutVertices, uNumVertices);
 }
 
-//----- (00436455) --------------------------------------------------------
-bool Camera3D::IsCulled(BLVFace *pFace) {
-    RenderVertexSoft v;  // [sp+8h] [bp-30h]@1
-
-    //----- (0043648F) --------------------------------------------------------
-    auto Vec3_short__to_RenderVertexSoft = [](RenderVertexSoft *_this,
-                                              Vec3_short_ *a2) -> void {
-        _this->flt_2C = 0.0;
-
-        _this->vWorldPosition.x = a2->x;
-        _this->vWorldPosition.y = a2->y;
-        _this->vWorldPosition.z = a2->z;
-    };
-
-    Vec3_short__to_RenderVertexSoft(&v,
-                                    &pIndoor->pVertices[*pFace->pVertexIDs]);
-    return !is_face_faced_to_camera(pFace, &v);
-}
-
 float Camera3D::GetNearClip() const {
     return 4.0f;
 }
@@ -187,14 +168,18 @@ bool Camera3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
 
 
 //----- (00438258) --------------------------------------------------------
-bool Camera3D::is_face_faced_to_camera(BLVFace *pFace, RenderVertexSoft *a2) {
+bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
     if (pFace->Portal()) return false;
 
-    if ((a2->vWorldPosition.z - (double)pCamera3D->vCameraPos.z) *
+    float x = pIndoor->pVertices[pFace->pVertexIDs[0]].x;
+    float y = pIndoor->pVertices[pFace->pVertexIDs[0]].y;
+    float z = pIndoor->pVertices[pFace->pVertexIDs[0]].z;
+
+    if ((z - (double)pCamera3D->vCameraPos.z) *
         (double)pFace->pFacePlane_old.vNormal.z +
-        (a2->vWorldPosition.y - (double)pCamera3D->vCameraPos.y) *
+        (y - (double)pCamera3D->vCameraPos.y) *
         (double)pFace->pFacePlane_old.vNormal.y +
-        (a2->vWorldPosition.x - (double)pCamera3D->vCameraPos.x) *
+        (x - (double)pCamera3D->vCameraPos.x) *
         (double)pFace->pFacePlane_old.vNormal.x <
         0.0)
         return true;
@@ -530,7 +515,7 @@ bool Camera3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
     for (int p = 0; p < NumFrustumPlanes; p++) {
         inside = false;
         for (int v = 0; v < *pOutNumVertices; v++) {
-            double pLinelength1 = pInVertices[v].vWorldPosition.x * FrustumPlanes[p].x +
+            float pLinelength1 = pInVertices[v].vWorldPosition.x * FrustumPlanes[p].x +
                                   pInVertices[v].vWorldPosition.y * FrustumPlanes[p].y +
                                   pInVertices[v].vWorldPosition.z * FrustumPlanes[p].z;
 
@@ -555,70 +540,6 @@ bool Camera3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
     __debugbreak();
 
     return false;
-
-   
-    
-    // v20 = v13;
-    //bool Vert1Inside = pLinelength1 >= CamDotDistance;
-
-
-
-
-
-
-    RenderVertexSoft *v14;  // eax@8
-    RenderVertexSoft *v15;  // edx@8
-    Vec3_float_ FrustumPlaneVec;         // [sp+18h] [bp-3Ch]@12
-    // float v17; // [sp+44h] [bp-10h]@1
-    // int v18; // [sp+48h] [bp-Ch]@5
-    // stru9 *thisa; // [sp+4Ch] [bp-8h]@1
-    int VertsAdjusted = 0;  // [sp+53h] [bp-1h]@5
-    // bool a6a; // [sp+70h] [bp+1Ch]@5
-
-    // v17 = 0.0;
-    // thisa = engine->pStru9Instance;
-
-    static RenderVertexSoft sr_vertices_50D9D8[64];
-
-    // result = 0;
-    // VertsAdjusted = 0;
-    int MinVertsAllowed = 2 * (DebugLines == 0) + 1;  // 3 normally 1 for debuglines
-    // a6a = 0;
-    // v18 = MinVertsAllowed;
-    if (NumFrustumPlanes <= 0) return false;
-
-    // temp_b = *pOutNumVertices;
-    // temp_t = (char *)&a4->y;
-
-    // while ( 1 )
-    for (uint i = 0; i < NumFrustumPlanes; ++i) {  // cycle through left,right, top, bottom planes
-        if (i % 2) {
-            v14 = pInVertices;
-            v15 = sr_vertices_50D9D8;
-        } else {
-            v15 = pInVertices;
-            v14 = sr_vertices_50D9D8;
-        }
-        if (i == NumFrustumPlanes - 1) v14 = pVertices;
-        FrustumPlaneVec.x = FrustumPlanes[i].x;
-        FrustumPlaneVec.y = FrustumPlanes[i].y;
-        FrustumPlaneVec.z = FrustumPlanes[i].z;
-
-        engine->pStru9Instance->ClipVertsToFrustumPlane(
-            v15, *pOutNumVertices, v14, pOutNumVertices, &FrustumPlaneVec, FrustumPlanes[i].w,
-            (char *)&VertsAdjusted, _unused);
-
-        // temp_b = *pOutNumVertices;
-        if (*pOutNumVertices < MinVertsAllowed) {
-            *pOutNumVertices = 0;
-            return true;
-        }
-        // result = a6a;
-        // temp_t += 24;
-        // if (++i >= FrustumPlanes)
-        //
-    }
-    return VertsAdjusted;
 }
 
 //----- (00436BB7) --------------------------------------------------------
