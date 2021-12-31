@@ -20,6 +20,7 @@
 #include "Engine/Graphics/PaletteManager.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 
 
 struct SpriteFrameTable *pSpriteFrameTable;
@@ -329,7 +330,7 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
 }
 
 void SpriteFrameTable::ToFile() {
-    FILE *file = fcaseopen("data/dsft.bin", "wb");
+    FILE *file = fcaseopen(DATA_PATH "/dsft.bin", "wb");
     if (file == nullptr) {
         Error("Unable to save dsft.bin!");
     }

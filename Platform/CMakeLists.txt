@@ -9,6 +9,7 @@ set(PLATFORM_SOURCES OSWindow.cpp
 )
 
 set(PLATFORM_HEADERS Api.h
+                     Path.h
                      OSWindow.h
                      OSWindowFactory.h
                      Sdl2KeyboardController.h

@@ -8,6 +8,7 @@
 #include "Engine/Graphics/Sprites.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 
 LODFile_IconsBitmaps *pEvents_LOD = nullptr;
 
@@ -1208,7 +1209,7 @@ Texture_MM7 *LODFile_IconsBitmaps::GetTexture(int idx) {
 
 bool Initialize_GamesLOD_NewLOD() {
     pGames_LOD = new LOD::File();
-    if (pGames_LOD->Open(MakeDataPath("data/games.lod"))) {
+    if (pGames_LOD->Open(MakeDataPath(GAMES_LOD_FILE))) {
         pNew_LOD = new LOD::WriteableFile;
         pNew_LOD->AllocSubIndicesAndIO(300, 100000);
         return true;

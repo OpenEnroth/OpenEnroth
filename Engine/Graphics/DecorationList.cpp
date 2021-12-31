@@ -9,6 +9,7 @@
 #include "Sprites.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 
 struct DecorationList *pDecorationList;
 
@@ -49,7 +50,7 @@ void DecorationList::InitializeDecorationSprite(unsigned int uDecID) {
 }
 
 void DecorationList::ToFile() {
-    FILE *file = fcaseopen("data/ddeclist.bin", "wb");
+    FILE *file = fcaseopen(DATA_PATH "/ddeclist.bin", "wb");
     if (file == nullptr) {
         Error("Unable to save ddeclist.bin!", 0);
     }

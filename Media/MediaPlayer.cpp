@@ -33,6 +33,7 @@ extern "C" {
 #include "Media/Audio/OpenALSoundProvider.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 #include "Platform/OSWindow.h"
 
 
@@ -737,11 +738,11 @@ class VideoList {
 
 void MPlayer::Initialize() {
     might_list = new VideoList();
-    std::string filename = MakeDataPath("anims/might7.vid");
+    std::string filename = MakeDataPath(MIGHT7_VID_FILE);
     might_list->Initialize(filename);
 
     magic_list = new VideoList();
-    filename = MakeDataPath("anims/magic7.vid");
+    filename = MakeDataPath(MAGIC7_VID_FILE);
     magic_list->Initialize(filename);
 }
 

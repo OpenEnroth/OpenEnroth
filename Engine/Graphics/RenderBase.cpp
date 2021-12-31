@@ -18,6 +18,7 @@
 #include "Engine/Graphics/Viewport.h"
 
 #include "Platform/OSWindow.h"
+#include "Platform/Path.h"
 
 
 bool RenderBase::Initialize() {
@@ -26,10 +27,10 @@ bool RenderBase::Initialize() {
         config->render_height
     );
 
-    if (!pD3DBitmaps.Open(MakeDataPath("data/d3dbitmap.hwl"))) {
+    if (!pD3DBitmaps.Open(MakeDataPath(D3DBITMAP_HWL_FILE))) {
         return false;
     }
-    if (!pD3DSprites.Open(MakeDataPath("data/d3dsprite.hwl"))) {
+    if (!pD3DSprites.Open(MakeDataPath(D3DSPRITE_HWL_FILE))) {
         return false;
     }
 

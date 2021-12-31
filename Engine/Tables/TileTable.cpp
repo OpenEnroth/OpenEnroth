@@ -8,6 +8,7 @@
 #include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 
 #include "FrameTableInc.h"
 #include "TileFrameTable.h"
@@ -81,7 +82,7 @@ void TileTable::ToFile() {
     TileTable *Str = this;
 
     v1 = Str;
-    v2 = fcaseopen("data/dtile.bin", "wb");
+    v2 = fcaseopen(DATA_PATH "/dtile.bin", "wb");
     v3 = v2;
     if (!v2) Error("Unable to save dtile.bin!");
     fwrite(v1, 4u, 1u, v2);

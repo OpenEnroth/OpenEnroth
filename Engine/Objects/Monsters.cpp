@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 
 #include "../LOD.h"
 #include "../Tables/FrameTableInc.h"
@@ -430,7 +431,7 @@ void MonsterList::ToFile() {
     FILE *v3;         // edi@1
 
     v1 = this;
-    v2 = fcaseopen("data/dmonlist.bin", "wb");
+    v2 = fcaseopen(DATA_PATH "/dmonlist.bin", "wb");
     v3 = v2;
     if (!v2) Error("Unable to save dmonlist.bin!");
     fwrite(v1, 4u, 1u, v2);

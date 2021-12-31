@@ -24,6 +24,7 @@
 #include "GUI/UI/UIMainMenu.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 #include "Platform/OSWindow.h"
 
 
@@ -58,7 +59,7 @@ GUIWindow_Save::GUIWindow_Save() :
             file_name = "1.mm7";
         }
 
-        String str = "saves/" + file_name;
+        String str = SAVES_PATH "/" + file_name;
         str = MakeDataPath(str.c_str());
         if (_access(str.c_str(), 0) || _access(str.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
@@ -161,7 +162,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     LOD::File pLODFile;
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
-        String str = "saves/" + pSavegameList->pFileList[i];
+        String str = SAVES_PATH "/" + pSavegameList->pFileList[i];
         str = MakeDataPath(str.c_str());
         if (_access(str.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;

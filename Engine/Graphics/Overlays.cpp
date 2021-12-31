@@ -15,6 +15,7 @@
 #include "GUI/GUIWindow.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 
 #include "Sprites.h"
 
@@ -110,7 +111,7 @@ void OverlayList::ToFile() {
     FILE *v2;  // eax@1
     // FILE *v3; // edi@1
 
-    v2 = fcaseopen("data/doverlay.bin", "wb");
+    v2 = fcaseopen(DATA_PATH "/doverlay.bin", "wb");
     // v3 = v2;
     if (!v2) Error("Unable to save doverlay.bin!");
     fwrite(this, 4, 1, v2);

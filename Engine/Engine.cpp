@@ -72,6 +72,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 #include "Platform/OSWindow.h"
 #include "Platform/OSWindowFactory.h"
 
@@ -868,20 +869,20 @@ void FinalInitialization() {
 
 bool MM7_LoadLods() {
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(MakeDataPath("data/icons.lod"), "icons")) {
+    if (!pIcons_LOD->Load(MakeDataPath(ICONS_LOD_FILE), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pEvents_LOD = new LODFile_IconsBitmaps;
-    if (!pEvents_LOD->Load(MakeDataPath("data/events.lod").c_str(), "icons")) {
+    if (!pEvents_LOD->Load(MakeDataPath(EVENTS_LOD_FILE).c_str(), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(MakeDataPath("data/bitmaps.lod").c_str(), "bitmaps")) {
+    if (!pBitmaps_LOD->Load(MakeDataPath(BITMAPS_LOD_FILE).c_str(), "bitmaps")) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)
@@ -890,7 +891,7 @@ bool MM7_LoadLods() {
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(MakeDataPath("data/sprites.lod"))) {
+    if (!pSprites_LOD->LoadSprites(MakeDataPath(SPRITES_LOD_FILE))) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)

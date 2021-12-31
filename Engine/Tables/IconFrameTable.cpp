@@ -4,6 +4,7 @@
 #include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
+#include "Platform/Path.h"
 
 #include "../LOD.h"
 #include "FrameTableInc.h"
@@ -78,7 +79,7 @@ void IconFrameTable::ToFile() {
     // IconFrameTable* Str = this;
 
     // v1 = Str;
-    v2 = fcaseopen("data/dift.bin", "wb");
+    v2 = fcaseopen(DATA_PATH "/dift.bin", "wb");
     // v3 = v2;
     if (!v2) Error("Unable to save dift.bin!");
     fwrite(this, 4, 1, v2);
