@@ -132,8 +132,7 @@ class Render : public RenderBase {
     virtual void DrawTransparentRedShade(float u, float v, class Image *a4) override;
     virtual void DrawTransparentGreenShade(float u, float v,
                                            class Image *pTexture) override;
-    virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices,
-                                     unsigned int num_vertices) override;
+
 
     virtual void MaskGameViewport() override;
 

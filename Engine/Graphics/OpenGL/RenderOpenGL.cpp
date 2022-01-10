@@ -656,6 +656,10 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
     unsigned int v45;  // [sp+18h] [bp-Ch]@44
 
     v6 = uBaseLightLevel;
+
+    if (v6 > 31 || v6 < 0) __debugbreak();
+
+
     for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         MobileLight *p = &pMobileLightsStack->pLights[i];
 
@@ -733,11 +737,8 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
         }
     }
 
-    if (v6 <= 31) {
-        if (v6 < 0) v6 = 0;
-    } else {
-        v6 = 31;
-    }
+    if (v6 < 0) v6 = 0;
+    if (v6 > 31) v6 = 31;
     return v6;
 }
 
@@ -1966,10 +1967,10 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
     DrawMasked(u, v, pTexture, 0, 0x07E0);
 }
 
-void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices,
-                                       unsigned int num_vertices) {
-    __debugbreak();
-}
+//void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices,
+//                                       unsigned int num_vertices) {
+//    __debugbreak();
+//}
 
 inline uint32_t PixelDim(uint32_t pix, int dimming) {
     return Color32((((pix >> 16) & 0xFF) >> dimming),
@@ -3362,8 +3363,7 @@ void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bo
     // pBLVRenderParams->uFlags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES) if
     // (pCamera3D->debug_flags & ODM_RENDER_DRAW_TERRAIN_OUTLINES)
     if (engine->config->debug_terrain)
-        pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices,
-            0x00FFFFFF, 0.0);
+        pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FFFFFF, 0.0);
 }
 
 void RenderOpenGL::DrawOutdoorSkyD3D() {

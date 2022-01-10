@@ -314,12 +314,10 @@ void Render::RenderTerrainD3D() {  // New function
             if (dist > 2) {  // dont cull near feet
                 if (left > right) {  // crude fov culling
                     if ((tiledir > left) || (tiledir < right)) continue;
-                }
-                else {
+                } else {
                     if (!(tiledir < left || tiledir > right)) continue;
                 }
             }
-            
 
             struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
             pTilePolygon->flags = 0;
@@ -1088,6 +1086,10 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
         }
     }
+
+    if (engine->config->debug_terrain) {
+        pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x0000FFFF, 0.0);
+    }
 }
 
 Render::Render(
@@ -1473,9 +1475,6 @@ bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
     }
 
     int dwFlags = D3DDP_DONOTLIGHT;
-    //if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-    //    dwFlags |= D3DDP_DONOTCLIP | D3DDP_DONOTUPDATEEXTENTS;
-    //}
 
     ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
         D3DPT_TRIANGLEFAN,
@@ -2014,12 +2013,8 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
         //}
     }
 
-    // if (pIndoorCamera->flags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES ||
-    // pBLVRenderParams->uFlags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES) if
-    // (pCamera3D->debug_flags & ODM_RENDER_DRAW_TERRAIN_OUTLINES)
     if (engine->config->debug_terrain)
-        pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices,
-                                            0x00FFFFFF, 0.0);
+        pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FFFFFF, 0.0);
 }
 
 
@@ -2039,7 +2034,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     TextureD3D *texture = (TextureD3D *)pFace->GetTexture();
 
     if (lightmap_builder->StationaryLightsCount) {
-        sCorrectedColor =  0xFFFFFFFF/*-1*/;
+        sCorrectedColor =  0xFFFFFF/*-1*/;
     }
 
 
@@ -2052,7 +2047,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
 
         int redstart = (sCorrectedColor & 0x00FF0000) >> 16;
 
-        int col = (redstart - 64) - (64 * cosf(angle));
+        int col = redstart * abs(cosf(angle));
         // (a << 24) | (r << 16) | (g << 8) | b;
         sCorrectedColor = (0xFF << 24) | (redstart << 16) | (col << 8) | col;
     }
@@ -2156,6 +2151,9 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
         }
     }
+
+    if (engine->config->debug_terrain)
+        pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FF0000, 0.0);
 }
 
 void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
@@ -3315,7 +3313,6 @@ void Render::MaskGameViewport() {
 }
 
 void Render::DrawBuildingsD3D() {
-    // int v27;  // eax@57
     int farclip;  // [sp+2Ch] [bp-2Ch]@10
     int nearclip;  // [sp+30h] [bp-28h]@34
     int v51;  // [sp+34h] [bp-24h]@35
@@ -3479,28 +3476,14 @@ void Render::DrawBuildingsD3D() {
                         poly->uNumVertices, VertexRenderList, 0, (char)v31);
 
                 if (nearclip) {
-                    // poly->uNumVertices = ODM_NearClip(face.uNumVertices);
-                    //for (uint i = 0; i < poly->uNumVertices; i++) {
-                    //    memcpy(&VertexRenderList[i], &array_507D30[i],
-                    //        sizeof(VertexRenderList[i]));
-                    //}
-
                     pCamera3D->CullByNearClip(&VertexRenderList[0], &poly->uNumVertices);
                     pCamera3D->Project(&VertexRenderList[0], poly->uNumVertices);
-                    
                 }
-                if (farclip) {
-                    //poly->uNumVertices = ODM_FarClip(face.uNumVertices);
-                    /*for (uint i = 0; i < poly->uNumVertices; i++) {
-                        memcpy(&VertexRenderList[i], &array_507D30[i],
-                            sizeof(VertexRenderList[i]));
-                    }*/
 
+                if (farclip) {
                     pCamera3D->CullByFarClip(&VertexRenderList[0], &poly->uNumVertices);
                     pCamera3D->Project(&VertexRenderList[0], poly->uNumVertices);
                 }
-
-                
 
                 if (poly->uNumVertices) {
                     if (poly->IsWater()) {
@@ -3644,7 +3627,11 @@ void Render::BeginLightmaps() {
 
     // ErrD3D(pRenderD3D->pDevice->SetTexture(0,
     // pCamera3D->LoadTextureAndGetHardwarePtr("effpar03")));
-    auto effpar03 = assets->GetBitmap("effpar03");
+    static Texture* effpar03;
+    if (!effpar03) {
+        effpar03 = assets->GetBitmap("effpar03");
+    }
+
     ErrD3D(pRenderD3D->pDevice->SetTexture(
         0, ((TextureD3D *)effpar03)->GetDirect3DTexture()));
 
@@ -3719,8 +3706,7 @@ void Render::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
     drawcalls++;
 }
 
-void Render::DrawLines(const RenderVertexD3D3 *vertices,
-                       unsigned int num_vertices) {
+void Render::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
     ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
     ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
         D3DPT_LINELIST,
@@ -3729,37 +3715,37 @@ void Render::DrawLines(const RenderVertexD3D3 *vertices,
     drawcalls++;
 }
 
-void Render::DrawFansTransparent(const RenderVertexD3D3 *vertices,
-                                 unsigned int num_vertices) {
-    // ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
-    // false));
-    // ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,
-    // false));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
-                                               TRUE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
-                                               D3DBLEND_SRCALPHA));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
-                                               D3DBLEND_INVSRCALPHA));
-
-    ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
-    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
-        D3DPT_TRIANGLEFAN,
-        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-        (void *)vertices, num_vertices, 28));
-    drawcalls++;
-
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
-                                               D3DBLEND_ONE));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
-                                               D3DBLEND_ZERO));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
-                                               FALSE));
-    // ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,
-    // TRUE));
-    // ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
-    // TRUE));
-}
+//void Render::DrawFansTransparent(const RenderVertexD3D3 *vertices,
+//                                 unsigned int num_vertices) {
+//    // ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
+//    // false));
+//    // ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,
+//    // false));
+//    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
+//                                               TRUE));
+//    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
+//                                               D3DBLEND_SRCALPHA));
+//    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
+//                                               D3DBLEND_INVSRCALPHA));
+//
+//    ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+//    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
+//        D3DPT_TRIANGLEFAN,
+//        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+//        (void *)vertices, num_vertices, 28));
+//    drawcalls++;
+//
+//    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
+//                                               D3DBLEND_ONE));
+//    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
+//                                               D3DBLEND_ZERO));
+//    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,
+//                                               FALSE));
+//    // ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,
+//    // TRUE));
+//    // ErrD3D(render->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
+//    // TRUE));
+//}
 
 void Render::BeginDecals() {
     // code chunk from 0049C304
@@ -3856,10 +3842,7 @@ void Render::DrawDecal(Decal *pDecal, float z_bias) {
         pVerticesD3D[i].texcoord.y = pDecal->pVertices[i].v;
     }
 
-    //if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-    //    dwFlags = D3DDP_DONOTLIGHT | D3DDP_DONOTCLIP | D3DDP_DONOTUPDATEEXTENTS;
-    //else
-        dwFlags = D3DDP_DONOTLIGHT;
+    dwFlags = D3DDP_DONOTLIGHT;
 
     ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
         D3DPT_TRIANGLEFAN,
@@ -4229,7 +4212,7 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
     pSkyPolygon.field_24 = 0x2000000;
 
     v72 = 65536.0f / pCamera3D->ViewPlaneDist_X;
-        
+
     v12 = pSkyPolygon.texture->GetWidth() - 1;
     v13 = pSkyPolygon.texture->GetHeight() - 1;
     // v67 = 1.0 / (double)pSkyPolygon.pTexture->uTextureWidth;

@@ -1,10 +1,13 @@
 #pragma once
+
+#include <glm.hpp>
+
 #include "Engine/OurMath.h"
 #include "Engine/VectorTypes.h"
 
 #include "Engine/Graphics/IRender.h"
 
-#include <glm.hpp>
+
 
 /*  124 */
 #pragma pack(push, 1)
@@ -44,11 +47,6 @@ struct IndoorCameraD3D_Vec4 : public IndoorCameraD3D_Vec3 {
 };
 #pragma pack(pop)
 
-#define BLV_RENDER_DRAW_SW_OUTLINES (1 << 0)       // 1
-#define BLV_RENDER_DRAW_D3D_OUTLINES (1 << 1)      // 2
-#define ODM_RENDER_DRAW_D3D_OUTLINES (1 << 2)      // 4
-#define ODM_RENDER_DRAW_TERRAIN_OUTLINES (1 << 3)  // 8
-
 /*  123 */
 #pragma pack(push, 1)
 struct Camera3D {
@@ -67,6 +65,7 @@ struct Camera3D {
     void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices,
                  bool fit_into_viewport = false);
 
+    bool CullFaceToCameraFrustum(struct RenderVertexSoft *a1,
     float GetPolygonMaxZ(struct RenderVertexSoft *pVertex,
                           unsigned int uStripType);
     float GetPolygonMinZ(struct RenderVertexSoft *pVertices,
@@ -86,15 +85,24 @@ struct Camera3D {
                  signed int *pOutNumVertices);
     bool CullFaceToFrustum(struct RenderVertexSoft *a1,
                          unsigned int *pOutNumVertices,
-                         struct RenderVertexSoft *pVertices, signed int uNumVertices,
-                         char a6, int _unused);
-    char CullVertsToPlane(struct stru154 *thisa, struct RenderVertexSoft *a2,
+                         struct RenderVertexSoft *pVertices, signed int uNumVertices);
+
+    bool CullFaceToFrustum(struct RenderVertexSoft* inVerts,
+        unsigned int* pOutNumVertices,
+        struct RenderVertexSoft* pOutVertices, struct IndoorCameraD3D_Vec4* frustum, signed int uNumPlanes);
+
+    bool ClipFaceToFrustum(RenderVertexSoft* pInVertices,
+        unsigned int* pOutNumVertices,
+        RenderVertexSoft* pVertices,
+        IndoorCameraD3D_Vec4* CameraFrustrum,
+        signed int NumFrustumPlanes, char DebugLines,
+        int _unused);
+
+    bool CullVertsToPlane(struct stru154 *thisa, struct RenderVertexSoft *a2,
                  unsigned int *pOutNumVertices);
     void BuildViewFrustum();
     void CreateViewMatrixAndProjectionScale();
 
-    void PrepareAndDrawDebugOutline(struct BLVFace *pFace,
-                                    unsigned int uDiffuse);
     void debug_outline_sw(struct RenderVertexSoft *a2,
                           unsigned int uNumVertices, unsigned int uDiffuse,
                           float a5);
@@ -119,8 +127,6 @@ struct Camera3D {
 
     float GetPickDepth();
 
-    void DebugDrawPortal(struct BLVFace *pFace);
-
     glm::mat3x3 ViewMatrix;
     // using w comp of vec4 for dotdist
     glm::vec4 FrustumPlanes[6] {};
@@ -130,13 +136,13 @@ struct Camera3D {
     float screenCenterX = 0;
     float screenCenterY = 0;
     float ViewPlaneDist_X = 0;
-    float ViewPlaneDist_Y = 0;  // doesnt quite make sense
+    float ViewPlaneDist_Y = 0;
 
     int odm_fov_deg = 75;
     float odm_fov_rad = (float)odm_fov_deg * pi / 180.0;
     int blv_fov_deg = 60;
     float blv_fov_rad = (float)blv_fov_deg * pi / 180.0;
-    
+
     void CalculateRotations(int camera_rot_y, int camera_rot_z);
     int sRotationZ = 0;
     int sRotationY = 0;
@@ -151,7 +157,6 @@ struct Camera3D {
 
     glm::vec3 vCameraPos {};
 
-    int debug_flags = 0;
 
     float GetNearClip() const;
     float GetFarClip() const;

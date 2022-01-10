@@ -21,7 +21,7 @@ struct LightsData {
     Plane_int_ plane_4;
     Vec3_int_ vec_14;
     Vec3_int_ vec_20;
-    unsigned int uCurrentAmbientLightLevel;
+    unsigned int uCurrentAmbientLightLevel;  // 0 to 31
     int field_30;
     int field_34;
     int field_38;
@@ -561,7 +561,7 @@ struct BLVSector {  // 0x74
     int16_t uWaterLevel;
     int16_t uMistLevel;
     int16_t uLightDistanceMultiplier;
-    int16_t uMinAmbientLightLevel;
+    int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually 
     int16_t uFirstBSPNode;
     int16_t exit_tag;
     BBox_short_ pBounding;
@@ -710,10 +710,13 @@ struct BLVRenderParams {
 #pragma pack(pop)
 extern BLVRenderParams *pBLVRenderParams;
 
-// int GetPortalScreenCoord(unsigned int uFaceID);
-// void PrepareBspRenderList_BLV();
-// void AddBspNodeToRenderList(unsigned int node_id);
-// void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
+int GetPortalScreenCoord(unsigned int uFaceID);
+bool PortalFrustrum(int pNumVertices, struct BspRenderer_PortalViewportData *a2,
+                   struct BspRenderer_PortalViewportData *near_portal,
+                    int uFaceID);
+void PrepareBspRenderList_BLV();
+void AddBspNodeToRenderList(unsigned int node_id);
+void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
 char DoInteractionWithTopmostZObject(int pid);
 // int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
 unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
@@ -744,43 +747,22 @@ bool PointInPolyIndoor(int x, int y, int z, struct BLVFace *face);
 bool PointInPolyOutdoor(int a1, int a2, int a3, struct ODMFace *face,
                 struct BSPVertexBuffer *a5);
 
-#pragma pack(push, 1)
-struct BspRenderer_PortalViewportData {
-    void GetViewportData(int16_t x, int y, int16_t z, int w);
-
-    int _viewport_space_y;
-    int _viewport_space_w;
-    int _viewport_space_x;
-    int _viewport_space_z;
-    int _viewport_x_minID;
-    int _viewport_z_maxID;
-    int16_t viewport_left_side[480];
-    int16_t viewport_right_side[480];
-};
-#pragma pack(pop)
-extern BspRenderer_PortalViewportData _PortalViewportData_unused;
+#pragma once
 
 /*  164 */
 #pragma pack(push, 1)
-struct BspRenderer_stru0 {
+struct BspRenderer_ViewportNode {
     //----- (0043F2BF) --------------------------------------------------------
     inline BspRenderer_stru0() {}
 
     //----- (0043F2A9) --------------------------------------------------------
     ~BspRenderer_stru0() {}
 
-    uint16_t uSectorID = 0;
-    uint16_t uViewportX;
-    uint16_t uViewportY;
-    uint16_t uViewportZ;
-    uint16_t uViewportW;
-    int16_t field_A = 0;
-    BspRenderer_PortalViewportData PortalScreenData{};
+    uint16_t uSectorID = 0;  // sector that this node shows
     uint16_t uFaceID;
-    int16_t field_7A6 = 0;
-    unsigned int viewing_portal_id;  // portal through which we're seeing this node
-    IndoorCameraD3D_Vec4 std__vector_0007AC[4];  // frustum planes
-    RenderVertexSoft pPortalBounding[4];
+    unsigned int viewing_portal_id;  // portal/ node through which we're seeing this node
+    IndoorCameraD3D_Vec4 ViewportNodeFrustum[4];  // frustum planes of portal
+    RenderVertexSoft pPortalBounding[4];  // extents of portal
 };
 #pragma pack(pop)
 
@@ -810,7 +792,7 @@ struct BspRenderer {  // stru170
     BspFace faces[1000]{};
     // char field_130[3700];
     unsigned int num_nodes;
-    BspRenderer_stru0 nodes[150];
+    BspRenderer_ViewportNode nodes[150];
     unsigned int uNumVisibleNotEmptySectors;
     uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6]{};
 };

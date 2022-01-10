@@ -11,7 +11,7 @@
 
 #include "Outdoor.h"
 
-#include "Engine/Graphics/stru9.h"
+#include "Engine/Graphics/ClippingFunctions.h"
 
 //----- (0043B570) --------------------------------------------------------
 double Decal::Fade_by_time() {

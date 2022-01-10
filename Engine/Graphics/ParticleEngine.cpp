@@ -221,17 +221,9 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(
     /*fixed x, y, z;*/
     int xt, yt, zt;
 
-    /*if (!pCamera3D->ApplyViewTransform_TrueIfStillVisible_BLV(
-            x_int, y_int_, z_int_, &x, &y, &z, 1))
-        return false;*/
     if (!pCamera3D->ViewClip(x_int, y_int_, z_int_, &xt, &yt, &zt, 0)) return false;
-
-    /*pCamera3D->Project(x.GetInt(), y.GetInt(), z.GetInt(),
-                              &pParticle->uScreenSpaceX,
-                              &pParticle->uScreenSpaceY);*/
     pCamera3D->Project(xt, yt, zt, &pParticle->uScreenSpaceX, &pParticle->uScreenSpaceY);
 
-    
     pParticle->fov_x = pCamera3D->ViewPlaneDist_X;
     pParticle->fov_y = pCamera3D->ViewPlaneDist_Y;
 

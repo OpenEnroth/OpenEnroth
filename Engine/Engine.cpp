@@ -25,8 +25,8 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Graphics/stru10.h"
-#include "Engine/Graphics/stru9.h"
+#include "Engine/Graphics/PortalFunctions.h"
+#include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapsLongTimer.h"
@@ -448,8 +448,9 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
 
-    if (engine->config->DrawBlvDebugs())
-        pStru10Instance->bDoNotDrawPortalFrustum = false;
+    /*if (engine->config->DrawBlvDebugs())
+        pStru10Instance->bDoNotDrawPortalFrustum = false;*/
+
     if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         render->uFogColor = GetLevelFogColor() & 0xFFFFFF;
     // if (uFlags & GAME_FLAGS_1_400)

@@ -331,7 +331,7 @@ class IRender {
     virtual void DrawTextureGrayShade(float u, float v, Image *a4) = 0;
     virtual void DrawTransparentRedShade(float u, float v, Image *a4) = 0;
     virtual void DrawTransparentGreenShade(float u, float v, Image *pTexture) = 0;
-    virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
+    // virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
     virtual void DrawTextAlpha(int x, int y, unsigned char *font_pixels, int a5,
                                unsigned int uFontHeight, uint8_t *pPalette,

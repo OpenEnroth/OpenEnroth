@@ -17,8 +17,8 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      PCX.cpp
                      RenderBase.cpp
                      Sprites.cpp
-                     stru10.cpp
-                     stru9.cpp
+                     "PortalFunctions.cpp"
+                     "ClippingFunctions.cpp"
                      Viewport.cpp
                      Vis.cpp
                      Weather.cpp
@@ -50,8 +50,8 @@ set(GRAPHICS_HEADERS BSPModel.h
                      Polygon.h
                      RenderBase.h
                      Sprites.h
-                     stru10.h
-                     stru9.h
+                     "PortalFunctions.h"
+                     "ClippingFunctions.h"
                      Texture.h
                      Viewport.h
                      Vis.h

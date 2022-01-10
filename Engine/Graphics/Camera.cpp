@@ -10,13 +10,13 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Viewport.h"
 
-#include "Engine/Graphics/stru9.h"
+#include "Engine/Graphics/ClippingFunctions.h"
 
 Camera3D *pCamera3D = new Camera3D;
 
 //----- (004361EF) --------------------------------------------------------
 Camera3D::Camera3D() {
-    debug_flags = 0;
+    // debug_flags = 0;
     fRotationYCosine = 0;
     fRotationYSine = 0;
     fRotationZCosine = 0;
@@ -169,7 +169,7 @@ bool Camera3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
 
 //----- (00438258) --------------------------------------------------------
 bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
-    if (pFace->Portal()) return false;
+    // if (pFace->Portal()) return false;
 
     float x = pIndoor->pVertices[pFace->pVertexIDs[0]].x;
     float y = pIndoor->pVertices[pFace->pVertexIDs[0]].y;
@@ -188,7 +188,7 @@ bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
 }
 
 bool Camera3D::is_face_faced_to_cameraODM(ODMFace* pFace, RenderVertexSoft* a2) {
-    if (pFace->Portal()) return false;
+    // if (pFace->Portal()) return false;
 
     if ((a2->vWorldPosition.z - (double)pCamera3D->vCameraPos.z) *
         (double)pFace->pFacePlane.vNormal.z +
@@ -251,8 +251,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
     a1[1].vWorldPosition.x = pLineEnd->vWorldPosition.x;
     a1[1].vWorldPosition.y = pLineEnd->vWorldPosition.y;
     a1[1].vWorldPosition.z = pLineEnd->vWorldPosition.z;
-    if (CullFaceToFrustum(a1, &uOutNumVertices, pVertices, 4, 1,
-                        0) != 1 ||
+    if (CullFaceToCameraFrustum(a1, &uOutNumVertices, pVertices, 4) != 1 ||
         (signed int)uOutNumVertices >= 2) {
         ViewTransform(pVertices, 2);
         Project(pVertices, 2, 0);
@@ -305,65 +304,6 @@ void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
     do_draw_debug_line_sw(&a2[uNumVertices - 1], uDiffuse, a2, uDiffuse, 0, a5);
 }
 
-void Camera3D::DebugDrawPortal(BLVFace *pFace) {
-    Assert(pFace->uNumVertices <= 32);
-
-    RenderVertexSoft sw[32];
-    for (uint i = 0; i < pFace->uNumVertices; ++i) {
-        sw[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-        sw[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-        sw[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-    }
-    ViewTransform(sw, pFace->uNumVertices);
-    Project(sw, pFace->uNumVertices, 0);
-
-    RenderVertexD3D3 v[32];
-    for (uint i = 0; i < pFace->uNumVertices; ++i) {
-        v[i].pos.x = sw[i].vWorldViewProjX;
-        v[i].pos.y = sw[i].vWorldViewProjY;
-        v[i].pos.z = 1.0 - 1.0 / (sw[i].vWorldViewPosition.x * 0.061758894);
-        v[i].rhw = 1.0 / sw[i].vWorldViewPosition.x;
-        v[i].diffuse = 0x80F020F0;
-        v[i].specular = 0;
-        // v[i].texcoord.x = pFace->pVertexUIDs[i] /
-        // (double)pTex->uTextureWidth; v[i].texcoord.y = pFace->pVertexUIDs[i] /
-        // (double)pTex->uTextureHeight;
-        v[i].texcoord.x = 0;
-        v[i].texcoord.y = 0;
-    }
-
-    render->DrawFansTransparent(v, pFace->uNumVertices);
-}
-
-//----- (00437906) --------------------------------------------------------
-void Camera3D::PrepareAndDrawDebugOutline(BLVFace *pFace,
-                                                 unsigned int uDiffuse) {
-    static RenderVertexSoft static_sub_437906_array_50CDD0[64];
-    static bool __init_flag1 = false;
-    if (!__init_flag1) {
-        __init_flag1 = true;
-
-        for (uint i = 0; i < 64; ++i)
-            static_sub_437906_array_50CDD0[i].flt_2C = 0.0f;
-    }
-    if (pFace->uNumVertices) {
-        for (uint i = 0; i < pFace->uNumVertices; i++) {
-            static_sub_437906_array_50CDD0[i].vWorldPosition.x =
-                (double)pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-            static_sub_437906_array_50CDD0[i].vWorldPosition.y =
-                (double)pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-            static_sub_437906_array_50CDD0[i].vWorldPosition.z =
-                (double)pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-            static_sub_437906_array_50CDD0[i].u = (double)pFace->pVertexUIDs[i];
-            static_sub_437906_array_50CDD0[i].v = (double)pFace->pVertexVIDs[i];
-        }
-    }
-    if (engine->config->debug_portal_outlines)
-        debug_outline_sw(static_sub_437906_array_50CDD0, pFace->uNumVertices,
-                         uDiffuse, 0.0);
-}
-// 50D9D0: using guessed type char static_sub_437906_byte_50D9D0_init_flag;
-
 //----- (004376E7) --------------------------------------------------------
 void Camera3D::CreateViewMatrixAndProjectionScale() {
     // set up view transform matrix
@@ -397,11 +337,11 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
-    float HalfAngleX = (odm_fov_rad / 2.0);
-    float HalfAngleY = (atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X));
-    
+    float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
+    float HalfAngleY = (pi / 2.0) - (atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X));
+
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        HalfAngleX = (blv_fov_rad / 2.0);
+        HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
     }
 
     glm::vec3 PlaneVec(0);
@@ -429,9 +369,10 @@ void Camera3D::BuildViewFrustum() {
     FrustumPlanes[3].w = glm::dot(glm::vec3(FrustumPlanes[3]), vCameraPos);
 }
 
+
 //----- (00437376) --------------------------------------------------------
 // culls vertices to face plane
-char Camera3D::CullVertsToPlane(stru154 *faceplane, RenderVertexSoft *vertices,
+bool Camera3D::CullVertsToPlane(stru154 *faceplane, RenderVertexSoft *vertices,
                               unsigned int *pOutNumVertices) {
     double v6;             // st7@3
     int previous;          // esi@6
@@ -499,15 +440,13 @@ char Camera3D::CullVertsToPlane(stru154 *faceplane, RenderVertexSoft *vertices,
         return false;
 }
 
+
+// get rid of this one ??
 //----- (00437285) --------------------------------------------------------
-bool Camera3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
+bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
                                       unsigned int *pOutNumVertices,
                                       RenderVertexSoft *pVertices,
-                                      signed int NumFrustumPlanes, char DebugLines,
-                                      int _unused) {
-    // NumFrustumPlanes usually 4 - top, bottom, left, right - near and far done elsewhere
-    // DebugLines 0 or 1 - 1 when debug lines
-
+                                      signed int NumFrustumPlanes) {
     if (NumFrustumPlanes <= 0) return false;
     if (*pOutNumVertices <= 0) return false;
 
@@ -542,6 +481,112 @@ bool Camera3D::CullFaceToFrustum(RenderVertexSoft *pInVertices,
     return false;
 }
 
+// used for culling to supplied portal frustums
+// very sloppy check when using early break - different points could be passing plane checks
+bool Camera3D::CullFaceToFrustum(struct RenderVertexSoft* a1, unsigned int* pOutNumVertices,
+                    struct RenderVertexSoft* pVertices, struct IndoorCameraD3D_Vec4* frustum,
+                    signed int NumFrustumPlanes) {
+    if (NumFrustumPlanes <= 0) return false;
+    if (*pOutNumVertices <= 0) return false;
+    if (frustum == NULL) return true;
+
+    bool inside = false;
+    for (int p = 0; p < NumFrustumPlanes; p++) {
+        inside = false;
+        for (int v = 0; v < *pOutNumVertices; v++) {
+            float pLinelength1 = a1[v].vWorldPosition.x * frustum[p].x +
+                a1[v].vWorldPosition.y * frustum[p].y +
+                a1[v].vWorldPosition.z * frustum[p].z;
+
+            inside = (pLinelength1 + 5.0) >= frustum[p].dot;  // added 5 for a bit of epsilon
+            // break early when one passing vert is found for this plane
+            if (inside == true) break;  // true for early break -  false for all points must be in
+        }
+        // reject poly if not a single point is inside this plane
+        if (inside == false) break;
+    }
+
+    if (inside == false) {
+        *pOutNumVertices = 0;
+        return false;
+    } else {
+        // copy in vcerts
+        memcpy(pVertices, a1, sizeof(RenderVertexSoft) * *pOutNumVertices);
+        // return true
+        return true;
+    }
+
+    __debugbreak();
+
+    return false;
+}
+
+bool Camera3D::ClipFaceToFrustum(RenderVertexSoft* pInVertices,
+    unsigned int* pOutNumVertices,
+    RenderVertexSoft* pVertices,
+    IndoorCameraD3D_Vec4* CameraFrustrum,
+    signed int NumFrustumPlanes, char DebugLines,
+    int _unused) {
+    // NumFrustumPlanes usually 4 - top, bottom, left, right - near and far done elsewhere
+    // DebugLines 0 or 1 - 1 when debug lines
+
+    RenderVertexSoft* v14;  // eax@8
+    RenderVertexSoft* v15;  // edx@8
+    Vec3_float_ FrustumPlaneVec;         // [sp+18h] [bp-3Ch]@12
+    // float v17; // [sp+44h] [bp-10h]@1
+    // int v18; // [sp+48h] [bp-Ch]@5
+    // stru9 *thisa; // [sp+4Ch] [bp-8h]@1
+    int VertsAdjusted = 0;  // [sp+53h] [bp-1h]@5
+    // bool a6a; // [sp+70h] [bp+1Ch]@5
+
+    // v17 = 0.0;
+    // thisa = engine->pStru9Instance;
+
+    static RenderVertexSoft sr_vertices_50D9D8[64];
+
+    // result = 0;
+    // VertsAdjusted = 0;
+    int MinVertsAllowed = 2 * (DebugLines == 0) + 1;  // 3 normally 1 for debuglines
+    // a6a = 0;
+    // v18 = MinVertsAllowed;
+    if (NumFrustumPlanes <= 0) return false;
+
+    // v12 = *pOutNumVertices;
+    // v13 = (char *)&a4->y;
+
+    // while ( 1 )
+    for (uint i = 0; i < NumFrustumPlanes; ++i) {  // cycle through left,right, top, bottom planes
+        if (i % 2) {
+            v14 = pInVertices;
+            v15 = sr_vertices_50D9D8;
+        }  else {
+            v15 = pInVertices;
+            v14 = sr_vertices_50D9D8;
+        }
+
+        if (i == NumFrustumPlanes - 1) v14 = pVertices;
+        FrustumPlaneVec.x = CameraFrustrum[i].x;
+        FrustumPlaneVec.y = CameraFrustrum[i].y;
+        FrustumPlaneVec.z = CameraFrustrum[i].z;
+
+        engine->pStru9Instance->ClipVertsToFrustumPlane(
+            v15, *pOutNumVertices, v14, pOutNumVertices, &FrustumPlaneVec, CameraFrustrum[i].dot,
+            (char*)&VertsAdjusted, _unused);
+
+        // v12 = *pOutNumVertices;
+        if (*pOutNumVertices < MinVertsAllowed) {
+            *pOutNumVertices = 0;
+            return true;
+        }
+        // result = a6a;
+        // v13 += 24;
+        // if (++i >= FrustumPlanes)
+        //
+    }
+    return VertsAdjusted;
+}
+
+
 //----- (00436BB7) --------------------------------------------------------
 void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, bool fit_into_viewport) {
     double fitted_x;
@@ -549,7 +594,7 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
     double temp_l;
     double fitted_y;
     double temp_b;
-    double temp_t; 
+    double temp_t;
     double RHW;
     double viewscalefactor;
 
@@ -641,7 +686,7 @@ float Camera3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripT
 
 void Camera3D::CullByNearClip(RenderVertexSoft* pverts, uint* unumverts) {
     float near = GetNearClip();
-    
+
     if (!unumverts) return;
     for (uint i = 0; i < *unumverts; ++i) {
         if (pverts[i].vWorldViewPosition.x > near) {

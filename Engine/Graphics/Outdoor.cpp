@@ -80,9 +80,9 @@ int dword_4EC2AC = 7;
 
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
-    pCamera3D->debug_flags = 0;
+    /*pCamera3D->debug_flags = 0;
     if (viewparams->draw_d3d_outlines)
-        pCamera3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;
+        pCamera3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;*/
 
     // if (bRedraw || true /*render->pRenderD3D*/) {
         // pODMRenderParams->RotationToInts();

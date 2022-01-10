@@ -6,7 +6,7 @@
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Lights.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/stru9.h"
+#include "Engine/Graphics/ClippingFunctions.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -73,7 +73,7 @@ bool LightmapBuilder::ApplyLights_OutdoorFace(ODMFace *pFace) {
 
     v3 = Lights.uDefaultAmbientLightLevel + pFace->uShadeType;
     pSlot = 0;
-    Lights.uCurrentAmbientLightLevel = v3 << 16;
+    Lights.uCurrentAmbientLightLevel = v3 /*<< 16*/;
     for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         if (pSlot >= 20) break;
         ApplyLight_ODM((StationaryLight *)&pMobileLightsStack->pLights[i], pFace,
@@ -270,9 +270,7 @@ bool LightmapBuilder::ApplyLights_IndoorFace(unsigned int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     BLVSector *pSector = &pIndoor->pSectors[pFace->uSectorID];
 
-    Lights.uCurrentAmbientLightLevel =
-        (Lights.uDefaultAmbientLightLevel + pSector->uMinAmbientLightLevel)
-        << 16;  // 0x00180000
+    Lights.uCurrentAmbientLightLevel = (Lights.uDefaultAmbientLightLevel + (31 - pSector->uMinAmbientLightLevel))/*<< 16*/;  // 0x00180000
 
     uint uNumLightsApplied = 0;
     for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
