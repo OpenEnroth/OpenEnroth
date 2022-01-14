@@ -691,7 +691,7 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     int treasureLevelMinus1;      // ebx@3
     int current_chance;           // ebx@43
     int tmp_chance;               // ecx@47
-    int v17;                      // ebx@57
+    int artifact_random_id;       // ebx@57
     int v18;                      // edx@62
     unsigned int special_chance;  // edx@86
     unsigned int v26;             // edx@89
@@ -704,7 +704,7 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     int j;              // eax@121
     int val_list[800];  // [sp+Ch] [bp-C88h]@33
     int total_chance;   // [sp+C8Ch] [bp-8h]@33
-    signed int v56;     // [sp+CA0h] [bp+Ch]@55
+    int artifact_found = 0;       // [sp+CA0h] [bp+Ch]@55
     int v57;            // [sp+CA0h] [bp+Ch]@62
 
     if (!out_item) out_item = (ItemGen*)malloc(sizeof(ItemGen));
@@ -843,14 +843,14 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     } else {
         // artifact
         if (treasureLevelMinus1 == 5) {
-            v56 = 0;
-            for (int i = 0; i < 29; ++i) v56 += pParty->pIsArtifactFound[i];
-            v17 = rand() % 29;
-            if ((rand() % 100 < 5) && !pParty->pIsArtifactFound[v17] &&
-                v56 < 13) {
-                pParty->pIsArtifactFound[v17] = 1;
+            for (int i = 0; i < 29; ++i)
+                artifact_found += pParty->pIsArtifactFound[i];
+            artifact_random_id = rand() % 29;
+            if ((rand() % 100 < 5) && !pParty->pIsArtifactFound[artifact_random_id] &&
+                (engine->config->artifact_limit == 0 || artifact_found < engine->config->artifact_limit)) {
+                pParty->pIsArtifactFound[artifact_random_id] = 1;
                 out_item->uAttributes = 0;
-                out_item->uItemID = v17 + ITEM_ARTIFACT_PUCK;
+                out_item->uItemID = ITEM_ARTIFACT_PUCK + artifact_random_id;
                 SetSpecialBonus(out_item);
                 return;
             }
@@ -1273,7 +1273,7 @@ void ItemGen::PopulateRegularBonusMap() {
 void ItemGen::PopulateArtifactBonusMap() {
     int itemId;
     itemId = ITEM_ARTIFACT_PUCK;
-    NEWBONUSINTOARTIFACTLIST(CHARACTER_ATTRIBUTE_STRENGTH, 40);
+    NEWBONUSINTOARTIFACTLIST(CHARACTER_ATTRIBUTE_SPEED, 40);
 
     itemId = ITEM_ARTIFACT_IRON_FEATHER;
     NEWBONUSINTOARTIFACTLIST(CHARACTER_ATTRIBUTE_STRENGTH, 40);

@@ -1946,6 +1946,11 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     unsigned int imgwidth = img->GetWidth();
     auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
+    if (uOutX < 0)
+        uOutX = 0;
+    if (uOutY < 0)
+        uOutY = 0;
+
     for (int xs = 0; xs < imgwidth; xs++) {
         for (int ys = 0; ys < imgheight; ys++) {
             if (pixels[xs + imgwidth * ys] & 0xFF000000) {
@@ -4834,7 +4839,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     }
 }
 
-bool RenderOpenGL::NuklearInitialize() {
+bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     struct nk_context* nk_ctx = nuklear->ctx;
     if (!nk_ctx) {
         log->Warning("Nuklear context is not available");
@@ -4848,12 +4853,15 @@ bool RenderOpenGL::NuklearInitialize() {
     }
 
     nk_font_atlas_init_default(&nk_dev.atlas);
-    nk_dev.atlas.default_font = NuklearLoadFont(NULL, 13);
+    struct nk_tex_font *font = NuklearFontLoad(NULL, 13);
+    nk_dev.atlas.default_font = font->font;
     if (!nk_dev.atlas.default_font) {
         log->Warning("Nuklear default font loading failed");
         NuklearRelease();
         return false;
     }
+
+    memcpy(tfont, font, sizeof(struct nk_tex_font));
 
     if (!nk_init_default(nk_ctx, &nk_dev.atlas.default_font->handle)) {
         log->Warning("Nuklear initialization failed");
@@ -5070,7 +5078,6 @@ void RenderOpenGL::NuklearRelease() {
     glDeleteShader(nk_dev.vert_shdr);
     glDeleteShader(nk_dev.frag_shdr);
     glDeleteProgram(nk_dev.prog);
-    glDeleteTextures(1, &nk_dev.font_tex);
     glDeleteBuffers(1, &nk_dev.vbo);
     glDeleteBuffers(1, &nk_dev.ebo);
     glDeleteVertexArrays(1, &nk_dev.vao);
@@ -5080,9 +5087,14 @@ void RenderOpenGL::NuklearRelease() {
     memset(&nk_dev, 0, sizeof(nk_dev));
 }
 
-struct nk_font* RenderOpenGL::NuklearLoadFont(const char* font_path, size_t font_size) {
-    const void* image; int w, h;
-    struct nk_font* font;
+struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char* font_path, size_t font_size) {
+    const void *image;
+    int w, h;
+    GLuint texid;
+
+    struct nk_tex_font *tfont = new (struct nk_tex_font);
+    if (!tfont)
+        return NULL;
 
     struct nk_font_config cfg = nk_font_config(font_size);
     cfg.merge_mode = nk_false;
@@ -5098,22 +5110,27 @@ struct nk_font* RenderOpenGL::NuklearLoadFont(const char* font_path, size_t font
     nk_font_atlas_begin(&nk_dev.atlas);
 
     if (!font_path)
-        font = nk_font_atlas_add_default(&nk_dev.atlas, font_size, 0);
+        tfont->font = nk_font_atlas_add_default(&nk_dev.atlas, font_size, 0);
     else
-        font = nk_font_atlas_add_from_file(&nk_dev.atlas, font_path, font_size, &cfg);
+        tfont->font = nk_font_atlas_add_from_file(&nk_dev.atlas, font_path, font_size, &cfg);
 
     image = nk_font_atlas_bake(&nk_dev.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
 
-    glGenTextures(1, &nk_dev.font_tex);
-    glBindTexture(GL_TEXTURE_2D, nk_dev.font_tex);
+    glGenTextures(1, &texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)w, (GLsizei)h, 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)w, (GLsizei)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
-    nk_font_atlas_end(&nk_dev.atlas, nk_handle_id(nk_dev.font_tex), &nk_dev.null);
+    tfont->texid = texid;
+    nk_font_atlas_end(&nk_dev.atlas, nk_handle_id(texid), &nk_dev.null);
 
-    return font;
+    return tfont;
+}
+
+void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
+    if (tfont)
+        glDeleteTextures(1, &tfont->texid);
 }
 
 struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {

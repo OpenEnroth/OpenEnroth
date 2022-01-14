@@ -4761,10 +4761,11 @@ void Render::DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon)
 }
 
 bool Render::NuklearCreateDevice() { return false; }
-bool Render::NuklearInitialize() { return false; }
+bool Render::NuklearInitialize(struct nk_tex_font *tfont) { return false; }
 bool Render::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) { return false; }
 void Render::NuklearRelease() {}
-struct nk_font* Render::NuklearLoadFont(const char *font_path, size_t font_size) { return NULL; }
+struct nk_tex_font *Render::NuklearFontLoad(const char *font_path, size_t font_size) { return NULL; }
+void Render::NuklearFontFree(struct nk_tex_font *tfont) {}
 struct nk_image Render::NuklearImageLoad(Image* img) { return nk_image_id(0);  }
 void Render::NuklearImageFree(Image *img) {}
 

@@ -103,6 +103,7 @@ class EngineConfig {
 
     int gamma = 4;
     int max_flight_height = 4000;
+    int artifact_limit = 13;
 
     bool no_intro = false;
     bool no_logo = false;

@@ -439,23 +439,18 @@ class Movie : public IMovie {
                 assert(false);  // unknown stream
             }
         } while (avpacket->stream_index != video.stream_idx ||
-                 avpacket->pts != desired_frame_number);
+                 avpacket->pts <= desired_frame_number);
 
         av_packet_free(&avpacket);
 
         return video.last_frame;
     }
 
-    virtual void PlayBink() {
+    virtual void PlayBink(Rect rect) {
         // fix for #39 - choppy sound with bink
 
         AVPacket packet;
 
-        Rect rect;
-        rect.x = 0;
-        rect.y = 0;
-        rect.z = rect.x + window->GetWidth();
-        rect.w = rect.y + window->GetHeight();
 
         // create texture
         Texture* tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
@@ -473,9 +468,11 @@ class Movie : public IMovie {
         logger->Info("Audio Packets Queued");
 
         // reset video to start
-        int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+        int err = avformat_seek_file(format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
+        //int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
         if (err < 0) {
             logger->Info("Seek to start failed! - Exit Movie");
+            tex->Release();
             return;
         }
         start_time = std::chrono::system_clock::now();
@@ -842,18 +839,25 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
     pMovie_Track->Play();
 
+    float ratio_width = (float)window->GetWidth() / pMovie_Track->GetWidth();
+    float ratio_height = (float)window->GetHeight() / pMovie_Track->GetHeight();
+    float ratio = ratio_width < ratio_height ? ratio_width : ratio_height;
+
+    float w = pMovie_Track->GetWidth() * ratio;
+    float h = pMovie_Track->GetHeight() * ratio;
+
     Rect rect;
-    rect.x = 0;
-    rect.y = 0;
-    rect.z = rect.x + window->GetWidth();
-    rect.w = rect.y + window->GetHeight();
+    rect.x = (float)window->GetWidth() / 2 - w / 2;
+    rect.y = (float)window->GetHeight() / 2 - h / 2;
+    rect.z = rect.x + w;
+    rect.w = rect.y + h;
 
     // create texture
     Texture *tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
 
     if (pMovie->GetFormat() == "bink") {
         logger->Info("bink file");
-        pMovie->PlayBink();
+        pMovie->PlayBink(rect);
     } else {
         while (true) {
             MessageLoopWithWait();

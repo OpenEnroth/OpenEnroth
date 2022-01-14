@@ -39,6 +39,7 @@ namespace Io {
         bool IsAdventurerBackcycleToggled() const;
         bool IsSpellBackcycleToggled() const;
         bool IsCastOnClickToggled() const;
+        bool IsKeyHeld(GameKey key) const;
 
         void GenerateInputActions();
 

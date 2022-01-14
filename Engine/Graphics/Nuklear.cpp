@@ -36,9 +36,15 @@ enum WIN_STATE {
 
 struct hotkey {
     Io::GameKey key;
+    bool mod_control;
+    bool mod_shift;
+    bool mod_alt;
     int callback;
+    WindowType winType;
 };
-std::vector <struct hotkey> hotkeys;
+
+struct nk_tex_font font_default;
+std::vector<struct hotkey> hotkeys;
 
 struct img {
     Image *asset;
@@ -46,18 +52,27 @@ struct img {
 };
 
 struct context {
-    std::vector<struct img *> img;
-    WindowType winType;
-    WIN_STATE state;
     const char *tmpl;
-    Nuklear::NUKLEAR_MODE mode;
-    std::vector<void *> floats;
     int ui_draw;
     int ui_release;
+    std::vector<struct img *> imgs;
+    std::vector<struct nk_tex_font *> fonts;
+    std::vector<void *> tmp;
+    WindowType winType;
+    WIN_STATE state;
+    Nuklear::NUKLEAR_MODE mode;
 };
 
 struct context wins[WINDOW_DebugMenu] = {};
 WindowType currentWin = WINDOW_null;
+
+enum lua_nk_color_type {
+    LUA_COLOR_ANY,
+    LUA_COLOR_RGBA,
+    LUA_COLOR_RGBAF,
+    LUA_COLOR_HSVA,
+    LUA_COLOR_HSVAF
+};
 
 enum lua_nk_style_type {
     lua_nk_style_type_unknown,
@@ -101,7 +116,7 @@ std::shared_ptr<Nuklear> Nuklear::Initialize() {
         return nullptr;
     }
 
-    if (!render->NuklearInitialize()) {
+    if (!render->NuklearInitialize(&font_default)) {
         delete nuklear->ctx;
         return nullptr;
     }
@@ -717,8 +732,18 @@ int Nuklear::KeyEvent(Io::GameKey key) {
     for (auto it = hotkeys.begin(); it < hotkeys.end(); it++) {
         struct hotkey hk = *it;
         if (hk.key == key) {
+            if (hk.mod_control && !engine->keyboardInputHandler->IsKeyHeld(GameKey::Control))
+                continue;
+
+            if (hk.mod_shift && !engine->keyboardInputHandler->IsKeyHeld(GameKey::Shift))
+                continue;
+
+            if (hk.mod_alt && !engine->keyboardInputHandler->IsKeyHeld(GameKey::Alt))
+                continue;
+
             lua_rawgeti(lua, LUA_REGISTRYINDEX, hk.callback);
-            lua_pcall(lua, 0, 0, 0);
+            lua_pushlightuserdata(lua, (void *)&wins[hk.winType]);
+            lua_pcall(lua, 1, 0, 0);
 
             return 1;
         }
@@ -762,7 +787,7 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
         }
 
         int i = 0;
-        for (auto it = wins[winType].img.begin(); it != wins[winType].img.end(); it++, i++) {
+        for (auto it = wins[winType].imgs.begin(); it != wins[winType].imgs.end(); it++, i++) {
             if ((*it)->asset) {
                 render->NuklearImageFree((*it)->asset);
                 if ((*it)->asset->Release())
@@ -773,8 +798,14 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
                 delete *it;
             }
         }
-        wins[winType].img.clear();
-        wins[winType].img.swap(wins[winType].img);
+        wins[winType].imgs.clear();
+        wins[winType].imgs.swap(wins[winType].imgs);
+
+        for (auto itf = wins[winType].fonts.begin(); itf != wins[winType].fonts.end(); itf++, i++) {
+            delete *itf;
+        }
+        wins[winType].fonts.clear();
+        wins[winType].fonts.swap(wins[winType].fonts);
 
         if (wins[winType].ui_draw >= 0) {
             luaL_unref(lua, LUA_REGISTRYINDEX, wins[winType].ui_draw);
@@ -832,6 +863,7 @@ void Nuklear::Destroy() {
     if (!nuklear)
         return;
 
+    render->NuklearFontFree(&font_default);
     render->NuklearRelease();
     LuaRelease();
     for (auto it = lua_nk_styles.begin(); it < lua_nk_styles.end(); it++) {
@@ -849,6 +881,19 @@ void Nuklear::Destroy() {
 
 Nuklear::NUKLEAR_MODE Nuklear::Mode(WindowType winType) {
     return wins[winType].mode;
+}
+
+static int lua_check_args(lua_State *L, bool condition) {
+    if (lua_gettop(L) == 0)
+        return luaL_argerror(L, 1, lua_pushfstring(L, "context is absent"));
+
+    if (!lua_isuserdata(L, 1))
+        return luaL_argerror(L, 1, lua_pushfstring(L, "context is invalid"));
+
+    if (!condition)
+        return luaL_argerror(L, -2, lua_pushfstring(L, "invalid arguments count"));
+
+    return 0;
 }
 
 static void lua_dumptable(lua_State *L, int i) {
@@ -934,10 +979,11 @@ bool Nuklear::Draw(NUKLEAR_STAGE stage, WindowType winType, int id) {
             //render->Present();
             nk_input_begin(ctx);
 
-            for (auto it = wins[winType].floats.begin(); it < wins[winType].floats.end(); it++) {
+            for (auto it = wins[winType].tmp.begin(); it < wins[winType].tmp.end(); it++) {
                 free(*it);
             }
-            wins[winType].floats.clear();
+            wins[winType].tmp.clear();
+            wins[winType].tmp.swap(wins[winType].tmp);
         }
     }
 
@@ -1022,7 +1068,7 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
 }
 
 static int lua_log_info(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
 
     const char *str = lua_tostring(lua, 2);
     logger->Info("Nuklear LUA: %s", str);
@@ -1031,7 +1077,7 @@ static int lua_log_info(lua_State *L) {
 }
 
 static int lua_log_warning(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
 
     const char *str = lua_tostring(lua, 2);
     logger->Warning("Nuklear LUA: %s", str);
@@ -1059,7 +1105,7 @@ static int lua_nk_parse_vec2(lua_State *L, int idx, struct nk_vec2 *vec) {
 
         lua_pop(L, 1);
     } else {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "vec2 format is wrong"));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "vec2 format is wrong"));
     }
 
     return 0;
@@ -1085,7 +1131,7 @@ static int lua_nk_parse_ratio(lua_State *L, int idx, std::vector<float> *ratio) 
 
         lua_pop(L, 1);
     } else {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "ratio format is wrong"));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "ratio format is wrong"));
     }
 
     return 0;
@@ -1117,7 +1163,7 @@ static int lua_nk_parse_rect(lua_State *L, int idx, struct nk_rect *rect) {
 
         lua_pop(L, 1);
     } else {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "rect format is wrong"));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "rect format is wrong"));
     }
 
     return 0;
@@ -1132,7 +1178,7 @@ static int lua_nk_parse_align_header(lua_State *L, int idx, nk_flags *flag) {
     else if (!strcmp(strflag, "right"))
         *flag = NK_HEADER_RIGHT;
     else
-        return luaL_argerror(L, -1, lua_pushfstring(L, "header align '%s' is unknown", strflag));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "header align '%s' is unknown", strflag));
 
     return 0;
 }
@@ -1159,38 +1205,75 @@ static int lua_nk_parse_align_text(lua_State *L, int idx, nk_flags *flag) {
     else if (!strcmp(strflag, "right"))
         *flag = NK_TEXT_RIGHT;
     else
-        return luaL_argerror(L, -1, lua_pushfstring(L, "text align '%s' is unknown", strflag));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "text align '%s' is unknown", strflag));
 
     return 0;
 }
 
-static int lua_nk_parse_color(lua_State *L, int idx, nk_color *color) {
+static int lua_nk_parse_color(lua_State *L, int idx, nk_color *color, lua_nk_color_type type) {
+    int r = -1, g = -1, b = -1, a = 255, h = -1, s = -1, v = -1;
+    float f_r = -1, f_g = -1, f_b = -1, f_a = 255, f_h = -1, f_s = -1, f_v = -1;
+
     if (lua_istable(L, idx)) {
         lua_pushvalue(L, idx);
         lua_pushnil(L);
-        color->a = 255;
         while (lua_next(L, -2)) {
             lua_pushvalue(L, -2);
-            int i = luaL_checkinteger(L, -1);
-            switch (i) {
-                case(1):
-                    color->r = (nk_byte)luaL_checkinteger(L, -2);
-                    break;
-                case(2):
-                    color->g = (nk_byte)luaL_checkinteger(L, -2);
-                    break;
-                case(3):
-                    color->b = (nk_byte)luaL_checkinteger(L, -2);
-                    break;
-                case(4):
-                    color->a = (nk_byte)luaL_checkinteger(L, -2);
-                    break;
+            if (lua_isnumber(L, -1)) {
+                int i = luaL_checkinteger(L, -1);
+                switch (i) {
+                    case(1):
+                        r = luaL_checkinteger(L, -2);
+                        break;
+                    case(2):
+                        g = luaL_checkinteger(L, -2);
+                        break;
+                    case(3):
+                        b = luaL_checkinteger(L, -2);
+                        break;
+                    case(4):
+                        a = luaL_checkinteger(L, -2);
+                        break;
+                }
+            } else {
+                const char *key = luaL_checkstring(L, -1);
+
+                if (!strcmp(key, "r")) {
+                    r = luaL_checkinteger(L, -2);
+                } else if (!strcmp(key, "g")) {
+                    g = luaL_checkinteger(L, -2);
+                } else if (!strcmp(key, "b")) {
+                    b = luaL_checkinteger(L, -2);
+                } else if (!strcmp(key, "a")) {
+                    a = luaL_checkinteger(L, -2);
+                } else if (!strcmp(key, "h")) {
+                    h = luaL_checkinteger(L, -2);
+                } else if (!strcmp(key, "s")) {
+                    s = luaL_checkinteger(L, -2);
+                } else if (!strcmp(key, "v")) {
+                    v = luaL_checkinteger(L, -2);
+                } else if (!strcmp(key, "fr")) {
+                    f_r = (float)luaL_checknumber(L, -2);
+                } else if (!strcmp(key, "fg")) {
+                    f_g = (float)luaL_checknumber(L, -2);
+                } else if (!strcmp(key, "fb")) {
+                    f_b = (float)luaL_checknumber(L, -2);
+                } else if (!strcmp(key, "fa")) {
+                    f_a = (float)luaL_checknumber(L, -2);
+                } else if (!strcmp(key, "fh")) {
+                    f_h = (float)luaL_checknumber(L, -2);
+                } else if (!strcmp(key, "fs")) {
+                    f_s = (float)luaL_checknumber(L, -2);
+                } else if (!strcmp(key, "fv")) {
+                    f_v = (float)luaL_checknumber(L, -2);
+                }
             }
+
             lua_pop(L, 2);
         }
 
         lua_pop(L, 1);
-        return 0;
+
     } else if (lua_isstring(L, idx)) {
         bool is_hex_color = true;
         const char *strcolor = luaL_checkstring(L, idx);
@@ -1204,42 +1287,141 @@ static int lua_nk_parse_color(lua_State *L, int idx, nk_color *color) {
             }
 
             if (is_hex_color) {
-                int r, g, b, a = 255;
                 sscanf(strcolor, "#%02x%02x%02x", &r, &g, &b);
 
                 if (len == 9)
                     sscanf(strcolor + 7, "%02x", &a);
-
-                color->r = r;
-                color->g = g;
-                color->b = b;
-                color->a = a;
-                return 0;
             }
         }
     }
 
-    return luaL_argerror(L, -1, lua_pushfstring(L, "unrecognized color format"));
+    switch (type) {
+        case(LUA_COLOR_RGBA):
+            if (r >= 0 && g >= 0 && b >= 0 && a >= 0 && r <= 255 && g <= 255 && b <= 255 && a <= 255) {
+                *color = nk_rgba(r, g, b, a);
+                return 0;
+            }
+            break;
+        case(LUA_COLOR_RGBAF):
+            if (f_r >= 0 && f_g >= 0 && f_b >= 0 && f_a >= 0 && f_r <= 255 && f_g <= 255 && f_b <= 255 && f_a <= 255) {
+                *color = nk_rgba_f(f_r, f_g, f_b, f_a);
+                return 0;
+            }
+            break;
+        case(LUA_COLOR_HSVA):
+            if (h >= 0 && s >= 0 && v >= 0 && a >= 0 && h <= 255 && s <= 255 && v <= 255 && a <= 255) {
+                *color = nk_hsva(h, s, v, a);
+                return 0;
+            }
+        case(LUA_COLOR_HSVAF):
+            if (f_h >= 0 && f_s >= 0 && f_v >= 0 && f_a >= 0 && f_h <= 255 && f_s <= 255 && f_v <= 255 && f_a <= 255) {
+                *color = nk_hsva_f(f_h, f_s, f_v, f_a);
+                return 0;
+            }
+        default:
+            if (r >= 0 && g >= 0 && b >= 0 && a >= 0 && r <= 255 && g <= 255 && b <= 255 && a <= 255) {
+                *color = nk_rgba(r, g, b, a);
+                return 0;
+            } else if (h >= 0 && s >= 0 && v >= 0 && a >= 0 && h <= 255 && s <= 255 && v <= 255 && a <= 255) {
+                *color = nk_hsva(h, s, v, a);
+                return 0;
+            } else if (f_r >= 0 && f_g >= 0 && f_b >= 0 && f_a >= 0 && f_r <= 255 && f_g <= 255 && f_b <= 255 && f_a <= 255) {
+                *color = nk_rgba_f(f_r, f_g, f_b, f_a);
+                return 0;
+            } else if (f_h >= 0 && f_s >= 0 && f_v >= 0 && f_a >= 0 && f_h <= 255 && f_s <= 255 && f_v <= 255 && f_a <= 255) {
+                *color = nk_hsva_f(f_h, f_s, f_v, f_a);
+                return 0;
+            }
+            break;
+    }
+
+    return luaL_argerror(L, idx, lua_pushfstring(L, "unrecognized color format"));
+}
+
+static int lua_nk_parse_color(lua_State *L, int idx, nk_color *color) {
+    return lua_nk_parse_color(L, idx, color, LUA_COLOR_ANY);
+}
+
+static void lua_nk_push_color(lua_State *L, nk_color color) {
+    float f_r, f_g, f_b, f_a, f_h, f_s, f_v;
+    int h, s, v;
+
+    nk_color_f(&f_r, &f_g, &f_b, &f_a, color);
+    nk_color_hsv_i(&h, &s, &v, color);
+    nk_color_hsv_f(&f_h, &f_s, &f_v, color);
+
+    lua_newtable(L);
+    lua_pushliteral(L, "r");
+    lua_pushinteger(L, color.r);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "g");
+    lua_pushinteger(L, color.g);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "b");
+    lua_pushinteger(L, color.b);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "a");
+    lua_pushinteger(L, color.a);
+    lua_rawset(L, -3);
+
+    lua_pushliteral(L, "fr");
+    lua_pushnumber(L, f_r);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "fg");
+    lua_pushnumber(L, f_g);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "fb");
+    lua_pushnumber(L, f_b);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "fa");
+    lua_pushnumber(L, f_a);
+    lua_rawset(L, -3);
+
+    lua_pushliteral(L, "h");
+    lua_pushinteger(L, h);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "s");
+    lua_pushinteger(L, s);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "v");
+    lua_pushinteger(L, v);
+    lua_rawset(L, -3);
+
+    lua_pushliteral(L, "fh");
+    lua_pushnumber(L, f_h);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "fs");
+    lua_pushnumber(L, f_s);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "fv");
+    lua_pushnumber(L, f_v);
+    lua_rawset(L, -3);
+}
+
+static void lua_nk_push_colorf(lua_State *L, nk_colorf colorf) {
+    nk_color color = nk_rgba_cf(colorf);
+
+    lua_nk_push_color(L, color);
 }
 
 static int lua_nk_parse_image(struct context *w, lua_State *L, int idx, struct nk_image **image) {
     size_t slot = luaL_checkinteger(L, idx);
-    if (slot >= 0 && slot < w->img.size() && w->img[slot]->asset) {
-        *image = &w->img[slot]->nk;
+    if (slot >= 0 && slot < w->imgs.size() && w->imgs[slot]->asset) {
+        *image = &w->imgs[slot]->nk;
         return 0;
     }
 
-    return luaL_argerror(L, -1, lua_pushfstring(L, "asset is wrong"));
+    return luaL_argerror(L, idx, lua_pushfstring(L, "asset is wrong"));
 }
 
 static int lua_nk_parse_image_asset(struct context *w, lua_State *L, int idx, Image **asset) {
     size_t slot = luaL_checkinteger(L, idx);
-    if (slot >= 0 && slot < w->img.size() && w->img[slot]->asset) {
-        *asset = w->img[slot]->asset;
+    if (slot >= 0 && slot < w->imgs.size() && w->imgs[slot]->asset) {
+        *asset = w->imgs[slot]->asset;
         return 0;
     }
 
-    return luaL_argerror(L, -1, lua_pushfstring(L, "asset is wrong"));
+    return luaL_argerror(L, idx, lua_pushfstring(L, "asset is wrong"));
 }
 
 static int lua_nk_parse_layout_format(lua_State *L, int idx, nk_layout_format *fmt) {
@@ -1249,7 +1431,7 @@ static int lua_nk_parse_layout_format(lua_State *L, int idx, nk_layout_format *f
     } else if (!strcmp(strfmt, "static")) {
         *fmt = NK_STATIC;
     } else {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "unrecognized layout format '%s'", strfmt));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "unrecognized layout format '%s'", strfmt));
     }
 
     return 0;
@@ -1262,7 +1444,7 @@ static int lua_nk_parse_modifiable(lua_State *L, int idx, nk_bool *modifiable) {
     } else if (!strcmp(strmod, "fixed")) {
         *modifiable = NK_FIXED;
     } else {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "unrecognized modifiable '%s'", strmod));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "unrecognized modifiable '%s'", strmod));
     }
 
     return 0;
@@ -1275,7 +1457,7 @@ static int lua_nk_parse_popup_type(lua_State *L, int idx, nk_popup_type *type) {
     } else if (!strcmp(strtype, "static")) {
         *type = NK_POPUP_STATIC;
     } else {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "unrecognized popup type '%s'", strtype));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "unrecognized popup type '%s'", strtype));
     }
 
     return 0;
@@ -1300,11 +1482,11 @@ static int lua_nk_parse_style(lua_State *L, int cidx, int pidx, lua_nk_style_typ
                 }
             }
 
-            return luaL_argerror(L, -1, lua_pushfstring(L, "unknown property '%s'", property));
+            return luaL_argerror(L, pidx, lua_pushfstring(L, "unknown property '%s'", property));
         }
     }
 
-    return luaL_argerror(L, -1, lua_pushfstring(L, "unknown component '%s", component));
+    return luaL_argerror(L, cidx, lua_pushfstring(L, "unknown component '%s", component));
 }
 
 static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, nk_style_button *style) {
@@ -1441,10 +1623,10 @@ static int lua_nk_parse_window_flags(lua_State *L, int idx, nk_flags *flags) {
             else if (!strcmp(flag, "no_input"))
                 *flags |= NK_WINDOW_NO_INPUT;
             else
-                return luaL_argerror(L, -1, lua_pushfstring(L, "unrecognized window flag '%s'", flag));
+                return luaL_argerror(L, idx, lua_pushfstring(L, "unrecognized window flag '%s'", flag));
         }
     } else {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "wrong window flag argument"));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "wrong window flag argument"));
     }
 
     return 0;
@@ -1479,7 +1661,7 @@ static int lua_nk_parse_symbol(lua_State *L, int idx, nk_symbol_type *symbol) {
     else if (!strcmp(strsymbol, "triangle_max"))
         *symbol = nk_symbol_type::NK_SYMBOL_MAX;
     else
-        return luaL_argerror(L, -1, lua_pushfstring(L, "symbol '%s' is unknown", strsymbol));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "symbol '%s' is unknown", strsymbol));
 
     return 0;
 }
@@ -1492,7 +1674,7 @@ static int lua_nk_parse_collapse_states(lua_State *L, int idx, nk_collapse_state
     else if (!strcmp(strstate, "maximized"))
         *states = NK_MAXIMIZED;
     else
-        return luaL_argerror(L, -1, lua_pushfstring(L, "state '%s' is unknown", strstate));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "state '%s' is unknown", strstate));
 
     return 0;
 }
@@ -1505,13 +1687,13 @@ static int lua_nk_parse_tree_type(lua_State *L, int idx, nk_tree_type *type) {
     else if (!strcmp(strtype, "node"))
         *type = NK_TREE_NODE;
     else
-        return luaL_argerror(L, -1, lua_pushfstring(L, "type '%s' is unknown", strtype));
+        return luaL_argerror(L, idx, lua_pushfstring(L, "type '%s' is unknown", strtype));
 
     return 0;
 }
 
 static int lua_nk_begin(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 4 && lua_gettop(L) <= 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 4 && lua_gettop(L) <= 5));
 
     const char *name, *title = NULL;
     nk_flags flags = 0;
@@ -1530,7 +1712,7 @@ static int lua_nk_begin(lua_State *L) {
 }
 
 static int lua_nk_button_color(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     struct nk_color color;
     lua_check_ret(lua_nk_parse_color(L, 2, &color));
@@ -1543,7 +1725,7 @@ static int lua_nk_button_color(lua_State *L) {
 }
 
 static int lua_nk_button_image(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 2 && lua_gettop(L) <= 5 && lua_gettop(L) != 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2 && lua_gettop(L) <= 5 && lua_gettop(L) != 3));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     struct nk_style_button style = {};
@@ -1581,7 +1763,7 @@ static int lua_nk_button_image(lua_State *L) {
 }
 
 static int lua_nk_button_label(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 2 && lua_gettop(L) <= 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2 && lua_gettop(L) <= 3));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     struct nk_style_button style = {};
@@ -1601,7 +1783,7 @@ static int lua_nk_button_label(lua_State *L) {
 }
 
 static int lua_nk_button_set_behavior(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     enum nk_button_behavior behaviour;
     const char *strbehaviour = luaL_checkstring(L, 2);
@@ -1610,7 +1792,7 @@ static int lua_nk_button_set_behavior(lua_State *L) {
     else if (!strcmp(strbehaviour, "repeater"))
         behaviour = NK_BUTTON_REPEATER;
     else
-        return luaL_argerror(L, -1, lua_pushfstring(L, "behaviour '%s' is unknown", strbehaviour));
+        return luaL_argerror(L, 2, lua_pushfstring(L, "behaviour '%s' is unknown", strbehaviour));
 
     nk_button_set_behavior(nuklear->ctx, behaviour);
 
@@ -1618,7 +1800,7 @@ static int lua_nk_button_set_behavior(lua_State *L) {
 }
 
 static int lua_nk_button_symbol(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 2 && lua_gettop(L) <= 5 && lua_gettop(L) != 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2 && lua_gettop(L) <= 5 && lua_gettop(L) != 3));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     struct nk_style_button style = {};
@@ -1655,7 +1837,7 @@ static int lua_nk_button_symbol(lua_State *L) {
 }
 
 static int lua_nk_chart_begin(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
 
     nk_chart_type type;
     const char *strtype = luaL_checkstring(L, 2);
@@ -1663,14 +1845,14 @@ static int lua_nk_chart_begin(lua_State *L) {
     float min = (float)luaL_checknumber(L, 4);
     float max = (float)luaL_checknumber(L, 5);
 
-    if (!strcmp(strtype, "chart_lines"))
+    if (!strcmp(strtype, "lines"))
         type = NK_CHART_LINES;
-    else if (!strcmp(strtype, "chart_column"))
+    else if (!strcmp(strtype, "column"))
         type = NK_CHART_COLUMN;
-    else if (!strcmp(strtype, "chart_max"))
+    else if (!strcmp(strtype, "max"))
         type = NK_CHART_MAX;
     else
-        return luaL_argerror(L, -1, lua_pushfstring(L, "type '%s' is unknown", strtype));
+        return luaL_argerror(L, 2, lua_pushfstring(L, "type '%s' is unknown", strtype));
 
     bool ret = nk_chart_begin(nuklear->ctx, type, num, min, max);
 
@@ -1680,7 +1862,7 @@ static int lua_nk_chart_begin(lua_State *L) {
 }
 
 static int lua_nk_chart_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_chart_end(nuklear->ctx);
 
@@ -1688,7 +1870,7 @@ static int lua_nk_chart_end(lua_State *L) {
 }
 
 static int lua_nk_chart_push(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     float value = (float)luaL_checknumber(L, 2);
 
@@ -1706,7 +1888,7 @@ static int lua_nk_chart_push(lua_State *L) {
 }
 
 static int lua_nk_checkbox(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     const char *label = luaL_checkstring(L, 2);
     nk_bool value = lua_toboolean(L, 3);
@@ -1718,8 +1900,93 @@ static int lua_nk_checkbox(lua_State *L) {
     return 2;
 }
 
+static int lua_nk_color_picker(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    nk_color color;
+    nk_color_format format;
+    const char *strformat = luaL_checkstring(L, 3);
+    lua_check_ret(lua_nk_parse_color(L, 2, &color));
+
+    if (!strcmp(strformat, "rgb"))
+        format = NK_RGB;
+    else if (!strcmp(strformat, "rgba"))
+        format = NK_RGBA;
+    else
+        return luaL_argerror(L, 3, lua_pushfstring(L, "wrong color format"));
+
+    nk_colorf colorf = nk_color_cf(color);
+    colorf = nk_color_picker(nuklear->ctx, colorf, format);
+
+    lua_nk_push_colorf(L, colorf);
+
+    return 1;
+}
+
+static int lua_nk_color_update(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    nk_color color;
+    const char *strformat = luaL_checkstring(L, 3);
+
+    if (!strcmp(strformat, "rgba")) {
+        lua_check_ret(lua_nk_parse_color(L, 2, &color, LUA_COLOR_RGBA));
+    } else if (!strcmp(strformat, "rgbaf")) {
+        lua_check_ret(lua_nk_parse_color(L, 2, &color, LUA_COLOR_RGBAF));
+    } else if (!strcmp(strformat, "hsva")) {
+        lua_check_ret(lua_nk_parse_color(L, 2, &color, LUA_COLOR_HSVA));
+    } else if (!strcmp(strformat, "hsvaf")) {
+        lua_check_ret(lua_nk_parse_color(L, 2, &color, LUA_COLOR_HSVAF));
+    } else {
+        return luaL_argerror(L, 3, lua_pushfstring(L, "wrong color format"));
+    }
+
+    lua_nk_push_color(L, color);
+
+    return 1;
+}
+
+static int lua_nk_combo(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
+
+    struct context *w = (struct context *)lua_touserdata(L, 1);
+    char **items;
+    int count = 0;
+    int selected = luaL_checkinteger(L, 3);
+    int item_height = luaL_checkinteger(L, 4);
+    struct nk_vec2 size;
+
+    lua_check_ret(lua_nk_parse_vec2(L, 5, &size));
+
+    if (lua_istable(L, 2)) {
+        count = lua_objlen(L, 2);
+        lua_pushvalue(L, 2);
+        lua_pushnil(L);
+        items = (char **)calloc(count, sizeof(char*));
+        int i = 0;
+        while (lua_next(L, -2)) {
+            const char *val = luaL_checkstring(L, -1);
+
+            items[i] = (char *)val;
+
+            i++;
+            lua_pop(L, 1);
+        }
+
+        w->tmp.push_back((void *)items);
+    } else {
+        return luaL_argerror(L, 2, lua_pushfstring(L, "wrong items"));
+    }
+
+    int ret = nk_combo(nuklear->ctx, (const char **)items, count, selected, item_height, size);
+
+    lua_pushinteger(L, ret);
+
+    return 1;
+}
+
 static int lua_nk_combo_begin_color(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     struct nk_color color;
     struct nk_vec2 size;
@@ -1735,7 +2002,7 @@ static int lua_nk_combo_begin_color(lua_State *L) {
 }
 
 static int lua_nk_combo_begin_image(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 3 && lua_gettop(L) <= 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 3 && lua_gettop(L) <= 4));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     struct nk_image *img;
@@ -1761,7 +2028,7 @@ static int lua_nk_combo_begin_image(lua_State *L) {
 }
 
 static int lua_nk_combo_begin_label(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     struct nk_vec2 size;
     const char *label = luaL_checkstring(L, 2);
@@ -1775,7 +2042,7 @@ static int lua_nk_combo_begin_label(lua_State *L) {
 }
 
 static int lua_nk_combo_begin_symbol(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 3 && lua_gettop(L) <= 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 3 && lua_gettop(L) <= 4));
 
     nk_symbol_type symbol = nk_symbol_type::NK_SYMBOL_NONE;
     struct nk_vec2 size;
@@ -1798,8 +2065,16 @@ static int lua_nk_combo_begin_symbol(lua_State *L) {
     return 1;
 }
 
+static int lua_nk_combo_close(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
+
+    nk_combo_close(nuklear->ctx);
+
+    return 0;
+}
+
 static int lua_nk_combo_item_image(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     struct nk_image *img;
@@ -1816,7 +2091,7 @@ static int lua_nk_combo_item_image(lua_State *L) {
 }
 
 static int lua_nk_image_dimensions(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     Image *asset = NULL;
@@ -1831,7 +2106,7 @@ static int lua_nk_image_dimensions(lua_State *L) {
 }
 
 static int lua_nk_combo_item_label(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     nk_flags flag = 0;
     const char *label = luaL_checkstring(L, 2);
@@ -1844,7 +2119,7 @@ static int lua_nk_combo_item_label(lua_State *L) {
 }
 
 static int lua_nk_combo_item_symbol(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     nk_symbol_type symbol = nk_symbol_type::NK_SYMBOL_NONE;
     nk_flags flag = 0;
@@ -1860,7 +2135,7 @@ static int lua_nk_combo_item_symbol(lua_State *L) {
 }
 
 static int lua_nk_combo_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_combo_end(nuklear->ctx);
 
@@ -1868,7 +2143,7 @@ static int lua_nk_combo_end(lua_State *L) {
 }
 
 static int lua_nk_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_end(nuklear->ctx);
 
@@ -1876,7 +2151,7 @@ static int lua_nk_end(lua_State *L) {
 }
 
 static int lua_nk_group_begin(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     const char *title = luaL_checkstring(L, 2);
     nk_flags flags;
@@ -1890,31 +2165,33 @@ static int lua_nk_group_begin(lua_State *L) {
 }
 
 static int lua_nk_group_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_group_end(nuklear->ctx);
 
     return 0;
 }
 
-static int lua_nk_load_font(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+static int lua_nk_load_font_from_file(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
+    struct context *w = (struct context *)lua_touserdata(L, 1);
     const char *fontname = luaL_checkstring(L, 2);
     size_t fontsize = luaL_checkinteger(L, 3);
     std::string fontpath = MakeDataPath("fonts", fontname);
 
-    struct nk_font *font = render->NuklearLoadFont(fontpath.c_str(), fontsize);
-    if (font)
-        nk_style_set_font(nuklear->ctx, &font->handle);
+    struct nk_tex_font *font = render->NuklearFontLoad(fontpath.c_str(), fontsize);
+    if (font) {
+        w->fonts.push_back(font);
+    }
 
-    lua_pushboolean(L, !!font);
+    lua_pushlightuserdata(L, font);
 
     return 1;
 }
 
 static int lua_nk_label(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 2 && lua_gettop(L) <= 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2 && lua_gettop(L) <= 3));
 
     nk_flags flag = 0;
     const char *label = luaL_checkstring(L, 2);
@@ -1930,7 +2207,7 @@ static int lua_nk_label(lua_State *L) {
 }
 
 static int lua_nk_label_colored(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 3 && lua_gettop(L) <= 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 3 && lua_gettop(L) <= 4));
 
     nk_flags flag = 0;
     nk_color color;
@@ -1948,7 +2225,7 @@ static int lua_nk_label_colored(lua_State *L) {
 }
 
 static int lua_nk_layout_row(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
 
     struct context *w = (struct context*)lua_touserdata(L, 1);
     float height = (float)luaL_checknumber(L, 3);
@@ -1966,7 +2243,7 @@ static int lua_nk_layout_row(lua_State *L) {
     }
     ratio.clear();
 
-    w->floats.push_back(floats);
+    w->tmp.push_back(floats);
 
     nk_layout_row(nuklear->ctx, fmt, height, cols, floats);
 
@@ -1974,7 +2251,7 @@ static int lua_nk_layout_row(lua_State *L) {
 }
 
 static int lua_nk_layout_row_dynamic(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     float height = (float)luaL_checknumber(L, 2);
     int cols = luaL_checkinteger(L, 3);
@@ -1985,7 +2262,7 @@ static int lua_nk_layout_row_dynamic(lua_State *L) {
 }
 
 static int lua_nk_layout_row_static(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     float height = (float)luaL_checknumber(L, 2);
     float width = (float)luaL_checknumber(L, 3);
@@ -1997,7 +2274,7 @@ static int lua_nk_layout_row_static(lua_State *L) {
 }
 
 static int lua_nk_layout_row_begin(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     enum nk_layout_format fmt;
     float height = (float)luaL_checknumber(L, 3);
@@ -2010,7 +2287,7 @@ static int lua_nk_layout_row_begin(lua_State *L) {
 }
 
 static int lua_nk_layout_row_push(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     float ratio = (float)luaL_checknumber(L, 2);
 
@@ -2020,7 +2297,7 @@ static int lua_nk_layout_row_push(lua_State *L) {
 }
 
 static int lua_nk_layout_row_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_layout_row_end(nuklear->ctx);
 
@@ -2028,7 +2305,7 @@ static int lua_nk_layout_row_end(lua_State *L) {
 }
 
 static int lua_nk_layout_space_begin(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     enum nk_layout_format fmt;
     float height = (float)luaL_checknumber(L, 3);
@@ -2041,7 +2318,7 @@ static int lua_nk_layout_space_begin(lua_State *L) {
 }
 
 static int lua_nk_layout_space_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_layout_space_end(nuklear->ctx);
 
@@ -2049,7 +2326,7 @@ static int lua_nk_layout_space_end(lua_State *L) {
 }
 
 static int lua_nk_layout_space_push(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     struct nk_rect rect;
     lua_check_ret(lua_nk_parse_rect(L, 2, &rect));
@@ -2060,7 +2337,7 @@ static int lua_nk_layout_space_push(lua_State *L) {
 }
 
 static int lua_nk_style_default(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_style_default(nuklear->ctx);
 
@@ -2068,7 +2345,7 @@ static int lua_nk_style_default(lua_State *L) {
 }
 
 static int lua_nk_menu_begin_image(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 4 && lua_gettop(L) <= 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 4 && lua_gettop(L) <= 5));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     nk_flags flag = 0;
@@ -2094,7 +2371,7 @@ static int lua_nk_menu_begin_image(lua_State *L) {
 }
 
 static int lua_nk_menu_begin_label(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     nk_flags flag = 0;
     struct nk_vec2 size;
@@ -2110,7 +2387,7 @@ static int lua_nk_menu_begin_label(lua_State *L) {
 }
 
 static int lua_nk_menu_begin_symbol(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 4 && lua_gettop(L) <= 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 4 && lua_gettop(L) <= 5));
 
     nk_symbol_type symbol = nk_symbol_type::NK_SYMBOL_NONE;
     nk_flags flag = 0;
@@ -2135,7 +2412,7 @@ static int lua_nk_menu_begin_symbol(lua_State *L) {
 }
 
 static int lua_nk_menu_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_menu_end(nuklear->ctx);
 
@@ -2143,7 +2420,7 @@ static int lua_nk_menu_end(lua_State *L) {
 }
 
 static int lua_nk_menu_item_image(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     nk_flags flag = 0;
@@ -2162,7 +2439,7 @@ static int lua_nk_menu_item_image(lua_State *L) {
 }
 
 static int lua_nk_menu_item_label(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     nk_flags flag = 0;
     const char *label = luaL_checkstring(L, 2);
@@ -2176,7 +2453,7 @@ static int lua_nk_menu_item_label(lua_State *L) {
 }
 
 static int lua_nk_menu_item_symbol(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     nk_symbol_type symbol = nk_symbol_type::NK_SYMBOL_NONE;
     nk_flags flag = 0;
@@ -2192,7 +2469,7 @@ static int lua_nk_menu_item_symbol(lua_State *L) {
 }
 
 static int lua_nk_menubar_begin(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_menubar_begin(nuklear->ctx);
 
@@ -2200,7 +2477,7 @@ static int lua_nk_menubar_begin(lua_State *L) {
 }
 
 static int lua_nk_menubar_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_menubar_end(nuklear->ctx);
 
@@ -2208,7 +2485,7 @@ static int lua_nk_menubar_end(lua_State *L) {
 }
 
 static int lua_nk_option_label(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     const char *label = luaL_checkstring(L, 2);
     nk_bool active = lua_toboolean(L, 3);
@@ -2222,7 +2499,7 @@ static int lua_nk_option_label(lua_State *L) {
 
 
 static int lua_nk_popup_begin(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
 
     nk_popup_type type;
     nk_flags flags = 0;
@@ -2240,7 +2517,7 @@ static int lua_nk_popup_begin(lua_State *L) {
 }
 
 static int lua_nk_popup_end(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_popup_end(nuklear->ctx);
 
@@ -2248,7 +2525,7 @@ static int lua_nk_popup_end(lua_State *L) {
 }
 
 static int lua_nk_progress(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     nk_size value = luaL_checkinteger(L, 2);
     nk_size max = luaL_checkinteger(L, 3);
@@ -2264,11 +2541,11 @@ static int lua_nk_progress(lua_State *L) {
 }
 
 static int lua_nk_property_float(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 7);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 7));
 
-    float value = (float)luaL_checknumber(L, 2);
-    const char *title = luaL_checkstring(L, 3);
-    float min = (float)luaL_checknumber(L, 4);
+    const char *title = luaL_checkstring(L, 2);
+    float min = (float)luaL_checknumber(L, 3);
+    float value = (float)luaL_checknumber(L, 4);
     float max = (float)luaL_checknumber(L, 5);
     float step = (float)luaL_checknumber(L, 6);
     float inc_per_pixel = (float)luaL_checknumber(L, 7);
@@ -2281,11 +2558,11 @@ static int lua_nk_property_float(lua_State *L) {
 }
 
 static int lua_nk_property_int(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 7);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 7));
 
-    int value = luaL_checkinteger(L, 2);
-    const char *title = luaL_checkstring(L, 3);
-    int min = luaL_checkinteger(L, 4);
+    const char *title = luaL_checkstring(L, 2);
+    int min = luaL_checkinteger(L, 3);
+    int value = luaL_checkinteger(L, 4);
     int max = luaL_checkinteger(L, 5);
     int step = luaL_checkinteger(L, 6);
     float inc_per_pixel = (float)luaL_checknumber(L, 7);
@@ -2297,11 +2574,146 @@ static int lua_nk_property_int(lua_State *L) {
     return 1;
 }
 
-static int lua_nk_slider_float(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 5);
+static int lua_nk_propertyd(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 7));
 
-    float value = (float)luaL_checknumber(L, 2);
+    const char *title = luaL_checkstring(L, 2);
+    double min = luaL_checknumber(L, 3);
+    double value = luaL_checknumber(L, 4);
+    double max = luaL_checknumber(L, 5);
+    double step = luaL_checknumber(L, 6);
+    float inc_per_pixel = (float)luaL_checknumber(L, 7);
+
+    double ret = nk_propertyd(nuklear->ctx, title, min, value, max, step, inc_per_pixel);
+
+    lua_pushnumber(L, ret);
+
+    return 1;
+}
+
+static int lua_nk_propertyf(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 7));
+
+    const char *title = luaL_checkstring(L, 2);
     float min = (float)luaL_checknumber(L, 3);
+    float value = (float)luaL_checknumber(L, 4);
+    float max = (float)luaL_checknumber(L, 5);
+    float step = (float)luaL_checknumber(L, 6);
+    float inc_per_pixel = (float)luaL_checknumber(L, 7);
+
+    float ret = nk_propertyf(nuklear->ctx, title, min, value, max, step, inc_per_pixel);
+
+    lua_pushnumber(L, ret);
+
+    return 1;
+}
+
+static int lua_nk_propertyi(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 7));
+
+    const char *title = luaL_checkstring(L, 2);
+    int min = luaL_checkinteger(L, 3);
+    int value = luaL_checkinteger(L, 4);
+    int max = luaL_checkinteger(L, 5);
+    int step = luaL_checkinteger(L, 6);
+    float inc_per_pixel = (float)luaL_checknumber(L, 7);
+
+    int ret = nk_propertyi(nuklear->ctx, title, min, value, max, step, inc_per_pixel);
+
+    lua_pushinteger(L, ret);
+
+    return 1;
+}
+static int lua_nk_selectable_image(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 6));
+
+    struct context *w = (struct context *)lua_touserdata(L, 1);
+    nk_flags flag = 0;
+    struct nk_image *img;
+    struct nk_vec2 size;
+    nk_bool value = lua_toboolean(L, 6);
+    const char *label = luaL_checkstring(L, 3);
+    lua_check_ret(lua_nk_parse_image(w, L, 2, &img));
+    lua_check_ret(lua_nk_parse_vec2(L, 4, &size));
+    lua_check_ret(lua_nk_parse_align_text(L, 5, &flag));
+
+    bool ret = nk_selectable_image_label(nuklear->ctx, *img, label, flag, &value);
+
+    lua_pushboolean(L, value);
+    lua_pushboolean(L, ret);
+
+    return 2;
+}
+
+static int lua_nk_selectable_label(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
+
+    nk_flags flag = 0;
+    nk_bool value = lua_toboolean(L, 4);
+    const char *label = luaL_checkstring(L, 2);
+    lua_check_ret(lua_nk_parse_align_text(L, 3, &flag));
+
+    bool ret = nk_selectable_label(nuklear->ctx, label, flag, &value);
+
+    lua_pushboolean(L, value);
+    lua_pushboolean(L, ret);
+
+    return 2;
+}
+
+static int lua_nk_selectable_symbol(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
+
+    nk_symbol_type symbol = nk_symbol_type::NK_SYMBOL_NONE;
+    nk_flags flag = 0;
+    nk_bool value = lua_toboolean(L, 5);
+    const char *label = luaL_checkstring(L, 3);
+    lua_check_ret(lua_nk_parse_symbol(L, 2, &symbol))
+    lua_check_ret(lua_nk_parse_align_text(L, 4, &flag));
+
+    bool ret = nk_selectable_symbol_label(nuklear->ctx, symbol, label, flag, &value);
+
+    lua_pushboolean(L, value);
+    lua_pushboolean(L, ret);
+
+    return 2;
+}
+
+static int lua_nk_slide_float(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
+
+    float min = (float)luaL_checknumber(L, 2);
+    float value = (float)luaL_checknumber(L, 3);
+    float max = (float)luaL_checknumber(L, 4);
+    float step = (float)luaL_checknumber(L, 5);
+
+    float ret = nk_slide_float(nuklear->ctx, min, value, max, step);
+
+    lua_pushnumber(L, ret);
+
+    return 1;
+}
+
+static int lua_nk_slide_int(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
+
+    int min = luaL_checkinteger(L, 2);
+    int value = luaL_checkinteger(L, 3);
+    int max = luaL_checkinteger(L, 4);
+    int step = luaL_checkinteger(L, 5);
+
+    int ret = nk_slide_int(nuklear->ctx, min, value, max, step);
+
+    lua_pushinteger(L, ret);
+
+    return 1;
+}
+
+static int lua_nk_slider_float(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
+
+    float min = (float)luaL_checknumber(L, 2);
+    float value = (float)luaL_checknumber(L, 3);
     float max = (float)luaL_checknumber(L, 4);
     float step = (float)luaL_checknumber(L, 5);
 
@@ -2314,10 +2726,10 @@ static int lua_nk_slider_float(lua_State *L) {
 }
 
 static int lua_nk_slider_int(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 5));
 
-    int value = luaL_checkinteger(L, 2);
-    int min = luaL_checkinteger(L, 3);
+    int min = luaL_checkinteger(L, 2);
+    int value = luaL_checkinteger(L, 3);
     int max = luaL_checkinteger(L, 4);
     int step = luaL_checkinteger(L, 5);
 
@@ -2330,7 +2742,7 @@ static int lua_nk_slider_int(lua_State *L) {
 }
 
 static int lua_nk_style_from_table(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     struct nk_color table[NK_COLOR_COUNT];
     struct nk_color color = { 0, 0, 0, 255 };
@@ -2410,7 +2822,7 @@ static int lua_nk_style_from_table(lua_State *L) {
 }
 
 static int lua_nk_style_get(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     lua_nk_style_type *type;
     void *ptr = nullptr;
@@ -2426,19 +2838,7 @@ static int lua_nk_style_get(lua_State *L) {
         case(lua_nk_style_type_color):
             color = (nk_color *)ptr;
 
-            lua_newtable(L);
-            lua_pushliteral(L, "r");
-            lua_pushnumber(L, color->r);
-            lua_rawset(L, -3);
-            lua_pushliteral(L, "g");
-            lua_pushnumber(L, color->g);
-            lua_rawset(L, -3);
-            lua_pushliteral(L, "b");
-            lua_pushnumber(L, color->b);
-            lua_rawset(L, -3);
-            lua_pushliteral(L, "a");
-            lua_pushnumber(L, color->a);
-            lua_rawset(L, -3);
+            lua_nk_push_color(L, *color);
             return 1;
         case(lua_nk_style_type_float):
             value = (float *)ptr;
@@ -2461,11 +2861,11 @@ static int lua_nk_style_get(lua_State *L) {
             return 1;
     }
 
-    return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented yet"));
+    return luaL_argerror(L, 3, lua_pushfstring(L, "not implemented yet"));
 }
 
 static int lua_nk_style_pop(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
 
     lua_nk_style_type *type;
     void *ptr = nullptr;
@@ -2492,7 +2892,7 @@ static int lua_nk_style_pop(lua_State *L) {
             ret = nk_style_pop_vec2(nuklear->ctx);
             break;
         default:
-            return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented style property"));
+            return luaL_argerror(L, 3, lua_pushfstring(L, "not implemented style property"));
     }
 
     lua_pushboolean(L, ret);
@@ -2501,7 +2901,7 @@ static int lua_nk_style_pop(lua_State *L) {
 }
 
 static int lua_nk_style_push(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     lua_nk_style_type *type;
@@ -2542,7 +2942,7 @@ static int lua_nk_style_push(lua_State *L) {
             } else {
                 // TODO: nine slice
                 lua_dumpstack(L);
-                return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented yet"));
+                return luaL_argerror(L, 4, lua_pushfstring(L, "not implemented yet"));
             }
 
             break;
@@ -2551,7 +2951,7 @@ static int lua_nk_style_push(lua_State *L) {
             ret = nk_style_push_vec2(nuklear->ctx, (struct nk_vec2 *)ptr, vec2);
             break;
         default:
-            return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented style property"));
+            return luaL_argerror(L, 3, lua_pushfstring(L, "not implemented style property"));
     }
 
     lua_pushboolean(L, ret);
@@ -2560,7 +2960,7 @@ static int lua_nk_style_push(lua_State *L) {
 }
 
 static int lua_nk_style_set(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     lua_nk_style_type *type;
@@ -2597,7 +2997,7 @@ static int lua_nk_style_set(lua_State *L) {
                 memcpy(ptr, &item, sizeof(nk_style_item));
             } else {
                 // TODO: nine slice
-                return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented yet"));
+                return luaL_argerror(L, 4, lua_pushfstring(L, "not implemented yet"));
             }
 
             break;
@@ -2605,15 +3005,36 @@ static int lua_nk_style_set(lua_State *L) {
             lua_check_ret(lua_nk_parse_vec2(L, 4, (struct nk_vec2 *)ptr));
             break;
         default:
-            return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented style property"));
+            return luaL_argerror(L, 3, lua_pushfstring(L, "not implemented style property"));
     }
 
     return 0;
 }
 
+static int lua_nk_style_set_font(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
+
+    struct context *w = (struct context *)lua_touserdata(L, 1);
+    struct nk_tex_font *font = (struct nk_tex_font *)lua_touserdata(L, 2);
+
+    if (font)
+        nk_style_set_font(nuklear->ctx, &font->font->handle);
+
+    return 0;
+}
+
+static int lua_nk_style_set_font_default(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
+
+    struct context *w = (struct context *)lua_touserdata(L, 1);
+
+    nk_style_set_font(nuklear->ctx, &font_default.font->handle);
+
+    return 0;
+}
 
 static int lua_nk_spacer(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_spacer(nuklear->ctx);
 
@@ -2621,7 +3042,7 @@ static int lua_nk_spacer(lua_State *L) {
 }
 
 static int lua_nk_tree_element_pop(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_tree_element_pop(nuklear->ctx);
 
@@ -2629,13 +3050,14 @@ static int lua_nk_tree_element_pop(lua_State *L) {
 }
 
 static int lua_nk_tree_element_push(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     nk_tree_type type;
     nk_collapse_states states;
     nk_bool value;
     const char *label = luaL_checkstring(L, 3);
     lua_check_ret(lua_nk_parse_tree_type(L, 2, &type));
+    lua_check_ret(lua_nk_parse_collapse_states(L, 4, &states));
 
     // TODO: replace __LINE__ with wins context
     bool ret = nk_tree_element_push_hashed(nuklear->ctx, type, label, states, &value, label, strlen(label), __LINE__);
@@ -2647,7 +3069,7 @@ static int lua_nk_tree_element_push(lua_State *L) {
 }
 
 static int lua_nk_tree_pop(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     nk_tree_pop(nuklear->ctx);
 
@@ -2655,7 +3077,7 @@ static int lua_nk_tree_pop(lua_State *L) {
 }
 
 static int lua_nk_tree_push(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     nk_tree_type type;
     nk_collapse_states states;
@@ -2680,7 +3102,7 @@ static int lua_nk_tree_state_pop(lua_State *L) {
 }
 
 static int lua_nk_tree_state_push(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 4);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 4));
 
     nk_tree_type type;
     nk_collapse_states states;
@@ -2697,7 +3119,7 @@ static int lua_nk_tree_state_push(lua_State *L) {
 }
 
 static int lua_nk_window_is_closed(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     const char *title = luaL_checkstring(L, 2);
 
@@ -2709,7 +3131,7 @@ static int lua_nk_window_is_closed(lua_State *L) {
 }
 
 static int lua_nk_load_image(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) >= 3 && lua_gettop(L) <= 5);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 3 && lua_gettop(L) <= 5));
 
     struct context *w = (struct context *)lua_touserdata(L, 1);
     const char *type = luaL_checkstring(L, 2);
@@ -2743,8 +3165,8 @@ static int lua_nk_load_image(lua_State *L) {
 
     im->nk = render->NuklearImageLoad(im->asset);
 
-    slot = w->img.size();
-    w->img.push_back(im);
+    slot = w->imgs.size();
+    w->imgs.push_back(im);
 
     logger->Info("Nuklear: [%s] asset %d: '%s', type '%s' loaded!", w->tmpl, slot, name, type);
 
@@ -2763,7 +3185,7 @@ finish:
 
 
 static int lua_window_dimensions(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
     lua_pushnumber(L, window->GetWidth());
     lua_pushnumber(L, window->GetHeight());
@@ -2774,7 +3196,7 @@ static int lua_window_dimensions(lua_State *L) {
 }
 
 static int lua_set_game_current_menu(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
     int id = luaL_checkinteger(L, 2);
     SetCurrentMenuID(MENU_STATE(id));
@@ -2783,18 +3205,26 @@ static int lua_set_game_current_menu(lua_State *L) {
 }
 
 static int lua_set_hotkey(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 3);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 6));
 
+    struct context *w = (struct context *)lua_touserdata(L, 1);
     Io::GameKey gameKey;
     const char *key = luaL_checkstring(L, 2);
+    bool key_control = lua_toboolean(L, 3);
+    bool key_shift = lua_toboolean(L, 4);
+    bool key_alt = lua_toboolean(L, 5);
     if (!TryParseDisplayName(key, &gameKey)) {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "key '%s' is unknown", key));
+        return luaL_argerror(L, 2, lua_pushfstring(L, "key '%s' is unknown", key));
     }
 
-    if (lua_isfunction(L, 3)) {
+    if (lua_isfunction(L, 6)) {
         struct hotkey hk;
         hk.key = gameKey;
+        hk.mod_control = key_control;
+        hk.mod_shift = key_shift;
+        hk.mod_alt = key_alt;
         hk.callback = luaL_ref(L, LUA_REGISTRYINDEX);
+        hk.winType = w->winType;
 
         for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++) {
             struct hotkey ithk = *itk;
@@ -2813,22 +3243,22 @@ static int lua_set_hotkey(lua_State *L) {
         return 0;
     }
 
-    return luaL_argerror(L, -1, lua_pushfstring(L, "callback is wrong"));
+    return luaL_argerror(L, 3, lua_pushfstring(L, "callback is wrong"));
 }
 
 static int lua_unset_hotkey(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 2);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
 
+    struct context *w = (struct context *)lua_touserdata(L, 1);
     Io::GameKey gameKey;
     const char *key = luaL_checkstring(L, 2);
     if (!TryParseDisplayName(key, &gameKey)) {
-        return luaL_argerror(L, -1, lua_pushfstring(L, "key '%s' is unknown", key));
+        return luaL_argerror(L, 2, lua_pushfstring(L, "key '%s' is unknown", key));
     }
 
-    int i = 0;
-    for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++, i++) {
+    for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++) {
         struct hotkey hk = *itk;
-        if (gameKey == hk.key) {
+        if (hk.winType == w->winType && gameKey == hk.key) {
             luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
             logger->Info("Nuklear: hotkey '%s' is unset", key);
             hotkeys.erase(itk);
@@ -2840,17 +3270,46 @@ static int lua_unset_hotkey(lua_State *L) {
 }
 
 static int lua_unset_hotkeys(lua_State *L) {
-    assert(lua_isuserdata(L, 1) && lua_gettop(L) == 1);
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
 
-    int i = 0;
-    for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++, i++) {
+    struct context *w = (struct context *)lua_touserdata(L, 1);
+    for (auto itk = hotkeys.begin(); itk < hotkeys.end();) {
         struct hotkey hk = *itk;
-        luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-        logger->Info("Nuklear: hotkey '%s' is unset", GetDisplayName(hk.key).c_str());
+        if (hk.winType == w->winType) {
+            luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
+            logger->Info("Nuklear: hotkey '%s' is unset", GetDisplayName(hk.key).c_str());
+            itk = hotkeys.erase(itk);
+        } else {
+            ++itk;
+        }
     }
-    hotkeys.clear();
 
     return 0;
+}
+
+static bool lua_load_init() {
+    int status = luaL_loadfile(lua, MakeDataPath("ui", "init.lua").c_str());
+    if (status) {
+        logger->Warning("Nuklear: couldn't load init template: %s", lua_tostring(lua, -1));
+        lua_pop(lua, 1);
+        return false;
+    }
+
+    int err = lua_pcall(lua, 0, 0, 0);
+    if (lua_error_check(WINDOW_null, lua, err)) {
+        logger->Warning("Nuklear: error loading init template: %s", lua_tostring(lua, -1));
+        return false;
+    }
+
+    lua_getfield(lua, LUA_GLOBALSINDEX, "ui_init");
+    lua_pushlightuserdata(lua, (void *)&wins[WINDOW_null]);
+    err = lua_pcall(lua, 1, 0, 0);
+    if (lua_error_check(WINDOW_null, lua, err)) {
+        logger->Warning("Nuklear: error executing init template: %s", lua_tostring(lua, -1));
+        return false;
+    }
+
+    return true;
 }
 
 bool Nuklear::LuaInit() {
@@ -2887,10 +3346,15 @@ bool Nuklear::LuaInit() {
         { "nk_chart_end", lua_nk_chart_end },
         { "nk_chart_push", lua_nk_chart_push },
         { "nk_checkbox", lua_nk_checkbox },
+        { "nk_checkbox_label", lua_nk_checkbox },
+        { "nk_color_picker", lua_nk_color_picker },
+        { "nk_color_update", lua_nk_color_update },
+        { "nk_combo", lua_nk_combo },
         { "nk_combo_begin_color", lua_nk_combo_begin_color },
         { "nk_combo_begin_image", lua_nk_combo_begin_image },
         { "nk_combo_begin_label", lua_nk_combo_begin_label },
         { "nk_combo_begin_symbol", lua_nk_combo_begin_symbol },
+        { "nk_combo_close", lua_nk_combo_close },
         { "nk_combo_item_image", lua_nk_combo_item_image },
         { "nk_combo_item_label", lua_nk_combo_item_label },
         { "nk_combo_item_symbol", lua_nk_combo_item_symbol },
@@ -2901,7 +3365,7 @@ bool Nuklear::LuaInit() {
         { "nk_image_dimensions", lua_nk_image_dimensions },
         { "nk_label", lua_nk_label },
         { "nk_label_colored", lua_nk_label_colored },
-        { "nk_load_font", lua_nk_load_font },
+        { "nk_load_font_from_file", lua_nk_load_font_from_file },
         { "nk_load_image", lua_nk_load_image },
         { "nk_layout_row", lua_nk_layout_row },
         { "nk_layout_row_begin", lua_nk_layout_row_begin },
@@ -2927,6 +3391,14 @@ bool Nuklear::LuaInit() {
         { "nk_progress", lua_nk_progress },
         { "nk_property_float", lua_nk_property_float },
         { "nk_property_int", lua_nk_property_int },
+        { "nk_propertyd", lua_nk_propertyd },
+        { "nk_propertyf", lua_nk_propertyf },
+        { "nk_propertyi", lua_nk_propertyi },
+        { "nk_selectable_image", lua_nk_selectable_image },
+        { "nk_selectable_label", lua_nk_selectable_label },
+        { "nk_selectable_symbol", lua_nk_selectable_symbol },
+        { "nk_slide_float", lua_nk_slide_float },
+        { "nk_slide_int", lua_nk_slide_int },
         { "nk_slider_float", lua_nk_slider_float },
         { "nk_slider_int", lua_nk_slider_int },
         { "nk_spacer", lua_nk_spacer },
@@ -2936,6 +3408,8 @@ bool Nuklear::LuaInit() {
         { "nk_style_pop", lua_nk_style_pop },
         { "nk_style_push", lua_nk_style_push },
         { "nk_style_set", lua_nk_style_set },
+        { "nk_style_set_font", lua_nk_style_set_font },
+        { "nk_style_set_font_default", lua_nk_style_set_font_default },
         { "nk_tree_element_pop", lua_nk_tree_element_pop },
         { "nk_tree_element_push", lua_nk_tree_element_push },
         { "nk_tree_pop", lua_nk_tree_pop },
@@ -2975,26 +3449,5 @@ bool Nuklear::LuaInit() {
     lua_pushinteger(lua, NUKLEAR_MODE_EXCLUSIVE);
     lua_setglobal(lua, "NUKLEAR_MODE_EXCLUSIVE");
 
-    int status = luaL_loadfile(lua, MakeDataPath("ui", "init.lua").c_str());
-    if (status) {
-        logger->Warning("Nuklear: couldn't load init template: %s", lua_tostring(lua, -1));
-        lua_pop(lua, 1);
-        return false;
-    }
-
-    int err = lua_pcall(lua, 0, 0, 0);
-    if (lua_error_check(WINDOW_null, lua, err)) {
-        logger->Warning("Nuklear: error loading init template: %s", lua_tostring(lua, -1));
-        return false;
-    }
-
-    lua_getfield(lua, LUA_GLOBALSINDEX, "ui_init");
-    lua_pushlightuserdata(lua, (void *)&wins[WINDOW_null]);
-    err = lua_pcall(lua, 1, 0, 0);
-    if (lua_error_check(WINDOW_null, lua, err)) {
-        logger->Warning("Nuklear: error executing init template: %s", lua_tostring(lua, -1));
-        return false;
-    }
-
-    return true;
+    return lua_load_init();
 }

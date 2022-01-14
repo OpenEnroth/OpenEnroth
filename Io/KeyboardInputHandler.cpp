@@ -468,3 +468,7 @@ bool KeyboardInputHandler::IsSpellBackcycleToggled() const {
 bool KeyboardInputHandler::IsCastOnClickToggled() const {
     return controller->IsKeyHeld(GameKey::Shift);
 }
+
+bool KeyboardInputHandler::IsKeyHeld(GameKey key) const {
+    return controller->IsKeyHeld(key);
+}
