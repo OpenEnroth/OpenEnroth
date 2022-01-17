@@ -190,12 +190,12 @@ bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
 bool Camera3D::is_face_faced_to_cameraODM(ODMFace* pFace, RenderVertexSoft* a2) {
     // if (pFace->Portal()) return false;
 
-    if ((a2->vWorldPosition.z - (double)pCamera3D->vCameraPos.z) *
-        (double)pFace->pFacePlane.vNormal.z +
-        (a2->vWorldPosition.y - (double)pCamera3D->vCameraPos.y) *
-        (double)pFace->pFacePlane.vNormal.y +
-        (a2->vWorldPosition.x - (double)pCamera3D->vCameraPos.x) *
-        (double)pFace->pFacePlane.vNormal.x <
+    if ((a2->vWorldPosition.z - pCamera3D->vCameraPos.z) *
+        pFace->pFacePlane.vNormal.z +
+        (a2->vWorldPosition.y - pCamera3D->vCameraPos.y) *
+        pFace->pFacePlane.vNormal.y +
+        (a2->vWorldPosition.x - pCamera3D->vCameraPos.x) *
+        pFace->pFacePlane.vNormal.x <
         0.0)
         return true;
 

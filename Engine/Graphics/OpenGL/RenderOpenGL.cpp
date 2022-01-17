@@ -238,12 +238,12 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
         if (collision_state.bbox.Intersects(model.pBoundingBox)) {
             for (ODMFace &mface : model.pFaces) {
                 if (collision_state.bbox.Intersects(mface.pBoundingBox)) {
-                    face.pFacePlane_old.vNormal.x = mface.pFacePlane.vNormal.x;
-                    face.pFacePlane_old.vNormal.y = mface.pFacePlane.vNormal.y;
-                    face.pFacePlane_old.vNormal.z = mface.pFacePlane.vNormal.z;
+                    face.pFacePlane_old.vNormal.x = mface.pFacePlaneOLD.vNormal.x;
+                    face.pFacePlane_old.vNormal.y = mface.pFacePlaneOLD.vNormal.y;
+                    face.pFacePlane_old.vNormal.z = mface.pFacePlaneOLD.vNormal.z;
 
                     // TODO: need fixpoint_to_float here
-                    face.pFacePlane_old.dist = mface.pFacePlane.dist;  // incorrect
+                    face.pFacePlane_old.dist = mface.pFacePlaneOLD.dist;  // incorrect
 
                     face.uAttributes = mface.uAttributes;
 
@@ -2684,7 +2684,7 @@ void _set_3d_modelview_matrix() {
 
               camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationZ / 2048.0) /*- 5*/,
               camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationZ / 2048.0),
-              camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * (-pParty->sRotationY - 20) / 2048.0),
+              camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * (-pParty->sRotationY/* - 20*/) / 2048.0),
               0, 0, 1);
 }
 
@@ -2887,9 +2887,7 @@ void RenderOpenGL::RenderTerrainD3D() {
                     VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                 }
 
-                float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                    (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                    (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                float _f = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
 
                 lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, 3, 1);
@@ -3009,9 +3007,7 @@ void RenderOpenGL::RenderTerrainD3D() {
                     VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                 }
 
-                float _f2 = ((norm2->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                    (norm2->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                    (norm2->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                float _f2 = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f2 + 0.5f);
 
 
@@ -3113,9 +3109,7 @@ void RenderOpenGL::RenderTerrainD3D() {
 
                 // end split trinagles
             } else {
-                float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                    (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                    (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                float _f = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
 
                 lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, pTilePolygon->uNumVertices, 1);
@@ -3772,6 +3766,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
     int drawy = std::max(y, clipy);
     int draww = std::min(w, clipw);
     int drawz = std::min(z, clipz);
+    if (drawz <= drawx || draww <= drawy) return;
 
     float depth = 0;
 
@@ -4025,8 +4020,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
             unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
             unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
 
-            if (face.pFacePlane.vNormal.z &&
-                abs(face.pFacePlane.vNormal.z) >= 59082) {
+            if (face.pFacePlane.vNormal.z && abs(face.pFacePlane.vNormal.z) >= 0.9) {
                 if (poly->flags & 0x400)
                     poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
                 if (poly->flags & 0x800)
@@ -4087,13 +4081,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
             poly->uNumVertices = face.uNumVertices;
             poly->field_59 = 5;
 
-            v51 =
-                fixpoint_mul(-pOutdoor->vSunlight.x, face.pFacePlane.vNormal.x);
-            v53 =
-                fixpoint_mul(-pOutdoor->vSunlight.y, face.pFacePlane.vNormal.y);
-            v52 =
-                fixpoint_mul(-pOutdoor->vSunlight.z, face.pFacePlane.vNormal.z);
-            poly->dimming_level = 20 - fixpoint_mul(20, v51 + v53 + v52);
+            float f = face.pFacePlane.vNormal.x * pOutdoor->vSunlight.x + face.pFacePlane.vNormal.y * pOutdoor->vSunlight.y + face.pFacePlane.vNormal.z * pOutdoor->vSunlight.z;
+            poly->dimming_level = 20 - floorf(20.0 * f + 0.5f);
 
             if (poly->dimming_level < 0) poly->dimming_level = 0;
             if (poly->dimming_level > 31) poly->dimming_level = 31;

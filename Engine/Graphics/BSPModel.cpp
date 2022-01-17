@@ -171,7 +171,12 @@ void ODMFace::SetTexture(const std::string &filename) {
 }
 
 bool ODMFace::Deserialize(ODMFace_MM7 *mm7) {
-    memcpy(&this->pFacePlane, &mm7->pFacePlane, sizeof(this->pFacePlane));
+    memcpy(&this->pFacePlaneOLD, &mm7->pFacePlane, sizeof(this->pFacePlaneOLD));
+    this->pFacePlane.vNormal.x = this->pFacePlaneOLD.vNormal.x / 65536.0;
+    this->pFacePlane.vNormal.y = this->pFacePlaneOLD.vNormal.y / 65536.0;
+    this->pFacePlane.vNormal.z = this->pFacePlaneOLD.vNormal.z / 65536.0;
+    this->pFacePlane.dist = this->pFacePlaneOLD.dist / 65536.0;
+
     this->zCalc1 = mm7->zCalc1;
     this->zCalc2 = mm7->zCalc2;
     this->zCalc3 = mm7->zCalc3;

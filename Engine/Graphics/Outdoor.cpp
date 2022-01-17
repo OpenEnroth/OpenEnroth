@@ -428,23 +428,20 @@ void OutdoorLocation::MessWithLUN() {
 
 //----- (004892E6) --------------------------------------------------------
 void OutdoorLocation::UpdateSunlightVectors() {
-    unsigned int v3;  // edi@3
+    unsigned int minutes;  // edi@3
     double v8;        // st7@4
 
     if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 21) {
-        v3 = pParty->uCurrentMinute + 60 * (pParty->uCurrentHour - 5);
-        this->inv_sunlight_y = 0;
-        this->inv_sunlight_x =
-            TrigLUT->Cos((v3 * TrigLUT->uIntegerPi) / 960);
-        this->inv_sunlight_z =
-            TrigLUT->Sin((v3 * TrigLUT->uIntegerPi) / 960);
-        this->vSunlight.x = -this->inv_sunlight_x;
-        this->vSunlight.y = -this->inv_sunlight_y;
-        this->vSunlight.z = -this->inv_sunlight_z;
-        if (v3 >= 480)
-            v8 = 960 - v3;
+        minutes = pParty->uCurrentMinute + 60 * (pParty->uCurrentHour - 5);
+
+        this->vSunlight.x = cos((minutes * pi) / 960.0);
+        this->vSunlight.y = 0;
+        this->vSunlight.z = sin((minutes * pi) / 960.0);
+
+        if (minutes >= 480)
+            v8 = 960 - minutes;
         else
-            v8 = v3;
+            v8 = minutes;
         this->max_terrain_dimming_level = (int)(20.0 - v8 / 480.0 * 20.0);
         this->uLastSunlightUpdateMinute = pParty->uCurrentMinute;
     }
@@ -2798,7 +2795,7 @@ void ODM_ProcessPartyActions() {
                 &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
             v48 = pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1;
             v129 = v48 <= 32;
-            v119 = pODMFace->pFacePlane.vNormal.z < 46378;
+            v119 = pODMFace->pFacePlaneOLD.vNormal.z < 46378;
             if (engine->IsUnderwater())
                 v119 = 0;
             if (pODMFace->uPolygonType == POLYGON_Floor) {
@@ -2820,30 +2817,30 @@ void ODM_ProcessPartyActions() {
             if (!v129 &&
                 (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall ||
                  v119)) {  // упёрся в столб
-                v118 = abs(v128 * pODMFace->pFacePlane.vNormal.y +
-                           fall_speed * pODMFace->pFacePlane.vNormal.z +
-                           v2 * pODMFace->pFacePlane.vNormal.x) >>
+                v118 = abs(v128 * pODMFace->pFacePlaneOLD.vNormal.y +
+                           fall_speed * pODMFace->pFacePlaneOLD.vNormal.z +
+                           v2 * pODMFace->pFacePlaneOLD.vNormal.x) >>
                        16;
                 if ((collision_state.speed >> 3) > v118)
                     v118 = collision_state.speed >> 3;
-                v2 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.x);
-                v128 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.y);
+                v2 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.x);
+                v128 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.y);
                 v54 = 0;
                 if (!v119)
-                    v54 = fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
+                    v54 = fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
                 pParty->uFallSpeed += v54;
                 v55 =
                     collision_state.radius_lo -
-                    pODMFace->pFacePlane.SignedDistanceTo(_angle_x, _angle_y, v122);
+                    pODMFace->pFacePlaneOLD.SignedDistanceTo(_angle_x, _angle_y, v122);
                 if (v55 > 0) {
                     pX = _angle_x +
-                         fixpoint_mul(pODMFace->pFacePlane.vNormal.x, v55);
+                         fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
                     pY = _angle_y +
-                         fixpoint_mul(pODMFace->pFacePlane.vNormal.y, v55);
+                         fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.y, v55);
                     if (!v119)
                         party_new_Z =
                             v122 +
-                            fixpoint_mul(pODMFace->pFacePlane.vNormal.z, v55);
+                            fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.z, v55);
                 }
                 if (pParty->floor_face_pid != collision_state.pid &&
                     pODMFace->Pressure_Plate()) {
@@ -2852,16 +2849,16 @@ void ODM_ProcessPartyActions() {
                 }
             }
             if (pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                v118 = abs(v128 * pODMFace->pFacePlane.vNormal.y +
-                           fall_speed * pODMFace->pFacePlane.vNormal.z +
-                           v2 * pODMFace->pFacePlane.vNormal.x) >>
+                v118 = abs(v128 * pODMFace->pFacePlaneOLD.vNormal.y +
+                           fall_speed * pODMFace->pFacePlaneOLD.vNormal.z +
+                           v2 * pODMFace->pFacePlaneOLD.vNormal.x) >>
                        16;
                 if ((collision_state.speed >> 3) > v118)
                     v118 = collision_state.speed >> 3;
-                v2 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.x);
-                v128 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.y);
+                v2 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.x);
+                v128 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.y);
                 fall_speed +=
-                    fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
+                    fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
                 if (v2 * v2 + v128 * v128 >= 400) {
                     if (pParty->floor_face_pid != collision_state.pid &&
                         pODMFace->Pressure_Plate()) {
@@ -3528,32 +3525,32 @@ void UpdateActors_ODM() {
                                 pActors[Actor_ITR].vVelocity.x = 0;
                             }
                         } else {
-                           int v72b = abs(face->pFacePlane.vNormal.y *
+                           int v72b = abs(face->pFacePlaneOLD.vNormal.y *
                                            pActors[Actor_ITR].vVelocity.y +
-                                       face->pFacePlane.vNormal.z *
+                                       face->pFacePlaneOLD.vNormal.z *
                                            pActors[Actor_ITR].vVelocity.z +
-                                       face->pFacePlane.vNormal.x *
+                                       face->pFacePlaneOLD.vNormal.x *
                                            pActors[Actor_ITR].vVelocity.x) >>
                                    16;
                             if ((collision_state.speed >> 3) > v72b)
                                 v72b = collision_state.speed >> 3;
 
                             pActors[Actor_ITR].vVelocity.x +=
-                                fixpoint_mul(v72b, face->pFacePlane.vNormal.x);
+                                fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.x);
                             pActors[Actor_ITR].vVelocity.y +=
-                                fixpoint_mul(v72b, face->pFacePlane.vNormal.y);
+                                fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.y);
                             pActors[Actor_ITR].vVelocity.z +=
-                                fixpoint_mul(v72b, face->pFacePlane.vNormal.z);
+                                fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.z);
                             if (face->uPolygonType != 4) {
                                 int v46 = collision_state.radius_lo -
-                                    face->pFacePlane.SignedDistanceTo(pActors[Actor_ITR].vPosition);
+                                    face->pFacePlaneOLD.SignedDistanceTo(pActors[Actor_ITR].vPosition);
                                 if (v46 > 0) {
                                     pActors[Actor_ITR].vPosition.x += fixpoint_mul(
-                                        v46, face->pFacePlane.vNormal.x);
+                                        v46, face->pFacePlaneOLD.vNormal.x);
                                     pActors[Actor_ITR].vPosition.y += fixpoint_mul(
-                                        v46, face->pFacePlane.vNormal.y);
+                                        v46, face->pFacePlaneOLD.vNormal.y);
                                     pActors[Actor_ITR].vPosition.z += fixpoint_mul(
-                                        v46, face->pFacePlane.vNormal.z);
+                                        v46, face->pFacePlaneOLD.vNormal.z);
                                 }
                                 pActors[Actor_ITR].uYawAngle = TrigLUT->Atan2(
                                     pActors[Actor_ITR].vVelocity.x,

@@ -71,8 +71,7 @@ std::array<const char *, 11> _4E6BDC_loc_names = {
 
 bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     memcpy(&this->pFacePlane, &data->pFacePlane, sizeof(this->pFacePlane));
-    memcpy(&this->pFacePlane_old, &data->pFacePlane_old,
-           sizeof(this->pFacePlane_old));
+    memcpy(&this->pFacePlane_old, &data->pFacePlane_old, sizeof(this->pFacePlane_old));
     this->zCalc1 = data->zCalc1;
     this->zCalc2 = data->zCalc2;
     this->zCalc3 = data->zCalc3;
@@ -175,7 +174,7 @@ void PrepareBspRenderList_BLV() {
         // pBspRenderer->nodes[0].PortalScreenData.GetViewportData(
         //    pBLVRenderParams->uViewportX, pBLVRenderParams->uViewportY,
         //    pBLVRenderParams->uViewportZ, pBLVRenderParams->uViewportW);
-        
+
         // set furstum to cam frustum
         for (int loop = 0; loop < 4; loop++) {
             pBspRenderer->nodes[0].ViewportNodeFrustum[loop].x = pCamera3D->FrustumPlanes[loop].x;
@@ -584,14 +583,14 @@ void IndoorLocation::Draw() {
 
 //----- (004C0EF2) --------------------------------------------------------
 void BLVFace::FromODM(ODMFace *face) {
-    this->pFacePlane_old.vNormal.x = face->pFacePlane.vNormal.x;
-    this->pFacePlane_old.vNormal.y = face->pFacePlane.vNormal.y;
-    this->pFacePlane_old.vNormal.z = face->pFacePlane.vNormal.z;
-    this->pFacePlane_old.dist = face->pFacePlane.dist;
-    this->pFacePlane.vNormal.x = fixpoint_to_float(face->pFacePlane.vNormal.x);
-    this->pFacePlane.vNormal.y = fixpoint_to_float(face->pFacePlane.vNormal.y);
-    this->pFacePlane.vNormal.z = fixpoint_to_float(face->pFacePlane.vNormal.z);
-    this->pFacePlane.dist = fixpoint_to_float(face->pFacePlane.dist);
+    this->pFacePlane_old.vNormal.x = face->pFacePlaneOLD.vNormal.x;
+    this->pFacePlane_old.vNormal.y = face->pFacePlaneOLD.vNormal.y;
+    this->pFacePlane_old.vNormal.z = face->pFacePlaneOLD.vNormal.z;
+    this->pFacePlane_old.dist = face->pFacePlaneOLD.dist;
+    this->pFacePlane.vNormal.x = face->pFacePlane.vNormal.x;
+    this->pFacePlane.vNormal.y = face->pFacePlane.vNormal.y;
+    this->pFacePlane.vNormal.z = face->pFacePlane.vNormal.z;
+    this->pFacePlane.dist = face->pFacePlane.dist;
     this->uAttributes = face->uAttributes;
     this->pBounding.x1 = face->pBoundingBox.x1;
     this->pBounding.y1 = face->pBoundingBox.y1;
@@ -697,7 +696,6 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
 
         // 498377 always true - appears to be anothe function to clip vertices to portal planes??
         if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)
-            
             /*true*//*!portalfrustumnorm*/ /*|| *//*engine->pStru9Instance->ClipVertsToPortal(pPortalBounding, 4, portalfrustumnorm, static_vertices_buff_in, &uNumVerticesa)*/) {
 
             if (uNumVerticesa) {
@@ -731,8 +729,6 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
 
 
                     // memcpy(static_vertices_calc_out, static_vertices_buff_in, uNumVerticesa * sizeof(RenderVertexSoft));
-
-                    
 
                     FaceFlowTextureOffset(uFaceID);
 
@@ -3173,9 +3169,9 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
         for (BSPModel &model : pOutdoor->pBModels) {
             if (CalcDistPointToLine(ShiftedTargetX, ShiftedTargetY, ShiftedFromX, ShiftedFromY, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
                 for (ODMFace &face : model.pFaces) {
-                    v17 = fixpoint_mul(rayxnorm, face.pFacePlane.vNormal.x);
-                    v18 = fixpoint_mul(rayynorm, face.pFacePlane.vNormal.y);
-                    v19 = fixpoint_mul(rayznorm, face.pFacePlane.vNormal.z);
+                    v17 = fixpoint_mul(rayxnorm, face.pFacePlaneOLD.vNormal.x);
+                    v18 = fixpoint_mul(rayynorm, face.pFacePlaneOLD.vNormal.y);
+                    v19 = fixpoint_mul(rayznorm, face.pFacePlaneOLD.vNormal.z);
 
                     FaceIsParallel = v17 + v18 + v19 == 0;  // dot product implies face normal is perpendicular - face is parallel to LOS
 
@@ -3192,22 +3188,22 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                         continue;
 
                     // point to plane distacne
-                    v23 = -face.pFacePlane.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
+                    v23 = -face.pFacePlaneOLD.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
 
                     // are we on same side of plane
                     if (dot_ray2 <= 0) {
                         // angle obtuse - is target underneath plane
-                        if (face.pFacePlane.
+                        if (face.pFacePlaneOLD.
                             SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) < 0)
                             continue;  // can never hit
                     } else {
                         // angle acute - is target above plane
-                        if (face.pFacePlane.
+                        if (face.pFacePlaneOLD.
                             SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) > 0)
                             continue;  // can never hit
                     }
 
-                    v24 = abs(-face.pFacePlane.
+                    v24 = abs(-face.pFacePlaneOLD.
                         SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ)) >> 14;
 
                     // maybe some sort of epsilon check?
@@ -3257,9 +3253,9 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
             if (CalcDistPointToLine(ShiftedTargetX, ShiftedTargetY, ShiftedFromX, ShiftedFromY, model.vPosition.x,
                            model.vPosition.y) <= model.sBoundingRadius + 128) {
                 for (ODMFace &face : model.pFaces) {
-                    ya = fixpoint_mul(v126, face.pFacePlane.vNormal.x);
-                    ve = fixpoint_mul(v122, face.pFacePlane.vNormal.y);
-                    v_4 = fixpoint_mul(v35, face.pFacePlane.vNormal.z);
+                    ya = fixpoint_mul(v126, face.pFacePlaneOLD.vNormal.x);
+                    ve = fixpoint_mul(v122, face.pFacePlaneOLD.vNormal.y);
+                    v_4 = fixpoint_mul(v35, face.pFacePlaneOLD.vNormal.z);
                     FaceIsParallel = ya + ve + v_4 == 0;
                     v40 = ya + ve + v_4;
                     va = ya + ve + v_4;
@@ -3270,17 +3266,17 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                         v134 > face.pBoundingBox.z2 ||
                         v130 < face.pBoundingBox.z1 || FaceIsParallel)
                         continue;
-                    v42 = -face.pFacePlane.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
+                    v42 = -face.pFacePlaneOLD.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
                     if (v40 <= 0) {
-                        if (face.pFacePlane.
+                        if (face.pFacePlaneOLD.
                             SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) < 0)
                             continue;
                     } else {
-                        if (face.pFacePlane.
+                        if (face.pFacePlaneOLD.
                             SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) > 0)
                             continue;
                     }
-                    v_4a = abs(-face.pFacePlane.
+                    v_4a = abs(-face.pFacePlaneOLD.
                         SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ)) >> 14;
                     if (v_4a <= abs(v40)) {
                         // LODWORD(v43) = v42 << 16;
@@ -4284,10 +4280,10 @@ void stru154::GetFacePlane(ODMFace *pFace, BSPVertexBuffer *pVertices,
 
     // only one/two vert?
     __debugbreak();
-    pOutNormal->x = fixpoint_to_float(pFace->pFacePlane.vNormal.x);
-    pOutNormal->y = fixpoint_to_float(pFace->pFacePlane.vNormal.y);
-    pOutNormal->z = fixpoint_to_float(pFace->pFacePlane.vNormal.z);
-    *pOutDist = fixpoint_to_float(pFace->pFacePlane.dist);
+    pOutNormal->x = pFace->pFacePlane.vNormal.x;
+    pOutNormal->y = pFace->pFacePlane.vNormal.y;
+    pOutNormal->z = pFace->pFacePlane.vNormal.z;
+    *pOutDist = pFace->pFacePlane.dist;
 }
 
 //----- (0043F515) --------------------------------------------------------

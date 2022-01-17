@@ -131,7 +131,8 @@ struct ODMFace {
     bool Deserialize(struct ODMFace_MM7 *);
 
     unsigned int index = 0;
-    struct Plane_int_ pFacePlane;
+    struct Plane_float_ pFacePlane;
+    struct Plane_int_ pFacePlaneOLD;
     int zCalc1 = 0;
     int zCalc2 = 0;
     int zCalc3 = 0;

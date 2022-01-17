@@ -159,13 +159,10 @@ struct OutdoorLocation {
     int field_D0C;
     int field_D10;
     int field_D14;
-    int inv_sunlight_x;
-    int inv_sunlight_y;
-    int inv_sunlight_z;
     int field_D24;
     int field_D28;
     int field_D2C;
-    Vec3_int_ vSunlight;
+    glm::vec3 vSunlight;
     unsigned int *field_D3C;
     int field_D40;
     int field_D44;

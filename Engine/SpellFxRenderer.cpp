@@ -46,7 +46,7 @@ unsigned int ModulateColor(unsigned int diffuse, float multiplier) {
 }
 
 //----- (0042620A) --------------------------------------------------------
-bool sr_42620A(RenderVertexSoft *p) {
+bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
     //  __int16 v1; // fps@1
     unsigned __int8 v2;   // c0@2
     char v3;              // c2@2

@@ -611,11 +611,11 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint, signe
 
     v5 = 2 * pFace->uNumVertices;
     v16 = 0;
-    intersect_face_vertex_coords_list_a[v5] =
-        intersect_face_vertex_coords_list_a[0];
-    intersect_face_vertex_coords_list_b[v5] =
-        intersect_face_vertex_coords_list_b[0];
+    intersect_face_vertex_coords_list_a[v5] = intersect_face_vertex_coords_list_a[0];
+    intersect_face_vertex_coords_list_b[v5] = intersect_face_vertex_coords_list_b[0];
     v6 = intersect_face_vertex_coords_list_b[0] >= b;
+
+    // looks like this is point in poly test
     if (v5 <= 0) return false;
     for (int i = 0; i < v5; ++i) {
         if (v16 >= 2) break;
@@ -642,8 +642,14 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint, signe
 
     if (v16 != 1) return false;
 
-    if (engine->config->show_picked_face)
+    if (engine->config->show_picked_face) {
         pFace->uAttributes |= FACE_IsPicked;
+
+        // save debug pick line for later
+        debugpick.vWorldPosition.x = IntersectPoint.x;
+        debugpick.vWorldPosition.y = IntersectPoint.y;
+        debugpick.vWorldPosition.z = IntersectPoint.z;
+    }
 
 
     return true;
@@ -1444,6 +1450,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 
     if (pBillboardRenderList[v3].screen_space_z > fDepth) return false;
 
+    // test polygon center first
     GetPolygonCenter(render->pBillboardRenderListD3D[/*v3*/uD3DBillboardIdx].pQuads, 4, &test_x, &test_y);
     // why check parent id v3? parent ID are wrong becasue of switching between pBillboardRenderListD3D and pBillboardRenderList
 
@@ -1459,8 +1466,9 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
                          Vis_static_stru_F91E10.uNumPointers - 1);
     if (Vis_static_stru_F91E10.uNumPointers) {
         if (Vis_static_stru_F91E10.object_pointers[0]->depth >
-            pBillboardRenderList[v3].screen_space_z)
+            pBillboardRenderList[v3].screen_space_z) {
             return true;
+        }
     } else if ((double)(pViewport->uScreen_TL_X) <= test_x &&
         (double)pViewport->uScreen_BR_X >= test_x &&
         (double)pViewport->uScreen_TL_Y <= test_y &&
@@ -1468,6 +1476,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
         return true;
     }
 
+    // test four corners of quad
     for (v40 = 0; v40 < 4; ++v40) {
         test_x =
             render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[v40].pos.x;
@@ -1488,13 +1497,18 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
             Vis_static_stru_F91E10.create_object_pointers();
             sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0,
                                  Vis_static_stru_F91E10.uNumPointers - 1);
-            if (!Vis_static_stru_F91E10.uNumPointers) return true;
-            if (Vis_static_stru_F91E10.object_pointers[0]->depth >
-                pBillboardRenderList[v3].screen_space_z)
+            if (!Vis_static_stru_F91E10.uNumPointers) {
                 return true;
+            }
+            if (Vis_static_stru_F91E10.object_pointers[0]->depth >
+                pBillboardRenderList[v3].screen_space_z) {
+                return true;
+            }
         }
     }
 
+
+    // reverse quad and test center
     if (v40 >= 4) {
         // if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) return false;
         t1_x =
@@ -1534,10 +1548,13 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
             Vis_static_stru_F91E10.create_object_pointers();
             sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0,
                                  Vis_static_stru_F91E10.uNumPointers - 1);
-            if (!Vis_static_stru_F91E10.uNumPointers) return true;
-            if (Vis_static_stru_F91E10.object_pointers[0]->depth >
-                pBillboardRenderList[v3].screen_space_z)
+            if (!Vis_static_stru_F91E10.uNumPointers) {
                 return true;
+            }
+            if (Vis_static_stru_F91E10.object_pointers[0]->depth >
+                pBillboardRenderList[v3].screen_space_z) {
+                return true;
+            }
         }
     }
     return false;

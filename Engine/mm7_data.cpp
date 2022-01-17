@@ -302,7 +302,7 @@ std::array<const char *, 11> pHouse_ExitPictures = {{
 
 std::array<int16_t, 11> word_4E8152 = {{0, 0, 0, 90, 8, 2, 70, 20, 10, 50, 30}};  // level spawn monster levels ABC
 
-char _4E94D0_light_type = 5;
+char _4E94D0_light_type = 5;  // stationary??
 char _4E94D2_light_type = 6;
 char _4E94D3_light_type = 10;
 // char *off_4EB080; // idb

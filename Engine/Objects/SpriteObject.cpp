@@ -426,18 +426,18 @@ LABEL_13:
                         pSpriteObjects[uLayingItemID].vVelocity.y = 0;
                     }
                 } else {
-                    v56 = abs(face->pFacePlane.vNormal.x * pSpriteObjects[uLayingItemID].vVelocity.x +
-                              face->pFacePlane.vNormal.y * pSpriteObjects[uLayingItemID].vVelocity.y +
-                              face->pFacePlane.vNormal.z * pSpriteObjects[uLayingItemID].vVelocity.z) >>
+                    v56 = abs(face->pFacePlaneOLD.vNormal.x * pSpriteObjects[uLayingItemID].vVelocity.x +
+                              face->pFacePlaneOLD.vNormal.y * pSpriteObjects[uLayingItemID].vVelocity.y +
+                              face->pFacePlaneOLD.vNormal.z * pSpriteObjects[uLayingItemID].vVelocity.z) >>
                           16;
                     if ((collision_state.speed >> 3) > v56)
                         v56 = collision_state.speed >> 3;
                     // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
                     // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
-                    v60 = fixpoint_mul(v56, face->pFacePlane.vNormal.z);
-                    pSpriteObjects[uLayingItemID].vVelocity.x += 2 * fixpoint_mul(v56, face->pFacePlane.vNormal.x);
-                    pSpriteObjects[uLayingItemID].vVelocity.y += 2 * fixpoint_mul(v56, face->pFacePlane.vNormal.y);
-                    if (face->pFacePlane.vNormal.z <= 32000) {
+                    v60 = fixpoint_mul(v56, face->pFacePlaneOLD.vNormal.z);
+                    pSpriteObjects[uLayingItemID].vVelocity.x += 2 * fixpoint_mul(v56, face->pFacePlaneOLD.vNormal.x);
+                    pSpriteObjects[uLayingItemID].vVelocity.y += 2 * fixpoint_mul(v56, face->pFacePlaneOLD.vNormal.y);
+                    if (face->pFacePlaneOLD.vNormal.z <= 32000) {
                         v37 = 2 * (short)v60;
                     } else {
                         v36 = v60;

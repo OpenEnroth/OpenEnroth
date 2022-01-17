@@ -628,6 +628,8 @@ void Party_Image_MM7::Deserialize(Party *party) {
         party->InTheShopFlags[i] = this->InTheShopFlags[i];
 
     party->uFine = this->uFine;
+
+    // is this correct / ever used??
     party->flt_TorchlightColorR = this->flt_TorchlightColorR;
     party->flt_TorchlightColorG = this->flt_TorchlightColorG;
     party->flt_TorchlightColorB = this->flt_TorchlightColorB;

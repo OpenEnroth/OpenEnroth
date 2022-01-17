@@ -561,7 +561,7 @@ struct BLVSector {  // 0x74
     int16_t uWaterLevel;
     int16_t uMistLevel;
     int16_t uLightDistanceMultiplier;
-    int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually 
+    int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually
     int16_t uFirstBSPNode;
     int16_t exit_tag;
     BBox_short_ pBounding;

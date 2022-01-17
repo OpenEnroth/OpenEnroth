@@ -460,9 +460,7 @@ void Render::RenderTerrainD3D() {  // New function
                     VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                 }
 
-                float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                    (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                    (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                float _f = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
 
                 lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, 3, 1);
@@ -558,9 +556,7 @@ void Render::RenderTerrainD3D() {  // New function
                         VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                     }
 
-                    float _f2 = ((norm2->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                        (norm2->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                        (norm2->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                    float _f2 = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
                     pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f2 + 0.5f);
 
 
@@ -636,9 +632,7 @@ void Render::RenderTerrainD3D() {  // New function
                     }
                 }  // end split trinagles
             } else {
-                float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                    (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                    (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                float _f = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
 
                 lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, pTilePolygon->uNumVertices, 1);
@@ -985,6 +979,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
             drawcalls++;
+
         } else {
             for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].pos.x =
@@ -1089,6 +1084,15 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
 
     if (engine->config->debug_terrain) {
         pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x0000FFFF, 0.0);
+    }
+    if (engine->config->show_picked_face) {
+        if (pFace->uAttributes & FACE_OUTLINED) {
+            RenderVertexSoft cam;
+            cam.vWorldPosition.x = pCamera3D->vCameraPos.x;
+            cam.vWorldPosition.y = pCamera3D->vCameraPos.y;
+            cam.vWorldPosition.z = pCamera3D->vCameraPos.z;
+            pCamera3D->do_draw_debug_line_sw(&cam, -1, &vis->debugpick, 0xFFFF00u, 0, 0);
+        }
     }
 }
 
@@ -2062,6 +2066,11 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             log->Info(L"X: %.6f, Y: %.6f, Z: %.6f", array_507D30[out].vWorldViewProjX, array_507D30[out].vWorldViewProjY, array_507D30[out].vWorldViewPosition.x);
         }
         log->Info(L"FAce done");*/
+        RenderVertexSoft cam;
+        cam.vWorldPosition.x = pCamera3D->vCameraPos.x;
+        cam.vWorldPosition.y = pCamera3D->vCameraPos.y;
+        cam.vWorldPosition.z = pCamera3D->vCameraPos.z;
+        pCamera3D->do_draw_debug_line_sw(&cam, -1, &vis->debugpick, 0xFFFF00u, 0, 0);
     }
 
     if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
@@ -3361,8 +3370,8 @@ void Render::DrawBuildingsD3D() {
             unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
             unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
 
-            if (face.pFacePlane.vNormal.z &&
-                abs(face.pFacePlane.vNormal.z) >= 59082) {
+            if (face.pFacePlaneOLD.vNormal.z &&
+                abs(face.pFacePlaneOLD.vNormal.z) >= 59082) {
                 if (poly->flags & 0x400)
                     poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
                 if (poly->flags & 0x800)
@@ -3423,13 +3432,8 @@ void Render::DrawBuildingsD3D() {
             poly->uNumVertices = face.uNumVertices;
             poly->field_59 = 5;
 
-            v51 =
-                fixpoint_mul(-pOutdoor->vSunlight.x, face.pFacePlane.vNormal.x);
-            v53 =
-                fixpoint_mul(-pOutdoor->vSunlight.y, face.pFacePlane.vNormal.y);
-            v52 =
-                fixpoint_mul(-pOutdoor->vSunlight.z, face.pFacePlane.vNormal.z);
-            poly->dimming_level = 20 - fixpoint_mul(20, v51 + v53 + v52);
+            float f = (face.pFacePlaneOLD.vNormal.x / 65536.0) * pOutdoor->vSunlight.x + (face.pFacePlaneOLD.vNormal.y / 65536.0) * pOutdoor->vSunlight.y + (face.pFacePlaneOLD.vNormal.z / 65536.0) * pOutdoor->vSunlight.z;
+            poly->dimming_level = 20 - floorf(20.0 * f + 0.5f);
 
             if (poly->dimming_level < 0) poly->dimming_level = 0;
             if (poly->dimming_level > 31) poly->dimming_level = 31;
@@ -4169,11 +4173,11 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
             array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
             array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
         }
-        render->DrawIndoorPolygon(uNumVertices, pFace,
-            PID(OBJECT_BModel, uFaceID), -1, 0);
+        render->DrawIndoorPolygon(uNumVertices, pFace, PID(OBJECT_BModel, uFaceID), -1, 0);
         return;
     }
     //---------------------------------------
+
     v70 = (signed __int64)((double)(((int)(pCamera3D->ViewPlaneDist_X) << 16) *
         pCamera3D->vCameraPos.z)  // 179
         / (((double)((int)(pCamera3D->ViewPlaneDist_X) << 16) +

@@ -956,7 +956,7 @@ static void lua_dumpstack(lua_State *L) {
 }
 
 bool Nuklear::Draw(NUKLEAR_STAGE stage, WindowType winType, int id) {
-    if (!this || !nuklear->ctx || !lua)
+    if (!nuklear || !nuklear->ctx || !lua)
         return false;
 
     if (wins[winType].state == WINDOW_INITIALIZED) {
