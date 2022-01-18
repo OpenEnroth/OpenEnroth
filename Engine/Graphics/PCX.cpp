@@ -99,7 +99,7 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
 
     // check that's PCX and its version
     if (header->manufacturer != 0x0a || header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0) {
-        return false;
+        return nullptr;
     }
 
     *width = header->xmax - header->xmin + 1;
@@ -110,7 +110,7 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
     //corruption check
     if (bytes_per_scanline < (*width * header->bpp * header->nplanes + 7) / 8 ||
         (!header->compression && bytes_per_scanline > (filesize - sizeof(PCXHeader)) / *height)) {
-        return false;
+        return nullptr;
     }
 
     switch ((header->nplanes << 8) + header->bpp) {
@@ -143,7 +143,7 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
 
     uint8_t *pixels = new uint8_t[pixel_count];
     if (!pixels)
-        return false;
+        return nullptr;
 
     memset(pixels, 0, pixel_count * sizeof(uint8_t));
 
@@ -192,7 +192,7 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
         }
     } else {
         // TODO: other planes/bpp variants
-        return false;
+        return nullptr;
     }
 
     free(scanline);
