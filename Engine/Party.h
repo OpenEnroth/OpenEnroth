@@ -256,8 +256,7 @@ struct Party {
 
     bool IsPartyEvil();
     bool IsPartyGood();
-    int _46A89E_immolation_effect(int *affected, int affectedArrSize,
-                                  int effectRange);
+    size_t ImmolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
     int field_0;
     unsigned int uPartyHeight;
     unsigned int uDefaultPartyHeight;

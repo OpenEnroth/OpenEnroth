@@ -634,7 +634,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint, signe
                 if (!v10) {
                     ++v16;
                 } else {
-                    float _v1 = ((intersect_face_vertex_coords_list_a[i + 1] - intersect_face_vertex_coords_list_a[i])) / (intersect_face_vertex_coords_list_b[i + 1] - intersect_face_vertex_coords_list_b[i]);
+                    float _v1 = (float)((intersect_face_vertex_coords_list_a[i + 1] - intersect_face_vertex_coords_list_a[i])) / (float)(intersect_face_vertex_coords_list_b[i + 1] - intersect_face_vertex_coords_list_b[i]);
                     int _v2 = (b - intersect_face_vertex_coords_list_b[i]) * _v1 + 0.5;
 
                     if (intersect_face_vertex_coords_list_a[i] + (_v2) >= a)

@@ -2223,7 +2223,9 @@ unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         pOutdoor->Draw();
     }
-    DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+
+    if (uCurrentlyLoadedLevelType != LEVEL_null)
+        DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
     glReadPixels(0, 0, window->GetWidth(), window->GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, sPixels);
 
@@ -2825,7 +2827,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         // native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
 
     unsigned __int8 *pixels = nullptr;
-    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8) {
+    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8 || native_format == IMAGE_FORMAT_R8G8B8A8) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);  // rgba
         gl_format = GL_RGBA;
     } else {

@@ -64,7 +64,6 @@ struct context {
 };
 
 struct context wins[WINDOW_DebugMenu] = {};
-WindowType currentWin = WINDOW_null;
 
 enum lua_nk_color_type {
     LUA_COLOR_ANY,
@@ -126,6 +125,7 @@ std::shared_ptr<Nuklear> Nuklear::Initialize() {
         wins[w].mode = NUKLEAR_MODE_SHARED;
         wins[w].ui_draw = -1;
         wins[w].ui_release = -1;
+        wins[w].winType = (WindowType)w;
     }
 
     struct lua_nk_style style;
@@ -3287,6 +3287,148 @@ static int lua_unset_hotkeys(lua_State *L) {
     return 0;
 }
 
+static int lua_party_get(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
+
+    const char *name = luaL_checkstring(L, 1);
+    int value;
+
+    if (!strcmp(name, "food"))
+        value = pParty->GetFood();
+    else if (!strcmp(name, "gold"))
+        value = pParty->GetGold();
+    else
+        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
+
+    lua_pushinteger(L, value);
+
+    return 1;
+}
+
+static int lua_party_give(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    const char *name = luaL_checkstring(L, 1);
+    int value = luaL_checknumber(L, 2);
+
+    if (!strcmp(name, "food"))
+        pParty->GiveFood(value);
+    else if (!strcmp(name, "gold"))
+        pParty->AddGold(value);
+    else
+        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
+
+    return 0;
+}
+
+static int lua_party_set(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    const char *name = luaL_checkstring(L, 1);
+    int value = luaL_checknumber(L, 2);
+
+    if (!strcmp(name, "food"))
+        pParty->SetFood(value);
+    else if (!strcmp(name, "gold"))
+        pParty->SetGold(value);
+    else
+        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
+
+    return 0;
+}
+
+static int lua_party_take(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    const char *name = luaL_checkstring(L, 1);
+    int value = luaL_checknumber(L, 2);
+
+    if (!strcmp(name, "food"))
+        pParty->TakeFood(value);
+    else if (!strcmp(name, "gold"))
+        pParty->TakeGold(value);
+    else
+        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
+
+    return 0;
+}
+
+static int lua_party_member_get(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    int playerID = luaL_checkinteger(L, 1);
+    const char *name = luaL_checkstring(L, 2);
+    int actual = 0, base = 0, modifier = 0;
+
+    if (playerID < 1 || playerID > 4)
+        return luaL_argerror(L, 2, lua_pushfstring(L, "member id '%d' is invalid", playerID));
+
+    Player player = pParty->pPlayers[playerID - 1];
+    if (!strcmp(name, "age")) {
+        actual = player.GetActualAge();
+        base = player.GetBaseAge();
+        modifier = player.sAgeModifier;
+    } else if (!strcmp(name, "accuracy")) {
+        actual = player.GetActualAccuracy();
+        base = player.GetBaseAccuracy();
+        modifier = player.uAccuracyBonus;
+    } else if (!strcmp(name, "armor_class")) {
+        actual = player.GetActualAC();
+        base = player.GetBaseAC();
+        modifier = player.sACModifier;
+    } else if (!strcmp(name, "attack_damage_melee")) {
+        actual = player.GetActualAttack(false);
+    } else if (!strcmp(name, "attack_damage_missle")) {
+        actual = player.GetActualAttack(true);
+    } else if (!strcmp(name, "attribute_endurance")) {
+        actual = player.GetActualEndurance();
+        base = player.GetBaseEndurance();
+        modifier = player.uEnduranceBonus;
+    } else {
+        return luaL_argerror(L, 2, lua_pushfstring(L, "name '%s' is unknown", name));
+    }
+
+    lua_newtable(L);
+    lua_pushliteral(L, "actual");
+    lua_pushinteger(L, actual);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "base");
+    lua_pushinteger(L, base);
+    lua_rawset(L, -3);
+    lua_pushliteral(L, "modifier");
+    lua_pushinteger(L, modifier);
+    lua_rawset(L, -3);
+
+    return 1;
+}
+
+static int lua_load_raw_from_lod(lua_State *L) {
+    lua_check_ret(lua_check_args(L, lua_gettop(L) == 3));
+
+    const char *lod_name = luaL_checkstring(L, 1);
+    const char *resource = luaL_checkstring(L, 2);
+    char *content = NULL;
+
+    if (!strcmp(lod_name, "bitmaps"))
+        content = (char *)pBitmaps_LOD->LoadCompressedTexture(resource);
+    else if (!strcmp(lod_name, "events"))
+        content = (char *)pEvents_LOD->LoadCompressedTexture(resource);
+    else if (!strcmp(lod_name, "games"))
+        content = (char *)pGames_LOD->LoadCompressedTexture(resource);
+    else if (!strcmp(lod_name, "icons"))
+        content = (char *)pIcons_LOD->LoadCompressedTexture(resource);
+    else if (!strcmp(lod_name, "sprites"))
+        content = (char *)pSprites_LOD->LoadCompressedTexture(resource);
+
+    if (!content)
+        return luaL_argerror(L, 2, lua_pushfstring(L, "resource '%s' couldn't be loaded", resource));
+
+    lua_pushstring(L, content);
+    free(content);
+
+    return 1;
+}
+
 static bool lua_load_init() {
     int status = luaL_loadfile(lua, MakeDataPath("ui", "init.lua").c_str());
     if (status) {
@@ -3423,6 +3565,12 @@ bool Nuklear::LuaInit() {
     lua_setglobal(lua, "ui");
 
     static const luaL_Reg game[] = {
+        { "load_raw_from_lod", lua_load_raw_from_lod },
+        { "party_get", lua_party_get },
+        { "party_give", lua_party_give },
+        { "party_set", lua_party_set },
+        { "party_take", lua_party_take },
+        { "party_member_get", lua_party_member_get },
         { "set_current_menu", lua_set_game_current_menu },
         { "set_hotkey", lua_set_hotkey },
         { "unset_hotkey", lua_unset_hotkey },

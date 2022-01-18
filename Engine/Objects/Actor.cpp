@@ -1403,7 +1403,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         v6 = &pOutdoor->ddm;
         if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v6 = &pIndoor->dlv;
         pPlayer->StealFromActor(uActorID, v4, v6->uReputation++);
-        v8 = pPlayer->GetAttackRecoveryTime(0);
+        v8 = pPlayer->GetAttackRecoveryTime(false);
         if (v8 < 30) v8 = 30;
         if (!pParty->bTurnBasedModeOn)
             pPlayer->SetRecoveryTime(
@@ -3525,8 +3525,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                     uDamageAmount /= 2;
                 IsAdditionalDamagePossible = true;
                 if (projectileSprite->containing_item.uItemID != 0 &&
-                    projectileSprite->containing_item.special_enchantment ==
-                        3) {  // of carnage
+                    projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DMGT_FIRE;
                 } else if (!player->PlayerHitOrMiss(pMonster, v61, a4)) {
                     player->PlaySound(SPEECH_AttackMiss, 0);

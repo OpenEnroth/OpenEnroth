@@ -1542,13 +1542,13 @@ void GameUI_DrawPortraits(unsigned int _this) {
                 render->DrawTextureGrayShade(
                     pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] /
                         640.0f,
-                    388 / 480.0f, pPortrait);
+                    387 / 480.0f, pPortrait); // was 388
             else
                 render->DrawTextureAlphaNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] +
                      1) /
                         640.0f,
-                    388 / 480.0f, pPortrait);
+                    387 / 480.0f, pPortrait); // was 388
             if (pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active() ||
                 pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active() ||
                 pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active() ||
@@ -1644,7 +1644,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                                  [PID_ID(pTurnEngine->pQueue[i].uPackedID)] -
                              4) /
                                 640.0f,
-                            385 / 480.0f, alert_texture);
+                            384 / 480.0f, alert_texture); // was 385
                     }
                 }
             }
@@ -1663,7 +1663,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] -
                      4) /
                         640.0f,
-                    385 / 480.0f, alert_texture);
+                    384 / 480.0f, alert_texture); // was 385
             }
         }
     }
@@ -1956,11 +1956,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
     }
 
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_minimap_frame);
     render->SetUIClipRect(541, 0, 567, 480);
     render->DrawTextureAlphaNew((floorf(((double)pParty->sRotationZ * 0.1171875) + 0.5f) + 285) / 640.0f,
         136 / 480.0f, game_ui_minimap_compass);
     render->ResetUIClipRect();
+    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_minimap_frame);
 }
 
 //----- (00441498) --------------------------------------------------------

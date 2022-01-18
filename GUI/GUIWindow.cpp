@@ -384,7 +384,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
 
     GUIWindow current_window = *this;
     current_window.uFrameX += 12;
-    current_window.uFrameWidth -= 24;
+    current_window.uFrameWidth -= 28;
     current_window.uFrameY += 12;
     current_window.uFrameHeight -= 12;
     current_window.uFrameZ =
@@ -850,8 +850,7 @@ void DialogueEnding() {
 
 void GUIWindow_BooksButtonOverlay::Update() {
     GUIButton *pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameY / 640.0f, uFrameX / 480.0f,
-        pButton->vTextures[0]);
+    render->DrawTextureAlphaNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
 }
 
@@ -894,9 +893,8 @@ void OnButtonClick3::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[1]);
-    viewparams->bRedrawGameUI = 1;
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
+    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }
@@ -908,8 +906,7 @@ void OnButtonClick4::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[1]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
 
     Release();
@@ -920,8 +917,7 @@ void OnSaveLoad::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[0]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -940,8 +936,7 @@ void OnCancel::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pGUIButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pGUIButton->vTextures[0]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pGUIButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -1022,7 +1017,7 @@ void CreateScrollWindow() {
     a1.uFrameW = v0 + a1.uFrameY - 1;
     a1.DrawMessageBox(0);
     a1.uFrameX += 12;
-    a1.uFrameWidth -= 24;
+    a1.uFrameWidth -= 28;
     a1.uFrameY += 12;
     a1.uFrameHeight -= 12;
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;

@@ -1056,21 +1056,21 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
-        471, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
+        471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_CANCEL),
         {{ui_exit_cancel_button_background}}
     );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
     if (pNPCStats->pProfessions[v1->profession].pBenefits) {
         pDialogueWindow->CreateButton(
-            480, 0xA0u, 0x8Cu, 0x1Eu, 1, 0,
+            480, 160, 140, 30, 1, 0,
             UIMSG_ClickNPCTopic, DIALOGUE_PROFESSION_DETAILS, GameKey::None,
             localization->GetString(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
     pDialogueWindow->CreateButton(
-        0x1E0u, 30 * v0 + 160, 0x8Cu, 0x1Eu, 1, 0,
+        480, 30 * v0 + 160, 140, 30, 1, 0,
         UIMSG_ClickNPCTopic, DIALOGUE_HIRE_FIRE, GameKey::None,
         localization->GetString(LSTR_HIRE)
     );

@@ -101,8 +101,10 @@ void GUIWindow_MainMenu::Update() {
 }
 
 void GUIWindow_MainMenu::EventLoop() {
-    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        pMessageQueue_50CBD0->Clear();
         return;
+    }
 
     while (!pMessageQueue_50CBD0->Empty()) {
         UIMessageType pUIMessageType;
@@ -215,7 +217,7 @@ void DrawMM7CopyrightWindow() {
     Dst.uFrameW = 469;
     Dst.DrawMessageBox(0);
 
-    Dst.uFrameWidth -= 24;
+    Dst.uFrameWidth -= 28;
     Dst.uFrameX += 12;
     Dst.uFrameY += 12;
     Dst.uFrameHeight -= 12;

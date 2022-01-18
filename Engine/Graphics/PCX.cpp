@@ -1,25 +1,37 @@
 #include "Engine/Graphics/PCX.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+
+// TODO: this is not big-endian compatible!
+
+enum {
+    PCX_VERSION_2_5 = 0,
+    PCX_VERSION_NOT_VALID = 1,
+    PCX_VERSION_2_8_WITH_PALLETE = 2,
+    PCX_VERSION_2_8_WITHOUT_PALLETE = 3,
+    PCX_VERSION_WINDOWS = 4,
+    PCX_VERSION_3_0 = 5
+};
 
 #pragma pack(push, 1)
 struct PCXHeader {
     int8_t manufacturer;
     int8_t version;
-    int8_t encoding;
+    int8_t compression;
     int8_t bpp;
-    int16_t left;
-    int16_t up;
-    int16_t right;
-    int16_t bottom;
+    int16_t xmin;
+    int16_t ymin;
+    int16_t xmax;
+    int16_t ymax;
     int16_t hdpi;
     int16_t vdpi;
-    int8_t color_map[48];
+    int8_t pallete[48];
     int8_t reserved;
-    int8_t planes;
-    int16_t pitch;
+    int8_t nplanes;
+    int16_t bytes_per_row;
     int16_t palette_info;
     int16_t hres;
     int16_t vres;
@@ -27,150 +39,165 @@ struct PCXHeader {
 };
 #pragma pack(pop)
 
-bool PCX::IsValid(const void *pcx_data) {
-    PCXHeader *header = (PCXHeader *)pcx_data;
-    return (header->bpp == 8) && (header->planes == 3);
+typedef struct bstreamer {
+    const uint8_t *buffer, *buffer_end, *buffer_start;
+} bstreamer;
+
+static inline void bs_init(bstreamer *bs, const uint8_t *buf, int buf_size) {
+    bs->buffer = bs->buffer_start = buf;
+    bs->buffer_end = buf + buf_size;
 }
 
-void PCX::GetSize(const void *pcx_data, unsigned int *width, unsigned int *height) {
-    PCXHeader *header = (PCXHeader *)pcx_data;
-    *width = header->right - header->left + 1;
-    *height = header->bottom - header->up + 1;
+static inline int bs_get_bytes_left(bstreamer *bs) {
+    return bs->buffer_end - bs->buffer;
 }
 
-bool PCX::Decode(const void *pcx_data, uint16_t *pOutPixels,
-                 unsigned int *width, unsigned int *height) {
+static inline unsigned int bs_get_byte(bstreamer *bs) {
+    unsigned int byte;
+    if (bs_get_bytes_left(bs) > 0) {
+        byte = bs->buffer[0];
+        bs->buffer++;
+        return byte;
+    }
+
+    return 0;
+}
+
+static inline unsigned int bs_get_buffer(bstreamer *bs, uint8_t *dst, unsigned int size) {
+    int size_min = std::min((unsigned int)(bs->buffer_end - bs->buffer), size);
+    memcpy(dst, bs->buffer, size_min);
+    bs->buffer += size_min;
+    return size_min;
+}
+
+static int pcx_rle_decode(bstreamer *bs, uint8_t *dst, unsigned int bytes_per_scanline, int compressed) {
+    unsigned int i = 0;
+    unsigned char run, value;
+
+    if (bs_get_bytes_left(bs) < 1)
+        return -1;
+
+    if (compressed) {
+        while (i < bytes_per_scanline && bs_get_bytes_left(bs) > 0) {
+            run = 1;
+            value = bs_get_byte(bs);
+            if (value >= 0xc0 && bs_get_bytes_left(bs) > 0) {
+                run = value & 0x3f;
+                value = bs_get_byte(bs);
+            }
+            while (i < bytes_per_scanline && run--)
+                dst[i++] = value;
+        }
+    } else {
+        bs_get_buffer(bs, dst, bytes_per_scanline);
+    }
+    return 0;
+}
+
+uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width, unsigned int *height, IMAGE_FORMAT *format, IMAGE_FORMAT requested_format) {
     PCXHeader *header = (PCXHeader *)pcx_data;
 
-    if (!IsValid(pcx_data)) {
+    // check that's PCX and its version
+    if (header->manufacturer != 0x0a || header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0) {
         return false;
     }
 
-    GetSize(pcx_data, width, height);
+    *width = header->xmax - header->xmin + 1;
+    *height = header->ymax - header->ymin + 1;
 
-    memset(pOutPixels, 0, *width * *height * sizeof(int16_t));
+    unsigned int bytes_per_scanline = header->nplanes * header->bytes_per_row;
 
-    unsigned int r_mask = 0xF800;
-    unsigned int num_r_bits = 5;
-    unsigned int g_mask = 0x07E0;
-    unsigned int num_g_bits = 6;
-    unsigned int b_mask = 0x001F;
-    unsigned int num_b_bits = 5;
-
-    unsigned char test_byte;      // edx@3
-    unsigned int row_position;    // edi@40
-    unsigned char value;          // cl@63
-    char count;                   // [sp+50h] [bp-Ch]@43
-    unsigned short *dec_position;
-    unsigned short *temp_dec_position;
-
-    uint8_t *input = (uint8_t*)pcx_data;
-
-    // При сохранении изображения подряд идущие пиксели одинакового цвета
-    // объединяются и вместо указания цвета для каждого пикселя указывается цвет
-    // группы пикселей и их количество.
-    unsigned int read_offset = sizeof(PCXHeader);
-    unsigned short current_line = 0;
-    if (*height > 0) {
-        dec_position = pOutPixels;
-        do {
-            temp_dec_position = dec_position;
-            row_position = 0;
-            // decode red line
-            if (header->pitch) {
-                do {
-                    test_byte = input[read_offset];
-                    ++read_offset;
-                    if ((test_byte & 0xC0) == 0xC0) {  // имеется ли объединение
-                        value = input[read_offset];
-                        ++read_offset;
-
-                        if ((test_byte & 0x3F) > 0) {
-                            count = test_byte &
-                                    0x3F;  // количество одинаковых пикселей
-                            do {
-                                ++row_position;
-                                *temp_dec_position |=
-                                    r_mask & ((uint8_t)value
-                                              << (num_g_bits + num_r_bits +
-                                                  num_b_bits - 8));
-                                temp_dec_position++;
-                                if (row_position == header->pitch) break;
-                            } while (count-- != 1);
-                        }
-                    } else {
-                        ++row_position;
-                        *temp_dec_position |=
-                            r_mask &
-                            ((uint8_t)test_byte
-                             << (num_g_bits + num_r_bits + num_b_bits - 8));
-                        temp_dec_position++;
-                    }
-                } while (row_position < header->pitch);
-            }
-
-            temp_dec_position = dec_position;
-            row_position = 0;
-            // decode green line
-            while (row_position < header->pitch) {
-                test_byte = *(input + read_offset);
-                ++read_offset;
-                if ((test_byte & 0xC0) == 0xC0) {
-                    value = *(input + read_offset);
-                    ++read_offset;
-                    if ((test_byte & 0x3F) > 0) {
-                        count = test_byte & 0x3F;
-                        do {
-                            *temp_dec_position |=
-                                g_mask &
-                                (uint16_t)((uint8_t)value
-                                           << (num_g_bits + num_b_bits - 8));
-
-                            temp_dec_position++;
-                            ++row_position;
-                            if (row_position == header->pitch) break;
-                        } while (count-- != 1);
-                    }
-                } else {
-                    *temp_dec_position |=
-                        g_mask & (uint16_t)((uint8_t)test_byte
-                                            << (num_g_bits + num_b_bits - 8));
-                    temp_dec_position++;
-                    ++row_position;
-                }
-            }
-
-            temp_dec_position = dec_position;
-            row_position = 0;
-            // decode blue line
-            while (row_position < header->pitch) {
-                test_byte = *(input + read_offset);
-                read_offset++;
-                if ((test_byte & 0xC0) == 0xC0) {
-                    value = *(input + read_offset);
-                    ++read_offset;
-                    if ((test_byte & 0x3F) > 0) {
-                        count = test_byte & 0x3F;
-                        do {
-                            *temp_dec_position |= value >> (8 - num_b_bits);
-                            temp_dec_position++;
-
-                            ++row_position;
-                            if (row_position == header->pitch) break;
-                        } while (count-- != 1);
-                    }
-                } else {
-                    *temp_dec_position |= test_byte >> (8 - num_b_bits);
-                    temp_dec_position++;
-                    ++row_position;
-                }
-            }
-            ++current_line;
-            dec_position += *width;
-        } while (current_line < *height);
+    //corruption check
+    if (bytes_per_scanline < (*width * header->bpp * header->nplanes + 7) / 8 ||
+        (!header->compression && bytes_per_scanline > (filesize - sizeof(PCXHeader)) / *height)) {
+        return false;
     }
 
-    return true;
+    switch ((header->nplanes << 8) + header->bpp) {
+        case 0x0308:
+            if (requested_format == IMAGE_FORMAT_R5G6B5)
+                *format = IMAGE_FORMAT_R5G6B5;
+            else
+                *format = IMAGE_FORMAT_R8G8B8A8;
+
+            break;
+        case 0x0108:
+        case 0x0104:
+        case 0x0102:
+        case 0x0101:
+        case 0x0401:
+        case 0x0301:
+        case 0x0201:
+            // TODO: PAL8 color mode
+            // fall through
+        default:
+            *format = IMAGE_INVALID_FORMAT;
+            return nullptr;
+    }
+
+    size_t pixel_count = 0;
+    if (*format == IMAGE_FORMAT_R5G6B5)
+        pixel_count = *width * *height * 2;
+    else
+        pixel_count = *width * *height * 4;
+
+    uint8_t *pixels = new uint8_t[pixel_count];
+    if (!pixels)
+        return false;
+
+    memset(pixels, 0, pixel_count * sizeof(uint8_t));
+
+    bstreamer bs;
+    unsigned int stride = 0;
+    uint8_t *scanline = (uint8_t *)malloc(bytes_per_scanline + 32);
+    bs_init(&bs, (uint8_t*)pcx_data + sizeof(PCXHeader), filesize - sizeof(PCXHeader));
+
+    if (header->nplanes == 3 && header->bpp == 8) {
+        for (unsigned int y = 0; y < *height; y++) {
+            int ret = pcx_rle_decode(&bs, scanline, bytes_per_scanline, header->compression);
+            if (ret < 0) {
+                free(pixels);
+                pixels = nullptr;
+                return pixels;
+            }
+
+            for (unsigned int x = 0; x < *width; x++) {
+                if (*format == IMAGE_FORMAT_R5G6B5) {
+                    unsigned int r_mask = 0xF800;
+                    unsigned int num_r_bits = 5;
+                    unsigned int g_mask = 0x07E0;
+                    unsigned int num_g_bits = 6;
+                    unsigned int b_mask = 0x001F;
+                    unsigned int num_b_bits = 5;
+                    uint16_t tmp = 0;
+
+                    tmp |= r_mask & (scanline[x] << (num_g_bits + num_r_bits + num_b_bits - 8));
+                    tmp |= g_mask & (uint16_t)(scanline[x + header->bytes_per_row] << (num_g_bits + num_b_bits - 8));
+                    tmp |= scanline[x + (header->bytes_per_row << 1)] >> (8 - num_b_bits);;
+
+                    pixels[stride + 2 * x] = tmp & 0xff;
+                    pixels[stride + 2 * x + 1] = tmp >> 8;
+                } else {
+                    pixels[stride + 4 * x] = scanline[x];
+                    pixels[stride + 4 * x + 1] = scanline[x + header->bytes_per_row];
+                    pixels[stride + 4 * x + 2] = scanline[x + (header->bytes_per_row << 1)];
+                    pixels[stride + 4 * x + 3] = 255;
+                }
+            }
+
+            if (*format == IMAGE_FORMAT_R5G6B5)
+                stride += *width * 2;
+            else
+                stride += *width * 4;
+        }
+    } else {
+        // TODO: other planes/bpp variants
+        return false;
+    }
+
+    free(scanline);
+
+    return pixels;
 }
 
 void *WritePCXHeader(void *pcx_data, int width, int height) {
@@ -181,18 +208,18 @@ void *WritePCXHeader(void *pcx_data, int width, int height) {
 
     PCXHeader *header = (PCXHeader *)pcx_data;
     memset(header, 0, sizeof(PCXHeader));
-    header->left = 0;
-    header->up = 0;
-    header->right = width - 1;
-    header->bottom = height - 1;
-    header->pitch = pitch;
+    header->xmin = 0;
+    header->ymin = 0;
+    header->xmax = width - 1;
+    header->ymax = height - 1;
+    header->bytes_per_row = pitch;
     header->manufacturer = 10;
     header->version = 5;
-    header->encoding = 1;
+    header->compression = 1;
     header->bpp = 8;
     header->hdpi = 75;
     header->vdpi = 75;
-    header->planes = 3;
+    header->nplanes = 3;
     header->palette_info = 1;
 
     return (uint8_t *)pcx_data + sizeof(PCXHeader);

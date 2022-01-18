@@ -54,15 +54,13 @@ void CharacterUI_DrawTooltip(const char *title, String &content) {
     popup_window.uFrameHeight = 256;
     popup_window.uFrameX = 128;
     popup_window.uFrameY = pt.y + 30;
-    popup_window.uFrameHeight =
-        pFontSmallnum->CalcTextHeight(content, popup_window.uFrameWidth, 24) +
-        2 * pFontLucida->GetHeight() + 24;
+    popup_window.uFrameHeight = pFontSmallnum->CalcTextHeight(content, popup_window.uFrameWidth, 24) + 2 * pFontLucida->GetHeight() + 24;
     popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
     popup_window.uFrameW = popup_window.uFrameY + popup_window.uFrameHeight - 1;
     popup_window.DrawMessageBox(0);
 
     popup_window.uFrameX += 12;
-    popup_window.uFrameWidth -= 24;
+    popup_window.uFrameWidth -= 28;
     popup_window.uFrameY += 12;
     popup_window.uFrameHeight -= 12;
     popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
@@ -151,7 +149,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
         for (unsigned int y = uY + messagebox_corner_x->GetHeight();
              y < uY + uHeight - messagebox_corner_y->GetHeight();
-             y += messagebox_border_top->GetHeight()) {
+             y += messagebox_border_right->GetHeight()) {
             render->DrawTextureAlphaNew(uX / renwidth, y / renheight,
                                         messagebox_border_left);
             render->DrawTextureAlphaNew(
@@ -1078,30 +1076,30 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
          0x3F)) {
         sprintf(static_sub_417BB5_out_string, a2,
                 localization->GetSkillDescription(uPlayerSkillType),
-                localization->GetString(LSTR_NORMAL), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_NORMAL), v35 + 3, v35 + 10,
                 localization->GetSkillDescriptionNormal(uPlayerSkillType),
                 // changed from 5 to 15 to add space
                 // after ':'
-                localization->GetString(LSTR_EXPERT), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_EXPERT), v35 + 3, v35 + 10,
                 localization->GetSkillDescriptionExpert(uPlayerSkillType),
-                localization->GetString(LSTR_MASTER), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_MASTER), v35 + 3, v35 + 10,
                 localization->GetSkillDescriptionMaster(uPlayerSkillType),
-                localization->GetString(LSTR_GRAND), v35 + 3, v35 + 15,
+                localization->GetString(LSTR_GRAND), v35 + 3, v35 + 10,
                 localization->GetSkillDescriptionGrand(uPlayerSkillType));
     } else {
         sprintf(Source, "\f%05d", Color16(0xFFu, 0xFFu, 0xFFu));
         strcat(a2, Source);
-        strcat(a2, "%s: +%d");
+        strcat(a2, "\n%s: +%d");
         sprintf(
             static_sub_417BB5_out_string, a2,
             localization->GetSkillDescription(uPlayerSkillType),
-            localization->GetString(LSTR_NORMAL), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_NORMAL), v35 + 3, v35 + 10,
             localization->GetSkillDescriptionNormal(uPlayerSkillType),
-            localization->GetString(LSTR_EXPERT), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_EXPERT), v35 + 3, v35 + 10,
             localization->GetSkillDescriptionExpert(uPlayerSkillType),
-            localization->GetString(LSTR_MASTER), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_MASTER), v35 + 3, v35 + 10,
             localization->GetSkillDescriptionMaster(uPlayerSkillType),
-            localization->GetString(LSTR_GRAND), v35 + 3, v35 + 5,
+            localization->GetString(LSTR_GRAND), v35 + 3, v35 + 10,
             localization->GetSkillDescriptionGrand(uPlayerSkillType),
             localization->GetString(LSTR_BONUS_2),
             (pParty->pPlayers[uPlayerID].GetActualSkillLevel(uPlayerSkillType) &
@@ -1120,7 +1118,7 @@ void CharacterUI_SkillsTab_ShowHint() {
     if (pX < 24 || pX > 455 || pY < 18 || pY > 36) {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
-                pX <= pButton->uZ && pY >= pButton->uY && pY <= pButton->uW) {
+                pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 String pSkillDescText = CharacterUI_GetSkillDescText(
                     uActiveCharacter - 1,
                     (PLAYER_SKILL_TYPE)pButton->msg_param);
@@ -1271,7 +1269,7 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 15:  // Attack Bonus
             if (pAttackBonusAttributeDescription) {
-                int meleerecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(0);
+                int meleerecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false);
                 char recov[100];
                 sprintf(recov, "\n\nRecovery time: %d", meleerecov);
                 String test = String(pAttackBonusAttributeDescription) + String(recov);
@@ -1290,7 +1288,7 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 17:  // Missle Bonus
             if (pMissleBonusAttributeDescription) {
-                int missrecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(1);
+                int missrecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(true);
                 char recovm[100];
                 sprintf(recovm, "\n\nRecovery time: %d", missrecov);
                 String test2 = String(pAttackBonusAttributeDescription) + String(recovm);
@@ -1998,7 +1996,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             item->UpdateTempBonus(pParty->GetPlayingTime());
             if (pParty->pPickedItem.uItemID == ITEM_POTION_SLAYING_POTION) {
-                item->special_enchantment = ITEM_ENCHANTMENT_40;  // of Slaying
+                item->special_enchantment = ITEM_ENCHANTMENT_DRAGON_SLAYING;
                 v31 = (double)(1800 * pParty->pPickedItem.uEnchantmentType);
             } else {
                 static ITEM_ENCHANTMENT _4E2904_enchantment_by_potion_lut[] = {
