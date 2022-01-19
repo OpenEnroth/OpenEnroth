@@ -19,16 +19,13 @@
     #endif
 #endif
 
+#include "glad/gl.h"
+
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
-#include <OpenGL/gl.h>
 #else
 #include <GL/glu.h>
-#include <GL/gl.h>
 #endif
-
-#include <SDL.h>
-#include <SDL_opengl_glext.h>
 
 #include <algorithm>
 #include <memory>
@@ -41,6 +38,7 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -1878,7 +1876,7 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
 
 void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
                                      Image *pTexture) {
-    DrawTextureNew((pX - move_X)/window->GetWidth(), (pY - move_Y)/window->GetHeight(), pTexture);
+    DrawTextureNew((float)(pX - move_X)/window->GetWidth(), (float)(pY - move_Y)/window->GetHeight(), pTexture);
 }
 
 
@@ -1927,7 +1925,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL error: (%u)", err);
+        log->Warning("OpenGL: draw image error: (%u)", err);
     }
 }
 
@@ -1947,6 +1945,11 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     unsigned int imgheight = img->GetHeight();
     unsigned int imgwidth = img->GetWidth();
     auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+    if (uOutX < 0)
+        uOutX = 0;
+    if (uOutY < 0)
+        uOutY = 0;
 
     for (int xs = 0; xs < imgwidth; xs++) {
         for (int ys = 0; ys < imgheight; ys++) {
@@ -2220,7 +2223,9 @@ unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         pOutdoor->Draw();
     }
-    DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+
+    if (uCurrentlyLoadedLevelType != LEVEL_null)
+        DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
     glReadPixels(0, 0, window->GetWidth(), window->GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, sPixels);
 
@@ -2262,7 +2267,7 @@ Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
 void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) {
     auto pixels = MakeScreenshot(width, height);
 
-    FILE *result = fcaseopen(filename.c_str(), "wb");
+    FILE *result = fopen(filename.c_str(), "wb");
     if (result == nullptr) {
         return;
     }
@@ -2799,7 +2804,7 @@ void RenderOpenGL::Update_Texture(Texture *texture) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL error: (%u)", err);
+        log->Warning("OpenGL: update texture error: (%u)", err);
     }
 }
 
@@ -2822,7 +2827,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         // native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
 
     unsigned __int8 *pixels = nullptr;
-    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8) {
+    if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8 || native_format == IMAGE_FORMAT_R8G8B8A8) {
         pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);  // rgba
         gl_format = GL_RGBA;
     } else {
@@ -4005,7 +4010,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL error: (%u)", err);
+        log->Warning("OpenGL: draw texture error: (%u)", err);
     }
 
     // blank over same bit of this render_target_rgb to stop text overlaps
@@ -4832,8 +4837,324 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 
     GLenum err;
     while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL error: (%u)", err);
+        log->Warning("OpenGL: fill rectangle error: (%u)", err);
     }
 }
 
+bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
+    struct nk_context* nk_ctx = nuklear->ctx;
+    if (!nk_ctx) {
+        log->Warning("Nuklear context is not available");
+        return false;
+    }
 
+    if (!NuklearCreateDevice()) {
+        log->Warning("Nuklear device creation failed");
+        NuklearRelease();
+        return false;
+    }
+
+    nk_font_atlas_init_default(&nk_dev.atlas);
+    struct nk_tex_font *font = NuklearFontLoad(NULL, 13);
+    nk_dev.atlas.default_font = font->font;
+    if (!nk_dev.atlas.default_font) {
+        log->Warning("Nuklear default font loading failed");
+        NuklearRelease();
+        return false;
+    }
+
+    memcpy(tfont, font, sizeof(struct nk_tex_font));
+
+    if (!nk_init_default(nk_ctx, &nk_dev.atlas.default_font->handle)) {
+        log->Warning("Nuklear initialization failed");
+        NuklearRelease();
+        return false;
+    }
+
+    nk_buffer_init_default(&nk_dev.cmds);
+
+    return true;
+}
+
+bool RenderOpenGL::NuklearCreateDevice() {
+    GLint status;
+    static const GLchar* vertex_shader =
+        NK_SHADER_VERSION
+        "uniform mat4 ProjMtx;\n"
+        "in vec2 Position;\n"
+        "in vec2 TexCoord;\n"
+        "in vec4 Color;\n"
+        "out vec2 Frag_UV;\n"
+        "out vec4 Frag_Color;\n"
+        "void main() {\n"
+        "   Frag_UV = TexCoord;\n"
+        "   Frag_Color = Color;\n"
+        "   gl_Position = ProjMtx * vec4(Position.xy, 0, 1);\n"
+        "}\n";
+    static const GLchar* fragment_shader =
+        NK_SHADER_VERSION
+        "precision mediump float;\n"
+        "uniform sampler2D Texture;\n"
+        "in vec2 Frag_UV;\n"
+        "in vec4 Frag_Color;\n"
+        "out vec4 Out_Color;\n"
+        "void main(){\n"
+        "   Out_Color = Frag_Color * texture(Texture, Frag_UV.st);\n"
+        "}\n";
+
+    nk_buffer_init_default(&nk_dev.cmds);
+    nk_dev.prog = glCreateProgram();
+    nk_dev.vert_shdr = glCreateShader(GL_VERTEX_SHADER);
+    nk_dev.frag_shdr = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(nk_dev.vert_shdr, 1, &vertex_shader, 0);
+    glShaderSource(nk_dev.frag_shdr, 1, &fragment_shader, 0);
+    glCompileShader(nk_dev.vert_shdr);
+    glCompileShader(nk_dev.frag_shdr);
+    glGetShaderiv(nk_dev.vert_shdr, GL_COMPILE_STATUS, &status);
+    if (status != GL_TRUE)
+        return false;
+    glGetShaderiv(nk_dev.frag_shdr, GL_COMPILE_STATUS, &status);
+    if (status != GL_TRUE)
+        return false;
+    glAttachShader(nk_dev.prog, nk_dev.vert_shdr);
+    glAttachShader(nk_dev.prog, nk_dev.frag_shdr);
+    glLinkProgram(nk_dev.prog);
+    glGetProgramiv(nk_dev.prog, GL_LINK_STATUS, &status);
+    if (status != GL_TRUE)
+        return false;
+
+    nk_dev.uniform_tex = glGetUniformLocation(nk_dev.prog, "Texture");
+    nk_dev.uniform_proj = glGetUniformLocation(nk_dev.prog, "ProjMtx");
+    nk_dev.attrib_pos = glGetAttribLocation(nk_dev.prog, "Position");
+    nk_dev.attrib_uv = glGetAttribLocation(nk_dev.prog, "TexCoord");
+    nk_dev.attrib_col = glGetAttribLocation(nk_dev.prog, "Color");
+
+    {
+        GLsizei vs = sizeof(struct nk_vertex);
+        size_t vp = offsetof(struct nk_vertex, position);
+        size_t vt = offsetof(struct nk_vertex, uv);
+        size_t vc = offsetof(struct nk_vertex, col);
+
+        glGenBuffers(1, &nk_dev.vbo);
+        glGenBuffers(1, &nk_dev.ebo);
+        glGenVertexArrays(1, &nk_dev.vao);
+
+        glBindVertexArray(nk_dev.vao);
+        glBindBuffer(GL_ARRAY_BUFFER, nk_dev.vbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nk_dev.ebo);
+
+        glEnableVertexAttribArray((GLuint)nk_dev.attrib_pos);
+        glEnableVertexAttribArray((GLuint)nk_dev.attrib_uv);
+        glEnableVertexAttribArray((GLuint)nk_dev.attrib_col);
+
+        glVertexAttribPointer((GLuint)nk_dev.attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void*)vp);
+        glVertexAttribPointer((GLuint)nk_dev.attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void*)vt);
+        glVertexAttribPointer((GLuint)nk_dev.attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void*)vc);
+    }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    return true;
+}
+
+bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) {
+    struct nk_context *nk_ctx = nuklear->ctx;
+    if (!nk_ctx)
+        return false;
+
+    int width, height;
+    int display_width, display_height;
+    struct nk_vec2 scale;
+    GLfloat ortho[4][4] = {
+        { 2.0f,  0.0f,  0.0f,  0.0f },
+        { 0.0f, -2.0f,  0.0f,  0.0f },
+        { 0.0f,  0.0f, -1.0f,  0.0f },
+        { -1.0f, 1.0f,  0.0f,  1.0f },
+    };
+
+    height = window->GetHeight();
+    width = window->GetWidth();
+    display_height = render->GetRenderHeight();
+    display_width = render->GetRenderWidth();
+
+    ortho[0][0] /= (GLfloat)width;
+    ortho[1][1] /= (GLfloat)height;
+
+    scale.x = (float)display_width / (float)width;
+    scale.y = (float)display_height / (float)height;
+
+    /* setup global state */
+    glViewport(0, 0, display_width, display_height);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_SCISSOR_TEST);
+    glActiveTexture(GL_TEXTURE0);
+
+    /* setup program */
+    glUseProgram(nk_dev.prog);
+    glUniform1i(nk_dev.uniform_tex, 0);
+    glUniformMatrix4fv(nk_dev.uniform_proj, 1, GL_FALSE, &ortho[0][0]);
+    {
+        /* convert from command queue into draw list and draw to screen */
+        const struct nk_draw_command *cmd;
+        void *vertices, *elements;
+        const nk_draw_index *offset = NULL;
+        struct nk_buffer vbuf, ebuf;
+
+        /* allocate vertex and element buffer */
+        glBindVertexArray(nk_dev.vao);
+        glBindBuffer(GL_ARRAY_BUFFER, nk_dev.vbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, nk_dev.ebo);
+
+        glBufferData(GL_ARRAY_BUFFER, max_vertex_buffer, NULL, GL_STREAM_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, max_element_buffer, NULL, GL_STREAM_DRAW);
+
+        /* load vertices/elements directly into vertex/element buffer */
+        vertices = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        elements = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+        {
+            /* fill convert configuration */
+            struct nk_convert_config config;
+            struct nk_draw_vertex_layout_element vertex_layout[] = {
+                {NK_VERTEX_POSITION, NK_FORMAT_FLOAT, NK_OFFSETOF(struct nk_vertex, position)},
+                {NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, NK_OFFSETOF(struct nk_vertex, uv)},
+                {NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, NK_OFFSETOF(struct nk_vertex, col)},
+                {NK_VERTEX_LAYOUT_END}
+            };
+            memset(&config, 0, sizeof(config));
+            config.vertex_layout = vertex_layout;
+            config.vertex_size = sizeof(struct nk_vertex);
+            config.vertex_alignment = NK_ALIGNOF(struct nk_vertex);
+            config.null = nk_dev.null;
+            config.circle_segment_count = 22;
+            config.curve_segment_count = 22;
+            config.arc_segment_count = 22;
+            config.global_alpha = 1.0f;
+            config.shape_AA = AA;
+            config.line_AA = AA;
+
+            /* setup buffers to load vertices and elements */
+            nk_buffer_init_fixed(&vbuf, vertices, (nk_size)max_vertex_buffer);
+            nk_buffer_init_fixed(&ebuf, elements, (nk_size)max_element_buffer);
+            nk_convert(nk_ctx, &nk_dev.cmds, &vbuf, &ebuf, &config);
+        }
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+        glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+
+        /* iterate over and execute each draw command */
+        nk_draw_foreach(cmd, nk_ctx, &nk_dev.cmds) {
+            if (!cmd->elem_count) continue;
+            glBindTexture(GL_TEXTURE_2D, (GLuint)cmd->texture.id);
+            glScissor((GLint)(cmd->clip_rect.x * scale.x),
+                (GLint)((height - (GLint)(cmd->clip_rect.y + cmd->clip_rect.h)) * scale.y),
+                (GLint)(cmd->clip_rect.w * scale.x),
+                (GLint)(cmd->clip_rect.h * scale.y));
+            glDrawElements(GL_TRIANGLES, (GLsizei)cmd->elem_count, GL_UNSIGNED_SHORT, offset);
+            offset += cmd->elem_count;
+        }
+        nk_clear(nk_ctx);
+        nk_buffer_clear(&nk_dev.cmds);
+    }
+
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    glDisable(GL_BLEND);
+    glDisable(GL_SCISSOR_TEST);
+
+    return true;
+}
+
+void RenderOpenGL::NuklearRelease() {
+    nk_font_atlas_clear(&nk_dev.atlas);
+
+    glDetachShader(nk_dev.prog, nk_dev.vert_shdr);
+    glDetachShader(nk_dev.prog, nk_dev.frag_shdr);
+    glDeleteShader(nk_dev.vert_shdr);
+    glDeleteShader(nk_dev.frag_shdr);
+    glDeleteProgram(nk_dev.prog);
+    glDeleteBuffers(1, &nk_dev.vbo);
+    glDeleteBuffers(1, &nk_dev.ebo);
+    glDeleteVertexArrays(1, &nk_dev.vao);
+
+    nk_buffer_free(&nk_dev.cmds);
+
+    memset(&nk_dev, 0, sizeof(nk_dev));
+}
+
+struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char* font_path, size_t font_size) {
+    const void *image;
+    int w, h;
+    GLuint texid;
+
+    struct nk_tex_font *tfont = new (struct nk_tex_font);
+    if (!tfont)
+        return NULL;
+
+    struct nk_font_config cfg = nk_font_config(font_size);
+    cfg.merge_mode = nk_false;
+    cfg.coord_type = NK_COORD_UV;
+    cfg.spacing = nk_vec2(0, 0);
+    cfg.oversample_h = 3;
+    cfg.oversample_v = 1;
+    cfg.range = nk_font_cyrillic_glyph_ranges();
+    cfg.size = font_size;
+    cfg.pixel_snap = 0;
+    cfg.fallback_glyph = '?';
+
+    nk_font_atlas_begin(&nk_dev.atlas);
+
+    if (!font_path)
+        tfont->font = nk_font_atlas_add_default(&nk_dev.atlas, font_size, 0);
+    else
+        tfont->font = nk_font_atlas_add_from_file(&nk_dev.atlas, font_path, font_size, &cfg);
+
+    image = nk_font_atlas_bake(&nk_dev.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
+
+    glGenTextures(1, &texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)w, (GLsizei)h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+    tfont->texid = texid;
+    nk_font_atlas_end(&nk_dev.atlas, nk_handle_id(texid), &nk_dev.null);
+
+    return tfont;
+}
+
+void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
+    if (tfont)
+        glDeleteTextures(1, &tfont->texid);
+}
+
+struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
+    GLuint texid;
+    auto t = (TextureOpenGL *)img;
+    unsigned __int8 *pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+
+    glGenTextures(1, &texid);
+    t->SetOpenGlTexture(texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t->GetWidth(), t->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return nk_image_id(texid);
+}
+
+void RenderOpenGL::NuklearImageFree(Image *img) {
+    auto t = (TextureOpenGL *)img;
+    GLuint texid = t->GetOpenGlTexture();
+    if (texid != -1) {
+        glDeleteTextures(1, &texid);
+    }
+}

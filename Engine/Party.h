@@ -139,7 +139,7 @@ struct ActionQueue {
 };
 #pragma pack(pop)
 
-enum class PartyAlignment : uint32_t {
+enum class PartyAlignment: __int32 {
     PartyAlignment_Good = 0,
     PartyAlignment_Neutral = 1,
     PartyAlignment_Evil = 2
@@ -256,8 +256,7 @@ struct Party {
 
     bool IsPartyEvil();
     bool IsPartyGood();
-    int _46A89E_immolation_effect(int *affected, int affectedArrSize,
-                                  int effectRange);
+    size_t ImmolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
     int field_0;
     unsigned int uPartyHeight;
     unsigned int uDefaultPartyHeight;

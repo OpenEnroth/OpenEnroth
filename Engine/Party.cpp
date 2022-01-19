@@ -1149,29 +1149,28 @@ bool Party::IsPartyEvil() { return _449B57_test_bit(_quest_bits, QBIT_DARK_PATH)
 bool Party::IsPartyGood() { return _449B57_test_bit(_quest_bits, QBIT_LIGHT_PATH); }
 
 //----- (0046A89E) --------------------------------------------------------
-int Party::_46A89E_immolation_effect(int *affected, int affectedArrSize,
-                                     int effectRange) {
-    int v5;             // ebx@3
-    int v17;            // [sp+Ch] [bp-10h]@3
-    int v18;            // [sp+10h] [bp-Ch]@3
-    int affectedCount;  // [sp+18h] [bp-4h]@1
+size_t Party::ImmolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange) {
+    int x, y, z;
+    int affectedCount = 0;
 
-    affectedCount = 0;
     for (size_t i = 0; i < uNumActors; ++i) {
-        v5 = abs(pActors[i].vPosition.x - this->vPosition.x);
-        v17 = abs(pActors[i].vPosition.y - this->vPosition.y);
-        v18 = abs(pActors[i].vPosition.z - this->vPosition.z);
-        if (int_get_vector_length(v5, v17, v18) <= effectRange) {
+        x = abs(pActors[i].vPosition.x - this->vPosition.x);
+        y = abs(pActors[i].vPosition.y - this->vPosition.y);
+        z = abs(pActors[i].vPosition.z - this->vPosition.z);
+        if (int_get_vector_length(x, y, z) <= effectRange) {
             if (pActors[i].uAIState != Dead && pActors[i].uAIState != Dying &&
                 pActors[i].uAIState != Removed &&
                 pActors[i].uAIState != Disabled &&
                 pActors[i].uAIState != Summoned) {
                 affected[affectedCount] = i;
+
                 affectedCount++;
-                if (affectedCount >= affectedArrSize) break;
+                if (affectedCount >= affectedArrSize)
+                    break;
             }
         }
     }
+
     return affectedCount;
 }
 

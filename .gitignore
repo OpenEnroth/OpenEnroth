@@ -22,3 +22,7 @@ build
 
 # 3d-party libs are auto-resolved by cmake
 lib
+
+# patch artifacts
+*.orig
+*.rej

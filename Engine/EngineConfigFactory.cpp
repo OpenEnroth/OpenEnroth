@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <string>
 
 #include "Platform/Api.h"
 
@@ -76,6 +77,7 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::Create() {
 std::shared_ptr<EngineConfig> EngineConfigFactory::Create(std::shared_ptr<CommandLine> command_line) {
     auto config = CreateDefaultConfiguration();
 
+    std::shared_ptr<std::string> value;
     if (command_line->TryFindKey("-window")) {
         config->run_in_window |= DEBUG_SETTINGS_RUN_IN_WIDOW;
     }
@@ -96,6 +98,33 @@ std::shared_ptr<EngineConfig> EngineConfigFactory::Create(std::shared_ptr<Comman
     }
     if (command_line->TryFindKey("-nomarg")) {
         config->no_margareth = true;
+    }
+    if (command_line->TryFindKey("-nograb")) {
+        config->no_grab = true;
+    }
+    if (command_line->TryGetValue("render", &value)) {
+        config->renderer_name = *value;
+    }
+    if (command_line->TryGetValue("display", &value)) {
+        config->display = std::stoi(*value);
+    }
+    if (command_line->TryGetValue("window_width", &value)) {
+        config->window_width = std::stoi(*value);
+    }
+    if (command_line->TryGetValue("window_height", &value)) {
+        config->window_height = std::stoi(*value);
+    }
+    if (command_line->TryGetValue("window_x", &value)) {
+        config->window_x = std::stoi(*value);
+    }
+    if (command_line->TryGetValue("window_y", &value)) {
+        config->window_y = std::stoi(*value);
+    }
+    if (command_line->TryGetValue("fullscreen", &value)) {
+        config->fullscreen = std::stoi(*value);
+    }
+    if (command_line->TryGetValue("borderless", &value)) {
+        config->borderless = std::stoi(*value);
     }
 
     return config;

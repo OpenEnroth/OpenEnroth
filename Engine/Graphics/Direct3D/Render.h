@@ -11,11 +11,11 @@
 #include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 
-
 struct ODMFace;
 class RenderD3D;
 class Image;
 class OSWindow;
+class Nuklear;
 
 class Render : public RenderBase {
  public:
@@ -31,6 +31,15 @@ class Render : public RenderBase {
     virtual ~Render();
 
     virtual bool Initialize();
+
+    virtual bool NuklearInitialize(struct nk_tex_font *tfont);
+    virtual bool NuklearCreateDevice();
+    virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer);
+    virtual void NuklearRelease();
+    virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size);
+    virtual void NuklearFontFree(struct nk_tex_font *tfont);
+    virtual struct nk_image NuklearImageLoad(Image *img);
+    virtual void NuklearImageFree(Image *img);
 
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey);
     virtual Texture *CreateTexture_Solid(const String &name);

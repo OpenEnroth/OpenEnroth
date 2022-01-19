@@ -9,7 +9,7 @@ namespace Io {
         // usual text input
         Char,
 
-        // scancodes (langauge and case neutral)
+        // scancodes (language and case neutral)
         F1,
         F2,
         F3,
@@ -68,7 +68,7 @@ namespace Io {
         Alt,
         Shift,
 
-        Numpad0,
+        Numpad0, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
 
         None
     };

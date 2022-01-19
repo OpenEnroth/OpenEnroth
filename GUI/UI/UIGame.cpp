@@ -388,6 +388,7 @@ void GUIWindow_GameVideoOptions::Update() {
             game_ui_menu_options_video_gamma_positions[uGammaPos]);
 
         render->DrawTextureNew(274 / 640.0f, 169 / 480.0f, gamma_preview_image);
+        msg_window.Init();
         msg_window.uFrameX = 22;
         msg_window.uFrameY = 190;
         msg_window.uFrameWidth = 211;
@@ -736,6 +737,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     lpsz = pNPCStats->pProfessions[pNPC->profession].pJoinText;
                     if (!lpsz) lpsz = "";
                 }
+                popup_window.Init();
                 popup_window.sHint.clear();
                 popup_window.uFrameX = 38;
                 popup_window.uFrameY = 60;
@@ -1151,7 +1153,7 @@ void GameUI_WritePointedObjectStatusString() {
                 uLastPointedObjectID = 0;
                 return;
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
-                if (pickedObject.depth >= 0x200u) {
+                if (pickedObject.depth >= 0x2000u) {
                     mouse->uPointingObjectID = 0;
                     if (uLastPointedObjectID != 0) {
                         game_ui_status_bar_string.clear();
@@ -1160,8 +1162,10 @@ void GameUI_WritePointedObjectStatusString() {
                     uLastPointedObjectID = 0;
                     return;
                 }
-                pText = GetDisplayName(&pActors[pickedObjectID]).c_str();
-                GameUI_StatusBar_Set(pText);  // intentional fallthrough
+                String pDisplayName = GetDisplayName(&pActors[pickedObjectID]).c_str();
+                GameUI_StatusBar_Set(pDisplayName.c_str());
+            } else if (mouse->uPointingObjectID == 0xFFFF) {
+                mouse->uPointingObjectID = 0;
             }
             if (mouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
                 game_ui_status_bar_string.clear();
@@ -1540,13 +1544,13 @@ void GameUI_DrawPortraits(unsigned int _this) {
                 render->DrawTextureGrayShade(
                     pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] /
                         640.0f,
-                    388 / 480.0f, pPortrait);
+                    387 / 480.0f, pPortrait); // was 388
             else
                 render->DrawTextureAlphaNew(
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] +
                      1) /
                         640.0f,
-                    388 / 480.0f, pPortrait);
+                    387 / 480.0f, pPortrait); // was 388
             if (pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active() ||
                 pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active() ||
                 pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active() ||
@@ -1642,7 +1646,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                                  [PID_ID(pTurnEngine->pQueue[i].uPackedID)] -
                              4) /
                                 640.0f,
-                            385 / 480.0f, alert_texture);
+                            384 / 480.0f, alert_texture); // was 385
                     }
                 }
             }
@@ -1661,7 +1665,7 @@ void GameUI_DrawPortraits(unsigned int _this) {
                     (pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] -
                      4) /
                         640.0f,
-                    385 / 480.0f, alert_texture);
+                    384 / 480.0f, alert_texture); // was 385
             }
         }
     }
@@ -1954,11 +1958,11 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
     }
 
-    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_minimap_frame);
     render->SetUIClipRect(541, 0, 567, 480);
     render->DrawTextureAlphaNew((floorf(((double)pParty->sRotationZ * 0.1171875) + 0.5f) + 285) / 640.0f,
         136 / 480.0f, game_ui_minimap_compass);
     render->ResetUIClipRect();
+    render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_minimap_frame);
 }
 
 //----- (00441498) --------------------------------------------------------

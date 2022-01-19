@@ -5,10 +5,15 @@
 
 #include <map>
 #include <utility>
+#include <vector>
 
+#include "Engine/Engine.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Platform/Sdl2Window.h"
 
 #include "Io/GameKey.h"
+
+#include "glad/gl.h"
 
 using Io::GameKey;
 
@@ -107,6 +112,15 @@ std::map<SDL_Scancode, GameKey> scancode_lookup = {
     { SDL_SCANCODE_RSHIFT,           GameKey::Shift },
 
     { SDL_SCANCODE_KP_0,             GameKey::Numpad0 },
+    { SDL_SCANCODE_KP_1,             GameKey::Numpad1 },
+    { SDL_SCANCODE_KP_2,             GameKey::Numpad2 },
+    { SDL_SCANCODE_KP_3,             GameKey::Numpad3 },
+    { SDL_SCANCODE_KP_4,             GameKey::Numpad4 },
+    { SDL_SCANCODE_KP_5,             GameKey::Numpad5 },
+    { SDL_SCANCODE_KP_6,             GameKey::Numpad6 },
+    { SDL_SCANCODE_KP_7,             GameKey::Numpad7 },
+    { SDL_SCANCODE_KP_8,             GameKey::Numpad8 },
+    { SDL_SCANCODE_KP_9,             GameKey::Numpad9 },
 };
 
 const int GAME_KEYS_NUM = (int)GameKey::None;
@@ -147,6 +161,201 @@ int SDL_GetAsyncKeyState(GameKey key, bool consume) {
                 return 0;
             }
         }
+    }
+
+    return 0;
+}
+
+Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
+    std::vector<SDL_Rect> displayBounds;
+    Sdl2Window::Sdl2WinParams *params = new(Sdl2WinParams);
+
+    params->flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
+    params->x = engine->config->window_x;
+    params->y = engine->config->window_y;
+    params->display = engine->config->display;
+    int displays = SDL_GetNumVideoDisplays();
+    if (params->display > displays - 1)
+        params->display = 0;
+
+    for (int i = 0; i < displays; i++) {
+        displayBounds.push_back(SDL_Rect());
+        SDL_GetDisplayBounds(i, &displayBounds.back());
+        log->Info("SDL2: display %d, x=%d, y=%d, w=%d, h=%d", i,
+            displayBounds[i].x, displayBounds[i].y,
+            displayBounds[i].w, displayBounds[i].h);
+    }
+
+    if (engine->config->fullscreen) {
+        if (engine->config->borderless)
+            params->flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        else
+            params->flags |= SDL_WINDOW_FULLSCREEN;
+
+        params->x = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
+        params->y = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
+    } else {
+        if (engine->config->borderless)
+            params->flags |= SDL_WINDOW_BORDERLESS;
+
+        if (params->x >= 0 && params->x < displayBounds[params->display].w)
+            params->x += displayBounds[params->display].x;
+        else
+            params->x = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
+
+        if (params->y >= 0 && params->y < displayBounds[params->display].h)
+            params->y += displayBounds[params->display].y;
+        else
+            params->y = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
+    }
+
+    displayBounds.clear();
+
+    return params;
+}
+
+SDL_Window* Sdl2Window::CreateSDLWindow() {
+    Sdl2Window::Sdl2WinParams *params = CalculateWindowParameters();
+
+    sdlWindow = SDL_CreateWindow(
+        engine->config->window_title.c_str(),
+        params->x, params->y,
+        engine->config->window_width, engine->config->window_height,
+        params->flags
+    );
+
+    engine->SetConfigWindowDisplay(params->display);
+
+    delete params;
+
+    if (!sdlWindow)
+        return nullptr;
+
+    if (!engine->config->no_grab)
+        SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
+
+    sdlWindowSurface = SDL_GetWindowSurface(sdlWindow);
+    if (!sdlWindowSurface) {
+        DestroySDLWindow();
+        return nullptr;
+    }
+
+    return sdlWindow;
+}
+
+void Sdl2Window::DestroySDLWindow() {
+    if (sdlWindow) {
+        SDL_DestroyWindow(sdlWindow);
+        sdlWindow = nullptr;
+    }
+}
+
+bool Sdl2Window::NuklearEventHandler(const SDL_Event &e) {
+    if (e.type == SDL_KEYUP || e.type == SDL_KEYDOWN) {
+        /* key events */
+        int down = e.type == SDL_KEYDOWN;
+        const Uint8 *state = SDL_GetKeyboardState(0);
+        SDL_Keycode sym = e.key.keysym.sym;
+
+        GameKey mappedKey;
+        if (TryMapScanCode(e.key.keysym.scancode, &mappedKey)) {
+            if (nuklear->KeyEvent(mappedKey))
+                return 1;
+        }
+
+        if (sym == SDLK_BACKQUOTE && state[SDL_SCANCODE_LCTRL] && !down) {
+            nuklear->Reload();
+        } else if (sym == SDLK_RSHIFT || sym == SDLK_LSHIFT) {
+            nk_input_key(nuklear->ctx, NK_KEY_SHIFT, down);
+        } else if (sym == SDLK_DELETE) {
+            nk_input_key(nuklear->ctx, NK_KEY_DEL, down);
+        } else if (sym == SDLK_RETURN) {
+            nk_input_key(nuklear->ctx, NK_KEY_ENTER, down);
+        } else if (sym == SDLK_TAB) {
+            nk_input_key(nuklear->ctx, NK_KEY_TAB, down);
+        } else if (sym == SDLK_BACKSPACE) {
+            nk_input_key(nuklear->ctx, NK_KEY_BACKSPACE, down);
+        } else if (sym == SDLK_HOME) {
+            nk_input_key(nuklear->ctx, NK_KEY_TEXT_START, down);
+            nk_input_key(nuklear->ctx, NK_KEY_SCROLL_START, down);
+        } else if (sym == SDLK_END) {
+            nk_input_key(nuklear->ctx, NK_KEY_TEXT_END, down);
+            nk_input_key(nuklear->ctx, NK_KEY_SCROLL_END, down);
+        } else if (sym == SDLK_PAGEDOWN) {
+            nk_input_key(nuklear->ctx, NK_KEY_SCROLL_DOWN, down);
+        } else if (sym == SDLK_PAGEUP) {
+            nk_input_key(nuklear->ctx, NK_KEY_SCROLL_UP, down);
+        } else if (sym == SDLK_z && state[SDL_SCANCODE_LCTRL]) {
+            nk_input_key(nuklear->ctx, NK_KEY_TEXT_UNDO, down);
+        } else if (sym == SDLK_r && state[SDL_SCANCODE_LCTRL]) {
+            nk_input_key(nuklear->ctx, NK_KEY_TEXT_REDO, down);
+        } else if (sym == SDLK_c && state[SDL_SCANCODE_LCTRL]) {
+            nk_input_key(nuklear->ctx, NK_KEY_COPY, down);
+        } else if (sym == SDLK_v && state[SDL_SCANCODE_LCTRL]) {
+            nk_input_key(nuklear->ctx, NK_KEY_PASTE, down);
+        } else if (sym == SDLK_x && state[SDL_SCANCODE_LCTRL]) {
+            nk_input_key(nuklear->ctx, NK_KEY_CUT, down);
+        } else if (sym == SDLK_b && state[SDL_SCANCODE_LCTRL]) {
+            nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_START, down);
+        } else if (sym == SDLK_e && state[SDL_SCANCODE_LCTRL]) {
+            nk_input_key(nuklear->ctx, NK_KEY_TEXT_LINE_END, down);
+        } else if (sym == SDLK_UP) {
+            nk_input_key(nuklear->ctx, NK_KEY_UP, down);
+        } else if (sym == SDLK_DOWN) {
+            nk_input_key(nuklear->ctx, NK_KEY_DOWN, down);
+        } else if (sym == SDLK_LEFT) {
+            if (state[SDL_SCANCODE_LCTRL])
+                nk_input_key(nuklear->ctx, NK_KEY_TEXT_WORD_LEFT, down);
+            else
+                nk_input_key(nuklear->ctx, NK_KEY_LEFT, down);
+        } else if (sym == SDLK_RIGHT) {
+            if (state[SDL_SCANCODE_LCTRL])
+                nk_input_key(nuklear->ctx, NK_KEY_TEXT_WORD_RIGHT, down);
+            else
+                nk_input_key(nuklear->ctx, NK_KEY_RIGHT, down);
+        } else {
+            return 0;
+        }
+
+        return 1;
+    } else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
+        /* mouse button */
+        int down = e.type == SDL_MOUSEBUTTONDOWN;
+        const int x = e.button.x, y = e.button.y;
+        if (e.button.button == SDL_BUTTON_LEFT) {
+            if (e.button.clicks > 1)
+                nk_input_button(nuklear->ctx, NK_BUTTON_DOUBLE, x, y, down);
+
+            nk_input_button(nuklear->ctx, NK_BUTTON_LEFT, x, y, down);
+        } else if (e.button.button == SDL_BUTTON_MIDDLE) {
+            nk_input_button(nuklear->ctx, NK_BUTTON_MIDDLE, x, y, down);
+        } else if (e.button.button == SDL_BUTTON_RIGHT) {
+            nk_input_button(nuklear->ctx, NK_BUTTON_RIGHT, x, y, down);
+        }
+
+        return 1;
+    } else if (e.type == SDL_MOUSEMOTION) {
+        /* mouse motion */
+        if (nuklear->ctx->input.mouse.grabbed) {
+            int x = (int)nuklear->ctx->input.mouse.prev.x, y = (int)nuklear->ctx->input.mouse.prev.y;
+            nk_input_motion(nuklear->ctx, x + e.motion.xrel, y + e.motion.yrel);
+        } else {
+            nk_input_motion(nuklear->ctx, e.motion.x, e.motion.y);
+        }
+
+        return 1;
+    } else if (e.type == SDL_TEXTINPUT) {
+        /* text input */
+        nk_glyph glyph;
+        memcpy(glyph, e.text.text, NK_UTF_SIZE);
+        nk_input_glyph(nuklear->ctx, glyph);
+
+        return 1;
+    } else if (e.type == SDL_MOUSEWHEEL) {
+        /* mouse wheel */
+        nk_input_scroll(nuklear->ctx, nk_vec2((float)e.wheel.x, (float)e.wheel.y));
+
+        return 1;
     }
 
     return 0;
@@ -264,6 +473,10 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
 void Sdl2Window::HandleAllEvents() {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
+        if (nuklear && nuklear->ctx) {
+            NuklearEventHandler(e);
+        }
+
         MessageProc(e);
     }
 }
@@ -293,11 +506,44 @@ void *Sdl2Window::GetWinApiHandle() {
 #endif
 }
 
+SDL_GLContext* Sdl2Window::getSDLOpenGlContext() {
+    return &sdlOpenGlContext;
+}
+
+SDL_Window* Sdl2Window::getSDLWindow() {
+    return sdlWindow;
+}
+SDL_Surface* Sdl2Window::getSDLWindowSurface() {
+    return sdlWindowSurface;
+}
 
 void Sdl2Window::SetFullscreenMode() {
+    Uint32 flags;
+
+    if (engine->config->borderless)
+        flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
+    else
+        flags = SDL_WINDOW_FULLSCREEN;
+
+    if (SDL_SetWindowFullscreen(sdlWindow, flags) < 0)
+        log->Warning("SDL2: unable to enter fullscreen mode: %s", SDL_GetError());
 }
 
 void Sdl2Window::SetWindowedMode(int new_window_width, int new_window_height) {
+    if (SDL_SetWindowFullscreen(sdlWindow, 0) < 0) {
+        log->Warning("SDL2: unable to leave fullscreen mode: %s", SDL_GetError());
+        return;
+    }
+
+    Sdl2WinParams *params = CalculateWindowParameters();
+
+    SDL_SetWindowSize(sdlWindow, new_window_width, new_window_height);
+    SDL_SetWindowPosition(sdlWindow, params->x, params->y);
+
+    engine->SetConfigWindowDisplay(params->display);
+    engine->SetConfigWindowDimensions(new_window_width, new_window_height);
+
+    delete params;
 }
 
 void Sdl2Window::SetCursor(bool on = 1) {
@@ -394,26 +640,36 @@ bool Sdl2Window::TryMapScanCode(SDL_Scancode code, GameKey *outKey) const {
     return false;
 }
 
-
 void Sdl2Window::OpenGlCreate() {
+    int version;
+
     //  Use OpenGL 3.3 core - requires all fixed pipeline code to be modernised
-    //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    //  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
     //  Turn on double buffering with a 24bit Z buffer.
     //  You may need to change this to 16 or 32 for your system
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
     sdlOpenGlContext = SDL_GL_CreateContext(sdlWindow);
     if (!sdlOpenGlContext) {
-        log->Warning("OpenGL failed: %s", SDL_GetError());
+        log->Warning("SDL2: failed to initialize SDL with OpenGL: %s", SDL_GetError());
     }
+
+    if (!(version = gladLoadGL((GLADloadfunc)SDL_GL_GetProcAddress))) {
+        log->Warning("SDL2: failed to initialize the OpenGL loader");
+    }
+
+    log->Info("SDL2: supported OpenGL: %s", glGetString(GL_VERSION));
+    log->Info("SDL2: supported GLSL: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    log->Info("SDL2: OpenGL version: %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
     //  Use Vsync
     if (SDL_GL_SetSwapInterval(1) < 0) {
-        log->Info("Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+        log->Info("SDL2: unable to set VSync: %s\n", SDL_GetError());
     }
 }
 

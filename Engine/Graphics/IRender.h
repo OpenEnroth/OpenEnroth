@@ -4,6 +4,7 @@
 #include "Engine/Graphics/IRenderConfig.h"
 #include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"
@@ -192,6 +193,11 @@ struct SoftwareBillboard {
     unsigned short object_pid;
 };
 
+struct nk_tex_font {
+    uint32_t texid;
+    struct nk_font *font;
+};
+
 class HWLTexture;
 
 class IRender {
@@ -231,6 +237,15 @@ class IRender {
     }
 
     virtual bool Initialize() = 0;
+
+    virtual bool NuklearInitialize(struct nk_tex_font *tfont) = 0;
+    virtual bool NuklearCreateDevice() = 0;
+    virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) = 0;
+    virtual void NuklearRelease() = 0;
+    virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) = 0;
+    virtual void NuklearFontFree(struct nk_tex_font *tfont) = 0;
+    virtual struct nk_image NuklearImageLoad(Image* img) = 0;
+    virtual void NuklearImageFree(Image *img) = 0;
 
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey) = 0;
     virtual Texture *CreateTexture_Solid(const String &name) = 0;

@@ -222,10 +222,10 @@ std::array<int, 8> BtnTurnCoord = {{
     0x7,
     0x3B,
 }};
-std::array<__int16, 4> RightClickPortraitXmin = {{0x14, 0x83, 0xF2, 0x165}};
-std::array<__int16, 4> RightClickPortraitXmax = {{0x53, 0xC6, 0x138, 0x1A7}};
+std::array<__int16, 4> RightClickPortraitXmin = {{20, 131, 242, 357}};
+std::array<__int16, 4> RightClickPortraitXmax = {{83, 198, 312, 423}};
 
-std::array<unsigned int, 4> pHealthBarPos = {{22, 137, 251, 366}};
+std::array<unsigned int, 4> pHealthBarPos = {{23, 138, 251, 366}}; //was 22, 137
 std::array<unsigned int, 4> pManaBarPos = {{102, 217, 331, 447}};
 
 std::array<char, 88> monster_popup_y_offsets = {

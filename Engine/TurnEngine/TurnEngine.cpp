@@ -195,7 +195,7 @@ void stru262_TurnBased::Start() {
             players_recovery_time[i] =
                 pParty
                     ->pPlayers[PID_ID(this->pQueue[activ_players[i]].uPackedID)]
-                    .GetAttackRecoveryTime(0);
+                    .GetAttackRecoveryTime(false);
         // sort players by recovery time
         for (i = 0; i < a_players_count - 1; ++i) {
             for (j = i + 1; j < a_players_count; ++j) {
@@ -521,7 +521,7 @@ void stru262_TurnBased::_406457(int a2) {
             v6 = pParty->pTurnBasedPlayerRecoveryTimes[v4];
             pParty->pTurnBasedPlayerRecoveryTimes[v4] = 0;
         } else {
-            v6 = pPlayers[v4 + 1]->GetAttackRecoveryTime(0);
+            v6 = pPlayers[v4 + 1]->GetAttackRecoveryTime(false);
         }
         if (v6 < 30) v6 = 30;
     } else {

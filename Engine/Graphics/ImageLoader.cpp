@@ -179,32 +179,18 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
     return true;
 }
 
-bool PCX_Loader::DecodePCX(const void *pcx_data, uint16_t *pOutPixels,
-                           unsigned int *width, unsigned int *height) {
-    return PCX::Decode(pcx_data, pOutPixels, width, height);
-}
-
 bool PCX_Loader::InternalLoad(void *file, size_t filesize,
                                    unsigned int *width, unsigned int *height,
                                    void **pixels, IMAGE_FORMAT *format) {
-    if (!PCX::IsValid(file)) {
-        return false;
-    }
+    IMAGE_FORMAT request_format = IMAGE_FORMAT_R8G8B8A8;
+    if (engine->config->renderer_name == "DirectDraw")
+        request_format = IMAGE_FORMAT_R5G6B5;
 
-    PCX::GetSize(file, width, height);
-    unsigned int num_pixels = *width * *height;
-    *pixels = new uint16_t[num_pixels + 2];
+    *pixels = PCX::Decode(file, filesize, width, height, format, request_format);
+    if (*pixels)
+        return true;
 
-    if (pixels) {
-        if (!this->DecodePCX(file, (uint16_t*)*pixels, width, height)) {
-            delete[] *(uint16_t**)pixels;
-            *pixels = nullptr;
-        } else {
-            *format = IMAGE_FORMAT_R5G6B5;
-        }
-    }
-
-    return *pixels != nullptr;
+    return false;
 }
 
 bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
@@ -214,7 +200,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
     *pixels = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    FILE *file = fcaseopen(this->resource_name.c_str(), "rb");
+    FILE *file = fopen(this->resource_name.c_str(), "rb");
     if (!file) {
         log->Warning("Unable to load %s", this->resource_name.c_str());
         return false;

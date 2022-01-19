@@ -16,6 +16,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -139,14 +140,6 @@ std::string FindMm7Directory() {
         }
     }
 
-    // Hack path fix - pskelton
-    if (!mm7_installation_found) {
-        mm7_installation_found = 1;
-        strcpy(path_buffer, "E:/Programs/GOG Galaxy/Games/Might and Magic 7");
-        logger->Info("Hack Path MM7 installation found: %s", path_buffer);
-        return path_buffer;
-    }
-
     return "";
 }
 
@@ -155,21 +148,26 @@ void Game::Run() {
 
     SetDataPath(FindMm7Directory());
 
-    window = OSWindowFactory().Create(
-        "World of Might and Magic®",
-        config->window_x,
-        config->window_y,
-        config->window_width,
-        config->window_height,
-        config->display,
-        config->fullscreen,
-        config->borderless
-    );
+    EngineFactory engineFactory;
+    engine = engineFactory.CreateEngine(config->command_line);
+    ::engine = engine;
+
+    if (!engine) {
+        log->Warning("Engine creation failed");
+        return;
+    }
+
+    window = OSWindowFactory().Create();
     ::window = window;
+
+    if (!window) {
+        log->Warning("Window creation failed");
+        return;
+    }
 
     render = IRenderFactory().Create(
         window,
-        config->renderer_name,
+        engine->config->renderer_name,
         false
     );
     ::render = render;
@@ -184,6 +182,12 @@ void Game::Run() {
         return;
     }
 
+    nuklear = Nuklear().Initialize();
+    if (!nuklear) {
+        log->Warning("Nuklear failed to initialize");
+    }
+    ::nuklear = nuklear;
+
     keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
     ::keyboardActionMapping = keyboardActionMapping;
 
@@ -195,9 +199,8 @@ void Game::Run() {
     mouse = EngineIoc::ResolveMouse();
     ::mouse = mouse;
 
-    EngineFactory engineFactory;
-    engine = engineFactory.CreateEngine(config->command_line);
-    ::engine = engine;
+    engine->keyboardActionMapping = keyboardActionMapping;
+    engine->keyboardInputHandler = keyboardInputHandler;
 
     engine->Initialize();
 

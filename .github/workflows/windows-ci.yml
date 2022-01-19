@@ -17,6 +17,7 @@ jobs:
     - name: Build
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars32.bat"
+        git submodule update --init
         mkdir out && cd out
         #cmake .. -G "NMake Makefiles" -A ${{ matrix.Platform }} -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
         cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}

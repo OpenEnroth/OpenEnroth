@@ -1,6 +1,7 @@
 #include "Platform/Win/Win.h"
 
 #include <cstdio>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -56,11 +57,28 @@ std::vector<std::string> OS_FindFiles(const std::string &folder, const std::stri
     return result;
 }
 
-
-FILE *fcaseopen(char const *path, char const *mode) {
-    return fopen(path, mode);
+char OS_GetDirSeparator() {
+    return '\\';
 }
 
-std::string OS_GetDirSeparator() {
-    return "/";
+std::string OS_casepath(std::string path) {
+    std::string r;
+    std::string sep;
+
+    sep.push_back(OS_GetDirSeparator());
+
+    std::stringstream ss(path);
+    std::string s;
+
+    while (std::getline(ss, s, OS_GetDirSeparator())) {
+        if (s.empty())
+            continue;
+
+        if (!r.empty())
+            r += sep;
+
+        r += s;
+    }
+
+    return r;
 }

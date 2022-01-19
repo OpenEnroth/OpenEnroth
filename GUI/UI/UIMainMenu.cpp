@@ -20,6 +20,10 @@ GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
     GUIWindow(WINDOW_MainMenu, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
+    nuklear->Create(WINDOW_MainMenu);
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE)
+        return;
+
     main_menu_background = assets->GetImage_PCXFromIconsLOD("title.pcx");
 
     ui_mainmenu_new = assets->GetImage_ColorKey("title_new", render->teal_mask_16);
@@ -38,14 +42,27 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        nuklear->Release(WINDOW_MainMenu);
+        return;
+    }
+
     ui_mainmenu_new->Release();
     ui_mainmenu_load->Release();
     ui_mainmenu_credits->Release();
     ui_mainmenu_exit->Release();
     main_menu_background->Release();
+
+    nuklear->Release(WINDOW_MainMenu);
 }
 
 void GUIWindow_MainMenu::Update() {
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu, 2);
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu, 2);
+        return;
+    }
+
     render->DrawTextureNew(0, 0, main_menu_background);
 
     Point pt = mouse->GetCursorPos();
@@ -79,9 +96,16 @@ void GUIWindow_MainMenu::Update() {
             }
         }
     }
+
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu, 2);
 }
 
 void GUIWindow_MainMenu::EventLoop() {
+    if (nuklear->Mode(WINDOW_MainMenu) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        pMessageQueue_50CBD0->Clear();
+        return;
+    }
+
     while (!pMessageQueue_50CBD0->Empty()) {
         UIMessageType pUIMessageType;
         int pParam;
@@ -117,28 +141,40 @@ void GUIWindow_MainMenu::EventLoop() {
 static bool first_initialization = true;
 
 void GUIWindow_MainMenu::Loop() {
+    Image *tex;
+    nuklear->Create(WINDOW_MainMenu_Load);
+
     pAudioPlayer->StopChannels(-1, -1);
     pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
 
     if (first_initialization) {
         first_initialization = false;
 
-        Image *tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
+        if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+            tex = assets->GetImage_PCXFromIconsLOD("mm6title.pcx");
+        }
 
         render->ResetUIClipRect();
         render->BeginScene();
         {
-            render->DrawTextureNew(0, 0, tex);
-            DrawMM7CopyrightWindow();
+            nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_MainMenu_Load, 1);
+            if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+                render->DrawTextureNew(0, 0, tex);
+                DrawMM7CopyrightWindow();
+            }
+            nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_MainMenu_Load, 1);
+            render->EndScene();
+            render->Present();
+
+            engine->SecondaryInitialization();
+            FinalInitialization();
+
+            if (nuklear->Mode(WINDOW_MainMenu_Load) != nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+                tex->Release();
+            }
         }
-        render->EndScene();
-        render->Present();
-
-        engine->SecondaryInitialization();
-        FinalInitialization();
-
-        tex->Release();
     }
+    nuklear->Release(WINDOW_MainMenu_Load);
 
     current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
 
@@ -161,6 +197,7 @@ void GUIWindow_MainMenu::Loop() {
         render->Present();
     }
 
+    nuklear->Release(WINDOW_MainMenu);
     pWindow_MainMenu->Release();
     delete pWindow_MainMenu;
     pWindow_MainMenu = nullptr;
@@ -180,7 +217,7 @@ void DrawMM7CopyrightWindow() {
     Dst.uFrameW = 469;
     Dst.DrawMessageBox(0);
 
-    Dst.uFrameWidth -= 24;
+    Dst.uFrameWidth -= 28;
     Dst.uFrameX += 12;
     Dst.uFrameY += 12;
     Dst.uFrameHeight -= 12;

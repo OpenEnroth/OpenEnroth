@@ -381,7 +381,7 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureAlphaNew((uPosActiveItem->uZ - 4) / renwidth, uPosActiveItem->uY / renheight, ui_partycreation_arrow_l[uPlayerCreationUI_ArrowAnim + 1]);
     render->DrawTextureAlphaNew((uPosActiveItem->uX - 12) / renwidth, uPosActiveItem->uY / renheight, ui_partycreation_arrow_r[uPlayerCreationUI_ArrowAnim + 1]);
 
-    memset(pText, 0, 200);
+    memset(pText, 0, sizeof(pText));
     strcpy(pText, localization->GetString(LSTR_SKILLS));
     for (int i = strlen(pText) - 1; i >= 0; i--)
         pText[i] = toupper((uint8_t)pText[i]);
@@ -680,6 +680,7 @@ void GUIWindow_PartyCreation::Update() {
         Color16(0xFF, 0xFF, 0xFF),
         unspent_attribute_bonus_label);
     if (game_ui_status_bar_event_string_time_left > OS_GetTime()) {
+        message_window.Init();
         message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
         if (pBonusNum < 0)
             message_window.sHint = localization->GetString(LSTR_PARTY_TOO_MUCH_POINTS);

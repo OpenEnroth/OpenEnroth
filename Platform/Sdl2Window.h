@@ -9,10 +9,8 @@
 
 class Sdl2Window : public OSWindow {
  public:
-    inline Sdl2Window(SDL_Window *sdlWindow, SDL_Surface *sdlWindowSurface)
+    inline Sdl2Window()
         : OSWindow() {
-        this->sdlWindow = sdlWindow;
-        this->sdlWindowSurface = sdlWindowSurface;
     }
 
     void SetFullscreenMode() override;
@@ -44,18 +42,30 @@ class Sdl2Window : public OSWindow {
     }
 
     // Sdl2Window-specific interface follows
-
     void* GetWinApiHandle() override;
+    SDL_Window* getSDLWindow();
+    SDL_Surface* getSDLWindowSurface();
+    SDL_GLContext* getSDLOpenGlContext();
+    SDL_Window* CreateSDLWindow();
+    void DestroySDLWindow();
 
     // window<->renderer integration, probably should be a separate class
     void OpenGlCreate() override;
     void OpenGlSwapBuffers() override;
 
  private:
+    struct Sdl2WinParams {
+        Uint32 flags;
+        int x;
+        int y;
+        int display;
+    };
     SDL_Window *sdlWindow = nullptr;
     SDL_Surface *sdlWindowSurface = nullptr;
     SDL_GLContext sdlOpenGlContext = nullptr;
 
+    Sdl2WinParams *CalculateWindowParameters();
+    bool NuklearEventHandler(const SDL_Event &e);
     void MessageProc(const SDL_Event &e);
     bool TryMapScanCode(SDL_Scancode code, GameKey* outKey) const;
     bool TryMapKeyCode(SDL_Keycode key, bool uppercase, int *outKey) const;

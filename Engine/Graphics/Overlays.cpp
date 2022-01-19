@@ -110,7 +110,7 @@ void OverlayList::ToFile() {
     FILE *v2;  // eax@1
     // FILE *v3; // edi@1
 
-    v2 = fcaseopen("data/doverlay.bin", "wb");
+    v2 = fopen(MakeDataPath("data", "doverlay.bin").c_str(), "wb");
     // v3 = v2;
     if (!v2) Error("Unable to save doverlay.bin!");
     fwrite(this, 4, 1, v2);
@@ -155,7 +155,7 @@ bool OverlayList::FromFileTxt(const char *Args) {
     v3 = 0;
     this->pOverlays = nullptr;
     this->uNumOverlays = 0;
-    v4 = fcaseopen(Args, "r");
+    v4 = fopen(Args, "r");
     File = v4;
     if (!v4) Error("ObjectDescriptionList::load - Unable to open file: %s.");
 

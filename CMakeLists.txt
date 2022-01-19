@@ -61,12 +61,21 @@ else()
   set(CXX_STANDARD_REQUIRED ON)
 endif()
 
-include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+set(THIRDPARTY_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
+set(GLAD_DIRECTORY ${THIRDPARTY_DIRECTORY}/glad)
+set(NUKLEAR_DIRECTORY ${THIRDPARTY_DIRECTORY}/nuklear)
+set(LUAJIT_DIRECTORY ${THIRDPARTY_DIRECTORY}/luajit)
+
+include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${THIRDPARTY_DIRECTORY} ${LUAJIT_DIRECTORY}/luajit/src ${GLAD_DIRECTORY}/include)
 
 add_definitions(-DPACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-and-magic/issues")
 
 include(CppLint)
 enable_check_style()
+
+add_subdirectory(${GLAD_DIRECTORY})
+add_subdirectory(${LUAJIT_DIRECTORY})
+add_subdirectory(${NUKLEAR_DIRECTORY})
 
 add_subdirectory(Arcomage)
 add_subdirectory(Engine)
@@ -92,6 +101,7 @@ else()
 message(STATUS "ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
 message(STATUS "SDL_LIBRARIES = ${SDL_LIBRARIES}")
 message(STATUS "FFMPEG_LIBRARIES = ${FFMPEG_LIBRARIES}")
+message(STATUS "OpenAL_LIBRARY = ${OPENAL_LIBRARY}")
 message(STATUS "OPENGL_opengl_LIBRARY = ${OPENGL_opengl_LIBRARY}")
 message(STATUS "OPENGL_glu_LIBRARY = ${OPENGL_glu_LIBRARY}")
 
@@ -112,7 +122,7 @@ if (APPLE)
 endif()
 
 endif()
-target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization)
+target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization glad nuklear libluajit)
 
 set_property(
     DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic

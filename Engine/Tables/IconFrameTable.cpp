@@ -78,7 +78,7 @@ void IconFrameTable::ToFile() {
     // IconFrameTable* Str = this;
 
     // v1 = Str;
-    v2 = fcaseopen("data/dift.bin", "wb");
+    v2 = fopen(MakeDataPath("data", "dift.bin").c_str(), "wb");
     // v3 = v2;
     if (!v2) Error("Unable to save dift.bin!");
     fwrite(this, 4, 1, v2);

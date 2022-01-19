@@ -1514,6 +1514,7 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     }
 
     GUIWindow a1;
+    a1.Init();
     a1.uFrameY = v3;
     a1.uFrameWidth = 328;
     a1.uFrameHeight = 68;

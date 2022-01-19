@@ -268,7 +268,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                if (pPlayer->WearsItem(ITEM_ARTEFACT_ULLYSES, EQUIP_BOW))
+                if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, EQUIP_BOW))
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(0xBD6u);
                 pSpellSprite.vPosition.x = pParty->vPosition.x;
                 pSpellSprite.vPosition.y = pParty->vPosition.y;
@@ -308,7 +308,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
             case SPELL_LASER_PROJECTILE:  //стрельба из бластера
             {
-                sRecoveryTime = pPlayer->GetAttackRecoveryTime(0);
+                sRecoveryTime = pPlayer->GetAttackRecoveryTime(false);
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.spell_id = pCastSpell->uSpellID;
                 pSpellSprite.spell_level = spell_level;

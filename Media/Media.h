@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 
+#include "Engine/Rect.h"
 #include "src/tools/MemBuffer.h"
 
 class IAudioDataSource {
@@ -86,6 +87,6 @@ class IMovie {
     virtual bool IsPlaying() const = 0;
     virtual PMemBuffer GetFrame() = 0;
     virtual std::string GetFormat() = 0;
-    virtual void PlayBink() = 0;
+    virtual void PlayBink(Rect rect) = 0;
 };
 typedef std::shared_ptr<IMovie> PMovie;

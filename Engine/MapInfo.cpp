@@ -64,7 +64,7 @@ void MapStats::Initialize() {
         while (!line.eof()) {
             std::getline(line, tmpString, '\t');
             char test_string[1024];
-            strcpy(test_string, tmpString.c_str());
+            strncpy(test_string, tmpString.c_str(), sizeof(test_string) - 1);
             switch (decode_step) {
                 case 1:
                     pInfos[i].pName = RemoveQuotes(test_string);  // randoms crashes here  // got 1 too
@@ -120,7 +120,7 @@ void MapStats::Initialize() {
                 case 19:
                     pInfos[i].uEncounterMonster1AtLeast = 1;
                     pInfos[i].uEncounterMonster1AtMost = 1;
-                    strcpy(work_str, test_string);
+                    strncpy(work_str, test_string, sizeof(work_str) - 1);
                     work_str_pos = 0;
                     work_str_len = strlen(work_str);
                     if (work_str_len) {
@@ -145,7 +145,7 @@ void MapStats::Initialize() {
                 case 23:
                     pInfos[i].uEncounterMonster2AtLeast = 1;
                     pInfos[i].uEncounterMonster2AtMost = 1;
-                    strcpy(work_str, test_string);
+                    strncpy(work_str, test_string, sizeof(work_str) - 1);
                     work_str_pos = 0;
                     work_str_len = strlen(work_str);
                     if (work_str_len) {
@@ -170,7 +170,7 @@ void MapStats::Initialize() {
                 case 27:
                     pInfos[i].uEncounterMonster3AtLeast = 1;
                     pInfos[i].uEncounterMonster3AtMost = 1;
-                    strcpy(work_str, test_string);
+                    strncpy(work_str, test_string, sizeof(work_str) - 1);
                     work_str_pos = 0;
                     work_str_len = strlen(work_str);
                     if (work_str_len) {

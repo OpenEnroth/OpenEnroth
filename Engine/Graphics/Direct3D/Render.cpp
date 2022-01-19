@@ -1156,7 +1156,7 @@ void Render::SaveWinnersCertificate(const char *file_name) {
 
 void Render::SavePCXImage32(const String &filename, uint16_t *picture_data,
                             int width, int height) {
-    FILE *result = fcaseopen(filename.c_str(), "wb");
+    FILE *result = fopen(filename.c_str(), "wb");
     if (result == nullptr) {
         return;
     }
@@ -1173,7 +1173,7 @@ void Render::SavePCXImage32(const String &filename, uint16_t *picture_data,
 
 void Render::SavePCXImage16(const String &filename, uint16_t *picture_data,
                             int width, int height) {
-    FILE *result = fcaseopen(filename.c_str(), "wb");
+    FILE *result = fopen(filename.c_str(), "wb");
     if (result == nullptr) {
         return;
     }
@@ -4759,3 +4759,13 @@ void Render::DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon)
         drawcalls++;
     }
 }
+
+bool Render::NuklearCreateDevice() { return false; }
+bool Render::NuklearInitialize(struct nk_tex_font *tfont) { return false; }
+bool Render::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) { return false; }
+void Render::NuklearRelease() {}
+struct nk_tex_font *Render::NuklearFontLoad(const char *font_path, size_t font_size) { return NULL; }
+void Render::NuklearFontFree(struct nk_tex_font *tfont) {}
+struct nk_image Render::NuklearImageLoad(Image* img) { return nk_image_id(0);  }
+void Render::NuklearImageFree(Image *img) {}
+

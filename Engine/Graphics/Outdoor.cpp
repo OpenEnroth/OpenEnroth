@@ -2336,9 +2336,8 @@ void ODM_ProcessPartyActions() {
             pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
         } else {
             for (int i = 0; i < 4; ++i) {  // receive falling damage
-                if (!pParty->pPlayers[i].HasEnchantedItemEquipped(72) &&
-                    !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS,
-                        EQUIP_BOOTS)) {
+                if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                    !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)) {
                     pParty->pPlayers[i].ReceiveDamage(
                         (int)((pParty->uFallStartY - party_new_Z) *
                         (uint64_t)(pParty->pPlayers[i]
@@ -2784,9 +2783,8 @@ void ODM_ProcessPartyActions() {
                 pParty->vPosition.z - v111 > 1000 &&
                 !pParty->FeatherFallActive()) {  // falling scream
                 for (int i = 0; i < 4; ++i) {
-                    if (!pParty->pPlayers[i].HasEnchantedItemEquipped(72) &&
-                        !pParty->pPlayers[i].WearsItem(
-                            ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS) &&
+                    if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                        !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS) &&
                         pParty->pPlayers[i].CanAct())
                         pParty->pPlayers[i].PlaySound(SPEECH_Falling,
                                                       0);  // крик падения

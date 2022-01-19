@@ -31,6 +31,9 @@ enum ITEM_FLAGS : unsigned int {
 enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_NULL = 0,
 
+    ITEM_ENCHANTMENT_OF_PROTECTION = 1,    // Adds +10 to all Resistances
+    ITEM_ENCHANTMENT_OF_GODS = 2,          // Adds +10 to all Seven Statistics
+    ITEM_ENCHANTMENT_OF_CARNAGE = 3,       // Projectile explodes like fireball
     ITEM_ENCHANTMENT_OF_COLD = 4,          // Adds 3-4 points of cold damage
     ITEM_ENCHANTMENT_OF_FROST = 5,         // Adds 6-8 points of cold damage
     ITEM_ENCHANTMENT_OF_ICE = 6,           // Adds 9-12 points of cold damage
@@ -45,19 +48,66 @@ enum ITEM_ENCHANTMENT : unsigned int {
     ITEM_ENCHANTMENT_OF_ACID = 15,         // Adds 12 points of body damage
     ITEM_ENCHANTMENT_VAMPIRIC = 16,        // 20% of damage dealt given to wielder
     ITEM_ENCHANTMENT_OF_RECOVERY = 17,     // Increases rate of Recovery
-
-    ITEM_ENCHANTMENT_OF_FORCE = 24,        // Increases Knockback
-
-    ITEM_ENCHANTMENT_40 = 40,
+    ITEM_ENCHANTMENT_OF_IMMUNITY = 18,     // Wearer immune to Diseases
+    ITEM_ENCHANTMENT_OF_SANITY = 19,       // Wearer immune to Insanity
+    ITEM_ENCHANTMENT_OF_FREEDOM = 20,      // Wearer immune to Paralysis
+    ITEM_ENCHANTMENT_OF_ANTIDOTES = 21,    // Wearer immune to Poison
+    ITEM_ENCHANTMENT_OF_ALARMS = 22,       // Wearer immune to Sleep
+    ITEM_ENCHANTMENT_OF_MEDUSA = 23,       // Wearer immune to Stone
+    ITEM_ENCHANTMENT_OF_FORCE = 24,        // Increased Knockback
+    ITEM_ENCHANTMENT_OF_POWER = 25,        // Add +5 Levels
+    ITEM_ENCHANTMENT_OF_AIR_MAGIC = 26,    // Increases effect of all Air spells
+    ITEM_ENCHANTMENT_OF_BODY_MAGIC = 27,   // Increases effect of all Body spells
+    ITEM_ENCHANTMENT_OF_DARK_MAGIC = 28,   // Increases effect of all Dark spells
+    ITEM_ENCHANTMENT_OF_EARTH_MAGIC = 29,  // Increases effect of all Earth spells
+    ITEM_ENCHANTMENT_OF_FIRE_MAGIC = 30,   // Increases effect of all Fire spells
+    ITEM_ENCHANTMENT_OF_LIGHT_MAGIC = 31,  // Increases effect of all Light spells
+    ITEM_ENCHANTMENT_OF_MIND_MAGIC = 32,   // Increases effect of all Mind spells
+    ITEM_ENCHANTMENT_OF_SPIRIT_MAGIC = 33, // Increases effect of all Spirit spells
+    ITEM_ENCHANTMENT_OF_WATER_MAGIC = 34,  // Increases effect of all Water spells
+    ITEM_ENCHANTMENT_OF_THIEVERY = 35,     // Increases chance of Disarming (double)
+    ITEM_ENCHANTMENT_OF_SHIELDING = 36,    // Half damage from all missile attacks (not cumulative)
+    ITEM_ENCHANTMENT_OF_REGENERATION = 37, // Regenerate HP over time
+    ITEM_ENCHANTMENT_OF_MANA = 38,         // Regenerate SP over time
+    ITEM_ENCHANTMENT_DEMON_SLAYING = 39,   // Double damage vs Demons.
+    ITEM_ENCHANTMENT_DRAGON_SLAYING = 40,  // Double damage vs Dragons
     ITEM_ENCHANTMENT_OF_DARKNESS = 41,     // Vampiric and Swift
-
-    ITEM_ENCHANTMENT_OF_DRAGON =
-    46,  // Adds 10-20 points of fire damage and +25 Might
+    ITEM_ENCHANTMENT_OF_DOOM = 42,         // +1 to Seven Stats, HP, SP, Armor, Resistances
+    ITEM_ENCHANTMENT_OF_EARTH = 43,        // +10 to Endurance, Armor, HP
+    ITEM_ENCHANTMENT_OF_LIFE = 44,         // +10 HP and Regenerate HP over time
+    ITEM_ENCHANTMENT_ROGUES = 45,          // Adds +5 Speed and Accuracy.
+    ITEM_ENCHANTMENT_OF_DRAGON = 46,       // Adds 10-20 points of fire damage and +25 Might
+    ITEM_ENCHANTMENT_OF_ECLIPSE = 47,      // +10 SP and Regenerate SP over time
+    ITEM_ENCHANTMENT_OF_GOLEM = 48,        // +15 Endurance and +5 Armor
+    ITEM_ENCHANTMENT_OF_MOON = 49,         // +10 Intellect and Luck
+    ITEM_ENCHANTMENT_OF_PHOENIX = 50,      // +30 Fire Resistance and Regenerate HP over time
+    ITEM_ENCHANTMENT_OF_SKY = 51,          // +10 Spell points, Speed, Intellect
+    ITEM_ENCHANTMENT_OF_STARS = 52,        // +10 Endurance and Accuracy
+    ITEM_ENCHANTMENT_OF_SUN = 53,          // +10 Might and Personality
+    ITEM_ENCHANTMENT_OF_TROLL = 54,        // +15 Endurance and Regenerate HP over time
+    ITEM_ENCHANTMENT_OF_UNICORN = 55,      // +15 Luck and Regenerate SP over time
+    ITEM_ENCHANTMENT_WARRIORS = 56,        // Adds +5 Might and Endurance
+    ITEM_ENCHANTMENT_WIZARDS = 57,         // Adds +5 Intellect and Personality
+    ITEM_ENCHANTMENT_ANTIQUE = 58,         // Increased value
+    ITEM_ENCHANTMENT_SWIFT = 59,           // Swift, increased Weapon speed
+    ITEM_ENCHANTMENT_MONKS = 60,           // Adds +3 Unarmed and Dodging skills
+    ITEM_ENCHANTMENT_THIEVES = 61,         // Adds +3 Stealing and Disarm skills
+    ITEM_ENCHANTMENT_OF_IDENTIFYING = 62,  // Adds +3 ID Item and ID Monster skills
+    ITEM_ENCHANTMENT_ELF_SLAYING = 63,     // Double Damage vs Elves
+    ITEM_ENCHANTMENT_UNDEAD_SLAYING = 64,  // Double Damage vs Undead
+    ITEM_ENCHANTMENT_TITAN_SLAYING = 65,   // Double Damage vs Titans
+    ITEM_ENCHANTMENT_OF_PLENTY = 66,       // Regenerate SP and HP over time
+    ITEM_ENCHANTMENT_ASSASINS = 67,        // Adds 5 points of Body damage and +2 Disarm skill
+    ITEM_ENCHANTMENT_BARBARIANS = 68,      // Adds 6-8 points of Cold damage and +5 Armor Class
+    ITEM_ENCHANTMENT_OF_STORM = 69,        // +20 Air Resistance and Shielding
+    ITEM_ENCHANTMENT_OF_OCEAN = 70,        // +10 Water Resistance and +2 Alchemy skill
+    ITEM_ENCHANTMENT_OF_WATER_WALKING = 71, // Prevents damage from drowning
+    ITEM_ENCHANTMENT_OF_FEATHER_FALLING = 72, // Prevents damage from falling
 };
 
 enum ITEM_MATERIAL {
     MATERIAL_COMMON = 0,
-    MATERIAL_ARTEFACT = 1,
+    MATERIAL_ARTIFACT = 1,
     MATERIAL_RELIC = 2,
     MATERIAL_SPECIAL = 3
 };
@@ -153,8 +203,8 @@ enum ITEM_TYPE {
     ITEM_ARTIFACT_GHOULSBANE = 507,       // 1FA
     ITEM_ARTIFACT_GIBBET = 508,           // 1FA
     ITEM_ARTIFACT_CHARELE = 509,          // 1FA
-    ITEM_ARTEFACT_ULLYSES = 510,
-    ITEM_ARTEFACT_HANDS_OF_THE_MASTER = 511,
+    ITEM_ARTIFACT_ULLYSES = 510,
+    ITEM_ARTIFACT_HANDS_OF_THE_MASTER = 511,
     ITEM_ARTIFACT_LEAGUE_BOOTS = 512,  // 200
     ITEM_ARTIFACT_RULERS_RING = 513,
     ITEM_RELIC_MASH = 514,
@@ -167,7 +217,7 @@ enum ITEM_TYPE {
     ITEM_RELIC_TALEDONS_HELM = 521,    // 209
     ITEM_RELIC_SCHOLARS_CAP = 522,     // 20A
     ITEM_RELIC_PHYNAXIAN_CROWN = 523,  // 20B
-    ITEM_RILIC_TITANS_BELT = 524,      // 20C
+    ITEM_RELIC_TITANS_BELT = 524,      // 20C
     ITEM_RELIC_TWILIGHT = 525,         // 20D
     ITEM_RELIC_ANIA_SELVING = 526,
     ITEM_RELIC_JUSTICE = 527,

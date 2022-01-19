@@ -201,10 +201,10 @@ signed int parameter_to_bonus_value[29] = {
     30, 25, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8,
     7,  6,  5,  4,  3,  2,  1,  0,  -1, -2, -3, -4, -5, -6};
 
-unsigned short base_recovery_times_per_weapon_type[12] = {
+unsigned short base_recovery_times_per_weapon_type[13] = {
     100,  // PLAYER_SKILL_STAFF   && Unarmed withoud skill
-    90,   // PLAYER_SKILL_SWORD   && Unarmed with skill
-    60,   // PLAYER_SKILL_DAGGER
+    90,   // PLAYER_SKILL_SWORD
+    60,   // PLAYER_SKILL_DAGGER  && Unarmed with skill
     100,  // PLAYER_SKILL_AXE
     80,   // PLAYER_SKILL_SPEAR
     100,  // PLAYER_SKILL_BOW
@@ -1013,7 +1013,7 @@ int Player::GetDisarmTrap() {
     if (skillmaster == 4)  // gm disarm
         return 10000;
 
-    if (HasEnchantedItemEquipped(35))  // item has increased disarm
+    if (HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
         multiplier++;
 
     return multiplier * skill;
@@ -1277,24 +1277,20 @@ int Player::CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
 
         if (MonsterStats::BelongsToSupertype(uTargetActorID,
                                              MONSTER_SUPERTYPE_UNDEAD) &&
-            (enchType == 64 || itemId == ITEM_ARTIFACT_GHOULSBANE ||
+            (enchType == ITEM_ENCHANTMENT_UNDEAD_SLAYING || itemId == ITEM_ARTIFACT_GHOULSBANE ||
              itemId == ITEM_ARTIFACT_GIBBET || itemId == ITEM_RELIC_JUSTICE)) {
             totalDmg *= 2;  // double damage vs undead
-        } else if (MonsterStats::BelongsToSupertype(
-                       uTargetActorID, MONSTER_SUPERTYPE_KREEGAN) &&
-                   (enchType == 39 || itemId == ITEM_ARTIFACT_GIBBET)) {
+        } else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_KREEGAN) &&
+                   (enchType == ITEM_ENCHANTMENT_DEMON_SLAYING || itemId == ITEM_ARTIFACT_GIBBET)) {
             totalDmg *= 2;  // double damage vs devils
-        } else if (MonsterStats::BelongsToSupertype(uTargetActorID,
-                                                    MONSTER_SUPERTYPE_DRAGON) &&
-                   (enchType == 40 || itemId == ITEM_ARTIFACT_GIBBET)) {
+        } else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_DRAGON) &&
+                   (enchType == ITEM_ENCHANTMENT_DRAGON_SLAYING || itemId == ITEM_ARTIFACT_GIBBET)) {
             totalDmg *= 2;  // double damage vs dragons
-        } else if (MonsterStats::BelongsToSupertype(uTargetActorID,
-                                                    MONSTER_SUPERTYPE_ELF) &&
-                   (enchType == 63 || itemId == ITEM_RELIC_OLD_NICK)) {
+        } else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_ELF) &&
+                   (enchType == ITEM_ENCHANTMENT_ELF_SLAYING || itemId == ITEM_RELIC_OLD_NICK)) {
             totalDmg *= 2;  // double damage vs elf
-        } else if (MonsterStats::BelongsToSupertype(uTargetActorID,
-                                                    MONSTER_SUPERTYPE_TITAN) &&
-                   (enchType == 65)) {
+        } else if (MonsterStats::BelongsToSupertype(uTargetActorID, MONSTER_SUPERTYPE_TITAN) &&
+                   (enchType == ITEM_ENCHANTMENT_TITAN_SLAYING)) {
             totalDmg *= 2;  // double damage vs titan
         }
     }
@@ -2212,103 +2208,87 @@ unsigned int Player::GetSpellSchool(unsigned int uSpellID) {
 
 //----- (0048E1B5) --------------------------------------------------------
 int Player::GetAttackRecoveryTime(bool bRangedAttack) {
-    ItemGen* weapon = nullptr;
-    uint weapon_recovery = base_recovery_times_per_weapon_type[0];
+    ItemGen *weapon = nullptr, *weapon_main = nullptr;
+    uint weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_STAFF];
+    bool shooting_laser = false;
+    uint shield_recovery = 0;
     if (bRangedAttack) {
-        if (HasItemEquipped(EQUIP_BOW)) {
+        if (HasItemEquipped(EQUIP_SINGLE_HANDED)) {
+            weapon_main = GetMainHandItem();
+            if (weapon_main != nullptr && weapon_main->GetPlayerSkillType() == PLAYER_SKILL_BLASTER) {
+                weapon = weapon_main;
+                weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_BLASTER];
+                shooting_laser = true;
+            }
+        }
+
+        if (!shooting_laser && HasItemEquipped(EQUIP_BOW)) {
             weapon = GetBowItem();
-            weapon_recovery =
-                base_recovery_times_per_weapon_type[weapon
-                                                        ->GetPlayerSkillType()];
+            weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
     } else if (IsUnarmed() == 1 && GetActualSkillLevel(PLAYER_SKILL_UNARMED) > 0) {
-        weapon_recovery = base_recovery_times_per_weapon_type[1];
+        weapon_recovery = base_recovery_times_per_weapon_type[PLAYER_SKILL_DAGGER];
     } else if (HasItemEquipped(EQUIP_TWO_HANDED)) {
         weapon = GetMainHandItem();
         if (weapon->GetItemEquipType() == EQUIP_WAND) {
-            // __debugbreak();  // looks like offset in player's inventory and
-                             // wand_lut much like case in 0042ECB5
-            // __debugbreak();  // looks like wands were two-handed weapons once,
-                             // or supposed to be. should not get here now
             weapon_recovery = pSpellDatas[wand_spell_ids[weapon->uItemID - ITEM_WAND_FIRE]].uExpertLevelRecovery;
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
         }
     }
-    if (HasItemEquipped(EQUIP_SINGLE_HANDED) &&
-        GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) != EQUIP_SHIELD) {
-    // ADD: shield check because shield recovery is added later and can be
-    // accidentally doubled
-        if (base_recovery_times_per_weapon_type[GetOffHandItem()
-                                                    ->GetPlayerSkillType()] >
-            weapon_recovery) {
-            weapon = GetOffHandItem();
-            weapon_recovery =
-                base_recovery_times_per_weapon_type[weapon
-                                                        ->GetPlayerSkillType()];
+
+    if (HasItemEquipped(EQUIP_SINGLE_HANDED)) {
+        if (GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) == EQUIP_SHIELD) {
+            uchar skill_type = GetOffHandItem()->GetPlayerSkillType();
+            uint shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
+            float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
+            shield_recovery = (uint)(shield_base_recovery * multiplier);
+        } else {
+            if (base_recovery_times_per_weapon_type[GetOffHandItem()->GetPlayerSkillType()] > weapon_recovery) {
+                weapon = GetOffHandItem();
+                weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
+            }
         }
     }
 
     uint armour_recovery = 0;
     if (HasItemEquipped(EQUIP_ARMOUR)) {
         uchar armour_skill_type = GetArmorItem()->GetPlayerSkillType();
-        uint base_armour_recovery =
-            base_recovery_times_per_weapon_type[armour_skill_type];
+        uint base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
         float multiplier;
 
         if (armour_skill_type == PLAYER_SKILL_LEATHER) {
-            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(
-                armour_skill_type, 1.0f, 0, 0, 0);
+            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0, 0, 0);
         } else if (armour_skill_type == PLAYER_SKILL_CHAIN) {
-            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(
-                armour_skill_type, 1.0f, 0.5f, 0, 0);
+            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0, 0);
         } else if (armour_skill_type == PLAYER_SKILL_PLATE) {
-            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(
-                armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
+            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
         } else {
             // PLAYER_SKILL_MISC
             // any others?
-            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(
-                armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
+            multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
 
         armour_recovery = (uint)(base_armour_recovery * multiplier);
     }
 
-    uint shield_recovery = 0;
-    if (HasItemEquipped(EQUIP_SINGLE_HANDED) &&
-        GetEquippedItemEquipType(EQUIP_SINGLE_HANDED) == EQUIP_SHIELD) {
-        uchar skill_type = GetOffHandItem()->GetPlayerSkillType();
-
-        uint shield_base_recovery =
-            base_recovery_times_per_weapon_type[skill_type];
-        float multiplier =
-            GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
-        shield_recovery = (uint)(shield_base_recovery * multiplier);
-    }
-
     uint player_speed_recovery_reduction = GetParameterBonus(GetActualSpeed()),
          sword_axe_bow_recovery_reduction = 0;
-    bool shooting_laser = false;
     if (weapon != nullptr) {
         if (GetActualSkillLevel(
                 (PLAYER_SKILL_TYPE)weapon->GetPlayerSkillType()) &&
             (weapon->GetPlayerSkillType() == PLAYER_SKILL_SWORD ||
              weapon->GetPlayerSkillType() == PLAYER_SKILL_AXE ||
              weapon->GetPlayerSkillType() == PLAYER_SKILL_BOW)) {
-            if (SkillToMastery(pActiveSkills[weapon->GetPlayerSkillType()]) >=
-                2)  // Expert   Sword, Axe & Bow   reduce recovery
-                sword_axe_bow_recovery_reduction =
-                    pActiveSkills[weapon->GetPlayerSkillType()] & 0x3F;
+            // Expert Sword, Axe & Bow reduce recovery
+            if (SkillToMastery(pActiveSkills[weapon->GetPlayerSkillType()]) >= 2)
+                sword_axe_bow_recovery_reduction = pActiveSkills[weapon->GetPlayerSkillType()] & 0x3F;
         }
-        if (weapon->GetPlayerSkillType() == PLAYER_SKILL_BLASTER)
-            shooting_laser = true;
     }
 
     uint armsmaster_recovery_reduction = 0;
-    if (!bRangedAttack && !shooting_laser) {
-        if (uint armsmaster_level =
-                GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER)) {
+    if (!bRangedAttack) {
+        if (uint armsmaster_level = GetActualSkillLevel(PLAYER_SKILL_ARMSMASTER)) {
             armsmaster_recovery_reduction = armsmaster_level & 0x3F;
             if (SkillToMastery(armsmaster_level) >= 4)
                 armsmaster_recovery_reduction *= 2;
@@ -2320,10 +2300,10 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
     if (pParty->pPartyBuffs[PARTY_BUFF_HASTE].Active()) hasteRecoveryReduction = 25;
 
     uint weapon_enchantment_recovery_reduction = 0;
-    if (weapon) {
-        if (weapon->special_enchantment == 59 ||
-            weapon->special_enchantment == 41 ||
-            weapon->special_enchantment == 500)
+    if (weapon != nullptr) {
+        if (weapon->special_enchantment == ITEM_ENCHANTMENT_SWIFT ||
+            weapon->special_enchantment == ITEM_ENCHANTMENT_OF_DARKNESS ||
+            weapon->uItemID == ITEM_ARTIFACT_PUCK)
             weapon_enchantment_recovery_reduction = 20;
     }
 
@@ -2333,10 +2313,12 @@ int Player::GetAttackRecoveryTime(bool bRangedAttack) {
                    hasteRecoveryReduction - sword_axe_bow_recovery_reduction -
                    player_speed_recovery_reduction;
 
-    if (bRangedAttack || shooting_laser) {
-        if (recovery < 5) recovery = 5;
+    if (bRangedAttack) {
+        if (recovery < 5)
+            recovery = 5;
     } else {
-        if (recovery < 30) recovery = 30;
+        if (recovery < 30)
+            recovery = 30;
     }
 
     return recovery;
@@ -2782,7 +2764,7 @@ int Player::GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr,
             return v5 + v56;
 
         case CHARACTER_ATTRIBUTE_LEVEL:
-            if (!Player::HasEnchantedItemEquipped(25)) return 0;
+            if (!Player::HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_POWER)) return 0;
             return 5;
             break;
 
@@ -7211,28 +7193,24 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                 // reduce missle damage with skills / armour
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
                 if (playerPtr->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
-                if (playerPtr->HasEnchantedItemEquipped(36)) dmgToReceive >>= 1;
-                if (playerPtr->HasEnchantedItemEquipped(69)) dmgToReceive >>= 1;
+                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING)) dmgToReceive >>= 1;
+                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM)) dmgToReceive >>= 1;
                 if (playerPtr->HasItemEquipped(EQUIP_ARMOUR) &&
-                    playerPtr->GetArmorItem()->uItemID ==
-                        ITEM_ARTIFACT_GOVERNORS_ARMOR)
+                    playerPtr->GetArmorItem()->uItemID == ITEM_ARTIFACT_GOVERNORS_ARMOR)
                     dmgToReceive >>= 1;
                 if (playerPtr->HasItemEquipped(EQUIP_TWO_HANDED)) {
                     ItemGen* mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
                         (mainHandItem->GetItemEquipType() == EQUIP_SHIELD &&
-                         playerPtr->GetActualSkillMastery(
-                             PLAYER_SKILL_SHIELD) == 4))
+                         playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == 4))
                         dmgToReceive >>= 1;
                 }
                 if (playerPtr->HasItemEquipped(EQUIP_SINGLE_HANDED)) {
                     ItemGen* offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->uItemID == ITEM_RELIC_KELEBRIM ||
                         offHandItem->uItemID == ITEM_ARTIFACT_ELFBANE ||
-                        (offHandItem->GetItemEquipType() == EQUIP_SHIELD &&
-                         playerPtr->GetActualSkillMastery(
-                             PLAYER_SKILL_SHIELD) == 4))
+                        (offHandItem->GetItemEquipType() == EQUIP_SHIELD && playerPtr->GetActualSkillMastery(PLAYER_SKILL_SHIELD) == 4))
                         dmgToReceive >>= 1;
                 }
             }

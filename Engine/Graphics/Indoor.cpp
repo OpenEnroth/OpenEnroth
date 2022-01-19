@@ -3603,9 +3603,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
         } else {
             for (uint i = 0; i < 4; ++i) {  // receive falling damage
-                if (!pParty->pPlayers[i].HasEnchantedItemEquipped(72) &&
-                    !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS,
-                        EQUIP_BOOTS)) {
+                if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                    !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)) {
                     pParty->pPlayers[i].ReceiveDamage(
                         (pParty->uFallStartY - party_z) *
                         (0.1f * pParty->pPlayers[i].GetMaxHealth()) / 256,
@@ -3755,16 +3754,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     pParty->sRotationZ = angle;
     pParty->sRotationX = _view_angle;
     if (hovering) {  // парящие
-        pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed *
-                              GetGravityStrength();  // расчёт скорости падения
+        pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();  // расчёт скорости падения
         if (hovering && pParty->uFallSpeed <= 0) {
             if (pParty->uFallSpeed < -500 && !pParty->bFlying) {
                 for (uint pl = 1; pl <= 4; pl++) {
-                    if (!pPlayers[pl]->HasEnchantedItemEquipped(72) &&
-                        !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS,
-                                                 EQUIP_BOOTS))  // was 8
-                        pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_SCARED,
-                                                  0);
+                    if (!pPlayers[pl]->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                        !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))  // was 8
+                        pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_SCARED, 0);
                 }
             }
         } else {

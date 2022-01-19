@@ -58,8 +58,7 @@ GUIWindow_Save::GUIWindow_Save() :
             file_name = "1.mm7";
         }
 
-        String str = "saves/" + file_name;
-        str = MakeDataPath(str.c_str());
+        String str = MakeDataPath("saves", file_name);
         if (_access(str.c_str(), 0) || _access(str.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
@@ -75,7 +74,8 @@ GUIWindow_Save::GUIWindow_Save() :
                 strcpy(pSavegameHeader[i].pName, test.c_str());
             }
 
-            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(&pLODFile, "image.pcx"));
+//            pSavegameThumbnails[i] = Image::Create(new PCX_LOD_Raw_Loader(&pLODFile, "image.pcx"));
+            pSavegameThumbnails[i] = render->CreateTexture_PCXFromLOD(&pLODFile, "image.pcx");
             if (pSavegameThumbnails[i]->GetWidth() == 0) {
                 pSavegameThumbnails[i]->Release();
                 pSavegameThumbnails[i] = nullptr;
@@ -161,8 +161,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     LOD::File pLODFile;
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
-        String str = "saves/" + pSavegameList->pFileList[i];
-        str = MakeDataPath(str.c_str());
+        String str = MakeDataPath("saves", pSavegameList->pFileList[i]);
         if (_access(str.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
@@ -239,7 +238,7 @@ static void UI_DrawSaveLoad(bool save) {
     unsigned int pSaveFiles;
 
     if (pSavegameUsedSlots[uLoadGameUI_SelectedSlot]) {
-        memset(&save_load_window, 0, 0x54);
+        save_load_window.Init();
         save_load_window.uFrameX = pGUIWindow_CurrentMenu->uFrameX + 240;
         save_load_window.uFrameWidth = 220;
         save_load_window.uFrameY = (pGUIWindow_CurrentMenu->uFrameY - pFontSmallnum->GetHeight()) + 157;
@@ -355,7 +354,8 @@ void MainMenuLoad_EventLoop() {
                 int v26 = param + pSaveListPosition;
                 if (dword_6BE138 == v26) {
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_SaveLoadBtn, 0, 0);
-                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
+                    // Breaks UI interaction after save load
+                    // pMessageQueue_50CBD0->AddGUIMessage(UIMSG_LoadGame, 0, 0);
                 }
                 uLoadGameUI_SelectedSlot = v26;
                 dword_6BE138 = v26;

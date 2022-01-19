@@ -1,9 +1,16 @@
 #pragma once
 #include <memory>
 
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
 #include "Engine/MM7.h"
+
+#ifdef __APPLE__
+#define NK_SHADER_VERSION "#version 150\n"
+#else
+#define NK_SHADER_VERSION "#version 300 es\n"
+#endif
 
 class RenderOpenGL : public RenderBase {
  public:
@@ -19,6 +26,15 @@ class RenderOpenGL : public RenderBase {
     virtual ~RenderOpenGL();
 
     virtual bool Initialize();
+
+    virtual bool NuklearInitialize(struct nk_tex_font *tfont);
+    virtual bool NuklearCreateDevice();
+    virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer);
+    virtual void NuklearRelease();
+    virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size);
+    virtual void NuklearFontFree(struct nk_tex_font *tfont);
+    virtual struct nk_image NuklearImageLoad(Image *img);
+    virtual void NuklearImageFree(Image *img);
 
     virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey);
     virtual Texture *CreateTexture_Solid(const String &name);
@@ -199,6 +215,25 @@ class RenderOpenGL : public RenderBase {
     uint32_t *render_target_rgb;  // now 32 - draw to in format A8R8G8B8 - endian swivel means BGRA
 
     int GL_lastboundtex;
+    struct nk_vertex {
+        float position[2];
+        float uv[2];
+        nk_byte col[4];
+    } nk_vertex;
+    struct nk_device {
+        struct nk_buffer cmds;
+        struct nk_draw_null_texture null;
+        struct nk_font_atlas atlas;
+        uint32_t vbo, vao, ebo;
+        uint32_t prog;
+        uint32_t vert_shdr;
+        uint32_t frag_shdr;
+        int32_t attrib_pos;
+        int32_t attrib_uv;
+        int32_t attrib_col;
+        int32_t uniform_tex;
+        int32_t uniform_proj;
+    } nk_dev;
 };
 
 

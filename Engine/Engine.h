@@ -27,6 +27,7 @@
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
 
+class Nuklear;
 using Io::KeyboardActionMapping;
 using Io::KeyboardInputHandler;
 using Io::Mouse;
@@ -231,6 +232,26 @@ struct Engine {
                 cfg->allow_lightmaps = allow_lightmaps;
             });
     }
+    inline void SetConfigWindowDisplay(int display) {
+        MutateConfig(
+            [display](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->display = display;
+            });
+    }
+    inline void SetConfigWindowPosition(int window_x, int window_y) {
+        MutateConfig(
+            [window_x, window_y](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->window_x = window_x;
+                cfg->window_y = window_y;
+            });
+    }
+    inline void SetConfigWindowDimensions(int window_width, int window_height) {
+        MutateConfig(
+            [window_width, window_height](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->window_width = window_width;
+                cfg->window_height = window_height;
+            });
+    }
     inline void SetDebugLightmapsDecals(bool debug_lightmaps_decals) {
         MutateConfig(
             [debug_lightmaps_decals](std::shared_ptr<EngineConfig> &cfg) {
@@ -253,6 +274,12 @@ struct Engine {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->ToggleFlipOnExit();
+            });
+    }
+    inline void ToggleFullscreen() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleFullscreen();
             });
     }
     inline void ToggleWalkSound() {
@@ -477,6 +504,7 @@ struct Engine {
     SpellFxRenderer *spell_fx_renedrer = nullptr;
     LightmapBuilder *lightmap_builder = nullptr;
     std::shared_ptr<Mouse> mouse = nullptr;
+    std::shared_ptr<Nuklear> nuklear = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
     std::shared_ptr<KeyboardInputHandler> keyboardInputHandler;
@@ -510,7 +538,7 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on);
 void SetDecorationSprite(uint16_t uCog, bool bHide,
                          const char *pFileName);  // idb
 void _494035_timed_effects__water_walking_damage__etc();
-void _493938_regenerate();
+void RegeneratePartyHealthMana();
 String GetReputationString(int reputation);
 unsigned int _494820_training_time(unsigned int a1);
 void LoadLevel_InitializeLevelStr();
@@ -526,4 +554,12 @@ void OnTimer(int);
 void TeleportToNWCDungeon();
 
 void SetDataPath(const std::string &data_path);
-std::string MakeDataPath(const char *file_rel_path);
+
+std::string MakeDataPath(std::initializer_list<std::string_view> paths);
+template<typename ... Ts>
+std::string MakeDataPath(Ts&&... paths) {
+    static_assert(((std::is_same<typename std::decay<Ts>::type, std::string>::value ||
+        std::is_same<typename std::decay<Ts>::type, const char*>::value) || ...),
+        "T must be a basic string");
+    return MakeDataPath({ paths... });
+}

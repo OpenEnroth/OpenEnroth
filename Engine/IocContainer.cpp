@@ -17,6 +17,7 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -99,6 +100,14 @@ std::shared_ptr<Mouse> IocContainer::ResolveMouse() {
     return mouse;
 }
 
+std::shared_ptr<Nuklear> IocContainer::ResolveNuklear() {
+    if (!nuklear) {
+        nuklear = std::make_shared<Nuklear>();
+    }
+
+    return nuklear;
+}
+
 std::shared_ptr<ParticleEngine> IocContainer::ResolveParticleEngine() {
     if (!particle_engine) {
         particle_engine = std::make_shared<ParticleEngine>();
@@ -119,6 +128,7 @@ BloodsplatContainer *IocContainer::bloodspalt_container = nullptr;
 SpellFxRenderer *IocContainer::spell_fx_renderer = nullptr;
 LightmapBuilder *IocContainer::lightmap_builder = nullptr;
 std::shared_ptr<Mouse> IocContainer::mouse = nullptr;
+std::shared_ptr<Nuklear> IocContainer::nuklear = nullptr;
 std::shared_ptr<ParticleEngine> IocContainer::particle_engine = nullptr;
 Vis *IocContainer::vis = nullptr;
 

@@ -83,6 +83,7 @@ class EngineConfig {
     inline void ToggleDebugPickedFace() { show_picked_face = !show_picked_face; }
     inline void ToggleDebugShowFPS() { show_fps = !show_fps; }
     inline void ToggleDebugSeasonsChange() { seasons_change = !seasons_change; }
+    inline void ToggleFullscreen() { fullscreen = !fullscreen; }
 
     // DEBUG_SETTINGS_*
     int run_in_window = DEBUG_SETTINGS_RUN_IN_WIDOW;
@@ -102,6 +103,7 @@ class EngineConfig {
 
     int gamma = 4;
     int max_flight_height = 4000;
+    int artifact_limit = 13;
 
     bool no_intro = false;
     bool no_logo = false;
@@ -136,6 +138,23 @@ class EngineConfig {
 
     bool is_underwater = false;
     bool is_targeting = false;
+
+    bool no_grab = false;
+
+    int window_x = -1;
+    int window_y = -1;
+    int window_width = 640;
+    int window_height = 480;
+    int display = 0;
+    int fullscreen = 0;
+    int borderless = 0;
+    std::string renderer_name =
+#ifdef _WINDOWS
+            "OpenGL";  // "DirectDraw";
+#else
+            "OpenGL";
+#endif
+    std::string window_title = "World of Might and Magic";
 };
 
 }  // namespace Engine_

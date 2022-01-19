@@ -552,7 +552,6 @@ void GUIWindow_CharacterRecord::Update() {
         }
         case WINDOW_CharacterWindow_Awards: {
             CharacterUI_ReleaseButtons();
-            ReleaseAwardsScrollBar();
             CreateAwardsScrollBar();
             CharacterUI_AwardsTab_Draw(player);
             render->DrawTextureAlphaNew(
@@ -630,27 +629,27 @@ void GUIWindow_CharacterRecord::ShowAwardsTab() {
 }
 
 void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
-    int v128, v125, v123, v121;
+    int x, y, w, h;
 
     bRingsShownInCharScreen ^= 1;
     pCharacterScreen_DetalizBtn->Release();
     pCharacterScreen_DollBtn->Release();
     if (bRingsShownInCharScreen) {
-        v128 = ui_character_inventory_paperdoll_rings_close->GetHeight();
-        v125 = ui_character_inventory_paperdoll_rings_close->GetWidth();
-        v123 = 445;
-        v121 = 470;
+        h = ui_character_inventory_paperdoll_rings_close->GetHeight();
+        w = ui_character_inventory_paperdoll_rings_close->GetWidth();
+        y = 445;
+        x = 471;
     } else {
-        v128 = 30;
-        v125 = 30;
-        v123 = 300;
-        v121 = 600;
+        h = 30;
+        w = 30;
+        y = 300;
+        x = 600;
     }
     pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton(
-        v121, v123, v125, v128, 1, 0, UIMSG_ChangeDetaliz, 0, GameKey::None,
+        x, y, w, h, 1, 0, UIMSG_ChangeDetaliz, 0, GameKey::None,
         localization->GetString(LSTR_DETAIL_TOGGLE));
     pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton(
-        0x1DCu, 0, 0xA4u, 0x159u, 1, 0, UIMSG_ClickPaperdoll, 0);
+        476, 0, 164, 345, 1, 0, UIMSG_ClickPaperdoll, 0);
     viewparams->bRedrawGameUI = true;
 }
 
@@ -687,6 +686,7 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
     Player *player, int x, int y, const int *skill_list, int skill_list_size,
     int right_margin, const char *skill_group_name) {
     int y_offset = y;
+    Point pt = mouse->GetCursorPos();
 
     auto str = StringPrintf("%s\r%03d%s", skill_group_name, right_margin,
                             localization->GetString(LSTR_LEVEL));
@@ -708,15 +708,16 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
             ++num_skills_drawn;
             y_offset = v8->uY;
 
-            // ushort skill_value = player->pActiveSkills[skill];
-            int skill_level = player->GetActualSkillLevel(skill);
+            //int skill_level = player->GetActualSkillLevel(skill);
+            ushort skill_value = player->pActiveSkills[skill];
+            int skill_level = skill_value & 0x3F;
 
             uint skill_color = 0;
             uint skill_mastery_color = 0;
             if (player->uSkillPoints > skill_level)
                 skill_color = ui_character_skill_upgradeable_color;
 
-            if (pGUIWindow_CurrentMenu->pCurrentPosActiveItem == j) {  // this needs to reset??
+            if (pt.x >= v8->uX && pt.x < v8->uZ && pt.y >= v8->uY && pt.y < v8->uW) {
                 if (player->uSkillPoints > skill_level)
                     skill_mastery_color = ui_character_bonus_text_color;
                 else
@@ -724,18 +725,13 @@ static int CharacterUI_SkillsTab_Draw__DrawSkillTable(
                 skill_color = skill_mastery_color;
             }
 
-            if (player->GetActualSkillMastery(skill) == 1) {
-                auto Strsk = StringPrintf(
-                    "%s\r%03d%2d",
-                        localization->GetSkillName(skill), right_margin, skill_level
-                );
-                pGUIWindow_CurrentMenu->DrawText(
-                    pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0
-                );
+            if (SkillToMastery(skill_value) == 1) {
+                auto Strsk = StringPrintf("%s\r%03d%2d", localization->GetSkillName(skill), right_margin, skill_level);
+                pGUIWindow_CurrentMenu->DrawText(pFontLucida, x, v8->uY, skill_color, Strsk, 0, 0, 0);
             } else {
                 const char *skill_level_str = nullptr;
 
-                switch (player->GetActualSkillMastery(skill)) {
+                switch (SkillToMastery(skill_value)) {
                     case 4:
                         skill_level_str = localization->GetString(LSTR_GRAND);
                         break;
@@ -1295,7 +1291,7 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         if (player->GetItem(&PlayerEquipment::uBelt)) {
             item = player->GetBeltItem();
             switch (item->uItemID) {
-                case ITEM_RILIC_TITANS_BELT:
+                case ITEM_RELIC_TITANS_BELT:
                     index = 5;
                     break;
                 case ITEM_ARTIFACT_HEROS_BELT:
@@ -2061,7 +2057,7 @@ void CharacterUI_LoadPaperdollTextures() {
             byte_5111F6_OwnedArtifacts[7] = 1;
         if (player->HasItem(ITEM_RARE_SHADOWS_MASK, 1))
             byte_5111F6_OwnedArtifacts[8] = 1;
-        if (player->HasItem(ITEM_RILIC_TITANS_BELT, 1))
+        if (player->HasItem(ITEM_RELIC_TITANS_BELT, 1))
             byte_5111F6_OwnedArtifacts[9] = 1;
         if (player->HasItem(ITEM_ARTIFACT_HEROS_BELT, 1))
             byte_5111F6_OwnedArtifacts[10] = 1;
@@ -2421,7 +2417,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                               UI_GetHealthManaAndOtherQualitiesStringColor(
                                   player->GetActualAge(), player->GetBaseAge()),
                               player->GetActualAge(), player->GetBaseAge());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str14);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 256, pY, 0, str14);
 
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetBaseLevel() > 99)
@@ -2433,7 +2429,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                      UI_GetHealthManaAndOtherQualitiesStringColor(
                          player->GetActualLevel(), player->GetBaseLevel()),
                      player->GetActualLevel(), player->GetBaseLevel());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str15);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 256, pY, 0, str15);
 
     pY += pFontArrus->GetHeight() - 2;
     pText = localization->GetString(LSTR_EXP);

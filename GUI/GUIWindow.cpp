@@ -291,6 +291,29 @@ void GUIWindow::_41D08F_set_keyboard_control_group(int num_buttons, int a3,
     }
 }
 
+void GUIWindow::Init() {
+    this->uFrameX = 0;
+    this->uFrameY = 0;
+    this->uFrameWidth = 0;
+    this->uFrameHeight = 0;
+    this->uFrameZ = 0;
+    this->uFrameW = 0;
+    this->eWindowType = WINDOW_null;
+    this->ptr_1C = 0;
+    this->par1C = 0;
+    this->field_24 = 0;
+    this->pNumPresenceButton = 0;
+    this->pCurrentPosActiveItem = 0;
+    this->field_30 = 0;
+    this->field_34 = 0;
+    this->pStartingPosActiveItem = 0;
+    this->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
+    this->receives_keyboard_input = false;
+    this->sHint.clear();
+
+    DeleteButtons();
+}
+
 void GUIWindow::Release() {
     if (!this || this->eWindowType == WINDOW_null) {
         // added the check to avoid releasing
@@ -300,6 +323,9 @@ void GUIWindow::Release() {
     DeleteButtons();
 
     lWindowList.remove(this);
+
+    if (this->eWindowType == WINDOW_GameUI)
+        nuklear->Release(WINDOW_GameUI);
 
     log->Info("Release window: %s", ToString(eWindowType));
 }
@@ -361,7 +387,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
 
     GUIWindow current_window = *this;
     current_window.uFrameX += 12;
-    current_window.uFrameWidth -= 24;
+    current_window.uFrameWidth -= 28;
     current_window.uFrameY += 12;
     current_window.uFrameHeight -= 12;
     current_window.uFrameZ =
@@ -827,8 +853,7 @@ void DialogueEnding() {
 
 void GUIWindow_BooksButtonOverlay::Update() {
     GUIButton *pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameY / 640.0f, uFrameX / 480.0f,
-        pButton->vTextures[0]);
+    render->DrawTextureAlphaNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
 }
 
@@ -871,9 +896,8 @@ void OnButtonClick3::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[1]);
-    viewparams->bRedrawGameUI = 1;
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
+    viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
     }
@@ -885,8 +909,7 @@ void OnButtonClick4::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[1]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
 
     Release();
@@ -897,8 +920,7 @@ void OnSaveLoad::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pButton->vTextures[0]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -917,8 +939,7 @@ void OnCancel::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
     auto pGUIButton = (GUIButton *)ptr_1C;
-    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-        pGUIButton->vTextures[0]);
+    render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
         pGUIButton->DrawLabel(sHint, pFontCreate, 0, 0);
@@ -999,7 +1020,7 @@ void CreateScrollWindow() {
     a1.uFrameW = v0 + a1.uFrameY - 1;
     a1.DrawMessageBox(0);
     a1.uFrameX += 12;
-    a1.uFrameWidth -= 24;
+    a1.uFrameWidth -= 28;
     a1.uFrameY += 12;
     a1.uFrameHeight -= 12;
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
@@ -2511,6 +2532,7 @@ void UI_Create() {
     dialogue_ui_x_ok_u = assets->GetImage_ColorKey("x_ok_u", render->teal_mask_16);
     ui_buttyes2 = assets->GetImage_Alpha("BUTTYES2");
 
+    nuklear->Create(WINDOW_GameUI);
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, 0, 0, window->GetWidth(), window->GetHeight(), 0);
     pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 

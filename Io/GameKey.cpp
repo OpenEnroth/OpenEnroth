@@ -89,6 +89,17 @@ static std::map<GameKey, const char*> displayNames = {
     { GameKey::LeftBracket,     "L BRACKET" },
     { GameKey::RightBracket,    "R BRACKET" },
     { GameKey::Tilde,           "~" },
+
+    { GameKey::Numpad0,         "NUMPAD 0" },
+    { GameKey::Numpad1,         "NUMPAD 1" },
+    { GameKey::Numpad2,         "NUMPAD 2" },
+    { GameKey::Numpad3,         "NUMPAD 3" },
+    { GameKey::Numpad4,         "NUMPAD 4" },
+    { GameKey::Numpad5,         "NUMPAD 5" },
+    { GameKey::Numpad6,         "NUMPAD 6" },
+    { GameKey::Numpad7,         "NUMPAD 7" },
+    { GameKey::Numpad8,         "NUMPAD 8" },
+    { GameKey::Numpad9,         "NUMPAD 9" },
 };
 
 std::string GetDisplayName(GameKey key) {

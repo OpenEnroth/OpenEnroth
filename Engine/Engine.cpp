@@ -115,18 +115,30 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 
 */
 
+std::shared_ptr<Engine> engine;
 static std::string s_data_path;
 
 void SetDataPath(const std::string &data_path) { s_data_path = data_path; }
 
-std::string MakeDataPath(const char *file_rel_path) {
-    return s_data_path + OS_GetDirSeparator() + file_rel_path;
+std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
+    std::string res = s_data_path;
+    std::string sep;
+
+    sep.push_back(OS_GetDirSeparator());
+
+    for (auto p : paths) {
+        if (!p.empty()) {
+            if (!res.empty())
+                res += sep;
+
+            res += p;
+        }
+    }
+
+    res = OS_casepath(res);
+
+    return res;
 }
-
-std::shared_ptr<Engine> engine;
-
-
-
 
 uint32_t Color32(uint16_t color16) {
     uint32_t c = color16;
@@ -229,18 +241,26 @@ void Engine::Draw() {
     viewparams->bRedrawGameUI = true;
 
     render->BeginScene();
-    DrawGUI();
-    int v4 = viewparams->bRedrawGameUI;
-    GUI_UpdateWindows();
-    pParty->UpdatePlayersAndHirelingsEmotions();
-    _unused_5B5924_is_travel_ui_drawn = false;
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
+    if (nuklear->Mode(WINDOW_GameUI) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
+    } else {
+        DrawGUI();
+        int v4 = viewparams->bRedrawGameUI;
+        GUI_UpdateWindows();
+        pParty->UpdatePlayersAndHirelingsEmotions();
+        _unused_5B5924_is_travel_ui_drawn = false;
 
-    // if (v4)
-        mouse->bRedraw = true;
+        // if (v4)
+    }
+    mouse->bRedraw = true;
 
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
     mouse->Activate();
+
+    engine->nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
+
     render->EndScene();
     render->Present();
     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
@@ -614,6 +634,7 @@ Engine::Engine() {
     this->spell_fx_renedrer = EngineIoc::ResolveSpellFxRenderer();
     this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
     this->mouse = EngineIoc::ResolveMouse();
+    this->nuklear = EngineIoc::ResolveNuklear();
     this->particle_engine = EngineIoc::ResolveParticleEngine();
     this->vis = EngineIoc::ResolveVis();
 
@@ -638,8 +659,8 @@ Engine::Engine() {
     // pKeyboardInstance = new Keyboard;
     // pGammaController = new GammaController;
 
-    keyboardInputHandler = ::keyboardInputHandler;
-    keyboardActionMapping = ::keyboardActionMapping;
+    keyboardInputHandler = nullptr;
+    keyboardActionMapping = nullptr;
 }
 
 //----- (0044E7F3) --------------------------------------------------------
@@ -868,20 +889,20 @@ void FinalInitialization() {
 
 bool MM7_LoadLods() {
     pIcons_LOD = new LODFile_IconsBitmaps;
-    if (!pIcons_LOD->Load(MakeDataPath("data/icons.lod"), "icons")) {
+    if (!pIcons_LOD->Load(MakeDataPath("data", "icons.lod"), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
     pIcons_LOD->_011BA4_debug_paletted_pixels_uncompressed = false;
 
     pEvents_LOD = new LODFile_IconsBitmaps;
-    if (!pEvents_LOD->Load(MakeDataPath("data/events.lod").c_str(), "icons")) {
+    if (!pEvents_LOD->Load(MakeDataPath("data", "events.lod"), "icons")) {
         Error("Some files are missing\n\nPlease Reinstall.");
         return false;
     }
 
     pBitmaps_LOD = new LODFile_IconsBitmaps;
-    if (!pBitmaps_LOD->Load(MakeDataPath("data/bitmaps.lod").c_str(), "bitmaps")) {
+    if (!pBitmaps_LOD->Load(MakeDataPath("data", "bitmaps.lod"), "bitmaps")) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)
@@ -890,7 +911,7 @@ bool MM7_LoadLods() {
     }
 
     pSprites_LOD = new LODFile_Sprites;
-    if (!pSprites_LOD->LoadSprites(MakeDataPath("data/sprites.lod"))) {
+    if (!pSprites_LOD->LoadSprites(MakeDataPath("data", "sprites.lod"))) {
         Error(
             localization->GetString(LSTR_PLEASE_REINSTALL),
             localization->GetString(LSTR_REINSTALL_NECESSARY)
@@ -1604,7 +1625,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
         for (uint pl = 1; pl <= 4; ++pl) {
             if (pPlayers[pl]->WearsItem(ITEM_RELIC_HARECS_LEATHER,
                 EQUIP_ARMOUR) ||
-                pPlayers[pl]->HasEnchantedItemEquipped(71) ||
+                pPlayers[pl]->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_WATER_WALK].expire_time) {
                 pPlayers[pl]->PlayEmotion(CHARACTER_EXPRESSION_37, 0);
             } else {
@@ -1636,7 +1657,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
             }
         }
     }
-    _493938_regenerate();
+    RegeneratePartyHealthMana();
     uint party_condition_flag = 4;
     a2a = pEventTimer->uTimeElapsed;
     if (pParty->uFlags2 &
@@ -1825,35 +1846,14 @@ void _494035_timed_effects__water_walking_damage__etc() {
 }
 
 //----- (00493938) --------------------------------------------------------
-void _493938_regenerate() {  // immolation
-    int current_time;                     // edi@1
-    int last_reg_time;                    // qax@1
-    int v4;                               // eax@2
-    int v5;                               // edi@5
-    int v9;                               // edi@15
-    // signed int v10;                       // eax@15
-    int numberOfActorsAffected;           // ebx@20
-    unsigned int v14;                     // esi@21
-    signed int v19;                       // eax@21
-    bool recovery_HP;                     // ebx@25
-    signed int v25;                       // eax@33
-    signed int v31;                       // ecx@53
-    int actorsAffectedByImmolation[100];  // [sp+4h] [bp-22Ch]@20
-    SpriteObject a1;                      // [sp+194h] [bp-9Ch]@15
-    Vec3_int_ a3;                         // [sp+204h] [bp-2Ch]@15
-    bool has_dragon_flag;                 // [sp+210h] [bp-20h]@22
-    bool lich_jar_flag;                   // [sp+214h] [bp-1Ch]@25
-    bool zombie_flag;                     // [sp+218h] [bp-18h]@25
-    bool decrease_HP;                     // [sp+21Ch] [bp-14h]@25
-    bool lich_flag;                       // [sp+220h] [bp-10h]@25
-    int v49;                              // [sp+224h] [bp-Ch]@24
-    bool recovery_SP;                     // [sp+228h] [bp-8h]@25
-    bool redraw_flag;                     // [sp+22Ch] [bp-4h]@2
+void RegeneratePartyHealthMana() {
+    bool redraw_flag;
 
-    current_time = pParty->GetPlayingTime().GetMinutesFraction();
-    last_reg_time = pParty->last_regenerated.GetMinutesFraction();
+    int current_time = pParty->GetPlayingTime().GetMinutesFraction();
+    int last_reg_time = pParty->last_regenerated.GetMinutesFraction();
 
-    if (current_time == last_reg_time) return;
+    if (current_time == last_reg_time)
+        return;
 
     int testmin = last_reg_time + 5;
     if (testmin >= 60) {  // hour tickover boundaries
@@ -1863,22 +1863,17 @@ void _493938_regenerate() {  // immolation
 
     if (current_time >= testmin) {
         redraw_flag = false;
-        v4 = (current_time - last_reg_time) / 5;
+        int times_triggered = (current_time - last_reg_time) / 5;
 
         // chance to flight break due to a curse
         if (pParty->FlyActive()) {
             if (pParty->bFlying) {
                 if (!(pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1)) {
-                    v5 = v4 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
+                    unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
 
-                    auto v6 =
-                        &pParty
-                             ->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY]
-                                            .uCaster -
-                                        1]
-                             .conditions_times[Condition_Cursed];
-                    if (v6->value < v5) {
-                        v6 = 0;
+                    auto cursed_times = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].conditions_times[Condition_Cursed];
+                    if (cursed_times->value < spell_power) {
+                        cursed_times = 0;
                         pParty->uFlags &= 0xFFFFFFBF;
                         pParty->bFlying = false;
                         redraw_flag = true;
@@ -1890,18 +1885,11 @@ void _493938_regenerate() {  // immolation
         // chance to waterwalk drowning due to a curse
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
-                if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags &
-                      1)) {  // taking on water
-                    auto v8 =
-                        &pParty
-                             ->pPlayers[pParty
-                                            ->pPartyBuffs[PARTY_BUFF_WATER_WALK]
-                                            .uCaster -
-                                        1]
-                             .conditions_times[Condition_Cursed];
-                    v8->value -= v4;
-                    if (v8->value <= 0) {
-                        v8->value = 0;
+                if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1)) {  // taking on water
+                    auto cursed_times = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1].conditions_times[Condition_Cursed];
+                    cursed_times->value -= times_triggered;
+                    if (cursed_times->value <= 0) {
+                        cursed_times->value = 0;
                         pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
                         redraw_flag = true;
                     }
@@ -1909,158 +1897,121 @@ void _493938_regenerate() {  // immolation
             }
         }
 
-        if (pParty->ImmolationActive()) {  // Жертва
-            a3.z = 0;
-            a3.y = 0;
-            a3.x = 0;
-            a1.containing_item.Reset();
-            a1.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uPower;
-            a1.spell_skill = pParty->ImmolationSkillLevel();
-            a1.uType = SPRITE_SPELL_FIRE_IMMOLATION;
-            a1.spell_id = SPELL_FIRE_IMMOLATION;
-            a1.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprite_mapping[8].uSpriteType);
-            a1.field_60_distance_related_prolly_lod = 0;
-            a1.uAttributes = 0;
-            a1.uSectorID = 0;
-            a1.uSpriteFrameID = 0;
-            a1.spell_caster_pid = PID(OBJECT_Player, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uCaster);
-            a1.uFacing = 0;
-            a1.uSoundID = 0;
-            numberOfActorsAffected = pParty->_46A89E_immolation_effect(actorsAffectedByImmolation, 100, 307);
-            for (v9 = 0; v9 < numberOfActorsAffected; ++v9) {
-                v14 = actorsAffectedByImmolation[v9];
-                a1.vPosition.x = pActors[v14].vPosition.x;
-                a1.vPosition.y = pActors[v14].vPosition.y;
-                a1.vPosition.z = pActors[v14].vPosition.z;
-                a1.spell_target_pid = PID(OBJECT_Actor, v14);
-                v19 = a1.Create(0, 0, 0, 0);
-                Actor::DamageMonsterFromParty(PID(OBJECT_Item, v19), v14, &a3);
+        // immolation fire spell aura damage
+        if (pParty->ImmolationActive()) {
+            Vec3_int_ cords;
+            cords.x = 0;
+            cords.y = 0;
+            cords.z = 0;
+
+            SpriteObject spellSprite;
+            spellSprite.containing_item.Reset();
+            spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uPower;
+            spellSprite.spell_skill = pParty->ImmolationSkillLevel();
+            spellSprite.uType = SPRITE_SPELL_FIRE_IMMOLATION;
+            spellSprite.spell_id = SPELL_FIRE_IMMOLATION;
+            spellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprite_mapping[8].uSpriteType);
+            spellSprite.field_60_distance_related_prolly_lod = 0;
+            spellSprite.uAttributes = 0;
+            spellSprite.uSectorID = 0;
+            spellSprite.uSpriteFrameID = 0;
+            spellSprite.spell_caster_pid = PID(OBJECT_Player, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].uCaster);
+            spellSprite.uFacing = 0;
+            spellSprite.uSoundID = 0;
+
+            int actorsAffectedByImmolation[100];
+            size_t numberOfActorsAffected = pParty->ImmolationAffectedActors(actorsAffectedByImmolation, 100, 307);
+            for (size_t idx = 0; idx < numberOfActorsAffected; ++idx) {
+                int actorID = actorsAffectedByImmolation[idx];
+                spellSprite.vPosition.x = pActors[actorID].vPosition.x;
+                spellSprite.vPosition.y = pActors[actorID].vPosition.y;
+                spellSprite.vPosition.z = pActors[actorID].vPosition.z;
+                spellSprite.spell_target_pid = PID(OBJECT_Actor, actorID);
+                Actor::DamageMonsterFromParty(PID(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, &cords);
             }
         }
 
-        has_dragon_flag = false;
-        if (PartyHasDragon()) has_dragon_flag = true;
+        // HP/SP regeneration and HP deterioration
+        for (int playerID = 0; playerID < 4; playerID++) {
+            bool recovery_HP = false;
+            bool decrease_HP = false;
+            bool recovery_SP = false;
 
-        for (v49 = 0; v49 < 4; v49++) {
-            recovery_HP = false;
-            recovery_SP = false;
-            decrease_HP = false;
-            lich_flag = false;
-            lich_jar_flag = false;
-            zombie_flag = false;
-
-            for (int v22 = 0; (signed int)v22 < 16; v22++) {
-                if (pParty->pPlayers[v49].HasItemEquipped(
-                        (ITEM_EQUIP_TYPE)v22)) {
-                    uint _idx = pParty->pPlayers[v49].pEquipment.pIndices[v22];
-                    if (pParty->pPlayers[v49]
-                            .pInventoryItemList[_idx - 1]
-                            .uItemID > 134) {
-                        if (pParty->pPlayers[v49]
-                                .pInventoryItemList[_idx - 1]
-                                .uItemID == ITEM_RELIC_ETHRICS_STAFF)
+            for (int idx = 0; idx < 16; idx++) {
+                if (pParty->pPlayers[playerID].HasItemEquipped((ITEM_EQUIP_TYPE)idx)) {
+                    uint _idx = pParty->pPlayers[playerID].pEquipment.pIndices[idx];
+                    ItemGen equppedItem = pParty->pPlayers[playerID].pInventoryItemList[_idx - 1];
+                    if (equppedItem.uItemID > 134) {
+                        if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF)
                             decrease_HP = true;
-                        if (pParty->pPlayers[v49]
-                                .pInventoryItemList[_idx - 1]
-                                .uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
+                        if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
                             recovery_HP = true;
                             recovery_SP = true;
                         }
-                        if (pParty->pPlayers[v49]
-                                .pInventoryItemList[_idx - 1]
-                                .uItemID == ITEM_ARTIFACT_MINDS_EYE)
+                        if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE)
                             recovery_SP = true;
-                        if (pParty->pPlayers[v49]
-                                .pInventoryItemList[_idx - 1]
-                                .uItemID == ITEM_ARTIFACT_HEROS_BELT)
+                        if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT)
                             recovery_HP = true;
                     } else {
-                        v25 = pParty->pPlayers[v49]
-                                  .pInventoryItemList[_idx - 1]
-                                  .special_enchantment;
-                        if (v25 == 37  // of Regeneration("Regenerate 1hp/x
-                                       // while walking, etc")
-                            || v25 == 44  // of Life("HP (+10), Regen hpts")
-                            || v25 == 50  // of The Phoenix("Fire Res (+30),
-                                          // Regen hpts") &&
-                            ||
-                            v25 == 54)  // of The Troll("End (+15), Regen hpts")
+                        ITEM_ENCHANTMENT special_enchantment = equppedItem.special_enchantment;
+                        if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL)
                             recovery_HP = true;
-                        if (v25 == 38  // of Mana("Regenerate 1sp/x while
-                                       // walking, etc")
-                            ||
-                            v25 == 47  // of The Eclipse("SP (+10), Regen spts")
-                            ||
-                            v25 ==
-                                55)  // of The Unicorn("Luck (+15), Regen spts")
+
+                        if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
+                            || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN)
                             recovery_SP = true;
-                        if (v25 == 66) {  // of Plenty("Regenerate 1 hp/x and 1
-                                          // sp/x while walking, etc.")
+
+                        if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
                             recovery_HP = true;
                             recovery_SP = true;
                         }
                     }
 
                     if (recovery_HP &&
-                        !pParty->pPlayers[v49]
-                             .conditions_times[Condition_Dead] &&
-                        !pParty->pPlayers[v49]
-                             .conditions_times[Condition_Eradicated]) {
-                        if (pParty->pPlayers[v49].sHealth <
-                            pParty->pPlayers[v49].GetMaxHealth()) {
-                            ++pParty->pPlayers[v49].sHealth;
+                        !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
+                        !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                        if (pParty->pPlayers[playerID].sHealth <
+                            pParty->pPlayers[playerID].GetMaxHealth()) {
+                            ++pParty->pPlayers[playerID].sHealth;
                         }
-                        if (pParty->pPlayers[v49]
-                                .conditions_times[Condition_Unconcious] &&
-                            pParty->pPlayers[v49].sHealth > 0) {
-                            pParty->pPlayers[v49]
-                                .conditions_times[Condition_Unconcious]
+                        if (pParty->pPlayers[playerID].conditions_times[Condition_Unconcious] &&
+                            pParty->pPlayers[playerID].sHealth > 0) {
+                            pParty->pPlayers[playerID].conditions_times[Condition_Unconcious]
                                 .Reset();
                         }
                         redraw_flag = true;
                     }
 
                     if (recovery_SP &&
-                        !pParty->pPlayers[v49]
-                             .conditions_times[Condition_Dead] &&
-                        !pParty->pPlayers[v49]
-                             .conditions_times[Condition_Eradicated]) {
-                        if (pParty->pPlayers[v49].sMana <
-                            pParty->pPlayers[v49].GetMaxMana())
-                            ++pParty->pPlayers[v49].sMana;
+                        !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
+                        !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                        if (pParty->pPlayers[playerID].sMana <
+                            pParty->pPlayers[playerID].GetMaxMana())
+                            ++pParty->pPlayers[playerID].sMana;
                         redraw_flag = true;
                     }
 
                     if (decrease_HP &&
-                        !pParty->pPlayers[v49]
-                             .conditions_times[Condition_Dead] &&
-                        !pParty->pPlayers[v49]
-                             .conditions_times[Condition_Eradicated]) {
-                        --pParty->pPlayers[v49].sHealth;
-                        if (!(pParty->pPlayers[v49]
-                                  .conditions_times[Condition_Unconcious]) &&
-                            pParty->pPlayers[v49].sHealth < 0) {
-                            pParty->pPlayers[v49]
-                                .conditions_times[Condition_Unconcious] =
-                                pParty->GetPlayingTime();
+                        !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
+                        !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                        --pParty->pPlayers[playerID].sHealth;
+                        if (!(pParty->pPlayers[playerID].conditions_times[Condition_Unconcious]) &&
+                            pParty->pPlayers[playerID].sHealth < 0) {
+                            pParty->pPlayers[playerID].conditions_times[Condition_Unconcious] = pParty->GetPlayingTime();
                         }
-                        if (pParty->pPlayers[v49].sHealth < 1) {
-                            if (pParty->pPlayers[v49].sHealth +
-                                        pParty->pPlayers[v49].uEndurance +
-                                        pParty->pPlayers[v49].GetItemsBonus(
-                                            CHARACTER_ATTRIBUTE_ENDURANCE) >=
-                                    1 ||
-                                pParty->pPlayers[v49]
-                                    .pPlayerBuffs[PLAYER_BUFF_PRESERVATION]
-                                    .expire_time) {
-                                pParty->pPlayers[v49]
-                                    .conditions_times[Condition_Unconcious] =
-                                    pParty->GetPlayingTime();
-                            } else if (!pParty->pPlayers[v49]
-                                            .conditions_times[Condition_Dead]) {
-                                pParty->pPlayers[v49]
-                                    .conditions_times[Condition_Dead] =
-                                    pParty->GetPlayingTime();
+                        if (pParty->pPlayers[playerID].sHealth < 1) {
+                            if (pParty->pPlayers[playerID].sHealth +
+                                pParty->pPlayers[playerID].uEndurance +
+                                pParty->pPlayers[playerID].GetItemsBonus(
+                                    CHARACTER_ATTRIBUTE_ENDURANCE) >= 1 ||
+                                pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].expire_time) {
+                                pParty->pPlayers[playerID].conditions_times[Condition_Unconcious] = pParty->GetPlayingTime();
+                            } else if (!pParty->pPlayers[playerID].conditions_times[Condition_Dead]) {
+                                pParty->pPlayers[playerID].conditions_times[Condition_Dead] = pParty->GetPlayingTime();
                             }
                         }
                         redraw_flag = true;
@@ -2068,93 +2019,78 @@ void _493938_regenerate() {  // immolation
                 }
             }
 
-            // regeneration
-            if (pParty->pPlayers[v49]
-                    .pPlayerBuffs[PLAYER_BUFF_REGENERATION]
-                    .expire_time &&
-                !pParty->pPlayers[v49].conditions_times[Condition_Dead] &&
-                !pParty->pPlayers[v49].conditions_times[Condition_Eradicated]) {
-                pParty->pPlayers[v49].sHealth +=
-                    5 * pParty->pPlayers[v49]
-                            .pPlayerBuffs[PLAYER_BUFF_REGENERATION]
-                            .uPower;
-                if (pParty->pPlayers[v49].sHealth >
-                    pParty->pPlayers[v49].GetMaxHealth()) {
-                    pParty->pPlayers[v49].sHealth =
-                        pParty->pPlayers[v49].GetMaxHealth();
+            // regeneration buff
+            if (pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].expire_time &&
+                !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
+                !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                pParty->pPlayers[playerID].sHealth += 5 * pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
+                if (pParty->pPlayers[playerID].sHealth >
+                    pParty->pPlayers[playerID].GetMaxHealth()) {
+                    pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].GetMaxHealth();
                 }
-                if (pParty->pPlayers[v49]
-                        .conditions_times[Condition_Unconcious] &&
-                    pParty->pPlayers[v49].sHealth > 0) {
-                    pParty->pPlayers[v49]
-                        .conditions_times[Condition_Unconcious]
-                        .Reset();
+                if (pParty->pPlayers[playerID].conditions_times[Condition_Unconcious] &&
+                    pParty->pPlayers[playerID].sHealth > 0) {
+                    pParty->pPlayers[playerID].conditions_times[Condition_Unconcious].Reset();
                 }
                 redraw_flag = true;
             }
 
             // for warlock
-            if (has_dragon_flag &&
-                pParty->pPlayers[v49].classType == PLAYER_CLASS_WARLOCK) {
-                if (pParty->pPlayers[v49].sMana <
-                    pParty->pPlayers[v49].GetMaxMana()) {
-                    ++pParty->pPlayers[v49].sMana;
+            if (PartyHasDragon() &&
+                pParty->pPlayers[playerID].classType == PLAYER_CLASS_WARLOCK) {
+                if (pParty->pPlayers[playerID].sMana <
+                    pParty->pPlayers[playerID].GetMaxMana()) {
+                    ++pParty->pPlayers[playerID].sMana;
                 }
                 redraw_flag = true;
             }
 
             // for lich
-            if (pParty->pPlayers[v49].classType == PLAYER_CLASS_LICH) {
-                for (v31 = 0; v31 < 126; ++v31) {
-                    if (pParty->pPlayers[v49].pInventoryItemList[v31].uItemID ==
-                        ITEM_LICH_JAR_FULL)
-                        lich_jar_flag = true;
+            if (pParty->pPlayers[playerID].classType == PLAYER_CLASS_LICH) {
+                bool lich_has_jar = false;
+                for (int idx = 0; idx < 126; ++idx) {
+                    if (pParty->pPlayers[playerID].pInventoryItemList[idx].uItemID == ITEM_LICH_JAR_FULL)
+                        lich_has_jar = true;
                 }
-                lich_flag = true;
-            }
 
-            if (lich_flag &&
-                !pParty->pPlayers[v49].conditions_times[Condition_Dead] &&
-                !pParty->pPlayers[v49].conditions_times[Condition_Eradicated]) {
-                if (pParty->pPlayers[v49].sHealth >
-                    pParty->pPlayers[v49].GetMaxHealth() / 2) {
-                    pParty->pPlayers[v49].sHealth =
-                        pParty->pPlayers[v49].sHealth - 2;
+                if (!pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
+                    !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                    if (pParty->pPlayers[playerID].sHealth >
+                        pParty->pPlayers[playerID].GetMaxHealth() / 2) {
+                        pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].sHealth - 2;
+                    }
+                    if (pParty->pPlayers[playerID].sMana >
+                        pParty->pPlayers[playerID].GetMaxMana() / 2) {
+                        pParty->pPlayers[playerID].sMana = pParty->pPlayers[playerID].sMana - 2;
+                    }
                 }
-                if (pParty->pPlayers[v49].sMana >
-                    pParty->pPlayers[v49].GetMaxMana() / 2) {
-                    pParty->pPlayers[v49].sMana =
-                        pParty->pPlayers[v49].sMana - 2;
-                }
-            }
 
-            if (lich_jar_flag) {
-                if (pParty->pPlayers[v49].sMana <
-                    pParty->pPlayers[v49].GetMaxMana()) {
-                    ++pParty->pPlayers[v49].sMana;
+                if (lich_has_jar) {
+                    if (pParty->pPlayers[playerID].sMana < pParty->pPlayers[playerID].GetMaxMana()) {
+                        ++pParty->pPlayers[playerID].sMana;
+                    }
                 }
             }
 
             // for zombie
-            if (pParty->pPlayers[v49].conditions_times[Condition_Zombie]) {
-                zombie_flag = true;
-            }
-            if (zombie_flag &&
-                !pParty->pPlayers[v49].conditions_times[Condition_Dead] &&
-                !pParty->pPlayers[v49].conditions_times[Condition_Eradicated]) {
-                if (pParty->pPlayers[v49].sHealth >
-                    pParty->pPlayers[v49].GetMaxHealth() / 2) {
-                    pParty->pPlayers[v49].sHealth =
-                        pParty->pPlayers[v49].sHealth - 1;
+            if (pParty->pPlayers[playerID].conditions_times[Condition_Zombie] &&
+                !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
+                !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                if (pParty->pPlayers[playerID].sHealth >
+                    pParty->pPlayers[playerID].GetMaxHealth() / 2) {
+                    pParty->pPlayers[playerID].sHealth =
+                        pParty->pPlayers[playerID].sHealth - 1;
                 }
-                if (pParty->pPlayers[v49].sMana > 0) {
-                    pParty->pPlayers[v49].sMana =
-                        pParty->pPlayers[v49].sMana - 1;
+                if (pParty->pPlayers[playerID].sMana > 0) {
+                    pParty->pPlayers[playerID].sMana = pParty->pPlayers[playerID].sMana - 1;
                 }
             }
         }
+
         pParty->last_regenerated = pParty->GetPlayingTime();
-        if (!viewparams->bRedrawGameUI) viewparams->bRedrawGameUI = redraw_flag;
+
+        if (!viewparams->bRedrawGameUI)
+            viewparams->bRedrawGameUI = redraw_flag;
     }
 }
 
