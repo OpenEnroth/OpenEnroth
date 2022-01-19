@@ -714,6 +714,7 @@ std::shared_ptr<Nuklear> Nuklear::Initialize() {
 
     wins[WINDOW_MainMenu].tmpl = "mainmenu";
     wins[WINDOW_MainMenu_Load].tmpl = "mainmenu_load";
+    wins[WINDOW_GameUI].tmpl = "gameui";
 
     return nuklear;
 }
@@ -774,7 +775,7 @@ void Nuklear::Release(WindowType winType, bool is_reload) {
     if (!nuklear || !nuklear->ctx)
         return;
 
-    nk_clear(ctx);
+    nk_clear(nuklear->ctx);
 
     if (wins[winType].tmpl && (wins[winType].state == WINDOW_INITIALIZED || wins[winType].state == WINDOW_TEMPLATE_ERROR)) {
         if (wins[winType].ui_release >= 0) {
@@ -955,7 +956,7 @@ static void lua_dumpstack(lua_State *L) {
 }
 
 bool Nuklear::Draw(NUKLEAR_STAGE stage, WindowType winType, int id) {
-    if (!this || !ctx || !lua)
+    if (!this || !nuklear->ctx || !lua)
         return false;
 
     if (wins[winType].state == WINDOW_INITIALIZED) {
@@ -972,12 +973,12 @@ bool Nuklear::Draw(NUKLEAR_STAGE stage, WindowType winType, int id) {
         }
 
         if (stage == NUKLEAR_STAGE_POST) {
-            nk_input_end(ctx);
+            nk_input_end(nuklear->ctx);
             //render->BeginScene();
             render->NuklearRender(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
             //render->EndScene();
             //render->Present();
-            nk_input_begin(ctx);
+            nk_input_begin(nuklear->ctx);
 
             for (auto it = wins[winType].tmp.begin(); it < wins[winType].tmp.end(); it++) {
                 free(*it);

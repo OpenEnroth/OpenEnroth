@@ -241,18 +241,26 @@ void Engine::Draw() {
     viewparams->bRedrawGameUI = true;
 
     render->BeginScene();
-    DrawGUI();
-    int v4 = viewparams->bRedrawGameUI;
-    GUI_UpdateWindows();
-    pParty->UpdatePlayersAndHirelingsEmotions();
-    _unused_5B5924_is_travel_ui_drawn = false;
+    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
+    if (nuklear->Mode(WINDOW_GameUI) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
+        nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
+    } else {
+        DrawGUI();
+        int v4 = viewparams->bRedrawGameUI;
+        GUI_UpdateWindows();
+        pParty->UpdatePlayersAndHirelingsEmotions();
+        _unused_5B5924_is_travel_ui_drawn = false;
 
-    // if (v4)
-        mouse->bRedraw = true;
+        // if (v4)
+    }
+    mouse->bRedraw = true;
 
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
     mouse->Activate();
+
+    engine->nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
+
     render->EndScene();
     render->Present();
     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;

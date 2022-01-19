@@ -1153,7 +1153,7 @@ void GameUI_WritePointedObjectStatusString() {
                 uLastPointedObjectID = 0;
                 return;
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_Actor) {
-                if (pickedObject.depth >= 0x200u) {
+                if (pickedObject.depth >= 0x2000u) {
                     mouse->uPointingObjectID = 0;
                     if (uLastPointedObjectID != 0) {
                         game_ui_status_bar_string.clear();
@@ -1162,8 +1162,10 @@ void GameUI_WritePointedObjectStatusString() {
                     uLastPointedObjectID = 0;
                     return;
                 }
-                pText = GetDisplayName(&pActors[pickedObjectID]).c_str();
-                GameUI_StatusBar_Set(pText);  // intentional fallthrough
+                String pDisplayName = GetDisplayName(&pActors[pickedObjectID]).c_str();
+                GameUI_StatusBar_Set(pDisplayName.c_str());
+            } else if (mouse->uPointingObjectID == 0xFFFF) {
+                mouse->uPointingObjectID = 0;
             }
             if (mouse->uPointingObjectID == 0 && uLastPointedObjectID != 0) {
                 game_ui_status_bar_string.clear();

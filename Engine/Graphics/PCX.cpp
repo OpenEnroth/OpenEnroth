@@ -156,9 +156,9 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
         for (unsigned int y = 0; y < *height; y++) {
             int ret = pcx_rle_decode(&bs, scanline, bytes_per_scanline, header->compression);
             if (ret < 0) {
-                free(pixels);
-                pixels = nullptr;
-                return pixels;
+                free(scanline);
+                delete pixels;
+                return nullptr;
             }
 
             for (unsigned int x = 0; x < *width; x++) {
@@ -192,6 +192,8 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
         }
     } else {
         // TODO: other planes/bpp variants
+        free(scanline);
+        delete pixels;
         return nullptr;
     }
 

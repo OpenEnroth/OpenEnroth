@@ -193,7 +193,7 @@ void SpellFX_Billboard::_47829F_sphere_particle(
 
         uNumVertices = 3;
         if (SpellFXViewTransform() && SpellFXViewClip()) {
-//            if (SpellFXProject()) render->_4A4CC9_AddSomeBillboard(this, diffuse);
+            if (SpellFXProject()) render->_4A4CC9_AddSomeBillboard(this, diffuse);
         }
     }
 }

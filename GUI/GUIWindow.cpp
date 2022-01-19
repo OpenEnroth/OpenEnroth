@@ -324,6 +324,9 @@ void GUIWindow::Release() {
 
     lWindowList.remove(this);
 
+    if (this->eWindowType == WINDOW_GameUI)
+        nuklear->Release(WINDOW_GameUI);
+
     log->Info("Release window: %s", ToString(eWindowType));
 }
 
@@ -2529,6 +2532,7 @@ void UI_Create() {
     dialogue_ui_x_ok_u = assets->GetImage_ColorKey("x_ok_u", render->teal_mask_16);
     ui_buttyes2 = assets->GetImage_Alpha("BUTTYES2");
 
+    nuklear->Create(WINDOW_GameUI);
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, 0, 0, window->GetWidth(), window->GetHeight(), 0);
     pPrimaryWindow->CreateButton(7, 8, 460, 343, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 

@@ -910,7 +910,7 @@ void *LOD::File::LoadRaw(const String &pContainer, size_t *data_size) {
 }
 
 void *LOD::File::LoadCompressedTexture(const String &pContainer, size_t *data_size) {
-    void *result = nullptr;
+    uint8_t *result = nullptr;
     if (data_size != nullptr) {
         *data_size = 0;
     }
@@ -925,23 +925,25 @@ void *LOD::File::LoadCompressedTexture(const String &pContainer, size_t *data_si
     fread(&DstBuf, 1, sizeof(TextureHeader), File);
 
     if (DstBuf.uDecompressedSize) {
-        result = malloc(DstBuf.uDecompressedSize);
+        result = (uint8_t *)malloc(DstBuf.uDecompressedSize + 1);
         void *tmp_buf = malloc(DstBuf.uTextureSize);
         fread(tmp_buf, 1, DstBuf.uTextureSize, File);
         zlib::Uncompress(result, &DstBuf.uDecompressedSize, tmp_buf,
                          DstBuf.uTextureSize);
         DstBuf.uTextureSize = DstBuf.uDecompressedSize;
         free(tmp_buf);
+        result[DstBuf.uDecompressedSize] = '\0';
     } else {
-        result = malloc(DstBuf.uTextureSize);
+        result = (uint8_t*)malloc(DstBuf.uTextureSize + 1);
         fread(result, 1, DstBuf.uTextureSize, File);
+        result[DstBuf.uTextureSize] = '\0';
     }
 
     if (data_size != nullptr) {
         *data_size = DstBuf.uTextureSize;
     }
 
-    return result;
+    return (void*)result;
 }
 
 #pragma pack(push, 1)
