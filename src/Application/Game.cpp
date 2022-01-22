@@ -154,7 +154,7 @@ int Game::Run() {
 
     if (!engine) {
         log->Warning("Engine creation failed");
-        return;
+        return -1;
     }
 
     window = OSWindowFactory().Create();
@@ -162,7 +162,7 @@ int Game::Run() {
 
     if (!window) {
         log->Warning("Window creation failed");
-        return;
+        return -1;
     }
 
     render = IRenderFactory().Create(
