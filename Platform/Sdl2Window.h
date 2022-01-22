@@ -44,7 +44,6 @@ class Sdl2Window : public OSWindow {
     // Sdl2Window-specific interface follows
     void* GetWinApiHandle() override;
     SDL_Window* getSDLWindow();
-    SDL_Surface* getSDLWindowSurface();
     SDL_GLContext* getSDLOpenGlContext();
     SDL_Window* CreateSDLWindow();
     void DestroySDLWindow();
@@ -61,7 +60,7 @@ class Sdl2Window : public OSWindow {
         int display;
     };
     SDL_Window *sdlWindow = nullptr;
-    SDL_Surface *sdlWindowSurface = nullptr;
+    SDL_Renderer *sdlRenderer = nullptr;
     SDL_GLContext sdlOpenGlContext = nullptr;
 
     Sdl2WinParams *CalculateWindowParameters();
