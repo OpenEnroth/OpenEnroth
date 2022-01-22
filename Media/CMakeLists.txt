@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
+if(APPLE)
+  add_definitions(-DFF_API_NEXT)
+endif()
+
 set(MEDIA_SOURCES Media.cpp
                   MediaPlayer.cpp
                   Audio/AudioPlayer.cpp
