@@ -5,6 +5,7 @@
 #include <io.h>
 #endif
 
+#include <filesystem>
 #include <algorithm>
 
 #include "src/Application/Game.h"
@@ -138,6 +139,10 @@ std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
     res = OS_casepath(res);
 
     return res;
+}
+
+std::string MakeTempPath(const char *file_rel_path) {
+    return std::filesystem::temp_directory_path().string() + OS_GetDirSeparator() + file_rel_path;
 }
 
 uint32_t Color32(uint16_t color16) {
