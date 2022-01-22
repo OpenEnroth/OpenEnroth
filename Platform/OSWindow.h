@@ -25,6 +25,7 @@ using Io::IMouseController;
 class OSWindow {
  public:
     OSWindow();
+    virtual ~OSWindow() {}
 
     virtual void SetFullscreenMode() = 0;
     virtual void SetWindowedMode(int new_window_width, int new_window_height) = 0;

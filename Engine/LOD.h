@@ -101,7 +101,7 @@ class WriteableFile : public File {
     unsigned int Write(const String &file_name, const void *pDirData, size_t size, int a4);
     void CloseWriteFile();
     int CreateTempFile();
-    int FixDirectoryOffsets();
+    bool FixDirectoryOffsets();
     bool _4621A7();
     int CreateNewLod(LOD::FileHeader *pHeader, const String &root_name, const String &Source);
 

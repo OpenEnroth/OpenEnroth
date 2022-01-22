@@ -12,8 +12,6 @@
 
 #include "Media/Media.h"
 
-void log(const char *format, ...);
-
 class OpenALSoundProvider {
  public:
     struct TrackBuffer {
@@ -48,6 +46,8 @@ class OpenALSoundProvider {
     void SetOrientation(float yaw, float pitch);
 
  protected:
+    void DeleteBuffers(StreamingTrackBuffer *track, int type);
+
     ALCdevice *device;
     ALCcontext *context;
 };

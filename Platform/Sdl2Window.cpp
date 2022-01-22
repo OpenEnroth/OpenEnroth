@@ -6,6 +6,7 @@
 #include <map>
 #include <utility>
 #include <vector>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Nuklear.h"
@@ -216,6 +217,9 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
 
 SDL_Window* Sdl2Window::CreateSDLWindow() {
     Sdl2Window::Sdl2WinParams *params = CalculateWindowParameters();
+    if (params == nullptr) {
+        return nullptr;
+    }
 
     sdlWindow = SDL_CreateWindow(
         engine->config->window_title.c_str(),
@@ -228,15 +232,25 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
 
     delete params;
 
-    if (!sdlWindow)
+    if (!sdlWindow) {
         return nullptr;
+    }
 
-    if (!engine->config->no_grab)
+    if (!engine->config->no_grab) {
         SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
+    }
 
-    sdlWindowSurface = SDL_GetWindowSurface(sdlWindow);
-    if (!sdlWindowSurface) {
-        DestroySDLWindow();
+    int renderer_index = -1;
+    for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i) {
+        SDL_RendererInfo info = {0};
+        if (SDL_GetRenderDriverInfo(i, &info) == 0) {
+            if (std::string(info.name) == "opengl") {
+                renderer_index = i;
+            }
+        }
+    }
+    sdlRenderer = SDL_CreateRenderer(sdlWindow, renderer_index, SDL_RENDERER_TARGETTEXTURE);
+    if (sdlRenderer == nullptr) {
         return nullptr;
     }
 
@@ -512,9 +526,6 @@ SDL_GLContext* Sdl2Window::getSDLOpenGlContext() {
 
 SDL_Window* Sdl2Window::getSDLWindow() {
     return sdlWindow;
-}
-SDL_Surface* Sdl2Window::getSDLWindowSurface() {
-    return sdlWindowSurface;
 }
 
 void Sdl2Window::SetFullscreenMode() {

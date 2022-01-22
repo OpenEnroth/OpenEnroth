@@ -439,7 +439,7 @@ bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить з
     return LoadFile(pLODName, 0);
 }
 
-int LOD::WriteableFile::FixDirectoryOffsets() {
+bool LOD::WriteableFile::FixDirectoryOffsets() {
     unsigned int total_size = 0;
     for (int i = 0; i < uNumSubDirs; i++) {
         total_size += pSubIndices[i].uDataSize;
@@ -452,7 +452,7 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
         temp_offset += pSubIndices[i].uDataSize;
     }
 
-    String Filename = MakeDataPath("lod.tmp");
+    String Filename = MakeTempPath("lod.tmp");
     FILE *tmp_file = fopen(Filename.c_str(), "wb+");
     if (tmp_file == nullptr) {
         return 5;
@@ -483,14 +483,14 @@ int LOD::WriteableFile::FixDirectoryOffsets() {
 
     fclose(tmp_file);
     fclose(pOutputFileHandle);
+    pOutputFileHandle = nullptr;
     CloseWriteFile();
-    remove(MakeDataPath("lodapp.tmp").c_str());
+    remove(MakeTempPath("lodapp.tmp").c_str());
     remove(pLODName.c_str());
     rename(Filename.c_str(), pLODName.c_str());
     CloseWriteFile();
-    LoadFile(pLODName.c_str(), 0);
 
-    return 0;
+    return LoadFile(pLODName.c_str(), 0);
 }
 
 bool LOD::WriteableFile::AppendDirectory(const String &file_name, const void *pData, size_t data_size) {
@@ -510,7 +510,7 @@ int LOD::WriteableFile::CreateTempFile() {
 
     if (pIOBuffer && uIOBufferSize) {
         uNumSubDirs = 0;
-        pOutputFileHandle = fopen(MakeDataPath("lodapp.tmp").c_str(), "wb+");
+        pOutputFileHandle = fopen(MakeTempPath("lodapp.tmp").c_str(), "wb+");
         return pOutputFileHandle ? 1 : 7;
     } else {
         return 5;

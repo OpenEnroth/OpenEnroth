@@ -112,35 +112,59 @@ void OpenALSoundProvider::Release() {
     }
 }
 
+void OpenALSoundProvider::DeleteBuffers(StreamingTrackBuffer *track, int type) {
+    int count = 0;
+    alGetSourcei(track->source_id, type, &count);
+    if (CheckError()) {
+        logger->Warning("OpenAL: Fail to get buffers count.");
+        assert(false);
+    }
+    if (count > 0) {
+        unsigned int *buffer_ids = new unsigned int[count];
+        alSourceUnqueueBuffers(track->source_id, count, buffer_ids);
+        if (CheckError()) {
+            logger->Warning("OpenAL: Fail to unqueue buffers.");
+            assert(false);
+        } else {
+            alDeleteBuffers(count, buffer_ids);
+            if (CheckError()) {
+                logger->Warning("OpenAL: Fail to delete buffers.");
+                assert(false);
+            }
+        }
+        delete[] buffer_ids;
+    }
+}
+
 void OpenALSoundProvider::DeleteStreamingTrack(StreamingTrackBuffer **buffer) {
     if (!buffer && !*buffer) return;
-    auto track = *buffer;
+    StreamingTrackBuffer *track = *buffer;
 
     int status;
     alGetSourcei(track->source_id, AL_SOURCE_STATE, &status);
     if (status == AL_PLAYING) {
+#ifdef __APPLE__
+        alSourcePause(track->source_id);
+#else  // __APPLE__
         alSourceStop(track->source_id);
+#endif  // __APPLE__
         if (CheckError()) assert(false);
     }
-
-    int num_processed_buffers = 0;
-    int num_queued_buffers = 0;
-    alGetSourcei(track->source_id, AL_BUFFERS_PROCESSED,
-                 &num_processed_buffers);
-    alGetSourcei(track->source_id, AL_BUFFERS_QUEUED, &num_queued_buffers);
-    //  int num_track_buffers = num_queued_buffers + num_processed_buffers;
-    for (int i = 0; i < num_processed_buffers; ++i) {
-        unsigned int buffer_id;
-        alSourceUnqueueBuffers(track->source_id, 1, &buffer_id);
-        if (!CheckError()) {
-            alDeleteBuffers(1, &buffer_id);
-        } else {
-            assert(false);
-        }
+    alSourcei(track->source_id, AL_LOOPING, AL_FALSE);
+    if (CheckError()) {
+        logger->Warning("OpenAL: Fail to disable looping.");
+        assert(false);
     }
 
+    DeleteBuffers(track, AL_BUFFERS_PROCESSED);
+    DeleteBuffers(track, AL_BUFFERS_QUEUED);
+
+#ifdef __APPLE__
+    alSourceStop(track->source_id);
+    if (CheckError()) assert(false);
+#endif  // __APPLE__
     alDeleteSources(1, &track->source_id);
-    CheckError();
+    if (CheckError()) assert(false);
 
     delete *buffer;
     *buffer = nullptr;
@@ -231,24 +255,7 @@ void OpenALSoundProvider::Stream16(StreamingTrackBuffer *buffer,
 
     int bytes_per_sample = 2;
 
-    int num_processed_buffers = 0;
-    alGetSourcei(buffer->source_id, AL_BUFFERS_PROCESSED,
-                 &num_processed_buffers);
-    if (num_processed_buffers > 0) {
-        unsigned int *processed_buffer_ids =
-            new unsigned int[num_processed_buffers];
-        alSourceUnqueueBuffers(buffer->source_id, num_processed_buffers,
-                               processed_buffer_ids);
-        if (CheckError()) {
-            logger->Warning("OpenAL: Failed to get played buffers");
-        } else {
-            alDeleteBuffers(num_processed_buffers, processed_buffer_ids);
-            if (CheckError()) {
-                logger->Warning("OpenAL: Failed to delete played buffers");
-            }
-        }
-        delete[] processed_buffer_ids;
-    }
+    DeleteBuffers(buffer, AL_BUFFERS_PROCESSED);
 
     unsigned int al_buffer;
     alGenBuffers(1, &al_buffer);

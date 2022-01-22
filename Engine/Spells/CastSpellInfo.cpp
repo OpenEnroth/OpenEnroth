@@ -2660,7 +2660,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     } else {
                         if (item.uItemID) {
                             GameUI_SetStatusBar(StringPrintf(
-                                "(%s)", item.GetDisplayName()));
+                                "(%s)", item.GetDisplayName().c_str()));
                         } else {
                             GameUI_SetStatusBar("nothing");
                         }

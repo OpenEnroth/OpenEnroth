@@ -563,3 +563,4 @@ std::string MakeDataPath(Ts&&... paths) {
         "T must be a basic string");
     return MakeDataPath({ paths... });
 }
+std::string MakeTempPath(const char *file_rel_path);
