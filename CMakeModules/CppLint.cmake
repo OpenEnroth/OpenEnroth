@@ -1,8 +1,8 @@
-find_package(Python3)
+find_package(PythonInterp)
 
 set(CPPLINT_VERSION "1.5.5")
 
-if(Python3_Interpreter_FOUND AND NOT CPPLINT_FOUND)
+if(PYTHONINTERP_FOUND AND NOT CPPLINT_FOUND)
   file(DOWNLOAD "https://github.com/cpplint/cpplint/archive/refs/tags/${CPPLINT_VERSION}.tar.gz" "${CMAKE_CURRENT_BINARY_DIR}/cpplint.tar.gz")
   execute_process(COMMAND ${CMAKE_COMMAND} -E tar xz cpplint.tar.gz
                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
@@ -29,9 +29,10 @@ function(target_check_style TARGET)
         endif()
     endforeach(sourcefile)
 
-    add_custom_target(${TARGET_NAME} ${Python2_EXECUTABLE} ${CPPLINT_COMMAND} ${SOURCES_LIST}
+    add_custom_target(${TARGET_NAME} ${PYTHON_EXECUTABLE} ${CPPLINT_COMMAND} ${SOURCES_LIST}
                       DEPENDS ${SOURCES_LIST}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     add_dependencies(check_style ${TARGET_NAME})
+    set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "check_style")
   endif()
 endfunction()
