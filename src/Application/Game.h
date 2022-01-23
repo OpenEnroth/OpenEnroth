@@ -33,7 +33,7 @@ class Game {
          return true;
      }
 
-     void Run();
+     int Run();
 
  private:
      bool Loop();

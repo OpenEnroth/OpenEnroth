@@ -57,7 +57,6 @@ void GameResultsApply();
 void am_DrawText(const String &str, Point *pXY);
 void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill);
 int rand_interval(int min, int max);  // idb
-void am_IntToString(int val, char *pOut);
 
 unsigned int R8G8B8_to_TargetFormat(int uColor) {
     return Color16(uColor & 0xFF, (uColor >> 8) & 0xFF, (uColor >> 16) & 0xFF);
@@ -1035,9 +1034,9 @@ void SetStartGameData() {
     SetStartConditions();
 
     current_player_num = !Player_Gets_First_Turn;
-    strcpy(am_Players[1].pPlayerName, pArcomageGame->pPlayer2Name);
+    am_Players[1].pPlayerName = pArcomageGame->pPlayer2Name;
     am_Players[1].IsHisTurn = 0;  // !Player_Gets_First_Turn;
-    strcpy(am_Players[0].pPlayerName, pArcomageGame->pPlayer1Name);
+    am_Players[0].pPlayerName = pArcomageGame->pPlayer1Name;
     am_Players[0].IsHisTurn = 1;  // Player_Gets_First_Turn;
 
     for (i = 0; i < 2; ++i) {
@@ -1061,7 +1060,7 @@ void SetStartGameData() {
             }
         }
     }
-    strcpy(deckMaster.name, "Master Deck");
+    deckMaster.name = "Master Deck";
     for (i = 0, card_dispenser_counter = -2, card_id_counter = 0; i < DECK_SIZE;
          ++i, ++card_dispenser_counter) {
         deckMaster.cardsInUse[i] = 0;
@@ -1197,7 +1196,7 @@ void IncreaseResourcesInTurn(int player_num) {
 }
 
 void TurnChange() {
-    char player_name[64];    // [sp+4h] [bp-64h]@4
+    String player_name;    // [sp+4h] [bp-64h]@4
     ArcomageGame_InputMSG v10;  // [sp+54h] [bp-14h]@7
     Point v11;               // [sp+60h] [bp-8h]@4
 
@@ -1212,19 +1211,17 @@ void TurnChange() {
             // nullsub_1();
             //   v11.x = 0;
             //   v11.y = 0;
-            strcpy(player_name, "The Next Player is: ");  //"След"
-                                                            // v0 = 0;
+
             v11.y = 200;
             v11.x = 320;  // - 12 * v0 / 2;
-            am_DrawText(player_name, &v11);
+            am_DrawText("The Next Player is: ", &v11);  // "След"
             hide_card_anim_start = 1;
             ++current_player_num;
             if (current_player_num >= 2) current_player_num = 0;
-            strcpy(player_name, am_Players[current_player_num].pPlayerName);
             // v4 = 0;
             v11.y = 260;
             v11.x = 320;  // - 12 * v4 / 2;
-            am_DrawText(player_name, &v11);
+            am_DrawText(am_Players[current_player_num].pPlayerName, &v11);
             /* v6.left = 0;
             v6.right = 640;
             v6.top = 0;
@@ -1513,47 +1510,47 @@ void DrawRectanglesForText() {
 
 void DrawPlayersText() {
     int res_value;
-    char text_buff[32];
+    String text_buff;
     Point text_position;
 
     if (need_to_discard_card) {
-        strcpy(text_buff, localization->GetString(LSTR_ARCOMAGE_CARD_DISCARD));
+        text_buff = localization->GetString(LSTR_ARCOMAGE_CARD_DISCARD);
         text_position.x = 320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
         text_position.y = 306;
         am_DrawText(text_buff, &text_position);
     }
 
     // player names
-    strcpy(text_buff, am_Players[0].pPlayerName);
-    if (!current_player_num) strcat(text_buff, "***");
+    text_buff = am_Players[0].pPlayerName;
+    if (current_player_num == 0) text_buff += "***";
     text_position.x = 47 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 21;
     am_DrawText(text_buff, &text_position);
 
-    strcpy(text_buff, am_Players[1].pPlayerName);
-    if (current_player_num == 1) strcat(text_buff, "***");
+    text_buff = am_Players[1].pPlayerName;
+    if (current_player_num == 1) text_buff += "***";
     text_position.x = 595 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 21;
     am_DrawText(text_buff, &text_position);
 
     // tower heights
-    am_IntToString(am_Players[0].tower_height, text_buff);
+    text_buff = StringFromInt(am_Players[0].tower_height);
     text_position.x = 123 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 305;
     am_DrawText(text_buff, &text_position);
 
-    am_IntToString(am_Players[1].tower_height, text_buff);
+    text_buff = StringFromInt(am_Players[1].tower_height);
     text_position.x = 515 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 305;
     am_DrawText(text_buff, &text_position);
 
     // wall heights
-    am_IntToString(am_Players[0].wall_height, text_buff);
+    text_buff = StringFromInt(am_Players[0].wall_height);
     text_position.x = 188 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 305;
     am_DrawText(text_buff, &text_position);
 
-    am_IntToString(am_Players[1].wall_height, text_buff);
+    text_buff = StringFromInt(am_Players[1].wall_height);
     text_position.x = 451 - pArcomageGame->pfntComic->GetLineWidth(text_buff) / 2;
     text_position.y = 305;
     am_DrawText(text_buff, &text_position);
@@ -2979,8 +2976,8 @@ void GameResultsApply() {
 void ArcomageGame::PrepareArcomage() {
     // stop all audio and set player names
     pAudioPlayer->StopChannels(-1, -1);
-    strcpy(pArcomageGame->pPlayer1Name, Player1Name);
-    strcpy(pArcomageGame->pPlayer2Name, Player2Name);
+    pArcomageGame->pPlayer1Name = Player1Name;
+    pArcomageGame->pPlayer2Name = Player2Name;
 
     // load in background pic and render
     pArcomageGame->pGameBackground = assets->GetImage_PCXFromIconsLOD("layout.pcx");
@@ -3072,8 +3069,6 @@ void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill) {
 }
 
 int rand_interval(int min, int max) { return min + rand() % (max - min + 1); }
-
-void am_IntToString(int val, char *pOut) { sprintf(pOut, "%d", val); }
 
 void set_stru1_field_8_InArcomage(int inValue) {  // what is this meant to be doing??
     switch (inValue) {

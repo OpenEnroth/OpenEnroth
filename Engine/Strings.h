@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <functional>
 #include <cstring>
 #ifndef _WINDOWS
 #include "Platform/Lin/Lin.h"
@@ -22,7 +21,7 @@ inline char *RemoveQuotes(char *str) {
     return str;
 }
 
-inline bool iequals(const std::string& a, const std::string& b) {
+inline bool iequals(std::string_view a, std::string_view b) {
     return std::equal(a.begin(), a.end(), b.begin(), b.end(),
         [](const unsigned char &a, const unsigned char &b) {
             return tolower(a) == tolower(b);
@@ -30,7 +29,7 @@ inline bool iequals(const std::string& a, const std::string& b) {
     );
 }
 
-inline bool iless(const std::string& a, const std::string& b) {
+inline bool iless(std::string_view a, std::string_view b) {
     return std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end(),
         [](const unsigned char &a, const unsigned char &b) {
           return tolower(a) < tolower(b);
@@ -38,4 +37,9 @@ inline bool iless(const std::string& a, const std::string& b) {
     );
 }
 
-inline auto iless_functor = std::function <bool (const std::string&, const std::string&)>(iless);
+struct ILess {
+    bool operator()(std::string_view a, std::string_view b) const {
+        return iless(a, b);
+    }
+};
+
