@@ -120,6 +120,8 @@ class EngineConfig {
     bool allow_lightmaps = true;
     bool allow_snow = false;
     bool extended_draw_distance = true;    // 2.5x draw distance
+    bool use_hwl_bitmaps = false;          // use low-res bitmaps from HWL files instead of hi-res ones from LODs
+                                           // (note that we'll have a separate options for sprites)
     bool show_fps = false;
     bool show_picked_face = false;           // red flash face pointed by mouse
     bool debug_all_magic = false;            // toggle all spellbook

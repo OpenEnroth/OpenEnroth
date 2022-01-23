@@ -321,61 +321,61 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
 
     if (tex->header.pBits & 2) {  // hardware bitmap
-#if 1
-        Assert(tex->paletted_pixels);
-        Assert(tex->pPalette24);
+        if (!this->use_hwl) {
+            Assert(tex->paletted_pixels);
+            Assert(tex->pPalette24);
 
-        uint8_t* pixels = new uint8_t[num_pixels * 4];
-        size_t w = tex->header.uTextureWidth;
-        size_t h = tex->header.uTextureHeight;
+            uint8_t* pixels = new uint8_t[num_pixels * 4];
+            size_t w = tex->header.uTextureWidth;
+            size_t h = tex->header.uTextureHeight;
 
-        for (size_t y = 0; y < h; y++) {
-            for (size_t x = 0; x < w; x++) {
-                size_t p = y * w + x;
+            for (size_t y = 0; y < h; y++) {
+                for (size_t x = 0; x < w; x++) {
+                    size_t p = y * w + x;
 
-                int pal = tex->paletted_pixels[p];
-                if (pal != 0) {
-                    pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 2];
-                    pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
-                    pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 0];
-                    pixels[p * 4 + 3] = 255;
-                } else {
-                    ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
-                }
-            }
-        }
-
-        *format = IMAGE_FORMAT_A8R8G8B8;
-        *width = tex->header.uTextureWidth;
-        *height = tex->header.uTextureHeight;
-        *out_pixels = pixels;
-        return true;
-#else
-        uint16_t* pixels = new uint16_t[num_pixels];
-
-        HWLTexture *hwl = render->LoadHwlBitmap(this->resource_name);
-        if (hwl) {
-            // linear scaling
-            for (int s = 0; s < tex->header.uTextureHeight; ++s) {
-                for (int t = 0; t < tex->header.uTextureWidth; ++t) {
-                    unsigned int resampled_x = t * hwl->uWidth / tex->header.uTextureWidth,
-                                    resampled_y = s * hwl->uHeight / tex->header.uTextureHeight;
-                    unsigned short sample = hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
-
-                    pixels[s * tex->header.uTextureWidth + t] = sample;
+                    int pal = tex->paletted_pixels[p];
+                    if (pal != 0) {
+                        pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 2];
+                        pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
+                        pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 0];
+                        pixels[p * 4 + 3] = 255;
+                    } else {
+                        ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
+                    }
                 }
             }
 
-            delete[] hwl->pPixels;
-            delete hwl;
-        }
+            *format = IMAGE_FORMAT_A8R8G8B8;
+            *width = tex->header.uTextureWidth;
+            *height = tex->header.uTextureHeight;
+            *out_pixels = pixels;
+            return true;
+        } else {
+            uint16_t* pixels = new uint16_t[num_pixels];
 
-        *format = IMAGE_FORMAT_A1R5G5B5;
-        *width = tex->header.uTextureWidth;
-        *height = tex->header.uTextureHeight;
-        *out_pixels = pixels;
-        return true;
-#endif
+            HWLTexture* hwl = render->LoadHwlBitmap(this->resource_name);
+            if (hwl) {
+                // linear scaling
+                for (int s = 0; s < tex->header.uTextureHeight; ++s) {
+                    for (int t = 0; t < tex->header.uTextureWidth; ++t) {
+                        unsigned int resampled_x = t * hwl->uWidth / tex->header.uTextureWidth,
+                            resampled_y = s * hwl->uHeight / tex->header.uTextureHeight;
+                        unsigned short sample = hwl->pPixels[resampled_y * hwl->uWidth + resampled_x];
+
+                        pixels[s * tex->header.uTextureWidth + t] = sample;
+                    }
+                }
+
+                delete[] hwl->pPixels;
+                delete hwl;
+            }
+
+            *format = IMAGE_FORMAT_A1R5G5B5;
+            *width = tex->header.uTextureWidth;
+            *height = tex->header.uTextureHeight;
+            *out_pixels = pixels;
+            return true;
+        }
     }
 
     *width = 0;

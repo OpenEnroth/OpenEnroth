@@ -2784,7 +2784,7 @@ Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int heig
 
 
 Texture *RenderOpenGL::CreateTexture(const String &name) {
-    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
+    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->use_hwl_bitmaps));
 }
 
 Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id,

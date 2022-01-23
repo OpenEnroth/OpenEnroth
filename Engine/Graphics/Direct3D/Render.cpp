@@ -108,7 +108,7 @@ Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
 
 
 Texture *Render::CreateTexture(const String &name) {
-    return TextureD3D::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
+    return TextureD3D::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->use_hwl_bitmaps));
 }
 
 Texture *Render::CreateSprite(const String &name, unsigned int palette_id,
