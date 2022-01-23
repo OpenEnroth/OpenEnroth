@@ -120,17 +120,17 @@ class EngineConfig {
     bool allow_lightmaps = true;
     bool allow_snow = false;
     bool extended_draw_distance = true;    // 2.5x draw distance
-    bool show_fps = true;
-    bool show_picked_face = true;           // red flash face pointed by mouse
+    bool show_fps = false;
+    bool show_picked_face = false;           // red flash face pointed by mouse
     bool debug_all_magic = false;            // toggle all spellbook
     bool debug_wizard_eye = false;           // wizard eye always on
     bool debug_portal_outlines = false;     // draw portal frames
     bool debug_turbo_speed = false;          // party movement 12x
     bool debug_lightmaps_decals = false;    // debug lightmap and decals outlines
     bool debug_terrain = false;
-    bool debug_town_portal = true;
-    bool debug_infinite_gold = true;
-    bool debug_infinite_food = true;
+    bool debug_town_portal = false;
+    bool debug_infinite_gold = false;
+    bool debug_infinite_food = false;
 
     bool always_run = true;
     bool show_damage = true;
