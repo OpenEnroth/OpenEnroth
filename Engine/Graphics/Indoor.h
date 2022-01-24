@@ -733,7 +733,77 @@ bool PointInPolyIndoor(int x, int y, int z, struct BLVFace *face);
 bool PointInPolyOutdoor(int a1, int a2, int a3, struct ODMFace *face,
                 struct BSPVertexBuffer *a5);
 
-#pragma once
+#pragma pack(push, 1)
+struct BspRenderer_PortalViewportData {
+    void GetViewportData(int16_t x, int y, int16_t z, int w);
+
+    int _viewport_space_y;
+    int _viewport_space_w;
+    int _viewport_space_x;
+    int _viewport_space_z;
+    int _viewport_x_minID;
+    int _viewport_z_maxID;
+    int16_t viewport_left_side[480];
+    int16_t viewport_right_side[480];
+};
+#pragma pack(pop)
+extern BspRenderer_PortalViewportData _PortalViewportData_unused;
+
+/*  164 */
+#pragma pack(push, 1)
+struct BspRenderer_stru0 {
+    //----- (0043F2BF) --------------------------------------------------------
+    inline BspRenderer_stru0() {}
+
+    //----- (0043F2A9) --------------------------------------------------------
+    ~BspRenderer_stru0() {}
+
+    uint16_t uSectorID = 0;
+    uint16_t uViewportX;
+    uint16_t uViewportY;
+    uint16_t uViewportZ;
+    uint16_t uViewportW;
+    int16_t field_A = 0;
+    BspRenderer_PortalViewportData PortalScreenData{};
+    uint16_t uFaceID;
+    int16_t field_7A6 = 0;
+    unsigned int viewing_portal_id;  // portal through which we're seeing this node
+    IndoorCameraD3D_Vec4 std__vector_0007AC[4];  // frustum planes
+    RenderVertexSoft pPortalBounding[4];
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct BspFace {
+    uint16_t uFaceID;
+    uint16_t uNodeID;
+};
+#pragma pack(pop)
+
+/*  163 */
+#pragma pack(push, 1)
+struct BspRenderer {  // stru170
+    //----- (0043F282) --------------------------------------------------------
+    inline BspRenderer() {
+        num_faces = 0;
+        num_nodes = 0;
+        uNumVisibleNotEmptySectors = 0;
+    }
+
+    void AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFaceID);
+    void MakeVisibleSectorList();
+    // void DrawFaceOutlines();
+
+    unsigned int num_faces;
+    // __int16 pFaceIDs[2000];
+    BspFace faces[1000]{};
+    // char field_130[3700];
+    unsigned int num_nodes;
+    BspRenderer_stru0 nodes[150];
+    unsigned int uNumVisibleNotEmptySectors;
+    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6]{};
+};
+#pragma pack(pop)
 
 void FindBillboardsLightLevels_BLV();
 
