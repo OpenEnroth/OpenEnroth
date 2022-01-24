@@ -2749,7 +2749,7 @@ void RenderOpenGL::RenderTerrainD3D() {
     // tile culling maths
     int camx = WorldPosToGridCellX(pCamera3D->vCameraPos.x);
     int camy = WorldPosToGridCellY(pCamera3D->vCameraPos.y);
-    int tilerange = (pCamera3D->GetFarClip() / terrain_block_scale)+1;
+    int tilerange = (pCamera3D->GetFarClip() / terrain_block_scale)+3;
 
     int camfacing = 2048 - pCamera3D->sRotationZ;
     int right = int(camfacing - (TrigLUT->uIntegerPi / 2));
@@ -4857,7 +4857,7 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glDisable(GL_BLEND);
-    glDisable(GL_SCISSOR_TEST);
+    // glDisable(GL_SCISSOR_TEST);
 
     return true;
 }

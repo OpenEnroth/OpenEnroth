@@ -48,8 +48,8 @@
 struct BSPNode {
     int16_t uFront;
     int16_t uBack;
-    int16_t uCoplanarOffset;
-    int16_t uCoplanarSize;
+    int16_t uBSPFaceIDOffset;
+    int16_t uNumBSPFaces;
 };
 #pragma pack(pop)
 

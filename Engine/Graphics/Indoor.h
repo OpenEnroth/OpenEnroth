@@ -524,7 +524,7 @@ struct BLVFaceExtra {  // 24h
 /*   95 */
 #pragma pack(push, 1)
 struct BLVSector {  // 0x74
-    int32_t field_0;  // flags?? &8 is for check floor level against portals
+    int32_t field_0;  // flags?? &8 is for check floor level against portals &10 is for adding additonal node faces
     uint16_t uNumFloors;
     int16_t field_6;
     uint16_t *pFloors;
@@ -684,8 +684,6 @@ struct BLVRenderParams {
     void Reset();
 
     int field_0_timer_ = 0;
-    int _unused_uFlags = 0;  // & INDOOR_CAMERA_DRAW_D3D_OUTLINES:  render d3d
-                         // outlines
     int uPartySectorID = 0;
 
     unsigned int uTargetWidth = 0;
@@ -694,29 +692,19 @@ struct BLVRenderParams {
     unsigned int uViewportY;
     unsigned int uViewportZ;
     unsigned int uViewportW;
-    int fov = 0;
     int *pTargetZBuffer = nullptr;
     int uViewportHeight = 0;
     int uViewportWidth = 0;
     int uViewportCenterX = 0;
     int uViewportCenterY = 0;
     unsigned int uNumFacesRenderedThisFrame = 0;
-    int field_84 = 0;
-    int field_88 = 0;
-    int field_8C = 0;
-    int field_90 = 0;
-    int field_94 = 0;
 };
 #pragma pack(pop)
 extern BLVRenderParams *pBLVRenderParams;
 
-int GetPortalScreenCoord(unsigned int uFaceID);
-bool PortalFrustrum(int pNumVertices, struct BspRenderer_PortalViewportData *a2,
-                   struct BspRenderer_PortalViewportData *near_portal,
-                    int uFaceID);
 void PrepareBspRenderList_BLV();
 void AddBspNodeToRenderList(unsigned int node_id);
-void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
+void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode);  // idb
 char DoInteractionWithTopmostZObject(int pid);
 // int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
 unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
@@ -747,16 +735,15 @@ bool PointInPolyIndoor(int x, int y, int z, struct BLVFace *face);
 bool PointInPolyOutdoor(int a1, int a2, int a3, struct ODMFace *face,
                 struct BSPVertexBuffer *a5);
 
-#pragma once
 
 /*  164 */
 #pragma pack(push, 1)
 struct BspRenderer_ViewportNode {
     //----- (0043F2BF) --------------------------------------------------------
-    inline BspRenderer_stru0() {}
+    inline BspRenderer_ViewportNode() {}
 
     //----- (0043F2A9) --------------------------------------------------------
-    ~BspRenderer_stru0() {}
+    ~BspRenderer_ViewportNode() {}
 
     uint16_t uSectorID = 0;  // sector that this node shows
     uint16_t uFaceID;
@@ -809,3 +796,5 @@ void FindBillboardsLightLevels_BLV();
 int collide_against_floor_approximate(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
 
 bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3_int_ from);
+
+extern struct BspRenderer* pBspRenderer;

@@ -454,7 +454,6 @@ bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
 
         // if normal in z - portals dont work out so use camera
         if (pFace->pFacePlane.vNormal.z == 1.0 || pFace->pFacePlane.vNormal.z == -1.0) {
-            logger->Info("Portal z normal");
             for (int i = 0; i < 4; i++) {
                 pOutFrustum[i].x = pCamera3D->FrustumPlanes[i].x;
                 pOutFrustum[i].y = pCamera3D->FrustumPlanes[i].y;

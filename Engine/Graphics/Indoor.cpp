@@ -116,6 +116,7 @@ void PrepareDrawLists_BLV() {
             int MinTorch = TorchLightPower;
             int MaxTorch = TorchLightPower * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
 
+            // torchlight flickering effect
             // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
             int ran = rand();
             int mod = ((ran - (RAND_MAX * .4)) / 200);
@@ -129,9 +130,6 @@ void PrepareDrawLists_BLV() {
         }
 
         pParty->TorchLightLastIntensity = TorchLightPower;
-
-        //       double nexLightIntensity(lastIntensity)
-        //   return clamp(0, 1, lastIntensity + (rand() - .3) / 100)
 
         pMobileLightsStack->AddLight(
             pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y,
@@ -149,32 +147,21 @@ void PrepareDrawLists_BLV() {
          int v7 = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
          v8 = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
-    // for (int i = 1; i < pIndoor->uNumSectors; i++) {
-    //     v8 = &pIndoor->pSectors[i];
         for (uint j = 0; j < v8->uNumDecorations; ++j)
             pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], v7);
-    // }
      }
 
     FindBillboardsLightLevels_BLV();
-    // engine->PrepareBloodsplats();
 }
 
 //----- (0043F953) --------------------------------------------------------
 void PrepareBspRenderList_BLV() {
+    // reset faces list
     pBspRenderer->num_faces = 0;
 
     if (pBLVRenderParams->uPartySectorID) {
         // set node 0 to current sector
         pBspRenderer->nodes[0].uSectorID = pBLVRenderParams->uPartySectorID;
-        // pBspRenderer->nodes[0].uViewportX = pBLVRenderParams->uViewportX;
-        // pBspRenderer->nodes[0].uViewportY = pBLVRenderParams->uViewportY;
-        // pBspRenderer->nodes[0].uViewportZ = pBLVRenderParams->uViewportZ;
-        // pBspRenderer->nodes[0].uViewportW = pBLVRenderParams->uViewportW;
-        // pBspRenderer->nodes[0].PortalScreenData.GetViewportData(
-        //    pBLVRenderParams->uViewportX, pBLVRenderParams->uViewportY,
-        //    pBLVRenderParams->uViewportZ, pBLVRenderParams->uViewportW);
-
         // set furstum to cam frustum
         for (int loop = 0; loop < 4; loop++) {
             pBspRenderer->nodes[0].ViewportNodeFrustum[loop].x = pCamera3D->FrustumPlanes[loop].x;
@@ -183,6 +170,7 @@ void PrepareBspRenderList_BLV() {
             pBspRenderer->nodes[0].ViewportNodeFrustum[loop].dot = pCamera3D->FrustumPlanes[loop].w;
         }
 
+        // blank viewing node
         pBspRenderer->nodes[0].uFaceID = -1;
         pBspRenderer->nodes[0].viewing_portal_id = -1;
         pBspRenderer->num_nodes = 1;
@@ -207,177 +195,101 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
             // add face and return
             faces[num_faces].uFaceID = uFaceID;
             faces[num_faces++].uNodeID = node_id;
+        } else {
+            logger->Info("Too many faces in BLV render");
         }
         return;
     }
 
     // portals are invisible faces marking the transition between sectors
-
+    // dont add the face we are looking through
     if (nodes[node_id].uFaceID == uFaceID) return;
 
-    // if node_id 0 and bounding box xhexck with portal - ie party stood nextt o portal
+    // if node_id 0 and bounding box check with portal - ie party stood next to portal
     int boundingslack = 128;
 
     if (!node_id &&
-        pCamera3D->vCameraPos.x >= pFace->pBounding.x1 - boundingslack &&  // we are probably standing at the portal plane
+        pCamera3D->vCameraPos.x >= pFace->pBounding.x1 - boundingslack &&
         pCamera3D->vCameraPos.x <= pFace->pBounding.x2 + boundingslack &&
         pCamera3D->vCameraPos.y >= pFace->pBounding.y1 - boundingslack &&
         pCamera3D->vCameraPos.y <= pFace->pBounding.y2 + boundingslack &&
         pCamera3D->vCameraPos.z >= pFace->pBounding.z1 - boundingslack &&
         pCamera3D->vCameraPos.z <= pFace->pBounding.z2 + boundingslack) {
-        logger->Info("Bounding box");
-        /*if (abs(pFace->pFacePlane_old.dist +
-            pCamera3D->vCameraPos.x *
-            pFace->pFacePlane_old.vNormal.x +
-            pCamera3D->vCameraPos.y *
-            pFace->pFacePlane_old.vNormal.y +
-            pCamera3D->vCameraPos.z *
-            pFace->pFacePlane_old.vNormal.z) <=
-            589824) {*/  // we sure are standing at the portal plane
-            // add adjacent sector as node
-            logger->Info("Next to portal");
-            pTransitionSector = pFace->uSectorID;
-            if (nodes[0].uSectorID == pTransitionSector)  // draw back sector if we are already doing this sector
+        // we are standing at the portal plane
+        pTransitionSector = pFace->uSectorID;
+        // draw back sector if we are already doing this sector
+        if (nodes[0].uSectorID == pTransitionSector)
                 pTransitionSector = pFace->uBackSectorID;
-            nodes[num_nodes].uSectorID = pTransitionSector;
-            nodes[num_nodes].uFaceID = uFaceID;
-            /*nodes[num_nodes].uViewportX = pBLVRenderParams->uViewportX;
-            nodes[num_nodes].uViewportZ = pBLVRenderParams->uViewportZ;
-            nodes[num_nodes].uViewportY = pBLVRenderParams->uViewportY;
-            nodes[num_nodes].uViewportW = pBLVRenderParams->uViewportW;
-            nodes[num_nodes].PortalScreenData.GetViewportData(
-                pBLVRenderParams->uViewportX, pBLVRenderParams->uViewportY,
-                pBLVRenderParams->uViewportZ, pBLVRenderParams->uViewportW);*/
+        nodes[num_nodes].uSectorID = pTransitionSector;
+        nodes[num_nodes].uFaceID = uFaceID;
 
-            // set furstum to cam frustum
-            for (int loop = 0; loop < 4; loop++) {
-                nodes[num_nodes].ViewportNodeFrustum[loop].x = pCamera3D->FrustumPlanes[loop].x;
-                nodes[num_nodes].ViewportNodeFrustum[loop].y = pCamera3D->FrustumPlanes[loop].y;
-                nodes[num_nodes].ViewportNodeFrustum[loop].z = pCamera3D->FrustumPlanes[loop].z;
-                nodes[num_nodes].ViewportNodeFrustum[loop].dot = pCamera3D->FrustumPlanes[loop].w;
-            }
+        // set furstum to cam frustum
+        for (int loop = 0; loop < 4; loop++) {
+            nodes[num_nodes].ViewportNodeFrustum[loop].x = pCamera3D->FrustumPlanes[loop].x;
+            nodes[num_nodes].ViewportNodeFrustum[loop].y = pCamera3D->FrustumPlanes[loop].y;
+            nodes[num_nodes].ViewportNodeFrustum[loop].z = pCamera3D->FrustumPlanes[loop].z;
+            nodes[num_nodes].ViewportNodeFrustum[loop].dot = pCamera3D->FrustumPlanes[loop].w;
+        }
 
-
-            AddBspNodeToRenderList(++num_nodes - 1);
-            return;
-        //}
+        AddBspNodeToRenderList(++num_nodes - 1);
+        return;
     }
-
-    // if (pFace->uBackSectorID == 1 || pFace->uSectorID == 1) __debugbreak();
-
-    // plane equation check if party is infront/ behind portal
-    // dotdist = pFace->pFacePlane_old.vNormal.x *
-    //    (pIndoor->pVertices[pFace->pVertexIDs[0]].x -
-    //        pCamera3D->vCameraPos.x) +
-    //    pFace->pFacePlane_old.vNormal.y *
-    //    (pIndoor->pVertices[pFace->pVertexIDs[0]].y -
-    //        pCamera3D->vCameraPos.y) +
-    //    pFace->pFacePlane_old.vNormal.z *
-    //    (pIndoor->pVertices[pFace->pVertexIDs[0]].z -
-    //        pCamera3D->vCameraPos.z);
-    // if (nodes[node_id].uSectorID != pFace->uSectorID) dotdist = -dotdist;
-    // if (dotdist >= 0) return;
-
-    // check number of verts of portal is seen by camera
-
-
-
-
-    // int num_vertices = GetPortalScreenCoord(uFaceID);
-    // if (num_vertices < 2) return;
-
-    // int face_min_screenspace_x = PortalFace._screen_space_x[0],
-    //    face_max_screenspace_x = PortalFace._screen_space_x[0];
-    // int face_min_screenspace_y = PortalFace._screen_space_y[0],
-    //    face_max_screenspace_y = PortalFace._screen_space_y[0];
-    // for (uint i = 1; i < num_vertices; ++i) {
-    //    if (face_min_screenspace_x > PortalFace._screen_space_x[i])
-    //        face_min_screenspace_x = PortalFace._screen_space_x[i];
-    //    if (face_max_screenspace_x < PortalFace._screen_space_x[i])
-    //        face_max_screenspace_x = PortalFace._screen_space_x[i];
-
-    //    if (face_min_screenspace_y > PortalFace._screen_space_y[i])
-    //        face_min_screenspace_y = PortalFace._screen_space_y[i];
-    //    if (face_max_screenspace_y < PortalFace._screen_space_y[i])
-    //        face_max_screenspace_y = PortalFace._screen_space_y[i];
-    //}
-    // _screen_space_x = 719, 568, 493
-    // savegame: qw , 0Bh and 0x1D4h
-    // problem here when standing near/on portal, condition is false because of
-    // face_min_screenspace_x > p->uViewportZ
-
     // check if portal is visible on screen
 
     static RenderVertexSoft static_subAddFaceToRenderList_d3d_stru_F7AA08[64];
     static RenderVertexSoft static_subAddFaceToRenderList_d3d_stru_F79E08[64];
 
     for (uint k = 0; k < pFace->uNumVertices; ++k) {
-        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.x =
-            pIndoor->pVertices[pFace->pVertexIDs[k]].x;
-        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.y =
-            pIndoor->pVertices[pFace->pVertexIDs[k]].y;
-        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.z =
-            pIndoor->pVertices[pFace->pVertexIDs[k]].z;
+        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[k]].x;
+        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[k]].y;
+        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[k]].z;
     }
 
+    unsigned int pNewNumVertices = pFace->uNumVertices;
 
-    // if (face_max_screenspace_x >= nodes[node_id].uViewportX &&
-    //    face_min_screenspace_x <= nodes[node_id].uViewportZ &&
-    //    face_max_screenspace_y >= nodes[node_id].uViewportY &&
-    //    face_min_screenspace_y <= nodes[node_id].uViewportW &&
-    //    PortalFrustrum(num_vertices, &nodes[num_nodes].PortalScreenData,
-    //        &nodes[node_id].PortalScreenData, uFaceID)) {
-
-
-        unsigned int pNewNumVertices = pFace->uNumVertices;
-
-        bool vertadj = pCamera3D->ClipFaceToFrustum(
+    // accurate clip to current viewing nodes frustum
+    bool vertadj = pCamera3D->ClipFaceToFrustum(
             static_subAddFaceToRenderList_d3d_stru_F7AA08, &pNewNumVertices,
             static_subAddFaceToRenderList_d3d_stru_F79E08,
             nodes[node_id].ViewportNodeFrustum, 4, 0, 0);
 
     if (pNewNumVertices) {
         // current portal visible through previous
-
         pTransitionSector = pFace->uSectorID;
         if (nodes[node_id].uSectorID == pTransitionSector)
             pTransitionSector = pFace->uBackSectorID;
         nodes[num_nodes].uSectorID = pTransitionSector;
         nodes[num_nodes].uFaceID = uFaceID;
 
-
-        bool bFrustumbuilt = false;
-
-            // calculates the portal bounding and frustum
-
-            bFrustumbuilt = engine->pStru10Instance->CalcPortalShapePoly(
+        // calculates the portal bounding and frustum
+        bool bFrustumbuilt = engine->pStru10Instance->CalcPortalShapePoly(
                 pFace, static_subAddFaceToRenderList_d3d_stru_F79E08,
                 &pNewNumVertices, nodes[num_nodes].ViewportNodeFrustum,
                 nodes[num_nodes].pPortalBounding);
 
         if (bFrustumbuilt) {
-            assert(num_nodes < 150);
-
             // add portal sector to drawing list
-
+            assert(num_nodes < 150);
             nodes[num_nodes].viewing_portal_id = uFaceID;
             AddBspNodeToRenderList(++num_nodes - 1);
         }
     }
 }
 
+//----- (00440639) --------------------------------------------------------
 void AddBspNodeToRenderList(unsigned int node_id) {
     BLVSector* pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
 
     for (uint i = 0; i < pSector->uNumNonBSPFaces; ++i)
         pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);  // рекурсия\recursion
 
-
-    if (pSector->field_0 & 0x10) sub_4406BC(node_id, pSector->uFirstBSPNode);
+    if (pSector->field_0 & 0x10) {
+        AddNodeBSPFaces(node_id, pSector->uFirstBSPNode);
+    }
 }
 
 //----- (004406BC) --------------------------------------------------------
-void sub_4406BC(unsigned int node_id, unsigned int uFirstNode) {
+void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode) {
     BLVSector* pSector;       // esi@2
     BSPNode* pNode;           // edi@2
     BLVFace* pFace;           // eax@2
@@ -386,46 +298,37 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode) {
     int v7;                   // ebp@10
     int v8;                   // ebx@10
     __int16 v9;               // di@18
-    BspRenderer_ViewportNode* node;  // [sp+18h] [bp-4h]@1
 
-    // logger->Warning(L"sub_4406BC(%u, %u)", a1, uFirstNode);
+    BspRenderer_ViewportNode* node = &pBspRenderer->nodes[node_id];
 
-    // v10 = a1;
-    node = &pBspRenderer->nodes[node_id];
     while (1) {
         pSector = &pIndoor->pSectors[node->uSectorID];
         pNode = &pIndoor->pNodes[uFirstNode];
-        pFace = &pIndoor->pFaces[pSector->pFaceIDs[pNode->uCoplanarOffset]];
+        pFace = &pIndoor->pFaces[pSector->pFaceIDs[pNode->uBSPFaceIDOffset]];
+        // check if we are in front or behind face
         v5 = pFace->pFacePlane_old.dist +
             pCamera3D->vCameraPos.x * pFace->pFacePlane_old.vNormal.x +
             pCamera3D->vCameraPos.y * pFace->pFacePlane_old.vNormal.y +
-            pCamera3D->vCameraPos.z *
-            pFace->pFacePlane_old.vNormal.z;  // plane equation
+            pCamera3D->vCameraPos.z * pFace->pFacePlane_old.vNormal.z;  // plane equation
         if (pFace->Portal() && pFace->uSectorID != node->uSectorID) v5 = -v5;
-        // v11 = v5 > 0;
+
         if (v5 <= 0)
             v6 = pNode->uFront;
         else
             v6 = pNode->uBack;
-        if (v6 != -1) sub_4406BC(node_id, v6);
-        v7 = pNode->uCoplanarOffset;
-        v8 = v7 + pNode->uCoplanarSize;
+
+        if (v6 != -1) AddNodeBSPFaces(node_id, v6);
+
+        v7 = pNode->uBSPFaceIDOffset;
+        v8 = v7 + pNode->uNumBSPFaces;
 
         // logger->Warning(L"Node %u: %X to %X (%hX)", uFirstNode, v7, v8,
         // v2->pFaceIDs[v7]);
 
-        // if ( render->pRenderD3D )
-        {
-            while (v7 < v8)
-                pBspRenderer->AddFaceToRenderList_d3d(node_id,
-                    pSector->pFaceIDs[v7++]);
+        while (v7 < v8) {
+            pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[v7++]);
         }
-        /*else
-        {
-          while ( v7 < v8 )
-            pBspRenderer->AddFaceToRenderList_sw(node_id,
-        pSector->pFaceIDs[v7++]);
-        }*/
+
         v9 = v5 > 0 ? pNode->uFront : pNode->uBack;
         if (v9 == -1) break;
         uFirstNode = v9;
@@ -438,41 +341,14 @@ void sub_4406BC(unsigned int node_id, unsigned int uFirstNode) {
 void BLVRenderParams::Reset() {
     this->field_0_timer_ = pEventTimer->uTotalGameTimeElapsed;
 
-    // pCamera3D->debug_flags = 0;
-    // if (viewparams->draw_sw_outlines)
-    //    pCamera3D->debug_flags |= BLV_RENDER_DRAW_SW_OUTLINES;
-    // if (viewparams->draw_d3d_outlines)
-    //    pCamera3D->debug_flags |= BLV_RENDER_DRAW_D3D_OUTLINES;
+    this->uPartySectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
 
-    // v2 = a2;
-    // this->field_0_timer_ = a2->field_0_timer;
-    // this->uFlags = a2->uFlags;
-    // this->vPartyPos.x = a2->vPosition.x;
-    // this->vPartyPos.y = a2->vPosition.y;
-    // this->vPartyPos.z = a2->vPosition.z;
-    // v4 = this->vPartyPos.z;
-    // v5 = this->vPartyPos.y;
-    // this->sPartyRotY = a2->sRotationZ;
-    // v6 = this->vPartyPos.x;
-    // this->sPartyRotX = a2->sRotationY;
-    int v7 = pIndoor->GetSector(pCamera3D->vCameraPos.x,
-                            pCamera3D->vCameraPos.y,
-                            pCamera3D->vCameraPos.z);
-    this->uPartySectorID = v7;
-    if (!v7) {
+    if (!this->uPartySectorID) {
         __debugbreak();  // shouldnt happen, please provide savegame
-        /*v8 = this->vPartyPos.z;
-        this->vPartyPos.x = pParty->vPosition.x;
-        v9 = pParty->vPosition.y;
-        v10 = this->vPartyPos.x;
-        this->vPartyPos.y = pParty->vPosition.y;*/
-        // this->uPartySectorID = pIndoor->GetSector(
-        //    pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
     }
-    // if ( render->pRenderD3D )
-    {
-        // this->fov = pViewport->field_of_view;
 
+
+    {
         this->uViewportX = pViewport->uScreen_TL_X;
         this->uViewportY = pViewport->uScreen_TL_Y;
         this->uViewportZ = pViewport->uScreen_BR_X;
@@ -484,35 +360,20 @@ void BLVRenderParams::Reset() {
         this->uViewportCenterY = (uViewportY + uViewportW) / 2;
     }
 
-
     this->uTargetWidth = window->GetWidth();
     this->uTargetHeight = window->GetHeight();
     this->pTargetZBuffer = render->pActiveZBuffer;
-    this->field_8C = 0;
-    this->field_84 = 0;
     this->uNumFacesRenderedThisFrame = 0;
-    this->field_88 = 0;
-    pBLVRenderParams->field_90 = 64;
-    pBLVRenderParams->field_94 = 6;
 }
 
+//----- (0043F333) --------------------------------------------------------
 void BspRenderer::MakeVisibleSectorList() {
-    //  int v6; // ebx@3
     bool onlist = false;
     uNumVisibleNotEmptySectors = 0;
 
     for (uint i = 0; i < num_nodes; ++i) {
         onlist = false;
-        // if (!uNumVisibleNotEmptySectors)
-        //{
-        // pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[uNumVisibleNotEmptySectors++]
-        // = nodes[i].uSectorID; continue;
-        //}
-        // v6 = 0;
-        // while (pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[v6] !=
-        // nodes[i].uSectorID )
         for (uint j = 0; j < uNumVisibleNotEmptySectors; j++) {
-            // ++v6;
             if (pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == nodes[i].uSectorID) {
                 onlist = true;
                 break;
@@ -539,42 +400,10 @@ void IndoorLocation::DrawIndoorFaces(bool bD3D) {
 
 //----- (00441BD4) --------------------------------------------------------
 void IndoorLocation::Draw() {
-    // int v0; // eax@1
-    // IndoorLocation_drawstru _this; // [sp+0h] [bp-4Ch]@5
-    //  int v2; // [sp+44h] [bp-8h]@5
-    //  int v3; // [sp+48h] [bp-4h]@5
-
-    /*_this.uFlags = 0;
-    if (viewparams->draw_sw_outlines)
-      _this.uFlags |= BLV_RENDER_DRAW_SW_OUTLINES;
-    if (viewparams->draw_d3d_outlines)
-      _this.uFlags |= BLV_RENDER_DRAW_D3D_OUTLINES;
-
-    _this.uFlags |= BLV_RENDER_DRAW_SW_OUTLINES;
-    _this.uFlags |= BLV_RENDER_DRAW_D3D_OUTLINES;
-
-    _this.field_0_timer = pEventTimer->uTotalGameTimeElapsed;
-    //_this.fov_deg = 65;
-    _this.uViewportX = pViewport->uScreen_TL_X;
-    _this.uViewportY = pViewport->uScreen_TL_Y;
-    _this.uViewportZ = pViewport->uScreen_BR_X;
-    _this.uViewportW = pViewport->uScreen_BR_Y;
-    _this.field_3C = pViewport->field_30;
-
-    _this.uTargetWidth = 640;
-    _this.uTargetHeight = 480;
-    _this.pTargetZ = render->pActiveZBuffer;*/
-
-    // sub_440BED(&_this); -- inlined
-    //{
-
-
-
     PrepareDrawLists_BLV();
     if (pBLVRenderParams->uPartySectorID)
-        DrawIndoorFaces(true /*render->pRenderD3D != 0*/);
+        DrawIndoorFaces(true);
     render->DrawBillboardList_BLV();
-    //}
 
     pParty->uFlags &= ~PARTY_FLAGS_1_ForceRedraw;
     engine->DrawParticles();
@@ -613,7 +442,7 @@ void BLVFace::FromODM(ODMFace *face) {
 //----- (004B0A25) --------------------------------------------------------
 void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                                   IndoorCameraD3D_Vec4 *portalfrustumnorm,
-                                  unsigned int uNumVertices,
+                                  unsigned int uNumFrustums,
                                   RenderVertexSoft *pPortalBounding) {
     // faceid, portalfrustum normal, 4, portalbounding
 
@@ -680,8 +509,6 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
     }
 
 
-
-
     if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
         uNumVerticesa = pFace->uNumVertices;
 
@@ -694,123 +521,66 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             static_vertices_buff_in[i].v = (signed short)pFace->pVertexVIDs[i];
         }
 
-        // 498377 always true - appears to be anothe function to clip vertices to portal planes??
+        // check if this face is visible through current portal node
         if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)
-            /*true*//*!portalfrustumnorm*/ /*|| *//*engine->pStru9Instance->ClipVertsToPortal(pPortalBounding, 4, portalfrustumnorm, static_vertices_buff_in, &uNumVerticesa)*/) {
+            // pCamera3D->ClipFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4, 0, 0) || true
+            ) {
+            ++pBLVRenderParams->uNumFacesRenderedThisFrame;
 
-            if (uNumVerticesa) {
-                // test
-                        // copy to buff in
-                uNumVerticesa = pFace->uNumVertices;
-                for (uint i = 0; i < pFace->uNumVertices; ++i) {
-                    static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-                    static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-                    static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-                    static_vertices_buff_in[i].u = (signed short)pFace->pVertexUIDs[i];
-                    static_vertices_buff_in[i].v = (signed short)pFace->pVertexVIDs[i];
-                }
+            /*int xd = pParty->vPosition.x - pIndoor->pVertices[pFace->pVertexIDs[0]].x;
+            int yd = pParty->vPosition.y - pIndoor->pVertices[pFace->pVertexIDs[0]].y;
+            int zd = pParty->vPosition.z - pIndoor->pVertices[pFace->pVertexIDs[0]].z;
+            int dist = sqrt(xd * xd + yd * yd + zd * zd);*/
 
+            // if (dist < 2000) {
+                pFace->uAttributes |= FACE_SeenByParty;
+            //}
 
-                if (pCamera3D->CullFaceToCameraFrustum(  // clips vertices to the frustum planes
-                    static_vertices_buff_in, &uNumVerticesa,
-                    static_vertices_calc_out,
-                    4) != 1 || uNumVerticesa) {
-                    ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+            FaceFlowTextureOffset(uFaceID);
 
-                    /*int xd = pParty->vPosition.x - pIndoor->pVertices[pFace->pVertexIDs[0]].x;
-                    int yd = pParty->vPosition.y - pIndoor->pVertices[pFace->pVertexIDs[0]].y;
-                    int zd = pParty->vPosition.z - pIndoor->pVertices[pFace->pVertexIDs[0]].z;
+            lightmap_builder->ApplyLights_IndoorFace(uFaceID);
 
-                    int dist = sqrt(xd * xd + yd * yd + zd * zd);*/
+            LightLevel = Lights.uCurrentAmbientLightLevel & 31;
+            // lightlevel is 0 to 31
+            //if (LightLevel < 5) LightLevel = 5;
 
-                    // if (dist < 2000) {
-                        pFace->uAttributes |= FACE_SeenByParty;
-                    //}
+            ColourMask = ((LightLevel << 3)) | ((LightLevel << 3)) << 8 | ((LightLevel << 3)) << 16;
 
+            pCamera3D->ViewTransfrom_OffsetUV(static_vertices_calc_out, uNumVerticesa, array_507D30, &Lights);
+            pCamera3D->Project(array_507D30, uNumVerticesa, 0);
 
-                    // memcpy(static_vertices_calc_out, static_vertices_buff_in, uNumVerticesa * sizeof(RenderVertexSoft));
-
-                    FaceFlowTextureOffset(uFaceID);
-
-                    lightmap_builder->ApplyLights_IndoorFace(uFaceID);
-
-                    LightLevel = Lights.uCurrentAmbientLightLevel & 31;
-                    // lightlevel is 0 to 31
-                    if (LightLevel < 5) LightLevel = 5;
-
-                    ColourMask = ((LightLevel << 3)) |
-                        ((LightLevel << 3)) << 8 |
-                        ((LightLevel << 3)) << 16;
-
-
-                    // decal_builder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
-
-                    pCamera3D->ViewTransfrom_OffsetUV(static_vertices_calc_out, uNumVerticesa, array_507D30, &Lights);
-
-                    pCamera3D->Project(array_507D30, uNumVerticesa, 0);
-
-                    lightmap_builder->StationaryLightsCount = 0;
-                    if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
-                        FacePlaneHolder.face_plane.vNormal.x =
-                            pFace->pFacePlane.vNormal.x;
-                        FacePlaneHolder.polygonType = pFace->uPolygonType;
-                        FacePlaneHolder.face_plane.vNormal.y =
-                            pFace->pFacePlane.vNormal.y;
-                        FacePlaneHolder.face_plane.vNormal.z =
-                            pFace->pFacePlane.vNormal.z;
-                        FacePlaneHolder.face_plane.dist = pFace->pFacePlane.dist;
-                    }
-
-                    if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
-                        lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, /*pVertices*/0, 0);
-
-                    // if (decal_builder->uNumDecals > 0)  // blood draw
-                    //    decal_builder->ApplyDecals(LightLevel, 1, &FacePlaneHolder,
-                    //                               uNumVerticesa, array_507D30,
-                    //                               pVertices, 0, pFace->uSectorID);
-
-                    Texture* face_texture = pFace->GetTexture();
-                    if (pFace->Fluid()) {
-                        // if (pFace->uBitmapID == render->hd_water_tile_id)
-                        //    v27 =
-                        //    pBitmaps_LOD->pHardwareTextures[render->pHDWaterBitmapIDs[render->hd_water_current_frame]];
-                        // else
-                        {
-                            face_texture = (Texture*)pFace->resource;
-                            // auto v24 = GetTickCount() / 4;
-                            // auto v25 = v24 - TrigLUT->uIntegerHalfPi;
-                            uint eightSeconds = OS_GetTime() % 8000;
-                            float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
-
-                            // animte lava back and forth
-                            for (uint i = 0; i < uNumVerticesa; ++i)
-                                // array_507D30[i].v +=
-                                // (double)(pBitmaps_LOD->pTextures[pFace->uBitmapID].uHeightMinus1
-                                // & (unsigned int)(TrigLUT->SinCos(v25) >> 8));
-                                array_507D30[i].v +=
-                                (face_texture->GetHeight() - 1) * cosf(angle);
-                        }
-                    } else if (pFace->IsTextureFrameTable()) {
-                        face_texture = pTextureFrameTable->GetFrameTexture(
-                            (int64_t)pFace->resource, pBLVRenderParams->field_0_timer_);
-                    } else {
-                        // this overrides colourmask - is this correct??
-                        // ColourMask = 0xFF808080;
-                        // v27 = pBitmaps_LOD->pHardwareTextures[pFace->uBitmapID];
-                    }
-
-                    if (pFace->Indoor_sky()) {
-                        render->DrawIndoorSky(uNumVerticesa, uFaceID);
-                    } else {
-                        // if (!(pFace->uAttributes & FACE_OUTLINED)) {
-                            // __debugbreak();
-                        render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_BModel, uFaceID), ColourMask, 0);
-                        // }
-                        // }
-                    }
-                    return;
-                }
+            lightmap_builder->StationaryLightsCount = 0;
+            if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
+                FacePlaneHolder.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
+                FacePlaneHolder.polygonType = pFace->uPolygonType;
+                FacePlaneHolder.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
+                FacePlaneHolder.face_plane.vNormal.z = pFace->pFacePlane.vNormal.z;
+                FacePlaneHolder.face_plane.dist = pFace->pFacePlane.dist;
             }
+
+            if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
+                lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, /*pVertices*/0, 0);
+
+            Texture* face_texture = pFace->GetTexture();
+            if (pFace->Fluid()) {
+                face_texture = (Texture*)pFace->resource;
+                uint eightSeconds = OS_GetTime() % 8000;
+                float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
+
+                // animte lava back and forth
+                for (uint i = 0; i < uNumVerticesa; ++i)
+                    array_507D30[i].v += (face_texture->GetHeight() - 1) * cosf(angle);
+            } else if (pFace->IsTextureFrameTable()) {
+                face_texture = pTextureFrameTable->GetFrameTexture((int64_t)pFace->resource, pBLVRenderParams->field_0_timer_);
+            }
+
+            if (pFace->Indoor_sky()) {
+                render->DrawIndoorSky(uNumVerticesa, uFaceID);
+            } else {
+                render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_BModel, uFaceID), ColourMask, 0);
+            }
+
+            return;
         }
     }
 }
@@ -1403,6 +1173,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     return 0;
 }
 
+//----- (0049AC17) --------------------------------------------------------
 int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) return 0;
     if (uNumSectors < 2) {
@@ -1596,6 +1367,7 @@ bool BLVFace::ContainsXY(IndoorLocation *indoor, int x, int y) const {
 }
 
 
+//----- (0044C23B) --------------------------------------------------------
 bool BLVFaceExtra::HasEventHint() {
     int event_index = 0;
     if ((uLevelEVT_NumEvents - 1) <= 0) {
@@ -2653,6 +2425,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
     }
 }
 
+//----- (0044028F) --------------------------------------------------------
 void IndoorLocation::PrepareItemsRenderList_BLV() {
     unsigned int v6;     // eax@12
 
@@ -2749,6 +2522,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
     }
 }
 
+//----- (0043FA33) --------------------------------------------------------
 void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID) {
     unsigned int v8;       // edi@5
     int v9;                // edi@5
@@ -2865,6 +2639,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     }
 }
 
+//----- (00407A1C) --------------------------------------------------------
 bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_From) {  // target xyz from position v true on clear
     int dist_y;       // edi@2
     int dist_z;       // ebx@2
@@ -3306,6 +3081,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
     return (!LOS_Obscurred2 || !LOS_Obscurred);  // true if LOS clear
 }
 
+//----- (0046A334) --------------------------------------------------------
 char DoInteractionWithTopmostZObject(int pid) {
     auto id = PID_ID(pid);
     auto type = PID_TYPE(pid);
@@ -3945,6 +3721,7 @@ int CalcDistPointToLine(int x1, int y1, int x2, int y2, int x3, int y3) {
     return result;
 }
 
+//----- (00450DA3) --------------------------------------------------------
 int GetAlertStatus() {
     int result;
 
@@ -3956,6 +3733,7 @@ int GetAlertStatus() {
     return result;
 }
 
+//----- (0045063B) --------------------------------------------------------
 int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
     // creates random spawn point for encounter
     bool failed_point = false;
@@ -4047,6 +3825,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
     return enc_index;
 }
 
+//----- (00450521) --------------------------------------------------------
 int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t facing) {
     SpriteObject a1;
     pItemsTable->GenerateItem(trs_level, trs_type, &a1.containing_item);
@@ -4062,6 +3841,7 @@ int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t fa
     return a1.Create(0, 0, 0, 0);
 }
 
+//----- (004075DB) --------------------------------------------------------
 bool PointInPolyIndoor(int x, int y, int z, BLVFace *face) {
     // check if point is inside polygon - LOS check indoors
 
@@ -4130,6 +3910,7 @@ bool PointInPolyIndoor(int x, int y, int z, BLVFace *face) {
     return true;
 }
 
+//----- (004077F1) --------------------------------------------------------
 bool PointInPolyOutdoor(int x, int y, int z, ODMFace *face, BSPVertexBuffer *verts) {
     // check if point is inside polygon - LOS check outdoors
 

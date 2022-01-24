@@ -65,7 +65,11 @@ struct Camera3D {
     void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices,
                  bool fit_into_viewport = false);
 
-    bool CullFaceToCameraFrustum(struct RenderVertexSoft *a1,
+    bool CullFaceToCameraFrustum(RenderVertexSoft* pInVertices,
+        unsigned int* pOutNumVertices,
+        RenderVertexSoft* pVertices,
+        signed int NumFrustumPlanes);
+
     float GetPolygonMaxZ(struct RenderVertexSoft *pVertex,
                           unsigned int uStripType);
     float GetPolygonMinZ(struct RenderVertexSoft *pVertices,

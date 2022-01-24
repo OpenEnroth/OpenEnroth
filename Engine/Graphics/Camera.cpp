@@ -175,13 +175,10 @@ bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
     float y = pIndoor->pVertices[pFace->pVertexIDs[0]].y;
     float z = pIndoor->pVertices[pFace->pVertexIDs[0]].z;
 
-    if ((z - (double)pCamera3D->vCameraPos.z) *
-        (double)pFace->pFacePlane_old.vNormal.z +
-        (y - (double)pCamera3D->vCameraPos.y) *
-        (double)pFace->pFacePlane_old.vNormal.y +
-        (x - (double)pCamera3D->vCameraPos.x) *
-        (double)pFace->pFacePlane_old.vNormal.x <
-        0.0)
+    if ((z - pCamera3D->vCameraPos.z) * pFace->pFacePlane.vNormal.z +
+        (y - pCamera3D->vCameraPos.y) * pFace->pFacePlane.vNormal.y +
+        (x - pCamera3D->vCameraPos.x) * pFace->pFacePlane.vNormal.x <
+        0.0f)
         return true;
 
     return false;
@@ -190,13 +187,10 @@ bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
 bool Camera3D::is_face_faced_to_cameraODM(ODMFace* pFace, RenderVertexSoft* a2) {
     // if (pFace->Portal()) return false;
 
-    if ((a2->vWorldPosition.z - pCamera3D->vCameraPos.z) *
-        pFace->pFacePlane.vNormal.z +
-        (a2->vWorldPosition.y - pCamera3D->vCameraPos.y) *
-        pFace->pFacePlane.vNormal.y +
-        (a2->vWorldPosition.x - pCamera3D->vCameraPos.x) *
-        pFace->pFacePlane.vNormal.x <
-        0.0)
+    if ((a2->vWorldPosition.z - pCamera3D->vCameraPos.z) * pFace->pFacePlane.vNormal.z +
+        (a2->vWorldPosition.y - pCamera3D->vCameraPos.y) * pFace->pFacePlane.vNormal.y +
+        (a2->vWorldPosition.x - pCamera3D->vCameraPos.x) * pFace->pFacePlane.vNormal.x <
+        0.0f)
         return true;
 
     return false;
@@ -660,7 +654,7 @@ void Camera3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace
 }
 
 void Camera3D::CalculateRotations(int camera_rot_y, int camera_rot_z) {
-    sRotationY = camera_rot_y + 20;  // pitch
+    sRotationY = camera_rot_y;  // pitch
     sRotationZ = camera_rot_z;  // yaw
 
     fRotationZSine = sin((pi_double + pi_double) * (double)sRotationZ / 2048.0);
@@ -673,6 +667,8 @@ void Camera3D::CalculateRotations(int camera_rot_y, int camera_rot_z) {
     int_cosine_Z = TrigLUT->Cos(sRotationZ);
     int_sine_y = TrigLUT->Sin(sRotationY);
     int_cosine_y = TrigLUT->Cos(sRotationY);
+}
+
 //----- (00436A6D) --------------------------------------------------------
 float Camera3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripType) {
     float result = FLT_MAX;
@@ -680,6 +676,16 @@ float Camera3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripT
         if (pVertices[i].vWorldPosition.z < result) {
             result = pVertices[i].vWorldPosition.z;
         }
+    }
+    return result;
+}
+
+//----- (00436A40) --------------------------------------------------------
+float Camera3D::GetPolygonMaxZ(RenderVertexSoft* pVertex, unsigned int uStripType) {
+    float result = FLT_MIN;
+    for (uint i = 0; i < uStripType; i++) {
+        if (pVertex[i].vWorldPosition.z > result)
+            result = pVertex[i].vWorldPosition.z;
     }
     return result;
 }
@@ -693,15 +699,6 @@ void Camera3D::CullByNearClip(RenderVertexSoft* pverts, uint* unumverts) {
             return;
         }
     }
-//----- (00436A40) --------------------------------------------------------
-float Camera3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uStripType) {
-    float result; = FLT_MIN;
-    for (uint i = 0; i < uStripType; i++) {
-        if (pVertex[i].vWorldPosition.z > result)
-            result = pVertex[i].vWorldPosition.z;
-    }
-    return result;
-}
 
     *unumverts = 0;
     return;

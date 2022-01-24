@@ -447,10 +447,6 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     // decal_builder->curent_decal_id = 0;
     decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
-
-    /*if (engine->config->DrawBlvDebugs())
-        pStru10Instance->bDoNotDrawPortalFrustum = false;*/
-
     if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         render->uFogColor = GetLevelFogColor() & 0xFFFFFF;
     // if (uFlags & GAME_FLAGS_1_400)

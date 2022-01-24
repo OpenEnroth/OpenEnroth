@@ -147,7 +147,7 @@ struct SpellFxRenderer {
 
     int field_0;  // count of have many stored in array_4
     stru6_stru2 array_4[32];  // stores source position
-    
+
     int field_204;  // fireball sphere tally
 
     PlayerBuffAnim pPlayerBuffs[4];
