@@ -48,3 +48,8 @@ For style check on Windows platform, you can use [Visual Studio Code cpplint plu
 
 In visual studio, style can be checked (Python requred). Go to Solution Explorer->Change Views->CMake targets
 Right click and build check_style, errors will be listed in output
+
+Some basic rules that we follow, in no particular order:
+* `*` and `&` in type declarations are preceded by a space. So it's `char *string`, and not `char* string`.
+* Documentation should be in doxydoc format with `\` used for tags, and starting with `/**` comment introducer.
+* Documentation should be written in English. There are some leftover comments in Russian throughout the codebase, feel free to translate them into English when you have a chance.
