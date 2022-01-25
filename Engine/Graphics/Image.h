@@ -136,7 +136,7 @@ struct TextureFrameTable {
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);
-    Texture *GetFrameTexture(int64_t uFrameID, int time);
+    Texture *GetFrameTexture(int uFrameID, int time);
     int64_t FindTextureByName(const char *Str2);
 
     uint32_t sNumTextures;
