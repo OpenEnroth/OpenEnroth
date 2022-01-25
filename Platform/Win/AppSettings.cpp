@@ -1,5 +1,7 @@
 #include "Platform/Win/Win.h"
 
+#include "Engine/Strings.h"
+
 bool OS_GetAppStringRecursive(
     HKEY parent_key,
     const char *path,
@@ -18,15 +20,15 @@ bool OS_GetAppStringRecursive(
         strcpy(path_tail, delimiter + 1);
 
         if (!parent_key) {
-            if (!strcmpi(current_key, "HKEY_CLASSES_ROOT"))
+            if (iequals(current_key, "HKEY_CLASSES_ROOT"))
                 parent_key = HKEY_CLASSES_ROOT;
-            else if (!strcmpi(current_key, "HKEY_CURRENT_CONFIG"))
+            else if (iequals(current_key, "HKEY_CURRENT_CONFIG"))
                 parent_key = HKEY_CURRENT_CONFIG;
-            else if (!strcmpi(current_key, "HKEY_CURRENT_USER"))
+            else if (iequals(current_key, "HKEY_CURRENT_USER"))
                 parent_key = HKEY_CURRENT_USER;
-            else if (!strcmpi(current_key, "HKEY_LOCAL_MACHINE"))
+            else if (iequals(current_key, "HKEY_LOCAL_MACHINE"))
                 parent_key = HKEY_LOCAL_MACHINE;
-            else if (!strcmpi(current_key, "HKEY_USERS"))
+            else if (iequals(current_key, "HKEY_USERS"))
                 parent_key = HKEY_USERS;
             else
                 return false;
