@@ -15,7 +15,7 @@
 // calculates FOV (Field of View) angle in radians for IndoorCamera::Initialize
 // and BLVRenderParams::Reset
 float _calc_fov(int viewport_width, int angle_degree) {
-    return viewport_width * 0.5 / tan(angle_degree / 2 * 0.01745329) + 0.5;
+    return viewport_width * 0.5f / tan(angle_degree / 2 * 0.01745329f) + 0.5f;
 }
 
 IndoorCameraD3D *pIndoorCameraD3D = new IndoorCameraD3D;

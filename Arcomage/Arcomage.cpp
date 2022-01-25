@@ -2943,7 +2943,8 @@ void GameResultsApply() {
         if ((window_SpeakInHouse->par1C >= 108) && (window_SpeakInHouse->par1C <= 120)) {
             if (!pParty->pArcomageWins[window_SpeakInHouse->par1C - 108]) {
                 pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] = 1;
-                pParty->PartyFindsGold(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);
+                pParty->PartyFindsGold(
+                    static_cast<unsigned int>(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100), 0);
             }
         }
 
