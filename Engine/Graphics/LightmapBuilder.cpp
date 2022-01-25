@@ -97,7 +97,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
                                              unsigned int *pSlot) {
     // For outdoor terrain light (II)
     //  bool result; // eax@1
-    double maxz;      // st7@11
+    float maxz;      // st7@11
                       //  char v20; // c2@11
                       //  signed int v52; // ecx@17
     char v57;         // dl@18
@@ -194,12 +194,9 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
     int id = 4 * *pSlot;
     if (render->config->is_using_specular) {
         if (Lights._blv_lights_types[*pSlot] & 4) {
-            Lights._blv_lights_rs[id] =
-                Lights._blv_lights_rs[id] * 0.3300000131130219;
-            Lights._blv_lights_gs[id] =
-                Lights._blv_lights_gs[id] * 0.3300000131130219;
-            Lights._blv_lights_bs[id] =
-                Lights._blv_lights_bs[id] * 0.3300000131130219;
+            Lights._blv_lights_rs[id] = Lights._blv_lights_rs[id] * 0.3300000131130219f;
+            Lights._blv_lights_gs[id] = Lights._blv_lights_gs[id] * 0.3300000131130219f;
+            Lights._blv_lights_bs[id] = Lights._blv_lights_bs[id] * 0.3300000131130219f;
         }
     }
     ++*pSlot;
@@ -236,12 +233,9 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
             Lights._blv_lights_xs[*pSlot] = pLight->vPosition.x;
             Lights._blv_lights_ys[*pSlot] = pLight->vPosition.y;
             Lights._blv_lights_zs[*pSlot] = pLight->vPosition.z;
-            Lights._blv_lights_rs[*pSlot] =
-                (double)pLight->uLightColorR / 255.0f;
-            Lights._blv_lights_gs[*pSlot] =
-                (double)pLight->uLightColorG / 255.0f;
-            Lights._blv_lights_bs[*pSlot] =
-                (double)pLight->uLightColorB / 255.0f;
+            Lights._blv_lights_rs[*pSlot] = pLight->uLightColorR / 255.0f;
+            Lights._blv_lights_gs[*pSlot] = pLight->uLightColorG / 255.0f;
+            Lights._blv_lights_bs[*pSlot] = pLight->uLightColorB / 255.0f;
             Lights._blv_lights_light_dot_faces[*pSlot] =
                 abs((int)floorf(v10 + 0.5f));
             Lights._blv_lights_types[*pSlot] = pLight->uLightType;
@@ -254,14 +248,11 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
                 __debugbreak();
                 if (Lights._blv_lights_types[*pSlot] & 4) {
                     *(float *)((char *)Lights._blv_lights_rs + result) =
-                        *(float *)((char *)Lights._blv_lights_rs + result) *
-                        0.33000001;
+                        *(float *)((char *)Lights._blv_lights_rs + result) * 0.33000001f;
                     *(float *)((char *)Lights._blv_lights_gs + result) =
-                        *(float *)((char *)Lights._blv_lights_gs + result) *
-                        0.33000001;
+                        *(float *)((char *)Lights._blv_lights_gs + result) * 0.33000001f;
                     *(float *)((char *)Lights._blv_lights_bs + result) =
-                        *(float *)((char *)Lights._blv_lights_bs + result) *
-                        0.33000001;
+                        *(float *)((char *)Lights._blv_lights_bs + result) * 0.33000001f;
                 }
             }
 

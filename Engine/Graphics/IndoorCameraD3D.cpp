@@ -1100,9 +1100,8 @@ void IndoorCameraD3D::Project(int x, int y, int z, int *screenspace_x,
 }
 
 //----- (00436A6D) --------------------------------------------------------
-double IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices,
-                                       unsigned int uStripType) {
-    double result = FLT_MAX;
+float IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripType) {
+    float result = FLT_MAX;
     for (uint i = 0; i < uStripType; i++) {
         if (pVertices[i].vWorldPosition.z < result) {
             result = pVertices[i].vWorldPosition.z;
@@ -1112,11 +1111,8 @@ double IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices,
 }
 
 //----- (00436A40) --------------------------------------------------------
-double IndoorCameraD3D::GetPolygonMaxZ(RenderVertexSoft *pVertex,
-                                       unsigned int uStripType) {
-    double result;  // st7@1
-
-    result = 1.1754944e-38;
+float IndoorCameraD3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uStripType) {
+    float result = FLT_MIN;
     for (uint i = 0; i < uStripType; i++) {
         if (pVertex[i].vWorldPosition.z > result)
             result = pVertex[i].vWorldPosition.z;

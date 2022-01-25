@@ -118,9 +118,9 @@ struct IndoorCameraD3D {
     void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices,
                  bool fit_into_viewport = false);
 
-    double GetPolygonMaxZ(struct RenderVertexSoft *pVertex,
+    float GetPolygonMaxZ(struct RenderVertexSoft *pVertex,
                           unsigned int uStripType);
-    double GetPolygonMinZ(struct RenderVertexSoft *pVertices,
+    float GetPolygonMinZ(struct RenderVertexSoft *pVertices,
                           unsigned int uStripType);
 
     void LightmapNeerClip(struct RenderVertexSoft *pInVertices,
