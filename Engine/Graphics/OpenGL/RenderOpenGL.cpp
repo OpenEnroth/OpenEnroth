@@ -1,6 +1,4 @@
 #ifdef _WINDOWS
-    #include <Windows.h>
-
     #pragma comment(lib, "opengl32.lib")
     #pragma comment(lib, "glu32.lib")
 
@@ -56,6 +54,10 @@
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
+
+#ifndef LOWORD
+    #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
+#endif
 
 
 RenderVertexSoft VertexRenderList[50];  // array_50AC10

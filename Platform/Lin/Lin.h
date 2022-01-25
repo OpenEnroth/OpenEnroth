@@ -15,17 +15,6 @@
 // #define MM_ARCH_ARM64
 #endif
 
-#if defined(MM_ARCH_X64)
-#ifdef __APPLE__
-typedef long long ULONG_PTR;
-#else
-typedef unsigned long long ULONG_PTR;
-#endif
-#else
-typedef unsigned long ULONG_PTR;
-#endif
-#define LOWORD(l) ((unsigned short)(((ULONG_PTR)(l)) & 0xFFFF))
-
 #define _stricmp strcasecmp
 #define _strnicmp strncasecmp
 #define vswprintf_s vswprintf
