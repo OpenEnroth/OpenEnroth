@@ -259,9 +259,9 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
             ++*pSlot;
             return true;
         }
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 // ////////////////////////INDOOR
