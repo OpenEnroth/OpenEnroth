@@ -278,7 +278,8 @@ int explosion_effect_struct::UpdateEffect() {
     float total_to_init = 0;
     if (this->remaining_sparks_to_init > 0) {
         total_to_init = this->prev_init_overflow + this->num_init_per_cycle;
-         if (total_to_init > this->remaining_sparks_to_init) total_to_init = this->remaining_sparks_to_init;
+         if (total_to_init > this->remaining_sparks_to_init)
+             total_to_init = this->remaining_sparks_to_init;
     }
 
     // if sparks left to initiate or effect is still active
@@ -444,8 +445,8 @@ void DrawSparks() {
             }
 
             // increase extents to cover larger square particle drawing
-            xmax +=2;
-            ymax +=2;
+            xmax += 2;
+            ymax += 2;
             uint width = xmax - xmin;
             uint height = ymax - ymin;
 
