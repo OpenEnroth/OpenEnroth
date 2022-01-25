@@ -159,15 +159,15 @@ void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x,
 
     this->ViewTransform(&v, 1);
     if (transformed_x) {
-        *transformed_x = floorf(v.vWorldViewPosition.x + 0.5f);
+        *transformed_x = static_cast<int>(v.vWorldViewPosition.x + 0.5f);
     }
 
     if (transformed_y) {
-        *transformed_y = floorf(v.vWorldViewPosition.y + 0.5f);
+        *transformed_y = static_cast<int>(v.vWorldViewPosition.y + 0.5f);
     }
 
     if (transformed_z) {
-        *transformed_z = floorf(v.vWorldViewPosition.z + 0.5f);
+        *transformed_z = static_cast<int>(v.vWorldViewPosition.z + 0.5f);
     }
 }
 
