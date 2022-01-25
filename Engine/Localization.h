@@ -420,7 +420,7 @@ class Localization {
     bool Initialize();
 
     const char *GetString(unsigned int index) const;
-    String FormatString(unsigned int index, ...) const;
+    std::string FormatString(unsigned int index, ...) const;
 
     const char *GetDayName(unsigned int index) const {
         return this->day_names[index];

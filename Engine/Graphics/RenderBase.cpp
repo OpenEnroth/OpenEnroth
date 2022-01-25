@@ -455,11 +455,11 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     }
 }
 
-HWLTexture *RenderBase::LoadHwlBitmap(const String &name) {
+HWLTexture *RenderBase::LoadHwlBitmap(const std::string &name) {
     return pD3DBitmaps.LoadTexture(name);
 }
 
-HWLTexture *RenderBase::LoadHwlSprite(const String &name) {
+HWLTexture *RenderBase::LoadHwlSprite(const std::string &name) {
     return pD3DSprites.LoadTexture(name);
 }
 

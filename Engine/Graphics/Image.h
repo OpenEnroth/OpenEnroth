@@ -115,7 +115,7 @@ class TextureFrame {
  public:
     inline TextureFrame() : tex(nullptr) {}
 
-    String name = "null";
+    std::string name = "null";
     int16_t uAnimTime = 0;
     int16_t uAnimLength = 0;
     int16_t uFlags = 0;

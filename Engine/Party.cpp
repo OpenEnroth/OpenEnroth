@@ -991,7 +991,7 @@ void Party::PartyFindsGold(
     int hirelingSalaries = 0;
     unsigned int goldToGain = amount;
 
-    String status;
+    std::string status;
     if (_1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal == 2) {
     } else if (
         _1_dont_share_with_followers___2_the_same_but_without_a_message__else_normal == 1) {

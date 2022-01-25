@@ -154,7 +154,7 @@ Texture *ODMFace::GetTexture() {
     }
 }
 
-void ODMFace::SetTexture(const String &filename) {
+void ODMFace::SetTexture(const std::string &filename) {
     if (this->IsTextureFrameTable()) {
         this->resource = (void *)pTextureFrameTable->FindTextureByName(filename.c_str());
         if (this->resource != (void *)-1) {

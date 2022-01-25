@@ -149,8 +149,8 @@ struct Player {
     int GetRangedDamageMin();
     int GetRangedDamageMax();
     int CalculateRangedDamageTo(int uMonsterInfoID);
-    String GetMeleeDamageString();
-    String GetRangedDamageString();
+    std::string GetMeleeDamageString();
+    std::string GetRangedDamageString();
     bool CanTrainToNextLevel();
     unsigned int GetExperienceDisplayColor();
     int CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int amount);
@@ -191,7 +191,7 @@ struct Player {
     int GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
     int GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
     enum CHARACTER_RACE GetRace() const;
-    String GetRaceName() const;
+    std::string GetRaceName() const;
     PLAYER_SEX GetSexByVoice();
     void SetInitialStats();
     void SetSexByVoice();

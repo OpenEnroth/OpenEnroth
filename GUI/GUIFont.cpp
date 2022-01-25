@@ -59,7 +59,7 @@ unsigned int GUIFont::GetHeight() const {
     return pData->uFontHeight;
 }
 
-void GUIFont::DrawTextLine(const String &text, uint16_t uDefaultColor, int uX, int uY, int max_len_pix) {
+void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, int uX, int uY, int max_len_pix) {
     if (text.empty()) {
         return;
     }
@@ -131,7 +131,7 @@ void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, i
     }
 }
 
-void GUIFont::DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const String &text, int line_width) {
+void GUIFont::DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const std::string &text, int line_width) {
     if (text.empty()) {
         return;
     }
@@ -182,14 +182,14 @@ void GUIFont::DrawTextLineToBuff(uint16_t uColor, uint32_t *uX_buff_pos, const S
     }
 }
 
-String GUIFont::GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned int uX, int a5) {
+std::string GUIFont::GetPageTop(const std::string &pInString, GUIWindow *pWindow, unsigned int uX, int a5) {
     if (pInString.empty()) {
         return "";
     }
 
     int text_height = 0;
 
-    String text_str = FitTextInAWindow(pInString, pWindow->uFrameWidth, uX);
+    std::string text_str = FitTextInAWindow(pInString, pWindow->uFrameWidth, uX);
     int text_length = text_str.length();
     for (int i = 0; i < text_length; ++i) {
         unsigned char c = text_str[i];
@@ -217,14 +217,14 @@ String GUIFont::GetPageTop(const String &pInString, GUIWindow *pWindow, unsigned
     return text_str;
 }
 
-unsigned int GUIFont::CalcTextHeight(const String &pString, unsigned int width,
+unsigned int GUIFont::CalcTextHeight(const std::string &pString, unsigned int width,
     int uXOffset, bool return_on_carriage) {
     if (pString.empty()) {
         return 0;
     }
 
     unsigned int uAllHeght = pData->uFontHeight - 6;
-    String test_string = FitTextInAWindow(pString, width, uXOffset);
+    std::string test_string = FitTextInAWindow(pString, width, uXOffset);
     size_t uStringLen = pString.length();
     for (int i = 0; i < uStringLen; ++i) {
         unsigned char c = test_string[i];
@@ -249,7 +249,7 @@ unsigned int GUIFont::CalcTextHeight(const String &pString, unsigned int width,
     return uAllHeght;
 }
 
-unsigned int GUIFont::GetLineWidth(const String &inString) {
+unsigned int GUIFont::GetLineWidth(const std::string &inString) {
     size_t str_len = inString.length();
     unsigned int string_line_width = 0;
     for (int i = 0; i < str_len; ++i) {
@@ -277,12 +277,12 @@ unsigned int GUIFont::GetLineWidth(const String &inString) {
     return string_line_width;
 }
 
-unsigned int GUIFont::AlignText_Center(unsigned int width, const String &pString) {
+unsigned int GUIFont::AlignText_Center(unsigned int width, const std::string &pString) {
     int position = ((int)width - (int)GetLineWidth(pString)) / 2;
     return (position < 0) ? 0 : position;
 }
 
-String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int uX, bool return_on_carriage) {
+std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int width, int uX, bool return_on_carriage) {
     size_t uInStrLen = inString.length();
     strcpy(temp_string, inString.c_str());
     if (uInStrLen == 0) {
@@ -359,7 +359,7 @@ String GUIFont::FitTextInAWindow(const String &inString, unsigned int width, int
     return temp_string;
 }
 
-void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, const String &str,
+void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, const std::string &str,
     bool present_time_transparency, int max_text_height, int uFontShadowColor) {
     int left_margin = 0;
     if (str.empty()) {
@@ -374,7 +374,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
         uX = 12;
     }
 
-    String string_begin = str;
+    std::string string_begin = str;
     if (max_text_height == 0) {
         string_begin = FitTextInAWindow(str, pWindow->uFrameWidth, uX);
     }
@@ -467,7 +467,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
     }
 }
 
-int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, uint16_t uColor, const String &str, int rect_width, int reverse_text) {
+int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, uint16_t uColor, const std::string &str, int rect_width, int reverse_text) {
     char text[4096];
     Assert(str.length() < sizeof(text));
     strcpy(text, str.c_str());
@@ -583,7 +583,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
 }
 
 void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
-    uint16_t firstColor, uint16_t secondColor, const String &pString,
+    uint16_t firstColor, uint16_t secondColor, const std::string &pString,
     Image *image) {
     GUIWindow draw_window;
     draw_window.uFrameHeight = h;
@@ -594,7 +594,7 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
     draw_window.uFrameX = uFrameX;
     draw_window.uFrameY = uFrameY;
 
-    String work_string = FitTwoFontStringINWindow(pString, pSecondFont, &draw_window, 0, 1);
+    std::string work_string = FitTwoFontStringINWindow(pString, pSecondFont, &draw_window, 0, 1);
     std::istringstream stream(work_string);
     std::getline(stream, work_string);
 
@@ -628,9 +628,9 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
     }
 }
 
-String GUIFont::FitTwoFontStringINWindow(const String &pString, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6) {
+std::string GUIFont::FitTwoFontStringINWindow(const std::string &pString, GUIFont *pFontSecond, GUIWindow* pWindow, int startPixlOff, int a6) {
     if (pString.empty()) {
-        return String();
+        return std::string();
     }
     GUIFont *currentFont = this;
     size_t uInStrLen = pString.length();
@@ -715,16 +715,16 @@ String GUIFont::FitTwoFontStringINWindow(const String &pString, GUIFont *pFontSe
         }
     }
 
-    return String(pTmpBuf3.data());
+    return std::string(pTmpBuf3.data());
 }
 
-int GUIFont::GetStringHeight2(GUIFont *secondFont, const String &text_str, GUIWindow* pWindow, int startX, int a6) {
+int GUIFont::GetStringHeight2(GUIFont *secondFont, const std::string &text_str, GUIWindow* pWindow, int startX, int a6) {
     if (text_str.empty()) {
         return 0;
     }
 
     int uAllHeght = GetHeight() - 3;
-    String test_string = FitTwoFontStringINWindow(text_str, secondFont, pWindow, startX, 0);
+    std::string test_string = FitTwoFontStringINWindow(text_str, secondFont, pWindow, startX, 0);
     size_t uStringLen = test_string.length();
     for (size_t i = 0; i < uStringLen; ++i) {
         unsigned char c = test_string[i];

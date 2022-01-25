@@ -101,7 +101,7 @@ void GUIButton::Release() {
     delete this;
 }
 
-void GUIButton::DrawLabel(const String &label_text, GUIFont *pFont, int a5,
+void GUIButton::DrawLabel(const std::string &label_text, GUIFont *pFont, int a5,
                           int uFontShadowColor) {
     return pParent->DrawText(
         pFont,

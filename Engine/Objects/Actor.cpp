@@ -5028,15 +5028,15 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     int v37;               // eax@51
     int v38;               // eax@52
     int v39;               // edi@52
-    String v40;       // [sp-18h] [bp-100h]@60
+    std::string v40;       // [sp-18h] [bp-100h]@60
     const char *v44;       // [sp-8h] [bp-F0h]@13
-    String pTexture;        // [sp-4h] [bp-ECh]@9
+    std::string pTexture;        // [sp-4h] [bp-ECh]@9
                            //  char Str[32]; // [sp+Ch] [bp-DCh]@60
-    String Str2;           // [sp+2Ch] [bp-BCh]@29
+    std::string Str2;           // [sp+2Ch] [bp-BCh]@29
     unsigned int uFaceID;  // [sp+A4h] [bp-44h]@52
     MonsterInfo *Src;      // [sp+A8h] [bp-40h]@50
     int v50;               // [sp+ACh] [bp-3Ch]@47
-    String Source;         // [sp+B0h] [bp-38h]@20
+    std::string Source;         // [sp+B0h] [bp-38h]@20
     int v52;               // [sp+D0h] [bp-18h]@34
     int v53;               // [sp+D4h] [bp-14h]@34
     int pSector;           // [sp+D8h] [bp-10h]@32

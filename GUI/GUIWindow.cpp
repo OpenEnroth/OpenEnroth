@@ -154,7 +154,7 @@ bool PauseGameDrawing() {
 OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     unsigned int width,
     unsigned int height, GUIButton *button,
-    const String &hint
+    const std::string &hint
 )
     : GUIWindow(WINDOW_CastSpell, x, y, width, height, button, hint) {
     pEventTimer->Pause();
@@ -506,7 +506,7 @@ void GUIWindow::HouseDialogManager() {
                 pNPCPortraits_y[uNumDialogueNPCPortraits - 1][v8] / 480.0f,
                 pDialogueNPCPortraits[v8]);
             if (uNumDialogueNPCPortraits < 4) {
-                String pTitleText;
+                std::string pTitleText;
                 int v9 = 0;
                 if (v8 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
                     pTitleText = pMapStats->pInfos[uHouse_ExitPic].pName;
@@ -635,13 +635,13 @@ void GUIWindow::HouseDialogManager() {
     }
 }
 
-String MakeDateTimeString(GameTime time) {
+std::string MakeDateTimeString(GameTime time) {
     int seconds = time.GetSecondsFraction();
     int minutes = time.GetMinutesFraction();
     int hours = time.GetHoursOfDay();
     int days = time.GetDays();
 
-    String str = "";
+    std::string str = "";
     if (days) {
         auto day_str = localization->GetString(LSTR_DAYS);
         if (days <= 1) day_str = localization->GetString(LSTR_DAY_CAPITALIZED);
@@ -686,7 +686,7 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
 
 void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
     int vertical_margin,
-    unsigned __int16 uDefaultColor, const String &str,
+    unsigned __int16 uDefaultColor, const std::string &str,
     int line_spacing) {
     this->DrawTitleText(font, horizontal_margin, vertical_margin, uDefaultColor,
         str.c_str(), line_spacing);
@@ -699,10 +699,10 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin,
     const char *pInString, int uLineSpacing) {
     int width = this->uFrameWidth - uHorizontalMargin;
     ui_current_text_color = uDefaultColor;
-    String resString = pFont->FitTextInAWindow(pInString, this->uFrameWidth,
+    std::string resString = pFont->FitTextInAWindow(pInString, this->uFrameWidth,
         uHorizontalMargin);
     std::istringstream stream(resString);
-    String line;
+    std::string line;
     int x = uHorizontalMargin + this->uFrameX;
     int y = uVerticalMargin + this->uFrameY;
     while (std::getline(stream, line)) {
@@ -714,7 +714,7 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin,
 }
 
 void GUIWindow::DrawText(GUIFont *font, int x, int y, unsigned short uFontColor,
-    const String &str, bool present_time_transparency,
+    const std::string &str, bool present_time_transparency,
     int max_text_height, int uFontShadowColor) {
     this->DrawText(font, x, y, uFontColor, str.c_str(),
         present_time_transparency, max_text_height,
@@ -733,13 +733,13 @@ void GUIWindow::DrawText(GUIFont *font, int uX, int uY,
 int GUIWindow::DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y,
     unsigned int color, const char *text,
     int rect_width, int reverse_text) {
-    String label = String(text);
+    std::string label = std::string(text);
     return DrawTextInRect(font, x, y, color, label, rect_width, reverse_text);
 }
 
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, unsigned int uX, unsigned int uY,
-    unsigned int uColor, String &str, int rect_width,
+    unsigned int uColor, std::string &str, int rect_width,
     int reverse_text) {
     return pFont->DrawTextInRect(this, uX, uY, uColor, str, rect_width,
         reverse_text);
@@ -748,7 +748,7 @@ int GUIWindow::DrawTextInRect(GUIFont *pFont, unsigned int uX, unsigned int uY,
 GUIButton *GUIWindow::CreateButton(int uX, int uY, int uWidth, int uHeight,
     int a6, int a7, UIMessageType msg,
     unsigned int msg_param, GameKey hotkey,
-    const String &label,
+    const std::string &label,
     const std::vector<Image *> &textures) {
     GUIButton *pButton = new GUIButton();
 
@@ -799,7 +799,7 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
 }
 
 GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth,
-    unsigned int uHeight, GUIButton *pButton, const String &hint
+    unsigned int uHeight, GUIButton *pButton, const std::string &hint
 )
     : eWindowType(windowType) {
     this->mouse = EngineIoc::ResolveMouse();
@@ -1666,7 +1666,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
 
 void _4B3FE5_training_dialogue(int a4) {
     uDialogueType = DIALOGUE_SKILL_TRAINER;
-    current_npc_text = String(pNPCTopics[a4 + 168].pText);
+    current_npc_text = std::string(pNPCTopics[a4 + 168].pText);
     _4B254D_SkillMasteryTeacher(a4);  // checks whether the facility can be used
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)a4);
@@ -1831,7 +1831,7 @@ void CheckBountyRespawnAndAward() {
 }
 
 //----- (004B254D) --------------------------------------------------------
-String _4B254D_SkillMasteryTeacher(int trainerInfo) {
+std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     int teacherLevel;                // edx@1
     int skillBeingTaught;            // ecx@1
     int pClassType;                  // eax@7
@@ -1891,18 +1891,18 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
     }
 
     if (!activePlayer->CanAct())
-        return String(pNPCTopics[122].pText);  // Not in your condition!
+        return std::string(pNPCTopics[122].pText);  // Not in your condition!
 
     pointsInSkill = activePlayer->pActiveSkills[skillBeingTaught];
     pointsInSkillWOutMastery = pointsInSkill & 0x3F;
     if (!pointsInSkillWOutMastery)
-        return String(
+        return std::string(
             pNPCTopics[131].pText);  // You must know the skill before you can
                                      // become an expert in it!
 
     skillMastery = SkillToMastery(pointsInSkill);
     if (skillMastery > teacherLevel + 1)
-        return String(
+        return std::string(
             pNPCTopics[teacherLevel + 128]
             .pText);  // You are already an SKILLLEVEL in this skill.
 
@@ -1910,7 +1910,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
     if (masteryLevelBeingTaught == 2 && pointsInSkillWOutMastery < 4 ||
         masteryLevelBeingTaught == 3 && pointsInSkillWOutMastery < 7 ||
         masteryLevelBeingTaught == 4 && pointsInSkillWOutMastery < 10)
-        return String(
+        return std::string(
             pNPCTopics[127].pText);  // You don't meet the requirements, and
                                      // cannot be taught until you do.
 
@@ -1990,13 +1990,13 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         case 3:
             if (!_449B57_test_bit(pParty->_quest_bits, 114))
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
         case 4:
             if (!activePlayer->IsClass(PLAYER_CLASS_ARCHMAGE) ||
                 !activePlayer->IsClass(PLAYER_CLASS_PRIEST_OF_SUN))
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
         }
@@ -2008,13 +2008,13 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         case 3:
             if (!_449B57_test_bit(pParty->_quest_bits, 110))
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
         case 4:
             if (!activePlayer->IsClass(PLAYER_CLASS_LICH) ||
                 !activePlayer->IsClass(PLAYER_CLASS_PRIEST_OF_MOON))
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
         }
@@ -2046,7 +2046,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         case 3:
             if (activePlayer->GetBaseWillpower() < 50)
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
         case 4:
@@ -2061,7 +2061,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         case 3:
             if (activePlayer->GetBaseEndurance() < 50)
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 2500;
             break;
         case 4:
@@ -2085,7 +2085,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         case 4:
             if ((activePlayer->pActiveSkills[PLAYER_SKILL_UNARMED] & 63) < 0xA)
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
         }
@@ -2100,7 +2100,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         case 4:
             if ((activePlayer->pActiveSkills[PLAYER_SKILL_DODGE] & 63) < 0xA)
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 8000;
             break;
         }
@@ -2113,7 +2113,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             break;
         case 3:
             if (activePlayer->GetBaseIntelligence() < 50)
-                return String(pNPCTopics[127].pText);
+                return std::string(pNPCTopics[127].pText);
             gold_transaction_amount = 5000;
             break;
         case 4:
@@ -2126,7 +2126,7 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
     }
 
     if (gold_transaction_amount > pParty->GetGold())
-        return String(pNPCTopics[124].pText);  // You don't have enough gold!
+        return std::string(pNPCTopics[124].pText);  // You don't have enough gold!
 
     guild_membership_approved = true;
     if (masteryLevelBeingTaught == 2) {
@@ -2149,17 +2149,17 @@ String _4B254D_SkillMasteryTeacher(int trainerInfo) {
             gold_transaction_amount);
     }
 
-    return String("");
+    return std::string("");
 }
 
-String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID,
+std::string BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID,
     ItemGen *a3, char *a4, int a5, GameTime *a6) {
-    String str = String(lpsz);
+    std::string str = std::string(lpsz);
     return BuildDialogueString(str, uPlayerID, a3, a4, a5, a6);
 }
 
 //----- (00495461) --------------------------------------------------------
-String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
+std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, ItemGen *a3,
     char *a4, int shop_screen, GameTime *a6) {
     char v1[256] = "";
     Player *pPlayer;       // ebx@3
@@ -2182,7 +2182,7 @@ String BuildDialogueString(String &str, unsigned __int8 uPlayerID, ItemGen *a3,
     else
         npc = GetNPCData(sDialogue_SpeakingActorNPC_ID);
 
-    String result;
+    std::string result;
 
     // pText = a4;
     uint len = str.length();
@@ -2647,7 +2647,7 @@ void UI_Create() {
 }
 
 
-String NameAndTitle(const char* name, const char* title) {
+std::string NameAndTitle(const char* name, const char* title) {
     return localization->FormatString(
         LSTR_FMT_S_THE_S,
         name,
@@ -2656,7 +2656,7 @@ String NameAndTitle(const char* name, const char* title) {
 }
 
 
-String NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
+std::string NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
     return NameAndTitle(
         name,
         localization->GetClassName(class_type)
@@ -2664,7 +2664,7 @@ String NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type) {
 }
 
 
-String NameAndTitle(const char* name, NPCProf profession) {
+std::string NameAndTitle(const char* name, NPCProf profession) {
     return NameAndTitle(
         name,
         localization->GetNpcProfessionName(profession)
@@ -2672,7 +2672,7 @@ String NameAndTitle(const char* name, NPCProf profession) {
 }
 
 
-String NameAndTitle(NPCData* npc) {
+std::string NameAndTitle(NPCData* npc) {
     if (npc->pName) {
         if (npc->profession) {
             Assert(npc->profession < 59);
@@ -2682,11 +2682,11 @@ String NameAndTitle(NPCData* npc) {
         return npc->pName;
     }
 
-    return String("");
+    return std::string("");
 }
 
 
-String GetDisplayName(Actor* actor) {
+std::string GetDisplayName(Actor* actor) {
     if (actor->dword_000334_unique_name)
         return pMonsterStats->pPlaceStrings[actor->dword_000334_unique_name];
     else
@@ -2694,7 +2694,7 @@ String GetDisplayName(Actor* actor) {
 }
 
 
-static String SeekKnowledgeElswhereString(Player *player) {
+static std::string SeekKnowledgeElswhereString(Player *player) {
     return localization->FormatString(
         LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE,
         player->pName,
@@ -2705,7 +2705,7 @@ static String SeekKnowledgeElswhereString(Player *player) {
 }
 
 void SeekKnowledgeElswhereDialogueOption(GUIWindow* dialogue, Player* player) {
-    String str = SeekKnowledgeElswhereString(pPlayers[uActiveCharacter]);
+    std::string str = SeekKnowledgeElswhereString(pPlayers[uActiveCharacter]);
     int text_height = pFontArrus->CalcTextHeight(str, dialogue->uFrameWidth, 0);
 
     dialogue->DrawTitleText(

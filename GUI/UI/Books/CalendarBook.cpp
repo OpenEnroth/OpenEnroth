@@ -136,7 +136,7 @@ void GUIWindow_CalendarBook::Update() {
         ui_book_calendar_moon_color, str, 0, 0, 0);
 
     pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-    String pMapName;
+    std::string pMapName;
     if (pMapID)
         pMapName = pMapStats->pInfos[pMapID].pName;
     else

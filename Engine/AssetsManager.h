@@ -14,25 +14,25 @@ class AssetsManager {
     bool ReleaseAllImages();
     bool ReleaseAllSprites();
 
-    bool ReleaseImage(const String &name);
-    bool ReleaseSprite(const String& name);
+    bool ReleaseImage(const std::string &name);
+    bool ReleaseSprite(const std::string& name);
 
-    Texture *GetImage_ColorKey(const String &name, uint16_t colorkey);
-    Texture *GetImage_Solid(const String &name);
-    Texture *GetImage_Alpha(const String &name);
+    Texture *GetImage_ColorKey(const std::string &name, uint16_t colorkey);
+    Texture *GetImage_Solid(const std::string &name);
+    Texture *GetImage_Alpha(const std::string &name);
 
-    Texture *GetImage_PCXFromFile(const String &name);
-    Texture *GetImage_PCXFromIconsLOD(const String &name);
-    Texture *GetImage_PCXFromNewLOD(const String &name);
+    Texture *GetImage_PCXFromFile(const std::string &name);
+    Texture *GetImage_PCXFromIconsLOD(const std::string &name);
+    Texture *GetImage_PCXFromNewLOD(const std::string &name);
 
-    Texture *GetBitmap(const String &name);
-    Texture *GetSprite(const String &name, unsigned int palette_id,
+    Texture *GetBitmap(const std::string &name);
+    Texture *GetSprite(const std::string &name, unsigned int palette_id,
                        unsigned int lod_sprite_id);
 
  protected:
-    std::map<String, Texture *> bitmaps;
-    std::map<String, Texture *> sprites;
-    std::map<String, Texture *> images;
+    std::map<std::string, Texture *> bitmaps;
+    std::map<std::string, Texture *> sprites;
+    std::map<std::string, Texture *> images;
 };
 
 extern AssetsManager *assets;

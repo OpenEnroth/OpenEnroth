@@ -14,7 +14,7 @@ const char *Localization::GetString(unsigned int index) const {
     return this->localization_strings[index];
 }
 
-String Localization::FormatString(unsigned int index, ...) const {
+std::string Localization::FormatString(unsigned int index, ...) const {
     va_list args_ptr;
 
     const char *format = (this->GetString(index));
@@ -27,7 +27,7 @@ String Localization::FormatString(unsigned int index, ...) const {
 
     extern int sprintfex_internal(char *str);
     sprintfex_internal(buf);
-    return String(buf);
+    return std::string(buf);
 }
 
 //----- (00452C49) --------------------------------------------------------

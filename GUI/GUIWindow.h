@@ -428,24 +428,24 @@ class GUIButton;
 class GUIWindow {
  public:
     GUIWindow();
-    GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, GUIButton *pButton, const String &hint = String());
+    GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, GUIButton *pButton, const std::string &hint = std::string());
     virtual ~GUIWindow() {}
 
     GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
-    UIMessageType msg, unsigned int msg_param, GameKey hotkey = GameKey::None, const String &label = "",
+    UIMessageType msg, unsigned int msg_param, GameKey hotkey = GameKey::None, const std::string &label = "",
     const std::vector<Image*> &textures = std::vector<Image*>());
 
     bool Contains(unsigned int x, unsigned int y);
     void DrawFlashingInputCursor(int uX, int uY, GUIFont *a2);
 
     int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, const char *text, int rect_width, int reverse_text);
-    int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, String &str, int rect_width, int reverse_text);
+    int DrawTextInRect(GUIFont *font, unsigned int x, unsigned int y, unsigned int color, std::string &str, int rect_width, int reverse_text);
 
     void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const char *str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
-    void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const String &str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
+    void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const std::string &str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
 
     void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const char *pInString, int line_spacing);
-    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const String &str, int line_spacing);
+    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const std::string &str, int line_spacing);
 
     void DrawShops_next_generation_time_string(GameTime time);
     void HouseDialogManager();
@@ -481,7 +481,7 @@ class GUIWindow {
     int pStartingPosActiveItem;
     WindowInputStatus keyboard_input_status;
     bool receives_keyboard_input;
-    String sHint;
+    std::string sHint;
     std::vector<GUIButton*> vButtons;
 
     std::shared_ptr<Mouse> mouse = nullptr;
@@ -490,7 +490,7 @@ class GUIWindow {
 
 class GUIWindow_Scroll : public GUIWindow {
  public:
-    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
+    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
         GUIWindow(WINDOW_Scroll, x, y, width, height, button, hint) {
         CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
         CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
@@ -505,7 +505,7 @@ class GUIWindow_Scroll : public GUIWindow {
 
 class OnButtonClick : public GUIWindow {
  public:
-    OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String(), bool play_sound = true) :
+    OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string(), bool play_sound = true) :
         GUIWindow(WINDOW_CharacterCreationBtn, x, y, width, height, button, hint),
         bPlaySound(play_sound)
     {}
@@ -518,7 +518,7 @@ class OnButtonClick : public GUIWindow {
 
 class OnButtonClick2 : public GUIWindow {
  public:
-    OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String(), bool play_sound = true) :
+    OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string(), bool play_sound = true) :
         GUIWindow(WINDOW_PressedButton2, x, y, width, height, button, hint),
         bPlaySound(play_sound)
     {}
@@ -531,7 +531,7 @@ class OnButtonClick2 : public GUIWindow {
 
 class OnButtonClick3 : public GUIWindow {
  public:
-    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String())
+    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string())
         : GUIWindow(windowType, x, y, width, height, button, hint) {
     }
 
@@ -543,7 +543,7 @@ class OnButtonClick3 : public GUIWindow {
 // something debug? not really sure, unused
 class OnButtonClick4 : public GUIWindow {
  public:
-    OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
+    OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
         GUIWindow(WINDOW_59, x, y, width, height, button, hint)
     {}
     virtual ~OnButtonClick4() {}
@@ -553,7 +553,7 @@ class OnButtonClick4 : public GUIWindow {
 
 class OnSaveLoad : public GUIWindow {
  public:
-    OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
+    OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
         GUIWindow(WINDOW_SaveLoadBtn, x, y, width, height, button, hint)
     {}
     virtual ~OnSaveLoad() {}
@@ -563,7 +563,7 @@ class OnSaveLoad : public GUIWindow {
 
 class OnCancel : public GUIWindow {
  public:
-    OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
+    OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
         GUIWindow(WINDOW_GenericCancel, x, y, width, height, button, hint)
     {}
     virtual ~OnCancel() {}
@@ -573,7 +573,7 @@ class OnCancel : public GUIWindow {
 
 class OnCancel2 : public GUIWindow {
  public:
-    OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
+    OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
         GUIWindow(WINDOW_ExitCharacterWindow, x, y, width, height, button, hint)
     {}
     virtual ~OnCancel2() {}
@@ -583,7 +583,7 @@ class OnCancel2 : public GUIWindow {
 
 class OnCancel3 : public GUIWindow {
  public:
-    OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String()) :
+    OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
         GUIWindow(WINDOW_LoadGame_CancelBtn, x, y, width, height, button, hint)
     {}
     virtual ~OnCancel3() {}
@@ -593,7 +593,7 @@ class OnCancel3 : public GUIWindow {
 
 class OnCastTargetedSpell : public GUIWindow {
  public:
-    OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String());
+    OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string());
     virtual ~OnCastTargetedSpell() {}
 };
 
@@ -640,7 +640,7 @@ struct GUIMessage {
     enum UIMessageType eType;
     int param;
     int field_8;
-    String file;
+    std::string file;
     unsigned int line;
 };
 
@@ -694,7 +694,7 @@ void GameUI_DrawPortraits(unsigned int _this);
 void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                         unsigned int uW, unsigned int uZoom,
                         unsigned int bRedrawOdmMinimap);
-String GameUI_GetMinimapHintText();
+std::string GameUI_GetMinimapHintText();
 void GameUI_DrawPartySpells();
 void GameUI_DrawTorchlightAndWizardEye();
 void GameUI_DrawCharacterSelectionFrame();
@@ -702,7 +702,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player);
 void GameUI_DrawNPCPopup(void *_this);
 
 // character ui
-String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
+std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID,
                                     PLAYER_SKILL_TYPE uPlayerSkillType);
 void CharacterUI_SkillsTab_ShowHint();
 void CharacterUI_StatsTab_ShowHint();
@@ -750,22 +750,22 @@ void ClickNPCTopic(DIALOGUE_TYPE topic);
 void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
 void CheckBountyRespawnAndAward();
-String _4B254D_SkillMasteryTeacher(int trainerInfo);
-String BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID,
+std::string _4B254D_SkillMasteryTeacher(int trainerInfo);
+std::string BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID,
                            struct ItemGen *a3, char *a4, int a5,
                            GameTime *a6 = nullptr);
-String BuildDialogueString(String &str, unsigned __int8 uPlayerID,
+std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID,
                            struct ItemGen *a3, char *a4, int shop_screen,
                            GameTime *a6 = nullptr);
 int const_2();
 
 
-String NameAndTitle(const char *name, const char *title);
-String NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type);
-String NameAndTitle(const char* name, NPCProf profession);
-String NameAndTitle(NPCData *npc);
+std::string NameAndTitle(const char *name, const char *title);
+std::string NameAndTitle(const char* name, PLAYER_CLASS_TYPE class_type);
+std::string NameAndTitle(const char* name, NPCProf profession);
+std::string NameAndTitle(NPCData *npc);
 
-String GetDisplayName(Actor* actor);
+std::string GetDisplayName(Actor* actor);
 
 void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player* player);
 void SkillTrainingDialogue(GUIWindow* dialogue, int num_skills_avaiable, int all_text_height, int skill_price);

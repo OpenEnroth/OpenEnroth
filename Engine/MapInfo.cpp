@@ -45,9 +45,9 @@ const char *location_type[] = {
 };
 
 void MapStats::Initialize() {
-    String pMapStatsTXT = (char*)pEvents_LOD->LoadCompressedTexture("MapStats.txt");
+    std::string pMapStatsTXT = (char*)pEvents_LOD->LoadCompressedTexture("MapStats.txt");
     std::stringstream stream(pMapStatsTXT);
-    String tmpString;
+    std::string tmpString;
     std::getline(stream, tmpString);
     std::getline(stream, tmpString);
     std::getline(stream, tmpString);
@@ -211,7 +211,7 @@ void MapStats::Initialize() {
 }
 
 int MapStats::sub_410D99_get_map_index(int a1) {
-    String name = pGames_LOD->GetSubNodeName(a1);
+    std::string name = pGames_LOD->GetSubNodeName(a1);
 
     for (int i = 1; i <= pMapStats->uNumMaps; i++) {
         if (pMapStats->pInfos[i].pFilename == name) {
@@ -222,10 +222,10 @@ int MapStats::sub_410D99_get_map_index(int a1) {
     return -1;
 }
 
-MAP_TYPE MapStats::GetMapInfo(const String &Str2) {
+MAP_TYPE MapStats::GetMapInfo(const std::string &Str2) {
     Assert(uNumMaps >= 2);
 
-    String map_name = MakeLower(Str2);
+    std::string map_name = MakeLower(Str2);
 
     for (uint i = 1; i < uNumMaps; ++i) {
         if (pInfos[i].pFilename == map_name) {

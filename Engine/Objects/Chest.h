@@ -14,7 +14,7 @@ enum CHEST_FLAGS {
 struct ChestDesc {
     explicit ChestDesc(struct ChestDesc_mm7 *pChest);
 
-    String sName;
+    std::string sName;
     unsigned int uWidth;
     unsigned int uHeight;
     unsigned int uTextureID;

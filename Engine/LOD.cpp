@@ -97,7 +97,7 @@ struct LODSpriteLine {
 };
 #pragma pack(pop)
 
-int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const String &pContainer) {
+int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const std::string &pContainer) {
     FILE *File = FindContainer(pContainer, 0);
     if (File == nullptr) {
         return -1;
@@ -140,7 +140,7 @@ int LODFile_Sprites::LoadSpriteFromFile(LODSprite *pSprite, const String &pConta
     return 1;
 }
 
-bool LODFile_Sprites::LoadSprites(const String &pFilename) {
+bool LODFile_Sprites::LoadSprites(const std::string &pFilename) {
     if (!Open(pFilename)) {
         return false;
     }
@@ -251,7 +251,7 @@ void LOD::File::Close() {
 }
 
 int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
-                                     const String &root_name, const String &lod_name) {
+                                     const std::string &root_name, const std::string &lod_name) {
     if (isFileOpened) return 1;
     if (root_name.empty()) {
         return 2;
@@ -333,7 +333,7 @@ void Sprite::Release() {
     this->uPaletteID = 0;
 }
 
-bool LODFile_IconsBitmaps::Load(const String &pLODFilename, const String &pFolderName) {
+bool LODFile_IconsBitmaps::Load(const std::string &pLODFilename, const std::string &pFolderName) {
     if (!Open(pLODFilename)) {
         return false;
     }
@@ -352,7 +352,7 @@ void LODFile_IconsBitmaps::ReleaseAll() {
     this->uNumLoadedFiles = 0;
 }
 
-unsigned int LODFile_IconsBitmaps::FindTextureByName(const String &pName) {
+unsigned int LODFile_IconsBitmaps::FindTextureByName(const std::string &pName) {
     for (uint i = 0; i < this->uNumLoadedFiles; i++) {
         if (iequals(this->pTextures[i].header.pName, pName))
             return i;
@@ -453,7 +453,7 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
         temp_offset += pSubIndices[i].uDataSize;
     }
 
-    String Filename = MakeTempPath("lod.tmp");
+    std::string Filename = MakeTempPath("lod.tmp");
     FILE *tmp_file = fopen(Filename.c_str(), "wb+");
     if (tmp_file == nullptr) {
         return 5;
@@ -494,7 +494,7 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
     return LoadFile(pLODName.c_str(), 0);
 }
 
-bool LOD::WriteableFile::AppendDirectory(const String &file_name, const void *pData, size_t data_size) {
+bool LOD::WriteableFile::AppendDirectory(const std::string &file_name, const void *pData, size_t data_size) {
     Assert(uNumSubDirs < 299);
 
     LOD::Directory dir;
@@ -532,7 +532,7 @@ void LOD::WriteableFile::CloseWriteFile() {
     // __debugbreak();
 }
 
-unsigned int LOD::WriteableFile::Write(const String &file_name, const void *pDirData, size_t size, int a4) {
+unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void *pDirData, size_t size, int a4) {
     LOD::Directory dir;
     strcpy(dir.pFilename, file_name.c_str());
     dir.uDataSize = size;
@@ -577,7 +577,7 @@ unsigned int LOD::WriteableFile::Write(const String &file_name, const void *pDir
     }
 
     int size_correction = 0;
-    String Filename = MakeDataPath("lod.tmp");
+    std::string Filename = MakeDataPath("lod.tmp");
     FILE *tmp_file = fopen(Filename.c_str(), "wb+");
     if (!tmp_file) return 5;
     if (!bRewrite_data)
@@ -675,7 +675,7 @@ LOD::WriteableFile::WriteableFile() {
     pOutputFileHandle = nullptr;
 }
 
-bool LOD::WriteableFile::LoadFile(const String &pFilename, bool bWriting) {
+bool LOD::WriteableFile::LoadFile(const std::string &pFilename, bool bWriting) {
     pFile = fopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
     if (pFile == nullptr) {
         return false;  // возможно файл не закрыт, поэтому не открывается
@@ -740,7 +740,7 @@ LOD::File::~File() {
     }
 }
 
-bool LOD::File::Open(const String &sFilename) {
+bool LOD::File::Open(const std::string &sFilename) {
     if (!OpenFile(sFilename)) {
         return false;
     }
@@ -752,7 +752,7 @@ bool LOD::File::Open(const String &sFilename) {
     return LoadSubIndices(pRoot.front().pFilename);
 }
 
-bool LOD::File::OpenFile(const String &sFilename) {
+bool LOD::File::OpenFile(const std::string &sFilename) {
     if (isFileOpened) {
         Close();
     }
@@ -793,7 +793,7 @@ bool LOD::File::LoadHeader() {
     return true;
 }
 
-bool LOD::File::LoadSubIndices(const String &pContainer) {
+bool LOD::File::LoadSubIndices(const std::string &pContainer) {
     ResetSubIndices();
 
     for (LOD::Directory &dir : pRoot) {
@@ -822,7 +822,7 @@ LOD::Directory::Directory() {
     this->priority = 0;
 }
 
-bool LOD::File::DoesContainerExist(const String &pContainer) {
+bool LOD::File::DoesContainerExist(const std::string &pContainer) {
     for (size_t i = 0; i < uNumSubDirs; ++i) {
         if (!_stricmp(pContainer.c_str(), pSubIndices[i].pFilename)) {
             return true;
@@ -840,7 +840,7 @@ int LODFile_Sprites::_461397() {
     return this->uNumLoadedSprites;
 }
 
-FILE *LOD::File::FindContainer(const String &pContainer_Name, size_t *data_size) {
+FILE *LOD::File::FindContainer(const std::string &pContainer_Name, size_t *data_size) {
     if (!isFileOpened) {
         return nullptr;
     }
@@ -884,7 +884,7 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
     }
 }
 
-void *LOD::File::LoadRaw(const String &pContainer, size_t *data_size) {
+void *LOD::File::LoadRaw(const std::string &pContainer, size_t *data_size) {
     if (data_size != nullptr) {
         *data_size = 0;
     }
@@ -910,7 +910,7 @@ void *LOD::File::LoadRaw(const String &pContainer, size_t *data_size) {
     return result;
 }
 
-void *LOD::File::LoadCompressedTexture(const String &pContainer, size_t *data_size) {
+void *LOD::File::LoadCompressedTexture(const std::string &pContainer, size_t *data_size) {
     uint8_t *result = nullptr;
     if (data_size != nullptr) {
         *data_size = 0;
@@ -956,7 +956,7 @@ struct CompressedHeader {
 };
 #pragma pack(pop)
 
-void *LOD::File::LoadCompressed(const String &pContainer, size_t *data_size) {
+void *LOD::File::LoadCompressed(const std::string &pContainer, size_t *data_size) {
     static_assert(sizeof(CompressedHeader) == 16, "Wrong type size");
 
     void *result = nullptr;
@@ -996,7 +996,7 @@ void *LOD::File::LoadCompressed(const String &pContainer, size_t *data_size) {
     return result;
 }
 
-int LOD::File::GetSubNodeIndex(const String &name) const {
+int LOD::File::GetSubNodeIndex(const std::string &name) const {
     for (size_t index = 0; index < uNumSubDirs; index++) {
         if (name == pSubIndices[index].pFilename) {
             return index;
@@ -1011,7 +1011,7 @@ void LODFile_IconsBitmaps::ReleaseHardwareTextures() {}
 void LODFile_IconsBitmaps::ReleaseLostHardwareTextures() {}
 
 int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
-                                        const String &pContainer, int mode) {
+                                        const std::string &pContainer, int mode) {
     unsigned int v7;  // ebx@6
     unsigned int v8;  // ecx@6
     int result;       // eax@7
@@ -1055,7 +1055,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
 }
 
 int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
-                                             const String &pContainer,
+                                             const std::string &pContainer,
                                              enum TEXTURE_TYPE eTextureType) {
     //int result;        // esi@14
     unsigned int v14;  // eax@21
@@ -1164,7 +1164,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
 }
 
 Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(
-    const String &pContainer, enum TEXTURE_TYPE uTextureType) {
+    const std::string &pContainer, enum TEXTURE_TYPE uTextureType) {
     uint id = LoadTexture(pContainer, uTextureType);
 
     Assert(id != -1 && L"Texture_MM7 not found");
@@ -1172,7 +1172,7 @@ Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(
     return &pTextures[id];
 }
 
-unsigned int LODFile_IconsBitmaps::LoadTexture(const String &pContainer, enum TEXTURE_TYPE uTextureType) {
+unsigned int LODFile_IconsBitmaps::LoadTexture(const std::string &pContainer, enum TEXTURE_TYPE uTextureType) {
     for (uint i = 0; i < uNumLoadedFiles; ++i) {
         if (iequals(pContainer, pTextures[i].header.pName)) {
             return i;

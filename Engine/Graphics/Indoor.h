@@ -429,7 +429,7 @@ struct BLVFace {  // 60h
     void _get_normals(Vec3_int_ *a2, Vec3_int_ *a3);
     void FromODM(struct ODMFace *face);
 
-    void SetTexture(const String &filename);
+    void SetTexture(const std::string &filename);
     Texture *GetTexture();
 
     bool Deserialize(struct BLVFace_MM7 *);
@@ -596,7 +596,7 @@ struct IndoorLocation {
     int GetSector(int sX, int sY, int sZ);
     void Release();
     bool Alloc();
-    bool Load(const String &filename, int num_days_played,
+    bool Load(const std::string &filename, int num_days_played,
               int respawn_interval_days, char *pDest);
     void Draw();
     void ToggleLight(signed int uLightID, unsigned int bToggle);
@@ -612,7 +612,7 @@ struct IndoorLocation {
     void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, unsigned int uSectorID);
     void PrepareItemsRenderList_BLV();
 
-    String filename;
+    std::string filename;
     char field_20[48];
     unsigned int bLoaded;
     char field_54[404];

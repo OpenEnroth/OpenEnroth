@@ -611,7 +611,7 @@ char *Party_Teleport_Map_Name;
 std::array<std::array<char, 100>, 6> byte_591180;  // idb
 std::array<struct NPCData *, 7> HouseNPCData;  // 0 zero element holds standart house npc
 GUIButton *HouseNPCPortraitsButtonsList[6];  // dword_5913F4
-String branchless_dialogue_str;
+std::string branchless_dialogue_str;
 int EvtTargetObj;                               // 0x5B5920
 int _unused_5B5924_is_travel_ui_drawn = false;  // 005B5924
 int Party_Teleport_X_Pos;
@@ -629,8 +629,8 @@ signed int dword_5B65D0_dialogue_actor_npc_id;
 int dword_5C3418;
 int dword_5C341C;
 // std::array<char, 777> byte_5C3427;
-String game_ui_status_bar_event_string;
-String game_ui_status_bar_string;
+std::string game_ui_status_bar_event_string;
+std::string game_ui_status_bar_string;
 unsigned int game_ui_status_bar_event_string_time_left;
 int bForceDrawFooter;
 int _5C35C0_force_party_death = false;
@@ -702,7 +702,7 @@ float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
 float flt_6BE150_look_up_down_dangle = 1.0f;
-String pCurrentMapName;
+std::string pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 float _6BE3A0_fov = 0.55000001f;
@@ -768,7 +768,7 @@ int gold_transaction_amount;  // F8B1B4
 std::array<const char *, 4> pShopOptions;
 int dword_F8B1E0;
 int dword_F8B1E4;
-String current_npc_text;                        // F8B1E8
+std::string current_npc_text;                        // F8B1E8
 char dialogue_show_profession_details = false;  // F8B1EC
 std::array<char, 777> byte_F8B1EF;
 std::array<char, 4> byte_F8B1F0;

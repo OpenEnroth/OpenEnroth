@@ -637,7 +637,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
         window.uFrameWidth = 143;
         window.uFrameZ = 334;
 
-        String str = localization->FormatString(
+        std::string str = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
             pPlayers[uActiveCharacter]->pName,
             localization->GetString(LSTR_DO_ANYTHING));
@@ -665,7 +665,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
                            // unsigned int v17; // eax@37
     int v18;       // edi@37
     int v19;       // edi@41
-    String pContainer;  // [sp+Ch] [bp-30h]@32
+    std::string pContainer;  // [sp+Ch] [bp-30h]@32
                           // unsigned int v24; // [sp+34h] [bp-8h]@5
 
     GameUI_StatusBar_Clear();
@@ -1485,7 +1485,7 @@ void TravelByTransport() {
             index = 0;
             strcpy(pTopicArray[4], "");
 
-            String str = localization->FormatString(
+            std::string str = localization->FormatString(
                 LSTR_FMT_TRAVEL_COST_D_GOLD, pPrice);
             pTextHeight =
                 pFontArrus->CalcTextHeight(str, travel_window.uFrameWidth, 0);
@@ -1537,7 +1537,7 @@ void TravelByTransport() {
                             &pMapStats->pInfos[transport_schedule[schedule_id]
                             .uMapInfoID],
                             0x44u);
-                        String str = localization->FormatString(
+                        std::string str = localization->FormatString(
                             LSTR_FMT_D_DAYS_TO_S,
                             travel_time,
                             pMap.pName.c_str());
@@ -1992,7 +1992,7 @@ void TavernDialog() {
     {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
 
-        String topic1 = StringPrintf("\f%05d",
+        std::string topic1 = StringPrintf("\f%05d",
                 pDialogueWindow->pCurrentPosActiveItem == 2
                 ? Color16(0xFFu, 0xFFu, 0x9Bu)
                 : Color16(0xFFu, 0xFFu, 0xFFu)) +
@@ -2001,7 +2001,7 @@ void TavernDialog() {
         pTopic1Height = pFontArrus->CalcTextHeight(
             topic1, dialog_window.uFrameWidth, 0);
 
-        String topic2 = StringPrintf("\f%05d",
+        std::string topic2 = StringPrintf("\f%05d",
                 pDialogueWindow->pCurrentPosActiveItem == 3
                 ? Color16(0xFFu, 0xFFu, 0x9Bu)
                 : Color16(0xFFu, 0xFFu, 0xFFu))
@@ -2012,14 +2012,14 @@ void TavernDialog() {
                 pPriceFood);
         pTopic2Height = pFontArrus->CalcTextHeight(topic2, dialog_window.uFrameWidth, 0);
 
-        String topic3 = StringPrintf("\f%05d",
+        std::string topic3 = StringPrintf("\f%05d",
                 pDialogueWindow->pCurrentPosActiveItem == 4
                 ? Color16(0xFFu, 0xFFu, 0x9Bu)
                 : Color16(0xFFu, 0xFFu, 0xFFu)) +
             localization->GetString(LSTR_LEARN_SKILLS);
         pTopic3Height = pFontArrus->CalcTextHeight(topic3, dialog_window.uFrameWidth, 0);
 
-        String topic4;
+        std::string topic4;
         if ((signed int)window_SpeakInHouse->par1C >= 108 &&
             (signed int)window_SpeakInHouse->par1C <= 120) {
             topic4 =
@@ -2082,7 +2082,7 @@ void TavernDialog() {
     {
         pOutString = pFontArrus;
 
-        String str = pNPCTopics[354].pText;
+        std::string str = pNPCTopics[354].pText;
         dialog_window.uFrameWidth = game_viewport_width;
         dialog_window.uFrameZ = 452;
         pTextHeight =
@@ -2109,7 +2109,7 @@ void TavernDialog() {
 
     case DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS:
     {
-        String label =
+        std::string label =
             pNPCTopics[(uint64_t)window_SpeakInHouse->ptr_1C + 247].pText;
         dialog_window.uFrameWidth = game_viewport_width;
         dialog_window.uFrameZ = 452;
@@ -2301,7 +2301,7 @@ void TempleDialog() {
         pButton->uHeight = 0;
         pButton->uY = 0;
         if (pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) {
-            static String shop_option_container;
+            static std::string shop_option_container;
             shop_option_container =
                 StringPrintf("%s %d %s",
                     localization->GetString(LSTR_HEAL), pPrice,
@@ -2602,7 +2602,7 @@ void TrainingDialog(const char *s) {
                         ++i) {
                         if (pDialogueWindow->GetControl(i)->msg_param ==
                             DIALOGUE_TRAINING_HALL_TRAIN) {
-                            static String shop_option_str_container;
+                            static std::string shop_option_str_container;
                             if (pPlayers[uActiveCharacter]->uLevel >=
                                 pMaxLevelPerTrainingHallType
                                 [(uint64_t)window_SpeakInHouse->ptr_1C -
@@ -2666,7 +2666,7 @@ void TrainingDialog(const char *s) {
         }
         //------------------------------------------------------------------
         if (dialog_menu_id == DIALOGUE_TRAINING_HALL_TRAIN) {
-            String label;
+            std::string label;
 
             if (!HouseUI_CheckIfPlayerCanInteract()) {
                 v33 = pFontArrus->CalcTextHeight(
@@ -3755,7 +3755,7 @@ void GenerateStandartShopItems() {
     pParty->InTheShopFlags[shop_index] = 0;
 }
 
-GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint) :
+GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint) :
     GUIWindow(WINDOW_HouseInterior, x, y, width, height, button, hint) {
     pEventTimer->Pause();  // pause timer so not attacked
     pAudioPlayer->StopChannels(-1, -1);
@@ -3767,7 +3767,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
         { { ui_exit_cancel_button_background } });
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
         const char *v29;
-        String v30;
+        std::string v30;
         if (v26 + 1 == uNumDialogueNPCPortraits && uHouse_ExitPic) {
             v30 = pMapStats->pInfos[uHouse_ExitPic].pName;
             v29 = localization->GetString(LSTR_FMT_ENTER_S);

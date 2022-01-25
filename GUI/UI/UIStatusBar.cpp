@@ -14,7 +14,7 @@
 
 #include "Platform/Api.h"
 
-void GameUI_StatusBar_Set(const String &str) {
+void GameUI_StatusBar_Set(const std::string &str) {
     if (str.length() > 0) {
         if (!game_ui_status_bar_event_string_time_left) {
             game_ui_status_bar_string = str;
@@ -27,12 +27,12 @@ void GameUI_StatusBar_Clear() {
     GameUI_StatusBar_ClearEventString();
 }
 
-void GameUI_StatusBar_OnEvent_Internal(const String &str, unsigned int ms) {
+void GameUI_StatusBar_OnEvent_Internal(const std::string &str, unsigned int ms) {
     game_ui_status_bar_event_string = str;
     game_ui_status_bar_event_string_time_left = OS_GetTime() + ms;
 }
 
-void GameUI_SetStatusBar(const String &str) {
+void GameUI_SetStatusBar(const std::string &str) {
     GameUI_StatusBar_OnEvent_Internal(str, 2 * 1000);
 }
 
@@ -53,7 +53,7 @@ void GameUI_SetStatusBar(int localization_string_id, ...) {
 }
 
 
-void GameUI_SetStatusBarShortNotification(const String &str) {
+void GameUI_SetStatusBarShortNotification(const std::string &str) {
     GameUI_StatusBar_OnEvent_Internal(str, 128);
 }
 
@@ -62,11 +62,11 @@ void GameUI_StatusBar_ClearEventString() {
     game_ui_status_bar_event_string_time_left = 0;
 }
 
-void GameUI_StatusBar_OnInput(const String &str) {
-    game_ui_status_bar_event_string = String(str);
+void GameUI_StatusBar_OnInput(const std::string &str) {
+    game_ui_status_bar_event_string = std::string(str);
 }
 
-String GameUI_StatusBar_GetInput() { return game_ui_status_bar_event_string; }
+std::string GameUI_StatusBar_GetInput() { return game_ui_status_bar_event_string; }
 
 void GameUI_StatusBar_ClearInputString() {
     game_ui_status_bar_event_string.clear();
@@ -90,7 +90,7 @@ void GameUI_StatusBar_DrawForced() {
 void GameUI_StatusBar_Draw() {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
 
-    String status;
+    std::string status;
     if (game_ui_status_bar_event_string_time_left) {
         status = game_ui_status_bar_event_string;
     } else {
@@ -104,7 +104,7 @@ void GameUI_StatusBar_Draw() {
     }
 }
 
-void GameUI_StatusBar_DrawImmediate(const String &str, int color) {
+void GameUI_StatusBar_DrawImmediate(const std::string &str, int color) {
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
     pPrimaryWindow->DrawText(pFontLucida,
                              pFontLucida->AlignText_Center(450, str) + 11, 357,

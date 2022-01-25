@@ -89,7 +89,7 @@ struct AcromageCardOnTable {
 };
 
 struct ArcomagePlayer {
-    String pPlayerName;
+    std::string pPlayerName;
     int IsHisTurn = 0;  // doesnt appear to be used correctly - always player 0 turn
     int tower_height = 0;
     int wall_height = 0;
@@ -151,8 +151,8 @@ struct ArcomageGame {
     int event_timer_time = 0;
     int uGameWinner = 0;
     int Victory_type = 0;
-    String pPlayer1Name;
-    String pPlayer2Name;
+    std::string pPlayer1Name;
+    std::string pPlayer2Name;
     char force_am_exit = 0;
     char GameOver = 0;
     char force_redraw_1 = 0;
@@ -230,7 +230,7 @@ struct explosion_effect_struct {
 #define DECK_SIZE 108
 
 struct ArcomageDeck {
-    String name;
+    std::string name;
     char cardsInUse[DECK_SIZE];
     int cards_IDs[DECK_SIZE];
 };

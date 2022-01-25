@@ -251,20 +251,20 @@ class IRender {
     virtual struct nk_image NuklearImageLoad(Image* img) = 0;
     virtual void NuklearImageFree(Image *img) = 0;
 
-    virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey) = 0;
-    virtual Texture *CreateTexture_Solid(const String &name) = 0;
-    virtual Texture *CreateTexture_Alpha(const String &name) = 0;
+    virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) = 0;
+    virtual Texture *CreateTexture_Solid(const std::string &name) = 0;
+    virtual Texture *CreateTexture_Alpha(const std::string &name) = 0;
 
-    virtual Texture *CreateTexture_PCXFromFile(const String &name) = 0;
-    virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name) = 0;
-    virtual Texture *CreateTexture_PCXFromNewLOD(const String &name) = 0;
-    virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) = 0;
+    virtual Texture *CreateTexture_PCXFromFile(const std::string &name) = 0;
+    virtual Texture *CreateTexture_PCXFromIconsLOD(const std::string &name) = 0;
+    virtual Texture *CreateTexture_PCXFromNewLOD(const std::string &name) = 0;
+    virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) = 0;
 
     virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
         IMAGE_FORMAT format, const void *pixels = nullptr) = 0;
 
-    virtual Texture *CreateTexture(const String &name) = 0;
-    virtual Texture *CreateSprite(const String &name, unsigned int palette_id,
+    virtual Texture *CreateTexture(const std::string &name) = 0;
+    virtual Texture *CreateSprite(const std::string &name, unsigned int palette_id,
                                   /*refactor*/ unsigned int lod_sprite_id) = 0;
 
     virtual void ClearBlack() = 0;
@@ -373,7 +373,7 @@ class IRender {
     virtual bool AreRenderSurfacesOk() = 0;
 
     virtual Image *TakeScreenshot(unsigned int width, unsigned int height) = 0;
-    virtual void SaveScreenshot(const String &filename, unsigned int width,
+    virtual void SaveScreenshot(const std::string &filename, unsigned int width,
                                 unsigned int height) = 0;
     virtual void PackScreenshot(unsigned int width, unsigned int height,
                                 void *out_data, unsigned int data_size,
@@ -469,8 +469,8 @@ class IRender {
     virtual unsigned int GetRenderWidth() const = 0;
     virtual unsigned int GetRenderHeight() const = 0;
 
-    virtual HWLTexture *LoadHwlBitmap(const String &name) = 0;
-    virtual HWLTexture *LoadHwlSprite(const String &name) = 0;
+    virtual HWLTexture *LoadHwlBitmap(const std::string &name) = 0;
+    virtual HWLTexture *LoadHwlSprite(const std::string &name) = 0;
 };
 
 extern std::shared_ptr<IRender> render;

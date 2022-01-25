@@ -503,7 +503,7 @@ void MonsterStats::Initialize() {
     char parse_str[64];
     // char Src[120];
     FrameTableTxtLine parsed_field;
-    String str;
+    std::string str;
 
     free(pMonstersTXT_Raw);
     pMonstersTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("monsters.txt");

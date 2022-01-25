@@ -22,7 +22,7 @@ bool AssetsManager::ReleaseAllImages() {
     return true;
 }
 
-bool AssetsManager::ReleaseImage(const String &name) {
+bool AssetsManager::ReleaseImage(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 
@@ -38,7 +38,7 @@ bool AssetsManager::ReleaseImage(const String &name) {
 
 
 
-Texture *AssetsManager::GetImage_ColorKey(const String &name, uint16_t colorkey) {
+Texture *AssetsManager::GetImage_ColorKey(const std::string &name, uint16_t colorkey) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
         ::tolower);
@@ -55,7 +55,7 @@ Texture *AssetsManager::GetImage_ColorKey(const String &name, uint16_t colorkey)
 
 
 
-Texture *AssetsManager::GetImage_Solid(const String &name) {
+Texture *AssetsManager::GetImage_Solid(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
@@ -70,7 +70,7 @@ Texture *AssetsManager::GetImage_Solid(const String &name) {
     return i->second;
 }
 
-Texture *AssetsManager::GetImage_Alpha(const String &name) {
+Texture *AssetsManager::GetImage_Alpha(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
@@ -85,7 +85,7 @@ Texture *AssetsManager::GetImage_Alpha(const String &name) {
     return i->second;
 }
 
-Texture *AssetsManager::GetImage_PCXFromIconsLOD(const String &name) {
+Texture *AssetsManager::GetImage_PCXFromIconsLOD(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
@@ -100,7 +100,7 @@ Texture *AssetsManager::GetImage_PCXFromIconsLOD(const String &name) {
     return i->second;
 }
 
-Texture *AssetsManager::GetImage_PCXFromNewLOD(const String &name) {
+Texture *AssetsManager::GetImage_PCXFromNewLOD(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
@@ -115,7 +115,7 @@ Texture *AssetsManager::GetImage_PCXFromNewLOD(const String &name) {
     return i->second;
 }
 
-Texture *AssetsManager::GetImage_PCXFromFile(const String &name) {
+Texture *AssetsManager::GetImage_PCXFromFile(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
@@ -130,7 +130,7 @@ Texture *AssetsManager::GetImage_PCXFromFile(const String &name) {
     return i->second;
 }
 
-Texture *AssetsManager::GetBitmap(const String &name) {
+Texture *AssetsManager::GetBitmap(const std::string &name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
                    ::tolower);
@@ -145,7 +145,7 @@ Texture *AssetsManager::GetBitmap(const String &name) {
     return i->second;
 }
 
-Texture *AssetsManager::GetSprite(const String &name, unsigned int palette_id,
+Texture *AssetsManager::GetSprite(const std::string &name, unsigned int palette_id,
                                   unsigned int lod_sprite_id) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(),
@@ -162,7 +162,7 @@ Texture *AssetsManager::GetSprite(const String &name, unsigned int palette_id,
     return i->second;
 }
 
-bool AssetsManager::ReleaseSprite(const String& name) {
+bool AssetsManager::ReleaseSprite(const std::string& name) {
     auto filename = name;
     std::transform(filename.begin(), filename.end(), filename.begin(), ::tolower);
 

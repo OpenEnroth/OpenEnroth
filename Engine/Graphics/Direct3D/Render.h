@@ -41,20 +41,20 @@ class Render : public RenderBase {
     virtual struct nk_image NuklearImageLoad(Image *img);
     virtual void NuklearImageFree(Image *img);
 
-    virtual Texture *CreateTexture_ColorKey(const String &name, uint16_t colorkey) override;
-    virtual Texture *CreateTexture_Solid(const String &name) override;
-    virtual Texture *CreateTexture_Alpha(const String &name) override;
+    virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) override;
+    virtual Texture *CreateTexture_Solid(const std::string &name) override;
+    virtual Texture *CreateTexture_Alpha(const std::string &name) override;
 
-    virtual Texture *CreateTexture_PCXFromFile(const String &name) override;
-    virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name) override;
-    virtual Texture *CreateTexture_PCXFromNewLOD(const String &name) override;
-    virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) override;
+    virtual Texture *CreateTexture_PCXFromFile(const std::string &name) override;
+    virtual Texture *CreateTexture_PCXFromIconsLOD(const std::string &name) override;
+    virtual Texture *CreateTexture_PCXFromNewLOD(const std::string &name) override;
+    virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) override;
 
     virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
         IMAGE_FORMAT format, const void *pixels = nullptr) override;
 
-    virtual Texture *CreateTexture(const String &name) override;
-    virtual Texture *CreateSprite(const String &name, unsigned int palette_id,
+    virtual Texture *CreateTexture(const std::string &name) override;
+    virtual Texture *CreateSprite(const std::string &name, unsigned int palette_id,
                                   unsigned int lod_sprite_id) override;
 
     virtual void ClearBlack() override;
@@ -161,7 +161,7 @@ class Render : public RenderBase {
     virtual bool AreRenderSurfacesOk() override;
 
     virtual Image *TakeScreenshot(unsigned int width, unsigned int height) override;
-    virtual void SaveScreenshot(const String &filename, unsigned int width,
+    virtual void SaveScreenshot(const std::string &filename, unsigned int width,
                                 unsigned int height) override;
     virtual void PackScreenshot(unsigned int width, unsigned int height,
                                 void *out_data, unsigned int data_size,
@@ -240,9 +240,9 @@ class Render : public RenderBase {
 
     void CreateClipper();
 
-    void SavePCXImage16(const String &filename, uint16_t *picture_data,
+    void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
                         int width, int height);
-    void SavePCXImage32(const String &filename, uint16_t *picture_data,
+    void SavePCXImage32(const std::string &filename, uint16_t *picture_data,
                         int width, int height);
 
     Gdiplus::Bitmap *BitmapWithImage(Image *image);

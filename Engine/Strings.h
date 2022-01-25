@@ -7,11 +7,9 @@
 #include "Platform/Lin/Lin.h"
 #endif
 
-typedef std::string String;
-
-String StringPrintf(const char *fmt, ...);
-String StringFromInt(int value);
-String MakeLower(const String &text);
+std::string StringPrintf(const char *fmt, ...);
+std::string StringFromInt(int value);
+std::string MakeLower(const std::string &text);
 
 //----- (00452C30) --------------------------------------------------------
 inline char *RemoveQuotes(char *str) {

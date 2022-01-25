@@ -88,7 +88,7 @@ class TileDesc {
  public:
     inline TileDesc() : texture(nullptr) {}
 
-    String name = "";
+    std::string name = "";
     uint16_t uTileID = 0;
     Tileset tileset = Tileset_NULL;
     uint16_t uSection = 0;

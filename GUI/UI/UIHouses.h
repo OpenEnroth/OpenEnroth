@@ -113,7 +113,7 @@ extern class Image *_591428_endcap;
 
 class GUIWindow_House : public GUIWindow {
  public:
-    GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const String &hint = String());
+    GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string());
     virtual ~GUIWindow_House() {}
 
     virtual void Update();

@@ -12,7 +12,7 @@ struct SavegameList {
 
     void Reset();
 
-    std::array<String, MAX_SAVE_SLOTS> pFileList;
+    std::array<std::string, MAX_SAVE_SLOTS> pFileList;
 };
 
 /*  244 */

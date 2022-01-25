@@ -242,7 +242,7 @@ int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
 }
 
 //----- (00488F5C) --------------------------------------------------------
-bool OutdoorLocation::Initialize(const String &filename, int days_played,
+bool OutdoorLocation::Initialize(const std::string &filename, int days_played,
                                  int respawn_interval_days,
                                  bool *outdoors_was_respawned) {
     decal_builder->Reset(0);
@@ -978,7 +978,7 @@ void OutdoorLocation::Release() {
     pTerrainNormals = nullptr;
 }
 
-bool OutdoorLocation::Load(const String &filename, int days_played,
+bool OutdoorLocation::Load(const std::string &filename, int days_played,
                            int respawn_interval_days,
                            bool *outdoors_was_respawned) {
     if (engine->IsUnderwater()) {
@@ -1006,10 +1006,10 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
         Error("Unable to find %s in Games.LOD", filename.c_str());
     }
 
-    String minimap_filename = filename.substr(0, filename.length() - 4);
+    std::string minimap_filename = filename.substr(0, filename.length() - 4);
     viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
 
-    auto odm_filename = String(filename);
+    auto odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
     void *pSrcMem = pGames_LOD->LoadCompressed(odm_filename);
@@ -1027,11 +1027,11 @@ bool OutdoorLocation::Load(const String &filename, int days_played,
 
     static_assert(sizeof(ODMInfo) == 160, "Wrong type size");
     ODMInfo *odm_info = (ODMInfo*)pSrc;
-    this->level_filename = String(odm_info->level_filename, 32);
-    this->location_filename = String(odm_info->level_filename, 32);
-    this->location_file_description = String(odm_info->location_file_description, 32);
-    this->sky_texture_filename = String(odm_info->sky_texture_filename, 32);
-    this->ground_tileset = String(odm_info->ground_tileset, 32);
+    this->level_filename = std::string(odm_info->level_filename, 32);
+    this->location_filename = std::string(odm_info->level_filename, 32);
+    this->location_file_description = std::string(odm_info->location_file_description, 32);
+    this->sky_texture_filename = std::string(odm_info->sky_texture_filename, 32);
+    this->ground_tileset = std::string(odm_info->ground_tileset, 32);
     pSrc += sizeof(ODMInfo);
 
     static_assert(sizeof(OutdoorLocationTileType) == 4, "Wrong type size");
@@ -3776,7 +3776,7 @@ void UpdateActors_ODM() {
 }
 
 //----- (0047A384) --------------------------------------------------------
-void ODM_LoadAndInitialize(const String &pFilename, ODMRenderParams *thisa) {
+void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa) {
     MapInfo *map_info;            // edi@4
     // size_t v7;              // eax@19
 

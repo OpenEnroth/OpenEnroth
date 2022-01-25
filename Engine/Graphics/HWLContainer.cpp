@@ -28,7 +28,7 @@ HWLContainer::~HWLContainer() {
     }
 }
 
-bool HWLContainer::Open(const String &pFilename) {
+bool HWLContainer::Open(const std::string &pFilename) {
     pFile = fopen(pFilename.c_str(), "rb");
     if (!pFile) {
         log->Warning("Failed to open file: %s", pFilename.c_str());
@@ -44,7 +44,7 @@ bool HWLContainer::Open(const String &pFilename) {
     fseek(pFile, header.uDataOffset, SEEK_SET);
 
     typedef struct HWLNode {
-        String sName;
+        std::string sName;
         size_t uOffset = 0;
     } HWLNode;
     std::vector<HWLNode> vNodes;
@@ -56,7 +56,7 @@ bool HWLContainer::Open(const String &pFilename) {
         fread(tmpName, 20, 1, pFile);
         tmpName[20] = 0;
         HWLNode node;
-        node.sName = MakeLower(String(tmpName));
+        node.sName = MakeLower(std::string(tmpName));
         node.uOffset = 0;
         vNodes.push_back(node);
     }
@@ -88,12 +88,12 @@ struct HWLTextureHeader {
 };
 #pragma pack(pop)
 
-HWLTexture *HWLContainer::LoadTexture(const String &pName) {
+HWLTexture *HWLContainer::LoadTexture(const std::string &pName) {
     if (mNodes.size() == 0) {
         return nullptr;
     }
 
-    std::map<String, size_t>::iterator it = mNodes.find(MakeLower(pName));
+    std::map<std::string, size_t>::iterator it = mNodes.find(MakeLower(pName));
     if (it == mNodes.end()) {
         return nullptr;
     }

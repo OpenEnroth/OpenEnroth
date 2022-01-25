@@ -101,7 +101,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
                       //  char v20; // c2@11
                       //  signed int v52; // ecx@17
     char v57;         // dl@18
-    // String v58;  // [sp-18h] [bp-38h]@10
+    // std::string v58;  // [sp-18h] [bp-38h]@10
                       //  double v61; // [sp+Ch] [bp-14h]@11
     float minz;       // [sp+14h] [bp-Ch]@11
     float tX_0 = 0;
@@ -1028,7 +1028,7 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3,
     const char *v18 = nullptr;     // ecx@9
     double v19;          // st7@10
     double v20;          // st7@10
-    String v21;     // [sp-10h] [bp-40h]@13
+    std::string v21;     // [sp-10h] [bp-40h]@13
     const char *v22[6];  // [sp+0h] [bp-30h]@10
     double v23;          // [sp+18h] [bp-18h]@1
                          //  double v24; // [sp+20h] [bp-10h]@1

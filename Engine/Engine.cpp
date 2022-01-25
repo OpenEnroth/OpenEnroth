@@ -369,7 +369,7 @@ void Engine::DrawGUI() {
                 pParty->vPosition.z),
             0, 0, 0);
 
-        String floor_level_str;
+        std::string floor_level_str;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             uint uFaceID;
             int sector_id = pIndoor->GetSector(
@@ -831,8 +831,8 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
                                                ? GUIProgressBar::TYPE_Fullscreen
                                                : GUIProgressBar::TYPE_Box);
     size_t pos = pCurrentMapName.rfind('.');
-    String mapName = pCurrentMapName.substr(0, pos);
-    String mapExt = pCurrentMapName.substr(pos + 1);  // This magically works even when pos == String::npos, in this case
+    std::string mapName = pCurrentMapName.substr(0, pos);
+    std::string mapExt = pCurrentMapName.substr(pos + 1);  // This magically works even when pos == std::string::npos, in this case
                                                       // maxExt == pCurrentMapName.
 
     Level_LoadEvtAndStr(mapName);
@@ -1437,7 +1437,7 @@ void GameUI_StatusBar_Update(bool force_hide) {
 }
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
-                                   const String &filename) {
+                                   const std::string &filename) {
     for (uint i = 1; i < pIndoor->uNumFaceExtras; ++i) {
         auto extra = &pIndoor->pFaceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
@@ -1448,7 +1448,7 @@ void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
 }
 
 void sub_44861E_set_texture_outdoor(unsigned int uFaceCog,
-                                    const String &filename) {
+                                    const std::string &filename) {
     for (BSPModel &model : pOutdoor->pBModels) {
         for (ODMFace &face : model.pFaces) {
             if (face.sCogNumber == uFaceCog) {
@@ -2266,7 +2266,7 @@ void OnMapLoad() {
     }
 }
 
-void Level_LoadEvtAndStr(const String& pLevelName) {
+void Level_LoadEvtAndStr(const std::string& pLevelName) {
     uLevelEVT_Size = LoadEventsToBuffer(pLevelName + ".evt", pLevelEVT.data(), 9216);
     uLevelStrFileSize = LoadEventsToBuffer(pLevelName + ".str", pLevelStr.data(), 9216);
     if (uLevelStrFileSize) LoadLevel_InitializeLevelStr();

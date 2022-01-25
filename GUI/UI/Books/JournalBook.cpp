@@ -184,7 +184,7 @@ void GUIWindow_JournalBook::Update() {
                 .pText,
             uActiveCharacter - 1, 0, 0, 0,
             &pParty->PartyTimes.HistoryEventTimes[index]);
-        String pStringOnPage = pAutonoteFont->GetPageTop(
+        std::string pStringOnPage = pAutonoteFont->GetPageTop(
             str.c_str(), &journal_window, 1,
             (unsigned __int8)
                 Journal_limitation_factor[books_primary_item_per_page]);

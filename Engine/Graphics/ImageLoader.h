@@ -13,20 +13,20 @@ class ImageLoader {
          this->log = EngineIoc::ResolveLogger();
     }
     virtual ~ImageLoader() {}
-    virtual String GetResourceName() const { return this->resource_name; }
+    virtual std::string GetResourceName() const { return this->resource_name; }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
                       IMAGE_FORMAT *format) = 0;
 
  protected:
-    String resource_name;
+    std::string resource_name;
     Log *log;
 };
 
 class ColorKey_LOD_Loader : public ImageLoader {
  public:
     inline ColorKey_LOD_Loader(LODFile_IconsBitmaps *lod,
-                               const String &filename, uint16_t colorkey) {
+                               const std::string &filename, uint16_t colorkey) {
         this->resource_name = filename;
         this->colorkey = colorkey;
         this->lod = lod;
@@ -43,7 +43,7 @@ class ColorKey_LOD_Loader : public ImageLoader {
 class Image16bit_LOD_Loader : public ImageLoader {
  public:
     inline Image16bit_LOD_Loader(LODFile_IconsBitmaps *lod,
-                                 const String &filename) {
+                                 const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -57,7 +57,7 @@ class Image16bit_LOD_Loader : public ImageLoader {
 
 class Alpha_LOD_Loader : public ImageLoader {
  public:
-    inline Alpha_LOD_Loader(LODFile_IconsBitmaps *lod, const String &filename) {
+    inline Alpha_LOD_Loader(LODFile_IconsBitmaps *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -80,7 +80,7 @@ class PCX_Loader : public ImageLoader {
 
 class PCX_File_Loader : public PCX_Loader {
  public:
-    explicit inline PCX_File_Loader(const String &filename) {
+    explicit inline PCX_File_Loader(const std::string &filename) {
         this->resource_name = filename;
     }
 
@@ -92,7 +92,7 @@ class PCX_File_Loader : public PCX_Loader {
 
 class PCX_LOD_Raw_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Raw_Loader(LOD::File *lod, const String &filename) {
+    inline PCX_LOD_Raw_Loader(LOD::File *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -106,7 +106,7 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
 
 class PCX_LOD_Compressed_Loader : public PCX_Loader {
  public:
-    inline PCX_LOD_Compressed_Loader(LOD::File *lod, const String &filename) {
+    inline PCX_LOD_Compressed_Loader(LOD::File *lod, const std::string &filename) {
         this->resource_name = filename;
         this->lod = lod;
     }
@@ -120,7 +120,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
-    inline Bitmaps_LOD_Loader(LODFile_IconsBitmaps *lod, const String &filename, bool use_hwl) {
+    inline Bitmaps_LOD_Loader(LODFile_IconsBitmaps *lod, const std::string &filename, bool use_hwl) {
         this->resource_name = filename;
         this->lod = lod;
         this->use_hwl = use_hwl;
@@ -137,7 +137,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
 class Sprites_LOD_Loader : public ImageLoader {
  public:
     inline Sprites_LOD_Loader(LODFile_Sprites *lod, unsigned int palette_id,
-                              const String &filename,
+                              const std::string &filename,
                               /*refactor*/ unsigned int lod_sprite_id) {
         this->resource_name = filename;
         this->lod = lod;
