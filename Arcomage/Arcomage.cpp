@@ -484,7 +484,7 @@ void DrawSparks() {
 
                 render->Update_Texture(temp);
                 // draw created image to xmin,ymin
-                render->DrawTextureAlphaNew(xmin / 640., ymin / 480., temp);
+                render->DrawTextureAlphaNew(xmin / 640.0f, ymin / 480.0f, temp);
                 temp->Release();
             }
         }
@@ -2942,8 +2942,8 @@ void GameResultsApply() {
         if ((window_SpeakInHouse->par1C >= 108) && (window_SpeakInHouse->par1C <= 120)) {
             if (!pParty->pArcomageWins[window_SpeakInHouse->par1C - 108]) {
                 pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] = 1;
-                pParty->PartyFindsGold(
-                    p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);            }
+                pParty->PartyFindsGold(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);
+            }
         }
 
         // arcomage quest test
