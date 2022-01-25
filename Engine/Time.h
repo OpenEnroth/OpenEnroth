@@ -4,30 +4,29 @@
 
 const int game_starting_year = 1168;
 
+// Number of game ticks per 30 game seconds
 #define TIME_QUANT                  128
 #define TIME_SECONDS_PER_QUANT      30
-#define TIME_UNPACK_GAME_SECONDS    (uint64_t)TIME_SECONDS_PER_QUANT / (double)TIME_QUANT
-// TIME_UNPACK_GAME_SECONDS = 0.234375
-// 30 game seconds per one time quant (128ms)   [128 * 0.234375 = 30]
-// seconds = game_time * TIME_UNPACK_GAME_SECONDS
-#define TIME_PACK_GAME_SECONDS      (uint64_t)TIME_QUANT / (double)TIME_SECONDS_PER_QUANT
-// game_time += seconds * TIME_PACK_GAME_SECONDS
+
+#define GAME_TIME_TO_SECONDS(VALUE) ((VALUE) * static_cast<uint64_t>(TIME_SECONDS_PER_QUANT) / TIME_QUANT)
+#define SECONDS_TO_GAME_TIME(VALUE) ((VALUE) * static_cast<uint64_t>(TIME_QUANT) / TIME_SECONDS_PER_QUANT)
 
 struct GameTime {
     GameTime() : value(0) {}
     explicit GameTime(uint64_t val) : value(val) {}
-    GameTime(int seconds, int minutes, int hours = 0, int days = 0,
-             int weeks = 0, int months = 0, int years = 0) {
-        auto converted = (seconds + (uint64_t)60 * minutes + (uint64_t)3600 * hours + (uint64_t)86400 * days +
-            (uint64_t)604800 * weeks + (uint64_t)2419200 * months +
-                          (uint64_t)29030400 * years) *
-                         TIME_PACK_GAME_SECONDS;
-
-        this->value = (uint64_t)converted;
+    GameTime(int seconds, int minutes, int hours = 0, int days = 0, int weeks = 0, int months = 0, int years = 0) {
+        this->value = SECONDS_TO_GAME_TIME(
+            seconds +
+            60ull * minutes +
+            3600ull * hours +
+            86400ull * days +
+            604800ull * weeks +
+            2419200ull * months +
+            29030400ull * years);
     }
 
     uint64_t GetSeconds() const {
-        return (uint64_t)(this->value * TIME_UNPACK_GAME_SECONDS);
+        return GAME_TIME_TO_SECONDS(this->value);
     }
     uint64_t GetMinutes() const { return this->GetSeconds() / 60; }
     uint64_t GetHours() const { return this->GetMinutes() / 60; }
@@ -45,16 +44,16 @@ struct GameTime {
     int GetMonthsOfYear() const { return this->GetMonths() % 12; }
 
     void AddMinutes(int minutes) {
-        this->value += (uint64_t)((uint64_t)60 * minutes * TIME_PACK_GAME_SECONDS);
+        this->value += SECONDS_TO_GAME_TIME(60ull * minutes);
     }
     void SubtractHours(int hours) {
-        this->value -= (uint64_t)((uint64_t)60 * 60 * hours * TIME_PACK_GAME_SECONDS);
+        this->value -= SECONDS_TO_GAME_TIME(3600ull * hours);
     }
     void AddDays(int days) {
-        this->value += ((uint64_t)60 * 60 * 24 * days * TIME_PACK_GAME_SECONDS);
+        this->value += SECONDS_TO_GAME_TIME(86400ull * days);
     }
     void AddYears(int years) {
-        this->value += ((uint64_t)60 * 60 * 24 * 7 * 4 * 12 * years * TIME_PACK_GAME_SECONDS);
+        this->value += SECONDS_TO_GAME_TIME(29030400ull * years);
     }
 
     void Reset() { this->value = 0; }
