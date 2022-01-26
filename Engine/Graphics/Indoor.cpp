@@ -2258,8 +2258,8 @@ bool BLV_CheckFloorIntersection(BLVFace *pFloor, int x, int y, int *z) {
         return false;
 
     // vert store for point in poly checks
-    float floor_x[104];
-    float floor_y[104];
+    std::array<float, 104> floor_x;
+    std::array<float, 104> floor_y;
 
     for (uint j = 0; j < pFloor->uNumVertices; ++j) {
         floor_x[2 * j] = pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].x;
