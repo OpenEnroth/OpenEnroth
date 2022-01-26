@@ -2802,18 +2802,18 @@ void ODM_ProcessPartyActions() {
     // --(столкновения)-------------------------------------------------------------------
     _actor_collision_struct.field_84 = -1;
     _actor_collision_struct.field_70 = 0;
-    _actor_collision_struct.prolly_normal_d = pParty->radius;
-    _actor_collision_struct.field_8_radius = pParty->radius / 2;
+    _actor_collision_struct.radius = pParty->radius;
+    _actor_collision_struct.radius2 = pParty->radius / 2;
     _actor_collision_struct.field_0 = 1;
     _actor_collision_struct.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
-        _actor_collision_struct.position.x = pX;
-        _actor_collision_struct.position.y = pY;
-        _actor_collision_struct.position.z = _actor_collision_struct.height + party_new_Z + 1;
+        _actor_collision_struct.position_hi.x = pX;
+        _actor_collision_struct.position_hi.y = pY;
+        _actor_collision_struct.position_hi.z = _actor_collision_struct.height + party_new_Z + 1;
 
-        _actor_collision_struct.normal.x = pX;
-        _actor_collision_struct.normal.y = pY;
-        _actor_collision_struct.normal.z = _actor_collision_struct.prolly_normal_d + party_new_Z + 1;
+        _actor_collision_struct.position_lo.x = pX;
+        _actor_collision_struct.position_lo.y = pY;
+        _actor_collision_struct.position_lo.z = _actor_collision_struct.radius + party_new_Z + 1;
 
         _actor_collision_struct.velocity.x = v2;
         _actor_collision_struct.velocity.y = v128;
@@ -2824,7 +2824,9 @@ void ODM_ProcessPartyActions() {
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             v36 = 13312;
         }
-        if (_actor_collision_struct.CalcMovementExtents(v36)) break;
+        if (_actor_collision_struct.PrepareAndCheckIfStationary(v36))
+            break;
+
         _46E889_collide_against_bmodels(1);
         // v37 = WorldPosToGridCellY(pParty->vPosition.y);
         // v38 = WorldPosToGridCellX(pParty->vPosition.x);
@@ -2834,10 +2836,10 @@ void ODM_ProcessPartyActions() {
         _46ED8A_collide_against_sprite_objects(4);
         for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
             Actor::_46DF1A_collide_against_actor(actor_id, 0);
-        if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
-            _angle_x = _actor_collision_struct.normal2.x;
-            _angle_y = _actor_collision_struct.normal2.y;
-            v40 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+        if (_actor_collision_struct.field_7C >= _actor_collision_struct.move_distance) {
+            _angle_x = _actor_collision_struct.new_position_lo.x;
+            _angle_y = _actor_collision_struct.new_position_lo.y;
+            v40 = _actor_collision_struct.new_position_lo.z - _actor_collision_struct.radius - 1;
         } else {
             _angle_x = pX + fixpoint_mul(_actor_collision_struct.field_7C,
                                          _actor_collision_struct.direction.x);
@@ -2885,13 +2887,13 @@ void ODM_ProcessPartyActions() {
                 }
             }
         }
-        if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
+        if (_actor_collision_struct.field_7C >= _actor_collision_struct.move_distance) {
             if (!is_not_on_bmodel) {
-                pX = _actor_collision_struct.normal2.x;
-                pY = _actor_collision_struct.normal2.y;
+                pX = _actor_collision_struct.new_position_lo.x;
+                pY = _actor_collision_struct.new_position_lo.y;
             }
             party_new_Z =
-                _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+                _actor_collision_struct.new_position_lo.z - _actor_collision_struct.radius - 1;
             break;
         }
         _actor_collision_struct.field_70 += _actor_collision_struct.field_7C;
@@ -2962,7 +2964,7 @@ void ODM_ProcessPartyActions() {
                     v54 = fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
                 pParty->uFallSpeed += v54;
                 v55 =
-                    _actor_collision_struct.prolly_normal_d -
+                    _actor_collision_struct.radius -
                     ((signed int)(pODMFace->pFacePlane.dist +
                                   v122 * pODMFace->pFacePlane.vNormal.z +
                                   _angle_y * pODMFace->pFacePlane.vNormal.y +
@@ -3504,26 +3506,26 @@ void UpdateActors_ODM() {
 
         _actor_collision_struct.field_0 = 1;
         _actor_collision_struct.field_84 = -1;
-        _actor_collision_struct.field_8_radius = Act_Radius;
-        _actor_collision_struct.prolly_normal_d = Act_Radius;
+        _actor_collision_struct.radius2 = Act_Radius;
+        _actor_collision_struct.radius = Act_Radius;
         _actor_collision_struct.height = pActors[Actor_ITR].uActorHeight;
         _actor_collision_struct.field_70 = 0;
 
         for (Model_On_PID = 0; Model_On_PID < 100; ++Model_On_PID) {
-            _actor_collision_struct.position.x = pActors[Actor_ITR].vPosition.x;
-            _actor_collision_struct.normal.x = _actor_collision_struct.position.x;
-            _actor_collision_struct.position.y = pActors[Actor_ITR].vPosition.y;
-            _actor_collision_struct.normal.y = _actor_collision_struct.position.y;
+            _actor_collision_struct.position_hi.x = pActors[Actor_ITR].vPosition.x;
+            _actor_collision_struct.position_lo.x = _actor_collision_struct.position_hi.x;
+            _actor_collision_struct.position_hi.y = pActors[Actor_ITR].vPosition.y;
+            _actor_collision_struct.position_lo.y = _actor_collision_struct.position_hi.y;
             int Act_Z_Pos = pActors[Actor_ITR].vPosition.z;
-            _actor_collision_struct.normal.z = Act_Z_Pos + Act_Radius + 1;
-            _actor_collision_struct.position.z = Act_Z_Pos - Act_Radius + _actor_collision_struct.height - 1;
-            if (_actor_collision_struct.position.z < _actor_collision_struct.normal.z)
-                _actor_collision_struct.position.z = Act_Z_Pos + Act_Radius + 1;
+            _actor_collision_struct.position_lo.z = Act_Z_Pos + Act_Radius + 1;
+            _actor_collision_struct.position_hi.z = Act_Z_Pos - Act_Radius + _actor_collision_struct.height - 1;
+            if (_actor_collision_struct.position_hi.z < _actor_collision_struct.position_lo.z)
+                _actor_collision_struct.position_hi.z = Act_Z_Pos + Act_Radius + 1;
             _actor_collision_struct.velocity.x = pActors[Actor_ITR].vVelocity.x;
             _actor_collision_struct.uSectorID = 0;
             _actor_collision_struct.velocity.y = pActors[Actor_ITR].vVelocity.y;
             _actor_collision_struct.velocity.z = pActors[Actor_ITR].vVelocity.z;
-            if (_actor_collision_struct.CalcMovementExtents(0)) break;
+            if (_actor_collision_struct.PrepareAndCheckIfStationary(0)) break;
             _46E889_collide_against_bmodels(1);
             _46E26D_collide_against_sprites(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y));
             _46EF01_collision_chech_player(0);
@@ -3536,16 +3538,16 @@ void UpdateActors_ODM() {
                     ++i;
             }
             int v71 = i > 1;
-            if (_actor_collision_struct.field_7C < _actor_collision_struct.field_6C)
+            if (_actor_collision_struct.field_7C < _actor_collision_struct.move_distance)
                 Slope_High =
                     fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.z);
             // v34 = 0;
-            int v35 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+            int v35 = _actor_collision_struct.new_position_lo.z - _actor_collision_struct.radius - 1;
             bool bOnWater = false;
             int Splash_Model_On;
             int Splash_Floor = ODM_GetFloorLevel(
-                _actor_collision_struct.normal2.x, _actor_collision_struct.normal2.y,
-                _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1,
+                _actor_collision_struct.new_position_lo.x, _actor_collision_struct.new_position_lo.y,
+                _actor_collision_struct.new_position_lo.z - _actor_collision_struct.radius - 1,
                 pActors[Actor_ITR].uActorHeight, &bOnWater, &Splash_Model_On, 0);
             if (uIsOnWater) {
                 if (v35 < Splash_Floor + 60) {
@@ -3565,11 +3567,11 @@ void UpdateActors_ODM() {
                     }
                 }
             }
-            if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
-                pActors[Actor_ITR].vPosition.x = (short)_actor_collision_struct.normal2.x;
-                pActors[Actor_ITR].vPosition.y = (short)_actor_collision_struct.normal2.y;
-                pActors[Actor_ITR].vPosition.z = (short)_actor_collision_struct.normal2.z -
-                                           (short)_actor_collision_struct.prolly_normal_d -
+            if (_actor_collision_struct.field_7C >= _actor_collision_struct.move_distance) {
+                pActors[Actor_ITR].vPosition.x = (short)_actor_collision_struct.new_position_lo.x;
+                pActors[Actor_ITR].vPosition.y = (short)_actor_collision_struct.new_position_lo.y;
+                pActors[Actor_ITR].vPosition.z = (short)_actor_collision_struct.new_position_lo.z -
+                                           (short)_actor_collision_struct.radius -
                                            1;
                 break;
             }
@@ -3678,7 +3680,7 @@ void UpdateActors_ODM() {
                             pActors[Actor_ITR].vVelocity.z +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.z);
                             if (face->uPolygonType != 4) {
-                                int v46 = _actor_collision_struct.prolly_normal_d -
+                                int v46 = _actor_collision_struct.radius -
                                       ((face->pFacePlane.dist +
                                         face->pFacePlane.vNormal.x *
                                             pActors[Actor_ITR].vPosition.x +
@@ -3711,7 +3713,7 @@ void UpdateActors_ODM() {
             pActors[Actor_ITR].vVelocity.z =
                 fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.z);
 
-            Act_Radius = _actor_collision_struct.prolly_normal_d;
+            Act_Radius = _actor_collision_struct.radius;
         }
 
         // WATER TILE CHECKING

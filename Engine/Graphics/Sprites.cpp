@@ -473,47 +473,47 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                     if (!v6->CanMoveThrough()) {
                                         v7 = v6->uRadius;
                                         v8 = v5->vPosition.x;
-                                        if (_actor_collision_struct.sMaxX <= v8 + v7) {
-                                            if (_actor_collision_struct.sMinX >= v8 - v7) {
+                                        if (_actor_collision_struct.bbox.x1 <= v8 + v7) {
+                                            if (_actor_collision_struct.bbox.x2 >= v8 - v7) {
                                                 v9 = v5->vPosition.y;
-                                                if (_actor_collision_struct.sMaxY <=
+                                                if (_actor_collision_struct.bbox.y1 <=
                                                     v9 + v7) {
-                                                    if (_actor_collision_struct.sMinY >=
+                                                    if (_actor_collision_struct.bbox.y2 >=
                                                         v9 - v7) {
                                                         v10 =
                                                             v6->uDecorationHeight;
                                                         v11 = v5->vPosition.z;
                                                         v22 = v10;
-                                                        if (_actor_collision_struct.sMaxZ <=
+                                                        if (_actor_collision_struct.bbox.z1 <=
                                                             v11 + v10) {
                                                             if (_actor_collision_struct
-                                                                    .sMinZ >=
+                                                                    .bbox.z2 >=
                                                                 v11) {
                                                                 v12 =
                                                                     v8 -
                                                                     _actor_collision_struct
-                                                                        .normal
+                                                                        .position_lo
                                                                         .x;
                                                                 v19 =
                                                                     v9 -
                                                                     _actor_collision_struct
-                                                                        .normal
+                                                                        .position_lo
                                                                         .y;
                                                                 v13 =
                                                                     _actor_collision_struct
-                                                                        .prolly_normal_d +
+                                                                        .radius +
                                                                     v7;
                                                                 v21 =
                                                                     ((v8 -
                                                                       _actor_collision_struct
-                                                                          .normal
+                                                                          .position_lo
                                                                           .x) *
                                                                          _actor_collision_struct
                                                                              .direction
                                                                              .y -
                                                                      (v9 -
                                                                       _actor_collision_struct
-                                                                          .normal
+                                                                          .position_lo
                                                                           .y) *
                                                                          _actor_collision_struct
                                                                              .direction
@@ -521,7 +521,7 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                                                     16;
                                                                 if (abs(v21) <=
                                                                     _actor_collision_struct
-                                                                            .prolly_normal_d +
+                                                                            .radius +
                                                                         v7) {
                                                                     v14 =
                                                                         (v12 *
@@ -540,7 +540,7 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                                                                 .z;
                                                                         v16 =
                                                                             _actor_collision_struct
-                                                                                .normal
+                                                                                .position_lo
                                                                                 .z +
                                                                             fixpoint_mul(
                                                                                 _actor_collision_struct

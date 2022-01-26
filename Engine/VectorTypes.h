@@ -132,6 +132,13 @@ struct BBox_int_ {
     int y2;
     int z1;
     int z2;
+
+    bool Intersects(const BBox_short_ &other) const {
+        return
+            this->x1 <= other.x2 && this->x2 >= other.x1 &&
+            this->y1 <= other.y2 && this->y2 >= other.y1 &&
+            this->z1 <= other.z2 && this->z2 >= other.z1;
+    }
 };
 #pragma pack(pop)
 

@@ -519,7 +519,7 @@ int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
 int _43F5C8_get_point_light_level_with_respect_to_lights(
     unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 unsigned int GetMaxMipLevels(unsigned int uDim);
-int _46E44E_collide_against_faces_and_portals(unsigned int b1);  // idb
+void _46E44E_collide_against_faces_and_portals(bool b1);
 void _46E889_collide_against_bmodels(unsigned int ecx0);
 
 // TODO: looks like this also works for ceilings, reflect in docs?

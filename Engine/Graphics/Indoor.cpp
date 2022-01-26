@@ -1734,31 +1734,31 @@ void UpdateActors_BLV() {
             _actor_collision_struct.field_84 = -1;
             _actor_collision_struct.field_70 = 0;
             _actor_collision_struct.field_0 = 1;
-            _actor_collision_struct.field_8_radius = pActors[actor_id].uActorRadius;
-            _actor_collision_struct.prolly_normal_d = pActors[actor_id].uActorRadius;
+            _actor_collision_struct.radius2 = pActors[actor_id].uActorRadius;
+            _actor_collision_struct.radius = pActors[actor_id].uActorRadius;
             _actor_collision_struct.height = pActors[actor_id].uActorHeight;
             v22 = 0;
             for (int attempt = 0; attempt < 100; attempt++) {
-                _actor_collision_struct.position.x = pActors[actor_id].vPosition.x;
-                _actor_collision_struct.normal.x = _actor_collision_struct.position.x;
-                _actor_collision_struct.position.y = pActors[actor_id].vPosition.y;
-                _actor_collision_struct.normal.y = _actor_collision_struct.position.y;
-                _actor_collision_struct.normal.z = pActors[actor_id].vPosition.z + pActors[actor_id].uActorRadius + 1;
-                _actor_collision_struct.position.z = pActors[actor_id].vPosition.z -
+                _actor_collision_struct.position_hi.x = pActors[actor_id].vPosition.x;
+                _actor_collision_struct.position_lo.x = _actor_collision_struct.position_hi.x;
+                _actor_collision_struct.position_hi.y = pActors[actor_id].vPosition.y;
+                _actor_collision_struct.position_lo.y = _actor_collision_struct.position_hi.y;
+                _actor_collision_struct.position_lo.z = pActors[actor_id].vPosition.z + pActors[actor_id].uActorRadius + 1;
+                _actor_collision_struct.position_hi.z = pActors[actor_id].vPosition.z -
                                          pActors[actor_id].uActorRadius + _actor_collision_struct.height - 1;
-                if (_actor_collision_struct.position.z < _actor_collision_struct.normal.z)
-                    _actor_collision_struct.position.z = pActors[actor_id].vPosition.z +
+                if (_actor_collision_struct.position_hi.z < _actor_collision_struct.position_lo.z)
+                    _actor_collision_struct.position_hi.z = pActors[actor_id].vPosition.z +
                     pActors[actor_id].uActorRadius + 1;
                 _actor_collision_struct.velocity.x = pActors[actor_id].vVelocity.x;
                 _actor_collision_struct.velocity.y = pActors[actor_id].vVelocity.y;
                 _actor_collision_struct.velocity.z = pActors[actor_id].vVelocity.z;
                 _actor_collision_struct.uSectorID = pActors[actor_id].uSectorID;
-                if (!_actor_collision_struct.CalcMovementExtents(v22)) {
+                if (!_actor_collision_struct.PrepareAndCheckIfStationary(v22)) {
                     v58 = 0;
                     v24 = 8 * actor_id;
                     HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor_id);
                     for (v61 = 0; v61 < 100; ++v61) {
-                        _46E44E_collide_against_faces_and_portals(1);
+                        _46E44E_collide_against_faces_and_portals(true);
                         _46E0B2_collide_against_decorations();
                         _46EF01_collision_chech_player(0);
                         _46ED8A_collide_against_sprite_objects(v24);
@@ -1776,10 +1776,10 @@ void UpdateActors_BLV() {
                         if (_46F04E_collide_against_portals()) break;
                     }
                     v56 = v58 > 1;
-                    if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
-                        v30 = _actor_collision_struct.normal2.x;
-                        v31 = _actor_collision_struct.normal2.y;
-                        v32 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+                    if (_actor_collision_struct.field_7C >= _actor_collision_struct.move_distance) {
+                        v30 = _actor_collision_struct.new_position_lo.x;
+                        v31 = _actor_collision_struct.new_position_lo.y;
+                        v32 = _actor_collision_struct.new_position_lo.z - _actor_collision_struct.radius - 1;
                     } else {
                         v30 = pActors[actor_id].vPosition.x +
                               fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
@@ -1798,7 +1798,7 @@ void UpdateActors_BLV() {
                             continue;
                         if (pActors[actor_id].uCurrentActionAnimation != 1 ||
                             v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
-                            if (_actor_collision_struct.field_7C < _actor_collision_struct.field_6C) {
+                            if (_actor_collision_struct.field_7C < _actor_collision_struct.move_distance) {
                                 pActors[actor_id].vPosition.x +=
                                     fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
                                 pActors[actor_id].vPosition.y +=
@@ -1963,7 +1963,7 @@ void UpdateActors_BLV() {
                                             fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.z);
                                         if (pIndoor->pFaces[v37].uPolygonType != 4 &&
                                             pIndoor->pFaces[v37].uPolygonType != 3) {
-                                            v44 = _actor_collision_struct.prolly_normal_d -
+                                            v44 = _actor_collision_struct.radius -
                                                   ((pIndoor->pFaces[v37].pFacePlane_old.dist +
                                                     pIndoor->pFaces[v37].pFacePlane_old.vNormal.z *
                                                         pActors[actor_id].vPosition.z +
@@ -1994,10 +1994,10 @@ void UpdateActors_BLV() {
                                 v22 = 0;
                                 continue;
                             } else {
-                                pActors[actor_id].vPosition.x = (short)_actor_collision_struct.normal2.x;
-                                pActors[actor_id].vPosition.y = (short)_actor_collision_struct.normal2.y;
-                                pActors[actor_id].vPosition.z = (short)_actor_collision_struct.normal2.z -
-                                    (short)_actor_collision_struct.prolly_normal_d - 1;
+                                pActors[actor_id].vPosition.x = (short)_actor_collision_struct.new_position_lo.x;
+                                pActors[actor_id].vPosition.y = (short)_actor_collision_struct.new_position_lo.y;
+                                pActors[actor_id].vPosition.z = (short)_actor_collision_struct.new_position_lo.z -
+                                    (short)_actor_collision_struct.radius - 1;
                                 pActors[actor_id].uSectorID = (short)_actor_collision_struct.uSectorID;
                                 // goto LABEL_123;
                                 break;
@@ -3236,7 +3236,6 @@ void BLV_UpdateUserInputAndOther() {
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
     double v10;               // st7@27
-    int v38;                  // eax@96
     int v39;                  // ecx@106
     int v40;                  // eax@106
     int v42;                  // eax@120
@@ -3491,43 +3490,45 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     _actor_collision_struct.field_84 = -1;
     _actor_collision_struct.field_70 = 0;
-    _actor_collision_struct.prolly_normal_d = pParty->radius;
-    _actor_collision_struct.field_8_radius = pParty->radius / 2;
+    _actor_collision_struct.radius = pParty->radius;
+    _actor_collision_struct.radius2 = pParty->radius / 2;
     _actor_collision_struct.field_0 = 1;
     _actor_collision_struct.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
         new_party_z = party_z;
-        _actor_collision_struct.position.x = new_party_x;
-        _actor_collision_struct.position.y = new_party_y;
-        _actor_collision_struct.position.z = _actor_collision_struct.height + party_z + 1;
+        _actor_collision_struct.position_hi.x = new_party_x;
+        _actor_collision_struct.position_hi.y = new_party_y;
+        _actor_collision_struct.position_hi.z = _actor_collision_struct.height + party_z + 1;
 
-        _actor_collision_struct.normal.x = new_party_x;
-        _actor_collision_struct.normal.y = new_party_y;
-        _actor_collision_struct.normal.z = _actor_collision_struct.prolly_normal_d + party_z + 1;
+        _actor_collision_struct.position_lo.x = new_party_x;
+        _actor_collision_struct.position_lo.y = new_party_y;
+        _actor_collision_struct.position_lo.z = _actor_collision_struct.radius + party_z + 1;
 
         _actor_collision_struct.velocity.x = party_dx;
         _actor_collision_struct.velocity.y = party_dy;
         _actor_collision_struct.velocity.z = pParty->uFallSpeed;
 
         _actor_collision_struct.uSectorID = uSectorID;
-        v38 = 0; // zero means use actual dt
-        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-            v38 = 13312; // fixpoint(13312) = 0.203125
-        }
-        if (_actor_collision_struct.CalcMovementExtents(v38)) break;
+        int dt = 0; // zero means use actual dt
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
+            dt = 13312; // fixpoint(13312) = 0.203125
+
+        if (_actor_collision_struct.PrepareAndCheckIfStationary(dt))
+            break;
+
         for (uint j = 0; j < 100; ++j) {
-            _46E44E_collide_against_faces_and_portals(1);
+            _46E44E_collide_against_faces_and_portals(true);
             _46E0B2_collide_against_decorations();  //столкновения с декором
             for (v80 = 0; v80 < (signed int)uNumActors; ++v80)
-                Actor::_46DF1A_collide_against_actor(
-                    v80, 0);  //столкновения с монстрами
+                Actor::_46DF1A_collide_against_actor(v80, 0);  //столкновения с монстрами
             if (_46F04E_collide_against_portals())  //столкновения с порталами
                 break;
         }
-        if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
-            v39 = _actor_collision_struct.normal2.x;
-            uSectorID = _actor_collision_struct.normal2.y;
-            v40 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+
+        if (_actor_collision_struct.field_7C >= _actor_collision_struct.move_distance) {
+            v39 = _actor_collision_struct.new_position_lo.x;
+            uSectorID = _actor_collision_struct.new_position_lo.y;
+            v40 = _actor_collision_struct.new_position_lo.z - _actor_collision_struct.radius - 1;
         } else {
             v39 = new_party_x +
                   fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
@@ -3539,21 +3540,17 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         v42 = collide_against_floor(v39, uSectorID, v40 + 40,
                                     &_actor_collision_struct.uSectorID, &uFaceID);
         if (v42 == -30000 || v42 - new_party_z > 128) return;
-        if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {  // ???
-            new_party_x = _actor_collision_struct.normal2.x;
-            new_party_y = _actor_collision_struct.normal2.y;
-            new_party_z =
-                _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+        if (_actor_collision_struct.field_7C >= _actor_collision_struct.move_distance) {  // ???
+            new_party_x = _actor_collision_struct.new_position_lo.x;
+            new_party_y = _actor_collision_struct.new_position_lo.y;
+            new_party_z = _actor_collision_struct.new_position_lo.z - _actor_collision_struct.radius - 1;
             break;
         }
-        new_party_x +=
-            fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
-        new_party_y +=
-            fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.y);
+        new_party_x += fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
+        new_party_y += fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.y);
         uSectorID = _actor_collision_struct.uSectorID;
         _actor_collision_struct.field_70 += _actor_collision_struct.field_7C;
-        unsigned long long v87 =
-            new_party_z +
+        unsigned long long v87 = new_party_z +
             fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.z);
         if (PID_TYPE(_actor_collision_struct.pid) ==
             OBJECT_Actor) {  // invis break on actor collision    /    при
@@ -3566,16 +3563,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                    OBJECT_Decoration) {  // decoration collision   /   при
                                          // столкновении с декорацией
             v54 = TrigLUT->Atan2(
-                new_party_x -
-                    pLevelDecorations[_actor_collision_struct.pid >> 3].vPosition.x,
-                new_party_y -
-                    pLevelDecorations[_actor_collision_struct.pid >> 3].vPosition.y);
-            party_dx = fixpoint_mul(TrigLUT->Cos(v54),
-                              integer_sqrt(party_dx * party_dx + party_dy * party_dy));
-            party_dy = fixpoint_mul(TrigLUT->Sin(v54),
-                              integer_sqrt(party_dx * party_dx + party_dy * party_dy));
-        } else if (PID_TYPE(_actor_collision_struct.pid) ==
-                   OBJECT_BModel) {  // при столкновении с bmodel
+                new_party_x - pLevelDecorations[_actor_collision_struct.pid >> 3].vPosition.x,
+                new_party_y - pLevelDecorations[_actor_collision_struct.pid >> 3].vPosition.y);
+            party_dx = fixpoint_mul(TrigLUT->Cos(v54), integer_sqrt(party_dx * party_dx + party_dy * party_dy));
+            party_dy = fixpoint_mul(TrigLUT->Sin(v54), integer_sqrt(party_dx * party_dx + party_dy * party_dy));
+        } else if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_BModel) {  // при столкновении с bmodel
             pFace = &pIndoor->pFaces[(signed int)_actor_collision_struct.pid >> 3];
             if (pFace->uPolygonType == POLYGON_Floor) {  // если bmodel - пол
                 if (pParty->uFallSpeed < 0) pParty->uFallSpeed = 0;
@@ -3603,7 +3595,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     pParty->uFallSpeed +=
                         fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     // v80 = pFace->pFacePlane_old.vNormal.y;
-                    v52 = _actor_collision_struct.prolly_normal_d -
+                    v52 = _actor_collision_struct.radius -
                           ((pFace->pFacePlane_old.dist +
                             v87 * pFace->pFacePlane_old.vNormal.z +
                             new_party_y * pFace->pFacePlane_old.vNormal.y +
@@ -3682,8 +3674,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             }
         }
     }
-    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) <
-        8)  //отключить  звук ходьбы при остановке
+    if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  //отключить  звук ходьбы при остановке
         pAudioPlayer->StopAll(804);
     //-------------------------------------------------------------
     if (!hovering || !not_high_fall)
@@ -4201,84 +4192,51 @@ int collide_against_floor_approximate(int x, int y, int z,
 }
 
 //----- (0047050A) --------------------------------------------------------
-bool stru141_actor_collision_object::CalcMovementExtents(int dt) {  // true if no movement
-    bool result = true;
-    int v17;            // eax@5
-    int v18;            // eax@7
-    int v21;            // eax@9
-    int v22;            // eax@11
+bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
+    this->speed = integer_sqrt(this->velocity.z * this->velocity.z +
+                               this->velocity.y * this->velocity.y +
+                               this->velocity.x * this->velocity.x);
 
-    int speed = 1 | integer_sqrt(this->velocity.z * this->velocity.z +
-                                 this->velocity.y * this->velocity.y +
-                                 this->velocity.x * this->velocity.x);
+    if (this->speed != 0) {
+        this->direction.x = fixpoint_div(this->velocity.x, this->speed);
+        this->direction.y = fixpoint_div(this->velocity.y, this->speed);
+        this->direction.z = fixpoint_div(this->velocity.z, this->speed);
+        this->inv_speed = 65536 / speed;
+    } else {
+        this->direction.x = 0;
+        this->direction.y = 0;
+        this->direction.z = 65536;
+        this->inv_speed = INT_MAX;
+    }
 
-    this->direction.x = 65536 / speed * this->velocity.x;
-    this->direction.y = 65536 / speed * this->velocity.y;
-    this->direction.z = 65536 / speed * this->velocity.z;
-
-    this->speed = speed;
-    this->inv_speed = 65536 / speed;
-
-    int timedelta = dt;
-    if (!timedelta) timedelta = pEventTimer->dt_fixpoint;
+    if (!dt)
+        dt = pEventTimer->dt_fixpoint;
 
     // v8 = fixpoint_mul(timedelta, speed) - this->field_70; // speed * dt - something
-    this->field_6C = fixpoint_mul(timedelta, speed) - this->field_70;
-    if (this->field_6C > 0) {
-        this->field_4C = fixpoint_mul(this->field_6C, this->direction.x) + this->normal.x;
-        this->normal2.x = fixpoint_mul(this->field_6C, this->direction.x) + this->normal.x;
+    this->move_distance = fixpoint_mul(dt, this->speed) - this->field_70;
+    if (this->move_distance <= 0)
+        return true;
 
-        this->field_50 = fixpoint_mul(this->field_6C, this->direction.y) + this->normal.y;
-        this->normal2.y = fixpoint_mul(this->field_6C, this->direction.y) + this->normal.y;
+    this->new_position_hi_x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
+    this->new_position_lo.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
 
-        this->normal2.z = fixpoint_mul(this->field_6C, this->direction.z) + this->normal.z;
-        this->field_54 = fixpoint_mul(this->field_6C, this->direction.z) + this->position.z;
+    this->new_position_hi_y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
+    this->new_position_lo.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
 
+    this->new_position_hi_z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_hi.z;
+    this->new_position_lo.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_lo.z;
 
-        v17 = this->normal.x;
-        if (v17 >= this->normal2.x) v17 = this->normal2.x;
-        this->sMaxX = v17 - this->prolly_normal_d;
-        v18 = this->prolly_normal_d + this->normal.x;
-        if (this->normal.x <= this->normal2.x)
-            v18 = this->prolly_normal_d + this->normal2.x;
-        // v19 = this->normal.y;
-        // v20 = this->normal2.y;
-        this->sMinX = v18;
+    this->bbox.x1 = std::min(this->position_lo.x, this->new_position_lo.x) - this->radius;
+    this->bbox.x2 = std::max(this->position_lo.x, this->new_position_lo.x) + this->radius;
+    this->bbox.y1 = std::min(this->position_lo.y, this->new_position_lo.y) - this->radius;
+    this->bbox.y2 = std::max(this->position_lo.y, this->new_position_lo.y) + this->radius;
+    this->bbox.z1 = std::min(this->position_lo.z, this->new_position_lo.z) - this->radius;
+    this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi_z) + this->radius2;
 
+    this->pid = 0;
+    this->field_80 = -1;
+    this->field_88 = -1;
+    this->field_7C = 0xFFFFFFu;  // 255.999984741 fixpoint
 
-        v21 = this->normal.y;
-        if (v21 >= this->normal2.y) v21 = this->normal2.y;
-        this->sMaxY = v21 - this->prolly_normal_d;
-        v22 = this->prolly_normal_d + this->normal.y;
-        if (this->normal.y <= this->normal2.y)
-            v22 = this->normal2.y + this->prolly_normal_d;
-        // v23 = this->normal2.z;
-        this->sMinY = v22;
-
-
-        // v24 = this->normal.z;
-        if (this->normal.z >= this->normal2.z)
-            this->sMaxZ = this->normal2.z - this->prolly_normal_d;
-        else
-            this->sMaxZ = this->normal.z - this->prolly_normal_d;
-        // this->sMaxZ = v25;
-        // v26 = this->field_8_radius;
-        if (this->position.z <=
-            this->position.z + fixpoint_mul(this->field_6C, this->direction.z))
-            this->sMinZ = (this->position.z +
-                           fixpoint_mul(this->field_6C, this->direction.z)) +
-                          this->field_8_radius;
-        else
-            this->sMinZ = this->position.z + this->field_8_radius;
-
-
-
-        this->pid = 0;
-        this->field_80 = -1;
-        this->field_88 = -1;
-        // this->sMinZ = v27;
-        this->field_7C = 0xFFFFFFu;  // 255.999984741 fixpoint
-        result = false;
-    }
-    return result;
+    return  false;
 }

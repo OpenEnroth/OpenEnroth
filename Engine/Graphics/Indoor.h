@@ -141,26 +141,32 @@ struct stru316 {
 /*  134 */
 #pragma pack(push, 1)
 struct stru141_actor_collision_object {
-    bool CalcMovementExtents(int a2);
+    /**
+     * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
+     *
+     * @param dt                        Time delta, in fixpoint seconds.
+     * @return                          True if there is no movement, false otherwise.
+     */
+    bool PrepareAndCheckIfStationary(int dt);
 
     int field_0;  // bool flag
-    int prolly_normal_d;
-    int field_8_radius;  // actor radius
+    int radius;   // actor radius
+    int radius2;  // eeeh, upper radius?
     int height;  // actor height
     int field_10;  // unsued
     int field_14;  // unsued
     int field_18;  // unsued
     Vec3_int_ velocity;
-    Vec3_int_ normal;
-    Vec3_int_ position;
-    Vec3_int_ normal2;  // adjusted move positions after collisions?
-    int field_4C;  // unmod x
-    int field_50;  // unmod y
-    int field_54;  // unmod z
+    Vec3_int_ position_lo;
+    Vec3_int_ position_hi;
+    Vec3_int_ new_position_lo;  // adjusted move positions after collisions?
+    int new_position_hi_x;  // unmod x
+    int new_position_hi_y;  // unmod y
+    int new_position_hi_z;  // unmod z
     Vec3_int_ direction;  // velocity's unit vector
     int speed = 0;
     int inv_speed;
-    int field_6C;  // movement dist
+    int move_distance;  // movement dist
     int field_70;  // some dist modifier - blanked before coll links with field_7C- slows/stops movement
     unsigned int uSectorID = 0;
     unsigned int pid;
@@ -168,12 +174,7 @@ struct stru141_actor_collision_object {
     int field_80;  // portal id??
     int field_84;  // pid of face
     int field_88;  // unsued
-    int sMaxX = 0;
-    int sMinX = 0;
-    int sMaxY = 0;
-    int sMinY = 0;
-    int sMaxZ = 0;  // is this min
-    int sMinZ = 0;  // is this max
+    BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
     int field_A4;  // unused
 };
 #pragma pack(pop)

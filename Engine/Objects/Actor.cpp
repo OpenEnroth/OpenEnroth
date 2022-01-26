@@ -2712,21 +2712,21 @@ bool Actor::_46DF1A_collide_against_actor(int a1, int a2) {
     v4 = v2->uActorRadius;
     if (a2) v4 = a2;
 
-    if (_actor_collision_struct.sMaxX > v2->vPosition.x + v4 ||
-        _actor_collision_struct.sMinX < v2->vPosition.x - v4 ||
-        _actor_collision_struct.sMaxY > v2->vPosition.y + v4 ||
-        _actor_collision_struct.sMinY < v2->vPosition.y - v4 ||
-        _actor_collision_struct.sMaxZ > v2->vPosition.z + v2->uActorHeight ||
-        _actor_collision_struct.sMinZ < v2->vPosition.z) {
+    if (_actor_collision_struct.bbox.x1 > v2->vPosition.x + v4 ||
+        _actor_collision_struct.bbox.x2 < v2->vPosition.x - v4 ||
+        _actor_collision_struct.bbox.y1 > v2->vPosition.y + v4 ||
+        _actor_collision_struct.bbox.y2 < v2->vPosition.y - v4 ||
+        _actor_collision_struct.bbox.z1 > v2->vPosition.z + v2->uActorHeight ||
+        _actor_collision_struct.bbox.z2 < v2->vPosition.z) {
         return false;
     }
-    v8 = v2->vPosition.x - _actor_collision_struct.normal.x;
-    v9 = v2->vPosition.y - _actor_collision_struct.normal.y;
-    v10 = _actor_collision_struct.prolly_normal_d + v4;
+    v8 = v2->vPosition.x - _actor_collision_struct.position_lo.x;
+    v9 = v2->vPosition.y - _actor_collision_struct.position_lo.y;
+    v10 = _actor_collision_struct.radius + v4;
     v11 = (v8 * _actor_collision_struct.direction.y - v9 * _actor_collision_struct.direction.x) >> 16;
     v12 = (v8 * _actor_collision_struct.direction.x + v9 * _actor_collision_struct.direction.y) >> 16;
     if (abs(v11) > v10 || v12 <= 0) return false;
-    if (fixpoint_mul(_actor_collision_struct.direction.z, v12) + _actor_collision_struct.normal.z <
+    if (fixpoint_mul(_actor_collision_struct.direction.z, v12) + _actor_collision_struct.position_lo.z <
         v2->vPosition.z)
         return false;
 
