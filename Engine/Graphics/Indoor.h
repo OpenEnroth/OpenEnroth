@@ -10,6 +10,8 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IndoorCameraD3D.h"
 
+struct IndoorLocation;
+
 using EngineIoc = Engine_::IocContainer;
 
 /*  358 */
@@ -460,6 +462,14 @@ struct BLVFace {  // 60h
                                 : this->uAttributes | FACE_TEXTURE_FRAME;
     }
 
+    /**
+     * @param indoor                    Indoor location that this face belongs to.
+     * @param x                         Point X coordinate.
+     * @param y                         Point Y coordinate.
+     * @return                          Whether the point at (X,Y) lies inside this polygon (if projected on XY plane).
+     */
+    bool ContainsXY(IndoorLocation *indoor, int x, int y) const;
+
     struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
     int zCalc1;  // fixpoint a
@@ -722,8 +732,8 @@ void BLV_UpdateUserInputAndOther();
  * @param y                             Actor's fixpoint Y position.
  * @param z                             Actor's fixpoint Z position.
  * @param uSectorID                     Actor's sector id.
- * @param[out] pFaceID                  Id of the closest floor face for the provided position.
- * @return                              Fixpoint Z coordinate of the floor face for the given position.
+ * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position.
+ * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
  *                                      If wrong sector is supplied, `-30000` is returned.
  */
 int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID);
