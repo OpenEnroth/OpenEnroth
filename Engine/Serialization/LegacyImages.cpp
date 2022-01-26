@@ -346,7 +346,7 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->floor_face_pid = party->floor_face_pid;
     this->walk_sound_timer = party->walk_sound_timer;
     this->_6FC_water_lava_timer = party->_6FC_water_lava_timer;
-    this->uFallStartY = party->uFallStartZ;
+    this->uFallStartZ = party->uFallStartZ;
     this->bFlying = party->bFlying;
     this->field_708 = party->field_708;
     this->hirelingScrollPosition = party->hirelingScrollPosition;
@@ -511,7 +511,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->floor_face_pid = this->floor_face_pid;
     party->walk_sound_timer = this->walk_sound_timer;
     party->_6FC_water_lava_timer = this->_6FC_water_lava_timer;
-    party->uFallStartZ = this->uFallStartY;
+    party->uFallStartZ = this->uFallStartZ;
     party->bFlying = this->bFlying;
     party->field_708 = this->field_708;
     party->hirelingScrollPosition = this->hirelingScrollPosition;

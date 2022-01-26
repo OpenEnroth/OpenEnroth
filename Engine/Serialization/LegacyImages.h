@@ -461,7 +461,7 @@ struct Party_Image_MM7 {
     /* 006F4 */ int floor_face_pid;  // face we are standing at
     /* 006F8 */ int walk_sound_timer;
     /* 006FC */ int _6FC_water_lava_timer;
-    /* 00700 */ int uFallStartY;
+    /* 00700 */ int uFallStartZ;
     /* 00704 */ unsigned int bFlying;
     /* 00708 */ char field_708;
     /* 00709 */ uint8_t hirelingScrollPosition;
