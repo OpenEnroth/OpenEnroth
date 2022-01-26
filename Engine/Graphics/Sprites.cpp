@@ -247,23 +247,16 @@ int SpriteFrameTable::FastFindSprite(const char *pSpriteName) {
 
 //----- (0044D83A) --------------------------------------------------------
 int SpriteFrameTable::BinarySearch(const char *pSpriteName) {
-    int startPos = 0;
-    int endPos = uNumEFrames;
-    while (1) {
-        int searchRange = endPos - startPos;
-        int middleFrameIndex = startPos + (endPos - startPos) / 2;
-        int comparisonResult = _stricmp(pSpriteName, this->pSpritePFrames[middleFrameIndex]->icon_name.c_str());
-        if (!comparisonResult) {
-            return middleFrameIndex;
+    SpriteFrame **result = std::lower_bound(this->pSpritePFrames, this->pSpritePFrames + uNumEFrames, pSpriteName,
+        [](SpriteFrame *l, const char *r) {
+            return iless(l->icon_name, r);
         }
-        if (startPos == endPos) {
-            return -1;
-        }
-        if (comparisonResult >= 0) {
-            startPos += std::max(((endPos - startPos) / 2), 1);
-        } else {
-            endPos = std::max(((endPos - startPos) / 2), 1) + startPos;
-        }
+    );
+
+    if (iequals((*result)->icon_name, pSpriteName)) {
+        return std::distance(this->pSpritePFrames, result);
+    } else {
+        return -1;
     }
 }
 
