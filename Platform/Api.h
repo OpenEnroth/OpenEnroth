@@ -21,6 +21,9 @@ void OS_ShowCursor(bool show);
 
 bool OS_OpenConsole();
 
+/**
+ * @return                              Current value of a monotonic clock in milliseconds (1/1000s of a second).
+ */
 unsigned int OS_GetTime();
 uint64_t OS_GetPrecisionTime();
 
