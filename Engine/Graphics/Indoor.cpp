@@ -3287,19 +3287,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     blv_prev_party_x = pParty->vPosition.x;
     blv_prev_party_y = pParty->vPosition.y;
     blv_prev_party_z = pParty->vPosition.z;
-    if (!pParty->bTurnBasedModeOn) {
-        static int dword_720CDC = 0;
-
-        int v67 = OS_GetTime() / 500;
-        if (dword_720CDC != v67) {
-            dword_4F8580[3 * dword_4F8580[1]] = pParty->vPosition.x;
-            dword_4F8580[3 * dword_4F8580[2]] = pParty->vPosition.y;
-            dword_4F8580[3 * dword_4F8580[3]] = pParty->vPosition.z;
-            if (dword_4F8580[0] > 60) dword_4F8580[0] = 1;
-
-            dword_720CDC = v67;
-        }
-    }
 
     int fall_start;
     /*

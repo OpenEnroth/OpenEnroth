@@ -109,7 +109,6 @@ extern std::array<int, 500> ai_near_actors_targets_pid;
 extern int ai_arrays_size;
 extern std::array<int, 500> ai_near_actors_distances;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
-extern std::array<int, 182> dword_4F8580;
 extern int dword_4FA9B0[];
 extern int dword_4FA9B4[];
 
