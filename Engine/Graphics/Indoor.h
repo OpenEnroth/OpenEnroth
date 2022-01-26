@@ -833,8 +833,12 @@ struct BspRenderer {  // stru170
 
 void FindBillboardsLightLevels_BLV();
 
-int collide_against_floor_approximate(int x, int y, int z,
-                                      unsigned int *pSectorID,
-                                      unsigned int *pFaceID);
+/**
+ * Same as `collide_against_floor`, but also tries jiggling the party around a bit if the collision point couldn't be
+ * found.
+ *
+ * @see collide_against_floor
+ */
+int collide_against_floor_approximate(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
 
 bool Check_LineOfSight(int to_x, int to_y, int to_z, struct Vec3_int_ from);

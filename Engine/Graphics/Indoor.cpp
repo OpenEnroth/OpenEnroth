@@ -4211,30 +4211,30 @@ void FindBillboardsLightLevels_BLV() {
 int collide_against_floor_approximate(int x, int y, int z,
                                       unsigned int *pSectorID,
                                       unsigned int *pFaceID) {
-    int result;  // eax@1
+    int result;
 
     *pSectorID = pIndoor->GetSector(x - 2, y, z + 40);
     result = collide_against_floor(x - 2, y, z + 40, pSectorID, pFaceID);
-    if (result == -30000 || !*pSectorID) {
-        *pSectorID = pIndoor->GetSector(x + 2, y, z + 40);
-        result = collide_against_floor(x + 2, y, z + 40, pSectorID, pFaceID);
-        if (result == -30000 || !*pSectorID) {
-            *pSectorID = pIndoor->GetSector(x, y - 2, z + 40);
-            result =
-                collide_against_floor(x, y - 2, z + 40, pSectorID, pFaceID);
-            if (result == -30000 || !*pSectorID) {
-                *pSectorID = pIndoor->GetSector(x, y + 2, z + 40);
-                result =
-                    collide_against_floor(x, y + 2, z + 40, pSectorID, pFaceID);
-                if (result == -30000 || !*pSectorID) {
-                    *pSectorID = pIndoor->GetSector(x, y, z + 140);
-                    result = collide_against_floor(x, y, z + 140, pSectorID,
-                                                   pFaceID);
-                }
-            }
-        }
-    }
-    return result;
+    if (result != -30000 && *pSectorID)
+        return result;
+
+    *pSectorID = pIndoor->GetSector(x + 2, y, z + 40);
+    result = collide_against_floor(x + 2, y, z + 40, pSectorID, pFaceID);
+    if (result != -30000 && *pSectorID)
+        return result;
+
+    *pSectorID = pIndoor->GetSector(x, y - 2, z + 40);
+    result = collide_against_floor(x, y - 2, z + 40, pSectorID, pFaceID);
+    if (result != -30000 && *pSectorID)
+        return result;
+
+    *pSectorID = pIndoor->GetSector(x, y + 2, z + 40);
+    result = collide_against_floor(x, y + 2, z + 40, pSectorID, pFaceID);
+    if (result != -30000 && !*pSectorID)
+        return result;
+
+    *pSectorID = pIndoor->GetSector(x, y, z + 140);
+    return collide_against_floor(x, y, z + 140, pSectorID, pFaceID);
 }
 
 //----- (0047050A) --------------------------------------------------------
