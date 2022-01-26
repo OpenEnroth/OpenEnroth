@@ -3264,6 +3264,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool party_running_flag = false;
     bool party_walking_flag = false;
     bool hovering = false;
+    bool not_high_fall = false;
 
     unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
     unsigned int uFaceID = -1;
@@ -3323,34 +3324,31 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
-    if (party_z > floor_z + 1) hovering = true;
-
-    bool not_high_fall = false;
+    if (party_z > floor_z + 1)
+        hovering = true;
 
     if (party_z - floor_z <= 32) {
         pParty->uFallStartZ = party_z;
         not_high_fall = true;
     }
 
-    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer) {  //таймеры для звуков передвижения
-        if (pParty->walk_sound_timer > pEventTimer->uTimeElapsed)
-            pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
-        else
-            pParty->walk_sound_timer = 0;
-    }
+    // update timer for walking sounds
+    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer > 0)
+        pParty->walk_sound_timer = std::max(0, pParty->walk_sound_timer - static_cast<int>(pEventTimer->uTimeElapsed));
 
-    if (party_z <= floor_z + 1) {  // группа ниже уровня пола
+    // party is below floor level?
+    if (party_z <= floor_z + 1) {
         party_z = floor_z + 1;
         pParty->uFallStartZ = floor_z + 1;
 
-        if (!hovering && pParty->floor_face_pid != uFaceID) {  // не парящие и
+        // not hovering & stepped onto a new face => activate potential pressure plate
+        if (!hovering && pParty->floor_face_pid != uFaceID) {
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_PRESSURE_PLATE)
-                uFaceEvent =
-                    pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID]
-                        .uEventID;
+                uFaceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].uEventID;
         }
     }
-    if (!hovering) pParty->floor_face_pid = uFaceID;
+    if (!hovering)
+        pParty->floor_face_pid = uFaceID;
 
     bool on_water = false;
     if (pIndoor->pFaces[uFaceID].Fluid())  // на воде
@@ -3360,13 +3358,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     angle = pParty->sRotationZ;
     _view_angle = pParty->sRotationX;
     v82 =
-        (unsigned __int64)(pEventTimer->dt_in_some_format *
-                           (signed __int64)((signed int)(pParty
-                                                             ->y_rotation_speed *
-                                                         TrigLUT
-                                                             ->uIntegerPi) /
-                                            180)) >>
-        16;
+        (unsigned __int64)(pEventTimer->dt_in_some_format * (signed __int64)((signed int)(pParty->y_rotation_speed *
+                                                         TrigLUT->uIntegerPi) / 180)) >> 16;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
@@ -3692,9 +3685,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     pParty->vPosition.z = new_party_z;
     pParty->vPosition.y = new_party_y;
     // pParty->uFallSpeed = v89;
+
     if (!hovering && pIndoor->pFaces[uFaceID].uAttributes & FACE_IsLava)
-        pParty->uFlags |= PARTY_FLAGS_1_BURNING;  // 0x200
-    if (uFaceEvent) EventProcessor(uFaceEvent, 0, 1);
+        pParty->uFlags |= PARTY_FLAGS_1_BURNING;
+
+    if (uFaceEvent)
+        EventProcessor(uFaceEvent, 0, 1);
 }
 
 //----- (00449A49) --------------------------------------------------------
