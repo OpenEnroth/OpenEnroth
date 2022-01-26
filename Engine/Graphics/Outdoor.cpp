@@ -2417,14 +2417,14 @@ void ODM_ProcessPartyActions() {
     _walk_speed = pParty->uWalkSpeed;
     _angle_y = pParty->sRotationZ;
     _angle_x = pParty->sRotationX;
-    // v126 = pEventTimer->dt_in_some_format;
-    /*v119 = (Player **)((unsigned __int64)(pEventTimer->dt_in_some_format
+    // v126 = pEventTimer->dt_fixpoint;
+    /*v119 = (Player **)((unsigned __int64)(pEventTimer->dt_fixpoint
                                         * (signed __int64)((signed
        int)(pParty->field_20_prolly_turn_speed
                                                                       *
        TrigLUT->uIntegerPi) / 180)) >> 16);*/
     __int64 dturn =
-        (unsigned __int64)(pEventTimer->dt_in_some_format *
+        (unsigned __int64)(pEventTimer->dt_fixpoint *
                            (signed __int64)((signed int)(pParty
                                                              ->y_rotation_speed *
                                                          TrigLUT

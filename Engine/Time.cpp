@@ -62,10 +62,13 @@ void Timer::Update() {
     uTimeElapsed = new_time - uStartTime;
     uStartTime = new_time;
 
-    if (uTimeElapsed > 32) uTimeElapsed = 32;
+    if (uTimeElapsed > 32)
+        uTimeElapsed = 32; // 32 is 250ms
 
-    if (!bPaused && !bTackGameTime) uTotalGameTimeElapsed += uTimeElapsed;
-    dt_in_some_format = (uTimeElapsed << 16) / 128;
+    if (!bPaused && !bTackGameTime)
+        uTotalGameTimeElapsed += uTimeElapsed;
+
+    dt_fixpoint = (uTimeElapsed << 16) / 128;
 }
 
 //----- (00426402) --------------------------------------------------------

@@ -127,7 +127,7 @@ void Timer_Image_MM7::Serialize(Timer *timer) {
     this->uGameTimeStart = timer->uGameTimeStart;
     this->field_18 = timer->field_18;
     this->uTimeElapsed = timer->uTimeElapsed;
-    this->dt_in_some_format = timer->dt_in_some_format;
+    this->dt_fixpoint = timer->dt_fixpoint;
     this->uTotalGameTimeElapsed = timer->uTotalGameTimeElapsed;
 }
 
@@ -140,7 +140,7 @@ void Timer_Image_MM7::Deserialize(Timer *timer) {
     timer->uGameTimeStart = this->uGameTimeStart;
     timer->field_18 = this->field_18;
     timer->uTimeElapsed = this->uTimeElapsed;
-    timer->dt_in_some_format = this->dt_in_some_format;
+    timer->dt_fixpoint = this->dt_fixpoint;
     timer->uTotalGameTimeElapsed = this->uTotalGameTimeElapsed;
 }
 

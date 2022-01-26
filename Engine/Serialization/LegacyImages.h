@@ -541,7 +541,7 @@ struct Timer_Image_MM7 {
     /* 14 */ int32_t uGameTimeStart;
     /* 18 */ int32_t field_18;
     /* 1C */ uint32_t uTimeElapsed;
-    /* 20 */ int32_t dt_in_some_format;
+    /* 20 */ int32_t dt_fixpoint;
     /* 24 */ uint32_t uTotalGameTimeElapsed;
     /* 28 */
 };

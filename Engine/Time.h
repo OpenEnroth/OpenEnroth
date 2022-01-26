@@ -112,7 +112,7 @@ struct Timer {
         uGameTimeStart = 0;
         field_18 = 0;
         uTimeElapsed = 0;
-        dt_in_some_format = 0;
+        dt_fixpoint = 0;
         uTotalGameTimeElapsed = 0;
     }
 
@@ -132,7 +132,7 @@ struct Timer {
     int uGameTimeStart;
     int field_18;
     unsigned int uTimeElapsed;
-    int dt_in_some_format;
+    int dt_fixpoint; // dt in seconds in fixpoint format
     unsigned int uTotalGameTimeElapsed;
 
     static const unsigned int Minute = 2 * TIME_QUANT;

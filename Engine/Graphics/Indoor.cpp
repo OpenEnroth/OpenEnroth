@@ -3358,7 +3358,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     angle = pParty->sRotationZ;
     _view_angle = pParty->sRotationX;
     v82 =
-        (unsigned __int64)(pEventTimer->dt_in_some_format * (signed __int64)((signed int)(pParty->y_rotation_speed *
+        (unsigned __int64)(pEventTimer->dt_fixpoint * (signed __int64)((signed int)(pParty->y_rotation_speed *
                                                          TrigLUT->uIntegerPi) / 180)) >> 16;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
@@ -4210,7 +4210,7 @@ int stru141_actor_collision_object::CalcMovementExtents(int dt) {  // true if no
     this->inv_speed = 65536 / speed;
 
     int timedelta = dt;
-    if (!timedelta) timedelta = pEventTimer->dt_in_some_format;
+    if (!timedelta) timedelta = pEventTimer->dt_fixpoint;
 
     // v8 = fixpoint_mul(timedelta, speed) - this->field_70; // speed * dt - something
     this->field_6C = fixpoint_mul(timedelta, speed) - this->field_70;
