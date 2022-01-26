@@ -1984,7 +1984,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
                                 } else {
                                     int a = fixpoint_mul(face.zCalc1, X);
                                     int b = fixpoint_mul(face.zCalc2, Y);
-                                    int c = ((int64_t)face.zCalc3 >> 16);
+                                    int c = (face.zCalc3 >> 16);
                                     v24 = a + b + c;
                                 }
                                 v25 = v46++;
@@ -3330,7 +3330,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                         else
                             v19 = fixpoint_mul(face.zCalc1, Party_X) +
                                   fixpoint_mul(face.zCalc2, Party_Y) +
-                                  HEXRAYS_HIWORD(face.zCalc3);
+                                  (face.zCalc3 >> 16);
                         v20 = v39++;
                         ceiling_height_level[v20] = v19;
                         dword_720ED0[v20] = model.index;

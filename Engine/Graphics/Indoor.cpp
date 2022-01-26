@@ -2242,107 +2242,104 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     }
 }
 
-//----- (0046CEC3) --------------------------------------------------------
-int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID) {
-    // gets the floor position at XYZ - if wrong secor is supplied, will return -30000
+/**
+ * @param pFloor                        Floor face.
+ * @param x                             X coordinate.
+ * @param y                             Y coordinate.
+ * @param z                             Z coordinate of the floor plane corresponding to provided X & Y. Ignored if
+ *                                      `nullptr` is passed.
+ * @return                              Whether provided (X,Y) point lies inside the floor face (in XY plane).
+ */
+bool BLV_CheckFloorIntersection(BLVFace *pFloor, int x, int y, int *z) {
+    if (!pFloor->uNumVertices)
+        return false;
 
-    // stores faces and floor levels
-    int FacesFound = 0;
-    static int blv_floor_id[5] = { 0 };
-    static int blv_floor_level[5] = { 0 };
-
-    int z_calc;
+    if (!pFloor->pBounding.ContainsXY(x, y))
+        return false;
 
     // vert store for point in poly checks
-    static float floor_vert_Y[104];
-    static float floor_vert_X[104];
+    float floor_x[104];
+    float floor_y[104];
+
+    for (uint j = 0; j < pFloor->uNumVertices; ++j) {
+        floor_x[2 * j] = pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].x;
+        floor_x[2 * j + 1] = pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j + 1]].x;
+        floor_y[2 * j] = pFloor->pYInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].y;
+        floor_y[2 * j + 1] = pFloor->pYInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j + 1]].y;
+    }
+
+    int nvert = (2 * pFloor->uNumVertices);
+    bool inside = false;
+
+    // Check whether we're inside the polygon. This is done by shooting an X-aligned ray and seeing
+    // if we'll get an odd number of intersections. The implementation iterates though all edges, checks
+    // whether an intersection is possible (vertices are placed in different half-planes relative to the ray),
+    // then calculates the intersection point and updates the even/odd state.
+    for (int ti = 0, hj = nvert - 1; ti < nvert; hj = ti++) {
+        if ((floor_y[ti] > y) == (floor_y[hj] > y))
+            continue;
+
+        int edge_x = floor_x[ti] +
+            (floor_x[hj] - floor_x[ti]) *
+            (y - floor_y[ti]) / (floor_y[hj] - floor_y[ti]);
+
+        if (x < edge_x)
+            inside = !inside;
+    }
+
+    if (!inside)
+        return false;
+
+    if (z) {
+        if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
+            *z = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
+        } else {
+            *z = fixpoint_mul(pFloor->zCalc1, x) + fixpoint_mul(pFloor->zCalc2, y) + ((pFloor->zCalc3 + 0x8000) >> 16);
+        }
+    }
+
+    return true;
+}
+
+//----- (0046CEC3) --------------------------------------------------------
+int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID) {
+    // stores faces and floor z levels
+    int FacesFound = 0;
+    int blv_floor_z[5] = { 0 };
+    int blv_floor_id[5] = { 0 };
 
     BLVSector *pSector = &pIndoor->pSectors[uSectorID];
 
     // loop over all floor faces
     for (uint i = 0; i < pSector->uNumFloors; ++i) {
+        if (FacesFound >= 5)
+            break;
+
         BLVFace *pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
-        if (pFloor->Ethereal()) continue;
-        if (!pFloor->uNumVertices) continue;
+        if (pFloor->Ethereal())
+            continue;
 
-        if (x <= pFloor->pBounding.x2 && x >= pFloor->pBounding.x1 &&
-            y <= pFloor->pBounding.y2 && y >= pFloor->pBounding.y1) {
-            for (uint j = 0; j < pFloor->uNumVertices; ++j) {
-                floor_vert_X[2 * j] =
-                    pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].x;
-                floor_vert_X[2 * j + 1] =
-                    pFloor->pXInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j + 1]].x;
-                floor_vert_Y[2 * j] =
-                    pFloor->pYInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j]].y;
-                floor_vert_Y[2 * j + 1] =
-                    pFloor->pYInterceptDisplacements[j] + pIndoor->pVertices[pFloor->pVertexIDs[j + 1]].y;
-            }
-
-            int ti, hj, nvert = (2 * pFloor->uNumVertices);
-            bool c = false;
-
-            for (ti = 0, hj = nvert - 1; ti < nvert; hj = ti++) {
-                if (((floor_vert_Y[ti] > y) != (floor_vert_Y[hj] > y)) &&
-                    (x < (floor_vert_X[hj] - floor_vert_X[ti]) * (y - floor_vert_Y[ti]) / (floor_vert_Y[hj] - floor_vert_Y[ti]) + floor_vert_X[ti])
-                    )
-                    c = !c;
-            }
-
-            if (c) {
-                if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
-                    z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
-                } else {
-                    z_calc = fixpoint_mul(pFloor->zCalc1, x) + fixpoint_mul(pFloor->zCalc2, y) +
-                        ((pFloor->zCalc3 + 0x8000) >> 16);
-                }
-
-                blv_floor_level[FacesFound] = z_calc;
-                blv_floor_id[FacesFound] = pSector->pFloors[i];
-                FacesFound++;
-            }
-            if (FacesFound >= 5) break;
+        int z_calc;
+        if (BLV_CheckFloorIntersection(pFloor, x, y, &z_calc)) {
+            blv_floor_z[FacesFound] = z_calc;
+            blv_floor_id[FacesFound] = pSector->pFloors[i];
+            FacesFound++;
         }
     }
-
 
     // as above but for sector portal faces
     if (pSector->field_0 & 8) {
         for (uint i = 0; i < pSector->uNumPortals; ++i) {
             if (FacesFound >= 5) break;
+
             BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
-            if (portal->uPolygonType != POLYGON_Floor) continue;
+            if (portal->uPolygonType != POLYGON_Floor)
+                continue;
 
-            if (!portal->uNumVertices) continue;
-
-            if (x <= portal->pBounding.x2 && x >= portal->pBounding.x1 &&
-                y <= portal->pBounding.y2 && y >= portal->pBounding.y1) {
-                for (uint j = 0; j < portal->uNumVertices; ++j) {
-                    floor_vert_X[2 * j] =
-                        portal->pXInterceptDisplacements[j] + pIndoor->pVertices[portal->pVertexIDs[j]].x;
-                    floor_vert_X[2 * j + 1] =
-                        portal->pXInterceptDisplacements[j + 1] + pIndoor->pVertices[portal->pVertexIDs[j + 1]].x;
-                    floor_vert_Y[2 * j] =
-                        portal->pYInterceptDisplacements[j] + pIndoor->pVertices[portal->pVertexIDs[j]].y;
-                    floor_vert_Y[2 * j + 1] =
-                        portal->pYInterceptDisplacements[j + 1] + pIndoor->pVertices[portal->pVertexIDs[j + 1]].y;
-                }
-
-                int ti, hj, nvert = (2 * portal->uNumVertices);
-                bool c = false;
-
-                for (ti = 0, hj = nvert - 1; ti < nvert; hj = ti++) {
-                    if (((floor_vert_Y[ti] > y) != (floor_vert_Y[hj] > y)) &&
-                        (x < (floor_vert_X[hj] - floor_vert_X[ti]) * (y - floor_vert_Y[ti]) / (floor_vert_Y[hj] - floor_vert_Y[ti]) + floor_vert_X[ti])
-                        )
-                        c = !c;
-                }
-
-                if (c) {
-                    if (FacesFound >= 5) break;
-                    blv_floor_level[FacesFound] = -29000;
-                    blv_floor_id[FacesFound] = pSector->pPortals[i];
-                    FacesFound++;
-                }
+            if (BLV_CheckFloorIntersection(portal, x, y, nullptr)) {
+                blv_floor_z[FacesFound] = -29000;
+                blv_floor_id[FacesFound] = pSector->pPortals[i];
+                FacesFound++;
             }
         }
     }
@@ -2350,8 +2347,8 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
     // one face found
     if (FacesFound == 1) {
         *pFaceID = blv_floor_id[0];
-        if (blv_floor_level[0] <= -29000) __debugbreak();
-        return blv_floor_level[0];
+        if (blv_floor_z[0] <= -29000) __debugbreak();
+        return blv_floor_z[0];
     }
 
     // no face found - probably wrong sector supplied
@@ -2361,14 +2358,14 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
     }
 
     // multiple faces found - pick nearest
-    int result = blv_floor_level[0];
+    int result = blv_floor_z[0];
     *pFaceID = blv_floor_id[0];
     for (uint i = 1; i < FacesFound; ++i) {
-        int v38 = blv_floor_level[i];
+        int v38 = blv_floor_z[i];
 
         if (abs(z - v38) <= abs(z - result)) {
-            result = blv_floor_level[i];
-            if (blv_floor_level[i] <= -29000) __debugbreak();
+            result = blv_floor_z[i];
+            if (blv_floor_z[i] <= -29000) __debugbreak();
             *pFaceID = blv_floor_id[i];
         }
     }

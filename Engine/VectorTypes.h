@@ -117,6 +117,10 @@ struct BBox_short_ {
     int16_t y2;
     int16_t z1;
     int16_t z2;
+
+    bool ContainsXY(int x, int y) const {
+        return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+    }
 };
 #pragma pack(pop)
 

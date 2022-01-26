@@ -462,9 +462,9 @@ struct BLVFace {  // 60h
 
     struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
-    int zCalc1;  // x
-    int zCalc2;  // y
-    int zCalc3;
+    int zCalc1;  // fixpoint a
+    int zCalc2;  // fixpoint b
+    int zCalc3;  // fixpoint c, plane = a*x + b*y + (c>>16), no idea what >>16 is doing here.
     unsigned int uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
@@ -716,8 +716,17 @@ char DoInteractionWithTopmostZObject(int pid);
 // int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
 unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
 void BLV_UpdateUserInputAndOther();
-int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
-                      unsigned int *pFaceID);
+
+/**
+ * @param x                             Actor's fixpoint X position.
+ * @param y                             Actor's fixpoint Y position.
+ * @param z                             Actor's fixpoint Z position.
+ * @param uSectorID                     Actor's sector id.
+ * @param[out] pFaceID                  Id of the closest floor face for the provided position.
+ * @return                              Fixpoint Z coordinate of the floor face for the given position.
+ *                                      If wrong sector is supplied, `-30000` is returned.
+ */
+int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
