@@ -147,7 +147,7 @@ class EngineConfig {
     bool is_underwater = false;
     bool is_targeting = false;
 
-    bool no_grab = false;
+    bool no_grab = false;           // Don't grab mouse. When false, you cannot move the mouse outside the game window.
 
     int window_x = -1;
     int window_y = -1;
