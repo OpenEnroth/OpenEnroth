@@ -3289,34 +3289,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     blv_prev_party_z = pParty->vPosition.z;
 
     int fall_start;
-    /*
-    if (!pParty->FeatherFallActive())// не активно падение пера
-    {
-      bFeatherFall = false;
-      if (!pParty->pPlayers[0].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&
-    // grants feather fall
-          !pParty->pPlayers[1].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&
-          !pParty->pPlayers[2].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&
-          !pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT))
-      {
-        fall_start = pParty->uFallStartZ;
-      }
-      else// was missing
-      {
-          fall_start = floor_level;
-          bFeatherFall = true;
-          pParty->uFallStartZ = floor_z;
-      }
-    }
-    else// активно падение пера
-    {
-      fall_start = floor_z;
-      bFeatherFall = true;
-      pParty->uFallStartZ = floor_z;
-    }
-
-    Reworked condition below
-    */
     if (pParty->FeatherFallActive() ||
         pParty->pPlayers[0].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) ||
         pParty->pPlayers[1].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) ||
