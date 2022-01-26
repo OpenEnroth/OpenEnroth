@@ -433,16 +433,16 @@ int _46EF01_collision_chech_player(int a1) {
     result = pParty->vPosition.x;
     // device_caps = pParty->uPartyHeight;
     if (_actor_collision_struct.sMaxX <=
-            pParty->vPosition.x + (2 * pParty->field_14_radius) &&
+            pParty->vPosition.x + (2 * pParty->radius) &&
         _actor_collision_struct.sMinX >=
-            pParty->vPosition.x - (2 * pParty->field_14_radius) &&
+            pParty->vPosition.x - (2 * pParty->radius) &&
         _actor_collision_struct.sMaxY <=
-            pParty->vPosition.y + (2 * pParty->field_14_radius) &&
+            pParty->vPosition.y + (2 * pParty->radius) &&
         _actor_collision_struct.sMinY >=
-            pParty->vPosition.y - (2 * pParty->field_14_radius) &&
+            pParty->vPosition.y - (2 * pParty->radius) &&
         _actor_collision_struct.sMinZ/*sMaxZ*/ <= (pParty->vPosition.z + (int)pParty->uPartyHeight) &&
         _actor_collision_struct.sMaxZ/*sMinZ*/ >= pParty->vPosition.z) {
-        v3 = _actor_collision_struct.prolly_normal_d + (2 * pParty->field_14_radius);
+        v3 = _actor_collision_struct.prolly_normal_d + (2 * pParty->radius);
         v11 = pParty->vPosition.x - _actor_collision_struct.normal.x;
         v4 = ((pParty->vPosition.x - _actor_collision_struct.normal.x) *
                   _actor_collision_struct.direction.y -
@@ -456,7 +456,7 @@ int _46EF01_collision_chech_player(int a1) {
                           _actor_collision_struct.direction.x) >>
                      16);
         if (result <=
-            _actor_collision_struct.prolly_normal_d + (2 * pParty->field_14_radius)) {
+            _actor_collision_struct.prolly_normal_d + (2 * pParty->radius)) {
             result = v10 * _actor_collision_struct.direction.y;
             v5 = (v10 * _actor_collision_struct.direction.y +
                   v11 * _actor_collision_struct.direction.x) >>

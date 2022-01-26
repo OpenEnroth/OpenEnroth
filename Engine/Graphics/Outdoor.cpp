@@ -2802,8 +2802,8 @@ void ODM_ProcessPartyActions() {
     // --(столкновения)-------------------------------------------------------------------
     _actor_collision_struct.field_84 = -1;
     _actor_collision_struct.field_70 = 0;
-    _actor_collision_struct.prolly_normal_d = pParty->field_14_radius;
-    _actor_collision_struct.field_8_radius = pParty->field_14_radius / 2;
+    _actor_collision_struct.prolly_normal_d = pParty->radius;
+    _actor_collision_struct.field_8_radius = pParty->radius / 2;
     _actor_collision_struct.field_0 = 1;
     _actor_collision_struct.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {

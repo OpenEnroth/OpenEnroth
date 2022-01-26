@@ -437,7 +437,7 @@ struct Party_Image_MM7 {
     /* 00008 */ unsigned int uDefaultPartyHeight;
     /* 0000C */ int sEyelevel;
     /* 00010 */ unsigned int uDefaultEyelevel;
-    /* 00014 */ int field_14_radius;
+    /* 00014 */ int radius;
     /* 00018 */ int y_rotation_granularity;
     /* 0001C */ unsigned int uWalkSpeed;
     /* 00020 */ int y_rotation_speed;  // deg/s

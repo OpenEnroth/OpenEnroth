@@ -94,7 +94,7 @@ void Party::Zero() {
     uFallSpeed = 0;
     field_28 = 0;
     uDefaultPartyHeight = 192;
-    field_14_radius = 37;
+    radius = 37;
     y_rotation_granularity = 25;
     y_rotation_speed = 90;
 
@@ -644,7 +644,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->uFallSpeed = 0;
     this->field_28 = 0;
     this->uDefaultPartyHeight = 120;
-    this->field_14_radius = 37;
+    this->radius = 37;
     this->y_rotation_granularity = 25;
     this->uWalkSpeed = 384;
     this->y_rotation_speed = 90;

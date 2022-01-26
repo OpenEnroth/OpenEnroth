@@ -300,7 +300,7 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->uDefaultPartyHeight = party->uDefaultPartyHeight;
     this->sEyelevel = party->sEyelevel;
     this->uDefaultEyelevel = party->uDefaultEyelevel;
-    this->field_14_radius = party->field_14_radius;
+    this->radius = party->radius;
     this->y_rotation_granularity = party->y_rotation_granularity;
     this->uWalkSpeed = party->uWalkSpeed;
     this->y_rotation_speed = party->y_rotation_speed;
@@ -465,7 +465,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->uDefaultPartyHeight = this->uDefaultPartyHeight;
     party->sEyelevel = this->sEyelevel;
     party->uDefaultEyelevel = this->uDefaultEyelevel;
-    party->field_14_radius = this->field_14_radius;
+    party->radius = this->radius;
     party->y_rotation_granularity = this->y_rotation_granularity;
     party->uWalkSpeed = this->uWalkSpeed;
     party->y_rotation_speed = this->y_rotation_speed;

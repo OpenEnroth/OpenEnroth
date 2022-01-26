@@ -262,7 +262,7 @@ struct Party {
     unsigned int uDefaultPartyHeight;
     int sEyelevel;
     unsigned int uDefaultEyelevel;
-    int field_14_radius;
+    int radius; // party radius, 37 by default.
     int y_rotation_granularity;
     unsigned int uWalkSpeed;
     int y_rotation_speed;  // deg/s
