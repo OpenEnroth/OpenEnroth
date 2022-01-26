@@ -45,4 +45,3 @@ inline char *_strrev(char *str) {
 
 #define _flushall() std::cout.flush()
 
-#define _access access

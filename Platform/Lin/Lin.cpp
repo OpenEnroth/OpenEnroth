@@ -161,3 +161,7 @@ std::string OS_casepath(std::string path) {
 
     return r;
 }
+
+bool OS_FileExists(const std::string& path) {
+    return _access(path.c_str(), 0) != -1;
+}

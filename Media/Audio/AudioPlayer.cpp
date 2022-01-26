@@ -122,7 +122,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
 
         std::string file_path = StringPrintf("%d.mp3", eTrack);
         file_path = MakeDataPath("music", file_path);
-        if (!FileExists(file_path.c_str())) {
+        if (!OS_FileExists(file_path)) {
             logger->Warning("AudioPlayer: %s not found", file_path.c_str());
             return;
         }

@@ -28,3 +28,4 @@ std::vector<std::string> OS_FindFiles(const std::string &folder, const std::stri
 
 char OS_GetDirSeparator(void);
 std::string OS_casepath(std::string path);
+bool OS_FileExists(const std::string &path);

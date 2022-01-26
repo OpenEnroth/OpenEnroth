@@ -2,7 +2,6 @@
 
 #ifdef _WINDOWS
 #include <direct.h>
-#include <io.h>
 #endif
 
 #include <filesystem>
@@ -161,10 +160,6 @@ uint32_t Color32(uint32_t r, uint32_t g, uint32_t b, uint32_t a) {
 uint16_t Color16(uint32_t r, uint32_t g, uint32_t b) {
     return (b >> (8 - 5)) | 0x7E0 & (g << (6 + 5 - 8)) |
         0xF800 & (r << (6 + 5 + 5 - 8));
-}
-
-bool FileExists(const char *fname) {
-    return access(fname, 0) != -1;
 }
 
 void Engine_DeinitializeAndTerminate(int exitCode) {

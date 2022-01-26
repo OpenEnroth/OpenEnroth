@@ -34,9 +34,6 @@ using Io::Mouse;
 
 void Engine_DeinitializeAndTerminate(int exitCode);
 
-bool FileExists(const char *fname);
-
-
 /*  320 */
 enum GAME_STATE {
     GAME_STATE_PLAYING = 0,
