@@ -2279,10 +2279,7 @@ bool BLV_CheckFloorIntersection(BLVFace *pFloor, int x, int y, int *z) {
         if ((floor_y[ti] > y) == (floor_y[hj] > y))
             continue;
 
-        int edge_x = floor_x[ti] +
-            (floor_x[hj] - floor_x[ti]) *
-            (y - floor_y[ti]) / (floor_y[hj] - floor_y[ti]);
-
+        int edge_x = floor_x[ti] + (floor_x[hj] - floor_x[ti]) * (y - floor_y[ti]) / (floor_y[hj] - floor_y[ti]);
         if (x < edge_x)
             inside = !inside;
     }
