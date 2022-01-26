@@ -856,22 +856,22 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
 
 int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID) {
     uint uFaceID = -1;
-    int floor_level = BLV_GetFloorLevel(x, y, z, *pSectorID, &uFaceID);
+    int floor_z = BLV_GetFloorLevel(x, y, z, *pSectorID, &uFaceID);
 
-    if (floor_level != -30000 && floor_level <= z + 50) {
+    if (floor_z != -30000 && floor_z <= z + 50) {
         *pFaceID = uFaceID;
-        return floor_level;
+        return floor_z;
     }
 
     uint uSectorID = pIndoor->GetSector(x, y, z);
     *pSectorID = uSectorID;
 
-    floor_level = BLV_GetFloorLevel(x, y, z, uSectorID, &uFaceID);
-    if (uSectorID && floor_level != -30000)
+    floor_z = BLV_GetFloorLevel(x, y, z, uSectorID, &uFaceID);
+    if (uSectorID && floor_z != -30000)
         *pFaceID = uFaceID;
     else
         return -30000;
-    return floor_level;
+    return floor_z;
 }
 
 void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
