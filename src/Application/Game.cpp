@@ -1311,7 +1311,7 @@ void Game::EventLoop() {
                         pTurnEngine->ApplyPlayerAction();
                     } else {
                         pPlayer9->SetRecoveryTime(
-                            (__int64)(flt_6BE3A4_debug_recmod1 *
+                            (__int64)(debug_non_combat_recovery_mul *
                                              (double)sRecoveryTime *
                                              2.133333333333333));
                     }

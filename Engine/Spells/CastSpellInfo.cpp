@@ -236,7 +236,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
             rand() % 100 < 50) {  //неудачное кастование - player is cursed
             if (!pParty->bTurnBasedModeOn) {
                 pPlayer->SetRecoveryTime(
-                    (int64_t)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
+                    (int64_t)(debug_non_combat_recovery_mul * 213.3333333333333));
             } else {
                 pParty->pTurnBasedPlayerRecoveryTimes[pCastSpellInfo[n].uPlayerID] = 100;
                 pPlayer->SetRecoveryTime(sRecoveryTime);
@@ -4049,7 +4049,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
                 if (!some_active_character) pTurnEngine->ApplyPlayerAction();
             } else {
-                pPlayer->SetRecoveryTime((int64_t)(flt_6BE3A4_debug_recmod1 *
+                pPlayer->SetRecoveryTime((int64_t)(debug_non_combat_recovery_mul *
                     (double)sRecoveryTime * 2.133333333333333));
             }
             pPlayer->PlaySound(SPEECH_CastSpell, 0);

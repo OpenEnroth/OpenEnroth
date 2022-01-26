@@ -1181,9 +1181,11 @@ void MM6_Initialize() {
     sprintf(pDefaultSkyTexture.data(), "%s", "plansky1");
     sprintf(pDefaultGroundTexture, "%s", "dirt");
 
-    flt_6BE3A4_debug_recmod1 = 1.0;
-    flt_6BE3A8_debug_recmod2 = 1.0;
-    flt_6BE3AC_debug_recmod1_x_1_6 = flt_6BE3A4_debug_recmod1 * 1.666666666666667;
+    debug_non_combat_recovery_mul = 1.0;
+    debug_combat_recovery_mul = 1.0;
+
+    // this makes very little sense, but apparently this is how it was done in the original binary.
+    debug_turn_based_monster_movespeed_mul = debug_non_combat_recovery_mul * 1.666666666666667;
 
     v3 = 0;
     if (strlen(pDefaultSkyTexture.data())) {

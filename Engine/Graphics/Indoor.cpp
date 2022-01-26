@@ -1696,7 +1696,7 @@ void UpdateActors_BLV() {
                 moveSpeed *= 2;
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT)
-                moveSpeed = moveSpeed * flt_6BE3AC_debug_recmod1_x_1_6;
+                moveSpeed = moveSpeed * debug_turn_based_monster_movespeed_mul;
 
             if (moveSpeed > 1000)
                 moveSpeed = 1000;
@@ -3318,7 +3318,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 // TODO: this can become negative, and there is an assert for that in SetRecoveryTime.
                 pParty->pPlayers[i].SetRecoveryTime(
                     (20 - pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualEndurance())) *
-                    flt_6BE3A4_debug_recmod1 * 2.133333333333333);
+                    debug_non_combat_recovery_mul * 2.133333333333333);
             }
         }
     }

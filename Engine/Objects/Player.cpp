@@ -3907,7 +3907,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime((int)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
+                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * 213.3333333333333));
             }
         }
         mouse->RemoveHoldingItem();
@@ -4325,7 +4325,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime((int)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
+                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * 213.3333333333333));
             }
         }
         mouse->RemoveHoldingItem();
@@ -7116,7 +7116,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         if (!pParty->bTurnBasedModeOn) {
             int actEndurance = playerPtr->GetActualEndurance();
             int recoveryTime = (int)((20 - playerPtr->GetParameterBonus(actEndurance)) *
-                      flt_6BE3A4_debug_recmod1 * 2.133333333333333);
+                      debug_non_combat_recovery_mul * 2.133333333333333);
             playerPtr->SetRecoveryTime(recoveryTime);
         }
 
@@ -7300,7 +7300,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                 int actEnd = playerPtr->GetActualEndurance();
                 int recTime =
                     (int)((20 - playerPtr->GetParameterBonus(actEnd)) *
-                          flt_6BE3A4_debug_recmod1 * 2.133333333333333);
+                          debug_non_combat_recovery_mul * 2.133333333333333);
                 playerPtr->SetRecoveryTime(recTime);
             }
             return;
@@ -7809,7 +7809,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
                          // spell effect
         int recovery = player->GetAttackRecoveryTime(false);
         if (recovery < 30) recovery = 30;
-        player->SetRecoveryTime(flt_6BE3A4_debug_recmod1 * (double)recovery *
+        player->SetRecoveryTime(debug_non_combat_recovery_mul * (double)recovery *
                                 2.133333333333333);
     }
 

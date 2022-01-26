@@ -705,9 +705,9 @@ std::string pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 float _6BE3A0_fov = 0.55000001f;
-float flt_6BE3A4_debug_recmod1;
-float flt_6BE3A8_debug_recmod2;
-float flt_6BE3AC_debug_recmod1_x_1_6;
+float debug_non_combat_recovery_mul;
+float debug_combat_recovery_mul;
+float debug_turn_based_monster_movespeed_mul;
 std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 std::array<int, 100> dword_720020_zvalues;

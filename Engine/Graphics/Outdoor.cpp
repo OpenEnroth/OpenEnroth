@@ -2349,7 +2349,7 @@ void ODM_ProcessPartyActions() {
                         pParty->pPlayers[i].GetActualEndurance());
                     pParty->pPlayers[i].SetRecoveryTime(
                         (signed __int64)((double)bonus *
-                            flt_6BE3A4_debug_recmod1 *
+                            debug_non_combat_recovery_mul *
                             2.133333333333333));
                 }
             }
@@ -3109,7 +3109,7 @@ void ODM_ProcessPartyActions() {
                                             pPlayers[i]->GetActualEndurance());
                             pPlayers[i]->SetRecoveryTime(
                                 (signed __int64)((double)v110 *
-                                                 flt_6BE3A4_debug_recmod1 *
+                                                 debug_non_combat_recovery_mul *
                                                  2.133333333333333));
                         }
                         // v73 = pParty->vPosition.z;
@@ -3223,7 +3223,7 @@ void ODM_ProcessPartyActions() {
                                         pPlayers[i]->GetActualEndurance());
                         pPlayers[i]->SetRecoveryTime(
                             (signed __int64)((double)v110 *
-                                             flt_6BE3A4_debug_recmod1 *
+                                             debug_non_combat_recovery_mul *
                                              2.133333333333333));
                     }
                     // v82 = pParty->vPosition.z;
@@ -3424,7 +3424,7 @@ void UpdateActors_ODM() {
                 pActors[Actor_ITR].uAIState == Pursuing)
                 Actor_Speed *= 2;
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT) {
-                Actor_Speed *= flt_6BE3AC_debug_recmod1_x_1_6;
+                Actor_Speed *= debug_turn_based_monster_movespeed_mul;
             }
             if (Actor_Speed > 1000) Actor_Speed = 1000;
 
