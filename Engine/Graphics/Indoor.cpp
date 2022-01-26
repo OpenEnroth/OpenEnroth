@@ -3269,11 +3269,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     unsigned int uFaceID = -1;
     int floor_z = collide_against_floor(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
 
-    if (pParty->bFlying) {  // disable flight
+    if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
-        if (pParty->FlyActive())
-            pOtherOverlayList->pOverlays[pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID - 1].field_E |= 1;
-    }
 
     if (floor_z == -30000 || uFaceID == -1) {
         floor_z = collide_against_floor_approximate(
