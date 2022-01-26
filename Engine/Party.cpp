@@ -101,7 +101,7 @@ void Party::Zero() {
     uWalkSpeed = 384;
     walk_sound_timer = 0;
 
-    field_24 = 5;
+    jump_strength = 5;
     _6FC_water_lava_timer = 0;
     field_708 = 15;
     field_0 = 25;
@@ -648,7 +648,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->y_rotation_granularity = 25;
     this->uWalkSpeed = 384;
     this->y_rotation_speed = 90;
-    this->field_24 = 5;
+    this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;
     this->field_708 = 15;
     this->field_0 = 25;

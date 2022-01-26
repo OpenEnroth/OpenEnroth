@@ -2695,11 +2695,11 @@ void ODM_ProcessPartyActions() {
             case PARTY_Jump:  // прыжок
                 if ((!partyAtHighSlope || bmodel_standing_on_pid) &&
                     !hovering &&
-                    pParty->field_24 &&
+                    pParty->jump_strength &&
                     !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) &&
                     !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
                     hovering = true;
-                    fall_speed += pParty->field_24 * 96;
+                    fall_speed += pParty->jump_strength * 96;
                 }
                 break;
 

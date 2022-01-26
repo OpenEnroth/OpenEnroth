@@ -266,7 +266,7 @@ struct Party {
     int y_rotation_granularity;
     unsigned int uWalkSpeed;
     int y_rotation_speed;  // deg/s
-    int field_24;
+    int jump_strength; // jump strength, higher value => higher jumps, default 5.
     int field_28;
     GameTime playing_time;  // unsigned __int64 uTimePlayed;
     GameTime last_regenerated;
@@ -280,7 +280,7 @@ struct Party {
     int sPrevEyelevel;
     int field_6E0;
     int field_6E4;
-    int uFallSpeed;
+    int uFallSpeed; // party vertical speed, negative => falling, positive => jumping
     int field_6EC;
     int field_6F0;
     int floor_face_pid;  // face we are standing at

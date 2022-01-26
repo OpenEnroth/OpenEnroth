@@ -304,7 +304,7 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->y_rotation_granularity = party->y_rotation_granularity;
     this->uWalkSpeed = party->uWalkSpeed;
     this->y_rotation_speed = party->y_rotation_speed;
-    this->field_24 = party->field_24;
+    this->jump_strength = party->jump_strength;
     this->field_28 = party->field_28;
     this->uTimePlayed = party->playing_time.value;
     this->uLastRegenerationTime = party->last_regenerated.value;
@@ -469,7 +469,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->y_rotation_granularity = this->y_rotation_granularity;
     party->uWalkSpeed = this->uWalkSpeed;
     party->y_rotation_speed = this->y_rotation_speed;
-    party->field_24 = this->field_24;
+    party->jump_strength = this->jump_strength;
     party->field_28 = this->field_28;
     party->playing_time.value = this->uTimePlayed;
     party->last_regenerated.value = this->uLastRegenerationTime;

@@ -441,7 +441,7 @@ struct Party_Image_MM7 {
     /* 00018 */ int y_rotation_granularity;
     /* 0001C */ unsigned int uWalkSpeed;
     /* 00020 */ int y_rotation_speed;  // deg/s
-    /* 00024 */ int field_24;
+    /* 00024 */ int jump_strength;
     /* 00028 */ int field_28;
     /* 0002C */ uint64_t uTimePlayed;
     /* 00034 */ int64_t uLastRegenerationTime;

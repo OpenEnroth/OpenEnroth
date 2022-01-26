@@ -3250,9 +3250,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     unsigned int uFaceEvent;  // [sp+14h] [bp-4Ch]@1
     bool bFeatherFall;        // [sp+24h] [bp-3Ch]@15
     int v80;                  // [sp+34h] [bp-2Ch]@1
-    int v82;                  // [sp+3Ch] [bp-24h]@47
-    int _view_angle;          // [sp+40h] [bp-20h]@47
-    int angle;                // [sp+5Ch] [bp-4h]@47
 
     uFaceEvent = 0;
     // v89 = pParty->uFallSpeed;
@@ -3261,10 +3258,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int new_party_x = pParty->vPosition.x;
     int new_party_y = pParty->vPosition.y;
     int party_z = pParty->vPosition.z;
+
     bool party_running_flag = false;
     bool party_walking_flag = false;
     bool hovering = false;
     bool not_high_fall = false;
+    bool on_water = false;
 
     unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
     unsigned int uFaceID = -1;
@@ -3350,43 +3349,47 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (!hovering)
         pParty->floor_face_pid = uFaceID;
 
-    bool on_water = false;
-    if (pIndoor->pFaces[uFaceID].Fluid())  // на воде
+    // party is on water?
+    if (pIndoor->pFaces[uFaceID].Fluid())
         on_water = true;
 
-    // v81 = pParty->uWalkSpeed;
-    angle = pParty->sRotationZ;
-    _view_angle = pParty->sRotationX;
-    v82 =
-        (unsigned __int64)(pEventTimer->dt_fixpoint * (signed __int64)((signed int)(pParty->y_rotation_speed *
-                                                         TrigLUT->uIntegerPi) / 180)) >> 16;
+    // Party angle in XY plane.
+    int angle = pParty->sRotationZ;
+
+    // Vertical party angle (basically azimuthal angle in polar coordinates).
+    int vertical_angle = pParty->sRotationX;
+
+    // Calculate rotation in TrigLUT-friendly ticks (1024 ticks per 180 degree).
+    int rotation =
+        (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->y_rotation_speed * TrigLUT->uIntegerPi / 180) >> 16;
+
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
                 if (engine->config->turn_speed > 0)
                     angle = TrigLUT->uDoublePiMask & (angle + engine->config->turn_speed);
                 else
-                    angle = TrigLUT->uDoublePiMask & (angle + (int)(v82 * fTurnSpeedMultiplier));
+                    angle = TrigLUT->uDoublePiMask & (angle + static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
                 if (engine->config->turn_speed > 0)
                     angle = TrigLUT->uDoublePiMask & (angle - engine->config->turn_speed);
                 else
-                    angle = TrigLUT->uDoublePiMask & (angle - (int)(v82 * fTurnSpeedMultiplier));
+                    angle = TrigLUT->uDoublePiMask & (angle - static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
                 if (engine->config->turn_speed > 0)
                     angle = TrigLUT->uDoublePiMask & (angle + engine->config->turn_speed);
                 else
-                    angle = TrigLUT->uDoublePiMask & (angle + (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
+                    angle = TrigLUT->uDoublePiMask & (angle + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnRight:
                 if (engine->config->turn_speed > 0)
                     angle = TrigLUT->uDoublePiMask & (angle - engine->config->turn_speed);
                 else
-                    angle = TrigLUT->uDoublePiMask & (angle - (int)(2.0f * fTurnSpeedMultiplier * (double)v82));
+                    angle = TrigLUT->uDoublePiMask & (angle - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_StrafeLeft:
@@ -3409,7 +3412,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 v1 -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
                 party_walking_flag = true;
                 break;
-            case PARTY_RunForward:  //Бег вперёд
+            case PARTY_RunForward:
                 v2 += fixpoint_mul(TrigLUT->Cos(angle), /*5*/2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 v1 += fixpoint_mul(TrigLUT->Sin(angle), /*5*/2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_running_flag = true;
@@ -3420,36 +3423,36 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 party_running_flag = true;
                 break;
             case PARTY_LookDown:
-                _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
-                if (_view_angle > 128)
-                    _view_angle = 128;
+                vertical_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
+                if (vertical_angle > 128)
+                    vertical_angle = 128;
                 if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_LookUp, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
             case PARTY_LookUp:
-                _view_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
-                if (_view_angle < -128)
-                    _view_angle = -128;
+                vertical_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
+                if (vertical_angle < -128)
+                    vertical_angle = -128;
                 if (uActiveCharacter)
-                    pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)SPEECH_LookDown, 0);
+                    pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookDown, 0);
                 break;
             case PARTY_CenterView:
-                _view_angle = 0;
+                vertical_angle = 0;
                 break;
             case PARTY_Jump:
-                if ((!hovering ||
-                     party_z <= floor_z + 6 && pParty->uFallSpeed <= 0) &&
-                    pParty->field_24) {
+                if ((!hovering || party_z <= floor_z + 6 && pParty->uFallSpeed <= 0) && pParty->jump_strength) {
                     hovering = true;
-                    pParty->uFallSpeed += pParty->field_24 * 96;
+                    pParty->uFallSpeed += pParty->jump_strength * 96;
                 }
                 break;
             default:
                 break;
         }
     }
+
     pParty->sRotationZ = angle;
-    pParty->sRotationX = _view_angle;
+    pParty->sRotationX = vertical_angle;
+
     if (hovering) {  // парящие
         pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();  // расчёт скорости падения
         if (hovering && pParty->uFallSpeed <= 0) {
