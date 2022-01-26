@@ -530,7 +530,8 @@ void _46E889_collide_against_bmodels(unsigned int ecx0);
  * @param[in,out] pSectorID             Actor's cached sector id. If the cached sector id is no longer valid (e.g. an
  *                                      actor has already moved to another sector), then the new sector id is returned
  *                                      in this output parameter.
- * @param[out] pFaceID                  Id of the floor face on which the actor is standing.
+ * @param[out] pFaceID                  Id of the floor face on which the actor is standing. Not updated if floor face
+ *                                      is not found.
  * @return                              Z coordinate for the floor at (X, Y).
  */
 int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
