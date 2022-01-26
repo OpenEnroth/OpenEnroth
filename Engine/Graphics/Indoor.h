@@ -603,7 +603,14 @@ struct IndoorLocation {
         uNumSectors = 0;
     }
 
+    /**
+     * @param sX                        X coordinate.
+     * @param sY                        Y coordinate.
+     * @param sZ                        Z coordinate.
+     * @return                          Sector id at (X,Y,Z), or zero if (X,Y,Z) is outside the level bounds.
+     */
     int GetSector(int sX, int sY, int sZ);
+
     void Release();
     bool Alloc();
     bool Load(const std::string &filename, int num_days_played,

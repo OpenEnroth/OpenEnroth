@@ -1194,8 +1194,6 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 }
 
 int IndoorLocation::GetSector(int sX, int sY, int sZ) {
-    // sx = input world XYZ s
-
     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) return 0;
     if (uNumSectors < 2) {
         __debugbreak();
@@ -1244,7 +1242,8 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     }
 
     // only one face found
-    if (NumFoundFaceStore == 1) return this->pFaces[FoundFaceStore[0]].uSectorID;
+    if (NumFoundFaceStore == 1)
+        return this->pFaces[FoundFaceStore[0]].uSectorID;
 
     // No face found - outside of level
     if (!NumFoundFaceStore) {
@@ -1623,11 +1622,9 @@ void BLV_UpdateDoors() {
 
 //----- (0046F90C) --------------------------------------------------------
 void UpdateActors_BLV() {
-    int v2;                  // edi@6
     int v3;                  // eax@6
     int v4;                  // eax@8
     __int16 v5;              // ax@11
-    signed int v6;           // ebx@14
     signed __int64 v10;      // qax@18
     int v22;                 // edi@46
     unsigned int v24;        // eax@51
@@ -1643,94 +1640,94 @@ void UpdateActors_BLV() {
     int v45;                 // edi@101
     AIDirection v52;         // [sp+0h] [bp-60h]@75
     AIDirection v53;         // [sp+1Ch] [bp-44h]@116
-    unsigned int uSectorID;  // [sp+3Ch] [bp-24h]@6
     int v56;                 // [sp+40h] [bp-20h]@6
     unsigned int _this;      // [sp+44h] [bp-1Ch]@51
     int v58;                 // [sp+48h] [bp-18h]@51
-    int v59;                 // [sp+4Ch] [bp-14h]@8
     unsigned int uFaceID;    // [sp+50h] [bp-10h]@6
     int v61;                 // [sp+54h] [bp-Ch]@14
-    int v62;                 // [sp+58h] [bp-8h]@6
-    unsigned int actor_id;   // [sp+5Ch] [bp-4h]@1
 
     if (engine->config->no_actors)
         return;  // uNumActors = 0;
 
-    for (actor_id = 0; actor_id < uNumActors; actor_id++) {
+    for (unsigned int actor_id = 0; actor_id < uNumActors; actor_id++) {
         if (pActors[actor_id].uAIState == Removed ||
             pActors[actor_id].uAIState == Disabled ||
             pActors[actor_id].uAIState == Summoned ||
             !pActors[actor_id].uMovementSpeed)
             continue;
-        uSectorID = pActors[actor_id].uSectorID;
-        v2 = collide_against_floor(
-            pActors[actor_id].vPosition.x, pActors[actor_id].vPosition.y,
-            pActors[actor_id].vPosition.z, &uSectorID, &uFaceID);
+
+        unsigned int uSectorID = pActors[actor_id].uSectorID;
+        int floor_z = collide_against_floor(
+            pActors[actor_id].vPosition.x, pActors[actor_id].vPosition.y, pActors[actor_id].vPosition.z,
+            &uSectorID, &uFaceID);
         pActors[actor_id].uSectorID = uSectorID;
-        v3 = pActors[actor_id].pMonsterInfo.uFlying;
-        v56 = v2;
-        v62 = v3;
-        if (!pActors[actor_id].CanAct()) v62 = 0;
-        v4 = pActors[actor_id].vPosition.z;
-        v59 = 0;
-        if (pActors[actor_id].vPosition.z > v2 + 1)
-            v59 = 1;
-        if (v2 <= -30000) {
-            v5 = pIndoor->GetSector(pActors[actor_id].vPosition.x,
-                                    pActors[actor_id].vPosition.y, v4);
-            pActors[actor_id].uSectorID = v5;
-            v56 = BLV_GetFloorLevel(
-                pActors[actor_id].vPosition.x, pActors[actor_id].vPosition.y,
-                pActors[actor_id].vPosition.z, v5, &uFaceID);
-            if (!v5 || v56 == -30000)
+
+        bool isFlying = pActors[actor_id].pMonsterInfo.uFlying;
+        if (!pActors[actor_id].CanAct())
+            isFlying = false;
+
+        bool isAboveGround = 0;
+        if (pActors[actor_id].vPosition.z > floor_z + 1)
+            isAboveGround = 1;
+
+        if (floor_z <= -30000) {
+            uSectorID = pIndoor->GetSector(pActors[actor_id].vPosition.x,
+                                           pActors[actor_id].vPosition.y, pActors[actor_id].vPosition.z);
+            pActors[actor_id].uSectorID = uSectorID;
+            floor_z = BLV_GetFloorLevel(
+                pActors[actor_id].vPosition.x, pActors[actor_id].vPosition.y, pActors[actor_id].vPosition.z,
+                uSectorID, &uFaceID);
+            if (uSectorID == 0 || floor_z == -30000)
                 continue;
         }
-        if (pActors[actor_id].uCurrentActionAnimation == ANIM_Walking) {  //монстр двигается
-            v6 = pActors[actor_id].uMovementSpeed;
+
+        if (pActors[actor_id].uCurrentActionAnimation == ANIM_Walking) {  // actor is moving
+            int moveSpeed = pActors[actor_id].uMovementSpeed;
+
             if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].Active()) {
                 if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower)
-                    HEXRAYS_LODWORD(v10) = pActors[actor_id].uMovementSpeed /
-                                           (unsigned __int16)pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
+                    moveSpeed = pActors[actor_id].uMovementSpeed /
+                                pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
                 else
-                    v10 = (signed __int64)((double)pActors[actor_id].uMovementSpeed * 0.5);
-                v6 = v10;
+                    moveSpeed = pActors[actor_id].uMovementSpeed / 2;
             }
-            if (pActors[actor_id].uAIState == Pursuing ||
-                pActors[actor_id].uAIState == Fleeing)
-                v6 *= 2;
+
+            if (pActors[actor_id].uAIState == Pursuing || pActors[actor_id].uAIState == Fleeing)
+                moveSpeed *= 2;
+
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT)
-                v6 = (signed __int64)((double)v6 *
-                                      flt_6BE3AC_debug_recmod1_x_1_6);
-            if (v6 > 1000) v6 = 1000;
-            pActors[actor_id].vVelocity.x =
-                fixpoint_mul(TrigLUT->Cos(pActors[actor_id].uYawAngle), v6);
-            pActors[actor_id].vVelocity.y =
-                fixpoint_mul(TrigLUT->Sin(pActors[actor_id].uYawAngle), v6);
-            if (v62)
-                pActors[actor_id].vVelocity.z = fixpoint_mul(
-                    TrigLUT->Sin(pActors[actor_id].uPitchAngle), v6);
-        } else {  // actor is not moving(актор не двигается)
-            pActors[actor_id].vVelocity.x =
-                fixpoint_mul(55000, pActors[actor_id].vVelocity.x);
-            pActors[actor_id].vVelocity.y =
-                fixpoint_mul(55000, pActors[actor_id].vVelocity.y);
-            if (v62)
-                pActors[actor_id].vVelocity.z =
-                    fixpoint_mul(55000, pActors[actor_id].vVelocity.z);
+                moveSpeed = moveSpeed * flt_6BE3AC_debug_recmod1_x_1_6;
+
+            if (moveSpeed > 1000)
+                moveSpeed = 1000;
+
+            pActors[actor_id].vVelocity.x = fixpoint_mul(TrigLUT->Cos(pActors[actor_id].uYawAngle), moveSpeed);
+            pActors[actor_id].vVelocity.y = fixpoint_mul(TrigLUT->Sin(pActors[actor_id].uYawAngle), moveSpeed);
+            if (isFlying)
+                pActors[actor_id].vVelocity.z = fixpoint_mul(TrigLUT->Sin(pActors[actor_id].uPitchAngle), moveSpeed);
+        } else {  // actor is not moving
+            // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
+            pActors[actor_id].vVelocity.x = fixpoint_mul(55000, pActors[actor_id].vVelocity.x);
+            pActors[actor_id].vVelocity.y = fixpoint_mul(55000, pActors[actor_id].vVelocity.y);
+            if (isFlying)
+                pActors[actor_id].vVelocity.z = fixpoint_mul(55000, pActors[actor_id].vVelocity.z);
         }
-        if (pActors[actor_id].vPosition.z <= v56) {
-            pActors[actor_id].vPosition.z = v56 + 1;
-            if (pIndoor->pFaces[uFaceID].uPolygonType == 3) {
+
+        if (pActors[actor_id].vPosition.z <= floor_z) {
+            pActors[actor_id].vPosition.z = floor_z + 1;
+            if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
                 if (pActors[actor_id].vVelocity.z < 0)
                     pActors[actor_id].vVelocity.z = 0;
             } else {
+                // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 45000)
-                    pActors[actor_id].vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
+                    pActors[actor_id].vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         } else {
-            if (v59 && !v62)
-                pActors[actor_id].vVelocity.z += -8 * (short)pEventTimer->uTimeElapsed * GetGravityStrength();
+            if (isAboveGround && !isFlying)
+                pActors[actor_id].vVelocity.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
         }
+
         if (pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
                 pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y +
                 pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >= 400) {
@@ -1796,11 +1793,11 @@ void UpdateActors_BLV() {
                         pActors[actor_id].uAIState = Removed;
                         continue;
                     }
-                    if (v59 || v62 || !(pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
+                    if (isAboveGround || isFlying || !(pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
                         if (v33 == -30000)
                             continue;
                         if (pActors[actor_id].uCurrentActionAnimation != 1 ||
-                            v33 >= pActors[actor_id].vPosition.z - 100 || v59 || v62) {
+                            v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
                             if (_actor_collision_struct.field_7C < _actor_collision_struct.field_6C) {
                                 pActors[actor_id].vPosition.x +=
                                     fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
@@ -2269,6 +2266,13 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
         if (pFloor->Ethereal() || !pFloor->ContainsXY(pIndoor, x, y))
             continue;
 
+        // TODO: Does POLYGON_Ceiling really belong here?
+        // Returned z is then used like this in UpdateActors_BLV:
+        //
+        // if (actor.z <= z) {
+        //     actor.z = z + 1;
+        //
+        // And if this z is ceiling z, then this will place the actor above the ceiling.
         int z_calc;
         if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
             z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
