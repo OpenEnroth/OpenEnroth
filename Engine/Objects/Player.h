@@ -191,7 +191,7 @@ struct Player {
     int GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
     int GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
     int GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
-    enum CHARACTER_RACE GetRace() const;
+    CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
     PLAYER_SEX GetSexByVoice();
     void SetInitialStats();

@@ -3497,10 +3497,13 @@ enum CHARACTER_RACE Player::GetRace() const {
 
 std::string Player::GetRaceName() const {
     switch (GetRace()) {
-        case 0: return localization->GetString(LSTR_RACE_HUMAN);
-        case 1: return localization->GetString(LSTR_RACE_DWARF);
-        case 2: return localization->GetString(LSTR_RACE_GOBLIN);
-        case 3: return localization->GetString(LSTR_RACE_ELF);
+        case CHARACTER_RACE_HUMAN: return localization->GetString(LSTR_RACE_HUMAN);
+        case CHARACTER_RACE_ELF: return localization->GetString(LSTR_RACE_ELF);
+        case CHARACTER_RACE_GOBLIN: return localization->GetString(LSTR_RACE_GOBLIN);
+        case CHARACTER_RACE_DWARF: return localization->GetString(LSTR_RACE_DWARF);
+        default:
+            __debugbreak();
+            return std::string();  // Make the compiler happy.
     }
 }
 
