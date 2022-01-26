@@ -1,9 +1,5 @@
 #include "Engine/Engine.h"
 
-#ifdef _WINDOWS
-#include <direct.h>
-#endif
-
 #include <filesystem>
 #include <algorithm>
 
