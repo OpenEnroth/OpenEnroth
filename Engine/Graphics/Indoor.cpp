@@ -1664,7 +1664,8 @@ void UpdateActors_BLV() {
         if (!pActors[actor_id].CanAct()) v62 = 0;
         v4 = pActors[actor_id].vPosition.z;
         v59 = 0;
-        if (pActors[actor_id].vPosition.z > v2 + 1) v59 = 1;
+        if (pActors[actor_id].vPosition.z > v2 + 1)
+            v59 = 1;
         if (v2 <= -30000) {
             v5 = pIndoor->GetSector(pActors[actor_id].vPosition.x,
                                     pActors[actor_id].vPosition.y, v4);
@@ -1672,21 +1673,17 @@ void UpdateActors_BLV() {
             v56 = BLV_GetFloorLevel(
                 pActors[actor_id].vPosition.x, pActors[actor_id].vPosition.y,
                 pActors[actor_id].vPosition.z, v5, &uFaceID);
-            if (!v5 || v56 == -30000) continue;
+            if (!v5 || v56 == -30000)
+                continue;
         }
-        if (pActors[actor_id].uCurrentActionAnimation ==
-            ANIM_Walking) {  //монстр двигается
+        if (pActors[actor_id].uCurrentActionAnimation == ANIM_Walking) {  //монстр двигается
             v6 = pActors[actor_id].uMovementSpeed;
             if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].Active()) {
                 if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower)
                     HEXRAYS_LODWORD(v10) = pActors[actor_id].uMovementSpeed /
-                                           (unsigned __int16)pActors[actor_id]
-                                               .pActorBuffs[ACTOR_BUFF_SLOWED]
-                                               .uPower;
+                                           (unsigned __int16)pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
                 else
-                    v10 = (signed __int64)((double)pActors[actor_id]
-                                               .uMovementSpeed *
-                                           0.5);
+                    v10 = (signed __int64)((double)pActors[actor_id].uMovementSpeed * 0.5);
                 v6 = v10;
             }
             if (pActors[actor_id].uAIState == Pursuing ||
@@ -1719,19 +1716,15 @@ void UpdateActors_BLV() {
                     pActors[actor_id].vVelocity.z = 0;
             } else {
                 if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 45000)
-                    pActors[actor_id].vVelocity.z -=
-                        (short)pEventTimer->uTimeElapsed * GetGravityStrength();
+                    pActors[actor_id].vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         } else {
             if (v59 && !v62)
-                pActors[actor_id].vVelocity.z +=
-                    -8 * (short)pEventTimer->uTimeElapsed *
-                    GetGravityStrength();
+                pActors[actor_id].vVelocity.z += -8 * (short)pEventTimer->uTimeElapsed * GetGravityStrength();
         }
         if (pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
                 pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y +
-                pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >=
-            400) {
+                pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >= 400) {
             _actor_collision_struct.field_84 = -1;
             _actor_collision_struct.field_70 = 0;
             _actor_collision_struct.field_0 = 1;
@@ -1746,8 +1739,7 @@ void UpdateActors_BLV() {
                 _actor_collision_struct.normal.y = _actor_collision_struct.position.y;
                 _actor_collision_struct.normal.z = pActors[actor_id].vPosition.z + pActors[actor_id].uActorRadius + 1;
                 _actor_collision_struct.position.z = pActors[actor_id].vPosition.z -
-                                         pActors[actor_id].uActorRadius +
-                                         _actor_collision_struct.height - 1;
+                                         pActors[actor_id].uActorRadius + _actor_collision_struct.height - 1;
                 if (_actor_collision_struct.position.z < _actor_collision_struct.normal.z)
                     _actor_collision_struct.position.z = pActors[actor_id].vPosition.z +
                     pActors[actor_id].uActorRadius + 1;
@@ -1827,12 +1819,12 @@ void UpdateActors_BLV() {
                                         if (!v56) {
                                             Actor::AI_Flee(actor_id, _actor_collision_struct.pid, v22,
                                                            (AIDirection *)v22);
-                                            pActors[actor_id]
-                                                .vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                            pActors[actor_id]
-                                                .vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                            pActors[actor_id]
-                                                .vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                            pActors[actor_id].vVelocity.x =
+                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
+                                            pActors[actor_id].vVelocity.y =
+                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
+                                            pActors[actor_id].vVelocity.z =
+                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
                                             v22 = 0;
                                             continue;
                                         }
@@ -1852,12 +1844,12 @@ void UpdateActors_BLV() {
                                             }
                                             Actor::AI_Flee(actor_id, _actor_collision_struct.pid, v22,
                                                            (AIDirection *)v22);
-                                            pActors[actor_id]
-                                                .vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                            pActors[actor_id]
-                                                .vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                            pActors[actor_id]
-                                                .vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                            pActors[actor_id].vVelocity.x =
+                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
+                                            pActors[actor_id].vVelocity.y =
+                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
+                                            pActors[actor_id].vVelocity.z =
+                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
                                             v22 = 0;
                                             continue;
                                         }
