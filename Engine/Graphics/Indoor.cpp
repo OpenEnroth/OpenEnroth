@@ -3308,18 +3308,17 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
         } else {
             for (uint i = 0; i < 4; ++i) {  // receive falling damage
-                if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                    !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)) {
-                    pParty->pPlayers[i].ReceiveDamage(
-                        (pParty->uFallStartZ - party_z) *
-                        (0.1f * pParty->pPlayers[i].GetMaxHealth()) / 256,
-                        DMGT_PHISYCAL);
-                    v10 = (double)(20 - pParty->pPlayers[i].GetParameterBonus(
-                        pParty->pPlayers[i]
-                        .GetActualEndurance())) *
-                        flt_6BE3A4_debug_recmod1 * 2.133333333333333;
-                    pParty->pPlayers[i].SetRecoveryTime((signed __int64)v10);
-                }
+                if (pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) ||
+                    pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))
+                    continue;
+
+                pParty->pPlayers[i].ReceiveDamage(
+                    (pParty->uFallStartZ - party_z) * (0.1f * pParty->pPlayers[i].GetMaxHealth()) / 256, DMGT_PHISYCAL);
+
+                // TODO: this can become negative, and there is an assert for that in SetRecoveryTime.
+                pParty->pPlayers[i].SetRecoveryTime(
+                    (20 - pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualEndurance())) *
+                    flt_6BE3A4_debug_recmod1 * 2.133333333333333);
             }
         }
     }
