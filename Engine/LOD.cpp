@@ -797,7 +797,7 @@ bool LOD::File::LoadSubIndices(const std::string &pContainer) {
     ResetSubIndices();
 
     for (LOD::Directory &dir : pRoot) {
-        if (!_stricmp(pContainer.c_str(), dir.pFilename)) {
+        if (iequals(pContainer, dir.pFilename)) {
             pContainerName = pContainer;
             uOffsetToSubIndex = dir.uOfsetFromSubindicesStart;
             uNumSubDirs = dir.uNumSubIndices;
@@ -824,7 +824,7 @@ LOD::Directory::Directory() {
 
 bool LOD::File::DoesContainerExist(const std::string &pContainer) {
     for (size_t i = 0; i < uNumSubDirs; ++i) {
-        if (!_stricmp(pContainer.c_str(), pSubIndices[i].pFilename)) {
+        if (iequals(pContainer, pSubIndices[i].pFilename)) {
             return true;
         }
     }
@@ -849,7 +849,7 @@ FILE *LOD::File::FindContainer(const std::string &pContainer_Name, size_t *data_
     }
 
     for (uint i = 0; i < uNumSubDirs; ++i) {
-        if (!_stricmp(pContainer_Name.c_str(), pSubIndices[i].pFilename)) {
+        if (iequals(pContainer_Name, pSubIndices[i].pFilename)) {
             fseek(pFile, uOffsetToSubIndex + pSubIndices[i].uOfsetFromSubindicesStart, SEEK_SET);
             if (data_size != nullptr) {
                 *data_size = pSubIndices[i].uDataSize;

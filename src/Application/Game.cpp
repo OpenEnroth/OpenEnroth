@@ -970,7 +970,7 @@ void Game::EventLoop() {
                     } else {
                         EventProcessor(dword_5C3418, 0, 1, dword_5C341C);
                     }
-                    if (!_stricmp(s_SavedMapName.data(), "d05.blv"))
+                    if (iequals(s_SavedMapName.data(), "d05.blv"))
                         pParty->GetPlayingTime().AddDays(4);
                     continue;
 

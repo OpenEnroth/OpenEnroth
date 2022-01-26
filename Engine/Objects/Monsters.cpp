@@ -27,95 +27,95 @@ unsigned int ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token) {
         ++*next_token;
         return 0;
     }
-    if (!_stricmp(tbl->pProperties[0], "Dispel")) {  // dispel magic
+    if (iequals(tbl->pProperties[0], "Dispel")) {  // dispel magic
         ++*next_token;
         return 80;
-    } else if (!_stricmp(tbl->pProperties[0], "Day")) {  // day of protection
+    } else if (iequals(tbl->pProperties[0], "Day")) {  // day of protection
         *next_token += 2;
         return 85;
-    } else if (!_stricmp(tbl->pProperties[0], "Hour")) {  // hour  of power
+    } else if (iequals(tbl->pProperties[0], "Hour")) {  // hour  of power
         *next_token += 2;
         return 86;
-    } else if (!_stricmp(tbl->pProperties[0], "Shield")) {
+    } else if (iequals(tbl->pProperties[0], "Shield")) {
         return 17;
-    } else if (!_stricmp(tbl->pProperties[0], "Spirit")) {
+    } else if (iequals(tbl->pProperties[0], "Spirit")) {
         ++*next_token;
         return 52;
-    } else if (!_stricmp(tbl->pProperties[0], "Power")) {  // power cure
+    } else if (iequals(tbl->pProperties[0], "Power")) {  // power cure
         ++*next_token;
         return 77;
-    } else if (!_stricmp(tbl->pProperties[0], "Meteor")) {  // meteot shower
+    } else if (iequals(tbl->pProperties[0], "Meteor")) {  // meteot shower
         ++*next_token;
         return 9;
-    } else if (!_stricmp(tbl->pProperties[0], "Lightning")) {  // Lightning bolt
+    } else if (iequals(tbl->pProperties[0], "Lightning")) {  // Lightning bolt
         ++*next_token;
         return 18;
-    } else if (!_stricmp(tbl->pProperties[0], "Implosion")) {
+    } else if (iequals(tbl->pProperties[0], "Implosion")) {
         return 20;
-    } else if (!_stricmp(tbl->pProperties[0], "Stone")) {
+    } else if (iequals(tbl->pProperties[0], "Stone")) {
         ++*next_token;
         return 38;
-    } else if (!_stricmp(tbl->pProperties[0], "Haste")) {
+    } else if (iequals(tbl->pProperties[0], "Haste")) {
         return 5;
-    } else if (!_stricmp(tbl->pProperties[0], "Heroism")) {
+    } else if (iequals(tbl->pProperties[0], "Heroism")) {
         return 51;
-    } else if (!_stricmp(tbl->pProperties[0], "Pain")) {  // pain reflection
+    } else if (iequals(tbl->pProperties[0], "Pain")) {  // pain reflection
         ++*next_token;
         return 95;
-    } else if (!_stricmp(tbl->pProperties[0], "Sparks")) {
+    } else if (iequals(tbl->pProperties[0], "Sparks")) {
         return 15;
-    } else if (!_stricmp(tbl->pProperties[0], "Light")) {
+    } else if (iequals(tbl->pProperties[0], "Light")) {
         ++*next_token;
         return 78;
-    } else if (!_stricmp(tbl->pProperties[0], "Toxic")) {  // toxic cloud
+    } else if (iequals(tbl->pProperties[0], "Toxic")) {  // toxic cloud
         ++*next_token;
         return 90;
-    } else if (!_stricmp(tbl->pProperties[0], "ShrapMetal")) {
+    } else if (iequals(tbl->pProperties[0], "ShrapMetal")) {
         return 93;
-    } else if (!_stricmp(tbl->pProperties[0], "Paralyze")) {
+    } else if (iequals(tbl->pProperties[0], "Paralyze")) {
         return 81;
-    } else if (!_stricmp(tbl->pProperties[0], "Fireball")) {
+    } else if (iequals(tbl->pProperties[0], "Fireball")) {
         return 6;
-    } else if (!_stricmp(tbl->pProperties[0], "Incinerate")) {
+    } else if (iequals(tbl->pProperties[0], "Incinerate")) {
         return 11;
-    } else if (!_stricmp(tbl->pProperties[0], "Fire")) {
+    } else if (iequals(tbl->pProperties[0], "Fire")) {
         ++*next_token;
         return 2;
-    } else if (!_stricmp(tbl->pProperties[0], "Rock")) {
+    } else if (iequals(tbl->pProperties[0], "Rock")) {
         ++*next_token;
         return 41;
-    } else if (!_stricmp(tbl->pProperties[0], "Mass")) {
+    } else if (iequals(tbl->pProperties[0], "Mass")) {
         ++*next_token;
         return 44;
-    } else if (!_stricmp(tbl->pProperties[0], "Ice")) {
+    } else if (iequals(tbl->pProperties[0], "Ice")) {
         ++*next_token;
         return 26;
-    } else if (!_stricmp(tbl->pProperties[0], "Acid")) {
+    } else if (iequals(tbl->pProperties[0], "Acid")) {
         ++*next_token;
         return 29;
-    } else if (!_stricmp(tbl->pProperties[0], "Bless")) {
+    } else if (iequals(tbl->pProperties[0], "Bless")) {
         return 46;
-    } else if (!_stricmp(tbl->pProperties[0], "Dragon")) {
+    } else if (iequals(tbl->pProperties[0], "Dragon")) {
         ++*next_token;
         return 97;
-    } else if (!_stricmp(tbl->pProperties[0], "Reanimate")) {
+    } else if (iequals(tbl->pProperties[0], "Reanimate")) {
         return 89;
-    } else if (!_stricmp(tbl->pProperties[0], "Summon")) {
+    } else if (iequals(tbl->pProperties[0], "Summon")) {
         ++*next_token;
         return 82;
-    } else if (!_stricmp(tbl->pProperties[0], "Fate")) {
+    } else if (iequals(tbl->pProperties[0], "Fate")) {
         return 47;
-    } else if (!_stricmp(tbl->pProperties[0], "Harm")) {
+    } else if (iequals(tbl->pProperties[0], "Harm")) {
         return 70;
-    } else if (!_stricmp(tbl->pProperties[0], "Mind")) {
+    } else if (iequals(tbl->pProperties[0], "Mind")) {
         ++*next_token;
         return 57;
-    } else if (!_stricmp(tbl->pProperties[0], "Blades")) {
+    } else if (iequals(tbl->pProperties[0], "Blades")) {
         return 39;
-    } else if (!_stricmp(tbl->pProperties[0], "Psychic")) {
+    } else if (iequals(tbl->pProperties[0], "Psychic")) {
         ++*next_token;
         return 65;
-    } else if (!_stricmp(tbl->pProperties[0], "Hammerhands")) {
+    } else if (iequals(tbl->pProperties[0], "Hammerhands")) {
         return 73;
     } else {
         logger->Warning(
@@ -185,29 +185,29 @@ void ParseDamage(char *damage_str, unsigned __int8 *dice_rolls,
 
 //----- (00454E3A) --------------------------------------------------------
 int ParseMissleAttackType(const char *missle_attack_str) {
-    if (!_stricmp(missle_attack_str, "ARROW"))
+    if (iequals(missle_attack_str, "ARROW"))
         return 1;
-    else if (!_stricmp(missle_attack_str, "ARROWF"))
+    else if (iequals(missle_attack_str, "ARROWF"))
         return 2;
-    else if (!_stricmp(missle_attack_str, "FIRE"))
+    else if (iequals(missle_attack_str, "FIRE"))
         return 3;
-    else if (!_stricmp(missle_attack_str, "AIR"))
+    else if (iequals(missle_attack_str, "AIR"))
         return 4;
-    else if (!_stricmp(missle_attack_str, "WATER"))
+    else if (iequals(missle_attack_str, "WATER"))
         return 5;
-    else if (!_stricmp(missle_attack_str, "EARTH"))
+    else if (iequals(missle_attack_str, "EARTH"))
         return 6;
-    else if (!_stricmp(missle_attack_str, "SPIRIT"))
+    else if (iequals(missle_attack_str, "SPIRIT"))
         return 7;
-    else if (!_stricmp(missle_attack_str, "MIND"))
+    else if (iequals(missle_attack_str, "MIND"))
         return 8;
-    else if (!_stricmp(missle_attack_str, "BODY"))
+    else if (iequals(missle_attack_str, "BODY"))
         return 9;
-    else if (!_stricmp(missle_attack_str, "LIGHT"))
+    else if (iequals(missle_attack_str, "LIGHT"))
         return 10;
-    else if (!_stricmp(missle_attack_str, "DARK"))
+    else if (iequals(missle_attack_str, "DARK"))
         return 11;
-    else if (!_stricmp(missle_attack_str, "ENER"))
+    else if (iequals(missle_attack_str, "ENER"))
         return 13;
     else
         return 0;
@@ -445,7 +445,7 @@ signed int MonsterStats::FindMonsterByTextureName(
     const char *monster_textr_name) {
     for (int i = 1; i < uNumMonsters; ++i) {
         if ((pInfos[i].pName) &&
-            (!_stricmp(pInfos[i].pPictureName, monster_textr_name)))
+            (iequals(pInfos[i].pPictureName, monster_textr_name)))
             return i;
     }
     return -1;
@@ -660,55 +660,55 @@ void MonsterStats::Initialize() {
                                 test_string[str_pos + 1] - '0';
                             item_name = &test_string[str_pos + 2];
                             if (*item_name) {
-                                if (!_stricmp(item_name, "WEAPON"))
+                                if (iequals(item_name, "WEAPON"))
                                     pInfos[curr_rec_num].uTreasureType = 20;
-                                else if (!_stricmp(item_name, "ARMOR"))
+                                else if (iequals(item_name, "ARMOR"))
                                     pInfos[curr_rec_num].uTreasureType = 21;
-                                else if (!_stricmp(item_name, "MISC"))
+                                else if (iequals(item_name, "MISC"))
                                     pInfos[curr_rec_num].uTreasureType = 22;
-                                else if (!_stricmp(item_name, "SWORD"))
+                                else if (iequals(item_name, "SWORD"))
                                     pInfos[curr_rec_num].uTreasureType = 23;
-                                else if (!_stricmp(item_name, "DAGGER"))
+                                else if (iequals(item_name, "DAGGER"))
                                     pInfos[curr_rec_num].uTreasureType = 24;
-                                else if (!_stricmp(item_name, "AXE"))
+                                else if (iequals(item_name, "AXE"))
                                     pInfos[curr_rec_num].uTreasureType = 25;
-                                else if (!_stricmp(item_name, "SPEAR"))
+                                else if (iequals(item_name, "SPEAR"))
                                     pInfos[curr_rec_num].uTreasureType = 26;
-                                else if (!_stricmp(item_name, "BOW"))
+                                else if (iequals(item_name, "BOW"))
                                     pInfos[curr_rec_num].uTreasureType = 27;
-                                else if (!_stricmp(item_name, "MACE"))
+                                else if (iequals(item_name, "MACE"))
                                     pInfos[curr_rec_num].uTreasureType = 28;
-                                else if (!_stricmp(item_name, "CLUB"))
+                                else if (iequals(item_name, "CLUB"))
                                     pInfos[curr_rec_num].uTreasureType = 29;
-                                else if (!_stricmp(item_name, "STAFF"))
+                                else if (iequals(item_name, "STAFF"))
                                     pInfos[curr_rec_num].uTreasureType = 30;
-                                else if (!_stricmp(item_name, "LEATHER"))
+                                else if (iequals(item_name, "LEATHER"))
                                     pInfos[curr_rec_num].uTreasureType = 31;
-                                else if (!_stricmp(item_name, "CHAIN"))
+                                else if (iequals(item_name, "CHAIN"))
                                     pInfos[curr_rec_num].uTreasureType = 32;
-                                else if (!_stricmp(item_name, "PLATE"))
+                                else if (iequals(item_name, "PLATE"))
                                     pInfos[curr_rec_num].uTreasureType = 33;
-                                else if (!_stricmp(item_name, "SHIELD"))
+                                else if (iequals(item_name, "SHIELD"))
                                     pInfos[curr_rec_num].uTreasureType = 34;
-                                else if (!_stricmp(item_name, "HELM"))
+                                else if (iequals(item_name, "HELM"))
                                     pInfos[curr_rec_num].uTreasureType = 35;
-                                else if (!_stricmp(item_name, "BELT"))
+                                else if (iequals(item_name, "BELT"))
                                     pInfos[curr_rec_num].uTreasureType = 36;
-                                else if (!_stricmp(item_name, "CAPE"))
+                                else if (iequals(item_name, "CAPE"))
                                     pInfos[curr_rec_num].uTreasureType = 37;
-                                else if (!_stricmp(item_name, "GAUNTLETS"))
+                                else if (iequals(item_name, "GAUNTLETS"))
                                     pInfos[curr_rec_num].uTreasureType = 38;
-                                else if (!_stricmp(item_name, "BOOTS"))
+                                else if (iequals(item_name, "BOOTS"))
                                     pInfos[curr_rec_num].uTreasureType = 39;
-                                else if (!_stricmp(item_name, "RING"))
+                                else if (iequals(item_name, "RING"))
                                     pInfos[curr_rec_num].uTreasureType = 40;
-                                else if (!_stricmp(item_name, "AMULET"))
+                                else if (iequals(item_name, "AMULET"))
                                     pInfos[curr_rec_num].uTreasureType = 41;
-                                else if (!_stricmp(item_name, "WAND"))
+                                else if (iequals(item_name, "WAND"))
                                     pInfos[curr_rec_num].uTreasureType = 42;
-                                else if (!_stricmp(item_name, "SCROLL"))
+                                else if (iequals(item_name, "SCROLL"))
                                     pInfos[curr_rec_num].uTreasureType = 43;
-                                else if (!_stricmp(item_name, "GEM"))
+                                else if (iequals(item_name, "GEM"))
                                     pInfos[curr_rec_num].uTreasureType = 46;
                             }
                         }
@@ -1065,17 +1065,14 @@ void MonsterStats::Initialize() {
                         if (parsed_field.uPropCount) {
                             //      v74 = v94.field_0;
                             if (parsed_field.uPropCount < 10) {
-                                if (!_stricmp(parsed_field.pProperties[0],
-                                              "shot")) {
+                                if (iequals(parsed_field.pProperties[0], "shot")) {
                                     pInfos[curr_rec_num].uSpecialAbilityType =
                                         1;
                                     pInfos[curr_rec_num]
                                         .uSpecialAbilityDamageDiceBonus = atoi(
                                         (char *)(parsed_field.pProperties[1] +
                                                  1));
-                                } else if (!_stricmp(
-                                               parsed_field.pProperties[0],
-                                               "summon")) {
+                                } else if (iequals(parsed_field.pProperties[0], "summon")) {
                                     pInfos[curr_rec_num].uSpecialAbilityType =
                                         2;
                                     if (parsed_field.uPropCount > 1) {
@@ -1147,9 +1144,7 @@ void MonsterStats::Initialize() {
                                         }
                                         pInfos[curr_rec_num]
                                             .uSpecialAbilityDamageDiceSides = 0;
-                                        if (!_stricmp(
-                                                parsed_field.pProperties[1],
-                                                "ground"))
+                                        if (iequals(parsed_field.pProperties[1], "ground"))
                                             pInfos[curr_rec_num]
                                                 .uSpecialAbilityDamageDiceSides =
                                                 1;
@@ -1159,9 +1154,7 @@ void MonsterStats::Initialize() {
                                             pInfos[curr_rec_num]
                                                 .uSpecialAbilityType = 0;
                                     }
-                                } else if (!_stricmp(
-                                               parsed_field.pProperties[0],
-                                               "explode")) {
+                                } else if (iequals(parsed_field.pProperties[0], "explode")) {
                                     pInfos[curr_rec_num].uSpecialAbilityType =
                                         3;
                                     ParseDamage(
@@ -1194,7 +1187,8 @@ void MonsterStats::Initialize() {
 signed __int16 MonsterList::GetMonsterIDByName(const char *pMonsterName) {
     if (!pMonsterName) return -1;
     for (signed __int16 i = 0; i <= uNumMonsters; ++i) {
-        if ((!_stricmp(pMonsters[i].pMonsterName, pMonsterName))) return i;
+        if (iequals(pMonsters[i].pMonsterName, pMonsterName))
+            return i;
     }
     Error("Monster not found: %s", pMonsterName);
 }

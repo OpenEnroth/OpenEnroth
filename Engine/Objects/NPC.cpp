@@ -973,23 +973,23 @@ void InitializeAutonotes() {
                         pAutonoteTxt[i + 1].pText = RemoveQuotes(test_string);
                         break;
                     case 2: {
-                        if (!_stricmp(test_string, "potion")) {
+                        if (iequals(test_string, "potion")) {
                             pAutonoteTxt[i + 1].eType = AUTONOTE_POTION_RECEPIE;
                             break;
                         }
-                        if (!_stricmp(test_string, "stat")) {
+                        if (iequals(test_string, "stat")) {
                             pAutonoteTxt[i + 1].eType = AUTONOTE_STAT_HINT;
                             break;
                         }
-                        if (!_stricmp(test_string, "seer")) {
+                        if (iequals(test_string, "seer")) {
                             pAutonoteTxt[i + 1].eType = AUTONOTE_SEER;
                             break;
                         }
-                        if (!_stricmp(test_string, "obelisk")) {
+                        if (iequals(test_string, "obelisk")) {
                             pAutonoteTxt[i + 1].eType = AUTONOTE_OBELISK;
                             break;
                         }
-                        if (!_stricmp(test_string, "teacher")) {
+                        if (iequals(test_string, "teacher")) {
                             pAutonoteTxt[i + 1].eType = AUTONOTE_TEACHER;
                             break;
                         }

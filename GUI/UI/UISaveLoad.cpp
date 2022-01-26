@@ -170,7 +170,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
         if (!pLODFile.Open(str)) __debugbreak();
         void *data = pLODFile.LoadRaw("header.bin");
         memcpy(&pSavegameHeader[i], data, sizeof(SavegameHeader));
-        if (!_stricmp(pSavegameList->pFileList[i].c_str(), localization->GetString(LSTR_AUTOSAVE_MM7))) {
+        if (iequals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) {
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_AUTOSAVE));
         }
 

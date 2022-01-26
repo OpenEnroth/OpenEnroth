@@ -376,15 +376,14 @@ void ItemsTable::Initialize() {
         pItems[item_counter]._bonus_type = 0;
         if (pItems[item_counter].uMaterial == MATERIAL_SPECIAL) {
             for (int ii = 0; ii < 24; ++ii) {
-                if (!_stricmp(tokens[12], pEnchantments[ii].pOfName)) {
+                if (iequals(tokens[12], pEnchantments[ii].pOfName)) {
                     pItems[item_counter]._bonus_type = ii + 1;
                     break;
                 }
             }
             if (!pItems[item_counter]._bonus_type) {
                 for (int ii = 0; ii < 72; ++ii) {
-                    if (!_stricmp(tokens[12],
-                                  pSpecialEnchantments[ii].pNameAdd)) {
+                    if (iequals(tokens[12], pSpecialEnchantments[ii].pNameAdd)) {
                         pItems[item_counter]._additional_value = ii + 1;
                     }
                 }

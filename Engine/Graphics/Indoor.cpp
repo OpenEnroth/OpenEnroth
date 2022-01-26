@@ -736,7 +736,8 @@ bool IndoorLocation::Alloc() {
 //----- (00444810) --------------------------------------------------------
 unsigned int IndoorLocation::GetLocationIndex(const char *Str1) {
     for (uint i = 0; i < 11; ++i)
-        if (!_stricmp(Str1, _4E6BDC_loc_names[i])) return i + 1;
+        if (iequals(Str1, _4E6BDC_loc_names[i]))
+            return i + 1;
     return 0;
 }
 

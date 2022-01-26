@@ -812,8 +812,8 @@ LABEL_47:
                           ((_evt->v14 +
                             ((_evt->v15 + ((uint)_evt->v16 << 8)) << 8))
                            << 8);
-                    if (!_stricmp(
-                            game_ui_status_bar_event_string.data(),
+                    if (iequals(
+                            game_ui_status_bar_event_string,
                             &pLevelStr
                                 [pLevelStrOffsets[_evt->v9 +
                                                   ((_evt->v10 +
@@ -821,7 +821,7 @@ LABEL_47:
                                                       ((uint)_evt->v12 << 8))
                                                      << 8))
                                                    << 8)]]) ||
-                        !_stricmp(game_ui_status_bar_event_string.data(),
+                        iequals(game_ui_status_bar_event_string,
                                   &pLevelStr[pLevelStrOffsets[v84]])) {
                         v11 = _evt->v17;
                         curr_seq_num = v11 - 1;

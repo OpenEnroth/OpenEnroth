@@ -2,10 +2,7 @@
 #include <utility>
 
 #include "Io/GameKey.h"
-
-#ifndef _WINDOWS
-#define _stricmp strcasecmp
-#endif
+#include "Engine/Strings.h"
 
 using Io::GameKey;
 
@@ -118,8 +115,7 @@ bool TryParseDisplayName(const std::string &displayName, GameKey *outKey) {
         displayNames.begin(),
         displayNames.end(),
         [displayNameStr](const std::pair<GameKey, const char *> &i) -> bool {
-            // TODO(alex-gee): refactor this using STL to void using _stricmp and its pesky #ifndef WINDOWS
-            return _stricmp(displayNameStr, i.second) == 0;
+            return iequals(displayNameStr, i.second);
         }
     );
 
