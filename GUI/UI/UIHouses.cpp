@@ -1622,7 +1622,7 @@ void TravelByTransport() {
                     pParty->vPosition.x = pTravel->arrival_x;
                     pParty->vPosition.y = pTravel->arrival_y;
                     pParty->vPosition.z = pTravel->arrival_z;
-                    pParty->uFallStartY = pParty->vPosition.z;
+                    pParty->uFallStartZ = pParty->vPosition.z;
                     pParty->sRotationX = 0;
                     pParty->sRotationZ = pTravel->arrival_rot_y;
                 }

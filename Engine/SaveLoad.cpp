@@ -263,7 +263,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->vPosition.z = pParty->vPrevPosition.z;
     pParty->vPosition.y = pParty->vPrevPosition.y;
 
-    pParty->uFallStartY = pParty->vPrevPosition.z;
+    pParty->uFallStartZ = pParty->vPrevPosition.z;
 
     pParty->sRotationZ = pParty->sPrevRotationY;
     pParty->sRotationX = pParty->sPrevRotationX;
@@ -543,7 +543,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->vPosition.x = pPositionX;
     pParty->vPosition.y = pPositionY;
     pParty->vPosition.z = pPositionZ;
-    pParty->uFallStartY = pPositionZ;
+    pParty->uFallStartZ = pPositionZ;
     pParty->sRotationZ = sPRotationY;
     pParty->sRotationX = sPRotationX;
 }
@@ -649,7 +649,7 @@ void SaveNewGame() {
         pParty->vPosition.y = 1816;
         pParty->vPosition.z = 0;
 
-        pParty->uFallStartY = 0;
+        pParty->uFallStartZ = 0;
 
         pParty->sPrevRotationX = 0;
         pParty->sPrevRotationY = 512;

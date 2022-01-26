@@ -363,8 +363,8 @@ extern std::array<int, 20> current_Face_id;                   // dword_721110
 extern std::array<int, 20> current_BModel_id;                 // dword_721160
 extern std::array<int, 20> odm_floor_level;  // idb dword_7211B0
 extern int blv_prev_party_x;
-extern int blv_prev_party_z;
 extern int blv_prev_party_y;
+extern int blv_prev_party_z;
 extern char *dword_722F10;  // idb
 extern std::array<const char *, 513> pQuestTable;
 extern char *dword_723718_autonote_related;  // idb

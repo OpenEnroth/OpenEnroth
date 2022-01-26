@@ -88,7 +88,7 @@ void Party::Zero() {
     vPosition.x = 0;
     vPosition.y = 0;
     vPosition.z = 0;
-    uFallStartY = 0;
+    uFallStartZ = 0;
     sRotationZ = 0;
     sRotationX = 0;
     uFallSpeed = 0;
@@ -638,7 +638,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->vPosition.y = 0;
     this->vPosition.z = 0;
     this->vPosition.x = 0;
-    this->uFallStartY = 0;
+    this->uFallStartZ = 0;
     this->sRotationZ = 0;
     this->sRotationX = 0;
     this->uFallSpeed = 0;

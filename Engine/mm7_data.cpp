@@ -728,8 +728,8 @@ std::array<int, 20> current_Face_id;                   // dword_721110
 std::array<int, 20> current_BModel_id;                 // dword_721160
 std::array<int, 20> odm_floor_level;                   // idb
 int blv_prev_party_x;
-int blv_prev_party_z;
 int blv_prev_party_y;
+int blv_prev_party_z;
 std::array<NPCTopic, 789> pNPCTopics;
 std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related;  // idb

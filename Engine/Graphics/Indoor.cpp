@@ -2227,7 +2227,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
         pParty->vPosition.z = 0;
         pParty->vPosition.y = 0;
         pParty->vPosition.x = 0;
-        pParty->uFallStartY = 0;
+        pParty->uFallStartZ = 0;
         pParty->uFallSpeed = 0;
         TeleportToStartingPoint(uLevel_StartingPointType);
     }
@@ -3273,21 +3273,20 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->bFlying = false;
 
     if (floor_z == -30000 || uFaceID == -1) {
-        floor_z = collide_against_floor_approximate(
-            new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
+        floor_z = collide_against_floor_approximate(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
         if (floor_z == -30000 || uFaceID == -1) {
             __debugbreak();  // level built with errors
             pParty->vPosition.x = blv_prev_party_x;
-            pParty->vPosition.y = blv_prev_party_z;
-            pParty->vPosition.z = blv_prev_party_y;
-            pParty->uFallStartY = blv_prev_party_y;
+            pParty->vPosition.y = blv_prev_party_y;
+            pParty->vPosition.z = blv_prev_party_z;
+            pParty->uFallStartZ = blv_prev_party_z;
             return;
         }
     }
 
     blv_prev_party_x = pParty->vPosition.x;
-    blv_prev_party_z = pParty->vPosition.y;
-    blv_prev_party_y = pParty->vPosition.z;
+    blv_prev_party_y = pParty->vPosition.y;
+    blv_prev_party_z = pParty->vPosition.z;
     if (!pParty->bTurnBasedModeOn) {
         static int dword_720CDC = 0;
 
@@ -3313,20 +3312,20 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
           !pParty->pPlayers[2].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) &&
           !pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT))
       {
-        fall_start = pParty->uFallStartY;
+        fall_start = pParty->uFallStartZ;
       }
       else// was missing
       {
           fall_start = floor_level;
           bFeatherFall = true;
-          pParty->uFallStartY = floor_z;
+          pParty->uFallStartZ = floor_z;
       }
     }
     else// активно падение пера
     {
       fall_start = floor_z;
       bFeatherFall = true;
-      pParty->uFallStartY = floor_z;
+      pParty->uFallStartZ = floor_z;
     }
 
     Reworked condition below
@@ -3338,10 +3337,10 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)) {
         fall_start = floor_z;
         bFeatherFall = true;
-        pParty->uFallStartY = floor_z;
+        pParty->uFallStartZ = floor_z;
     } else {
         bFeatherFall = false;
-        fall_start = pParty->uFallStartY;
+        fall_start = pParty->uFallStartZ;
     }
 
     if (fall_start - party_z > 512 && !bFeatherFall &&
@@ -3354,7 +3353,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                     !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)) {
                     pParty->pPlayers[i].ReceiveDamage(
-                        (pParty->uFallStartY - party_z) *
+                        (pParty->uFallStartZ - party_z) *
                         (0.1f * pParty->pPlayers[i].GetMaxHealth()) / 256,
                         DMGT_PHISYCAL);
                     v10 = (double)(20 - pParty->pPlayers[i].GetParameterBonus(
@@ -3372,7 +3371,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool not_high_fall = false;
 
     if (party_z - floor_z <= 32) {
-        pParty->uFallStartY = party_z;
+        pParty->uFallStartZ = party_z;
         not_high_fall = true;
     }
 
@@ -3385,7 +3384,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     if (party_z <= floor_z + 1) {  // группа ниже уровня пола
         party_z = floor_z + 1;
-        pParty->uFallStartY = floor_z + 1;
+        pParty->uFallStartZ = floor_z + 1;
 
         if (!hovering && pParty->floor_face_pid != uFaceID) {  // не парящие и
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_PRESSURE_PLATE)
@@ -3512,17 +3511,17 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 }
             }
         } else {
-            pParty->uFallStartY = party_z;
+            pParty->uFallStartZ = party_z;
         }
     } else {  // не парящие
         if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 0x8000) {
             pParty->uFallSpeed -=
                 pEventTimer->uTimeElapsed * GetGravityStrength();
-            pParty->uFallStartY = party_z;
+            pParty->uFallStartZ = party_z;
         } else {
             if (!(pParty->uFlags & PARTY_FLAGS_1_LANDING))
                 pParty->uFallSpeed = 0;
-            pParty->uFallStartY = party_z;
+            pParty->uFallStartZ = party_z;
         }
     }
     if (v2 * v2 + v1 * v1 < 400) {
@@ -3621,7 +3620,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             if (pFace->uPolygonType == POLYGON_Floor) {  // если bmodel - пол
                 if (pParty->uFallSpeed < 0) pParty->uFallSpeed = 0;
                 v87 = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
-                if (pParty->uFallStartY - v87 < 512) pParty->uFallStartY = v87;
+                if (pParty->uFallStartZ - v87 < 512) pParty->uFallStartZ = v87;
                 if (v2 * v2 + v1 * v1 < 400) {
                     v1 = 0;
                     v2 = 0;

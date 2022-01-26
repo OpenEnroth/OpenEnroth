@@ -1028,7 +1028,7 @@ LABEL_47:
                             pParty->vPosition.x = v135;
                             pParty->vPosition.y = v132;
                             pParty->vPosition.z = v126;
-                            pParty->uFallStartY = v126;
+                            pParty->uFallStartZ = v126;
                             if (Party_Teleport_Cam_Yaw != -1)
                                 pParty->sRotationZ =
                                     Party_Teleport_Cam_Yaw;

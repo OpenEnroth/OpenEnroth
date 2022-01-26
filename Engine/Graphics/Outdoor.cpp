@@ -2325,9 +2325,9 @@ void ODM_ProcessPartyActions() {
     //************************************
     // определение высоты падения
     if (bFeatherFall)  // падение пера
-        pParty->uFallStartY = floor_level;
+        pParty->uFallStartZ = floor_level;
     else
-        floor_level = pParty->uFallStartY;
+        floor_level = pParty->uFallStartZ;
     //*************************************
     // падение на 3D Model
     if (floor_level - party_new_Z > 512 && !bFeatherFall &&
@@ -2339,7 +2339,7 @@ void ODM_ProcessPartyActions() {
                 if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                     !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)) {
                     pParty->pPlayers[i].ReceiveDamage(
-                        (int)((pParty->uFallStartY - party_new_Z) *
+                        (int)((pParty->uFallStartZ - party_new_Z) *
                         (uint64_t)(pParty->pPlayers[i]
                             .GetMaxHealth() /
                             10)) /
@@ -2728,13 +2728,13 @@ void ODM_ProcessPartyActions() {
             stru_5E4C90_MapPersistVars._decor_events
                 [20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] &=
                 0xFE;
-        pParty->uFallStartY = party_new_Z;
+        pParty->uFallStartZ = party_new_Z;
     } else if (party_new_Z < v111) {
         if (is_on_water && fall_speed)
             SpriteObject::Create_Splash_Object(pX, pY, v111);
         fall_speed = 0;
         party_new_Z = v111;
-        pParty->uFallStartY = v111;
+        pParty->uFallStartZ = v111;
         v113 = party_new_Z;
         if (pParty->FlyActive())
             stru_5E4C90_MapPersistVars._decor_events
@@ -2792,7 +2792,7 @@ void ODM_ProcessPartyActions() {
             }
         }
     } else {
-      pParty->uFallStartY = party_new_Z;
+      pParty->uFallStartZ = party_new_Z;
     }
 
     if (v2 * v2 + v1 * v1 < 400 && !partyAtHighSlope) {
@@ -3079,7 +3079,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFallSpeed = fall_speed;
         if (party_new_Z > 8160) {  // ограничение высоты
             party_new_Z = 8160;
-            pParty->uFallStartY = 8160;
+            pParty->uFallStartZ = 8160;
             pParty->vPosition.z = 8160;
         }
 
@@ -3091,7 +3091,7 @@ void ODM_ProcessPartyActions() {
                 pParty->uFallSpeed = 0;
                 // v73 = v105;
                 pParty->vPosition.z = on_ground;
-                if (pParty->uFallStartY - party_new_Z > 512 && !bFeatherFall &&
+                if (pParty->uFallStartZ - party_new_Z > 512 && !bFeatherFall &&
                     party_new_Z <= on_ground &&
                     !engine->IsUnderwater()) {  // Fall to the ground(падение на землю с
                                      // высоты)
@@ -3100,7 +3100,7 @@ void ODM_ProcessPartyActions() {
                     } else {
                         for (uint i = 1; i <= 4; ++i) {
                             pPlayers[i]->ReceiveDamage(
-                                (int)((pParty->uFallStartY -
+                                (int)((pParty->uFallStartZ -
                                               party_new_Z) *
                                              (uint64_t)((double)pPlayers[i]->GetMaxHealth() * 0.1)) /
                                     256,
@@ -3115,7 +3115,7 @@ void ODM_ProcessPartyActions() {
                         // v73 = pParty->vPosition.z;
                     }
                 }
-                pParty->uFallStartY = party_new_Z;
+                pParty->uFallStartZ = party_new_Z;
             }
             if (v102 && pParty->vPosition.z < ceiling_height) {
                 if ((signed int)(pParty->uPartyHeight + pParty->vPosition.z) >=
@@ -3185,7 +3185,7 @@ void ODM_ProcessPartyActions() {
     pParty->vPosition.z = party_new_Z;
     if (party_new_Z > 8160) {  // опять ограничение высоты
         // v82 = 8160;
-        pParty->uFallStartY = 8160;
+        pParty->uFallStartZ = 8160;
         pParty->vPosition.z = 8160;
     }
     HEXRAYS_LOWORD(pParty->uFlags) &= 0xFDFBu;
@@ -3207,7 +3207,7 @@ void ODM_ProcessPartyActions() {
             // v82 = on_ground;
             pParty->uFallSpeed = 0;
             pParty->vPosition.z = on_ground;
-            if (pParty->uFallStartY - party_new_Z > 512 && !bFeatherFall &&
+            if (pParty->uFallStartZ - party_new_Z > 512 && !bFeatherFall &&
                 party_new_Z <= on_ground &&
                 !engine->IsUnderwater()) {  // Fall to the water(падение на воду с высоты)
                 if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
@@ -3216,7 +3216,7 @@ void ODM_ProcessPartyActions() {
                     for (uint i = 1; i <= 4; ++i) {
                         v110 = pPlayers[i]->GetMaxHealth();
                         pPlayers[i]->ReceiveDamage(
-                            (int)((pParty->uFallStartY - party_new_Z) *
+                            (int)((pParty->uFallStartZ - party_new_Z) *
                                          (uint64_t)((double)v110 * 0.1)) / 256,
                             DMGT_PHISYCAL);
                         v110 = 20 - pPlayers[i]->GetParameterBonus(
@@ -3229,7 +3229,7 @@ void ODM_ProcessPartyActions() {
                     // v82 = pParty->vPosition.z;
                 }
             }
-            pParty->uFallStartY = party_new_Z;
+            pParty->uFallStartZ = party_new_Z;
         }
         if (v102 && pParty->vPosition.z < ceiling_height &&
             (signed int)(pParty->uPartyHeight + pParty->vPosition.z) >=

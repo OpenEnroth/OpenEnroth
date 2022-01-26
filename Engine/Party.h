@@ -286,7 +286,7 @@ struct Party {
     int floor_face_pid;  // face we are standing at
     int walk_sound_timer;
     int _6FC_water_lava_timer;
-    int uFallStartY;
+    int uFallStartZ;
     unsigned int bFlying;
     char field_708;
     unsigned __int8 hirelingScrollPosition;

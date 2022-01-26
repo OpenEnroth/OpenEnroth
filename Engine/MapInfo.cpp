@@ -337,7 +337,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
                     pParty->vPosition.x = pLevelDecorations[i].vPosition.x;
                     pParty->vPosition.y = pLevelDecorations[i].vPosition.y;
                     pParty->vPosition.z = pLevelDecorations[i].vPosition.z;
-                    pParty->uFallStartY = pParty->vPosition.z;
+                    pParty->uFallStartZ = pParty->vPosition.z;
                     pParty->sRotationZ = (int)(TrigLUT->uIntegerHalfPi *
                                      pLevelDecorations[i].field_1A) /
                         90;
@@ -356,7 +356,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
                 pParty->vPosition.y = Party_Teleport_Y_Pos;
             if (Party_Teleport_Z_Pos) {
                 pParty->vPosition.z = Party_Teleport_Z_Pos;
-                pParty->uFallStartY = Party_Teleport_Z_Pos;
+                pParty->uFallStartZ = Party_Teleport_Z_Pos;
             }
             if (Party_Teleport_Cam_Yaw != -1)
                 pParty->sRotationZ = Party_Teleport_Cam_Yaw;
