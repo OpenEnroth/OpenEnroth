@@ -141,7 +141,7 @@ struct stru316 {
 /*  134 */
 #pragma pack(push, 1)
 struct stru141_actor_collision_object {
-    int CalcMovementExtents(int a2);
+    bool CalcMovementExtents(int a2);
 
     int field_0;  // bool flag
     int prolly_normal_d;

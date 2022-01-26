@@ -3235,10 +3235,7 @@ void BLV_UpdateUserInputAndOther() {
 
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
-    int v1;                   // ebx@1
-    int v2;                   // edi@1
     double v10;               // st7@27
-    int new_party_z;          // esi@96
     int v38;                  // eax@96
     int v39;                  // ecx@106
     int v40;                  // eax@106
@@ -3253,10 +3250,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     uFaceEvent = 0;
     // v89 = pParty->uFallSpeed;
-    v1 = 0;
-    v2 = 0;
     int new_party_x = pParty->vPosition.x;
     int new_party_y = pParty->vPosition.y;
+    int new_party_z;
     int party_z = pParty->vPosition.z;
 
     bool party_running_flag = false;
@@ -3359,10 +3355,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     // Vertical party angle (basically azimuthal angle in polar coordinates).
     int vertical_angle = pParty->sRotationX;
 
-    // Calculate rotation in TrigLUT-friendly ticks (1024 ticks per 180 degree).
+    // Calculate rotation in ticks (1024 ticks per 180 degree).
     int rotation =
         (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->y_rotation_speed * TrigLUT->uIntegerPi / 180) >> 16;
 
+    int party_dy = 0;
+    int party_dx = 0;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
@@ -3393,35 +3391,41 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_StrafeLeft:
-                v2 -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-                v1 += fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                party_dx -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                party_dy += fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
                 party_walking_flag = true;
                 break;
+
             case PARTY_StrafeRight:
-                v2 += fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-                v1 -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                party_dx += fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                party_dy -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
                 party_walking_flag = true;
                 break;
+
             case PARTY_WalkForward:
-                v2 += fixpoint_mul(TrigLUT->Cos(angle), /*2 **/ pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                v1 += fixpoint_mul(TrigLUT->Sin(angle), /*2 **/ pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                party_dx += fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                party_dy += fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_walking_flag = true;
                 break;
+
             case PARTY_WalkBackward:
-                v2 -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-                v1 -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                party_dx -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                party_dy -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
                 party_walking_flag = true;
                 break;
+
             case PARTY_RunForward:
-                v2 += fixpoint_mul(TrigLUT->Cos(angle), /*5*/2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                v1 += fixpoint_mul(TrigLUT->Sin(angle), /*5*/2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                party_dx += fixpoint_mul(TrigLUT->Cos(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                party_dy += fixpoint_mul(TrigLUT->Sin(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
                 party_running_flag = true;
                 break;
+
             case PARTY_RunBackward:
-                v2 -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-                v1 -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                party_dx -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                party_dy -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
                 party_running_flag = true;
                 break;
+
             case PARTY_LookDown:
                 vertical_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
                 if (vertical_angle > 128)
@@ -3429,6 +3433,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
+
             case PARTY_LookUp:
                 vertical_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
                 if (vertical_angle < -128)
@@ -3436,9 +3441,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookDown, 0);
                 break;
+
             case PARTY_CenterView:
                 vertical_angle = 0;
                 break;
+
             case PARTY_Jump:
                 if ((!hovering || party_z <= floor_z + 6 && pParty->uFallSpeed <= 0) && pParty->jump_strength) {
                     hovering = true;
@@ -3450,13 +3457,18 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
+    if (party_dx * party_dx + party_dy * party_dy < 400) {
+        party_dy = 0;
+        party_dx = 0;
+    }
+
     pParty->sRotationZ = angle;
     pParty->sRotationX = vertical_angle;
 
-    if (hovering) {  // парящие
-        pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();  // расчёт скорости падения
-        if (hovering && pParty->uFallSpeed <= 0) {
-            if (pParty->uFallSpeed < -500 && !pParty->bFlying) {
+    if (hovering) {
+        pParty->uFallSpeed += -2 * pEventTimer->uTimeElapsed * GetGravityStrength();
+        if (pParty->uFallSpeed <= 0) {
+            if (pParty->uFallSpeed < -500) {
                 for (uint pl = 1; pl <= 4; pl++) {
                     if (!pPlayers[pl]->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !pPlayers[pl]->WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS))  // was 8
@@ -3466,20 +3478,15 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         } else {
             pParty->uFallStartZ = party_z;
         }
-    } else {  // не парящие
+    } else {
         if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 0x8000) {
-            pParty->uFallSpeed -=
-                pEventTimer->uTimeElapsed * GetGravityStrength();
+            pParty->uFallSpeed -= pEventTimer->uTimeElapsed * GetGravityStrength();
             pParty->uFallStartZ = party_z;
         } else {
             if (!(pParty->uFlags & PARTY_FLAGS_1_LANDING))
                 pParty->uFallSpeed = 0;
             pParty->uFallStartZ = party_z;
         }
-    }
-    if (v2 * v2 + v1 * v1 < 400) {
-        v1 = 0;
-        v2 = 0;
     }
 
     _actor_collision_struct.field_84 = -1;
@@ -3498,14 +3505,14 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         _actor_collision_struct.normal.y = new_party_y;
         _actor_collision_struct.normal.z = _actor_collision_struct.prolly_normal_d + party_z + 1;
 
-        _actor_collision_struct.velocity.x = v2;
-        _actor_collision_struct.velocity.y = v1;
+        _actor_collision_struct.velocity.x = party_dx;
+        _actor_collision_struct.velocity.y = party_dy;
         _actor_collision_struct.velocity.z = pParty->uFallSpeed;
 
         _actor_collision_struct.uSectorID = uSectorID;
-        v38 = 0;
+        v38 = 0; // zero means use actual dt
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-            v38 = 13312;
+            v38 = 13312; // fixpoint(13312) = 0.203125
         }
         if (_actor_collision_struct.CalcMovementExtents(v38)) break;
         for (uint j = 0; j < 100; ++j) {
@@ -3563,10 +3570,10 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     pLevelDecorations[_actor_collision_struct.pid >> 3].vPosition.x,
                 new_party_y -
                     pLevelDecorations[_actor_collision_struct.pid >> 3].vPosition.y);
-            v2 = fixpoint_mul(TrigLUT->Cos(v54),
-                              integer_sqrt(v2 * v2 + v1 * v1));
-            v1 = fixpoint_mul(TrigLUT->Sin(v54),
-                              integer_sqrt(v2 * v2 + v1 * v1));
+            party_dx = fixpoint_mul(TrigLUT->Cos(v54),
+                              integer_sqrt(party_dx * party_dx + party_dy * party_dy));
+            party_dy = fixpoint_mul(TrigLUT->Sin(v54),
+                              integer_sqrt(party_dx * party_dx + party_dy * party_dy));
         } else if (PID_TYPE(_actor_collision_struct.pid) ==
                    OBJECT_BModel) {  // при столкновении с bmodel
             pFace = &pIndoor->pFaces[(signed int)_actor_collision_struct.pid >> 3];
@@ -3574,9 +3581,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (pParty->uFallSpeed < 0) pParty->uFallSpeed = 0;
                 v87 = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
                 if (pParty->uFallStartZ - v87 < 512) pParty->uFallStartZ = v87;
-                if (v2 * v2 + v1 * v1 < 400) {
-                    v1 = 0;
-                    v2 = 0;
+                if (party_dx * party_dx + party_dy * party_dy < 400) {
+                    party_dy = 0;
+                    party_dx = 0;
                 }
                 if (pParty->floor_face_pid != PID_ID(_actor_collision_struct.pid) &&
                     pFace->Pressure_Plate())
@@ -3586,13 +3593,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 v46 = pParty->uFallSpeed * pFace->pFacePlane_old.vNormal.z;
                 if (pFace->uPolygonType !=
                     POLYGON_InBetweenFloorAndWall) {  // полез на холм
-                    v80 = abs(v1 * pFace->pFacePlane_old.vNormal.y + v46 +
-                              v2 * pFace->pFacePlane_old.vNormal.x) >>
+                    v80 = abs(party_dy * pFace->pFacePlane_old.vNormal.y + v46 +
+                              party_dx * pFace->pFacePlane_old.vNormal.x) >>
                           16;
                     if ((_actor_collision_struct.speed >> 3) > v80)
                         v80 = _actor_collision_struct.speed >> 3;
-                    v2 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
-                    v1 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
+                    party_dx += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
+                    party_dy += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
                     pParty->uFallSpeed +=
                         fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     // v80 = pFace->pFacePlane_old.vNormal.y;
@@ -3616,31 +3623,31 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                             pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                 }
                 if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                    v80 = abs(v1 * pFace->pFacePlane_old.vNormal.y + v46 +
-                              v2 * pFace->pFacePlane_old.vNormal.x) >>
+                    v80 = abs(party_dy * pFace->pFacePlane_old.vNormal.y + v46 +
+                              party_dx * pFace->pFacePlane_old.vNormal.x) >>
                           16;
                     if ((_actor_collision_struct.speed >> 3) > v80)
                         v80 = _actor_collision_struct.speed >> 3;
-                    v2 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
-                    v1 += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
+                    party_dx += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
+                    party_dy += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
                     pParty->uFallSpeed +=
                         fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
-                    if (v2 * v2 + v1 * v1 >= 400) {
+                    if (party_dx * party_dx + party_dy * party_dy >= 400) {
                         if (pParty->floor_face_pid != PID_ID(_actor_collision_struct.pid) &&
                             pFace->Pressure_Plate())
                             uFaceEvent =
                                 pIndoor->pFaceExtras[pFace->uFaceExtraID]
                                     .uEventID;
                     } else {
-                        v2 = 0;
-                        v1 = 0;
+                        party_dx = 0;
+                        party_dy = 0;
                         pParty->uFallSpeed = 0;
                     }
                 }
             }
         }
-        v2 = fixpoint_mul(58500, v2);  // 58500 is roughly 0.89
-        v1 = fixpoint_mul(58500, v1);
+        party_dx = fixpoint_mul(58500, party_dx);  // 58500 is roughly 0.89
+        party_dy = fixpoint_mul(58500, party_dy);
         pParty->uFallSpeed = fixpoint_mul(58500, pParty->uFallSpeed);
     }
 
@@ -4194,8 +4201,8 @@ int collide_against_floor_approximate(int x, int y, int z,
 }
 
 //----- (0047050A) --------------------------------------------------------
-int stru141_actor_collision_object::CalcMovementExtents(int dt) {  // true if no movement
-    int result = 1;
+bool stru141_actor_collision_object::CalcMovementExtents(int dt) {  // true if no movement
+    bool result = true;
     int v17;            // eax@5
     int v18;            // eax@7
     int v21;            // eax@9
@@ -4270,9 +4277,8 @@ int stru141_actor_collision_object::CalcMovementExtents(int dt) {  // true if no
         this->field_80 = -1;
         this->field_88 = -1;
         // this->sMinZ = v27;
-        this->field_7C = 0xFFFFFFu;  // 255.0 fixpoint
-        result = 0;
         this->field_7C = 0xFFFFFFu;  // 255.999984741 fixpoint
+        result = false;
     }
     return result;
 }
