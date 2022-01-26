@@ -198,7 +198,7 @@ bool OverlayList::FromFileTxt(const char *Args) {
                 this->pOverlays[this->uNumOverlays].uOverlayType = 0;
             }
             this->pOverlays[this->uNumOverlays++].uSpriteFramesetID =
-                pSpriteFrameTable->FastFindSprite((char *)v19.pProperties[2]);
+                pSpriteFrameTable->FastFindSprite(v19.pProperties[2]);
         }
     }
     fclose(File);
