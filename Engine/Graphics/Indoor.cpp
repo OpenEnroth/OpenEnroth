@@ -3302,10 +3302,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         fall_start = pParty->uFallStartZ;
     }
 
-    if (fall_start - party_z > 512 && !bFeatherFall &&
-        party_z <= floor_z + 1) {  // повреждение от падения с высоты
-        assert(~pParty->uFlags & PARTY_FLAGS_1_LANDING);  // why land in indoor?
+    if (fall_start - party_z > 512 && !bFeatherFall && party_z <= floor_z + 1) {  // fall damage
         if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
+            __debugbreak(); // why land in indoor?
             pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
         } else {
             for (uint i = 0; i < 4; ++i) {  // receive falling damage
