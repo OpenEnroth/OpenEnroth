@@ -3248,50 +3248,37 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int v52;                  // eax@140
     int v54;                  // ebx@146
     unsigned int uFaceEvent;  // [sp+14h] [bp-4Ch]@1
-    bool party_running_flag;  // [sp+1Ch] [bp-44h]@1
     bool bFeatherFall;        // [sp+24h] [bp-3Ch]@15
-    unsigned int uSectorID;   // [sp+28h] [bp-38h]@1
-    bool party_walking_flag;  // [sp+2Ch] [bp-34h]@1
-    unsigned int uFaceID;     // [sp+30h] [bp-30h]@1
     int v80;                  // [sp+34h] [bp-2Ch]@1
     int v82;                  // [sp+3Ch] [bp-24h]@47
     int _view_angle;          // [sp+40h] [bp-20h]@47
-    bool hovering;            // [sp+44h] [bp-1Ch]@1
-    int new_party_y;          // [sp+48h] [bp-18h]@1
-    int new_party_x;          // [sp+4Ch] [bp-14h]@1
-    int party_z;              // [sp+50h] [bp-10h]@1
     int angle;                // [sp+5Ch] [bp-4h]@47
 
     uFaceEvent = 0;
     // v89 = pParty->uFallSpeed;
     v1 = 0;
     v2 = 0;
-    new_party_x = pParty->vPosition.x;
-    new_party_y = pParty->vPosition.y;
-    party_z = pParty->vPosition.z;
-    uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
-                                   pParty->vPosition.z);
-    party_running_flag = false;
-    party_walking_flag = false;
-    hovering = false;
+    int new_party_x = pParty->vPosition.x;
+    int new_party_y = pParty->vPosition.y;
+    int party_z = pParty->vPosition.z;
+    bool party_running_flag = false;
+    bool party_walking_flag = false;
+    bool hovering = false;
 
-    uFaceID = -1;
-    int floor_level =
-        collide_against_floor(new_party_x, new_party_y, party_z + 40,
-                              &uSectorID, &uFaceID);  //получить высоту пола
+    unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+    unsigned int uFaceID = -1;
+    int floor_z = collide_against_floor(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
 
-    if (pParty->bFlying) {  // отключить полёт
+    if (pParty->bFlying) {  // disable flight
         pParty->bFlying = false;
         if (pParty->FlyActive())
-            pOtherOverlayList
-                ->pOverlays[pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID - 1]
-                .field_E |= 1;
+            pOtherOverlayList->pOverlays[pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID - 1].field_E |= 1;
     }
 
-    if (floor_level == -30000 || uFaceID == -1) {
-        floor_level = collide_against_floor_approximate(
+    if (floor_z == -30000 || uFaceID == -1) {
+        floor_z = collide_against_floor_approximate(
             new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
-        if (floor_level == -30000 || uFaceID == -1) {
+        if (floor_z == -30000 || uFaceID == -1) {
             __debugbreak();  // level built with errors
             pParty->vPosition.x = blv_prev_party_x;
             pParty->vPosition.y = blv_prev_party_z;
@@ -3335,14 +3322,14 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
       {
           fall_start = floor_level;
           bFeatherFall = true;
-          pParty->uFallStartY = floor_level;
+          pParty->uFallStartY = floor_z;
       }
     }
     else// активно падение пера
     {
-      fall_start = floor_level;
+      fall_start = floor_z;
       bFeatherFall = true;
-      pParty->uFallStartY = floor_level;
+      pParty->uFallStartY = floor_z;
     }
 
     Reworked condition below
@@ -3352,16 +3339,16 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->pPlayers[1].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) ||
         pParty->pPlayers[2].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) ||
         pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)) {
-        fall_start = floor_level;
+        fall_start = floor_z;
         bFeatherFall = true;
-        pParty->uFallStartY = floor_level;
+        pParty->uFallStartY = floor_z;
     } else {
         bFeatherFall = false;
         fall_start = pParty->uFallStartY;
     }
 
     if (fall_start - party_z > 512 && !bFeatherFall &&
-        party_z <= floor_level + 1) {  // повреждение от падения с высоты
+        party_z <= floor_z + 1) {  // повреждение от падения с высоты
         assert(~pParty->uFlags & PARTY_FLAGS_1_LANDING);  // why land in indoor?
         if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
             pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
@@ -3383,11 +3370,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
-    if (party_z > floor_level + 1) hovering = true;
+    if (party_z > floor_z + 1) hovering = true;
 
     bool not_high_fall = false;
 
-    if (party_z - floor_level <= 32) {
+    if (party_z - floor_z <= 32) {
         pParty->uFallStartY = party_z;
         not_high_fall = true;
     }
@@ -3399,9 +3386,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pParty->walk_sound_timer = 0;
     }
 
-    if (party_z <= floor_level + 1) {  // группа ниже уровня пола
-        party_z = floor_level + 1;
-        pParty->uFallStartY = floor_level + 1;
+    if (party_z <= floor_z + 1) {  // группа ниже уровня пола
+        party_z = floor_z + 1;
+        pParty->uFallStartY = floor_z + 1;
 
         if (!hovering && pParty->floor_face_pid != uFaceID) {  // не парящие и
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_PRESSURE_PLATE)
@@ -3505,7 +3492,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
             case PARTY_Jump:
                 if ((!hovering ||
-                     party_z <= floor_level + 6 && pParty->uFallSpeed <= 0) &&
+                     party_z <= floor_z + 6 && pParty->uFallSpeed <= 0) &&
                     pParty->field_24) {
                     hovering = true;
                     pParty->uFallSpeed += pParty->field_24 * 96;
