@@ -1738,7 +1738,7 @@ void UpdateActors_BLV() {
             _actor_collision_struct.prolly_normal_d = pActors[actor_id].uActorRadius;
             _actor_collision_struct.height = pActors[actor_id].uActorHeight;
             v22 = 0;
-            for (uSectorID = 0; uSectorID < 100; uSectorID++) {
+            for (int attempt = 0; attempt < 100; attempt++) {
                 _actor_collision_struct.position.x = pActors[actor_id].vPosition.x;
                 _actor_collision_struct.normal.x = _actor_collision_struct.position.x;
                 _actor_collision_struct.position.y = pActors[actor_id].vPosition.y;
