@@ -4272,6 +4272,7 @@ int stru141_actor_collision_object::CalcMovementExtents(int dt) {  // true if no
         // this->sMinZ = v27;
         this->field_7C = 0xFFFFFFu;  // 255.0 fixpoint
         result = 0;
+        this->field_7C = 0xFFFFFFu;  // 255.999984741 fixpoint
     }
     return result;
 }
