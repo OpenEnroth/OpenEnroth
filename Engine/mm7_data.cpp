@@ -700,7 +700,6 @@ int dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
-float flt_6BE150_look_up_down_dangle = 1.0f;
 std::string pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;

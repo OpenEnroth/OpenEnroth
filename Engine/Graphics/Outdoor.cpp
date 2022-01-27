@@ -2667,16 +2667,14 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_LookDown:  // смотреть вниз
-                _angle_x +=
-                    (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
+                _angle_x += engine->config->vertical_turn_speed;
                 if (_angle_x > 128) _angle_x = 128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
 
             case PARTY_LookUp:  // смотреть вверх
-                _angle_x +=
-                    (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
+                _angle_x -= engine->config->vertical_turn_speed;
                 if (_angle_x < -128) _angle_x = -128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookDown, 0);

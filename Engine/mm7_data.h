@@ -314,7 +314,6 @@ extern int dword_6BE13C_uCurrentlyLoadedLocationID;
 extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
-extern float flt_6BE150_look_up_down_dangle;
 // extern char pMM7WindowClassName[]; // idb
 // extern HINSTANCE hInstance; // idb
 // extern char *pCmdLine;

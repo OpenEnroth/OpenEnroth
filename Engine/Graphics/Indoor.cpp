@@ -3327,7 +3327,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         party_z = floor_z + 1;
         pParty->uFallStartZ = floor_z + 1;
 
-        // not hovering & stepped onto a new face => activate potential pressure plate
+        // not hovering & stepped onto a new face => activate potential pressure plate,
+        // TODO: but why is this condition under "below floor level" if above?
         if (!hovering && pParty->floor_face_pid != uFaceID) {
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_PRESSURE_PLATE)
                 uFaceEvent = pIndoor->pFaceExtras[pIndoor->pFaces[uFaceID].uFaceExtraID].uEventID;
@@ -3418,7 +3419,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_LookDown:
-                vertical_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
+                vertical_angle += engine->config->vertical_turn_speed;
                 if (vertical_angle > 128)
                     vertical_angle = 128;
                 if (uActiveCharacter)
@@ -3426,7 +3427,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_LookUp:
-                vertical_angle += (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
+                vertical_angle -= engine->config->vertical_turn_speed;
                 if (vertical_angle < -128)
                     vertical_angle = -128;
                 if (uActiveCharacter)

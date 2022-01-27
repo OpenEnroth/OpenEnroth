@@ -94,7 +94,8 @@ class EngineConfig {
     // GAME_FLAGS_2_*
     int flags2 = GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS | GAME_FLAGS_2_DRAW_BLOODSPLATS | GAME_FLAGS_2_SATURATE_LIGHTMAPS;
 
-    int turn_speed = 0;             // discrete turn speed, 0 for smooth
+    int turn_speed = 0;             // discrete turn speed, 0 for smooth.
+    int vertical_turn_speed = 25;   // discrete vertical turn speed, 0 for smooth (mm7 default was 25).
     float turn_speed_smooth = 1.0f;
 
     int sound_level = 4;    // 0..9
