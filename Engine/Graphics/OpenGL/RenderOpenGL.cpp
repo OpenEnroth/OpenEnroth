@@ -953,7 +953,7 @@ bool sub_47531C(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3
         (fixpoint_mul(advance_fixpoint, dir.z) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.z);
 
     if (!IsProjectedPointInsideFace(face, new_pos))
-        return 0;
+        return false;
 
     if (advance_fixpoint < 0) {
         *move_distance = 0;
