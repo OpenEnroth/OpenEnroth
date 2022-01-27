@@ -3271,17 +3271,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         floor_z = collide_against_floor_approximate(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
         if (floor_z == -30000 || uFaceID == -1) {
             __debugbreak();  // level built with errors
-            pParty->vPosition.x = blv_prev_party_x;
-            pParty->vPosition.y = blv_prev_party_y;
-            pParty->vPosition.z = blv_prev_party_z;
-            pParty->uFallStartZ = blv_prev_party_z;
+            pParty->vPosition = blv_prev_party_pos;
+            pParty->uFallStartZ = blv_prev_party_pos.z;
             return;
         }
     }
 
-    blv_prev_party_x = pParty->vPosition.x;
-    blv_prev_party_y = pParty->vPosition.y;
-    blv_prev_party_z = pParty->vPosition.z;
+    blv_prev_party_pos = pParty->vPosition;
 
     int fall_start;
     if (pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)) {
