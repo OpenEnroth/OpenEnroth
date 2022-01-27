@@ -580,10 +580,8 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 distance_lo_new <= distance_lo_old)
             {
                 a3 = collision_state.move_distance;
-                if (sub_47531C(
-                    collision_state.radius, &a3,
-                    collision_state.position_lo.x, collision_state.position_lo.y, collision_state.position_lo.z,
-                    collision_state.direction.x, collision_state.direction.y, collision_state.direction.z, pFace, b1)) {
+                if (sub_47531C(collision_state.radius, &a3, collision_state.position_lo, collision_state.direction,
+                               pFace, b1)) {
                     v17 = a3;
                 } else {
                     a3 = collision_state.move_distance +
@@ -613,11 +611,8 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 v22 > v21)
                 continue;
             a3 = collision_state.move_distance;
-            if (sub_47531C(collision_state.radius2, &a3,
-                            collision_state.position_hi.x, collision_state.position_hi.y,
-                            collision_state.position_hi.z, collision_state.direction.x,
-                            collision_state.direction.y, collision_state.direction.z,
-                            pFace, b1)) {
+            if (sub_47531C(collision_state.radius2, &a3, collision_state.position_hi, collision_state.direction,
+                           pFace, b1)) {
                 v23 = a3;
                 goto LABEL_43;
             }
@@ -919,18 +914,17 @@ unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     return result;
 }
 
-bool sub_47531C(int radius, int* move_distance, int pos_x, int pos_y, int pos_z, int dir_x,
-    int dir_y, int dir_z, BLVFace* face, int a10) {
+bool sub_47531C(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir, BLVFace* face, int a10) {
     if (a10 && face->Ethereal())
         return 0;
 
     // Fixpoint dot_product(dir, normal).
     int dir_dot_normal_fixpoint =
-        fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
+        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
 
-    int distance_fixpoint = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos_x, pos_y, pos_z);
+    int distance_fixpoint = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
     int radius_fixpoint = radius << 16;
 
     int bounce;          // edi@4
@@ -951,12 +945,12 @@ bool sub_47531C(int radius, int* move_distance, int pos_x, int pos_y, int pos_z,
 
     int a7a;          // [sp+30h] [bp+18h]@7
     Vec3_short_ new_pos;
-    new_pos.x = pos_x +
-        (fixpoint_mul(advance_fixpoint, dir_x) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.x);
-    new_pos.y = pos_y +
-        (fixpoint_mul(advance_fixpoint, dir_y) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.y);
-    new_pos.z = pos_z +
-        (fixpoint_mul(advance_fixpoint, dir_z) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.z);
+    new_pos.x = pos.x +
+        (fixpoint_mul(advance_fixpoint, dir.x) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.x);
+    new_pos.y = pos.y +
+        (fixpoint_mul(advance_fixpoint, dir.y) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.y);
+    new_pos.z = pos.z +
+        (fixpoint_mul(advance_fixpoint, dir.z) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.z);
 
     if (!IsProjectedPointInsideFace(face, new_pos))
         return 0;
@@ -967,7 +961,7 @@ bool sub_47531C(int radius, int* move_distance, int pos_x, int pos_y, int pos_z,
         *move_distance = advance_fixpoint >> 16;
     }
 
-    return 1;
+    return true;
 }
 
 bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
