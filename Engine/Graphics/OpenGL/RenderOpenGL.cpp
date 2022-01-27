@@ -235,19 +235,9 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
     BLVFace face;      // [sp+Ch] [bp-7Ch]@1
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (_actor_collision_struct.bbox.x1 <= model.sMaxX &&
-            _actor_collision_struct.bbox.x2 >= model.sMinX &&
-            _actor_collision_struct.bbox.y1 <= model.sMaxY &&
-            _actor_collision_struct.bbox.y2 >= model.sMinY &&
-            _actor_collision_struct.bbox.z1 <= model.sMaxZ &&
-            _actor_collision_struct.bbox.z2 >= model.sMinZ) { // TODO: bbox.Intersects(bbox)
+        if (_actor_collision_struct.bbox.Intersects(model.pBoundingBox)) {
             for (ODMFace &mface : model.pFaces) {
-                if (_actor_collision_struct.bbox.x1 <= mface.pBoundingBox.x2 &&
-                    _actor_collision_struct.bbox.x2 >= mface.pBoundingBox.x1 &&
-                    _actor_collision_struct.bbox.y1 <= mface.pBoundingBox.y2 &&
-                    _actor_collision_struct.bbox.y2 >= mface.pBoundingBox.y1 &&
-                    _actor_collision_struct.bbox.z1 <= mface.pBoundingBox.z2 &&
-                    _actor_collision_struct.bbox.z2 >= mface.pBoundingBox.z1) {
+                if (_actor_collision_struct.bbox.Intersects(mface.pBoundingBox)) {
                     face.pFacePlane_old.vNormal.x = mface.pFacePlane.vNormal.x;
                     face.pFacePlane_old.vNormal.y = mface.pFacePlane.vNormal.y;
                     face.pFacePlane_old.vNormal.z = mface.pFacePlane.vNormal.z;
@@ -532,12 +522,7 @@ int _46F04E_collide_against_portals() {
         if (pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i] !=
             _actor_collision_struct.field_80) {
             BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i]];
-            if (_actor_collision_struct.bbox.x1 <= face->pBounding.x2 &&
-                _actor_collision_struct.bbox.x2 >= face->pBounding.x1 &&
-                _actor_collision_struct.bbox.y1 <= face->pBounding.y2 &&
-                _actor_collision_struct.bbox.y2 >= face->pBounding.y1 &&
-                _actor_collision_struct.bbox.z1 <= face->pBounding.z2 &&
-                _actor_collision_struct.bbox.z2 >= face->pBounding.z1) {
+            if (_actor_collision_struct.bbox.Intersects(face->pBounding)) {
                 int v4 = (_actor_collision_struct.position_lo.x * face->pFacePlane_old.vNormal.x +
                           face->pFacePlane_old.dist +
                           _actor_collision_struct.position_lo.y * face->pFacePlane_old.vNormal.y +

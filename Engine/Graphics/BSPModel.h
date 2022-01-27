@@ -179,12 +179,7 @@ class BSPModel {
     int32_t sCenterX = 0;
     int32_t sCenterY = 0;
     Vec3_int_ vPosition {};
-    int32_t sMinX = 0;
-    int32_t sMinY = 0;
-    int32_t sMinZ = 0;
-    int32_t sMaxX = 0;
-    int32_t sMaxY = 0;
-    int32_t sMaxZ = 0;
+    BBox_int_ pBoundingBox = {0, 0, 0, 0, 0, 0};
     int32_t sSomeOtherMinX = 0;
     int32_t sSomeOtherMinY = 0;
     int32_t sSomeOtherMinZ = 0;

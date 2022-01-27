@@ -1890,8 +1890,8 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
         GetTerrainHeightsAroundParty2(X, Y, pIsOnWater, bWaterWalk);
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (X <= model.sMaxX && X >= model.sMinX && Y <= model.sMaxY &&
-            Y >= model.sMinY) {
+        if (X <= model.pBoundingBox.x2 && X >= model.pBoundingBox.x1 && Y <= model.pBoundingBox.y2 &&
+            Y >= model.pBoundingBox.y1) {
             if (!model.pFaces.empty()) {
                 v39 = 0;
                 for (ODMFace &face : model.pFaces) {
@@ -3254,8 +3254,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
     v39 = 1;
     ceiling_height_level[0] = 10000;  // нет потолка
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (Party_X <= model.sMaxX && Party_X >= model.sMinX &&
-            Party_Y <= model.sMaxY && Party_Y >= model.sMinY) {
+        if (Party_X <= model.pBoundingBox.x2 && Party_X >= model.pBoundingBox.x1 &&
+            Party_Y <= model.pBoundingBox.y2 && Party_Y >= model.pBoundingBox.y1) {
             for (ODMFace &face : model.pFaces) {
                 if ((face.uPolygonType == POLYGON_Ceiling ||
                      face.uPolygonType == POLYGON_InBetweenCeilingAndWall) &&
