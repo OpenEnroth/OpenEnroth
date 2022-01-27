@@ -916,7 +916,7 @@ unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
 
 bool sub_47531C(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir, BLVFace* face, int a10) {
     if (a10 && face->Ethereal())
-        return 0;
+        return false;
 
     // Fixpoint dot_product(dir, normal).
     int dir_dot_normal_fixpoint =
@@ -935,15 +935,14 @@ bool sub_47531C(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3
         bounce = abs(bounce_fixpoint) >> 16;
         advance_fixpoint = 0;
     } else {
-        int wtf_x4 = abs(bounce_fixpoint) >> 14;
-        if (wtf_x4 > abs(dir_dot_normal_fixpoint))
-            return 0;
+        int bounce_x4 = abs(bounce_fixpoint) >> 14;
+        if (bounce_x4 > abs(dir_dot_normal_fixpoint))
+            return false;
 
         bounce = radius;
         advance_fixpoint = fixpoint_div(bounce_fixpoint, dir_dot_normal_fixpoint);
     }
 
-    int a7a;          // [sp+30h] [bp+18h]@7
     Vec3_short_ new_pos;
     new_pos.x = pos.x +
         (fixpoint_mul(advance_fixpoint, dir.x) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.x);
