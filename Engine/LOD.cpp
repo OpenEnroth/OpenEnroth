@@ -352,9 +352,10 @@ void LODFile_IconsBitmaps::ReleaseAll() {
     this->uNumLoadedFiles = 0;
 }
 
-unsigned int LODFile_IconsBitmaps::FindTextureByName(const char *pName) {
+unsigned int LODFile_IconsBitmaps::FindTextureByName(const String &pName) {
     for (uint i = 0; i < this->uNumLoadedFiles; i++) {
-        if (!_stricmp(this->pTextures[i].header.pName, pName)) return i;
+        if (iequals(this->pTextures[i].header.pName, pName))
+            return i;
     }
     return -1;
 }
@@ -1010,7 +1011,7 @@ void LODFile_IconsBitmaps::ReleaseHardwareTextures() {}
 void LODFile_IconsBitmaps::ReleaseLostHardwareTextures() {}
 
 int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
-                                        const char *pContainer, int mode) {
+                                        const String &pContainer, int mode) {
     unsigned int v7;  // ebx@6
     unsigned int v8;  // ecx@6
     int result;       // eax@7
@@ -1028,7 +1029,7 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
     Texture_MM7 *v6 = pDst;
     if (pDst->paletted_pixels && mode == 2 && pDst->pPalette24 &&
         (v7 = pDst->header.uTextureSize, fread(pDst, 1, 0x30u, File),
-         strcpy(pDst->header.pName, pContainer),
+         strncpy(pDst->header.pName, pContainer.c_str(), 16),
          v8 = pDst->header.uTextureSize, (int)v8 <= (int)v7)) {
         if (!pDst->header.uDecompressedSize ||
             this->_011BA4_debug_paletted_pixels_uncompressed) {
@@ -1054,9 +1055,9 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
 }
 
 int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
-                                             const char *pContainer,
+                                             const String &pContainer,
                                              enum TEXTURE_TYPE eTextureType) {
-    int result;        // esi@14
+    //int result;        // esi@14
     unsigned int v14;  // eax@21
     // size_t v22;        // ST2C_4@29
     // const void *v23;   // ecx@29
@@ -1069,11 +1070,11 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
 
     TextureHeader *header = &pOutTex->header;
     fread(header, 1, sizeof(TextureHeader), pFile);
-    strncpy(header->pName, pContainer, 16);
+    strncpy(header->pName, pContainer.c_str(), 16);
     data_size -= sizeof(TextureHeader);
 
     // BITMAPS
-    if ((header->pBits & 2) && strcmp(header->pName, "sptext01")) {
+    if ((header->pBits & 2) && pContainer != "sptext01") {
         if (!pHardwareSurfaces || !pHardwareTextures) {
             pHardwareSurfaces = new IDirectDrawSurface *[1000];
             memset(pHardwareSurfaces, 0, 1000 * sizeof(IDirectDrawSurface *));
@@ -1084,31 +1085,27 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
             ptr_011BB4 = new char[1000];
             memset(ptr_011BB4, 0, 1000);
         }
-        if (_strnicmp(pContainer, "wtrdr", 5)) {
-            if (_strnicmp(pContainer, "WtrTyl", 6)) {
-                v14 = uNumLoadedFiles;
-            } else {
+        if (!iequals(pContainer, "wtrdr")) {
+            if (iequals(pContainer, "WtrTyl"))
                 render->hd_water_tile_id = uNumLoadedFiles;
-                v14 = uNumLoadedFiles;
-            }
+            v14 = uNumLoadedFiles;
             // result = render->LoadTexture(pContainer, pOutTex->palette_id1,
             // (void **)&pHardwareSurfaces[v14], (void
             // **)&pHardwareTextures[v14]);
-            result = 1;
+            //result = 1;
         } else {
             char *temp_container;
-            temp_container = (char *)malloc(strlen(pContainer) + 2);
+            temp_container = (char *)malloc(pContainer.size() + 2);
             *temp_container = 104;  // 'h'
-            strcpy(temp_container + 1, pContainer);
-            result = 1;
+            strcpy(temp_container + 1, pContainer.c_str());
+            //result = 1;
             free((void *)temp_container);
         }
-        return result;
+        //return result;
     }
 
     // ICONS
-    if (!header->uDecompressedSize ||
-        _011BA4_debug_paletted_pixels_uncompressed) {
+    if (!header->uDecompressedSize || _011BA4_debug_paletted_pixels_uncompressed) {
         if (header->uTextureSize > data_size) {
             assert(false);
         }
@@ -1167,7 +1164,7 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
 }
 
 Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(
-    const char *pContainer, enum TEXTURE_TYPE uTextureType) {
+    const String &pContainer, enum TEXTURE_TYPE uTextureType) {
     uint id = LoadTexture(pContainer, uTextureType);
 
     Assert(id != -1 && L"Texture_MM7 not found");
@@ -1175,25 +1172,22 @@ Texture_MM7 *LODFile_IconsBitmaps::LoadTexturePtr(
     return &pTextures[id];
 }
 
-unsigned int LODFile_IconsBitmaps::LoadTexture(const char *pContainer,
-                                               enum TEXTURE_TYPE uTextureType) {
+unsigned int LODFile_IconsBitmaps::LoadTexture(const String &pContainer, enum TEXTURE_TYPE uTextureType) {
     for (uint i = 0; i < uNumLoadedFiles; ++i) {
-        if (!_stricmp(pContainer, pTextures[i].header.pName)) {
+        if (iequals(pContainer, pTextures[i].header.pName)) {
             return i;
         }
     }
 
     Assert(uNumLoadedFiles < 1000);
 
-    if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer,
-                           uTextureType) == -1) {
+    if (LoadTextureFromLOD(&pTextures[uNumLoadedFiles], pContainer, uTextureType) == -1) {
         for (uint i = 0; i < uNumLoadedFiles; ++i) {
-            if (!_stricmp(pTextures[i].header.pName, "pending")) {
+            if (iequals(pTextures[i].header.pName, "pending")) {
                 return i;
             }
         }
-        LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending",
-                           uTextureType);
+        LoadTextureFromLOD(&pTextures[uNumLoadedFiles], "pending", uTextureType);
     }
 
     return uNumLoadedFiles++;

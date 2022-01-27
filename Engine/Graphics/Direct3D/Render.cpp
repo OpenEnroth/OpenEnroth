@@ -95,8 +95,8 @@ Texture *Render::CreateTexture_PCXFromFile(const String &name) {
     return TextureD3D::Create(new PCX_File_Loader(name));
 }
 
-Texture *Render::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureD3D::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
+Texture *Render::CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) {
+    return TextureD3D::Create(new PCX_LOD_Raw_Loader(pLOD, name));
 }
 
 Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
@@ -108,7 +108,7 @@ Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
 
 
 Texture *Render::CreateTexture(const String &name) {
-    return TextureD3D::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
+    return TextureD3D::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->use_hwl_bitmaps));
 }
 
 Texture *Render::CreateSprite(const String &name, unsigned int palette_id,
@@ -2294,8 +2294,8 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
     int yDifference = bankersRounding(dstY - srcY);
     int absYDifference = abs(yDifference);
     int absXDifference = abs(xDifference);
-    unsigned int smallerabsdiff = min(absXDifference, absYDifference);
-    unsigned int largerabsdiff = max(absXDifference, absYDifference);
+    unsigned int smallerabsdiff = std::min(absXDifference, absYDifference);
+    unsigned int largerabsdiff = std::max(absXDifference, absYDifference);
     int v32 = (11 * smallerabsdiff >> 5) + largerabsdiff;
     double v16 = 1.0 / (double)v32;
     double v17 = (double)yDifference * v16 * a4;
@@ -2439,14 +2439,6 @@ void Render::_4A4CC9_AddSomeBillboard(SpellFX_Billboard *a1,
         pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.0;
         pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.0;
     }
-}
-
-HWLTexture *Render::LoadHwlBitmap(const char *name) {
-    return pD3DBitmaps.LoadTexture(name);
-}
-
-HWLTexture *Render::LoadHwlSprite(const char *name) {
-    return pD3DSprites.LoadTexture(name);
 }
 
 void Render::Update_Texture(Texture *texture) {
@@ -3527,8 +3519,8 @@ void Render::DrawBuildingsD3D() {
     int v53;  // [sp+3Ch] [bp-1Ch]@8
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        int reachable;
-        if (!IsBModelVisible(&model, &reachable)) {
+        bool reachable_unused;
+        if (!IsBModelVisible(&model, 256, &reachable_unused)) {
             continue;
         }
         model.field_40 |= 1;

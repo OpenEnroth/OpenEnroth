@@ -120,10 +120,10 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
 
 class Bitmaps_LOD_Loader : public ImageLoader {
  public:
-    inline Bitmaps_LOD_Loader(LODFile_IconsBitmaps *lod,
-                              const String &filename) {
+    inline Bitmaps_LOD_Loader(LODFile_IconsBitmaps *lod, const String &filename, bool use_hwl) {
         this->resource_name = filename;
         this->lod = lod;
+        this->use_hwl = use_hwl;
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height,
@@ -131,6 +131,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
 
  protected:
     LODFile_IconsBitmaps *lod;
+    bool use_hwl;
 };
 
 class Sprites_LOD_Loader : public ImageLoader {

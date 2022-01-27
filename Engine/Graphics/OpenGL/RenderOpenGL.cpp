@@ -1,5 +1,4 @@
 #ifdef _WINDOWS
-    #define NOMINMAX
     #include <Windows.h>
 
     #pragma comment(lib, "opengl32.lib")
@@ -77,7 +76,7 @@ void Polygon::_normalize_v_18() {
     }
 }
 
-bool IsBModelVisible(BSPModel *model, int *reachable) {
+bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // checks if model is visible in FOV cone
     float halfangle = (pODMRenderParams->uCameraFovInDegrees * pi_double / 180.0f) / 2;
     float rayx = model->vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
@@ -86,7 +85,7 @@ bool IsBModelVisible(BSPModel *model, int *reachable) {
     // approx distance
     int dist = int_get_vector_length(abs(rayx), abs(rayy), 0);
     *reachable = false;
-    if (dist < model->sBoundingRadius + 256) *reachable = true;
+    if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
 
     // dot product of camvec and ray - size in forward
     float frontvec = rayx * pIndoorCameraD3D->fRotationZCosine + rayy * pIndoorCameraD3D->fRotationZSine;
@@ -2773,8 +2772,8 @@ Texture *RenderOpenGL::CreateTexture_PCXFromFile(const String &name) {
     return TextureOpenGL::Create(new PCX_File_Loader(name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromLOD(void *pLOD, const String &name) {
-    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader((LOD::File *)pLOD, name));
+Texture *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) {
+    return TextureOpenGL::Create(new PCX_LOD_Raw_Loader(pLOD, name));
 }
 
 Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int height,
@@ -2785,7 +2784,7 @@ Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int heig
 
 
 Texture *RenderOpenGL::CreateTexture(const String &name) {
-    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name));
+    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->use_hwl_bitmaps));
 }
 
 Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id,
@@ -3420,7 +3419,6 @@ void RenderOpenGL::RenderTerrainD3D() {
 
 void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bool clampAtTextureBorders) {
     int v11;           // eax@5
-    unsigned int v45;  // eax@28
 
     unsigned int uNumVertices = poly->uNumVertices;
 
@@ -3942,12 +3940,17 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
     if (!tex) __debugbreak();
 
+    TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(tex);
+    if (!texture) {
+        __debugbreak();
+        return;
+    }
+
     glEnable(GL_TEXTURE_2D);
     glColor3f(1, 1, 1);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    auto texture = (TextureOpenGL *)tex;
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
     int clipx = this->clip_x;
@@ -4184,8 +4187,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
     int v53;  // [sp+3Ch] [bp-1Ch]@8
 
     for (BSPModel& model : pOutdoor->pBModels) {
-        int reachable;
-        if (!IsBModelVisible(&model, &reachable)) {
+        bool reachable_unused;
+        if (!IsBModelVisible(&model, 256, &reachable_unused)) {
             continue;
         }
         model.field_40 |= 1;
@@ -4370,7 +4373,9 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
         return;
     }
 
-    unsigned int v41;     // eax@29
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     unsigned int sCorrectedColor;  // [sp+64h] [bp-4h]@4
 
     auto texture = (TextureOpenGL*)pPolygon->texture;

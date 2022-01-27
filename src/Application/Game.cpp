@@ -466,7 +466,6 @@ void Game::EventLoop() {
     GUIButton *pButton;         // eax@578
     unsigned int v86;           // eax@583
     const char *v87;            // ecx@595
-    const char *v88;            // ecx@596
     unsigned int v90;           // eax@602
     int v91;                    // edx@605
     int v92;                    // eax@605
@@ -2659,8 +2658,8 @@ void Game::EventLoop() {
 void Game::OnPressSpace() {
     engine->PickKeyboard(keyboardInputHandler->IsKeyboardPickingOutlineToggled(), &vis_sprite_filter_3, &vis_door_filter);
 
-    int pid = vis->get_picked_object_zbuf_val().object_pid;
-    if (pid != -1)
+    uint16_t pid = vis->get_picked_object_zbuf_val().object_pid;
+    if (pid != PID_INVALID)
         DoInteractionWithTopmostZObject(pid);
 }
 
@@ -2688,10 +2687,10 @@ void Game::GameLoop() {
         pMessageQueue_50CBD0->Flush();
 
         pPartyActionQueue->uNumActions = 0;
-        if (pParty->bTurnBasedModeOn) {
-            pTurnEngine->End(false);
-            pParty->bTurnBasedModeOn = false;
-        }
+
+        pTurnEngine->End(false);
+        pParty->bTurnBasedModeOn = false;  // Make sure turn engine and party turn based mode flag are in sync.
+
         DoPrepareWorld(bLoading, 1);
         pEventTimer->Resume();
         dword_6BE364_game_settings_1 |=

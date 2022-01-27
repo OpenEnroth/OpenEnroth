@@ -232,7 +232,7 @@ struct stru154 {
     void GetFacePlane(struct ODMFace *pFace, struct BSPVertexBuffer *pVertices,
                       struct Vec3_float_ *pOutNormal, float *pOutDist);
 
-    void (***vdestructor_ptr)(stru154 *, bool);
+    void (***vdestructor_ptr)(stru154 *, bool) = nullptr;
     Plane_float_ face_plane {};
     PolygonType polygonType {};
     char field_15 = 0;
@@ -698,7 +698,6 @@ struct BLVRenderParams {
     int uViewportWidth = 0;
     int uViewportCenterX = 0;
     int uViewportCenterY = 0;
-    struct BspRenderer_PortalViewportData *field_7C = nullptr;
     unsigned int uNumFacesRenderedThisFrame = 0;
     int field_84 = 0;
     int field_88 = 0;
@@ -710,9 +709,6 @@ struct BLVRenderParams {
 extern BLVRenderParams *pBLVRenderParams;
 
 // int GetPortalScreenCoord(unsigned int uFaceID);
-// bool PortalFrustrum(int pNumVertices, struct BspRenderer_PortalViewportData *a2,
-//                   struct BspRenderer_PortalViewportData *near_portal,
-//                    int uFaceID);
 // void PrepareBspRenderList_BLV();
 // void AddBspNodeToRenderList(unsigned int node_id);
 // void sub_4406BC(unsigned int node_id, unsigned int uFirstNode);  // idb
@@ -737,9 +733,6 @@ bool PointInPolyIndoor(int x, int y, int z, struct BLVFace *face);
 bool PointInPolyOutdoor(int a1, int a2, int a3, struct ODMFace *face,
                 struct BSPVertexBuffer *a5);
 
-#pragma once
-
-/*  165 */
 #pragma pack(push, 1)
 struct BspRenderer_PortalViewportData {
     void GetViewportData(int16_t x, int y, int16_t z, int w);
@@ -760,12 +753,10 @@ extern BspRenderer_PortalViewportData _PortalViewportData_unused;
 #pragma pack(push, 1)
 struct BspRenderer_stru0 {
     //----- (0043F2BF) --------------------------------------------------------
-    inline BspRenderer_stru0() {
-    }
+    inline BspRenderer_stru0() {}
 
     //----- (0043F2A9) --------------------------------------------------------
-    ~BspRenderer_stru0() {
-    }
+    ~BspRenderer_stru0() {}
 
     uint16_t uSectorID = 0;
     uint16_t uViewportX;
@@ -773,7 +764,7 @@ struct BspRenderer_stru0 {
     uint16_t uViewportZ;
     uint16_t uViewportW;
     int16_t field_A = 0;
-    BspRenderer_PortalViewportData PortalScreenData {};
+    BspRenderer_PortalViewportData PortalScreenData{};
     uint16_t uFaceID;
     int16_t field_7A6 = 0;
     unsigned int viewing_portal_id;  // portal through which we're seeing this node
@@ -805,16 +796,14 @@ struct BspRenderer {  // stru170
 
     unsigned int num_faces;
     // __int16 pFaceIDs[2000];
-    BspFace faces[1000] {};
+    BspFace faces[1000]{};
     // char field_130[3700];
     unsigned int num_nodes;
     BspRenderer_stru0 nodes[150];
     unsigned int uNumVisibleNotEmptySectors;
-    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6] {};
+    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6]{};
 };
 #pragma pack(pop)
-
-extern struct BspRenderer *pBspRenderer;  // idb
 
 void FindBillboardsLightLevels_BLV();
 

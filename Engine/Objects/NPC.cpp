@@ -1083,12 +1083,6 @@ void _4B4224_UpdateNPCTopics(int _this) {
     int num_menu_buttons;  // ebx@1
     int i;                 // ebp@5
                            // signed int v4; // ebp@9
-    int v6;                // eax@16
-    int v8;                // eax@21
-    int v10;               // eax@26
-    int v12;               // eax@31
-    int v14;               // eax@36
-    int v16;               // eax@41
     NPCData *v17;          // [sp+10h] [bp-4h]@4
 
     num_menu_buttons = 0;

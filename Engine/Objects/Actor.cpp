@@ -3383,7 +3383,6 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     unsigned __int16 v43;            // ax@132
     unsigned __int16 v45;            // ax@132
     // unsigned __int64 v46; // [sp+Ch] [bp-60h]@6
-    char *pPlayerName;                // [sp+18h] [bp-54h]@12
     signed int a4;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
     int v61;                          // [sp+58h] [bp-14h]@1

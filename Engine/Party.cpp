@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <climits>
+#include <algorithm>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"

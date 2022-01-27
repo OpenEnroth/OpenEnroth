@@ -113,6 +113,8 @@ void LoadGame(unsigned int uSlot) {
             serialization->Deserialize(pParty);
             free(serialization);
 
+            pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
+
             for (size_t i = 0; i < 4; i++) {
                 Player *player = &pParty->pPlayers[i];
                 for (size_t j = 0; j < 5; j++) {

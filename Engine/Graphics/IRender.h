@@ -25,6 +25,10 @@ struct SpellFxRenderer;
 class Vis;
 class Log;
 
+namespace LOD {
+class File;
+}
+
 bool PauseGameDrawing();
 
 struct RenderBillboard {
@@ -254,7 +258,7 @@ class IRender {
     virtual Texture *CreateTexture_PCXFromFile(const String &name) = 0;
     virtual Texture *CreateTexture_PCXFromIconsLOD(const String &name) = 0;
     virtual Texture *CreateTexture_PCXFromNewLOD(const String &name) = 0;
-    virtual Texture *CreateTexture_PCXFromLOD(void *pLOD, const String &name) = 0;
+    virtual Texture *CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) = 0;
 
     virtual Texture *CreateTexture_Blank(unsigned int width, unsigned int height,
         IMAGE_FORMAT format, const void *pixels = nullptr) = 0;
@@ -536,5 +540,5 @@ bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6,
 
 class BSPModel;
 
-bool IsBModelVisible(BSPModel *model, int *unused);
+bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable);
 inline uint32_t PixelDim(uint32_t pix, int dimming);

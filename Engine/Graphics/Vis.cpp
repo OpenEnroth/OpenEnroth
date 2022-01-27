@@ -317,11 +317,6 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     v5 = 0;
     v17 = 0;
 
-    // for (a1.flt_2C = 0.0; v17 < (signed int)pBspRenderer->num_faces; ++v17) {
-    //     pFaceID = pBspRenderer->faces[v5].uFaceID;
-    //     if (pFaceID >= 0) {
-    //        if (pFaceID < (signed int)pIndoor->uNumFaces) {
-
     for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->uNumFaces; ++v17) {
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
@@ -353,8 +348,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
         else
             face->uAttributes &= ~FACE_OUTLINED;
         face->uAttributes &= ~FACE_IsPicked;
-           // }
-       // }
+
         v5 = v17 + 1;
     }
 }
@@ -366,8 +360,8 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     if (!pOutdoor) return;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        int reachable;
-        if (!IsBModelVisible(&model, &reachable)) {
+        bool reachable;
+        if (!IsBModelVisible(&model, fDepth, &reachable)) {
             continue;
         }
         if (!reachable && only_reachable) {
@@ -1570,39 +1564,27 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 //----- (004C0D32) --------------------------------------------------------
 void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                                    Vis_SelectionFilter *filter) {
-    int result;          // eax@1
-    signed int pFaceID;  // esi@2
-    BLVFace *pFace;      // edi@4
-    // unsigned int v7; // eax@6
-    Vis_ObjectInfo *v8;  // eax@6
-    signed int i;        // [sp+18h] [bp-8h]@1
+    // This is not a very efficient implementation. Instead of iterating through all faces we could be iterating
+    // only through the ones that have an event assigned. That would require some work in IndoorLocation.
 
-    result = 0;
-    for (i = 0; i < (signed int)pBspRenderer->num_faces; ++i) {
-        pFaceID = pBspRenderer->faces[result].uFaceID;
-        if (pFaceID >= 0) {
-            if (pFaceID < (signed int)pIndoor->uNumFaces) {
-                pFace = &pIndoor->pFaces[pFaceID];
-                if (!pIndoorCameraD3D->IsCulled(&pIndoor->pFaces[pFaceID])) {
-                    if (is_part_of_selection(pFace, filter)) {
-                        v8 = DetermineFacetIntersection(
-                            pFace, PID(OBJECT_BModel, pFaceID), pick_depth);
-                        if (v8)
-                            list->AddObject(v8->object, v8->object_type,
-                                            v8->depth, v8->object_pid);
-                    }
-                }
+    for (size_t i = 0; i < pIndoor->uNumFaces; ++i) {
+        BLVFace *pFace = &pIndoor->pFaces[i];
+        if (!pIndoorCameraD3D->IsCulled(pFace)) {
+            if (is_part_of_selection(pFace, filter)) {
+                Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, PID(OBJECT_BModel, i), pick_depth);
+                if (v8)
+                    list->AddObject(v8->object, v8->object_type,
+                                    v8->depth, v8->object_pid);
             }
         }
-        result = i + 1;
     }
 }
 
 void Vis::PickOutdoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
                                     Vis_SelectionFilter *filter) {
     for (BSPModel &model : pOutdoor->pBModels) {
-        int reachable;
-        if (IsBModelVisible(&model, &reachable)) {
+        bool reachable;
+        if (IsBModelVisible(&model, pick_depth, &reachable)) {
             if (reachable) {
                 for (ODMFace &face : model.pFaces) {
                     if (is_part_of_selection(&face, filter)) {

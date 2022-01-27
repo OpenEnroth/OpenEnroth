@@ -127,17 +127,17 @@ class LODFile_IconsBitmaps : public LOD::File {
     LODFile_IconsBitmaps();
     virtual ~LODFile_IconsBitmaps();
     void SyncLoadedFilesCount();
-    unsigned int FindTextureByName(const char *pName);
+    unsigned int FindTextureByName(const String &pName);
     bool Load(const String &pFilename, const String &pFolderName);
     void ReleaseAll();
-    unsigned int LoadTexture(const char *pContainer,
+    unsigned int LoadTexture(const String &pContainer,
                              enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
     struct Texture_MM7 *LoadTexturePtr(
-        const char *pContainer,
+        const String &pContainer,
         enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const char *pContainer,
+    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const String &pContainer,
                            enum TEXTURE_TYPE eTextureType);
-    int ReloadTexture(struct Texture_MM7 *pDst, const char *pContainer,
+    int ReloadTexture(struct Texture_MM7 *pDst, const String &pContainer,
                       int mode);
     void ReleaseHardwareTextures();
     void ReleaseLostHardwareTextures();

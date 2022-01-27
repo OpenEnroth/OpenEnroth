@@ -5,7 +5,7 @@ class TextureOpenGL : public Texture {
  public:
     int GetOpenGlTexture();
 
-    ~TextureOpenGL();
+    virtual ~TextureOpenGL();
 
  protected:
     friend class RenderOpenGL;

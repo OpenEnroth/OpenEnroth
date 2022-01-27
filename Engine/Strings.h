@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <algorithm>
 #include <cstring>
 #ifndef _WINDOWS
 #include "Platform/Lin/Lin.h"
@@ -22,19 +23,16 @@ inline char *RemoveQuotes(char *str) {
 }
 
 inline bool iequals(std::string_view a, std::string_view b) {
-    return std::equal(a.begin(), a.end(), b.begin(), b.end(),
-        [](const unsigned char &a, const unsigned char &b) {
-            return tolower(a) == tolower(b);
-        }
-    );
+    return a.size() == b.size() && _strnicmp(a.data(), b.data(), a.size()) == 0;
 }
 
 inline bool iless(std::string_view a, std::string_view b) {
-    return std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end(),
-        [](const unsigned char &a, const unsigned char &b) {
-          return tolower(a) < tolower(b);
-        }
-    );
+    int result = _strnicmp(a.data(), b.data(), std::min(a.size(), b.size()));
+    if (result < 0)
+        return true;
+    if (result > 0)
+        return false;
+    return a.size() < b.size();
 }
 
 struct ILess {

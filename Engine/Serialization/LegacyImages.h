@@ -18,6 +18,17 @@
  * with original files.
  */
 
+struct BLVSector;
+struct NPCData;
+struct ItemGen;
+struct SpellBuff;
+struct Player;
+class UIAnimation;
+class Icon;
+struct OtherOverlayList;
+struct Timer;
+struct Party;
+
 /*   42 */
 #pragma pack(push, 1)
 struct SpriteFrame_MM6 {
@@ -95,8 +106,8 @@ struct TextureFrame_MM7 {
 struct NPCData_Image_MM7 {
     NPCData_Image_MM7();
 
-    void Serialize(struct NPCData *item);
-    void Deserialize(struct NPCData *item);
+    void Serialize(NPCData *item);
+    void Deserialize(NPCData *item);
 
     /* 00 */ int32_t pName;  // char *pName;
     /* 04 */ unsigned int uPortraitID;
@@ -124,8 +135,8 @@ struct NPCData_Image_MM7 {
 struct ItemGen_Image_MM7 {
     ItemGen_Image_MM7();
 
-    void Serialize(struct ItemGen *item);
-    void Deserialize(struct ItemGen *item);
+    void Serialize(ItemGen *item);
+    void Deserialize(ItemGen *item);
 
     /* 00 */ int uItemID;
     /* 04 */ int uEnchantmentType;
@@ -161,8 +172,8 @@ struct ItemGen_Image_MM7 {
 struct SpellBuff_Image_MM7 {
     SpellBuff_Image_MM7();
 
-    void Serialize(struct SpellBuff *item);
-    void Deserialize(struct SpellBuff *item);
+    void Serialize(SpellBuff *item);
+    void Deserialize(SpellBuff *item);
 
     /* 00 */ int64_t uExpireTime;
     /* 08 */ uint16_t uPower;
@@ -235,8 +246,8 @@ struct LloydBeacon_Image_MM7 {
 struct Player_Image_MM7 {
     Player_Image_MM7();
 
-    void Serialize(struct Player *);
-    void Deserialize(struct Player *);
+    void Serialize(Player *);
+    void Deserialize(Player *);
 
     /* 0000 */ int64_t pConditions[20];
     /* 00A0 */ uint64_t uExperience;
@@ -418,8 +429,8 @@ struct PartyTimeStruct_Image_MM7 {
 struct Party_Image_MM7 {
     Party_Image_MM7();
 
-    void Serialize(struct Party *);
-    void Deserialize(struct Party *);
+    void Serialize(Party *);
+    void Deserialize(Party *);
 
     /* 00000 */ int field_0;
     /* 00004 */ unsigned int uPartyHeight;
@@ -519,8 +530,8 @@ struct Party_Image_MM7 {
 struct Timer_Image_MM7 {
     Timer_Image_MM7();
 
-    void Serialize(struct Timer *);
-    void Deserialize(struct Timer *);
+    void Serialize(Timer *);
+    void Deserialize(Timer *);
 
     /* 00 */ uint32_t bReady;
     /* 04 */ uint32_t bPaused;
@@ -555,8 +566,8 @@ struct OtherOverlay_Image_MM7 {
 struct OtherOverlayList_Image_MM7 {
     OtherOverlayList_Image_MM7();
 
-    void Serialize(struct OtherOverlayList *);
-    void Deserialize(struct OtherOverlayList *);
+    void Serialize(OtherOverlayList *);
+    void Deserialize(OtherOverlayList *);
 
     /* 000 */ OtherOverlay_Image_MM7 pOverlays[50];
     /* 3E8 */ int field_3E8;
@@ -570,8 +581,8 @@ struct OtherOverlayList_Image_MM7 {
 struct IconFrame_MM7 {
     IconFrame_MM7();
 
-    void Serialize(class Icon *);
-    void Deserialize(class Icon *);
+    void Serialize(Icon *);
+    void Deserialize(Icon *);
 
     /* 000 */ char pAnimationName[12];
     /* 00C */ char pTextureName[12];
@@ -587,8 +598,8 @@ struct IconFrame_MM7 {
 struct UIAnimation_MM7 {
     UIAnimation_MM7();
 
-    void Serialize(class UIAnimation *);
-    void Deserialize(class UIAnimation *);
+    void Serialize(UIAnimation *);
+    void Deserialize(UIAnimation *);
 
     /* 000 */ uint16_t uIconID;
     /* 002 */ int16_t field_2;
@@ -720,8 +731,8 @@ struct Actor_MM7 {
 struct BLVSector_MM7 {  // 0x74
     BLVSector_MM7();
 
-    void Serialize(class BLVSector *);
-    void Deserialize(class BLVSector *);
+    void Serialize(BLVSector *);
+    void Deserialize(BLVSector *);
 
     int32_t field_0;
     uint16_t uNumFloors;
@@ -771,8 +782,8 @@ struct BLVSector_MM7 {  // 0x74
 struct FontData_MM7 {
     FontData_MM7();
 
-    void Serialize(class FontData *);
-    void Deserialize(class FontData *, size_t size);
+    void Serialize(FontData *);
+    void Deserialize(FontData *, size_t size);
 
     uint8_t cFirstChar;  // 0
     uint8_t cLastChar;   // 1

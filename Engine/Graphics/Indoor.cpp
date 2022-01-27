@@ -147,16 +147,11 @@ void PrepareDrawLists_BLV() {
     pIndoor->PrepareItemsRenderList_BLV();
     pIndoor->PrepareActorRenderList_BLV();
 
-    // for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
-    //     v7 = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
-    //     v8 = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
-
     for (int i = 1; i < pIndoor->uNumSectors; i++) {
         v8 = &pIndoor->pSectors[i];
         for (uint j = 0; j < v8->uNumDecorations; ++j)
             pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], i);
     }
-        // }
 
     FindBillboardsLightLevels_BLV();
     // engine->PrepareBloodsplats();
@@ -3416,8 +3411,10 @@ char DoInteractionWithTopmostZObject(int pid) {
             if (pActors[id].uAIState == Dead) {
                 pActors[id].LootActor();
             } else {
-                extern bool ActorInteraction(unsigned int id);
-                ActorInteraction(id);
+                extern bool CanInteractWithActor(unsigned int id);
+                extern void InteractWithActor(unsigned int id);
+                if (CanInteractWithActor(id))
+                    InteractWithActor(id);
             }
             break;
 
@@ -3939,7 +3936,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 }
             }
         }
-        v2 = fixpoint_mul(58500, v2);
+        v2 = fixpoint_mul(58500, v2);  // 58500 is roughly 0.89
         v1 = fixpoint_mul(58500, v1);
         pParty->uFallSpeed = fixpoint_mul(58500, pParty->uFallSpeed);
     }
@@ -4567,7 +4564,7 @@ int stru141_actor_collision_object::CalcMovementExtents(int dt) {  // true if no
         this->field_80 = -1;
         this->field_88 = -1;
         // this->sMinZ = v27;
-        this->field_7C = 0xFFFFFFu;
+        this->field_7C = 0xFFFFFFu;  // 255.0 fixpoint
         result = 0;
     }
     return result;

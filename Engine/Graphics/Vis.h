@@ -68,7 +68,7 @@ struct Vis_SelectionList {
         uNumPointers++;
     }
 
-    void (***vdestructor_ptr)(Vis_SelectionList *, bool);
+    void (***vdestructor_ptr)(Vis_SelectionList *, bool) = nullptr;
     Vis_ObjectInfo object_pool[512] {};
     Vis_ObjectInfo* object_pointers[512] {};
     unsigned int uNumPointers;
