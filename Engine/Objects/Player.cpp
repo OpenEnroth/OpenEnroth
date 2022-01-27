@@ -1574,7 +1574,7 @@ bool Player::IsUnarmed() {
 }
 
 //----- (0048D6AA) --------------------------------------------------------
-bool Player::HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex) {
+bool Player::HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex) const {
     uint i = pEquipment.pIndices[uEquipIndex];
     if (i)
         return !pOwnItems[i - 1].IsBroken();
@@ -1594,16 +1594,15 @@ bool Player::HasEnchantedItemEquipped(int uEnchantment) {
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Player::WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type) {
+bool Player::WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type) const {
     // check aginst specific item and slot
-    return (HasItemEquipped(equip_type) &&
-            GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
+    return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
-bool Player::WearsItemAnyWhere(int item_id) {
+bool Player::WearsItemAnyWhere(int item_id) const {
     for (int i = 0; i < 16; i++) {  // check over equipped inventory
         if (WearsItem(item_id, (ITEM_EQUIP_TYPE)i)) {
-            return true;  // foudn item
+            return true;  // found item
         }
     }
 
@@ -7610,6 +7609,10 @@ ItemGen* Player::GetNthEquippedIndexItem(int index) {
     }
 
     return &this->pInventoryItemList[this->pEquipment.pIndices[index] - 1];
+}
+
+const ItemGen *Player::GetNthEquippedIndexItem(int index) const {
+    return const_cast<Player *>(this)->GetNthEquippedIndexItem(index);
 }
 
 ItemGen* Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
