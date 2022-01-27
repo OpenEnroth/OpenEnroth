@@ -697,14 +697,14 @@ struct Actor_MM7 {
     uint16_t uActorRadius;
     uint16_t uActorHeight;
     uint16_t uMovementSpeed;
-    struct Vec3_short_ vPosition;
-    struct Vec3_short_ vVelocity;
+    Vec3_short_ vPosition;
+    Vec3_short_ vVelocity;
     uint16_t uYawAngle;
     uint16_t uPitchAngle;
     int16_t uSectorID;
     uint16_t uCurrentActionLength;
-    struct Vec3_short_ vInitialPosition;
-    struct Vec3_short_ vGuardingPosition;
+    Vec3_short_ vInitialPosition;
+    Vec3_short_ vGuardingPosition;
     uint16_t uTetherDistance;
     int16_t uAIState;
     uint16_t uCurrentActionAnimation;

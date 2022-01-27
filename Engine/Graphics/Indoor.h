@@ -351,7 +351,7 @@ struct BLVLightMM6 {
 /*   98 */
 #pragma pack(push, 1)
 struct BLVLightMM7 {  // 10h
-    struct Vec3_short_ vPosition;
+    Vec3_short_ vPosition;
     int16_t uRadius;
     char uRed;
     char uGreen;
@@ -636,7 +636,7 @@ struct IndoorLocation {
     char field_54[404];
     struct BLVHeader blv;
     unsigned int uNumVertices;
-    struct Vec3_short_ *pVertices;
+    Vec3_short_ *pVertices;
     unsigned int uNumFaces;
     struct BLVFace *pFaces;
     unsigned int uNumFaceExtras;
@@ -842,4 +842,4 @@ void FindBillboardsLightLevels_BLV();
  */
 int collide_against_floor_approximate(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
 
-bool Check_LineOfSight(int to_x, int to_y, int to_z, struct Vec3_int_ from);
+bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3_int_ from);

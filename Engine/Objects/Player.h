@@ -511,7 +511,7 @@ struct Player {
     char field_1B3B;
 };
 
-void DamagePlayerFromMonster(unsigned int uObjID, int a2, struct Vec3_int_* pPos, signed int a4);
+void DamagePlayerFromMonster(unsigned int uObjID, int a2, Vec3_int_* pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();

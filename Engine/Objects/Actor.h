@@ -135,7 +135,7 @@ struct AIDirection {
 /*   71 */
 #pragma pack(push, 1)
 struct ActorJob {
-    struct Vec3_short_ vPos;
+    Vec3_short_ vPos;
     unsigned __int16 uAttributes = 0;
     unsigned __int8 uAction = 0;
     unsigned __int8 uHour = 0;
@@ -242,7 +242,7 @@ struct Actor {
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
                                int uSpellID, int a4, unsigned int uSkillLevel);
     static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
-                                       struct Vec3_int_ *pVelocity, int a4);
+                                       Vec3_int_ *pVelocity, int a4);
 
     static unsigned short GetObjDescId(int spellId);
 
@@ -262,7 +262,7 @@ struct Actor {
     static bool _46DF1A_collide_against_actor(int a1, int a2);
     static void Arena_summon_actor(int monster_id, int16_t x, int y, int z);
     static void DamageMonsterFromParty(int a1, unsigned int uActorID_Monster,
-                                       struct Vec3_int_ *pVelocity);
+                                       Vec3_int_ *pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();
@@ -295,14 +295,14 @@ struct Actor {
     uint16_t uActorRadius;
     uint16_t uActorHeight;
     uint16_t uMovementSpeed;
-    struct Vec3_short_ vPosition;
-    struct Vec3_short_ vVelocity;
+    Vec3_short_ vPosition;
+    Vec3_short_ vVelocity;
     uint16_t uYawAngle;
     uint16_t uPitchAngle;
     int16_t uSectorID;
     uint16_t uCurrentActionLength;
-    struct Vec3_short_ vInitialPosition;
-    struct Vec3_short_ vGuardingPosition;
+    Vec3_short_ vInitialPosition;
+    Vec3_short_ vGuardingPosition;
     uint16_t uTetherDistance;
     AIState uAIState;
     uint16_t uCurrentActionAnimation;
@@ -345,4 +345,4 @@ void SpawnEncounter(struct MapInfo *pMapInfo, struct SpawnPointMM7 *spawn,
 void area_of_effect__damage_evaluate();
 double sub_43AE12(signed int a1);
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
-                         struct Vec3_int_ *pVelocity);
+                         Vec3_int_ *pVelocity);

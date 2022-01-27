@@ -16,8 +16,8 @@ struct Vec2 {
 };
 #pragma pack(pop)
 
-#define Vec2_int_ Vec2<int32_t>
-#define Vec2_float_ Vec2<float>
+using Vec2_int_ = Vec2<int32_t>;
+using Vec2_float_ = Vec2<float>;
 
 const float pi = std::acos(-1.f);
 
@@ -67,8 +67,8 @@ struct Vec3 : public Vec2<T> {
 };
 #pragma pack(pop)
 
-#define Vec3_short_ Vec3<int16_t>
-#define Vec3_int_ Vec3<int32_t>
+using Vec3_short_ = Vec3<int16_t>;
+using Vec3_int_ = Vec3<int32_t>;
 
 #pragma pack(push, 1)
 struct Vec3_float_ {
