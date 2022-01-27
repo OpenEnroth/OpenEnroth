@@ -950,16 +950,15 @@ bool sub_47531C(int radius, int* move_distance, int pos_x, int pos_y, int pos_z,
     }
 
     int a7a;          // [sp+30h] [bp+18h]@7
-    short new_x = pos_x +
+    Vec3_short_ new_pos;
+    new_pos.x = pos_x +
         (fixpoint_mul(advance_fixpoint, dir_x) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.x);
-
-    short new_y = pos_y +
+    new_pos.y = pos_y +
         (fixpoint_mul(advance_fixpoint, dir_y) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.y);
-
-    short new_z = pos_z +
+    new_pos.z = pos_z +
         (fixpoint_mul(advance_fixpoint, dir_z) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.z);
 
-    if (!sub_475665(face, new_x, new_y, new_z))
+    if (!IsProjectedPointInsideFace(face, new_pos))
         return 0;
 
     if (advance_fixpoint < 0) {
@@ -1019,99 +1018,68 @@ bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
     return true;
 }
 
-int sub_475665(BLVFace* face, short x, short y, short z) {
-    int a2; ////
+bool IsProjectedPointInsideFace(BLVFace* face, const Vec3_short_ &point) {
+    std::array<int16_t, 104> edges_u;
+    std::array<int16_t, 104> edges_v;
 
-    bool v16;     // edi@14
-    int v20;      // ebx@18
-    int v21;      // edi@20
-    int v22;      // ST14_4@22
-    __int64 v23;  // qtt@22
-    int result;   // eax@25
-    int v25;      // [sp+14h] [bp-10h]@14
-    int v26;      // [sp+1Ch] [bp-8h]@2
-    int v27;      // [sp+20h] [bp-4h]@2
-    int v28;      // [sp+30h] [bp+Ch]@2
-    int v29;      // [sp+30h] [bp+Ch]@7
-    int v30;      // [sp+30h] [bp+Ch]@11
-    int v31;      // [sp+30h] [bp+Ch]@14
-
+    int u;
+    int v;
     if (face->uAttributes & FACE_XY_PLANE) {
-        v26 = x;
-        v27 = y;
-        for (v28 = 0; v28 < face->uNumVertices; v28++) {
-            word_720C10_intercepts_xs[2 * v28] =
-                face->pXInterceptDisplacements[v28] + pIndoor->pVertices[face->pVertexIDs[v28]].x;
-            word_720B40_intercepts_zs[2 * v28] =
-                face->pYInterceptDisplacements[v28] + pIndoor->pVertices[face->pVertexIDs[v28]].y;
-            word_720C10_intercepts_xs[2 * v28 + 1] =
-                face->pXInterceptDisplacements[v28 + 1] + pIndoor->pVertices[face->pVertexIDs[v28 + 1]].x;
-            word_720B40_intercepts_zs[2 * v28 + 1] =
-                face->pYInterceptDisplacements[v28 + 1] + pIndoor->pVertices[face->pVertexIDs[v28 + 1]].y;
+        u = point.x;
+        v = point.y;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].x;
+            edges_v[2 * i] = face->pYInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].y;
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].x;
+            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].y;
         }
     } else if (face->uAttributes & FACE_XZ_PLANE) {
-        v26 = x;
-        v27 = z;
-        for (v29 = 0; v29 < face->uNumVertices; v29++) {
-            word_720C10_intercepts_xs[2 * v29] =
-                face->pXInterceptDisplacements[v29] + pIndoor->pVertices[face->pVertexIDs[v29]].x;
-            word_720B40_intercepts_zs[2 * v29] =
-                face->pZInterceptDisplacements[v29] + pIndoor->pVertices[face->pVertexIDs[v29]].z;
-            word_720C10_intercepts_xs[2 * v29 + 1] =
-                face->pXInterceptDisplacements[v29 + 1] + pIndoor->pVertices[face->pVertexIDs[v29 + 1]].x;
-            word_720B40_intercepts_zs[2 * v29 + 1] =
-                face->pZInterceptDisplacements[v29 + 1] + pIndoor->pVertices[face->pVertexIDs[v29 + 1]].z;
+        u = point.x;
+        v = point.z;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].x;
+            edges_v[2 * i] = face->pZInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].z;
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].x;
+            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].z;
         }
     } else {
-        v26 = y;
-        v27 = z;
-        for (v30 = 0; v30 < face->uNumVertices; v30++) {
-            word_720C10_intercepts_xs[2 * v30] =
-                face->pYInterceptDisplacements[v30] + pIndoor->pVertices[face->pVertexIDs[v30]].y;
-            word_720B40_intercepts_zs[2 * v30] =
-                face->pZInterceptDisplacements[v30] + pIndoor->pVertices[face->pVertexIDs[v30]].z;
-            word_720C10_intercepts_xs[2 * v30 + 1] =
-                face->pYInterceptDisplacements[v30 + 1] + pIndoor->pVertices[face->pVertexIDs[v30 + 1]].y;
-            word_720B40_intercepts_zs[2 * v30 + 1] =
-                face->pZInterceptDisplacements[v30 + 1] + pIndoor->pVertices[face->pVertexIDs[v30 + 1]].z;
+        u = point.y;
+        v = point.z;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pYInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].y;
+            edges_v[2 * i] = face->pZInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].z;
+            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].y;
+            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].z;
         }
     }
+    edges_u[2 * face->uNumVertices] = edges_u[0];
+    edges_v[2 * face->uNumVertices] = edges_v[0];
 
-    v31 = 0;
-    word_720C10_intercepts_xs[2 * face->uNumVertices] = word_720C10_intercepts_xs[0];
-    word_720B40_intercepts_zs[2 * face->uNumVertices] = word_720B40_intercepts_zs[0];
-    v16 = word_720B40_intercepts_zs[0] >= v27;
     if (2 * face->uNumVertices <= 0)
         return 0;
 
-    for (v25 = 0; v25 < 2 * face->uNumVertices; ++v25) {
-        if (v31 >= 2) break;
-        if (v16 ^ (word_720B40_intercepts_zs[v25 + 1] >= v27)) {
-            if (word_720C10_intercepts_xs[v25 + 1] >= v26)
-                v20 = 0;
-            else
-                v20 = 2;
+    int v31 = 0;
 
-            v21 = v20 | (word_720C10_intercepts_xs[v25] < v26);
-            if (v21 != 3) {
-                v22 = word_720C10_intercepts_xs[v25 + 1] - word_720C10_intercepts_xs[v25];
-                HEXRAYS_LODWORD(v23) = v22 << 16;
-                HEXRAYS_HIDWORD(v23) = v22 >> 16;
-                if (!v21 ||
-                    (word_720C10_intercepts_xs[v25] +
-                        ((signed int)(((unsigned __int64)(v23 /
-                            (word_720B40_intercepts_zs[v25 + 1] - word_720B40_intercepts_zs[v25]) *
-                            ((v27 - (signed int)word_720B40_intercepts_zs[v25]) << 16)) >> 16) + 32768) >> 16) >= v26))
-                    ++v31;
-            }
-        }
-        v16 = word_720B40_intercepts_zs[v25 + 1] >= v27;
+    for (int i = 0; i < 2 * face->uNumVertices; ++i) {
+        if (v31 >= 2)
+            break;
+
+        // Check that we're inside the edge's bounding box.
+        if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
+            continue;
+        if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
+            continue;
+
+        // Calculate the intersection point of v=const line with the edge.
+        int line_intersection_u = edges_u[i] +
+            static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
+
+        // We only need ray intersections, so consider only one halfplane.
+        if (line_intersection_u >= u)
+            ++v31;
     }
 
-    result = 1;
-    if (v31 != 1)
-        result = 0;
-    return result;
+    return v31 == 1;
 }
 
 bool sub_4759C9(BLVFace* face, int a2, int a3, __int16 a4) {
@@ -1308,10 +1276,11 @@ bool sub_475D85(Vec3_int_* a1, Vec3_int_* a2, int* a3, BLVFace* a4) {
         HEXRAYS_LOWORD(v11->y) +
         (((unsigned int)fixpoint_mul(v17, v15->y) + 0x8000) >> 16);
     if (a4c > abs(v7) || (v17 > * a3 << 16) ||
-        !sub_475665(
-            v4, HEXRAYS_LOWORD(v12), HEXRAYS_HIWORD(v12),
-            LOWORD(v11->z) +
-        (((unsigned int)fixpoint_mul(v17, v15->z) + 0x8000) >> 16)))
+        !IsProjectedPointInsideFace(
+            v4, Vec3_short_(
+                HEXRAYS_LOWORD(v12),
+                HEXRAYS_HIWORD(v12),
+                LOWORD(v11->z) + (((unsigned int)fixpoint_mul(v17, v15->z) + 0x8000) >> 16))))
         return 0;
     *a3 = a4a >> 16;
     return 1;

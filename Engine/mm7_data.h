@@ -357,8 +357,6 @@ extern std::array<int, 100> dword_720020_zvalues;
 extern std::array<int, 299> dword_7201B0_zvalues;
 extern std::array<int16_t, 104> word_7209A0_intercepts_ys_plus_ys;
 extern std::array<int16_t, 104> word_720A70_intercepts_xs_plus_xs;
-extern std::array<int16_t, 104> word_720B40_intercepts_zs;
-extern std::array<int16_t, 102> word_720C10_intercepts_xs;
 extern std::array<int16_t, 777> word_720CE0_ys;  // idb
 extern std::array<int16_t, 777> word_720DB0_xs;  // idb
 extern std::array<int, 20> dword_720E80;
