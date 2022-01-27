@@ -1496,7 +1496,7 @@ void BLV_UpdateDoors() {
             face->pFacePlane.dist =
                 -((double)v17->z * face->pFacePlane.vNormal.z +
                   (double)v17->y * face->pFacePlane.vNormal.y +
-                  (double)v17->x * face->pFacePlane.vNormal.x);
+                  (double)v17->x * face->pFacePlane.vNormal.x); // TODO: needs fixpoint_to_float here?
             if (face->pFacePlane_old.vNormal.z) {
                 v24 = abs(face->pFacePlane_old.dist >> 15);
                 v25 = abs(face->pFacePlane_old.vNormal.z);
@@ -1952,13 +1952,8 @@ void UpdateActors_BLV() {
                                         if (pIndoor->pFaces[v37].uPolygonType != 4 &&
                                             pIndoor->pFaces[v37].uPolygonType != 3) {
                                             v44 = _actor_collision_struct.radius -
-                                                  ((pIndoor->pFaces[v37].pFacePlane_old.dist +
-                                                    pIndoor->pFaces[v37].pFacePlane_old.vNormal.z *
-                                                        pActors[actor_id].vPosition.z +
-                                                    pIndoor->pFaces[v37].pFacePlane_old.vNormal.y *
-                                                        pActors[actor_id].vPosition.y +
-                                                    pIndoor->pFaces[v37].pFacePlane_old.vNormal.x *
-                                                        pActors[actor_id].vPosition.x) >> 16);
+                                                pIndoor->pFaces[v37].pFacePlane_old.
+                                                    SignedDistanceTo(pActors[actor_id].vPosition);
                                             if (v44 > 0) {
                                                 pActors[actor_id].vPosition.x +=
                                                     fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.x);
@@ -2825,29 +2820,21 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                     Max_z < face->pBounding.z1 || FaceIsParallel)
                     continue;
 
-                ShiftDotDist = -(face->pFacePlane_old.dist +
-                        ShiftedTargetX * face->pFacePlane_old.vNormal.x +
-                        ShiftedTargetY * face->pFacePlane_old.vNormal.y +
-                        ShiftedTargetZ * face->pFacePlane_old.vNormal.z);
+                ShiftDotDist =
+                    -face->pFacePlane_old.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
 
                 if (v66 <= 0) {
-                    if (face->pFacePlane_old.dist +
-                            ShiftedTargetX * face->pFacePlane_old.vNormal.x +
-                            ShiftedTargetY * face->pFacePlane_old.vNormal.y +
-                            ShiftedTargetZ * face->pFacePlane_old.vNormal.z < 0)
+                    if (face->pFacePlane_old.
+                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) < 0)
                         continue;
                 } else {
-                    if (face->pFacePlane_old.dist +
-                            ShiftedTargetX * face->pFacePlane_old.vNormal.x +
-                            ShiftedTargetY * face->pFacePlane_old.vNormal.y +
-                            ShiftedTargetZ * face->pFacePlane_old.vNormal.z > 0)
+                    if (face->pFacePlane_old.
+                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) > 0)
                         continue;
                 }
 
-                v69 = abs(-(face->pFacePlane_old.dist +
-                            ShiftedTargetX * face->pFacePlane_old.vNormal.x +
-                            ShiftedTargetY * face->pFacePlane_old.vNormal.y +
-                            ShiftedTargetZ * face->pFacePlane_old.vNormal.z)) >> 14;
+                v69 = abs(-face->pFacePlane_old.
+                    SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ)) >> 14;
 
                 if (v69 <= abs(v66)) {
                     v108 = fixpoint_div(ShiftDotDist, v107);
@@ -2907,30 +2894,18 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                     v132 < face->pBounding.y1 || v136 > face->pBounding.z2 ||
                     v140 < face->pBounding.z1 || FaceIsParallel)
                     continue;
-                v93 = -(face->pFacePlane_old.dist +
-                        ShiftedTargetX * face->pFacePlane_old.vNormal.x +
-                        ShiftedTargetY * face->pFacePlane_old.vNormal.y +
-                        ShiftedTargetZ * face->pFacePlane_old.vNormal.z);
+                v93 = -face->pFacePlane_old.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
                 if (v91 <= 0) {
-                    if (face->pFacePlane_old.dist +
-                            ShiftedTargetX * face->pFacePlane_old.vNormal.x +
-                            ShiftedTargetY * face->pFacePlane_old.vNormal.y +
-                            ShiftedTargetZ * face->pFacePlane_old.vNormal.z <
-                        0)
+                    if (face->pFacePlane_old.
+                        SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) < 0)
                         continue;
                 } else {
-                    if (face->pFacePlane_old.dist +
-                            ShiftedTargetX * face->pFacePlane_old.vNormal.x +
-                            ShiftedTargetY * face->pFacePlane_old.vNormal.y +
-                            ShiftedTargetZ * face->pFacePlane_old.vNormal.z >
-                        0)
+                    if (face->pFacePlane_old.
+                        SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) > 0)
                         continue;
                 }
-                v_4c = abs(-(face->pFacePlane_old.dist +
-                             ShiftedTargetX * face->pFacePlane_old.vNormal.x +
-                             ShiftedTargetY * face->pFacePlane_old.vNormal.y +
-                             ShiftedTargetZ * face->pFacePlane_old.vNormal.z)) >>
-                       14;
+                v_4c = abs(-face->pFacePlane_old.
+                    SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ)) >> 14;
                 if (v_4c <= abs(v91)) {
                     vd = fixpoint_div(v93, vc);
                     if (vd >= 0) {
@@ -3003,35 +2978,23 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                         continue;
 
                     // point to plane distacne
-                    v23 = -(face.pFacePlane.dist +
-                            ShiftedTargetX * face.pFacePlane.vNormal.x +
-                            ShiftedTargetY * face.pFacePlane.vNormal.y +
-                            ShiftedTargetZ * face.pFacePlane.vNormal.z);
+                    v23 = -face.pFacePlane.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
 
                     // are we on same side of plane
                     if (dot_ray2 <= 0) {
                         // angle obtuse - is target underneath plane
-                        if (face.pFacePlane.dist +
-                                ShiftedTargetX * face.pFacePlane.vNormal.x +
-                                ShiftedTargetY * face.pFacePlane.vNormal.y +
-                                ShiftedTargetZ * face.pFacePlane.vNormal.z <
-                            0)
+                        if (face.pFacePlane.
+                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) < 0)
                             continue;  // can never hit
                     } else {
                         // angle acute - is target above plane
-                        if (face.pFacePlane.dist +
-                                ShiftedTargetX * face.pFacePlane.vNormal.x +
-                                ShiftedTargetY * face.pFacePlane.vNormal.y +
-                                ShiftedTargetZ * face.pFacePlane.vNormal.z >
-                            0)
+                        if (face.pFacePlane.
+                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) > 0)
                             continue;  // can never hit
                     }
 
-                    v24 = abs(-(face.pFacePlane.dist +
-                                ShiftedTargetX * face.pFacePlane.vNormal.x +
-                                ShiftedTargetY * face.pFacePlane.vNormal.y +
-                                ShiftedTargetZ * face.pFacePlane.vNormal.z)) >>
-                          14;
+                    v24 = abs(-face.pFacePlane.
+                        SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ)) >> 14;
 
                     // maybe some sort of epsilon check?
                     if (v24 <= abs(dot_ray2)) {
@@ -3093,30 +3056,18 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                         v134 > face.pBoundingBox.z2 ||
                         v130 < face.pBoundingBox.z1 || FaceIsParallel)
                         continue;
-                    v42 = -(face.pFacePlane.dist +
-                            ShiftedTargetX * face.pFacePlane.vNormal.x +
-                            ShiftedTargetY * face.pFacePlane.vNormal.y +
-                            ShiftedTargetZ * face.pFacePlane.vNormal.z);
+                    v42 = -face.pFacePlane.SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ);
                     if (v40 <= 0) {
-                        if (face.pFacePlane.dist +
-                                ShiftedTargetX * face.pFacePlane.vNormal.x +
-                                ShiftedTargetY * face.pFacePlane.vNormal.y +
-                                ShiftedTargetZ * face.pFacePlane.vNormal.z <
-                            0)
+                        if (face.pFacePlane.
+                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) < 0)
                             continue;
                     } else {
-                        if (face.pFacePlane.dist +
-                                ShiftedTargetX * face.pFacePlane.vNormal.x +
-                                ShiftedTargetY * face.pFacePlane.vNormal.y +
-                                ShiftedTargetZ * face.pFacePlane.vNormal.z >
-                            0)
+                        if (face.pFacePlane.
+                            SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ) > 0)
                             continue;
                     }
-                    v_4a = abs(-(face.pFacePlane.dist +
-                                 ShiftedTargetX * face.pFacePlane.vNormal.x +
-                                 ShiftedTargetY * face.pFacePlane.vNormal.y +
-                                 ShiftedTargetZ * face.pFacePlane.vNormal.z)) >>
-                           14;
+                    v_4a = abs(-face.pFacePlane.
+                        SignedDistanceToAsFixpoint(ShiftedTargetX, ShiftedTargetY, ShiftedTargetZ)) >> 14;
                     if (v_4a <= abs(v40)) {
                         // LODWORD(v43) = v42 << 16;
                         // HIDWORD(v43) = v42 >> 16;
@@ -3577,10 +3528,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     // v80 = pFace->pFacePlane_old.vNormal.y;
                     v52 = _actor_collision_struct.radius -
-                          ((pFace->pFacePlane_old.dist +
-                            v87 * pFace->pFacePlane_old.vNormal.z +
-                            new_party_y * pFace->pFacePlane_old.vNormal.y +
-                            new_party_x * pFace->pFacePlane_old.vNormal.x) >> 16);
+                        pFace->pFacePlane_old.SignedDistanceTo(new_party_x, new_party_y, v87);
                     if (v52 > 0) {
                         new_party_x +=
                             fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.x);

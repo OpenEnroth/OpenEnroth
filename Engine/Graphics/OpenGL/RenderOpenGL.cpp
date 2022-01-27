@@ -242,6 +242,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                     face.pFacePlane_old.vNormal.y = mface.pFacePlane.vNormal.y;
                     face.pFacePlane_old.vNormal.z = mface.pFacePlane.vNormal.z;
 
+                    // TODO: need fixpoint_to_float here
                     face.pFacePlane_old.dist = mface.pFacePlane.dist;  // incorrect
 
                     face.uAttributes = mface.uAttributes;
@@ -275,15 +276,9 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                     face.pVertexIDs = mface.pVertexIDs;
 
                     if (!face.Ethereal() && !face.Portal()) {
-                        v8 = (face.pFacePlane_old.dist +
-                              face.pFacePlane_old.vNormal.x * _actor_collision_struct.position_lo.x +
-                              face.pFacePlane_old.vNormal.y * _actor_collision_struct.position_lo.y +
-                              face.pFacePlane_old.vNormal.z * _actor_collision_struct.position_lo.z) >> 16;
+                        v8 = face.pFacePlane_old.SignedDistanceTo(_actor_collision_struct.position_lo);
                         if (v8 > 0) {
-                            v9 = (face.pFacePlane_old.dist +
-                                  face.pFacePlane_old.vNormal.x * _actor_collision_struct.new_position_lo.x +
-                                  face.pFacePlane_old.vNormal.y * _actor_collision_struct.new_position_lo.y +
-                                  face.pFacePlane_old.vNormal.z * _actor_collision_struct.new_position_lo.z) >> 16;
+                            v9 = face.pFacePlane_old.SignedDistanceTo(_actor_collision_struct.new_position_lo);
                             if (v8 <= _actor_collision_struct.radius ||
                                 v9 <= _actor_collision_struct.radius) {
                                 if (v9 <= v8) {
@@ -323,17 +318,9 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                         }
                     LABEL_29:
                         if (_actor_collision_struct.field_0 & 1) {
-                            v15 = (face.pFacePlane_old.dist +
-                                   face.pFacePlane_old.vNormal.x * _actor_collision_struct.position_hi.x +
-                                   face.pFacePlane_old.vNormal.y * _actor_collision_struct.position_hi.y +
-                                   face.pFacePlane_old.vNormal.z * _actor_collision_struct.position_hi.z) >>
-                                  16;
+                            v15 = face.pFacePlane_old.SignedDistanceTo(_actor_collision_struct.position_hi);
                             if (v15 > 0) {
-                                v16 = (face.pFacePlane_old.dist +
-                                       face.pFacePlane_old.vNormal.x * _actor_collision_struct.new_position_hi.x +
-                                       face.pFacePlane_old.vNormal.y * _actor_collision_struct.new_position_hi.y +
-                                       face.pFacePlane_old.vNormal.z * _actor_collision_struct.new_position_hi.z) >>
-                                      16;
+                                v16 = face.pFacePlane_old.SignedDistanceTo(_actor_collision_struct.new_position_hi);
                                 if (v15 <= _actor_collision_struct.radius ||
                                     v16 <= _actor_collision_struct.radius) {
                                     if (v16 <= v15) {
@@ -508,14 +495,8 @@ int _46F04E_collide_against_portals() {
             _actor_collision_struct.field_80) {
             BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i]];
             if (_actor_collision_struct.bbox.Intersects(face->pBounding)) {
-                int v4 = (_actor_collision_struct.position_lo.x * face->pFacePlane_old.vNormal.x +
-                          face->pFacePlane_old.dist +
-                          _actor_collision_struct.position_lo.y * face->pFacePlane_old.vNormal.y +
-                          _actor_collision_struct.position_lo.z * face->pFacePlane_old.vNormal.z) >> 16;
-                int v5 = (_actor_collision_struct.new_position_lo.z * face->pFacePlane_old.vNormal.z +
-                          face->pFacePlane_old.dist +
-                          _actor_collision_struct.new_position_lo.x * face->pFacePlane_old.vNormal.x +
-                          _actor_collision_struct.new_position_lo.y * face->pFacePlane_old.vNormal.y) >> 16;
+                int v4 = face->pFacePlane_old.SignedDistanceTo(_actor_collision_struct.position_lo);
+                int v5 = face->pFacePlane_old.SignedDistanceTo(_actor_collision_struct.new_position_lo);
                 if ((v4 < _actor_collision_struct.radius || v5 < _actor_collision_struct.radius) &&
                     (v4 > -_actor_collision_struct.radius || v5 > -_actor_collision_struct.radius) &&
                     (a3 = _actor_collision_struct.move_distance, sub_475D85(&_actor_collision_struct.position_lo, &_actor_collision_struct.direction, &a3, face)) && a3 < (int)v10) {
@@ -568,10 +549,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
         if (!_actor_collision_struct.bbox.Intersects(pFace->pBounding))
             continue;
 
-        int distance_to_face = abs(pFace->pFacePlane_old.dist +
-            _actor_collision_struct.position_lo.x * pFace->pFacePlane_old.vNormal.x +
-            _actor_collision_struct.position_lo.y * pFace->pFacePlane_old.vNormal.y +
-            _actor_collision_struct.position_lo.z * pFace->pFacePlane_old.vNormal.z) >> 16;
+        int distance_to_face = abs(pFace->pFacePlane_old.SignedDistanceTo(_actor_collision_struct.position_lo));
         if(distance_to_face > _actor_collision_struct.move_distance + 16)
             continue;
 
@@ -594,17 +572,10 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
             if(pFloor == _actor_collision_struct.field_84)
                 continue;
 
-            int distance_to_face_old =
-                (pFace->pFacePlane_old.dist +
-                _actor_collision_struct.position_lo.x * pFace->pFacePlane_old.vNormal.x +
-                _actor_collision_struct.position_lo.y * pFace->pFacePlane_old.vNormal.y +
-                _actor_collision_struct.position_lo.z * pFace->pFacePlane_old.vNormal.z) >> 16;
+            int distance_to_face_old = pFace->pFacePlane_old.SignedDistanceTo(_actor_collision_struct.position_lo);
             if (distance_to_face_old > 0) {
                 int distance_to_face_new =
-                    (pFace->pFacePlane_old.dist +
-                    _actor_collision_struct.new_position_lo.x * pFace->pFacePlane_old.vNormal.x +
-                    _actor_collision_struct.new_position_lo.y * pFace->pFacePlane_old.vNormal.y +
-                    _actor_collision_struct.new_position_lo.z * pFace->pFacePlane_old.vNormal.z) >> 16;
+                    pFace->pFacePlane_old.SignedDistanceTo(_actor_collision_struct.new_position_lo);
                 if (distance_to_face_old <= _actor_collision_struct.radius ||
                     distance_to_face_new <= _actor_collision_struct.radius) {
                     if (distance_to_face_new <= distance_to_face_old) {
@@ -639,15 +610,9 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
 
         LABEL_34:
             if (!(_actor_collision_struct.field_0 & 1) ||
-                (v21 = (pFace->pFacePlane_old.dist +
-                        _actor_collision_struct.position_hi.x * pFace->pFacePlane_old.vNormal.x +
-                        _actor_collision_struct.position_hi.y * pFace->pFacePlane_old.vNormal.y +
-                        _actor_collision_struct.position_hi.z * pFace->pFacePlane_old.vNormal.z) >> 16,
+                (v21 = pFace->pFacePlane_old.SignedDistanceTo(_actor_collision_struct.position_hi),
                     v21 <= 0) ||
-                (v22 = (pFace->pFacePlane_old.dist +
-                        _actor_collision_struct.new_position_hi.x * pFace->pFacePlane_old.vNormal.x +
-                        _actor_collision_struct.new_position_hi.y * pFace->pFacePlane_old.vNormal.y +
-                        _actor_collision_struct.new_position_hi.z * pFace->pFacePlane_old.vNormal.z) >> 16,
+                (v22 = pFace->pFacePlane_old.SignedDistanceTo(_actor_collision_struct.new_position_hi),
                     v21 > _actor_collision_struct.radius) &&
                     v22 > _actor_collision_struct.radius ||
                 v22 > v21)
@@ -980,13 +945,8 @@ bool sub_47531C(int a1, int* a2, int pos_x, int pos_y, int pos_z, int dir_x,
     a9b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
     v12 = v11 + a9b + a10b;
     a9a = v11 + a9b + a10b;
-    v13 = (a1 << 16) - pos_x * face->pFacePlane_old.vNormal.x -
-        pos_y * face->pFacePlane_old.vNormal.y -
-        pos_z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist;
-    if (abs((a1 << 16) - pos_x * face->pFacePlane_old.vNormal.x -
-        pos_y * face->pFacePlane_old.vNormal.y -
-        pos_z * face->pFacePlane_old.vNormal.z -
-        face->pFacePlane_old.dist) >= a1 << 16) {
+    v13 = (a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos_x, pos_y, pos_z);
+    if (abs((a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos_x, pos_y, pos_z)) >= a1 << 16) {
         a10c = abs(v13) >> 14;
         if (a10c > abs(v12)) return 0;
         HEXRAYS_LODWORD(v15) = v13 << 16;
@@ -1035,13 +995,8 @@ bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
     a1b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
     v13 = v12 + a1b + a11b;
     a1a = v12 + a1b + a11b;
-    v14 = (a1 << 16) - X * face->pFacePlane_old.vNormal.x -
-        Y * face->pFacePlane_old.vNormal.y -
-        Z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist;
-    if (abs((a1 << 16) - X * face->pFacePlane_old.vNormal.x -
-        Y * face->pFacePlane_old.vNormal.y -
-        Z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist) >=
-        a1 << 16) {
+    v14 = (a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(X, Y, Z);
+    if (abs((a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(X, Y, Z)) >= a1 << 16) {
         a11c = abs(v14) >> 14;
         if (a11c > abs(v13)) return false;
         HEXRAYS_LODWORD(v16) = v14 << 16;
@@ -1362,22 +1317,14 @@ bool sub_475D85(Vec3_int_* a1, Vec3_int_* a2, int* a3, BLVFace* a4) {
     // (v16 = v5 + v6 + a4b) == 0;
     if (a4->uAttributes & FACE_ETHEREAL || !v7 || v7 > 0 && !v4->Portal())
         return 0;
-    v8 = v4->pFacePlane_old.vNormal.z * a1->z;
-    v9 = -(v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y +
-        a1->x * v4->pFacePlane_old.vNormal.x);
+    v9 = -v4->pFacePlane_old.SignedDistanceToAsFixpoint(*a1);
     if (v7 <= 0) {
-        if (v4->pFacePlane_old.dist + v8 +
-            a1->y * v4->pFacePlane_old.vNormal.y +
-            a1->x * v4->pFacePlane_old.vNormal.x <
-            0)
+        if (v4->pFacePlane_old.SignedDistanceToAsFixpoint(*a1) < 0)
             return 0;
     } else {
         if (v9 < 0) return 0;
     }
-    a4c = abs(-(v4->pFacePlane_old.dist + v8 +
-        a1->y * v4->pFacePlane_old.vNormal.y +
-        a1->x * v4->pFacePlane_old.vNormal.x)) >>
-        14;
+    a4c = abs(-(v4->pFacePlane_old.SignedDistanceToAsFixpoint(*a1))) >> 14;
     v11 = v14;
     HEXRAYS_LODWORD(v10) = v9 << 16;
     HEXRAYS_HIDWORD(v10) = v9 >> 16;
@@ -1410,25 +1357,16 @@ bool sub_475F30(int* a1, BLVFace* a2, int a3, int a4, int a5, int a6, int a7,
     if (a2->Ethereal() || !v13 || v14 > 0 && !a2->Portal()) {
         return false;
     }
-    int v16 = -(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y +
-        a3 * a2->pFacePlane_old.vNormal.x +
-        a5 * a2->pFacePlane_old.vNormal.z);
+    int v16 = -(a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5));
     if (v14 <= 0) {
-        if (a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y +
-            a3 * a2->pFacePlane_old.vNormal.x +
-            a5 * a2->pFacePlane_old.vNormal.z <
-            0)
+        if (a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5) < 0)
             return 0;
     } else {
         if (v16 < 0) {
             return 0;
         }
     }
-    int v17 =
-        abs(-(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y +
-            a3 * a2->pFacePlane_old.vNormal.x +
-            a5 * a2->pFacePlane_old.vNormal.z)) >>
-        14;
+    int v17 = abs(-(a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5))) >> 14;
     int64_t v18;
     HEXRAYS_LODWORD(v18) = v16 << 16;
     HEXRAYS_HIDWORD(v18) = v16 >> 16;

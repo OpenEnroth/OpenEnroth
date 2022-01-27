@@ -2953,10 +2953,7 @@ void ODM_ProcessPartyActions() {
                 pParty->uFallSpeed += v54;
                 v55 =
                     _actor_collision_struct.radius -
-                    ((signed int)(pODMFace->pFacePlane.dist +
-                                  v122 * pODMFace->pFacePlane.vNormal.z +
-                                  _angle_y * pODMFace->pFacePlane.vNormal.y +
-                                  _angle_x * pODMFace->pFacePlane.vNormal.x) >> 16);
+                    pODMFace->pFacePlane.SignedDistanceTo(_angle_x, _angle_y, v122);
                 if (v55 > 0) {
                     pX = _angle_x +
                          fixpoint_mul(pODMFace->pFacePlane.vNormal.x, v55);
@@ -3668,10 +3665,7 @@ void UpdateActors_ODM() {
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.z);
                             if (face->uPolygonType != 4) {
                                 int v46 = _actor_collision_struct.radius -
-                                      ((face->pFacePlane.dist +
-                                        face->pFacePlane.vNormal.x * pActors[Actor_ITR].vPosition.x +
-                                        face->pFacePlane.vNormal.y * pActors[Actor_ITR].vPosition.y +
-                                        face->pFacePlane.vNormal.z * pActors[Actor_ITR].vPosition.z) >> 16);
+                                    face->pFacePlane.SignedDistanceTo(pActors[Actor_ITR].vPosition);
                                 if (v46 > 0) {
                                     pActors[Actor_ITR].vPosition.x += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.x);
