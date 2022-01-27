@@ -258,10 +258,10 @@ struct Party {
     */
     bool WearsItemAnywhere(int item_id) const {
         return
-            pPlayers[0].WearsItemAnyWhere(item_id) ||
-            pPlayers[1].WearsItemAnyWhere(item_id) ||
-            pPlayers[2].WearsItemAnyWhere(item_id) ||
-            pPlayers[3].WearsItemAnyWhere(item_id);
+            pPlayers[0].WearsItemAnywhere(item_id) ||
+            pPlayers[1].WearsItemAnywhere(item_id) ||
+            pPlayers[2].WearsItemAnywhere(item_id) ||
+            pPlayers[3].WearsItemAnywhere(item_id);
     }
 
     GameTime &GetPlayingTime() { return this->playing_time; }
