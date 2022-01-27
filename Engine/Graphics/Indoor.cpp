@@ -389,10 +389,10 @@ void BLVFace::FromODM(ODMFace *face) {
     this->pFacePlane_old.vNormal.y = face->pFacePlane.vNormal.y;
     this->pFacePlane_old.vNormal.z = face->pFacePlane.vNormal.z;
     this->pFacePlane_old.dist = face->pFacePlane.dist;
-    this->pFacePlane.vNormal.x = (double)(face->pFacePlane.vNormal.x) / 65536.0;
-    this->pFacePlane.vNormal.y = (double)(face->pFacePlane.vNormal.y) / 65536.0;
-    this->pFacePlane.vNormal.z = (double)(face->pFacePlane.vNormal.z) / 65536.0;
-    this->pFacePlane.dist = (double)(face->pFacePlane.dist) / 65536.0;
+    this->pFacePlane.vNormal.x = fixpoint_to_float(face->pFacePlane.vNormal.x);
+    this->pFacePlane.vNormal.y = fixpoint_to_float(face->pFacePlane.vNormal.y);
+    this->pFacePlane.vNormal.z = fixpoint_to_float(face->pFacePlane.vNormal.z);
+    this->pFacePlane.dist = fixpoint_to_float(face->pFacePlane.dist);
     this->uAttributes = face->uAttributes;
     this->pBounding.x1 = face->pBoundingBox.x1;
     this->pBounding.y1 = face->pBoundingBox.y1;
