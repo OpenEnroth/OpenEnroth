@@ -545,7 +545,7 @@ bool sub_47531C(int a1, int *a2, int pos_x, int pos_y, int pos_z, int dir_x,
                 int dir_y, int dir_z, struct BLVFace *face, int a10);
 bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y,
                 int dir_z, struct BLVFace *face, int a10, int a11);
-int sub_475665(struct BLVFace *face, int a2, int16_t a3);
+int sub_475665(struct BLVFace *face, short x, short y, short z);
 bool sub_4759C9(struct BLVFace *face, int a2, int a3, int16_t a4);
 bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, struct BLVFace *a4);
 bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6,

@@ -161,7 +161,7 @@ struct stru141_actor_collision_object {
     Vec3_int_ position_hi;
     Vec3_int_ new_position_lo;  // adjusted move positions after collisions?
     Vec3_int_ new_position_hi;
-    Vec3_int_ direction;  // velocity's unit vector
+    Vec3_int_ direction;  // velocity's unit vector, in fixpoint format
     int speed = 0;
     int inv_speed;
     int move_distance;  // movement dist

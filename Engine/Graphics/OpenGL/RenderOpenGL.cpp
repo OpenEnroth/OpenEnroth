@@ -549,8 +549,8 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
         if (!collision_state.bbox.Intersects(pFace->pBounding))
             continue;
 
-        int distance_to_face = abs(pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo));
-        if(distance_to_face > collision_state.move_distance + 16)
+        int distance = abs(pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo));
+        if(distance > collision_state.move_distance + 16)
             continue;
 
         pSectorsArray[totalSectors++] =
@@ -572,39 +572,34 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
             if(pFloor == collision_state.field_84)
                 continue;
 
-            int distance_to_face_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-            if (distance_to_face_old > 0) {
-                int distance_to_face_new =
-                    pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-                if (distance_to_face_old <= collision_state.radius ||
-                    distance_to_face_new <= collision_state.radius) {
-                    if (distance_to_face_new <= distance_to_face_old) {
-                        a3 = collision_state.move_distance;
-                        if (sub_47531C(
-                                collision_state.radius, &a3,
-                                collision_state.position_lo.x, collision_state.position_lo.y,
-                                collision_state.position_lo.z,
-                                collision_state.direction.x,
-                                collision_state.direction.y,
-                                collision_state.direction.z, pFace, b1)) {
-                            v17 = a3;
-                        } else {
-                            a3 = collision_state.move_distance +
-                                    collision_state.radius;
-                            if (!sub_475D85(&collision_state.position_lo,
-                                            &collision_state.direction, &a3,
-                                            pFace))
-                                goto LABEL_34;
-                            v17 = a3 - collision_state.radius;
-                            a3 -= collision_state.radius;
-                        }
-                        if (v17 < collision_state.field_7C) {
-                            collision_state.field_7C = v17;
-                            v18 = 8 * pSector->pFloors[j];
-                            v18 |= 6;
-                            collision_state.pid = v18;
-                        }
-                    }
+            int distance_lo_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
+            int distance_lo_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+
+            if (distance_lo_old > 0 &&
+                (distance_lo_old <= collision_state.radius || distance_lo_new <= collision_state.radius) &&
+                distance_lo_new <= distance_lo_old)
+            {
+                a3 = collision_state.move_distance;
+                if (sub_47531C(
+                    collision_state.radius, &a3,
+                    collision_state.position_lo.x, collision_state.position_lo.y, collision_state.position_lo.z,
+                    collision_state.direction.x, collision_state.direction.y, collision_state.direction.z, pFace, b1)) {
+                    v17 = a3;
+                } else {
+                    a3 = collision_state.move_distance +
+                        collision_state.radius;
+                    if (!sub_475D85(&collision_state.position_lo,
+                        &collision_state.direction, &a3,
+                        pFace))
+                        goto LABEL_34;
+                    v17 = a3 - collision_state.radius;
+                    a3 -= collision_state.radius;
+                }
+                if (v17 < collision_state.field_7C) {
+                    collision_state.field_7C = v17;
+                    v18 = 8 * pSector->pFloors[j];
+                    v18 |= 6;
+                    collision_state.pid = v18;
                 }
             }
 
@@ -924,53 +919,55 @@ unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     return result;
 }
 
-bool sub_47531C(int a1, int* a2, int pos_x, int pos_y, int pos_z, int dir_x,
+bool sub_47531C(int radius, int* move_distance, int pos_x, int pos_y, int pos_z, int dir_x,
     int dir_y, int dir_z, BLVFace* face, int a10) {
-    int v11;          // ST1C_4@3
-    int v12;          // edi@3
-    int v13;          // esi@3
-    int v14;          // edi@4
-    __int64 v15;      // qtt@6
-                      // __int16 v16; // si@7
-    int a7a;          // [sp+30h] [bp+18h]@7
-    int a9b;          // [sp+38h] [bp+20h]@3
-    int a9a;          // [sp+38h] [bp+20h]@3
-    int a10b;         // [sp+3Ch] [bp+24h]@3
-    signed int a10a;  // [sp+3Ch] [bp+24h]@4
-    int a10c;         // [sp+3Ch] [bp+24h]@5
-
-    if (a10 && face->Ethereal()) return 0;
-    v11 = fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x);
-    a10b = fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y);
-    a9b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
-    v12 = v11 + a9b + a10b;
-    a9a = v11 + a9b + a10b;
-    v13 = (a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos_x, pos_y, pos_z);
-    if (abs((a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos_x, pos_y, pos_z)) >= a1 << 16) {
-        a10c = abs(v13) >> 14;
-        if (a10c > abs(v12)) return 0;
-        HEXRAYS_LODWORD(v15) = v13 << 16;
-        HEXRAYS_HIDWORD(v15) = v13 >> 16;
-        v14 = a1;
-        a10a = v15 / a9a;
-    } else {
-        a10a = 0;
-        v14 = abs(v13) >> 16;
-    }
-    // v16 = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16);
-    HEXRAYS_LOWORD(a7a) = (short)pos_x +
-        ((unsigned int)fixpoint_mul(a10a, dir_x) >> 16) -
-        fixpoint_mul(v14, face->pFacePlane_old.vNormal.x);
-    HEXRAYS_HIWORD(a7a) = pos_y +
-        ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16) -
-        fixpoint_mul(v14, face->pFacePlane_old.vNormal.y);
-    if (!sub_475665(face, a7a,
-        (short)pos_z +
-    ((unsigned int)fixpoint_mul(a10a, dir_z) >> 16) -
-        fixpoint_mul(v14, face->pFacePlane_old.vNormal.z)))
+    if (a10 && face->Ethereal())
         return 0;
-    *a2 = a10a >> 16;
-    if (a10a >> 16 < 0) *a2 = 0;
+
+    // Fixpoint dot_product(dir, normal).
+    int dir_dot_normal_fixpoint =
+        fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
+
+    int distance_fixpoint = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos_x, pos_y, pos_z);
+    int radius_fixpoint = radius << 16;
+
+    int bounce;          // edi@4
+    signed int advance_fixpoint;  // [sp+3Ch] [bp+24h]@4
+
+    int bounce_fixpoint = radius_fixpoint - distance_fixpoint;
+    if (abs(bounce_fixpoint) < radius_fixpoint) {
+        bounce = abs(bounce_fixpoint) >> 16;
+        advance_fixpoint = 0;
+    } else {
+        int wtf_x4 = abs(bounce_fixpoint) >> 14;
+        if (wtf_x4 > abs(dir_dot_normal_fixpoint))
+            return 0;
+
+        bounce = radius;
+        advance_fixpoint = fixpoint_div(bounce_fixpoint, dir_dot_normal_fixpoint);
+    }
+
+    int a7a;          // [sp+30h] [bp+18h]@7
+    short new_x = pos_x +
+        (fixpoint_mul(advance_fixpoint, dir_x) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.x);
+
+    short new_y = pos_y +
+        (fixpoint_mul(advance_fixpoint, dir_y) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.y);
+
+    short new_z = pos_z +
+        (fixpoint_mul(advance_fixpoint, dir_z) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.z);
+
+    if (!sub_475665(face, new_x, new_y, new_z))
+        return 0;
+
+    if (advance_fixpoint < 0) {
+        *move_distance = 0;
+    } else {
+        *move_distance = advance_fixpoint >> 16;
+    }
+
     return 1;
 }
 
@@ -1022,7 +1019,9 @@ bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
     return true;
 }
 
-int sub_475665(BLVFace* face, int a2, __int16 a3) {
+int sub_475665(BLVFace* face, short x, short y, short z) {
+    int a2; ////
+
     bool v16;     // edi@14
     int v20;      // ebx@18
     int v21;      // edi@20
@@ -1038,8 +1037,8 @@ int sub_475665(BLVFace* face, int a2, __int16 a3) {
     int v31;      // [sp+30h] [bp+Ch]@14
 
     if (face->uAttributes & FACE_XY_PLANE) {
-        v26 = (signed __int16)a2;
-        v27 = HEXRAYS_SHIWORD(a2);
+        v26 = x;
+        v27 = y;
         if (face->uNumVertices) {
             for (v28 = 0; v28 < face->uNumVertices; v28++) {
                 word_720C10_intercepts_xs[2 * v28] =
@@ -1058,8 +1057,8 @@ int sub_475665(BLVFace* face, int a2, __int16 a3) {
         }
     } else {
         if (face->uAttributes & FACE_XZ_PLANE) {
-            v26 = (signed __int16)a2;
-            v27 = a3;
+            v26 = x;
+            v27 = z;
             if (face->uNumVertices) {
                 for (v29 = 0; v29 < face->uNumVertices; v29++) {
                     word_720C10_intercepts_xs[2 * v29] =
@@ -1077,8 +1076,8 @@ int sub_475665(BLVFace* face, int a2, __int16 a3) {
                 }
             }
         } else {
-            v26 = HEXRAYS_SHIWORD(a2);
-            v27 = a3;
+            v26 = y;
+            v27 = z;
             if (face->uNumVertices) {
                 for (v30 = 0; v30 < face->uNumVertices; v30++) {
                     word_720C10_intercepts_xs[2 * v30] =
@@ -1338,7 +1337,7 @@ bool sub_475D85(Vec3_int_* a1, Vec3_int_* a2, int* a3, BLVFace* a4) {
         (((unsigned int)fixpoint_mul(v17, v15->y) + 0x8000) >> 16);
     if (a4c > abs(v7) || (v17 > * a3 << 16) ||
         !sub_475665(
-            v4, v12,
+            v4, HEXRAYS_LOWORD(v12), HEXRAYS_HIWORD(v12),
             LOWORD(v11->z) +
         (((unsigned int)fixpoint_mul(v17, v15->z) + 0x8000) >> 16)))
         return 0;
