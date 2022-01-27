@@ -145,6 +145,8 @@ void KeyboardActionMapping::StoreMappings() {
 }
 
 KeyToggleType GetToggleType(InputAction action) {
+    // TODO: TOGGLE_* values in the table above are not respected, instead toggle values from this function are used.
+
     if (action == InputAction::StrafeLeft || action == InputAction::StrafeRight
         || action == InputAction::FlyUp || action == InputAction::FlyDown) {
         return KeyToggleType::TOGGLE_Continuously;
