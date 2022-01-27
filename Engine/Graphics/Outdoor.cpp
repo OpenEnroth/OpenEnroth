@@ -2956,8 +2956,7 @@ void ODM_ProcessPartyActions() {
                     ((signed int)(pODMFace->pFacePlane.dist +
                                   v122 * pODMFace->pFacePlane.vNormal.z +
                                   _angle_y * pODMFace->pFacePlane.vNormal.y +
-                                  _angle_x * pODMFace->pFacePlane.vNormal.x) >>
-                     16);
+                                  _angle_x * pODMFace->pFacePlane.vNormal.x) >> 16);
                 if (v55 > 0) {
                     pX = _angle_x +
                          fixpoint_mul(pODMFace->pFacePlane.vNormal.x, v55);
@@ -3670,13 +3669,9 @@ void UpdateActors_ODM() {
                             if (face->uPolygonType != 4) {
                                 int v46 = _actor_collision_struct.radius -
                                       ((face->pFacePlane.dist +
-                                        face->pFacePlane.vNormal.x *
-                                            pActors[Actor_ITR].vPosition.x +
-                                        face->pFacePlane.vNormal.y *
-                                            pActors[Actor_ITR].vPosition.y +
-                                        face->pFacePlane.vNormal.z *
-                                            pActors[Actor_ITR].vPosition.z) >>
-                                       16);
+                                        face->pFacePlane.vNormal.x * pActors[Actor_ITR].vPosition.x +
+                                        face->pFacePlane.vNormal.y * pActors[Actor_ITR].vPosition.y +
+                                        face->pFacePlane.vNormal.z * pActors[Actor_ITR].vPosition.z) >> 16);
                                 if (v46 > 0) {
                                     pActors[Actor_ITR].vPosition.x += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.x);

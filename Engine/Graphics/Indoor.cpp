@@ -3592,8 +3592,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                           ((pFace->pFacePlane_old.dist +
                             v87 * pFace->pFacePlane_old.vNormal.z +
                             new_party_y * pFace->pFacePlane_old.vNormal.y +
-                            new_party_x * pFace->pFacePlane_old.vNormal.x) >>
-                           16);
+                            new_party_x * pFace->pFacePlane_old.vNormal.x) >> 16);
                     if (v52 > 0) {
                         new_party_x +=
                             fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.x);
