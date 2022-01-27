@@ -4187,8 +4187,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
     int v53;  // [sp+3Ch] [bp-1Ch]@8
 
     for (BSPModel& model : pOutdoor->pBModels) {
-        bool reachable;
-        if (!IsBModelVisible(&model, 256, &reachable)) {
+        bool reachable_unused;
+        if (!IsBModelVisible(&model, 256, &reachable_unused)) {
             continue;
         }
         model.field_40 |= 1;
