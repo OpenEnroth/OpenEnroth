@@ -264,7 +264,7 @@ struct Player {
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
-    bool WearsItemAnyWhere(int item_id) const;
+    bool WearsItemAnywhere(int item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(
         unsigned char armour_skill_type, float param2, float param3,
         float param4, float param5);

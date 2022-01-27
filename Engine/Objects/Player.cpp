@@ -1599,7 +1599,7 @@ bool Player::WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type) const {
     return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
-bool Player::WearsItemAnyWhere(int item_id) const {
+bool Player::WearsItemAnywhere(int item_id) const {
     for (int i = 0; i < 16; i++) {  // check over equipped inventory
         if (WearsItem(item_id, (ITEM_EQUIP_TYPE)i)) {
             return true;  // found item

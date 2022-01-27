@@ -3284,11 +3284,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     blv_prev_party_z = pParty->vPosition.z;
 
     int fall_start;
-    if (pParty->FeatherFallActive() ||
-        pParty->pPlayers[0].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) ||
-        pParty->pPlayers[1].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) ||
-        pParty->pPlayers[2].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT) ||
-        pParty->pPlayers[3].WearsItemAnyWhere(ITEM_ARTIFACT_LADYS_ESCORT)) {
+    if (pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)) {
         fall_start = floor_z;
         bFeatherFall = true;
         pParty->uFallStartZ = floor_z;

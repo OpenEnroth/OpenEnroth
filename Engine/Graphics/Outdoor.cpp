@@ -2287,17 +2287,7 @@ void ODM_ProcessPartyActions() {
     bWaterWalk = false;
     //************************************
     // Проверка падение пера
-    if (!pParty->FeatherFallActive()) {
-        bFeatherFall = false;
-        for (int i = 0; i < 4; ++i)
-            if (pParty->pPlayers[i].WearsItemAnyWhere(
-                    ITEM_ARTIFACT_LADYS_ESCORT)) {  // seems like flying boots
-                bFeatherFall = true;
-                break;
-            }
-    } else {
-        bFeatherFall = true;
-    }
+    bFeatherFall = pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
     //************************************
     // Проверка хождения по воде
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;

@@ -52,7 +52,7 @@ bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, int condToCheck,
         ITEM_TYPE itemId = thisProc->m_equipmentPairs[i * 2].m_ItemId;
         ITEM_EQUIP_TYPE slot = thisProc->m_equipmentPairs[i * 2 + 1].m_EquipSlot;
         if (slot == EQIUP_ANY) {
-            if (inPlayer->WearsItemAnyWhere(itemId)) return false;
+            if (inPlayer->WearsItemAnywhere(itemId)) return false;
         } else {
             if (inPlayer->WearsItem(itemId, slot)) return false;
         }
