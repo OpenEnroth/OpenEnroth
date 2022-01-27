@@ -2712,29 +2712,29 @@ bool Actor::_46DF1A_collide_against_actor(int a1, int a2) {
     v4 = v2->uActorRadius;
     if (a2) v4 = a2;
 
-    if (_actor_collision_struct.bbox.x1 > v2->vPosition.x + v4 ||
-        _actor_collision_struct.bbox.x2 < v2->vPosition.x - v4 ||
-        _actor_collision_struct.bbox.y1 > v2->vPosition.y + v4 ||
-        _actor_collision_struct.bbox.y2 < v2->vPosition.y - v4 ||
-        _actor_collision_struct.bbox.z1 > v2->vPosition.z + v2->uActorHeight ||
-        _actor_collision_struct.bbox.z2 < v2->vPosition.z) {
+    if (collision_state.bbox.x1 > v2->vPosition.x + v4 ||
+        collision_state.bbox.x2 < v2->vPosition.x - v4 ||
+        collision_state.bbox.y1 > v2->vPosition.y + v4 ||
+        collision_state.bbox.y2 < v2->vPosition.y - v4 ||
+        collision_state.bbox.z1 > v2->vPosition.z + v2->uActorHeight ||
+        collision_state.bbox.z2 < v2->vPosition.z) {
         return false;
     }
-    v8 = v2->vPosition.x - _actor_collision_struct.position_lo.x;
-    v9 = v2->vPosition.y - _actor_collision_struct.position_lo.y;
-    v10 = _actor_collision_struct.radius + v4;
-    v11 = (v8 * _actor_collision_struct.direction.y - v9 * _actor_collision_struct.direction.x) >> 16;
-    v12 = (v8 * _actor_collision_struct.direction.x + v9 * _actor_collision_struct.direction.y) >> 16;
+    v8 = v2->vPosition.x - collision_state.position_lo.x;
+    v9 = v2->vPosition.y - collision_state.position_lo.y;
+    v10 = collision_state.radius + v4;
+    v11 = (v8 * collision_state.direction.y - v9 * collision_state.direction.x) >> 16;
+    v12 = (v8 * collision_state.direction.x + v9 * collision_state.direction.y) >> 16;
     if (abs(v11) > v10 || v12 <= 0) return false;
-    if (fixpoint_mul(_actor_collision_struct.direction.z, v12) + _actor_collision_struct.position_lo.z <
+    if (fixpoint_mul(collision_state.direction.z, v12) + collision_state.position_lo.z <
         v2->vPosition.z)
         return false;
 
     v13 = v12 - integer_sqrt(v10 * v10 - v11 * v11);
     if (v13 < 0) v13 = 0;
-    if (v13 < _actor_collision_struct.field_7C) {
-        _actor_collision_struct.field_7C = v13;
-        _actor_collision_struct.pid = PID(OBJECT_Actor, a1);
+    if (v13 < collision_state.field_7C) {
+        collision_state.field_7C = v13;
+        collision_state.pid = PID(OBJECT_Actor, a1);
     }
     return true;
 }

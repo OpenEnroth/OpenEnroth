@@ -176,7 +176,7 @@ struct stru141_actor_collision_object {
     int field_A4;  // unused
 };
 #pragma pack(pop)
-extern stru141_actor_collision_object _actor_collision_struct;
+extern stru141_actor_collision_object collision_state;
 
 /*  378 */
 #pragma pack(push, 1)
