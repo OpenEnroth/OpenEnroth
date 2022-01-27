@@ -1058,15 +1058,22 @@ bool IsProjectedPointInsideFace(BLVFace* face, const Vec3_short_ &point) {
     if (2 * face->uNumVertices <= 0)
         return 0;
 
-    int v31 = 0;
-
+    int counter = 0;
     for (int i = 0; i < 2 * face->uNumVertices; ++i) {
-        if (v31 >= 2)
+        if (counter >= 2)
             break;
 
-        // Check that we're inside the edge's bounding box.
+        // Check that we're inside the bounding band in v coordinate
         if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
             continue;
+
+        // If we're to the left then we surely have an intersection
+        if ((edges_u[i] >= u) && (edges_u[i + 1] >= u)) {
+            ++counter;
+            continue;
+        }
+
+        // We're not to the left? Then we must be inside the bounding band in u coordinate
         if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
             continue;
 
@@ -1074,12 +1081,12 @@ bool IsProjectedPointInsideFace(BLVFace* face, const Vec3_short_ &point) {
         int line_intersection_u = edges_u[i] +
             static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
 
-        // We only need ray intersections, so consider only one halfplane.
+        // We need ray intersections, so consider only one halfplane.
         if (line_intersection_u >= u)
-            ++v31;
+            ++counter;
     }
 
-    return v31 == 1;
+    return counter == 1;
 }
 
 bool sub_4759C9(BLVFace* face, int a2, int a3, __int16 a4) {
