@@ -4130,14 +4130,10 @@ void stru154::GetFacePlane(ODMFace *pFace, BSPVertexBuffer *pVertices,
 
     // only one/two vert?
     __debugbreak();
-    pOutNormal->x = (double)(pFace->pFacePlane.vNormal.x & 0xFFFF) / 65535.0f +
-                    (double)(pFace->pFacePlane.vNormal.x >> 16);
-    pOutNormal->y = (double)(pFace->pFacePlane.vNormal.y & 0xFFFF) / 65535.0f +
-                    (double)(pFace->pFacePlane.vNormal.y >> 16);
-    pOutNormal->z = (double)(pFace->pFacePlane.vNormal.z & 0xFFFF) / 65535.0f +
-                    (double)(pFace->pFacePlane.vNormal.z >> 16);
-    *pOutDist = (double)(pFace->pFacePlane.dist & 0xFFFF) / 65535.0f +
-                (double)(pFace->pFacePlane.dist >> 16);
+    pOutNormal->x = fixpoint_to_float(pFace->pFacePlane.vNormal.x);
+    pOutNormal->y = fixpoint_to_float(pFace->pFacePlane.vNormal.y);
+    pOutNormal->z = fixpoint_to_float(pFace->pFacePlane.vNormal.z);
+    *pOutDist = fixpoint_to_float(pFace->pFacePlane.dist);
 }
 
 //----- (0043F515) --------------------------------------------------------
