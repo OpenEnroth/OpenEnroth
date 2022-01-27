@@ -1039,70 +1039,51 @@ int sub_475665(BLVFace* face, short x, short y, short z) {
     if (face->uAttributes & FACE_XY_PLANE) {
         v26 = x;
         v27 = y;
-        if (face->uNumVertices) {
-            for (v28 = 0; v28 < face->uNumVertices; v28++) {
-                word_720C10_intercepts_xs[2 * v28] =
-                    face->pXInterceptDisplacements[v28] +
-                    pIndoor->pVertices[face->pVertexIDs[v28]].x;
-                word_720B40_intercepts_zs[2 * v28] =
-                    face->pYInterceptDisplacements[v28] +
-                    pIndoor->pVertices[face->pVertexIDs[v28]].y;
-                word_720C10_intercepts_xs[2 * v28 + 1] =
-                    face->pXInterceptDisplacements[v28 + 1] +
-                    pIndoor->pVertices[face->pVertexIDs[v28 + 1]].x;
-                word_720B40_intercepts_zs[2 * v28 + 1] =
-                    face->pYInterceptDisplacements[v28 + 1] +
-                    pIndoor->pVertices[face->pVertexIDs[v28 + 1]].y;
-            }
+        for (v28 = 0; v28 < face->uNumVertices; v28++) {
+            word_720C10_intercepts_xs[2 * v28] =
+                face->pXInterceptDisplacements[v28] + pIndoor->pVertices[face->pVertexIDs[v28]].x;
+            word_720B40_intercepts_zs[2 * v28] =
+                face->pYInterceptDisplacements[v28] + pIndoor->pVertices[face->pVertexIDs[v28]].y;
+            word_720C10_intercepts_xs[2 * v28 + 1] =
+                face->pXInterceptDisplacements[v28 + 1] + pIndoor->pVertices[face->pVertexIDs[v28 + 1]].x;
+            word_720B40_intercepts_zs[2 * v28 + 1] =
+                face->pYInterceptDisplacements[v28 + 1] + pIndoor->pVertices[face->pVertexIDs[v28 + 1]].y;
+        }
+    } else if (face->uAttributes & FACE_XZ_PLANE) {
+        v26 = x;
+        v27 = z;
+        for (v29 = 0; v29 < face->uNumVertices; v29++) {
+            word_720C10_intercepts_xs[2 * v29] =
+                face->pXInterceptDisplacements[v29] + pIndoor->pVertices[face->pVertexIDs[v29]].x;
+            word_720B40_intercepts_zs[2 * v29] =
+                face->pZInterceptDisplacements[v29] + pIndoor->pVertices[face->pVertexIDs[v29]].z;
+            word_720C10_intercepts_xs[2 * v29 + 1] =
+                face->pXInterceptDisplacements[v29 + 1] + pIndoor->pVertices[face->pVertexIDs[v29 + 1]].x;
+            word_720B40_intercepts_zs[2 * v29 + 1] =
+                face->pZInterceptDisplacements[v29 + 1] + pIndoor->pVertices[face->pVertexIDs[v29 + 1]].z;
         }
     } else {
-        if (face->uAttributes & FACE_XZ_PLANE) {
-            v26 = x;
-            v27 = z;
-            if (face->uNumVertices) {
-                for (v29 = 0; v29 < face->uNumVertices; v29++) {
-                    word_720C10_intercepts_xs[2 * v29] =
-                        face->pXInterceptDisplacements[v29] +
-                        pIndoor->pVertices[face->pVertexIDs[v29]].x;
-                    word_720B40_intercepts_zs[2 * v29] =
-                        face->pZInterceptDisplacements[v29] +
-                        pIndoor->pVertices[face->pVertexIDs[v29]].z;
-                    word_720C10_intercepts_xs[2 * v29 + 1] =
-                        face->pXInterceptDisplacements[v29 + 1] +
-                        pIndoor->pVertices[face->pVertexIDs[v29 + 1]].x;
-                    word_720B40_intercepts_zs[2 * v29 + 1] =
-                        face->pZInterceptDisplacements[v29 + 1] +
-                        pIndoor->pVertices[face->pVertexIDs[v29 + 1]].z;
-                }
-            }
-        } else {
-            v26 = y;
-            v27 = z;
-            if (face->uNumVertices) {
-                for (v30 = 0; v30 < face->uNumVertices; v30++) {
-                    word_720C10_intercepts_xs[2 * v30] =
-                        face->pYInterceptDisplacements[v30] +
-                        pIndoor->pVertices[face->pVertexIDs[v30]].y;
-                    word_720B40_intercepts_zs[2 * v30] =
-                        face->pZInterceptDisplacements[v30] +
-                        pIndoor->pVertices[face->pVertexIDs[v30]].z;
-                    word_720C10_intercepts_xs[2 * v30 + 1] =
-                        face->pYInterceptDisplacements[v30 + 1] +
-                        pIndoor->pVertices[face->pVertexIDs[v30 + 1]].y;
-                    word_720B40_intercepts_zs[2 * v30 + 1] =
-                        face->pZInterceptDisplacements[v30 + 1] +
-                        pIndoor->pVertices[face->pVertexIDs[v30 + 1]].z;
-                }
-            }
+        v26 = y;
+        v27 = z;
+        for (v30 = 0; v30 < face->uNumVertices; v30++) {
+            word_720C10_intercepts_xs[2 * v30] =
+                face->pYInterceptDisplacements[v30] + pIndoor->pVertices[face->pVertexIDs[v30]].y;
+            word_720B40_intercepts_zs[2 * v30] =
+                face->pZInterceptDisplacements[v30] + pIndoor->pVertices[face->pVertexIDs[v30]].z;
+            word_720C10_intercepts_xs[2 * v30 + 1] =
+                face->pYInterceptDisplacements[v30 + 1] + pIndoor->pVertices[face->pVertexIDs[v30 + 1]].y;
+            word_720B40_intercepts_zs[2 * v30 + 1] =
+                face->pZInterceptDisplacements[v30 + 1] + pIndoor->pVertices[face->pVertexIDs[v30 + 1]].z;
         }
     }
+
     v31 = 0;
-    word_720C10_intercepts_xs[2 * face->uNumVertices] =
-        word_720C10_intercepts_xs[0];
-    word_720B40_intercepts_zs[2 * face->uNumVertices] =
-        word_720B40_intercepts_zs[0];
+    word_720C10_intercepts_xs[2 * face->uNumVertices] = word_720C10_intercepts_xs[0];
+    word_720B40_intercepts_zs[2 * face->uNumVertices] = word_720B40_intercepts_zs[0];
     v16 = word_720B40_intercepts_zs[0] >= v27;
-    if (2 * face->uNumVertices <= 0) return 0;
+    if (2 * face->uNumVertices <= 0)
+        return 0;
+
     for (v25 = 0; v25 < 2 * face->uNumVertices; ++v25) {
         if (v31 >= 2) break;
         if (v16 ^ (word_720B40_intercepts_zs[v25 + 1] >= v27)) {
@@ -1110,35 +1091,26 @@ int sub_475665(BLVFace* face, short x, short y, short z) {
                 v20 = 0;
             else
                 v20 = 2;
+
             v21 = v20 | (word_720C10_intercepts_xs[v25] < v26);
             if (v21 != 3) {
-                v22 = word_720C10_intercepts_xs[v25 + 1] -
-                    word_720C10_intercepts_xs[v25];
+                v22 = word_720C10_intercepts_xs[v25 + 1] - word_720C10_intercepts_xs[v25];
                 HEXRAYS_LODWORD(v23) = v22 << 16;
                 HEXRAYS_HIDWORD(v23) = v22 >> 16;
                 if (!v21 ||
                     (word_720C10_intercepts_xs[v25] +
                         ((signed int)(((unsigned __int64)(v23 /
-                            (word_720B40_intercepts_zs
-                                [v25 + 1] -
-                                word_720B40_intercepts_zs
-                                [v25]) *
-                            ((v27 -
-                                (signed int)
-                                word_720B40_intercepts_zs
-                                [v25])
-                                << 16)) >>
-                            16) +
-                            32768) >>
-                            16) >=
-                        v26))
+                            (word_720B40_intercepts_zs[v25 + 1] - word_720B40_intercepts_zs[v25]) *
+                            ((v27 - (signed int)word_720B40_intercepts_zs[v25]) << 16)) >> 16) + 32768) >> 16) >= v26))
                     ++v31;
             }
         }
         v16 = word_720B40_intercepts_zs[v25 + 1] >= v27;
     }
+
     result = 1;
-    if (v31 != 1) result = 0;
+    if (v31 != 1)
+        result = 0;
     return result;
 }
 
