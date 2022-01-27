@@ -4193,13 +4193,13 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
     if (this->move_distance <= 0)
         return true;
 
-    this->new_position_hi_x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
+    this->new_position_hi.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
     this->new_position_lo.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
 
-    this->new_position_hi_y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
+    this->new_position_hi.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
     this->new_position_lo.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
 
-    this->new_position_hi_z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_hi.z;
+    this->new_position_hi.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_hi.z;
     this->new_position_lo.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_lo.z;
 
     this->bbox.x1 = std::min(this->position_lo.x, this->new_position_lo.x) - this->radius;
@@ -4207,7 +4207,7 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
     this->bbox.y1 = std::min(this->position_lo.y, this->new_position_lo.y) - this->radius;
     this->bbox.y2 = std::max(this->position_lo.y, this->new_position_lo.y) + this->radius;
     this->bbox.z1 = std::min(this->position_lo.z, this->new_position_lo.z) - this->radius;
-    this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi_z) + this->radius2;
+    this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi.z) + this->radius2;
 
     this->pid = 0;
     this->field_80 = -1;

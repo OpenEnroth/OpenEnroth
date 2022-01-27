@@ -330,9 +330,9 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                   16;
                             if (v15 > 0) {
                                 v16 = (face.pFacePlane_old.dist +
-                                       face.pFacePlane_old.vNormal.x * _actor_collision_struct.new_position_hi_x +
-                                       face.pFacePlane_old.vNormal.y * _actor_collision_struct.new_position_hi_y +
-                                       face.pFacePlane_old.vNormal.z * _actor_collision_struct.new_position_hi_z) >>
+                                       face.pFacePlane_old.vNormal.x * _actor_collision_struct.new_position_hi.x +
+                                       face.pFacePlane_old.vNormal.y * _actor_collision_struct.new_position_hi.y +
+                                       face.pFacePlane_old.vNormal.z * _actor_collision_struct.new_position_hi.z) >>
                                       16;
                                 if (v15 <= _actor_collision_struct.radius ||
                                     v16 <= _actor_collision_struct.radius) {
@@ -645,9 +645,9 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                         _actor_collision_struct.position_hi.z * pFace->pFacePlane_old.vNormal.z) >> 16,
                     v21 <= 0) ||
                 (v22 = (pFace->pFacePlane_old.dist +
-                        _actor_collision_struct.new_position_hi_x * pFace->pFacePlane_old.vNormal.x +
-                        _actor_collision_struct.new_position_hi_y * pFace->pFacePlane_old.vNormal.y +
-                        _actor_collision_struct.new_position_hi_z * pFace->pFacePlane_old.vNormal.z) >> 16,
+                        _actor_collision_struct.new_position_hi.x * pFace->pFacePlane_old.vNormal.x +
+                        _actor_collision_struct.new_position_hi.y * pFace->pFacePlane_old.vNormal.y +
+                        _actor_collision_struct.new_position_hi.z * pFace->pFacePlane_old.vNormal.z) >> 16,
                     v21 > _actor_collision_struct.radius) &&
                     v22 > _actor_collision_struct.radius ||
                 v22 > v21)
