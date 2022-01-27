@@ -51,6 +51,8 @@ LEVEL_TYPE uCurrentlyLoadedLevelType = LEVEL_null;
 
 LightsData Lights;
 stru337_unused _DLV_header_unused;
+BspRenderer_PortalViewportData _PortalViewportData_unused;
+BspRenderer *pBspRenderer = new BspRenderer;
 stru141_actor_collision_object _actor_collision_struct;
 // std::array<stru352, 480> stru_F83B80;
 
