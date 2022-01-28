@@ -541,7 +541,23 @@ void _46E0B2_collide_against_decorations();
 int _46F04E_collide_against_portals();
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);
 void UpdateObjects();
-bool _47531C_collide_against_face(const Vec3_int_ &pos, int radius, const Vec3_int_ &dir, int *move_distance, BLVFace *face, int a10);
+
+/**
+ * Original offset 0x47531C.
+ *
+ * @param face                          Polygon to check collision against.
+ * @param pos                           Actor position to check.
+ * @param radius                        Actor radius.
+ * @param dir                           Movement direction as a unit vector in fixpoint format.
+ * @param move_distance[out]            Move distance along the `dir` axis required to touch the provided polygon.
+ *                                      Always non-negative. This parameter is not set if the function returns false.
+ * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
+ * @return                              Whether the actor can actually collide with the polygon if moving along the
+ *                                      `dir` axis.
+ */
+bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
+                          int *move_distance, bool ignore_ethereal);
+
 bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y,
                 int dir_z, struct BLVFace *face, int a10, int a11);
 

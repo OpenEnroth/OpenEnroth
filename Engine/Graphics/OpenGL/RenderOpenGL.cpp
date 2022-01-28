@@ -577,8 +577,8 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 distance_lo_new <= distance_lo_old)
             {
                 move_distance = collision_state.move_distance;
-                if (_47531C_collide_against_face(collision_state.position_lo, collision_state.radius,
-                                                 collision_state.direction, &move_distance, pFace, b1)) {
+                if (collide_against_face(pFace, collision_state.position_lo, collision_state.radius,
+                                         collision_state.direction, &move_distance, b1)) {
                     v17 = move_distance;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius;
@@ -607,8 +607,8 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 continue;
 
             move_distance = collision_state.move_distance;
-            if (_47531C_collide_against_face(collision_state.position_hi, collision_state.radius2, collision_state.direction, &move_distance,
-                           pFace, b1)) {
+            if (collide_against_face(pFace, collision_state.position_hi, collision_state.radius2,
+                                     collision_state.direction, &move_distance, b1)) {
                 v23 = move_distance;
                 goto LABEL_43;
             }
@@ -910,8 +910,9 @@ unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     return result;
 }
 
-bool _47531C_collide_against_face(const Vec3_int_ &pos, int radius, const Vec3_int_ &dir, int *move_distance, BLVFace *face, int a10) {
-    if (a10 && face->Ethereal())
+bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
+                          int *move_distance, bool ignore_ethereal) {
+    if (ignore_ethereal && face->Ethereal())
         return false;
 
     // _fp suffix => that's a fixpoint number
