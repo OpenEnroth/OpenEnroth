@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Engine/Point.h"
 #include "Engine/Rect.h"
 
