@@ -109,16 +109,19 @@ struct Plane_int_ {
 
     /**
      * @param point                     Point to calculate distance to. Note that the point is NOT in fixpoint format.
-     * @return                          Signed distance to the provided point from this plane.
+     * @return                          Signed distance to the provided point from this plane. Positive value
+     *                                  means that `point` is in the half-space that the normal is pointing to,
+     *                                  and this usually is "outside" the model that the face belongs to.
      */
     int SignedDistanceTo(const Vec3_int_ &point) {
         return SignedDistanceTo(point.x, point.y, point.z);
     }
 
     /**
-     * @param point                     Point to calculate distance to. Note that the point is NOT in fixpoint format.
-     * @return                          Signed distance to the provided point from this plane as a fixpoint. To get
-     *                                  the distance in original coordinates, divide by 2^16.
+     * Same as `SignedDistanceTo`, but returns the distance as a fixpoint number. To get the distance in original
+     * coordinates, divide by 2^16.
+     *
+     * @see SignedDistanceTo(const Vec3_int_ &)
      */
     int SignedDistanceToAsFixpoint(const Vec3_int_ &point) {
         return SignedDistanceToAsFixpoint(point.x, point.y, point.z);
