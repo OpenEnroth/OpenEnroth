@@ -1,5 +1,6 @@
 #include "Engine/Graphics/BSPModel.h"
 
+#include <cstring>
 #include <cstdlib>
 #include <algorithm>
 
