@@ -541,7 +541,7 @@ void _46E0B2_collide_against_decorations();
 int _46F04E_collide_against_portals();
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);
 void UpdateObjects();
-bool sub_47531C(const Vec3_int_ &pos, int radius, const Vec3_int_ &dir, int *move_distance, BLVFace *face, int a10);
+bool _47531C_collide_against_face(const Vec3_int_ &pos, int radius, const Vec3_int_ &dir, int *move_distance, BLVFace *face, int a10);
 bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y,
                 int dir_z, struct BLVFace *face, int a10, int a11);
 
