@@ -1,8 +1,7 @@
 #pragma once
 
 #include <map>
-
-#include "Engine/Strings.h"
+#include <string>
 
 class Image;
 class Texture;

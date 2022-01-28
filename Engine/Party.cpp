@@ -1,8 +1,9 @@
 #include "Engine/Party.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <climits>
 #include <algorithm>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"

@@ -1,5 +1,7 @@
 ﻿#pragma once
-#include "Engine/Strings.h"
+
+#include <string>
+
 #include "Engine/Objects/NPCProf.h"
 
 

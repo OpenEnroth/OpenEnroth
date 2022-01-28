@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Strings.h"
+#include <string>
 
 enum MAP_TYPE : uint32_t {
     MAP_INVALID = 0,

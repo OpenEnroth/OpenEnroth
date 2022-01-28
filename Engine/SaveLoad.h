@@ -1,8 +1,9 @@
 #pragma once
+
 #include <array>
+#include <string>
 
 #include "Engine/Time.h"
-#include "Engine/Strings.h"
 
 constexpr unsigned int MAX_SAVE_SLOTS = 45;
 

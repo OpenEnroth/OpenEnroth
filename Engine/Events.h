@@ -1,8 +1,8 @@
 #pragma once
-#include <array>
-#include <cstdint>
 
-#include "Strings.h"
+#include <cstdint>
+#include <array>
+#include <string>
 
 #define EVT_ID_MARGARETH_DIALOGUE_LINE_1    7
 #define EVT_ID_MARGARETH_DIALOGUE_LINE_2    9
