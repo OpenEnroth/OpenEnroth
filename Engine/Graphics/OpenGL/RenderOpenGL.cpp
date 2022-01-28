@@ -580,8 +580,8 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 distance_lo_new <= distance_lo_old)
             {
                 a3 = collision_state.move_distance;
-                if (sub_47531C(collision_state.position_lo, collision_state.radius, collision_state.direction, &a3,
-                               pFace, b1)) {
+                if (_47531C_collide_against_face(collision_state.position_lo, collision_state.radius,
+                                                 collision_state.direction, &a3, pFace, b1)) {
                     v17 = a3;
                 } else {
                     a3 = collision_state.move_distance +
@@ -611,7 +611,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 v22 > v21)
                 continue;
             a3 = collision_state.move_distance;
-            if (sub_47531C(collision_state.position_hi, collision_state.radius2, collision_state.direction, &a3,
+            if (_47531C_collide_against_face(collision_state.position_hi, collision_state.radius2, collision_state.direction, &a3,
                            pFace, b1)) {
                 v23 = a3;
                 goto LABEL_43;
@@ -914,50 +914,58 @@ unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     return result;
 }
 
-bool sub_47531C(const Vec3_int_ &pos, int radius, const Vec3_int_ &dir, int *move_distance, BLVFace *face, int a10) {
+bool _47531C_collide_against_face(const Vec3_int_ &pos, int radius, const Vec3_int_ &dir, int *move_distance, BLVFace *face, int a10) {
     if (a10 && face->Ethereal())
         return false;
 
-    // Fixpoint dot_product(dir, normal).
-    int dir_dot_normal_fixpoint =
+    // _fp suffix => that's a fixpoint number
+
+    // dot_product(dir, normal) is a cosine of an angle between them.
+    int cos_dir_normal_fp =
         fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
         fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
         fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
 
-    int distance_fixpoint = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
-    int radius_fixpoint = radius << 16;
+    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
+    int radius_fp = radius << 16;
 
-    int bounce;          // edi@4
-    signed int advance_fixpoint;  // [sp+3Ch] [bp+24h]@4
+    int64_t overshoot;
+    signed int move_distance_fp;
 
-    int bounce_fixpoint = radius_fixpoint - distance_fixpoint;
-    if (abs(bounce_fixpoint) < radius_fixpoint) {
-        bounce = abs(bounce_fixpoint) >> 16;
-        advance_fixpoint = 0;
+    // How deep into the model that the face belongs to we already are,
+    // positive value => we're already inside the model.
+    int overshoot_fp = -pos_face_distance_fp + radius_fp;
+    if (abs(overshoot_fp) < radius_fp) {
+        // We got here => we're not that deep into the model. Can just push us back a little.
+        overshoot = abs(overshoot_fp) >> 16;
+        move_distance_fp = 0;
     } else {
-        int bounce_x4 = abs(bounce_fixpoint) >> 14;
-        if (bounce_x4 > abs(dir_dot_normal_fixpoint))
-            return false;
+        // We got here => we're already inside the model. Or way outside.
+        int overshoot_x4 = abs(overshoot_fp) >> 14;
+        if (overshoot_x4 > abs(cos_dir_normal_fp))
+            return false; // Moving perpendicular to the plane is OK for some reason.
 
-        bounce = radius;
-        advance_fixpoint = fixpoint_div(bounce_fixpoint, dir_dot_normal_fixpoint);
+        // We just say we overshot by radius. This, btw, is what produces these nasty jiggles
+        // when colliding with faces.
+        overshoot = radius;
+        //overshoot = 0;
+
+        // Then this is a correction needed to bring us to the point where we're just touching the face.
+        move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
     }
 
     Vec3_short_ new_pos;
-    new_pos.x = pos.x +
-        (fixpoint_mul(advance_fixpoint, dir.x) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.x);
-    new_pos.y = pos.y +
-        (fixpoint_mul(advance_fixpoint, dir.y) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.y);
-    new_pos.z = pos.z +
-        (fixpoint_mul(advance_fixpoint, dir.z) >> 16) - fixpoint_mul(bounce, face->pFacePlane_old.vNormal.z);
+    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) - overshoot * face->pFacePlane_old.vNormal.x) >> 16);
+    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
+    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
 
     if (!IsProjectedPointInsideFace(face, new_pos))
-        return false;
+        return false; // We've just managed to slide past the face, so pretend no collision happened.
 
-    if (advance_fixpoint < 0) {
+    if (move_distance_fp < 0) {
         *move_distance = 0;
     } else {
-        *move_distance = advance_fixpoint >> 16;
+        *move_distance = move_distance_fp >> 16;
     }
 
     return true;
