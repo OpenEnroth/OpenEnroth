@@ -562,6 +562,8 @@ bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y,
                 int dir_z, struct BLVFace *face, int a10, int a11);
 
 /**
+ * Original offset 0x475665.
+ *
  * \param face                          Face to check.
  * \param point                         Point to check.
  * \returns                             Projects the provided point and face onto the face's main plane (XY, YZ or ZX)
