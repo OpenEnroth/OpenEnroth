@@ -1,6 +1,7 @@
 #define _CRTDBG_MAP_ALLOC
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
+#include <cstdlib>
+#include <string>
 
 #include "src/Application/Game.h"
 

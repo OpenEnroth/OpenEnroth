@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Engine/Engine.h"
 #include "Engine/stru314.h"
 

@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"

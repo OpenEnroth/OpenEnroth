@@ -1,5 +1,7 @@
 #include "Engine/Objects/Monsters.h"
 
+#include <string>
+
 #include "Engine/Engine.h"
 
 #include "Platform/Api.h"

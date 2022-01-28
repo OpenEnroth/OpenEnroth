@@ -1,7 +1,8 @@
 #pragma once
 
+#include <string>
+
 #include "Engine/OurMath.h"
-#include "Engine/Strings.h"
 
 #include "Engine/Graphics/DecorationList.h"
 

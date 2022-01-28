@@ -1,6 +1,7 @@
 #include "Engine/Objects/Actor.h"
 
 #include <algorithm>
+#include <string>
 
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"

@@ -1,5 +1,6 @@
 #define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
+#include <cstdlib>
+#include <string>
 
 #define _CRT_SECURE_NO_WARNINGS
 

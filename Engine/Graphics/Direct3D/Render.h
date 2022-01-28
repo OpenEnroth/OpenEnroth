@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d.h>
 #include <ddraw.h>
+#include <string>
 
 #include <GdiPlus.h>
 #undef DrawText
@@ -8,7 +9,6 @@
 #include <memory>
 
 #include "Engine/Graphics/RenderBase.h"
-#include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 
 struct ODMFace;

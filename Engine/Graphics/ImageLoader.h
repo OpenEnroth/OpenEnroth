@@ -1,7 +1,9 @@
 #pragma once
+
+#include <string>
+
 #include "Engine/LOD.h"
 #include "Engine/IocContainer.h"
-#include "Engine/Strings.h"
 
 #include "Engine/Graphics/Image.h"
 

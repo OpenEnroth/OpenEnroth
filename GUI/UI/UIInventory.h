@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_Inventory : public GUIWindow {

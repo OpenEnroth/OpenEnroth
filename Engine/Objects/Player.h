@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"

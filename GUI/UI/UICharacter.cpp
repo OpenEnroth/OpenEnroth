@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <string>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"

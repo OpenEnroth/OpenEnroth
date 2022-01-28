@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Engine/Strings.h"
+#include <string>
+
 #include "Engine/AssetsManager.h"
 
 /*  327 */

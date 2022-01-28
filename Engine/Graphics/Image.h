@@ -1,5 +1,6 @@
 #pragma once
-#include "Engine/Strings.h"
+
+#include <string>
 
 enum IMAGE_FORMAT {
     IMAGE_FORMAT_R5G6B5 = 0,

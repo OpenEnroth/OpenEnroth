@@ -1,4 +1,5 @@
 #include <map>
+#include <string>
 
 #include "src/Application/GameMenu.h"
 

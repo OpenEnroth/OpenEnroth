@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "Engine/Objects/Items.h"
-#include "Engine/Strings.h"
 
 enum CHEST_FLAGS {
     CHEST_TRAPPED = 0x1,

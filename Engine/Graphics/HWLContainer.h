@@ -3,8 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <map>
-
-#include "Engine/Strings.h"
+#include <string>
 
 class HWLTexture {
  public:

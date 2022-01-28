@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"

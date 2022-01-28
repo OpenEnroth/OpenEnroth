@@ -1,5 +1,7 @@
 #include "GUI/UI/Books/CalendarBook.h"
 
+#include <string>
+
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"

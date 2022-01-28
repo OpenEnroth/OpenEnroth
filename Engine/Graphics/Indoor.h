@@ -1,10 +1,10 @@
 #pragma once
 #include <array>
 #include <memory>
+#include <string>
 
 #include "Engine/mm7_data.h"
 #include "Engine/IocContainer.h"
-#include "Engine/Strings.h"
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"

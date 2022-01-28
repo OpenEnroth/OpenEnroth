@@ -2,8 +2,7 @@
 
 #include <array>
 #include <vector>
-
-#include "Engine/Strings.h"
+#include <string>
 
 #include "GUI/GUIWindow.h"
 

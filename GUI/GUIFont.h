@@ -1,8 +1,7 @@
 #pragma once
 
 #include <vector>
-
-#include "Engine/Strings.h"
+#include <string>
 
 #pragma pack(push, 1)
 struct GUICharMetric {

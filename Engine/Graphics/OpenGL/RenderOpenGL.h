@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <string>
 
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/HWLContainer.h"

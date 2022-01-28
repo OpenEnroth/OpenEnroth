@@ -5,9 +5,9 @@
 #include <memory>
 #include <queue>
 #include <vector>
+#include <string>
 
 #include "Engine/Objects/Player.h"
-#include "Engine/Strings.h"
 #include "Engine/Party.h"
 
 #include "GUI/GUIDialogues.h"

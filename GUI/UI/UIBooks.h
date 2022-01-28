@@ -1,4 +1,7 @@
 #pragma once
+
+#include <string>
+
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_Book : public GUIWindow {

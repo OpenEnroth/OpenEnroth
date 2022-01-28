@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "../VectorTypes.h"
-#include "Engine/Strings.h"
 
 #define FACE_IsPortal           0x00000001
 #define FACE_IsSecret           0x00000002
