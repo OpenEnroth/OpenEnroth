@@ -2656,7 +2656,9 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    engine->PickKeyboard(keyboardInputHandler->IsKeyboardPickingOutlineToggled(), &vis_sprite_filter_3, &vis_door_filter);
+    engine->PickKeyboard(engine->config->keyboard_interaction_depth,
+                         keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
+                         &vis_sprite_filter_3, &vis_door_filter);
 
     uint16_t pid = vis->get_picked_object_zbuf_val().object_pid;
     if (pid != PID_INVALID)

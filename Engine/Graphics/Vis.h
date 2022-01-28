@@ -84,7 +84,7 @@ class Vis {
     // virtual ~Vis() {}
     //----- (004C05BE) --------------------------------------------------------
     virtual ~Vis() {}
-    bool PickKeyboard(Vis_SelectionList *list,
+    bool PickKeyboard(float pick_depth, Vis_SelectionList *list,
                       Vis_SelectionFilter *sprite_filter,
                       Vis_SelectionFilter *face_filter);
     void PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
@@ -162,7 +162,6 @@ class Vis {
     RenderVertexSoft stru_203C;
     RenderVertexSoft stru_206C;
     RenderVertexSoft stru_209C;
-    int keyboard_pick_depth;
 
     Log *log = nullptr;
 };

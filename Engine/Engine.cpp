@@ -716,10 +716,10 @@ bool Engine::PickMouse(float fPickDepth, unsigned int uMouseX,
 // 4E28F8: using guessed type int current_screen_type;
 
 //----- (0044EB12) --------------------------------------------------------
-bool Engine::PickKeyboard(bool bOutline, Vis_SelectionFilter *sprite_filter,
+bool Engine::PickKeyboard(float pick_depth, bool bOutline, Vis_SelectionFilter *sprite_filter,
                           Vis_SelectionFilter *face_filter) {
     if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-        bool r = vis->PickKeyboard(&vis->default_list, sprite_filter, face_filter);
+        bool r = vis->PickKeyboard(pick_depth, &vis->default_list, sprite_filter, face_filter);
 
         if (bOutline)
             OutlineSelection();

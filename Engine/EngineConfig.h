@@ -105,6 +105,12 @@ class EngineConfig {
     int max_flight_height = 4000;
     int artifact_limit = 13;
 
+    /** Maximum depth for item pickup / opening chests / activating levers / etc with a mouse. */
+    float mouse_interaction_depth = 512.0f;
+
+    /** Maximum depth for item pickup / opening chests / activating levers / etc with a keyboard (by pressing space). */
+    float keyboard_interaction_depth = 512.0f;
+
     bool no_intro = false;
     bool no_logo = false;
 
