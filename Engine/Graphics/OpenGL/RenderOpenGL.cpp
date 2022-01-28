@@ -580,7 +580,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 distance_lo_new <= distance_lo_old)
             {
                 a3 = collision_state.move_distance;
-                if (sub_47531C(collision_state.radius, &a3, collision_state.position_lo, collision_state.direction,
+                if (sub_47531C(collision_state.position_lo, collision_state.radius, collision_state.direction, &a3,
                                pFace, b1)) {
                     v17 = a3;
                 } else {
@@ -611,7 +611,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 v22 > v21)
                 continue;
             a3 = collision_state.move_distance;
-            if (sub_47531C(collision_state.radius2, &a3, collision_state.position_hi, collision_state.direction,
+            if (sub_47531C(collision_state.position_hi, collision_state.radius2, collision_state.direction, &a3,
                            pFace, b1)) {
                 v23 = a3;
                 goto LABEL_43;
@@ -914,7 +914,7 @@ unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     return result;
 }
 
-bool sub_47531C(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir, BLVFace* face, int a10) {
+bool sub_47531C(const Vec3_int_ &pos, int radius, const Vec3_int_ &dir, int *move_distance, BLVFace *face, int a10) {
     if (a10 && face->Ethereal())
         return false;
 
