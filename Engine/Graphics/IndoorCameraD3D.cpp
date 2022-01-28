@@ -150,25 +150,21 @@ bool IndoorCameraD3D::ViewClip(int x, int y, int z, int *transformed_x,
            *transformed_x <= this->GetFarClip();
 }
 
-void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x,
-                                    int *transformed_y, int *transformed_z) {
+void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z) {
     RenderVertexSoft v;
     v.vWorldPosition.x = x;
     v.vWorldPosition.y = y;
     v.vWorldPosition.z = z;
 
     this->ViewTransform(&v, 1);
-    if (transformed_x) {
+    if (transformed_x)
         *transformed_x = std::round(v.vWorldViewPosition.x + 0.5f);
-    }
 
-    if (transformed_y) {
+    if (transformed_y)
         *transformed_y = std::round(v.vWorldViewPosition.y + 0.5f);
-    }
 
-    if (transformed_z) {
+    if (transformed_z)
         *transformed_z = std::round(v.vWorldViewPosition.z + 0.5f);
-    }
 }
 
 //----- (00436523) --------------------------------------------------------

@@ -107,8 +107,7 @@ struct IndoorCameraD3D {
     //----- (004363C6) --------------------------------------------------------
     virtual ~IndoorCameraD3D() {}
 
-    void ViewTransform(int x, int y, int z, int *transformed_x,
-                       int *transformed_y, int *transformed_z);
+    void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
     void ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices);
 
     bool ViewClip(int x, int y, int z, int *transformed_x, int *transformed_y,
