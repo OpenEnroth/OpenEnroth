@@ -526,17 +526,13 @@ int _46F04E_collide_against_portals() {
 }
 
 void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide with ethereal faces?
-    BLVFace *pFace;       // esi@2
     // int v10; // ecx@15
-    int pFloor;             // eax@16
     int v17;                // eax@29
     unsigned int v18;       // eax@33
     int v21;                // eax@35
     int v22;                // ecx@36
     int v23;                // eax@40
     unsigned int v24;       // eax@44
-    int a3;                 // [sp+10h] [bp-48h]@28
-    int j;                // [sp+14h] [bp-44h]@15
 
     std::array<int, 10> pSectorsArray;  // [sp+30h] [bp-28h]@1
     pSectorsArray[0] = collision_state.uSectorID;
@@ -545,7 +541,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
     // See if we're intersection portals. If we do, we need to add corresponding sectors to the sectors array.
     BLVSector *pSector = &pIndoor->pSectors[collision_state.uSectorID];
     for (int j = 0; j < pSector->uNumPortals; ++j) {
-        pFace = &pIndoor->pFaces[pSector->pPortals[j]];
+        BLVFace *pFace = &pIndoor->pFaces[pSector->pPortals[j]];
         if (!collision_state.bbox.Intersects(pFace->pBounding))
             continue;
 
@@ -562,9 +558,9 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
         pSector = &pIndoor->pSectors[pSectorsArray[i]];
 
         int totalFaces = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
-        for (j = 0; j < totalFaces; j++) {
-            pFloor = pSector->pFloors[j];
-            pFace = &pIndoor->pFaces[pSector->pFloors[j]];
+        for (int j = 0; j < totalFaces; j++) {
+            int pFloor = pSector->pFloors[j];
+            BLVFace *pFace = &pIndoor->pFaces[pSector->pFloors[j]];
 
             if(pFace->Portal() || !collision_state.bbox.Intersects(pFace->pBounding))
                 continue;
@@ -572,6 +568,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
             if(pFloor == collision_state.field_84)
                 continue;
 
+            int move_distance;
             int distance_lo_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
             int distance_lo_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
 
@@ -579,20 +576,18 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 (distance_lo_old <= collision_state.radius || distance_lo_new <= collision_state.radius) &&
                 distance_lo_new <= distance_lo_old)
             {
-                a3 = collision_state.move_distance;
+                move_distance = collision_state.move_distance;
                 if (_47531C_collide_against_face(collision_state.position_lo, collision_state.radius,
-                                                 collision_state.direction, &a3, pFace, b1)) {
-                    v17 = a3;
+                                                 collision_state.direction, &move_distance, pFace, b1)) {
+                    v17 = move_distance;
                 } else {
-                    a3 = collision_state.move_distance +
-                        collision_state.radius;
-                    if (!sub_475D85(&collision_state.position_lo,
-                        &collision_state.direction, &a3,
-                        pFace))
+                    move_distance = collision_state.move_distance + collision_state.radius;
+                    if (!sub_475D85(&collision_state.position_lo, &collision_state.direction, &move_distance, pFace))
                         goto LABEL_34;
-                    v17 = a3 - collision_state.radius;
-                    a3 -= collision_state.radius;
+                    v17 = move_distance - collision_state.radius;
+                    move_distance -= collision_state.radius;
                 }
+
                 if (v17 < collision_state.field_7C) {
                     collision_state.field_7C = v17;
                     v18 = 8 * pSector->pFloors[j];
@@ -610,17 +605,18 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                     v22 > collision_state.radius ||
                 v22 > v21)
                 continue;
-            a3 = collision_state.move_distance;
-            if (_47531C_collide_against_face(collision_state.position_hi, collision_state.radius2, collision_state.direction, &a3,
+
+            move_distance = collision_state.move_distance;
+            if (_47531C_collide_against_face(collision_state.position_hi, collision_state.radius2, collision_state.direction, &move_distance,
                            pFace, b1)) {
-                v23 = a3;
+                v23 = move_distance;
                 goto LABEL_43;
             }
-            a3 = collision_state.move_distance + collision_state.radius2;
+            move_distance = collision_state.move_distance + collision_state.radius2;
             if (sub_475D85(&collision_state.position_hi, &collision_state.direction,
-                            &a3, pFace)) {
-                v23 = a3 - collision_state.radius;
-                a3 -= collision_state.radius;
+                            &move_distance, pFace)) {
+                v23 = move_distance - collision_state.radius;
+                move_distance -= collision_state.radius;
             LABEL_43:
                 if (v23 < collision_state.field_7C) {
                     collision_state.field_7C = v23;
