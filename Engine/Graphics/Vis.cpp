@@ -1218,8 +1218,6 @@ Vis::Vis() {
     v3.vWorldPosition.z = 0.0;
     memcpy(&stru_206C, &v3, sizeof(stru_206C));
     memcpy(&stru_209C, &v4, sizeof(stru_209C));
-
-    keyboard_pick_depth = 512;
 }
 
 //----- (004C055C) --------------------------------------------------------
@@ -1234,17 +1232,17 @@ Vis_SelectionList::Vis_SelectionList() {
 }
 
 //----- (004C05CC) --------------------------------------------------------
-bool Vis::PickKeyboard(Vis_SelectionList *list,
+bool Vis::PickKeyboard(float pick_depth, Vis_SelectionList *list,
                        Vis_SelectionFilter *sprite_filter,
                        Vis_SelectionFilter *face_filter) {
     if (!list) list = &default_list;
     list->uNumPointers = 0;
 
-    PickBillboards_Keyboard(keyboard_pick_depth, list, sprite_filter);
+    PickBillboards_Keyboard(pick_depth, list, sprite_filter);
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        PickIndoorFaces_Keyboard(keyboard_pick_depth, list, face_filter);
+        PickIndoorFaces_Keyboard(pick_depth, list, face_filter);
     else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        PickOutdoorFaces_Keyboard(keyboard_pick_depth, list, face_filter);
+        PickOutdoorFaces_Keyboard(pick_depth, list, face_filter);
     else
         assert(false);
 

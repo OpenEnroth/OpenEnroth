@@ -73,7 +73,8 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
         }
 
         if (engine) {
-            engine->PickMouse(512.0, x, y, false, &vis_sprite_filter_3, &vis_door_filter);
+            engine->PickMouse(engine->config->mouse_interaction_depth, x, y, false,
+                              &vis_sprite_filter_3, &vis_door_filter);
         }
 
         mouse->UI_OnMouseLeftClick();
