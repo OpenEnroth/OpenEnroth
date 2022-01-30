@@ -574,8 +574,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
 
             if (distance_lo_old > 0 &&
                 (distance_lo_old <= collision_state.radius || distance_lo_new <= collision_state.radius) &&
-                distance_lo_new <= distance_lo_old)
-            {
+                distance_lo_new <= distance_lo_old) {
                 move_distance = collision_state.move_distance;
                 if (collide_against_face(pFace, collision_state.position_lo, collision_state.radius,
                                          collision_state.direction, &move_distance, b1)) {
