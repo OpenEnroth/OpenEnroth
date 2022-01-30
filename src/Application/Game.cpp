@@ -664,7 +664,7 @@ void Game::EventLoop() {
                         if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                             dword_6BE138 = -1;
                             new OnButtonClick2(0x25Au, 0x1C2u, 0, 0,
-                                               (GUIButton *)pBtn_GameSettings, String(),
+                                               (GUIButton *)pBtn_GameSettings, std::string(),
                                                false);
 
                             pMessageQueue_50CBD0->Flush();
@@ -1269,14 +1269,14 @@ void Game::EventLoop() {
                     LloydBeacon *beacon = &pPlayer->vBeacons[uMessageParam];
                     if (bRecallingBeacon) {
                         if (beacon->uBeaconTime) {
-                            String v173 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon->SaveFileID)].pName;
+                            std::string v173 = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon->SaveFileID)].pName;
                             GameUI_StatusBar_Set(localization->FormatString(
                                 LSTR_FMT_RECALL_TO_S, v173.c_str()));
                         }
                         continue;
                     }
                     pMapNum = pMapStats->GetMapInfo(pCurrentMapName);
-                    String pMapName = "Not in Map Stats";
+                    std::string pMapName = "Not in Map Stats";
                     if (pMapNum) {
                         pMapName = pMapStats->pInfos[pMapNum].pName;
                     }
@@ -1436,7 +1436,7 @@ void Game::EventLoop() {
                         return;
                     goto LABEL_486;
                 case UIMSG_HintTownPortal: {
-                    String v69;
+                    std::string v69;
                     if (uMessageParam) {
                         switch (uMessageParam) {
                         case 1:
@@ -1500,7 +1500,7 @@ void Game::EventLoop() {
                     // static due to GUIWindow_Modal not
                     // holding a reference and text ptr will
                     // be destroyed upon exiting scope
-                    static String final_message;
+                    static std::string final_message;
 
                     final_message = StringPrintf(
                         "%s\n \n%s\n \n%s",
@@ -1524,11 +1524,11 @@ void Game::EventLoop() {
                     // pKeyActionMap->pPressedKeysBuffer);
                     FrameTableTxtLine frameTableTxtLine;
                     txt_file_frametable_parser(keyboardInputHandler->GetTextInput().c_str(), &frameTableTxtLine);
-                    String status_string;
+                    std::string status_string;
                     if (frameTableTxtLine.uPropCount == 1) {
                         size_t map_index = atoi(frameTableTxtLine.pProperties[0]);
                         if (map_index <= 0 || map_index >= 77) continue;
-                        String map_name = pMapStats->pInfos[map_index].pFilename;
+                        std::string map_name = pMapStats->pInfos[map_index].pFilename;
                         if (pGames_LOD->GetSubNodeIndex(map_name) < (pGames_LOD->GetSubNodesCount() / 2)) {
                             pCurrentMapName = map_name;
                             dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
@@ -2154,7 +2154,7 @@ void Game::EventLoop() {
                             continue;
                     }
                     new OnButtonClick(pButton->uX, pButton->uY, 0, 0,
-                                      (GUIButton *)pButton, String(), false);
+                                      (GUIButton *)pButton, std::string(), false);
                     continue;
                 case UIMSG_SelectCharacter:
                     pMessageQueue_50CBD0->Flush();
@@ -2201,7 +2201,7 @@ void Game::EventLoop() {
 
                     auto status = NameAndTitle(pPlayer5->pName, pPlayer5->classType);
                         + ": "
-                        + String(localization->GetCharacterConditionName(
+                        + std::string(localization->GetCharacterConditionName(
                             pPlayer5->GetMajorConditionIdx()));
                     GameUI_StatusBar_Set(status);
 

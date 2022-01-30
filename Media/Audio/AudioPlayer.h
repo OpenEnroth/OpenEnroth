@@ -150,7 +150,7 @@ class AudioPlayer {
     float uMasterVolume;
     PAudioTrack pCurrentMusicTrack;
     std::ifstream fAudioSnd;
-    std::map<String, SoundHeader> mSoundHeaders;
+    std::map<std::string, SoundHeader> mSoundHeaders;
 };
 
 struct SoundDesc;

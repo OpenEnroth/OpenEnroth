@@ -44,7 +44,7 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(
     unsigned int width,
     unsigned int height,
     GUIButton *button,
-    const String &hint
+    const std::string &hint
 ) :
     GUIWindow(WINDOW_CastSpell_InInventory, x, y, width, height, button, hint) {
     mouse->SetCursorImage("MICON2");

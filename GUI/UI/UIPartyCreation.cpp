@@ -1,6 +1,7 @@
 #define _CRTDBG_MAP_ALLOC
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
+#include <cstdlib>
+#include <string>
 
 #include "src/Application/Game.h"
 
@@ -99,7 +100,7 @@ void CreateParty_EventLoop() {
             auto pButton = pCreationUI_BtnPressLeft2[param];
 
             new OnButtonClick(pButton->uX, pButton->uY, 0, 0, pButton,
-                String(), false);
+                std::string(), false);
             pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
@@ -113,7 +114,7 @@ void CreateParty_EventLoop() {
             } while (pParty->pPlayers[param].GetSexByVoice() != sex);
             auto pButton = pCreationUI_BtnPressRight2[param];
             new OnButtonClick(pButton->uX, pButton->uY, 0, 0, pButton,
-                String(), false);
+                std::string(), false);
             pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
@@ -138,7 +139,7 @@ void CreateParty_EventLoop() {
             new OnButtonClick(pCreationUI_BtnPressLeft[param]->uX,
                 pCreationUI_BtnPressLeft[param]->uY, 0, 0,
                 (GUIButton *)pCreationUI_BtnPressLeft[param],
-                String(), false);
+                std::string(), false);
             pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
@@ -161,13 +162,13 @@ void CreateParty_EventLoop() {
             new OnButtonClick(pCreationUI_BtnPressRight[param]->uX,
                 pCreationUI_BtnPressRight[param]->uY, 0, 0,
                 (GUIButton *)pCreationUI_BtnPressRight[param],
-                String(), false);
+                std::string(), false);
             pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
         case UIMSG_PlayerCreationClickPlus:
             new OnButtonClick2(613, 393, 0, 0,
-                (GUIButton *)pPlayerCreationUI_BtnPlus, String(),
+                (GUIButton *)pPlayerCreationUI_BtnPlus, std::string(),
                 false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].IncreaseAttribute(
                 (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
@@ -177,7 +178,7 @@ void CreateParty_EventLoop() {
             break;
         case UIMSG_PlayerCreationClickMinus:
             new OnButtonClick2(523, 393, 0, 0,
-                (GUIButton *)pPlayerCreationUI_BtnMinus, String(),
+                (GUIButton *)pPlayerCreationUI_BtnMinus, std::string(),
                 false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].DecreaseAttribute(
                 (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
@@ -442,7 +443,7 @@ void GUIWindow_PartyCreation::Update() {
                 130, 0);
         }
 
-        String pRaceName = pParty->pPlayers[i].GetRaceName();
+        std::string pRaceName = pParty->pPlayers[i].GetRaceName();
         pGUIWindow_CurrentMenu->DrawTextInRect(
             pFontCreate, pIntervalX + 72, pIntervalY + 12, 0,
             pRaceName, 130, 0);

@@ -2,8 +2,7 @@
 
 #include <array>
 #include <vector>
-
-#include "Engine/Strings.h"
+#include <string>
 
 #include "GUI/GUIWindow.h"
 
@@ -19,7 +18,7 @@ class GUIButton {
         pParent = nullptr;
     }
 
-    void DrawLabel(const String &label_text, GUIFont *pFont, int a5, int uFontShadowColor);
+    void DrawLabel(const std::string &label_text, GUIFont *pFont, int a5, int uFontShadowColor);
     bool Contains(unsigned int x, unsigned int y);
     void Release();
 
@@ -38,8 +37,8 @@ class GUIButton {
     GUIWindow *pParent = nullptr;
     std::vector<Image*> vTextures;
     GameKey hotkey = GameKey::None;
-    String sLabel = "";
-    String field_75 = "";
+    std::string sLabel = "";
+    std::string field_75 = "";
 };
 
 extern GUIButton *pBtn_CloseBook;

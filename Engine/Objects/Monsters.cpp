@@ -1,5 +1,7 @@
 #include "Engine/Objects/Monsters.h"
 
+#include <string>
+
 #include "Engine/Engine.h"
 
 #include "Platform/Api.h"
@@ -503,7 +505,7 @@ void MonsterStats::Initialize() {
     char parse_str[64];
     // char Src[120];
     FrameTableTxtLine parsed_field;
-    String str;
+    std::string str;
 
     free(pMonstersTXT_Raw);
     pMonstersTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("monsters.txt");

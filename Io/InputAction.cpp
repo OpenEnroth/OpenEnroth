@@ -45,7 +45,7 @@ const std::vector<InputAction> AllInputActions() {
 }
 
 std::string ToString(InputAction action) {
-#define ENUM_CASE(x) x: return #x;
+#define ENUM_CASE(x) case Io::InputAction::x: return #x;
     switch (action) {
         ENUM_CASE(MoveForward)
         ENUM_CASE(MoveBackwards)

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "../VectorTypes.h"
-#include "Engine/Strings.h"
 
 #define FACE_IsPortal           0x00000001
 #define FACE_IsSecret           0x00000002
@@ -128,7 +128,7 @@ struct ODMFace {
                                 : this->uAttributes | FACE_TEXTURE_FRAME;
     }
 
-    void SetTexture(const String &filename);
+    void SetTexture(const std::string &filename);
     Texture *GetTexture();
 
     bool Deserialize(struct ODMFace_MM7 *);
@@ -146,7 +146,7 @@ struct ODMFace {
     int16_t pYInterceptDisplacements[20] {};
     int16_t pZInterceptDisplacements[20] {};
     void *resource = nullptr;  // __int16 uTextureID;
-    String resourcename;
+    std::string resourcename;
 
     int16_t sTextureDeltaU = 0;
     int16_t sTextureDeltaV = 0;
@@ -173,8 +173,8 @@ class BSPModel {
     void Release();
 
     unsigned int index = 0;
-    String pModelName;
-    String pModelName2;
+    std::string pModelName;
+    std::string pModelName2;
     int32_t field_40 = 0;
     int32_t sCenterX = 0;
     int32_t sCenterY = 0;

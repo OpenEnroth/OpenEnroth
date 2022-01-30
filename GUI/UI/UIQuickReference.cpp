@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
@@ -55,7 +57,7 @@ void GUIWindow_QuickReference::Update() {
     int pSkillsCount;         // ecx@27
     const char *pText;        // eax@38
     int pFontHeight;          // [sp+18h] [bp-14h]@1
-    String pTempString;
+    std::string pTempString;
 
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
                                 ui_game_quickref_background);

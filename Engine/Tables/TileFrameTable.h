@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Engine/Strings.h"
+#include <string>
+
 #include "Engine/AssetsManager.h"
 
 /*  327 */
@@ -88,7 +89,7 @@ class TileDesc {
  public:
     inline TileDesc() : texture(nullptr) {}
 
-    String name = "";
+    std::string name = "";
     uint16_t uTileID = 0;
     Tileset tileset = Tileset_NULL;
     uint16_t uSection = 0;

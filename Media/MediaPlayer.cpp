@@ -549,7 +549,7 @@ class Movie : public IMovie {
         return;
     }
 
-    virtual String GetFormat() {
+    virtual std::string GetFormat() {
         return format_ctx->iformat->name;
     }
 

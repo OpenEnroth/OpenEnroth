@@ -120,7 +120,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         }
         currentMusicTrack = -1;
 
-        String file_path = StringPrintf("%d.mp3", eTrack);
+        std::string file_path = StringPrintf("%d.mp3", eTrack);
         file_path = MakeDataPath("music", file_path);
         if (!FileExists(file_path.c_str())) {
             logger->Warning("AudioPlayer: %s not found", file_path.c_str());
@@ -401,7 +401,7 @@ bool AudioPlayer::FindSound(const std::string &pName, AudioPlayer::SoundHeader *
         return false;
     }
 
-    std::map<String, SoundHeader>::iterator it = mSoundHeaders.find(MakeLower(pName));
+    std::map<std::string, SoundHeader>::iterator it = mSoundHeaders.find(MakeLower(pName));
     if (it == mSoundHeaders.end()) {
         return false;
     }
@@ -419,7 +419,7 @@ PMemBuffer AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load soun
         return nullptr;
 
     // iterate through to get sound by int ID
-    std::map<String, SoundHeader>::iterator it = mSoundHeaders.begin();
+    std::map<std::string, SoundHeader>::iterator it = mSoundHeaders.begin();
     std::advance(it, uSoundID);
 
     if (it == mSoundHeaders.end()) {

@@ -137,7 +137,7 @@ void TextureFrameTable::LoadAnimationSequenceAndPalettes(int uFrameID) {
 }
 
 int64_t TextureFrameTable::FindTextureByName(const char *Str2) {
-    String name = Str2;
+    std::string name = Str2;
     std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
     for (unsigned int i = 0; i < this->sNumTextures; ++i) {
@@ -146,7 +146,7 @@ int64_t TextureFrameTable::FindTextureByName(const char *Str2) {
     return -1;
 }
 
-Texture *TextureFrameTable::GetFrameTexture(int64_t uFrameID, signed int a3) {
+Texture *TextureFrameTable::GetFrameTexture(int uFrameID, signed int a3) {
     int v3 = uFrameID;
     TextureFrame *v4 = this->pTextures;
     TextureFrame *v5 = &v4[uFrameID];

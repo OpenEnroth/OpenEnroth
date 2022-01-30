@@ -1,8 +1,8 @@
 #pragma once
 
+#include <cstring>
+#include <string>
 #include <vector>
-
-#include "Engine/Strings.h"
 
 #include "Engine/Graphics/Image.h"
 
@@ -60,34 +60,34 @@ class File {
     File();
     virtual ~File();
 
-    bool Open(const String &pFilename);
+    bool Open(const std::string &pFilename);
     void Close();
 
-    void *LoadRaw(const String &pContainer, size_t *data_size = nullptr);
-    void *LoadCompressedTexture(const String &pContainer, size_t *data_size = nullptr);
-    void *LoadCompressed(const String &pContainer, size_t *data_size = nullptr);
-    bool DoesContainerExist(const String &filename);
+    void *LoadRaw(const std::string &pContainer, size_t *data_size = nullptr);
+    void *LoadCompressedTexture(const std::string &pContainer, size_t *data_size = nullptr);
+    void *LoadCompressed(const std::string &pContainer, size_t *data_size = nullptr);
+    bool DoesContainerExist(const std::string &filename);
 
-    String GetSubNodeName(size_t index) const { return pSubIndices[index].pFilename; }
+    std::string GetSubNodeName(size_t index) const { return pSubIndices[index].pFilename; }
     size_t GetSubNodesCount() const { return uNumSubDirs; }
-    int GetSubNodeIndex(const String &name) const;
+    int GetSubNodeIndex(const std::string &name) const;
 
  protected:
-    FILE *FindContainer(const String &filename, size_t *data_size = nullptr);
-    virtual bool OpenFile(const String &sFilename);
+    FILE *FindContainer(const std::string &filename, size_t *data_size = nullptr);
+    virtual bool OpenFile(const std::string &sFilename);
     bool LoadHeader();
-    bool LoadSubIndices(const String &sFolder);
+    bool LoadSubIndices(const std::string &sFolder);
     virtual void ResetSubIndices();
 
  protected:
     FILE *pFile;
-    String pLODName;
+    std::string pLODName;
     bool isFileOpened;
 
     struct FileHeader header;
 
     std::vector<Directory> pRoot;
-    String pContainerName;
+    std::string pContainerName;
     unsigned int uOffsetToSubIndex;
 
     unsigned int uNumSubDirs;
@@ -97,17 +97,17 @@ class File {
 class WriteableFile : public File {
  public:
     WriteableFile();
-    bool LoadFile(const String &pFilename, bool bWriting);
-    unsigned int Write(const String &file_name, const void *pDirData, size_t size, int a4);
+    bool LoadFile(const std::string &pFilename, bool bWriting);
+    unsigned int Write(const std::string &file_name, const void *pDirData, size_t size, int a4);
     void CloseWriteFile();
     int CreateTempFile();
     bool FixDirectoryOffsets();
     bool _4621A7();
-    int CreateNewLod(LOD::FileHeader *pHeader, const String &root_name, const String &Source);
+    int CreateNewLod(LOD::FileHeader *pHeader, const std::string &root_name, const std::string &Source);
 
     void AllocSubIndicesAndIO(unsigned int uNumSubIndices, unsigned int uBufferSize);
     void FreeSubIndexAndIO();
-    bool AppendDirectory(const String &file_name, const void *pData, size_t data_size);
+    bool AppendDirectory(const std::string &file_name, const void *pData, size_t data_size);
 
     void ClearSubNodes() { uNumSubDirs = 0; }
 
@@ -127,17 +127,17 @@ class LODFile_IconsBitmaps : public LOD::File {
     LODFile_IconsBitmaps();
     virtual ~LODFile_IconsBitmaps();
     void SyncLoadedFilesCount();
-    unsigned int FindTextureByName(const String &pName);
-    bool Load(const String &pFilename, const String &pFolderName);
+    unsigned int FindTextureByName(const std::string &pName);
+    bool Load(const std::string &pFilename, const std::string &pFolderName);
     void ReleaseAll();
-    unsigned int LoadTexture(const String &pContainer,
+    unsigned int LoadTexture(const std::string &pContainer,
                              enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
     struct Texture_MM7 *LoadTexturePtr(
-        const String &pContainer,
+        const std::string &pContainer,
         enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const String &pContainer,
+    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer,
                            enum TEXTURE_TYPE eTextureType);
-    int ReloadTexture(struct Texture_MM7 *pDst, const String &pContainer,
+    int ReloadTexture(struct Texture_MM7 *pDst, const std::string &pContainer,
                       int mode);
     void ReleaseHardwareTextures();
     void ReleaseLostHardwareTextures();
@@ -216,8 +216,8 @@ class LODFile_Sprites : public LOD::File {
     void DeleteSpritesRange(int uStartIndex, int uStopIndex);
     int _461397();
     void DeleteSomeOtherSprites();
-    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const String &pContainer);
-    bool LoadSprites(const String &pFilename);
+    int LoadSpriteFromFile(LODSprite *pSpriteHeader, const std::string &pContainer);
+    bool LoadSprites(const std::string &pFilename);
     int LoadSprite(const char *pContainerName, unsigned int uPaletteID);
     void ReleaseLostHardwareSprites();
     void ReleaseAll();

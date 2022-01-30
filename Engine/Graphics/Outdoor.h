@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "Engine/Tables/TileFrameTable.h"
 
@@ -73,7 +74,7 @@ struct OutdoorLocation {
     void PrepareActorsDrawList();
     void CreateDebugLocation();
     void Release();
-    bool Load(const String &filename, int days_played,
+    bool Load(const std::string &filename, int days_played,
               int respawn_interval_days, bool *outdoors_was_respawned);
     int GetTileIdByTileMapId(signed int a2);
     int _47ED83(signed int a2, signed int a3);
@@ -94,7 +95,7 @@ struct OutdoorLocation {
     TileDesc *GetTile(int sX, int sZ);
     TileDesc *DoGetTile(int uX, int uZ);
     int GetHeightOnTerrain(int sX, int sZ);
-    bool Initialize(const String &filename, int days_played,
+    bool Initialize(const std::string &filename, int days_played,
                     int respawn_interval_days,
                     bool * outdoors_was_respawned);
     // bool Release2();
@@ -109,11 +110,11 @@ struct OutdoorLocation {
 
     static void LoadActualSkyFrame();
 
-    String level_filename;
-    String location_filename;
-    String location_file_description;
-    String sky_texture_filename;
-    String ground_tileset;
+    std::string level_filename;
+    std::string location_filename;
+    std::string location_file_description;
+    std::string sky_texture_filename;
+    std::string ground_tileset;
     OutdoorLocationTileType pTileTypes[4];  // [3]  road tileset
     struct OutdoorLocationTerrain pTerrain;
     void *pCmap;
@@ -197,7 +198,7 @@ char Is_out15odm_underwater();
 void SetUnderwaterFog();
 void ODM_Project(unsigned int uNumVertices);
 void sub_487DA9();
-void ODM_LoadAndInitialize(const String &pLevelFilename,
+void ODM_LoadAndInitialize(const std::string &pLevelFilename,
                            struct ODMRenderParams *thisa);
 unsigned int GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int a1, int a2, float a3);

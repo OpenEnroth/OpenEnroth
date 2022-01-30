@@ -1,6 +1,7 @@
 #define _CRTDBG_MAP_ALLOC
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdlib.h>
+#include <cstdlib>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
@@ -44,7 +45,7 @@ Image *messagebox_border_left = nullptr;    // 50769C
 Image *messagebox_border_right = nullptr;   // 5076A0
 
 //----- (004179BC) --------------------------------------------------------
-void CharacterUI_DrawTooltip(const char *title, String &content) {
+void CharacterUI_DrawTooltip(const char *title, std::string &content) {
     GUIWindow popup_window;  // [sp+Ch] [bp-5Ch]@1
 
     Point pt = mouse->GetCursorPos();
@@ -75,7 +76,7 @@ void CharacterUI_DrawTooltip(const char *title, String &content) {
 }
 
 void CharacterUI_DrawTooltip(const char *title, const char *content) {
-    String content_str = String(content);
+    std::string content_str = std::string(content);
     CharacterUI_DrawTooltip(title, content_str);
 }
 
@@ -317,7 +318,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         return;
     }
 
-    String str = localization->FormatString(
+    std::string str = localization->FormatString(
         LSTR_FMT_TYPE_S,
         pItemsTable->pItems[inspect_item->uItemID].pUnidentifiedName);
 
@@ -499,7 +500,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             v67.Initialize(inspect_item->uExpireTime -
                            pParty->GetPlayingTime());
 
-            String txt4 = "Duration:";
+            std::string txt4 = "Duration:";
             Str = (char *)(v67.field_18_expire_year - game_starting_year);
             if (v67.field_18_expire_year != 1168) {
                 txt4 += StringPrintf(" %d:yr", v67.field_18_expire_year - game_starting_year);
@@ -537,7 +538,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
             iteminfo_window.uFrameHeight - pFontComic->GetHeight(), 0,
             txt2.data(), 0, 0, 0);
 
-        String txt3;
+        std::string txt3;
         if (inspect_item->uAttributes & ITEM_STOLEN) {
             txt3 = localization->GetString(LSTR_STOLEN);
         } else {
@@ -635,7 +636,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
 
     // Draw name and profession
-    String str;
+    std::string str;
     if (pActors[uActorID].sNPC_ID) {
         str = NameAndTitle(GetNPCData(pActors[uActorID].sNPC_ID));
     } else {
@@ -835,7 +836,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                               localization->GetString(LSTR_NONE), 0, 0, 0);
     }
 
-    String txt2;
+    std::string txt2;
     if (normal_level) {
         auto str =
             StringPrintf("%s\f%05u\t100%d\n", localization->GetString(LSTR_HIT_POINTS), 0,
@@ -874,7 +875,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     content[9] = localization->GetSpellSchoolName(7);
     content[10] = localization->GetSpellSchoolName(8);
 
-    String txt4;
+    std::string txt4;
     if (expert_level) {
         auto txt3 = StringPrintf(
             "%s\f%05u\t080%s\n", localization->GetString(LSTR_ATTACK), 0,
@@ -1033,7 +1034,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 }
 
 //----- (00417BB5) --------------------------------------------------------
-String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
+std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID,
                                     PLAYER_SKILL_TYPE uPlayerSkillType) {
     char a2[1200];     // [sp+Ch] [bp-538h]@7
     char Source[120];  // [sp+4BCh] [bp-88h]@7
@@ -1107,7 +1108,7 @@ String CharacterUI_GetSkillDescText(unsigned int uPlayerID,
                 (pParty->pPlayers[uPlayerID].pActiveSkills[uPlayerSkillType] &
                  0x3F));
     }
-    return String(static_sub_417BB5_out_string);
+    return std::string(static_sub_417BB5_out_string);
 }
 
 void CharacterUI_SkillsTab_ShowHint() {
@@ -1119,7 +1120,7 @@ void CharacterUI_SkillsTab_ShowHint() {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
                 pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
-                String pSkillDescText = CharacterUI_GetSkillDescText(
+                std::string pSkillDescText = CharacterUI_GetSkillDescText(
                     uActiveCharacter - 1,
                     (PLAYER_SKILL_TYPE)pButton->msg_param);
                 CharacterUI_DrawTooltip(
@@ -1186,7 +1187,7 @@ void CharacterUI_StatsTab_ShowHint() {
             break;
         case 10:  // Player Condition
         {
-            auto str = String(pPlayerConditionAttributeDescription) + "\n";
+            auto str = std::string(pPlayerConditionAttributeDescription) + "\n";
 
             extern std::array<unsigned int, 18> pConditionImportancyTable;
             for (uint i = 0; i < 18; ++i) {
@@ -1250,8 +1251,8 @@ void CharacterUI_StatsTab_ShowHint() {
                 ++v15;
             } while (v15 <= 10000);
 
-            String str1;
-            String str2;
+            std::string str1;
+            std::string str2;
             if (v15 > pPlayers[uActiveCharacter]->uLevel)
                 str1 = localization->FormatString(
                     LSTR_ELIGIBLE_TO_LEVELUP, v15);
@@ -1261,7 +1262,7 @@ void CharacterUI_StatsTab_ShowHint() {
                 v15 + 1);
             str1 += "\n" + str2;
 
-            str2 = String(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
+            str2 = std::string(pPlayerExperienceAttributeDescription) + "\n \n" + str1;
 
             CharacterUI_DrawTooltip(localization->GetString(LSTR_EXPERIENCE), str2);
             break;
@@ -1272,7 +1273,7 @@ void CharacterUI_StatsTab_ShowHint() {
                 int meleerecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false);
                 char recov[100];
                 sprintf(recov, "\n\nRecovery time: %d", meleerecov);
-                String test = String(pAttackBonusAttributeDescription) + String(recov);
+                std::string test = std::string(pAttackBonusAttributeDescription) + std::string(recov);
                 CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS),
                     /*pAttackBonusAttributeDescription*/test);
             }
@@ -1291,7 +1292,7 @@ void CharacterUI_StatsTab_ShowHint() {
                 int missrecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(true);
                 char recovm[100];
                 sprintf(recovm, "\n\nRecovery time: %d", missrecov);
-                String test2 = String(pAttackBonusAttributeDescription) + String(recovm);
+                std::string test2 = std::string(pAttackBonusAttributeDescription) + std::string(recovm);
                 CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS),
                     /*pMissleBonusAttributeDescription*/test2);
             }
@@ -1391,7 +1392,7 @@ void DrawSpellDescriptionPopup(int spell_index) {
     if (pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)) > v5)
         v5 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND));
 
-    String str = StringPrintf(
+    std::string str = StringPrintf(
         "%s\n\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%s\t000\n%s\t%03d:\t%03d%"
         "s\t000\n%s\t%03d:\t%03d%s",
         spell->pDescription,
@@ -1480,7 +1481,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         }
         case CURRENT_SCREEN::SCREEN_CHEST: {
             if (!pPlayers[uActiveCharacter]->CanAct()) {
-                static String hint_reference;
+                static std::string hint_reference;
                 hint_reference = localization->FormatString(
                     LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
                     pPlayers[uActiveCharacter]->pName,
@@ -1730,7 +1731,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                         if ((int)pParty->pPlayers[pButton->msg_param]
                                 .GetSkillIdxByOrder(pButton->msg - UIMSG_48) <
                             37) {
-                            static String hint_reference;
+                            static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
                                 (PLAYER_SKILL_TYPE)pParty
@@ -1748,7 +1749,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 }
             }
             if (!popup_window.sHint.empty()) {
-                String sHint = popup_window.sHint;
+                std::string sHint = popup_window.sHint;
                 popup_window.sHint.clear();
                 popup_window.uFrameWidth = 384;
                 popup_window.uFrameHeight = 256;
@@ -1904,7 +1905,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
     // check character condition(проверка состояния персонажа)
     if (!pPlayers[uActiveCharacter]->CanAct()) {
-        static String hint_reference;
+        static std::string hint_reference;
         hint_reference = localization->FormatString(
             LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
             pPlayers[uActiveCharacter]->pName,

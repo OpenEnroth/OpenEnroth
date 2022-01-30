@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Engine/Strings.h"
 #include "../LOD.h"
 
 char *pHistoryTXT_Raw;

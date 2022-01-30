@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
@@ -383,7 +384,7 @@ bool SpellBuff::Apply(GameTime expire_time, unsigned __int16 uSkillLevel,
 
 //----- (0045384A) --------------------------------------------------------
 void SpellStats::Initialize() {
-    std::map<String, SPELL_SCHOOL, ILess> spellSchoolMaps;
+    std::map<std::string, SPELL_SCHOOL, ILess> spellSchoolMaps;
     spellSchoolMaps["fire"] = SPELL_SCHOOL_FIRE;
     spellSchoolMaps["air"] = SPELL_SCHOOL_AIR;
     spellSchoolMaps["water"] = SPELL_SCHOOL_WATER;

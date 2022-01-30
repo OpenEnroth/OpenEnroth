@@ -3,8 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <map>
-
-#include "Engine/Strings.h"
+#include <string>
 
 class HWLTexture {
  public:
@@ -28,12 +27,12 @@ class HWLContainer {
     HWLContainer();
     virtual ~HWLContainer();
 
-    bool Open(const String &pFilename);
+    bool Open(const std::string &pFilename);
 
-    HWLTexture *LoadTexture(const String &pName);
+    HWLTexture *LoadTexture(const std::string &pName);
 
  protected:
     FILE *pFile;
     Log *log;
-    std::map<String, size_t> mNodes;
+    std::map<std::string, size_t> mNodes;
 };

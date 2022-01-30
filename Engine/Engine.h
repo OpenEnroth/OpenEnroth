@@ -539,12 +539,12 @@ void SetDecorationSprite(uint16_t uCog, bool bHide,
                          const char *pFileName);  // idb
 void _494035_timed_effects__water_walking_damage__etc();
 void RegeneratePartyHealthMana();
-String GetReputationString(int reputation);
+std::string GetReputationString(int reputation);
 unsigned int _494820_training_time(unsigned int a1);
 void LoadLevel_InitializeLevelStr();
 void OnMapLeave();
 void OnMapLoad();
-void Level_LoadEvtAndStr(const String& pLevelName);
+void Level_LoadEvtAndStr(const std::string& pLevelName);
 void sub_4452BB();
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(const char *pMapName,

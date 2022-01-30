@@ -1,4 +1,5 @@
 #include <map>
+#include <string>
 
 #include "src/Application/GameMenu.h"
 
@@ -244,7 +245,7 @@ void Menu::EventLoop() {
                     double v19 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                     // engine->pGammaController->Initialize(v19);
                     new OnButtonClick2(21, 161, 0, 0, pBtn_SliderLeft,
-                                       String(), false);
+                                       std::string(), false);
                     pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                     continue;
                 }
@@ -254,7 +255,7 @@ void Menu::EventLoop() {
                         double v21 = (double)(signed int)uGammaPos * 0.1 + 0.6;
                         // engine->pGammaController->Initialize(v21);
                         new OnButtonClick2(213, 161, 0, 0,
-                                           pBtn_SliderRight, String(),
+                                           pBtn_SliderRight, std::string(),
                                            false);
                         pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                         continue;
@@ -282,10 +283,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->music_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 216, 0, 0, pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 216, 0, 0, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 216, 0, 0, pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 216, 0, 0, pBtn_SliderRight, std::string(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;  // for mouse
@@ -302,10 +303,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->sound_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 162, 0, 0, pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 162, 0, 0, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 162, 0, 0, pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 162, 0, 0, pBtn_SliderRight, std::string(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;
@@ -333,10 +334,10 @@ void Menu::EventLoop() {
                 int new_level = engine->config->voice_level;
                 if (param == 4) {
                     new_level -= 1;
-                    new OnButtonClick2(243, 270, 0, 0, pBtn_SliderLeft, String(), false);
+                    new OnButtonClick2(243, 270, 0, 0, pBtn_SliderLeft, std::string(), false);
                 } else if (param == 5) {
                     new_level += 1;
-                    new OnButtonClick2(435, 270, 0, 0, pBtn_SliderRight, String(), false);
+                    new OnButtonClick2(435, 270, 0, 0, pBtn_SliderRight, std::string(), false);
                 } else {
                     Point pt = mouse->GetCursorPos();
                     new_level = (pt.x - 263) / 17;

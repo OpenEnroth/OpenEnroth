@@ -1,5 +1,6 @@
 #define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
+#include <cstdlib>
+#include <string>
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -183,7 +184,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
         if (pItemID) {
             ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
 
-            String str;
+            std::string str;
             if (!item->IsIdentified()) {
                 int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
                     item, building, (int64_t)window_SpeakInHouse->ptr_1C, 4);
@@ -224,7 +225,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
             ItemGen *item = &pPlayers[uActiveCharacter]->pInventoryItemList[pItemID - 1];
             int phrases_id = pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
                 item, building, (int64_t)window_SpeakInHouse->ptr_1C, 5);
-            String str = BuildDialogueString(
+            std::string str = BuildDialogueString(
                 pMerchantsRepairPhrases[phrases_id], uActiveCharacter - 1, item,
                 (char *)window_SpeakInHouse->ptr_1C, 5);
             dialogwin.DrawTitleText(pFontArrus, 0,
@@ -338,7 +339,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                         pt.x < (testpos + (signed int)shop_ui_items_in_store[testx]->GetWidth())) {
                         if (pt.y >= weapons_Ypos[testx] + 30 &&
                             pt.y < (weapons_Ypos[testx] + 30 + shop_ui_items_in_store[testx]->GetHeight())) {
-                            String str;
+                            std::string str;
                             if (!StealingMode(uActiveCharacter)) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
@@ -504,7 +505,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                                 pt.y >= (98 - shop_ui_items_in_store[testx]->GetHeight()))) {
                             // y is 126 to 126 + height low or 98-height to 98
 
-                            String str;
+                            std::string str;
                             if (!StealingMode(uActiveCharacter)) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases
@@ -677,7 +678,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                             pt.y >= (152 - shop_ui_items_in_store[testx]->GetHeight()))) {
                             // y is 152-h to 152 or 308-height to 308
 
-                            String str;
+                            std::string str;
                             if (!StealingMode(uActiveCharacter)) {
                                 str = BuildDialogueString(
                                     pMerchantsBuyPhrases

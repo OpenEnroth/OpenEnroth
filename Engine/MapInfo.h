@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Strings.h"
+#include <string>
 
 enum MAP_TYPE : uint32_t {
     MAP_INVALID = 0,
@@ -35,11 +35,11 @@ enum MapStartPoint : uint32_t {
 struct MapInfo {
     int SpawnRandomTreasure(struct SpawnPointMM7 *a2);
 
-    String pName;
-    String pFilename;
-    String pEncounterMonster1Texture;
-    String pEncounterMonster2Texture;
-    String pEncounterMonster3Texture;
+    std::string pName;
+    std::string pFilename;
+    std::string pEncounterMonster1Texture;
+    std::string pEncounterMonster2Texture;
+    std::string pEncounterMonster3Texture;
     unsigned int uNumResets;
     unsigned int uFirstVisitedAt;
     unsigned int uRespawnIntervalDays;
@@ -74,7 +74,7 @@ struct MapInfo {
 
 struct MapStats {
     void Initialize();
-    MAP_TYPE GetMapInfo(const String &Str2);
+    MAP_TYPE GetMapInfo(const std::string &Str2);
     int sub_410D99_get_map_index(int a1);
     MapInfo pInfos[77];
     unsigned int uNumMaps;

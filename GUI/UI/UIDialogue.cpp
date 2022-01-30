@@ -39,7 +39,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
         pNPCInfo->uFlags = pNPCInfo->uFlags + 1;
     }
 
-    String filename;
+    std::string filename;
     switch (pParty->alignment) {
     case PartyAlignment::PartyAlignment_Good:
             filename = "evt02-b";
@@ -125,7 +125,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
 
 GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                                        unsigned int width, unsigned int height,
-                                       GUIButton *button, const String &hint)
+                                       GUIButton *button, const std::string &hint)
     : GUIWindow(WINDOW_Dialogue, x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_NPC_DIALOGUE;
@@ -232,7 +232,7 @@ void GUIWindow_Dialogue::Update() {
 
     pParty->GetPartyFame();
 
-    String dialogue_string;
+    std::string dialogue_string;
     switch (uDialogueType) {
         case DIALOGUE_13_hiring_related:
             dialogue_string = BuildDialogueString(
@@ -480,7 +480,7 @@ void GUIWindow_Dialogue::Update() {
 
 GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(
     unsigned int x, unsigned int y, unsigned int width, unsigned int height,
-    GUIButton *button, const String &hint
+    GUIButton *button, const std::string &hint
 ) : GUIWindow(WINDOW_GreetingNPC, x, y, width, height, button, hint) {
     prev_screen_type = current_screen_type;
     keyboardInputHandler->StartTextInput(TextInputType::Text, 15, this);

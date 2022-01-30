@@ -28,7 +28,7 @@
 
 Image *transition_ui_icon = nullptr;
 
-String transition_button_label;
+std::string transition_button_label;
 
 void GUIWindow_Travel::Release() {
     // -----------------------------------------
@@ -84,7 +84,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     pEventTimer->Pause();
     pAudioPlayer->StopChannels(-1, -1);
 
-    String filename;
+    std::string filename;
     switch (pParty->alignment) {
         case PartyAlignment::PartyAlignment_Good:
             filename = "evt02-b";
@@ -108,7 +108,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
                 pAnimatedRooms[p2DEvents[anim_id - 1].uAnimationID].video_name,
                 1);
 
-        String v15 = pLocationName;
+        std::string v15 = pLocationName;
         if (*pLocationName == '0') {
             v15 = pCurrentMapName;
         }
@@ -160,7 +160,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
         }
     }
 
-    String hint = this->sHint = transition_button_label;
+    std::string hint = this->sHint = transition_button_label;
 
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_INPUT_BLV;
@@ -180,7 +180,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
 
 GUIWindow_Travel::GUIWindow_Travel()
     : GUIWindow(WINDOW_ChangeLocation, 0, 0, window->GetWidth(), window->GetHeight(), 0) {
-    String pContainer;  // [sp+0h] [bp-28h]@1
+    std::string pContainer;  // [sp+0h] [bp-28h]@1
 
     pEventTimer->Pause();
 
@@ -207,7 +207,7 @@ GUIWindow_Travel::GUIWindow_Travel()
     else
         transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
 
-    String hint = this->sHint = transition_button_label;
+    std::string hint = this->sHint = transition_button_label;
 
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
@@ -246,7 +246,7 @@ void GUIWindow_Travel::Update() {
         travel_window.uFrameWidth = 148;
         travel_window.uFrameZ = 334;
 
-        String str;
+        std::string str;
         if (GetTravelTime() == 1) {
             str = localization->FormatString(
                 LSTR_FMT_IT_TAKES_D_DAY_TO_S,
@@ -313,7 +313,7 @@ void GUIWindow_Transition::Update() {
             pFontCreate, 0, v4, 0, pTransitionStrings[uCurrentHouse_Animation],
             3);
     } else if (map_id) {
-        String str = localization->FormatString(
+        std::string str = localization->FormatString(
             LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S_2,
             pMapStats->pInfos[map_id].pName.c_str());
         unsigned int v4 = (212 - pFontCreate->CalcTextHeight(

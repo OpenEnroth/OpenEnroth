@@ -42,7 +42,7 @@ void Mouse::SetCursorBitmapFromItemID(unsigned int uItemID) {
 
 void Mouse::SetCurrentCursorBitmap() { SetCursorImage(this->cursor_name); }
 
-void Mouse::SetCursorImage(const String &name) {
+void Mouse::SetCursorImage(const std::string &name) {
     if (!this->bInitialized) {
         return;
     }

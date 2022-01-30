@@ -636,7 +636,7 @@ Texture *BLVFace::GetTexture() {
         return (Texture *)this->resource;
 }
 
-void BLVFace::SetTexture(const String &filename) {
+void BLVFace::SetTexture(const std::string &filename) {
     if (this->IsTextureFrameTable()) {
         this->resource =
             (void *)pTextureFrameTable->FindTextureByName(filename.c_str());
@@ -753,7 +753,7 @@ void IndoorLocation::ToggleLight(signed int sLightID, unsigned int bToggle) {
 }
 
 //----- (00498E0A) --------------------------------------------------------
-bool IndoorLocation::Load(const String &filename, int num_days_played,
+bool IndoorLocation::Load(const std::string &filename, int num_days_played,
                           int respawn_interval_days, char *pDest) {
     decal_builder->Reset(0);
 
@@ -764,10 +764,10 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         return true;
     }
 
-    auto blv_filename = String(filename);
+    auto blv_filename = std::string(filename);
     blv_filename.replace(blv_filename.length() - 4, 4, ".blv");
 
-    this->filename = String(filename);
+    this->filename = std::string(filename);
     if (!pGames_LOD->DoesContainerExist(blv_filename)) {
         Error("Unable to find %s in Games.LOD", blv_filename.c_str());
     }
@@ -842,7 +842,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
         strncpy(pTexName, pData, 10);
         pData += 10;
 
-        pFace->SetTexture(String(pTexName));
+        pFace->SetTexture(std::string(pTexName));
     }
 
     pGameLoadingUI_ProgressBar->Progress();
@@ -993,7 +993,7 @@ bool IndoorLocation::Load(const String &filename, int num_days_played,
     memcpy(pMapOutlines->pOutlines, pData + 4, pMapOutlines->uNumOutlines * sizeof(BLVMapOutline));
     free(rawData);
 
-    String dlv_filename = String(filename);
+    std::string dlv_filename = std::string(filename);
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
     bool bResetSpawn = false;

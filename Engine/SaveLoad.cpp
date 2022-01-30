@@ -47,7 +47,7 @@ std::array<unsigned int, MAX_SAVE_SLOTS> pSavegameUsedSlots;
 std::array<Image *, MAX_SAVE_SLOTS> pSavegameThumbnails;
 std::array<SavegameHeader, MAX_SAVE_SLOTS> pSavegameHeader;
 
-bool CopyFile(const String &from, const String &to) {
+bool CopyFile(const std::string &from, const std::string &to) {
     int file_size = -1;
     int bytes_read = 0;
     int bytes_wrote = 0;
@@ -88,8 +88,8 @@ void LoadGame(unsigned int uSlot) {
     pNew_LOD->CloseWriteFile();
     // uCurrentlyLoadedLevelType = LEVEL_null;
 
-    String filename = MakeDataPath("saves", pSavegameList->pFileList[uSlot]);
-    String to_file_path = MakeDataPath("data", "new.lod");
+    std::string filename = MakeDataPath("saves", pSavegameList->pFileList[uSlot]);
+    std::string to_file_path = MakeDataPath("data", "new.lod");
     remove(to_file_path.c_str());
     if (!CopyFile(filename, to_file_path)) {
         Error("Failed to copy: %s", filename.c_str());
@@ -122,7 +122,7 @@ void LoadGame(unsigned int uSlot) {
                         continue;
                     }
                     LloydBeacon &beacon = player->vBeacons[j];
-                    String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                    std::string str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
                     beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
                     beacon.image->GetWidth();
                 }
@@ -384,7 +384,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 void *pcx_data = malloc(pcx_data_size);
                 PCX::Encode16(pixels, image->GetWidth(), image->GetHeight(),
                               pcx_data, pcx_data_size, &pcx_data_size);
-                String str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
+                std::string str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
                 if (pNew_LOD->Write(str, pcx_data, pcx_data_size, 0)) {
                     auto error_message = localization->FormatString(
                         LSTR_FMT_SAVEGAME_CORRUPTED, 207);
@@ -523,7 +523,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         odm_data->uCompressedSize = compressed_block_size;
         odm_data->uDecompressedSize = Size;
 
-        String file_name = pCurrentMapName;
+        std::string file_name = pCurrentMapName;
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
         if (pNew_LOD->Write(file_name, compressed_buf, compressed_block_size + sizeof(ODMHeader), 0)) {
@@ -555,7 +555,7 @@ void DoSavegame(unsigned int uSlot) {
         pSavegameHeader[uSlot].playing_time = pParty->GetPlayingTime();
         pNew_LOD->Write("header.bin", &pSavegameHeader[uSlot], sizeof(SavegameHeader), 0);
         pNew_LOD->CloseWriteFile();  //закрыть
-        String file_name = StringPrintf("save%03d.mm7", uSlot);
+        std::string file_name = StringPrintf("save%03d.mm7", uSlot);
         CopyFile(MakeDataPath("data", "new.lod"), MakeDataPath("saves", file_name));
     }
     GUI_UpdateWindows();
@@ -584,7 +584,7 @@ void SavegameList::Initialize() {
     pSavegameList->Reset();
     uNumSavegameFiles = 0;
 
-    String saves_dir = MakeDataPath("saves");
+    std::string saves_dir = MakeDataPath("saves");
 
     if (std::filesystem::exists(saves_dir)) {
         for (const auto& entry : std::filesystem::directory_iterator(saves_dir)) {
@@ -614,7 +614,7 @@ void SaveNewGame() {
         pNew_LOD->CloseWriteFile();
     }
 
-    String file_path = MakeDataPath("data", "new.lod");
+    std::string file_path = MakeDataPath("data", "new.lod");
     remove(file_path.c_str());  // удалить new.lod
 
     LOD::FileHeader header;  // заголовок
@@ -629,7 +629,7 @@ void SaveNewGame() {
         pNew_LOD->ClearSubNodes();
 
         for (size_t i = pGames_LOD->GetSubNodesCount() / 2; i < pGames_LOD->GetSubNodesCount(); ++i) {  // копирование файлов с 76 по 151
-            String name = pGames_LOD->GetSubNodeName(i);
+            std::string name = pGames_LOD->GetSubNodeName(i);
             size_t size = 0;
             void *data = pGames_LOD->LoadRaw(name, &size);
             pNew_LOD->AppendDirectory(name, data, size);

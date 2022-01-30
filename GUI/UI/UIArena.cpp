@@ -1,5 +1,7 @@
 #include "GUI/UI/UIArena.h"
 
+#include <string>
+
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/Sprites.h"
@@ -131,7 +133,7 @@ void ArenaFight() {
 
     render->DrawTextureAlphaNew(8 / 640.0f, (347 - v0) / 480.0f,
                                 _591428_endcap);
-    String v1 = pFontArrus->FitTextInAWindow(
+    std::string v1 = pFontArrus->FitTextInAWindow(
         localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth,
         13);
     pDialogueWindow->DrawText(pFontArrus, 13, 354 - v0, 0, v1, 0, 0, 0);

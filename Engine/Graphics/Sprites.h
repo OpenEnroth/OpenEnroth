@@ -1,7 +1,8 @@
 #pragma once
 
+#include <string>
+
 #include "Engine/OurMath.h"
-#include "Engine/Strings.h"
 
 #include "Engine/Graphics/DecorationList.h"
 
@@ -23,7 +24,7 @@ class Sprite {
 
     void Release();
 
-    String pName;
+    std::string pName;
     int uPaletteID;
     Texture *texture;
     int uAreaX;
@@ -40,8 +41,8 @@ class SpriteFrame {
  public:
     bool Deserialize(const struct SpriteFrame_MM7 *);
 
-    String icon_name;
-    String texture_name;
+    std::string icon_name;
+    std::string texture_name;
 
     Sprite* hw_sprites[8] {};
     float scale = 1.0;

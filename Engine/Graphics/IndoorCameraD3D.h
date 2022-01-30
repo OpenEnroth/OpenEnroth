@@ -107,8 +107,7 @@ struct IndoorCameraD3D {
     //----- (004363C6) --------------------------------------------------------
     virtual ~IndoorCameraD3D() {}
 
-    void ViewTransform(int x, int y, int z, int *transformed_x,
-                       int *transformed_y, int *transformed_z);
+    void ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z);
     void ViewTransform(struct RenderVertexSoft *a1a, unsigned int uNumVertices);
 
     bool ViewClip(int x, int y, int z, int *transformed_x, int *transformed_y,
@@ -118,9 +117,9 @@ struct IndoorCameraD3D {
     void Project(struct RenderVertexSoft *pVertices, unsigned int uNumVertices,
                  bool fit_into_viewport = false);
 
-    double GetPolygonMaxZ(struct RenderVertexSoft *pVertex,
+    float GetPolygonMaxZ(struct RenderVertexSoft *pVertex,
                           unsigned int uStripType);
-    double GetPolygonMinZ(struct RenderVertexSoft *pVertices,
+    float GetPolygonMinZ(struct RenderVertexSoft *pVertices,
                           unsigned int uStripType);
 
     void LightmapNeerClip(struct RenderVertexSoft *pInVertices,

@@ -1,8 +1,9 @@
 #pragma once
+
 #include <array>
+#include <string>
 
 #include "Engine/Time.h"
-#include "Engine/Strings.h"
 
 constexpr unsigned int MAX_SAVE_SLOTS = 45;
 
@@ -12,7 +13,7 @@ struct SavegameList {
 
     void Reset();
 
-    std::array<String, MAX_SAVE_SLOTS> pFileList;
+    std::array<std::string, MAX_SAVE_SLOTS> pFileList;
 };
 
 /*  244 */

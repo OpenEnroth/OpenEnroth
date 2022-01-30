@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <string>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Awards.h"
@@ -813,7 +814,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f,
                                 ui_character_awards_background);
 
-    String str = StringPrintf(
+    std::string str = StringPrintf(
         "%s \f%05d",
         localization->GetString(LSTR_AWARDS_FOR), ui_character_header_text_color)
         + NameAndTitle(player->pName, player->classType)
@@ -857,7 +858,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
     books_page_number = 0;
 
     for (int i = items_per_page; i < full_num_items_in_book; ++i) {
-        String str;
+        std::string str;
         auto v6 = pAwards[achieved_awards[i]]
                       .pText;  // (char *)dword_723E80_award_related[v20 / 4];
 
@@ -894,7 +895,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
                 break;
         }
 
-        if (str.length() < 1) str = String(v6);
+        if (str.length() < 1) str = std::string(v6);
 
         awards_window.DrawText(
             pFontArrus, 0, 0,

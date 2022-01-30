@@ -71,31 +71,31 @@ unsigned int Render::GetRenderHeight() const { return window->GetHeight(); }
 
 
 
-Texture *Render::CreateTexture_ColorKey(const String &name, uint16_t colorkey) {
+Texture *Render::CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) {
     return TextureD3D::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
 }
 
-Texture *Render::CreateTexture_Solid(const String &name) {
+Texture *Render::CreateTexture_Solid(const std::string &name) {
     return TextureD3D::Create(new Image16bit_LOD_Loader(pIcons_LOD, name));
 }
 
-Texture *Render::CreateTexture_Alpha(const String &name) {
+Texture *Render::CreateTexture_Alpha(const std::string &name) {
     return TextureD3D::Create(new Alpha_LOD_Loader(pIcons_LOD, name));
 }
 
-Texture *Render::CreateTexture_PCXFromIconsLOD(const String &name) {
+Texture *Render::CreateTexture_PCXFromIconsLOD(const std::string &name) {
     return TextureD3D::Create(new PCX_LOD_Compressed_Loader(pIcons_LOD, name));
 }
 
-Texture *Render::CreateTexture_PCXFromNewLOD(const String &name) {
+Texture *Render::CreateTexture_PCXFromNewLOD(const std::string &name) {
     return TextureD3D::Create(new PCX_LOD_Compressed_Loader(pNew_LOD, name));
 }
 
-Texture *Render::CreateTexture_PCXFromFile(const String &name) {
+Texture *Render::CreateTexture_PCXFromFile(const std::string &name) {
     return TextureD3D::Create(new PCX_File_Loader(name));
 }
 
-Texture *Render::CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) {
+Texture *Render::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
     return TextureD3D::Create(new PCX_LOD_Raw_Loader(pLOD, name));
 }
 
@@ -107,11 +107,11 @@ Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
 
 
 
-Texture *Render::CreateTexture(const String &name) {
+Texture *Render::CreateTexture(const std::string &name) {
     return TextureD3D::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->use_hwl_bitmaps));
 }
 
-Texture *Render::CreateSprite(const String &name, unsigned int palette_id,
+Texture *Render::CreateSprite(const std::string &name, unsigned int palette_id,
                               unsigned int lod_sprite_id) {
     return TextureD3D::Create(
         new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));
@@ -1154,7 +1154,7 @@ void Render::SaveWinnersCertificate(const char *file_name) {
     EndScene();
 }
 
-void Render::SavePCXImage32(const String &filename, uint16_t *picture_data,
+void Render::SavePCXImage32(const std::string &filename, uint16_t *picture_data,
                             int width, int height) {
     FILE *result = fopen(filename.c_str(), "wb");
     if (result == nullptr) {
@@ -1171,7 +1171,7 @@ void Render::SavePCXImage32(const String &filename, uint16_t *picture_data,
     fclose(result);
 }
 
-void Render::SavePCXImage16(const String &filename, uint16_t *picture_data,
+void Render::SavePCXImage16(const std::string &filename, uint16_t *picture_data,
                             int width, int height) {
     FILE *result = fopen(filename.c_str(), "wb");
     if (result == nullptr) {
@@ -3760,7 +3760,7 @@ Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
     return image;
 }
 
-void Render::SaveScreenshot(const String &filename, unsigned int width,
+void Render::SaveScreenshot(const std::string &filename, unsigned int width,
                             unsigned int height) {
     auto pixels = MakeScreenshot(width, height);
     SavePCXImage16(filename, pixels, width, height);

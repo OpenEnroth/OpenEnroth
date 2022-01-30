@@ -1,5 +1,6 @@
 #include <map>
 #include <algorithm>
+#include <string>
 
 #include "GUI/UI/UIGame.h"
 
@@ -772,7 +773,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
     }
 }
 
-String GameUI_GetMinimapHintText() {
+std::string GameUI_GetMinimapHintText() {
     double v3;            // st7@1
     int v7;               // eax@4
     const char *v14;      // eax@8
@@ -782,7 +783,7 @@ String GameUI_GetMinimapHintText() {
     unsigned int pY;      // [sp+1Ch] [bp-10h]@1
     unsigned int pX;      // [sp+28h] [bp-4h]@1
 
-    String result;
+    std::string result;
     mouse->GetClickPos(&pX, &pY);
     v3 = 1.0 / (float)((signed int)viewparams->uMinimapZoom * 0.000015258789);
     global_coord_X =
@@ -1288,7 +1289,7 @@ void GameUI_WritePointedObjectStatusString() {
                                      0x3F) +
                                     1;
 
-                                String str;
+                                std::string str;
                                 if (pPlayers[uActiveCharacter]->uSkillPoints <
                                     requiredSkillpoints)
                                     str = localization->FormatString(
@@ -1414,7 +1415,7 @@ void GameUI_WritePointedObjectStatusString() {
                              (pPlayers[uActiveCharacter]->pActiveSkills[pButton->msg_param]
                              & 0x3F) + 1;
 
-                             String str;
+                             std::string str;
                              if (pPlayers[uActiveCharacter]->uSkillPoints <
                              requiredSkillpoints)      str =
                              localization->FormatString(
@@ -2116,7 +2117,7 @@ int GetConditionDrawColor(unsigned int uConditionIdx) {
 }
 
 //----- (00495430) --------------------------------------------------------
-String GetReputationString(int reputation) {
+std::string GetReputationString(int reputation) {
     if (reputation >= 25)
         return localization->GetString(LSTR_REPUTATION_HATED);
     else if (reputation >= 6)

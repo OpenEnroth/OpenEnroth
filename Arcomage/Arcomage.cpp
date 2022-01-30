@@ -36,10 +36,10 @@ void DrawGameUI(int animation_stage);
 void DrawSparks();
 void DrawRectanglesForText();
 void DrawPlayersText();
-void DrawPlayerLevels(const String &str, Point *pXY);
-void DrawBricksCount(const String &str, Point *pXY);
-void DrawGemsCount(const String &str, Point *pXY);
-void DrawBeastsCount(const String &str, Point *pXY);
+void DrawPlayerLevels(const std::string &str, Point *pXY);
+void DrawBricksCount(const std::string &str, Point *pXY);
+void DrawGemsCount(const std::string &str, Point *pXY);
+void DrawBeastsCount(const std::string &str, Point *pXY);
 void DrawPlayersTowers();
 void DrawPlayersWall();
 void DrawCards();
@@ -54,7 +54,7 @@ int new_explosion_effect(Point *a1, int a2);
 int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
-void am_DrawText(const String &str, Point *pXY);
+void am_DrawText(const std::string &str, Point *pXY);
 void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill);
 int rand_interval(int min, int max);  // idb
 
@@ -278,7 +278,8 @@ int explosion_effect_struct::UpdateEffect() {
     float total_to_init = 0;
     if (this->remaining_sparks_to_init > 0) {
         total_to_init = this->prev_init_overflow + this->num_init_per_cycle;
-         if (total_to_init > this->remaining_sparks_to_init) total_to_init = this->remaining_sparks_to_init;
+         if (total_to_init > this->remaining_sparks_to_init)
+             total_to_init = this->remaining_sparks_to_init;
     }
 
     // if sparks left to initiate or effect is still active
@@ -444,8 +445,8 @@ void DrawSparks() {
             }
 
             // increase extents to cover larger square particle drawing
-            xmax +=2;
-            ymax +=2;
+            xmax += 2;
+            ymax += 2;
             uint width = xmax - xmin;
             uint height = ymax - ymin;
 
@@ -484,7 +485,7 @@ void DrawSparks() {
 
                 render->Update_Texture(temp);
                 // draw created image to xmin,ymin
-                render->DrawTextureAlphaNew(xmin / 640., ymin / 480., temp);
+                render->DrawTextureAlphaNew(xmin / 640.0f, ymin / 480.0f, temp);
                 temp->Release();
             }
         }
@@ -1196,7 +1197,7 @@ void IncreaseResourcesInTurn(int player_num) {
 }
 
 void TurnChange() {
-    String player_name;    // [sp+4h] [bp-64h]@4
+    std::string player_name;    // [sp+4h] [bp-64h]@4
     ArcomageGame_InputMSG v10;  // [sp+54h] [bp-14h]@7
     Point v11;               // [sp+60h] [bp-8h]@4
 
@@ -1437,12 +1438,12 @@ void DrawGameUI(int animation_stage) {
 
     // draw texts
     if (pArcomageGame->check_exit) {
-        String t = "Are you sure you want to resign?\n    Press ESC again to confirm";
+        std::string t = "Are you sure you want to resign?\n    Press ESC again to confirm";
         Point p(200, 200);
         am_DrawText(t, &p);
     }
     if (pArcomageGame->GameOver) {
-        String t = "Game Over!";
+        std::string t = "Game Over!";
         Point p(270, 200);
         am_DrawText(t, &p);
     }
@@ -1510,7 +1511,7 @@ void DrawRectanglesForText() {
 
 void DrawPlayersText() {
     int res_value;
-    String text_buff;
+    std::string text_buff;
     Point text_position;
 
     if (need_to_discard_card) {
@@ -1622,7 +1623,7 @@ void DrawPlayersText() {
     DrawBeastsCount(StringFromInt(am_Players[1].resource_beasts), &text_position);
 }
 
-void DrawPlayerLevels(const String &str, Point *pXY) {
+void DrawPlayerLevels(const std::string &str, Point *pXY) {
     Rect pSrcRect;
     Point pTargetPoint;
 
@@ -1644,7 +1645,7 @@ void DrawPlayerLevels(const String &str, Point *pXY) {
     }
 }
 
-void DrawBricksCount(const String &str, Point *pXY) {
+void DrawBricksCount(const std::string &str, Point *pXY) {
     Rect pSrcRect;
     Point pTargetPoint;
 
@@ -1666,7 +1667,7 @@ void DrawBricksCount(const String &str, Point *pXY) {
     }
 }
 
-void DrawGemsCount(const String &str, Point *pXY) {
+void DrawGemsCount(const std::string &str, Point *pXY) {
     Rect pSrcRect;
     Point pTargetPoint;
 
@@ -1688,7 +1689,7 @@ void DrawGemsCount(const String &str, Point *pXY) {
     }
 }
 
-void DrawBeastsCount(const String &str, Point *pXY) {
+void DrawBeastsCount(const std::string &str, Point *pXY) {
     Rect pSrcRect;
     Point pTargetPoint;
 
@@ -2943,7 +2944,8 @@ void GameResultsApply() {
             if (!pParty->pArcomageWins[window_SpeakInHouse->par1C - 108]) {
                 pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] = 1;
                 pParty->PartyFindsGold(
-                    p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100.0, 0);            }
+                    static_cast<unsigned int>(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100), 0);
+            }
         }
 
         // arcomage quest test
@@ -3050,7 +3052,7 @@ void SetStartConditions() {
     zoo_bonus = 1;
 }
 
-void am_DrawText(const String &str, Point *pXY) {
+void am_DrawText(const std::string &str, Point *pXY) {
     pPrimaryWindow->DrawText(pFontComic, pXY->x,
                              pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3,
                              0, str, 0, 0, 0);

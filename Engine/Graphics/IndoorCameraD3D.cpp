@@ -15,7 +15,7 @@
 // calculates FOV (Field of View) angle in radians for IndoorCamera::Initialize
 // and BLVRenderParams::Reset
 float _calc_fov(int viewport_width, int angle_degree) {
-    return viewport_width * 0.5 / tan(angle_degree / 2 * 0.01745329) + 0.5;
+    return viewport_width * 0.5f / tan(angle_degree / 2 * 0.01745329f) + 0.5f;
 }
 
 IndoorCameraD3D *pIndoorCameraD3D = new IndoorCameraD3D;
@@ -150,25 +150,21 @@ bool IndoorCameraD3D::ViewClip(int x, int y, int z, int *transformed_x,
            *transformed_x <= this->GetFarClip();
 }
 
-void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x,
-                                    int *transformed_y, int *transformed_z) {
+void IndoorCameraD3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z) {
     RenderVertexSoft v;
     v.vWorldPosition.x = x;
     v.vWorldPosition.y = y;
     v.vWorldPosition.z = z;
 
     this->ViewTransform(&v, 1);
-    if (transformed_x) {
-        *transformed_x = floorf(v.vWorldViewPosition.x + 0.5f);
-    }
+    if (transformed_x)
+        *transformed_x = std::round(v.vWorldViewPosition.x + 0.5f);
 
-    if (transformed_y) {
-        *transformed_y = floorf(v.vWorldViewPosition.y + 0.5f);
-    }
+    if (transformed_y)
+        *transformed_y = std::round(v.vWorldViewPosition.y + 0.5f);
 
-    if (transformed_z) {
-        *transformed_z = floorf(v.vWorldViewPosition.z + 0.5f);
-    }
+    if (transformed_z)
+        *transformed_z = std::round(v.vWorldViewPosition.z + 0.5f);
 }
 
 //----- (00436523) --------------------------------------------------------
@@ -1100,9 +1096,8 @@ void IndoorCameraD3D::Project(int x, int y, int z, int *screenspace_x,
 }
 
 //----- (00436A6D) --------------------------------------------------------
-double IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices,
-                                       unsigned int uStripType) {
-    double result = FLT_MAX;
+float IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripType) {
+    float result = FLT_MAX;
     for (uint i = 0; i < uStripType; i++) {
         if (pVertices[i].vWorldPosition.z < result) {
             result = pVertices[i].vWorldPosition.z;
@@ -1112,11 +1107,8 @@ double IndoorCameraD3D::GetPolygonMinZ(RenderVertexSoft *pVertices,
 }
 
 //----- (00436A40) --------------------------------------------------------
-double IndoorCameraD3D::GetPolygonMaxZ(RenderVertexSoft *pVertex,
-                                       unsigned int uStripType) {
-    double result;  // st7@1
-
-    result = 1.1754944e-38;
+float IndoorCameraD3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uStripType) {
+    float result = FLT_MIN;
     for (uint i = 0; i < uStripType; i++) {
         if (pVertex[i].vWorldPosition.z > result)
             result = pVertex[i].vWorldPosition.z;

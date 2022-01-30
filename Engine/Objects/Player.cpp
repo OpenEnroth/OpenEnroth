@@ -1406,7 +1406,7 @@ int Player::CalculateRangedDamageTo(int uMonsterInfoID) {
 }
 
 //----- (0048D2EA) --------------------------------------------------------
-String Player::GetMeleeDamageString() {
+std::string Player::GetMeleeDamageString() {
     int min_damage;
     int max_damage;
 
@@ -1414,7 +1414,7 @@ String Player::GetMeleeDamageString() {
 
     if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_FIRE) &&
         (mainHandItem->uItemID <= ITEM_WAND_INCENERATION)) {
-        return String(localization->GetString(LSTR_WAND));
+        return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
                 mainHandItem->uItemID == ITEM_LASER_RIFLE)) {
@@ -1433,7 +1433,7 @@ String Player::GetMeleeDamageString() {
 }
 
 //----- (0048D396) --------------------------------------------------------
-String Player::GetRangedDamageString() {
+std::string Player::GetRangedDamageString() {
     int min_damage;
     int max_damage;
 
@@ -1441,7 +1441,7 @@ String Player::GetRangedDamageString() {
 
     if (mainHandItem != nullptr && (mainHandItem->uItemID >= 135) &&
         (mainHandItem->uItemID <= 159)) {
-        return String(localization->GetString(LSTR_WAND));
+        return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr &&
                (mainHandItem->uItemID == ITEM_BLASTER ||
                 mainHandItem->uItemID == ITEM_LASER_RIFLE)) {
@@ -1460,7 +1460,7 @@ String Player::GetRangedDamageString() {
                                 max_damage);  // build string
         }
     } else {
-        return String("N/A");  // no bow equipped
+        return std::string("N/A");  // no bow equipped
     }
 }
 
@@ -3495,7 +3495,7 @@ enum CHARACTER_RACE Player::GetRace() const {
     }
 }
 
-String Player::GetRaceName() const {
+std::string Player::GetRaceName() const {
     switch (GetRace()) {
         case 0: return localization->GetString(LSTR_RACE_HUMAN);
         case 1: return localization->GetString(LSTR_RACE_DWARF);
@@ -4474,7 +4474,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             else
                 v74 = localization->GetAttirubteName(pParty->uCurrentMonth);
 
-            String status;
+            std::string status;
             switch (pParty->uCurrentMonth) {
                 case 0:
                     playerAffected->uMight += thisa;

@@ -226,7 +226,7 @@ extern std::array<struct NPCData *, 7>
     HouseNPCData;  // 0this array size temporarily increased to 60 from 6 to
                    // work aroud house overflow
 extern GUIButton *HouseNPCPortraitsButtonsList[6];
-extern String branchless_dialogue_str;
+extern std::string branchless_dialogue_str;
 extern int EvtTargetObj;
 extern int _unused_5B5924_is_travel_ui_drawn;  // 005B5924
 
@@ -246,8 +246,8 @@ extern int dword_5B65D0_dialogue_actor_npc_id;
 extern int dword_5C3418;
 extern int dword_5C341C;
 // extern std::array<char, 777> byte_5C3427;
-extern String game_ui_status_bar_event_string;
-extern String game_ui_status_bar_string;
+extern std::string game_ui_status_bar_event_string;
+extern std::string game_ui_status_bar_string;
 extern unsigned int game_ui_status_bar_event_string_time_left;
 extern int bForceDrawFooter;
 extern int _5C35C0_force_party_death;
@@ -320,7 +320,7 @@ extern float flt_6BE150_look_up_down_dangle;
 // extern HINSTANCE hInstance; // idb
 // extern char *pCmdLine;
 // extern HWND hWnd; // idb
-extern String pCurrentMapName;
+extern std::string pCurrentMapName;
 extern unsigned int uLevelMapStatsID;
 
 #define GAME_SETTINGS_0001 0x0001  // Skip AI next frame due to changing levels etc.
@@ -403,7 +403,7 @@ extern int gold_transaction_amount;  // F8B1B4
 extern std::array<const char *, 4> pShopOptions;
 extern int dword_F8B1E0;
 extern int dword_F8B1E4;
-extern String current_npc_text;  // F8B1E8
+extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
 extern std::array<char, 777> byte_F8B1EF;
 extern std::array<char, 4> byte_F8B1F0;

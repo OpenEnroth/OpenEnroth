@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "Engine/Objects/Items.h"
-#include "Engine/Strings.h"
 
 enum CHEST_FLAGS {
     CHEST_TRAPPED = 0x1,
@@ -14,7 +14,7 @@ enum CHEST_FLAGS {
 struct ChestDesc {
     explicit ChestDesc(struct ChestDesc_mm7 *pChest);
 
-    String sName;
+    std::string sName;
     unsigned int uWidth;
     unsigned int uHeight;
     unsigned int uTextureID;

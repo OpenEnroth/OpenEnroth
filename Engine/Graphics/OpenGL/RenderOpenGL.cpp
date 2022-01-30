@@ -1,6 +1,4 @@
 #ifdef _WINDOWS
-    #include <Windows.h>
-
     #pragma comment(lib, "opengl32.lib")
     #pragma comment(lib, "glu32.lib")
 
@@ -56,6 +54,10 @@
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
+
+#ifndef LOWORD
+    #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
+#endif
 
 
 RenderVertexSoft VertexRenderList[50];  // array_50AC10
@@ -2263,7 +2265,7 @@ Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
     return image;
 }
 
-void RenderOpenGL::SaveScreenshot(const String &filename, unsigned int width, unsigned int height) {
+void RenderOpenGL::SaveScreenshot(const std::string &filename, unsigned int width, unsigned int height) {
     auto pixels = MakeScreenshot(width, height);
 
     FILE *result = fopen(filename.c_str(), "wb");
@@ -2748,31 +2750,31 @@ FILE *CreateTga(const char *filename, int image_width, int image_height)
         return f;
 }*/
 
-Texture *RenderOpenGL::CreateTexture_ColorKey(const String &name, uint16_t colorkey) {
+Texture *RenderOpenGL::CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) {
     return TextureOpenGL::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
 }
 
-Texture *RenderOpenGL::CreateTexture_Solid(const String &name) {
+Texture *RenderOpenGL::CreateTexture_Solid(const std::string &name) {
     return TextureOpenGL::Create(new Image16bit_LOD_Loader(pIcons_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_Alpha(const String &name) {
+Texture *RenderOpenGL::CreateTexture_Alpha(const std::string &name) {
     return TextureOpenGL::Create(new Alpha_LOD_Loader(pIcons_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const String &name) {
+Texture *RenderOpenGL::CreateTexture_PCXFromIconsLOD(const std::string &name) {
     return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pIcons_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromNewLOD(const String &name) {
+Texture *RenderOpenGL::CreateTexture_PCXFromNewLOD(const std::string &name) {
     return TextureOpenGL::Create(new PCX_LOD_Compressed_Loader(pNew_LOD, name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromFile(const String &name) {
+Texture *RenderOpenGL::CreateTexture_PCXFromFile(const std::string &name) {
     return TextureOpenGL::Create(new PCX_File_Loader(name));
 }
 
-Texture *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const String &name) {
+Texture *RenderOpenGL::CreateTexture_PCXFromLOD(LOD::File *pLOD, const std::string &name) {
     return TextureOpenGL::Create(new PCX_LOD_Raw_Loader(pLOD, name));
 }
 
@@ -2783,11 +2785,11 @@ Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int heig
 }
 
 
-Texture *RenderOpenGL::CreateTexture(const String &name) {
+Texture *RenderOpenGL::CreateTexture(const std::string &name) {
     return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->use_hwl_bitmaps));
 }
 
-Texture *RenderOpenGL::CreateSprite(const String &name, unsigned int palette_id,
+Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
                                     /*refactor*/ unsigned int lod_sprite_id) {
     return TextureOpenGL::Create(
         new Sprites_LOD_Loader(pSprites_LOD, palette_id, name, lod_sprite_id));

@@ -1,5 +1,6 @@
 #pragma once
-#include "Engine/Strings.h"
+
+#include <string>
 
 enum IMAGE_FORMAT {
     IMAGE_FORMAT_R5G6B5 = 0,
@@ -115,7 +116,7 @@ class TextureFrame {
  public:
     inline TextureFrame() : tex(nullptr) {}
 
-    String name = "null";
+    std::string name = "null";
     int16_t uAnimTime = 0;
     int16_t uAnimLength = 0;
     int16_t uFlags = 0;
@@ -136,7 +137,7 @@ struct TextureFrameTable {
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);
-    Texture *GetFrameTexture(int64_t uFrameID, int time);
+    Texture *GetFrameTexture(int uFrameID, int time);
     int64_t FindTextureByName(const char *Str2);
 
     uint32_t sNumTextures;

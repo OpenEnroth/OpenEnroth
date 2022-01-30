@@ -50,7 +50,7 @@ struct DecorationDesc : public DecorationDesc_mm6 {
     uint8_t uColoredLightRed;
     uint8_t uColoredLightGreen;
     uint8_t uColoredLightBlue;
-    char __padding;
+    uint8_t __padding;
 };
 #pragma pack(pop)
 

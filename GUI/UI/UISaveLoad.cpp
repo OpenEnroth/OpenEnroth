@@ -52,13 +52,13 @@ GUIWindow_Save::GUIWindow_Save() :
 
     LOD::File pLODFile;
     for (uint i = 0; i < MAX_SAVE_SLOTS; ++i) {
-        // String file_name = pSavegameList->pFileList[i];
-        String file_name = StringPrintf("save%03d.mm7", i);
+        // std::string file_name = pSavegameList->pFileList[i];
+        std::string file_name = StringPrintf("save%03d.mm7", i);
         if (file_name.empty()) {
             file_name = "1.mm7";
         }
 
-        String str = MakeDataPath("saves", file_name);
+        std::string str = MakeDataPath("saves", file_name);
         if (_access(str.c_str(), 0) || _access(str.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
@@ -69,8 +69,8 @@ GUIWindow_Save::GUIWindow_Save() :
 
             if (pSavegameHeader[i].pName[0] == '\0') {
                 // blank so add something - suspect quicksaves
-                String newname = pSavegameList->pFileList[i];
-                String test = newname.substr(0, newname.size() - 4);
+                std::string newname = pSavegameList->pFileList[i];
+                std::string test = newname.substr(0, newname.size() - 4);
                 strcpy(pSavegameHeader[i].pName, test.c_str());
             }
 
@@ -160,7 +160,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     LOD::File pLODFile;
     Assert(sizeof(SavegameHeader) == 100);
     for (uint i = 0; i < uNumSavegameFiles; ++i) {
-        String str = MakeDataPath("saves", pSavegameList->pFileList[i]);
+        std::string str = MakeDataPath("saves", pSavegameList->pFileList[i]);
         if (_access(str.c_str(), 6)) {
             pSavegameUsedSlots[i] = 0;
             strcpy(pSavegameHeader[i].pName, localization->GetString(LSTR_EMPTY_SAVESLOT));
@@ -176,8 +176,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
 
         if (pSavegameHeader[i].pName[0] == '\0') {
             // blank so add something - suspect quicksaves
-            String newname = pSavegameList->pFileList[i];
-            String test = newname.substr(0, newname.size() - 4);
+            std::string newname = pSavegameList->pFileList[i];
+            std::string test = newname.substr(0, newname.size() - 4);
             strcpy(pSavegameHeader[i].pName, test.c_str());
         }
 

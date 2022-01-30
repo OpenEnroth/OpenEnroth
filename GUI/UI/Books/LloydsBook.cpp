@@ -1,3 +1,5 @@
+#include <string>
+
 #include "Engine/Engine.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/LOD.h"
@@ -68,7 +70,7 @@ void GUIWindow_LloydsBook::Update() {
     Player *pPlayer = &pParty->pPlayers[_506348_current_lloyd_playerid];
     render->DrawTextureAlphaNew(
         8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[bRecallingBeacon ? 1 : 0]);
-    String pText = localization->GetString(LSTR_RECALL_BEACON);
+    std::string pText = localization->GetString(LSTR_RECALL_BEACON);
 
     GUIWindow pWindow;
     pWindow.uFrameX = game_viewport_x;
@@ -131,7 +133,7 @@ void GUIWindow_LloydsBook::Update() {
                     pLloydsBeaconsPreviewXs[BeaconID] / 640.0f,
                     pLloydsBeaconsPreviewYs[BeaconID] / 480.0f,
                     beacon.image);
-                String Str = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
+                std::string Str = pMapStats->pInfos[pMapStats->sub_410D99_get_map_index(beacon.SaveFileID)].pName;
                 unsigned int pTextHeight = pSpellFont->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
                 pWindow.uFrameY -= 6 + pTextHeight;
                 pWindow.DrawTitleText(pSpellFont, 0, 0, 1, Str, 3);
@@ -140,7 +142,7 @@ void GUIWindow_LloydsBook::Update() {
                 GameTime RemainingTime = beacon.uBeaconTime - pParty->GetPlayingTime();
                 unsigned int pHours = RemainingTime.GetHoursOfDay();
                 unsigned int pDays = RemainingTime.GetDays();
-                String str;
+                std::string str;
                 if (pDays > 1) {
                     str = StringPrintf("%lu %s", pDays + 1, localization->GetString(LSTR_DAYS));
                 } else if (pHours + 1 <= 23) {

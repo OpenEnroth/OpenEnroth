@@ -1,3 +1,5 @@
+#include <string>
+
 #include "src/Application/GameOver.h"
 
 #include "Engine/AssetsManager.h"
@@ -108,7 +110,7 @@ void Application::GameOver_Loop(int v15) {
         v23 += pParty->pPlayers[i].uExperience;
     }
     v23 = (signed __int64)v23 / v19;
-    String v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
+    std::string v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), 1, v6, 0);
 
     v7 = localization->GetString(LSTR_DAY_CAPITALIZED);

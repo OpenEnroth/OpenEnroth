@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_Travel : public GUIWindow {
@@ -20,4 +22,4 @@ class GUIWindow_Transition : public GUIWindow {
     virtual void Release();
 };
 
-extern String transition_button_label;
+extern std::string transition_button_label;

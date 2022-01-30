@@ -309,9 +309,9 @@ static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,
         b /= count;
     }
 
-    bgra[0] = b;
-    bgra[1] = g;
-    bgra[2] = r;
+    bgra[0] = static_cast<uint8_t>(b);
+    bgra[1] = static_cast<uint8_t>(g);
+    bgra[2] = static_cast<uint8_t>(r);
     bgra[3] = 0;
 }
 
