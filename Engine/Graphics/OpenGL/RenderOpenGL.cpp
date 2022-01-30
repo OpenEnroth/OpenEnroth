@@ -941,10 +941,8 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
         if (overshoot_x4 > abs(cos_dir_normal_fp))
             return false; // Moving perpendicular to the plane is OK for some reason.
 
-        // We just say we overshot by radius. This, btw, is what produces these nasty jiggles
-        // when colliding with faces.
+        // We just say we overshot by radius. No idea why.
         overshoot = radius;
-        //overshoot = 0;
 
         // Then this is a correction needed to bring us to the point where we're just touching the face.
         move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);

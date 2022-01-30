@@ -255,7 +255,7 @@ struct Party {
     /**
      * @param item_id                   Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
      * @return                          Whether the provided item is worn by at least one member of the party.
-    */
+     */
     bool WearsItemAnywhere(int item_id) const {
         return
             pPlayers[0].WearsItemAnywhere(item_id) ||

@@ -473,7 +473,7 @@ struct BLVFace {  // 60h
     struct Plane_int_ pFacePlane_old;
     int zCalc1;  // fixpoint a
     int zCalc2;  // fixpoint b
-    int zCalc3;  // fixpoint c, plane = a*x + b*y + (c>>16), no idea what >>16 is doing here.
+    int zCalc3;  // fixpoint c, plane = a*x + b*y + c.
     unsigned int uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
