@@ -2682,9 +2682,9 @@ void _set_3d_modelview_matrix() {
 
     gluLookAt(camera_x, camera_y, camera_z,
 
-              camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationZ / 2048.0) /*- 5*/,
-              camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationZ / 2048.0),
-              camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * (-pParty->sRotationY/* - 20*/) / 2048.0),
+              camera_x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0f),
+              camera_y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0f),
+              camera_z - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationY / 2048.0f),
               0, 0, 1);
 }
 

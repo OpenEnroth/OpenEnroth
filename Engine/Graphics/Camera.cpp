@@ -300,7 +300,7 @@ void Camera3D::debug_outline_sw(RenderVertexSoft *a2,
 
 //----- (004376E7) --------------------------------------------------------
 void Camera3D::CreateViewMatrixAndProjectionScale() {
-    // set up view transform matrix
+    // set up view transform matrix (NB orig game has y rotation direction reversed)
     float cos_y1 = fRotationYCosine, sin_y1 = fRotationYSine;
     float cos_z1 = fRotationZCosine, sin_z1 = fRotationZSine;
 
@@ -654,7 +654,8 @@ void Camera3D::Project(int x, int y, int z, int *screenspace_x, int *screenspace
 }
 
 void Camera3D::CalculateRotations(int camera_rot_y, int camera_rot_z) {
-    sRotationY = camera_rot_y;  // pitch
+    // NB original game inverts rotation direction of y axis
+    sRotationY = -camera_rot_y;  // pitch
     sRotationZ = camera_rot_z;  // yaw
 
     fRotationZSine = sin((pi_double + pi_double) * (double)sRotationZ / 2048.0);

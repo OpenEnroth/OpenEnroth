@@ -186,8 +186,8 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
     int dotdist;                              // edx@15
 
     nodes[num_nodes].viewing_portal_id = -1;
-    // v39 = &pIndoor->pFaces[uFaceID];
 
+    if (uFaceID > pIndoor->uNumFaces) return;
     BLVFace* pFace = &pIndoor->pFaces[uFaceID];
 
     if (!pFace->Portal()) {
@@ -3347,7 +3347,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 party_running_flag = true;
                 break;
 
-            case PARTY_LookDown:
+            case PARTY_LookUp:
                 vertical_angle += engine->config->vertical_turn_speed;
                 if (vertical_angle > 128)
                     vertical_angle = 128;
@@ -3355,7 +3355,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
 
-            case PARTY_LookUp:
+            case PARTY_LookDown:
                 vertical_angle -= engine->config->vertical_turn_speed;
                 if (vertical_angle < -128)
                     vertical_angle = -128;

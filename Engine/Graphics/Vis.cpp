@@ -1562,33 +1562,17 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 // F93E18: using guessed type char static_byte_F93E18_init;
 
 //----- (004C0D32) --------------------------------------------------------
-void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
-                                   Vis_SelectionFilter *filter) {
-    int result;          // eax@1
-    signed int pFaceID;  // esi@2
-    BLVFace* pFace;      // edi@4
-    // unsigned int v7; // eax@6
-    Vis_ObjectInfo* v8;  // eax@6
-    signed int i;        // [sp+18h] [bp-8h]@1
-
-    result = 0;
-    for (i = 0; i < (signed int)pBspRenderer->num_faces; ++i) {
-        pFaceID = pBspRenderer->faces[result].uFaceID;
-        if (pFaceID >= 0) {
-            if (pFaceID < (signed int)pIndoor->uNumFaces) {
-                pFace = &pIndoor->pFaces[pFaceID];
-                if (!pCamera3D->is_face_faced_to_cameraBLV(&pIndoor->pFaces[pFaceID])) {
-                    if (is_part_of_selection(pFace, filter)) {
-                        v8 = DetermineFacetIntersection(
-                            pFace, PID(OBJECT_BModel, pFaceID), pick_depth);
-                        if (v8)
-                            list->AddObject(v8->object, v8->object_type,
-                                v8->depth, v8->object_pid);
-                    }
-                }
+void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
+    for (int i = 0; i < pBspRenderer->num_faces; ++i) {
+        int16_t pFaceID = pBspRenderer->faces[i].uFaceID;
+        BLVFace* pFace = &pIndoor->pFaces[pFaceID];
+        if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
+            if (is_part_of_selection(pFace, filter)) {
+                Vis_ObjectInfo* v8 = DetermineFacetIntersection(pFace, PID(OBJECT_BModel, pFaceID), pick_depth);
+                if (v8)
+                    list->AddObject(v8->object, v8->object_type, v8->depth, v8->object_pid);
             }
         }
-        result = i + 1;
     }
 }
 
