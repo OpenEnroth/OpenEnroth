@@ -10,7 +10,7 @@ Timer *pEventTimer;
 //----- (00426317) --------------------------------------------------------
 uint64_t Timer::Time() {
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-    uint64_t v2 = TIME_QUANT * ms.count() / 1000;
+    uint64_t v2 = 128 * ms.count() / 1000;
     if (v2 < uStartTime) uStartTime = 0;
     return v2;
 }
