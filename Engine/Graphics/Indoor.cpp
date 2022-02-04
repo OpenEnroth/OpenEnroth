@@ -1764,17 +1764,17 @@ void UpdateActors_BLV() {
                         if (_46F04E_collide_against_portals()) break;
                     }
                     v56 = v58 > 1;
-                    if (collision_state.field_7C >= collision_state.move_distance) {
+                    if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
                         v30 = collision_state.new_position_lo.x;
                         v31 = collision_state.new_position_lo.y;
                         v32 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
                     } else {
                         v30 = pActors[actor_id].vPosition.x +
-                              fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
+                              fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
                         v31 = pActors[actor_id].vPosition.y +
-                              fixpoint_mul(collision_state.field_7C, collision_state.direction.y);
+                              fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
                         v32 = pActors[actor_id].vPosition.z +
-                              fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
+                              fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
                     }
                     v33 = collide_against_floor(v30, v31, v32, &collision_state.uSectorID, &uFaceID);
                     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && pActors[actor_id].uAIState == Dead) {
@@ -1786,15 +1786,15 @@ void UpdateActors_BLV() {
                             continue;
                         if (pActors[actor_id].uCurrentActionAnimation != 1 ||
                             v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
-                            if (collision_state.field_7C < collision_state.move_distance) {
+                            if (collision_state.adjusted_move_distance < collision_state.move_distance) {
                                 pActors[actor_id].vPosition.x +=
-                                    fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
+                                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
                                 pActors[actor_id].vPosition.y +=
-                                    fixpoint_mul(collision_state.field_7C, collision_state.direction.y);
+                                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
                                 pActors[actor_id].vPosition.z +=
-                                    fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
+                                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
                                 pActors[actor_id].uSectorID = (short)collision_state.uSectorID;
-                                collision_state.field_70 += collision_state.field_7C;
+                                collision_state.field_70 += collision_state.adjusted_move_distance;
                                 v37 = PID_ID(collision_state.pid);
                                 if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
                                     if (pParty->bTurnBasedModeOn &&
@@ -3457,33 +3457,33 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
         }
 
-        if (collision_state.field_7C >= collision_state.move_distance) {
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             v39 = collision_state.new_position_lo.x;
             uSectorID = collision_state.new_position_lo.y;
             v40 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
             v39 = new_party_x +
-                  fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
-            uSectorID = new_party_y + fixpoint_mul(collision_state.field_7C,
+                  fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+            uSectorID = new_party_y + fixpoint_mul(collision_state.adjusted_move_distance,
                                                    collision_state.direction.y);
             v40 = new_party_z +
-                  fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
+                  fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
         }
         v42 = collide_against_floor(v39, uSectorID, v40 + 40,
                                     &collision_state.uSectorID, &uFaceID);
         if (v42 == -30000 || v42 - new_party_z > 128) return;
-        if (collision_state.field_7C >= collision_state.move_distance) {  // ???
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {  // ???
             new_party_x = collision_state.new_position_lo.x;
             new_party_y = collision_state.new_position_lo.y;
             new_party_z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             break;
         }
-        new_party_x += fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
-        new_party_y += fixpoint_mul(collision_state.field_7C, collision_state.direction.y);
+        new_party_x += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+        new_party_y += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
         uSectorID = collision_state.uSectorID;
-        collision_state.field_70 += collision_state.field_7C;
+        collision_state.field_70 += collision_state.adjusted_move_distance;
         unsigned long long v87 = new_party_z +
-            fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
+            fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
         if (PID_TYPE(collision_state.pid) ==
             OBJECT_Actor) {  // invis break on actor collision    /    при
                              // столкновении с монстром
@@ -4160,7 +4160,7 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
     this->pid = 0;
     this->field_80 = -1;
     this->field_88 = -1;
-    this->field_7C = 0xFFFFFFu;  // 255.999984741 fixpoint
+    this->adjusted_move_distance = 0xFFFFFFu;  // 255.999984741 fixpoint
 
     return  false;
 }

@@ -565,9 +565,9 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                                                                         0;
                                                                                 if (v17 <
                                                                                     collision_state
-                                                                                        .field_7C) {
+                                                                                        .adjusted_move_distance) {
                                                                                     collision_state
-                                                                                        .field_7C =
+                                                                                        .adjusted_move_distance =
                                                                                         v17;
                                                                                     collision_state
                                                                                         .pid =

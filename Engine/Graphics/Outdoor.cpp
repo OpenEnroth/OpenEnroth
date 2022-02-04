@@ -2824,18 +2824,18 @@ void ODM_ProcessPartyActions() {
         _46ED8A_collide_against_sprite_objects(4);
         for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
             Actor::_46DF1A_collide_against_actor(actor_id, 0);
-        if (collision_state.field_7C >= collision_state.move_distance) {
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             _angle_x = collision_state.new_position_lo.x;
             _angle_y = collision_state.new_position_lo.y;
             v40 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            _angle_x = pX + fixpoint_mul(collision_state.field_7C,
+            _angle_x = pX + fixpoint_mul(collision_state.adjusted_move_distance,
                                          collision_state.direction.x);
-            _angle_y = pY + fixpoint_mul(collision_state.field_7C,
+            _angle_y = pY + fixpoint_mul(collision_state.adjusted_move_distance,
                                          collision_state.direction.y);
-            // pModel = (BSPModel *)fixpoint_mul(collision_state.field_7C,
+            // pModel = (BSPModel *)fixpoint_mul(collision_state.adjusted_move_distance,
             // collision_state.direction.z);
-            v40 = fixpoint_mul(collision_state.field_7C, collision_state.direction.z) +
+            v40 = fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z) +
                   party_new_Z;
         }
         v122 = v40;
@@ -2875,7 +2875,7 @@ void ODM_ProcessPartyActions() {
                 }
             }
         }
-        if (collision_state.field_7C >= collision_state.move_distance) {
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             if (!is_not_on_bmodel) {
                 pX = collision_state.new_position_lo.x;
                 pY = collision_state.new_position_lo.y;
@@ -2884,7 +2884,7 @@ void ODM_ProcessPartyActions() {
                 collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             break;
         }
-        collision_state.field_70 += collision_state.field_7C;
+        collision_state.field_70 += collision_state.adjusted_move_distance;
         pX = _angle_x;
         pY = _angle_y;
         v45 = collision_state.pid;
@@ -3522,9 +3522,9 @@ void UpdateActors_ODM() {
                     ++i;
             }
             int v71 = i > 1;
-            if (collision_state.field_7C < collision_state.move_distance)
+            if (collision_state.adjusted_move_distance < collision_state.move_distance)
                 Slope_High =
-                    fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
+                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
             // v34 = 0;
             int v35 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             bool bOnWater = false;
@@ -3551,7 +3551,7 @@ void UpdateActors_ODM() {
                     }
                 }
             }
-            if (collision_state.field_7C >= collision_state.move_distance) {
+            if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
                 pActors[Actor_ITR].vPosition.x = (short)collision_state.new_position_lo.x;
                 pActors[Actor_ITR].vPosition.y = (short)collision_state.new_position_lo.y;
                 pActors[Actor_ITR].vPosition.z = (short)collision_state.new_position_lo.z -
@@ -3561,14 +3561,14 @@ void UpdateActors_ODM() {
             }
 
             pActors[Actor_ITR].vPosition.x +=
-                fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
 
             pActors[Actor_ITR].vPosition.y +=
-                fixpoint_mul(collision_state.field_7C, collision_state.direction.y);
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
 
             pActors[Actor_ITR].vPosition.z +=
-                fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
-            collision_state.field_70 += collision_state.field_7C;
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+            collision_state.field_70 += collision_state.adjusted_move_distance;
             unsigned int v39 = PID_ID(collision_state.pid);
             int Angle_To_Decor;
             signed int Coll_Speed;

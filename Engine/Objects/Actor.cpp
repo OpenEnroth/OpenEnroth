@@ -2732,8 +2732,8 @@ bool Actor::_46DF1A_collide_against_actor(int a1, int a2) {
 
     v13 = v12 - integer_sqrt(v10 * v10 - v11 * v11);
     if (v13 < 0) v13 = 0;
-    if (v13 < collision_state.field_7C) {
-        collision_state.field_7C = v13;
+    if (v13 < collision_state.adjusted_move_distance) {
+        collision_state.adjusted_move_distance = v13;
         collision_state.pid = PID(OBJECT_Actor, a1);
     }
     return true;

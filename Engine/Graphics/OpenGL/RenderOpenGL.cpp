@@ -307,8 +307,8 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                         v10 = a2 - collision_state.radius_lo;
                                         a2 -= collision_state.radius_lo;
                                     }
-                                    if (v10 < collision_state.field_7C) {
-                                        collision_state.field_7C = v10;
+                                    if (v10 < collision_state.adjusted_move_distance) {
+                                        collision_state.adjusted_move_distance = v10;
                                         collision_state.pid = PID(
                                             OBJECT_BModel,
                                             (mface.index | (model.index << 6)));
@@ -334,8 +334,8 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                                 collision_state.direction.y,
                                                 collision_state.direction.z, &face,
                                                 model.index, ecx0)) {
-                                            if (a2 < collision_state.field_7C) {
-                                                collision_state.field_7C = a2;
+                                            if (a2 < collision_state.adjusted_move_distance) {
+                                                collision_state.adjusted_move_distance = a2;
                                                 collision_state.pid =
                                                     PID(OBJECT_BModel,
                                                         (mface.index |
@@ -358,8 +358,8 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                                     collision_state.radius_lo;
                                                 a2 -=
                                                     collision_state.radius_lo;
-                                                if (a2 < collision_state.field_7C) {
-                                                    collision_state.field_7C = v21;
+                                                if (a2 < collision_state.adjusted_move_distance) {
+                                                    collision_state.adjusted_move_distance = v21;
                                                     collision_state.pid = PID(
                                                         OBJECT_BModel,
                                                         (mface.index |
@@ -430,8 +430,8 @@ int _46EF01_collision_chech_player(int a1) {
                         result = integer_sqrt(v3 * v3 - v4 * v4);
                         v7 = v5 - integer_sqrt(v3 * v3 - v4 * v4);
                         if (v7 < 0) v7 = 0;
-                        if (v7 < collision_state.field_7C) {
-                            collision_state.field_7C = v7;
+                        if (v7 < collision_state.adjusted_move_distance) {
+                            collision_state.adjusted_move_distance = v7;
                             collision_state.pid = 4;
                         }
                     }
@@ -469,8 +469,8 @@ void _46E0B2_collide_against_decorations() {
                                 if (v11 <= decor_desc->uDecorationHeight + decor->vPosition.z) {
                                     int v12 = v9 - integer_sqrt(v8 * v8 - v17 * v17);
                                     if (v12 < 0) v12 = 0;
-                                    if (v12 < collision_state.field_7C) {
-                                        collision_state.field_7C = v12;
+                                    if (v12 < collision_state.adjusted_move_distance) {
+                                        collision_state.adjusted_move_distance = v12;
                                         collision_state.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
                                     }
                                 }
@@ -511,14 +511,14 @@ int _46F04E_collide_against_portals() {
 
     int result = 1;
 
-    if (collision_state.field_7C >= (int)v1 && (int)v1 <= collision_state.move_distance) {
+    if (collision_state.adjusted_move_distance >= (int)v1 && (int)v1 <= collision_state.move_distance) {
         collision_state.field_80 = v12;
         if (pIndoor->pFaces[v12].uSectorID == collision_state.uSectorID) {
             collision_state.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
         } else {
             collision_state.uSectorID = pIndoor->pFaces[v12].uSectorID;
         }
-        collision_state.field_7C = 268435455;  // 0xFFFFFFF
+        collision_state.adjusted_move_distance = 268435455;  // 0xFFFFFFF
         result = 0;
     }
 
@@ -587,8 +587,8 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                     }
                 }
 
-                if (have_collision && move_distance < collision_state.field_7C) {
-                    collision_state.field_7C = move_distance;
+                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+                    collision_state.adjusted_move_distance = move_distance;
                     collision_state.pid = PID(OBJECT_BModel, pSector->pFloors[j]);
                 }
             }
@@ -614,8 +614,8 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                     }
                 }
 
-                if (have_collision && move_distance < collision_state.field_7C) {
-                    collision_state.field_7C = move_distance;
+                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+                    collision_state.adjusted_move_distance = move_distance;
                     collision_state.pid = PID(OBJECT_BModel, pSector->pFloors[j]);
                 }
             }
@@ -792,7 +792,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
                                 if (v11 <= object->uHeight +
                                                collision_state.radius_lo +
                                                pSpriteObjects[i].vPosition.z) {
-                                    if (v10 < collision_state.field_7C) {
+                                    if (v10 < collision_state.adjusted_move_distance) {
                                         sub_46DEF2(_this, i);
                                     }
                                 }

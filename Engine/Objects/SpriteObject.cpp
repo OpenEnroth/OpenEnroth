@@ -347,7 +347,7 @@ LABEL_13:
                 SpriteObject::OnInteraction(uLayingItemID);
                 return;
             }
-            if (collision_state.field_7C >= collision_state.move_distance) {
+            if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
                 pSpriteObjects[uLayingItemID].vPosition.x =
                     collision_state.new_position_lo.x;
                 pSpriteObjects[uLayingItemID].vPosition.y =
@@ -390,19 +390,19 @@ LABEL_13:
                 }
                 return;
             }
-            // v60 = ((unsigned __int64)(collision_state.field_7C * (signed
+            // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.x) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.x += fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
-            // v60 = ((unsigned __int64)(collision_state.field_7C * (signed
+            pSpriteObjects[uLayingItemID].vPosition.x += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+            // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.y) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.y += fixpoint_mul(collision_state.field_7C, collision_state.direction.y);
-            // v60 = ((unsigned __int64)(collision_state.field_7C * (signed
+            pSpriteObjects[uLayingItemID].vPosition.y += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+            // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.z) >> 16);
             v28 = (short)collision_state.uSectorID;
-            pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
+            pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
             pSpriteObjects[uLayingItemID].uSectorID = v28;
-            collision_state.field_70 += collision_state.field_7C;
+            collision_state.field_70 += collision_state.adjusted_move_distance;
             if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
                 if (v29 < v54)
                     pSpriteObjects[uLayingItemID].vPosition.z = v54 + 1;
@@ -552,7 +552,7 @@ LABEL_25:
             }
             // end loop2
 
-            if (collision_state.field_7C >= collision_state.move_distance) {
+            if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
                 pSpriteObject->vPosition.x = collision_state.new_position_lo.x;
                 pSpriteObject->vPosition.y = collision_state.new_position_lo.y;
                 pSpriteObject->vPosition.z =
@@ -593,26 +593,26 @@ LABEL_25:
                 }
                 return;
             }
-            // v40 = (unsigned __int64)(collision_state.field_7C * (signed
+            // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.x) >> 16;
 
             pSpriteObject->vPosition.x +=
-                fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
 
-            // v40 = (unsigned __int64)(collision_state.field_7C * (signed
+            // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.y) >> 16;
 
             pSpriteObject->vPosition.y +=
-                fixpoint_mul(collision_state.field_7C, collision_state.direction.y);
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
 
-            // v40 = (unsigned __int64)(collision_state.field_7C * (signed
+            // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.z) >> 16;
 
             pSpriteObject->vPosition.z +=
-                fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
 
             pSpriteObject->uSectorID = collision_state.uSectorID;
-            collision_state.field_70 += collision_state.field_7C;
+            collision_state.field_70 += collision_state.adjusted_move_distance;
 
             // if weve collided but dont need to react return
             if (pObject->uFlags & OBJECT_DESC_INTERACTABLE &&

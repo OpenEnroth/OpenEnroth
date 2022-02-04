@@ -167,10 +167,10 @@ struct stru141_actor_collision_object {
     int speed = 0;
     int inv_speed;
     int move_distance;  // desired movement distance.
-    int field_70;  // some dist modifier - blanked before coll links with field_7C- slows/stops movement
+    int field_70;  // some dist modifier - blanked before coll links with adjusted_move_distance- slows/stops movement
     unsigned int uSectorID = 0;
     unsigned int pid;
-    int field_7C;  // movement distance after adjusting for collisions.
+    int adjusted_move_distance;  // movement distance after adjusting for collisions.
     int field_80;  // portal id??
     int field_84;  // pid of face
     int field_88;  // unsued
