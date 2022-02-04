@@ -3290,6 +3290,10 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int rotation =
         (static_cast<int64_t>(pEventTimer->dt_fixpoint) * pParty->y_rotation_speed * TrigLUT->uIntegerPi / 180) >> 16;
 
+    // If party movement delta is lower then this number then the party remains stationary.
+    int64_t elapsed_time_bounded = std::min(pEventTimer->uTimeElapsed, 10000u);
+    int min_party_move_delta_sqr = 400 * elapsed_time_bounded * elapsed_time_bounded / 8;
+
     int party_dy = 0;
     int party_dx = 0;
     while (pPartyActionQueue->uNumActions) {
@@ -3388,7 +3392,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
-    if (party_dx * party_dx + party_dy * party_dy < 400) {
+    if (party_dx * party_dx + party_dy * party_dy < min_party_move_delta_sqr) {
         party_dy = 0;
         party_dx = 0;
     }
@@ -3505,7 +3509,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 if (pParty->uFallSpeed < 0) pParty->uFallSpeed = 0;
                 v87 = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
                 if (pParty->uFallStartZ - v87 < 512) pParty->uFallStartZ = v87;
-                if (party_dx * party_dx + party_dy * party_dy < 400) {
+                if (party_dx * party_dx + party_dy * party_dy < min_party_move_delta_sqr) {
                     party_dy = 0;
                     party_dx = 0;
                 }
@@ -3552,7 +3556,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     party_dy += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
                     pParty->uFallSpeed +=
                         fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
-                    if (party_dx * party_dx + party_dy * party_dy >= 400) {
+                    if (party_dx * party_dx + party_dy * party_dy >= min_party_move_delta_sqr) {
                         if (pParty->floor_face_pid != PID_ID(collision_state.pid) &&
                             pFace->Pressure_Plate())
                             uFaceEvent =
