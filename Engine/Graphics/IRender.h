@@ -551,9 +551,11 @@ void UpdateObjects();
  * @param dir                           Movement direction as a unit vector in fixpoint format.
  * @param move_distance[out]            Move distance along the `dir` axis required to touch the provided polygon.
  *                                      Always non-negative. This parameter is not set if the function returns false.
+ *                                      Note that "touching" in this context means that the distance from the actor's
+ *                                      center to the polygon equals actor's radius.
  * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
- * @return                              Whether the actor can actually collide with the polygon if moving along the
- *                                      `dir` axis.
+ * @return                              Whether the actor, basically modeled as a sphere, can actually collide with the
+ *                                      polygon if moving along the `dir` axis.
  */
 bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
                           int *move_distance, bool ignore_ethereal);

@@ -929,7 +929,7 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
     signed int move_distance_fp;
 
     // How deep into the model that the face belongs to we already are,
-    // positive value => we're already inside the model.
+    // positive value => actor's sphere already intersects the model.
     int overshoot_fp = -pos_face_distance_fp + radius_fp;
     if (abs(overshoot_fp) < radius_fp) {
         // We got here => we're not that deep into the model. Can just push us back a little.
@@ -944,7 +944,7 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
         // We just say we overshot by radius. No idea why.
         overshoot = radius;
 
-        // Then this is a correction needed to bring us to the point where we're just touching the face.
+        // Then this is a correction needed to bring us to the point where actor's sphere is just touching the face.
         move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
     }
 
