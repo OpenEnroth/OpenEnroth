@@ -286,10 +286,10 @@ LABEL_13:
         pSpriteObjects[uLayingItemID].vPosition.z = v8;
     if (_46BFFA_update_spell_fx(uLayingItemID, 0)) {
     LABEL_92:
-        collision_state.field_0 = 0;
-        collision_state.radius = object->uRadius;
+        collision_state.only_lo = 0;
+        collision_state.radius_lo = object->uRadius;
         collision_state.height = object->uHeight;
-        collision_state.radius2 = 0;
+        collision_state.radius_hi = 0;
         collision_state.field_70 = 0;
         for (v55 = 0; v55 < 100; ++v55) {
             collision_state.position_hi.x = pSpriteObjects[uLayingItemID].vPosition.x;
@@ -298,7 +298,7 @@ LABEL_13:
             collision_state.position_hi.y = pSpriteObjects[uLayingItemID].vPosition.y;
             collision_state.position_lo.y = pSpriteObjects[uLayingItemID].vPosition.y;
             collision_state.position_hi.z = pSpriteObjects[uLayingItemID].vPosition.z +
-                                     collision_state.radius + 1;
+                                     collision_state.radius_lo + 1;
             collision_state.position_lo.z = collision_state.position_hi.z;
             collision_state.velocity.x = pSpriteObjects[uLayingItemID].vVelocity.x;
             collision_state.velocity.y = pSpriteObjects[uLayingItemID].vVelocity.y;
@@ -330,11 +330,11 @@ LABEL_13:
                 for (i = 0; i < (signed int)uNumActors; ++i)
                     Actor::_46DF1A_collide_against_actor(i, 0);
             }
-            v26 = collision_state.new_position_lo.z - collision_state.radius - 1;
+            v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             v49 = false;
             v27 = ODM_GetFloorLevel(
                 collision_state.new_position_lo.x, collision_state.new_position_lo.y,
-                collision_state.new_position_lo.z - collision_state.radius - 1,
+                collision_state.new_position_lo.z - collision_state.radius_lo - 1,
                 object->uHeight, &v49, &v50, 0);
             if (on_water && v26 < v27 + 60) {
                 if (v50)
@@ -353,7 +353,7 @@ LABEL_13:
                 pSpriteObjects[uLayingItemID].vPosition.y =
                     collision_state.new_position_lo.y;
                 pSpriteObjects[uLayingItemID].vPosition.z =
-                    collision_state.new_position_lo.z - collision_state.radius - 1;
+                    collision_state.new_position_lo.z - collision_state.radius_lo - 1;
                 pSpriteObjects[uLayingItemID].uSectorID =
                     (short)collision_state.uSectorID;
                 memset(&Dst, 0, sizeof(Particle_sw));
@@ -504,16 +504,16 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
 
     if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {  //не падающие объекты
 LABEL_25:
-        collision_state.field_0 = 0;
-        collision_state.radius = pObject->uRadius;
+        collision_state.only_lo = 0;
+        collision_state.radius_lo = pObject->uRadius;
         collision_state.field_84 = -1;
         collision_state.height = pObject->uHeight;
-        collision_state.radius2 = 0;
+        collision_state.radius_hi = 0;
         collision_state.field_70 = 0;
         for (int loop = 0; loop < 100; loop++) {
             collision_state.position_hi.x = pSpriteObject->vPosition.x;
             collision_state.position_hi.y = pSpriteObject->vPosition.y;
-            collision_state.position_hi.z = collision_state.radius + pSpriteObject->vPosition.z + 1;
+            collision_state.position_hi.z = collision_state.radius_lo + pSpriteObject->vPosition.z + 1;
 
             collision_state.position_lo.x = collision_state.position_hi.x;
             collision_state.position_lo.y = collision_state.position_hi.y;
@@ -556,7 +556,7 @@ LABEL_25:
                 pSpriteObject->vPosition.x = collision_state.new_position_lo.x;
                 pSpriteObject->vPosition.y = collision_state.new_position_lo.y;
                 pSpriteObject->vPosition.z =
-                    collision_state.new_position_lo.z - collision_state.radius - 1;
+                    collision_state.new_position_lo.z - collision_state.radius_lo - 1;
                 pSpriteObject->uSectorID = (short)collision_state.uSectorID;
                 if (!(pObject->uFlags & 0x100)) return;
                 memset(&Dst, 0, sizeof(Particle_sw));

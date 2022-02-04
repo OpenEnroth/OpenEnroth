@@ -1721,9 +1721,9 @@ void UpdateActors_BLV() {
                 pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >= 400) {
             collision_state.field_84 = -1;
             collision_state.field_70 = 0;
-            collision_state.field_0 = 1;
-            collision_state.radius2 = pActors[actor_id].uActorRadius;
-            collision_state.radius = pActors[actor_id].uActorRadius;
+            collision_state.only_lo = 1;
+            collision_state.radius_hi = pActors[actor_id].uActorRadius;
+            collision_state.radius_lo = pActors[actor_id].uActorRadius;
             collision_state.height = pActors[actor_id].uActorHeight;
             v22 = 0;
             for (int attempt = 0; attempt < 100; attempt++) {
@@ -1767,7 +1767,7 @@ void UpdateActors_BLV() {
                     if (collision_state.field_7C >= collision_state.move_distance) {
                         v30 = collision_state.new_position_lo.x;
                         v31 = collision_state.new_position_lo.y;
-                        v32 = collision_state.new_position_lo.z - collision_state.radius - 1;
+                        v32 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
                     } else {
                         v30 = pActors[actor_id].vPosition.x +
                               fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
@@ -1951,7 +1951,7 @@ void UpdateActors_BLV() {
                                             fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.z);
                                         if (pIndoor->pFaces[v37].uPolygonType != 4 &&
                                             pIndoor->pFaces[v37].uPolygonType != 3) {
-                                            v44 = collision_state.radius -
+                                            v44 = collision_state.radius_lo -
                                                 pIndoor->pFaces[v37].pFacePlane_old.
                                                     SignedDistanceTo(pActors[actor_id].vPosition);
                                             if (v44 > 0) {
@@ -1980,7 +1980,7 @@ void UpdateActors_BLV() {
                                 pActors[actor_id].vPosition.x = (short)collision_state.new_position_lo.x;
                                 pActors[actor_id].vPosition.y = (short)collision_state.new_position_lo.y;
                                 pActors[actor_id].vPosition.z = (short)collision_state.new_position_lo.z -
-                                    (short)collision_state.radius - 1;
+                                    (short)collision_state.radius_lo - 1;
                                 pActors[actor_id].uSectorID = (short)collision_state.uSectorID;
                                 // goto LABEL_123;
                                 break;
@@ -3422,9 +3422,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     collision_state.field_84 = -1;
     collision_state.field_70 = 0;
-    collision_state.radius = pParty->radius;
-    collision_state.radius2 = pParty->radius / 2;
-    collision_state.field_0 = 1;
+    collision_state.radius_lo = pParty->radius;
+    collision_state.radius_hi = pParty->radius / 2;
+    collision_state.only_lo = 1;
     collision_state.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
         new_party_z = party_z;
@@ -3434,7 +3434,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
         collision_state.position_lo.x = new_party_x;
         collision_state.position_lo.y = new_party_y;
-        collision_state.position_lo.z = collision_state.radius + party_z + 1;
+        collision_state.position_lo.z = collision_state.radius_lo + party_z + 1;
 
         collision_state.velocity.x = party_dx;
         collision_state.velocity.y = party_dy;
@@ -3460,7 +3460,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (collision_state.field_7C >= collision_state.move_distance) {
             v39 = collision_state.new_position_lo.x;
             uSectorID = collision_state.new_position_lo.y;
-            v40 = collision_state.new_position_lo.z - collision_state.radius - 1;
+            v40 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
             v39 = new_party_x +
                   fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
@@ -3475,7 +3475,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (collision_state.field_7C >= collision_state.move_distance) {  // ???
             new_party_x = collision_state.new_position_lo.x;
             new_party_y = collision_state.new_position_lo.y;
-            new_party_z = collision_state.new_position_lo.z - collision_state.radius - 1;
+            new_party_z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             break;
         }
         new_party_x += fixpoint_mul(collision_state.field_7C, collision_state.direction.x);
@@ -3527,7 +3527,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     pParty->uFallSpeed +=
                         fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     // v80 = pFace->pFacePlane_old.vNormal.y;
-                    v52 = collision_state.radius -
+                    v52 = collision_state.radius_lo -
                         pFace->pFacePlane_old.SignedDistanceTo(new_party_x, new_party_y, v87);
                     if (v52 > 0) {
                         new_party_x +=
@@ -4150,12 +4150,12 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
     this->new_position_hi.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_hi.z;
     this->new_position_lo.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_lo.z;
 
-    this->bbox.x1 = std::min(this->position_lo.x, this->new_position_lo.x) - this->radius;
-    this->bbox.x2 = std::max(this->position_lo.x, this->new_position_lo.x) + this->radius;
-    this->bbox.y1 = std::min(this->position_lo.y, this->new_position_lo.y) - this->radius;
-    this->bbox.y2 = std::max(this->position_lo.y, this->new_position_lo.y) + this->radius;
-    this->bbox.z1 = std::min(this->position_lo.z, this->new_position_lo.z) - this->radius;
-    this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi.z) + this->radius2;
+    this->bbox.x1 = std::min(this->position_lo.x, this->new_position_lo.x) - this->radius_lo;
+    this->bbox.x2 = std::max(this->position_lo.x, this->new_position_lo.x) + this->radius_lo;
+    this->bbox.y1 = std::min(this->position_lo.y, this->new_position_lo.y) - this->radius_lo;
+    this->bbox.y2 = std::max(this->position_lo.y, this->new_position_lo.y) + this->radius_lo;
+    this->bbox.z1 = std::min(this->position_lo.z, this->new_position_lo.z) - this->radius_lo;
+    this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi.z) + this->radius_hi;
 
     this->pid = 0;
     this->field_80 = -1;

@@ -2722,7 +2722,7 @@ bool Actor::_46DF1A_collide_against_actor(int a1, int a2) {
     }
     v8 = v2->vPosition.x - collision_state.position_lo.x;
     v9 = v2->vPosition.y - collision_state.position_lo.y;
-    v10 = collision_state.radius + v4;
+    v10 = collision_state.radius_lo + v4;
     v11 = (v8 * collision_state.direction.y - v9 * collision_state.direction.x) >> 16;
     v12 = (v8 * collision_state.direction.x + v9 * collision_state.direction.y) >> 16;
     if (abs(v11) > v10 || v12 <= 0) return false;

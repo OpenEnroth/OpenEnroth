@@ -501,7 +501,7 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                                                         .y;
                                                                 v13 =
                                                                     collision_state
-                                                                        .radius +
+                                                                        .radius_lo +
                                                                     v7;
                                                                 v21 =
                                                                     ((v8 -
@@ -521,7 +521,7 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                                                     16;
                                                                 if (abs(v21) <=
                                                                     collision_state
-                                                                            .radius +
+                                                                            .radius_lo +
                                                                         v7) {
                                                                     v14 =
                                                                         (v12 *

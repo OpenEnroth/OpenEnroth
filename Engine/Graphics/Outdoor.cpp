@@ -2790,9 +2790,9 @@ void ODM_ProcessPartyActions() {
     // --(столкновения)-------------------------------------------------------------------
     collision_state.field_84 = -1;
     collision_state.field_70 = 0;
-    collision_state.radius = pParty->radius;
-    collision_state.radius2 = pParty->radius / 2;
-    collision_state.field_0 = 1;
+    collision_state.radius_lo = pParty->radius;
+    collision_state.radius_hi = pParty->radius / 2;
+    collision_state.only_lo = 1;
     collision_state.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi.x = pX;
@@ -2801,7 +2801,7 @@ void ODM_ProcessPartyActions() {
 
         collision_state.position_lo.x = pX;
         collision_state.position_lo.y = pY;
-        collision_state.position_lo.z = collision_state.radius + party_new_Z + 1;
+        collision_state.position_lo.z = collision_state.radius_lo + party_new_Z + 1;
 
         collision_state.velocity.x = v2;
         collision_state.velocity.y = v128;
@@ -2827,7 +2827,7 @@ void ODM_ProcessPartyActions() {
         if (collision_state.field_7C >= collision_state.move_distance) {
             _angle_x = collision_state.new_position_lo.x;
             _angle_y = collision_state.new_position_lo.y;
-            v40 = collision_state.new_position_lo.z - collision_state.radius - 1;
+            v40 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
             _angle_x = pX + fixpoint_mul(collision_state.field_7C,
                                          collision_state.direction.x);
@@ -2881,7 +2881,7 @@ void ODM_ProcessPartyActions() {
                 pY = collision_state.new_position_lo.y;
             }
             party_new_Z =
-                collision_state.new_position_lo.z - collision_state.radius - 1;
+                collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             break;
         }
         collision_state.field_70 += collision_state.field_7C;
@@ -2952,7 +2952,7 @@ void ODM_ProcessPartyActions() {
                     v54 = fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
                 pParty->uFallSpeed += v54;
                 v55 =
-                    collision_state.radius -
+                    collision_state.radius_lo -
                     pODMFace->pFacePlane.SignedDistanceTo(_angle_x, _angle_y, v122);
                 if (v55 > 0) {
                     pX = _angle_x +
@@ -3488,10 +3488,10 @@ void UpdateActors_ODM() {
             Act_Radius = 40;
 
 
-        collision_state.field_0 = 1;
+        collision_state.only_lo = 1;
         collision_state.field_84 = -1;
-        collision_state.radius2 = Act_Radius;
-        collision_state.radius = Act_Radius;
+        collision_state.radius_hi = Act_Radius;
+        collision_state.radius_lo = Act_Radius;
         collision_state.height = pActors[Actor_ITR].uActorHeight;
         collision_state.field_70 = 0;
 
@@ -3526,12 +3526,12 @@ void UpdateActors_ODM() {
                 Slope_High =
                     fixpoint_mul(collision_state.field_7C, collision_state.direction.z);
             // v34 = 0;
-            int v35 = collision_state.new_position_lo.z - collision_state.radius - 1;
+            int v35 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             bool bOnWater = false;
             int Splash_Model_On;
             int Splash_Floor = ODM_GetFloorLevel(
                 collision_state.new_position_lo.x, collision_state.new_position_lo.y,
-                collision_state.new_position_lo.z - collision_state.radius - 1,
+                collision_state.new_position_lo.z - collision_state.radius_lo - 1,
                 pActors[Actor_ITR].uActorHeight, &bOnWater, &Splash_Model_On, 0);
             if (uIsOnWater) {
                 if (v35 < Splash_Floor + 60) {
@@ -3555,7 +3555,7 @@ void UpdateActors_ODM() {
                 pActors[Actor_ITR].vPosition.x = (short)collision_state.new_position_lo.x;
                 pActors[Actor_ITR].vPosition.y = (short)collision_state.new_position_lo.y;
                 pActors[Actor_ITR].vPosition.z = (short)collision_state.new_position_lo.z -
-                                           (short)collision_state.radius -
+                                           (short)collision_state.radius_lo -
                                            1;
                 break;
             }
@@ -3664,7 +3664,7 @@ void UpdateActors_ODM() {
                             pActors[Actor_ITR].vVelocity.z +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.z);
                             if (face->uPolygonType != 4) {
-                                int v46 = collision_state.radius -
+                                int v46 = collision_state.radius_lo -
                                     face->pFacePlane.SignedDistanceTo(pActors[Actor_ITR].vPosition);
                                 if (v46 > 0) {
                                     pActors[Actor_ITR].vPosition.x += fixpoint_mul(
@@ -3690,7 +3690,7 @@ void UpdateActors_ODM() {
             pActors[Actor_ITR].vVelocity.z =
                 fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.z);
 
-            Act_Radius = collision_state.radius;
+            Act_Radius = collision_state.radius_lo;
         }
 
         // WATER TILE CHECKING

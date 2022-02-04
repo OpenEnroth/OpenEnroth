@@ -571,9 +571,25 @@ bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y,
  * \returns                             Projects the provided point and face onto the face's main plane (XY, YZ or ZX)
  *                                      and returns whether the resulting point lies inside the resulting polygon.
  */
-bool IsProjectedPointInsideFace(struct BLVFace *face, const Vec3_short_ &point);
+bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point);
 bool sub_4759C9(struct BLVFace *face, int a2, int a3, int16_t a4);
-bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, struct BLVFace *a4);
+/**
+ * Original offset 0x475D85.
+ *
+ * @param face                          Polygon to check collision against.
+ * @param pos                           Actor position to check.
+ * @param dir                           Movement direction as a unit vector in fixpoint format.
+ * @param move_distance[in,out]         Current movement distance along the `dir` axis. This parameter is not touched
+ *                                      when the function returns false. If the function returns true, then the
+ *                                      distance required to hit the polygon is stored here. Note that this effectively
+ *                                      means that this function can only decrease `move_distance`, but never increase
+ *                                      it.
+ * @return                              Whether the actor, modeled as a point, hits the provided polygon if moving from
+ *                                      `pos` along the `dir` axis by at most `move_distance`.
+ *
+ * @see collide_against_face
+ */
+bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance);
 bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6,
                 int a7, int a8, int a9);
 

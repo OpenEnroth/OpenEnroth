@@ -149,26 +149,28 @@ struct stru141_actor_collision_object {
      */
     bool PrepareAndCheckIfStationary(int dt);
 
-    int field_0;  // bool flag
-    int radius;   // actor radius
-    int radius2;  // eeeh, upper radius?
-    int height;  // actor height
-    int field_10;  // unsued
-    int field_14;  // unsued
-    int field_18;  // unsued
+    // actor is modeled as two spheres, basically "feet" & "head". Collisions are then done for both spheres.
+
+    int only_lo;  // only check collisions for the lo sphere.
+    int radius_lo;   // radius of the lo ("feet") sphere.
+    int radius_hi;  // radius of the hi ("head") sphere.
+    int height;  // actor height.
+    int field_10;  // unused
+    int field_14;  // unused
+    int field_18;  // unused
     Vec3_int_ velocity;
-    Vec3_int_ position_lo;
-    Vec3_int_ position_hi;
-    Vec3_int_ new_position_lo;  // adjusted move positions after collisions?
-    Vec3_int_ new_position_hi;
-    Vec3_int_ direction;  // velocity's unit vector, in fixpoint format
+    Vec3_int_ position_lo; // center of the lo sphere.
+    Vec3_int_ position_hi; // center of the hi sphere.
+    Vec3_int_ new_position_lo; // desired new position for the center of the lo sphere.
+    Vec3_int_ new_position_hi; // desired new position for the center of the hi sphere.
+    Vec3_int_ direction;  // movement direction, as a fixpoint unit vector.
     int speed = 0;
     int inv_speed;
-    int move_distance;  // movement dist
+    int move_distance;  // desired movement distance.
     int field_70;  // some dist modifier - blanked before coll links with field_7C- slows/stops movement
     unsigned int uSectorID = 0;
     unsigned int pid;
-    int field_7C;  // mod speed after collisions??
+    int field_7C;  // movement distance after adjusting for collisions.
     int field_80;  // portal id??
     int field_84;  // pid of face
     int field_88;  // unsued
@@ -439,7 +441,7 @@ struct BLVFace {  // 60h
         return (uAttributes & FACE_IsInvisible) != 0;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return (uAttributes & FACE_IsPortal) != 0; }
+    inline bool Portal() const { return (uAttributes & FACE_IsPortal) != 0; } // TODO: rename IsPortal.
     inline bool Fluid() const { return (uAttributes & FACE_IsFluid) != 0; }
     inline bool Indoor_sky() const {
         return (uAttributes & FACE_INDOOR_SKY) != 0;

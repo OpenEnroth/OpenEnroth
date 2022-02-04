@@ -279,11 +279,11 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                         v8 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
                         if (v8 > 0) {
                             v9 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-                            if (v8 <= collision_state.radius ||
-                                v9 <= collision_state.radius) {
+                            if (v8 <= collision_state.radius_lo ||
+                                v9 <= collision_state.radius_lo) {
                                 if (v9 <= v8) {
                                     a2 = collision_state.move_distance;
-                                    if (sub_4754BF(collision_state.radius,
+                                    if (sub_4754BF(collision_state.radius_lo,
                                                    &a2, collision_state.position_lo.x,
                                                    collision_state.position_lo.y,
                                                    collision_state.position_lo.z,
@@ -293,7 +293,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                                    &face, model.index, ecx0)) {
                                         v10 = a2;
                                     } else {
-                                        a2 = collision_state.radius +
+                                        a2 = collision_state.radius_lo +
                                              collision_state.move_distance;
                                         if (!sub_475F30(&a2, &face,
                                                         collision_state.position_lo.x,
@@ -304,8 +304,8 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                                         collision_state.direction.z,
                                                         model.index))
                                             goto LABEL_29;
-                                        v10 = a2 - collision_state.radius;
-                                        a2 -= collision_state.radius;
+                                        v10 = a2 - collision_state.radius_lo;
+                                        a2 -= collision_state.radius_lo;
                                     }
                                     if (v10 < collision_state.field_7C) {
                                         collision_state.field_7C = v10;
@@ -317,16 +317,16 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                             }
                         }
                     LABEL_29:
-                        if (collision_state.field_0 & 1) {
+                        if (collision_state.only_lo & 1) {
                             v15 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
                             if (v15 > 0) {
                                 v16 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
-                                if (v15 <= collision_state.radius ||
-                                    v16 <= collision_state.radius) {
+                                if (v15 <= collision_state.radius_lo ||
+                                    v16 <= collision_state.radius_lo) {
                                     if (v16 <= v15) {
                                         a2 = collision_state.move_distance;
                                         if (sub_4754BF(
-                                                collision_state.radius2, &a2,
+                                                collision_state.radius_hi, &a2,
                                                 collision_state.position_hi.x,
                                                 collision_state.position_hi.y,
                                                 collision_state.position_hi.z,
@@ -343,7 +343,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                             }
                                         } else {
                                             a2 = collision_state.move_distance +
-                                                 collision_state.radius2;
+                                                 collision_state.radius_hi;
                                             if (sub_475F30(
                                                     &a2, &face,
                                                     collision_state.position_hi.x,
@@ -355,9 +355,9 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                                     model.index)) {
                                                 v21 =
                                                     a2 -
-                                                    collision_state.radius;
+                                                    collision_state.radius_lo;
                                                 a2 -=
-                                                    collision_state.radius;
+                                                    collision_state.radius_lo;
                                                 if (a2 < collision_state.field_7C) {
                                                     collision_state.field_7C = v21;
                                                     collision_state.pid = PID(
@@ -400,7 +400,7 @@ int _46EF01_collision_chech_player(int a1) {
         collision_state.bbox.y2 >= pParty->vPosition.y - (2 * pParty->radius) &&
         collision_state.bbox.z1 <= (pParty->vPosition.z + (int)pParty->uPartyHeight) &&
         collision_state.bbox.z2 >= pParty->vPosition.z) {
-        v3 = collision_state.radius + (2 * pParty->radius);
+        v3 = collision_state.radius_lo + (2 * pParty->radius);
         v11 = pParty->vPosition.x - collision_state.position_lo.x;
         v4 = ((pParty->vPosition.x - collision_state.position_lo.x) *
                   collision_state.direction.y -
@@ -413,7 +413,7 @@ int _46EF01_collision_chech_player(int a1) {
                       (pParty->vPosition.y - collision_state.position_lo.y) *
                           collision_state.direction.x) >>
                      16);
-        if (result <= collision_state.radius + (2 * pParty->radius)) {
+        if (result <= collision_state.radius_lo + (2 * pParty->radius)) {
             result = v10 * collision_state.direction.y;
             v5 = (v10 * collision_state.direction.y +
                   v11 * collision_state.direction.x) >>
@@ -458,10 +458,10 @@ void _46E0B2_collide_against_decorations() {
                     collision_state.bbox.z2 >= decor->vPosition.z) {
                     int v16 = decor->vPosition.x - collision_state.position_lo.x;
                     int v15 = decor->vPosition.y - collision_state.position_lo.y;
-                    int v8 = collision_state.radius + decor_desc->uRadius;
+                    int v8 = collision_state.radius_lo + decor_desc->uRadius;
                     int v17 = ((decor->vPosition.x - collision_state.position_lo.x) * collision_state.direction.y -
                                (decor->vPosition.y - collision_state.position_lo.y) * collision_state.direction.x) >> 16;
-                    if (abs(v17) <= collision_state.radius + decor_desc->uRadius) {
+                    if (abs(v17) <= collision_state.radius_lo + decor_desc->uRadius) {
                         int v9 = (v16 * collision_state.direction.x + v15 * collision_state.direction.y) >> 16;
                         if (v9 > 0) {
                             int v11 = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, v9);
@@ -497,9 +497,9 @@ int _46F04E_collide_against_portals() {
             if (collision_state.bbox.Intersects(face->pBounding)) {
                 int v4 = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
                 int v5 = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-                if ((v4 < collision_state.radius || v5 < collision_state.radius) &&
-                    (v4 > -collision_state.radius || v5 > -collision_state.radius) &&
-                    (a3 = collision_state.move_distance, sub_475D85(&collision_state.position_lo, &collision_state.direction, &a3, face)) && a3 < (int)v10) {
+                if ((v4 < collision_state.radius_lo || v5 < collision_state.radius_lo) &&
+                    (v4 > -collision_state.radius_lo || v5 > -collision_state.radius_lo) &&
+                    (a3 = collision_state.move_distance, collide_against_face_point(face, &collision_state.position_lo, &collision_state.direction, &a3)) && a3 < (int)v10) {
                     v10 = a3;
                     v12 = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
                 }
@@ -527,10 +527,9 @@ int _46F04E_collide_against_portals() {
 
 void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide with ethereal faces?
     // int v10; // ecx@15
-    int v17;                // eax@29
     unsigned int v18;       // eax@33
-    int v21;                // eax@35
-    int v22;                // ecx@36
+    int distance_hi_old;                // eax@35
+    int distance_hi_new;                // ecx@36
     int v23;                // eax@40
     unsigned int v24;       // eax@44
 
@@ -568,60 +567,56 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
             if(pFloor == collision_state.field_84)
                 continue;
 
-            int move_distance;
             int distance_lo_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
             int distance_lo_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-
             if (distance_lo_old > 0 &&
-                (distance_lo_old <= collision_state.radius || distance_lo_new <= collision_state.radius) &&
+                (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
                 distance_lo_new <= distance_lo_old) {
-                move_distance = collision_state.move_distance;
-                if (collide_against_face(pFace, collision_state.position_lo, collision_state.radius,
+
+                bool have_collision = false;
+                int move_distance = collision_state.move_distance;
+                if (collide_against_face(pFace, collision_state.position_lo, collision_state.radius_lo,
                                          collision_state.direction, &move_distance, b1)) {
-                    v17 = move_distance;
+                    have_collision = true;
                 } else {
-                    move_distance = collision_state.move_distance + collision_state.radius;
-                    if (!sub_475D85(&collision_state.position_lo, &collision_state.direction, &move_distance, pFace))
-                        goto LABEL_34;
-                    v17 = move_distance - collision_state.radius;
-                    move_distance -= collision_state.radius;
+                    move_distance = collision_state.move_distance + collision_state.radius_lo;
+                    if (collide_against_face_point(pFace, &collision_state.position_lo, &collision_state.direction,
+                                                   &move_distance)) {
+                        have_collision = true;
+                        move_distance -= collision_state.radius_lo;
+                    }
                 }
 
-                if (v17 < collision_state.field_7C) {
-                    collision_state.field_7C = v17;
-                    v18 = 8 * pSector->pFloors[j];
-                    v18 |= 6;
-                    collision_state.pid = v18;
+                if (have_collision && move_distance < collision_state.field_7C) {
+                    collision_state.field_7C = move_distance;
+                    collision_state.pid = PID(OBJECT_BModel, pSector->pFloors[j]);
                 }
             }
 
-        LABEL_34:
-            if (!(collision_state.field_0 & 1) ||
-                (v21 = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_hi),
-                    v21 <= 0) ||
-                (v22 = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi),
-                    v21 > collision_state.radius) &&
-                    v22 > collision_state.radius ||
-                v22 > v21)
-                continue;
+            int distance_hi_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
+            int distance_hi_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
+            if (!(collision_state.only_lo & 1) &&
+                distance_hi_old > 0 &&
+                (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
+                distance_hi_new <= distance_hi_old) {
 
-            move_distance = collision_state.move_distance;
-            if (collide_against_face(pFace, collision_state.position_hi, collision_state.radius2,
-                                     collision_state.direction, &move_distance, b1)) {
-                v23 = move_distance;
-                goto LABEL_43;
-            }
-            move_distance = collision_state.move_distance + collision_state.radius2;
-            if (sub_475D85(&collision_state.position_hi, &collision_state.direction,
-                            &move_distance, pFace)) {
-                v23 = move_distance - collision_state.radius;
-                move_distance -= collision_state.radius;
-            LABEL_43:
-                if (v23 < collision_state.field_7C) {
-                    collision_state.field_7C = v23;
-                    v24 = 8 * pSector->pFloors[j];
-                    v24 |= 6;
-                    collision_state.pid = v24;
+                bool have_collision = false;
+                int move_distance = collision_state.move_distance;
+                if (collide_against_face(pFace, collision_state.position_hi, collision_state.radius_hi,
+                                         collision_state.direction, &move_distance, b1)) {
+                    have_collision = true;
+                } else {
+                    move_distance = collision_state.move_distance + collision_state.radius_hi;
+                    if (collide_against_face_point(pFace, &collision_state.position_hi, &collision_state.direction,
+                                                   &move_distance)) {
+                        have_collision = true;
+                        move_distance -= collision_state.radius_lo;
+                    }
+                }
+
+                if (have_collision && move_distance < collision_state.field_7C) {
+                    collision_state.field_7C = move_distance;
+                    collision_state.pid = PID(OBJECT_BModel, pSector->pFloors[j]);
                 }
             }
         }
@@ -779,7 +774,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
                               collision_state.position_lo.y) *
                                  collision_state.direction.x) >>
                             16) <=
-                        object->uHeight + collision_state.radius) {
+                        object->uHeight + collision_state.radius_lo) {
                         v10 = ((pSpriteObjects[i].vPosition.x -
                                 collision_state.position_lo.x) *
                                    collision_state.direction.x +
@@ -793,9 +788,9 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
                                                       (signed __int64)v10) >>
                                    16);
                             if (v11 >= pSpriteObjects[i].vPosition.z -
-                                           collision_state.radius) {
+                                           collision_state.radius_lo) {
                                 if (v11 <= object->uHeight +
-                                               collision_state.radius +
+                                               collision_state.radius_lo +
                                                pSpriteObjects[i].vPosition.z) {
                                     if (v10 < collision_state.field_7C) {
                                         sub_46DEF2(_this, i);
@@ -1231,61 +1226,53 @@ bool sub_4759C9(BLVFace* face, int a2, int a3, __int16 a4) {
     return result;
 }
 
-bool sub_475D85(Vec3_int_* a1, Vec3_int_* a2, int* a3, BLVFace* a4) {
-    BLVFace* v4;         // ebx@1
-    int v5;              // ST24_4@2
-    int v6;              // ST28_4@2
-    int v7;              // edi@2
-    int v8;              // eax@5
-    signed int v9;       // esi@5
-    signed __int64 v10;  // qtt@10
-    Vec3_int_* v11;      // esi@11
-    int v12;             // ST14_4@11
-    Vec3_int_* v14;      // [sp+Ch] [bp-18h]@1
-    Vec3_int_* v15;      // [sp+14h] [bp-10h]@1
-    int v17;             // [sp+20h] [bp-4h]@10
-    int a4b;             // [sp+30h] [bp+Ch]@2
-    int a4c;             // [sp+30h] [bp+Ch]@9
-    int a4a;             // [sp+30h] [bp+Ch]@10
+bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance) {
+    // _fp suffix => that's a fixpoint number
 
-    v4 = a4;
-    v15 = a2;
-    v14 = a1;
-    v5 = fixpoint_mul(a2->x, a4->pFacePlane_old.vNormal.x);
-    a4b = fixpoint_mul(a2->y, a4->pFacePlane_old.vNormal.y);
-    v6 = fixpoint_mul(a2->z, v4->pFacePlane_old.vNormal.z);
-    v7 = v5 + v6 + a4b;
-    // (v16 = v5 + v6 + a4b) == 0;
-    if (a4->uAttributes & FACE_ETHEREAL || !v7 || v7 > 0 && !v4->Portal())
-        return 0;
-    v9 = -v4->pFacePlane_old.SignedDistanceToAsFixpoint(*a1);
-    if (v7 <= 0) {
-        if (v4->pFacePlane_old.SignedDistanceToAsFixpoint(*a1) < 0)
-            return 0;
-    } else {
-        if (v9 < 0) return 0;
-    }
-    a4c = abs(-(v4->pFacePlane_old.SignedDistanceToAsFixpoint(*a1))) >> 14;
-    v11 = v14;
-    HEXRAYS_LODWORD(v10) = v9 << 16;
-    HEXRAYS_HIDWORD(v10) = v9 >> 16;
-    a4a = v10 / v7;
-    v17 = v10 / v7;
-    HEXRAYS_LOWORD(v12) =
-        HEXRAYS_LOWORD(v14->x) +
-        (((unsigned int)fixpoint_mul(v17, v15->x) + 0x8000) >> 16);
-    HEXRAYS_HIWORD(v12) =
-        HEXRAYS_LOWORD(v11->y) +
-        (((unsigned int)fixpoint_mul(v17, v15->y) + 0x8000) >> 16);
-    if (a4c > abs(v7) || (v17 > * a3 << 16) ||
-        !IsProjectedPointInsideFace(
-            v4, Vec3_short_(
-                HEXRAYS_LOWORD(v12),
-                HEXRAYS_HIWORD(v12),
-                LOWORD(v11->z) + (((unsigned int)fixpoint_mul(v17, v15->z) + 0x8000) >> 16))))
-        return 0;
-    *a3 = a4a >> 16;
-    return 1;
+    // dot_product(dir, normal) is a cosine of an angle between them.
+    int cos_dir_normal_fp =
+        fixpoint_mul(dir->x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir->y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir->z, face->pFacePlane_old.vNormal.z);
+
+    if (cos_dir_normal_fp == 0)
+        return false; // dir is perpendicular to face normal.
+
+    if (face->uAttributes & FACE_ETHEREAL)
+        return false;
+
+    if (cos_dir_normal_fp > 0 && !face->Portal())
+        return false; // We're facing away && face is not a portal.
+
+    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(*pos);
+
+    if (cos_dir_normal_fp < 0 && pos_face_distance_fp < 0)
+        return false; // Facing towards the face but already inside the model.
+
+    if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
+        return false; // Facing away from the face and outside the model.
+
+    int pos_face_distance_x4 = abs(-(pos_face_distance_fp)) >> 14;
+
+    // How far we need to move along the `dir` axis to hit face.
+    int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
+
+    Vec3_short_ new_pos;
+    new_pos.x = pos->x + ((fixpoint_mul(move_distance_fp, dir->x) + 0x8000) >> 16);
+    new_pos.y = pos->y + ((fixpoint_mul(move_distance_fp, dir->y) + 0x8000) >> 16);
+    new_pos.z = pos->z + ((fixpoint_mul(move_distance_fp, dir->z) + 0x8000) >> 16);
+
+    if (pos_face_distance_x4 > abs(cos_dir_normal_fp))
+        return false; // Moving perpendicular to the plane.
+
+    if (move_distance_fp > *move_distance << 16)
+        return false; // No correction needed.
+
+    if (!IsProjectedPointInsideFace(face, new_pos))
+        return false;
+
+    *move_distance = move_distance_fp >> 16;
+    return true;
 }
 
 bool sub_475F30(int* a1, BLVFace* a2, int a3, int a4, int a5, int a6, int a7,
