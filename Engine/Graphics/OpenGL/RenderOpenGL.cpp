@@ -526,13 +526,6 @@ int _46F04E_collide_against_portals() {
 }
 
 void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide with ethereal faces?
-    // int v10; // ecx@15
-    unsigned int v18;       // eax@33
-    int distance_hi_old;                // eax@35
-    int distance_hi_new;                // ecx@36
-    int v23;                // eax@40
-    unsigned int v24;       // eax@44
-
     std::array<int, 10> pSectorsArray;  // [sp+30h] [bp-28h]@1
     pSectorsArray[0] = collision_state.uSectorID;
     int totalSectors = 1;
