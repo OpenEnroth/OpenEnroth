@@ -2792,7 +2792,7 @@ void ODM_ProcessPartyActions() {
     collision_state.field_70 = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2;
-    collision_state.only_lo = 1;
+    collision_state.check_hi = 1;
     collision_state.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi.x = pX;
@@ -3488,7 +3488,7 @@ void UpdateActors_ODM() {
             Act_Radius = 40;
 
 
-        collision_state.only_lo = 1;
+        collision_state.check_hi = 1;
         collision_state.field_84 = -1;
         collision_state.radius_hi = Act_Radius;
         collision_state.radius_lo = Act_Radius;

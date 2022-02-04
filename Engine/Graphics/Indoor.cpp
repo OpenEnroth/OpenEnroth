@@ -1721,7 +1721,7 @@ void UpdateActors_BLV() {
                 pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >= 400) {
             collision_state.field_84 = -1;
             collision_state.field_70 = 0;
-            collision_state.only_lo = 1;
+            collision_state.check_hi = 1;
             collision_state.radius_hi = pActors[actor_id].uActorRadius;
             collision_state.radius_lo = pActors[actor_id].uActorRadius;
             collision_state.height = pActors[actor_id].uActorHeight;
@@ -3424,7 +3424,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     collision_state.field_70 = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2;
-    collision_state.only_lo = 1;
+    collision_state.check_hi = 1;
     collision_state.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
         new_party_z = party_z;

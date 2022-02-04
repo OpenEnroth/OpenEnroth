@@ -151,7 +151,7 @@ struct stru141_actor_collision_object {
 
     // actor is modeled as two spheres, basically "feet" & "head". Collisions are then done for both spheres.
 
-    int only_lo;  // only check collisions for the lo sphere.
+    int check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
     int radius_lo;   // radius of the lo ("feet") sphere.
     int radius_hi;  // radius of the hi ("head") sphere.
     int height;  // actor height.

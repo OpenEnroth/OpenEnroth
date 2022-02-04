@@ -286,7 +286,7 @@ LABEL_13:
         pSpriteObjects[uLayingItemID].vPosition.z = v8;
     if (_46BFFA_update_spell_fx(uLayingItemID, 0)) {
     LABEL_92:
-        collision_state.only_lo = 0;
+        collision_state.check_hi = 0;
         collision_state.radius_lo = object->uRadius;
         collision_state.height = object->uHeight;
         collision_state.radius_hi = 0;
@@ -504,7 +504,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
 
     if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {  //не падающие объекты
 LABEL_25:
-        collision_state.only_lo = 0;
+        collision_state.check_hi = 0;
         collision_state.radius_lo = pObject->uRadius;
         collision_state.field_84 = -1;
         collision_state.height = pObject->uHeight;

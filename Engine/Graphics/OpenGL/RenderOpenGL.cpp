@@ -317,7 +317,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                             }
                         }
                     LABEL_29:
-                        if (collision_state.only_lo & 1) {
+                        if (collision_state.check_hi & 1) {
                             v15 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
                             if (v15 > 0) {
                                 v16 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
@@ -561,10 +561,10 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
             int pFloor = pSector->pFloors[j];
             BLVFace *pFace = &pIndoor->pFaces[pSector->pFloors[j]];
 
-            if(pFace->Portal() || !collision_state.bbox.Intersects(pFace->pBounding))
+            if (pFace->Portal() || !collision_state.bbox.Intersects(pFace->pBounding))
                 continue;
 
-            if(pFloor == collision_state.field_84)
+            if (pFloor == collision_state.field_84)
                 continue;
 
             int distance_lo_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
@@ -595,7 +595,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
 
             int distance_hi_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
             int distance_hi_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
-            if (!(collision_state.only_lo & 1) &&
+            if ((collision_state.check_hi & 1) &&
                 distance_hi_old > 0 &&
                 (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
                 distance_hi_new <= distance_hi_old) {
