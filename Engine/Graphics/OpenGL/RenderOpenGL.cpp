@@ -572,7 +572,6 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
             if (distance_lo_old > 0 &&
                 (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
                 distance_lo_new <= distance_lo_old) {
-
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
                 if (collide_against_face(pFace, collision_state.position_lo, collision_state.radius_lo,
@@ -602,7 +601,6 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 distance_hi_old > 0 &&
                 (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
                 distance_hi_new <= distance_hi_old) {
-
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
                 if (collide_against_face(pFace, collision_state.position_hi, collision_state.radius_hi,
