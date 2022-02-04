@@ -447,38 +447,54 @@ void _46E0B2_collide_against_decorations() {
     BLVSector *sector = &pIndoor->pSectors[collision_state.uSectorID];
     for (unsigned int i = 0; i < sector->uNumDecorations; ++i) {
         LevelDecoration *decor = &pLevelDecorations[sector->pDecorationIDs[i]];
-        if (!(decor->uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
-            if (!decor_desc->CanMoveThrough()) {
-                if (collision_state.bbox.x1 <= decor->vPosition.x + decor_desc->uRadius &&
-                    collision_state.bbox.x2 >= decor->vPosition.x - decor_desc->uRadius &&
-                    collision_state.bbox.y1 <= decor->vPosition.y + decor_desc->uRadius &&
-                    collision_state.bbox.y2 >= decor->vPosition.y - decor_desc->uRadius &&
-                    collision_state.bbox.z1 <= decor->vPosition.z + decor_desc->uDecorationHeight &&
-                    collision_state.bbox.z2 >= decor->vPosition.z) {
-                    int v16 = decor->vPosition.x - collision_state.position_lo.x;
-                    int v15 = decor->vPosition.y - collision_state.position_lo.y;
-                    int v8 = collision_state.radius_lo + decor_desc->uRadius;
-                    int v17 = ((decor->vPosition.x - collision_state.position_lo.x) * collision_state.direction.y -
-                               (decor->vPosition.y - collision_state.position_lo.y) * collision_state.direction.x) >> 16;
-                    if (abs(v17) <= collision_state.radius_lo + decor_desc->uRadius) {
-                        int v9 = (v16 * collision_state.direction.x + v15 * collision_state.direction.y) >> 16;
-                        if (v9 > 0) {
-                            int v11 = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, v9);
-                            if (v11 >= decor->vPosition.z) {
-                                if (v11 <= decor_desc->uDecorationHeight + decor->vPosition.z) {
-                                    int v12 = v9 - integer_sqrt(v8 * v8 - v17 * v17);
-                                    if (v12 < 0) v12 = 0;
-                                    if (v12 < collision_state.adjusted_move_distance) {
-                                        collision_state.adjusted_move_distance = v12;
-                                        collision_state.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
+            continue;
+
+        DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
+        if (decor_desc->CanMoveThrough())
+            continue;
+
+        BBox_int_ decor_bbox;
+        decor_bbox.x1 = decor->vPosition.x - decor_desc->uRadius;
+        decor_bbox.x2 = decor->vPosition.x + decor_desc->uRadius;
+        decor_bbox.y1 = decor->vPosition.y - decor_desc->uRadius;
+        decor_bbox.y2 = decor->vPosition.y + decor_desc->uRadius;
+        decor_bbox.z1 = decor->vPosition.z;
+        decor_bbox.z2 = decor->vPosition.z + decor_desc->uDecorationHeight;
+        if (!collision_state.bbox.Intersects(decor_bbox))
+            continue;
+
+        // dist vector points from position center into decoration center.
+        int dist_x = decor->vPosition.x - collision_state.position_lo.x;
+        int dist_y = decor->vPosition.y - collision_state.position_lo.y;
+        int sum_radius = collision_state.radius_lo + decor_desc->uRadius;
+
+        // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
+        // thus this actually is length(dist) * sin(dist, collision_state.direction).
+        // This in turn is the distance from decoration center to the line of actor's movement.
+        int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
+        if (abs(closest_dist) > sum_radius)
+            continue; // No chance to collide.
+
+        // Length of dist vector projected onto collision_state.direction.
+        int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
+        if (dist_dot_dir <= 0)
+            continue; // We're moving away from the decoration.
+
+        // Z-coordinate of the actor at the point closest to the decoration in XY plane.
+        int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
+        if (closest_z < decor_bbox.z1 || closest_z > decor_bbox.z2)
+            continue;
+
+        // That's how far can we go along the collision_state.direction axis until the actor touches the decoration,
+        // i.e. distance between them goes below sum_radius.
+        int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
+        if (move_distance < 0)
+            move_distance = 0;
+
+        if (move_distance < collision_state.adjusted_move_distance) {
+            collision_state.adjusted_move_distance = move_distance;
+            collision_state.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
         }
     }
 }
