@@ -527,7 +527,7 @@ LABEL_25:
             if (collision_state.PrepareAndCheckIfStationary(0)) return;
 
             for (int loop2 = 0; loop2 < 100; ++loop2) {
-                _46E44E_collide_against_faces_and_portals(false);
+                collide_against_faces_and_portals(false);
                 _46E0B2_collide_against_decorations();
 
                 if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Player)

@@ -525,7 +525,7 @@ int _46F04E_collide_against_portals() {
     return result;
 }
 
-void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide with ethereal faces?
+void collide_against_faces_and_portals(bool ignore_ethereal) {
     std::array<int, 10> pSectorsArray;  // [sp+30h] [bp-28h]@1
     pSectorsArray[0] = collision_state.uSectorID;
     int totalSectors = 1;
@@ -568,7 +568,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
                 if (collide_against_face(pFace, collision_state.position_lo, collision_state.radius_lo,
-                                         collision_state.direction, &move_distance, b1)) {
+                                         collision_state.direction, &move_distance, ignore_ethereal)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_lo;
@@ -597,7 +597,7 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
                 if (collide_against_face(pFace, collision_state.position_hi, collision_state.radius_hi,
-                                         collision_state.direction, &move_distance, b1)) {
+                                         collision_state.direction, &move_distance, ignore_ethereal)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_hi;

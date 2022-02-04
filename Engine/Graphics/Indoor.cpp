@@ -1746,7 +1746,7 @@ void UpdateActors_BLV() {
                     v24 = 8 * actor_id;
                     HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor_id);
                     for (v61 = 0; v61 < 100; ++v61) {
-                        _46E44E_collide_against_faces_and_portals(true);
+                        collide_against_faces_and_portals(true);
                         _46E0B2_collide_against_decorations();
                         _46EF01_collision_chech_player(0);
                         _46ED8A_collide_against_sprite_objects(v24);
@@ -3453,8 +3453,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             break;
 
         for (uint j = 0; j < 100; ++j) {
-            _46E44E_collide_against_faces_and_portals(true);
-            _46E0B2_collide_against_decorations();  //столкновения с декором
+            collide_against_faces_and_portals(true);
+            _46E0B2_collide_against_decorations();
             for (v80 = 0; v80 < (signed int)uNumActors; ++v80)
                 Actor::_46DF1A_collide_against_actor(v80, 0);  //столкновения с монстрами
             if (_46F04E_collide_against_portals())  //столкновения с порталами
