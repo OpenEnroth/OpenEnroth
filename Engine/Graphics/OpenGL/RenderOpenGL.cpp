@@ -593,6 +593,9 @@ void _46E44E_collide_against_faces_and_portals(bool b1) { // b1 == don't collide
                 }
             }
 
+            // TODO: it's quite clear radius_lo does not belong in checks below, but here it is. Probably a bug in
+            // the original code?
+
             int distance_hi_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
             int distance_hi_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
             if ((collision_state.check_hi & 1) &&
