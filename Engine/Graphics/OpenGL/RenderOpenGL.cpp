@@ -454,14 +454,14 @@ void _46E0B2_collide_against_decorations() {
         if (decor_desc->CanMoveThrough())
             continue;
 
-        BBox_int_ decor_bbox;
-        decor_bbox.x1 = decor->vPosition.x - decor_desc->uRadius;
-        decor_bbox.x2 = decor->vPosition.x + decor_desc->uRadius;
-        decor_bbox.y1 = decor->vPosition.y - decor_desc->uRadius;
-        decor_bbox.y2 = decor->vPosition.y + decor_desc->uRadius;
-        decor_bbox.z1 = decor->vPosition.z;
-        decor_bbox.z2 = decor->vPosition.z + decor_desc->uDecorationHeight;
-        if (!collision_state.bbox.Intersects(decor_bbox))
+        BBox_int_ bbox;
+        bbox.x1 = decor->vPosition.x - decor_desc->uRadius;
+        bbox.x2 = decor->vPosition.x + decor_desc->uRadius;
+        bbox.y1 = decor->vPosition.y - decor_desc->uRadius;
+        bbox.y2 = decor->vPosition.y + decor_desc->uRadius;
+        bbox.z1 = decor->vPosition.z;
+        bbox.z2 = decor->vPosition.z + decor_desc->uDecorationHeight;
+        if (!collision_state.bbox.Intersects(bbox))
             continue;
 
         // dist vector points from position center into decoration center.
@@ -483,7 +483,7 @@ void _46E0B2_collide_against_decorations() {
 
         // Z-coordinate of the actor at the point closest to the decoration in XY plane.
         int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
-        if (closest_z < decor_bbox.z1 || closest_z > decor_bbox.z2)
+        if (closest_z < bbox.z1 || closest_z > bbox.z2)
             continue;
 
         // That's how far can we go along the collision_state.direction axis until the actor touches the decoration,
