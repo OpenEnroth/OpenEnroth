@@ -1640,9 +1640,7 @@ void UpdateActors_BLV() {
         if (floor_z <= -30000) {
             uSectorID = pIndoor->GetSector(pActors[actor_id].vPosition);
             pActors[actor_id].uSectorID = uSectorID;
-            floor_z = BLV_GetFloorLevel(
-                pActors[actor_id].vPosition.x, pActors[actor_id].vPosition.y, pActors[actor_id].vPosition.z,
-                uSectorID, &uFaceID);
+            floor_z = BLV_GetFloorLevel(pActors[actor_id].vPosition, uSectorID, &uFaceID);
             if (uSectorID == 0 || floor_z == -30000)
                 continue;
         }
@@ -2210,7 +2208,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
 }
 
 //----- (0046CEC3) --------------------------------------------------------
-int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID) {
+int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int *pFaceID) {
     // stores faces and floor z levels
     int FacesFound = 0;
     int blv_floor_z[5] = { 0 };
@@ -2224,7 +2222,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
             break;
 
         BLVFace *pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
-        if (pFloor->Ethereal() || !pFloor->ContainsXY(pIndoor, x, y))
+        if (pFloor->Ethereal() || !pFloor->ContainsXY(pIndoor, pos.x, pos.y))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -2238,7 +2236,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
         if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
             z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
         } else {
-            z_calc = fixpoint_mul(pFloor->zCalc1, x) + fixpoint_mul(pFloor->zCalc2, y) +
+            z_calc = fixpoint_mul(pFloor->zCalc1, pos.x) + fixpoint_mul(pFloor->zCalc2, pos.y) +
                 ((pFloor->zCalc3 + 0x8000) >> 16);
         }
 
@@ -2253,7 +2251,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
             if (FacesFound >= 5) break;
 
             BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
-            if (portal->uPolygonType != POLYGON_Floor || !portal->ContainsXY(pIndoor, x, y))
+            if (portal->uPolygonType != POLYGON_Floor || !portal->ContainsXY(pIndoor, pos.x, pos.y))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;
@@ -2281,7 +2279,7 @@ int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int 
     for (uint i = 1; i < FacesFound; ++i) {
         int v38 = blv_floor_z[i];
 
-        if (abs(z - v38) <= abs(z - result)) {
+        if (abs(pos.z - v38) <= abs(pos.z - result)) {
             result = blv_floor_z[i];
             if (blv_floor_z[i] <= -29000) __debugbreak();
             *pFaceID = blv_floor_id[i];
@@ -3779,8 +3777,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition.x, enc_spawn_point.vPosition.y, pParty->vPosition.z);
             if (mon_sectorID == party_sectorID) {
                 // check proposed floor level
-                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition.x, enc_spawn_point.vPosition.y,
-                                        enc_spawn_point.vPosition.z, mon_sectorID, &uFaceID);
+                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition, mon_sectorID, &uFaceID);
                 enc_spawn_point.vPosition.z = indoor_floor_level;
                 if (indoor_floor_level != -30000) {
                     // break if spanwn point is okay

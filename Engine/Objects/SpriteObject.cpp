@@ -477,9 +477,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
 
     unsigned int uFaceID;
 
-    int floor_lvl = BLV_GetFloorLevel(
-        pSpriteObject->vPosition.x, pSpriteObject->vPosition.y,
-        pSpriteObject->vPosition.z, pSpriteObject->uSectorID, &uFaceID);
+    int floor_lvl = BLV_GetFloorLevel(pSpriteObject->vPosition, pSpriteObject->uSectorID, &uFaceID);
 
     // object out of bounds
     if (abs(pSpriteObject->vPosition.x) > 32767 ||

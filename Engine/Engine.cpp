@@ -365,9 +365,7 @@ void Engine::DrawGUI() {
             uint uFaceID;
             int sector_id = pIndoor->GetSector(
                 pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
-            int floor_level = BLV_GetFloorLevel(
-                pParty->vPosition.x, pParty->vPosition.y,
-                pParty->vPosition.z/* + 40*/, sector_id, &uFaceID);
+            int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3_int_(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = StringPrintf(
                 "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {

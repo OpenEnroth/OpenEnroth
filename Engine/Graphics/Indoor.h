@@ -719,15 +719,13 @@ unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
 void BLV_UpdateUserInputAndOther();
 
 /**
- * @param x                             Actor's fixpoint X position.
- * @param y                             Actor's fixpoint Y position.
- * @param z                             Actor's fixpoint Z position.
+ * @param pos                           Actor's position.
  * @param uSectorID                     Actor's sector id.
  * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position.
  * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
  *                                      If wrong sector is supplied, `-30000` is returned.
  */
-int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID);
+int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();

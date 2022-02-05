@@ -2631,7 +2631,7 @@ void Actor::SummonMinion(int summonerId) {
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
         if (result != actorSector) return;
-        result = BLV_GetFloorLevel(v15, v17, v27, result, &monsterId);
+        result = BLV_GetFloorLevel(Vec3_int_(v15, v17, v27), result, &monsterId);
         if (result != -30000) return;
         if (abs(result - v27) > 1024) return;
     }
@@ -4995,9 +4995,7 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
         result = pIndoor->GetSector(pActors[uActorIndex].vPosition);
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor ||
             result == v21 &&
-                (result = BLV_GetFloorLevel(
-                     pActors[uActorIndex].vPosition.x, pActors[uActorIndex].vPosition.y,
-                     pActors[uActorIndex].vPosition.z, result, &uFaceID),
+                (result = BLV_GetFloorLevel(pActors[uActorIndex].vPosition, result, &uFaceID),
                  result != -30000) &&
                 (result = abs(result - pParty->vPosition.z), result <= 1024)) {
             if (uActorIndex == uNumActors) ++uNumActors;
@@ -5259,7 +5257,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         }
         v37 = pIndoor->GetSector(pPosX, a4, spawn->vPosition.z);
         if (v37 == pSector) {
-            v38 = BLV_GetFloorLevel(pPosX, a4, a3, v37, &uFaceID);
+            v38 = BLV_GetFloorLevel(Vec3_int_(pPosX, a4, a3), v37, &uFaceID);
             v39 = v38;
             if (v38 != -30000) {
                 if (abs(v38 - a3) <= 1024) {
