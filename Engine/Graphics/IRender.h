@@ -513,7 +513,7 @@ unsigned int GetMaxMipLevels(unsigned int uDim);
  */
 void collide_against_faces_and_portals(bool ignore_ethereal);
 
-void _46E889_collide_against_bmodels(unsigned int ecx0);
+void _46E889_collide_against_bmodels(bool ignore_ethereal);
 
 // TODO: looks like this also works for ceilings, reflect in docs?
 /**
@@ -561,7 +561,7 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
                           int *move_distance, bool ignore_ethereal);
 
 bool sub_4754BF(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
-                BLVFace *face, int a10, int a11);
+                BLVFace *face, int a10, bool ignore_ethereal);
 
 /**
  * Original offset 0x475665.

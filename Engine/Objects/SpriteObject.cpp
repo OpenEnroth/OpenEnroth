@@ -305,7 +305,7 @@ LABEL_13:
             if (collision_state.PrepareAndCheckIfStationary(0))
                 return;
 
-            _46E889_collide_against_bmodels(0);
+            _46E889_collide_against_bmodels(false);
             _46E26D_collide_against_sprites(
                 WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x),
                 WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y));

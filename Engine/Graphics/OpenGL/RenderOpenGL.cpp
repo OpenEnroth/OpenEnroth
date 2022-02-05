@@ -221,7 +221,7 @@ int uNumSpritesDrawnThisFrame;
 
 RenderVertexSoft array_73D150[20];
 
-void _46E889_collide_against_bmodels(unsigned int ecx0) {
+void _46E889_collide_against_bmodels(bool ignore_ethereal) {
     int v8;            // eax@19
     int v9;            // ecx@20
     int v10;           // eax@24
@@ -290,7 +290,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                         &move_distance,
                                         collision_state.position_lo,
                                         collision_state.direction,
-                                        &face, model.index, ecx0)) {
+                                        &face, model.index, ignore_ethereal)) {
                             v10 = move_distance;
                         } else {
                             move_distance = collision_state.radius_lo +
@@ -326,7 +326,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                     collision_state.radius_hi, &move_distance,
                                     collision_state.position_hi,
                                     collision_state.direction, &face,
-                                    model.index, ecx0)) {
+                                    model.index, ignore_ethereal)) {
                                 if (move_distance < collision_state.adjusted_move_distance) {
                                     collision_state.adjusted_move_distance = move_distance;
                                     collision_state.pid =
@@ -946,38 +946,39 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
 }
 
 bool sub_4754BF(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
-                BLVFace* face, int a10, int a11) {
+                BLVFace* face, int a10, bool ignore_ethereal) {
     int v12;      // ST1C_4@3
-    int v13;      // edi@3
     int v14;      // esi@3
     int v15;      // edi@4
     int64_t v16;  // qtt@6
                   // __int16 v17; // si@7
     int a7a;      // [sp+30h] [bp+18h]@7
     int a1b;      // [sp+38h] [bp+20h]@3
-    int a1a;      // [sp+38h] [bp+20h]@3
     int a11b;     // [sp+40h] [bp+28h]@3
     int a11a;     // [sp+40h] [bp+28h]@4
     int a11c;     // [sp+40h] [bp+28h]@5
 
-    if (a11 && face->Ethereal()) return false;
-    v12 = fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x);
-    a11b = fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y);
-    a1b = fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
-    v13 = v12 + a1b + a11b;
-    a1a = v12 + a1b + a11b;
+    if (ignore_ethereal && face->Ethereal())
+        return false;
+
+    int dir_dot_normal =
+        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+
     v14 = (radius << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
     if (abs((radius << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z)) >= radius << 16) {
         a11c = abs(v14) >> 14;
-        if (a11c > abs(v13)) return false;
+        if (a11c > abs(dir_dot_normal)) return false;
         HEXRAYS_LODWORD(v16) = v14 << 16;
         HEXRAYS_HIDWORD(v16) = v14 >> 16;
         v15 = radius;
-        a11a = v16 / a1a;
+        a11a = v16 / dir_dot_normal;
     } else {
         a11a = 0;
         v15 = abs(v14) >> 16;
     }
+
     // v17 = pos.y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16);
     HEXRAYS_LOWORD(a7a) = (short)pos.x +
         ((unsigned int)fixpoint_mul(a11a, dir.x) >> 16) -

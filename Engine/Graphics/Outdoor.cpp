@@ -2692,7 +2692,7 @@ void ODM_ProcessPartyActions() {
         if (collision_state.PrepareAndCheckIfStationary(v36))
             break;
 
-        _46E889_collide_against_bmodels(1);
+        _46E889_collide_against_bmodels(true);
         // v37 = WorldPosToGridCellY(pParty->vPosition.y);
         // v38 = WorldPosToGridCellX(pParty->vPosition.x);
         _46E26D_collide_against_sprites(
@@ -3386,7 +3386,7 @@ void UpdateActors_ODM() {
             collision_state.velocity.y = pActors[Actor_ITR].vVelocity.y;
             collision_state.velocity.z = pActors[Actor_ITR].vVelocity.z;
             if (collision_state.PrepareAndCheckIfStationary(0)) break;
-            _46E889_collide_against_bmodels(1);
+            _46E889_collide_against_bmodels(true);
             _46E26D_collide_against_sprites(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y));
             _46EF01_collision_chech_player(0);
             _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, Actor_ITR));
