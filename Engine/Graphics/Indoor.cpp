@@ -3461,7 +3461,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
         new_party_x += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
         new_party_y += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
-        unsigned long long v87 = new_party_z +
+        unsigned long long new_party_z_tmp = new_party_z +
             fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
@@ -3478,8 +3478,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
             if (pFace->uPolygonType == POLYGON_Floor) {  // если bmodel - пол
                 if (pParty->uFallSpeed < 0) pParty->uFallSpeed = 0;
-                v87 = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
-                if (pParty->uFallStartZ - v87 < 512) pParty->uFallStartZ = v87;
+                new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
+                if (pParty->uFallStartZ - new_party_z_tmp < 512) pParty->uFallStartZ = new_party_z_tmp;
                 if (party_dx * party_dx + party_dy * party_dy < min_party_move_delta_sqr) {
                     party_dy = 0;
                     party_dx = 0;
@@ -3502,11 +3502,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     // v80 = pFace->pFacePlane_old.vNormal.y;
                     v52 = collision_state.radius_lo -
-                        pFace->pFacePlane_old.SignedDistanceTo(new_party_x, new_party_y, v87);
+                        pFace->pFacePlane_old.SignedDistanceTo(new_party_x, new_party_y, new_party_z_tmp);
                     if (v52 > 0) {
                         new_party_x += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.x);
                         new_party_y += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.y);
-                        v87 += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
+                        new_party_z_tmp += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
                     }
                     if (pParty->floor_face_pid != PID_ID(collision_state.pid) &&
                         pFace->Pressure_Plate())
