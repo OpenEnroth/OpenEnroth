@@ -282,8 +282,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uFacing = (short)pDir->uYawAngle;
             a1.uSoundID = 0;
             a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y,
-                                              a1.vPosition.z);
+            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
             a1.uSpriteFrameID = 0;
             a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
             a1.spell_target_pid = 0;
@@ -419,8 +418,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uFacing = pDir->uYawAngle;
             a1.uSoundID = 0;
             a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y,
-                                              a1.vPosition.z);
+            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
             a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
             a1.uSpriteFrameID = 0;
             a1.spell_target_pid = 0;
@@ -653,8 +651,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uFacing = pDir->uYawAngle;
             a1.uSoundID = 0;
             a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y,
-                                              a1.vPosition.z);
+            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
             a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
             a1.uSpriteFrameID = 0;
             a1.spell_target_pid = 0;
@@ -814,8 +811,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.uFacing = pDir->uYawAngle;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID =
-        pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.uSpriteFrameID = 0;
     a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
     a1.spell_target_pid = 0;
@@ -868,7 +864,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.uFacing = 0;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.uSpriteFrameID = 0;
     a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
     a1.spell_target_pid = 0;
@@ -2620,8 +2616,7 @@ void Actor::SummonMinion(int summonerId) {
 
     actorSector = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        actorSector = pIndoor->GetSector(this->vPosition.x, this->vPosition.y,
-                                         this->vPosition.z);
+        actorSector = pIndoor->GetSector(this->vPosition);
 
     v19 = this->uAlly;
     if (!this->uAlly) {
@@ -4570,7 +4565,7 @@ int Actor::MakeActorAIList_BLV() {
     // reset party alert level
     pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;  // ~0x30
     // TODO(pskelton): grab sector id from somewhere else rather than calc it several times per frame
-    int party_sector = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+    int party_sector = pIndoor->GetSector(pParty->vPosition);
 
     // find actors that are in range and can act
     uint active_actor_count = 0;
@@ -4740,7 +4735,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
             obj2_x = pParty->vPosition.x;
             obj2_z = pParty->sEyelevel + pParty->vPosition.z;
             obj2_y = pParty->vPosition.y;
-            obj2_sector = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->sEyelevel + pParty->vPosition.z);
+            obj2_sector = pIndoor->GetSector(pParty->vPosition + Vec3_int_(0, 0, pParty->sEyelevel));
             break;
         case OBJECT_Actor:
             obj2_y = pActors[obj2_pid].vPosition.y;
@@ -4961,8 +4956,7 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
     if (uActorIndex != uNumActors || result < 500) {
         v21 = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-            v21 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
-                                     pParty->vPosition.z);
+            v21 = pIndoor->GetSector(pParty->vPosition);
         v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
         pActors[uActorIndex].Reset();
         strcpy(pActors[uActorIndex].pActorName, pMonsterStats->pInfos[uMonsterID + 1].pName);
@@ -4998,9 +4992,7 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
         pActors[uActorIndex].uCurrentActionLength = 256;
         pActors[uActorIndex].UpdateAnimation();
 
-        result = pIndoor->GetSector(pActors[uActorIndex].vPosition.x,
-                                    pActors[uActorIndex].vPosition.y,
-                                    pActors[uActorIndex].vPosition.z);
+        result = pIndoor->GetSector(pActors[uActorIndex].vPosition);
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor ||
             result == v21 &&
                 (result = BLV_GetFloorLevel(
@@ -5179,8 +5171,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     a4 = spawn->vPosition.y;
     a3 = spawn->vPosition.z;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        pSector = pIndoor->GetSector(spawn->vPosition.x, spawn->vPosition.y,
-                                     spawn->vPosition.z);
+        pSector = pIndoor->GetSector(spawn->vPosition);
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
 

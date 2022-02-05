@@ -64,6 +64,10 @@ struct Vec3 : public Vec2<T> {
         this->y = bankersRounding(y / s);
         this->z = bankersRounding(z / s);
     }
+
+    friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
+        return Vec3(l.x + r.x, l.y + r.y, l.z + r.z);
+    }
 };
 #pragma pack(pop)
 

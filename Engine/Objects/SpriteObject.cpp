@@ -473,9 +473,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
     SpriteObject *pSpriteObject = &pSpriteObjects[uLayingItemID];
     ObjectDesc *pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
 
-    pSpriteObject->uSectorID = pIndoor->GetSector(pSpriteObject->vPosition.x,
-        pSpriteObject->vPosition.y,
-        pSpriteObject->vPosition.z);
+    pSpriteObject->uSectorID = pIndoor->GetSector(pSpriteObject->vPosition);
 
     unsigned int uFaceID;
 

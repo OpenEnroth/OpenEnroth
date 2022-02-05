@@ -612,6 +612,14 @@ struct IndoorLocation {
      */
     int GetSector(int sX, int sY, int sZ);
 
+    int GetSector(const Vec3_int_ &pos) {
+        return GetSector(pos.x, pos.y, pos.z);
+    }
+
+    int GetSector(const Vec3_short_ &pos) {
+        return GetSector(pos.x, pos.y, pos.z);
+    }
+
     void Release();
     bool Alloc();
     bool Load(const std::string &filename, int num_days_played,

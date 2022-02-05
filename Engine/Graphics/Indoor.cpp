@@ -341,7 +341,7 @@ void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode) {
 void BLVRenderParams::Reset() {
     this->field_0_timer_ = pEventTimer->uTotalGameTimeElapsed;
 
-    this->uPartySectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+    this->uPartySectorID = pIndoor->GetSector(pParty->vPosition);
 
     if (!this->uPartySectorID) {
         __debugbreak();  // shouldnt happen, please provide savegame
@@ -384,7 +384,6 @@ void BspRenderer::MakeVisibleSectorList() {
             pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[uNumVisibleNotEmptySectors++] = nodes[i].uSectorID;
     }
 }
-
 
 //----- (00440B44) --------------------------------------------------------
 void IndoorLocation::DrawIndoorFaces(bool bD3D) {
@@ -1641,8 +1640,7 @@ void UpdateActors_BLV() {
             isAboveGround = 1;
 
         if (floor_z <= -30000) {
-            uSectorID = pIndoor->GetSector(pActors[actor_id].vPosition.x,
-                                           pActors[actor_id].vPosition.y, pActors[actor_id].vPosition.z);
+            uSectorID = pIndoor->GetSector(pActors[actor_id].vPosition);
             pActors[actor_id].uSectorID = uSectorID;
             floor_z = BLV_GetFloorLevel(
                 pActors[actor_id].vPosition.x, pActors[actor_id].vPosition.y, pActors[actor_id].vPosition.z,
@@ -3179,7 +3177,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool on_water = false;
     bool bFeatherFall;
 
-    unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+    unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition);
     unsigned int uFaceID = -1;
     int floor_z = collide_against_floor(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
 
@@ -3766,7 +3764,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         }
         failed_point = loop_cnt == 100;
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        int party_sectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+        int party_sectorID = pIndoor->GetSector(pParty->vPosition);
         int mon_sectorID;
         int indoor_floor_level;
         unsigned int uFaceID;

@@ -136,7 +136,7 @@ bool Chest::Open(int uChestID) {
             pSpellObject.vPosition.z = pOut.y;
             pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = 48;
-            pSpellObject.uSectorID = pIndoor->GetSector(pOut.x, pOut.z, pOut.y);
+            pSpellObject.uSectorID = pIndoor->GetSector(pOut);
             pSpellObject.uSpriteFrameID = 0;
             pSpellObject.spell_caster_pid = 0;
             pSpellObject.spell_target_pid = 0;

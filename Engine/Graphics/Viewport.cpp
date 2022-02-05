@@ -298,8 +298,7 @@ void Engine::DropHeldItem() {
     a1.uSoundID = 0;
     a1.uFacing = 0;
     a1.uAttributes = 8;
-    a1.uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
-                                      pParty->sEyelevel + pParty->vPosition.z);
+    a1.uSectorID = pIndoor->GetSector(pParty->vPosition + Vec3_int_(0, 0, pParty->sEyelevel));
     a1.uSpriteFrameID = 0;
     memcpy(&a1.containing_item, &pParty->pPickedItem, 0x24u);
 
