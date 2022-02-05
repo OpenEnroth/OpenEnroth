@@ -222,7 +222,7 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
         pLight->vPosition.y < pLight->uRadius + pFace->pBoundingBox.y2 &&
         (pLight->vPosition.z > pFace->pBoundingBox.z1 - pLight->uRadius) &&
         pLight->vPosition.z < pLight->uRadius + pFace->pBoundingBox.z2) {
-        v10 = pFace->pFacePlane.SignedDistanceTo(pLight->vPosition);
+        v10 = pFace->pFacePlaneOLD.SignedDistanceTo(pLight->vPosition);
 
         if (((bLightBackfaces) || v10 >= 0.0f) &&
             fabsf(v10) <= pLight->uRadius) {

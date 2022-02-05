@@ -818,8 +818,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
         ++uControlParam;
     } while (uControlParam < 9);
 
-    ui_partycreation_buttmake = assets->GetImage_Alpha("BUTTMAKE");
-    ui_partycreation_buttmake2 = assets->GetImage_Alpha("BUTTMAKE2");
+    ui_partycreation_buttmake = assets->GetImage_Solid("BUTTMAKE");
+    ui_partycreation_buttmake2 = assets->GetImage_Solid("BUTTMAKE2");
 
     pPlayerCreationUI_BtnOK = CreateButton(580, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickOK, 0, GameKey::Return, "", { { ui_partycreation_buttmake } });
     pPlayerCreationUI_BtnReset = CreateButton(527, 431, 51, 39, 1, 0, UIMSG_PlayerCreationClickReset, 0, GameKey::C, "", { { ui_partycreation_buttmake2 } });

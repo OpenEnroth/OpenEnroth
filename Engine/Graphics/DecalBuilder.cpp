@@ -237,7 +237,7 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace* pFace) {
                 (double)pFace->pBoundingBox.y2 + pBloodsplat->radius > pBloodsplat->y &&
                 (double)pFace->pBoundingBox.z1 - pBloodsplat->radius < pBloodsplat->z &&
                 (double)pFace->pBoundingBox.z2 + pBloodsplat->radius > pBloodsplat->z) {
-                double dotdist = pFace->pFacePlane.SignedDistanceTo(
+                double dotdist = pFace->pFacePlaneOLD.SignedDistanceTo(
                     round_to_int(pBloodsplat->x), round_to_int(pBloodsplat->y), round_to_int(pBloodsplat->z));
                 if (dotdist <= pBloodsplat->radius) {
                     // store splat

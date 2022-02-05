@@ -314,16 +314,17 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 
     ViewMatrix = newyaw * newpitch * newroll;
 
-
+    // TODO(pskelton): fov calcs only need recalculating on level change or if we add config option
     // fov projection calcs
-    fov = 0.5 / tan(odm_fov_rad / 2.0);
+    unit_fov = 0.5 / tan(odm_fov_rad / 2.0);
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        fov = 0.5 / tan(blv_fov_rad / 2.0);
+        unit_fov = 0.5 / tan(blv_fov_rad / 2.0);
 
-    inv_fov = 1.0 / fov;
+    ViewPlaneDist_X = (double)pViewport->uScreenWidth * unit_fov;
+    ViewPlaneDist_Y = (double)pViewport->uScreenHeight * unit_fov;
 
-    ViewPlaneDist_X = (double)pViewport->uScreenWidth * fov;
-    ViewPlaneDist_Y = (double)pViewport->uScreenHeight * fov;
+    // calculate vertical FOV in degrees for GL rendering
+    fov_y_deg = (180.0 / pi) * 2.0 * atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X);
 
     screenCenterX = (double)pViewport->uScreenCenterX;
     screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uScreen_TL_Y;
@@ -435,7 +436,7 @@ bool Camera3D::CullVertsToPlane(stru154 *faceplane, RenderVertexSoft *vertices,
 }
 
 
-// get rid of this one ??
+// TODO(pskelton): does this func need to copy verts or could it be eliminated
 //----- (00437285) --------------------------------------------------------
 bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
                                       unsigned int *pOutNumVertices,

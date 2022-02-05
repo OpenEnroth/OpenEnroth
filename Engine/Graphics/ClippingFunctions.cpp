@@ -199,7 +199,7 @@ bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft* pInVertices, signed int pI
         if (Vert1Inside) {
             // ++pVertices;
             memcpy(pOutVertices, pLineStart, sizeof(RenderVertexSoft));
-            ++* pOutNumVertices;
+            ++*pOutNumVertices;
             // v10 = a5;
             pOutVertices++;
             // v9 = a1;

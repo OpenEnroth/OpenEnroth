@@ -109,7 +109,7 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
         // boudning point inside cone
         if (sloperem >= 0) return true;
         // bounding radius inside cone
-        if (abs(sloperem) < model->sBoundingRadius /*+ 512*/) return true;
+        if (abs(sloperem) < model->sBoundingRadius + 512) return true;
     }
 
     // not visible
@@ -657,9 +657,6 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
 
     v6 = uBaseLightLevel;
 
-    if (v6 > 31 || v6 < 0) __debugbreak();
-
-
     for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         MobileLight *p = &pMobileLightsStack->pLights[i];
 
@@ -737,8 +734,7 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
         }
     }
 
-    if (v6 < 0) v6 = 0;
-    if (v6 > 31) v6 = 31;
+    v6 = std::clamp(v6, 0, 31);
     return v6;
 }
 
@@ -2128,7 +2124,7 @@ void RenderOpenGL::BeginLightmaps2() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    auto effpar03 = assets->GetBitmap("effpar03");
+    static Texture* effpar03 = assets->GetBitmap("effpar03");
     auto texture = (TextureOpenGL*)effpar03;
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 }
@@ -2665,10 +2661,8 @@ void _set_3d_projection_matrix() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    // ogl uses fov in Y so we need to convert
-    float newfov = (180.0 / pi) * 2.0 * atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDist_X);
-
-    gluPerspective(newfov, double(game_viewport_width/double(game_viewport_height)), near_clip, far_clip);
+    // ogl uses fov in Y
+    gluPerspective(pCamera3D->fov_y_deg, double(game_viewport_width/double(game_viewport_height)), near_clip, far_clip);
 }
 
 void _set_3d_modelview_matrix() {
@@ -2721,16 +2715,13 @@ void RenderOpenGL::RenderTerrainD3D() {
 
     int blockScale = 512;
     int heightScale = 32;
+
+    // TODO(pskelton): move these calculations to map load so its not run every frame
     for (unsigned int z = 0; z < 128; ++z) {
         for (unsigned int x = 0; x < 128; ++x) {
-            pTerrainVertices[z * 128 + x].vWorldPosition.x =
-                (-64 + (signed)x) * blockScale;
-            pTerrainVertices[z * 128 + x].vWorldPosition.y =
-                (64 - (signed)z) * blockScale;
-            pTerrainVertices[z * 128 + x].vWorldPosition.z =
-                heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
-            pCamera3D->ViewTransform(&pTerrainVertices[z * 128 + x], 1);
-            pCamera3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
+            pTerrainVertices[z * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
+            pTerrainVertices[z * 128 + x].vWorldPosition.y = (64 - (signed)z) * blockScale;
+            pTerrainVertices[z * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
         }
     }
 
@@ -2746,46 +2737,63 @@ void RenderOpenGL::RenderTerrainD3D() {
     GL_lastboundtex = -1;  // keeps track of which tile texture is loaded
     GLint thistex = -1;
 
+
+    //-------(Отсечение невидимой части
+    //карты)------------------------------------------------------------------------------------------
+    float direction = (float)(pCamera3D->sRotationZ /
+        256);  // direction of the camera(напрвление
+               // камеры) 0-East(B) 1-NorthEast(CB)
+               // 2-North(C)
+               // 3-WestNorth(CЗ)
+               // 4-West(З)
+               // 5-SouthWest(ЮЗ)
+               // 6-South(Ю)
+               // 7-SouthEast(ЮВ)
+    unsigned int Start_X, End_X, Start_Z, End_Z;
+    if (direction >= 0 && direction < 1.0) {  // East(B) - NorthEast(CB)
+        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 127;
+        Start_Z = 0, End_Z = 127;
+    } else if (direction >= 1.0 && direction < 3.0) {  // NorthEast(CB) - WestNorth(CЗ)
+        Start_X = 0, End_X = 127;
+        Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellY + 2;
+    } else if (direction >= 3.0 && direction < 5.0) {  // WestNorth(CЗ) - SouthWest(ЮЗ)
+        Start_X = 0, End_X = pODMRenderParams->uMapGridCellX + 2;
+        Start_Z = 0, End_Z = 127;
+    } else if (direction >= 5.0 && direction < 7.0) {  // SouthWest(ЮЗ) - //SouthEast(ЮВ)
+        Start_X = 0, End_X = 127;
+        Start_Z = pODMRenderParams->uMapGridCellY - 2, End_Z = 127;
+    } else {  // SouthEast(ЮВ) - East(B)
+        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 127;
+        Start_Z = 0, End_Z = 127;
+    }
+
+    for (unsigned int z = Start_Z; z < End_Z + 1; ++z) {
+        for (unsigned int x = Start_X; x < End_X + 1; ++x) {
+            pCamera3D->ViewTransform(&pTerrainVertices[z * 128 + x], 1);
+            pCamera3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
+        }
+    }
+
+
+
     // tile culling maths
     int camx = WorldPosToGridCellX(pCamera3D->vCameraPos.x);
     int camy = WorldPosToGridCellY(pCamera3D->vCameraPos.y);
-    int tilerange = (pCamera3D->GetFarClip() / terrain_block_scale)+3;
-
-    int camfacing = 2048 - pCamera3D->sRotationZ;
-    int right = int(camfacing - (TrigLUT->uIntegerPi / 2));
-    int left = int(camfacing + (TrigLUT->uIntegerPi / 2));
-    if (left > 2048) left -= 2048;
-    if (right < 0) right += 2048;
+    int tilerange = (pCamera3D->GetFarClip() / terrain_block_scale) + 3;
 
     float Light_tile_dist;
 
 
-    for (int z = 0; z < 128 - 1; ++z) {
-        for (int x = 0; x < 128 - 1; ++x) {
+    for (int z = Start_Z; z < End_Z; ++z) {
+        for (int x = Start_X; x < End_X; ++x) {
             // tile culling
             int xdist = camx - x;
             int zdist = camy - z;
 
             if (xdist > tilerange || zdist > tilerange) continue;
 
-            int dist = sqrt((xdist) * (xdist)+(zdist) * (zdist));
+            int dist = sqrt((xdist) * (xdist) + (zdist) * (zdist));
             if (dist > tilerange) continue;  // crude distance culling
-
-            // could do further x + z culling by camera direction see dx
-
-            int tiledir = TrigLUT->Atan2(xdist, zdist) + 1024;
-            if (tiledir > 2048) {
-                tiledir -= 2048;
-            }
-
-            if (dist > 2) {  // dont cull near feet
-                if (left > right) {  // crude fov culling
-                    if ((tiledir > left) || (tiledir < right)) continue;
-                } else {
-                    if (!(tiledir < left || tiledir > right)) continue;
-                }
-            }
-
 
             struct Polygon* pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
             pTilePolygon->flags = 0;
@@ -2821,8 +2829,13 @@ void RenderOpenGL::RenderTerrainD3D() {
             array_73D150[1].u = 0;
             array_73D150[1].v = 1;
 
-            pTilePolygon->pODMFace = nullptr;
             pTilePolygon->uNumVertices = 4;
+            // better tile culling
+            pCamera3D->CullFaceToCameraFrustum(array_73D150, &pTilePolygon->uNumVertices, array_73D150, 4);
+            if (!pTilePolygon->uNumVertices) continue;
+
+            pTilePolygon->pODMFace = nullptr;
+            // pTilePolygon->uNumVertices = 4;
             pTilePolygon->field_59 = 5;
 
             ++pODMRenderParams->uNumPolygons;
@@ -3968,8 +3981,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
     _set_3d_projection_matrix();
     _set_3d_modelview_matrix();
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // int v27;  // eax@57
     int farclip;  // [sp+2Ch] [bp-2Ch]@10
@@ -4040,40 +4053,35 @@ void RenderOpenGL::DrawBuildingsD3D() {
             nearclip = 0;
             farclip = 0;
 
-            for (uint vertex_id = 1; vertex_id <= face.uNumVertices;
-                vertex_id++) {
-                array_73D150[vertex_id - 1].vWorldPosition.x =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
-                array_73D150[vertex_id - 1].vWorldPosition.y =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
-                array_73D150[vertex_id - 1].vWorldPosition.z =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
-                array_73D150[vertex_id - 1].u =
-                    (poly->sTextureDeltaU +
+            for (uint vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
+                array_73D150[vertex_id - 1].vWorldPosition.x = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+                array_73D150[vertex_id - 1].vWorldPosition.y = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+                array_73D150[vertex_id - 1].vWorldPosition.z = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+                array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU +
                         (__int16)face.pTextureUIDs[vertex_id - 1]) *
                     (1.0 / (double)poly->texture->GetWidth());
-                array_73D150[vertex_id - 1].v =
-                    (poly->sTextureDeltaV +
+                array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV +
                         (__int16)face.pTextureVIDs[vertex_id - 1]) *
                     (1.0 / (double)poly->texture->GetHeight());
             }
+
             for (uint i = 1; i <= face.uNumVertices; i++) {
                 if (model.pVertices.pVertices[face.pVertexIDs[0]].z ==
                     array_73D150[i - 1].vWorldPosition.z)
                     ++v53;
                 pCamera3D->ViewTransform(&array_73D150[i - 1], 1);
-                if (array_73D150[i - 1].vWorldViewPosition.x <
-                    pCamera3D->GetNearClip() ||
-                    array_73D150[i - 1].vWorldViewPosition.x >
-                    pCamera3D->GetFarClip()) {
-                    if (array_73D150[i - 1].vWorldViewPosition.x >=
-                        pCamera3D->GetNearClip())
-                        farclip = 1;
-                    else
-                        nearclip = 1;
-                } else {
+                //if (array_73D150[i - 1].vWorldViewPosition.x <
+                //    pCamera3D->GetNearClip() ||
+                //    array_73D150[i - 1].vWorldViewPosition.x >
+                //    pCamera3D->GetFarClip()) {
+                //    if (array_73D150[i - 1].vWorldViewPosition.x >=
+                //        pCamera3D->GetNearClip())
+                //        farclip = 1;
+                //    else
+                //        nearclip = 1;
+                //} else {
                     pCamera3D->Project(&array_73D150[i - 1], 1, 0);
-                }
+                //}
             }
 
             if (v53 == face.uNumVertices) poly->field_32 |= 1;
@@ -4082,7 +4090,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
             poly->field_59 = 5;
 
             float f = face.pFacePlane.vNormal.x * pOutdoor->vSunlight.x + face.pFacePlane.vNormal.y * pOutdoor->vSunlight.y + face.pFacePlane.vNormal.z * pOutdoor->vSunlight.z;
-            poly->dimming_level = 20 - floorf(20.0 * f + 0.5f);
+            poly->dimming_level = 20 - std::round(20 * f);
 
             if (poly->dimming_level < 0) poly->dimming_level = 0;
             if (poly->dimming_level > 31) poly->dimming_level = 31;
@@ -4159,9 +4167,6 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
         return;
     }
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
     unsigned int sCorrectedColor;  // [sp+64h] [bp-4h]@4
 
     auto texture = (TextureOpenGL*)pPolygon->texture;
@@ -4182,6 +4187,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
             _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
             glDisable(GL_BLEND);
             glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
             glBegin(GL_TRIANGLE_FAN);
 
@@ -4270,6 +4277,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
 
             glDepthMask(false);
             glBindTexture(GL_TEXTURE_2D, 0);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
             glBegin(GL_TRIANGLE_FAN);  // GL_TRIANGLE_FAN
 
@@ -4307,6 +4316,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
             glDepthMask(true);
             glEnable(GL_BLEND);
             glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
                 glBegin(GL_TRIANGLE_FAN);
 
@@ -4359,13 +4370,26 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         sCorrectedColor = 0xFFFFFFFF/*-1*/;
     }
 
-    engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+    // perception
+    // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+
+    if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_IsSecret)) {
+        uint eightSeconds = OS_GetTime() % 3000;
+        float angle = (eightSeconds / 3000.0f) * 2 * 3.1415f;
+
+        int redstart = (sCorrectedColor & 0x00FF0000) >> 16;
+
+        int col = redstart * abs(cosf(angle));
+        // (a << 24) | (r << 16) | (g << 8) | b;
+        sCorrectedColor = (0xFF << 24) | (redstart << 16) | (col << 8) | col;
+    }
 
     if (pFace->uAttributes & FACE_OUTLINED) {
         if (OS_GetTime() % 300 >= 150)
             uColor = sCorrectedColor = 0xFF20FF20;
         else
             uColor = sCorrectedColor = 0xFF109010;
+        // TODO(pskelton): add debug pick lines in
     }
 
 

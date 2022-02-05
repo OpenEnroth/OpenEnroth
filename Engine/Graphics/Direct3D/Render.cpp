@@ -234,15 +234,15 @@ void Render::RenderTerrainD3D() {  // New function
     int blockScale = 512;
     int heightScale = 32;
 
-    if (pTerrainVertices[7].vWorldPosition.x == 0) {
-        for (unsigned int z = 0; z < 128; ++z) {
-            for (unsigned int x = 0; x < 128; ++x) {
-                pTerrainVertices[z * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
-                pTerrainVertices[z * 128 + x].vWorldPosition.y = (64 - (signed)z) * blockScale;
-                pTerrainVertices[z * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
-            }
+    // TODO(pskelton): move these calculations to map load so its not run every frame
+    for (unsigned int z = 0; z < 128; ++z) {
+        for (unsigned int x = 0; x < 128; ++x) {
+            pTerrainVertices[z * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
+            pTerrainVertices[z * 128 + x].vWorldPosition.y = (64 - (signed)z) * blockScale;
+            pTerrainVertices[z * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
         }
     }
+
     //-------(Отсечение невидимой части
     //карты)------------------------------------------------------------------------------------------
     float direction = (float)(pCamera3D->sRotationZ /
@@ -285,13 +285,7 @@ void Render::RenderTerrainD3D() {  // New function
 
     int camx = pODMRenderParams->uMapGridCellX;
     int camz = pODMRenderParams->uMapGridCellY - 1;
-    int tilerange = (pCamera3D->GetFarClip() / blockScale) + 1;
-
-    int camfacing = 2048 - pCamera3D->sRotationZ;
-    int right = int(camfacing - (TrigLUT->uIntegerPi / 2));
-    int left = int(camfacing + (TrigLUT->uIntegerPi / 2));
-    if (left > 2048) left -= 2048;
-    if (right < 0) right += 2048;
+    int tilerange = (pCamera3D->GetFarClip() / blockScale) + 3;
 
     float Light_tile_dist;
 
@@ -305,19 +299,6 @@ void Render::RenderTerrainD3D() {  // New function
 
             int dist = sqrt((xdist)*(xdist)+(zdist)*(zdist));
             if (dist > tilerange) continue;  // crude distance culling
-
-            int tiledir = TrigLUT->Atan2(xdist, zdist) + 1024;
-            if (tiledir > 2048) {
-                tiledir -= 2048;
-            }
-
-            if (dist > 2) {  // dont cull near feet
-                if (left > right) {  // crude fov culling
-                    if ((tiledir > left) || (tiledir < right)) continue;
-                } else {
-                    if (!(tiledir < left || tiledir > right)) continue;
-                }
-            }
 
             struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
             pTilePolygon->flags = 0;
@@ -382,11 +363,17 @@ void Render::RenderTerrainD3D() {  // New function
             array_73D150[1].u = 0;
             array_73D150[1].v = 1;
 
+
+            pTilePolygon->uNumVertices = 4;
+            // better tile culling
+            pCamera3D->CullFaceToCameraFrustum(array_73D150, &pTilePolygon->uNumVertices, array_73D150, 4);
+            if (!pTilePolygon->uNumVertices) continue;
+
             // v58 = 0;
             // if (v58 == 4) // if all y == first y;  primitive in xz plane
             // pTile->field_32 |= 0x0001;
             pTilePolygon->pODMFace = nullptr;
-            pTilePolygon->uNumVertices = 4;
+            // pTilePolygon->uNumVertices = 4;
             pTilePolygon->field_59 = 5;
 
             pCamera3D->CullByNearClip(&array_73D150[0], &pTilePolygon->uNumVertices);
@@ -2038,7 +2025,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     TextureD3D *texture = (TextureD3D *)pFace->GetTexture();
 
     if (lightmap_builder->StationaryLightsCount) {
-        sCorrectedColor =  0xFFFFFF/*-1*/;
+        sCorrectedColor =  0xFFFFFFFF/*-1*/;
     }
 
 
@@ -3413,18 +3400,18 @@ void Render::DrawBuildingsD3D() {
                     array_73D150[i - 1].vWorldPosition.z)
                     ++v53;
                 pCamera3D->ViewTransform(&array_73D150[i - 1], 1);
-                if (array_73D150[i - 1].vWorldViewPosition.x <
-                        pCamera3D->GetNearClip() ||
-                    array_73D150[i - 1].vWorldViewPosition.x >
-                        pCamera3D->GetFarClip()) {
-                    if (array_73D150[i - 1].vWorldViewPosition.x >=
-                        pCamera3D->GetNearClip())
-                        farclip = 1;
-                    else
-                        nearclip = 1;
-                } else {
+               // if (array_73D150[i - 1].vWorldViewPosition.x <
+               //         pCamera3D->GetNearClip() ||
+                //    array_73D150[i - 1].vWorldViewPosition.x >
+                //        pCamera3D->GetFarClip()) {
+                //    if (array_73D150[i - 1].vWorldViewPosition.x >=
+                 //       pCamera3D->GetNearClip())
+                //        farclip = 1;
+                //    else
+                //        nearclip = 1;
+                //} else {
                     pCamera3D->Project(&array_73D150[i - 1], 1, 0);
-                }
+                //}
             }
 
             if (v53 == face.uNumVertices) poly->field_32 |= 1;
@@ -3432,8 +3419,8 @@ void Render::DrawBuildingsD3D() {
             poly->uNumVertices = face.uNumVertices;
             poly->field_59 = 5;
 
-            float f = (face.pFacePlaneOLD.vNormal.x / 65536.0) * pOutdoor->vSunlight.x + (face.pFacePlaneOLD.vNormal.y / 65536.0) * pOutdoor->vSunlight.y + (face.pFacePlaneOLD.vNormal.z / 65536.0) * pOutdoor->vSunlight.z;
-            poly->dimming_level = 20 - floorf(20.0 * f + 0.5f);
+            float f = face.pFacePlane.vNormal.x * pOutdoor->vSunlight.x + face.pFacePlane.vNormal.y * pOutdoor->vSunlight.y + face.pFacePlane.vNormal.z * pOutdoor->vSunlight.z;
+            poly->dimming_level = 20 - std::round(20 * f);
 
             if (poly->dimming_level < 0) poly->dimming_level = 0;
             if (poly->dimming_level > 31) poly->dimming_level = 31;
@@ -3479,15 +3466,15 @@ void Render::DrawBuildingsD3D() {
                         &Lights, &static_RenderBuildingsD3D_stru_73C834,
                         poly->uNumVertices, VertexRenderList, 0, (char)v31);
 
-                if (nearclip) {
-                    pCamera3D->CullByNearClip(&VertexRenderList[0], &poly->uNumVertices);
-                    pCamera3D->Project(&VertexRenderList[0], poly->uNumVertices);
-                }
+                //if (nearclip) {
+                //    pCamera3D->CullByNearClip(&VertexRenderList[0], &poly->uNumVertices);
+                //    pCamera3D->Project(&VertexRenderList[0], poly->uNumVertices);
+                //}
 
-                if (farclip) {
-                    pCamera3D->CullByFarClip(&VertexRenderList[0], &poly->uNumVertices);
-                    pCamera3D->Project(&VertexRenderList[0], poly->uNumVertices);
-                }
+                //if (farclip) {
+                //    pCamera3D->CullByFarClip(&VertexRenderList[0], &poly->uNumVertices);
+                //    pCamera3D->Project(&VertexRenderList[0], poly->uNumVertices);
+                //}
 
                 if (poly->uNumVertices) {
                     if (poly->IsWater()) {
@@ -3631,10 +3618,7 @@ void Render::BeginLightmaps() {
 
     // ErrD3D(pRenderD3D->pDevice->SetTexture(0,
     // pCamera3D->LoadTextureAndGetHardwarePtr("effpar03")));
-    static Texture* effpar03;
-    if (!effpar03) {
-        effpar03 = assets->GetBitmap("effpar03");
-    }
+    static Texture* effpar03 = assets->GetBitmap("effpar03");
 
     ErrD3D(pRenderD3D->pDevice->SetTexture(
         0, ((TextureD3D *)effpar03)->GetDirect3DTexture()));

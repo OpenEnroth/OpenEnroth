@@ -165,8 +165,6 @@ class Vis {
 
     RenderVertexSoft debugpick;
 
-    int keyboard_pick_depth;
-
     Log *log = nullptr;
 };
 #pragma pack(pop)
