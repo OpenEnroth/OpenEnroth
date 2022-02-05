@@ -800,7 +800,7 @@ void FindBillboardsLightLevels_BLV();
  *
  * @see collide_against_floor
  */
-int collide_against_floor_approximate(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
+int collide_against_floor_approximate(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 
 bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3_int_ from);
 

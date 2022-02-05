@@ -517,9 +517,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0);
 
 // TODO: looks like this also works for ceilings, reflect in docs?
 /**
- * @param x                             Actor's X coordinate.
- * @param y                             Actor's Y coordinate.
- * @param z                             Actor's Z coordinate.
+ * @param pos                           Actor's position.
  * @param[in,out] pSectorID             Actor's cached sector id. If the cached sector id is no longer valid (e.g. an
  *                                      actor has already moved to another sector), then the new sector id is returned
  *                                      in this output parameter.
@@ -527,7 +525,7 @@ void _46E889_collide_against_bmodels(unsigned int ecx0);
  *                                      is not found.
  * @return                              Z coordinate for the floor at (X, Y).
  */
-int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
+int collide_against_floor(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 int _46EF01_collision_chech_player(int a1);  // idb
 void _46E0B2_collide_against_decorations();

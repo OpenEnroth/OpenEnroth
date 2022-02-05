@@ -735,19 +735,19 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
 }
 
 
-int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID) {
+int collide_against_floor(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
     uint uFaceID = -1;
-    int floor_z = BLV_GetFloorLevel(x, y, z, *pSectorID, &uFaceID);
+    int floor_z = BLV_GetFloorLevel(pos.x, pos.y, pos.z, *pSectorID, &uFaceID);
 
-    if (floor_z != -30000 && floor_z <= z + 50) {
+    if (floor_z != -30000 && floor_z <= pos.z + 50) {
         *pFaceID = uFaceID;
         return floor_z;
     }
 
-    uint uSectorID = pIndoor->GetSector(x, y, z);
+    uint uSectorID = pIndoor->GetSector(pos);
     *pSectorID = uSectorID;
 
-    floor_z = BLV_GetFloorLevel(x, y, z, uSectorID, &uFaceID);
+    floor_z = BLV_GetFloorLevel(pos.x, pos.y, pos.z, uSectorID, &uFaceID);
     if (uSectorID && floor_z != -30000)
         *pFaceID = uFaceID;
     else

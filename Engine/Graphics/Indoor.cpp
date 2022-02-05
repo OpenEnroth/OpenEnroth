@@ -1626,9 +1626,7 @@ void UpdateActors_BLV() {
             continue;
 
         unsigned int uSectorID = pActors[actor_id].uSectorID;
-        int floor_z = collide_against_floor(
-            pActors[actor_id].vPosition.x, pActors[actor_id].vPosition.y, pActors[actor_id].vPosition.z,
-            &uSectorID, &uFaceID);
+        int floor_z = collide_against_floor(pActors[actor_id].vPosition, &uSectorID, &uFaceID);
         pActors[actor_id].uSectorID = uSectorID;
 
         bool isFlying = pActors[actor_id].pMonsterInfo.uFlying;
@@ -1756,7 +1754,7 @@ void UpdateActors_BLV() {
                         v32 = pActors[actor_id].vPosition.z +
                               fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
                     }
-                    v33 = collide_against_floor(v30, v31, v32, &collision_state.uSectorID, &uFaceID);
+                    v33 = collide_against_floor(Vec3_int_(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
                     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && pActors[actor_id].uAIState == Dead) {
                         pActors[actor_id].uAIState = Removed;
                         continue;
@@ -3179,13 +3177,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition);
     unsigned int uFaceID = -1;
-    int floor_z = collide_against_floor(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
+    int floor_z = collide_against_floor(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floor_z == -30000 || uFaceID == -1) {
-        floor_z = collide_against_floor_approximate(new_party_x, new_party_y, party_z + 40, &uSectorID, &uFaceID);
+        floor_z = collide_against_floor_approximate(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
         if (floor_z == -30000 || uFaceID == -1) {
             __debugbreak();  // level built with errors
             pParty->vPosition = blv_prev_party_pos;
@@ -3439,20 +3437,18 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
         }
 
-        int adjusted_x;
-        int adjusted_y;
-        int adjusted_z;
+        Vec3_int_ adjusted_pos;
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             // We've hit a portal?
-            adjusted_x = collision_state.new_position_lo.x;
-            adjusted_y = collision_state.new_position_lo.y;
-            adjusted_z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            adjusted_pos.x = collision_state.new_position_lo.x;
+            adjusted_pos.y = collision_state.new_position_lo.y;
+            adjusted_pos.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            adjusted_x = new_party_x + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
-            adjusted_y = new_party_y + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
-            adjusted_z = new_party_z + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+            adjusted_pos.x = new_party_x + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+            adjusted_pos.y = new_party_y + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+            adjusted_pos.z = new_party_z + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
         }
-        int adjusted_floor_z = collide_against_floor(adjusted_x, adjusted_y, adjusted_z + 40, &collision_state.uSectorID, &uFaceID);
+        int adjusted_floor_z = collide_against_floor(adjusted_pos + Vec3_int_(0, 0, 40), &collision_state.uSectorID, &uFaceID);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - new_party_z > 128)
             return; // TODO: whaaa?
 
@@ -4060,33 +4056,23 @@ void FindBillboardsLightLevels_BLV() {
 }
 
 //----- (0047272C) --------------------------------------------------------
-int collide_against_floor_approximate(int x, int y, int z,
-                                      unsigned int *pSectorID,
-                                      unsigned int *pFaceID) {
+int collide_against_floor_approximate(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+    std::array<Vec3_int_, 5> attempts = {{
+        pos + Vec3_int_(-2, 0, 40),
+        pos + Vec3_int_(2, 0, 40),
+        pos + Vec3_int_(0, -2, 40),
+        pos + Vec3_int_(0, 2, 40),
+        pos + Vec3_int_(0, 0, 140)
+    }};
+
     int result;
-
-    *pSectorID = pIndoor->GetSector(x - 2, y, z + 40);
-    result = collide_against_floor(x - 2, y, z + 40, pSectorID, pFaceID);
-    if (result != -30000 && *pSectorID)
-        return result;
-
-    *pSectorID = pIndoor->GetSector(x + 2, y, z + 40);
-    result = collide_against_floor(x + 2, y, z + 40, pSectorID, pFaceID);
-    if (result != -30000 && *pSectorID)
-        return result;
-
-    *pSectorID = pIndoor->GetSector(x, y - 2, z + 40);
-    result = collide_against_floor(x, y - 2, z + 40, pSectorID, pFaceID);
-    if (result != -30000 && *pSectorID)
-        return result;
-
-    *pSectorID = pIndoor->GetSector(x, y + 2, z + 40);
-    result = collide_against_floor(x, y + 2, z + 40, pSectorID, pFaceID);
-    if (result != -30000 && !*pSectorID)
-        return result;
-
-    *pSectorID = pIndoor->GetSector(x, y, z + 140);
-    return collide_against_floor(x, y, z + 140, pSectorID, pFaceID);
+    for (const Vec3_int_ &attempt: attempts) {
+        *pSectorID = pIndoor->GetSector(attempt);
+        result = collide_against_floor(attempt, pSectorID, pFaceID);
+        if (result != -30000 && *pSectorID)
+            return result;
+    }
+    return result; // Return the last result anyway.
 }
 
 //----- (0047050A) --------------------------------------------------------
