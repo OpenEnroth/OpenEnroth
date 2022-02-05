@@ -2671,11 +2671,10 @@ void ODM_ProcessPartyActions() {
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2;
     collision_state.check_hi = 1;
-    collision_state.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
         collision_state.position_hi.x = pX;
         collision_state.position_hi.y = pY;
-        collision_state.position_hi.z = collision_state.height + party_new_Z + 1;
+        collision_state.position_hi.z = (pParty->uPartyHeight - 32) + party_new_Z + 1;
 
         collision_state.position_lo.x = pX;
         collision_state.position_lo.y = pY;
@@ -3370,7 +3369,6 @@ void UpdateActors_ODM() {
         collision_state.field_84 = -1;
         collision_state.radius_hi = Act_Radius;
         collision_state.radius_lo = Act_Radius;
-        collision_state.height = pActors[Actor_ITR].uActorHeight;
         collision_state.total_move_distance = 0;
 
         for (Model_On_PID = 0; Model_On_PID < 100; ++Model_On_PID) {
@@ -3380,7 +3378,7 @@ void UpdateActors_ODM() {
             collision_state.position_lo.y = collision_state.position_hi.y;
             int Act_Z_Pos = pActors[Actor_ITR].vPosition.z;
             collision_state.position_lo.z = Act_Z_Pos + Act_Radius + 1;
-            collision_state.position_hi.z = Act_Z_Pos - Act_Radius + collision_state.height - 1;
+            collision_state.position_hi.z = Act_Z_Pos - Act_Radius + pActors[Actor_ITR].uActorHeight - 1;
             if (collision_state.position_hi.z < collision_state.position_lo.z)
                 collision_state.position_hi.z = Act_Z_Pos + Act_Radius + 1;
             collision_state.velocity.x = pActors[Actor_ITR].vVelocity.x;

@@ -1700,7 +1700,6 @@ void UpdateActors_BLV() {
             collision_state.check_hi = 1;
             collision_state.radius_hi = pActors[actor_id].uActorRadius;
             collision_state.radius_lo = pActors[actor_id].uActorRadius;
-            collision_state.height = pActors[actor_id].uActorHeight;
             v22 = 0;
             for (int attempt = 0; attempt < 100; attempt++) {
                 collision_state.position_hi.x = pActors[actor_id].vPosition.x;
@@ -1709,7 +1708,7 @@ void UpdateActors_BLV() {
                 collision_state.position_lo.y = collision_state.position_hi.y;
                 collision_state.position_lo.z = pActors[actor_id].vPosition.z + pActors[actor_id].uActorRadius + 1;
                 collision_state.position_hi.z = pActors[actor_id].vPosition.z -
-                                         pActors[actor_id].uActorRadius + collision_state.height - 1;
+                                         pActors[actor_id].uActorRadius + pActors[actor_id].uActorHeight - 1;
                 if (collision_state.position_hi.z < collision_state.position_lo.z)
                     collision_state.position_hi.z = pActors[actor_id].vPosition.z +
                     pActors[actor_id].uActorRadius + 1;
@@ -3404,12 +3403,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2;
     collision_state.check_hi = 1;
-    collision_state.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
         new_party_z = party_z;
         collision_state.position_hi.x = new_party_x;
         collision_state.position_hi.y = new_party_y;
-        collision_state.position_hi.z = collision_state.height + party_z + 1;
+        collision_state.position_hi.z = (pParty->uPartyHeight - 32) + party_z + 1;
 
         collision_state.position_lo.x = new_party_x;
         collision_state.position_lo.y = new_party_y;

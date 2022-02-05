@@ -154,7 +154,6 @@ struct stru141_actor_collision_object {
     int check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
     int radius_lo;   // radius of the lo ("feet") sphere.
     int radius_hi;  // radius of the hi ("head") sphere.
-    int height;  // actor height. // TODO: remove, it's not used in collision calculations.
     Vec3_int_ position_lo; // center of the lo sphere.
     Vec3_int_ position_hi; // center of the hi sphere.
     Vec3_int_ new_position_lo; // desired new position for the center of the lo sphere.

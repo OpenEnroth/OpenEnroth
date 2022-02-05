@@ -288,7 +288,6 @@ LABEL_13:
     LABEL_92:
         collision_state.check_hi = 0;
         collision_state.radius_lo = object->uRadius;
-        collision_state.height = object->uHeight;
         collision_state.radius_hi = 0;
         collision_state.total_move_distance = 0;
         for (v55 = 0; v55 < 100; ++v55) {
@@ -503,7 +502,6 @@ LABEL_25:
         collision_state.check_hi = 0;
         collision_state.radius_lo = pObject->uRadius;
         collision_state.field_84 = -1;
-        collision_state.height = pObject->uHeight;
         collision_state.radius_hi = 0;
         collision_state.total_move_distance = 0;
         for (int loop = 0; loop < 100; loop++) {
