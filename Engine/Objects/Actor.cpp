@@ -2694,51 +2694,59 @@ void Actor::SummonMinion(int summonerId) {
 }
 // 46DF1A: using guessed type int 46DF1A_collide_against_actor(int, int);
 //----- (0046DF1A) --------------------------------------------------------
-bool Actor::_46DF1A_collide_against_actor(int a1, int a2) {
-    Actor *v2;            // edi@1
-    unsigned __int16 v3;  // ax@1
-    int v4;               // esi@6
-    int v8;               // ecx@14
-    int v9;               // eax@14
-    int v10;              // ebx@14
-    int v11;              // esi@14
-    int v12;              // ebx@15
-    int v13;              // ebx@17
-
-    v2 = &pActors[a1];
-    v3 = v2->uAIState;
-    if (v3 == Removed || v3 == Dying || v3 == Disabled || v3 == Dead ||
-        v3 == Summoned)
-        return 0;
-    v4 = v2->uActorRadius;
-    if (a2) v4 = a2;
-
-    if (collision_state.bbox.x1 > v2->vPosition.x + v4 ||
-        collision_state.bbox.x2 < v2->vPosition.x - v4 ||
-        collision_state.bbox.y1 > v2->vPosition.y + v4 ||
-        collision_state.bbox.y2 < v2->vPosition.y - v4 ||
-        collision_state.bbox.z1 > v2->vPosition.z + v2->uActorHeight ||
-        collision_state.bbox.z2 < v2->vPosition.z) {
-        return false;
-    }
-    v8 = v2->vPosition.x - collision_state.position_lo.x;
-    v9 = v2->vPosition.y - collision_state.position_lo.y;
-    v10 = collision_state.radius_lo + v4;
-    v11 = (v8 * collision_state.direction.y - v9 * collision_state.direction.x) >> 16;
-    v12 = (v8 * collision_state.direction.x + v9 * collision_state.direction.y) >> 16;
-    if (abs(v11) > v10 || v12 <= 0) return false;
-    if (fixpoint_mul(collision_state.direction.z, v12) + collision_state.position_lo.z <
-        v2->vPosition.z)
+bool Actor::_46DF1A_collide_against_actor(int actor_idx, int override_radius) {
+    Actor *actor = &pActors[actor_idx];
+    if (actor->uAIState == Removed || actor->uAIState == Dying || actor->uAIState == Disabled ||
+        actor->uAIState == Dead || actor->uAIState == Summoned)
         return false;
 
-    v13 = v12 - integer_sqrt(v10 * v10 - v11 * v11);
-    if (v13 < 0) v13 = 0;
-    if (v13 < collision_state.adjusted_move_distance) {
-        collision_state.adjusted_move_distance = v13;
-        collision_state.pid = PID(OBJECT_Actor, a1);
+    int radius = actor->uActorRadius;
+    if (override_radius != 0)
+        radius = override_radius;
+
+    BBox_int_ bbox;
+    bbox.x1 = actor->vPosition.x - radius;
+    bbox.x2 = actor->vPosition.x + radius;
+    bbox.y1 = actor->vPosition.y - radius;
+    bbox.y2 = actor->vPosition.y + radius;
+    bbox.z1 = actor->vPosition.z;
+    bbox.z2 = actor->vPosition.z + actor->uActorHeight;
+
+    if (!collision_state.bbox.Intersects(bbox))
+        return false;
+
+    // dist vector points from position center into actor's center.
+    int dist_x = actor->vPosition.x - collision_state.position_lo.x;
+    int dist_y = actor->vPosition.y - collision_state.position_lo.y;
+    int sum_radius = collision_state.radius_lo + radius;
+
+    // Distance from actor's center to the line of movement.
+    int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
+    if (abs(closest_dist) > sum_radius)
+        return false; // No chance to collide.
+
+    // Length of dist vector projected onto collision_state.direction.
+    int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
+    if (dist_dot_dir <= 0)
+        return false; // We're moving away from the actor.
+
+    // Z-coordinate at the point closest to the actor in XY plane.
+    int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
+    if (closest_z < actor->vPosition.z)
+        return false; // We're below.
+    // TODO: and where's a check for being above?
+
+    int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
+    if (move_distance < 0)
+        move_distance = 0;
+
+    if (move_distance < collision_state.adjusted_move_distance) {
+        collision_state.adjusted_move_distance = move_distance;
+        collision_state.pid = PID(OBJECT_Actor, actor_idx);
     }
     return true;
 }
+
 //----- (00401A91) --------------------------------------------------------
 void Actor::UpdateActorAI() {
     signed int v4;    // edi@10
