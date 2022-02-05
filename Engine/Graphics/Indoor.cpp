@@ -3161,10 +3161,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int v80;                  // [sp+34h] [bp-2Ch]@1
 
     unsigned int uFaceEvent = 0;
-    int new_party_x = pParty->vPosition.x;
-    int new_party_y = pParty->vPosition.y;
-    int new_party_z;
-    int party_z = pParty->vPosition.z;
 
     bool party_running_flag = false;
     bool party_walking_flag = false;
@@ -3175,6 +3171,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition);
     unsigned int uFaceID = -1;
+    int party_z = pParty->vPosition.z;
     int floor_z = collide_against_floor(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
 
     if (pParty->bFlying)  // disable flight
@@ -3398,6 +3395,10 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
+    int new_party_x = pParty->vPosition.x;
+    int new_party_y = pParty->vPosition.y;
+    int new_party_z = party_z;
+
     collision_state.field_84 = -1;
     collision_state.field_70 = 0;
     collision_state.radius_lo = pParty->radius;
@@ -3574,8 +3575,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->SetAirborne(true);
     pParty->uFlags &= ~PARTY_FLAGS_1_BURNING;
     pParty->vPosition.x = new_party_x;
-    pParty->vPosition.z = new_party_z;
     pParty->vPosition.y = new_party_y;
+    pParty->vPosition.z = new_party_z;
     // pParty->uFallSpeed = v89;
 
     if (!hovering && pIndoor->pFaces[uFaceID].uAttributes & FACE_IsLava)
