@@ -252,6 +252,18 @@ struct Party {
         }
     }
 
+    /**
+     * @param item_id                   Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
+     * @return                          Whether the provided item is worn by at least one member of the party.
+     */
+    bool WearsItemAnywhere(int item_id) const {
+        return
+            pPlayers[0].WearsItemAnywhere(item_id) ||
+            pPlayers[1].WearsItemAnywhere(item_id) ||
+            pPlayers[2].WearsItemAnywhere(item_id) ||
+            pPlayers[3].WearsItemAnywhere(item_id);
+    }
+
     GameTime &GetPlayingTime() { return this->playing_time; }
 
     bool IsPartyEvil();
@@ -262,11 +274,11 @@ struct Party {
     unsigned int uDefaultPartyHeight;
     int sEyelevel;
     unsigned int uDefaultEyelevel;
-    int field_14_radius;
+    int radius; // party radius, 37 by default.
     int y_rotation_granularity;
     unsigned int uWalkSpeed;
     int y_rotation_speed;  // deg/s
-    int field_24;
+    int jump_strength; // jump strength, higher value => higher jumps, default 5.
     int field_28;
     GameTime playing_time;  // unsigned __int64 uTimePlayed;
     GameTime last_regenerated;
@@ -280,13 +292,13 @@ struct Party {
     int sPrevEyelevel;
     int field_6E0;
     int field_6E4;
-    int uFallSpeed;
+    int uFallSpeed; // party vertical speed, negative => falling, positive => jumping
     int field_6EC;
     int field_6F0;
     int floor_face_pid;  // face we are standing at
     int walk_sound_timer;
     int _6FC_water_lava_timer;
-    int uFallStartY;
+    int uFallStartZ;
     unsigned int bFlying;
     char field_708;
     unsigned __int8 hirelingScrollPosition;

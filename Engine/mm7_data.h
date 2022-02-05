@@ -109,7 +109,6 @@ extern std::array<int, 500> ai_near_actors_targets_pid;
 extern int ai_arrays_size;
 extern std::array<int, 500> ai_near_actors_distances;
 extern std::array<unsigned int, 500> ai_near_actors_ids;
-extern std::array<int, 182> dword_4F8580;
 extern int dword_4FA9B0[];
 extern int dword_4FA9B4[];
 
@@ -315,7 +314,6 @@ extern int dword_6BE13C_uCurrentlyLoadedLocationID;
 extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
-extern float flt_6BE150_look_up_down_dangle;
 // extern char pMM7WindowClassName[]; // idb
 // extern HINSTANCE hInstance; // idb
 // extern char *pCmdLine;
@@ -341,17 +339,24 @@ extern unsigned int uLevelMapStatsID;
 extern int dword_6BE364_game_settings_1;  // GAME_SETTINGS_*
 
 extern float _6BE3A0_fov;
-extern float flt_6BE3A4_debug_recmod1;
-extern float flt_6BE3A8_debug_recmod2;
-extern float flt_6BE3AC_debug_recmod1_x_1_6;
+
+/** Recovery multiplier for non-combat actions, e.g. receiving fall damage, casting buffs,
+ * and receiving damage from monsters. */
+extern float debug_non_combat_recovery_mul;
+
+/** Recovery multiplier for combat actions, e.g. hand-to-hand and ranged attacks and combat spells. */
+extern float debug_combat_recovery_mul;
+
+/** Speed multiplier for monsters in turn-based mode. It does affect actual move distance, but setting a high value
+ * doesn't make monsters dart like crazy because monster speed is capped at 1000. Doh. */
+extern float debug_turn_based_monster_movespeed_mul;
+
 extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
 extern std::array<int, 100> dword_720020_zvalues;
 extern std::array<int, 299> dword_7201B0_zvalues;
 extern std::array<int16_t, 104> word_7209A0_intercepts_ys_plus_ys;
 extern std::array<int16_t, 104> word_720A70_intercepts_xs_plus_xs;
-extern std::array<int16_t, 104> word_720B40_intercepts_zs;
-extern std::array<int16_t, 102> word_720C10_intercepts_xs;
 extern std::array<int16_t, 777> word_720CE0_ys;  // idb
 extern std::array<int16_t, 777> word_720DB0_xs;  // idb
 extern std::array<int, 20> dword_720E80;
@@ -362,9 +367,7 @@ extern std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
 extern std::array<int, 20> current_Face_id;                   // dword_721110
 extern std::array<int, 20> current_BModel_id;                 // dword_721160
 extern std::array<int, 20> odm_floor_level;  // idb dword_7211B0
-extern int blv_prev_party_x;
-extern int blv_prev_party_z;
-extern int blv_prev_party_y;
+extern Vec3_int_ blv_prev_party_pos;
 extern char *dword_722F10;  // idb
 extern std::array<const char *, 513> pQuestTable;
 extern char *dword_723718_autonote_related;  // idb

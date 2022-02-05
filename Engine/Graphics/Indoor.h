@@ -10,6 +10,8 @@
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/IndoorCameraD3D.h"
 
+struct IndoorLocation;
+
 using EngineIoc = Engine_::IocContainer;
 
 /*  358 */
@@ -139,43 +141,44 @@ struct stru316 {
 /*  134 */
 #pragma pack(push, 1)
 struct stru141_actor_collision_object {
-    int CalcMovementExtents(int a2);
+    /**
+     * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
+     *
+     * @param dt                        Time delta, in fixpoint seconds.
+     * @return                          True if there is no movement, false otherwise.
+     */
+    bool PrepareAndCheckIfStationary(int dt);
 
-    int field_0;  // bool flag
-    int prolly_normal_d;
-    int field_8_radius;  // actor radius
-    int height;  // actor height
-    int field_10;  // unsued
-    int field_14;  // unsued
-    int field_18;  // unsued
+    // actor is modeled as two spheres, basically "feet" & "head". Collisions are then done for both spheres.
+
+    int check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
+    int radius_lo;   // radius of the lo ("feet") sphere.
+    int radius_hi;  // radius of the hi ("head") sphere.
+    int height;  // actor height.
+    int field_10;  // unused
+    int field_14;  // unused
+    int field_18;  // unused
     Vec3_int_ velocity;
-    Vec3_int_ normal;
-    Vec3_int_ position;
-    Vec3_int_ normal2;  // adjusted move positions after collisions?
-    int field_4C;  // unmod x
-    int field_50;  // unmod y
-    int field_54;  // unmod z
-    Vec3_int_ direction;  // velocity's unit vector
+    Vec3_int_ position_lo; // center of the lo sphere.
+    Vec3_int_ position_hi; // center of the hi sphere.
+    Vec3_int_ new_position_lo; // desired new position for the center of the lo sphere.
+    Vec3_int_ new_position_hi; // desired new position for the center of the hi sphere.
+    Vec3_int_ direction;  // movement direction, as a fixpoint unit vector.
     int speed = 0;
     int inv_speed;
-    int field_6C;  // movement dist
-    int field_70;  // some dist modifier - blanked before coll links with field_7C- slows/stops movement
+    int move_distance;  // desired movement distance.
+    int field_70;  // some dist modifier - blanked before coll links with adjusted_move_distance- slows/stops movement
     unsigned int uSectorID = 0;
     unsigned int pid;
-    int field_7C;  // mod speed after collisions??
+    int adjusted_move_distance;  // movement distance after adjusting for collisions.
     int field_80;  // portal id??
     int field_84;  // pid of face
     int field_88;  // unsued
-    int sMaxX = 0;
-    int sMinX = 0;
-    int sMaxY = 0;
-    int sMinY = 0;
-    int sMaxZ = 0;  // is this min
-    int sMinZ = 0;  // is this max
+    BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
     int field_A4;  // unused
 };
 #pragma pack(pop)
-extern stru141_actor_collision_object _actor_collision_struct;
+extern stru141_actor_collision_object collision_state;
 
 /*  378 */
 #pragma pack(push, 1)
@@ -348,7 +351,7 @@ struct BLVLightMM6 {
 /*   98 */
 #pragma pack(push, 1)
 struct BLVLightMM7 {  // 10h
-    struct Vec3_short_ vPosition;
+    Vec3_short_ vPosition;
     int16_t uRadius;
     char uRed;
     char uGreen;
@@ -438,7 +441,7 @@ struct BLVFace {  // 60h
         return (uAttributes & FACE_IsInvisible) != 0;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return (uAttributes & FACE_IsPortal) != 0; }
+    inline bool Portal() const { return (uAttributes & FACE_IsPortal) != 0; } // TODO: rename IsPortal.
     inline bool Fluid() const { return (uAttributes & FACE_IsFluid) != 0; }
     inline bool Indoor_sky() const {
         return (uAttributes & FACE_INDOOR_SKY) != 0;
@@ -460,11 +463,19 @@ struct BLVFace {  // 60h
                                 : this->uAttributes | FACE_TEXTURE_FRAME;
     }
 
+    /**
+     * @param indoor                    Indoor location that this face belongs to.
+     * @param x                         Point X coordinate.
+     * @param y                         Point Y coordinate.
+     * @return                          Whether the point at (X,Y) lies inside this polygon (if projected on XY plane).
+     */
+    bool ContainsXY(IndoorLocation *indoor, int x, int y) const;
+
     struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
-    int zCalc1;  // x
-    int zCalc2;  // y
-    int zCalc3;
+    int zCalc1;  // fixpoint a
+    int zCalc2;  // fixpoint b
+    int zCalc3;  // fixpoint c, plane = a*x + b*y + c.
     unsigned int uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
@@ -593,7 +604,14 @@ struct IndoorLocation {
         uNumSectors = 0;
     }
 
+    /**
+     * @param sX                        X coordinate.
+     * @param sY                        Y coordinate.
+     * @param sZ                        Z coordinate.
+     * @return                          Sector id at (X,Y,Z), or zero if (X,Y,Z) is outside the level bounds.
+     */
     int GetSector(int sX, int sY, int sZ);
+
     void Release();
     bool Alloc();
     bool Load(const std::string &filename, int num_days_played,
@@ -618,7 +636,7 @@ struct IndoorLocation {
     char field_54[404];
     struct BLVHeader blv;
     unsigned int uNumVertices;
-    struct Vec3_short_ *pVertices;
+    Vec3_short_ *pVertices;
     unsigned int uNumFaces;
     struct BLVFace *pFaces;
     unsigned int uNumFaceExtras;
@@ -716,8 +734,17 @@ char DoInteractionWithTopmostZObject(int pid);
 // int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
 unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
 void BLV_UpdateUserInputAndOther();
-int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID,
-                      unsigned int *pFaceID);
+
+/**
+ * @param x                             Actor's fixpoint X position.
+ * @param y                             Actor's fixpoint Y position.
+ * @param z                             Actor's fixpoint Z position.
+ * @param uSectorID                     Actor's sector id.
+ * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position.
+ * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
+ *                                      If wrong sector is supplied, `-30000` is returned.
+ */
+int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
@@ -807,8 +834,12 @@ struct BspRenderer {  // stru170
 
 void FindBillboardsLightLevels_BLV();
 
-int collide_against_floor_approximate(int x, int y, int z,
-                                      unsigned int *pSectorID,
-                                      unsigned int *pFaceID);
+/**
+ * Same as `collide_against_floor`, but also tries jiggling the party around a bit if the collision point couldn't be
+ * found.
+ *
+ * @see collide_against_floor
+ */
+int collide_against_floor_approximate(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
 
-bool Check_LineOfSight(int to_x, int to_y, int to_z, struct Vec3_int_ from);
+bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3_int_ from);

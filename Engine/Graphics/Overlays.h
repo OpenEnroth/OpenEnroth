@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 
 /*  282 */
 #pragma pack(push, 1)
@@ -33,7 +34,7 @@ struct OtherOverlayList {
     int _4418B6(int uOverlayID, int16_t a3, int a4, int a5, int16_t a6);
     void DrawTurnBasedIcon(int a2);
 
-    OtherOverlay pOverlays[50];
+    std::array<OtherOverlay, 50> pOverlays;
     int field_3E8;
     int bRedraw;
 };

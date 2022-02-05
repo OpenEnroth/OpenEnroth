@@ -16,8 +16,8 @@ struct Vec2 {
 };
 #pragma pack(pop)
 
-#define Vec2_int_ Vec2<int32_t>
-#define Vec2_float_ Vec2<float>
+using Vec2_int_ = Vec2<int32_t>;
+using Vec2_float_ = Vec2<float>;
 
 const float pi = std::acos(-1.f);
 
@@ -67,8 +67,8 @@ struct Vec3 : public Vec2<T> {
 };
 #pragma pack(pop)
 
-#define Vec3_short_ Vec3<int16_t>
-#define Vec3_int_ Vec3<int32_t>
+using Vec3_short_ = Vec3<int16_t>;
+using Vec3_int_ = Vec3<int32_t>;
 
 #pragma pack(push, 1)
 struct Vec3_float_ {
@@ -104,8 +104,49 @@ struct Vec4_int_ {
 /*   82 */
 #pragma pack(push, 1)
 struct Plane_int_ {
-    Vec3_int_ vNormal;
-    int dist = 0;
+    Vec3_int_ vNormal; // Plane normal, unit vector stored as fixpoint.
+    int dist = 0;      // D in A*x + B*y + C*z + D = 0 (basically D = -A*x_0 - B*y_0 - C*z_0), stored as fixpoint.
+
+    /**
+     * @param point                     Point to calculate distance to. Note that the point is NOT in fixpoint format.
+     * @return                          Signed distance to the provided point from this plane. Positive value
+     *                                  means that `point` is in the half-space that the normal is pointing to,
+     *                                  and this usually is "outside" the model that the face belongs to.
+     */
+    int SignedDistanceTo(const Vec3_int_ &point) {
+        return SignedDistanceTo(point.x, point.y, point.z);
+    }
+
+    /**
+     * Same as `SignedDistanceTo`, but returns the distance as a fixpoint number. To get the distance in original
+     * coordinates, divide by 2^16.
+     *
+     * @see SignedDistanceTo(const Vec3_int_ &)
+     */
+    int SignedDistanceToAsFixpoint(const Vec3_int_ &point) {
+        return SignedDistanceToAsFixpoint(point.x, point.y, point.z);
+    }
+
+    /**
+     * @see SignedDistanceTo(const Vec3_int_ &)
+     */
+    int SignedDistanceTo(const Vec3_short_ &point) {
+        return SignedDistanceTo(point.x, point.y, point.z);
+    }
+
+    /**
+     * @see SignedDistanceTo(const Vec3_int_ &)
+     */
+    int SignedDistanceTo(int x, int y, int z) {
+        return SignedDistanceToAsFixpoint(x, y, z) >> 16;
+    }
+
+    /**
+     * @see SignedDistanceToAsFixpoint(const Vec3_int_ &)
+     */
+    int SignedDistanceToAsFixpoint(int x, int y, int z) {
+        return this->dist + this->vNormal.x * x + this->vNormal.y * y + this->vNormal.z * z;
+    }
 };
 #pragma pack(pop)
 
@@ -117,6 +158,10 @@ struct BBox_short_ {
     int16_t y2;
     int16_t z1;
     int16_t z2;
+
+    bool ContainsXY(int x, int y) const {
+        return x >= x1 && x <= x2 && y >= y1 && y <= y2;
+    }
 };
 #pragma pack(pop)
 
@@ -128,6 +173,20 @@ struct BBox_int_ {
     int y2;
     int z1;
     int z2;
+
+    bool Intersects(const BBox_short_ &other) const {
+        return
+            this->x1 <= other.x2 && this->x2 >= other.x1 &&
+            this->y1 <= other.y2 && this->y2 >= other.y1 &&
+            this->z1 <= other.z2 && this->z2 >= other.z1;
+    }
+
+    bool Intersects(const BBox_int_ &other) const {
+        return
+            this->x1 <= other.x2 && this->x2 >= other.x1 &&
+            this->y1 <= other.y2 && this->y2 >= other.y1 &&
+            this->z1 <= other.z2 && this->z2 >= other.z1;
+    }
 };
 #pragma pack(pop)
 

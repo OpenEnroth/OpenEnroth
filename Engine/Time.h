@@ -112,12 +112,17 @@ struct Timer {
         uGameTimeStart = 0;
         field_18 = 0;
         uTimeElapsed = 0;
-        dt_in_some_format = 0;
+        dt_fixpoint = 0;
         uTotalGameTimeElapsed = 0;
     }
 
     void Initialize();
+
+    /**
+     * @return                          Current time in 1/128th of a second.
+     */
     uint64_t Time();
+
     void Update();
     void Pause();
     void Resume();
@@ -131,8 +136,8 @@ struct Timer {
     unsigned int uStopTime;
     int uGameTimeStart;
     int field_18;
-    unsigned int uTimeElapsed;
-    int dt_in_some_format;
+    unsigned int uTimeElapsed; // dt in 1/128th of a second.
+    int dt_fixpoint; // dt in seconds in fixpoint format
     unsigned int uTotalGameTimeElapsed;
 
     static const unsigned int Minute = 2 * TIME_QUANT;

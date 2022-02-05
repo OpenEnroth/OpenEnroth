@@ -62,7 +62,8 @@ void DecorationList::ToFile() {
 uint16_t DecorationList::GetDecorIdByName(const char *pName) {
     if (pName && pDecorations.size() > 1) {
         for (uint uID = 1; uID < pDecorations.size(); ++uID) {
-            if (!_stricmp(pName, pDecorations[uID].pName)) return uID;
+            if (iequals(pName, pDecorations[uID].pName))
+                return uID;
         }
     }
 

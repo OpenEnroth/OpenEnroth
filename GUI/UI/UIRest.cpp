@@ -1,8 +1,6 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Outdoor.h"

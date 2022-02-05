@@ -1212,7 +1212,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
                   .uRecoveryTime;
         if (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SLOWED].Active()) v25 *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            pActors[uActorID].pMonsterInfo.uRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * v25 * 2.133333333333333);
+            pActors[uActorID].pMonsterInfo.uRecoveryTime = (int)(debug_combat_recovery_mul * v25 * 2.133333333333333);
         } else {
             pActors[uActorID].pMonsterInfo.uRecoveryTime = v25;
         }
@@ -1408,7 +1408,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         if (v8 < 30) v8 = 30;
         if (!pParty->bTurnBasedModeOn)
             pPlayer->SetRecoveryTime(
-                (int)(flt_6BE3A4_debug_recmod1 * v8 * 2.133333333333333));
+                (int)(debug_non_combat_recovery_mul * v8 * 2.133333333333333));
         pTurnEngine->ApplyPlayerAction();
     }
 }
@@ -1468,7 +1468,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
         if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
         } else {
-            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(debug_combat_recovery_mul * pDira * 2.133333333333333);
         }
         v3->vVelocity.z = 0;
         v3->vVelocity.y = 0;
@@ -1542,7 +1542,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
         } else {
-            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(debug_combat_recovery_mul * pDira * 2.133333333333333);
         }
         v16 = v3->pMonsterInfo.uSpell1ID;
         v3->vVelocity.z = 0;
@@ -1614,7 +1614,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            v3->pMonsterInfo.uRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * pDira * 2.133333333333333);
+            v3->pMonsterInfo.uRecoveryTime = (int)(debug_combat_recovery_mul * pDira * 2.133333333333333);
         } else {
             v3->pMonsterInfo.uRecoveryTime = pDira;
         }
@@ -1686,7 +1686,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
         } else {
-            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength - (int)(flt_6BE3A8_debug_recmod2 * pDira * -2.133333333333333);
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength - (int)(debug_combat_recovery_mul * pDira * -2.133333333333333);
         }
         v3->vVelocity.z = 0;
         v3->vVelocity.y = 0;
@@ -2712,29 +2712,29 @@ bool Actor::_46DF1A_collide_against_actor(int a1, int a2) {
     v4 = v2->uActorRadius;
     if (a2) v4 = a2;
 
-    if (_actor_collision_struct.sMaxX > v2->vPosition.x + v4 ||
-        _actor_collision_struct.sMinX < v2->vPosition.x - v4 ||
-        _actor_collision_struct.sMaxY > v2->vPosition.y + v4 ||
-        _actor_collision_struct.sMinY < v2->vPosition.y - v4 ||
-        _actor_collision_struct.sMaxZ > v2->vPosition.z + v2->uActorHeight ||
-        _actor_collision_struct.sMinZ < v2->vPosition.z) {
+    if (collision_state.bbox.x1 > v2->vPosition.x + v4 ||
+        collision_state.bbox.x2 < v2->vPosition.x - v4 ||
+        collision_state.bbox.y1 > v2->vPosition.y + v4 ||
+        collision_state.bbox.y2 < v2->vPosition.y - v4 ||
+        collision_state.bbox.z1 > v2->vPosition.z + v2->uActorHeight ||
+        collision_state.bbox.z2 < v2->vPosition.z) {
         return false;
     }
-    v8 = v2->vPosition.x - _actor_collision_struct.normal.x;
-    v9 = v2->vPosition.y - _actor_collision_struct.normal.y;
-    v10 = _actor_collision_struct.prolly_normal_d + v4;
-    v11 = (v8 * _actor_collision_struct.direction.y - v9 * _actor_collision_struct.direction.x) >> 16;
-    v12 = (v8 * _actor_collision_struct.direction.x + v9 * _actor_collision_struct.direction.y) >> 16;
+    v8 = v2->vPosition.x - collision_state.position_lo.x;
+    v9 = v2->vPosition.y - collision_state.position_lo.y;
+    v10 = collision_state.radius_lo + v4;
+    v11 = (v8 * collision_state.direction.y - v9 * collision_state.direction.x) >> 16;
+    v12 = (v8 * collision_state.direction.x + v9 * collision_state.direction.y) >> 16;
     if (abs(v11) > v10 || v12 <= 0) return false;
-    if (fixpoint_mul(_actor_collision_struct.direction.z, v12) + _actor_collision_struct.normal.z <
+    if (fixpoint_mul(collision_state.direction.z, v12) + collision_state.position_lo.z <
         v2->vPosition.z)
         return false;
 
     v13 = v12 - integer_sqrt(v10 * v10 - v11 * v11);
     if (v13 < 0) v13 = 0;
-    if (v13 < _actor_collision_struct.field_7C) {
-        _actor_collision_struct.field_7C = v13;
-        _actor_collision_struct.pid = PID(OBJECT_Actor, a1);
+    if (v13 < collision_state.adjusted_move_distance) {
+        collision_state.adjusted_move_distance = v13;
+        collision_state.pid = PID(OBJECT_Actor, a1);
     }
     return true;
 }
@@ -3651,7 +3651,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         extraRecoveryTime = 20;
         knockbackValue = 10;
         if (!pParty->bTurnBasedModeOn)
-            extraRecoveryTime = (int)(flt_6BE3A8_debug_recmod2 * 42.66666666666666);
+            extraRecoveryTime = (int)(debug_combat_recovery_mul * 42.66666666666666);
         pMonster->pMonsterInfo.uRecoveryTime += extraRecoveryTime;
         if (!engine->config->NoShowDamage()) {
             GameUI_SetStatusBar(

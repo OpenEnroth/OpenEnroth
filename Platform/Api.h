@@ -21,6 +21,9 @@ void OS_ShowCursor(bool show);
 
 bool OS_OpenConsole();
 
+/**
+ * @return                              Current value of a monotonic clock in milliseconds (1/1000s of a second).
+ */
 unsigned int OS_GetTime();
 uint64_t OS_GetPrecisionTime();
 
@@ -28,3 +31,4 @@ std::vector<std::string> OS_FindFiles(const std::string &folder, const std::stri
 
 char OS_GetDirSeparator(void);
 std::string OS_casepath(std::string path);
+bool OS_FileExists(const std::string &path);

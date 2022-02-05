@@ -40,11 +40,11 @@ struct ItemGen {  // 0x24
 
     bool IsRegularEnchanmentForAttribute(CHARACTER_ATTRIBUTE_TYPE attrToGet);
 
-    inline bool IsBroken() { return (uAttributes & ITEM_BROKEN) != 0; }
+    inline bool IsBroken() const { return (uAttributes & ITEM_BROKEN) != 0; }
     inline void SetBroken() { uAttributes |= ITEM_BROKEN; }
-    inline bool IsIdentified() { return (uAttributes & ITEM_IDENTIFIED) != 0; }
+    inline bool IsIdentified() const { return (uAttributes & ITEM_IDENTIFIED) != 0; }
     inline void SetIdentified() { uAttributes |= ITEM_IDENTIFIED; }
-    inline bool IsStolen() { return (uAttributes & ITEM_STOLEN) != 0; }
+    inline bool IsStolen() const { return (uAttributes & ITEM_STOLEN) != 0; }
     inline void SetStolen() { uAttributes |= ITEM_STOLEN; }
 
     bool GenerateArtifact();

@@ -24,7 +24,7 @@ Icon *IconFrameTable::GetIcon(unsigned int idx) {
 
 Icon *IconFrameTable::GetIcon(const char *pIconName) {
     for (unsigned int i = 0; i < this->uNumIcons; i++) {
-        if (!_stricmp(pIconName, this->pIcons[i].GetAnimationName()))
+        if (iequals(pIconName, this->pIcons[i].GetAnimationName()))
             return &this->pIcons[i];
     }
     return nullptr;
@@ -33,7 +33,8 @@ Icon *IconFrameTable::GetIcon(const char *pIconName) {
 //----- (00494F3A) --------------------------------------------------------
 unsigned int IconFrameTable::FindIcon(const char *pIconName) {
     for (uint i = 0; i < (signed int)this->uNumIcons; i++) {
-        if (!_stricmp(pIconName, this->pIcons[i].GetAnimationName())) return i;
+        if (iequals(pIconName, this->pIcons[i].GetAnimationName()))
+            return i;
     }
     return 0;
 }
@@ -193,7 +194,7 @@ Args, v22);
 v20.pProperties[0]); strcpy(this->pIcons[this->uNumIcons].pTextureName,
 v20.pProperties[1]); v8 = v20.pProperties[2];
         this->pIcons[this->uNumIcons].uFlags = 0;
-        if ( !_stricmp(v8, "new") )
+        if ( iequals(v8, "new") )
         {
           v9 = (int)&this->pIcons[this->uNumIcons].uFlags;
           *(char *)v9 |= 4u;

@@ -158,9 +158,9 @@ struct Player {
     ITEM_EQUIP_TYPE GetEquippedItemEquipType(ITEM_EQUIP_TYPE uEquipSlot);
     PLAYER_SKILL_TYPE GetEquippedItemSkillType(ITEM_EQUIP_TYPE uEquipSlot);
     bool IsUnarmed();
-    bool HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex);
+    bool HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex) const;
     bool HasEnchantedItemEquipped(int uEnchantment);
-    bool WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type);
+    bool WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type) const;
     int StealFromShop(ItemGen* itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int* fineIfFailed);
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
@@ -191,7 +191,7 @@ struct Player {
     int GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
     int GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
     int GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
-    enum CHARACTER_RACE GetRace() const;
+    CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
     PLAYER_SEX GetSexByVoice();
     void SetInitialStats();
@@ -264,7 +264,7 @@ struct Player {
     int CalculateMeleeDmgToEnemyWithWeapon(ItemGen* weapon,
                                            unsigned int uTargetActorID,
                                            bool addOneDice);
-    bool WearsItemAnyWhere(int item_id);
+    bool WearsItemAnywhere(int item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(
         unsigned char armour_skill_type, float param2, float param3,
         float param4, float param5);
@@ -333,7 +333,8 @@ struct Player {
     ItemGen* GetBootItem();
     ItemGen* GetAmuletItem();
     ItemGen* GetNthRingItem(int ringNum);
-    ItemGen* GetNthEquippedIndexItem(int index);
+    const ItemGen* GetNthEquippedIndexItem(int index) const;
+    ItemGen *GetNthEquippedIndexItem(int index);
     ItemGen* GetItem(unsigned int PlayerEquipment::*itemPos);
     int GetPlayerIndex();
 
@@ -510,7 +511,7 @@ struct Player {
     char field_1B3B;
 };
 
-void DamagePlayerFromMonster(unsigned int uObjID, int a2, struct Vec3_int_* pPos, signed int a4);
+void DamagePlayerFromMonster(unsigned int uObjID, int a2, Vec3_int_* pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();

@@ -1890,8 +1890,8 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
         GetTerrainHeightsAroundParty2(X, Y, pIsOnWater, bWaterWalk);
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (X <= model.sMaxX && X >= model.sMinX && Y <= model.sMaxY &&
-            Y >= model.sMinY) {
+        if (X <= model.pBoundingBox.x2 && X >= model.pBoundingBox.x1 && Y <= model.pBoundingBox.y2 &&
+            Y >= model.pBoundingBox.y1) {
             if (!model.pFaces.empty()) {
                 v39 = 0;
                 for (ODMFace &face : model.pFaces) {
@@ -1984,7 +1984,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
                                 } else {
                                     int a = fixpoint_mul(face.zCalc1, X);
                                     int b = fixpoint_mul(face.zCalc2, Y);
-                                    int c = ((int64_t)face.zCalc3 >> 16);
+                                    int c = (face.zCalc3 >> 16);
                                     v24 = a + b + c;
                                 }
                                 v25 = v46++;
@@ -2287,17 +2287,7 @@ void ODM_ProcessPartyActions() {
     bWaterWalk = false;
     //************************************
     // Проверка падение пера
-    if (!pParty->FeatherFallActive()) {
-        bFeatherFall = false;
-        for (int i = 0; i < 4; ++i)
-            if (pParty->pPlayers[i].WearsItemAnyWhere(
-                    ITEM_ARTIFACT_LADYS_ESCORT)) {  // seems like flying boots
-                bFeatherFall = true;
-                break;
-            }
-    } else {
-        bFeatherFall = true;
-    }
+    bFeatherFall = pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
     //************************************
     // Проверка хождения по воде
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
@@ -2325,9 +2315,9 @@ void ODM_ProcessPartyActions() {
     //************************************
     // определение высоты падения
     if (bFeatherFall)  // падение пера
-        pParty->uFallStartY = floor_level;
+        pParty->uFallStartZ = floor_level;
     else
-        floor_level = pParty->uFallStartY;
+        floor_level = pParty->uFallStartZ;
     //*************************************
     // падение на 3D Model
     if (floor_level - party_new_Z > 512 && !bFeatherFall &&
@@ -2339,7 +2329,7 @@ void ODM_ProcessPartyActions() {
                 if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                     !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)) {
                     pParty->pPlayers[i].ReceiveDamage(
-                        (int)((pParty->uFallStartY - party_new_Z) *
+                        (int)((pParty->uFallStartZ - party_new_Z) *
                         (uint64_t)(pParty->pPlayers[i]
                             .GetMaxHealth() /
                             10)) /
@@ -2349,7 +2339,7 @@ void ODM_ProcessPartyActions() {
                         pParty->pPlayers[i].GetActualEndurance());
                     pParty->pPlayers[i].SetRecoveryTime(
                         (signed __int64)((double)bonus *
-                            flt_6BE3A4_debug_recmod1 *
+                            debug_non_combat_recovery_mul *
                             2.133333333333333));
                 }
             }
@@ -2417,14 +2407,14 @@ void ODM_ProcessPartyActions() {
     _walk_speed = pParty->uWalkSpeed;
     _angle_y = pParty->sRotationZ;
     _angle_x = pParty->sRotationX;
-    // v126 = pEventTimer->dt_in_some_format;
-    /*v119 = (Player **)((unsigned __int64)(pEventTimer->dt_in_some_format
+    // v126 = pEventTimer->dt_fixpoint;
+    /*v119 = (Player **)((unsigned __int64)(pEventTimer->dt_fixpoint
                                         * (signed __int64)((signed
        int)(pParty->field_20_prolly_turn_speed
                                                                       *
        TrigLUT->uIntegerPi) / 180)) >> 16);*/
     __int64 dturn =
-        (unsigned __int64)(pEventTimer->dt_in_some_format *
+        (unsigned __int64)(pEventTimer->dt_fixpoint *
                            (signed __int64)((signed int)(pParty
                                                              ->y_rotation_speed *
                                                          TrigLUT
@@ -2677,16 +2667,14 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_LookDown:  // смотреть вниз
-                _angle_x +=
-                    (signed __int64)(flt_6BE150_look_up_down_dangle * 25.0);
+                _angle_x += engine->config->vertical_turn_speed;
                 if (_angle_x > 128) _angle_x = 128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
 
             case PARTY_LookUp:  // смотреть вверх
-                _angle_x +=
-                    (signed __int64)(flt_6BE150_look_up_down_dangle * -25.0);
+                _angle_x -= engine->config->vertical_turn_speed;
                 if (_angle_x < -128) _angle_x = -128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookDown, 0);
@@ -2695,11 +2683,11 @@ void ODM_ProcessPartyActions() {
             case PARTY_Jump:  // прыжок
                 if ((!partyAtHighSlope || bmodel_standing_on_pid) &&
                     !hovering &&
-                    pParty->field_24 &&
+                    pParty->jump_strength &&
                     !(pParty->uFlags & PARTY_FLAGS_1_WATER_DAMAGE) &&
                     !(pParty->uFlags & PARTY_FLAGS_1_BURNING)) {
                     hovering = true;
-                    fall_speed += pParty->field_24 * 96;
+                    fall_speed += pParty->jump_strength * 96;
                 }
                 break;
 
@@ -2728,13 +2716,13 @@ void ODM_ProcessPartyActions() {
             stru_5E4C90_MapPersistVars._decor_events
                 [20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] &=
                 0xFE;
-        pParty->uFallStartY = party_new_Z;
+        pParty->uFallStartZ = party_new_Z;
     } else if (party_new_Z < v111) {
         if (is_on_water && fall_speed)
             SpriteObject::Create_Splash_Object(pX, pY, v111);
         fall_speed = 0;
         party_new_Z = v111;
-        pParty->uFallStartY = v111;
+        pParty->uFallStartZ = v111;
         v113 = party_new_Z;
         if (pParty->FlyActive())
             stru_5E4C90_MapPersistVars._decor_events
@@ -2792,7 +2780,7 @@ void ODM_ProcessPartyActions() {
             }
         }
     } else {
-      pParty->uFallStartY = party_new_Z;
+      pParty->uFallStartZ = party_new_Z;
     }
 
     if (v2 * v2 + v1 * v1 < 400 && !partyAtHighSlope) {
@@ -2800,31 +2788,33 @@ void ODM_ProcessPartyActions() {
         v2 = 0;
     }
     // --(столкновения)-------------------------------------------------------------------
-    _actor_collision_struct.field_84 = -1;
-    _actor_collision_struct.field_70 = 0;
-    _actor_collision_struct.prolly_normal_d = pParty->field_14_radius;
-    _actor_collision_struct.field_8_radius = pParty->field_14_radius / 2;
-    _actor_collision_struct.field_0 = 1;
-    _actor_collision_struct.height = pParty->uPartyHeight - 32;
+    collision_state.field_84 = -1;
+    collision_state.field_70 = 0;
+    collision_state.radius_lo = pParty->radius;
+    collision_state.radius_hi = pParty->radius / 2;
+    collision_state.check_hi = 1;
+    collision_state.height = pParty->uPartyHeight - 32;
     for (uint i = 0; i < 100; i++) {
-        _actor_collision_struct.position.x = pX;
-        _actor_collision_struct.position.y = pY;
-        _actor_collision_struct.position.z = _actor_collision_struct.height + party_new_Z + 1;
+        collision_state.position_hi.x = pX;
+        collision_state.position_hi.y = pY;
+        collision_state.position_hi.z = collision_state.height + party_new_Z + 1;
 
-        _actor_collision_struct.normal.x = pX;
-        _actor_collision_struct.normal.y = pY;
-        _actor_collision_struct.normal.z = _actor_collision_struct.prolly_normal_d + party_new_Z + 1;
+        collision_state.position_lo.x = pX;
+        collision_state.position_lo.y = pY;
+        collision_state.position_lo.z = collision_state.radius_lo + party_new_Z + 1;
 
-        _actor_collision_struct.velocity.x = v2;
-        _actor_collision_struct.velocity.y = v128;
-        _actor_collision_struct.velocity.z = fall_speed;
+        collision_state.velocity.x = v2;
+        collision_state.velocity.y = v128;
+        collision_state.velocity.z = fall_speed;
 
-        _actor_collision_struct.uSectorID = 0;
+        collision_state.uSectorID = 0;
         v36 = 0;
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
             v36 = 13312;
         }
-        if (_actor_collision_struct.CalcMovementExtents(v36)) break;
+        if (collision_state.PrepareAndCheckIfStationary(v36))
+            break;
+
         _46E889_collide_against_bmodels(1);
         // v37 = WorldPosToGridCellY(pParty->vPosition.y);
         // v38 = WorldPosToGridCellX(pParty->vPosition.x);
@@ -2834,18 +2824,18 @@ void ODM_ProcessPartyActions() {
         _46ED8A_collide_against_sprite_objects(4);
         for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
             Actor::_46DF1A_collide_against_actor(actor_id, 0);
-        if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
-            _angle_x = _actor_collision_struct.normal2.x;
-            _angle_y = _actor_collision_struct.normal2.y;
-            v40 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            _angle_x = collision_state.new_position_lo.x;
+            _angle_y = collision_state.new_position_lo.y;
+            v40 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            _angle_x = pX + fixpoint_mul(_actor_collision_struct.field_7C,
-                                         _actor_collision_struct.direction.x);
-            _angle_y = pY + fixpoint_mul(_actor_collision_struct.field_7C,
-                                         _actor_collision_struct.direction.y);
-            // pModel = (BSPModel *)fixpoint_mul(_actor_collision_struct.field_7C,
-            // _actor_collision_struct.direction.z);
-            v40 = fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.z) +
+            _angle_x = pX + fixpoint_mul(collision_state.adjusted_move_distance,
+                                         collision_state.direction.x);
+            _angle_y = pY + fixpoint_mul(collision_state.adjusted_move_distance,
+                                         collision_state.direction.y);
+            // pModel = (BSPModel *)fixpoint_mul(collision_state.adjusted_move_distance,
+            // collision_state.direction.z);
+            v40 = fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z) +
                   party_new_Z;
         }
         v122 = v40;
@@ -2885,32 +2875,32 @@ void ODM_ProcessPartyActions() {
                 }
             }
         }
-        if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             if (!is_not_on_bmodel) {
-                pX = _actor_collision_struct.normal2.x;
-                pY = _actor_collision_struct.normal2.y;
+                pX = collision_state.new_position_lo.x;
+                pY = collision_state.new_position_lo.y;
             }
             party_new_Z =
-                _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+                collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             break;
         }
-        _actor_collision_struct.field_70 += _actor_collision_struct.field_7C;
+        collision_state.field_70 += collision_state.adjusted_move_distance;
         pX = _angle_x;
         pY = _angle_y;
-        v45 = _actor_collision_struct.pid;
+        v45 = collision_state.pid;
         party_new_Z = v40;
 
-        if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_Actor) {
+        if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
             if (pParty->Invisible())
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
             viewparams->bRedrawGameUI = true;
         }
 
-        if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_Decoration) {
+        if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
             v129 = TrigLUT->Atan2(
-                _angle_x - pLevelDecorations[(signed int)_actor_collision_struct.pid >> 3]
+                _angle_x - pLevelDecorations[(signed int)collision_state.pid >> 3]
                                .vPosition.x,
-                _angle_y - pLevelDecorations[(signed int)_actor_collision_struct.pid >> 3]
+                _angle_y - pLevelDecorations[(signed int)collision_state.pid >> 3]
                                .vPosition.y);
             v2 = fixpoint_mul(TrigLUT->Cos(v129),
                               integer_sqrt(v2 * v2 + v128 * v128));
@@ -2920,11 +2910,11 @@ void ODM_ProcessPartyActions() {
                                 integer_sqrt(v2 * v2 + v128 * v128));
         }
 
-        if (PID_TYPE(_actor_collision_struct.pid) == OBJECT_BModel) {
+        if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
             pParty->bFlying = false;
-            pModel = &pOutdoor->pBModels[(signed int)_actor_collision_struct.pid >> 9];
+            pModel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
             pODMFace =
-                &pModel->pFaces[((signed int)_actor_collision_struct.pid >> 3) & 0x3F];
+                &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
             v48 = pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1;
             v129 = v48 <= 32;
             v119 = pODMFace->pFacePlane.vNormal.z < 46378;
@@ -2953,8 +2943,8 @@ void ODM_ProcessPartyActions() {
                            fall_speed * pODMFace->pFacePlane.vNormal.z +
                            v2 * pODMFace->pFacePlane.vNormal.x) >>
                        16;
-                if ((_actor_collision_struct.speed >> 3) > v118)
-                    v118 = _actor_collision_struct.speed >> 3;
+                if ((collision_state.speed >> 3) > v118)
+                    v118 = collision_state.speed >> 3;
                 v2 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.x);
                 v128 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.y);
                 v54 = 0;
@@ -2962,12 +2952,8 @@ void ODM_ProcessPartyActions() {
                     v54 = fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
                 pParty->uFallSpeed += v54;
                 v55 =
-                    _actor_collision_struct.prolly_normal_d -
-                    ((signed int)(pODMFace->pFacePlane.dist +
-                                  v122 * pODMFace->pFacePlane.vNormal.z +
-                                  _angle_y * pODMFace->pFacePlane.vNormal.y +
-                                  _angle_x * pODMFace->pFacePlane.vNormal.x) >>
-                     16);
+                    collision_state.radius_lo -
+                    pODMFace->pFacePlane.SignedDistanceTo(_angle_x, _angle_y, v122);
                 if (v55 > 0) {
                     pX = _angle_x +
                          fixpoint_mul(pODMFace->pFacePlane.vNormal.x, v55);
@@ -2978,9 +2964,9 @@ void ODM_ProcessPartyActions() {
                             v122 +
                             fixpoint_mul(pODMFace->pFacePlane.vNormal.z, v55);
                 }
-                if (pParty->floor_face_pid != _actor_collision_struct.pid &&
+                if (pParty->floor_face_pid != collision_state.pid &&
                     pODMFace->Pressure_Plate()) {
-                    pParty->floor_face_pid = _actor_collision_struct.pid;
+                    pParty->floor_face_pid = collision_state.pid;
                     trigger_id = pODMFace->sCogTriggeredID;  //
                 }
             }
@@ -2989,16 +2975,16 @@ void ODM_ProcessPartyActions() {
                            fall_speed * pODMFace->pFacePlane.vNormal.z +
                            v2 * pODMFace->pFacePlane.vNormal.x) >>
                        16;
-                if ((_actor_collision_struct.speed >> 3) > v118)
-                    v118 = _actor_collision_struct.speed >> 3;
+                if ((collision_state.speed >> 3) > v118)
+                    v118 = collision_state.speed >> 3;
                 v2 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.x);
                 v128 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.y);
                 fall_speed +=
                     fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
                 if (v2 * v2 + v128 * v128 >= 400) {
-                    if (pParty->floor_face_pid != _actor_collision_struct.pid &&
+                    if (pParty->floor_face_pid != collision_state.pid &&
                         pODMFace->Pressure_Plate()) {
-                        pParty->floor_face_pid = _actor_collision_struct.pid;
+                        pParty->floor_face_pid = collision_state.pid;
                         trigger_id = pODMFace->sCogTriggeredID;  //
                     }
                 } else {
@@ -3079,7 +3065,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFallSpeed = fall_speed;
         if (party_new_Z > 8160) {  // ограничение высоты
             party_new_Z = 8160;
-            pParty->uFallStartY = 8160;
+            pParty->uFallStartZ = 8160;
             pParty->vPosition.z = 8160;
         }
 
@@ -3091,7 +3077,7 @@ void ODM_ProcessPartyActions() {
                 pParty->uFallSpeed = 0;
                 // v73 = v105;
                 pParty->vPosition.z = on_ground;
-                if (pParty->uFallStartY - party_new_Z > 512 && !bFeatherFall &&
+                if (pParty->uFallStartZ - party_new_Z > 512 && !bFeatherFall &&
                     party_new_Z <= on_ground &&
                     !engine->IsUnderwater()) {  // Fall to the ground(падение на землю с
                                      // высоты)
@@ -3100,7 +3086,7 @@ void ODM_ProcessPartyActions() {
                     } else {
                         for (uint i = 1; i <= 4; ++i) {
                             pPlayers[i]->ReceiveDamage(
-                                (int)((pParty->uFallStartY -
+                                (int)((pParty->uFallStartZ -
                                               party_new_Z) *
                                              (uint64_t)((double)pPlayers[i]->GetMaxHealth() * 0.1)) /
                                     256,
@@ -3109,13 +3095,13 @@ void ODM_ProcessPartyActions() {
                                             pPlayers[i]->GetActualEndurance());
                             pPlayers[i]->SetRecoveryTime(
                                 (signed __int64)((double)v110 *
-                                                 flt_6BE3A4_debug_recmod1 *
+                                                 debug_non_combat_recovery_mul *
                                                  2.133333333333333));
                         }
                         // v73 = pParty->vPosition.z;
                     }
                 }
-                pParty->uFallStartY = party_new_Z;
+                pParty->uFallStartZ = party_new_Z;
             }
             if (v102 && pParty->vPosition.z < ceiling_height) {
                 if ((signed int)(pParty->uPartyHeight + pParty->vPosition.z) >=
@@ -3185,7 +3171,7 @@ void ODM_ProcessPartyActions() {
     pParty->vPosition.z = party_new_Z;
     if (party_new_Z > 8160) {  // опять ограничение высоты
         // v82 = 8160;
-        pParty->uFallStartY = 8160;
+        pParty->uFallStartZ = 8160;
         pParty->vPosition.z = 8160;
     }
     HEXRAYS_LOWORD(pParty->uFlags) &= 0xFDFBu;
@@ -3207,7 +3193,7 @@ void ODM_ProcessPartyActions() {
             // v82 = on_ground;
             pParty->uFallSpeed = 0;
             pParty->vPosition.z = on_ground;
-            if (pParty->uFallStartY - party_new_Z > 512 && !bFeatherFall &&
+            if (pParty->uFallStartZ - party_new_Z > 512 && !bFeatherFall &&
                 party_new_Z <= on_ground &&
                 !engine->IsUnderwater()) {  // Fall to the water(падение на воду с высоты)
                 if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
@@ -3216,20 +3202,20 @@ void ODM_ProcessPartyActions() {
                     for (uint i = 1; i <= 4; ++i) {
                         v110 = pPlayers[i]->GetMaxHealth();
                         pPlayers[i]->ReceiveDamage(
-                            (int)((pParty->uFallStartY - party_new_Z) *
+                            (int)((pParty->uFallStartZ - party_new_Z) *
                                          (uint64_t)((double)v110 * 0.1)) / 256,
                             DMGT_PHISYCAL);
                         v110 = 20 - pPlayers[i]->GetParameterBonus(
                                         pPlayers[i]->GetActualEndurance());
                         pPlayers[i]->SetRecoveryTime(
                             (signed __int64)((double)v110 *
-                                             flt_6BE3A4_debug_recmod1 *
+                                             debug_non_combat_recovery_mul *
                                              2.133333333333333));
                     }
                     // v82 = pParty->vPosition.z;
                 }
             }
-            pParty->uFallStartY = party_new_Z;
+            pParty->uFallStartZ = party_new_Z;
         }
         if (v102 && pParty->vPosition.z < ceiling_height &&
             (signed int)(pParty->uPartyHeight + pParty->vPosition.z) >=
@@ -3264,8 +3250,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
     v39 = 1;
     ceiling_height_level[0] = 10000;  // нет потолка
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (Party_X <= model.sMaxX && Party_X >= model.sMinX &&
-            Party_Y <= model.sMaxY && Party_Y >= model.sMinY) {
+        if (Party_X <= model.pBoundingBox.x2 && Party_X >= model.pBoundingBox.x1 &&
+            Party_Y <= model.pBoundingBox.y2 && Party_Y >= model.pBoundingBox.y1) {
             for (ODMFace &face : model.pFaces) {
                 if ((face.uPolygonType == POLYGON_Ceiling ||
                      face.uPolygonType == POLYGON_InBetweenCeilingAndWall) &&
@@ -3330,7 +3316,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                         else
                             v19 = fixpoint_mul(face.zCalc1, Party_X) +
                                   fixpoint_mul(face.zCalc2, Party_Y) +
-                                  HEXRAYS_HIWORD(face.zCalc3);
+                                  (face.zCalc3 >> 16);
                         v20 = v39++;
                         ceiling_height_level[v20] = v19;
                         dword_720ED0[v20] = model.index;
@@ -3424,7 +3410,7 @@ void UpdateActors_ODM() {
                 pActors[Actor_ITR].uAIState == Pursuing)
                 Actor_Speed *= 2;
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT) {
-                Actor_Speed *= flt_6BE3AC_debug_recmod1_x_1_6;
+                Actor_Speed *= debug_turn_based_monster_movespeed_mul;
             }
             if (Actor_Speed > 1000) Actor_Speed = 1000;
 
@@ -3502,28 +3488,28 @@ void UpdateActors_ODM() {
             Act_Radius = 40;
 
 
-        _actor_collision_struct.field_0 = 1;
-        _actor_collision_struct.field_84 = -1;
-        _actor_collision_struct.field_8_radius = Act_Radius;
-        _actor_collision_struct.prolly_normal_d = Act_Radius;
-        _actor_collision_struct.height = pActors[Actor_ITR].uActorHeight;
-        _actor_collision_struct.field_70 = 0;
+        collision_state.check_hi = 1;
+        collision_state.field_84 = -1;
+        collision_state.radius_hi = Act_Radius;
+        collision_state.radius_lo = Act_Radius;
+        collision_state.height = pActors[Actor_ITR].uActorHeight;
+        collision_state.field_70 = 0;
 
         for (Model_On_PID = 0; Model_On_PID < 100; ++Model_On_PID) {
-            _actor_collision_struct.position.x = pActors[Actor_ITR].vPosition.x;
-            _actor_collision_struct.normal.x = _actor_collision_struct.position.x;
-            _actor_collision_struct.position.y = pActors[Actor_ITR].vPosition.y;
-            _actor_collision_struct.normal.y = _actor_collision_struct.position.y;
+            collision_state.position_hi.x = pActors[Actor_ITR].vPosition.x;
+            collision_state.position_lo.x = collision_state.position_hi.x;
+            collision_state.position_hi.y = pActors[Actor_ITR].vPosition.y;
+            collision_state.position_lo.y = collision_state.position_hi.y;
             int Act_Z_Pos = pActors[Actor_ITR].vPosition.z;
-            _actor_collision_struct.normal.z = Act_Z_Pos + Act_Radius + 1;
-            _actor_collision_struct.position.z = Act_Z_Pos - Act_Radius + _actor_collision_struct.height - 1;
-            if (_actor_collision_struct.position.z < _actor_collision_struct.normal.z)
-                _actor_collision_struct.position.z = Act_Z_Pos + Act_Radius + 1;
-            _actor_collision_struct.velocity.x = pActors[Actor_ITR].vVelocity.x;
-            _actor_collision_struct.uSectorID = 0;
-            _actor_collision_struct.velocity.y = pActors[Actor_ITR].vVelocity.y;
-            _actor_collision_struct.velocity.z = pActors[Actor_ITR].vVelocity.z;
-            if (_actor_collision_struct.CalcMovementExtents(0)) break;
+            collision_state.position_lo.z = Act_Z_Pos + Act_Radius + 1;
+            collision_state.position_hi.z = Act_Z_Pos - Act_Radius + collision_state.height - 1;
+            if (collision_state.position_hi.z < collision_state.position_lo.z)
+                collision_state.position_hi.z = Act_Z_Pos + Act_Radius + 1;
+            collision_state.velocity.x = pActors[Actor_ITR].vVelocity.x;
+            collision_state.uSectorID = 0;
+            collision_state.velocity.y = pActors[Actor_ITR].vVelocity.y;
+            collision_state.velocity.z = pActors[Actor_ITR].vVelocity.z;
+            if (collision_state.PrepareAndCheckIfStationary(0)) break;
             _46E889_collide_against_bmodels(1);
             _46E26D_collide_against_sprites(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y));
             _46EF01_collision_chech_player(0);
@@ -3536,16 +3522,16 @@ void UpdateActors_ODM() {
                     ++i;
             }
             int v71 = i > 1;
-            if (_actor_collision_struct.field_7C < _actor_collision_struct.field_6C)
+            if (collision_state.adjusted_move_distance < collision_state.move_distance)
                 Slope_High =
-                    fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.z);
+                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
             // v34 = 0;
-            int v35 = _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1;
+            int v35 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             bool bOnWater = false;
             int Splash_Model_On;
             int Splash_Floor = ODM_GetFloorLevel(
-                _actor_collision_struct.normal2.x, _actor_collision_struct.normal2.y,
-                _actor_collision_struct.normal2.z - _actor_collision_struct.prolly_normal_d - 1,
+                collision_state.new_position_lo.x, collision_state.new_position_lo.y,
+                collision_state.new_position_lo.z - collision_state.radius_lo - 1,
                 pActors[Actor_ITR].uActorHeight, &bOnWater, &Splash_Model_On, 0);
             if (uIsOnWater) {
                 if (v35 < Splash_Floor + 60) {
@@ -3565,28 +3551,28 @@ void UpdateActors_ODM() {
                     }
                 }
             }
-            if (_actor_collision_struct.field_7C >= _actor_collision_struct.field_6C) {
-                pActors[Actor_ITR].vPosition.x = (short)_actor_collision_struct.normal2.x;
-                pActors[Actor_ITR].vPosition.y = (short)_actor_collision_struct.normal2.y;
-                pActors[Actor_ITR].vPosition.z = (short)_actor_collision_struct.normal2.z -
-                                           (short)_actor_collision_struct.prolly_normal_d -
+            if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+                pActors[Actor_ITR].vPosition.x = (short)collision_state.new_position_lo.x;
+                pActors[Actor_ITR].vPosition.y = (short)collision_state.new_position_lo.y;
+                pActors[Actor_ITR].vPosition.z = (short)collision_state.new_position_lo.z -
+                                           (short)collision_state.radius_lo -
                                            1;
                 break;
             }
 
             pActors[Actor_ITR].vPosition.x +=
-                fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.x);
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
 
             pActors[Actor_ITR].vPosition.y +=
-                fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.y);
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
 
             pActors[Actor_ITR].vPosition.z +=
-                fixpoint_mul(_actor_collision_struct.field_7C, _actor_collision_struct.direction.z);
-            _actor_collision_struct.field_70 += _actor_collision_struct.field_7C;
-            unsigned int v39 = PID_ID(_actor_collision_struct.pid);
+                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+            collision_state.field_70 += collision_state.adjusted_move_distance;
+            unsigned int v39 = PID_ID(collision_state.pid);
             int Angle_To_Decor;
             signed int Coll_Speed;
-            switch (PID_TYPE(_actor_collision_struct.pid)) {
+            switch (PID_TYPE(collision_state.pid)) {
                 case OBJECT_Actor:
                     if (pTurnEngine->turn_stage != TE_ATTACK && pTurnEngine->turn_stage != TE_MOVEMENT ||
                         !pParty->bTurnBasedModeOn) {
@@ -3594,7 +3580,7 @@ void UpdateActors_ODM() {
                         // v34 = 0;
                         if (pActors[Actor_ITR].pMonsterInfo.uHostilityType) {
                             if (v71 == 0)
-                                Actor::AI_Flee(Actor_ITR, _actor_collision_struct.pid, 0,
+                                Actor::AI_Flee(Actor_ITR, collision_state.pid, 0,
                                                (AIDirection *)0);
                             else
                                 Actor::AI_StandOrBored(Actor_ITR, 4, 0,
@@ -3603,17 +3589,17 @@ void UpdateActors_ODM() {
                             Actor::AI_StandOrBored(Actor_ITR, 4, 0, (AIDirection *)0);
                         } else if (pActors[v39].pMonsterInfo.uHostilityType ==
                             MonsterInfo::Hostility_Friendly) {
-                            Actor::AI_Flee(Actor_ITR, _actor_collision_struct.pid, 0,
+                            Actor::AI_Flee(Actor_ITR, collision_state.pid, 0,
                                 (AIDirection *)0);
                         } else {
-                            Actor::AI_FaceObject(Actor_ITR, _actor_collision_struct.pid, 0,
+                            Actor::AI_FaceObject(Actor_ITR, collision_state.pid, 0,
                                 (AIDirection *)0);
                         }
                     }
                     break;
                 case OBJECT_Player:
                     if (!pActors[Actor_ITR].GetActorsRelation(0)) {
-                        Actor::AI_FaceObject(Actor_ITR, _actor_collision_struct.pid, 0,
+                        Actor::AI_FaceObject(Actor_ITR, collision_state.pid, 0,
                                              (AIDirection *)0);
                         break;
                     }
@@ -3642,13 +3628,13 @@ void UpdateActors_ODM() {
                         fixpoint_mul(TrigLUT->Sin(Angle_To_Decor), Coll_Speed);
                     break;
                 case OBJECT_BModel:
-                    ODMFace * face = &pOutdoor->pBModels[_actor_collision_struct.pid >> 9]
+                    ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9]
                                 .pFaces[v39 & 0x3F];
                     if (!face->Ethereal()) {
                         if (face->uPolygonType == 3) {
                             pActors[Actor_ITR].vVelocity.z = 0;
                             pActors[Actor_ITR].vPosition.z =
-                                (short)pOutdoor->pBModels[_actor_collision_struct.pid >> 9]
+                                (short)pOutdoor->pBModels[collision_state.pid >> 9]
                                     .pVertices.pVertices[face->pVertexIDs[0]]
                                     .z +
                                 1;
@@ -3668,8 +3654,8 @@ void UpdateActors_ODM() {
                                        face->pFacePlane.vNormal.x *
                                            pActors[Actor_ITR].vVelocity.x) >>
                                    16;
-                            if ((_actor_collision_struct.speed >> 3) > v72b)
-                                v72b = _actor_collision_struct.speed >> 3;
+                            if ((collision_state.speed >> 3) > v72b)
+                                v72b = collision_state.speed >> 3;
 
                             pActors[Actor_ITR].vVelocity.x +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.x);
@@ -3678,15 +3664,8 @@ void UpdateActors_ODM() {
                             pActors[Actor_ITR].vVelocity.z +=
                                 fixpoint_mul(v72b, face->pFacePlane.vNormal.z);
                             if (face->uPolygonType != 4) {
-                                int v46 = _actor_collision_struct.prolly_normal_d -
-                                      ((face->pFacePlane.dist +
-                                        face->pFacePlane.vNormal.x *
-                                            pActors[Actor_ITR].vPosition.x +
-                                        face->pFacePlane.vNormal.y *
-                                            pActors[Actor_ITR].vPosition.y +
-                                        face->pFacePlane.vNormal.z *
-                                            pActors[Actor_ITR].vPosition.z) >>
-                                       16);
+                                int v46 = collision_state.radius_lo -
+                                    face->pFacePlane.SignedDistanceTo(pActors[Actor_ITR].vPosition);
                                 if (v46 > 0) {
                                     pActors[Actor_ITR].vPosition.x += fixpoint_mul(
                                         v46, face->pFacePlane.vNormal.x);
@@ -3711,7 +3690,7 @@ void UpdateActors_ODM() {
             pActors[Actor_ITR].vVelocity.z =
                 fixpoint_mul(58500, pActors[Actor_ITR].vVelocity.z);
 
-            Act_Radius = _actor_collision_struct.prolly_normal_d;
+            Act_Radius = collision_state.radius_lo;
         }
 
         // WATER TILE CHECKING

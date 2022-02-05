@@ -519,23 +519,86 @@ int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
 int _43F5C8_get_point_light_level_with_respect_to_lights(
     unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 unsigned int GetMaxMipLevels(unsigned int uDim);
-int _46E44E_collide_against_faces_and_portals(unsigned int b1);  // idb
+
+/**
+ * Original offset 0x46E44E.
+ *
+ * Performs collisions with level geometry. Fill & initialize `collision_state` before calling this function.
+ *
+ * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
+ */
+void collide_against_faces_and_portals(bool ignore_ethereal);
+
 void _46E889_collide_against_bmodels(unsigned int ecx0);
-int collide_against_floor(int x, int y, int z, unsigned int *pSectorID,
-                          unsigned int *pFaceID);  // idb
+
+// TODO: looks like this also works for ceilings, reflect in docs?
+/**
+ * @param x                             Actor's X coordinate.
+ * @param y                             Actor's Y coordinate.
+ * @param z                             Actor's Z coordinate.
+ * @param[in,out] pSectorID             Actor's cached sector id. If the cached sector id is no longer valid (e.g. an
+ *                                      actor has already moved to another sector), then the new sector id is returned
+ *                                      in this output parameter.
+ * @param[out] pFaceID                  Id of the floor face on which the actor is standing. Not updated if floor face
+ *                                      is not found.
+ * @return                              Z coordinate for the floor at (X, Y).
+ */
+int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
 void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 int _46EF01_collision_chech_player(int a1);  // idb
 void _46E0B2_collide_against_decorations();
 int _46F04E_collide_against_portals();
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);
 void UpdateObjects();
-bool sub_47531C(int a1, int *a2, int pos_x, int pos_y, int pos_z, int dir_x,
-                int dir_y, int dir_z, struct BLVFace *face, int a10);
+
+/**
+ * Original offset 0x47531C.
+ *
+ * @param face                          Polygon to check collision against.
+ * @param pos                           Actor position to check.
+ * @param radius                        Actor radius.
+ * @param dir                           Movement direction as a unit vector in fixpoint format.
+ * @param move_distance[out]            Move distance along the `dir` axis required to touch the provided polygon.
+ *                                      Always non-negative. This parameter is not set if the function returns false.
+ *                                      Note that "touching" in this context means that the distance from the actor's
+ *                                      center to the polygon equals actor's radius.
+ * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
+ * @return                              Whether the actor, basically modeled as a sphere, can actually collide with the
+ *                                      polygon if moving along the `dir` axis.
+ */
+bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
+                          int *move_distance, bool ignore_ethereal);
+
 bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y,
                 int dir_z, struct BLVFace *face, int a10, int a11);
-int sub_475665(struct BLVFace *face, int a2, int16_t a3);
+
+/**
+ * Original offset 0x475665.
+ *
+ * \param face                          Face to check.
+ * \param point                         Point to check.
+ * \returns                             Projects the provided point and face onto the face's main plane (XY, YZ or ZX)
+ *                                      and returns whether the resulting point lies inside the resulting polygon.
+ */
+bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point);
 bool sub_4759C9(struct BLVFace *face, int a2, int a3, int16_t a4);
-bool sub_475D85(Vec3_int_ *a1, Vec3_int_ *a2, int *a3, struct BLVFace *a4);
+/**
+ * Original offset 0x475D85.
+ *
+ * @param face                          Polygon to check collision against.
+ * @param pos                           Actor position to check.
+ * @param dir                           Movement direction as a unit vector in fixpoint format.
+ * @param move_distance[in,out]         Current movement distance along the `dir` axis. This parameter is not touched
+ *                                      when the function returns false. If the function returns true, then the
+ *                                      distance required to hit the polygon is stored here. Note that this effectively
+ *                                      means that this function can only decrease `move_distance`, but never increase
+ *                                      it.
+ * @return                              Whether the actor, modeled as a point, hits the provided polygon if moving from
+ *                                      `pos` along the `dir` axis by at most `move_distance`.
+ *
+ * @see collide_against_face
+ */
+bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance);
 bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6,
                 int a7, int a8, int a9);
 

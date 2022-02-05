@@ -34,9 +34,6 @@ using Io::Mouse;
 
 void Engine_DeinitializeAndTerminate(int exitCode);
 
-bool FileExists(const char *fname);
-
-
 /*  320 */
 enum GAME_STATE {
     GAME_STATE_PLAYING = 0,
@@ -538,6 +535,10 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on);
 void SetDecorationSprite(uint16_t uCog, bool bHide,
                          const char *pFileName);  // idb
 void _494035_timed_effects__water_walking_damage__etc();
+
+/**
+ * Original offset 0x493938.
+ */
 void RegeneratePartyHealthMana();
 std::string GetReputationString(int reputation);
 unsigned int _494820_training_time(unsigned int a1);

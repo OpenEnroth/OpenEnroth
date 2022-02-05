@@ -437,11 +437,11 @@ struct Party_Image_MM7 {
     /* 00008 */ unsigned int uDefaultPartyHeight;
     /* 0000C */ int sEyelevel;
     /* 00010 */ unsigned int uDefaultEyelevel;
-    /* 00014 */ int field_14_radius;
+    /* 00014 */ int radius;
     /* 00018 */ int y_rotation_granularity;
     /* 0001C */ unsigned int uWalkSpeed;
     /* 00020 */ int y_rotation_speed;  // deg/s
-    /* 00024 */ int field_24;
+    /* 00024 */ int jump_strength;
     /* 00028 */ int field_28;
     /* 0002C */ uint64_t uTimePlayed;
     /* 00034 */ int64_t uLastRegenerationTime;
@@ -461,7 +461,7 @@ struct Party_Image_MM7 {
     /* 006F4 */ int floor_face_pid;  // face we are standing at
     /* 006F8 */ int walk_sound_timer;
     /* 006FC */ int _6FC_water_lava_timer;
-    /* 00700 */ int uFallStartY;
+    /* 00700 */ int uFallStartZ;
     /* 00704 */ unsigned int bFlying;
     /* 00708 */ char field_708;
     /* 00709 */ uint8_t hirelingScrollPosition;
@@ -541,7 +541,7 @@ struct Timer_Image_MM7 {
     /* 14 */ int32_t uGameTimeStart;
     /* 18 */ int32_t field_18;
     /* 1C */ uint32_t uTimeElapsed;
-    /* 20 */ int32_t dt_in_some_format;
+    /* 20 */ int32_t dt_fixpoint;
     /* 24 */ uint32_t uTotalGameTimeElapsed;
     /* 28 */
 };
@@ -697,14 +697,14 @@ struct Actor_MM7 {
     uint16_t uActorRadius;
     uint16_t uActorHeight;
     uint16_t uMovementSpeed;
-    struct Vec3_short_ vPosition;
-    struct Vec3_short_ vVelocity;
+    Vec3_short_ vPosition;
+    Vec3_short_ vVelocity;
     uint16_t uYawAngle;
     uint16_t uPitchAngle;
     int16_t uSectorID;
     uint16_t uCurrentActionLength;
-    struct Vec3_short_ vInitialPosition;
-    struct Vec3_short_ vGuardingPosition;
+    Vec3_short_ vInitialPosition;
+    Vec3_short_ vGuardingPosition;
     uint16_t uTetherDistance;
     int16_t uAIState;
     uint16_t uCurrentActionAnimation;

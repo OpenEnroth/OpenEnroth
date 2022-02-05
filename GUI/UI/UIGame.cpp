@@ -808,7 +808,7 @@ std::string GameUI_GetMinimapHintText() {
                         if (!(face.uAttributes & FACE_HAS_EVENT)) {
                             v14 = GetEventHintString(face.sCogTriggeredID);
                             if (v14) {
-                                if (_stricmp(v14, "")) {
+                                if (!iequals(v14, "")) {
                                     result = v14;
                                 }
                             }
@@ -2047,8 +2047,7 @@ void GameUI_DrawHiredNPCs() {
                     v13 = 0;
                     if (pIconsFrameTable->uNumIcons) {
                         for (v13 = 0; v13 < pIconsFrameTable->uNumIcons; ++v13) {
-                            if (!_stricmp("spell96",
-                                          pIconsFrameTable->pIcons[v13].GetAnimationName()))
+                            if (iequals("spell96", pIconsFrameTable->pIcons[v13].GetAnimationName()))
                                 break;
                         }
                     }

@@ -127,7 +127,7 @@ void Timer_Image_MM7::Serialize(Timer *timer) {
     this->uGameTimeStart = timer->uGameTimeStart;
     this->field_18 = timer->field_18;
     this->uTimeElapsed = timer->uTimeElapsed;
-    this->dt_in_some_format = timer->dt_in_some_format;
+    this->dt_fixpoint = timer->dt_fixpoint;
     this->uTotalGameTimeElapsed = timer->uTotalGameTimeElapsed;
 }
 
@@ -140,7 +140,7 @@ void Timer_Image_MM7::Deserialize(Timer *timer) {
     timer->uGameTimeStart = this->uGameTimeStart;
     timer->field_18 = this->field_18;
     timer->uTimeElapsed = this->uTimeElapsed;
-    timer->dt_in_some_format = this->dt_in_some_format;
+    timer->dt_fixpoint = this->dt_fixpoint;
     timer->uTotalGameTimeElapsed = this->uTotalGameTimeElapsed;
 }
 
@@ -300,11 +300,11 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->uDefaultPartyHeight = party->uDefaultPartyHeight;
     this->sEyelevel = party->sEyelevel;
     this->uDefaultEyelevel = party->uDefaultEyelevel;
-    this->field_14_radius = party->field_14_radius;
+    this->radius = party->radius;
     this->y_rotation_granularity = party->y_rotation_granularity;
     this->uWalkSpeed = party->uWalkSpeed;
     this->y_rotation_speed = party->y_rotation_speed;
-    this->field_24 = party->field_24;
+    this->jump_strength = party->jump_strength;
     this->field_28 = party->field_28;
     this->uTimePlayed = party->playing_time.value;
     this->uLastRegenerationTime = party->last_regenerated.value;
@@ -346,7 +346,7 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->floor_face_pid = party->floor_face_pid;
     this->walk_sound_timer = party->walk_sound_timer;
     this->_6FC_water_lava_timer = party->_6FC_water_lava_timer;
-    this->uFallStartY = party->uFallStartY;
+    this->uFallStartZ = party->uFallStartZ;
     this->bFlying = party->bFlying;
     this->field_708 = party->field_708;
     this->hirelingScrollPosition = party->hirelingScrollPosition;
@@ -465,11 +465,11 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->uDefaultPartyHeight = this->uDefaultPartyHeight;
     party->sEyelevel = this->sEyelevel;
     party->uDefaultEyelevel = this->uDefaultEyelevel;
-    party->field_14_radius = this->field_14_radius;
+    party->radius = this->radius;
     party->y_rotation_granularity = this->y_rotation_granularity;
     party->uWalkSpeed = this->uWalkSpeed;
     party->y_rotation_speed = this->y_rotation_speed;
-    party->field_24 = this->field_24;
+    party->jump_strength = this->jump_strength;
     party->field_28 = this->field_28;
     party->playing_time.value = this->uTimePlayed;
     party->last_regenerated.value = this->uLastRegenerationTime;
@@ -511,7 +511,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->floor_face_pid = this->floor_face_pid;
     party->walk_sound_timer = this->walk_sound_timer;
     party->_6FC_water_lava_timer = this->_6FC_water_lava_timer;
-    party->uFallStartY = this->uFallStartY;
+    party->uFallStartZ = this->uFallStartZ;
     party->bFlying = this->bFlying;
     party->field_708 = this->field_708;
     party->hirelingScrollPosition = this->hirelingScrollPosition;

@@ -189,8 +189,8 @@ bool OverlayList::FromFileTxt(const char *Args) {
         if (v19.uPropCount && *v19.pProperties[0] != 47) {
             this->pOverlays[this->uNumOverlays].uOverlayID =
                 atoi(v19.pProperties[0]);
-            if (_stricmp(v19.pProperties[1], "center")) {
-                if (!_stricmp(v19.pProperties[1], "transparent"))
+            if (!iequals(v19.pProperties[1], "center")) {
+                if (iequals(v19.pProperties[1], "transparent"))
                     this->pOverlays[this->uNumOverlays].uOverlayType = 2;
                 else
                     this->pOverlays[this->uNumOverlays].uOverlayType = 1;
@@ -198,7 +198,7 @@ bool OverlayList::FromFileTxt(const char *Args) {
                 this->pOverlays[this->uNumOverlays].uOverlayType = 0;
             }
             this->pOverlays[this->uNumOverlays++].uSpriteFramesetID =
-                pSpriteFrameTable->FastFindSprite((char *)v19.pProperties[2]);
+                pSpriteFrameTable->FastFindSprite(v19.pProperties[2]);
         }
     }
     fclose(File);

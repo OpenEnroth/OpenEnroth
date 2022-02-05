@@ -37,8 +37,8 @@ struct SpriteObject {
     SPRITE_OBJECT_TYPE uType;
     // unsigned __int16 uType;
     unsigned __int16 uObjectDescID;
-    struct Vec3_int_ vPosition;
-    struct Vec3_short_ vVelocity;
+    Vec3_int_ vPosition;
+    Vec3_short_ vVelocity;
     unsigned __int16 uFacing;
     unsigned __int16 uSoundID;
     unsigned __int16 uAttributes;

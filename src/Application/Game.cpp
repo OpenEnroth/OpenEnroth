@@ -942,7 +942,7 @@ void Game::EventLoop() {
                         }
                         if (Party_Teleport_Z_Pos) {
                             pParty->vPosition.z = Party_Teleport_Z_Pos;
-                            pParty->uFallStartY = Party_Teleport_Z_Pos;
+                            pParty->uFallStartZ = Party_Teleport_Z_Pos;
                         }
                         if (Party_Teleport_Cam_Yaw) {
                             pParty->sRotationZ = Party_Teleport_Cam_Yaw;
@@ -970,7 +970,7 @@ void Game::EventLoop() {
                     } else {
                         EventProcessor(dword_5C3418, 0, 1, dword_5C341C);
                     }
-                    if (!_stricmp(s_SavedMapName.data(), "d05.blv"))
+                    if (iequals(s_SavedMapName.data(), "d05.blv"))
                         pParty->GetPlayingTime().AddDays(4);
                     continue;
 
@@ -1061,7 +1061,7 @@ void Game::EventLoop() {
                         bool bOnWater = false;
                         pParty->vPosition.z = GetTerrainHeightsAroundParty2(
                             pParty->vPosition.x, pParty->vPosition.y, &bOnWater, 0);
-                        pParty->uFallStartY = pParty->vPosition.z;
+                        pParty->uFallStartZ = pParty->vPosition.z;
                         engine->_461103_load_level_sub();
                         pEventTimer->Resume();
                         viewparams->bRedrawGameUI = 1;
@@ -1311,7 +1311,7 @@ void Game::EventLoop() {
                         pTurnEngine->ApplyPlayerAction();
                     } else {
                         pPlayer9->SetRecoveryTime(
-                            (__int64)(flt_6BE3A4_debug_recmod1 *
+                            (__int64)(debug_non_combat_recovery_mul *
                                              (double)sRecoveryTime *
                                              2.133333333333333));
                     }
@@ -1333,7 +1333,7 @@ void Game::EventLoop() {
                             pParty->vPosition.x = pPlayer9->vBeacons[uMessageParam].PartyPos_X;
                             pParty->vPosition.y = pPlayer9->vBeacons[uMessageParam].PartyPos_Y;
                             pParty->vPosition.z = pPlayer9->vBeacons[uMessageParam].PartyPos_Z;
-                            pParty->uFallStartY = pParty->vPosition.z;
+                            pParty->uFallStartZ = pParty->vPosition.z;
                             pParty->sRotationZ = pPlayer9->vBeacons[uMessageParam].PartyRot_X;
                             pParty->sRotationX = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
                         }
@@ -1379,7 +1379,7 @@ void Game::EventLoop() {
                                             TownPortalList[v65].pos.y;
                                         pParty->vPosition.z =
                                             TownPortalList[v65].pos.z;
-                                        pParty->uFallStartY =
+                                        pParty->uFallStartZ =
                                             pParty->vPosition.z;
                                         pParty->sRotationZ =
                                             TownPortalList[v65].rot_y;
@@ -1547,7 +1547,7 @@ void Game::EventLoop() {
                                 pParty->vPosition.x = x;
                                 pParty->vPosition.y = y;
                                 pParty->vPosition.z = z;
-                                pParty->uFallStartY = z;
+                                pParty->uFallStartZ = z;
                                 continue;
                             }
                         } else {
@@ -1555,7 +1555,7 @@ void Game::EventLoop() {
                                 pParty->vPosition.x = x;
                                 pParty->vPosition.y = y;
                                 pParty->vPosition.z = z;
-                                pParty->uFallStartY = z;
+                                pParty->uFallStartZ = z;
                                 continue;
                             }
                         }
@@ -2831,7 +2831,7 @@ void Game::GameLoop() {
                     pLocationName = "out01.odm";
                 }
                 strcpy(Source, pLocationName);
-                pParty->uFallStartY = pParty->vPosition.z;
+                pParty->uFallStartZ = pParty->vPosition.z;
                 pParty->sRotationX = 0;
                 pParty->uFallSpeed = 0;
                 pParty->field_6E4 = 0;

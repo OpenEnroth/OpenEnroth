@@ -173,7 +173,7 @@ void PlayerFrameTable::FromFile(void *data_mm6, void *data_mm7,
 //                this->pFrames[this->uNumFrames].uAnimLength = 0;
 //                this->pFrames[this->uNumFrames].uFlags = 0;
 //                for (j = 3; j < v24.uPropCount; ++j) {
-//                    if (!_stricmp(v24.pProperties[j], "New"))
+//                    if (iequals(v24.pProperties[j], "New"))
 //                        this->pFrames[this->uNumFrames].uFlags |= 4;
 //                }
 //                ++this->uNumFrames;

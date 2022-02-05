@@ -617,11 +617,9 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                         pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
                 }
             }
-            if (pParty->pHirelings[0].pName &&
-                !_stricmp(pParty->pHirelings[0].pName, speakingNPC->pName))
+            if (pParty->pHirelings[0].pName && iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
                 memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
-            else if (pParty->pHirelings[1].pName &&
-                     !_stricmp(pParty->pHirelings[1].pName, speakingNPC->pName))
+            else if (pParty->pHirelings[1].pName && iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
                 memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();
@@ -688,11 +686,9 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                             pNPCStats->pNewNPCData[i].pName))
                     pNPCStats->pNewNPCData[i].uFlags &= 0x7Fu;
             }
-            if (pParty->pHirelings[0].pName &&
-                !_stricmp(pParty->pHirelings[0].pName, speakingNPC->pName))
+            if (pParty->pHirelings[0].pName && iequals(pParty->pHirelings[0].pName, speakingNPC->pName))
                 memset(&pParty->pHirelings[0], 0, sizeof(NPCData));
-            else if (pParty->pHirelings[1].pName &&
-                     !_stricmp(pParty->pHirelings[1].pName, speakingNPC->pName))
+            else if (pParty->pHirelings[1].pName && iequals(pParty->pHirelings[1].pName, speakingNPC->pName))
                 memset(&pParty->pHirelings[1], 0, sizeof(NPCData));
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();

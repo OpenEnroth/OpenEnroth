@@ -235,25 +235,15 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
     BLVFace face;      // [sp+Ch] [bp-7Ch]@1
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (_actor_collision_struct.sMaxX <= model.sMaxX &&
-            _actor_collision_struct.sMinX >= model.sMinX &&
-            _actor_collision_struct.sMaxY <= model.sMaxY &&
-            _actor_collision_struct.sMinY >= model.sMinY &&
-            _actor_collision_struct.sMaxZ <= model.sMaxZ &&
-            _actor_collision_struct.sMinZ >= model.sMinZ) {
+        if (collision_state.bbox.Intersects(model.pBoundingBox)) {
             for (ODMFace &mface : model.pFaces) {
-                if (_actor_collision_struct.sMaxX <= mface.pBoundingBox.x2 &&
-                    _actor_collision_struct.sMinX >= mface.pBoundingBox.x1 &&
-                    _actor_collision_struct.sMaxY <= mface.pBoundingBox.y2 &&
-                    _actor_collision_struct.sMinY >= mface.pBoundingBox.y1 &&
-                    _actor_collision_struct.sMaxZ <= mface.pBoundingBox.z2 &&
-                    _actor_collision_struct.sMinZ >= mface.pBoundingBox.z1) {
+                if (collision_state.bbox.Intersects(mface.pBoundingBox)) {
                     face.pFacePlane_old.vNormal.x = mface.pFacePlane.vNormal.x;
                     face.pFacePlane_old.vNormal.y = mface.pFacePlane.vNormal.y;
                     face.pFacePlane_old.vNormal.z = mface.pFacePlane.vNormal.z;
 
-                    face.pFacePlane_old.dist =
-                        mface.pFacePlane.dist;  // incorrect
+                    // TODO: need fixpoint_to_float here
+                    face.pFacePlane_old.dist = mface.pFacePlane.dist;  // incorrect
 
                     face.uAttributes = mface.uAttributes;
 
@@ -286,54 +276,40 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                     face.pVertexIDs = mface.pVertexIDs;
 
                     if (!face.Ethereal() && !face.Portal()) {
-                        v8 = (face.pFacePlane_old.dist +
-                              face.pFacePlane_old.vNormal.x *
-                                  _actor_collision_struct.normal.x +
-                              face.pFacePlane_old.vNormal.y *
-                                  _actor_collision_struct.normal.y +
-                              face.pFacePlane_old.vNormal.z *
-                                  _actor_collision_struct.normal.z) >>
-                             16;
+                        v8 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
                         if (v8 > 0) {
-                            v9 = (face.pFacePlane_old.dist +
-                                  face.pFacePlane_old.vNormal.x *
-                                      _actor_collision_struct.normal2.x +
-                                  face.pFacePlane_old.vNormal.y *
-                                      _actor_collision_struct.normal2.y +
-                                  face.pFacePlane_old.vNormal.z *
-                                      _actor_collision_struct.normal2.z) >>
-                                 16;
-                            if (v8 <= _actor_collision_struct.prolly_normal_d ||
-                                v9 <= _actor_collision_struct.prolly_normal_d) {
+                            v9 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+                            if (v8 <= collision_state.radius_lo ||
+                                v9 <= collision_state.radius_lo) {
                                 if (v9 <= v8) {
-                                    a2 = _actor_collision_struct.field_6C;
-                                    if (sub_4754BF(_actor_collision_struct.prolly_normal_d,
-                                                   &a2, _actor_collision_struct.normal.x,
-                                                   _actor_collision_struct.normal.y,
-                                                   _actor_collision_struct.normal.z,
-                                                   _actor_collision_struct.direction.x,
-                                                   _actor_collision_struct.direction.y,
-                                                   _actor_collision_struct.direction.z,
+                                    a2 = collision_state.move_distance;
+                                    if (sub_4754BF(collision_state.radius_lo,
+                                                   &a2, collision_state.position_lo.x,
+                                                   collision_state.position_lo.y,
+                                                   collision_state.position_lo.z,
+                                                   collision_state.direction.x,
+                                                   collision_state.direction.y,
+                                                   collision_state.direction.z,
                                                    &face, model.index, ecx0)) {
                                         v10 = a2;
                                     } else {
-                                        a2 = _actor_collision_struct.prolly_normal_d +
-                                             _actor_collision_struct.field_6C;
+                                        a2 = collision_state.radius_lo +
+                                             collision_state.move_distance;
                                         if (!sub_475F30(&a2, &face,
-                                                        _actor_collision_struct.normal.x,
-                                                        _actor_collision_struct.normal.y,
-                                                        _actor_collision_struct.normal.z,
-                                                        _actor_collision_struct.direction.x,
-                                                        _actor_collision_struct.direction.y,
-                                                        _actor_collision_struct.direction.z,
+                                                        collision_state.position_lo.x,
+                                                        collision_state.position_lo.y,
+                                                        collision_state.position_lo.z,
+                                                        collision_state.direction.x,
+                                                        collision_state.direction.y,
+                                                        collision_state.direction.z,
                                                         model.index))
                                             goto LABEL_29;
-                                        v10 = a2 - _actor_collision_struct.prolly_normal_d;
-                                        a2 -= _actor_collision_struct.prolly_normal_d;
+                                        v10 = a2 - collision_state.radius_lo;
+                                        a2 -= collision_state.radius_lo;
                                     }
-                                    if (v10 < _actor_collision_struct.field_7C) {
-                                        _actor_collision_struct.field_7C = v10;
-                                        _actor_collision_struct.pid = PID(
+                                    if (v10 < collision_state.adjusted_move_distance) {
+                                        collision_state.adjusted_move_distance = v10;
+                                        collision_state.pid = PID(
                                             OBJECT_BModel,
                                             (mface.index | (model.index << 6)));
                                     }
@@ -341,64 +317,50 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                             }
                         }
                     LABEL_29:
-                        if (_actor_collision_struct.field_0 & 1) {
-                            v15 = (face.pFacePlane_old.dist +
-                                   face.pFacePlane_old.vNormal.x *
-                                       _actor_collision_struct.position.x +
-                                   face.pFacePlane_old.vNormal.y *
-                                       _actor_collision_struct.position.y +
-                                   face.pFacePlane_old.vNormal.z *
-                                       _actor_collision_struct.position.z) >>
-                                  16;
+                        if (collision_state.check_hi & 1) {
+                            v15 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
                             if (v15 > 0) {
-                                v16 = (face.pFacePlane_old.dist +
-                                       face.pFacePlane_old.vNormal.x *
-                                           _actor_collision_struct.field_4C +
-                                       face.pFacePlane_old.vNormal.y *
-                                           _actor_collision_struct.field_50 +
-                                       face.pFacePlane_old.vNormal.z *
-                                           _actor_collision_struct.field_54) >>
-                                      16;
-                                if (v15 <= _actor_collision_struct.prolly_normal_d ||
-                                    v16 <= _actor_collision_struct.prolly_normal_d) {
+                                v16 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
+                                if (v15 <= collision_state.radius_lo ||
+                                    v16 <= collision_state.radius_lo) {
                                     if (v16 <= v15) {
-                                        a2 = _actor_collision_struct.field_6C;
+                                        a2 = collision_state.move_distance;
                                         if (sub_4754BF(
-                                                _actor_collision_struct.field_8_radius, &a2,
-                                                _actor_collision_struct.position.x,
-                                                _actor_collision_struct.position.y,
-                                                _actor_collision_struct.position.z,
-                                                _actor_collision_struct.direction.x,
-                                                _actor_collision_struct.direction.y,
-                                                _actor_collision_struct.direction.z, &face,
+                                                collision_state.radius_hi, &a2,
+                                                collision_state.position_hi.x,
+                                                collision_state.position_hi.y,
+                                                collision_state.position_hi.z,
+                                                collision_state.direction.x,
+                                                collision_state.direction.y,
+                                                collision_state.direction.z, &face,
                                                 model.index, ecx0)) {
-                                            if (a2 < _actor_collision_struct.field_7C) {
-                                                _actor_collision_struct.field_7C = a2;
-                                                _actor_collision_struct.pid =
+                                            if (a2 < collision_state.adjusted_move_distance) {
+                                                collision_state.adjusted_move_distance = a2;
+                                                collision_state.pid =
                                                     PID(OBJECT_BModel,
                                                         (mface.index |
                                                          (model.index << 6)));
                                             }
                                         } else {
-                                            a2 = _actor_collision_struct.field_6C +
-                                                 _actor_collision_struct.field_8_radius;
+                                            a2 = collision_state.move_distance +
+                                                 collision_state.radius_hi;
                                             if (sub_475F30(
                                                     &a2, &face,
-                                                    _actor_collision_struct.position.x,
-                                                    _actor_collision_struct.position.y,
-                                                    _actor_collision_struct.position.z,
-                                                    _actor_collision_struct.direction.x,
-                                                    _actor_collision_struct.direction.y,
-                                                    _actor_collision_struct.direction.z,
+                                                    collision_state.position_hi.x,
+                                                    collision_state.position_hi.y,
+                                                    collision_state.position_hi.z,
+                                                    collision_state.direction.x,
+                                                    collision_state.direction.y,
+                                                    collision_state.direction.z,
                                                     model.index)) {
                                                 v21 =
                                                     a2 -
-                                                    _actor_collision_struct.prolly_normal_d;
+                                                    collision_state.radius_lo;
                                                 a2 -=
-                                                    _actor_collision_struct.prolly_normal_d;
-                                                if (a2 < _actor_collision_struct.field_7C) {
-                                                    _actor_collision_struct.field_7C = v21;
-                                                    _actor_collision_struct.pid = PID(
+                                                    collision_state.radius_lo;
+                                                if (a2 < collision_state.adjusted_move_distance) {
+                                                    collision_state.adjusted_move_distance = v21;
+                                                    collision_state.pid = PID(
                                                         OBJECT_BModel,
                                                         (mface.index |
                                                          (model.index << 6)));
@@ -432,38 +394,33 @@ int _46EF01_collision_chech_player(int a1) {
 
     result = pParty->vPosition.x;
     // device_caps = pParty->uPartyHeight;
-    if (_actor_collision_struct.sMaxX <=
-            pParty->vPosition.x + (2 * pParty->field_14_radius) &&
-        _actor_collision_struct.sMinX >=
-            pParty->vPosition.x - (2 * pParty->field_14_radius) &&
-        _actor_collision_struct.sMaxY <=
-            pParty->vPosition.y + (2 * pParty->field_14_radius) &&
-        _actor_collision_struct.sMinY >=
-            pParty->vPosition.y - (2 * pParty->field_14_radius) &&
-        _actor_collision_struct.sMinZ/*sMaxZ*/ <= (pParty->vPosition.z + (int)pParty->uPartyHeight) &&
-        _actor_collision_struct.sMaxZ/*sMinZ*/ >= pParty->vPosition.z) {
-        v3 = _actor_collision_struct.prolly_normal_d + (2 * pParty->field_14_radius);
-        v11 = pParty->vPosition.x - _actor_collision_struct.normal.x;
-        v4 = ((pParty->vPosition.x - _actor_collision_struct.normal.x) *
-                  _actor_collision_struct.direction.y -
-              (pParty->vPosition.y - _actor_collision_struct.normal.y) *
-                  _actor_collision_struct.direction.x) >>
+    if (collision_state.bbox.x1 <= pParty->vPosition.x + (2 * pParty->radius) &&
+        collision_state.bbox.x2 >= pParty->vPosition.x - (2 * pParty->radius) &&
+        collision_state.bbox.y1 <= pParty->vPosition.y + (2 * pParty->radius) &&
+        collision_state.bbox.y2 >= pParty->vPosition.y - (2 * pParty->radius) &&
+        collision_state.bbox.z1 <= (pParty->vPosition.z + (int)pParty->uPartyHeight) &&
+        collision_state.bbox.z2 >= pParty->vPosition.z) {
+        v3 = collision_state.radius_lo + (2 * pParty->radius);
+        v11 = pParty->vPosition.x - collision_state.position_lo.x;
+        v4 = ((pParty->vPosition.x - collision_state.position_lo.x) *
+                  collision_state.direction.y -
+              (pParty->vPosition.y - collision_state.position_lo.y) *
+                  collision_state.direction.x) >>
              16;
-        v10 = pParty->vPosition.y - _actor_collision_struct.normal.y;
-        result = abs(((pParty->vPosition.x - _actor_collision_struct.normal.x) *
-                          _actor_collision_struct.direction.y -
-                      (pParty->vPosition.y - _actor_collision_struct.normal.y) *
-                          _actor_collision_struct.direction.x) >>
+        v10 = pParty->vPosition.y - collision_state.position_lo.y;
+        result = abs(((pParty->vPosition.x - collision_state.position_lo.x) *
+                          collision_state.direction.y -
+                      (pParty->vPosition.y - collision_state.position_lo.y) *
+                          collision_state.direction.x) >>
                      16);
-        if (result <=
-            _actor_collision_struct.prolly_normal_d + (2 * pParty->field_14_radius)) {
-            result = v10 * _actor_collision_struct.direction.y;
-            v5 = (v10 * _actor_collision_struct.direction.y +
-                  v11 * _actor_collision_struct.direction.x) >>
+        if (result <= collision_state.radius_lo + (2 * pParty->radius)) {
+            result = v10 * collision_state.direction.y;
+            v5 = (v10 * collision_state.direction.y +
+                  v11 * collision_state.direction.x) >>
                  16;
             if (v5 > 0) {
-                v6 = fixpoint_mul(_actor_collision_struct.direction.z, v5) +
-                     _actor_collision_struct.normal.z;
+                v6 = fixpoint_mul(collision_state.direction.z, v5) +
+                     collision_state.position_lo.z;
                 result = pParty->vPosition.z;
                 if (v6 >= pParty->vPosition.z) {
                     result = pParty->uPartyHeight + pParty->vPosition.z;
@@ -473,9 +430,9 @@ int _46EF01_collision_chech_player(int a1) {
                         result = integer_sqrt(v3 * v3 - v4 * v4);
                         v7 = v5 - integer_sqrt(v3 * v3 - v4 * v4);
                         if (v7 < 0) v7 = 0;
-                        if (v7 < _actor_collision_struct.field_7C) {
-                            _actor_collision_struct.field_7C = v7;
-                            _actor_collision_struct.pid = 4;
+                        if (v7 < collision_state.adjusted_move_distance) {
+                            collision_state.adjusted_move_distance = v7;
+                            collision_state.pid = 4;
                         }
                     }
                 }
@@ -487,41 +444,57 @@ int _46EF01_collision_chech_player(int a1) {
 
 
 void _46E0B2_collide_against_decorations() {
-    BLVSector *sector = &pIndoor->pSectors[_actor_collision_struct.uSectorID];
+    BLVSector *sector = &pIndoor->pSectors[collision_state.uSectorID];
     for (unsigned int i = 0; i < sector->uNumDecorations; ++i) {
         LevelDecoration *decor = &pLevelDecorations[sector->pDecorationIDs[i]];
-        if (!(decor->uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
-            if (!decor_desc->CanMoveThrough()) {
-                if (_actor_collision_struct.sMaxX <= decor->vPosition.x + decor_desc->uRadius &&
-                    _actor_collision_struct.sMinX >= decor->vPosition.x - decor_desc->uRadius &&
-                    _actor_collision_struct.sMaxY <= decor->vPosition.y + decor_desc->uRadius &&
-                    _actor_collision_struct.sMinY >= decor->vPosition.y - decor_desc->uRadius &&
-                    _actor_collision_struct.sMaxZ <= decor->vPosition.z + decor_desc->uDecorationHeight &&
-                    _actor_collision_struct.sMinZ >= decor->vPosition.z) {
-                    int v16 = decor->vPosition.x - _actor_collision_struct.normal.x;
-                    int v15 = decor->vPosition.y - _actor_collision_struct.normal.y;
-                    int v8 = _actor_collision_struct.prolly_normal_d + decor_desc->uRadius;
-                    int v17 = ((decor->vPosition.x - _actor_collision_struct.normal.x) * _actor_collision_struct.direction.y -
-                               (decor->vPosition.y - _actor_collision_struct.normal.y) * _actor_collision_struct.direction.x) >> 16;
-                    if (abs(v17) <= _actor_collision_struct.prolly_normal_d + decor_desc->uRadius) {
-                        int v9 = (v16 * _actor_collision_struct.direction.x + v15 * _actor_collision_struct.direction.y) >> 16;
-                        if (v9 > 0) {
-                            int v11 = _actor_collision_struct.normal.z + fixpoint_mul(_actor_collision_struct.direction.z, v9);
-                            if (v11 >= decor->vPosition.z) {
-                                if (v11 <= decor_desc->uDecorationHeight + decor->vPosition.z) {
-                                    int v12 = v9 - integer_sqrt(v8 * v8 - v17 * v17);
-                                    if (v12 < 0) v12 = 0;
-                                    if (v12 < _actor_collision_struct.field_7C) {
-                                        _actor_collision_struct.field_7C = v12;
-                                        _actor_collision_struct.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
+            continue;
+
+        DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
+        if (decor_desc->CanMoveThrough())
+            continue;
+
+        BBox_int_ decor_bbox;
+        decor_bbox.x1 = decor->vPosition.x - decor_desc->uRadius;
+        decor_bbox.x2 = decor->vPosition.x + decor_desc->uRadius;
+        decor_bbox.y1 = decor->vPosition.y - decor_desc->uRadius;
+        decor_bbox.y2 = decor->vPosition.y + decor_desc->uRadius;
+        decor_bbox.z1 = decor->vPosition.z;
+        decor_bbox.z2 = decor->vPosition.z + decor_desc->uDecorationHeight;
+        if (!collision_state.bbox.Intersects(decor_bbox))
+            continue;
+
+        // dist vector points from position center into decoration center.
+        int dist_x = decor->vPosition.x - collision_state.position_lo.x;
+        int dist_y = decor->vPosition.y - collision_state.position_lo.y;
+        int sum_radius = collision_state.radius_lo + decor_desc->uRadius;
+
+        // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
+        // thus this actually is length(dist) * sin(dist, collision_state.direction).
+        // This in turn is the distance from decoration center to the line of actor's movement.
+        int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
+        if (abs(closest_dist) > sum_radius)
+            continue; // No chance to collide.
+
+        // Length of dist vector projected onto collision_state.direction.
+        int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
+        if (dist_dot_dir <= 0)
+            continue; // We're moving away from the decoration.
+
+        // Z-coordinate of the actor at the point closest to the decoration in XY plane.
+        int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
+        if (closest_z < decor_bbox.z1 || closest_z > decor_bbox.z2)
+            continue;
+
+        // That's how far can we go along the collision_state.direction axis until the actor touches the decoration,
+        // i.e. distance between them goes below sum_radius.
+        int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
+        if (move_distance < 0)
+            move_distance = 0;
+
+        if (move_distance < collision_state.adjusted_move_distance) {
+            collision_state.adjusted_move_distance = move_distance;
+            collision_state.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
         }
     }
 }
@@ -533,29 +506,18 @@ int _46F04E_collide_against_portals() {
 
     unsigned int v1 = 0xFFFFFF;
     unsigned int v10 = 0xFFFFFF;
-    for (unsigned int i = 0; i < pIndoor->pSectors[_actor_collision_struct.uSectorID].uNumPortals; ++i) {
-        if (pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i] !=
-            _actor_collision_struct.field_80) {
-            BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i]];
-            if (_actor_collision_struct.sMaxX <= face->pBounding.x2 &&
-                _actor_collision_struct.sMinX >= face->pBounding.x1 &&
-                _actor_collision_struct.sMaxY <= face->pBounding.y2 &&
-                _actor_collision_struct.sMinY >= face->pBounding.y1 &&
-                _actor_collision_struct.sMaxZ <= face->pBounding.z2 &&
-                _actor_collision_struct.sMinZ >= face->pBounding.z1) {
-                int v4 = (_actor_collision_struct.normal.x * face->pFacePlane_old.vNormal.x +
-                          face->pFacePlane_old.dist +
-                          _actor_collision_struct.normal.y * face->pFacePlane_old.vNormal.y +
-                          _actor_collision_struct.normal.z * face->pFacePlane_old.vNormal.z) >> 16;
-                int v5 = (_actor_collision_struct.normal2.z * face->pFacePlane_old.vNormal.z +
-                          face->pFacePlane_old.dist +
-                          _actor_collision_struct.normal2.x * face->pFacePlane_old.vNormal.x +
-                          _actor_collision_struct.normal2.y * face->pFacePlane_old.vNormal.y) >> 16;
-                if ((v4 < _actor_collision_struct.prolly_normal_d || v5 < _actor_collision_struct.prolly_normal_d) &&
-                    (v4 > -_actor_collision_struct.prolly_normal_d || v5 > -_actor_collision_struct.prolly_normal_d) &&
-                    (a3 = _actor_collision_struct.field_6C, sub_475D85(&_actor_collision_struct.normal, &_actor_collision_struct.direction, &a3, face)) && a3 < (int)v10) {
+    for (unsigned int i = 0; i < pIndoor->pSectors[collision_state.uSectorID].uNumPortals; ++i) {
+        if (pIndoor->pSectors[collision_state.uSectorID].pPortals[i] !=
+            collision_state.field_80) {
+            BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[collision_state.uSectorID].pPortals[i]];
+            if (collision_state.bbox.Intersects(face->pBounding)) {
+                int v4 = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
+                int v5 = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+                if ((v4 < collision_state.radius_lo || v5 < collision_state.radius_lo) &&
+                    (v4 > -collision_state.radius_lo || v5 > -collision_state.radius_lo) &&
+                    (a3 = collision_state.move_distance, collide_against_face_point(face, &collision_state.position_lo, &collision_state.direction, &a3)) && a3 < (int)v10) {
                     v10 = a3;
-                    v12 = pIndoor->pSectors[_actor_collision_struct.uSectorID].pPortals[i];
+                    v12 = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
                 }
             }
         }
@@ -565,184 +527,110 @@ int _46F04E_collide_against_portals() {
 
     int result = 1;
 
-    if (_actor_collision_struct.field_7C >= (int)v1 && (int)v1 <= _actor_collision_struct.field_6C) {
-        _actor_collision_struct.field_80 = v12;
-        if (pIndoor->pFaces[v12].uSectorID == _actor_collision_struct.uSectorID) {
-            _actor_collision_struct.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
+    if (collision_state.adjusted_move_distance >= (int)v1 && (int)v1 <= collision_state.move_distance) {
+        collision_state.field_80 = v12;
+        if (pIndoor->pFaces[v12].uSectorID == collision_state.uSectorID) {
+            collision_state.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
         } else {
-            _actor_collision_struct.uSectorID = pIndoor->pFaces[v12].uSectorID;
+            collision_state.uSectorID = pIndoor->pFaces[v12].uSectorID;
         }
-        _actor_collision_struct.field_7C = 268435455;  // 0xFFFFFFF
+        collision_state.adjusted_move_distance = 268435455;  // 0xFFFFFFF
         result = 0;
     }
 
     return result;
 }
 
-int _46E44E_collide_against_faces_and_portals(unsigned int b1) {
-    BLVSector *pSector;   // edi@1
-    int v2;        // ebx@1
-    BLVFace *pFace;       // esi@2
-    __int16 pNextSector;  // si@10
-    int pArrayNum;        // ecx@12
-    unsigned __int8 v6;   // sf@12
-    unsigned __int8 v7;   // of@12
-    int result;           // eax@14
-    // int v10; // ecx@15
-    int pFloor;             // eax@16
-    int v15;                // eax@24
-    int v16;                // edx@25
-    int v17;                // eax@29
-    unsigned int v18;       // eax@33
-    int v21;                // eax@35
-    int v22;                // ecx@36
-    int v23;                // eax@40
-    unsigned int v24;       // eax@44
-    int a3;                 // [sp+10h] [bp-48h]@28
-    int v26;                // [sp+14h] [bp-44h]@15
-    int i;                  // [sp+18h] [bp-40h]@1
-    int a10;                // [sp+1Ch] [bp-3Ch]@1
-    int v29;                // [sp+20h] [bp-38h]@14
-    int v32;                // [sp+2Ch] [bp-2Ch]@15
-    int pSectorsArray[10];  // [sp+30h] [bp-28h]@1
+void collide_against_faces_and_portals(bool ignore_ethereal) {
+    std::array<int, 10> pSectorsArray;  // [sp+30h] [bp-28h]@1
+    pSectorsArray[0] = collision_state.uSectorID;
+    int totalSectors = 1;
 
-    pSector = &pIndoor->pSectors[_actor_collision_struct.uSectorID];
-    i = 1;
-    a10 = b1;
-    pSectorsArray[0] = _actor_collision_struct.uSectorID;
-    for (v2 = 0; v2 < pSector->uNumPortals; ++v2) {
-        pFace = &pIndoor->pFaces[pSector->pPortals[v2]];
-        if (_actor_collision_struct.sMaxX <= pFace->pBounding.x2 &&
-            _actor_collision_struct.sMinX >= pFace->pBounding.x1 &&
-            _actor_collision_struct.sMaxY <= pFace->pBounding.y2 &&
-            _actor_collision_struct.sMinY >= pFace->pBounding.y1 &&
-            _actor_collision_struct.sMaxZ <= pFace->pBounding.z2 &&
-            _actor_collision_struct.sMinZ >= pFace->pBounding.z1 &&
-            abs((pFace->pFacePlane_old.dist +
-                 _actor_collision_struct.normal.x * pFace->pFacePlane_old.vNormal.x +
-                 _actor_collision_struct.normal.y * pFace->pFacePlane_old.vNormal.y +
-                 _actor_collision_struct.normal.z * pFace->pFacePlane_old.vNormal.z) >>
-                16) <= _actor_collision_struct.field_6C + 16) {
-            pNextSector = pFace->uSectorID == _actor_collision_struct.uSectorID
-                              ? pFace->uBackSectorID
-                              : pFace->uSectorID;  // FrontSectorID
-            pArrayNum = i++;
-            v7 = i < 10;
-            v6 = i - 10 < 0;
-            pSectorsArray[pArrayNum] = pNextSector;
-            if (!(v6 ^ v7)) break;
-        }
+    // See if we're intersection portals. If we do, we need to add corresponding sectors to the sectors array.
+    BLVSector *pSector = &pIndoor->pSectors[collision_state.uSectorID];
+    for (int j = 0; j < pSector->uNumPortals; ++j) {
+        BLVFace *pFace = &pIndoor->pFaces[pSector->pPortals[j]];
+        if (!collision_state.bbox.Intersects(pFace->pBounding))
+            continue;
+
+        int distance = abs(pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo));
+        if(distance > collision_state.move_distance + 16)
+            continue;
+
+        pSectorsArray[totalSectors++] =
+            pFace->uSectorID == collision_state.uSectorID ? pFace->uBackSectorID : pFace->uSectorID;
+        break;
     }
-    result = 0;
-    for (v29 = 0; v29 < i; v29++) {
-        pSector = &pIndoor->pSectors[pSectorsArray[v29]];
-        v32 = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
-        for (v26 = 0; v26 < v32; v26++) {
-            pFloor = pSector->pFloors[v26];
-            pFace = &pIndoor->pFaces[pSector->pFloors[v26]];
-            if (!pFace->Portal() && _actor_collision_struct.sMaxX <= pFace->pBounding.x2 &&
-                _actor_collision_struct.sMinX >= pFace->pBounding.x1 &&
-                _actor_collision_struct.sMaxY <= pFace->pBounding.y2 &&
-                _actor_collision_struct.sMinY >= pFace->pBounding.y1 &&
-                _actor_collision_struct.sMaxZ <= pFace->pBounding.z2 &&
-                _actor_collision_struct.sMinZ >= pFace->pBounding.z1 &&
-                pFloor != _actor_collision_struct.field_84) {
-                v15 =
-                    (pFace->pFacePlane_old.dist +
-                     _actor_collision_struct.normal.x * pFace->pFacePlane_old.vNormal.x +
-                     _actor_collision_struct.normal.y * pFace->pFacePlane_old.vNormal.y +
-                     _actor_collision_struct.normal.z * pFace->pFacePlane_old.vNormal.z) >>
-                    16;
-                if (v15 > 0) {
-                    v16 = (pFace->pFacePlane_old.dist +
-                           _actor_collision_struct.normal2.x *
-                               pFace->pFacePlane_old.vNormal.x +
-                           _actor_collision_struct.normal2.y *
-                               pFace->pFacePlane_old.vNormal.y +
-                           _actor_collision_struct.normal2.z *
-                               pFace->pFacePlane_old.vNormal.z) >>
-                          16;
-                    if (v15 <= _actor_collision_struct.prolly_normal_d ||
-                        v16 <= _actor_collision_struct.prolly_normal_d) {
-                        if (v16 <= v15) {
-                            a3 = _actor_collision_struct.field_6C;
-                            if (sub_47531C(
-                                    _actor_collision_struct.prolly_normal_d, &a3,
-                                    _actor_collision_struct.normal.x, _actor_collision_struct.normal.y,
-                                    _actor_collision_struct.normal.z,
-                                    _actor_collision_struct.direction.x,
-                                    _actor_collision_struct.direction.y,
-                                    _actor_collision_struct.direction.z, pFace, a10)) {
-                                v17 = a3;
-                            } else {
-                                a3 = _actor_collision_struct.field_6C +
-                                     _actor_collision_struct.prolly_normal_d;
-                                if (!sub_475D85(&_actor_collision_struct.normal,
-                                                &_actor_collision_struct.direction, &a3,
-                                                pFace))
-                                    goto LABEL_34;
-                                v17 = a3 - _actor_collision_struct.prolly_normal_d;
-                                a3 -= _actor_collision_struct.prolly_normal_d;
-                            }
-                            if (v17 < _actor_collision_struct.field_7C) {
-                                _actor_collision_struct.field_7C = v17;
-                                v18 = 8 * pSector->pFloors[v26];
-                                v18 |= 6;
-                                _actor_collision_struct.pid = v18;
-                            }
-                        }
+
+    for (int i = 0; i < totalSectors; i++) {
+        pSector = &pIndoor->pSectors[pSectorsArray[i]];
+
+        int totalFaces = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
+        for (int j = 0; j < totalFaces; j++) {
+            int pFloor = pSector->pFloors[j];
+            BLVFace *pFace = &pIndoor->pFaces[pSector->pFloors[j]];
+
+            if (pFace->Portal() || !collision_state.bbox.Intersects(pFace->pBounding))
+                continue;
+
+            if (pFloor == collision_state.field_84)
+                continue;
+
+            int distance_lo_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
+            int distance_lo_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+            if (distance_lo_old > 0 &&
+                (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
+                distance_lo_new <= distance_lo_old) {
+                bool have_collision = false;
+                int move_distance = collision_state.move_distance;
+                if (collide_against_face(pFace, collision_state.position_lo, collision_state.radius_lo,
+                                         collision_state.direction, &move_distance, ignore_ethereal)) {
+                    have_collision = true;
+                } else {
+                    move_distance = collision_state.move_distance + collision_state.radius_lo;
+                    if (collide_against_face_point(pFace, &collision_state.position_lo, &collision_state.direction,
+                                                   &move_distance)) {
+                        have_collision = true;
+                        move_distance -= collision_state.radius_lo;
                     }
                 }
-            LABEL_34:
-                if (!(_actor_collision_struct.field_0 & 1) ||
-                    (v21 = (pFace->pFacePlane_old.dist +
-                            _actor_collision_struct.position.x *
-                                pFace->pFacePlane_old.vNormal.x +
-                            _actor_collision_struct.position.y *
-                                pFace->pFacePlane_old.vNormal.y +
-                            _actor_collision_struct.position.z *
-                                pFace->pFacePlane_old.vNormal.z) >>
-                           16,
-                     v21 <= 0) ||
-                    (v22 = (pFace->pFacePlane_old.dist +
-                            _actor_collision_struct.field_4C *
-                                pFace->pFacePlane_old.vNormal.x +
-                            _actor_collision_struct.field_50 *
-                                pFace->pFacePlane_old.vNormal.y +
-                            _actor_collision_struct.field_54 *
-                                pFace->pFacePlane_old.vNormal.z) >>
-                           16,
-                     v21 > _actor_collision_struct.prolly_normal_d) &&
-                        v22 > _actor_collision_struct.prolly_normal_d ||
-                    v22 > v21)
-                    continue;
-                a3 = _actor_collision_struct.field_6C;
-                if (sub_47531C(_actor_collision_struct.field_8_radius, &a3,
-                               _actor_collision_struct.position.x, _actor_collision_struct.position.y,
-                               _actor_collision_struct.position.z, _actor_collision_struct.direction.x,
-                               _actor_collision_struct.direction.y, _actor_collision_struct.direction.z,
-                               pFace, a10)) {
-                    v23 = a3;
-                    goto LABEL_43;
+
+                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+                    collision_state.adjusted_move_distance = move_distance;
+                    collision_state.pid = PID(OBJECT_BModel, pSector->pFloors[j]);
                 }
-                a3 = _actor_collision_struct.field_6C + _actor_collision_struct.field_8_radius;
-                if (sub_475D85(&_actor_collision_struct.position, &_actor_collision_struct.direction,
-                               &a3, pFace)) {
-                    v23 = a3 - _actor_collision_struct.prolly_normal_d;
-                    a3 -= _actor_collision_struct.prolly_normal_d;
-                LABEL_43:
-                    if (v23 < _actor_collision_struct.field_7C) {
-                        _actor_collision_struct.field_7C = v23;
-                        v24 = 8 * pSector->pFloors[v26];
-                        v24 |= 6;
-                        _actor_collision_struct.pid = v24;
+            }
+
+            // TODO: it's quite clear radius_lo does not belong in checks below, but here it is. Probably a bug in
+            // the original code?
+
+            int distance_hi_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
+            int distance_hi_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
+            if ((collision_state.check_hi & 1) &&
+                distance_hi_old > 0 &&
+                (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
+                distance_hi_new <= distance_hi_old) {
+                bool have_collision = false;
+                int move_distance = collision_state.move_distance;
+                if (collide_against_face(pFace, collision_state.position_hi, collision_state.radius_hi,
+                                         collision_state.direction, &move_distance, ignore_ethereal)) {
+                    have_collision = true;
+                } else {
+                    move_distance = collision_state.move_distance + collision_state.radius_hi;
+                    if (collide_against_face_point(pFace, &collision_state.position_hi, &collision_state.direction,
+                                                   &move_distance)) {
+                        have_collision = true;
+                        move_distance -= collision_state.radius_lo;
                     }
+                }
+
+                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+                    collision_state.adjusted_move_distance = move_distance;
+                    collision_state.pid = PID(OBJECT_BModel, pSector->pFloors[j]);
                 }
             }
         }
-        result = v29 + 1;
     }
-    return result;
 }
 
 
@@ -856,22 +744,22 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
 
 int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID) {
     uint uFaceID = -1;
-    int floor_level = BLV_GetFloorLevel(x, y, z, *pSectorID, &uFaceID);
+    int floor_z = BLV_GetFloorLevel(x, y, z, *pSectorID, &uFaceID);
 
-    if (floor_level != -30000 && floor_level <= z + 50) {
+    if (floor_z != -30000 && floor_z <= z + 50) {
         *pFaceID = uFaceID;
-        return floor_level;
+        return floor_z;
     }
 
     uint uSectorID = pIndoor->GetSector(x, y, z);
     *pSectorID = uSectorID;
 
-    floor_level = BLV_GetFloorLevel(x, y, z, uSectorID, &uFaceID);
-    if (uSectorID && floor_level != -30000)
+    floor_z = BLV_GetFloorLevel(x, y, z, uSectorID, &uFaceID);
+    if (uSectorID && floor_z != -30000)
         *pFaceID = uFaceID;
     else
         return -30000;
-    return floor_level;
+    return floor_z;
 }
 
 void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
@@ -883,43 +771,38 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         if (pSpriteObjects[i].uObjectDescID) {
             object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
             if (!(object->uFlags & OBJECT_DESC_NO_COLLISION)) {
-                if (_actor_collision_struct.sMaxX <=
-                        pSpriteObjects[i].vPosition.x + object->uRadius &&
-                    _actor_collision_struct.sMinX >=
-                        pSpriteObjects[i].vPosition.x - object->uRadius &&
-                    _actor_collision_struct.sMaxY <=
-                        pSpriteObjects[i].vPosition.y + object->uRadius &&
-                    _actor_collision_struct.sMinY >=
-                        pSpriteObjects[i].vPosition.y - object->uRadius &&
-                    _actor_collision_struct.sMaxZ <=
-                        pSpriteObjects[i].vPosition.z + object->uHeight &&
-                    _actor_collision_struct.sMinZ >= pSpriteObjects[i].vPosition.z) {
+                if (collision_state.bbox.x1 <= pSpriteObjects[i].vPosition.x + object->uRadius &&
+                    collision_state.bbox.x2 >= pSpriteObjects[i].vPosition.x - object->uRadius &&
+                    collision_state.bbox.y1 <= pSpriteObjects[i].vPosition.y + object->uRadius &&
+                    collision_state.bbox.y2 >= pSpriteObjects[i].vPosition.y - object->uRadius &&
+                    collision_state.bbox.z1 <= pSpriteObjects[i].vPosition.z + object->uHeight &&
+                    collision_state.bbox.z2 >= pSpriteObjects[i].vPosition.z) {
                     if (abs(((pSpriteObjects[i].vPosition.x -
-                              _actor_collision_struct.normal.x) *
-                                 _actor_collision_struct.direction.y -
+                              collision_state.position_lo.x) *
+                                 collision_state.direction.y -
                              (pSpriteObjects[i].vPosition.y -
-                              _actor_collision_struct.normal.y) *
-                                 _actor_collision_struct.direction.x) >>
+                              collision_state.position_lo.y) *
+                                 collision_state.direction.x) >>
                             16) <=
-                        object->uHeight + _actor_collision_struct.prolly_normal_d) {
+                        object->uHeight + collision_state.radius_lo) {
                         v10 = ((pSpriteObjects[i].vPosition.x -
-                                _actor_collision_struct.normal.x) *
-                                   _actor_collision_struct.direction.x +
+                                collision_state.position_lo.x) *
+                                   collision_state.direction.x +
                                (pSpriteObjects[i].vPosition.y -
-                                _actor_collision_struct.normal.y) *
-                                   _actor_collision_struct.direction.y) >>
+                                collision_state.position_lo.y) *
+                                   collision_state.direction.y) >>
                               16;
                         if (v10 > 0) {
-                            v11 = _actor_collision_struct.normal.z +
-                                  ((unsigned __int64)(_actor_collision_struct.direction.z *
+                            v11 = collision_state.position_lo.z +
+                                  ((unsigned __int64)(collision_state.direction.z *
                                                       (signed __int64)v10) >>
                                    16);
                             if (v11 >= pSpriteObjects[i].vPosition.z -
-                                           _actor_collision_struct.prolly_normal_d) {
+                                           collision_state.radius_lo) {
                                 if (v11 <= object->uHeight +
-                                               _actor_collision_struct.prolly_normal_d +
+                                               collision_state.radius_lo +
                                                pSpriteObjects[i].vPosition.z) {
-                                    if (v10 < _actor_collision_struct.field_7C) {
+                                    if (v10 < collision_state.adjusted_move_distance) {
                                         sub_46DEF2(_this, i);
                                     }
                                 }
@@ -1031,59 +914,60 @@ unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     return result;
 }
 
-bool sub_47531C(int a1, int* a2, int pos_x, int pos_y, int pos_z, int dir_x,
-    int dir_y, int dir_z, BLVFace* face, int a10) {
-    int v11;          // ST1C_4@3
-    int v12;          // edi@3
-    int v13;          // esi@3
-    int v14;          // edi@4
-    __int64 v15;      // qtt@6
-                      // __int16 v16; // si@7
-    int a7a;          // [sp+30h] [bp+18h]@7
-    int a9b;          // [sp+38h] [bp+20h]@3
-    int a9a;          // [sp+38h] [bp+20h]@3
-    int a10b;         // [sp+3Ch] [bp+24h]@3
-    signed int a10a;  // [sp+3Ch] [bp+24h]@4
-    int a10c;         // [sp+3Ch] [bp+24h]@5
+bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
+                          int *move_distance, bool ignore_ethereal) {
+    if (ignore_ethereal && face->Ethereal())
+        return false;
 
-    if (a10 && face->Ethereal()) return 0;
-    v11 = fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x);
-    a10b = fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y);
-    a9b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
-    v12 = v11 + a9b + a10b;
-    a9a = v11 + a9b + a10b;
-    v13 = (a1 << 16) - pos_x * face->pFacePlane_old.vNormal.x -
-        pos_y * face->pFacePlane_old.vNormal.y -
-        pos_z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist;
-    if (abs((a1 << 16) - pos_x * face->pFacePlane_old.vNormal.x -
-        pos_y * face->pFacePlane_old.vNormal.y -
-        pos_z * face->pFacePlane_old.vNormal.z -
-        face->pFacePlane_old.dist) >= a1 << 16) {
-        a10c = abs(v13) >> 14;
-        if (a10c > abs(v12)) return 0;
-        HEXRAYS_LODWORD(v15) = v13 << 16;
-        HEXRAYS_HIDWORD(v15) = v13 >> 16;
-        v14 = a1;
-        a10a = v15 / a9a;
+    // _fp suffix => that's a fixpoint number
+
+    // dot_product(dir, normal) is a cosine of an angle between them.
+    int cos_dir_normal_fp =
+        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+
+    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
+    int radius_fp = radius << 16;
+
+    int64_t overshoot;
+    signed int move_distance_fp;
+
+    // How deep into the model that the face belongs to we already are,
+    // positive value => actor's sphere already intersects the model.
+    int overshoot_fp = -pos_face_distance_fp + radius_fp;
+    if (abs(overshoot_fp) < radius_fp) {
+        // We got here => we're not that deep into the model. Can just push us back a little.
+        overshoot = abs(overshoot_fp) >> 16;
+        move_distance_fp = 0;
     } else {
-        a10a = 0;
-        v14 = abs(v13) >> 16;
+        // We got here => we're already inside the model. Or way outside.
+        int overshoot_x4 = abs(overshoot_fp) >> 14;
+        if (overshoot_x4 > abs(cos_dir_normal_fp))
+            return false; // Moving perpendicular to the plane is OK for some reason.
+
+        // We just say we overshot by radius. No idea why.
+        overshoot = radius;
+
+        // Then this is a correction needed to bring us to the point where actor's sphere is just touching the face.
+        move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
     }
-    // v16 = pos_y + ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16);
-    HEXRAYS_LOWORD(a7a) = (short)pos_x +
-        ((unsigned int)fixpoint_mul(a10a, dir_x) >> 16) -
-        fixpoint_mul(v14, face->pFacePlane_old.vNormal.x);
-    HEXRAYS_HIWORD(a7a) = pos_y +
-        ((unsigned int)fixpoint_mul(a10a, dir_y) >> 16) -
-        fixpoint_mul(v14, face->pFacePlane_old.vNormal.y);
-    if (!sub_475665(face, a7a,
-        (short)pos_z +
-    ((unsigned int)fixpoint_mul(a10a, dir_z) >> 16) -
-        fixpoint_mul(v14, face->pFacePlane_old.vNormal.z)))
-        return 0;
-    *a2 = a10a >> 16;
-    if (a10a >> 16 < 0) *a2 = 0;
-    return 1;
+
+    Vec3_short_ new_pos;
+    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) - overshoot * face->pFacePlane_old.vNormal.x) >> 16);
+    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
+    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
+
+    if (!IsProjectedPointInsideFace(face, new_pos))
+        return false; // We've just managed to slide past the face, so pretend no collision happened.
+
+    if (move_distance_fp < 0) {
+        *move_distance = 0;
+    } else {
+        *move_distance = move_distance_fp >> 16;
+    }
+
+    return true;
 }
 
 bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
@@ -1107,13 +991,8 @@ bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
     a1b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
     v13 = v12 + a1b + a11b;
     a1a = v12 + a1b + a11b;
-    v14 = (a1 << 16) - X * face->pFacePlane_old.vNormal.x -
-        Y * face->pFacePlane_old.vNormal.y -
-        Z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist;
-    if (abs((a1 << 16) - X * face->pFacePlane_old.vNormal.x -
-        Y * face->pFacePlane_old.vNormal.y -
-        Z * face->pFacePlane_old.vNormal.z - face->pFacePlane_old.dist) >=
-        a1 << 16) {
+    v14 = (a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(X, Y, Z);
+    if (abs((a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(X, Y, Z)) >= a1 << 16) {
         a11c = abs(v14) >> 14;
         if (a11c > abs(v13)) return false;
         HEXRAYS_LODWORD(v16) = v14 << 16;
@@ -1139,125 +1018,75 @@ bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
     return true;
 }
 
-int sub_475665(BLVFace* face, int a2, __int16 a3) {
-    bool v16;     // edi@14
-    int v20;      // ebx@18
-    int v21;      // edi@20
-    int v22;      // ST14_4@22
-    __int64 v23;  // qtt@22
-    int result;   // eax@25
-    int v25;      // [sp+14h] [bp-10h]@14
-    int v26;      // [sp+1Ch] [bp-8h]@2
-    int v27;      // [sp+20h] [bp-4h]@2
-    int v28;      // [sp+30h] [bp+Ch]@2
-    int v29;      // [sp+30h] [bp+Ch]@7
-    int v30;      // [sp+30h] [bp+Ch]@11
-    int v31;      // [sp+30h] [bp+Ch]@14
+bool IsProjectedPointInsideFace(BLVFace* face, const Vec3_short_ &point) {
+    std::array<int16_t, 104> edges_u;
+    std::array<int16_t, 104> edges_v;
 
+    int u;
+    int v;
     if (face->uAttributes & FACE_XY_PLANE) {
-        v26 = (signed __int16)a2;
-        v27 = HEXRAYS_SHIWORD(a2);
-        if (face->uNumVertices) {
-            for (v28 = 0; v28 < face->uNumVertices; v28++) {
-                word_720C10_intercepts_xs[2 * v28] =
-                    face->pXInterceptDisplacements[v28] +
-                    pIndoor->pVertices[face->pVertexIDs[v28]].x;
-                word_720B40_intercepts_zs[2 * v28] =
-                    face->pYInterceptDisplacements[v28] +
-                    pIndoor->pVertices[face->pVertexIDs[v28]].y;
-                word_720C10_intercepts_xs[2 * v28 + 1] =
-                    face->pXInterceptDisplacements[v28 + 1] +
-                    pIndoor->pVertices[face->pVertexIDs[v28 + 1]].x;
-                word_720B40_intercepts_zs[2 * v28 + 1] =
-                    face->pYInterceptDisplacements[v28 + 1] +
-                    pIndoor->pVertices[face->pVertexIDs[v28 + 1]].y;
-            }
+        u = point.x;
+        v = point.y;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].x;
+            edges_v[2 * i] = face->pYInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].y;
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].x;
+            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].y;
+        }
+    } else if (face->uAttributes & FACE_XZ_PLANE) {
+        u = point.x;
+        v = point.z;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].x;
+            edges_v[2 * i] = face->pZInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].z;
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].x;
+            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].z;
         }
     } else {
-        if (face->uAttributes & FACE_XZ_PLANE) {
-            v26 = (signed __int16)a2;
-            v27 = a3;
-            if (face->uNumVertices) {
-                for (v29 = 0; v29 < face->uNumVertices; v29++) {
-                    word_720C10_intercepts_xs[2 * v29] =
-                        face->pXInterceptDisplacements[v29] +
-                        pIndoor->pVertices[face->pVertexIDs[v29]].x;
-                    word_720B40_intercepts_zs[2 * v29] =
-                        face->pZInterceptDisplacements[v29] +
-                        pIndoor->pVertices[face->pVertexIDs[v29]].z;
-                    word_720C10_intercepts_xs[2 * v29 + 1] =
-                        face->pXInterceptDisplacements[v29 + 1] +
-                        pIndoor->pVertices[face->pVertexIDs[v29 + 1]].x;
-                    word_720B40_intercepts_zs[2 * v29 + 1] =
-                        face->pZInterceptDisplacements[v29 + 1] +
-                        pIndoor->pVertices[face->pVertexIDs[v29 + 1]].z;
-                }
-            }
-        } else {
-            v26 = HEXRAYS_SHIWORD(a2);
-            v27 = a3;
-            if (face->uNumVertices) {
-                for (v30 = 0; v30 < face->uNumVertices; v30++) {
-                    word_720C10_intercepts_xs[2 * v30] =
-                        face->pYInterceptDisplacements[v30] +
-                        pIndoor->pVertices[face->pVertexIDs[v30]].y;
-                    word_720B40_intercepts_zs[2 * v30] =
-                        face->pZInterceptDisplacements[v30] +
-                        pIndoor->pVertices[face->pVertexIDs[v30]].z;
-                    word_720C10_intercepts_xs[2 * v30 + 1] =
-                        face->pYInterceptDisplacements[v30 + 1] +
-                        pIndoor->pVertices[face->pVertexIDs[v30 + 1]].y;
-                    word_720B40_intercepts_zs[2 * v30 + 1] =
-                        face->pZInterceptDisplacements[v30 + 1] +
-                        pIndoor->pVertices[face->pVertexIDs[v30 + 1]].z;
-                }
-            }
+        u = point.y;
+        v = point.z;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pYInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].y;
+            edges_v[2 * i] = face->pZInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].z;
+            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].y;
+            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].z;
         }
     }
-    v31 = 0;
-    word_720C10_intercepts_xs[2 * face->uNumVertices] =
-        word_720C10_intercepts_xs[0];
-    word_720B40_intercepts_zs[2 * face->uNumVertices] =
-        word_720B40_intercepts_zs[0];
-    v16 = word_720B40_intercepts_zs[0] >= v27;
-    if (2 * face->uNumVertices <= 0) return 0;
-    for (v25 = 0; v25 < 2 * face->uNumVertices; ++v25) {
-        if (v31 >= 2) break;
-        if (v16 ^ (word_720B40_intercepts_zs[v25 + 1] >= v27)) {
-            if (word_720C10_intercepts_xs[v25 + 1] >= v26)
-                v20 = 0;
-            else
-                v20 = 2;
-            v21 = v20 | (word_720C10_intercepts_xs[v25] < v26);
-            if (v21 != 3) {
-                v22 = word_720C10_intercepts_xs[v25 + 1] -
-                    word_720C10_intercepts_xs[v25];
-                HEXRAYS_LODWORD(v23) = v22 << 16;
-                HEXRAYS_HIDWORD(v23) = v22 >> 16;
-                if (!v21 ||
-                    (word_720C10_intercepts_xs[v25] +
-                        ((signed int)(((unsigned __int64)(v23 /
-                            (word_720B40_intercepts_zs
-                                [v25 + 1] -
-                                word_720B40_intercepts_zs
-                                [v25]) *
-                            ((v27 -
-                                (signed int)
-                                word_720B40_intercepts_zs
-                                [v25])
-                                << 16)) >>
-                            16) +
-                            32768) >>
-                            16) >=
-                        v26))
-                    ++v31;
-            }
+    edges_u[2 * face->uNumVertices] = edges_u[0];
+    edges_v[2 * face->uNumVertices] = edges_v[0];
+
+    if (2 * face->uNumVertices <= 0)
+        return 0;
+
+    int counter = 0;
+    for (int i = 0; i < 2 * face->uNumVertices; ++i) {
+        if (counter >= 2)
+            break;
+
+        // Check that we're inside the bounding band in v coordinate
+        if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
+            continue;
+
+        // If we're to the left then we surely have an intersection
+        if ((edges_u[i] >= u) && (edges_u[i + 1] >= u)) {
+            ++counter;
+            continue;
         }
-        v16 = word_720B40_intercepts_zs[v25 + 1] >= v27;
+
+        // We're not to the left? Then we must be inside the bounding band in u coordinate
+        if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
+            continue;
+
+        // Calculate the intersection point of v=const line with the edge.
+        int line_intersection_u = edges_u[i] +
+            static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
+
+        // We need ray intersections, so consider only one halfplane.
+        if (line_intersection_u >= u)
+            ++counter;
     }
-    result = 1;
-    if (v31 != 1) result = 0;
-    return result;
+
+    return counter == 1;
 }
 
 bool sub_4759C9(BLVFace* face, int a2, int a3, __int16 a4) {
@@ -1407,68 +1236,53 @@ bool sub_4759C9(BLVFace* face, int a2, int a3, __int16 a4) {
     return result;
 }
 
-bool sub_475D85(Vec3_int_* a1, Vec3_int_* a2, int* a3, BLVFace* a4) {
-    BLVFace* v4;         // ebx@1
-    int v5;              // ST24_4@2
-    int v6;              // ST28_4@2
-    int v7;              // edi@2
-    int v8;              // eax@5
-    signed int v9;       // esi@5
-    signed __int64 v10;  // qtt@10
-    Vec3_int_* v11;      // esi@11
-    int v12;             // ST14_4@11
-    Vec3_int_* v14;      // [sp+Ch] [bp-18h]@1
-    Vec3_int_* v15;      // [sp+14h] [bp-10h]@1
-    int v17;             // [sp+20h] [bp-4h]@10
-    int a4b;             // [sp+30h] [bp+Ch]@2
-    int a4c;             // [sp+30h] [bp+Ch]@9
-    int a4a;             // [sp+30h] [bp+Ch]@10
+bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance) {
+    // _fp suffix => that's a fixpoint number
 
-    v4 = a4;
-    v15 = a2;
-    v14 = a1;
-    v5 = fixpoint_mul(a2->x, a4->pFacePlane_old.vNormal.x);
-    a4b = fixpoint_mul(a2->y, a4->pFacePlane_old.vNormal.y);
-    v6 = fixpoint_mul(a2->z, v4->pFacePlane_old.vNormal.z);
-    v7 = v5 + v6 + a4b;
-    // (v16 = v5 + v6 + a4b) == 0;
-    if (a4->uAttributes & FACE_ETHEREAL || !v7 || v7 > 0 && !v4->Portal())
-        return 0;
-    v8 = v4->pFacePlane_old.vNormal.z * a1->z;
-    v9 = -(v4->pFacePlane_old.dist + v8 + a1->y * v4->pFacePlane_old.vNormal.y +
-        a1->x * v4->pFacePlane_old.vNormal.x);
-    if (v7 <= 0) {
-        if (v4->pFacePlane_old.dist + v8 +
-            a1->y * v4->pFacePlane_old.vNormal.y +
-            a1->x * v4->pFacePlane_old.vNormal.x <
-            0)
-            return 0;
-    } else {
-        if (v9 < 0) return 0;
-    }
-    a4c = abs(-(v4->pFacePlane_old.dist + v8 +
-        a1->y * v4->pFacePlane_old.vNormal.y +
-        a1->x * v4->pFacePlane_old.vNormal.x)) >>
-        14;
-    v11 = v14;
-    HEXRAYS_LODWORD(v10) = v9 << 16;
-    HEXRAYS_HIDWORD(v10) = v9 >> 16;
-    a4a = v10 / v7;
-    v17 = v10 / v7;
-    HEXRAYS_LOWORD(v12) =
-        HEXRAYS_LOWORD(v14->x) +
-        (((unsigned int)fixpoint_mul(v17, v15->x) + 0x8000) >> 16);
-    HEXRAYS_HIWORD(v12) =
-        HEXRAYS_LOWORD(v11->y) +
-        (((unsigned int)fixpoint_mul(v17, v15->y) + 0x8000) >> 16);
-    if (a4c > abs(v7) || (v17 > * a3 << 16) ||
-        !sub_475665(
-            v4, v12,
-            LOWORD(v11->z) +
-        (((unsigned int)fixpoint_mul(v17, v15->z) + 0x8000) >> 16)))
-        return 0;
-    *a3 = a4a >> 16;
-    return 1;
+    // dot_product(dir, normal) is a cosine of an angle between them.
+    int cos_dir_normal_fp =
+        fixpoint_mul(dir->x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir->y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir->z, face->pFacePlane_old.vNormal.z);
+
+    if (cos_dir_normal_fp == 0)
+        return false; // dir is perpendicular to face normal.
+
+    if (face->uAttributes & FACE_ETHEREAL)
+        return false;
+
+    if (cos_dir_normal_fp > 0 && !face->Portal())
+        return false; // We're facing away && face is not a portal.
+
+    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(*pos);
+
+    if (cos_dir_normal_fp < 0 && pos_face_distance_fp < 0)
+        return false; // Facing towards the face but already inside the model.
+
+    if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
+        return false; // Facing away from the face and outside the model.
+
+    int pos_face_distance_x4 = abs(-(pos_face_distance_fp)) >> 14;
+
+    // How far we need to move along the `dir` axis to hit face.
+    int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
+
+    Vec3_short_ new_pos;
+    new_pos.x = pos->x + ((fixpoint_mul(move_distance_fp, dir->x) + 0x8000) >> 16);
+    new_pos.y = pos->y + ((fixpoint_mul(move_distance_fp, dir->y) + 0x8000) >> 16);
+    new_pos.z = pos->z + ((fixpoint_mul(move_distance_fp, dir->z) + 0x8000) >> 16);
+
+    if (pos_face_distance_x4 > abs(cos_dir_normal_fp))
+        return false; // Moving perpendicular to the plane.
+
+    if (move_distance_fp > *move_distance << 16)
+        return false; // No correction needed.
+
+    if (!IsProjectedPointInsideFace(face, new_pos))
+        return false;
+
+    *move_distance = move_distance_fp >> 16;
+    return true;
 }
 
 bool sub_475F30(int* a1, BLVFace* a2, int a3, int a4, int a5, int a6, int a7,
@@ -1482,25 +1296,16 @@ bool sub_475F30(int* a1, BLVFace* a2, int a3, int a4, int a5, int a6, int a7,
     if (a2->Ethereal() || !v13 || v14 > 0 && !a2->Portal()) {
         return false;
     }
-    int v16 = -(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y +
-        a3 * a2->pFacePlane_old.vNormal.x +
-        a5 * a2->pFacePlane_old.vNormal.z);
+    int v16 = -(a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5));
     if (v14 <= 0) {
-        if (a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y +
-            a3 * a2->pFacePlane_old.vNormal.x +
-            a5 * a2->pFacePlane_old.vNormal.z <
-            0)
+        if (a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5) < 0)
             return 0;
     } else {
         if (v16 < 0) {
             return 0;
         }
     }
-    int v17 =
-        abs(-(a2->pFacePlane_old.dist + a4 * a2->pFacePlane_old.vNormal.y +
-            a3 * a2->pFacePlane_old.vNormal.x +
-            a5 * a2->pFacePlane_old.vNormal.z)) >>
-        14;
+    int v17 = abs(-(a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5))) >> 14;
     int64_t v18;
     HEXRAYS_LODWORD(v18) = v16 << 16;
     HEXRAYS_HIDWORD(v18) = v16 >> 16;

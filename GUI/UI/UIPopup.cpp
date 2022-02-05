@@ -1,5 +1,4 @@
 #define _CRTDBG_MAP_ALLOC
-#define _CRT_SECURE_NO_WARNINGS
 #include <cstdlib>
 #include <string>
 
@@ -821,7 +820,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         pText = "";
                         break;
                 }
-                if (_stricmp(pText, "")) {
+                if (!iequals(pText, "")) {
                     pWindow->DrawText(pFontSmallnum, 28, pTextHeight,
                                       GetSpellColor(pTextColorID), pText, 0, 0,
                                       0);
@@ -830,7 +829,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 }
             }
         }
-        if (!_stricmp(pText, ""))
+        if (iequals(pText, ""))
             pWindow->DrawText(pFontSmallnum, 28, pTextHeight,
                               Color16(0xE1u, 255, 0x9Bu),
                               localization->GetString(LSTR_NONE), 0, 0, 0);

@@ -247,23 +247,16 @@ int SpriteFrameTable::FastFindSprite(const char *pSpriteName) {
 
 //----- (0044D83A) --------------------------------------------------------
 int SpriteFrameTable::BinarySearch(const char *pSpriteName) {
-    int startPos = 0;
-    int endPos = uNumEFrames;
-    while (1) {
-        int searchRange = endPos - startPos;
-        int middleFrameIndex = startPos + (endPos - startPos) / 2;
-        int comparisonResult = _stricmp(pSpriteName, this->pSpritePFrames[middleFrameIndex]->icon_name.c_str());
-        if (!comparisonResult) {
-            return middleFrameIndex;
+    SpriteFrame **result = std::lower_bound(this->pSpritePFrames, this->pSpritePFrames + uNumEFrames, pSpriteName,
+        [](SpriteFrame *l, const char *r) {
+            return iless(l->icon_name, r);
         }
-        if (startPos == endPos) {
-            return -1;
-        }
-        if (comparisonResult >= 0) {
-            startPos += std::max(((endPos - startPos) / 2), 1);
-        } else {
-            endPos = std::max(((endPos - startPos) / 2), 1) + startPos;
-        }
+    );
+
+    if (iequals((*result)->icon_name, pSpriteName)) {
+        return std::distance(this->pSpritePFrames, result);
+    } else {
+        return -1;
     }
 }
 
@@ -480,63 +473,63 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                     if (!v6->CanMoveThrough()) {
                                         v7 = v6->uRadius;
                                         v8 = v5->vPosition.x;
-                                        if (_actor_collision_struct.sMaxX <= v8 + v7) {
-                                            if (_actor_collision_struct.sMinX >= v8 - v7) {
+                                        if (collision_state.bbox.x1 <= v8 + v7) {
+                                            if (collision_state.bbox.x2 >= v8 - v7) {
                                                 v9 = v5->vPosition.y;
-                                                if (_actor_collision_struct.sMaxY <=
+                                                if (collision_state.bbox.y1 <=
                                                     v9 + v7) {
-                                                    if (_actor_collision_struct.sMinY >=
+                                                    if (collision_state.bbox.y2 >=
                                                         v9 - v7) {
                                                         v10 =
                                                             v6->uDecorationHeight;
                                                         v11 = v5->vPosition.z;
                                                         v22 = v10;
-                                                        if (_actor_collision_struct.sMaxZ <=
+                                                        if (collision_state.bbox.z1 <=
                                                             v11 + v10) {
-                                                            if (_actor_collision_struct
-                                                                    .sMinZ >=
+                                                            if (collision_state
+                                                                    .bbox.z2 >=
                                                                 v11) {
                                                                 v12 =
                                                                     v8 -
-                                                                    _actor_collision_struct
-                                                                        .normal
+                                                                    collision_state
+                                                                        .position_lo
                                                                         .x;
                                                                 v19 =
                                                                     v9 -
-                                                                    _actor_collision_struct
-                                                                        .normal
+                                                                    collision_state
+                                                                        .position_lo
                                                                         .y;
                                                                 v13 =
-                                                                    _actor_collision_struct
-                                                                        .prolly_normal_d +
+                                                                    collision_state
+                                                                        .radius_lo +
                                                                     v7;
                                                                 v21 =
                                                                     ((v8 -
-                                                                      _actor_collision_struct
-                                                                          .normal
+                                                                      collision_state
+                                                                          .position_lo
                                                                           .x) *
-                                                                         _actor_collision_struct
+                                                                         collision_state
                                                                              .direction
                                                                              .y -
                                                                      (v9 -
-                                                                      _actor_collision_struct
-                                                                          .normal
+                                                                      collision_state
+                                                                          .position_lo
                                                                           .y) *
-                                                                         _actor_collision_struct
+                                                                         collision_state
                                                                              .direction
                                                                              .x) >>
                                                                     16;
                                                                 if (abs(v21) <=
-                                                                    _actor_collision_struct
-                                                                            .prolly_normal_d +
+                                                                    collision_state
+                                                                            .radius_lo +
                                                                         v7) {
                                                                     v14 =
                                                                         (v12 *
-                                                                             _actor_collision_struct
+                                                                             collision_state
                                                                                  .direction
                                                                                  .x +
                                                                          v19 *
-                                                                             _actor_collision_struct
+                                                                             collision_state
                                                                                  .direction
                                                                                  .y) >>
                                                                         16;
@@ -546,11 +539,11 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                                                             v5->vPosition
                                                                                 .z;
                                                                         v16 =
-                                                                            _actor_collision_struct
-                                                                                .normal
+                                                                            collision_state
+                                                                                .position_lo
                                                                                 .z +
                                                                             fixpoint_mul(
-                                                                                _actor_collision_struct
+                                                                                collision_state
                                                                                     .direction
                                                                                     .z,
                                                                                 v14);
@@ -571,12 +564,12 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                                                                     v17 =
                                                                                         0;
                                                                                 if (v17 <
-                                                                                    _actor_collision_struct
-                                                                                        .field_7C) {
-                                                                                    _actor_collision_struct
-                                                                                        .field_7C =
+                                                                                    collision_state
+                                                                                        .adjusted_move_distance) {
+                                                                                    collision_state
+                                                                                        .adjusted_move_distance =
                                                                                         v17;
-                                                                                    _actor_collision_struct
+                                                                                    collision_state
                                                                                         .pid =
                                                                                         (signed __int16)*v20;
                                                                                 }

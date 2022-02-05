@@ -10,7 +10,7 @@ Timer *pEventTimer;
 //----- (00426317) --------------------------------------------------------
 uint64_t Timer::Time() {
     std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-    uint64_t v2 = TIME_QUANT * ms.count() / 1000;
+    uint64_t v2 = 128 * ms.count() / 1000;
     if (v2 < uStartTime) uStartTime = 0;
     return v2;
 }
@@ -62,10 +62,13 @@ void Timer::Update() {
     uTimeElapsed = new_time - uStartTime;
     uStartTime = new_time;
 
-    if (uTimeElapsed > 32) uTimeElapsed = 32;
+    if (uTimeElapsed > 32)
+        uTimeElapsed = 32; // 32 is 250ms
 
-    if (!bPaused && !bTackGameTime) uTotalGameTimeElapsed += uTimeElapsed;
-    dt_in_some_format = (uTimeElapsed << 16) / 128;
+    if (!bPaused && !bTackGameTime)
+        uTotalGameTimeElapsed += uTimeElapsed;
+
+    dt_fixpoint = (uTimeElapsed << 16) / 128;
 }
 
 //----- (00426402) --------------------------------------------------------

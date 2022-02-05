@@ -94,7 +94,8 @@ class EngineConfig {
     // GAME_FLAGS_2_*
     int flags2 = GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS | GAME_FLAGS_2_DRAW_BLOODSPLATS | GAME_FLAGS_2_SATURATE_LIGHTMAPS;
 
-    int turn_speed = 0;             // discrete turn speed, 0 for smooth
+    int turn_speed = 0;             // discrete turn speed, 0 for smooth.
+    int vertical_turn_speed = 25;   // discrete vertical turn speed (mm7 default is 25, smooth is not supported rn).
     float turn_speed_smooth = 1.0f;
 
     int sound_level = 4;    // 0..9
@@ -147,7 +148,7 @@ class EngineConfig {
     bool is_underwater = false;
     bool is_targeting = false;
 
-    bool no_grab = false;
+    bool no_grab = false;           // Don't grab mouse. When false, you cannot move the mouse outside the game window.
 
     int window_x = -1;
     int window_y = -1;

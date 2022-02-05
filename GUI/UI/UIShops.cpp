@@ -2,8 +2,6 @@
 #include <cstdlib>
 #include <string>
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"

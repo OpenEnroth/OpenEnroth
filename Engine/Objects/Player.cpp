@@ -1574,7 +1574,7 @@ bool Player::IsUnarmed() {
 }
 
 //----- (0048D6AA) --------------------------------------------------------
-bool Player::HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex) {
+bool Player::HasItemEquipped(ITEM_EQUIP_TYPE uEquipIndex) const {
     uint i = pEquipment.pIndices[uEquipIndex];
     if (i)
         return !pOwnItems[i - 1].IsBroken();
@@ -1594,16 +1594,15 @@ bool Player::HasEnchantedItemEquipped(int uEnchantment) {
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Player::WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type) {
+bool Player::WearsItem(int item_id, ITEM_EQUIP_TYPE equip_type) const {
     // check aginst specific item and slot
-    return (HasItemEquipped(equip_type) &&
-            GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
+    return (HasItemEquipped(equip_type) && GetNthEquippedIndexItem(equip_type)->uItemID == item_id);
 }
 
-bool Player::WearsItemAnyWhere(int item_id) {
+bool Player::WearsItemAnywhere(int item_id) const {
     for (int i = 0; i < 16; i++) {  // check over equipped inventory
         if (WearsItem(item_id, (ITEM_EQUIP_TYPE)i)) {
-            return true;  // foudn item
+            return true;  // found item
         }
     }
 
@@ -3497,10 +3496,13 @@ enum CHARACTER_RACE Player::GetRace() const {
 
 std::string Player::GetRaceName() const {
     switch (GetRace()) {
-        case 0: return localization->GetString(LSTR_RACE_HUMAN);
-        case 1: return localization->GetString(LSTR_RACE_DWARF);
-        case 2: return localization->GetString(LSTR_RACE_GOBLIN);
-        case 3: return localization->GetString(LSTR_RACE_ELF);
+        case CHARACTER_RACE_HUMAN: return localization->GetString(LSTR_RACE_HUMAN);
+        case CHARACTER_RACE_ELF: return localization->GetString(LSTR_RACE_ELF);
+        case CHARACTER_RACE_GOBLIN: return localization->GetString(LSTR_RACE_GOBLIN);
+        case CHARACTER_RACE_DWARF: return localization->GetString(LSTR_RACE_DWARF);
+        default:
+            __debugbreak();
+            return std::string();  // Make the compiler happy.
     }
 }
 
@@ -3904,7 +3906,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime((int)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
+                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * 213.3333333333333));
             }
         }
         mouse->RemoveHoldingItem();
@@ -4322,7 +4324,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime((int)(flt_6BE3A4_debug_recmod1 * 213.3333333333333));
+                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * 213.3333333333333));
             }
         }
         mouse->RemoveHoldingItem();
@@ -7113,7 +7115,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         if (!pParty->bTurnBasedModeOn) {
             int actEndurance = playerPtr->GetActualEndurance();
             int recoveryTime = (int)((20 - playerPtr->GetParameterBonus(actEndurance)) *
-                      flt_6BE3A4_debug_recmod1 * 2.133333333333333);
+                      debug_non_combat_recovery_mul * 2.133333333333333);
             playerPtr->SetRecoveryTime(recoveryTime);
         }
 
@@ -7297,7 +7299,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                 int actEnd = playerPtr->GetActualEndurance();
                 int recTime =
                     (int)((20 - playerPtr->GetParameterBonus(actEnd)) *
-                          flt_6BE3A4_debug_recmod1 * 2.133333333333333);
+                          debug_non_combat_recovery_mul * 2.133333333333333);
                 playerPtr->SetRecoveryTime(recTime);
             }
             return;
@@ -7609,6 +7611,10 @@ ItemGen* Player::GetNthEquippedIndexItem(int index) {
     return &this->pInventoryItemList[this->pEquipment.pIndices[index] - 1];
 }
 
+const ItemGen *Player::GetNthEquippedIndexItem(int index) const {
+    return const_cast<Player *>(this)->GetNthEquippedIndexItem(index);
+}
+
 ItemGen* Player::GetItem(unsigned int PlayerEquipment::*itemPos) {
     if (this->pEquipment.*itemPos == 0) {
         return nullptr;
@@ -7806,7 +7812,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
                          // spell effect
         int recovery = player->GetAttackRecoveryTime(false);
         if (recovery < 30) recovery = 30;
-        player->SetRecoveryTime(flt_6BE3A4_debug_recmod1 * (double)recovery *
+        player->SetRecoveryTime(debug_non_combat_recovery_mul * (double)recovery *
                                 2.133333333333333);
     }
 

@@ -67,7 +67,7 @@ void Arena_SelectionFightLevel() {
                 pParty->vPosition.x = 3849;
                 pParty->vPosition.y = 5770;
                 pParty->vPosition.z = 1;
-                pParty->uFallStartY = 1;
+                pParty->uFallStartZ = 1;
                 pParty->sRotationZ = 512;
                 pParty->sRotationX = 0;
                 pParty->uFallSpeed = 0;
@@ -142,7 +142,7 @@ void ArenaFight() {
     pParty->vPosition.x = 3849;
     pParty->vPosition.y = 5770;
     pParty->vPosition.z = 1;
-    pParty->uFallStartY = 1;
+    pParty->uFallStartZ = 1;
     pParty->sRotationZ = 512;
     pParty->sRotationX = 0;
     pParty->uFallSpeed = 0;

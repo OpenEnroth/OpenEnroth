@@ -369,7 +369,7 @@ const char *GetMapBookHintText(int mouse_x, int mouse_y) {
                     if (face.sCogTriggeredID) {
                         if (!(face.uAttributes & FACE_HAS_EVENT)) {
                             if (GetEventHintString(face.sCogTriggeredID)) {
-                                if (_stricmp(GetEventHintString(face.sCogTriggeredID), "")) {
+                                if (!iequals(GetEventHintString(face.sCogTriggeredID), "")) {
                                     result = GetEventHintString(face.sCogTriggeredID);
                                 }
                             }

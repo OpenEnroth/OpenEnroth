@@ -18,9 +18,9 @@ void OS_MsgBox(const char *msg, const char *title) {
 }
 
 unsigned int OS_GetTime() {
-    struct timeval tv;
-    gettimeofday(&tv, 0);
-    return unsigned((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
 void OS_ShowCursor(bool show) {
@@ -160,4 +160,8 @@ std::string OS_casepath(std::string path) {
         closedir(d);
 
     return r;
+}
+
+bool OS_FileExists(const std::string& path) {
+    return _access(path.c_str(), 0) != -1;
 }

@@ -16,6 +16,14 @@ __int64 fixpoint_div(int, int);
 // int fixpoint_from_float(float value);
 // int fixpoint_from_int(int lhv, int rhv);
 
+/**
+ * @param value                         Fixed-point value.
+ * @return                              Corresponding value as a `float`.
+ */
+inline float fixpoint_to_float(int value) {
+    return static_cast<float>(value / 65536.0);
+}
+
 int integer_sqrt(int val);
 int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides);  // idb
 inline int round_to_int(float x) { return (int)floor(x + 0.5f); }

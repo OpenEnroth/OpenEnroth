@@ -503,7 +503,6 @@ std::array<int, 500> ai_near_actors_targets_pid;
 int ai_arrays_size;
 std::array<int, 500> ai_near_actors_distances;
 std::array<unsigned int, 500> ai_near_actors_ids;
-std::array<int, 182> dword_4F8580 = {};
 
 char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
@@ -701,22 +700,19 @@ int dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
-float flt_6BE150_look_up_down_dangle = 1.0f;
 std::string pCurrentMapName;
 unsigned int uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 float _6BE3A0_fov = 0.55000001f;
-float flt_6BE3A4_debug_recmod1;
-float flt_6BE3A8_debug_recmod2;
-float flt_6BE3AC_debug_recmod1_x_1_6;
+float debug_non_combat_recovery_mul;
+float debug_combat_recovery_mul;
+float debug_turn_based_monster_movespeed_mul;
 std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;
 std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;
 std::array<__int16, 104> word_720A70_intercepts_xs_plus_xs;
-std::array<__int16, 104> word_720B40_intercepts_zs;
-std::array<__int16, 102> word_720C10_intercepts_xs;
 std::array<__int16, 777> word_720CE0_ys;  // idb
 std::array<__int16, 777> word_720DB0_xs;  // idb
 std::array<int, 20> dword_720E80;
@@ -727,9 +723,7 @@ std::array<__int16, 104> odm_floor_face_vert_coord_X;  // word_721040
 std::array<int, 20> current_Face_id;                   // dword_721110
 std::array<int, 20> current_BModel_id;                 // dword_721160
 std::array<int, 20> odm_floor_level;                   // idb
-int blv_prev_party_x;
-int blv_prev_party_z;
-int blv_prev_party_y;
+Vec3_int_ blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
 std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related;  // idb

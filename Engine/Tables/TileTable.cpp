@@ -175,59 +175,59 @@ int TileTable::FromFileTxt(const char *pFilename) {
                 v9 = v84.pProperties[3];
                 // v2->pTiles[v2->sNumTiles].uBitmapID = v8;
 
-                if (!_stricmp(v9, "TTtype_NULL")) {
+                if (iequals(v9, "TTtype_NULL")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_NULL;
-                } else if (!_stricmp(v9, "TTtype_Start")) {
+                } else if (iequals(v9, "TTtype_Start")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Start;
-                } else if (!_stricmp(v9, "TTtype_Grass")) {
+                } else if (iequals(v9, "TTtype_Grass")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Grass;
-                } else if (!_stricmp(v9, "TTtype_Snow")) {
+                } else if (iequals(v9, "TTtype_Snow")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Snow;
-                } else if (!_stricmp(v9, "TTtype_Sand")) {
+                } else if (iequals(v9, "TTtype_Sand")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Desert;
-                } else if (!_stricmp(v9, "TTtype_Volcano")) {
+                } else if (iequals(v9, "TTtype_Volcano")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_CooledLava;
-                } else if (!_stricmp(v9, "TTtype_Dirt")) {
+                } else if (iequals(v9, "TTtype_Dirt")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Dirt;
-                } else if (!_stricmp(v9, "TTtype_Water")) {
+                } else if (iequals(v9, "TTtype_Water")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Water;
-                } else if (!_stricmp(v9, "TTtype_Cracked")) {
+                } else if (iequals(v9, "TTtype_Cracked")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Badlands;
-                } else if (!_stricmp(v9, "TTtype_Swamp")) {
+                } else if (iequals(v9, "TTtype_Swamp")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Swamp;
-                } else if (!_stricmp(v9, "TTtype_Tropical")) {
+                } else if (iequals(v9, "TTtype_Tropical")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_Tropical;
-                } else if (!_stricmp(v9, "TTtype_City")) {
+                } else if (iequals(v9, "TTtype_City")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_City;
-                } else if (!_stricmp(v9, "TTtype_RoadGrassCobble")) {
+                } else if (iequals(v9, "TTtype_RoadGrassCobble")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadGrassCobble;
-                } else if (!_stricmp(v9, "TTtype_RoadGrassDirt")) {
+                } else if (iequals(v9, "TTtype_RoadGrassDirt")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadGrassDirt;
-                } else if (!_stricmp(v9, "TTtype_RoadSnowCobble")) {
+                } else if (iequals(v9, "TTtype_RoadSnowCobble")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSnowCobble;
-                } else if (!_stricmp(v9, "TTtype_RoadSnowDirt")) {
+                } else if (iequals(v9, "TTtype_RoadSnowDirt")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSnowDirt;
-                } else if (!_stricmp(v9, "TTtype_RoadSandCobble")) {
+                } else if (iequals(v9, "TTtype_RoadSandCobble")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSandCobble;
-                } else if (!_stricmp(v9, "TTtype_RoadSandDirt")) {
+                } else if (iequals(v9, "TTtype_RoadSandDirt")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSandDirt;
-                } else if (!_stricmp(v9, "TTtype_RoadVolcanoCobble")) {
+                } else if (iequals(v9, "TTtype_RoadVolcanoCobble")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadVolcanoCobble;
-                } else if (!_stricmp(v9, "TTtype_RoadVolcanoDirt")) {
+                } else if (iequals(v9, "TTtype_RoadVolcanoDirt")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadVolcanoDirt;
-                } else if (!_stricmp(v9, "TTtype_RoadCrackedCobble")) {
+                } else if (iequals(v9, "TTtype_RoadCrackedCobble")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadCrackedCobble;
-                } else if (!_stricmp(v9, "TTtype_RoadCrackedDirt")) {
+                } else if (iequals(v9, "TTtype_RoadCrackedDirt")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadCrackedDirt;
-                } else if (!_stricmp(v9, "TTtype_RoadSwampCobble")) {
+                } else if (iequals(v9, "TTtype_RoadSwampCobble")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSwampCobble;
-                } else if (!_stricmp(v9, "TTtype_RoadSwampDirt")) {
+                } else if (iequals(v9, "TTtype_RoadSwampDirt")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadSwampDir;
-                } else if (!_stricmp(v9, "TTtype_RoadTropicalCobble")) {
+                } else if (iequals(v9, "TTtype_RoadTropicalCobble")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadTropicalCobble;
-                } else if (!_stricmp(v9, "TTtype_RoadTropicalDirt")) {
+                } else if (iequals(v9, "TTtype_RoadTropicalDirt")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadTropicalDirt;
-                } else if (!_stricmp(v9, "TTtype_RoadCityStone")) {
+                } else if (iequals(v9, "TTtype_RoadCityStone")) {
                     v2->pTiles[v2->sNumTiles].tileset = Tileset_RoadCityStone;
                 } else {
                     logger->Warning("%s", StringPrintf("Unknown tile type %s", v9).c_str());
@@ -239,161 +239,161 @@ int TileTable::FromFileTxt(const char *pFilename) {
                 v2->pTiles[v2->sNumTiles].uSection = 0;
                 v2->pTiles[v2->sNumTiles].uAttributes = 0;
 
-                if (!_stricmp(v35, "TTsect_NULL")) {
+                if (iequals(v35, "TTsect_NULL")) {
                     v2->pTiles[v2->sNumTiles].uSection |= TILE_SECT_NULL;
-                } else if (!_stricmp(v35, "TTsect_Start")) {
+                } else if (iequals(v35, "TTsect_Start")) {
                     v2->pTiles[v2->sNumTiles].uSection |= TILE_SECT_Start;
-                } else if (!_stricmp(v35, "TTsect_Base1")) {
+                } else if (iequals(v35, "TTsect_Base1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base1;
-                } else if (!_stricmp(v35, "TTsect_Base2")) {
+                } else if (iequals(v35, "TTsect_Base2")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base2_NS;
-                } else if (!_stricmp(v35, "TTsect_Base3")) {
+                } else if (iequals(v35, "TTsect_Base3")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base3_EW;
-                } else if (!_stricmp(v35, "TTsect_Base4")) {
+                } else if (iequals(v35, "TTsect_Base4")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base4_N_E;
-                } else if (!_stricmp(v35, "TTsect_Special1")) {
+                } else if (iequals(v35, "TTsect_Special1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special1_N_W;
-                } else if (!_stricmp(v35, "TTsect_Special2")) {
+                } else if (iequals(v35, "TTsect_Special2")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special2_S_E;
-                } else if (!_stricmp(v35, "TTsect_Special3")) {
+                } else if (iequals(v35, "TTsect_Special3")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special3_S_W;
-                } else if (!_stricmp(v35, "TTsect_Special4")) {
+                } else if (iequals(v35, "TTsect_Special4")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special4_NS_E;
-                } else if (!_stricmp(v35, "TTsect_Special5")) {
+                } else if (iequals(v35, "TTsect_Special5")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special5_NS_W;
-                } else if (!_stricmp(v35, "TTsect_Special6")) {
+                } else if (iequals(v35, "TTsect_Special6")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special6_EW_N;
-                } else if (!_stricmp(v35, "TTsect_Special7")) {
+                } else if (iequals(v35, "TTsect_Special7")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special7_EW_S;
-                } else if (!_stricmp(v35, "TTsect_Special8")) {
+                } else if (iequals(v35, "TTsect_Special8")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special8_NCAP;
-                } else if (!_stricmp(v35, "TTsect_NE1")) {
+                } else if (iequals(v35, "TTsect_NE1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NE1_SE1_ECAP;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_NW1")) {
+                } else if (iequals(v35, "TTsect_NW1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NW1_SW1_WCAP;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_SE1")) {
+                } else if (iequals(v35, "TTsect_SE1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NE1_SE1_ECAP;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_SW1")) {
+                } else if (iequals(v35, "TTsect_SW1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NW1_SW1_WCAP;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_E1")) {
+                } else if (iequals(v35, "TTsect_E1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_E1_DS;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_W1")) {
+                } else if (iequals(v35, "TTsect_W1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_W1_DW;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_N1")) {
+                } else if (iequals(v35, "TTsect_N1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_N1_DE;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_S1")) {
+                } else if (iequals(v35, "TTsect_S1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_S1_DSW;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_XNE1")) {
+                } else if (iequals(v35, "TTsect_XNE1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNE1_XSE1_DNE;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_XNW1")) {
+                } else if (iequals(v35, "TTsect_XNW1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNW1_XSW1_DNW;
                     v2->pTiles[v2->sNumTiles].uAttributes = TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_XSE1")) {
+                } else if (iequals(v35, "TTsect_XSE1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNE1_XSE1_DNE;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_XSW1")) {
+                } else if (iequals(v35, "TTsect_XSW1")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNW1_XSW1_DNW;
                     v2->pTiles[v2->sNumTiles].uAttributes = TILE_DESC_TRANSITION;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_CROS")) {
+                } else if (iequals(v35, "TTsect_CROS")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base1;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_NS")) {
+                } else if (iequals(v35, "TTsect_NS")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base2_NS;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_EW")) {
+                } else if (iequals(v35, "TTsect_EW")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base3_EW;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_N_E")) {
+                } else if (iequals(v35, "TTsect_N_E")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Base4_N_E;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_N_W")) {
+                } else if (iequals(v35, "TTsect_N_W")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special1_N_W;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_S_E")) {
+                } else if (iequals(v35, "TTsect_S_E")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special2_S_E;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_S_W")) {
+                } else if (iequals(v35, "TTsect_S_W")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special3_S_W;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_NS_E")) {
+                } else if (iequals(v35, "TTsect_NS_E")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special4_NS_E;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_NS_W")) {
+                } else if (iequals(v35, "TTsect_NS_W")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special5_NS_W;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_EW_N")) {
+                } else if (iequals(v35, "TTsect_EW_N")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special6_EW_N;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_EW_S")) {
+                } else if (iequals(v35, "TTsect_EW_S")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special7_EW_S;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_NCAP")) {
+                } else if (iequals(v35, "TTsect_NCAP")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_Special8_NCAP;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_ECAP")) {
+                } else if (iequals(v35, "TTsect_ECAP")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NE1_SE1_ECAP;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_SCAP")) {
+                } else if (iequals(v35, "TTsect_SCAP")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_SCAP;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_WCAP")) {
+                } else if (iequals(v35, "TTsect_WCAP")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_NW1_SW1_WCAP;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_DN")) {
+                } else if (iequals(v35, "TTsect_DN")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_DN;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_DS")) {
+                } else if (iequals(v35, "TTsect_DS")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_E1_DS;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_DW")) {
+                } else if (iequals(v35, "TTsect_DW")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_W1_DW;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_DE")) {
+                } else if (iequals(v35, "TTsect_DE")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_N1_DE;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_DSW")) {
+                } else if (iequals(v35, "TTsect_DSW")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_S1_DSW;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_DNE")) {
+                } else if (iequals(v35, "TTsect_DNE")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNE1_XSE1_DNE;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_DSE")) {
+                } else if (iequals(v35, "TTsect_DSE")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_DSE;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
-                } else if (!_stricmp(v35, "TTsect_DNW")) {
+                } else if (iequals(v35, "TTsect_DNW")) {
                     v2->pTiles[v2->sNumTiles].uSection = TILE_SECT_XNW1_XSW1_DNW;
                     v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
                 }
 
                 for (j = 5; j < v84.uPropCount; ++j) {
                     v72 = v84.pProperties[j];
-                    if (!_stricmp(v84.pProperties[j], "TTattr_Burn")) {
+                    if (iequals(v84.pProperties[j], "TTattr_Burn")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_BURN;
-                    } else if (!_stricmp(v72, "TTattr_Water")) {
+                    } else if (iequals(v72, "TTattr_Water")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_WATER;
-                    } else if (!_stricmp(v72, "TTattr_Water2")) {
+                    } else if (iequals(v72, "TTattr_Water2")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_WATER_2;
-                    } else if (!_stricmp(v72, "TTattr_Block")) {
+                    } else if (iequals(v72, "TTattr_Block")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_BLOCK;
-                    } else if (!_stricmp(v72, "TTattr_Repulse")) {
+                    } else if (iequals(v72, "TTattr_Repulse")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_REPULSE;
-                    } else if (!_stricmp(v72, "TTattr_Flat")) {
+                    } else if (iequals(v72, "TTattr_Flat")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_FLAT;
-                    } else if (!_stricmp(v72, "TTattr_Wave")) {
+                    } else if (iequals(v72, "TTattr_Wave")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_WAVY;
-                    } else if (!_stricmp(v72, "TTattr_NoDraw")) {
+                    } else if (iequals(v72, "TTattr_NoDraw")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_DONT_DRAW;
-                    } else if (!_stricmp(v72, "TTattr_Transition")) {
+                    } else if (iequals(v72, "TTattr_Transition")) {
                         v2->pTiles[v2->sNumTiles].uAttributes |= TILE_DESC_TRANSITION;
                     } else {
                         logger->Warning("%s", StringPrintf("Unknown tile attribute %s", v72).c_str());

@@ -88,20 +88,20 @@ void Party::Zero() {
     vPosition.x = 0;
     vPosition.y = 0;
     vPosition.z = 0;
-    uFallStartY = 0;
+    uFallStartZ = 0;
     sRotationZ = 0;
     sRotationX = 0;
     uFallSpeed = 0;
     field_28 = 0;
     uDefaultPartyHeight = 192;
-    field_14_radius = 37;
+    radius = 37;
     y_rotation_granularity = 25;
     y_rotation_speed = 90;
 
     uWalkSpeed = 384;
     walk_sound_timer = 0;
 
-    field_24 = 5;
+    jump_strength = 5;
     _6FC_water_lava_timer = 0;
     field_708 = 15;
     field_0 = 25;
@@ -638,17 +638,17 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->vPosition.y = 0;
     this->vPosition.z = 0;
     this->vPosition.x = 0;
-    this->uFallStartY = 0;
+    this->uFallStartZ = 0;
     this->sRotationZ = 0;
     this->sRotationX = 0;
     this->uFallSpeed = 0;
     this->field_28 = 0;
     this->uDefaultPartyHeight = 120;
-    this->field_14_radius = 37;
+    this->radius = 37;
     this->y_rotation_granularity = 25;
     this->uWalkSpeed = 384;
     this->y_rotation_speed = 90;
-    this->field_24 = 5;
+    this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;
     this->field_708 = 15;
     this->field_0 = 25;
