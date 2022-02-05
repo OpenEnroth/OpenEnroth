@@ -4115,8 +4115,7 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
 
     this->pid = 0;
     this->portal_id = -1;
-    this->field_88 = -1;
-    this->adjusted_move_distance = 0xFFFFFFu;  // 255.999984741 fixpoint
+    this->adjusted_move_distance = 0xFFFFFFu;
 
     return  false;
 }

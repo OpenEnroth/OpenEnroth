@@ -155,9 +155,6 @@ struct stru141_actor_collision_object {
     int radius_lo;   // radius of the lo ("feet") sphere.
     int radius_hi;  // radius of the hi ("head") sphere.
     int height;  // actor height. // TODO: remove, it's not used in collision calculations.
-    int field_10;  // unused
-    int field_14;  // unused
-    int field_18;  // unused
     Vec3_int_ position_lo; // center of the lo sphere.
     Vec3_int_ position_hi; // center of the hi sphere.
     Vec3_int_ new_position_lo; // desired new position for the center of the lo sphere.
@@ -171,11 +168,9 @@ struct stru141_actor_collision_object {
     int adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
     unsigned int uSectorID = 0;
     unsigned int pid;
-    int portal_id;  // Portal id to ignore, and portal id we've hit. // TODO: remove, it's not really used for anything.
+    int portal_id;  // Portal id to ignore, and portal id we've hit. // TODO: remove? it's not really used for anything.
     int field_84;  // pid of face
-    int field_88;  // unused
     BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
-    int field_A4;  // unused
 };
 #pragma pack(pop)
 extern stru141_actor_collision_object collision_state;
