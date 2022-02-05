@@ -4082,12 +4082,10 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
         this->direction.x = fixpoint_div(this->velocity.x, this->speed);
         this->direction.y = fixpoint_div(this->velocity.y, this->speed);
         this->direction.z = fixpoint_div(this->velocity.z, this->speed);
-        this->inv_speed = 65536 / speed;
     } else {
         this->direction.x = 0;
         this->direction.y = 0;
         this->direction.z = 65536;
-        this->inv_speed = INT_MAX;
     }
 
     if (!dt)

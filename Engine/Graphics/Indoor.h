@@ -162,7 +162,6 @@ struct stru141_actor_collision_object {
     Vec3_int_ velocity;  // Movement vector.
     Vec3_int_ direction;  // Movement direction, basically velocity as a unit vector.
     int speed = 0;  // Velocity magnitude.
-    int inv_speed;  // TODO: remove, it's unused.
     int total_move_distance;  // Total move distance, accumulated between collision iterations, starts at 0.
     int move_distance;  // Desired movement distance for current iteration, minus the distance already covered.
     int adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
