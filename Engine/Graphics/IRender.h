@@ -590,8 +590,7 @@ bool sub_4759C9(struct BLVFace *face, int a2, int a3, int16_t a4);
  * @see collide_against_face
  */
 bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance);
-bool sub_475F30(int *a1, struct BLVFace *a2, int a3, int a4, int a5, int a6,
-                int a7, int a8, int a9);
+bool sub_475F30(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int a9);
 
 class BSPModel;
 

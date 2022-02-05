@@ -296,12 +296,8 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                             move_distance = collision_state.radius_lo +
                                     collision_state.move_distance;
                             if (!sub_475F30(&move_distance, &face,
-                                            collision_state.position_lo.x,
-                                            collision_state.position_lo.y,
-                                            collision_state.position_lo.z,
-                                            collision_state.direction.x,
-                                            collision_state.direction.y,
-                                            collision_state.direction.z,
+                                            collision_state.position_lo,
+                                            collision_state.direction,
                                             model.index))
                                 goto LABEL_29;
                             v10 = move_distance - collision_state.radius_lo;
@@ -343,12 +339,8 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
                                         collision_state.radius_hi;
                                 if (sub_475F30(
                                         &move_distance, &face,
-                                        collision_state.position_hi.x,
-                                        collision_state.position_hi.y,
-                                        collision_state.position_hi.z,
-                                        collision_state.direction.x,
-                                        collision_state.direction.y,
-                                        collision_state.direction.z,
+                                        collision_state.position_hi,
+                                        collision_state.direction,
                                         model.index)) {
                                     v21 =
                                         move_distance -
@@ -1268,27 +1260,26 @@ bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, i
     return true;
 }
 
-bool sub_475F30(int* a1, BLVFace* a2, int a3, int a4, int a5, int a6, int a7,
-    int a8, int a9) {
-    int v10 = fixpoint_mul(a6, a2->pFacePlane_old.vNormal.x);
-    int v11 = fixpoint_mul(a7, a2->pFacePlane_old.vNormal.y);
-    int v12 = fixpoint_mul(a8, a2->pFacePlane_old.vNormal.z);
+bool sub_475F30(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int a9) {
+    int v10 = fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x);
+    int v11 = fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y);
+    int v12 = fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
     int v13 = v10 + v12 + v11;
     int v14 = v10 + v12 + v11;
     int v22 = v10 + v12 + v11;
-    if (a2->Ethereal() || !v13 || v14 > 0 && !a2->Portal()) {
+    if (face->Ethereal() || !v13 || v14 > 0 && !face->Portal()) {
         return false;
     }
-    int v16 = -(a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5));
+    int v16 = -(face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z));
     if (v14 <= 0) {
-        if (a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5) < 0)
+        if (face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z) < 0)
             return 0;
     } else {
         if (v16 < 0) {
             return 0;
         }
     }
-    int v17 = abs(-(a2->pFacePlane_old.SignedDistanceToAsFixpoint(a3, a4, a5))) >> 14;
+    int v17 = abs(-(face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z))) >> 14;
     int64_t v18;
     HEXRAYS_LODWORD(v18) = v16 << 16;
     HEXRAYS_HIDWORD(v18) = v16 >> 16;
@@ -1296,15 +1287,15 @@ bool sub_475F30(int* a1, BLVFace* a2, int a3, int a4, int a5, int a6, int a7,
     int v23 = v18 / v22;
     int v19;
     HEXRAYS_LOWORD(v19) =
-        a3 + (((unsigned int)fixpoint_mul(v23, a6) + 0x8000) >> 16);
+        pos.x + (((unsigned int)fixpoint_mul(v23, dir.x) + 0x8000) >> 16);
     HEXRAYS_HIWORD(v19) =
-        a4 + (((unsigned int)fixpoint_mul(v23, a7) + 0x8000) >> 16);
-    if (v17 > abs(v14) || v23 > * a1 << 16 ||
+        pos.y + (((unsigned int)fixpoint_mul(v23, dir.y) + 0x8000) >> 16);
+    if (v17 > abs(v14) || v23 > * move_distance << 16 ||
         !sub_4759C9(
-            a2, a9, v19,
-            a5 + (((unsigned int)fixpoint_mul(v23, a8) + 0x8000) >> 16)))
+            face, a9, v19,
+            pos.z + (((unsigned int)fixpoint_mul(v23, dir.z) + 0x8000) >> 16)))
         return 0;
-    *a1 = v24 >> 16;
+    *move_distance = v24 >> 16;
     return 1;
 }
 
