@@ -4112,7 +4112,6 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
     this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi.z) + this->radius_hi;
 
     this->pid = 0;
-    this->portal_id = -1;
     this->adjusted_move_distance = 0xFFFFFFu;
 
     return  false;

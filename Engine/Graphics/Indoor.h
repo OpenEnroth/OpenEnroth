@@ -167,7 +167,6 @@ struct stru141_actor_collision_object {
     int adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
     unsigned int uSectorID = 0;
     unsigned int pid;
-    int portal_id;  // Portal id to ignore, and portal id we've hit. // TODO: remove? it's not really used for anything.
     int field_84;  // pid of face
     BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
 };
