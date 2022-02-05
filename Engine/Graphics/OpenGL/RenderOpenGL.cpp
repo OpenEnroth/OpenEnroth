@@ -231,142 +231,136 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
     // unsigned int v17;  // eax@36
     int v21;           // eax@42
     // unsigned int v22;  // eax@43
-    int a2;            // [sp+84h] [bp-4h]@23
+    int move_distance;            // [sp+84h] [bp-4h]@23
     BLVFace face;      // [sp+Ch] [bp-7Ch]@1
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (collision_state.bbox.Intersects(model.pBoundingBox)) {
-            for (ODMFace &mface : model.pFaces) {
-                if (collision_state.bbox.Intersects(mface.pBoundingBox)) {
-                    face.pFacePlane_old.vNormal.x = mface.pFacePlaneOLD.vNormal.x;
-                    face.pFacePlane_old.vNormal.y = mface.pFacePlaneOLD.vNormal.y;
-                    face.pFacePlane_old.vNormal.z = mface.pFacePlaneOLD.vNormal.z;
+        if (!collision_state.bbox.Intersects(model.pBoundingBox))
+            continue;
 
-                    // TODO: need fixpoint_to_float here
-                    face.pFacePlane_old.dist = mface.pFacePlaneOLD.dist;  // incorrect
+        for (ODMFace &mface : model.pFaces) {
+            if (!collision_state.bbox.Intersects(mface.pBoundingBox))
+                continue;
 
-                    face.uAttributes = mface.uAttributes;
+            face.pFacePlane_old.vNormal.x = mface.pFacePlaneOLD.vNormal.x;
+            face.pFacePlane_old.vNormal.y = mface.pFacePlaneOLD.vNormal.y;
+            face.pFacePlane_old.vNormal.z = mface.pFacePlaneOLD.vNormal.z;
 
-                    face.pBounding.x1 = mface.pBoundingBox.x1;
-                    face.pBounding.y1 = mface.pBoundingBox.y1;
-                    face.pBounding.z1 = mface.pBoundingBox.z1;
+            // TODO: need fixpoint_to_float here
+            face.pFacePlane_old.dist = mface.pFacePlaneOLD.dist;  // incorrect
 
-                    face.pBounding.x2 = mface.pBoundingBox.x2;
-                    face.pBounding.y2 = mface.pBoundingBox.y2;
-                    face.pBounding.z2 = mface.pBoundingBox.z2;
+            face.uAttributes = mface.uAttributes;
 
-                    face.zCalc1 = mface.zCalc1;
-                    face.zCalc2 = mface.zCalc2;
-                    face.zCalc3 = mface.zCalc3;
+            face.pBounding.x1 = mface.pBoundingBox.x1;
+            face.pBounding.y1 = mface.pBoundingBox.y1;
+            face.pBounding.z1 = mface.pBoundingBox.z1;
 
-                    face.pXInterceptDisplacements =
-                        mface.pXInterceptDisplacements;
-                    face.pYInterceptDisplacements =
-                        mface.pYInterceptDisplacements;
-                    face.pZInterceptDisplacements =
-                        mface.pZInterceptDisplacements;
+            face.pBounding.x2 = mface.pBoundingBox.x2;
+            face.pBounding.y2 = mface.pBoundingBox.y2;
+            face.pBounding.z2 = mface.pBoundingBox.z2;
 
-                    face.uPolygonType = (PolygonType)mface.uPolygonType;
+            face.zCalc1 = mface.zCalc1;
+            face.zCalc2 = mface.zCalc2;
+            face.zCalc3 = mface.zCalc3;
 
-                    face.uNumVertices = mface.uNumVertices;
+            face.pXInterceptDisplacements = mface.pXInterceptDisplacements;
+            face.pYInterceptDisplacements = mface.pYInterceptDisplacements;
+            face.pZInterceptDisplacements = mface.pZInterceptDisplacements;
 
-                    // face.uBitmapID = model.pFaces[j].uTextureID;
-                    face.resource = mface.resource;
+            face.uPolygonType = (PolygonType)mface.uPolygonType;
 
-                    face.pVertexIDs = mface.pVertexIDs;
+            face.uNumVertices = mface.uNumVertices;
 
-                    if (!face.Ethereal() && !face.Portal()) {
-                        v8 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-                        if (v8 > 0) {
-                            v9 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-                            if (v8 <= collision_state.radius_lo ||
-                                v9 <= collision_state.radius_lo) {
-                                if (v9 <= v8) {
-                                    a2 = collision_state.move_distance;
-                                    if (sub_4754BF(collision_state.radius_lo,
-                                                   &a2, collision_state.position_lo.x,
-                                                   collision_state.position_lo.y,
-                                                   collision_state.position_lo.z,
-                                                   collision_state.direction.x,
-                                                   collision_state.direction.y,
-                                                   collision_state.direction.z,
-                                                   &face, model.index, ecx0)) {
-                                        v10 = a2;
-                                    } else {
-                                        a2 = collision_state.radius_lo +
-                                             collision_state.move_distance;
-                                        if (!sub_475F30(&a2, &face,
-                                                        collision_state.position_lo.x,
-                                                        collision_state.position_lo.y,
-                                                        collision_state.position_lo.z,
-                                                        collision_state.direction.x,
-                                                        collision_state.direction.y,
-                                                        collision_state.direction.z,
-                                                        model.index))
-                                            goto LABEL_29;
-                                        v10 = a2 - collision_state.radius_lo;
-                                        a2 -= collision_state.radius_lo;
-                                    }
-                                    if (v10 < collision_state.adjusted_move_distance) {
-                                        collision_state.adjusted_move_distance = v10;
+            // face.uBitmapID = model.pFaces[j].uTextureID;
+            face.resource = mface.resource;
+
+            face.pVertexIDs = mface.pVertexIDs;
+
+            if (face.Ethereal() || face.Portal())
+                continue;
+
+            v8 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
+            if (v8 > 0) {
+                v9 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+                if (v8 <= collision_state.radius_lo ||
+                    v9 <= collision_state.radius_lo) {
+                    if (v9 <= v8) {
+                        move_distance = collision_state.move_distance;
+                        if (sub_4754BF(collision_state.radius_lo,
+                                        &move_distance,
+                                        collision_state.position_lo,
+                                        collision_state.direction,
+                                        &face, model.index, ecx0)) {
+                            v10 = move_distance;
+                        } else {
+                            move_distance = collision_state.radius_lo +
+                                    collision_state.move_distance;
+                            if (!sub_475F30(&move_distance, &face,
+                                            collision_state.position_lo.x,
+                                            collision_state.position_lo.y,
+                                            collision_state.position_lo.z,
+                                            collision_state.direction.x,
+                                            collision_state.direction.y,
+                                            collision_state.direction.z,
+                                            model.index))
+                                goto LABEL_29;
+                            v10 = move_distance - collision_state.radius_lo;
+                            move_distance -= collision_state.radius_lo;
+                        }
+                        if (v10 < collision_state.adjusted_move_distance) {
+                            collision_state.adjusted_move_distance = v10;
+                            collision_state.pid = PID(
+                                OBJECT_BModel,
+                                (mface.index | (model.index << 6)));
+                        }
+                    }
+                }
+            }
+
+        LABEL_29:
+            if (collision_state.check_hi & 1) {
+                v15 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
+                if (v15 > 0) {
+                    v16 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
+                    if (v15 <= collision_state.radius_lo ||
+                        v16 <= collision_state.radius_lo) {
+                        if (v16 <= v15) {
+                            move_distance = collision_state.move_distance;
+                            if (sub_4754BF(
+                                    collision_state.radius_hi, &move_distance,
+                                    collision_state.position_hi,
+                                    collision_state.direction, &face,
+                                    model.index, ecx0)) {
+                                if (move_distance < collision_state.adjusted_move_distance) {
+                                    collision_state.adjusted_move_distance = move_distance;
+                                    collision_state.pid =
+                                        PID(OBJECT_BModel,
+                                            (mface.index |
+                                                (model.index << 6)));
+                                }
+                            } else {
+                                move_distance = collision_state.move_distance +
+                                        collision_state.radius_hi;
+                                if (sub_475F30(
+                                        &move_distance, &face,
+                                        collision_state.position_hi.x,
+                                        collision_state.position_hi.y,
+                                        collision_state.position_hi.z,
+                                        collision_state.direction.x,
+                                        collision_state.direction.y,
+                                        collision_state.direction.z,
+                                        model.index)) {
+                                    v21 =
+                                        move_distance -
+                                        collision_state.radius_lo;
+                                    move_distance -=
+                                        collision_state.radius_lo;
+                                    if (move_distance < collision_state.adjusted_move_distance) {
+                                        collision_state.adjusted_move_distance = v21;
                                         collision_state.pid = PID(
                                             OBJECT_BModel,
-                                            (mface.index | (model.index << 6)));
-                                    }
-                                }
-                            }
-                        }
-                    LABEL_29:
-                        if (collision_state.check_hi & 1) {
-                            v15 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
-                            if (v15 > 0) {
-                                v16 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
-                                if (v15 <= collision_state.radius_lo ||
-                                    v16 <= collision_state.radius_lo) {
-                                    if (v16 <= v15) {
-                                        a2 = collision_state.move_distance;
-                                        if (sub_4754BF(
-                                                collision_state.radius_hi, &a2,
-                                                collision_state.position_hi.x,
-                                                collision_state.position_hi.y,
-                                                collision_state.position_hi.z,
-                                                collision_state.direction.x,
-                                                collision_state.direction.y,
-                                                collision_state.direction.z, &face,
-                                                model.index, ecx0)) {
-                                            if (a2 < collision_state.adjusted_move_distance) {
-                                                collision_state.adjusted_move_distance = a2;
-                                                collision_state.pid =
-                                                    PID(OBJECT_BModel,
-                                                        (mface.index |
-                                                         (model.index << 6)));
-                                            }
-                                        } else {
-                                            a2 = collision_state.move_distance +
-                                                 collision_state.radius_hi;
-                                            if (sub_475F30(
-                                                    &a2, &face,
-                                                    collision_state.position_hi.x,
-                                                    collision_state.position_hi.y,
-                                                    collision_state.position_hi.z,
-                                                    collision_state.direction.x,
-                                                    collision_state.direction.y,
-                                                    collision_state.direction.z,
-                                                    model.index)) {
-                                                v21 =
-                                                    a2 -
-                                                    collision_state.radius_lo;
-                                                a2 -=
-                                                    collision_state.radius_lo;
-                                                if (a2 < collision_state.adjusted_move_distance) {
-                                                    collision_state.adjusted_move_distance = v21;
-                                                    collision_state.pid = PID(
-                                                        OBJECT_BModel,
-                                                        (mface.index |
-                                                         (model.index << 6)));
-                                                }
-                                            }
-                                        }
+                                            (mface.index |
+                                                (model.index << 6)));
                                     }
                                 }
                             }
@@ -959,8 +953,8 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
     return true;
 }
 
-bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
-    int dir_z, BLVFace* face, int a10, int a11) {
+bool sub_4754BF(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
+                BLVFace* face, int a10, int a11) {
     int v12;      // ST1C_4@3
     int v13;      // edi@3
     int v14;      // esi@3
@@ -975,35 +969,35 @@ bool sub_4754BF(int a1, int* a2, int X, int Y, int Z, int dir_x, int dir_y,
     int a11c;     // [sp+40h] [bp+28h]@5
 
     if (a11 && face->Ethereal()) return false;
-    v12 = fixpoint_mul(dir_x, face->pFacePlane_old.vNormal.x);
-    a11b = fixpoint_mul(dir_y, face->pFacePlane_old.vNormal.y);
-    a1b = fixpoint_mul(dir_z, face->pFacePlane_old.vNormal.z);
+    v12 = fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x);
+    a11b = fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y);
+    a1b = fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
     v13 = v12 + a1b + a11b;
     a1a = v12 + a1b + a11b;
-    v14 = (a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(X, Y, Z);
-    if (abs((a1 << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(X, Y, Z)) >= a1 << 16) {
+    v14 = (radius << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
+    if (abs((radius << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z)) >= radius << 16) {
         a11c = abs(v14) >> 14;
         if (a11c > abs(v13)) return false;
         HEXRAYS_LODWORD(v16) = v14 << 16;
         HEXRAYS_HIDWORD(v16) = v14 >> 16;
-        v15 = a1;
+        v15 = radius;
         a11a = v16 / a1a;
     } else {
         a11a = 0;
         v15 = abs(v14) >> 16;
     }
-    // v17 = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16);
-    HEXRAYS_LOWORD(a7a) = (short)X +
-        ((unsigned int)fixpoint_mul(a11a, dir_x) >> 16) -
+    // v17 = pos.y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16);
+    HEXRAYS_LOWORD(a7a) = (short)pos.x +
+        ((unsigned int)fixpoint_mul(a11a, dir.x) >> 16) -
         fixpoint_mul(v15, face->pFacePlane_old.vNormal.x);
-    HEXRAYS_HIWORD(a7a) = Y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16) -
+    HEXRAYS_HIWORD(a7a) = pos.y + ((unsigned int)fixpoint_mul(a11a, dir.y) >> 16) -
         fixpoint_mul(v15, face->pFacePlane_old.vNormal.y);
     if (!sub_4759C9(face, a10, a7a,
-        (short)Z + ((unsigned int)fixpoint_mul(a11a, dir_z) >> 16) -
+        (short)pos.z + ((unsigned int)fixpoint_mul(a11a, dir.z) >> 16) -
         fixpoint_mul(v15, face->pFacePlane_old.vNormal.z)))
         return false;
-    *a2 = a11a >> 16;
-    if (a11a >> 16 < 0) *a2 = 0;
+    *move_distance = a11a >> 16;
+    if (a11a >> 16 < 0) *move_distance = 0;
     return true;
 }
 

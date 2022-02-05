@@ -560,8 +560,8 @@ void UpdateObjects();
 bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
                           int *move_distance, bool ignore_ethereal);
 
-bool sub_4754BF(int a1, int *a2, int X, int Y, int Z, int dir_x, int dir_y,
-                int dir_z, struct BLVFace *face, int a10, int a11);
+bool sub_4754BF(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
+                BLVFace *face, int a10, int a11);
 
 /**
  * Original offset 0x475665.
