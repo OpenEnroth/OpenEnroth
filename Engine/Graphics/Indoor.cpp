@@ -3161,19 +3161,12 @@ void BLV_UpdateUserInputAndOther() {
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
     double v10;               // st7@27
-    int v39;                  // ecx@106
-    int v40;                  // eax@106
-    int v42;                  // eax@120
     BLVFace *pFace;           // esi@126
     int v46;                  // ecx@133
     int v52;                  // eax@140
-    int v54;                  // ebx@146
-    unsigned int uFaceEvent;  // [sp+14h] [bp-4Ch]@1
-    bool bFeatherFall;        // [sp+24h] [bp-3Ch]@15
     int v80;                  // [sp+34h] [bp-2Ch]@1
 
-    uFaceEvent = 0;
-    // v89 = pParty->uFallSpeed;
+    unsigned int uFaceEvent = 0;
     int new_party_x = pParty->vPosition.x;
     int new_party_y = pParty->vPosition.y;
     int new_party_z;
@@ -3184,6 +3177,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool hovering = false;
     bool not_high_fall = false;
     bool on_water = false;
+    bool bFeatherFall;
 
     unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
     unsigned int uFaceID = -1;
@@ -3441,56 +3435,55 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         for (uint j = 0; j < 100; ++j) {
             collide_against_faces_and_portals(true);
             _46E0B2_collide_against_decorations();
-            for (v80 = 0; v80 < (signed int)uNumActors; ++v80)
-                Actor::_46DF1A_collide_against_actor(v80, 0);  //столкновения с монстрами
-            if (_46F04E_collide_against_portals())  //столкновения с порталами
+            for (int k = 0; k < uNumActors; ++k)
+                Actor::_46DF1A_collide_against_actor(k, 0);
+            if (_46F04E_collide_against_portals())
                 break;
         }
 
+        int adjusted_x;
+        int adjusted_y;
+        int adjusted_z;
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            v39 = collision_state.new_position_lo.x;
-            uSectorID = collision_state.new_position_lo.y;
-            v40 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            // We've hit a portal?
+            adjusted_x = collision_state.new_position_lo.x;
+            adjusted_y = collision_state.new_position_lo.y;
+            adjusted_z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            v39 = new_party_x +
-                  fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
-            uSectorID = new_party_y + fixpoint_mul(collision_state.adjusted_move_distance,
-                                                   collision_state.direction.y);
-            v40 = new_party_z +
-                  fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+            adjusted_x = new_party_x + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+            adjusted_y = new_party_y + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+            adjusted_z = new_party_z + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
         }
-        v42 = collide_against_floor(v39, uSectorID, v40 + 40,
-                                    &collision_state.uSectorID, &uFaceID);
-        if (v42 == -30000 || v42 - new_party_z > 128) return;
-        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {  // ???
+        int adjusted_floor_z = collide_against_floor(adjusted_x, adjusted_y, adjusted_z + 40, &collision_state.uSectorID, &uFaceID);
+        if (adjusted_floor_z == -30000 || adjusted_floor_z - new_party_z > 128)
+            return; // TODO: whaaa?
+
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            // We've hit a portal, store back positions.
             new_party_x = collision_state.new_position_lo.x;
             new_party_y = collision_state.new_position_lo.y;
             new_party_z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
-            break;
+            break; // And we're done with collisions.
         }
+
         new_party_x += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
         new_party_y += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
-        uSectorID = collision_state.uSectorID;
         collision_state.field_70 += collision_state.adjusted_move_distance;
         unsigned long long v87 = new_party_z +
             fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
-        if (PID_TYPE(collision_state.pid) ==
-            OBJECT_Actor) {  // invis break on actor collision    /    при
-                             // столкновении с монстром
-            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
-                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-            }
+
+        if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
+            if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
+                pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
             viewparams->bRedrawGameUI = true;
-        } else if (PID_TYPE(collision_state.pid) ==
-                   OBJECT_Decoration) {  // decoration collision   /   при
-                                         // столкновении с декорацией
-            v54 = TrigLUT->Atan2(
+        } else if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
+            int angle = TrigLUT->Atan2(
                 new_party_x - pLevelDecorations[collision_state.pid >> 3].vPosition.x,
                 new_party_y - pLevelDecorations[collision_state.pid >> 3].vPosition.y);
-            party_dx = fixpoint_mul(TrigLUT->Cos(v54), integer_sqrt(party_dx * party_dx + party_dy * party_dy));
-            party_dy = fixpoint_mul(TrigLUT->Sin(v54), integer_sqrt(party_dx * party_dx + party_dy * party_dy));
-        } else if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {  // при столкновении с bmodel
-            pFace = &pIndoor->pFaces[(signed int)collision_state.pid >> 3];
+            party_dx = fixpoint_mul(TrigLUT->Cos(angle), integer_sqrt(party_dx * party_dx + party_dy * party_dy));
+            party_dy = fixpoint_mul(TrigLUT->Sin(angle), integer_sqrt(party_dx * party_dx + party_dy * party_dy));
+        } else if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
+            pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
             if (pFace->uPolygonType == POLYGON_Floor) {  // если bmodel - пол
                 if (pParty->uFallSpeed < 0) pParty->uFallSpeed = 0;
                 v87 = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
@@ -3514,40 +3507,30 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                         v80 = collision_state.speed >> 3;
                     party_dx += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
                     party_dy += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
-                    pParty->uFallSpeed +=
-                        fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
+                    pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     // v80 = pFace->pFacePlane_old.vNormal.y;
                     v52 = collision_state.radius_lo -
                         pFace->pFacePlane_old.SignedDistanceTo(new_party_x, new_party_y, v87);
                     if (v52 > 0) {
-                        new_party_x +=
-                            fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.x);
-                        new_party_y +=
-                            fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.y);
-                        v87 +=
-                            fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
+                        new_party_x += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.x);
+                        new_party_y += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.y);
+                        v87 += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
                     }
                     if (pParty->floor_face_pid != PID_ID(collision_state.pid) &&
                         pFace->Pressure_Plate())
-                        uFaceEvent =
-                            pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+                        uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                 }
                 if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                     v80 = abs(party_dy * pFace->pFacePlane_old.vNormal.y + v46 +
-                              party_dx * pFace->pFacePlane_old.vNormal.x) >>
-                          16;
+                              party_dx * pFace->pFacePlane_old.vNormal.x) >> 16;
                     if ((collision_state.speed >> 3) > v80)
                         v80 = collision_state.speed >> 3;
                     party_dx += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
                     party_dy += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
-                    pParty->uFallSpeed +=
-                        fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
+                    pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
                     if (party_dx * party_dx + party_dy * party_dy >= min_party_move_delta_sqr) {
-                        if (pParty->floor_face_pid != PID_ID(collision_state.pid) &&
-                            pFace->Pressure_Plate())
-                            uFaceEvent =
-                                pIndoor->pFaceExtras[pFace->uFaceExtraID]
-                                    .uEventID;
+                        if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
+                            uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
                     } else {
                         party_dx = 0;
                         party_dy = 0;
@@ -3567,8 +3550,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     uint pZ_ = abs(pParty->vPosition.z - new_party_z);
     if (!engine->config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
-        if (party_running_flag &&
-            (!hovering || not_high_fall)) {  // Бег и (не прыжок или не высокое падение )
+        if (party_running_flag && (!hovering || not_high_fall)) {  // Бег и (не прыжок или не высокое падение )
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {
                 if (on_water)
                     pAudioPlayer->PlaySound(SOUND_RunWaterIndoor, 804, 1, -1, 0, 0);
@@ -3578,8 +3560,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     pAudioPlayer->PlaySound(SOUND_RunWood, -1 /*804*/, 1, -1, 0, 0);
                 pParty->walk_sound_timer = 96;  // 64
             }
-        } else if (party_walking_flag &&
-                   (!hovering || not_high_fall)) {  // Ходьба и (не прыжок или не
+        } else if (party_walking_flag && (!hovering || not_high_fall)) {  // Ходьба и (не прыжок или не
                                                     // высокое падение)
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 8) {
                 if (on_water)
