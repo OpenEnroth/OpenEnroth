@@ -531,7 +531,7 @@ int collide_against_floor(int x, int y, int z, unsigned int *pSectorID, unsigned
 void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 int _46EF01_collision_chech_player(int a1);  // idb
 void _46E0B2_collide_against_decorations();
-int _46F04E_collide_against_portals();
+bool _46F04E_collide_against_portals();
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);
 void UpdateObjects();
 

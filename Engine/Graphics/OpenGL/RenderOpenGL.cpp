@@ -500,45 +500,41 @@ void _46E0B2_collide_against_decorations() {
 }
 
 
-int _46F04E_collide_against_portals() {
-    int a3;             // [sp+Ch] [bp-8h]@13
-    int v12 = 0;            // [sp+10h] [bp-4h]@15
-
-    unsigned int v1 = 0xFFFFFF;
-    unsigned int v10 = 0xFFFFFF;
+bool _46F04E_collide_against_portals() {
+    int portal_id = 0;            // [sp+10h] [bp-4h]@15
+    unsigned int min_move_distance = 0xFFFFFF;
     for (unsigned int i = 0; i < pIndoor->pSectors[collision_state.uSectorID].uNumPortals; ++i) {
-        if (pIndoor->pSectors[collision_state.uSectorID].pPortals[i] !=
-            collision_state.field_80) {
-            BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[collision_state.uSectorID].pPortals[i]];
-            if (collision_state.bbox.Intersects(face->pBounding)) {
-                int v4 = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-                int v5 = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-                if ((v4 < collision_state.radius_lo || v5 < collision_state.radius_lo) &&
-                    (v4 > -collision_state.radius_lo || v5 > -collision_state.radius_lo) &&
-                    (a3 = collision_state.move_distance, collide_against_face_point(face, &collision_state.position_lo, &collision_state.direction, &a3)) && a3 < (int)v10) {
-                    v10 = a3;
-                    v12 = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
-                }
-            }
+        if (pIndoor->pSectors[collision_state.uSectorID].pPortals[i] == collision_state.field_80)
+            continue;
+
+        BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[collision_state.uSectorID].pPortals[i]];
+        if (!collision_state.bbox.Intersects(face->pBounding))
+            continue;
+
+        int distance_lo_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
+        int distance_lo_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+        int move_distance = collision_state.move_distance;
+        if ((distance_lo_old < collision_state.radius_lo || distance_lo_new < collision_state.radius_lo) &&
+            (distance_lo_old > -collision_state.radius_lo || distance_lo_new > -collision_state.radius_lo) &&
+            collide_against_face_point(face, &collision_state.position_lo, &collision_state.direction, &move_distance) &&
+            move_distance < min_move_distance) {
+            min_move_distance = move_distance;
+            portal_id = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
         }
     }
 
-    v1 = v10;
-
-    int result = 1;
-
-    if (collision_state.adjusted_move_distance >= (int)v1 && (int)v1 <= collision_state.move_distance) {
-        collision_state.field_80 = v12;
-        if (pIndoor->pFaces[v12].uSectorID == collision_state.uSectorID) {
-            collision_state.uSectorID = pIndoor->pFaces[v12].uBackSectorID;
+    if (collision_state.adjusted_move_distance >= min_move_distance && min_move_distance <= collision_state.move_distance) {
+        collision_state.field_80 = portal_id;
+        if (pIndoor->pFaces[portal_id].uSectorID == collision_state.uSectorID) {
+            collision_state.uSectorID = pIndoor->pFaces[portal_id].uBackSectorID;
         } else {
-            collision_state.uSectorID = pIndoor->pFaces[v12].uSectorID;
+            collision_state.uSectorID = pIndoor->pFaces[portal_id].uSectorID;
         }
-        collision_state.adjusted_move_distance = 268435455;  // 0xFFFFFFF
-        result = 0;
+        collision_state.adjusted_move_distance = 0xFFFFFFF;
+        return false;
     }
 
-    return result;
+    return true;
 }
 
 void collide_against_faces_and_portals(bool ignore_ethereal) {
