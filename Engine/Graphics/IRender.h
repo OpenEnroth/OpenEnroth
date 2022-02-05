@@ -529,6 +529,15 @@ int collide_against_floor(const Vec3_int_ &pos, unsigned int *pSectorID, unsigne
 void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 int _46EF01_collision_chech_player(int a1);  // idb
 void _46E0B2_collide_against_decorations();
+
+/**
+ * Original offset 0x46F04E.
+ *
+ * Performs collision checks with portals. If the collision did happen, then `adjusted_move_distance` of the collision
+ * struct is set to `0xFFFFFF` (basically a large number).
+ *
+ * @return                              True if there were no collisions with portals.
+ */
 bool _46F04E_collide_against_portals();
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);
 void UpdateObjects();

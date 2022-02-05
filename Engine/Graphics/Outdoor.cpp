@@ -2667,7 +2667,7 @@ void ODM_ProcessPartyActions() {
     }
     // --(столкновения)-------------------------------------------------------------------
     collision_state.field_84 = -1;
-    collision_state.field_70 = 0;
+    collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2;
     collision_state.check_hi = 1;
@@ -2762,7 +2762,7 @@ void ODM_ProcessPartyActions() {
                 collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             break;
         }
-        collision_state.field_70 += collision_state.adjusted_move_distance;
+        collision_state.total_move_distance += collision_state.adjusted_move_distance;
         pX = _angle_x;
         pY = _angle_y;
         v45 = collision_state.pid;
@@ -3371,7 +3371,7 @@ void UpdateActors_ODM() {
         collision_state.radius_hi = Act_Radius;
         collision_state.radius_lo = Act_Radius;
         collision_state.height = pActors[Actor_ITR].uActorHeight;
-        collision_state.field_70 = 0;
+        collision_state.total_move_distance = 0;
 
         for (Model_On_PID = 0; Model_On_PID < 100; ++Model_On_PID) {
             collision_state.position_hi.x = pActors[Actor_ITR].vPosition.x;
@@ -3446,7 +3446,7 @@ void UpdateActors_ODM() {
 
             pActors[Actor_ITR].vPosition.z +=
                 fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
-            collision_state.field_70 += collision_state.adjusted_move_distance;
+            collision_state.total_move_distance += collision_state.adjusted_move_distance;
             unsigned int v39 = PID_ID(collision_state.pid);
             int Angle_To_Decor;
             signed int Coll_Speed;

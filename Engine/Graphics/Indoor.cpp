@@ -1696,7 +1696,7 @@ void UpdateActors_BLV() {
                 pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y +
                 pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >= 400) {
             collision_state.field_84 = -1;
-            collision_state.field_70 = 0;
+            collision_state.total_move_distance = 0;
             collision_state.check_hi = 1;
             collision_state.radius_hi = pActors[actor_id].uActorRadius;
             collision_state.radius_lo = pActors[actor_id].uActorRadius;
@@ -1770,7 +1770,7 @@ void UpdateActors_BLV() {
                                 pActors[actor_id].vPosition.z +=
                                     fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
                                 pActors[actor_id].uSectorID = (short)collision_state.uSectorID;
-                                collision_state.field_70 += collision_state.adjusted_move_distance;
+                                collision_state.total_move_distance += collision_state.adjusted_move_distance;
                                 v37 = PID_ID(collision_state.pid);
                                 if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
                                     if (pParty->bTurnBasedModeOn &&
@@ -3400,7 +3400,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int new_party_z = party_z;
 
     collision_state.field_84 = -1;
-    collision_state.field_70 = 0;
+    collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2;
     collision_state.check_hi = 1;
@@ -3433,12 +3433,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             for (int k = 0; k < uNumActors; ++k)
                 Actor::_46DF1A_collide_against_actor(k, 0);
             if (_46F04E_collide_against_portals())
-                break;
+                break; // No portal collisions => can break.
         }
 
         Vec3_int_ adjusted_pos;
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            // We've hit a portal?
             adjusted_pos.x = collision_state.new_position_lo.x;
             adjusted_pos.y = collision_state.new_position_lo.y;
             adjusted_pos.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
@@ -3452,16 +3451,16 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             return; // TODO: whaaa?
 
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            // We've hit a portal, store back positions.
             new_party_x = collision_state.new_position_lo.x;
             new_party_y = collision_state.new_position_lo.y;
             new_party_z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             break; // And we're done with collisions.
         }
 
+        collision_state.total_move_distance += collision_state.adjusted_move_distance;
+
         new_party_x += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
         new_party_y += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
-        collision_state.field_70 += collision_state.adjusted_move_distance;
         unsigned long long v87 = new_party_z +
             fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
 
@@ -4094,8 +4093,7 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
     if (!dt)
         dt = pEventTimer->dt_fixpoint;
 
-    // v8 = fixpoint_mul(timedelta, speed) - this->field_70; // speed * dt - something
-    this->move_distance = fixpoint_mul(dt, this->speed) - this->field_70;
+    this->move_distance = fixpoint_mul(dt, this->speed) - this->total_move_distance;
     if (this->move_distance <= 0)
         return true;
 
@@ -4116,7 +4114,7 @@ bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
     this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi.z) + this->radius_hi;
 
     this->pid = 0;
-    this->field_80 = -1;
+    this->portal_id = -1;
     this->field_88 = -1;
     this->adjusted_move_distance = 0xFFFFFFu;  // 255.999984741 fixpoint
 

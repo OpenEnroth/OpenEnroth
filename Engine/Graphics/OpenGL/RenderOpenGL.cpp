@@ -504,7 +504,7 @@ bool _46F04E_collide_against_portals() {
     int portal_id = 0;            // [sp+10h] [bp-4h]@15
     unsigned int min_move_distance = 0xFFFFFF;
     for (unsigned int i = 0; i < pIndoor->pSectors[collision_state.uSectorID].uNumPortals; ++i) {
-        if (pIndoor->pSectors[collision_state.uSectorID].pPortals[i] == collision_state.field_80)
+        if (pIndoor->pSectors[collision_state.uSectorID].pPortals[i] == collision_state.portal_id)
             continue;
 
         BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[collision_state.uSectorID].pPortals[i]];
@@ -524,7 +524,7 @@ bool _46F04E_collide_against_portals() {
     }
 
     if (collision_state.adjusted_move_distance >= min_move_distance && min_move_distance <= collision_state.move_distance) {
-        collision_state.field_80 = portal_id;
+        collision_state.portal_id = portal_id;
         if (pIndoor->pFaces[portal_id].uSectorID == collision_state.uSectorID) {
             collision_state.uSectorID = pIndoor->pFaces[portal_id].uBackSectorID;
         } else {

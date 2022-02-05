@@ -154,26 +154,26 @@ struct stru141_actor_collision_object {
     int check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
     int radius_lo;   // radius of the lo ("feet") sphere.
     int radius_hi;  // radius of the hi ("head") sphere.
-    int height;  // actor height.
+    int height;  // actor height. // TODO: remove, it's not used in collision calculations.
     int field_10;  // unused
     int field_14;  // unused
     int field_18;  // unused
-    Vec3_int_ velocity;
     Vec3_int_ position_lo; // center of the lo sphere.
     Vec3_int_ position_hi; // center of the hi sphere.
     Vec3_int_ new_position_lo; // desired new position for the center of the lo sphere.
     Vec3_int_ new_position_hi; // desired new position for the center of the hi sphere.
-    Vec3_int_ direction;  // movement direction, as a fixpoint unit vector.
-    int speed = 0;
-    int inv_speed;
-    int move_distance;  // desired movement distance.
-    int field_70;  // some dist modifier - blanked before coll links with adjusted_move_distance- slows/stops movement
+    Vec3_int_ velocity;  // Movement vector.
+    Vec3_int_ direction;  // Movement direction, basically velocity as a unit vector.
+    int speed = 0;  // Velocity magnitude.
+    int inv_speed;  // TODO: remove, it's unused.
+    int total_move_distance;  // Total move distance, accumulated between collision iterations, starts at 0.
+    int move_distance;  // Desired movement distance for current iteration, minus the distance already covered.
+    int adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
     unsigned int uSectorID = 0;
     unsigned int pid;
-    int adjusted_move_distance;  // movement distance after adjusting for collisions.
-    int field_80;  // portal id??
+    int portal_id;  // Portal id to ignore, and portal id we've hit. // TODO: remove, it's not really used for anything.
     int field_84;  // pid of face
-    int field_88;  // unsued
+    int field_88;  // unused
     BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
     int field_A4;  // unused
 };

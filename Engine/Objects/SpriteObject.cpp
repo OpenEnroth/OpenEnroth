@@ -290,7 +290,7 @@ LABEL_13:
         collision_state.radius_lo = object->uRadius;
         collision_state.height = object->uHeight;
         collision_state.radius_hi = 0;
-        collision_state.field_70 = 0;
+        collision_state.total_move_distance = 0;
         for (v55 = 0; v55 < 100; ++v55) {
             collision_state.position_hi.x = pSpriteObjects[uLayingItemID].vPosition.x;
             collision_state.position_lo.x = collision_state.position_hi.x;
@@ -402,7 +402,7 @@ LABEL_13:
             pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
             pSpriteObjects[uLayingItemID].uSectorID = v28;
-            collision_state.field_70 += collision_state.adjusted_move_distance;
+            collision_state.total_move_distance += collision_state.adjusted_move_distance;
             if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
                 if (v29 < v54)
                     pSpriteObjects[uLayingItemID].vPosition.z = v54 + 1;
@@ -505,7 +505,7 @@ LABEL_25:
         collision_state.field_84 = -1;
         collision_state.height = pObject->uHeight;
         collision_state.radius_hi = 0;
-        collision_state.field_70 = 0;
+        collision_state.total_move_distance = 0;
         for (int loop = 0; loop < 100; loop++) {
             collision_state.position_hi.x = pSpriteObject->vPosition.x;
             collision_state.position_hi.y = pSpriteObject->vPosition.y;
@@ -608,7 +608,7 @@ LABEL_25:
                 fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
 
             pSpriteObject->uSectorID = collision_state.uSectorID;
-            collision_state.field_70 += collision_state.adjusted_move_distance;
+            collision_state.total_move_distance += collision_state.adjusted_move_distance;
 
             // if weve collided but dont need to react return
             if (pObject->uFlags & OBJECT_DESC_INTERACTABLE &&
