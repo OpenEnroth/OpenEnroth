@@ -1695,7 +1695,7 @@ void UpdateActors_BLV() {
         if (pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
                 pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y +
                 pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >= 400) {
-            collision_state.field_84 = -1;
+            collision_state.ignored_face_id = -1;
             collision_state.total_move_distance = 0;
             collision_state.check_hi = 1;
             collision_state.radius_hi = pActors[actor_id].uActorRadius;
@@ -1884,7 +1884,7 @@ void UpdateActors_BLV() {
                                     continue;
                                 }
                                 if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
-                                    collision_state.field_84 = PID_ID(collision_state.pid);
+                                    collision_state.ignored_face_id = PID_ID(collision_state.pid);
                                     if (pIndoor->pFaces[v37].uPolygonType == 3) {
                                         pActors[actor_id].vVelocity.z = 0;
                                         pActors[actor_id].vPosition.z =
@@ -3390,7 +3390,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int new_party_y = pParty->vPosition.y;
     int new_party_z = party_z;
 
-    collision_state.field_84 = -1;
+    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2;

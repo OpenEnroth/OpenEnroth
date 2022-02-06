@@ -502,7 +502,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
 LABEL_25:
         collision_state.check_hi = 0;
         collision_state.radius_lo = pObject->uRadius;
-        collision_state.field_84 = -1;
+        collision_state.ignored_face_id = -1;
         collision_state.radius_hi = 0;
         collision_state.total_move_distance = 0;
         for (int loop = 0; loop < 100; loop++) {
@@ -630,7 +630,7 @@ LABEL_25:
                     fixpoint_mul(TrigLUT->Sin(v23), v40);
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
-                collision_state.field_84 = (signed int)PID_ID(collision_state.pid);
+                collision_state.ignored_face_id = PID_ID(collision_state.pid);
                 if (pIndoor->pFaces[v15].uPolygonType != POLYGON_Floor) {
                     floor_lvl = abs(pIndoor->pFaces[v15].pFacePlane_old.vNormal.x *
                                   pSpriteObject->vVelocity.x +

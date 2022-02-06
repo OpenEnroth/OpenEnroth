@@ -2667,7 +2667,7 @@ void ODM_ProcessPartyActions() {
         v2 = 0;
     }
     // --(столкновения)-------------------------------------------------------------------
-    collision_state.field_84 = -1;
+    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius / 2;
@@ -3367,7 +3367,7 @@ void UpdateActors_ODM() {
 
 
         collision_state.check_hi = 1;
-        collision_state.field_84 = -1;
+        collision_state.ignored_face_id = -1;
         collision_state.radius_hi = Act_Radius;
         collision_state.radius_lo = Act_Radius;
         collision_state.total_move_distance = 0;

@@ -42,7 +42,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             if (pFace->Portal() || !collision_state.bbox.Intersects(pFace->pBounding))
                 continue;
 
-            if (pFloor == collision_state.field_84)
+            if (pFloor == collision_state.ignored_face_id)
                 continue;
 
             int distance_lo_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
