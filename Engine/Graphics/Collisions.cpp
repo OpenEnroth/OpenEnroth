@@ -331,8 +331,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
                 continue;
 
             BLVFace face;
-            face.pFacePlane_old.vNormal = mface.pFacePlaneOLD.vNormal;
-            face.pFacePlane_old.dist = mface.pFacePlaneOLD.dist;
+            face.pFacePlane_old = mface.pFacePlaneOLD;
             face.uAttributes = mface.uAttributes;
             face.pBounding = mface.pBoundingBox;
             face.zCalc1 = mface.zCalc1;
