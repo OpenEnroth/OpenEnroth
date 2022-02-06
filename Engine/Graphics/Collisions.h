@@ -6,6 +6,8 @@ struct BLVFace;
 
 struct CollisionState {
     /**
+     * Original offset 0x0047050A.
+     *
      * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
      *
      * @param dt                        Time delta, in fixpoint seconds.

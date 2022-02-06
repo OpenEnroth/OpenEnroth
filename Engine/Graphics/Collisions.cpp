@@ -356,6 +356,50 @@ static void CollideWithDecoration(int id) {
 /* =============================
  * Implementation of public API.
  */
+bool CollisionState::PrepareAndCheckIfStationary(int dt) {
+    this->speed = integer_sqrt(
+        this->velocity.z * this->velocity.z +
+        this->velocity.y * this->velocity.y +
+        this->velocity.x * this->velocity.x);
+
+    if (this->speed != 0) {
+        this->direction.x = fixpoint_div(this->velocity.x, this->speed);
+        this->direction.y = fixpoint_div(this->velocity.y, this->speed);
+        this->direction.z = fixpoint_div(this->velocity.z, this->speed);
+    } else {
+        this->direction.x = 0;
+        this->direction.y = 0;
+        this->direction.z = 65536;
+    }
+
+    if (!dt)
+        dt = pEventTimer->dt_fixpoint;
+
+    this->move_distance = fixpoint_mul(dt, this->speed) - this->total_move_distance;
+    if (this->move_distance <= 0)
+        return true;
+
+    this->new_position_hi.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
+    this->new_position_lo.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
+
+    this->new_position_hi.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
+    this->new_position_lo.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
+
+    this->new_position_hi.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_hi.z;
+    this->new_position_lo.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_lo.z;
+
+    this->bbox.x1 = std::min(this->position_lo.x, this->new_position_lo.x) - this->radius_lo;
+    this->bbox.x2 = std::max(this->position_lo.x, this->new_position_lo.x) + this->radius_lo;
+    this->bbox.y1 = std::min(this->position_lo.y, this->new_position_lo.y) - this->radius_lo;
+    this->bbox.y2 = std::max(this->position_lo.y, this->new_position_lo.y) + this->radius_lo;
+    this->bbox.z1 = std::min(this->position_lo.z, this->new_position_lo.z) - this->radius_lo;
+    this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi.z) + this->radius_hi;
+
+    this->pid = 0;
+    this->adjusted_move_distance = 0xFFFFFFu;
+
+    return  false;
+}
 
 void CollideIndoorWithGeometry(bool ignore_ethereal) {
     std::array<int, 10> pSectorsArray;
