@@ -36,28 +36,28 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
         int totalFaces = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
         for (int j = 0; j < totalFaces; j++) {
-            int pFloor = pSector->pFloors[j];
-            BLVFace *pFace = &pIndoor->pFaces[pSector->pFloors[j]];
+            int face_id = pSector->pFloors[j];
+            BLVFace *face = &pIndoor->pFaces[pSector->pFloors[j]];
 
-            if (pFace->Portal() || !collision_state.bbox.Intersects(pFace->pBounding))
+            if (face->Portal() || !collision_state.bbox.Intersects(face->pBounding))
                 continue;
 
-            if (pFloor == collision_state.ignored_face_id)
+            if (face_id == collision_state.ignored_face_id)
                 continue;
 
-            int distance_lo_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-            int distance_lo_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+            int distance_lo_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
+            int distance_lo_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
             if (distance_lo_old > 0 &&
                 (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
                 distance_lo_new <= distance_lo_old) {
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
-                if (CollideIndoorWithFace(pFace, collision_state.position_lo, collision_state.radius_lo,
+                if (CollideIndoorWithFace(face, collision_state.position_lo, collision_state.radius_lo,
                                          collision_state.direction, &move_distance, ignore_ethereal)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_lo;
-                    if (CollidePointIndoorWithFace(pFace, &collision_state.position_lo, &collision_state.direction,
+                    if (CollidePointIndoorWithFace(face, &collision_state.position_lo, &collision_state.direction,
                                                    &move_distance)) {
                         have_collision = true;
                         move_distance -= collision_state.radius_lo;
@@ -66,27 +66,27 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
                 if (have_collision && move_distance < collision_state.adjusted_move_distance) {
                     collision_state.adjusted_move_distance = move_distance;
-                    collision_state.pid = PID(OBJECT_BModel, pSector->pFloors[j]);
+                    collision_state.pid = PID(OBJECT_BModel, face_id);
                 }
             }
 
             // TODO: it's quite clear radius_lo does not belong in checks below, but here it is. Probably a bug in
             // the original code?
 
-            int distance_hi_old = pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
-            int distance_hi_new = pFace->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
+            int distance_hi_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
+            int distance_hi_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
             if ((collision_state.check_hi & 1) &&
                 distance_hi_old > 0 &&
                 (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
                 distance_hi_new <= distance_hi_old) {
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
-                if (CollideIndoorWithFace(pFace, collision_state.position_hi, collision_state.radius_hi,
+                if (CollideIndoorWithFace(face, collision_state.position_hi, collision_state.radius_hi,
                                          collision_state.direction, &move_distance, ignore_ethereal)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_hi;
-                    if (CollidePointIndoorWithFace(pFace, &collision_state.position_hi, &collision_state.direction,
+                    if (CollidePointIndoorWithFace(face, &collision_state.position_hi, &collision_state.direction,
                                                    &move_distance)) {
                         have_collision = true;
                         move_distance -= collision_state.radius_lo;
