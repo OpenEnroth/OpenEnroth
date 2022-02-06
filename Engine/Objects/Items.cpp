@@ -975,9 +975,12 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     v45 = 0;
     while (v45 < v46) {
         ++j;
+
+        // TODO(pskelton): investigate this
+        // quick fix on limit
+        if (j > 799) break;
         out_item->special_enchantment = (ITEM_ENCHANTMENT)val_list[j];
-        v45 += pSpecialEnchantments[val_list[j]]
-                   .to_item_apply[out_item->GetItemEquipType()];
+        v45 += pSpecialEnchantments[val_list[j]].to_item_apply[out_item->GetItemEquipType()];
     }
 }
 

@@ -6,7 +6,7 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      Image.cpp
                      ImageLoader.cpp
                      Indoor.cpp
-                     "Camera.cpp"
+                     Camera.cpp
                      LightmapBuilder.cpp
                      LightsStack.cpp
                      Outdoor.cpp
@@ -17,8 +17,8 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      PCX.cpp
                      RenderBase.cpp
                      Sprites.cpp
-                     "PortalFunctions.cpp"
-                     "ClippingFunctions.cpp"
+                     PortalFunctions.cpp
+                     ClippingFunctions.cpp
                      Viewport.cpp
                      Vis.cpp
                      Weather.cpp
@@ -37,7 +37,7 @@ set(GRAPHICS_HEADERS BSPModel.h
                      ImageFormatConverter.h
                      ImageLoader.h
                      Indoor.h
-                     "Camera.h"
+                     Camera.h
                      IRender.h
                      LightmapBuilder.h
                      Lights.h
@@ -50,8 +50,8 @@ set(GRAPHICS_HEADERS BSPModel.h
                      Polygon.h
                      RenderBase.h
                      Sprites.h
-                     "PortalFunctions.h"
-                     "ClippingFunctions.h"
+                     PortalFunctions.h
+                     ClippingFunctions.h
                      Texture.h
                      Viewport.h
                      Vis.h

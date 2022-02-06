@@ -114,7 +114,7 @@ void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
 bool Camera3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
                                           Vec3_float_ *a3, Vec3_float_ *a4) {
     switch ((PolygonType)polyType) {
-        case POLYGON_VerticalWall: {
+        case POLYGON_VerticalWall:
             a4->x = -a2->y;
             a4->y = a2->x;
             a4->z = 0.0;
@@ -122,11 +122,11 @@ bool Camera3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
             a3->x = 0.0;
             a3->y = 0.0;
             a3->z = 1.0f;
-        }
+
             return true;
 
         case POLYGON_Floor:
-        case POLYGON_Ceiling: {
+        case POLYGON_Ceiling:
             a4->x = 1.0;
             a4->y = 0.0;
             a4->z = 0.0;
@@ -134,11 +134,11 @@ bool Camera3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
             a3->x = 0.0;
             a3->y = 1.0;
             a3->z = 0.0;
-        }
+
             return true;
 
         case POLYGON_InBetweenFloorAndWall:
-        case POLYGON_InBetweenCeilingAndWall: {
+        case POLYGON_InBetweenCeilingAndWall:
             if (fabs(a2->z) < 0.70811361) {
                 a4->x = -a2->y;
                 a4->y = a2->x;
@@ -157,7 +157,7 @@ bool Camera3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
                 a3->y = 1.0;
                 a3->z = 0.0;
             }
-        }
+
             return true;
 
         default:

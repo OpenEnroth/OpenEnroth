@@ -2544,14 +2544,14 @@ void ODM_ProcessPartyActions() {
                 _angle_x = 0;
                 break;
 
-            case PARTY_LookUp:  // смотреть вниз
+            case PARTY_LookUp:
                 _angle_x += engine->config->vertical_turn_speed;
                 if (_angle_x > 128) _angle_x = 128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
 
-            case PARTY_LookDown:  // смотреть вверх
+            case PARTY_LookDown:
                 _angle_x -= engine->config->vertical_turn_speed;
                 if (_angle_x < -128) _angle_x = -128;
                 if (uActiveCharacter)
