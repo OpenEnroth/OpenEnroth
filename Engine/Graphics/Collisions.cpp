@@ -103,18 +103,6 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 }
 
 void CollideOutdoorWithModels(bool ignore_ethereal) {
-    int v8;            // eax@19
-    int v9;            // ecx@20
-    int v10;           // eax@24
-    // unsigned int v14;  // eax@28
-    int v15;           // eax@30
-    int v16;           // ecx@31
-    // unsigned int v17;  // eax@36
-    int v21;           // eax@42
-    // unsigned int v22;  // eax@43
-    int move_distance;            // [sp+84h] [bp-4h]@23
-    BLVFace face;      // [sp+Ch] [bp-7Ch]@1
-
     for (BSPModel &model : pOutdoor->pBModels) {
         if (!collision_state.bbox.Intersects(model.pBoundingBox))
             continue;
@@ -123,6 +111,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (!collision_state.bbox.Intersects(mface.pBoundingBox))
                 continue;
 
+            BLVFace face;
             face.pFacePlane_old.vNormal.x = mface.pFacePlaneOLD.vNormal.x;
             face.pFacePlane_old.vNormal.y = mface.pFacePlaneOLD.vNormal.y;
             face.pFacePlane_old.vNormal.z = mface.pFacePlaneOLD.vNormal.z;
@@ -160,85 +149,54 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (face.Ethereal() || face.Portal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
 
-            v8 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-            if (v8 > 0) {
-                v9 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-                if (v8 <= collision_state.radius_lo ||
-                    v9 <= collision_state.radius_lo) {
-                    if (v9 <= v8) {
-                        move_distance = collision_state.move_distance;
-                        if (CollideOutdoorWithFace(collision_state.radius_lo,
-                                        &move_distance,
-                                        collision_state.position_lo,
-                                        collision_state.direction,
-                                        &face, model.index, ignore_ethereal)) {
-                            v10 = move_distance;
-                        } else {
-                            move_distance = collision_state.radius_lo +
-                                    collision_state.move_distance;
-                            if (!CollidePointOutdoorWithFace(&move_distance, &face,
-                                            collision_state.position_lo,
-                                            collision_state.direction,
-                                            model.index))
-                                goto LABEL_29;
-                            v10 = move_distance - collision_state.radius_lo;
-                            move_distance -= collision_state.radius_lo;
-                        }
-                        if (v10 < collision_state.adjusted_move_distance) {
-                            collision_state.adjusted_move_distance = v10;
-                            collision_state.pid = PID(
-                                OBJECT_BModel,
-                                (mface.index | (model.index << 6)));
-                        }
+            int distance_lo_old = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
+            int distance_lo_new = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+            if (distance_lo_old > 0 &&
+                (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
+                distance_lo_new <= distance_lo_old) {
+                bool have_collision = false;
+                int move_distance = collision_state.move_distance;
+                if (CollideOutdoorWithFace(collision_state.radius_lo, &move_distance, collision_state.position_lo,
+                                           collision_state.direction, &face, model.index, ignore_ethereal)) {
+                    have_collision = true;
+                } else {
+                    move_distance = collision_state.move_distance + collision_state.radius_lo;
+                    if (CollidePointOutdoorWithFace(&move_distance, &face, collision_state.position_lo,
+                                                    collision_state.direction, model.index)) {
+                        have_collision = true;
+                        move_distance -= collision_state.radius_lo;
                     }
+                }
+
+                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+                    collision_state.adjusted_move_distance = move_distance;
+                    collision_state.pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
                 }
             }
 
-        LABEL_29:
-            if (collision_state.check_hi & 1) {
-                v15 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
-                if (v15 > 0) {
-                    v16 = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
-                    if (v15 <= collision_state.radius_lo ||
-                        v16 <= collision_state.radius_lo) {
-                        if (v16 <= v15) {
-                            move_distance = collision_state.move_distance;
-                            if (CollideOutdoorWithFace(
-                                    collision_state.radius_hi, &move_distance,
-                                    collision_state.position_hi,
-                                    collision_state.direction, &face,
-                                    model.index, ignore_ethereal)) {
-                                if (move_distance < collision_state.adjusted_move_distance) {
-                                    collision_state.adjusted_move_distance = move_distance;
-                                    collision_state.pid =
-                                        PID(OBJECT_BModel,
-                                            (mface.index |
-                                                (model.index << 6)));
-                                }
-                            } else {
-                                move_distance = collision_state.move_distance +
-                                        collision_state.radius_hi;
-                                if (CollidePointOutdoorWithFace(
-                                        &move_distance, &face,
-                                        collision_state.position_hi,
-                                        collision_state.direction,
-                                        model.index)) {
-                                    v21 =
-                                        move_distance -
-                                        collision_state.radius_lo;
-                                    move_distance -=
-                                        collision_state.radius_lo;
-                                    if (move_distance < collision_state.adjusted_move_distance) {
-                                        collision_state.adjusted_move_distance = v21;
-                                        collision_state.pid = PID(
-                                            OBJECT_BModel,
-                                            (mface.index |
-                                                (model.index << 6)));
-                                    }
-                                }
-                            }
-                        }
+            int distance_hi_old = face.pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
+            int distance_hi_new = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
+            if ((collision_state.check_hi & 1) &&
+                distance_hi_old > 0 &&
+                (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
+                distance_hi_new <= distance_hi_old) {
+                bool have_collision = false;
+                int move_distance = collision_state.move_distance;
+                if (CollideOutdoorWithFace(collision_state.radius_hi, &move_distance, collision_state.position_hi,
+                                           collision_state.direction, &face, model.index, ignore_ethereal)) {
+                    have_collision = true;
+                } else {
+                    move_distance = collision_state.move_distance + collision_state.radius_hi;
+                    if (CollidePointOutdoorWithFace(&move_distance, &face, collision_state.position_hi,
+                                                    collision_state.direction, model.index)) {
+                        have_collision = true;
+                        move_distance -= collision_state.radius_lo;
                     }
+                }
+
+                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+                    collision_state.adjusted_move_distance = move_distance;
+                    collision_state.pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
                 }
             }
         }
