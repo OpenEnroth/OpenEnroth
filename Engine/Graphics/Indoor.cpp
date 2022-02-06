@@ -4050,6 +4050,26 @@ void FindBillboardsLightLevels_BLV() {
     }
 }
 
+int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+    uint uFaceID = -1;
+    int floor_z = BLV_GetFloorLevel(pos, *pSectorID, &uFaceID);
+
+    if (floor_z != -30000 && floor_z <= pos.z + 50) {
+        *pFaceID = uFaceID;
+        return floor_z;
+    }
+
+    uint uSectorID = pIndoor->GetSector(pos);
+    *pSectorID = uSectorID;
+
+    floor_z = BLV_GetFloorLevel(pos, uSectorID, &uFaceID);
+    if (uSectorID && floor_z != -30000)
+        *pFaceID = uFaceID;
+    else
+        return -30000;
+    return floor_z;
+}
+
 //----- (0047272C) --------------------------------------------------------
 int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
     std::array<Vec3_int_, 5> attempts = {{

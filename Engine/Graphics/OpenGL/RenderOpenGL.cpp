@@ -328,27 +328,6 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
     return v6;
 }
 
-
-int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
-    uint uFaceID = -1;
-    int floor_z = BLV_GetFloorLevel(pos, *pSectorID, &uFaceID);
-
-    if (floor_z != -30000 && floor_z <= pos.z + 50) {
-        *pFaceID = uFaceID;
-        return floor_z;
-    }
-
-    uint uSectorID = pIndoor->GetSector(pos);
-    *pSectorID = uSectorID;
-
-    floor_z = BLV_GetFloorLevel(pos, uSectorID, &uFaceID);
-    if (uSectorID && floor_z != -30000)
-        *pFaceID = uFaceID;
-    else
-        return -30000;
-    return floor_z;
-}
-
 void UpdateObjects() {
     int v5;   // ecx@6
     int v7;   // eax@9

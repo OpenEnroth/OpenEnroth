@@ -36,19 +36,6 @@ struct CollisionState {
 
 extern CollisionState collision_state;
 
-// TODO: looks like this also works for ceilings, reflect in docs?
-/**
- * @param pos                           Actor's position.
- * @param[in,out] pSectorID             Actor's cached sector id. If the cached sector id is no longer valid (e.g. an
- *                                      actor has already moved to another sector), then the new sector id is returned
- *                                      in this output parameter.
- * @param[out] pFaceID                  Id of the floor face on which the actor is standing. Not updated if floor face
- *                                      is not found.
- * @return                              Z coordinate for the floor at (X, Y).
- */
-int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
-// TODO: ^ belongs in indoor.cpp?
-
 /**
  * Original offset 0x46E44E.
  *
