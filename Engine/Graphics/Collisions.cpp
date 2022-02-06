@@ -269,7 +269,7 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
     collide_once(collision_state.position_lo, collision_state.new_position_lo, collision_state.direction,
                  collision_state.radius_lo);
 
-    if(collision_state.check_hi & 1)
+    if(collision_state.check_hi)
         collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction,
                      collision_state.radius_hi);
 }
