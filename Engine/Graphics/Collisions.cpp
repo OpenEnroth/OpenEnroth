@@ -112,36 +112,19 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
                 continue;
 
             BLVFace face;
-            face.pFacePlane_old.vNormal.x = mface.pFacePlaneOLD.vNormal.x;
-            face.pFacePlane_old.vNormal.y = mface.pFacePlaneOLD.vNormal.y;
-            face.pFacePlane_old.vNormal.z = mface.pFacePlaneOLD.vNormal.z;
+            face.pFacePlane_old.vNormal = mface.pFacePlaneOLD.vNormal;
             face.pFacePlane_old.dist = mface.pFacePlaneOLD.dist;
-
             face.uAttributes = mface.uAttributes;
-
-            face.pBounding.x1 = mface.pBoundingBox.x1;
-            face.pBounding.y1 = mface.pBoundingBox.y1;
-            face.pBounding.z1 = mface.pBoundingBox.z1;
-
-            face.pBounding.x2 = mface.pBoundingBox.x2;
-            face.pBounding.y2 = mface.pBoundingBox.y2;
-            face.pBounding.z2 = mface.pBoundingBox.z2;
-
+            face.pBounding = mface.pBoundingBox;
             face.zCalc1 = mface.zCalc1;
             face.zCalc2 = mface.zCalc2;
             face.zCalc3 = mface.zCalc3;
-
             face.pXInterceptDisplacements = mface.pXInterceptDisplacements;
             face.pYInterceptDisplacements = mface.pYInterceptDisplacements;
             face.pZInterceptDisplacements = mface.pZInterceptDisplacements;
-
             face.uPolygonType = (PolygonType)mface.uPolygonType;
-
             face.uNumVertices = mface.uNumVertices;
-
-            // face.uBitmapID = model.pFaces[j].uTextureID;
             face.resource = mface.resource;
-
             face.pVertexIDs = mface.pVertexIDs;
 
             if (face.Ethereal() || face.Portal()) // TODO: this doesn't respect ignore_ethereal parameter
