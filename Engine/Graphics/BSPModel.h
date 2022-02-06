@@ -159,7 +159,7 @@ struct ODMFace {
     uint8_t uGradientVertex3 = 0;
     uint8_t uGradientVertex4 = 0;
     uint8_t uNumVertices = 0;
-    uint8_t uPolygonType = 0;
+    uint8_t uPolygonType = 0;  // TODO: It's PolygonType actually, not uint8_t
     uint8_t uShadeType = 0;  // could be minimum shade
     uint8_t bVisible = 0;
     char field_132 = 0;
