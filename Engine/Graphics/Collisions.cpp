@@ -157,7 +157,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
 
             face.pVertexIDs = mface.pVertexIDs;
 
-            if (face.Ethereal() || face.Portal())
+            if (face.Ethereal() || face.Portal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
 
             v8 = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
