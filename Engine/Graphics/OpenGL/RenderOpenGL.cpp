@@ -1079,13 +1079,13 @@ bool IsProjectedPointInsideModelFace(BLVFace* face, int model_index, const Vec3_
         v = point.y;
         for (int i = 0; i < face->uNumVertices; ++i) {
             edges_u[2 * i] = face->pXInterceptDisplacements[i] +
-                LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].x);
+                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].x;
             edges_v[2 * i] = face->pYInterceptDisplacements[i] +
-                LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].y);
+                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].y;
             edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] +
-                LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].x);
+                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].x;
             edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] +
-                LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].y);
+                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].y;
         }
     } else {
         if (face->uAttributes & FACE_XZ_PLANE) {
@@ -1093,26 +1093,26 @@ bool IsProjectedPointInsideModelFace(BLVFace* face, int model_index, const Vec3_
             v = point.z;
             for (int i = 0; i < face->uNumVertices; ++i) {
                 edges_u[2 * i] = face->pXInterceptDisplacements[i] +
-                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].x);
+                    pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].x;
                 edges_v[2 * i] = face->pZInterceptDisplacements[i] +
-                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].z);
+                    pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].z;
                 edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] +
-                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].x);
+                    pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].x;
                 edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] +
-                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].z);
+                    pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].z;
             }
         } else {
             u = point.y;
             v = point.z;
             for (int i = 0; i < face->uNumVertices; ++i) {
                 edges_u[2 * i] = face->pYInterceptDisplacements[i] +
-                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].y);
+                    pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].y;
                 edges_v[2 * i] = face->pZInterceptDisplacements[i] +
-                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].z);
+                    pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].z;
                 edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] +
-                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].y);
+                    pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].y;
                 edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] +
-                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].z);
+                    pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].z;
             }
         }
     }
