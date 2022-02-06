@@ -11,7 +11,7 @@
 CollisionState collision_state;
 
 void CollideIndoorWithGeometry(bool ignore_ethereal) {
-    std::array<int, 10> pSectorsArray;  // [sp+30h] [bp-28h]@1
+    std::array<int, 10> pSectorsArray;
     pSectorsArray[0] = collision_state.uSectorID;
     int totalSectors = 1;
 
@@ -716,7 +716,8 @@ bool CollidePointOutdoorWithFace(int *move_distance, BLVFace *face, const Vec3_i
     return true;
 }
 
-bool IsProjectedPointInsideIndoorFace(BLVFace* face, const Vec3_short_ &point) {
+template<class FacePointAccessor>
+static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, const FacePointAccessor& face_points) {
     std::array<int16_t, 104> edges_u;
     std::array<int16_t, 104> edges_v;
 
@@ -726,28 +727,28 @@ bool IsProjectedPointInsideIndoorFace(BLVFace* face, const Vec3_short_ &point) {
         u = point.x;
         v = point.y;
         for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].x;
-            edges_v[2 * i] = face->pYInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].y;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].x;
-            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].y;
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
+            edges_v[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
+            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
         }
     } else if (face->uAttributes & FACE_XZ_PLANE) {
         u = point.x;
         v = point.z;
         for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].x;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].z;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].x;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].z;
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
+            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
+            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
         }
     } else {
         u = point.y;
         v = point.z;
         for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pYInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].y;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] + pIndoor->pVertices[face->pVertexIDs[i]].z;
-            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].y;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + pIndoor->pVertices[face->pVertexIDs[i + 1]].z;
+            edges_u[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
+            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
+            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
+            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
         }
     }
     edges_u[2 * face->uNumVertices] = edges_u[0];
@@ -787,87 +788,15 @@ bool IsProjectedPointInsideIndoorFace(BLVFace* face, const Vec3_short_ &point) {
     return counter == 1;
 }
 
+bool IsProjectedPointInsideIndoorFace(BLVFace* face, const Vec3_short_ &point) {
+    return IsProjectedPointInsideFace(face, point, [&](int index) -> const auto & {
+        return pIndoor->pVertices[face->pVertexIDs[index]];
+    });
+}
+
 bool IsProjectedPointInsideOutdoorFace(BLVFace* face, int model_index, const Vec3_short_ &point) {
-    std::array<int16_t, 104> edges_u;
-    std::array<int16_t, 104> edges_v;
-
-    int u;
-    int v;
-    if (face->uAttributes & FACE_XY_PLANE) {
-        u = point.x;
-        v = point.y;
-        for (int i = 0; i < face->uNumVertices; ++i) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].x;
-            edges_v[2 * i] = face->pYInterceptDisplacements[i] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].y;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].x;
-            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].y;
-        }
-    } else if (face->uAttributes & FACE_XZ_PLANE) {
-        u = point.x;
-        v = point.z;
-        for (int i = 0; i < face->uNumVertices; ++i) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].x;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].z;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].x;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].z;
-        }
-    } else {
-        u = point.y;
-        v = point.z;
-        for (int i = 0; i < face->uNumVertices; ++i) {
-            edges_u[2 * i] = face->pYInterceptDisplacements[i] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].y;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].z;
-            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].y;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] +
-                pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].z;
-        }
-    }
-
-    edges_u[2 * face->uNumVertices] = edges_u[0];
-    edges_v[2 * face->uNumVertices] = edges_v[0];
-
-    if (2 * face->uNumVertices <= 0)
-        return 0;
-
-    int counter = 0;
-    for (int i = 0; i < 2 * face->uNumVertices; ++i) {
-        if (counter >= 2)
-            break;
-
-        // Check that we're inside the bounding band in v coordinate
-        if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
-            continue;
-
-        // If we're to the left then we surely have an intersection
-        if ((edges_u[i] >= u) && (edges_u[i + 1] >= u)) {
-            ++counter;
-            continue;
-        }
-
-        // We're not to the left? Then we must be inside the bounding band in u coordinate
-        if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
-            continue;
-
-        // Calculate the intersection point of v=const line with the edge.
-        int line_intersection_u = edges_u[i] +
-            static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
-
-        // We need ray intersections, so consider only one halfplane.
-        if (line_intersection_u >= u)
-            ++counter;
-    }
-
-    return counter == 1;
+    return IsProjectedPointInsideFace(face, point, [&](int index) -> const auto & {
+        return pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[index]];
+    });
 }
 
