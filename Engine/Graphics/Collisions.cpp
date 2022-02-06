@@ -104,7 +104,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radiu
  */
 template<class FacePointAccessor>
 static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *move_distance,
-                          const FacePointAccessor &face_points) {
+                                 const FacePointAccessor &face_points) {
     // _fp suffix => that's a fixpoint number
 
     // dot_product(dir, normal) is a cosine of an angle between them.
@@ -377,7 +377,8 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
                 return pOutdoor->pBModels[model.index].pVertices.pVertices[face.pVertexIDs[index]];
             };
 
-            CollideBodyWithFace(&face, PID(OBJECT_BModel, (mface.index | (model.index << 6))), ignore_ethereal, face_points);
+            int pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
+            CollideBodyWithFace(&face, pid, ignore_ethereal, face_points);
         }
     }
 }
