@@ -268,14 +268,11 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
         }
     }
 
-    // TODO: it's quite clear radius_lo does not belong in checks below, but here it is. Probably a bug in
-    // the original code?
-
     int distance_hi_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
     int distance_hi_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
     if ((collision_state.check_hi & 1) &&
         distance_hi_old > 0 &&
-        (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
+        (distance_hi_old <= collision_state.radius_hi || distance_hi_new <= collision_state.radius_hi) &&
         distance_hi_new <= distance_hi_old) {
         bool have_collision = false;
         int move_distance = collision_state.move_distance;
@@ -287,7 +284,7 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
             if (CollidePointWithFace(face, collision_state.position_hi, collision_state.direction,
                                      &move_distance, face_points)) {
                 have_collision = true;
-                move_distance -= collision_state.radius_lo;
+                move_distance -= collision_state.radius_hi;
             }
         }
 
