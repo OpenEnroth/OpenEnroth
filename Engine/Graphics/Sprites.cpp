@@ -433,10 +433,7 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
         pSpritePFrames[i] = &pSpriteSFrames[pSpriteEFrames[i]];
 }
 
-void _46E26D_collide_against_sprites(int a1, int a2) {
-    int v2;                 // edx@5
-    unsigned __int16 *v3;   // eax@5
-    unsigned __int16 v4;    // ax@6
+void _46E26D_collide_against_sprites(int grid_x, int grid_y) {
     LevelDecoration *v5;    // edi@7
     DecorationDesc *v6;     // esi@8
     int v7;                 // edx@9
@@ -452,133 +449,127 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
     int v17;                // esi@19
     char v18;               // zf@23
     int v19;                // [sp+0h] [bp-10h]@15
-    unsigned __int16 *v20;  // [sp+4h] [bp-Ch]@5
     int v21;                // [sp+8h] [bp-8h]@15
     int v22;                // [sp+Ch] [bp-4h]@13
 
-    if (a1 >= 0) {
-        if (a1 <= 127) {
-            if (a2 >= 0) {
-                if (a2 <= 127) {
-                    v2 = a1 + (a2 << 7);
-                    v3 = &pOutdoor->pFaceIDLIST[pOutdoor->pOMAP[v2]];
-                    v20 = &pOutdoor->pFaceIDLIST[pOutdoor->pOMAP[v2]];
-                    if (v3) {
-                        do {
-                            v4 = *v3;
-                            if (PID_TYPE(v4) == OBJECT_Decoration) {
-                                v5 =
-                                    &pLevelDecorations[(signed __int16)v4 >> 3];
-                                if (!(v5->uFlags &
-                                      LEVEL_DECORATION_INVISIBLE)) {
-                                    v6 = pDecorationList->GetDecoration(v5->uDecorationDescID);
-                                    if (!v6->CanMoveThrough()) {
-                                        v7 = v6->uRadius;
-                                        v8 = v5->vPosition.x;
-                                        if (collision_state.bbox.x1 <= v8 + v7) {
-                                            if (collision_state.bbox.x2 >= v8 - v7) {
-                                                v9 = v5->vPosition.y;
-                                                if (collision_state.bbox.y1 <=
-                                                    v9 + v7) {
-                                                    if (collision_state.bbox.y2 >=
-                                                        v9 - v7) {
-                                                        v10 =
-                                                            v6->uDecorationHeight;
-                                                        v11 = v5->vPosition.z;
-                                                        v22 = v10;
-                                                        if (collision_state.bbox.z1 <=
-                                                            v11 + v10) {
-                                                            if (collision_state
-                                                                    .bbox.z2 >=
-                                                                v11) {
-                                                                v12 =
-                                                                    v8 -
-                                                                    collision_state
-                                                                        .position_lo
-                                                                        .x;
-                                                                v19 =
-                                                                    v9 -
-                                                                    collision_state
-                                                                        .position_lo
-                                                                        .y;
-                                                                v13 =
-                                                                    collision_state
-                                                                        .radius_lo +
-                                                                    v7;
-                                                                v21 =
-                                                                    ((v8 -
-                                                                      collision_state
-                                                                          .position_lo
-                                                                          .x) *
-                                                                         collision_state
-                                                                             .direction
-                                                                             .y -
-                                                                     (v9 -
-                                                                      collision_state
-                                                                          .position_lo
-                                                                          .y) *
-                                                                         collision_state
-                                                                             .direction
-                                                                             .x) >>
-                                                                    16;
-                                                                if (abs(v21) <=
-                                                                    collision_state
-                                                                            .radius_lo +
-                                                                        v7) {
-                                                                    v14 =
-                                                                        (v12 *
-                                                                             collision_state
-                                                                                 .direction
-                                                                                 .x +
-                                                                         v19 *
-                                                                             collision_state
-                                                                                 .direction
-                                                                                 .y) >>
-                                                                        16;
-                                                                    if (v14 >
-                                                                        0) {
-                                                                        v15 =
-                                                                            v5->vPosition
-                                                                                .z;
-                                                                        v16 =
-                                                                            collision_state
-                                                                                .position_lo
-                                                                                .z +
-                                                                            fixpoint_mul(
-                                                                                collision_state
-                                                                                    .direction
-                                                                                    .z,
-                                                                                v14);
-                                                                        if (v16 >=
-                                                                            v15) {
-                                                                            if (v16 <=
-                                                                                v22 +
-                                                                                    v15) {
-                                                                                v17 =
-                                                                                    v14 -
-                                                                                    integer_sqrt(
-                                                                                        v13 *
-                                                                                            v13 -
-                                                                                        v21 *
-                                                                                            v21);
-                                                                                if (v17 <
-                                                                                    0)
-                                                                                    v17 =
-                                                                                        0;
-                                                                                if (v17 <
-                                                                                    collision_state
-                                                                                        .adjusted_move_distance) {
-                                                                                    collision_state
-                                                                                        .adjusted_move_distance =
-                                                                                        v17;
-                                                                                    collision_state
-                                                                                        .pid =
-                                                                                        (signed __int16)*v20;
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
+    if (grid_x < 0 || grid_x > 127 || grid_y < 0 || grid_y > 127)
+        return;
+
+    int grid_index = grid_x + (grid_y << 7);
+    unsigned __int16 *v3 = &pOutdoor->pFaceIDLIST[pOutdoor->pOMAP[grid_index]];
+    unsigned __int16 *v20 = &pOutdoor->pFaceIDLIST[pOutdoor->pOMAP[grid_index]];
+    if (!v3)
+        return;
+
+    do {
+        unsigned __int16 v4 = *v3;
+        if (PID_TYPE(v4) == OBJECT_Decoration) {
+            v5 = &pLevelDecorations[(signed __int16)v4 >> 3];
+            if (!(v5->uFlags &
+                LEVEL_DECORATION_INVISIBLE)) {
+                v6 = pDecorationList->GetDecoration(v5->uDecorationDescID);
+                if (!v6->CanMoveThrough()) {
+                    v7 = v6->uRadius;
+                    v8 = v5->vPosition.x;
+                    if (collision_state.bbox.x1 <= v8 + v7) {
+                        if (collision_state.bbox.x2 >= v8 - v7) {
+                            v9 = v5->vPosition.y;
+                            if (collision_state.bbox.y1 <=
+                                v9 + v7) {
+                                if (collision_state.bbox.y2 >=
+                                    v9 - v7) {
+                                    v10 =
+                                        v6->uDecorationHeight;
+                                    v11 = v5->vPosition.z;
+                                    v22 = v10;
+                                    if (collision_state.bbox.z1 <=
+                                        v11 + v10) {
+                                        if (collision_state
+                                            .bbox.z2 >=
+                                            v11) {
+                                            v12 =
+                                                v8 -
+                                                collision_state
+                                                .position_lo
+                                                .x;
+                                            v19 =
+                                                v9 -
+                                                collision_state
+                                                .position_lo
+                                                .y;
+                                            v13 =
+                                                collision_state
+                                                .radius_lo +
+                                                v7;
+                                            v21 =
+                                                ((v8 -
+                                                    collision_state
+                                                    .position_lo
+                                                    .x) *
+                                                    collision_state
+                                                    .direction
+                                                    .y -
+                                                    (v9 -
+                                                        collision_state
+                                                        .position_lo
+                                                        .y) *
+                                                    collision_state
+                                                    .direction
+                                                    .x) >>
+                                                16;
+                                            if (abs(v21) <=
+                                                collision_state
+                                                .radius_lo +
+                                                v7) {
+                                                v14 =
+                                                    (v12 *
+                                                        collision_state
+                                                        .direction
+                                                        .x +
+                                                        v19 *
+                                                        collision_state
+                                                        .direction
+                                                        .y) >>
+                                                    16;
+                                                if (v14 >
+                                                    0) {
+                                                    v15 =
+                                                        v5->vPosition
+                                                        .z;
+                                                    v16 =
+                                                        collision_state
+                                                        .position_lo
+                                                        .z +
+                                                        fixpoint_mul(
+                                                            collision_state
+                                                            .direction
+                                                            .z,
+                                                            v14);
+                                                    if (v16 >=
+                                                        v15) {
+                                                        if (v16 <=
+                                                            v22 +
+                                                            v15) {
+                                                            v17 =
+                                                                v14 -
+                                                                integer_sqrt(
+                                                                    v13 *
+                                                                    v13 -
+                                                                    v21 *
+                                                                    v21);
+                                                            if (v17 <
+                                                                0)
+                                                                v17 =
+                                                                0;
+                                                            if (v17 <
+                                                                collision_state
+                                                                .adjusted_move_distance) {
+                                                                collision_state
+                                                                    .adjusted_move_distance =
+                                                                    v17;
+                                                                collision_state
+                                                                    .pid =
+                                                                    (signed __int16)*v20;
                                                             }
                                                         }
                                                     }
@@ -588,15 +579,15 @@ void _46E26D_collide_against_sprites(int a1, int a2) {
                                     }
                                 }
                             }
-                            v3 = v20 + 1;
-                            v18 = *v20 == 0;
-                            ++v20;
-                        } while (!v18);
+                        }
                     }
                 }
             }
         }
-    }
+        v3 = v20 + 1;
+        v18 = *v20 == 0;
+        ++v20;
+    } while (!v18);
 }
 
 
