@@ -8,9 +8,9 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
-stru141_actor_collision_object collision_state;
+CollisionState collision_state;
 
-void _46E26D_collide_against_sprites(int grid_x, int grid_y) {
+void CollideOutdoorWithDecorations(int grid_x, int grid_y) {
     int v12;                // ebp@15
     int v13;                // ebx@15
     int v14;                // esi@16
@@ -81,7 +81,7 @@ void _46E26D_collide_against_sprites(int grid_x, int grid_y) {
     } while (!v18);
 }
 
-void _46E889_collide_against_bmodels(bool ignore_ethereal) {
+void CollideOutdoorWithModels(bool ignore_ethereal) {
     int v8;            // eax@19
     int v9;            // ecx@20
     int v10;           // eax@24
@@ -146,7 +146,7 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal) {
                     v9 <= collision_state.radius_lo) {
                     if (v9 <= v8) {
                         move_distance = collision_state.move_distance;
-                        if (collide_against_model_face(collision_state.radius_lo,
+                        if (CollideOutdoorWithFace(collision_state.radius_lo,
                                         &move_distance,
                                         collision_state.position_lo,
                                         collision_state.direction,
@@ -155,7 +155,7 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal) {
                         } else {
                             move_distance = collision_state.radius_lo +
                                     collision_state.move_distance;
-                            if (!collide_against_model_face_point(&move_distance, &face,
+                            if (!CollidePointOutdoorWithFace(&move_distance, &face,
                                             collision_state.position_lo,
                                             collision_state.direction,
                                             model.index))
@@ -182,7 +182,7 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal) {
                         v16 <= collision_state.radius_lo) {
                         if (v16 <= v15) {
                             move_distance = collision_state.move_distance;
-                            if (collide_against_model_face(
+                            if (CollideOutdoorWithFace(
                                     collision_state.radius_hi, &move_distance,
                                     collision_state.position_hi,
                                     collision_state.direction, &face,
@@ -197,7 +197,7 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal) {
                             } else {
                                 move_distance = collision_state.move_distance +
                                         collision_state.radius_hi;
-                                if (collide_against_model_face_point(
+                                if (CollidePointOutdoorWithFace(
                                         &move_distance, &face,
                                         collision_state.position_hi,
                                         collision_state.direction,
@@ -285,7 +285,7 @@ int _46EF01_collision_chech_player(int a1) {
 }
 
 
-void _46E0B2_collide_against_decorations() {
+void CollideIndoorWithDecorations() {
     BLVSector *sector = &pIndoor->pSectors[collision_state.uSectorID];
     for (unsigned int i = 0; i < sector->uNumDecorations; ++i) {
         LevelDecoration *decor = &pLevelDecorations[sector->pDecorationIDs[i]];
@@ -342,7 +342,7 @@ void _46E0B2_collide_against_decorations() {
 }
 
 
-bool _46F04E_collide_against_portals() {
+bool CollideIndoorWithPortals() {
     int portal_id = 0;            // [sp+10h] [bp-4h]@15
     unsigned int min_move_distance = 0xFFFFFF;
     for (unsigned int i = 0; i < pIndoor->pSectors[collision_state.uSectorID].uNumPortals; ++i) {
@@ -355,7 +355,7 @@ bool _46F04E_collide_against_portals() {
         int move_distance = collision_state.move_distance;
         if ((distance_lo_old < collision_state.radius_lo || distance_lo_new < collision_state.radius_lo) &&
             (distance_lo_old > -collision_state.radius_lo || distance_lo_new > -collision_state.radius_lo) &&
-            collide_against_face_point(face, &collision_state.position_lo, &collision_state.direction, &move_distance) &&
+            CollidePointIndoorWithFace(face, &collision_state.position_lo, &collision_state.direction, &move_distance) &&
             move_distance < min_move_distance) {
             min_move_distance = move_distance;
             portal_id = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
@@ -375,7 +375,7 @@ bool _46F04E_collide_against_portals() {
     return true;
 }
 
-void collide_against_faces_and_portals(bool ignore_ethereal) {
+void CollideIndoorWithGeometry(bool ignore_ethereal) {
     std::array<int, 10> pSectorsArray;  // [sp+30h] [bp-28h]@1
     pSectorsArray[0] = collision_state.uSectorID;
     int totalSectors = 1;
@@ -417,12 +417,12 @@ void collide_against_faces_and_portals(bool ignore_ethereal) {
                 distance_lo_new <= distance_lo_old) {
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
-                if (collide_against_face(pFace, collision_state.position_lo, collision_state.radius_lo,
+                if (CollideIndoorWithFace(pFace, collision_state.position_lo, collision_state.radius_lo,
                                          collision_state.direction, &move_distance, ignore_ethereal)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_lo;
-                    if (collide_against_face_point(pFace, &collision_state.position_lo, &collision_state.direction,
+                    if (CollidePointIndoorWithFace(pFace, &collision_state.position_lo, &collision_state.direction,
                                                    &move_distance)) {
                         have_collision = true;
                         move_distance -= collision_state.radius_lo;
@@ -446,12 +446,12 @@ void collide_against_faces_and_portals(bool ignore_ethereal) {
                 distance_hi_new <= distance_hi_old) {
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
-                if (collide_against_face(pFace, collision_state.position_hi, collision_state.radius_hi,
+                if (CollideIndoorWithFace(pFace, collision_state.position_hi, collision_state.radius_hi,
                                          collision_state.direction, &move_distance, ignore_ethereal)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_hi;
-                    if (collide_against_face_point(pFace, &collision_state.position_hi, &collision_state.direction,
+                    if (CollidePointIndoorWithFace(pFace, &collision_state.position_hi, &collision_state.direction,
                                                    &move_distance)) {
                         have_collision = true;
                         move_distance -= collision_state.radius_lo;
@@ -523,7 +523,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
 
 // 46DF1A: using guessed type int 46DF1A_collide_against_actor(int, int);
 //----- (0046DF1A) --------------------------------------------------------
-bool _46DF1A_collide_against_actor(int actor_idx, int override_radius) {
+bool CollideWithActor(int actor_idx, int override_radius) {
     Actor *actor = &pActors[actor_idx];
     if (actor->uAIState == Removed || actor->uAIState == Dying || actor->uAIState == Disabled ||
         actor->uAIState == Dead || actor->uAIState == Summoned)
@@ -576,7 +576,7 @@ bool _46DF1A_collide_against_actor(int actor_idx, int override_radius) {
     return true;
 }
 
-bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
+bool CollideIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
                           int *move_distance, bool ignore_ethereal) {
     if (ignore_ethereal && face->Ethereal())
         return false;
@@ -620,7 +620,7 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
     new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
     new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
 
-    if (!IsProjectedPointInsideFace(face, new_pos))
+    if (!IsProjectedPointInsideIndoorFace(face, new_pos))
         return false; // We've just managed to slide past the face, so pretend no collision happened.
 
     if (move_distance_fp < 0) {
@@ -632,7 +632,7 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
     return true;
 }
 
-bool collide_against_model_face(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
+bool CollideOutdoorWithFace(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
                 BLVFace* face, int model_index, bool ignore_ethereal) {
     int v12;      // ST1C_4@3
     int a7a;      // [sp+30h] [bp+18h]@7
@@ -673,7 +673,7 @@ bool collide_against_model_face(int radius, int* move_distance, const Vec3_int_ 
     new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
     new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
 
-    if (!IsProjectedPointInsideModelFace(face, model_index, new_pos))
+    if (!IsProjectedPointInsideOutdoorFace(face, model_index, new_pos))
         return false;
 
     if (move_distance_fp < 0) {
@@ -684,7 +684,7 @@ bool collide_against_model_face(int radius, int* move_distance, const Vec3_int_ 
     return true;
 }
 
-bool IsProjectedPointInsideFace(BLVFace* face, const Vec3_short_ &point) {
+bool IsProjectedPointInsideIndoorFace(BLVFace* face, const Vec3_short_ &point) {
     std::array<int16_t, 104> edges_u;
     std::array<int16_t, 104> edges_v;
 
@@ -755,7 +755,7 @@ bool IsProjectedPointInsideFace(BLVFace* face, const Vec3_short_ &point) {
     return counter == 1;
 }
 
-bool IsProjectedPointInsideModelFace(BLVFace* face, int model_index, const Vec3_short_ &point) {
+bool IsProjectedPointInsideOutdoorFace(BLVFace* face, int model_index, const Vec3_short_ &point) {
     std::array<int16_t, 104> edges_u;
     std::array<int16_t, 104> edges_v;
 
@@ -839,7 +839,7 @@ bool IsProjectedPointInsideModelFace(BLVFace* face, int model_index, const Vec3_
     return counter == 1;
 }
 
-bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance) {
+bool CollidePointIndoorWithFace(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance) {
     // _fp suffix => that's a fixpoint number
 
     // dot_product(dir, normal) is a cosine of an angle between them.
@@ -881,14 +881,14 @@ bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, i
     if (move_distance_fp > *move_distance << 16)
         return false; // No correction needed.
 
-    if (!IsProjectedPointInsideFace(face, new_pos))
+    if (!IsProjectedPointInsideIndoorFace(face, new_pos))
         return false;
 
     *move_distance = move_distance_fp >> 16;
     return true;
 }
 
-bool collide_against_model_face_point(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int model_index) {
+bool CollidePointOutdoorWithFace(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int model_index) {
     // _fp suffix => that's a fixpoint number
 
     // dot_product(dir, normal) is a cosine of an angle between them.
@@ -930,7 +930,7 @@ bool collide_against_model_face_point(int *move_distance, BLVFace *face, const V
     if (move_distance_fp > *move_distance << 16)
         return false; // No correction needed.
 
-    if (!IsProjectedPointInsideModelFace(face, model_index, new_pos))
+    if (!IsProjectedPointInsideOutdoorFace(face, model_index, new_pos))
         return false;
 
     *move_distance = move_distance_fp >> 16;

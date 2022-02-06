@@ -306,8 +306,8 @@ LABEL_13:
             if (collision_state.PrepareAndCheckIfStationary(0))
                 return;
 
-            _46E889_collide_against_bmodels(false);
-            _46E26D_collide_against_sprites(
+            CollideOutdoorWithModels(false);
+            CollideOutdoorWithDecorations(
                 WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x),
                 WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y));
             if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) !=
@@ -323,12 +323,12 @@ LABEL_13:
                         if (pActors[PID_ID(pSpriteObjects[uLayingItemID]
                                                .spell_caster_pid)]
                                 .GetActorsRelation(&pActors[v56]))
-                            _46DF1A_collide_against_actor(v56, 0);
+                            CollideWithActor(v56, 0);
                     }
                 }
             } else {
                 for (i = 0; i < (signed int)uNumActors; ++i)
-                    _46DF1A_collide_against_actor(i, 0);
+                    CollideWithActor(i, 0);
             }
             v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             v49 = false;
@@ -522,8 +522,8 @@ LABEL_25:
             if (collision_state.PrepareAndCheckIfStationary(0)) return;
 
             for (int loop2 = 0; loop2 < 100; ++loop2) {
-                collide_against_faces_and_portals(false);
-                _46E0B2_collide_against_decorations();
+                CollideIndoorWithGeometry(false);
+                CollideIndoorWithDecorations();
 
                 if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Player)
                     _46EF01_collision_chech_player(1);
@@ -540,10 +540,10 @@ LABEL_25:
                         if (pActors[actloop].word_000086_some_monster_id) {  // not always filled in from scripted monsters
                             radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id - 1].uToHitRadius;
                         }
-                        _46DF1A_collide_against_actor(actloop, radius);
+                        CollideWithActor(actloop, radius);
                 }
 
-                if (_46F04E_collide_against_portals()) break;
+                if (CollideIndoorWithPortals()) break;
             }
             // end loop2
 

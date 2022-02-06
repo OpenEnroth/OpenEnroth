@@ -1626,7 +1626,7 @@ void UpdateActors_BLV() {
             continue;
 
         unsigned int uSectorID = pActors[actor_id].uSectorID;
-        int floor_z = collide_against_floor(pActors[actor_id].vPosition, &uSectorID, &uFaceID);
+        int floor_z = GetIndoorFloorZ(pActors[actor_id].vPosition, &uSectorID, &uFaceID);
         pActors[actor_id].uSectorID = uSectorID;
 
         bool isFlying = pActors[actor_id].pMonsterInfo.uFlying;
@@ -1721,8 +1721,8 @@ void UpdateActors_BLV() {
                     v24 = 8 * actor_id;
                     HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor_id);
                     for (v61 = 0; v61 < 100; ++v61) {
-                        collide_against_faces_and_portals(true);
-                        _46E0B2_collide_against_decorations();
+                        CollideIndoorWithGeometry(true);
+                        CollideIndoorWithDecorations();
                         _46EF01_collision_chech_player(0);
                         _46ED8A_collide_against_sprite_objects(v24);
                         for (uint j = 0; j < ai_arrays_size; j++) {
@@ -1732,11 +1732,11 @@ void UpdateActors_BLV() {
                                 v29 = abs(pActors[ai_near_actors_ids[j]].vPosition.x - pActors[actor_id].vPosition.x);
                                 if (int_get_vector_length(v29, v28, v27) >= pActors[actor_id].uActorRadius +
                                             (signed int) pActors[ai_near_actors_ids[j]].uActorRadius &&
-                                    _46DF1A_collide_against_actor(ai_near_actors_ids[j], 40))
+                                    CollideWithActor(ai_near_actors_ids[j], 40))
                                     ++v58;
                             }
                         }
-                        if (_46F04E_collide_against_portals()) break;
+                        if (CollideIndoorWithPortals()) break;
                     }
                     v56 = v58 > 1;
                     if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
@@ -1751,7 +1751,7 @@ void UpdateActors_BLV() {
                         v32 = pActors[actor_id].vPosition.z +
                               fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
                     }
-                    v33 = collide_against_floor(Vec3_int_(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
+                    v33 = GetIndoorFloorZ(Vec3_int_(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
                     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && pActors[actor_id].uAIState == Dead) {
                         pActors[actor_id].uAIState = Removed;
                         continue;
@@ -3171,13 +3171,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     unsigned int uSectorID = pIndoor->GetSector(pParty->vPosition);
     unsigned int uFaceID = -1;
     int party_z = pParty->vPosition.z;
-    int floor_z = collide_against_floor(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
+    int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floor_z == -30000 || uFaceID == -1) {
-        floor_z = collide_against_floor_approximate(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
+        floor_z = GetApproximateIndoorFloorZ(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
         if (floor_z == -30000 || uFaceID == -1) {
             __debugbreak();  // level built with errors
             pParty->vPosition = blv_prev_party_pos;
@@ -3426,11 +3426,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             break;
 
         for (uint j = 0; j < 100; ++j) {
-            collide_against_faces_and_portals(true);
-            _46E0B2_collide_against_decorations();
+            CollideIndoorWithGeometry(true);
+            CollideIndoorWithDecorations();
             for (int k = 0; k < uNumActors; ++k)
-                _46DF1A_collide_against_actor(k, 0);
-            if (_46F04E_collide_against_portals())
+                CollideWithActor(k, 0);
+            if (CollideIndoorWithPortals())
                 break; // No portal collisions => can break.
         }
 
@@ -3444,7 +3444,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             adjusted_pos.y = new_party_y + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
             adjusted_pos.z = new_party_z + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
         }
-        int adjusted_floor_z = collide_against_floor(adjusted_pos + Vec3_int_(0, 0, 40), &collision_state.uSectorID, &uFaceID);
+        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3_int_(0, 0, 40), &collision_state.uSectorID, &uFaceID);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - new_party_z > 128)
             return; // TODO: whaaa?
 
@@ -4051,7 +4051,7 @@ void FindBillboardsLightLevels_BLV() {
 }
 
 //----- (0047272C) --------------------------------------------------------
-int collide_against_floor_approximate(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
     std::array<Vec3_int_, 5> attempts = {{
         pos + Vec3_int_(-2, 0, 40),
         pos + Vec3_int_(2, 0, 40),
@@ -4063,7 +4063,7 @@ int collide_against_floor_approximate(const Vec3_int_ &pos, unsigned int *pSecto
     int result;
     for (const Vec3_int_ &attempt: attempts) {
         *pSectorID = pIndoor->GetSector(attempt);
-        result = collide_against_floor(attempt, pSectorID, pFaceID);
+        result = GetIndoorFloorZ(attempt, pSectorID, pFaceID);
         if (result != -30000 && *pSectorID)
             return result;
     }
@@ -4071,7 +4071,7 @@ int collide_against_floor_approximate(const Vec3_int_ &pos, unsigned int *pSecto
 }
 
 //----- (0047050A) --------------------------------------------------------
-bool stru141_actor_collision_object::PrepareAndCheckIfStationary(int dt) {
+bool CollisionState::PrepareAndCheckIfStationary(int dt) {
     this->speed = integer_sqrt(this->velocity.z * this->velocity.z +
                                this->velocity.y * this->velocity.y +
                                this->velocity.x * this->velocity.x);

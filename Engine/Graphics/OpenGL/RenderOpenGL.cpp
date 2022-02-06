@@ -329,7 +329,7 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
 }
 
 
-int collide_against_floor(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
     uint uFaceID = -1;
     int floor_z = BLV_GetFloorLevel(pos, *pSectorID, &uFaceID);
 

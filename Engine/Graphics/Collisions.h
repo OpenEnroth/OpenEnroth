@@ -4,7 +4,7 @@
 
 struct BLVFace;
 
-struct stru141_actor_collision_object {
+struct CollisionState {
     /**
      * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
      *
@@ -34,20 +34,7 @@ struct stru141_actor_collision_object {
     BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
 };
 
-extern stru141_actor_collision_object collision_state;
-
-void _46E26D_collide_against_sprites(int a1, int a2);
-
-/**
- * Original offset 0x46E44E.
- *
- * Performs collisions with level geometry. Fill & initialize `collision_state` before calling this function.
- *
- * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
- */
-void collide_against_faces_and_portals(bool ignore_ethereal);
-
-void _46E889_collide_against_bmodels(bool ignore_ethereal);
+extern CollisionState collision_state;
 
 // TODO: looks like this also works for ceilings, reflect in docs?
 /**
@@ -59,20 +46,67 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal);
  *                                      is not found.
  * @return                              Z coordinate for the floor at (X, Y).
  */
-int collide_against_floor(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
-void _46ED8A_collide_against_sprite_objects(unsigned int _this);
-int _46EF01_collision_chech_player(int a1);  // idb
-void _46E0B2_collide_against_decorations();
+int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
+// TODO: ^ belongs in indoor.cpp?
+
+/**
+ * Original offset 0x46E44E.
+ *
+ * Performs collisions with level geometry in indoor levels. Updates `collision_state`.
+ *
+ * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
+ */
+void CollideIndoorWithGeometry(bool ignore_ethereal);
+
+/**
+ * Original offset 0x46E889.
+ *
+ * Performs collisions with models in outdoor levels. Updates `collision_state`.
+ *
+ * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
+ */
+void CollideOutdoorWithModels(bool ignore_ethereal);
+
+/**
+ * Original offset 0x46E0B2.
+ */
+void CollideIndoorWithDecorations();
+
+/**
+ * Original offset 0x46E26D.
+ *
+ * @param grid_x
+ * @param grid_y
+ */
+void CollideOutdoorWithDecorations(int grid_x, int grid_y);
 
 /**
  * Original offset 0x46F04E.
  *
- * Performs collision checks with portals. If the collision did happen, then `adjusted_move_distance` of the collision
- * struct is set to `0xFFFFFF` (basically a large number).
+ * Performs collision checks with portals. Updates `collision_state`. If the collision did happen, then
+ * `adjusted_move_distance` member is set to `0xFFFFFF` (basically a large number).
  *
  * @return                              True if there were no collisions with portals.
  */
-bool _46F04E_collide_against_portals();
+bool CollideIndoorWithPortals();
+
+/**
+ * Original offset 0x46DF1A.
+ *
+ * @param actor_idx                 Actor index.
+ * @param override_radius           Override actor's radius. Pass zero to use original radius.
+ * @return                          Whether the collision is possible.
+ */
+bool CollideWithActor(int actor_idx, int override_radius);
+
+void _46ED8A_collide_against_sprite_objects(unsigned int _this);
+
+int _46EF01_collision_chech_player(int a1);
+
+
+// ================================================================================================================== //
+// Helper functions (not really a part of public interface)
+// ================================================================================================================== //
 
 /**
  * Original offset 0x47531C.
@@ -89,33 +123,8 @@ bool _46F04E_collide_against_portals();
  * @return                              Whether the actor, basically modeled as a sphere, can actually collide with the
  *                                      polygon if moving along the `dir` axis.
  */
-bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
+bool CollideIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
     int *move_distance, bool ignore_ethereal);
-
-/**
- * Original offset 0x4754BF
- *
- * @see collide_against_face
- */
-bool collide_against_model_face(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
-    BLVFace *face, int model_index, bool ignore_ethereal);
-
-/**
- * Original offset 0x475665.
- *
- * \param face                          Face to check.
- * \param point                         Point to check.
- * \returns                             Projects the provided point and face onto the face's main plane (XY, YZ or ZX)
- *                                      and returns whether the resulting point lies inside the resulting polygon.
- */
-bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point);
-
-/**
- * Original offset 0x4759C9.
- *
- * @see IsProjectedPointInsideFace
- */
-bool IsProjectedPointInsideModelFace(BLVFace *face, int model_index, const Vec3_short_ &point);
 
 /**
  * Original offset 0x475D85.
@@ -131,23 +140,39 @@ bool IsProjectedPointInsideModelFace(BLVFace *face, int model_index, const Vec3_
  * @return                              Whether the actor, modeled as a point, hits the provided polygon if moving from
  *                                      `pos` along the `dir` axis by at most `move_distance`.
  *
- * @see collide_against_face
+ * @see CollideIndoorWithFace
  */
-bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance);
+bool CollidePointIndoorWithFace(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance);
+
+/**
+ * Original offset 0x4754BF
+ *
+ * @see CollideIndoorWithFace
+ */
+bool CollideOutdoorWithFace(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
+    BLVFace *face, int model_index, bool ignore_ethereal);
 
 /**
  * Original offset 0x475F30.
  *
- * @see collide_against_face_point
+ * @see CollidePointIndoorWithFace
  */
-bool collide_against_model_face_point(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int a9);
+bool CollidePointOutdoorWithFace(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int a9);
 
 /**
- * Original offset 0x46DF1A.
+ * Original offset 0x475665.
  *
- * @param actor_idx                 Actor index.
- * @param override_radius           Override actor's radius. Pass zero to use original radius.
- * @return                          Whether the collision is possible.
+ * \param face                          Face to check.
+ * \param point                         Point to check.
+ * \returns                             Projects the provided point and face onto the face's main plane (XY, YZ or ZX)
+ *                                      and returns whether the resulting point lies inside the resulting polygon.
  */
-bool _46DF1A_collide_against_actor(int actor_idx, int override_radius);
+bool IsProjectedPointInsideIndoorFace(BLVFace *face, const Vec3_short_ &point);
+
+/**
+ * Original offset 0x4759C9.
+ *
+ * @see IsProjectedPointInsideIndoorFace
+ */
+bool IsProjectedPointInsideOutdoorFace(BLVFace *face, int model_index, const Vec3_short_ &point);
 

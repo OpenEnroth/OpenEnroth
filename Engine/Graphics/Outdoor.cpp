@@ -2693,15 +2693,15 @@ void ODM_ProcessPartyActions() {
         if (collision_state.PrepareAndCheckIfStationary(v36))
             break;
 
-        _46E889_collide_against_bmodels(true);
+        CollideOutdoorWithModels(true);
         // v37 = WorldPosToGridCellY(pParty->vPosition.y);
         // v38 = WorldPosToGridCellX(pParty->vPosition.x);
-        _46E26D_collide_against_sprites(
+        CollideOutdoorWithDecorations(
             WorldPosToGridCellX(pParty->vPosition.x),
             WorldPosToGridCellY(pParty->vPosition.y));
         _46ED8A_collide_against_sprite_objects(4);
         for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
-            _46DF1A_collide_against_actor(actor_id, 0);
+            CollideWithActor(actor_id, 0);
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             _angle_x = collision_state.new_position_lo.x;
             _angle_y = collision_state.new_position_lo.y;
@@ -3387,15 +3387,15 @@ void UpdateActors_ODM() {
             collision_state.velocity.y = pActors[Actor_ITR].vVelocity.y;
             collision_state.velocity.z = pActors[Actor_ITR].vVelocity.z;
             if (collision_state.PrepareAndCheckIfStationary(0)) break;
-            _46E889_collide_against_bmodels(true);
-            _46E26D_collide_against_sprites(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y));
+            CollideOutdoorWithModels(true);
+            CollideOutdoorWithDecorations(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y));
             _46EF01_collision_chech_player(0);
             _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, Actor_ITR));
             int v31 = 0;
             signed int i;
             for (i = 0; v31 < ai_arrays_size; ++v31) {
                 unsigned int v33 = ai_near_actors_ids[v31];
-                if (v33 != Actor_ITR && _46DF1A_collide_against_actor(v33, 40))
+                if (v33 != Actor_ITR && CollideWithActor(v33, 40))
                     ++i;
             }
             int v71 = i > 1;
