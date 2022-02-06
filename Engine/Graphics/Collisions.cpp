@@ -522,55 +522,42 @@ bool CollideWithActor(int actor_idx, int override_radius) {
 }
 
 void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
-    ObjectDesc *object;  // edx@4
-    int v10;             // ecx@12
-    int v11;             // esi@13
-
     for (uint i = 0; i < uNumSpriteObjects; ++i) {
-        if (pSpriteObjects[i].uObjectDescID) {
-            object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
-            if (!(object->uFlags & OBJECT_DESC_NO_COLLISION)) {
-                if (collision_state.bbox.x1 <= pSpriteObjects[i].vPosition.x + object->uRadius &&
-                    collision_state.bbox.x2 >= pSpriteObjects[i].vPosition.x - object->uRadius &&
-                    collision_state.bbox.y1 <= pSpriteObjects[i].vPosition.y + object->uRadius &&
-                    collision_state.bbox.y2 >= pSpriteObjects[i].vPosition.y - object->uRadius &&
-                    collision_state.bbox.z1 <= pSpriteObjects[i].vPosition.z + object->uHeight &&
-                    collision_state.bbox.z2 >= pSpriteObjects[i].vPosition.z) {
-                    if (abs(((pSpriteObjects[i].vPosition.x -
-                              collision_state.position_lo.x) *
-                                 collision_state.direction.y -
-                             (pSpriteObjects[i].vPosition.y -
-                              collision_state.position_lo.y) *
-                                 collision_state.direction.x) >>
-                            16) <=
-                        object->uHeight + collision_state.radius_lo) {
-                        v10 = ((pSpriteObjects[i].vPosition.x -
-                                collision_state.position_lo.x) *
-                                   collision_state.direction.x +
-                               (pSpriteObjects[i].vPosition.y -
-                                collision_state.position_lo.y) *
-                                   collision_state.direction.y) >>
-                              16;
-                        if (v10 > 0) {
-                            v11 = collision_state.position_lo.z +
-                                  ((unsigned __int64)(collision_state.direction.z *
-                                                      (signed __int64)v10) >>
-                                   16);
-                            if (v11 >= pSpriteObjects[i].vPosition.z -
-                                           collision_state.radius_lo) {
-                                if (v11 <= object->uHeight +
-                                               collision_state.radius_lo +
-                                               pSpriteObjects[i].vPosition.z) {
-                                    if (v10 < collision_state.adjusted_move_distance) {
-                                        sub_46DEF2(_this, i);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        if (pSpriteObjects[i].uObjectDescID == 0)
+            continue;
+
+        ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
+        if (object->uFlags & OBJECT_DESC_NO_COLLISION)
+            continue;
+
+        BBox_int_ bbox;
+        bbox.x1 = pSpriteObjects[i].vPosition.x - object->uRadius;
+        bbox.x2 = pSpriteObjects[i].vPosition.x + object->uRadius;
+        bbox.y1 = pSpriteObjects[i].vPosition.y - object->uRadius;
+        bbox.y2 = pSpriteObjects[i].vPosition.y + object->uRadius;
+        bbox.z1 = pSpriteObjects[i].vPosition.z;
+        bbox.z2 = pSpriteObjects[i].vPosition.z + object->uHeight;
+        if (!collision_state.bbox.Intersects(bbox))
+            continue;
+
+        int dist_x = pSpriteObjects[i].vPosition.x - collision_state.position_lo.x;
+        int dist_y = pSpriteObjects[i].vPosition.y - collision_state.position_lo.y;
+        int sum_radius = object->uHeight + collision_state.radius_lo;
+
+        int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
+        if (abs(closest_dist) > sum_radius)
+            continue;
+
+        int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
+        if (dist_dot_dir <= 0)
+            continue;
+
+        int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
+        if (closest_z < bbox.z1 - collision_state.radius_lo || closest_z > bbox.z2 + collision_state.radius_lo)
+            continue;
+
+        if (dist_dot_dir < collision_state.adjusted_move_distance)
+            sub_46DEF2(_this, i);
     }
 }
 
