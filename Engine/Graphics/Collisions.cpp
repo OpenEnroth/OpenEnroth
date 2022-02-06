@@ -1,5 +1,7 @@
 #include "Collisions.h"
 
+#include <algorithm>
+
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"

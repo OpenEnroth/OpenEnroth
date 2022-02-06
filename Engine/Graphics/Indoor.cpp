@@ -4064,7 +4064,7 @@ int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, un
     }};
 
     int result;
-    for (const Vec3_int_ &attempt: attempts) {
+    for (const Vec3_int_ &attempt : attempts) {
         *pSectorID = pIndoor->GetSector(attempt);
         result = GetIndoorFloorZ(attempt, pSectorID, pFaceID);
         if (result != -30000 && *pSectorID)
