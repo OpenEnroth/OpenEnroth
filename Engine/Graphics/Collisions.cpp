@@ -31,8 +31,8 @@ CollisionState collision_state;
  *                                      polygon if moving along the `dir` axis.
  */
 template<class FacePointAccessor>
-static bool CollideWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
-                     int *move_distance, bool ignore_ethereal, const FacePointAccessor& face_points) {
+static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
+                                  int *move_distance, bool ignore_ethereal, const FacePointAccessor& face_points) {
     if (ignore_ethereal && face->Ethereal())
         return false;
 
@@ -240,6 +240,63 @@ static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, 
     return counter == 1;
 }
 
+template<class FacePointAccessor>
+static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal,
+                                const FacePointAccessor &face_points) {
+    int distance_lo_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
+    int distance_lo_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
+    if (distance_lo_old > 0 &&
+        (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
+        distance_lo_new <= distance_lo_old) {
+        bool have_collision = false;
+        int move_distance = collision_state.move_distance;
+        if (CollideSphereWithFace(face, collision_state.position_lo, collision_state.radius_lo,
+                            collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
+            have_collision = true;
+        } else {
+            move_distance = collision_state.move_distance + collision_state.radius_lo;
+            if (CollidePointWithFace(face, collision_state.position_lo, collision_state.direction,
+                                     &move_distance, face_points)) {
+                have_collision = true;
+                move_distance -= collision_state.radius_lo;
+            }
+        }
+
+        if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+            collision_state.adjusted_move_distance = move_distance;
+            collision_state.pid = face_pid;
+        }
+    }
+
+    // TODO: it's quite clear radius_lo does not belong in checks below, but here it is. Probably a bug in
+    // the original code?
+
+    int distance_hi_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
+    int distance_hi_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
+    if ((collision_state.check_hi & 1) &&
+        distance_hi_old > 0 &&
+        (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
+        distance_hi_new <= distance_hi_old) {
+        bool have_collision = false;
+        int move_distance = collision_state.move_distance;
+        if (CollideSphereWithFace(face, collision_state.position_hi, collision_state.radius_hi,
+                            collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
+            have_collision = true;
+        } else {
+            move_distance = collision_state.move_distance + collision_state.radius_hi;
+            if (CollidePointWithFace(face, collision_state.position_hi, collision_state.direction,
+                                     &move_distance, face_points)) {
+                have_collision = true;
+                move_distance -= collision_state.radius_lo;
+            }
+        }
+
+        if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+            collision_state.adjusted_move_distance = move_distance;
+            collision_state.pid = face_pid;
+        }
+    }
+}
 
 
 /*
@@ -272,72 +329,18 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
         int totalFaces = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
         for (int j = 0; j < totalFaces; j++) {
-            int face_id = pSector->pFloors[j];
             BLVFace *face = &pIndoor->pFaces[pSector->pFloors[j]];
-
             if (face->Portal() || !collision_state.bbox.Intersects(face->pBounding))
                 continue;
 
+            int face_id = pSector->pFloors[j];
             if (face_id == collision_state.ignored_face_id)
                 continue;
 
             auto face_points = [&](int index) -> const auto & {
                 return pIndoor->pVertices[face->pVertexIDs[index]];
             };
-
-            int distance_lo_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-            int distance_lo_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-            if (distance_lo_old > 0 &&
-                (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
-                distance_lo_new <= distance_lo_old) {
-                bool have_collision = false;
-                int move_distance = collision_state.move_distance;
-                if (CollideWithFace(face, collision_state.position_lo, collision_state.radius_lo,
-                                    collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
-                    have_collision = true;
-                } else {
-                    move_distance = collision_state.move_distance + collision_state.radius_lo;
-                    if (CollidePointWithFace(face, collision_state.position_lo, collision_state.direction,
-                                             &move_distance, face_points)) {
-                        have_collision = true;
-                        move_distance -= collision_state.radius_lo;
-                    }
-                }
-
-                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-                    collision_state.adjusted_move_distance = move_distance;
-                    collision_state.pid = PID(OBJECT_BModel, face_id);
-                }
-            }
-
-            // TODO: it's quite clear radius_lo does not belong in checks below, but here it is. Probably a bug in
-            // the original code?
-
-            int distance_hi_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
-            int distance_hi_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
-            if ((collision_state.check_hi & 1) &&
-                distance_hi_old > 0 &&
-                (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
-                distance_hi_new <= distance_hi_old) {
-                bool have_collision = false;
-                int move_distance = collision_state.move_distance;
-                if (CollideWithFace(face, collision_state.position_hi, collision_state.radius_hi,
-                                    collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
-                    have_collision = true;
-                } else {
-                    move_distance = collision_state.move_distance + collision_state.radius_hi;
-                    if (CollidePointWithFace(face, collision_state.position_hi, collision_state.direction,
-                                             &move_distance, face_points)) {
-                        have_collision = true;
-                        move_distance -= collision_state.radius_lo;
-                    }
-                }
-
-                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-                    collision_state.adjusted_move_distance = move_distance;
-                    collision_state.pid = PID(OBJECT_BModel, pSector->pFloors[j]);
-                }
-            }
+            CollideBodyWithFace(face, PID(OBJECT_BModel, face_id), ignore_ethereal, face_points);
         }
     }
 }
@@ -374,56 +377,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
                 return pOutdoor->pBModels[model.index].pVertices.pVertices[face.pVertexIDs[index]];
             };
 
-            int distance_lo_old = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-            int distance_lo_new = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-            if (distance_lo_old > 0 &&
-                (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
-                distance_lo_new <= distance_lo_old) {
-                bool have_collision = false;
-                int move_distance = collision_state.move_distance;
-                if (CollideWithFace(&face, collision_state.position_lo, collision_state.radius_lo,
-                                    collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
-                    have_collision = true;
-                } else {
-                    move_distance = collision_state.move_distance + collision_state.radius_lo;
-                    if (CollidePointWithFace(&face, collision_state.position_lo, collision_state.direction,
-                                             &move_distance, face_points)) {
-                        have_collision = true;
-                        move_distance -= collision_state.radius_lo;
-                    }
-                }
-
-                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-                    collision_state.adjusted_move_distance = move_distance;
-                    collision_state.pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
-                }
-            }
-
-            int distance_hi_old = face.pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
-            int distance_hi_new = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
-            if ((collision_state.check_hi & 1) &&
-                distance_hi_old > 0 &&
-                (distance_hi_old <= collision_state.radius_lo || distance_hi_new <= collision_state.radius_lo) &&
-                distance_hi_new <= distance_hi_old) {
-                bool have_collision = false;
-                int move_distance = collision_state.move_distance;
-                if (CollideWithFace(&face, collision_state.position_hi, collision_state.radius_hi,
-                                    collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
-                    have_collision = true;
-                } else {
-                    move_distance = collision_state.move_distance + collision_state.radius_hi;
-                    if (CollidePointWithFace(&face, collision_state.position_hi, collision_state.direction,
-                                             &move_distance, face_points)) {
-                        have_collision = true;
-                        move_distance -= collision_state.radius_lo;
-                    }
-                }
-
-                if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-                    collision_state.adjusted_move_distance = move_distance;
-                    collision_state.pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
-                }
-            }
+            CollideBodyWithFace(&face, PID(OBJECT_BModel, (mface.index | (model.index << 6))), ignore_ethereal, face_points);
         }
     }
 }
