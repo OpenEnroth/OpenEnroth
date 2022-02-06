@@ -10,7 +10,7 @@
 
 CollisionState collision_state;
 
-/*
+/* =================
  * Helper functions.
  */
 
@@ -274,48 +274,40 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
                      collision_state.radius_hi);
 }
 
-static void CollideWithDecoration(int id) {
-    LevelDecoration *decor = &pLevelDecorations[id];
-    if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
-        return;
-
-    DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
-    if (decor_desc->CanMoveThrough())
-        return;
-
+static bool CollideWithCylinder(const Vec3_int_ &center_lo, int radius, int height, int pid, bool jagged_top) {
     BBox_int_ bbox;
-    bbox.x1 = decor->vPosition.x - decor_desc->uRadius;
-    bbox.x2 = decor->vPosition.x + decor_desc->uRadius;
-    bbox.y1 = decor->vPosition.y - decor_desc->uRadius;
-    bbox.y2 = decor->vPosition.y + decor_desc->uRadius;
-    bbox.z1 = decor->vPosition.z;
-    bbox.z2 = decor->vPosition.z + decor_desc->uDecorationHeight;
+    bbox.x1 = center_lo.x - radius;
+    bbox.x2 = center_lo.x + radius;
+    bbox.y1 = center_lo.y - radius;
+    bbox.y2 = center_lo.y + radius;
+    bbox.z1 = center_lo.z;
+    bbox.z2 = center_lo.z + height;
     if (!collision_state.bbox.Intersects(bbox))
-        return;
+        return false;
 
-    // dist vector points from position center into decoration center.
-    int dist_x = decor->vPosition.x - collision_state.position_lo.x;
-    int dist_y = decor->vPosition.y - collision_state.position_lo.y;
-    int sum_radius = collision_state.radius_lo + decor_desc->uRadius;
+    // dist vector points from position center into cylinder center.
+    int dist_x = center_lo.x - collision_state.position_lo.x;
+    int dist_y = center_lo.y - collision_state.position_lo.y;
+    int sum_radius = collision_state.radius_lo + radius;
 
     // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
     // thus this actually is length(dist) * sin(dist, collision_state.direction).
-    // This in turn is the distance from decoration center to the line of actor's movement.
+    // This in turn is the distance from cylinder center to the line of actor's movement.
     int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
     if (abs(closest_dist) > sum_radius)
-        return; // No chance to collide.
+        return false; // No chance to collide.
 
     // Length of dist vector projected onto collision_state.direction.
     int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
     if (dist_dot_dir <= 0)
-        return; // We're moving away from the decoration.
+        return false; // We're moving away from the cylinder.
 
-    // Z-coordinate of the actor at the point closest to the decoration in XY plane.
+    // Z-coordinate of the actor at the point closest to the cylinder in XY plane.
     int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
-    if (closest_z < bbox.z1 || closest_z > bbox.z2)
-        return;
+    if (closest_z < bbox.z1 || (closest_z > bbox.z2 && !jagged_top))
+        return false;
 
-    // That's how far can we go along the collision_state.direction axis until the actor touches the decoration,
+    // That's how far can we go along the collision_state.direction axis until the actor touches the cylinder,
     // i.e. distance between them goes below sum_radius.
     int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
     if (move_distance < 0)
@@ -323,12 +315,26 @@ static void CollideWithDecoration(int id) {
 
     if (move_distance < collision_state.adjusted_move_distance) {
         collision_state.adjusted_move_distance = move_distance;
-        collision_state.pid = PID(OBJECT_Decoration, id);
+        collision_state.pid = pid;
     }
+    return true;
+}
+
+static void CollideWithDecoration(int id) {
+    LevelDecoration *decor = &pLevelDecorations[id];
+    if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
+        return;
+
+    DecorationDesc *desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
+    if (desc->CanMoveThrough())
+        return;
+
+    CollideWithCylinder(decor->vPosition, desc->uRadius, desc->uDecorationHeight, PID(OBJECT_Decoration, id), false);
 }
 
 
-/*
+
+/* =============================
  * Implementation of public API.
  */
 
@@ -427,7 +433,7 @@ void CollideOutdoorWithDecorations(int grid_x, int grid_y) {
         return;
 
     for(; *pid_list != 0; pid_list++) {
-        unsigned __int16 pid = *pid_list;
+        uint16_t pid = *pid_list;
         if (PID_TYPE(pid) != OBJECT_Decoration)
             continue;
 
@@ -478,47 +484,7 @@ bool CollideWithActor(int actor_idx, int override_radius) {
     if (override_radius != 0)
         radius = override_radius;
 
-    BBox_int_ bbox;
-    bbox.x1 = actor->vPosition.x - radius;
-    bbox.x2 = actor->vPosition.x + radius;
-    bbox.y1 = actor->vPosition.y - radius;
-    bbox.y2 = actor->vPosition.y + radius;
-    bbox.z1 = actor->vPosition.z;
-    bbox.z2 = actor->vPosition.z + actor->uActorHeight;
-
-    if (!collision_state.bbox.Intersects(bbox))
-        return false;
-
-    // dist vector points from position center into actor's center.
-    int dist_x = actor->vPosition.x - collision_state.position_lo.x;
-    int dist_y = actor->vPosition.y - collision_state.position_lo.y;
-    int sum_radius = collision_state.radius_lo + radius;
-
-    // Distance from actor's center to the line of movement.
-    int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
-    if (abs(closest_dist) > sum_radius)
-        return false; // No chance to collide.
-
-    // Length of dist vector projected onto collision_state.direction.
-    int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
-    if (dist_dot_dir <= 0)
-        return false; // We're moving away from the actor.
-
-    // Z-coordinate at the point closest to the actor in XY plane.
-    int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
-    if (closest_z < actor->vPosition.z)
-        return false; // We're below.
-    // TODO: and where's a check for being above?
-
-    int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
-    if (move_distance < 0)
-        move_distance = 0;
-
-    if (move_distance < collision_state.adjusted_move_distance) {
-        collision_state.adjusted_move_distance = move_distance;
-        collision_state.pid = PID(OBJECT_Actor, actor_idx);
-    }
-    return true;
+    return CollideWithCylinder(actor->vPosition, radius, actor->uActorHeight, PID(OBJECT_Actor, actor_idx), true);
 }
 
 void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
@@ -529,6 +495,9 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
         if (object->uFlags & OBJECT_DESC_NO_COLLISION)
             continue;
+
+        // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
+        // seemed not worth it.
 
         BBox_int_ bbox;
         bbox.x1 = pSpriteObjects[i].vPosition.x - object->uRadius;
@@ -561,41 +530,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
     }
 }
 
-void _46EF01_collision_chech_player(bool infinite_height) {
-    BBox_int_ bbox;
-    bbox.x1 = pParty->vPosition.x - (2 * pParty->radius);
-    bbox.x2 = pParty->vPosition.x + (2 * pParty->radius);
-    bbox.y1 = pParty->vPosition.y - (2 * pParty->radius);
-    bbox.y2 = pParty->vPosition.y + (2 * pParty->radius);
-    bbox.z1 = pParty->vPosition.z;
-    bbox.z2 = pParty->vPosition.z + pParty->uPartyHeight;
-    if (!collision_state.bbox.Intersects(bbox))
-        return;
-
-    int sum_radius = collision_state.radius_lo + (2 * pParty->radius);
-    int dist_x = pParty->vPosition.x - collision_state.position_lo.x;
-    int dist_y = pParty->vPosition.y - collision_state.position_lo.y;
-
-    int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
-    if (abs(closest_dist) > sum_radius)
-        return;
-
-    int dist_dot_dir = (dist_y * collision_state.direction.y + dist_x * collision_state.direction.x) >> 16;
-    if (dist_dot_dir <= 0)
-        return;
-
-    int closest_z = fixpoint_mul(collision_state.direction.z, dist_dot_dir) + collision_state.position_lo.z;
-    if (closest_z < bbox.z1 || (closest_z > bbox.z2 && !infinite_height))
-        return;
-
-    int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
-    if (move_distance < 0)
-        move_distance = 0;
-
-    if (move_distance < collision_state.adjusted_move_distance) {
-        collision_state.adjusted_move_distance = move_distance;
-        collision_state.pid = 4;
-    }
+void _46EF01_collision_chech_player(bool jagged_top) {
+    CollideWithCylinder(pParty->vPosition, 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
 }
-
 

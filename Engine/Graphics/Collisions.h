@@ -91,8 +91,10 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 /**
  * Original offset 0x46EF01.
  *
- * @param infinite_height           Assume that the party has infinite height.
+ * @param jagged_top                Makes collision happen even if the monster would end up above the party.
+ *                                  However, for the collision to happen, corresponding bounding boxes still need to
+ *                                  intersect.
  */
-void _46EF01_collision_chech_player(bool infinite_height);
+void _46EF01_collision_chech_player(bool jagged_top);
 
 
