@@ -114,6 +114,14 @@ bool CollideIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, cons
     int *move_distance, bool ignore_ethereal);
 
 /**
+ * Original offset 0x4754BF
+ *
+ * @see CollideIndoorWithFace
+ */
+bool CollideOutdoorWithFace(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
+    BLVFace *face, int model_index, bool ignore_ethereal);
+
+/**
  * Original offset 0x475D85.
  *
  * @param face                          Polygon to check collision against.
@@ -130,14 +138,6 @@ bool CollideIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, cons
  * @see CollideIndoorWithFace
  */
 bool CollidePointIndoorWithFace(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance);
-
-/**
- * Original offset 0x4754BF
- *
- * @see CollideIndoorWithFace
- */
-bool CollideOutdoorWithFace(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
-    BLVFace *face, int model_index, bool ignore_ethereal);
 
 /**
  * Original offset 0x475F30.
