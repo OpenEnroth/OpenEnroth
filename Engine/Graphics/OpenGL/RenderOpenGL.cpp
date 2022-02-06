@@ -286,7 +286,7 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal) {
                     v9 <= collision_state.radius_lo) {
                     if (v9 <= v8) {
                         move_distance = collision_state.move_distance;
-                        if (sub_4754BF(collision_state.radius_lo,
+                        if (collide_against_model_face(collision_state.radius_lo,
                                         &move_distance,
                                         collision_state.position_lo,
                                         collision_state.direction,
@@ -295,7 +295,7 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal) {
                         } else {
                             move_distance = collision_state.radius_lo +
                                     collision_state.move_distance;
-                            if (!sub_475F30(&move_distance, &face,
+                            if (!collide_against_model_face_point(&move_distance, &face,
                                             collision_state.position_lo,
                                             collision_state.direction,
                                             model.index))
@@ -322,7 +322,7 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal) {
                         v16 <= collision_state.radius_lo) {
                         if (v16 <= v15) {
                             move_distance = collision_state.move_distance;
-                            if (sub_4754BF(
+                            if (collide_against_model_face(
                                     collision_state.radius_hi, &move_distance,
                                     collision_state.position_hi,
                                     collision_state.direction, &face,
@@ -337,7 +337,7 @@ void _46E889_collide_against_bmodels(bool ignore_ethereal) {
                             } else {
                                 move_distance = collision_state.move_distance +
                                         collision_state.radius_hi;
-                                if (sub_475F30(
+                                if (collide_against_model_face_point(
                                         &move_distance, &face,
                                         collision_state.position_hi,
                                         collision_state.direction,
@@ -945,52 +945,55 @@ bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const
     return true;
 }
 
-bool sub_4754BF(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
-                BLVFace* face, int a10, bool ignore_ethereal) {
+bool collide_against_model_face(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
+                BLVFace* face, int model_index, bool ignore_ethereal) {
     int v12;      // ST1C_4@3
-    int v14;      // esi@3
-    int v15;      // edi@4
-    int64_t v16;  // qtt@6
-                  // __int16 v17; // si@7
     int a7a;      // [sp+30h] [bp+18h]@7
     int a1b;      // [sp+38h] [bp+20h]@3
     int a11b;     // [sp+40h] [bp+28h]@3
-    int a11a;     // [sp+40h] [bp+28h]@4
-    int a11c;     // [sp+40h] [bp+28h]@5
 
     if (ignore_ethereal && face->Ethereal())
         return false;
 
-    int dir_dot_normal =
+    // _fp suffix => that's a fixpoint number
+
+    int cos_dir_normal_fp =
         fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
         fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
         fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
 
-    v14 = (radius << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
-    if (abs((radius << 16) - face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z)) >= radius << 16) {
-        a11c = abs(v14) >> 14;
-        if (a11c > abs(dir_dot_normal)) return false;
-        HEXRAYS_LODWORD(v16) = v14 << 16;
-        HEXRAYS_HIDWORD(v16) = v14 >> 16;
-        v15 = radius;
-        a11a = v16 / dir_dot_normal;
+    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
+    int radius_fp = radius << 16;
+
+    int move_distance_fp;
+    int64_t overshoot;
+
+    int overshoot_fp = radius_fp - pos_face_distance_fp;
+    if (abs(radius_fp - pos_face_distance_fp) < radius_fp) {
+        move_distance_fp = 0;
+        overshoot = abs(overshoot_fp) >> 16;
     } else {
-        a11a = 0;
-        v15 = abs(v14) >> 16;
+        int overshoot_x4 = abs(overshoot_fp) >> 14;
+        if (overshoot_x4 > abs(cos_dir_normal_fp))
+            return false;
+
+        overshoot = radius;
+        move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
     }
 
-    // v17 = pos.y + ((unsigned int)fixpoint_mul(a11a, dir_y) >> 16);
-    HEXRAYS_LOWORD(a7a) = (short)pos.x +
-        ((unsigned int)fixpoint_mul(a11a, dir.x) >> 16) -
-        fixpoint_mul(v15, face->pFacePlane_old.vNormal.x);
-    HEXRAYS_HIWORD(a7a) = pos.y + ((unsigned int)fixpoint_mul(a11a, dir.y) >> 16) -
-        fixpoint_mul(v15, face->pFacePlane_old.vNormal.y);
-    if (!sub_4759C9(face, a10, a7a,
-        (short)pos.z + ((unsigned int)fixpoint_mul(a11a, dir.z) >> 16) -
-        fixpoint_mul(v15, face->pFacePlane_old.vNormal.z)))
+    Vec3_short_ new_pos;
+    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) - overshoot * face->pFacePlane_old.vNormal.x) >> 16);
+    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
+    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
+
+    if (!IsProjectedPointInsideModelFace(face, model_index, new_pos))
         return false;
-    *move_distance = a11a >> 16;
-    if (a11a >> 16 < 0) *move_distance = 0;
+
+    if (move_distance_fp < 0) {
+        *move_distance = 0;
+    } else {
+        *move_distance = move_distance_fp >> 16;
+    }
     return true;
 }
 
@@ -1065,151 +1068,90 @@ bool IsProjectedPointInsideFace(BLVFace* face, const Vec3_short_ &point) {
     return counter == 1;
 }
 
-bool sub_4759C9(BLVFace* face, int a2, int a3, __int16 a4) {
-    bool v12;            // edi@14
-    signed int v16;      // ebx@18
-    int v17;             // edi@20
-    signed int v18;      // ST14_4@22
-    signed __int64 v19;  // qtt@22
-    bool result;         // eax@25
-    int v21;             // [sp+14h] [bp-10h]@14
-    signed int v22;      // [sp+18h] [bp-Ch]@1
-    int v23;             // [sp+1Ch] [bp-8h]@2
-    signed int v24;      // [sp+20h] [bp-4h]@2
-    signed int a4d;      // [sp+30h] [bp+Ch]@14
+bool IsProjectedPointInsideModelFace(BLVFace* face, int model_index, const Vec3_short_ &point) {
+    std::array<int16_t, 104> edges_u;
+    std::array<int16_t, 104> edges_v;
 
+    int u;
+    int v;
     if (face->uAttributes & FACE_XY_PLANE) {
-        v23 = (signed __int16)a3;
-        v24 = HEXRAYS_SHIWORD(a3);
-        if (face->uNumVertices) {
-            for (v22 = 0; v22 < face->uNumVertices; ++v22) {
-                word_720A70_intercepts_xs_plus_xs[2 * v22] =
-                    face->pXInterceptDisplacements[v22] +
-                    LOWORD(pOutdoor->pBModels[a2]
-                        .pVertices.pVertices[face->pVertexIDs[v22]]
-                        .x);
-                word_7209A0_intercepts_ys_plus_ys[2 * v22] =
-                    face->pYInterceptDisplacements[v22] +
-                    LOWORD(pOutdoor->pBModels[a2]
-                        .pVertices.pVertices[face->pVertexIDs[v22]]
-                        .y);
-                word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] =
-                    face->pXInterceptDisplacements[v22 + 1] +
-                    LOWORD(pOutdoor->pBModels[a2]
-                        .pVertices.pVertices[face->pVertexIDs[v22 + 1]]
-                        .x);
-                word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] =
-                    face->pYInterceptDisplacements[v22 + 1] +
-                    LOWORD(pOutdoor->pBModels[a2]
-                        .pVertices.pVertices[face->pVertexIDs[v22 + 1]]
-                        .y);
-            }
+        u = point.x;
+        v = point.y;
+        for (int i = 0; i < face->uNumVertices; ++i) {
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] +
+                LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].x);
+            edges_v[2 * i] = face->pYInterceptDisplacements[i] +
+                LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].y);
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] +
+                LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].x);
+            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] +
+                LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].y);
         }
     } else {
         if (face->uAttributes & FACE_XZ_PLANE) {
-            v23 = (signed __int16)a3;
-            v24 = a4;
-            if (face->uNumVertices) {
-                for (v22 = 0; v22 < face->uNumVertices; ++v22) {
-                    word_720A70_intercepts_xs_plus_xs[2 * v22] =
-                        face->pXInterceptDisplacements[v22] +
-                        LOWORD(pOutdoor->pBModels[a2]
-                            .pVertices.pVertices[face->pVertexIDs[v22]]
-                            .x);
-                    word_7209A0_intercepts_ys_plus_ys[2 * v22] =
-                        face->pZInterceptDisplacements[v22] +
-                        LOWORD(pOutdoor->pBModels[a2]
-                            .pVertices.pVertices[face->pVertexIDs[v22]]
-                            .z);
-                    word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] =
-                        face->pXInterceptDisplacements[v22 + 1] +
-                        LOWORD(
-                            pOutdoor->pBModels[a2]
-                            .pVertices.pVertices[face->pVertexIDs[v22 + 1]]
-                            .x);
-                    word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] =
-                        face->pZInterceptDisplacements[v22 + 1] +
-                        LOWORD(
-                            pOutdoor->pBModels[a2]
-                            .pVertices.pVertices[face->pVertexIDs[v22 + 1]]
-                            .z);
-                }
+            u = point.x;
+            v = point.z;
+            for (int i = 0; i < face->uNumVertices; ++i) {
+                edges_u[2 * i] = face->pXInterceptDisplacements[i] +
+                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].x);
+                edges_v[2 * i] = face->pZInterceptDisplacements[i] +
+                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].z);
+                edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] +
+                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].x);
+                edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] +
+                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].z);
             }
         } else {
-            v23 = HEXRAYS_SHIWORD(a3);
-            v24 = a4;
-            if (face->uNumVertices) {
-                for (v22 = 0; v22 < face->uNumVertices; ++v22) {
-                    word_720A70_intercepts_xs_plus_xs[2 * v22] =
-                        face->pYInterceptDisplacements[v22] +
-                        LOWORD(pOutdoor->pBModels[a2]
-                            .pVertices.pVertices[face->pVertexIDs[v22]]
-                            .y);
-                    word_7209A0_intercepts_ys_plus_ys[2 * v22] =
-                        face->pZInterceptDisplacements[v22] +
-                        LOWORD(pOutdoor->pBModels[a2]
-                            .pVertices.pVertices[face->pVertexIDs[v22]]
-                            .z);
-                    word_720A70_intercepts_xs_plus_xs[2 * v22 + 1] =
-                        face->pYInterceptDisplacements[v22 + 1] +
-                        LOWORD(
-                            pOutdoor->pBModels[a2]
-                            .pVertices.pVertices[face->pVertexIDs[v22 + 1]]
-                            .y);
-                    word_7209A0_intercepts_ys_plus_ys[2 * v22 + 1] =
-                        face->pZInterceptDisplacements[v22 + 1] +
-                        LOWORD(
-                            pOutdoor->pBModels[a2]
-                            .pVertices.pVertices[face->pVertexIDs[v22 + 1]]
-                            .z);
-                }
+            u = point.y;
+            v = point.z;
+            for (int i = 0; i < face->uNumVertices; ++i) {
+                edges_u[2 * i] = face->pYInterceptDisplacements[i] +
+                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].y);
+                edges_v[2 * i] = face->pZInterceptDisplacements[i] +
+                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i]].z);
+                edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] +
+                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].y);
+                edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] +
+                    LOWORD(pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[i + 1]].z);
             }
         }
     }
-    a4d = 0;
-    word_720A70_intercepts_xs_plus_xs[2 * face->uNumVertices] =
-        word_720A70_intercepts_xs_plus_xs[0];
-    word_7209A0_intercepts_ys_plus_ys[2 * face->uNumVertices] =
-        word_7209A0_intercepts_ys_plus_ys[0];
-    v12 = word_7209A0_intercepts_ys_plus_ys[0] >= v24;
-    if (2 * face->uNumVertices <= 0) return 0;
-    for (v21 = 0; v21 < 2 * face->uNumVertices; ++v21) {
-        if (a4d >= 2) break;
-        if (v12 ^ (word_7209A0_intercepts_ys_plus_ys[v21 + 1] >= v24)) {
-            if (word_720A70_intercepts_xs_plus_xs[v21 + 1] >= v23)
-                v16 = 0;
-            else
-                v16 = 2;
-            v17 = v16 | (word_720A70_intercepts_xs_plus_xs[v21] < v23);
-            if (v17 != 3) {
-                v18 = word_720A70_intercepts_xs_plus_xs[v21 + 1] -
-                    word_720A70_intercepts_xs_plus_xs[v21];
-                HEXRAYS_LODWORD(v19) = v18 << 16;
-                HEXRAYS_HIDWORD(v19) = v18 >> 16;
-                if (!v17 ||
-                    (word_720A70_intercepts_xs_plus_xs[v21] +
-                        ((signed int)(((unsigned __int64)(v19 /
-                            (word_7209A0_intercepts_ys_plus_ys
-                                [v21 + 1] -
-                                word_7209A0_intercepts_ys_plus_ys
-                                [v21]) *
-                            ((v24 -
-                                (signed int)
-                                word_7209A0_intercepts_ys_plus_ys
-                                [v21])
-                                << 16)) >>
-                            16) +
-                            0x8000) >>
-                            16) >=
-                        v23))
-                    ++a4d;
-            }
+
+    edges_u[2 * face->uNumVertices] = edges_u[0];
+    edges_v[2 * face->uNumVertices] = edges_v[0];
+
+    if (2 * face->uNumVertices <= 0)
+        return 0;
+
+    int counter = 0;
+    for (int i = 0; i < 2 * face->uNumVertices; ++i) {
+        if (counter >= 2)
+            break;
+
+        // Check that we're inside the bounding band in v coordinate
+        if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
+            continue;
+
+        // If we're to the left then we surely have an intersection
+        if ((edges_u[i] >= u) && (edges_u[i + 1] >= u)) {
+            ++counter;
+            continue;
         }
-        v12 = word_7209A0_intercepts_ys_plus_ys[v21 + 1] >= v24;
+
+        // We're not to the left? Then we must be inside the bounding band in u coordinate
+        if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
+            continue;
+
+        // Calculate the intersection point of v=const line with the edge.
+        int line_intersection_u = edges_u[i] +
+            static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
+
+        // We need ray intersections, so consider only one halfplane.
+        if (line_intersection_u >= u)
+            ++counter;
     }
-    result = 1;
-    if (a4d != 1) result = 0;
-    return result;
+
+    return counter == 1;
 }
 
 bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance) {
@@ -1261,43 +1203,53 @@ bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, i
     return true;
 }
 
-bool sub_475F30(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int a9) {
-    int v10 = fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x);
-    int v11 = fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y);
-    int v12 = fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
-    int v13 = v10 + v12 + v11;
-    int v14 = v10 + v12 + v11;
-    int v22 = v10 + v12 + v11;
-    if (face->Ethereal() || !v13 || v14 > 0 && !face->Portal()) {
+bool collide_against_model_face_point(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int model_index) {
+    // _fp suffix => that's a fixpoint number
+
+    // dot_product(dir, normal) is a cosine of an angle between them.
+    int cos_dir_normal_fp =
+        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+
+    if (cos_dir_normal_fp == 0)
+        return false; // dir is perpendicular to face normal.
+
+    if (face->uAttributes & FACE_ETHEREAL)
         return false;
-    }
-    int v16 = -(face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z));
-    if (v14 <= 0) {
-        if (face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z) < 0)
-            return 0;
-    } else {
-        if (v16 < 0) {
-            return 0;
-        }
-    }
-    int v17 = abs(-(face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z))) >> 14;
-    int64_t v18;
-    HEXRAYS_LODWORD(v18) = v16 << 16;
-    HEXRAYS_HIDWORD(v18) = v16 >> 16;
-    int v24 = v18 / v22;
-    int v23 = v18 / v22;
-    int v19;
-    HEXRAYS_LOWORD(v19) =
-        pos.x + (((unsigned int)fixpoint_mul(v23, dir.x) + 0x8000) >> 16);
-    HEXRAYS_HIWORD(v19) =
-        pos.y + (((unsigned int)fixpoint_mul(v23, dir.y) + 0x8000) >> 16);
-    if (v17 > abs(v14) || v23 > * move_distance << 16 ||
-        !sub_4759C9(
-            face, a9, v19,
-            pos.z + (((unsigned int)fixpoint_mul(v23, dir.z) + 0x8000) >> 16)))
-        return 0;
-    *move_distance = v24 >> 16;
-    return 1;
+
+    if (cos_dir_normal_fp > 0 && !face->Portal())
+        return false; // We're facing away && face is not a portal.
+
+    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos);
+
+    if (cos_dir_normal_fp < 0 && pos_face_distance_fp < 0)
+        return false; // Facing towards the face but already inside the model.
+
+    if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
+        return false; // Facing away from the face and outside the model.
+
+    int pos_face_distance_x4 = abs(-(pos_face_distance_fp)) >> 14;
+
+    // How far we need to move along the `dir` axis to hit face.
+    int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
+
+    Vec3_short_ new_pos;
+    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) + 0x8000) >> 16);
+    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) + 0x8000) >> 16);
+    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) + 0x8000) >> 16);
+
+    if (pos_face_distance_x4 > abs(cos_dir_normal_fp))
+        return false; // Moving perpendicular to the plane.
+
+    if (move_distance_fp > *move_distance << 16)
+        return false; // No correction needed.
+
+    if (!IsProjectedPointInsideModelFace(face, model_index, new_pos))
+        return false;
+
+    *move_distance = move_distance_fp >> 16;
+    return true;
 }
 
 

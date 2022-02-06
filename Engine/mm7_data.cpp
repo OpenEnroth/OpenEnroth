@@ -714,8 +714,6 @@ std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;
-std::array<__int16, 104> word_7209A0_intercepts_ys_plus_ys;
-std::array<__int16, 104> word_720A70_intercepts_xs_plus_xs;
 std::array<__int16, 777> word_720CE0_ys;  // idb
 std::array<__int16, 777> word_720DB0_xs;  // idb
 std::array<int, 20> dword_720E80;

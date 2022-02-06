@@ -560,8 +560,13 @@ void UpdateObjects();
 bool collide_against_face(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
                           int *move_distance, bool ignore_ethereal);
 
-bool sub_4754BF(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
-                BLVFace *face, int a10, bool ignore_ethereal);
+/**
+ * Original offset 0x4754BF
+ *
+ * @see collide_against_face
+ */
+bool collide_against_model_face(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
+                BLVFace *face, int model_index, bool ignore_ethereal);
 
 /**
  * Original offset 0x475665.
@@ -572,7 +577,14 @@ bool sub_4754BF(int radius, int *move_distance, const Vec3_int_ &pos, const Vec3
  *                                      and returns whether the resulting point lies inside the resulting polygon.
  */
 bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point);
-bool sub_4759C9(struct BLVFace *face, int a2, int a3, int16_t a4);
+
+/**
+ * Original offset 0x4759C9.
+ *
+ * @see IsProjectedPointInsideFace
+ */
+bool IsProjectedPointInsideModelFace(BLVFace *face, int model_index, const Vec3_short_ &point);
+
 /**
  * Original offset 0x475D85.
  *
@@ -590,7 +602,13 @@ bool sub_4759C9(struct BLVFace *face, int a2, int a3, int16_t a4);
  * @see collide_against_face
  */
 bool collide_against_face_point(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance);
-bool sub_475F30(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int a9);
+
+/**
+ * Original offset 0x475F30.
+ *
+ * @see collide_against_face_point
+ */
+bool collide_against_model_face_point(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int a9);
 
 class BSPModel;
 
