@@ -274,6 +274,59 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
                      collision_state.radius_hi);
 }
 
+static void CollideWithDecoration(int id) {
+    LevelDecoration *decor = &pLevelDecorations[id];
+    if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
+        return;
+
+    DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
+    if (decor_desc->CanMoveThrough())
+        return;
+
+    BBox_int_ bbox;
+    bbox.x1 = decor->vPosition.x - decor_desc->uRadius;
+    bbox.x2 = decor->vPosition.x + decor_desc->uRadius;
+    bbox.y1 = decor->vPosition.y - decor_desc->uRadius;
+    bbox.y2 = decor->vPosition.y + decor_desc->uRadius;
+    bbox.z1 = decor->vPosition.z;
+    bbox.z2 = decor->vPosition.z + decor_desc->uDecorationHeight;
+    if (!collision_state.bbox.Intersects(bbox))
+        return;
+
+    // dist vector points from position center into decoration center.
+    int dist_x = decor->vPosition.x - collision_state.position_lo.x;
+    int dist_y = decor->vPosition.y - collision_state.position_lo.y;
+    int sum_radius = collision_state.radius_lo + decor_desc->uRadius;
+
+    // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
+    // thus this actually is length(dist) * sin(dist, collision_state.direction).
+    // This in turn is the distance from decoration center to the line of actor's movement.
+    int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
+    if (abs(closest_dist) > sum_radius)
+        return; // No chance to collide.
+
+    // Length of dist vector projected onto collision_state.direction.
+    int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
+    if (dist_dot_dir <= 0)
+        return; // We're moving away from the decoration.
+
+    // Z-coordinate of the actor at the point closest to the decoration in XY plane.
+    int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
+    if (closest_z < bbox.z1 || closest_z > bbox.z2)
+        return;
+
+    // That's how far can we go along the collision_state.direction axis until the actor touches the decoration,
+    // i.e. distance between them goes below sum_radius.
+    int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
+    if (move_distance < 0)
+        move_distance = 0;
+
+    if (move_distance < collision_state.adjusted_move_distance) {
+        collision_state.adjusted_move_distance = move_distance;
+        collision_state.pid = PID(OBJECT_Decoration, id);
+    }
+}
+
 
 /*
  * Implementation of public API.
@@ -360,129 +413,26 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
 
 void CollideIndoorWithDecorations() {
     BLVSector *sector = &pIndoor->pSectors[collision_state.uSectorID];
-    for (unsigned int i = 0; i < sector->uNumDecorations; ++i) {
-        LevelDecoration *decor = &pLevelDecorations[sector->pDecorationIDs[i]];
-        if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
-            continue;
-
-        DecorationDesc *decor_desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
-        if (decor_desc->CanMoveThrough())
-            continue;
-
-        BBox_int_ bbox;
-        bbox.x1 = decor->vPosition.x - decor_desc->uRadius;
-        bbox.x2 = decor->vPosition.x + decor_desc->uRadius;
-        bbox.y1 = decor->vPosition.y - decor_desc->uRadius;
-        bbox.y2 = decor->vPosition.y + decor_desc->uRadius;
-        bbox.z1 = decor->vPosition.z;
-        bbox.z2 = decor->vPosition.z + decor_desc->uDecorationHeight;
-        if (!collision_state.bbox.Intersects(bbox))
-            continue;
-
-        // dist vector points from position center into decoration center.
-        int dist_x = decor->vPosition.x - collision_state.position_lo.x;
-        int dist_y = decor->vPosition.y - collision_state.position_lo.y;
-        int sum_radius = collision_state.radius_lo + decor_desc->uRadius;
-
-        // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
-        // thus this actually is length(dist) * sin(dist, collision_state.direction).
-        // This in turn is the distance from decoration center to the line of actor's movement.
-        int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
-        if (abs(closest_dist) > sum_radius)
-            continue; // No chance to collide.
-
-        // Length of dist vector projected onto collision_state.direction.
-        int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
-        if (dist_dot_dir <= 0)
-            continue; // We're moving away from the decoration.
-
-        // Z-coordinate of the actor at the point closest to the decoration in XY plane.
-        int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
-        if (closest_z < bbox.z1 || closest_z > bbox.z2)
-            continue;
-
-        // That's how far can we go along the collision_state.direction axis until the actor touches the decoration,
-        // i.e. distance between them goes below sum_radius.
-        int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
-        if (move_distance < 0)
-            move_distance = 0;
-
-        if (move_distance < collision_state.adjusted_move_distance) {
-            collision_state.adjusted_move_distance = move_distance;
-            collision_state.pid = PID(OBJECT_Decoration, sector->pDecorationIDs[i]);
-        }
-    }
+    for (unsigned int i = 0; i < sector->uNumDecorations; ++i)
+        CollideWithDecoration(sector->pDecorationIDs[i]);
 }
 
 void CollideOutdoorWithDecorations(int grid_x, int grid_y) {
-    int v12;                // ebp@15
-    int v13;                // ebx@15
-    int v14;                // esi@16
-    int v15;                // edi@17
-    int v16;                // eax@17
-    int v17;                // esi@19
-    char v18;               // zf@23
-    int v19;                // [sp+0h] [bp-10h]@15
-    int v21;                // [sp+8h] [bp-8h]@15
-
     if (grid_x < 0 || grid_x > 127 || grid_y < 0 || grid_y > 127)
         return;
 
     int grid_index = grid_x + (grid_y << 7);
-    unsigned __int16 *v3 = &pOutdoor->pFaceIDLIST[pOutdoor->pOMAP[grid_index]];
-    unsigned __int16 *v20 = &pOutdoor->pFaceIDLIST[pOutdoor->pOMAP[grid_index]];
-    if (!v3)
+    uint16_t *pid_list = &pOutdoor->pFaceIDLIST[pOutdoor->pOMAP[grid_index]];
+    if (!pid_list)
         return;
 
-    do {
-        unsigned __int16 v4 = *v3;
-        if (PID_TYPE(v4) == OBJECT_Decoration) {
-            LevelDecoration *v5 = &pLevelDecorations[PID_ID(v4)];
-            if (!(v5->uFlags & LEVEL_DECORATION_INVISIBLE)) {
-                DecorationDesc *v6 = pDecorationList->GetDecoration(v5->uDecorationDescID);
-                if (!v6->CanMoveThrough()) {
-                    BBox_int_ bbox;
-                    bbox.x1 = v5->vPosition.x - v6->uRadius;
-                    bbox.x2 = v5->vPosition.x + v6->uRadius;
-                    bbox.y1 = v5->vPosition.y - v6->uRadius;
-                    bbox.y2 = v5->vPosition.y + v6->uRadius;
-                    bbox.z1 = v5->vPosition.z;
-                    bbox.z2 = v5->vPosition.z + v6->uDecorationHeight;
-                    if (collision_state.bbox.Intersects(bbox)) {
-                        v12 = v5->vPosition.x - collision_state.position_lo.x;
-                        v19 = v5->vPosition.y - collision_state.position_lo.y;
-                        v13 = collision_state.radius_lo + v6->uRadius;
-                        v21 = ((v5->vPosition.x - collision_state.position_lo.x) *
-                            collision_state.direction.y - (v5->vPosition.y - collision_state.position_lo.y) *
-                            collision_state.direction.x) >> 16;
-                        if (abs(v21) <= collision_state.radius_lo + v6->uRadius) {
-                            v14 = (v12 * collision_state.direction.x +
-                                v19 * collision_state.direction.y) >> 16;
-                            if (v14 > 0) {
-                                v15 = v5->vPosition.z;
-                                v16 = collision_state.position_lo.z +
-                                    fixpoint_mul(collision_state.direction.z, v14);
-                                if (v16 >= v15) {
-                                    if (v16 <= v6->uDecorationHeight + v15) {
-                                        v17 = v14 - integer_sqrt(v13 * v13 - v21 * v21);
-                                        if (v17 < 0)
-                                            v17 = 0;
-                                        if (v17 < collision_state.adjusted_move_distance) {
-                                            collision_state.adjusted_move_distance = v17;
-                                            collision_state.pid = *v20;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        v3 = v20 + 1;
-        v18 = *v20 == 0;
-        ++v20;
-    } while (!v18);
+    for(; *pid_list != 0; pid_list++) {
+        unsigned __int16 pid = *pid_list;
+        if (PID_TYPE(pid) != OBJECT_Decoration)
+            continue;
+
+        CollideWithDecoration(PID_ID(pid));
+    }
 }
 
 bool CollideIndoorWithPortals() {
