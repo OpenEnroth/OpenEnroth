@@ -574,64 +574,41 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
     }
 }
 
-int _46EF01_collision_chech_player(int a1) {
-    int result;  // eax@1
-    int v3;      // ebx@7
-    int v4;      // esi@7
-    int v5;      // edi@8
-    int v6;      // ecx@9
-    int v7;      // edi@12
-    int v10;     // [sp+14h] [bp-8h]@7
-    int v11;     // [sp+18h] [bp-4h]@7
+void _46EF01_collision_chech_player(bool infinite_height) {
+    BBox_int_ bbox;
+    bbox.x1 = pParty->vPosition.x - (2 * pParty->radius);
+    bbox.x2 = pParty->vPosition.x + (2 * pParty->radius);
+    bbox.y1 = pParty->vPosition.y - (2 * pParty->radius);
+    bbox.y2 = pParty->vPosition.y + (2 * pParty->radius);
+    bbox.z1 = pParty->vPosition.z;
+    bbox.z2 = pParty->vPosition.z + pParty->uPartyHeight;
+    if (!collision_state.bbox.Intersects(bbox))
+        return;
 
-    result = pParty->vPosition.x;
-    // device_caps = pParty->uPartyHeight;
-    if (collision_state.bbox.x1 <= pParty->vPosition.x + (2 * pParty->radius) &&
-        collision_state.bbox.x2 >= pParty->vPosition.x - (2 * pParty->radius) &&
-        collision_state.bbox.y1 <= pParty->vPosition.y + (2 * pParty->radius) &&
-        collision_state.bbox.y2 >= pParty->vPosition.y - (2 * pParty->radius) &&
-        collision_state.bbox.z1 <= (pParty->vPosition.z + (int)pParty->uPartyHeight) &&
-        collision_state.bbox.z2 >= pParty->vPosition.z) {
-        v3 = collision_state.radius_lo + (2 * pParty->radius);
-        v11 = pParty->vPosition.x - collision_state.position_lo.x;
-        v4 = ((pParty->vPosition.x - collision_state.position_lo.x) *
-            collision_state.direction.y -
-            (pParty->vPosition.y - collision_state.position_lo.y) *
-            collision_state.direction.x) >>
-            16;
-        v10 = pParty->vPosition.y - collision_state.position_lo.y;
-        result = abs(((pParty->vPosition.x - collision_state.position_lo.x) *
-            collision_state.direction.y -
-            (pParty->vPosition.y - collision_state.position_lo.y) *
-            collision_state.direction.x) >>
-            16);
-        if (result <= collision_state.radius_lo + (2 * pParty->radius)) {
-            result = v10 * collision_state.direction.y;
-            v5 = (v10 * collision_state.direction.y +
-                v11 * collision_state.direction.x) >>
-                16;
-            if (v5 > 0) {
-                v6 = fixpoint_mul(collision_state.direction.z, v5) +
-                    collision_state.position_lo.z;
-                result = pParty->vPosition.z;
-                if (v6 >= pParty->vPosition.z) {
-                    result = pParty->uPartyHeight + pParty->vPosition.z;
-                    if (v6 <= (signed int)(pParty->uPartyHeight +
-                        pParty->vPosition.z) ||
-                        a1) {
-                        result = integer_sqrt(v3 * v3 - v4 * v4);
-                        v7 = v5 - integer_sqrt(v3 * v3 - v4 * v4);
-                        if (v7 < 0) v7 = 0;
-                        if (v7 < collision_state.adjusted_move_distance) {
-                            collision_state.adjusted_move_distance = v7;
-                            collision_state.pid = 4;
-                        }
-                    }
-                }
-            }
-        }
+    int sum_radius = collision_state.radius_lo + (2 * pParty->radius);
+    int dist_x = pParty->vPosition.x - collision_state.position_lo.x;
+    int dist_y = pParty->vPosition.y - collision_state.position_lo.y;
+
+    int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
+    if (abs(closest_dist) > sum_radius)
+        return;
+
+    int dist_dot_dir = (dist_y * collision_state.direction.y + dist_x * collision_state.direction.x) >> 16;
+    if (dist_dot_dir <= 0)
+        return;
+
+    int closest_z = fixpoint_mul(collision_state.direction.z, dist_dot_dir) + collision_state.position_lo.z;
+    if (closest_z < bbox.z1 || (closest_z > bbox.z2 && !infinite_height))
+        return;
+
+    int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
+    if (move_distance < 0)
+        move_distance = 0;
+
+    if (move_distance < collision_state.adjusted_move_distance) {
+        collision_state.adjusted_move_distance = move_distance;
+        collision_state.pid = 4;
     }
-    return result;
 }
 
 

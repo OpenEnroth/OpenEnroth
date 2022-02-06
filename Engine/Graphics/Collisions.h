@@ -88,6 +88,11 @@ bool CollideWithActor(int actor_idx, int override_radius);
 
 void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 
-int _46EF01_collision_chech_player(int a1);
+/**
+ * Original offset 0x46EF01.
+ *
+ * @param infinite_height           Assume that the party has infinite height.
+ */
+void _46EF01_collision_chech_player(bool infinite_height);
 
 
