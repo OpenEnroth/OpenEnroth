@@ -10,6 +10,202 @@
 
 CollisionState collision_state;
 
+/*
+ * Helper functions.
+ */
+
+template<class FacePointAccessor>
+static bool CollideWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
+                     int *move_distance, bool ignore_ethereal, const FacePointAccessor& face_points) {
+    if (ignore_ethereal && face->Ethereal())
+        return false;
+
+    // _fp suffix => that's a fixpoint number
+
+    // dot_product(dir, normal) is a cosine of an angle between them.
+    int cos_dir_normal_fp =
+        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+
+    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
+    int radius_fp = radius << 16;
+
+    int64_t overshoot;
+    signed int move_distance_fp;
+
+    // How deep into the model that the face belongs to we already are,
+    // positive value => actor's sphere already intersects the model.
+    int overshoot_fp = -pos_face_distance_fp + radius_fp;
+    if (abs(overshoot_fp) < radius_fp) {
+        // We got here => we're not that deep into the model. Can just push us back a little.
+        overshoot = abs(overshoot_fp) >> 16;
+        move_distance_fp = 0;
+    } else {
+        // We got here => we're already inside the model. Or way outside.
+        int overshoot_x4 = abs(overshoot_fp) >> 14;
+        if (overshoot_x4 > abs(cos_dir_normal_fp))
+            return false; // Moving perpendicular to the plane is OK for some reason.
+
+        // We just say we overshot by radius. No idea why.
+        overshoot = radius;
+
+        // Then this is a correction needed to bring us to the point where actor's sphere is just touching the face.
+        move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
+    }
+
+    Vec3_short_ new_pos;
+    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) - overshoot * face->pFacePlane_old.vNormal.x) >> 16);
+    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
+    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
+
+    if (!IsProjectedPointInsideFace(face, new_pos, face_points))
+        return false; // We've just managed to slide past the face, so pretend no collision happened.
+
+    if (move_distance_fp < 0) {
+        *move_distance = 0;
+    } else {
+        *move_distance = move_distance_fp >> 16;
+    }
+
+    return true;
+}
+
+template<class FacePointAccessor>
+static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *move_distance,
+                          const FacePointAccessor &face_points) {
+    // _fp suffix => that's a fixpoint number
+
+    // dot_product(dir, normal) is a cosine of an angle between them.
+    int cos_dir_normal_fp =
+        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
+        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
+        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+
+    if (cos_dir_normal_fp == 0)
+        return false; // dir is perpendicular to face normal.
+
+    if (face->uAttributes & FACE_ETHEREAL)
+        return false;
+
+    if (cos_dir_normal_fp > 0 && !face->Portal())
+        return false; // We're facing away && face is not a portal.
+
+    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos);
+
+    if (cos_dir_normal_fp < 0 && pos_face_distance_fp < 0)
+        return false; // Facing towards the face but already inside the model.
+
+    if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
+        return false; // Facing away from the face and outside the model.
+
+    int pos_face_distance_x4 = abs(-(pos_face_distance_fp)) >> 14;
+
+    // How far we need to move along the `dir` axis to hit face.
+    int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
+
+    Vec3_short_ new_pos;
+    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) + 0x8000) >> 16);
+    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) + 0x8000) >> 16);
+    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) + 0x8000) >> 16);
+
+    if (pos_face_distance_x4 > abs(cos_dir_normal_fp))
+        return false; // Moving perpendicular to the plane.
+
+    if (move_distance_fp > *move_distance << 16)
+        return false; // No correction needed.
+
+    if (!IsProjectedPointInsideFace(face, new_pos, face_points))
+        return false;
+
+    *move_distance = move_distance_fp >> 16;
+    return true;
+}
+
+bool CollidePointIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *move_distance) {
+    return CollidePointWithFace(face, pos, dir, move_distance, [&](int index) -> const auto & {
+        return pIndoor->pVertices[face->pVertexIDs[index]];
+    });
+}
+
+template<class FacePointAccessor>
+static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, const FacePointAccessor& face_points) {
+    std::array<int16_t, 104> edges_u;
+    std::array<int16_t, 104> edges_v;
+
+    int u;
+    int v;
+    if (face->uAttributes & FACE_XY_PLANE) {
+        u = point.x;
+        v = point.y;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
+            edges_v[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
+            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
+        }
+    } else if (face->uAttributes & FACE_XZ_PLANE) {
+        u = point.x;
+        v = point.z;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
+            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
+            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
+            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
+        }
+    } else {
+        u = point.y;
+        v = point.z;
+        for (int i = 0; i < face->uNumVertices; i++) {
+            edges_u[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
+            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
+            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
+            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
+        }
+    }
+    edges_u[2 * face->uNumVertices] = edges_u[0];
+    edges_v[2 * face->uNumVertices] = edges_v[0];
+
+    if (2 * face->uNumVertices <= 0)
+        return 0;
+
+    int counter = 0;
+    for (int i = 0; i < 2 * face->uNumVertices; ++i) {
+        if (counter >= 2)
+            break;
+
+        // Check that we're inside the bounding band in v coordinate
+        if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
+            continue;
+
+        // If we're to the left then we surely have an intersection
+        if ((edges_u[i] >= u) && (edges_u[i + 1] >= u)) {
+            ++counter;
+            continue;
+        }
+
+        // We're not to the left? Then we must be inside the bounding band in u coordinate
+        if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
+            continue;
+
+        // Calculate the intersection point of v=const line with the edge.
+        int line_intersection_u = edges_u[i] +
+            static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
+
+        // We need ray intersections, so consider only one halfplane.
+        if (line_intersection_u >= u)
+            ++counter;
+    }
+
+    return counter == 1;
+}
+
+
+
+/*
+ * Implementation of public API.
+ */
+
 void CollideIndoorWithGeometry(bool ignore_ethereal) {
     std::array<int, 10> pSectorsArray;
     pSectorsArray[0] = collision_state.uSectorID;
@@ -45,6 +241,10 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             if (face_id == collision_state.ignored_face_id)
                 continue;
 
+            auto face_points = [&](int index) -> const auto & {
+                return pIndoor->pVertices[face->pVertexIDs[index]];
+            };
+
             int distance_lo_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
             int distance_lo_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
             if (distance_lo_old > 0 &&
@@ -52,13 +252,13 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
                 distance_lo_new <= distance_lo_old) {
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
-                if (CollideIndoorWithFace(face, collision_state.position_lo, collision_state.radius_lo,
-                                         collision_state.direction, &move_distance, ignore_ethereal)) {
+                if (CollideWithFace(face, collision_state.position_lo, collision_state.radius_lo,
+                                    collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_lo;
-                    if (CollidePointIndoorWithFace(face, &collision_state.position_lo, &collision_state.direction,
-                                                   &move_distance)) {
+                    if (CollidePointWithFace(face, collision_state.position_lo, collision_state.direction,
+                                             &move_distance, face_points)) {
                         have_collision = true;
                         move_distance -= collision_state.radius_lo;
                     }
@@ -81,13 +281,13 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
                 distance_hi_new <= distance_hi_old) {
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
-                if (CollideIndoorWithFace(face, collision_state.position_hi, collision_state.radius_hi,
-                                         collision_state.direction, &move_distance, ignore_ethereal)) {
+                if (CollideWithFace(face, collision_state.position_hi, collision_state.radius_hi,
+                                    collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_hi;
-                    if (CollidePointIndoorWithFace(face, &collision_state.position_hi, &collision_state.direction,
-                                                   &move_distance)) {
+                    if (CollidePointWithFace(face, collision_state.position_hi, collision_state.direction,
+                                             &move_distance, face_points)) {
                         have_collision = true;
                         move_distance -= collision_state.radius_lo;
                     }
@@ -130,6 +330,10 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (face.Ethereal() || face.Portal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
 
+            auto face_points = [&](int index) -> const auto &{
+                return pOutdoor->pBModels[model.index].pVertices.pVertices[face.pVertexIDs[index]];
+            };
+
             int distance_lo_old = face.pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
             int distance_lo_new = face.pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
             if (distance_lo_old > 0 &&
@@ -137,13 +341,13 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
                 distance_lo_new <= distance_lo_old) {
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
-                if (CollideOutdoorWithFace(collision_state.radius_lo, &move_distance, collision_state.position_lo,
-                                           collision_state.direction, &face, model.index, ignore_ethereal)) {
+                if (CollideWithFace(&face, collision_state.position_lo, collision_state.radius_lo,
+                                    collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_lo;
-                    if (CollidePointOutdoorWithFace(&move_distance, &face, collision_state.position_lo,
-                                                    collision_state.direction, model.index)) {
+                    if (CollidePointWithFace(&face, collision_state.position_lo, collision_state.direction,
+                                             &move_distance, face_points)) {
                         have_collision = true;
                         move_distance -= collision_state.radius_lo;
                     }
@@ -163,13 +367,13 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
                 distance_hi_new <= distance_hi_old) {
                 bool have_collision = false;
                 int move_distance = collision_state.move_distance;
-                if (CollideOutdoorWithFace(collision_state.radius_hi, &move_distance, collision_state.position_hi,
-                                           collision_state.direction, &face, model.index, ignore_ethereal)) {
+                if (CollideWithFace(&face, collision_state.position_hi, collision_state.radius_hi,
+                                    collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
                     have_collision = true;
                 } else {
                     move_distance = collision_state.move_distance + collision_state.radius_hi;
-                    if (CollidePointOutdoorWithFace(&move_distance, &face, collision_state.position_hi,
-                                                    collision_state.direction, model.index)) {
+                    if (CollidePointWithFace(&face, collision_state.position_hi, collision_state.direction,
+                                             &move_distance, face_points)) {
                         have_collision = true;
                         move_distance -= collision_state.radius_lo;
                     }
@@ -324,7 +528,7 @@ bool CollideIndoorWithPortals() {
         int move_distance = collision_state.move_distance;
         if ((distance_lo_old < collision_state.radius_lo || distance_lo_new < collision_state.radius_lo) &&
             (distance_lo_old > -collision_state.radius_lo || distance_lo_new > -collision_state.radius_lo) &&
-            CollidePointIndoorWithFace(face, &collision_state.position_lo, &collision_state.direction, &move_distance) &&
+            CollidePointIndoorWithFace(face, collision_state.position_lo, collision_state.direction, &move_distance) &&
             move_distance < min_move_distance) {
             min_move_distance = move_distance;
             portal_id = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
@@ -510,293 +714,4 @@ int _46EF01_collision_chech_player(int a1) {
     return result;
 }
 
-bool CollideIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
-                          int *move_distance, bool ignore_ethereal) {
-    if (ignore_ethereal && face->Ethereal())
-        return false;
-
-    // _fp suffix => that's a fixpoint number
-
-    // dot_product(dir, normal) is a cosine of an angle between them.
-    int cos_dir_normal_fp =
-        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
-
-    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
-    int radius_fp = radius << 16;
-
-    int64_t overshoot;
-    signed int move_distance_fp;
-
-    // How deep into the model that the face belongs to we already are,
-    // positive value => actor's sphere already intersects the model.
-    int overshoot_fp = -pos_face_distance_fp + radius_fp;
-    if (abs(overshoot_fp) < radius_fp) {
-        // We got here => we're not that deep into the model. Can just push us back a little.
-        overshoot = abs(overshoot_fp) >> 16;
-        move_distance_fp = 0;
-    } else {
-        // We got here => we're already inside the model. Or way outside.
-        int overshoot_x4 = abs(overshoot_fp) >> 14;
-        if (overshoot_x4 > abs(cos_dir_normal_fp))
-            return false; // Moving perpendicular to the plane is OK for some reason.
-
-        // We just say we overshot by radius. No idea why.
-        overshoot = radius;
-
-        // Then this is a correction needed to bring us to the point where actor's sphere is just touching the face.
-        move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
-    }
-
-    Vec3_short_ new_pos;
-    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) - overshoot * face->pFacePlane_old.vNormal.x) >> 16);
-    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
-    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
-
-    if (!IsProjectedPointInsideIndoorFace(face, new_pos))
-        return false; // We've just managed to slide past the face, so pretend no collision happened.
-
-    if (move_distance_fp < 0) {
-        *move_distance = 0;
-    } else {
-        *move_distance = move_distance_fp >> 16;
-    }
-
-    return true;
-}
-
-bool CollideOutdoorWithFace(int radius, int* move_distance, const Vec3_int_ &pos, const Vec3_int_ &dir,
-                BLVFace* face, int model_index, bool ignore_ethereal) {
-    int v12;      // ST1C_4@3
-    int a7a;      // [sp+30h] [bp+18h]@7
-    int a1b;      // [sp+38h] [bp+20h]@3
-    int a11b;     // [sp+40h] [bp+28h]@3
-
-    if (ignore_ethereal && face->Ethereal())
-        return false;
-
-    // _fp suffix => that's a fixpoint number
-
-    int cos_dir_normal_fp =
-        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
-
-    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
-    int radius_fp = radius << 16;
-
-    int move_distance_fp;
-    int64_t overshoot;
-
-    int overshoot_fp = radius_fp - pos_face_distance_fp;
-    if (abs(radius_fp - pos_face_distance_fp) < radius_fp) {
-        move_distance_fp = 0;
-        overshoot = abs(overshoot_fp) >> 16;
-    } else {
-        int overshoot_x4 = abs(overshoot_fp) >> 14;
-        if (overshoot_x4 > abs(cos_dir_normal_fp))
-            return false;
-
-        overshoot = radius;
-        move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
-    }
-
-    Vec3_short_ new_pos;
-    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) - overshoot * face->pFacePlane_old.vNormal.x) >> 16);
-    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
-    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
-
-    if (!IsProjectedPointInsideOutdoorFace(face, model_index, new_pos))
-        return false;
-
-    if (move_distance_fp < 0) {
-        *move_distance = 0;
-    } else {
-        *move_distance = move_distance_fp >> 16;
-    }
-    return true;
-}
-
-bool CollidePointIndoorWithFace(BLVFace *face, Vec3_int_ *pos, Vec3_int_ *dir, int *move_distance) {
-    // _fp suffix => that's a fixpoint number
-
-    // dot_product(dir, normal) is a cosine of an angle between them.
-    int cos_dir_normal_fp =
-        fixpoint_mul(dir->x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir->y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir->z, face->pFacePlane_old.vNormal.z);
-
-    if (cos_dir_normal_fp == 0)
-        return false; // dir is perpendicular to face normal.
-
-    if (face->uAttributes & FACE_ETHEREAL)
-        return false;
-
-    if (cos_dir_normal_fp > 0 && !face->Portal())
-        return false; // We're facing away && face is not a portal.
-
-    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(*pos);
-
-    if (cos_dir_normal_fp < 0 && pos_face_distance_fp < 0)
-        return false; // Facing towards the face but already inside the model.
-
-    if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
-        return false; // Facing away from the face and outside the model.
-
-    int pos_face_distance_x4 = abs(-(pos_face_distance_fp)) >> 14;
-
-    // How far we need to move along the `dir` axis to hit face.
-    int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
-
-    Vec3_short_ new_pos;
-    new_pos.x = pos->x + ((fixpoint_mul(move_distance_fp, dir->x) + 0x8000) >> 16);
-    new_pos.y = pos->y + ((fixpoint_mul(move_distance_fp, dir->y) + 0x8000) >> 16);
-    new_pos.z = pos->z + ((fixpoint_mul(move_distance_fp, dir->z) + 0x8000) >> 16);
-
-    if (pos_face_distance_x4 > abs(cos_dir_normal_fp))
-        return false; // Moving perpendicular to the plane.
-
-    if (move_distance_fp > *move_distance << 16)
-        return false; // No correction needed.
-
-    if (!IsProjectedPointInsideIndoorFace(face, new_pos))
-        return false;
-
-    *move_distance = move_distance_fp >> 16;
-    return true;
-}
-
-bool CollidePointOutdoorWithFace(int *move_distance, BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int model_index) {
-    // _fp suffix => that's a fixpoint number
-
-    // dot_product(dir, normal) is a cosine of an angle between them.
-    int cos_dir_normal_fp =
-        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
-
-    if (cos_dir_normal_fp == 0)
-        return false; // dir is perpendicular to face normal.
-
-    if (face->uAttributes & FACE_ETHEREAL)
-        return false;
-
-    if (cos_dir_normal_fp > 0 && !face->Portal())
-        return false; // We're facing away && face is not a portal.
-
-    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos);
-
-    if (cos_dir_normal_fp < 0 && pos_face_distance_fp < 0)
-        return false; // Facing towards the face but already inside the model.
-
-    if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
-        return false; // Facing away from the face and outside the model.
-
-    int pos_face_distance_x4 = abs(-(pos_face_distance_fp)) >> 14;
-
-    // How far we need to move along the `dir` axis to hit face.
-    int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
-
-    Vec3_short_ new_pos;
-    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) + 0x8000) >> 16);
-    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) + 0x8000) >> 16);
-    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) + 0x8000) >> 16);
-
-    if (pos_face_distance_x4 > abs(cos_dir_normal_fp))
-        return false; // Moving perpendicular to the plane.
-
-    if (move_distance_fp > *move_distance << 16)
-        return false; // No correction needed.
-
-    if (!IsProjectedPointInsideOutdoorFace(face, model_index, new_pos))
-        return false;
-
-    *move_distance = move_distance_fp >> 16;
-    return true;
-}
-
-template<class FacePointAccessor>
-static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, const FacePointAccessor& face_points) {
-    std::array<int16_t, 104> edges_u;
-    std::array<int16_t, 104> edges_v;
-
-    int u;
-    int v;
-    if (face->uAttributes & FACE_XY_PLANE) {
-        u = point.x;
-        v = point.y;
-        for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
-            edges_v[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
-            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
-        }
-    } else if (face->uAttributes & FACE_XZ_PLANE) {
-        u = point.x;
-        v = point.z;
-        for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
-        }
-    } else {
-        u = point.y;
-        v = point.z;
-        for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
-            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
-        }
-    }
-    edges_u[2 * face->uNumVertices] = edges_u[0];
-    edges_v[2 * face->uNumVertices] = edges_v[0];
-
-    if (2 * face->uNumVertices <= 0)
-        return 0;
-
-    int counter = 0;
-    for (int i = 0; i < 2 * face->uNumVertices; ++i) {
-        if (counter >= 2)
-            break;
-
-        // Check that we're inside the bounding band in v coordinate
-        if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
-            continue;
-
-        // If we're to the left then we surely have an intersection
-        if ((edges_u[i] >= u) && (edges_u[i + 1] >= u)) {
-            ++counter;
-            continue;
-        }
-
-        // We're not to the left? Then we must be inside the bounding band in u coordinate
-        if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
-            continue;
-
-        // Calculate the intersection point of v=const line with the edge.
-        int line_intersection_u = edges_u[i] +
-            static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
-
-        // We need ray intersections, so consider only one halfplane.
-        if (line_intersection_u >= u)
-            ++counter;
-    }
-
-    return counter == 1;
-}
-
-bool IsProjectedPointInsideIndoorFace(BLVFace* face, const Vec3_short_ &point) {
-    return IsProjectedPointInsideFace(face, point, [&](int index) -> const auto & {
-        return pIndoor->pVertices[face->pVertexIDs[index]];
-    });
-}
-
-bool IsProjectedPointInsideOutdoorFace(BLVFace* face, int model_index, const Vec3_short_ &point) {
-    return IsProjectedPointInsideFace(face, point, [&](int index) -> const auto & {
-        return pOutdoor->pBModels[model_index].pVertices.pVertices[face->pVertexIDs[index]];
-    });
-}
 
