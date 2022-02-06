@@ -3145,12 +3145,6 @@ void BLV_UpdateUserInputAndOther() {
 
 //----- (00472866) --------------------------------------------------------
 void BLV_ProcessPartyActions() {  // could this be combined with odm process actions?
-    double v10;               // st7@27
-    BLVFace *pFace;           // esi@126
-    int v46;                  // ecx@133
-    int v52;                  // eax@140
-    int v80;                  // [sp+34h] [bp-2Ch]@1
-
     unsigned int uFaceEvent = 0;
 
     bool party_running_flag = false;
@@ -3459,57 +3453,54 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset(); // Break invisibility when running into a monster.
             viewparams->bRedrawGameUI = true;
         } else if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
+            // Bounce back from a decoration & do another round of collision checks.
+            // This way the party can "slide" along & past a decoration.
             int angle = TrigLUT->Atan2(
-                new_party_x - pLevelDecorations[collision_state.pid >> 3].vPosition.x,
-                new_party_y - pLevelDecorations[collision_state.pid >> 3].vPosition.y);
-            party_dx = fixpoint_mul(TrigLUT->Cos(angle), integer_sqrt(party_dx * party_dx + party_dy * party_dy));
-            party_dy = fixpoint_mul(TrigLUT->Sin(angle), integer_sqrt(party_dx * party_dx + party_dy * party_dy));
+                new_party_x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
+                new_party_y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
+            int len = integer_sqrt(party_dx * party_dx + party_dy * party_dy);
+            party_dx = fixpoint_mul(TrigLUT->Cos(angle), len);
+            party_dy = fixpoint_mul(TrigLUT->Sin(angle), len);
         } else if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
-            pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
-            if (pFace->uPolygonType == POLYGON_Floor) {  // если bmodel - пол
-                if (pParty->uFallSpeed < 0) pParty->uFallSpeed = 0;
+            BLVFace *pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
+            if (pFace->uPolygonType == POLYGON_Floor) {
+                if (pParty->uFallSpeed < 0)
+                    pParty->uFallSpeed = 0;
                 new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z + 1;
-                if (pParty->uFallStartZ - new_party_z_tmp < 512) pParty->uFallStartZ = new_party_z_tmp;
+                if (pParty->uFallStartZ - new_party_z_tmp < 512)
+                    pParty->uFallStartZ = new_party_z_tmp;
                 if (party_dx * party_dx + party_dy * party_dy < min_party_move_delta_sqr) {
                     party_dy = 0;
                     party_dx = 0;
                 }
-                if (pParty->floor_face_pid != PID_ID(collision_state.pid) &&
-                    pFace->Pressure_Plate())
-                    uFaceEvent =
-                        pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-            } else {  // если не пол
-                v46 = pParty->uFallSpeed * pFace->pFacePlane_old.vNormal.z;
-                if (pFace->uPolygonType !=
-                    POLYGON_InBetweenFloorAndWall) {  // полез на холм
-                    v80 = abs(party_dy * pFace->pFacePlane_old.vNormal.y + v46 +
-                              party_dx * pFace->pFacePlane_old.vNormal.x) >>
-                          16;
-                    if ((collision_state.speed >> 3) > v80)
-                        v80 = collision_state.speed >> 3;
-                    party_dx += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
-                    party_dy += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
-                    pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
-                    // v80 = pFace->pFacePlane_old.vNormal.y;
-                    v52 = collision_state.radius_lo -
-                        pFace->pFacePlane_old.SignedDistanceTo(new_party_x, new_party_y, new_party_z_tmp);
-                    if (v52 > 0) {
-                        new_party_x += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.x);
-                        new_party_y += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.y);
-                        new_party_z_tmp += fixpoint_mul(v52, pFace->pFacePlane_old.vNormal.z);
+                if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
+                    uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
+            } else { // Not floor
+                int speed_dot_normal = abs(
+                    party_dx * pFace->pFacePlane_old.vNormal.x +
+                    party_dy * pFace->pFacePlane_old.vNormal.y +
+                    pParty->uFallSpeed * pFace->pFacePlane_old.vNormal.z) >> 16;
+
+                if ((collision_state.speed >> 3) > speed_dot_normal)
+                    speed_dot_normal = collision_state.speed >> 3;
+
+                party_dx += fixpoint_mul(speed_dot_normal, pFace->pFacePlane_old.vNormal.x);
+                party_dy += fixpoint_mul(speed_dot_normal, pFace->pFacePlane_old.vNormal.y);
+                pParty->uFallSpeed += fixpoint_mul(speed_dot_normal, pFace->pFacePlane_old.vNormal.z);
+
+                if (pFace->uPolygonType != POLYGON_InBetweenFloorAndWall) { // wall / ceiling
+                    int distance_to_face =
+                        pFace->pFacePlane_old.SignedDistanceTo(new_party_x, new_party_y, new_party_z_tmp) -
+                        collision_state.radius_lo;
+                    if (distance_to_face < 0) {
+                        // We're too close to the face, push back.
+                        new_party_x += fixpoint_mul(-distance_to_face, pFace->pFacePlane_old.vNormal.x);
+                        new_party_y += fixpoint_mul(-distance_to_face, pFace->pFacePlane_old.vNormal.y);
+                        new_party_z_tmp += fixpoint_mul(-distance_to_face, pFace->pFacePlane_old.vNormal.z);
                     }
-                    if (pParty->floor_face_pid != PID_ID(collision_state.pid) &&
-                        pFace->Pressure_Plate())
+                    if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
                         uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
-                }
-                if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                    v80 = abs(party_dy * pFace->pFacePlane_old.vNormal.y + v46 +
-                              party_dx * pFace->pFacePlane_old.vNormal.x) >> 16;
-                    if ((collision_state.speed >> 3) > v80)
-                        v80 = collision_state.speed >> 3;
-                    party_dx += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.x);
-                    party_dy += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.y);
-                    pParty->uFallSpeed += fixpoint_mul(v80, pFace->pFacePlane_old.vNormal.z);
+                } else { // between floor & wall
                     if (party_dx * party_dx + party_dy * party_dy >= min_party_move_delta_sqr) {
                         if (pParty->floor_face_pid != PID_ID(collision_state.pid) && pFace->Pressure_Plate())
                             uFaceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
