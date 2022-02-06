@@ -243,56 +243,35 @@ static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, 
 template<class FacePointAccessor>
 static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal,
                                 const FacePointAccessor &face_points) {
-    int distance_lo_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-    int distance_lo_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-    if (distance_lo_old > 0 &&
-        (distance_lo_old <= collision_state.radius_lo || distance_lo_new <= collision_state.radius_lo) &&
-        distance_lo_new <= distance_lo_old) {
-        bool have_collision = false;
-        int move_distance = collision_state.move_distance;
-        if (CollideSphereWithFace(face, collision_state.position_lo, collision_state.radius_lo,
-                            collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
-            have_collision = true;
-        } else {
-            move_distance = collision_state.move_distance + collision_state.radius_lo;
-            if (CollidePointWithFace(face, collision_state.position_lo, collision_state.direction,
-                                     &move_distance, face_points)) {
+    auto collide_once = [&](const Vec3_int_ &old_pos, const Vec3_int_ &new_pos, const Vec3_int_ &dir, int radius) {
+        int distance_old = face->pFacePlane_old.SignedDistanceTo(old_pos);
+        int distance_new = face->pFacePlane_old.SignedDistanceTo(new_pos);
+        if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
+            bool have_collision = false;
+            int move_distance = collision_state.move_distance;
+            if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, ignore_ethereal, face_points)) {
                 have_collision = true;
-                move_distance -= collision_state.radius_lo;
+            } else {
+                move_distance = collision_state.move_distance + radius;
+                if (CollidePointWithFace(face, old_pos, dir, &move_distance, face_points)) {
+                    have_collision = true;
+                    move_distance -= radius;
+                }
+            }
+
+            if (have_collision && move_distance < collision_state.adjusted_move_distance) {
+                collision_state.adjusted_move_distance = move_distance;
+                collision_state.pid = face_pid;
             }
         }
+    };
 
-        if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-            collision_state.adjusted_move_distance = move_distance;
-            collision_state.pid = face_pid;
-        }
-    }
+    collide_once(collision_state.position_lo, collision_state.new_position_lo, collision_state.direction,
+                 collision_state.radius_lo);
 
-    int distance_hi_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_hi);
-    int distance_hi_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_hi);
-    if ((collision_state.check_hi & 1) &&
-        distance_hi_old > 0 &&
-        (distance_hi_old <= collision_state.radius_hi || distance_hi_new <= collision_state.radius_hi) &&
-        distance_hi_new <= distance_hi_old) {
-        bool have_collision = false;
-        int move_distance = collision_state.move_distance;
-        if (CollideSphereWithFace(face, collision_state.position_hi, collision_state.radius_hi,
-                            collision_state.direction, &move_distance, ignore_ethereal, face_points)) {
-            have_collision = true;
-        } else {
-            move_distance = collision_state.move_distance + collision_state.radius_hi;
-            if (CollidePointWithFace(face, collision_state.position_hi, collision_state.direction,
-                                     &move_distance, face_points)) {
-                have_collision = true;
-                move_distance -= collision_state.radius_hi;
-            }
-        }
-
-        if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-            collision_state.adjusted_move_distance = move_distance;
-            collision_state.pid = face_pid;
-        }
-    }
+    if(collision_state.check_hi & 1)
+        collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction,
+                     collision_state.radius_hi);
 }
 
 
