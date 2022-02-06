@@ -448,10 +448,10 @@ struct Party_Image_MM7 {
     /* 0003C */ PartyTimeStruct_Image_MM7 PartyTimes;
     /* 006B4 */ Vec3_int_ vPosition;
     /* 006C0 */ int sRotationZ;
-    /* 006C4 */ int sRotationX;
+    /* 006C4 */ int sRotationY;
     /* 006C8 */ Vec3_int_ vPrevPosition;
-    /* 006D4 */ int sPrevRotationY;
-    /* 006D8 */ int sPrevRotationX;
+    /* 006D4 */ int sPrevRotationZ;
+    /* 006D8 */ int sPrevRotationY;
     /* 006DC */ int sPrevEyelevel;
     /* 006E0 */ int field_6E0;
     /* 006E4 */ int field_6E4;

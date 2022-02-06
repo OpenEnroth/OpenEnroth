@@ -3906,7 +3906,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * 213.3333333333333));
+                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0));
             }
         }
         mouse->RemoveHoldingItem();
@@ -4324,7 +4324,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 this->SetRecoveryTime(100);
                 pTurnEngine->ApplyPlayerAction();
             } else {
-                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * 213.3333333333333));
+                this->SetRecoveryTime((int)(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100.0));
             }
         }
         mouse->RemoveHoldingItem();
@@ -7115,7 +7115,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         if (!pParty->bTurnBasedModeOn) {
             int actEndurance = playerPtr->GetActualEndurance();
             int recoveryTime = (int)((20 - playerPtr->GetParameterBonus(actEndurance)) *
-                      debug_non_combat_recovery_mul * 2.133333333333333);
+                      debug_non_combat_recovery_mul * flt_debugrecmod3);
             playerPtr->SetRecoveryTime(recoveryTime);
         }
 
@@ -7299,7 +7299,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                 int actEnd = playerPtr->GetActualEndurance();
                 int recTime =
                     (int)((20 - playerPtr->GetParameterBonus(actEnd)) *
-                          debug_non_combat_recovery_mul * 2.133333333333333);
+                          debug_non_combat_recovery_mul * flt_debugrecmod3);
                 playerPtr->SetRecoveryTime(recTime);
             }
             return;
@@ -7813,7 +7813,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         int recovery = player->GetAttackRecoveryTime(false);
         if (recovery < 30) recovery = 30;
         player->SetRecoveryTime(debug_non_combat_recovery_mul * (double)recovery *
-                                2.133333333333333);
+                                flt_debugrecmod3);
     }
 
     int v34 = 0;
@@ -8255,7 +8255,7 @@ bool Player::SetBeacon(size_t index, size_t power) {
     beacon.PartyPos_Y = pParty->vPosition.y;
     beacon.PartyPos_Z = pParty->vPosition.z;
     beacon.PartyRot_X = pParty->sRotationZ;
-    beacon.PartyRot_Y = pParty->sRotationX;
+    beacon.PartyRot_Y = pParty->sRotationY;
     beacon.SaveFileID = file_index;
 
     if (index < vBeacons.size()) {

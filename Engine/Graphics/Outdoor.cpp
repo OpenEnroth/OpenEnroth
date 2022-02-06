@@ -80,9 +80,9 @@ int dword_4EC2AC = 7;
 
 //----- (0047A59E) --------------------------------------------------------
 void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
-    pIndoorCameraD3D->debug_flags = 0;
+    /*pCamera3D->debug_flags = 0;
     if (viewparams->draw_d3d_outlines)
-        pIndoorCameraD3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;
+        pCamera3D->debug_flags |= ODM_RENDER_DRAW_D3D_OUTLINES;*/
 
     // if (bRedraw || true /*render->pRenderD3D*/) {
         // pODMRenderParams->RotationToInts();
@@ -115,7 +115,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         pOutdoor->UpdateSunlightVectors();
 
     pOutdoor->UpdateFog();
-    // pIndoorCameraD3D->sr_Reset_list_0037C();
+    // pCamera3D->sr_Reset_list_0037C();
 
     // if (render->pRenderD3D) // d3d - redraw always
     {
@@ -428,23 +428,20 @@ void OutdoorLocation::MessWithLUN() {
 
 //----- (004892E6) --------------------------------------------------------
 void OutdoorLocation::UpdateSunlightVectors() {
-    unsigned int v3;  // edi@3
+    unsigned int minutes;  // edi@3
     double v8;        // st7@4
 
     if (pParty->uCurrentHour >= 5 && pParty->uCurrentHour < 21) {
-        v3 = pParty->uCurrentMinute + 60 * (pParty->uCurrentHour - 5);
-        this->inv_sunlight_y = 0;
-        this->inv_sunlight_x =
-            TrigLUT->Cos((v3 * TrigLUT->uIntegerPi) / 960);
-        this->inv_sunlight_z =
-            TrigLUT->Sin((v3 * TrigLUT->uIntegerPi) / 960);
-        this->vSunlight.x = -this->inv_sunlight_x;
-        this->vSunlight.y = -this->inv_sunlight_y;
-        this->vSunlight.z = -this->inv_sunlight_z;
-        if (v3 >= 480)
-            v8 = 960 - v3;
+        minutes = pParty->uCurrentMinute + 60 * (pParty->uCurrentHour - 5);
+
+        this->vSunlight.x = cos((minutes * pi) / 960.0);
+        this->vSunlight.y = 0;
+        this->vSunlight.z = sin((minutes * pi) / 960.0);
+
+        if (minutes >= 480)
+            v8 = 960 - minutes;
         else
-            v8 = v3;
+            v8 = minutes;
         this->max_terrain_dimming_level = (int)(20.0 - v8 / 480.0 * 20.0);
         this->uLastSunlightUpdateMinute = pParty->uCurrentMinute;
     }
@@ -517,83 +514,6 @@ void OutdoorLocation::SetFog() {
     pOutdoor->loc_time.day_fogrange_1 = ::day_fogrange_1;
     pOutdoor->loc_time.day_fogrange_2 = ::day_fogrange_2;
     pOutdoor->loc_time.day_attrib = ::day_attrib;
-}
-
-//----- (00482170) --------------------------------------------------------
-bool ODMFace::IsBackfaceNotCulled(RenderVertexSoft *a2,
-                                  struct Polygon *polygon) {
-    unsigned int numOfVertices;    // edx@1
-    RenderVertexSoft *currVertex;  // ecx@2
-    double v7;                     // st7@5
-    double v8;                     // st6@5
-    double v9;                     // st5@5
-    float v18;                     // [sp+8h] [bp-38h]@5
-    float v19;                     // [sp+10h] [bp-30h]@5
-    float v20;                     // [sp+14h] [bp-2Ch]@5
-    float v21;                     // [sp+18h] [bp-28h]@5
-    float v22;                     // [sp+1Ch] [bp-24h]@5
-    float v23;                     // [sp+24h] [bp-1Ch]@5
-    float v24;                     // [sp+28h] [bp-18h]@5
-    float v25;                     // [sp+30h] [bp-10h]@5
-    float v26;                     // [sp+34h] [bp-Ch]@5
-    float v27;                     // [sp+38h] [bp-8h]@5
-    float v28;                     // [sp+3Ch] [bp-4h]@5
-    float a3a;                     // [sp+48h] [bp+8h]@5
-    float a3b;                     // [sp+48h] [bp+8h]@17
-    float a3c;                     // [sp+48h] [bp+8h]@17
-    float a3d;                     // [sp+48h] [bp+8h]@17
-    float a3e;                     // [sp+48h] [bp+8h]@17
-
-    numOfVertices = polygon->uNumVertices;
-    if (numOfVertices < 3) return false;
-    currVertex = &a2[numOfVertices - 1];
-    if (a2->vWorldPosition.z == a2[1].vWorldPosition.z &&
-        a2[1].vWorldPosition.z == currVertex->vWorldPosition.z)
-        polygon->flags |= 0x10u;
-
-    v28 = a2[1].vWorldPosition.x - a2->vWorldPosition.x;
-    v27 = a2[1].vWorldPosition.y - a2->vWorldPosition.y;
-    a3a = a2[1].vWorldPosition.z - a2->vWorldPosition.z;
-
-    for (int i = 0; i < numOfVertices; i++) {
-        v7 = currVertex->vWorldPosition.x - a2->vWorldPosition.x;
-        v8 = currVertex->vWorldPosition.y - a2->vWorldPosition.y;
-        v9 = currVertex->vWorldPosition.z - a2->vWorldPosition.z;
-        v26 = v27 * v9 - v8 * a3a;
-        v24 = v7 * a3a - v9 * v28;
-        v25 = v8 * v28 - v7 * v27;
-        if (v24 != 0.0 || v25 != 0.0 || v26 != 0.0) break;
-        currVertex--;
-    }
-
-    if (((double)pIndoorCameraD3D->vPartyPos.x - a2->vWorldPosition.x) * v26 +
-            ((double)pIndoorCameraD3D->vPartyPos.z - a2->vWorldPosition.z) *
-                v25 +
-            ((double)pIndoorCameraD3D->vPartyPos.y - a2->vWorldPosition.y) *
-                v24 >
-        0.0) {
-        v19 = a2[1].vWorldViewPosition.x - a2->vWorldViewPosition.x;
-        v18 = a2[1].vWorldViewPosition.y - a2->vWorldViewPosition.y;
-        v20 = a2[1].vWorldViewPosition.z - a2->vWorldViewPosition.z;
-        v21 = currVertex->vWorldViewPosition.x - a2->vWorldViewPosition.x;
-        v22 = currVertex->vWorldViewPosition.y - a2->vWorldViewPosition.y;
-        v23 = currVertex->vWorldViewPosition.z - a2->vWorldViewPosition.z;
-
-        a3b = v23 * v18 - v22 * v20;
-        polygon->v_18.x = bankersRounding(a3b);
-        a3c = v21 * v20 - v23 * v19;
-        polygon->v_18.y = bankersRounding(a3c);
-        a3d = v22 * v19 - v21 * v18;
-        polygon->v_18.z = bankersRounding(a3d);
-        polygon->_normalize_v_18();
-        a3e = -((double)polygon->v_18.x * a2->vWorldViewPosition.x) -
-              (double)polygon->v_18.y * a2->vWorldViewPosition.y -
-              (double)polygon->v_18.z * a2->vWorldViewPosition.z;
-        polygon->field_24 = bankersRounding(a3e);
-        return true;
-    } else {
-        return false;
-    }
 }
 
 //----- (0047C7A9) --------------------------------------------------------
@@ -1756,8 +1676,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
         }
 
         Angle_To_Cam = TrigLUT->Atan2(
-            pActors[i].vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-            pActors[i].vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+            pActors[i].vPosition.x - pCamera3D->vCameraPos.x,
+            pActors[i].vPosition.y - pCamera3D->vCameraPos.y);
 
         // int v9 = 0;
         // HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
@@ -1805,13 +1725,13 @@ void OutdoorLocation::PrepareActorsDrawList() {
         }
 
         int view_x = 0, view_y = 0, view_z = 0;
-        bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+        bool visible = pCamera3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
 
         if (visible) {
             if (abs(view_x) >= abs(view_y)) {
                 int projected_x = 0;
                 int projected_y = 0;
-                pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x,
+                pCamera3D->Project(view_x, view_y, view_z, &projected_x,
                                           &projected_y);
 
                 if (uNumBillboardsToDraw >= 500) return;
@@ -1827,8 +1747,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
 
-                float _v26 = v15->scale * (pODMRenderParams->int_fov_rad) /
-                            (view_x);
+                float _v26 = v15->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
                 pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =  _v26;
                 pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v26;
 
@@ -2168,47 +2087,6 @@ void OutdoorLocation::subconstuctor() {
     pOMAP = 0;
 }
 
-//----- (00481E55) --------------------------------------------------------
-void ODM_Project(unsigned int uNumVertices) {
-    for (uint i = 0; i < uNumVertices; i++) {
-        memcpy(&VertexRenderList[i], &array_507D30[i],
-               sizeof(VertexRenderList[i]));
-        VertexRenderList[i].vWorldViewProjX =
-            (double)pViewport->uScreenCenterX -
-            ((double)pODMRenderParams->int_fov_rad * array_507D30[i]._rhw) *
-                array_507D30[i].vWorldViewPosition.y;
-        VertexRenderList[i].vWorldViewProjY =
-            (double)pViewport->uScreenCenterY -
-            ((double)pODMRenderParams->int_fov_rad * array_507D30[i]._rhw) *
-                array_507D30[i].vWorldViewPosition.z;
-    }
-}
-
-//----- (00485F64) --------------------------------------------------------
-void ODMRenderParams::Initialize() {  // this seems to be called several times during loading
-    int v1;             // eax@1
-    int v2;             // eax@2
-    signed __int64 v3;  // qtt@4
-    int v4;             // eax@4
-
-    this->uCameraFovInDegrees = 75;
-
-    v1 = TrigLUT->uPiMask & 0xD5;
-    if (v1 >= (signed int)TrigLUT->uIntegerHalfPi)
-        v2 = -TrigLUT->pTanTable[TrigLUT->uIntegerPi - v1];
-    else
-        v2 = TrigLUT->pTanTable[v1];
-    HEXRAYS_LODWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 31;
-    HEXRAYS_HIDWORD(v3) = (viewparams->uSomeZ - viewparams->uSomeX) << 15 >> 16;
-    v4 = (signed int)(v3 / v2) >> 16;
-    this->int_fov_rad = v4;
-    this->field_4C = 360000;
-    this->int_fov_rad_inv = 65536 / v4;
-    this->field_50 = 115;
-    // sr_6BE060[1] = 1;
-    // RotationToInts();
-}
-
 //----- (00473893) --------------------------------------------------------
 void ODM_ProcessPartyActions() {
     int v1;            // edi@1
@@ -2340,7 +2218,7 @@ void ODM_ProcessPartyActions() {
                     pParty->pPlayers[i].SetRecoveryTime(
                         (signed __int64)((double)bonus *
                             debug_non_combat_recovery_mul *
-                            2.133333333333333));
+                            flt_debugrecmod3));
                 }
             }
         }
@@ -2406,7 +2284,7 @@ void ODM_ProcessPartyActions() {
     //***********************************************
     _walk_speed = pParty->uWalkSpeed;
     _angle_y = pParty->sRotationZ;
-    _angle_x = pParty->sRotationX;
+    _angle_x = pParty->sRotationY;
     // v126 = pEventTimer->dt_fixpoint;
     /*v119 = (Player **)((unsigned __int64)(pEventTimer->dt_fixpoint
                                         * (signed __int64)((signed
@@ -2666,14 +2544,14 @@ void ODM_ProcessPartyActions() {
                 _angle_x = 0;
                 break;
 
-            case PARTY_LookDown:  // смотреть вниз
+            case PARTY_LookUp:
                 _angle_x += engine->config->vertical_turn_speed;
                 if (_angle_x > 128) _angle_x = 128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
 
-            case PARTY_LookUp:  // смотреть вверх
+            case PARTY_LookDown:
                 _angle_x -= engine->config->vertical_turn_speed;
                 if (_angle_x < -128) _angle_x = -128;
                 if (uActiveCharacter)
@@ -2706,7 +2584,7 @@ void ODM_ProcessPartyActions() {
     }
 
     pParty->sRotationZ = _angle_y;
-    pParty->sRotationX = _angle_x;
+    pParty->sRotationY = _angle_x;
     //-------------------------------------------
     if (pParty->bFlying) {
         v129 = fixpoint_mul(4, TrigLUT->Cos(OS_GetTime()));
@@ -2917,7 +2795,7 @@ void ODM_ProcessPartyActions() {
                 &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
             v48 = pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1;
             v129 = v48 <= 32;
-            v119 = pODMFace->pFacePlane.vNormal.z < 46378;
+            v119 = pODMFace->pFacePlaneOLD.vNormal.z < 46378;
             if (engine->IsUnderwater())
                 v119 = 0;
             if (pODMFace->uPolygonType == POLYGON_Floor) {
@@ -2939,30 +2817,30 @@ void ODM_ProcessPartyActions() {
             if (!v129 &&
                 (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall ||
                  v119)) {  // упёрся в столб
-                v118 = abs(v128 * pODMFace->pFacePlane.vNormal.y +
-                           fall_speed * pODMFace->pFacePlane.vNormal.z +
-                           v2 * pODMFace->pFacePlane.vNormal.x) >>
+                v118 = abs(v128 * pODMFace->pFacePlaneOLD.vNormal.y +
+                           fall_speed * pODMFace->pFacePlaneOLD.vNormal.z +
+                           v2 * pODMFace->pFacePlaneOLD.vNormal.x) >>
                        16;
                 if ((collision_state.speed >> 3) > v118)
                     v118 = collision_state.speed >> 3;
-                v2 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.x);
-                v128 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.y);
+                v2 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.x);
+                v128 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.y);
                 v54 = 0;
                 if (!v119)
-                    v54 = fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
+                    v54 = fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
                 pParty->uFallSpeed += v54;
                 v55 =
                     collision_state.radius_lo -
-                    pODMFace->pFacePlane.SignedDistanceTo(_angle_x, _angle_y, v122);
+                    pODMFace->pFacePlaneOLD.SignedDistanceTo(_angle_x, _angle_y, v122);
                 if (v55 > 0) {
                     pX = _angle_x +
-                         fixpoint_mul(pODMFace->pFacePlane.vNormal.x, v55);
+                         fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
                     pY = _angle_y +
-                         fixpoint_mul(pODMFace->pFacePlane.vNormal.y, v55);
+                         fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.y, v55);
                     if (!v119)
                         party_new_Z =
                             v122 +
-                            fixpoint_mul(pODMFace->pFacePlane.vNormal.z, v55);
+                            fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.z, v55);
                 }
                 if (pParty->floor_face_pid != collision_state.pid &&
                     pODMFace->Pressure_Plate()) {
@@ -2971,16 +2849,16 @@ void ODM_ProcessPartyActions() {
                 }
             }
             if (pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                v118 = abs(v128 * pODMFace->pFacePlane.vNormal.y +
-                           fall_speed * pODMFace->pFacePlane.vNormal.z +
-                           v2 * pODMFace->pFacePlane.vNormal.x) >>
+                v118 = abs(v128 * pODMFace->pFacePlaneOLD.vNormal.y +
+                           fall_speed * pODMFace->pFacePlaneOLD.vNormal.z +
+                           v2 * pODMFace->pFacePlaneOLD.vNormal.x) >>
                        16;
                 if ((collision_state.speed >> 3) > v118)
                     v118 = collision_state.speed >> 3;
-                v2 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.x);
-                v128 += fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.y);
+                v2 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.x);
+                v128 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.y);
                 fall_speed +=
-                    fixpoint_mul(v118, pODMFace->pFacePlane.vNormal.z);
+                    fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
                 if (v2 * v2 + v128 * v128 >= 400) {
                     if (pParty->floor_face_pid != collision_state.pid &&
                         pODMFace->Pressure_Plate()) {
@@ -3096,7 +2974,7 @@ void ODM_ProcessPartyActions() {
                             pPlayers[i]->SetRecoveryTime(
                                 (signed __int64)((double)v110 *
                                                  debug_non_combat_recovery_mul *
-                                                 2.133333333333333));
+                                                 flt_debugrecmod3));
                         }
                         // v73 = pParty->vPosition.z;
                     }
@@ -3210,7 +3088,7 @@ void ODM_ProcessPartyActions() {
                         pPlayers[i]->SetRecoveryTime(
                             (signed __int64)((double)v110 *
                                              debug_non_combat_recovery_mul *
-                                             2.133333333333333));
+                                             flt_debugrecmod3));
                     }
                     // v82 = pParty->vPosition.z;
                 }
@@ -3647,32 +3525,32 @@ void UpdateActors_ODM() {
                                 pActors[Actor_ITR].vVelocity.x = 0;
                             }
                         } else {
-                           int v72b = abs(face->pFacePlane.vNormal.y *
+                           int v72b = abs(face->pFacePlaneOLD.vNormal.y *
                                            pActors[Actor_ITR].vVelocity.y +
-                                       face->pFacePlane.vNormal.z *
+                                       face->pFacePlaneOLD.vNormal.z *
                                            pActors[Actor_ITR].vVelocity.z +
-                                       face->pFacePlane.vNormal.x *
+                                       face->pFacePlaneOLD.vNormal.x *
                                            pActors[Actor_ITR].vVelocity.x) >>
                                    16;
                             if ((collision_state.speed >> 3) > v72b)
                                 v72b = collision_state.speed >> 3;
 
                             pActors[Actor_ITR].vVelocity.x +=
-                                fixpoint_mul(v72b, face->pFacePlane.vNormal.x);
+                                fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.x);
                             pActors[Actor_ITR].vVelocity.y +=
-                                fixpoint_mul(v72b, face->pFacePlane.vNormal.y);
+                                fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.y);
                             pActors[Actor_ITR].vVelocity.z +=
-                                fixpoint_mul(v72b, face->pFacePlane.vNormal.z);
+                                fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.z);
                             if (face->uPolygonType != 4) {
                                 int v46 = collision_state.radius_lo -
-                                    face->pFacePlane.SignedDistanceTo(pActors[Actor_ITR].vPosition);
+                                    face->pFacePlaneOLD.SignedDistanceTo(pActors[Actor_ITR].vPosition);
                                 if (v46 > 0) {
                                     pActors[Actor_ITR].vPosition.x += fixpoint_mul(
-                                        v46, face->pFacePlane.vNormal.x);
+                                        v46, face->pFacePlaneOLD.vNormal.x);
                                     pActors[Actor_ITR].vPosition.y += fixpoint_mul(
-                                        v46, face->pFacePlane.vNormal.y);
+                                        v46, face->pFacePlaneOLD.vNormal.y);
                                     pActors[Actor_ITR].vPosition.z += fixpoint_mul(
-                                        v46, face->pFacePlane.vNormal.z);
+                                        v46, face->pFacePlaneOLD.vNormal.z);
                                 }
                                 pActors[Actor_ITR].uYawAngle = TrigLUT->Atan2(
                                     pActors[Actor_ITR].vVelocity.x,
@@ -3760,7 +3638,6 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     // size_t v7;              // eax@19
 
     // thisa->AllocSoftwareDrawBuffers();
-    pODMRenderParams->Initialize();
     pWeather->bRenderSnow = false;
     render->ClearZBuffer();
     // thisa = (ODMRenderParams *)1;
@@ -3801,31 +3678,10 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     pOutdoor->MessWithLUN();
     pOutdoor->level_filename = pFilename;
     pWeather->Initialize();
-    pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
-    pIndoorCameraD3D->sRotationX = pParty->sRotationX;
+    pCamera3D->sRotationZ = pParty->sRotationZ;
+    pCamera3D->sRotationY = pParty->sRotationY;
     // pODMRenderParams->RotationToInts();
     pOutdoor->UpdateSunlightVectors();
-
-    float fov_rad;
-    float fov_rad_inv;
-    //----- (0042394D) --------------------------------------------------------
-    // void IndoorCamera::Initialize(int degFov, unsigned int uViewportWidth,
-    // unsigned int uViewportHeight)
-    {
-        // pIndoorCamera->Initialize(65, viewparams->uScreen_BttmR_X -
-        // viewparams->uScreen_topL_X + 1,
-        //                              viewparams->uScreen_BttmR_Y -
-        //                              viewparams->uScreen_topL_Y + 1);
-
-        int uViewportWidth =
-            viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X + 1;
-
-        extern float _calc_fov(int viewport_width, int angle_degree);
-        fov_rad = _calc_fov(uViewportWidth, 65);
-        fov_rad_inv = 65536.0 / fov_rad;
-    }
-    pODMRenderParams->int_fov_rad = (signed __int64)fov_rad;
-    pODMRenderParams->int_fov_rad_inv = (signed __int64)fov_rad_inv;
 
     for (int i = 0; i < 20000; ++i) {
         array_77EC08[i].ptr_38 = &SkyBillboard;
@@ -4080,4 +3936,25 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     } else {
         return y_x1z1;
     }
+}
+
+//----- (00436A6D) --------------------------------------------------------
+double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft* pVertices, unsigned int unumverts) {
+    double result = FLT_MAX;
+    for (uint i = 0; i < unumverts; i++) {
+        if (pVertices[i].vWorldPosition.z < result) {
+            result = pVertices[i].vWorldPosition.z;
+        }
+    }
+    return result;
+}
+
+//----- (00436A40) --------------------------------------------------------
+double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft* pVertex, unsigned int unumverts) {
+    double result = FLT_MIN;
+    for (uint i = 0; i < unumverts; i++) {
+        if (pVertex[i].vWorldPosition.z > result)
+            result = pVertex[i].vWorldPosition.z;
+    }
+    return result;
 }

@@ -239,11 +239,11 @@ void stru262_TurnBased::End(bool bPlaySound) {
         if (objType == OBJECT_Player)
             pPlayers[objID + 1]->uTimeToRecovery =
                 (unsigned __int16)((double)pQueue[i].actor_initiative *
-                                   2.133333333333333);
+                                   flt_debugrecmod3);
         else if (objType == OBJECT_Actor)
             pActors[objID].pMonsterInfo.uRecoveryTime =
                 (unsigned __int16)((double)pQueue[i].actor_initiative *
-                                   2.133333333333333);
+                                   flt_debugrecmod3);
     }
     pAudioPlayer->StopChannels(-1, -1);
     if (bPlaySound != 0)

@@ -81,9 +81,9 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
         assert(false);
     }
 
-    pIndoorCameraD3D->ViewTransform(
+    pCamera3D->ViewTransform(
         static_DetermineFacetIntersection_array_F8F200, face->uNumVertices);
-    pIndoorCameraD3D->Project(static_DetermineFacetIntersection_array_F8F200,
+    pCamera3D->Project(static_DetermineFacetIntersection_array_F8F200,
                               face->uNumVertices, 1);
 
     SortVectors_x(static_DetermineFacetIntersection_array_F8F200, 0,
@@ -320,10 +320,10 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->uNumFaces; ++v17) {
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
-            if (!pIndoorCameraD3D->IsCulled(face)) {
+            if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
                 if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &a1,
                                         face, 0xFFFFFFFFu)) {
-                    pIndoorCameraD3D->ViewTransform(&a1, 1);
+                    pCamera3D->ViewTransform(&a1, 1);
                     // v9 = fixpoint_from_float(/*v8,
                     // */a1.vWorldViewPosition.x); HEXRAYS_LOWORD(v9) =
                     // 0; v15 = (void *)((PID(OBJECT_BModel,pFaceID)) +
@@ -376,7 +376,7 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                 RenderVertexSoft intersection;
                 if (Intersect_Ray_Face(pRay, pRay + 1, &fDepth, &intersection,
                                        &blv_face, model.index)) {
-                    pIndoorCameraD3D->ViewTransform(&intersection, 1);
+                    pCamera3D->ViewTransform(&intersection, 1);
                     // int v13 = fixpoint_from_float(/*v12,
                     // */intersection.vWorldViewPosition.x); v13 &= 0xFFFF0000;
                     // v13 += PID(OBJECT_BModel, j | (i << 6));
@@ -451,6 +451,7 @@ void Vis::_4C1A02() {
     memcpy(&this->stru_206C, &v4, 0x60u);
 }
 
+// depth sort
 //----- (004C1ABA) --------------------------------------------------------
 void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
     int left_sort_index;          // ebx@2
@@ -610,11 +611,11 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint, signe
 
     v5 = 2 * pFace->uNumVertices;
     v16 = 0;
-    intersect_face_vertex_coords_list_a[v5] =
-        intersect_face_vertex_coords_list_a[0];
-    intersect_face_vertex_coords_list_b[v5] =
-        intersect_face_vertex_coords_list_b[0];
+    intersect_face_vertex_coords_list_a[v5] = intersect_face_vertex_coords_list_a[0];
+    intersect_face_vertex_coords_list_b[v5] = intersect_face_vertex_coords_list_b[0];
     v6 = intersect_face_vertex_coords_list_b[0] >= b;
+
+    // looks like this is point in poly test
     if (v5 <= 0) return false;
     for (int i = 0; i < v5; ++i) {
         if (v16 >= 2) break;
@@ -641,8 +642,14 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint, signe
 
     if (v16 != 1) return false;
 
-    if (engine->config->show_picked_face)
+    if (engine->config->show_picked_face) {
         pFace->uAttributes |= FACE_IsPicked;
+
+        // save debug pick line for later
+        debugpick.vWorldPosition.x = IntersectPoint.x;
+        debugpick.vWorldPosition.y = IntersectPoint.y;
+        debugpick.vWorldPosition.z = IntersectPoint.z;
+    }
 
 
     return true;
@@ -878,32 +885,16 @@ void Vis::ODM_CreateIntersectFacesVertexCoordList(
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    int v3;  // [sp-4h] [bp-8h]@5
+    int v3 = pCamera3D->ViewPlaneDist_X;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        // if ( render->pRenderD3D )
-        v3 = pIndoorCameraD3D->fov;
-        // else
-        //  v3 = pIndoorCamera->fov_rad;
-    } else {
-        v3 = pODMRenderParams->int_fov_rad;
-    }
     return TrigLUT->Atan2(x - pViewport->uScreenCenterX, v3) -
            TrigLUT->uIntegerHalfPi;
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    int v3;  // [sp-4h] [bp-8h]@5
+    int v3 = pCamera3D->ViewPlaneDist_X;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        // if ( render->pRenderD3D )
-        v3 = pIndoorCameraD3D->fov;
-        // else
-        //  v3 = pIndoorCamera->fov_rad;
-    } else {
-        v3 = pODMRenderParams->int_fov_rad;
-    }
     return TrigLUT->Atan2(y - pViewport->uScreenCenterY, v3) -
            TrigLUT->uIntegerHalfPi;
 }
@@ -918,18 +909,18 @@ void Vis::CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY, floa
     int outz;  // [sp+94h] [bp-Ch]@1
     int outy;  // [sp+98h] [bp-8h]@1
 
-    pRotY = pIndoorCameraD3D->sRotationZ + UnprojectX(fMouseX);
-    pRotX = -pIndoorCameraD3D->sRotationX + UnprojectY(fMouseY);
+    pRotY = pCamera3D->sRotationZ + UnprojectX(fMouseX);
+    pRotX = -pCamera3D->sRotationY + UnprojectY(fMouseY);
 
     // log->Info("Roty: %d, Rotx: %d", pRotY, pRotX);
 
-    pStartR.z = pIndoorCameraD3D->vPartyPos.z;
-    pStartR.x = pIndoorCameraD3D->vPartyPos.x;
-    pStartR.y = pIndoorCameraD3D->vPartyPos.y;
+    pStartR.z = pCamera3D->vCameraPos.z;
+    pStartR.x = pCamera3D->vCameraPos.x;
+    pStartR.y = pCamera3D->vCameraPos.y;
 
-    v11[1].vWorldPosition.x = (double)pIndoorCameraD3D->vPartyPos.x;
-    v11[1].vWorldPosition.y = (double)pIndoorCameraD3D->vPartyPos.y;
-    v11[1].vWorldPosition.z = (double)pIndoorCameraD3D->vPartyPos.z;
+    v11[1].vWorldPosition.x = (double)pCamera3D->vCameraPos.x;
+    v11[1].vWorldPosition.y = (double)pCamera3D->vCameraPos.y;
+    v11[1].vWorldPosition.z = (double)pCamera3D->vCameraPos.z;
 
     int depth = /*fixpoint_from_float*/(fPickDepth);
     Vec3_int_::Rotate(depth, pRotY, pRotX, pStartR, &outx, &outy, &outz);
@@ -1459,6 +1450,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 
     if (pBillboardRenderList[v3].screen_space_z > fDepth) return false;
 
+    // test polygon center first
     GetPolygonCenter(render->pBillboardRenderListD3D[/*v3*/uD3DBillboardIdx].pQuads, 4, &test_x, &test_y);
     // why check parent id v3? parent ID are wrong becasue of switching between pBillboardRenderListD3D and pBillboardRenderList
 
@@ -1474,8 +1466,9 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
                          Vis_static_stru_F91E10.uNumPointers - 1);
     if (Vis_static_stru_F91E10.uNumPointers) {
         if (Vis_static_stru_F91E10.object_pointers[0]->depth >
-            pBillboardRenderList[v3].screen_space_z)
+            pBillboardRenderList[v3].screen_space_z) {
             return true;
+        }
     } else if ((double)(pViewport->uScreen_TL_X) <= test_x &&
         (double)pViewport->uScreen_BR_X >= test_x &&
         (double)pViewport->uScreen_TL_Y <= test_y &&
@@ -1483,6 +1476,7 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
         return true;
     }
 
+    // test four corners of quad
     for (v40 = 0; v40 < 4; ++v40) {
         test_x =
             render->pBillboardRenderListD3D[uD3DBillboardIdx].pQuads[v40].pos.x;
@@ -1503,13 +1497,18 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
             Vis_static_stru_F91E10.create_object_pointers();
             sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0,
                                  Vis_static_stru_F91E10.uNumPointers - 1);
-            if (!Vis_static_stru_F91E10.uNumPointers) return true;
-            if (Vis_static_stru_F91E10.object_pointers[0]->depth >
-                pBillboardRenderList[v3].screen_space_z)
+            if (!Vis_static_stru_F91E10.uNumPointers) {
                 return true;
+            }
+            if (Vis_static_stru_F91E10.object_pointers[0]->depth >
+                pBillboardRenderList[v3].screen_space_z) {
+                return true;
+            }
         }
     }
 
+
+    // reverse quad and test center
     if (v40 >= 4) {
         // if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) return false;
         t1_x =
@@ -1549,10 +1548,13 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
             Vis_static_stru_F91E10.create_object_pointers();
             sort_object_pointers(Vis_static_stru_F91E10.object_pointers, 0,
                                  Vis_static_stru_F91E10.uNumPointers - 1);
-            if (!Vis_static_stru_F91E10.uNumPointers) return true;
-            if (Vis_static_stru_F91E10.object_pointers[0]->depth >
-                pBillboardRenderList[v3].screen_space_z)
+            if (!Vis_static_stru_F91E10.uNumPointers) {
                 return true;
+            }
+            if (Vis_static_stru_F91E10.object_pointers[0]->depth >
+                pBillboardRenderList[v3].screen_space_z) {
+                return true;
+            }
         }
     }
     return false;
@@ -1560,19 +1562,15 @@ bool Vis::DoesRayIntersectBillboard(float fDepth,
 // F93E18: using guessed type char static_byte_F93E18_init;
 
 //----- (004C0D32) --------------------------------------------------------
-void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list,
-                                   Vis_SelectionFilter *filter) {
-    // This is not a very efficient implementation. Instead of iterating through all faces we could be iterating
-    // only through the ones that have an event assigned. That would require some work in IndoorLocation.
-
-    for (size_t i = 0; i < pIndoor->uNumFaces; ++i) {
-        BLVFace *pFace = &pIndoor->pFaces[i];
-        if (!pIndoorCameraD3D->IsCulled(pFace)) {
+void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vis_SelectionFilter *filter) {
+    for (int i = 0; i < pBspRenderer->num_faces; ++i) {
+        int16_t pFaceID = pBspRenderer->faces[i].uFaceID;
+        BLVFace* pFace = &pIndoor->pFaces[pFaceID];
+        if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
             if (is_part_of_selection(pFace, filter)) {
-                Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, PID(OBJECT_BModel, i), pick_depth);
+                Vis_ObjectInfo* v8 = DetermineFacetIntersection(pFace, PID(OBJECT_BModel, pFaceID), pick_depth);
                 if (v8)
-                    list->AddObject(v8->object, v8->object_type,
-                                    v8->depth, v8->object_pid);
+                    list->AddObject(v8->object, v8->object_type, v8->depth, v8->object_pid);
             }
         }
     }

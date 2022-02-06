@@ -196,23 +196,3 @@ struct Plane_float_ {
     float dist;
 };
 #pragma pack(pop)
-
-/*  196 */
-#pragma pack(push, 1)
-struct Matrix3x3_float_ {
-    union {
-        struct {
-            float _11;
-            float _12;
-            float _13;
-            float _21;
-            float _22;
-            float _23;
-            float _31;
-            float _32;
-            float _33;
-        };
-        float v[3][3];
-    };
-};
-#pragma pack(pop)

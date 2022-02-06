@@ -69,7 +69,7 @@ void Arena_SelectionFightLevel() {
                 pParty->vPosition.z = 1;
                 pParty->uFallStartZ = 1;
                 pParty->sRotationZ = 512;
-                pParty->sRotationX = 0;
+                pParty->sRotationY = 0;
                 pParty->uFallSpeed = 0;
                 pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0);
             }
@@ -144,7 +144,7 @@ void ArenaFight() {
     pParty->vPosition.z = 1;
     pParty->uFallStartZ = 1;
     pParty->sRotationZ = 512;
-    pParty->sRotationX = 0;
+    pParty->sRotationY = 0;
     pParty->uFallSpeed = 0;
     /*if ( (signed int)pMessageQueue_50CBD0->uNumMessages < 40 )
     {

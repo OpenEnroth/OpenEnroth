@@ -48,8 +48,8 @@
 struct BSPNode {
     int16_t uFront;
     int16_t uBack;
-    int16_t uCoplanarOffset;
-    int16_t uCoplanarSize;
+    int16_t uBSPFaceIDOffset;
+    int16_t uNumBSPFaces;
 };
 #pragma pack(pop)
 
@@ -99,9 +99,6 @@ class Texture;
 struct ODMFace {
     bool HasEventHint();
 
-    static bool IsBackfaceNotCulled(struct RenderVertexSoft *a2,
-                                    struct Polygon *polygon);
-
     inline bool Invisible() const {
         return (uAttributes & FACE_IsInvisible) != 0;
     }
@@ -134,7 +131,8 @@ struct ODMFace {
     bool Deserialize(struct ODMFace_MM7 *);
 
     unsigned int index = 0;
-    struct Plane_int_ pFacePlane;
+    struct Plane_float_ pFacePlane;
+    struct Plane_int_ pFacePlaneOLD;
     int zCalc1 = 0;
     int zCalc2 = 0;
     int zCalc3 = 0;
@@ -162,7 +160,7 @@ struct ODMFace {
     uint8_t uGradientVertex4 = 0;
     uint8_t uNumVertices = 0;
     uint8_t uPolygonType = 0;
-    uint8_t uShadeType = 0;
+    uint8_t uShadeType = 0;  // could be minimum shade
     uint8_t bVisible = 0;
     char field_132 = 0;
     char field_133 = 0;

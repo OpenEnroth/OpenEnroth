@@ -80,9 +80,9 @@ void Polygon::_normalize_v_18() {
 
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // checks if model is visible in FOV cone
-    float halfangle = (pODMRenderParams->uCameraFovInDegrees * pi_double / 180.0f) / 2;
-    float rayx = model->vBoundingCenter.x - pIndoorCameraD3D->vPartyPos.x;
-    float rayy = model->vBoundingCenter.y - pIndoorCameraD3D->vPartyPos.y;
+    float halfangle = (pCamera3D->odm_fov_rad) / 2.0;
+    float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
+    float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
 
     // approx distance
     int dist = int_get_vector_length(abs(rayx), abs(rayy), 0);
@@ -90,11 +90,11 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
 
     // dot product of camvec and ray - size in forward
-    float frontvec = rayx * pIndoorCameraD3D->fRotationZCosine + rayy * pIndoorCameraD3D->fRotationZSine;
-    if (pIndoorCameraD3D->sRotationX) { frontvec *= pIndoorCameraD3D->fRotationXCosine;}
+    float frontvec = rayx * pCamera3D->fRotationZCosine + rayy * pCamera3D->fRotationZSine;
+    if (pCamera3D->sRotationY) { frontvec *= pCamera3D->fRotationYCosine;}
 
     // dot product of camvec and ray - size in left
-    float leftvec = rayy * pIndoorCameraD3D->fRotationZCosine - rayx * pIndoorCameraD3D->fRotationZSine;
+    float leftvec = rayy * pCamera3D->fRotationZCosine - rayx * pCamera3D->fRotationZSine;
 
     // which half fov is ray in direction of - compare slopes
     float sloperem = 0.0;
@@ -105,7 +105,7 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     }
 
     // view range check
-    if (dist <= pIndoorCameraD3D->GetFarClip() + 2048) {
+    if (dist <= pCamera3D->GetFarClip() + 2048) {
         // boudning point inside cone
         if (sloperem >= 0) return true;
         // bounding radius inside cone
@@ -238,12 +238,12 @@ void _46E889_collide_against_bmodels(unsigned int ecx0) {
         if (collision_state.bbox.Intersects(model.pBoundingBox)) {
             for (ODMFace &mface : model.pFaces) {
                 if (collision_state.bbox.Intersects(mface.pBoundingBox)) {
-                    face.pFacePlane_old.vNormal.x = mface.pFacePlane.vNormal.x;
-                    face.pFacePlane_old.vNormal.y = mface.pFacePlane.vNormal.y;
-                    face.pFacePlane_old.vNormal.z = mface.pFacePlane.vNormal.z;
+                    face.pFacePlane_old.vNormal.x = mface.pFacePlaneOLD.vNormal.x;
+                    face.pFacePlane_old.vNormal.y = mface.pFacePlaneOLD.vNormal.y;
+                    face.pFacePlane_old.vNormal.z = mface.pFacePlaneOLD.vNormal.z;
 
                     // TODO: need fixpoint_to_float here
-                    face.pFacePlane_old.dist = mface.pFacePlane.dist;  // incorrect
+                    face.pFacePlane_old.dist = mface.pFacePlaneOLD.dist;  // incorrect
 
                     face.uAttributes = mface.uAttributes;
 
@@ -656,6 +656,7 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
     unsigned int v45;  // [sp+18h] [bp-Ch]@44
 
     v6 = uBaseLightLevel;
+
     for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         MobileLight *p = &pMobileLightsStack->pLights[i];
 
@@ -733,11 +734,7 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
         }
     }
 
-    if (v6 <= 31) {
-        if (v6 < 0) v6 = 0;
-    } else {
-        v6 = 31;
-    }
+    v6 = std::clamp(v6, 0, 31);
     return v6;
 }
 
@@ -1338,28 +1335,28 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     // transform to odd axis??
 
 
-    float cosz = pIndoorCameraD3D->fRotationZCosine;  // int_cosine_Z;
-    float cosx = pIndoorCameraD3D->fRotationXCosine;  // int_cosine_x;
-    float sinz = pIndoorCameraD3D->fRotationZSine;  // int_sine_Z;
-    float sinx = pIndoorCameraD3D->fRotationXSine;  // int_sine_x;
+    float cosz = pCamera3D->fRotationZCosine;  // int_cosine_Z;
+    float cosx = pCamera3D->fRotationYCosine;  // int_cosine_y;
+    float sinz = pCamera3D->fRotationZSine;  // int_sine_Z;
+    float sinx = pCamera3D->fRotationYSine;  // int_sine_y;
 
     // positions all minus ?
-    float v11 = cosz * -pIndoorCameraD3D->vPartyPos.x + sinz * -pIndoorCameraD3D->vPartyPos.y;
-    float v24 = cosz * -pIndoorCameraD3D->vPartyPos.y - sinz * -pIndoorCameraD3D->vPartyPos.x;
+    float v11 = cosz * -pCamera3D->vCameraPos.x + sinz * -pCamera3D->vCameraPos.y;
+    float v24 = cosz * -pCamera3D->vCameraPos.y - sinz * -pCamera3D->vCameraPos.x;
 
     // cam position transform
-    if (pIndoorCameraD3D->sRotationX) {
-        this->field_0_party_dir_x = (v11 * cosx) + (-pIndoorCameraD3D->vPartyPos.z * sinx);
+    if (pCamera3D->sRotationY) {
+        this->field_0_party_dir_x = (v11 * cosx) + (-pCamera3D->vCameraPos.z * sinx);
         this->field_4_party_dir_y = v24;
-        this->field_8_party_dir_z = (-pIndoorCameraD3D->vPartyPos.z * cosx) /*-*/ + (v11 * sinx);
+        this->field_8_party_dir_z = (-pCamera3D->vCameraPos.z * cosx) /*-*/ + (v11 * sinx);
     } else {
         this->field_0_party_dir_x = v11;
         this->field_4_party_dir_y = v24;
-        this->field_8_party_dir_z = (-pIndoorCameraD3D->vPartyPos.z);
+        this->field_8_party_dir_z = (-pCamera3D->vCameraPos.z);
     }
 
     // set 1 position transfrom (6 0 0) looks like cam left vector
-    if (pIndoorCameraD3D->sRotationX) {
+    if (pCamera3D->sRotationY) {
         float v17 = (x1 * cosz) + (y1 * sinz);
 
         this->CamVecLeft_Z = (v17 * cosx) + (z1 * sinx);  // dz
@@ -1372,7 +1369,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     }
 
     // set 2 position transfrom (0 6 0) looks like cam front vector
-    if (pIndoorCameraD3D->sRotationX) {
+    if (pCamera3D->sRotationY) {
         float v19 = (x2 * cosz) + (y2 * sinz);
 
         this->CamVecFront_Z = (v19 * cosx) + (z2 * sinx);  // dz
@@ -1966,10 +1963,10 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
     DrawMasked(u, v, pTexture, 0, 0x07E0);
 }
 
-void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices,
-                                       unsigned int num_vertices) {
-    __debugbreak();
-}
+//void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices,
+//                                       unsigned int num_vertices) {
+//    __debugbreak();
+//}
 
 inline uint32_t PixelDim(uint32_t pix, int dimming) {
     return Color32((((pix >> 16) & 0xFF) >> dimming),
@@ -2103,8 +2100,8 @@ int RenderOpenGL::GetActorsInViewport(int pDepth) {
 }
 
 void RenderOpenGL::BeginLightmaps() {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
@@ -2127,7 +2124,7 @@ void RenderOpenGL::BeginLightmaps2() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    auto effpar03 = assets->GetBitmap("effpar03");
+    static Texture* effpar03 = assets->GetBitmap("effpar03");
     auto texture = (TextureOpenGL*)effpar03;
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 }
@@ -2381,9 +2378,9 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
 
                     v10 = (unsigned __int16 *)TrigLUT->Atan2(
                         pLevelDecorations[i].vPosition.x -
-                        pIndoorCameraD3D->vPartyPos.x,
+                        pCamera3D->vCameraPos.x,
                         pLevelDecorations[i].vPosition.y -
-                        pIndoorCameraD3D->vPartyPos.y);
+                        pCamera3D->vCameraPos.y);
                     v38 = 0;
                     v13 = ((signed int)(TrigLUT->uIntegerPi +
                         ((signed int)TrigLUT->uIntegerPi >>
@@ -2417,20 +2414,20 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                     }  // for light
 
                        // v17 = (pLevelDecorations[i].vPosition.x -
-                       // pIndoorCameraD3D->vPartyPos.x) << 16; v40 =
+                       // pCamera3D->vCameraPos.x) << 16; v40 =
                        // (pLevelDecorations[i].vPosition.y -
-                       // pIndoorCameraD3D->vPartyPos.y) << 16;
+                       // pCamera3D->vCameraPos.y) << 16;
                     int party_to_decor_x = pLevelDecorations[i].vPosition.x -
-                        pIndoorCameraD3D->vPartyPos.x;
+                        pCamera3D->vCameraPos.x;
                     int party_to_decor_y = pLevelDecorations[i].vPosition.y -
-                        pIndoorCameraD3D->vPartyPos.y;
+                        pCamera3D->vCameraPos.y;
                     int party_to_decor_z = pLevelDecorations[i].vPosition.z -
-                        pIndoorCameraD3D->vPartyPos.z;
+                        pCamera3D->vCameraPos.z;
 
                     int view_x = 0;
                     int view_y = 0;
                     int view_z = 0;
-                    bool visible = pIndoorCameraD3D->ViewClip(
+                    bool visible = pCamera3D->ViewClip(
                         pLevelDecorations[i].vPosition.x,
                         pLevelDecorations[i].vPosition.y,
                         pLevelDecorations[i].vPosition.z, &view_x, &view_y,
@@ -2440,14 +2437,11 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                         if (2 * abs(view_x) >= abs(view_y)) {
                             int projected_x = 0;
                             int projected_y = 0;
-                            pIndoorCameraD3D->Project(view_x, view_y, view_z,
+                            pCamera3D->Project(view_x, view_y, view_z,
                                 &projected_x,
                                 &projected_y);
 
-                            float _v41 =
-                                frame->scale *
-                                (pODMRenderParams->int_fov_rad) /
-                                (view_x);
+                            float _v41 = frame->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
 
                             int screen_space_half_width = _v41 * frame->hw_sprites[(int64_t)v37]->uBufferWidth / 2;
 
@@ -2661,23 +2655,14 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
 }
 
 void _set_3d_projection_matrix() {
-    float near_clip = pIndoorCameraD3D->GetNearClip();
-    float far_clip = pIndoorCameraD3D->GetFarClip();
+    float near_clip = pCamera3D->GetNearClip();
+    float far_clip = pCamera3D->GetFarClip();
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-
-    // outdoors 60 - should be 75?
-    // indoors 65?/
-    // something to do with ratio of screenwidth to viewport width
-
-    int fov = 60;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) fov = 50;
-
-    gluPerspective(fov, double(game_viewport_width/double(game_viewport_height))  // 65.0f
-                   /*(GLfloat)window->GetWidth() / (GLfloat)window->GetHeight()*/,
-                   near_clip, far_clip);
+    // ogl uses fov in Y
+    gluPerspective(pCamera3D->fov_y_deg, double(game_viewport_width/double(game_viewport_height)), near_clip, far_clip);
 }
 
 void _set_3d_modelview_matrix() {
@@ -2691,9 +2676,9 @@ void _set_3d_modelview_matrix() {
 
     gluLookAt(camera_x, camera_y, camera_z,
 
-              camera_x - pParty->y_rotation_granularity * cosf(2 * 3.14159 * pParty->sRotationZ / 2048.0) /*- 5*/,
-              camera_y - pParty->y_rotation_granularity * sinf(2 * 3.14159 * pParty->sRotationZ / 2048.0),
-              camera_z - pParty->y_rotation_granularity * sinf(2 * 3.14159 * (-pParty->sRotationX - 20) / 2048.0),
+              camera_x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0f),
+              camera_y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0f),
+              camera_z - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationY / 2048.0f),
               0, 0, 1);
 }
 
@@ -2730,16 +2715,13 @@ void RenderOpenGL::RenderTerrainD3D() {
 
     int blockScale = 512;
     int heightScale = 32;
+
+    // TODO(pskelton): move these calculations to map load so its not run every frame
     for (unsigned int z = 0; z < 128; ++z) {
         for (unsigned int x = 0; x < 128; ++x) {
-            pTerrainVertices[z * 128 + x].vWorldPosition.x =
-                (-64 + (signed)x) * blockScale;
-            pTerrainVertices[z * 128 + x].vWorldPosition.y =
-                (64 - (signed)z) * blockScale;
-            pTerrainVertices[z * 128 + x].vWorldPosition.z =
-                heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
-            pIndoorCameraD3D->ViewTransform(&pTerrainVertices[z * 128 + x], 1);
-            pIndoorCameraD3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
+            pTerrainVertices[z * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
+            pTerrainVertices[z * 128 + x].vWorldPosition.y = (64 - (signed)z) * blockScale;
+            pTerrainVertices[z * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[z * 128 + x];
         }
     }
 
@@ -2755,46 +2737,63 @@ void RenderOpenGL::RenderTerrainD3D() {
     GL_lastboundtex = -1;  // keeps track of which tile texture is loaded
     GLint thistex = -1;
 
-    // tile culling maths
-    int camx = WorldPosToGridCellX(pIndoorCameraD3D->vPartyPos.x);
-    int camy = WorldPosToGridCellY(pIndoorCameraD3D->vPartyPos.y);
-    int tilerange = (pIndoorCameraD3D->GetFarClip() / terrain_block_scale)+1;
 
-    int camfacing = 2048 - pIndoorCameraD3D->sRotationZ;
-    int right = int(camfacing - (TrigLUT->uIntegerPi / 2));
-    int left = int(camfacing + (TrigLUT->uIntegerPi / 2));
-    if (left > 2048) left -= 2048;
-    if (right < 0) right += 2048;
+    //-------(Отсечение невидимой части
+    //карты)------------------------------------------------------------------------------------------
+    float direction = (float)(pCamera3D->sRotationZ /
+        256);  // direction of the camera(напрвление
+               // камеры) 0-East(B) 1-NorthEast(CB)
+               // 2-North(C)
+               // 3-WestNorth(CЗ)
+               // 4-West(З)
+               // 5-SouthWest(ЮЗ)
+               // 6-South(Ю)
+               // 7-SouthEast(ЮВ)
+    unsigned int Start_X, End_X, Start_Z, End_Z;
+    if (direction >= 0 && direction < 1.0) {  // East(B) - NorthEast(CB)
+        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 127;
+        Start_Z = 0, End_Z = 127;
+    } else if (direction >= 1.0 && direction < 3.0) {  // NorthEast(CB) - WestNorth(CЗ)
+        Start_X = 0, End_X = 127;
+        Start_Z = 0, End_Z = pODMRenderParams->uMapGridCellY + 2;
+    } else if (direction >= 3.0 && direction < 5.0) {  // WestNorth(CЗ) - SouthWest(ЮЗ)
+        Start_X = 0, End_X = pODMRenderParams->uMapGridCellX + 2;
+        Start_Z = 0, End_Z = 127;
+    } else if (direction >= 5.0 && direction < 7.0) {  // SouthWest(ЮЗ) - //SouthEast(ЮВ)
+        Start_X = 0, End_X = 127;
+        Start_Z = pODMRenderParams->uMapGridCellY - 2, End_Z = 127;
+    } else {  // SouthEast(ЮВ) - East(B)
+        Start_X = pODMRenderParams->uMapGridCellX - 2, End_X = 127;
+        Start_Z = 0, End_Z = 127;
+    }
+
+    for (unsigned int z = Start_Z; z < End_Z + 1; ++z) {
+        for (unsigned int x = Start_X; x < End_X + 1; ++x) {
+            pCamera3D->ViewTransform(&pTerrainVertices[z * 128 + x], 1);
+            pCamera3D->Project(&pTerrainVertices[z * 128 + x], 1, 0);
+        }
+    }
+
+
+
+    // tile culling maths
+    int camx = WorldPosToGridCellX(pCamera3D->vCameraPos.x);
+    int camy = WorldPosToGridCellY(pCamera3D->vCameraPos.y);
+    int tilerange = (pCamera3D->GetFarClip() / terrain_block_scale) + 3;
 
     float Light_tile_dist;
 
 
-    for (int z = 0; z < 128 - 1; ++z) {
-        for (int x = 0; x < 128 - 1; ++x) {
+    for (int z = Start_Z; z < End_Z; ++z) {
+        for (int x = Start_X; x < End_X; ++x) {
             // tile culling
             int xdist = camx - x;
             int zdist = camy - z;
 
             if (xdist > tilerange || zdist > tilerange) continue;
 
-            int dist = sqrt((xdist) * (xdist)+(zdist) * (zdist));
+            int dist = sqrt((xdist) * (xdist) + (zdist) * (zdist));
             if (dist > tilerange) continue;  // crude distance culling
-
-            // could do further x + z culling by camera direction see dx
-
-            int tiledir = TrigLUT->Atan2(xdist, zdist) + 1024;
-            if (tiledir > 2048) {
-                tiledir -= 2048;
-            }
-
-            if (dist > 2) {  // dont cull near feet
-                if (left > right) {  // crude fov culling
-                    if ((tiledir > left) || (tiledir < right)) continue;
-                } else {
-                    if (!(tiledir < left || tiledir > right)) continue;
-                }
-            }
-
 
             struct Polygon* pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
             pTilePolygon->flags = 0;
@@ -2830,8 +2829,13 @@ void RenderOpenGL::RenderTerrainD3D() {
             array_73D150[1].u = 0;
             array_73D150[1].v = 1;
 
-            pTilePolygon->pODMFace = nullptr;
             pTilePolygon->uNumVertices = 4;
+            // better tile culling
+            pCamera3D->CullFaceToCameraFrustum(array_73D150, &pTilePolygon->uNumVertices, array_73D150, 4);
+            if (!pTilePolygon->uNumVertices) continue;
+
+            pTilePolygon->pODMFace = nullptr;
+            // pTilePolygon->uNumVertices = 4;
             pTilePolygon->field_59 = 5;
 
             ++pODMRenderParams->uNumPolygons;
@@ -2896,9 +2900,7 @@ void RenderOpenGL::RenderTerrainD3D() {
                     VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                 }
 
-                float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                    (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                    (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                float _f = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
 
                 lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, 3, 1);
@@ -2907,8 +2909,8 @@ void RenderOpenGL::RenderTerrainD3D() {
                 unsigned int a5 = 4;
 
                 // ---------Draw distance(Дальность отрисовки)-------------------------------
-                int far_clip_distance = pIndoorCameraD3D->GetFarClip();
-                float near_clip_distance = pIndoorCameraD3D->GetNearClip();
+                int far_clip_distance = pCamera3D->GetFarClip();
+                float near_clip_distance = pCamera3D->GetNearClip();
 
 
                 bool neer_clip = array_73D150[0].vWorldViewPosition.x < near_clip_distance ||
@@ -3018,9 +3020,7 @@ void RenderOpenGL::RenderTerrainD3D() {
                     VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                 }
 
-                float _f2 = ((norm2->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                    (norm2->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                    (norm2->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                float _f2 = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f2 + 0.5f);
 
 
@@ -3033,8 +3033,8 @@ void RenderOpenGL::RenderTerrainD3D() {
                 unsigned int a5_2 = 4;
 
                 // ---------Draw distance(Дальность отрисовки)-------------------------------
-                int far_clip_distance_2 = pIndoorCameraD3D->GetFarClip();
-                float near_clip_distance_2 = pIndoorCameraD3D->GetNearClip();
+                int far_clip_distance_2 = pCamera3D->GetFarClip();
+                float near_clip_distance_2 = pCamera3D->GetNearClip();
 
 
                 bool neer_clip_2 = array_73D150[0].vWorldViewPosition.x < near_clip_distance_2 ||
@@ -3122,9 +3122,7 @@ void RenderOpenGL::RenderTerrainD3D() {
 
                 // end split trinagles
             } else {
-                float _f = ((norm->x * (float)pOutdoor->vSunlight.x / 65536.0) -
-                    (norm->y * (float)pOutdoor->vSunlight.y / 65536.0) -
-                    (norm->z * (float)pOutdoor->vSunlight.z / 65536.0));
+                float _f = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
 
                 lightmap_builder->StackLights_TerrainFace(norm, &Light_tile_dist, VertexRenderList, pTilePolygon->uNumVertices, 1);
@@ -3133,8 +3131,8 @@ void RenderOpenGL::RenderTerrainD3D() {
                 unsigned int a5 = 4;
 
                 // ---------Draw distance(Дальность отрисовки)-------------------------------
-               // int far_clip_distance = pIndoorCameraD3D->GetFarClip();
-                // float near_clip_distance = pIndoorCameraD3D->GetNearClip();
+               // int far_clip_distance = pCamera3D->GetFarClip();
+                // float near_clip_distance = pCamera3D->GetNearClip();
 
                // if (engine->config->extended_draw_distance)
                //     far_clip_distance = 0x5000;
@@ -3370,31 +3368,30 @@ void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bo
 
     // if (pIndoorCamera->flags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES ||
     // pBLVRenderParams->uFlags & INDOOR_CAMERA_DRAW_TERRAIN_OUTLINES) if
-    // (pIndoorCameraD3D->debug_flags & ODM_RENDER_DRAW_TERRAIN_OUTLINES)
+    // (pCamera3D->debug_flags & ODM_RENDER_DRAW_TERRAIN_OUTLINES)
     if (engine->config->debug_terrain)
-        pIndoorCameraD3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices,
-            0x00FFFFFF, 0.0);
+        pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FFFFFF, 0.0);
 }
 
 void RenderOpenGL::DrawOutdoorSkyD3D() {
     double rot_to_rads = ((2 * pi_double) / 2048);
 
     // lowers clouds as party goes up
-    float  horizon_height_offset = ((double)(pODMRenderParams->int_fov_rad * pIndoorCameraD3D->vPartyPos.z)
-        / ((double)pODMRenderParams->int_fov_rad + 8192.0)
+    float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vCameraPos.z)
+        / ((double)pCamera3D->ViewPlaneDist_X + 8192.0)
         + (double)(pViewport->uScreenCenterY));
 
     // magnitude in up direction
-    float cam_vec_up = cos((double)pIndoorCameraD3D->sRotationX * rot_to_rads) *
-    pIndoorCameraD3D->GetFarClip();
+    float cam_vec_up = cos((double)pCamera3D->sRotationY * rot_to_rads) *
+    pCamera3D->GetFarClip();
 
     float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
-        (double)pODMRenderParams->int_fov_rad /
+        (double)pCamera3D->ViewPlaneDist_X /
         (cam_vec_up + 0.0000001) *
-        (sin((double)pIndoorCameraD3D->sRotationX * rot_to_rads)
+        (sin((double)pCamera3D->sRotationY * rot_to_rads)
             *
-            pIndoorCameraD3D->GetFarClip() -
-            (double)pIndoorCameraD3D->vPartyPos.z));
+            pCamera3D->GetFarClip() -
+            (double)pCamera3D->vCameraPos.z));
 
     struct Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;
@@ -3416,9 +3413,9 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector
         float v18x, v18y, v18z;
-        /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pIndoorCameraD3D->sRotationX + 16) / 65536.0;
+        /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pCamera3D->sRotationY + 16) / 65536.0;
         /*pSkyPolygon.v_18.y*/ v18y = 0;
-        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pIndoorCameraD3D->sRotationX + 16) / 65536.0;
+        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pCamera3D->sRotationY + 16) / 65536.0;
 
         // sky wiew position(положение неба на
         // экране)------------------------------------------
@@ -3444,7 +3441,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;  // 468
         VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;  // 8
 
-        double half_fov_angle_rads = ((pODMRenderParams->uCameraFovInDegrees - 1) * pi_double) / 360;
+        double half_fov_angle_rads = ((pCamera3D->odm_fov_deg) * pi_double) / 360;
 
         // far width per pixel??
         float widthperpixel = 1 /
@@ -3502,7 +3499,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
             // }
 
             float worldviewdepth = -64.0 / top_y_proj;
-            if (worldviewdepth < 0) worldviewdepth = pIndoorCameraD3D->GetFarClip();
+            if (worldviewdepth < 0) worldviewdepth = pCamera3D->GetFarClip();
 
             float texoffset_U = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((skyfinalleft * worldviewdepth));
             VertexRenderList[i].u = texoffset_U / ((float)pSkyPolygon.texture->GetWidth());
@@ -3510,7 +3507,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
             float texoffset_V = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((finalskyfront * worldviewdepth));
             VertexRenderList[i].v = texoffset_V / ((float)pSkyPolygon.texture->GetHeight());
 
-            VertexRenderList[i].vWorldViewPosition.x = pIndoorCameraD3D->GetFarClip();
+            VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
             VertexRenderList[i]._rhw = 1.0 / (double)(worldviewdepth);
         }
 
@@ -3545,16 +3542,16 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     VertexRenderList[2].u = 1 - (float)pParty->sRotationZ / 512;
     VertexRenderList[3].u = 1 - (float)pParty->sRotationZ / 512;
 
-    if (pParty->sRotationX > 0) {
-        VertexRenderList[0].v = 0 - (float)pParty->sRotationX / 1024;
-        VertexRenderList[1].v = 1 - (float)pParty->sRotationX / 1024;
-        VertexRenderList[2].v = 1 - (float)pParty->sRotationX / 1024;
-        VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 1024;
+    if (pParty->sRotationY > 0) {
+        VertexRenderList[0].v = 0 - (float)pParty->sRotationY / 1024;
+        VertexRenderList[1].v = 1 - (float)pParty->sRotationY / 1024;
+        VertexRenderList[2].v = 1 - (float)pParty->sRotationY / 1024;
+        VertexRenderList[3].v = 0 - (float)pParty->sRotationY / 1024;
     } else {
-        VertexRenderList[0].v = 0 - (float)pParty->sRotationX / 256;
-        VertexRenderList[1].v = 1 - (float)pParty->sRotationX / 256;
-        VertexRenderList[2].v = 1 - (float)pParty->sRotationX / 256;
-        VertexRenderList[3].v = 0 - (float)pParty->sRotationX / 256;
+        VertexRenderList[0].v = 0 - (float)pParty->sRotationY / 256;
+        VertexRenderList[1].v = 1 - (float)pParty->sRotationY / 256;
+        VertexRenderList[2].v = 1 - (float)pParty->sRotationY / 256;
+        VertexRenderList[3].v = 0 - (float)pParty->sRotationY / 256;
     }
 
     glBegin(GL_TRIANGLE_FAN);
@@ -3630,8 +3627,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
                              billboard->pQuads[j].texcoord.y);
 
                 float oneoz = 1. / (billboard->screen_space_z);
-                float oneon = 1. / (pIndoorCameraD3D->GetNearClip()+4);
-                float oneof = 1. / pIndoorCameraD3D->GetFarClip();
+                float oneon = 1. / (pCamera3D->GetNearClip()+4);
+                float oneof = 1. / pCamera3D->GetFarClip();
 
                 glVertex3f(
                     billboard->pQuads[j].pos.x,
@@ -3782,6 +3779,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
     int drawy = std::max(y, clipy);
     int draww = std::min(w, clipw);
     int drawz = std::min(z, clipz);
+    if (drawz <= drawx || draww <= drawy) return;
 
     float depth = 0;
 
@@ -3983,8 +3981,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
     _set_3d_projection_matrix();
     _set_3d_modelview_matrix();
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // int v27;  // eax@57
     int farclip;  // [sp+2Ch] [bp-2Ch]@10
@@ -4035,8 +4033,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
             unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
             unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
 
-            if (face.pFacePlane.vNormal.z &&
-                abs(face.pFacePlane.vNormal.z) >= 59082) {
+            if (face.pFacePlane.vNormal.z && abs(face.pFacePlane.vNormal.z) >= 0.9) {
                 if (poly->flags & 0x400)
                     poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
                 if (poly->flags & 0x800)
@@ -4056,40 +4053,35 @@ void RenderOpenGL::DrawBuildingsD3D() {
             nearclip = 0;
             farclip = 0;
 
-            for (uint vertex_id = 1; vertex_id <= face.uNumVertices;
-                vertex_id++) {
-                array_73D150[vertex_id - 1].vWorldPosition.x =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
-                array_73D150[vertex_id - 1].vWorldPosition.y =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
-                array_73D150[vertex_id - 1].vWorldPosition.z =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
-                array_73D150[vertex_id - 1].u =
-                    (poly->sTextureDeltaU +
+            for (uint vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
+                array_73D150[vertex_id - 1].vWorldPosition.x = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+                array_73D150[vertex_id - 1].vWorldPosition.y = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+                array_73D150[vertex_id - 1].vWorldPosition.z = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+                array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU +
                         (__int16)face.pTextureUIDs[vertex_id - 1]) *
                     (1.0 / (double)poly->texture->GetWidth());
-                array_73D150[vertex_id - 1].v =
-                    (poly->sTextureDeltaV +
+                array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV +
                         (__int16)face.pTextureVIDs[vertex_id - 1]) *
                     (1.0 / (double)poly->texture->GetHeight());
             }
+
             for (uint i = 1; i <= face.uNumVertices; i++) {
                 if (model.pVertices.pVertices[face.pVertexIDs[0]].z ==
                     array_73D150[i - 1].vWorldPosition.z)
                     ++v53;
-                pIndoorCameraD3D->ViewTransform(&array_73D150[i - 1], 1);
-                if (array_73D150[i - 1].vWorldViewPosition.x <
-                    pIndoorCameraD3D->GetNearClip() ||
-                    array_73D150[i - 1].vWorldViewPosition.x >
-                    pIndoorCameraD3D->GetFarClip()) {
-                    if (array_73D150[i - 1].vWorldViewPosition.x >=
-                        pIndoorCameraD3D->GetNearClip())
-                        farclip = 1;
-                    else
-                        nearclip = 1;
-                } else {
-                    pIndoorCameraD3D->Project(&array_73D150[i - 1], 1, 0);
-                }
+                pCamera3D->ViewTransform(&array_73D150[i - 1], 1);
+                //if (array_73D150[i - 1].vWorldViewPosition.x <
+                //    pCamera3D->GetNearClip() ||
+                //    array_73D150[i - 1].vWorldViewPosition.x >
+                //    pCamera3D->GetFarClip()) {
+                //    if (array_73D150[i - 1].vWorldViewPosition.x >=
+                //        pCamera3D->GetNearClip())
+                //        farclip = 1;
+                //    else
+                //        nearclip = 1;
+                //} else {
+                    pCamera3D->Project(&array_73D150[i - 1], 1, 0);
+                //}
             }
 
             if (v53 == face.uNumVertices) poly->field_32 |= 1;
@@ -4097,18 +4089,13 @@ void RenderOpenGL::DrawBuildingsD3D() {
             poly->uNumVertices = face.uNumVertices;
             poly->field_59 = 5;
 
-            v51 =
-                fixpoint_mul(-pOutdoor->vSunlight.x, face.pFacePlane.vNormal.x);
-            v53 =
-                fixpoint_mul(-pOutdoor->vSunlight.y, face.pFacePlane.vNormal.y);
-            v52 =
-                fixpoint_mul(-pOutdoor->vSunlight.z, face.pFacePlane.vNormal.z);
-            poly->dimming_level = 20 - fixpoint_mul(20, v51 + v53 + v52);
+            float f = face.pFacePlane.vNormal.x * pOutdoor->vSunlight.x + face.pFacePlane.vNormal.y * pOutdoor->vSunlight.y + face.pFacePlane.vNormal.z * pOutdoor->vSunlight.z;
+            poly->dimming_level = 20 - std::round(20 * f);
 
             if (poly->dimming_level < 0) poly->dimming_level = 0;
             if (poly->dimming_level > 31) poly->dimming_level = 31;
             if (pODMRenderParams->uNumPolygons >= 1999 + 5000) return;
-            if (ODMFace::IsBackfaceNotCulled(array_73D150, poly)) {
+            if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                 face.bVisible = 1;
                 poly->uBModelFaceID = face.index;
                 poly->uBModelID = model.index;
@@ -4180,9 +4167,6 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
         return;
     }
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
     unsigned int sCorrectedColor;  // [sp+64h] [bp-4h]@4
 
     auto texture = (TextureOpenGL*)pPolygon->texture;
@@ -4203,6 +4187,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
             _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
             glDisable(GL_BLEND);
             glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
             glBegin(GL_TRIANGLE_FAN);
 
@@ -4214,7 +4200,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
                 d3d_vertex_buffer[i].pos.z =
                     1.0 -
                     1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                        pIndoorCameraD3D->GetFarClip());
+                        pCamera3D->GetFarClip());
                 d3d_vertex_buffer[i].rhw =
                     1.0 /
                     (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
@@ -4273,7 +4259,7 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
                 d3d_vertex_buffer[i].pos.z =
                     1.0 -
                     1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                        pIndoorCameraD3D->GetFarClip());
+                        pCamera3D->GetFarClip());
                 d3d_vertex_buffer[i].rhw =
                     1.0 /
                     (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
@@ -4291,6 +4277,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
 
             glDepthMask(false);
             glBindTexture(GL_TEXTURE_2D, 0);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
             glBegin(GL_TRIANGLE_FAN);  // GL_TRIANGLE_FAN
 
@@ -4328,6 +4316,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
             glDepthMask(true);
             glEnable(GL_BLEND);
             glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
                 glBegin(GL_TRIANGLE_FAN);
 
@@ -4380,13 +4370,26 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         sCorrectedColor = 0xFFFFFFFF/*-1*/;
     }
 
-    engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+    // perception
+    // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
+
+    if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_IsSecret)) {
+        uint eightSeconds = OS_GetTime() % 3000;
+        float angle = (eightSeconds / 3000.0f) * 2 * 3.1415f;
+
+        int redstart = (sCorrectedColor & 0x00FF0000) >> 16;
+
+        int col = redstart * abs(cosf(angle));
+        // (a << 24) | (r << 16) | (g << 8) | b;
+        sCorrectedColor = (0xFF << 24) | (redstart << 16) | (col << 8) | col;
+    }
 
     if (pFace->uAttributes & FACE_OUTLINED) {
         if (OS_GetTime() % 300 >= 150)
             uColor = sCorrectedColor = 0xFF20FF20;
         else
             uColor = sCorrectedColor = 0xFF109010;
+        // TODO(pskelton): add debug pick lines in
     }
 
 
@@ -4453,12 +4456,11 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                 // glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
                 glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
 
-
-                 glColor4f(
-                ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                1.0f);
+                glColor4f(
+                     (float)((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
+                     (float)((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
+                     (float)((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
+                    1.0f);
 
                 glVertex3f(pIndoor->pVertices[pFace->pVertexIDs[i]].x,
                     pIndoor->pVertices[pFace->pVertexIDs[i]].y,
@@ -4552,7 +4554,7 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
 
 bool RenderOpenGL::SwitchToWindow() {
     // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
-    pViewport->SetFOV(_6BE3A0_fov);
+    pViewport->ResetScreen();
     CreateZBuffer();
 
     return true;
@@ -4879,7 +4881,7 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glDisable(GL_BLEND);
-    glDisable(GL_SCISSOR_TEST);
+    // glDisable(GL_SCISSOR_TEST);
 
     return true;
 }

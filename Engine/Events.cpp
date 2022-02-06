@@ -1033,7 +1033,7 @@ LABEL_47:
                                 pParty->sRotationZ =
                                     Party_Teleport_Cam_Yaw;
                             Party_Teleport_Cam_Yaw = -1;
-                            pParty->sRotationX = v95;
+                            pParty->sRotationY = v95;
                             pParty->uFallSpeed = v134;
                             Start_Party_Teleport_Flag = 0;
                             Party_Teleport_Z_Speed = 0;

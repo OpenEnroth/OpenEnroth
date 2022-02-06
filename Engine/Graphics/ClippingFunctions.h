@@ -47,7 +47,7 @@ struct stru9 {
                  unsigned int *pOutNumVertices);
     bool ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
         RenderVertexSoft *pOutVertices,
-        unsigned int *pOutNumVertices,
+        unsigned int* pOutNumVertices,
         struct Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
         int unused);
     void AddVertex(struct VertexBuffer *pVertexBuffer,

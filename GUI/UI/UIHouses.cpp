@@ -683,7 +683,6 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
     uCloseTime = p2DEvents[uHouseID - 1].uCloseTime;
     current_npc_text.clear();
     dword_F8B1E4 = 0;
-    memset(byte_F8B1F0.data(), 0, 4);
     memset(player_levels.data(), 0, 16);
     render->ClearZBuffer();
 
@@ -1616,14 +1615,14 @@ void TravelByTransport() {
                     Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y |
                         pTravel->arrival_z | pTravel->arrival_rot_y;
                 } else {
-                    pIndoorCameraD3D->sRotationZ = 0;
+                    pCamera3D->sRotationZ = 0;
 
                     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                     pParty->vPosition.x = pTravel->arrival_x;
                     pParty->vPosition.y = pTravel->arrival_y;
                     pParty->vPosition.z = pTravel->arrival_z;
                     pParty->uFallStartZ = pParty->vPosition.z;
-                    pParty->sRotationX = 0;
+                    pParty->sRotationY = 0;
                     pParty->sRotationZ = pTravel->arrival_rot_y;
                 }
                 PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
@@ -3821,7 +3820,7 @@ void GUIWindow_House::Release() {
     dword_5C35D4 = 0;
     if (engine->config->flip_on_exit) {
         pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) & (TrigLUT->uIntegerPi + pParty->sRotationZ);
-        pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
+        pCamera3D->sRotationZ = pParty->sRotationZ;
     }
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
 

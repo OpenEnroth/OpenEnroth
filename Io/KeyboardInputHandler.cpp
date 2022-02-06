@@ -187,7 +187,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
                 if (pPlayers[uActiveCharacter]->uTimeToRecovery == 0) {
                     if (!pParty->bTurnBasedModeOn) {
                         pPlayers[uActiveCharacter]->SetRecoveryTime(
-                            debug_non_combat_recovery_mul * (double)pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false) * 2.133333333333333
+                            debug_non_combat_recovery_mul * (double)pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false) * flt_debugrecmod3
                         );
                     }
                     CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();

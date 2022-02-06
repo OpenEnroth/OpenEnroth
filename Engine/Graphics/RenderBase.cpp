@@ -10,7 +10,7 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
-#include "Engine/Graphics/IndoorCameraD3D.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Lights.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -152,8 +152,8 @@ void RenderBase::DrawSpriteObjects_ODM() {
 
             // sprite angle to camera
             unsigned int v6 = TrigLUT->Atan2(
-                object->vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-                object->vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+                object->vPosition.x - pCamera3D->vCameraPos.x,
+                object->vPosition.y - pCamera3D->vCameraPos.y);
             // LOWORD(v7) = object->uFacing;
             // v8 = v36;
             int v9 = ((int)(TrigLUT->uIntegerPi + ((int)TrigLUT->uIntegerPi >> 3) +
@@ -184,21 +184,21 @@ void RenderBase::DrawSpriteObjects_ODM() {
             int view_y = 0;
             int view_z = 0;
 
-            bool visible = pIndoorCameraD3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
+            bool visible = pCamera3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
 
             if (visible) {
                 // if (abs(view_x) >= abs(view_y)) {
                     int projected_x = 0;
                     int projected_y = 0;
-                    pIndoorCameraD3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+                    pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
                     object->uAttributes |= 1;
                     pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
                     pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
                     pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = frame->scale * pODMRenderParams->int_fov_rad / view_x;
-                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = frame->scale * pODMRenderParams->int_fov_rad / view_x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = frame->scale * pCamera3D->ViewPlaneDist_X / view_x;
+                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = frame->scale * pCamera3D->ViewPlaneDist_X / view_x;
 
                     pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
                     pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
@@ -313,7 +313,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     billboard->pQuads[0].diffuse = diffuse;
     billboard->pQuads[0].pos.x = (float)a2->screen_space_x - v14 * v30;
     billboard->pQuads[0].pos.y = (float)a2->screen_space_y - v15 * v29;
-    billboard->pQuads[0].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f  / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[0].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f  / pCamera3D->GetFarClip());
     billboard->pQuads[0].rhw = 1.f / a2->screen_space_z;
     billboard->pQuads[0].specular = specular;
     billboard->pQuads[0].texcoord.x = 0.f;
@@ -326,7 +326,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     billboard->pQuads[1].diffuse = diffuse;
     billboard->pQuads[1].pos.x = (float)a2->screen_space_x - v14 * v30;
     billboard->pQuads[1].pos.y = (float)a2->screen_space_y - v15 * v29;
-    billboard->pQuads[1].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[1].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[1].rhw = 1.f / a2->screen_space_z;
     billboard->pQuads[1].texcoord.x = 0.f;
     billboard->pQuads[1].texcoord.y = 1.f;
@@ -338,7 +338,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     billboard->pQuads[2].specular = specular;
     billboard->pQuads[2].pos.x = (float)a2->screen_space_x + v14 * v30;
     billboard->pQuads[2].pos.y = (float)a2->screen_space_y - v15 * v29;
-    billboard->pQuads[2].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[2].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[2].rhw = 1.f / a2->screen_space_z;
     billboard->pQuads[2].texcoord.x = 1.f;
     billboard->pQuads[2].texcoord.y = 1.f;
@@ -350,7 +350,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     billboard->pQuads[3].specular = specular;
     billboard->pQuads[3].pos.x = (float)a2->screen_space_x + v14 * v30;
     billboard->pQuads[3].pos.y = (float)a2->screen_space_y - v15 * v29;
-    billboard->pQuads[3].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    billboard->pQuads[3].pos.z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pCamera3D->GetFarClip());
     billboard->pQuads[3].rhw = 1.f / a2->screen_space_z;
     billboard->pQuads[3].texcoord.x = 1.f;
     billboard->pQuads[3].texcoord.y = 0.f;
@@ -397,7 +397,7 @@ void RenderBase::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 
     float rhw = 1.f / a2->screen_space_z;
-    float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pIndoorCameraD3D->GetFarClip());
+    float z = 1.f - 1.f / (a2->screen_space_z * 1000.f / pCamera3D->GetFarClip());
 
     float acos = (float)cos(angle);
     float asin = (float)sin(angle);

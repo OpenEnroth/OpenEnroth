@@ -1,33 +1,36 @@
-#include "Engine/Graphics/stru9.h"
+#include "Engine/Graphics/ClippingFunctions.h"
 
 #include "Engine/Engine.h"
 
-#include "IndoorCameraD3D.h"
+#include "Camera.h"
 
 //----- (00498377) --------------------------------------------------------
 bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test skipping this
-                    unsigned int uNumVertices,
-                    IndoorCameraD3D_Vec4 *pVertices,
+                    unsigned int uNumfrust,
+                    IndoorCameraD3D_Vec4 *pfrustnorm,
                     RenderVertexSoft *pVertices2,
                     unsigned int *pOutNumVertices) {
     // portal corners
     // 4
-    // node
+    // portal frustum normal
     // faceverts
     // num face verts
 
     int result;             // eax@7
-    RenderVertexSoft *v9;   // ecx@9
-    RenderVertexSoft *v19;  // [sp+14h] [bp-14h]@0
+    RenderVertexSoft *v9 = nullptr;   // ecx@9
+    RenderVertexSoft *v19 = nullptr;  // [sp+14h] [bp-14h]@0
     int v21;         // [sp+1Ch] [bp-Ch]@7
 
     // __debugbreak();
     // thisa = this;
 
 
-    return true;  // testing bypass
+    // return true;  // testing bypass
 
-
+    if (pPortalBounding->vWorldPosition.x == 0 && pPortalBounding->vWorldPosition.y == 0 && pPortalBounding->vWorldPosition.z == 0) {
+        logger->Info("no portal bounding");
+        return true;
+    }
 
     static RenderVertexSoft static_AE3FB4;
     /*static bool __init_flag1 = false;
@@ -56,7 +59,7 @@ bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test
     result = false;
     // v7 = pOutNumVertices;
     v21 = 0;
-    if ((signed int)uNumVertices <= 0) {
+    if ((signed int)uNumfrust <= 0) {
         *pOutNumVertices = 0;
         return true;
     }
@@ -64,10 +67,10 @@ bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test
     // v8 = (char *)&a3->y;
     // v18 = (char *)&a3->y;
     // do
-    for (uint j = 0; j < uNumVertices; j++) {
+    for (uint j = 0; j < uNumfrust; j++) {
         // v17 = result + 1;
         result = j;
-        v9 = &pPortalBounding[(j + 1) % (signed int)uNumVertices];
+        v9 = &pPortalBounding[(j + 1) % (signed int)uNumfrust];
         if (pPortalBounding->vWorldPosition.x != v9->vWorldPosition.x ||
             pPortalBounding->vWorldPosition.y != v9->vWorldPosition.y ||
             pPortalBounding->vWorldPosition.z != v9->vWorldPosition.z) {
@@ -77,9 +80,9 @@ bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test
             // result = 0;
             static_AE33A0.uNumVertices = 0;
             // a3a = 0;
-            static_AE3FA4.x = pVertices->x;
-            static_AE3FA4.y = pVertices->y;
-            static_AE3FA4.z = pVertices->z;
+            static_AE3FA4.x = pfrustnorm->x;
+            static_AE3FA4.y = pfrustnorm->y;
+            static_AE3FA4.z = pfrustnorm->z;
             if ((signed int)*pOutNumVertices <= 0) {
                 *pOutNumVertices = 0;
                 return true;
@@ -159,7 +162,7 @@ bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test
         }
         // result = v17;
         ++pPortalBounding;
-        pVertices++;
+        pfrustnorm++;
         // v18 = (char *)&a3->y;
     }
     // while ( v17 < (signed int)uNumVertices );
@@ -167,23 +170,23 @@ bool stru9::ClipVertsToPortal(struct RenderVertexSoft *pPortalBounding,  // test
     return true;
 }
 
-bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
-                            RenderVertexSoft *pOutVertices,
-                            unsigned int *pOutNumVertices,
-                            struct Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
-                            int unused) {
+bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft* pInVertices, signed int pInNumVertices,
+    RenderVertexSoft* pOutVertices,
+    unsigned int* pOutNumVertices,
+    struct Vec3_float_* CamFrustumNormal, float CamDotDistance, char* VertsAdjusted,
+    int unused) {
     // this cycles through adjust vertice posisiton to supplied frustum plane
     // points are inside frstum plane when point dot product is greater than camera dot distance
 
-    RenderVertexSoft *pLineEnd;  // ecx@9
+    RenderVertexSoft* pLineEnd;  // ecx@9
     double pLinelength2;         // st7@9
     double t;                    // st6@12
 
-    RenderVertexSoft *pLineStart = &pInVertices[0];
+    RenderVertexSoft* pLineStart = &pInVertices[0];
     // pVertices = a3;
     double pLinelength1 = CamFrustumNormal->x * pInVertices[0].vWorldPosition.x +
-                    pInVertices[0].vWorldPosition.y * CamFrustumNormal->y +
-                    pInVertices[0].vWorldPosition.z * CamFrustumNormal->z;
+        pInVertices[0].vWorldPosition.y * CamFrustumNormal->y +
+        pInVertices[0].vWorldPosition.z * CamFrustumNormal->z;
     // v20 = v13;
     bool Vert1Inside = pLinelength1 >= CamDotDistance;
 
@@ -204,8 +207,8 @@ bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pI
         bool Vert2Inside = false;
         pLineEnd = &pInVertices[VertCounter % pInNumVertices];
         pLinelength2 = CamFrustumNormal->x * pLineEnd->vWorldPosition.x +
-                       pLineEnd->vWorldPosition.y * CamFrustumNormal->y +
-                       pLineEnd->vWorldPosition.z * CamFrustumNormal->z;
+            pLineEnd->vWorldPosition.y * CamFrustumNormal->y +
+            pLineEnd->vWorldPosition.z * CamFrustumNormal->z;
         if (pLinelength2 >= CamDotDistance) Vert2Inside = true;
 
         if (Vert1Inside != Vert2Inside) {
@@ -223,7 +226,7 @@ bool stru9::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pI
             pOutVertices->v = pLineStart->v + (pLineEnd->v - pLineStart->v) * t;
             ++pOutVertices;
             // a3 = pVertices;
-            ++*pOutNumVertices;
+            ++* pOutNumVertices;
             *VertsAdjusted = true;
         }
 

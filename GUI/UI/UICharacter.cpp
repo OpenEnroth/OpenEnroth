@@ -2418,7 +2418,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                               UI_GetHealthManaAndOtherQualitiesStringColor(
                                   player->GetActualAge(), player->GetBaseAge()),
                               player->GetActualAge(), player->GetBaseAge());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 256, pY, 0, str14);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str14);
 
     text_format = Stat_string_format_2_column_less_100;
     if (player->GetBaseLevel() > 99)
@@ -2430,7 +2430,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
                      UI_GetHealthManaAndOtherQualitiesStringColor(
                          player->GetActualLevel(), player->GetBaseLevel()),
                      player->GetActualLevel(), player->GetBaseLevel());
-    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 256, pY, 0, str15);
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 266, pY, 0, str15);
 
     pY += pFontArrus->GetHeight() - 2;
     pText = localization->GetString(LSTR_EXP);

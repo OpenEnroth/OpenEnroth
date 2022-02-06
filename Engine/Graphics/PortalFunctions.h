@@ -5,20 +5,14 @@
 struct stru10 {
     stru10();
     virtual ~stru10();
-    char _49C5DA(struct BLVFace *pFace, struct RenderVertexSoft *pVertices,
+    bool CalcPortalShapePoly(struct BLVFace *pFace, struct RenderVertexSoft *pVertices,
                  unsigned int *pNumVertices, struct IndoorCameraD3D_Vec4 *a5,
                  struct RenderVertexSoft *pOutBounding);
-    bool CalcPortalShape(struct BLVFace *pFace,
-                         struct IndoorCameraD3D_Vec4 *pPortalDataFrustum,
-                         struct RenderVertexSoft *pOutBounding);
-    char _49C720(struct RenderVertexSoft *pFaceBounding,
-                 struct IndoorCameraD3D_Vec4 *pPortalDataFrustum);
-    bool FindFaceNormal(struct RenderVertexSoft *pFaceBounding1,
+    bool CalcPortalFrustum(struct RenderVertexSoft *pFaceBounding, struct IndoorCameraD3D_Vec4 *pPortalDataFrustum);
+    bool CalcPortalFrustumPlane(struct RenderVertexSoft *pFaceBounding1,
                         struct RenderVertexSoft *pFaceBounding2,
                         struct Vec3_float_ *pRayStart,
                         struct IndoorCameraD3D_Vec4 *pPortalDataFrustum);
-    bool FindFacePlane(struct RenderVertexSoft *face,
-                       struct Vec3_float_ *out_normal, float *out_distance);
     bool CalcFaceBounding(struct BLVFace *pFace,
                           struct RenderVertexSoft *pFaceLimits,
                           unsigned int uNumVertices,
@@ -29,6 +23,5 @@ struct stru10 {
                  unsigned int uNumVertices, RenderVertexSoft *pOutLimits);
 
     void (***vdestructor_ptr)(stru10 *, bool) = nullptr;
-    int bDoNotDrawPortalFrustum;
 };
 #pragma pack(pop)

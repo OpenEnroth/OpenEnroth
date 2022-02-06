@@ -254,15 +254,15 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     int pPositionY = pParty->vPosition.y;
     int pPositionZ = pParty->vPosition.z;
     int sPRotationY = pParty->sRotationZ;
-    int sPRotationX = pParty->sRotationX;
+    int sPRotationX = pParty->sRotationY;
     pParty->vPosition.x = pParty->vPrevPosition.x;
     pParty->vPosition.z = pParty->vPrevPosition.z;
     pParty->vPosition.y = pParty->vPrevPosition.y;
 
     pParty->uFallStartZ = pParty->vPrevPosition.z;
 
-    pParty->sRotationZ = pParty->sPrevRotationY;
-    pParty->sRotationX = pParty->sPrevRotationX;
+    pParty->sRotationZ = pParty->sPrevRotationZ;
+    pParty->sRotationY = pParty->sPrevRotationY;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         pIndoor->stru1.last_visit = pParty->GetPlayingTime();
     else
@@ -541,7 +541,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
     pParty->vPosition.z = pPositionZ;
     pParty->uFallStartZ = pPositionZ;
     pParty->sRotationZ = sPRotationY;
-    pParty->sRotationX = sPRotationX;
+    pParty->sRotationY = sPRotationX;
 }
 
 void DoSavegame(unsigned int uSlot) {
@@ -647,10 +647,10 @@ void SaveNewGame() {
 
         pParty->uFallStartZ = 0;
 
-        pParty->sPrevRotationX = 0;
-        pParty->sPrevRotationY = 512;
+        pParty->sPrevRotationY = 0;
+        pParty->sPrevRotationZ = 512;
 
-        pParty->sRotationX = 0;
+        pParty->sRotationY = 0;
         pParty->sRotationZ = 512;
 
         SaveGame(1, 1);

@@ -25,8 +25,8 @@
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Graphics/stru10.h"
-#include "Engine/Graphics/stru9.h"
+#include "Engine/Graphics/PortalFunctions.h"
+#include "Engine/Graphics/ClippingFunctions.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/MapsLongTimer.h"
@@ -170,16 +170,16 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 void Engine::Draw() {
     SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
-    pIndoorCameraD3D->sRotationX = pParty->sRotationX;
-    pIndoorCameraD3D->sRotationZ = pParty->sRotationZ;
-    pIndoorCameraD3D->vPartyPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    pIndoorCameraD3D->vPartyPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    pIndoorCameraD3D->vPartyPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
+    pCamera3D->sRotationY = pParty->sRotationY;
+    pCamera3D->sRotationZ = pParty->sRotationZ;
+    pCamera3D->vCameraPos.x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
+    pCamera3D->vCameraPos.y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
+    pCamera3D->vCameraPos.z = pParty->vPosition.z + pParty->sEyelevel;  // 193, but real 353
 
     // pIndoorCamera->Initialize2();
-    pIndoorCameraD3D->CalculateRotations(pParty->sRotationX, pParty->sRotationZ);
-    pIndoorCameraD3D->CreateWorldMatrixAndSomeStuff();
-    pIndoorCameraD3D->BuildViewFrustum();
+    pCamera3D->CalculateRotations(pParty->sRotationY, pParty->sRotationZ);
+    pCamera3D->CreateViewMatrixAndProjectionScale();
+    pCamera3D->BuildViewFrustum();
 
     if (pMovie_Track) {
         /*if ( !render->pRenderD3D )
@@ -190,9 +190,9 @@ void Engine::Draw() {
         }*/
     } else {
         if (pParty->vPosition.x != pParty->vPrevPosition.x ||
-            pParty->sRotationZ != pParty->sPrevRotationY ||
+            pParty->sRotationZ != pParty->sPrevRotationZ ||
             pParty->vPosition.y != pParty->vPrevPosition.y ||
-            pParty->sRotationX != pParty->sPrevRotationX ||
+            pParty->sRotationY != pParty->sPrevRotationY ||
             pParty->vPosition.z != pParty->vPrevPosition.z ||
             pParty->sEyelevel != pParty->sPrevEyelevel)
             pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
@@ -201,8 +201,8 @@ void Engine::Draw() {
         pParty->vPrevPosition.y = pParty->vPosition.y;
         pParty->vPrevPosition.z = pParty->vPosition.z;
         // v0 = &render;
-        pParty->sPrevRotationY = pParty->sRotationZ;
-        pParty->sPrevRotationX = pParty->sRotationX;
+        pParty->sPrevRotationZ = pParty->sRotationZ;
+        pParty->sPrevRotationY = pParty->sRotationY;
 
         pParty->sPrevEyelevel = pParty->sEyelevel;
         render->BeginSceneD3D();
@@ -425,7 +425,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     if (sub_4637E0_is_there_popup_onscreen()) {
         face_filter = &vis_face_filter;
         sprite_filter = &vis_sprite_filter_2;
-        depth = pIndoorCameraD3D->GetPickDepth();
+        depth = pCamera3D->GetPickDepth();
     } else {
         if (config->IsTargetingMode()) {
             face_filter = &vis_face_filter;
@@ -447,9 +447,6 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     // decal_builder->curent_decal_id = 0;
     decal_builder->bloodsplat_container->uNumBloodsplats = 0;
 
-
-    if (engine->config->DrawBlvDebugs())
-        pStru10Instance->bDoNotDrawPortalFrustum = false;
     if (/*render->pRenderD3D &&*/ uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         render->uFogColor = GetLevelFogColor() & 0xFFFFFF;
     // if (uFlags & GAME_FLAGS_1_400)
@@ -643,7 +640,7 @@ Engine::Engine() {
     // pLightmapBuilder = new LightmapBuilder;
     // pVisInstance = new Vis;
     // spellfx = new SpellFxRenderer;
-    pIndoorCameraD3D = new IndoorCameraD3D;
+    pCamera3D = new Camera3D;
     pStru9Instance = new stru9;
     pStru10Instance = new stru10;
     // pStru11Instance = new stru11;
@@ -668,7 +665,7 @@ Engine::~Engine() {
     delete pStru11Instance;*/
     delete pStru10Instance;
     delete pStru9Instance;
-    delete pIndoorCameraD3D;
+    delete pCamera3D;
     // delete spellfx;
     // delete pVisInstance;
     // delete pLightmapBuilder;
@@ -872,7 +869,7 @@ void FinalInitialization() {
         viewparams->uSomeZ,
         viewparams->uSomeW
     );
-    pViewport->SetFOV(_6BE3A0_fov);
+    pViewport->ResetScreen();
 
     InitializeTurnBasedAnimations(&stru_50C198);
     pBitmaps_LOD->_inlined_sub1();
@@ -1183,6 +1180,8 @@ void MM6_Initialize() {
     // this makes very little sense, but apparently this is how it was done in the original binary.
     debug_turn_based_monster_movespeed_mul = debug_non_combat_recovery_mul * 1.666666666666667;
 
+    flt_debugrecmod3 = 2.133333333333333;
+
     v3 = 0;
     if (strlen(pDefaultSkyTexture.data())) {
         do {
@@ -1228,8 +1227,6 @@ void MM7Initialization() {
     pViewport->SetScreen(viewparams->uScreen_topL_X, viewparams->uScreen_topL_Y,
                          viewparams->uScreen_BttmR_X,
                          viewparams->uScreen_BttmR_Y);
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        pODMRenderParams->Initialize();
 }
 
 //----- (004610AA) --------------------------------------------------------
@@ -1379,11 +1376,11 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pIndoorCameraD3D->vPartyPos.x = 0;
-    pIndoorCameraD3D->vPartyPos.y = 0;
-    pIndoorCameraD3D->vPartyPos.z = 100;
-    pIndoorCameraD3D->sRotationX = 0;
-    pIndoorCameraD3D->sRotationZ = 0;
+    pCamera3D->vCameraPos.x = 0;
+    pCamera3D->vCameraPos.y = 0;
+    pCamera3D->vCameraPos.z = 100;
+    pCamera3D->sRotationY = 0;
+    pCamera3D->sRotationZ = 0;
     viewparams->bRedrawGameUI = true;
     uLevel_StartingPointType = MapStartPoint_Party;
     pSprites_LOD->_461397();

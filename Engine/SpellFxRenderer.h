@@ -145,13 +145,11 @@ struct SpellFxRenderer {
     void DrawPlayerBuffAnims();
     void LoadAnimations();
 
-    int field_0;
-    stru6_stru2 array_4[32];
-    int field_1F4;
-    int field_1F8;
-    int field_1FC;
-    int field_200;
-    int field_204;  // sphere tally
+    int field_0;  // count of have many stored in array_4
+    stru6_stru2 array_4[32];  // stores source position
+
+    int field_204;  // fireball sphere tally
+
     PlayerBuffAnim pPlayerBuffs[4];
     ProjectileAnim pProjectiles[32];
     int uNumProjectiles;

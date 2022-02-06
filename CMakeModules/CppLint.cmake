@@ -29,7 +29,7 @@ function(target_check_style TARGET)
         endif()
     endforeach(sourcefile)
 
-    add_custom_target(${TARGET_NAME} ${PYTHON_EXECUTABLE} ${CPPLINT_COMMAND} ${SOURCES_LIST}
+    add_custom_target(${TARGET_NAME} ${PYTHON_EXECUTABLE} ${CPPLINT_COMMAND} "--quiet" ${SOURCES_LIST}
                       DEPENDS ${SOURCES_LIST}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     add_dependencies(check_style ${TARGET_NAME})

@@ -163,6 +163,8 @@ class Vis {
     RenderVertexSoft stru_206C;
     RenderVertexSoft stru_209C;
 
+    RenderVertexSoft debugpick;
+
     Log *log = nullptr;
 };
 #pragma pack(pop)

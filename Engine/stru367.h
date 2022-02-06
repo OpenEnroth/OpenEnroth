@@ -6,7 +6,7 @@
 /*  152 */
 #pragma pack(push, 1)
 struct stru367 {
-    bool direction;
+    bool direction;  // is portal faced to camera
     std::array<int, 13> field_4;
     std::array<int, 60> _view_transformed_x;
     std::array<int, 60> _view_transformed_y;

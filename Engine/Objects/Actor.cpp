@@ -1212,7 +1212,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
                   .uRecoveryTime;
         if (pActors[uActorID].pActorBuffs[ACTOR_BUFF_SLOWED].Active()) v25 *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            pActors[uActorID].pMonsterInfo.uRecoveryTime = (int)(debug_combat_recovery_mul * v25 * 2.133333333333333);
+            pActors[uActorID].pMonsterInfo.uRecoveryTime = (int)(debug_combat_recovery_mul * v25 * flt_debugrecmod3);
         } else {
             pActors[uActorID].pMonsterInfo.uRecoveryTime = v25;
         }
@@ -1408,7 +1408,7 @@ void Actor::StealFrom(unsigned int uActorID) {
         if (v8 < 30) v8 = 30;
         if (!pParty->bTurnBasedModeOn)
             pPlayer->SetRecoveryTime(
-                (int)(debug_non_combat_recovery_mul * v8 * 2.133333333333333));
+                (int)(debug_non_combat_recovery_mul * v8 * flt_debugrecmod3));
         pTurnEngine->ApplyPlayerAction();
     }
 }
@@ -1468,7 +1468,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
         if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
         } else {
-            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(debug_combat_recovery_mul * pDira * 2.133333333333333);
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
         }
         v3->vVelocity.z = 0;
         v3->vVelocity.y = 0;
@@ -1542,7 +1542,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
         } else {
-            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(debug_combat_recovery_mul * pDira * 2.133333333333333);
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength + (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
         }
         v16 = v3->pMonsterInfo.uSpell1ID;
         v3->vVelocity.z = 0;
@@ -1614,7 +1614,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
         pDira = pMonsterStats->pInfos[v3->pMonsterInfo.uID].uRecoveryTime;
         if (v3->pActorBuffs[ACTOR_BUFF_SLOWED].Active()) pDira *= 2;
         if (!pParty->bTurnBasedModeOn) {
-            v3->pMonsterInfo.uRecoveryTime = (int)(debug_combat_recovery_mul * pDira * 2.133333333333333);
+            v3->pMonsterInfo.uRecoveryTime = (int)(debug_combat_recovery_mul * pDira * flt_debugrecmod3);
         } else {
             v3->pMonsterInfo.uRecoveryTime = pDira;
         }
@@ -1686,7 +1686,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
         if (pParty->bTurnBasedModeOn) {
             v3->pMonsterInfo.uRecoveryTime = pDira;
         } else {
-            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength - (int)(debug_combat_recovery_mul * pDira * -2.133333333333333);
+            v3->pMonsterInfo.uRecoveryTime = v3->uCurrentActionLength - (int)(debug_combat_recovery_mul * pDira * -flt_debugrecmod3);
         }
         v3->vVelocity.z = 0;
         v3->vVelocity.y = 0;
@@ -1872,8 +1872,8 @@ void Actor::AI_Bored(unsigned int uActorID, unsigned int uObjID,
         8 * pSpriteFrameTable->pSpriteSFrames[actor->pSpriteIDs[ANIM_Bored]]
                 .uAnimLength;
 
-    v7 = TrigLUT->Atan2(actor->vPosition.x - pIndoorCameraD3D->vPartyPos.x,
-                            actor->vPosition.y - pIndoorCameraD3D->vPartyPos.y);
+    v7 = TrigLUT->Atan2(actor->vPosition.x - pCamera3D->vCameraPos.x,
+                            actor->vPosition.y - pCamera3D->vCameraPos.y);
     v9 = TrigLUT->uIntegerPi + actor->uYawAngle +
          ((signed int)TrigLUT->uIntegerPi >> 3) - v7;
 
@@ -2786,11 +2786,11 @@ void Actor::UpdateActorAI() {
         } else {
             pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) &
                                  (pParty->sRotationZ + rand() % 16 - 8);
-            pParty->sRotationX = pParty->sRotationX + rand() % 16 - 8;
-            if (pParty->sRotationX > 128)
-                pParty->sRotationX = 128;
-            else if (pParty->sRotationX < -128)
-                pParty->sRotationX = -128;
+            pParty->sRotationY = pParty->sRotationY + rand() % 16 - 8;
+            if (pParty->sRotationY > 128)
+                pParty->sRotationY = 128;
+            else if (pParty->sRotationY < -128)
+                pParty->sRotationY = -128;
 
             pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
             pParty->armageddon_timer -= pMiscTimer->uTimeElapsed;
@@ -2905,7 +2905,7 @@ void Actor::UpdateActorAI() {
         pActor = &pActors[actor_id];
 
         v47 = (signed int)(pActor->pMonsterInfo.uRecoveryTime *
-                           2.133333333333333);
+                           flt_debugrecmod3);
 
         Actor::_SelectTarget(actor_id, &ai_near_actors_targets_pid[actor_id],
                              true);
@@ -3055,7 +3055,7 @@ void Actor::UpdateActorAI() {
                     MONSTER_MOVEMENT_TYPE_STAIONARY) {
                     Actor::AI_Stand(actor_id, target_pid,
                         (uint)(pActor->pMonsterInfo.uRecoveryTime *
-                            2.133333333333333),
+                            flt_debugrecmod3),
                         pDir);
                 } else {
                     Actor::AI_Flee(actor_id, target_pid, 0, pDir);
@@ -3196,7 +3196,7 @@ void Actor::UpdateActorAI() {
                      MONSTER_MOVEMENT_TYPE_STAIONARY) {
                 Actor::GetDirectionInfo(a1, 4, &v72, 0);
                 v58 = (uint)(pActor->pMonsterInfo.uRecoveryTime *
-                             2.133333333333333);
+                             flt_debugrecmod3);
                 Actor::AI_Stand(actor_id, 4, v58, &v72);
             }
         } else if (!pActor->pMonsterInfo.uMissleAttack2Type) {
@@ -3651,7 +3651,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         extraRecoveryTime = 20;
         knockbackValue = 10;
         if (!pParty->bTurnBasedModeOn)
-            extraRecoveryTime = (int)(debug_combat_recovery_mul * 42.66666666666666);
+            extraRecoveryTime = (int)(debug_combat_recovery_mul * flt_debugrecmod3 * 20.0);
         pMonster->pMonsterInfo.uRecoveryTime += extraRecoveryTime;
         if (!engine->config->NoShowDamage()) {
             GameUI_SetStatusBar(

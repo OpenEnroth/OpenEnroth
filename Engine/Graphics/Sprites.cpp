@@ -261,15 +261,17 @@ int SpriteFrameTable::BinarySearch(const char *pSpriteName) {
 }
 
 //----- (0044D8D0) --------------------------------------------------------
-SpriteFrame *SpriteFrameTable::GetFrame(unsigned int uSpriteID,
-                                        unsigned int uTime) {
-    SpriteFrame *v4;  // ecx@1
-
-    v4 = &pSpriteSFrames[uSpriteID];
+SpriteFrame *SpriteFrameTable::GetFrame(unsigned int uSpriteID, unsigned int uTime) {
+    SpriteFrame *v4 = &pSpriteSFrames[uSpriteID];
     if (~v4->uFlags & 1 || !v4->uAnimLength) return pSpriteSFrames + uSpriteID;
 
     for (uint t = (uTime / 8) % v4->uAnimLength; t > v4->uAnimTime; ++v4)
         t -= v4->uAnimTime;
+
+    // TODO(pskelton): investigate and fix properly
+    // quick fix so it doesnt return empty sprite
+     while (v4->hw_sprites[0] == NULL) --v4;
+
     return v4;
 
     /*for (v4; v4->uAnimTime <= t; ++v4)
