@@ -2835,13 +2835,14 @@ void Actor::UpdateActorAI() {
         return;
     }
 
+    // this loops over all actors in background ai state
     for (uint i = 0; i < uNumActors; ++i) {
         pActor = &pActors[i];
         ai_near_actors_targets_pid[i] = OBJECT_Player;
 
-        // Skip actor if: Dead / Removed / Disabled / uAttributes & 0x0400
+        // Skip actor if: Dead / Removed / Disabled / or in full ai state
         if (pActor->uAIState == Dead || pActor->uAIState == Removed ||
-            pActor->uAIState == Disabled || pActor->uAttributes & ACTOR_ALIVE)
+            pActor->uAIState == Disabled || pActor->uAttributes & ACTOR_FULL_AI_STATE)
             continue;
 
         // Kill actor if HP == 0
@@ -2898,6 +2899,7 @@ void Actor::UpdateActorAI() {
         pActor->UpdateAnimation();
     }
 
+    // loops over for the actors in "full" ai state
     for (v78 = 0; v78 < ai_arrays_size; ++v78) {
         uint actor_id = ai_near_actors_ids[v78];
         assert(actor_id < uNumActors);
@@ -3461,7 +3463,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
             int d3 = abs(pParty->vPosition.z - projectileSprite->vPosition.z);
             v61 = int_get_vector_length(d1, d2, d3);
 
-            if (v61 >= 5120 && !(pMonster->uAttributes & ACTOR_ALIVE))  // 0x400
+            if (v61 >= 5120 && !(pMonster->uAttributes & ACTOR_FULL_AI_STATE))  // 0x400
                 return;
             else if (v61 >= 2560)
                 v61 = 2;
@@ -4466,7 +4468,7 @@ void Actor::MakeActorAIList_ODM() {
     for (uint i = 0; i < uNumActors; ++i) {
         Actor *actor = &pActors[i];
 
-        actor->ResetAlive();  // ~0x400
+        actor->ResetFullAiState();  // ~0x400
         if (!actor->CanAct()) {
             actor->ResetActive();
             continue;
@@ -4530,6 +4532,8 @@ void Actor::MakeActorAIList_ODM() {
       while ( v15 - 1 < result );
     }*/
 
+
+    // bubble sort nearest actors
     for (int i = 0; i < ai_arrays_size; ++i) {
         for (int j = 0; j < i; ++j) {
             if (ai_near_actors_distances[j] > ai_near_actors_distances[i]) {
@@ -4547,45 +4551,36 @@ void Actor::MakeActorAIList_ODM() {
     if (ai_arrays_size > 30) ai_arrays_size = 30;
 
     for (int i = 0; i < ai_arrays_size; ++i)
-        pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_ALIVE;  // 0x400
+        pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_FULL_AI_STATE;  // 0x400
 }
 
 //----- (004016FA) --------------------------------------------------------
 int Actor::MakeActorAIList_BLV() {
-    int v1;            // eax@4
-    int distance;      // edi@10
-    int v13;           // edx@24
-    int v15;           // ebx@26
-    unsigned int v17;  // esi@27
-    int v18;           // ecx@31
-    signed int v19;    // edi@31
-    signed int v25;    // eax@40
-    uint j;             // edi@45
-    int v30;           // eax@48
-    int v37;           // [sp+Ch] [bp-18h]@1
-    int v38;           // [sp+10h] [bp-14h]@4
-    int v39;           // [sp+14h] [bp-10h]@4
-    uint i;             // [sp+18h] [bp-Ch]@31
-    uint v45;          // [sp+20h] [bp-4h]@1
-
     //  __debugbreak(); // refactor for blv ai
-    pParty->uFlags &= 0xFFFFFFCF;  // ~0x30
-    v37 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
-                             pParty->vPosition.z);
-    v45 = 0;
+
+    // reset party alert level
+    pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;  // ~0x30
+    // TODO(pskelton): grab sector id from somewhere else rather than calc it several times per frame
+    int party_sector = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+
+    // find actors that are in range and can act
+    uint active_actor_count = 0;
     for (uint i = 0; i < uNumActors; ++i) {
-        pActors[i].ResetAlive();  // ~0x0400
+        pActors[i].ResetFullAiState();  // ~0x0400
+
         if (!pActors[i].CanAct()) {
             pActors[i].ResetActive();
             continue;
         }
-        v1 = abs(pParty->vPosition.x - pActors[i].vPosition.x);
-        v38 = abs(pParty->vPosition.y - pActors[i].vPosition.y);
-        v39 = abs(pParty->vPosition.z - pActors[i].vPosition.z);
 
-        distance =
-            int_get_vector_length(v39, v38, v1) - pActors[i].uActorRadius;
+        int delta_x = abs(pParty->vPosition.x - pActors[i].vPosition.x);
+        int delta_y = abs(pParty->vPosition.y - pActors[i].vPosition.y);
+        int delta_z = abs(pParty->vPosition.z - pActors[i].vPosition.z);
+
+        int distance = int_get_vector_length(delta_z, delta_y, delta_x) - pActors[i].uActorRadius;
         if (distance < 0) distance = 0;
+
+        // actor is in range
         if (distance < 10240) {
             pActors[i].ResetHostile();  // ~0x01000000
             if (pActors[i].ActorEnemy() || pActors[i].GetActorsRelation(0)) {
@@ -4595,56 +4590,65 @@ int Actor::MakeActorAIList_BLV() {
                 if (!(pParty->GetYellowAlert()) && distance < 5120)
                     pParty->SetYellowAlert();
             }
-            ai_near_actors_distances[v45] = distance;
-            ai_near_actors_ids[v45] = i;
-            v45++;
+            ai_near_actors_distances[active_actor_count] = distance;
+            ai_near_actors_ids[active_actor_count] = i;
+            active_actor_count++;
         } else {
+            // otherwise idle
             pActors[i].ResetActive();
         }
     }
-    v13 = 0;
-    if (v45 > 0) {
-        for (uint i = 1; i < v45; i++) {
-            for (uint j = 1; j < v45; ++j) {
-                v15 = ai_near_actors_distances[v13];
-                if (ai_near_actors_distances[v13] >
-                    ai_near_actors_distances[j]) {
-                    v17 = ai_near_actors_ids[v13];
-                    ai_near_actors_ids[v13] = ai_near_actors_ids[j];
-                    ai_near_actors_ids[j] = v17;
-                    ai_near_actors_distances[v13] = ai_near_actors_distances[j];
-                    ai_near_actors_distances[j] = v15;
+
+    // bubble sorting active actors by distance
+    if (active_actor_count > 0) {
+        for (uint i = 0; i < active_actor_count; i++) {
+            int change = 0;
+            for (uint j = 0; j < active_actor_count - i - 1; j++) {
+                if (ai_near_actors_distances[j] > ai_near_actors_distances[j + 1]) {
+                    int temp_dist = ai_near_actors_distances[j];
+                    int temp_id = ai_near_actors_ids[j];
+                    ai_near_actors_ids[j] = ai_near_actors_ids[j + 1];
+                    ai_near_actors_ids[j + 1] = temp_id;
+                    ai_near_actors_distances[j] = ai_near_actors_distances[j + 1];
+                    ai_near_actors_distances[j + 1] = temp_dist;
+                    change = 1;
                 }
             }
-            ++v13;
+            // if no change the list is sorted
+            if (!change) break;
         }
     }
-    v18 = 0;
-    v19 = 0;
-    for (i = 0; i < v45; i++) {
+
+    // checks nearby actors can detect player and takes nearest 30
+    int num_actors_detect_player = 0;
+    for (int i = 0; i < active_actor_count; i++) {
         if (pActors[ai_near_actors_ids[i]].ActorNearby() ||
             Detect_Between_Objects(
                 PID(OBJECT_Actor, ai_near_actors_ids[i]), OBJECT_Player)) {
             pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_NEARBY;
-            ai_array_4F6638_actor_ids[v19] = ai_near_actors_ids[i];
-            ai_array_4F5E68[v19++] = ai_near_actors_distances[i];
-            if (v19 >= 30) break;
+            ai_array_detected_actor_ids[num_actors_detect_player] = ai_near_actors_ids[i];
+            ai_array_detected_actor_dist[num_actors_detect_player++] = ai_near_actors_distances[i];
+            if (num_actors_detect_player >= 30) break;
         }
     }
-    ai_arrays_size = v19;
+
+    ai_arrays_size = num_actors_detect_player;
+
+    // add any actors than can act and are in the same sector
     if ((signed int)uNumActors > 0) {
         for (uint i = 0; i < (signed int)uNumActors; ++i) {
-            if (pActors[i].CanAct() && pActors[i].uSectorID == v37) {
-                v25 = 0;
-                if (v19 <= 0) {
+            if (pActors[i].CanAct() && pActors[i].uSectorID == party_sector) {
+                int v25 = 0;
+                if (num_actors_detect_player <= 0) {
                     pActors[i].uAttributes |= ACTOR_ACTIVE;
-                    ai_array_4F6638_actor_ids[ai_arrays_size++] = i;
+                    ai_array_detected_actor_ids[ai_arrays_size++] = i;
                 } else {
-                    while (ai_array_4F6638_actor_ids[v25] != i) {
+                    // convoluted way of checking that this actor is not already on the list
+                    while (ai_array_detected_actor_ids[v25] != i) {
                         ++v25;
-                        if (v25 >= v19) {
+                        if (v25 >= num_actors_detect_player) {
                             pActors[i].uAttributes |= ACTOR_ACTIVE;
-                            ai_array_4F6638_actor_ids[ai_arrays_size++] = i;
+                            ai_array_detected_actor_ids[ai_arrays_size++] = i;
                             break;
                         }
                     }
@@ -4652,33 +4656,35 @@ int Actor::MakeActorAIList_BLV() {
             }
         }
     }
-    for (j = 0; j < v45; ++j) {
-        if (pActors[ai_near_actors_ids[j]].uAttributes & 0xC000 &&
-            pActors[ai_near_actors_ids[j]].CanAct()) {
-            v30 = 0;
+
+    // add any actors that are active and have previosuly detected the player
+    for (int j = 0; j < active_actor_count; ++j) {
+        if (pActors[ai_near_actors_ids[j]].uAttributes & (ACTOR_ACTIVE | ACTOR_NEARBY) && pActors[ai_near_actors_ids[j]].CanAct()) {
+            int v30 = 0;
             if (ai_arrays_size <= 0) {
-                ai_array_4F6638_actor_ids[ai_arrays_size++] =
-                    ai_near_actors_ids[j];
+                ai_array_detected_actor_ids[ai_arrays_size++] = ai_near_actors_ids[j];
             } else {
-                while (ai_array_4F6638_actor_ids[v30] !=
-                       ai_near_actors_ids[j]) {
+                // convoluted way of checking that this actor is not already on the list
+                while (ai_array_detected_actor_ids[v30] != ai_near_actors_ids[j]) {
                     ++v30;
                     if (v30 >= ai_arrays_size) {
-                        ai_array_4F6638_actor_ids[ai_arrays_size++] =
-                            ai_near_actors_ids[j];
+                        ai_array_detected_actor_ids[ai_arrays_size++] = ai_near_actors_ids[j];
                         break;
                     }
                 }
             }
         }
     }
+
+    // take the first 30 from list
     if (ai_arrays_size > 30) ai_arrays_size = 30;
-    memcpy(ai_near_actors_ids.data(), ai_array_4F6638_actor_ids.data(),
-           4 * ai_arrays_size);
-    memcpy(ai_near_actors_distances.data(), ai_array_4F5E68.data(),
-           4 * ai_arrays_size);
+    memcpy(ai_near_actors_ids.data(), ai_array_detected_actor_ids.data(), 4 * ai_arrays_size);
+    memcpy(ai_near_actors_distances.data(), ai_array_detected_actor_dist.data(), 4 * ai_arrays_size);
+
+    // activate ai state for these actors
     for (int i = 0; i < ai_arrays_size; i++)
-        pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_ALIVE;  // 0x400
+        pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_FULL_AI_STATE;  // 0x400
+
     return ai_arrays_size;
 }
 

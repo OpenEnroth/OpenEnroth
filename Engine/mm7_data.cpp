@@ -497,10 +497,11 @@ std::array<int16_t, 32> word_4F0F30 = {{
     4, 7, 10, 11, 4, 7, 10, 11, 4, 7, 10, 11, 4, 7,  10, 11,
     4, 7, 10, 11, 4, 7, 10, 11, 4, 7, 10, 11, 7, 11, 7,  11
 }};
-std::array<int, 500> ai_array_4F5E68;
-std::array<int, 500> ai_array_4F6638_actor_ids;
-std::array<int, 500> ai_near_actors_targets_pid;
+
 int ai_arrays_size;
+std::array<int, 500> ai_array_detected_actor_dist;
+std::array<int, 500> ai_array_detected_actor_ids;
+std::array<int, 500> ai_near_actors_targets_pid;
 std::array<int, 500> ai_near_actors_distances;
 std::array<unsigned int, 500> ai_near_actors_ids;
 
