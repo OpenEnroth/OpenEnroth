@@ -115,9 +115,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             face.pFacePlane_old.vNormal.x = mface.pFacePlaneOLD.vNormal.x;
             face.pFacePlane_old.vNormal.y = mface.pFacePlaneOLD.vNormal.y;
             face.pFacePlane_old.vNormal.z = mface.pFacePlaneOLD.vNormal.z;
-
-            // TODO: need fixpoint_to_float here
-            face.pFacePlane_old.dist = mface.pFacePlaneOLD.dist;  // incorrect
+            face.pFacePlane_old.dist = mface.pFacePlaneOLD.dist;
 
             face.uAttributes = mface.uAttributes;
 
