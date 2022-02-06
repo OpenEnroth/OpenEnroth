@@ -138,40 +138,6 @@ struct stru316 {
 };
 #pragma pack(pop)
 
-/*  134 */
-#pragma pack(push, 1)
-struct stru141_actor_collision_object {
-    /**
-     * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
-     *
-     * @param dt                        Time delta, in fixpoint seconds.
-     * @return                          True if there is no movement, false otherwise.
-     */
-    bool PrepareAndCheckIfStationary(int dt);
-
-    // actor is modeled as two spheres, basically "feet" & "head". Collisions are then done for both spheres.
-
-    int check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
-    int radius_lo;   // radius of the lo ("feet") sphere.
-    int radius_hi;  // radius of the hi ("head") sphere.
-    Vec3_int_ position_lo; // center of the lo sphere.
-    Vec3_int_ position_hi; // center of the hi sphere.
-    Vec3_int_ new_position_lo; // desired new position for the center of the lo sphere.
-    Vec3_int_ new_position_hi; // desired new position for the center of the hi sphere.
-    Vec3_int_ velocity;  // Movement vector.
-    Vec3_int_ direction;  // Movement direction, basically velocity as a unit vector.
-    int speed = 0;  // Velocity magnitude.
-    int total_move_distance;  // Total move distance, accumulated between collision iterations, starts at 0.
-    int move_distance;  // Desired movement distance for current iteration, minus the distance already covered.
-    int adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
-    unsigned int uSectorID = 0;
-    unsigned int pid;
-    int field_84;  // pid of face
-    BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
-};
-#pragma pack(pop)
-extern stru141_actor_collision_object collision_state;
-
 /*  378 */
 #pragma pack(push, 1)
 struct stru337_stru0 {

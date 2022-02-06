@@ -4,6 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
+#include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -2700,7 +2701,7 @@ void ODM_ProcessPartyActions() {
             WorldPosToGridCellY(pParty->vPosition.y));
         _46ED8A_collide_against_sprite_objects(4);
         for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
-            Actor::_46DF1A_collide_against_actor(actor_id, 0);
+            _46DF1A_collide_against_actor(actor_id, 0);
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             _angle_x = collision_state.new_position_lo.x;
             _angle_y = collision_state.new_position_lo.y;
@@ -3394,7 +3395,7 @@ void UpdateActors_ODM() {
             signed int i;
             for (i = 0; v31 < ai_arrays_size; ++v31) {
                 unsigned int v33 = ai_near_actors_ids[v31];
-                if (v33 != Actor_ITR && Actor::_46DF1A_collide_against_actor(v33, 40))
+                if (v33 != Actor_ITR && _46DF1A_collide_against_actor(v33, 40))
                     ++i;
             }
             int v71 = i > 1;

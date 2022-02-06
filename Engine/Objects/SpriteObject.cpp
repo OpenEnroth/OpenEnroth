@@ -18,6 +18,7 @@
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 
+#include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -322,12 +323,12 @@ LABEL_13:
                         if (pActors[PID_ID(pSpriteObjects[uLayingItemID]
                                                .spell_caster_pid)]
                                 .GetActorsRelation(&pActors[v56]))
-                            Actor::_46DF1A_collide_against_actor(v56, 0);
+                            _46DF1A_collide_against_actor(v56, 0);
                     }
                 }
             } else {
                 for (i = 0; i < (signed int)uNumActors; ++i)
-                    Actor::_46DF1A_collide_against_actor(i, 0);
+                    _46DF1A_collide_against_actor(i, 0);
             }
             v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             v49 = false;
@@ -539,7 +540,7 @@ LABEL_25:
                         if (pActors[actloop].word_000086_some_monster_id) {  // not always filled in from scripted monsters
                             radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id - 1].uToHitRadius;
                         }
-                        Actor::_46DF1A_collide_against_actor(actloop, radius);
+                        _46DF1A_collide_against_actor(actloop, radius);
                 }
 
                 if (_46F04E_collide_against_portals()) break;

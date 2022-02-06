@@ -4,6 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
+#include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -52,7 +53,6 @@ LEVEL_TYPE uCurrentlyLoadedLevelType = LEVEL_null;
 LightsData Lights;
 stru337_unused _DLV_header_unused;
 BspRenderer *pBspRenderer = new BspRenderer;
-stru141_actor_collision_object collision_state;
 // std::array<stru352, 480> stru_F83B80;
 
 unsigned __int16 pDoorSoundIDsByLocationID[78] = {
@@ -1732,7 +1732,7 @@ void UpdateActors_BLV() {
                                 v29 = abs(pActors[ai_near_actors_ids[j]].vPosition.x - pActors[actor_id].vPosition.x);
                                 if (int_get_vector_length(v29, v28, v27) >= pActors[actor_id].uActorRadius +
                                             (signed int) pActors[ai_near_actors_ids[j]].uActorRadius &&
-                                    Actor::_46DF1A_collide_against_actor(ai_near_actors_ids[j], 40))
+                                    _46DF1A_collide_against_actor(ai_near_actors_ids[j], 40))
                                     ++v58;
                             }
                         }
@@ -3429,7 +3429,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             collide_against_faces_and_portals(true);
             _46E0B2_collide_against_decorations();
             for (int k = 0; k < uNumActors; ++k)
-                Actor::_46DF1A_collide_against_actor(k, 0);
+                _46DF1A_collide_against_actor(k, 0);
             if (_46F04E_collide_against_portals())
                 break; // No portal collisions => can break.
         }

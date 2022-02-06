@@ -263,14 +263,6 @@ struct Actor {
     static void AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
                                              int a3);
 
-    /**
-     * Original offset 0x46DF1A.
-     *
-     * @param actor_idx                 Actor index.
-     * @param override_radius           Override actor's radius. Pass zero to use original radius.
-     * @return                          Whether the collision is possible.
-     */
-    static bool _46DF1A_collide_against_actor(int actor_idx, int override_radius);
     static void Arena_summon_actor(int monster_id, int16_t x, int y, int z);
     static void DamageMonsterFromParty(int a1, unsigned int uActorID_Monster,
                                        Vec3_int_ *pVelocity);

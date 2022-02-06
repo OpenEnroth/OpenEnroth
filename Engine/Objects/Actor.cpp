@@ -2687,60 +2687,6 @@ void Actor::SummonMinion(int summonerId) {
     if (ActorEnemy()) actor->uAttributes |= ACTOR_AGGRESSOR;
     actor->uSummonerID = PID(OBJECT_Actor, summonerId);
 }
-// 46DF1A: using guessed type int 46DF1A_collide_against_actor(int, int);
-//----- (0046DF1A) --------------------------------------------------------
-bool Actor::_46DF1A_collide_against_actor(int actor_idx, int override_radius) {
-    Actor *actor = &pActors[actor_idx];
-    if (actor->uAIState == Removed || actor->uAIState == Dying || actor->uAIState == Disabled ||
-        actor->uAIState == Dead || actor->uAIState == Summoned)
-        return false;
-
-    int radius = actor->uActorRadius;
-    if (override_radius != 0)
-        radius = override_radius;
-
-    BBox_int_ bbox;
-    bbox.x1 = actor->vPosition.x - radius;
-    bbox.x2 = actor->vPosition.x + radius;
-    bbox.y1 = actor->vPosition.y - radius;
-    bbox.y2 = actor->vPosition.y + radius;
-    bbox.z1 = actor->vPosition.z;
-    bbox.z2 = actor->vPosition.z + actor->uActorHeight;
-
-    if (!collision_state.bbox.Intersects(bbox))
-        return false;
-
-    // dist vector points from position center into actor's center.
-    int dist_x = actor->vPosition.x - collision_state.position_lo.x;
-    int dist_y = actor->vPosition.y - collision_state.position_lo.y;
-    int sum_radius = collision_state.radius_lo + radius;
-
-    // Distance from actor's center to the line of movement.
-    int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
-    if (abs(closest_dist) > sum_radius)
-        return false; // No chance to collide.
-
-    // Length of dist vector projected onto collision_state.direction.
-    int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
-    if (dist_dot_dir <= 0)
-        return false; // We're moving away from the actor.
-
-    // Z-coordinate at the point closest to the actor in XY plane.
-    int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
-    if (closest_z < actor->vPosition.z)
-        return false; // We're below.
-    // TODO: and where's a check for being above?
-
-    int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
-    if (move_distance < 0)
-        move_distance = 0;
-
-    if (move_distance < collision_state.adjusted_move_distance) {
-        collision_state.adjusted_move_distance = move_distance;
-        collision_state.pid = PID(OBJECT_Actor, actor_idx);
-    }
-    return true;
-}
 
 //----- (00401A91) --------------------------------------------------------
 void Actor::UpdateActorAI() {
