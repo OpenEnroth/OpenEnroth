@@ -240,6 +240,15 @@ static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, 
     return counter == 1;
 }
 
+/**
+ * Helper function that performs several collision checks between both the "feet" and the "head" spheres of the
+ * collision state, and the provided face.
+ *
+ * @param face                          Face to check.
+ * @param face_pid                      Pid of the provided face.
+ * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
+ * @param face_points                   Face vertices access function.
+*/
 template<class FacePointAccessor>
 static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal,
                                 const FacePointAccessor &face_points) {
@@ -274,6 +283,16 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
                      collision_state.radius_hi);
 }
 
+/**
+ * Performs a collision check with a cylinder.
+ *
+ * @param center_lo                     Center of the cylinder's base.
+ * @param radius                        Cylinder radius.
+ * @param height                        Cylinder height.
+ * @param pid                           Pid of the object represented by the cylinder.
+ * @param jagged_top                    See `CollideWithParty`.
+ * @return                              Whether there is a collision.
+ */
 static bool CollideWithCylinder(const Vec3_int_ &center_lo, int radius, int height, int pid, bool jagged_top) {
     BBox_int_ bbox;
     bbox.x1 = center_lo.x - radius;
@@ -530,7 +549,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
     }
 }
 
-void _46EF01_collision_chech_player(bool jagged_top) {
+void CollideWithParty(bool jagged_top) {
     CollideWithCylinder(pParty->vPosition, 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
 }
 

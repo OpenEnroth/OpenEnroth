@@ -62,8 +62,8 @@ void CollideIndoorWithDecorations();
 /**
  * Original offset 0x46E26D.
  *
- * @param grid_x
- * @param grid_y
+ * @param grid_x                        Grid x coordinate.
+ * @param grid_y                        Grid y coordinate.
  */
 void CollideOutdoorWithDecorations(int grid_x, int grid_y);
 
@@ -80,11 +80,12 @@ bool CollideIndoorWithPortals();
 /**
  * Original offset 0x46DF1A.
  *
- * @param actor_idx                 Actor index.
- * @param override_radius           Override actor's radius. Pass zero to use original radius.
- * @return                          Whether the collision is possible.
+ * @param actor_idx                     Actor index.
+ * @param override_radius               Override actor's radius. Pass zero to use original radius.
+ * @return                              Whether the collision is possible.
  */
 bool CollideWithActor(int actor_idx, int override_radius);
+
 
 void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 
@@ -95,6 +96,6 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this);
  *                                  However, for the collision to happen, corresponding bounding boxes still need to
  *                                  intersect.
  */
-void _46EF01_collision_chech_player(bool jagged_top);
+void CollideWithParty(bool jagged_top);
 
 

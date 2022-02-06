@@ -1723,7 +1723,7 @@ void UpdateActors_BLV() {
                     for (v61 = 0; v61 < 100; ++v61) {
                         CollideIndoorWithGeometry(true);
                         CollideIndoorWithDecorations();
-                        _46EF01_collision_chech_player(0);
+                        CollideWithParty(false);
                         _46ED8A_collide_against_sprite_objects(v24);
                         for (uint j = 0; j < ai_arrays_size; j++) {
                             if (ai_near_actors_ids[j] != actor_id) {

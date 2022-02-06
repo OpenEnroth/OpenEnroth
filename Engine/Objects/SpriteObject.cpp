@@ -312,7 +312,7 @@ LABEL_13:
                 WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y));
             if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) !=
                 OBJECT_Player)
-                _46EF01_collision_chech_player(0);
+                CollideWithParty(false);
             if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) ==
                 OBJECT_Actor) {
                 if ((PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid) >=
@@ -526,7 +526,7 @@ LABEL_25:
                 CollideIndoorWithDecorations();
 
                 if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Player)
-                    _46EF01_collision_chech_player(1);
+                    CollideWithParty(true);
 
                 for (int actloop = 0; actloop < (signed int)uNumActors; ++actloop) {
                     // dont collide against self

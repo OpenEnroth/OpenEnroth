@@ -3389,7 +3389,7 @@ void UpdateActors_ODM() {
             if (collision_state.PrepareAndCheckIfStationary(0)) break;
             CollideOutdoorWithModels(true);
             CollideOutdoorWithDecorations(WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x), WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y));
-            _46EF01_collision_chech_player(0);
+            CollideWithParty(false);
             _46ED8A_collide_against_sprite_objects(PID(OBJECT_Actor, Actor_ITR));
             int v31 = 0;
             signed int i;
