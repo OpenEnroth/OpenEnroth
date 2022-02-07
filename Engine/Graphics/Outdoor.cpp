@@ -3796,7 +3796,7 @@ int GridCellToWorldPosZ(int a1) { return (64 - a1) << 9; }
 
 
 //----- (004823F4) --------------------------------------------------------
-bool IsTerrainSlopeTooHigh(int pos_x, int pos_z) {
+bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
     // unsigned int v2; // ebx@1
     // unsigned int v3; // edi@1
     // int v4; // eax@1
@@ -3811,7 +3811,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_z) {
     // v12 = a1;
     // v11 = a2;
     unsigned int grid_x = WorldPosToGridCellX(pos_x);
-    unsigned int grid_z = WorldPosToGridCellY(pos_z) - 1;
+    unsigned int grid_z = WorldPosToGridCellY(pos_y) - 1;
 
     int party_grid_x1 = GridCellToWorldPosX(grid_x);
     // dword_76D56C_terrain_cell_world_pos_around_party_x =
@@ -3836,7 +3836,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_z) {
         party_x2z2_y == party_x1z2_y)
         return false;
 
-    int dx = abs(pos_x - party_grid_x1), dz = abs(party_grid_z1 - pos_z);
+    int dx = abs(pos_x - party_grid_x1), dz = abs(party_grid_z1 - pos_y);
 
     int y1, y2, y3;
     if (dz >= dx) {
