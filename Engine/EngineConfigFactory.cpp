@@ -4,6 +4,7 @@
 #include <cctype>
 #include <string>
 
+#include "Engine/EngineConfig.h"
 #include "Platform/Api.h"
 
 using Engine_::EngineConfigFactory;

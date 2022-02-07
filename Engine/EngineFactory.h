@@ -3,7 +3,6 @@
 
 #include "Engine/CommandLine.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineConfig.h"
 
 namespace Engine_ {
     class EngineFactory {

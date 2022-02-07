@@ -3,13 +3,14 @@
 #include <memory>
 
 #include "Engine/CommandLine.h"
-#include "Engine/EngineConfig.h"
 #include "Engine/IocContainer.h"
 #include "Engine/Log.h"
 
 using EngineIoc = Engine_::IocContainer;
 
 namespace Engine_ {
+class EngineConfig;
+
 class EngineConfigFactory {
  public:
     inline EngineConfigFactory() {
