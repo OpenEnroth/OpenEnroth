@@ -108,14 +108,18 @@ enum ActorAnimation : __int32 {
 
 #define ACTOR_VISIBLE 0x00000008
 #define ACTOR_STAND_IN_QUEUE 0x00000080
-#define ACTOR_ALIVE 0x00000400
-#define ACTOR_ACTIVE 0x00004000
-#define ACTOR_NEARBY 0x00008000
-#define ACTOR_UNKNOW11 0x00010000  // aidisabled
+
+// nearest 30 actors to the players are put into this state - where the ai will attack/ flee/ cast spells/ wander
+// out of this state actors will idle on the spot
+#define ACTOR_FULL_AI_STATE 0x00000400
+
+#define ACTOR_ACTIVE 0x00004000  // actor ai has been activated
+#define ACTOR_NEARBY 0x00008000  // detected player / monster
+#define ACTOR_UNKNOW11 0x00010000  // aidisabled?
 #define ACTOR_FLEEING 0x00020000
 #define ACTOR_UNKNOW5 0x00040000  // casting??
 #define ACTOR_AGGRESSOR 0x00080000
-#define ACTOR_UNKNOW7 0x00100000  // alertstatus
+#define ACTOR_UNKNOW7 0x00100000  // alertstatus ?
 #define ACTOR_ANIMATION 0x00200000
 #define ACTOR_UNKNOW9 0x00400000  // actor has job - never finished feature
 #define ACTOR_HAS_ITEM 0x00800000
@@ -178,7 +182,7 @@ struct Actor {
     inline void ResetAnimation() { uAttributes &= 0xFFDFFFFF; }
     inline void ResetQueue() { uAttributes &= ~ACTOR_STAND_IN_QUEUE; }
     inline void ResetActive() { uAttributes &= 0xFFFFBFFF; }
-    inline void ResetAlive() { uAttributes &= 0xFFFFFBFF; }
+    inline void ResetFullAiState() { uAttributes &= ~ACTOR_FULL_AI_STATE; }
     inline void ResetHasItem() { uAttributes &= 0xFF7FFFFF; }
     inline void ResetHostile() { uAttributes &= 0xFEFFFFFF; }
     inline void ResetAggressor() { uAttributes &= 0xFFF7FFFF; }
