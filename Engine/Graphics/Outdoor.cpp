@@ -2173,12 +2173,9 @@ void ODM_ProcessPartyActions() {
     if (pParty->WaterWalkActive()) {
         bWaterWalk = true;
         *(short *)&stru_5E4C90_MapPersistVars._decor_events
-             [20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID +
-              119] |= 1;
+             [20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119] |= 1;
         if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1) &&
-            pParty->pPlayers
-                    [pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1]
-                        .sMana <= 0)
+            pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1].sMana <= 0)
             bWaterWalk = false;
     }
     //*************************************
@@ -2199,8 +2196,7 @@ void ODM_ProcessPartyActions() {
         floor_level = pParty->uFallStartZ;
     //*************************************
     // падение на 3D Model
-    if (floor_level - party_new_Z > 512 && !bFeatherFall &&
-        party_new_Z <= v111 + 1) {
+    if (floor_level - party_new_Z > 512 && !bFeatherFall && party_new_Z <= v111 + 1) {
         if (pParty->uFlags & PARTY_FLAGS_1_LANDING) {
             pParty->uFlags &= ~PARTY_FLAGS_1_LANDING;
         } else {
@@ -2209,17 +2205,10 @@ void ODM_ProcessPartyActions() {
                     !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS)) {
                     pParty->pPlayers[i].ReceiveDamage(
                         (int)((pParty->uFallStartZ - party_new_Z) *
-                        (uint64_t)(pParty->pPlayers[i]
-                            .GetMaxHealth() /
-                            10)) /
-                        256,
+                        (uint64_t)(pParty->pPlayers[i].GetMaxHealth() / 10)) / 256,
                         DMGT_PHISYCAL);
-                    bonus = 20 - pParty->pPlayers[i].GetParameterBonus(
-                        pParty->pPlayers[i].GetActualEndurance());
-                    pParty->pPlayers[i].SetRecoveryTime(
-                        (signed __int64)((double)bonus *
-                            debug_non_combat_recovery_mul *
-                            flt_debugrecmod3));
+                    bonus = 20 - pParty->pPlayers[i].GetParameterBonus(pParty->pPlayers[i].GetActualEndurance());
+                    pParty->pPlayers[i].SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
                 }
             }
         }
@@ -2228,9 +2217,7 @@ void ODM_ProcessPartyActions() {
     // определение высоты потолка
     ceiling_height = -1;
     if (pParty->bFlying)  // в полёте
-        ceiling_height =
-            GetCeilingHeight(pX, pY, party_new_Z + pParty->uPartyHeight,
-                             &v102);  // высота потолка
+        ceiling_height = GetCeilingHeight(pX, pY, party_new_Z + pParty->uPartyHeight, &v102);  // высота потолка
     // v107 = bmodel_standing_on_pid == 0;
     on_ground = v111 + 1;  // на земле
     //**************************************
@@ -2239,7 +2226,7 @@ void ODM_ProcessPartyActions() {
         ceiling_height = -1;
         pParty->bFlying = false;
     } else {
-      hovering = true;
+        hovering = true;
     }
     not_high_fall = party_new_Z - v111 <= 32;
     //****************************************
@@ -2265,22 +2252,15 @@ void ODM_ProcessPartyActions() {
                 int BModel_id = bmodel_standing_on_pid >> 6;
                 if (BModel_id < pOutdoor->pBModels.size()) {
                     int face_id = bmodel_standing_on_pid & 0x3F;
-                    if (pOutdoor->pBModels[BModel_id]
-                            .pFaces[face_id]
-                            .uAttributes &
-                        FACE_PRESSURE_PLATE) {
-                        pParty->floor_face_pid =
-                            PID(OBJECT_BModel, bmodel_standing_on_pid);
-                        trigger_id =
-                            pOutdoor->pBModels[BModel_id]
-                                .pFaces[face_id]
-                                .sCogTriggeredID;  // EVT, панель имеет событие
+                    if (pOutdoor->pBModels[BModel_id].pFaces[face_id].uAttributes & FACE_PRESSURE_PLATE) {
+                        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);
+                        trigger_id = pOutdoor->pBModels[BModel_id].pFaces[face_id].sCogTriggeredID;
+                        // EVT, панель имеет событие
                     }
                 }
             }
         }
-        pParty->floor_face_pid =
-            PID(OBJECT_BModel, bmodel_standing_on_pid);  // 6 - на земле
+        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);  // 6 - на земле
     }
     //***********************************************
     _walk_speed = pParty->uWalkSpeed;
@@ -2293,13 +2273,7 @@ void ODM_ProcessPartyActions() {
                                                                       *
        TrigLUT->uIntegerPi) / 180)) >> 16);*/
     __int64 dturn =
-        (unsigned __int64)(pEventTimer->dt_fixpoint *
-                           (signed __int64)((signed int)(pParty
-                                                             ->y_rotation_speed *
-                                                         TrigLUT
-                                                             ->uIntegerPi) /
-                                            180)) >>
-        16;
+        ((__int64) pEventTimer->dt_fixpoint * pParty->y_rotation_speed * TrigLUT->uIntegerPi / 180) >> 16;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:  // полёт вверх
@@ -2309,9 +2283,8 @@ void ODM_ProcessPartyActions() {
                 pParty->bFlying = false;
                 if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
-                    (pParty->pPlayers
-                            [pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1]
-                                .sMana > 0 || engine->config->debug_all_magic)) {
+                    (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 ||
+                    engine->config->debug_all_magic)) {
                     if (pParty->vPosition.z < engine->config->max_flight_height || hovering) {
                         party_new_Z += 30;
                         v113 += 30;
@@ -2325,8 +2298,8 @@ void ODM_ProcessPartyActions() {
                         fall_speed = 0;
                         *(float *)&v128 = 0.0;
                         if (v102 && party_new_Z < ceiling_height &&
-                            (signed int)(pParty->uPartyHeight + party_new_Z) >=
-                                ceiling_height) {  // столкновение с потолком
+                            (signed int)(pParty->uPartyHeight + party_new_Z) >= ceiling_height) {
+                            // столкновение с потолком
                             pParty->field_6E0 = 0;
                             pParty->field_6E4 = 0;
                             pPartyActionQueue->uNumActions = 0;
@@ -2523,10 +2496,8 @@ void ODM_ProcessPartyActions() {
                 float sin_y = sinf(2 * pi_double * _angle_y / 2048.0);
                 float cos_y = cosf(2 * pi_double * _angle_y / 2048.0);
 
-                int dx =
-                    cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
-                int dy =
-                    sin_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                int dx = cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                int dy = sin_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
 
                 if (pParty->bFlying) {
                     v2 -= 4 * dx;
@@ -2592,9 +2563,7 @@ void ODM_ProcessPartyActions() {
         party_new_Z = v113 + v129;
         if (pModel_) party_new_Z = v113;
         if (pParty->FlyActive())
-            stru_5E4C90_MapPersistVars._decor_events
-                [20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] &=
-                0xFE;
+            stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] &= 0xFE;
         pParty->uFallStartZ = party_new_Z;
     } else if (party_new_Z < v111) {
         if (is_on_water && fall_speed)
@@ -2604,23 +2573,17 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = v111;
         v113 = party_new_Z;
         if (pParty->FlyActive())
-            stru_5E4C90_MapPersistVars._decor_events
-                [20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |=
-                1;
+            stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
     } else {
         v113 = party_new_Z;
         if (pParty->FlyActive())
-            stru_5E4C90_MapPersistVars._decor_events
-                [20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |=
-                1;
+            stru_5E4C90_MapPersistVars._decor_events[20 * pParty->pPartyBuffs[PARTY_BUFF_FLY].uOverlayID + 119] |= 1;
     }
     //------------------------------------------
     if (hovering && !pParty->bFlying) {  // расчёт скорости падения
         // v33 = -(pEventTimer->uTimeElapsed * GetGravityStrength());
-        v34 = fall_speed +
-              (-(pEventTimer->uTimeElapsed * GetGravityStrength()) << 1);
-        fall_speed += (-(pEventTimer->uTimeElapsed * GetGravityStrength())
-                       << 1);  // y(t) = 2*gt
+        v34 = fall_speed + (-(pEventTimer->uTimeElapsed * GetGravityStrength()) << 1);
+        fall_speed += (-(pEventTimer->uTimeElapsed * GetGravityStrength()) << 1);  // y(t) = 2*gt
     } else if (!partyAtHighSlope) {
         v34 = fall_speed;
     } else if (!hovering) {
@@ -2631,8 +2594,7 @@ void ODM_ProcessPartyActions() {
             // gradually sliding downwards. nice trick
             party_new_Z = v111;
             ODM_GetTerrainNormalAt(pX, pY, &v98);
-            v35 = fall_speed +
-                  (8 * -(pEventTimer->uTimeElapsed * GetGravityStrength()));
+            v35 = fall_speed + (8 * -(pEventTimer->uTimeElapsed * GetGravityStrength()));
             v129 = abs(v2 * v98.x + v1 * v98.y + v35 * v98.z) >> 16;
             v2 += fixpoint_mul(v129, v98.x);
             v1 += fixpoint_mul(v129, v98.y);
@@ -2653,8 +2615,7 @@ void ODM_ProcessPartyActions() {
                     if (!pParty->pPlayers[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
                         !pParty->pPlayers[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, EQUIP_BOOTS) &&
                         pParty->pPlayers[i].CanAct())
-                        pParty->pPlayers[i].PlaySound(SPEECH_Falling,
-                                                      0);  // крик падения
+                        pParty->pPlayers[i].PlaySound(SPEECH_Falling, 0);  // крик падения
                 }
             }
         }
@@ -2713,16 +2674,12 @@ void ODM_ProcessPartyActions() {
                                          collision_state.direction.y);
             // pModel = (BSPModel *)fixpoint_mul(collision_state.adjusted_move_distance,
             // collision_state.direction.z);
-            v40 = fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z) +
-                  party_new_Z;
+            v40 = fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z) + party_new_Z;
         }
         v122 = v40;
-        ODM_GetFloorLevel(_angle_x, _angle_y, v40, pParty->uPartyHeight,
-                          &is_on_water, &bmodel_standing_on_pid, 0);
-        v129 = ODM_GetFloorLevel(_angle_x, pY, v40, pParty->uPartyHeight,
-                                 &is_on_water, &v97, 0);
-        int v119 = ODM_GetFloorLevel(pX, _angle_y, v40, pParty->uPartyHeight,
-                                     &is_on_water, &v110, 0);
+        ODM_GetFloorLevel(_angle_x, _angle_y, v40, pParty->uPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
+        v129 = ODM_GetFloorLevel(_angle_x, pY, v40, pParty->uPartyHeight, &is_on_water, &v97, 0);
+        int v119 = ODM_GetFloorLevel(pX, _angle_y, v40, pParty->uPartyHeight, &is_on_water, &v110, 0);
         bool v42_ = (BSPModel *)IsTerrainSlopeTooHigh(_angle_x, pY);
         v42 = IsTerrainSlopeTooHigh(pX, _angle_y);
         is_not_on_bmodel = false;
@@ -2742,11 +2699,9 @@ void ODM_ProcessPartyActions() {
             } else if (v43) {
                 pY = _angle_y;
             } else {
-                int new_ = ODM_GetFloorLevel(_angle_x, _angle_y, v40,
-                                             pParty->uPartyHeight, &is_on_water,
+                int new_ = ODM_GetFloorLevel(_angle_x, _angle_y, v40, pParty->uPartyHeight, &is_on_water,
                                              &bmodel_standing_on_pid, 0);
-                if (IsTerrainSlopeTooHigh(_angle_x, _angle_y) &&
-                    new_ <= party_new_Z) {
+                if (IsTerrainSlopeTooHigh(_angle_x, _angle_y) && new_ <= party_new_Z) {
                     v43 = 1;
                     pX = _angle_x;
                     if (v43) pY = _angle_y;
@@ -2776,23 +2731,17 @@ void ODM_ProcessPartyActions() {
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
             v129 = TrigLUT->Atan2(
-                _angle_x - pLevelDecorations[(signed int)collision_state.pid >> 3]
-                               .vPosition.x,
-                _angle_y - pLevelDecorations[(signed int)collision_state.pid >> 3]
-                               .vPosition.y);
-            v2 = fixpoint_mul(TrigLUT->Cos(v129),
-                              integer_sqrt(v2 * v2 + v128 * v128));
-            v122 = fixpoint_mul(TrigLUT->Sin(v129),
-                                integer_sqrt(v2 * v2 + v128 * v128));
-            v128 = fixpoint_mul(TrigLUT->Sin(v129),
-                                integer_sqrt(v2 * v2 + v128 * v128));
+                _angle_x - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.x,
+                _angle_y - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.y);
+            v2 = fixpoint_mul(TrigLUT->Cos(v129), integer_sqrt(v2 * v2 + v128 * v128));
+            v122 = fixpoint_mul(TrigLUT->Sin(v129), integer_sqrt(v2 * v2 + v128 * v128));
+            v128 = fixpoint_mul(TrigLUT->Sin(v129), integer_sqrt(v2 * v2 + v128 * v128));
         }
 
         if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
             pParty->bFlying = false;
             pModel = &pOutdoor->pBModels[(signed int)collision_state.pid >> 9];
-            pODMFace =
-                &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
+            pODMFace = &pModel->pFaces[((signed int)collision_state.pid >> 3) & 0x3F];
             v48 = pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1;
             v129 = v48 <= 32;
             v119 = pODMFace->pFacePlaneOLD.vNormal.z < 46378;
@@ -2800,8 +2749,7 @@ void ODM_ProcessPartyActions() {
                 v119 = 0;
             if (pODMFace->uPolygonType == POLYGON_Floor) {
                 if (fall_speed < 0) fall_speed = 0;
-                party_new_Z =
-                    pModel->pVertices.pVertices[pODMFace->pVertexIDs[0]].z + 1;
+                party_new_Z = pModel->pVertices.pVertices[pODMFace->pVertexIDs[0]].z + 1;
                 if (v2 * v2 + v128 * v128 < 400) {
                     v2 = 0;
                     *(float *)&v128 = 0.0;
@@ -2814,13 +2762,10 @@ void ODM_ProcessPartyActions() {
                                                     // events??
                 }
             }
-            if (!v129 &&
-                (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall ||
-                 v119)) {  // упёрся в столб
+            if (!v129 && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || v119)) {  // упёрся в столб
                 v118 = abs(v128 * pODMFace->pFacePlaneOLD.vNormal.y +
                            fall_speed * pODMFace->pFacePlaneOLD.vNormal.z +
-                           v2 * pODMFace->pFacePlaneOLD.vNormal.x) >>
-                       16;
+                           v2 * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
                 if ((collision_state.speed >> 3) > v118)
                     v118 = collision_state.speed >> 3;
                 v2 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.x);
@@ -2833,14 +2778,10 @@ void ODM_ProcessPartyActions() {
                     collision_state.radius_lo -
                     pODMFace->pFacePlaneOLD.SignedDistanceTo(_angle_x, _angle_y, v122);
                 if (v55 > 0) {
-                    pX = _angle_x +
-                         fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
-                    pY = _angle_y +
-                         fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.y, v55);
+                    pX = _angle_x + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
+                    pY = _angle_y + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.y, v55);
                     if (!v119)
-                        party_new_Z =
-                            v122 +
-                            fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.z, v55);
+                        party_new_Z = v122 + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.z, v55);
                 }
                 if (pParty->floor_face_pid != collision_state.pid &&
                     pODMFace->Pressure_Plate()) {
@@ -2851,14 +2792,12 @@ void ODM_ProcessPartyActions() {
             if (pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                 v118 = abs(v128 * pODMFace->pFacePlaneOLD.vNormal.y +
                            fall_speed * pODMFace->pFacePlaneOLD.vNormal.z +
-                           v2 * pODMFace->pFacePlaneOLD.vNormal.x) >>
-                       16;
+                           v2 * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
                 if ((collision_state.speed >> 3) > v118)
                     v118 = collision_state.speed >> 3;
                 v2 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.x);
                 v128 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.y);
-                fall_speed +=
-                    fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
+                fall_speed += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
                 if (v2 * v2 + v128 * v128 >= 400) {
                     if (pParty->floor_face_pid != collision_state.pid &&
                         pODMFace->Pressure_Plate()) {
@@ -2964,17 +2903,12 @@ void ODM_ProcessPartyActions() {
                     } else {
                         for (uint i = 1; i <= 4; ++i) {
                             pPlayers[i]->ReceiveDamage(
-                                (int)((pParty->uFallStartZ -
-                                              party_new_Z) *
-                                             (uint64_t)((double)pPlayers[i]->GetMaxHealth() * 0.1)) /
-                                    256,
+                                (int)((pParty->uFallStartZ - party_new_Z) *
+                                             (uint64_t)((double)pPlayers[i]->GetMaxHealth() * 0.1)) / 256,
                                 DMGT_PHISYCAL);
-                            v110 = 20 - pPlayers[i]->GetParameterBonus(
-                                            pPlayers[i]->GetActualEndurance());
+                            v110 = 20 - pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualEndurance());
                             pPlayers[i]->SetRecoveryTime(
-                                (signed __int64)((double)v110 *
-                                                 debug_non_combat_recovery_mul *
-                                                 flt_debugrecmod3));
+                                (signed __int64)((double)v110 * debug_non_combat_recovery_mul * flt_debugrecmod3));
                         }
                         // v73 = pParty->vPosition.z;
                     }
@@ -2984,10 +2918,8 @@ void ODM_ProcessPartyActions() {
             if (v102 && pParty->vPosition.z < ceiling_height) {
                 if ((signed int)(pParty->uPartyHeight + pParty->vPosition.z) >=
                     ceiling_height) {
-                    pParty->vPosition.z =
-                        ceiling_height - pParty->uPartyHeight - 1;
-                    pParty->field_6F0 =
-                        ceiling_height - pParty->uPartyHeight - 1;
+                    pParty->vPosition.z = ceiling_height - pParty->uPartyHeight - 1;
+                    pParty->field_6F0 = ceiling_height - pParty->uPartyHeight - 1;
                 }
             }
             pParty->uFlags &= ~0x204;
@@ -2996,8 +2928,8 @@ void ODM_ProcessPartyActions() {
     }
     //-----------------------------------------------------------------
     // v76 = pParty->bFlying;
-    if (pParty->bFlying || !not_high_fall || bWaterWalk ||
-        !v122_a)  // полёт или высокое падение или хождение по воде или
+    if (pParty->bFlying || !not_high_fall || bWaterWalk || !v122_a)
+        // полёт или высокое падение или хождение по воде или
         v77 = 1;
     else
         v77 = v122 != 0;
@@ -3027,9 +2959,7 @@ void ODM_ProcessPartyActions() {
             // 1u;
             v79 =
                 (short *)&stru_5E4C90_MapPersistVars._decor_events
-                    [20 *
-                         pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID +
-                     119];
+                [20 * pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uOverlayID + 119];
             *(short *)v79 |= 1;
             if (!v122 || !v69) {
                 if (!pParty->bFlying) {
@@ -3080,15 +3010,11 @@ void ODM_ProcessPartyActions() {
                     for (uint i = 1; i <= 4; ++i) {
                         v110 = pPlayers[i]->GetMaxHealth();
                         pPlayers[i]->ReceiveDamage(
-                            (int)((pParty->uFallStartZ - party_new_Z) *
-                                         (uint64_t)((double)v110 * 0.1)) / 256,
+                            (int)((pParty->uFallStartZ - party_new_Z) * (uint64_t)((double)v110 * 0.1)) / 256,
                             DMGT_PHISYCAL);
-                        v110 = 20 - pPlayers[i]->GetParameterBonus(
-                                        pPlayers[i]->GetActualEndurance());
+                        v110 = 20 - pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualEndurance());
                         pPlayers[i]->SetRecoveryTime(
-                            (signed __int64)((double)v110 *
-                                             debug_non_combat_recovery_mul *
-                                             flt_debugrecmod3));
+                            (signed __int64)((double)v110 * debug_non_combat_recovery_mul * flt_debugrecmod3));
                     }
                     // v82 = pParty->vPosition.z;
                 }
