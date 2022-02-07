@@ -108,7 +108,11 @@ enum ActorAnimation : __int32 {
 
 #define ACTOR_VISIBLE 0x00000008
 #define ACTOR_STAND_IN_QUEUE 0x00000080
+
+// nearest 30 actors to the players are put into this state - where the ai will attack/ flee/ cast spells/ wander
+// out of this state actors will idle on the spot
 #define ACTOR_FULL_AI_STATE 0x00000400
+
 #define ACTOR_ACTIVE 0x00004000  // actor ai has been activated
 #define ACTOR_NEARBY 0x00008000  // detected player / monster
 #define ACTOR_UNKNOW11 0x00010000  // aidisabled?

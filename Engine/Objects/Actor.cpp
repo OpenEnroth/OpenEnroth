@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <string>
+#include <utility>
 
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
@@ -4605,12 +4606,8 @@ int Actor::MakeActorAIList_BLV() {
             int change = 0;
             for (uint j = 0; j < active_actor_count - i - 1; j++) {
                 if (ai_near_actors_distances[j] > ai_near_actors_distances[j + 1]) {
-                    int temp_dist = ai_near_actors_distances[j];
-                    int temp_id = ai_near_actors_ids[j];
-                    ai_near_actors_ids[j] = ai_near_actors_ids[j + 1];
-                    ai_near_actors_ids[j + 1] = temp_id;
-                    ai_near_actors_distances[j] = ai_near_actors_distances[j + 1];
-                    ai_near_actors_distances[j + 1] = temp_dist;
+                    std::swap(ai_near_actors_ids[j], ai_near_actors_ids[j + 1]);
+                    std::swap(ai_near_actors_distances[j], ai_near_actors_distances[j + 1]);
                     change = 1;
                 }
             }
