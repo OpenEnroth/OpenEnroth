@@ -734,9 +734,60 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].texture = pSprite->texture;
 }
 
-void RenderOpenGL::_4A4CC9_AddSomeBillboard(
-    struct SpellFX_Billboard *a1, int diffuse) {
-    __debugbreak();
+void RenderOpenGL::_4A4CC9_AddSomeBillboard(struct SpellFX_Billboard *a1, int diffuse) {
+    // fireball / implosion sphere
+    //__debugbreak();
+
+    // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
+
+    if (a1->uNumVertices < 3) {
+        return;
+    }
+
+    float depth = 1000000.0;
+    for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
+        if (a1->field_104[i].z < depth) {
+            depth = a1->field_104[i].z;
+        }
+    }
+
+    unsigned int v5 = Billboard_ProbablyAddToListAndSortByZOrder(depth);
+    pBillboardRenderListD3D[v5].field_90 = 0;
+    pBillboardRenderListD3D[v5].sParentBillboardID = -1;
+    pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
+    pBillboardRenderListD3D[v5].texture = 0;
+    pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
+    pBillboardRenderListD3D[v5].z_order = depth;
+
+    for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
+        pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
+        pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
+        pBillboardRenderListD3D[v5].pQuads[i].pos.z = a1->field_104[i].z;
+
+        float rhw = 1.f / a1->field_104[i].z;
+        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pCamera3D->GetFarClip());
+
+        double v10 = a1->field_104[i].z;
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            v10 *= 1000.f / 16192.f;
+        } else {
+            v10 *= 1000.f / pCamera3D->GetFarClip();
+        }
+
+        pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;
+
+        int v12;
+        if (diffuse & 0xFF000000) {
+            v12 = a1->field_104[i].diffuse;
+        } else {
+            v12 = diffuse;
+        }
+        pBillboardRenderListD3D[v5].pQuads[i].diffuse = v12;
+        pBillboardRenderListD3D[v5].pQuads[i].specular = 0;
+
+        pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.0;
+        pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.0;
+    }
 }
 
 void RenderOpenGL::DrawBillboardList_BLV() {
@@ -775,8 +826,123 @@ void RenderOpenGL::DrawBillboardList_BLV() {
 void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
                                   float dstX, float dstY, float a7, float a8,
                                   Texture *texture) {
-    __debugbreak();
+    // a3 - src worldviewx
+    // a4 - src fov / worldview
+    // a7 - dst worldview
+    // a8 - dst fov / worldview
+
+    // TODO(pskelton): fix properly - sometimes half disappears
+
+    // billboards projectile - lightning bolt
+
+    double v20;  // st4@8
+    double v21;  // st4@10
+    double v22;  // st4@10
+    double v23;  // st4@10
+    double v25;  // st4@11
+    double v26;  // st4@13
+    double v28;  // st4@13
+
+
+    TextureOpenGL *textured3d = (TextureOpenGL *)texture;
+
+    int xDifference = bankersRounding(dstX - srcX);
+    int yDifference = bankersRounding(dstY - srcY);
+    int absYDifference = abs(yDifference);
+    int absXDifference = abs(xDifference);
+    unsigned int smallerabsdiff = std::min(absXDifference, absYDifference);
+    unsigned int largerabsdiff = std::max(absXDifference, absYDifference);
+
+    // distance approx
+    int v32 = (11 * smallerabsdiff >> 5) + largerabsdiff;
+
+    double v16 = 1.0 / (double)v32;
+    double srcxmod = (double)yDifference * v16 * a4;
+    double srcymod = (double)xDifference * v16 * a4;
+
+    v20 = a3 * 1000.0 / pCamera3D->GetFarClip();
+    v25 = a7 * 1000.0 / pCamera3D->GetFarClip();
+
+    v21 = 1.0 / a3;
+    v22 = (double)yDifference * v16 * a8;
+    v23 = (double)xDifference * v16 * a8;
+    v26 = 1.0 - 1.0 / v25;
+    v28 = 1.0 / a7;
+
+    RenderVertexD3D3 v29[4];
+    v29[0].pos.x = srcX + srcxmod;
+    v29[0].pos.y = srcY - srcymod;
+    v29[0].pos.z = 1.0 - 1.0 / v20;
+    v29[0].rhw = v21;
+    v29[0].diffuse = -1;
+    v29[0].specular = 0;
+    v29[0].texcoord.x = 1.0;
+    v29[0].texcoord.y = 0.0;
+
+    v29[1].pos.x = v22 + dstX;
+    v29[1].pos.y = dstY - v23;
+    v29[1].pos.z = v26;
+    v29[1].rhw = v28;
+    v29[1].diffuse = -16711936;
+    v29[1].specular = 0;
+    v29[1].texcoord.x = 1.0;
+    v29[1].texcoord.y = 1.0;
+
+    v29[2].pos.x = dstX - v22;
+    v29[2].pos.y = v23 + dstY;
+    v29[2].pos.z = v26;
+    v29[2].rhw = v28;
+    v29[2].diffuse = -1;
+    v29[2].specular = 0;
+    v29[2].texcoord.x = 0.0;
+    v29[2].texcoord.y = 1.0;
+
+    v29[3].pos.x = srcX - srcxmod;
+    v29[3].pos.y = srcymod + srcY;
+    v29[3].pos.z = v29[0].pos.z;
+    v29[3].rhw = v21;
+    v29[3].diffuse = -1;
+    v29[3].specular = 0;
+    v29[3].texcoord.x = 0.0;
+    v29[3].texcoord.y = 0.0;
+
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE);
+
+    // ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
+    glDepthMask(GL_FALSE);
+    glDisable(GL_CULL_FACE);
+
+    if (textured3d) {
+        glBindTexture(GL_TEXTURE_2D, textured3d->GetOpenGlTexture());
+    } else {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    glBegin(GL_TRIANGLE_FAN);
+
+    for (uint i = 0; i < 4; ++i) {
+        glColor4f(1, 1, 1, 1.0f);  // ????
+        glTexCoord2f(v29[i].texcoord.x, v29[i].texcoord.y);
+        glVertex3f(v29[i].pos.x, v29[i].pos.y, v29[i].pos.z);
+    }
+
+
+
+    glEnd();
+
+    drawcalls++;
+
+    glDisable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ZERO);
+
+
+    //ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
+    glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
 }
+
 void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
 
 
@@ -2688,7 +2854,7 @@ void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
 //----- (004A1C1E) --------------------------------------------------------
 void RenderOpenGL::DoRenderBillboards_D3D() {
     glEnable(GL_BLEND);
-    glDepthMask(GL_TRUE);
+    glDepthMask(GL_FALSE);  // in theory billboards all sorted by depth so dont cull by depth test
     glDisable(GL_CULL_FACE);  // some quads are reversed to reuse sprites opposite hand
     glEnable(GL_TEXTURE_2D);
 
@@ -2700,24 +2866,18 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
         }
 
-        auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
-        glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+        float gltexid = 0;
+        if (pBillboardRenderListD3D[i].texture) {
+            auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
+            gltexid = texture->GetOpenGlTexture();
+        }
+
+        glBindTexture(GL_TEXTURE_2D, gltexid);
 
         glBegin(GL_TRIANGLE_FAN);
         {
             auto billboard = &pBillboardRenderListD3D[i];
             auto b = &pBillboardRenderList[i];
-
-            // since OpenGL 1.0 can't mirror texture borders, we should offset
-            // UV to avoid black edges
-            billboard->pQuads[0].texcoord.x += 0.5f / texture->GetWidth();
-            billboard->pQuads[0].texcoord.y += 0.5f / texture->GetHeight();
-            billboard->pQuads[1].texcoord.x += 0.5f / texture->GetWidth();
-            billboard->pQuads[1].texcoord.y -= 0.5f / texture->GetHeight();
-            billboard->pQuads[2].texcoord.x -= 0.5f / texture->GetWidth();
-            billboard->pQuads[2].texcoord.y -= 0.5f / texture->GetHeight();
-            billboard->pQuads[3].texcoord.x -= 0.5f / texture->GetWidth();
-            billboard->pQuads[3].texcoord.y += 0.5f / texture->GetHeight();
 
             for (unsigned int j = 0; j < billboard->uNumVertices; ++j) {
                 glColor4f(
