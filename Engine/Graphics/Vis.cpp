@@ -591,12 +591,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint, signe
 
     int a = 0, b = 0;
 
-    if (IntersectPoint.x < pFace->pBounding.x1 ||
-        IntersectPoint.x > pFace->pBounding.x2 ||
-        IntersectPoint.y < pFace->pBounding.y1 ||
-        IntersectPoint.y > pFace->pBounding.y2 ||
-        IntersectPoint.z < pFace->pBounding.z1 ||
-        IntersectPoint.z > pFace->pBounding.z2)
+    if (!pFace->pBounding.Contains(IntersectPoint))
         return false;
 
     if (sModelID != -1)

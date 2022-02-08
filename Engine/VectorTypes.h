@@ -177,6 +177,10 @@ struct BBox_short_ {
     bool ContainsXY(int x, int y) const {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
+
+    bool Contains(const Vec3_short_ &pos) const {
+        return x1 <= pos.x && pos.x <= x2 && y1 <= pos.y && pos.y <= y2 && z1 <= pos.z && pos.z <= z2;
+    }
 };
 #pragma pack(pop)
 
