@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
 set(GRAPHICS_SOURCES BSPModel.cpp
+                     Collisions.cpp
                      DecalBuilder.cpp
                      DecorationList.cpp
                      Image.cpp
@@ -31,6 +32,7 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      HWLContainer.cpp)
 
 set(GRAPHICS_HEADERS BSPModel.h
+                     Collisions.h
                      DecalBuilder.h
                      DecorationList.h
                      Image.h

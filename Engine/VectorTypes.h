@@ -1,10 +1,17 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
 
 #include "OurMath.h"
 
 uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
+
+template<class From, class To>
+struct vector_conversion_allowed : std::false_type {};
+
+template<>
+struct vector_conversion_allowed<int16_t, int32_t> : std::true_type {}; // Allow Vec3_short_ -> Vec3_int_ conversions.
 
 #pragma pack(push, 1)
 template <class T>
@@ -27,6 +34,10 @@ struct Vec3 : public Vec2<T> {
     T z;
 
     explicit Vec3(T a = 0, T b = 0, T c = 0) : Vec2<T>(a, b), z(c) {}
+
+    // TODO: rewrite with requires clause when we have C++20
+    template<class OtherT, class = std::enable_if_t<vector_conversion_allowed<OtherT, T>::value>>
+    Vec3(const Vec3<OtherT> &other) : Vec2<T>(other.x, other.y), z(other.z) {}
 
     template <class U>
     inline uint32_t GetDistanceTo(Vec3<U> &o) {
@@ -63,6 +74,10 @@ struct Vec3 : public Vec2<T> {
         this->x = bankersRounding(x / s);
         this->y = bankersRounding(y / s);
         this->z = bankersRounding(z / s);
+    }
+
+    friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
+        return Vec3(l.x + r.x, l.y + r.y, l.z + r.z);
     }
 };
 #pragma pack(pop)

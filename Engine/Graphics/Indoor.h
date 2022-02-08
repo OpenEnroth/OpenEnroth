@@ -138,48 +138,6 @@ struct stru316 {
 };
 #pragma pack(pop)
 
-/*  134 */
-#pragma pack(push, 1)
-struct stru141_actor_collision_object {
-    /**
-     * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
-     *
-     * @param dt                        Time delta, in fixpoint seconds.
-     * @return                          True if there is no movement, false otherwise.
-     */
-    bool PrepareAndCheckIfStationary(int dt);
-
-    // actor is modeled as two spheres, basically "feet" & "head". Collisions are then done for both spheres.
-
-    int check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
-    int radius_lo;   // radius of the lo ("feet") sphere.
-    int radius_hi;  // radius of the hi ("head") sphere.
-    int height;  // actor height.
-    int field_10;  // unused
-    int field_14;  // unused
-    int field_18;  // unused
-    Vec3_int_ velocity;
-    Vec3_int_ position_lo; // center of the lo sphere.
-    Vec3_int_ position_hi; // center of the hi sphere.
-    Vec3_int_ new_position_lo; // desired new position for the center of the lo sphere.
-    Vec3_int_ new_position_hi; // desired new position for the center of the hi sphere.
-    Vec3_int_ direction;  // movement direction, as a fixpoint unit vector.
-    int speed = 0;
-    int inv_speed;
-    int move_distance;  // desired movement distance.
-    int field_70;  // some dist modifier - blanked before coll links with adjusted_move_distance- slows/stops movement
-    unsigned int uSectorID = 0;
-    unsigned int pid;
-    int adjusted_move_distance;  // movement distance after adjusting for collisions.
-    int field_80;  // portal id??
-    int field_84;  // pid of face
-    int field_88;  // unsued
-    BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
-    int field_A4;  // unused
-};
-#pragma pack(pop)
-extern stru141_actor_collision_object collision_state;
-
 /*  378 */
 #pragma pack(push, 1)
 struct stru337_stru0 {
@@ -612,6 +570,14 @@ struct IndoorLocation {
      */
     int GetSector(int sX, int sY, int sZ);
 
+    int GetSector(const Vec3_int_ &pos) {
+        return GetSector(pos.x, pos.y, pos.z);
+    }
+
+    int GetSector(const Vec3_short_ &pos) {
+        return GetSector(pos.x, pos.y, pos.z);
+    }
+
     void Release();
     bool Alloc();
     bool Load(const std::string &filename, int num_days_played,
@@ -711,15 +677,13 @@ unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
 void BLV_UpdateUserInputAndOther();
 
 /**
- * @param x                             Actor's fixpoint X position.
- * @param y                             Actor's fixpoint Y position.
- * @param z                             Actor's fixpoint Z position.
+ * @param pos                           Actor's position.
  * @param uSectorID                     Actor's sector id.
  * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position.
  * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
  *                                      If wrong sector is supplied, `-30000` is returned.
  */
-int BLV_GetFloorLevel(int x, int y, int z, unsigned int uSectorID, unsigned int *pFaceID);
+int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
@@ -786,13 +750,27 @@ struct BspRenderer {  // stru170
 
 void FindBillboardsLightLevels_BLV();
 
+// TODO: looks like this also works for ceilings, reflect in docs?
 /**
- * Same as `collide_against_floor`, but also tries jiggling the party around a bit if the collision point couldn't be
+ * @param pos                           Actor's position.
+ * @param[in,out] pSectorID             Actor's cached sector id. If the cached sector id is no longer valid (e.g. an
+ *                                      actor has already moved to another sector), then the new sector id is returned
+ *                                      in this output parameter.
+ * @param[out] pFaceID                  Id of the floor face on which the actor is standing. Not updated if floor face
+ *                                      is not found.
+ * @return                              Z coordinate for the floor at (X, Y).
+ */
+int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
+
+/**
+ * Original offset 0x0047272C.
+ *
+ * Same as `GetIndoorFloorZ`, but also tries jiggling the party around a bit if the collision point couldn't be
  * found.
  *
- * @see collide_against_floor
+ * @see GetIndoorFloorZ
  */
-int collide_against_floor_approximate(int x, int y, int z, unsigned int *pSectorID, unsigned int *pFaceID);
+int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 
 bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3_int_ from);
 

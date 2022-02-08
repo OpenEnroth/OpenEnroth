@@ -18,6 +18,7 @@
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/ObjectList.h"
 
+#include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -286,11 +287,10 @@ LABEL_13:
         pSpriteObjects[uLayingItemID].vPosition.z = v8;
     if (_46BFFA_update_spell_fx(uLayingItemID, 0)) {
     LABEL_92:
-        collision_state.check_hi = 0;
+        collision_state.check_hi = false;
         collision_state.radius_lo = object->uRadius;
-        collision_state.height = object->uHeight;
         collision_state.radius_hi = 0;
-        collision_state.field_70 = 0;
+        collision_state.total_move_distance = 0;
         for (v55 = 0; v55 < 100; ++v55) {
             collision_state.position_hi.x = pSpriteObjects[uLayingItemID].vPosition.x;
             collision_state.position_lo.x = collision_state.position_hi.x;
@@ -306,13 +306,13 @@ LABEL_13:
             if (collision_state.PrepareAndCheckIfStationary(0))
                 return;
 
-            _46E889_collide_against_bmodels(0);
-            _46E26D_collide_against_sprites(
+            CollideOutdoorWithModels(false);
+            CollideOutdoorWithDecorations(
                 WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x),
                 WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y));
             if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) !=
                 OBJECT_Player)
-                _46EF01_collision_chech_player(0);
+                CollideWithParty(false);
             if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) ==
                 OBJECT_Actor) {
                 if ((PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid) >=
@@ -323,12 +323,12 @@ LABEL_13:
                         if (pActors[PID_ID(pSpriteObjects[uLayingItemID]
                                                .spell_caster_pid)]
                                 .GetActorsRelation(&pActors[v56]))
-                            Actor::_46DF1A_collide_against_actor(v56, 0);
+                            CollideWithActor(v56, 0);
                     }
                 }
             } else {
                 for (i = 0; i < (signed int)uNumActors; ++i)
-                    Actor::_46DF1A_collide_against_actor(i, 0);
+                    CollideWithActor(i, 0);
             }
             v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             v49 = false;
@@ -402,7 +402,7 @@ LABEL_13:
             pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
             pSpriteObjects[uLayingItemID].uSectorID = v28;
-            collision_state.field_70 += collision_state.adjusted_move_distance;
+            collision_state.total_move_distance += collision_state.adjusted_move_distance;
             if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
                 if (v29 < v54)
                     pSpriteObjects[uLayingItemID].vPosition.z = v54 + 1;
@@ -473,15 +473,11 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
     SpriteObject *pSpriteObject = &pSpriteObjects[uLayingItemID];
     ObjectDesc *pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
 
-    pSpriteObject->uSectorID = pIndoor->GetSector(pSpriteObject->vPosition.x,
-        pSpriteObject->vPosition.y,
-        pSpriteObject->vPosition.z);
+    pSpriteObject->uSectorID = pIndoor->GetSector(pSpriteObject->vPosition);
 
     unsigned int uFaceID;
 
-    int floor_lvl = BLV_GetFloorLevel(
-        pSpriteObject->vPosition.x, pSpriteObject->vPosition.y,
-        pSpriteObject->vPosition.z, pSpriteObject->uSectorID, &uFaceID);
+    int floor_lvl = BLV_GetFloorLevel(pSpriteObject->vPosition, pSpriteObject->uSectorID, &uFaceID);
 
     // object out of bounds
     if (abs(pSpriteObject->vPosition.x) > 32767 ||
@@ -504,12 +500,11 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
 
     if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {  //не падающие объекты
 LABEL_25:
-        collision_state.check_hi = 0;
+        collision_state.check_hi = false;
         collision_state.radius_lo = pObject->uRadius;
-        collision_state.field_84 = -1;
-        collision_state.height = pObject->uHeight;
+        collision_state.ignored_face_id = -1;
         collision_state.radius_hi = 0;
-        collision_state.field_70 = 0;
+        collision_state.total_move_distance = 0;
         for (int loop = 0; loop < 100; loop++) {
             collision_state.position_hi.x = pSpriteObject->vPosition.x;
             collision_state.position_hi.y = pSpriteObject->vPosition.y;
@@ -527,11 +522,11 @@ LABEL_25:
             if (collision_state.PrepareAndCheckIfStationary(0)) return;
 
             for (int loop2 = 0; loop2 < 100; ++loop2) {
-                collide_against_faces_and_portals(false);
-                _46E0B2_collide_against_decorations();
+                CollideIndoorWithGeometry(false);
+                CollideIndoorWithDecorations();
 
                 if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Player)
-                    _46EF01_collision_chech_player(1);
+                    CollideWithParty(true);
 
                 for (int actloop = 0; actloop < (signed int)uNumActors; ++actloop) {
                     // dont collide against self
@@ -545,10 +540,10 @@ LABEL_25:
                         if (pActors[actloop].word_000086_some_monster_id) {  // not always filled in from scripted monsters
                             radius = pMonsterList->pMonsters[pActors[actloop].word_000086_some_monster_id - 1].uToHitRadius;
                         }
-                        Actor::_46DF1A_collide_against_actor(actloop, radius);
+                        CollideWithActor(actloop, radius);
                 }
 
-                if (_46F04E_collide_against_portals()) break;
+                if (CollideIndoorWithPortals()) break;
             }
             // end loop2
 
@@ -612,7 +607,7 @@ LABEL_25:
                 fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
 
             pSpriteObject->uSectorID = collision_state.uSectorID;
-            collision_state.field_70 += collision_state.adjusted_move_distance;
+            collision_state.total_move_distance += collision_state.adjusted_move_distance;
 
             // if weve collided but dont need to react return
             if (pObject->uFlags & OBJECT_DESC_INTERACTABLE &&
@@ -635,7 +630,7 @@ LABEL_25:
                     fixpoint_mul(TrigLUT->Sin(v23), v40);
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
-                collision_state.field_84 = (signed int)PID_ID(collision_state.pid);
+                collision_state.ignored_face_id = PID_ID(collision_state.pid);
                 if (pIndoor->pFaces[v15].uPolygonType != POLYGON_Floor) {
                     floor_lvl = abs(pIndoor->pFaces[v15].pFacePlane_old.vNormal.x *
                                   pSpriteObject->vVelocity.x +

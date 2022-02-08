@@ -81,8 +81,6 @@ struct SpriteFrameTable {
 };
 #pragma pack(pop)
 
-void _46E26D_collide_against_sprites(int a1, int a2);
-
 extern struct SpriteFrameTable *pSpriteFrameTable;
 
 SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t, int month);

@@ -282,8 +282,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uFacing = (short)pDir->uYawAngle;
             a1.uSoundID = 0;
             a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y,
-                                              a1.vPosition.z);
+            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
             a1.uSpriteFrameID = 0;
             a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
             a1.spell_target_pid = 0;
@@ -419,8 +418,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uFacing = pDir->uYawAngle;
             a1.uSoundID = 0;
             a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y,
-                                              a1.vPosition.z);
+            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
             a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
             a1.uSpriteFrameID = 0;
             a1.spell_target_pid = 0;
@@ -653,8 +651,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             a1.uFacing = pDir->uYawAngle;
             a1.uSoundID = 0;
             a1.uAttributes = 0;
-            a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y,
-                                              a1.vPosition.z);
+            a1.uSectorID = pIndoor->GetSector(a1.vPosition);
             a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
             a1.uSpriteFrameID = 0;
             a1.spell_target_pid = 0;
@@ -814,8 +811,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
     a1.uFacing = pDir->uYawAngle;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID =
-        pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.uSpriteFrameID = 0;
     a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
     a1.spell_target_pid = 0;
@@ -868,7 +864,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.uFacing = 0;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(a1.vPosition.x, a1.vPosition.y, a1.vPosition.z);
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.uSpriteFrameID = 0;
     a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
     a1.spell_target_pid = 0;
@@ -2620,8 +2616,7 @@ void Actor::SummonMinion(int summonerId) {
 
     actorSector = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        actorSector = pIndoor->GetSector(this->vPosition.x, this->vPosition.y,
-                                         this->vPosition.z);
+        actorSector = pIndoor->GetSector(this->vPosition);
 
     v19 = this->uAlly;
     if (!this->uAlly) {
@@ -2636,7 +2631,7 @@ void Actor::SummonMinion(int summonerId) {
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
         if (result != actorSector) return;
-        result = BLV_GetFloorLevel(v15, v17, v27, result, &monsterId);
+        result = BLV_GetFloorLevel(Vec3_int_(v15, v17, v27), result, &monsterId);
         if (result != -30000) return;
         if (abs(result - v27) > 1024) return;
     }
@@ -2692,53 +2687,7 @@ void Actor::SummonMinion(int summonerId) {
     if (ActorEnemy()) actor->uAttributes |= ACTOR_AGGRESSOR;
     actor->uSummonerID = PID(OBJECT_Actor, summonerId);
 }
-// 46DF1A: using guessed type int 46DF1A_collide_against_actor(int, int);
-//----- (0046DF1A) --------------------------------------------------------
-bool Actor::_46DF1A_collide_against_actor(int a1, int a2) {
-    Actor *v2;            // edi@1
-    unsigned __int16 v3;  // ax@1
-    int v4;               // esi@6
-    int v8;               // ecx@14
-    int v9;               // eax@14
-    int v10;              // ebx@14
-    int v11;              // esi@14
-    int v12;              // ebx@15
-    int v13;              // ebx@17
 
-    v2 = &pActors[a1];
-    v3 = v2->uAIState;
-    if (v3 == Removed || v3 == Dying || v3 == Disabled || v3 == Dead ||
-        v3 == Summoned)
-        return 0;
-    v4 = v2->uActorRadius;
-    if (a2) v4 = a2;
-
-    if (collision_state.bbox.x1 > v2->vPosition.x + v4 ||
-        collision_state.bbox.x2 < v2->vPosition.x - v4 ||
-        collision_state.bbox.y1 > v2->vPosition.y + v4 ||
-        collision_state.bbox.y2 < v2->vPosition.y - v4 ||
-        collision_state.bbox.z1 > v2->vPosition.z + v2->uActorHeight ||
-        collision_state.bbox.z2 < v2->vPosition.z) {
-        return false;
-    }
-    v8 = v2->vPosition.x - collision_state.position_lo.x;
-    v9 = v2->vPosition.y - collision_state.position_lo.y;
-    v10 = collision_state.radius_lo + v4;
-    v11 = (v8 * collision_state.direction.y - v9 * collision_state.direction.x) >> 16;
-    v12 = (v8 * collision_state.direction.x + v9 * collision_state.direction.y) >> 16;
-    if (abs(v11) > v10 || v12 <= 0) return false;
-    if (fixpoint_mul(collision_state.direction.z, v12) + collision_state.position_lo.z <
-        v2->vPosition.z)
-        return false;
-
-    v13 = v12 - integer_sqrt(v10 * v10 - v11 * v11);
-    if (v13 < 0) v13 = 0;
-    if (v13 < collision_state.adjusted_move_distance) {
-        collision_state.adjusted_move_distance = v13;
-        collision_state.pid = PID(OBJECT_Actor, a1);
-    }
-    return true;
-}
 //----- (00401A91) --------------------------------------------------------
 void Actor::UpdateActorAI() {
     signed int v4;    // edi@10
@@ -4562,7 +4511,7 @@ int Actor::MakeActorAIList_BLV() {
     // reset party alert level
     pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;  // ~0x30
     // TODO(pskelton): grab sector id from somewhere else rather than calc it several times per frame
-    int party_sector = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+    int party_sector = pIndoor->GetSector(pParty->vPosition);
 
     // find actors that are in range and can act
     uint active_actor_count = 0;
@@ -4732,7 +4681,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
             obj2_x = pParty->vPosition.x;
             obj2_z = pParty->sEyelevel + pParty->vPosition.z;
             obj2_y = pParty->vPosition.y;
-            obj2_sector = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->sEyelevel + pParty->vPosition.z);
+            obj2_sector = pIndoor->GetSector(pParty->vPosition + Vec3_int_(0, 0, pParty->sEyelevel));
             break;
         case OBJECT_Actor:
             obj2_y = pActors[obj2_pid].vPosition.y;
@@ -4953,8 +4902,7 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
     if (uActorIndex != uNumActors || result < 500) {
         v21 = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-            v21 = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
-                                     pParty->vPosition.z);
+            v21 = pIndoor->GetSector(pParty->vPosition);
         v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
         pActors[uActorIndex].Reset();
         strcpy(pActors[uActorIndex].pActorName, pMonsterStats->pInfos[uMonsterID + 1].pName);
@@ -4990,14 +4938,10 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
         pActors[uActorIndex].uCurrentActionLength = 256;
         pActors[uActorIndex].UpdateAnimation();
 
-        result = pIndoor->GetSector(pActors[uActorIndex].vPosition.x,
-                                    pActors[uActorIndex].vPosition.y,
-                                    pActors[uActorIndex].vPosition.z);
+        result = pIndoor->GetSector(pActors[uActorIndex].vPosition);
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor ||
             result == v21 &&
-                (result = BLV_GetFloorLevel(
-                     pActors[uActorIndex].vPosition.x, pActors[uActorIndex].vPosition.y,
-                     pActors[uActorIndex].vPosition.z, result, &uFaceID),
+                (result = BLV_GetFloorLevel(pActors[uActorIndex].vPosition, result, &uFaceID),
                  result != -30000) &&
                 (result = abs(result - pParty->vPosition.z), result <= 1024)) {
             if (uActorIndex == uNumActors) ++uNumActors;
@@ -5171,8 +5115,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     a4 = spawn->vPosition.y;
     a3 = spawn->vPosition.z;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        pSector = pIndoor->GetSector(spawn->vPosition.x, spawn->vPosition.y,
-                                     spawn->vPosition.z);
+        pSector = pIndoor->GetSector(spawn->vPosition);
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
 
@@ -5260,7 +5203,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         }
         v37 = pIndoor->GetSector(pPosX, a4, spawn->vPosition.z);
         if (v37 == pSector) {
-            v38 = BLV_GetFloorLevel(pPosX, a4, a3, v37, &uFaceID);
+            v38 = BLV_GetFloorLevel(Vec3_int_(pPosX, a4, a3), v37, &uFaceID);
             v39 = v38;
             if (v38 != -30000) {
                 if (abs(v38 - a3) <= 1024) {
