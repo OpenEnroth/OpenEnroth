@@ -152,6 +152,9 @@ struct Camera3D {
     int blv_fov_deg = 60;
     float blv_fov_rad = (float)blv_fov_deg * pi / 180.0;
 
+    // game viewport aspect ratio
+    float aspect = 0;
+
     // camera cos + sin values in both forms to avoid repeated calculation
     void CalculateRotations(int camera_rot_y, int camera_rot_z);
     int sRotationZ = 0;

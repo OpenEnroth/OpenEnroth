@@ -66,7 +66,6 @@ struct ODMRenderParams {
         uPickDepth = 0;
         this->shading_dist_shade = 0x800;
         shading_dist_shademist = 0x1000;
-        this->far_clip = 2 * 0x2000;
         this->bNoSky = 0;
         this->bDoNotRenderDecorations = 0;
         this->field_5C = 0;
@@ -78,7 +77,6 @@ struct ODMRenderParams {
     int uPickDepth;
     int shading_dist_shade;
     int shading_dist_shademist;
-    int far_clip;  // far clip (shading_dist_mist in M&M6 terms)
     int uNumPolygons = 0;
     unsigned int _unused_uNumEdges = 0;
     unsigned int _unused_uNumSurfs = 0;

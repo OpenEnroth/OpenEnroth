@@ -52,15 +52,7 @@ float Camera3D::GetNearClip() const {
 }
 
 float Camera3D::GetFarClip() const {
-    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-        if (pODMRenderParams) {
-            return pODMRenderParams->far_clip;
-        }
-
-        return (float)0x2000;
-    } else {
-        return 16192.0f;
-    }
+    return 16192.0f;
 }
 
 // ViewTransformAndClipTest
@@ -328,6 +320,8 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
 
     screenCenterX = (double)pViewport->uScreenCenterX;
     screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uScreen_TL_Y;
+
+    aspect = float(game_viewport_width / float(game_viewport_height));
 }
 
 //----- (004374E8) --------------------------------------------------------

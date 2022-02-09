@@ -1930,8 +1930,8 @@ void _set_3d_projection_matrix() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    // ogl uses fov in Y
-    gluPerspective(pCamera3D->fov_y_deg, double(game_viewport_width/double(game_viewport_height)), near_clip, far_clip);
+    // ogl uses fov in Y - this func has known bug where it misses aspect divsion hence multiplying it to clip distances
+    gluPerspective(pCamera3D->fov_y_deg, double(game_viewport_width/double(game_viewport_height)), near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
 }
 
 void _set_3d_modelview_matrix() {
@@ -1939,15 +1939,14 @@ void _set_3d_modelview_matrix() {
     glLoadIdentity();
     glScalef(-1.0f, 1.0f, -1.0f);
 
-    int camera_x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    int camera_y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    int camera_z = pParty->vPosition.z + pParty->sEyelevel;
+    float camera_x = pCamera3D->vCameraPos.x;
+    float camera_y = pCamera3D->vCameraPos.y;
+    float camera_z = pCamera3D->vCameraPos.z;
 
     gluLookAt(camera_x, camera_y, camera_z,
-
-              camera_x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0f),
-              camera_y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0f),
-              camera_z - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationY / 2048.0f),
+              camera_x - cosf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
+              camera_y - sinf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
+              camera_z - tanf(2.0 * pi_double * (float)-pCamera3D->sRotationY / 2048.0f),
               0, 0, 1);
 }
 
@@ -2044,26 +2043,11 @@ void RenderOpenGL::RenderTerrainD3D() {
     }
 
 
-
-    // tile culling maths
-    int camx = WorldPosToGridCellX(pCamera3D->vCameraPos.x);
-    int camy = WorldPosToGridCellY(pCamera3D->vCameraPos.y);
-    int tilerange = (pCamera3D->GetFarClip() / terrain_block_scale) + 3;
-
     float Light_tile_dist;
 
 
     for (int z = Start_Z; z < End_Z; ++z) {
         for (int x = Start_X; x < End_X; ++x) {
-            // tile culling
-            int xdist = camx - x;
-            int zdist = camy - z;
-
-            if (xdist > tilerange || zdist > tilerange) continue;
-
-            int dist = sqrt((xdist) * (xdist) + (zdist) * (zdist));
-            if (dist > tilerange) continue;  // crude distance culling
-
             struct Polygon* pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
             pTilePolygon->flags = 0;
             pTilePolygon->field_32 = 0;
@@ -2098,9 +2082,11 @@ void RenderOpenGL::RenderTerrainD3D() {
             array_73D150[1].u = 0;
             array_73D150[1].v = 1;
 
-            pTilePolygon->uNumVertices = 4;
             // better tile culling
+            pTilePolygon->uNumVertices = 4;
             pCamera3D->CullFaceToCameraFrustum(array_73D150, &pTilePolygon->uNumVertices, array_73D150, 4);
+            pCamera3D->CullByNearClip(&array_73D150[0], &pTilePolygon->uNumVertices);
+            pCamera3D->CullByFarClip(&array_73D150[0], &pTilePolygon->uNumVertices);
             if (!pTilePolygon->uNumVertices) continue;
 
             pTilePolygon->pODMFace = nullptr;
@@ -2889,14 +2875,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
                 glTexCoord2f(billboard->pQuads[j].texcoord.x,
                              billboard->pQuads[j].texcoord.y);
 
-                float oneoz = 1. / (billboard->screen_space_z);
-                float oneon = 1. / (pCamera3D->GetNearClip()+4);
-                float oneof = 1. / pCamera3D->GetFarClip();
+                float oneoz = 1. / billboard->screen_space_z;
+                float oneon = 1. / (pCamera3D->GetNearClip() * pCamera3D->aspect * 2);
+                float oneof = 1. / (pCamera3D->GetFarClip() * pCamera3D->aspect);
 
                 glVertex3f(
                     billboard->pQuads[j].pos.x,
                     billboard->pQuads[j].pos.y,
-                    (oneoz - oneon)/(oneof - oneon) );  // depth is  non linear  proportional to reciprocal of distance
+                    (oneoz - oneon)/(oneof - oneon));  // depth is  non linear  proportional to reciprocal of distance
             }
         }
         drawcalls++;
