@@ -360,6 +360,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (!collision_state.bbox.Intersects(mface.pBoundingBox))
                 continue;
 
+            // TODO: we should really either merge two face classes, or template the functions down the chain call here.
             BLVFace face;
             face.pFacePlane_old = mface.pFacePlaneOLD;
             face.uAttributes = mface.uAttributes;
