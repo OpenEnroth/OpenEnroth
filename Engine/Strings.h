@@ -20,6 +20,17 @@ inline char *RemoveQuotes(char *str) {
     return str;
 }
 
+inline std::string TrimRemoveQuotes(std::string str) {
+    while (str.length() > 0 && (str.at(0) == ' ' || str.at(0) == '"')) {
+        str.erase(0, 1);
+    }
+    while (str.length() > 0 && (str.at(str.length() - 1) == ' ' || str.at(str.length() - 1) == '"')) {
+        str.pop_back();
+    }
+
+    return str;
+}
+
 inline bool iequals(std::string_view a, std::string_view b) {
     return a.size() == b.size() && _strnicmp(a.data(), b.data(), a.size()) == 0;
 }
