@@ -718,10 +718,6 @@ int GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
 int DropTreasureAt(int trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
 
-bool PointInPolyIndoor(int x, int y, int z, struct BLVFace *face);
-bool PointInPolyOutdoor(int a1, int a2, int a3, struct ODMFace *face,
-                struct BSPVertexBuffer *a5);
-
 
 /*  164 */
 #pragma pack(push, 1)

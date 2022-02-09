@@ -4782,10 +4782,10 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
             if (intersect < 0) continue;
 
             // check if point along ray is in portal face
-            if (!PointInPolyIndoor(obj1_x + (rayxnorm * intersect) + 0.5,
-                            obj1_y + (rayynorm * intersect) + 0.5,
-                            obj1_z + (rayznorm * intersect) + 0.5,
-                            portalface)) {
+            Vec3_int_ pos = Vec3_int_(obj1_x + (rayxnorm * intersect) + 0.5,
+                obj1_y + (rayynorm * intersect) + 0.5,
+                obj1_z + (rayznorm * intersect) + 0.5);
+            if (!portalface->Contains(pos, MODEL_INDOOR)) {
                 // not visible through this portal
                 continue;
             }
