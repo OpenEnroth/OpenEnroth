@@ -136,14 +136,6 @@ class Vis {
                             signed int pBModelID);
     bool CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint,
                               signed int sModelID);
-    void BLV_CreateIntersectFacesVertexCoordList(
-        int *a, int *b, int16_t *intersect_face_vertex_coords_list_a,
-        int16_t *intersect_face_vertex_coords_list_b,
-        Vec3_short_ *IntersectPoint, BLVFace *pFace);
-    void ODM_CreateIntersectFacesVertexCoordList(
-        int *a, int *b, int16_t *intersect_face_vertex_coords_list_a,
-        int16_t *intersect_face_vertex_coords_list_b,
-        Vec3_short_ *IntersectPoint, BLVFace *pFace, unsigned int uModelID);
     void CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY,
                      float fPickDepth);
     void sort_object_pointers(Vis_ObjectInfo **pPointers, int start, int end);

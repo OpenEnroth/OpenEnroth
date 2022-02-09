@@ -1214,7 +1214,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->ContainsXY(pIndoor, sX, sY))
+            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break;
@@ -1328,43 +1328,89 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     return;
 }
 
-bool BLVFace::ContainsXY(IndoorLocation *indoor, int x, int y) const {
-    if (this->uNumVertices == 0)
-        return false;
+void BLVFace::Flatten(FlatFace *points, int model_idx, int override_plane) const {
+    int plane = override_plane;
+    if (plane == 0)
+        plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
 
-    if (!this->pBounding.ContainsXY(x, y))
-        return false;
+    auto do_flatten = [&](auto &&vertex_accessor) {
+        if (plane & FACE_XY_PLANE) {
+            for (int i = 0; i < this->uNumVertices; i++) {
+                points->u[i] = vertex_accessor(i).x;
+                points->v[i] = vertex_accessor(i).y;
+            }
+        } else if (plane & FACE_XZ_PLANE) {
+            for (int i = 0; i < this->uNumVertices; i++) {
+                points->u[i] = vertex_accessor(i).x;
+                points->v[i] = vertex_accessor(i).z;
+            }
+        } else {
+            for (int i = 0; i < this->uNumVertices; i++) {
+                points->u[i] = vertex_accessor(i).y;
+                points->v[i] = vertex_accessor(i).z;
+            }
+        }
+    };
 
-    // vert store for point in poly checks
-    std::array<float, 104> vert_x;
-    std::array<float, 104> vert_y;
-
-    for (uint j = 0; j < this->uNumVertices; ++j) {
-        vert_x[2 * j] = this->pXInterceptDisplacements[j] + indoor->pVertices[this->pVertexIDs[j]].x;
-        vert_x[2 * j + 1] = this->pXInterceptDisplacements[j] + indoor->pVertices[this->pVertexIDs[j + 1]].x;
-        vert_y[2 * j] = this->pYInterceptDisplacements[j] + indoor->pVertices[this->pVertexIDs[j]].y;
-        vert_y[2 * j + 1] = this->pYInterceptDisplacements[j] + indoor->pVertices[this->pVertexIDs[j + 1]].y;
+    if (model_idx == MODEL_INDOOR) {
+        do_flatten([&](int index) -> const auto &{
+            return pIndoor->pVertices[this->pVertexIDs[index]];
+        });
+    } else {
+        do_flatten([&](int index) -> const auto &{
+            return pOutdoor->pBModels[model_idx].pVertices.pVertices[this->pVertexIDs[index]];
+        });
     }
-
-    int nvert = (2 * this->uNumVertices);
-    bool inside = false;
-
-    // Check whether we're inside the polygon. This is done by shooting an X-aligned ray and seeing
-    // if we'll get an odd number of intersections. The implementation iterates though all edges, checks
-    // whether an intersection is possible (vertices are placed in different half-planes relative to the ray),
-    // then calculates the intersection point and updates the even/odd state.
-    for (int ti = 0, hj = nvert - 1; ti < nvert; hj = ti++) {
-        if ((vert_y[ti] > y) == (vert_y[hj] > y))
-            continue;
-
-        int edge_x = vert_x[ti] + (vert_x[hj] - vert_x[ti]) * (y - vert_y[ti]) / (vert_y[hj] - vert_y[ti]);
-        if (x < edge_x)
-            inside = !inside;
-    }
-
-    return inside;
 }
 
+bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int override_plane) const {
+    if (this->uNumVertices <= 0)
+        return false;
+
+    int plane = override_plane;
+    if (plane == 0)
+        plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
+
+    FlatFace points;
+    Flatten(&points, model_idx, plane);
+
+    int u;
+    int v;
+    if (plane & FACE_XY_PLANE) {
+        u = pos.x;
+        v = pos.y;
+    } else if (plane & FACE_YZ_PLANE) {
+        u = pos.y;
+        v = pos.z;
+    } else {
+        u = pos.x;
+        v = pos.z;
+    }
+
+    // The polygons we're dealing with are convex, so instead of the usual ray casting algorithm we can simply
+    // check that the point in question lies on the same side relative to all of the polygon's edges.
+    int sign = 0;
+    for (int i = 0; i < this->uNumVertices; i++) {
+        int j = (i + 1) % this->uNumVertices;
+
+        int a_u = points.u[j] - points.u[i];
+        int a_v = points.v[j] - points.v[i];
+        int b_u = u - points.u[i];
+        int b_v = v - points.v[i];
+        int cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
+        if (cross_product == 0)
+            continue;
+
+        int cross_sign = static_cast<int>(cross_product > 0) * 2 - 1;
+
+        if (sign == 0) {
+            sign = cross_sign;
+        } else if (sign != cross_sign) {
+            return false;
+        }
+    }
+    return true;
+}
 
 //----- (0044C23B) --------------------------------------------------------
 bool BLVFaceExtra::HasEventHint() {
@@ -2213,7 +2259,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             break;
 
         BLVFace *pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
-        if (pFloor->Ethereal() || !pFloor->ContainsXY(pIndoor, pos.x, pos.y))
+        if (pFloor->Ethereal() || !pFloor->Contains(pos, MODEL_INDOOR, FACE_XY_PLANE))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -2242,7 +2288,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             if (FacesFound >= 5) break;
 
             BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
-            if (portal->uPolygonType != POLYGON_Floor || !portal->ContainsXY(pIndoor, pos.x, pos.y))
+            if (portal->uPolygonType != POLYGON_Floor || !portal->Contains(pos, MODEL_INDOOR, FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;

@@ -373,6 +373,15 @@ struct BLVMapOutline {  // 0C
 };
 #pragma pack(pop)
 
+struct FlatFace {
+    std::array<int32_t, 104> u;
+    std::array<int32_t, 104> v;
+};
+
+enum {
+    MODEL_INDOOR = -1
+};
+
 /*   93 */
 #pragma pack(push, 1)
 struct BLVFace {  // 60h
@@ -422,12 +431,26 @@ struct BLVFace {  // 60h
     }
 
     /**
-     * @param indoor                    Indoor location that this face belongs to.
-     * @param x                         Point X coordinate.
-     * @param y                         Point Y coordinate.
-     * @return                          Whether the point at (X,Y) lies inside this polygon (if projected on XY plane).
+     * @param points[out]               Coordinate storage. The storage is populated by the coordinates of this
+     *                                  face's vertices projected onto this face's primary plane.
+     * @param model_idx                 Model that this face belongs to, or `MODEL_INDOOR` for faces in indoor
+     *                                  locations.
+     * @param override_plane            Plane override.
+     * @see BLVFace::Contains
      */
-    bool ContainsXY(IndoorLocation *indoor, int x, int y) const;
+    void Flatten(FlatFace *points, int model_idx, int override_plane = 0) const;
+
+    /**
+     * @param pos                       Point to check.
+     * @param model_idx                 Model that this face belongs to, or `MODEL_INDOOR` for faces in indoor
+     *                                  locations.
+     * @param override_plane            Plane override. By default the check is performed in the face's primary plane
+     *                                  that is set in attributes, but this behavior can be overridden by e.g. passing
+     *                                  `FACE_XY_PLANE`.
+     * @return                          Whether the point lies inside this polygon, if projected on the face's
+     *                                  primary plane.
+     */
+    bool Contains(const Vec3_int_ &pos, int model_idx, int override_plane = 0) const;
 
     struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
