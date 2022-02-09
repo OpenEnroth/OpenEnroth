@@ -172,6 +172,9 @@ static bool CollidePointIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, cons
  */
 template<class FacePointAccessor>
 static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, const FacePointAccessor& face_points) {
+    if (face->uNumVertices <= 0)
+        return false;
+
     std::array<int16_t, 104> edges_u;
     std::array<int16_t, 104> edges_v;
 
@@ -181,65 +184,48 @@ static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, 
         u = point.x;
         v = point.y;
         for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
-            edges_v[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
-            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
+            edges_u[i] = face_points(i).x;
+            edges_v[i] = face_points(i).y;
         }
     } else if (face->uAttributes & FACE_XZ_PLANE) {
         u = point.x;
         v = point.z;
         for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
+            edges_u[i] = face_points(i).x;
+            edges_v[i] = face_points(i).z;
         }
     } else {
         u = point.y;
         v = point.z;
         for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
-            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
+            edges_u[i] = face_points(i).y;
+            edges_v[i] = face_points(i).z;
         }
     }
-    edges_u[2 * face->uNumVertices] = edges_u[0];
-    edges_v[2 * face->uNumVertices] = edges_v[0];
 
-    if (2 * face->uNumVertices <= 0)
-        return 0;
+    // The polygons we're dealing with are convex, so instead of the usual ray casting algorithm we can simply
+    // check that the point in question lies on the same side relative to all of the polygon's edges.
+    int sign = 0;
+    for (int i = 0; i < face->uNumVertices; i++) {
+        int j = (i + 1) % face->uNumVertices;
 
-    int counter = 0;
-    for (int i = 0; i < 2 * face->uNumVertices; ++i) {
-        if (counter >= 2)
-            break;
-
-        // Check that we're inside the bounding band in v coordinate
-        if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
+        int a_u = edges_u[j] - edges_u[i];
+        int a_v = edges_v[j] - edges_v[i];
+        int b_u = u - edges_u[i];
+        int b_v = v - edges_v[i];
+        int cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
+        if (cross_product == 0)
             continue;
 
-        // If we're to the left then we surely have an intersection
-        if ((edges_u[i] >= u) && (edges_u[i + 1] >= u)) {
-            ++counter;
-            continue;
+        int cross_sign = static_cast<int>(cross_product > 0) * 2 - 1;
+
+        if (sign == 0) {
+            sign = cross_sign;
+        } else if (sign != cross_sign) {
+            return false;
         }
-
-        // We're not to the left? Then we must be inside the bounding band in u coordinate
-        if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
-            continue;
-
-        // Calculate the intersection point of v=const line with the edge.
-        int line_intersection_u = edges_u[i] +
-            static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
-
-        // We need ray intersections, so consider only one halfplane.
-        if (line_intersection_u >= u)
-            ++counter;
     }
-
-    return counter == 1;
+    return true;
 }
 
 /**
