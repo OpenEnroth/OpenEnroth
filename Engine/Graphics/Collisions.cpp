@@ -153,10 +153,6 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3
     return true;
 }
 
-static bool CollidePointIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *move_distance) {
-    return CollidePointWithFace(face, pos, dir, move_distance, MODEL_INDOOR);
-}
-
 /**
  * Helper function that performs several collision checks between both the "feet" and the "head" spheres of the
  * collision state, and the provided face.
@@ -422,7 +418,8 @@ bool CollideIndoorWithPortals() {
         int move_distance = collision_state.move_distance;
         if ((distance_lo_old < collision_state.radius_lo || distance_lo_new < collision_state.radius_lo) &&
             (distance_lo_old > -collision_state.radius_lo || distance_lo_new > -collision_state.radius_lo) &&
-            CollidePointIndoorWithFace(face, collision_state.position_lo, collision_state.direction, &move_distance) &&
+            CollidePointWithFace(face, collision_state.position_lo, collision_state.direction, &move_distance,
+                MODEL_INDOOR) &&
             move_distance < min_move_distance) {
             min_move_distance = move_distance;
             portal_id = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
