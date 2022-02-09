@@ -119,7 +119,8 @@ void LoadGame(unsigned int uSlot) {
                     }
                     LloydBeacon &beacon = player->vBeacons[j];
                     std::string str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
-                    beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
+                    //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
+                    beacon.image = render->CreateTexture_PCXFromLOD(pNew_LOD, str);
                     beacon.image->GetWidth();
                 }
             }
@@ -376,6 +377,8 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             Image *image = beacon->image;
             if ((beacon->uBeaconTime != 0) && (image != nullptr)) {
                 const void *pixels = image->GetPixels(IMAGE_FORMAT_R5G6B5);
+                if (!pixels)
+                    __debugbreak();
                 unsigned int pcx_data_size = 30000;
                 void *pcx_data = malloc(pcx_data_size);
                 PCX::Encode16(pixels, image->GetWidth(), image->GetHeight(),

@@ -310,7 +310,25 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                         nullptr,                   // IMAGE_FORMAT_R8G8B8
                         Image_A8R8G8B8_to_R8G8B8A8,       // IMAGE_FORMAT_R8G8B8A8
                     },
-                };
+
+                    // IMAGE_FORMAT_R8G8B8 ->
+                    {
+                        nullptr,                   // IMAGE_FORMAT_R5G6B5
+                        nullptr,                   // IMAGE_FORMAT_A1R5G5B5
+                        nullptr,                   // IMAGE_FORMAT_A8R8G8B8
+                        nullptr,                   // IMAGE_FORMAT_R8G8B8
+                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
+                    },
+
+                    // IMAGE_FORMAT_R8G8B8A8 ->
+                    {
+                        Image_R8G8B8A8_to_R5G6B5,  // IMAGE_FORMAT_R5G6B5
+                        nullptr,                   // IMAGE_FORMAT_A1R5G5B5
+                        nullptr,                   // IMAGE_FORMAT_A8R8G8B8
+                        nullptr,                   // IMAGE_FORMAT_R8G8B8
+                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
+                    },
+            };
 
             ImageFormatConverter cvt = converters[this->native_format][format];
             if (cvt) {
