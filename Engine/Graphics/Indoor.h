@@ -793,6 +793,4 @@ int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, un
 
 bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3_int_ from);
 
-void InitZCalc(const Plane_int_ &plane, PlaneZCalc_int64_ *zCalc);
-
 extern struct BspRenderer* pBspRenderer;

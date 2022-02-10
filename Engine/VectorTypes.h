@@ -245,11 +245,21 @@ struct Plane_float_ {
  * Coefficients are stored in fixpoint format.
  */
 struct PlaneZCalc_int64_ {
-    int64_t a;
-    int64_t b;
-    int64_t c;
+    int64_t a = 0;
+    int64_t b = 0;
+    int64_t c = 0;
 
     int Calculate(int x, int y) const {
         return (a * x + b * y + c + 0x8000) >> 16;
+    }
+
+    void Init(const Plane_int_ &plane) {
+        if (plane.vNormal.z == 0) {
+            this->a = this->b = this->c = 0;
+        } else {
+            this->a = -fixpoint_div(plane.vNormal.x, plane.vNormal.z);
+            this->b = -fixpoint_div(plane.vNormal.y, plane.vNormal.z);
+            this->c = -fixpoint_div(plane.dist, plane.vNormal.z);
+        }
     }
 };

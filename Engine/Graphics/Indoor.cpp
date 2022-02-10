@@ -72,7 +72,7 @@ std::array<const char *, 11> _4E6BDC_loc_names = {
 bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     memcpy(&this->pFacePlane, &data->pFacePlane, sizeof(this->pFacePlane));
     memcpy(&this->pFacePlane_old, &data->pFacePlane_old, sizeof(this->pFacePlane_old));
-    InitZCalc(this->pFacePlane_old, &this->zCalc);
+    this->zCalc.Init(this->pFacePlane_old);
     this->uAttributes = data->uAttributes;
     this->pVertexIDs = (uint16_t *)data->pVertexIDs;
     this->pXInterceptDisplacements = (int16_t *)data->pXInterceptDisplacements;
@@ -3977,12 +3977,3 @@ int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, un
     return result; // Return the last result anyway.
 }
 
-void InitZCalc(const Plane_int_ &plane, PlaneZCalc_int64_ *zCalc) {
-    if (plane.vNormal.z == 0) {
-        zCalc->a = zCalc->b = zCalc->c = 0;
-    } else {
-        zCalc->a = -fixpoint_div(plane.vNormal.x, plane.vNormal.z);
-        zCalc->b = -fixpoint_div(plane.vNormal.y, plane.vNormal.z);
-        zCalc->c = -fixpoint_div(plane.dist, plane.vNormal.z);
-    }
-}
