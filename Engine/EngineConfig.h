@@ -112,6 +112,10 @@ class EngineConfig {
     /** Maximum depth for item pickup / opening chests / activating levers / etc with a keyboard (by pressing space). */
     float keyboard_interaction_depth = 512.0f;
 
+    /** Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level. This is needed because
+     * there are actual holes in level geometry sometimes, up to several units wide. */
+    int floor_checks_eps = 3;
+
     bool no_intro = false;
     bool no_logo = false;
 

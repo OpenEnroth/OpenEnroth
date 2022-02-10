@@ -1214,7 +1214,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, 3, FACE_XY_PLANE))
+            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break;
@@ -2267,7 +2267,10 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             break;
 
         BLVFace *pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
-        if (pFloor->Ethereal() || !pFloor->Contains(pos, MODEL_INDOOR, 3, FACE_XY_PLANE))
+        if (pFloor->Ethereal())
+            continue;
+
+        if (!pFloor->Contains(pos, MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -2296,7 +2299,10 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             if (FacesFound >= 5) break;
 
             BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
-            if (portal->uPolygonType != POLYGON_Floor || !portal->Contains(pos, MODEL_INDOOR, 3, FACE_XY_PLANE))
+            if (portal->uPolygonType != POLYGON_Floor)
+                continue;
+
+            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;
