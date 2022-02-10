@@ -10,8 +10,13 @@ uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 template<class From, class To>
 struct vector_conversion_allowed : std::false_type {};
 
+// Allow widening vector conversions.
 template<>
-struct vector_conversion_allowed<int16_t, int32_t> : std::true_type {}; // Allow Vec3_short_ -> Vec3_int_ conversions.
+struct vector_conversion_allowed<int16_t, int32_t> : std::true_type {};
+template<>
+struct vector_conversion_allowed<int16_t, int64_t> : std::true_type {};
+template<>
+struct vector_conversion_allowed<int32_t, int64_t> : std::true_type {};
 
 #pragma pack(push, 1)
 template <class T>
@@ -79,11 +84,28 @@ struct Vec3 : public Vec2<T> {
     friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
         return Vec3(l.x + r.x, l.y + r.y, l.z + r.z);
     }
+
+    friend Vec3 operator-(const Vec3 &l, const Vec3 &r) {
+        return Vec3(l.x - r.x, l.y - r.y, l.z - r.z);
+    }
+
+    friend Vec3 operator/(const Vec3 &l, T r) {
+        return Vec3(l.x / r, l.y / r, l.z / r);
+    }
+
+    friend Vec3 Cross(const Vec3 &l, const Vec3 &r) {
+        return Vec3(l.y * r.z - l.z * r.y, l.z * r.x - l.x * r.z, l.x * r.y - l.y * r.x);
+    }
+
+    friend T Dot(const Vec3 &l, const Vec3 &r) {
+        return l.x * r.x + l.y * r.y + l.z * r.z;
+    }
 };
 #pragma pack(pop)
 
 using Vec3_short_ = Vec3<int16_t>;
 using Vec3_int_ = Vec3<int32_t>;
+using Vec3_int64_ = Vec3<int64_t>;
 
 #pragma pack(push, 1)
 struct Vec3_float_ {
