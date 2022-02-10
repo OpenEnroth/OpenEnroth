@@ -1214,7 +1214,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, FACE_XY_PLANE))
+            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, 3, FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break;
@@ -1363,7 +1363,7 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, int override_plane) const
     }
 }
 
-bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int override_plane) const {
+bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, int override_plane) const {
     if (this->uNumVertices <= 0)
         return false;
 
@@ -1400,6 +1400,14 @@ bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int override_plane) 
         int cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
         if (cross_product == 0)
             continue;
+
+        if (slack > 0) {
+            // distance(point, line) = (a x b) / |a|,
+            // so the condition below just checks that distance is less than slack.
+            int64_t a_len_sqr = a_u * a_u + a_v * a_v;
+            if (static_cast<int64_t>(cross_product) * cross_product < a_len_sqr * slack * slack)
+                continue;
+        }
 
         int cross_sign = static_cast<int>(cross_product > 0) * 2 - 1;
 
@@ -2259,7 +2267,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             break;
 
         BLVFace *pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
-        if (pFloor->Ethereal() || !pFloor->Contains(pos, MODEL_INDOOR, FACE_XY_PLANE))
+        if (pFloor->Ethereal() || !pFloor->Contains(pos, MODEL_INDOOR, 3, FACE_XY_PLANE))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -2288,7 +2296,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             if (FacesFound >= 5) break;
 
             BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
-            if (portal->uPolygonType != POLYGON_Floor || !portal->Contains(pos, MODEL_INDOOR, FACE_XY_PLANE))
+            if (portal->uPolygonType != POLYGON_Floor || !portal->Contains(pos, MODEL_INDOOR, 3, FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;

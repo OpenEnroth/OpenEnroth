@@ -444,13 +444,15 @@ struct BLVFace {  // 60h
      * @param pos                       Point to check.
      * @param model_idx                 Model that this face belongs to, or `MODEL_INDOOR` for faces in indoor
      *                                  locations.
+     * @param slack                     If a point is at most `slack` units away from the edge, it'll still be
+     *                                  considered to be lying on the edge.
      * @param override_plane            Plane override. By default the check is performed in the face's primary plane
      *                                  that is set in attributes, but this behavior can be overridden by e.g. passing
      *                                  `FACE_XY_PLANE`.
      * @return                          Whether the point lies inside this polygon, if projected on the face's
      *                                  primary plane.
      */
-    bool Contains(const Vec3_int_ &pos, int model_idx, int override_plane = 0) const;
+    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, int override_plane = 0) const;
 
     struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
