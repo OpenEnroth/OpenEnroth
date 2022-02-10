@@ -17,12 +17,12 @@ struct ODMFace_MM7 {
     int zCalc2;
     int zCalc3;
     unsigned int uAttributes;
-    uint16_t pVertexIDs[20];
-    uint16_t pTextureUIDs[20];
-    uint16_t pTextureVIDs[20];
-    int16_t pXInterceptDisplacements[20];
-    int16_t pYInterceptDisplacements[20];
-    int16_t pZInterceptDisplacements[20];
+    std::array<uint16_t, 20> pVertexIDs;
+    std::array<int16_t, 20> pTextureUIDs;
+    std::array<int16_t, 20> pTextureVIDs;
+    std::array<int16_t, 20> pXInterceptDisplacements;
+    std::array<int16_t, 20> pYInterceptDisplacements;
+    std::array<int16_t, 20> pZInterceptDisplacements;
     int16_t uTextureID;
     int16_t sTextureDeltaU;
     int16_t sTextureDeltaV;
@@ -180,19 +180,16 @@ bool ODMFace::Deserialize(ODMFace_MM7 *mm7) {
 
     this->zCalc.Init(this->pFacePlaneOLD);
     this->uAttributes = mm7->uAttributes;
-    memcpy(this->pVertexIDs, mm7->pVertexIDs, sizeof(this->pVertexIDs));
-    memcpy(this->pTextureUIDs, mm7->pTextureUIDs, sizeof(this->pTextureUIDs));
-    memcpy(this->pTextureVIDs, mm7->pTextureVIDs, sizeof(this->pTextureVIDs));
-    memcpy(this->pXInterceptDisplacements, mm7->pXInterceptDisplacements,
-           sizeof(this->pXInterceptDisplacements));
-    memcpy(this->pYInterceptDisplacements, mm7->pYInterceptDisplacements,
-           sizeof(this->pYInterceptDisplacements));
-    memcpy(this->pZInterceptDisplacements, mm7->pZInterceptDisplacements,
-           sizeof(this->pZInterceptDisplacements));
+    this->pVertexIDs = mm7->pVertexIDs;
+    this->pTextureUIDs = mm7->pTextureUIDs;
+    this->pTextureVIDs = mm7->pTextureVIDs;
+    this->pXInterceptDisplacements = mm7->pXInterceptDisplacements;
+    this->pYInterceptDisplacements = mm7->pYInterceptDisplacements;
+    this->pZInterceptDisplacements = mm7->pZInterceptDisplacements;
     this->resource = nullptr;
     this->sTextureDeltaU = mm7->sTextureDeltaU;
     this->sTextureDeltaV = mm7->sTextureDeltaV;
-    memcpy(&this->pBoundingBox, &mm7->pBoundingBox, sizeof(this->pBoundingBox));
+    this->pBoundingBox = mm7->pBoundingBox;
     this->sCogNumber = mm7->sCogNumber;
     this->sCogTriggeredID = mm7->sCogTriggeredID;
     this->sCogTriggerType = mm7->sCogTriggerType;
@@ -239,6 +236,6 @@ bool ODMFace::Contains(const Vec3_int_ &pos, int model_idx, int override_plane) 
     BLVFace face;
     face.uAttributes = this->uAttributes;
     face.uNumVertices = this->uNumVertices;
-    face.pVertexIDs = const_cast<uint16_t *>(this->pVertexIDs);
+    face.pVertexIDs = const_cast<uint16_t *>(this->pVertexIDs.data());
     return face.Contains(pos, model_idx, override_plane);
 }

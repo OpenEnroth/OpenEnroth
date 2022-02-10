@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <vector>
 #include <string>
 
@@ -141,12 +142,12 @@ struct ODMFace {
     struct Plane_int_ pFacePlaneOLD;
     PlaneZCalc_int64_ zCalc;
     uint32_t uAttributes = 0;
-    uint16_t pVertexIDs[20] {};
-    int16_t pTextureUIDs[20] {};
-    int16_t pTextureVIDs[20] {};
-    int16_t pXInterceptDisplacements[20] {};
-    int16_t pYInterceptDisplacements[20] {};
-    int16_t pZInterceptDisplacements[20] {};
+    std::array<uint16_t, 20> pVertexIDs = {{}};
+    std::array<int16_t, 20> pTextureUIDs = {{}};
+    std::array<int16_t, 20> pTextureVIDs = {{}};
+    std::array<int16_t, 20> pXInterceptDisplacements = {{}};
+    std::array<int16_t, 20> pYInterceptDisplacements = {{}};
+    std::array<int16_t, 20> pZInterceptDisplacements = {{}};
     void *resource = nullptr;  // __int16 uTextureID;
     std::string resourcename;
 
