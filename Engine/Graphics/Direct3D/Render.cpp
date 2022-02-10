@@ -346,20 +346,16 @@ void Render::RenderTerrainD3D() {  // New function
             // array_73D150[3].v = 1;
 
             // verts CCW - for testing
-            memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
-                sizeof(RenderVertexSoft));  // x, z
+            array_73D150[0] = pTerrainVertices[z * 128 + x];  // x, z
             array_73D150[0].u = 0;
             array_73D150[0].v = 0;
-            memcpy(&array_73D150[3], &pTerrainVertices[z * 128 + x + 1],
-                sizeof(RenderVertexSoft));  // x + 1, z
+            array_73D150[3] = pTerrainVertices[z * 128 + x + 1];  // x + 1, z
             array_73D150[3].u = 1;
             array_73D150[3].v = 0;
-            memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x + 1],
-                sizeof(RenderVertexSoft));  // x + 1, z + 1
+            array_73D150[2] = pTerrainVertices[(z + 1) * 128 + x + 1];  // x + 1, z + 1
             array_73D150[2].u = 1;
             array_73D150[2].v = 1;
-            memcpy(&array_73D150[1], &pTerrainVertices[(z + 1) * 128 + x],
-                sizeof(RenderVertexSoft));  // x, z + 1
+            array_73D150[1] = pTerrainVertices[(z + 1) * 128 + x];  // x, z + 1
             array_73D150[1].u = 0;
             array_73D150[1].v = 1;
 
@@ -390,7 +386,7 @@ void Render::RenderTerrainD3D() {  // New function
             pTilePolygon->uBModelFaceID = 0;
             pTilePolygon->pid = (8 * (0 | (0 << 6))) | 6;
             for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
-                memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                VertexRenderList[k] = array_73D150[k];
                 VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
             }
 
@@ -425,25 +421,21 @@ void Render::RenderTerrainD3D() {  // New function
                 ///////////// triangle 1 - 1 2 3
 
                 // verts CCW - for testing
-                memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
-                    sizeof(RenderVertexSoft));  // x, z
+                array_73D150[0] = pTerrainVertices[z * 128 + x];  // x, z
                 array_73D150[0].u = 0;
                 array_73D150[0].v = 0;
-                memcpy(&array_73D150[2], &pTerrainVertices[z * 128 + x + 1],
-                    sizeof(RenderVertexSoft));  // x + 1, z
+                array_73D150[2] = pTerrainVertices[z * 128 + x + 1];  // x + 1, z
                 array_73D150[2].u = 1;
                 array_73D150[2].v = 0;
-                memcpy(&array_73D150[1], &pTerrainVertices[(z + 1) * 128 + x + 1],
-                    sizeof(RenderVertexSoft));  // x + 1, z + 1
+                array_73D150[1] = pTerrainVertices[(z + 1) * 128 + x + 1];  // x + 1, z + 1
                 array_73D150[1].u = 1;
                 array_73D150[1].v = 1;
-                // memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x],
-                //    sizeof(RenderVertexSoft));  // x, z + 1
+                // array_73D150[2] = pTerrainVertices[(z + 1) * 128 + x]  // x, z + 1
                 // array_73D150[2].u = 0;
                 // array_73D150[2].v = 1;
 
                 for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
-                    memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                    VertexRenderList[k] = array_73D150[k];
                     VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                 }
 
@@ -521,25 +513,21 @@ void Render::RenderTerrainD3D() {  // New function
                 ///////////// triangle 2  0 1 3
                 {
                     // verts CCW - for testing
-                    memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
-                        sizeof(RenderVertexSoft));  // x, z
+                    array_73D150[0] = pTerrainVertices[z * 128 + x];  // x, z
                     array_73D150[0].u = 0;
                     array_73D150[0].v = 0;
-                    // memcpy(&array_73D150[2], &pTerrainVertices[z * 128 + x + 1],
-                    //    sizeof(RenderVertexSoft));  // x + 1, z
+                    // array_73D150[2] = pTerrainVertices[z * 128 + x + 1]  // x + 1, z
                     // array_73D150[2].u = 1;
                     // array_73D150[2].v = 0;
-                    memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x + 1],
-                        sizeof(RenderVertexSoft));  // x + 1, z + 1
+                    array_73D150[2] = pTerrainVertices[(z + 1) * 128 + x + 1];  // x + 1, z + 1
                     array_73D150[2].u = 1;
                     array_73D150[2].v = 1;
-                    memcpy(&array_73D150[1], &pTerrainVertices[(z + 1) * 128 + x],
-                        sizeof(RenderVertexSoft));  // x, z + 1
+                    array_73D150[1] = pTerrainVertices[(z + 1) * 128 + x];  // x, z + 1
                     array_73D150[1].u = 0;
                     array_73D150[1].v = 1;
 
                     for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
-                        memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                        VertexRenderList[k] = array_73D150[k];
                         VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                     }
 
@@ -693,8 +681,7 @@ void Render::RenderTerrainD3D() {  // New function
 }
 
 void Render::DrawBorderTiles(struct Polygon *poly) {
-    struct Polygon poly_clone;
-    memcpy(&poly_clone, poly, sizeof(poly_clone));
+    struct Polygon poly_clone = *poly;
     poly_clone.texture = this->hd_water_tile_anim[this->hd_water_current_frame];
 
     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
@@ -3433,9 +3420,7 @@ void Render::DrawBuildingsD3D() {
                 poly->pid = PID(OBJECT_BModel, (face.index | (model.index << 6)));
                 for (int vertex_id = 0; vertex_id < face.uNumVertices;
                      ++vertex_id) {
-                    memcpy(&VertexRenderList[vertex_id],
-                           &array_73D150[vertex_id],
-                           sizeof(VertexRenderList[vertex_id]));
+                    VertexRenderList[vertex_id] = array_73D150[vertex_id];
                     VertexRenderList[vertex_id]._rhw =
                         1.0 / (array_73D150[vertex_id].vWorldViewPosition.x +
                                0.0000001);
@@ -3678,9 +3663,8 @@ void Render::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                     const RenderVertexD3D3 *pLineEnd,
                                     signed int sDiffuseEnd, float z_stuff) {
     RenderVertexD3D3 vertices[2];  // [sp+8h] [bp-40h]@2
-
-    memcpy(&vertices[0], pLineBegin, sizeof(vertices[0]));
-    memcpy(&vertices[1], pLineEnd, sizeof(vertices[1]));
+    vertices[0] = *pLineBegin;
+    vertices[1] = *pLineEnd;
 
     vertices[0].pos.z = 0.001 - z_stuff;
     vertices[1].pos.z = 0.001 - z_stuff;
@@ -4304,7 +4288,7 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
         uint i = 0;
         for (v78 = pSkyPolygon.uNumVertices; v78; --v78) {
             ++HEXRAYS_LODWORD(v73);
-            memcpy(&VertexRenderList[i], &array_507D30[i], sizeof(RenderVertexSoft));
+            VertexRenderList[i] = array_507D30[i];
             HEXRAYS_LODWORD(v76) += 48;
             if (v28 <= array_507D30[i].vWorldViewProjY ||
                 v28 >= array_507D30[i + 1].vWorldViewProjY) {
@@ -4441,7 +4425,7 @@ LABEL_40:
             --HEXRAYS_HIDWORD(v69)) {
             if (v48 >= VertexRenderList[i].vWorldViewProjY) {
                 ++i;
-                memcpy(&array_507D30[i], &VertexRenderList[i], sizeof(RenderVertexSoft));
+                array_507D30[i] = VertexRenderList[i];
             }
         }
     }
@@ -4453,7 +4437,7 @@ LABEL_40:
         for (v80 = v73; v80 != 0.0; --HEXRAYS_LODWORD(v80)) {
             if (v51 <= VertexRenderList[pNumVertices].vWorldViewProjY) {
                 ++pNumVertices;
-                memcpy(&array_507D30[pNumVertices], &VertexRenderList[pNumVertices], sizeof(RenderVertexSoft));
+                array_507D30[pNumVertices] = VertexRenderList[pNumVertices];
             }
         }
     }
