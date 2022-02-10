@@ -237,3 +237,19 @@ struct Plane_float_ {
     float dist;
 };
 #pragma pack(pop)
+
+/**
+ * Helper structure for calculating Z-coordinate of a point on a plane given x and y, basically a storage for
+ * coefficients in `z = ax + by + c` equation.
+ *
+ * Coefficients are stored in fixpoint format.
+ */
+struct PlaneZCalc_int64_ {
+    int64_t a;
+    int64_t b;
+    int64_t c;
+
+    int Calculate(int x, int y) const {
+        return (a * x + b * y + c + 0x8000) >> 16;
+    }
+};

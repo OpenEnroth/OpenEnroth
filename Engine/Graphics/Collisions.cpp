@@ -365,9 +365,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             face.pFacePlane_old = mface.pFacePlaneOLD;
             face.uAttributes = mface.uAttributes;
             face.pBounding = mface.pBoundingBox;
-            face.zCalc1 = mface.zCalc1;
-            face.zCalc2 = mface.zCalc2;
-            face.zCalc3 = mface.zCalc3;
+            face.zCalc = mface.zCalc;
             face.uPolygonType = (PolygonType)mface.uPolygonType;
             face.uNumVertices = mface.uNumVertices;
             face.resource = mface.resource;

@@ -178,9 +178,7 @@ bool ODMFace::Deserialize(ODMFace_MM7 *mm7) {
     this->pFacePlane.vNormal.z = this->pFacePlaneOLD.vNormal.z / 65536.0;
     this->pFacePlane.dist = this->pFacePlaneOLD.dist / 65536.0;
 
-    this->zCalc1 = mm7->zCalc1;
-    this->zCalc2 = mm7->zCalc2;
-    this->zCalc3 = mm7->zCalc3;
+    InitZCalc(this->pFacePlaneOLD, &this->zCalc);
     this->uAttributes = mm7->uAttributes;
     memcpy(this->pVertexIDs, mm7->pVertexIDs, sizeof(this->pVertexIDs));
     memcpy(this->pTextureUIDs, mm7->pTextureUIDs, sizeof(this->pTextureUIDs));

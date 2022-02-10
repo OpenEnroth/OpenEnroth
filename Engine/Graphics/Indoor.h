@@ -456,9 +456,7 @@ struct BLVFace {  // 60h
 
     struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
-    int zCalc1;  // fixpoint a
-    int zCalc2;  // fixpoint b
-    int zCalc3;  // fixpoint c, plane = a*x + b*y + c.
+    PlaneZCalc_int64_ zCalc;
     unsigned int uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
@@ -794,5 +792,7 @@ int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int 
 int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 
 bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3_int_ from);
+
+void InitZCalc(const Plane_int_ &plane, PlaneZCalc_int64_ *zCalc);
 
 extern struct BspRenderer* pBspRenderer;

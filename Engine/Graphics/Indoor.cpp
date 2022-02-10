@@ -72,9 +72,7 @@ std::array<const char *, 11> _4E6BDC_loc_names = {
 bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     memcpy(&this->pFacePlane, &data->pFacePlane, sizeof(this->pFacePlane));
     memcpy(&this->pFacePlane_old, &data->pFacePlane_old, sizeof(this->pFacePlane_old));
-    this->zCalc1 = data->zCalc1;
-    this->zCalc2 = data->zCalc2;
-    this->zCalc3 = data->zCalc3;
+    InitZCalc(this->pFacePlane_old, &this->zCalc);
     this->uAttributes = data->uAttributes;
     this->pVertexIDs = (uint16_t *)data->pVertexIDs;
     this->pXInterceptDisplacements = (int16_t *)data->pXInterceptDisplacements;
@@ -426,9 +424,7 @@ void BLVFace::FromODM(ODMFace *face) {
     this->pBounding.x2 = face->pBoundingBox.x2;
     this->pBounding.y2 = face->pBoundingBox.y2;
     this->pBounding.z2 = face->pBoundingBox.z2;
-    this->zCalc1 = face->zCalc1;
-    this->zCalc2 = face->zCalc2;
-    this->zCalc3 = face->zCalc3;
+    this->zCalc = face->zCalc;
     this->pXInterceptDisplacements = face->pXInterceptDisplacements;
     this->pYInterceptDisplacements = face->pYInterceptDisplacements;
     this->pZInterceptDisplacements = face->pZInterceptDisplacements;
@@ -1241,10 +1237,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_Floor)
                 CalcZDist = abs(sZ - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z);
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                CalcZDist = abs(sZ -
-                    ((fixpoint_mul(this->pFaces[FoundFaceStore[s]].zCalc1, (sX << 16)) +
-                      fixpoint_mul(this->pFaces[FoundFaceStore[s]].zCalc2, (sY << 16)) +
-                      this->pFaces[FoundFaceStore[s]].zCalc3 + 0x8000) >> 16));
+                CalcZDist = abs(sZ - this->pFaces[FoundFaceStore[s]].zCalc.Calculate(sX, sY));
             }
 
             // use this face if its smaller than the current min
@@ -1544,7 +1537,7 @@ void BLV_UpdateDoors() {
                         face->pFacePlane_old.vNormal.z);
                 HEXRAYS_LODWORD(v27) = face->pFacePlane_old.dist << 16;
                 HEXRAYS_HIDWORD(v27) = face->pFacePlane_old.dist >> 16;
-                face->zCalc3 = -v27 / face->pFacePlane_old.vNormal.z;
+                face->zCalc.c = -v27 / face->pFacePlane_old.vNormal.z;
             }
             // if ( face->uAttributes & FACE_TexMoveByDoor || render->pRenderD3D
             // )
@@ -2284,8 +2277,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
         if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
             z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
         } else {
-            z_calc = fixpoint_mul(pFloor->zCalc1, pos.x) + fixpoint_mul(pFloor->zCalc2, pos.y) +
-                ((pFloor->zCalc3 + 0x8000) >> 16);
+            z_calc = pFloor->zCalc.Calculate(pos.x, pos.y);
         }
 
         blv_floor_z[FacesFound] = z_calc;
@@ -3985,3 +3977,12 @@ int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, un
     return result; // Return the last result anyway.
 }
 
+void InitZCalc(const Plane_int_ &plane, PlaneZCalc_int64_ *zCalc) {
+    if (plane.vNormal.z == 0) {
+        zCalc->a = zCalc->b = zCalc->c = 0;
+    } else {
+        zCalc->a = -fixpoint_div(plane.vNormal.x, plane.vNormal.z);
+        zCalc->b = -fixpoint_div(plane.vNormal.y, plane.vNormal.z);
+        zCalc->c = -fixpoint_div(plane.dist, plane.vNormal.z);
+    }
+}

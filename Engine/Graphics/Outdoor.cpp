@@ -1902,10 +1902,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
                                         .pVertices[face.pVertexIDs[0]]
                                         .z;
                                 } else {
-                                    int a = fixpoint_mul(face.zCalc1, X);
-                                    int b = fixpoint_mul(face.zCalc2, Y);
-                                    int c = (face.zCalc3 >> 16);
-                                    v24 = a + b + c;
+                                    v24 = face.zCalc.Calculate(X, Y);
                                 }
                                 v25 = v46++;
                                 odm_floor_level[v25] = v24;
@@ -3118,9 +3115,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                             v19 =
                                 model.pVertices.pVertices[face.pVertexIDs[0]].z;
                         else
-                            v19 = fixpoint_mul(face.zCalc1, Party_X) +
-                                  fixpoint_mul(face.zCalc2, Party_Y) +
-                                  (face.zCalc3 >> 16);
+                            v19 = face.zCalc.Calculate(Party_X, Party_Y);
                         v20 = v39++;
                         ceiling_height_level[v20] = v19;
                         dword_720ED0[v20] = model.index;
