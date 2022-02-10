@@ -358,6 +358,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
             pSomeEVT_Events[v4].event_step == curr_seq_num) {
             _evt_raw *_evt = (_evt_raw *)(pSomeEVT + pSomeEVT_Events[v4].uEventOffsetInEVT);
 
+            std::string movieName;
             switch (_evt->_e_type) {
                 case EVENT_CheckSeason:
                     if (!sub_4465DF_check_season(_evt->v5)) {
@@ -1135,6 +1136,42 @@ LABEL_47:
                 case EVENT_Exit:
                     if (v133 == 1) OnMapLeave();
                     return;
+                case EVENT_ShowMovie:
+                    movieName = TrimRemoveQuotes((char *)&_evt->v7);
+                    if (movieName.length() == 0) {
+                        ++curr_seq_num;
+                        break;
+                    }
+                    if (pMediaPlayer->IsMoviePlaying())
+                        pMediaPlayer->Unload();
+
+                    pMediaPlayer->PlayFullscreenMovie(movieName);
+
+                    if (!movieName.compare("arbiter good")) { // change alignment to good
+                        pParty->alignment = PartyAlignment::PartyAlignment_Good;
+                        SetUserInterface(pParty->alignment, true);
+                    } else if (!movieName.compare("arbiter evil")) { // change alignment to evil
+                        pParty->alignment = PartyAlignment::PartyAlignment_Evil;
+                        SetUserInterface(pParty->alignment, true);
+                    } else if (!movieName.compare("pcout01")) { // moving to harmondale from emerald isle
+                        Rest(0x2760u); // 7 days
+                        pParty->RestAndHeal();
+                        pParty->days_played_without_rest = 0;
+                    }
+
+                    // is this block is needed anymore?
+                    if (!_evt->v6 || current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS) {
+                        if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS) {
+                            pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Fullscreen);
+                        }
+
+                        if (current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                            pMediaPlayer->OpenHouseMovie(pAnimatedRooms[uCurrentHouse_Animation].video_name, 1);
+                        }
+                    }
+
+                    ++curr_seq_num;
+                break;
                 default:
                     ++curr_seq_num;
                     break;

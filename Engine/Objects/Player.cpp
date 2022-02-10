@@ -510,6 +510,18 @@ unsigned int Player::GetItemListAtInventoryIndex(int inout_item_cell) {
     return inventory_index;  // returns item list position + 1
 }
 
+unsigned int Player::GetItemMainInventoryIndex(int inout_item_cell) {
+    int cell_idx = inout_item_cell;
+    if (cell_idx > 125 || cell_idx < 0) return 0;
+
+    int inventory_index = this->pInventoryMatrix[cell_idx];
+    if (inventory_index < 0) {  // not pointed to main item cell so redirect
+        cell_idx = (-(inventory_index + 1));
+    }
+
+    return cell_idx;
+}
+
 //----- (004160CA) --------------------------------------------------------
 void Player::ItemsPotionDmgBreak(int enchant_count) {
     int avalible_items = 0;
@@ -7351,8 +7363,7 @@ void Player::OnInventoryLeftClick() {
         if (inventoryYCoord >= 0 && inventoryYCoord < INVETORYSLOTSHEIGHT &&
             inventoryXCoord >= 0 && inventoryXCoord < INVETORYSLOTSWIDTH) {
             if (_50C9A0_IsEnchantingInProgress) {
-                unsigned int enchantedItemPos =
-                    this->GetItemListAtInventoryIndex(invMatrixIndex);
+                unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
                 if (enchantedItemPos) {
                     /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
@@ -7369,8 +7380,7 @@ void Player::OnInventoryLeftClick() {
                     pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
                     pSpellInfo->spell_target_pid = enchantedItemPos;  // - 1;
                     pSpellInfo->field_6 = (-1 - enchantedItemPos);    // check
-                    ptr_50C9A4_ItemToEnchant =
-                        &this->pInventoryItemList[enchantedItemPos - 1];
+                    ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
                     _50C9A0_IsEnchantingInProgress = 0;
 
                     pMessageQueue_50CBD0->Flush();
@@ -7393,30 +7403,25 @@ void Player::OnInventoryLeftClick() {
                 if (!invItemIndex) {
                     return;
                 } else {
-                    memcpy(&pParty->pPickedItem,
-                           &this->pInventoryItemList[invItemIndex - 1],
-                           sizeof(pParty->pPickedItem));
+                    memcpy(&pParty->pPickedItem, &this->pInventoryItemList[invItemIndex - 1], sizeof(pParty->pPickedItem));
                     this->RemoveItemAtInventoryIndex(invMatrixIndex);
                     pickedItemId = pParty->pPickedItem.uItemID;
-                    mouse->SetCursorImage(
-                        pItemsTable->pItems[pickedItemId].pIconName);
+                    mouse->SetCursorImage(pItemsTable->pItems[pickedItemId].pIconName);
                     return;
                 }
             } else {  // hold item
                 if (invItemIndex) {
-                    ItemGen* invItemPtr =
-                        &this->pInventoryItemList[invItemIndex - 1];
+                    ItemGen* invItemPtr = &this->pInventoryItemList[invItemIndex - 1];
                     memcpy(&tmpItem, invItemPtr, sizeof(tmpItem));
-                    this->RemoveItemAtInventoryIndex(invMatrixIndex);
-                    int emptyIndex =
-                        this->AddItem2(invMatrixIndex, &pParty->pPickedItem);
+                    int oldinvMatrixIndex = invMatrixIndex;
+                    invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
+                    this->RemoveItemAtInventoryIndex(oldinvMatrixIndex);
+                    int emptyIndex = this->AddItem2(invMatrixIndex, &pParty->pPickedItem);
 
                     if (!emptyIndex) {
                         emptyIndex = this->AddItem2(-1, &pParty->pPickedItem);
                         if (!emptyIndex) {
-                            this->PutItemArInventoryIndex(tmpItem.uItemID,
-                                                          invItemIndex - 1,
-                                                          invMatrixIndex);
+                            this->PutItemArInventoryIndex(tmpItem.uItemID, invItemIndex - 1, invMatrixIndex);
                             memcpy(invItemPtr, &tmpItem, sizeof(ItemGen));
                             return;
                         }
@@ -7429,8 +7434,7 @@ void Player::OnInventoryLeftClick() {
                     itemPos = this->AddItem(invMatrixIndex, pickedItemId);
 
                     if (itemPos) {
-                        memcpy(&this->pInventoryItemList[itemPos - 1],
-                               &pParty->pPickedItem, sizeof(ItemGen));
+                        memcpy(&this->pInventoryItemList[itemPos - 1], &pParty->pPickedItem, sizeof(ItemGen));
                         mouse->RemoveHoldingItem();
                         return;
                     }
@@ -8250,6 +8254,8 @@ bool Player::SetBeacon(size_t index, size_t power) {
     LloydBeacon beacon;
 
     beacon.image = render->TakeScreenshot(92, 68);
+    IMAGE_FORMAT format = beacon.image->GetFormat();
+    beacon.image = render->CreateTexture_Blank(beacon.image->GetWidth(), beacon.image->GetHeight(), format, beacon.image->GetPixels(format));
     beacon.uBeaconTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(power));
     beacon.PartyPos_X = pParty->vPosition.x;
     beacon.PartyPos_Y = pParty->vPosition.y;
