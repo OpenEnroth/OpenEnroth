@@ -30,7 +30,7 @@ void DecorationList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
     DecorationDesc_mm6 *decors_mm6 = (DecorationDesc_mm6*)((char*)data_mm6 + 4);
     for (size_t i = 0; i < num_mm6_decs; ++i) {
         DecorationDesc decor;
-        memcpy(&decor, &decors_mm6[i], sizeof(DecorationDesc_mm6));
+        static_cast<DecorationDesc_mm6 &>(decor) = decors_mm6[i];
         decor.uColoredLightRed = 255;
         decor.uColoredLightGreen = 255;
         decor.uColoredLightBlue = 255;

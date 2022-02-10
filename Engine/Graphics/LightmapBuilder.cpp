@@ -513,7 +513,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsig
     a9 = FaceVertexList;
     if (a6) {
         for (uint i = 0; i < uNumVertices; ++i)
-            memcpy(&static_69B140[i], FaceVertexList + i, sizeof(RenderVertexSoft));
+            static_69B140[i] = FaceVertexList[i];
 
         if (pCamera3D->CullVertsToPlane(FacePlane, static_69B140, &uNumVertices) == 1) {
             if (!uNumVertices) return false;
