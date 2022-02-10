@@ -87,7 +87,7 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
     virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
                                       RenderBillboard *) override;
-    virtual void _4A4CC9_AddSomeBillboard(struct SpellFX_Billboard *a1, int diffuse) override;
+    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) override;
     virtual void DrawBillboardList_BLV() override;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -109,7 +109,7 @@ class RenderOpenGL : public RenderBase {
                                unsigned int uZ, unsigned int uW) override;
     virtual void ResetUIClipRect() override;
 
-    virtual void DrawTextureNew(float u, float v, class Image *) override;
+    virtual void DrawTextureNew(float u, float v, class Image *, uint32_t colourmask = 0xFFFFFFFF);
     virtual void DrawTextureAlphaNew(float u, float v, class Image *) override;
 
         virtual void DrawTextureCustomHeight(float u, float v, class Image *,
@@ -118,8 +118,6 @@ class RenderOpenGL : public RenderBase {
                                    Image *) override;
     virtual void DrawImage(Image *, const Rect &rect) override;
 
-    virtual void ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture,
-                                int a5) override;
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) override;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t,
                                int start_opacity, int end_opacity) override;

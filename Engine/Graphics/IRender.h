@@ -287,7 +287,7 @@ class IRender {
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() = 0;
     virtual void DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
                                       RenderBillboard *billboard) = 0;
-    virtual void _4A4CC9_AddSomeBillboard(struct SpellFX_Billboard *a1, int diffuse) = 0;
+    virtual void BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) = 0;
     virtual void TransformBillboardsAndSetPalettesODM() = 0;
     virtual void DrawBillboardList_BLV() = 0;
 
@@ -311,13 +311,12 @@ class IRender {
 
     virtual void MaskGameViewport() = 0;
 
-    virtual void DrawTextureNew(float u, float v, Image *) = 0;
+    virtual void DrawTextureNew(float u, float v, Image *img, uint32_t colourmask = 0xFFFFFFFF) = 0;
     virtual void DrawTextureAlphaNew(float u, float v, Image *) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, Image *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, Image *) = 0;
     virtual void DrawImage(Image *, const Rect &rect) = 0;
 
-    virtual void ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture, int a5) = 0;
     virtual void ZDrawTextureAlpha(float u, float v, Image *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, Image *a4, Image *a5, int t, int start_opacity, int end_opacity) = 0;
     virtual void TexturePixelRotateDraw(float u, float v, Image *img, int time) = 0;

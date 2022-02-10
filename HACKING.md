@@ -38,9 +38,9 @@ You will require the following installed on your computer: Git and Visual Studio
 * Run!
 
 Visual studio has a bug with git submodules not syncing between branches.
-When checking out the branch you may need to run the following commands: "git submodule init" then "git submodule update"
+When checking out the branch you may need to run the following command: "git submodule update --init"
 
-Windows users please note this project requires Windows SDK 10.0.20348.0 or higher
+MSVC users please note this project requires Windows SDK 10.0.20348.0 or higher
 
 Still having problems? Try the discord chat [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)
 

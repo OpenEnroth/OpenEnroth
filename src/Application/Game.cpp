@@ -2619,10 +2619,7 @@ void Game::EventLoop() {
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugFarClip:
-                    //if (pODMRenderParams->far_clip == 0x6000)
-                    //    pODMRenderParams->far_clip = 0x2000;
-                    //else
-                    //    pODMRenderParams->far_clip = 0x6000;
+                    engine->ToggleExtendedDrawDistance();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 default:

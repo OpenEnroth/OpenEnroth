@@ -52,7 +52,7 @@ float Camera3D::GetNearClip() const {
 }
 
 float Camera3D::GetFarClip() const {
-    return 16192.0f;
+    return engine->config->extended_draw_distance? (2.5f * 16192.0f) : 16192.0f;
 }
 
 // ViewTransformAndClipTest

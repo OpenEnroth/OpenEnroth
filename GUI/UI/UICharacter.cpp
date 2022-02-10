@@ -1854,7 +1854,7 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
         signed int X_offset = (((signed int)((width - 14) & 0xFFFFFFE0) + 32) - width) / 2;
         signed int Y_offset = (((signed int)((height - 14) & 0xFFFFFFE0) + 32) - height) / 2;
         CharacterUI_DrawItem(uCellX + X_offset, uCellY + Y_offset,
-            &(player->pInventoryItemList[player->pInventoryMatrix[i] - 1]), 0);
+            &(player->pInventoryItemList[player->pInventoryMatrix[i] - 1]), Cover_Strip);
     }
 }
 
@@ -1891,13 +1891,11 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id) {
         if (item->IsBroken())
             render->DrawTransparentRedShade(x / 640.0f, y / 480.0f,
                                             item_texture);
-        else if (!item->IsIdentified())
+        else if (!item->IsIdentified() && (engine->config->show_unidentified_item || id))
             render->DrawTransparentGreenShade(x / 640.0f, y / 480.0f,
                                               item_texture);
         else
             render->DrawTextureAlphaNew(x / 640.0f, y / 480.0f, item_texture);
-
-        render->ZBuffer_Fill_2(x, y, item_texture, id);  // blank functions
     }
 }
 

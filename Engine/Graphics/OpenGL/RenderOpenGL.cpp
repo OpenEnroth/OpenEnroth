@@ -734,7 +734,8 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].texture = pSprite->texture;
 }
 
-void RenderOpenGL::_4A4CC9_AddSomeBillboard(struct SpellFX_Billboard *a1, int diffuse) {
+//----- (004A4CC9) ---------------------------------------
+void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) {
     // fireball / implosion sphere
     //__debugbreak();
 
@@ -768,11 +769,7 @@ void RenderOpenGL::_4A4CC9_AddSomeBillboard(struct SpellFX_Billboard *a1, int di
         float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pCamera3D->GetFarClip());
 
         double v10 = a1->field_104[i].z;
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            v10 *= 1000.f / 16192.f;
-        } else {
-            v10 *= 1000.f / pCamera3D->GetFarClip();
-        }
+        v10 *= 1000.f / pCamera3D->GetFarClip();
 
         pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;
 
@@ -999,13 +996,6 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     while ((err = glGetError()) != GL_NO_ERROR) {
         log->Warning("OpenGL: draw image error: (%u)", err);
     }
-}
-
-
-void RenderOpenGL::ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture,
-                                  int a5) {
-    // __debugbreak();
-    // blank in d3d
 }
 
 
@@ -1237,36 +1227,20 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
 //    __debugbreak();
 //}
 
-inline uint32_t PixelDim(uint32_t pix, int dimming) {
-    return Color32((((pix >> 16) & 0xFF) >> dimming),
-        (((pix >> 8) & 0xFF) >> dimming),
-        ((pix & 0xFF) >> dimming));
-}
+void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, unsigned __int16 mask) {
+    uint col = Color32(255, 255, 255);
 
-void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level,
-                              unsigned __int16 mask) {
-    if (!pTexture) {
-        return;
-    }
-    uint32_t width = pTexture->GetWidth();
-    uint32_t *pixels = (uint32_t *)pTexture->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-    // Image *temp = Image::Create(width, pTexture->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
-    // uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-    int x = window->GetWidth() * u;
-    int y = window->GetHeight() * v;
+    if (mask)
+        col = Color32(mask);
 
-    for (unsigned int dy = 0; dy < pTexture->GetHeight(); ++dy) {
-        for (unsigned int dx = 0; dx < width; ++dx) {
-            if (*pixels & 0xFF000000) {
-                if ((x + dx) < window->GetWidth() && (y + dy) < window->GetHeight()) {
-                    render_target_rgb[x + dx + window->GetWidth() * (y + dy)] = PixelDim(*pixels, color_dimming_level) & Color32(mask);
-                }
-            }
-            ++pixels;
-        }
-    }
-    // render->DrawTextureAlphaNew(u, v, temp);
-    // temp->Release();;
+    float r = ((col >> 16) & 0xFF) & (0xFF>> color_dimming_level);
+    float g = ((col >> 8) & 0xFF) & (0xFF >> color_dimming_level);
+    float b = ((col) & 0xFF) & (0xFF >> color_dimming_level);
+
+    col = Color32(r, g, b);
+
+    DrawTextureNew(u, v, pTexture, col);
+    return;
 }
 
 
@@ -1290,21 +1264,22 @@ bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
 unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
     GLubyte* sPixels = new GLubyte[3 * window->GetWidth() * window->GetHeight()];
 
+    BeginSceneD3D();
+
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         pIndoor->Draw();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         pOutdoor->Draw();
     }
 
-    if (uCurrentlyLoadedLevelType != LEVEL_null)
-        DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+    DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
     glReadPixels(0, 0, window->GetWidth(), window->GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, sPixels);
 
     uint16_t *for_pixels;  // ebx@1
 
-    float interval_x = game_viewport_width / (double)width;
-    float interval_y = game_viewport_height / (double)height;
+    int interval_x = game_viewport_width / (double)width;
+    int interval_y = game_viewport_height / (double)height;
 
     uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * height * width);
     memset(pPixels, 0, sizeof(uint16_t) * height * width);
@@ -1931,7 +1906,7 @@ void _set_3d_projection_matrix() {
     glLoadIdentity();
 
     // ogl uses fov in Y - this func has known bug where it misses aspect divsion hence multiplying it to clip distances
-    gluPerspective(pCamera3D->fov_y_deg, double(game_viewport_width/double(game_viewport_height)), near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
+    gluPerspective(pCamera3D->fov_y_deg, pCamera3D->aspect, near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
 }
 
 void _set_3d_modelview_matrix() {
@@ -2990,7 +2965,7 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
     return;
 }
 
-void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
+void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
     if (!tex) __debugbreak();
 
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(tex);
@@ -2999,8 +2974,12 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
         return;
     }
 
+    float r = ((colourmask >> 16) & 0xFF) / 255.0f;
+    float g = ((colourmask >> 8) & 0xFF) / 255.0f;
+    float b = ((colourmask >> 0) & 0xFF) / 255.0f;
+
     glEnable(GL_TEXTURE_2D);
-    glColor3f(1, 1, 1);
+    glColor3f(r, g, b);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
