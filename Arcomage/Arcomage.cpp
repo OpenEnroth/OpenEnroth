@@ -570,13 +570,12 @@ void ArcomageGame::PlaySound(unsigned int event_id) {
 }
 
 bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
-    void *v2 = a2;
     pArcomageGame->field_0 = 0;
     pArcomageGame->stru1.am_input_type = 0;
 
     window->HandleSingleEvent();
 
-    memcpy(v2, &pArcomageGame->stru1, 0xCu);
+    *a2 = pArcomageGame->stru1;
     return pArcomageGame->stru1.am_input_type != 0;
 }
 
