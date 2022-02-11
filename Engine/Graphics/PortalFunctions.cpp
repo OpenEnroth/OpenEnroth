@@ -128,69 +128,38 @@ void stru10::_49CE9E(BLVFace *pFace, RenderVertexSoft *pVertices,
 
 //----- (0049D379) --------------------------------------------------------
 void stru10::CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
-    struct {
-        float x;
-        float y;
-        int c;
-    } v46[40]{};  // [sp+0C];
+    FlatFace points;
+    pFace->Flatten(&points, MODEL_INDOOR);
 
-    if (pFace->uAttributes & FACE_XY_PLANE) {
-        for (uint i = 0; i < pFace->uNumVertices; ++i) {
-            v46[i].x = pIndoor->pVertices[pFace->pVertexIDs[i]].x +
-                       pFace->pXInterceptDisplacements[i];
-            v46[i].y = pIndoor->pVertices[pFace->pVertexIDs[i]].y +
-                       pFace->pYInterceptDisplacements[i];
-            v46[i].c = i;
-        }
-    }
-    if (pFace->uAttributes & FACE_XZ_PLANE) {
-        for (uint i = 0; i < pFace->uNumVertices; ++i) {
-            v46[i].x = pIndoor->pVertices[pFace->pVertexIDs[i]].x +
-                       pFace->pXInterceptDisplacements[i];
-            v46[i].y = pIndoor->pVertices[pFace->pVertexIDs[i]].z +
-                       pFace->pZInterceptDisplacements[i];
-            v46[i].c = i;
-        }
-    }
-    if (pFace->uAttributes & FACE_YZ_PLANE) {
-        for (uint i = 0; i < pFace->uNumVertices; ++i) {
-            v46[i].x = pIndoor->pVertices[pFace->pVertexIDs[i]].y +
-                       pFace->pYInterceptDisplacements[i];
-            v46[i].y = pIndoor->pVertices[pFace->pVertexIDs[i]].z +
-                       pFace->pZInterceptDisplacements[i];
-            v46[i].c = i;
-        }
-    }
-
-    float x_min = v46[0].x;
+    float x_min = points.u[0];
     uint x_min_idx = 0;
 
-    float x_max = v46[0].x;
+    float x_max = points.u[0];
     uint x_max_idx = 0;
 
-    float y_min = v46[0].y;
+    float y_min = points.v[0];
     uint y_min_idx = 0;
 
-    float y_max = v46[0].y;
+    float y_max = points.v[0];
     uint y_max_idx = 0;
 
     for (uint i = 0; i < pFace->uNumVertices; ++i) {
-        if (v46[i].x < x_min) {
-            x_min = v46[i].x;
-            x_min_idx = v46[i].c;
+        if (points.u[i] < x_min) {
+            x_min = points.u[i];
+            x_min_idx = i;
         }
-        if (v46[i].x > x_max) {
-            x_max = v46[i].x;
-            x_max_idx = v46[i].c;
+        if (points.u[i] > x_max) {
+            x_max = points.u[i];
+            x_max_idx = i;
         }
 
-        if (v46[i].y < y_min) {
-            y_min = v46[i].y;
-            y_min_idx = v46[i].c;
+        if (points.v[i] < y_min) {
+            y_min = points.v[i];
+            y_min_idx = i;
         }
-        if (v46[i].y > y_max) {
-            y_max = v46[i].y;
-            y_max_idx = v46[i].c;
+        if (points.v[i] > y_max) {
+            y_max = points.v[i];
+            y_max_idx = i;
         }
     }
 

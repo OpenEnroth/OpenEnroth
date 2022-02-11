@@ -8,6 +8,7 @@
 #include "Engine/Events.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Time.h"
+#include "Engine/Graphics/Indoor.h"
 
 #pragma pack(push, 1)
 struct ODMFace_MM7 {
@@ -177,9 +178,7 @@ bool ODMFace::Deserialize(ODMFace_MM7 *mm7) {
     this->pFacePlane.vNormal.z = this->pFacePlaneOLD.vNormal.z / 65536.0;
     this->pFacePlane.dist = this->pFacePlaneOLD.dist / 65536.0;
 
-    this->zCalc1 = mm7->zCalc1;
-    this->zCalc2 = mm7->zCalc2;
-    this->zCalc3 = mm7->zCalc3;
+    this->zCalc.Init(this->pFacePlaneOLD);
     this->uAttributes = mm7->uAttributes;
     memcpy(this->pVertexIDs, mm7->pVertexIDs, sizeof(this->pVertexIDs));
     memcpy(this->pTextureUIDs, mm7->pTextureUIDs, sizeof(this->pTextureUIDs));
@@ -234,4 +233,12 @@ bool ODMFace::HasEventHint() {
         return false;
     else
         return true;
+}
+
+bool ODMFace::Contains(const Vec3_int_ &pos, int model_idx, int override_plane) const {
+    BLVFace face;
+    face.uAttributes = this->uAttributes;
+    face.uNumVertices = this->uNumVertices;
+    face.pVertexIDs = const_cast<uint16_t *>(this->pVertexIDs);
+    return face.Contains(pos, model_idx, override_plane);
 }

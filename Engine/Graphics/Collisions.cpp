@@ -28,13 +28,12 @@ CollisionState collision_state;
  *                                      Note that "touching" in this context means that the distance from the actor's
  *                                      center to the polygon equals actor's radius.
  * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
- * @param face_points                   Face vertices access function.
+ * @param model_idx                     Model index, or `MODEL_INDOOR`.
  * @return                              Whether the actor, basically modeled as a sphere, can actually collide with the
  *                                      polygon if moving along the `dir` axis.
  */
-template<class FacePointAccessor>
 static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
-                                  int *move_distance, bool ignore_ethereal, const FacePointAccessor& face_points) {
+                                  int *move_distance, bool ignore_ethereal, int model_idx) {
     if (ignore_ethereal && face->Ethereal())
         return false;
 
@@ -77,7 +76,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radiu
     new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
     new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
 
-    if (!IsProjectedPointInsideFace(face, new_pos, face_points))
+    if (!face->Contains(new_pos, model_idx))
         return false; // We've just managed to slide past the face, so pretend no collision happened.
 
     if (move_distance_fp < 0) {
@@ -100,13 +99,12 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radiu
  *                                      distance required to hit the polygon is stored here. Note that this effectively
  *                                      means that this function can only decrease `move_distance`, but never increase
  *                                      it.
- * @param face_points                   Face vertices access function.
+ * @param model_idx                     Model index, or `MODEL_INDOOR`.
  * @return                              Whether the actor, modeled as a point, hits the provided polygon if moving from
  *                                      `pos` along the `dir` axis by at most `move_distance`.
  */
-template<class FacePointAccessor>
 static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *move_distance,
-                                 const FacePointAccessor &face_points) {
+                                 int model_idx) {
     // _fp suffix => that's a fixpoint number
 
     // dot_product(dir, normal) is a cosine of an angle between them.
@@ -148,98 +146,11 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3
     if (move_distance_fp > *move_distance << 16)
         return false; // No correction needed.
 
-    if (!IsProjectedPointInsideFace(face, new_pos, face_points))
+    if (!face->Contains(new_pos, model_idx))
         return false;
 
     *move_distance = move_distance_fp >> 16;
     return true;
-}
-
-static bool CollidePointIndoorWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *move_distance) {
-    return CollidePointWithFace(face, pos, dir, move_distance, [&](int index) -> const auto & {
-        return pIndoor->pVertices[face->pVertexIDs[index]];
-    });
-}
-
-/**
- * Original offset 0x475665, 0x4759C9 (two functions merged into one).
- *
- * @param face                          Face to check.
- * @param point                         Point to check.
- * @param face_points                   Face vertices access function.
- * @returns                             Projects the provided point and face onto the face's main plane (XY, YZ or ZX)
- *                                      and returns whether the resulting point lies inside the resulting polygon.
- */
-template<class FacePointAccessor>
-static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, const FacePointAccessor& face_points) {
-    std::array<int16_t, 104> edges_u;
-    std::array<int16_t, 104> edges_v;
-
-    int u;
-    int v;
-    if (face->uAttributes & FACE_XY_PLANE) {
-        u = point.x;
-        v = point.y;
-        for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
-            edges_v[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
-            edges_v[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
-        }
-    } else if (face->uAttributes & FACE_XZ_PLANE) {
-        u = point.x;
-        v = point.z;
-        for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pXInterceptDisplacements[i] + face_points(i).x;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
-            edges_u[2 * i + 1] = face->pXInterceptDisplacements[i + 1] + face_points(i + 1).x;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
-        }
-    } else {
-        u = point.y;
-        v = point.z;
-        for (int i = 0; i < face->uNumVertices; i++) {
-            edges_u[2 * i] = face->pYInterceptDisplacements[i] + face_points(i).y;
-            edges_v[2 * i] = face->pZInterceptDisplacements[i] + face_points(i).z;
-            edges_u[2 * i + 1] = face->pYInterceptDisplacements[i + 1] + face_points(i + 1).y;
-            edges_v[2 * i + 1] = face->pZInterceptDisplacements[i + 1] + face_points(i + 1).z;
-        }
-    }
-    edges_u[2 * face->uNumVertices] = edges_u[0];
-    edges_v[2 * face->uNumVertices] = edges_v[0];
-
-    if (2 * face->uNumVertices <= 0)
-        return 0;
-
-    int counter = 0;
-    for (int i = 0; i < 2 * face->uNumVertices; ++i) {
-        if (counter >= 2)
-            break;
-
-        // Check that we're inside the bounding band in v coordinate
-        if ((edges_v[i] >= v) == (edges_v[i + 1] >= v))
-            continue;
-
-        // If we're to the left then we surely have an intersection
-        if ((edges_u[i] >= u) && (edges_u[i + 1] >= u)) {
-            ++counter;
-            continue;
-        }
-
-        // We're not to the left? Then we must be inside the bounding band in u coordinate
-        if ((edges_u[i] >= u) == (edges_u[i + 1] >= u))
-            continue;
-
-        // Calculate the intersection point of v=const line with the edge.
-        int line_intersection_u = edges_u[i] +
-            static_cast<__int64>(edges_u[i + 1] - edges_u[i]) * (v - edges_v[i]) / (edges_v[i + 1] - edges_v[i]);
-
-        // We need ray intersections, so consider only one halfplane.
-        if (line_intersection_u >= u)
-            ++counter;
-    }
-
-    return counter == 1;
 }
 
 /**
@@ -249,22 +160,20 @@ static bool IsProjectedPointInsideFace(BLVFace *face, const Vec3_short_ &point, 
  * @param face                          Face to check.
  * @param face_pid                      Pid of the provided face.
  * @param ignore_ethereal               Whether ethereal faces should be ignored by this function.
- * @param face_points                   Face vertices access function.
+ * @param model_idx                     Model index, or `MODEL_INDOOR`.
 */
-template<class FacePointAccessor>
-static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal,
-                                const FacePointAccessor &face_points) {
+static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal, int model_idx) {
     auto collide_once = [&](const Vec3_int_ &old_pos, const Vec3_int_ &new_pos, const Vec3_int_ &dir, int radius) {
         int distance_old = face->pFacePlane_old.SignedDistanceTo(old_pos);
         int distance_new = face->pFacePlane_old.SignedDistanceTo(new_pos);
         if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
             bool have_collision = false;
             int move_distance = collision_state.move_distance;
-            if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, ignore_ethereal, face_points)) {
+            if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, ignore_ethereal, model_idx)) {
                 have_collision = true;
             } else {
                 move_distance = collision_state.move_distance + radius;
-                if (CollidePointWithFace(face, old_pos, dir, &move_distance, face_points)) {
+                if (CollidePointWithFace(face, old_pos, dir, &move_distance, model_idx)) {
                     have_collision = true;
                     move_distance -= radius;
                 }
@@ -437,10 +346,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             if (face_id == collision_state.ignored_face_id)
                 continue;
 
-            auto face_points = [&](int index) -> const auto & {
-                return pIndoor->pVertices[face->pVertexIDs[index]];
-            };
-            CollideBodyWithFace(face, PID(OBJECT_BModel, face_id), ignore_ethereal, face_points);
+            CollideBodyWithFace(face, PID(OBJECT_BModel, face_id), ignore_ethereal, MODEL_INDOOR);
         }
     }
 }
@@ -454,16 +360,12 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (!collision_state.bbox.Intersects(mface.pBoundingBox))
                 continue;
 
+            // TODO: we should really either merge two face classes, or template the functions down the chain call here.
             BLVFace face;
             face.pFacePlane_old = mface.pFacePlaneOLD;
             face.uAttributes = mface.uAttributes;
             face.pBounding = mface.pBoundingBox;
-            face.zCalc1 = mface.zCalc1;
-            face.zCalc2 = mface.zCalc2;
-            face.zCalc3 = mface.zCalc3;
-            face.pXInterceptDisplacements = mface.pXInterceptDisplacements;
-            face.pYInterceptDisplacements = mface.pYInterceptDisplacements;
-            face.pZInterceptDisplacements = mface.pZInterceptDisplacements;
+            face.zCalc = mface.zCalc;
             face.uPolygonType = (PolygonType)mface.uPolygonType;
             face.uNumVertices = mface.uNumVertices;
             face.resource = mface.resource;
@@ -472,12 +374,8 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             if (face.Ethereal() || face.Portal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
 
-            auto face_points = [&](int index) -> const auto &{
-                return pOutdoor->pBModels[model.index].pVertices.pVertices[face.pVertexIDs[index]];
-            };
-
             int pid = PID(OBJECT_BModel, (mface.index | (model.index << 6)));
-            CollideBodyWithFace(&face, pid, ignore_ethereal, face_points);
+            CollideBodyWithFace(&face, pid, ignore_ethereal, model.index);
         }
     }
 }
@@ -519,7 +417,8 @@ bool CollideIndoorWithPortals() {
         int move_distance = collision_state.move_distance;
         if ((distance_lo_old < collision_state.radius_lo || distance_lo_new < collision_state.radius_lo) &&
             (distance_lo_old > -collision_state.radius_lo || distance_lo_new > -collision_state.radius_lo) &&
-            CollidePointIndoorWithFace(face, collision_state.position_lo, collision_state.direction, &move_distance) &&
+            CollidePointWithFace(face, collision_state.position_lo, collision_state.direction, &move_distance,
+                MODEL_INDOOR) &&
             move_distance < min_move_distance) {
             min_move_distance = move_distance;
             portal_id = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];

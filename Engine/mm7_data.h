@@ -410,5 +410,3 @@ extern char dialogue_show_profession_details;
 extern std::array<char, 777> byte_F8B1EF;
 
 extern int bGameoverLoop;
-extern std::array<int16_t, 104> intersect_face_vertex_coords_list_a;  // word_F8BC48
-extern std::array<int16_t, 104> intersect_face_vertex_coords_list_b;  // word_F8BD18

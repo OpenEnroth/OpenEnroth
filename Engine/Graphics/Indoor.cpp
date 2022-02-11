@@ -72,9 +72,7 @@ std::array<const char *, 11> _4E6BDC_loc_names = {
 bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     memcpy(&this->pFacePlane, &data->pFacePlane, sizeof(this->pFacePlane));
     memcpy(&this->pFacePlane_old, &data->pFacePlane_old, sizeof(this->pFacePlane_old));
-    this->zCalc1 = data->zCalc1;
-    this->zCalc2 = data->zCalc2;
-    this->zCalc3 = data->zCalc3;
+    this->zCalc.Init(this->pFacePlane_old);
     this->uAttributes = data->uAttributes;
     this->pVertexIDs = (uint16_t *)data->pVertexIDs;
     this->pXInterceptDisplacements = (int16_t *)data->pXInterceptDisplacements;
@@ -426,9 +424,7 @@ void BLVFace::FromODM(ODMFace *face) {
     this->pBounding.x2 = face->pBoundingBox.x2;
     this->pBounding.y2 = face->pBoundingBox.y2;
     this->pBounding.z2 = face->pBoundingBox.z2;
-    this->zCalc1 = face->zCalc1;
-    this->zCalc2 = face->zCalc2;
-    this->zCalc3 = face->zCalc3;
+    this->zCalc = face->zCalc;
     this->pXInterceptDisplacements = face->pXInterceptDisplacements;
     this->pYInterceptDisplacements = face->pYInterceptDisplacements;
     this->pZInterceptDisplacements = face->pZInterceptDisplacements;
@@ -1214,7 +1210,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->ContainsXY(pIndoor, sX, sY))
+            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break;
@@ -1241,10 +1237,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_Floor)
                 CalcZDist = abs(sZ - this->pVertices[*this->pFaces[FoundFaceStore[s]].pVertexIDs].z);
             if (this->pFaces[FoundFaceStore[s]].uPolygonType == POLYGON_InBetweenFloorAndWall) {
-                CalcZDist = abs(sZ -
-                    ((fixpoint_mul(this->pFaces[FoundFaceStore[s]].zCalc1, (sX << 16)) +
-                      fixpoint_mul(this->pFaces[FoundFaceStore[s]].zCalc2, (sY << 16)) +
-                      this->pFaces[FoundFaceStore[s]].zCalc3 + 0x8000) >> 16));
+                CalcZDist = abs(sZ - this->pFaces[FoundFaceStore[s]].zCalc.Calculate(sX, sY));
             }
 
             // use this face if its smaller than the current min
@@ -1328,43 +1321,97 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     return;
 }
 
-bool BLVFace::ContainsXY(IndoorLocation *indoor, int x, int y) const {
-    if (this->uNumVertices == 0)
-        return false;
+void BLVFace::Flatten(FlatFace *points, int model_idx, int override_plane) const {
+    int plane = override_plane;
+    if (plane == 0)
+        plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
 
-    if (!this->pBounding.ContainsXY(x, y))
-        return false;
+    auto do_flatten = [&](auto &&vertex_accessor) {
+        if (plane & FACE_XY_PLANE) {
+            for (int i = 0; i < this->uNumVertices; i++) {
+                points->u[i] = vertex_accessor(i).x;
+                points->v[i] = vertex_accessor(i).y;
+            }
+        } else if (plane & FACE_XZ_PLANE) {
+            for (int i = 0; i < this->uNumVertices; i++) {
+                points->u[i] = vertex_accessor(i).x;
+                points->v[i] = vertex_accessor(i).z;
+            }
+        } else {
+            for (int i = 0; i < this->uNumVertices; i++) {
+                points->u[i] = vertex_accessor(i).y;
+                points->v[i] = vertex_accessor(i).z;
+            }
+        }
+    };
 
-    // vert store for point in poly checks
-    std::array<float, 104> vert_x;
-    std::array<float, 104> vert_y;
-
-    for (uint j = 0; j < this->uNumVertices; ++j) {
-        vert_x[2 * j] = this->pXInterceptDisplacements[j] + indoor->pVertices[this->pVertexIDs[j]].x;
-        vert_x[2 * j + 1] = this->pXInterceptDisplacements[j] + indoor->pVertices[this->pVertexIDs[j + 1]].x;
-        vert_y[2 * j] = this->pYInterceptDisplacements[j] + indoor->pVertices[this->pVertexIDs[j]].y;
-        vert_y[2 * j + 1] = this->pYInterceptDisplacements[j] + indoor->pVertices[this->pVertexIDs[j + 1]].y;
+    if (model_idx == MODEL_INDOOR) {
+        do_flatten([&](int index) -> const auto &{
+            return pIndoor->pVertices[this->pVertexIDs[index]];
+        });
+    } else {
+        do_flatten([&](int index) -> const auto &{
+            return pOutdoor->pBModels[model_idx].pVertices.pVertices[this->pVertexIDs[index]];
+        });
     }
-
-    int nvert = (2 * this->uNumVertices);
-    bool inside = false;
-
-    // Check whether we're inside the polygon. This is done by shooting an X-aligned ray and seeing
-    // if we'll get an odd number of intersections. The implementation iterates though all edges, checks
-    // whether an intersection is possible (vertices are placed in different half-planes relative to the ray),
-    // then calculates the intersection point and updates the even/odd state.
-    for (int ti = 0, hj = nvert - 1; ti < nvert; hj = ti++) {
-        if ((vert_y[ti] > y) == (vert_y[hj] > y))
-            continue;
-
-        int edge_x = vert_x[ti] + (vert_x[hj] - vert_x[ti]) * (y - vert_y[ti]) / (vert_y[hj] - vert_y[ti]);
-        if (x < edge_x)
-            inside = !inside;
-    }
-
-    return inside;
 }
 
+bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, int override_plane) const {
+    if (this->uNumVertices <= 0)
+        return false;
+
+    int plane = override_plane;
+    if (plane == 0)
+        plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
+
+    FlatFace points;
+    Flatten(&points, model_idx, plane);
+
+    int u;
+    int v;
+    if (plane & FACE_XY_PLANE) {
+        u = pos.x;
+        v = pos.y;
+    } else if (plane & FACE_YZ_PLANE) {
+        u = pos.y;
+        v = pos.z;
+    } else {
+        u = pos.x;
+        v = pos.z;
+    }
+
+    // The polygons we're dealing with are convex, so instead of the usual ray casting algorithm we can simply
+    // check that the point in question lies on the same side relative to all of the polygon's edges.
+    int sign = 0;
+    for (int i = 0; i < this->uNumVertices; i++) {
+        int j = (i + 1) % this->uNumVertices;
+
+        int a_u = points.u[j] - points.u[i];
+        int a_v = points.v[j] - points.v[i];
+        int b_u = u - points.u[i];
+        int b_v = v - points.v[i];
+        int cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
+        if (cross_product == 0)
+            continue;
+
+        if (slack > 0) {
+            // distance(point, line) = (a x b) / |a|,
+            // so the condition below just checks that distance is less than slack.
+            int64_t a_len_sqr = a_u * a_u + a_v * a_v;
+            if (static_cast<int64_t>(cross_product) * cross_product < a_len_sqr * slack * slack)
+                continue;
+        }
+
+        int cross_sign = static_cast<int>(cross_product > 0) * 2 - 1;
+
+        if (sign == 0) {
+            sign = cross_sign;
+        } else if (sign != cross_sign) {
+            return false;
+        }
+    }
+    return true;
+}
 
 //----- (0044C23B) --------------------------------------------------------
 bool BLVFaceExtra::HasEventHint() {
@@ -1490,7 +1537,7 @@ void BLV_UpdateDoors() {
                         face->pFacePlane_old.vNormal.z);
                 HEXRAYS_LODWORD(v27) = face->pFacePlane_old.dist << 16;
                 HEXRAYS_HIDWORD(v27) = face->pFacePlane_old.dist >> 16;
-                face->zCalc3 = -v27 / face->pFacePlane_old.vNormal.z;
+                face->zCalc.c = -v27 / face->pFacePlane_old.vNormal.z;
             }
             // if ( face->uAttributes & FACE_TexMoveByDoor || render->pRenderD3D
             // )
@@ -2213,7 +2260,10 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             break;
 
         BLVFace *pFloor = &pIndoor->pFaces[pSector->pFloors[i]];
-        if (pFloor->Ethereal() || !pFloor->ContainsXY(pIndoor, pos.x, pos.y))
+        if (pFloor->Ethereal())
+            continue;
+
+        if (!pFloor->Contains(pos, MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -2227,8 +2277,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
         if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
             z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
         } else {
-            z_calc = fixpoint_mul(pFloor->zCalc1, pos.x) + fixpoint_mul(pFloor->zCalc2, pos.y) +
-                ((pFloor->zCalc3 + 0x8000) >> 16);
+            z_calc = pFloor->zCalc.Calculate(pos.x, pos.y);
         }
 
         blv_floor_z[FacesFound] = z_calc;
@@ -2242,7 +2291,10 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             if (FacesFound >= 5) break;
 
             BLVFace *portal = &pIndoor->pFaces[pSector->pPortals[i]];
-            if (portal->uPolygonType != POLYGON_Floor || !portal->ContainsXY(pIndoor, pos.x, pos.y))
+            if (portal->uPolygonType != POLYGON_Floor)
+                continue;
+
+            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;
@@ -2809,10 +2861,11 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                 if (v69 <= abs(v66)) {
                     v108 = fixpoint_div(ShiftDotDist, v107);
                     if (v108 >= 0) {
-                        if (PointInPolyIndoor(ShiftedTargetX + ((signed int)(fixpoint_mul(v108, X_VecDist) + 0x8000) >> 16),
-                                        ShiftedTargetY + ((signed int)(fixpoint_mul(v108, Y_VecDist) + 0x8000) >> 16),
-                                        ShiftedTargetZ + ((signed int)(fixpoint_mul(v108, Z_VecDist) + 0x8000) >> 16),
-                                        face)) {
+                        Vec3_int_ pos = Vec3_int_(
+                            ShiftedTargetX + ((signed int)(fixpoint_mul(v108, X_VecDist) + 0x8000) >> 16),
+                            ShiftedTargetY + ((signed int)(fixpoint_mul(v108, Y_VecDist) + 0x8000) >> 16),
+                            ShiftedTargetZ + ((signed int)(fixpoint_mul(v108, Z_VecDist) + 0x8000) >> 16));
+                        if (face->Contains(pos, MODEL_INDOOR)) {
                             LOS_Obscurred2 = 1;
                             break;
                         }
@@ -2879,17 +2932,11 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                 if (v_4c <= abs(v91)) {
                     vd = fixpoint_div(v93, vc);
                     if (vd >= 0) {
-                        if (PointInPolyIndoor(
-                                ShiftedTargetX + ((signed int)(fixpoint_mul(vd, v144) +
-                                                   0x8000) >>
-                                      16),
-                                ShiftedTargetY + ((signed int)(fixpoint_mul(vd, v80) +
-                                                   0x8000) >>
-                                      16),
-                                ShiftedTargetZ + ((signed int)(fixpoint_mul(vd, v81) +
-                                                   0x8000) >>
-                                      16),
-                                face)) {
+                        Vec3_int_ pos = Vec3_int_(
+                            ShiftedTargetX + ((signed int)(fixpoint_mul(vd, v144) + 0x8000) >> 16),
+                            ShiftedTargetY + ((signed int)(fixpoint_mul(vd, v80) + 0x8000) >> 16),
+                            ShiftedTargetZ + ((signed int)(fixpoint_mul(vd, v81) + 0x8000) >> 16));
+                        if (face->Contains(pos, MODEL_INDOOR)) {
                             LOS_Obscurred = 1;
                             break;
                         }
@@ -2973,11 +3020,11 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
 
                         // less than zero means intersection is behind target point
                         if (v110 >= 0) {
-                            if (PointInPolyOutdoor(
-                                    ShiftedTargetX + ((signed int)(fixpoint_mul(v110, rayxnorm) + 0x8000) >> 16),
-                                    ShiftedTargetY + ((signed int)(fixpoint_mul(v110, rayynorm) + 0x8000) >> 16),
-                                    ShiftedTargetZ + ((signed int)(fixpoint_mul(v110, rayznorm) + 0x8000) >> 16),
-                                    &face, &model.pVertices)) {
+                            Vec3_int_ pos = Vec3_int_(
+                                ShiftedTargetX + ((signed int)(fixpoint_mul(v110, rayxnorm) + 0x8000) >> 16),
+                                ShiftedTargetY + ((signed int)(fixpoint_mul(v110, rayynorm) + 0x8000) >> 16),
+                                ShiftedTargetZ + ((signed int)(fixpoint_mul(v110, rayznorm) + 0x8000) >> 16));
+                            if (face.Contains(pos, model.index)) {
                                 LOS_Obscurred2 = 1;
                                 break;
                             }
@@ -3044,16 +3091,11 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                         // vb = v43 / va;
                         vb = fixpoint_div(v42, va);
                         if (vb >= 0) {
-                            if (PointInPolyOutdoor(ShiftedTargetX + ((int)(fixpoint_mul(vb, v126) +
-                                                       0x8000) >>
-                                                 16),
-                                           ShiftedTargetY + ((int)(fixpoint_mul(vb, v122) +
-                                                       0x8000) >>
-                                                 16),
-                                           ShiftedTargetZ + ((int)(fixpoint_mul(vb, v35) +
-                                                       0x8000) >>
-                                                 16),
-                                           &face, &model.pVertices)) {
+                            Vec3_int_ pos = Vec3_int_(
+                                ShiftedTargetX + ((int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
+                                ShiftedTargetY + ((int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
+                                ShiftedTargetZ + ((int)(fixpoint_mul(vb, v35) + 0x8000) >> 16));
+                            if (face.Contains(pos, model.index)) {
                                 LOS_Obscurred = 1;
                                 break;
                             }
@@ -3792,144 +3834,6 @@ int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t fa
     a1.uSectorID = pIndoor->GetSector(x, y, z);
     a1.uSpriteFrameID = 0;
     return a1.Create(0, 0, 0, 0);
-}
-
-//----- (004075DB) --------------------------------------------------------
-bool PointInPolyIndoor(int x, int y, int z, BLVFace *face) {
-    // check if point is inside polygon - LOS check indoors
-
-    // store for projected coords
-    int ProjCoord_X;
-    int ProjCoord_Y;
-    std::array<int, 52> ProjCoords_Ys;
-    std::array<int, 52> ProjCoords_Xs;
-
-    // project/flatten polygon onto primary plane
-    if (face->uAttributes & FACE_XY_PLANE) {
-        ProjCoord_X = x;
-        ProjCoord_Y = y;
-        for (int i = 0; i < face->uNumVertices; i++) {
-            ProjCoords_Xs[i] = pIndoor->pVertices[face->pVertexIDs[i]].x;
-            ProjCoords_Ys[i] = pIndoor->pVertices[face->pVertexIDs[i]].y;
-        }
-    } else {
-        ProjCoord_Y = z;
-        if (face->uAttributes & FACE_XZ_PLANE) {
-            ProjCoord_X = x;
-            for (int i = 0; i < face->uNumVertices; i++) {
-                ProjCoords_Xs[i] = pIndoor->pVertices[face->pVertexIDs[i]].x;
-                ProjCoords_Ys[i] = pIndoor->pVertices[face->pVertexIDs[i]].z;
-            }
-        } else {
-            ProjCoord_X = y;
-            for (int i = 0; i < face->uNumVertices; i++) {
-                ProjCoords_Xs[i] = pIndoor->pVertices[face->pVertexIDs[i]].y;
-                ProjCoords_Ys[i] = pIndoor->pVertices[face->pVertexIDs[i]].z;
-            }
-        }
-    }
-
-    // copy first vert to last
-    ProjCoords_Xs[face->uNumVertices] = ProjCoords_Xs[0];
-    ProjCoords_Ys[face->uNumVertices] = ProjCoords_Ys[0];
-
-    float LineSlope;
-    float LinePoint;
-    int InsideLine = 0;
-
-    // loop over verts
-    for (int i = 0; i < face->uNumVertices && InsideLine < 2; i++) {
-        // XOR check if Y is within vert y edges
-        if ((ProjCoords_Ys[i] >= ProjCoord_Y) ^ (ProjCoords_Ys[i + 1] >= ProjCoord_Y)) {
-            // elimate by x
-            if (!(ProjCoords_Xs[i + 1] >= ProjCoord_X && ProjCoords_Xs[i] < ProjCoord_X)) {
-                // check within x edges
-                if ((ProjCoords_Xs[i + 1] < ProjCoord_X && ProjCoords_Xs[i] >= ProjCoord_X)) {
-                   ++InsideLine;
-                } else {
-                    // slope of line connecting verts
-                    LineSlope = (float)(ProjCoords_Xs[i + 1] - ProjCoords_Xs[i]) / (float)(ProjCoords_Ys[i + 1] - ProjCoords_Ys[i]);
-                    // calc x coords given y coords
-                    LinePoint = ProjCoords_Xs[i] + (LineSlope * (ProjCoord_Y - ProjCoords_Ys[i]) + 0.5);
-                    // test against actual x to left
-                    if (LinePoint >= ProjCoord_X) ++InsideLine;
-                }
-            }
-        }
-    }
-
-    // intersection must be unique
-    if (InsideLine != 1) return false;
-    return true;
-}
-
-//----- (004077F1) --------------------------------------------------------
-bool PointInPolyOutdoor(int x, int y, int z, ODMFace *face, BSPVertexBuffer *verts) {
-    // check if point is inside polygon - LOS check outdoors
-
-    // store for projected coords
-    int ProjCoord_X;
-    int ProjCoord_Y;
-    std::array<int, 52> ProjCoords_Ys;
-    std::array<int, 52> ProjCoords_Xs;
-
-    // project/flatten polygon onto primary plane
-    if (face->uAttributes & FACE_XY_PLANE) {
-        ProjCoord_X = x;
-        ProjCoord_Y = y;
-        for (int i = 0; i < face->uNumVertices; i++) {
-            ProjCoords_Xs[i + 1] = verts->pVertices[face->pVertexIDs[i]].x;
-            ProjCoords_Ys[i + 1] = verts->pVertices[face->pVertexIDs[i]].y;
-        }
-    } else {
-        ProjCoord_Y = z;
-        if (face->uAttributes & FACE_XY_PLANE) {
-            ProjCoord_X = x;
-            for (int i = 0; i < face->uNumVertices; i++) {
-                ProjCoords_Xs[i + 1] = verts->pVertices[face->pVertexIDs[i]].x;
-                ProjCoords_Ys[i + 1] = verts->pVertices[face->pVertexIDs[i]].z;
-            }
-        } else {
-            ProjCoord_X = y;
-            for (int i = 0; i < face->uNumVertices; i++) {
-                ProjCoords_Xs[i + 1] = verts->pVertices[face->pVertexIDs[i]].y;
-                ProjCoords_Ys[i + 1] = verts->pVertices[face->pVertexIDs[i]].z;
-            }
-        }
-    }
-
-    // copy first vert to last
-    ProjCoords_Xs[face->uNumVertices] = ProjCoords_Xs[0];
-    ProjCoords_Ys[face->uNumVertices] = ProjCoords_Ys[0];
-
-    float LineSlope;
-    float LinePoint;
-    int InsideLine = 0;
-
-    // loop over verts
-    for (int i = 0; i < face->uNumVertices && InsideLine < 2; i++) {
-        // XOR check if Y is within vert y edges
-        if ((ProjCoords_Ys[i] >= ProjCoord_Y) ^ (ProjCoords_Ys[i + 1] >= ProjCoord_Y)) {
-            // elimate by x
-            if (!(ProjCoords_Xs[i + 1] >= ProjCoord_X && ProjCoords_Xs[i] < ProjCoord_X)) {
-                // check within x edges
-                if ((ProjCoords_Xs[i + 1] < ProjCoord_X && ProjCoords_Xs[i] >= ProjCoord_X)) {
-                    ++InsideLine;
-                } else {
-                    // slope of line connecting verts
-                    LineSlope = (float)(ProjCoords_Xs[i + 1] - ProjCoords_Xs[i]) / (float)(ProjCoords_Ys[i + 1] - ProjCoords_Ys[i]);
-                    // calc x coords given y coords
-                    LinePoint = ProjCoords_Xs[i] + (LineSlope * (ProjCoord_Y - ProjCoords_Ys[i]) + 0.5);
-                    // test against actual x to left
-                    if (LinePoint >= ProjCoord_X) ++InsideLine;
-                }
-            }
-        }
-    }
-
-    // intersection must be unique
-    if (InsideLine != 1) return false;
-    return true;
 }
 
 //----- (0049B04D) --------------------------------------------------------

@@ -130,12 +130,16 @@ struct ODMFace {
 
     bool Deserialize(struct ODMFace_MM7 *);
 
+    // TODO: does this really have to be two separate functions?
+    /**
+     * @see BLVFace::Contains
+     */
+    bool Contains(const Vec3_int_ &pos, int model_idx, int override_plane = 0) const;
+
     unsigned int index = 0;
     struct Plane_float_ pFacePlane;
     struct Plane_int_ pFacePlaneOLD;
-    int zCalc1 = 0;
-    int zCalc2 = 0;
-    int zCalc3 = 0;
+    PlaneZCalc_int64_ zCalc;
     uint32_t uAttributes = 0;
     uint16_t pVertexIDs[20] {};
     int16_t pTextureUIDs[20] {};

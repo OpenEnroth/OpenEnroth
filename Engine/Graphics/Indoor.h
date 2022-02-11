@@ -373,6 +373,15 @@ struct BLVMapOutline {  // 0C
 };
 #pragma pack(pop)
 
+struct FlatFace {
+    std::array<int32_t, 104> u;
+    std::array<int32_t, 104> v;
+};
+
+enum {
+    MODEL_INDOOR = -1
+};
+
 /*   93 */
 #pragma pack(push, 1)
 struct BLVFace {  // 60h
@@ -422,18 +431,32 @@ struct BLVFace {  // 60h
     }
 
     /**
-     * @param indoor                    Indoor location that this face belongs to.
-     * @param x                         Point X coordinate.
-     * @param y                         Point Y coordinate.
-     * @return                          Whether the point at (X,Y) lies inside this polygon (if projected on XY plane).
+     * @param points[out]               Coordinate storage. The storage is populated by the coordinates of this
+     *                                  face's vertices projected onto this face's primary plane.
+     * @param model_idx                 Model that this face belongs to, or `MODEL_INDOOR` for faces in indoor
+     *                                  locations.
+     * @param override_plane            Plane override.
+     * @see BLVFace::Contains
      */
-    bool ContainsXY(IndoorLocation *indoor, int x, int y) const;
+    void Flatten(FlatFace *points, int model_idx, int override_plane = 0) const;
+
+    /**
+     * @param pos                       Point to check.
+     * @param model_idx                 Model that this face belongs to, or `MODEL_INDOOR` for faces in indoor
+     *                                  locations.
+     * @param slack                     If a point is at most `slack` units away from the edge, it'll still be
+     *                                  considered to be lying on the edge.
+     * @param override_plane            Plane override. By default the check is performed in the face's primary plane
+     *                                  that is set in attributes, but this behavior can be overridden by e.g. passing
+     *                                  `FACE_XY_PLANE`.
+     * @return                          Whether the point lies inside this polygon, if projected on the face's
+     *                                  primary plane.
+     */
+    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, int override_plane = 0) const;
 
     struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
-    int zCalc1;  // fixpoint a
-    int zCalc2;  // fixpoint b
-    int zCalc3;  // fixpoint c, plane = a*x + b*y + c.
+    PlaneZCalc_int64_ zCalc;
     unsigned int uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
@@ -694,10 +717,6 @@ void PrepareToLoadBLV(unsigned int bLoading);
 int GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
 int DropTreasureAt(int trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
-
-bool PointInPolyIndoor(int x, int y, int z, struct BLVFace *face);
-bool PointInPolyOutdoor(int a1, int a2, int a3, struct ODMFace *face,
-                struct BSPVertexBuffer *a5);
 
 
 /*  164 */

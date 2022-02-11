@@ -10,8 +10,13 @@ uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 template<class From, class To>
 struct vector_conversion_allowed : std::false_type {};
 
+// Allow widening vector conversions.
 template<>
-struct vector_conversion_allowed<int16_t, int32_t> : std::true_type {}; // Allow Vec3_short_ -> Vec3_int_ conversions.
+struct vector_conversion_allowed<int16_t, int32_t> : std::true_type {};
+template<>
+struct vector_conversion_allowed<int16_t, int64_t> : std::true_type {};
+template<>
+struct vector_conversion_allowed<int32_t, int64_t> : std::true_type {};
 
 #pragma pack(push, 1)
 template <class T>
@@ -79,11 +84,28 @@ struct Vec3 : public Vec2<T> {
     friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
         return Vec3(l.x + r.x, l.y + r.y, l.z + r.z);
     }
+
+    friend Vec3 operator-(const Vec3 &l, const Vec3 &r) {
+        return Vec3(l.x - r.x, l.y - r.y, l.z - r.z);
+    }
+
+    friend Vec3 operator/(const Vec3 &l, T r) {
+        return Vec3(l.x / r, l.y / r, l.z / r);
+    }
+
+    friend Vec3 Cross(const Vec3 &l, const Vec3 &r) {
+        return Vec3(l.y * r.z - l.z * r.y, l.z * r.x - l.x * r.z, l.x * r.y - l.y * r.x);
+    }
+
+    friend T Dot(const Vec3 &l, const Vec3 &r) {
+        return l.x * r.x + l.y * r.y + l.z * r.z;
+    }
 };
 #pragma pack(pop)
 
 using Vec3_short_ = Vec3<int16_t>;
 using Vec3_int_ = Vec3<int32_t>;
+using Vec3_int64_ = Vec3<int64_t>;
 
 #pragma pack(push, 1)
 struct Vec3_float_ {
@@ -177,6 +199,10 @@ struct BBox_short_ {
     bool ContainsXY(int x, int y) const {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
+
+    bool Contains(const Vec3_short_ &pos) const {
+        return x1 <= pos.x && pos.x <= x2 && y1 <= pos.y && pos.y <= y2 && z1 <= pos.z && pos.z <= z2;
+    }
 };
 #pragma pack(pop)
 
@@ -211,3 +237,29 @@ struct Plane_float_ {
     float dist;
 };
 #pragma pack(pop)
+
+/**
+ * Helper structure for calculating Z-coordinate of a point on a plane given x and y, basically a storage for
+ * coefficients in `z = ax + by + c` equation.
+ *
+ * Coefficients are stored in fixpoint format.
+ */
+struct PlaneZCalc_int64_ {
+    int64_t a = 0;
+    int64_t b = 0;
+    int64_t c = 0;
+
+    int Calculate(int x, int y) const {
+        return (a * x + b * y + c + 0x8000) >> 16;
+    }
+
+    void Init(const Plane_int_ &plane) {
+        if (plane.vNormal.z == 0) {
+            this->a = this->b = this->c = 0;
+        } else {
+            this->a = -fixpoint_div(plane.vNormal.x, plane.vNormal.z);
+            this->b = -fixpoint_div(plane.vNormal.y, plane.vNormal.z);
+            this->c = -fixpoint_div(plane.dist, plane.vNormal.z);
+        }
+    }
+};
