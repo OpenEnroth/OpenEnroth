@@ -73,56 +73,20 @@ void stru10::_49CE9E(BLVFace *pFace, RenderVertexSoft *pVertices,
     stru10::CalcPolygonLimits(pFace, pLimits);
 
     if (pFace->uAttributes & FACE_XY_PLANE) {
-        memcpy(&pOutLimits[0],
-               &pVertices[_49CE9E_sub0_x(pVertices, uNumVertices,
-                                         pLimits[0].vWorldPosition.x)],
-               0x30);
-        memcpy(&pOutLimits[2],
-               &pVertices[_49CE9E_sub0_x(pVertices, uNumVertices,
-                                         pLimits[2].vWorldPosition.x)],
-               0x30);
-        memcpy(&pOutLimits[1],
-               &pVertices[_49CE9E_sub0_y(pVertices, uNumVertices,
-                                         pLimits[1].vWorldPosition.y)],
-               0x30);
-        memcpy(&pOutLimits[3],
-               &pVertices[_49CE9E_sub0_y(pVertices, uNumVertices,
-                                         pLimits[3].vWorldPosition.y)],
-               0x30);
+        pOutLimits[0] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[0].vWorldPosition.x)];
+        pOutLimits[2] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[2].vWorldPosition.x)];
+        pOutLimits[1] = pVertices[_49CE9E_sub0_y(pVertices, uNumVertices, pLimits[1].vWorldPosition.y)];
+        pOutLimits[3] = pVertices[_49CE9E_sub0_y(pVertices, uNumVertices, pLimits[3].vWorldPosition.y)];
     } else if (pFace->uAttributes & FACE_XZ_PLANE) {
-        memcpy(&pOutLimits[0],
-               &pVertices[_49CE9E_sub0_x(pVertices, uNumVertices,
-                                         pLimits[0].vWorldPosition.x)],
-               0x30);
-        memcpy(&pOutLimits[2],
-               &pVertices[_49CE9E_sub0_x(pVertices, uNumVertices,
-                                         pLimits[2].vWorldPosition.x)],
-               0x30);
-        memcpy(&pOutLimits[1],
-               &pVertices[_49CE9E_sub0_z(pVertices, uNumVertices,
-                                         pLimits[1].vWorldPosition.z)],
-               0x30);
-        memcpy(&pOutLimits[3],
-               &pVertices[_49CE9E_sub0_z(pVertices, uNumVertices,
-                                         pLimits[3].vWorldPosition.z)],
-               0x30);
+        pOutLimits[0] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[0].vWorldPosition.x)];
+        pOutLimits[2] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[2].vWorldPosition.x)];
+        pOutLimits[1] = pVertices[_49CE9E_sub0_z(pVertices, uNumVertices, pLimits[1].vWorldPosition.z)];
+        pOutLimits[3] = pVertices[_49CE9E_sub0_z(pVertices, uNumVertices, pLimits[3].vWorldPosition.z)];
     } else if (pFace->uAttributes & FACE_YZ_PLANE) {
-        memcpy(&pOutLimits[0],
-               &pVertices[_49CE9E_sub0_y(pVertices, uNumVertices,
-                                         pLimits[0].vWorldPosition.y)],
-               0x30);
-        memcpy(&pOutLimits[2],
-               &pVertices[_49CE9E_sub0_y(pVertices, uNumVertices,
-                                         pLimits[2].vWorldPosition.y)],
-               0x30);
-        memcpy(&pOutLimits[1],
-               &pVertices[_49CE9E_sub0_z(pVertices, uNumVertices,
-                                         pLimits[1].vWorldPosition.z)],
-               0x30);
-        memcpy(&pOutLimits[3],
-               &pVertices[_49CE9E_sub0_z(pVertices, uNumVertices,
-                                         pLimits[3].vWorldPosition.z)],
-               0x30);
+        pOutLimits[0] = pVertices[_49CE9E_sub0_y(pVertices, uNumVertices, pLimits[0].vWorldPosition.y)];
+        pOutLimits[2] = pVertices[_49CE9E_sub0_y(pVertices, uNumVertices, pLimits[2].vWorldPosition.y)];
+        pOutLimits[1] = pVertices[_49CE9E_sub0_z(pVertices, uNumVertices, pLimits[1].vWorldPosition.z)];
+        pOutLimits[3] = pVertices[_49CE9E_sub0_z(pVertices, uNumVertices, pLimits[3].vWorldPosition.z)];
     }
 }
 
@@ -164,40 +128,28 @@ void stru10::CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     }
 
     RenderVertexSoft v1;  // [sp+30Ch] [bp-54h]@24
-    v1.vWorldPosition.x =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].x;
-    v1.vWorldPosition.y =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].y;
-    v1.vWorldPosition.z =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].z;
-    memcpy(&pOutVertices[0], &v1, sizeof(RenderVertexSoft));
+    v1.vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].x;
+    v1.vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].y;
+    v1.vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[x_min_idx]].z;
+    pOutVertices[0] = v1;
 
     RenderVertexSoft v2;  // [sp+30Ch] [bp-54h]@24
-    v2.vWorldPosition.x =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].x;
-    v2.vWorldPosition.y =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].y;
-    v2.vWorldPosition.z =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].z;
-    memcpy(&pOutVertices[1], &v2, sizeof(RenderVertexSoft));
+    v2.vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].x;
+    v2.vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].y;
+    v2.vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[y_min_idx]].z;
+    pOutVertices[1] = v2;
 
     RenderVertexSoft v3;  // [sp+30Ch] [bp-54h]@24
-    v3.vWorldPosition.x =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].x;
-    v3.vWorldPosition.y =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].y;
-    v3.vWorldPosition.z =
-        (float)pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].z;
-    memcpy(&pOutVertices[2], &v3, sizeof(RenderVertexSoft));
+    v3.vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].x;
+    v3.vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].y;
+    v3.vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[x_max_idx]].z;
+    pOutVertices[2] = v3;
 
     RenderVertexSoft v4;  // [sp+30Ch] [bp-54h]@24
-    v4.vWorldPosition.x =
-        (double)pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].x;
-    v4.vWorldPosition.y =
-        (double)pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].y;
-    v4.vWorldPosition.z =
-        (double)pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].z;
-    memcpy(&pOutVertices[3], &v4, sizeof(RenderVertexSoft));
+    v4.vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].x;
+    v4.vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].y;
+    v4.vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[y_max_idx]].z;
+    pOutVertices[3] = v4;
 }
 
 //----- (0049C9E3) --------------------------------------------------------
@@ -343,17 +295,15 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     a1.z = pFace->pFacePlane.vNormal.z;
 
 
-    RenderVertexSoft v25;  // [sp+10h] [bp-90h]@20
-    memcpy(&v25, pOutBounding, sizeof(RenderVertexSoft));
-
+    RenderVertexSoft v25 = pOutBounding[0];  // [sp+10h] [bp-90h]@20
     float _dp = (v25.vWorldPosition.x - pCamera3D->vCameraPos.x) * a1.x +
                 (v25.vWorldPosition.y - pCamera3D->vCameraPos.y) * a1.y +
                 (v25.vWorldPosition.z - pCamera3D->vCameraPos.z) * a1.z;
     if (fabs(_dp) < 1e-6f) {
         logger->Info("Epsilon check");
-        memcpy(&v25, &pOutBounding[1], sizeof(RenderVertexSoft));
-        memcpy(&pOutBounding[1], &pOutBounding[3], sizeof(RenderVertexSoft));
-        memcpy(&pOutBounding[3], &v25, sizeof(RenderVertexSoft));
+        v25 = pOutBounding[1];
+        pOutBounding[1] = pOutBounding[3];
+        pOutBounding[3] = v25;
     }
 
 
@@ -412,10 +362,10 @@ bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
 
         // make sure frustum planes will be on correct side
         if (pOutBounding[0].vWorldViewProjX > pOutBounding[3].vWorldViewProjX) {
-            memcpy(&pOutBounding[0], &temp[3], sizeof(RenderVertexSoft));
-            memcpy(&pOutBounding[2], &temp[1], sizeof(RenderVertexSoft));
-            memcpy(&pOutBounding[3], &temp[0], sizeof(RenderVertexSoft));
-            memcpy(&pOutBounding[1], &temp[2], sizeof(RenderVertexSoft));
+            pOutBounding[0] = temp[3];
+            pOutBounding[2] = temp[1];
+            pOutBounding[3] = temp[0];
+            pOutBounding[1] = temp[2];
         }
 
         // calculate the new frustum for this portal

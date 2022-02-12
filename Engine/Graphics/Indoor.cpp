@@ -70,8 +70,8 @@ std::array<const char *, 11> _4E6BDC_loc_names = {
     "mdt09.blv", "mdt15.blv", "mdt11.blv"};
 
 bool BLVFace::Deserialize(BLVFace_MM7 *data) {
-    memcpy(&this->pFacePlane, &data->pFacePlane, sizeof(this->pFacePlane));
-    memcpy(&this->pFacePlane_old, &data->pFacePlane_old, sizeof(this->pFacePlane_old));
+    this->pFacePlane = data->pFacePlane;
+    this->pFacePlane_old = data->pFacePlane_old;
     this->zCalc.Init(this->pFacePlane_old);
     this->uAttributes = data->uAttributes;
     this->pVertexIDs = (uint16_t *)data->pVertexIDs;
@@ -84,7 +84,7 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     // unsigned __int16  uBitmapID;
     this->uSectorID = data->uSectorID;
     this->uBackSectorID = data->uBackSectorID;
-    memcpy(&this->pBounding, &data->pBounding, sizeof(this->pBounding));
+    this->pBounding = data->pBounding;
     this->uPolygonType = (PolygonType)data->uPolygonType;
     this->uNumVertices = data->uNumVertices;
     this->field_5E = data->field_5E;
@@ -409,29 +409,18 @@ void IndoorLocation::Draw() {
 
 //----- (004C0EF2) --------------------------------------------------------
 void BLVFace::FromODM(ODMFace *face) {
-    this->pFacePlane_old.vNormal.x = face->pFacePlaneOLD.vNormal.x;
-    this->pFacePlane_old.vNormal.y = face->pFacePlaneOLD.vNormal.y;
-    this->pFacePlane_old.vNormal.z = face->pFacePlaneOLD.vNormal.z;
-    this->pFacePlane_old.dist = face->pFacePlaneOLD.dist;
-    this->pFacePlane.vNormal.x = face->pFacePlane.vNormal.x;
-    this->pFacePlane.vNormal.y = face->pFacePlane.vNormal.y;
-    this->pFacePlane.vNormal.z = face->pFacePlane.vNormal.z;
-    this->pFacePlane.dist = face->pFacePlane.dist;
+    this->pFacePlane_old = face->pFacePlaneOLD;
+    this->pFacePlane = face->pFacePlane;
     this->uAttributes = face->uAttributes;
-    this->pBounding.x1 = face->pBoundingBox.x1;
-    this->pBounding.y1 = face->pBoundingBox.y1;
-    this->pBounding.z1 = face->pBoundingBox.z1;
-    this->pBounding.x2 = face->pBoundingBox.x2;
-    this->pBounding.y2 = face->pBoundingBox.y2;
-    this->pBounding.z2 = face->pBoundingBox.z2;
+    this->pBounding = face->pBoundingBox;
     this->zCalc = face->zCalc;
-    this->pXInterceptDisplacements = face->pXInterceptDisplacements;
-    this->pYInterceptDisplacements = face->pYInterceptDisplacements;
-    this->pZInterceptDisplacements = face->pZInterceptDisplacements;
+    this->pXInterceptDisplacements = face->pXInterceptDisplacements.data();
+    this->pYInterceptDisplacements = face->pYInterceptDisplacements.data();
+    this->pZInterceptDisplacements = face->pZInterceptDisplacements.data();
     this->uPolygonType = (PolygonType)face->uPolygonType;
     this->uNumVertices = face->uNumVertices;
     this->resource = face->resource;
-    this->pVertexIDs = face->pVertexIDs;
+    this->pVertexIDs = face->pVertexIDs.data();
 }
 
 //----- (004B0A25) --------------------------------------------------------

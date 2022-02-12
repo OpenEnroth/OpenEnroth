@@ -2040,20 +2040,16 @@ void RenderOpenGL::RenderTerrainD3D() {
             pTilePolygon->sTextureDeltaU = 0;
             pTilePolygon->sTextureDeltaV = 0;
 
-            memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
-                sizeof(RenderVertexSoft));  // x, z
+            array_73D150[0] = pTerrainVertices[z * 128 + x];  // x, z
             array_73D150[0].u = 0;
             array_73D150[0].v = 0;
-            memcpy(&array_73D150[3], &pTerrainVertices[z * 128 + x + 1],
-                sizeof(RenderVertexSoft));  // x + 1, z
+            array_73D150[3] = pTerrainVertices[z * 128 + x + 1];  // x + 1, z
             array_73D150[3].u = 1;
             array_73D150[3].v = 0;
-            memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x + 1],
-                sizeof(RenderVertexSoft));  // x + 1, z + 1
+            array_73D150[2] = pTerrainVertices[(z + 1) * 128 + x + 1];  // x + 1, z + 1
             array_73D150[2].u = 1;
             array_73D150[2].v = 1;
-            memcpy(&array_73D150[1], &pTerrainVertices[(z + 1) * 128 + x],
-                sizeof(RenderVertexSoft));  // x, z + 1
+            array_73D150[1] = pTerrainVertices[(z + 1) * 128 + x];  // x, z + 1
             array_73D150[1].u = 0;
             array_73D150[1].v = 1;
 
@@ -2076,7 +2072,7 @@ void RenderOpenGL::RenderTerrainD3D() {
             pTilePolygon->uBModelFaceID = 0;
             pTilePolygon->pid = (8 * (0 | (0 << 6))) | 6;
             for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
-                memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                VertexRenderList[k] = array_73D150[k];
                 VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
             }
 
@@ -2108,16 +2104,13 @@ void RenderOpenGL::RenderTerrainD3D() {
                 ///////////// triangle 1 - 1 2 3
 
                 // verts CCW - for testing
-                memcpy(&array_73D150[0], &pTerrainVertices[z * 128 + x],
-                    sizeof(RenderVertexSoft));  // x, z
+                array_73D150[0] = pTerrainVertices[z * 128 + x];  // x, z
                 array_73D150[0].u = 0;
                 array_73D150[0].v = 0;
-                memcpy(&array_73D150[2], &pTerrainVertices[z * 128 + x + 1],
-                    sizeof(RenderVertexSoft));  // x + 1, z
+                array_73D150[2] = pTerrainVertices[z * 128 + x + 1];  // x + 1, z
                 array_73D150[2].u = 1;
                 array_73D150[2].v = 0;
-                memcpy(&array_73D150[1], &pTerrainVertices[(z + 1) * 128 + x + 1],
-                    sizeof(RenderVertexSoft));  // x + 1, z + 1
+                array_73D150[1] = pTerrainVertices[(z + 1) * 128 + x + 1];  // x + 1, z + 1
                 array_73D150[1].u = 1;
                 array_73D150[1].v = 1;
                 // memcpy(&array_73D150[2], &pTerrainVertices[(z + 1) * 128 + x],
@@ -2126,7 +2119,7 @@ void RenderOpenGL::RenderTerrainD3D() {
                 // array_73D150[2].v = 1;
 
                 for (unsigned int k = 0; k < pTilePolygon->uNumVertices; ++k) {
-                    memcpy(&VertexRenderList[k], &array_73D150[k], sizeof(struct RenderVertexSoft));
+                    VertexRenderList[k] = array_73D150[k];
                     VertexRenderList[k]._rhw = 1.0 / (array_73D150[k].vWorldViewPosition.x + 0.0000001000000011686097);
                 }
 

@@ -2655,7 +2655,7 @@ void Actor::SummonMinion(int summonerId) {
     pActors[uNumActors].Reset();
     strcpy(actor->pActorName, v9->pName);
     actor->sCurrentHP = (short)v9->uHP;
-    memcpy(&actor->pMonsterInfo, v9, sizeof(actor->pMonsterInfo));
+    actor->pMonsterInfo = *v9;
     actor->word_000086_some_monster_id = summonMonsterBaseType;
     actor->uActorRadius = pMonsterList->pMonsters[v7].uMonsterRadius;
     actor->uActorHeight = pMonsterList->pMonsters[v7].uMonsterHeight;
@@ -3655,7 +3655,7 @@ void Actor::Arena_summon_actor(int monster_id, __int16 x, int y, int z) {
                pMonsterStats->pInfos[monster_id].pName);
         pActors[uNumActors].sCurrentHP =
             (short)pMonsterStats->pInfos[monster_id].uHP;
-        memcpy(&pActors[uNumActors].pMonsterInfo, &pMonsterStats->pInfos[monster_id], sizeof(MonsterInfo));
+        pActors[uNumActors].pMonsterInfo = pMonsterStats->pInfos[monster_id];
         pActors[uNumActors].word_000086_some_monster_id = monster_id;
         pActors[uNumActors].uActorRadius =
             pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;
@@ -4092,7 +4092,7 @@ void Actor::LootActor() {
     }
     if (this->ActorHasItem()) {
         if (this->ActorHasItems[3].uItemID) {
-            memcpy(&Dst, &this->ActorHasItems[3], sizeof(Dst));
+            Dst = this->ActorHasItems[3];
             this->ActorHasItems[3].Reset();
 
             StatusBarItemFound(
@@ -4839,8 +4839,7 @@ bool SpawnActor(unsigned int uMonsterID) {
         memset(&actor, 0, sizeof(Actor));
         strcpy(actor.pActorName, pMonsterStats->pInfos[v1 + 1].pName);
         actor.sCurrentHP = (short)pMonsterStats->pInfos[v1 + 1].uHP;
-        memcpy(&actor.pMonsterInfo, &pMonsterStats->pInfos[v1 + 1],
-               sizeof(MonsterInfo));
+        actor.pMonsterInfo = pMonsterStats->pInfos[v1 + 1];
         actor.word_000086_some_monster_id = v1 + 1;
         actor.uActorRadius = pMonsterList->pMonsters[v1].uMonsterRadius;
         actor.uActorHeight = pMonsterList->pMonsters[v1].uMonsterHeight;
@@ -4862,7 +4861,7 @@ bool SpawnActor(unsigned int uMonsterID) {
             dword_5C6DF8 = 0;
             v6 = uNumActors++;
         }
-        memcpy(&pActors[v6], &actor, sizeof(Actor));
+        pActors[v6] = actor;
         pActors[v6].PrepareSprites(1);
         result = 1;
     }

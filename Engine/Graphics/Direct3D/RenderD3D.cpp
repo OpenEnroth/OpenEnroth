@@ -50,7 +50,7 @@ HRESULT __stdcall D3DDeviceEnumerator(
         strcpy(a6->pInfo[v7].pDescription, lpDeviceDesc);
 
         a6->pInfo[v7].pGUID = new GUID;
-        memcpy(a6->pInfo[v7].pGUID, lpGUID, 0x10);
+        *a6->pInfo[v7].pGUID = *lpGUID;
 
         a6->pInfo[v7].pDriverName = strdup(a6->ptr_4->pDriverName);
         a6->pInfo[v7].pDeviceDesc = strdup(a6->ptr_4->pDeviceDesc);
@@ -58,7 +58,7 @@ HRESULT __stdcall D3DDeviceEnumerator(
 
         if (a6->ptr_4->pGUID) {
             a6->pInfo[v7].pDirectDrawGUID = new GUID;
-            memcpy(a6->pInfo[v7].pDirectDrawGUID, a6->ptr_4->pGUID, 0x10);
+            *a6->pInfo[v7].pDirectDrawGUID = *a6->ptr_4->pGUID;
         } else {
             a6->pInfo[v7].pDirectDrawGUID = 0;
         }
@@ -90,7 +90,7 @@ int __stdcall RenderD3D__DeviceEnumerator(GUID *lpGUID, const char *lpDevDesc,
     strcpy(v20.pDeviceDesc, lpDevDesc);
     if (lpGUID) {
         v20.pGUID = new GUID;
-        memcpy(v20.pGUID, lpGUID, 0x10);
+        *v20.pGUID = *lpGUID;
     } else {
         v20.pGUID = 0;
     }
@@ -163,11 +163,11 @@ HRESULT __stdcall D3DZBufferFormatEnumerator(DDPIXELFORMAT *Src,
                                              DDPIXELFORMAT *Dst) {
     if (Src->dwFlags & (0x400 | 0x2000)) {
         if (Src->dwRGBBitCount == 16 && !Src->dwRBitMask) {
-            memcpy(Dst, Src, sizeof(DDPIXELFORMAT));
+            *Dst = *Src;
             return 0;
         }
         if (!Dst->dwSize) {
-            memcpy(Dst, Src, sizeof(DDPIXELFORMAT));
+            *Dst = *Src;
             return 1;
         }
     }

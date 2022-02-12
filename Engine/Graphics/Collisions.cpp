@@ -369,7 +369,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             face.uPolygonType = (PolygonType)mface.uPolygonType;
             face.uNumVertices = mface.uNumVertices;
             face.resource = mface.resource;
-            face.pVertexIDs = mface.pVertexIDs;
+            face.pVertexIDs = mface.pVertexIDs.data();
 
             if (face.Ethereal() || face.Portal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;
