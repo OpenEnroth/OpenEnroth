@@ -396,6 +396,13 @@ struct Engine {
         });
     }
 
+    inline void ToggleExtendedDrawDistance() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleExtendedDrawDistance();
+            });
+    }
+
     inline void SetMusicLevel(int level) {
         MutateConfig(
             [level](std::shared_ptr<EngineConfig> &cfg) {

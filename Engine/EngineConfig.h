@@ -83,6 +83,7 @@ class EngineConfig {
     inline void ToggleDebugPickedFace() { show_picked_face = !show_picked_face; }
     inline void ToggleDebugShowFPS() { show_fps = !show_fps; }
     inline void ToggleDebugSeasonsChange() { seasons_change = !seasons_change; }
+    inline void ToggleExtendedDrawDistance() { extended_draw_distance = !extended_draw_distance; }
     inline void ToggleFullscreen() { fullscreen = !fullscreen; }
 
     // DEBUG_SETTINGS_*
@@ -130,9 +131,11 @@ class EngineConfig {
     bool seasons_change = true;             // change sprites and tiles according to season
     bool allow_lightmaps = true;
     bool allow_snow = false;
-    bool extended_draw_distance = true;    // 2.5x draw distance
+    bool extended_draw_distance = false;    // 2.5x draw distance
     bool use_hwl_bitmaps = false;          // use low-res bitmaps from HWL files instead of hi-res ones from LODs
                                            // (note that we'll have a separate options for sprites)
+    bool show_unidentified_item = false;    // show unidentified items in green mask in inventory
+
     bool show_fps = false;
     bool show_picked_face = false;           // red flash face pointed by mouse
     bool debug_all_magic = false;            // toggle all spellbook

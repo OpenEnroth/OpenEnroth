@@ -283,23 +283,10 @@ void Render::RenderTerrainD3D() {  // New function
     }
 
 
-    int camx = pODMRenderParams->uMapGridCellX;
-    int camz = pODMRenderParams->uMapGridCellY - 1;
-    int tilerange = (pCamera3D->GetFarClip() / blockScale) + 3;
-
     float Light_tile_dist;
 
     for (unsigned int z = Start_Z; z < End_Z; ++z) {
         for (unsigned int x = Start_X; x < End_X; ++x) {
-            // tile culling
-            int xdist = camx - x;
-            int zdist = camz - z;
-
-            if (xdist > tilerange || zdist > tilerange) continue;
-
-            int dist = sqrt((xdist)*(xdist)+(zdist)*(zdist));
-            if (dist > tilerange) continue;  // crude distance culling
-
             struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
             pTilePolygon->flags = 0;
             pTilePolygon->field_32 = 0;
@@ -363,10 +350,11 @@ void Render::RenderTerrainD3D() {  // New function
             array_73D150[1].u = 0;
             array_73D150[1].v = 1;
 
-
-            pTilePolygon->uNumVertices = 4;
             // better tile culling
+            pTilePolygon->uNumVertices = 4;
             pCamera3D->CullFaceToCameraFrustum(array_73D150, &pTilePolygon->uNumVertices, array_73D150, 4);
+            pCamera3D->CullByNearClip(&array_73D150[0], &pTilePolygon->uNumVertices);
+            pCamera3D->CullByFarClip(&array_73D150[0], &pTilePolygon->uNumVertices);
             if (!pTilePolygon->uNumVertices) continue;
 
             // v58 = 0;
@@ -376,9 +364,6 @@ void Render::RenderTerrainD3D() {  // New function
             // pTilePolygon->uNumVertices = 4;
             pTilePolygon->field_59 = 5;
 
-            pCamera3D->CullByNearClip(&array_73D150[0], &pTilePolygon->uNumVertices);
-            pCamera3D->CullByFarClip(&array_73D150[0], &pTilePolygon->uNumVertices);
-            if (!pTilePolygon->uNumVertices) continue;
 
             //----------------------------------------------------------------------------
 
@@ -2395,7 +2380,7 @@ void Render::DrawProjectile(float srcX, float srcY, float a3, float a4,
                                                D3DCULL_CW));
 }
 
-void Render::_4A4CC9_AddSomeBillboard(SpellFX_Billboard *a1,
+void Render::BillboardSphereSpellFX(SpellFX_Billboard *a1,
                                       int diffuse) {
     if (a1->uNumVertices < 3) {
         return;
@@ -2817,7 +2802,7 @@ void Render::DrawTextureCustomHeight(float u, float v, class Image *image,
     delete bitmap;
 }
 
-void Render::DrawTextureNew(float u, float v, Image *bmp) {
+void Render::DrawTextureNew(float u, float v, Image *bmp, uint32_t colourmask) {
     DrawTextureCustomHeight(u, v, bmp, bmp->GetHeight());
 }
 
@@ -2926,6 +2911,12 @@ void Render::DrawTransparentGreenShade(float u, float v, Image *pTexture) {
 
 void Render::DrawTransparentRedShade(float u, float v, Image *a4) {
     DrawMasked(u, v, a4, 0, 0xF800);
+}
+
+inline uint32_t PixelDim(uint32_t pix, int dimming) {
+    return Color32((((pix >> 16) & 0xFF) >> dimming),
+        (((pix >> 8) & 0xFF) >> dimming),
+        ((pix & 0xFF) >> dimming));
 }
 
 void Render::DrawMasked(float u, float v, Image *pTexture,
@@ -3209,8 +3200,6 @@ void Render::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     }
 }
 
-void Render::ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture,
-                            int a5) {}
 
 void Render::DoRenderBillboards_D3D() {
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
@@ -3497,8 +3486,8 @@ unsigned short *Render::MakeScreenshot(int width, int height) {
     uint16_t *for_pixels;  // ebx@1
     DDSURFACEDESC2 Dst;    // [sp+4h] [bp-A0h]@6
 
-    float interval_x = game_viewport_width / (double)width;
-    float interval_y = game_viewport_height / (double)height;
+    int interval_x = game_viewport_width / (double)width;
+    int interval_y = game_viewport_height / (double)height;
 
     uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * height * width);
     memset(pPixels, 0, sizeof(uint16_t) * height * width);

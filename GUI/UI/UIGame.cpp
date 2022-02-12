@@ -2286,7 +2286,7 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(354, 248, "Show FPS", engine->config->show_fps);
 
     buttonbox(13, 275, "Seasons", engine->config->seasons_change);
-    buttonbox(127, 275, "Far Clip", pODMRenderParams->far_clip == 0x6000);
+    buttonbox(127, 275, "Far Clip", engine->config->extended_draw_distance);
     buttonbox(241, 275, "Gen Item", 2);
     buttonbox(354, 275, "Special Item", 2);
 

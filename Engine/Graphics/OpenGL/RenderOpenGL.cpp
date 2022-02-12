@@ -734,9 +734,57 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].texture = pSprite->texture;
 }
 
-void RenderOpenGL::_4A4CC9_AddSomeBillboard(
-    struct SpellFX_Billboard *a1, int diffuse) {
-    __debugbreak();
+//----- (004A4CC9) ---------------------------------------
+void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) {
+    // fireball / implosion sphere
+    //__debugbreak();
+
+    // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
+
+    if (a1->uNumVertices < 3) {
+        return;
+    }
+
+    float depth = 1000000.0;
+    for (uint i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
+        if (a1->field_104[i].z < depth) {
+            depth = a1->field_104[i].z;
+        }
+    }
+
+    unsigned int v5 = Billboard_ProbablyAddToListAndSortByZOrder(depth);
+    pBillboardRenderListD3D[v5].field_90 = 0;
+    pBillboardRenderListD3D[v5].sParentBillboardID = -1;
+    pBillboardRenderListD3D[v5].opacity = RenderBillboardD3D::Opaque_2;
+    pBillboardRenderListD3D[v5].texture = 0;
+    pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
+    pBillboardRenderListD3D[v5].z_order = depth;
+
+    for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
+        pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
+        pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
+        pBillboardRenderListD3D[v5].pQuads[i].pos.z = a1->field_104[i].z;
+
+        float rhw = 1.f / a1->field_104[i].z;
+        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pCamera3D->GetFarClip());
+
+        double v10 = a1->field_104[i].z;
+        v10 *= 1000.f / pCamera3D->GetFarClip();
+
+        pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;
+
+        int v12;
+        if (diffuse & 0xFF000000) {
+            v12 = a1->field_104[i].diffuse;
+        } else {
+            v12 = diffuse;
+        }
+        pBillboardRenderListD3D[v5].pQuads[i].diffuse = v12;
+        pBillboardRenderListD3D[v5].pQuads[i].specular = 0;
+
+        pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.0;
+        pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.0;
+    }
 }
 
 void RenderOpenGL::DrawBillboardList_BLV() {
@@ -775,8 +823,123 @@ void RenderOpenGL::DrawBillboardList_BLV() {
 void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
                                   float dstX, float dstY, float a7, float a8,
                                   Texture *texture) {
-    __debugbreak();
+    // a3 - src worldviewx
+    // a4 - src fov / worldview
+    // a7 - dst worldview
+    // a8 - dst fov / worldview
+
+    // TODO(pskelton): fix properly - sometimes half disappears
+
+    // billboards projectile - lightning bolt
+
+    double v20;  // st4@8
+    double v21;  // st4@10
+    double v22;  // st4@10
+    double v23;  // st4@10
+    double v25;  // st4@11
+    double v26;  // st4@13
+    double v28;  // st4@13
+
+
+    TextureOpenGL *textured3d = (TextureOpenGL *)texture;
+
+    int xDifference = bankersRounding(dstX - srcX);
+    int yDifference = bankersRounding(dstY - srcY);
+    int absYDifference = abs(yDifference);
+    int absXDifference = abs(xDifference);
+    unsigned int smallerabsdiff = std::min(absXDifference, absYDifference);
+    unsigned int largerabsdiff = std::max(absXDifference, absYDifference);
+
+    // distance approx
+    int v32 = (11 * smallerabsdiff >> 5) + largerabsdiff;
+
+    double v16 = 1.0 / (double)v32;
+    double srcxmod = (double)yDifference * v16 * a4;
+    double srcymod = (double)xDifference * v16 * a4;
+
+    v20 = a3 * 1000.0 / pCamera3D->GetFarClip();
+    v25 = a7 * 1000.0 / pCamera3D->GetFarClip();
+
+    v21 = 1.0 / a3;
+    v22 = (double)yDifference * v16 * a8;
+    v23 = (double)xDifference * v16 * a8;
+    v26 = 1.0 - 1.0 / v25;
+    v28 = 1.0 / a7;
+
+    RenderVertexD3D3 v29[4];
+    v29[0].pos.x = srcX + srcxmod;
+    v29[0].pos.y = srcY - srcymod;
+    v29[0].pos.z = 1.0 - 1.0 / v20;
+    v29[0].rhw = v21;
+    v29[0].diffuse = -1;
+    v29[0].specular = 0;
+    v29[0].texcoord.x = 1.0;
+    v29[0].texcoord.y = 0.0;
+
+    v29[1].pos.x = v22 + dstX;
+    v29[1].pos.y = dstY - v23;
+    v29[1].pos.z = v26;
+    v29[1].rhw = v28;
+    v29[1].diffuse = -16711936;
+    v29[1].specular = 0;
+    v29[1].texcoord.x = 1.0;
+    v29[1].texcoord.y = 1.0;
+
+    v29[2].pos.x = dstX - v22;
+    v29[2].pos.y = v23 + dstY;
+    v29[2].pos.z = v26;
+    v29[2].rhw = v28;
+    v29[2].diffuse = -1;
+    v29[2].specular = 0;
+    v29[2].texcoord.x = 0.0;
+    v29[2].texcoord.y = 1.0;
+
+    v29[3].pos.x = srcX - srcxmod;
+    v29[3].pos.y = srcymod + srcY;
+    v29[3].pos.z = v29[0].pos.z;
+    v29[3].rhw = v21;
+    v29[3].diffuse = -1;
+    v29[3].specular = 0;
+    v29[3].texcoord.x = 0.0;
+    v29[3].texcoord.y = 0.0;
+
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE);
+
+    // ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE));
+    glDepthMask(GL_FALSE);
+    glDisable(GL_CULL_FACE);
+
+    if (textured3d) {
+        glBindTexture(GL_TEXTURE_2D, textured3d->GetOpenGlTexture());
+    } else {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    glBegin(GL_TRIANGLE_FAN);
+
+    for (uint i = 0; i < 4; ++i) {
+        glColor4f(1, 1, 1, 1.0f);  // ????
+        glTexCoord2f(v29[i].texcoord.x, v29[i].texcoord.y);
+        glVertex3f(v29[i].pos.x, v29[i].pos.y, v29[i].pos.z);
+    }
+
+
+
+    glEnd();
+
+    drawcalls++;
+
+    glDisable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ZERO);
+
+
+    //ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
+    glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
 }
+
 void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
 
 
@@ -833,13 +996,6 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     while ((err = glGetError()) != GL_NO_ERROR) {
         log->Warning("OpenGL: draw image error: (%u)", err);
     }
-}
-
-
-void RenderOpenGL::ZBuffer_Fill_2(signed int a2, signed int a3, Image *pTexture,
-                                  int a5) {
-    // __debugbreak();
-    // blank in d3d
 }
 
 
@@ -1071,36 +1227,20 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
 //    __debugbreak();
 //}
 
-inline uint32_t PixelDim(uint32_t pix, int dimming) {
-    return Color32((((pix >> 16) & 0xFF) >> dimming),
-        (((pix >> 8) & 0xFF) >> dimming),
-        ((pix & 0xFF) >> dimming));
-}
+void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, unsigned __int16 mask) {
+    uint col = Color32(255, 255, 255);
 
-void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level,
-                              unsigned __int16 mask) {
-    if (!pTexture) {
-        return;
-    }
-    uint32_t width = pTexture->GetWidth();
-    uint32_t *pixels = (uint32_t *)pTexture->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-    // Image *temp = Image::Create(width, pTexture->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
-    // uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-    int x = window->GetWidth() * u;
-    int y = window->GetHeight() * v;
+    if (mask)
+        col = Color32(mask);
 
-    for (unsigned int dy = 0; dy < pTexture->GetHeight(); ++dy) {
-        for (unsigned int dx = 0; dx < width; ++dx) {
-            if (*pixels & 0xFF000000) {
-                if ((x + dx) < window->GetWidth() && (y + dy) < window->GetHeight()) {
-                    render_target_rgb[x + dx + window->GetWidth() * (y + dy)] = PixelDim(*pixels, color_dimming_level) & Color32(mask);
-                }
-            }
-            ++pixels;
-        }
-    }
-    // render->DrawTextureAlphaNew(u, v, temp);
-    // temp->Release();;
+    float r = ((col >> 16) & 0xFF) & (0xFF>> color_dimming_level);
+    float g = ((col >> 8) & 0xFF) & (0xFF >> color_dimming_level);
+    float b = ((col) & 0xFF) & (0xFF >> color_dimming_level);
+
+    col = Color32(r, g, b);
+
+    DrawTextureNew(u, v, pTexture, col);
+    return;
 }
 
 
@@ -1124,21 +1264,22 @@ bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
 unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
     GLubyte* sPixels = new GLubyte[3 * window->GetWidth() * window->GetHeight()];
 
+    BeginSceneD3D();
+
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         pIndoor->Draw();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         pOutdoor->Draw();
     }
 
-    if (uCurrentlyLoadedLevelType != LEVEL_null)
-        DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
+    DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
     glReadPixels(0, 0, window->GetWidth(), window->GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, sPixels);
 
     uint16_t *for_pixels;  // ebx@1
 
-    float interval_x = game_viewport_width / (double)width;
-    float interval_y = game_viewport_height / (double)height;
+    int interval_x = game_viewport_width / (double)width;
+    int interval_y = game_viewport_height / (double)height;
 
     uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * height * width);
     memset(pPixels, 0, sizeof(uint16_t) * height * width);
@@ -1764,8 +1905,8 @@ void _set_3d_projection_matrix() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    // ogl uses fov in Y
-    gluPerspective(pCamera3D->fov_y_deg, double(game_viewport_width/double(game_viewport_height)), near_clip, far_clip);
+    // ogl uses fov in Y - this func has known bug where it misses aspect divsion hence multiplying it to clip distances
+    gluPerspective(pCamera3D->fov_y_deg, pCamera3D->aspect, near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
 }
 
 void _set_3d_modelview_matrix() {
@@ -1773,15 +1914,14 @@ void _set_3d_modelview_matrix() {
     glLoadIdentity();
     glScalef(-1.0f, 1.0f, -1.0f);
 
-    int camera_x = pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    int camera_y = pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0);
-    int camera_z = pParty->vPosition.z + pParty->sEyelevel;
+    float camera_x = pCamera3D->vCameraPos.x;
+    float camera_y = pCamera3D->vCameraPos.y;
+    float camera_z = pCamera3D->vCameraPos.z;
 
     gluLookAt(camera_x, camera_y, camera_z,
-
-              camera_x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0f),
-              camera_y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0f),
-              camera_z - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationY / 2048.0f),
+              camera_x - cosf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
+              camera_y - sinf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
+              camera_z - tanf(2.0 * pi_double * (float)-pCamera3D->sRotationY / 2048.0f),
               0, 0, 1);
 }
 
@@ -1878,26 +2018,11 @@ void RenderOpenGL::RenderTerrainD3D() {
     }
 
 
-
-    // tile culling maths
-    int camx = WorldPosToGridCellX(pCamera3D->vCameraPos.x);
-    int camy = WorldPosToGridCellY(pCamera3D->vCameraPos.y);
-    int tilerange = (pCamera3D->GetFarClip() / terrain_block_scale) + 3;
-
     float Light_tile_dist;
 
 
     for (int z = Start_Z; z < End_Z; ++z) {
         for (int x = Start_X; x < End_X; ++x) {
-            // tile culling
-            int xdist = camx - x;
-            int zdist = camy - z;
-
-            if (xdist > tilerange || zdist > tilerange) continue;
-
-            int dist = sqrt((xdist) * (xdist) + (zdist) * (zdist));
-            if (dist > tilerange) continue;  // crude distance culling
-
             struct Polygon* pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
             pTilePolygon->flags = 0;
             pTilePolygon->field_32 = 0;
@@ -1932,9 +2057,11 @@ void RenderOpenGL::RenderTerrainD3D() {
             array_73D150[1].u = 0;
             array_73D150[1].v = 1;
 
-            pTilePolygon->uNumVertices = 4;
             // better tile culling
+            pTilePolygon->uNumVertices = 4;
             pCamera3D->CullFaceToCameraFrustum(array_73D150, &pTilePolygon->uNumVertices, array_73D150, 4);
+            pCamera3D->CullByNearClip(&array_73D150[0], &pTilePolygon->uNumVertices);
+            pCamera3D->CullByFarClip(&array_73D150[0], &pTilePolygon->uNumVertices);
             if (!pTilePolygon->uNumVertices) continue;
 
             pTilePolygon->pODMFace = nullptr;
@@ -2688,7 +2815,7 @@ void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
 //----- (004A1C1E) --------------------------------------------------------
 void RenderOpenGL::DoRenderBillboards_D3D() {
     glEnable(GL_BLEND);
-    glDepthMask(GL_TRUE);
+    glDepthMask(GL_FALSE);  // in theory billboards all sorted by depth so dont cull by depth test
     glDisable(GL_CULL_FACE);  // some quads are reversed to reuse sprites opposite hand
     glEnable(GL_TEXTURE_2D);
 
@@ -2700,24 +2827,18 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
         }
 
-        auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
-        glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+        float gltexid = 0;
+        if (pBillboardRenderListD3D[i].texture) {
+            auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
+            gltexid = texture->GetOpenGlTexture();
+        }
+
+        glBindTexture(GL_TEXTURE_2D, gltexid);
 
         glBegin(GL_TRIANGLE_FAN);
         {
             auto billboard = &pBillboardRenderListD3D[i];
             auto b = &pBillboardRenderList[i];
-
-            // since OpenGL 1.0 can't mirror texture borders, we should offset
-            // UV to avoid black edges
-            billboard->pQuads[0].texcoord.x += 0.5f / texture->GetWidth();
-            billboard->pQuads[0].texcoord.y += 0.5f / texture->GetHeight();
-            billboard->pQuads[1].texcoord.x += 0.5f / texture->GetWidth();
-            billboard->pQuads[1].texcoord.y -= 0.5f / texture->GetHeight();
-            billboard->pQuads[2].texcoord.x -= 0.5f / texture->GetWidth();
-            billboard->pQuads[2].texcoord.y -= 0.5f / texture->GetHeight();
-            billboard->pQuads[3].texcoord.x -= 0.5f / texture->GetWidth();
-            billboard->pQuads[3].texcoord.y += 0.5f / texture->GetHeight();
 
             for (unsigned int j = 0; j < billboard->uNumVertices; ++j) {
                 glColor4f(
@@ -2729,14 +2850,14 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
                 glTexCoord2f(billboard->pQuads[j].texcoord.x,
                              billboard->pQuads[j].texcoord.y);
 
-                float oneoz = 1. / (billboard->screen_space_z);
-                float oneon = 1. / (pCamera3D->GetNearClip()+4);
-                float oneof = 1. / pCamera3D->GetFarClip();
+                float oneoz = 1. / billboard->screen_space_z;
+                float oneon = 1. / (pCamera3D->GetNearClip() * pCamera3D->aspect * 2);
+                float oneof = 1. / (pCamera3D->GetFarClip() * pCamera3D->aspect);
 
                 glVertex3f(
                     billboard->pQuads[j].pos.x,
                     billboard->pQuads[j].pos.y,
-                    (oneoz - oneon)/(oneof - oneon) );  // depth is  non linear  proportional to reciprocal of distance
+                    (oneoz - oneon)/(oneof - oneon));  // depth is  non linear  proportional to reciprocal of distance
             }
         }
         drawcalls++;
@@ -2844,7 +2965,7 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
     return;
 }
 
-void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
+void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
     if (!tex) __debugbreak();
 
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(tex);
@@ -2853,8 +2974,12 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex) {
         return;
     }
 
+    float r = ((colourmask >> 16) & 0xFF) / 255.0f;
+    float g = ((colourmask >> 8) & 0xFF) / 255.0f;
+    float b = ((colourmask >> 0) & 0xFF) / 255.0f;
+
     glEnable(GL_TEXTURE_2D);
-    glColor3f(1, 1, 1);
+    glColor3f(r, g, b);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
