@@ -26,3 +26,5 @@ lib
 # patch artifacts
 *.orig
 *.rej
+*.diff
+*.patch
