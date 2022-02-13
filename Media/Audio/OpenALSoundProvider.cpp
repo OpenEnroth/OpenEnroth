@@ -449,7 +449,7 @@ class AudioTrackS16 : public IAudioTrack {
  protected:
     void Close();
     void DrainBuffers();
-    void Update();
+    bool Update();
 
     PAudioDataSource pDataSource;
     CallBackTimer updater;
@@ -513,7 +513,10 @@ bool AudioTrackS16::Play() {
         return true;
     }
 
-    Update();
+    if (!Update()) {
+        Close();
+        return false;
+    }
 
     alSourcePlay(al_source);
     if (CheckError()) {
@@ -627,37 +630,42 @@ void AudioTrackS16::DrainBuffers() {
     delete[] processed_buffer_ids;
 }
 
-void AudioTrackS16::Update() {
+bool AudioTrackS16::Update() {
     DrainBuffers();
 
     while (uiReservedData < uiReservedDataMinimum) {
         PMemBuffer buffer = pDataSource->GetNextBuffer();
 
         if (!buffer) {
-            return;
+            pDataSource->Close();
+            if (!pDataSource->Open())
+                return false;
+
+            buffer = pDataSource->GetNextBuffer();
+            if (!buffer)
+                return false;
         }
 
         ALuint al_buffer = -1;
         alGenBuffers(1, &al_buffer);
         if (CheckError()) {
-            Close();
-            return;
+            return false;
         }
 
         alBufferData(al_buffer, al_format, buffer->GetData(), buffer->GetSize(), al_sample_rate);
         if (CheckError()) {
-            Close();
-            return;
+            return false;
         }
 
         alSourceQueueBuffers(al_source, 1, &al_buffer);
         if (CheckError()) {
-            Close();
-            return;
+            return false;
         }
 
         uiReservedData += buffer->GetSize();
     }
+
+    return true;
 }
 
 PAudioTrack CreateAudioTrack(const std::string &file_path) {

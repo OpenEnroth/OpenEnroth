@@ -1119,6 +1119,8 @@ void AudioBaseDataSource::Close() {
         avformat_close_input(&pFormatContext);
         pFormatContext = nullptr;
     }
+
+    bOpened = false;
 }
 
 size_t AudioBaseDataSource::GetSampleRate() {
