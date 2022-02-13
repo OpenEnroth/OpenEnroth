@@ -239,7 +239,11 @@ void LoadGame(unsigned int uSlot) {
         pParty->sRotationZ = engine->config->turn_speed * pParty->sRotationZ / engine->config->turn_speed;
     }
     MM7Initialization();
+
+    // TODO: disable flashing for all books until we save state to savegame file
     bFlashQuestBook = false;
+    bFlashAutonotesBook = false;
+    bFlashHistoryBook = false;
     viewparams->bRedrawGameUI = true;
 }
 

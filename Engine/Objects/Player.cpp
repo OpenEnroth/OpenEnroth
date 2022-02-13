@@ -1684,12 +1684,9 @@ int Player::StealFromActor(
         actroPtr->SetRandomGoldIfTheresNoItem();  // add some gold
 
     unsigned int stealskill = this->GetActualSkillLevel(PLAYER_SKILL_STEALING);
-    unsigned int stealingMastery =
-        this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
-    int currMaxItemValue = StealingRandomBonuses[rand() % 5] +
-                           stealskill * StealingMasteryBonuses[stealingMastery];
-    int fineIfFailed =
-        actroPtr->pMonsterInfo.uLevel + 100 * (_steal_perm + reputation);
+    unsigned int stealingMastery = this->GetActualSkillMastery(PLAYER_SKILL_STEALING);
+    int currMaxItemValue = StealingRandomBonuses[rand() % 5] + stealskill * StealingMasteryBonuses[stealingMastery];
+    int fineIfFailed = actroPtr->pMonsterInfo.uLevel + 100 * (_steal_perm + reputation);
 
     if (rand() % 100 < 5 || fineIfFailed > currMaxItemValue ||
         actroPtr->ActorEnemy()) {  // busted
@@ -1714,14 +1711,9 @@ int Player::StealFromActor(
 
             unsigned int enchBonusSum = 0;  // how much to steal
             for (int i = 0; i < stealskill; i++)
-                enchBonusSum +=
-                    rand() % StealingEnchantmentBonusForSkill[stealingMastery] +
-                    1;  // add random stealing bonuses
+                enchBonusSum += rand() % StealingEnchantmentBonusForSkill[stealingMastery] + 1;  // add random stealing bonuses
 
-            int* enchTypePtr;
-            enchTypePtr = (int*)&actroPtr->ActorHasItems[3]
-                              .special_enchantment;  // this is the amount of
-                                                     // gold the actor has
+            int* enchTypePtr = (int*)&actroPtr->ActorHasItems[3].special_enchantment;  // actor has this amount of gold
 
             if ((int)enchBonusSum >= *enchTypePtr) {  // steal all the gold
                 enchBonusSum = *enchTypePtr;
@@ -1752,22 +1744,17 @@ int Player::StealFromActor(
             int randslot = rand() % 4;
             unsigned int carriedItemId = actroPtr->uCarriedItemID;
 
-            if (carriedItemId != 0 ||
-                actroPtr->ActorHasItems[randslot].uItemID != 0 &&
-                    actroPtr->ActorHasItems[randslot].GetItemEquipType() !=
-                        EQUIP_GOLD) {  // check we have an item to steal
-                if (carriedItemId != 0) {  // load item into tempitem
+            // check if we have an item to steal
+            if (carriedItemId != ITEM_NULL || actroPtr->ActorHasItems[randslot].uItemID != 0 && actroPtr->ActorHasItems[randslot].GetItemEquipType() != EQUIP_GOLD) {
+                if (carriedItemId != ITEM_NULL) {  // load item into tempitem
                     actroPtr->uCarriedItemID = 0;
                     tempItem.uItemID = carriedItemId;
-                    if (pItemsTable->pItems[carriedItemId].uEquipType ==
-                        EQUIP_WAND)
-                        tempItem.uNumCharges =
-                            rand() % 6 +
-                            pItemsTable->pItems[carriedItemId].uDamageMod + 1;
-                    else if (pItemsTable->pItems[carriedItemId].uEquipType ==
-                                 EQUIP_POTION &&
-                             carriedItemId != ITEM_POTION_BOTTLE)
+                    if (pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_WAND) {
+                        tempItem.uNumCharges = rand() % 6 + pItemsTable->pItems[carriedItemId].uDamageMod + 1;
+                        tempItem.uMaxCharges = tempItem.uNumCharges;
+                    } else if (pItemsTable->pItems[carriedItemId].uEquipType == EQUIP_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
                         tempItem.uEnchantmentType = 2 * rand() % 4 + 2;
+                    }
                 } else {
                     ItemGen* itemToSteal = &actroPtr->ActorHasItems[randslot];
                     memcpy(&tempItem, itemToSteal, sizeof(tempItem));
@@ -1775,24 +1762,13 @@ int Player::StealFromActor(
                     carriedItemId = tempItem.uItemID;
                 }
 
-                if (carriedItemId !=
-                    0) {  // looks odd in current context, but avoids accessing
-                          // zeroth element of pItemsTable->pItems
-
-                    __debugbreak();  // no %s stole %s fmt string
-                                     // the below would case a stack corruption
+                if (carriedItemId != ITEM_NULL) {
                     GameUI_SetStatusBar(
-                        LSTR_OFFICIAL,
+                        LSTR_FMT_S_STOLE_D_ITEM,
                         this->pName,
                         pItemsTable->pItems[carriedItemId].pUnidentifiedName
                     );
-
-                    pParty->PickedItem_PlaceInInventory_or_Drop();  // drop or place picked item
-
-                    memcpy(
-                        &pParty->pPickedItem, &tempItem,
-                        sizeof(ItemGen));
-                    mouse->SetCursorBitmapFromItemID(carriedItemId);
+                    pParty->SetHoldingItem(&tempItem);
                     return STEAL_SUCCESS;
                 }
             }
@@ -4680,17 +4656,12 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
     int actStat;                           // ebx@161
     int baseStat;                          // eax@161
 
-    if ((signed int)VarNum >= VAR_MapPersistentVariable_0 &&
-        VarNum <= VAR_MapPersistentVariable_74)
-        return (unsigned __int8)stru_5E4C90_MapPersistVars
-                   .field_0[VarNum - VAR_MapPersistentVariable_0] >
-               0;  // originally (unsigned __int8)byte_5E4C15[VarNum];
-    if ((signed int)VarNum >= VAR_MapPersistentVariable_75 &&
-        VarNum <= VAR_MapPersistentVariable_99)
-        return (unsigned __int8)stru_5E4C90_MapPersistVars
-                   ._decor_events[VarNum - VAR_MapPersistentVariable_75] >
-               0;  // not really sure whether the number gets up to 99, but
-                   // can't ignore the possibility
+    if ((signed int)VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74)
+        return (unsigned __int8)stru_5E4C90_MapPersistVars.field_0[VarNum - VAR_MapPersistentVariable_0] >= pValue;  // originally (unsigned __int8)byte_5E4C15[VarNum];
+
+    // not really sure whether the number gets up to 99, but can't ignore the possibility
+    if ((signed int)VarNum >= VAR_MapPersistentVariable_75 && VarNum <= VAR_MapPersistentVariable_99)
+        return (unsigned __int8)stru_5E4C90_MapPersistVars._decor_events[VarNum - VAR_MapPersistentVariable_75] >= pValue;
 
     switch (VarNum) {
         case VAR_Sex:
@@ -4720,8 +4691,7 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
         case VAR_Award:
             return _449B57_test_bit(this->_achieved_awards_bits, pValue);
         case VAR_Experience:
-            return this->uExperience >=
-                   pValue;  // TODO(_) change pValue to long long
+            return this->uExperience >= pValue;  // TODO(_) change pValue to long long
         case VAR_QBits_QuestsDone:
             return _449B57_test_bit(pParty->_quest_bits, pValue);
         case VAR_PlayerItemInHands:
@@ -5091,8 +5061,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
-            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] =
-                pParty->GetPlayingTime();
+            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
             if (pStorylineText->StoreLine[var_type - VAR_History_0].pText) {
                 bFlashHistoryBook = 1;
                 PlayAwardSound();
@@ -5101,27 +5070,18 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
         return;
     }
 
-    if (var_type >= VAR_MapPersistentVariable_0 &&
-        var_type <= VAR_MapPersistentVariable_99) {
-        if (var_type >= VAR_MapPersistentVariable_0 &&
-            var_type <= VAR_MapPersistentVariable_74)
-            stru_5E4C90_MapPersistVars
-                .field_0[var_type - VAR_MapPersistentVariable_0] =
-                (char)var_value;
-        if (var_type >= VAR_MapPersistentVariable_75 &&
-            var_type <= VAR_MapPersistentVariable_99)
-            stru_5E4C90_MapPersistVars
-                ._decor_events[var_type - VAR_MapPersistentVariable_75] =
-                (unsigned char)
-                    var_value;  // not really sure whether the number gets up to
-                                // 99, but can't ignore the possibility
+    if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_99) {
+        if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74)
+            stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] = (char)var_value;
+
+        // not really sure whether the number gets up to 99, but can't ignore the possibility
+        if (var_type >= VAR_MapPersistentVariable_75 && var_type <= VAR_MapPersistentVariable_99)
+            stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] = (unsigned char)var_value;
         return;
     }
 
-    if (var_type >= VAR_UnknownTimeEvent0 &&
-        var_type <= VAR_UnknownTimeEvent19) {
-        pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] =
-            pParty->GetPlayingTime();
+    if (var_type >= VAR_UnknownTimeEvent0 && var_type <= VAR_UnknownTimeEvent19) {
+        pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] = pParty->GetPlayingTime();
         PlayAwardSound();
         return;
     }
@@ -5203,7 +5163,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_QBits_QuestsDone:
-            if (!_449B57_test_bit(pParty->_quest_bits, var_value) && pQuestTable[var_value - 1]) {
+            if (!_449B57_test_bit(pParty->_quest_bits, var_value) && pQuestTable[var_value]) {
                 bFlashQuestBook = 1;
                 spell_fx_renderer->SetPlayerBuffAnim(0x96u, GetPlayerIndex());
                 PlayAwardSound();
@@ -5685,53 +5645,36 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
     ItemGen item;         // [sp+Ch] [bp-2Ch]@45
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
-        pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] =
-            pParty->GetPlayingTime();
+        pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] = pParty->GetPlayingTime();
         return;
     }
 
-    if (var_type >= VAR_UnknownTimeEvent0 &&
-        var_type <= VAR_UnknownTimeEvent19) {
-        pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] =
-            pParty->GetPlayingTime();
+    if (var_type >= VAR_UnknownTimeEvent0 && var_type <= VAR_UnknownTimeEvent19) {
+        pParty->PartyTimes._s_times[var_type - VAR_UnknownTimeEvent0] = pParty->GetPlayingTime();
         PlayAwardSound();
         return;
     }
 
-    if (var_type >= VAR_MapPersistentVariable_0 &&
-        var_type <= VAR_MapPersistentVariable_99) {
-        if (var_type >= VAR_MapPersistentVariable_0 &&
-            var_type <= VAR_MapPersistentVariable_74) {
-            if (255 - val >
-                stru_5E4C90_MapPersistVars
-                    .field_0[var_type - VAR_MapPersistentVariable_0])
-                stru_5E4C90_MapPersistVars
-                    .field_0[var_type - VAR_MapPersistentVariable_0] += val;
+    if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_99) {
+        if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74) {
+            if (255 - val > stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0])
+                stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] += val;
             else
-                stru_5E4C90_MapPersistVars
-                    .field_0[var_type - VAR_MapPersistentVariable_0] = 255;
+                stru_5E4C90_MapPersistVars.field_0[var_type - VAR_MapPersistentVariable_0] = 255;
         }
-        if ((signed int)var_type >= VAR_MapPersistentVariable_75 &&
-            var_type <= VAR_MapPersistentVariable_99) {
-            if (255 - val >
-                stru_5E4C90_MapPersistVars
-                    ._decor_events[var_type - VAR_MapPersistentVariable_75])
-                stru_5E4C90_MapPersistVars
-                    ._decor_events[var_type - VAR_MapPersistentVariable_75] +=
-                    val;
+        if ((signed int)var_type >= VAR_MapPersistentVariable_75 && var_type <= VAR_MapPersistentVariable_99) {
+            if (255 - val > stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75])
+                stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] += val;
             else
-                stru_5E4C90_MapPersistVars
-                    ._decor_events[var_type - VAR_MapPersistentVariable_75] =
-                    255;
+                stru_5E4C90_MapPersistVars._decor_events[var_type - VAR_MapPersistentVariable_75] = 255;
         }
         return;
     }
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
-            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] =
-                pParty->GetPlayingTime();
-            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText == 0) {
+            pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0] = pParty->GetPlayingTime();
+            if (pStorylineText->StoreLine[var_type - VAR_History_0].pText) {
                 bFlashHistoryBook = 1;
                 PlayAwardSound();
             }
@@ -7378,8 +7321,8 @@ void Player::OnInventoryLeftClick() {
                         (CastSpellInfo*)pGUIWindow_CastTargetedSpell->ptr_1C;
                     pSpellInfo->uFlags &= 0x7F;
                     pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
-                    pSpellInfo->spell_target_pid = enchantedItemPos;  // - 1;
-                    pSpellInfo->field_6 = (-1 - enchantedItemPos);    // check
+                    pSpellInfo->spell_target_pid = enchantedItemPos - 1;
+                    pSpellInfo->field_6 = this->GetItemMainInventoryIndex(invMatrixIndex);
                     ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
                     _50C9A0_IsEnchantingInProgress = 0;
 
@@ -7394,7 +7337,8 @@ void Player::OnInventoryLeftClick() {
                 return;
             }
 
-            if (ptr_50C9A4_ItemToEnchant) return;
+            if (ptr_50C9A4_ItemToEnchant)
+                return;
 
             pickedItemId = pParty->pPickedItem.uItemID;
             invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);

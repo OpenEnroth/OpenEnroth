@@ -457,7 +457,7 @@ struct BLVFace {  // 60h
     struct Plane_float_ pFacePlane {};
     struct Plane_int_ pFacePlane_old;
     PlaneZCalc_int64_ zCalc;
-    unsigned int uAttributes;
+    uint32_t uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
     int16_t *pYInterceptDisplacements;

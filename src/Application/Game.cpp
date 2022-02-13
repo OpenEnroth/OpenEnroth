@@ -2590,8 +2590,8 @@ void Game::EventLoop() {
                     engine->ToggleDebugNoActors();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
-                case UIMSG_DebugDrawDist:
-                    engine->ToggleDebugDrawDist();
+                case UIMSG_DebugExtendedDrawDistance:
+                    engine->ToggleExtendedDrawDistance();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugSnow:
@@ -2618,8 +2618,8 @@ void Game::EventLoop() {
                     engine->ToggleDebugSeasonsChange();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
-                case UIMSG_DebugFarClip:
-                    engine->ToggleExtendedDrawDistance();
+                case UIMSG_DebugVerboseLogging:
+                    engine->ToggleVerboseLogging();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 default:

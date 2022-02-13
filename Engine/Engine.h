@@ -217,6 +217,12 @@ struct Engine {
                 cfg->extended_draw_distance = extended_draw_distance;
             });
     }
+    inline void SetVerboseLogging(bool verbose_logging) {
+        MutateConfig(
+            [verbose_logging](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->verbose_logging = verbose_logging;
+            });
+    }
     inline void SetNoActors(bool no_actors) {
         MutateConfig(
             [no_actors](std::shared_ptr<EngineConfig> &cfg) {
@@ -347,13 +353,6 @@ struct Engine {
         });
     }
 
-    inline void ToggleDebugDrawDist() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugDrawDist();
-        });
-    }
-
     inline void ToggleDebugSnow() {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
@@ -400,6 +399,13 @@ struct Engine {
         MutateConfig(
             [](std::shared_ptr<EngineConfig> &cfg) {
                 cfg->ToggleExtendedDrawDistance();
+            });
+    }
+
+    inline void ToggleVerboseLogging() {
+        MutateConfig(
+            [](std::shared_ptr<EngineConfig> &cfg) {
+                cfg->ToggleVerboseLogging();
             });
     }
 

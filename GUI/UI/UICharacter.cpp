@@ -3228,8 +3228,8 @@ void OnPaperdollLeftClick() {
         if (!pitem) return;
         // pPlayers[uActiveCharacter]->get
 
-        // enchanting??
-        if (_50C9A0_IsEnchantingInProgress) {  // наложить закл на экипировку
+        // enchant / recharge item
+        if (_50C9A0_IsEnchantingInProgress) {
             /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
              *0x7Fu;//CastSpellInfo
              *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
@@ -3240,8 +3240,7 @@ void OnPaperdollLeftClick() {
             pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
             pSpellInfo->uFlags &= 0x7F;
             pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
-            pSpellInfo->spell_target_pid =
-                pPlayers[uActiveCharacter]->pEquipment.pIndices[pos];
+            pSpellInfo->spell_target_pid = pPlayers[uActiveCharacter]->pEquipment.pIndices[pos];
             pSpellInfo->field_6 = pEquipType;
 
             ptr_50C9A4_ItemToEnchant = pitem;
@@ -3254,8 +3253,7 @@ void OnPaperdollLeftClick() {
         } else {
             if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                 pParty->SetHoldingItem(pitem);
-                pPlayers[uActiveCharacter]
-                    ->pEquipment.pIndices[pitem->uBodyAnchor - 1] = 0;
+                pPlayers[uActiveCharacter]->pEquipment.pIndices[pitem->uBodyAnchor - 1] = 0;
                 pitem->Reset();
 
                 // pParty->SetHoldingItem(&pPlayers[uActiveCharacter]->pInventoryItemList[v34
