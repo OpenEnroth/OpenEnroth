@@ -1212,8 +1212,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
     // No face found - outside of level
     if (!NumFoundFaceStore) {
-        if (engine->config->verbose_logging)
-            logger->Warning("Sector fail");
+        logger->Warning("Sector fail");
 
         return 0;
     }
