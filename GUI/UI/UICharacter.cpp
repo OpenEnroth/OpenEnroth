@@ -926,14 +926,6 @@ void CharacterUI_DrawPaperdoll(Player *player) {
     ItemGen *item;              // edi@38
     int item_X;                 // ebx@38
     int index;                  // eax@65
-    Image *v59;                 // ebx@129
-    Image *v75;                 // ebx@170
-    Image *v94;                 // ebx@214
-    Image *v127;                // ebx@314
-    Image *v153;                // eax@370
-    char *v166;                 // [sp-8h] [bp-54h]@16
-    const char *container = nullptr;      // [sp-8h] [bp-54h]@79
-    char *v181;                 // [sp-8h] [bp-54h]@337
     int item_Y;                 // [sp+10h] [bp-3Ch]@38
     int pBodyComplection;       // [sp+24h] [bp-28h]@6
     bool two_handed_left_fist;  // [sp+34h] [bp-18h]@361
@@ -967,118 +959,34 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f,
                 papredoll_dbods[uPlayerID - 1], player->pEquipment.uArmor);
 
-        //Рука не занята или ...
-        if (!player->GetItem(&PlayerEquipment::uMainHand) ||
-            (player->GetMainHandItem()->GetItemEquipType() !=
-             EQUIP_TWO_HANDED) &&
-                (player->GetMainHandItem()->GetItemEquipType() !=
-                     PLAYER_SKILL_SPEAR ||
-                 player->GetItem(&PlayerEquipment::uShield)))
+        // Main Hand is empty or ...
+        if (!player->GetItem(&PlayerEquipment::uMainHand) || (player->GetMainHandItem()->GetItemEquipType() != EQUIP_TWO_HANDED) &&
+                (player->GetMainHandItem()->GetItemEquipType() != PLAYER_SKILL_SPEAR || player->GetItem(&PlayerEquipment::uShield)))
             render->DrawTextureAlphaNew(
-                (pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0]) /
-                    640.0f,
-                (pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1]) /
-                    480.0f,
+                (pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0]) / 640.0f,
+                (pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1]) / 480.0f,
                 papredoll_dlads[uPlayerID - 1]);
         // -----------------------------------------------------(Hand/Рука)---------------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uMainHand)) {
             item = player->GetMainHandItem();
-            item_X = pPaperdoll_BodyX +
-                     paperdoll_Weapon[pBodyComplection][1][0] -
-                     pItemsTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY +
-                     paperdoll_Weapon[pBodyComplection][1][1] -
-                     pItemsTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemsTable->pItems[item->uItemID].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemsTable->pItems[item->uItemID].uEquipY;
+
+            Texture *texture = NULL;
             if (item->uItemID == ITEM_BLASTER)
-                v166 = "item64v1";
-            else
-                v166 = item->GetIconName();
+                texture = assets->GetImage_Alpha("item64v1");
 
-            auto texture = assets->GetImage_Alpha(v166);
-
-            if (item->ItemEnchanted()) {
-                if (item->AuraEffectRed())
-                    container = "sptext01";
-                else if (item->AuraEffectBlue())
-                    container = "sp28a";
-                else if (item->AuraEffectGreen())
-                    container = "sp30a";
-                else if (item->AuraEffectPurple())
-                    container = "sp91a";
-                _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                if (_50C9A8_item_enchantment_timer <= 0) {
-                    _50C9A8_item_enchantment_timer = 0;
-                    item->ResetEnchantAnimation();
-                    ptr_50C9A4_ItemToEnchant = nullptr;
-                }
-                render->BlendTextures(
-                    item_X, item_Y, texture,
-                    assets->GetImage_ColorKey(container, render->teal_mask_16),
-                    OS_GetTime() / 10, 0,
-                    255);  // should this pass enchant timer?
-
-            } else if (item->uAttributes & ITEM_BROKEN) {
-                render->DrawTransparentRedShade(item_X / 640.0f,
-                    item_Y / 480.0f, texture);
-            } else if (item->uAttributes & ITEM_IDENTIFIED) {
-                render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f,
-                    texture);
-            } else {
-                render->DrawTransparentGreenShade(item_X / 640.0f,
-                    item_Y / 480.0f, texture);
-            }
-
-            if (!bRingsShownInCharScreen)
-                render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f,
-                                          texture,
-                                          player->pEquipment.uMainHand);
+            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uMainHand, texture);
         }
     } else {  // без акваланга
         // ----------------(Bow/
         // Лук)-------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uBow)) {
             item = player->GetBowItem();
-            item_X = pPaperdoll_BodyX +
-                     paperdoll_Weapon[pBodyComplection][2][0] -
-                     pItemsTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY +
-                     paperdoll_Weapon[pBodyComplection][2][1] -
-                     pItemsTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemsTable->pItems[item->uItemID].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemsTable->pItems[item->uItemID].uEquipY;
 
-            auto texture = assets->GetImage_Alpha(item->GetIconName());
-            if (item->ItemEnchanted()) {  // применён закл
-                if (item->AuraEffectRed())
-                    container = "sptext01";
-                else if (item->AuraEffectBlue())
-                    container = "sp28a";
-                else if (item->AuraEffectGreen())
-                    container = "sp30a";
-                else if (item->AuraEffectPurple())
-                    container = "sp91a";
-                _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                if (_50C9A8_item_enchantment_timer <= 0) {
-                    _50C9A8_item_enchantment_timer = 0;
-                    item->ResetEnchantAnimation();
-                    ptr_50C9A4_ItemToEnchant = nullptr;
-                }
-                render->BlendTextures(
-                    item_X, item_Y, texture,
-                    assets->GetImage_ColorKey(container, render->teal_mask_16),
-                    OS_GetTime() / 10, 0, 255);
-            } else if (item->uAttributes & ITEM_BROKEN) {
-                render->DrawTransparentRedShade(item_X / 640.0f,
-                    item_Y / 480.0f, texture);
-            } else if (!(item->uAttributes & ITEM_IDENTIFIED)) {
-                render->DrawTransparentGreenShade(item_X / 640.0f,
-                    item_Y / 480.0f, texture);
-            } else {  // опознанный лук
-                render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f,
-                    texture);
-            }
-
-            if (!bRingsShownInCharScreen)
-                render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f,
-                                          texture, player->pEquipment.uBow);
+            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBow);
         }
         // -----------------------------(Cloak/Плащ)---------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uCloak)) {
@@ -1104,46 +1012,11 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     break;
             }
             if (index >= 0 && index < 10) {
-                item_X = pPaperdoll_BodyX +
-                         paperdoll_Cloak[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY +
-                         paperdoll_Cloak[pBodyComplection][index][1];
+                item_X = pPaperdoll_BodyX + paperdoll_Cloak[pBodyComplection][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
 
-                if (item->ItemEnchanted()) {
-                    if (item->AuraEffectRed())
-                        container = "sptext01";
-                    else if (item->AuraEffectBlue())
-                        container = "sp28a";
-                    else if (item->AuraEffectGreen())
-                        container = "sp30a";
-                    else if (item->AuraEffectPurple())
-                        container = "sp91a";
-                    _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                    if (_50C9A8_item_enchantment_timer <= 0) {
-                        _50C9A8_item_enchantment_timer = 0;
-                        item->ResetEnchantAnimation();  // ~0x000000F0
-                        ptr_50C9A4_ItemToEnchant = nullptr;
-                    }
-                    render->BlendTextures(
-                        item_X, item_Y,
-                        paperdoll_cloak_texture[pBodyComplection][index],
-                        assets->GetImage_ColorKey(container, render->teal_mask_16),
-                        OS_GetTime() / 10, 0, 255);
-                } else if (item->uAttributes & ITEM_BROKEN) {
-                    render->DrawTransparentRedShade(
-                        item_X / 640.0f, item_Y / 480.0f,
-                        paperdoll_cloak_texture[pBodyComplection][index]);
-                } else {
-                    render->DrawTextureAlphaNew(
-                        item_X / 640.0f, item_Y / 480.0f,
-                        paperdoll_cloak_texture[pBodyComplection][index]);
-                }
-
-                if (!bRingsShownInCharScreen)
-                    render->ZDrawTextureAlpha(
-                        item_X / 640.0f, item_Y / 480.0f,
-                        paperdoll_cloak_texture[pBodyComplection][index],
-                        player->pEquipment.uCloak);
+                Texture *texture = (Texture *)paperdoll_cloak_texture[pBodyComplection][index];
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uCloak);
             }
         }
         // -------------------------------(Paperdoll/Кукла)-------------------------------------------
@@ -1171,122 +1044,44 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     break;
             }
             if (index >= 0 && index < 17) {
-                item_X = pPaperdoll_BodyX +
-                         paperdoll_Armor_Coord[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY +
-                         paperdoll_Armor_Coord[pBodyComplection][index][1];
+                item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
 
-                if (item->ItemEnchanted()) {
-                    if (item->AuraEffectRed())
-                        container = "sptext01";
-                    else if (item->AuraEffectBlue())
-                        container = "sp28a";
-                    else if (item->AuraEffectGreen())
-                        container = "sp30a";
-                    else if (item->AuraEffectPurple())
-                        container = "sp91a";
-                    _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                    if (_50C9A8_item_enchantment_timer <= 0) {
-                        _50C9A8_item_enchantment_timer = 0;
-                        item->ResetEnchantAnimation();  // ~0x000000F0
-                        ptr_50C9A4_ItemToEnchant = nullptr;
-                    }
-                    render->BlendTextures(
-                        item_X, item_Y,
-                        paperdoll_armor_texture[pBodyComplection][index][0],
-                        assets->GetImage_ColorKey(container, render->teal_mask_16),
-                        OS_GetTime() / 10, 0, 255);
-                } else if (item->uAttributes & ITEM_BROKEN) {
-                    render->DrawTransparentRedShade(
-                        item_X / 640.0f, item_Y / 480.0f,
-                        paperdoll_armor_texture[pBodyComplection][index][0]);
-                } else if (!(item->uAttributes & ITEM_IDENTIFIED)) {
-                    render->DrawTransparentGreenShade(
-                        item_X / 640.0f, item_Y / 480.0f,
-                        paperdoll_armor_texture[pBodyComplection][index][0]);
-                } else {
-                    render->DrawTextureAlphaNew(
-                        item_X / 640.0f, item_Y / 480.0f,
-                        paperdoll_armor_texture[pBodyComplection][index][0]);
-                }
-
-                if (!bRingsShownInCharScreen)
-                    render->ZDrawTextureAlpha(
-                        item_X / 640.0f, item_Y / 480.0f,
-                        paperdoll_armor_texture[pBodyComplection][index][0],
-                        player->pEquipment.uArmor);
+                Texture *texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][0];
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uArmor, texture);
             }
         }
         // ----------------------------------(Boot/Обувь)--------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uBoot)) {
             item = player->GetBootItem();
+            Texture *texture = NULL;
             switch (item->uItemID) {
                 case ITEM_ARTIFACT_HERMES_SANDALS:
                     index = 5;
-                    v59 = papredoll_flying_feet[player->uCurrentFace];
+                    texture = (Texture *)papredoll_flying_feet[player->uCurrentFace];
                     break;
                 case ITEM_ARTIFACT_LEAGUE_BOOTS:
                     index = 6;
-                    v59 = paperdoll_boots_texture[pBodyComplection][5];
+                    texture = (Texture *)paperdoll_boots_texture[pBodyComplection][5];
                     break;
                 default:
                     index = item->uItemID - 115;
-                    v59 = paperdoll_boots_texture[pBodyComplection][index];
+                    texture = (Texture *)paperdoll_boots_texture[pBodyComplection][index];
                     break;
             }
             if (index >= 0 && index < 7) {
-                item_X = pPaperdoll_BodyX +
-                         paperdoll_Boot[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY +
-                         paperdoll_Boot[pBodyComplection][index][1];
+                item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
 
-                if (item->ItemEnchanted()) {
-                    if (item->AuraEffectRed())
-                        container = "sptext01";
-                    else if (item->AuraEffectBlue())
-                        container = "sp28a";
-                    else if (item->AuraEffectGreen())
-                        container = "sp30a";
-                    else if (item->AuraEffectPurple())
-                        container = "sp91a";
-                    _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                    if (_50C9A8_item_enchantment_timer <= 0) {
-                        _50C9A8_item_enchantment_timer = 0;
-                        item->ResetEnchantAnimation();  // ~0x000000F0
-                        ptr_50C9A4_ItemToEnchant = nullptr;
-                    }
-                    render->BlendTextures(
-                        item_X, item_Y, v59,
-                        assets->GetImage_ColorKey(container, render->teal_mask_16),
-                        OS_GetTime() * 0.1, 0, 255);
-                } else if (item->uAttributes & ITEM_BROKEN) {
-                    render->DrawTransparentRedShade(item_X / 640.0f,
-                        item_Y / 480.0f, v59);
-                } else if (item->uAttributes & ITEM_IDENTIFIED) {
-                    render->DrawTextureAlphaNew(item_X / 640.0f,
-                        item_Y / 480.0f, v59);
-                } else {
-                    render->DrawTransparentGreenShade(item_X / 640.0f,
-                        item_Y / 480.0f, v59);
-                }
-
-                if (!bRingsShownInCharScreen)
-                    render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f,
-                                              v59, player->pEquipment.uBoot);
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBoot, texture);
             }
         }
         // --------------------------------------------(Hand/Рука)------------------------------------------------------
-        if (!player->GetItem(&PlayerEquipment::uMainHand) ||
-            (player->GetMainHandItem()->GetItemEquipType() !=
-             EQUIP_TWO_HANDED) &&
-                (player->GetMainHandItem()->GetPlayerSkillType() !=
-                     PLAYER_SKILL_SPEAR ||
-                 player->GetItem(&PlayerEquipment::uShield)))
+        if (!player->GetItem(&PlayerEquipment::uMainHand) || (player->GetMainHandItem()->GetItemEquipType() != EQUIP_TWO_HANDED) &&
+                (player->GetMainHandItem()->GetPlayerSkillType() != PLAYER_SKILL_SPEAR || player->GetItem(&PlayerEquipment::uShield)))
             render->DrawTextureAlphaNew(
-                (pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0]) /
-                    640.0f,
-                (pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1]) /
-                    480.0f,
+                (pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0]) / 640.0f,
+                (pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1]) / 480.0f,
                 papredoll_dlads[uPlayerID - 1]);
         // --------------------------------------------(Belt/Пояс)-------------------------------------------------------
         if (player->GetItem(&PlayerEquipment::uBelt)) {
@@ -1307,44 +1102,13 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                          paperdoll_Belt[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY +
                          paperdoll_Belt[pBodyComplection][index][1];
+                Texture *texture = NULL;
                 if (IsDwarf != 1 || index == 5)
-                    v75 = paperdoll_belt_texture[pBodyComplection][index];
+                    texture = (Texture *)paperdoll_belt_texture[pBodyComplection][index];
                 else
-                    v75 = paperdoll_belt_texture[pBodyComplection - 2][index];
+                    texture = (Texture *)paperdoll_belt_texture[pBodyComplection - 2][index];
 
-                if (item->ItemEnchanted()) {
-                    if (item->AuraEffectRed())
-                        container = "sptext01";
-                    else if (item->AuraEffectBlue())
-                        container = "sp28a";
-                    else if (item->AuraEffectGreen())
-                        container = "sp30a";
-                    else if (item->AuraEffectPurple())
-                        container = "sp91a";
-                    _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                    if (_50C9A8_item_enchantment_timer <= 0) {
-                        _50C9A8_item_enchantment_timer = 0;
-                        item->ResetEnchantAnimation();  // ~0x000000F0
-                        ptr_50C9A4_ItemToEnchant = nullptr;
-                    }
-                    render->BlendTextures(
-                        item_X, item_Y, v75,
-                        assets->GetImage_ColorKey(container, render->teal_mask_16),
-                        OS_GetTime() / 10, 0, 255);
-                } else if (item->uAttributes & ITEM_BROKEN) {
-                    render->DrawTransparentRedShade(item_X / 640.0f,
-                        item_Y / 480.0f, v75);
-                } else if (item->uAttributes & ITEM_IDENTIFIED) {
-                    render->DrawTextureAlphaNew(item_X / 640.0f,
-                        item_Y / 480.0f, v75);
-                } else {
-                    render->DrawTransparentGreenShade(item_X / 640.0f,
-                        item_Y / 480.0f, v75);
-                }
-
-                if (!bRingsShownInCharScreen)
-                    render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f,
-                                              v75, player->pEquipment.uBelt);
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBelt, texture);
             }
         }
         // --------------------------------(Shoulder/Плечи)---------------------------------------------
@@ -1375,116 +1139,30 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                              PLAYER_SKILL_SPEAR &&
                          !player->GetItem(
                              &PlayerEquipment::uShield))) {  // без щита
-                    v94 = paperdoll_armor_texture[pBodyComplection][index][2];
+                    Texture *texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][2];
                     if (paperdoll_armor_texture[pBodyComplection][index][2]) {
-                        v94 =
-                            paperdoll_armor_texture[pBodyComplection][index][1];
-                        item_X = pPaperdoll_BodyX +
-                                 paperdoll_shoulder_coord[pBodyComplection]
-                                                         [index][0];
-                        item_Y = pPaperdoll_BodyY +
-                                 paperdoll_shoulder_coord[pBodyComplection]
-                                                         [index][1];
+                        texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][1];
+                        item_X = pPaperdoll_BodyX + paperdoll_shoulder_coord[pBodyComplection][index][0];
+                        item_Y = pPaperdoll_BodyY + paperdoll_shoulder_coord[pBodyComplection][index][1];
                     } else {
-                        item_X =
-                            pPaperdoll_BodyX +
-                            paperdoll_shoulder_second_coord[pBodyComplection]
-                                                           [index][0];
-                        item_Y =
-                            pPaperdoll_BodyY +
-                            paperdoll_shoulder_second_coord[pBodyComplection]
-                                                           [index][1];
+                        item_X = pPaperdoll_BodyX + paperdoll_shoulder_second_coord[pBodyComplection][index][0];
+                        item_Y = pPaperdoll_BodyY + paperdoll_shoulder_second_coord[pBodyComplection][index][1];
                     }
-                    if (v94) {
-                        if (item->ItemEnchanted()) {
-                            if (paperdoll_armor_texture[pBodyComplection][index]
-                                                       [2]) {
-                                if (item->AuraEffectRed())
-                                    container = "sptext01";
-                                else if (item->AuraEffectBlue())
-                                    container = "sp28a";
-                                else if (item->AuraEffectGreen())
-                                    container = "sp30a";
-                                else if (item->AuraEffectPurple())
-                                    container = "sp91a";
-                                _50C9A8_item_enchantment_timer -=
-                                    pEventTimer->uTimeElapsed;
-                                if (_50C9A8_item_enchantment_timer <= 0) {
-                                    _50C9A8_item_enchantment_timer = 0;
-                                    item->ResetEnchantAnimation();  // ~0x000000F0
-                                    ptr_50C9A4_ItemToEnchant = nullptr;
-                                }
-                                render->BlendTextures(
-                                    item_X, item_Y, v94,
-                                    assets->GetImage_ColorKey(container, render->teal_mask_16),
-                                    OS_GetTime() / 10, 0, 255);
-                            }
-                        } else if (item->uAttributes & ITEM_BROKEN) {
-                            render->DrawTransparentRedShade(
-                                item_X / 640.0f, item_Y / 480.0f, v94);
-                        } else if (item->uAttributes & ITEM_IDENTIFIED) {
-                            render->DrawTextureAlphaNew(item_X / 640.0f,
-                                item_Y / 480.0f, v94);
-                        } else {
-                            render->DrawTransparentGreenShade(
-                                item_X / 640.0f, item_Y / 480.0f, v94);
-                        }
-                    }
-                } else {  // без ничего или с щитом
-                    // v94 =
-                    // paperdoll_armor_texture[pBodyComplection][index][1];
-                    if (paperdoll_armor_texture[pBodyComplection][index][1]) {
-                        item_X = pPaperdoll_BodyX +
-                                 paperdoll_shoulder_coord[pBodyComplection]
-                                                         [index][0];
-                        item_Y = pPaperdoll_BodyY +
-                                 paperdoll_shoulder_coord[pBodyComplection]
-                                                         [index][1];
 
-                        if (item->ItemEnchanted()) {
-                            if (item->AuraEffectRed())
-                                container = "sptext01";
-                            else if (item->AuraEffectBlue())
-                                container = "sp28a";
-                            else if (item->AuraEffectGreen())
-                                container = "sp30a";
-                            else if (item->AuraEffectPurple())
-                                container = "sp91a";
-                            _50C9A8_item_enchantment_timer -=
-                                pEventTimer->uTimeElapsed;
-                            if (_50C9A8_item_enchantment_timer <= 0) {
-                                _50C9A8_item_enchantment_timer = 0;
-                                item->ResetEnchantAnimation();  // ~0x000000F0
-                                ptr_50C9A4_ItemToEnchant = nullptr;
-                            }
-                            render->BlendTextures(
-                                item_X, item_Y,
-                                paperdoll_armor_texture[pBodyComplection][index]
-                                                       [1],
-                                assets->GetImage_ColorKey(container, render->teal_mask_16),
-                                OS_GetTime() / 10, 0, 255);
-                        } else if (item->uAttributes & ITEM_BROKEN) {
-                            render->DrawTransparentRedShade(
-                                item_X / 640.0f, item_Y / 480.0f,
-                                paperdoll_armor_texture[pBodyComplection][index]
-                                [1]);
-                        } else if (item->uAttributes & ITEM_IDENTIFIED) {
-                            render->DrawTextureAlphaNew(
-                                item_X / 640.0f, item_Y / 480.0f,
-                                paperdoll_armor_texture[pBodyComplection][index]
-                                [1]);
-                        } else {
-                            render->DrawTransparentGreenShade(
-                                item_X / 640.0f, item_Y / 480.0f,
-                                paperdoll_armor_texture[pBodyComplection][index]
-                                [1]);
-                        }
+                    CharacterUI_DrawItem(item_X, item_Y, item, 0, texture);
+                } else {  // без ничего или с щитом
+                    // v94 = paperdoll_armor_texture[pBodyComplection][index][1];
+                    if (paperdoll_armor_texture[pBodyComplection][index][1]) {
+                        item_X = pPaperdoll_BodyX + paperdoll_shoulder_coord[pBodyComplection][index][0];
+                        item_Y = pPaperdoll_BodyY + paperdoll_shoulder_coord[pBodyComplection][index][1];
+
+                        Texture *texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][1];
+                        CharacterUI_DrawItem(item_X, item_Y, item, 0, texture);
                     }
                 }
             }
         }
-        // ----------------------------------------------(Cloak collar/воротник
-        // плаща)-------------------------------------
+        // ----------------------------------------------(Cloak collar/воротник плаща)-------------------------------------
         if (player->GetItem(&PlayerEquipment::uCloak)) {
             item = player->GetCloakItem();
             switch (item->uItemID) {
@@ -1514,45 +1192,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 // int r = pIcons_LOD->FindTextureByName("item325v2a1");
 
                 if (paperdoll_cloak_collar_texture[pBodyComplection][index]) {
-                    if (item->ItemEnchanted()) {
-                        if (item->AuraEffectRed())
-                            container = "sptext01";
-                        else if (item->AuraEffectBlue())
-                            container = "sp28a";
-                        else if (item->AuraEffectGreen())
-                            container = "sp30a";
-                        else if (item->AuraEffectPurple())
-                            container = "sp91a";
-                        _50C9A8_item_enchantment_timer -=
-                            pEventTimer->uTimeElapsed;
-                        if (_50C9A8_item_enchantment_timer <= 0) {
-                            _50C9A8_item_enchantment_timer = 0;
-                            item->ResetEnchantAnimation();  // ~0x000000F0
-                            ptr_50C9A4_ItemToEnchant = nullptr;
-                        }
-                        render->BlendTextures(
-                            item_X, item_Y,
-                            paperdoll_cloak_collar_texture[pBodyComplection][index],
-                            assets->GetImage_ColorKey(container, render->teal_mask_16),
-                            OS_GetTime() / 10, 0, 255);
-                    } else if (item->uAttributes & ITEM_BROKEN) {
-                        render->DrawTransparentRedShade(
-                            item_X / 640.0f, item_Y / 480.0f,
-                            paperdoll_cloak_collar_texture[pBodyComplection]
-                            [index]);
-                    } else {
-                        render->DrawTextureAlphaNew(
-                            item_X / 640.0f, item_Y / 480.0f,
-                            paperdoll_cloak_collar_texture[pBodyComplection]
-                            [index]);
-                    }
-
-                    if (!bRingsShownInCharScreen)
-                        render->ZDrawTextureAlpha(
-                            item_X / 640.0f, item_Y / 480.0f,
-                            paperdoll_cloak_collar_texture[pBodyComplection]
-                                                          [index],
-                            player->pEquipment.uCloak);
+                    Texture *texture = (Texture *)paperdoll_cloak_collar_texture[pBodyComplection][index];
+                    CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uCloak, texture);
                 }
             }
         }
@@ -1560,12 +1201,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
             if (paperdoll_dbrds[player->uCurrentFace])
                 render->DrawTextureAlphaNew(
-                    (pPaperdoll_BodyX +
-                     pPaperdoll_Beards[2 * player->uCurrentFace - 24]) /
-                        640.0f,
-                    (pPaperdoll_BodyY +
-                     pPaperdoll_Beards[2 * player->uCurrentFace - 23]) /
-                        480.0f,
+                    (pPaperdoll_BodyX + pPaperdoll_Beards[2 * player->uCurrentFace - 24]) / 640.0f,
+                    (pPaperdoll_BodyY + pPaperdoll_Beards[2 * player->uCurrentFace - 23]) / 480.0f,
                     paperdoll_dbrds[player->uCurrentFace]);
         }
         // --------------------------------------------(Helm/Шлем)------------------------------------------------------------
@@ -1595,45 +1232,14 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                          paperdoll_Helm[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY +
                          paperdoll_Helm[pBodyComplection][index][1];
+
+                Texture *texture = NULL;
                 if (IsDwarf != 1 || item->uItemID != ITEM_92)
-                    v127 =
-                        paperdoll_helm_texture[player->GetSexByVoice()][index];
+                    texture = (Texture *)paperdoll_helm_texture[player->GetSexByVoice()][index];
                 else
-                    v127 = paperdoll_dbrds[11];
+                    texture = (Texture *)paperdoll_dbrds[11];
 
-                if (item->ItemEnchanted()) {
-                    if (item->AuraEffectRed())
-                        container = "sptext01";
-                    else if (item->AuraEffectBlue())
-                        container = "sp28a";
-                    else if (item->AuraEffectGreen())
-                        container = "sp30a";
-                    else if (item->AuraEffectPurple())
-                        container = "sp91a";
-                    _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                    if (_50C9A8_item_enchantment_timer <= 0) {
-                        _50C9A8_item_enchantment_timer = 0;
-                        item->ResetEnchantAnimation();
-                        ptr_50C9A4_ItemToEnchant = nullptr;
-                    }
-                    render->BlendTextures(
-                        item_X, item_Y, v127,
-                        assets->GetImage_ColorKey(container, render->teal_mask_16),
-                        OS_GetTime() / 10, 0, 255);
-                } else if (item->uAttributes & ITEM_BROKEN) {
-                    render->DrawTransparentRedShade(item_X / 640.0f,
-                        item_Y / 480.0f, v127);
-                } else if (item->uAttributes & ITEM_IDENTIFIED) {
-                    render->DrawTextureAlphaNew(item_X / 640.0f,
-                        item_Y / 480.0f, v127);
-                } else {
-                    render->DrawTransparentGreenShade(item_X / 640.0f,
-                        item_Y / 480.0f, v127);
-                }
-
-                if (!bRingsShownInCharScreen)
-                    render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f,
-                                              v127, player->pEquipment.uHelm);
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uHelm, texture);
             }
         }
         // ------------------------------------------------(Hand3/Рука3)-------------------------------------------
@@ -1645,47 +1251,12 @@ void CharacterUI_DrawPaperdoll(Player *player) {
             item_Y = pPaperdoll_BodyY +
                      paperdoll_Weapon[pBodyComplection][1][1] -
                      pItemsTable->pItems[item->uItemID].uEquipY;
+
+            Texture *texture = NULL;
             if (item->uItemID == ITEM_BLASTER)
-                v181 = "item64v1";
-            else
-                v181 = item->GetIconName();
+                texture = assets->GetImage_Alpha("item64v1");
 
-            auto texture = assets->GetImage_Alpha(v181);
-
-            if (item->ItemEnchanted()) {
-                if (item->AuraEffectRed())
-                    container = "sptext01";
-                else if (item->AuraEffectBlue())
-                    container = "sp28a";
-                else if (item->AuraEffectGreen())
-                    container = "sp30a";
-                else if (item->AuraEffectPurple())
-                    container = "sp91a";
-                _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                if (_50C9A8_item_enchantment_timer <= 0) {
-                    _50C9A8_item_enchantment_timer = 0;
-                    item->ResetEnchantAnimation();
-                    ptr_50C9A4_ItemToEnchant = nullptr;
-                }
-                render->BlendTextures(
-                    item_X, item_Y, texture,
-                    assets->GetImage_ColorKey(container, render->teal_mask_16),
-                    OS_GetTime() / 10, 0, 255);
-            } else if (item->uAttributes & ITEM_BROKEN) {
-                render->DrawTransparentRedShade(item_X / 640.0f,
-                    item_Y / 480.0f, texture);
-            } else if (item->uAttributes & ITEM_IDENTIFIED) {
-                render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f,
-                    texture);
-            } else {
-                render->DrawTransparentGreenShade(item_X / 640.0f,
-                    item_Y / 480.0f, texture);
-            }
-
-            if (!bRingsShownInCharScreen)
-                render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f,
-                                          texture,
-                                          player->pEquipment.uMainHand);
+            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uMainHand, texture);
         }
         // --------------------------------------------------(Shield/Щит)---------------------------------------------
         if (player->GetItem(&PlayerEquipment::uShield)) {
@@ -1707,12 +1278,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                         item_Y = 33;
                         break;
                     default:
-                        item_X = pPaperdoll_BodyX +
-                                 paperdoll_Weapon[pBodyComplection][0][0] -
-                                 pItemsTable->pItems[item->uItemID].uEquipX;
-                        item_Y = pPaperdoll_BodyY +
-                                 paperdoll_Weapon[pBodyComplection][0][1] -
-                                 pItemsTable->pItems[item->uItemID].uEquipY;
+                        item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemsTable->pItems[item->uItemID].uEquipX;
+                        item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemsTable->pItems[item->uItemID].uEquipY;
                         break;
                 }
             } else {
@@ -1724,53 +1291,15 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                          paperdoll_Weapon[pBodyComplection][0][1] -
                          pItemsTable->pItems[item->uItemID].uEquipY;
             }
-            v153 = assets->GetImage_Alpha(item->GetIconName());
 
-            if (item->ItemEnchanted()) {
-                // if (item->AuraEffectRed())
-                    container = "sptext01";
-                /*else*/
-                if (item->AuraEffectBlue())
-                    container = "sp28a";
-                else if (item->AuraEffectGreen())
-                    container = "sp30a";
-                else if (item->AuraEffectPurple())
-                    container = "sp91a";
-
-                _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
-                if (_50C9A8_item_enchantment_timer <= 0) {
-                    _50C9A8_item_enchantment_timer = 0;
-                    item->ResetEnchantAnimation();
-                    ptr_50C9A4_ItemToEnchant = nullptr;
-                }
-                render->BlendTextures(
-                    item_X, item_Y, v153,
-                    assets->GetImage_ColorKey(container, render->teal_mask_16),
-                    OS_GetTime() / 10, 0, 255);
-            } else if (item->uAttributes & ITEM_BROKEN) {
-                render->DrawTransparentRedShade(item_X / 640.0f,
-                    item_Y / 480.0f, v153);
-            } else if (!(item->uAttributes & ITEM_IDENTIFIED)) {
-                render->DrawTransparentGreenShade(item_X / 640.0f,
-                    item_Y / 480.0f, v153);
-            } else {
-                render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f,
-                    v153);
-            }
+            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uShield);
 
             if (two_handed_left_fist)  // two-handed - left fist/двуручие -
                                        // левая кисть
                 render->DrawTextureAlphaNew(
-                    (pPaperdoll_BodyX +
-                     pPaperdollLeftEmptyHand[pBodyComplection][0]) /
-                        640.0f,
-                    (pPaperdoll_BodyY +
-                     pPaperdollLeftEmptyHand[pBodyComplection][1]) /
-                        480.0f,
+                    (pPaperdoll_BodyX + pPaperdollLeftEmptyHand[pBodyComplection][0]) / 640.0f,
+                    (pPaperdoll_BodyY + pPaperdollLeftEmptyHand[pBodyComplection][1]) / 480.0f,
                     papredoll_dlhs[uPlayerID - 1]);
-            if (!bRingsShownInCharScreen)
-                render->ZDrawTextureAlpha(item_X / 640.0f, item_Y / 480.0f,
-                                          v153, player->pEquipment.uShield);
         }
     }
     // --------------------------------------------------------(RightHand/Правая
@@ -1783,16 +1312,10 @@ void CharacterUI_DrawPaperdoll(Player *player) {
     // рука)--------------------------------------------------
     if (player->GetItem(&PlayerEquipment::uMainHand)) {
         if (player->GetMainHandItem()->GetItemEquipType() == EQUIP_TWO_HANDED ||
-            player->GetMainHandItem()->GetPlayerSkillType() ==
-                    PLAYER_SKILL_SPEAR &&
-                !player->GetItem(&PlayerEquipment::uShield))
+            player->GetMainHandItem()->GetPlayerSkillType() == PLAYER_SKILL_SPEAR && !player->GetItem(&PlayerEquipment::uShield))
             render->DrawTextureAlphaNew(
-                (pPaperdoll_BodyX +
-                 pPaperdoll_SecondLeftHand[pBodyComplection][0]) /
-                    640.0f,
-                (pPaperdoll_BodyY +
-                 pPaperdoll_SecondLeftHand[pBodyComplection][1]) /
-                    480.0f,
+                (pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0]) / 640.0f,
+                (pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1]) / 480.0f,
                 papredoll_dlaus[uPlayerID - 1]);
     }
     // --------------------------------------------------------(two-handed -
@@ -1800,21 +1323,15 @@ void CharacterUI_DrawPaperdoll(Player *player) {
     if (player->GetItem(&PlayerEquipment::uMainHand)) {
         item = player->GetMainHandItem();
         if (item->GetItemEquipType() == EQUIP_TWO_HANDED ||
-            item->GetPlayerSkillType() == PLAYER_SKILL_SPEAR &&
-                !player->GetItem(&PlayerEquipment::uShield))
+            item->GetPlayerSkillType() == PLAYER_SKILL_SPEAR && !player->GetItem(&PlayerEquipment::uShield))
             render->DrawTextureAlphaNew(
-                (pPaperdoll_BodyX +
-                 pPaperdoll_SecondLeftHand[pBodyComplection][0]) /
-                    640.0f,
-                (pPaperdoll_BodyY +
-                 pPaperdoll_SecondLeftHand[pBodyComplection][1]) /
-                    480.0f,
+                (pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0]) / 640.0f,
+                (pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1]) / 480.0f,
                 papredoll_dlhus[uPlayerID - 1]);
     }
 
     if (!bRingsShownInCharScreen)  //рисование лупы
-        render->DrawTextureAlphaNew(603 / 640.0f, 299 / 480.0f,
-                                    ui_character_inventory_magnification_glass);
+        render->DrawTextureAlphaNew(603 / 640.0f, 299 / 480.0f, ui_character_inventory_magnification_glass);
 
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
 }
@@ -1836,15 +1353,12 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
 
     for (uint i = 0; i < 126; ++i) {
         if (player->pInventoryMatrix[i] <= 0) continue;
-        if (!player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
-                 .uItemID)
+        if (!player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uItemID)
             continue;
         unsigned int uCellY = 32 * (i / 14) + 17;
         unsigned int uCellX = 32 * (i % 14) + 14;
 
-        Image *pTexture = assets->GetImage_Alpha(
-            player->pInventoryItemList[player->pInventoryMatrix[i] - 1]
-                .GetIconName());
+        Image *pTexture = assets->GetImage_Alpha(player->pInventoryItemList[player->pInventoryMatrix[i] - 1].GetIconName());
 
         int width = pTexture->GetWidth();
         int height = pTexture->GetHeight();
@@ -1853,50 +1367,46 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
 
         signed int X_offset = (((signed int)((width - 14) & 0xFFFFFFE0) + 32) - width) / 2;
         signed int Y_offset = (((signed int)((height - 14) & 0xFFFFFFE0) + 32) - height) / 2;
-        CharacterUI_DrawItem(uCellX + X_offset, uCellY + Y_offset,
-            &(player->pInventoryItemList[player->pInventoryMatrix[i] - 1]), Cover_Strip);
+        CharacterUI_DrawItem(uCellX + X_offset, uCellY + Y_offset, &(player->pInventoryItemList[player->pInventoryMatrix[i] - 1]), Cover_Strip);
     }
 }
 
-static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id) {
-    auto item_texture = assets->GetImage_Alpha(item->GetIconName());
+static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *item_texture) {
+    if (!item_texture)
+        item_texture = assets->GetImage_Alpha(item->GetIconName());
 
-    if (item->uAttributes & ITEM_ENCHANT_ANIMATION) {  // enchant animation
+    if (item->ItemEnchanted()) { // enchant animation
         Image *enchantment_texture = nullptr;
-        switch (item->uAttributes & ITEM_ENCHANT_ANIMATION) {
-            case ITEM_AURA_EFFECT_RED:
-                enchantment_texture =
-                    assets->GetImage_ColorKey("sptext01", render->teal_mask_16);
-                break;
-            case ITEM_AURA_EFFECT_BLUE:
-                enchantment_texture = assets->GetImage_ColorKey("sp28a", render->teal_mask_16);
-                break;
-            case ITEM_AURA_EFFECT_GREEN:
-                enchantment_texture = assets->GetImage_ColorKey("sp30a", render->teal_mask_16);
-                break;
-            case ITEM_AURA_EFFECT_PURPLE:
-                enchantment_texture = assets->GetImage_ColorKey("sp91a", render->teal_mask_16);
-                break;
+        if (item->AuraEffectRed())
+            enchantment_texture = assets->GetImage_ColorKey("sptext01", render->teal_mask_16);
+        else if (item->AuraEffectBlue())
+            enchantment_texture = assets->GetImage_ColorKey("sp28a", render->teal_mask_16);
+        else if (item->AuraEffectGreen())
+            enchantment_texture = assets->GetImage_ColorKey("sp30a", render->teal_mask_16);
+        else if (item->AuraEffectPurple())
+            enchantment_texture = assets->GetImage_ColorKey("sp91a", render->teal_mask_16);
+        else {
+            __debugbreak;
         }
 
         _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
         if (_50C9A8_item_enchantment_timer <= 0) {
             _50C9A8_item_enchantment_timer = 0;
-            item->uAttributes &= 0xFFFFFF0F;
+            item->ResetEnchantAnimation();
             ptr_50C9A4_ItemToEnchant = nullptr;
         }
-        render->BlendTextures(x, y, item_texture, enchantment_texture,
-                              OS_GetTime() / 10, 0, 255);
+
+        render->BlendTextures(x, y, item_texture, enchantment_texture, OS_GetTime() / 10, 0, 255);
+    } else if (item->IsBroken()) {
+        render->DrawTransparentRedShade(x / 640.0f, y / 480.0f, item_texture);
+    } else if (!item->IsIdentified() && (engine->config->show_unidentified_item || id)) {
+        render->DrawTransparentGreenShade(x / 640.0f, y / 480.0f, item_texture);
     } else {
-        if (item->IsBroken())
-            render->DrawTransparentRedShade(x / 640.0f, y / 480.0f,
-                                            item_texture);
-        else if (!item->IsIdentified() && (engine->config->show_unidentified_item || id))
-            render->DrawTransparentGreenShade(x / 640.0f, y / 480.0f,
-                                              item_texture);
-        else
-            render->DrawTextureAlphaNew(x / 640.0f, y / 480.0f, item_texture);
+        render->DrawTextureAlphaNew(x / 640.0f, y / 480.0f, item_texture);
     }
+
+    if (id && !bRingsShownInCharScreen)
+        render->ZDrawTextureAlpha(x / 640.0f, y / 480.0f, item_texture, id);
 }
 
 //----- (0043E825) --------------------------------------------------------

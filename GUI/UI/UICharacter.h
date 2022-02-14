@@ -23,7 +23,7 @@ class GUIWindow_CharacterRecord : public GUIWindow {
 };
 
 bool ringscreenactive();
-static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id);
+static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *item_texture = NULL);
 
 class Image;
 extern Image *ui_character_skills_background;
