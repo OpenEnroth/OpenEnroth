@@ -1715,7 +1715,6 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                         } else {
                             // Weapons are limited to special enchantments, but all other types can have either
                             if (rnd < 80 && this_equip_type >= EQUIP_ARMOUR && this_equip_type <= EQUIP_AMULET) { // chance to roll standard enchantment on non-weapons
-
                                 int ench_found = 0;
                                 int to_item_apply_sum = 0;
                                 int ench_array[100] = { 0 };

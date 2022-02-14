@@ -1385,9 +1385,8 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
             enchantment_texture = assets->GetImage_ColorKey("sp30a", render->teal_mask_16);
         else if (item->AuraEffectPurple())
             enchantment_texture = assets->GetImage_ColorKey("sp91a", render->teal_mask_16);
-        else {
-            __debugbreak;
-        }
+        else
+            __debugbreak();
 
         _50C9A8_item_enchantment_timer -= pEventTimer->uTimeElapsed;
         if (_50C9A8_item_enchantment_timer <= 0) {
