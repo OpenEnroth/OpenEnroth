@@ -972,7 +972,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // main hand's item
-        if (item = itemMainHand) {
+        item = itemMainHand;
+        if (item) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemsTable->pItems[item->uItemID].uEquipX;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemsTable->pItems[item->uItemID].uEquipY;
 
@@ -984,7 +985,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
     } else {
         // bow
-        if (item = player->GetBowItem()) {
+        item = player->GetBowItem();
+        if (item) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemsTable->pItems[item->uItemID].uEquipX;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemsTable->pItems[item->uItemID].uEquipY;
 
@@ -992,7 +994,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // cloak
-        if (item = player->GetCloakItem()) {
+        item = player->GetCloakItem();
+        if (item) {
             switch (item->uItemID) {
                 case ITEM_RELIC_TWILIGHT:
                     index = 5;
@@ -1026,7 +1029,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
 
         // armor
-        if (item = player->GetArmorItem()) {
+        item = player->GetArmorItem();
+        if (item) {
             switch (item->uItemID) {
                 case ITEM_ARTIFACT_GOVERNORS_ARMOR:
                     index = 15;
@@ -1055,7 +1059,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // boots
-        if (item = player->GetBootItem()) {
+        item = player->GetBootItem();
+        if (item) {
             Texture *texture = nullptr;
             switch (item->uItemID) {
                 case ITEM_ARTIFACT_HERMES_SANDALS:
@@ -1092,7 +1097,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // belt
-        if (item = player->GetBeltItem()) {
+        item = player->GetBeltItem();
+        if (item) {
             switch (item->uItemID) {
                 case ITEM_RELIC_TITANS_BELT:
                     index = 5;
@@ -1119,7 +1125,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // armor's shoulders
-        if (item = player->GetArmorItem()) {
+        item = player->GetArmorItem();
+        if (item) {
             switch (item->uItemID) {
                 case ITEM_ARTIFACT_GOVERNORS_ARMOR:
                     index = 15;
@@ -1158,7 +1165,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // cloak's collar
-        if (item = player->GetCloakItem()) {
+        item = player->GetCloakItem();
+        if (item) {
             switch (item->uItemID) {
                 case ITEM_RELIC_TWILIGHT:
                     index = 5;
@@ -1200,7 +1208,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // helm
-        if (item = player->GetHelmItem()) {
+        item = player->GetHelmItem();
+        if (item) {
             switch (item->uItemID) {
                 case ITEM_RELIC_TALEDONS_HELM:
                     index = 11;
@@ -1236,7 +1245,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // main hand's item
-        if (item = itemMainHand) {
+        item = itemMainHand;
+        if (item) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemsTable->pItems[item->uItemID].uEquipX;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemsTable->pItems[item->uItemID].uEquipY;
 
@@ -1248,7 +1258,8 @@ void CharacterUI_DrawPaperdoll(Player *player) {
         }
 
         // offhand's item
-        if (item = itemOffHand) {
+        item = itemOffHand;
+        if (item) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemsTable->pItems[item->uItemID].uEquipX;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemsTable->pItems[item->uItemID].uEquipY;
 

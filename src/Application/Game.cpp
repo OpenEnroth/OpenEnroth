@@ -2648,7 +2648,7 @@ void Game::EventLoop() {
             }
         }
     }
-    CastSpellInfoHelpers::_427E01_cast_spell();
+    CastSpellInfoHelpers::CastSpell();
 }
 
 //----- (0046A14B) --------------------------------------------------------

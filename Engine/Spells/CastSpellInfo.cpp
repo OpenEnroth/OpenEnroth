@@ -41,33 +41,16 @@ const size_t CastSpellInfoCount = 10;
 std::array<CastSpellInfo, CastSpellInfoCount> pCastSpellInfo;
 
 //----- (00427E01) --------------------------------------------------------
-void CastSpellInfoHelpers::_427E01_cast_spell() {
-    CastSpellInfo *pCastSpell;        // ebx@2
-    signed int spell_pointed_target;  // eax@14
+void CastSpellInfoHelpers::CastSpell() {
+    CastSpellInfo *pCastSpell;
+    signed int spell_pointed_target;
 
-    int monster_id;        // ecx@184
-    int spell_overlay_id;  // eax@274
-    int dist_X;            // eax@278
+    int monster_id;
+    int spell_overlay_id;
+    int dist_X;
     int dist_Z;
-    int spell_spray_angle_start;     // esi@369
-    int spell_spray_angle_end;       // edi@369
-    double spell_recharge_factor;    // st7@478
-    ItemGen *spell_item_to_enchant;  // edi@492
-
-
-    // int *v267;              // eax@524
-    // int v268;              // eax@524
-    // int v278;              // ecx@548
-    // char v279;             // al@550
-    // int v280;              // eax@552
-    // int *v281;             // esi@553
-    // int v282;              // edx@555
-    // int *v283;             // ecx@555
-    // int v284;              // esi@555
-    // int v285;              // edx@555
-    // int *l;                // eax@556
-    // int v295;              // edx@575
-
+    int spell_spray_angle_start;
+    int spell_spray_angle_end;
                            //  int v396; // eax@752
     __int16 v448;          // ax@864
     DDM_DLV_Header *v613;  // eax@1108
@@ -99,11 +82,8 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
     int buff_resist;
     bool spell_sound_flag = false;  // [sp+E5Ch] [bp-28h]@1
     Player *pPlayer;                // [sp+E64h] [bp-20h]@8
-    // char *v730;                       // [sp+E68h] [bp-1Ch]@53
     int v730_int;
-    ItemGen *v730c;
     int skill_level = 0;  // [sp+E6Ch] [bp-18h]@48
-    // int *v732;      // [sp+E70h] [bp-14h]@325
     int v732_int;
 
     int spellduration;
@@ -751,59 +731,66 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 break;
             }
 
+            case SPELL_DARK_VAMPIRIC_WEAPON:
             case SPELL_FIRE_FIRE_AURA:
             {
-                switch (skill_level) {
-                    case 1:
-                        spellduration = 3600 * spell_level;
-                        amount = 10;
-                        break;  //Огня
-                    case 2:
-                        spellduration = 3600 * spell_level;
-                        amount = 11;
-                        break;  //Огненного жара
-                    case 3:
-                        spellduration = 3600 * spell_level;
-                        amount = 12;
-                        break;
-                    case 4:
-                        spellduration = 0;
-                        amount = 12;
-                        break;
-                    default:
-                        assert(false);
-                }
                 if (!pPlayer->CanCastSpell(uRequiredMana))
                     break;
 
-                v730c = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
-                _item = &pItemsTable->pItems[v730c->uItemID];
-                v730c->UpdateTempBonus(pParty->GetPlayingTime());
-                if (v730c->uItemID < ITEM_BLASTER || v730c->uItemID > ITEM_LASER_RIFLE &&
-                        !v730c->IsBroken() &&
-                        !v730c->special_enchantment &&
-                        !v730c->uEnchantmentType &&
-                        (_item->uEquipType == EQUIP_SINGLE_HANDED ||
-                         _item->uEquipType == EQUIP_TWO_HANDED ||
-                         _item->uEquipType == EQUIP_BOW) &&
-                        !pItemsTable->IsMaterialNonCommon(v730c)) {
-                    v730c->special_enchantment = (ITEM_ENCHANTMENT)amount;
-                    if (skill_level != 4) {
-                        v730c->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration));
-                        v730c->uAttributes |= ITEM_TEMP_BONUS;
-                    }
-                    v730c->uAttributes |= ITEM_AURA_EFFECT_RED;
-                    _50C9A8_item_enchantment_timer = 256;
-                    spell_sound_flag = true;
+                ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
+                item->UpdateTempBonus(pParty->GetPlayingTime());
+                if (item->uItemID == ITEM_BLASTER || item->uItemID == ITEM_LASER_RIFLE ||
+                    item->IsBroken() || pItemsTable->IsMaterialNonCommon(item) || item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->uEnchantmentType != 0 ||
+                    item->GetItemEquipType() != EQUIP_SINGLE_HANDED && item->GetItemEquipType() != EQUIP_TWO_HANDED && item->GetItemEquipType() != EQUIP_BOW) {
+                    _50C9D0_AfterEnchClickEventId = 113;
+                    _50C9D4_AfterEnchClickEventSecondParam = 0;
+                    _50C9D8_AfterEnchClickEventTimeout = 128; // was 1, increased to make message readable
+                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
+                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
+                    pCastSpell->uSpellID = 0;
                     break;
                 }
-                _50C9D0_AfterEnchClickEventId = 113;
-                _50C9D4_AfterEnchClickEventSecondParam = 0;
-                _50C9D8_AfterEnchClickEventTimeout = 1;
-                GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                pCastSpell->uSpellID = 0;
-                continue;
+
+                switch (pCastSpell->uSpellID) {
+                    case SPELL_FIRE_FIRE_AURA:
+                        switch (skill_level) {
+                            case 1:
+                                item->special_enchantment = ITEM_ENCHANTMENT_OF_FIRE;
+                                break;
+                            case 2:
+                                item->special_enchantment = ITEM_ENCHANTMENT_OF_FLAME;
+                                break;
+                            case 3:
+                            case 4:
+                                item->special_enchantment = ITEM_ENCHANTMENT_OF_INFERNOS;
+                                break;
+                            default:
+                                __debugbreak();
+                        }
+
+                        item->uAttributes |= ITEM_AURA_EFFECT_RED;
+                        break;
+                    case SPELL_DARK_VAMPIRIC_WEAPON:
+                        item->special_enchantment = ITEM_ENCHANTMENT_VAMPIRIC;
+                        item->uAttributes |= ITEM_AURA_EFFECT_PURPLE;
+                        break;
+                    default:
+                        __debugbreak();
+                }
+
+                if (skill_level < 4)
+                    spellduration = 3600 * spell_level;
+                else
+                    spellduration = 0;
+
+                if (spellduration > 0) {
+                    item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration));
+                    item->uAttributes |= ITEM_TEMP_BONUS;
+                }
+
+                _50C9A8_item_enchantment_timer = 256;
+                spell_sound_flag = true;
+                break;
             }
 
             case SPELL_BODY_REGENERATION:
@@ -1633,9 +1620,11 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
 
             case SPELL_WATER_RECHARGE_ITEM:
             {
-                if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                v730c = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
-                if (v730c->GetItemEquipType() != EQUIP_WAND || v730c->IsBroken()) {
+                if (!pPlayer->CanCastSpell(uRequiredMana))
+                    break;
+
+                ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
+                if (item->GetItemEquipType() != EQUIP_WAND || item->IsBroken()) {
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
@@ -1644,31 +1633,34 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                     pCastSpell->uSpellID = 0;
                     continue;
                 }
+
+                double spell_recharge_factor;
                 if (skill_level == 1 || skill_level == 2)
-                    spell_recharge_factor =
-                        (double)spell_level * 0.0099999998 + 0.5;  // 50 %
+                    spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.5;  // 50 %
                 else if (skill_level == 3)
                     spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.69999999;  // 30 %
                 else if (skill_level == 4)
                     spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.80000001;  // 20 %
                 else
                     spell_recharge_factor = 0.0;
-                if (spell_recharge_factor > 1.0) spell_recharge_factor = 1.0;
-                int uNewCharges = v730c->uMaxCharges * spell_recharge_factor;
-                v730c->uMaxCharges = uNewCharges;
-                v730c->uNumCharges = uNewCharges;
+
+                if (spell_recharge_factor > 1.0)
+                    spell_recharge_factor = 1.0;
+
+                int uNewCharges = item->uMaxCharges * spell_recharge_factor;
+                item->uMaxCharges = uNewCharges;
+                item->uNumCharges = uNewCharges;
                 if (uNewCharges <= 0) {
-                    v730c = 0;
                     _50C9D0_AfterEnchClickEventId = 113;
                     _50C9D4_AfterEnchClickEventSecondParam = 0;
                     _50C9D8_AfterEnchClickEventTimeout = 1;
                     GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     pCastSpell->uSpellID = 0;
-                    spell_level = spell_level;
                     continue;
                 }
-                v730c->uAttributes |= ITEM_AURA_EFFECT_GREEN;
+
+                item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
                 _50C9A8_item_enchantment_timer = 256;
                 spell_sound_flag = true;
                 break;
@@ -1683,7 +1675,7 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 bool item_not_broken = true;
                 int rnd = rand() % 100;
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID_2];
-                spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->spell_target_pid];
+                ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->spell_target_pid];
                 ItemDesc *_v725 = &pItemsTable->pItems[spell_item_to_enchant->uItemID];
                 char this_equip_type = _v725->uEquipType;
 
@@ -3445,45 +3437,6 @@ void CastSpellInfoHelpers::_427E01_cast_spell() {
                 pActors[monster_id].pActorBuffs[ACTOR_BUFF_ENSLAVED].Reset();
                 if (pActors[monster_id].sCurrentHP > 10 * amount)
                     pActors[monster_id].sCurrentHP = 10 * amount;
-                spell_sound_flag = true;
-                break;
-            }
-
-            case SPELL_DARK_VAMPIRIC_WEAPON:
-            {
-                if (!pPlayer->CanCastSpell(uRequiredMana))
-                    break;
-
-                amount = 16;
-                if (skill_level == 4)
-                    spellduration = 0;
-                else
-                    spellduration = 3600 * spell_level;
-
-                ItemGen *item = &pParty->pPlayers[pCastSpell->uPlayerID_2].pInventoryItemList[pCastSpell->spell_target_pid];
-                item->UpdateTempBonus(pParty->GetPlayingTime());
-                if (item->uItemID >= ITEM_BLASTER && item->uItemID <= ITEM_LASER_RIFLE || item->IsBroken() ||
-                    item->special_enchantment != 0 ||
-                    item->uEnchantmentType != 0 ||
-                    pItemsTable->pItems[item->uItemID].uEquipType != EQUIP_SINGLE_HANDED &&
-                        pItemsTable->pItems[item->uItemID].uEquipType != EQUIP_TWO_HANDED &&
-                        pItemsTable->pItems[item->uItemID].uEquipType != EQUIP_BOW ||
-                    pItemsTable->IsMaterialNonCommon(item)) {
-                    _50C9D0_AfterEnchClickEventId = 113;
-                    _50C9D4_AfterEnchClickEventSecondParam = 0;
-                    _50C9D8_AfterEnchClickEventTimeout = 1;
-                    GameUI_SetStatusBar(LSTR_SPELL_FAILED);
-                    pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
-                    pCastSpell->uSpellID = 0;
-                    continue;
-                }
-                item->special_enchantment = ITEM_ENCHANTMENT_VAMPIRIC;
-                if (skill_level != 4) {
-                    item->uExpireTime = GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(spellduration));
-                    item->uAttributes |= ITEM_TEMP_BONUS;
-                }
-                item->uAttributes |= ITEM_AURA_EFFECT_PURPLE;
-                _50C9A8_item_enchantment_timer = 256;
                 spell_sound_flag = true;
                 break;
             }
