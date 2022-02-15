@@ -199,15 +199,15 @@ void set_default_ui_skin() {
     ui_house_player_cant_interact_color = Color16(255, 255, 155);
 }
 
-Image *papredoll_drhs[4];
-Image *papredoll_dlhus[4];
-Image *papredoll_dlhs[4];
-Image *papredoll_dbods[5];
+Image *paperdoll_drhs[4];
+Image *paperdoll_dlhus[4];
+Image *paperdoll_dlhs[4];
+Image *paperdoll_dbods[5];
 Image *paperdoll_armor_texture[4][17][3];  // 0x511294
 // int paperdoll_array_51132C[165];
-Image *papredoll_dlaus[5];
-Image *papredoll_dlads[4];
-Image *papredoll_flying_feet[22];      // 005115E0
+Image *paperdoll_dlaus[5];
+Image *paperdoll_dlads[4];
+Image *paperdoll_flying_feet[22];      // 005115E0
 Image *paperdoll_boots_texture[4][6];  // 511638
 Image *paperdoll_cloak_collar_texture[4][10];
 Image *paperdoll_cloak_texture[4][10];
@@ -923,14 +923,13 @@ void draw_leather() {
 
 //----- (0043CC7C) --------------------------------------------------------
 void CharacterUI_DrawPaperdoll(Player *player) {
-    ItemGen *item;              // edi@38
-    int item_X;                 // ebx@38
-    int index;                  // eax@65
-    int item_Y;                 // [sp+10h] [bp-3Ch]@38
-    int pBodyComplection;       // [sp+24h] [bp-28h]@6
-    bool two_handed_left_fist;  // [sp+34h] [bp-18h]@361
-    int IsDwarf;                // [sp+40h] [bp-Ch]@4
+    int index;
+    int item_X;
+    int item_Y;
+    ItemGen *item;
 
+    int IsDwarf;
+    int pBodyComplection;
     if (player->GetRace() == CHARACTER_RACE_DWARF) {
         IsDwarf = 1;
         pBodyComplection = player->GetSexByVoice() == SEX_MALE ? 2 : 3;
@@ -940,57 +939,60 @@ void CharacterUI_DrawPaperdoll(Player *player) {
     }
 
     int uPlayerID = 0;
-    for (uint i = 0; i < 4; ++i) {
-        if (pPlayers[i + 1] == player) {
-            uPlayerID = i + 1;
+    for (uint i = 1; i <= 4; i++) {
+        if (pPlayers[i] == player) {
+            uPlayerID = i;
             break;
         }
     }
 
-    render->ResetUIClipRect();
-    render->DrawTextureAlphaNew(467 / 640.0f, 0,
-                                ui_character_inventory_paperdoll_background);
-    if (IsPlayerWearingWatersuit[uPlayerID]) {  // акваланг
-        render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f,
-                                    pPaperdoll_BodyY / 480.0f,
-                                    papredoll_dbods[uPlayerID - 1]);
-        if (!bRingsShownInCharScreen)
-            render->ZDrawTextureAlpha(
-                pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f,
-                papredoll_dbods[uPlayerID - 1], player->pEquipment.uArmor);
+    // player not found in the party
+    if (!uPlayerID)
+        __debugbreak();
 
-        // Main Hand is empty or ...
-        if (!player->GetItem(&PlayerEquipment::uMainHand) || (player->GetMainHandItem()->GetItemEquipType() != EQUIP_TWO_HANDED) &&
-                (player->GetMainHandItem()->GetItemEquipType() != PLAYER_SKILL_SPEAR || player->GetItem(&PlayerEquipment::uShield)))
-            render->DrawTextureAlphaNew(
-                (pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0]) / 640.0f,
-                (pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1]) / 480.0f,
-                papredoll_dlads[uPlayerID - 1]);
-        // -----------------------------------------------------(Hand/Рука)---------------------------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uMainHand)) {
-            item = player->GetMainHandItem();
+    render->ResetUIClipRect();
+    render->DrawTextureAlphaNew(467 / 640.0f, 0, ui_character_inventory_paperdoll_background);
+
+    ItemGen *itemMainHand = player->GetMainHandItem();
+    ItemGen *itemOffHand = player->GetOffHandItem();
+    bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == EQUIP_TWO_HANDED || itemMainHand->GetPlayerSkillType() == PLAYER_SKILL_SPEAR && !itemOffHand);
+
+    // Aqua-Lung
+    if (IsPlayerWearingWatersuit[uPlayerID]) {
+        render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
+        if (!bRingsShownInCharScreen)
+            render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1], player->pEquipment.uArmor);
+
+        // hands aren't in two handed grip pose
+        if (!bTwoHandedGrip) {
+            item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0];
+            item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1];
+
+            render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID - 1]);
+        }
+
+        // main hand's item
+        if (item = itemMainHand) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemsTable->pItems[item->uItemID].uEquipX;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemsTable->pItems[item->uItemID].uEquipY;
 
-            Texture *texture = NULL;
+            Texture *texture = nullptr;
             if (item->uItemID == ITEM_BLASTER)
                 texture = assets->GetImage_Alpha("item64v1");
 
-            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uMainHand, texture);
+            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uMainHand, texture, !bRingsShownInCharScreen);
         }
-    } else {  // без акваланга
-        // ----------------(Bow/
-        // Лук)-------------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uBow)) {
-            item = player->GetBowItem();
+    } else {
+        // bow
+        if (item = player->GetBowItem()) {
             item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemsTable->pItems[item->uItemID].uEquipX;
             item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemsTable->pItems[item->uItemID].uEquipY;
 
-            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBow);
+            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBow, nullptr, !bRingsShownInCharScreen);
         }
-        // -----------------------------(Cloak/Плащ)---------------------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uCloak)) {
-            item = player->GetCloakItem();
+
+        // cloak
+        if (item = player->GetCloakItem()) {
             switch (item->uItemID) {
                 case ITEM_RELIC_TWILIGHT:
                     index = 5;
@@ -1016,16 +1018,15 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
 
                 Texture *texture = (Texture *)paperdoll_cloak_texture[pBodyComplection][index];
-                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uCloak);
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uCloak, texture, !bRingsShownInCharScreen);
             }
         }
-        // -------------------------------(Paperdoll/Кукла)-------------------------------------------
-        render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f,
-                                    pPaperdoll_BodyY / 480.0f,
-                                    papredoll_dbods[uPlayerID - 1]);
-        // -------------------------------(Armor/Броня)-----------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uArmor)) {
-            item = player->GetArmorItem();
+
+        // paperdoll
+        render->DrawTextureAlphaNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID - 1]);
+
+        // armor
+        if (item = player->GetArmorItem()) {
             switch (item->uItemID) {
                 case ITEM_ARTIFACT_GOVERNORS_ARMOR:
                     index = 15;
@@ -1043,22 +1044,23 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     index = item->uItemID - 66;
                     break;
             }
+
             if (index >= 0 && index < 17) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
 
                 Texture *texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][0];
-                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uArmor, texture);
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uArmor, texture, !bRingsShownInCharScreen);
             }
         }
-        // ----------------------------------(Boot/Обувь)--------------------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uBoot)) {
-            item = player->GetBootItem();
-            Texture *texture = NULL;
+
+        // boots
+        if (item = player->GetBootItem()) {
+            Texture *texture = nullptr;
             switch (item->uItemID) {
                 case ITEM_ARTIFACT_HERMES_SANDALS:
                     index = 5;
-                    texture = (Texture *)papredoll_flying_feet[player->uCurrentFace];
+                    texture = (Texture *)paperdoll_flying_feet[player->uCurrentFace];
                     break;
                 case ITEM_ARTIFACT_LEAGUE_BOOTS:
                     index = 6;
@@ -1069,23 +1071,28 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     texture = (Texture *)paperdoll_boots_texture[pBodyComplection][index];
                     break;
             }
+
             if (index >= 0 && index < 7) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
 
-                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBoot, texture);
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBoot, texture, !bRingsShownInCharScreen);
             }
         }
-        // --------------------------------------------(Hand/Рука)------------------------------------------------------
-        if (!player->GetItem(&PlayerEquipment::uMainHand) || (player->GetMainHandItem()->GetItemEquipType() != EQUIP_TWO_HANDED) &&
-                (player->GetMainHandItem()->GetPlayerSkillType() != PLAYER_SKILL_SPEAR || player->GetItem(&PlayerEquipment::uShield)))
-            render->DrawTextureAlphaNew(
-                (pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0]) / 640.0f,
-                (pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1]) / 480.0f,
-                papredoll_dlads[uPlayerID - 1]);
-        // --------------------------------------------(Belt/Пояс)-------------------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uBelt)) {
-            item = player->GetBeltItem();
+
+        // offhand depending on grip
+        if (!bTwoHandedGrip) {
+            item_X = pPaperdoll_BodyX + pPaperdoll_LeftHand[pBodyComplection][0];
+            item_Y = pPaperdoll_BodyY + pPaperdoll_LeftHand[pBodyComplection][1];
+            render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlads[uPlayerID - 1]);
+        } else {
+            item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0];
+            item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
+            render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlaus[uPlayerID - 1]);
+        }
+
+        // belt
+        if (item = player->GetBeltItem()) {
             switch (item->uItemID) {
                 case ITEM_RELIC_TITANS_BELT:
                     index = 5;
@@ -1097,23 +1104,22 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     index = item->uItemID - 100;
                     break;
             }
+
             if (index >= 0 && index < 7) {
-                item_X = pPaperdoll_BodyX +
-                         paperdoll_Belt[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY +
-                         paperdoll_Belt[pBodyComplection][index][1];
-                Texture *texture = NULL;
+                item_X = pPaperdoll_BodyX + paperdoll_Belt[pBodyComplection][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Belt[pBodyComplection][index][1];
+                Texture *texture = nullptr;
                 if (IsDwarf != 1 || index == 5)
                     texture = (Texture *)paperdoll_belt_texture[pBodyComplection][index];
                 else
                     texture = (Texture *)paperdoll_belt_texture[pBodyComplection - 2][index];
 
-                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBelt, texture);
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uBelt, texture, !bRingsShownInCharScreen);
             }
         }
-        // --------------------------------(Shoulder/Плечи)---------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uArmor)) {
-            item = player->GetArmorItem();
+
+        // armor's shoulders
+        if (item = player->GetArmorItem()) {
             switch (item->uItemID) {
                 case ITEM_ARTIFACT_GOVERNORS_ARMOR:
                     index = 15;
@@ -1131,40 +1137,28 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                     index = item->uItemID - 66;
                     break;
             }
+
             if (index >= 0 && index < 17) {
-                if (player->GetItem(&PlayerEquipment::uMainHand) &&
-                    (player->GetMainHandItem()->GetItemEquipType() ==
-                         EQUIP_TWO_HANDED ||
-                     player->GetMainHandItem()->GetPlayerSkillType() ==
-                             PLAYER_SKILL_SPEAR &&
-                         !player->GetItem(
-                             &PlayerEquipment::uShield))) {  // без щита
-                    Texture *texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][2];
-                    if (paperdoll_armor_texture[pBodyComplection][index][2]) {
-                        texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][1];
-                        item_X = pPaperdoll_BodyX + paperdoll_shoulder_coord[pBodyComplection][index][0];
-                        item_Y = pPaperdoll_BodyY + paperdoll_shoulder_coord[pBodyComplection][index][1];
-                    } else {
-                        item_X = pPaperdoll_BodyX + paperdoll_shoulder_second_coord[pBodyComplection][index][0];
-                        item_Y = pPaperdoll_BodyY + paperdoll_shoulder_second_coord[pBodyComplection][index][1];
-                    }
+                // holding weapon in two hands
+                Texture *texture = nullptr;
+                if (bTwoHandedGrip) {
+                    item_X = pPaperdoll_BodyX + paperdoll_shoulder_second_coord[pBodyComplection][index][0];
+                    item_Y = pPaperdoll_BodyY + paperdoll_shoulder_second_coord[pBodyComplection][index][1];
 
-                    CharacterUI_DrawItem(item_X, item_Y, item, 0, texture);
-                } else {  // без ничего или с щитом
-                    // v94 = paperdoll_armor_texture[pBodyComplection][index][1];
-                    if (paperdoll_armor_texture[pBodyComplection][index][1]) {
-                        item_X = pPaperdoll_BodyX + paperdoll_shoulder_coord[pBodyComplection][index][0];
-                        item_Y = pPaperdoll_BodyY + paperdoll_shoulder_coord[pBodyComplection][index][1];
+                    texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][2];
+                } else {
+                    item_X = pPaperdoll_BodyX + paperdoll_shoulder_coord[pBodyComplection][index][0];
+                    item_Y = pPaperdoll_BodyY + paperdoll_shoulder_coord[pBodyComplection][index][1];
 
-                        Texture *texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][1];
-                        CharacterUI_DrawItem(item_X, item_Y, item, 0, texture);
-                    }
+                    texture = (Texture *)paperdoll_armor_texture[pBodyComplection][index][1];
                 }
+
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uArmor, texture, !bRingsShownInCharScreen);
             }
         }
-        // ----------------------------------------------(Cloak collar/воротник плаща)-------------------------------------
-        if (player->GetItem(&PlayerEquipment::uCloak)) {
-            item = player->GetCloakItem();
+
+        // cloak's collar
+        if (item = player->GetCloakItem()) {
             switch (item->uItemID) {
                 case ITEM_RELIC_TWILIGHT:
                     index = 5;
@@ -1184,30 +1178,29 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 default:
                     index = item->uItemID - 105;
             }
-            if (index > 0 && index < 10) {  // leather cloak has no collar
-                item_X = pPaperdoll_BodyX +
-                         paperdoll_CloakCollar[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY +
-                         paperdoll_CloakCollar[pBodyComplection][index][1];
-                // int r = pIcons_LOD->FindTextureByName("item325v2a1");
+
+            // leather cloak has no collar
+            if (index > 0 && index < 10) {
+                item_X = pPaperdoll_BodyX + paperdoll_CloakCollar[pBodyComplection][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_CloakCollar[pBodyComplection][index][1];
 
                 if (paperdoll_cloak_collar_texture[pBodyComplection][index]) {
                     Texture *texture = (Texture *)paperdoll_cloak_collar_texture[pBodyComplection][index];
-                    CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uCloak, texture);
+                    CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uCloak, texture, !bRingsShownInCharScreen);
                 }
             }
         }
-        // --------------------------------------------(Beards/Борода)-------------------------------------------------------
-        if (player->uCurrentFace == 12 || player->uCurrentFace == 13) {
-            if (paperdoll_dbrds[player->uCurrentFace])
-                render->DrawTextureAlphaNew(
-                    (pPaperdoll_BodyX + pPaperdoll_Beards[2 * player->uCurrentFace - 24]) / 640.0f,
-                    (pPaperdoll_BodyY + pPaperdoll_Beards[2 * player->uCurrentFace - 23]) / 480.0f,
-                    paperdoll_dbrds[player->uCurrentFace]);
+
+        // beard
+        if ((player->uCurrentFace == 12 || player->uCurrentFace == 13) && paperdoll_dbrds[player->uCurrentFace]) {
+            item_X = pPaperdoll_BodyX + pPaperdoll_Beards[2 * player->uCurrentFace - 24];
+            item_Y = pPaperdoll_BodyY + pPaperdoll_Beards[2 * player->uCurrentFace - 23];
+
+            render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dbrds[player->uCurrentFace]);
         }
-        // --------------------------------------------(Helm/Шлем)------------------------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uHelm)) {
-            item = player->GetHelmItem();
+
+        // helm
+        if (item = player->GetHelmItem()) {
             switch (item->uItemID) {
                 case ITEM_RELIC_TALEDONS_HELM:
                     index = 11;
@@ -1227,110 +1220,89 @@ void CharacterUI_DrawPaperdoll(Player *player) {
                 default:
                     index = item->uItemID - 89;
             }
-            if (index >= 0 && index < 16) {
-                item_X = pPaperdoll_BodyX +
-                         paperdoll_Helm[pBodyComplection][index][0];
-                item_Y = pPaperdoll_BodyY +
-                         paperdoll_Helm[pBodyComplection][index][1];
 
-                Texture *texture = NULL;
+            if (index >= 0 && index < 16) {
+                item_X = pPaperdoll_BodyX + paperdoll_Helm[pBodyComplection][index][0];
+                item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
+
+                Texture *texture = nullptr;
                 if (IsDwarf != 1 || item->uItemID != ITEM_92)
                     texture = (Texture *)paperdoll_helm_texture[player->GetSexByVoice()][index];
                 else
                     texture = (Texture *)paperdoll_dbrds[11];
 
-                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uHelm, texture);
+                CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uHelm, texture, !bRingsShownInCharScreen);
             }
         }
-        // ------------------------------------------------(Hand3/Рука3)-------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uMainHand)) {
-            item = player->GetMainHandItem();
-            item_X = pPaperdoll_BodyX +
-                     paperdoll_Weapon[pBodyComplection][1][0] -
-                     pItemsTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY +
-                     paperdoll_Weapon[pBodyComplection][1][1] -
-                     pItemsTable->pItems[item->uItemID].uEquipY;
 
-            Texture *texture = NULL;
+        // main hand's item
+        if (item = itemMainHand) {
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemsTable->pItems[item->uItemID].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemsTable->pItems[item->uItemID].uEquipY;
+
+            Texture *texture = nullptr;
             if (item->uItemID == ITEM_BLASTER)
                 texture = assets->GetImage_Alpha("item64v1");
 
-            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uMainHand, texture);
+            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uMainHand, texture, !bRingsShownInCharScreen);
         }
-        // --------------------------------------------------(Shield/Щит)---------------------------------------------
-        if (player->GetItem(&PlayerEquipment::uShield)) {
-            item = player->GetOffHandItem();
-            if (item->GetPlayerSkillType() == PLAYER_SKILL_DAGGER ||
-                item->GetPlayerSkillType() == PLAYER_SKILL_SWORD) {
-                // v151 = item->uItemID - 400;
-                item_X = 596;
-                two_handed_left_fist = true;
+
+        // offhand's item
+        if (item = itemOffHand) {
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemsTable->pItems[item->uItemID].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemsTable->pItems[item->uItemID].uEquipY;
+
+            /*
+             * MM6 artifacts.
+             * These cases should never execute in MM7 as we have spell books in these positions.
+             * Also MM6 doesn't have variable size paperdoll's so cordinates need to account pPaperdoll_BodyX/Y.
+             */
+            if (item->GetPlayerSkillType() == PLAYER_SKILL_DAGGER || item->GetPlayerSkillType() == PLAYER_SKILL_SWORD) {
                 switch (item->uItemID) {
-                    case 400:
+                    case 400: // Mordred
+                        item_X = 596;
                         item_Y = 86;
+                        __debugbreak();
                         break;
-                    case 403:
+                    case 403: // Excalibur
+                        item_X = 596;
                         item_Y = 28;
+                        __debugbreak();
                         break;
-                    case 415:
+                    case 415: // Hades
                         item_X = 595;
                         item_Y = 33;
-                        break;
-                    default:
-                        item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemsTable->pItems[item->uItemID].uEquipX;
-                        item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemsTable->pItems[item->uItemID].uEquipY;
+                        __debugbreak();
                         break;
                 }
-            } else {
-                two_handed_left_fist = false;
-                item_X = pPaperdoll_BodyX +
-                         paperdoll_Weapon[pBodyComplection][0][0] -
-                         pItemsTable->pItems[item->uItemID].uEquipX;
-                item_Y = pPaperdoll_BodyY +
-                         paperdoll_Weapon[pBodyComplection][0][1] -
-                         pItemsTable->pItems[item->uItemID].uEquipY;
             }
 
-            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uShield);
-
-            if (two_handed_left_fist)  // two-handed - left fist/двуручие -
-                                       // левая кисть
-                render->DrawTextureAlphaNew(
-                    (pPaperdoll_BodyX + pPaperdollLeftEmptyHand[pBodyComplection][0]) / 640.0f,
-                    (pPaperdoll_BodyY + pPaperdollLeftEmptyHand[pBodyComplection][1]) / 480.0f,
-                    papredoll_dlhs[uPlayerID - 1]);
+            CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment.uOffHand, nullptr, !bRingsShownInCharScreen);
         }
     }
-    // --------------------------------------------------------(RightHand/Правая
-    // кисть)--------------------------------------------------
-    render->DrawTextureAlphaNew(
-        (pPaperdoll_BodyX + pPaperdoll_RightHand[pBodyComplection][0]) / 640.0f,
-        (pPaperdoll_BodyY + pPaperdoll_RightHand[pBodyComplection][1]) / 480.0f,
-        papredoll_drhs[uPlayerID - 1]);
-    // ---------------------------------------------(two-handed - hand/Двуручие -
-    // рука)--------------------------------------------------
-    if (player->GetItem(&PlayerEquipment::uMainHand)) {
-        if (player->GetMainHandItem()->GetItemEquipType() == EQUIP_TWO_HANDED ||
-            player->GetMainHandItem()->GetPlayerSkillType() == PLAYER_SKILL_SPEAR && !player->GetItem(&PlayerEquipment::uShield))
-            render->DrawTextureAlphaNew(
-                (pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0]) / 640.0f,
-                (pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1]) / 480.0f,
-                papredoll_dlaus[uPlayerID - 1]);
-    }
-    // --------------------------------------------------------(two-handed -
-    // fist/двуручие - кисть)----------------------------------------------------
-    if (player->GetItem(&PlayerEquipment::uMainHand)) {
-        item = player->GetMainHandItem();
-        if (item->GetItemEquipType() == EQUIP_TWO_HANDED ||
-            item->GetPlayerSkillType() == PLAYER_SKILL_SPEAR && !player->GetItem(&PlayerEquipment::uShield))
-            render->DrawTextureAlphaNew(
-                (pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0]) / 640.0f,
-                (pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1]) / 480.0f,
-                papredoll_dlhus[uPlayerID - 1]);
+
+    // mainhand's wrist
+    {
+        item_X = pPaperdoll_BodyX + pPaperdoll_RightHand[pBodyComplection][0];
+        item_Y = pPaperdoll_BodyY + pPaperdoll_RightHand[pBodyComplection][1];
+
+        render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_drhs[uPlayerID - 1]);
     }
 
-    if (!bRingsShownInCharScreen)  //рисование лупы
+    // offhand's wrist
+    if (bTwoHandedGrip) {
+        item_X = pPaperdoll_BodyX + pPaperdoll_SecondLeftHand[pBodyComplection][0];
+        item_Y = pPaperdoll_BodyY + pPaperdoll_SecondLeftHand[pBodyComplection][1];
+
+        render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhus[uPlayerID - 1]);
+    } else if (!itemOffHand || itemOffHand && itemOffHand->GetItemEquipType() != EQUIP_SHIELD) {
+        item_X = pPaperdoll_BodyX + pPaperdollLeftEmptyHand[pBodyComplection][0];
+        item_Y = pPaperdoll_BodyY + pPaperdollLeftEmptyHand[pBodyComplection][1];
+        render->DrawTextureAlphaNew(item_X / 640.0f, item_Y / 480.0f, paperdoll_dlhs[uPlayerID - 1]);
+    }
+
+    // magnifying glass
+    if (!bRingsShownInCharScreen)
         render->DrawTextureAlphaNew(603 / 640.0f, 299 / 480.0f, ui_character_inventory_magnification_glass);
 
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
@@ -1371,7 +1343,7 @@ void CharacterUI_InventoryTab_Draw(Player *player, bool Cover_Strip) {
     }
 }
 
-static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *item_texture) {
+static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *item_texture, bool doZDraw) {
     if (!item_texture)
         item_texture = assets->GetImage_Alpha(item->GetIconName());
 
@@ -1404,7 +1376,7 @@ static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, Texture *i
         render->DrawTextureAlphaNew(x / 640.0f, y / 480.0f, item_texture);
     }
 
-    if (id && !bRingsShownInCharScreen)
+    if (doZDraw)
         render->ZDrawTextureAlpha(x / 640.0f, y / 480.0f, item_texture, id);
 }
 
@@ -1470,42 +1442,42 @@ void CharacterUI_LoadPaperdollTextures() {
             else
                 v3 = (pPlayers[i + 1]->GetSexByVoice() != 0) + 1;
             sprintf(pContainer, "pc23v%dBod", v3);
-            papredoll_dbods[i] =
+            paperdoll_dbods[i] =
                 assets->GetImage_Alpha(pContainer);  // Body texture
             sprintf(pContainer, "pc23v%dlad", v3);
-            papredoll_dlads[i] =
+            paperdoll_dlads[i] =
                 assets->GetImage_Alpha(pContainer);  // Left Hand
             sprintf(pContainer, "pc23v%dlau", v3);
-            papredoll_dlaus[i] =
+            paperdoll_dlaus[i] =
                 assets->GetImage_Alpha(pContainer);  // Left Hand2
             sprintf(pContainer, "pc23v%drh", v3);
-            papredoll_drhs[i] =
+            paperdoll_drhs[i] =
                 assets->GetImage_Alpha(pContainer);  // Right Hand
             sprintf(pContainer, "pc23v%dlh", v3);
-            papredoll_dlhs[i] =
+            paperdoll_dlhs[i] =
                 assets->GetImage_Alpha(pContainer);  // Left Palm
             sprintf(pContainer, "pc23v%dlhu", v3);
-            papredoll_dlhus[i] =
+            paperdoll_dlhus[i] =
                 assets->GetImage_Alpha(pContainer);  // Left Fist
             pPlayer = pPlayers[i + 1];
 
             if (pPlayer->uCurrentFace == 12 || pPlayer->uCurrentFace == 13)
                 paperdoll_dbrds[(char)pPlayer->uCurrentFace] = nullptr;
-            papredoll_flying_feet[pPlayer->uCurrentFace] = nullptr;
+            paperdoll_flying_feet[pPlayer->uCurrentFace] = nullptr;
 
             IsPlayerWearingWatersuit[i + 1] = true;
         } else {
-            papredoll_dbods[i] = assets->GetImage_Alpha(
+            paperdoll_dbods[i] = assets->GetImage_Alpha(
                 dbod_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            papredoll_dlads[i] = assets->GetImage_Alpha(
+            paperdoll_dlads[i] = assets->GetImage_Alpha(
                 dlad_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            papredoll_dlaus[i] = assets->GetImage_Alpha(
+            paperdoll_dlaus[i] = assets->GetImage_Alpha(
                 dlau_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            papredoll_drhs[i] = assets->GetImage_Alpha(
+            paperdoll_drhs[i] = assets->GetImage_Alpha(
                 drh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            papredoll_dlhs[i] = assets->GetImage_Alpha(
+            paperdoll_dlhs[i] = assets->GetImage_Alpha(
                 dlh_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
-            papredoll_dlhus[i] = assets->GetImage_Alpha(
+            paperdoll_dlhus[i] = assets->GetImage_Alpha(
                 dlhu_texnames_by_face[pPlayers[i + 1]->uCurrentFace]);
 
             if (pPlayers[i + 1]->uCurrentFace == 12 ||
@@ -1515,7 +1487,7 @@ void CharacterUI_LoadPaperdollTextures() {
                         "pc%02dbrd", pPlayers[i + 1]->uCurrentFace + 1));
             }
 
-            papredoll_flying_feet[pPlayers[i + 1]->uCurrentFace] =
+            paperdoll_flying_feet[pPlayers[i + 1]->uCurrentFace] =
                 assets->GetImage_Alpha(StringPrintf(
                     "item281pc%02d", pPlayers[i + 1]->uCurrentFace + 1));
             IsPlayerWearingWatersuit[i + 1] = 0;
@@ -2154,22 +2126,22 @@ void WetsuitOn(unsigned int uPlayerID) {
             texture_num = (player_sex != 0) + 1;
 
         sprintf(pContainer, "pc23v%dBod", texture_num);
-        papredoll_dbods[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
+        paperdoll_dbods[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
         sprintf(pContainer, "pc23v%dlad", texture_num);
-        papredoll_dlads[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
+        paperdoll_dlads[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
         sprintf(pContainer, "pc23v%dlau", texture_num);
-        papredoll_dlaus[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
+        paperdoll_dlaus[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
         sprintf(pContainer, "pc23v%drh", texture_num);
-        papredoll_drhs[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
+        paperdoll_drhs[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
         sprintf(pContainer, "pc23v%dlh", texture_num);
-        papredoll_dlhs[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
+        paperdoll_dlhs[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
         sprintf(pContainer, "pc23v%dlhu", texture_num);
-        papredoll_dlhus[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
+        paperdoll_dlhus[uPlayerID - 1] = assets->GetImage_Alpha(pContainer);
 
         if (pPlayers[uPlayerID]->uCurrentFace == 12 ||
             pPlayers[uPlayerID]->uCurrentFace == 13)
             paperdoll_dbrds[pPlayers[uPlayerID]->uCurrentFace] = nullptr;
-        papredoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] = nullptr;
+        paperdoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] = nullptr;
 
         IsPlayerWearingWatersuit[uPlayerID] = true;
     }
@@ -2178,17 +2150,17 @@ void WetsuitOn(unsigned int uPlayerID) {
 //----- (0043F0BD) --------------------------------------------------------
 void WetsuitOff(unsigned int uPlayerID) {
     if (uPlayerID > 0) {
-        papredoll_dbods[uPlayerID - 1] = assets->GetImage_Alpha(
+        paperdoll_dbods[uPlayerID - 1] = assets->GetImage_Alpha(
             dbod_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        papredoll_dlads[uPlayerID - 1] = assets->GetImage_Alpha(
+        paperdoll_dlads[uPlayerID - 1] = assets->GetImage_Alpha(
             dlad_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        papredoll_dlaus[uPlayerID - 1] = assets->GetImage_Alpha(
+        paperdoll_dlaus[uPlayerID - 1] = assets->GetImage_Alpha(
             dlau_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        papredoll_drhs[uPlayerID - 1] = assets->GetImage_Alpha(
+        paperdoll_drhs[uPlayerID - 1] = assets->GetImage_Alpha(
             drh_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        papredoll_dlhs[uPlayerID - 1] = assets->GetImage_Alpha(
+        paperdoll_dlhs[uPlayerID - 1] = assets->GetImage_Alpha(
             dlh_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
-        papredoll_dlhus[uPlayerID - 1] = assets->GetImage_Alpha(
+        paperdoll_dlhus[uPlayerID - 1] = assets->GetImage_Alpha(
             dlhu_texnames_by_face[pPlayers[uPlayerID]->uCurrentFace]);
 
         // wchar_t name[1024];
@@ -2199,7 +2171,7 @@ void WetsuitOff(unsigned int uPlayerID) {
                     "pc%02dbrd", pPlayers[uPlayerID]->uCurrentFace + 1));
         }
 
-        papredoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] =
+        paperdoll_flying_feet[pPlayers[uPlayerID]->uCurrentFace] =
             assets->GetImage_Alpha(StringPrintf(
                 "item281pc%02d", pPlayers[uPlayerID]->uCurrentFace + 1));
 
@@ -2248,7 +2220,7 @@ void OnPaperdollLeftClick() {
     ItemGen _this;  // [sp+Ch] [bp-40h]@1
     _this.Reset();
     int mainhandequip = pPlayers[uActiveCharacter]->pEquipment.uMainHand;
-    unsigned int shieldequip = pPlayers[uActiveCharacter]->pEquipment.uShield;
+    unsigned int shieldequip = pPlayers[uActiveCharacter]->pEquipment.uOffHand;
 
     if (mainhandequip && pPlayers[uActiveCharacter]
                                  ->pInventoryItemList[mainhandequip - 1]
@@ -2482,7 +2454,7 @@ void OnPaperdollLeftClick() {
                     memcpy(&pPlayers[uActiveCharacter]
                                 ->pInventoryItemList[shieldequip],
                            &_this, 0x24u);
-                    pPlayers[uActiveCharacter]->pEquipment.uShield =
+                    pPlayers[uActiveCharacter]->pEquipment.uOffHand =
                         shieldequip + 1;
                     if (twohandedequip == EQUIP_SINGLE_HANDED) return;
                 } else {
@@ -2498,7 +2470,7 @@ void OnPaperdollLeftClick() {
                                &pParty->pPickedItem,
                                sizeof(pPlayers[uActiveCharacter]
                                           ->pInventoryItemList[freeslot]));
-                        pPlayers[uActiveCharacter]->pEquipment.uShield = v17;
+                        pPlayers[uActiveCharacter]->pEquipment.uOffHand = v17;
                         mouse->RemoveHoldingItem();
                         return;
                     }
@@ -2517,7 +2489,7 @@ void OnPaperdollLeftClick() {
                            &_this,
                            sizeof(pPlayers[uActiveCharacter]
                                       ->pInventoryItemList[freeslot]));
-                    pPlayers[uActiveCharacter]->pEquipment.uShield =
+                    pPlayers[uActiveCharacter]->pEquipment.uOffHand =
                         freeslot + 1;
                 }
                 pPlayers[uActiveCharacter]->pEquipment.uMainHand = 0;
@@ -2563,7 +2535,7 @@ void OnPaperdollLeftClick() {
                                 memcpy(&pPlayers[uActiveCharacter]
                                             ->pInventoryItemList[shieldequip],
                                        &_this, 0x24u);
-                                pPlayers[uActiveCharacter]->pEquipment.uShield =
+                                pPlayers[uActiveCharacter]->pEquipment.uOffHand =
                                     shieldequip + 1;
                                 if (pEquipType != EQUIP_WAND) return;
                                 v50 = _this.uItemID;
@@ -2578,7 +2550,7 @@ void OnPaperdollLeftClick() {
                                    &pParty->pPickedItem,
                                    sizeof(pPlayers[uActiveCharacter]
                                               ->pInventoryItemList[v23]));
-                            pPlayers[uActiveCharacter]->pEquipment.uShield =
+                            pPlayers[uActiveCharacter]->pEquipment.uOffHand =
                                 v23 + 1;
                             mouse->RemoveHoldingItem();
                             if (pEquipType != EQUIP_WAND) return;
@@ -2618,7 +2590,7 @@ void OnPaperdollLeftClick() {
                     mainhandequip + 1;
                 if (pEquipType == EQUIP_WAND) v50 = _this.uItemID;
                 if (twohandedequip)
-                    pPlayers[uActiveCharacter]->pEquipment.uShield = 0;
+                    pPlayers[uActiveCharacter]->pEquipment.uOffHand = 0;
                 break;
                 // ---------------------------take two hands(взять двумя
                 // руками)---------------------------------
@@ -2673,7 +2645,7 @@ void OnPaperdollLeftClick() {
                                    &_this,
                                    sizeof(pPlayers[uActiveCharacter]
                                               ->pInventoryItemList[freeslot]));
-                            pPlayers[uActiveCharacter]->pEquipment.uShield = 0;
+                            pPlayers[uActiveCharacter]->pEquipment.uOffHand = 0;
                             pPlayers[uActiveCharacter]->pEquipment.uMainHand =
                                 freeslot + 1;
                         } else {

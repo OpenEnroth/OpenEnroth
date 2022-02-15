@@ -1226,7 +1226,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
             bool addOneDice = false;
             if (pItemsTable->pItems[itemId].uSkillType == PLAYER_SKILL_SPEAR &&
                 !this->pEquipment
-                     .uShield)  // using spear in two hands adds a dice roll
+                     .uOffHand)  // using spear in two hands adds a dice roll
                 addOneDice = true;
 
             mainWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
@@ -1239,7 +1239,7 @@ int Player::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
                                              // that not a shield
                 ItemGen* offHandItemGen =
                     (ItemGen*)&this
-                        ->pInventoryItemList[this->pEquipment.uShield - 1];
+                        ->pInventoryItemList[this->pEquipment.uOffHand - 1];
 
                 if (offHandItemGen->GetItemEquipType() != EQUIP_SHIELD) {
                     offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
@@ -7525,7 +7525,7 @@ void Player::SetCondUnconsciousWithBlockCheck(int blockable) {
     SetCondition(Condition_Dead, blockable);
 }
 
-ItemGen* Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uShield); }
+ItemGen* Player::GetOffHandItem() { return GetItem(&PlayerEquipment::uOffHand); }
 
 ItemGen* Player::GetMainHandItem() {
     return GetItem(&PlayerEquipment::uMainHand);

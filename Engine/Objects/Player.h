@@ -82,7 +82,7 @@ struct PlayerSpells {
 union PlayerEquipment {
     union {
         struct {
-            unsigned int uShield;
+            unsigned int uOffHand;
             unsigned int uMainHand;
             unsigned int uBow;
             unsigned int uArmor;
