@@ -506,10 +506,18 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
         }
 
         // check if this face is visible through current portal node
-        if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)
+        if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)/* ||  true*/
             // pCamera3D->ClipFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4, 0, 0) || true
             ) {
             ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+
+            /*for (uint i = 0; i < pFace->uNumVertices; ++i) {
+                static_vertices_calc_out[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+                static_vertices_calc_out[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+                static_vertices_calc_out[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+                static_vertices_calc_out[i].u = (signed short)pFace->pVertexUIDs[i];
+                static_vertices_calc_out[i].v = (signed short)pFace->pVertexVIDs[i];
+            }*/
 
             /*int xd = pParty->vPosition.x - pIndoor->pVertices[pFace->pVertexIDs[0]].x;
             int yd = pParty->vPosition.y - pIndoor->pVertices[pFace->pVertexIDs[0]].y;

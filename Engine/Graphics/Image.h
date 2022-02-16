@@ -119,7 +119,7 @@ class TextureFrame {
     std::string name = "null";
     int16_t uAnimTime = 0;
     int16_t uAnimLength = 0;
-    int16_t uFlags = 0;
+    int16_t uFlags = 0;  // 1 for anim
 
     Texture *GetTexture();
 
