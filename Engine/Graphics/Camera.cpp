@@ -24,11 +24,11 @@ Camera3D::Camera3D() {
 }
 
 //----- (0043643E) --------------------------------------------------------
-float Camera3D::GetPickDepth() {
+float Camera3D::GetMouseInfoDepth() {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        return pODMRenderParams->uPickDepth;
+        return engine->config->mouse_info_depth_outdoor;
     else
-        return 16192.0;
+        return engine->config->mouse_info_depth_indoor;
 }
 
 //----- (004364C5) --------------------------------------------------------

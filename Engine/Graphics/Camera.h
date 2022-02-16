@@ -129,7 +129,7 @@ struct Camera3D {
     void CullByNearClip(struct RenderVertexSoft* pverts, uint* unumverts);
     void CullByFarClip(struct RenderVertexSoft* pverts, uint* unumverts);
 
-    float GetPickDepth();
+    float GetMouseInfoDepth();
 
     glm::mat3x3 ViewMatrix;
     // using w comp of vec4 for dotdist

@@ -1587,7 +1587,8 @@ void Game::EventLoop() {
                     v83 = vis->get_picked_object_zbuf_val();
                     v44 = v83.object_pid;
                     v84 = v83.depth;
-                    if (PID_TYPE(v44) != 3 || v84 >= 5120) continue;
+                    if (PID_TYPE(v44) != 3 || v84 >= engine->config->ranged_attack_depth)
+                        continue;
                     pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
                         pSpellInfo->uFlags &= ~0x08;
