@@ -2301,7 +2301,7 @@ void GUIWindow_DebugMenu::Update() {
     viewparams->bRedrawGameUI = true;
 }
 
-void buttonbox(int x, int y, char* text, int col) {
+void buttonbox(int x, int y, const char* text, int col) {
     int width = 108;
     int height = 20;
     render->FillRectFast(x, y, width+1, height+1, Color16(50, 50, 50));

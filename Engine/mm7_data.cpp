@@ -306,7 +306,7 @@ char _4E94D0_light_type = 5;  // stationary??
 char _4E94D2_light_type = 6;
 char _4E94D3_light_type = 10;
 // char *off_4EB080; // idb
-std::array<char *, 465> pTransitionStrings = {{"", nullptr}};
+std::array<const char *, 465> pTransitionStrings = {{"", nullptr}};
 std::array<const char *, 25> pPlayerPortraitsNames = {{
     "pc01-", "pc02",  "pc03",  "pc04",  "pc05-", "pc06", "pc07",
     "pc08",  "pc09-", "pc10",  "pc11-", "pc12",  "pc13", "pc14",

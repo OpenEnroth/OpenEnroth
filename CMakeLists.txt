@@ -61,7 +61,7 @@ else()
   add_definitions(-D_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
   set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
-  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 23)
   set(CXX_STANDARD_REQUIRED ON)
 endif()
 

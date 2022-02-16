@@ -105,18 +105,14 @@ int OS_GetAppInt(const char *pKey, int uDefValue) {
     phkResult = 0;
     cbData = 4;
     *(int *)Data = uDefValue;
+    char emptyClass[] = "";
 
-    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0,
-                       KEY_READ | KEY_WOW64_32KEY, &hKey)) {  // for 64 bit
-        if (!RegCreateKeyExA(hKey, "New World Computing", 0, "", 0,
-                             KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
-            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, "", 0,
-                                 KEY_ALL_ACCESS, 0, &v10, &dwDisposition)) {
-                if (!RegCreateKeyExA(v10, "1.0", 0, "", 0, KEY_ALL_ACCESS, 0,
-                                     &v11, &dwDisposition)) {
+    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0, KEY_READ | KEY_WOW64_32KEY, &hKey)) {  // for 64 bit
+        if (!RegCreateKeyExA(hKey, "New World Computing", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
+            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &v10, &dwDisposition)) {
+                if (!RegCreateKeyExA(v10, "1.0", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &v11, &dwDisposition)) {
                     LSTATUS status;
-                    if (status = RegQueryValueExA(v11, lpValueName, 0, 0, Data,
-                                                  &cbData)) {
+                    if (status = RegQueryValueExA(v11, lpValueName, 0, 0, Data, &cbData)) {
                         status;
                         GetLastError();
                         RegSetValueExA(v11, lpValueName, 0, 4, Data, 4);
@@ -149,17 +145,14 @@ void OS_SetAppString(const char *pKey, const char *pString) {
     v8 = 0;
     hKey = 0;
     phkResult = 0;
-    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0,
-                       KEY_READ | KEY_WOW64_32KEY, &hKey)) {
-        if (!RegCreateKeyExA(hKey, "New World Computing", 0, "", 0,
-                             KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
-            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, "", 0,
-                                 KEY_ALL_ACCESS, 0, &v8, &dwDisposition)) {
-                if (!RegCreateKeyExA(v8, "1.0", 0, "", 0, KEY_ALL_ACCESS, 0,
-                                     &v9, &dwDisposition)) {
+    char emptyClass[] = "";
+
+    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0, KEY_READ | KEY_WOW64_32KEY, &hKey)) {
+        if (!RegCreateKeyExA(hKey, "New World Computing", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
+            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &v8, &dwDisposition)) {
+                if (!RegCreateKeyExA(v8, "1.0", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &v9, &dwDisposition)) {
                     v2 = strlen(Str);
-                    RegSetValueExA(v9, lpValueName, 0, 1, (const BYTE *)Str,
-                                   v2 + 1);
+                    RegSetValueExA(v9, lpValueName, 0, 1, (const BYTE *)Str, v2 + 1);
                     RegCloseKey(v9);
                 }
                 RegCloseKey(v8);
@@ -193,16 +186,13 @@ void OS_GetAppString(const char *pKeyName, char *pOutString, int uBufLen,
     hKey = 0;
     phkResult = 0;
     result = (LSTATUS)strncpy((char *)Dest, pDefaultValue, uBufLen);
-    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0,
-                       KEY_READ | KEY_WOW64_32KEY, &hKey)) {
-        if (!RegCreateKeyExA(hKey, "New World Computing", 0, "", 0,
-                             KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
-            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, "", 0,
-                                 KEY_ALL_ACCESS, 0, &v13, &dwDisposition)) {
-                if (!RegCreateKeyExA(v13, "1.0", 0, "", 0, KEY_ALL_ACCESS, 0,
-                                     &v14, &dwDisposition)) {
-                    if (RegQueryValueExA(v14, lpValueName, 0, &Type, Dest,
-                                         &cbData))
+    char emptyClass[] = "";
+
+    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0, KEY_READ | KEY_WOW64_32KEY, &hKey)) {
+        if (!RegCreateKeyExA(hKey, "New World Computing", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
+            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &v13, &dwDisposition)) {
+                if (!RegCreateKeyExA(v13, "1.0", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &v14, &dwDisposition)) {
+                    if (RegQueryValueExA(v14, lpValueName, 0, &Type, Dest, &cbData))
                         GetLastError();
                     RegCloseKey(v14);
                     v14 = NULL;
@@ -234,14 +224,12 @@ void OS_SetAppInt(const char *pKey, int val) {
     v7 = 0;
     hKey = 0;
     phkResult = 0;
-    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0,
-                       KEY_READ | KEY_WOW64_32KEY, &hKey)) {
-        if (!RegCreateKeyExA(hKey, "New World Computing", 0, "", 0,
-                             KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
-            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, "", 0,
-                                 KEY_ALL_ACCESS, 0, &v7, &dwDisposition)) {
-                if (!RegCreateKeyExA(v7, "1.0", 0, "", 0, KEY_ALL_ACCESS, 0,
-                                     &v8, &dwDisposition)) {
+    char emptyClass[] = "";
+
+    if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE", 0, KEY_READ | KEY_WOW64_32KEY, &hKey)) {
+        if (!RegCreateKeyExA(hKey, "New World Computing", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &phkResult, &dwDisposition)) {
+            if (!RegCreateKeyExA(phkResult, "Might and Magic VII", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &v7, &dwDisposition)) {
+                if (!RegCreateKeyExA(v7, "1.0", 0, emptyClass, 0, KEY_ALL_ACCESS, 0, &v8, &dwDisposition)) {
                     RegSetValueExA(v8, lpValueName, 0, 4, Data, 4);
                     RegCloseKey(v8);
                 }

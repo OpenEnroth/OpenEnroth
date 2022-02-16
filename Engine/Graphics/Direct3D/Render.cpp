@@ -4302,9 +4302,9 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {  /
             i++;
         }
     }
+    uint j = 0;
     if (HEXRAYS_SLODWORD(v73) <= 0) goto LABEL_40;
     // v34 = (char *)&VertexRenderList[0].vWorldViewProjY;
-    uint j = 0;
     v65 = v77 >> 14;
     // HIDWORD(v69) = LODWORD(v73);
     for (int t = (int)HEXRAYS_LODWORD(v73); t > 1; t--) {

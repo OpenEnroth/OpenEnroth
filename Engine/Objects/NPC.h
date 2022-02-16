@@ -18,7 +18,7 @@ extern std::array<NPCTopic, 789> pNPCTopics;
 struct NPCData {  // 4Ch
     inline bool Hired() { return (uFlags & 0x80) != 0; }
 
-    char *pName;               // 0
+    const char *pName;               // 0
     unsigned int uPortraitID;  // 4
     unsigned int uFlags;  // 8    // & 0x80    no greeting on dialogue start;
                           // looks like hired

@@ -3,7 +3,7 @@
 /*  152 */
 #pragma pack(push, 1)
 struct stru159 {
-    char *video_name;
+    const char *video_name;
     int field_4;
     int house_npc_id;
     unsigned __int8 uBuildingType;  // enum BuildingType
