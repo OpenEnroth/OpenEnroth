@@ -60,10 +60,6 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radiu
         move_distance_fp = 0;
     } else {
         // We got here => we're already inside the model. Or way outside.
-        int overshoot_x4 = abs(overshoot_fp) >> 14;
-        if (overshoot_x4 > abs(cos_dir_normal_fp))
-            return false; // Moving perpendicular to the plane is OK for some reason.
-
         // We just say we overshot by radius. No idea why.
         overshoot = radius;
 
@@ -130,8 +126,6 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3
     if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
         return false; // Facing away from the face and outside the model.
 
-    int pos_face_distance_x4 = abs(-(pos_face_distance_fp)) >> 14;
-
     // How far we need to move along the `dir` axis to hit face.
     int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
 
@@ -139,9 +133,6 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3
     new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) + 0x8000) >> 16);
     new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) + 0x8000) >> 16);
     new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) + 0x8000) >> 16);
-
-    if (pos_face_distance_x4 > abs(cos_dir_normal_fp))
-        return false; // Moving perpendicular to the plane.
 
     if (move_distance_fp > *move_distance << 16)
         return false; // No correction needed.
