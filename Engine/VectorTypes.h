@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cmath>
 #include <type_traits>
 
 #include "OurMath.h"
@@ -31,7 +32,7 @@ struct Vec2 {
 using Vec2_int_ = Vec2<int32_t>;
 using Vec2_float_ = Vec2<float>;
 
-const float pi = std::acos(-1.f);
+const float pi = static_cast<float>(M_PI);
 
 #pragma pack(push, 1)
 template <class T>
@@ -242,15 +243,15 @@ struct Plane_float_ {
  * Helper structure for calculating Z-coordinate of a point on a plane given x and y, basically a storage for
  * coefficients in `z = ax + by + c` equation.
  *
- * Coefficients are stored in fixpoint format.
+ * Coefficients are stored in fixpoint format (16 fraction bits).
  */
 struct PlaneZCalc_int64_ {
     int64_t a = 0;
     int64_t b = 0;
     int64_t c = 0;
 
-    int Calculate(int x, int y) const {
-        return (a * x + b * y + c + 0x8000) >> 16;
+    int32_t Calculate(int32_t x, int32_t y) const {
+        return static_cast<int32_t>((a * x + b * y + c + 0x8000) >> 16);
     }
 
     void Init(const Plane_int_ &plane) {

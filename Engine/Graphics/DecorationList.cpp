@@ -10,7 +10,7 @@
 
 #include "Platform/Api.h"
 
-struct DecorationList *pDecorationList;
+DecorationList *pDecorationList;
 
 //----- (0045864C) --------------------------------------------------------
 void DecorationList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {

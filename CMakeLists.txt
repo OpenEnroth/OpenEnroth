@@ -57,6 +57,8 @@ else()
   add_definitions(-DWINDOWS_IGNORE_PACKING_MISMATCH="") # vs2019 complains about using #pragma pack()
   add_definitions(-DNOMINMAX) # please don't pull in these macros from <Windows.h>
   add_definitions(-D_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
+  add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise
+  add_definitions(-D_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
   set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
   set(CMAKE_CXX_STANDARD 17)

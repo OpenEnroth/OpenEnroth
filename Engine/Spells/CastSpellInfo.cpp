@@ -3637,8 +3637,7 @@ void CastSpellInfoHelpers::CastSpell() {
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
 
-                int mon_num = render->GetActorsInViewport(
-                    (int64_t)pCamera3D->GetPickDepth());
+                int mon_num = render->GetActorsInViewport((int64_t)pCamera3D->GetPickDepth());
                 v707.x = 0;
                 v707.y = 0;
                 v707.z = 0;

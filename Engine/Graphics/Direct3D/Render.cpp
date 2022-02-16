@@ -3566,8 +3566,7 @@ int Render::GetActorsInViewport(int pDepth) {
                         pActors[v6].uAIState != Removed &&
                         pActors[v6].uAIState != Disabled &&
                         pActors[v6].uAIState != Summoned) {
-                        if (vis->DoesRayIntersectBillboard(
-                                (double)pDepth, a1a)) {
+                        if (vis->DoesRayIntersectBillboard(pDepth, a1a)) {
                             if (mon_num < 100) {
                                 _50BF30_actors_in_viewport_ids[mon_num] = v6;
                                 mon_num++;
