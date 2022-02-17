@@ -5,7 +5,8 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 
-#define MAX_LOC_STRINGS 677
+#define MM7_LOC_STRINGS 677
+#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 3
 extern std::vector<char *> Tokenize(char *input, const char separator);
 
 Localization *localization = nullptr;
@@ -43,12 +44,12 @@ bool Localization::Initialize() {
         return false;
     }
 
-    this->localization_strings = new const char *[MAX_LOC_STRINGS];
+    this->localization_strings = new const char *[MAX_LOC_STRINGS]();
 
     strtok(this->localization_raw, "\r");
     strtok(NULL, "\r");
 
-    for (int i = 0; i < MAX_LOC_STRINGS; ++i) {
+    for (int i = 0; i < MM7_LOC_STRINGS; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
         step = 0;
         string_end = false;
@@ -76,6 +77,14 @@ bool Localization::Initialize() {
             test_string = tmp_pos + 1;
         } while (step <= 2 && !string_end);
     }
+
+    // TODO: should be moved to localization files eventually
+    if (!this->localization_strings[LSTR_FMT_S_STOLE_D_ITEM])
+        this->localization_strings[LSTR_FMT_S_STOLE_D_ITEM] = "%s stole %s!";
+    if (!this->localization_strings[LSTR_FMT_RECOVERY_TIME_D])
+        this->localization_strings[LSTR_FMT_RECOVERY_TIME_D] = "Recovery time: %d";
+    if (!this->localization_strings[LSTR_FMT_S_U_OUT_OF_U])
+        this->localization_strings[LSTR_FMT_S_U_OUT_OF_U] = "%s: %lu out of %lu";
 
     InitializeMm6ItemCategories();
 

@@ -498,7 +498,13 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
     int v40;                      // [sp+84h] [bp-Ch]@28
 
 
-    if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {  //не падающие объекты
+    if (pObject->uFlags & OBJECT_DESC_NO_GRAVITY) {
+        goto LABEL_25;
+    }
+
+    // flying objects / projectiles
+    if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
+        pSpriteObject->vVelocity.z -= (short)pEventTimer->uTimeElapsed * GetGravityStrength();
 LABEL_25:
         collision_state.check_hi = false;
         collision_state.radius_lo = pObject->uRadius;
@@ -721,13 +727,6 @@ LABEL_25:
             pSpriteObject->vVelocity.z = fixpoint_mul(58500, pSpriteObject->vVelocity.z);
         }
         // end loop
-    }
-    //для падающих объектов(для примера выброс вещи из инвентаря)
-    // fallen objects, eg thrown out of inventory
-    if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
-        pSpriteObject->vVelocity.z -=
-            (short)pEventTimer->uTimeElapsed * GetGravityStrength();
-        goto LABEL_25;
     }
 
     if (!(pObject->uFlags & OBJECT_DESC_INTERACTABLE) ||

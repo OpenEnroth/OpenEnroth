@@ -2232,7 +2232,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, GameKey::None, "DEBUG TOGGLE LIGHTMAP DECAL");
     GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, GameKey::None, "DEBUG TOGGLE TURBO SPEED");
     GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, GameKey::None, "DEBUG TOGGLE ACTORS");
-    GUIButton *pBtn_DebugDrawDist = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugDrawDist, 0, GameKey::None, "DEBUG TOGGLE EXTENDED DRAW DISTANCE");
+    GUIButton *pBtn_DebugExtendedDrawDistance = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugExtendedDrawDistance, 0, GameKey::None, "DEBUG TOGGLE EXTENDED DRAW DISTANCE");
 
     GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, GameKey::None, "DEBUG TOGGLE SNOW");
     GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, GameKey::None, "DEBUG TOGGLE PORTAL OUTLINES");
@@ -2240,7 +2240,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugShowFPS = CreateButton(354, 248, width, height, 1, 0, UIMSG_DebugShowFPS, 0, GameKey::None, "DEBUG TOGGLE SHOW FPS");
 
     GUIButton *pBtn_DebugSeasonsChange = CreateButton(13, 275, width, height, 1, 0, UIMSG_DebugSeasonsChange, 0, GameKey::None, "DEBUG TOGGLE SEASONS CHANGE");
-    GUIButton *pBtn_DebugFarClipToggle = CreateButton(127, 275, width, height, 1, 0, UIMSG_DebugFarClip, 0, GameKey::None, "DEBUG TOGGLE FAR CLIP DISTANCE");
+    GUIButton *pBtn_DebugVerboseLogging = CreateButton(127, 275, width, height, 1, 0, UIMSG_DebugVerboseLogging, 0, GameKey::None, "DEBUG TOGGLE VERBOSE LOGGING");
     GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, GameKey::None, "DEBUG GENERATE RANDOM ITEM");
     GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, GameKey::None, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
@@ -2286,7 +2286,7 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(354, 248, "Show FPS", engine->config->show_fps);
 
     buttonbox(13, 275, "Seasons", engine->config->seasons_change);
-    buttonbox(127, 275, "Far Clip", engine->config->extended_draw_distance);
+    buttonbox(127, 275, "Verbose Log", engine->config->verbose_logging);
     buttonbox(241, 275, "Gen Item", 2);
     buttonbox(354, 275, "Special Item", 2);
 

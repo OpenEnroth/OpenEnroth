@@ -144,6 +144,7 @@ void ItemGen::Reset() {
     this->uHolderPlayer = 0;
     this->uAttributes = 0;
     this->uNumCharges = 0;
+    this->uMaxCharges = 0;
     this->special_enchantment = ITEM_ENCHANTMENT_NULL;
     this->m_enchantmentStrength = 0;
     this->uEnchantmentType = 0;

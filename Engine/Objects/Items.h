@@ -62,9 +62,9 @@ struct ItemGen {  // 0x24
     uint8_t GetDamageRoll();
     uint8_t GetDamageMod();
     bool MerchandiseTest(int _2da_idx);
-    int uItemID = 0;                // 0
-    int uEnchantmentType = 0;       // 4
-    int m_enchantmentStrength = 0;  // 8
+    int32_t uItemID = 0;               // 0
+    int32_t uEnchantmentType = 0;       // 4
+    int32_t m_enchantmentStrength = 0;  // 8
     ITEM_ENCHANTMENT special_enchantment{};  // 0c
                               // 25  +5 levels
                               // 16  Drain Hit Points from target.
@@ -84,12 +84,12 @@ struct ItemGen {  // 0x24
                               // skill. 68  Adds 6-8 points of Cold damage and
                               // +5 Armor Class. 71  Prevents drowning damage.
                               // 72  Prevents falling damage.
-    int uNumCharges = 0;              // 10
-    unsigned int uAttributes = 0;     // 14
-    uint8_t uBodyAnchor = 0;  // 18
-    char uMaxCharges = 0;             // 19
-    char uHolderPlayer = 0;           // 1A
-    char field_1B = 0;                // 1B
+    int32_t uNumCharges = 0;           // 10
+    uint32_t uAttributes = 0;          // 14
+    uint8_t uBodyAnchor = 0;           // 18
+    uint8_t uMaxCharges = 0;           // 19
+    uint8_t uHolderPlayer = 0;         // 1A
+    char field_1B = 0;                 // 1B
     GameTime uExpireTime;        // uint64_t uExpireTime; //1C
 };
 #pragma pack(pop)
@@ -104,7 +104,7 @@ struct ItemDesc {  // 30h
     char *pName;                  // 4 8
     char *pUnidentifiedName;      // 8 c
     char *pDescription;           // 0c 10
-    unsigned int uValue;          // 10 14
+    uint32_t uValue;          // 10 14
     uint16_t uSpriteID;   // 14 18
     int16_t field_1A;             // 16
     int16_t uEquipX;       // 18  1c

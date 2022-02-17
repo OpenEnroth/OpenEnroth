@@ -212,7 +212,7 @@ union PlayerEquipment_Image_MM7 {
 
     union {
         struct {
-            /* 00 */ unsigned int uShield;
+            /* 00 */ unsigned int uOffHand;
             /* 04 */ unsigned int uMainHand;
             /* 08 */ unsigned int uBow;
             /* 0C */ unsigned int uArmor;

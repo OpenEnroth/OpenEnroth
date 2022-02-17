@@ -242,7 +242,7 @@ enum UIMessageType : uint32_t {
 
     UIMSG_DebugSpecialItem = 971,
     UIMSG_DebugGenItem = 972,
-    UIMSG_DebugFarClip = 973,
+    UIMSG_DebugVerboseLogging = 973,
     UIMSG_DebugSeasonsChange = 974,
     UIMSG_DebugShowFPS = 975,
     UIMSG_DebugPickedFace = 976,
@@ -252,7 +252,7 @@ enum UIMessageType : uint32_t {
     UIMSG_DebugNoDamage = 980,
     UIMSG_DebugFullHeal = 981,
     UIMSG_DebugSnow = 982,
-    UIMSG_DebugDrawDist = 983,
+    UIMSG_DebugExtendedDrawDistance = 983,
     UIMSG_DebugNoActors = 984,
     UIMSG_DebugTurboSpeed = 985,
     UIMSG_DebugLightmap = 986,

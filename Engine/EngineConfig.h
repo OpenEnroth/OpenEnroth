@@ -76,7 +76,6 @@ class EngineConfig {
     inline void ToggleDebugLightmap() { debug_lightmaps_decals = !debug_lightmaps_decals; }
     inline void ToggleDebugTurboSpeed() { debug_turbo_speed = !debug_turbo_speed; }
     inline void ToggleDebugNoActors() { no_actors = !no_actors; }
-    inline void ToggleDebugDrawDist() { extended_draw_distance = !extended_draw_distance; }
     inline void ToggleDebugSnow() { allow_snow = !allow_snow; }
     inline void ToggleDebugNoDamage() { no_damage = !no_damage; }
     inline void ToggleDebugPortalLines() { debug_portal_outlines = !debug_portal_outlines; }
@@ -85,6 +84,7 @@ class EngineConfig {
     inline void ToggleDebugSeasonsChange() { seasons_change = !seasons_change; }
     inline void ToggleExtendedDrawDistance() { extended_draw_distance = !extended_draw_distance; }
     inline void ToggleFullscreen() { fullscreen = !fullscreen; }
+    inline void ToggleVerboseLogging() { verbose_logging = !verbose_logging; }
 
     // DEBUG_SETTINGS_*
     int run_in_window = DEBUG_SETTINGS_RUN_IN_WIDOW;
@@ -147,6 +147,7 @@ class EngineConfig {
     bool debug_town_portal = false;
     bool debug_infinite_gold = false;
     bool debug_infinite_food = false;
+    bool verbose_logging = false;
 
     bool always_run = true;
     bool show_damage = true;

@@ -321,12 +321,9 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     v133 = 0;
     EvtTargetObj = targetObj;
     dword_5B65C4_cancelEventProcessing = 0;
-    if (uEventID == 114) {  // for test script
-        // if (!lua->DoFile("out01.lua"))
-        //    logger->Warning("Error opening out01.lua\n");
-        // logger->Warning("being tested that well\n");
-        return;
-    }
+    if (engine->config->verbose_logging)
+        logger->Warning("Processing EventID: %d", uEventID);
+
     if (!uEventID) {
         if (!game_ui_status_bar_event_string_time_left)
             GameUI_SetStatusBar(LSTR_NOTHING_HERE);

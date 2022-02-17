@@ -8,7 +8,7 @@
 
 namespace CastSpellInfoHelpers {
 void Cancel_Spell_Cast_In_Progress();
-void _427E01_cast_spell();
+void CastSpell();
 };  // namespace CastSpellInfoHelpers
 
 class GUIWindow;

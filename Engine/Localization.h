@@ -67,8 +67,8 @@
 #define LSTR_GRAND                           96   // "Grand"
 #define LSTR_GOLD                            97   // "Gold"
 #define LSTR_RACE_HUMAN                      99   // "Human"
-#define LSTR_RACE_ELF                       101  // "Elf"
-#define LSTR_RACE_DWARF                     103  // "Dwarf"
+#define LSTR_RACE_DWARF                     101  // "Dwarf"
+#define LSTR_RACE_ELF                       103  // "Elf"
 #define LSTR_HEAL                           104  // "Heal"
 #define LSTR_RACE_GOBLIN                    106  // "Goblin"
 #define LSTR_HP                             107  // "HP"
@@ -177,7 +177,7 @@
 #define LSTR_ARCOMAGE_CARD_DISCARD          266  // "DISCARD A CARD"
 #define LSTR_SHIELD                         279  // "Shield"
 #define LSTR_OFFICIAL                       304  // "Official"
-#define LSTR_FMT_S_STOLE_D_GOLD             320  // "%s stole %d gold!"
+#define LSTR_FMT_S_STOLE_D_GOLD             302  // "%s stole %d gold!"
 #define LSTR_SET_BEACON                     375  // "Set Beacon"
 #define LSTR_FMT_S_WAS_CAUGHT_STEALING      376  // "%s was caught stealing!"
 #define LSTR_FMT_S_FAILED_TO_STEAL          377  // "%s failed to steal anything!"
@@ -416,6 +416,10 @@
                                                  // your plans.  Soon the world will bow to your every whim!
                                                  // Still, you can't help but wonder what was beyond the Gate
                                                  // the other side was trying so hard to build."
+// WoMM string IDs
+#define LSTR_FMT_S_STOLE_D_ITEM             677  // "%s stole %s!"
+#define LSTR_FMT_RECOVERY_TIME_D            678  // "Recovery time: %d"
+#define LSTR_FMT_S_U_OUT_OF_U               679  // "%s: %lu out of %lu"
 
 class Localization {
  public:

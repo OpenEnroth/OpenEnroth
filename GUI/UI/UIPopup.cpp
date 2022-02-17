@@ -397,10 +397,10 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                 pItemsTable
                 ->pSpecialEnchantments[inspect_item->special_enchantment - 1]
                 .pBonusStatement);
-        } else if (inspect_item->uNumCharges) {
+        } else if (inspect_item->GetItemEquipType() == EQUIP_WAND) {
             sprintf(
-                out_text + 200, "%s: %lu", localization->GetString(LSTR_CHARGES),
-                inspect_item->uNumCharges
+                out_text + 200, localization->GetString(LSTR_FMT_S_U_OUT_OF_U), localization->GetString(LSTR_CHARGES),
+                inspect_item->uNumCharges, inspect_item->uMaxCharges
             );
         }
     }
@@ -1024,12 +1024,14 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
 
     // ps - test to track ai states
-    auto txttest = StringPrintf("%d", pActors[uActorID].uAIState);
-    pFontSmallnum->GetLineWidth(txttest);
-    pWindow->DrawTitleText(
-        pFontSmallnum, 0,
-        pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, txttest,
-        3);
+    if (engine->config->verbose_logging) {
+        auto txttest = StringPrintf("AI State: %d", pActors[uActorID].uAIState);
+        pFontSmallnum->GetLineWidth(txttest);
+        pWindow->DrawTitleText(
+            pFontSmallnum, 0,
+            pWindow->uFrameHeight - pFontSmallnum->GetHeight() - 12, 0, txttest,
+            3);
+    }
 }
 
 //----- (00417BB5) --------------------------------------------------------
@@ -1270,11 +1272,9 @@ void CharacterUI_StatsTab_ShowHint() {
         case 15:  // Attack Bonus
             if (pAttackBonusAttributeDescription) {
                 int meleerecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(false);
-                char recov[100];
-                sprintf(recov, "\n\nRecovery time: %d", meleerecov);
-                std::string test = std::string(pAttackBonusAttributeDescription) + std::string(recov);
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS),
-                    /*pAttackBonusAttributeDescription*/test);
+                std::string description = StringPrintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), meleerecov);
+                description = StringPrintf("%s\n\n%s", pAttackBonusAttributeDescription, description.c_str());
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_ATTACK_BONUS), description);
             }
             break;
 
@@ -1289,11 +1289,9 @@ void CharacterUI_StatsTab_ShowHint() {
         case 17:  // Missle Bonus
             if (pMissleBonusAttributeDescription) {
                 int missrecov = pPlayers[uActiveCharacter]->GetAttackRecoveryTime(true);
-                char recovm[100];
-                sprintf(recovm, "\n\nRecovery time: %d", missrecov);
-                std::string test2 = std::string(pAttackBonusAttributeDescription) + std::string(recovm);
-                CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS),
-                    /*pMissleBonusAttributeDescription*/test2);
+                std::string description = StringPrintf(localization->GetString(LSTR_FMT_RECOVERY_TIME_D), missrecov);
+                description = StringPrintf("%s\n\n%s", pAttackBonusAttributeDescription, description.c_str());
+                CharacterUI_DrawTooltip(localization->GetString(LSTR_SHOOT_BONUS), description);
             }
             break;
 

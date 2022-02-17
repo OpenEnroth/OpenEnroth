@@ -146,6 +146,7 @@ void AudioPlayer::MusicStop() {
 
     pCurrentMusicTrack->Stop();
     pCurrentMusicTrack = nullptr;
+    currentMusicTrack = -1;
 }
 
 void AudioPlayer::MusicPause() {
@@ -161,7 +162,13 @@ void AudioPlayer::MusicResume() {
         return;
     }
 
-    pCurrentMusicTrack->Resume();
+    if (!pCurrentMusicTrack->Resume()) {
+        int playedMusicTrack = currentMusicTrack;
+        if (currentMusicTrack > 0) {
+            MusicStop();
+            MusicPlayTrack((MusicID)playedMusicTrack);
+        }
+    }
 }
 
 void AudioPlayer::SetMusicVolume(int vol) {

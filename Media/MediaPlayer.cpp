@@ -962,6 +962,9 @@ void MPlayer::Unload() {
 void av_logger(void *ptr, int level, const char *format, va_list args) {
     char buf[2048];
     int prefix = 1;
+    if (!engine->config->verbose_logging)
+        return;
+
     int ret = av_log_format_line2(ptr, level, format, args, buf, sizeof(buf), &prefix);
     if (ret < 0)
         fprintf(stderr, "%s", buf);
@@ -1119,6 +1122,8 @@ void AudioBaseDataSource::Close() {
         avformat_close_input(&pFormatContext);
         pFormatContext = nullptr;
     }
+
+    bOpened = false;
 }
 
 size_t AudioBaseDataSource::GetSampleRate() {
