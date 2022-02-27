@@ -64,6 +64,29 @@ void _set_3d_modelview_matrix();
 void _set_ortho_projection(bool gameviewport = false);
 void _set_ortho_modelview();
 
+// improved error check
+void GL_Check_Errors(bool breakonerr = true) {
+    GLenum err = glGetError();
+
+    while (err != GL_NO_ERROR) {
+        static std::string error;
+
+        switch (err) {
+            case GL_INVALID_OPERATION:      error = "INVALID_OPERATION";      break;
+            case GL_INVALID_ENUM:           error = "INVALID_ENUM";           break;
+            case GL_INVALID_VALUE:          error = "INVALID_VALUE";          break;
+            case GL_OUT_OF_MEMORY:          error = "OUT_OF_MEMORY";          break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION:  error = "INVALID_FRAMEBUFFER_OPERATION";  break;
+            default:                        error = "Unknown Error";  break;
+        }
+
+        logger->Warning("OpenGL error (%u): %s", err, error.c_str());
+        if (breakonerr) __debugbreak();
+
+        err = glGetError();
+    }
+}
+
 RenderVertexSoft VertexRenderList[50];  // array_50AC10
 RenderVertexD3D3 d3d_vertex_buffer[50];
 
@@ -600,6 +623,8 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
     glVertex3f(uZ+.5, uW+.5, 0);
     drawcalls++;
     glEnd();
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::BeginSceneD3D() {
@@ -613,6 +638,7 @@ void RenderOpenGL::BeginSceneD3D() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     render->uNumBillboardsToDraw = 0;  // moved from drawbillboards - cant reset this until mouse picking finished
+    GL_Check_Errors();
 }
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
@@ -956,6 +982,8 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
     //ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
     glDepthMask(GL_TRUE);
     glEnable(GL_CULL_FACE);
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
@@ -1010,10 +1038,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
 
     glDisable(GL_BLEND);
 
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL: draw image error: (%u)", err);
-    }
+    GL_Check_Errors();
 }
 
 
@@ -1511,11 +1536,15 @@ void RenderOpenGL::BeginLightmaps() {
     auto effpar03 = assets->GetBitmap("effpar03");
     auto texture = (TextureOpenGL*)effpar03;
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::EndLightmaps() {
     glDisable(GL_BLEND);
     glBindTexture(GL_TEXTURE_2D, GL_lastboundtex);
+
+    GL_Check_Errors();
 }
 
 
@@ -1529,6 +1558,8 @@ void RenderOpenGL::BeginLightmaps2() {
     static Texture* effpar03 = assets->GetBitmap("effpar03");
     auto texture = (TextureOpenGL*)effpar03;
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    GL_Check_Errors();
 }
 
 
@@ -1537,6 +1568,8 @@ void RenderOpenGL::EndLightmaps2() {
     glDepthMask(true);
     glEnable(GL_CULL_FACE);
     glBindTexture(GL_TEXTURE_2D, GL_lastboundtex);
+
+    GL_Check_Errors();
 }
 
 bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, struct Vec3_float_ *pColorMult, float z_bias) {
@@ -1570,6 +1603,8 @@ bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, struct Vec3_float_ *
     glEnd();
 
     drawcalls++;
+
+    GL_Check_Errors();
     return true;
 }
 
@@ -1581,12 +1616,16 @@ void RenderOpenGL::BeginDecals() {
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::EndDecals() {
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
@@ -1631,6 +1670,8 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
         drawcalls++;
     }
     glEnd();
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
@@ -1722,8 +1763,11 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     glDisableClientState(GL_VERTEX_ARRAY);
 
     glDisable(GL_BLEND);
-}
 
+
+    GL_Check_Errors();
+    return;
+}
 
 
 void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
@@ -1991,10 +2035,7 @@ void RenderOpenGL::Update_Texture(Texture *texture) {
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_BGRA, GL_UNSIGNED_BYTE, t->GetPixels(IMAGE_FORMAT_A8R8G8B8));
     glBindTexture(GL_TEXTURE_2D, NULL);
 
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL: update texture error: (%u)", err);
-    }
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::DeleteTexture(Texture *texture) {
@@ -2005,6 +2046,8 @@ void RenderOpenGL::DeleteTexture(Texture *texture) {
     if (texid != -1) {
         glDeleteTextures(1, &texid);
     }
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::RemoveTextureFromDevice(Texture* texture) { __debugbreak(); }
@@ -2039,6 +2082,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
+        GL_Check_Errors();
         return true;
     }
     return false;
@@ -2053,6 +2097,8 @@ void _set_3d_projection_matrix() {
 
     // ogl uses fov in Y - this func has known bug where it misses aspect divsion hence multiplying it to clip distances
     gluPerspective(pCamera3D->fov_y_deg, pCamera3D->aspect, near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
+
+    GL_Check_Errors();
 }
 
 void _set_3d_modelview_matrix() {
@@ -2069,6 +2115,8 @@ void _set_3d_modelview_matrix() {
               camera_y - sinf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
               camera_z - tanf(2.0 * pi_double * (float)-pCamera3D->sRotationY / 2048.0f),
               0, 0, 1);
+
+    GL_Check_Errors();
 }
 
 void _set_ortho_projection(bool gameviewport) {
@@ -2085,11 +2133,14 @@ void _set_ortho_projection(bool gameviewport) {
         glLoadIdentity();
         glOrtho(game_viewport_x, game_viewport_z, game_viewport_w, game_viewport_y, 1, -1);  // far = 1 but ogl looks down -z
     }
+
+    GL_Check_Errors();
 }
 
 void _set_ortho_modelview() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    GL_Check_Errors();
 }
 
 const int terrain_block_scale = 512;
@@ -2587,6 +2638,8 @@ void RenderOpenGL::RenderTerrainD3D() {
             // end norm split
         }
     }
+
+    GL_Check_Errors();
 }
 
 
@@ -2740,6 +2793,8 @@ void RenderOpenGL::DrawTerrainPolygon(struct Polygon *poly, bool transparent, bo
     // (pCamera3D->debug_flags & ODM_RENDER_DRAW_TERRAIN_OUTLINES)
     if (engine->config->debug_terrain)
         pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FFFFFF, 0.0);
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::DrawOutdoorSkyD3D() {
@@ -2875,10 +2930,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     drawcalls++;
     glEnd();
 
-    GLint err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL: draw texture error: (%u)", err);
-    }
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
@@ -2956,6 +3008,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
 
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
+
+    GL_Check_Errors();
 }
 
 //----- (004A1DA8) --------------------------------------------------------
@@ -2996,6 +3050,8 @@ void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) 
             assert(false);
             break;
     }
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
@@ -3005,6 +3061,8 @@ void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
     this->clip_z = z;
     this->clip_w = w;
     glScissor(x, this->window->GetHeight() -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::ResetUIClipRect() {
@@ -3027,6 +3085,8 @@ void RenderOpenGL::BeginScene() {
 
     _set_ortho_projection();
     _set_ortho_modelview();
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::EndScene() {
@@ -3043,7 +3103,7 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
     if (!tex) __debugbreak();
 
-    TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(tex);
+    TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
         __debugbreak();
         return;
@@ -3102,8 +3162,8 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
         texx, texw,
     };
 
-     GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
-        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+       0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, Vertices);
@@ -3119,10 +3179,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
 
     glDisable(GL_BLEND);
 
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL: draw texture error: (%u)", err);
-    }
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
@@ -3730,6 +3787,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
             glDisable(GL_BLEND);
         }
     }
+
+    GL_Check_Errors();
 }
 
 void RenderOpenGL::DrawIndoorBatched() { return; }
@@ -3937,6 +3996,8 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             glDisable(GL_BLEND);
         }
     }
+
+    GL_Check_Errors();
 }
 
 bool RenderOpenGL::SwitchToWindow() {
@@ -3990,6 +4051,7 @@ bool RenderOpenGL::Initialize() {
 
         PostInitialization();
 
+        GL_Check_Errors();
         return true;
     }
 
@@ -4027,10 +4089,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     drawcalls++;
     glDisableClientState(GL_VERTEX_ARRAY);
 
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL: fill rectangle error: (%u)", err);
-    }
+    GL_Check_Errors();
 }
 
 bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
@@ -4149,6 +4208,7 @@ bool RenderOpenGL::NuklearCreateDevice() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    GL_Check_Errors();
     return true;
 }
 
@@ -4261,6 +4321,7 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
     glDisable(GL_BLEND);
     // glDisable(GL_SCISSOR_TEST);
 
+    GL_Check_Errors();
     return true;
 }
 
@@ -4275,6 +4336,8 @@ void RenderOpenGL::NuklearRelease() {
     glDeleteBuffers(1, &nk_dev.vbo);
     glDeleteBuffers(1, &nk_dev.ebo);
     glDeleteVertexArrays(1, &nk_dev.vao);
+
+    GL_Check_Errors();
 
     nk_buffer_free(&nk_dev.cmds);
 
@@ -4319,12 +4382,14 @@ struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char* font_path, size_t 
     tfont->texid = texid;
     nk_font_atlas_end(&nk_dev.atlas, nk_handle_id(texid), &nk_dev.null);
 
+    GL_Check_Errors();
     return tfont;
 }
 
 void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
     if (tfont)
         glDeleteTextures(1, &tfont->texid);
+    GL_Check_Errors();
 }
 
 struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
@@ -4341,6 +4406,7 @@ struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
     //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, /*GL_RGBA*/GL_BGRA, GL_UNSIGNED_BYTE, pixels);
     //glBindTexture(GL_TEXTURE_2D, 0);
 
+    GL_Check_Errors();
     return nk_image_id(texid);
 }
 
@@ -4350,4 +4416,5 @@ void RenderOpenGL::NuklearImageFree(Image *img) {
     if (texid != -1) {
         glDeleteTextures(1, &texid);
     }
+    GL_Check_Errors();
 }
