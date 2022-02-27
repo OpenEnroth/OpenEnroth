@@ -61,6 +61,7 @@ set(GRAPHICS_HEADERS BSPModel.h
                      Level/Decoration.h
                      OpenGL/RenderOpenGL.h
                      OpenGL/TextureOpenGL.h
+                     OpenGL/GLShaderLoader.h
                      IRenderConfig.h
                      IRenderConfigFactory.h
                      IRenderFactory.h

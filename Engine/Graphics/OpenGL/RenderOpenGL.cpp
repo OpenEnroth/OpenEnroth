@@ -38,6 +38,7 @@
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
+#include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/PCX.h"
