@@ -26,6 +26,11 @@
 
 #include <algorithm>
 #include <memory>
+#include <utility>
+#include <map>
+
+#include <glm.hpp>
+#include <glm/glm/gtc/matrix_transform.hpp>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Image.h"
@@ -87,6 +92,11 @@ void GL_Check_Errors(bool breakonerr = true) {
         err = glGetError();
     }
 }
+
+// TODO(pskelton): move to opengl render class
+// these are the view and projection matrices for submission to shaders
+glm::mat4 projmat;
+glm::mat4 viewmat;
 
 RenderVertexSoft VertexRenderList[50];  // array_50AC10
 RenderVertexD3D3 d3d_vertex_buffer[50];
@@ -2099,6 +2109,9 @@ void _set_3d_projection_matrix() {
     // ogl uses fov in Y - this func has known bug where it misses aspect divsion hence multiplying it to clip distances
     gluPerspective(pCamera3D->fov_y_deg, pCamera3D->aspect, near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
 
+    // build same matrix with glm so we can drop depreciated glu above eventually
+    projmat = glm::perspective(glm::radians(pCamera3D->fov_y_deg), pCamera3D->aspect, near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
+
     GL_Check_Errors();
 }
 
@@ -2116,6 +2129,15 @@ void _set_3d_modelview_matrix() {
               camera_y - sinf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
               camera_z - tanf(2.0 * pi_double * (float)-pCamera3D->sRotationY / 2048.0f),
               0, 0, 1);
+
+    // build same matrix with glm so we can drop depreciated glu above eventually
+    glm::vec3 campos = glm::vec3(camera_x, camera_y, camera_z);
+    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
+        camera_y - sinf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
+        camera_z - tanf(2.0 * pi_double * (float)-pCamera3D->sRotationY / 2048.0f));
+    glm::vec3 upvec = glm::vec3(0.0, 0.0, 1.0);
+
+    viewmat = glm::lookAtLH(campos, eyepos, upvec);
 
     GL_Check_Errors();
 }
@@ -2144,9 +2166,661 @@ void _set_ortho_modelview() {
     GL_Check_Errors();
 }
 
+
+// ---------------------- terrain -----------------------
 const int terrain_block_scale = 512;
 const int terrain_height_scale = 32;
+
+struct GLshaderverts {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat u;
+    GLfloat v;
+    GLfloat texunit;
+    GLfloat texturelayer;
+    GLfloat normx;
+    GLfloat normy;
+    GLfloat normz;
+    GLfloat attribs;
+};
+
+GLshaderverts terrshaderstore[127 * 127 * 6] = {};
+
 void RenderOpenGL::RenderTerrainD3D() {
+    // shader version
+
+    // face culling
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
+    // camera matrices
+    _set_3d_projection_matrix();
+    _set_3d_modelview_matrix();
+
+    //GLfloat projmat[16];
+    //glGetFloatv(GL_PROJECTION_MATRIX, projmat);
+    //GLfloat viewmat[16];
+    //glGetFloatv(GL_MODELVIEW_MATRIX, viewmat);
+
+
+
+
+
+
+
+
+
+    // generate array and populate data - needs to be moved to on map load
+    if (terrainVAO == 0) {
+        static RenderVertexSoft pTerrainVertices[128 * 128];
+        int blockScale = 512;
+        int heightScale = 32;
+
+        for (unsigned int y = 0; y < 128; ++y) {
+            for (unsigned int x = 0; x < 128; ++x) {
+                pTerrainVertices[y * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
+                pTerrainVertices[y * 128 + x].vWorldPosition.y = (64 - (signed)y) * blockScale;
+                pTerrainVertices[y * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[y * 128 + x];
+            }
+        }
+
+        // reserve first 7 layers for water tiles in unit 0
+        auto wtrtexture = this->hd_water_tile_anim[0];
+        terraintexturesizes[0] = wtrtexture->GetWidth();
+
+        for (int buff = 0; buff < 7; buff++) {
+            char container_name[64];
+            sprintf(container_name, "HDWTR%03u", buff);
+
+            terraintexmap.insert(std::make_pair(container_name, terraintexmap.size()));
+            numterraintexloaded[0]++;
+        }
+
+
+        //// tile culling maths
+        //int camx = WorldPosToGridCellX(pCamera3D->vPartyPos.x);
+        //int camy = WorldPosToGridCellY(pCamera3D->vPartyPos.y);
+        //int tilerange = (pIndoorCameraD3D->GetFarClip() / terrain_block_scale) + 1;
+
+
+        for (int y = 0; y < 127; ++y) {
+            for (int x = 0; x < 127; ++x) {
+                // map is 127 x 127 squares
+                // each square has two triangles
+                // each tri has 3 verts
+
+                auto tile = pOutdoor->DoGetTile(x, y);
+
+                int tileunit = 0;
+                int tilelayer = 0;
+
+                // check if tile->name is already in list
+                auto mapiter = terraintexmap.find(tile->name);
+                if (mapiter != terraintexmap.end()) {
+                    // if so, extract unit and layer
+                    int unitlayer = mapiter->second;
+                    tilelayer = unitlayer & 0xFF;
+                    tileunit = (unitlayer & 0xFF00) >> 8;
+                } else if (tile->name == "wtrtyl") {
+                    // water tile
+                    tileunit = 0;
+                    tilelayer = 0;
+                } else {
+                    // else need to add it
+                    auto thistexture = assets->GetBitmap(tile->name);
+                    int width = thistexture->GetWidth();
+                    // check size to see what unit it needs
+                    int i;
+                    for (i = 0; i < 8; i++) {
+                        if (terraintexturesizes[i] == width || terraintexturesizes[i] == 0) break;
+                    }
+                    if (i == 8) __debugbreak();
+
+                    if (terraintexturesizes[i] == 0) terraintexturesizes[i] = width;
+
+                    tileunit = i;
+                    tilelayer = numterraintexloaded[i];
+
+                    // encode unit and layer together
+                    int encode = (tileunit << 8) | tilelayer;
+
+                    // intsert into tex map
+                    terraintexmap.insert(std::make_pair(tile->name, encode));
+
+                    numterraintexloaded[i]++;
+                    if (numterraintexloaded[i] == 256) __debugbreak();
+                }
+
+
+                // vertices
+
+                uint norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
+                uint bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
+                assert(norm_idx < uNumTerrainNormals);
+                assert(bottnormidx < uNumTerrainNormals);
+                Vec3_float_ *norm = &pTerrainNormals[norm_idx];
+                Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
+
+                // calc each vertex
+                // [0] - x,y        n1
+                terrshaderstore[6 * (x + (127 * y))].x = pTerrainVertices[y * 128 + x].vWorldPosition.x;
+                terrshaderstore[6 * (x + (127 * y))].y = pTerrainVertices[y * 128 + x].vWorldPosition.y;
+                terrshaderstore[6 * (x + (127 * y))].z = pTerrainVertices[y * 128 + x].vWorldPosition.z;
+                terrshaderstore[6 * (x + (127 * y))].u = 0;
+                terrshaderstore[6 * (x + (127 * y))].v = 0;
+                terrshaderstore[6 * (x + (127 * y))].texunit = tileunit;
+                terrshaderstore[6 * (x + (127 * y))].texturelayer = tilelayer;
+                terrshaderstore[6 * (x + (127 * y))].normx = norm->x;
+                terrshaderstore[6 * (x + (127 * y))].normy = norm->y;
+                terrshaderstore[6 * (x + (127 * y))].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y))].attribs = 0;
+
+                // [1] - x+1,y+1    n1
+                terrshaderstore[6 * (x + (127 * y)) + 1].x = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.x;
+                terrshaderstore[6 * (x + (127 * y)) + 1].y = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.y;
+                terrshaderstore[6 * (x + (127 * y)) + 1].z = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.z;
+                terrshaderstore[6 * (x + (127 * y)) + 1].u = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 1].v = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 1].texunit = tileunit;
+                terrshaderstore[6 * (x + (127 * y)) + 1].texturelayer = tilelayer;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normx = norm->x;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normy = norm->y;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y)) + 1].attribs = 0;
+
+                // [2] - x+1,y      n1
+                terrshaderstore[6 * (x + (127 * y)) + 2].x = pTerrainVertices[y * 128 + x + 1].vWorldPosition.x;
+                terrshaderstore[6 * (x + (127 * y)) + 2].y = pTerrainVertices[y * 128 + x + 1].vWorldPosition.y;
+                terrshaderstore[6 * (x + (127 * y)) + 2].z = pTerrainVertices[y * 128 + x + 1].vWorldPosition.z;
+                terrshaderstore[6 * (x + (127 * y)) + 2].u = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 2].v = 0;
+                terrshaderstore[6 * (x + (127 * y)) + 2].texunit = tileunit;
+                terrshaderstore[6 * (x + (127 * y)) + 2].texturelayer = tilelayer;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normx = norm->x;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normy = norm->y;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y)) + 2].attribs = 0;
+
+                // [3] - x,y        n2
+                terrshaderstore[6 * (x + (127 * y)) + 3].x = pTerrainVertices[y * 128 + x].vWorldPosition.x;
+                terrshaderstore[6 * (x + (127 * y)) + 3].y = pTerrainVertices[y * 128 + x].vWorldPosition.y;
+                terrshaderstore[6 * (x + (127 * y)) + 3].z = pTerrainVertices[y * 128 + x].vWorldPosition.z;
+                terrshaderstore[6 * (x + (127 * y)) + 3].u = 0;
+                terrshaderstore[6 * (x + (127 * y)) + 3].v = 0;
+                terrshaderstore[6 * (x + (127 * y)) + 3].texunit = tileunit;
+                terrshaderstore[6 * (x + (127 * y)) + 3].texturelayer = tilelayer;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normx = norm2->x;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normy = norm2->y;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 3].attribs = 0;
+
+                // [4] - x,y+1      n2
+                terrshaderstore[6 * (x + (127 * y)) + 4].x = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition.x;
+                terrshaderstore[6 * (x + (127 * y)) + 4].y = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition.y;
+                terrshaderstore[6 * (x + (127 * y)) + 4].z = pTerrainVertices[(y + 1) * 128 + x].vWorldPosition.z;
+                terrshaderstore[6 * (x + (127 * y)) + 4].u = 0;
+                terrshaderstore[6 * (x + (127 * y)) + 4].v = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 4].texunit = tileunit;
+                terrshaderstore[6 * (x + (127 * y)) + 4].texturelayer = tilelayer;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normx = norm2->x;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normy = norm2->y;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 4].attribs = 0;
+
+                // [5] - x+1,y+1    n2
+                terrshaderstore[6 * (x + (127 * y)) + 5].x = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.x;
+                terrshaderstore[6 * (x + (127 * y)) + 5].y = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.y;
+                terrshaderstore[6 * (x + (127 * y)) + 5].z = pTerrainVertices[(y + 1) * 128 + x + 1].vWorldPosition.z;
+                terrshaderstore[6 * (x + (127 * y)) + 5].u = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 5].v = 1;
+                terrshaderstore[6 * (x + (127 * y)) + 5].texunit = tileunit;
+                terrshaderstore[6 * (x + (127 * y)) + 5].texturelayer = tilelayer;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normx = norm2->x;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normy = norm2->y;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 5].attribs = 0;
+
+                // if (terrshaderstore[6 * (x + (127 * y)) + 5].texturelayer != 0) __debugbreak();
+            }
+        }
+
+        glGenVertexArrays(1, &terrainVAO);
+        glGenBuffers(1, &terrainVBO);
+
+        glBindVertexArray(terrainVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(terrshaderstore), terrshaderstore, GL_STATIC_DRAW);
+
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)0);
+        glEnableVertexAttribArray(0);
+        // tex uv attribute
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+        // tex unit attribute
+        // tex array layer attribute
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+        // normals
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(7 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(3);
+        // attribs - not used here yet
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(4);
+
+        GL_Check_Errors();
+
+        // texture set up
+
+        // loop over all units
+        for (int unit = 0; unit < 8; unit++) {
+            assert(numterraintexloaded[unit] <= 256);
+            // skip if textures are empty
+            if (numterraintexloaded[unit] == 0) continue;
+
+            glGenTextures(1, &terraintextures[unit]);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D_ARRAY, terraintextures[unit]);
+
+            // glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, GL_RGBA8, terraintexturesizes[unit], terraintexturesizes[unit], numterraintexloaded[unit]);
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, terraintexturesizes[unit], terraintexturesizes[unit], numterraintexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+            std::map<std::string, int>::iterator it = terraintexmap.begin();
+            while (it != terraintexmap.end()) {
+                // skip if wtrtyl
+                //if ((it->first).substr(0, 6) == "wtrtyl") {
+                //    std::cout << "skipped  " << it->first << std::endl;
+                 //   it++;
+                 //   continue;
+                //}
+
+                int comb = it->second;
+                int tlayer = comb & 0xFF;
+                int tunit = (comb & 0xFF00) >> 8;
+
+                if (tunit == unit) {
+                    // get texture
+                    auto texture = assets->GetBitmap(it->first);
+
+                    std::cout << "loading  " << it->first << "   into unit " << tunit << " and pos " << tlayer << std::endl;
+
+                    glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
+                        0,
+                        0, 0, tlayer,
+                        terraintexturesizes[unit], terraintexturesizes[unit], 1,
+                        GL_RGBA,
+                        GL_UNSIGNED_BYTE,
+                        texture->GetPixels(IMAGE_FORMAT_R8G8B8A8));
+
+                    //numterraintexloaded[0]++;
+                }
+
+                it++;
+            }
+
+            //iterate through terrain tex map
+            //ignore wtrtyl
+            //laod in
+
+            //auto tile = pOutdoor->DoGetTile(0, 0);
+            //bool border = tile->IsWaterBorderTile();
+
+
+            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+            glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+
+
+
+            GL_Check_Errors();
+        }
+    }
+
+    //
+    //unsigned int VBO;
+
+
+
+
+/////////////////////////////////////////////////////
+    // actual drawing
+
+
+    // terrain debug
+    if (engine->config->debug_terrain)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+    ////
+    for (int unit = 0; unit < 8; unit++) {
+        // skip if textures are empty
+        if (numterraintexloaded[unit] > 0) {
+            glActiveTexture(GL_TEXTURE0 + unit);
+            glBindTexture(GL_TEXTURE_2D_ARRAY, terraintextures[unit]);
+        }
+        GL_Check_Errors();
+    }
+    //logger->Info("vefore");
+
+    glBindVertexArray(terrainVAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+
+    glUseProgram(terrainshader.ID);
+
+    GL_Check_Errors();
+
+    // set sampler to texure0
+    //glUniform1i(0, 0); ???
+
+    //logger->Info("after");
+    //// set projection
+    glUniformMatrix4fv(glGetUniformLocation(terrainshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    //// set view
+    glUniformMatrix4fv(glGetUniformLocation(terrainshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+    glUniform1i(glGetUniformLocation(terrainshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+
+    glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray0"), GLint(0));
+    glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray1"), GLint(1));
+
+    GLfloat camera[3];
+    camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0));
+    camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0));
+    camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
+    glUniform3fv(glGetUniformLocation(terrainshader.ID, "CameraPos"), 1, &camera[0]);
+
+
+    // lighting stuff
+    float ambient = pParty->uCurrentMinute + pParty->uCurrentHour * 60.0;  // 0 - > 1439
+    ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * pi_double) / 1440) + 1) * 0.27;
+    float diffuseon = pWeather->bNight ? 0 : 1;
+
+    glUniform3fv(glGetUniformLocation(terrainshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), ambient, ambient, ambient);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), diffuseon * 1.0, diffuseon * 0.8, 0.0);
+
+    if (pParty->armageddon_timer) {
+        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), 1.0, 0, 0);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), 1.0, 0, 0);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0, 0, 0);
+    }
+
+    // 48
+
+    // point lights - fspointlights
+    /*
+        lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+        lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+        lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+        lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setFloat("pointLights[0].constant", 1.0f);
+        lightingShader.setFloat("pointLights[0].linear", 0.09);
+        lightingShader.setFloat("pointLights[0].quadratic", 0.032);
+    */
+
+    // test torchlight
+    float torchradius = 0;
+    if (!diffuseon) {
+        int rangemult = 1;
+        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
+            rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+        torchradius = float(rangemult) * 1024.0;
+    }
+
+    glUniform3fv(glGetUniformLocation(terrainshader.ID, "fspointlights[0].position"), 1, &camera[0]);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].specular"), 0, 0, 1);
+    //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].constant"), .81);
+    //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].linear"), 0.003);
+    //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].quadratic"), 0.000007);
+    glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].radius"), torchradius);
+
+
+    // rest of lights stacking
+    GLuint num_lights = 1;
+
+    for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
+        if (num_lights >= 20) break;
+
+        std::string slotnum = std::to_string(num_lights);
+        auto test = pMobileLightsStack->pLights[i];
+
+        float x = pMobileLightsStack->pLights[i].vPosition.x;
+        float y = pMobileLightsStack->pLights[i].vPosition.y;
+        float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+
+        float lightrad = pMobileLightsStack->pLights[i].uRadius;
+
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].constant"), .81);
+        //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].linear"), 0.003);
+        //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].quadratic"), 0.000007);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+        num_lights++;
+
+        //    StackLight_TerrainFace(
+        //        (StationaryLight*)&pMobileLightsStack->pLights[i], pNormal,
+        //        Light_tile_dist, VertList, uStripType, bLightBackfaces, &num_lights);
+    }
+
+
+
+
+
+    for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
+        if (num_lights >= 20) break;
+
+        std::string slotnum = std::to_string(num_lights);
+        auto test = pStationaryLightsStack->pLights[i];
+
+        float x = test.vPosition.x;
+        float y = test.vPosition.y;
+        float z = test.vPosition.z;
+
+        float r = test.uLightColorR / 255.0;
+        float g = test.uLightColorG / 255.0;
+        float b = test.uLightColorB / 255.0;
+
+        float lightrad = test.uRadius;
+
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].constant"), .81);
+        //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].linear"), 0.003);
+        //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].quadratic"), 0.000007);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+        num_lights++;
+
+
+
+        //    StackLight_TerrainFace(&pStationaryLightsStack->pLights[i], pNormal,
+        //        Light_tile_dist, VertList, uStripType, bLightBackfaces,
+        //        &num_lights);
+    }
+
+
+    // blank lights
+
+    for (int blank = num_lights; blank < 20; blank++) {
+        std::string slotnum = std::to_string(blank);
+        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
+    }
+
+    GL_Check_Errors();
+
+
+    glDrawArrays(GL_TRIANGLES, 0, (127 * 127 * 6));
+    drawcalls++;
+    GL_Check_Errors();
+
+    glUseProgram(0);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
+
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, NULL);
+
+
+
+    //end terrain debug
+    if (engine->config->debug_terrain)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
+    GL_Check_Errors();
+
+    // return;
+
+
+
+    // stack new decals onto terrain faces ////////////////////////////////////////////////
+    // cludge for now
+
+
+    if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
+    unsigned int NumBloodsplats = decal_builder->bloodsplat_container->uNumBloodsplats;
+
+    // loop over blood to lay
+    for (uint i = 0; i < NumBloodsplats; ++i) {
+        // approx location of bloodsplat
+        int splatx = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].x;
+        int splaty = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].y;
+        int splatz = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].z;
+        int testx = WorldPosToGridCellX(splatx);
+        int testy = WorldPosToGridCellY(splaty);
+        // use terrain squares in block surrounding to try and stack faces
+
+        for (int loopy = (testy - 1); loopy < (testy + 1); ++loopy) {
+            for (int loopx = (testx - 1); loopx < (testx + 1); ++loopx) {
+                if (loopy < 0) continue;
+                if (loopy > 126) continue;
+                if (loopx < 0) continue;
+                if (loopx > 126) continue;
+
+
+
+                struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
+                pTilePolygon->flags = pOutdoor->GetSomeOtherTileInfo(loopx, loopy);
+
+
+
+                uint norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
+                uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
+
+                assert(norm_idx < uNumTerrainNormals);
+                assert(bottnormidx < uNumTerrainNormals);
+
+                Vec3_float_ *norm = &pTerrainNormals[norm_idx];
+                Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
+
+                float v51 = (-pOutdoor->vSunlight.x * norm->x) / 65536.0;
+                float v53 = (-pOutdoor->vSunlight.y * norm->y) / 65536.0;
+                float v52 = (-pOutdoor->vSunlight.z * norm->z) / 65536.0;
+                pTilePolygon->dimming_level = 20 - 20 * (v51 + v53 + v52);
+
+                if (pTilePolygon->dimming_level < 0) pTilePolygon->dimming_level = 0;
+                if (pTilePolygon->dimming_level > 31) pTilePolygon->dimming_level = 31;
+
+                float Light_tile_dist = 0.0;
+
+                int blockScale = 512;
+                int heightScale = 32;
+
+                static stru154 static_sub_0048034E_stru_154;
+
+                // top tri
+                // x, y
+                VertexRenderList[0].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy))].x;
+                VertexRenderList[0].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy))].y;
+                VertexRenderList[0].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy))].z;
+                // x + 1, y + 1
+                VertexRenderList[1].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 1].x;
+                VertexRenderList[1].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 1].y;
+                VertexRenderList[1].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 1].z;
+                // x + 1, y
+                VertexRenderList[2].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].x;
+                VertexRenderList[2].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].y;
+                VertexRenderList[2].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 2].z;
+
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 3, 1);
+                static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
+                if (decal_builder->uNumSplatsThisFace > 0)
+                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, 4, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0/**(float*)&uClipFlag*/, -1);
+
+                //bottom tri
+                v51 = (-pOutdoor->vSunlight.x * norm2->x) / 65536.0;
+                v53 = (-pOutdoor->vSunlight.y * norm2->y) / 65536.0;
+                v52 = (-pOutdoor->vSunlight.z * norm2->z) / 65536.0;
+                pTilePolygon->dimming_level = 20 - 20 * (v51 + v53 + v52);
+
+                if (pTilePolygon->dimming_level < 0) pTilePolygon->dimming_level = 0;
+                if (pTilePolygon->dimming_level > 31) pTilePolygon->dimming_level = 31;
+
+
+
+                // x, y
+                VertexRenderList[0].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].x;
+                VertexRenderList[0].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].y;
+                VertexRenderList[0].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 3].z;
+                // x, y + 1
+                VertexRenderList[1].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].x;
+                VertexRenderList[1].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].y;
+                VertexRenderList[1].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 4].z;
+                // x + 1, y + 1
+                VertexRenderList[2].vWorldPosition.x = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].x;
+                VertexRenderList[2].vWorldPosition.y = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].y;
+                VertexRenderList[2].vWorldPosition.z = terrshaderstore[6 * (loopx + (127 * loopy)) + 5].z;
+
+                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, VertexRenderList, 3, 0);
+                static_sub_0048034E_stru_154.ClassifyPolygon(norm2, Light_tile_dist);
+                if (decal_builder->uNumSplatsThisFace > 0)
+                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, 4, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0/**(float*)&uClipFlag_2*/, -1);
+            }
+        }
+    }
+
+    // end of new system test
+
+    return;
+
+    // end shder version
+
+
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -4124,6 +4798,35 @@ bool RenderOpenGL::InitShaders() {
     terrainshader.build("../../../../Engine/Graphics/Shaders/glterrain.vs", "../../../../Engine/Graphics/Shaders/glterrain.fs");
     if (terrainshader.ID == 0)
         return false;
+    // needs moving to release terrain in outdoor
+    ReleaseTerrain();
+
+    return true;
+}
+
+void RenderOpenGL::ReleaseTerrain() {
+    /*GLuint terrainVBO, terrainVAO;
+    GLuint terraintextures[8];
+    uint numterraintexloaded[8];
+    uint terraintexturesizes[8];
+    std::map<std::string, int> terraintexmap;*/
+
+    terraintexmap.clear();
+
+    for (int i = 0; i < 8; i++) {
+        glDeleteTextures(1, &terraintextures[i]);
+        terraintextures[i] = 0;
+        numterraintexloaded[i] = 0;
+        terraintexturesizes[i] = 0;
+    }
+
+    glDeleteBuffers(1, &terrainVBO);
+    glDeleteVertexArrays(1, &terrainVAO);
+
+    terrainVBO = 0;
+    terrainVAO = 0;
+
+    GL_Check_Errors();
 }
 
 

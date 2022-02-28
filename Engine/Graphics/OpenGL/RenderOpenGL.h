@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <map>
 
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/HWLContainer.h"
@@ -198,6 +199,8 @@ class RenderOpenGL : public RenderBase {
 
     virtual void DrawIndoorBatched() override;
 
+    virtual void ReleaseTerrain();
+
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;
 
@@ -226,11 +229,15 @@ class RenderOpenGL : public RenderBase {
     int GPU_MAX_UNIFORM_COMP;
     int GPU_MAX_TOTAL_TEXTURES;
 
-    glm::mat4 projmat;
-    glm::mat4 viewmat;
-
     bool InitShaders();
     GLShader terrainshader;
+
+    GLuint terrainVBO, terrainVAO;
+    // all terrain textures are square
+    GLuint terraintextures[8];
+    uint numterraintexloaded[8];
+    uint terraintexturesizes[8];
+    std::map<std::string, int> terraintexmap;
 
     struct nk_vertex {
         float position[2];
