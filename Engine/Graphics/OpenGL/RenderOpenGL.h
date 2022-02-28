@@ -6,6 +6,7 @@
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
 #include "Engine/MM7.h"
+#include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 
 #ifdef __APPLE__
 #define NK_SHADER_VERSION "#version 150\n"
@@ -218,6 +219,19 @@ class RenderOpenGL : public RenderBase {
     int clip_z, clip_w;
 
     int GL_lastboundtex;
+
+    int GPU_MAX_TEX_SIZE;
+    int GPU_MAX_TEX_LAYERS;
+    int GPU_MAX_TEX_UNITS;
+    int GPU_MAX_UNIFORM_COMP;
+    int GPU_MAX_TOTAL_TEXTURES;
+
+    glm::mat4 projmat;
+    glm::mat4 viewmat;
+
+    bool InitShaders();
+    GLShader terrainshader;
+
     struct nk_vertex {
         float position[2];
         float uv[2];

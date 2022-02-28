@@ -13,10 +13,11 @@
 #include "glad/gl.h"
 #include <glm.hpp>
 
-class GL_Shader {
+class GLShader {
  public:
     unsigned int ID;
-    GL_Shader() {
+
+    GLShader() {
         ID = 0;
     }
 
@@ -27,7 +28,7 @@ class GL_Shader {
 
     // constructor generates the shader on the fly
     // ------------------------------------------------------------------------
-    GL_Shader(const char *vertexPath, const char *fragmentPath, const char *geometryPath = nullptr) {
+    GLShader(const char *vertexPath, const char *fragmentPath, const char *geometryPath = nullptr) {
         ID = 0;
         build(vertexPath, fragmentPath, geometryPath);
     }
@@ -71,6 +72,7 @@ class GL_Shader {
         }
         catch (std::ifstream::failure &e) {
             std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+            return false;
         }
 
         const char *vShaderCode = vertexCode.c_str();

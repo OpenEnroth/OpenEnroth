@@ -4053,6 +4053,31 @@ bool RenderOpenGL::Initialize() {
         PostInitialization();
 
         GL_Check_Errors();
+
+        // check gpu gl capability params
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &GPU_MAX_TEX_SIZE);
+        assert(GPU_MAX_TEX_SIZE >= 512);
+
+        glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &GPU_MAX_TEX_LAYERS);
+        assert(GPU_MAX_TEX_LAYERS >= 256);
+
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &GPU_MAX_TEX_UNITS);
+        assert(GPU_MAX_TEX_UNITS >= 16);
+
+        glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &GPU_MAX_UNIFORM_COMP);
+        assert(GPU_MAX_UNIFORM_COMP >= 1024);
+
+        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &GPU_MAX_TOTAL_TEXTURES);
+        assert(GPU_MAX_TOTAL_TEXTURES >= 80);
+
+        GL_Check_Errors();
+
+        // initiate shaders
+        if (!InitShaders()) {
+            logger->Warning("--- Shader initialisation has failed ---");
+            return false;
+        }
+
         return true;
     }
 
@@ -4092,6 +4117,15 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 
     GL_Check_Errors();
 }
+
+// gl shaders
+bool RenderOpenGL::InitShaders() {
+    logger->Info("Building outdoors terrain shader...");
+    terrainshader.build("../../../../Engine/Graphics/Shaders/glterrain.vs", "../../../../Engine/Graphics/Shaders/glterrain.fs");
+    if (terrainshader.ID == 0)
+        return false;
+}
+
 
 bool RenderOpenGL::NuklearInitialize(struct nk_tex_font *tfont) {
     struct nk_context* nk_ctx = nuklear->ctx;
