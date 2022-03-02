@@ -4,6 +4,7 @@ layout (location = 0) in vec3 vaPos;
 layout (location = 1) in vec2 vaTexUV;
 layout (location = 2) in vec2 vaTexLayer;
 layout (location = 3) in vec3 vaNormal;
+// loc 4 is attributes but not used here yet
 
 out vec4 vertexColour;
 out vec2 texuv;

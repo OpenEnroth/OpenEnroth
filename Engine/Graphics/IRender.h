@@ -391,6 +391,8 @@ class IRender {
 
     virtual void DrawIndoorBatched() = 0;
 
+    virtual void ReleaseTerrain() = 0;
+
     inline void ToggleTint() {
         IRenderConfigFactory renderConfigFactory;
         auto new_config = renderConfigFactory.Clone(config);

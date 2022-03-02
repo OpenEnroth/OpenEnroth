@@ -22,10 +22,10 @@ struct PointLight {
 
     vec3 position;
 
+    // dont use these atm
     //float constant;
     //float linear;
     //float quadratic;
-
 
     float radius;
 
@@ -43,13 +43,6 @@ uniform PointLight fspointlights[num_point_lights];
 
 uniform sampler2DArray textureArray0;
 uniform sampler2DArray textureArray1;
-//layout (binding = 2) uniform sampler2DArray textureArray2;
-//layout (binding = 3) uniform sampler2DArray textureArray3;
-//layout (binding = 4) uniform sampler2DArray textureArray4;
-//layout (binding = 5) uniform sampler2DArray textureArray5;
-//layout (binding = 6) uniform sampler2DArray textureArray6;
-//layout (binding = 7) uniform sampler2DArray textureArray7;
-
 
 
 // funcs
@@ -61,75 +54,26 @@ void main() {
 	vec3 fragnorm = normalize(vsNorm);
     vec3 fragviewdir = normalize(CameraPos - vsPos);
 
+    // get water textures at point
     vec4 watercol = texture(textureArray0, vec3(texuv.x,texuv.y,waterframe));
 
 	vec4 fragcol = vec4(0);
 
-//    if (olayer.x == 7) {
-//        fragcol = texture(textureArray7, vec3(texuv.x,texuv.y,olayer.y));
-//    }
+    // get normal texture at point
+    fragcol = texture(textureArray1, vec3(texuv.x,texuv.y,olayer.y));
 
-//    if (olayer.x == 6) {
-//        fragcol = texture(textureArray6, vec3(texuv.x,texuv.y,olayer.y));
-//    }
-
-//    if (olayer.x == 5) {
-//        fragcol = texture(textureArray5, vec3(texuv.x,texuv.y,olayer.y));
-//    }
-
-//    if (olayer.x == 4) {
-//        fragcol = texture(textureArray4, vec3(texuv.x,texuv.y,olayer.y));
-//    }
-
-//   if (olayer.x == 3) {
-//        fragcol = texture(textureArray3, vec3(texuv.x,texuv.y,olayer.y));
-//    }
-
-//    if (olayer.x == 2) {
-//        fragcol = texture(textureArray2, vec3(texuv.x,texuv.y,olayer.y));
-//    }
-
-//    if (olayer.x == 1) {
-        fragcol = texture(textureArray1, vec3(texuv.x,texuv.y,olayer.y));
-//    }
-
-//    if (olayer.x == 0) {
-//        fragcol = texture(textureArray0, vec3(texuv.x,texuv.y,olayer.y));
-//        if (olayer.y == 0){
-//            fragcol = watercol;
-//        }
-//    }
-
+    // replace texture with water if alpha or a water tile
     if (fragcol.a == 0 || olayer.x == 0){
         fragcol = watercol;
     }
 
-
-
-
-//	if (olayer.y == 0){
-//		//FragColour = texture(textureArray, vec3(texuv.x,texuv.y,waterframe));
-//		fragcol = texture(textureArray0, vec3(texuv.x,texuv.y,waterframe));
-//	} else {
-//		//FragColour = texture(textureArray, vec3(texuv.x,texuv.y,olayer));
-//		fragcol = texture(textureArray0, vec3(texuv.x,texuv.y,olayer.y));
-//		//if (FragColour.a == 0){
-//		if (fragcol.a == 0){
-//			//FragColour = texture(textureArray, vec3(texuv.x,texuv.y,waterframe));
-//			fragcol = texture(textureArray0, vec3(texuv.x,texuv.y,waterframe));
-//		}
-//	}
-
-
-
-
-
-	vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1)); //fragcol.rgb);
+    // apply sun
+	vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1));
     result = clamp(result, 0, 0.85);
 
     result += CalcPointLight(fspointlights[0], fragnorm, vsPos, fragviewdir);
 
-    // stack stationary
+    // stack stationary lights
     for(int i = 1; i < num_point_lights; i++) {
         if (fspointlights[i].type == 1)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
@@ -137,16 +81,14 @@ void main() {
 
     result *= fragcol.rgb;
 
-    // stack mobile
-
+    // stack mobile lights
     for(int i = 1; i < num_point_lights; i++) {
         if (fspointlights[i].type == 2)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
     }
 
-    vec3 clamps = result; // fragcol.rgb *  // clamp(result,0,1) * ; 
-
-	FragColour = vec4(clamps,1); // result, 1.0);
+    vec3 clamps = result;
+    FragColour = vec4(clamps,1);
 
 }
 

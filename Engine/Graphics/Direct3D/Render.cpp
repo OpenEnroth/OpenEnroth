@@ -4589,3 +4589,4 @@ void Render::NuklearFontFree(struct nk_tex_font *tfont) {}
 struct nk_image Render::NuklearImageLoad(Image* img) { return nk_image_id(0);  }
 void Render::NuklearImageFree(Image *img) {}
 
+void Render::ReleaseTerrain() { return; }

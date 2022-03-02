@@ -897,6 +897,9 @@ void OutdoorLocation::Release() {
     pFaceIDLIST = nullptr;
     free(pTerrainNormals);
     pTerrainNormals = nullptr;
+
+    // free shader data for outdoor location
+    render->ReleaseTerrain();
 }
 
 bool OutdoorLocation::Load(const std::string &filename, int days_played,
