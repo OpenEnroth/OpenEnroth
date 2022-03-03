@@ -194,6 +194,8 @@ class RenderOpenGL : public RenderBase {
     virtual void am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                int blend_mode) override;
 
+    virtual void DrawIndoorBatched() override;
+
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;
 

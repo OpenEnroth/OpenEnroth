@@ -50,6 +50,19 @@ struct RenderVertexD3D3 pVertices[50];
 
 DDPIXELFORMAT ddpfPrimarySuface;
 
+
+RenderVertexD3D3 BatchDrawTriangles[10000] {};
+struct BatchTriangles {
+    RenderVertexD3D3 Verts[3] {};
+    Texture* texture = nullptr;
+    std::string* texname = nullptr;
+    bool trans = 0;
+};
+
+BatchTriangles BatchTrianglesStore[10000] {};
+BatchTriangles* StorePtr[10000] {};
+int NumBatchTrianglesStore = 0;
+
 void ErrHR(HRESULT hr, const char *pAPI, const char *pFunction,
            const char *pFile, int line) {
     if (SUCCEEDED(hr)) {
@@ -663,16 +676,117 @@ void Render::RenderTerrainD3D() {  // New function
             }
         }
     }
+
+    // draw any triangles that have been batched
+    pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); // terrain tiles need to be clamped
+    BatchTriDraw();
+}
+
+void BatchTriSort() {
+    // set pointers
+    for (int i = 0; i < NumBatchTrianglesStore; ++i) {
+        StorePtr[i] = &BatchTrianglesStore[i];
+    }
+    // sort tris
+    std::sort(StorePtr, StorePtr + NumBatchTrianglesStore, SortByTransThenTex);
+}
+
+void Render::BatchTriDraw() {
+    if (!NumBatchTrianglesStore) return;
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL));
+
+    // sort batched traingles
+    BatchTriSort();
+
+    // reset params
+    std::string *currtex = nullptr;
+    bool currtrans = 0;
+    int trisinbatch = 0;
+    int batches = 0;
+
+    // loop through store
+    for (int z = 0; z < NumBatchTrianglesStore; z++) {
+        BatchTriangles* thistri = StorePtr[z];
+        // add tringles that match current settings to render batch
+        if ((thistri->texname == currtex) && (thistri->trans == currtrans)) {
+            // add triangles to render list
+            for (int t = 0; t < 3; t++) {
+                BatchDrawTriangles[(trisinbatch * 3 + t)] = thistri->Verts[t];
+            }
+            trisinbatch++;
+        } else {
+            // draw current batch
+            if (trisinbatch) {
+                this->pRenderD3D->pDevice->DrawPrimitive(
+                    D3DPT_TRIANGLELIST,
+                    D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+                    BatchDrawTriangles, (trisinbatch*3), D3DDP_DONOTLIGHT);
+
+                drawcalls++;
+            }
+
+            // start new batch with altered settings
+            batches++;
+            trisinbatch = 0;
+
+            // set new params and load
+            currtex = thistri->texname;
+            currtrans = thistri->trans;
+
+            if (currtrans) {
+                this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
+                this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
+                this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
+            } else {
+                this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
+                this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+                this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+            }
+
+            auto texture = (TextureD3D*)thistri->texture;
+            this->pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
+
+            for (int t = 0; t < 3; t++) {
+                BatchDrawTriangles[(trisinbatch * 3 + t)] = thistri->Verts[t];
+            }
+            trisinbatch++;
+        }
+    }
+
+    // draw any left in pipeline
+    if (trisinbatch) {
+        this->pRenderD3D->pDevice->DrawPrimitive(
+            D3DPT_TRIANGLELIST,
+            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+            BatchDrawTriangles, (trisinbatch*3), D3DDP_DONOTLIGHT);
+
+        drawcalls++;
+    }
+
+    // reset
+    batches++;
+    trisinbatch = 0;
+    //logger->Info("%u Triangles sorted to %u batches", NumBatchTrianglesStore, batches);
+    NumBatchTrianglesStore = 0;
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESS));
+}
+
+bool SortByTransThenTex(const BatchTriangles* lhs, const BatchTriangles* rhs) {
+    if (lhs->trans != rhs->trans) {
+        return lhs->trans < rhs->trans;
+    } else {
+        return lhs->texname < rhs->texname;
+    }
 }
 
 void Render::DrawBorderTiles(struct Polygon *poly) {
     struct Polygon poly_clone = *poly;
     poly_clone.texture = this->hd_water_tile_anim[this->hd_water_current_frame];
 
-    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-    DrawTerrainPolygon(&poly_clone, true, true);
+    //pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+    DrawTerrainPolygon(&poly_clone, false, true); // t t
 
-    pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
+    //pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
 }
 
 
@@ -885,59 +999,83 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
     } else {
         if (!lightmap_builder->StationaryLightsCount ||
             _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
-            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                             D3DTADDRESS_WRAP));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE,
-                                                       D3DCULL_CW));
-            if (config->is_using_specular) {
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
-                ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
-            }
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].pos.x =
-                    VertexRenderList[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y =
-                    VertexRenderList[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z =
-                    1.0 -
-                    1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                           pCamera3D->GetFarClip());
-                d3d_vertex_buffer[i].rhw =
-                    1.0 /
-                    (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-                d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(
-                    pPolygon->dimming_level, 0,
-                    VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-                engine->AlterGamma_ODM(pFace, &d3d_vertex_buffer[i].diffuse);
+            // send for batching
 
+            for (int z = 0; z < (uNumVertices - 2); z++) {
+                // 123, 134, 145, 156..
+                BatchTriangles* thistri = &BatchTrianglesStore[NumBatchTrianglesStore];
+
+                thistri->texture = pPolygon->texture;
+                thistri->texname = pPolygon->texture->GetName();
+                thistri->trans = 0;
+
+                // copy first
+                //for (uint i = 0; i < uNumVertices; ++i) {
+                thistri->Verts[0].pos.x = VertexRenderList[0].vWorldViewProjX;
+                thistri->Verts[0].pos.y = VertexRenderList[0].vWorldViewProjY;
+                thistri->Verts[0].pos.z =
+                    1.0 - 1.0 / ((VertexRenderList[0].vWorldViewPosition.x * 1000) /
+                        pCamera3D->GetFarClip());
+                thistri->Verts[0].rhw =
+                    1.0 / (VertexRenderList[0].vWorldViewPosition.x + 0.0000001);
+                thistri->Verts[0].diffuse = ::GetActorTintColor(
+                    pPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x,
+                    0, 0);
+
+                engine->AlterGamma_ODM(pFace, &thistri->Verts[0].diffuse);
+
+                thistri->Verts[0].specular = 0;
                 if (config->is_using_specular)
-                    d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(
-                        0, 0, VertexRenderList[i].vWorldViewPosition.x);
-                else
-                    d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
-                d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
+                    thistri->Verts[0].specular = sub_47C3D7_get_fog_specular(
+                        0, 0, VertexRenderList[0].vWorldViewPosition.x);
+
+                thistri->Verts[0].texcoord.x = VertexRenderList[0].u;
+                thistri->Verts[0].texcoord.y = VertexRenderList[0].v;
+                //}
+
+
+
+
+                // copy other two (z+1)(z+2)
+                for (uint i = 1; i < 3; ++i) {
+                    thistri->Verts[i].pos.x = VertexRenderList[z + i].vWorldViewProjX;
+                    thistri->Verts[i].pos.y = VertexRenderList[z + i].vWorldViewProjY;
+                    thistri->Verts[i].pos.z =
+                        1.0 - 1.0 / ((VertexRenderList[z + i].vWorldViewPosition.x * 1000) /
+                            pCamera3D->GetFarClip());
+                    thistri->Verts[i].rhw =
+                        1.0 / (VertexRenderList[z + i].vWorldViewPosition.x + 0.0000001);
+                    thistri->Verts[i].diffuse = ::GetActorTintColor(
+                        pPolygon->dimming_level, 0, VertexRenderList[z + i].vWorldViewPosition.x,
+                        0, 0);
+
+                    engine->AlterGamma_ODM(pFace, &thistri->Verts[i].diffuse);
+
+                    thistri->Verts[i].specular = 0;
+                    if (config->is_using_specular)
+                        thistri->Verts[i].specular = sub_47C3D7_get_fog_specular(
+                            0, 0, VertexRenderList[z + i].vWorldViewPosition.x);
+
+                    thistri->Verts[i].texcoord.x = VertexRenderList[z + i].u;
+                    thistri->Verts[i].texcoord.y = VertexRenderList[z + i].v;
+                }
+
+                if (pFace->uAttributes & FACE_OUTLINED) {
+                    int color;
+                    if (OS_GetTime() % 300 >= 150)
+                        color = 0xFFFF2020;
+                    else
+                        color = 0xFF901010;
+
+                    for (uint i = 0; i < 3; ++i)
+                        thistri->Verts[i].diffuse = color;
+                }
+
+                ++NumBatchTrianglesStore;
+                if (NumBatchTrianglesStore > 9500) BatchTriDraw();
             }
 
-            if (pFace->uAttributes & FACE_OUTLINED) {
-                int color;
-                if (OS_GetTime() % 300 >= 150)
-                    color = 0xFFFF2020;
-                else
-                    color = 0xFF901010;
 
-                for (uint i = 0; i < uNumVertices; ++i)
-                    d3d_vertex_buffer[i].diffuse = color;
-            }
-
-            ErrD3D(pRenderD3D->pDevice->SetTexture(
-                0, texture->GetDirect3DTexture()));
-            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
-                D3DPT_TRIANGLEFAN,
-                D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-                d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
-            drawcalls++;
 
         } else {
             for (uint i = 0; i < uNumVertices; ++i) {
@@ -1002,6 +1140,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_SPECULAR,
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
             drawcalls++;
+
             if (config->is_using_specular) {
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
 
@@ -1032,6 +1171,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE,
                                                     0);
             }
+
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
                                                        D3DBLEND_ONE));
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
@@ -1252,9 +1392,9 @@ void Present_NoColorKey() {
         Gdiplus::Rect rect(0, 0, Dst.dwWidth, Dst.dwHeight);
         Gdiplus::BitmapData bitmapData;
         r->p2DSurface->LockBits(&rect, Gdiplus::ImageLockModeRead,
-                                PixelFormat32bppARGB, &bitmapData);
+            PixelFormat32bppARGB, &bitmapData);
         Present32((uint32_t *)bitmapData.Scan0, bitmapData.Width,
-                  (uint32_t *)Dst.lpSurface, Dst.lPitch / 4);
+            (uint32_t *)Dst.lpSurface, Dst.lPitch / 4);
         r->p2DSurface->UnlockBits(&bitmapData);
         ErrD3D(r->pBackBuffer4->Unlock(NULL));
     }
@@ -1354,7 +1494,7 @@ bool Render::InitializeFullscreen() {
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true));
     ErrD3D(
         pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true));
-    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, 2));
+    ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESS));  // D3DCMP_LESS
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE,
                                                false));
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE,
@@ -1822,74 +1962,74 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
     if (uNumVertices < 3) return;
 
     if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
+        __debugbreak();
         v11 =
             ::GetActorTintColor(a4->dimming_level, 0,
                                 VertexRenderList[0].vWorldViewPosition.x, 0, 0);
         lightmap_builder->DrawLightmaps(v11 /*, 0*/);
     } else if (transparent || !lightmap_builder->StationaryLightsCount ||
         _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
-        if (clampAtTextureBorders)
-            this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                            D3DTADDRESS_CLAMP);
-        else
-            this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                            D3DTADDRESS_WRAP);
+        // send for batching
 
-        if (transparent || config->is_using_specular) {
-            this->pRenderD3D->pDevice->SetRenderState(
-                D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-            if (transparent) {
-                this->pRenderD3D->pDevice->SetRenderState(
-                    D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-                this->pRenderD3D->pDevice->SetRenderState(
-                    D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-                // this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
-                // D3DBLEND_ZERO);
-                // this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
-                // D3DBLEND_ONE);
-            } else {
-                this->pRenderD3D->pDevice->SetRenderState(
-                    D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-                this->pRenderD3D->pDevice->SetRenderState(
-                    D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+        for (int z = 0; z < (uNumVertices - 2); z++) {
+            // 123, 134, 145, 156..
+            BatchTriangles* thistri = &BatchTrianglesStore[NumBatchTrianglesStore];
+
+            thistri->texture = a4->texture;
+            thistri->texname = a4->texture->GetName();
+            thistri->trans = transparent;
+
+            // copy first
+            //for (uint i = 0; i < uNumVertices; ++i) {
+            thistri->Verts[0].pos.x = VertexRenderList[0].vWorldViewProjX;
+            thistri->Verts[0].pos.y = VertexRenderList[0].vWorldViewProjY;
+            thistri->Verts[0].pos.z =
+                    1.0 - 1.0 / ((VertexRenderList[0].vWorldViewPosition.x * 1000) /
+                        pCamera3D->GetFarClip());
+            thistri->Verts[0].rhw =
+                    1.0 / (VertexRenderList[0].vWorldViewPosition.x + 0.0000001);
+            thistri->Verts[0].diffuse = ::GetActorTintColor(
+                    a4->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x,
+                    0, 0);
+            thistri->Verts[0].specular = 0;
+                if (config->is_using_specular)
+                    thistri->Verts[0].specular = sub_47C3D7_get_fog_specular(
+                        0, 0, VertexRenderList[0].vWorldViewPosition.x);
+
+                thistri->Verts[0].texcoord.x = VertexRenderList[0].u;
+                thistri->Verts[0].texcoord.y = VertexRenderList[0].v;
+            //}
+
+            // copy other two (z+1)(z+2)
+            for (uint i = 1; i < 3; ++i) {
+                thistri->Verts[i].pos.x = VertexRenderList[z+i].vWorldViewProjX;
+                thistri->Verts[i].pos.y = VertexRenderList[z+ i].vWorldViewProjY;
+                thistri->Verts[i].pos.z =
+                    1.0 - 1.0 / ((VertexRenderList[z+ i].vWorldViewPosition.x * 1000) /
+                        pCamera3D->GetFarClip());
+                thistri->Verts[i].rhw =
+                    1.0 / (VertexRenderList[z+ i].vWorldViewPosition.x + 0.0000001);
+                thistri->Verts[i].diffuse = ::GetActorTintColor(
+                    a4->dimming_level, 0, VertexRenderList[z+ i].vWorldViewPosition.x,
+                    0, 0);
+                thistri->Verts[i].specular = 0;
+                if (config->is_using_specular)
+                    thistri->Verts[i].specular = sub_47C3D7_get_fog_specular(
+                        0, 0, VertexRenderList[z+ i].vWorldViewPosition.x);
+
+                thistri->Verts[i].texcoord.x = VertexRenderList[z+i].u;
+                thistri->Verts[i].texcoord.y = VertexRenderList[z+ i].v;
             }
+
+
+
+            ++NumBatchTrianglesStore;
+            if (NumBatchTrianglesStore > 9500) BatchTriDraw();
         }
 
-        for (uint i = 0; i < uNumVertices; ++i) {
-            d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
-            d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
-            d3d_vertex_buffer[i].pos.z =
-                1.0 - 1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                             pCamera3D->GetFarClip());
-            d3d_vertex_buffer[i].rhw =
-                1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-            d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(
-                a4->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x,
-                0, 0);
-            d3d_vertex_buffer[i].specular = 0;
-            if (config->is_using_specular)
-                d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(
-                    0, 0, VertexRenderList[i].vWorldViewPosition.x);
 
-            d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
-            d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
-        }
-
-        this->pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture());
-        this->pRenderD3D->pDevice->DrawPrimitive(
-            D3DPT_TRIANGLEFAN,
-            D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-            d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT);
-        drawcalls++;
-        if (transparent) {
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(
-                D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,
-                                                       D3DBLEND_ONE));
-            ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,
-                                                       D3DBLEND_ZERO));
-        }
     } else if (lightmap_builder->StationaryLightsCount) {
+        // return;
         for (uint i = 0; i < uNumVertices; ++i) {
             d3d_vertex_buffer[i].pos.x = VertexRenderList[i].vWorldViewProjX;
             d3d_vertex_buffer[i].pos.y = VertexRenderList[i].vWorldViewProjY;
@@ -1982,7 +2122,11 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
 
 
 
-
+void Render::DrawIndoorBatched() {
+    pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);  // buildings
+    BatchTriDraw();
+    // NumBatchTrianglesStore = 0;
+}
 
 
 
@@ -2039,32 +2183,59 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
            // return;
 
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z =
+            // send for batching
+
+            for (int z = 0; z < (uNumVertices - 2); z++) {
+                // 123, 134, 145, 156..
+                BatchTriangles* thistri = &BatchTrianglesStore[NumBatchTrianglesStore];
+
+                thistri->texture = pFace->GetTexture();
+                thistri->texname = pFace->GetTexture()->GetName();
+                thistri->trans = false;
+
+                // copy first
+                //for (uint i = 0; i < uNumVertices; ++i) {
+                thistri->Verts[0].pos.x = array_507D30[0].vWorldViewProjX;
+                thistri->Verts[0].pos.y = array_507D30[0].vWorldViewProjY;
+                thistri->Verts[0].pos.z =
                     1.0 -
-                    1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-                d3d_vertex_buffer[i].rhw =
-                    1.0 / array_507D30[i].vWorldViewPosition.x;
-                d3d_vertex_buffer[i].diffuse = sCorrectedColor;
-                d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x =
-                    array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
-                d3d_vertex_buffer[i].texcoord.y =
-                    array_507D30[i].v /
-                    (double)pFace->GetTexture()->GetHeight();
+                    1.0 / (array_507D30[0].vWorldViewPosition.x * 0.061758894);
+                thistri->Verts[0].rhw =
+                    1.0 / array_507D30[0].vWorldViewPosition.x;
+                thistri->Verts[0].diffuse = sCorrectedColor;
+                thistri->Verts[0].specular = 0;
+                if (config->is_using_specular)
+                    thistri->Verts[0].specular = 0;
+
+                thistri->Verts[0].texcoord.x = array_507D30[0].u / (double)pFace->GetTexture()->GetWidth();
+                thistri->Verts[0].texcoord.y = array_507D30[0].v / (double)pFace->GetTexture()->GetHeight();
+                //}
+
+                // copy other two (z+1)(z+2)
+                for (uint i = 1; i < 3; ++i) {
+                    thistri->Verts[i].pos.x = array_507D30[z + i].vWorldViewProjX;
+                    thistri->Verts[i].pos.y = array_507D30[z + i].vWorldViewProjY;
+                    thistri->Verts[i].pos.z =
+                        1.0 -
+                        1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+                    thistri->Verts[i].rhw =
+                        1.0 / array_507D30[i].vWorldViewPosition.x;
+                    thistri->Verts[i].diffuse = sCorrectedColor;
+                    thistri->Verts[i].specular = 0;
+                    if (config->is_using_specular)
+                        thistri->Verts[i].specular = 0;
+
+                    thistri->Verts[i].texcoord.x = array_507D30[z + i].u / (double)pFace->GetTexture()->GetWidth();
+                    thistri->Verts[i].texcoord.y = array_507D30[z + i].v / (double)pFace->GetTexture()->GetHeight();
+                }
+
+
+
+                ++NumBatchTrianglesStore;
+                if (NumBatchTrianglesStore > 9500) BatchTriDraw();
             }
 
-            ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-                                                             D3DTADDRESS_WRAP));
-            ErrD3D(pRenderD3D->pDevice->SetTexture(
-                0, texture->GetDirect3DTexture()));
-            ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
-                D3DPT_TRIANGLEFAN,
-                D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-                d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
-            drawcalls++;
+
         } else {
             for (uint i = 0; i < uNumVertices; ++i) {
                 d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
@@ -2784,7 +2955,7 @@ void Render::DrawTextureCustomHeight(float u, float v, class Image *image,
     int y = window->GetHeight() * v;
 
     p2DGraphics->DrawImage(bitmap, x, y, 0, 0, image->GetWidth(), custom_height,
-                           Gdiplus::UnitPixel);
+        Gdiplus::UnitPixel);
 
     delete bitmap;
 }
@@ -2832,7 +3003,7 @@ void Render::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
     Gdiplus::Color c(r, g, b);
     Gdiplus::SolidBrush brush(c);
     p2DGraphics->FillRectangle(&brush, (INT)uX, (INT)uY, (INT)uWidth,
-                               (INT)uHeight);
+        (INT)uHeight);
 }
 
 void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
@@ -2958,7 +3129,7 @@ void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
             }
         }
 
-       // find brightest
+        // find brightest
         unsigned int bmax = (*(pixelpoint + brightloc) & 0xFF);
         unsigned int gmax = ((*(pixelpoint + brightloc) >> 8) & 0xFF);
         unsigned int rmax = ((*(pixelpoint + brightloc) >> 16) & 0xFF);
@@ -3146,7 +3317,7 @@ void Render::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
             uint a = 2 * (src[idx] & 0xFFE0);
             uint b = src[idx] & 0x1F;
 
-            temppix[(x-dst_x) + 128*(y-dst_y)] = (b | a);
+            temppix[(x - dst_x) + 128 * (y - dst_y)] = (b | a);
         }
     }
 
@@ -3177,11 +3348,12 @@ void Render::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     unsigned int imgheight = img->GetHeight();
     unsigned int imgwidth = img->GetWidth();
     auto pixels = (uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    int window_width = window->GetWidth();
 
     for (int xs = 0; xs < imgwidth; xs++) {
         for (int ys = 0; ys < imgheight; ys++) {
             if (pixels[xs + imgwidth * ys] & 0xFF000000) {
-                this->pActiveZBuffer[uOutX + xs + window->GetWidth() * (uOutY + ys)] = zVal;
+                this->pActiveZBuffer[uOutX + xs + window_width * (uOutY + ys)] = zVal;
             }
         }
     }
@@ -3465,6 +3637,9 @@ void Render::DrawBuildingsD3D() {
             }
         }
     }
+
+    pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);  // buildings
+    BatchTriDraw();
 }
 
 unsigned short *Render::MakeScreenshot(int width, int height) {

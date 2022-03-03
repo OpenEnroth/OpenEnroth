@@ -40,6 +40,8 @@ class Image {
     const void *GetPixels(IMAGE_FORMAT format);
     IMAGE_FORMAT GetFormat() const { return native_format; }
 
+    std::string* GetName();
+
     bool Release();
 
  protected:

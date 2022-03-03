@@ -17,6 +17,11 @@ class Image;
 class OSWindow;
 class Nuklear;
 
+struct BatchTriangles;
+
+void BatchTriSort();
+bool SortByTransThenTex(const BatchTriangles* lhs, const BatchTriangles* rhs);
+
 class Render : public RenderBase {
  public:
     Render(
@@ -248,4 +253,7 @@ class Render : public RenderBase {
                             DDSURFACEDESC2 *pDesc, unsigned int uLockFlags);
     void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
     void DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon);
+
+    void BatchTriDraw();
+    void DrawIndoorBatched();
 };
