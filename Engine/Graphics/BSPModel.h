@@ -148,8 +148,12 @@ struct ODMFace {
     std::array<int16_t, 20> pXInterceptDisplacements = {{}};
     std::array<int16_t, 20> pYInterceptDisplacements = {{}};
     std::array<int16_t, 20> pZInterceptDisplacements = {{}};
+
+    // details store for array texture
     void *resource = nullptr;  // __int16 uTextureID;
     std::string resourcename;
+    int texunit = -1;
+    int texlayer = -1;
 
     int16_t sTextureDeltaU = 0;
     int16_t sTextureDeltaV = 0;

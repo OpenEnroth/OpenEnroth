@@ -231,13 +231,24 @@ class RenderOpenGL : public RenderBase {
 
     bool InitShaders();
     GLShader terrainshader;
+    GLShader outbuildshader;
 
+    // terrain shader
     GLuint terrainVBO, terrainVAO;
     // all terrain textures are square
     GLuint terraintextures[8];
     uint numterraintexloaded[8];
     uint terraintexturesizes[8];
     std::map<std::string, int> terraintexmap;
+
+    // outside building shader
+    GLuint outbuildVBO[16], outbuildVAO[16];
+    GLuint outbuildtextures[16];
+    uint numoutbuildtexloaded[16];
+    uint outbuildtexturewidths[16];
+    uint outbuildtextureheights[16];
+    std::map<std::string, int> outbuildtexmap;
+
 
     struct nk_vertex {
         float position[2];

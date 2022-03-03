@@ -2145,7 +2145,7 @@ void _set_3d_modelview_matrix() {
 }
 
 // TODO(pskelton): move into gl renderer
-void _set_ortho_projection(bool gameviewport = false) {
+void _set_ortho_projection(bool gameviewport) {
     if (!gameviewport) {  // project over entire window
         glViewport(0, 0, window->GetWidth(), window->GetHeight());
 
@@ -3335,23 +3335,549 @@ void RenderOpenGL::Present() {
 // RenderVertexSoft ogl_draw_buildings_vertices[20];
 
 
+GLshaderverts *outbuildshaderstore[16] = { nullptr };
+int numoutbuildverts[16] = { 0 };
+
 void RenderOpenGL::DrawBuildingsD3D() {
+    // shader
+    // verts are streamed to gpu as required
+    // textures can be different sizes
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
     _set_3d_projection_matrix();
     _set_3d_modelview_matrix();
 
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    if (outbuildVAO[0] == 0) {
+        // count all triangles
+        // make out build shader store
+        int verttotals = 0;
 
-    // int v27;  // eax@57
-    int farclip;  // [sp+2Ch] [bp-2Ch]@10
-    int nearclip;  // [sp+30h] [bp-28h]@34
-    // int v51;  // [sp+34h] [bp-24h]@35
-    // int v52;  // [sp+38h] [bp-20h]@36
-    int v53;  // [sp+3Ch] [bp-1Ch]@8
+        for (int i = 0; i < 16; i++) {
+            numoutbuildverts[i] = 0;
 
-    for (BSPModel& model : pOutdoor->pBModels) {
-        bool reachable_unused;
-        if (!IsBModelVisible(&model, 256, &reachable_unused)) {
+            //for (BSPModel& model : pOutdoor->pBModels) {
+            //    //int reachable;
+            //    //if (IsBModelVisible(&model, &reachable)) {
+            //    //model.field_40 |= 1;
+            //    if (!model.pFaces.empty()) {
+            //        for (ODMFace& face : model.pFaces) {
+            //            if (!face.Invisible()) {
+            //                numoutbuildverts += 3 * (face.uNumVertices - 2);
+            //            }
+            //        }
+            //    }
+            //}
+
+            free(outbuildshaderstore[i]);
+            outbuildshaderstore[i] = nullptr;
+            outbuildshaderstore[i] = (GLshaderverts *)malloc(sizeof(GLshaderverts) * 10000);
+        }
+
+        // reserve first 7 layers for water tiles in unit 0
+        auto wtrtexture = this->hd_water_tile_anim[0];
+        //terraintexmap.insert(std::make_pair("wtrtyl", terraintexmap.size()));
+        //numterraintexloaded[0]++;
+        outbuildtexturewidths[0] = wtrtexture->GetWidth();
+        outbuildtextureheights[0] = wtrtexture->GetHeight();
+
+        for (int buff = 0; buff < 7; buff++) {
+            char container_name[64];
+            sprintf(container_name, "HDWTR%03u", buff);
+
+            outbuildtexmap.insert(std::make_pair(container_name, outbuildtexmap.size()));
+            numoutbuildtexloaded[0]++;
+        }
+
+
+
+
+
+        for (BSPModel &model : pOutdoor->pBModels) {
+            //int reachable;
+            //if (IsBModelVisible(&model, &reachable)) {
+            model.field_40 |= 1;
+            if (!model.pFaces.empty()) {
+                for (ODMFace &face : model.pFaces) {
+                    if (!face.Invisible()) {
+                        //v53 = 0;
+                        //auto poly = &array_77EC08[pODMRenderParams->uNumPolygons];
+
+                        //poly->flags = 0;
+                        //poly->field_32 = 0;
+                        auto tex = face.GetTexture();
+
+                        std::string texname = face.resourcename;
+                        // gather up all texture and shaderverts data
+
+                        //auto tile = pOutdoor->DoGetTile(x, y);
+
+                        int texunit = 0;
+                        int texlayer = 0;
+                        int attribflags = 0;
+
+                        if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
+                        if (face.uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+
+                        if (face.uAttributes & FACE_FlowDown)
+                            attribflags |= 0x400;
+                        else if (face.uAttributes & FACE_FlowUp)
+                            attribflags |= 0x800;
+
+                        if (face.uAttributes & FACE_FlowRight)
+                            attribflags |= 0x2000;
+                        else if (face.uAttributes & FACE_FlowLeft)
+                            attribflags |= 0x1000;
+
+                        // check if tile->name is already in list
+                        auto mapiter = outbuildtexmap.find(texname);
+                        if (mapiter != outbuildtexmap.end()) {
+                            // if so, extract unit and layer
+                            int unitlayer = mapiter->second;
+                            texlayer = unitlayer & 0xFF;
+                            texunit = (unitlayer & 0xFF00) >> 8;
+                        } else if (texname == "wtrtyl") {
+                            // water tile
+                            texunit = 0;
+                            texlayer = 0;
+                        } else {
+                            // else need to add it
+                            auto thistexture = assets->GetBitmap(texname);
+                            int width = thistexture->GetWidth();
+                            int height = thistexture->GetHeight();
+                            // check size to see what unit it needs
+                            int i;
+                            for (i = 0; i < 16; i++) {
+                                if ((outbuildtexturewidths[i] == width && outbuildtextureheights[i] == height) || outbuildtexturewidths[i] == 0) break;
+                            }
+                            if (i == 16) __debugbreak();
+
+                            if (outbuildtexturewidths[i] == 0) {
+                                outbuildtexturewidths[i] = width;
+                                outbuildtextureheights[i] = height;
+                            }
+
+                            texunit = i;
+                            texlayer = numoutbuildtexloaded[i];
+
+                            // encode unit and layer together
+                            int encode = (texunit << 8) | texlayer;
+
+                            // intsert into tex map
+                            outbuildtexmap.insert(std::make_pair(texname, encode));
+
+                            numoutbuildtexloaded[i]++;
+                            if (numoutbuildtexloaded[i] == 256) __debugbreak();
+                        }
+
+                        face.texunit = texunit;
+                        face.texlayer = texlayer;
+
+                        // load up verts here
+
+                        for (int z = 0; z < (face.uNumVertices - 2); z++) {
+                            // 123, 134, 145, 156..
+                            GLshaderverts *thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
+
+                            // copy first
+                            thisvert->x = model.pVertices.pVertices[face.pVertexIDs[0]].x;
+                            thisvert->y = model.pVertices.pVertices[face.pVertexIDs[0]].y;
+                            thisvert->z = model.pVertices.pVertices[face.pVertexIDs[0]].z;
+                            thisvert->u = face.pTextureUIDs[0] + face.sTextureDeltaU;
+                            thisvert->v = face.pTextureVIDs[0] + face.sTextureDeltaV;
+                            thisvert->texunit = texunit;
+                            thisvert->texturelayer = texlayer;
+                            thisvert->normx = face.pFacePlane.vNormal.x;
+                            thisvert->normy = face.pFacePlane.vNormal.y;
+                            thisvert->normz = face.pFacePlane.vNormal.z;
+                            thisvert->attribs = attribflags;
+                            thisvert++;
+
+                            // copy other two (z+1)(z+2)
+                            for (uint i = 1; i < 3; ++i) {
+                                thisvert->x = model.pVertices.pVertices[face.pVertexIDs[z + i]].x;
+                                thisvert->y = model.pVertices.pVertices[face.pVertexIDs[z + i]].y;
+                                thisvert->z = model.pVertices.pVertices[face.pVertexIDs[z + i]].z;
+                                thisvert->u = face.pTextureUIDs[z + i] + face.sTextureDeltaU;
+                                thisvert->v = face.pTextureVIDs[z + i] + face.sTextureDeltaV;
+                                thisvert->texunit = texunit;
+                                thisvert->texturelayer = texlayer;
+                                thisvert->normx = face.pFacePlane.vNormal.x;
+                                thisvert->normy = face.pFacePlane.vNormal.y;
+                                thisvert->normz = face.pFacePlane.vNormal.z;
+                                thisvert->attribs = attribflags;
+                                thisvert++;
+                            }
+
+                            numoutbuildverts[texunit] += 3;
+                            assert(numoutbuildverts[texunit] <= 9999);
+                        }
+                    }
+                }
+            }
+            //}
+        }
+
+        for (int l = 0; l < 16; l++) {
+            glGenVertexArrays(1, &outbuildVAO[l]);
+            glGenBuffers(1, &outbuildVBO[l]);
+
+            glBindVertexArray(outbuildVAO[l]);
+            glBindBuffer(GL_ARRAY_BUFFER, outbuildVBO[l]);
+
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 10000, outbuildshaderstore[l], GL_DYNAMIC_DRAW);
+
+            // position attribute
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)0);
+            glEnableVertexAttribArray(0);
+            // tex uv attribute
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+            glEnableVertexAttribArray(1);
+            // tex unit attribute
+            // tex array layer attribute
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+            glEnableVertexAttribArray(2);
+            // normals
+            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(7 * sizeof(GLfloat)));
+            glEnableVertexAttribArray(3);
+            // attribs - not used here yet
+            glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
+            glEnableVertexAttribArray(4);
+
+
+            GL_Check_Errors();
+        }
+
+
+        GL_Check_Errors();
+        // texture set up
+
+        // loop over all units
+        for (int unit = 0; unit < 16; unit++) {
+            assert(numoutbuildtexloaded[unit] <= 256);
+            // skip if textures are empty
+            if (numoutbuildtexloaded[unit] == 0) continue;
+
+            glGenTextures(1, &outbuildtextures[unit]);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D_ARRAY, outbuildtextures[unit]);
+
+            // create blank memory for later texture submission
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, outbuildtexturewidths[unit], outbuildtextureheights[unit], numoutbuildtexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+            GL_Check_Errors();
+
+            std::map<std::string, int>::iterator it = outbuildtexmap.begin();
+            while (it != outbuildtexmap.end()) {
+                // skip if wtrtyl
+                //if ((it->first).substr(0, 6) == "wtrtyl") {
+                //    std::cout << "skipped  " << it->first << std::endl;
+                 //   it++;
+                 //   continue;
+                //}
+
+                int comb = it->second;
+                int tlayer = comb & 0xFF;
+                int tunit = (comb & 0xFF00) >> 8;
+
+                if (tunit == unit) {
+                    // get texture
+                    auto texture = assets->GetBitmap(it->first);
+
+                    glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
+                        0,
+                        0, 0, tlayer,
+                        outbuildtexturewidths[unit], outbuildtextureheights[unit], 1,
+                        GL_RGBA,
+                        GL_UNSIGNED_BYTE,
+                        texture->GetPixels(IMAGE_FORMAT_R8G8B8A8));
+                }
+
+                it++;
+            }
+
+            //iterate through terrain tex map
+            //ignore wtrtyl
+            //laod in
+
+            //auto tile = pOutdoor->DoGetTile(0, 0);
+            //bool border = tile->IsWaterBorderTile();
+
+
+            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+            glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+
+            GL_Check_Errors();
+        }
+    } else {
+        // else update verts - blank store
+        for (int i = 0; i < 16; i++) {
+            numoutbuildverts[i] = 0;
+        }
+
+        for (BSPModel &model : pOutdoor->pBModels) {
+            bool reachable;
+            if (IsBModelVisible(&model, 256, &reachable)) {
+                //if (model.index == 35) continue;
+                model.field_40 |= 1;
+                if (!model.pFaces.empty()) {
+                    for (ODMFace &face : model.pFaces) {
+                        if (!face.Invisible()) {
+                            int texunit = face.texunit;
+                            int texlayer = face.texlayer;
+                            int attribflags = 0;
+
+                            if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
+                            if (face.uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+
+                            if (face.uAttributes & FACE_FlowDown)
+                                attribflags |= 0x400;
+                            else if (face.uAttributes & FACE_FlowUp)
+                                attribflags |= 0x800;
+
+                            if (face.uAttributes & FACE_FlowRight)
+                                attribflags |= 0x2000;
+                            else if (face.uAttributes & FACE_FlowLeft)
+                                attribflags |= 0x1000;
+
+                            if (face.uAttributes & (FACE_OUTLINED | FACE_IsSecret))
+                                attribflags |= FACE_OUTLINED;
+
+                            // load up verts here
+                            for (int z = 0; z < (face.uNumVertices - 2); z++) {
+                                // 123, 134, 145, 156..
+                                GLshaderverts *thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
+
+                                // copy first
+                                thisvert->x = model.pVertices.pVertices[face.pVertexIDs[0]].x;
+                                thisvert->y = model.pVertices.pVertices[face.pVertexIDs[0]].y;
+                                thisvert->z = model.pVertices.pVertices[face.pVertexIDs[0]].z;
+                                thisvert->u = face.pTextureUIDs[0] + face.sTextureDeltaU;
+                                thisvert->v = face.pTextureVIDs[0] + face.sTextureDeltaV;
+                                thisvert->texunit = texunit;
+                                thisvert->texturelayer = texlayer;
+                                thisvert->normx = face.pFacePlane.vNormal.x;
+                                thisvert->normy = face.pFacePlane.vNormal.y;
+                                thisvert->normz = face.pFacePlane.vNormal.z;
+                                thisvert->attribs = attribflags;
+                                thisvert++;
+
+                                // copy other two (z+1)(z+2)
+                                for (uint i = 1; i < 3; ++i) {
+                                    thisvert->x = model.pVertices.pVertices[face.pVertexIDs[z + i]].x;
+                                    thisvert->y = model.pVertices.pVertices[face.pVertexIDs[z + i]].y;
+                                    thisvert->z = model.pVertices.pVertices[face.pVertexIDs[z + i]].z;
+                                    thisvert->u = face.pTextureUIDs[z + i] + face.sTextureDeltaU;
+                                    thisvert->v = face.pTextureVIDs[z + i] + face.sTextureDeltaV;
+                                    thisvert->texunit = texunit;
+                                    thisvert->texturelayer = texlayer;
+                                    thisvert->normx = face.pFacePlane.vNormal.x;
+                                    thisvert->normy = face.pFacePlane.vNormal.y;
+                                    thisvert->normz = face.pFacePlane.vNormal.z;
+                                    thisvert->attribs = attribflags;
+                                    thisvert++;
+                                }
+
+                                numoutbuildverts[texunit] += 3;
+                                assert(numoutbuildverts[texunit] <= 9999);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        GL_Check_Errors();
+
+        for (int l = 0; l < 16; l++) {
+            if (numoutbuildverts[l]) {
+                glBindBuffer(GL_ARRAY_BUFFER, outbuildVBO[l]);
+                // orphan buffer
+                glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 10000, NULL, GL_DYNAMIC_DRAW);
+                // update buffer
+                glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLshaderverts) * numoutbuildverts[l], outbuildshaderstore[l]);
+                GL_Check_Errors();
+            }
+        }
+
+        GL_Check_Errors();
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+
+    // terrain debug
+    if (engine->config->debug_terrain)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+    ////
+
+
+    glUseProgram(outbuildshader.ID);
+    // set projection
+    glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    // set view
+    glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+    glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
+
+    // set texture unit location
+    glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray0"), GLint(0));
+
+    GLfloat camera[3];
+    camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0));
+    camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0));
+    camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
+    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "CameraPos"), 1, &camera[0]);
+
+
+    // sun lighting stuff
+    float ambient = pParty->uCurrentMinute + pParty->uCurrentHour * 60.0;  // 0 - > 1439
+    ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * pi_double) / 1440) + 1) * 0.27;
+    float diffuseon = pWeather->bNight ? 0 : 1;
+
+    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.ambient"), ambient, ambient, ambient);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.specular"), diffuseon * 1.0, diffuseon * 0.8, 0.0);
+
+    if (pParty->armageddon_timer) {
+        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), 1.0, 0, 0);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), 1.0, 0, 0);
+        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0, 0, 0);
+    }
+
+    // torchlight
+    float torchradius = 0;
+    if (!diffuseon) {
+        int rangemult = 1;
+        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
+            rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+        torchradius = float(rangemult) * 1024.0;
+    }
+
+    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].position"), 1, &camera[0]);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].specular"), 0, 0, 1);
+    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].radius"), torchradius);
+
+
+    // rest of lights stacking
+    GLuint num_lights = 1;
+    for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
+        if (num_lights >= 20) break;
+
+        std::string slotnum = std::to_string(num_lights);
+        auto test = pMobileLightsStack->pLights[i];
+
+        float x = pMobileLightsStack->pLights[i].vPosition.x;
+        float y = pMobileLightsStack->pLights[i].vPosition.y;
+        float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+        float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
+        float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
+        float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+
+        float lightrad = pMobileLightsStack->pLights[i].uRadius;
+
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+        num_lights++;
+    }
+
+
+    for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
+        if (num_lights >= 20) break;
+
+        std::string slotnum = std::to_string(num_lights);
+        auto test = pStationaryLightsStack->pLights[i];
+
+        float x = test.vPosition.x;
+        float y = test.vPosition.y;
+        float z = test.vPosition.z;
+
+        float r = test.uLightColorR / 255.0;
+        float g = test.uLightColorG / 255.0;
+        float b = test.uLightColorB / 255.0;
+
+        float lightrad = test.uRadius;
+
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+        num_lights++;
+    }
+
+
+    // blank rest of lights
+    for (int blank = num_lights; blank < 20; blank++) {
+        std::string slotnum = std::to_string(blank);
+        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
+    }
+
+    // toggle for water faces or not
+    glUniform1i(glGetUniformLocation(outbuildshader.ID, "watertiles"), GLint(1));
+
+    glActiveTexture(GL_TEXTURE0);
+
+    for (int unit = 0; unit < 16; unit++) {
+        // skip if textures are empty
+        if (numoutbuildtexloaded[unit] > 0) {
+            if (unit == 1) {
+                glUniform1i(glGetUniformLocation(outbuildshader.ID, "watertiles"), GLint(0));
+            }
+
+            // draw each set of triangles
+            glBindTexture(GL_TEXTURE_2D_ARRAY, outbuildtextures[unit]);
+            glBindVertexArray(outbuildVAO[unit]);
+            glDrawArrays(GL_TRIANGLES, 0, (numoutbuildverts[unit]));
+            drawcalls++;
+        }
+    }
+
+    // unload
+    glUseProgram(0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, NULL);
+
+    //end terrain debug
+    if (engine->config->debug_terrain)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    GL_Check_Errors();
+
+
+    // TODO(pskelton): clean up
+    // need to stack decals
+    if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
+
+    for (BSPModel &model : pOutdoor->pBModels) {
+        bool reachable;
+        if (!IsBModelVisible(&model, 256, &reachable)) {
             continue;
         }
         model.field_40 |= 1;
@@ -3359,123 +3885,69 @@ void RenderOpenGL::DrawBuildingsD3D() {
             continue;
         }
 
-        for (ODMFace& face : model.pFaces) {
+        for (ODMFace &face : model.pFaces) {
             if (face.Invisible()) {
                 continue;
             }
 
-            v53 = 0;
-            auto poly = &array_77EC08[pODMRenderParams->uNumPolygons];
 
+            //////////////////////////////////////////////
+
+            struct Polygon *poly = &array_77EC08[pODMRenderParams->uNumPolygons];
             poly->flags = 0;
             poly->field_32 = 0;
-            poly->texture = face.GetTexture();
 
-            if (face.uAttributes & FACE_IsFluid) poly->flags |= 2;
-            if (face.uAttributes & FACE_INDOOR_SKY) poly->flags |= 0x400;
-
-            if (face.uAttributes & FACE_FlowDown)
-                poly->flags |= 0x400;
-            else if (face.uAttributes & FACE_FlowUp)
-                poly->flags |= 0x800;
-
-            if (face.uAttributes & FACE_FlowRight)
-                poly->flags |= 0x2000;
-            else if (face.uAttributes & FACE_FlowLeft)
-                poly->flags |= 0x1000;
-
-            poly->sTextureDeltaU = face.sTextureDeltaU;
-            poly->sTextureDeltaV = face.sTextureDeltaV;
-
-            unsigned int flow_anim_timer = OS_GetTime() >> 4;
-            unsigned int flow_u_mod = poly->texture->GetWidth() - 1;
-            unsigned int flow_v_mod = poly->texture->GetHeight() - 1;
-
-            if (face.pFacePlane.vNormal.z && abs(face.pFacePlane.vNormal.z) >= 0.9) {
-                if (poly->flags & 0x400)
-                    poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
-                if (poly->flags & 0x800)
-                    poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
-            } else {
-                if (poly->flags & 0x400)
-                    poly->sTextureDeltaV -= flow_anim_timer & flow_v_mod;
-                if (poly->flags & 0x800)
-                    poly->sTextureDeltaV += flow_anim_timer & flow_v_mod;
-            }
-
-            if (poly->flags & 0x1000)
-                poly->sTextureDeltaU -= flow_anim_timer & flow_u_mod;
-            else if (poly->flags & 0x2000)
-                poly->sTextureDeltaU += flow_anim_timer & flow_u_mod;
-
-            nearclip = 0;
-            farclip = 0;
-
-            for (uint vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
-                array_73D150[vertex_id - 1].vWorldPosition.x = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
-                array_73D150[vertex_id - 1].vWorldPosition.y = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
-                array_73D150[vertex_id - 1].vWorldPosition.z = model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
-                array_73D150[vertex_id - 1].u = (poly->sTextureDeltaU +
-                        (__int16)face.pTextureUIDs[vertex_id - 1]) *
-                    (1.0 / (double)poly->texture->GetWidth());
-                array_73D150[vertex_id - 1].v = (poly->sTextureDeltaV +
-                        (__int16)face.pTextureVIDs[vertex_id - 1]) *
-                    (1.0 / (double)poly->texture->GetHeight());
-            }
-
-            for (uint i = 1; i <= face.uNumVertices; i++) {
-                if (model.pVertices.pVertices[face.pVertexIDs[0]].z ==
-                    array_73D150[i - 1].vWorldPosition.z)
-                    ++v53;
-                pCamera3D->ViewTransform(&array_73D150[i - 1], 1);
-                //if (array_73D150[i - 1].vWorldViewPosition.x <
-                //    pCamera3D->GetNearClip() ||
-                //    array_73D150[i - 1].vWorldViewPosition.x >
-                //    pCamera3D->GetFarClip()) {
-                //    if (array_73D150[i - 1].vWorldViewPosition.x >=
-                //        pCamera3D->GetNearClip())
-                //        farclip = 1;
-                //    else
-                //        nearclip = 1;
-                //} else {
-                    pCamera3D->Project(&array_73D150[i - 1], 1, 0);
-                //}
-            }
-
-            if (v53 == face.uNumVertices) poly->field_32 |= 1;
+            // if (v53 == face.uNumVertices) poly->field_32 |= 1;
             poly->pODMFace = &face;
             poly->uNumVertices = face.uNumVertices;
             poly->field_59 = 5;
 
-            float f = face.pFacePlane.vNormal.x * pOutdoor->vSunlight.x + face.pFacePlane.vNormal.y * pOutdoor->vSunlight.y + face.pFacePlane.vNormal.z * pOutdoor->vSunlight.z;
-            poly->dimming_level = 20 - std::round(20 * f);
 
-            if (poly->dimming_level < 0) poly->dimming_level = 0;
-            if (poly->dimming_level > 31) poly->dimming_level = 31;
-            if (pODMRenderParams->uNumPolygons >= 1999 + 5000) return;
+            float _f1 = face.pFacePlane.vNormal.x * pOutdoor->vSunlight.x + face.pFacePlane.vNormal.y * pOutdoor->vSunlight.y + face.pFacePlane.vNormal.z * pOutdoor->vSunlight.z;
+            poly->dimming_level = 20.0 - floorf(20.0 * _f1 + 0.5f);
+            poly->dimming_level = std::clamp((int)poly->dimming_level, 0, 31);
+
+            for (uint vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
+                array_73D150[vertex_id - 1].vWorldPosition.x =
+                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+                array_73D150[vertex_id - 1].vWorldPosition.y =
+                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+                array_73D150[vertex_id - 1].vWorldPosition.z =
+                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+            }
+
+
+            for (int vertex_id = 0; vertex_id < face.uNumVertices; ++vertex_id) {
+                memcpy(&VertexRenderList[vertex_id], &array_73D150[vertex_id], sizeof(VertexRenderList[vertex_id]));
+                VertexRenderList[vertex_id]._rhw = 1.0 / (array_73D150[vertex_id].vWorldViewPosition.x + 0.0000001);
+            }
+
+
+            float Light_tile_dist = 0.0;
+
+
+
+            //static stru154 static_sub_0048034E_stru_154;
+
+
             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                 face.bVisible = 1;
                 poly->uBModelFaceID = face.index;
                 poly->uBModelID = model.index;
                 poly->pid =
                     PID(OBJECT_BModel, (face.index | (model.index << 6)));
-                for (int vertex_id = 0; vertex_id < face.uNumVertices;
-                    ++vertex_id) {
-                    memcpy(&VertexRenderList[vertex_id],
-                        &array_73D150[vertex_id],
-                        sizeof(VertexRenderList[vertex_id]));
-                    VertexRenderList[vertex_id]._rhw =
-                        1.0 / (array_73D150[vertex_id].vWorldViewPosition.x +
-                            0.0000001);
-                }
+
                 static stru154 static_RenderBuildingsD3D_stru_73C834;
 
-                lightmap_builder->ApplyLights_OutdoorFace(&face);
+
+
+
                 decal_builder->ApplyBloodSplat_OutdoorFace(&face);
-                lightmap_builder->StationaryLightsCount = 0;
+
+                //lightmap_builder->StationaryLightsCount = 0;
                 int v31 = 0;
-                if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
-                    v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
+                if (decal_builder->uNumSplatsThisFace > 0) {
+                    //v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
 
                     // if (face.uAttributes & FACE_OUTLINED) __debugbreak();
 
@@ -3488,226 +3960,21 @@ void RenderOpenGL::DrawBuildingsD3D() {
                             -1);
                     }
                 }
-                if (Lights.uNumLightsApplied > 0)
-                    // if (face.uAttributes & FACE_OUTLINED)
-                    lightmap_builder->ApplyLights(
-                        &Lights, &static_RenderBuildingsD3D_stru_73C834,
-                        poly->uNumVertices, VertexRenderList, 0, (char)v31);
-
-                // if (nearclip) {
-                //    poly->uNumVertices = ODM_NearClip(face.uNumVertices);
-                //    ODM_Project(poly->uNumVertices);
-                // }
-                // if (farclip) {
-                //    poly->uNumVertices = ODM_FarClip(face.uNumVertices);
-                //    ODM_Project(poly->uNumVertices);
-                // }
-
-                if (poly->uNumVertices) {
-                    if (poly->IsWater()) {
-                        if (poly->IsWaterAnimDisabled())
-                            poly->texture = render->hd_water_tile_anim[0];
-                        else
-                            poly->texture =
-                            render->hd_water_tile_anim
-                            [render->hd_water_current_frame];
-                    }
-
-                    render->DrawPolygon(poly);
-                }
             }
         }
     }
-}
 
-void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
-    if (pPolygon->uNumVertices < 3) {
-        return;
-    }
-
-    unsigned int sCorrectedColor;  // [sp+64h] [bp-4h]@4
-
-    auto texture = (TextureOpenGL*)pPolygon->texture;
-    ODMFace* pFace = pPolygon->pODMFace;
-    auto uNumVertices = pPolygon->uNumVertices;
-
-    if (lightmap_builder->StationaryLightsCount) {
-        sCorrectedColor = -1;
-    }
-    engine->AlterGamma_ODM(pFace, &sCorrectedColor);
-    if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
-        int v8 = ::GetActorTintColor(
-            pPolygon->dimming_level, 0,
-            VertexRenderList[0].vWorldViewPosition.x, 0, 0);
-        lightmap_builder->DrawLightmaps(v8 /*, 0*/);
-    } else {
-        if (!lightmap_builder->StationaryLightsCount ||
-            _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
-            glDisable(GL_BLEND);
-            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-            glBegin(GL_TRIANGLE_FAN);
-
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].pos.x =
-                    VertexRenderList[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y =
-                    VertexRenderList[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z =
-                    1.0 -
-                    1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                        pCamera3D->GetFarClip());
-                d3d_vertex_buffer[i].rhw =
-                    1.0 /
-                    (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-                d3d_vertex_buffer[i].diffuse = ::GetActorTintColor(
-                    pPolygon->dimming_level, 0,
-                    VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-                engine->AlterGamma_ODM(pFace, &d3d_vertex_buffer[i].diffuse);
-
-                if (config->is_using_specular)
-                    d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(
-                        0, 0, VertexRenderList[i].vWorldViewPosition.x);
-                else
-                    d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
-                d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
-                //}
-
-                if (pFace->uAttributes & FACE_OUTLINED) {
-                    int color;
-                    if (OS_GetTime() % 300 >= 150)
-                        color = 0xFFFF2020;
-                    else
-                        color = 0xFF901010;
-
-                    // for (uint i = 0; i < uNumVertices; ++i)
-                    d3d_vertex_buffer[i].diffuse = color;
-                }
+    return;
 
 
 
-                glTexCoord2f(VertexRenderList[i].u,
-                    VertexRenderList[i].v);
-
-                glColor4f(
-                    ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                    config->is_using_specular
-                    ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f
-                    : 1.0f);
-
-                glVertex3f(VertexRenderList[i].vWorldPosition.x,
-                    VertexRenderList[i].vWorldPosition.y,
-                    VertexRenderList[i].vWorldPosition.z);
-            }
-
-            drawcalls++;
-            glEnd();
-
-        } else {
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].pos.x =
-                    VertexRenderList[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y =
-                    VertexRenderList[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z =
-                    1.0 -
-                    1.0 / ((VertexRenderList[i].vWorldViewPosition.x * 1000) /
-                        pCamera3D->GetFarClip());
-                d3d_vertex_buffer[i].rhw =
-                    1.0 /
-                    (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
-                d3d_vertex_buffer[i].diffuse = GetActorTintColor(
-                    pPolygon->dimming_level, 0,
-                    VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-                if (config->is_using_specular)
-                    d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(
-                        0, 0, VertexRenderList[i].vWorldViewPosition.x);
-                else
-                    d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
-                d3d_vertex_buffer[i].texcoord.y = VertexRenderList[i].v;
-            }
-
-            glDepthMask(false);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-            glBegin(GL_TRIANGLE_FAN);  // GL_TRIANGLE_FAN
-
-            for (uint i = 0; i < uNumVertices; ++i) {
-                glTexCoord2f(VertexRenderList[i].u, VertexRenderList[i].v);
-
-                glColor4f(
-                    ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                    config->is_using_specular
-                    ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f
-                    : 1.0f);
-
-                glVertex3f(VertexRenderList[i].vWorldPosition.x,
-                    VertexRenderList[i].vWorldPosition.y,
-                    VertexRenderList[i].vWorldPosition.z);
-            }
-
-            glEnd();
-
-
-            drawcalls++;
-
-            glDisable(GL_CULL_FACE);
-
-            // (*(void (**)(void))(*(int *)v50 + 88))();
-            lightmap_builder->DrawLightmaps(-1);
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].diffuse = sCorrectedColor;
-            }
-
-            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
-            glDepthMask(true);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_ZERO, GL_SRC_COLOR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-                glBegin(GL_TRIANGLE_FAN);
-
-                for (uint i = 0; i < uNumVertices; ++i) {
-                    glTexCoord2f(VertexRenderList[i].u, VertexRenderList[i].v);
-
-                    glColor4f(
-                        ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                        ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                        ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                        config->is_using_specular
-                        ? ((d3d_vertex_buffer[i].diffuse >> 24) & 0xFF) / 255.0f
-                        : 1.0f);
-
-                    glVertex3f(VertexRenderList[i].vWorldPosition.x,
-                        VertexRenderList[i].vWorldPosition.y,
-                        VertexRenderList[i].vWorldPosition.z);
-                }
-
-                glEnd();
-
-            drawcalls++;
-
-            glBlendFunc(GL_ONE, GL_ZERO);
-            glDisable(GL_BLEND);
-        }
-    }
-
-    GL_Check_Errors();
+    ///////////////// shader end
 }
 
 void RenderOpenGL::DrawIndoorBatched() { return; }
+
+// no longer require with shaders
+void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) { return; }
 
 void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     int uPackedID, unsigned int uColor,
@@ -4040,6 +4307,11 @@ bool RenderOpenGL::InitShaders() {
     if (terrainshader.ID == 0)
         return false;
 
+    logger->Info("Building outdoors building shader...");
+    outbuildshader.build("../../../../Engine/Graphics/Shaders/gloutbuild.vs", "../../../../Engine/Graphics/Shaders/gloutbuild.fs");
+    if (outbuildshader.ID == 0)
+        return false;
+
     return true;
 }
 
@@ -4064,6 +4336,31 @@ void RenderOpenGL::ReleaseTerrain() {
 
     terrainVBO = 0;
     terrainVAO = 0;
+
+    /*GLuint outbuildVBO, outbuildVAO;
+    GLuint outbuildtextures[8];
+    uint numoutbuildtexloaded[8];
+    uint outbuildtexturewidths[8];
+    uint outbuildtextureheights[8];
+    std::map<std::string, int> outbuildtexmap;*/
+
+    outbuildtexmap.clear();
+
+    for (int i = 0; i < 16; i++) {
+        glDeleteTextures(1, &outbuildtextures[i]);
+        outbuildtextures[i] = 0;
+        numoutbuildtexloaded[i] = 0;
+        outbuildtexturewidths[i] = 0;
+        outbuildtextureheights[i] = 0;
+        glDeleteBuffers(1, &outbuildVBO[i]);
+        glDeleteVertexArrays(1, &outbuildVAO[i]);
+        outbuildVBO[i] = 0;
+        outbuildVAO[i] = 0;
+        if (outbuildshaderstore[i]) {
+            free(outbuildshaderstore[i]);
+            outbuildshaderstore[i] = nullptr;
+        }
+    }
 
     GL_Check_Errors();
 }

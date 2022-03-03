@@ -679,7 +679,7 @@ void Sdl2Window::OpenGlCreate() {
     log->Info("SDL2: OpenGL version: %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
     // Use Vsync
-    if (SDL_GL_SetSwapInterval(1) < 0) {
+    if (SDL_GL_SetSwapInterval(0) < 0) {
         log->Info("SDL2: unable to set VSync: %s\n", SDL_GetError());
     }
 }
