@@ -99,51 +99,38 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     }
     game_ui_dialogue_background = assets->GetImage_Solid(filename);
 
-    transition_ui_icon =
-        assets->GetImage_Solid(pHouse_ExitPictures[exit_pic_id]);
-    if (anim_id) {
+    transition_ui_icon = assets->GetImage_Solid(pHouse_ExitPictures[exit_pic_id]);
+
+    // animation or special transfer message
+    if (anim_id || IndoorLocation::GetLocationIndex(pLocationName)) {
         if (!IndoorLocation::GetLocationIndex(pLocationName))
-            pMediaPlayer->OpenHouseMovie(
-                pAnimatedRooms[p2DEvents[anim_id - 1].uAnimationID].video_name,
-                1);
+            pMediaPlayer->OpenHouseMovie(pAnimatedRooms[p2DEvents[anim_id - 1].uAnimationID].video_name, 1);
 
         std::string v15 = pLocationName;
         if (*pLocationName == '0') {
             v15 = pCurrentMapName;
         }
         if (pMapStats->GetMapInfo(v15)) {
-            transition_button_label = localization->FormatString(
-                LSTR_FMT_ENTER_S,
-                pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str()
-            );
-
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
-                pParty->GetRedOrYellowAlert())
+            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
+            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_LeaveDungeon, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
-                uCurrentHouse_Animation =
-                    IndoorLocation::GetLocationIndex(pLocationName);
+                uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         } else {
-            transition_button_label = localization->FormatString(
-                LSTR_FMT_ENTER_S,
-                pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
+            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].pName.c_str());
             if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
-                pParty->GetRedOrYellowAlert())
+            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_LeaveDungeon, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
         }
-    } else if (!IndoorLocation::GetLocationIndex(pLocationName)) {
+    } else if (!IndoorLocation::GetLocationIndex(pLocationName)) { // transfer to outdoors - no special message
         if (pMapStats->GetMapInfo(pCurrentMapName)) {
-            transition_button_label = localization->FormatString(
-                LSTR_FMT_LEAVE_S,
-                pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
+            transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].pName.c_str());
             if (pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
-                pParty->GetRedOrYellowAlert())
+            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_LeaveDungeon, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);
@@ -151,8 +138,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
             transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
             if ( pAnimatedRooms[p2DEvents[anim_id].uAnimationID].uRoomSoundId)
                 PlayHouseSound(anim_id, HouseSound_Greeting);
-            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter &&
-                pParty->GetRedOrYellowAlert())
+            if (uCurrentlyLoadedLevelType == LEVEL_Indoor && uActiveCharacter && pParty->GetRedOrYellowAlert())
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_LeaveDungeon, 0);
             if (IndoorLocation::GetLocationIndex(pLocationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(pLocationName);

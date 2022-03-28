@@ -1862,11 +1862,13 @@ void RegeneratePartyHealthMana() {
                     unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
 
                     auto cursed_times = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].conditions_times[Condition_Cursed];
-                    if (cursed_times->value < spell_power) {
-                        cursed_times = 0;
-                        pParty->uFlags &= 0xFFFFFFBF;
-                        pParty->bFlying = false;
-                        redraw_flag = true;
+                    if (cursed_times->Valid()) {
+                        if (cursed_times->value < spell_power) {
+                            cursed_times = 0;
+                            pParty->uFlags &= 0xFFFFFFBF;
+                            pParty->bFlying = false;
+                            redraw_flag = true;
+                        }
                     }
                 }
             }

@@ -395,6 +395,11 @@ bool KeyboardInputHandler::ProcessTextInput(GameKey key, int c) {
             SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CONFIRMED);
         } else if (key == GameKey::Escape) {
             SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_CANCELLED);
+        } else if (key == GameKey::Space && this->uNumKeysPressed < this->max_input_string_len) {
+            if (inputType == TextInputType::Text) {
+                pPressedKeysBuffer[uNumKeysPressed++] = ' ';
+                pPressedKeysBuffer[uNumKeysPressed] = 0;
+            }
         } else if (key == GameKey::Char && this->uNumKeysPressed < this->max_input_string_len) {
             if (inputType == TextInputType::Text) {
                 pPressedKeysBuffer[uNumKeysPressed++] = c;

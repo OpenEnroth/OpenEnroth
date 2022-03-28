@@ -20,6 +20,10 @@ GUIProgressBar::GUIProgressBar() {
 }
 
 bool GUIProgressBar::Initialize(Type type) {
+    if (loading_bg) {
+        return false;
+    }
+
     Release();
 
     switch (type) {
@@ -32,10 +36,6 @@ bool GUIProgressBar::Initialize(Type type) {
 
         default:
             Error("Invalid GUIProgressBar type: %u", type);
-    }
-
-    if (loading_bg) {
-        return false;
     }
 
     uType = type;

@@ -288,7 +288,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     int v90;               // eax@243
     const char *v91;       // ecx@247
     int v94;               // ecx@262
-    int v95;               // ebp@262
+    int trans_directionpitch;  // diretion pithc               // ebp@262
     int v96;               // edx@262
     int v97;               // eax@262
     unsigned int v98;      // edx@265
@@ -300,15 +300,15 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     signed int v109;       // [sp-14h] [bp-4BCh]@278
     signed int v110;       // [sp-10h] [bp-4B8h]@278
     int curr_seq_num;      // [sp+10h] [bp-498h]@4
-    int v126;              // [sp+1Ch] [bp-48Ch]@262
+    int trans_partyz;  // z             // [sp+1Ch] [bp-48Ch]@262
     int player_choose;     // [sp+20h] [bp-488h]@4
     // int v128;              // [sp+24h] [bp-484h]@21
-    int v129;              // [sp+24h] [bp-484h]@262
+    int trans_directionyaw;  // direction yaw             // [sp+24h] [bp-484h]@262
     signed int v130;       // [sp+28h] [bp-480h]@0
-    int v132;              // [sp+30h] [bp-478h]@262
+    int trans_partyy;  // y              // [sp+30h] [bp-478h]@262
     signed int v133;       // [sp+34h] [bp-474h]@1
-    int v134;              // [sp+38h] [bp-470h]@262
-    int v135;              // [sp+3Ch] [bp-46Ch]@262
+    int trans_partyzspeed;  // z speed            // [sp+38h] [bp-470h]@262
+    int trans_partyx;  // x              // [sp+3Ch] [bp-46Ch]@262
     int v136;              // [sp+40h] [bp-468h]@40
     int v137;              // [sp+44h] [bp-464h]@40
     int v138;              // [sp+48h] [bp-460h]@40
@@ -966,23 +966,23 @@ LABEL_47:
                         _evt->v5 +
                         ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
                          << 8);
-                    v135 =
+                    trans_partyx =
                         _evt->v5 +
                         ((_evt->v6 + ((_evt->v7 + ((uint)_evt->v8 << 8)) << 8))
                          << 8);
-                    v132 = _evt->v9 +
+                    trans_partyy = _evt->v9 +
                            ((_evt->v10 +
                              ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
                             << 8);
-                    v126 = _evt->v13 +
+                    trans_partyz = _evt->v13 +
                            ((_evt->v14 +
                              ((_evt->v15 + ((uint)_evt->v16 << 8)) << 8))
                             << 8);
-                    v129 = _evt->v17 +
+                    trans_directionyaw = _evt->v17 +
                            ((_evt->v18 +
                              ((_evt->v19 + ((uint)_evt->v20 << 8)) << 8))
                             << 8);
-                    v95 = _evt->v21 +
+                    trans_directionpitch = _evt->v21 +
                           ((_evt->v22 +
                             ((_evt->v23 + ((uint)_evt->v24 << 8)) << 8))
                            << 8);
@@ -990,13 +990,13 @@ LABEL_47:
                     v97 = v96 + ((_evt->v26 +
                                   ((_evt->v27 + ((uint)_evt->v28 << 8)) << 8))
                                  << 8);
-                    v134 = v96 + ((_evt->v26 +
+                    trans_partyzspeed = v96 + ((_evt->v26 +
                                    ((_evt->v27 + ((uint)_evt->v28 << 8)) << 8))
                                   << 8);
                     if (_evt->v29 || _evt->v30) {
                         pDialogueWindow = new GUIWindow_Transition(
-                            _evt->v29, _evt->v30, v135, v132, v126, v129, v95,
-                            v134, (char *)&_evt->v31);
+                            _evt->v29, _evt->v30, trans_partyx, trans_partyy, trans_partyz, trans_directionyaw, trans_directionpitch,
+                            trans_partyzspeed, (char *)&_evt->v31);
                         dword_5C3418 = uEventID;
                         dword_5C341C = curr_seq_num + 1;
                         if (v133 == 1) OnMapLeave();
@@ -1008,31 +1008,31 @@ LABEL_47:
                           ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
                          << 8);
                     Party_Teleport_X_Pos = v94;
-                    Party_Teleport_Z_Pos = v126;
-                    if (v129 == -1) {
+                    Party_Teleport_Z_Pos = trans_partyz;
+                    if (trans_directionyaw == -1) {
                         v98 = Party_Teleport_Cam_Yaw;
                     } else {
-                        v98 = v129 & TrigLUT->uDoublePiMask;
+                        v98 = trans_directionyaw & TrigLUT->uDoublePiMask;
                         Party_Teleport_Cam_Yaw =
-                            v129 & TrigLUT->uDoublePiMask;
+                            trans_directionyaw & TrigLUT->uDoublePiMask;
                     }
                     v99 = (char *)&_evt->v31;
-                    Party_Teleport_Cam_Pitch = v95;
+                    Party_Teleport_Cam_Pitch = trans_directionpitch;
                     Party_Teleport_Z_Speed = v97;
-                    v100 = v94 | v132 | v126 | v95 | v97 | v98;
+                    v100 = v94 | trans_partyy | trans_partyz | trans_directionpitch | v97 | v98;
                     Start_Party_Teleport_Flag = v100;
                     if (*v99 == 48) {
                         if (v100) {
-                            pParty->vPosition.x = v135;
-                            pParty->vPosition.y = v132;
-                            pParty->vPosition.z = v126;
-                            pParty->uFallStartZ = v126;
+                            pParty->vPosition.x = trans_partyx;
+                            pParty->vPosition.y = trans_partyy;
+                            pParty->vPosition.z = trans_partyz;
+                            pParty->uFallStartZ = trans_partyz;
                             if (Party_Teleport_Cam_Yaw != -1)
                                 pParty->sRotationZ =
                                     Party_Teleport_Cam_Yaw;
                             Party_Teleport_Cam_Yaw = -1;
-                            pParty->sRotationY = v95;
-                            pParty->uFallSpeed = v134;
+                            pParty->sRotationY = trans_directionpitch;
+                            pParty->uFallSpeed = trans_partyzspeed;
                             Start_Party_Teleport_Flag = 0;
                             Party_Teleport_Z_Speed = 0;
                             Party_Teleport_Cam_Pitch = 0;

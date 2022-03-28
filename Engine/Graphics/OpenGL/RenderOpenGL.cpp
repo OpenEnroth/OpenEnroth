@@ -1025,14 +1025,12 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
 
 
 
-
+// TODO(pskelton): stencil masking with opacity would be a better way to do this
 void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, int time, int start_opacity,
     int end_opacity) {
-    // thrown together as a crude estimate of the enchaintg
-                          // effects
-
-      // leaves gap where it shouldnt on dark pixels currently
-      // doesnt use opacity params
+    // thrown together as a crude estimate of the enchaintg effects
+    // leaves gap where it shouldnt on dark pixels currently
+    // doesnt use opacity params
 
     const uint32_t* pixelpoint;
     const uint32_t* pixelpointblend;
@@ -1044,8 +1042,9 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
 
         int Width = imgin->GetWidth();
         int Height = imgin->GetHeight();
-        // Image* temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
-        // uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        Texture *temp = render->CreateTexture_Blank(Width, Height, IMAGE_FORMAT_A8R8G8B8);
+        //Image* temp = Image::Create(Width, Height, IMAGE_FORMAT_A8R8G8B8);
+        uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
         uint32_t c = *(pixelpointblend + 2700);  // guess at brightest pixel
         unsigned int bmax = (c & 0xFF);
@@ -1094,8 +1093,8 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
                     if (gcur < gmin) gcur = gmin;
                     if (rcur < rmin) rcur = rmin;
 
-                    // temppix[xdraw + ydraw * Width] = Color32(rcur, gcur, bcur);
-                    render_target_rgb[x + xdraw + (render->GetRenderWidth() * (y + ydraw))] = Color32(rcur, gcur, bcur);
+                    temppix[xdraw + ydraw * Width] = Color32(rcur, gcur, bcur);
+                    //render_target_rgb[x + xdraw + (render->GetRenderWidth() * (y + ydraw))] = Color32(rcur, gcur, bcur);
                 }
 
                 pixelpoint++;
@@ -1104,8 +1103,9 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
             pixelpoint += imgin->GetWidth() - Width;
         }
         // draw image
-        // render->DrawTextureAlphaNew(x / float(window->GetWidth()), y / float(window->GetHeight()), temp);
-        // temp->Release();
+        render->Update_Texture(temp);
+        render->DrawTextureAlphaNew(x / float(window->GetWidth()), y / float(window->GetHeight()), temp);
+        temp->Release();
     }
 }
 
