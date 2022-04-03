@@ -3116,61 +3116,88 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     }
 }
 
-void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img,
-                                           int custom_height) {
-    unsigned __int16 *v6;  // esi@3
-    unsigned int v8;       // eax@5
-    unsigned int v11;      // eax@7
-    unsigned int v12;      // ebx@8
-    unsigned int v15;      // eax@14
-    int v19;               // [sp+10h] [bp-8h]@3
+void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
+    if (!img) __debugbreak();
 
-    if (!img) return;
-
-    unsigned int uOutX = window->GetWidth() * u;
-    unsigned int uOutY = window->GetHeight() * v;
-
-    int width = img->GetWidth();
-    int height = std::min((int)img->GetHeight(), custom_height);
-    v6 = (unsigned __int16 *)img->GetPixels(IMAGE_FORMAT_R5G6B5);
-
-    // v5 = &this->pTargetSurface[uOutX + uOutY * this->uTargetSurfacePitch];
-    v19 = width;
-    // if (this->bClip)
-    {
-        if ((signed int)uOutX < (signed int)this->clip_x) {
-            v8 = this->clip_x - uOutX;
-            unsigned int v9 = uOutX - this->clip_x;
-            v8 *= 2;
-            width += v9;
-            v6 = (unsigned __int16 *)((char *)v6 + v8);
-            // v5 = (unsigned __int16 *)((char *)v5 + v8);
-        }
-        if ((signed int)uOutY < (signed int)this->clip_y) {
-            v11 = this->clip_y - uOutY;
-            v6 += v19 * v11;
-            height += uOutY - this->clip_y;
-            // v5 += this->uTargetSurfacePitch * v11;
-        }
-        v12 = std::max((unsigned int)this->clip_x, uOutX);
-        if ((signed int)(width + v12) > (signed int)this->clip_z) {
-            width = this->clip_z - std::max(this->clip_x, (int)uOutX);
-        }
-        v15 = std::max((unsigned int)this->clip_y, uOutY);
-        if ((signed int)(v15 + height) > (signed int)this->clip_w) {
-            height = this->clip_w - std::max(this->clip_y, (int)uOutY);
-        }
+    TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(img);
+    if (!texture) {
+        __debugbreak();
+        return;
     }
 
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            WritePixel16(uOutX + x, uOutY + y, *v6);
-            // *v5 = *v6;
-            // ++v5;
-            ++v6;
-        }
-        v6 += v19 - width;
-        // v5 += this->uTargetSurfacePitch - v4;
+    float r = 1.0f;
+    float g = 1.0f;
+    float b = 1.0f;
+
+    glEnable(GL_TEXTURE_2D);
+    glColor3f(r, g, b);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    int clipx = this->clip_x;
+    int clipy = this->clip_y;
+    int clipw = this->clip_w;
+    int clipz = this->clip_z;
+
+    int width = img->GetWidth();
+    int height = img->GetHeight();
+
+    int x = u * window->GetWidth();
+    int y = v * window->GetHeight();
+    int z = x + width;
+    int w = y + custom_height;
+
+    // check bounds
+    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
+    // check for overlap
+    if ((clipx < z && clipz > x && clipy > w && clipw < y)) return;
+
+    int drawx = std::max(x, clipx);
+    int drawy = std::max(y, clipy);
+    int draww = std::min(w, clipw);
+    int drawz = std::min(z, clipz);
+    if (drawz <= drawx || draww <= drawy) return;
+
+    float depth = 0;
+
+    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
+        (float)drawz, (float)drawy, depth,
+        (float)drawz, (float)draww, depth,
+        (float)drawx, (float)draww, depth };
+
+    float texx = (drawx - x) / float(width);
+    float texy = (drawy - y) / float(height);
+    float texz = (width - (z - drawz)) / float(width);
+    float texw = (height - (w - draww)) / float(height);
+
+    GLfloat TexCoord[] = { texx, texy,
+        texz, texy,
+        texz, texw,
+        texx, texw,
+    };
+
+    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+       0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    drawcalls++;
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glDisable(GL_BLEND);
+
+    GLenum err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        log->Warning("OpenGL: draw texture error: (%u)", err);
     }
 }
 
@@ -3979,9 +4006,7 @@ bool RenderOpenGL::Initialize() {
         this->clip_x = this->clip_y = 0;
         this->clip_z = window->GetWidth();
         this->clip_w = window->GetHeight();
-        this->render_target_rgb =
-            new uint32_t[window->GetWidth() *
-            window->GetHeight()];
+        this->render_target_rgb = new uint32_t[window->GetWidth() * window->GetHeight()];
 
         PostInitialization();
 
@@ -3992,8 +4017,7 @@ bool RenderOpenGL::Initialize() {
 }
 
 void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) {
-    // render target now 32 bit - format A8R8G8B8
-    render_target_rgb[x + window->GetWidth() * y] = Color32(color);
+    return;
 }
 
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
