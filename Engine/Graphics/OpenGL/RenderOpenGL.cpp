@@ -508,7 +508,6 @@ RenderOpenGL::RenderOpenGL(
     clip_x = 0;
     clip_y = 0;
     clip_z = 0;
-    render_target_rgb = nullptr;
 }
 
 RenderOpenGL::~RenderOpenGL() { /*__debugbreak();*/ }
@@ -547,7 +546,7 @@ void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
 }
 
 void RenderOpenGL::ClearTarget(unsigned int uColor) {
-    memset32(render_target_rgb, Color32(uColor), (window->GetWidth() * window->GetHeight()));
+    return;
 }
 
 
@@ -1094,7 +1093,6 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
                     if (rcur < rmin) rcur = rmin;
 
                     temppix[xdraw + ydraw * Width] = Color32(rcur, gcur, bcur);
-                    //render_target_rgb[x + xdraw + (render->GetRenderWidth() * (y + ydraw))] = Color32(rcur, gcur, bcur);
                 }
 
                 pixelpoint++;
@@ -1115,6 +1113,8 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
         auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         int width = img->GetWidth();
         int height = img->GetHeight();
+        Texture *temp = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
+        uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
         int brightloc = -1;
         int brightval = 0;
@@ -1188,16 +1188,15 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
                         gcur = gmax - pixstepg * gstep;
                     }
                     // out pixel
-                    // temppix[xdraw + ydraw * width] = (rcur << 24) | (gcur << 16) | (bcur << 8) | 0xFF;//Color32(rcur, gcur, bcur);
-                    render_target_rgb[int((u*window->GetWidth())+xdraw + window->GetWidth() *(v*window->GetHeight()+ydraw))] = Color32(rcur, gcur, bcur);
+                    temppix[xdraw + ydraw * width] = Color32(rcur, gcur, bcur);
                 }
                 pixelpoint++;
             }
         }
         // draw image
-        // render->Update_Texture(img);
-        // render->DrawTextureAlphaNew(u, v, img);
-        // temp->Release();
+        render->Update_Texture(temp);
+        render->DrawTextureAlphaNew(u, v, temp);
+        temp->Release();
     }
 }
 
@@ -1704,14 +1703,6 @@ void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, in
     glDisableClientState(GL_VERTEX_ARRAY);
 
     glDisable(GL_BLEND);
-
-
-    // blank over same bit of this render_target_rgb to stop text overlaps
-    for (int ys = drawy; ys < draww; ys++) {
-        memset(this->render_target_rgb + (ys * window->GetWidth() + drawx), 0x00000000, (drawz - drawx) * 4);
-    }
-
-    return;
 }
 
 
@@ -3109,11 +3100,6 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     while ((err = glGetError()) != GL_NO_ERROR) {
         log->Warning("OpenGL: draw texture error: (%u)", err);
     }
-
-    // blank over same bit of this render_target_rgb to stop text overlaps
-    for (int ys = drawy; ys < draww; ys++) {
-        memset(this->render_target_rgb +(ys * window->GetWidth() + drawx), 0x00000000, (drawz - drawx) * 4);
-    }
 }
 
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
@@ -3292,24 +3278,19 @@ void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
 
     // needs limits checks adding
 
-    // Image *fonttemp = Image::Create(uCharWidth, uCharHeight, IMAGE_FORMAT_A8R8G8B8);
-    // uint32_t *fontpix = (uint32_t*)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-    for (uint y = 0; y < uCharHeight; ++y) {
-        for (uint x = 0; x < uCharWidth; ++x) {
-            if (*pFontPixels) {
-                uint16_t color = uShadowColor;
-                if (*pFontPixels != 1) {
-                    color = uFaceColor;
-                }
-                // fontpix[x + y * uCharWidth] = Color32(color);
-                this->render_target_rgb[(uOutX+x)+(uOutY+y)*window->GetWidth()] = Color32(color);
-            }
-            ++pFontPixels;
-        }
-    }
-    // render->DrawTextureAlphaNew(uOutX / 640., uOutY / 480., fonttemp);
-    // fonttemp->Release();
+    //for (uint y = 0; y < uCharHeight; ++y) {
+    //    for (uint x = 0; x < uCharWidth; ++x) {
+    //        if (*pFontPixels) {
+    //            uint16_t color = uShadowColor;
+    //            if (*pFontPixels != 1) {
+    //                color = uFaceColor;
+    //            }
+    //            // fontpix[x + y * uCharWidth] = Color32(color);
+    //            this->render_target_rgb[(uOutX+x)+(uOutY+y)*window->GetWidth()] = Color32(color);
+    //        }
+    //        ++pFontPixels;
+    //    }
+    //}
 }
 
 void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
@@ -3320,61 +3301,38 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
 
     // needs limits checks adding
 
-    // Image *fonttemp = Image::Create(uCharWidth, uFontHeight, IMAGE_FORMAT_A8R8G8B8);
-    // uint32_t *fontpix = (uint32_t *)fonttemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-    if (present_time_transparency) {
-        for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
-            for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
-                uint16_t color = (*font_pixels)
-                    ? pPalette[*font_pixels]
-                    : teal_mask_16;  // transparent color 16bit
-                              // render->uTargetGMask |
-                              // render->uTargetBMask;
-                this->render_target_rgb[(x + dx) + (y + dy) * window->GetWidth()] = Color32(color);
-                // fontpix[dx + dy * uCharWidth] = Color32(color);
-                ++font_pixels;
-            }
-        }
-    } else {
-        for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
-            for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
-                if (*font_pixels) {
-                    uint8_t index = *font_pixels;
-                    if (index != 255 && index != 1) __debugbreak();
-                    uint8_t r = pPalette[index * 3 + 0];
-                    uint8_t g = pPalette[index * 3 + 1];
-                    uint8_t b = pPalette[index * 3 + 2];
-                    this->render_target_rgb[(x + dx) + (y + dy) * window->GetWidth()] = Color32(r, g, b);
-                    // fontpix[dx + dy * uCharWidth] = Color32(r, g, b);
-                }
-                ++font_pixels;
-            }
-        }
-    }
-    // render->DrawTextureAlphaNew(x / 640., y / 480., fonttemp);
-    // fonttemp->Release();
+    //if (present_time_transparency) {
+    //    for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
+    //        for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
+    //            uint16_t color = (*font_pixels)
+    //                ? pPalette[*font_pixels]
+    //                : teal_mask_16;  // transparent color 16bit
+    //                          // render->uTargetGMask |
+    //                          // render->uTargetBMask;
+    //            this->render_target_rgb[(x + dx) + (y + dy) * window->GetWidth()] = Color32(color);
+    //            // fontpix[dx + dy * uCharWidth] = Color32(color);
+    //            ++font_pixels;
+    //        }
+    //    }
+    //} else {
+    //    for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
+    //        for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
+    //            if (*font_pixels) {
+    //                uint8_t index = *font_pixels;
+    //                if (index != 255 && index != 1) __debugbreak();
+    //                uint8_t r = pPalette[index * 3 + 0];
+    //                uint8_t g = pPalette[index * 3 + 1];
+    //                uint8_t b = pPalette[index * 3 + 2];
+    //                this->render_target_rgb[(x + dx) + (y + dy) * window->GetWidth()] = Color32(r, g, b);
+    //                // fontpix[dx + dy * uCharWidth] = Color32(r, g, b);
+    //            }
+    //            ++font_pixels;
+    //        }
+    //    }
+    //}
 }
 
 void RenderOpenGL::Present() {
-    // screen overlay holds all text and changing images at the moment
-
-    static Texture *screen_text_overlay = 0;
-    if (!screen_text_overlay) {
-        screen_text_overlay = render->CreateTexture_Blank(window->GetWidth(), window->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
-    }
-
-    uint32_t *pix = (uint32_t*)screen_text_overlay->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-    unsigned int num_pixels = screen_text_overlay->GetWidth() * screen_text_overlay->GetHeight();
-    unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
-
-    // update pixels
-    memcpy(pix, this->render_target_rgb, num_pixels_bytes);
-    // update texture
-    render->Update_Texture(screen_text_overlay);
-    // draw
-    render->DrawTextureAlphaNew(0, 0, screen_text_overlay);
-
     window->OpenGlSwapBuffers();
 }
 
@@ -4006,7 +3964,6 @@ bool RenderOpenGL::Initialize() {
         this->clip_x = this->clip_y = 0;
         this->clip_z = window->GetWidth();
         this->clip_w = window->GetHeight();
-        this->render_target_rgb = new uint32_t[window->GetWidth() * window->GetHeight()];
 
         PostInitialization();
 
@@ -4023,11 +3980,6 @@ void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) {
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
                                 unsigned int uWidth, unsigned int uHeight,
                                 unsigned int uColor16) {
-    // uint32_t col = Color32(uColor16);
-    // for (unsigned int dy = 0; dy < uHeight; ++dy) {
-    //    memset32(this->render_target_rgb + ((uY+dy) * window->GetWidth() + uX), col, uWidth);
-    // }
-
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
 

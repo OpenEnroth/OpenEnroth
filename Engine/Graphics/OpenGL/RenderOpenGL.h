@@ -213,7 +213,6 @@ class RenderOpenGL : public RenderBase {
 
     int clip_x, clip_y;
     int clip_z, clip_w;
-    uint32_t *render_target_rgb;  // now 32 - draw to in format A8R8G8B8 - endian swivel means BGRA
 
     int GL_lastboundtex;
     struct nk_vertex {
