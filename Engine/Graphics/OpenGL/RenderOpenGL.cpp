@@ -3174,10 +3174,95 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img,
     }
 }
 
+void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) {
+    // TODO(pskelton): need to add batching here so each lump of text is drawn in one call
+    // TODO(pskelton): inputs are color 16 - change param to avoid confusion
+
+    glEnable(GL_TEXTURE_2D);
+    colour = Color32(colour);
+
+    float b = (colour & 0xFF) / 255.0f;
+    float g = ((colour >> 8) & 0xFF) / 255.0f;
+    float r = ((colour >> 16) & 0xFF) / 255.0f;
+
+    glColor3f(r, g, b);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    auto texture = (TextureOpenGL *)tex;
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    int clipx = this->clip_x;
+    int clipy = this->clip_y;
+    int clipw = this->clip_w;
+    int clipz = this->clip_z;
+
+    //int texwidth = texture->GetWidth();
+    //int texheight = texture->GetHeight();
+
+    //int width = pSrcRect->z - pSrcRect->x;
+    //int height = pSrcRect->w - pSrcRect->y;
+
+    //int x = pTargetPoint->x;  // u* window->GetWidth();
+    //int y = pTargetPoint->y;  // v* window->GetHeight();
+    int z = x + width;
+    int w = y + h;
+
+    // check bounds
+    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
+    // check for overlap
+    if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
+
+    int drawx = x;  // std::max(x, clipx);
+    int drawy = y;  // std::max(y, clipy);
+    int draww = w;  // std::min(w, clipw);
+    int drawz = z;  // std::min(z, clipz);
+
+    float depth = 0;
+
+    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
+        (float)drawz, (float)drawy, depth,
+        (float)drawz, (float)draww, depth,
+        (float)drawx, (float)draww, depth };
+
+    float texx = u1;  // (drawx - x) / float(width);
+    float texy = v1;  //  (drawy - y) / float(height);
+    float texz = u2;  //  (width - (z - drawz)) / float(width);
+    float texw = v2;  // (height - (w - draww)) / float(height);
+
+    GLfloat TexCoord[] = { texx, texy,
+        texz, texy,
+        texz, texw,
+        texx, texw,
+    };
+
+    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    drawcalls++;
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glDisable(GL_BLEND);
+    //glEnable(GL_DEPTH_TEST);
+}
+
 void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
                             unsigned int uCharWidth, unsigned int uCharHeight,
                             uint8_t* pFontPalette, uint16_t uFaceColor,
                             uint16_t uShadowColor) {
+    return;
+
+
     // needs limits checks adding
 
     // Image *fonttemp = Image::Create(uCharWidth, uCharHeight, IMAGE_FORMAT_A8R8G8B8);
@@ -3204,6 +3289,8 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
                                  int uCharWidth, unsigned int uFontHeight,
                                  uint8_t *pPalette,
                                  bool present_time_transparency) {
+    return;
+
     // needs limits checks adding
 
     // Image *fonttemp = Image::Create(uCharWidth, uFontHeight, IMAGE_FORMAT_A8R8G8B8);
@@ -3227,6 +3314,7 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
             for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
                 if (*font_pixels) {
                     uint8_t index = *font_pixels;
+                    if (index != 255 && index != 1) __debugbreak();
                     uint8_t r = pPalette[index * 3 + 0];
                     uint8_t g = pPalette[index * 3 + 1];
                     uint8_t b = pPalette[index * 3 + 2];

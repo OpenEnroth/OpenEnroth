@@ -334,12 +334,12 @@ void Engine::DrawGUI() {
 
     if (engine->config->show_fps) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(0, 0, 0),
+            pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(255, 255, 255),
                 StringPrintf("FPS: % .4f", framerate), 0,
                 0, 0);
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, 300, 0, Color16(0, 0, 0),
+        pPrimaryWindow->DrawText(pFontArrus, 300, 0, Color16(255, 255, 255),
             StringPrintf("DrawCalls: %d", render->drawcalls), 0, 0, 0);
         render->drawcalls = 0;
 

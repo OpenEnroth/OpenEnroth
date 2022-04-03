@@ -3006,6 +3006,10 @@ void Render::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
         (INT)uHeight);
 }
 
+void Render::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) {
+    return;
+}
+
 void Render::DrawText(int uOutX, int uOutY, uint8_t *pFontPixels,
                       unsigned int uCharWidth, unsigned int uCharHeight,
                       uint8_t *pFontPalette, uint16_t uFaceColor,

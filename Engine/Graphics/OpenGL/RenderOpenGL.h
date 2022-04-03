@@ -143,6 +143,7 @@ class RenderOpenGL : public RenderBase {
                           unsigned int uCharWidth, unsigned int uCharHeight,
                           uint8_t *pFontPalette, uint16_t uFaceColor,
                           uint16_t uShadowColor) override;
+    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) override;
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
