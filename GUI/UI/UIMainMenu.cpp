@@ -144,7 +144,7 @@ void GUIWindow_MainMenu::Loop() {
     Image *tex;
     nuklear->Create(WINDOW_MainMenu_Load);
 
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->MusicPlayTrack(MUSIC_MainMenu);
 
     if (first_initialization) {

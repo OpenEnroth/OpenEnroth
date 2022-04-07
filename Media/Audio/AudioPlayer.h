@@ -124,6 +124,7 @@ class AudioPlayer {
     void Initialize();
 
     void SetMasterVolume(int level);
+    void SetVoiceVolume(int level);
 
     void MusicPlayTrack(enum MusicID eTrack);
     void MusicStart();
@@ -136,9 +137,9 @@ class AudioPlayer {
     void StopAll(int sample_id);
     void PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int x, int y, int a7);
     void UpdateSounds();
-    void StopChannels(int uStartChannel, int uEndChannel);
+    void PauseSounds(int uType);
     void LoadAudioSnd();
-    void MessWithChannels();
+    void ResumeSounds();
     bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
     PMemBuffer LoadSound(const std::string &pSoundName);
     PMemBuffer LoadSound(int uSoundID);
@@ -148,6 +149,7 @@ class AudioPlayer {
     bool bPlayerReady;
     int currentMusicTrack;
     float uMasterVolume;
+    float uVoiceVolume;
     PAudioTrack pCurrentMusicTrack;
     std::ifstream fAudioSnd;
     std::map<std::string, SoundHeader> mSoundHeaders;

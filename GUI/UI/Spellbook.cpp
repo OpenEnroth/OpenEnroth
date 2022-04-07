@@ -317,7 +317,7 @@ static void BookUI_Spellbook_DrawCurrentSchoolBackground() {
 }
 
 void InitializeSpellBookTextures() {
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
 
     ui_spellbook_btn_close = assets->GetImage_Solid("ib-m5-u");

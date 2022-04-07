@@ -1265,7 +1265,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         pOutdoor->Release();
 
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     uCurrentlyLoadedLevelType = LEVEL_null;
     pSpriteFrameTable->ResetLoadedFlags();
     pParty->armageddon_timer = 0;
@@ -2283,7 +2283,7 @@ bool _44100D_should_alter_right_panel() {
 
 void Transition_StopSound_Autosave(const char *pMapName,
                                    MapStartPoint start_point) {
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
 
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 

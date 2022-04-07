@@ -309,7 +309,7 @@ bool Game::Loop() {
         }
         if (uGameState ==
             GAME_STATE_GAME_QUITTING_TO_MAIN_MENU) {  // from the loaded game
-            pAudioPlayer->StopChannels(-1, -1);
+            pAudioPlayer->PauseSounds(-1);
             uGameState = GAME_STATE_PLAYING;
             break;
         }
@@ -1245,13 +1245,13 @@ void Game::EventLoop() {
                     continue;
 
                 case UIMSG_OnCastTownPortal:
-                    pAudioPlayer->StopChannels(-1, -1);
+                    pAudioPlayer->PauseSounds(-1);
                     pGUIWindow_CurrentMenu =
                         new GUIWindow_TownPortalBook();  // (char *)uMessageParam);
                     continue;
 
                 case UIMSG_OnCastLloydsBeacon:
-                    pAudioPlayer->StopChannels(-1, -1);
+                    pAudioPlayer->PauseSounds(-1);
                     pGUIWindow_CurrentMenu = new GUIWindow_LloydsBook();
                     continue;
 
@@ -2752,7 +2752,7 @@ void Game::GameLoop() {
                 continue;
             }
             if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // смена локации
-                pAudioPlayer->StopChannels(-1, -1);
+                pAudioPlayer->PauseSounds(-1);
                 PrepareWorld(0);
                 uGameState = GAME_STATE_PLAYING;
                 continue;
@@ -2779,7 +2779,7 @@ void Game::GameLoop() {
                 continue;
             }
             if (uGameState == GAME_STATE_PARTY_DIED) {
-                pAudioPlayer->StopChannels(-1, -1);
+                pAudioPlayer->PauseSounds(-1);
                 memset(&pParty->pHirelings[0], 0, 0x4Cu);
                 memset(&pParty->pHirelings[1], 0, 0x4Cu);
                 for (int i = 0; i < (signed int)pNPCStats->uNumNewNPCs; ++i) {

@@ -1002,7 +1002,8 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
 void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     if (!img) return;
 
-    int uOutX = u * this->window->GetWidth();
+    int winwidth = this->window->GetWidth();
+    int uOutX = u * winwidth;
     int uOutY = v * this->window->GetHeight();
     unsigned int imgheight = img->GetHeight();
     unsigned int imgwidth = img->GetWidth();
@@ -1016,7 +1017,7 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
     for (int xs = 0; xs < imgwidth; xs++) {
         for (int ys = 0; ys < imgheight; ys++) {
             if (pixels[xs + imgwidth * ys] & 0xFF000000) {
-                this->pActiveZBuffer[uOutX + xs + window->GetWidth() * (uOutY + ys)] = zVal;
+                this->pActiveZBuffer[uOutX + xs + winwidth * (uOutY + ys)] = zVal;
             }
         }
     }

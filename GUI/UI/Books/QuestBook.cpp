@@ -25,7 +25,7 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
     // --------------------------------
     // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     pBooksButtonOverlay =
         new GUIWindow_BooksButtonOverlay(493u, 355u, 0, 0, pBtn_Quests);
     bFlashQuestBook = 0;

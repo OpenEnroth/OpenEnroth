@@ -66,7 +66,7 @@ GUIWindow_Book::GUIWindow_Book()
     : GUIWindow(WINDOW_Book, 0, 0, window->GetWidth(), window->GetHeight(), 0) {}
 
 void GUIWindow_Book::BasicBookInitialization() {
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     InitializeFonts();
     CreateButton(475, 445, 158, 34, 1, 0, UIMSG_Escape, 0, GameKey::None,
                  localization->GetString(LSTR_DIALOGUE_EXIT));
@@ -79,7 +79,7 @@ void GUIWindow_Book::BasicBookInitialization() {
 
 //----- (00411AAA) --------------------------------------------------------
 void GUIWindow_Book::InitializeFonts() {
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
 
     ui_book_map_frame = assets->GetImage_Alpha("mapbordr");

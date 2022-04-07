@@ -81,7 +81,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     Party_Teleport_Map_Name = (char *)pLocationName;
     uCurrentHouse_Animation = anim_id;
     pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
 
     std::string filename;
     switch (pParty->alignment) {

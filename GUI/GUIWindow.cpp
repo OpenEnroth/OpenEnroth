@@ -158,7 +158,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
 )
     : GUIWindow(WINDOW_CastSpell, x, y, width, height, button, hint) {
     pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     mouse->SetCursorImage("MICON2");
     GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
 }
@@ -328,6 +328,7 @@ void GUIWindow::Release() {
         nuklear->Release(WINDOW_GameUI);
 
     log->Info("Release window: %s", ToString(eWindowType));
+    pAudioPlayer->ResumeSounds();
 }
 
 void GUIWindow::DeleteButtons() {

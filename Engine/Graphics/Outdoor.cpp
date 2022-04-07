@@ -2041,7 +2041,7 @@ void ODM_UpdateUserInputAndOther() {
             if (pParty->vPosition.y < -22528) pParty->vPosition.y = -22528;
             if (pParty->vPosition.y > 22528) pParty->vPosition.y = 22528;
         } else {
-            pAudioPlayer->StopChannels(-1, -1);
+            pAudioPlayer->PauseSounds(-1);
             pDialogueWindow = new GUIWindow_Travel();  // TravelUI_Load();
         }
     }

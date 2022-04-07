@@ -48,7 +48,7 @@ void Application::GameOver_Loop(int v15) {
 
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
     bGameoverLoop = true;
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     render->BeginScene();
     render->ClearBlack();
     render->EndScene();

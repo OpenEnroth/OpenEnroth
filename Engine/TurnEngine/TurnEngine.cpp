@@ -118,7 +118,7 @@ void stru262_TurnBased::Start() {
 
     pTurnEngine->field_18 &= ~TE_HAVE_PENDING_ACTIONS;
     pEventTimer->TrackGameTime();
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->PlaySound(SOUND_batllest, 0, 0, -1, 0, 0);
     // pPlayer = pParty->pPlayers.data();
     dword_50C998_turnbased_icon_1A =
@@ -245,7 +245,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
                 (unsigned __int16)((double)pQueue[i].actor_initiative *
                                    flt_debugrecmod3);
     }
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     if (bPlaySound != 0)
         pAudioPlayer->PlaySound(SOUND_batlleen, 0, 0, -1, 0, 0);
     pTurnEngine->field_18 &= ~TE_HAVE_PENDING_ACTIONS;
