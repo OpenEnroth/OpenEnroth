@@ -390,6 +390,8 @@ class IRender {
                                struct Point *pTargetPoint, int a3,
                                int blend_mode) = 0;
 
+    virtual void DrawIndoorBatched() = 0;
+
     inline void ToggleTint() {
         IRenderConfigFactory renderConfigFactory;
         auto new_config = renderConfigFactory.Clone(config);

@@ -391,6 +391,7 @@ void IndoorLocation::DrawIndoorFaces(bool bD3D) {
                 pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum,
                 4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);
         }
+        render->DrawIndoorBatched();
 }
 
 

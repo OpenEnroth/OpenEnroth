@@ -3636,6 +3636,8 @@ void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) {
     }
 }
 
+void RenderOpenGL::DrawIndoorBatched() { return; }
+
 void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     int uPackedID, unsigned int uColor,
     int a8) {
