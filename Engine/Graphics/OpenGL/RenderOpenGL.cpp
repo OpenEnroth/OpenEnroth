@@ -59,6 +59,10 @@
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
 #endif
 
+void _set_3d_projection_matrix();
+void _set_3d_modelview_matrix();
+void _set_ortho_projection(bool gameviewport = false);
+void _set_ortho_modelview();
 
 RenderVertexSoft VertexRenderList[50];  // array_50AC10
 RenderVertexD3D3 d3d_vertex_buffer[50];
@@ -433,10 +437,7 @@ RenderVertexSoft array_507D30[50];
 void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y2, int z2) {
     // 6 0 0 0 6 0
 
-    //<< 16
-
-    // transform to odd axis??
-
+    // TODO(pskelton): clean up
 
     float cosz = pCamera3D->fRotationZCosine;  // int_cosine_Z;
     float cosx = pCamera3D->fRotationYCosine;  // int_cosine_y;
@@ -462,36 +463,36 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
     if (pCamera3D->sRotationY) {
         float v17 = (x1 * cosz) + (y1 * sinz);
 
-        this->CamVecLeft_Z = (v17 * cosx) + (z1 * sinx);  // dz
+        this->CamVecLeft_Y = (v17 * cosx) + (z1 * sinx);  // dz
         this->CamVecLeft_X = (y1 * cosz) - (x1 * sinz);  // dx
-        this->CamVecLeft_Y = (z1 * cosx) /*-*/ + (v17 * sinx);  // dy
+        this->CamVecLeft_Z = (z1 * cosx) /*-*/ + (v17 * sinx);  // dy
     } else {
-        this->CamVecLeft_Z = (x1 * cosz) + (y1 * sinz);  // dz
+        this->CamVecLeft_Y = (x1 * cosz) + (y1 * sinz);  // dz
         this->CamVecLeft_X = (y1 * cosz) - (x1 * sinz);  // dx
-        this->CamVecLeft_Y = z1;  // dy
+        this->CamVecLeft_Z = z1;  // dy
     }
 
     // set 2 position transfrom (0 6 0) looks like cam front vector
     if (pCamera3D->sRotationY) {
         float v19 = (x2 * cosz) + (y2 * sinz);
 
-        this->CamVecFront_Z = (v19 * cosx) + (z2 * sinx);  // dz
+        this->CamVecFront_Y = (v19 * cosx) + (z2 * sinx);  // dz
         this->CamVecFront_X = (y2 * cosz) - (x2 * sinz);  // dx
-        this->CamVecFront_Y = (z2 * cosx) /*-*/ + (v19 * sinx);  // dy
+        this->CamVecFront_Z = (z2 * cosx) /*-*/ + (v19 * sinx);  // dy
     } else {
-        this->CamVecFront_Z = (x2 * cosz) + (y2 * sinz);  // dz
+        this->CamVecFront_Y = (x2 * cosz) + (y2 * sinz);  // dz
         this->CamVecFront_X = (y2 * cosz) - (x2 * sinz);  // dx
-        this->CamVecFront_Y = z2;  // dy
+        this->CamVecFront_Z = z2;  // dy
     }
 
     this->CamLeftDot =
         (this->CamVecLeft_X * this->field_0_party_dir_x) +
-        (this->CamVecLeft_Z * this->field_4_party_dir_y) +
-        (this->CamVecLeft_Y * this->field_8_party_dir_z);
+        (this->CamVecLeft_Y * this->field_4_party_dir_y) +
+        (this->CamVecLeft_Z * this->field_8_party_dir_z);
     this->CamFrontDot =
         (this->CamVecFront_X * this->field_0_party_dir_x) +
-        (this->CamVecFront_Z * this->field_4_party_dir_y) +
-        (this->CamVecFront_Y * this->field_8_party_dir_z);
+        (this->CamVecFront_Y * this->field_4_party_dir_y) +
+        (this->CamVecFront_Z * this->field_8_party_dir_z);
 }
 
 RenderOpenGL::RenderOpenGL(
@@ -1249,14 +1250,148 @@ void RenderOpenGL::DrawTextureGrayShade(float a2, float a3, Image *a4) {
     DrawMasked(a2, a3, a4, 1, 0x7BEF);
 }
 
-void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices,
-                                 unsigned int uFaceID) {
+void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
+    // TODO(pskelton): fix properly - only partially works
+    // for floor and wall(for example Celeste)-------------------
+    BLVFace *pFace = &pIndoor->pFaces[uFaceID];
+    if (pFace->uPolygonType == POLYGON_InBetweenFloorAndWall || pFace->uPolygonType == POLYGON_Floor) {
+        int v69 = (OS_GetTime() / 32) - pCamera3D->vCameraPos.x;
+        int v55 = (OS_GetTime() / 32) + pCamera3D->vCameraPos.y;
+        for (uint i = 0; i < uNumVertices; ++i) {
+            array_507D30[i].u = (v69 + array_507D30[i].u) * 0.25f;
+            array_507D30[i].v = (v55 + array_507D30[i].v) * 0.25f;
+        }
+        render->DrawIndoorPolygon(uNumVertices, pFace, PID(OBJECT_BModel, uFaceID), -1, 0);
+        return;
+    }
+    //---------------------------------------
+
+    // TODO(pskelton): temporary hack to use outdoor sky as a coverall instead of drawing the individual segments which causes hazy transitions without rhw correction
+    render->DrawOutdoorSkyD3D();
+    return;
+
+
+    if ((signed int)uNumVertices <= 0) return;
+
+    struct Polygon pSkyPolygon;
+    pSkyPolygon.texture = nullptr;
+    pSkyPolygon.texture = pFace->GetTexture();
+    if (!pSkyPolygon.texture) return;
+
+    pSkyPolygon.ptr_38 = &SkyBillboard;
+    pSkyPolygon.dimming_level = 0;
+    pSkyPolygon.uNumVertices = uNumVertices;
+
+    SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
+
+    double rot_to_rads = ((2 * pi_double) / 2048);
+
+    // lowers clouds as party goes up
+    float  blv_horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vCameraPos.z)
+        / ((double)pCamera3D->ViewPlaneDist_X + pCamera3D->GetFarClip())
+        + (double)(pBLVRenderParams->uViewportCenterY));
+
+    double cam_y_rot_rad = (double)pCamera3D->sRotationY * rot_to_rads;
+
+    float depth_to_far_clip = cos((double)pCamera3D->sRotationY * rot_to_rads) * pCamera3D->GetFarClip();
+    float height_to_far_clip = sin((double)pCamera3D->sRotationY * rot_to_rads) * pCamera3D->GetFarClip();
+
+    float blv_bottom_y_proj = ((double)(pBLVRenderParams->uViewportCenterY) -
+        (double)pCamera3D->ViewPlaneDist_X /
+        (depth_to_far_clip + 0.0000001) *
+        (height_to_far_clip - (double)pCamera3D->vCameraPos.z));
+
+    // rotation vec for sky plane - pitch
+    float v_18x = -sin((-pCamera3D->sRotationY + 16) * rot_to_rads);
+    float v_18y = 0.0f;
+    float v_18z = -cos((pCamera3D->sRotationY + 16) * rot_to_rads);
+
+    float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDist_X;
+
+    int _507D30_idx = 0;
+    for (_507D30_idx; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
+        // outbound screen x dist
+        float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - array_507D30[_507D30_idx].vWorldViewProjX);
+        // outbound screen y dist
+        float y_dist = inv_viewplanedist * (blv_horizon_height_offset - array_507D30[_507D30_idx].vWorldViewProjY);
+
+        // rotate vectors to cam facing
+        float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
+        float skyfinalfront = (pSkyPolygon.ptr_38->CamVecFront_X * x_dist) + (pSkyPolygon.ptr_38->CamVecFront_Z * y_dist) + pSkyPolygon.ptr_38->CamVecFront_Y;
+
+        // pitch rotate sky to get top projection
+        float newX = v_18x + v_18y + (v_18z * y_dist);
+        float worldviewdepth = -512.0f / newX;
+
+        // offset tex coords
+        float texoffset_U = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((skyfinalleft * worldviewdepth) / 16.0f);
+        array_507D30[_507D30_idx].u = texoffset_U / ((float)pSkyPolygon.texture->GetWidth());
+        float texoffset_V = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((skyfinalfront * worldviewdepth) / 16.0f);
+        array_507D30[_507D30_idx].v = texoffset_V / ((float)pSkyPolygon.texture->GetHeight());
+
+        // this basically acts as texture perspective correction
+        array_507D30[_507D30_idx]._rhw = /*1.0f /*/ (double)worldviewdepth;
+    }
+
+    // no clipped polygon so draw and return??
+    if (_507D30_idx >= pSkyPolygon.uNumVertices) {
+        DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
+        return;
+    }
+
+    logger->Info("past normal section");
     __debugbreak();
+    // please provide save game / details if you get here
+    // TODO(pskelton): below looks like some vert clipping but dont think its ever gets here now - delete below after testing;
 }
 
-void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices,
-                                        struct Polygon *pSkyPolygon) {
-    __debugbreak();
+void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
+    TextureOpenGL *texture = (TextureOpenGL *)pSkyPolygon->texture;
+
+    //if (uNumD3DSceneBegins == 0) {
+    //    return;
+    //}
+
+    if (uNumVertices >= 3) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        int v5 = 31 - (pSkyPolygon->dimming_level & 0x1F);
+        if (v5 < pOutdoor->max_terrain_dimming_level) {
+            v5 = pOutdoor->max_terrain_dimming_level;
+        }
+
+        for (uint i = 0; i < (unsigned int)uNumVertices; ++i) {
+            d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
+            d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
+            d3d_vertex_buffer[i].pos.z =
+                1.0 -
+                1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
+            d3d_vertex_buffer[i].rhw = 1.0 / array_507D30[i]._rhw;
+            d3d_vertex_buffer[i].diffuse =
+                8 * v5 | ((8 * v5 | (v5 << 11)) << 8);
+            d3d_vertex_buffer[i].specular = 0;
+            d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u;
+            d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v;
+        }
+
+        glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+        glBegin(GL_TRIANGLE_FAN);
+
+        for (uint i = 0; i < uNumVertices; ++i) {
+            glColor4f((8 * v5) / 255.0f, (8 * v5) / 255.0f, (8 * v5) / 255.0f, 1.0f);
+            glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
+            glVertex3f(array_507D30[i].vWorldPosition.x, array_507D30[i].vWorldPosition.y, array_507D30[i].vWorldPosition.z);
+        }
+
+        glEnd();
+
+        drawcalls++;
+
+        //if (engine->config->debug_terrain)
+        //    pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FF0000, 0.0);
+    }
 }
 
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
@@ -1925,7 +2060,7 @@ void _set_3d_modelview_matrix() {
               0, 0, 1);
 }
 
-void _set_ortho_projection(bool gameviewport = false) {
+void _set_ortho_projection(bool gameviewport) {
     if (!gameviewport) {  // project over entire window
         glViewport(0, 0, window->GetWidth(), window->GetHeight());
 
@@ -2601,20 +2736,16 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
 
     // lowers clouds as party goes up
     float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDist_X * pCamera3D->vCameraPos.z)
-        / ((double)pCamera3D->ViewPlaneDist_X + 8192.0)
+        / ((double)pCamera3D->ViewPlaneDist_X + pCamera3D->GetFarClip())
         + (double)(pViewport->uScreenCenterY));
 
-    // magnitude in up direction
-    float cam_vec_up = cos((double)pCamera3D->sRotationY * rot_to_rads) *
-    pCamera3D->GetFarClip();
+    float depth_to_far_clip = cos((double)pCamera3D->sRotationY * rot_to_rads) * pCamera3D->GetFarClip();
+    float height_to_far_clip = sin((double)pCamera3D->sRotationY * rot_to_rads) * pCamera3D->GetFarClip();
 
     float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
         (double)pCamera3D->ViewPlaneDist_X /
-        (cam_vec_up + 0.0000001) *
-        (sin((double)pCamera3D->sRotationY * rot_to_rads)
-            *
-            pCamera3D->GetFarClip() -
-            (double)pCamera3D->vCameraPos.z));
+        (depth_to_far_clip + 0.0000001) *
+        (height_to_far_clip - (double)pCamera3D->vCameraPos.z));
 
     struct Polygon pSkyPolygon;
     pSkyPolygon.texture = nullptr;
@@ -2630,15 +2761,14 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
 
     pSkyPolygon.texture = pOutdoor->sky_texture;
     if (pSkyPolygon.texture) {
-        pSkyPolygon.dimming_level = 0;
+        pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_Outdoor)? 31 : 0;
         pSkyPolygon.uNumVertices = 4;
 
         // centering(центруем)-----------------------------------------------------------------
-        // plane of sky polygon rotation vector
-        float v18x, v18y, v18z;
-        /*pSkyPolygon.v_18.x*/ v18x = -TrigLUT->Sin(-pCamera3D->sRotationY + 16) / 65536.0;
-        /*pSkyPolygon.v_18.y*/ v18y = 0;
-        /*pSkyPolygon.v_18.z*/ v18z = -TrigLUT->Cos(pCamera3D->sRotationY + 16) / 65536.0;
+        // plane of sky polygon rotation vector - pitch rotation around y
+        float v18x = -sin((-pCamera3D->sRotationY + 16) * rot_to_rads);
+        float v18y = 0;
+        float v18z = -cos((pCamera3D->sRotationY + 16) * rot_to_rads);
 
         // sky wiew position(положение неба на
         // экране)------------------------------------------
@@ -2664,90 +2794,40 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;  // 468
         VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;  // 8
 
-        double half_fov_angle_rads = ((pCamera3D->odm_fov_deg) * pi_double) / 360;
-
-        // far width per pixel??
-        float widthperpixel = 1 /
-            (((double)(pViewport->uViewportBR_X - pViewport->uViewportTL_X) / 2)
-                / tan(half_fov_angle_rads) +
-                0.5);
+        float widthperpixel = 1 / pCamera3D->ViewPlaneDist_X;
 
         for (uint i = 0; i < pSkyPolygon.uNumVertices; ++i) {
-            // rotate skydome(вращение купола
-            // неба)--------------------------------------
-            // В игре принята своя система измерения углов. Полный угол (180).
-            // Значению угла 0 соответствует направление на север и/или юг (либо
-            // на восток и/или запад), значению 65536 еденицам(0х10000)
-            // соответствует угол 90. две переменные хранят данные по углу
-            // обзора. field_14 по западу и востоку. field_20 по югу и северу от
-            // -25080 до 25080
+            // outbound screen X dist
+            float x_dist = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
+            // outbound screen y dist
+            float y_dist = widthperpixel * (horizon_height_offset - VertexRenderList[i].vWorldViewProjY);
 
-            float v13 = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
+            // rotate vectors to cam facing
+            float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
+            float skyfinalfront = (pSkyPolygon.ptr_38->CamVecFront_X * x_dist) + (pSkyPolygon.ptr_38->CamVecFront_Z * y_dist) + pSkyPolygon.ptr_38->CamVecFront_Y;
 
-
-            float v39 = (pSkyPolygon.ptr_38->CamVecLeft_Y * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-            float v35 = v39 + pSkyPolygon.ptr_38->CamVecLeft_Z;
-
-            float skyfinalleft = v35 + (pSkyPolygon.ptr_38->CamVecLeft_X * v13);
-
-            v39 = (pSkyPolygon.ptr_38->CamVecFront_Y * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.f)));
-            float v36 = v39 + pSkyPolygon.ptr_38->CamVecFront_Z;
-
-            float finalskyfront = v36 + (pSkyPolygon.ptr_38->CamVecFront_X * v13);
-
-
-            float v9 = (/*pSkyPolygon.v_18.z*/v18z * widthperpixel * (horizon_height_offset - floor(VertexRenderList[i].vWorldViewProjY + 0.5)));
-
-
-
-
-            float top_y_proj = /*pSkyPolygon.v_18.x*/v18x + v9;
-            if (top_y_proj > 0) top_y_proj = 0;
-
-            /* v32 = (signed __int64)VertexRenderList[i].vWorldViewProjY - 1.0; */
-            // v14 = widthperpixel * (horizon_height_offset - v32);
-            // while (1) {
-            //    if (top_y_proj) {
-            //        v37 = 0.03125;  // abs((int)cam_vec_up >> 14);
-            //        v15 = abs(top_y_proj);
-            //        if (v37 <= v15 ||
-            //            v32 <= (signed int)pViewport->uViewportTL_Y) {
-            //            if (top_y_proj <= 0) break;
-            //        }
-            //    }
-            //    v16 = (/*pSkyPolygon.v_18.z*/v18z * v14);  // does this bit ever get called?
-            //    --v32;
-            //    v14 += widthperpixel;
-            //    top_y_proj = /*pSkyPolygon.v_18.x*/v18x + v16;
-            // }
+            // pitch rotate sky to get top
+            float top_y_proj = v18x + v18y + v18z * y_dist;
+            if (top_y_proj > 0) top_y_proj = -0.0000001;
 
             float worldviewdepth = -64.0 / top_y_proj;
             if (worldviewdepth < 0) worldviewdepth = pCamera3D->GetFarClip();
 
+            // offset tex coords
             float texoffset_U = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((skyfinalleft * worldviewdepth));
             VertexRenderList[i].u = texoffset_U / ((float)pSkyPolygon.texture->GetWidth());
-
-            float texoffset_V = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((finalskyfront * worldviewdepth));
+            float texoffset_V = (float(pMiscTimer->uTotalGameTimeElapsed) / 128.0) + ((skyfinalfront * worldviewdepth));
             VertexRenderList[i].v = texoffset_V / ((float)pSkyPolygon.texture->GetHeight());
 
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
-            VertexRenderList[i]._rhw = 1.0 / (double)(worldviewdepth);
+
+            // this basically acts as texture perspective correction
+            VertexRenderList[i]._rhw = /*1.0 /*/ (double)(worldviewdepth);
         }
 
         _set_ortho_projection(1);
         _set_ortho_modelview();
-
         DrawOutdoorSkyPolygon(&pSkyPolygon);
-
-        // adjust and draw again to fill gap below horizon
-        // could mirror over??
-
-        // VertexRenderList[0].vWorldViewProjY += 60;
-        // VertexRenderList[1].vWorldViewProjY += 60;
-        // VertexRenderList[2].vWorldViewProjY += 60;
-        // VertexRenderList[3].vWorldViewProjY += 60;
-
-        // DrawOutdoorSkyPolygon(&pSkyPolygon);
     }
 }
 
@@ -2757,46 +2837,34 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-    VertexRenderList[0].u = 0 - (float)pParty->sRotationZ / 512;
-    VertexRenderList[1].u = 0 - (float)pParty->sRotationZ / 512;
-    VertexRenderList[2].u = 1 - (float)pParty->sRotationZ / 512;
-    VertexRenderList[3].u = 1 - (float)pParty->sRotationZ / 512;
-
-    if (pParty->sRotationY > 0) {
-        VertexRenderList[0].v = 0 - (float)pParty->sRotationY / 1024;
-        VertexRenderList[1].v = 1 - (float)pParty->sRotationY / 1024;
-        VertexRenderList[2].v = 1 - (float)pParty->sRotationY / 1024;
-        VertexRenderList[3].v = 0 - (float)pParty->sRotationY / 1024;
-    } else {
-        VertexRenderList[0].v = 0 - (float)pParty->sRotationY / 256;
-        VertexRenderList[1].v = 1 - (float)pParty->sRotationY / 256;
-        VertexRenderList[2].v = 1 - (float)pParty->sRotationY / 256;
-        VertexRenderList[3].v = 0 - (float)pParty->sRotationY / 256;
-    }
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glBegin(GL_TRIANGLE_FAN);
     {
         for (int i = 0; i < pSkyPolygon->uNumVertices; ++i) {
             unsigned int diffuse = ::GetActorTintColor(
-                31, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
+                pSkyPolygon->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
 
             glColor4f(((diffuse >> 16) & 0xFF) / 255.0f,
                       ((diffuse >> 8) & 0xFF) / 255.0f,
                       (diffuse & 0xFF) / 255.0f, 1.0f);
 
-            glTexCoord2f(VertexRenderList[i].u,
-                         /*max_v*/ /*-*/VertexRenderList[i].v);
+            glTexCoord2f(VertexRenderList[i].u, VertexRenderList[i].v);
 
-            glVertex3f(VertexRenderList[i].vWorldViewProjX,
-                VertexRenderList[i].vWorldViewProjY,
-                0.99989998);  // z is negative in OpenGL
+            // shoe horn in perspective correction
+            glVertex4f(VertexRenderList[i].vWorldViewProjX * VertexRenderList[i]._rhw,
+                VertexRenderList[i].vWorldViewProjY * VertexRenderList[i]._rhw,
+                1.0 * VertexRenderList[i]._rhw, VertexRenderList[i]._rhw);
         }
     }
     drawcalls++;
     glEnd();
+
+    GLint err;
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        log->Warning("OpenGL: draw texture error: (%u)", err);
+    }
 }
 
 void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
@@ -3674,8 +3742,8 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             glBegin(GL_TRIANGLE_FAN);
 
             for (uint i = 0; i < pFace->uNumVertices; ++i) {
-                // glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
-                glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
+                glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
+                //glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
 
                 glColor4f(
                      (float)((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
@@ -3715,8 +3783,8 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             glBegin(GL_TRIANGLE_FAN);
 
             for (uint i = 0; i < pFace->uNumVertices; ++i) {
-                // glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
-                glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
+                glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
+                //glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
 
 
                 glColor4f(
@@ -3750,8 +3818,8 @@ void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
             glBegin(GL_TRIANGLE_FAN);
 
             for (uint i = 0; i < pFace->uNumVertices; ++i) {
-                // glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
-                glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
+                glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
+                //glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
 
 
                 glColor4f(

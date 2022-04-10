@@ -41,7 +41,7 @@ void SpriteFrameTable::ResetLoadedFlags() {
 //----- (0044D513) --------------------------------------------------------
 void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
     // SpriteFrameTable *v2; // esi@1
-    unsigned int v3;  // ebx@3
+    //unsigned int iter_uSpriteID;  // ebx@3
     // char *v4; // edx@3
     // int v5; // eax@3
     //    SpriteFrame *v6; // ecx@5
@@ -68,27 +68,28 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
     // v2 = this;
     if (uSpriteID <= this->uNumSpriteFrames) {
         if (uSpriteID >= 0) {
-            v3 = uSpriteID;
+            uint iter_uSpriteID = uSpriteID;
+            //if (iter_uSpriteID == 807) __debugbreak();
 
-            int uFlags = pSpriteSFrames[v3].uFlags;
+            int uFlags = pSpriteSFrames[iter_uSpriteID].uFlags;
 
             if (!(uFlags & 0x0080)) {  // not loaded
-                pSpriteSFrames[v3].uFlags |= 0x80;  // set loaded
+                pSpriteSFrames[iter_uSpriteID].uFlags |= 0x80;  // set loaded
 
                 while (1) {
-                    pSpriteSFrames[v3].uPaletteIndex = pPaletteManager->LoadPalette(pSpriteSFrames[v3].uPaletteID);
+                    pSpriteSFrames[iter_uSpriteID].uPaletteIndex = pPaletteManager->LoadPalette(pSpriteSFrames[iter_uSpriteID].uPaletteID);
 
                     if (uFlags & 0x10) {  // single frame per frame sequence
-                        auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[v3].texture_name.c_str(), pSpriteSFrames[v3].uPaletteID);
+                        auto v8 = pSprites_LOD->LoadSprite(pSpriteSFrames[iter_uSpriteID].texture_name.c_str(), pSpriteSFrames[iter_uSpriteID].uPaletteID);
 
                         if (v8 == -1) {
-                            logger->Warning("Sprite %s not loaded!", pSpriteSFrames[v3].texture_name.c_str());
+                            logger->Warning("Sprite %s not loaded!", pSpriteSFrames[iter_uSpriteID].texture_name.c_str());
                             for (uint i = 0; i < 8; ++i) {
-                                pSpriteSFrames[v3].hw_sprites[i] = nullptr;
+                                pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = nullptr;
                             }
                         } else {
                             for (uint i = 0; i < 8; ++i) {
-                                pSpriteSFrames[v3].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v8];
+                                pSpriteSFrames[iter_uSpriteID].hw_sprites[i] = &pSprites_LOD->pHardwareSprites[v8];
                             }
                         }
 
@@ -99,41 +100,41 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 case 4:
                                 case 5:
                                     sprintf(sprite_name, "%s4",
-                                            pSpriteSFrames[v3]
+                                            pSpriteSFrames[iter_uSpriteID]
                                                 .texture_name.c_str());
                                     break;
                                 case 2:
                                 case 6:
                                     sprintf(sprite_name, "%s2",
-                                            pSpriteSFrames[v3]
+                                            pSpriteSFrames[iter_uSpriteID]
                                                 .texture_name.c_str());
                                     break;
                                 case 0:
                                 case 1:
                                 case 7:
                                     sprintf(sprite_name, "%s0",
-                                            pSpriteSFrames[v3]
+                                            pSpriteSFrames[iter_uSpriteID]
                                                 .texture_name.c_str());
                                     break;
                             }
                             auto v12 = pSprites_LOD->LoadSprite(
-                                sprite_name, pSpriteSFrames[v3].uPaletteID);
-                            // pSpriteSFrames[v3].pHwSpriteIDs[i]=v12;
+                                sprite_name, pSpriteSFrames[iter_uSpriteID].uPaletteID);
+                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             if (v12 == -1) __debugbreak();
-                            pSpriteSFrames[v3].hw_sprites[i] =
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] =
                                 &pSprites_LOD->pHardwareSprites[v12];
                         }
 
                     } else if (uFlags & 0x40) {  // part of monster fidgeting seq
                         strcpy(Source, "stA");
-                        strcpy(Str, pSpriteSFrames[v3].texture_name.c_str());
+                        strcpy(Str, pSpriteSFrames[iter_uSpriteID].texture_name.c_str());
                         auto v14 = strlen(Str);
                         strcpy(&Str[v14 - 3], Source);
                         for (uint i = 0; i < 8; ++i) {
                             switch (i) {
                                 case 0:
                                     sprintf(sprite_name, "%s0",
-                                            pSpriteSFrames[v3]
+                                            pSpriteSFrames[iter_uSpriteID]
                                                 .texture_name.c_str());
                                     break;
                                 case 4:
@@ -146,87 +147,87 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                                 case 2:
                                 case 6:
                                     sprintf(sprite_name, "%s2",
-                                            pSpriteSFrames[v3]
+                                            pSpriteSFrames[iter_uSpriteID]
                                                 .texture_name.c_str());
                                     break;
                                 case 1:
                                 case 7:
                                     sprintf(sprite_name, "%s1",
-                                            pSpriteSFrames[v3]
+                                            pSpriteSFrames[iter_uSpriteID]
                                                 .texture_name.c_str());
                                     break;
                             }
                             auto v12 = pSprites_LOD->LoadSprite(
-                                sprite_name, pSpriteSFrames[v3].uPaletteID);
-                            // pSpriteSFrames[v3].pHwSpriteIDs[i]=v12;
+                                sprite_name, pSpriteSFrames[iter_uSpriteID].uPaletteID);
+                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
                             if (v12 == -1) __debugbreak();
 
-                            pSpriteSFrames[v3].hw_sprites[i] =
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] =
                                 &pSprites_LOD->pHardwareSprites[v12];
                         }
                     } else {
                         for (uint i = 0; i < 8; ++i) {
                             if (((0x0100 << i) &
-                                 pSpriteSFrames[v3].uFlags)) {  // mirrors
+                                 pSpriteSFrames[iter_uSpriteID].uFlags)) {  // mirrors
                                 switch (i) {
                                     case 1:
                                         sprintf(sprite_name, "%s7",
-                                                pSpriteSFrames[v3]
+                                                pSpriteSFrames[iter_uSpriteID]
                                                     .texture_name.c_str());
                                         break;
                                     case 2:
                                         sprintf(sprite_name, "%s6",
-                                                pSpriteSFrames[v3]
+                                                pSpriteSFrames[iter_uSpriteID]
                                                     .texture_name.c_str());
                                         break;
                                     case 3:
                                         sprintf(sprite_name, "%s5",
-                                                pSpriteSFrames[v3]
+                                                pSpriteSFrames[iter_uSpriteID]
                                                     .texture_name.c_str());
                                         break;
                                     case 4:
                                         sprintf(sprite_name, "%s4",
-                                                pSpriteSFrames[v3]
+                                                pSpriteSFrames[iter_uSpriteID]
                                                     .texture_name.c_str());
                                         break;
                                     case 5:
                                         sprintf(sprite_name, "%s3",
-                                                pSpriteSFrames[v3]
+                                                pSpriteSFrames[iter_uSpriteID]
                                                     .texture_name.c_str());
                                         break;
                                     case 6:
                                         sprintf(sprite_name, "%s2",
-                                                pSpriteSFrames[v3]
+                                                pSpriteSFrames[iter_uSpriteID]
                                                     .texture_name.c_str());
                                         break;
                                     case 7:
                                         sprintf(sprite_name, "%s1",
-                                                pSpriteSFrames[v3]
+                                                pSpriteSFrames[iter_uSpriteID]
                                                     .texture_name.c_str());
                                         break;
                                 }
                             } else {
                                 // some names already passed through with codes attached
-                                if (strlen(pSpriteSFrames[v3].texture_name.c_str()) < 7) {
-                                    sprintf(sprite_name, "%s%i", pSpriteSFrames[v3].texture_name.c_str(), i);
+                                if (strlen(pSpriteSFrames[iter_uSpriteID].texture_name.c_str()) < 7) {
+                                    sprintf(sprite_name, "%s%i", pSpriteSFrames[iter_uSpriteID].texture_name.c_str(), i);
                                 } else {
-                                    sprintf(sprite_name, "%s", pSpriteSFrames[v3].texture_name.c_str());
+                                    sprintf(sprite_name, "%s", pSpriteSFrames[iter_uSpriteID].texture_name.c_str());
                                     // __debugbreak();
                                 }
                             }
 
-                            auto v12 = pSprites_LOD->LoadSprite(sprite_name, pSpriteSFrames[v3].uPaletteID);
-                            // pSpriteSFrames[v3].pHwSpriteIDs[i]=v12;
+                            auto v12 = pSprites_LOD->LoadSprite(sprite_name, pSpriteSFrames[iter_uSpriteID].uPaletteID);
+                            // pSpriteSFrames[iter_uSpriteID].pHwSpriteIDs[i]=v12;
 
                             if (v12 == -1) __debugbreak();
 
-                            pSpriteSFrames[v3].hw_sprites[i] =
+                            pSpriteSFrames[iter_uSpriteID].hw_sprites[i] =
                                 &pSprites_LOD->pHardwareSprites[v12];
                         }
                     }
 
-                    if (!(pSpriteSFrames[v3].uFlags & 1)) return;
-                    ++v3;
+                    if (!(pSpriteSFrames[iter_uSpriteID].uFlags & 1)) return;
+                    ++iter_uSpriteID;
                 }
             }
         }
@@ -265,12 +266,17 @@ SpriteFrame *SpriteFrameTable::GetFrame(unsigned int uSpriteID, unsigned int uTi
     SpriteFrame *v4 = &pSpriteSFrames[uSpriteID];
     if (~v4->uFlags & 1 || !v4->uAnimLength) return pSpriteSFrames + uSpriteID;
 
+
+    // uAnimLength / uAnimTime = actual number of frames in sprite
     for (uint t = (uTime / 8) % v4->uAnimLength; t > v4->uAnimTime; ++v4)
         t -= v4->uAnimTime;
 
-    // TODO(pskelton): investigate and fix properly
+    // TODO(pskelton): investigate and fix properly - dragon breath is missing last two frames??
     // quick fix so it doesnt return empty sprite
-     while (v4->hw_sprites[0] == NULL) --v4;
+    while (v4->hw_sprites[0] == NULL) {
+        __debugbreak();
+        --v4;
+    }
 
     return v4;
 

@@ -479,12 +479,12 @@ struct SkyBillboardStruct {
     float field_0_party_dir_x;  // cam view transform
     float field_4_party_dir_y;
     float field_8_party_dir_z;
-    float CamVecLeft_Z;
-    float CamVecLeft_X;
     float CamVecLeft_Y;
-    float CamVecFront_Z;
-    float CamVecFront_X;
+    float CamVecLeft_X;
+    float CamVecLeft_Z;
     float CamVecFront_Y;
+    float CamVecFront_X;
+    float CamVecFront_Z;
     float CamLeftDot;
     float CamFrontDot;
 };

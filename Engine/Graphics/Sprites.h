@@ -46,7 +46,7 @@ class SpriteFrame {
 
     Sprite* hw_sprites[8] {};
     float scale = 1.0;
-    int uFlags = 0;  // 128 for loaded
+    int uFlags = 0;  // 128 for loaded - 1 for anim
     int uGlowRadius = 0;
     int uPaletteID = 0;
     int uPaletteIndex = 0;
