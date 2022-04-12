@@ -52,6 +52,8 @@ class IAudioSample {
 
     virtual bool Play(bool loop = false, bool positioned = false) = 0;
     virtual bool Stop() = 0;
+    virtual bool Pause() = 0;
+    virtual bool Resume() = 0;
     virtual bool SetVolume(float volume) = 0;
     virtual bool SetPosition(float x, float y, float z, float max_dist) = 0;
 };

@@ -638,10 +638,12 @@ void GUIWindow_PartyCreation::Update() {
         Color16(0xD1, 0xBB, 0x61),
         localization->GetString(LSTR_AVAILABLE_SKILLS), 0, 0, 0);
     for (uint i = 0; i < 9; ++i) {
-        pSkillId = pParty->pPlayers[uPlayerCreationUI_SelectedCharacter]
-            .GetSkillIdxByOrder(i + 4);
+        pSkillId = pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(i + 4);
         strcpy(pText, localization->GetSkillName(pSkillId));
         pLenText = strlen(pText);
+        // trim skills that are too long
+        if (pLenText > 13) pText[12] = '\0';
+
         v104 = 0;
         if ((signed int)pLenText > 0) {
             if (pText[v104] == 32) {
@@ -654,13 +656,22 @@ void GUIWindow_PartyCreation::Update() {
             }
         }
         pCorrective = -10;             // -5
-        if ((signed int)pLenText < 8)  // if ( (signed int)v124 > 2 )
-            pCorrective = 0;
+        //if ((signed int)pLenText < 8)  // if ( (signed int)v124 > 2 )
+        //    pCorrective = 0;
         pColorText = Color16(0, 0xF7, 0xF7);
         if (!pParty->pPlayers[uPlayerCreationUI_SelectedCharacter]
             .pActiveSkills[pSkillId])
             pColorText = Color16(0xFF, 0xFF, 0xFF);
-        pTextCenter = pFontCreate->AlignText_Center(100, pText);
+
+        // align skills left / centre /right
+        if ((i / 3) == 0) {
+            pTextCenter = 5;
+        } else if ((i / 3) == 1) {
+            pTextCenter = pFontCreate->AlignText_Center(100, pText);
+        } else {
+            pTextCenter = 105 - pFontCreate->GetLineWidth(pText);
+        }
+
         pGUIWindow_CurrentMenu->DrawText(
             pFontCreate, 100 * (i / 3) + pTextCenter + pCorrective + 17,
             pIntervalY * (i % 3) + 417, pColorText, pText, 0, 0, 0);
@@ -1025,6 +1036,6 @@ bool PartyCreationUI_LoopInternal() {
         }
     }
 
-    pAudioPlayer->StopChannels(-1, -1);
+    // pAudioPlayer->PauseSounds(-1);
     return party_not_creation_flag;
 }

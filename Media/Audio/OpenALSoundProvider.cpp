@@ -689,6 +689,8 @@ class AudioSample16 : public IAudioSample {
 
     virtual bool Play(bool loop = false, bool positioned = false);
     virtual bool Stop();
+    virtual bool Pause();
+    virtual bool Resume();
     virtual bool SetVolume(float volume);
     virtual bool SetPosition(float x, float y, float z, float max_dist);
 
@@ -864,6 +866,46 @@ bool AudioSample16::Stop() {
     }
 
     alSourceStop(al_source);
+    if (CheckError()) {
+        return false;
+    }
+
+    return true;
+}
+
+bool AudioSample16::Pause() {
+    if (!IsValid()) {
+        return false;
+    }
+
+    ALint status;
+    alGetSourcei(al_source, AL_SOURCE_STATE, &status);
+    if (status != AL_PLAYING) {
+        return false;
+    }
+
+    alSourcePause(al_source);
+    if (CheckError()) {
+        return false;
+    }
+
+    updater.Stop();
+
+    return true;
+}
+
+bool AudioSample16::Resume() {
+    if (!IsValid()) {
+        return false;
+    }
+
+    ALint status;
+    alGetSourcei(al_source, AL_SOURCE_STATE, &status);
+    if (status != AL_PAUSED) {
+        return false;
+    }
+
+    alSourcePlay(al_source);
     if (CheckError()) {
         return false;
     }

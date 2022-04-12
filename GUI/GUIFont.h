@@ -31,6 +31,7 @@ struct FontData {
 
 class GUIWindow;
 class Image;
+class Texture;
 struct FontData;
 
 class GUIFont {
@@ -68,6 +69,10 @@ class GUIFont {
                           Image *image);
     int GetStringHeight2(GUIFont *secondFont, const std::string &text_str,
                          GUIWindow *pWindow, int startX, int a6);
+
+    int maxcharwidth = 0;
+    Texture *fonttex = nullptr;
+    Texture *fontshadow = nullptr;
 
  protected:
     FontData *pData;

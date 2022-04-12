@@ -344,6 +344,7 @@ void Menu::EventLoop() {
                 }
 
                 engine->SetVoiceLevel(new_level);
+                pAudioPlayer->SetVoiceVolume(engine->config->voice_level);
                 if (engine->config->voice_level > 0)
                     pAudioPlayer->PlaySound(SOUND_hf445a, 44, 0, -1, 0, 0);
                 continue;
@@ -487,7 +488,7 @@ void Menu::EventLoop() {
 
 void Menu::MenuLoop() {
     pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
 
     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
@@ -530,4 +531,6 @@ void Menu::MenuLoop() {
         gamma_preview_image->Release();
         gamma_preview_image = nullptr;
     }
+
+    pAudioPlayer->ResumeSounds();
 }

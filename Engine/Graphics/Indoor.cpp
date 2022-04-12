@@ -63,7 +63,10 @@ unsigned __int16 pDoorSoundIDsByLocationID[78] = {
     300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 404, 304,
     400, 300, 300, 404, 304, 400, 300, 300, 404, 304, 400, 300, 300};
 
-// possibly all locations which should have special tranfer message??
+// all locations which should have special tranfer message
+// dragon caves, markham, bandit cave, haunted mansion
+// barrow 7, barrow 9, barrow 10, setag tower
+// wromthrax cave, toberti, hidden tomb
 std::array<const char *, 11> _4E6BDC_loc_names = {
     "mdt12.blv", "d18.blv",   "mdt14.blv", "d37.blv",
     "mdk01.blv", "mdt01.blv", "mdr01.blv", "mdt10.blv",
@@ -707,6 +710,7 @@ bool IndoorLocation::Alloc() {
 }
 
 //----- (00444810) --------------------------------------------------------
+// index of special transfer message, 0 otherwise
 unsigned int IndoorLocation::GetLocationIndex(const char *Str1) {
     for (uint i = 0; i < 11; ++i)
         if (iequals(Str1, _4E6BDC_loc_names[i]))
@@ -1221,7 +1225,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
     // No face found - outside of level
     if (!NumFoundFaceStore) {
-        logger->Warning("Sector fail");
+        logger->Warning("Sector fail: %i, %i, %i", sX, sY, sZ);
 
         return 0;
     }
@@ -2475,6 +2479,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                         (pSpriteObjects[i].uType < 811 || pSpriteObjects[i].uType >= 815) ||
                     spell_fx_renderer->RenderAsSprite(&pSpriteObjects[i])) {
                     SpriteFrame *v4 = pSpriteObjects[i].GetSpriteFrame();
+
                     int a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
                     v6 = TrigLUT->Atan2(pSpriteObjects[i].vPosition.x - pCamera3D->vCameraPos.x,
                                             pSpriteObjects[i].vPosition.y - pCamera3D->vCameraPos.y);
@@ -2483,6 +2488,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
 
                     pBillboardRenderList[uNumBillboardsToDraw].hwsprite = v4->hw_sprites[v9];
                     // error catching
+                    if (v4->texture_name == "null") continue;
                     if (v4->hw_sprites[v9]->texture->GetHeight() == 0 || v4->hw_sprites[v9]->texture->GetWidth() == 0)
                         __debugbreak();
 

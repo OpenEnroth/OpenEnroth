@@ -334,12 +334,12 @@ void Engine::DrawGUI() {
 
     if (engine->config->show_fps) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(0, 0, 0),
+            pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(255, 255, 255),
                 StringPrintf("FPS: % .4f", framerate), 0,
                 0, 0);
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, 300, 0, Color16(0, 0, 0),
+        pPrimaryWindow->DrawText(pFontArrus, 300, 0, Color16(255, 255, 255),
             StringPrintf("DrawCalls: %d", render->drawcalls), 0, 0, 0);
         render->drawcalls = 0;
 
@@ -1265,7 +1265,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         pOutdoor->Release();
 
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     uCurrentlyLoadedLevelType = LEVEL_null;
     pSpriteFrameTable->ResetLoadedFlags();
     pParty->armageddon_timer = 0;
@@ -1862,11 +1862,13 @@ void RegeneratePartyHealthMana() {
                     unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
 
                     auto cursed_times = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].conditions_times[Condition_Cursed];
-                    if (cursed_times->value < spell_power) {
-                        cursed_times = 0;
-                        pParty->uFlags &= 0xFFFFFFBF;
-                        pParty->bFlying = false;
-                        redraw_flag = true;
+                    if (cursed_times->Valid()) {
+                        if (cursed_times->value < spell_power) {
+                            cursed_times = 0;
+                            pParty->uFlags &= 0xFFFFFFBF;
+                            pParty->bFlying = false;
+                            redraw_flag = true;
+                        }
                     }
                 }
             }
@@ -2281,7 +2283,7 @@ bool _44100D_should_alter_right_panel() {
 
 void Transition_StopSound_Autosave(const char *pMapName,
                                    MapStartPoint start_point) {
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
 
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 

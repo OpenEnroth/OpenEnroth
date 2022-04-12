@@ -30,7 +30,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     pEventTimer->Pause();
     pMiscTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     uDialogueType = DIALOGUE_NULL;
     sDialogue_SpeakingActorNPC_ID = actor->sNPC_ID;
     pDialogue_SpeakingActor = actor;
@@ -561,7 +561,7 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
         if (pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) {
             engine->Draw();
         }
-        pAudioPlayer->StopChannels(-1, -1);
+        pAudioPlayer->PauseSounds(-1);
         pMiscTimer->Pause();
         pEventTimer->Pause();
         dword_5C3418 = a1;

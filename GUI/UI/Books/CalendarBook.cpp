@@ -32,7 +32,7 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
     // --------------------------------
     // 004304E7 Game_EventLoop --- part
     pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     pBooksButtonOverlay =
         new GUIWindow_BooksButtonOverlay(570, 354, 0, 0, pBtn_Calendar);
 

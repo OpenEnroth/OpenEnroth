@@ -51,6 +51,7 @@ class SoundInfo {
     uint32_t uFlags;
     PMemBuffer buffer;
     PAudioSample sample;
+    uint32_t last_pid = PID_INVALID;
 };
 
 std::map<uint32_t, SoundInfo> mapSounds;
@@ -193,12 +194,42 @@ void AudioPlayer::SetMasterVolume(int level) {
     level = std::max(0, level);
     level = std::min(9, level);
     uMasterVolume = (2.f * pSoundVolumeLevels[level]);
+
+    auto iter = mapSounds.begin();
+    while (iter != mapSounds.end()) {
+        SoundInfo &si = iter->second;
+        if (si.sample) {
+            // if not voice sample - set volume
+            if (PID_TYPE(si.last_pid) != 4)
+                si.sample->SetVolume(uMasterVolume);
+        }
+        ++iter;
+    }
 }
 
-void AudioPlayer::StopAll(int sample_id) {
+void AudioPlayer::SetVoiceVolume(int level) {
+    level = std::max(0, level);
+    level = std::min(9, level);
+    uVoiceVolume = (2.f * pSoundVolumeLevels[level]);
+
+    auto iter = mapSounds.begin();
+    while (iter != mapSounds.end()) {
+        SoundInfo &si = iter->second;
+        if (si.sample) {
+            // if voice sample - set volume
+            if (PID_TYPE(si.last_pid) == 4)
+                si.sample->SetVolume(uVoiceVolume);
+        }
+        ++iter;
+    }
+}
+
+void AudioPlayer::StopAll(int sample_id) { // sample id is pid of origin
     if (!bPlayerReady) {
         return;
     }
+
+    // looks like this was just meant to stop party walking sounds overrunning
 }
 
 void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats, int source_x, int source_y, int sound_data_id) {
@@ -270,7 +301,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 break;
             }
             case OBJECT_Player: {
-                si.sample->SetVolume((2.f * pSoundVolumeLevels[engine->config->voice_level]));
+                si.sample->SetVolume(uVoiceVolume);
                 if (object_id == 5) si.sample->Stop();
                 si.sample->Play();
 
@@ -329,6 +360,8 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         }
     }
 
+    si.last_pid = pid;
+
     if (si.sName == "")
         logger->Info("AudioPlayer: playing sound %u", eSoundID);
     else
@@ -337,7 +370,17 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     return;
 }
 
-void AudioPlayer::MessWithChannels() { pAudioPlayer->StopChannels(-1, -1); }
+void AudioPlayer::ResumeSounds() {
+    auto iter = mapSounds.begin();
+    while (iter != mapSounds.end()) {
+        SoundInfo &si = iter->second;
+        if (si.sample) {
+            if (si.sample->Resume() && engine->config->verbose_logging)
+                logger->Info("sound resumed: %s", si.sName.c_str());
+        }
+        ++iter;
+    }
+}
 
 void AudioPlayer::UpdateSounds() {
     float pitch = pi * (float)pParty->sRotationY / 1024.f;
@@ -348,7 +391,33 @@ void AudioPlayer::UpdateSounds() {
                                   pParty->vPosition.z / 50.f);
 }
 
-void AudioPlayer::StopChannels(int uStartChannel, int uEndChannel) {}
+void AudioPlayer::PauseSounds(int uType) {
+    // pause everything
+    if (uType == 2) {
+        auto iter = mapSounds.begin();
+        while (iter != mapSounds.end()) {
+            SoundInfo &si = iter->second;
+            if (si.sample) {
+                if (si.sample->Pause() && engine->config->verbose_logging)
+                    logger->Info("sound paused: %s", si.sName.c_str());
+            }
+            ++iter;
+        }
+    } else {
+        // pause non exclusives
+        auto iter = mapSounds.begin();
+        while (iter != mapSounds.end()) {
+            SoundInfo &si = iter->second;
+            if (si.sample) {
+                if (si.last_pid <= 0) {
+                    if (si.sample->Pause() && engine->config->verbose_logging)
+                        logger->Info("sound paused: %s", si.sName.c_str());
+                }
+            }
+            ++iter;
+        }
+    }
+}
 
 #pragma pack(push, 1)
 struct SoundHeader_mm7 {

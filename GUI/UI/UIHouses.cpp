@@ -725,7 +725,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
                 return 0;
             }
         }
-        pAudioPlayer->StopChannels(-1, -1);
+        // pAudioPlayer->PauseSounds(-1);
 
         uCurrentHouse_Animation = p2DEvents[uHouseID - 1].uAnimationID;
         in_current_building_type =
@@ -1576,7 +1576,7 @@ void TravelByTransport() {
                             travel_window.uFrameWidth, 0)) / 2 + 138,
                     Color16(255, 255, 255),
                     localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
-                pAudioPlayer->StopChannels(-1, -1);
+                pAudioPlayer->PauseSounds(-1);
             }
         }
     } else {  //после нажатия топика
@@ -3757,7 +3757,7 @@ void GenerateStandartShopItems() {
 GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint) :
     GUIWindow(WINDOW_HouseInterior, x, y, width, height, button, hint) {
     pEventTimer->Pause();  // pause timer so not attacked
-    pAudioPlayer->StopChannels(-1, -1);
+    // pAudioPlayer->PauseSounds(-1);
 
     current_screen_type = CURRENT_SCREEN::SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton(

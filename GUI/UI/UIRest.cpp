@@ -52,7 +52,7 @@ void GUIWindow_RestWindow::Update() {
 }
 
 void PrepareToLoadRestUI() {
-    if (!_506F14_resting_stage) pAudioPlayer->StopChannels(-1, -1);
+    if (!_506F14_resting_stage) pAudioPlayer->PauseSounds(-1);
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) {
         if (pGUIWindow_CurrentMenu) {
             pGUIWindow_CurrentMenu->Release();

@@ -157,7 +157,7 @@ bool Chest::Open(int uChestID) {
         chest->uFlags &= 0xFEu;
         flag_shout = true;
     }
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     pAudioPlayer->PlaySound(SOUND_openchest0101, 0, 0, -1, 0, 0);
     if (flag_shout == true) {
         if (!OpenedTelekinesis)

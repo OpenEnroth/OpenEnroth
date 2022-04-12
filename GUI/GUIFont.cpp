@@ -48,6 +48,46 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
 
     pFont->pData->pFontPalettes[0] = pIcons_LOD->pTextures[pallete_index].pPalette24;
     pFont->pData->palletes_count = 1;
+
+    // get max xhar width
+    pFont->maxcharwidth = 0;
+    for (int l = 0; l < 256; l++) {
+        if (pFont->pData->pMetrics[l].uWidth > pFont->maxcharwidth) pFont->maxcharwidth = pFont->pData->pMetrics[l].uWidth;
+    }
+
+    // create blank textures
+    pFont->fonttex = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8R8G8B8);
+    pFont->fontshadow = render->CreateTexture_Blank(512, 512, IMAGE_FORMAT_A8R8G8B8);
+    uint32_t *pPixelsfont = (uint32_t *)pFont->fonttex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    uint32_t *pPixelsshadow = (uint32_t *)pFont->fontshadow->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+
+    // load in char pixels into squares within texture
+    for (int l = 0; l < 256; l++) {
+        int xsq = l % 16;
+        int ysq = l / 16;
+        int offset = 32 * xsq + 32 * ysq * 512;
+        uint8_t *pCharPixels = &pFont->pData->pFontData[pFont->pData->font_pixels_offset[l]];
+
+        for (uint y = 0; y < pFont->pData->uFontHeight; ++y) {
+            for (uint x = 0; x < pFont->pData->pMetrics[l].uWidth; ++x) {
+                if (*pCharPixels) {
+                    if (*pCharPixels == 1) {
+                        // add to shadow
+                        pPixelsshadow[offset + x + y * 512] = Color32(255, 255, 255);
+                    } else if(*pCharPixels != 1) {
+                        // add to normal
+                        pPixelsfont[offset + x + y * 512] = Color32(255, 255, 255);
+                    }
+                }
+                ++pCharPixels;
+            }
+        }
+    }
+
+    render->Update_Texture(pFont->fonttex);
+    render->Update_Texture(pFont->fontshadow);
+
+
     return pFont;
 }
 
@@ -95,10 +135,21 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, int 
                     uint16_t draw_color = text_color;
                     uint8_t *pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
                     if (!text_color) {
-                        draw_color = -1;
+                        draw_color = Color16(255, 255, 255);
                     }
-                    render->DrawText(uX_pos, uY, pCharPixels, uCharWidth, pData->uFontHeight,
-                        pData->pFontPalettes[0], draw_color, 0);
+
+                    int xsq = c % 16;
+                    int ysq = c / 16;
+                    float u1 = (xsq * 32.0f) / 512.0f;
+                    float u2 = (xsq * 32.0f + pData->pMetrics[c].uWidth) / 512.0f;
+                    float v1 = (ysq * 32.0f) / 512.0f;
+                    float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
+
+                    render->DrawTextNew(uX_pos, uY, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, 0);
+                    render->DrawTextNew(uX_pos, uY, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, draw_color);
+
+                    render->DrawText(uX_pos, uY, pCharPixels, uCharWidth, pData->uFontHeight, pData->pFontPalettes[0], draw_color, 0);
+
                     uX_pos += uCharWidth;
                     if (i < text_length) {
                         uX_pos += pData->pMetrics[c].uRightSpacing;
@@ -447,13 +498,50 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
                         out_x += pData->pMetrics[c].uLeftSpacing;
                     }
 
+                    if (present_time_transparency) __debugbreak();
+
+
                     unsigned char *letter_pixels = &pData->pFontData[pData->font_pixels_offset[c]];
                     if (uFontColor) {
-                        render->DrawText(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight,
-                            pData->pFontPalettes[0], uFontColor, uFontShadowColor);
+                        int xsq = c % 16;
+                        int ysq = c / 16;
+                        float u1 = (xsq * 32.0f) / 512.0f;
+                        float u2 = (xsq * 32.0f + pData->pMetrics[c].uWidth) / 512.0f;
+                        float v1 = (ysq * 32.0f) / 512.0f;
+                        float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
+
+                        render->DrawText(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight, pData->pFontPalettes[0], uFontColor, uFontShadowColor);
+
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, uFontShadowColor);
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, uFontColor);
                     } else {
-                        render->DrawTextAlpha(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight,
-                            pData->pFontPalettes[0], present_time_transparency);
+                        // pallette24 check for colour
+                        unsigned char *pix = letter_pixels;
+                        uint8_t *pPalette = pData->pFontPalettes[0];
+                        uint8_t r = 0, g = 0, b = 0;
+                        for (int t = 0; t < (pData->pMetrics[c].uWidth * pData->uFontHeight); t++) {
+                            if (*pix) {
+                                uint8_t index = *pix;
+                                // if (index != 255 && index != 1) __debugbreak();
+                                r = pPalette[index * 3 + 0];
+                                g = pPalette[index * 3 + 1];
+                                b = pPalette[index * 3 + 2];
+                                break;
+                            }
+                            pix++;
+                        }
+
+                        int xsq = c % 16;
+                        int ysq = c / 16;
+                        float u1 = (xsq * 32.0f) / 512.0f;
+                        float u2 = (xsq * 32.0f + pData->pMetrics[c].uWidth) / 512.0f;
+                        float v1 = (ysq * 32.0f) / 512.0f;
+                        float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
+
+                        render->DrawTextAlpha(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight, pData->pFontPalettes[0], present_time_transparency);
+
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, Color16(r, g, b));
+                        //render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, Color16(0,255,0));
                     }
 
                     out_x += pData->pMetrics[c].uWidth;
@@ -521,8 +609,8 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
         _strrev(text);
     }
 
-    int width = uX + pWindow->uFrameX;
-    int height = uY + pWindow->uFrameY;
+    int text_pos_x = uX + pWindow->uFrameX;
+    int text_pos_y = uY + pWindow->uFrameY;
     for (i = 0; i < pNumLen; ++i) {
         uint8_t v15 = text[i];
         if (this->IsCharValid(v15)) {
@@ -537,9 +625,9 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
             }
             case '\n': {  // Line Feed 0A 10
                 unsigned int v24 = pData->uFontHeight;
-                width = uX;
+                text_pos_x = uX;
                 uY = uY + pData->uFontHeight - 3;
-                height = uY + pData->uFontHeight - 3;
+                text_pos_y = uY + pData->uFontHeight - 3;
                 break;
             }
             case '\r': {  // Form Feed, page eject  0C 12
@@ -556,24 +644,60 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
                 Str[3] = 0;
                 i += 3;
                 unsigned int v23 = this->GetLineWidth(&text[i]);
-                width = pWindow->uFrameZ - v23 - atoi(Str);
-                height = uY;
+                text_pos_x = pWindow->uFrameZ - v23 - atoi(Str);
+                text_pos_y = uY;
                 break;
             }
             default: {
-                unsigned int v20 = pData->pMetrics[v15].uWidth;
+                unsigned int char_width = pData->pMetrics[v15].uWidth;
                 if (i > 0) {
-                    width += pData->pMetrics[v15].uLeftSpacing;
+                    text_pos_x += pData->pMetrics[v15].uLeftSpacing;
                 }
-                uint8_t *v21 = &pData->pFontData[pData->font_pixels_offset[v15]];
+                uint8_t *char_pix_ptr = &pData->pFontData[pData->font_pixels_offset[v15]];
                 if (uColor) {
-                    render->DrawText(width, height, v21, v20, pData->uFontHeight, pData->pFontPalettes[0], uColor, 0);
+                    int xsq = v15 % 16;
+                    int ysq = v15 / 16;
+                    float u1 = (xsq * 32.0f) / 512.0f;
+                    float u2 = (xsq * 32.0f + pData->pMetrics[v15].uWidth) / 512.0f;
+                    float v1 = (ysq * 32.0f) / 512.0f;
+                    float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
+
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, 0);
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, uColor);
+
+                    render->DrawText(text_pos_x, text_pos_y, char_pix_ptr, char_width, pData->uFontHeight, pData->pFontPalettes[0], uColor, 0);
                 } else {
-                    render->DrawTextAlpha(width, height, v21, v20, pData->uFontHeight, pData->pFontPalettes[0], false);
+                    // pallette24 check for colour
+                    unsigned char *pix = char_pix_ptr;
+                    uint8_t *pPalette = pData->pFontPalettes[0];
+                    uint8_t r = 0, g = 0, b = 0;
+                    for (int t = 0; t < (pData->pMetrics[v15].uWidth * pData->uFontHeight); t++) {
+                        if (*pix) {
+                            uint8_t index = *pix;
+                            // if (index != 255 && index != 1) __debugbreak();
+                            r = pPalette[index * 3 + 0];
+                            g = pPalette[index * 3 + 1];
+                            b = pPalette[index * 3 + 2];
+                            break;
+                        }
+                        pix++;
+                    }
+
+                    int xsq = v15 % 16;
+                    int ysq = v15 / 16;
+                    float u1 = (xsq * 32.0f) / 512.0f;
+                    float u2 = (xsq * 32.0f + pData->pMetrics[v15].uWidth) / 512.0f;
+                    float v1 = (ysq * 32.0f) / 512.0f;
+                    float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
+
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, Color16(r, g, b));
+                    //render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, Color16(r, 255, b));
+
+                    render->DrawTextAlpha(text_pos_x, text_pos_y, char_pix_ptr, char_width, pData->uFontHeight, pData->pFontPalettes[0], false);
                 }
-                width += v20;
+                text_pos_x += char_width;
                 if (i < (int)pNumLen) {
-                    width += pData->pMetrics[v15].uRightSpacing;
+                    text_pos_x += pData->pMetrics[v15].uRightSpacing;
                 }
             }
             }

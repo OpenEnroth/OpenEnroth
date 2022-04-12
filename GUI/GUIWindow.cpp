@@ -145,7 +145,7 @@ bool PauseGameDrawing() {
     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
         current_screen_type != CURRENT_SCREEN::SCREEN_NPC_DIALOGUE &&
         current_screen_type != CURRENT_SCREEN::SCREEN_CHANGE_LOCATION) {
-        if (current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV) return uCurrentHouse_Animation;
+        if (current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV) return false; // uCurrentHouse_Animation;
         if (current_screen_type != CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG) return true;
     }
     return false;
@@ -158,7 +158,7 @@ OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
 )
     : GUIWindow(WINDOW_CastSpell, x, y, width, height, button, hint) {
     pEventTimer->Pause();
-    pAudioPlayer->StopChannels(-1, -1);
+    pAudioPlayer->PauseSounds(-1);
     mouse->SetCursorImage("MICON2");
     GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
 }
@@ -328,6 +328,7 @@ void GUIWindow::Release() {
         nuklear->Release(WINDOW_GameUI);
 
     log->Info("Release window: %s", ToString(eWindowType));
+    pAudioPlayer->ResumeSounds();
 }
 
 void GUIWindow::DeleteButtons() {
