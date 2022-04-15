@@ -11,7 +11,7 @@ out vec2 texuv;
 flat out vec2 olayer;
 out vec3 vsPos;
 out vec3 vsNorm;
-out int vsAttrib;
+flat out int vsAttrib;
 
 uniform mat4 view;
 uniform mat4 projection;

@@ -145,7 +145,10 @@ class RenderOpenGL : public RenderBase {
                           unsigned int uCharWidth, unsigned int uCharHeight,
                           uint8_t *pFontPalette, uint16_t uFaceColor,
                           uint16_t uShadowColor) override;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) override;
+
+    virtual void BeginTextNew(Texture *main, Texture *shadow) override;
+    virtual void EndTextNew() override;
+    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) override;
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
@@ -232,6 +235,7 @@ class RenderOpenGL : public RenderBase {
     bool InitShaders();
     GLShader terrainshader;
     GLShader outbuildshader;
+    GLShader textshader;
 
     // terrain shader
     GLuint terrainVBO, terrainVAO;
@@ -248,6 +252,10 @@ class RenderOpenGL : public RenderBase {
     uint outbuildtexturewidths[16];
     uint outbuildtextureheights[16];
     std::map<std::string, int> outbuildtexmap;
+
+    // text shader
+    GLuint textVBO, textVAO;
+    GLuint texmain, texshadow;
 
 
     struct nk_vertex {

@@ -56,16 +56,16 @@ void main() {
 
     // texture flow mods
     if (abs(vsNorm.z) >= 0.9) {
-        if (vsAttrib & 0x400) texuvmod.y = 1;
-        if (vsAttrib & 0x800) texuvmod.y = -1;
+        if ((vsAttrib & 0x400) > 0) texuvmod.y = 1;
+        if ((vsAttrib & 0x800) > 0) texuvmod.y = -1;
     } else {
-        if (vsAttrib & 0x400) texuvmod.y = -1;
-        if (vsAttrib & 0x800) texuvmod.y = 1;
+        if ((vsAttrib & 0x400) > 0) texuvmod.y = -1;
+        if ((vsAttrib & 0x800) > 0) texuvmod.y = 1;
     }
 
-    if (vsAttrib & 0x1000) {
+    if ((vsAttrib & 0x1000) > 0) {
         texuvmod.x = -1;    
-    } else if (vsAttrib & 0x2000) {
+    } else if ((vsAttrib & 0x2000) > 0) {
         texuvmod.x = 1;    
     }
 
@@ -112,7 +112,7 @@ void main() {
     vec3 dull;
 
     // percpetion red fade
-    if (vsAttrib & 0x10000) {
+    if ((vsAttrib & 0x10000) > 0) {
         float ss = (sin(flowtimer/30.0)+ 1.0) / 2.0;
         dull = vec3(1, ss, ss);
     } else {

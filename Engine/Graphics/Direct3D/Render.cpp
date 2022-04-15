@@ -3017,7 +3017,15 @@ void Render::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
         (INT)uHeight);
 }
 
-void Render::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) {
+void Render::BeginTextNew(Texture *main, Texture *shadow) {
+    return;
+}
+
+void Render::EndTextNew() {
+    return;
+}
+
+void Render::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) {
     return;
 }
 

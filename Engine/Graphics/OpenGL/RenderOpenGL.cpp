@@ -2152,12 +2152,16 @@ void _set_ortho_projection(bool gameviewport) {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
+
+        projmat = glm::ortho(float(0), float(window->GetWidth()), float(window->GetHeight()), float(0), float(-1), float(1));
     } else {  // project to game viewport
         glViewport(game_viewport_x, window->GetHeight()-game_viewport_w-1, game_viewport_width, game_viewport_height);
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(game_viewport_x, game_viewport_z, game_viewport_w, game_viewport_y, 1, -1);  // far = 1 but ogl looks down -z
+
+        projmat = glm::ortho(float(game_viewport_x), float(game_viewport_z), float(game_viewport_w), float(game_viewport_y), float(1), float(-1));
     }
 
     GL_Check_Errors();
@@ -2167,6 +2171,9 @@ void _set_ortho_projection(bool gameviewport) {
 void _set_ortho_modelview() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    viewmat = glm::mat4x4(1);
+
     GL_Check_Errors();
 }
 
@@ -3183,24 +3190,158 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     }
 }
 
-void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) {
-    // TODO(pskelton): need to add batching here so each lump of text is drawn in one call
-    // TODO(pskelton): inputs are color 16 - change param to avoid confusion
 
-    glEnable(GL_TEXTURE_2D);
-    colour = Color32(colour);
+struct twodverts {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat u;
+    GLfloat v;
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+    GLfloat a;
+    GLfloat texid;
+};
 
-    float b = (colour & 0xFF) / 255.0f;
-    float g = ((colour >> 8) & 0xFF) / 255.0f;
-    float r = ((colour >> 16) & 0xFF) / 255.0f;
+twodverts textshaderstore[6000] = {};
+int textvertscnt = 0;
 
-    glColor3f(r, g, b);
+void RenderOpenGL::BeginTextNew(Texture *main, Texture *shadow) {
+    if (textvertscnt) __debugbreak();
+
+    auto texturemain = (TextureOpenGL *)main;
+    texmain = texturemain->GetOpenGlTexture();
+    auto textureshadow = (TextureOpenGL *)shadow;
+    texshadow = textureshadow->GetOpenGlTexture();
+
+    // set up buffers
+    // set up counts
+    // set up textures
+
+    return;
+}
+
+void RenderOpenGL::EndTextNew() {
+    if (!textvertscnt) return;
+
+    if (textVAO == 0) {
+        glGenVertexArrays(1, &textVAO);
+        glGenBuffers(1, &textVBO);
+
+        glBindVertexArray(textVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(textshaderstore), NULL, GL_DYNAMIC_DRAW);
+
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)0);
+        glEnableVertexAttribArray(0);
+        // tex uv
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+        // colour
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+        // texid
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(3);
+
+        GL_Check_Errors();
+    }
+
+    GL_Check_Errors();
+
+    // update buffer
+    glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+    // orphan
+    glBufferData(GL_ARRAY_BUFFER, sizeof(textshaderstore), NULL, GL_DYNAMIC_DRAW);
+    // update buffer
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(twodverts) * textvertscnt, textshaderstore);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GL_Check_Errors();
+
+    glBindVertexArray(textVAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+
+    GL_Check_Errors();
+
+    glUseProgram(textshader.ID);
+    GL_Check_Errors();
+
+    // glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    GL_Check_Errors();
 
-    auto texture = (TextureOpenGL *)tex;
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    // set sampler to texure0
+    glUniform1i(glGetUniformLocation(textshader.ID, "texture0"), GLint(0));
+    glUniform1i(glGetUniformLocation(textshader.ID, "texture1"), GLint(1));
+
+    //// set projection
+    glUniformMatrix4fv(glGetUniformLocation(textshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    //// set view
+    glUniformMatrix4fv(glGetUniformLocation(textshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+    GL_Check_Errors();
+
+    // set textures
+    glEnable(GL_TEXTURE_2D);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texmain);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texshadow);
+
+    glDrawArrays(GL_TRIANGLES, 0, textvertscnt);
+    drawcalls++;
+
+    GL_Check_Errors();
+    glUseProgram(0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    textvertscnt = 0;
+    texmain = 0;
+    texshadow = 0;
+    GL_Check_Errors();
+    return;
+}
+
+void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) {
+    // TODO(pskelton): need to add batching here so each lump of text is drawn in one call
+
+
+    //glEnable(GL_TEXTURE_2D);
+
+    float b = ((colour & 31) * 8) / 255.0f;
+    float g = (((colour >> 5) & 63) * 4) / 255.0f;
+    float r = (((colour >> 11) & 31) * 8) / 255.0f;
+
+    // not 100% sure why this is required but it is
+    if (r == 0) r = 0.00392;
+
+    //glColor3f(r, g, b);
+    //glEnable(GL_BLEND);
+    //glBlendEquation(GL_FUNC_ADD);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //auto texture = (TextureOpenGL *)tex;
+    //glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
@@ -3230,39 +3371,123 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
 
     float depth = 0;
 
-    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
-        (float)drawz, (float)drawy, depth,
-        (float)drawz, (float)draww, depth,
-        (float)drawx, (float)draww, depth };
+    //GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
+    //    (float)drawz, (float)drawy, depth,
+    //    (float)drawz, (float)draww, depth,
+    //    (float)drawx, (float)draww, depth };
 
     float texx = u1;  // (drawx - x) / float(width);
     float texy = v1;  //  (drawy - y) / float(height);
     float texz = u2;  //  (width - (z - drawz)) / float(width);
     float texw = v2;  // (height - (w - draww)) / float(height);
 
-    GLfloat TexCoord[] = { texx, texy,
-        texz, texy,
-        texz, texw,
-        texx, texw,
-    };
+    //GLfloat TexCoord[] = { texx, texy,
+    //    texz, texy,
+    //    texz, texw,
+    //    texx, texw,
+    //};
 
-    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
-        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+    //GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
+    //    0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+    //glEnableClientState(GL_VERTEX_ARRAY);
+    //glVertexPointer(3, GL_FLOAT, 0, Vertices);
 
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+    //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    //glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-    drawcalls++;
+    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+    //drawcalls++;
 
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    //glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    //glDisableClientState(GL_VERTEX_ARRAY);
 
-    glDisable(GL_BLEND);
-    //glEnable(GL_DEPTH_TEST);
+    //glDisable(GL_BLEND);
+    ////glEnable(GL_DEPTH_TEST);
+
+
+
+    // 0 1 2 / 0 2 3
+
+    textshaderstore[textvertscnt].x = drawx;
+    textshaderstore[textvertscnt].y = drawy;
+    textshaderstore[textvertscnt].z = 0;
+    textshaderstore[textvertscnt].u = texx;
+    textshaderstore[textvertscnt].v = texy;
+    textshaderstore[textvertscnt].r = r;
+    textshaderstore[textvertscnt].g = g;
+    textshaderstore[textvertscnt].b = b;
+    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].texid = float(isshadow);
+    textvertscnt++;
+
+    textshaderstore[textvertscnt].x = drawz;
+    textshaderstore[textvertscnt].y = drawy;
+    textshaderstore[textvertscnt].z = 0;
+    textshaderstore[textvertscnt].u = texz;
+    textshaderstore[textvertscnt].v = texy;
+    textshaderstore[textvertscnt].r = r;
+    textshaderstore[textvertscnt].g = g;
+    textshaderstore[textvertscnt].b = b;
+    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].texid = float(isshadow);
+    textvertscnt++;
+
+    textshaderstore[textvertscnt].x = drawz;
+    textshaderstore[textvertscnt].y = draww;
+    textshaderstore[textvertscnt].z = 0;
+    textshaderstore[textvertscnt].u = texz;
+    textshaderstore[textvertscnt].v = texw;
+    textshaderstore[textvertscnt].r = r;
+    textshaderstore[textvertscnt].g = g;
+    textshaderstore[textvertscnt].b = b;
+    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].texid = float(isshadow);
+    textvertscnt++;
+
+    ////////////////////////////////
+
+    textshaderstore[textvertscnt].x = drawx;
+    textshaderstore[textvertscnt].y = drawy;
+    textshaderstore[textvertscnt].z = 0;
+    textshaderstore[textvertscnt].u = texx;
+    textshaderstore[textvertscnt].v = texy;
+    textshaderstore[textvertscnt].r = r;
+    textshaderstore[textvertscnt].g = g;
+    textshaderstore[textvertscnt].b = b;
+    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].texid = float(isshadow);
+    textvertscnt++;
+
+    textshaderstore[textvertscnt].x = drawz;
+    textshaderstore[textvertscnt].y = draww;
+    textshaderstore[textvertscnt].z = 0;
+    textshaderstore[textvertscnt].u = texz;
+    textshaderstore[textvertscnt].v = texw;
+    textshaderstore[textvertscnt].r = r;
+    textshaderstore[textvertscnt].g = g;
+    textshaderstore[textvertscnt].b = b;
+    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].texid = float(isshadow);
+    textvertscnt++;
+
+    textshaderstore[textvertscnt].x = drawx;
+    textshaderstore[textvertscnt].y = draww;
+    textshaderstore[textvertscnt].z = 0;
+    textshaderstore[textvertscnt].u = texx;
+    textshaderstore[textvertscnt].v = texw;
+    textshaderstore[textvertscnt].r = r;
+    textshaderstore[textvertscnt].g = g;
+    textshaderstore[textvertscnt].b = b;
+    textshaderstore[textvertscnt].a = 1;
+    textshaderstore[textvertscnt].texid = float(isshadow);
+    textvertscnt++;
+
+
+    GL_Check_Errors();
+
+
+    if (textvertscnt > 5990) __debugbreak();
 }
 
 void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
@@ -3476,6 +3701,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
                         face.texlayer = texlayer;
 
                         // load up verts here
+
+                        // TODO(pskelton): map to gl buffer rather than intermediate copy
 
                         for (int z = 0; z < (face.uNumVertices - 2); z++) {
                             // 123, 134, 145, 156..
@@ -3729,7 +3956,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
 
     // set texture unit location
-    glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray0"), GLint(0));
+    glUniform1i(glGetUniformLocation(outbuildshader.ID, "textureArray0"), GLint(0));
 
     GLfloat camera[3];
     camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0));
@@ -4311,6 +4538,12 @@ bool RenderOpenGL::InitShaders() {
     outbuildshader.build("../../../../Engine/Graphics/Shaders/gloutbuild.vs", "../../../../Engine/Graphics/Shaders/gloutbuild.fs");
     if (outbuildshader.ID == 0)
         return false;
+
+    logger->Info("Building text shader...");
+    textshader.build("../../../../Engine/Graphics/Shaders/gltextshader.vs", "../../../../Engine/Graphics/Shaders/gltextshader.fs");
+    if (textshader.ID == 0)
+        return false;
+    textVAO = 0;
 
     return true;
 }

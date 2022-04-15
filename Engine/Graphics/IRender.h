@@ -335,7 +335,10 @@ class IRender {
                           unsigned int uCharWidth, unsigned int uCharHeight,
                           uint8_t *pFontPalette, uint16_t uFaceColor,
                           uint16_t uShadowColor) = 0;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) = 0;
+
+    virtual void BeginTextNew(Texture *main, Texture *shadow) = 0;
+    virtual void EndTextNew() = 0;
+    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) = 0;
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,

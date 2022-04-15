@@ -73,10 +73,10 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
                 if (*pCharPixels) {
                     if (*pCharPixels == 1) {
                         // add to shadow
-                        pPixelsshadow[offset + x + y * 512] = Color32(255, 255, 255);
+                        pPixelsfont[offset + x + y * 512] = Color32(255, 255, 255);
                     } else if(*pCharPixels != 1) {
                         // add to normal
-                        pPixelsfont[offset + x + y * 512] = Color32(255, 255, 255);
+                        pPixelsshadow[offset + x + y * 512] = Color32(255, 255, 255);
                     }
                 }
                 ++pCharPixels;
@@ -103,6 +103,7 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, int 
     if (text.empty()) {
         return;
     }
+    render->BeginTextNew(fonttex, fontshadow);
 
     uint16_t text_color = ui_current_text_color;
     size_t text_length = text.size();
@@ -145,8 +146,8 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, int 
                     float v1 = (ysq * 32.0f) / 512.0f;
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                    render->DrawTextNew(uX_pos, uY, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, 0);
-                    render->DrawTextNew(uX_pos, uY, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, draw_color);
+                    render->DrawTextNew(uX_pos, uY, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, 0);
+                    render->DrawTextNew(uX_pos, uY, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, draw_color);
 
                     render->DrawText(uX_pos, uY, pCharPixels, uCharWidth, pData->uFontHeight, pData->pFontPalettes[0], draw_color, 0);
 
@@ -158,6 +159,7 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, int 
             }
         }
     }
+    render->EndTextNew();
 }
 
 void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
@@ -420,6 +422,8 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
         return;
     }
 
+    render->BeginTextNew(fonttex, fontshadow);
+
     size_t v30 = str.length();
     if (!uX) {
         uX = 12;
@@ -512,8 +516,8 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
 
                         render->DrawText(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight, pData->pFontPalettes[0], uFontColor, uFontShadowColor);
 
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, uFontShadowColor);
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, uFontColor);
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, uFontShadowColor);
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, uFontColor);
                     } else {
                         // pallette24 check for colour
                         unsigned char *pix = letter_pixels;
@@ -553,6 +557,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
             }
         } while (++v14 < v30);
     }
+    render->EndTextNew();
 }
 
 int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, uint16_t uColor, const std::string &str, int rect_width, int reverse_text) {
@@ -568,6 +573,8 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
         this->DrawText(pWindow, uX, uY, uColor, text, 0, 0, 0);
         return pLineWidth;
     }
+
+    render->BeginTextNew(fonttex, fontshadow);
 
     unsigned int text_width = 0;
     if (reverse_text) {
@@ -662,8 +669,8 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
                     float v1 = (ysq * 32.0f) / 512.0f;
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, 0);
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, uColor);
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, 0);
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, uColor);
 
                     render->DrawText(text_pos_x, text_pos_y, char_pix_ptr, char_width, pData->uFontHeight, pData->pFontPalettes[0], uColor, 0);
                 } else {
@@ -703,6 +710,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
             }
         }
     }
+    render->EndTextNew();
     return v28;
 }
 
