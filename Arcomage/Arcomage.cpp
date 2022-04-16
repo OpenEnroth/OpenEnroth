@@ -3020,12 +3020,16 @@ void am_DrawText(const std::string &str, Point *pXY) {
 
 void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill) {
     if (bSolidFill) {
-        render->FillRectFast(pXYZW->x, pXYZW->y, (pXYZW->z - pXYZW->x), (pXYZW->w - pXYZW->y), uColor);
+        int width = pXYZW->z - pXYZW->x;
+        int height = pXYZW->w - pXYZW->y;
+        render->FillRectFast(pXYZW->x, pXYZW->y, width, height, uColor);
     } else {
+        render->BeginLines2D();
         render->RasterLine2D(pXYZW->x, pXYZW->y, pXYZW->z, pXYZW->y, uColor);
         render->RasterLine2D(pXYZW->z, pXYZW->y, pXYZW->z, pXYZW->w, uColor);
         render->RasterLine2D(pXYZW->z, pXYZW->w, pXYZW->x, pXYZW->w, uColor);
         render->RasterLine2D(pXYZW->x, pXYZW->w, pXYZW->x, pXYZW->y, uColor);
+        render->EndLines2D();
     }
 }
 

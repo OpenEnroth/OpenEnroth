@@ -1785,6 +1785,14 @@ bool Render::SwitchToWindow() {
     return true;
 }
 
+void Render::BeginLines2D() {
+    return;
+}
+
+void Render::EndLines2D() {
+    return;
+}
+
 void Render::RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t color) {
     // change to 32bit clor input??
 

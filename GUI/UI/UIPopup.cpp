@@ -617,6 +617,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait border
         render->ResetUIClipRect();
         render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, Color16(0, 0, 0));
+        render->BeginLines2D();
         render->RasterLine2D(
             doll_rect.x - 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.y - 1,
             Color16(0xE1u, 255, 0x9Bu));  // горизонтальная верхняя линия
@@ -629,6 +630,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         render->RasterLine2D(
             doll_rect.z + 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.w + 1,
             Color16(0xE1u, 255, 0x9Bu));  // правая вертикальная линия
+        render->EndLines2D();
 
         // Draw portrait
         render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);

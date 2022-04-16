@@ -1779,7 +1779,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
-
+        render->BeginLines2D();
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines->uNumOutlines; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines->pOutlines[i];
 
@@ -1814,6 +1814,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
             }
         }
+        render->EndLines2D();
     }
 
     // draw arrow on the minimap(include. Ritor1)
@@ -1831,6 +1832,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
+        render->BeginLines2D();
         if (uWizardEyeSkillLevel >= 2) {
             for (uint i = 0; i < uNumSpriteObjects; ++i) {
                 if (!pSpriteObjects[i].uType ||
@@ -1956,6 +1958,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
             }
         }
+        render->EndLines2D();
     }
 
     render->SetUIClipRect(541, 0, 567, 480);
@@ -2306,10 +2309,12 @@ void buttonbox(int x, int y, const char* text, int col) {
     int height = 20;
     render->FillRectFast(x, y, width+1, height+1, Color16(50, 50, 50));
 
+    render->BeginLines2D();
     render->RasterLine2D(x-1, y-1, x+width+1, y-1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x-1, y-1, x-1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
+    render->EndLines2D();
 
     uint colour = ui_character_condition_severe_color;
     if (col == 2) {

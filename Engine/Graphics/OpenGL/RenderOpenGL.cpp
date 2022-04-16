@@ -614,28 +614,97 @@ void RenderOpenGL::ClearZBuffer() {
     memset32(this->pActiveZBuffer, 0xFFFF0000, window->GetWidth() * window->GetHeight());
 }
 
+struct linesverts {
+    GLfloat x;
+    GLfloat y;
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+};
+
+linesverts lineshaderstore[500] = {};
+int linevertscnt = 0;
+
+void RenderOpenGL::BeginLines2D() {
+    if (linevertscnt) __debugbreak();
+
+    if (lineVAO == 0) {
+        glGenVertexArrays(1, &lineVAO);
+        glGenBuffers(1, &lineVBO);
+
+        glBindVertexArray(lineVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(lineshaderstore), NULL, GL_DYNAMIC_DRAW);
+
+        // position attribute
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, (5 * sizeof(GLfloat)), (void *)0);
+        glEnableVertexAttribArray(0);
+        // colour attribute
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (5 * sizeof(GLfloat)), (void *)(2 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+
+        GL_Check_Errors();
+    }
+}
+
+void RenderOpenGL::EndLines2D() {
+    if (!linevertscnt) return;
+
+    // update buffer
+    glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(lineshaderstore), NULL, GL_DYNAMIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(linesverts) * linevertscnt, lineshaderstore);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    GL_Check_Errors();
+
+    glBindVertexArray(lineVAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glUseProgram(lineshader.ID);
+
+    //// set projection
+    glUniformMatrix4fv(glGetUniformLocation(lineshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    //// set view
+    glUniformMatrix4fv(glGetUniformLocation(lineshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+    glDrawArrays(GL_LINES, 0, (linevertscnt));
+    drawcalls++;
+    GL_Check_Errors();
+
+    glUseProgram(0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    linevertscnt = 0;
+    GL_Check_Errors();
+}
+
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
                                 signed int uW, unsigned __int16 uColor) {
     unsigned int b = (uColor & 0x1F)*8;
     unsigned int g = ((uColor >> 5) & 0x3F)*4;
     unsigned int r = ((uColor >> 11) & 0x1F)*8;
 
-    glDisable(GL_TEXTURE_2D);
-    glLineWidth(1);
-    glColor3ub(r, g, b);
+    lineshaderstore[linevertscnt].x = uX;
+    lineshaderstore[linevertscnt].y = uY;
+    lineshaderstore[linevertscnt].r = r / 255.;
+    lineshaderstore[linevertscnt].g = g / 255.;
+    lineshaderstore[linevertscnt].b = b / 255.;
+    linevertscnt++;
 
-    // pixel centers around 0.5 so tweak to avoid gaps and squashing
-    if (uZ == uX) {
-       uW += 1;
-    }
+    lineshaderstore[linevertscnt].x = uZ + 0.5;
+    lineshaderstore[linevertscnt].y = uW + 0.5;
+    lineshaderstore[linevertscnt].r = r / 255.;
+    lineshaderstore[linevertscnt].g = g / 255.;
+    lineshaderstore[linevertscnt].b = b / 255.;
+    linevertscnt++;
 
-    glBegin(GL_LINES);
-    glVertex3f(uX, uY, 0);
-    glVertex3f(uZ+.5, uW+.5, 0);
-    drawcalls++;
-    glEnd();
-
-    GL_Check_Errors();
+    // draw if buffer full
+    if (linevertscnt == 500) EndLines2D();
 }
 
 void RenderOpenGL::BeginSceneD3D() {
@@ -4528,6 +4597,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 }
 
 // gl shaders
+// TODO(pskelton): use MakeDataPath
 bool RenderOpenGL::InitShaders() {
     logger->Info("Building outdoors terrain shader...");
     terrainshader.build("../../../../Engine/Graphics/Shaders/glterrain.vs", "../../../../Engine/Graphics/Shaders/glterrain.fs");
@@ -4544,6 +4614,12 @@ bool RenderOpenGL::InitShaders() {
     if (textshader.ID == 0)
         return false;
     textVAO = 0;
+
+    logger->Info("Building line shader...");
+    lineshader.build("../../../../Engine/Graphics/Shaders/gllinesshader.vs", "../../../../Engine/Graphics/Shaders/gllinesshader.fs");
+    if (lineshader.ID == 0)
+        return false;
+    lineVAO = 0;
 
     return true;
 }

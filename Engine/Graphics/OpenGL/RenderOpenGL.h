@@ -69,8 +69,12 @@ class RenderOpenGL : public RenderBase {
     virtual void Release() override;
 
     virtual bool SwitchToWindow() override;
+
+    virtual void BeginLines2D() override;
+    virtual void EndLines2D() override;
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
                               signed int uW, unsigned __int16 uColor) override;
+
     virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
@@ -236,6 +240,7 @@ class RenderOpenGL : public RenderBase {
     GLShader terrainshader;
     GLShader outbuildshader;
     GLShader textshader;
+    GLShader lineshader;
 
     // terrain shader
     GLuint terrainVBO, terrainVAO;
@@ -256,6 +261,9 @@ class RenderOpenGL : public RenderBase {
     // text shader
     GLuint textVBO, textVAO;
     GLuint texmain, texshadow;
+
+    // lines shader
+    GLuint lineVBO, lineVAO;
 
 
     struct nk_vertex {

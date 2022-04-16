@@ -75,7 +75,11 @@ class Render : public RenderBase {
     virtual void Release() override;
 
     virtual bool SwitchToWindow() override;
+
+    virtual void BeginLines2D() override;
+    virtual void EndLines2D() override;
     virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t uColor) override;
+
     virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
