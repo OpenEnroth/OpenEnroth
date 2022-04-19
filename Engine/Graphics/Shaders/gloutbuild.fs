@@ -49,7 +49,7 @@ void main() {
 	vec3 fragnorm = normalize(vsNorm);
     vec3 fragviewdir = normalize(CameraPos - vsPos);
 
-	vec4 fragcol = vec4(0);
+	vec4 fragcol = vec4(1);
     vec2 texcoords = vec2(0);
     vec2 texuvmod = vec2(0);
     vec2 deltas = vec2(0);
@@ -78,7 +78,7 @@ void main() {
     vec4 toplayer = texture(textureArray0, vec3(texcoords.x/4.0,texcoords.y/4.0,0));
     vec4 watercol = texture(textureArray0, vec3(texcoords.x/4.0,texcoords.y/4.0,waterframe));
 
-    if (watertiles == 1 && olayer.y == 0){
+    if ((watertiles == 1) && (olayer.y == 0)){
         if ((vsAttrib & 0x3C00) != 0){ // water anim disabled
             fragcol = toplayer;
         } else {

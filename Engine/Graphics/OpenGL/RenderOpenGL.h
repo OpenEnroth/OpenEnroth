@@ -208,6 +208,8 @@ class RenderOpenGL : public RenderBase {
 
     virtual void ReleaseTerrain();
 
+    virtual void drawtwodverts();
+
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;
 
@@ -241,6 +243,7 @@ class RenderOpenGL : public RenderBase {
     GLShader outbuildshader;
     GLShader textshader;
     GLShader lineshader;
+    GLShader twodshader;
 
     // terrain shader
     GLuint terrainVBO, terrainVAO;
@@ -264,6 +267,9 @@ class RenderOpenGL : public RenderBase {
 
     // lines shader
     GLuint lineVBO, lineVAO;
+
+    // two d shader
+    GLuint twodVBO, twodVAO;
 
 
     struct nk_vertex {

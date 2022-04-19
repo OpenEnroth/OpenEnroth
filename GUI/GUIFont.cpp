@@ -71,11 +71,12 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
         for (uint y = 0; y < pFont->pData->uFontHeight; ++y) {
             for (uint x = 0; x < pFont->pData->pMetrics[l].uWidth; ++x) {
                 if (*pCharPixels) {
+                    if (*pCharPixels != 1) {
+                        // add to normal
+                        pPixelsfont[offset + x + y * 512] = Color32(255, 255, 255);
+                    }
                     if (*pCharPixels == 1) {
                         // add to shadow
-                        pPixelsfont[offset + x + y * 512] = Color32(255, 255, 255);
-                    } else if(*pCharPixels != 1) {
-                        // add to normal
                         pPixelsshadow[offset + x + y * 512] = Color32(255, 255, 255);
                     }
                 }

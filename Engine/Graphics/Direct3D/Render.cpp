@@ -4606,3 +4606,4 @@ struct nk_image Render::NuklearImageLoad(Image* img) { return nk_image_id(0);  }
 void Render::NuklearImageFree(Image *img) {}
 
 void Render::ReleaseTerrain() { return; }
+void Render::drawtwodverts() { return; }

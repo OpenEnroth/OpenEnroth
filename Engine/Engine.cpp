@@ -266,6 +266,9 @@ void Engine::Draw() {
 void Engine::DrawGUI() {
     render->ResetUIClipRect();
 
+    // force always redraw
+    viewparams->bRedrawGameUI = true;
+
     // if (render->pRenderD3D)
     mouse->DrawCursorToTarget();
     if (pOtherOverlayList->bRedraw)

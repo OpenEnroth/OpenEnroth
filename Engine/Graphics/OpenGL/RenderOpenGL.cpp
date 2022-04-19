@@ -598,6 +598,10 @@ void RenderOpenGL::ClearBlack() {  // used only at start and in game over win
 }
 
 void RenderOpenGL::ClearTarget(unsigned int uColor) {
+    glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
+    glClearDepth(1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     return;
 }
 
@@ -627,6 +631,8 @@ int linevertscnt = 0;
 
 void RenderOpenGL::BeginLines2D() {
     if (linevertscnt) __debugbreak();
+
+    drawtwodverts();
 
     if (lineVAO == 0) {
         glGenVertexArrays(1, &lineVAO);
@@ -1074,51 +1080,131 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
     DrawTextureNew((float)(pX - move_X)/window->GetWidth(), (float)(pY - move_Y)/window->GetHeight(), pTexture);
 }
 
+struct twodverts {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat u;
+    GLfloat v;
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+    GLfloat a;
+    GLfloat texid;
+};
+
+twodverts twodshaderstore[500] = {};
+int twodvertscnt = 0;
 
 void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
-    glEnable(GL_TEXTURE_2D);
-    glColor3f(1, 1, 1);
-    bool blendFlag = 1;
+    if (!img) __debugbreak();
 
-    // check if loaded
-    auto texture = (TextureOpenGL *)img;
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    int width = img->GetWidth();
+    int height = img->GetHeight();
 
-    if (blendFlag) {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
+    int x = rect.x;
+    int y = rect.y;
+    int z = rect.z;
+    int w = rect.w;
 
-    float depth = 0;
+    // check bounds
+    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
+    // check for overlap
+    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    GLfloat Vertices[] = { (float)rect.x, (float)rect.y, depth,
-        (float)rect.z, (float)rect.y, depth,
-        (float)rect.z, (float)rect.w, depth,
-        (float)rect.x, (float)rect.w, depth };
+    auto texture = (TextureOpenGL*)img;
+    float gltexid = texture->GetOpenGlTexture();
 
-    GLfloat TexCoord[] = { 0, 0,
-        1, 0,
-        1, 1,
-        0, 1 };
+    int drawx = std::max(x, this->clip_x);
+    int drawy = std::max(y, this->clip_y);
+    int draww = std::min(w, this->clip_w);
+    int drawz = std::min(z, this->clip_z);
 
-    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
-        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+    float texx = (drawx - x) / float(width);
+    float texy = (drawy - y) / float(height);
+    float texz = float(drawz) / z;
+    float texw = float(draww) / w;
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+    // 0 1 2 / 0 2 3
 
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = 1;
+    twodshaderstore[twodvertscnt].g = 1;
+    twodshaderstore[twodvertscnt].b = 1;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-    drawcalls++;
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = 1;
+    twodshaderstore[twodvertscnt].g = 1;
+    twodshaderstore[twodvertscnt].b = 1;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = 1;
+    twodshaderstore[twodvertscnt].g = 1;
+    twodshaderstore[twodvertscnt].b = 1;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDisable(GL_BLEND);
+    ////////////////////////////////
+
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = 1;
+    twodshaderstore[twodvertscnt].g = 1;
+    twodshaderstore[twodvertscnt].b = 1;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = 1;
+    twodshaderstore[twodvertscnt].g = 1;
+    twodshaderstore[twodvertscnt].b = 1;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = 1;
+    twodshaderstore[twodvertscnt].g = 1;
+    twodshaderstore[twodvertscnt].b = 1;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
     GL_Check_Errors();
+
+    if (twodvertscnt > 490) drawtwodverts();
+    return;
 }
 
 
@@ -1147,7 +1233,7 @@ void RenderOpenGL::ZDrawTextureAlpha(float u, float v, Image *img, int zVal) {
 }
 
 
-
+// TODO(pskelton): sort this - forcing the draw is slow
 // TODO(pskelton): stencil masking with opacity would be a better way to do this
 void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, int time, int start_opacity,
     int end_opacity) {
@@ -1227,12 +1313,17 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
         // draw image
         render->Update_Texture(temp);
         render->DrawTextureAlphaNew(x / float(window->GetWidth()), y / float(window->GetHeight()), temp);
+
+        render->drawtwodverts();
+
         temp->Release();
     }
 }
 
 
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
+    // TODO(pskelton): sort this - forcing the draw is slow
+
     if (img) {
         auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         int width = img->GetWidth();
@@ -1320,6 +1411,9 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
         // draw image
         render->Update_Texture(temp);
         render->DrawTextureAlphaNew(u, v, temp);
+
+        render->drawtwodverts();
+
         temp->Release();
     }
 }
@@ -1773,78 +1867,127 @@ void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
 void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
     // want to draw psrcrect section @ point
 
-    glEnable(GL_TEXTURE_2D);
+    TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;
+
+    if (!texture) {
+        __debugbreak();
+        return;
+    }
+
     float col = (blend_mode == 2) ? 1 : 0.5;
-
-    glColor3f(col, col, col);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    auto texture = (TextureOpenGL*)pArcomageGame->pSprites;
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+    float r = col;
+    float g = col;
+    float b = col;
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
     int clipw = this->clip_w;
     int clipz = this->clip_z;
 
-    int texwidth = texture->GetWidth();
-    int texheight = texture->GetHeight();
-
     int width = pSrcRect->z - pSrcRect->x;
     int height = pSrcRect->w - pSrcRect->y;
 
-    int x = pTargetPoint->x;  // u* window->GetWidth();
-    int y = pTargetPoint->y;  // v* window->GetHeight();
+    int x = pTargetPoint->x;
+    int y = pTargetPoint->y;
     int z = x + width;
     int w = y + height;
 
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
+    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
     // check for overlap
-    if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
+    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    int drawx = x;  // std::max(x, clipx);
-    int drawy = y;  // std::max(y, clipy);
-    int draww = w;  // std::min(w, clipw);
-    int drawz = z;  // std::min(z, clipz);
+    float gltexid = texture->GetOpenGlTexture();
+    int texwidth = texture->GetWidth();
+    int texheight = texture->GetHeight();
 
-    float depth = 0;
-
-    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
-        (float)drawz, (float)drawy, depth,
-        (float)drawz, (float)draww, depth,
-        (float)drawx, (float)draww, depth };
+    int drawx = x;
+    int drawy = y;
+    int draww = w;
+    int drawz = z;
 
     float texx = pSrcRect->x / float(texwidth);
     float texy = pSrcRect->y / float(texheight);
     float texz = pSrcRect->z / float(texwidth);
     float texw = pSrcRect->w / float(texheight);
 
-    GLfloat TexCoord[] = { texx, texy,
-        texz, texy,
-        texz, texw,
-        texx, texw,
-    };
+    // 0 1 2 / 0 2 3
 
-    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
-        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-    drawcalls++;
+    ////////////////////////////////
 
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDisable(GL_BLEND);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
+    if (twodvertscnt > 490) drawtwodverts();
     GL_Check_Errors();
     return;
 }
@@ -3105,13 +3248,6 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     float g = ((colourmask >> 8) & 0xFF) / 255.0f;
     float b = ((colourmask >> 0) & 0xFF) / 255.0f;
 
-    glEnable(GL_TEXTURE_2D);
-    glColor3f(r, g, b);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
     int clipx = this->clip_x;
     int clipy = this->clip_y;
     int clipw = this->clip_w;
@@ -3126,58 +3262,107 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     int w = y + height;
 
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
+    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
     // check for overlap
-    if ((clipx < z && clipz > x && clipy > w && clipw < y)) return;
+    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    int drawx = std::max(x, clipx);
-    int drawy = std::max(y, clipy);
-    int draww = std::min(w, clipw);
-    int drawz = std::min(z, clipz);
-    if (drawz <= drawx || draww <= drawy) return;
+    float gltexid = texture->GetOpenGlTexture();
 
-    float depth = 0;
-
-    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
-        (float)drawz, (float)drawy, depth,
-        (float)drawz, (float)draww, depth,
-        (float)drawx, (float)draww, depth };
+    int drawx = std::max(x, this->clip_x);
+    int drawy = std::max(y, this->clip_y);
+    int draww = std::min(w, this->clip_w);
+    int drawz = std::min(z, this->clip_z);
 
     float texx = (drawx - x) / float(width);
     float texy = (drawy - y) / float(height);
     float texz = (drawz - x) / float(width);
     float texw = (draww - y) / float(height);
 
-    GLfloat TexCoord[] = { texx, texy,
-        texz, texy,
-        texz, texw,
-        texx, texw,
-    };
+    // 0 1 2 / 0 2 3
 
-    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
-       0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-    drawcalls++;
+    ////////////////////////////////
 
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDisable(GL_BLEND);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    if (twodvertscnt > 490) drawtwodverts();
     GL_Check_Errors();
+    return;
 }
 
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
     if (!img) __debugbreak();
 
-    TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(img);
+    TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
         __debugbreak();
         return;
@@ -3186,13 +3371,6 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     float r = 1.0f;
     float g = 1.0f;
     float b = 1.0f;
-
-    glEnable(GL_TEXTURE_2D);
-    glColor3f(r, g, b);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
@@ -3203,75 +3381,108 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     int height = img->GetHeight();
 
     int x = u * window->GetWidth();
-    int y = v * window->GetHeight();
+    int y = v * window->GetHeight() + 0.5;
     int z = x + width;
     int w = y + custom_height;
 
     // check bounds
-    if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
+    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
     // check for overlap
-    if ((clipx < z && clipz > x && clipy > w && clipw < y)) return;
+    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    int drawx = std::max(x, clipx);
-    int drawy = std::max(y, clipy);
-    int draww = std::min(w, clipw);
-    int drawz = std::min(z, clipz);
-    if (drawz <= drawx || draww <= drawy) return;
+    float gltexid = texture->GetOpenGlTexture();
 
-    float depth = 0;
-
-    GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
-        (float)drawz, (float)drawy, depth,
-        (float)drawz, (float)draww, depth,
-        (float)drawx, (float)draww, depth };
+    int drawx = std::max(x, this->clip_x);
+    int drawy = std::max(y, this->clip_y);
+    int draww = std::min(w, this->clip_w);
+    int drawz = std::min(z, this->clip_z);
 
     float texx = (drawx - x) / float(width);
     float texy = (drawy - y) / float(height);
     float texz = float(drawz) / z;
     float texw = float(draww) / w;
 
-    GLfloat TexCoord[] = { texx, texy,
-        texz, texy,
-        texz, texw,
-        texx, texw,
-    };
+    // 0 1 2 / 0 2 3
 
-    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
-       0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, Vertices);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-    drawcalls++;
+    ////////////////////////////////
 
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    glDisable(GL_BLEND);
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
 
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        log->Warning("OpenGL: draw texture error: (%u)", err);
-    }
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    if (twodvertscnt > 490) drawtwodverts();
+    GL_Check_Errors();
+    return;
 }
 
-
-struct twodverts {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat u;
-    GLfloat v;
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-    GLfloat a;
-    GLfloat texid;
-};
 
 twodverts textshaderstore[6000] = {};
 int textvertscnt = 0;
@@ -3279,8 +3490,19 @@ int textvertscnt = 0;
 void RenderOpenGL::BeginTextNew(Texture *main, Texture *shadow) {
     if (textvertscnt) __debugbreak();
 
+
+
+    drawtwodverts();
+
     auto texturemain = (TextureOpenGL *)main;
+    GLuint texmainidcheck = texturemain->GetOpenGlTexture();
+    if (texmainidcheck == texmain) {
+        if (engine->config->verbose_logging)
+            logger->Info("same font started");
+    }
+
     texmain = texturemain->GetOpenGlTexture();
+
     auto textureshadow = (TextureOpenGL *)shadow;
     texshadow = textureshadow->GetOpenGlTexture();
 
@@ -3385,8 +3607,8 @@ void RenderOpenGL::EndTextNew() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     textvertscnt = 0;
-    texmain = 0;
-    texshadow = 0;
+    // texmain = 0;
+    // texshadow = 0;
     GL_Check_Errors();
     return;
 }
@@ -3450,31 +3672,6 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     float texz = u2;  //  (width - (z - drawz)) / float(width);
     float texw = v2;  // (height - (w - draww)) / float(height);
 
-    //GLfloat TexCoord[] = { texx, texy,
-    //    texz, texy,
-    //    texz, texw,
-    //    texx, texw,
-    //};
-
-    //GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
-    //    0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
-
-    //glEnableClientState(GL_VERTEX_ARRAY);
-    //glVertexPointer(3, GL_FLOAT, 0, Vertices);
-
-    //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    //glTexCoordPointer(2, GL_FLOAT, 0, TexCoord);
-
-    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-    //drawcalls++;
-
-    //glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    //glDisableClientState(GL_VERTEX_ARRAY);
-
-    //glDisable(GL_BLEND);
-    ////glEnable(GL_DEPTH_TEST);
-
-
 
     // 0 1 2 / 0 2 3
 
@@ -3487,7 +3684,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].g = g;
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
-    textshaderstore[textvertscnt].texid = float(isshadow);
+    textshaderstore[textvertscnt].texid = (isshadow);
     textvertscnt++;
 
     textshaderstore[textvertscnt].x = drawz;
@@ -3499,7 +3696,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].g = g;
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
-    textshaderstore[textvertscnt].texid = float(isshadow);
+    textshaderstore[textvertscnt].texid = (isshadow);
     textvertscnt++;
 
     textshaderstore[textvertscnt].x = drawz;
@@ -3511,7 +3708,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].g = g;
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
-    textshaderstore[textvertscnt].texid = float(isshadow);
+    textshaderstore[textvertscnt].texid = (isshadow);
     textvertscnt++;
 
     ////////////////////////////////
@@ -3525,7 +3722,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].g = g;
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
-    textshaderstore[textvertscnt].texid = float(isshadow);
+    textshaderstore[textvertscnt].texid = (isshadow);
     textvertscnt++;
 
     textshaderstore[textvertscnt].x = drawz;
@@ -3537,7 +3734,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].g = g;
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
-    textshaderstore[textvertscnt].texid = float(isshadow);
+    textshaderstore[textvertscnt].texid = (isshadow);
     textvertscnt++;
 
     textshaderstore[textvertscnt].x = drawx;
@@ -3549,7 +3746,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].g = g;
     textshaderstore[textvertscnt].b = b;
     textshaderstore[textvertscnt].a = 1;
-    textshaderstore[textvertscnt].texid = float(isshadow);
+    textshaderstore[textvertscnt].texid = (isshadow);
     textvertscnt++;
 
 
@@ -3623,6 +3820,10 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
 }
 
 void RenderOpenGL::Present() {
+    drawtwodverts();
+
+    GL_Check_Errors();
+
     window->OpenGlSwapBuffers();
 }
 
@@ -3667,7 +3868,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
             free(outbuildshaderstore[i]);
             outbuildshaderstore[i] = nullptr;
-            outbuildshaderstore[i] = (GLshaderverts *)malloc(sizeof(GLshaderverts) * 10000);
+            outbuildshaderstore[i] = (GLshaderverts *)malloc(sizeof(GLshaderverts) * 20000);
         }
 
         // reserve first 7 layers for water tiles in unit 0
@@ -3701,7 +3902,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
                         //poly->flags = 0;
                         //poly->field_32 = 0;
-                        auto tex = face.GetTexture();
+                        TextureOpenGL* tex = (TextureOpenGL*)face.GetTexture();
 
                         std::string texname = face.resourcename;
                         // gather up all texture and shaderverts data
@@ -3808,7 +4009,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                             }
 
                             numoutbuildverts[texunit] += 3;
-                            assert(numoutbuildverts[texunit] <= 9999);
+                            assert(numoutbuildverts[texunit] <= 19999);
                         }
                     }
                 }
@@ -4135,7 +4336,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
     for (int unit = 0; unit < 16; unit++) {
         // skip if textures are empty
-        if (numoutbuildtexloaded[unit] > 0) {
+        //if (numoutbuildtexloaded[unit] > 0) {
             if (unit == 1) {
                 glUniform1i(glGetUniformLocation(outbuildshader.ID, "watertiles"), GLint(0));
             }
@@ -4145,7 +4346,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
             glBindVertexArray(outbuildVAO[unit]);
             glDrawArrays(GL_TRIANGLES, 0, (numoutbuildverts[unit]));
             drawcalls++;
-        }
+        //}
     }
 
     // unload
@@ -4569,31 +4770,115 @@ void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) {
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
                                 unsigned int uWidth, unsigned int uHeight,
                                 unsigned int uColor16) {
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_BLEND);
-
-    unsigned int b = (uColor16 & 0x1F) * 8;
-    unsigned int g = ((uColor16 >> 5) & 0x3F) * 4;
-    unsigned int r = ((uColor16 >> 11) & 0x1F) * 8;
-    glColor3ub(r, g, b);
+    float b = ((uColor16 & 0x1F) * 8) / 255.0f;
+    float g = (((uColor16 >> 5) & 0x3F) * 4) / 255.0f;
+    float r = (((uColor16 >> 11) & 0x1F) * 8) / 255.0f;
 
     float depth = 0;
+    int x = uX;
+    int y = uY;
+    int z = x + uWidth;
+    int w = y + uHeight;
 
-    GLfloat Vertices[] = { (float)uX, (float)uY, depth,
-        (float)(uX+uWidth), (float)uY, depth,
-        (float)(uX + uWidth), (float)(uY+uHeight), depth,
-        (float)uX, (float)(uY + uHeight), depth };
+    // check bounds
+    if (x >= (int)window->GetWidth() || x >= this->clip_z || y >= (int)window->GetHeight() || y >= this->clip_w) return;
+    // check for overlap
+    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
-    GLubyte indices[] = { 0, 1, 2,  // first triangle (bottom left - top left - top right)
-        0, 2, 3 };  // second triangle (bottom left - top right - bottom right)
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, Vertices);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-    drawcalls++;
-    glDisableClientState(GL_VERTEX_ARRAY);
+    static Texture* effpar03 = assets->GetBitmap("effpar03");
+    auto texture = (TextureOpenGL*)effpar03;
+    float gltexid = texture->GetOpenGlTexture();
 
+    int drawx = std::max(x, this->clip_x);
+    int drawy = std::max(y, this->clip_y);
+    int draww = std::min(w, this->clip_w);
+    int drawz = std::min(z, this->clip_z);
+
+    float texx = 0.5;
+    float texy = 0.5;
+    float texz = 0.5;
+    float texw = 0.5;
+
+    // 0 1 2 / 0 2 3
+
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    ////////////////////////////////
+
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texy;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texz;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = texx;
+    twodshaderstore[twodvertscnt].v = texw;
+    twodshaderstore[twodvertscnt].r = r;
+    twodshaderstore[twodvertscnt].g = g;
+    twodshaderstore[twodvertscnt].b = b;
+    twodshaderstore[twodvertscnt].a = 1;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    if (twodvertscnt > 490) drawtwodverts();
     GL_Check_Errors();
+    return;
 }
 
 // gl shaders
@@ -4620,6 +4905,12 @@ bool RenderOpenGL::InitShaders() {
     if (lineshader.ID == 0)
         return false;
     lineVAO = 0;
+
+    logger->Info("Building two-d shader...");
+    twodshader.build("../../../../Engine/Graphics/Shaders/gltwodshader.vs", "../../../../Engine/Graphics/Shaders/gltwodshader.fs");
+    if (twodshader.ID == 0)
+        return false;
+    twodVAO = 0;
 
     return true;
 }
@@ -4672,6 +4963,110 @@ void RenderOpenGL::ReleaseTerrain() {
     }
 
     GL_Check_Errors();
+}
+
+void RenderOpenGL::drawtwodverts() {
+    if (!twodvertscnt) return;
+
+    int savex = this->clip_x;
+    int savey = this->clip_y;
+    int savez = this->clip_z;
+    int savew = this->clip_w;
+    render->ResetUIClipRect();
+
+    if (twodVAO == 0) {
+        glGenVertexArrays(1, &twodVAO);
+        glGenBuffers(1, &twodVBO);
+
+        glBindVertexArray(twodVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, twodVBO);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(twodshaderstore), twodshaderstore, GL_DYNAMIC_DRAW);
+
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void*)0);
+        glEnableVertexAttribArray(0);
+        // tex uv
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void*)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+        // colour
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void*)(5 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+        // texid
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void*)(9 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(3);
+    }
+
+    GL_Check_Errors();
+
+    // update buffer
+    glBindBuffer(GL_ARRAY_BUFFER, twodVBO);
+
+    GL_Check_Errors();
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(twodverts) * twodvertscnt, twodshaderstore);
+    GL_Check_Errors();
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(twodVAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+
+    glUseProgram(twodshader.ID);
+    GL_Check_Errors();
+
+    // glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    GL_Check_Errors();
+    // set sampler to texure0
+    glUniform1i(glGetUniformLocation(twodshader.ID, "texture0"), GLint(0));
+
+    //// set projection
+    glUniformMatrix4fv(glGetUniformLocation(twodshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    //// set view
+    glUniformMatrix4fv(glGetUniformLocation(twodshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    GL_Check_Errors();
+
+    int offset = 0;
+    while (offset < twodvertscnt) {
+        // set texture
+        GLfloat thistex = twodshaderstore[offset].texid;
+        glBindTexture(GL_TEXTURE_2D, twodshaderstore[offset].texid);
+
+        int cnt = 0;
+        do {
+            cnt++;
+        } while (twodshaderstore[offset + (cnt * 6)].texid == thistex);
+
+        glDrawArrays(GL_TRIANGLES, offset, (6*cnt));
+
+        if (engine->config->verbose_logging) {
+            if (cnt > 1) logger->Info("twod batch %i", cnt);
+        }
+
+        drawcalls++;
+
+        offset += (6*cnt);
+    }
+
+    GL_Check_Errors();
+    glUseProgram(0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
+    twodvertscnt = 0;
+    GL_Check_Errors();
+    render->SetUIClipRect(savex, savey, savez, savew);
 }
 
 
@@ -4800,6 +5195,10 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
     if (!nk_ctx)
         return false;
 
+    if (!nk_ctx->begin)
+        return false;
+
+
     int width, height;
     int display_width, display_height;
     struct nk_vec2 scale {};
@@ -4891,6 +5290,7 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
                 (GLint)(cmd->clip_rect.w * scale.x),
                 (GLint)(cmd->clip_rect.h * scale.y));
             glDrawElements(GL_TRIANGLES, (GLsizei)cmd->elem_count, GL_UNSIGNED_SHORT, offset);
+            ++drawcalls;
             offset += cmd->elem_count;
         }
         nk_clear(nk_ctx);

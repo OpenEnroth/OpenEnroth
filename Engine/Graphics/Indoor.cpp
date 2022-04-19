@@ -1174,7 +1174,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) return 0;
     if (uNumSectors < 2) {
-        __debugbreak();
+        // __debugbreak();
         return 0;
     }
 
@@ -1198,6 +1198,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         // nothing in secotr to check against so skip
         if (!FloorsAndPortals) continue;
+        if (!pSector->pFloors) continue;
 
         // loop over check faces
         for (uint z = 0; z < FloorsAndPortals; ++z) {
