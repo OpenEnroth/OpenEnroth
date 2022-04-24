@@ -1777,6 +1777,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             // no need to update map - just redraw
             render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
         }
+        render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
         render->BeginLines2D();
@@ -1814,25 +1815,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
             }
         }
-        render->EndLines2D();
     }
-
-    // draw arrow on the minimap(include. Ritor1)
-    uint arrow_idx;
-    unsigned int rotate = pParty->sRotationZ & TrigLUT->uDoublePiMask;
-    if ((signed int)rotate <= 1920) arrow_idx = 6;
-    if ((signed int)rotate < 1664) arrow_idx = 5;
-    if ((signed int)rotate <= 1408) arrow_idx = 4;
-    if ((signed int)rotate < 1152) arrow_idx = 3;
-    if ((signed int)rotate <= 896) arrow_idx = 2;
-    if ((signed int)rotate < 640) arrow_idx = 1;
-    if ((signed int)rotate <= 384) arrow_idx = 0;
-    if ((signed int)rotate < 128 || (signed int)rotate > 1920) arrow_idx = 7;
-    render->DrawTextureAlphaNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
-        render->BeginLines2D();
         if (uWizardEyeSkillLevel >= 2) {
             for (uint i = 0; i < uNumSpriteObjects; ++i) {
                 if (!pSpriteObjects[i].uType ||
@@ -1958,8 +1944,22 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
             }
         }
-        render->EndLines2D();
     }
+
+    render->EndLines2D();
+
+    // draw arrow on the minimap(include. Ritor1)
+    uint arrow_idx;
+    unsigned int rotate = pParty->sRotationZ & TrigLUT->uDoublePiMask;
+    if ((signed int)rotate <= 1920) arrow_idx = 6;
+    if ((signed int)rotate < 1664) arrow_idx = 5;
+    if ((signed int)rotate <= 1408) arrow_idx = 4;
+    if ((signed int)rotate < 1152) arrow_idx = 3;
+    if ((signed int)rotate <= 896) arrow_idx = 2;
+    if ((signed int)rotate < 640) arrow_idx = 1;
+    if ((signed int)rotate <= 384) arrow_idx = 0;
+    if ((signed int)rotate < 128 || (signed int)rotate > 1920) arrow_idx = 7;
+    render->DrawTextureAlphaNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     render->SetUIClipRect(541, 0, 567, 480);
     render->DrawTextureAlphaNew((floorf(((double)pParty->sRotationZ * 0.1171875) + 0.5f) + 285) / 640.0f,
@@ -2316,7 +2316,7 @@ void buttonbox(int x, int y, const char* text, int col) {
     render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
     render->EndLines2D();
 
-    uint colour = ui_character_condition_severe_color;
+    uint16_t colour = ui_character_condition_severe_color;
     if (col == 2) {
         colour = 0;
     }

@@ -108,6 +108,7 @@ void GUIProgressBar::Draw() {
     //render->ClearBlack();
 
     if (uType != TYPE_Fullscreen) {
+        // TODO(pskelton): fix flashing in opengl
         //engine->DrawGUI();
         render->DrawTextureAlphaNew(80 / 640.0f, 122 / 480.0f, progressbar_dungeon);
         render->DrawTextureAlphaNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->GetFrame(uIconID_TurnHour, 0)->GetTexture());

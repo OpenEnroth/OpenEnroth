@@ -4681,7 +4681,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
             obj2_x = pParty->vPosition.x;
             obj2_z = pParty->sEyelevel + pParty->vPosition.z;
             obj2_y = pParty->vPosition.y;
-            obj2_sector = pIndoor->GetSector(pParty->vPosition + Vec3_int_(0, 0, pParty->sEyelevel));
+            obj2_sector = pBLVRenderParams->uPartyEyeSectorID;
             break;
         case OBJECT_Actor:
             obj2_y = pActors[obj2_pid].vPosition.y;

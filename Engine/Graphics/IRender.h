@@ -397,8 +397,10 @@ class IRender {
                                int blend_mode) = 0;
 
     virtual void DrawIndoorBatched() = 0;
+    virtual void DrawIndoorFaces() = 0;
 
     virtual void ReleaseTerrain() = 0;
+    virtual void ReleaseBSP() = 0;
 
     virtual void drawtwodverts() = 0;
 

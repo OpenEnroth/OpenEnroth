@@ -205,7 +205,10 @@ class Render : public RenderBase {
                                int blend_mode) override;
 
     virtual void ReleaseTerrain() override;
+    virtual void ReleaseBSP() override;
     virtual void drawtwodverts() override;
+
+    virtual void DrawIndoorFaces() override;
 
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;

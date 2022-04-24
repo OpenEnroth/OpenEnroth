@@ -349,7 +349,7 @@ void Engine::DrawGUI() {
 
         int debug_info_offset = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            int sector_id = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+            int sector_id = pBLVRenderParams->uPartySectorID;
             pPrimaryWindow->DrawText(
                 pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255),
                 StringPrintf("Party Sector ID:        %u/%u\n", sector_id,
@@ -366,8 +366,7 @@ void Engine::DrawGUI() {
         std::string floor_level_str;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             uint uFaceID;
-            int sector_id = pIndoor->GetSector(
-                pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+            int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3_int_(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = StringPrintf(
                 "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);

@@ -166,8 +166,6 @@ void ODMFace::SetTexture(const std::string &filename) {
         this->ToggleIsTextureFrameTable();
     }
 
-    this->resourcename = filename;
-    std::transform(this->resourcename.begin(), this->resourcename.end(), this->resourcename.begin(), ::tolower);
     this->resource = assets->GetBitmap(filename);
 }
 

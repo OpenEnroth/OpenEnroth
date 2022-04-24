@@ -626,7 +626,7 @@ struct linesverts {
     GLfloat b;
 };
 
-linesverts lineshaderstore[500] = {};
+linesverts lineshaderstore[2000] = {};
 int linevertscnt = 0;
 
 void RenderOpenGL::BeginLines2D() {
@@ -691,26 +691,26 @@ void RenderOpenGL::EndLines2D() {
 
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
                                 signed int uW, unsigned __int16 uColor) {
-    unsigned int b = (uColor & 0x1F)*8;
-    unsigned int g = ((uColor >> 5) & 0x3F)*4;
-    unsigned int r = ((uColor >> 11) & 0x1F)*8;
+    float b = ((uColor & 0x1F)*8) / 255.0f;
+    float g = (((uColor >> 5) & 0x3F)*4) / 255.0f;
+    float r = (((uColor >> 11) & 0x1F)*8) / 255.0f;
 
     lineshaderstore[linevertscnt].x = uX;
     lineshaderstore[linevertscnt].y = uY;
-    lineshaderstore[linevertscnt].r = r / 255.;
-    lineshaderstore[linevertscnt].g = g / 255.;
-    lineshaderstore[linevertscnt].b = b / 255.;
+    lineshaderstore[linevertscnt].r = r;
+    lineshaderstore[linevertscnt].g = g;
+    lineshaderstore[linevertscnt].b = b;
     linevertscnt++;
 
     lineshaderstore[linevertscnt].x = uZ + 0.5;
     lineshaderstore[linevertscnt].y = uW + 0.5;
-    lineshaderstore[linevertscnt].r = r / 255.;
-    lineshaderstore[linevertscnt].g = g / 255.;
-    lineshaderstore[linevertscnt].b = b / 255.;
+    lineshaderstore[linevertscnt].r = r;
+    lineshaderstore[linevertscnt].g = g;
+    lineshaderstore[linevertscnt].b = b;
     linevertscnt++;
 
     // draw if buffer full
-    if (linevertscnt == 500) EndLines2D();
+    if (linevertscnt == 2000) EndLines2D();
 }
 
 void RenderOpenGL::BeginSceneD3D() {
@@ -1700,85 +1700,11 @@ int RenderOpenGL::GetActorsInViewport(int pDepth) {
     return 0;
 }
 
-void RenderOpenGL::BeginLightmaps() {
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE);
-
-    auto effpar03 = assets->GetBitmap("effpar03");
-    auto texture = (TextureOpenGL*)effpar03;
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
-    GL_Check_Errors();
-}
-
-void RenderOpenGL::EndLightmaps() {
-    glDisable(GL_BLEND);
-    glBindTexture(GL_TEXTURE_2D, GL_lastboundtex);
-
-    GL_Check_Errors();
-}
-
-
-void RenderOpenGL::BeginLightmaps2() {
-    glDisable(GL_CULL_FACE);
-    glDepthMask(false);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE);
-
-    static Texture* effpar03 = assets->GetBitmap("effpar03");
-    auto texture = (TextureOpenGL*)effpar03;
-    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
-    GL_Check_Errors();
-}
-
-
-void RenderOpenGL::EndLightmaps2() {
-    glDisable(GL_BLEND);
-    glDepthMask(true);
-    glEnable(GL_CULL_FACE);
-    glBindTexture(GL_TEXTURE_2D, GL_lastboundtex);
-
-    GL_Check_Errors();
-}
-
+void RenderOpenGL::BeginLightmaps() { return; }
+void RenderOpenGL::EndLightmaps() { return; }
+void RenderOpenGL::BeginLightmaps2() { return; }
+void RenderOpenGL::EndLightmaps2() { return; }
 bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, struct Vec3_float_ *pColorMult, float z_bias) {
-    // For outdoor terrain and indoor light (VII)(VII)
-    if (pLightmap->NumVertices < 3) {
-        log->Warning("Lightmap uNumVertices < 3");
-        return false;
-    }
-
-    unsigned int uLightmapColorMaskR = (pLightmap->uColorMask >> 16) & 0xFF;
-    unsigned int uLightmapColorMaskG = (pLightmap->uColorMask >> 8) & 0xFF;
-    unsigned int uLightmapColorMaskB = pLightmap->uColorMask & 0xFF;
-
-    unsigned int uLightmapColorR = floorf(
-        uLightmapColorMaskR * pLightmap->fBrightness * pColorMult->x + 0.5f);
-    unsigned int uLightmapColorG = floorf(
-        uLightmapColorMaskG * pLightmap->fBrightness * pColorMult->y + 0.5f);
-    unsigned int uLightmapColorB = floorf(
-        uLightmapColorMaskB * pLightmap->fBrightness * pColorMult->z + 0.5f);
-
-    RenderVertexD3D3 pVerticesD3D[64];
-
-    glBegin(GL_TRIANGLE_FAN);
-
-    for (uint i = 0; i < pLightmap->NumVertices; ++i) {
-        glColor4f((uLightmapColorR) / 255.0f, (uLightmapColorG) / 255.0f, (uLightmapColorB) / 255.0f, 1.0f);
-        glTexCoord2f(pLightmap->pVertices[i].u, pLightmap->pVertices[i].v);
-        glVertex3f(pLightmap->pVertices[i].vWorldPosition.x, pLightmap->pVertices[i].vWorldPosition.y, pLightmap->pVertices[i].vWorldPosition.z);
-    }
-
-    glEnd();
-
-    drawcalls++;
-
-    GL_Check_Errors();
     return true;
 }
 
@@ -3033,6 +2959,9 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         _set_ortho_modelview();
         DrawOutdoorSkyPolygon(&pSkyPolygon);
     }
+
+    //_set_3d_projection_matrix();
+    //_set_3d_projection_matrix();
 }
 
 //----- (004A2DA3) --------------------------------------------------------
@@ -3904,7 +3833,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                         //poly->field_32 = 0;
                         TextureOpenGL* tex = (TextureOpenGL*)face.GetTexture();
 
-                        std::string texname = face.resourcename;
+                        std::string *texname = tex->GetName();
                         // gather up all texture and shaderverts data
 
                         //auto tile = pOutdoor->DoGetTile(x, y);
@@ -3927,19 +3856,19 @@ void RenderOpenGL::DrawBuildingsD3D() {
                             attribflags |= 0x1000;
 
                         // check if tile->name is already in list
-                        auto mapiter = outbuildtexmap.find(texname);
+                        auto mapiter = outbuildtexmap.find(*texname);
                         if (mapiter != outbuildtexmap.end()) {
                             // if so, extract unit and layer
                             int unitlayer = mapiter->second;
                             texlayer = unitlayer & 0xFF;
                             texunit = (unitlayer & 0xFF00) >> 8;
-                        } else if (texname == "wtrtyl") {
+                        } else if (*texname == "wtrtyl") {
                             // water tile
                             texunit = 0;
                             texlayer = 0;
                         } else {
                             // else need to add it
-                            auto thistexture = assets->GetBitmap(texname);
+                            auto thistexture = assets->GetBitmap(*texname);
                             int width = thistexture->GetWidth();
                             int height = thistexture->GetHeight();
                             // check size to see what unit it needs
@@ -3961,7 +3890,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                             int encode = (texunit << 8) | texlayer;
 
                             // intsert into tex map
-                            outbuildtexmap.insert(std::make_pair(texname, encode));
+                            outbuildtexmap.insert(std::make_pair(*texname, encode));
 
                             numoutbuildtexloaded[i]++;
                             if (numoutbuildtexloaded[i] == 256) __debugbreak();
@@ -3969,48 +3898,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
                         face.texunit = texunit;
                         face.texlayer = texlayer;
-
-                        // load up verts here
-
-                        // TODO(pskelton): map to gl buffer rather than intermediate copy
-
-                        for (int z = 0; z < (face.uNumVertices - 2); z++) {
-                            // 123, 134, 145, 156..
-                            GLshaderverts *thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
-
-                            // copy first
-                            thisvert->x = model.pVertices.pVertices[face.pVertexIDs[0]].x;
-                            thisvert->y = model.pVertices.pVertices[face.pVertexIDs[0]].y;
-                            thisvert->z = model.pVertices.pVertices[face.pVertexIDs[0]].z;
-                            thisvert->u = face.pTextureUIDs[0] + face.sTextureDeltaU;
-                            thisvert->v = face.pTextureVIDs[0] + face.sTextureDeltaV;
-                            thisvert->texunit = texunit;
-                            thisvert->texturelayer = texlayer;
-                            thisvert->normx = face.pFacePlane.vNormal.x;
-                            thisvert->normy = face.pFacePlane.vNormal.y;
-                            thisvert->normz = face.pFacePlane.vNormal.z;
-                            thisvert->attribs = attribflags;
-                            thisvert++;
-
-                            // copy other two (z+1)(z+2)
-                            for (uint i = 1; i < 3; ++i) {
-                                thisvert->x = model.pVertices.pVertices[face.pVertexIDs[z + i]].x;
-                                thisvert->y = model.pVertices.pVertices[face.pVertexIDs[z + i]].y;
-                                thisvert->z = model.pVertices.pVertices[face.pVertexIDs[z + i]].z;
-                                thisvert->u = face.pTextureUIDs[z + i] + face.sTextureDeltaU;
-                                thisvert->v = face.pTextureVIDs[z + i] + face.sTextureDeltaV;
-                                thisvert->texunit = texunit;
-                                thisvert->texturelayer = texlayer;
-                                thisvert->normx = face.pFacePlane.vNormal.x;
-                                thisvert->normy = face.pFacePlane.vNormal.y;
-                                thisvert->normz = face.pFacePlane.vNormal.z;
-                                thisvert->attribs = attribflags;
-                                thisvert++;
-                            }
-
-                            numoutbuildverts[texunit] += 3;
-                            assert(numoutbuildverts[texunit] <= 19999);
-                        }
                     }
                 }
             }
@@ -4024,7 +3911,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
             glBindVertexArray(outbuildVAO[l]);
             glBindBuffer(GL_ARRAY_BUFFER, outbuildVBO[l]);
 
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 10000, outbuildshaderstore[l], GL_DYNAMIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, outbuildshaderstore[l], GL_DYNAMIC_DRAW);
 
             // position attribute
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)0);
@@ -4112,7 +3999,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
             GL_Check_Errors();
         }
-    } else {
+    }
+
         // else update verts - blank store
         for (int i = 0; i < 16; i++) {
             numoutbuildverts[i] = 0;
@@ -4126,52 +4014,43 @@ void RenderOpenGL::DrawBuildingsD3D() {
                 if (!model.pFaces.empty()) {
                     for (ODMFace &face : model.pFaces) {
                         if (!face.Invisible()) {
-                            int texunit = face.texunit;
-                            int texlayer = face.texlayer;
-                            int attribflags = 0;
+                            array_73D150[0].vWorldPosition.x = model.pVertices.pVertices[face.pVertexIDs[0]].x;
+                            array_73D150[0].vWorldPosition.y = model.pVertices.pVertices[face.pVertexIDs[0]].y;
+                            array_73D150[0].vWorldPosition.z = model.pVertices.pVertices[face.pVertexIDs[0]].z;
 
-                            if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
-                            if (face.uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
 
-                            if (face.uAttributes & FACE_FlowDown)
-                                attribflags |= 0x400;
-                            else if (face.uAttributes & FACE_FlowUp)
-                                attribflags |= 0x800;
+                            if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
+                                int texunit = face.texunit;
+                                int texlayer = face.texlayer;
+                                int attribflags = 0;
 
-                            if (face.uAttributes & FACE_FlowRight)
-                                attribflags |= 0x2000;
-                            else if (face.uAttributes & FACE_FlowLeft)
-                                attribflags |= 0x1000;
+                                if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
+                                if (face.uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
 
-                            if (face.uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                                attribflags |= FACE_OUTLINED;
+                                if (face.uAttributes & FACE_FlowDown)
+                                    attribflags |= 0x400;
+                                else if (face.uAttributes & FACE_FlowUp)
+                                    attribflags |= 0x800;
 
-                            // load up verts here
-                            for (int z = 0; z < (face.uNumVertices - 2); z++) {
-                                // 123, 134, 145, 156..
-                                GLshaderverts *thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
+                                if (face.uAttributes & FACE_FlowRight)
+                                    attribflags |= 0x2000;
+                                else if (face.uAttributes & FACE_FlowLeft)
+                                    attribflags |= 0x1000;
 
-                                // copy first
-                                thisvert->x = model.pVertices.pVertices[face.pVertexIDs[0]].x;
-                                thisvert->y = model.pVertices.pVertices[face.pVertexIDs[0]].y;
-                                thisvert->z = model.pVertices.pVertices[face.pVertexIDs[0]].z;
-                                thisvert->u = face.pTextureUIDs[0] + face.sTextureDeltaU;
-                                thisvert->v = face.pTextureVIDs[0] + face.sTextureDeltaV;
-                                thisvert->texunit = texunit;
-                                thisvert->texturelayer = texlayer;
-                                thisvert->normx = face.pFacePlane.vNormal.x;
-                                thisvert->normy = face.pFacePlane.vNormal.y;
-                                thisvert->normz = face.pFacePlane.vNormal.z;
-                                thisvert->attribs = attribflags;
-                                thisvert++;
+                                if (face.uAttributes & (FACE_OUTLINED | FACE_IsSecret))
+                                    attribflags |= FACE_OUTLINED;
 
-                                // copy other two (z+1)(z+2)
-                                for (uint i = 1; i < 3; ++i) {
-                                    thisvert->x = model.pVertices.pVertices[face.pVertexIDs[z + i]].x;
-                                    thisvert->y = model.pVertices.pVertices[face.pVertexIDs[z + i]].y;
-                                    thisvert->z = model.pVertices.pVertices[face.pVertexIDs[z + i]].z;
-                                    thisvert->u = face.pTextureUIDs[z + i] + face.sTextureDeltaU;
-                                    thisvert->v = face.pTextureVIDs[z + i] + face.sTextureDeltaV;
+                                // load up verts here
+                                for (int z = 0; z < (face.uNumVertices - 2); z++) {
+                                    // 123, 134, 145, 156..
+                                    GLshaderverts* thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
+
+                                    // copy first
+                                    thisvert->x = model.pVertices.pVertices[face.pVertexIDs[0]].x;
+                                    thisvert->y = model.pVertices.pVertices[face.pVertexIDs[0]].y;
+                                    thisvert->z = model.pVertices.pVertices[face.pVertexIDs[0]].z;
+                                    thisvert->u = face.pTextureUIDs[0] + face.sTextureDeltaU;
+                                    thisvert->v = face.pTextureVIDs[0] + face.sTextureDeltaV;
                                     thisvert->texunit = texunit;
                                     thisvert->texturelayer = texlayer;
                                     thisvert->normx = face.pFacePlane.vNormal.x;
@@ -4179,10 +4058,26 @@ void RenderOpenGL::DrawBuildingsD3D() {
                                     thisvert->normz = face.pFacePlane.vNormal.z;
                                     thisvert->attribs = attribflags;
                                     thisvert++;
-                                }
 
-                                numoutbuildverts[texunit] += 3;
-                                assert(numoutbuildverts[texunit] <= 9999);
+                                    // copy other two (z+1)(z+2)
+                                    for (uint i = 1; i < 3; ++i) {
+                                        thisvert->x = model.pVertices.pVertices[face.pVertexIDs[z + i]].x;
+                                        thisvert->y = model.pVertices.pVertices[face.pVertexIDs[z + i]].y;
+                                        thisvert->z = model.pVertices.pVertices[face.pVertexIDs[z + i]].z;
+                                        thisvert->u = face.pTextureUIDs[z + i] + face.sTextureDeltaU;
+                                        thisvert->v = face.pTextureVIDs[z + i] + face.sTextureDeltaV;
+                                        thisvert->texunit = texunit;
+                                        thisvert->texturelayer = texlayer;
+                                        thisvert->normx = face.pFacePlane.vNormal.x;
+                                        thisvert->normy = face.pFacePlane.vNormal.y;
+                                        thisvert->normz = face.pFacePlane.vNormal.z;
+                                        thisvert->attribs = attribflags;
+                                        thisvert++;
+                                    }
+
+                                    numoutbuildverts[texunit] += 3;
+                                    assert(numoutbuildverts[texunit] <= 9999);
+                                }
                             }
                         }
                     }
@@ -4196,7 +4091,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
             if (numoutbuildverts[l]) {
                 glBindBuffer(GL_ARRAY_BUFFER, outbuildVBO[l]);
                 // orphan buffer
-                glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 10000, NULL, GL_DYNAMIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
                 // update buffer
                 glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLshaderverts) * numoutbuildverts[l], outbuildshaderstore[l]);
                 GL_Check_Errors();
@@ -4205,8 +4100,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
         GL_Check_Errors();
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
 
     // terrain debug
     if (engine->config->debug_terrain)
@@ -4261,7 +4154,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
     }
 
     glUniform3fv(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].position"), 1, &camera[0]);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].ambient"), 0.085, 0.085, 0.085);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].specular"), 0, 0, 1);
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].radius"), torchradius);
@@ -4287,9 +4180,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0, g / 10.0, b / 10.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
@@ -4314,9 +4207,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0, g / 10.0, b / 10.0);
         glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), r, g, b);
+        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
         glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
@@ -4468,216 +4361,760 @@ void RenderOpenGL::DrawBuildingsD3D() {
     ///////////////// shader end
 }
 
+GLshaderverts* BSPshaderstore[16] = { nullptr };
+int numBSPverts[16] = { 0 };
+
+void RenderOpenGL::DrawIndoorFaces() {
+    // void RenderOpenGL::DrawIndoorBSP() {
+
+
+
+
+        glEnable(GL_CULL_FACE);
+
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+
+        _set_ortho_projection(1);
+        _set_ortho_modelview();
+
+        _set_3d_projection_matrix();
+        _set_3d_modelview_matrix();
+
+        if (bspVAO[0] == 0) {
+            // lights setup
+            int cntnosect = 0;
+
+            for (int lightscnt = 0; lightscnt < pStationaryLightsStack->uNumLightsActive; ++lightscnt) {
+                auto test = pStationaryLightsStack->pLights[lightscnt];
+
+
+                // kludge for getting lights in  visible sectors
+                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition.x, test.vPosition.y, test.vPosition.z);
+
+                if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
+            }
+
+            logger->Warning("%i lights - sector not found", cntnosect);
+
+
+            // count triangles and create store
+            //int verttotals = 0;
+            //numBSPverts = 0;
+
+            //for (int count = 0; count < pIndoor->uNumFaces; count++) {
+            //    auto face = &pIndoor->pFaces[count];
+            //    if (face->Portal()) continue;
+            //    if (!face->GetTexture()) continue;
+
+            //    //if (face->uAttributes & FACE_IS_DOOR) continue;
+
+            //    if (face->uNumVertices) {
+            //        numBSPverts += 3 * (face->uNumVertices - 2);
+            //    }
+            //}
+
+            //free(BSPshaderstore);
+            //BSPshaderstore = NULL;
+            //BSPshaderstore = (GLshaderverts*)malloc(sizeof(GLshaderverts) * numBSPverts);
+
+            for (int i = 0; i < 16; i++) {
+                numBSPverts[i] = 0;
+                free(BSPshaderstore[i]);
+                BSPshaderstore[i] = nullptr;
+                BSPshaderstore[i] = (GLshaderverts*)malloc(sizeof(GLshaderverts) * 20000);
+            }
+
+
+            // reserve first 7 layers for water tiles in unit 0
+            auto wtrtexture = this->hd_water_tile_anim[0];
+            //terraintexmap.insert(std::make_pair("wtrtyl", terraintexmap.size()));
+            //numterraintexloaded[0]++;
+            bsptexturewidths[0] = wtrtexture->GetWidth();
+            bsptextureheights[0] = wtrtexture->GetHeight();
+
+            for (int buff = 0; buff < 7; buff++) {
+                char container_name[64];
+                sprintf(container_name, "HDWTR%03u", buff);
+
+                bsptexmap.insert(std::make_pair(container_name, bsptexmap.size()));
+                bsptexloaded[0]++;
+            }
+
+
+            for (int test = 0; test < pIndoor->uNumFaces; test++) {
+                BLVFace* face = &pIndoor->pFaces[test];
+
+                if (face->Portal()) continue;
+                if (!face->GetTexture()) continue;
+                //if (face->uAttributes & FACE_IS_DOOR) continue;
+
+                TextureOpenGL* tex = (TextureOpenGL*)face->GetTexture();
+                std::string* texname = tex->GetName();
+
+                int texunit = 0;
+                int texlayer = 0;
+                int attribflags = 0;
+
+                if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
+                if (face->uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+
+                if (face->uAttributes & FACE_FlowDown)
+                    attribflags |= 0x400;
+                else if (face->uAttributes & FACE_FlowUp)
+                    attribflags |= 0x800;
+
+                if (face->uAttributes & FACE_FlowRight)
+                    attribflags |= 0x2000;
+                else if (face->uAttributes & FACE_FlowLeft)
+                    attribflags |= 0x1000;
+
+                if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
+                    attribflags |= FACE_OUTLINED;
+
+                // check if tile->name is already in list
+                auto mapiter = bsptexmap.find(*texname);
+                if (mapiter != bsptexmap.end()) {
+                    // if so, extract unit and layer
+                    int unitlayer = mapiter->second;
+                    texlayer = unitlayer & 0xFF;
+                    texunit = (unitlayer & 0xFF00) >> 8;
+                } else if (*texname == "wtrtyl") {
+                    // water tile
+                    texunit = 0;
+                    texlayer = 0;
+                } else {
+                    // else need to add it
+                    auto thistexture = assets->GetBitmap(*texname);
+                    int width = thistexture->GetWidth();
+                    int height = thistexture->GetHeight();
+                    // check size to see what unit it needs
+                    int i;
+                    for (i = 0; i < 16; i++) {
+                        if ((bsptexturewidths[i] == width && bsptextureheights[i] == height) || bsptexturewidths[i] == 0) break;
+                    }
+                    if (i == 16) __debugbreak();
+
+                    if (bsptexturewidths[i] == 0) {
+                        bsptexturewidths[i] = width;
+                        bsptextureheights[i] = height;
+                    }
+
+                    texunit = i;
+                    texlayer = bsptexloaded[i];
+
+                    // encode unit and layer together
+                    int encode = (texunit << 8) | texlayer;
+
+                    // intsert into tex map
+                    bsptexmap.insert(std::make_pair(*texname, encode));
+
+                    bsptexloaded[i]++;
+                    if (bsptexloaded[i] == 256) __debugbreak();
+                }
+
+                face->texunit = texunit;
+                face->texlayer = texlayer;
+            }
+
+            for (int l = 0; l < 16; l++) {
+                glGenVertexArrays(1, &bspVAO[l]);
+                glGenBuffers(1, &bspVBO[l]);
+
+                glBindVertexArray(bspVAO[l]);
+                glBindBuffer(GL_ARRAY_BUFFER, bspVBO[l]);
+
+                glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
+
+                // position attribute
+                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)0);
+                glEnableVertexAttribArray(0);
+                // tex uv attribute
+                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(3 * sizeof(GLfloat)));
+                glEnableVertexAttribArray(1);
+                // tex unit attribute
+                // tex array layer attribute
+                glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(5 * sizeof(GLfloat)));
+                glEnableVertexAttribArray(2);
+                // normals
+                glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(7 * sizeof(GLfloat)));
+                glEnableVertexAttribArray(3);
+                // attribs - not used here yet
+                glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(10 * sizeof(GLfloat)));
+                glEnableVertexAttribArray(4);
+
+
+                GL_Check_Errors();
+            }
+
+            // texture set up
+
+            // loop over all units
+            for (int unit = 0; unit < 16; unit++) {
+                assert(bsptexloaded[unit] <= 256);
+                // skip if textures are empty
+                if (bsptexloaded[unit] == 0) continue;
+
+                glGenTextures(1, &bsptextures[unit]);
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D_ARRAY, bsptextures[unit]);
+
+                glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, bsptexturewidths[unit], bsptextureheights[unit], bsptexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+                std::map<std::string, int>::iterator it = bsptexmap.begin();
+                while (it != bsptexmap.end()) {
+                    int comb = it->second;
+                    int tlayer = comb & 0xFF;
+                    int tunit = (comb & 0xFF00) >> 8;
+
+                    if (tunit == unit) {
+                        // get texture
+                        auto texture = assets->GetBitmap(it->first);
+
+                        std::cout << "loading  " << it->first << "   into unit " << tunit << " and pos " << tlayer << std::endl;
+
+                        glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
+                            0,
+                            0, 0, tlayer,
+                            bsptexturewidths[unit], bsptextureheights[unit], 1,
+                            GL_RGBA,
+                            GL_UNSIGNED_BYTE,
+                            texture->GetPixels(IMAGE_FORMAT_R8G8B8A8));
+
+                        //numterraintexloaded[0]++;
+                    }
+
+                    it++;
+                }
+
+
+
+
+                glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+                glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+
+
+                GL_Check_Errors();;
+            }
+        }
+
+
+            // update verts - blank store
+
+            for (int i = 0; i < 16; i++) {
+                numBSPverts[i] = 0;
+            }
+
+            bool drawnsky = false;
+
+            for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
+                // viewed through portal
+                /*IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
+                    pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum,
+                    4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);*/
+
+                unsigned int uFaceID = pBspRenderer->faces[i].uFaceID;
+                if (uFaceID >= pIndoor->uNumFaces)
+                    continue;
+                BLVFace* face = &pIndoor->pFaces[uFaceID];
+
+                if (face->Portal()) {
+                    continue;
+                }
+
+                if (face->uNumVertices < 3) continue;
+
+                if (face->Invisible()) {
+                    continue;
+                }
+
+                if (!face->GetTexture()) {
+                    continue;
+                }
+
+                if (face->Indoor_sky()) {
+                    if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                        if (drawnsky == false) {
+                            drawnsky = true;
+                        }
+                        continue;
+                    }
+                }
+
+                IndoorCameraD3D_Vec4* portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
+                unsigned int uNumFrustums = 4;
+                RenderVertexSoft* pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
+
+                uint ColourMask;  // ebx@25
+                unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
+                int LightLevel;                     // [sp+34h] [bp+Ch]@25
+
+                static RenderVertexSoft static_vertices_buff_in[64];  // buff in
+                static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
+
+                static stru154 FacePlaneHolder;  // idb
+
+                if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
+                    uNumVerticesa = face->uNumVertices;
+
+                    // copy to buff in
+                    for (uint i = 0; i < face->uNumVertices; ++i) {
+                        static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[face->pVertexIDs[i]].x;
+                        static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[face->pVertexIDs[i]].y;
+                        static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[face->pVertexIDs[i]].z;
+                        static_vertices_buff_in[i].u = (signed short)face->pVertexUIDs[i];
+                        static_vertices_buff_in[i].v = (signed short)face->pVertexVIDs[i];
+                    }
+
+                    // check if this face is visible through current portal node
+                    if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)/* ||  true*/
+                        // pCamera3D->ClipFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4, 0, 0) || true
+                        ) {
+                        ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+
+                        face->uAttributes |= FACE_SeenByParty;
+
+
+                        // load up verts here
+                        int texlayer = 0;
+                        int texunit = 0;
+                        int attribflags = 0;
+
+                        if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
+                        if (face->uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+
+                        if (face->uAttributes & FACE_FlowDown)
+                            attribflags |= 0x400;
+                        else if (face->uAttributes & FACE_FlowUp)
+                            attribflags |= 0x800;
+
+                        if (face->uAttributes & FACE_FlowRight)
+                            attribflags |= 0x2000;
+                        else if (face->uAttributes & FACE_FlowLeft)
+                            attribflags |= 0x1000;
+
+                        if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
+                            attribflags |= FACE_OUTLINED;
+
+                        texlayer = face->texlayer;
+                        texunit = face->texunit;
+
+                        for (int z = 0; z < (face->uNumVertices - 2); z++) {
+                            // 123, 134, 145, 156..
+                            GLshaderverts* thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
+
+
+                            // copy first
+                            thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
+                            thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
+                            thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
+                            thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
+                            thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                            thisvert->texunit = texunit;
+                            thisvert->texturelayer = texlayer;
+                            thisvert->normx = face->pFacePlane.vNormal.x;
+                            thisvert->normy = face->pFacePlane.vNormal.y;
+                            thisvert->normz = face->pFacePlane.vNormal.z;
+                            thisvert->attribs = attribflags;
+                            thisvert++;
+
+                            // copy other two (z+1)(z+2)
+                            for (uint i = 1; i < 3; ++i) {
+                                thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
+                                thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
+                                thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
+                                thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
+                                thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                                thisvert->texunit = texunit;
+                                thisvert->texturelayer = texlayer;
+                                thisvert->normx = face->pFacePlane.vNormal.x;
+                                thisvert->normy = face->pFacePlane.vNormal.y;
+                                thisvert->normz = face->pFacePlane.vNormal.z;
+                                thisvert->attribs = attribflags;
+                                thisvert++;
+                            }
+
+                            numBSPverts[texunit] += 3;
+                            assert(numBSPverts[texunit] <= 19999);
+                        }
+                    }
+                }
+            }
+
+            GL_Check_Errors();
+
+            for (int l = 0; l < 16; l++) {
+                if (numBSPverts[l]) {
+                    glBindBuffer(GL_ARRAY_BUFFER, bspVBO[l]);
+                    // orphan buffer
+                    glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
+                    // update buffer
+                    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLshaderverts) * numBSPverts[l], BSPshaderstore[l]);
+                    GL_Check_Errors();
+                }
+            }
+
+            GL_Check_Errors();
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // terrain debug
+        if (engine->config->debug_terrain)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+        ////
+        for (int unit = 0; unit < 16; unit++) {
+            // skip if textures are empty
+            //if (bsptexloaded[unit] > 0) {
+                glActiveTexture(GL_TEXTURE0 + unit);
+                glBindTexture(GL_TEXTURE_2D_ARRAY, bsptextures[unit]);
+            //}
+        }
+
+        //logger->Info("vefore");
+
+        //glBindVertexArray(bspVAO);
+        //glEnableVertexAttribArray(0);
+        //glEnableVertexAttribArray(1);
+        //glEnableVertexAttribArray(2);
+        //glEnableVertexAttribArray(3);
+        //glEnableVertexAttribArray(4);
+
+        glUseProgram(bspshader.ID);
+
+        //logger->Info("after");
+        //// set projection
+        glUniformMatrix4fv(glGetUniformLocation(bspshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+        //// set view
+        glUniformMatrix4fv(glGetUniformLocation(bspshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+        glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(OS_GetTime() >> 4));
+
+        // set texture unit location
+        glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray0"), GLint(0));
+        glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray1"), GLint(1));
+        glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray2"), GLint(2));
+
+
+        GLfloat camera[3];
+        camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0));
+        camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0));
+        camera[2] = (float)(pParty->vPosition.z + pParty->sEyelevel);
+        glUniform3fv(glGetUniformLocation(bspshader.ID, "CameraPos"), 1, &camera[0]);
+
+
+        // lighting stuff
+        GLfloat sunvec[3];
+        sunvec[0] = 0;  // (float)pOutdoor->vSunlight.x / 65536.0;
+        sunvec[1] = 0;  // (float)pOutdoor->vSunlight.y / 65536.0;
+        sunvec[2] = 0;  // (float)pOutdoor->vSunlight.z / 65536.0;
+
+
+        int16_t mintest = 0;
+
+        for (int i = 0; i < pIndoor->uNumSectors; i++) {
+            mintest = std::max(mintest, pIndoor->pSectors[i].uMinAmbientLightLevel);
+        }
+
+        Lights.uCurrentAmbientLightLevel = (Lights.uDefaultAmbientLightLevel + mintest);
+
+        float ambient = (248.0 - (Lights.uCurrentAmbientLightLevel << 3)) / 255.0;
+        //pParty->uCurrentMinute + pParty->uCurrentHour * 60.0;  // 0 - > 1439
+    // ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * pi_double) / 1440) + 1) * 0.27;
+
+        float diffuseon = 0;  // pWeather->bNight ? 0 : 1;
+
+        glUniform3fv(glGetUniformLocation(bspshader.ID, "sun.direction"), 1, &sunvec[0]);
+        glUniform3f(glGetUniformLocation(bspshader.ID, "sun.ambient"), ambient, ambient, ambient);
+        glUniform3f(glGetUniformLocation(bspshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
+        glUniform3f(glGetUniformLocation(bspshader.ID, "sun.specular"), diffuseon * 1.0, diffuseon * 0.8, 0.0);
+
+        // point lights - fspointlights
+
+            //lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+            //lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+            //lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+            //lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+            //lightingShader.setFloat("pointLights[0].constant", 1.0f);
+            //lightingShader.setFloat("pointLights[0].linear", 0.09);
+            //lightingShader.setFloat("pointLights[0].quadratic", 0.032);
+
+
+        //// test torchlight
+        //float torchradius = 0;
+        //if (!diffuseon) {
+        //    int rangemult = 1;
+        //    if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
+        //        rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+        //    torchradius = float(rangemult) * 1024.0;
+        //}
+
+        //glUniform3fv(glGetUniformLocation(bspshader.ID, "fspointlights[0].position"), 1, &camera[0]);
+        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);
+        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);
+        //glUniform3f(glGetUniformLocation(bspshader.ID, "fspointlights[0].specular"), 0, 0, 1);
+        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
+        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
+        ////glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
+        //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].radius"), torchradius);
+
+    //        // torchlight - pointlight 1 is always party glow
+    //float torchradius = 0;
+    //if (!diffuseon) {
+    //    int rangemult = 1;
+    //    if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
+    //        rangemult = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+    //    torchradius = float(rangemult) * 1024.0;
+    //}
+
+    //glUniform3fv(glGetUniformLocation(terrainshader.ID, "fspointlights[0].position"), 1, &camera[0]);
+    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);  // background
+    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);  // direct
+    //glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].specular"), 0, 0, 1);          // for "shinyness"
+    //glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].radius"), torchradius);
+
+
+        // rest of lights stacking
+        GLuint num_lights = 0;   // 1;
+
+        for (int i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
+            if (num_lights >= 40) break;
+
+            // test sector/ distance?
+
+            std::string slotnum = std::to_string(num_lights);
+            auto test = pMobileLightsStack->pLights[i];
+
+            float x = pMobileLightsStack->pLights[i].vPosition.x;
+            float y = pMobileLightsStack->pLights[i].vPosition.y;
+            float z = pMobileLightsStack->pLights[i].vPosition.z;
+
+            float r = pMobileLightsStack->pLights[i].uLightColorR / 255.0;
+            float g = pMobileLightsStack->pLights[i].uLightColorG / 255.0;
+            float b = pMobileLightsStack->pLights[i].uLightColorB / 255.0;
+
+            float lightrad = pMobileLightsStack->pLights[i].uRadius;
+
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0, g / 10.0, b / 10.0);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
+            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
+            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+            num_lights++;
+
+            //    StackLight_TerrainFace(
+            //        (StationaryLight*)&pMobileLightsStack->pLights[i], pNormal,
+            //        Light_tile_dist, VertList, uStripType, bLightBackfaces, &num_lights);
+        }
+
+
+
+        // sort stationary by distance ??
+
+
+
+        for (int i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
+            if (num_lights >= 40) break;
+
+            std::string slotnum = std::to_string(num_lights);
+            auto test = pStationaryLightsStack->pLights[i];
+
+
+            // kludge for getting lights in  visible sectors
+            // int sector = pIndoor->GetSector(test.vPosition.x, test.vPosition.y, test.vPosition.z);
+
+            // is this on the list
+            bool onlist = false;
+            for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
+                int listsector = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
+                if (test.uSectorID == listsector) {
+                    onlist = true;
+                    break;
+                }
+            }
+            if (!onlist) continue;
+
+
+
+            float x = test.vPosition.x;
+            float y = test.vPosition.y;
+            float z = test.vPosition.z;
+
+            float r = test.uLightColorR / 255.0;
+            float g = test.uLightColorG / 255.0;
+            float b = test.uLightColorB / 255.0;
+
+            float lightrad = test.uRadius;
+
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), r / 10.0, g / 10.0, b / 10.0);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), r, g, b);
+            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].constant"), .81);
+            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].linear"), 0.003);
+            //glUniform1f(glGetUniformLocation(bspshader.ID, "fspointlights[0].quadratic"), 0.000007);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+
+            num_lights++;
+
+
+
+            //    StackLight_TerrainFace(&pStationaryLightsStack->pLights[i], pNormal,
+            //        Light_tile_dist, VertList, uStripType, bLightBackfaces,
+            //        &num_lights);
+        }
+
+        // logger->Info("Frame");
+
+        // blank lights
+
+        for (int blank = num_lights; blank < 40; blank++) {
+            std::string slotnum = std::to_string(blank);
+            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
+        }
+
+
+        GL_Check_Errors();
+
+
+        // toggle for water faces or not
+        glUniform1i(glGetUniformLocation(bspshader.ID, "watertiles"), GLint(1));
+
+        glActiveTexture(GL_TEXTURE0);
+
+        for (int unit = 0; unit < 16; unit++) {
+            // skip if textures are empty
+            //if (numoutbuildtexloaded[unit] > 0) {
+            if (unit == 1) {
+                glUniform1i(glGetUniformLocation(bspshader.ID, "watertiles"), GLint(0));
+            }
+
+            // draw each set of triangles
+            glBindTexture(GL_TEXTURE_2D_ARRAY, bsptextures[unit]);
+            glBindVertexArray(bspVAO[unit]);
+            glDrawArrays(GL_TRIANGLES, 0, (numBSPverts[unit]));
+            drawcalls++;
+            //}
+        }
+
+        glUseProgram(0);
+
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
+        glDisableVertexAttribArray(4);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(0);
+
+
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+
+
+
+        //end terrain debug
+        if (engine->config->debug_terrain)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
+
+        GL_Check_Errors();
+
+        // do we need background sky?
+        if (drawnsky == true) {
+            SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
+            render->DrawOutdoorSkyD3D();
+        }
+
+
+        // stack decals start
+
+        if (!decal_builder->bloodsplat_container->uNumBloodsplats) return;
+        static stru154 FacePlaneHolder;
+        static RenderVertexSoft static_vertices_buff_in[64];  // buff in
+
+        // loop over faces
+        for (int test = 0; test < pIndoor->uNumFaces; test++) {
+            BLVFace* pface = &pIndoor->pFaces[test];
+
+            if (pface->Portal()) continue;
+            if (!pface->GetTexture()) continue;
+
+            // check if faces is visible
+            bool onlist = false;
+            for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
+                int listsector = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
+                if (pface->uSectorID == listsector) {
+                    onlist = true;
+                    break;
+                }
+            }
+            if (!onlist) continue;
+
+
+            decal_builder->ApplyBloodsplatDecals_IndoorFace(test);
+            if (!decal_builder->uNumSplatsThisFace) continue;
+
+            FacePlaneHolder.face_plane.vNormal.x = pface->pFacePlane.vNormal.x;
+            FacePlaneHolder.polygonType = pface->uPolygonType;
+            FacePlaneHolder.face_plane.vNormal.y = pface->pFacePlane.vNormal.y;
+            FacePlaneHolder.face_plane.vNormal.z = pface->pFacePlane.vNormal.z;
+            FacePlaneHolder.face_plane.dist = pface->pFacePlane.dist;
+
+            // copy to buff in
+            for (uint i = 0; i < pface->uNumVertices; ++i) {
+                static_vertices_buff_in[i].vWorldPosition.x =
+                    pIndoor->pVertices[pface->pVertexIDs[i]].x;
+                static_vertices_buff_in[i].vWorldPosition.y =
+                    pIndoor->pVertices[pface->pVertexIDs[i]].y;
+                static_vertices_buff_in[i].vWorldPosition.z =
+                    pIndoor->pVertices[pface->pVertexIDs[i]].z;
+                static_vertices_buff_in[i].u = (signed short)pface->pVertexUIDs[i];
+                static_vertices_buff_in[i].v = (signed short)pface->pVertexVIDs[i];
+            }
+
+            // blood draw
+            decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, 1, &FacePlaneHolder,
+                pface->uNumVertices, static_vertices_buff_in,
+                0, pface->uSectorID);
+        }
+
+
+
+        ///////////////////////////////////////////////////////
+        // stack decals end
+
+
+       // __debugbreak();
+
+
+        return;
+}
+
 void RenderOpenGL::DrawIndoorBatched() { return; }
 
 // no longer require with shaders
 void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) { return; }
-
 void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     int uPackedID, unsigned int uColor,
     int a8) {
 
-
-    if (uNumVertices < 3) {
-        return;
-    }
-
-    _set_ortho_projection(1);
-    _set_ortho_modelview();
-
-    _set_3d_projection_matrix();
-    _set_3d_modelview_matrix();
-
-    unsigned int sCorrectedColor = uColor;
-
-    TextureOpenGL *texture = (TextureOpenGL *)pFace->GetTexture();
-
-    if (lightmap_builder->StationaryLightsCount) {
-        sCorrectedColor = 0xFFFFFFFF/*-1*/;
-    }
-
-    // perception
-    // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
-
-    if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_IsSecret)) {
-        uint eightSeconds = OS_GetTime() % 3000;
-        float angle = (eightSeconds / 3000.0f) * 2 * 3.1415f;
-
-        int redstart = (sCorrectedColor & 0x00FF0000) >> 16;
-
-        int col = redstart * abs(cosf(angle));
-        // (a << 24) | (r << 16) | (g << 8) | b;
-        sCorrectedColor = (0xFF << 24) | (redstart << 16) | (col << 8) | col;
-    }
-
-    if (pFace->uAttributes & FACE_OUTLINED) {
-        if (OS_GetTime() % 300 >= 150)
-            uColor = sCorrectedColor = 0xFF20FF20;
-        else
-            uColor = sCorrectedColor = 0xFF109010;
-        // TODO(pskelton): add debug pick lines in
-    }
-
-
-    if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
-        /*
-        __debugbreak();
-        ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,
-        false)); ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0,
-        D3DTSS_ADDRESS, D3DTADDRESS_WRAP)); for (uint i = 0; i <
-        uNumVertices; ++i)
-        {
-        d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-        d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-        d3d_vertex_buffer[i].pos.z = 1.0 - 1.0 /
-        (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-        d3d_vertex_buffer[i].rhw = 1.0 /
-        array_507D30[i].vWorldViewPosition.x; d3d_vertex_buffer[i].diffuse =
-        sCorrectedColor; d3d_vertex_buffer[i].specular = 0;
-        d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u /
-        (double)pFace->GetTexture()->GetWidth();
-        d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v /
-        (double)pFace->GetTexture()->GetHeight();
-        }
-
-        ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
-        D3DTADDRESS_WRAP)); ErrD3D(pRenderD3D->pDevice->SetTexture(0,
-        nullptr));
-        ErrD3D(pRenderD3D->pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN,
-        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-        d3d_vertex_buffer, uNumVertices, 28));
-        lightmap_builder->DrawLightmaps(-1);
-        */
-    } else {
-        if (!lightmap_builder->StationaryLightsCount || _4D864C_force_sw_render_rules && engine->config->Flag1_2()) {
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z =
-                    1.0 -
-                    1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-                d3d_vertex_buffer[i].rhw =
-                    1.0 / array_507D30[i].vWorldViewPosition.x;
-                d3d_vertex_buffer[i].diffuse = sCorrectedColor;
-                d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x =
-                    array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
-                d3d_vertex_buffer[i].texcoord.y =
-                    array_507D30[i].v /
-                    (double)pFace->GetTexture()->GetHeight();
-            }
-
-            // glEnable(GL_TEXTURE_2D);
-            // glDisable(GL_BLEND);
-            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
-            // glDisable(GL_CULL_FACE);  // testing
-            // glDisable(GL_DEPTH_TEST);
-
-            // if (uNumVertices != 3 ) return; //3 ,4, 5 ,6
-
-            glBegin(GL_TRIANGLE_FAN);
-
-            for (uint i = 0; i < pFace->uNumVertices; ++i) {
-                glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
-                //glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
-
-                glColor4f(
-                     (float)((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                     (float)((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                     (float)((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                    1.0f);
-
-                glVertex3f(pIndoor->pVertices[pFace->pVertexIDs[i]].x,
-                    pIndoor->pVertices[pFace->pVertexIDs[i]].y,
-                    pIndoor->pVertices[pFace->pVertexIDs[i]].z);
-            }
-            drawcalls++;
-
-            glEnd();
-        } else {
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-                d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-                d3d_vertex_buffer[i].pos.z =
-                    1.0 -
-                    1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-                d3d_vertex_buffer[i].rhw = 1.0 / array_507D30[i].vWorldViewPosition.x;
-                d3d_vertex_buffer[i].diffuse = uColor;
-                d3d_vertex_buffer[i].specular = 0;
-                d3d_vertex_buffer[i].texcoord.x =
-                    array_507D30[i].u / (double)pFace->GetTexture()->GetWidth();
-                d3d_vertex_buffer[i].texcoord.y =
-                    array_507D30[i].v /
-                    (double)pFace->GetTexture()->GetHeight();
-            }
-
-            glDepthMask(false);
-
-            // ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-            glBindTexture(GL_TEXTURE_2D, 0);
-
-            glBegin(GL_TRIANGLE_FAN);
-
-            for (uint i = 0; i < pFace->uNumVertices; ++i) {
-                glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
-                //glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
-
-
-                glColor4f(
-                    ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                    1.0f);
-
-                glVertex3f(pIndoor->pVertices[pFace->pVertexIDs[i]].x,
-                    pIndoor->pVertices[pFace->pVertexIDs[i]].y,
-                    pIndoor->pVertices[pFace->pVertexIDs[i]].z);
-            }
-            drawcalls++;
-
-            glEnd();
-            glDisable(GL_CULL_FACE);
-
-            lightmap_builder->DrawLightmaps(-1 /*, 0*/);
-
-            for (uint i = 0; i < uNumVertices; ++i) {
-                d3d_vertex_buffer[i].diffuse = sCorrectedColor;
-            }
-
-            glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-            // ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-
-            glDepthMask(true);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_ZERO, GL_SRC_COLOR);
-
-            glBegin(GL_TRIANGLE_FAN);
-
-            for (uint i = 0; i < pFace->uNumVertices; ++i) {
-                glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
-                //glTexCoord2f(((pFace->pVertexUIDs[i] + Lights.pDeltaUV[0]) / (double)pFace->GetTexture()->GetWidth()), ((pFace->pVertexVIDs[i] + Lights.pDeltaUV[1]) / (double)pFace->GetTexture()->GetHeight()));
-
-
-                glColor4f(
-                    ((d3d_vertex_buffer[i].diffuse >> 16) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 8) & 0xFF) / 255.0f,
-                    ((d3d_vertex_buffer[i].diffuse >> 0) & 0xFF) / 255.0f,
-                    1.0f);
-
-                glVertex3f(pIndoor->pVertices[pFace->pVertexIDs[i]].x,
-                    pIndoor->pVertices[pFace->pVertexIDs[i]].y,
-                    pIndoor->pVertices[pFace->pVertexIDs[i]].z);
-            }
-            drawcalls++;
-
-            glEnd();
-
-            glDisable(GL_BLEND);
-        }
-    }
-
-    GL_Check_Errors();
+    return;
 }
 
 bool RenderOpenGL::SwitchToWindow() {
@@ -4894,6 +5331,11 @@ bool RenderOpenGL::InitShaders() {
     if (outbuildshader.ID == 0)
         return false;
 
+    logger->Info("Building indoors bsp shader...");
+    bspshader.build("../../../../Engine/Graphics/Shaders/glbspshader.vs", "../../../../Engine/Graphics/Shaders/glbspshader.fs");
+    if (bspshader.ID == 0)
+        return false;
+
     logger->Info("Building text shader...");
     textshader.build("../../../../Engine/Graphics/Shaders/gltextshader.vs", "../../../../Engine/Graphics/Shaders/gltextshader.fs");
     if (textshader.ID == 0)
@@ -4964,6 +5406,39 @@ void RenderOpenGL::ReleaseTerrain() {
 
     GL_Check_Errors();
 }
+
+void RenderOpenGL::ReleaseBSP() {
+    /*GLuint bspVBO, bspVAO;
+    GLuint bsptextures[16];
+    uint bsptexloaded[16];
+    uint bsptexturewidths[16];
+    uint bsptextureheights[16];
+    std::map<std::string, int> bsptexmap;*/
+
+    bsptexmap.clear();
+
+    for (int i = 0; i < 16; i++) {
+        glDeleteTextures(1, &bsptextures[i]);
+        bsptextures[i] = 0;
+        bsptexloaded[i] = 0;
+        bsptexturewidths[i] = 0;
+        bsptextureheights[i] = 0;
+        glDeleteBuffers(1, &bspVBO[i]);
+        glDeleteVertexArrays(1, &bspVAO[i]);
+        bspVAO[i] = 0;
+        bspVBO[i] = 0;
+        if (BSPshaderstore[i]) {
+            free(BSPshaderstore[i]);
+            BSPshaderstore[i] = nullptr;
+        }
+    }
+
+
+
+
+    GL_Check_Errors();
+}
+
 
 void RenderOpenGL::drawtwodverts() {
     if (!twodvertscnt) return;

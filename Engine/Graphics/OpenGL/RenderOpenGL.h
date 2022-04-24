@@ -204,9 +204,11 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                int blend_mode) override;
 
+    virtual void DrawIndoorFaces() override;
     virtual void DrawIndoorBatched() override;
 
     virtual void ReleaseTerrain();
+    virtual void ReleaseBSP();
 
     virtual void drawtwodverts();
 
@@ -241,6 +243,7 @@ class RenderOpenGL : public RenderBase {
     bool InitShaders();
     GLShader terrainshader;
     GLShader outbuildshader;
+    GLShader bspshader;
     GLShader textshader;
     GLShader lineshader;
     GLShader twodshader;
@@ -260,6 +263,14 @@ class RenderOpenGL : public RenderBase {
     uint outbuildtexturewidths[16];
     uint outbuildtextureheights[16];
     std::map<std::string, int> outbuildtexmap;
+
+    // indoors bsp shader
+    GLuint bspVBO[16], bspVAO[16];
+    GLuint bsptextures[16];
+    uint bsptexloaded[16];
+    uint bsptexturewidths[16];
+    uint bsptextureheights[16];
+    std::map<std::string, int> bsptexmap;
 
     // text shader
     GLuint textVBO, textVAO;

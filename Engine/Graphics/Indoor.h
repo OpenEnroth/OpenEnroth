@@ -466,6 +466,9 @@ struct BLVFace {  // 60h
     int16_t *pVertexVIDs = nullptr;
     uint16_t uFaceExtraID;
     void *resource;  // unsigned __int16  uBitmapID;
+    int texunit = -1;
+    int texlayer = -1;
+
     uint16_t uSectorID;
     int16_t uBackSectorID;
     struct BBox_short_ pBounding {};
@@ -674,6 +677,7 @@ struct BLVRenderParams {
 
     int field_0_timer_ = 0;
     int uPartySectorID = 0;
+    int uPartyEyeSectorID = 0;
 
     unsigned int uTargetWidth = 0;
     unsigned int uTargetHeight = 0;

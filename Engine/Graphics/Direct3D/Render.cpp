@@ -2147,6 +2147,163 @@ void Render::DrawIndoorBatched() {
     // NumBatchTrianglesStore = 0;
 }
 
+void Render::DrawIndoorFaces() {
+    for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
+        // viewed through portal
+        /*IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
+            pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum,
+            4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);*/
+        unsigned int uFaceID = pBspRenderer->faces[i].uFaceID;
+        IndoorCameraD3D_Vec4 *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
+        unsigned int uNumFrustums = 4;
+        RenderVertexSoft* pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
+
+                 uint ColourMask;  // ebx@25
+            // IDirect3DTexture2 *v27; // eax@42
+            unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
+            int LightLevel;                     // [sp+34h] [bp+Ch]@25
+
+            if (uFaceID >= pIndoor->uNumFaces)
+                continue;
+
+            static RenderVertexSoft static_vertices_buff_in[64];  // buff in
+            static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
+
+            static stru154 FacePlaneHolder;  // idb
+
+
+            BLVFace* pFace = &pIndoor->pFaces[uFaceID];
+
+            if (pFace->Portal()) {
+                // pCamera3D->DebugDrawPortal(pFace);
+                continue;
+            }
+
+            if (pFace->uNumVertices < 3) continue;
+
+            if (pFace->Invisible()) {
+                continue;
+            }
+
+
+            // stack decals outside of clipping now
+
+            if (decal_builder->bloodsplat_container->uNumBloodsplats) {
+                decal_builder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
+                if (decal_builder->uNumSplatsThisFace) {
+                    FacePlaneHolder.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
+                    FacePlaneHolder.polygonType = pFace->uPolygonType;
+                    FacePlaneHolder.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
+                    FacePlaneHolder.face_plane.vNormal.z = pFace->pFacePlane.vNormal.z;
+                    FacePlaneHolder.face_plane.dist = pFace->pFacePlane.dist;
+
+                    // copy to buff in
+                    for (uint i = 0; i < pFace->uNumVertices; ++i) {
+                        static_vertices_buff_in[i].vWorldPosition.x =
+                            pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+                        static_vertices_buff_in[i].vWorldPosition.y =
+                            pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+                        static_vertices_buff_in[i].vWorldPosition.z =
+                            pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+                        static_vertices_buff_in[i].u = (signed short)pFace->pVertexUIDs[i];
+                        static_vertices_buff_in[i].v = (signed short)pFace->pVertexVIDs[i];
+                    }
+
+                    // blood draw
+                    decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, 1, &FacePlaneHolder,
+                        pFace->uNumVertices, static_vertices_buff_in,
+                        0, pFace->uSectorID);
+                }
+            }
+
+            if (!pFace->GetTexture()) {
+                continue;
+            }
+
+
+            if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
+                uNumVerticesa = pFace->uNumVertices;
+
+                // copy to buff in
+                for (uint i = 0; i < pFace->uNumVertices; ++i) {
+                    static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+                    static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+                    static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+                    static_vertices_buff_in[i].u = (signed short)pFace->pVertexUIDs[i];
+                    static_vertices_buff_in[i].v = (signed short)pFace->pVertexVIDs[i];
+                }
+
+                // check if this face is visible through current portal node
+                if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)/* ||  true*/
+                    // pCamera3D->ClipFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4, 0, 0) || true
+                    ) {
+                    ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+
+                    /*for (uint i = 0; i < pFace->uNumVertices; ++i) {
+                        static_vertices_calc_out[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+                        static_vertices_calc_out[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+                        static_vertices_calc_out[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+                        static_vertices_calc_out[i].u = (signed short)pFace->pVertexUIDs[i];
+                        static_vertices_calc_out[i].v = (signed short)pFace->pVertexVIDs[i];
+                    }*/
+
+                    /*int xd = pParty->vPosition.x - pIndoor->pVertices[pFace->pVertexIDs[0]].x;
+                    int yd = pParty->vPosition.y - pIndoor->pVertices[pFace->pVertexIDs[0]].y;
+                    int zd = pParty->vPosition.z - pIndoor->pVertices[pFace->pVertexIDs[0]].z;
+                    int dist = sqrt(xd * xd + yd * yd + zd * zd);*/
+
+                    // if (dist < 2000) {
+                    pFace->uAttributes |= FACE_SeenByParty;
+                    //}
+
+                    FaceFlowTextureOffset(uFaceID);
+
+                    lightmap_builder->ApplyLights_IndoorFace(uFaceID);
+
+                    LightLevel = Lights.uCurrentAmbientLightLevel & 31;
+                    // lightlevel is 0 to 31
+                    //if (LightLevel < 5) LightLevel = 5;
+
+                    ColourMask = ((LightLevel << 3)) | ((LightLevel << 3)) << 8 | ((LightLevel << 3)) << 16;
+
+                    pCamera3D->ViewTransfrom_OffsetUV(static_vertices_calc_out, uNumVerticesa, array_507D30, &Lights);
+                    pCamera3D->Project(array_507D30, uNumVerticesa, 0);
+
+                    lightmap_builder->StationaryLightsCount = 0;
+                    if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
+                        FacePlaneHolder.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
+                        FacePlaneHolder.polygonType = pFace->uPolygonType;
+                        FacePlaneHolder.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
+                        FacePlaneHolder.face_plane.vNormal.z = pFace->pFacePlane.vNormal.z;
+                        FacePlaneHolder.face_plane.dist = pFace->pFacePlane.dist;
+                    }
+
+                    if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
+                        lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, /*pVertices*/0, 0);
+
+                    Texture* face_texture = pFace->GetTexture();
+                    if (pFace->Fluid()) {
+                        face_texture = (Texture*)pFace->resource;
+                        uint eightSeconds = OS_GetTime() % 8000;
+                        float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
+
+                        // animte lava back and forth
+                        for (uint i = 0; i < uNumVerticesa; ++i)
+                            array_507D30[i].v += (face_texture->GetHeight() - 1) * cosf(angle);
+                    } else if (pFace->IsTextureFrameTable()) {
+                        face_texture = pTextureFrameTable->GetFrameTexture((int64_t)pFace->resource, pBLVRenderParams->field_0_timer_);
+                    }
+
+                    if (pFace->Indoor_sky()) {
+                        render->DrawIndoorSky(uNumVerticesa, uFaceID);
+                    } else {
+                        render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_BModel, uFaceID), ColourMask, 0);
+                    }
+                }
+            }
+    }
+    DrawIndoorBatched();
+}
 
 
 void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
@@ -4152,6 +4309,7 @@ void Render::DrawOutdoorSkyD3D() {
     // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
 
     pSkyPolygon.texture = pOutdoor->sky_texture;
+
     if (pSkyPolygon.texture) {
         pSkyPolygon.dimming_level = 0;
         pSkyPolygon.uNumVertices = 4;
@@ -4606,4 +4764,5 @@ struct nk_image Render::NuklearImageLoad(Image* img) { return nk_image_id(0);  }
 void Render::NuklearImageFree(Image *img) {}
 
 void Render::ReleaseTerrain() { return; }
+void Render::ReleaseBSP() { return; }
 void Render::drawtwodverts() { return; }
