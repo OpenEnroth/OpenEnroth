@@ -1320,9 +1320,90 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
     }
 }
 
+//----- (004A65CC) --------------------------------------------------------
+//_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
+// a6 is time, a7 is 0, a8 is 63
+
+/*
+
+void Render::_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
+{
+  unsigned int uHeight; // edi@6
+  unsigned int v14; // edx@11
+  unsigned int v16; // edx@14
+  unsigned int v17; // edx@17
+  unsigned int v19; // edx@20
+  int v20; // eax@27
+  int v21; // edx@29
+  unsigned __int8 *v24; // [sp+14h] [bp-4h]@6
+  int Width; // [sp+2Ch] [bp+14h]@6
+
+  if ( this->uNumSceneBegins && a4 && a4->pPalette16 && a5 && a5->pPalette16 )
+  {
+    v24 = a4->paletted_pixels;
+    Width = a4->uTextureWidth;
+    uHeight = a4->uTextureHeight;
+    int clipped_out_x = x;
+    int clipped_out_y = y;
+    if ( this->bClip )
+    {
+      if ( (signed int)x < (signed int)this->uClipX )
+      {
+        v24 += this->uClipX - x;
+        Width += x - this->uClipX;
+        clipped_out_x = uClipX;
+      }
+      if ( (signed int)y < (signed int)this->uClipY )
+      {
+        v24 += a4->uTextureWidth * (this->uClipY - y);
+        uHeight = y - this->uClipY + a4->uTextureHeight;
+        clipped_out_y = uClipY;
+      }
+      v14 = this->uClipX;
+      if ( (signed int)this->uClipX < (signed int)x )
+        v14 = x;
+      if ( (signed int)(Width + v14) > (signed int)this->uClipZ )
+      {
+        v16 = this->uClipX;
+        if ( (signed int)this->uClipX < (signed int)x )
+          v16 = x;
+        Width = this->uClipZ - v16;
+      }
+      v17 = this->uClipY;
+      if ( (signed int)this->uClipY < (signed int)y )
+        v17 = y;
+      if ( (signed int)(uHeight + v17) > (signed int)this->uClipW )
+      {
+        v19 = this->uClipY;
+        if ( (signed int)this->uClipY < (signed int)y )
+          v19 = y;
+        uHeight = this->uClipW - v19;
+      }
+    }
+
+    for (uint dy = 0; dy < uHeight; ++dy)
+    {
+      for (int dx = 0; dx < Width; ++dx)
+      {
+        v20 = *v24;
+        if ( v20 >= a7 && v20 <= a8 )
+        {
+          v21 = a7 + (a6 + v20) % (2 * (a8 - a7));
+          if ( (a6 + v20) % (2 * (a8 - a7)) >= a8 - a7 )
+            v21 = 2 * a8 - v21 - a7;
+          WritePixel16(clipped_out_x + dx, clipped_out_y + dy, a4->pPalette16[v21]);
+        }
+        ++v24;
+      }
+      v24 += a4->uTextureWidth - Width;
+    }
+
+*/
+
 
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
-    // TODO(pskelton): sort this - forcing the draw is slow
+    // TODO(pskelton): sort this - forcing the draw is slow - precalculate??
+    //pIcons_LOD->
 
     if (img) {
         auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
@@ -1564,52 +1645,8 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 }
 
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
-    TextureOpenGL *texture = (TextureOpenGL *)pSkyPolygon->texture;
-
-    //if (uNumD3DSceneBegins == 0) {
-    //    return;
-    //}
-
-    if (uNumVertices >= 3) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        int v5 = 31 - (pSkyPolygon->dimming_level & 0x1F);
-        if (v5 < pOutdoor->max_terrain_dimming_level) {
-            v5 = pOutdoor->max_terrain_dimming_level;
-        }
-
-        for (uint i = 0; i < (unsigned int)uNumVertices; ++i) {
-            d3d_vertex_buffer[i].pos.x = array_507D30[i].vWorldViewProjX;
-            d3d_vertex_buffer[i].pos.y = array_507D30[i].vWorldViewProjY;
-            d3d_vertex_buffer[i].pos.z =
-                1.0 -
-                1.0 / (array_507D30[i].vWorldViewPosition.x * 0.061758894);
-            d3d_vertex_buffer[i].rhw = 1.0 / array_507D30[i]._rhw;
-            d3d_vertex_buffer[i].diffuse =
-                8 * v5 | ((8 * v5 | (v5 << 11)) << 8);
-            d3d_vertex_buffer[i].specular = 0;
-            d3d_vertex_buffer[i].texcoord.x = array_507D30[i].u;
-            d3d_vertex_buffer[i].texcoord.y = array_507D30[i].v;
-        }
-
-        glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
-
-        glBegin(GL_TRIANGLE_FAN);
-
-        for (uint i = 0; i < uNumVertices; ++i) {
-            glColor4f((8 * v5) / 255.0f, (8 * v5) / 255.0f, (8 * v5) / 255.0f, 1.0f);
-            glTexCoord2f(d3d_vertex_buffer[i].texcoord.x, d3d_vertex_buffer[i].texcoord.y);
-            glVertex3f(array_507D30[i].vWorldPosition.x, array_507D30[i].vWorldPosition.y, array_507D30[i].vWorldPosition.z);
-        }
-
-        glEnd();
-
-        drawcalls++;
-
-        //if (engine->config->debug_terrain)
-        //    pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FF0000, 0.0);
-    }
+    __debugbreak();
+    return;
 }
 
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
@@ -3413,21 +3450,23 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
 }
 
 
-twodverts textshaderstore[6000] = {};
+twodverts textshaderstore[10000] = {};
 int textvertscnt = 0;
 
 void RenderOpenGL::BeginTextNew(Texture *main, Texture *shadow) {
-    if (textvertscnt) __debugbreak();
+    // if (textvertscnt) __debugbreak();
 
-
-
-    drawtwodverts();
+    // draw any images in buffer
+    if (twodvertscnt) {
+        drawtwodverts();
+    }
 
     auto texturemain = (TextureOpenGL *)main;
     GLuint texmainidcheck = texturemain->GetOpenGlTexture();
-    if (texmainidcheck == texmain) {
-        if (engine->config->verbose_logging)
-            logger->Info("same font started");
+
+    // if we are changing font draw whats in the text buffer
+    if (texmainidcheck != texmain) {
+        EndTextNew();
     }
 
     texmain = texturemain->GetOpenGlTexture();
@@ -3682,7 +3721,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     GL_Check_Errors();
 
 
-    if (textvertscnt > 5990) __debugbreak();
+    if (textvertscnt > 9990) __debugbreak();
 }
 
 void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
@@ -3750,8 +3789,12 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
 
 void RenderOpenGL::Present() {
     drawtwodverts();
+    EndTextNew();
 
     GL_Check_Errors();
+
+    // if (engine->config->verbose_logging)
+    //logger->Info("end frame");
 
     window->OpenGlSwapBuffers();
 }
@@ -5442,6 +5485,10 @@ void RenderOpenGL::ReleaseBSP() {
 
 void RenderOpenGL::drawtwodverts() {
     if (!twodvertscnt) return;
+
+    if (textvertscnt) {
+        EndTextNew();
+    }
 
     int savex = this->clip_x;
     int savey = this->clip_y;

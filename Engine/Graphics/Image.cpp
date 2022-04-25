@@ -206,9 +206,11 @@ Image *Image::Create(ImageLoader *loader) {
 bool Image::LoadImageData() {
     if (!initialized) {
         void *data = nullptr;
-        initialized = loader->Load(&width, &height, &data, &native_format);
+        void *palette = nullptr;
+        initialized = loader->Load(&width, &height, &data, &native_format, &palette);
         if (initialized && native_format != IMAGE_INVALID_FORMAT) {
             pixels[native_format] = data;
+            palette24 = palette;
         }
     }
 

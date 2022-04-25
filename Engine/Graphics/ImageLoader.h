@@ -19,7 +19,7 @@ class ImageLoader {
     virtual std::string* GetResourceNamePtr() { return &this->resource_name; }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
-                      IMAGE_FORMAT *format) = 0;
+                      IMAGE_FORMAT *format, void **out_palette) = 0;
 
  protected:
     std::string resource_name;
@@ -36,7 +36,7 @@ class ColorKey_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
-                      IMAGE_FORMAT *format);
+                      IMAGE_FORMAT *format, void **out_palette);
 
  protected:
     uint16_t colorkey;
@@ -52,7 +52,7 @@ class Image16bit_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
-                      IMAGE_FORMAT *format);
+                      IMAGE_FORMAT *format, void **out_palette);
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -66,7 +66,7 @@ class Alpha_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
-                      IMAGE_FORMAT *format);
+                      IMAGE_FORMAT *format, void **out_palette);
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -88,7 +88,7 @@ class PCX_File_Loader : public PCX_Loader {
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
-                      IMAGE_FORMAT *format);
+                      IMAGE_FORMAT *format, void **out_palette);
 
     LODFile_IconsBitmaps *lod;
 };
@@ -101,7 +101,7 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
-                      IMAGE_FORMAT *format);
+                      IMAGE_FORMAT *format, void **out_palette);
 
  protected:
     LOD::File *lod;
@@ -115,7 +115,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height,
-                      void **out_pixels, IMAGE_FORMAT *format);
+                      void **out_pixels, IMAGE_FORMAT *format, void **out_palette);
 
  protected:
     LOD::File *lod;
@@ -130,7 +130,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height,
-                      void **out_pixels, IMAGE_FORMAT *format);
+                      void **out_pixels, IMAGE_FORMAT *format, void **out_palette);
 
  protected:
     LODFile_IconsBitmaps *lod;
@@ -149,7 +149,7 @@ class Sprites_LOD_Loader : public ImageLoader {
     }
 
     virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
-                      IMAGE_FORMAT *format);
+                      IMAGE_FORMAT *format, void **out_palette);
 
  protected:
     LODFile_Sprites *lod;

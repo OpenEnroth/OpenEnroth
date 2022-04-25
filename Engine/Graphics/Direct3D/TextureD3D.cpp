@@ -65,14 +65,16 @@ IDirect3DTexture2 *TextureD3D::GetDirect3DTexture() {
 bool TextureD3D::LoadImageData() {
     if (!this->initialized) {
         void *pixels;
+        void *palette;
 
         this->initialized =
-            this->loader->Load(&width, &height, &pixels, &native_format);
+            this->loader->Load(&width, &height, &pixels, &native_format, &palette);
 
         // if (width == 0 || height == 0) __debugbreak();
 
         if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT) {
             this->pixels[native_format] = pixels;
+            this->palette24 = palette;
 
             // check power of two - temporary
             if ( (this->width & (this->width - 1)) == 0 && (this->height & (this->height - 1)) == 0 ) {

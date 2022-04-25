@@ -53,6 +53,7 @@ class Image {
     unsigned int height = 0;
     IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
     void* pixels[IMAGE_NUM_FORMATS]{};
+    void* palette24 = nullptr;
 
     virtual bool LoadImageData();
 };
