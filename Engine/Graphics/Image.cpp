@@ -317,9 +317,9 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                     {
                         nullptr,                   // IMAGE_FORMAT_R5G6B5
                         nullptr,                   // IMAGE_FORMAT_A1R5G5B5
-                        nullptr,                   // IMAGE_FORMAT_A8R8G8B8
+                        Image_R8G8B8_to_A8R8G8B8,  // IMAGE_FORMAT_A8R8G8B8
                         nullptr,                   // IMAGE_FORMAT_R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
+                        Image_R8G8B8_to_R8G8B8A8,  // IMAGE_FORMAT_R8G8B8A8
                     },
 
                     // IMAGE_FORMAT_R8G8B8A8 ->
@@ -354,6 +354,18 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
             }
         }
     }
+    return nullptr;
+}
+
+const void *Image::GetPalette() {
+    if (!initialized) {
+        LoadImageData();
+    }
+
+    if (initialized) {
+        return this->palette24;
+    }
+
     return nullptr;
 }
 

@@ -82,7 +82,9 @@ void ErrHR(HRESULT hr, const char *pAPI, const char *pFunction,
 unsigned int Render::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int Render::GetRenderHeight() const { return window->GetHeight(); }
 
-
+Texture *Render::CreateTexture_Paletted(const std::string &name) {
+    return TextureD3D::Create(new Paletted_Img_Loader(pIcons_LOD, name, 0));
+}
 
 Texture *Render::CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) {
     return TextureD3D::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
@@ -3288,89 +3290,29 @@ void Render::DrawMasked(float u, float v, Image *pTexture,
 
 void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
     if (img) {
-        auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
         int width = img->GetWidth();
         int height = img->GetHeight();
-        Image *temp = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
+        Texture *temp = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
         uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-        int brightloc = -1;
-        int brightval = 0;
-        int darkloc = -1;
-        int darkval = 765;
+        uint8_t *texpix24 = (uint8_t *)img->GetPixels(IMAGE_FORMAT_R8G8B8);
+        uint8_t thispix;
+        int palindex;
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int nudge = x + y * width;
-                // Test the brightness against the threshold
-                int bright = (*(pixelpoint + nudge) & 0xFF) + ((*(pixelpoint + nudge) >> 8) & 0xFF) + ((*(pixelpoint + nudge) >> 16) & 0xFF);
-                if (bright == 0) continue;
-
-                if (bright > brightval) {
-                    brightval = bright;
-                    brightloc = nudge;
+        for (uint dy = 0; dy < height; ++dy) {
+            for (int dx = 0; dx < width; ++dx) {
+                thispix = *texpix24;
+                if (thispix >= 0 && thispix <= 63) {
+                    palindex = (time + thispix) % (2 * 63);
+                    if (palindex >= 63)
+                        palindex = (2 * 63) - palindex;
+                    temppix[dx + dy * width] = Color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
                 }
-                if (bright < darkval) {
-                    darkval = bright;
-                    darkloc = nudge;
-                }
+                ++texpix24;
             }
         }
 
-        // find brightest
-        unsigned int bmax = (*(pixelpoint + brightloc) & 0xFF);
-        unsigned int gmax = ((*(pixelpoint + brightloc) >> 8) & 0xFF);
-        unsigned int rmax = ((*(pixelpoint + brightloc) >> 16) & 0xFF);
-
-        // find darkest not black
-        unsigned int bmin = (*(pixelpoint + darkloc) & 0xFF);
-        unsigned int gmin = ((*(pixelpoint + darkloc) >> 8) & 0xFF);
-        unsigned int rmin = ((*(pixelpoint + darkloc) >> 16) & 0xFF);
-
-        // steps pixels
-        float bstep = (bmax - bmin) / 128.;
-        float gstep = (gmax - gmin) / 128.;
-        float rstep = (rmax - rmin) / 128.;
-
-        int timestep = time % 256;
-
-        // loop through
-        for (int ydraw = 0; ydraw < height; ++ydraw) {
-            for (int xdraw = 0; xdraw < width; ++xdraw) {
-                if (*pixelpoint) {  // check orig item not got blakc pixel
-                    unsigned int bcur = (*(pixelpoint) & 0xFF);
-                    unsigned int gcur = ((*(pixelpoint) >> 8) & 0xFF);
-                    unsigned int rcur = ((*(pixelpoint) >> 16) & 0xFF);
-                    int pixstepb = (bcur - bmin) / bstep + timestep;
-                    if (pixstepb > 255) pixstepb = pixstepb - 256;
-                    if (pixstepb >= 0 && pixstepb < 128)  // 0-127
-                        bcur = bmin + pixstepb * bstep;
-                    if (pixstepb >= 128 && pixstepb < 256) {  // 128-255
-                        pixstepb = pixstepb - 128;
-                        bcur = bmax - pixstepb * bstep;
-                    }
-                    int pixstepr = (rcur - rmin) / rstep + timestep;
-                    if (pixstepr > 255) pixstepr = pixstepr - 256;
-                    if (pixstepr >= 0 && pixstepr < 128)  // 0-127
-                        rcur = rmin + pixstepr * rstep;
-                    if (pixstepr >= 128 && pixstepr < 256) {  // 128-255
-                        pixstepr = pixstepr - 128;
-                        rcur = rmax - pixstepr * rstep;
-                    }
-                    int pixstepg = (gcur - gmin) / gstep + timestep;
-                    if (pixstepg > 255) pixstepg = pixstepg - 256;
-                    if (pixstepg >= 0 && pixstepg < 128)  // 0-127
-                        gcur = gmin + pixstepg * gstep;
-                    if (pixstepg >= 128 && pixstepg < 256) {  // 128-255
-                        pixstepg = pixstepg - 128;
-                        gcur = gmax - pixstepg * gstep;
-                    }
-                    // out pixel
-                    temppix[xdraw + ydraw * width] = Color32(rcur, gcur, bcur);
-                }
-                pixelpoint++;
-            }
-        }
         // draw image
         render->DrawTextureAlphaNew(u, v, temp);
         temp->Release();

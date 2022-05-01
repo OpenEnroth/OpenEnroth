@@ -26,6 +26,22 @@ class ImageLoader {
     Log *log;
 };
 
+class Paletted_Img_Loader : public ImageLoader {
+ public:
+    inline Paletted_Img_Loader(LODFile_IconsBitmaps *lod, const std::string &filename, uint16_t colorkey) {
+        this->resource_name = filename;
+        this->colorkey = colorkey;
+        this->lod = lod;
+    }
+
+    virtual bool Load(unsigned int *width, unsigned int *height, void **pixels,
+        IMAGE_FORMAT *format, void **out_palette);
+
+ protected:
+    uint16_t colorkey;
+    LODFile_IconsBitmaps *lod;
+};
+
 class ColorKey_LOD_Loader : public ImageLoader {
  public:
     inline ColorKey_LOD_Loader(LODFile_IconsBitmaps *lod,

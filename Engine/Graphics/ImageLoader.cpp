@@ -73,6 +73,46 @@ uint32_t *MakeImageColorKey(unsigned int width, unsigned int height,
     return res;
 }
 
+bool Paletted_Img_Loader::Load(unsigned int *out_width,
+    unsigned int *out_height, void **out_pixels,
+    IMAGE_FORMAT *out_format, void **out_palette) {
+    *out_width = 0;
+    *out_height = 0;
+    *out_pixels = nullptr;
+    *out_format = IMAGE_INVALID_FORMAT;
+
+    Texture_MM7 *tex = lod->GetTexture(
+        lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+    if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
+        (tex->paletted_pixels == nullptr)) {
+        return false;
+    }
+
+    //if (tex->header.pBits & 512) {
+    //    *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
+    //        tex->header.uTextureHeight,
+    //        tex->paletted_pixels, tex->pPalette24);
+    //}
+    //else {
+    //    *out_pixels = MakeImageColorKey(
+    //        tex->header.uTextureWidth, tex->header.uTextureHeight,
+    //        tex->paletted_pixels, tex->pPalette24, colorkey);
+    //}
+
+    *out_pixels = tex->paletted_pixels;
+
+    if (*out_pixels == nullptr) {
+        return false;
+    }
+
+    *out_width = tex->header.uTextureWidth;
+    *out_height = tex->header.uTextureHeight;
+    *out_format = IMAGE_FORMAT_R8G8B8;
+    *out_palette = tex->pPalette24;
+
+    return true;
+}
+
 bool ColorKey_LOD_Loader::Load(unsigned int *out_width,
                                unsigned int *out_height, void **out_pixels,
                                IMAGE_FORMAT *out_format, void **out_palette) {

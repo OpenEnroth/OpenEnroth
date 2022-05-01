@@ -2481,7 +2481,10 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
 
 static void LoadPartyBuffIcons() {
     for (uint i = 0; i < 14; ++i) {
-        party_buff_icons[i] = assets->GetImage_ColorKey(StringPrintf("isn-%02d", i + 1), render->teal_mask_16);
+        //auto temp = assets->GetImage_Paletted(StringPrintf("isn-%02d", i + 1));
+        //int booty = temp->GetHeight();
+        //party_buff_icons[i] = assets->GetImage_ColorKey(StringPrintf("isn-%02d", i + 1), render->teal_mask_16);
+        party_buff_icons[i] = assets->GetImage_Paletted(StringPrintf("isn-%02d", i + 1));
     }
 
     uIconIdx_FlySpell = pIconsFrameTable->FindIcon("spell21");

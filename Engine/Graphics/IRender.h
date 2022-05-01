@@ -232,6 +232,7 @@ class IRender {
     virtual struct nk_image NuklearImageLoad(Image* img) = 0;
     virtual void NuklearImageFree(Image *img) = 0;
 
+    virtual Texture *CreateTexture_Paletted(const std::string &name) = 0;
     virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) = 0;
     virtual Texture *CreateTexture_Solid(const std::string &name) = 0;
     virtual Texture *CreateTexture_Alpha(const std::string &name) = 0;

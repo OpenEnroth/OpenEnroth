@@ -38,6 +38,7 @@ class Image {
     unsigned int GetWidth();
     unsigned int GetHeight();
     const void *GetPixels(IMAGE_FORMAT format);
+    const void *GetPalette();
     IMAGE_FORMAT GetFormat() const { return native_format; }
 
     std::string* GetName();

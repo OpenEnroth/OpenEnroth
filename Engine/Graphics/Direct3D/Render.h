@@ -46,6 +46,7 @@ class Render : public RenderBase {
     virtual struct nk_image NuklearImageLoad(Image *img);
     virtual void NuklearImageFree(Image *img);
 
+    virtual Texture *CreateTexture_Paletted(const std::string &name) override;
     virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) override;
     virtual Texture *CreateTexture_Solid(const std::string &name) override;
     virtual Texture *CreateTexture_Alpha(const std::string &name) override;

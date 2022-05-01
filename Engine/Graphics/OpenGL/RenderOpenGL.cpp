@@ -1323,172 +1323,33 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
 //----- (004A65CC) --------------------------------------------------------
 //_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
 // a6 is time, a7 is 0, a8 is 63
-
-/*
-
-void Render::_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
-{
-  unsigned int uHeight; // edi@6
-  unsigned int v14; // edx@11
-  unsigned int v16; // edx@14
-  unsigned int v17; // edx@17
-  unsigned int v19; // edx@20
-  int v20; // eax@27
-  int v21; // edx@29
-  unsigned __int8 *v24; // [sp+14h] [bp-4h]@6
-  int Width; // [sp+2Ch] [bp+14h]@6
-
-  if ( this->uNumSceneBegins && a4 && a4->pPalette16 && a5 && a5->pPalette16 )
-  {
-    v24 = a4->paletted_pixels;
-    Width = a4->uTextureWidth;
-    uHeight = a4->uTextureHeight;
-    int clipped_out_x = x;
-    int clipped_out_y = y;
-    if ( this->bClip )
-    {
-      if ( (signed int)x < (signed int)this->uClipX )
-      {
-        v24 += this->uClipX - x;
-        Width += x - this->uClipX;
-        clipped_out_x = uClipX;
-      }
-      if ( (signed int)y < (signed int)this->uClipY )
-      {
-        v24 += a4->uTextureWidth * (this->uClipY - y);
-        uHeight = y - this->uClipY + a4->uTextureHeight;
-        clipped_out_y = uClipY;
-      }
-      v14 = this->uClipX;
-      if ( (signed int)this->uClipX < (signed int)x )
-        v14 = x;
-      if ( (signed int)(Width + v14) > (signed int)this->uClipZ )
-      {
-        v16 = this->uClipX;
-        if ( (signed int)this->uClipX < (signed int)x )
-          v16 = x;
-        Width = this->uClipZ - v16;
-      }
-      v17 = this->uClipY;
-      if ( (signed int)this->uClipY < (signed int)y )
-        v17 = y;
-      if ( (signed int)(uHeight + v17) > (signed int)this->uClipW )
-      {
-        v19 = this->uClipY;
-        if ( (signed int)this->uClipY < (signed int)y )
-          v19 = y;
-        uHeight = this->uClipW - v19;
-      }
-    }
-
-    for (uint dy = 0; dy < uHeight; ++dy)
-    {
-      for (int dx = 0; dx < Width; ++dx)
-      {
-        v20 = *v24;
-        if ( v20 >= a7 && v20 <= a8 )
-        {
-          v21 = a7 + (a6 + v20) % (2 * (a8 - a7));
-          if ( (a6 + v20) % (2 * (a8 - a7)) >= a8 - a7 )
-            v21 = 2 * a8 - v21 - a7;
-          WritePixel16(clipped_out_x + dx, clipped_out_y + dy, a4->pPalette16[v21]);
-        }
-        ++v24;
-      }
-      v24 += a4->uTextureWidth - Width;
-    }
-
-*/
-
-
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
-    // TODO(pskelton): sort this - forcing the draw is slow - precalculate??
-    //pIcons_LOD->
+    // TODO(pskelton): sort this - forcing the draw is slow - precalculate/ shader
 
     if (img) {
-        auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
         int width = img->GetWidth();
         int height = img->GetHeight();
         Texture *temp = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
         uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-        int brightloc = -1;
-        int brightval = 0;
-        int darkloc = -1;
-        int darkval = 765;
+        uint8_t *texpix24 = (uint8_t *)img->GetPixels(IMAGE_FORMAT_R8G8B8);
+        uint8_t thispix;
+        int palindex;
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int nudge = x + y * width;
-                // Test the brightness against the threshold
-                int bright = (*(pixelpoint + nudge) & 0xFF) + ((*(pixelpoint + nudge) >> 8) & 0xFF) + ((*(pixelpoint + nudge) >> 16) & 0xFF);
-                if (bright == 0) continue;
-
-                if (bright > brightval) {
-                    brightval = bright;
-                    brightloc = nudge;
+        for (uint dy = 0; dy < height; ++dy) {
+            for (int dx = 0; dx < width; ++dx) {
+                thispix = *texpix24;
+                if (thispix >= 0 && thispix <= 63) {
+                    palindex = (time + thispix) % (2 * 63);
+                    if (palindex >= 63)
+                        palindex = (2 * 63) - palindex;
+                    temppix[dx + dy * width] = Color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
                 }
-                if (bright < darkval) {
-                    darkval = bright;
-                    darkloc = nudge;
-                }
+                ++texpix24;
             }
         }
 
-        // find brightest
-        unsigned int bmax = (*(pixelpoint + brightloc) & 0xFF);
-        unsigned int gmax = ((*(pixelpoint + brightloc) >> 8) & 0xFF);
-        unsigned int rmax = ((*(pixelpoint + brightloc) >> 16) & 0xFF);
-
-        // find darkest not black
-        unsigned int bmin = (*(pixelpoint + darkloc) & 0xFF);
-        unsigned int gmin = ((*(pixelpoint + darkloc) >> 8) & 0xFF);
-        unsigned int rmin = ((*(pixelpoint + darkloc) >> 16) & 0xFF);
-
-        // steps pixels
-        float bstep = (bmax - bmin) / 128.;
-        float gstep = (gmax - gmin) / 128.;
-        float rstep = (rmax - rmin) / 128.;
-
-        int timestep = time % 256;
-
-        // loop through
-        for (int ydraw = 0; ydraw < height; ++ydraw) {
-            for (int xdraw = 0; xdraw < width; ++xdraw) {
-                if (*pixelpoint) {  // check orig item not got blakc pixel
-                    unsigned int bcur = (*(pixelpoint) & 0xFF);
-                    unsigned int gcur = ((*(pixelpoint) >> 8) & 0xFF);
-                    unsigned int rcur = ((*(pixelpoint) >> 16) & 0xFF);
-                    int pixstepb = (bcur - bmin) / bstep + timestep;
-                    if (pixstepb > 255) pixstepb = pixstepb - 256;
-                    if (pixstepb >= 0 && pixstepb < 128)  // 0-127
-                        bcur = bmin + pixstepb * bstep;
-                    if (pixstepb >= 128 && pixstepb < 256) {  // 128-255
-                        pixstepb = pixstepb - 128;
-                        bcur = bmax - pixstepb * bstep;
-                    }
-                    int pixstepr = (rcur - rmin) / rstep + timestep;
-                    if (pixstepr > 255) pixstepr = pixstepr - 256;
-                    if (pixstepr >= 0 && pixstepr < 128)  // 0-127
-                        rcur = rmin + pixstepr * rstep;
-                    if (pixstepr >= 128 && pixstepr < 256) {  // 128-255
-                        pixstepr = pixstepr - 128;
-                        rcur = rmax - pixstepr * rstep;
-                    }
-                    int pixstepg = (gcur - gmin) / gstep + timestep;
-                    if (pixstepg > 255) pixstepg = pixstepg - 256;
-                    if (pixstepg >= 0 && pixstepg < 128)  // 0-127
-                        gcur = gmin + pixstepg * gstep;
-                    if (pixstepg >= 128 && pixstepg < 256) {  // 128-255
-                        pixstepg = pixstepg - 128;
-                        gcur = gmax - pixstepg * gstep;
-                    }
-                    // out pixel
-                    temppix[xdraw + ydraw * width] = Color32(rcur, gcur, bcur);
-                }
-                pixelpoint++;
-            }
-        }
         // draw image
         render->Update_Texture(temp);
         render->DrawTextureAlphaNew(u, v, temp);
@@ -2168,6 +2029,10 @@ FILE *CreateTga(const char *filename, int image_width, int image_height)
         return f;
 }*/
 
+Texture *RenderOpenGL::CreateTexture_Paletted(const std::string &name) {
+    return TextureOpenGL::Create(new Paletted_Img_Loader(pIcons_LOD, name, 0));
+}
+
 Texture *RenderOpenGL::CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) {
     return TextureOpenGL::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
 }
@@ -2250,6 +2115,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         // takes care of endian flip from literals here - hence BGRA
         gl_format = GL_BGRA;
     } else {
+        __debugbreak();
         log->Warning("Image not loaded!");
     }
 
