@@ -1647,6 +1647,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         case CURRENT_SCREEN::SCREEN_HOUSE: {
             if ((signed int)pY < 345 && (signed int)pX < 469)
                 ShowPopupShopItem();
+            if ((signed int)pX >= 469)
+                ShowPopupShopSkills();
             break;
         }
         case CURRENT_SCREEN::SCREEN_PARTY_CREATION: {

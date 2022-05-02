@@ -1411,9 +1411,15 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     default:
     {
         if (IsSkillLearningDialogue(option)) {
-            v36 =
-                (signed __int64)(p2DEvents[(uint64_t)
+            v36 = (signed __int64)(p2DEvents[(uint64_t)
                     window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+            if (p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].uType >= BuildingType_FireGuild &&
+                p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].uType <= BuildingType_SelfGuild) {
+                // guild prices use the other multipler
+                v36 = (signed __int64)(p2DEvents[(uint64_t)
+                    window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier * 500.0);
+            }
+
             pPrice = v36 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
             if (pPrice < v36 / 3) pPrice = v36 / 3;
             auto skill = GetLearningDialogueSkill(option);

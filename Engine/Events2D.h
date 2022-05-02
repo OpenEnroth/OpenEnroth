@@ -50,8 +50,8 @@ struct _2devent {
     int16_t _per;
     int16_t generation_interval_days;
     int16_t field_1E;
-    float fPriceMultiplier;
-    float flt_24;
+    float fPriceMultiplier; // shop price multiplier
+    float flt_24; // skills price multiplier
     uint16_t uOpenTime;
     uint16_t uCloseTime;
     int16_t uExitPicID;

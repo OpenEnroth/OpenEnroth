@@ -2724,7 +2724,7 @@ void SkillTrainingDialogue(
     GUIWindow *dialogue,
     int num_skills_avaiable,
     int all_text_height,
-    int skill_price
+     int skill_price
 ) {
     if (!num_skills_avaiable) {
         SeekKnowledgeElswhereDialogueOption(

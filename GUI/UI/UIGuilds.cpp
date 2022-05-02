@@ -187,25 +187,6 @@ void GuildDialog() {
         return;
     }
 
-    if (HouseUI_CheckIfPlayerCanInteract()) {  // buy skills
-        auto skill = GetLearningDialogueSkill(dialog_menu_id);
-        if (pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
-            GameUI_SetStatusBar(
-                LSTR_FMT_ALREADY_KNOW_THE_S_SKILL,
-                localization->GetSkillName(skill)
-            );
-            pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
-        } else {
-            if (pParty->GetGold() < pPrice) {
-                GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-                PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
-                               HouseSound_NotEnoughMoney_TrainingSuccessful);
-            } else {
-                Party::TakeGold(pPrice);
-                pPlayers[uActiveCharacter]->pActiveSkills[skill] = 1;
-            }
-        }
-    }
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
 }
 
