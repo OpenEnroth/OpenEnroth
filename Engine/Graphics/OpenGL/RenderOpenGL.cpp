@@ -1267,6 +1267,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
     //---------------------------------------
 
     // TODO(pskelton): temporary hack to use outdoor sky as a coverall instead of drawing the individual segments which causes hazy transitions without rhw correction
+    SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);
     render->DrawOutdoorSkyD3D();
     return;
 
@@ -2751,6 +2752,9 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
     // pSkyPolygon.pTexture = (Texture_MM7 *)(pSkyPolygon.uTileBitmapID != -1 ?
     // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
 
+    if (!pOutdoor->sky_texture)
+        pOutdoor->sky_texture = assets->GetBitmap("plansky3");
+
     pSkyPolygon.texture = pOutdoor->sky_texture;
     if (pSkyPolygon.texture) {
         pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_Outdoor)? 31 : 0;
@@ -3071,8 +3075,8 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
 
     float texx = (drawx - x) / float(width);
     float texy = (drawy - y) / float(height);
-    float texz = (width - (z - drawz)) / float(width);
-    float texw = (height - (w - draww)) / float(height);
+    float texz = (drawz - x) / float(width);
+    float texw = (draww - y) / float(height);
 
     GLfloat TexCoord[] = { texx, texy,
         texz, texy,
@@ -3156,8 +3160,8 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
 
     float texx = (drawx - x) / float(width);
     float texy = (drawy - y) / float(height);
-    float texz = (width - (z - drawz)) / float(width);
-    float texw = (height - (w - draww)) / float(height);
+    float texz = float(drawz) / z;
+    float texw = float(draww) / w;
 
     GLfloat TexCoord[] = { texx, texy,
         texz, texy,
