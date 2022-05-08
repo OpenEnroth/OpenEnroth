@@ -2906,6 +2906,20 @@ void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     spell_fx_renderer->RenderSpecialEffects();
 }
 
+struct billbverts {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat u;
+    GLfloat v;
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+    GLfloat a;
+    GLfloat texid;
+    GLfloat blend;
+};
+
 //----- (004A1C1E) --------------------------------------------------------
 void RenderOpenGL::DoRenderBillboards_D3D() {
     glEnable(GL_BLEND);
@@ -2916,23 +2930,42 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     _set_ortho_projection(1);
     _set_ortho_modelview();
 
+    // track loaded tex
+    float gltexid{ 0 };
+    // track blend mode
+    RenderBillboardD3D::OpacityType blendtrack{ RenderBillboardD3D::NoBlend };
+
+    float oneon = 1. / (pCamera3D->GetNearClip() * pCamera3D->aspect * 2);
+    float oneof = 1. / (pCamera3D->GetFarClip() * pCamera3D->aspect);
+
     for (int i = uNumBillboardsToDraw - 1; i >= 0; --i) {
         if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend) {
-            SetBillboardBlendOptions(pBillboardRenderListD3D[i].opacity);
+            if (blendtrack != pBillboardRenderListD3D[i].opacity) {
+                blendtrack = pBillboardRenderListD3D[i].opacity;
+                SetBillboardBlendOptions(blendtrack);
+            }
         }
 
-        float gltexid = 0;
+        float testtexid{ 0 };
         if (pBillboardRenderListD3D[i].texture) {
             auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
-            gltexid = texture->GetOpenGlTexture();
+            testtexid = texture->GetOpenGlTexture();
         }
 
-        glBindTexture(GL_TEXTURE_2D, gltexid);
+        if (gltexid != testtexid) {
+            gltexid = testtexid;
+            glBindTexture(GL_TEXTURE_2D, gltexid);
+        }
+
+        
 
         glBegin(GL_TRIANGLE_FAN);
         {
             auto billboard = &pBillboardRenderListD3D[i];
             auto b = &pBillboardRenderList[i];
+
+            float oneoz = 1. / billboard->screen_space_z;
+            float thisdepth = (oneoz - oneon) / (oneof - oneon);
 
             for (unsigned int j = 0; j < billboard->uNumVertices; ++j) {
                 glColor4f(
@@ -2944,14 +2977,13 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
                 glTexCoord2f(billboard->pQuads[j].texcoord.x,
                              billboard->pQuads[j].texcoord.y);
 
-                float oneoz = 1. / billboard->screen_space_z;
-                float oneon = 1. / (pCamera3D->GetNearClip() * pCamera3D->aspect * 2);
-                float oneof = 1. / (pCamera3D->GetFarClip() * pCamera3D->aspect);
+                
+                
 
                 glVertex3f(
                     billboard->pQuads[j].pos.x,
                     billboard->pQuads[j].pos.y,
-                    (oneoz - oneon)/(oneof - oneon));  // depth is  non linear  proportional to reciprocal of distance
+                    thisdepth);  // depth is  non linear  proportional to reciprocal of distance
             }
         }
         drawcalls++;
