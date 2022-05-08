@@ -108,6 +108,8 @@ GUIWindow_Save::GUIWindow_Save() :
     pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, GameKey::None, "", { { saveload_ui_x_d } });
     pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, GameKey::None, "", { { ui_ar_up_dn } });
     pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, MAX_SAVE_SLOTS, GameKey::None, "", { { ui_ar_dn_dn } });
+
+    CreateButton(215, 216, 17, 107, 1, 0, UIMSG_SaveLoadScroll, MAX_SAVE_SLOTS);
 }
 
 void GUIWindow_Save::Update() {
@@ -217,6 +219,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     pBtnCancel = CreateButton(350, 302, 105, 40, 1, 0, UIMSG_Cancel, 0, GameKey::None, "", { { saveload_ui_x_d } });
     pBtnArrowUp = CreateButton(215, 199, 17, 17, 1, 0, UIMSG_ArrowUp, 0, GameKey::None, "", { { ui_ar_up_dn } });
     pBtnDownArrow = CreateButton(215, 323, 17, 17, 1, 0, UIMSG_DownArrow, uNumSavegameFiles, GameKey::None, "", { { ui_ar_dn_dn } });
+
+    CreateButton(215, 216, 17, 107, 1, 0, UIMSG_SaveLoadScroll, uNumSavegameFiles);
 }
 
 void GUIWindow_Load::Update() {
@@ -401,6 +405,21 @@ void MainMenuLoad_EventLoop() {
                 viewparams->bRedrawGameUI = true;
                 break;
             }
+            break;
+        }
+        case UIMSG_SaveLoadScroll: {
+            // pskelton add for scroll click
+            int pSaveFiles{ static_cast<int>(uNumSavegameFiles) };
+            uint mx{}, my{};
+            mouse->GetClickPos(&mx, &my);
+            // 276 is offset down from top (216 + 60 frame)
+            my -= 276;
+            // 107 is total height of bar
+            float fmy = static_cast<float>(my) / 107.0f;
+            int newlistpost = std::round((param - 7) * fmy);
+            newlistpost = std::clamp(newlistpost, 0, (param - 7));
+            pSaveListPosition = newlistpost;
+            new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197, 0, 0, pBtnArrowUp);
             break;
         }
         }

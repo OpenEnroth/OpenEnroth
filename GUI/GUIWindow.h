@@ -240,6 +240,8 @@ enum UIMessageType : uint32_t {
     UIMSG_MMT_MainMenu_MM8 = 428,
     UIMSG_MMT_MainMenu_Continue = 429,
 
+    UIMSG_SaveLoadScroll = 970,
+
     UIMSG_DebugSpecialItem = 971,
     UIMSG_DebugGenItem = 972,
     UIMSG_DebugVerboseLogging = 973,
