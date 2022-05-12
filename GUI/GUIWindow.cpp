@@ -1445,7 +1445,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     char *v15;         // eax@58
     int pPrice;        // ecx@70
     char *v22;         // [sp-Ch] [bp-18h]@73
-    char *v24;         // [sp-8h] [bp-14h]@73
+    const char *v24;         // [sp-8h] [bp-14h]@73
 
     uDialogueType = (DIALOGUE_TYPE)(topic + 1);
     NPCData *pCurrentNPCInfo =

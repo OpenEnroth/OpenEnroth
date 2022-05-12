@@ -2888,7 +2888,7 @@ void sub_4B6478() {
 
 void SimpleHouseDialog() {
     NPCData *pNPC;       // esi@6
-    char *v15;           // esi@14
+    const char *v15;           // esi@14
     GUIButton *pButton;  // eax@15
     char *v29;           // esi@42
     int v31;             // ST1C_4@42

@@ -3745,8 +3745,7 @@ int Render::GetActorsInViewport(int pDepth) {
                         pActors[v6].uAIState != Removed &&
                         pActors[v6].uAIState != Disabled &&
                         pActors[v6].uAIState != Summoned) {
-                        if (vis->DoesRayIntersectBillboard(
-                                (double)pDepth, a1a)) {
+                        if (vis->DoesRayIntersectBillboard(pDepth, a1a)) {
                             if (mon_num < 100) {
                                 _50BF30_actors_in_viewport_ids[mon_num] = v6;
                                 mon_num++;
@@ -4360,9 +4359,9 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
             i++;
         }
     }
+    uint j = 0;
     if (HEXRAYS_SLODWORD(v73) <= 0) goto LABEL_40;
     // v34 = (char *)&VertexRenderList[0].vWorldViewProjY;
-    uint j = 0;
     v65 = v77 >> 14;
     // HIDWORD(v69) = LODWORD(v73);
     for (int t = (int)HEXRAYS_LODWORD(v73); t > 1; t--) {

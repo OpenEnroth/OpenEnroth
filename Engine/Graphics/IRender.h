@@ -63,7 +63,6 @@ uint32_t Color32_SwapRedBlue(uint16_t color16);
 #pragma pack(push, 1)
 struct ODMRenderParams {
     ODMRenderParams() {
-        uPickDepth = 0;
         this->shading_dist_shade = 0x800;
         shading_dist_shademist = 0x1000;
         this->bNoSky = 0;
@@ -74,7 +73,6 @@ struct ODMRenderParams {
         this->outdoor_no_mist = 0;
     }
 
-    int uPickDepth;
     int shading_dist_shade;
     int shading_dist_shademist;
     int uNumPolygons = 0;
@@ -83,7 +81,7 @@ struct ODMRenderParams {
     unsigned int _unused_uNumSpans = 0;
     unsigned int uNumBillboards = 0;
     float field_40 = 0;
-    int outdoor_grid_band_3 = 0;
+    int outdoor_grid_band_3 = 0; // TODO: drop?
     unsigned int bNoSky;
     unsigned int bDoNotRenderDecorations;
     int field_5C;

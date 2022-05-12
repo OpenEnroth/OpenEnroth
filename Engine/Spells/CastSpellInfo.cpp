@@ -125,7 +125,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 target_undead = 0;
 
             // find the closest target
-            spell_targeted_at = stru_50C198.FindClosestActor(5120, 1, target_undead);
+            spell_targeted_at = stru_50C198.FindClosestActor(engine->config->ranged_attack_depth, 1, target_undead);
             spell_pointed_target = mouse->uPointingObjectID;
 
             if (mouse->uPointingObjectID &&
@@ -3637,8 +3637,7 @@ void CastSpellInfoHelpers::CastSpell() {
             {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
 
-                int mon_num = render->GetActorsInViewport(
-                    (int64_t)pCamera3D->GetPickDepth());
+                int mon_num = render->GetActorsInViewport((int64_t)pCamera3D->GetMouseInfoDepth());
                 v707.x = 0;
                 v707.y = 0;
                 v707.z = 0;

@@ -508,7 +508,7 @@ void ItemsTable::LoadPotions() {
     unsigned __int8 potion_value;
 
     free(pPotionNotesTXT_Raw);
-    auto tokens = Tokenize("", '\t');
+    std::vector<char *> tokens;
     char* pPotionsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("potion.txt");
     test_string = strtok(pPotionsTXT_Raw, "\r") + 1;
     while (test_string) {
@@ -555,7 +555,7 @@ void ItemsTable::LoadPotionNotes() {
     unsigned __int8 potion_note;
 
     free(pPotionNotesTXT_Raw);
-    auto tokens = Tokenize("", '\t');
+    std::vector<char *> tokens;
     char* pPotionNotesTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("potnotes.txt");
     test_string = strtok(pPotionNotesTXT_Raw, "\r") + 1;
     while (test_string) {

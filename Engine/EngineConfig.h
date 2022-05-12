@@ -113,6 +113,15 @@ class EngineConfig {
     /** Maximum depth for item pickup / opening chests / activating levers / etc with a keyboard (by pressing space). */
     float keyboard_interaction_depth = 512.0f;
 
+    /** Maximum depth at which right clicking on a monster produces a popup.
+     * Also somehow this is the max depth for the souldrinker spell. */
+    float mouse_info_depth_indoor = 16192.0f;
+    float mouse_info_depth_outdoor = 12800.0f; // That's 25 * 512, so 25 cells.
+
+    /** Max depth for ranged attacks and ranged spells. It's impossible to target monsters that are father away
+     * than this value. Incidentally this is also the depth at which status bar tips are displayed on mouse over. */
+    float ranged_attack_depth = 5120.0f;
+
     /** Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level. This is needed because
      * there are actual holes in level geometry sometimes, up to several units wide. */
     int floor_checks_eps = 3;

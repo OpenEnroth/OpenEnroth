@@ -423,7 +423,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     if (sub_4637E0_is_there_popup_onscreen()) {
         face_filter = &vis_face_filter;
         sprite_filter = &vis_sprite_filter_2;
-        depth = pCamera3D->GetPickDepth();
+        depth = pCamera3D->GetMouseInfoDepth();
     } else {
         if (config->IsTargetingMode()) {
             face_filter = &vis_face_filter;
@@ -432,7 +432,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
             face_filter = &vis_face_filter;
             sprite_filter = &vis_sprite_filter_4;
         }
-        depth = 5120.0;
+        depth = config->ranged_attack_depth;
     }
     // depth = v2;
 
@@ -1210,8 +1210,6 @@ void MM7Initialization() {
         // outdoor_grid_band_2, outdoor_grid_band_3);
         {
             pODMRenderParams->outdoor_grid_band_3 = 25;  // outdoor_grid_band_3;
-            pODMRenderParams->uPickDepth =
-                25 * 512;  // outdoor_grid_band_3 * 512;
         }
     } else {
         viewparams->field_20 &= 0xFFFFFF00;

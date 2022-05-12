@@ -129,7 +129,7 @@ struct Camera3D {
     void CullByNearClip(struct RenderVertexSoft* pverts, uint* unumverts);
     void CullByFarClip(struct RenderVertexSoft* pverts, uint* unumverts);
 
-    float GetPickDepth();
+    float GetMouseInfoDepth();
 
     glm::mat3x3 ViewMatrix;
     // using w comp of vec4 for dotdist
@@ -148,9 +148,9 @@ struct Camera3D {
 
     // Camera field of view angles in degrees and radians
     int odm_fov_deg = 75;
-    float odm_fov_rad = (float)odm_fov_deg * pi / 180.0;
+    float odm_fov_rad = odm_fov_deg * pi / 180.0f;
     int blv_fov_deg = 60;
-    float blv_fov_rad = (float)blv_fov_deg * pi / 180.0;
+    float blv_fov_rad = blv_fov_deg * pi / 180.0f;
 
     // game viewport aspect ratio
     float aspect = 0;
