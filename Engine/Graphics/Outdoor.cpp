@@ -122,7 +122,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     {
         SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);  // sky box frustum
         render->DrawOutdoorSkyD3D();
-        render->RenderTerrainD3D();
+        render->DrawTerrainD3D();
         render->DrawBuildingsD3D();
 
         // render->DrawBezierTerrain();

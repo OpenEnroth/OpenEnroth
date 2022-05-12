@@ -357,7 +357,7 @@ class IRender {
     virtual void PrepareDecorationsRenderList_ODM() = 0;
     virtual void DrawSpriteObjects_ODM() = 0;
 
-    virtual void RenderTerrainD3D() = 0;
+    virtual void DrawTerrainD3D() = 0;
 
     virtual bool AreRenderSurfacesOk() = 0;
 
@@ -382,7 +382,7 @@ class IRender {
     virtual void EndDecals() = 0;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) = 0;
 
-    virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
+    virtual void Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                         signed int sDiffuseBegin,
                                         const RenderVertexD3D3 *pLineEnd,
                                         signed int sDiffuseEnd,
@@ -403,7 +403,7 @@ class IRender {
     virtual void ReleaseTerrain() = 0;
     virtual void ReleaseBSP() = 0;
 
-    virtual void drawtwodverts() = 0;
+    virtual void DrawTwodVerts() = 0;
 
     inline void ToggleTint() {
         IRenderConfigFactory renderConfigFactory;

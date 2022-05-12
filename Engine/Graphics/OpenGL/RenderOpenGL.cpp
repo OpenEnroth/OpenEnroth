@@ -632,7 +632,7 @@ int linevertscnt = 0;
 void RenderOpenGL::BeginLines2D() {
     if (linevertscnt) __debugbreak();
 
-    drawtwodverts();
+    DrawTwodVerts();
 
     if (lineVAO == 0) {
         glGenVertexArrays(1, &lineVAO);
@@ -1203,7 +1203,7 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
 
     GL_Check_Errors();
 
-    if (twodvertscnt > 490) drawtwodverts();
+    if (twodvertscnt > 490) DrawTwodVerts();
     return;
 }
 
@@ -1314,7 +1314,7 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
         render->Update_Texture(temp);
         render->DrawTextureAlphaNew(x / float(window->GetWidth()), y / float(window->GetHeight()), temp);
 
-        render->drawtwodverts();
+        render->DrawTwodVerts();
 
         temp->Release();
     }
@@ -1354,7 +1354,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
         render->Update_Texture(temp);
         render->DrawTextureAlphaNew(u, v, temp);
 
-        render->drawtwodverts();
+        render->DrawTwodVerts();
 
         temp->Release();
     }
@@ -1672,7 +1672,7 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     GL_Check_Errors();
 }
 
-void RenderOpenGL::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
+void RenderOpenGL::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                           signed int sDiffuseBegin,
                                           const RenderVertexD3D3 *pLineEnd,
                                           signed int sDiffuseEnd,
@@ -1811,7 +1811,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodvertscnt++;
 
-    if (twodvertscnt > 490) drawtwodverts();
+    if (twodvertscnt > 490) DrawTwodVerts();
     GL_Check_Errors();
     return;
 }
@@ -2240,7 +2240,7 @@ struct GLshaderverts {
 
 GLshaderverts terrshaderstore[127 * 127 * 6] = {};
 
-void RenderOpenGL::RenderTerrainD3D() {
+void RenderOpenGL::DrawTerrainD3D() {
     // shader version
     // draws entire terrain in one go at the moment
     // textures must all be square and same size
@@ -2920,6 +2920,9 @@ struct billbverts {
     GLfloat blend;
 };
 
+billbverts billbstore{ };
+int billbstorecnt{ 0 };
+
 //----- (004A1C1E) --------------------------------------------------------
 void RenderOpenGL::DoRenderBillboards_D3D() {
     glEnable(GL_BLEND);
@@ -2935,8 +2938,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     // track blend mode
     RenderBillboardD3D::OpacityType blendtrack{ RenderBillboardD3D::NoBlend };
 
-    float oneon = 1. / (pCamera3D->GetNearClip() * pCamera3D->aspect * 2);
-    float oneof = 1. / (pCamera3D->GetFarClip() * pCamera3D->aspect);
+    float oneon = 1.0f / (pCamera3D->GetNearClip() * pCamera3D->aspect * 2.0f);
+    float oneof = 1.0f / (pCamera3D->GetFarClip() * pCamera3D->aspect);
 
     for (int i = uNumBillboardsToDraw - 1; i >= 0; --i) {
         if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend) {
@@ -2957,8 +2960,6 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             glBindTexture(GL_TEXTURE_2D, gltexid);
         }
 
-        
-
         glBegin(GL_TRIANGLE_FAN);
         {
             auto billboard = &pBillboardRenderListD3D[i];
@@ -2977,8 +2978,6 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
                 glTexCoord2f(billboard->pQuads[j].texcoord.x,
                              billboard->pQuads[j].texcoord.y);
 
-                
-                
 
                 glVertex3f(
                     billboard->pQuads[j].pos.x,
@@ -3218,7 +3217,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodvertscnt++;
 
-    if (twodvertscnt > 490) drawtwodverts();
+    if (twodvertscnt > 490) DrawTwodVerts();
     GL_Check_Errors();
     return;
 }
@@ -3342,7 +3341,7 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodvertscnt++;
 
-    if (twodvertscnt > 490) drawtwodverts();
+    if (twodvertscnt > 490) DrawTwodVerts();
     GL_Check_Errors();
     return;
 }
@@ -3356,7 +3355,7 @@ void RenderOpenGL::BeginTextNew(Texture *main, Texture *shadow) {
 
     // draw any images in buffer
     if (twodvertscnt) {
-        drawtwodverts();
+        DrawTwodVerts();
     }
 
     auto texturemain = (TextureOpenGL *)main;
@@ -3686,7 +3685,7 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
 }
 
 void RenderOpenGL::Present() {
-    drawtwodverts();
+    DrawTwodVerts();
     EndTextNew();
 
     GL_Check_Errors();
@@ -5254,7 +5253,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodvertscnt++;
 
-    if (twodvertscnt > 490) drawtwodverts();
+    if (twodvertscnt > 490) DrawTwodVerts();
     GL_Check_Errors();
     return;
 }
@@ -5381,7 +5380,7 @@ void RenderOpenGL::ReleaseBSP() {
 }
 
 
-void RenderOpenGL::drawtwodverts() {
+void RenderOpenGL::DrawTwodVerts() {
     if (!twodvertscnt) return;
 
     if (textvertscnt) {

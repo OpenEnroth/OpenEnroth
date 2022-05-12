@@ -224,7 +224,7 @@ bool Render::AreRenderSurfacesOk() { return pFrontBuffer4 && pBackBuffer4; }
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
 
-void Render::RenderTerrainD3D() {  // New function
+void Render::DrawTerrainD3D() {  // New function
     // warning: the game uses CW culling by default, ccw is incosistent
     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
 
@@ -3951,7 +3951,7 @@ void Render::EndLightmaps2() {
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
 }
 
-void Render::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
+void Render::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                     signed int sDiffuseBegin,
                                     const RenderVertexD3D3 *pLineEnd,
                                     signed int sDiffuseEnd, float z_stuff) {
@@ -4707,4 +4707,4 @@ void Render::NuklearImageFree(Image *img) {}
 
 void Render::ReleaseTerrain() { return; }
 void Render::ReleaseBSP() { return; }
-void Render::drawtwodverts() { return; }
+void Render::DrawTwodVerts() { return; }

@@ -167,7 +167,7 @@ class Render : public RenderBase {
 
     virtual void PrepareDecorationsRenderList_ODM() override;
 
-    virtual void RenderTerrainD3D() override;
+    virtual void DrawTerrainD3D() override;
 
     virtual bool AreRenderSurfacesOk() override;
 
@@ -192,7 +192,7 @@ class Render : public RenderBase {
     virtual void EndDecals() override;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) override;
 
-    virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
+    virtual void Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                         signed int sDiffuseBegin,
                                         const RenderVertexD3D3 *pLineEnd,
                                         signed int sDiffuseEnd, float z_stuff) override;
@@ -207,7 +207,7 @@ class Render : public RenderBase {
 
     virtual void ReleaseTerrain() override;
     virtual void ReleaseBSP() override;
-    virtual void drawtwodverts() override;
+    virtual void DrawTwodVerts() override;
 
     virtual void DrawIndoorFaces() override;
 
