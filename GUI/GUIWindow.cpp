@@ -991,9 +991,9 @@ void GUI_UpdateWindows() {
         pWindow->Update();
     }
 
-    //if (GetCurrentMenuID() == -1) {
-    //    GameUI_DrawFoodAndGold();
-    //}
+    if (GetCurrentMenuID() == -1) {
+        GameUI_DrawFoodAndGold();
+    }
 
     if (sub_4637E0_is_there_popup_onscreen()) {
         std::shared_ptr<Mouse> mouse = EngineIoc::ResolveMouse();

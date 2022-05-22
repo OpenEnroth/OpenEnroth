@@ -301,10 +301,12 @@ void Engine::DrawGUI() {
     GameUI_DrawPartySpells();
     if (v4 || pParty->pHirelings[0].dialogue_3_evt_id || pParty->pHirelings[1].dialogue_3_evt_id)
         GameUI_DrawHiredNPCs();
+
     GameUI_DrawPortraits(v4);
     GameUI_DrawLifeManaBars();
     GameUI_DrawCharacterSelectionFrame();
     if (_44100D_should_alter_right_panel()) GameUI_DrawRightPanel();
+
     if (!pMovie_Track) {
         spell_fx_renedrer->DrawPlayerBuffAnims();
         pOtherOverlayList->DrawTurnBasedIcon(v4);

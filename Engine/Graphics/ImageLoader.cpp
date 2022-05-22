@@ -99,7 +99,20 @@ bool Paletted_Img_Loader::Load(unsigned int *out_width,
     //        tex->paletted_pixels, tex->pPalette24, colorkey);
     //}
 
-    *out_pixels = tex->paletted_pixels;
+    // need to copy save palette pixels
+
+    int size = 3 * tex->header.uTextureWidth * tex->header.uTextureHeight;
+    uint8_t *store = new uint8_t[size];
+    memcpy(store, tex->paletted_pixels, size);
+    *out_pixels = store;
+
+    uint8_t *storepal = new uint8_t[3 * 256];
+    memcpy(storepal, tex->pPalette24, 3 * 256);
+    *out_palette = storepal;
+
+    // *out_pixels = tex->paletted_pixels;
+    //    *out_pixels = MakeImageSolid(tex->header.uTextureWidth, tex->header.uTextureHeight,
+    //        tex->paletted_pixels, tex->pPalette24);
 
     if (*out_pixels == nullptr) {
         return false;
@@ -108,7 +121,7 @@ bool Paletted_Img_Loader::Load(unsigned int *out_width,
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
     *out_format = IMAGE_FORMAT_R8G8B8;
-    *out_palette = tex->pPalette24;
+    // *out_palette = tex->pPalette24;
 
     return true;
 }

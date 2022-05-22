@@ -9,8 +9,7 @@
             "installRoot": "${projectDir}\\out\\install\\${name}",
             "cmakeCommandArgs": "",
             "buildCommandArgs": "",
-            "ctestCommandArgs": "",
-            "variables": []
+            "ctestCommandArgs": ""
         },
         {
             "name": "x32-Debug",
@@ -21,7 +20,18 @@
             "installRoot": "${projectDir}\\out\\install\\${name}",
             "cmakeCommandArgs": "",
             "buildCommandArgs": "",
+            "ctestCommandArgs": ""
+        },
+        {
+            "name": "x32-Release",
+            "generator": "Visual Studio 16 2019",
+            "configurationType": "Release",
+            "buildRoot": "${projectDir}\\out\\build\\${name}",
+            "installRoot": "${projectDir}\\out\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "",
             "ctestCommandArgs": "",
+            "inheritEnvironments": [ "msvc_x86" ],
             "variables": []
         }
     ]

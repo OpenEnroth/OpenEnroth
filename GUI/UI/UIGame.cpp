@@ -1028,7 +1028,6 @@ void GameUI_DrawRightPanelFrames() {
     render->DrawTextureNew(0, 8 / 480.0f, game_ui_leftframe);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_rightframe);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_bottomframe);
-    GameUI_DrawFoodAndGold();
     GameUI_DrawRightPanelItems();
 
     // render->EndScene();
@@ -2256,9 +2255,18 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
 }
 
 void GUIWindow_DebugMenu::Update() {
+    // could move the drwa flush to update windows?
+    render->DrawTwodVerts();
+    render->EndLines2D();
+    render->EndTextNew();
+
+    render->BeginLines2D();
+
     render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f,
         pViewport->uViewportTL_Y / 480.0f,
         game_ui_menu_options);
+
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 0, 10, 0, "Debug Menu", 0, 0, 0);
 
     buttonbox(13, 140, "Town Portal", engine->config->debug_town_portal);
     buttonbox(127, 140, "Give Gold", 2);
@@ -2301,6 +2309,9 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(241, 329, "No Damage", engine->config->no_damage);
     buttonbox(354, 329, "Full Heal", 2);
 
+    //render->DrawTwodVerts();
+    //render->EndLines2D();
+
     viewparams->bRedrawGameUI = true;
 }
 
@@ -2309,12 +2320,12 @@ void buttonbox(int x, int y, const char* text, int col) {
     int height = 20;
     render->FillRectFast(x, y, width+1, height+1, Color16(50, 50, 50));
 
-    render->BeginLines2D();
+    //render->BeginLines2D();
     render->RasterLine2D(x-1, y-1, x+width+1, y-1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x-1, y-1, x-1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
-    render->EndLines2D();
+    //render->EndLines2D();
 
     uint16_t colour = ui_character_condition_severe_color;
     if (col == 2) {

@@ -2920,7 +2920,7 @@ struct billbverts {
     GLfloat blend;
 };
 
-billbverts billbstore{ };
+billbverts billbstore[1000] {};
 int billbstorecnt{ 0 };
 
 //----- (004A1C1E) --------------------------------------------------------
@@ -3685,7 +3685,9 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
 }
 
 void RenderOpenGL::Present() {
+    // flush any undrawn items
     DrawTwodVerts();
+    EndLines2D();
     EndTextNew();
 
     GL_Check_Errors();

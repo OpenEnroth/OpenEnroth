@@ -444,6 +444,10 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
     iteminfo_window.uFrameZ =
         iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
+
+    // flush draw before starting popup window
+    render->DrawTwodVerts();
+
     iteminfo_window.DrawMessageBox(0);
     render->SetUIClipRect(
         iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
@@ -462,6 +466,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                                      2.) /
                                     480.0f,
                                 inspect_item_image);
+    logger->Info("draw item");
 
     v34 = (int)(v85 + 35);
     Str = out_text;
