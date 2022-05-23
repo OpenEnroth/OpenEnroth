@@ -159,6 +159,21 @@ void Menu::EventLoop() {
                 // SaveUI_Load(current_screen_type = SCREEN_SAVEGAME);
                 continue;
             }
+            case UIMSG_SaveLoadScroll: {
+                // pskelton add for scroll click
+                int pSaveFiles{ static_cast<int>(uNumSavegameFiles) };
+                uint mx{}, my{};
+                mouse->GetClickPos(&mx, &my);
+                // 216 is offset down from top (216)
+                my -= 216;
+                // 107 is total height of bar
+                float fmy = static_cast<float>(my) / 107.0f;
+                int newlistpost = std::round((param - 7) * fmy);
+                newlistpost = std::clamp(newlistpost, 0, (param - 7));
+                pSaveListPosition = newlistpost;
+                new OnButtonClick2(pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197, 0, 0, pBtnArrowUp);
+                continue;
+            }
             case UIMSG_Game_OpenOptionsDialog:  // Open
             {
                 pMessageQueue_50CBD0->Flush();
