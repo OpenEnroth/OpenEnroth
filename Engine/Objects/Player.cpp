@@ -813,6 +813,7 @@ void Player::WearItem(unsigned int uItemID) {
 
 //----- (004927A8) --------------------------------------------------------
 int Player::AddItem(int index, unsigned int uItemID) {
+    if (!uItemID) return 0;
     if (index == -1) {  // no location specified - search for space
         for (int xcoord = 0; xcoord < INVETORYSLOTSWIDTH; xcoord++) {
             for (int ycoord = 0; ycoord < INVETORYSLOTSHEIGHT; ycoord++) {

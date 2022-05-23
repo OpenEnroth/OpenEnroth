@@ -2070,6 +2070,8 @@ OutdoorLocation::OutdoorLocation() {
     this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
     this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
 
+    this->sky_texture = nullptr;
+
     subconstuctor();
     uLastSunlightUpdateMinute = 0;
 }

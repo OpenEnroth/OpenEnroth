@@ -21,6 +21,7 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIShops.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/UIPopup.h"
 
 #include "Io/Mouse.h"
 
@@ -1255,6 +1256,31 @@ void UIShop_Buy_Identify_Repair() {
         }
     }
 }
+
+//----- new function
+void ShowPopupShopSkills() {
+    unsigned int pX = 0;
+    unsigned int pY = 0;
+    mouse->GetClickPos(&pX, &pY);
+
+    if (pDialogueWindow) {
+        for (GUIButton *pButton : pDialogueWindow->vButtons) {
+            if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
+                if (IsSkillLearningDialogue((DIALOGUE_TYPE)pButton->msg_param)) {
+                    auto skill_id = GetLearningDialogueSkill((DIALOGUE_TYPE)pButton->msg_param);
+                    if (byte_4ED970_skill_learn_ability_by_class_table
+                        [pPlayers[uActiveCharacter]->classType][skill_id] &&
+                        !pPlayers[uActiveCharacter]->pActiveSkills[skill_id]) {
+                        // is this skill visible
+                        std::string pSkillDescText = CharacterUI_GetSkillDescText(uActiveCharacter - 1, (PLAYER_SKILL_TYPE)skill_id);
+                        CharacterUI_DrawTooltip(localization->GetSkillName(skill_id), pSkillDescText);
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 //----- (004B1A2D) --------------------------------------------------------
 void ShowPopupShopItem() {
