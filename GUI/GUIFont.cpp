@@ -541,7 +541,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
                         render->DrawTextAlpha(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight, pData->pFontPalettes[0], present_time_transparency);
 
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, Color16(r, g, b));
-                        //render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, Color16(0,255,0));
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, Color16(0, 0, 0));
                     }
 
                     out_x += pData->pMetrics[c].uWidth;
@@ -691,7 +691,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fonttex, Color16(r, g, b));
-                    //render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, Color16(r, 255, b));
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, fontshadow, Color16(0, 0, 0));
 
                     render->DrawTextAlpha(text_pos_x, text_pos_y, char_pix_ptr, char_width, pData->uFontHeight, pData->pFontPalettes[0], false);
                 }
