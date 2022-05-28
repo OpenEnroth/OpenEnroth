@@ -213,7 +213,7 @@ explosion_effect_struct *explosion_effect_struct::New() {
     }
     v2->mem_signature = SIG_MEMALOC;
     v2->remaining_sparks_to_init = 0;
-    v2->prev_init_overflow = 0.0;
+    v2->prev_init_overflow = 0;
     v2->effect_active = 0;
     v2->params_filled = 0;
 
@@ -234,14 +234,14 @@ int explosion_effect_struct::StartFill(effect_params_struct *params) {
     // fill effect params;
     if (this->mem_signature == SIG_MEMALOC) {
         this->spark_array_size = params->spark_array_size;
-        this->start_x_min = params->effect_area.x << 16;
-        this->start_y_max = params->effect_area.y << 16;
-        this->start_x_max = params->effect_area.z << 16;
-        this->start_y_min = params->effect_area.w << 16;
+        this->start_x_min = params->effect_area.x;
+        this->start_y_max = params->effect_area.y;
+        this->start_x_max = params->effect_area.z;
+        this->start_y_min = params->effect_area.w;
         this->unused_param_1 = params->unused_param_1;
         this->unused_param_2 = params->unused_param_2;
         this->unused_param_3 = params->unused_param_3;
-        this->gravity_unshift = (float)(params->gravity_acc * 65536.0);
+        this->gravity = params->gravity_acc;
         this->num_init_per_cycle = params->create_per_frame;
         this->unused_acc_1 = (int)(params->unused_acc_1 * 65536.0);
         this->unused_acc_1 = (int)(params->unused_acc_1 * 65536.0);
@@ -259,7 +259,7 @@ int explosion_effect_struct::Clear(char stop_init, char wipe) {
     if (mem_signature == SIG_MEMALOC) {
         if (stop_init) {
             remaining_sparks_to_init = 0;
-            prev_init_overflow = 0.0;
+            prev_init_overflow = 0;
         }
         if (params_filled && wipe) {
             for (int i = 0; i < spark_array_size; ++i) spark_array_ptr[i].spark_remaining_life = 0;
@@ -275,7 +275,7 @@ int explosion_effect_struct::UpdateEffect() {
     if (this->mem_signature != SIG_MEMALOC) return 2;
 
     // calculate how many sparks to initiate
-    float total_to_init = 0;
+    int total_to_init {0};
     if (this->remaining_sparks_to_init > 0) {
         total_to_init = this->prev_init_overflow + this->num_init_per_cycle;
          if (total_to_init > this->remaining_sparks_to_init)
@@ -283,7 +283,7 @@ int explosion_effect_struct::UpdateEffect() {
     }
 
     // if sparks left to initiate or effect is still active
-    if (total_to_init >= 1.0 || this->effect_active) {
+    if (total_to_init >= 1 || this->effect_active) {
         bool active_check = 0;
         spark_point_struct* spark_ptr = this->spark_array_ptr;
 
@@ -295,13 +295,13 @@ int explosion_effect_struct::UpdateEffect() {
                 --spark_ptr->spark_remaining_life;
 
                 // update x pos
-                spark_ptr->spark_x_unshift += spark_ptr->spark_x_speed;
-                spark_ptr->spark_position.x = spark_ptr->spark_x_unshift >> 16;
+                spark_ptr->spark_x_pos += spark_ptr->spark_x_speed;
+                spark_ptr->spark_position.x = static_cast<int> (spark_ptr->spark_x_pos);
 
                 // update y pos
-                spark_ptr->spark_y_speed += this->gravity_unshift;
-                spark_ptr->spark_y_unshift += spark_ptr->spark_y_speed;
-                spark_ptr->spark_position.y = spark_ptr->spark_y_unshift >> 16;
+                spark_ptr->spark_y_speed += this->gravity;
+                spark_ptr->spark_y_pos += spark_ptr->spark_y_speed;
+                spark_ptr->spark_position.y = static_cast<int> (spark_ptr->spark_y_pos);
 
                 // set effect still active
                 active_check = 1;
@@ -309,12 +309,12 @@ int explosion_effect_struct::UpdateEffect() {
                 if (total_to_init >= 1.0) {
                     // spark dead - initialze new spark
                     spark_ptr->spark_remaining_life = rand_interval(this->min_lifespan, this->max_lifespan);
-                    spark_ptr->spark_x_speed = (rand() % 17 - 8) << 16;
-                    spark_ptr->spark_y_speed = (rand() % 17 - 8) << 16;
-                    spark_ptr->spark_x_unshift = rand_interval(this->start_x_min, (this->start_x_max - 1));
-                    spark_ptr->spark_position.x = spark_ptr->spark_x_unshift >> 16;
-                    spark_ptr->spark_y_unshift = rand_interval((this->start_y_min - 1), this->start_y_max);;
-                    spark_ptr->spark_position.y = spark_ptr->spark_y_unshift >> 16;
+                    spark_ptr->spark_x_speed = static_cast<float> (rand() % 17 - 8);
+                    spark_ptr->spark_y_speed = static_cast<float> (rand() % 17 - 8);
+                    spark_ptr->spark_x_pos = static_cast<float> (rand_interval(this->start_x_min, (this->start_x_max - 1)));
+                    spark_ptr->spark_position.x = static_cast<int> (spark_ptr->spark_x_pos);
+                    spark_ptr->spark_y_pos = static_cast<float> (rand_interval((this->start_y_min - 1), this->start_y_max));
+                    spark_ptr->spark_position.y = static_cast<int> (spark_ptr->spark_y_pos);
                     --this->remaining_sparks_to_init;
                     --total_to_init;
 
@@ -377,7 +377,7 @@ int new_explosion_effect(Point* startXY, int effect_value) {
     am_effects_array[arr_slot].eff_params.unused_param_3 = 180;
     am_effects_array[arr_slot].eff_params.gravity_acc = 0.5;
     am_effects_array[arr_slot].eff_params.spark_array_size = 150;
-    am_effects_array[arr_slot].eff_params.create_per_frame = 50.0;
+    am_effects_array[arr_slot].eff_params.create_per_frame = 50;
     am_effects_array[arr_slot].eff_params.unused_acc_1 = 3.0;
     am_effects_array[arr_slot].eff_params.unused_acc_1 = 8.0;
     am_effects_array[arr_slot].eff_params.min_lifespan = 5;
@@ -390,7 +390,7 @@ int new_explosion_effect(Point* startXY, int effect_value) {
     if (!explos->params_filled) return 3;
     if (10 * effect_value > 150) effect_value = 15;
     explos->remaining_sparks_to_init = 10 * effect_value;
-    explos->prev_init_overflow = 0.0;
+    explos->prev_init_overflow = 0;
     explos->effect_active = 0;
 
     // unused parameters
@@ -406,87 +406,32 @@ int new_explosion_effect(Point* startXY, int effect_value) {
 }
 
 void DrawSparks() {
-    int rgb_pixel_color;
+    int rgb_pixel_color{};
 
     for (int i = 0; i < 10; ++i) {
-        if (am_effects_array[i].have_effect &&
-            (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
-            // scan and find extents of spark array
-            bool first = 0;
-            int xmin = -1;
-            int xmax = -1;
-            int ymin = -1;
-            int ymax = -1;
+        if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
+            // set the pixel color
+            rgb_pixel_color = Color16(0, 255, 0);  // green
+            if (!am_effects_array[i].effect_sign) rgb_pixel_color = Color16(255, 0, 0);  // red
+
+            // draw sparks
             for (int j = 0; j < 150; ++j) {
                 if (am_effects_array[i].effect_sparks[j].spark_remaining_life > 0) {
-                    if (first == 0) {
-                        if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
-                            if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
-                                xmin = xmax = am_effects_array[i].effect_sparks[j].spark_position.x;
-                                ymin = ymax = am_effects_array[i].effect_sparks[j].spark_position.y;
-                                first = 1;
-                            }
-                        }
-                    } else {
-                        if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
-                            if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
-                                if (am_effects_array[i].effect_sparks[j].spark_position.x < xmin)
-                                    xmin = am_effects_array[i].effect_sparks[j].spark_position.x;
-                                if (am_effects_array[i].effect_sparks[j].spark_position.x > xmax)
-                                    xmax = am_effects_array[i].effect_sparks[j].spark_position.x;
-                                if (am_effects_array[i].effect_sparks[j].spark_position.y < ymin)
-                                    ymin = am_effects_array[i].effect_sparks[j].spark_position.y;
-                                if (am_effects_array[i].effect_sparks[j].spark_position.y > ymax)
-                                    ymax = am_effects_array[i].effect_sparks[j].spark_position.y;
+                    // check limits
+                    if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
+                        if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
+                            if (j % 2) {
+                                // draw single pixel
+                                render->FillRectFast(am_effects_array[i].effect_sparks[j].spark_position.x,
+                                    am_effects_array[i].effect_sparks[j].spark_position.y, 1, 1, rgb_pixel_color);
+                            } else {
+                                // draw square
+                                render->FillRectFast(am_effects_array[i].effect_sparks[j].spark_position.x,
+                                    am_effects_array[i].effect_sparks[j].spark_position.y, 2, 2, rgb_pixel_color);
                             }
                         }
                     }
                 }
-            }
-
-            // increase extents to cover larger square particle drawing
-            xmax += 2;
-            ymax += 2;
-            uint width = xmax - xmin;
-            uint height = ymax - ymin;
-
-            if (width && height) {
-                // create temp image
-                Texture* temp = render->CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
-                uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-                // set the pixel color
-                rgb_pixel_color = 0xFF00FF00;  // green
-                if (!am_effects_array[i].effect_sign) rgb_pixel_color = 0xFFFF0000;  // red
-
-                // draw pixels to image
-                for (int j = 0; j < 150; ++j) {
-                    if (am_effects_array[i].effect_sparks[j].spark_remaining_life > 0) {
-                        // check limits
-                        if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
-                            if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
-                                uint x = am_effects_array[i].effect_sparks[j].spark_position.x - xmin;
-                                uint y = am_effects_array[i].effect_sparks[j].spark_position.y - ymin;
-
-                                if (j % 2) {
-                                    // draw single pixel
-                                    temppix[x + y * width] = rgb_pixel_color;
-                                } else {
-                                    // draw square
-                                    temppix[x + y * width] = rgb_pixel_color;
-                                    temppix[((x + 1) + y * width)] = rgb_pixel_color;
-                                    temppix[(x + (y+1) * width)] = rgb_pixel_color;
-                                    temppix[((x + 1) + (y+1) * width)] = rgb_pixel_color;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                render->Update_Texture(temp);
-                // draw created image to xmin,ymin
-                render->DrawTextureAlphaNew(xmin / 640.0f, ymin / 480.0f, temp);
-                temp->Release();
             }
         }
     }
@@ -1404,7 +1349,7 @@ char PlayerTurn(int player_num) {
         }
 
         // do we need to draw
-        if (pArcomageGame->force_redraw_1) {
+        if (true/*pArcomageGame->force_redraw_1*/) {
             DrawGameUI(animation_stage);
             pArcomageGame->force_redraw_1 = 0;
         }
@@ -3059,8 +3004,7 @@ void am_DrawText(const std::string &str, Point *pXY) {
 
 void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill) {
     if (bSolidFill) {
-        for (int i = pXYZW->y; i <= pXYZW->w; ++i)
-            render->RasterLine2D(pXYZW->x, i, pXYZW->z, i, uColor);
+        render->FillRectFast(pXYZW->x, pXYZW->y, (pXYZW->z - pXYZW->x), (pXYZW->w - pXYZW->y), uColor);
     } else {
         render->RasterLine2D(pXYZW->x, pXYZW->y, pXYZW->z, pXYZW->y, uColor);
         render->RasterLine2D(pXYZW->z, pXYZW->y, pXYZW->z, pXYZW->w, uColor);
