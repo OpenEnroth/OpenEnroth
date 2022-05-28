@@ -229,80 +229,53 @@ void RenderOpenGL::MaskGameViewport() {
     // do not want in opengl mode
 }
 
-int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {
-    signed int v6;     // edi@1
-    int v8;            // eax@6
-    int v9;            // ebx@6
-    unsigned int v10;  // ecx@6
-    unsigned int v11;  // edx@9
-    unsigned int v12;  // edx@11
-    signed int v13;    // ecx@12
-    BLVLightMM7 *v16;  // esi@20
-    int v17;           // ebx@21
-    signed int v24;    // ecx@30
-    int v26;           // ebx@35
-    int v37;           // [sp+Ch] [bp-18h]@37
-    int v39;           // [sp+10h] [bp-14h]@23
-    int v40;           // [sp+10h] [bp-14h]@36
-    int v42;           // [sp+14h] [bp-10h]@22
-    unsigned int v43;  // [sp+18h] [bp-Ch]@12
-    unsigned int v44;  // [sp+18h] [bp-Ch]@30
-    unsigned int v45;  // [sp+18h] [bp-Ch]@44
+// ----- (0043F5C8) --------------------------------------------------------
+int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {
+    int lightlevel = uBaseLightLevel;
+    float light_radius{};
+    float distX{};
+    float distY{};
+    float distZ{};
+    unsigned int approx_distance;
 
-    v6 = uBaseLightLevel;
-
+    // mobile lights
     for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
         MobileLight *p = &pMobileLightsStack->pLights[i];
+        light_radius = p->uRadius;
 
-        float distX = abs(p->vPosition.x - x);
-        if (distX <= p->uRadius) {
-            float distY = abs(p->vPosition.y - y);
-            if (distY <= p->uRadius) {
-                float distZ = abs(p->vPosition.z - z);
-                if (distZ <= p->uRadius) {
-                    v8 = distX;
-                    v9 = distY;
-                    v10 = distZ;
-                    if (distX < distY) {
-                        v8 = distY;
-                        v9 = distX;
-                    }
-                    if (v8 < distZ) {
-                        v11 = v8;
-                        v8 = distZ;
-                        v10 = v11;
-                    }
-                    if (v9 < (signed int)v10) {
-                        v12 = v10;
-                        v10 = v9;
-                        v9 = v12;
-                    }
-                    v43 = ((unsigned int)(11 * v9) / 32) + (v10 / 4) + v8;
-                    v13 = p->uRadius;
-                    if ((signed int)v43 < v13)
-         //* ORIGONAL */v6 += ((unsigned __int64)(30i64 *(signed int)(v43 << 16) / v13) >> 16) - 30;
-                        v6 += ((unsigned __int64)(30ll * (signed int)(v43 << 16) / v13) >> 16) - 30;
+        distX = abs(p->vPosition.x - x);
+        if (distX <= light_radius) {
+            distY = abs(p->vPosition.y - y);
+            if (distY <= light_radius) {
+                distZ = abs(p->vPosition.z - z);
+                if (distZ <= light_radius) {
+                    approx_distance = int_get_vector_length(distX, distY, distZ);
+                    if (approx_distance < light_radius)
+         //* ORIGONAL */lightlevel += ((unsigned __int64)(30i64 *(signed int)(approx_distance << 16) / light_radius) >> 16) - 30;
+                        lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
                 }
             }
         }
     }
 
+    // sector lights
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         BLVSector *pSector = &pIndoor->pSectors[uSectorID];
 
         for (uint i = 0; i < pSector->uNumLights; ++i) {
-            v16 = pIndoor->pLights + pSector->pLights[i];
-            if (~v16->uAtributes & 8) {
-                v17 = abs(v16->vPosition.x - x);
-                if (v17 <= v16->uRadius) {
-                    v42 = abs(v16->vPosition.y - y);
-                    if (v42 <= v16->uRadius) {
-                        v39 = abs(v16->vPosition.z - z);
-                        if (v39 <= v16->uRadius) {
-                            v44 = int_get_vector_length(v17, v42, v39);
-                            v24 = v16->uRadius;
-                            if ((signed int)v44 < v24)
-                                v6 += ((unsigned __int64)(30ll * (signed int)(v44 << 16) / v24) >> 16) - 30;
+            BLVLightMM7 *this_light = pIndoor->pLights + pSector->pLights[i];
+            light_radius = this_light->uRadius;
+
+            if (~this_light->uAtributes & 8) {
+                distX = abs(this_light->vPosition.x - x);
+                if (distX <= light_radius) {
+                    distY = abs(this_light->vPosition.y - y);
+                    if (distY <= light_radius) {
+                        distZ = abs(this_light->vPosition.z - z);
+                        if (distZ <= light_radius) {
+                            approx_distance = int_get_vector_length(distX, distY, distZ);
+                            if (approx_distance < light_radius)
+                                lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
                         }
                     }
                 }
@@ -310,26 +283,27 @@ int _43F5C8_get_point_light_level_with_respect_to_lights(unsigned int uBaseLight
         }
     }
 
+    // stationary lights
     for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
-        // StationaryLight* p = &pStationaryLightsStack->pLights[i];
-        v26 = abs(pStationaryLightsStack->pLights[i].vPosition.x - x);
-        if (v26 <= pStationaryLightsStack->pLights[i].uRadius) {
-            v40 = abs(pStationaryLightsStack->pLights[i].vPosition.y - y);
-            if (v40 <= pStationaryLightsStack->pLights[i].uRadius) {
-                v37 = abs(pStationaryLightsStack->pLights[i].vPosition.z - z);
-                if (v37 <= pStationaryLightsStack->pLights[i].uRadius) {
-                    v45 = int_get_vector_length(v26, v40, v37);
-                    // v33 = pStationaryLightsStack->pLights[i].uRadius;
-                    if ((signed int)v45 <
-                        pStationaryLightsStack->pLights[i].uRadius)
-                        v6 += ((unsigned __int64)(30ll * (signed int)(v45 << 16) / pStationaryLightsStack->pLights[i].uRadius) >> 16) - 30;
+        StationaryLight* p = &pStationaryLightsStack->pLights[i];
+        light_radius = p->uRadius;
+
+        distX = abs(p->vPosition.x - x);
+        if (distX <= light_radius) {
+            distY = abs(p->vPosition.y - y);
+            if (distY <= light_radius) {
+                distZ = abs(p->vPosition.z - z);
+                if (distZ <= light_radius) {
+                    approx_distance = int_get_vector_length(distX, distY, distZ);
+                    if (approx_distance < light_radius)
+                        lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
                 }
             }
         }
     }
 
-    v6 = std::clamp(v6, 0, 31);
-    return v6;
+    lightlevel = std::clamp(lightlevel, 0, 31);
+    return lightlevel;
 }
 
 void UpdateObjects() {
@@ -418,7 +392,7 @@ int _43F55F_get_billboard_light_level(RenderBillboard *a1,
         }
     }
 
-    return _43F5C8_get_point_light_level_with_respect_to_lights(
+    return GetLightLevelAtPoint(
         v3, a1->uIndoorSectorID, a1->world_x, a1->world_y, a1->world_z);
 }
 
@@ -3354,8 +3328,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
     // int v27;  // eax@57
     int farclip;  // [sp+2Ch] [bp-2Ch]@10
     int nearclip;  // [sp+30h] [bp-28h]@34
-    int v51;  // [sp+34h] [bp-24h]@35
-    int v52;  // [sp+38h] [bp-20h]@36
+    // int v51;  // [sp+34h] [bp-24h]@35
+    // int v52;  // [sp+38h] [bp-20h]@36
     int v53;  // [sp+3Ch] [bp-1Ch]@8
 
     for (BSPModel& model : pOutdoor->pBModels) {
@@ -4141,7 +4115,7 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
 
     int width, height;
     int display_width, display_height;
-    struct nk_vec2 scale;
+    struct nk_vec2 scale {};
     GLfloat ortho[4][4] = {
         { 2.0f,  0.0f,  0.0f,  0.0f },
         { 0.0f, -2.0f,  0.0f,  0.0f },
