@@ -14,7 +14,7 @@ enum IMAGE_FORMAT {
 };
 
 unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format);
-const wchar_t *IMAGE_FORMAT_ToString(IMAGE_FORMAT format);
+const char *IMAGE_FORMAT_ToString(IMAGE_FORMAT format);
 
 class ImageLoader;
 class Image {

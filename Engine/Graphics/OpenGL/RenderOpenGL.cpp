@@ -1601,13 +1601,8 @@ void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
     __debugbreak();
 }
 
-void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
+void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
     // want to draw psrcrect section @ point
-    // __debugbreak();
-
-
-    // need to add blue masking
-
 
     glEnable(GL_TEXTURE_2D);
     float col = (blend_mode == 2) ? 1 : 0.5;
@@ -1652,10 +1647,10 @@ void RenderOpenGL::am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3, in
         (float)drawz, (float)draww, depth,
         (float)drawx, (float)draww, depth };
 
-    float texx = pSrcRect->x / float(texwidth);  // (drawx - x) / float(width);
-    float texy = pSrcRect->y / float(texheight);  //  (drawy - y) / float(height);
-    float texz = pSrcRect->z / float(texwidth);  //  (width - (z - drawz)) / float(width);
-    float texw = pSrcRect->w / float(texheight);  // (height - (w - draww)) / float(height);
+    float texx = pSrcRect->x / float(texwidth);
+    float texy = pSrcRect->y / float(texheight);
+    float texz = pSrcRect->z / float(texwidth);
+    float texw = pSrcRect->w / float(texheight);
 
     GLfloat TexCoord[] = { texx, texy,
         texz, texy,

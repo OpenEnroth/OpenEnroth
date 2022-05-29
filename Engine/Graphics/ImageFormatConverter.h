@@ -54,6 +54,21 @@ inline bool Image_A8R8G8B8_to_R8G8B8A8(unsigned int num_pixels, const void *src_
     return true;
 }
 
+inline uint32_t R8G8B8A8_to_A8R8G8B8(uint32_t c) {  // eh waht ?? ABGR
+    return (c & 0xFF000000) | (c & 0x000000FF) << 16 | (c & 0x0000FF00) | (c & 0x00FF0000) >> 16;
+}
+
+inline bool Image_R8G8B8A8_to_A8R8G8B8(unsigned int num_pixels, const void *src_pixels, void *dst_pixels) {
+    auto src = (uint32_t *)src_pixels;
+    auto dst = (uint32_t *)dst_pixels;
+
+    for (unsigned int i = 0; i < num_pixels; ++i) {
+        dst[i] = R8G8B8A8_to_A8R8G8B8(src[i]);
+    }
+
+    return true;
+}
+
 inline bool Image_A8R8G8B8_to_R5G6B5(unsigned int num_pixels,
                                      const void *src_pixels, void *dst_pixels) {
     auto src = (uint32_t*)src_pixels;

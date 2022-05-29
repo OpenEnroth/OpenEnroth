@@ -385,7 +385,7 @@ class IRender {
     virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                         Texture *texture) = 0;
 
-    virtual void am_Blt_Chroma(struct Rect *pSrcRect,
+    virtual void DrawFromSpriteSheet(struct Rect *pSrcRect,
                                struct Point *pTargetPoint, int a3,
                                int blend_mode) = 0;
 

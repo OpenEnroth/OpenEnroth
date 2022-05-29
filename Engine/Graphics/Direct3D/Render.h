@@ -194,7 +194,7 @@ class Render : public RenderBase {
     virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                         Texture *texture) override;
 
-    virtual void am_Blt_Chroma(Rect *pSrcRect, Point *pTargetPoint, int a3,
+    virtual void DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                int blend_mode) override;
 
  public:
