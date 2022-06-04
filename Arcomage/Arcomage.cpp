@@ -213,7 +213,7 @@ explosion_effect_struct *explosion_effect_struct::New() {
     }
     v2->mem_signature = SIG_MEMALOC;
     v2->remaining_sparks_to_init = 0;
-    v2->prev_init_overflow = 0.0;
+    v2->prev_init_overflow = 0;
     v2->effect_active = 0;
     v2->params_filled = 0;
 
@@ -234,14 +234,14 @@ int explosion_effect_struct::StartFill(effect_params_struct *params) {
     // fill effect params;
     if (this->mem_signature == SIG_MEMALOC) {
         this->spark_array_size = params->spark_array_size;
-        this->start_x_min = params->effect_area.x << 16;
-        this->start_y_max = params->effect_area.y << 16;
-        this->start_x_max = params->effect_area.z << 16;
-        this->start_y_min = params->effect_area.w << 16;
+        this->start_x_min = params->effect_area.x;
+        this->start_y_max = params->effect_area.y;
+        this->start_x_max = params->effect_area.z;
+        this->start_y_min = params->effect_area.w;
         this->unused_param_1 = params->unused_param_1;
         this->unused_param_2 = params->unused_param_2;
         this->unused_param_3 = params->unused_param_3;
-        this->gravity_unshift = (float)(params->gravity_acc * 65536.0);
+        this->gravity = params->gravity_acc;
         this->num_init_per_cycle = params->create_per_frame;
         this->unused_acc_1 = (int)(params->unused_acc_1 * 65536.0);
         this->unused_acc_1 = (int)(params->unused_acc_1 * 65536.0);
@@ -259,7 +259,7 @@ int explosion_effect_struct::Clear(char stop_init, char wipe) {
     if (mem_signature == SIG_MEMALOC) {
         if (stop_init) {
             remaining_sparks_to_init = 0;
-            prev_init_overflow = 0.0;
+            prev_init_overflow = 0;
         }
         if (params_filled && wipe) {
             for (int i = 0; i < spark_array_size; ++i) spark_array_ptr[i].spark_remaining_life = 0;
@@ -275,7 +275,7 @@ int explosion_effect_struct::UpdateEffect() {
     if (this->mem_signature != SIG_MEMALOC) return 2;
 
     // calculate how many sparks to initiate
-    float total_to_init = 0;
+    int total_to_init {0};
     if (this->remaining_sparks_to_init > 0) {
         total_to_init = this->prev_init_overflow + this->num_init_per_cycle;
          if (total_to_init > this->remaining_sparks_to_init)
@@ -283,7 +283,7 @@ int explosion_effect_struct::UpdateEffect() {
     }
 
     // if sparks left to initiate or effect is still active
-    if (total_to_init >= 1.0 || this->effect_active) {
+    if (total_to_init >= 1 || this->effect_active) {
         bool active_check = 0;
         spark_point_struct* spark_ptr = this->spark_array_ptr;
 
@@ -295,13 +295,13 @@ int explosion_effect_struct::UpdateEffect() {
                 --spark_ptr->spark_remaining_life;
 
                 // update x pos
-                spark_ptr->spark_x_unshift += spark_ptr->spark_x_speed;
-                spark_ptr->spark_position.x = spark_ptr->spark_x_unshift >> 16;
+                spark_ptr->spark_x_pos += spark_ptr->spark_x_speed;
+                spark_ptr->spark_position.x = static_cast<int> (spark_ptr->spark_x_pos);
 
                 // update y pos
-                spark_ptr->spark_y_speed += this->gravity_unshift;
-                spark_ptr->spark_y_unshift += spark_ptr->spark_y_speed;
-                spark_ptr->spark_position.y = spark_ptr->spark_y_unshift >> 16;
+                spark_ptr->spark_y_speed += this->gravity;
+                spark_ptr->spark_y_pos += spark_ptr->spark_y_speed;
+                spark_ptr->spark_position.y = static_cast<int> (spark_ptr->spark_y_pos);
 
                 // set effect still active
                 active_check = 1;
@@ -309,12 +309,12 @@ int explosion_effect_struct::UpdateEffect() {
                 if (total_to_init >= 1.0) {
                     // spark dead - initialze new spark
                     spark_ptr->spark_remaining_life = rand_interval(this->min_lifespan, this->max_lifespan);
-                    spark_ptr->spark_x_speed = (rand() % 17 - 8) << 16;
-                    spark_ptr->spark_y_speed = (rand() % 17 - 8) << 16;
-                    spark_ptr->spark_x_unshift = rand_interval(this->start_x_min, (this->start_x_max - 1));
-                    spark_ptr->spark_position.x = spark_ptr->spark_x_unshift >> 16;
-                    spark_ptr->spark_y_unshift = rand_interval((this->start_y_min - 1), this->start_y_max);;
-                    spark_ptr->spark_position.y = spark_ptr->spark_y_unshift >> 16;
+                    spark_ptr->spark_x_speed = static_cast<float> (rand() % 17 - 8);
+                    spark_ptr->spark_y_speed = static_cast<float> (rand() % 17 - 8);
+                    spark_ptr->spark_x_pos = static_cast<float> (rand_interval(this->start_x_min, (this->start_x_max - 1)));
+                    spark_ptr->spark_position.x = static_cast<int> (spark_ptr->spark_x_pos);
+                    spark_ptr->spark_y_pos = static_cast<float> (rand_interval((this->start_y_min - 1), this->start_y_max));
+                    spark_ptr->spark_position.y = static_cast<int> (spark_ptr->spark_y_pos);
                     --this->remaining_sparks_to_init;
                     --total_to_init;
 
@@ -377,7 +377,7 @@ int new_explosion_effect(Point* startXY, int effect_value) {
     am_effects_array[arr_slot].eff_params.unused_param_3 = 180;
     am_effects_array[arr_slot].eff_params.gravity_acc = 0.5;
     am_effects_array[arr_slot].eff_params.spark_array_size = 150;
-    am_effects_array[arr_slot].eff_params.create_per_frame = 50.0;
+    am_effects_array[arr_slot].eff_params.create_per_frame = 50;
     am_effects_array[arr_slot].eff_params.unused_acc_1 = 3.0;
     am_effects_array[arr_slot].eff_params.unused_acc_1 = 8.0;
     am_effects_array[arr_slot].eff_params.min_lifespan = 5;
@@ -390,7 +390,7 @@ int new_explosion_effect(Point* startXY, int effect_value) {
     if (!explos->params_filled) return 3;
     if (10 * effect_value > 150) effect_value = 15;
     explos->remaining_sparks_to_init = 10 * effect_value;
-    explos->prev_init_overflow = 0.0;
+    explos->prev_init_overflow = 0;
     explos->effect_active = 0;
 
     // unused parameters
@@ -406,87 +406,32 @@ int new_explosion_effect(Point* startXY, int effect_value) {
 }
 
 void DrawSparks() {
-    int rgb_pixel_color;
+    int rgb_pixel_color{};
 
     for (int i = 0; i < 10; ++i) {
-        if (am_effects_array[i].have_effect &&
-            (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
-            // scan and find extents of spark array
-            bool first = 0;
-            int xmin = -1;
-            int xmax = -1;
-            int ymin = -1;
-            int ymax = -1;
+        if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
+            // set the pixel color
+            rgb_pixel_color = Color16(0, 255, 0);  // green
+            if (!am_effects_array[i].effect_sign) rgb_pixel_color = Color16(255, 0, 0);  // red
+
+            // draw sparks
             for (int j = 0; j < 150; ++j) {
                 if (am_effects_array[i].effect_sparks[j].spark_remaining_life > 0) {
-                    if (first == 0) {
-                        if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
-                            if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
-                                xmin = xmax = am_effects_array[i].effect_sparks[j].spark_position.x;
-                                ymin = ymax = am_effects_array[i].effect_sparks[j].spark_position.y;
-                                first = 1;
-                            }
-                        }
-                    } else {
-                        if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
-                            if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
-                                if (am_effects_array[i].effect_sparks[j].spark_position.x < xmin)
-                                    xmin = am_effects_array[i].effect_sparks[j].spark_position.x;
-                                if (am_effects_array[i].effect_sparks[j].spark_position.x > xmax)
-                                    xmax = am_effects_array[i].effect_sparks[j].spark_position.x;
-                                if (am_effects_array[i].effect_sparks[j].spark_position.y < ymin)
-                                    ymin = am_effects_array[i].effect_sparks[j].spark_position.y;
-                                if (am_effects_array[i].effect_sparks[j].spark_position.y > ymax)
-                                    ymax = am_effects_array[i].effect_sparks[j].spark_position.y;
+                    // check limits
+                    if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
+                        if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
+                            if (j % 2) {
+                                // draw single pixel
+                                render->FillRectFast(am_effects_array[i].effect_sparks[j].spark_position.x,
+                                    am_effects_array[i].effect_sparks[j].spark_position.y, 1, 1, rgb_pixel_color);
+                            } else {
+                                // draw square
+                                render->FillRectFast(am_effects_array[i].effect_sparks[j].spark_position.x,
+                                    am_effects_array[i].effect_sparks[j].spark_position.y, 2, 2, rgb_pixel_color);
                             }
                         }
                     }
                 }
-            }
-
-            // increase extents to cover larger square particle drawing
-            xmax += 2;
-            ymax += 2;
-            uint width = xmax - xmin;
-            uint height = ymax - ymin;
-
-            if (width && height) {
-                // create temp image
-                Texture* temp = render->CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
-                uint32_t* temppix = (uint32_t*)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-
-                // set the pixel color
-                rgb_pixel_color = 0xFF00FF00;  // green
-                if (!am_effects_array[i].effect_sign) rgb_pixel_color = 0xFFFF0000;  // red
-
-                // draw pixels to image
-                for (int j = 0; j < 150; ++j) {
-                    if (am_effects_array[i].effect_sparks[j].spark_remaining_life > 0) {
-                        // check limits
-                        if (am_effects_array[i].effect_sparks[j].spark_position.x >= 0 && am_effects_array[i].effect_sparks[j].spark_position.y >= 0) {
-                            if (am_effects_array[i].effect_sparks[j].spark_position.x <= 639 && am_effects_array[i].effect_sparks[j].spark_position.y <= 479) {
-                                uint x = am_effects_array[i].effect_sparks[j].spark_position.x - xmin;
-                                uint y = am_effects_array[i].effect_sparks[j].spark_position.y - ymin;
-
-                                if (j % 2) {
-                                    // draw single pixel
-                                    temppix[x + y * width] = rgb_pixel_color;
-                                } else {
-                                    // draw square
-                                    temppix[x + y * width] = rgb_pixel_color;
-                                    temppix[((x + 1) + y * width)] = rgb_pixel_color;
-                                    temppix[(x + (y+1) * width)] = rgb_pixel_color;
-                                    temppix[((x + 1) + (y+1) * width)] = rgb_pixel_color;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                render->Update_Texture(temp);
-                // draw created image to xmin,ymin
-                render->DrawTextureAlphaNew(xmin / 640.0f, ymin / 480.0f, temp);
-                temp->Release();
             }
         }
     }
@@ -583,6 +528,20 @@ bool ArcomageGame::LoadSprites() {
     // load layout sprite
     pArcomageGame->pSprites = assets->GetImage_PCXFromIconsLOD("sprites.pcx");
     pArcomageGame->pSpritesPixels = (unsigned __int16 *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_R5G6B5);
+
+    // mask out blue
+    uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    int width = pArcomageGame->pSprites->GetWidth();
+    uint32_t mask = Color32(0, 0, 255);
+    for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < pArcomageGame->pSprites->GetHeight(); ++y) {
+            int index{ x + y * width };
+            if (pix[index] == mask)
+                pix[index] = Color32(0, 0, 0, 0);
+        }
+    }
+    render->Update_Texture(pArcomageGame->pSprites);
+
     return true;
 }
 
@@ -1404,7 +1363,7 @@ char PlayerTurn(int player_num) {
         }
 
         // do we need to draw
-        if (pArcomageGame->force_redraw_1) {
+        if (true/*pArcomageGame->force_redraw_1*/) {
             DrawGameUI(animation_stage);
             pArcomageGame->force_redraw_1 = 0;
         }
@@ -1462,11 +1421,11 @@ void DrawRectanglesForText() {
 
     pTargetXY.x = 8;
     pTargetXY.y = 56;
-    render->am_Blt_Chroma(&pSrcRect, &pTargetXY, 0, 2);
+    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, 0, 2);
 
     pTargetXY.x = 555;
     pTargetXY.y = 56;
-    render->am_Blt_Chroma(&pSrcRect, &pTargetXY, 0, 2);
+    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, 0, 2);
 
     // players name rectangle
     pSrcRect.x = 283;
@@ -1475,11 +1434,11 @@ void DrawRectanglesForText() {
     pSrcRect.w = 190;
     pTargetXY.x = 8;
     pTargetXY.y = 13;
-    render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
     pTargetXY.x = 555;
     pTargetXY.y = 13;
-    render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
     // tower height rectangle
     pSrcRect.x = 234;
@@ -1488,11 +1447,11 @@ void DrawRectanglesForText() {
     pSrcRect.w = 190;
     pTargetXY.x = 100;
     pTargetXY.y = 296;
-    render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
     pTargetXY.x = 492;
     pTargetXY.y = 296;
-    render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
     // wall height rectangle
     pSrcRect.x = 192;
@@ -1501,11 +1460,11 @@ void DrawRectanglesForText() {
     pSrcRect.w = 190;
     pTargetXY.x = 168;
     pTargetXY.y = 296;
-    render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 
     pTargetXY.x = 430;
     pTargetXY.y = 296;
-    render->am_Blt_Chroma(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(&pSrcRect, &pTargetXY, pArcomageGame->field_54, 2);
 }
 
 void DrawPlayersText() {
@@ -1638,7 +1597,7 @@ void DrawPlayerLevels(const std::string &str, Point *pXY) {
             pSrcRect.y = 190;
             pSrcRect.w = 207;
             // draw digit
-            render->am_Blt_Chroma(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
+            render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, pArcomageGame->field_54, 1);
             pTargetPoint.x += 22;
         }
     }
@@ -1660,7 +1619,7 @@ void DrawBricksCount(const std::string &str, Point *pXY) {
             pSrcRect.y = 128;
             pSrcRect.w = 138;
             // draw digit
-            render->am_Blt_Chroma(&pSrcRect, &pTargetPoint, 0, 2);
+            render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
             pTargetPoint.x += 13;
         }
     }
@@ -1682,7 +1641,7 @@ void DrawGemsCount(const std::string &str, Point *pXY) {
             pSrcRect.y = 138;
             pSrcRect.w = 148;
             // draw digit
-            render->am_Blt_Chroma(&pSrcRect, &pTargetPoint, 0, 2);
+            render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
             pTargetPoint.x += 13;
         }
     }
@@ -1704,7 +1663,7 @@ void DrawBeastsCount(const std::string &str, Point *pXY) {
             pSrcRect.y = 148;
             pSrcRect.w = 158;
             // draw digit
-            render->am_Blt_Chroma(&pSrcRect, &pTargetPoint, 0, 2);
+            render->DrawFromSpriteSheet(&pSrcRect, &pTargetPoint, 0, 2);
             pTargetPoint.x += 13;
         }
     }
@@ -1726,7 +1685,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.w = tower_top;
     pTargetXY.x = 102;
     pTargetXY.y = 297 - tower_top;
-    if (tower_height > 0) render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 2);  //стена башни
+    if (tower_height > 0) render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);  //стена башни
 
     // draw player 0 top
     pSrcXYZW.y = 0;
@@ -1735,7 +1694,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.w = 94;
     pTargetXY.y = 203 - tower_top;
     pTargetXY.x = 91;
-    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);  //верхушка башни
+    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);  //верхушка башни
 
     // draw player 1 tower
     tower_height = am_Players[1].tower_height;
@@ -1749,7 +1708,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.w = tower_top;
     pTargetXY.x = 494;
     pTargetXY.y = 297 - tower_top;
-    if (tower_height > 0) render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 2);
+    if (tower_height > 0) render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);
 
     // draw tower 1 top
     pSrcXYZW.x = 384;
@@ -1758,7 +1717,7 @@ void DrawPlayersTowers() {
     pSrcXYZW.w = 188;
     pTargetXY.x = 483;
     pTargetXY.y = 203 - tower_top;
-    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
 }
 
 void DrawPlayersWall() {
@@ -1780,7 +1739,7 @@ void DrawPlayersWall() {
         pSrcXYZW.w = player_0_pixh;
         pTargetXY.x = 177;
         pTargetXY.y = 297 - player_0_pixh;
-        render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+        render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
     }
 
     // draw player 1 wall
@@ -1794,7 +1753,7 @@ void DrawPlayersWall() {
         pSrcXYZW.w = player_1_pixh;
         pTargetXY.x = 439;
         pTargetXY.y = 297 - player_1_pixh;
-        render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+        render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
     }
 }
 
@@ -1826,14 +1785,14 @@ void DrawCards() {
                 pSrcXYZW.z = 288;
                 pSrcXYZW.y = 0;
                 pSrcXYZW.w = 128;
-                render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 2);  //рисуется оборотные стороны карт противника
+                render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);  //рисуется оборотные стороны карт противника
             } else {
                 pArcomageGame->GetCardRect(am_Players[current_player_num].cards_at_hand[card_slot], &pSrcXYZW);
                 if (!CanCardBePlayed(current_player_num, card_slot)) {
                     // рисуются неактивные карты - greyed out
-                    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 0);
+                    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
                 } else {
-                    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 2);  //рисуются активные карты
+                    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);  //рисуются активные карты
                 }
             }
         }
@@ -1855,7 +1814,7 @@ void DrawCards() {
             if (shown_cards[table_cards].uCardId != -1) {
                 // draw card - greyed out
                 pArcomageGame->GetCardRect(shown_cards[table_cards].uCardId, &pSrcXYZW);
-                render->am_Blt_Chroma(&pSrcXYZW, &shown_cards[table_cards].hide_anim_pos, 0, 0);
+                render->DrawFromSpriteSheet(&pSrcXYZW, &shown_cards[table_cards].hide_anim_pos, 0, 0);
             }
             if (shown_cards[table_cards].discarded != 0) {
                 // draw discarded text
@@ -1865,7 +1824,7 @@ void DrawCards() {
                 pSrcXYZW.z = 916;
                 pSrcXYZW.y = 200;
                 pSrcXYZW.w = 216;
-                render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
+                render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, pArcomageGame->field_54, 2);
             }
         } else if (hide_card_anim_count <= 0) {
             // animation finished
@@ -1888,7 +1847,7 @@ void DrawCards() {
                 shown_cards[table_cards].hide_anim_pos.x += shown_cards[table_cards].hide_anim_spd.x;
                 shown_cards[table_cards].hide_anim_pos.y += shown_cards[table_cards].hide_anim_spd.y;
                 pArcomageGame->GetCardRect(shown_cards[table_cards].uCardId, &pSrcXYZW);
-                render->am_Blt_Chroma(&pSrcXYZW, &shown_cards[table_cards].hide_anim_pos, 0, 0);
+                render->DrawFromSpriteSheet(&pSrcXYZW, &shown_cards[table_cards].hide_anim_pos, 0, 0);
             }
         }
     }
@@ -1903,7 +1862,7 @@ void DrawCards() {
     pSrcXYZW.w = 128;
     pTargetXY.x = 120;
     pTargetXY.y = 18;
-    render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 0);
+    render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
 }
 
 void DrawCardAnimation(int animation_stage) {
@@ -1942,7 +1901,7 @@ void DrawCardAnimation(int animation_stage) {
             pSrcXYZW.y = 0;
             pSrcXYZW.z = 288;
             pSrcXYZW.w = 128;
-            render->am_Blt_Chroma(&pSrcXYZW, &anim_card_pos_drawncard, 0, 2);
+            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_drawncard, 0, 2);
         } else {
             // animation is running - update position and draw
             pSrcXYZW.x = 192;
@@ -1951,7 +1910,7 @@ void DrawCardAnimation(int animation_stage) {
             pSrcXYZW.w = 128;
             anim_card_pos_drawncard.x += anim_card_spd_drawncard.x;
             anim_card_pos_drawncard.y += anim_card_spd_drawncard.y;
-            render->am_Blt_Chroma(&pSrcXYZW, &anim_card_pos_drawncard, 0, 2);
+            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_drawncard, 0, 2);
 
             // reset if animation is finished
             if (!drawn_card_anim_cnt) drawn_card_slot_index = -1;
@@ -1979,7 +1938,7 @@ void DrawCardAnimation(int animation_stage) {
                 pArcomageGame->GetCardRect(discarded_card_id, &pSrcXYZW);
                 pTargetXY.x = shown_cards[card_slot].table_pos.x;
                 pTargetXY.y = shown_cards[card_slot].table_pos.y;
-                render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 0);
+                render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
 
                 // reset discard anim
                 discarded_card_id = -1;
@@ -1989,7 +1948,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(discarded_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->am_Blt_Chroma(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 0);
+            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 0);
         }
     }
     // end discard card anim
@@ -2002,7 +1961,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->am_Blt_Chroma(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 2);
+            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 2);
             return;
         }
 
@@ -2017,7 +1976,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 2);
+            render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);
             return;
         }
 
@@ -2037,7 +1996,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = 272;
             pTargetXY.y = 173;
-            render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 2);
+            render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 2);
             return;
         }
 
@@ -2047,7 +2006,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             anim_card_pos_playdiscard.x += anim_card_spd_playdiscard.x;
             anim_card_pos_playdiscard.y += anim_card_spd_playdiscard.y;
-            render->am_Blt_Chroma(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 0);
+            render->DrawFromSpriteSheet(&pSrcXYZW, &anim_card_pos_playdiscard, 0, 0);
             return;
         }
 
@@ -2066,7 +2025,7 @@ void DrawCardAnimation(int animation_stage) {
             pArcomageGame->GetCardRect(played_card_id, &pSrcXYZW);
             pTargetXY.x = shown_cards[v19].table_pos.x;
             pTargetXY.y = shown_cards[v19].table_pos.y;
-            render->am_Blt_Chroma(&pSrcXYZW, &pTargetXY, 0, 0);
+            render->DrawFromSpriteSheet(&pSrcXYZW, &pTargetXY, 0, 0);
 
             // reset anim
             played_card_id = -1;
@@ -3059,8 +3018,7 @@ void am_DrawText(const std::string &str, Point *pXY) {
 
 void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill) {
     if (bSolidFill) {
-        for (int i = pXYZW->y; i <= pXYZW->w; ++i)
-            render->RasterLine2D(pXYZW->x, i, pXYZW->z, i, uColor);
+        render->FillRectFast(pXYZW->x, pXYZW->y, (pXYZW->z - pXYZW->x), (pXYZW->w - pXYZW->y), uColor);
     } else {
         render->RasterLine2D(pXYZW->x, pXYZW->y, pXYZW->z, pXYZW->y, uColor);
         render->RasterLine2D(pXYZW->z, pXYZW->y, pXYZW->z, pXYZW->w, uColor);

@@ -385,7 +385,7 @@ class IRender {
     virtual void DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                         Texture *texture) = 0;
 
-    virtual void am_Blt_Chroma(struct Rect *pSrcRect,
+    virtual void DrawFromSpriteSheet(struct Rect *pSrcRect,
                                struct Point *pTargetPoint, int a3,
                                int blend_mode) = 0;
 
@@ -498,8 +498,7 @@ int GetActorTintColor(int max_dim, int min_dim, float distance, int a4,
                       struct RenderBillboard *a5);
 int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
                                       int uBaseLightLevel);
-int _43F5C8_get_point_light_level_with_respect_to_lights(
-    unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
+int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 unsigned int GetMaxMipLevels(unsigned int uDim);
 
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);

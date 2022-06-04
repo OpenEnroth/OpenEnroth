@@ -171,10 +171,10 @@ extern void set_stru1_field_8_InArcomage(int inValue);
 struct spark_point_struct {
     int spark_remaining_life = 0;
     Point spark_position {};
-    int spark_x_unshift = 0;
-    int spark_y_unshift = 0;
-    int spark_x_speed = 0;
-    int spark_y_speed = 0;
+    float spark_x_pos = 0;
+    float spark_y_pos = 0;
+    float spark_x_speed = 0;
+    float spark_y_speed = 0;
 };
 
 struct effect_params_struct {
@@ -184,7 +184,7 @@ struct effect_params_struct {
     int unused_param_3;
     float gravity_acc;
     int spark_array_size;
-    float create_per_frame;
+    int create_per_frame;
     float unused_acc_1;
     float unused_acc_2;
     int min_lifespan;
@@ -211,9 +211,9 @@ struct explosion_effect_struct {
     int unused_param_1;
     int unused_param_2;
     int unused_param_3;
-    float gravity_unshift;
-    float num_init_per_cycle;
-    float prev_init_overflow;
+    float gravity;
+    int num_init_per_cycle;
+    int prev_init_overflow;
     int unused_acc_1;
     int unused_acc_2;
     int min_lifespan;

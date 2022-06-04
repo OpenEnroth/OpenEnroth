@@ -80,7 +80,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, char LocationFlags, stru
         for (int i = 0; i < this->uNumSplatsThisFace; ++i) {
             int thissplat = this->WhichSplatsOnThisFace[i];
             Bloodsplat* buildsplat = &bloodsplat_container->pBloodsplats_to_apply[thissplat];
-            int point_light_level = _43F5C8_get_point_light_level_with_respect_to_lights(
+            int point_light_level = GetLightLevelAtPoint(
                     light_level, uSectorID,
                     buildsplat->x, buildsplat->y, buildsplat->z);
 

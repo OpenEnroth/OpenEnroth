@@ -808,7 +808,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 
 //----- (00464866) --------------------------------------------------------
 void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
-    char *v3;         // eax@1
+    // char *v3;         // eax@1
     unsigned int v5;  // eax@3
 
     // v9 = bLoading;
@@ -1283,7 +1283,7 @@ void Engine::_461103_load_level_sub() {
     // int v18;  // [sp+14h] [bp-48h]@23
     int v19;         // [sp+18h] [bp-44h]@1
     int v20;  // [sp+18h] [bp-44h]@14
-    int v21[16];     // [sp+1Ch] [bp-40h]@17
+    int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
     if (engine->config->no_actors)
         uNumActors = 0;
