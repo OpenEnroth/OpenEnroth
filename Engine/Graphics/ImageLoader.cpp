@@ -183,7 +183,7 @@ bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
 bool PCX_Loader::InternalLoad(void *file, size_t filesize,
                                    unsigned int *width, unsigned int *height,
                                    void **pixels, IMAGE_FORMAT *format) {
-    IMAGE_FORMAT request_format = IMAGE_FORMAT_R8G8B8A8;
+    IMAGE_FORMAT request_format = IMAGE_FORMAT_A8R8G8B8;
     if (engine->config->renderer_name == "DirectDraw")
         request_format = IMAGE_FORMAT_R5G6B5;
 

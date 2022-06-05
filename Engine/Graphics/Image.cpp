@@ -289,26 +289,26 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                         nullptr,                   // IMAGE_FORMAT_R5G6B5
                         nullptr,                   // IMAGE_FORMAT_A1R5G5B5
                         Image_R5G6B5_to_A8R8G8B8,  // IMAGE_FORMAT_A8R8G8B8
-                        Image_R5G6B5_to_R8G8B8,    // IMAGE_FORMAT_R8G8B8
-                        Image_R5G6B5_to_R8G8B8A8,                   // IMAGE_FORMAT_R8G8B8A8
+                        nullptr,    // IMAGE_FORMAT_R8G8B8
+                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
                     },
 
                     // IMAGE_FORMAT_A1R5G5B5 ->
                     {
                         nullptr,                     // IMAGE_FORMAT_R5G6B5
                         nullptr,                     // IMAGE_FORMAT_A1R5G5B5
-                        nullptr,                     // IMAGE_FORMAT_A8R8G8B8
+                        Image_A1R5G5B5_to_A8R8G8B8,  // IMAGE_FORMAT_A8R8G8B8
                         nullptr,                     // IMAGE_FORMAT_R8G8B8
-                        Image_A1R5G5B5_to_R8G8B8A8,  // IMAGE_FORMAT_R8G8B8A8
+                        nullptr,                     // IMAGE_FORMAT_R8G8B8A8
                     },
 
                     // IMAGE_FORMAT_A8R8G8B8 ->
                     {
-                        Image_A8R8G8B8_to_R5G6B5,  // IMAGE_FORMAT_R5G6B5
-                        Image_A8R8G8B8_to_A1R5G5B5,  // IMAGE_FORMAT_A1R5G5B5
+                        nullptr,                    // IMAGE_FORMAT_R5G6B5
+                        Image_A8R8G8B8_to_A1R5G5B5, // IMAGE_FORMAT_A1R5G5B5
                         nullptr,                   // IMAGE_FORMAT_A8R8G8B8
                         nullptr,                   // IMAGE_FORMAT_R8G8B8
-                        Image_A8R8G8B8_to_R8G8B8A8,       // IMAGE_FORMAT_R8G8B8A8
+                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
                     },
 
                     // IMAGE_FORMAT_R8G8B8 ->
@@ -322,9 +322,9 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
 
                     // IMAGE_FORMAT_R8G8B8A8 ->
                     {
-                        Image_R8G8B8A8_to_R5G6B5,  // IMAGE_FORMAT_R5G6B5
+                        nullptr,                 // IMAGE_FORMAT_R5G6B5
                         nullptr,                   // IMAGE_FORMAT_A1R5G5B5
-                        Image_R8G8B8A8_to_A8R8G8B8,     // IMAGE_FORMAT_A8R8G8B8
+                        nullptr,                  // IMAGE_FORMAT_A8R8G8B8
                         nullptr,                   // IMAGE_FORMAT_R8G8B8
                         nullptr,                   // IMAGE_FORMAT_R8G8B8A8
                     },
@@ -338,6 +338,8 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                     new unsigned char[num_pixels *
                                       IMAGE_FORMAT_BytesPerPixel(format)];
                 if (cvt(width * height, native_pixels, cvt_pixels)) {
+                    if (engine->config->verbose_logging)
+                        logger->Info("Image pixel format conversion");
                     return this->pixels[format] = cvt_pixels;
                 } else {
                     delete[] cvt_pixels;

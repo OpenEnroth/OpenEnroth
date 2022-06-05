@@ -118,7 +118,7 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
             if (requested_format == IMAGE_FORMAT_R5G6B5)
                 *format = IMAGE_FORMAT_R5G6B5;
             else
-                *format = IMAGE_FORMAT_R8G8B8A8;
+                *format = IMAGE_FORMAT_A8R8G8B8;
 
             break;
         case 0x0108:
@@ -178,9 +178,9 @@ uint8_t *PCX::Decode(const void *pcx_data, size_t filesize, unsigned int *width,
                     pixels[stride + 2 * x] = tmp & 0xff;
                     pixels[stride + 2 * x + 1] = tmp >> 8;
                 } else {
-                    pixels[stride + 4 * x] = scanline[x];
+                    pixels[stride + 4 * x + 2] = scanline[x];
                     pixels[stride + 4 * x + 1] = scanline[x + header->bytes_per_row];
-                    pixels[stride + 4 * x + 2] = scanline[x + (header->bytes_per_row << 1)];
+                    pixels[stride + 4 * x + 0] = scanline[x + (header->bytes_per_row << 1)];
                     pixels[stride + 4 * x + 3] = 255;
                 }
             }
