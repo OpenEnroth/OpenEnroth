@@ -1272,14 +1272,25 @@ void Render::SavePCXScreenshot() {
 
 void Render::SaveWinnersCertificate(const char *file_name) {
     BeginScene();
-    //  SavePCXImage32(file_name, (uint16_t*)render->pTargetSurface,
-    //  render->GetRenderWidth(), render->GetRenderHeight());
+
+    // grab and copy back buffer
+    DDSURFACEDESC2 Dst;
+    memset(&Dst, 0, sizeof(Dst));
+    Dst.dwSize = sizeof(Dst);
+
+    if (LockSurface_DDraw4(pRenderD3D->pBackBuffer, &Dst, DDLOCK_WAIT)) {
+        SavePCXImage32(file_name, (uint16_t *)Dst.lpSurface, render->GetRenderWidth(), render->GetRenderHeight());
+        ErrD3D(pRenderD3D->pBackBuffer->Unlock(NULL));
+    }
+
     EndScene();
 }
 
 void Render::SavePCXImage32(const std::string &filename, uint16_t *picture_data,
                             int width, int height) {
-    FILE *result = fopen(filename.c_str(), "wb");
+    // TODO(pskelton): add "Screenshots" folder?
+    auto thispath = MakeDataPath(filename);
+    FILE *result = fopen(thispath.c_str(), "wb");
     if (result == nullptr) {
         return;
     }
@@ -3646,7 +3657,7 @@ void Render::DrawBuildingsD3D() {
     BatchTriDraw();
 }
 
-unsigned short *Render::MakeScreenshot(int width, int height) {
+unsigned short *Render::MakeScreenshot16(int width, int height) {
     uint16_t *for_pixels;  // ebx@1
     DDSURFACEDESC2 Dst;    // [sp+4h] [bp-A0h]@6
 
@@ -3700,7 +3711,7 @@ unsigned short *Render::MakeScreenshot(int width, int height) {
 }
 
 Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot(width, height);
+    auto pixels = MakeScreenshot16(width, height);
     Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
     free(pixels);
     return image;
@@ -3708,7 +3719,7 @@ Image *Render::TakeScreenshot(unsigned int width, unsigned int height) {
 
 void Render::SaveScreenshot(const std::string &filename, unsigned int width,
                             unsigned int height) {
-    auto pixels = MakeScreenshot(width, height);
+    auto pixels = MakeScreenshot16(width, height);
     SavePCXImage16(filename, pixels, width, height);
     free(pixels);
 }
@@ -3716,7 +3727,7 @@ void Render::SaveScreenshot(const std::string &filename, unsigned int width,
 void Render::PackScreenshot(unsigned int width, unsigned int height, void *data,
                             unsigned int data_size,
                             unsigned int *out_screenshot_size) {
-    auto pixels = MakeScreenshot(150, 112);
+    auto pixels = MakeScreenshot16(150, 112);
     PCX::Encode16(pixels, width, height, data, data_size, out_screenshot_size);
     free(pixels);
 }
