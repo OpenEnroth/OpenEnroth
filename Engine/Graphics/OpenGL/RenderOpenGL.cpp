@@ -2933,6 +2933,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     _set_ortho_projection(1);
     _set_ortho_modelview();
 
+    if (billbstorecnt) __debugbreak();
+    //memset(billbstore, 0, sizeof(billbstore));
+
     // track loaded tex
     float gltexid{ 0 };
     // track blend mode
@@ -3123,6 +3126,10 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         int cnt = 0;
         do {
             cnt++;
+            if (offset + (6 * cnt) > billbstorecnt) {
+                --cnt;
+                break;
+            }
         } while (billbstore[offset + (cnt * 6)].texid == thistex && billbstore[offset + (cnt * 6)].blend == thisblend);
 
         glDrawArrays(GL_TRIANGLES, offset, (6*cnt));
