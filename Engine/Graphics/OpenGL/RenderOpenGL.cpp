@@ -2936,73 +2936,219 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     // track loaded tex
     float gltexid{ 0 };
     // track blend mode
-    RenderBillboardD3D::OpacityType blendtrack{ RenderBillboardD3D::NoBlend };
+    //RenderBillboardD3D::OpacityType blendtrack{ RenderBillboardD3D::NoBlend };
 
     float oneon = 1.0f / (pCamera3D->GetNearClip() * pCamera3D->aspect * 2.0f);
     float oneof = 1.0f / (pCamera3D->GetFarClip() * pCamera3D->aspect);
 
     for (int i = uNumBillboardsToDraw - 1; i >= 0; --i) {
-        if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend) {
-            if (blendtrack != pBillboardRenderListD3D[i].opacity) {
-                blendtrack = pBillboardRenderListD3D[i].opacity;
-                SetBillboardBlendOptions(blendtrack);
-            }
-        }
+        //if (pBillboardRenderListD3D[i].opacity != RenderBillboardD3D::NoBlend) {
+        //    if (blendtrack != pBillboardRenderListD3D[i].opacity) {
+        //        blendtrack = pBillboardRenderListD3D[i].opacity;
+        //        SetBillboardBlendOptions(blendtrack);
+        //    }
+        //}
 
-        float testtexid{ 0 };
         if (pBillboardRenderListD3D[i].texture) {
             auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
-            testtexid = texture->GetOpenGlTexture();
+            gltexid = texture->GetOpenGlTexture();
+        } else {
+            gltexid = 0;
         }
 
-        if (gltexid != testtexid) {
-            gltexid = testtexid;
-            glBindTexture(GL_TEXTURE_2D, gltexid);
-        }
+        //if (gltexid != testtexid) {
+        //    gltexid = testtexid;
+        //    glBindTexture(GL_TEXTURE_2D, gltexid);
+        //}
 
-        glBegin(GL_TRIANGLE_FAN);
-        {
-            auto billboard = &pBillboardRenderListD3D[i];
-            auto b = &pBillboardRenderList[i];
+        auto billboard = &pBillboardRenderListD3D[i];
+        auto b = &pBillboardRenderList[i];
 
-            float oneoz = 1. / billboard->screen_space_z;
-            float thisdepth = (oneoz - oneon) / (oneof - oneon);
+        float oneoz = 1. / billboard->screen_space_z;
+        float thisdepth = (oneoz - oneon) / (oneof - oneon);
 
-            for (unsigned int j = 0; j < billboard->uNumVertices; ++j) {
-                glColor4f(
-                    ((billboard->pQuads[j].diffuse >> 16) & 0xFF) / 255.0f,
-                    ((billboard->pQuads[j].diffuse >> 8) & 0xFF) / 255.0f,
-                    ((billboard->pQuads[j].diffuse >> 0) & 0xFF) / 255.0f,
-                    1.0f);
+        float thisblend = static_cast<float>(billboard->opacity);
 
-                glTexCoord2f(billboard->pQuads[j].texcoord.x,
-                             billboard->pQuads[j].texcoord.y);
+        // 0 1 2 / 0 2 3
 
+        billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
+        billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
+        billbstore[billbstorecnt].z = thisdepth;
+        billbstore[billbstorecnt].u = billboard->pQuads[0].texcoord.x;
+        billbstore[billbstorecnt].v = billboard->pQuads[0].texcoord.y;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].texid = gltexid;
+        billbstore[billbstorecnt].blend = thisblend;
+        billbstorecnt++;
 
-                glVertex3f(
-                    billboard->pQuads[j].pos.x,
-                    billboard->pQuads[j].pos.y,
-                    thisdepth);  // depth is  non linear  proportional to reciprocal of distance
-            }
-        }
-        drawcalls++;
-        glEnd();
+        billbstore[billbstorecnt].x = billboard->pQuads[1].pos.x;
+        billbstore[billbstorecnt].y = billboard->pQuads[1].pos.y;
+        billbstore[billbstorecnt].z = thisdepth;
+        billbstore[billbstorecnt].u = billboard->pQuads[1].texcoord.x;
+        billbstore[billbstorecnt].v = billboard->pQuads[1].texcoord.y;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[1].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].g = ((billboard->pQuads[1].diffuse >> 8) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[1].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].texid = gltexid;
+        billbstore[billbstorecnt].blend = thisblend;
+        billbstorecnt++;
+
+        billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
+        billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
+        billbstore[billbstorecnt].z = thisdepth;
+        billbstore[billbstorecnt].u = billboard->pQuads[2].texcoord.x;
+        billbstore[billbstorecnt].v = billboard->pQuads[2].texcoord.y;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].texid = gltexid;
+        billbstore[billbstorecnt].blend = thisblend;
+        billbstorecnt++;
+
+        ////////////////////////////////
+
+        billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
+        billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
+        billbstore[billbstorecnt].z = thisdepth;
+        billbstore[billbstorecnt].u = billboard->pQuads[0].texcoord.x;
+        billbstore[billbstorecnt].v = billboard->pQuads[0].texcoord.y;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].texid = gltexid;
+        billbstore[billbstorecnt].blend = thisblend;
+        billbstorecnt++;
+
+        billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
+        billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
+        billbstore[billbstorecnt].z = thisdepth;
+        billbstore[billbstorecnt].u = billboard->pQuads[2].texcoord.x;
+        billbstore[billbstorecnt].v = billboard->pQuads[2].texcoord.y;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].texid = gltexid;
+        billbstore[billbstorecnt].blend = thisblend;
+        billbstorecnt++;
+
+        billbstore[billbstorecnt].x = billboard->pQuads[3].pos.x;
+        billbstore[billbstorecnt].y = billboard->pQuads[3].pos.y;
+        billbstore[billbstorecnt].z = thisdepth;
+        billbstore[billbstorecnt].u = billboard->pQuads[3].texcoord.x;
+        billbstore[billbstorecnt].v = billboard->pQuads[3].texcoord.y;
+        billbstore[billbstorecnt].r = ((billboard->pQuads[3].diffuse >> 16) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].g = ((billboard->pQuads[3].diffuse >> 8) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
+        billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].texid = gltexid;
+        billbstore[billbstorecnt].blend = thisblend;
+        billbstorecnt++;
     }
 
     // uNumBillboardsToDraw = 0;
 
+    if (billbVAO == 0) {
+        glGenVertexArrays(1, &billbVAO);
+        glGenBuffers(1, &billbVBO);
 
-    if (config->is_using_fog) {
-        SetUsingFog(false);
-        glEnable(GL_FOG);
-        glFogi(GL_FOG_MODE, GL_EXP);
+        glBindVertexArray(billbVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, billbVBO);
 
-        GLfloat fog_color[] = {((GetLevelFogColor() >> 16) & 0xFF) / 255.0f,
-                               ((GetLevelFogColor() >> 8) & 0xFF) / 255.0f,
-                               ((GetLevelFogColor() >> 0) & 0xFF) / 255.0f,
-                               1.0f};
-        glFogfv(GL_FOG_COLOR, fog_color);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(billbstore), billbstore, GL_DYNAMIC_DRAW);
+
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)0);
+        glEnableVertexAttribArray(0);
+        // tex uv
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+        // colour
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+        // texid
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(3);
     }
+
+    GL_Check_Errors();
+
+    // update buffer
+    glBindBuffer(GL_ARRAY_BUFFER, billbVBO);
+
+    GL_Check_Errors();
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(billbverts) * billbstorecnt, billbstore);
+    GL_Check_Errors();
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(billbVAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+
+    glUseProgram(billbshader.ID);
+    GL_Check_Errors();
+
+    // set sampler to texure0
+    glUniform1i(glGetUniformLocation(billbshader.ID, "texture0"), GLint(0));
+
+    //// set projection
+    glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    //// set view
+    glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    GL_Check_Errors();
+
+    int offset = 0;
+    while (offset < billbstorecnt) {
+        // set texture
+        GLfloat thistex = billbstore[offset].texid;
+        glBindTexture(GL_TEXTURE_2D, billbstore[offset].texid);
+
+        GLfloat thisblend = billbstore[offset].blend;
+        if (thisblend == 0.0)
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        else
+            glBlendFunc(GL_ONE, GL_ONE);
+
+
+        int cnt = 0;
+        do {
+            cnt++;
+        } while (billbstore[offset + (cnt * 6)].texid == thistex && billbstore[offset + (cnt * 6)].blend == thisblend);
+
+        glDrawArrays(GL_TRIANGLES, offset, (6*cnt));
+
+        if (engine->config->verbose_logging) {
+            if (cnt > 1) logger->Info("billb batch %i", cnt);
+        }
+
+        drawcalls++;
+
+        offset += (6*cnt);
+    }
+
+    GL_Check_Errors();
+    glUseProgram(0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
+    billbstorecnt = 0;
+    GL_Check_Errors();
 
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
@@ -5295,6 +5441,12 @@ bool RenderOpenGL::InitShaders() {
     if (twodshader.ID == 0)
         return false;
     twodVAO = 0;
+
+    logger->Info("Building billboard shader...");
+    billbshader.build("../../../../Engine/Graphics/Shaders/glbillbshader.vs", "../../../../Engine/Graphics/Shaders/glbillbshader.fs");
+    if (billbshader.ID == 0)
+        return false;
+    billbVAO = 0;
 
     return true;
 }
