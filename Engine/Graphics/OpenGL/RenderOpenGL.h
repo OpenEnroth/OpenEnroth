@@ -212,6 +212,7 @@ class RenderOpenGL : public RenderBase {
     virtual void ReleaseBSP();
 
     virtual void DrawTwodVerts();
+    virtual void DrawBillboards();
 
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;

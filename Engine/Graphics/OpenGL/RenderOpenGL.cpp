@@ -3053,9 +3053,25 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
         billbstorecnt++;
+
+        if (billbstorecnt > 990) {
+            DrawBillboards();
+        }
     }
 
     // uNumBillboardsToDraw = 0;
+
+    DrawBillboards();
+
+    glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
+
+    GL_Check_Errors();
+}
+
+// name better
+void RenderOpenGL::DrawBillboards() {
+    if (!billbstorecnt) return;
 
     if (billbVAO == 0) {
         glGenVertexArrays(1, &billbVAO);
@@ -3132,7 +3148,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             }
         } while (billbstore[offset + (cnt * 6)].texid == thistex && billbstore[offset + (cnt * 6)].blend == thisblend);
 
-        glDrawArrays(GL_TRIANGLES, offset, (6*cnt));
+        glDrawArrays(GL_TRIANGLES, offset, (6 * cnt));
 
         if (engine->config->verbose_logging) {
             if (cnt > 1) logger->Info("billb batch %i", cnt);
@@ -3140,7 +3156,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
 
         drawcalls++;
 
-        offset += (6*cnt);
+        offset += (6 * cnt);
     }
 
     GL_Check_Errors();
@@ -3156,12 +3172,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
 
     billbstorecnt = 0;
     GL_Check_Errors();
-
-    glDisable(GL_BLEND);
-    glDepthMask(GL_TRUE);
-
-    GL_Check_Errors();
 }
+
 
 //----- (004A1DA8) --------------------------------------------------------
 void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
