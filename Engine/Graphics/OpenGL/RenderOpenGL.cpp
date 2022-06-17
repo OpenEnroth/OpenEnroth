@@ -3177,44 +3177,46 @@ void RenderOpenGL::DrawBillboards() {
 
 //----- (004A1DA8) --------------------------------------------------------
 void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
-    switch (a1) {
-        case RenderBillboardD3D::Transparent: {
-            if (config->is_using_fog) {
-                SetUsingFog(false);
-                glEnable(GL_FOG);
-                glFogi(GL_FOG_MODE, GL_EXP);
+    return;
 
-                GLfloat fog_color[] = {
-                    ((GetLevelFogColor() >> 16) & 0xFF) / 255.0f,
-                    ((GetLevelFogColor() >> 8) & 0xFF) / 255.0f,
-                    ((GetLevelFogColor() >> 0) & 0xFF) / 255.0f, 1.0f};
-                glFogfv(GL_FOG_COLOR, fog_color);
-            }
+    //switch (a1) {
+    //    case RenderBillboardD3D::Transparent: {
+    //        if (config->is_using_fog) {
+    //            SetUsingFog(false);
+    //            glEnable(GL_FOG);
+    //            glFogi(GL_FOG_MODE, GL_EXP);
 
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        } break;
+    //            GLfloat fog_color[] = {
+    //                ((GetLevelFogColor() >> 16) & 0xFF) / 255.0f,
+    //                ((GetLevelFogColor() >> 8) & 0xFF) / 255.0f,
+    //                ((GetLevelFogColor() >> 0) & 0xFF) / 255.0f, 1.0f};
+    //            glFogfv(GL_FOG_COLOR, fog_color);
+    //        }
 
-        case RenderBillboardD3D::Opaque_1:
-        case RenderBillboardD3D::Opaque_2:
-        case RenderBillboardD3D::Opaque_3: {
-            if (config->is_using_specular) {
-                if (!config->is_using_fog) {
-                    SetUsingFog(true);
-                    glDisable(GL_FOG);
-                }
-            }
+    //        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //    } break;
 
-            glBlendFunc(GL_ONE, GL_ONE);  // zero
-        } break;
+    //    case RenderBillboardD3D::Opaque_1:
+    //    case RenderBillboardD3D::Opaque_2:
+    //    case RenderBillboardD3D::Opaque_3: {
+    //        if (config->is_using_specular) {
+    //            if (!config->is_using_fog) {
+    //                SetUsingFog(true);
+    //                glDisable(GL_FOG);
+    //            }
+    //        }
 
-        default:
-            log->Warning(
-                "SetBillboardBlendOptions: invalid opacity type (%u)", a1);
-            assert(false);
-            break;
-    }
+    //        glBlendFunc(GL_ONE, GL_ONE);  // zero
+    //    } break;
 
-    GL_Check_Errors();
+    //    default:
+    //        log->Warning(
+    //            "SetBillboardBlendOptions: invalid opacity type (%u)", a1);
+    //        assert(false);
+    //        break;
+    //}
+
+    //GL_Check_Errors();
 }
 
 void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
