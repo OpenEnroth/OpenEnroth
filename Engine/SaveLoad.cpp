@@ -380,12 +380,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             LloydBeacon *beacon = &player->vBeacons[j];
             Image *image = beacon->image;
             if ((beacon->uBeaconTime != 0) && (image != nullptr)) {
-                const void *pixels = image->GetPixels(IMAGE_FORMAT_R5G6B5);
+                const void *pixels = image->GetPixels(IMAGE_FORMAT_A8R8G8B8);
                 if (!pixels)
                     __debugbreak();
                 unsigned int pcx_data_size = 30000;
                 void *pcx_data = malloc(pcx_data_size);
-                PCX::Encode16(pixels, image->GetWidth(), image->GetHeight(),
+                PCX::Encode32(pixels, image->GetWidth(), image->GetHeight(),
                               pcx_data, pcx_data_size, &pcx_data_size);
                 std::string str = StringPrintf("lloyd%d%d.pcx", i + 1, j + 1);
                 if (pNew_LOD->Write(str, pcx_data, pcx_data_size, 0)) {

@@ -1969,8 +1969,9 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
 
     unsigned __int8 *pixels = nullptr;
     if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8 || native_format == IMAGE_FORMAT_R8G8B8A8) {
-        pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);  // rgba
-        gl_format = GL_RGBA;
+        pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        // takes care of endian flip from literals here - hence BGRA
+        gl_format = GL_BGRA;
     } else {
         log->Warning("Image not loaded!");
     }
@@ -1981,7 +1982,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         t->SetOpenGlTexture(texid);
 
         glBindTexture(GL_TEXTURE_2D, texid);
-        glTexImage2D(GL_TEXTURE_2D, 0, gl_format, t->GetWidth(), t->GetHeight(),
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(),
                      0, gl_format, GL_UNSIGNED_BYTE, pixels);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -4281,15 +4282,16 @@ void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
 struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
     GLuint texid;
     auto t = (TextureOpenGL *)img;
-    unsigned __int8 *pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_R8G8B8A8);
+    //unsigned __int8 *pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    texid = t->GetOpenGlTexture();
 
-    glGenTextures(1, &texid);
+    //glGenTextures(1, &texid);
     t->SetOpenGlTexture(texid);
-    glBindTexture(GL_TEXTURE_2D, texid);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t->GetWidth(), t->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    //glBindTexture(GL_TEXTURE_2D, texid);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, /*GL_RGBA*/GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+    //glBindTexture(GL_TEXTURE_2D, 0);
 
     return nk_image_id(texid);
 }
