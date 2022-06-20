@@ -2,7 +2,7 @@
 name: Suggestion
 about: Share an idea for an improvement
 title: ''
-labels: ''
+labels: 'enhancement'
 assignees: ''
 
 ---
