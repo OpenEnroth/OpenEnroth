@@ -160,7 +160,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool AreRenderSurfacesOk() override;
 
-    unsigned short *MakeScreenshot(int width, int height);
+    unsigned short *MakeScreenshot16(int width, int height);
     virtual Image *TakeScreenshot(unsigned int width, unsigned int height) override;
     virtual void SaveScreenshot(const std::string &filename, unsigned int width,
                                 unsigned int height) override;
@@ -210,6 +210,9 @@ class RenderOpenGL : public RenderBase {
     void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
     void DrawIndoorSkyPolygon(signed int uNumVertices,
                               struct Polygon *pSkyPolygon);
+
+    void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
+        int width, int height);
 
     int clip_x, clip_y;
     int clip_z, clip_w;

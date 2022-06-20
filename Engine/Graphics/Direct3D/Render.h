@@ -237,7 +237,7 @@ class Render : public RenderBase {
 
     void DrawBorderTiles(struct Polygon *poly);
 
-    unsigned short *MakeScreenshot(signed int width, signed int height);
+    unsigned short *MakeScreenshot16(signed int width, signed int height);
     bool CheckTextureStages();
     void ParseTargetPixelFormat();
 

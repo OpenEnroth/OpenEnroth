@@ -488,7 +488,51 @@ RenderOpenGL::~RenderOpenGL() { /*__debugbreak();*/ }
 
 void RenderOpenGL::Release() { __debugbreak(); }
 
-void RenderOpenGL::SaveWinnersCertificate(const char *a1) { __debugbreak(); }
+void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
+    uint winwidth{ window->GetWidth() };
+    uint winheight{ window->GetHeight() };
+    GLubyte *sPixels = new GLubyte[3 * winwidth * winheight];
+    glReadPixels(0, 0, winwidth, winheight, GL_RGB, GL_UNSIGNED_BYTE, sPixels);
+
+    uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * winheight * winwidth);
+    memset(pPixels, 0, sizeof(uint16_t) * winheight * winwidth);
+
+    // reverse pixels from ogl (uses BL as 0,0)
+    uint16_t *for_pixels = pPixels;
+    unsigned __int8 *p = sPixels;
+    for (uint y = 0; y < (unsigned int)winheight; ++y) {
+        for (uint x = 0; x < (unsigned int)winwidth; ++x) {
+            p = sPixels + 3 * (int)(x) + 3 * (int)(winheight - y) * winwidth;
+
+            *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
+            ++for_pixels;
+        }
+    }
+
+    delete[] sPixels;
+
+    SavePCXImage16(a1, (uint16_t *)pPixels, render->GetRenderWidth(), render->GetRenderHeight());
+    free(pPixels);
+}
+
+void RenderOpenGL::SavePCXImage16(const std::string &filename, uint16_t *picture_data, int width, int height) {
+    // TODO(pskelton): add "Screenshots" folder?
+    auto thispath = MakeDataPath(filename);
+    FILE *result = fopen(thispath.c_str(), "wb");
+    if (result == nullptr) {
+        return;
+    }
+
+    unsigned int pcx_data_size = width * height * 5;
+    uint8_t *pcx_data = new uint8_t[pcx_data_size];
+    unsigned int pcx_data_real_size = 0;
+    PCX::Encode16(picture_data, width, height, pcx_data, pcx_data_size,
+        &pcx_data_real_size);
+    fwrite(pcx_data, pcx_data_real_size, 1, result);
+    delete[] pcx_data;
+    fclose(result);
+}
+
 
 bool RenderOpenGL::InitializeFullscreen() {
     __debugbreak();
@@ -1371,9 +1415,7 @@ void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon 
 
 bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
 
-unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
-    GLubyte* sPixels = new GLubyte[3 * window->GetWidth() * window->GetHeight()];
-
+unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
     BeginSceneD3D();
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
@@ -1384,9 +1426,8 @@ unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
 
     DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene();
 
+    GLubyte *sPixels = new GLubyte[3 * window->GetWidth() * window->GetHeight()];
     glReadPixels(0, 0, window->GetWidth(), window->GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, sPixels);
-
-    uint16_t *for_pixels;  // ebx@1
 
     int interval_x = game_viewport_width / (double)width;
     int interval_y = game_viewport_height / (double)height;
@@ -1394,7 +1435,7 @@ unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
     uint16_t *pPixels = (uint16_t *)malloc(sizeof(uint16_t) * height * width);
     memset(pPixels, 0, sizeof(uint16_t) * height * width);
 
-    for_pixels = pPixels;
+    uint16_t *for_pixels = pPixels;
 
     if (uCurrentlyLoadedLevelType == LEVEL_null) {
         memset(&for_pixels, 0, sizeof(for_pixels));
@@ -1411,18 +1452,19 @@ unsigned short *RenderOpenGL::MakeScreenshot(int width, int height) {
         }
     }
 
+    delete [] sPixels;
     return pPixels;
 }
 
 Image *RenderOpenGL::TakeScreenshot(unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot(width, height);
+    auto pixels = MakeScreenshot16(width, height);
     Image *image = Image::Create(width, height, IMAGE_FORMAT_R5G6B5, pixels);
     free(pixels);
     return image;
 }
 
 void RenderOpenGL::SaveScreenshot(const std::string &filename, unsigned int width, unsigned int height) {
-    auto pixels = MakeScreenshot(width, height);
+    auto pixels = MakeScreenshot16(width, height);
 
     FILE *result = fopen(filename.c_str(), "wb");
     if (result == nullptr) {
@@ -1441,13 +1483,19 @@ void RenderOpenGL::SaveScreenshot(const std::string &filename, unsigned int widt
 void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height,
                                   void *out_data, unsigned int data_size,
                                   unsigned int *screenshot_size) {
-    auto pixels = MakeScreenshot(width, height);
+    auto pixels = MakeScreenshot16(width, height);
     SaveScreenshot("save.pcx", width, height);
     PCX::Encode16(pixels, 150, 112, out_data, 1000000, screenshot_size);
     free(pixels);
 }
 
-void RenderOpenGL::SavePCXScreenshot() { __debugbreak(); }
+void RenderOpenGL::SavePCXScreenshot() {
+    char file_name[40];
+    sprintf(file_name, "screen%0.2i.pcx", ScreenshotFileNumber++ % 100);
+
+    SaveWinnersCertificate(file_name);
+}
+
 int RenderOpenGL::GetActorsInViewport(int pDepth) {
     __debugbreak();
     return 0;
