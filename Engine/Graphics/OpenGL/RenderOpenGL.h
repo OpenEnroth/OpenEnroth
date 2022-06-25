@@ -250,6 +250,7 @@ class RenderOpenGL : public RenderBase {
     GLShader lineshader;
     GLShader twodshader;
     GLShader billbshader;
+    GLShader decalshader;
 
     // terrain shader
     GLuint terrainVBO, terrainVAO;
@@ -287,6 +288,9 @@ class RenderOpenGL : public RenderBase {
 
     // billboards shader
     GLuint billbVBO, billbVAO;
+
+    // decal shader
+    GLuint decalVBO, decalVAO;
 
 
     struct nk_vertex {

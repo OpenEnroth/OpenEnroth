@@ -1606,6 +1606,23 @@ bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, struct Vec3_float_ *
     return true;
 }
 
+struct GLdecalverts {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat u;
+    GLfloat v;
+    GLfloat texunit;
+    GLfloat red;
+    GLfloat green;
+    GLfloat blue;
+    GLfloat attribs;
+};
+
+GLdecalverts decalshaderstore[10000] = {};
+int numdecalverts{ 0 };
+
+
 void RenderOpenGL::BeginDecals() {
     auto texture = (TextureOpenGL*)assets->GetBitmap("hwsplat04");
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
@@ -1616,9 +1633,105 @@ void RenderOpenGL::BeginDecals() {
     glBlendFunc(GL_ONE, GL_ONE);
 
     GL_Check_Errors();
+
+    // gen buffers
+
+    if (decalVAO == 0) {
+        glGenVertexArrays(1, &decalVAO);
+        glGenBuffers(1, &decalVBO);
+
+        glBindVertexArray(decalVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, decalVBO);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, decalshaderstore, GL_DYNAMIC_DRAW);
+
+        // position attribute
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)0);
+        glEnableVertexAttribArray(0);
+        // tex uv attribute
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+        // tex unit attribute
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+        // colours
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(6 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(3);
+        // attribs - not used here yet
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(4);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+        GL_Check_Errors();
+    }
+
+    numdecalverts = 0;
 }
 
 void RenderOpenGL::EndDecals() {
+    // draw here
+    GL_Check_Errors();
+
+    if (numdecalverts) {
+            glBindBuffer(GL_ARRAY_BUFFER, decalVBO);
+            // orphan buffer
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, NULL, GL_DYNAMIC_DRAW);
+            // update buffer
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLdecalverts) * numdecalverts, decalshaderstore);
+            GL_Check_Errors();
+    } else {
+        return;
+    }
+
+    GL_Check_Errors();
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // ?
+    _set_3d_projection_matrix();
+    _set_3d_modelview_matrix();
+
+    glUseProgram(decalshader.ID);
+    // set projection
+    glUniformMatrix4fv(glGetUniformLocation(decalshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    // set view
+    glUniformMatrix4fv(glGetUniformLocation(decalshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+    // set bias
+    glUniform1f(glGetUniformLocation(decalshader.ID, "decalbias"), GLfloat(0.002f));
+
+    // set texture unit location
+    glUniform1i(glGetUniformLocation(decalshader.ID, "texture0"), GLint(0));
+    glActiveTexture(GL_TEXTURE0);
+
+    auto texture = (TextureOpenGL *)assets->GetBitmap("hwsplat04");
+    glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
+
+    glBindVertexArray(decalVAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+
+    glDrawArrays(GL_TRIANGLES, 0, numdecalverts);
+    // logger->Info("Decal verts %i ", numdecalverts);
+    drawcalls++;
+    GL_Check_Errors();
+
+    // unload
+    glUseProgram(0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
+    glBindVertexArray(0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, NULL);
+    GL_Check_Errors();
+
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
@@ -1626,10 +1739,9 @@ void RenderOpenGL::EndDecals() {
     GL_Check_Errors();
 }
 
-void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
-    // need to add z biasing
-    RenderVertexD3D3 pVerticesD3D[64];
 
+
+void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     if (pDecal->uNumVertices < 3) {
         log->Warning("Decal has < 3 vertices");
         return;
@@ -1641,35 +1753,58 @@ void RenderOpenGL::DrawDecal(struct Decal *pDecal, float z_bias) {
     // temp - bloodsplat persistance
     // color_mult = 1;
 
-    glBegin(GL_TRIANGLE_FAN);
+    // load into buffer
+    uint uDecalColorMultR = (pDecal->uColorMultiplier >> 16) & 0xFF,
+        uDecalColorMultG = (pDecal->uColorMultiplier >> 8) & 0xFF,
+        uDecalColorMultB = pDecal->uColorMultiplier & 0xFF;
 
-    for (uint i = 0; i < (unsigned int)pDecal->uNumVertices; ++i) {
-        uint uTint =
-            GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[i].vWorldViewPosition.x, 0, nullptr);
+    for (int z = 0; z < (pDecal->uNumVertices - 2); z++) {
+        // 123, 134, 145, 156..
+        GLdecalverts *thisvert = &decalshaderstore[numdecalverts];
+        uint uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[0].vWorldViewPosition.x, 0, nullptr);
+        uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
 
-        uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF,
-            uTintB = uTint & 0xFF;
+        uint uFinalR = floorf(uTintR / 255.0 * color_mult * uDecalColorMultR + 0.0f),
+             uFinalG = floorf(uTintG / 255.0 * color_mult * uDecalColorMultG + 0.0f),
+             uFinalB = floorf(uTintB / 255.0 * color_mult * uDecalColorMultB + 0.0f);
 
-        uint uDecalColorMultR = (pDecal->uColorMultiplier >> 16) & 0xFF,
-            uDecalColorMultG = (pDecal->uColorMultiplier >> 8) & 0xFF,
-            uDecalColorMultB = pDecal->uColorMultiplier & 0xFF;
+        // copy first
+        thisvert->x = pDecal->pVertices[0].vWorldPosition.x;
+        thisvert->y = pDecal->pVertices[0].vWorldPosition.y;
+        thisvert->z = pDecal->pVertices[0].vWorldPosition.z;
+        thisvert->u = pDecal->pVertices[0].u;
+        thisvert->v = pDecal->pVertices[0].v;
+        thisvert->texunit = 0;
+        thisvert->red = (uFinalR) / 255.0f;
+        thisvert->green = (uFinalG) / 255.0f;
+        thisvert->blue = (uFinalB) / 255.0f;
+        thisvert->attribs = 0;
+        thisvert++;
 
-        uint uFinalR =
-            floorf(uTintR / 255.0 * color_mult * uDecalColorMultR + 0.0f),
-            uFinalG =
-            floorf(uTintG / 255.0 * color_mult * uDecalColorMultG + 0.0f),
-            uFinalB =
-            floorf(uTintB / 255.0 * color_mult * uDecalColorMultB + 0.0f);
+        // copy other two (z+1)(z+2)
+        for (uint i = 1; i < 3; ++i) {
+            uTint = GetActorTintColor(pDecal->DimmingLevel, 0, pDecal->pVertices[z + i].vWorldViewPosition.x, 0, nullptr);
+            uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+            uFinalR = floorf(uTintR / 255.0 * color_mult * uDecalColorMultR + 0.0f),
+            uFinalG = floorf(uTintG / 255.0 * color_mult * uDecalColorMultG + 0.0f),
+            uFinalB = floorf(uTintB / 255.0 * color_mult * uDecalColorMultB + 0.0f);
 
-        glColor4f((uFinalR) / 255.0f, (uFinalG) / 255.0f, (uFinalB) / 255.0f, 1.0f);
-        glTexCoord2f(pDecal->pVertices[i].u, pDecal->pVertices[i].v);
-        glVertex3f(pDecal->pVertices[i].vWorldPosition.x, pDecal->pVertices[i].vWorldPosition.y, pDecal->pVertices[i].vWorldPosition.z);
+            thisvert->x = pDecal->pVertices[z + i].vWorldPosition.x;
+            thisvert->y = pDecal->pVertices[z + i].vWorldPosition.y;
+            thisvert->z = pDecal->pVertices[z + i].vWorldPosition.z;
+            thisvert->u = pDecal->pVertices[z + i].u;
+            thisvert->v = pDecal->pVertices[z + i].v;
+            thisvert->texunit = 0;
+            thisvert->red = (uFinalR) / 255.0f;
+            thisvert->green = (uFinalG) / 255.0f;
+            thisvert->blue = (uFinalB) / 255.0f;
+            thisvert->attribs = 0;
+            thisvert++;
+        }
 
-        drawcalls++;
+        numdecalverts += 3;
+        assert(numdecalverts <= 9999);
     }
-    glEnd();
-
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
@@ -5469,6 +5604,12 @@ bool RenderOpenGL::InitShaders() {
         return false;
     billbVAO = 0;
 
+    logger->Info("Building decal shader...");
+    decalshader.build("../../../../Engine/Graphics/Shaders/gldecalshader.vs", "../../../../Engine/Graphics/Shaders/gldecalshader.fs");
+    if (decalshader.ID == 0)
+        return false;
+    decalVAO = 0;
+
     return true;
 }
 
@@ -5634,6 +5775,10 @@ void RenderOpenGL::DrawTwodVerts() {
         int cnt = 0;
         do {
             cnt++;
+            if (offset + (6 * cnt) > twodvertscnt) {
+                --cnt;
+                break;
+            }
         } while (twodshaderstore[offset + (cnt * 6)].texid == thistex);
 
         glDrawArrays(GL_TRIANGLES, offset, (6*cnt));
