@@ -251,6 +251,7 @@ class RenderOpenGL : public RenderBase {
     GLShader twodshader;
     GLShader billbshader;
     GLShader decalshader;
+    GLShader forcepershader;
 
     // terrain shader
     GLuint terrainVBO, terrainVAO;
@@ -291,6 +292,9 @@ class RenderOpenGL : public RenderBase {
 
     // decal shader
     GLuint decalVBO, decalVAO;
+
+    // forced perspective shader
+    GLuint forceperVBO, forceperVAO;
 
 
     struct nk_vertex {

@@ -1053,6 +1053,7 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
         glColor4f(1, 1, 1, 1.0f);  // ????
         glTexCoord2f(v29[i].texcoord.x, v29[i].texcoord.y);
         glVertex3f(v29[i].pos.x, v29[i].pos.y, v29[i].pos.z);
+        //glVertex4f(v29[i].pos.x * v29[i].rhw, v29[i].pos.y * v29[i].rhw, v29[i].rhw, v29[i].rhw);
     }
 
 
@@ -3002,6 +3003,21 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
     //_set_3d_projection_matrix();
 }
 
+struct forcepersverts {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat w;
+    GLfloat u;
+    GLfloat v;
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+};
+
+forcepersverts forceperstore[50]{};
+int forceperstorecnt{ 0 };
+
 //----- (004A2DA3) --------------------------------------------------------
 void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     auto texture = (TextureOpenGL *)pSkyPolygon->texture;
@@ -3011,27 +3027,110 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glBegin(GL_TRIANGLE_FAN);
-    {
-        for (int i = 0; i < pSkyPolygon->uNumVertices; ++i) {
-            unsigned int diffuse = ::GetActorTintColor(
-                pSkyPolygon->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
+    // load up poly
+    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+        // 123, 134, 145, 156..
+        forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+        uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
+        uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
 
-            glColor4f(((diffuse >> 16) & 0xFF) / 255.0f,
-                      ((diffuse >> 8) & 0xFF) / 255.0f,
-                      (diffuse & 0xFF) / 255.0f, 1.0f);
+        // copy first
+        thisvert->x = VertexRenderList[0].vWorldViewProjX;
+        thisvert->y = VertexRenderList[0].vWorldViewProjY;
+        thisvert->z = 1.0f;
+        thisvert->w = VertexRenderList[0]._rhw;
+        thisvert->u = VertexRenderList[0].u;
+        thisvert->v = VertexRenderList[0].v;
+        thisvert->r = (uTintR) / 255.0f;
+        thisvert->g = (uTintG) / 255.0f;
+        thisvert->b = (uTintB) / 255.0f;
+        thisvert++;
 
-            glTexCoord2f(VertexRenderList[i].u, VertexRenderList[i].v);
+        // copy other two (z+1)(z+2)
+        for (uint i = 1; i < 3; ++i) {
+            uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[z + i].vWorldViewPosition.x, 1, 0);
+            uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
 
-            // shoe horn in perspective correction
-            glVertex4f(VertexRenderList[i].vWorldViewProjX * VertexRenderList[i]._rhw,
-                VertexRenderList[i].vWorldViewProjY * VertexRenderList[i]._rhw,
-                1.0 * VertexRenderList[i]._rhw, VertexRenderList[i]._rhw);
+            thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
+            thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+            thisvert->z = 1.0f;
+            thisvert->w = VertexRenderList[z + i]._rhw;
+            thisvert->u = VertexRenderList[z + i].u;
+            thisvert->v = VertexRenderList[z + i].v;
+            thisvert->r = (uTintR) / 255.0f;
+            thisvert->g = (uTintG) / 255.0f;
+            thisvert->b = (uTintB) / 255.0f;
+            thisvert++;
         }
-    }
-    drawcalls++;
-    glEnd();
 
+        forceperstorecnt += 3;
+        assert(forceperstorecnt <= 40);
+    }
+
+    if (!forceperstorecnt) return;
+
+    if (forceperVAO == 0) {
+        glGenVertexArrays(1, &forceperVAO);
+        glGenBuffers(1, &forceperVBO);
+
+        glBindVertexArray(forceperVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, forceperVBO);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(forceperstore), forceperstore, GL_DYNAMIC_DRAW);
+
+        // position attribute
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (9 * sizeof(GLfloat)), (void *)0);
+        glEnableVertexAttribArray(0);
+        // tex uv
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (9 * sizeof(GLfloat)), (void *)(4 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+        // colour
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, (9 * sizeof(GLfloat)), (void *)(6 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+    }
+
+    GL_Check_Errors();
+
+    // update buffer
+    glBindBuffer(GL_ARRAY_BUFFER, forceperVBO);
+
+    GL_Check_Errors();
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(forcepersverts) * forceperstorecnt, forceperstore);
+    GL_Check_Errors();
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(forceperVAO);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    glUseProgram(forcepershader.ID);
+    GL_Check_Errors();
+
+    // set sampler to texure0
+    glUniform1i(glGetUniformLocation(billbshader.ID, "texture0"), GLint(0));
+
+    //// set projection
+    glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    //// set view
+    glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    GL_Check_Errors();
+
+    glDrawArrays(GL_TRIANGLES, 0, forceperstorecnt);
+
+    GL_Check_Errors();
+    glUseProgram(0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
+    forceperstorecnt = 0;
     GL_Check_Errors();
 }
 
@@ -5609,6 +5708,13 @@ bool RenderOpenGL::InitShaders() {
     if (decalshader.ID == 0)
         return false;
     decalVAO = 0;
+
+    logger->Info("Building force perspective shader... ");
+    forcepershader.build("../../../../Engine/Graphics/Shaders/glforcepershader.vs", "../../../../Engine/Graphics/Shaders/glforcepershader.fs");
+    if (forcepershader.ID == 0)
+        return false;
+    forceperVAO = 0;
+
 
     return true;
 }

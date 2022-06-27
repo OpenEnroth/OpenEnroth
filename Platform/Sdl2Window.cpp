@@ -654,7 +654,7 @@ bool Sdl2Window::TryMapScanCode(SDL_Scancode code, GameKey *outKey) const {
 void Sdl2Window::OpenGlCreate() {
     int version;
 
-    //  Use OpenGL 3.3 core - requires all fixed pipeline code to be modernised
+    //  Use OpenGL 4.1 core - requires all fixed pipeline code to be modernised
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
