@@ -2603,9 +2603,9 @@ void RenderOpenGL::DrawTerrainD3D() {
                         0,
                         0, 0, tlayer,
                         terraintexturesizes[unit], terraintexturesizes[unit], 1,
-                        GL_RGBA,
+                        GL_BGRA,
                         GL_UNSIGNED_BYTE,
-                        texture->GetPixels(IMAGE_FORMAT_R8G8B8A8));
+                        texture->GetPixels(IMAGE_FORMAT_A8R8G8B8));
                 }
 
                 it++;
@@ -4299,9 +4299,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
                         0,
                         0, 0, tlayer,
                         outbuildtexturewidths[unit], outbuildtextureheights[unit], 1,
-                        GL_RGBA,
+                        GL_BGRA,
                         GL_UNSIGNED_BYTE,
-                        texture->GetPixels(IMAGE_FORMAT_R8G8B8A8));
+                        texture->GetPixels(IMAGE_FORMAT_A8R8G8B8));
                 }
 
                 it++;
@@ -4902,9 +4902,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                             0,
                             0, 0, tlayer,
                             bsptexturewidths[unit], bsptextureheights[unit], 1,
-                            GL_RGBA,
+                            GL_BGRA,
                             GL_UNSIGNED_BYTE,
-                            texture->GetPixels(IMAGE_FORMAT_R8G8B8A8));
+                            texture->GetPixels(IMAGE_FORMAT_A8R8G8B8));
 
                         //numterraintexloaded[0]++;
                     }
