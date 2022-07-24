@@ -227,6 +227,7 @@ class RenderOpenGL : public RenderBase {
     void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
     void DrawIndoorSkyPolygon(signed int uNumVertices,
                               struct Polygon *pSkyPolygon);
+    void DrawForcePerVerts();
 
     void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
         int width, int height);

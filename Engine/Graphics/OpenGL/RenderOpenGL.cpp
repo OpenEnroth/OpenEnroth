@@ -949,27 +949,27 @@ void RenderOpenGL::DrawBillboardList_BLV() {
     }
 }
 
+struct forcepersverts {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat w;
+    GLfloat u;
+    GLfloat v;
+    GLfloat q;
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+};
 
-void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
-                                  float dstX, float dstY, float a7, float a8,
+forcepersverts forceperstore[50]{};
+int forceperstorecnt{ 0 };
+
+
+void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, float srcfovoworldview,
+                                  float dstX, float dstY, float dstworldview, float dstfovoworldview,
                                   Texture *texture) {
-    // a3 - src worldviewx
-    // a4 - src fov / worldview
-    // a7 - dst worldview
-    // a8 - dst fov / worldview
-
-    // TODO(pskelton): fix properly - sometimes half disappears
-
     // billboards projectile - lightning bolt
-
-    double v20;  // st4@8
-    double v21;  // st4@10
-    double v22;  // st4@10
-    double v23;  // st4@10
-    double v25;  // st4@11
-    double v26;  // st4@13
-    double v28;  // st4@13
-
 
     TextureOpenGL *textured3d = (TextureOpenGL *)texture;
 
@@ -981,44 +981,45 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
     unsigned int largerabsdiff = std::max(absXDifference, absYDifference);
 
     // distance approx
-    int v32 = (11 * smallerabsdiff >> 5) + largerabsdiff;
+    int distapprox = (11 * smallerabsdiff >> 5) + largerabsdiff;
 
-    double v16 = 1.0 / (double)v32;
-    double srcxmod = (double)yDifference * v16 * a4;
-    double srcymod = (double)xDifference * v16 * a4;
+    double v16 = 1.0 / (double)distapprox;
+    double srcxmod = (double)yDifference * v16 * srcfovoworldview;
+    double srcymod = (double)xDifference * v16 * srcfovoworldview;
 
-    v20 = a3 * 1000.0 / pCamera3D->GetFarClip();
-    v25 = a7 * 1000.0 / pCamera3D->GetFarClip();
+    double v20 = srcworldview * 1000.0 / pCamera3D->GetFarClip();
+    double v25 = dstworldview * 1000.0 / pCamera3D->GetFarClip();
+    double srcrhw = 1.0 / srcworldview;
+    double dstxmod = (double)yDifference * v16 * dstfovoworldview;
+    double dstymod = (double)xDifference * v16 * dstfovoworldview;
+    double srcz = 1.0 - 1.0 / v20;
+    double dstz = 1.0 - 1.0 / v25;
+    double dstrhw = 1.0 / dstworldview;
 
-    v21 = 1.0 / a3;
-    v22 = (double)yDifference * v16 * a8;
-    v23 = (double)xDifference * v16 * a8;
-    v26 = 1.0 - 1.0 / v25;
-    v28 = 1.0 / a7;
 
     RenderVertexD3D3 v29[4];
     v29[0].pos.x = srcX + srcxmod;
     v29[0].pos.y = srcY - srcymod;
-    v29[0].pos.z = 1.0 - 1.0 / v20;
-    v29[0].rhw = v21;
+    v29[0].pos.z = srcz;
+    v29[0].rhw = srcrhw;
     v29[0].diffuse = -1;
     v29[0].specular = 0;
     v29[0].texcoord.x = 1.0;
     v29[0].texcoord.y = 0.0;
 
-    v29[1].pos.x = v22 + dstX;
-    v29[1].pos.y = dstY - v23;
-    v29[1].pos.z = v26;
-    v29[1].rhw = v28;
+    v29[1].pos.x = dstxmod + dstX;
+    v29[1].pos.y = dstY - dstymod;
+    v29[1].pos.z = dstz;
+    v29[1].rhw = dstrhw;
     v29[1].diffuse = -16711936;
     v29[1].specular = 0;
     v29[1].texcoord.x = 1.0;
     v29[1].texcoord.y = 1.0;
 
-    v29[2].pos.x = dstX - v22;
-    v29[2].pos.y = v23 + dstY;
-    v29[2].pos.z = v26;
-    v29[2].rhw = v28;
+    v29[2].pos.x = dstX - dstxmod;
+    v29[2].pos.y = dstymod + dstY;
+    v29[2].pos.z = dstz;
+    v29[2].rhw = dstrhw;
     v29[2].diffuse = -1;
     v29[2].specular = 0;
     v29[2].texcoord.x = 0.0;
@@ -1026,13 +1027,16 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
 
     v29[3].pos.x = srcX - srcxmod;
     v29[3].pos.y = srcymod + srcY;
-    v29[3].pos.z = v29[0].pos.z;
-    v29[3].rhw = v21;
+    v29[3].pos.z = srcz;
+    v29[3].rhw = srcrhw;
     v29[3].diffuse = -1;
     v29[3].specular = 0;
     v29[3].texcoord.x = 0.0;
     v29[3].texcoord.y = 0.0;
 
+
+    //_set_ortho_projection(1);
+    //_set_ortho_modelview();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
@@ -1047,20 +1051,68 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float a3, float a4,
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    glBegin(GL_TRIANGLE_FAN);
+    //glBegin(GL_TRIANGLE_FAN);
 
-    for (uint i = 0; i < 4; ++i) {
-        glColor4f(1, 1, 1, 1.0f);  // ????
-        glTexCoord2f(v29[i].texcoord.x, v29[i].texcoord.y);
-        glVertex3f(v29[i].pos.x, v29[i].pos.y, v29[i].pos.z);
-        //glVertex4f(v29[i].pos.x * v29[i].rhw, v29[i].pos.y * v29[i].rhw, v29[i].rhw, v29[i].rhw);
+    //for (uint i = 0; i < 4; ++i) {
+    //    glColor4f(1, 1, 1, 1.0f);  // ????
+
+    //    glTexCoord4f(v29[i].texcoord.x * v29[i].rhw, v29[i].texcoord.y * v29[i].rhw, 0 , v29[i].rhw);
+    //    glVertex3f(v29[i].pos.x, v29[i].pos.y, v29[i].pos.z);
+
+    //}
+
+
+
+    //glEnd();
+
+    //drawcalls++;
+
+
+    // load up poly
+    for (int z = 0; z < 2; z++) {
+        // 123, 134, 145, 156..
+        forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+        //uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
+        //uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+
+        // copy first
+        thisvert->x = v29[0].pos.x;
+        thisvert->y = v29[0].pos.y;
+        thisvert->z = v29[0].pos.z;
+        thisvert->w = 1.0f;
+        thisvert->u = v29[0].texcoord.x;
+        thisvert->v = v29[0].texcoord.y;
+        thisvert->q = v29[0].rhw;
+        thisvert->r = 1.0f;
+        thisvert->g = 1.0f;
+        thisvert->b = 1.0f;
+        thisvert++;
+
+        // copy other two (z+1)(z+2)
+        for (uint i = 1; i < 3; ++i) {
+            //uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[z + i].vWorldViewPosition.x, 1, 0);
+            //uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+
+            thisvert->x = v29[z + i].pos.x;
+            thisvert->y = v29[z + i].pos.y;
+            thisvert->z = v29[z + i].pos.z;
+            thisvert->w = 1.0f;
+            thisvert->u = v29[z + i].texcoord.x;
+            thisvert->v = v29[z + i].texcoord.y;
+            thisvert->q = v29[z + i].rhw;
+            thisvert->r = 1.0f;
+            thisvert->g = 1.0f;
+            thisvert->b = 1.0f;
+            thisvert++;
+        }
+
+        forceperstorecnt += 3;
+        assert(forceperstorecnt <= 40);
     }
 
+    DrawForcePerVerts();
 
 
-    glEnd();
-
-    drawcalls++;
 
     glDisable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ZERO);
@@ -3003,20 +3055,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
     //_set_3d_projection_matrix();
 }
 
-struct forcepersverts {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat w;
-    GLfloat u;
-    GLfloat v;
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-};
 
-forcepersverts forceperstore[50]{};
-int forceperstorecnt{ 0 };
 
 //----- (004A2DA3) --------------------------------------------------------
 void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
@@ -3041,6 +3080,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         thisvert->w = VertexRenderList[0]._rhw;
         thisvert->u = VertexRenderList[0].u;
         thisvert->v = VertexRenderList[0].v;
+        thisvert->q = 1.0f;
         thisvert->r = (uTintR) / 255.0f;
         thisvert->g = (uTintG) / 255.0f;
         thisvert->b = (uTintB) / 255.0f;
@@ -3057,6 +3097,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->w = VertexRenderList[z + i]._rhw;
             thisvert->u = VertexRenderList[z + i].u;
             thisvert->v = VertexRenderList[z + i].v;
+            thisvert->q = 1.0f;
             thisvert->r = (uTintR) / 255.0f;
             thisvert->g = (uTintG) / 255.0f;
             thisvert->b = (uTintB) / 255.0f;
@@ -3067,6 +3108,10 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         assert(forceperstorecnt <= 40);
     }
 
+    DrawForcePerVerts();
+}
+
+void RenderOpenGL::DrawForcePerVerts() {
     if (!forceperstorecnt) return;
 
     if (forceperVAO == 0) {
@@ -3079,13 +3124,13 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         glBufferData(GL_ARRAY_BUFFER, sizeof(forceperstore), forceperstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (9 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)0);
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (9 * sizeof(GLfloat)), (void *)(4 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(4 * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, (9 * sizeof(GLfloat)), (void *)(6 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(7 * sizeof(GLfloat)));
         glEnableVertexAttribArray(2);
     }
 
@@ -3119,6 +3164,7 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     GL_Check_Errors();
 
     glDrawArrays(GL_TRIANGLES, 0, forceperstorecnt);
+    ++drawcalls;
 
     GL_Check_Errors();
     glUseProgram(0);
