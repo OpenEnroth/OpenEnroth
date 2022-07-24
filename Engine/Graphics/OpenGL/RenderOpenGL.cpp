@@ -1034,10 +1034,6 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     v29[3].texcoord.x = 0.0;
     v29[3].texcoord.y = 0.0;
 
-
-    //_set_ortho_projection(1);
-    //_set_ortho_modelview();
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
 
@@ -1051,29 +1047,10 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    //glBegin(GL_TRIANGLE_FAN);
-
-    //for (uint i = 0; i < 4; ++i) {
-    //    glColor4f(1, 1, 1, 1.0f);  // ????
-
-    //    glTexCoord4f(v29[i].texcoord.x * v29[i].rhw, v29[i].texcoord.y * v29[i].rhw, 0 , v29[i].rhw);
-    //    glVertex3f(v29[i].pos.x, v29[i].pos.y, v29[i].pos.z);
-
-    //}
-
-
-
-    //glEnd();
-
-    //drawcalls++;
-
-
     // load up poly
     for (int z = 0; z < 2; z++) {
         // 123, 134, 145, 156..
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
-        //uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
-        //uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
 
         // copy first
         thisvert->x = v29[0].pos.x;
@@ -1090,9 +1067,6 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
 
         // copy other two (z+1)(z+2)
         for (uint i = 1; i < 3; ++i) {
-            //uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[z + i].vWorldViewPosition.x, 1, 0);
-            //uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
-
             thisvert->x = v29[z + i].pos.x;
             thisvert->y = v29[z + i].pos.y;
             thisvert->z = v29[z + i].pos.z;
@@ -1112,11 +1086,8 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
 
     DrawForcePerVerts();
 
-
-
     glDisable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ZERO);
-
 
     //ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
     glDepthMask(GL_TRUE);
@@ -2333,13 +2304,7 @@ void _set_3d_projection_matrix() {
     float near_clip = pCamera3D->GetNearClip();
     float far_clip = pCamera3D->GetFarClip();
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    // ogl uses fov in Y - this func has known bug where it misses aspect divsion hence multiplying it to clip distances
-    gluPerspective(pCamera3D->fov_y_deg, pCamera3D->aspect, near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
-
-    // build same matrix with glm so we can drop depreciated glu above eventually
+    // build projection matrix with glm
     projmat = glm::perspective(glm::radians(pCamera3D->fov_y_deg), pCamera3D->aspect, near_clip * pCamera3D->aspect, far_clip * pCamera3D->aspect);
 
     GL_Check_Errors();
@@ -2347,21 +2312,11 @@ void _set_3d_projection_matrix() {
 
 // TODO(pskelton): move into gl renderer
 void _set_3d_modelview_matrix() {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glScalef(-1.0f, 1.0f, -1.0f);
-
     float camera_x = pCamera3D->vCameraPos.x;
     float camera_y = pCamera3D->vCameraPos.y;
     float camera_z = pCamera3D->vCameraPos.z;
 
-    gluLookAt(camera_x, camera_y, camera_z,
-              camera_x - cosf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
-              camera_y - sinf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
-              camera_z - tanf(2.0 * pi_double * (float)-pCamera3D->sRotationY / 2048.0f),
-              0, 0, 1);
-
-    // build same matrix with glm so we can drop depreciated glu above eventually
+    // build view matrix with glm
     glm::vec3 campos = glm::vec3(camera_x, camera_y, camera_z);
     glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
         camera_y - sinf(2.0 * pi_double * (float)pCamera3D->sRotationZ / 2048.0f),
@@ -2377,32 +2332,18 @@ void _set_3d_modelview_matrix() {
 void _set_ortho_projection(bool gameviewport) {
     if (!gameviewport) {  // project over entire window
         glViewport(0, 0, window->GetWidth(), window->GetHeight());
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
-
         projmat = glm::ortho(float(0), float(window->GetWidth()), float(window->GetHeight()), float(0), float(-1), float(1));
     } else {  // project to game viewport
         glViewport(game_viewport_x, window->GetHeight()-game_viewport_w-1, game_viewport_width, game_viewport_height);
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(game_viewport_x, game_viewport_z, game_viewport_w, game_viewport_y, 1, -1);  // far = 1 but ogl looks down -z
-
         projmat = glm::ortho(float(game_viewport_x), float(game_viewport_z), float(game_viewport_w), float(game_viewport_y), float(1), float(-1));
     }
-
     GL_Check_Errors();
 }
 
 // TODO(pskelton): move into gl renderer
 void _set_ortho_modelview() {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
+    // load identity matrix
     viewmat = glm::mat4x4(1);
-
     GL_Check_Errors();
 }
 
@@ -3050,9 +2991,6 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
         _set_ortho_modelview();
         DrawOutdoorSkyPolygon(&pSkyPolygon);
     }
-
-    //_set_3d_projection_matrix();
-    //_set_3d_projection_matrix();
 }
 
 
@@ -3061,7 +2999,6 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
 void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     auto texture = (TextureOpenGL *)pSkyPolygon->texture;
 
-    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -3208,7 +3145,6 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);  // in theory billboards all sorted by depth so dont cull by depth test
     glDisable(GL_CULL_FACE);  // some quads are reversed to reuse sprites opposite hand
-    glEnable(GL_TEXTURE_2D);
 
     _set_ortho_projection(1);
     _set_ortho_modelview();
@@ -3894,11 +3830,11 @@ void RenderOpenGL::EndTextNew() {
     GL_Check_Errors();
 
     // set textures
-    glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texmain);
-    glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, texshadow);
+    GL_Check_Errors();
 
     glDrawArrays(GL_TRIANGLES, 0, textvertscnt);
     drawcalls++;
@@ -5522,31 +5458,17 @@ bool RenderOpenGL::Initialize() {
 
     if (window != nullptr) {
         window->OpenGlCreate();
+        GL_Check_Errors();
 
-        glShadeModel(GL_SMOOTH);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
         glClearDepth(1.0f);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
-        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         glViewport(0, 0, window->GetWidth(), window->GetHeight());
         glScissor(0, 0, window->GetWidth(), window->GetHeight());
-
         glEnable(GL_SCISSOR_TEST);
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-
-        // Calculate The Aspect Ratio Of The Window
-        gluPerspective(45.0f,
-            (GLfloat)window->GetWidth() / (GLfloat)window->GetHeight(),
-            0.1f, 100.0f);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        GL_Check_Errors();
 
         // Swap Buffers (Double Buffering)
         window->OpenGlSwapBuffers();
