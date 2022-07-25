@@ -1,8 +1,8 @@
 #include "Media/Audio/OpenALSoundProvider.h"
 
 #ifdef __APPLE__
-#import <OpenAL/al.h>
-#import <OpenAL/alc.h>
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
 #else
 #include <AL/al.h>
 #include <AL/alc.h>
