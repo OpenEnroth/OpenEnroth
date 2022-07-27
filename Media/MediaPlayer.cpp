@@ -1243,6 +1243,9 @@ class AudioBufferDataSource : public AudioBaseDataSource {
 
     static int read_packet(void *opaque, uint8_t *buf, int buf_size);
     int ReadPacket(uint8_t *buf, int buf_size);
+
+    static int64_t seek(void *opaque, int64_t offset, int whence);
+    int64_t Seek(void *opaque, int64_t offset, int whence);
 };
 
 AudioBufferDataSource::AudioBufferDataSource(PMemBuffer buffer)
@@ -1271,7 +1274,7 @@ bool AudioBufferDataSource::Open() {
     }
 
     avio_ctx = avio_alloc_context(avio_ctx_buffer, avio_ctx_buffer_size, 0,
-                                  this, &read_packet, nullptr, nullptr);
+                                  this, &read_packet, nullptr, &seek);
     if (!avio_ctx) {
         Close();
         return false;
@@ -1303,12 +1306,38 @@ int AudioBufferDataSource::read_packet(void *opaque, uint8_t *buf,
 int AudioBufferDataSource::ReadPacket(uint8_t *buf, int buf_size) {
     int size = buf_end - buf_pos;
     if (size <= 0) {
-        return 0;
+        return AVERROR_EOF;
     }
     size = std::min(buf_size, size);
     memcpy(buf, buf_pos, size);
     buf_pos += size;
     return size;
+}
+
+int64_t AudioBufferDataSource::seek(void *opaque, int64_t offset, int whence) {
+    AudioBufferDataSource *pThis = (AudioBufferDataSource *)opaque;
+    return pThis->Seek(opaque, offset, whence);
+}
+
+int64_t AudioBufferDataSource::Seek(void *opaque, int64_t offset, int whence) {
+    if ((whence & AVSEEK_SIZE) == AVSEEK_SIZE) {
+        return buffer->GetSize();
+    }
+    int force = whence & AVSEEK_FORCE;
+    whence &= ~AVSEEK_FORCE;
+    whence &= ~AVSEEK_SIZE;
+    uint8_t *buf_start = (uint8_t*)buffer->GetData();
+    if (whence == SEEK_SET) {
+        buf_pos = std::clamp(buf_start + offset, buf_start, buf_end);
+        return buf_pos - buf_start;
+    } else if (whence == SEEK_CUR) {
+        buf_pos = std::clamp(buf_pos + offset, buf_start, buf_end);
+        return buf_pos - buf_start;
+    } else if (whence == SEEK_END) {
+        buf_pos = std::clamp(buf_end + offset, buf_start, buf_end);
+        return buf_pos - buf_start;
+    }
+    return AVERROR(EIO);
 }
 
 PAudioDataSource CreateAudioFileDataSource(const std::string &file_name) {
