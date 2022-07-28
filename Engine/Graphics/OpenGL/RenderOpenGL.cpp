@@ -28,6 +28,7 @@
 #include <memory>
 #include <utility>
 #include <map>
+#include <filesystem>
 
 #include <glm.hpp>
 #include <glm/glm/gtc/matrix_transform.hpp>
@@ -49,6 +50,7 @@
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
@@ -65,10 +67,16 @@
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
 #endif
 
-void _set_3d_projection_matrix();
-void _set_3d_modelview_matrix();
-void _set_ortho_projection(bool gameviewport = false);
-void _set_ortho_modelview();
+// globals
+//TODO(pskelton): Combine and contain
+std::shared_ptr<IRender> render;
+int uNumDecorationsDrawnThisFrame;
+RenderBillboard pBillboardRenderList[500];
+unsigned int uNumBillboardsToDraw;
+int uNumSpritesDrawnThisFrame;
+RenderVertexSoft array_73D150[20];
+RenderVertexSoft VertexRenderList[50];
+RenderVertexD3D3 d3d_vertex_buffer[50];
 
 // improved error check
 void GL_Check_Errors(bool breakonerr = true) {
@@ -92,14 +100,6 @@ void GL_Check_Errors(bool breakonerr = true) {
         err = glGetError();
     }
 }
-
-// TODO(pskelton): move to opengl render class
-// these are the view and projection matrices for submission to shaders
-glm::mat4 projmat;
-glm::mat4 viewmat;
-
-RenderVertexSoft VertexRenderList[50];  // array_50AC10
-RenderVertexD3D3 d3d_vertex_buffer[50];
 
 void Polygon::_normalize_v_18() {
     float len = sqrt((double)this->v_18.z * (double)this->v_18.z +
@@ -251,13 +251,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, Render
     }
 }
 
-std::shared_ptr<IRender> render;
-int uNumDecorationsDrawnThisFrame;
-RenderBillboard pBillboardRenderList[500];
-unsigned int uNumBillboardsToDraw;
-int uNumSpritesDrawnThisFrame;
 
-RenderVertexSoft array_73D150[20];
 
 void RenderOpenGL::MaskGameViewport() {
     // do not want in opengl mode
@@ -1096,14 +1090,6 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     GL_Check_Errors();
 }
 
-void RenderOpenGL::ScreenFade(unsigned int color, float t) { __debugbreak(); }
-
-
-void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
-                                     Image *pTexture) {
-    DrawTextureNew((float)(pX - move_X)/window->GetWidth(), (float)(pY - move_Y)/window->GetHeight(), pTexture);
-}
-
 struct twodverts {
     GLfloat x;
     GLfloat y;
@@ -1119,6 +1105,112 @@ struct twodverts {
 
 twodverts twodshaderstore[500] = {};
 int twodvertscnt = 0;
+
+void RenderOpenGL::ScreenFade(unsigned int color, float t) {
+    t = std::clamp(t, 0.0f, 1.0f);
+    //color is 24bits r8g8b8?
+    float red = ((color & 0xFF0000) >> 16) / 255.0f;
+    float green = ((color & 0xFF00) >> 8) / 255.0f;
+    float blue = ((color & 0xFF)) / 255.0f;
+
+    float drawx = pViewport->uViewportTL_X;
+    float drawy = pViewport->uViewportTL_Y;
+    float drawz = pViewport->uViewportBR_X;
+    float draww = pViewport->uViewportBR_Y;
+
+    static Texture *effpar03 = assets->GetBitmap("effpar03");
+    auto texture = (TextureOpenGL *)effpar03;
+    float gltexid = texture->GetOpenGlTexture();
+
+    // 0 1 2 / 0 2 3
+
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = 0.5f;
+    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].r = red;
+    twodshaderstore[twodvertscnt].g = green;
+    twodshaderstore[twodvertscnt].b = blue;
+    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = 0.5f;
+    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].r = red;
+    twodshaderstore[twodvertscnt].g = green;
+    twodshaderstore[twodvertscnt].b = blue;
+    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = 0.5f;
+    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].r = red;
+    twodshaderstore[twodvertscnt].g = green;
+    twodshaderstore[twodvertscnt].b = blue;
+    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    ////////////////////////////////
+
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = drawy;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = 0.5f;
+    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].r = red;
+    twodshaderstore[twodvertscnt].g = green;
+    twodshaderstore[twodvertscnt].b = blue;
+    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].texid = 0;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawz;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = 0.5f;
+    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].r = red;
+    twodshaderstore[twodvertscnt].g = green;
+    twodshaderstore[twodvertscnt].b = blue;
+    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    twodshaderstore[twodvertscnt].x = drawx;
+    twodshaderstore[twodvertscnt].y = draww;
+    twodshaderstore[twodvertscnt].z = 0;
+    twodshaderstore[twodvertscnt].u = 0.5f;
+    twodshaderstore[twodvertscnt].v = 0.5f;
+    twodshaderstore[twodvertscnt].r = red;
+    twodshaderstore[twodvertscnt].g = green;
+    twodshaderstore[twodvertscnt].b = blue;
+    twodshaderstore[twodvertscnt].a = t;
+    twodshaderstore[twodvertscnt].texid = gltexid;
+    twodvertscnt++;
+
+    GL_Check_Errors();
+
+    if (twodvertscnt > 490) DrawTwodVerts();
+    return;
+}
+
+
+void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
+                                     Image *pTexture) {
+    DrawTextureNew((float)(pX - move_X)/window->GetWidth(), (float)(pY - move_Y)/window->GetHeight(), pTexture);
+}
+
+
 
 void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     if (!img) __debugbreak();
@@ -1526,7 +1618,6 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
     logger->Info("past normal section");
     __debugbreak();
     // please provide save game / details if you get here
-    // TODO(pskelton): below looks like some vert clipping but dont think its ever gets here now - delete below after testing;
 }
 
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
@@ -1617,9 +1708,44 @@ void RenderOpenGL::SavePCXScreenshot() {
     SaveWinnersCertificate(file_name);
 }
 
+
+// should this be combined / moved out of render
 int RenderOpenGL::GetActorsInViewport(int pDepth) {
-    __debugbreak();
-    return 0;
+    unsigned int
+        v3;  // eax@2 применяется в закле Жар печи для подсчёта кол-ва монстров
+             // видимых группе и заполнения массива id видимых монстров
+    unsigned int v5;   // eax@2
+    unsigned int v6;   // eax@4
+    unsigned int v12;  // [sp+10h] [bp-14h]@1
+    int mon_num;       // [sp+1Ch] [bp-8h]@1
+    unsigned int a1a;  // [sp+20h] [bp-4h]@1
+
+    mon_num = 0;
+    v12 = render->uNumBillboardsToDraw;
+    if ((signed int)render->uNumBillboardsToDraw > 0) {
+        for (a1a = 0; (signed int)a1a < (signed int)v12; ++a1a) {
+            v3 = render->pBillboardRenderListD3D[a1a].sParentBillboardID;
+            v5 = (unsigned __int16)pBillboardRenderList[v3].object_pid;
+            if (PID_TYPE(v5) == OBJECT_Actor) {
+                if (pBillboardRenderList[v3].screen_space_z <= pDepth) {
+                    v6 = PID_ID(v5);
+                    if (pActors[v6].uAIState != Dead &&
+                        pActors[v6].uAIState != Dying &&
+                        pActors[v6].uAIState != Removed &&
+                        pActors[v6].uAIState != Disabled &&
+                        pActors[v6].uAIState != Summoned) {
+                        if (vis->DoesRayIntersectBillboard(pDepth, a1a)) {
+                            if (mon_num < 100) {
+                                _50BF30_actors_in_viewport_ids[mon_num] = v6;
+                                mon_num++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return mon_num;
 }
 
 void RenderOpenGL::BeginLightmaps() { return; }
@@ -1836,11 +1962,19 @@ void RenderOpenGL::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                           const RenderVertexD3D3 *pLineEnd,
                                           signed int sDiffuseEnd,
                                           float z_stuff) {
-    __debugbreak();
+    __debugbreak(); // not required
 }
-void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices,
-                             unsigned int num_vertices) {
-    __debugbreak();
+void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
+   /*
+   
+   ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
+    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
+        D3DPT_LINELIST,
+        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
+        (void *)vertices, num_vertices, D3DDP_DONOTLIGHT));
+    drawcalls++;
+   
+   */
 }
 void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                           Texture *texture) {
@@ -2299,8 +2433,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     return false;
 }
 
-// TODO(pskelton): move into gl renderer
-void _set_3d_projection_matrix() {
+void RenderOpenGL::_set_3d_projection_matrix() {
     float near_clip = pCamera3D->GetNearClip();
     float far_clip = pCamera3D->GetFarClip();
 
@@ -2310,8 +2443,7 @@ void _set_3d_projection_matrix() {
     GL_Check_Errors();
 }
 
-// TODO(pskelton): move into gl renderer
-void _set_3d_modelview_matrix() {
+void RenderOpenGL::_set_3d_modelview_matrix() {
     float camera_x = pCamera3D->vCameraPos.x;
     float camera_y = pCamera3D->vCameraPos.y;
     float camera_z = pCamera3D->vCameraPos.z;
@@ -2328,8 +2460,7 @@ void _set_3d_modelview_matrix() {
     GL_Check_Errors();
 }
 
-// TODO(pskelton): move into gl renderer
-void _set_ortho_projection(bool gameviewport) {
+void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
     if (!gameviewport) {  // project over entire window
         glViewport(0, 0, window->GetWidth(), window->GetHeight());
         projmat = glm::ortho(float(0), float(window->GetWidth()), float(window->GetHeight()), float(0), float(-1), float(1));
@@ -2340,8 +2471,7 @@ void _set_ortho_projection(bool gameviewport) {
     GL_Check_Errors();
 }
 
-// TODO(pskelton): move into gl renderer
-void _set_ortho_modelview() {
+void RenderOpenGL::_set_ortho_modelview() {
     // load identity matrix
     viewmat = glm::mat4x4(1);
     GL_Check_Errors();
@@ -3862,67 +3992,36 @@ void RenderOpenGL::EndTextNew() {
 }
 
 void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) {
-    // TODO(pskelton): need to add batching here so each lump of text is drawn in one call
-
-
-    //glEnable(GL_TEXTURE_2D);
-
     float b = ((colour & 31) * 8) / 255.0f;
     float g = (((colour >> 5) & 63) * 4) / 255.0f;
     float r = (((colour >> 11) & 31) * 8) / 255.0f;
-
     // not 100% sure why this is required but it is
     if (r == 0) r = 0.00392;
-
-    //glColor3f(r, g, b);
-    //glEnable(GL_BLEND);
-    //glBlendEquation(GL_FUNC_ADD);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    //auto texture = (TextureOpenGL *)tex;
-    //glBindTexture(GL_TEXTURE_2D, texture->GetOpenGlTexture());
 
     int clipx = this->clip_x;
     int clipy = this->clip_y;
     int clipw = this->clip_w;
     int clipz = this->clip_z;
 
-    //int texwidth = texture->GetWidth();
-    //int texheight = texture->GetHeight();
-
-    //int width = pSrcRect->z - pSrcRect->x;
-    //int height = pSrcRect->w - pSrcRect->y;
-
-    //int x = pTargetPoint->x;  // u* window->GetWidth();
-    //int y = pTargetPoint->y;  // v* window->GetHeight();
     int z = x + width;
     int w = y + h;
-
     // check bounds
     if (x >= (int)window->GetWidth() || x >= clipz || y >= (int)window->GetHeight() || y >= clipw) return;
     // check for overlap
     if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
 
-    int drawx = x;  // std::max(x, clipx);
-    int drawy = y;  // std::max(y, clipy);
-    int draww = w;  // std::min(w, clipw);
-    int drawz = z;  // std::min(z, clipz);
+    int drawx = x;
+    int drawy = y;
+    int draww = w;
+    int drawz = z;
 
     float depth = 0;
-
-    //GLfloat Vertices[] = { (float)drawx, (float)drawy, depth,
-    //    (float)drawz, (float)drawy, depth,
-    //    (float)drawz, (float)draww, depth,
-    //    (float)drawx, (float)draww, depth };
-
-    float texx = u1;  // (drawx - x) / float(width);
-    float texy = v1;  //  (drawy - y) / float(height);
-    float texz = u2;  //  (width - (z - drawz)) / float(width);
-    float texw = v2;  // (height - (w - draww)) / float(height);
-
+    float texx = u1;
+    float texy = v1;
+    float texz = u2;
+    float texw = v2;
 
     // 0 1 2 / 0 2 3
-
     textshaderstore[textvertscnt].x = drawx;
     textshaderstore[textvertscnt].y = drawy;
     textshaderstore[textvertscnt].z = 0;
@@ -3960,7 +4059,6 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textvertscnt++;
 
     ////////////////////////////////
-
     textshaderstore[textvertscnt].x = drawx;
     textshaderstore[textvertscnt].y = drawy;
     textshaderstore[textvertscnt].z = 0;
@@ -3997,10 +4095,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].texid = (isshadow);
     textvertscnt++;
 
-
     GL_Check_Errors();
-
-
     if (textvertscnt > 9990) __debugbreak();
 }
 
@@ -4080,9 +4175,6 @@ void RenderOpenGL::Present() {
 
     window->OpenGlSwapBuffers();
 }
-
-// RenderVertexSoft ogl_draw_buildings_vertices[20];
-
 
 GLshaderverts *outbuildshaderstore[16] = { nullptr };
 int numoutbuildverts[16] = { 0 };
@@ -5424,10 +5516,6 @@ void RenderOpenGL::DrawIndoorFaces() {
         ///////////////////////////////////////////////////////
         // stack decals end
 
-
-       // __debugbreak();
-
-
         return;
 }
 
@@ -5435,12 +5523,7 @@ void RenderOpenGL::DrawIndoorBatched() { return; }
 
 // no longer require with shaders
 void RenderOpenGL::DrawPolygon(struct Polygon *pPolygon) { return; }
-void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
-    int uPackedID, unsigned int uColor,
-    int a8) {
-
-    return;
-}
+void RenderOpenGL::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace, int uPackedID, unsigned int uColor, int a8) { return; }
 
 bool RenderOpenGL::SwitchToWindow() {
     // pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
@@ -5478,25 +5561,19 @@ bool RenderOpenGL::Initialize() {
         this->clip_w = window->GetHeight();
 
         PostInitialization();
-
         GL_Check_Errors();
 
         // check gpu gl capability params
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &GPU_MAX_TEX_SIZE);
         assert(GPU_MAX_TEX_SIZE >= 512);
-
         glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &GPU_MAX_TEX_LAYERS);
         assert(GPU_MAX_TEX_LAYERS >= 256);
-
         glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &GPU_MAX_TEX_UNITS);
         assert(GPU_MAX_TEX_UNITS >= 16);
-
         glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &GPU_MAX_UNIFORM_COMP);
         assert(GPU_MAX_UNIFORM_COMP >= 1024);
-
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &GPU_MAX_TOTAL_TEXTURES);
         assert(GPU_MAX_TOTAL_TEXTURES >= 80);
-
         GL_Check_Errors();
 
         // initiate shaders
@@ -5511,9 +5588,7 @@ bool RenderOpenGL::Initialize() {
     return false;
 }
 
-void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) {
-    return;
-}
+void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) { return; }
 
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
                                 unsigned int uWidth, unsigned int uHeight,
@@ -5632,6 +5707,13 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 // gl shaders
 // TODO(pskelton): use MakeDataPath
 bool RenderOpenGL::InitShaders() {
+    if (!std::filesystem::exists(MakeDataPath("WOMM Assets\Shaders"))) {
+        // make it
+        // warn user to copy in
+    }
+    // check for folder in game dir "WOMM assets\Shaders"
+    // if not make it and error msg to move shaders in
+
     logger->Info("Building outdoors terrain shader...");
     terrainshader.build("../../../../Engine/Graphics/Shaders/glterrain.vs", "../../../../Engine/Graphics/Shaders/glterrain.fs");
     if (terrainshader.ID == 0)

@@ -232,6 +232,14 @@ class RenderOpenGL : public RenderBase {
     void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
         int width, int height);
 
+    // these are the view and projection matrices for submission to shaders
+    glm::mat4 projmat;
+    glm::mat4 viewmat;
+    void _set_3d_projection_matrix();
+    void _set_3d_modelview_matrix();
+    void _set_ortho_projection(bool gameviewport = false);
+    void _set_ortho_modelview();
+
     int clip_x, clip_y;
     int clip_z, clip_w;
 
