@@ -1964,18 +1964,41 @@ void RenderOpenGL::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                           float z_stuff) {
     __debugbreak(); // not required
 }
+
+// used for debug protal lines
 void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
-   /*
-   
-   ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
-    ErrD3D(pRenderD3D->pDevice->DrawPrimitive(
-        D3DPT_LINELIST,
-        D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1,
-        (void *)vertices, num_vertices, D3DDP_DONOTLIGHT));
-    drawcalls++;
-   
-   */
+    BeginLines2D();
+    for (int i = 0; i < num_vertices - 1; ++i) {
+        uint uColor = vertices[i].diffuse;
+        float b1 = ((uColor & 0x1F) * 8) / 255.0f;
+        float g1 = (((uColor >> 5) & 0x3F) * 4) / 255.0f;
+        float r1 = (((uColor >> 11) & 0x1F) * 8) / 255.0f;
+
+        uint uColor2 = vertices[i+1].diffuse;
+        float b2 = ((uColor2 & 0x1F) * 8) / 255.0f;
+        float g2 = (((uColor2 >> 5) & 0x3F) * 4) / 255.0f;
+        float r2 = (((uColor2 >> 11) & 0x1F) * 8) / 255.0f;
+
+        lineshaderstore[linevertscnt].x = vertices[i].pos.x;
+        lineshaderstore[linevertscnt].y = vertices[i].pos.y;
+        lineshaderstore[linevertscnt].r = r1;
+        lineshaderstore[linevertscnt].g = g1;
+        lineshaderstore[linevertscnt].b = b1;
+        linevertscnt++;
+
+        lineshaderstore[linevertscnt].x = vertices[i + 1].pos.x + 0.5;
+        lineshaderstore[linevertscnt].y = vertices[i + 1].pos.y + 0.5;
+        lineshaderstore[linevertscnt].r = r2;
+        lineshaderstore[linevertscnt].g = g2;
+        lineshaderstore[linevertscnt].b = b2;
+        linevertscnt++;
+
+        // draw if buffer full
+        if (linevertscnt == 2000) EndLines2D();
+    }
+    EndLines2D();
 }
+
 void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
                                           Texture *texture) {
     __debugbreak();
