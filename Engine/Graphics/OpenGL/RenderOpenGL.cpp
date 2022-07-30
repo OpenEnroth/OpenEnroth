@@ -5714,66 +5714,63 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 }
 
 // gl shaders
-// TODO(pskelton): use MakeDataPath
 bool RenderOpenGL::InitShaders() {
-    if (!std::filesystem::exists(MakeDataPath("assets\shaders"))) {
-        // make it
-        // warn user to copy in
+    if (!std::filesystem::exists(MakeDataPath("shaders"))) {
+        std::filesystem::create_directories(MakeDataPath("shaders"));
+        logger->Warning("Copy shader files into 'shaders'!");
+        return false;
     }
-    // check for folder in game dir "WOMM assets\Shaders"
-    // if not make it and error msg to move shaders in
 
     logger->Info("Building outdoors terrain shader...");
-    terrainshader.build("../../../../Engine/Graphics/Shaders/glterrain.vs", "../../../../Engine/Graphics/Shaders/glterrain.fs");
+    terrainshader.build(MakeDataPath("shaders", "glterrain.vs").c_str(), MakeDataPath("shaders", "glterrain.fs").c_str());
     if (terrainshader.ID == 0)
         return false;
 
     logger->Info("Building outdoors building shader...");
-    outbuildshader.build("../../../../Engine/Graphics/Shaders/gloutbuild.vs", "../../../../Engine/Graphics/Shaders/gloutbuild.fs");
+    outbuildshader.build(MakeDataPath("shaders", "gloutbuild.vs").c_str(), MakeDataPath("shaders", "gloutbuild.fs").c_str());
     if (outbuildshader.ID == 0)
         return false;
 
     logger->Info("Building indoors bsp shader...");
-    bspshader.build("../../../../Engine/Graphics/Shaders/glbspshader.vs", "../../../../Engine/Graphics/Shaders/glbspshader.fs");
+    bspshader.build(MakeDataPath("shaders", "glbspshader.vs").c_str(), MakeDataPath("shaders", "glbspshader.fs").c_str());
     if (bspshader.ID == 0)
         return false;
 
     logger->Info("Building text shader...");
-    textshader.build("../../../../Engine/Graphics/Shaders/gltextshader.vs", "../../../../Engine/Graphics/Shaders/gltextshader.fs");
+    textshader.build(MakeDataPath("shaders", "gltextshader.vs").c_str(), MakeDataPath("shaders", "gltextshader.fs").c_str());
     if (textshader.ID == 0)
         return false;
     textVAO = 0;
 
     logger->Info("Building line shader...");
-    lineshader.build("../../../../Engine/Graphics/Shaders/gllinesshader.vs", "../../../../Engine/Graphics/Shaders/gllinesshader.fs");
+    lineshader.build(MakeDataPath("shaders", "gllinesshader.vs").c_str(), MakeDataPath("shaders", "gllinesshader.fs").c_str());
     if (lineshader.ID == 0)
         return false;
     lineVAO = 0;
 
     logger->Info("Building two-d shader...");
-    twodshader.build("../../../../Engine/Graphics/Shaders/gltwodshader.vs", "../../../../Engine/Graphics/Shaders/gltwodshader.fs");
+    twodshader.build(MakeDataPath("shaders", "gltwodshader.vs").c_str(), MakeDataPath("shaders", "gltwodshader.fs").c_str());
     if (twodshader.ID == 0)
         return false;
     twodVAO = 0;
 
     logger->Info("Building billboard shader...");
-    billbshader.build("../../../../Engine/Graphics/Shaders/glbillbshader.vs", "../../../../Engine/Graphics/Shaders/glbillbshader.fs");
+    billbshader.build(MakeDataPath("shaders", "glbillbshader.vs").c_str(), MakeDataPath("shaders", "glbillbshader.fs").c_str());
     if (billbshader.ID == 0)
         return false;
     billbVAO = 0;
 
     logger->Info("Building decal shader...");
-    decalshader.build("../../../../Engine/Graphics/Shaders/gldecalshader.vs", "../../../../Engine/Graphics/Shaders/gldecalshader.fs");
+    decalshader.build(MakeDataPath("shaders", "gldecalshader.vs").c_str(), MakeDataPath("shaders", "gldecalshader.fs").c_str());
     if (decalshader.ID == 0)
         return false;
     decalVAO = 0;
 
     logger->Info("Building force perspective shader... ");
-    forcepershader.build("../../../../Engine/Graphics/Shaders/glforcepershader.vs", "../../../../Engine/Graphics/Shaders/glforcepershader.fs");
+    forcepershader.build(MakeDataPath("shaders", "glforcepershader.vs").c_str(), MakeDataPath("shaders", "glforcepershader.fs").c_str());
     if (forcepershader.ID == 0)
         return false;
     forceperVAO = 0;
-
 
     return true;
 }
