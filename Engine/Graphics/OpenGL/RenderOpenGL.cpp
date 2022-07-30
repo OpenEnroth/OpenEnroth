@@ -77,6 +77,7 @@ int uNumSpritesDrawnThisFrame;
 RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
+RenderVertexSoft array_507D30[50];
 
 // improved error check
 void GL_Check_Errors(bool breakonerr = true) {
@@ -432,7 +433,6 @@ unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     return result;
 }
 
-RenderVertexSoft array_507D30[50];
 
 // sky billboard stuff
 
@@ -512,9 +512,9 @@ RenderOpenGL::RenderOpenGL(
     clip_z = 0;
 }
 
-RenderOpenGL::~RenderOpenGL() { /*__debugbreak();*/ }
+RenderOpenGL::~RenderOpenGL() { logger->Info("RenderGl - Destructor"); }
 
-void RenderOpenGL::Release() { __debugbreak(); }
+void RenderOpenGL::Release() { logger->Info("RenderGL - Release"); }
 
 void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
     uint winwidth{ window->GetWidth() };
@@ -563,7 +563,7 @@ void RenderOpenGL::SavePCXImage16(const std::string &filename, uint16_t *picture
 
 
 bool RenderOpenGL::InitializeFullscreen() {
-    __debugbreak();
+    logger->Info("InitializeFullscreen not implemented yet");
     return 0;
 }
 
@@ -574,11 +574,12 @@ unsigned int RenderOpenGL::GetActorTintColor(int DimLevel, int tint, float World
 
 
 // when losing and regaining window focus - not required for OGL??
-void RenderOpenGL::RestoreFrontBuffer() { /*__debugbreak();*/ }
-void RenderOpenGL::RestoreBackBuffer() { /*__debugbreak();*/ }
+void RenderOpenGL::RestoreFrontBuffer() { logger->Info("RenderGl - RestoreFrontBuffer"); }
+void RenderOpenGL::RestoreBackBuffer() { logger->Info("RenderGl - RestoreBackBuffer"); }
 
 void RenderOpenGL::BltBackToFontFast(int a2, int a3, Rect *a4) {
-    __debugbreak();  // never called anywhere
+    logger->Info("RenderGl - BltBackToFontFast");
+    // never called anywhere
 }
 
 
@@ -624,7 +625,8 @@ linesverts lineshaderstore[2000] = {};
 int linevertscnt = 0;
 
 void RenderOpenGL::BeginLines2D() {
-    if (linevertscnt) __debugbreak();
+    if (linevertscnt && engine->config->verbose_logging)
+        logger->Warning("BeginLines with points still stored in buffer");
 
     DrawTwodVerts();
 
@@ -861,8 +863,6 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
 //----- (004A4CC9) ---------------------------------------
 void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diffuse) {
     // fireball / implosion sphere
-    //__debugbreak();
-
     // TODO(pskelton): could draw in 3d rather than convert to billboard for ogl
 
     if (a1->uNumVertices < 3) {
@@ -1213,7 +1213,11 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 
 
 void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
-    if (!img) __debugbreak();
+    if (!img) {
+        if (engine->config->verbose_logging)
+            logger->Warning("Null img passed to DrawImage");
+        return;
+    }
 
     int width = img->GetWidth();
     int height = img->GetHeight();
@@ -1498,11 +1502,6 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
     DrawMasked(u, v, pTexture, 0, 0x07E0);
 }
 
-//void RenderOpenGL::DrawFansTransparent(const RenderVertexD3D3 *vertices,
-//                                       unsigned int num_vertices) {
-//    __debugbreak();
-//}
-
 void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, unsigned __int16 mask) {
     uint col = Color32(255, 255, 255);
 
@@ -1621,11 +1620,14 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
 }
 
 void RenderOpenGL::DrawIndoorSkyPolygon(signed int uNumVertices, struct Polygon *pSkyPolygon) {
-    __debugbreak();
+    // not used in gl now
     return;
 }
 
-bool RenderOpenGL::AreRenderSurfacesOk() { return true; }
+bool RenderOpenGL::AreRenderSurfacesOk() {
+    logger->Info("RenderGl - AreRenderSurfacesOk");
+    return true;
+}
 
 unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
     BeginSceneD3D();
@@ -1748,6 +1750,7 @@ int RenderOpenGL::GetActorsInViewport(int pDepth) {
     return mon_num;
 }
 
+// not required in gl renderer now
 void RenderOpenGL::BeginLightmaps() { return; }
 void RenderOpenGL::EndLightmaps() { return; }
 void RenderOpenGL::BeginLightmaps2() { return; }
@@ -1962,7 +1965,7 @@ void RenderOpenGL::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                           const RenderVertexD3D3 *pLineEnd,
                                           signed int sDiffuseEnd,
                                           float z_stuff) {
-    __debugbreak(); // not required
+    // not required - using wireframe drawing for gl debug lines
 }
 
 // used for debug protal lines
@@ -1999,9 +2002,15 @@ void RenderOpenGL::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_
     EndLines2D();
 }
 
-void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices,
-                                          Texture *texture) {
-    __debugbreak();
+void RenderOpenGL::DrawSpecialEffectsQuad(const RenderVertexD3D3 *vertices, Texture *texture) {
+    //TODO(pskelton): need to add dimming  0x7F7F7F
+    Rect targetrect{};
+    targetrect.x = pViewport->uViewportTL_X;
+    targetrect.y = pViewport->uViewportTL_Y;
+    targetrect.z = pViewport->uViewportBR_X;
+    targetrect.w = pViewport->uViewportBR_Y;
+
+    DrawImage(texture, targetrect);
 }
 
 void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, int blend_mode) {
@@ -2010,7 +2019,8 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;
 
     if (!texture) {
-        __debugbreak();
+        if (engine->config->verbose_logging)
+            logger->Warning("Missing Arcomage Sprite Sheet");
         return;
     }
 
@@ -2417,7 +2427,9 @@ void RenderOpenGL::DeleteTexture(Texture *texture) {
     GL_Check_Errors();
 }
 
-void RenderOpenGL::RemoveTextureFromDevice(Texture* texture) { __debugbreak(); }
+void RenderOpenGL::RemoveTextureFromDevice(Texture* texture) {
+    logger->Info("RenderGL - RemoveTextureFromDevice");
+}
 
 bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     auto t = (TextureOpenGL *)texture;
@@ -2431,8 +2443,8 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         // takes care of endian flip from literals here - hence BGRA
         gl_format = GL_BGRA;
     } else {
-        __debugbreak();
-        log->Warning("Image not loaded!");
+        if (engine->config->verbose_logging)
+            log->Warning("Image %s not loaded!", t->GetName()->c_str());
     }
 
     if (pixels) {
@@ -2594,20 +2606,29 @@ void RenderOpenGL::DrawTerrainD3D() {
                     for (i = 0; i < 8; i++) {
                         if (terraintexturesizes[i] == width || terraintexturesizes[i] == 0) break;
                     }
-                    if (i == 8) __debugbreak();
 
-                    if (terraintexturesizes[i] == 0) terraintexturesizes[i] = width;
+                    if (i == 8) {
+                        logger->Warning("Texture unit full - draw terrain!");
+                        tileunit = 0;
+                        tilelayer = 0;
+                    } else {
+                        if (terraintexturesizes[i] == 0) terraintexturesizes[i] = width;
+                        tileunit = i;
+                        tilelayer = numterraintexloaded[i];
 
-                    tileunit = i;
-                    tilelayer = numterraintexloaded[i];
+                        // encode unit and layer together
+                        int encode = (tileunit << 8) | tilelayer;
 
-                    // encode unit and layer together
-                    int encode = (tileunit << 8) | tilelayer;
-
-                    // intsert into tex map
-                    terraintexmap.insert(std::make_pair(tile->name, encode));
-                    numterraintexloaded[i]++;
-                    if (numterraintexloaded[i] == 256) __debugbreak();
+                        if (numterraintexloaded[i] < 256) {
+                            // intsert into tex map
+                            terraintexmap.insert(std::make_pair(tile->name, encode));
+                            numterraintexloaded[i]++;
+                        } else {
+                            logger->Warning("Texture layer full - draw terrain!");
+                            tileunit = 0;
+                            tilelayer = 0;
+                        }
+                    }
                 }
 
                 // next calculate all vertices vertices
@@ -3302,8 +3323,8 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     _set_ortho_projection(1);
     _set_ortho_modelview();
 
-    if (billbstorecnt) __debugbreak();
-    //memset(billbstore, 0, sizeof(billbstore));
+    if (billbstorecnt && engine->config->verbose_logging)
+        logger->Warning("Billboard shader store isnt empty!");
 
     // track loaded tex
     float gltexid{ 0 };
@@ -3635,11 +3656,10 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
 }
 
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
-    if (!tex) __debugbreak();
-
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
-        __debugbreak();
+        if (engine->config->verbose_logging)
+            logger->Info("Null texture passed to DrawTextureNew");
         return;
     }
 
@@ -3759,11 +3779,10 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
 }
 
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
-    if (!img) __debugbreak();
-
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
-        __debugbreak();
+        if (engine->config->verbose_logging)
+            logger->Info("Null texture passed to DrawTextureCustomHeight");
         return;
     }
 
@@ -3887,8 +3906,6 @@ twodverts textshaderstore[10000] = {};
 int textvertscnt = 0;
 
 void RenderOpenGL::BeginTextNew(Texture *main, Texture *shadow) {
-    // if (textvertscnt) __debugbreak();
-
     // draw any images in buffer
     if (twodvertscnt) {
         DrawTwodVerts();
@@ -4119,7 +4136,7 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textvertscnt++;
 
     GL_Check_Errors();
-    if (textvertscnt > 9990) __debugbreak();
+    if (textvertscnt > 9990) EndTextNew();
 }
 
 void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
@@ -4127,23 +4144,6 @@ void RenderOpenGL::DrawText(int uOutX, int uOutY, uint8_t* pFontPixels,
                             uint8_t* pFontPalette, uint16_t uFaceColor,
                             uint16_t uShadowColor) {
     return;
-
-
-    // needs limits checks adding
-
-    //for (uint y = 0; y < uCharHeight; ++y) {
-    //    for (uint x = 0; x < uCharWidth; ++x) {
-    //        if (*pFontPixels) {
-    //            uint16_t color = uShadowColor;
-    //            if (*pFontPixels != 1) {
-    //                color = uFaceColor;
-    //            }
-    //            // fontpix[x + y * uCharWidth] = Color32(color);
-    //            this->render_target_rgb[(uOutX+x)+(uOutY+y)*window->GetWidth()] = Color32(color);
-    //        }
-    //        ++pFontPixels;
-    //    }
-    //}
 }
 
 void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
@@ -4151,38 +4151,6 @@ void RenderOpenGL::DrawTextAlpha(int x, int y, unsigned char *font_pixels,
                                  uint8_t *pPalette,
                                  bool present_time_transparency) {
     return;
-
-    // needs limits checks adding
-
-    //if (present_time_transparency) {
-    //    for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
-    //        for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
-    //            uint16_t color = (*font_pixels)
-    //                ? pPalette[*font_pixels]
-    //                : teal_mask_16;  // transparent color 16bit
-    //                          // render->uTargetGMask |
-    //                          // render->uTargetBMask;
-    //            this->render_target_rgb[(x + dx) + (y + dy) * window->GetWidth()] = Color32(color);
-    //            // fontpix[dx + dy * uCharWidth] = Color32(color);
-    //            ++font_pixels;
-    //        }
-    //    }
-    //} else {
-    //    for (unsigned int dy = 0; dy < uFontHeight; ++dy) {
-    //        for (unsigned int dx = 0; dx < uCharWidth; ++dx) {
-    //            if (*font_pixels) {
-    //                uint8_t index = *font_pixels;
-    //                if (index != 255 && index != 1) __debugbreak();
-    //                uint8_t r = pPalette[index * 3 + 0];
-    //                uint8_t g = pPalette[index * 3 + 1];
-    //                uint8_t b = pPalette[index * 3 + 2];
-    //                this->render_target_rgb[(x + dx) + (y + dy) * window->GetWidth()] = Color32(r, g, b);
-    //                // fontpix[dx + dy * uCharWidth] = Color32(r, g, b);
-    //            }
-    //            ++font_pixels;
-    //        }
-    //    }
-    //}
 }
 
 void RenderOpenGL::Present() {
@@ -4316,24 +4284,33 @@ void RenderOpenGL::DrawBuildingsD3D() {
                             for (i = 0; i < 16; i++) {
                                 if ((outbuildtexturewidths[i] == width && outbuildtextureheights[i] == height) || outbuildtexturewidths[i] == 0) break;
                             }
-                            if (i == 16) __debugbreak();
 
-                            if (outbuildtexturewidths[i] == 0) {
-                                outbuildtexturewidths[i] = width;
-                                outbuildtextureheights[i] = height;
+                            if (i == 16) {
+                                logger->Warning("Texture unit full - draw building!");
+                                texunit = 0;
+                                texlayer = 0;
+                            } else {
+                                if (outbuildtexturewidths[i] == 0) {
+                                    outbuildtexturewidths[i] = width;
+                                    outbuildtextureheights[i] = height;
+                                }
+
+                                texunit = i;
+                                texlayer = numoutbuildtexloaded[i];
+
+                                // encode unit and layer together
+                                int encode = (texunit << 8) | texlayer;
+
+                                if (numoutbuildtexloaded[i] < 256) {
+                                    // intsert into tex map
+                                    outbuildtexmap.insert(std::make_pair(*texname, encode));
+                                    numoutbuildtexloaded[i]++;
+                                } else {
+                                    logger->Warning("Texture layer full - draw building!");
+                                    texunit = 0;
+                                    texlayer = 0;
+                                }
                             }
-
-                            texunit = i;
-                            texlayer = numoutbuildtexloaded[i];
-
-                            // encode unit and layer together
-                            int encode = (texunit << 8) | texlayer;
-
-                            // intsert into tex map
-                            outbuildtexmap.insert(std::make_pair(*texname, encode));
-
-                            numoutbuildtexloaded[i]++;
-                            if (numoutbuildtexloaded[i] == 256) __debugbreak();
                         }
 
                         face.texunit = texunit;
@@ -4779,8 +4756,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
                 if (decal_builder->uNumSplatsThisFace > 0) {
                     //v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
 
-                    // if (face.uAttributes & FACE_OUTLINED) __debugbreak();
-
                     static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
                     if (decal_builder->uNumSplatsThisFace > 0) {
                         decal_builder->BuildAndApplyDecals(
@@ -4933,24 +4908,33 @@ void RenderOpenGL::DrawIndoorFaces() {
                     for (i = 0; i < 16; i++) {
                         if ((bsptexturewidths[i] == width && bsptextureheights[i] == height) || bsptexturewidths[i] == 0) break;
                     }
-                    if (i == 16) __debugbreak();
 
-                    if (bsptexturewidths[i] == 0) {
-                        bsptexturewidths[i] = width;
-                        bsptextureheights[i] = height;
+                    if (i == 16) {
+                        logger->Warning("Texture unit full - draw Indoor faces!");
+                        texunit = 0;
+                        texlayer = 0;
+                    } else {
+                        if (bsptexturewidths[i] == 0) {
+                            bsptexturewidths[i] = width;
+                            bsptextureheights[i] = height;
+                        }
+
+                        texunit = i;
+                        texlayer = bsptexloaded[i];
+
+                        // encode unit and layer together
+                        int encode = (texunit << 8) | texlayer;
+
+                        if (bsptexloaded[i] < 256) {
+                            // intsert into tex map
+                            bsptexmap.insert(std::make_pair(*texname, encode));
+                            bsptexloaded[i]++;
+                        } else {
+                            logger->Warning("Texture layer full - draw indoor faces!");
+                            texunit = 0;
+                            texlayer = 0;
+                        }
                     }
-
-                    texunit = i;
-                    texlayer = bsptexloaded[i];
-
-                    // encode unit and layer together
-                    int encode = (texunit << 8) | texlayer;
-
-                    // intsert into tex map
-                    bsptexmap.insert(std::make_pair(*texname, encode));
-
-                    bsptexloaded[i]++;
-                    if (bsptexloaded[i] == 256) __debugbreak();
                 }
 
                 face->texunit = texunit;
@@ -5542,6 +5526,7 @@ void RenderOpenGL::DrawIndoorFaces() {
         return;
 }
 
+// d3d only
 void RenderOpenGL::DrawIndoorBatched() { return; }
 
 // no longer require with shaders
@@ -5611,6 +5596,7 @@ bool RenderOpenGL::Initialize() {
     return false;
 }
 
+// do not use
 void RenderOpenGL::WritePixel16(int x, int y, uint16_t color) { return; }
 
 void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
@@ -5730,7 +5716,7 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 // gl shaders
 // TODO(pskelton): use MakeDataPath
 bool RenderOpenGL::InitShaders() {
-    if (!std::filesystem::exists(MakeDataPath("WOMM Assets\Shaders"))) {
+    if (!std::filesystem::exists(MakeDataPath("assets\shaders"))) {
         // make it
         // warn user to copy in
     }

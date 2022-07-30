@@ -134,8 +134,8 @@ Texture *Render::CreateSprite(const std::string &name, unsigned int palette_id,
 
 void Render::WritePixel16(int x, int y, uint16_t color) {
     // do not use this - slow
-    __debugbreak();
     logger->Info("Reduce use of WritePixel16");
+    return;
 
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
@@ -1613,7 +1613,8 @@ void Render::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, in
     int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
 
     if (!pArcomageGame->pBlit_Copy_pixels) {
-        __debugbreak();
+        if (engine->config->verbose_logging)
+            logger->Warning("Missing Arcomage Sprite Sheet");
         return;
     }
 
@@ -3725,9 +3726,7 @@ void Render::DrawBuildingsD3D() {
                 if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
 
-                   // if (face.uAttributes & FACE_OUTLINED) __debugbreak();
-
-                    static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
+                   static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
                     if (decal_builder->uNumSplatsThisFace > 0) {
                         decal_builder->BuildAndApplyDecals(
                             31 - poly->dimming_level, 2,
