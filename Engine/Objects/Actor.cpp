@@ -3984,13 +3984,13 @@ bool CheckActors_proximity() {
     int for_z;            // [sp+10h] [bp-Ch]@5
 
     distance = 5120;
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) distance = 2560;
+    // if (uCurrentlyLoadedLevelType == LEVEL_Indoor) distance = 2560;
 
     if ((signed int)uNumActors <= 0) return false;
     for (uint i = 0; i < (signed int)uNumActors; ++i) {
-        for_x = abs(pActors[i].vInitialPosition.x - pParty->vPosition.x);
-        for_y = abs(pActors[i].vInitialPosition.y - pParty->vPosition.y);
-        for_z = abs(pActors[i].vInitialPosition.z - pParty->vPosition.z);
+        for_x = abs(pActors[i].vPosition.x - pParty->vPosition.x);
+        for_y = abs(pActors[i].vPosition.y - pParty->vPosition.y);
+        for_z = abs(pActors[i].vPosition.z - pParty->vPosition.z);
         if (int_get_vector_length(for_x, for_y, for_z) < distance) {
             if (pActors[i].uAIState != Dead) {
                 if (pActors[i].uAIState != Dying &&

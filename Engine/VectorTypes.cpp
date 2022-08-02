@@ -5,7 +5,7 @@
 #include "OurMath.h"
 #include "Engine/mm7_data.h"
 
-uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z) {
+uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z) { // approx distance
     if (x < y) {
         std::swap(x, y);
     }

@@ -374,7 +374,7 @@ void OnCloseSpellBook() {
         }
     }
 
-    pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
+    pAudioPlayer->PlaySound(SOUND_closebook, 0, 0, -1, 0, 0);
 }
 
 void OnCloseSpellBookPage() {

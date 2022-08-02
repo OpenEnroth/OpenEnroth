@@ -3598,10 +3598,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  //отключить  звук ходьбы при остановке
         pAudioPlayer->StopAll(804);
     //-------------------------------------------------------------
-    if (!hovering || !not_high_fall)
+
+    if (!hovering || not_high_fall)
         pParty->SetAirborne(false);
     else
         pParty->SetAirborne(true);
+
     pParty->uFlags &= ~PARTY_FLAGS_1_BURNING;
     pParty->vPosition.x = new_party_x;
     pParty->vPosition.y = new_party_y;

@@ -28,6 +28,7 @@ Image *ui_book_map_background = nullptr;
 
 GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_MapsBook;  // inherited from GUIWindow::GUIWindow
+    this->eWindowType = WindowType::WINDOW_MapsBook;
     BasicBookInitialization();
 
     pEventTimer->Pause();

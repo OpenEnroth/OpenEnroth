@@ -2856,10 +2856,12 @@ void ODM_ProcessPartyActions() {
     if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) < 8)  // отключить  звук ходьбы при остановке
         pAudioPlayer->StopAll(804);
     //------------------------------------------------------------------------
-    if (!hovering || !not_high_fall)
+
+    if (!hovering || not_high_fall)
         pParty->SetAirborne(false);
     else
         pParty->SetAirborne(true);
+
     int pMap_X = WorldPosToGridCellX(pParty->vPosition.x);
     int pMap_Y = WorldPosToGridCellY(pParty->vPosition.y) - 1;
     unsigned int v114_a = WorldPosToGridCellX(pX);

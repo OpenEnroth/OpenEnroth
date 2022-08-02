@@ -456,6 +456,7 @@ void AudioPlayer::Initialize() {
     uMasterVolume = 127;
 
     pAudioPlayer->SetMasterVolume(engine->config->sound_level);
+    pAudioPlayer->SetVoiceVolume(engine->config->voice_level);
     if (bPlayerReady) {
         SetMusicVolume(engine->config->music_level);
     }
