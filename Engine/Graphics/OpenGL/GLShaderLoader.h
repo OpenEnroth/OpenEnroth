@@ -194,14 +194,14 @@ class GLShader {
             if (!success) {
                 ID = 0;
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                logger->Warning("-------------------------\n\nERROR::SHADER_COMPILATION_ERROR of type: %s\n%s--------------------------------------", type.c_str(), infoLog);
             }
         } else {
             glGetProgramiv(shader, GL_LINK_STATUS, &success);
             if (!success) {
                 ID = 0;
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                logger->Warning("-------------------------\n\nERROR::PROGRAM_LINKING_ERROR of type: %s\n%s--------------------------------------", type.c_str(), infoLog);
             }
         }
     }

@@ -69,7 +69,7 @@ void main() {
 
     // apply sun
 	vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1));
-    result = clamp(result, 0, 0.85);
+    result = clamp(result, 0.0, 0.85);
 
     result += CalcPointLight(fspointlights[0], fragnorm, vsPos, fragviewdir);
 

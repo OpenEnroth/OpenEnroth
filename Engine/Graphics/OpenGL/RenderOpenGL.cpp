@@ -29,6 +29,7 @@
 #include <utility>
 #include <map>
 #include <filesystem>
+#include <chrono>
 
 #include <glm.hpp>
 #include <glm/glm/gtc/matrix_transform.hpp>
@@ -2873,7 +2874,7 @@ void RenderOpenGL::DrawTerrainD3D() {
     glUniform3fv(glGetUniformLocation(terrainshader.ID, "fspointlights[0].position"), 1, &camera[0]);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].ambient"), 0.85, 0.85, 0.85);  // background
     glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);  // direct
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].specular"), 0, 0, 1);          // for "shinyness"
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].specular"), 0.35, 0.35, 0.35);          // for "shinyness"
     glUniform1f(glGetUniformLocation(terrainshader.ID, "fspointlights[0].radius"), torchradius);
 
 
@@ -4160,11 +4161,22 @@ void RenderOpenGL::Present() {
     EndTextNew();
 
     GL_Check_Errors();
-
-    // if (engine->config->verbose_logging)
-    //logger->Info("end frame");
-
     window->OpenGlSwapBuffers();
+
+    // crude frame rate limiting
+    const int MAX_FRAME_RATE = 200;
+    const int MIN_FRAME_TIME = 1000 / MAX_FRAME_RATE;
+
+    static std::chrono::time_point<std::chrono::high_resolution_clock> lastframe{ std::chrono::high_resolution_clock::now() };
+    uint64_t framedt{};
+    std::chrono::time_point<std::chrono::high_resolution_clock> now{};
+
+    // run in circles
+    do {
+        now = std::chrono::high_resolution_clock::now();
+        framedt = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastframe).count();
+    } while (framedt < MIN_FRAME_TIME);
+    lastframe = now;
 }
 
 GLshaderverts *outbuildshaderstore[16] = { nullptr };
@@ -4573,7 +4585,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glUniform3fv(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].position"), 1, &camera[0]);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].ambient"), 0.085, 0.085, 0.085);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].diffuse"), 0.85, 0.85, 0.85);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].specular"), 0, 0, 1);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].specular"), 0.35, 0.35, 0.35);
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "fspointlights[0].radius"), torchradius);
 
 
