@@ -49,13 +49,16 @@ using EngineIoc = Engine_::IocContainer;
 using Io::InputAction;
 
 GUIWindow *pPrimaryWindow;
-GUIWindow *pChestWindow;
+
+GUIWindow *pGUIWindow_CurrentMenu;
+
+
+//GUIWindow *pChestWindow;
 GUIWindow *pDialogueWindow;
 GUIWindow *window_SpeakInHouse;
 GUIWindow *pGUIWindow_ScrollWindow;
 GUIWindow *ptr_507BC8;
-GUIWindow *pGUIWindow_CurrentMenu;
-GUIWindow *ptr_507BD0;
+//GUIWindow *ptr_507BD0;
 GUIWindow *pGUIWindow_CastTargetedSpell;
 GUIWindow *pModalWindow;
 GUIWindow *pGUIWindow_EscMessageWindow;

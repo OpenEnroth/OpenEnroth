@@ -778,13 +778,13 @@ void SeekKnowledgeElswhereDialogueOption(GUIWindow *dialogue, Player* player);
 void SkillTrainingDialogue(GUIWindow* dialogue, int num_skills_avaiable, int all_text_height, int skill_price);
 
 extern GUIWindow *pPrimaryWindow;
-extern GUIWindow *pChestWindow;
+//extern GUIWindow *pChestWindow;
 extern GUIWindow *pDialogueWindow;
 extern GUIWindow *window_SpeakInHouse;
 extern GUIWindow *pGUIWindow_ScrollWindow;
 extern GUIWindow *ptr_507BC8;
 extern GUIWindow *pGUIWindow_CurrentMenu;
-extern GUIWindow *ptr_507BD0;
+//extern GUIWindow *ptr_507BD0;
 extern GUIWindow *pGUIWindow_CastTargetedSpell;
 extern GUIWindow *pModalWindow;
 extern GUIWindow *pGUIWindow_EscMessageWindow;

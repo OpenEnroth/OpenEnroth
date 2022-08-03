@@ -783,7 +783,7 @@ void Game::EventLoop() {
                                         current_screen_type = CURRENT_SCREEN::SCREEN_CHEST;
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_CHEST:
-                                        pWindow2 = pChestWindow;
+                                        pWindow2 = pGUIWindow_CurrentMenu;
                                         pWindow2->Release();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                         viewparams->bRedrawGameUI = 1;
@@ -2038,8 +2038,9 @@ void Game::EventLoop() {
                                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                                 continue;
                             }
-                            // cant open screen - talking or in shop
-                            if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                            // cant open screen - talking or in shop or map transition
+                            if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE
+                                || current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV) {
                                 continue;
                             }
                             // game screen
