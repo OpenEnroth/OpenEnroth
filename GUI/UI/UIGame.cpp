@@ -1209,7 +1209,7 @@ void GameUI_WritePointedObjectStatusString() {
                                               // *)&pPlayers[uActiveCharacter]->pInventoryItemList[testing
                                               // - 1];
 
-                    if (!pItemGen == NULL) pickedObjectID = pItemGen->uItemID;
+                    if (pItemGen != NULL) pickedObjectID = pItemGen->uItemID;
                     // if (!pItemID)
                     // return;
                     // item =
