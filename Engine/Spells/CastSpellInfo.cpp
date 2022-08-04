@@ -1104,7 +1104,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 int j = 0;
                 if (meteor_num > 0) {
                     v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
-                    for (meteor_num; meteor_num; meteor_num--) {
+                    for (; meteor_num; meteor_num--) {
                         spell_targeted_at = rand() % 1000;
                         if (sqrt(((double)spell_targeted_at - 2500) *
                                      ((double)spell_targeted_at - 2500) + j * j + k * k) <= 1.0) {
@@ -4072,11 +4072,11 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             pBtn_NPCLeft = pGUIWindow_CastTargetedSpell->CreateButton(
                 469, 178, ui_btn_npc_left->GetWidth(),
                 ui_btn_npc_left->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 0, GameKey::None,
-                "", {{ui_btn_npc_left}});
+                "", {ui_btn_npc_left});
             pBtn_NPCRight = pGUIWindow_CastTargetedSpell->CreateButton(
                 626, 178, ui_btn_npc_right->GetWidth(),
                 ui_btn_npc_right->GetHeight(), 1, 0, UIMSG_ScrollNPCPanel, 1, GameKey::None,
-                "", {{ui_btn_npc_right}});
+                "", {ui_btn_npc_right});
             pGUIWindow_CastTargetedSpell->CreateButton(
                 491, 149, 64, 74, 1, 0, UIMSG_HiredNPC_CastSpell, 4, GameKey::Digit5);
             pGUIWindow_CastTargetedSpell->CreateButton(

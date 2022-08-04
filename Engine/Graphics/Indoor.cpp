@@ -3756,7 +3756,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
         int modelPID = 0;
 
         // 100 attempts to make a usuable spawn point
-        for (loop_cnt; loop_cnt < 100; ++loop_cnt) {
+        for (; loop_cnt < 100; ++loop_cnt) {
             // random x,y at distance from party
             dist_from_party = rand() % 1024 + 512;
             angle_from_party = ((rand() % (signed int)TrigLUT->uIntegerDoublePi) * 2 * pi) / TrigLUT->uIntegerDoublePi;

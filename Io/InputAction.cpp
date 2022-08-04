@@ -32,8 +32,12 @@ std::string GetDisplayName(InputAction action) {
     case InputAction::FlyUp: return "FLY UP";
     case InputAction::FlyDown: return "FLY DOWN";
     case InputAction::Land: return "LAND";
+    case InputAction::StrafeLeft: return "STRAFE LEFT";
+    case InputAction::StrafeRight: return "STRAFE RIGHT";
+    case InputAction::Invalid:
+    default:
+        return "-INVALID-ACTION-";
     }
-    return "-INVALID-ACTION-";
 }
 
 const std::vector<InputAction> AllInputActions() {
@@ -77,7 +81,8 @@ std::string ToString(InputAction action) {
         ENUM_CASE(Land)
         ENUM_CASE(StrafeLeft)
         ENUM_CASE(StrafeRight)
-    }
 #undef ENUM_CASE
-    return "-INVALID-VALUE-";
+    default:
+        return "-INVALID-VALUE-";
+    }
 }

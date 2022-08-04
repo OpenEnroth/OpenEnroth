@@ -211,7 +211,7 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
                                      bool bLightBackfaces) {
     // For outdoor light (IV)
     int result;  // eax@0
-    double v10;  // ecx@8
+    float v10;  // ecx@8
     char v14;    // dl@11
 
     if (!pLight->uRadius) return false;
@@ -224,8 +224,7 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
         pLight->vPosition.z < pLight->uRadius + pFace->pBoundingBox.z2) {
         v10 = pFace->pFacePlaneOLD.SignedDistanceTo(pLight->vPosition);
 
-        if (((bLightBackfaces) || v10 >= 0.0f) &&
-            fabsf(v10) <= pLight->uRadius) {
+        if (((bLightBackfaces) || v10 >= 0.0f) && fabsf(v10) <= pLight->uRadius) {
             Lights._blv_lights_radii[*pSlot] = pLight->uRadius;
             Lights._blv_lights_inv_radii[*pSlot] = 65536 / pLight->uRadius;
             Lights._blv_lights_xs[*pSlot] = pLight->vPosition.x;
