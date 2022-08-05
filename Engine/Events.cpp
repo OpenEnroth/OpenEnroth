@@ -588,7 +588,7 @@ LABEL_47:
                                 pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
                                 window_SpeakInHouse = new GUIWindow_House(
                                     0, 0, window->GetWidth(),
-                                    window->GetHeight(), (GUIButton *)165, 0);
+                                    window->GetHeight(), (GUIButton *)165, "");
                                 window_SpeakInHouse->DeleteButtons();
                             }
                             //          else {
