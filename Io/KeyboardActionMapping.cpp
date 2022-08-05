@@ -88,7 +88,7 @@ GameKey KeyboardActionMapping::MapDefaultKey(InputAction action) {
             return keyMappingParams[i].m_key;
         }
     }
-    __debugbreak();
+    return GameKey::None;
 }
 
 //----- (00459C82) --------------------------------------------------------
