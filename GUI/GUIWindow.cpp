@@ -537,13 +537,13 @@ void GUIWindow::HouseDialogManager() {
         return;
     }
 
-    char *v4 = (char *)pDialogueNPCCount - 1;
+    int v4 = pDialogueNPCCount - 1;
     render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
         (pNPCPortraits_y[0][0] - 4) / 480.0f,
         game_ui_evtnpc);
     render->DrawTextureAlphaNew(pNPCPortraits_x[0][0] / 640.0f,
         pNPCPortraits_y[0][0] / 480.0f,
-        pDialogueNPCPortraits[(int64_t)v4]);
+        pDialogueNPCPortraits[v4]);
     if (current_screen_type == CURRENT_SCREEN::SCREEN_E) {
         CharacterUI_InventoryTab_Draw(pPlayers[uActiveCharacter], true);
         if (pDialogueNPCCount == uNumDialogueNPCPortraits && uHouse_ExitPic) {
@@ -1667,12 +1667,12 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
 }
 
 
-void _4B3FE5_training_dialogue(int a4) {
+void _4B3FE5_training_dialogue(int eventId) {
     uDialogueType = DIALOGUE_SKILL_TRAINER;
-    current_npc_text = std::string(pNPCTopics[a4 + 168].pText);
-    _4B254D_SkillMasteryTeacher(a4);  // checks whether the facility can be used
+    current_npc_text = std::string(pNPCTopics[eventId + 168].pText);
+    _4B254D_SkillMasteryTeacher(eventId);  // checks whether the facility can be used
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)a4);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)eventId);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
@@ -2180,8 +2180,7 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
 
     NPCData *npc = nullptr;
     if (dword_5C35D4)
-        npc = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount +
-            -(dword_591080 != 0))];  //- 1
+        npc = HouseNPCData[pDialogueNPCCount - (dword_591080 != 0)];
     else
         npc = GetNPCData(sDialogue_SpeakingActorNPC_ID);
 
@@ -2354,7 +2353,7 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
                         2;
                     break;
                 }
-                sprintf(v1, "%lu", v29);
+                sprintf(v1, "%u", v29);
                 result += v1;
                 break;
 
@@ -2397,12 +2396,12 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
                             break;
                         }
                     }
-                    sprintf(v1, "%lu", v29);
+                    sprintf(v1, "%u", v29);
                     result += v1;
                     break;
                 }
                 sprintf(
-                    v1, "%lu",
+                    v1, "%u",
                     pPlayer->GetPriceIdentification(
                         p2DEvents[(int64_t)a4 - 1].fPriceMultiplier));
                 result += v1;
@@ -2414,7 +2413,7 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
 
             case 29:  // identify cost
                 sprintf(
-                    v1, "%lu",
+                    v1, "%u",
                     pPlayer->GetPriceIdentification(
                         p2DEvents[(int64_t)a4 - 1].fPriceMultiplier));
                 result += v1;
