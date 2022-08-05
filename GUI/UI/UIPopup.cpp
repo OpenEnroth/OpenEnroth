@@ -1128,12 +1128,9 @@ void CharacterUI_SkillsTab_ShowHint() {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
                 pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
-                std::string pSkillDescText = CharacterUI_GetSkillDescText(
-                    uActiveCharacter - 1,
-                    (PLAYER_SKILL_TYPE)pButton->msg_param);
-                CharacterUI_DrawTooltip(
-                    localization->GetSkillName(pButton->msg_param),
-                    pSkillDescText);
+                PLAYER_SKILL_TYPE skill = static_cast<PLAYER_SKILL_TYPE>(pButton->msg_param);
+                std::string pSkillDescText = CharacterUI_GetSkillDescText(uActiveCharacter - 1, skill);
+                CharacterUI_DrawTooltip(localization->GetSkillName(skill), pSkillDescText);
             }
         }
     } else {
@@ -1427,7 +1424,7 @@ void DrawSpellDescriptionPopup(int spell_index) {
     spell_info_window.DrawTitleText(
         pFontComic, 12, 75, 0,
         localization->GetSkillName(
-            pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 12),
+            static_cast<PLAYER_SKILL_TYPE>(pPlayers[uActiveCharacter]->lastOpenedSpellbookPage + 12)),
         3);
 
     auto str2 = StringPrintf(

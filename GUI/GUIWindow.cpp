@@ -18,6 +18,7 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ItemTable.h"
+#include "Engine/Objects/PlayerEnums.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/IocContainer.h"
@@ -121,6 +122,7 @@ Image *ui_leather_mm7 = nullptr;
 
 DIALOGUE_TYPE _dword_F8B1D8_last_npc_topic_menu;
 AwardType dword_F8B1AC_award_bit_number;
+PLAYER_SKILL_TYPE dword_F8B1AC_skill_being_taught; // Address the same as above --- splitting a union into two variables.
 
 
 const wchar_t *MENU_STATE_to_string(MENU_STATE m) {
@@ -1547,22 +1549,22 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
                     Party::TakeGold(gold_transaction_amount);
                     if (uActiveCharacter) {
                         v12 = (char *)&pPlayers[uActiveCharacter]
-                            ->pActiveSkills[dword_F8B1AC_award_bit_number];
+                            ->pActiveSkills[dword_F8B1AC_skill_being_taught];
                         *(short *)v12 &= 0x3Fu;  // erase current mastery
                         switch (dword_F8B1B0_MasteryBeingTaught) {
                         case 2:
                             v15 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_skill_being_taught];
                             *v15 |= 0x40u;  // expert
                             break;
                         case 3:
                             v14 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_skill_being_taught];
                             *v14 |= 0x80u;  // master
                             break;
                         case 4:
                             v13 = (char *)&pPlayers[uActiveCharacter]
-                                ->pActiveSkills[dword_F8B1AC_award_bit_number];
+                                ->pActiveSkills[dword_F8B1AC_skill_being_taught];
                             v13[1] |= 1u;  // grandmaster
                             break;
                         }
@@ -1839,7 +1841,7 @@ void CheckBountyRespawnAndAward() {
 //----- (004B254D) --------------------------------------------------------
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     int teacherLevel;                // edx@1
-    int skillBeingTaught;            // ecx@1
+    PLAYER_SKILL_TYPE skillBeingTaught;
     int pClassType;                  // eax@7
     int currClassMaxMastery;         // eax@7
     int pointsInSkillWOutMastery;    // ebx@7
@@ -1850,7 +1852,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
 
     guild_membership_approved = false;
     teacherLevel = (trainerInfo - 200) % 3;
-    skillBeingTaught = (trainerInfo - 200) / 3;
+    skillBeingTaught = static_cast<PLAYER_SKILL_TYPE>((trainerInfo - 200) / 3);
     Player *activePlayer = pPlayers[uActiveCharacter];
     pClassType = activePlayer->classType;
     currClassMaxMastery =
@@ -1912,7 +1914,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             pNPCTopics[teacherLevel + 128]
             .pText);  // You are already an SKILLLEVEL in this skill.
 
-    dword_F8B1AC_award_bit_number = (AwardType)skillBeingTaught;
+    dword_F8B1AC_skill_being_taught = skillBeingTaught;
     if (masteryLevelBeingTaught == 2 && pointsInSkillWOutMastery < 4 ||
         masteryLevelBeingTaught == 3 && pointsInSkillWOutMastery < 7 ||
         masteryLevelBeingTaught == 4 && pointsInSkillWOutMastery < 10)
@@ -1920,7 +1922,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
             pNPCTopics[127].pText);  // You don't meet the requirements, and
                                      // cannot be taught until you do.
 
-    switch (dword_F8B1AC_award_bit_number) {
+    switch (dword_F8B1AC_skill_being_taught) {
     case PLAYER_SKILL_STAFF:
     case PLAYER_SKILL_SWORD:
     case PLAYER_SKILL_DAGGER:
@@ -2139,19 +2141,19 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
         return localization->FormatString(
             LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_EXPERT),
-            localization->GetSkillName(dword_F8B1AC_award_bit_number),
+            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
             gold_transaction_amount);
     } else if (masteryLevelBeingTaught == 3) {
         return localization->FormatString(
             LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_MASTER),
-            localization->GetSkillName(dword_F8B1AC_award_bit_number),
+            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
             gold_transaction_amount);
     } else if (masteryLevelBeingTaught == 4) {
         return localization->FormatString(
             LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD,
             localization->GetString(LSTR_GRANDMASTER),
-            localization->GetSkillName(dword_F8B1AC_award_bit_number),
+            localization->GetSkillName(dword_F8B1AC_skill_being_taught),
             gold_transaction_amount);
     }
 
@@ -2824,9 +2826,7 @@ const char* GetJoinGuildDialogueOption(GUILD_ID guild_id) {
         uActiveCharacter = pParty->GetFirstCanAct();  // avoid nzi
 
     if (pPlayers[uActiveCharacter]->CanAct()) {
-        if (_449B57_test_bit(
-            (uint8_t*)pPlayers[uActiveCharacter]->_achieved_awards_bits,
-            dword_F8B1AC_award_bit_number)) {
+        if (_449B57_test_bit((uint8_t*)pPlayers[uActiveCharacter]->_achieved_awards_bits, dword_F8B1AC_award_bit_number)) {
             return pNPCTopics[dialogue_base + 13].pText;
         } else {
             if (gold_transaction_amount <= pParty->GetGold()) {
