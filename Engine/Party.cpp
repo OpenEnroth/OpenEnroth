@@ -120,6 +120,20 @@ void Party::Zero() {
 
     for (int y = 0; y < 4; y++) {
         auto player = &pPlayers[y];
+
+        player->Zero();
+        player->sResFireBase = 0;
+        player->sResAirBase = 0;
+        player->sResWaterBase = 0;
+        player->sResEarthBase = 0;
+        player->field_177C = 0;
+        player->sResMagicBase = 0;
+        player->sResSpiritBase = 0;
+        player->sResMindBase = 0;
+        player->sResBodyBase = 0;
+        player->sResLightBase = 0;
+        player->sResDarkBase = 0;
+
         for (int z = 0; z < player->vBeacons.size(); z++) {
             player->vBeacons[z].image->Release();
         }

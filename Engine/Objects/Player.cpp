@@ -3764,7 +3764,18 @@ void Player::Zero() {
     this->field_E8 = 0;
     this->field_E4 = 0;
     this->field_E0 = 0;
-    memset(&this->sResFireBonus, 0, 0x16u);
+    this->sResFireBonus = 0;
+    this->sResAirBonus = 0;
+    this->sResWaterBonus = 0;
+    this->sResEarthBonus = 0;
+    this->field_1792 = 0;
+    this->sResMagicBonus = 0;
+    this->sResSpiritBonus = 0;
+    this->sResMindBonus = 0;
+    this->sResBodyBonus = 0;
+    this->sResLightBonus = 0;
+    this->sResDarkBonus = 0;
+
     this->field_1A97 = 0;
     this->_ranged_dmg_bonus = 0;
     this->field_1A95 = 0;
