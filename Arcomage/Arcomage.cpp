@@ -2899,7 +2899,7 @@ void GameResultsApply() {
     if (winner == 1) {
         // 108..120 - tavern ids
         // TODO: get rid of static cast, just place HOUSE_ID in proper place
-        HOUSE_ID houseId = static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val); 
+        HOUSE_ID houseId = static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val);
         if ((houseId >= 108) && (houseId <= 120)) {
             if (!pParty->pArcomageWins[houseId - 108]) {
                 pParty->pArcomageWins[houseId - 108] = 1;

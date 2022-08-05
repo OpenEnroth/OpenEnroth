@@ -4,7 +4,7 @@
 
 #include "GUI/GUIWindow.h"
 
-class CastSpellInfo;
+struct CastSpellInfo;
 
 class GUIWindow_Inventory : public GUIWindow {
  public:
