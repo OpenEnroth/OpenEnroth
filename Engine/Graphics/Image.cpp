@@ -342,7 +342,7 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                         logger->Info("Image pixel format conversion");
                     return this->pixels[format] = cvt_pixels;
                 } else {
-                    delete cvt_pixels;
+                    delete[] cvt_pixels;
                     cvt_pixels = nullptr;
                 }
             } else {
@@ -375,7 +375,7 @@ bool Image::Release() {
 
         for (unsigned int i = 0; i < IMAGE_NUM_FORMATS; ++i) {
             if (pixels[i]) {
-                delete pixels[i];
+                delete[] pixels[i];
                 pixels[i] = nullptr;
             }
         }
