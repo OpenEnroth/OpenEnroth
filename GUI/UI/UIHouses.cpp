@@ -596,8 +596,7 @@ void InitializaDialogueOptions(BuildingType type) {
         CreateShopDialogueButtonAtRow(0, DIALOGUE_TAVERN_REST);
         CreateShopDialogueButtonAtRow(1, DIALOGUE_TAVERN_BUY_FOOD);
         CreateShopDialogueButtonAtRow(2, DIALOGUE_LEARN_SKILLS);
-        if ((int64_t)window_SpeakInHouse->ptr_1C < 108 ||
-            (int64_t)window_SpeakInHouse->ptr_1C > 120) {
+        if (window_SpeakInHouse->wData.val < 108 || window_SpeakInHouse->wData.val > 120) {
             pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
         } else {
             CreateShopDialogueButtonAtRow(3, DIALOGUE_TAVERN_ARCOMAGE_MAIN);
@@ -891,7 +890,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 }
                 if (pPlayers[uActiveCharacter]->uLevel <
                     pMaxLevelPerTrainingHallType
-                    [(uint64_t)window_SpeakInHouse->ptr_1C - 89] &&
+                    [window_SpeakInHouse->wData.val - 89] &&
                     (signed __int64)pPlayers[uActiveCharacter]->uExperience <
                     1000 * experience_for_next_level)  // test experience
                     return;
@@ -909,7 +908,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             if ((in_current_building_type == BuildingType_Stables ||
                 in_current_building_type == BuildingType_Boats) &&
                 transport_schedule
-                [transport_routes[(uint64_t)window_SpeakInHouse->ptr_1C - HOUSE_STABLES_HARMONDALE]
+                [transport_routes[window_SpeakInHouse->wData.val - HOUSE_STABLES_HARMONDALE]
                 [option - DIALOGUE_TRANSPORT_SCHEDULE_1]]
             .pSchedule[pParty->uCurrentDayOfMonth % 7] ||
                 in_current_building_type != BuildingType_Temple ||
@@ -951,23 +950,23 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_16:
     {
         if (pParty->PartyTimes
-            .Shops_next_generation_time[window_SpeakInHouse->par1C - 139] >=
+            .Shops_next_generation_time[window_SpeakInHouse->wData.val - 139] >=
             pParty->GetPlayingTime()) {
             for (uint i = 0; i < 12; ++i) {
                 if (pParty
-                    ->SpellBooksInGuilds[window_SpeakInHouse->par1C - 139][i].uItemID)
+                    ->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139][i].uItemID)
                     shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                         pParty->SpellBooksInGuilds
-                        [window_SpeakInHouse->par1C - 139][i].GetIconName(),
+                        [window_SpeakInHouse->wData.val - 139][i].GetIconName(),
                         render->teal_mask_16);
             }
         } else {  // generation new books
             SpellBookGenerator();
             pParty->PartyTimes
-                .Shops_next_generation_time[window_SpeakInHouse->par1C - 139] =
+                .Shops_next_generation_time[window_SpeakInHouse->wData.val - 139] =
                 GameTime(pParty->GetPlayingTime() +
                 GameTime::FromDays(
-                    p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
+                    p2DEvents[window_SpeakInHouse->wData.val - 1]
                     .generation_interval_days));
         }
         break;
@@ -975,26 +974,21 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case BuildingType_TownHall:
     {
         if (option == DIALOGUE_TOWNHALL_MESSAGE) {
-            if (pParty->PartyTimes.bountyHunting_next_generation_time[(
-                int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] <
+            if (pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - 102] <
                 pParty->GetPlayingTime()) {  // new generation
-                pParty->monster_for_hunting_killed[(
-                    int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+                pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - 102] =
                     false;
-                pParty->PartyTimes.bountyHunting_next_generation_time[(
-                    int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+                pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - 102] =
                     GameTime((int64_t)((double)(309657600 *
                     (pParty->uCurrentMonth + 12ll * pParty->uCurrentYear -
                         14015)) * 0.033333335));
-                pParty->monster_id_for_hunting[(
-                    int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+                pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102] =
                     rand() % 258 + 1;
-                v16 = (int64_t)((char *)window_SpeakInHouse->ptr_1C - 102);
+                v16 = window_SpeakInHouse->wData.val - 102;
                 if (!v16) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102];
                         if ((unsigned __int16)v24 < 115 ||
                             (unsigned __int16)v24 > 132) {
                             if (((unsigned __int16)v24 < 235 ||
@@ -1021,16 +1015,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (unsigned __int16)v24 > 0x63u))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)] = rand() % 258 + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102] = rand() % 258 + 1;
                     }
                 }
                 if (v16 == 1) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102];
                         if ((unsigned __int16)v24 < 115 ||
                             (unsigned __int16)v24 > 132) {
                             if (((unsigned __int16)v24 < 0xE8u ||
@@ -1063,16 +1055,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (unsigned __int16)v24 > 0xCFu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)] = rand() % 258 + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102] = rand() % 258 + 1;
                     }
                 }
                 if (v16 == 2) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102];
                         if ((unsigned __int16)v24 < 0x73u ||
                             (unsigned __int16)v24 > 0x84u) {
                             if (((unsigned __int16)v24 < 0xE8u ||
@@ -1099,16 +1089,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (unsigned __int16)v24 > 0x1Eu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)] = rand() % 258 + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102] = rand() % 258 + 1;
                     }
                 }
                 if (v16 == 3) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102];
                         if ((unsigned __int16)v24 < 0x73u ||
                             (unsigned __int16)v24 > 0x84u) {
                             if (((unsigned __int16)v24 < 0xE8u ||
@@ -1141,16 +1129,14 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (unsigned __int16)v24 > 0x6Cu))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)] = rand() % 258 + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102] = rand() % 258 + 1;
                     }
                 }
                 if (v16 == 4) {
                     while (1) {
-                        v24 = pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)];
+                        v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102];
                         if ((unsigned __int16)v24 < 0x73u ||
                             (unsigned __int16)v24 > 0x84u) {
                             if (((unsigned __int16)v24 < 0xE8u ||
@@ -1191,38 +1177,32 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                                 (unsigned __int16)v24 > 0x12u))
                                 break;
                         }
-                        pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)] = rand() % 258 + 1;
+                        pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102] = rand() % 258 + 1;
                     }
                 }
             }
             bountyHunting_monster_id_for_hunting =
-                pParty->monster_id_for_hunting[(
-                    int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)];
-            if (!pParty->monster_for_hunting_killed[(
-                int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)]) {
+                pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102];
+            if (!pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - 102]) {
                 bountyHunting_text =
                     pNPCTopics[351].pText;  //"В этом месяцу назначена
                                             //награда за голову %s..."
-                if (!pParty->monster_id_for_hunting[(
-                    int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)])
+                if (!pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102])
                     bountyHunting_text =
                     pNPCTopics[353].pText;  //"Кое кто уже приходил в
                                             //этом месяце за наградой"
             } else {
-                if (pParty->monster_id_for_hunting[(
-                    int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] >
+                if (pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102] >
                     0) {  // get prize
                     pParty->PartyFindsGold(
                         100 * pMonsterStats
                         ->pInfos
                         [(unsigned __int16)
-                        pParty->monster_id_for_hunting[(
-                            int64_t)((char *)
+                        pParty->monster_id_for_hunting[
                                 window_SpeakInHouse
-                                ->ptr_1C -
-                                102)]]
+                                ->wData.val -
+                                102]]
                     .uLevel,
                         0);
                     for (uint i = 0; i < 4; ++i)
@@ -1230,15 +1210,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     pParty->uNumBountiesCollected +=
                         100 *
                         pMonsterStats
-                        ->pInfos[pParty->monster_id_for_hunting[(
-                            int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                                102)]]
+                        ->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val -
+                                102]]
                         .uLevel;
-                    pParty->monster_id_for_hunting[(
-                        int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+                    pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102] =
                         0;
-                    pParty->monster_for_hunting_killed[(
-                        int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+                    pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - 102] =
                         false;
                 }
                 bountyHunting_text =
@@ -1304,50 +1281,50 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     case DIALOGUE_SHOP_BUY_SPECIAL:
     {
         if (pParty->PartyTimes.Shops_next_generation_time
-            [(uint64_t)window_SpeakInHouse->ptr_1C] <
+            [window_SpeakInHouse->wData.val] <
             pParty->GetPlayingTime()) {
             GenerateStandartShopItems();
             GenerateSpecialShopItems();
             pParty->PartyTimes
-                .Shops_next_generation_time[window_SpeakInHouse->par1C] =
+                .Shops_next_generation_time[window_SpeakInHouse->wData.val] =
                 GameTime(pParty->GetPlayingTime() +
                 GameTime::FromDays(
-                    p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
+                    p2DEvents[window_SpeakInHouse->wData.val - 1]
                     .generation_interval_days));
         }
         if (option == DIALOGUE_SHOP_BUY_STANDARD) {
             if (uItemsAmountPerShopType
-                [p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].uType]) {
+                [p2DEvents[window_SpeakInHouse->wData.val - 1].uType]) {
                 for (uint i = 0;
                     i < (unsigned __int8)uItemsAmountPerShopType
-                    [p2DEvents[(uint64_t)
-                    window_SpeakInHouse->ptr_1C - 1].uType];
+                    [p2DEvents[
+                    window_SpeakInHouse->wData.val - 1].uType];
                     ++i) {
                     if (pParty
-                        ->StandartItemsInShops[(int64_t)window_SpeakInHouse
-                        ->ptr_1C][i].uItemID)
+                        ->StandartItemsInShops[window_SpeakInHouse
+                        ->wData.val][i].uItemID)
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                             pParty->StandartItemsInShops
-                            [(int64_t)window_SpeakInHouse->ptr_1C][i].GetIconName(),
+                            [window_SpeakInHouse->wData.val][i].GetIconName(),
                         render->teal_mask_16);
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
                 if (uItemsAmountPerShopType
                     [p2DEvents
-                    [(uint64_t)window_SpeakInHouse->ptr_1C - 1]
+                    [window_SpeakInHouse->wData.val - 1]
                 .uType]) {
                     for (uint i = 0;
                         i <
                         (unsigned __int8)uItemsAmountPerShopType
-                        [p2DEvents[(uint64_t)
-                        window_SpeakInHouse->ptr_1C -
+                        [p2DEvents[
+                        window_SpeakInHouse->wData.val -
                         1]
                         .uType];
                         ++i) {
                         if (pParty
                             ->StandartItemsInShops
-                            [(int64_t)window_SpeakInHouse->ptr_1C][i]
+                            [window_SpeakInHouse->wData.val][i]
                             .uItemID)
                             weapons_Ypos[i] =
                             rand() %
@@ -1359,32 +1336,32 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
         }
         if (option == DIALOGUE_SHOP_BUY_SPECIAL) {
             if (uItemsAmountPerShopType
-                [p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].uType]) {
+                [p2DEvents[window_SpeakInHouse->wData.val - 1].uType]) {
                 for (uint i = 0;
                     i < (unsigned __int8)uItemsAmountPerShopType
-                    [p2DEvents[(uint64_t)
-                    window_SpeakInHouse->ptr_1C - 1].uType];
+                    [p2DEvents[
+                    window_SpeakInHouse->wData.val - 1].uType];
                     ++i) {
-                    if (pParty->SpecialItemsInShops[(uint64_t)
-                        window_SpeakInHouse->ptr_1C][i].uItemID)
+                    if (pParty->SpecialItemsInShops[
+                        window_SpeakInHouse->wData.val][i].uItemID)
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
                             pParty->SpecialItemsInShops
-                            [(uint64_t)window_SpeakInHouse->ptr_1C][i].GetIconName(),
+                            [window_SpeakInHouse->wData.val][i].GetIconName(),
                             render->teal_mask_16);
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
                 if (uItemsAmountPerShopType
                     [p2DEvents
-                    [(uint64_t)window_SpeakInHouse->ptr_1C - 1]
+                    [window_SpeakInHouse->wData.val - 1]
                 .uType]) {
                     for (uint i = 0;
                         i < (unsigned __int8)uItemsAmountPerShopType
-                            [p2DEvents[(uint64_t)
-                            window_SpeakInHouse->ptr_1C - 1].uType];
+                            [p2DEvents[
+                            window_SpeakInHouse->wData.val - 1].uType];
                         ++i) {
-                        if (pParty->SpecialItemsInShops[(uint64_t)
-                            window_SpeakInHouse->ptr_1C][i].uItemID)
+                        if (pParty->SpecialItemsInShops[
+                            window_SpeakInHouse->wData.val][i].uItemID)
                             weapons_Ypos[i] = rand() %
                             (300 - shop_ui_items_in_store[i]->GetHeight());
                     }
@@ -1411,13 +1388,13 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     default:
     {
         if (IsSkillLearningDialogue(option)) {
-            v36 = (signed __int64)(p2DEvents[(uint64_t)
-                    window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
-            if (p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].uType >= BuildingType_FireGuild &&
-                p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].uType <= BuildingType_SelfGuild) {
+            v36 = (signed __int64)(p2DEvents[
+                    window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
+            if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild &&
+                p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_SelfGuild) {
                 // guild prices use the other multipler
-                v36 = (signed __int64)(p2DEvents[(uint64_t)
-                    window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier * 500.0);
+                v36 = (signed __int64)(p2DEvents[
+                    window_SpeakInHouse->wData.val - 1].fPriceMultiplier * 500.0);
             }
 
             pPrice = v36 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
@@ -1431,10 +1408,10 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                         if (in_current_building_type == BuildingType_Training
                             || in_current_building_type == BuildingType_Tavern)
                             PlayHouseSound(
-                            (uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
+                            window_SpeakInHouse->wData.val, HouseSound_Goodbye);
                         else
                             PlayHouseSound(
-                            (uint64_t)window_SpeakInHouse->ptr_1C,
+                            window_SpeakInHouse->wData.val,
                                 HouseSound_NotEnoughMoney_TrainingSuccessful);
                     } else {
                         Party::TakeGold(pPrice);
@@ -1476,11 +1453,11 @@ void TravelByTransport() {
     travel_window.uFrameWidth = 143;
     travel_window.uFrameZ = 334;
 
-    v4 = p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].uType ==
+    v4 = p2DEvents[window_SpeakInHouse->wData.val - 1].uType ==
         BuildingType_Stables
         ? 25
         : 50;
-    v4 *= p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
+    v4 *= p2DEvents[window_SpeakInHouse->wData.val - 1]
         .fPriceMultiplier;
 
     pPrice = v4 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
@@ -1502,7 +1479,7 @@ void TravelByTransport() {
                     pDialogueWindow->pStartingPosActiveItem);
                 ++i) {
                 schedule_id =
-                    transport_routes[(uint64_t)window_SpeakInHouse->ptr_1C -
+                    transport_routes[window_SpeakInHouse->wData.val -
                     HOUSE_STABLES_HARMONDALE][index];
                 pButton = pDialogueWindow->GetControl(i);
 
@@ -1526,7 +1503,7 @@ void TravelByTransport() {
                         sprintf(pTopicArray[index], "\f%05d", Color16(255, 255, 255));
 
                     travel_time = transport_schedule[schedule_id].uTravelTime;
-                    if ((int64_t)window_SpeakInHouse->ptr_1C >= HOUSE_BOATS_EMERALD_ISLE) {
+                    if (window_SpeakInHouse->wData.val >= HOUSE_BOATS_EMERALD_ISLE) {
                         if (CheckHiredNPCSpeciality(Sailor)) travel_time -= 2;
                         if (CheckHiredNPCSpeciality(Navigator)) travel_time -= 3;
                         if (CheckHiredNPCSpeciality(Pirate)) travel_time -= 2;
@@ -1590,7 +1567,7 @@ void TravelByTransport() {
             dialog_menu_id <= DIALOGUE_TRANSPORT_SCHEDULE_4) {
             if (pParty->GetGold() < pPrice) {
                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-                PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
+                PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                 return;
             }
@@ -1599,8 +1576,8 @@ void TravelByTransport() {
 
             pTravel =
                 &transport_schedule
-                [transport_routes[(uint64_t)
-                window_SpeakInHouse->ptr_1C -
+                [transport_routes[
+                window_SpeakInHouse->wData.val -
                 HOUSE_STABLES_HARMONDALE]
                 [dialog_menu_id -
                 DIALOGUE_TRANSPORT_SCHEDULE_1]];
@@ -1631,10 +1608,10 @@ void TravelByTransport() {
                     pParty->sRotationY = 0;
                     pParty->sRotationZ = pTravel->arrival_rot_y;
                 }
-                PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
+                PlayHouseSound(window_SpeakInHouse->wData.val,
                     HouseSound_NotEnoughMoney_TrainingSuccessful);
                 v12 = pTravel->uTravelTime;
-                if ((int64_t)window_SpeakInHouse->ptr_1C >= 63) {
+                if (window_SpeakInHouse->wData.val >= 63) {
                     pSpeech = SPEECH_TravelBoat;
                     v13 = 2500;
                     if (CheckHiredNPCSpeciality(Sailor)) v12 -= 2;
@@ -1806,7 +1783,7 @@ void TownHallDialog() {
             }
             if (v1 > pParty->GetGold()) {
                 PlayHouseSound(
-                    (uint64_t)window_SpeakInHouse->ptr_1C,
+                    window_SpeakInHouse->wData.val,
                     HouseSound_NotEnoughMoney_TrainingSuccessful);
                 v2 = pParty->GetGold();
             }
@@ -1881,7 +1858,7 @@ void BankDialog() {
             }
             if (entered_sum > pParty->GetGold()) {
                 PlayHouseSound(
-                    (uint64_t)window_SpeakInHouse->ptr_1C,
+                    window_SpeakInHouse->wData.val,
                     HouseSound_NotEnoughMoney_TrainingSuccessful);
                 takes_sum = pParty->GetGold();
             }
@@ -1925,7 +1902,7 @@ void BankDialog() {
             if (entered_sum) {
                 if (entered_sum > pParty->uNumGoldInBank) {
                     PlayHouseSound(
-                        (uint64_t)window_SpeakInHouse->ptr_1C,
+                        window_SpeakInHouse->wData.val,
                         HouseSound_NotEnoughMoney_TrainingSuccessful);
                     takes_sum = pParty->uNumGoldInBank;
                 }
@@ -1975,7 +1952,7 @@ void TavernDialog() {
     dialog_window.uFrameX = 483;
     dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
-    v2 = p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
+    v2 = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
 
     if (uActiveCharacter == 0)  // avoid nzi
         uActiveCharacter = pParty->GetFirstCanAct();
@@ -2013,7 +1990,7 @@ void TavernDialog() {
             + localization->FormatString(
                 LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD,
                 (unsigned int)
-                p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier,
+                p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier,
                 pPriceFood);
         pTopic2Height = pFontArrus->CalcTextHeight(topic2, dialog_window.uFrameWidth, 0);
 
@@ -2025,8 +2002,8 @@ void TavernDialog() {
         pTopic3Height = pFontArrus->CalcTextHeight(topic3, dialog_window.uFrameWidth, 0);
 
         std::string topic4;
-        if ((signed int)window_SpeakInHouse->par1C >= 108 &&
-            (signed int)window_SpeakInHouse->par1C <= 120) {
+        if (window_SpeakInHouse->wData.val >= 108 &&
+            window_SpeakInHouse->wData.val <= 120) {
             topic4 =
                 StringPrintf("\f%05d",
                     pDialogueWindow->pCurrentPosActiveItem == 5
@@ -2115,7 +2092,7 @@ void TavernDialog() {
     case DIALOGUE_TAVERN_ARCOMAGE_VICTORY_CONDITIONS:
     {
         std::string label =
-            pNPCTopics[(uint64_t)window_SpeakInHouse->ptr_1C + 247].pText;
+            pNPCTopics[window_SpeakInHouse->wData.val + 247].pText;
         dialog_window.uFrameWidth = game_viewport_width;
         dialog_window.uFrameZ = 452;
         pTextHeight = pFontArrus->CalcTextHeight(
@@ -2157,20 +2134,20 @@ void TavernDialog() {
     {
         if (pParty->GetGold() >= pPriceRoom) {
             Party::TakeGold(pPriceRoom);
-            PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
+            PlayHouseSound(window_SpeakInHouse->wData.val,
                 HouseSound_NotEnoughMoney_TrainingSuccessful);
             dialog_menu_id = DIALOGUE_NULL;
             HouseDialogPressCloseBtn();
             GetHouseGoodbyeSpeech();
             pMediaPlayer->Unload();
 
-            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_RentRoom, (int64_t)window_SpeakInHouse->ptr_1C, 1);
+            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_RentRoom, window_SpeakInHouse->wData.val, 1);
             window_SpeakInHouse->Release();
             window_SpeakInHouse = 0;
             return;
         }
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-        PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
+        PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
@@ -2179,8 +2156,8 @@ void TavernDialog() {
     {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
         pSkillCount = 0;
-        v9 = (signed __int64)(p2DEvents[(uint64_t)
-            window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+        v9 = (signed __int64)(p2DEvents[
+            window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
         pPriceSkill = v9 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
         if (pPriceSkill < v9 / 3) pPriceSkill = v9 / 3;
         all_text_height = 0;
@@ -2207,7 +2184,7 @@ void TavernDialog() {
     case DIALOGUE_TAVERN_BUY_FOOD:
     {
         if ((double)pParty->GetFood() >=
-            p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier) {
+            p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier) {
             GameUI_SetStatusBar(LSTR_RATIONS_FULL);
             if (uActiveCharacter)
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_PacksFull, 0);
@@ -2217,14 +2194,14 @@ void TavernDialog() {
         if (pParty->GetGold() >= pPriceFood) {
             Party::TakeGold(pPriceFood);
             Party::SetFood(
-                p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]
+                p2DEvents[window_SpeakInHouse->wData.val - 1]
                 .fPriceMultiplier);
-            PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Greeting_2);
+            PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-        PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_Goodbye);
+        PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         break;
     }
@@ -2298,7 +2275,7 @@ void TempleDialog() {
     }
 
     pPrice = pPlayers[uActiveCharacter]->GetTempleHealCostModifier(
-        p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier);
+        p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     if (dialog_menu_id == DIALOGUE_MAIN) {
         index = 1;
         pButton = pDialogueWindow->GetControl(
@@ -2365,7 +2342,7 @@ void TempleDialog() {
         if (!pPlayers[uActiveCharacter]->IsPlayerHealableByTemple()) return;
         if (pParty->GetGold() < pPrice) {
             GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-            PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, HouseSound_NotEnoughMoney_TrainingSuccessful);
+            PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney_TrainingSuccessful);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2378,9 +2355,9 @@ void TempleDialog() {
         pPlayers[uActiveCharacter]->sMana =
             pPlayers[uActiveCharacter]->GetMaxMana();
 
-        if ((int64_t)window_SpeakInHouse->ptr_1C != 78 &&
-            ((int64_t)window_SpeakInHouse->ptr_1C <= 80 ||
-            (int64_t)window_SpeakInHouse->ptr_1C > 82)) {
+        if (window_SpeakInHouse->wData.val != 78 &&
+            (window_SpeakInHouse->wData.val <= 80 ||
+            window_SpeakInHouse->wData.val > 82)) {
             if (pPlayers[uActiveCharacter]
                 ->conditions_times[Condition_Zombie]
                 .Valid()) {  // если состояние зомби
@@ -2448,7 +2425,7 @@ void TempleDialog() {
     }
     //---------------------------------------------------
     if (dialog_menu_id == DIALOGUE_TEMPLE_DONATE) {
-        pPrice = p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier;
+        pPrice = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
         if (pParty->GetGold() >= pPrice) {
             Party::TakeGold(pPrice);
             v26 = &pOutdoor->ddm;
@@ -2501,7 +2478,7 @@ void TempleDialog() {
             return;
         }
         GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-        PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C,
+        PlayHouseSound(window_SpeakInHouse->wData.val,
             HouseSound_NotEnoughMoney_TrainingSuccessful);
         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
         return;
@@ -2511,8 +2488,8 @@ void TempleDialog() {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             all_text_height = 0;
             pCurrentItem =
-                (signed __int64)(p2DEvents[(int64_t)
-                    window_SpeakInHouse->ptr_1C -
+                (signed __int64)(p2DEvents[
+                    window_SpeakInHouse->wData.val -
                     1]
                     .flt_24 *
                     500.0);
@@ -2582,7 +2559,7 @@ void TrainingDialog(const char *s) {
         v9 = (double)pPlayers[uActiveCharacter]->uLevel;
         v69 = v8;
         v10 = (signed __int64)(v9 *
-            p2DEvents[(int64_t)window_SpeakInHouse->ptr_1C - 1]
+            p2DEvents[window_SpeakInHouse->wData.val - 1]
             .fPriceMultiplier *
             (double)v8);
         pPrice = v10 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
@@ -2610,7 +2587,7 @@ void TrainingDialog(const char *s) {
                             static std::string shop_option_str_container;
                             if (pPlayers[uActiveCharacter]->uLevel >=
                                 pMaxLevelPerTrainingHallType
-                                [(uint64_t)window_SpeakInHouse->ptr_1C -
+                                [window_SpeakInHouse->wData.val -
                                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
                                 shop_option_str_container = StringPrintf(
                                     "%s\n \n%s",
@@ -2685,14 +2662,14 @@ void TrainingDialog(const char *s) {
             }
             if (pPlayers[uActiveCharacter]->uLevel <
                 pMaxLevelPerTrainingHallType
-                [(uint64_t)window_SpeakInHouse->ptr_1C -
+                [window_SpeakInHouse->wData.val -
                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
                 if ((signed __int64)pPlayers[uActiveCharacter]->uExperience >=
                     v5) {
                     if (pParty->GetGold() >= pPrice) {
                         Party::TakeGold(pPrice);
                         PlayHouseSound(
-                            (uint64_t)window_SpeakInHouse->ptr_1C,
+                            window_SpeakInHouse->wData.val,
                             HouseSound_NotEnoughMoney_TrainingSuccessful);
                         ++pPlayers[uActiveCharacter]->uLevel;
                         pPlayers[uActiveCharacter]->uSkillPoints +=
@@ -2717,9 +2694,9 @@ void TrainingDialog(const char *s) {
                                 pParty->uCurrentHour) +
                                 4) -
                                 pParty->uCurrentMinute;
-                            if ((uint64_t)window_SpeakInHouse->ptr_1C ==
+                            if (window_SpeakInHouse->wData.val ==
                                 HOUSE_TRAINING_HALL_94 ||
-                                (uint64_t)window_SpeakInHouse->ptr_1C ==
+                                window_SpeakInHouse->wData.val ==
                                 HOUSE_TRAINING_HALL_95)
                                 v42 += 12 * 60;
                             RestAndHeal(v42 + 7 * 24 * 60);
@@ -2740,7 +2717,7 @@ void TrainingDialog(const char *s) {
                     }
 
                     GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
-                    PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, (HouseSoundID)4);
+                    PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)4);
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     return;
                 }
@@ -2761,7 +2738,7 @@ void TrainingDialog(const char *s) {
             training_dialog_window.DrawTitleText(
                 pFontArrus, 0, v36, Color16(0xE1u, 0xCDu, 0x23u), label, 3);
 
-            PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, (HouseSoundID)3);
+            PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)3);
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
@@ -2770,8 +2747,8 @@ void TrainingDialog(const char *s) {
     //-------------------------------------------------------------
     if (dialog_menu_id == DIALOGUE_LEARN_SKILLS) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
-            v14 = (signed __int64)(p2DEvents[(uint64_t)
-                window_SpeakInHouse->ptr_1C - 1].flt_24 * 500.0);
+            v14 = (signed __int64)(p2DEvents[
+                window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
             pPrice = v14 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
 
             if (pPrice < v14 / 3) pPrice = v14 / 3;
@@ -2816,16 +2793,16 @@ void sub_4B6478() {
     dialog_window.uFrameZ = 334;
 
     v32 = (unsigned __int8)(((p2DEvents
-            [(uint64_t)window_SpeakInHouse->ptr_1C - 1]
+            [window_SpeakInHouse->wData.val - 1]
     .uType != 18) - 1) & 0x96) + 100;
     v3 = (signed __int64)((double)v32 *
-        p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1].fPriceMultiplier);
+        p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     pPrice = v3 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
     if (pPrice < v3 / 3) pPrice = v3 / 3;
     if (dialog_menu_id == DIALOGUE_MAIN) {
         if (!_449B57_test_bit(
             (unsigned __int8 *)pPlayers[uActiveCharacter]->_achieved_awards_bits,
-            word_4F0754[2 * (uint64_t)window_SpeakInHouse->ptr_1C])) {
+            word_4F0754[2 * window_SpeakInHouse->wData.val])) {
             pTextHeight = pFontArrus->CalcTextHeight(
                 pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
             dialog_window.DrawTitleText(
@@ -2884,7 +2861,7 @@ void sub_4B6478() {
                 *(short *)v6 = 1;
                 v27 = 2;
             }
-            PlayHouseSound((uint64_t)window_SpeakInHouse->ptr_1C, (HouseSoundID)v27);
+            PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)v27);
         }
     } else {
         v5 = 0;
@@ -3058,10 +3035,10 @@ void SimpleHouseDialog() {
             pButton->sLabel = localization->GetString(LSTR_MORE_INFORMATION);
             continue;
         case DIALOGUE_79_mastery_teacher:
-            pButton->sLabel = _4B254D_SkillMasteryTeacher((int64_t)right_panel_window.ptr_1C);
+            pButton->sLabel = _4B254D_SkillMasteryTeacher(right_panel_window.wData.val);
             continue;
         case DIALOGUE_82_join_guild:
-            pButton->sLabel = GetJoinGuildDialogueOption((GUILD_ID)(int64_t)right_panel_window.ptr_1C);
+            pButton->sLabel = GetJoinGuildDialogueOption(static_cast<GUILD_ID>(right_panel_window.wData.val));
             continue;
         case DIALOGUE_83_bounty_hunting:
             v29 = pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName;
@@ -3440,7 +3417,7 @@ int HouseDialogPressCloseBtn() {
 void BackToHouseMenu() {
     auto pMouse = EngineIoc::ResolveMouse();
     pMouse->ClearPickedItem();
-    if (window_SpeakInHouse && window_SpeakInHouse->ptr_1C == (void *)165 &&
+    if (window_SpeakInHouse && window_SpeakInHouse->wData.val == 165 &&
         !pMovie_Track) {
         bGameoverLoop = true;
         HouseDialogPressCloseBtn();
@@ -3448,7 +3425,7 @@ void BackToHouseMenu() {
         pParty->uFlags &= 0xFFFFFFFD;
         if (EnterHouse(HOUSE_BODY_GUILD_ERATHIA)) {
             pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
-            window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), (GUIButton*)165, "");
+            window_SpeakInHouse = new GUIWindow_House(0, 0, window->GetWidth(), window->GetHeight(), HOUSE_BODY_GUILD_ERATHIA, "");
             window_SpeakInHouse->CreateButton(0x3Du, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
             window_SpeakInHouse->CreateButton(0xB1u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
             window_SpeakInHouse->CreateButton(0x124u, 0x1A8u, 0x1Fu, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
@@ -3495,10 +3472,10 @@ void FillAviableSkillsToTeach(BuildingType type) {
             for (int j = 0; j < 4; ++j) {
                 if (i)
                     v21 = shopWeap_variation_spc
-                    [(uint64_t)window_SpeakInHouse->ptr_1C].item_class[j];
+                    [window_SpeakInHouse->wData.val].item_class[j];
                 else
                     v21 = shopWeap_variation_ord
-                    [(uint64_t)window_SpeakInHouse->ptr_1C].item_class[j];
+                    [window_SpeakInHouse->wData.val].item_class[j];
 
                 DIALOGUE_TYPE v34;
                 switch (v21) {
@@ -3524,10 +3501,10 @@ void FillAviableSkillsToTeach(BuildingType type) {
                 for (int k = 0; k < 4; ++k) {
                     if (i)
                         v15 = shopArmr_variation_spc
-                        [(uint64_t)window_SpeakInHouse->ptr_1C - 15 + j].item_class[k];
+                        [window_SpeakInHouse->wData.val - 15 + j].item_class[k];
                     else
                         v15 = shopArmr_variation_ord
-                        [(uint64_t)window_SpeakInHouse->ptr_1C - 15 + j].item_class[k];
+                        [window_SpeakInHouse->wData.val - 15 + j].item_class[k];
 
                     DIALOGUE_TYPE v33;
                     switch (v15) {
@@ -3664,7 +3641,7 @@ void GenerateSpecialShopItems() {
     int item_class = 0;
     int mdf;
 
-    shop_index = (int64_t)window_SpeakInHouse->ptr_1C;
+    shop_index = window_SpeakInHouse->wData.val;
     if (uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType]) {
         for (item_count = 0;
             item_count <
@@ -3716,7 +3693,7 @@ void GenerateStandartShopItems() {
     int item_class = 0;
     int mdf;
 
-    shop_index = (int64_t)window_SpeakInHouse->ptr_1C;
+    shop_index = window_SpeakInHouse->wData.val;
     if (uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType]) {
         for (item_count = 0;
             item_count <
@@ -3760,8 +3737,8 @@ void GenerateStandartShopItems() {
     pParty->InTheShopFlags[shop_index] = 0;
 }
 
-GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint) :
-    GUIWindow(WINDOW_HouseInterior, x, y, width, height, button, hint) {
+GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int width, unsigned int height, HOUSE_ID houseId, const std::string &hint) :
+    GUIWindow(WINDOW_HouseInterior, x, y, width, height, houseId, hint) {
     pEventTimer->Pause();  // pause timer so not attacked
     // pAudioPlayer->PauseSounds(-1);
 
@@ -3780,7 +3757,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
             if (v26 || !dword_591080)
                 v30 = HouseNPCData[v26 + 1 - ((dword_591080 != 0) ? 1 : 0)]->pName;
             else
-                v30 = p2DEvents[(int64_t)button - 1].pProprieterName;
+                v30 = p2DEvents[houseId - 1].pProprieterName;
             v29 = localization->GetString(LSTR_FMT_CONVERSE_WITH_S);
         }
         sprintf(byte_591180[v26].data(), v29, v30.c_str());
@@ -3798,11 +3775,11 @@ void GUIWindow_House::Update() {
     HouseDialogManager();
     if (!window_SpeakInHouse)
         return;
-    if (window_SpeakInHouse->par1C >= 53)
+    if (window_SpeakInHouse->wData.val >= 53)
         return;
-    if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] <= pParty->GetPlayingTime()) {
-        if (window_SpeakInHouse->par1C < 53)
-            pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->par1C] = GameTime(0);
+    if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] <= pParty->GetPlayingTime()) {
+        if (window_SpeakInHouse->wData.val < 53)
+            pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] = GameTime(0);
         return;
     }
     // dialog_menu_id = DIALOGUE_MAIN;

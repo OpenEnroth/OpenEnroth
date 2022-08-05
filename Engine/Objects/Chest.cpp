@@ -173,7 +173,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
     unsigned int pX = pt.x;
     unsigned int pY = pt.y;
 
-    Chest *chest = &vChests[(int)pGUIWindow_CurrentMenu->par1C];
+    Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
 
     int chestheight = pChestHeightsByType[chest->uChestBitmapID];
     int chestwidth = pChestWidthsByType[chest->uChestBitmapID];
@@ -322,7 +322,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
     if (position == -1) {  // no position specified
         for (int _i = 0; _i < max_size; _i++) {
-            if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pChestWindow->par1C)) {
+            if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pChestWindow->wData.val)) {
                 test_pos = _i;  // found somewhere to place item
                 break;
             }
@@ -507,7 +507,7 @@ char *ChestsDeserialize(char *pData) {
 }
 
 void RemoveItemAtChestIndex(int index) {
-    Chest *chest = &vChests[pGUIWindow_CurrentMenu->par1C];
+    Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
 
     int chestindex = chest->pInventoryIndices[index];
     ItemGen *item_in_slot = &chest->igChestItems[chestindex - 1];
@@ -531,7 +531,7 @@ void RemoveItemAtChestIndex(int index) {
 }
 
 void Chest::OnChestLeftClick() {
-    Chest *chest = &vChests[pGUIWindow_CurrentMenu->par1C];
+    Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
 
     int chestheight = pChestHeightsByType[chest->uChestBitmapID];
     int chestwidth = pChestWidthsByType[chest->uChestBitmapID];
@@ -547,7 +547,7 @@ void Chest::OnChestLeftClick() {
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
         inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
         if (pParty->pPickedItem.uItemID) {  // item held
-            if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, pGUIWindow_CurrentMenu->par1C)) {
+            if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, pGUIWindow_CurrentMenu->wData.val)) {
                 mouse->RemoveHoldingItem();
             }
         } else {
@@ -583,7 +583,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
     int goldcount = 0;
     int goldamount = 0;
 
-    Chest *chest = &vChests[pGUIWindow_CurrentMenu->par1C];
+    Chest *chest = &vChests[pGUIWindow_CurrentMenu->wData.val];
 
     // loop through chest pInvetoryIndices
     for (int loop = 0; loop < 140; loop++) {

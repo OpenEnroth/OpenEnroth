@@ -23,13 +23,12 @@ Image *ui_book_journal_background = nullptr;
 
 GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
     eWindowType = WINDOW_JournalBook;
-    this->ptr_1C = (void *)WINDOW_JournalBook;  // inherited from GUIWindow::GUIWindow
+    this->wData.val = WINDOW_JournalBook;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
-    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(0x258u, 0x169u, 0, 0,
-                                                           (GUIButton *)pBtn_History);
+    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(0x258u, 0x169u, 0, 0, pBtn_History);
     bFlashHistoryBook = 0;
 
     int pTextHeight;           // eax@12

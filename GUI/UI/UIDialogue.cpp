@@ -86,9 +86,7 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
     }
     if (sDialogue_SpeakingActorNPC_ID < 0) v9 = 4;
 
-    pDialogueWindow = new GUIWindow_Dialogue(
-        0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)3
-    );
+    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 3);
     if (pNPCInfo->Hired() && !pNPCInfo->bHasUsedTheAbility) {
         if (pNPCInfo->profession == Healer ||
             pNPCInfo->profession == ExpertHealer ||
@@ -125,8 +123,8 @@ void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello) {
 
 GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
                                        unsigned int width, unsigned int height,
-                                       GUIButton *button, const std::string &hint)
-    : GUIWindow(WINDOW_Dialogue, x, y, width, height, button, hint) {
+                                       WindowData data, const std::string &hint)
+    : GUIWindow(WINDOW_Dialogue, x, y, width, height, data, hint) {
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_NPC_DIALOGUE;
     pBtn_ExitCancel = CreateButton(
@@ -134,7 +132,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
         localization->GetString(LSTR_DIALOGUE_EXIT),
         {{ui_exit_cancel_button_background}}
     );
-    if (par1C != 1) {
+    if (wData.val != 1) {
         int num_dialugue_options = 0;
         int text_line_height = pFontArrus->GetHeight() - 3;
         NPCData *speakingNPC = GetNPCData(sDialogue_SpeakingActorNPC_ID);
@@ -480,8 +478,8 @@ void GUIWindow_Dialogue::Update() {
 
 GUIWindow_GenericDialogue::GUIWindow_GenericDialogue(
     unsigned int x, unsigned int y, unsigned int width, unsigned int height,
-    GUIButton *button, const std::string &hint
-) : GUIWindow(WINDOW_GreetingNPC, x, y, width, height, button, hint) {
+    WindowData data, const std::string &hint
+) : GUIWindow(WINDOW_GreetingNPC, x, y, width, height, data, hint) {
     prev_screen_type = current_screen_type;
     keyboardInputHandler->StartTextInput(TextInputType::Text, 15, this);
     current_screen_type = CURRENT_SCREEN::SCREEN_BRANCHLESS_NPC_DIALOG;
@@ -542,7 +540,7 @@ void GUIWindow_GenericDialogue::Update() {
         sub_4452BB();
         return;
     }
-    if (pGUIWindow2->ptr_1C == (void *)26) {
+    if (pGUIWindow2->wData.val == 26) {
         auto str = StringPrintf("%s %s", GameUI_StatusBar_GetInput().c_str(), keyboardInputHandler->GetTextInput().c_str());
         pGUIWindow2->DrawText(pFontLucida, 13, 357, 0, str, 0, 0, 0);
         pGUIWindow2->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
@@ -567,7 +565,7 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
         dword_5C3418 = a1;
         dword_5C341C = a2;
         _591094_decoration = activeLevelDecoration;
-        pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)a4);
+        pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), a4);
         pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
         pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
         pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);
@@ -581,8 +579,7 @@ void BuildHireableNpcDialogue() {
     int v1 = 0;
     pDialogueWindow->eWindowType = WINDOW_MainMenu;
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(),
-                                             window->GetHeight(), (GUIButton *)1);
+    pDialogueWindow = new GUIWindow_Dialogue(0, 0, window->GetWidth(), window->GetHeight(), 1);
     if (pNPCStats->pProfessions[v0->profession].pBenefits) {
         pDialogueWindow->CreateButton(
             480, 160, 140, 28, 1, 0, UIMSG_SelectNPCDialogueOption,

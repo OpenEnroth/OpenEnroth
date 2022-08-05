@@ -1507,16 +1507,16 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
                 if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
                     inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-                    int chestindex = vChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+                    int chestindex = vChests[pGUIWindow_CurrentMenu->wData.val].pInventoryIndices[invMatrixIndex];
                     if (chestindex < 0) {
                         invMatrixIndex = (-(chestindex + 1));
-                        chestindex = vChests[(int)pGUIWindow_CurrentMenu->par1C].pInventoryIndices[invMatrixIndex];
+                        chestindex = vChests[pGUIWindow_CurrentMenu->wData.val].pInventoryIndices[invMatrixIndex];
                     }
 
                     if (chestindex) {
                         int itemindex = chestindex - 1;
 
-                        GameUI_DrawItemInfo(&vChests[pChestWindow->par1C].igChestItems[itemindex]);
+                        GameUI_DrawItemInfo(&vChests[pChestWindow->wData.val].igChestItems[itemindex]);
                     }
                 }
             }
@@ -1528,7 +1528,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         {
             if (GetCurrentMenuID() > 0) break;
             if ((signed int)pY > (signed int)pViewport->uViewportBR_Y) {
-                popup_window.ptr_1C = (void *)((signed int)pX / 118);
+                popup_window.wData.val = pX / 118;
                 if ((signed int)pX / 118 < 4) {  // portaits zone
                     popup_window.sHint.clear();
                     popup_window.uFrameWidth = 400;
@@ -1537,7 +1537,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameY = 60;
                     pAudioPlayer->PauseSounds(-1);
                     GameUI_CharacterQuickRecord_Draw(
-                        &popup_window, pPlayers[(int64_t)popup_window.ptr_1C + 1]);
+                        &popup_window, pPlayers[popup_window.wData.val + 1]);
                 }
             } else if ((int)pX > pViewport->uViewportBR_X) {
                 if (pY >= 130) {

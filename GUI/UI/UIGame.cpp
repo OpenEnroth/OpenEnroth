@@ -867,7 +867,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
             v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID,
                                                   pMiscTimer->Time());
         player->field_1AA2 = v15->uTextureID - 1;
-        v13 = game_ui_player_faces[window->par1C][v15->uTextureID - 1];
+        v13 = game_ui_player_faces[window->wData.val][v15->uTextureID - 1];
     }
 
     render->DrawTextureAlphaNew((window->uFrameX + 24) / 640.0f,

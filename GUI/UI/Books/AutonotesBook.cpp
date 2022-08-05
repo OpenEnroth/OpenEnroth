@@ -19,8 +19,8 @@
 Image *ui_book_autonotes_background = nullptr;
 
 GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
-    this->ptr_1C =
-        (void *)WINDOW_AutonotesBook;  // inherited from GUIWindow::GUIWindow
+    this->wData.val =
+        WINDOW_AutonotesBook;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
     // --------------------------------

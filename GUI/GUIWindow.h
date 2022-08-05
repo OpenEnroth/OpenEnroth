@@ -427,10 +427,19 @@ struct Texture_MM7;
 class GUIFont;
 class GUIButton;
 
+struct WindowData {
+    WindowData() {}
+    WindowData(int value): val(value) {}
+    WindowData(void *value): ptr(value) {}
+
+    int val = 0;
+    void *ptr = nullptr;
+};
+
 class GUIWindow {
  public:
     GUIWindow();
-    GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, GUIButton *pButton, const std::string &hint = std::string());
+    GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth, unsigned int uHeight, WindowData wData, const std::string &hint = std::string());
     virtual ~GUIWindow() {}
 
     GUIButton *CreateButton(int x, int y, int width, int height, int a6, int a7,
@@ -470,11 +479,7 @@ class GUIWindow {
     unsigned int uFrameZ;
     unsigned int uFrameW;
     WindowType eWindowType;
-    union {
-        void *ptr_1C;        // sometimes BuildID_2Events - book open, sometimes Button
-        unsigned int par1C;  // in shops and houses - int parameter
-                             // sometimes WindowType
-    };
+    WindowData wData; // Window-specific
     int field_24;
     int pNumPresenceButton;
     int pCurrentPosActiveItem;
@@ -492,8 +497,8 @@ class GUIWindow {
 
 class GUIWindow_Scroll : public GUIWindow {
  public:
-    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_Scroll, x, y, width, height, button, hint) {
+    GUIWindow_Scroll(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_Scroll, x, y, width, height, data, hint) {
         CreateButton(61, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
         CreateButton(177, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2, "");
         CreateButton(292, 424, 31, 0, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3, "");
@@ -507,8 +512,8 @@ class GUIWindow_Scroll : public GUIWindow {
 
 class OnButtonClick : public GUIWindow {
  public:
-    OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string(), bool play_sound = true) :
-        GUIWindow(WINDOW_CharacterCreationBtn, x, y, width, height, button, hint),
+    OnButtonClick(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string(), bool play_sound = true) :
+        GUIWindow(WINDOW_CharacterCreationBtn, x, y, width, height, data, hint),
         bPlaySound(play_sound)
     {}
     virtual ~OnButtonClick() {}
@@ -520,8 +525,8 @@ class OnButtonClick : public GUIWindow {
 
 class OnButtonClick2 : public GUIWindow {
  public:
-    OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string(), bool play_sound = true) :
-        GUIWindow(WINDOW_PressedButton2, x, y, width, height, button, hint),
+    OnButtonClick2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string(), bool play_sound = true) :
+        GUIWindow(WINDOW_PressedButton2, x, y, width, height, data, hint),
         bPlaySound(play_sound)
     {}
     virtual ~OnButtonClick2() {}
@@ -533,8 +538,8 @@ class OnButtonClick2 : public GUIWindow {
 
 class OnButtonClick3 : public GUIWindow {
  public:
-    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string())
-        : GUIWindow(windowType, x, y, width, height, button, hint) {
+    OnButtonClick3(WindowType windowType, unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string())
+        : GUIWindow(windowType, x, y, width, height, data, hint) {
     }
 
     virtual ~OnButtonClick3() {}
@@ -545,8 +550,8 @@ class OnButtonClick3 : public GUIWindow {
 // something debug? not really sure, unused
 class OnButtonClick4 : public GUIWindow {
  public:
-    OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_59, x, y, width, height, button, hint)
+    OnButtonClick4(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_59, x, y, width, height, data, hint)
     {}
     virtual ~OnButtonClick4() {}
 
@@ -555,8 +560,8 @@ class OnButtonClick4 : public GUIWindow {
 
 class OnSaveLoad : public GUIWindow {
  public:
-    OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_SaveLoadBtn, x, y, width, height, button, hint)
+    OnSaveLoad(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_SaveLoadBtn, x, y, width, height, data, hint)
     {}
     virtual ~OnSaveLoad() {}
 
@@ -565,8 +570,8 @@ class OnSaveLoad : public GUIWindow {
 
 class OnCancel : public GUIWindow {
  public:
-    OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_GenericCancel, x, y, width, height, button, hint)
+    OnCancel(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_GenericCancel, x, y, width, height, data, hint)
     {}
     virtual ~OnCancel() {}
 
@@ -575,8 +580,8 @@ class OnCancel : public GUIWindow {
 
 class OnCancel2 : public GUIWindow {
  public:
-    OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_ExitCharacterWindow, x, y, width, height, button, hint)
+    OnCancel2(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_ExitCharacterWindow, x, y, width, height, data, hint)
     {}
     virtual ~OnCancel2() {}
 
@@ -585,8 +590,8 @@ class OnCancel2 : public GUIWindow {
 
 class OnCancel3 : public GUIWindow {
  public:
-    OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string()) :
-        GUIWindow(WINDOW_LoadGame_CancelBtn, x, y, width, height, button, hint)
+    OnCancel3(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string()) :
+        GUIWindow(WINDOW_LoadGame_CancelBtn, x, y, width, height, data, hint)
     {}
     virtual ~OnCancel3() {}
 
@@ -595,7 +600,7 @@ class OnCancel3 : public GUIWindow {
 
 class OnCastTargetedSpell : public GUIWindow {
  public:
-    OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, GUIButton *button, const std::string &hint = std::string());
+    OnCastTargetedSpell(unsigned int x, unsigned int y, unsigned int width, unsigned int height, WindowData data, const std::string &hint = std::string());
     virtual ~OnCastTargetedSpell() {}
 };
 
@@ -754,10 +759,10 @@ void OracleDialogue();
 void CheckBountyRespawnAndAward();
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo);
 std::string BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID,
-                           struct ItemGen *a3, char *a4, int a5,
+                           struct ItemGen *a3, int eventId, int a5,
                            GameTime *a6 = nullptr);
 std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID,
-                           struct ItemGen *a3, char *a4, int shop_screen,
+                           struct ItemGen *a3, int eventId, int shop_screen,
                            GameTime *a6 = nullptr);
 int const_2();
 

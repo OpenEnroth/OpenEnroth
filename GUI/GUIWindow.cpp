@@ -153,10 +153,10 @@ bool PauseGameDrawing() {
 
 OnCastTargetedSpell::OnCastTargetedSpell(unsigned int x, unsigned int y,
     unsigned int width,
-    unsigned int height, GUIButton *button,
+    unsigned int height, WindowData data,
     const std::string &hint
 )
-    : GUIWindow(WINDOW_CastSpell, x, y, width, height, button, hint) {
+    : GUIWindow(WINDOW_CastSpell, x, y, width, height, data, hint) {
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
     mouse->SetCursorImage("MICON2");
@@ -299,8 +299,6 @@ void GUIWindow::Init() {
     this->uFrameZ = 0;
     this->uFrameW = 0;
     this->eWindowType = WINDOW_null;
-    this->ptr_1C = 0;
-    this->par1C = 0;
     this->field_24 = 0;
     this->pNumPresenceButton = 0;
     this->pCurrentPosActiveItem = 0;
@@ -435,13 +433,13 @@ void GUIWindow::HouseDialogManager() {
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     if (pDialogueNPCCount != uNumDialogueNPCPortraits || !uHouse_ExitPic) {
-        const char *pHouseName = p2DEvents[window_SpeakInHouse->par1C - 1].pName;
+        const char *pHouseName = p2DEvents[window_SpeakInHouse->wData.val - 1].pName;
         if (pHouseName) {
             int v3 = 2 * pFontCreate->GetHeight() - 6 -
                 pFontCreate->CalcTextHeight(pHouseName, 130, 0);
             if (v3 < 0) v3 = 0;
             pWindow.DrawTitleText(pFontCreate, 0x1EAu, v3 / 2 + 4, pWhiteColor,
-                                  p2DEvents[window_SpeakInHouse->par1C - 1].pName, 3);
+                                  p2DEvents[window_SpeakInHouse->wData.val - 1].pName, 3);
         }
     }
     pWindow.uFrameWidth += 8;
@@ -514,7 +512,7 @@ void GUIWindow::HouseDialogManager() {
                     v9 = 94 * v8 + 113;
                 } else {
                     if (!v8 && dword_591080) {
-                        pTitleText = (char*)p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterTitle;
+                        pTitleText = (char*)p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterTitle;
                         pWindow.DrawTitleText(pFontCreate, 0x1E3u, 113, pColor2, pTitleText, 3);
                         continue;
                     }
@@ -565,8 +563,8 @@ void GUIWindow::HouseDialogManager() {
         pWindow.DrawTitleText(
             pFontCreate, 0x1E3u, 0x71u, pColor2,
             NameAndTitle(
-                p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterName,
-                p2DEvents[window_SpeakInHouse->par1C - 1].pProprieterTitle
+                p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterName,
+                p2DEvents[window_SpeakInHouse->wData.val - 1].pProprieterTitle
             ), 3);
         switch (in_current_building_type) {
         case BuildingType_WeaponShop:
@@ -800,7 +798,7 @@ GUIWindow::GUIWindow() : eWindowType(WINDOW_null) {
 }
 
 GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, unsigned int uWidth,
-    unsigned int uHeight, GUIButton *pButton, const std::string &hint
+    unsigned int uHeight, WindowData wData, const std::string &hint
 )
     : eWindowType(windowType) {
     this->mouse = EngineIoc::ResolveMouse();
@@ -816,7 +814,7 @@ GUIWindow::GUIWindow(WindowType windowType, unsigned int uX, unsigned int uY, un
     this->uFrameZ = uX + uWidth - 1;
     this->uFrameW = uY + uHeight - 1;
 
-    this->ptr_1C = (void *)pButton;
+    this->wData = wData;
     this->sHint = hint;
 
     this->receives_keyboard_input = false;
@@ -828,7 +826,7 @@ void DrawJoinGuildWindow(GUILD_ID guild_id) {
     current_npc_text = (char *)pNPCTopics[guild_id + 99].pText;
     GetJoinGuildDialogueOption(guild_id);
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)guild_id);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, guild_id);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_CANCEL),
@@ -853,7 +851,7 @@ void DialogueEnding() {
 }
 
 void GUIWindow_BooksButtonOverlay::Update() {
-    GUIButton *pButton = (GUIButton *)ptr_1C;
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureAlphaNew(uFrameY / 640.0f, uFrameX / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
 }
@@ -866,7 +864,7 @@ void OnButtonClick::Update() {
     if (bPlaySound) {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
-    GUIButton *pButton = (GUIButton *)ptr_1C;
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
@@ -879,7 +877,7 @@ void OnButtonClick2::Update() {
     if (bPlaySound) {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
-    GUIButton *pButton = (GUIButton *)ptr_1C;
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     if (pButton->uX >= 0 && pButton->uX <= window->GetWidth()) {
         if (pButton->uY >= 0 && pButton->uY <= window->GetHeight()) {
             render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
@@ -896,7 +894,7 @@ void OnButtonClick3::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
-    auto pButton = (GUIButton *)ptr_1C;
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
@@ -909,7 +907,7 @@ void OnButtonClick4::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
-    auto pButton = (GUIButton *)ptr_1C;
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
 
@@ -920,7 +918,7 @@ void OnSaveLoad::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
-    auto pButton = (GUIButton *)ptr_1C;
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
@@ -939,7 +937,7 @@ void OnCancel::Update() {
     if (sHint.empty()) {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
-    auto pGUIButton = (GUIButton *)ptr_1C;
+    GUIButton *pGUIButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pGUIButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
@@ -954,7 +952,7 @@ void OnCancel2::Update() {
     if (!sHint.empty()) {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
-    auto pButton = (GUIButton *)ptr_1C;
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[1]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
@@ -970,7 +968,7 @@ void OnCancel3::Update() {
         pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     }
 
-    auto pButton = (GUIButton *)ptr_1C;
+    GUIButton *pButton = static_cast<GUIButton *>(wData.ptr);
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f, pButton->vTextures[0]);
     viewparams->bRedrawGameUI = true;
     if (!sHint.empty()) {
@@ -1009,7 +1007,7 @@ void CreateScrollWindow() {
     a1.uFrameY = 1;
     a1.uFrameWidth = 468;
     unsigned int v0 =
-        pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->par1C],
+        pFontSmallnum->CalcTextHeight(pScrolls[pGUIWindow_ScrollWindow->wData.val],
             a1.uFrameWidth, 0) +
         2 * (unsigned char)pFontCreate->GetHeight() + 24;
     a1.uFrameHeight = v0;
@@ -1027,13 +1025,13 @@ void CreateScrollWindow() {
     a1.uFrameZ = a1.uFrameWidth + a1.uFrameX - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
 
-    char *v1 = pItemsTable->pItems[(uint64_t)pGUIWindow_ScrollWindow->ptr_1C + 700].pName;
+    char *v1 = pItemsTable->pItems[pGUIWindow_ScrollWindow->wData.val + 700].pName;
 
     a1.DrawTitleText(
         pFontCreate, 0, 0, 0,
         StringPrintf(format_4E2D80, Color16(0xFFu, 0xFFu, 0x9Bu), v1), 3);
     a1.DrawText(pFontSmallnum, 1, pFontCreate->GetHeight() - 3, 0,
-        pScrolls[(uint64_t)pGUIWindow_ScrollWindow->ptr_1C], 0, 0,
+        pScrolls[pGUIWindow_ScrollWindow->wData.val], 0, 0,
         0);
 }
 
@@ -1042,8 +1040,7 @@ void CreateMsgScrollWindow(signed int mscroll_id) {
     if (!pGUIWindow_ScrollWindow && mscroll_id >= 700) {
         if (mscroll_id <= 782) {
             pGUIWindow_ScrollWindow =
-                new GUIWindow_Scroll(0, 0, window->GetWidth(),
-                    window->GetHeight(), (GUIButton *)(mscroll_id - 700), "");
+                new GUIWindow_Scroll(0, 0, window->GetWidth(), window->GetHeight(), mscroll_id - 700, "");
         }
     }
 }
@@ -1656,7 +1653,7 @@ void ClickNPCTopic(DIALOGUE_TYPE topic) {
     strcpy(v22, v24);
     pParty->hirelingScrollPosition = 0;
     pParty->CountHirelings();
-    PrepareHouse((HOUSE_ID)(int64_t)window_SpeakInHouse->ptr_1C);
+    PrepareHouse(static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val));
     dialog_menu_id = DIALOGUE_MAIN;
 
     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
@@ -1672,7 +1669,7 @@ void _4B3FE5_training_dialogue(int eventId) {
     current_npc_text = std::string(pNPCTopics[eventId + 168].pText);
     _4B254D_SkillMasteryTeacher(eventId);  // checks whether the facility can be used
     pDialogueWindow->Release();
-    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, (GUIButton *)eventId);
+    pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, eventId);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_CANCEL), { ui_exit_cancel_button_background }
@@ -1768,20 +1765,17 @@ void CheckBountyRespawnAndAward() {
     pDialogueWindow->_41D08F_set_keyboard_control_group(1, 1, 0, 2);
     dialog_menu_id = DIALOGUE_OTHER;
     // get new monster for hunting
-    if (pParty->PartyTimes.bountyHunting_next_generation_time[(
-        int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] <
+    if (pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - 102] <
         pParty->GetPlayingTime()) {
-        pParty->monster_for_hunting_killed[(
-            int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
-        pParty->PartyTimes.bountyHunting_next_generation_time[(
-            int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+        pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - 102] = false;
+        pParty->PartyTimes.bountyHunting_next_generation_time[window_SpeakInHouse->wData.val - 102] =
             GameTime((int64_t)((double)(0x12750000 *
             (pParty->uCurrentMonth +
                 12 * pParty->uCurrentYear - 14015)) *
                 0.033333335));
         for (i = rand();; i = rand()) {
             rand_monster_id = i % 258 + 1;
-            pParty->monster_id_for_hunting[(int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] =
+            pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102] =
                 rand_monster_id;
             if ((uint16_t)rand_monster_id < 0x73u ||
                 (uint16_t)rand_monster_id > 0x84u) {
@@ -1797,37 +1791,28 @@ void CheckBountyRespawnAndAward() {
             }
         }
     }
-    bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[(
-        int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)];
-    if (!pParty->monster_for_hunting_killed[(
-        int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)]) {
+    bountyHunting_monster_id_for_hunting = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102];
+    if (!pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - 102]) {
         bountyHunting_text = pNPCTopics[351].pText;
-        if (!pParty->monster_id_for_hunting[(
-            int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)])
+        if (!pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102])
             bountyHunting_text = pNPCTopics[353].pText;
     } else {  // get prize
-        if (pParty->monster_id_for_hunting[(
-            int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)]) {
+        if (pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102]) {
             pParty->PartyFindsGold(
                 100 *
                 pMonsterStats
                 ->pInfos
-                [(unsigned __int16)pParty->monster_id_for_hunting[(
-                    int64_t)((char *)window_SpeakInHouse->ptr_1C -
-                        102)]]
+                [(unsigned __int16)pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102]]
             .uLevel,
                 0);
             for (uint i = 0; i < 4; ++i)
                 pParty->pPlayers[i].SetVariable(VAR_Award, 86);
             pParty->uNumBountiesCollected +=
                 100 * pMonsterStats
-                ->pInfos[pParty->monster_id_for_hunting[(
-                    int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)]]
+                ->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102]]
                 .uLevel;
-            pParty->monster_id_for_hunting[(
-                int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] = 0;
-            pParty->monster_for_hunting_killed[(
-                int64_t)((char *)window_SpeakInHouse->ptr_1C - 102)] = false;
+            pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - 102] = 0;
+            pParty->monster_for_hunting_killed[window_SpeakInHouse->wData.val - 102] = false;
         }
         bountyHunting_text = pNPCTopics[352].pText;
     }
@@ -2156,14 +2141,14 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
 }
 
 std::string BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID,
-    ItemGen *a3, char *a4, int a5, GameTime *a6) {
+    ItemGen *a3, int eventId, int a5, GameTime *a6) {
     std::string str = std::string(lpsz);
-    return BuildDialogueString(str, uPlayerID, a3, a4, a5, a6);
+    return BuildDialogueString(str, uPlayerID, a3, eventId, a5, a6);
 }
 
 //----- (00495461) --------------------------------------------------------
 std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, ItemGen *a3,
-    char *a4, int shop_screen, GameTime *a6) {
+    int eventId, int shop_screen, GameTime *a6) {
     char v1[256] = "";
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
@@ -2327,28 +2312,28 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
 
             case 25:  // base prices
                 v29 = pPlayer->GetBaseBuyingPrice(
-                    a3->GetValue(), p2DEvents[(int64_t)a4 - 1].fPriceMultiplier
+                    a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier
                 );
                 switch (shop_screen) {
                 case 3:
                     v29 = pPlayer->GetBaseSellingPrice(
-                        a3->GetValue(), p2DEvents[(int64_t)a4 - 1].fPriceMultiplier
+                        a3->GetValue(), p2DEvents[eventId - 1].fPriceMultiplier
                     );
                     break;
                 case 4:
                     v29 = pPlayer->GetBaseIdentifyPrice(
-                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier
+                        p2DEvents[eventId - 1].fPriceMultiplier
                     );
                     break;
                 case 5:
                     v29 = pPlayer->GetBaseRepairPrice(
                         a3->GetValue(),
-                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
+                        p2DEvents[eventId - 1].fPriceMultiplier);
                     break;
                 case 6:
                     v29 = pPlayer->GetBaseSellingPrice(
                         a3->GetValue(),
-                        p2DEvents[(int64_t)a4 - 1]
+                        p2DEvents[eventId - 1]
                         .fPriceMultiplier) /
                         2;
                     break;
@@ -2360,13 +2345,13 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
             case 27:  // actual price
                 v29 = pPlayer->GetBuyingPrice(
                     a3->GetValue(),
-                    p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
+                    p2DEvents[eventId - 1].fPriceMultiplier);
                 if (shop_screen == 3) {
                     // v29 = pPlayer->GetPriceSell(a3->GetValue(),
-                    // p2DEvents[(signed int)a4 - 1].fPriceMultiplier);
+                    // p2DEvents[(signed int)eventId - 1].fPriceMultiplier);
                     v29 = pPlayer->GetPriceSell(
                         *a3,
-                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
+                        p2DEvents[eventId - 1].fPriceMultiplier);
                     // if (a3->IsBroken())
                     // v29 = 1;
                     sprintf(v1, "%u", v29);
@@ -2377,14 +2362,14 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
                     if (shop_screen == 5) {
                         v29 = pPlayer->GetPriceRepair(
                             a3->GetValue(),
-                            p2DEvents[(int64_t)a4 - 1].fPriceMultiplier);
+                            p2DEvents[eventId - 1].fPriceMultiplier);
                     } else {
                         if (shop_screen == 6) {
                             // v29 = pPlayer->GetPriceSell(a3->GetValue(),
-                            // p2DEvents[(signed int)a4 -
+                            // p2DEvents[(signed int)eventId -
                             // 1].fPriceMultiplier) / 2;
                             v29 = pPlayer->GetPriceSell(
-                                *a3, p2DEvents[(int64_t)a4 - 1]
+                                *a3, p2DEvents[eventId - 1]
                                 .fPriceMultiplier) /
                                 2;
                             // if (a3->IsBroken())
@@ -2403,24 +2388,25 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
                 sprintf(
                     v1, "%u",
                     pPlayer->GetPriceIdentification(
-                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier));
+                        p2DEvents[eventId - 1].fPriceMultiplier));
                 result += v1;
                 break;
 
             case 28:  // shop type - blacksmith ect..
-                result += p2DEvents[(int64_t)a4 - 1].pProprieterTitle;
+                result += p2DEvents[eventId - 1].pProprieterTitle;
                 break;
 
             case 29:  // identify cost
                 sprintf(
                     v1, "%u",
                     pPlayer->GetPriceIdentification(
-                        p2DEvents[(int64_t)a4 - 1].fPriceMultiplier));
+                        p2DEvents[eventId - 1].fPriceMultiplier));
                 result += v1;
                 break;
             case 30:
                 if (!a6) {
-                    result += a4;
+                    // result += eventId; 
+                    __debugbreak(); // should never get here?
                     break;
                 }
                 v56.Initialize(*a6);
@@ -2444,7 +2430,8 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
                     break;
                 }
                 if (v17 - 51 >= 20) {
-                    result += a4;
+                    // result += eventId;
+                    __debugbreak(); // should never get here?
                     break;
                 }
 

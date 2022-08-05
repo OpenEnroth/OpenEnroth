@@ -493,8 +493,7 @@ std::array<Image *, 16> paperdoll_dbrds;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
     unsigned int uActiveCharacter, enum CURRENT_SCREEN screen)
-    : GUIWindow(WINDOW_CharacterRecord, 0, 0, window->GetWidth(), window->GetHeight(),
-                (GUIButton *)uActiveCharacter) {
+    : GUIWindow(WINDOW_CharacterRecord, 0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter) {
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
     bRingsShownInCharScreen = false;
@@ -687,7 +686,7 @@ GUIWindow *CastSpellInfo::GetCastSpellInInventoryWindow() {
     CharacterUI_LoadPaperdollTextures();
     current_screen_type = CURRENT_SCREEN::SCREEN_CASTING;
     GUIWindow *CS_inventory_window = new GUIWindow_Inventory_CastSpell(
-        0, 0, window->GetWidth(), window->GetHeight(), (GUIButton *)this, "");
+        0, 0, window->GetWidth(), window->GetHeight(), this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton(
         394, 318, 75, 33, 1, 0, UIMSG_ClickExitCharacterWindowBtn, 0, GameKey::None,
         localization->GetString(LSTR_DIALOGUE_EXIT),
@@ -2758,7 +2757,7 @@ void OnPaperdollLeftClick() {
              *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) = v36;
              *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
              *pEquipType;*/
-            pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+            pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
             pSpellInfo->uFlags &= 0x7F;
             pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
             pSpellInfo->spell_target_pid = pPlayers[uActiveCharacter]->pEquipment.pIndices[pos];
@@ -2833,7 +2832,7 @@ void OnPaperdollLeftClick() {
                  *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                  *pEquipType;*/
                 pSpellInfo =
-                    (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+                    static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                 pSpellInfo->uFlags &= 0x7F;
                 pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
                 pSpellInfo->spell_target_pid = v34 - 1;

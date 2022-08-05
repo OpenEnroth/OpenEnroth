@@ -24,8 +24,7 @@ Image *ui_book_townportal_background = nullptr;
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook()  // const char *a1)
     : GUIWindow_Book() {
     // this->sHint = a1;  // inherited from GUIWindow::GUIWindow
-    this->ptr_1C =
-        (void *)WINDOW_TownPortal;  // inherited from GUIWindow::GUIWindow
+    this->wData.val = WINDOW_TownPortal;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
     // ----------------------------------------------

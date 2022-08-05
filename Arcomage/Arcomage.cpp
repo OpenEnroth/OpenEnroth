@@ -2898,11 +2898,13 @@ void GameResultsApply() {
     pArcomageGame->uGameWinner = winner;
     if (winner == 1) {
         // 108..120 - tavern ids
-        if ((window_SpeakInHouse->par1C >= 108) && (window_SpeakInHouse->par1C <= 120)) {
-            if (!pParty->pArcomageWins[window_SpeakInHouse->par1C - 108]) {
-                pParty->pArcomageWins[window_SpeakInHouse->par1C - 108] = 1;
+        // TODO: get rid of static cast, just place HOUSE_ID in proper place
+        HOUSE_ID houseId = static_cast<HOUSE_ID>(window_SpeakInHouse->wData.val); 
+        if ((houseId >= 108) && (houseId <= 120)) {
+            if (!pParty->pArcomageWins[houseId - 108]) {
+                pParty->pArcomageWins[houseId - 108] = 1;
                 pParty->PartyFindsGold(
-                    static_cast<unsigned int>(p2DEvents[window_SpeakInHouse->par1C - 1].fPriceMultiplier * 100), 0);
+                    static_cast<unsigned int>(p2DEvents[houseId - 1].fPriceMultiplier * 100), 0);
             }
         }
 
@@ -2986,7 +2988,7 @@ void ArcomageGame::PrepareArcomage() {
 
 void SetStartConditions() {
     const ArcomageStartConditions *st_cond;
-    st_cond = &start_conditions[window_SpeakInHouse->par1C - 108];
+    st_cond = &start_conditions[window_SpeakInHouse->wData.val - 108];
 
     // set start conditions
     start_tower_height = st_cond->tower_height;
