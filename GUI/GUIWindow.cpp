@@ -2405,7 +2405,7 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
                 break;
             case 30:
                 if (!a6) {
-                    // result += eventId; 
+                    // result += eventId;
                     __debugbreak(); // should never get here?
                     break;
                 }
