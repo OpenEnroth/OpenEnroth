@@ -126,7 +126,7 @@ void Party::Zero() {
         player->sResAirBase = 0;
         player->sResWaterBase = 0;
         player->sResEarthBase = 0;
-        player->field_177C = 0;
+        player->sResPhysicalBase = 0;
         player->sResMagicBase = 0;
         player->sResSpiritBase = 0;
         player->sResMindBase = 0;

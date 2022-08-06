@@ -449,7 +449,7 @@ struct Player {
     __int16 sResAirBase;
     __int16 sResWaterBase;
     __int16 sResEarthBase;
-    __int16 field_177C;
+    __int16 sResPhysicalBase;
     __int16 sResMagicBase;
     __int16 sResSpiritBase;
     __int16 sResMindBase;
@@ -460,7 +460,7 @@ struct Player {
     __int16 sResAirBonus;
     __int16 sResWaterBonus;
     __int16 sResEarthBonus;
-    __int16 field_1792;
+    __int16 sResPhysicalBonus;
     __int16 sResMagicBonus;
     __int16 sResSpiritBonus;
     __int16 sResMindBonus;

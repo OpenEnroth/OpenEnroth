@@ -3599,6 +3599,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     pActiveSkills.fill(0);
     memset(_achieved_awards_bits, 0, sizeof(_achieved_awards_bits));
     memset(&spellbook, 0, sizeof(spellbook));
+    uQuickSpell = 0;
 
     for (uint i = 0; i < 37; ++i) {
         if (pSkillAvailabilityPerClass[classType / 4][i] != 2) continue;
@@ -3768,7 +3769,7 @@ void Player::Zero() {
     this->sResAirBonus = 0;
     this->sResWaterBonus = 0;
     this->sResEarthBonus = 0;
-    this->field_1792 = 0;
+    this->sResPhysicalBonus = 0;
     this->sResMagicBonus = 0;
     this->sResSpiritBonus = 0;
     this->sResMindBonus = 0;
