@@ -350,7 +350,7 @@ struct Player_Image_MM7 {
     /* 1776 */ int16_t sResAirBase;
     /* 1778 */ int16_t sResWaterBase;
     /* 177A */ int16_t sResEarthBase;
-    /* 177C */ int16_t field_177C;
+    /* 177C */ int16_t sResPhysicalBase;
     /* 177E */ int16_t sResMagicBase;
     /* 1780 */ int16_t sResSpiritBase;
     /* 1782 */ int16_t sResMindBase;
@@ -361,7 +361,7 @@ struct Player_Image_MM7 {
     /* 178C */ int16_t sResAirBonus;
     /* 178E */ int16_t sResWaterBonus;
     /* 1790 */ int16_t sResEarthBonus;
-    /* 1792 */ int16_t field_1792;
+    /* 1792 */ int16_t sResPhysicalBonus;
     /* 1794 */ int16_t sResMagicBonus;
     /* 1796 */ int16_t sResSpiritBonus;
     /* 1798 */ int16_t sResMindBonus;

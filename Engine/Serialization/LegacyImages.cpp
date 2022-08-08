@@ -705,7 +705,7 @@ void Player_Image_MM7::Serialize(Player *player) {
     this->sResAirBase = player->sResAirBase;
     this->sResWaterBase = player->sResWaterBase;
     this->sResEarthBase = player->sResEarthBase;
-    this->field_177C = player->field_177C;
+    this->sResPhysicalBase = player->sResPhysicalBase;
     this->sResMagicBase = player->sResMagicBase;
     this->sResSpiritBase = player->sResSpiritBase;
     this->sResMindBase = player->sResMindBase;
@@ -716,7 +716,7 @@ void Player_Image_MM7::Serialize(Player *player) {
     this->sResAirBonus = player->sResAirBonus;
     this->sResWaterBonus = player->sResWaterBonus;
     this->sResEarthBonus = player->sResEarthBonus;
-    this->field_1792 = player->field_1792;
+    this->sResPhysicalBonus = player->sResPhysicalBonus;
     this->sResMagicBonus = player->sResMagicBonus;
     this->sResSpiritBonus = player->sResSpiritBonus;
     this->sResMindBonus = player->sResMindBonus;
@@ -990,7 +990,7 @@ void Player_Image_MM7::Deserialize(Player* player) {
     player->sResAirBase = this->sResAirBase;
     player->sResWaterBase = this->sResWaterBase;
     player->sResEarthBase = this->sResEarthBase;
-    player->field_177C = this->field_177C;
+    player->sResPhysicalBase = this->sResPhysicalBase;
     player->sResMagicBase = this->sResMagicBase;
     player->sResSpiritBase = this->sResSpiritBase;
     player->sResMindBase = this->sResMindBase;
@@ -1001,7 +1001,7 @@ void Player_Image_MM7::Deserialize(Player* player) {
     player->sResAirBonus = this->sResAirBonus;
     player->sResWaterBonus = this->sResWaterBonus;
     player->sResEarthBonus = this->sResEarthBonus;
-    player->field_1792 = this->field_1792;
+    player->sResPhysicalBonus = this->sResPhysicalBonus;
     player->sResMagicBonus = this->sResMagicBonus;
     player->sResSpiritBonus = this->sResSpiritBonus;
     player->sResMindBonus = this->sResMindBonus;
