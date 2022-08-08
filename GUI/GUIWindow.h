@@ -787,7 +787,7 @@ extern GUIWindow *pGUIWindow_CurrentMenu;
 //extern GUIWindow *ptr_507BD0;
 extern GUIWindow *pGUIWindow_CastTargetedSpell;
 extern GUIWindow *pModalWindow;
-extern GUIWindow *pGUIWindow_EscMessageWindow;
+//extern GUIWindow *pGUIWindow_EscMessageWindow;
 extern GUIWindow *pBooksButtonOverlay;
 extern GUIWindow *pGUIWindow2;
 

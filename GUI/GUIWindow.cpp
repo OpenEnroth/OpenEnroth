@@ -54,16 +54,24 @@ GUIWindow *pGUIWindow_CurrentMenu;
 
 
 //GUIWindow *pChestWindow;
+
 GUIWindow *pDialogueWindow;
 GUIWindow *window_SpeakInHouse;
-GUIWindow *pGUIWindow_ScrollWindow;
-GUIWindow *ptr_507BC8;
+
+GUIWindow *pGUIWindow_ScrollWindow; // reading a message scroll
+
+GUIWindow *ptr_507BC8;  // screen 19 - not used?
+
 //GUIWindow *ptr_507BD0;
 GUIWindow *pGUIWindow_CastTargetedSpell;
-GUIWindow *pModalWindow;
-GUIWindow *pGUIWindow_EscMessageWindow;
-GUIWindow *pBooksButtonOverlay;
-GUIWindow *pGUIWindow2;
+
+GUIWindow *pModalWindow; // UIMSG_ShowFinalWindow
+
+//GUIWindow *pGUIWindow_EscMessageWindow;
+
+GUIWindow *pBooksButtonOverlay; // child of books windows
+
+GUIWindow *pGUIWindow2; // branchless dialougue
 
 typedef struct _RGBColor {
     unsigned char R;

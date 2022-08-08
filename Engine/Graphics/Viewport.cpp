@@ -262,7 +262,7 @@ void InteractWithActor(unsigned int id) {
                     [pNPCStats->pGroups_copy[pActors[id].uGroup]]) {
                 pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
                 branchless_dialogue_str = pNPCStats->pCatchPhrases[pNPCStats->pGroups_copy[pActors[id].uGroup]];
-                sub_4451A8_press_any_key(0, 0, 0);
+                StartBranchlessDialogue(0, 0, 0);
             }
         }
     }

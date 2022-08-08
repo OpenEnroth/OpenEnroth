@@ -801,7 +801,7 @@ LABEL_47:
                     if (!entry_line) {
                         game_ui_status_bar_event_string =
                             &pLevelStr[pLevelStrOffsets[EVT_DWORD(_evt->v5)]];
-                        sub_4451A8_press_any_key(uEventID, curr_seq_num, 26);
+                        StartBranchlessDialogue(uEventID, curr_seq_num, 26);
                         if (v133 == 1) OnMapLeave();
                         return;
                     }
@@ -1126,7 +1126,7 @@ LABEL_47:
                     ++curr_seq_num;
                     break;
                 case EVENT_PressAnyKey:
-                    sub_4451A8_press_any_key(uEventID, curr_seq_num + 1, 33);
+                    StartBranchlessDialogue(uEventID, curr_seq_num + 1, 33);
                     if (v133 == 1) OnMapLeave();
                     return;
                 case EVENT_Exit:

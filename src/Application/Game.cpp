@@ -423,6 +423,14 @@ void Game::OnEscape() {
 
 extern bool _506360_installing_beacon;
 
+bool IsWindowSwitchable() {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE
+        || current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV || current_screen_type == CURRENT_SCREEN::SCREEN_CHANGE_LOCATION) {
+        return false;
+    }
+    return true;
+}
+
 void Game::EventLoop() {
     unsigned int v2;            // edx@7
     GUIWindow *pWindow2;        // ecx@248
@@ -592,12 +600,16 @@ void Game::EventLoop() {
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                         continue;
                     }
-                    // cant open screen - talking or in shop
-                    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
                         continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
                     }
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // open window
                     pGUIWindow_CurrentMenu = new GUIWindow_QuestBook();
                     continue;
                 case UIMSG_OpenAutonotes:
@@ -607,12 +619,16 @@ void Game::EventLoop() {
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                         continue;
                     }
-                    // cant open screen - talking or in shop
-                    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
                         continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
                     }
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // open window
                     pGUIWindow_CurrentMenu = new GUIWindow_AutonotesBook();
                     continue;
                 case UIMSG_OpenMapBook:
@@ -622,12 +638,16 @@ void Game::EventLoop() {
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                         continue;
                     }
-                    // cant open screen - talking or in shop
-                    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
                         continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
                     }
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // open window;
                     pGUIWindow_CurrentMenu = new GUIWindow_MapBook();
                     continue;
                 case UIMSG_OpenCalendar:
@@ -637,12 +657,16 @@ void Game::EventLoop() {
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                         continue;
                     }
-                    // cant open screen - talking or in shop
-                    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
                         continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
                     }
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // open window
                     pGUIWindow_CurrentMenu = new GUIWindow_CalendarBook();
                     continue;
                 case UIMSG_OpenHistoryBook:
@@ -652,12 +676,16 @@ void Game::EventLoop() {
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                         continue;
                     }
-                    // cant open screen - talking or in shop
-                    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
                         continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
                     }
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // open window
                     pGUIWindow_CurrentMenu = new GUIWindow_JournalBook();
                     continue;
                 case UIMSG_OpenDebugMenu:
@@ -890,7 +918,7 @@ void Game::EventLoop() {
                                                                         // escape
                                         GameUI_StatusBar_ClearEventString();
 
-                                        sub_4452BB();
+                                        ReleaseBranchlessDialogue();
                                         DialogueEnding();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                         viewparams->bRedrawGameUI = true;
@@ -1017,13 +1045,19 @@ void Game::EventLoop() {
                     }
                     if (iequals(s_SavedMapName.data(), "d05.blv"))
                         pParty->GetPlayingTime().AddDays(4);
-                    continue;
 
+                    CloseWindowBackground();
+                    DialogueEnding();
+                    back_to_game();
+                    OnEscape();
+                    continue;
                 case UIMSG_TransitionWindowCloseBtn:
                     CloseWindowBackground();
                     pMediaPlayer->Unload();
                     DialogueEnding();
                     viewparams->bRedrawGameUI = true;
+                    back_to_game();
+                    OnEscape();
                     continue;
                 case UIMSG_CycleCharacters:
                     uActiveCharacter = CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled());
@@ -1752,6 +1786,7 @@ void Game::EventLoop() {
                     //    continue;
                     //}
                     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
+                    CloseTargetedSpellWindow();
 
                     if (CheckActors_proximity()) {
                         if (pParty->bTurnBasedModeOn) {
@@ -1778,7 +1813,7 @@ void Game::EventLoop() {
                         continue;
                     } else {
                         if (engine->config->verbose_logging) {
-                            if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE) logger->Info("Party is aribourne");
+                            if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE) logger->Info("Party is airborne");
                             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) logger->Info("Party on water");
                         }
                     }
@@ -2039,27 +2074,18 @@ void Game::EventLoop() {
                                 continue;
                             }
                             // cant open screen - talking or in shop or map transition
-                            if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE
-                                || current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV) {
+                            if (!IsWindowSwitchable()) {
                                 continue;
+                            } else {
+                                // close out current window
+                                back_to_game();
+                                OnEscape();
+                                GameUI_StatusBar_Clear();
                             }
-                            // game screen
-                            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-                                new OnButtonClick2(476, 450, 0, 0, pBtn_CastSpell);
-                                pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
-                                continue;
-                            }
-                            // switchable
-                            if (current_screen_type != CURRENT_SCREEN::SCREEN_REST &&
-                                current_screen_type != CURRENT_SCREEN::SCREEN_CHARACTERS &&
-                                (current_screen_type <= CURRENT_SCREEN::SCREEN_63 ||
-                                 current_screen_type > CURRENT_SCREEN::SCREEN_67)) {
-                                if (!pGUIWindow_CurrentMenu) __debugbreak();
-                                pGUIWindow_CurrentMenu->Release();
-                                new OnButtonClick2(476, 450, 0, 0, pBtn_CastSpell);
-                                pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
-                                continue;
-                            }
+                            // open window
+                            new OnButtonClick2(476, 450, 0, 0, pBtn_CastSpell);
+                            pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
+                            continue;
                         }
                     }
                     continue;
@@ -2070,16 +2096,18 @@ void Game::EventLoop() {
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                         continue;
                     }
-                    // cant open screen - talking or in shop
-                    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE) {
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
                         continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
                     }
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
-
+                    // open window
                     new OnButtonClick2(0x230u, 0x1C2u, 0, 0, pBtn_QuickReference);
                     viewparams->bRedrawGameUI = true;
-
                     pGUIWindow_CurrentMenu = new GUIWindow_QuickReference();
                     continue;
                 case UIMSG_GameMenuButton:

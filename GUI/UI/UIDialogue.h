@@ -25,6 +25,6 @@ class GUIWindow_GenericDialogue : public GUIWindow {
     virtual void Release();
 };
 
-void sub_4451A8_press_any_key(int a1, int a2, int a4);
+void StartBranchlessDialogue(int eventid, int entryline, int button);
 
 void OnSelectNPCDialogueOption(DIALOGUE_TYPE option);

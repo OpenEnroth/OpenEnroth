@@ -3984,7 +3984,7 @@ bool CheckActors_proximity() {
     int for_z;            // [sp+10h] [bp-Ch]@5
 
     distance = 5120;
-    // if (uCurrentlyLoadedLevelType == LEVEL_Indoor) distance = 2560;
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) distance = 2560;
 
     if ((signed int)uNumActors <= 0) return false;
     for (uint i = 0; i < (signed int)uNumActors; ++i) {
