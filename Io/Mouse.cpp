@@ -263,7 +263,7 @@ void Mouse::UI_OnMouseLeftClick() {
         sub_4637E0_is_there_popup_onscreen())
         return;
 
-    if (pGUIWindow2 && pGUIWindow2->ptr_1C == (void *)33) {
+    if (pGUIWindow2 && pGUIWindow2->wData.val == 33) {
         sub_4452BB();
         return;
     }

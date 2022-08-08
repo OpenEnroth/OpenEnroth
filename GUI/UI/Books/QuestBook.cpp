@@ -18,8 +18,7 @@
 Image *ui_book_quests_background = nullptr;
 
 GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
-    this->ptr_1C =
-        (void *)WINDOW_QuestBook;  // inherited from GUIWindow::GUIWindow
+    this->wData.val = WINDOW_QuestBook;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
     // --------------------------------

@@ -295,7 +295,6 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     const char *v99;       // esi@267
     int v100;              // edx@267
     unsigned int v102;     // esi@281
-    int v104;              // eax@288
     int v106;              // [sp-20h] [bp-4C8h]@278
     signed int v109;       // [sp-14h] [bp-4BCh]@278
     signed int v110;       // [sp-10h] [bp-4B8h]@278
@@ -492,7 +491,7 @@ LABEL_47:
                                 pAudioPlayer->PauseSounds(-1);
                                 window_SpeakInHouse = new GUIWindow_House(
                                     0, 0, window->GetWidth(),
-                                    window->GetHeight(), (GUIButton *)170, "");
+                                    window->GetHeight(), HOUSE_DARK_GUILD_PIT, "");
                                 window_SpeakInHouse->CreateButton(
                                     61, 424, 31, 0, 2, 94,
                                     UIMSG_SelectCharacter, 1, GameKey::Digit1, "");
@@ -578,7 +577,7 @@ LABEL_47:
                     pNPCStats->pNewNPCData[EVT_DWORD(_evt->v5)].Location2D =
                         EVT_DWORD(_evt->v9);
                     if (window_SpeakInHouse) {
-                        if (window_SpeakInHouse->par1C == 165) {
+                        if (window_SpeakInHouse->wData.val == HOUSE_BODY_GUILD_ERATHIA) {
                             HouseDialogPressCloseBtn();
                             pMediaPlayer->Unload();
                             window_SpeakInHouse->Release();
@@ -588,7 +587,7 @@ LABEL_47:
                                 pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
                                 window_SpeakInHouse = new GUIWindow_House(
                                     0, 0, window->GetWidth(),
-                                    window->GetHeight(), (GUIButton *)165, 0);
+                                    window->GetHeight(), HOUSE_BODY_GUILD_ERATHIA, "");
                                 window_SpeakInHouse->DeleteButtons();
                             }
                             //          else {
@@ -1102,12 +1101,12 @@ LABEL_47:
                     if (EnterHouse((enum HOUSE_ID)EVT_DWORD(_evt->v5))) {
                         pAudioPlayer->PlaySound(SOUND_Invalid, 0, 0, -1, 0, 0);
                         pAudioPlayer->PlaySound(SOUND_enter, 814, 0, -1, 0, 0);
-                        v104 = 187;
+                        HOUSE_ID houseId = HOUSE_JAIL;
                         if (uCurrentHouse_Animation != 167)
-                            v104 = EVT_DWORD(_evt->v5);
+                            houseId = static_cast<HOUSE_ID>(EVT_DWORD(_evt->v5));
                         window_SpeakInHouse =
                             new GUIWindow_House(0, 0, window->GetWidth(),
-                                                window->GetHeight(), (GUIButton *)v104);
+                                                window->GetHeight(), houseId);
                         window_SpeakInHouse->CreateButton(61, 424, 31, 0, 2, 94,
                                                           UIMSG_SelectCharacter,
                                                           1, GameKey::Digit1, "");

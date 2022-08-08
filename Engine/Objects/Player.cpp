@@ -475,9 +475,9 @@ bool Player::IsPlayerHealableByTemple() {
         return false;  // fully healthy
     } else {
         if (GetMajorConditionIdx() == Condition_Zombie) {
-            if ((window_SpeakInHouse->par1C == 78 ||
-                 window_SpeakInHouse->par1C == 81 ||
-                 window_SpeakInHouse->par1C == 82))
+            if ((window_SpeakInHouse->wData.val == 78 ||
+                 window_SpeakInHouse->wData.val == 81 ||
+                 window_SpeakInHouse->wData.val == 82))
                 return false;  // zombie cant be healed at these tmeples
             else
                 return true;
@@ -7318,8 +7318,7 @@ void Player::OnInventoryLeftClick() {
                      *enchantedItemPos - 1;
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *invMatrixIndex;*/
-                    pSpellInfo =
-                        (CastSpellInfo*)pGUIWindow_CastTargetedSpell->ptr_1C;
+                    pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     pSpellInfo->uFlags &= 0x7F;
                     pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
                     pSpellInfo->spell_target_pid = enchantedItemPos - 1;

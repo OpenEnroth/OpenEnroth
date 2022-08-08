@@ -43,7 +43,7 @@ void GUIWindow_RestWindow::Update() {
     GUIButton2.pParent = pButton_RestUI_WaitUntilDawn->pParent;
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
     render->DrawTextureAlphaNew(uFrameX / 640.0f, uFrameY / 480.0f,
-                                *((Image **)ptr_1C + 15));
+                                *(static_cast<Image **>(wData.ptr) + 15));
     viewparams->bRedrawGameUI = 1;
     GUIButton2.DrawLabel(
         localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, 0, 0);
@@ -230,7 +230,7 @@ void GUIWindow_Rest::Update() {
         if (_506F14_resting_stage) Party::Sleep8Hours();
     } else {
         new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0,
-            (GUIButton *)pButton_RestUI_Exit,
+            pButton_RestUI_Exit,
             localization->GetString(LSTR_EXIT_REST));
     }
 }

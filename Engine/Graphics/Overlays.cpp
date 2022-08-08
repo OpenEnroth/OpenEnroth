@@ -44,7 +44,7 @@ int OtherOverlayList::_4418B6(int uOverlayID, __int16 a3, int a4, int a5,
             this->pOverlays[i].screen_space_x = 0;
             this->pOverlays[i].field_C = a3;
             v9 = 0;
-            for (v9; v9 < (signed int)pOverlayList->uNumOverlays; ++v9) {
+            for (; v9 < (signed int)pOverlayList->uNumOverlays; ++v9) {
                 if (uOverlayID == pOverlayList->pOverlays[v9].uOverlayID) break;
             }
             this->pOverlays[i].field_2 = v9;

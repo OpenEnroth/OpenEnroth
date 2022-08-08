@@ -8,10 +8,9 @@
 
 enum CURRENT_SCREEN modal_window_prev_screen_type;
 
-GUIWindow_Modal::GUIWindow_Modal(const char *message,
-                                 enum UIMessageType on_release_event)
+GUIWindow_Modal::GUIWindow_Modal(const char *message, UIMessageType on_release_event)
     : GUIWindow(WINDOW_ModalWindow, 0, 0, window->GetWidth(), window->GetHeight(),
-                (GUIButton *)on_release_event, message) {
+                on_release_event, message) {
     pEventTimer->Pause();
     prev_screen_type = current_screen_type;
     current_screen_type = CURRENT_SCREEN::SCREEN_MODAL_WINDOW;
@@ -32,7 +31,7 @@ void GUIWindow_Modal::Update() {
 }
 
 void GUIWindow_Modal::Release() {
-    pMessageQueue_50CBD0->AddGUIMessage((UIMessageType)par1C, 0, 0);
+    pMessageQueue_50CBD0->AddGUIMessage(static_cast<UIMessageType>(wData.val), 0, 0);
 
     current_screen_type = prev_screen_type;
     pEventTimer->Resume();

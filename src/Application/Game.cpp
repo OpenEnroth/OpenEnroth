@@ -664,7 +664,7 @@ void Game::EventLoop() {
                         if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                             dword_6BE138 = -1;
                             new OnButtonClick2(0x25Au, 0x1C2u, 0, 0,
-                                               (GUIButton *)pBtn_GameSettings, std::string(),
+                                               pBtn_GameSettings, std::string(),
                                                false);
 
                             pMessageQueue_50CBD0->Flush();
@@ -1093,7 +1093,7 @@ void Game::EventLoop() {
                     if (v45 == 3) {
                         v47 = pActors[v46].uAIState == Dead;
                         if (!v47) continue;
-                        pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+                        pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                         pSpellInfo->uFlags &= ~0x40u;
                         pSpellInfo->uPlayerID_2 = uMessageParam;
                         pSpellInfo->spell_target_pid = v44;
@@ -1113,8 +1113,7 @@ void Game::EventLoop() {
                                    .uFlags &
                                0x10) == 0;
                         if (!v47) continue;
-                        pSpellInfo = (CastSpellInfo *)
-                                         pGUIWindow_CastTargetedSpell->ptr_1C;
+                        pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                         pSpellInfo->uFlags &= ~0x40u;
                         pSpellInfo->uPlayerID_2 = uMessageParam;
                         pSpellInfo->spell_target_pid = v44;
@@ -1138,8 +1137,7 @@ void Game::EventLoop() {
                                 !pODMFace->sCogTriggeredID)
                                 continue;
                             v44 = uNumSeconds;
-                            pSpellInfo =
-                                (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+                            pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                             pSpellInfo->uFlags &= ~0x40u;
                             pSpellInfo->uPlayerID_2 = uMessageParam;
                             pSpellInfo->spell_target_pid = v44;
@@ -1159,8 +1157,7 @@ void Game::EventLoop() {
                                   .uEventID == 0;
                     }
                     if (v48) continue;
-                    pSpellInfo =
-                        (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+                    pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     pSpellInfo->uFlags &= ~0x40u;
                     pSpellInfo->uPlayerID_2 = uMessageParam;
                     pSpellInfo->spell_target_pid = v44;
@@ -1188,9 +1185,7 @@ void Game::EventLoop() {
                         viewparams->bRedrawGameUI = 1;
                     } else {
                         if (pGUIWindow_CastTargetedSpell) {
-                            pSpellInfo =
-                                (CastSpellInfo *)
-                                    pGUIWindow_CastTargetedSpell->ptr_1C;
+                            pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                             switch (uMessage) {
                                 case UIMSG_CastSpell_Character_Big_Improvement:
                                     pSpellInfo->uFlags &= ~0x02u;
@@ -1225,7 +1220,7 @@ void Game::EventLoop() {
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     // v53 = p2DEvents_minus1_::30[26 * (unsigned
                     // int)ptr_507BC0->ptr_1C];
-                    v53 = p2DEvents[(uint64_t)window_SpeakInHouse->ptr_1C - 1]._quest_bit;
+                    v53 = p2DEvents[window_SpeakInHouse->wData.val - 1]._quest_bit;
                     if (v53 < 0) {
                         v54 = abs(v53) - 1;
                         Party_Teleport_Cam_Pitch = 0;
@@ -1589,7 +1584,7 @@ void Game::EventLoop() {
                     v84 = v83.depth;
                     if (PID_TYPE(v44) != 3 || v84 >= engine->config->ranged_attack_depth)
                         continue;
-                    pSpellInfo = (CastSpellInfo *)pGUIWindow_CastTargetedSpell->ptr_1C;
+                    pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
                         pSpellInfo->uFlags &= ~0x08;
                     } else {
@@ -1653,7 +1648,7 @@ void Game::EventLoop() {
                 case UIMSG_ExitRest:
                     new OnCancel(pButton_RestUI_Exit->uX,
                                  pButton_RestUI_Exit->uY, 0, 0,
-                                 (GUIButton *)pButton_RestUI_Exit,
+                                 pButton_RestUI_Exit,
                                  localization->GetString(LSTR_EXIT_REST));
                     continue;
                 case UIMSG_Wait5Minutes:
@@ -1665,7 +1660,7 @@ void Game::EventLoop() {
                     new OnButtonClick2(
                         pButton_RestUI_Wait5Minutes->uX,
                         pButton_RestUI_Wait5Minutes->uY, 0, 0,
-                        (GUIButton *)pButton_RestUI_Wait5Minutes,
+                        pButton_RestUI_Wait5Minutes,
                         localization->GetString(LSTR_WAIT_5_MINUTES));
                     _506F14_resting_stage = 1;
                     _506F18_num_minutes_to_sleep = 5;
@@ -1679,7 +1674,7 @@ void Game::EventLoop() {
                     new OnButtonClick2(
                         pButton_RestUI_Wait1Hour->uX,
                         pButton_RestUI_Wait1Hour->uY, 0, 0,
-                        (GUIButton *)pButton_RestUI_Wait1Hour,
+                        pButton_RestUI_Wait1Hour,
                         localization->GetString(LSTR_WAIT_1_HOUR));
                     _506F14_resting_stage = 1;
                     _506F18_num_minutes_to_sleep = 60;
@@ -1816,7 +1811,7 @@ void Game::EventLoop() {
                     new OnButtonClick2(
                         pButton_RestUI_WaitUntilDawn->uX,
                         pButton_RestUI_WaitUntilDawn->uY, 0, 0,
-                        (GUIButton *)pButton_RestUI_WaitUntilDawn,
+                        pButton_RestUI_WaitUntilDawn,
                         localization->GetString(LSTR_WAIT_UNTIL_DAWN));
                     v97 = _494820_training_time(pParty->uCurrentHour);
                     _506F14_resting_stage = 1;
@@ -1870,7 +1865,7 @@ void Game::EventLoop() {
                 case UIMSG_ClickInstallRemoveQuickSpellBtn: {
                     new OnButtonClick2(pBtn_InstallRemoveSpell->uX,
                                        pBtn_InstallRemoveSpell->uY, 0, 0,
-                                       (GUIButton *)pBtn_InstallRemoveSpell);
+                                       pBtn_InstallRemoveSpell);
                     if (!uActiveCharacter) continue;
                     pPlayer10 = pPlayers[uActiveCharacter];
                     if (!byte_506550 || !quick_spell_at_page) {
@@ -1992,7 +1987,7 @@ void Game::EventLoop() {
                                  current_screen_type > CURRENT_SCREEN::SCREEN_67)) {
                                 pGUIWindow_CurrentMenu->Release();
                                 new OnButtonClick2(476, 450, 0, 0,
-                                                   (GUIButton *)pBtn_CastSpell);
+                                                   pBtn_CastSpell);
                                 pGUIWindow_CurrentMenu =
                                     new GUIWindow_Spellbook();
                                 continue;
@@ -2006,7 +2001,7 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu->Release();
 
                     new OnButtonClick2(0x230u, 0x1C2u, 0, 0,
-                                       (GUIButton *)pBtn_QuickReference);
+                                       pBtn_QuickReference);
                     viewparams->bRedrawGameUI = true;
 
                     pGUIWindow_CurrentMenu = new GUIWindow_QuickReference();
@@ -2028,7 +2023,7 @@ void Game::EventLoop() {
                         assets->GetImage_PCXFromFile("gamma.pcx");
 
                     new OnButtonClick(0x25Au, 0x1C2u, 0, 0,
-                                      (GUIButton *)pBtn_GameSettings);
+                                      pBtn_GameSettings);
                     // LABEL_453:
                     /*if ( (signed int)pMessageQueue_50CBD0->uNumMessages >= 40
                     ) continue;
@@ -2102,7 +2097,7 @@ void Game::EventLoop() {
                 case UIMSG_ClickExitCharacterWindowBtn:
                     new OnCancel2(pCharacterScreen_ExitBtn->uX,
                                   pCharacterScreen_ExitBtn->uY, 0, 0,
-                                  (GUIButton *)pCharacterScreen_ExitBtn);
+                                  pCharacterScreen_ExitBtn);
                     continue;
                 case UIMSG_ClickBooksBtn:
                     switch (uMessageParam) {
@@ -2155,7 +2150,7 @@ void Game::EventLoop() {
                             continue;
                     }
                     new OnButtonClick(pButton->uX, pButton->uY, 0, 0,
-                                      (GUIButton *)pButton, std::string(), false);
+                                      pButton, std::string(), false);
                     continue;
                 case UIMSG_SelectCharacter:
                     pMessageQueue_50CBD0->Flush();
@@ -2247,12 +2242,12 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_F:  // what event?
                     __debugbreak();
-                    pButton2 = (GUIButton *)(unsigned __int16)vis->get_picked_object_zbuf_val().object_pid;
+                    //pButton2 = (GUIButton *)(unsigned __int16)vis->get_picked_object_zbuf_val().object_pid;
                     __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
                     continue;
                 case UIMSG_54:  // what event?
                     __debugbreak();
-                    pButton2 = (GUIButton *)uMessageParam;
+                    //pButton2 = (GUIButton *)uMessageParam;
                     __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_22, (int)pButton2, 0);
                     continue;
                 case UIMSG_Game_Action:

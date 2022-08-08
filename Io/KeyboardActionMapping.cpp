@@ -88,6 +88,7 @@ GameKey KeyboardActionMapping::MapDefaultKey(InputAction action) {
             return keyMappingParams[i].m_key;
         }
     }
+    return GameKey::None;
 }
 
 //----- (00459C82) --------------------------------------------------------
@@ -137,10 +138,8 @@ void KeyboardActionMapping::ReadMappings() {
 //----- (0045A960) --------------------------------------------------------
 void KeyboardActionMapping::StoreMappings() {
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
-        const char *display_name = GetDisplayName(
-            GetKey(keyMappingParams[i].m_cmdId)
-        ).c_str();
-        OS_SetAppString(keyMappingParams[i].m_keyName.c_str(), display_name);
+        std::string display_name = GetDisplayName(GetKey(keyMappingParams[i].m_cmdId));
+        OS_SetAppString(keyMappingParams[i].m_keyName.c_str(), display_name.c_str());
     }
 }
 

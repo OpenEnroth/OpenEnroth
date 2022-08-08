@@ -23,7 +23,7 @@ Image *ui_book_lloyds_border = nullptr;
 std::array<Image *, 2> ui_book_lloyds_backgrounds;
 
 GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
-    this->ptr_1C = (void *)WINDOW_LloydsBeacon;  // inherited from GUIWindow::GUIWindow
+    this->wData.val = WINDOW_LloydsBeacon;  // inherited from GUIWindow::GUIWindow
     BasicBookInitialization();
 
     _506360_installing_beacon = false;

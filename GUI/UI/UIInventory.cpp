@@ -43,10 +43,10 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(
     unsigned int y,
     unsigned int width,
     unsigned int height,
-    GUIButton *button,
+    CastSpellInfo *spellInfo,
     const std::string &hint
 ) :
-    GUIWindow(WINDOW_CastSpell_InInventory, x, y, width, height, button, hint) {
+    GUIWindow(WINDOW_CastSpell_InInventory, x, y, width, height, spellInfo, hint) {
     mouse->SetCursorImage("MICON2");
     pBtn_ExitCancel = CreateButton(
         392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,

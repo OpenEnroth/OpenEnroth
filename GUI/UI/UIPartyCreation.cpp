@@ -137,7 +137,7 @@ void CreateParty_EventLoop() {
             uPlayerCreationUI_SelectedCharacter = param;
             new OnButtonClick(pCreationUI_BtnPressLeft[param]->uX,
                 pCreationUI_BtnPressLeft[param]->uY, 0, 0,
-                (GUIButton *)pCreationUI_BtnPressLeft[param],
+                pCreationUI_BtnPressLeft[param],
                 std::string(), false);
             pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
@@ -160,14 +160,14 @@ void CreateParty_EventLoop() {
             uPlayerCreationUI_SelectedCharacter = param;
             new OnButtonClick(pCreationUI_BtnPressRight[param]->uX,
                 pCreationUI_BtnPressRight[param]->uY, 0, 0,
-                (GUIButton *)pCreationUI_BtnPressRight[param],
+                pCreationUI_BtnPressRight[param],
                 std::string(), false);
             pAudioPlayer->PlaySound(SOUND_SelectingANewCharacter, 0, 0, -1, 0, 0);
             pParty->pPlayers[param].PlaySound(SPEECH_PickMe, 0);
             break;
         case UIMSG_PlayerCreationClickPlus:
             new OnButtonClick2(613, 393, 0, 0,
-                (GUIButton *)pPlayerCreationUI_BtnPlus, std::string(),
+                pPlayerCreationUI_BtnPlus, std::string(),
                 false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].IncreaseAttribute(
                 (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
@@ -177,7 +177,7 @@ void CreateParty_EventLoop() {
             break;
         case UIMSG_PlayerCreationClickMinus:
             new OnButtonClick2(523, 393, 0, 0,
-                (GUIButton *)pPlayerCreationUI_BtnMinus, std::string(),
+                pPlayerCreationUI_BtnMinus, std::string(),
                 false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].DecreaseAttribute(
                 (pGUIWindow_CurrentMenu->pCurrentPosActiveItem -
@@ -201,7 +201,7 @@ void CreateParty_EventLoop() {
             break;
         case UIMSG_PlayerCreationClickOK:
             new OnButtonClick2(580, 431, 0, 0,
-                (GUIButton *)pPlayerCreationUI_BtnOK);
+                pPlayerCreationUI_BtnOK);
             if (PlayerCreation_GetUnspentAttributePointCount() ||
                 !PlayerCreation_Choose4Skills())
                 game_ui_status_bar_event_string_time_left =
@@ -210,8 +210,7 @@ void CreateParty_EventLoop() {
                 uGameState = GAME_STATE_STARTING_NEW_GAME;
             break;
         case UIMSG_PlayerCreationClickReset:
-            new OnButtonClick2(527, 431, 0, 0,
-                (GUIButton *)pPlayerCreationUI_BtnReset);
+            new OnButtonClick2(527, 431, 0, 0, pPlayerCreationUI_BtnReset);
             pParty->Reset();
             break;
         case UIMSG_PlayerCreationRemoveUpSkill:
@@ -248,7 +247,7 @@ void CreateParty_EventLoop() {
             pAudioPlayer->PlaySound(SOUND_ClickSkill, 0, 0, -1, 0, 0);
             uPlayerCreationUI_SelectedCharacter = param;
             keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
-            pGUIWindow_CurrentMenu->ptr_1C = (void *)param;
+            pGUIWindow_CurrentMenu->wData.val = param;
             break;
         case UIMSG_Escape:
             if (pModalWindow) {
@@ -400,15 +399,15 @@ void GUIWindow_PartyCreation::Update() {
             ui_partycreation_class_icons[pParty->pPlayers[i].classType / 4]);
 
         if (pGUIWindow_CurrentMenu->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_NONE &&
-            pGUIWindow_CurrentMenu->ptr_1C == (void *)i) {
+            pGUIWindow_CurrentMenu->wData.val == i) {
             switch (pGUIWindow_CurrentMenu->keyboard_input_status) {
             case WindowInputStatus::WINDOW_INPUT_IN_PROGRESS:  // press name panel
                 v17 = pGUIWindow_CurrentMenu->DrawTextInRect(
                     pFontCreate,
-                    159 * (int64_t)pGUIWindow_CurrentMenu->ptr_1C + 18, 124, 0,
+                    159 * pGUIWindow_CurrentMenu->wData.val + 18, 124, 0,
                     keyboardInputHandler->GetTextInput().c_str(), 120, 1);
                 pGUIWindow_CurrentMenu->DrawFlashingInputCursor(
-                    159 * (uint64_t)pGUIWindow_CurrentMenu->ptr_1C +
+                    159 * pGUIWindow_CurrentMenu->wData.val +
                     v17 + 20,
                     124, pFontCreate);
                 break;
