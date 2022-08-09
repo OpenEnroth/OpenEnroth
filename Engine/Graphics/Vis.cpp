@@ -442,45 +442,21 @@ void Vis::_4C1A02() {
     v4.vWorldPosition.y = 0.0;
     v4.vWorldPosition.z = 0.0;
 
-    memcpy(&this->stru_200C, &v1, 0x60u);
-    memcpy(&this->stru_206C, &v4, 0x60u);
+    this->stru_200C = v1;
+    this->stru_203C = v2;
+    this->stru_206C = v3;
+    this->stru_209C = v4;
+    //memcpy(&this->stru_200C, &v1, 0x60u);
+    //memcpy(&this->stru_206C, &v4, 0x60u); // the code above doesn't match this memcpy, but there is no other way it seems
 }
 
 // depth sort
 //----- (004C1ABA) --------------------------------------------------------
 void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
-    int left_sort_index;          // ebx@2
-    int right_sort_index;         // ecx@2
-    RenderVertexSoft temp_array;  // [sp+4h] [bp-6Ch]@8
-    RenderVertexSoft max_array;   // [sp+34h] [bp-3Ch]@2
-
-    if (end > start) {
-        left_sort_index = start - 1;
-        right_sort_index = end;
-        memcpy(&max_array, &pArray[end], sizeof(max_array));
-        while (1) {
-            do {
-                ++left_sort_index;
-            } while (pArray[left_sort_index].vWorldViewPosition.x <
-                     (double)max_array.vWorldViewPosition.x);
-            do {
-                --right_sort_index;
-            } while (pArray[right_sort_index].vWorldViewPosition.x >
-                     (double)max_array.vWorldViewPosition.x);
-            if (left_sort_index >= right_sort_index) break;
-            memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-            memcpy(&pArray[left_sort_index], &pArray[right_sort_index],
-                   sizeof(pArray[left_sort_index]));
-            memcpy(&pArray[right_sort_index], &temp_array,
-                   sizeof(pArray[right_sort_index]));
-        }
-        memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-        memcpy(&pArray[left_sort_index], &pArray[end],
-               sizeof(pArray[left_sort_index]));
-        memcpy(&pArray[end], &temp_array, sizeof(pArray[end]));
-        SortVectors_x(pArray, start, left_sort_index - 1);
-        SortVectors_x(pArray, left_sort_index + 1, end);
-    }
+    auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
+        return l.vWorldViewPosition.x < r.vWorldViewPosition.x;
+    };
+    std::sort(pArray + start, pArray + end + 1, cmp);
 }
 
 Vis_PIDAndDepth InvalidPIDAndDepth() {
@@ -891,77 +867,19 @@ void Vis::SortVerticesByY(RenderVertexD3D3 *pArray, unsigned int uStart,
 }
 
 //----- (004C288E) --------------------------------------------------------
-void Vis::SortByScreenSpaceX(
-    RenderVertexSoft *pArray, int start,
-    int end) {  // сортировка по возрастанию экранных координат х
-    int left_sort_index;          // ebx@2
-    int right_sort_index;         // ecx@2
-    RenderVertexSoft temp_array;  // [sp+4h] [bp-6Ch]@8
-    RenderVertexSoft max_array;   // [sp+34h] [bp-3Ch]@2
-
-    if (end > start) {
-        left_sort_index = start - 1;
-        right_sort_index = end;
-        memcpy(&max_array, &pArray[end], sizeof(max_array));
-        while (1) {
-            do {
-                ++left_sort_index;
-            } while (pArray[left_sort_index].vWorldViewProjX <
-                     (double)max_array.vWorldViewProjX);
-            do {
-                --right_sort_index;
-            } while (pArray[right_sort_index].vWorldViewProjX >
-                     (double)max_array.vWorldViewProjX);
-            if (left_sort_index >= right_sort_index) break;
-            memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-            memcpy(&pArray[left_sort_index], &pArray[right_sort_index],
-                   sizeof(pArray[left_sort_index]));
-            memcpy(&pArray[right_sort_index], &temp_array,
-                   sizeof(pArray[right_sort_index]));
-        }
-        memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-        memcpy(&pArray[left_sort_index], &pArray[end],
-               sizeof(pArray[left_sort_index]));
-        memcpy(&pArray[end], &temp_array, sizeof(pArray[end]));
-        Vis::SortByScreenSpaceX(pArray, start, left_sort_index - 1);
-        Vis::SortByScreenSpaceX(pArray, left_sort_index + 1, end);
-    }
+void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end) {  // сортировка по возрастанию экранных координат х
+    auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
+        return l.vWorldViewProjX < r.vWorldViewProjX;
+    };
+    std::sort(pArray + start, pArray + end + 1, cmp);
 }
 
 //----- (004C297E) --------------------------------------------------------
 void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
-    int left_sort_index;          // ebx@2
-    int right_sort_index;         // ecx@2
-    RenderVertexSoft temp_array;  // [sp+4h] [bp-6Ch]@8
-    RenderVertexSoft max_array;   // [sp+34h] [bp-3Ch]@2
-
-    if (end > start) {
-        left_sort_index = start - 1;
-        right_sort_index = end;
-        memcpy(&max_array, &pArray[end], sizeof(max_array));
-        while (1) {
-            do {
-                ++left_sort_index;
-            } while (pArray[left_sort_index].vWorldViewProjY <
-                     (double)max_array.vWorldViewProjY);
-            do {
-                --right_sort_index;
-            } while (pArray[right_sort_index].vWorldViewProjY >
-                     (double)max_array.vWorldViewProjY);
-            if (left_sort_index >= right_sort_index) break;
-            memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-            memcpy(&pArray[left_sort_index], &pArray[right_sort_index],
-                   sizeof(pArray[left_sort_index]));
-            memcpy(&pArray[right_sort_index], &temp_array,
-                   sizeof(pArray[right_sort_index]));
-        }
-        memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-        memcpy(&pArray[left_sort_index], &pArray[end],
-               sizeof(pArray[left_sort_index]));
-        memcpy(&pArray[end], &temp_array, sizeof(pArray[end]));
-        Vis::SortByScreenSpaceY(pArray, start, left_sort_index - 1);
-        Vis::SortByScreenSpaceY(pArray, left_sort_index + 1, end);
-    }
+    auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
+        return l.vWorldViewProjY < r.vWorldViewProjY;
+    };
+    std::sort(pArray + start, pArray + end + 1, cmp);
 }
 
 //----- (004C04AF) --------------------------------------------------------

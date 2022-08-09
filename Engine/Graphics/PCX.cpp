@@ -229,19 +229,20 @@ void *WritePCXHeader(void *pcx_data, int width, int height) {
 
 void *EncodeOneLine(void *pcx_data, void *line, size_t line_size) {
     uint8_t *input = (uint8_t *)line;
+    uint8_t *end = input + line_size;
     uint8_t *output = (uint8_t *)pcx_data;
 
-    for (int i = 0; i < line_size; i++) {
+    while (input < end) {
         uint8_t value = *input++;
-        uint8_t count = 1;
-        while ((count < 63) && (i < (line_size - 1)) && (input[1] == value)) {
+
+        int count = 1;
+        while (count < 63 && input < end && *input == value) {
             input++;
             count++;
-            i++;
         }
-        if ((count > 1) || ((value & 0xC0) != 0)) {
+
+        if (count > 1 || (value & 0xC0) != 0)
             *output++ = 0xC0 + count;
-        }
         *output++ = value;
     }
 

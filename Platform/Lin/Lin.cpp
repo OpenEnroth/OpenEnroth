@@ -127,8 +127,6 @@ std::string OS_casepath(std::string path) {
                     r += sep;
                 r += e->d_name;
 
-                closedir(d);
-
                 // some filesystems like reiserfs don't set entry type and we need additional step
                 if (e->d_type == DT_UNKNOWN) {
                     struct stat st;
@@ -138,10 +136,13 @@ std::string OS_casepath(std::string path) {
                     }
                 }
 
-                if (e->d_type == DT_DIR)
+                if (e->d_type == DT_DIR) {
+                    closedir(d);
                     d = opendir(r.c_str());
-                else
+                } else {
+                    closedir(d);
                     d = nullptr;
+                }
 
                 break;
             }
