@@ -77,12 +77,12 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     this->pFacePlane_old = data->pFacePlane_old;
     this->zCalc.Init(this->pFacePlane_old);
     this->uAttributes = data->uAttributes;
-    this->pVertexIDs = (uint16_t *)data->pVertexIDs;
-    this->pXInterceptDisplacements = (int16_t *)data->pXInterceptDisplacements;
-    this->pYInterceptDisplacements = (int16_t *)data->pYInterceptDisplacements;
-    this->pZInterceptDisplacements = (int16_t *)data->pZInterceptDisplacements;
-    this->pVertexUIDs = (int16_t *)data->pVertexUIDs;
-    this->pVertexVIDs = (int16_t *)data->pVertexVIDs;
+    this->pVertexIDs = nullptr;
+    this->pXInterceptDisplacements = nullptr;
+    this->pYInterceptDisplacements = nullptr;
+    this->pZInterceptDisplacements = nullptr;
+    this->pVertexUIDs = nullptr;
+    this->pVertexVIDs = nullptr;
     this->uFaceExtraID = data->uFaceExtraID;
     // unsigned __int16  uBitmapID;
     this->uSectorID = data->uSectorID;
