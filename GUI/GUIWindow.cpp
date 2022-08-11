@@ -229,7 +229,7 @@ void GUI_ReplaceHotkey(GameKey oldKey, GameKey newKey, char bFirstCall) {
 }
 
 GUIButton *GUI_HandleHotkey(GameKey hotkey) {
-    for (GUIWindow *pWindow : lWindowList) {
+     for (GUIWindow *pWindow : lWindowList) {
         for (GUIButton *result : pWindow->vButtons) {
             if (result->hotkey == hotkey) {
                 pMessageQueue_50CBD0->AddGUIMessage(result->msg, result->msg_param, 0);
@@ -996,6 +996,12 @@ void GUI_UpdateWindows() {
         UI_OnKeyDown(GameKey::PageDown);
     }
 
+    if (engine->config->verbose_logging)
+        logger->Info("Windowlist size:  %i", lWindowList.size());
+
+    // should never activte this - gameui window should always be open
+    if (lWindowList.size() < 1) __debugbreak();
+
     std::list<GUIWindow *> tmpWindowList(lWindowList);
     tmpWindowList.reverse();  // new windows are push front - but front should be drawn last?? testing
     for (GUIWindow *pWindow : tmpWindowList) {
@@ -1060,7 +1066,7 @@ void CreateMsgScrollWindow(signed int mscroll_id) {
 void free_book_subwindow() {
     if (pGUIWindow_ScrollWindow) {
         pGUIWindow_ScrollWindow->Release();
-        pGUIWindow_ScrollWindow = 0;
+        pGUIWindow_ScrollWindow = nullptr;
     }
 }
 //----- (004226EF) --------------------------------------------------------
