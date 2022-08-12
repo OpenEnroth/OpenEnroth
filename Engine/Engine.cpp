@@ -2264,7 +2264,7 @@ void Level_LoadEvtAndStr(const std::string& pLevelName) {
     if (uLevelStrFileSize) LoadLevel_InitializeLevelStr();
 }
 
-void sub_4452BB() {
+void ReleaseBranchlessDialogue() {
     pGUIWindow2->Release();
     pGUIWindow2 = 0;
     activeLevelDecoration = _591094_decoration;

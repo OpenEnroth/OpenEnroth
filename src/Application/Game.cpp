@@ -423,6 +423,14 @@ void Game::OnEscape() {
 
 extern bool _506360_installing_beacon;
 
+bool IsWindowSwitchable() {
+    if (current_screen_type == CURRENT_SCREEN::SCREEN_NPC_DIALOGUE || current_screen_type == CURRENT_SCREEN::SCREEN_HOUSE
+        || current_screen_type == CURRENT_SCREEN::SCREEN_INPUT_BLV || current_screen_type == CURRENT_SCREEN::SCREEN_CHANGE_LOCATION) {
+        return false;
+    }
+    return true;
+}
+
 void Game::EventLoop() {
     unsigned int v2;            // edx@7
     GUIWindow *pWindow2;        // ecx@248
@@ -587,32 +595,97 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_OpenQuestBook:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // toggle
+                    if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_QuestBook) {
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        continue;
+                    }
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
+                        continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
+                    }
+                    // open window
                     pGUIWindow_CurrentMenu = new GUIWindow_QuestBook();
                     continue;
                 case UIMSG_OpenAutonotes:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // toggle
+                    if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_AutonotesBook) {
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        continue;
+                    }
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
+                        continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
+                    }
+                    // open window
                     pGUIWindow_CurrentMenu = new GUIWindow_AutonotesBook();
                     continue;
                 case UIMSG_OpenMapBook:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // toggle
+                    if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_MapsBook) {
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        continue;
+                    }
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
+                        continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
+                    }
+                    // open window;
                     pGUIWindow_CurrentMenu = new GUIWindow_MapBook();
                     continue;
                 case UIMSG_OpenCalendar:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // toggle
+                    if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_CalendarBook) {
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        continue;
+                    }
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
+                        continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
+                    }
+                    // open window
                     pGUIWindow_CurrentMenu = new GUIWindow_CalendarBook();
                     continue;
                 case UIMSG_OpenHistoryBook:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME)
-                        pGUIWindow_CurrentMenu->Release();
+                    // toggle
+                    if (current_screen_type == CURRENT_SCREEN::SCREEN_BOOKS && pGUIWindow_CurrentMenu->eWindowType == WindowType::WINDOW_JournalBook) {
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        continue;
+                    }
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
+                        continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
+                    }
+                    // open window
                     pGUIWindow_CurrentMenu = new GUIWindow_JournalBook();
                     continue;
                 case UIMSG_OpenDebugMenu:
@@ -738,7 +811,7 @@ void Game::EventLoop() {
                                         current_screen_type = CURRENT_SCREEN::SCREEN_CHEST;
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_CHEST:
-                                        pWindow2 = pChestWindow;
+                                        pWindow2 = pGUIWindow_CurrentMenu;
                                         pWindow2->Release();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                         viewparams->bRedrawGameUI = 1;
@@ -845,7 +918,7 @@ void Game::EventLoop() {
                                                                         // escape
                                         GameUI_StatusBar_ClearEventString();
 
-                                        sub_4452BB();
+                                        ReleaseBranchlessDialogue();
                                         DialogueEnding();
                                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                                         viewparams->bRedrawGameUI = true;
@@ -972,13 +1045,19 @@ void Game::EventLoop() {
                     }
                     if (iequals(s_SavedMapName.data(), "d05.blv"))
                         pParty->GetPlayingTime().AddDays(4);
-                    continue;
 
+                    CloseWindowBackground();
+                    DialogueEnding();
+                    back_to_game();
+                    OnEscape();
+                    continue;
                 case UIMSG_TransitionWindowCloseBtn:
                     CloseWindowBackground();
                     pMediaPlayer->Unload();
                     DialogueEnding();
                     viewparams->bRedrawGameUI = true;
+                    back_to_game();
+                    OnEscape();
                     continue;
                 case UIMSG_CycleCharacters:
                     uActiveCharacter = CycleCharacter(keyboardInputHandler->IsAdventurerBackcycleToggled());
@@ -1701,14 +1780,21 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_RestWindow:
                     pMessageQueue_50CBD0->Flush();
+                    // toggle
+                    //if (current_screen_type == CURRENT_SCREEN::SCREEN_REST) {
+                    //    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                    //    continue;
+                    //}
                     if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME) continue;
+                    CloseTargetedSpellWindow();
+
                     if (CheckActors_proximity()) {
                         if (pParty->bTurnBasedModeOn) {
                             GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
                             continue;
                         }
 
-                        if (pParty->uFlags & 0x88)
+                        if (pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER)) // airbourne or on water
                             GameUI_SetStatusBar(LSTR_CANT_REST_HERE);
                         else
                             GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
@@ -1721,16 +1807,23 @@ void Game::EventLoop() {
                         GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
                         continue;
                     }
-                    if (!(pParty->uFlags & 0x88)) {
+
+                    if (!(pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER))) {
                         pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                         continue;
+                    } else {
+                        if (engine->config->verbose_logging) {
+                            if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE) logger->Info("Party is airborne");
+                            if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) logger->Info("Party on water");
+                        }
                     }
+
                     if (pParty->bTurnBasedModeOn) {
                         GameUI_SetStatusBar(LSTR_CANT_REST_IN_TURN_BASED);
                         continue;
                     }
 
-                    if (pParty->uFlags & 0x88)
+                    if (pParty->uFlags & (PARTY_FLAGS_1_AIRBORNE | PARTY_FLAGS_1_STANDING_ON_WATER))
                         GameUI_SetStatusBar(LSTR_CANT_REST_HERE);
                     else
                         GameUI_SetStatusBar(LSTR_HOSTILE_ENEMIES_NEARBY);
@@ -1974,36 +2067,47 @@ void Game::EventLoop() {
                         pAudioPlayer->PlaySound(SOUND_error, 0, 0, -1, 0, 0);
                     } else {
                         pMessageQueue_50CBD0->Flush();
-                        if (uActiveCharacter &&
-                            !pPlayers[uActiveCharacter]->uTimeToRecovery) {
-                            if (current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
-                                new OnButtonClick2(476, 450, 0, 0, pBtn_CastSpell);
-                                pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
+                        if (uActiveCharacter && !pPlayers[uActiveCharacter]->uTimeToRecovery) {
+                            // toggle
+                            if (current_screen_type == CURRENT_SCREEN::SCREEN_SPELL_BOOK) {
+                                pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                                 continue;
                             }
-                            if (current_screen_type != CURRENT_SCREEN::SCREEN_REST &&
-                                current_screen_type != CURRENT_SCREEN::SCREEN_CHARACTERS &&
-                                (current_screen_type <= CURRENT_SCREEN::SCREEN_63 ||
-                                 current_screen_type > CURRENT_SCREEN::SCREEN_67)) {
-                                pGUIWindow_CurrentMenu->Release();
-                                new OnButtonClick2(476, 450, 0, 0,
-                                                   pBtn_CastSpell);
-                                pGUIWindow_CurrentMenu =
-                                    new GUIWindow_Spellbook();
+                            // cant open screen - talking or in shop or map transition
+                            if (!IsWindowSwitchable()) {
                                 continue;
+                            } else {
+                                // close out current window
+                                back_to_game();
+                                OnEscape();
+                                GameUI_StatusBar_Clear();
                             }
+                            // open window
+                            new OnButtonClick2(476, 450, 0, 0, pBtn_CastSpell);
+                            pGUIWindow_CurrentMenu = new GUIWindow_Spellbook();
+                            continue;
                         }
                     }
                     continue;
                 case UIMSG_QuickReference:
                     pMessageQueue_50CBD0->Flush();
-                    if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME && pGUIWindow_CurrentMenu != nullptr)
-                        pGUIWindow_CurrentMenu->Release();
-
-                    new OnButtonClick2(0x230u, 0x1C2u, 0, 0,
-                                       pBtn_QuickReference);
+                    // toggle
+                    if (current_screen_type == CURRENT_SCREEN::SCREEN_QUICK_REFERENCE) {
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
+                        continue;
+                    }
+                    // cant open screen - talking or in shop or map transition
+                    if (!IsWindowSwitchable()) {
+                        continue;
+                    } else {
+                        // close out current window
+                        back_to_game();
+                        OnEscape();
+                        GameUI_StatusBar_Clear();
+                    }
+                    // open window
+                    new OnButtonClick2(0x230u, 0x1C2u, 0, 0, pBtn_QuickReference);
                     viewparams->bRedrawGameUI = true;
-
                     pGUIWindow_CurrentMenu = new GUIWindow_QuickReference();
                     continue;
                 case UIMSG_GameMenuButton:

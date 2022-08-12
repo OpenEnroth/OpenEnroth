@@ -530,31 +530,33 @@ void GUIWindow_GenericDialogue::Update() {
         if (pGUIWindow2->keyboard_input_status == WindowInputStatus::WINDOW_INPUT_CONFIRMED) {
             pGUIWindow2->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
             GameUI_StatusBar_OnInput(keyboardInputHandler->GetTextInput().c_str());
-            sub_4452BB();
+            ReleaseBranchlessDialogue();
             return;
         }
         if (pGUIWindow2->keyboard_input_status != WindowInputStatus::WINDOW_INPUT_CANCELLED)
             return;
         pGUIWindow2->keyboard_input_status = WindowInputStatus::WINDOW_INPUT_NONE;
         GameUI_StatusBar_ClearInputString();
-        sub_4452BB();
+        ReleaseBranchlessDialogue();
         return;
     }
-    if (pGUIWindow2->wData.val == 26) {
+
+    if (pGUIWindow2->wData.val == 26) { // EVENT_InputString
         auto str = StringPrintf("%s %s", GameUI_StatusBar_GetInput().c_str(), keyboardInputHandler->GetTextInput().c_str());
         pGUIWindow2->DrawText(pFontLucida, 13, 357, 0, str, 0, 0, 0);
         pGUIWindow2->DrawFlashingInputCursor(pFontLucida->GetLineWidth(str) + 13, 357, pFontLucida);
         return;
     }
+
     if (!keyboardInputHandler->GetTextInput().empty()) {
         keyboardInputHandler->SetWindowInputStatus(WindowInputStatus::WINDOW_INPUT_NONE);
         GameUI_StatusBar_ClearInputString();
-        sub_4452BB();
+        ReleaseBranchlessDialogue();
         return;
     }
 }
 
-void sub_4451A8_press_any_key(int a1, int a2, int a4) {
+void StartBranchlessDialogue(int eventid, int entryline, int button) {
     if (!pGUIWindow2) {
         if (pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) {
             engine->Draw();
@@ -562,10 +564,10 @@ void sub_4451A8_press_any_key(int a1, int a2, int a4) {
         pAudioPlayer->PauseSounds(-1);
         pMiscTimer->Pause();
         pEventTimer->Pause();
-        dword_5C3418 = a1;
-        dword_5C341C = a2;
+        dword_5C3418 = eventid;
+        dword_5C341C = entryline;
         _591094_decoration = activeLevelDecoration;
-        pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), a4);
+        pGUIWindow2 = new GUIWindow_GenericDialogue(0, 0, window->GetWidth(), window->GetHeight(), button);
         pGUIWindow2->CreateButton(61, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 1, GameKey::Digit1);
         pGUIWindow2->CreateButton(177, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 2, GameKey::Digit2);
         pGUIWindow2->CreateButton(292, 424, 31, 40, 2, 94, UIMSG_SelectCharacter, 3, GameKey::Digit3);

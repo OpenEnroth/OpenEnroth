@@ -49,18 +49,29 @@ using EngineIoc = Engine_::IocContainer;
 using Io::InputAction;
 
 GUIWindow *pPrimaryWindow;
-GUIWindow *pChestWindow;
+
+GUIWindow *pGUIWindow_CurrentMenu;
+
+
+//GUIWindow *pChestWindow;
+
 GUIWindow *pDialogueWindow;
 GUIWindow *window_SpeakInHouse;
-GUIWindow *pGUIWindow_ScrollWindow;
-GUIWindow *ptr_507BC8;
-GUIWindow *pGUIWindow_CurrentMenu;
-GUIWindow *ptr_507BD0;
+
+GUIWindow *pGUIWindow_ScrollWindow; // reading a message scroll
+
+GUIWindow *ptr_507BC8;  // screen 19 - not used?
+
+//GUIWindow *ptr_507BD0;
 GUIWindow *pGUIWindow_CastTargetedSpell;
-GUIWindow *pModalWindow;
-GUIWindow *pGUIWindow_EscMessageWindow;
-GUIWindow *pBooksButtonOverlay;
-GUIWindow *pGUIWindow2;
+
+GUIWindow *pModalWindow; // UIMSG_ShowFinalWindow
+
+//GUIWindow *pGUIWindow_EscMessageWindow;
+
+GUIWindow *pBooksButtonOverlay; // child of books windows
+
+GUIWindow *pGUIWindow2; // branchless dialougue
 
 typedef struct _RGBColor {
     unsigned char R;
@@ -218,7 +229,7 @@ void GUI_ReplaceHotkey(GameKey oldKey, GameKey newKey, char bFirstCall) {
 }
 
 GUIButton *GUI_HandleHotkey(GameKey hotkey) {
-    for (GUIWindow *pWindow : lWindowList) {
+     for (GUIWindow *pWindow : lWindowList) {
         for (GUIButton *result : pWindow->vButtons) {
             if (result->hotkey == hotkey) {
                 pMessageQueue_50CBD0->AddGUIMessage(result->msg, result->msg_param, 0);
@@ -985,6 +996,12 @@ void GUI_UpdateWindows() {
         UI_OnKeyDown(GameKey::PageDown);
     }
 
+    if (engine->config->verbose_logging)
+        logger->Info("Windowlist size:  %i", lWindowList.size());
+
+    // should never activte this - gameui window should always be open
+    if (lWindowList.size() < 1) __debugbreak();
+
     std::list<GUIWindow *> tmpWindowList(lWindowList);
     tmpWindowList.reverse();  // new windows are push front - but front should be drawn last?? testing
     for (GUIWindow *pWindow : tmpWindowList) {
@@ -1050,7 +1067,7 @@ void CreateMsgScrollWindow(signed int mscroll_id) {
 void free_book_subwindow() {
     if (pGUIWindow_ScrollWindow) {
         pGUIWindow_ScrollWindow->Release();
-        pGUIWindow_ScrollWindow = 0;
+        pGUIWindow_ScrollWindow = nullptr;
     }
 }
 //----- (004226EF) --------------------------------------------------------

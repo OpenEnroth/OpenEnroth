@@ -1523,7 +1523,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     if (chestindex) {
                         int itemindex = chestindex - 1;
 
-                        GameUI_DrawItemInfo(&vChests[pChestWindow->wData.val].igChestItems[itemindex]);
+                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentMenu->wData.val].igChestItems[itemindex]);
                     }
                 }
             }

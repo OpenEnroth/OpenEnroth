@@ -82,6 +82,7 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     uCurrentHouse_Animation = anim_id;
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
+    current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
 
     std::string filename;
     switch (pParty->alignment) {

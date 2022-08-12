@@ -164,7 +164,7 @@ bool Chest::Open(int uChestID) {
             pPlayers[uActiveCharacter]->PlaySound(SPEECH_TrapDisarmed, 0);
     }
     OpenedTelekinesis = false;
-    pChestWindow = pGUIWindow_CurrentMenu = new GUIWindow_Chest(uChestID);
+    /*pChestWindow =*/ pGUIWindow_CurrentMenu = new GUIWindow_Chest(uChestID);
     return true;
 }
 
@@ -322,7 +322,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
     if (position == -1) {  // no position specified
         for (int _i = 0; _i < max_size; _i++) {
-            if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pChestWindow->wData.val)) {
+            if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pGUIWindow_CurrentMenu->wData.val)) {
                 test_pos = _i;  // found somewhere to place item
                 break;
             }

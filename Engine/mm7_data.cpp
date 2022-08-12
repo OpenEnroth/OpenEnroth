@@ -599,7 +599,7 @@ GameTime _5773B8_event_timer;
 struct Actor *pDialogue_SpeakingActor;
 DIALOGUE_TYPE uDialogueType;
 int sDialogue_SpeakingActorNPC_ID;
-struct LevelDecoration *_591094_decoration;
+struct LevelDecoration *_591094_decoration; // level decoration store for branchless dialogue
 int uCurrentHouse_Animation;
 char *Party_Teleport_Map_Name;
 // int Party_Teleport_Z_Speed;
@@ -626,8 +626,8 @@ int MapsLongTimers_count;  // dword_5B65C8 счётчик таймеров дл�
                            // фаерволов-ловушек
 int npcIdToDismissAfterDialogue;
 signed int dword_5B65D0_dialogue_actor_npc_id;
-int dword_5C3418;
-int dword_5C341C;
+int dword_5C3418; //  eventid store for branchless dialogue
+int dword_5C341C; // entry line store for branchless dialogue
 // std::array<char, 777> byte_5C3427;
 std::string game_ui_status_bar_event_string;
 std::string game_ui_status_bar_string;

@@ -26,6 +26,7 @@ Image *ui_book_calendar_moon_full = nullptr;
 
 GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
     this->wData.val = WINDOW_CalendarBook;  // inherited from GUIWindow::GUIWindow
+    this->eWindowType = WindowType::WINDOW_CalendarBook;
     BasicBookInitialization();
 
     // --------------------------------
