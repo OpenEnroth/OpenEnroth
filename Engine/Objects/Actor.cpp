@@ -3701,7 +3701,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
     signed int v2;         // ebx@1
     bool flag;             // edi@37
     int v22;               // [sp+8h] [bp-140h]@3
-    int Victims_list[60];  // [sp+48h] [bp-100h]@48
+    int Victims_list[60] {};  // [sp+48h] [bp-100h]@48
     int for_sex;           // [sp+13Ch] [bp-Ch]@1
     int for_race;          // [sp+140h] [bp-8h]@1
     int for_class;         // [sp+144h] [bp-4h]@1
@@ -4510,8 +4510,7 @@ int Actor::MakeActorAIList_BLV() {
 
     // reset party alert level
     pParty->uFlags &= ~PARTY_FLAGS_1_ALERT_RED_OR_YELLOW;  // ~0x30
-    // TODO(pskelton): grab sector id from somewhere else rather than calc it several times per frame
-    int party_sector = pIndoor->GetSector(pParty->vPosition);
+    int party_sector = pBLVRenderParams->uPartySectorID;
 
     // find actors that are in range and can act
     uint active_actor_count = 0;
@@ -4901,7 +4900,7 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
     if (uActorIndex != uNumActors || result < 500) {
         v21 = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-            v21 = pIndoor->GetSector(pParty->vPosition);
+            v21 = pBLVRenderParams->uPartySectorID;
         v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
         pActors[uActorIndex].Reset();
         strcpy(pActors[uActorIndex].pActorName, pMonsterStats->pInfos[uMonsterID + 1].pName);
@@ -4976,7 +4975,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     int v38;               // eax@52
     int v39;               // edi@52
     std::string v40;       // [sp-18h] [bp-100h]@60
-    const char *v44;       // [sp-8h] [bp-F0h]@13
+    // const char *v44;       // [sp-8h] [bp-F0h]@13
     std::string pTexture;        // [sp-4h] [bp-ECh]@9
                            //  char Str[32]; // [sp+Ch] [bp-DCh]@60
     std::string Str2;           // [sp+2Ch] [bp-BCh]@29

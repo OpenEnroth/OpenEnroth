@@ -243,7 +243,7 @@ bool ParticleEngine::ViewProject_TrueIfStillVisible_BLV(
 
 //----- (0048BBA6) --------------------------------------------------------
 void ParticleEngine::DrawParticles_BLV() {
-    SoftwareBillboard v15;  // [sp+Ch] [bp-58h]@1
+    SoftwareBillboard v15 {};  // [sp+Ch] [bp-58h]@1
 
     v15.sParentBillboardID = -1;
 

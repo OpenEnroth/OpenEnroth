@@ -213,18 +213,18 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         v24[0].pos.y = pVertices[0].vWorldViewProjY;
         v24[0].pos.z = 0.001 - z_stuff;
         v24[0].diffuse = sStartDiffuse;
-        v24[0].rhw = 0.001;
-        v24[0].texcoord.x = 0.0;
-        v24[0].texcoord.y = 0.0;
+        v24[0].rhw = 0.001f;
+        v24[0].texcoord.x = 0.0f;
+        v24[0].texcoord.y = 0.0f;
 
         v24[1].pos.x = pVertices[1].vWorldViewProjX;
         v24[1].pos.y = pVertices[1].vWorldViewProjY;
         v24[1].diffuse = sEndDiffuse;
         v24[1].pos.z = 0.001 - z_stuff;
         v24[1].specular = 0;
-        v24[1].rhw = 0.001;
-        v24[1].texcoord.x = 0.0;
-        v24[1].texcoord.y = 0.0;
+        v24[1].rhw = 0.001f;
+        v24[1].texcoord.x = 0.0f;
+        v24[1].texcoord.y = 0.0f;
         // v19 = render->pRenderD3D->pDevice;
         render->DrawLines(v24, 2);
         return;
@@ -246,7 +246,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         v24[0].pos.y = pVertices[0].vWorldViewProjY;
         v24[0].pos.z = 0.001 - z_stuff;
         v24[0].diffuse = sStartDiffuse;
-        v24[0].rhw = 0.001;
+        v24[0].rhw = 0.001f;
         v24[0].texcoord.x = 0.0;
         v24[0].texcoord.y = 0.0;
 
@@ -255,7 +255,7 @@ void Camera3D::do_draw_debug_line_sw(RenderVertexSoft *pLineBegin,
         v24[1].diffuse = sEndDiffuse;
         v24[1].pos.z = 0.001 - z_stuff;
         v24[1].specular = 0;
-        v24[1].rhw = 0.001;
+        v24[1].rhw = 0.001f;
         v24[1].texcoord.x = 0.0;
         v24[1].texcoord.y = 0.0;
         // v19 = render->pRenderD3D->pDevice;
@@ -521,7 +521,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft* pInVertices,
 
     RenderVertexSoft* v14;  // eax@8
     RenderVertexSoft* v15;  // edx@8
-    Vec3_float_ FrustumPlaneVec;         // [sp+18h] [bp-3Ch]@12
+    Vec3_float_ FrustumPlaneVec {};         // [sp+18h] [bp-3Ch]@12
     // float v17; // [sp+44h] [bp-10h]@1
     // int v18; // [sp+48h] [bp-Ch]@5
     // stru9 *thisa; // [sp+4Ch] [bp-8h]@1

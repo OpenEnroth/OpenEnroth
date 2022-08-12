@@ -14,14 +14,14 @@
 #include "Engine/Graphics/ClippingFunctions.h"
 
 //----- (0043B570) --------------------------------------------------------
-double Decal::Fade_by_time() {
+float Decal::Fade_by_time() {
     // splats dont fade
-    if (!(decal_flags & DecalFlagsFade)) return 1.0;
+    if (!(decal_flags & DecalFlagsFade)) return 1.0f;
 
     // splats fade
     int64_t delta = fadetime - pEventTimer->Time();
-    double result = (float(delta) + 3840.0) / 3840.0;
-    if (result < 0) result = 0.0;
+    float result = (float(delta) + 3840.0f) / 3840.0f;
+    if (result < 0.0f) result = 0.0f;
     return result;
 }
 
@@ -357,7 +357,7 @@ void DecalBuilder::DrawBloodsplats() {
     if (!DecalsCount) return;
 
     render->BeginDecals();
-    DrawDecals(0.00039999999);
+    DrawDecals(0.00039999999f);
     render->EndDecals();
 }
 

@@ -514,4 +514,6 @@ SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t, int month)
         default:
             assert(/*pParty->uCurrentMonth*/month >= 0 && /*pParty->uCurrentMonth*/month < 12);
     }
+    logger->Warning("No sprite returned - LevelDecorationChangeSeason!");
+    return nullptr;
 }

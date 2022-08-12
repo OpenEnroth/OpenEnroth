@@ -376,9 +376,8 @@ int Player::GetTempleHealCostModifier(float price_multi) {
 //----- (004B8102) --------------------------------------------------------
 int Player::GetPriceSell(ItemGen itemx, float price_multiplier) {
     int uRealValue = itemx.GetValue();
-    signed int result =
-        (signed int)(((double)uRealValue / (price_multiplier + 2.0)) +
-                     uRealValue * GetMerchant() / 100);
+    int result = static_cast<int>((uRealValue / (price_multiplier + 2.0)) +
+                     uRealValue * GetMerchant() / 100.0);
 
     if (result > uRealValue) result = uRealValue;
 
@@ -1849,7 +1848,7 @@ int Player::ReceiveSpecialAttackEffect(
     int statcheckbonus;
     int luckstat = GetActualLuck();
     signed int itemstobreakcounter = 0;
-    char itemstobreaklist[140];
+    char itemstobreaklist[140] {};
     ItemGen* itemtocheck = nullptr;
     ItemGen* itemtobreak = nullptr;
     unsigned int itemtostealinvindex = 0;
@@ -6908,7 +6907,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
     Actor* actorPtr;              // esi@3
     int spellId;                  // eax@38
     signed int recvdMagicDmg;     // eax@139
-    int v72[4];                   // [sp+30h] [bp-24h]@164
+    int v72[4] {};                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
 
@@ -7786,7 +7785,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         v34 = 7;
     } else {
         int main_hand_idx = player->pEquipment.uMainHand;
-        if (player->HasItemEquipped(EQUIP_TWO_HANDED) & main_hand_idx)
+        if (player->HasItemEquipped(EQUIP_TWO_HANDED) && main_hand_idx)
             v34 = player->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
 
         pTurnEngine->ApplyPlayerAction();
@@ -7883,8 +7882,8 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
     int pickedVariant;                   // esi@10
     CHARACTER_EXPRESSION_ID expression;  // ebx@17
     int pSoundID;                        // ecx@19
-    int speechVariantArray[5];           // [sp+Ch] [bp-1Ch]@7
-    int expressionVariantArray[5];
+    int speechVariantArray[5] {};           // [sp+Ch] [bp-1Ch]@7
+    int expressionVariantArray[5] {};
     unsigned int expressionDuration = 0;
 
     unsigned int pickedSoundID = 0;

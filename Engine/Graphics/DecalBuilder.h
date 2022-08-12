@@ -69,7 +69,7 @@ struct Decal {
         Decal_base_ctor();
         decal_flags = DecalFlagsNone;
     }
-    double Fade_by_time();
+    float Fade_by_time();
 
     virtual ~Decal() {}
 
