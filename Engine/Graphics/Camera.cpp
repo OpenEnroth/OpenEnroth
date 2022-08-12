@@ -270,10 +270,10 @@ void Camera3D::debug_outline_d3d(const RenderVertexD3D3 *pLineVertices,
                                         unsigned int uNumLines, int uDiffuse,
                                         float z_stuff) {
     for (int i = 0; i < uNumLines - 1; ++i)
-        render->do_draw_debug_line_d3d(&pLineVertices[i], uDiffuse,
+        render->Do_draw_debug_line_d3d(&pLineVertices[i], uDiffuse,
                                        &pLineVertices[i + 1], uDiffuse,
                                        z_stuff);
-    render->do_draw_debug_line_d3d(&pLineVertices[uNumLines - 1], uDiffuse,
+    render->Do_draw_debug_line_d3d(&pLineVertices[uNumLines - 1], uDiffuse,
                                    pLineVertices, uDiffuse, z_stuff);
 }
 

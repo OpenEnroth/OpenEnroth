@@ -274,7 +274,7 @@ SpriteFrame *SpriteFrameTable::GetFrame(unsigned int uSpriteID, unsigned int uTi
     // TODO(pskelton): investigate and fix properly - dragon breath is missing last two frames??
     // quick fix so it doesnt return empty sprite
     while (v4->hw_sprites[0] == NULL) {
-        __debugbreak();
+        //__debugbreak();
         --v4;
     }
 

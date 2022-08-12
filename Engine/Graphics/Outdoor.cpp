@@ -122,7 +122,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     {
         SkyBillboard.CalcSkyFrustumVec(1, 0, 0, 0, 1, 0);  // sky box frustum
         render->DrawOutdoorSkyD3D();
-        render->RenderTerrainD3D();
+        render->DrawTerrainD3D();
         render->DrawBuildingsD3D();
 
         // render->DrawBezierTerrain();
@@ -897,6 +897,9 @@ void OutdoorLocation::Release() {
     pFaceIDLIST = nullptr;
     free(pTerrainNormals);
     pTerrainNormals = nullptr;
+
+    // free shader data for outdoor location
+    render->ReleaseTerrain();
 }
 
 bool OutdoorLocation::Load(const std::string &filename, int days_played,
@@ -1374,7 +1377,7 @@ int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
                                                   signed int sY) {
     int v3;  // esi@5
 
-    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
+    if (sX < 0 || sX > 127 || sY < 0 || sY > 127 || !this->pTerrain.pTilemap)
         return 0;
 
     v3 = this->pTerrain.pTilemap[sY * 128 + sX];
@@ -1386,7 +1389,7 @@ int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
 
 //----- (0047EE16) --------------------------------------------------------
 int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
-    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
+    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127 || !pTerrain.pHeightmap)
         return 0;
 
     return 32 * pTerrain.pHeightmap[sZ * 128 + sX];

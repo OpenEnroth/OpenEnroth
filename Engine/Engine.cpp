@@ -266,6 +266,9 @@ void Engine::Draw() {
 void Engine::DrawGUI() {
     render->ResetUIClipRect();
 
+    // force always redraw
+    viewparams->bRedrawGameUI = true;
+
     // if (render->pRenderD3D)
     mouse->DrawCursorToTarget();
     if (pOtherOverlayList->bRedraw)
@@ -298,10 +301,12 @@ void Engine::DrawGUI() {
     GameUI_DrawPartySpells();
     if (v4 || pParty->pHirelings[0].dialogue_3_evt_id || pParty->pHirelings[1].dialogue_3_evt_id)
         GameUI_DrawHiredNPCs();
+
     GameUI_DrawPortraits(v4);
     GameUI_DrawLifeManaBars();
     GameUI_DrawCharacterSelectionFrame();
     if (_44100D_should_alter_right_panel()) GameUI_DrawRightPanel();
+
     if (!pMovie_Track) {
         spell_fx_renedrer->DrawPlayerBuffAnims();
         pOtherOverlayList->DrawTurnBasedIcon(v4);
@@ -346,7 +351,7 @@ void Engine::DrawGUI() {
 
         int debug_info_offset = 0;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            int sector_id = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+            int sector_id = pBLVRenderParams->uPartySectorID;
             pPrimaryWindow->DrawText(
                 pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255),
                 StringPrintf("Party Sector ID:        %u/%u\n", sector_id,
@@ -363,8 +368,7 @@ void Engine::DrawGUI() {
         std::string floor_level_str;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             uint uFaceID;
-            int sector_id = pIndoor->GetSector(
-                pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+            int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3_int_(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = StringPrintf(
                 "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);

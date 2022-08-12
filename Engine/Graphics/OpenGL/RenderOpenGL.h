@@ -1,11 +1,13 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <map>
 
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/RenderBase.h"
 #include "Engine/MM7.h"
+#include "Engine/Graphics/OpenGL/GLShaderLoader.h"
 
 #ifdef __APPLE__
 #define NK_SHADER_VERSION "#version 150\n"
@@ -37,6 +39,7 @@ class RenderOpenGL : public RenderBase {
     virtual struct nk_image NuklearImageLoad(Image *img);
     virtual void NuklearImageFree(Image *img);
 
+    virtual Texture *CreateTexture_Paletted(const std::string &name) override;
     virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) override;
     virtual Texture *CreateTexture_Solid(const std::string &name) override;
     virtual Texture *CreateTexture_Alpha(const std::string &name) override;
@@ -67,8 +70,12 @@ class RenderOpenGL : public RenderBase {
     virtual void Release() override;
 
     virtual bool SwitchToWindow() override;
+
+    virtual void BeginLines2D() override;
+    virtual void EndLines2D() override;
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
                               signed int uW, unsigned __int16 uColor) override;
+
     virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
@@ -143,7 +150,10 @@ class RenderOpenGL : public RenderBase {
                           unsigned int uCharWidth, unsigned int uCharHeight,
                           uint8_t *pFontPalette, uint16_t uFaceColor,
                           uint16_t uShadowColor) override;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) override;
+
+    virtual void BeginTextNew(Texture *main, Texture *shadow) override;
+    virtual void EndTextNew() override;
+    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) override;
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
@@ -156,7 +166,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual void PrepareDecorationsRenderList_ODM() override;
 
-    virtual void RenderTerrainD3D() override;
+    virtual void DrawTerrainD3D() override;
 
     virtual bool AreRenderSurfacesOk() override;
 
@@ -182,7 +192,7 @@ class RenderOpenGL : public RenderBase {
     virtual void EndDecals() override;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) override;
 
-    virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
+    virtual void Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                         signed int sDiffuseBegin,
                                         const RenderVertexD3D3 *pLineEnd,
                                         signed int sDiffuseEnd, float z_stuff) override;
@@ -195,7 +205,14 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                int blend_mode) override;
 
+    virtual void DrawIndoorFaces() override;
     virtual void DrawIndoorBatched() override;
+
+    virtual void ReleaseTerrain();
+    virtual void ReleaseBSP();
+
+    virtual void DrawTwodVerts();
+    virtual void DrawBillboards();
 
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;
@@ -210,14 +227,85 @@ class RenderOpenGL : public RenderBase {
     void DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon);
     void DrawIndoorSkyPolygon(signed int uNumVertices,
                               struct Polygon *pSkyPolygon);
+    void DrawForcePerVerts();
 
     void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
         int width, int height);
+
+    // these are the view and projection matrices for submission to shaders
+    glm::mat4 projmat;
+    glm::mat4 viewmat;
+    void _set_3d_projection_matrix();
+    void _set_3d_modelview_matrix();
+    void _set_ortho_projection(bool gameviewport = false);
+    void _set_ortho_modelview();
 
     int clip_x, clip_y;
     int clip_z, clip_w;
 
     int GL_lastboundtex;
+
+    int GPU_MAX_TEX_SIZE;
+    int GPU_MAX_TEX_LAYERS;
+    int GPU_MAX_TEX_UNITS;
+    int GPU_MAX_UNIFORM_COMP;
+    int GPU_MAX_TOTAL_TEXTURES;
+
+    bool InitShaders();
+    GLShader terrainshader;
+    GLShader outbuildshader;
+    GLShader bspshader;
+    GLShader textshader;
+    GLShader lineshader;
+    GLShader twodshader;
+    GLShader billbshader;
+    GLShader decalshader;
+    GLShader forcepershader;
+
+    // terrain shader
+    GLuint terrainVBO, terrainVAO;
+    // all terrain textures are square
+    GLuint terraintextures[8];
+    uint numterraintexloaded[8];
+    uint terraintexturesizes[8];
+    std::map<std::string, int> terraintexmap;
+
+    // outside building shader
+    GLuint outbuildVBO[16], outbuildVAO[16];
+    GLuint outbuildtextures[16];
+    uint numoutbuildtexloaded[16];
+    uint outbuildtexturewidths[16];
+    uint outbuildtextureheights[16];
+    std::map<std::string, int> outbuildtexmap;
+
+    // indoors bsp shader
+    GLuint bspVBO[16], bspVAO[16];
+    GLuint bsptextures[16];
+    uint bsptexloaded[16];
+    uint bsptexturewidths[16];
+    uint bsptextureheights[16];
+    std::map<std::string, int> bsptexmap;
+
+    // text shader
+    GLuint textVBO, textVAO;
+    GLuint texmain, texshadow;
+
+    // lines shader
+    GLuint lineVBO, lineVAO;
+
+    // two d shader
+    GLuint twodVBO, twodVAO;
+
+    // billboards shader
+    GLuint billbVBO, billbVAO;
+
+    // decal shader
+    GLuint decalVBO, decalVAO;
+
+    // forced perspective shader
+    GLuint forceperVBO, forceperVAO;
+
+
     struct nk_vertex {
         float position[2];
         float uv[2];

@@ -46,6 +46,7 @@ class Render : public RenderBase {
     virtual struct nk_image NuklearImageLoad(Image *img);
     virtual void NuklearImageFree(Image *img);
 
+    virtual Texture *CreateTexture_Paletted(const std::string &name) override;
     virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) override;
     virtual Texture *CreateTexture_Solid(const std::string &name) override;
     virtual Texture *CreateTexture_Alpha(const std::string &name) override;
@@ -75,7 +76,11 @@ class Render : public RenderBase {
     virtual void Release() override;
 
     virtual bool SwitchToWindow() override;
+
+    virtual void BeginLines2D() override;
+    virtual void EndLines2D() override;
     virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t uColor) override;
+
     virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
@@ -146,7 +151,10 @@ class Render : public RenderBase {
                           unsigned int uCharWidth, unsigned int uCharHeight,
                           uint8_t *pFontPalette, uint16_t uFaceColor,
                           uint16_t uShadowColor) override;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) override;
+
+    virtual void BeginTextNew(Texture *main, Texture *shadow) override;
+    virtual void EndTextNew() override;
+    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) override;
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
@@ -159,7 +167,7 @@ class Render : public RenderBase {
 
     virtual void PrepareDecorationsRenderList_ODM() override;
 
-    virtual void RenderTerrainD3D() override;
+    virtual void DrawTerrainD3D() override;
 
     virtual bool AreRenderSurfacesOk() override;
 
@@ -184,7 +192,7 @@ class Render : public RenderBase {
     virtual void EndDecals() override;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) override;
 
-    virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
+    virtual void Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                         signed int sDiffuseBegin,
                                         const RenderVertexD3D3 *pLineEnd,
                                         signed int sDiffuseEnd, float z_stuff) override;
@@ -196,6 +204,12 @@ class Render : public RenderBase {
 
     virtual void DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3,
                                int blend_mode) override;
+
+    virtual void ReleaseTerrain() override;
+    virtual void ReleaseBSP() override;
+    virtual void DrawTwodVerts() override;
+
+    virtual void DrawIndoorFaces() override;
 
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;

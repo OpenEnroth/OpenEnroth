@@ -35,7 +35,20 @@ bool AssetsManager::ReleaseImage(const std::string &name) {
     return true;
 }
 
+Texture *AssetsManager::GetImage_Paletted(const std::string &name) {
+    auto filename = name;
+    std::transform(filename.begin(), filename.end(), filename.begin(),
+        ::tolower);
 
+    auto i = images.find(filename);
+    if (i == images.end()) {
+        auto image = render->CreateTexture_Paletted(name);
+        images[filename] = image;
+        return image;
+    }
+
+    return i->second;
+}
 
 
 Texture *AssetsManager::GetImage_ColorKey(const std::string &name, uint16_t colorkey) {

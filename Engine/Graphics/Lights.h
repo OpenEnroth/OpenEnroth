@@ -14,6 +14,7 @@ struct StationaryLight {
     uint8_t uLightColorG = 0;
     uint8_t uLightColorB = 0;
     char uLightType = 0;
+    int16_t uSectorID = 0;
 };
 #pragma pack(pop)
 

@@ -132,6 +132,14 @@ void PrepareDrawLists_BLV() {
 
         pParty->TorchLightLastIntensity = TorchLightPower;
 
+        // problem with deserializing this ??
+        if (pParty->flt_TorchlightColorR == 0) {
+            // __debugbreak();
+            pParty->flt_TorchlightColorR = 96;
+            pParty->flt_TorchlightColorG = 96;
+            pParty->flt_TorchlightColorB = 96;
+        }
+
         pMobileLightsStack->AddLight(
             pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y,
             pCamera3D->vCameraPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
@@ -343,6 +351,7 @@ void BLVRenderParams::Reset() {
     this->field_0_timer_ = pEventTimer->uTotalGameTimeElapsed;
 
     this->uPartySectorID = pIndoor->GetSector(pParty->vPosition);
+    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->vPosition + Vec3_int_(0, 0, pParty->sEyelevel));
 
     if (!this->uPartySectorID) {
         __debugbreak();  // shouldnt happen, please provide savegame
@@ -388,13 +397,14 @@ void BspRenderer::MakeVisibleSectorList() {
 
 //----- (00440B44) --------------------------------------------------------
 void IndoorLocation::DrawIndoorFaces(bool bD3D) {
-        for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
-            // viewed through portal
-            IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
-                pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum,
-                4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);
-        }
-        render->DrawIndoorBatched();
+    render->DrawIndoorFaces();
+        //for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
+        //    // viewed through portal
+        //    IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
+        //        pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum,
+        //        4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);
+        //}
+        //render->DrawIndoorBatched();
 }
 
 
@@ -432,6 +442,9 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
                                   IndoorCameraD3D_Vec4 *portalfrustumnorm,
                                   unsigned int uNumFrustums,
                                   RenderVertexSoft *pPortalBounding) {
+    // This has been moved to seperate funciotns in render(s) see DrawIndoorFaces
+
+
     // faceid, portalfrustum normal, 4, portalbounding
 
     uint ColourMask;  // ebx@25
@@ -675,6 +688,8 @@ void IndoorLocation::Release() {
 
     free(this->pMapOutlines);
     this->pMapOutlines = NULL;
+
+    render->ReleaseBSP();
 
     this->bLoaded = 0;
 }
@@ -1174,7 +1189,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) return 0;
     if (uNumSectors < 2) {
-        __debugbreak();
+        // __debugbreak();
         return 0;
     }
 
@@ -1198,6 +1213,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 
         // nothing in secotr to check against so skip
         if (!FloorsAndPortals) continue;
+        if (!pSector->pFloors) continue;
 
         // loop over check faces
         for (uint z = 0; z < FloorsAndPortals; ++z) {

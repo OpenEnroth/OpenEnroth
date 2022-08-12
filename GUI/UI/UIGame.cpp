@@ -1028,7 +1028,6 @@ void GameUI_DrawRightPanelFrames() {
     render->DrawTextureNew(0, 8 / 480.0f, game_ui_leftframe);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_rightframe);
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_bottomframe);
-    GameUI_DrawFoodAndGold();
     GameUI_DrawRightPanelItems();
 
     // render->EndScene();
@@ -1777,9 +1776,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             // no need to update map - just redraw
             render->DrawTextureAlphaNew(uX / 640., uY / 480., minimaptemp);
         }
+        render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
-
+        render->BeginLines2D();
         for (uint i = 0; i < (uint)pIndoor->pMapOutlines->uNumOutlines; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines->pOutlines[i];
 
@@ -1815,19 +1815,6 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             }
         }
     }
-
-    // draw arrow on the minimap(include. Ritor1)
-    uint arrow_idx;
-    unsigned int rotate = pParty->sRotationZ & TrigLUT->uDoublePiMask;
-    if ((signed int)rotate <= 1920) arrow_idx = 6;
-    if ((signed int)rotate < 1664) arrow_idx = 5;
-    if ((signed int)rotate <= 1408) arrow_idx = 4;
-    if ((signed int)rotate < 1152) arrow_idx = 3;
-    if ((signed int)rotate <= 896) arrow_idx = 2;
-    if ((signed int)rotate < 640) arrow_idx = 1;
-    if ((signed int)rotate <= 384) arrow_idx = 0;
-    if ((signed int)rotate < 128 || (signed int)rotate > 1920) arrow_idx = 7;
-    render->DrawTextureAlphaNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
@@ -1957,6 +1944,21 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             }
         }
     }
+
+    render->EndLines2D();
+
+    // draw arrow on the minimap(include. Ritor1)
+    uint arrow_idx;
+    unsigned int rotate = pParty->sRotationZ & TrigLUT->uDoublePiMask;
+    if ((signed int)rotate <= 1920) arrow_idx = 6;
+    if ((signed int)rotate < 1664) arrow_idx = 5;
+    if ((signed int)rotate <= 1408) arrow_idx = 4;
+    if ((signed int)rotate < 1152) arrow_idx = 3;
+    if ((signed int)rotate <= 896) arrow_idx = 2;
+    if ((signed int)rotate < 640) arrow_idx = 1;
+    if ((signed int)rotate <= 384) arrow_idx = 0;
+    if ((signed int)rotate < 128 || (signed int)rotate > 1920) arrow_idx = 7;
+    render->DrawTextureAlphaNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     render->SetUIClipRect(541, 0, 567, 480);
     render->DrawTextureAlphaNew((floorf(((double)pParty->sRotationZ * 0.1171875) + 0.5f) + 285) / 640.0f,
@@ -2253,9 +2255,18 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
 }
 
 void GUIWindow_DebugMenu::Update() {
+    // could move the drwa flush to update windows?
+    render->DrawTwodVerts();
+    render->EndLines2D();
+    render->EndTextNew();
+
+    render->BeginLines2D();
+
     render->DrawTextureAlphaNew(pViewport->uViewportTL_X / 640.0f,
         pViewport->uViewportTL_Y / 480.0f,
         game_ui_menu_options);
+
+    pGUIWindow_CurrentMenu->DrawText(pFontArrus, 0, 10, 0, "Debug Menu", 0, 0, 0);
 
     buttonbox(13, 140, "Town Portal", engine->config->debug_town_portal);
     buttonbox(127, 140, "Give Gold", 2);
@@ -2298,6 +2309,9 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(241, 329, "No Damage", engine->config->no_damage);
     buttonbox(354, 329, "Full Heal", 2);
 
+    //render->DrawTwodVerts();
+    //render->EndLines2D();
+
     viewparams->bRedrawGameUI = true;
 }
 
@@ -2306,12 +2320,14 @@ void buttonbox(int x, int y, const char* text, int col) {
     int height = 20;
     render->FillRectFast(x, y, width+1, height+1, Color16(50, 50, 50));
 
+    //render->BeginLines2D();
     render->RasterLine2D(x-1, y-1, x+width+1, y-1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x-1, y-1, x-1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
     render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
+    //render->EndLines2D();
 
-    uint colour = ui_character_condition_severe_color;
+    uint16_t colour = ui_character_condition_severe_color;
     if (col == 2) {
         colour = 0;
     }

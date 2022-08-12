@@ -232,6 +232,7 @@ class IRender {
     virtual struct nk_image NuklearImageLoad(Image* img) = 0;
     virtual void NuklearImageFree(Image *img) = 0;
 
+    virtual Texture *CreateTexture_Paletted(const std::string &name) = 0;
     virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) = 0;
     virtual Texture *CreateTexture_Solid(const std::string &name) = 0;
     virtual Texture *CreateTexture_Alpha(const std::string &name) = 0;
@@ -261,7 +262,11 @@ class IRender {
     virtual void Release() = 0;
 
     virtual bool SwitchToWindow() = 0;
+
+    virtual void BeginLines2D() = 0;
+    virtual void EndLines2D() = 0;
     virtual void RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t uColor) = 0;
+
     virtual void ClearZBuffer() = 0;
     virtual void RestoreFrontBuffer() = 0;
     virtual void RestoreBackBuffer() = 0;
@@ -335,7 +340,10 @@ class IRender {
                           unsigned int uCharWidth, unsigned int uCharHeight,
                           uint8_t *pFontPalette, uint16_t uFaceColor,
                           uint16_t uShadowColor) = 0;
-    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) = 0;
+
+    virtual void BeginTextNew(Texture *main, Texture *shadow) = 0;
+    virtual void EndTextNew() = 0;
+    virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) = 0;
 
     virtual void FillRectFast(unsigned int uX, unsigned int uY,
                               unsigned int uWidth, unsigned int uHeight,
@@ -349,7 +357,7 @@ class IRender {
     virtual void PrepareDecorationsRenderList_ODM() = 0;
     virtual void DrawSpriteObjects_ODM() = 0;
 
-    virtual void RenderTerrainD3D() = 0;
+    virtual void DrawTerrainD3D() = 0;
 
     virtual bool AreRenderSurfacesOk() = 0;
 
@@ -374,7 +382,7 @@ class IRender {
     virtual void EndDecals() = 0;
     virtual void DrawDecal(struct Decal *pDecal, float z_bias) = 0;
 
-    virtual void do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
+    virtual void Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                         signed int sDiffuseBegin,
                                         const RenderVertexD3D3 *pLineEnd,
                                         signed int sDiffuseEnd,
@@ -390,6 +398,12 @@ class IRender {
                                int blend_mode) = 0;
 
     virtual void DrawIndoorBatched() = 0;
+    virtual void DrawIndoorFaces() = 0;
+
+    virtual void ReleaseTerrain() = 0;
+    virtual void ReleaseBSP() = 0;
+
+    virtual void DrawTwodVerts() = 0;
 
     inline void ToggleTint() {
         IRenderConfigFactory renderConfigFactory;

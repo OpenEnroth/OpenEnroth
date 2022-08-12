@@ -125,7 +125,7 @@ struct OutdoorLocation {
     unsigned int numFaceIDListElems;
     uint16_t *pFaceIDLIST;
     unsigned int *pOMAP;
-    Texture *sky_texture;        // signed int sSky_TextureID;
+    Texture *sky_texture = nullptr;        // signed int sSky_TextureID;
     Texture *main_tile_texture;  // signed int sMainTile_BitmapID;
     int16_t field_F0;
     int16_t field_F2;

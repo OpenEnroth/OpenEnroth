@@ -654,10 +654,10 @@ bool Sdl2Window::TryMapScanCode(SDL_Scancode code, GameKey *outKey) const {
 void Sdl2Window::OpenGlCreate() {
     int version;
 
-    //  Use OpenGL 3.3 core - requires all fixed pipeline code to be modernised
+    //  Use OpenGL 4.1 core
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
     //  Turn on double buffering with a 24bit Z buffer.
     //  You may need to change this to 16 or 32 for your system
@@ -679,7 +679,7 @@ void Sdl2Window::OpenGlCreate() {
     log->Info("SDL2: OpenGL version: %d.%d", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
     // Use Vsync
-    if (SDL_GL_SetSwapInterval(1) < 0) {
+    if (SDL_GL_SetSwapInterval(0) < 0) {
         log->Info("SDL2: unable to set VSync: %s\n", SDL_GetError());
     }
 }

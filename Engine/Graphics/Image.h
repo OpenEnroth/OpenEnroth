@@ -38,6 +38,7 @@ class Image {
     unsigned int GetWidth();
     unsigned int GetHeight();
     const void *GetPixels(IMAGE_FORMAT format);
+    const void *GetPalette();
     IMAGE_FORMAT GetFormat() const { return native_format; }
 
     std::string* GetName();
@@ -53,6 +54,7 @@ class Image {
     unsigned int height = 0;
     IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
     void* pixels[IMAGE_NUM_FORMATS]{};
+    void* palette24 = nullptr;
 
     virtual bool LoadImageData();
 };

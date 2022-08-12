@@ -262,21 +262,16 @@ bool Vis::IsPointInsideD3DBillboard(RenderBillboardD3D *a1, float x, float y) {
     float drY = a1->pQuads[0].pos.y;
     float drH = a1->pQuads[1].pos.y - drY;
 
-
+    // simple bounds check
+    if (x > drX && x > a1->pQuads[3].pos.x) return 0;
+    if (x < drX && x < a1->pQuads[3].pos.x) return 0;
+    if (y > drY && y > a1->pQuads[1].pos.y) return 0;
+    if (y < drY && y < a1->pQuads[1].pos.y) return 0;
 
     // for small items dont bother with the per pixel checks
     if (abs(drH) < 5 || abs(drW) < 5) {
-        if (drW < 0) {  // sprite reversed
-            drX = a1->pQuads[3].pos.x;
-            drW = a1->pQuads[0].pos.x - drX;
-        }
-        if (x >= drX && x < (drW + drX) && y >= drY && y < (drH + drY)) {  // simple bounds check
             return 1;
-        } else {
-            return 0;
-        }
     }
-
 
     Sprite *ownerSprite = nullptr;
     for (int i = 0; i < pSprites_LOD->uNumLoadedSprites; ++i) {
@@ -527,7 +522,7 @@ bool Vis::Intersect_Ray_Face(RenderVertexSoft *pRayStart,
                              signed int pBModelID) {
     float c1;                    // st5@6
     float c2;                    // st7@11
-    Vec3_short_ IntersectPoint;  // ST04_6@11
+    static Vec3_short_ IntersectPoint;  // ST04_6@11
 
     if (pFace->Portal() || pFace->Invisible()) return false;
 

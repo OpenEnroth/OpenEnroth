@@ -206,9 +206,11 @@ Image *Image::Create(ImageLoader *loader) {
 bool Image::LoadImageData() {
     if (!initialized) {
         void *data = nullptr;
-        initialized = loader->Load(&width, &height, &data, &native_format);
+        void *palette = nullptr;
+        initialized = loader->Load(&width, &height, &data, &native_format, &palette);
         if (initialized && native_format != IMAGE_INVALID_FORMAT) {
             pixels[native_format] = data;
+            palette24 = palette;
         }
     }
 
@@ -315,9 +317,9 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                     {
                         nullptr,                   // IMAGE_FORMAT_R5G6B5
                         nullptr,                   // IMAGE_FORMAT_A1R5G5B5
-                        nullptr,                   // IMAGE_FORMAT_A8R8G8B8
+                        nullptr,                    // IMAGE_FORMAT_A8R8G8B8
                         nullptr,                   // IMAGE_FORMAT_R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
+                        nullptr,                    // IMAGE_FORMAT_R8G8B8A8
                     },
 
                     // IMAGE_FORMAT_R8G8B8A8 ->
@@ -352,6 +354,18 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
             }
         }
     }
+    return nullptr;
+}
+
+const void *Image::GetPalette() {
+    if (!initialized) {
+        LoadImageData();
+    }
+
+    if (initialized) {
+        return this->palette24;
+    }
+
     return nullptr;
 }
 

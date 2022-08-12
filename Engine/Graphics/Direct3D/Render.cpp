@@ -82,7 +82,9 @@ void ErrHR(HRESULT hr, const char *pAPI, const char *pFunction,
 unsigned int Render::GetRenderWidth() const { return window->GetWidth(); }
 unsigned int Render::GetRenderHeight() const { return window->GetHeight(); }
 
-
+Texture *Render::CreateTexture_Paletted(const std::string &name) {
+    return TextureD3D::Create(new Paletted_Img_Loader(pIcons_LOD, name, 0));
+}
 
 Texture *Render::CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) {
     return TextureD3D::Create(new ColorKey_LOD_Loader(pIcons_LOD, name, colorkey));
@@ -132,8 +134,8 @@ Texture *Render::CreateSprite(const std::string &name, unsigned int palette_id,
 
 void Render::WritePixel16(int x, int y, uint16_t color) {
     // do not use this - slow
-    __debugbreak();
     logger->Info("Reduce use of WritePixel16");
+    return;
 
     unsigned int b = (color & 0x1F) << 3;
     unsigned int g = ((color >> 5) & 0x3F) << 2;
@@ -222,7 +224,7 @@ bool Render::AreRenderSurfacesOk() { return pFrontBuffer4 && pBackBuffer4; }
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
 
-void Render::RenderTerrainD3D() {  // New function
+void Render::DrawTerrainD3D() {  // New function
     // warning: the game uses CW culling by default, ccw is incosistent
     pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
 
@@ -1611,7 +1613,8 @@ void Render::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, in
     int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
 
     if (!pArcomageGame->pBlit_Copy_pixels) {
-        __debugbreak();
+        if (engine->config->verbose_logging)
+            logger->Warning("Missing Arcomage Sprite Sheet");
         return;
     }
 
@@ -1783,6 +1786,14 @@ bool Render::SwitchToWindow() {
     pBeforePresentFunction = Present_NoColorKey;
 
     return true;
+}
+
+void Render::BeginLines2D() {
+    return;
+}
+
+void Render::EndLines2D() {
+    return;
 }
 
 void Render::RasterLine2D(int uX, int uY, int uZ, int uW, uint16_t color) {
@@ -2139,6 +2150,163 @@ void Render::DrawIndoorBatched() {
     // NumBatchTrianglesStore = 0;
 }
 
+void Render::DrawIndoorFaces() {
+    for (uint i = 0; i < pBspRenderer->num_faces; ++i) {
+        // viewed through portal
+        /*IndoorLocation::ExecDraw_d3d(pBspRenderer->faces[i].uFaceID,
+            pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum,
+            4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);*/
+        unsigned int uFaceID = pBspRenderer->faces[i].uFaceID;
+        IndoorCameraD3D_Vec4 *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum;
+        unsigned int uNumFrustums = 4;
+        RenderVertexSoft* pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding;
+
+                 uint ColourMask;  // ebx@25
+            // IDirect3DTexture2 *v27; // eax@42
+            unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
+            int LightLevel;                     // [sp+34h] [bp+Ch]@25
+
+            if (uFaceID >= pIndoor->uNumFaces)
+                continue;
+
+            static RenderVertexSoft static_vertices_buff_in[64];  // buff in
+            static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
+
+            static stru154 FacePlaneHolder;  // idb
+
+
+            BLVFace* pFace = &pIndoor->pFaces[uFaceID];
+
+            if (pFace->Portal()) {
+                // pCamera3D->DebugDrawPortal(pFace);
+                continue;
+            }
+
+            if (pFace->uNumVertices < 3) continue;
+
+            if (pFace->Invisible()) {
+                continue;
+            }
+
+
+            // stack decals outside of clipping now
+
+            if (decal_builder->bloodsplat_container->uNumBloodsplats) {
+                decal_builder->ApplyBloodsplatDecals_IndoorFace(uFaceID);
+                if (decal_builder->uNumSplatsThisFace) {
+                    FacePlaneHolder.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
+                    FacePlaneHolder.polygonType = pFace->uPolygonType;
+                    FacePlaneHolder.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
+                    FacePlaneHolder.face_plane.vNormal.z = pFace->pFacePlane.vNormal.z;
+                    FacePlaneHolder.face_plane.dist = pFace->pFacePlane.dist;
+
+                    // copy to buff in
+                    for (uint i = 0; i < pFace->uNumVertices; ++i) {
+                        static_vertices_buff_in[i].vWorldPosition.x =
+                            pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+                        static_vertices_buff_in[i].vWorldPosition.y =
+                            pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+                        static_vertices_buff_in[i].vWorldPosition.z =
+                            pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+                        static_vertices_buff_in[i].u = (signed short)pFace->pVertexUIDs[i];
+                        static_vertices_buff_in[i].v = (signed short)pFace->pVertexVIDs[i];
+                    }
+
+                    // blood draw
+                    decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, 1, &FacePlaneHolder,
+                        pFace->uNumVertices, static_vertices_buff_in,
+                        0, pFace->uSectorID);
+                }
+            }
+
+            if (!pFace->GetTexture()) {
+                continue;
+            }
+
+
+            if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
+                uNumVerticesa = pFace->uNumVertices;
+
+                // copy to buff in
+                for (uint i = 0; i < pFace->uNumVertices; ++i) {
+                    static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+                    static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+                    static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+                    static_vertices_buff_in[i].u = (signed short)pFace->pVertexUIDs[i];
+                    static_vertices_buff_in[i].v = (signed short)pFace->pVertexVIDs[i];
+                }
+
+                // check if this face is visible through current portal node
+                if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)/* ||  true*/
+                    // pCamera3D->ClipFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4, 0, 0) || true
+                    ) {
+                    ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+
+                    /*for (uint i = 0; i < pFace->uNumVertices; ++i) {
+                        static_vertices_calc_out[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+                        static_vertices_calc_out[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+                        static_vertices_calc_out[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+                        static_vertices_calc_out[i].u = (signed short)pFace->pVertexUIDs[i];
+                        static_vertices_calc_out[i].v = (signed short)pFace->pVertexVIDs[i];
+                    }*/
+
+                    /*int xd = pParty->vPosition.x - pIndoor->pVertices[pFace->pVertexIDs[0]].x;
+                    int yd = pParty->vPosition.y - pIndoor->pVertices[pFace->pVertexIDs[0]].y;
+                    int zd = pParty->vPosition.z - pIndoor->pVertices[pFace->pVertexIDs[0]].z;
+                    int dist = sqrt(xd * xd + yd * yd + zd * zd);*/
+
+                    // if (dist < 2000) {
+                    pFace->uAttributes |= FACE_SeenByParty;
+                    //}
+
+                    FaceFlowTextureOffset(uFaceID);
+
+                    lightmap_builder->ApplyLights_IndoorFace(uFaceID);
+
+                    LightLevel = Lights.uCurrentAmbientLightLevel & 31;
+                    // lightlevel is 0 to 31
+                    //if (LightLevel < 5) LightLevel = 5;
+
+                    ColourMask = ((LightLevel << 3)) | ((LightLevel << 3)) << 8 | ((LightLevel << 3)) << 16;
+
+                    pCamera3D->ViewTransfrom_OffsetUV(static_vertices_calc_out, uNumVerticesa, array_507D30, &Lights);
+                    pCamera3D->Project(array_507D30, uNumVerticesa, 0);
+
+                    lightmap_builder->StationaryLightsCount = 0;
+                    if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
+                        FacePlaneHolder.face_plane.vNormal.x = pFace->pFacePlane.vNormal.x;
+                        FacePlaneHolder.polygonType = pFace->uPolygonType;
+                        FacePlaneHolder.face_plane.vNormal.y = pFace->pFacePlane.vNormal.y;
+                        FacePlaneHolder.face_plane.vNormal.z = pFace->pFacePlane.vNormal.z;
+                        FacePlaneHolder.face_plane.dist = pFace->pFacePlane.dist;
+                    }
+
+                    if (Lights.uNumLightsApplied > 0 && !pFace->Indoor_sky())  // for torchlight(для света факелов)
+                        lightmap_builder->ApplyLights(&Lights, &FacePlaneHolder, uNumVerticesa, array_507D30, /*pVertices*/0, 0);
+
+                    Texture* face_texture = pFace->GetTexture();
+                    if (pFace->Fluid()) {
+                        face_texture = (Texture*)pFace->resource;
+                        uint eightSeconds = OS_GetTime() % 8000;
+                        float angle = (eightSeconds / 8000.0f) * 2 * 3.1415f;
+
+                        // animte lava back and forth
+                        for (uint i = 0; i < uNumVerticesa; ++i)
+                            array_507D30[i].v += (face_texture->GetHeight() - 1) * cosf(angle);
+                    } else if (pFace->IsTextureFrameTable()) {
+                        face_texture = pTextureFrameTable->GetFrameTexture((int64_t)pFace->resource, pBLVRenderParams->field_0_timer_);
+                    }
+
+                    if (pFace->Indoor_sky()) {
+                        render->DrawIndoorSky(uNumVerticesa, uFaceID);
+                    } else {
+                        render->DrawIndoorPolygon(uNumVerticesa, pFace, PID(OBJECT_BModel, uFaceID), ColourMask, 0);
+                    }
+                }
+            }
+    }
+    DrawIndoorBatched();
+}
 
 
 void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
@@ -3017,7 +3185,15 @@ void Render::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
         (INT)uHeight);
 }
 
-void Render::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, Texture *tex, uint32_t colour) {
+void Render::BeginTextNew(Texture *main, Texture *shadow) {
+    return;
+}
+
+void Render::EndTextNew() {
+    return;
+}
+
+void Render::DrawTextNew(int x, int y, int width, int h, float u1, float v1, float u2, float v2, int isshadow, uint16_t colour) {
     return;
 }
 
@@ -3115,89 +3291,29 @@ void Render::DrawMasked(float u, float v, Image *pTexture,
 
 void Render::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
     if (img) {
-        auto pixelpoint = (const uint32_t *)img->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
         int width = img->GetWidth();
         int height = img->GetHeight();
-        Image *temp = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
+        Texture *temp = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
         uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-        int brightloc = -1;
-        int brightval = 0;
-        int darkloc = -1;
-        int darkval = 765;
+        uint8_t *texpix24 = (uint8_t *)img->GetPixels(IMAGE_FORMAT_R8G8B8);
+        uint8_t thispix;
+        int palindex;
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int nudge = x + y * width;
-                // Test the brightness against the threshold
-                int bright = (*(pixelpoint + nudge) & 0xFF) + ((*(pixelpoint + nudge) >> 8) & 0xFF) + ((*(pixelpoint + nudge) >> 16) & 0xFF);
-                if (bright == 0) continue;
-
-                if (bright > brightval) {
-                    brightval = bright;
-                    brightloc = nudge;
+        for (uint dy = 0; dy < height; ++dy) {
+            for (int dx = 0; dx < width; ++dx) {
+                thispix = *texpix24;
+                if (thispix >= 0 && thispix <= 63) {
+                    palindex = (time + thispix) % (2 * 63);
+                    if (palindex >= 63)
+                        palindex = (2 * 63) - palindex;
+                    temppix[dx + dy * width] = Color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
                 }
-                if (bright < darkval) {
-                    darkval = bright;
-                    darkloc = nudge;
-                }
+                ++texpix24;
             }
         }
 
-        // find brightest
-        unsigned int bmax = (*(pixelpoint + brightloc) & 0xFF);
-        unsigned int gmax = ((*(pixelpoint + brightloc) >> 8) & 0xFF);
-        unsigned int rmax = ((*(pixelpoint + brightloc) >> 16) & 0xFF);
-
-        // find darkest not black
-        unsigned int bmin = (*(pixelpoint + darkloc) & 0xFF);
-        unsigned int gmin = ((*(pixelpoint + darkloc) >> 8) & 0xFF);
-        unsigned int rmin = ((*(pixelpoint + darkloc) >> 16) & 0xFF);
-
-        // steps pixels
-        float bstep = (bmax - bmin) / 128.;
-        float gstep = (gmax - gmin) / 128.;
-        float rstep = (rmax - rmin) / 128.;
-
-        int timestep = time % 256;
-
-        // loop through
-        for (int ydraw = 0; ydraw < height; ++ydraw) {
-            for (int xdraw = 0; xdraw < width; ++xdraw) {
-                if (*pixelpoint) {  // check orig item not got blakc pixel
-                    unsigned int bcur = (*(pixelpoint) & 0xFF);
-                    unsigned int gcur = ((*(pixelpoint) >> 8) & 0xFF);
-                    unsigned int rcur = ((*(pixelpoint) >> 16) & 0xFF);
-                    int pixstepb = (bcur - bmin) / bstep + timestep;
-                    if (pixstepb > 255) pixstepb = pixstepb - 256;
-                    if (pixstepb >= 0 && pixstepb < 128)  // 0-127
-                        bcur = bmin + pixstepb * bstep;
-                    if (pixstepb >= 128 && pixstepb < 256) {  // 128-255
-                        pixstepb = pixstepb - 128;
-                        bcur = bmax - pixstepb * bstep;
-                    }
-                    int pixstepr = (rcur - rmin) / rstep + timestep;
-                    if (pixstepr > 255) pixstepr = pixstepr - 256;
-                    if (pixstepr >= 0 && pixstepr < 128)  // 0-127
-                        rcur = rmin + pixstepr * rstep;
-                    if (pixstepr >= 128 && pixstepr < 256) {  // 128-255
-                        pixstepr = pixstepr - 128;
-                        rcur = rmax - pixstepr * rstep;
-                    }
-                    int pixstepg = (gcur - gmin) / gstep + timestep;
-                    if (pixstepg > 255) pixstepg = pixstepg - 256;
-                    if (pixstepg >= 0 && pixstepg < 128)  // 0-127
-                        gcur = gmin + pixstepg * gstep;
-                    if (pixstepg >= 128 && pixstepg < 256) {  // 128-255
-                        pixstepg = pixstepg - 128;
-                        gcur = gmax - pixstepg * gstep;
-                    }
-                    // out pixel
-                    temppix[xdraw + ydraw * width] = Color32(rcur, gcur, bcur);
-                }
-                pixelpoint++;
-            }
-        }
         // draw image
         render->DrawTextureAlphaNew(u, v, temp);
         temp->Release();
@@ -3610,9 +3726,7 @@ void Render::DrawBuildingsD3D() {
                 if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
 
-                   // if (face.uAttributes & FACE_OUTLINED) __debugbreak();
-
-                    static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
+                   static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
                     if (decal_builder->uNumSplatsThisFace > 0) {
                         decal_builder->BuildAndApplyDecals(
                             31 - poly->dimming_level, 2,
@@ -3836,7 +3950,7 @@ void Render::EndLightmaps2() {
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
 }
 
-void Render::do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
+void Render::Do_draw_debug_line_d3d(const RenderVertexD3D3 *pLineBegin,
                                     signed int sDiffuseBegin,
                                     const RenderVertexD3D3 *pLineEnd,
                                     signed int sDiffuseEnd, float z_stuff) {
@@ -4136,6 +4250,7 @@ void Render::DrawOutdoorSkyD3D() {
     // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
 
     pSkyPolygon.texture = pOutdoor->sky_texture;
+
     if (pSkyPolygon.texture) {
         pSkyPolygon.dimming_level = 0;
         pSkyPolygon.uNumVertices = 4;
@@ -4589,3 +4704,6 @@ void Render::NuklearFontFree(struct nk_tex_font *tfont) {}
 struct nk_image Render::NuklearImageLoad(Image* img) { return nk_image_id(0);  }
 void Render::NuklearImageFree(Image *img) {}
 
+void Render::ReleaseTerrain() { return; }
+void Render::ReleaseBSP() { return; }
+void Render::DrawTwodVerts() { return; }

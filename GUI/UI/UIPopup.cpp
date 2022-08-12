@@ -444,6 +444,10 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 1;
     iteminfo_window.uFrameZ =
         iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 1;
+
+    // flush draw before starting popup window
+    render->DrawTwodVerts();
+
     iteminfo_window.DrawMessageBox(0);
     render->SetUIClipRect(
         iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
@@ -462,6 +466,7 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                                      2.) /
                                     480.0f,
                                 inspect_item_image);
+    logger->Info("draw item");
 
     v34 = (int)(v85 + 35);
     Str = out_text;
@@ -617,6 +622,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait border
         render->ResetUIClipRect();
         render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, Color16(0, 0, 0));
+        render->BeginLines2D();
         render->RasterLine2D(
             doll_rect.x - 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.y - 1,
             Color16(0xE1u, 255, 0x9Bu));  // горизонтальная верхняя линия
@@ -629,6 +635,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         render->RasterLine2D(
             doll_rect.z + 1, doll_rect.y - 1, doll_rect.z + 1, doll_rect.w + 1,
             Color16(0xE1u, 255, 0x9Bu));  // правая вертикальная линия
+        render->EndLines2D();
 
         // Draw portrait
         render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
