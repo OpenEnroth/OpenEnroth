@@ -88,7 +88,7 @@ void main() {
     }
 
     vec3 clamps = result;
-    FragColour = vec4(clamps,1);
+    FragColour = vec4(clamps, vertexColour.a);
 
 }
 

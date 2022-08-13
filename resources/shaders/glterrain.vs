@@ -18,8 +18,9 @@ uniform mat4 projection;
 void main() {
 	gl_Position = projection * view * vec4(vaPos, 1.0);
 
-	//unused
-	vertexColour = vec4(0.0005 * vaPos.y, 0.30, 0.30, 1.0);
+	// rgb unused
+	float opacity = smoothstep(1.0 , 0.99999, gl_Position.z / gl_Position.w); 
+	vertexColour = vec4(0.0, 0.0, 0.0, opacity);
 
 	texuv = vaTexUV;
 	olayer = vaTexLayer;

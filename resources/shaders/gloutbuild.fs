@@ -119,7 +119,7 @@ void main() {
         dull = vec3(1,1,1);
     }
 
-	FragColour = vec4(clamps,1) * vec4(dull,1); // result, 1.0);
+	FragColour = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
 
 }
 
