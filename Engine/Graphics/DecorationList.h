@@ -61,7 +61,7 @@ class DecorationList {
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     void InitializeDecorationSprite(unsigned int uDecID);
-    uint16_t GetDecorIdByName(const char *pName);
+    uint16_t GetDecorIdByName(std::string_view pName);
     DecorationDesc *GetDecoration(unsigned int index) {
         return &pDecorations[index];
     }
