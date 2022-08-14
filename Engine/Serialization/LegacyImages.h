@@ -18,6 +18,7 @@
  * with original files.
  */
 
+struct BLVDoor;
 struct BLVSector;
 struct NPCData;
 struct ItemGen;
@@ -723,6 +724,38 @@ struct Actor_MM7 {
     unsigned int uLastCharacterIDToHit;
     int dword_000334_unique_name;
     char field_338[12];
+};
+#pragma pack(pop)
+
+/*  100 */
+#pragma pack(push, 1)
+struct BLVDoor_MM7 {  // 50h
+    BLVDoor_MM7();
+
+    void Serialize(BLVDoor *);
+    void Deserialize(BLVDoor *);
+
+    uint32_t uAttributes;
+    uint32_t uDoorID;
+    uint32_t uTimeSinceTriggered;
+    Vec3_int_ vDirection;
+    uint32_t uMoveLength;
+    uint32_t uOpenSpeed;
+    uint32_t uCloseSpeed;
+    uint32_t pVertexIDs;
+    uint32_t pFaceIDs;
+    uint32_t pSectorIDs;
+    int32_t pDeltaUs;
+    int32_t pDeltaVs;
+    uint32_t pXOffsets;
+    uint32_t pYOffsets;
+    uint32_t pZOffsets;
+    uint16_t uNumVertices;
+    uint16_t uNumFaces;
+    uint16_t uNumSectors;
+    uint16_t uNumOffsets;
+    uint16_t uState;
+    int16_t field_4E;
 };
 #pragma pack(pop)
 

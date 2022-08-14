@@ -807,19 +807,19 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         pFace->pVertexIDs = &pLFaces[j];
 
         j += pFace->uNumVertices + 1;
-        pFace->pXInterceptDisplacements = (short *)(&pLFaces[j]);
+        pFace->pXInterceptDisplacements = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
-        pFace->pYInterceptDisplacements = (short *)(&pLFaces[j]);
+        pFace->pYInterceptDisplacements = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
-        pFace->pZInterceptDisplacements = (short *)(&pLFaces[j]);
+        pFace->pZInterceptDisplacements = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
-        pFace->pVertexUIDs = (__int16 *)(&pLFaces[j]);
+        pFace->pVertexUIDs = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
-        pFace->pVertexVIDs = (__int16 *)(&pLFaces[j]);
+        pFace->pVertexVIDs = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
     }
@@ -1104,13 +1104,20 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pData = ChestsDeserialize(pData);
+    pData += ChestsDeserialize(pData);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(pDoors, pData, 0x3E80);
-    pData += 0x3E80;
+    // memcpy(pDoors, pData, 0x3E80);
+    // pData += 0x3E80
+    BLVDoor_MM7 *tmp_door = (BLVDoor_MM7 *)malloc(sizeof(BLVDoor_MM7));
+    for (int i = 0; i < uNumDoors; ++i) {
+        memcpy(tmp_door, pData + i * sizeof(BLVDoor_MM7), sizeof(BLVDoor_MM7));
+        tmp_door->Deserialize(&pDoors[i]);
+    }
+    free(tmp_door);
+    pData += uNumDoors * sizeof(BLVDoor_MM7);
 
     // v201 = (const char *)blv.uDoors_ddata_Size;
     // v200 = (size_t)ptr_0002B4_doors_ddata;
@@ -1139,12 +1146,12 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         j += pDoor->uNumFaces;
 
         pDoor->pSectorIDs = &ptr_0002B4_doors_ddata[j];
-        j += pDoor->field_48;
+        j += pDoor->uNumSectors;
 
-        pDoor->pDeltaUs = (short *)(&ptr_0002B4_doors_ddata[j]);
+        pDoor->pDeltaUs = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
         j += pDoor->uNumFaces;
 
-        pDoor->pDeltaVs = (short *)(&ptr_0002B4_doors_ddata[j]);
+        pDoor->pDeltaVs = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
         j += pDoor->uNumFaces;
 
         pDoor->pXOffsets = &ptr_0002B4_doors_ddata[j];

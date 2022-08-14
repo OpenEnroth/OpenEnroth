@@ -1187,7 +1187,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    pSrc = (uint8_t*)ChestsDeserialize((char*)pSrc);
+    pSrc += ChestsDeserialize((char*)pSrc);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 

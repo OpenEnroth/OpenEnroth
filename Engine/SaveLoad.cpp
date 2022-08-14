@@ -452,10 +452,18 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
             data_write_pos += 112 * uNumSpriteObjects;
 
-            data_write_pos = ChestsSerialize(data_write_pos);
+            data_write_pos += ChestsSerialize(data_write_pos);
 
-            memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
-            data_write_pos += 16000;
+            // memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
+            // data_write_pos += 16000;
+            BLVDoor_MM7* tmp_door = (BLVDoor_MM7*)malloc(sizeof(BLVDoor_MM7));
+            for (int i = 0; i < pIndoor->uNumDoors; ++i) {
+                tmp_door->Serialize(&pIndoor->pDoors[i]);
+                memcpy(data_write_pos + i * sizeof(BLVDoor_MM7), tmp_door, sizeof(BLVDoor_MM7));
+            }
+            free(tmp_door);
+            data_write_pos += pIndoor->uNumDoors * sizeof(BLVDoor_MM7);
+
             memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata, pIndoor->blv.uDoors_ddata_Size);
             data_write_pos += pIndoor->blv.uDoors_ddata_Size;
             memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
@@ -507,7 +515,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                    uNumSpriteObjects * sizeof(SpriteObject));
             data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
 
-            data_write_pos = ChestsSerialize(data_write_pos);
+            data_write_pos += ChestsSerialize(data_write_pos);
 
             memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
             data_write_pos += 200;

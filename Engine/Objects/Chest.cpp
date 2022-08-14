@@ -479,31 +479,29 @@ void ChestList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
     }
 }
 
-char *ChestsSerialize(char *pData) {
+size_t ChestsSerialize(char *pData) {
     static_assert(sizeof(Chest) == 5324, "Wrong type size");
 
     uint32_t uNumChests = vChests.size();
     memcpy(pData, &uNumChests, 4);
-    pData += 4;
-    Chest *pChests = (Chest*)pData;
+    Chest *pChests = (Chest*)(pData + 4);
     for (int i = 0; i < uNumChests; i++) {
         memcpy(pChests + i, &vChests[i], sizeof(Chest));
     }
-    pData += sizeof(Chest) * uNumChests;
-    return pData;
+
+    return 4 + uNumChests * sizeof(Chest);
 }
 
-char *ChestsDeserialize(char *pData) {
+size_t ChestsDeserialize(char *pData) {
     vChests.clear();
     uint32_t uNumChests = 0;
     memcpy(&uNumChests, pData, 4);
-    pData += 4;
-    Chest *pChests = (Chest*)pData;
+    Chest *pChests = (Chest*)(pData + 4);
     for (int i = 0; i < uNumChests; i++) {
         vChests.push_back(pChests[i]);
     }
-    pData += uNumChests * sizeof(Chest);
-    return pData;
+
+    return 4 + uNumChests * sizeof(Chest);
 }
 
 void RemoveItemAtChestIndex(int index) {
