@@ -907,28 +907,21 @@ void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
 // tests the object against selection filter to determine whether it can be
 // picked or not
 //----- (004C0791) --------------------------------------------------------
-bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
-                               Vis_SelectionFilter *filter) {
+bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace, Vis_SelectionFilter *filter) {
     switch (filter->vis_object_type) {
         case VisObjectType_Any:
             return true;
 
         case VisObjectType_Sprite: {
+            int parentBillboardId =
+                render->pBillboardRenderListD3D[(int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace].sParentBillboardID;
+
+            if (parentBillboardId == -1)
+                return false;
+
             // v5 = filter->select_flags;
-            int object_idx = PID_ID(
-                pBillboardRenderList
-                    [render
-                         ->pBillboardRenderListD3D[(
-                             int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
-                         .sParentBillboardID]
-                        .object_pid);
-            int object_type = PID_TYPE(
-                pBillboardRenderList
-                    [render
-                         ->pBillboardRenderListD3D[(
-                             int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
-                         .sParentBillboardID]
-                        .object_pid);
+            int object_idx = PID_ID(pBillboardRenderList[parentBillboardId].object_pid);
+            int object_type = PID_TYPE(pBillboardRenderList[parentBillboardId].object_pid);
             if (filter->select_flags & ExcludeType) {
                 return object_type != filter->object_type;
             }
