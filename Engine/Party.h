@@ -294,7 +294,7 @@ struct Party {
     int field_6E4;
     int uFallSpeed; // party vertical speed, negative => falling, positive => jumping
     int field_6EC;
-    int field_6F0;
+    int field_6F0;  // party old z??
     int floor_face_pid;  // face we are standing at
     int walk_sound_timer;
     int _6FC_water_lava_timer;

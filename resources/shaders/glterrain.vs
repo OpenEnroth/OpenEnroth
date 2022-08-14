@@ -19,7 +19,8 @@ void main() {
 	gl_Position = projection * view * vec4(vaPos, 1.0);
 
 	// rgb unused
-	float opacity = smoothstep(1.0 , 0.99999, gl_Position.z / gl_Position.w); 
+	float opacity = smoothstep(1.0 , 0.99999, gl_Position.z / gl_Position.w);
+	if (gl_Position.z < 0.0) opacity = 1.0;
 	vertexColour = vec4(0.0, 0.0, 0.0, opacity);
 
 	texuv = vaTexUV;

@@ -103,8 +103,8 @@ void ArenaFight() {
     int v18;                 // edx@53
     int i;                   // edi@55
     signed int v22;          // [sp-4h] [bp-144h]@51
-    __int16 v23[100];        // [sp+Ch] [bp-134h]@39
-    __int16 monster_ids[6];  // [sp+128h] [bp-18h]@56
+    __int16 v23[100] {};        // [sp+Ch] [bp-134h]@39
+    __int16 monster_ids[6] {};  // [sp+128h] [bp-18h]@56
     int v26;                 // [sp+134h] [bp-Ch]@1
     int num_monsters;        // [sp+13Ch] [bp-4h]@17
 
