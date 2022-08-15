@@ -381,6 +381,8 @@ void BspRenderer::MakeVisibleSectorList() {
     bool onlist = false;
     uNumVisibleNotEmptySectors = 0;
 
+    // TODO: this is actually n^2, might make sense to rewrite properly.
+
     for (uint i = 0; i < num_nodes; ++i) {
         onlist = false;
         for (uint j = 0; j < uNumVisibleNotEmptySectors; j++) {

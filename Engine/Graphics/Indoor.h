@@ -767,7 +767,7 @@ struct BspRenderer {  // stru170
     BspRenderer_ViewportNode nodes[150];
 
     unsigned int uNumVisibleNotEmptySectors;
-    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6]{};
+    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[150]{};
 };
 #pragma pack(pop)
 
