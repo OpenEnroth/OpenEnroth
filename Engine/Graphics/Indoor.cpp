@@ -28,6 +28,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/MemoryInput.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
 #include "Engine/stru367.h"
@@ -95,6 +96,14 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
 
     return true;
 }
+
+// TODO: move to util?
+struct FreeDeleter {
+    template <typename T>
+    void operator()(const T *p) const {
+        std::free(const_cast<T *>(p));
+    }
+};
 
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
@@ -648,15 +657,9 @@ void BLVFace::SetTexture(const std::string &filename) {
 
 //----- (00498B15) --------------------------------------------------------
 void IndoorLocation::Release() {
-    free(this->ptr_0002B4_doors_ddata);
-    this->ptr_0002B4_doors_ddata = NULL;
-
-    free(this->ptr_0002B0_sector_rdata);
-    this->ptr_0002B0_sector_rdata = NULL;
-
-    free(this->ptr_0002B8_sector_lrdata);
-    this->ptr_0002B8_sector_lrdata = NULL;
-
+    this->ptr_0002B4_doors_ddata.clear();
+    this->ptr_0002B0_sector_rdata.clear();
+    this->ptr_0002B8_sector_lrdata.clear();
     this->pLFaces.clear();
     this->pSpawnPoints.clear();
     this->pSectors.clear();
@@ -724,41 +727,29 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         return false;
 
     size_t blv_size = 0;
-    void *rawData = pGames_LOD->LoadCompressed(blv_filename, &blv_size);
-    char *pData = (char*)rawData;
+    std::unique_ptr<void, FreeDeleter> rawData;
+    rawData.reset(pGames_LOD->LoadCompressed(blv_filename, &blv_size));
+    MemoryInput stream(rawData.get(), blv_size);
 
     bLoaded = true;
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&blv, pData, sizeof(BLVHeader));
-    pData += sizeof(BLVHeader);
-    uint32_t uNumVertices;
-    memcpy(&uNumVertices, pData, 4);
-    pData += 4;
-    pVertices.resize(uNumVertices);
-    memcpy(pVertices.data(), pData, uNumVertices * sizeof(Vec3_short_));
+    stream.ReadRaw(&blv);
+    stream.ReadVector(&pVertices);
 
     pGameLoadingUI_ProgressBar->Progress();
-
-    uint32_t uNumFaces;
-    memcpy(&uNumFaces, pData += uNumVertices * sizeof(Vec3_short_), 4);
-    pData += 4;
-
     pGameLoadingUI_ProgressBar->Progress();
 
-    // memcpy(pFaces, pData, uNumFaces * sizeof(BLVFace));
-    BLVFace_MM7 *face_data = (BLVFace_MM7 *)pData;
-    pFaces.resize(uNumFaces);
-    for (unsigned int i = 0; i < uNumFaces; ++i) {
-        pFaces[i].Deserialize(face_data);
-        face_data++;
-    }
+    std::vector<BLVFace_MM7> mm7faces;
+    stream.ReadVector(&mm7faces);
+    pFaces.resize(mm7faces.size());
+    for (unsigned int i = 0; i < mm7faces.size(); ++i)
+        pFaces[i].Deserialize(&mm7faces[i]);
 
-    pLFaces.resize(blv.uFaces_fdata_Size);
-    memcpy(pLFaces.data(), pData += uNumFaces * sizeof(BLVFace_MM7), blv.uFaces_fdata_Size);
+    stream.ReadSizedVector(&pLFaces, blv.uFaces_fdata_Size / sizeof(uint16_t));
 
-    for (uint i = 0, j = 0; i < uNumFaces; ++i) {
+    for (uint i = 0, j = 0; i < pFaces.size(); ++i) {
         BLVFace *pFace = &pFaces[i];
 
         pFace->pVertexIDs = &pLFaces[j];
@@ -783,44 +774,34 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pData += blv.uFaces_fdata_Size;
-
-    for (uint i = 0; i < uNumFaces; ++i) {
+    for (uint i = 0; i < pFaces.size(); ++i) {
         BLVFace *pFace = &pFaces[i];
 
-        char pTexName[16];
-        strncpy(pTexName, pData, 10);
-        pData += 10;
-
-        pFace->SetTexture(std::string(pTexName));
+        std::string texName;
+        stream.ReadSizedString(&texName, 10);
+        pFace->SetTexture(texName);
     }
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    uint32_t uNumFaceExtras;
-    memcpy(&uNumFaceExtras, pData, 4);
-    pFaceExtras.resize(uNumFaceExtras);
-    memcpy(pFaceExtras.data(), pData += 4, uNumFaceExtras * sizeof(BLVFaceExtra));
-    pData += uNumFaceExtras * sizeof(BLVFaceExtra);
+    stream.ReadVector(&pFaceExtras);
 
     pGameLoadingUI_ProgressBar->Progress();
 
     // v108 = (char *)v107 + 36 * uNumFaceExtras;
     // v245 = 0;
     // *(int *)((char *)&uSourceLen + 1) = 0;
-    for (uint i = 0; i < uNumFaceExtras; ++i) {
-        char pTexName[32];
-        strncpy(pTexName, pData, 10);
-        pData += 10;
+    for (uint i = 0; i < pFaceExtras.size(); ++i) {
+        std::string texName;
+        stream.ReadSizedString(&texName, 10);
 
-        if (!strcmp(pTexName, ""))
+        if (texName.empty())
             pFaceExtras[i].uAdditionalBitmapID = -1;
         else
-            pFaceExtras[i].uAdditionalBitmapID =
-                pBitmaps_LOD->LoadTexture(pTexName);
+            pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(texName);
     }
 
-    for (uint i = 0; i < uNumFaces; ++i) {
+    for (uint i = 0; i < pFaces.size(); ++i) {
         BLVFace *pFace = &pFaces[i];
         BLVFaceExtra *pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
 
@@ -834,29 +815,17 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    uint32_t uNumSectors;
-    memcpy(&uNumSectors, pData, 4);
-    pSectors.resize(uNumSectors);
-
-    // memcpy(pSectors, pData + 4, uNumSectors * sizeof(BLVSector));
-
-    BLVSector_MM7 *tmp_sector = (BLVSector_MM7 *)malloc(sizeof(BLVSector_MM7));
-    for (int i = 0; i < uNumSectors; ++i) {
-        memcpy(tmp_sector, pData + 4 + i * sizeof(BLVSector_MM7), sizeof(BLVSector_MM7));
-        tmp_sector->Deserialize(&pSectors[i]);
-    }
-    free(tmp_sector);
-
-    pData += 4 + uNumSectors * sizeof(BLVSector_MM7);
+    std::vector<BLVSector_MM7> mm7sectors;
+    stream.ReadVector(&mm7sectors);
+    pSectors.resize(mm7sectors.size());
+    for (int i = 0; i < mm7sectors.size(); ++i)
+        mm7sectors[i].Deserialize(&pSectors[i]);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    ptr_0002B0_sector_rdata =
-        (unsigned short *)malloc(blv.uSector_rdata_Size);  //, "L.RData");
-    memcpy(ptr_0002B0_sector_rdata, pData, blv.uSector_rdata_Size);
-    pData += blv.uSector_rdata_Size;
+    stream.ReadSizedVector(&ptr_0002B0_sector_rdata, blv.uSector_rdata_Size / sizeof(uint16_t));
 
-    for (uint i = 0, j = 0; i < uNumSectors; ++i) {
+    for (uint i = 0, j = 0; i < pSectors.size(); ++i) {
         BLVSector *pSector = &pSectors[i];
 
         pSector->pFloors = &ptr_0002B0_sector_rdata[j];
@@ -887,92 +856,70 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         j += pSector->uNumMarkers;
     }
 
-    ptr_0002B8_sector_lrdata =
-        (unsigned __int16 *)malloc(blv.uSector_lrdata_Size);  //, "L.RLData");
-    memcpy(ptr_0002B8_sector_lrdata, pData, blv.uSector_lrdata_Size);
-    pData += blv.uSector_lrdata_Size;
+    stream.ReadSizedVector(&ptr_0002B8_sector_lrdata, blv.uSector_lrdata_Size / sizeof(uint16_t));
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0, j = 0; i < uNumSectors; ++i) {
-        pSectors[i].pLights = ptr_0002B8_sector_lrdata + j;
+    for (uint i = 0, j = 0; i < pSectors.size(); ++i) {
+        pSectors[i].pLights = &ptr_0002B8_sector_lrdata[j];
         j += pSectors[i].uNumLights;
     }
 
     pGameLoadingUI_ProgressBar->Progress();
 
     uint32_t uNumDoors;
-    memcpy(&uNumDoors, pData, 4);
-    pDoors.resize(uNumDoors);
-    pData += 4;
+    stream.ReadRaw(&uNumDoors);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumLevelDecorations, pData, 4); // TODO: reading 4 bytes into size_t
-    memcpy(pLevelDecorations.data(), pData + 4,
-           uNumLevelDecorations * sizeof(LevelDecoration));
-    pData += 4 + uNumLevelDecorations * sizeof(LevelDecoration);
+    uint32_t uNumLevelDecorations;
+    stream.ReadRaw(&uNumLevelDecorations);
+    ::uNumLevelDecorations = uNumLevelDecorations;
+    stream.ReadRawArray(pLevelDecorations.data(), uNumLevelDecorations);
 
     for (uint i = 0; i < uNumLevelDecorations; ++i) {
-        pLevelDecorations[i].uDecorationDescID =
-            pDecorationList->GetDecorIdByName(pData);
+        std::string name;
+        stream.ReadSizedString(&name, 32);
 
-        pData += 32;
+        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
     }
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    uint32_t uNumLights;
-    memcpy(&uNumLights, pData, 4);
-    pLights.resize(uNumLights);
-    memcpy(pLights.data(), pData + 4, uNumLights * sizeof(BLVLightMM7));
-    pData += 4 + uNumLights * sizeof(BLVLightMM7);
+    stream.ReadVector(&pLights);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    uint32_t uNumNodes;
-    memcpy(&uNumNodes, pData, 4);
-    pNodes.resize(uNumNodes);
-    memcpy(pNodes.data(), pData + 4, uNumNodes * sizeof(BSPNode));
-    pData += 4 + uNumNodes * sizeof(BSPNode);
+    stream.ReadVector(&pNodes);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    uint32_t uNumSpawnPoints;
-    memcpy(&uNumSpawnPoints, pData, 4);
-    pSpawnPoints.resize(uNumSpawnPoints);
-    memcpy(pSpawnPoints.data(), pData + 4, uNumSpawnPoints * sizeof(SpawnPointMM7));
-    pData += 4 + uNumSpawnPoints * sizeof(SpawnPointMM7);
+    stream.ReadVector(&pSpawnPoints);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    uint32_t uNumOutlines;
-    memcpy(&uNumOutlines, pData, 4);
-    pMapOutlines.resize(uNumOutlines);
-    memcpy(pMapOutlines.data(), pData + 4, uNumOutlines * sizeof(BLVMapOutline));
-    free(rawData);
+    stream.ReadVector(&pMapOutlines);
 
     std::string dlv_filename = std::string(filename);
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
     bool bResetSpawn = false;
     size_t dlv_size = 0;
-    rawData = pNew_LOD->LoadCompressed(dlv_filename, &dlv_size);
-    if (rawData != nullptr) {
-        pData = (char*)rawData;
-        memcpy(&dlv, pData, sizeof(DDM_DLV_Header));
-        pData += sizeof(DDM_DLV_Header);
+    rawData.reset(pNew_LOD->LoadCompressed(dlv_filename, &dlv_size));
+    if (rawData) {
+        stream.Reset(rawData.get(), dlv_size);
+        stream.ReadRaw(&dlv);
     } else {
         bResetSpawn = true;
     }
 
     if (dlv.uNumFacesInBModels > 0) {
         if (dlv.uNumDecorations > 0) {
-            if (dlv.uNumFacesInBModels != uNumFaces ||
+            if (dlv.uNumFacesInBModels != pFaces.size() ||
                 dlv.uNumDecorations != uNumLevelDecorations)
                 bResetSpawn = true;
         }
@@ -988,28 +935,29 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         bRespawnLocation = true;
     }
 
-    char SavedOutlines[875];
+    std::array<char, 875> SavedOutlines = {{}};
     if (bResetSpawn || (bRespawnLocation || !dlv.uLastRepawnDay)) {
         if (bResetSpawn) {
-            memset(SavedOutlines, 0, 875);
+            // do nothing, SavedOutlines are already filled with zeros.
         } else if (bRespawnLocation || !dlv.uLastRepawnDay) {
-            memcpy(SavedOutlines, pData, 875);
+            stream.ReadRaw(&SavedOutlines);
         }
 
         dlv.uLastRepawnDay = num_days_played;
         if (!bResetSpawn) ++dlv.uNumRespawns;
         *(int *)pDest = 1;
 
-        pData = (char*)pGames_LOD->LoadCompressed(dlv_filename);
-        pData += sizeof(DDM_DLV_Header);
+        rawData.reset(pGames_LOD->LoadCompressed(dlv_filename, &dlv_size));
+        stream.Reset(rawData.get(), dlv_size);
+        stream.Skip(sizeof(DDM_DLV_Header));
     } else {
         *(int*)pDest = 0;
     }
 
-    memcpy(_visible_outlines, pData, 875);
-    pData += 875;
+    stream.ReadRaw(&_visible_outlines);
 
-    if (*(int *)pDest) memcpy(_visible_outlines, SavedOutlines, 875);
+    if (*(int *)pDest)
+        _visible_outlines = SavedOutlines;
 
     for (uint i = 0; i < pMapOutlines.size(); ++i) {
         BLVMapOutline *pVertex = &pMapOutlines[i];
@@ -1017,12 +965,11 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
             pVertex->uFlags |= 1;
     }
 
-    for (uint i = 0; i < uNumFaces; ++i) {
+    for (uint i = 0; i < pFaces.size(); ++i) {
         BLVFace *pFace = &pFaces[i];
         BLVFaceExtra *pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
 
-        memcpy(&pFace->uAttributes, pData, 4);
-        pData += 4;
+        stream.ReadRaw(&pFace->uAttributes);
 
         if (pFaceExtra->uEventID) {
             if (pFaceExtra->HasEventHint())
@@ -1034,34 +981,24 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
-        memcpy(&pLevelDecorations[i].uFlags, pData, 2);
-        pData += 2;
-    }
+    for (uint i = 0; i < uNumLevelDecorations; ++i)
+        stream.ReadRaw(&pLevelDecorations[i].uFlags);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumActors, pData, 4);
-
-    // memcpy(&pActors, pData + 4, uNumActors * sizeof(Actor));
-    // pData += 4 + uNumActors * sizeof(Actor);
-    Actor_MM7* tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
-
-    for (int i = 0; i < uNumActors; ++i) {
-        memcpy(tmp_actor, pData + 4 + i * sizeof(Actor_MM7), sizeof(Actor_MM7));
-        tmp_actor->Deserialize(&pActors[i]);
-    }
-    free(tmp_actor);
-
-    pData += 4 + uNumActors * sizeof(Actor_MM7);
+    std::vector<Actor_MM7> mm7actors;
+    stream.ReadVector(&mm7actors);
+    uNumActors = mm7actors.size();
+    for (int i = 0; i < uNumActors; ++i)
+        mm7actors[i].Deserialize(&pActors[i]);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumSpriteObjects, pData, 4);
-    memcpy(pSpriteObjects.data(), pData + 4,
-           uNumSpriteObjects * sizeof(SpriteObject));
-    pData += 4 + uNumSpriteObjects * sizeof(SpriteObject);
+    uint32_t uNumSpriteObjects;
+    stream.ReadRaw(&uNumSpriteObjects);
+    ::uNumSpriteObjects = uNumSpriteObjects;
+    stream.ReadRawArray(pSpriteObjects.data(), uNumSpriteObjects);
 
     pGameLoadingUI_ProgressBar->Progress();
 
@@ -1074,33 +1011,22 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pData += ChestsDeserialize(pData);
+    stream.Skip(ChestsDeserialize(stream.Ptr()));
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    // memcpy(pDoors, pData, 0x3E80);
-    // pData += 0x3E80
-    BLVDoor_MM7 *tmp_door = (BLVDoor_MM7 *)malloc(sizeof(BLVDoor_MM7));
-    for (int i = 0; i < uNumDoors; ++i) {
-        memcpy(tmp_door, pData + i * sizeof(BLVDoor_MM7), sizeof(BLVDoor_MM7));
-        tmp_door->Deserialize(&pDoors[i]);
-    }
-    free(tmp_door);
-    pData += uNumDoors * sizeof(BLVDoor_MM7);
+    std::vector<BLVDoor_MM7> mm7doors;
+    stream.ReadSizedVector(&mm7doors, uNumDoors);
+    pDoors.resize(uNumDoors);
+    for (int i = 0; i < uNumDoors; ++i)
+        mm7doors[i].Deserialize(&pDoors[i]);
 
     // v201 = (const char *)blv.uDoors_ddata_Size;
     // v200 = (size_t)ptr_0002B4_doors_ddata;
     // v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
     // v171 = blv.uDoors_ddata_Size;
-    ptr_0002B4_doors_ddata = (uint16_t*)malloc(blv.uDoors_ddata_Size);  //, "L.DData");
-    if (ptr_0002B4_doors_ddata == nullptr) {
-        log->Warning("Malloc error");
-        Error("Malloc");  // is this recoverable
-    }
-
-    memcpy(ptr_0002B4_doors_ddata, pData, blv.uDoors_ddata_Size);
-    pData += blv.uDoors_ddata_Size;
+    stream.ReadSizedVector(&ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size / sizeof(uint16_t));
 
     // Src = (BLVFace *)((char *)Src + v171);
     // v172 = 0;
@@ -1149,15 +1075,11 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&stru_5E4C90_MapPersistVars, pData, 0xC8);
-    pData += 0xC8;
+    stream.ReadRaw(&stru_5E4C90_MapPersistVars);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&stru1, pData, 0x38u);
-    pData += 0x38;
-
-    free(rawData);
+    stream.ReadRaw(&stru1);
 
     return 0;
 }

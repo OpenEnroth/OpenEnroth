@@ -421,7 +421,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             pIndoor->dlv.uNumDecorations = uNumLevelDecorations;
             memcpy(data_write_pos, &pIndoor->dlv, sizeof(DDM_DLV_Header));  // 0x28
             data_write_pos += sizeof(DDM_DLV_Header);
-            memcpy(data_write_pos, pIndoor->_visible_outlines, 0x36B);
+            memcpy(data_write_pos, &pIndoor->_visible_outlines, 0x36B);
             data_write_pos += 875;
             for (int i = 0; i < (signed int)pIndoor->pFaces.size(); ++i) {
                 memcpy(data_write_pos, &pIndoor->pFaces[i].uAttributes, 4);
@@ -464,7 +464,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             free(tmp_door);
             data_write_pos += pIndoor->pDoors.size() * sizeof(BLVDoor_MM7);
 
-            memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata, pIndoor->blv.uDoors_ddata_Size);
+            memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata.data(), pIndoor->blv.uDoors_ddata_Size);
             data_write_pos += pIndoor->blv.uDoors_ddata_Size;
             memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
             data_write_pos += 200;

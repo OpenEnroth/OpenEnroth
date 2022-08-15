@@ -612,13 +612,13 @@ struct IndoorLocation {
     std::vector<BSPNode> pNodes;
     std::vector<BLVMapOutline> pMapOutlines;
     std::vector<uint16_t> pLFaces;
-    uint16_t *ptr_0002B0_sector_rdata = nullptr;
-    uint16_t *ptr_0002B4_doors_ddata = nullptr;
-    uint16_t *ptr_0002B8_sector_lrdata = nullptr;
+    std::vector<uint16_t> ptr_0002B0_sector_rdata;
+    std::vector<uint16_t> ptr_0002B4_doors_ddata;
+    std::vector<uint16_t> ptr_0002B8_sector_lrdata;
     std::vector<SpawnPointMM7> pSpawnPoints;
-    struct DDM_DLV_Header dlv;
+    DDM_DLV_Header dlv;
     LocationTime_stru1 stru1;
-    char _visible_outlines[875];
+    std::array<char, 875> _visible_outlines;
     char padding;
 
     Log *log = nullptr;
