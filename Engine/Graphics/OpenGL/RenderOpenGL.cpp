@@ -293,7 +293,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
         BLVSector *pSector = &pIndoor->pSectors[uSectorID];
 
         for (uint i = 0; i < pSector->uNumLights; ++i) {
-            BLVLightMM7 *this_light = pIndoor->pLights + pSector->pLights[i];
+            BLVLightMM7 *this_light = &pIndoor->pLights[pSector->pLights[i]];
             light_radius = this_light->uRadius;
 
             if (~this_light->uAtributes & 8) {
@@ -4867,7 +4867,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
 
 
-            for (int test = 0; test < pIndoor->uNumFaces; test++) {
+            for (int test = 0; test < pIndoor->pFaces.size(); test++) {
                 BLVFace* face = &pIndoor->pFaces[test];
 
                 if (face->Portal()) continue;
@@ -5052,7 +5052,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);*/
 
                 unsigned int uFaceID = pBspRenderer->faces[i].uFaceID;
-                if (uFaceID >= pIndoor->uNumFaces)
+                if (uFaceID >= pIndoor->pFaces.size())
                     continue;
                 BLVFace* face = &pIndoor->pFaces[uFaceID];
 
@@ -5251,7 +5251,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         int16_t mintest = 0;
 
-        for (int i = 0; i < pIndoor->uNumSectors; i++) {
+        for (int i = 0; i < pIndoor->pSectors.size(); i++) {
             mintest = std::max(mintest, pIndoor->pSectors[i].uMinAmbientLightLevel);
         }
 
@@ -5483,7 +5483,7 @@ void RenderOpenGL::DrawIndoorFaces() {
         static RenderVertexSoft static_vertices_buff_in[64];  // buff in
 
         // loop over faces
-        for (int test = 0; test < pIndoor->uNumFaces; test++) {
+        for (int test = 0; test < pIndoor->pFaces.size(); test++) {
             BLVFace* pface = &pIndoor->pFaces[test];
 
             if (pface->Portal()) continue;

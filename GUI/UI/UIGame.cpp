@@ -1780,8 +1780,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         render->FillRectFast(uX, uY, uZ - uX, uHeight, 0xF);
         render->BeginLines2D();
-        for (uint i = 0; i < (uint)pIndoor->pMapOutlines->uNumOutlines; ++i) {
-            BLVMapOutline *pOutline = &pIndoor->pMapOutlines->pOutlines[i];
+        for (uint i = 0; i < (uint)pIndoor->pMapOutlines.size(); ++i) {
+            BLVMapOutline *pOutline = &pIndoor->pMapOutlines[i];
 
             if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
                 pIndoor->pFaces[pOutline->uFace2ID].Visible()) {
@@ -1790,10 +1790,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                     pOutline->uFlags = pOutline->uFlags | 1;
                     pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 
-                    int Vert1X = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].x - pParty->vPosition.x;
-                    int Vert2X = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].x - pParty->vPosition.x;
-                    int Vert1Y = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex1ID].y - pParty->vPosition.y;
-                    int Vert2Y = pIndoor->pVertices[pIndoor->pMapOutlines->pOutlines[i].uVertex2ID].y - pParty->vPosition.y;
+                    int Vert1X = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID].x - pParty->vPosition.x;
+                    int Vert2X = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID].x - pParty->vPosition.x;
+                    int Vert1Y = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID].y - pParty->vPosition.y;
+                    int Vert2Y = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID].y - pParty->vPosition.y;
 
                     int linex = uCenterX + fixpoint_mul(uZoom, Vert1X);
                     int liney = uCenterY - fixpoint_mul(uZoom, Vert1Y);

@@ -313,7 +313,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     v5 = 0;
     v17 = 0;
 
-    for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->uNumFaces; ++v17) {
+    for (a1.flt_2C = 0.0; v17 < (signed int)pIndoor->pFaces.size(); ++v17) {
         BLVFace *face = &pIndoor->pFaces[/*pFaceID*/v17];
         if (is_part_of_selection(face, filter)) {
             if (pCamera3D->is_face_faced_to_cameraBLV(face)) {

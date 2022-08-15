@@ -355,7 +355,7 @@ void Engine::DrawGUI() {
             pPrimaryWindow->DrawText(
                 pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255),
                 StringPrintf("Party Sector ID:        %u/%u\n", sector_id,
-                    pIndoor->uNumSectors),
+                    (unsigned int)pIndoor->pSectors.size()),
                 0, 0, 0);
         }
         pPrimaryWindow->DrawText(
@@ -1428,7 +1428,7 @@ void GameUI_StatusBar_Update(bool force_hide) {
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    const std::string &filename) {
-    for (uint i = 1; i < pIndoor->uNumFaceExtras; ++i) {
+    for (uint i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
         auto extra = &pIndoor->pFaceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
             auto face = &pIndoor->pFaces[extra->face_id];
@@ -1472,7 +1472,7 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename) {
 void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            for (uint i = 1; i < (unsigned int)pIndoor->uNumFaceExtras; ++i) {
+            for (uint i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
                 if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
                     if (on)
                         pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id]

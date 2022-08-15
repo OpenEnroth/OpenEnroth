@@ -248,10 +248,10 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     } else {  // indoors
         unsigned int Colour_Black = Color16(0, 0, 0);
 
-        if (pIndoor->pMapOutlines->uNumOutlines) {
+        if (!pIndoor->pMapOutlines.empty()) {
             render->BeginLines2D();
-            for (uint i = 0; i < pIndoor->pMapOutlines->uNumOutlines; ++i) {
-                BLVMapOutline *pOutline = &pIndoor->pMapOutlines->pOutlines[i];
+            for (uint i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
+                BLVMapOutline *pOutline = &pIndoor->pMapOutlines[i];
 
                 if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
                     pIndoor->pFaces[pOutline->uFace2ID].Visible()) {

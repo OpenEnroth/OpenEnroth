@@ -189,9 +189,9 @@ void ViewingParams::_443365() {
 
         maximum_x = -0x40000000;
         maximum_y = -0x40000000;
-        for (int i = 0; i < pIndoor->pMapOutlines->uNumOutlines; ++i) {
+        for (int i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
             v3 = &pIndoor
-                      ->pVertices[pIndoor->pMapOutlines->pOutlines[i].uFace1ID];
+                      ->pVertices[pIndoor->pMapOutlines[i].uFace1ID];
 
             if (v3->x < minimum_x) minimum_x = v3->x;
             if (v3->x > maximum_x) maximum_x = v3->x;
@@ -199,7 +199,7 @@ void ViewingParams::_443365() {
             if (v3->y > maximum_y) maximum_y = v3->x;
 
             v6 = &pIndoor
-                      ->pVertices[pIndoor->pMapOutlines->pOutlines[i].uFace2ID];
+                      ->pVertices[pIndoor->pMapOutlines[i].uFace2ID];
 
             if (v6->x < minimum_x) minimum_x = v3->x;
             if (v6->x > maximum_x) maximum_x = v3->x;

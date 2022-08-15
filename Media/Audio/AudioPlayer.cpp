@@ -287,7 +287,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
         switch (object_type) {
             case OBJECT_BLVDoor: {
                 assert(uCurrentlyLoadedLevelType == LEVEL_Indoor);
-                assert((int)object_id < pIndoor->uNumDoors);
+                assert((int)object_id < pIndoor->pDoors.size());
 
                 provider->SetListenerPosition(pParty->vPosition.x / 50.f,
                                               pParty->vPosition.y / 50.f,

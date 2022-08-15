@@ -416,14 +416,14 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
         char *data_write_pos = uncompressed_buff;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            pIndoor->dlv.uNumFacesInBModels = pIndoor->uNumFaces;
+            pIndoor->dlv.uNumFacesInBModels = pIndoor->pFaces.size();
             pIndoor->dlv.uNumBModels = 0;
             pIndoor->dlv.uNumDecorations = uNumLevelDecorations;
             memcpy(data_write_pos, &pIndoor->dlv, sizeof(DDM_DLV_Header));  // 0x28
             data_write_pos += sizeof(DDM_DLV_Header);
             memcpy(data_write_pos, pIndoor->_visible_outlines, 0x36B);
             data_write_pos += 875;
-            for (int i = 0; i < (signed int)pIndoor->uNumFaces; ++i) {
+            for (int i = 0; i < (signed int)pIndoor->pFaces.size(); ++i) {
                 memcpy(data_write_pos, &pIndoor->pFaces[i].uAttributes, 4);
                 data_write_pos += 4;
             }
@@ -457,12 +457,12 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             // memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
             // data_write_pos += 16000;
             BLVDoor_MM7* tmp_door = (BLVDoor_MM7*)malloc(sizeof(BLVDoor_MM7));
-            for (int i = 0; i < pIndoor->uNumDoors; ++i) {
+            for (int i = 0; i < pIndoor->pDoors.size(); ++i) {
                 tmp_door->Serialize(&pIndoor->pDoors[i]);
                 memcpy(data_write_pos + i * sizeof(BLVDoor_MM7), tmp_door, sizeof(BLVDoor_MM7));
             }
             free(tmp_door);
-            data_write_pos += pIndoor->uNumDoors * sizeof(BLVDoor_MM7);
+            data_write_pos += pIndoor->pDoors.size() * sizeof(BLVDoor_MM7);
 
             memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata, pIndoor->blv.uDoors_ddata_Size);
             data_write_pos += pIndoor->blv.uDoors_ddata_Size;

@@ -552,13 +552,6 @@ struct BLVSector {  // 0x74
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
-struct BLVMapOutlines {
-    int uNumOutlines;
-    BLVMapOutline pOutlines[7000];
-};
-#pragma pack(pop)
-
 /*   89 */
 #pragma pack(push, 1)
 struct IndoorLocation {
@@ -569,23 +562,6 @@ struct IndoorLocation {
         this->spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
         this->lightmap_builder = EngineIoc::ResolveLightmapBuilder();
         this->particle_engine = EngineIoc::ResolveParticleEngine();
-
-        bLoaded = 0;
-        ptr_0002B8_sector_lrdata = 0;
-        ptr_0002B4_doors_ddata = 0;
-        ptr_0002B0_sector_rdata = 0;
-        pLFaces = 0;
-        pVertices = 0;
-        pFaces = 0;
-        pFaceExtras = 0;
-        pSectors = 0;
-        pLights = 0;
-        pDoors = 0;
-        pNodes = 0;
-        pMapOutlines = 0;
-        uNumSpawnPoints = 0;
-        pSpawnPoints = 0;
-        uNumSectors = 0;
     }
 
     /**
@@ -624,30 +600,22 @@ struct IndoorLocation {
 
     std::string filename;
     char field_20[48];
-    unsigned int bLoaded;
+    unsigned int bLoaded = 0;
     char field_54[404];
-    struct BLVHeader blv;
-    unsigned int uNumVertices;
-    Vec3_short_ *pVertices;
-    unsigned int uNumFaces;
-    struct BLVFace *pFaces;
-    unsigned int uNumFaceExtras;
-    struct BLVFaceExtra *pFaceExtras;
-    int uNumSectors;
-    struct BLVSector *pSectors;
-    int uNumLights;
-    struct BLVLightMM7 *pLights;
-    int uNumDoors;
-    struct BLVDoor *pDoors;
-    unsigned int uNumNodes;
-    struct BSPNode *pNodes;
-    BLVMapOutlines *pMapOutlines;
-    uint16_t *pLFaces;
-    uint16_t *ptr_0002B0_sector_rdata;
-    uint16_t *ptr_0002B4_doors_ddata;
-    uint16_t *ptr_0002B8_sector_lrdata;
-    unsigned int uNumSpawnPoints;
-    struct SpawnPointMM7 *pSpawnPoints;
+    BLVHeader blv;
+    std::vector<Vec3_short_> pVertices;
+    std::vector<BLVFace> pFaces;
+    std::vector<BLVFaceExtra> pFaceExtras;
+    std::vector<BLVSector> pSectors;
+    std::vector<BLVLightMM7> pLights;
+    std::vector<BLVDoor> pDoors;
+    std::vector<BSPNode> pNodes;
+    std::vector<BLVMapOutline> pMapOutlines;
+    std::vector<uint16_t> pLFaces;
+    uint16_t *ptr_0002B0_sector_rdata = nullptr;
+    uint16_t *ptr_0002B4_doors_ddata = nullptr;
+    uint16_t *ptr_0002B8_sector_lrdata = nullptr;
+    std::vector<SpawnPointMM7> pSpawnPoints;
     struct DDM_DLV_Header dlv;
     LocationTime_stru1 stru1;
     char _visible_outlines[875];
