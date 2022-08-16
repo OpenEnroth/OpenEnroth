@@ -868,8 +868,7 @@ void OutdoorLocation::Release() {
     free(pOMAP);
     pOMAP = nullptr;
     pFaceIDLIST.clear();
-    free(pTerrainNormals);
-    pTerrainNormals = nullptr;
+    pTerrainNormals.clear();
 
     // free shader data for outdoor location
     render->ReleaseTerrain();
@@ -958,6 +957,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
+    uint32_t uNumTerrainNormals;
     memcpy(&uNumTerrainNormals, pSrc, 4);  // количество нормалей
     pSrc += 4;
     memcpy(pTerrainSomeOtherData.data(), pSrc, 0x20000);
@@ -966,9 +966,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     memcpy(pTerrainNormalIndices.data(), pSrc, 0x10000);  // индексы нормалей
     pSrc += 0x10000;
 
-    pTerrainNormals = (Vec3_float_ *)malloc(
-        sizeof(Vec3_float_) * uNumTerrainNormals);  // карта нормалей
-    memcpy(pTerrainNormals, pSrc, 12 * uNumTerrainNormals);
+    pTerrainNormals.resize(uNumTerrainNormals);  // карта нормалей
+    memcpy(pTerrainNormals.data(), pSrc, 12 * uNumTerrainNormals);
     pSrc += 12 * uNumTerrainNormals;
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки

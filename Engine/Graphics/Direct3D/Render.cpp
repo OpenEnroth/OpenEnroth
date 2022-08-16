@@ -396,18 +396,18 @@ void Render::DrawTerrainD3D() {  // New function
             uint norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * z) + 2 /*+ 1*/ ];  // 2 is top tri // 3 is bottom
             uint bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * z) + 3];
 
-            assert(norm_idx < uNumTerrainNormals);
-            assert(bottnormidx < uNumTerrainNormals);
+            assert(norm_idx < pTerrainNormals.size());
+            assert(bottnormidx < pTerrainNormals.size());
 
             Vec3_float_ *norm = &pTerrainNormals[norm_idx];
             Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
 
-            if (norm_idx < 0 || norm_idx > uNumTerrainNormals - 1)
+            if (norm_idx < 0 || norm_idx >= pTerrainNormals.size())
                 norm = 0;
             else
                 norm = &pTerrainNormals[norm_idx];
 
-            if (bottnormidx < 0 || bottnormidx > uNumTerrainNormals - 1)
+            if (bottnormidx < 0 || bottnormidx >= pTerrainNormals.size())
                 norm2 = 0;
             else
                 norm2 = &pTerrainNormals[bottnormidx];

@@ -2633,8 +2633,8 @@ void RenderOpenGL::DrawTerrainD3D() {
                 // next calculate all vertices vertices
                 uint norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
                 uint bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
-                assert(norm_idx < uNumTerrainNormals);
-                assert(bottnormidx < uNumTerrainNormals);
+                assert(norm_idx < pTerrainNormals.size());
+                assert(bottnormidx < pTerrainNormals.size());
                 Vec3_float_ *norm = &pTerrainNormals[norm_idx];
                 Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
 
@@ -2992,8 +2992,8 @@ void RenderOpenGL::DrawTerrainD3D() {
 
                 uint norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
                 uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
-                assert(norm_idx < uNumTerrainNormals);
-                assert(bottnormidx < uNumTerrainNormals);
+                assert(norm_idx < pTerrainNormals.size());
+                assert(bottnormidx < pTerrainNormals.size());
                 Vec3_float_ *norm = &pTerrainNormals[norm_idx];
                 Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
 
