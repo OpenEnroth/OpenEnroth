@@ -115,7 +115,7 @@ struct OutdoorLocation {
     std::string location_file_description;
     std::string sky_texture_filename;
     std::string ground_tileset;
-    OutdoorLocationTileType pTileTypes[4];  // [3]  road tileset
+    std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3]  road tileset
     struct OutdoorLocationTerrain pTerrain;
     std::array<uint16_t, 128 * 128> pCmap; // Unused
     BSPModelList pBModels;
@@ -127,8 +127,7 @@ struct OutdoorLocation {
     int16_t field_F2;
     int field_F4;
     char field_F8[968];
-    unsigned int uNumSpawnPoints;
-    struct SpawnPointMM7 *pSpawnPoints;
+    std::vector<SpawnPointMM7> pSpawnPoints;
     struct DDM_DLV_Header ddm;
     LocationTime_stru1 loc_time;
     unsigned char

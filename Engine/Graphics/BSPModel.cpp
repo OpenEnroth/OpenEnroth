@@ -45,10 +45,12 @@ struct ODMFace_MM7 {
 };
 #pragma pack(pop)
 
-uint8_t *BSPModelList::Load(uint8_t *data) {
+size_t BSPModelList::Load(const char *data) {
     static_assert(sizeof(BSPModelData) == 188, "Wrong type size");
     static_assert(sizeof(BSPNode) == 8, "Wrong type size");
     static_assert(sizeof(Vec3_int_) == 12, "Wrong type size");
+
+    const char *start = data;
 
     uint32_t uNumBModels;
     memcpy(&uNumBModels, data, 4);  // количество BModel'ей
@@ -135,7 +137,7 @@ uint8_t *BSPModelList::Load(uint8_t *data) {
         model_index++;
     }
 
-    return data;
+    return data - start;
 }
 
 void BSPModel::Release() {

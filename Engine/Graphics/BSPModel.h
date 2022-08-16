@@ -203,5 +203,5 @@ class BSPModel {
 
 class BSPModelList : public std::vector<BSPModel> {
  public:
-    uint8_t *Load(uint8_t *data);
+    size_t Load(const char *data);
 };
