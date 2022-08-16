@@ -1819,7 +1819,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     // draw objects on the minimap
     if (bWizardEyeActive) {
         if (uWizardEyeSkillLevel >= 2) {
-            for (uint i = 0; i < uNumSpriteObjects; ++i) {
+            for (uint i = 0; i < pSpriteObjects.size(); ++i) {
                 if (!pSpriteObjects[i].uType ||
                     !pSpriteObjects[i].uObjectDescID)
                     continue;
@@ -1917,8 +1917,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
             }
         }
-        for (uint i = 0; i < (signed int)uNumLevelDecorations;
-             ++i) {  // draw items(отрисовка предметов)
+        for (uint i = 0; i < (signed int)pLevelDecorations.size(); ++i) {  // draw items(отрисовка предметов)
             if (pLevelDecorations[i].uFlags & 8) {
                 pPoint_X =
                     uCenterX + (fixpoint_mul((pLevelDecorations[i].vPosition.x -

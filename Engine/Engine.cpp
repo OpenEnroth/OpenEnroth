@@ -828,9 +828,6 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
     Level_LoadEvtAndStr(mapName);
     LoadLevel_InitializeLevelEvt();
 
-    for (uint i = 0; i < 1000; ++i)
-        pSpriteObjects[i].uObjectDescID = 0;
-
     v5 = pMapStats->GetMapInfo(pCurrentMapName);
 
     uLevelMapStatsID = v5;
@@ -1371,7 +1368,7 @@ void Engine::_461103_load_level_sub() {
     if (engine->config->NoActors())
         uNumActors = 0;
     if (engine->config->NoDecorations())
-        uNumLevelDecorations = 0;
+        pLevelDecorations.clear();
     init_event_triggers();
 
     pGameLoadingUI_ProgressBar->Progress();
@@ -1502,7 +1499,7 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
 
 //----- (0044882F) --------------------------------------------------------
 void SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName) {
-    for (size_t i = 0; i < uNumLevelDecorations; i++) {
+    for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
             if (pFileName && strcmp(pFileName, "0")) {
                 pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(pFileName);

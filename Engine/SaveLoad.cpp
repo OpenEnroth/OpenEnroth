@@ -418,7 +418,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             pIndoor->dlv.uNumFacesInBModels = pIndoor->pFaces.size();
             pIndoor->dlv.uNumBModels = 0;
-            pIndoor->dlv.uNumDecorations = uNumLevelDecorations;
+            pIndoor->dlv.uNumDecorations = pLevelDecorations.size();
             memcpy(data_write_pos, &pIndoor->dlv, sizeof(DDM_DLV_Header));  // 0x28
             data_write_pos += sizeof(DDM_DLV_Header);
             memcpy(data_write_pos, &pIndoor->_visible_outlines, 0x36B);
@@ -428,7 +428,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 data_write_pos += 4;
             }
 
-            for (int i = 0; i < (signed int)uNumLevelDecorations; ++i) {
+            for (int i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
                 memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
                 data_write_pos += 2;
             }
@@ -447,6 +447,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             free(tmp_actor);
             data_write_pos += uNumActors * sizeof(Actor_MM7);
 
+            uint32_t uNumSpriteObjects = pSpriteObjects.size();
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
             memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
@@ -477,7 +478,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 pOutdoor->ddm.uNumFacesInBModels += model.pFaces.size();
             }
             pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
-            pOutdoor->ddm.uNumDecorations = uNumLevelDecorations;
+            pOutdoor->ddm.uNumDecorations = pLevelDecorations.size();
             memcpy(data_write_pos, &pOutdoor->ddm, sizeof(DDM_DLV_Header));  // 0x28
             data_write_pos += sizeof(DDM_DLV_Header);
             memcpy(data_write_pos, pOutdoor->uFullyRevealedCellOnMap, 0x3C8);
@@ -491,7 +492,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 }
             }
 
-            for (size_t i = 0; i < uNumLevelDecorations; ++i) {
+            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
                 data_write_pos += 2;
             }
@@ -509,6 +510,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             free(tmp_actor);
             data_write_pos += uNumActors * sizeof(Actor_MM7);
 
+            uint32_t uNumSpriteObjects = pSpriteObjects.size();
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
             memcpy(data_write_pos, &pSpriteObjects,

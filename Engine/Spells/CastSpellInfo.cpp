@@ -351,7 +351,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 int _v733 = 0;
-                for (uint i = 0; i < uNumSpriteObjects; ++i) {
+                for (uint i = 0; i < pSpriteObjects.size(); ++i) {
                     SpriteObject *object = &pSpriteObjects[i];
                     if (object->uType && object->spell_id == SPELL_FIRE_FIRE_SPIKE && object->spell_caster_pid == PID(OBJECT_Player, pCastSpell->uPlayerID))
                         ++_v733;

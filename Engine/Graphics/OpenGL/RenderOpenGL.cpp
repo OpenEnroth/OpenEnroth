@@ -344,7 +344,7 @@ void UpdateObjects() {
     int v18;  // [sp+4h] [bp-10h]@27
     int v19;  // [sp+8h] [bp-Ch]@27
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uAttributes & OBJECT_40) {
             pSpriteObjects[i].uAttributes &= ~OBJECT_40;
         } else {
@@ -2157,7 +2157,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
     unsigned __int16 *v37;  // [sp+84h] [bp-20h]@9
     int v38;                // [sp+88h] [bp-1Ch]@9
 
-    for (unsigned int i = 0; i < uNumLevelDecorations; ++i) {
+    for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
         // LevelDecoration* decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
             pLevelDecorations[i].IsObeliskChestActive()) &&

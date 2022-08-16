@@ -873,12 +873,9 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    uint32_t uNumLevelDecorations;
-    stream.ReadRaw(&uNumLevelDecorations);
-    ::uNumLevelDecorations = uNumLevelDecorations;
-    stream.ReadRawArray(pLevelDecorations.data(), uNumLevelDecorations);
+    stream.ReadVector(&pLevelDecorations);
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
+    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         std::string name;
         stream.ReadSizedString(&name, 32);
 
@@ -920,7 +917,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     if (dlv.uNumFacesInBModels > 0) {
         if (dlv.uNumDecorations > 0) {
             if (dlv.uNumFacesInBModels != pFaces.size() ||
-                dlv.uNumDecorations != uNumLevelDecorations)
+                dlv.uNumDecorations != pLevelDecorations.size())
                 bResetSpawn = true;
         }
     }
@@ -981,7 +978,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i)
+    for (uint i = 0; i < pLevelDecorations.size(); ++i)
         stream.ReadRaw(&pLevelDecorations[i].uFlags);
 
     pGameLoadingUI_ProgressBar->Progress();
@@ -995,14 +992,11 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    uint32_t uNumSpriteObjects;
-    stream.ReadRaw(&uNumSpriteObjects);
-    ::uNumSpriteObjects = uNumSpriteObjects;
-    stream.ReadRawArray(pSpriteObjects.data(), uNumSpriteObjects);
+    stream.ReadVector(&pSpriteObjects);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & 0x0100)) {
             pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
             pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
@@ -2043,7 +2037,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     pGameLoadingUI_ProgressBar->Progress();
 
     v35 = 0;
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
+    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
 
         DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
@@ -2088,7 +2082,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (pSpriteObjects[i].containing_item.uItemID) {
                 if (pSpriteObjects[i].containing_item.uItemID != 220 &&
@@ -2386,7 +2380,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
 void IndoorLocation::PrepareItemsRenderList_BLV() {
     unsigned int v6;     // eax@12
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (pSpriteObjects[i].HasSprite()) {
                 if ((pSpriteObjects[i].uType < 1000 || pSpriteObjects[i].uType >= 10000) &&
@@ -3037,7 +3031,7 @@ char DoInteractionWithTopmostZObject(int pid) {
 
     switch (type) {
         case OBJECT_Item: {  // take the item
-            if (pSpriteObjects[id].IsUnpickable() || id >= MAX_SPRITE_OBJECTS || !pSpriteObjects[id].uObjectDescID) {
+            if (pSpriteObjects[id].IsUnpickable() || id >= pSpriteObjects.size() || !pSpriteObjects[id].uObjectDescID) {
                 return 1;
             }
 

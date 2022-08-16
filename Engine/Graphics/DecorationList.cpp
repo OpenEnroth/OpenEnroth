@@ -74,7 +74,7 @@ void RespawnGlobalDecorations() {
     memset(stru_5E4C90_MapPersistVars._decor_events.data(), 0, 125);
 
     uint decorEventIdx = 0;
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
+    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         if (!decor->uEventID) {

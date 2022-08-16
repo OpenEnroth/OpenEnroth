@@ -1005,9 +1005,11 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ******************Decorations**********************//
+    uint32_t uNumLevelDecorations;
     memcpy(&uNumLevelDecorations, pSrc, 4);
     // uSourceLen = (char *)uSourceLen + 4;
     if (uNumLevelDecorations > 3000) logger->Warning("Can't load file! Too many decorations");
+    pLevelDecorations.resize(uNumLevelDecorations);
 
     assert(sizeof(LevelDecoration) == 32);
     memcpy(pLevelDecorations.data(), pSrc + 4,
@@ -1174,9 +1176,11 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pSrc += 4 + uNumActors * sizeof(Actor_MM7);
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
+    uint32_t uNumSpriteObjects;
     memcpy(&uNumSpriteObjects, pSrc, 4);
     assert(uNumSpriteObjects <= 1000 && "Too many objects");
     assert(sizeof(SpriteObject) == 112);
+    pSpriteObjects.resize(uNumSpriteObjects);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
@@ -1504,7 +1508,7 @@ bool OutdoorLocation::PrepareDecorations() {
         v8 = 1;
     }
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
+    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
@@ -1531,8 +1535,8 @@ bool OutdoorLocation::PrepareDecorations() {
 }
 
 void OutdoorLocation::ArrangeSpriteObjects() {
-    if ((int)uNumSpriteObjects > 0) {
-        for (int i = 0; i < (signed int)uNumSpriteObjects; ++i) {
+    if (!pSpriteObjects.empty()) {
+        for (int i = 0; i < (signed int)pSpriteObjects.size(); ++i) {
             if (pSpriteObjects[i].uObjectDescID) {
                 if (!(pSpriteObjects[i].uAttributes & 8) && !pSpriteObjects[i].IsUnpickable()) {
                     bool bOnWater = false;

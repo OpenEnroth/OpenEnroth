@@ -805,7 +805,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
     unsigned __int16 *v37;  // [sp+84h] [bp-20h]@9
     int v38;                // [sp+88h] [bp-1Ch]@9
 
-    for (unsigned int i = 0; i < uNumLevelDecorations; ++i) {
+    for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
         // LevelDecoration* decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
              pLevelDecorations[i].IsObeliskChestActive()) &&

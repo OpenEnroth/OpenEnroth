@@ -443,7 +443,7 @@ bool CollideWithActor(int actor_idx, int override_radius) {
 }
 
 void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID == 0)
             continue;
 
