@@ -822,18 +822,7 @@ void OutdoorLocation::CreateDebugLocation() {
     this->pTerrain.ZeroLandscape();
     this->pTerrain.FillDMap(0, 0, 128, 128);
 
-    free(this->pCmap);
-    this->pCmap = malloc(0x8000);
-
-    free(this->pOMAP);
-    this->pOMAP = (unsigned int *)malloc(0x10000);
-    if (this->pOMAP == nullptr) {
-        log->Warning("Malloc error - pOMAP");
-        __debugbreak();
-    } else {
-        memset(this->pOMAP, 0, 0x10000);
-    }
-
+    this->pOMAP.fill(0);
     this->pFaceIDLIST.clear();
     this->sky_texture_filename = pDefaultSkyTexture.data();
     this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
@@ -863,10 +852,6 @@ void OutdoorLocation::Release() {
 
     pTerrain.Release();
 
-    free(pCmap);
-    pCmap = nullptr;
-    free(pOMAP);
-    pOMAP = nullptr;
     pFaceIDLIST.clear();
     pTerrainNormals.clear();
 
@@ -951,8 +936,6 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     memcpy(pTerrain.pAttributemap.data(), pSrc, 0x4000);  // карта аттрибутов
     pSrc += 0x4000;
 
-    free(pCmap);
-    pCmap = malloc(0x8000);
     pTerrain.FillDMap(0, 0, 128, 128);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
@@ -1009,9 +992,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    free(pOMAP);
-    pOMAP = (unsigned int *)malloc(0x10000);
-    memcpy(pOMAP, pSrc, 65536);
+    memcpy(pOMAP.data(), pSrc, 65536);
     pSrc += 65536;
 
     pGameLoadingUI_ProgressBar->Progress();
@@ -2057,8 +2038,6 @@ void OutdoorLocation::subconstuctor() {
     field_F4 = 0x40000000u;
     // DLVHeader::DLVHeader(&v1->ddm);
     pSpawnPoints = 0;
-    pCmap = 0;
-    pOMAP = 0;
 }
 
 //----- (00473893) --------------------------------------------------------
