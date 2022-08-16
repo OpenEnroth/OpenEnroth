@@ -44,6 +44,7 @@
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
+#include "src/tools/FreeDeleter.h"
 
 
 IndoorLocation *pIndoor = new IndoorLocation;
@@ -96,14 +97,6 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
 
     return true;
 }
-
-// TODO: move to util?
-struct FreeDeleter {
-    template <typename T>
-    void operator()(const T *p) const {
-        std::free(const_cast<T *>(p));
-    }
-};
 
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
