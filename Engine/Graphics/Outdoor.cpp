@@ -529,15 +529,6 @@ void OutdoorLocationTerrain::_47C7A9() {
 
 //----- (0047C7C2) --------------------------------------------------------
 void OutdoorLocationTerrain::Release() {  // очистить локацию
-    free(this->pHeightmap);
-    pHeightmap = nullptr;
-    free(pTilemap);
-    pTilemap = nullptr;
-    free(pAttributemap);
-    pAttributemap = nullptr;
-    free(pDmap);
-    pDmap = nullptr;
-
     _47C7A9();
 }
 
@@ -631,7 +622,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         result <= 32768) {
                         // v15 = pOutLocTerrain->field_10;
                         // v55 = pOutLocTerrain->field_10;
-                        pMapHeight = this->pHeightmap;
+                        pMapHeight = this->pHeightmap.data();
                         v17 = (char *)(&pMapHeight[v13 * this->field_10] + v14);
                         v18 = -v13;
                         v19 = (64 - v13) << 9;
@@ -665,7 +656,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         if (v31 > 31.0) v31 = 31.0;
                         v44 = 2 * (v14 + v13 * this->field_10);
                         // pOutLocTerrain = pOutLocTerrain2;
-                        *((char *)this->pDmap + v44 + 1) = (signed __int64)v31;
+                        *((char *)this->pDmap.data() + v44 + 1) = (signed __int64)v31;
 
                         v32 = v49 - (v49 - 512);
                         v33 = (double)-((v42 - v40) * (v19 - v41));
@@ -685,7 +676,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         if (v38 < 0.0) v38 = 0.0;
                         if (v38 > 31.0) v38 = 31.0;
                         // v13 = v48;
-                        *((char *)this->pDmap + v44) = (signed __int64)v38;
+                        *((char *)this->pDmap.data() + v44) = (signed __int64)v38;
                         // v14 = v50;
                         result = v49;
                     }
@@ -795,10 +786,10 @@ int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
 
 //----- (0047CCE2) --------------------------------------------------------
 bool OutdoorLocationTerrain::ZeroLandscape() {
-    memset(this->pHeightmap, 0, 0x4000u);
-    memset(this->pTilemap, 90, 0x4000u);
-    memset(this->pAttributemap, 0, 0x4000u);
-    memset(this->pDmap, 0, 0x8000u);
+    this->pHeightmap.fill(0);
+    this->pTilemap.fill(90);
+    this->pAttributemap.fill(0);
+    this->pDmap.fill({0, 0});
     this->field_12 = 128;
     this->field_10 = 128;
     this->field_16 = 7;
@@ -810,14 +801,7 @@ bool OutdoorLocationTerrain::ZeroLandscape() {
 
 //----- (0047CD44) --------------------------------------------------------
 bool OutdoorLocationTerrain::Initialize() {
-    pHeightmap = (unsigned __int8 *)malloc(0x4000);  // height map
-    pTilemap = (unsigned __int8 *)malloc(0x4000);    // tile map
-    pAttributemap = (unsigned __int8 *)malloc(0x4000);  // карта атрибутов
-    pDmap = (struct DMap *)malloc(0x8000);
-    if (pHeightmap && pTilemap && pAttributemap && pDmap)
-        return true;
-    else
-        return false;
+    return true; // TODO: drop this function
 }
 
 //----- (0047CDE2) --------------------------------------------------------
@@ -924,7 +908,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
-    assert(sizeof(BSPModelData) == 188);
+    static_assert(sizeof(BSPModelData) == 188);
 
     if (!pGames_LOD->DoesContainerExist(filename)) {
         Error("Unable to find %s in Games.LOD", filename.c_str());
@@ -933,7 +917,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
     viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
 
-    auto odm_filename = std::string(filename);
+    std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
     void *pSrcMem = pGames_LOD->LoadCompressed(odm_filename);
@@ -970,13 +954,13 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     // *******************Terrain**************************//
     pTerrain.Initialize();
-    memcpy(pTerrain.pHeightmap, pSrc, 0x4000);  // карта высот
+    memcpy(pTerrain.pHeightmap.data(), pSrc, 0x4000);  // карта высот
     pSrc += 0x4000;
 
-    memcpy(pTerrain.pTilemap, pSrc, 0x4000);  // карта тайлов
+    memcpy(pTerrain.pTilemap.data(), pSrc, 0x4000);  // карта тайлов
     pSrc += 0x4000;
 
-    memcpy(pTerrain.pAttributemap, pSrc, 0x4000);  // карта аттрибутов
+    memcpy(pTerrain.pAttributemap.data(), pSrc, 0x4000);  // карта аттрибутов
     pSrc += 0x4000;
 
     free(pCmap);
@@ -1381,7 +1365,7 @@ int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
                                                   signed int sY) {
     int v3;  // esi@5
 
-    if (sX < 0 || sX > 127 || sY < 0 || sY > 127 || !this->pTerrain.pTilemap)
+    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
         return 0;
 
     v3 = this->pTerrain.pTilemap[sY * 128 + sX];
@@ -1393,7 +1377,7 @@ int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
 
 //----- (0047EE16) --------------------------------------------------------
 int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
-    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127 || !pTerrain.pHeightmap)
+    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
         return 0;
 
     return 32 * pTerrain.pHeightmap[sZ * 128 + sX];

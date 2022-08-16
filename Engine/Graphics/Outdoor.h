@@ -38,10 +38,6 @@ struct DMap {
 struct OutdoorLocationTerrain {
     //----- (0047C794) --------------------------------------------------------
     inline OutdoorLocationTerrain() {
-        pHeightmap = nullptr;
-        pTilemap = nullptr;
-        pAttributemap = nullptr;
-        pDmap = nullptr;
         this->field_10 = 0;
         this->field_12 = 0;
     }
@@ -53,10 +49,11 @@ struct OutdoorLocationTerrain {
     bool ZeroLandscape();
     bool Initialize();
 
-    uint8_t *pHeightmap;
-    uint8_t *pTilemap;
-    uint8_t *pAttributemap;
-    struct DMap *pDmap;
+
+    std::array<uint8_t, 128 * 128> pHeightmap;
+    std::array<uint8_t, 128 * 128> pTilemap;
+    std::array<uint8_t, 128 * 128> pAttributemap;
+    std::array<DMap, 128 * 128> pDmap;
     int16_t field_10 = 0;
     int16_t field_12 = 0;
     int16_t field_14 = 0;
