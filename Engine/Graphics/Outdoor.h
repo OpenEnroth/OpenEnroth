@@ -119,8 +119,7 @@ struct OutdoorLocation {
     struct OutdoorLocationTerrain pTerrain;
     void *pCmap;
     BSPModelList pBModels;
-    unsigned int numFaceIDListElems;
-    uint16_t *pFaceIDLIST;
+    std::vector<uint16_t> pFaceIDLIST;
     unsigned int *pOMAP;
     Texture *sky_texture = nullptr;        // signed int sSky_TextureID;
     Texture *main_tile_texture;  // signed int sMainTile_BitmapID;

@@ -834,17 +834,7 @@ void OutdoorLocation::CreateDebugLocation() {
         memset(this->pOMAP, 0, 0x10000);
     }
 
-    this->numFaceIDListElems = 0;
-
-    free(this->pFaceIDLIST);
-    this->pFaceIDLIST = (unsigned __int16 *)malloc(2);
-    if (this->pFaceIDLIST == nullptr) {
-        logger->Warning("Malloc fail - pfaceidlist");
-        __debugbreak();
-    } else {
-        this->pFaceIDLIST[0] = 0;
-    }
-
+    this->pFaceIDLIST.clear();
     this->sky_texture_filename = pDefaultSkyTexture.data();
     this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
 
@@ -877,8 +867,7 @@ void OutdoorLocation::Release() {
     pCmap = nullptr;
     free(pOMAP);
     pOMAP = nullptr;
-    free(pFaceIDLIST);
-    pFaceIDLIST = nullptr;
+    pFaceIDLIST.clear();
     free(pTerrainNormals);
     pTerrainNormals = nullptr;
 
@@ -1012,16 +1001,12 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
+    uint32_t numFaceIDListElems;
     memcpy(&numFaceIDListElems, pSrc, 4);
+    pFaceIDLIST.resize(numFaceIDListElems);
 
-    free(pFaceIDLIST);
-    pFaceIDLIST = nullptr;
-
-    uint faceIDListSize = 2 * numFaceIDListElems;
-    pFaceIDLIST = (unsigned short *)malloc(faceIDListSize);
-
-    memcpy(pFaceIDLIST, pSrc + 4, faceIDListSize);
-    pSrc += 4 + faceIDListSize;
+    memcpy(pFaceIDLIST.data(), pSrc + 4, numFaceIDListElems * sizeof(uint16_t));
+    pSrc += 4 + numFaceIDListElems * sizeof(uint16_t);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
@@ -2074,7 +2059,6 @@ void OutdoorLocation::subconstuctor() {
     // DLVHeader::DLVHeader(&v1->ddm);
     pSpawnPoints = 0;
     pCmap = 0;
-    pFaceIDLIST = 0;
     pOMAP = 0;
 }
 
