@@ -513,7 +513,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             uint32_t uNumSpriteObjects = pSpriteObjects.size();
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
-            memcpy(data_write_pos, &pSpriteObjects,
+            memcpy(data_write_pos, pSpriteObjects.data(),
                    uNumSpriteObjects * sizeof(SpriteObject));
             data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
 
