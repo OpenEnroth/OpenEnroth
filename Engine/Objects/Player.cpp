@@ -3853,7 +3853,7 @@ void Player::Zero() {
     this->_ranged_atk_bonus = 0;
     this->field_1A95 = 0;
     this->_ranged_dmg_bonus = 0;
-    this->field_1A97 = 0;
+    this->field_1A97_set0_unused = 0;
     this->uFullHealthBonus = 0;
     this->_health_related = 0;
     this->uFullManaBonus = 0;
@@ -3861,7 +3861,7 @@ void Player::Zero() {
     expression = CHARACTER_EXPRESSION_1;
     uExpressionTimePassed = 0;
     uExpressionTimeLength = 0;
-    field_1AA2 = 0;
+    uExpressionImageIndex = 0;
     _expression21_animtime = 0;
     _expression21_frameset = 0;
     for (int z = 0; z < vBeacons.size(); z++) {
@@ -3871,7 +3871,7 @@ void Player::Zero() {
     uNumDivineInterventionCastsThisDay = 0;
     uNumArmageddonCasts = 0;
     uNumFireSpikeCasts = 0;
-    field_1B3B = 0;
+    field_1B3B_set0_unused = 0;
 }
 
 //----- (004907E7) --------------------------------------------------------
@@ -8241,7 +8241,7 @@ Player::Player() {
     _ranged_atk_bonus = 0;
     field_1A95 = 0;
     _ranged_dmg_bonus = 0;
-    field_1A97 = 0;
+    field_1A97_set0_unused = 0;
 
     expression = CHARACTER_EXPRESSION_INVALID;
     uExpressionTimePassed = 0;

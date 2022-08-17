@@ -72,7 +72,7 @@ void Party::CountHirelings() {  // non hired followers
 // inlined
 //----- (mm6c::004858D0) --------------------------------------------------
 void Party::Zero() {
-    field_0 = 25;
+    field_0_set25_unused = 25;
     uPartyHeight = uDefaultPartyHeight = 192;
     sEyelevel = uDefaultEyelevel = 160;
     radius = 37;
@@ -80,7 +80,7 @@ void Party::Zero() {
     uWalkSpeed = 384;
     y_rotation_speed = 90;
     jump_strength = 5;
-    field_28 = 0;
+    field_28_set0_unused = 0;
     playing_time = GameTime(0, 0, 0);
     last_regenerated = GameTime(0, 0, 0);
     PartyTimes.bountyHunting_next_generation_time.fill(GameTime(0));
@@ -95,20 +95,20 @@ void Party::Zero() {
     sRotationZ = sPrevRotationZ = 0;
     sRotationY = sPrevRotationY = 0;
     sPrevEyelevel = 0;
-    field_6E0 = 0;
-    field_6E4 = 0;
+    field_6E0_set0_unused = 0;
+    field_6E4_set0_unused = 0;
     uFallSpeed = 0;
-    field_6EC = 0;
-    field_6F0 = 0;
+    field_6EC_set0_unused = 0;
+    sPartyPrevZ = 0;
     floor_face_pid = 0;
     walk_sound_timer = 0;
     _6FC_water_lava_timer = 0;
     uFallStartZ = 0;
     bFlying = 0;
-    field_708 = 15;
+    field_708_set15_unused = 15;
     hirelingScrollPosition = 0;
     cNonHireFollowers = 0;
-    field_70B = 0;
+    field_70B_set0_unused = 0;
     uCurrentYear = 0;
     uCurrentMonth = 0;
     uCurrentMonthWeek = 0;
@@ -117,15 +117,15 @@ void Party::Zero() {
     uCurrentMinute = 0;
     uCurrentTimeSecond = 0;
     uNumFoodRations = 0;
-    field_72C = 0;
-    field_730 = 0;
+    field_72C_set0_unused = 0;
+    field_730_set0_unused = 0;
     uNumGold = 0;
     uNumGoldInBank = 0;
     uNumDeaths = 0;
-    field_740 = 0;
+    field_740_set0_unused = 0;
     uNumPrisonTerms = 0;
     uNumBountiesCollected = 0;
-    field_74C = 0;
+    field_74C_set0_unused = 0;
     monster_id_for_hunting.fill(0);
     monster_for_hunting_killed.fill(0);
     days_played_without_rest = 0;
@@ -137,14 +137,14 @@ void Party::Zero() {
     uNumArenaKnightWins = 0;
     uNumArenaLordWins = 0;
     pIsArtifactFound.fill(0);
-    field_7d7.fill(0);
+    field_7d7_set0_unused.fill(0);
     memset(_autonote_bits, 0, sizeof(_autonote_bits));
-    field_818.fill(0);
-    field_854.fill(0);
+    field_818_set0_unused.fill(0);
+    random_order_num_unused.fill(0);
     uNumArcomageWins = 0;
     uNumArcomageLoses = 0;
     bTurnBasedModeOn = false;
-    field_880 = 0;
+    field_880_set0_unused = 0;
     uFlags2 = 0;
     alignment = PartyAlignment::PartyAlignment_Neutral;
     for (uint i = 0; i < 20; ++i) pPartyBuffs[i].Reset();
@@ -163,7 +163,7 @@ void Party::Zero() {
         for (unsigned int j = 0; j < 12; ++j)
             SpellBooksInGuilds[i][j].Reset();
 
-    field_1605C.fill(0);
+    field_1605C_set0_unused.fill(0);
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
     armageddon_timer = 0;
@@ -593,7 +593,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
 void Party::Reset() {
     Zero();
 
-    field_708 = 15;
+    field_708_set15_unused = 15;
     sEyelevel = 160;
     uNumGold = 200;
     uNumFoodRations = 7;
@@ -718,7 +718,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->sRotationZ = 0;
     this->sRotationY = 0;
     this->uFallSpeed = 0;
-    this->field_28 = 0;
+    this->field_28_set0_unused = 0;
     this->uDefaultPartyHeight = 120;
     this->radius = 37;
     this->y_rotation_granularity = 25;
@@ -726,8 +726,8 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->y_rotation_speed = 90;
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;
-    this->field_708 = 15;
-    this->field_0 = 25;
+    this->field_708_set15_unused = 15;
+    this->field_0_set25_unused = 25;
 
     for (int playerId = 0; playerId < 4; playerId++) {
         for (int buffId = 0; buffId < 24; buffId++) {
@@ -975,7 +975,7 @@ void RestAndHeal(int minutes) {
         pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
         pParty->pPlayers[i].uNumArmageddonCasts = 0;
         pParty->pPlayers[i].uNumFireSpikeCasts = 0;
-        pParty->pPlayers[i].field_1B3B = 0;
+        pParty->pPlayers[i].field_1B3B_set0_unused = 0;
     }
 
     pParty->UpdatePlayersAndHirelingsEmotions();

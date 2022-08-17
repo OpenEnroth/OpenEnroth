@@ -905,7 +905,7 @@ bool PartyCreationUI_LoopInternal() {
                 while (v20[v9]);
             }
         }
-        pParty->field_854[i] = v9;
+        pParty->random_order_num_unused[i] = v9;
         v20[v9] = 1;
     }
 

@@ -300,7 +300,7 @@ void ItemGen_Image_MM7::Deserialize(ItemGen *item) {
 void Party_Image_MM7::Serialize(Party *party) {
     memset(this, 0, sizeof(*this));
 
-    this->field_0 = party->field_0;
+    this->field_0 = party->field_0_set25_unused;
     this->uPartyHeight = party->uPartyHeight;
     this->uDefaultPartyHeight = party->uDefaultPartyHeight;
     this->sEyelevel = party->sEyelevel;
@@ -310,7 +310,7 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->uWalkSpeed = party->uWalkSpeed;
     this->y_rotation_speed = party->y_rotation_speed;
     this->jump_strength = party->jump_strength;
-    this->field_28 = party->field_28;
+    this->field_28 = party->field_28_set0_unused;
     this->uTimePlayed = party->playing_time.value;
     this->uLastRegenerationTime = party->last_regenerated.value;
 
@@ -343,20 +343,20 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->sPrevRotationZ = party->sPrevRotationZ;
     this->sPrevRotationY = party->sPrevRotationY;
     this->sPrevEyelevel = party->sPrevEyelevel;
-    this->field_6E0 = party->field_6E0;
-    this->field_6E4 = party->field_6E4;
+    this->field_6E0 = party->field_6E0_set0_unused;
+    this->field_6E4 = party->field_6E4_set0_unused;
     this->uFallSpeed = party->uFallSpeed;
-    this->field_6EC = party->field_6EC;
-    this->field_6F0 = party->field_6F0;
+    this->field_6EC = party->field_6EC_set0_unused;
+    this->field_6F0 = party->sPartyPrevZ;
     this->floor_face_pid = party->floor_face_pid;
     this->walk_sound_timer = party->walk_sound_timer;
     this->_6FC_water_lava_timer = party->_6FC_water_lava_timer;
     this->uFallStartZ = party->uFallStartZ;
     this->bFlying = party->bFlying;
-    this->field_708 = party->field_708;
+    this->field_708 = party->field_708_set15_unused;
     this->hirelingScrollPosition = party->hirelingScrollPosition;
     this->field_70A = party->cNonHireFollowers;
-    this->field_70B = party->field_70B;
+    this->field_70B = party->field_70B_set0_unused;
     this->uCurrentYear = party->uCurrentYear;
     this->uCurrentMonth = party->uCurrentMonth;
     this->uCurrentMonthWeek = party->uCurrentMonthWeek;
@@ -365,15 +365,15 @@ void Party_Image_MM7::Serialize(Party *party) {
     this->uCurrentMinute = party->uCurrentMinute;
     this->uCurrentTimeSecond = party->uCurrentTimeSecond;
     this->uNumFoodRations = party->GetFood();
-    this->field_72C = party->field_72C;
-    this->field_730 = party->field_730;
+    this->field_72C = party->field_72C_set0_unused;
+    this->field_730 = party->field_730_set0_unused;
     this->uNumGold = party->GetGold();
     this->uNumGoldInBank = party->uNumGoldInBank;
     this->uNumDeaths = party->uNumDeaths;
-    this->field_740 = party->field_740;
+    this->field_740 = party->field_740_set0_unused;
     this->uNumPrisonTerms = party->uNumPrisonTerms;
     this->uNumBountiesCollected = party->uNumBountiesCollected;
-    this->field_74C = party->field_74C;
+    this->field_74C = party->field_74C_set0_unused;
 
     for (unsigned int i = 0; i < 5; ++i)
         this->monster_id_for_hunting[i] = party->monster_id_for_hunting[i];
@@ -397,18 +397,18 @@ void Party_Image_MM7::Serialize(Party *party) {
     for (unsigned int i = 0; i < 29; ++i)
         this->pIsArtifactFound[i] = party->pIsArtifactFound[i];
     for (unsigned int i = 0; i < 39; ++i)
-        this->field_7d7[i] = party->field_7d7[i];
+        this->field_7d7[i] = party->field_7d7_set0_unused[i];
     for (unsigned int i = 0; i < 26; ++i)
         this->_autonote_bits[i] = party->_autonote_bits[i];
     for (unsigned int i = 0; i < 60; ++i)
-        this->field_818[i] = party->field_818[i];
+        this->field_818[i] = party->field_818_set0_unused[i];
     for (unsigned int i = 0; i < 32; ++i)
-        this->field_854[i] = party->field_854[i];
+        this->field_854[i] = party->random_order_num_unused[i];
 
     this->uNumArcomageWins = party->uNumArcomageWins;
     this->uNumArcomageLoses = party->uNumArcomageLoses;
     this->bTurnBasedModeOn = party->bTurnBasedModeOn;
-    this->field_880 = party->field_880;
+    this->field_880 = party->field_880_set0_unused;
     this->uFlags2 = party->uFlags2;
 
     uint align = 0;
@@ -443,7 +443,7 @@ void Party_Image_MM7::Serialize(Party *party) {
                 &party->SpellBooksInGuilds[i][j]);
 
     for (unsigned int i = 0; i < 24; ++i)
-        this->field_1605C[i] = party->field_1605C[i];
+        this->field_1605C[i] = party->field_1605C_set0_unused[i];
 
     strcpy(this->pHireling1Name, party->pHireling1Name);
     strcpy(this->pHireling2Name, party->pHireling2Name);
@@ -465,7 +465,7 @@ void Party_Image_MM7::Serialize(Party *party) {
 }
 
 void Party_Image_MM7::Deserialize(Party *party) {
-    party->field_0 = this->field_0;
+    party->field_0_set25_unused = this->field_0;
     party->uPartyHeight = this->uPartyHeight;
     party->uDefaultPartyHeight = this->uDefaultPartyHeight;
     party->sEyelevel = this->sEyelevel;
@@ -475,7 +475,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->uWalkSpeed = this->uWalkSpeed;
     party->y_rotation_speed = this->y_rotation_speed;
     party->jump_strength = this->jump_strength;
-    party->field_28 = this->field_28;
+    party->field_28_set0_unused = this->field_28;
     party->playing_time.value = this->uTimePlayed;
     party->last_regenerated.value = this->uLastRegenerationTime;
 
@@ -508,20 +508,20 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->sPrevRotationZ = this->sPrevRotationZ;
     party->sPrevRotationY = this->sPrevRotationY;
     party->sPrevEyelevel = this->sPrevEyelevel;
-    party->field_6E0 = this->field_6E0;
-    party->field_6E4 = this->field_6E4;
+    party->field_6E0_set0_unused = this->field_6E0;
+    party->field_6E4_set0_unused = this->field_6E4;
     party->uFallSpeed = this->uFallSpeed;
-    party->field_6EC = this->field_6EC;
-    party->field_6F0 = this->field_6F0;
+    party->field_6EC_set0_unused = this->field_6EC;
+    party->sPartyPrevZ = this->field_6F0;
     party->floor_face_pid = this->floor_face_pid;
     party->walk_sound_timer = this->walk_sound_timer;
     party->_6FC_water_lava_timer = this->_6FC_water_lava_timer;
     party->uFallStartZ = this->uFallStartZ;
     party->bFlying = this->bFlying;
-    party->field_708 = this->field_708;
+    party->field_708_set15_unused = this->field_708;
     party->hirelingScrollPosition = this->hirelingScrollPosition;
     party->cNonHireFollowers = this->field_70A;
-    party->field_70B = this->field_70B;
+    party->field_70B_set0_unused = this->field_70B;
     party->uCurrentYear = this->uCurrentYear;
     party->uCurrentMonth = this->uCurrentMonth;
     party->uCurrentMonthWeek = this->uCurrentMonthWeek;
@@ -530,15 +530,15 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->uCurrentMinute = this->uCurrentMinute;
     party->uCurrentTimeSecond = this->uCurrentTimeSecond;
     party->uNumFoodRations = this->uNumFoodRations;
-    party->field_72C = this->field_72C;
-    party->field_730 = this->field_730;
+    party->field_72C_set0_unused = this->field_72C;
+    party->field_730_set0_unused = this->field_730;
     party->uNumGold = this->uNumGold;
     party->uNumGoldInBank = this->uNumGoldInBank;
     party->uNumDeaths = this->uNumDeaths;
-    party->field_740 = this->field_740;
+    party->field_740_set0_unused = this->field_740;
     party->uNumPrisonTerms = this->uNumPrisonTerms;
     party->uNumBountiesCollected = this->uNumBountiesCollected;
-    party->field_74C = this->field_74C;
+    party->field_74C_set0_unused = this->field_74C;
 
     for (unsigned int i = 0; i < 5; ++i)
         party->monster_id_for_hunting[i] = this->monster_id_for_hunting[i];
@@ -562,18 +562,18 @@ void Party_Image_MM7::Deserialize(Party *party) {
     for (unsigned int i = 0; i < 29; ++i)
         party->pIsArtifactFound[i] = this->pIsArtifactFound[i];
     for (unsigned int i = 0; i < 39; ++i)
-        party->field_7d7[i] = this->field_7d7[i];
+        party->field_7d7_set0_unused[i] = this->field_7d7[i];
     for (unsigned int i = 0; i < 26; ++i)
         party->_autonote_bits[i] = this->_autonote_bits[i];
     for (unsigned int i = 0; i < 60; ++i)
-        party->field_818[i] = this->field_818[i];
+        party->field_818_set0_unused[i] = this->field_818[i];
     for (unsigned int i = 0; i < 32; ++i)
-        party->field_854[i] = this->field_854[i];
+        party->random_order_num_unused[i] = this->field_854[i];
 
     party->uNumArcomageWins = this->uNumArcomageWins;
     party->uNumArcomageLoses = this->uNumArcomageLoses;
     party->bTurnBasedModeOn = this->bTurnBasedModeOn;
-    party->field_880 = this->field_880;
+    party->field_880_set0_unused = this->field_880;
     party->uFlags2 = this->uFlags2;
 
     switch (this->alignment) {
@@ -617,7 +617,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
                 &party->SpellBooksInGuilds[i][j]);
 
     for (unsigned int i = 0; i < 24; ++i)
-        party->field_1605C[i] = this->field_1605C[i];
+        party->field_1605C_set0_unused[i] = this->field_1605C[i];
 
     strcpy(party->pHireling1Name, this->pHireling1Name);
     strcpy(party->pHireling2Name, this->pHireling2Name);
@@ -766,7 +766,7 @@ void Player_Image_MM7::Serialize(Player *player) {
     this->_ranged_atk_bonus = player->_ranged_atk_bonus;
     this->field_1A95 = player->field_1A95;
     this->_ranged_dmg_bonus = player->_ranged_dmg_bonus;
-    this->field_1A97 = player->field_1A97;
+    this->field_1A97 = player->field_1A97_set0_unused;
     this->uFullHealthBonus = player->uFullHealthBonus;
     this->_health_related = player->_health_related;
     this->uFullManaBonus = player->uFullManaBonus;
@@ -774,7 +774,7 @@ void Player_Image_MM7::Serialize(Player *player) {
     this->expression = player->expression;
     this->uExpressionTimePassed = player->uExpressionTimePassed;
     this->uExpressionTimeLength = player->uExpressionTimeLength;
-    this->field_1AA2 = player->field_1AA2;
+    this->field_1AA2 = player->uExpressionImageIndex;
     this->_expression21_animtime = player->_expression21_animtime;
     this->_expression21_frameset = player->_expression21_frameset;
 
@@ -802,7 +802,7 @@ void Player_Image_MM7::Serialize(Player *player) {
         player->uNumDivineInterventionCastsThisDay;
     this->uNumArmageddonCasts = player->uNumArmageddonCasts;
     this->uNumFireSpikeCasts = player->uNumFireSpikeCasts;
-    this->field_1B3B = player->field_1B3B;
+    this->field_1B3B = player->field_1B3B_set0_unused;
 }
 
 void Player_Image_MM7::Deserialize(Player* player) {
@@ -1051,7 +1051,7 @@ void Player_Image_MM7::Deserialize(Player* player) {
     player->_ranged_atk_bonus = this->_ranged_atk_bonus;
     player->field_1A95 = this->field_1A95;
     player->_ranged_dmg_bonus = this->_ranged_dmg_bonus;
-    player->field_1A97 = this->field_1A97;
+    player->field_1A97_set0_unused = this->field_1A97;
     player->uFullHealthBonus = this->uFullHealthBonus;
     player->_health_related = this->_health_related;
     player->uFullManaBonus = this->uFullManaBonus;
@@ -1059,7 +1059,7 @@ void Player_Image_MM7::Deserialize(Player* player) {
     player->expression = (CHARACTER_EXPRESSION_ID)this->expression;
     player->uExpressionTimePassed = this->uExpressionTimePassed;
     player->uExpressionTimeLength = this->uExpressionTimeLength;
-    player->field_1AA2 = this->field_1AA2;
+    player->uExpressionImageIndex = this->field_1AA2;
     player->_expression21_animtime = this->_expression21_animtime;
     player->_expression21_frameset = this->_expression21_frameset;
 
@@ -1086,7 +1086,7 @@ void Player_Image_MM7::Deserialize(Player* player) {
         this->uNumDivineInterventionCastsThisDay;
     player->uNumArmageddonCasts = this->uNumArmageddonCasts;
     player->uNumFireSpikeCasts = this->uNumFireSpikeCasts;
-    player->field_1B3B = this->field_1B3B;
+    player->field_1B3B_set0_unused = this->field_1B3B;
 }
 
 void IconFrame_MM7::Serialize(Icon *icon) {

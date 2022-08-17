@@ -395,6 +395,11 @@ void BspRenderer::MakeVisibleSectorList() {
         if (!onlist)
             pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[uNumVisibleNotEmptySectors++] = nodes[i].uSectorID;
     }
+
+    if (engine->config->verbose_logging)
+        logger->Info("uNumVisibleNotEmptySectors: %i", uNumVisibleNotEmptySectors);
+
+    assert(uNumVisibleNotEmptySectors < 10 && "Testing visible sector limits");
 }
 
 //----- (00440B44) --------------------------------------------------------

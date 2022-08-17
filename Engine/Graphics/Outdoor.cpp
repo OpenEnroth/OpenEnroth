@@ -2157,7 +2157,7 @@ void ODM_ProcessPartyActions() {
     pY = pParty->vPosition.y;
     party_new_Z = pParty->vPosition.z;
 
-    v113 = pParty->field_6F0;
+    v113 = pParty->sPartyPrevZ;
     hovering = false;
     bool partyAtHighSlope =
         IsTerrainSlopeTooHigh(pParty->vPosition.x, pParty->vPosition.y);
@@ -2302,17 +2302,17 @@ void ODM_ProcessPartyActions() {
                         if (v102 && party_new_Z < ceiling_height &&
                             (signed int)(pParty->uPartyHeight + party_new_Z) >= ceiling_height) {
                             // столкновение с потолком
-                            pParty->field_6E0 = 0;
-                            pParty->field_6E4 = 0;
+                            pParty->field_6E0_set0_unused = 0;
+                            pParty->field_6E4_set0_unused = 0;
                             pPartyActionQueue->uNumActions = 0;
                             pParty->uFlags |= PARTY_FLAGS_1_LANDING;
                             pParty->vPosition.z =
                                 ceiling_height - pParty->uPartyHeight - 31;
-                            pParty->field_6F0 = party_new_Z;
+                            pParty->sPartyPrevZ = party_new_Z;
                             pParty->bFlying = false;
                             party_new_Z =
                                 ceiling_height - pParty->uPartyHeight - 31;
-                            v113 = pParty->field_6F0;
+                            v113 = pParty->sPartyPrevZ;
                         }
                         pParty->uFallSpeed = 0;
                         pModel_ = true;
@@ -2882,7 +2882,7 @@ void ODM_ProcessPartyActions() {
         pParty->vPosition.x = pX;
         pParty->vPosition.y = pY;
         pParty->vPosition.z = party_new_Z;
-        pParty->field_6F0 = v113;
+        pParty->sPartyPrevZ = v113;
         pParty->uFallSpeed = fall_speed;
         if (party_new_Z > 8160) {  // ограничение высоты
             party_new_Z = 8160;
@@ -2923,7 +2923,7 @@ void ODM_ProcessPartyActions() {
                 if ((signed int)(pParty->uPartyHeight + pParty->vPosition.z) >=
                     ceiling_height) {
                     pParty->vPosition.z = ceiling_height - pParty->uPartyHeight - 1;
-                    pParty->field_6F0 = ceiling_height - pParty->uPartyHeight - 1;
+                    pParty->sPartyPrevZ = ceiling_height - pParty->uPartyHeight - 1;
                 }
             }
             pParty->uFlags &= ~0x204;
@@ -2988,7 +2988,7 @@ void ODM_ProcessPartyActions() {
     }
     HEXRAYS_LOWORD(pParty->uFlags) &= 0xFDFBu;
     pParty->uFallSpeed = fall_speed;
-    pParty->field_6F0 = v113;
+    pParty->sPartyPrevZ = v113;
     if (party_drowning_flag) {  // группа тонет
         bool onWater = false;
         pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->vPosition.x, pParty->vPosition.y, &onWater, 1);
@@ -3030,7 +3030,7 @@ void ODM_ProcessPartyActions() {
                 ceiling_height) {
             pParty->vPosition.z =
                 pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
-            pParty->field_6F0 =
+            pParty->sPartyPrevZ =
                 pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
         }
     }

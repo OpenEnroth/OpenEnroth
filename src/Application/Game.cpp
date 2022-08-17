@@ -1086,8 +1086,8 @@ void Game::EventLoop() {
                         DialogueEnding();
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                     } else {
-                        pParty->field_6E4 = 0;
-                        pParty->field_6E0 = 0;
+                        pParty->field_6E4_set0_unused = 0;
+                        pParty->field_6E0_set0_unused = 0;
                         CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
                         DialogueEnding();
                         pEventTimer->Pause();
@@ -2930,8 +2930,8 @@ void Game::GameLoop() {
                 pParty->uFallStartZ = pParty->vPosition.z;
                 pParty->sRotationY = 0;
                 pParty->uFallSpeed = 0;
-                pParty->field_6E4 = 0;
-                pParty->field_6E0 = 0;
+                pParty->field_6E4_set0_unused = 0;
+                pParty->field_6E0_set0_unused = 0;
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;
