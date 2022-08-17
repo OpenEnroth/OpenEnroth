@@ -3746,67 +3746,24 @@ void Player::IncreaseAttribute(int eAttribute) {
 
 //----- (0049070F) --------------------------------------------------------
 void Player::Zero() {
-    conditions_times.fill(GameTime(0));
-    uExperience = 0;
-    pName[0] = 0;
-    uSex = SEX_MALE;
-    classType = PLAYER_CLASS_KNIGHT;
-    uCurrentFace = 0;
-    field_BB = 0;
-    uMight = 0;
-    uMightBonus = 0;
-    uIntelligence = 0;
-    uIntelligenceBonus = 0;
-    uWillpower = 0;
-    uWillpowerBonus = 0;
-    uEndurance = 0;
-    uEnduranceBonus = 0;
-    uSpeed = 0;
-    uSpeedBonus = 0;
-    uAccuracy = 0;
-    uAccuracyBonus = 0;
-    uLuck = 0;
-    uLuckBonus = 0;
-    this->sACModifier = 0;
-    uLevel = 1;
     this->sLevelModifier = 0;
-    sAgeModifier = 0;
-    this->field_E0 = 0;
-    this->field_E4 = 0;
-    this->field_E8 = 0;
-    this->field_EC = 0;
-    this->field_F0 = 0;
-    this->field_F4 = 0;
-    this->field_F8 = 0;
-    this->field_FC = 0;
+    this->sACModifier = 0;
+    this->uLuckBonus = 0;
+    this->uAccuracyBonus = 0;
+    this->uSpeedBonus = 0;
+    this->uEnduranceBonus = 0;
+    this->uWillpowerBonus = 0;
+    this->uIntelligenceBonus = 0;
+    this->uMightBonus = 0;
     this->field_100 = 0;
-    field_104 = 0;
-    pActiveSkills.fill(0);
-    memset(_achieved_awards_bits, 0, sizeof(_achieved_awards_bits));
-    memset(&spellbook, 0, sizeof(spellbook));
-    _1F6_padding[0] = _1F6_padding[1] = 0;
-    pure_luck_used = 0;
-    pure_speed_used = 0;
-    pure_intellect_used = 0;
-    pure_endurance_used = 0;
-    pure_willpower_used = 0;
-    pure_accuracy_used = 0;
-    pure_might_used = 0;
-    for (unsigned int i = 0; i < 138; ++i)
-        pOwnItems[i].Reset();
-    pInventoryMatrix.fill(0);
-
-    sResFireBase = 0;
-    sResAirBase = 0;
-    sResWaterBase = 0;
-    sResEarthBase = 0;
-    sResPhysicalBase = 0;
-    sResMagicBase = 0;
-    sResSpiritBase = 0;
-    sResMindBase = 0;
-    sResBodyBase = 0;
-    sResLightBase = 0;
-    sResDarkBase = 0;
+    this->field_FC = 0;
+    this->field_F8 = 0;
+    this->field_F4 = 0;
+    this->field_F0 = 0;
+    this->field_EC = 0;
+    this->field_E8 = 0;
+    this->field_E4 = 0;
+    this->field_E0 = 0;
     this->sResFireBonus = 0;
     this->sResAirBonus = 0;
     this->sResWaterBonus = 0;
@@ -3819,59 +3776,18 @@ void Player::Zero() {
     this->sResLightBonus = 0;
     this->sResDarkBonus = 0;
 
-    for (uint i = 0; i < 24; ++i) {
-        pPlayerBuffs[i].uSkill = 0;
-        pPlayerBuffs[i].uSkill = 0;
-        pPlayerBuffs[i].uPower = 0;
-        pPlayerBuffs[i].expire_time.Reset();
-        pPlayerBuffs[i].uCaster = 0;
-        pPlayerBuffs[i].uFlags = 0;
-    }
-    uVoiceID = 0;
-    uPrevVoiceID = 0;
-    uPrevFace = 0;
-    field_192C = 0;
-    field_1930 = 0;
-    uTimeToRecovery = 0;
-    field_1936 = 0;
-    field_1937 = 0;
-    uSkillPoints = 0;
-    sHealth = 1;
-    sMana = 0;
-    uBirthYear = 0;
-    memset(&pEquipment, 0, sizeof(pEquipment));
-    memset(field_1988, 0, sizeof(field_1988));
-    field_1A4C = 0;
-    field_1A4D = 0;
-    lastOpenedSpellbookPage = 0;
-    uQuickSpell = 0;
-    memset(playerEventBits, 0, sizeof(playerEventBits));
-    this->_some_attack_bonus = 0;
-    this->field_1A91 = 0;
-    this->_melee_dmg_bonus = 0;
-    this->field_1A93 = 0;
-    this->_ranged_atk_bonus = 0;
-    this->field_1A95 = 0;
-    this->_ranged_dmg_bonus = 0;
     this->field_1A97_set0_unused = 0;
-    this->uFullHealthBonus = 0;
-    this->_health_related = 0;
-    this->uFullManaBonus = 0;
+    this->_ranged_dmg_bonus = 0;
+    this->field_1A95 = 0;
+    this->_ranged_atk_bonus = 0;
+    this->field_1A93 = 0;
+    this->_melee_dmg_bonus = 0;
+    this->field_1A91 = 0;
+    this->_some_attack_bonus = 0;
     this->_mana_related = 0;
-    expression = CHARACTER_EXPRESSION_1;
-    uExpressionTimePassed = 0;
-    uExpressionTimeLength = 0;
-    uExpressionImageIndex = 0;
-    _expression21_animtime = 0;
-    _expression21_frameset = 0;
-    for (int z = 0; z < vBeacons.size(); z++) {
-        vBeacons[z].image->Release();
-    }
-    vBeacons.clear();
-    uNumDivineInterventionCastsThisDay = 0;
-    uNumArmageddonCasts = 0;
-    uNumFireSpikeCasts = 0;
-    field_1B3B_set0_unused = 0;
+    this->uFullManaBonus = 0;
+    this->_health_related = 0;
+    this->uFullHealthBonus = 0;
 }
 
 //----- (004907E7) --------------------------------------------------------
