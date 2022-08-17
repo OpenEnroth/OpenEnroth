@@ -1576,7 +1576,7 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     a1.uFrameZ = a1.uFrameX + 107;
     a1.uFrameWidth = 108;
     a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0,
-                     localization->GetSkillName(spellSchool / 4 + 12), 3u);
+                     localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
 
     str = StringPrintf("%s\n%d", localization->GetString(LSTR_SP_COST),
                        pSpellDatas[spellId].uNormalLevelMana);

@@ -77,12 +77,12 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     this->pFacePlane_old = data->pFacePlane_old;
     this->zCalc.Init(this->pFacePlane_old);
     this->uAttributes = data->uAttributes;
-    this->pVertexIDs = (uint16_t *)data->pVertexIDs;
-    this->pXInterceptDisplacements = (int16_t *)data->pXInterceptDisplacements;
-    this->pYInterceptDisplacements = (int16_t *)data->pYInterceptDisplacements;
-    this->pZInterceptDisplacements = (int16_t *)data->pZInterceptDisplacements;
-    this->pVertexUIDs = (int16_t *)data->pVertexUIDs;
-    this->pVertexVIDs = (int16_t *)data->pVertexVIDs;
+    this->pVertexIDs = nullptr;
+    this->pXInterceptDisplacements = nullptr;
+    this->pYInterceptDisplacements = nullptr;
+    this->pZInterceptDisplacements = nullptr;
+    this->pVertexUIDs = nullptr;
+    this->pVertexVIDs = nullptr;
     this->uFaceExtraID = data->uFaceExtraID;
     // unsigned __int16  uBitmapID;
     this->uSectorID = data->uSectorID;
@@ -380,6 +380,8 @@ void BLVRenderParams::Reset() {
 void BspRenderer::MakeVisibleSectorList() {
     bool onlist = false;
     uNumVisibleNotEmptySectors = 0;
+
+    // TODO: this is actually n^2, might make sense to rewrite properly.
 
     for (uint i = 0; i < num_nodes; ++i) {
         onlist = false;
@@ -807,19 +809,19 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         pFace->pVertexIDs = &pLFaces[j];
 
         j += pFace->uNumVertices + 1;
-        pFace->pXInterceptDisplacements = (short *)(&pLFaces[j]);
+        pFace->pXInterceptDisplacements = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
-        pFace->pYInterceptDisplacements = (short *)(&pLFaces[j]);
+        pFace->pYInterceptDisplacements = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
-        pFace->pZInterceptDisplacements = (short *)(&pLFaces[j]);
+        pFace->pZInterceptDisplacements = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
-        pFace->pVertexUIDs = (__int16 *)(&pLFaces[j]);
+        pFace->pVertexUIDs = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
-        pFace->pVertexVIDs = (__int16 *)(&pLFaces[j]);
+        pFace->pVertexVIDs = (int16_t *)(&pLFaces[j]);
 
         j += pFace->uNumVertices + 1;
     }
@@ -1104,13 +1106,20 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pData = ChestsDeserialize(pData);
+    pData += ChestsDeserialize(pData);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(pDoors, pData, 0x3E80);
-    pData += 0x3E80;
+    // memcpy(pDoors, pData, 0x3E80);
+    // pData += 0x3E80
+    BLVDoor_MM7 *tmp_door = (BLVDoor_MM7 *)malloc(sizeof(BLVDoor_MM7));
+    for (int i = 0; i < uNumDoors; ++i) {
+        memcpy(tmp_door, pData + i * sizeof(BLVDoor_MM7), sizeof(BLVDoor_MM7));
+        tmp_door->Deserialize(&pDoors[i]);
+    }
+    free(tmp_door);
+    pData += uNumDoors * sizeof(BLVDoor_MM7);
 
     // v201 = (const char *)blv.uDoors_ddata_Size;
     // v200 = (size_t)ptr_0002B4_doors_ddata;
@@ -1139,12 +1148,12 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         j += pDoor->uNumFaces;
 
         pDoor->pSectorIDs = &ptr_0002B4_doors_ddata[j];
-        j += pDoor->field_48;
+        j += pDoor->uNumSectors;
 
-        pDoor->pDeltaUs = (short *)(&ptr_0002B4_doors_ddata[j]);
+        pDoor->pDeltaUs = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
         j += pDoor->uNumFaces;
 
-        pDoor->pDeltaVs = (short *)(&ptr_0002B4_doors_ddata[j]);
+        pDoor->pDeltaVs = (int16_t *)(&ptr_0002B4_doors_ddata[j]);
         j += pDoor->uNumFaces;
 
         pDoor->pXOffsets = &ptr_0002B4_doors_ddata[j];

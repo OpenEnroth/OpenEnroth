@@ -65,8 +65,8 @@ struct Chest {  // 0x14cc
 void RemoveItemAtChestIndex(int index);
 void GenerateItemsInChest();
 
-char *ChestsSerialize(char *pData);
-char *ChestsDeserialize(char *pData);
+size_t ChestsSerialize(char *pData);
+size_t ChestsDeserialize(char *pData);
 
 extern ChestList *pChestList;
 extern std::vector<Chest> vChests;

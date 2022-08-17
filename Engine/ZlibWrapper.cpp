@@ -5,11 +5,17 @@ namespace zlib {
 #include <zlib.h>
 
 int Uncompress(void *dest, unsigned int *destLen, const void *source, unsigned int sourceLen) {
-    return uncompress((Bytef *)dest, (uLongf *)destLen, (Bytef *)source, sourceLen);
+    uLongf localDestLen = *destLen;
+    int result = uncompress(static_cast<Bytef *>(dest), &localDestLen, static_cast<const Bytef *>(source), sourceLen);
+    *destLen = localDestLen;
+    return result;
 }
 
 int Compress(void *dest, unsigned int *destLen, void *source, unsigned int sourceLen) {
-    return compress((Bytef *)dest, (uLongf *)destLen, (Bytef *)source, sourceLen);
+    uLongf localDestLen = *destLen;
+    int result = compress(static_cast<Bytef *>(dest), &localDestLen, static_cast<const Bytef *>(source), sourceLen);
+    *destLen = localDestLen;
+    return result;
 }
 
 PMemBuffer Compress(PMemBuffer source) {
@@ -22,14 +28,14 @@ PMemBuffer Compress(PMemBuffer source) {
             dest = nullptr;
             destLen *= 2;
         }
-        dest = (Bytef*)malloc(destLen);
-        res = compress(dest, &destLen, (Bytef*)source->GetData(), source->GetSize());
+        dest = static_cast<Bytef *>(malloc(destLen));
+        res = compress(dest, &destLen, static_cast<const Bytef *>(source->GetData()), source->GetSize());
     }
 
     PMemBuffer result = nullptr;
     if (res == Z_OK) {
         result = AllocMemBuffer(destLen);
-        memcpy((void*)result->GetData(), dest, destLen);
+        memcpy(const_cast<void *>(result->GetData()), dest, destLen);
     }
     free(dest);
     return result;
@@ -45,14 +51,14 @@ PMemBuffer Uncompress(PMemBuffer source) {
             dest = nullptr;
             destLen *= 2;
         }
-        dest = (Bytef*)malloc(destLen);
-        res = uncompress(dest, &destLen, (Bytef*)source->GetData(), source->GetSize());
+        dest = static_cast<Bytef *>(malloc(destLen));
+        res = uncompress(dest, &destLen, static_cast<const Bytef *>(source->GetData()), source->GetSize());
     }
 
     PMemBuffer result = nullptr;
     if (res == Z_OK) {
         result = AllocMemBuffer(destLen);
-        memcpy((void*)result->GetData(), dest, destLen);
+        memcpy(const_cast<void *>(result->GetData()), dest, destLen);
     }
     free(dest);
     return result;

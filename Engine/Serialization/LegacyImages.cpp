@@ -111,6 +111,11 @@ BLVSector_MM7::BLVSector_MM7() {
     memset(this, 0, sizeof(*this));
 }
 
+BLVDoor_MM7::BLVDoor_MM7() {
+    Assert(sizeof(*this) == 0x50);
+    memset(this, 0, sizeof(*this));
+}
+
 FontData_MM7::FontData_MM7() {
     Assert(sizeof(*this) == 0x1020);
     memset(this, 0, sizeof(*this));
@@ -1351,6 +1356,38 @@ void Actor_MM7::Deserialize(Actor *actor) {
 
     for (unsigned int i = 0; i < 12; ++i)
         actor->field_338[i] = this->field_338[i];
+}
+
+void BLVDoor_MM7::Serialize(BLVDoor *door) {
+    this->uAttributes = door->uAttributes;
+    this->uDoorID = door->uDoorID;
+    this->uTimeSinceTriggered = door->uTimeSinceTriggered;
+    this->vDirection = door->vDirection;
+    this->uMoveLength = door->uMoveLength;
+    this->uOpenSpeed = door->uOpenSpeed;
+    this->uCloseSpeed = door->uCloseSpeed;
+    this->uNumVertices = door->uNumVertices;
+    this->uNumFaces = door->uNumFaces;
+    this->uNumSectors = door->uNumSectors;
+    this->uNumOffsets = door->uNumOffsets;
+    this->uState = door->uState;
+    this->field_4E = door->field_4E;
+}
+
+void BLVDoor_MM7::Deserialize(BLVDoor *door) {
+    door->uAttributes = this->uAttributes;
+    door->uDoorID = this->uDoorID;
+    door->uTimeSinceTriggered = this->uTimeSinceTriggered;
+    door->vDirection = this->vDirection;
+    door->uMoveLength = this->uMoveLength;
+    door->uOpenSpeed = this->uOpenSpeed;
+    door->uCloseSpeed = this->uCloseSpeed;
+    door->uNumVertices = this->uNumVertices;
+    door->uNumFaces = this->uNumFaces;
+    door->uNumSectors = this->uNumSectors;
+    door->uNumOffsets = this->uNumOffsets;
+    door->uState = (BLVDoor::State)this->uState;
+    door->field_4E = this->field_4E;
 }
 
 void BLVSector_MM7::Serialize(BLVSector *sector) {

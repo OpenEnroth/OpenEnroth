@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/Objects/NPCProf.h"
+#include "Engine/Objects/PlayerEnums.h"
 
 
 #define LSTR_AC                               0   // "AC"
@@ -464,27 +465,27 @@ class Localization {
         return this->attribute_descriptions[index];
     }
 
-    const char *GetSkillName(unsigned int index) const {
+    const char *GetSkillName(PLAYER_SKILL_TYPE index) const {
         return this->skill_names[index];
     }
 
-    const char *GetSkillDescription(unsigned int index) const {
+    const char *GetSkillDescription(PLAYER_SKILL_TYPE index) const {
         return this->skill_descriptions[index];
     }
 
-    const char *GetSkillDescriptionNormal(unsigned int index) const {
+    const char *GetSkillDescriptionNormal(PLAYER_SKILL_TYPE index) const {
         return this->skill_descriptions_normal[index];
     }
 
-    const char *GetSkillDescriptionExpert(unsigned int index) const {
+    const char *GetSkillDescriptionExpert(PLAYER_SKILL_TYPE index) const {
         return this->skill_descriptions_expert[index];
     }
 
-    const char *GetSkillDescriptionMaster(unsigned int index) const {
+    const char *GetSkillDescriptionMaster(PLAYER_SKILL_TYPE index) const {
         return this->skill_descriptions_master[index];
     }
 
-    const char *GetSkillDescriptionGrand(unsigned int index) const {
+    const char *GetSkillDescriptionGrand(PLAYER_SKILL_TYPE index) const {
         return this->skill_descriptions_grand[index];
     }
 

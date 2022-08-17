@@ -1,6 +1,7 @@
 #include "Engine/Graphics/Vis.h"
 
 #include <cstdlib>
+#include <algorithm>
 
 #include "Engine/Engine.h"
 #include "Engine/IocContainer.h"
@@ -442,45 +443,21 @@ void Vis::_4C1A02() {
     v4.vWorldPosition.y = 0.0;
     v4.vWorldPosition.z = 0.0;
 
-    memcpy(&this->stru_200C, &v1, 0x60u);
-    memcpy(&this->stru_206C, &v4, 0x60u);
+    this->stru_200C = v1;
+    this->stru_203C = v2;
+    this->stru_206C = v3;
+    this->stru_209C = v4;
+    //memcpy(&this->stru_200C, &v1, 0x60u);
+    //memcpy(&this->stru_206C, &v4, 0x60u); // the code above doesn't match this memcpy, but there is no other way it seems
 }
 
 // depth sort
 //----- (004C1ABA) --------------------------------------------------------
 void Vis::SortVectors_x(RenderVertexSoft *pArray, int start, int end) {
-    int left_sort_index;          // ebx@2
-    int right_sort_index;         // ecx@2
-    RenderVertexSoft temp_array;  // [sp+4h] [bp-6Ch]@8
-    RenderVertexSoft max_array;   // [sp+34h] [bp-3Ch]@2
-
-    if (end > start) {
-        left_sort_index = start - 1;
-        right_sort_index = end;
-        memcpy(&max_array, &pArray[end], sizeof(max_array));
-        while (1) {
-            do {
-                ++left_sort_index;
-            } while (pArray[left_sort_index].vWorldViewPosition.x <
-                     (double)max_array.vWorldViewPosition.x);
-            do {
-                --right_sort_index;
-            } while (pArray[right_sort_index].vWorldViewPosition.x >
-                     (double)max_array.vWorldViewPosition.x);
-            if (left_sort_index >= right_sort_index) break;
-            memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-            memcpy(&pArray[left_sort_index], &pArray[right_sort_index],
-                   sizeof(pArray[left_sort_index]));
-            memcpy(&pArray[right_sort_index], &temp_array,
-                   sizeof(pArray[right_sort_index]));
-        }
-        memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-        memcpy(&pArray[left_sort_index], &pArray[end],
-               sizeof(pArray[left_sort_index]));
-        memcpy(&pArray[end], &temp_array, sizeof(pArray[end]));
-        SortVectors_x(pArray, start, left_sort_index - 1);
-        SortVectors_x(pArray, left_sort_index + 1, end);
-    }
+    auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
+        return l.vWorldViewPosition.x < r.vWorldViewPosition.x;
+    };
+    std::sort(pArray + start, pArray + end + 1, cmp);
 }
 
 Vis_PIDAndDepth InvalidPIDAndDepth() {
@@ -771,197 +748,43 @@ void Vis_SelectionList::create_object_pointers(PointerCreationType type) {
 }
 
 //----- (004C264A) --------------------------------------------------------
-void Vis::sort_object_pointers(Vis_ObjectInfo **pPointers, int start,
-                               int end) {  // сортировка
-    int sort_start;                  // edx@1
-    int forward_sort_index;          // esi@2
-    signed int backward_sort_index;  // ecx@2
-    unsigned int last_z_val;         // eax@3
-    unsigned int more_lz_val;        // ebx@4
-    unsigned int less_lz_val;        // ebx@6
-    Vis_ObjectInfo *temp_pointer;    // eax@7
-    //  Vis_ObjectInfo *a3a; // [sp+14h] [bp+Ch]@2
-
-    sort_start = start;
-
-    if (end > start) {
-        do {
-            forward_sort_index = sort_start - 1;
-            backward_sort_index = end;
-            do {
-                last_z_val = pPointers[end]->depth;
-                do {
-                    ++forward_sort_index;
-                    more_lz_val = pPointers[forward_sort_index]->depth;
-                } while (more_lz_val < last_z_val);
-
-                do {
-                    if (backward_sort_index < 1) break;
-                    --backward_sort_index;
-                    less_lz_val = pPointers[backward_sort_index]->depth;
-                } while (less_lz_val > last_z_val);
-
-                temp_pointer = pPointers[forward_sort_index];
-                if (forward_sort_index >= backward_sort_index) {
-                    pPointers[forward_sort_index] = pPointers[end];
-                    pPointers[end] = temp_pointer;
-                } else {
-                    pPointers[forward_sort_index] =
-                        pPointers[backward_sort_index];
-                    pPointers[backward_sort_index] = temp_pointer;
-                }
-            } while (forward_sort_index < backward_sort_index);
-
-            sort_object_pointers(pPointers, sort_start, forward_sort_index - 1);
-            sort_start = forward_sort_index + 1;
-        } while (end > forward_sort_index + 1);
-    }
+void Vis::sort_object_pointers(Vis_ObjectInfo **pPointers, int start, int end) {  // сортировка
+    auto cmp = [](Vis_ObjectInfo *l, Vis_ObjectInfo *r) {
+        return l->depth < r->depth;
+    };
+    std::sort(pPointers + start, pPointers + end + 1, cmp);
 }
 
 //----- (004C26D0) --------------------------------------------------------
-void Vis::SortVerticesByX(RenderVertexD3D3 *pArray, unsigned int uStart,
-                          unsigned int uEnd) {
-    unsigned int left_sort_index;   // ebx@2
-    RenderVertexD3D3 temp_array;    // [sp+4h] [bp-4Ch]@8
-    RenderVertexD3D3 max_array;     // [sp+24h] [bp-2Ch]@2
-    unsigned int right_sort_index;  // [sp+4Ch] [bp-4h]@2
-
-    if ((signed int)uEnd > (signed int)uStart) {
-        left_sort_index = uStart - 1;
-        right_sort_index = uEnd;
-        while (1) {
-            memcpy(&max_array, &pArray[uEnd], sizeof(max_array));
-            do {
-                ++left_sort_index;
-            } while (pArray[left_sort_index].pos.x < (double)max_array.pos.x);
-            do {
-                --right_sort_index;
-            } while (pArray[right_sort_index].pos.x > (double)max_array.pos.x);
-            if ((signed int)left_sort_index >= (signed int)right_sort_index)
-                break;
-            memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-            memcpy(&pArray[left_sort_index], &pArray[right_sort_index],
-                   sizeof(pArray[left_sort_index]));
-            memcpy(&pArray[right_sort_index], &temp_array,
-                   sizeof(pArray[right_sort_index]));
-        }
-        memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-        memcpy(&pArray[left_sort_index], &pArray[uEnd],
-               sizeof(pArray[left_sort_index]));
-        memcpy(&pArray[uEnd], &temp_array, sizeof(pArray[uEnd]));
-        SortVerticesByX(pArray, uStart, left_sort_index - 1);
-        SortVerticesByX(pArray, left_sort_index + 1, uEnd);
-    }
+void Vis::SortVerticesByX(RenderVertexD3D3 *pArray, unsigned int uStart, unsigned int uEnd) {
+    auto cmp = [](const RenderVertexD3D3 &l, const RenderVertexD3D3 &r) {
+        return l.pos.x < r.pos.x;
+    };
+    std::sort(pArray + uStart, pArray + uEnd + 1, cmp);
 }
 
 //----- (004C27AD) --------------------------------------------------------
-void Vis::SortVerticesByY(RenderVertexD3D3 *pArray, unsigned int uStart,
-                          unsigned int uEnd) {
-    unsigned int left_sort_index;   // ebx@2
-    RenderVertexD3D3 temp_array;    // [sp+4h] [bp-4Ch]@8
-    RenderVertexD3D3 max_array;     // [sp+24h] [bp-2Ch]@2
-    unsigned int right_sort_index;  // [sp+4Ch] [bp-4h]@2
-
-    if ((signed int)uEnd > (signed int)uStart) {
-        left_sort_index = uStart - 1;
-        right_sort_index = uEnd;
-        while (1) {
-            memcpy(&max_array, &pArray[uEnd], sizeof(max_array));
-            do {
-                ++left_sort_index;
-            } while (pArray[left_sort_index].pos.y < (double)max_array.pos.y);
-            do {
-                --right_sort_index;
-            } while (pArray[right_sort_index].pos.y > (double)max_array.pos.y);
-            if ((signed int)left_sort_index >= (signed int)right_sort_index)
-                break;
-            memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-            memcpy(&pArray[left_sort_index], &pArray[right_sort_index],
-                   sizeof(pArray[left_sort_index]));
-            memcpy(&pArray[right_sort_index], &temp_array,
-                   sizeof(pArray[right_sort_index]));
-        }
-        memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-        memcpy(&pArray[left_sort_index], &pArray[uEnd],
-               sizeof(pArray[left_sort_index]));
-        memcpy(&pArray[uEnd], &temp_array, sizeof(pArray[uEnd]));
-        SortVerticesByY(pArray, uStart, left_sort_index - 1);
-        SortVerticesByY(pArray, left_sort_index + 1, uEnd);
-    }
+void Vis::SortVerticesByY(RenderVertexD3D3 *pArray, unsigned int uStart, unsigned int uEnd) {
+    auto cmp = [](const RenderVertexD3D3 &l, const RenderVertexD3D3 &r) {
+        return l.pos.y < r.pos.y;
+    };
+    std::sort(pArray + uStart, pArray + uEnd + 1, cmp);
 }
 
 //----- (004C288E) --------------------------------------------------------
-void Vis::SortByScreenSpaceX(
-    RenderVertexSoft *pArray, int start,
-    int end) {  // сортировка по возрастанию экранных координат х
-    int left_sort_index;          // ebx@2
-    int right_sort_index;         // ecx@2
-    RenderVertexSoft temp_array;  // [sp+4h] [bp-6Ch]@8
-    RenderVertexSoft max_array;   // [sp+34h] [bp-3Ch]@2
-
-    if (end > start) {
-        left_sort_index = start - 1;
-        right_sort_index = end;
-        memcpy(&max_array, &pArray[end], sizeof(max_array));
-        while (1) {
-            do {
-                ++left_sort_index;
-            } while (pArray[left_sort_index].vWorldViewProjX <
-                     (double)max_array.vWorldViewProjX);
-            do {
-                --right_sort_index;
-            } while (pArray[right_sort_index].vWorldViewProjX >
-                     (double)max_array.vWorldViewProjX);
-            if (left_sort_index >= right_sort_index) break;
-            memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-            memcpy(&pArray[left_sort_index], &pArray[right_sort_index],
-                   sizeof(pArray[left_sort_index]));
-            memcpy(&pArray[right_sort_index], &temp_array,
-                   sizeof(pArray[right_sort_index]));
-        }
-        memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-        memcpy(&pArray[left_sort_index], &pArray[end],
-               sizeof(pArray[left_sort_index]));
-        memcpy(&pArray[end], &temp_array, sizeof(pArray[end]));
-        Vis::SortByScreenSpaceX(pArray, start, left_sort_index - 1);
-        Vis::SortByScreenSpaceX(pArray, left_sort_index + 1, end);
-    }
+void Vis::SortByScreenSpaceX(RenderVertexSoft *pArray, int start, int end) {  // сортировка по возрастанию экранных координат х
+    auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
+        return l.vWorldViewProjX < r.vWorldViewProjX;
+    };
+    std::sort(pArray + start, pArray + end + 1, cmp);
 }
 
 //----- (004C297E) --------------------------------------------------------
 void Vis::SortByScreenSpaceY(RenderVertexSoft *pArray, int start, int end) {
-    int left_sort_index;          // ebx@2
-    int right_sort_index;         // ecx@2
-    RenderVertexSoft temp_array;  // [sp+4h] [bp-6Ch]@8
-    RenderVertexSoft max_array;   // [sp+34h] [bp-3Ch]@2
-
-    if (end > start) {
-        left_sort_index = start - 1;
-        right_sort_index = end;
-        memcpy(&max_array, &pArray[end], sizeof(max_array));
-        while (1) {
-            do {
-                ++left_sort_index;
-            } while (pArray[left_sort_index].vWorldViewProjY <
-                     (double)max_array.vWorldViewProjY);
-            do {
-                --right_sort_index;
-            } while (pArray[right_sort_index].vWorldViewProjY >
-                     (double)max_array.vWorldViewProjY);
-            if (left_sort_index >= right_sort_index) break;
-            memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-            memcpy(&pArray[left_sort_index], &pArray[right_sort_index],
-                   sizeof(pArray[left_sort_index]));
-            memcpy(&pArray[right_sort_index], &temp_array,
-                   sizeof(pArray[right_sort_index]));
-        }
-        memcpy(&temp_array, &pArray[left_sort_index], sizeof(temp_array));
-        memcpy(&pArray[left_sort_index], &pArray[end],
-               sizeof(pArray[left_sort_index]));
-        memcpy(&pArray[end], &temp_array, sizeof(pArray[end]));
-        Vis::SortByScreenSpaceY(pArray, start, left_sort_index - 1);
-        Vis::SortByScreenSpaceY(pArray, left_sort_index + 1, end);
-    }
+    auto cmp = [](const RenderVertexSoft &l, const RenderVertexSoft &r) {
+        return l.vWorldViewProjY < r.vWorldViewProjY;
+    };
+    std::sort(pArray + start, pArray + end + 1, cmp);
 }
 
 //----- (004C04AF) --------------------------------------------------------
@@ -1085,28 +908,21 @@ void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
 // tests the object against selection filter to determine whether it can be
 // picked or not
 //----- (004C0791) --------------------------------------------------------
-bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
-                               Vis_SelectionFilter *filter) {
+bool Vis::is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace, Vis_SelectionFilter *filter) {
     switch (filter->vis_object_type) {
         case VisObjectType_Any:
             return true;
 
         case VisObjectType_Sprite: {
+            int parentBillboardId =
+                render->pBillboardRenderListD3D[(int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace].sParentBillboardID;
+
+            if (parentBillboardId == -1)
+                return false;
+
             // v5 = filter->select_flags;
-            int object_idx = PID_ID(
-                pBillboardRenderList
-                    [render
-                         ->pBillboardRenderListD3D[(
-                             int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
-                         .sParentBillboardID]
-                        .object_pid);
-            int object_type = PID_TYPE(
-                pBillboardRenderList
-                    [render
-                         ->pBillboardRenderListD3D[(
-                             int64_t)uD3DBillboardIdx_or_pBLVFace_or_pODMFace]
-                         .sParentBillboardID]
-                        .object_pid);
+            int object_idx = PID_ID(pBillboardRenderList[parentBillboardId].object_pid);
+            int object_type = PID_TYPE(pBillboardRenderList[parentBillboardId].object_pid);
             if (filter->select_flags & ExcludeType) {
                 return object_type != filter->object_type;
             }

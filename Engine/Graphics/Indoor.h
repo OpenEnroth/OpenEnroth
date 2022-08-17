@@ -337,13 +337,13 @@ struct BLVDoor {  // 50h
         Closing = 3
     };
 
-    unsigned int uAttributes;
-    unsigned int uDoorID;
-    unsigned int uTimeSinceTriggered;
+    uint32_t uAttributes;
+    uint32_t uDoorID;
+    uint32_t uTimeSinceTriggered;
     Vec3_int_ vDirection;
-    int uMoveLength;
-    int uOpenSpeed;
-    int uCloseSpeed;
+    int32_t uMoveLength;
+    int32_t uOpenSpeed;
+    int32_t uCloseSpeed;
     uint16_t *pVertexIDs;
     uint16_t *pFaceIDs;
     uint16_t *pSectorIDs;
@@ -354,7 +354,7 @@ struct BLVDoor {  // 50h
     uint16_t *pZOffsets;
     uint16_t uNumVertices;
     uint16_t uNumFaces;
-    int16_t field_48;
+    uint16_t uNumSectors;
     uint16_t uNumOffsets;
     State uState;
     int16_t field_4E;
@@ -767,7 +767,7 @@ struct BspRenderer {  // stru170
     BspRenderer_ViewportNode nodes[150];
 
     unsigned int uNumVisibleNotEmptySectors;
-    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[6]{};
+    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[150]{};
 };
 #pragma pack(pop)
 
