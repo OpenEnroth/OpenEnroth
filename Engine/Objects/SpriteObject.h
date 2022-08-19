@@ -1,4 +1,7 @@
 #pragma once
+
+#include <vector>
+
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/SpriteObjectType.h"
 #include "Engine/VectorTypes.h"

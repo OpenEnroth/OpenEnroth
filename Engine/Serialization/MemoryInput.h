@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 class MemoryInput {
-public:
+ public:
     MemoryInput(const void *data, size_t size) {
         Reset(data, size);
     }
@@ -62,7 +62,7 @@ public:
         return data_;
     }
 
-private:
+ private:
     const char *data_ = nullptr;
     const char *end_ = nullptr;
 };
