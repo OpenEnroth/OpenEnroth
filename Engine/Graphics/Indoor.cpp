@@ -817,6 +817,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
 
     stream.ReadSizedVector(&ptr_0002B0_sector_rdata, blv.uSector_rdata_Size / sizeof(uint16_t));
+    ptr_0002B0_sector_rdata.push_back(0); // make the element past the end addressable.
 
     for (uint i = 0, j = 0; i < pSectors.size(); ++i) {
         BLVSector *pSector = &pSectors[i];
@@ -850,6 +851,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     }
 
     stream.ReadSizedVector(&ptr_0002B8_sector_lrdata, blv.uSector_lrdata_Size / sizeof(uint16_t));
+    ptr_0002B8_sector_lrdata.push_back(0); // make the element past the end addressable.
 
     pGameLoadingUI_ProgressBar->Progress();
 
@@ -1014,6 +1016,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     // v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
     // v171 = blv.uDoors_ddata_Size;
     stream.ReadSizedVector(&ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size / sizeof(uint16_t));
+    ptr_0002B4_doors_ddata.push_back(0); // make the element past the end addressable.
 
     // Src = (BLVFace *)((char *)Src + v171);
     // v172 = 0;
