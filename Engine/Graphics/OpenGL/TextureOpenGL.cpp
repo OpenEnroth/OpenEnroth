@@ -57,8 +57,8 @@ int TextureOpenGL::GetOpenGlTexture() {
 
 bool TextureOpenGL::LoadImageData() {
     if (!this->initialized) {
-        void *pixels;
-        void *palette;
+        void *pixels {nullptr};
+        void *palette {nullptr};
 
         this->initialized =
             this->loader->Load(&width, &height, &pixels, &native_format, &palette);

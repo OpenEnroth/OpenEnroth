@@ -80,28 +80,16 @@ bool Paletted_Img_Loader::Load(unsigned int *out_width,
     *out_height = 0;
     *out_pixels = nullptr;
     *out_format = IMAGE_INVALID_FORMAT;
+    *out_palette = nullptr;
 
-    Texture_MM7 *tex = lod->GetTexture(
-        lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
-    if ((tex == nullptr) || (tex->pPalette24 == nullptr) ||
-        (tex->paletted_pixels == nullptr)) {
+    Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
+
+    if ((tex == nullptr) || (tex->pPalette24 == nullptr) || (tex->paletted_pixels == nullptr)) {
         return false;
     }
 
-    //if (tex->header.pBits & 512) {
-    //    *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
-    //        tex->header.uTextureHeight,
-    //        tex->paletted_pixels, tex->pPalette24);
-    //}
-    //else {
-    //    *out_pixels = MakeImageColorKey(
-    //        tex->header.uTextureWidth, tex->header.uTextureHeight,
-    //        tex->paletted_pixels, tex->pPalette24, colorkey);
-    //}
-
     // need to copy save palette pixels
-
-    int size = 3 * tex->header.uTextureWidth * tex->header.uTextureHeight;
+    int size = tex->header.uTextureWidth * tex->header.uTextureHeight;
     uint8_t *store = new uint8_t[size];
     memcpy(store, tex->paletted_pixels, size);
     *out_pixels = store;
@@ -110,10 +98,6 @@ bool Paletted_Img_Loader::Load(unsigned int *out_width,
     memcpy(storepal, tex->pPalette24, 3 * 256);
     *out_palette = storepal;
 
-    // *out_pixels = tex->paletted_pixels;
-    //    *out_pixels = MakeImageSolid(tex->header.uTextureWidth, tex->header.uTextureHeight,
-    //        tex->paletted_pixels, tex->pPalette24);
-
     if (*out_pixels == nullptr) {
         return false;
     }
@@ -121,7 +105,6 @@ bool Paletted_Img_Loader::Load(unsigned int *out_width,
     *out_width = tex->header.uTextureWidth;
     *out_height = tex->header.uTextureHeight;
     *out_format = IMAGE_FORMAT_R8G8B8;
-    // *out_palette = tex->pPalette24;
 
     return true;
 }
@@ -345,21 +328,21 @@ static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,
     bool canDecY = y > 0;
     bool canIncY = y < h - 1;
 
-    if (canDecX & canDecY)
+    if (canDecX && canDecY)
         processPixel(x - 1, y - 1);
     if (canDecX)
         processPixel(x - 1, y);
-    if (canDecX & canIncY)
+    if (canDecX && canIncY)
         processPixel(x - 1, y + 1);
     if (canDecY)
         processPixel(x, y - 1);
     if (canIncY)
         processPixel(x, y + 1);
-    if (canIncX & canDecY)
+    if (canIncX && canDecY)
         processPixel(x + 1, y - 1);
     if (canIncX)
         processPixel(x + 1, y);
-    if (canIncX & canIncY)
+    if (canIncX && canIncY)
         processPixel(x + 1, y + 1);
 
     if (count != 0) {

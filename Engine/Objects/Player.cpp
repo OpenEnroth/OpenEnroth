@@ -3592,7 +3592,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     uIntelligenceBonus = 0;
     uMightBonus = 0;
     uLevel = 1;
-    uExperience = 251 + rand() % 100;
+    uExperience = 251ll + rand() % 100;
     uSkillPoints = 0;
     uBirthYear = 1147 - rand() % 6;
     pActiveSkills.fill(0);
@@ -3746,6 +3746,7 @@ void Player::IncreaseAttribute(int eAttribute) {
 
 //----- (0049070F) --------------------------------------------------------
 void Player::Zero() {
+    // this is also used during party rest and heal so only buffs and bonuses are reset
     this->sLevelModifier = 0;
     this->sACModifier = 0;
     this->uLuckBonus = 0;
@@ -4547,7 +4548,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     );
                     break;
                 case 10:
-                    playerAffected->uExperience += 2500 * thisa;
+                    playerAffected->uExperience += 2500ll * thisa;
                     status = StringPrintf(
                         "+%u %s", 2500 * thisa,
                         localization->GetString(LSTR_EXPERIENCE)
@@ -5617,8 +5618,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound() {
     int playerIndex = GetPlayerIndex();
-    int v25 = 8 * playerIndex + 400;
-    HEXRAYS_LOBYTE(v25) = PID(OBJECT_Player, playerIndex - 112);
+    int v25 = PID(OBJECT_Player, playerIndex + 48);
     pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
 }
 
@@ -7766,13 +7766,11 @@ void Player::_42ECB5_PlayerAttacksActor() {
         // attacking air
     }
 
-    if (!pParty->bTurnBasedModeOn &&
-        melee_attack) {  // wands, bows & lasers will add recovery while shooting
-                         // spell effect
+    if (!pParty->bTurnBasedModeOn && melee_attack) {
+        // wands, bows & lasers will add recovery while shooting spell effect
         int recovery = player->GetAttackRecoveryTime(false);
         if (recovery < 30) recovery = 30;
-        player->SetRecoveryTime(debug_non_combat_recovery_mul * (double)recovery *
-                                flt_debugrecmod3);
+        player->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery * flt_debugrecmod3));
     }
 
     int v34 = 0;
