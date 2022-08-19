@@ -873,8 +873,8 @@ uint8_t SpriteObject::GetParticleTrailColorB() {
 void SpriteObject::OnInteraction(unsigned int uLayingItemID) {
     pSpriteObjects[uLayingItemID].uObjectDescID = 0;
     if (pParty->bTurnBasedModeOn) {
-        if (pSpriteObjects[uLayingItemID].uAttributes & 4) {
-            pSpriteObjects[uLayingItemID].uAttributes &= 0xFFFB;  // ~0x00000004
+        if (pSpriteObjects[uLayingItemID].uAttributes & 0x4) {
+            pSpriteObjects[uLayingItemID].uAttributes &= ~0x4;
             --pTurnEngine->pending_actions;
         }
     }

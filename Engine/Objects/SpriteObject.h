@@ -38,7 +38,7 @@ struct SpriteObject {
 
     SPRITE_OBJECT_TYPE uType;
     // unsigned __int16 uType;
-    unsigned __int16 uObjectDescID = 0;
+    unsigned __int16 uObjectDescID = 0; // Zero means free slot, can reuse.
     Vec3_int_ vPosition;
     Vec3_short_ vVelocity;
     unsigned __int16 uFacing;
