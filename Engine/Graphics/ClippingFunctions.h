@@ -59,7 +59,5 @@ struct stru9 {
                              struct RenderVertexSoft *a2, struct stru312 *a3);
     bool DoDecalVertsNeedClipping(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                  struct RenderVertexSoft *a3, struct stru312 *a4);
-
-    void (***vdestructor_ptr)(stru9 *, bool) = nullptr;
 };
 #pragma pack(pop)

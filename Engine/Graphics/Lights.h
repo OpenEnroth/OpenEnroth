@@ -61,7 +61,6 @@ struct LightsStack_StationaryLight_ {
     bool AddLight(int16_t x, int16_t y, int16_t z, int16_t a5, unsigned char r,
                   unsigned char g, unsigned char b, char uLightType);
 
-    // void ( ***vdestructor_ptr)(LightsStack_StationaryLight_ *, bool);
     StationaryLight pLights[400];
     unsigned int uNumLightsActive;
 
@@ -84,7 +83,6 @@ struct LightsStack_MobileLight_ {
                   int uRadius, uint8_t r, uint8_t g,
                   uint8_t b, char a10);
 
-    // void ( ***vdestructor_ptr)(LightsStack_MobileLight_ *, bool);
     MobileLight pLights[400];
     unsigned int uNumLightsActive;
     Log *log;

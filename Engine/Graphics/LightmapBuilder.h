@@ -13,7 +13,6 @@ struct Lightmap {  // карта света, текстура для налож�
     Lightmap();
     virtual ~Lightmap() {}
 
-    // void ( ***vdestructor_ptr)(Lightmap *, bool);
     signed int NumVertices;
     RenderVertexSoft pVertices[64];
     __int16 position_x;  //позиция источника света
@@ -76,7 +75,6 @@ class LightmapBuilder {
                      unsigned int uNumVertices, struct RenderVertexSoft *a5,
                      struct IndoorCameraD3D_Vec4 *, char uClipFlag);
 
-    // void ( ***vdestructor_ptr)(LightmapBuilder *, bool);
     // std::vector<Lightmap> std__vector_000004;
     // std::vector<Lightmap> std__vector_183808;
     Lightmap StationaryLights[512];      // std__vector_000004

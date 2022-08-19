@@ -24,7 +24,6 @@ Lightmap::Lightmap() {
     NumVertices = -1;
     for (uint i = 0; i < 64; ++i) pVertices[i].flt_2C = 0.0f;
     this->field_C18 = 0;
-    // this->vdestructor_ptr = &Lightmap_pvdtor;
     uColorMask = 0;
     position_z = 0;
     position_y = 0;

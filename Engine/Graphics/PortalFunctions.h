@@ -21,7 +21,5 @@ struct stru10 {
                            struct RenderVertexSoft pOutVertices[4]);
     void _49CE9E(struct BLVFace *pFace, struct RenderVertexSoft *pVertices,
                  unsigned int uNumVertices, RenderVertexSoft *pOutLimits);
-
-    void (***vdestructor_ptr)(stru10 *, bool) = nullptr;
 };
 #pragma pack(pop)

@@ -19,8 +19,6 @@ struct IndoorCameraD3D_Vec3 {
     //----- (004C039C) --------------------------------------------------------
     // void ~IndoorCameraD3D_Vec3() {}
 
-    // void ( ***vdestructor_ptr)(IndoorCameraD3D_Vec3 *, bool);
-
     union {
         struct {
             float x;
