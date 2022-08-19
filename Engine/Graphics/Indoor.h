@@ -675,9 +675,11 @@ void BLV_UpdateUserInputAndOther();
 /**
  * @param pos                           Actor's position.
  * @param uSectorID                     Actor's sector id.
- * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position.
+ * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position, or `-1`
+ *                                      if wrong sector is supplied or actor is out of bounds.
  * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
- *                                      If wrong sector is supplied, `-30000` is returned.
+ *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
+ *                                      returned.
  */
 int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
@@ -747,10 +749,12 @@ void FindBillboardsLightLevels_BLV();
  * @param pos                           Actor's position.
  * @param[in,out] pSectorID             Actor's cached sector id. If the cached sector id is no longer valid (e.g. an
  *                                      actor has already moved to another sector), then the new sector id is returned
- *                                      in this output parameter.
- * @param[out] pFaceID                  Id of the floor face on which the actor is standing. Not updated if floor face
- *                                      is not found.
- * @return                              Z coordinate for the floor at (X, Y).
+ *                                      in this output parameter. If the actor moves out of level bounds (this happens),
+ *                                      then this parameter is set to 0.
+ * @param[out] pFaceID                  Id of the floor face on which the actor is standing, or `-1` if actor is outside
+ *                                      the level boundaries.
+ * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
+ *                                      level boundaries.
  */
 int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 

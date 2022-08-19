@@ -1707,13 +1707,13 @@ void UpdateActors_BLV() {
                               fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
                     }
                     v33 = GetIndoorFloorZ(Vec3_int_(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
+                    if (v33 == -30000)
+                        break; // Actor out of bounds, running more iterations won't help.
                     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && pActors[actor_id].uAIState == Dead) {
                         pActors[actor_id].uAIState = Removed;
                         continue;
                     }
                     if (isAboveGround || isFlying || !(pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
-                        if (v33 == -30000)
-                            continue;
                         if (pActors[actor_id].uCurrentActionAnimation != 1 ||
                             v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
                             if (collision_state.adjusted_move_distance < collision_state.move_distance) {
@@ -2221,8 +2221,9 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
         if (engine->config->verbose_logging)
-            logger->Warning("Floorlvl fail");
+            logger->Warning("Floorlvl fail: %i %i %i", pos.x, pos.y, pos.z);
 
+        *pFaceID = -1;
         return -30000;
     }
 
@@ -3852,23 +3853,19 @@ void FindBillboardsLightLevels_BLV() {
 }
 
 int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
-    uint uFaceID = -1;
-    int floor_z = BLV_GetFloorLevel(pos, *pSectorID, &uFaceID);
-
-    if (floor_z != -30000 && floor_z <= pos.z + 50) {
-        *pFaceID = uFaceID;
-        return floor_z;
+    if (*pSectorID != 0) {
+        int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
+        if (result != -30000 && result <= pos.z + 50)
+            return result;
     }
 
-    uint uSectorID = pIndoor->GetSector(pos);
-    *pSectorID = uSectorID;
-
-    floor_z = BLV_GetFloorLevel(pos, uSectorID, &uFaceID);
-    if (uSectorID && floor_z != -30000)
-        *pFaceID = uFaceID;
-    else
+    *pSectorID = pIndoor->GetSector(pos);
+    if (*pSectorID == 0) {
+        *pFaceID = -1;
         return -30000;
-    return floor_z;
+    }
+
+    return BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
 }
 
 //----- (0047272C) --------------------------------------------------------
@@ -3883,9 +3880,9 @@ int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, un
 
     int result;
     for (const Vec3_int_ &attempt : attempts) {
-        *pSectorID = pIndoor->GetSector(attempt);
+        *pSectorID = 0; // Make sure GetIndoorFloorZ recalculates sector id from provided coordinates.
         result = GetIndoorFloorZ(attempt, pSectorID, pFaceID);
-        if (result != -30000 && *pSectorID)
+        if (result != -30000)
             return result;
     }
     return result; // Return the last result anyway.

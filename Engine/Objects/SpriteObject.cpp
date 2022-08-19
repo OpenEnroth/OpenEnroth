@@ -472,20 +472,20 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
     SpriteObject *pSpriteObject = &pSpriteObjects[uLayingItemID];
     ObjectDesc *pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
 
-    pSpriteObject->uSectorID = pIndoor->GetSector(pSpriteObject->vPosition);
-
-    unsigned int uFaceID;
-
-    int floor_lvl = BLV_GetFloorLevel(pSpriteObject->vPosition, pSpriteObject->uSectorID, &uFaceID);
-
-    // object out of bounds
-    if (abs(pSpriteObject->vPosition.x) > 32767 ||
-        abs(pSpriteObject->vPosition.y) > 32767 ||
-        abs(pSpriteObject->vPosition.z) > 20000 ||
-        floor_lvl <= -30000 && (pSpriteObject->uSectorID == 0)) {
+    // Break early if we're out of bounds.
+    if (abs(pSpriteObject->vPosition.x) > 32767 || abs(pSpriteObject->vPosition.y) > 32767 || abs(pSpriteObject->vPosition.z) > 20000) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
+
+    unsigned int uFaceID;
+    unsigned int uSectorID = pSpriteObject->uSectorID; // TODO: this should go straight into GetIndoorFloorZ as a pointer.
+    int floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition, &uSectorID, &uFaceID);
+    if (floor_lvl <= -30000) {
+        SpriteObject::OnInteraction(uLayingItemID);
+        return;
+    }
+    pSpriteObject->uSectorID = uSectorID;
 
     int v15;               // ebx@46
     int v17;                      // eax@50
