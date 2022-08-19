@@ -2137,6 +2137,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
         pParty->uFallStartZ = 0;
         pParty->uFallSpeed = 0;
         TeleportToStartingPoint(uLevel_StartingPointType);
+        pBLVRenderParams->Reset();
     }
     viewparams->_443365();
     PlayLevelMusic();

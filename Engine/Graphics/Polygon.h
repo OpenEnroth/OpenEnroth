@@ -16,7 +16,7 @@ struct Polygon {
 
     // int _479295();
     // void _48276F_sr();
-    void _normalize_v_18();
+    // void _normalize_v_18();
     // void Create_48607B(struct SkyBillboardStruct *a2);
 
     inline bool IsWater() const { return this->flags & 2; }

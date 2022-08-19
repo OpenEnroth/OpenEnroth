@@ -103,21 +103,7 @@ void GL_Check_Errors(bool breakonerr = true) {
     }
 }
 
-void Polygon::_normalize_v_18() {
-    double len = sqrt((double)this->v_18.z * (double)this->v_18.z +
-                     (double)this->v_18.y * (double)this->v_18.y +
-                     (double)this->v_18.x * (double)this->v_18.x);
-    if (fabs(len) < 1e-6) {
-        v_18.x = 0;
-        v_18.y = 0;
-        v_18.z = 65536;
-    } else {
-        v_18.x = round_to_int(static_cast<float>(this->v_18.x / len * 65536.0));
-        v_18.y = round_to_int(static_cast<float>(this->v_18.y / len * 65536.0));
-        v_18.z = round_to_int(static_cast<float>(this->v_18.z / len * 65536.0));
-    }
-}
-
+// TODO(pskelton): move out of gl
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // checks if model is visible in FOV cone
     float halfangle = (pCamera3D->odm_fov_rad) / 2.0f;
@@ -156,37 +142,40 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     return false;
 }
 
+// TODO(pskelton): move out of gl
+// returns 32 bit int
 int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5) {
-    signed int v6;   // edx@1
-    int v8;          // eax@3
+    signed int v6 = 0;   // edx@1
+    //int isNight;          // eax@3
     float v9;       // st7@12
     int v11;         // ecx@28
     float v15;      // st7@44
     int v18;         // ST14_4@44
-    signed int v20;  // [sp+10h] [bp-4h]@10
+    //signed int v20;  // [sp+10h] [bp-4h]@10
     float a3c;       // [sp+1Ch] [bp+8h]@44
     int a5a;         // [sp+24h] [bp+10h]@44
 
-    // v5 = a2;
-    v6 = 0;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
         return 8 * (31 - max_dimm) | ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
 
     if (pParty->armageddon_timer) return 0xFFFF0000;
 
-    v8 = pWeather->bNight;
+    bool isNight = pWeather->bNight;
     if (engine->IsUnderwater())
-        v8 = 0;
-    if (v8) {
-        v20 = 1;
+        isNight = false;
+
+    if (isNight) {
+        int v20 = 1;
         if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
             v20 = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
         v9 = v20 * 1024.0f;
-        if (a4) {
+
+        if (a4) { // dont light sky poly
             v6 = 216;
             goto LABEL_20;
         }
+
         if (distance <= v9) {
             if (distance > 0.0f) {
                 // a4b = distance * 216.0 / device_caps;
@@ -201,6 +190,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, Render
         } else {
             v6 = 216;
         }
+
         if (distance != 0.0) {
         LABEL_20:
             if (a5) v6 = 8 * _43F55F_get_billboard_light_level(a5, v6 >> 3);
@@ -212,6 +202,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, Render
         goto LABEL_20;
     }
 
+    // daytime
     if (fabsf(distance) < 1.0e-6f) return 0xFFF8F8F8;
 
     // dim in measured in 8-steps
@@ -2487,10 +2478,10 @@ void RenderOpenGL::_set_3d_modelview_matrix() {
 
     // build view matrix with glm
     glm::vec3 campos = glm::vec3(camera_x, camera_y, camera_z);
-    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0 * pi_double * pCamera3D->sRotationZ / 2048.0f),
-        camera_y - sinf(2.0 * pi_double * pCamera3D->sRotationZ / 2048.0f),
-        camera_z - tanf(2.0 * pi_double * -pCamera3D->sRotationY / 2048.0f));
-    glm::vec3 upvec = glm::vec3(0.0, 0.0, 1.0);
+    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0f * pi_double * pCamera3D->sRotationZ / 2048.0f),
+        camera_y - sinf(2.0f * pi_double * pCamera3D->sRotationZ / 2048.0f),
+        camera_z - tanf(2.0f * pi_double * -pCamera3D->sRotationY / 2048.0f));
+    glm::vec3 upvec = glm::vec3(0.0f, 0.0f, 1.0f);
 
     viewmat = glm::lookAtLH(campos, eyepos, upvec);
 
@@ -2561,8 +2552,8 @@ void RenderOpenGL::DrawTerrainD3D() {
         // generate vertex locations
         for (unsigned int y = 0; y < 128; ++y) {
             for (unsigned int x = 0; x < 128; ++x) {
-                pTerrainVertices[y * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
-                pTerrainVertices[y * 128 + x].vWorldPosition.y = (64 - (signed)y) * blockScale;
+                pTerrainVertices[y * 128 + x].vWorldPosition.x = (-64.0f + x) * blockScale;
+                pTerrainVertices[y * 128 + x].vWorldPosition.y = (64.0f - y) * blockScale;
                 pTerrainVertices[y * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[y * 128 + x];
             }
         }
@@ -5945,7 +5936,7 @@ void RenderOpenGL::DrawTwodVerts() {
     while (offset < twodvertscnt) {
         // set texture
         GLfloat thistex = twodshaderstore[offset].texid;
-        glBindTexture(GL_TEXTURE_2D, twodshaderstore[offset].texid);
+        glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(twodshaderstore[offset].texid));
 
         int cnt = 0;
         do {
