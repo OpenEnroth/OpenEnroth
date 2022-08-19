@@ -2166,7 +2166,7 @@ void Render::DrawIndoorFaces() {
             unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
             int LightLevel;                     // [sp+34h] [bp+Ch]@25
 
-            if (uFaceID >= pIndoor->uNumFaces)
+            if (uFaceID >= pIndoor->pFaces.size())
                 continue;
 
             static RenderVertexSoft static_vertices_buff_in[64];  // buff in
