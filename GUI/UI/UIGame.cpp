@@ -866,7 +866,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, Player *player) {
         else
             v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID,
                                                   pMiscTimer->Time());
-        player->field_1AA2 = v15->uTextureID - 1;
+        player->uExpressionImageIndex = v15->uTextureID - 1;
         v13 = game_ui_player_faces[window->wData.val][v15->uTextureID - 1];
     }
 
@@ -1596,12 +1596,12 @@ void GameUI_DrawPortraits(unsigned int _this) {
         else
             pFrame = pPlayerFrameTable->GetFrameBy_x(
                 face_expression_ID, pPlayer->uExpressionTimePassed);
-        if (pPlayer->field_1AA2 != pFrame->uTextureID - 1 || _this) {
-            pPlayer->field_1AA2 = pFrame->uTextureID - 1;
+        if (pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1 || _this) {
+            pPlayer->uExpressionImageIndex = pFrame->uTextureID - 1;
             pPortrait = game_ui_player_faces
                 [i]
                 [pPlayer
-                     ->field_1AA2];  // pFace = (Texture_MM7
+                     ->uExpressionImageIndex];  // pFace = (Texture_MM7
                                      // *)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 render->DrawTextureGrayShade(

@@ -61,8 +61,8 @@ void CastSpellInfoHelpers::CastSpell() {
     int target_undead;              // [sp+4h] [bp-E80h]@12
     PLAYER_SKILL_TYPE which_skill;  // [sp+4h] [bp-E80h]@25
 
-    unsigned __int64 v685;          // [sp+D08h] [bp-17Ch]@416
-    unsigned __int64 v687;          // [sp+D24h] [bp-160h]@327
+    unsigned __int64 v685 {};          // [sp+D08h] [bp-17Ch]@416
+    unsigned __int64 v687 {};          // [sp+D24h] [bp-160h]@327
     Vec3_int_ v688;                 // [sp+D2Ch] [bp-158h]@943
     Vec3_int_ v691;                 // [sp+D38h] [bp-14Ch]@137
     Vec3_int_ v694;                 // [sp+D44h] [bp-140h]@982
@@ -90,7 +90,7 @@ void CastSpellInfoHelpers::CastSpell() {
     signed int spell_targeted_at = 0;  // [sp+E7Ch] [bp-8h]@14
     int amount = 0;                    // [sp+E80h] [bp-4h]@1
     int obj_type;
-    ItemDesc *_item;
+    // ItemDesc *_item;
 
     SpriteObject pSpellSprite;  // [sp+DDCh] [bp-A8h]@1
 
@@ -2226,7 +2226,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 int active_pl_num = 0;
                 signed int shared_life_count = amount;
                 int mean_life = 0;
-                int pl_array[4];
+                int pl_array[4] {};
                 for (uint pl_id = 1; pl_id <= 4; pl_id++) {
                     if (!pPlayers[pl_id]
                              ->conditions_times[Condition_Dead]
@@ -3682,7 +3682,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     }
                 }
                 int pl_num = 0;
-                int pl_array[4];
+                int pl_array[4] {};
                 for (uint pl_id = 1; pl_id <= 4; ++pl_id) {
                     if (!pPlayers[pl_id]->conditions_times[Condition_Sleep].Valid() &&
                         !pPlayers[pl_id]->conditions_times[Condition_Paralyzed].Valid() &&

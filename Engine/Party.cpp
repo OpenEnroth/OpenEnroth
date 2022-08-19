@@ -72,9 +72,43 @@ void Party::CountHirelings() {  // non hired followers
 // inlined
 //----- (mm6c::004858D0) --------------------------------------------------
 void Party::Zero() {
-    uFlags2 = 0;
-    uNumGoldInBank = 0;
-
+    field_0_set25_unused = 25;
+    uPartyHeight = uDefaultPartyHeight = 192;
+    sEyelevel = uDefaultEyelevel = 160;
+    radius = 37;
+    y_rotation_granularity = 25;
+    uWalkSpeed = 384;
+    y_rotation_speed = 90;
+    jump_strength = 5;
+    field_28_set0_unused = 0;
+    playing_time = GameTime(0, 0, 0);
+    last_regenerated = GameTime(0, 0, 0);
+    PartyTimes.bountyHunting_next_generation_time.fill(GameTime(0));
+    PartyTimes.CounterEventValues.fill(GameTime(0));
+    PartyTimes.HistoryEventTimes.fill(GameTime(0));
+    PartyTimes.Shops_next_generation_time.fill(GameTime(0));
+    PartyTimes._shop_ban_times.fill(GameTime(0));
+    PartyTimes._s_times.fill(GameTime(0));
+    vPosition.x = vPrevPosition.x = 0;
+    vPosition.y = vPrevPosition.y = 0;
+    vPosition.z = vPrevPosition.z = 0;
+    sRotationZ = sPrevRotationZ = 0;
+    sRotationY = sPrevRotationY = 0;
+    sPrevEyelevel = 0;
+    field_6E0_set0_unused = 0;
+    field_6E4_set0_unused = 0;
+    uFallSpeed = 0;
+    field_6EC_set0_unused = 0;
+    sPartyPrevZ = 0;
+    floor_face_pid = 0;
+    walk_sound_timer = 0;
+    _6FC_water_lava_timer = 0;
+    uFallStartZ = 0;
+    bFlying = 0;
+    field_708_set15_unused = 15;
+    hirelingScrollPosition = 0;
+    cNonHireFollowers = 0;
+    field_70B_set0_unused = 0;
     uCurrentYear = 0;
     uCurrentMonth = 0;
     uCurrentMonthWeek = 0;
@@ -82,42 +116,67 @@ void Party::Zero() {
     uCurrentHour = 0;
     uCurrentMinute = 0;
     uCurrentTimeSecond = 0;
-
-    _6FC_water_lava_timer = 0;
-    days_played_without_rest = 0;
-    vPosition.x = 0;
-    vPosition.y = 0;
-    vPosition.z = 0;
-    uFallStartZ = 0;
-    sRotationZ = 0;
-    sRotationY = 0;
-    uFallSpeed = 0;
-    field_28 = 0;
-    uDefaultPartyHeight = 192;
-    radius = 37;
-    y_rotation_granularity = 25;
-    y_rotation_speed = 90;
-
-    uWalkSpeed = 384;
-    walk_sound_timer = 0;
-
-    jump_strength = 5;
-    _6FC_water_lava_timer = 0;
-    field_708 = 15;
-    field_0 = 25;
-
+    uNumFoodRations = 0;
+    field_72C_set0_unused = 0;
+    field_730_set0_unused = 0;
+    uNumGold = 0;
+    uNumGoldInBank = 0;
     uNumDeaths = 0;
+    field_740_set0_unused = 0;
     uNumPrisonTerms = 0;
     uNumBountiesCollected = 0;
-    monster_for_hunting_killed.fill(0);
+    field_74C_set0_unused = 0;
     monster_id_for_hunting.fill(0);
+    monster_for_hunting_killed.fill(0);
+    days_played_without_rest = 0;
     memset(_quest_bits, 0, sizeof(_quest_bits));
     pArcomageWins.fill(0);
+    field_7B5_in_arena_quest = 0;
     uNumArenaPageWins = 0;
     uNumArenaSquireWins = 0;
     uNumArenaKnightWins = 0;
     uNumArenaLordWins = 0;
+    pIsArtifactFound.fill(0);
+    field_7d7_set0_unused.fill(0);
+    memset(_autonote_bits, 0, sizeof(_autonote_bits));
+    field_818_set0_unused.fill(0);
+    random_order_num_unused.fill(0);
+    uNumArcomageWins = 0;
+    uNumArcomageLoses = 0;
+    bTurnBasedModeOn = false;
+    field_880_set0_unused = 0;
+    uFlags2 = 0;
+    alignment = PartyAlignment::PartyAlignment_Neutral;
+    for (uint i = 0; i < 20; ++i) pPartyBuffs[i].Reset();
+    pPickedItem.Reset();
+    uFlags = 0;
 
+    for (unsigned int i = 0; i < 53; ++i)
+        for (unsigned int j = 0; j < 12; ++j)
+            StandartItemsInShops[i][j].Reset();
+
+    for (unsigned int i = 0; i < 53; ++i)
+        for (unsigned int j = 0; j < 12; ++j)
+            SpecialItemsInShops[i][j].Reset();
+
+    for (unsigned int i = 0; i < 32; ++i)
+        for (unsigned int j = 0; j < 12; ++j)
+            SpellBooksInGuilds[i][j].Reset();
+
+    field_1605C_set0_unused.fill(0);
+    pHireling1Name[0] = 0;
+    pHireling2Name[0] = 0;
+    armageddon_timer = 0;
+    armageddonDamage = 0;
+    pTurnBasedPlayerRecoveryTimes.fill(0);
+    InTheShopFlags.fill(0);
+    uFine = 0;
+    flt_TorchlightColorR = 0.0f;
+    flt_TorchlightColorG = 0.0f;
+    flt_TorchlightColorB = 0.0f;
+    TorchLightLastIntensity = 0.0f;
+
+    // players
     for (int y = 0; y < 4; y++) {
         auto player = &pPlayers[y];
 
@@ -139,6 +198,9 @@ void Party::Zero() {
         }
         player->vBeacons.clear();
     }
+
+    // hirelings
+    memset(&pHirelings, 0, sizeof(pHirelings));
 }
 
 // inlined
@@ -189,7 +251,7 @@ int Party::GetFirstCanAct() {  // added to fix some nzi problems entering shops
 //----- (0049370F) --------------------------------------------------------
 int Party::GetNextActiveCharacter() {
     int v2;         // eax@4
-    signed int v8;  // esi@23
+    signed int v8 {};  // esi@23
     int v12;        // [sp+Ch] [bp-4h]@1
 
     if (uActiveCharacter > 0 && this->pPlayers[uActiveCharacter - 1].CanAct() &&
@@ -531,7 +593,7 @@ void Party::CreateDefaultParty(bool bDebugGiveItems) {
 void Party::Reset() {
     Zero();
 
-    field_708 = 15;
+    field_708_set15_unused = 15;
     sEyelevel = 160;
     uNumGold = 200;
     uNumFoodRations = 7;
@@ -656,7 +718,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->sRotationZ = 0;
     this->sRotationY = 0;
     this->uFallSpeed = 0;
-    this->field_28 = 0;
+    this->field_28_set0_unused = 0;
     this->uDefaultPartyHeight = 120;
     this->radius = 37;
     this->y_rotation_granularity = 25;
@@ -664,8 +726,8 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->y_rotation_speed = 90;
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;
-    this->field_708 = 15;
-    this->field_0 = 25;
+    this->field_708_set15_unused = 15;
+    this->field_0_set25_unused = 25;
 
     for (int playerId = 0; playerId < 4; playerId++) {
         for (int buffId = 0; buffId < 24; buffId++) {
@@ -913,7 +975,7 @@ void RestAndHeal(int minutes) {
         pParty->pPlayers[i].uNumDivineInterventionCastsThisDay = 0;
         pParty->pPlayers[i].uNumArmageddonCasts = 0;
         pParty->pPlayers[i].uNumFireSpikeCasts = 0;
-        pParty->pPlayers[i].field_1B3B = 0;
+        pParty->pPlayers[i].field_1B3B_set0_unused = 0;
     }
 
     pParty->UpdatePlayersAndHirelingsEmotions();
@@ -1013,7 +1075,7 @@ void Party::PartyFindsGold(
         status = localization->FormatString(
             LSTR_FMT_YOU_FOUND_D_GOLD, amount);
     } else {
-        unsigned char buf[1024];
+        unsigned char buf[1024] {};
         hirelingCount = 0;
         for (int i = 0; i < 2; i++) {
             if (this->pHirelings[i].pName) {

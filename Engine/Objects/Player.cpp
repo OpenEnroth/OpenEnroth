@@ -376,9 +376,8 @@ int Player::GetTempleHealCostModifier(float price_multi) {
 //----- (004B8102) --------------------------------------------------------
 int Player::GetPriceSell(ItemGen itemx, float price_multiplier) {
     int uRealValue = itemx.GetValue();
-    signed int result =
-        (signed int)(((double)uRealValue / (price_multiplier + 2.0)) +
-                     uRealValue * GetMerchant() / 100);
+    int result = static_cast<int>((uRealValue / (price_multiplier + 2.0)) +
+                     uRealValue * GetMerchant() / 100.0);
 
     if (result > uRealValue) result = uRealValue;
 
@@ -1849,7 +1848,7 @@ int Player::ReceiveSpecialAttackEffect(
     int statcheckbonus;
     int luckstat = GetActualLuck();
     signed int itemstobreakcounter = 0;
-    char itemstobreaklist[140];
+    char itemstobreaklist[140] {};
     ItemGen* itemtocheck = nullptr;
     ItemGen* itemtobreak = nullptr;
     unsigned int itemtostealinvindex = 0;
@@ -3593,7 +3592,7 @@ void Player::Reset(PLAYER_CLASS_TYPE cls) {
     uIntelligenceBonus = 0;
     uMightBonus = 0;
     uLevel = 1;
-    uExperience = 251 + rand() % 100;
+    uExperience = 251ll + rand() % 100;
     uSkillPoints = 0;
     uBirthYear = 1147 - rand() % 6;
     pActiveSkills.fill(0);
@@ -3747,6 +3746,7 @@ void Player::IncreaseAttribute(int eAttribute) {
 
 //----- (0049070F) --------------------------------------------------------
 void Player::Zero() {
+    // this is also used during party rest and heal so only buffs and bonuses are reset
     this->sLevelModifier = 0;
     this->sACModifier = 0;
     this->uLuckBonus = 0;
@@ -3777,7 +3777,7 @@ void Player::Zero() {
     this->sResLightBonus = 0;
     this->sResDarkBonus = 0;
 
-    this->field_1A97 = 0;
+    this->field_1A97_set0_unused = 0;
     this->_ranged_dmg_bonus = 0;
     this->field_1A95 = 0;
     this->_ranged_atk_bonus = 0;
@@ -4548,7 +4548,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     );
                     break;
                 case 10:
-                    playerAffected->uExperience += 2500 * thisa;
+                    playerAffected->uExperience += 2500ll * thisa;
                     status = StringPrintf(
                         "+%u %s", 2500 * thisa,
                         localization->GetString(LSTR_EXPERIENCE)
@@ -5618,8 +5618,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
 //----- (new function) --------------------------------------------------------
 void Player::PlayAwardSound() {
     int playerIndex = GetPlayerIndex();
-    int v25 = 8 * playerIndex + 400;
-    HEXRAYS_LOBYTE(v25) = PID(OBJECT_Player, playerIndex - 112);
+    int v25 = PID(OBJECT_Player, playerIndex + 48);
     pAudioPlayer->PlaySound(SOUND_quest, v25, 0, -1, 0, 0);
 }
 
@@ -6908,7 +6907,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
     Actor* actorPtr;              // esi@3
     int spellId;                  // eax@38
     signed int recvdMagicDmg;     // eax@139
-    int v72[4];                   // [sp+30h] [bp-24h]@164
+    int v72[4] {};                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
 
@@ -7767,13 +7766,11 @@ void Player::_42ECB5_PlayerAttacksActor() {
         // attacking air
     }
 
-    if (!pParty->bTurnBasedModeOn &&
-        melee_attack) {  // wands, bows & lasers will add recovery while shooting
-                         // spell effect
+    if (!pParty->bTurnBasedModeOn && melee_attack) {
+        // wands, bows & lasers will add recovery while shooting spell effect
         int recovery = player->GetAttackRecoveryTime(false);
         if (recovery < 30) recovery = 30;
-        player->SetRecoveryTime(debug_non_combat_recovery_mul * (double)recovery *
-                                flt_debugrecmod3);
+        player->SetRecoveryTime(static_cast<int>(debug_non_combat_recovery_mul * recovery * flt_debugrecmod3));
     }
 
     int v34 = 0;
@@ -7786,7 +7783,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
         v34 = 7;
     } else {
         int main_hand_idx = player->pEquipment.uMainHand;
-        if (player->HasItemEquipped(EQUIP_TWO_HANDED) & main_hand_idx)
+        if (player->HasItemEquipped(EQUIP_TWO_HANDED) && main_hand_idx)
             v34 = player->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
 
         pTurnEngine->ApplyPlayerAction();
@@ -7883,8 +7880,8 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
     int pickedVariant;                   // esi@10
     CHARACTER_EXPRESSION_ID expression;  // ebx@17
     int pSoundID;                        // ecx@19
-    int speechVariantArray[5];           // [sp+Ch] [bp-1Ch]@7
-    int expressionVariantArray[5];
+    int speechVariantArray[5] {};           // [sp+Ch] [bp-1Ch]@7
+    int expressionVariantArray[5] {};
     unsigned int expressionDuration = 0;
 
     unsigned int pickedSoundID = 0;
@@ -8158,7 +8155,7 @@ Player::Player() {
     _ranged_atk_bonus = 0;
     field_1A95 = 0;
     _ranged_dmg_bonus = 0;
-    field_1A97 = 0;
+    field_1A97_set0_unused = 0;
 
     expression = CHARACTER_EXPRESSION_INVALID;
     uExpressionTimePassed = 0;

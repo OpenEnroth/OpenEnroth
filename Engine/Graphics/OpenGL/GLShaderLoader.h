@@ -72,7 +72,7 @@ class GLShader {
             }
         }
         catch (std::ifstream::failure &e) {
-            logger->Warning("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ");
+            logger->Warning("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n%s\n", e.what());
             return false;
         }
 

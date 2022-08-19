@@ -13,6 +13,7 @@ uniform mat4 projection;
 
 void main() {
     gl_Position = projection * view * vec4(vaPos, 1.0);
-    colour = vaCol;
+    float opacity = smoothstep(1.0 , 0.9999, vaPos.z);
+    colour = vec4(vaCol.r, vaCol.g, vaCol.b, opacity);
     texuv = vaTexUV;
 } 

@@ -2177,7 +2177,7 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
     unsigned __int8 *v20;  // ebx@32
     int v21;               // ecx@34
     int v29;               // eax@68
-    __int16 v55[56];       // [sp+10h] [bp-128h]@34
+    __int16 v55[56] {};       // [sp+10h] [bp-128h]@34
     SummonedItem v56;      // [sp+80h] [bp-B8h]@107
     int v63;               // [sp+12Ch] [bp-Ch]@32
 

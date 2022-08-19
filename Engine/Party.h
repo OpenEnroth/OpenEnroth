@@ -269,7 +269,7 @@ struct Party {
     bool IsPartyEvil();
     bool IsPartyGood();
     size_t ImmolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
-    int field_0;
+    int field_0_set25_unused;
     unsigned int uPartyHeight;
     unsigned int uDefaultPartyHeight;
     int sEyelevel;
@@ -279,7 +279,7 @@ struct Party {
     unsigned int uWalkSpeed;
     int y_rotation_speed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
-    int field_28;
+    int field_28_set0_unused;
     GameTime playing_time;  // unsigned __int64 uTimePlayed;
     GameTime last_regenerated;
     PartyTimeStruct PartyTimes;
@@ -290,20 +290,20 @@ struct Party {
     int sPrevRotationZ;
     int sPrevRotationY;
     int sPrevEyelevel;
-    int field_6E0;
-    int field_6E4;
+    int field_6E0_set0_unused; // party old x/y ?
+    int field_6E4_set0_unused; // party old x/y ?
     int uFallSpeed; // party vertical speed, negative => falling, positive => jumping
-    int field_6EC;
-    int field_6F0;
+    int field_6EC_set0_unused;
+    int sPartyPrevZ;  // party old z??
     int floor_face_pid;  // face we are standing at
     int walk_sound_timer;
     int _6FC_water_lava_timer;
     int uFallStartZ;
     unsigned int bFlying;
-    char field_708;
+    char field_708_set15_unused;
     unsigned __int8 hirelingScrollPosition;
     char cNonHireFollowers;  // number of non hireling party guests
-    char field_70B;
+    char field_70B_set0_unused;
     unsigned int uCurrentYear;
     unsigned int uCurrentMonth;
     unsigned int uCurrentMonthWeek;
@@ -312,15 +312,15 @@ struct Party {
     unsigned int uCurrentMinute;
     unsigned int uCurrentTimeSecond;
     unsigned int uNumFoodRations;
-    int field_72C;
-    int field_730;
+    int field_72C_set0_unused;
+    int field_730_set0_unused;
     unsigned int uNumGold;
     unsigned int uNumGoldInBank;
     unsigned int uNumDeaths;
-    int field_740;
+    int field_740_set0_unused;
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
-    int field_74C;
+    int field_74C_set0_unused;
     std::array<__int16, 5> monster_id_for_hunting;
     std::array<__int16, 5> monster_for_hunting_killed;
     unsigned char days_played_without_rest;
@@ -332,14 +332,14 @@ struct Party {
     char uNumArenaKnightWins;
     char uNumArenaLordWins;
     std::array<char, 29> pIsArtifactFound;  // 7ba
-    std::array<char, 39> field_7d7;
+    std::array<char, 39> field_7d7_set0_unused;
     unsigned char _autonote_bits[26];
-    std::array<char, 60> field_818;
-    std::array<char, 32> field_854;
+    std::array<char, 60> field_818_set0_unused;
+    std::array<char, 32> random_order_num_unused;
     int uNumArcomageWins;
     int uNumArcomageLoses;
     bool bTurnBasedModeOn;
-    int field_880;
+    int field_880_set0_unused;
     int uFlags2;
     PartyAlignment alignment;
     std::array<SpellBuff, 20> pPartyBuffs;
@@ -350,7 +350,7 @@ struct Party {
     std::array<std::array<ItemGen, 12>, 53> StandartItemsInShops;
     std::array<std::array<ItemGen, 12>, 53> SpecialItemsInShops;  // D0EC
     std::array<std::array<ItemGen, 12>, 32> SpellBooksInGuilds;
-    std::array<char, 24> field_1605C;
+    std::array<char, 24> field_1605C_set0_unused;
     char pHireling1Name[100];
     char pHireling2Name[100];
     int armageddon_timer;

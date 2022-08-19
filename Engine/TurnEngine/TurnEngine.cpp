@@ -110,8 +110,8 @@ void stru262_TurnBased::Start() {
     AIDirection v30;  // [sp+Ch] [bp-68h]@10
     AIDirection v31;  // [sp+28h] [bp-4Ch]@10
     AIDirection a3;   // [sp+44h] [bp-30h]@10
-    int activ_players[4];
-    int players_recovery_time[4];
+    int activ_players[4] {};
+    int players_recovery_time[4] {};
     int a_players_count;
     int i, j;
     int temp;

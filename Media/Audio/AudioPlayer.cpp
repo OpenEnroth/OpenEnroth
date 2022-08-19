@@ -438,12 +438,12 @@ void AudioPlayer::LoadAudioSnd() {
         return;
     }
 
-    uint32_t uNumSoundHeaders;
+    uint32_t uNumSoundHeaders {};
     fAudioSnd.read((char*)&uNumSoundHeaders, 4);
     for (uint32_t i = 0; i < uNumSoundHeaders; i++) {
-        SoundHeader_mm7 header_mm7;
+        SoundHeader_mm7 header_mm7 {};
         fAudioSnd.read((char*)&header_mm7, sizeof(SoundHeader_mm7));
-        SoundHeader header;
+        SoundHeader header {};
         header.uFileOffset = header_mm7.uFileOffset;
         header.uCompressedSize = header_mm7.uCompressedSize;
         header.uDecompressedSize = header_mm7.uDecompressedSize;

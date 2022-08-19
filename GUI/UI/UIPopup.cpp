@@ -1044,8 +1044,8 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 //----- (00417BB5) --------------------------------------------------------
 std::string CharacterUI_GetSkillDescText(unsigned int uPlayerID,
                                     PLAYER_SKILL_TYPE uPlayerSkillType) {
-    char a2[1200];     // [sp+Ch] [bp-538h]@7
-    char Source[120];  // [sp+4BCh] [bp-88h]@7
+    char a2[1200] {};     // [sp+Ch] [bp-538h]@7
+    char Source[120] {};  // [sp+4BCh] [bp-88h]@7
     int v35;           // [sp+53Ch] [bp-8h]@1
 
     v35 = pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL));
@@ -2238,6 +2238,9 @@ unsigned int GetSpellColor(signed int a1) {
         return Color16(192, 192, 240);
     else
         __debugbreak();
+
+    logger->Warning("No color returned - GetSpellColor!");
+    return 0;
 }
 
 //----- (004B46F8) --------------------------------------------------------

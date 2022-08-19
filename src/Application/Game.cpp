@@ -360,7 +360,7 @@ void Game_StartHirelingDialogue(unsigned int hireling_id) {
     pMessageQueue_50CBD0->Flush();
 
     uint hireling_slot = 0;
-    char buf[1024];
+    char buf[1024] {};
     for (uint i = 0; i < 2; ++i) {
         if (pParty->pHirelings[i].pName) buf[hireling_slot++] = i;
     }
@@ -432,11 +432,11 @@ bool IsWindowSwitchable() {
 }
 
 void Game::EventLoop() {
-    unsigned int v2;            // edx@7
+    unsigned int v2 {};            // edx@7
     GUIWindow *pWindow2;        // ecx@248
     int v37;                    // eax@341
     int v38;                    // eax@358
-    int v42;                    // eax@396
+    int v42 {};                    // eax@396
     signed int v44;             // eax@398
     int v45;                    // edx@398
     signed int v46;             // ecx@398
@@ -494,8 +494,7 @@ void Game::EventLoop() {
                         //    unsigned int v125; // [sp-20h] [bp-61Ch]@711
     int v127;  // [sp-1Ch] [bp-618h]@107
                //    unsigned int v128; // [sp-1Ch] [bp-618h]@711
-    GUIButton
-        *pButton2;  // [sp-4h] [bp-600h]@59
+    // GUIButton *pButton2;  // [sp-4h] [bp-600h]@59
                     //    KeyToggleType pKeyToggleType; // [sp+0h] [bp-5FCh]@287
     Player *pPlayer7;             // [sp+14h] [bp-5E8h]@373
     Player *pPlayer8;             // [sp+14h] [bp-5E8h]@377
@@ -511,11 +510,11 @@ void Game::EventLoop() {
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
                                   //    char v197; // [sp+2Bh] [bp-5D1h]@101
     enum UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
-    unsigned int v199;            // [sp+30h] [bp-5CCh]@7
+    unsigned int v199 {};            // [sp+30h] [bp-5CCh]@7
     char *v200 = nullptr;                   // [sp+34h] [bp-5C8h]@518
     // int v213;                     // [sp+98h] [bp-564h]@385
     char pOut[32];                // [sp+BCh] [bp-540h]@370
-    int v217[9];                  // [sp+158h] [bp-4A4h]@652
+    int v217[9] {};                  // [sp+158h] [bp-4A4h]@652
     // char Str2[128];               // [sp+238h] [bp-3C4h]@527
     Actor actor;                  // [sp+2B8h] [bp-344h]@4
     int currHour;
@@ -1087,8 +1086,8 @@ void Game::EventLoop() {
                         DialogueEnding();
                         current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
                     } else {
-                        pParty->field_6E4 = 0;
-                        pParty->field_6E0 = 0;
+                        pParty->field_6E4_set0_unused = 0;
+                        pParty->field_6E0_set0_unused = 0;
                         CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
                         DialogueEnding();
                         pEventTimer->Pause();
@@ -2931,8 +2930,8 @@ void Game::GameLoop() {
                 pParty->uFallStartZ = pParty->vPosition.z;
                 pParty->sRotationY = 0;
                 pParty->uFallSpeed = 0;
-                pParty->field_6E4 = 0;
-                pParty->field_6E0 = 0;
+                pParty->field_6E4_set0_unused = 0;
+                pParty->field_6E0_set0_unused = 0;
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;

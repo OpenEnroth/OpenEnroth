@@ -494,7 +494,7 @@ struct Player {
     char _ranged_atk_bonus;
     char field_1A95;
     char _ranged_dmg_bonus;
-    char field_1A97;
+    char field_1A97_set0_unused;
     char uFullHealthBonus;
     char _health_related;
     char uFullManaBonus;
@@ -502,14 +502,14 @@ struct Player {
     CHARACTER_EXPRESSION_ID expression;
     unsigned __int16 uExpressionTimePassed;
     unsigned __int16 uExpressionTimeLength;
-    __int16 field_1AA2;
+    __int16 uExpressionImageIndex;
     int _expression21_animtime;
     int _expression21_frameset;
     std::vector<LloydBeacon> vBeacons;
     char uNumDivineInterventionCastsThisDay;
     char uNumArmageddonCasts;
     char uNumFireSpikeCasts;
-    char field_1B3B;
+    char field_1B3B_set0_unused;
 };
 
 void DamagePlayerFromMonster(unsigned int uObjID, int a2, Vec3_int_* pPos, signed int a4);
