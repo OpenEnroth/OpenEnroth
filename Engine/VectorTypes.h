@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cmath>
 #include <type_traits>
+#include <algorithm>
 
 #include "OurMath.h"
 
@@ -258,7 +259,6 @@ struct Plane_float_ {
     float SignedDistanceTo(const Vec3_float_ &point) {
         return this->dist + this->vNormal.x * point.x + this->vNormal.y * point.y + this->vNormal.z * point.z;
     }
-
 };
 #pragma pack(pop)
 

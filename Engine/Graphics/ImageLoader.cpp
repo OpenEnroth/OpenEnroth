@@ -1,9 +1,7 @@
-#include "Engine/Log.h"
+#include "ImageLoader.h"
 
 #include <unordered_set>
 #include <string_view>
-
-#include "Engine/ZlibWrapper.h"
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/HWLContainer.h"
@@ -12,6 +10,8 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Log.h"
+#include "Engine/ZlibWrapper.h"
 
 #include "Platform/Api.h"
 
