@@ -865,8 +865,8 @@ uint8_t SpriteObject::GetParticleTrailColorB() {
 void SpriteObject::OnInteraction(unsigned int uLayingItemID) {
     pSpriteObjects[uLayingItemID].uObjectDescID = 0;
     if (pParty->bTurnBasedModeOn) {
-        if (pSpriteObjects[uLayingItemID].uAttributes & 0x4) {
-            pSpriteObjects[uLayingItemID].uAttributes &= ~0x4;
+        if (pSpriteObjects[uLayingItemID].uAttributes & SPRITE_HALT_TURN_BASED) {
+            pSpriteObjects[uLayingItemID].uAttributes &= ~SPRITE_HALT_TURN_BASED;
             --pTurnEngine->pending_actions;
         }
     }
@@ -953,7 +953,7 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     pSpellObject.uSpriteFrameID = 0;
     pSpellObject.spell_caster_pid = 0;
     pSpellObject.spell_target_pid = 0;
-    if (!(pSpellObject.uAttributes & 0x10)) {
+    if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
         if (pItemsTable->uAllItemsCount) {
             for (uint i = 1; i < pItemsTable->uAllItemsCount; ++i) {
                 if (pItemsTable->pItems[i].uSpriteID == sprite)
@@ -1034,9 +1034,9 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             return 1;
     }
     if (pParty->bTurnBasedModeOn) {
-        if (pSpriteObjects[uLayingItemID].uAttributes & 4) {
+        if (pSpriteObjects[uLayingItemID].uAttributes & SPRITE_HALT_TURN_BASED) {
             --pTurnEngine->pending_actions;
-            pSpriteObjects[uLayingItemID].uAttributes &= 0xFFFB;  // ~0x00000004
+            pSpriteObjects[uLayingItemID].uAttributes &= ~SPRITE_HALT_TURN_BASED;
         }
     }
     if (PID_TYPE(a2) == OBJECT_BModel &&

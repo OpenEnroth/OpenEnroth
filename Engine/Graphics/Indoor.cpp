@@ -992,7 +992,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
 
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & 0x0100)) {
+        if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
             pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
             pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
         }
@@ -2432,7 +2432,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
-                        pSpriteObjects[i].uAttributes |= 1;
+                        pSpriteObjects[i].uAttributes |= SPRITE_VISIBLE;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
                         // if ( render->pRenderD3D )

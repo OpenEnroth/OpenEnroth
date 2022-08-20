@@ -1421,7 +1421,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
     if (!pSpriteObjects.empty()) {
         for (int i = 0; i < (signed int)pSpriteObjects.size(); ++i) {
             if (pSpriteObjects[i].uObjectDescID) {
-                if (!(pSpriteObjects[i].uAttributes & 8) && !pSpriteObjects[i].IsUnpickable()) {
+                if (!(pSpriteObjects[i].uAttributes & SPRITE_DROPPED_BY_PLAYER) && !pSpriteObjects[i].IsUnpickable()) {
                     bool bOnWater = false;
                     pSpriteObjects[i].vPosition.z =
                         GetTerrainHeightsAroundParty2(

@@ -484,7 +484,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_sprites.vPosition.x = fromx;
             spell_sprites.vPosition.y = fromy;
             spell_sprites.vPosition.z = fromz;
-            spell_sprites.uAttributes = 16;
+            spell_sprites.uAttributes = SPRITE_IGNORE_RANGE;
             spell_sprites.uSectorID = pIndoor->GetSector(fromx, fromy, fromz);
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
             spell_sprites.uSpriteFrameID = 0;
