@@ -258,9 +258,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
                 memcpy(&pSpellSprite.containing_item, &pPlayer->pInventoryItemList[pPlayer->pEquipment.uBow - 1], sizeof(pSpellSprite.containing_item));
-                pSpellSprite.uAttributes = 0x100;
+                pSpellSprite.uAttributes |= SPRITE_MISSILE;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes = 0x104;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 for (int i = 0; i < amount; ++i) {
                     if (i)
@@ -297,9 +297,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 // pParty->pPlayers[pCastSpell->uPlayerID].pEquipment.uMainHand +
                 // 5], );
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
-                pSpellSprite.uAttributes |= 0x100;
+                pSpellSprite.uAttributes |= SPRITE_MISSILE;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed,
                     pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
@@ -379,7 +379,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.uFacing = (short)target_direction.uYawAngle;
                 pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY + 10, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
@@ -485,7 +485,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_target_pid = spell_targeted_at;
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uFacing = target_direction.uYawAngle;
-                pSpellSprite.uAttributes |= 0x80u;
+                pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 int obj_id = pSpellSprite.Create(0, 0, 0, 0);
                 if (!MonsterStats::BelongsToSupertype(pActors[PID_ID(spell_targeted_at)].pMonsterInfo.uID, MONSTER_SUPERTYPE_UNDEAD)) {
@@ -533,9 +533,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.uFacing = target_direction.uYawAngle;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pCastSpell->uSpellID == SPELL_AIR_LIGHNING_BOLT)
-                    pSpellSprite.uAttributes |= 0x40;
+                    pSpellSprite.uAttributes |= SPRITE_SKIP_A_FRAME;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
@@ -566,7 +566,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.uFacing = target_direction.uYawAngle;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
@@ -601,7 +601,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
                     if (pParty->bTurnBasedModeOn) {
-                        pSpellSprite.uAttributes |= 4;
+                        pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
@@ -694,7 +694,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
-                    pSpellSprite.uAttributes |= 0x80u;
+                    pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
@@ -721,7 +721,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_id = SPELL_FIRE_PROTECTION_FROM_FIRE;
                 pSpellSprite.spell_level = 300 * spell_level;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
@@ -1135,7 +1135,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         pSpellSprite.uFacing = v687;
                         pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                         if (pParty->bTurnBasedModeOn) {
-                            pSpellSprite.uAttributes = 4;
+                            pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                         }
                         if (pSpellSprite.Create(v687, HEXRAYS_SHIDWORD(v687), pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed, 0) != -1 && pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
@@ -1279,7 +1279,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 spell_spray_angle_start = (int)_v726 / -2;
                 spell_spray_angle_end = (int)_v726 / 2;
@@ -1443,7 +1443,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.uFacing = v685;
                     pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                     if (pParty->bTurnBasedModeOn) {
-                        pSpellSprite.uAttributes = 4;
+                        pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     if (pSpellSprite.Create(v685, HEXRAYS_SHIDWORD(v685),
                                             pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed, 0) != -1 &&
@@ -1534,7 +1534,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.uFacing = target_direction.uYawAngle;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
                     if (pParty->bTurnBasedModeOn) {
-                        pSpellSprite.uAttributes |= 4;
+                        pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
@@ -1555,7 +1555,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
                     if (pParty->bTurnBasedModeOn) {
-                        pSpellSprite.uAttributes |= 4;
+                        pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     spell_spray_angle_start = _v733 / -2;
                     spell_spray_angle_end = _v733 / 2;
@@ -1908,7 +1908,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.uFacing = pParty->sRotationZ;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(pParty->sRotationZ, pParty->sRotationY, v659, pCastSpell->uPlayerID + 1) != -1 && pParty->bTurnBasedModeOn) {
@@ -1944,7 +1944,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.uFacing = (short)pParty->sRotationZ;
                 pSpellSprite.uSoundID = (short)pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes = 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 v659 = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(pParty->sRotationZ, TrigLUT->uIntegerHalfPi / 2, v659, 0) != -1 && pParty->bTurnBasedModeOn) {
@@ -2480,7 +2480,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
-                    pSpellSprite.uAttributes |= 0x80;
+                    pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
@@ -2545,7 +2545,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
-                    pSpellSprite.uAttributes |= 0x80;
+                    pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
@@ -2596,7 +2596,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
-                    pSpellSprite.uAttributes |= 0x80;
+                    pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }
@@ -3475,7 +3475,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes |= 4;
+                    pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                 }
                 spell_spray_angle_start = (signed int)_v726 / -2;
                 spell_spray_angle_end = (signed int)_v726 / 2;
@@ -3548,7 +3548,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.field_60_distance_related_prolly_lod =
                         target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
-                    pSpellSprite.uAttributes |= 0x80;
+                    pSpellSprite.uAttributes |= SPRITE_ATTACHED_TO_HEAD;
                     pSpellSprite.uSoundID = pCastSpell->sound_id;
                     pSpellSprite.Create(0, 0, 0, pCastSpell->uPlayerID + 1);
                 }

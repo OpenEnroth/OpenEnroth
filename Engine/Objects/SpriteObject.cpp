@@ -1745,8 +1745,8 @@ void UpdateObjects() {
     int v19;  // [sp+8h] [bp-Ch]@27
 
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].uAttributes & OBJECT_40) {
-            pSpriteObjects[i].uAttributes &= ~OBJECT_40;
+        if (pSpriteObjects[i].uAttributes & SPRITE_SKIP_A_FRAME) {
+            pSpriteObjects[i].uAttributes &= ~SPRITE_SKIP_A_FRAME;
         } else {
             ObjectDesc *object =
                 &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
@@ -1776,7 +1776,7 @@ void UpdateObjects() {
                         continue;
                     }
                     v11 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
+                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY)
                         v11 = pSpriteObjects[i].field_20;
                 }
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
