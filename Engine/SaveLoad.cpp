@@ -416,19 +416,19 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
 
         char *data_write_pos = uncompressed_buff;
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            pIndoor->dlv.uNumFacesInBModels = pIndoor->uNumFaces;
+            pIndoor->dlv.uNumFacesInBModels = pIndoor->pFaces.size();
             pIndoor->dlv.uNumBModels = 0;
-            pIndoor->dlv.uNumDecorations = uNumLevelDecorations;
+            pIndoor->dlv.uNumDecorations = pLevelDecorations.size();
             memcpy(data_write_pos, &pIndoor->dlv, sizeof(DDM_DLV_Header));  // 0x28
             data_write_pos += sizeof(DDM_DLV_Header);
-            memcpy(data_write_pos, pIndoor->_visible_outlines, 0x36B);
+            memcpy(data_write_pos, &pIndoor->_visible_outlines, 0x36B);
             data_write_pos += 875;
-            for (int i = 0; i < (signed int)pIndoor->uNumFaces; ++i) {
+            for (int i = 0; i < (signed int)pIndoor->pFaces.size(); ++i) {
                 memcpy(data_write_pos, &pIndoor->pFaces[i].uAttributes, 4);
                 data_write_pos += 4;
             }
 
-            for (int i = 0; i < (signed int)uNumLevelDecorations; ++i) {
+            for (int i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
                 memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
                 data_write_pos += 2;
             }
@@ -447,6 +447,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             free(tmp_actor);
             data_write_pos += uNumActors * sizeof(Actor_MM7);
 
+            uint32_t uNumSpriteObjects = pSpriteObjects.size();
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
             memcpy(data_write_pos, pSpriteObjects.data(), 112 * uNumSpriteObjects);
@@ -457,14 +458,14 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             // memcpy(data_write_pos, pIndoor->pDoors, sizeof(BLVDoor) * 200);
             // data_write_pos += 16000;
             BLVDoor_MM7* tmp_door = (BLVDoor_MM7*)malloc(sizeof(BLVDoor_MM7));
-            for (int i = 0; i < pIndoor->uNumDoors; ++i) {
+            for (int i = 0; i < pIndoor->pDoors.size(); ++i) {
                 tmp_door->Serialize(&pIndoor->pDoors[i]);
                 memcpy(data_write_pos + i * sizeof(BLVDoor_MM7), tmp_door, sizeof(BLVDoor_MM7));
             }
             free(tmp_door);
-            data_write_pos += pIndoor->uNumDoors * sizeof(BLVDoor_MM7);
+            data_write_pos += pIndoor->pDoors.size() * sizeof(BLVDoor_MM7);
 
-            memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata, pIndoor->blv.uDoors_ddata_Size);
+            memcpy(data_write_pos, pIndoor->ptr_0002B4_doors_ddata.data(), pIndoor->blv.uDoors_ddata_Size);
             data_write_pos += pIndoor->blv.uDoors_ddata_Size;
             memcpy(data_write_pos, &stru_5E4C90_MapPersistVars, 0xC8);
             data_write_pos += 200;
@@ -477,7 +478,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 pOutdoor->ddm.uNumFacesInBModels += model.pFaces.size();
             }
             pOutdoor->ddm.uNumBModels = pOutdoor->pBModels.size();
-            pOutdoor->ddm.uNumDecorations = uNumLevelDecorations;
+            pOutdoor->ddm.uNumDecorations = pLevelDecorations.size();
             memcpy(data_write_pos, &pOutdoor->ddm, sizeof(DDM_DLV_Header));  // 0x28
             data_write_pos += sizeof(DDM_DLV_Header);
             memcpy(data_write_pos, pOutdoor->uFullyRevealedCellOnMap, 0x3C8);
@@ -491,7 +492,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 }
             }
 
-            for (size_t i = 0; i < uNumLevelDecorations; ++i) {
+            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
                 data_write_pos += 2;
             }
@@ -509,9 +510,10 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             free(tmp_actor);
             data_write_pos += uNumActors * sizeof(Actor_MM7);
 
+            uint32_t uNumSpriteObjects = pSpriteObjects.size();
             memcpy(data_write_pos, &uNumSpriteObjects, 4);
             data_write_pos += 4;
-            memcpy(data_write_pos, &pSpriteObjects,
+            memcpy(data_write_pos, pSpriteObjects.data(),
                    uNumSpriteObjects * sizeof(SpriteObject));
             data_write_pos += uNumSpriteObjects * sizeof(SpriteObject);
 

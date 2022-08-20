@@ -1,6 +1,7 @@
 #include "Engine/Graphics/Outdoor.h"
 
 #include <algorithm>
+#include <memory>
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
@@ -24,6 +25,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/MemoryInput.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
 #include "Engine/Tables/TileFrameTable.h"
@@ -39,6 +41,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Platform/Api.h"
+
+#include "src/tools/FreeDeleter.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -529,15 +533,6 @@ void OutdoorLocationTerrain::_47C7A9() {
 
 //----- (0047C7C2) --------------------------------------------------------
 void OutdoorLocationTerrain::Release() {  // очистить локацию
-    free(this->pHeightmap);
-    pHeightmap = nullptr;
-    free(pTilemap);
-    pTilemap = nullptr;
-    free(pAttributemap);
-    pAttributemap = nullptr;
-    free(pDmap);
-    pDmap = nullptr;
-
     _47C7A9();
 }
 
@@ -631,7 +626,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         result <= 32768) {
                         // v15 = pOutLocTerrain->field_10;
                         // v55 = pOutLocTerrain->field_10;
-                        pMapHeight = this->pHeightmap;
+                        pMapHeight = this->pHeightmap.data();
                         v17 = (char *)(&pMapHeight[v13 * this->field_10] + v14);
                         v18 = -v13;
                         v19 = (64 - v13) << 9;
@@ -665,7 +660,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         if (v31 > 31.0) v31 = 31.0;
                         v44 = 2 * (v14 + v13 * this->field_10);
                         // pOutLocTerrain = pOutLocTerrain2;
-                        *((char *)this->pDmap + v44 + 1) = (signed __int64)v31;
+                        *((char *)this->pDmap.data() + v44 + 1) = (signed __int64)v31;
 
                         v32 = v49 - (v49 - 512);
                         v33 = (double)-((v42 - v40) * (v19 - v41));
@@ -685,7 +680,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         if (v38 < 0.0) v38 = 0.0;
                         if (v38 > 31.0) v38 = 31.0;
                         // v13 = v48;
-                        *((char *)this->pDmap + v44) = (signed __int64)v38;
+                        *((char *)this->pDmap.data() + v44) = (signed __int64)v38;
                         // v14 = v50;
                         result = v49;
                     }
@@ -795,10 +790,10 @@ int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
 
 //----- (0047CCE2) --------------------------------------------------------
 bool OutdoorLocationTerrain::ZeroLandscape() {
-    memset(this->pHeightmap, 0, 0x4000u);
-    memset(this->pTilemap, 90, 0x4000u);
-    memset(this->pAttributemap, 0, 0x4000u);
-    memset(this->pDmap, 0, 0x8000u);
+    this->pHeightmap.fill(0);
+    this->pTilemap.fill(90);
+    this->pAttributemap.fill(0);
+    this->pDmap.fill({0, 0});
     this->field_12 = 128;
     this->field_10 = 128;
     this->field_16 = 7;
@@ -810,14 +805,7 @@ bool OutdoorLocationTerrain::ZeroLandscape() {
 
 //----- (0047CD44) --------------------------------------------------------
 bool OutdoorLocationTerrain::Initialize() {
-    pHeightmap = (unsigned __int8 *)malloc(0x4000);  // height map
-    pTilemap = (unsigned __int8 *)malloc(0x4000);    // tile map
-    pAttributemap = (unsigned __int8 *)malloc(0x4000);  // карта атрибутов
-    pDmap = (struct DMap *)malloc(0x8000);
-    if (pHeightmap && pTilemap && pAttributemap && pDmap)
-        return true;
-    else
-        return false;
+    return true; // TODO: drop this function
 }
 
 //----- (0047CDE2) --------------------------------------------------------
@@ -832,35 +820,13 @@ void OutdoorLocation::CreateDebugLocation() {
     this->pTileTypes[3].tileset = Tileset_RoadGrassCobble;
     this->LoadTileGroupIds();
     this->LoadRoadTileset();
-    free(this->pSpawnPoints);
-    this->pSpawnPoints = 0;
+    this->pSpawnPoints.clear();
     this->pTerrain.Initialize();
     this->pTerrain.ZeroLandscape();
     this->pTerrain.FillDMap(0, 0, 128, 128);
 
-    free(this->pCmap);
-    this->pCmap = malloc(0x8000);
-
-    free(this->pOMAP);
-    this->pOMAP = (unsigned int *)malloc(0x10000);
-    if (this->pOMAP == nullptr) {
-        log->Warning("Malloc error - pOMAP");
-        __debugbreak();
-    } else {
-        memset(this->pOMAP, 0, 0x10000);
-    }
-
-    this->numFaceIDListElems = 0;
-
-    free(this->pFaceIDLIST);
-    this->pFaceIDLIST = (unsigned __int16 *)malloc(2);
-    if (this->pFaceIDLIST == nullptr) {
-        logger->Warning("Malloc fail - pfaceidlist");
-        __debugbreak();
-    } else {
-        this->pFaceIDLIST[0] = 0;
-    }
-
+    this->pOMAP.fill(0);
+    this->pFaceIDLIST.clear();
     this->sky_texture_filename = pDefaultSkyTexture.data();
     this->sky_texture = assets->GetBitmap(this->sky_texture_filename);
 
@@ -883,20 +849,12 @@ void OutdoorLocation::Release() {
         pBModels.pop_back();
     }
 
-    free(pSpawnPoints);
-    pSpawnPoints = nullptr;
-    uNumSpawnPoints = 0;
+    pSpawnPoints.clear();
 
     pTerrain.Release();
 
-    free(pCmap);
-    pCmap = nullptr;
-    free(pOMAP);
-    pOMAP = nullptr;
-    free(pFaceIDLIST);
-    pFaceIDLIST = nullptr;
-    free(pTerrainNormals);
-    pTerrainNormals = nullptr;
+    pFaceIDLIST.clear();
+    pTerrainNormals.clear();
 
     // free shader data for outdoor location
     render->ReleaseTerrain();
@@ -924,7 +882,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     _6807E0_num_decorations_with_sounds_6807B8 = 0;
 
-    assert(sizeof(BSPModelData) == 188);
+    static_assert(sizeof(BSPModelData) == 188);
 
     if (!pGames_LOD->DoesContainerExist(filename)) {
         Error("Unable to find %s in Games.LOD", filename.c_str());
@@ -933,34 +891,22 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     std::string minimap_filename = filename.substr(0, filename.length() - 4);
     viewparams->location_minimap = assets->GetImage_Solid(minimap_filename);
 
-    auto odm_filename = std::string(filename);
+    std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
-    void *pSrcMem = pGames_LOD->LoadCompressed(odm_filename);
-    uint8_t *pSrc = (uint8_t*)pSrcMem;
+    size_t srcSize;
+    std::unique_ptr<void, FreeDeleter> pSrcMem;
+    pSrcMem.reset(pGames_LOD->LoadCompressed(odm_filename, &srcSize));
+    MemoryInput stream(pSrcMem.get(), srcSize);
 
-#pragma pack(push, 1)
-    struct ODMInfo {
-        char level_filename[32];
-        char location_filename[32];
-        char location_file_description[32];
-        char sky_texture_filename[32];
-        char ground_tileset[32];
-    };
-#pragma pack(pop)
+    stream.ReadSizedString(&this->level_filename, 32);
+    stream.ReadSizedString(&this->location_filename, 32);
+    stream.ReadSizedString(&this->location_file_description, 32);
+    stream.ReadSizedString(&this->sky_texture_filename, 32);
+    stream.ReadSizedString(&this->ground_tileset, 32);
 
-    static_assert(sizeof(ODMInfo) == 160, "Wrong type size");
-    ODMInfo *odm_info = (ODMInfo*)pSrc;
-    this->level_filename = std::string(odm_info->level_filename, 32);
-    this->location_filename = std::string(odm_info->level_filename, 32);
-    this->location_file_description = std::string(odm_info->location_file_description, 32);
-    this->sky_texture_filename = std::string(odm_info->sky_texture_filename, 32);
-    this->ground_tileset = std::string(odm_info->ground_tileset, 32);
-    pSrc += sizeof(ODMInfo);
-
-    static_assert(sizeof(OutdoorLocationTileType) == 4, "Wrong type size");
-    memcpy(pTileTypes, pSrc, sizeof(pTileTypes));
-    pSrc += sizeof(pTileTypes);
+    static_assert(sizeof(pTileTypes) == 16, "Wrong type size");
+    stream.ReadRaw(&pTileTypes);
 
     LoadTileGroupIds();
     LoadRoadTileset();
@@ -970,107 +916,65 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     // *******************Terrain**************************//
     pTerrain.Initialize();
-    memcpy(pTerrain.pHeightmap, pSrc, 0x4000);  // карта высот
-    pSrc += 0x4000;
+    stream.ReadRaw(&pTerrain.pHeightmap);  // карта высот
+    stream.ReadRaw(&pTerrain.pTilemap);  // карта тайлов
+    stream.ReadRaw(&pTerrain.pAttributemap);  // карта аттрибутов
 
-    memcpy(pTerrain.pTilemap, pSrc, 0x4000);  // карта тайлов
-    pSrc += 0x4000;
-
-    memcpy(pTerrain.pAttributemap, pSrc, 0x4000);  // карта аттрибутов
-    pSrc += 0x4000;
-
-    free(pCmap);
-    pCmap = malloc(0x8000);
     pTerrain.FillDMap(0, 0, 128, 128);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    memcpy(&uNumTerrainNormals, pSrc, 4);  // количество нормалей
-    pSrc += 4;
-    memcpy(pTerrainSomeOtherData.data(), pSrc, 0x20000);
-    pSrc += 0x20000;
-
-    memcpy(pTerrainNormalIndices.data(), pSrc, 0x10000);  // индексы нормалей
-    pSrc += 0x10000;
-
-    pTerrainNormals = (Vec3_float_ *)malloc(
-        sizeof(Vec3_float_) * uNumTerrainNormals);  // карта нормалей
-    memcpy(pTerrainNormals, pSrc, 12 * uNumTerrainNormals);
-    pSrc += 12 * uNumTerrainNormals;
+    uint32_t uNumTerrainNormals;
+    stream.ReadRaw(&uNumTerrainNormals);  // количество нормалей
+    stream.ReadRaw(&pTerrainSomeOtherData);
+    stream.ReadRaw(&pTerrainNormalIndices);  // индексы нормалей
+    stream.ReadSizedVector(&pTerrainNormals, uNumTerrainNormals);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ************BModels************************//
-    pSrc = pBModels.Load(pSrc);
+    stream.Skip(pBModels.Load(stream.Ptr()));
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ******************Decorations**********************//
-    memcpy(&uNumLevelDecorations, pSrc, 4);
-    // uSourceLen = (char *)uSourceLen + 4;
-    if (uNumLevelDecorations > 3000) logger->Warning("Can't load file! Too many decorations");
-
-    assert(sizeof(LevelDecoration) == 32);
-    memcpy(pLevelDecorations.data(), pSrc + 4,
-           uNumLevelDecorations * sizeof(LevelDecoration));
-    pSrc += 4 + sizeof(LevelDecoration) * uNumLevelDecorations;
+    static_assert(sizeof(LevelDecoration) == 32);
+    stream.ReadVector(&pLevelDecorations);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
-        char name[256];
-        memcpy(name, pSrc, sizeof(LevelDecoration));
-        pSrc += sizeof(LevelDecoration);
-        pLevelDecorations[i].uDecorationDescID =
-            pDecorationList->GetDecorIdByName(name);
+    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
+        std::string name;
+        stream.ReadSizedString(&name, 32);
+        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
     }
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    memcpy(&numFaceIDListElems, pSrc, 4);
-
-    free(pFaceIDLIST);
-    pFaceIDLIST = nullptr;
-
-    uint faceIDListSize = 2 * numFaceIDListElems;
-    pFaceIDLIST = (unsigned short *)malloc(faceIDListSize);
-
-    memcpy(pFaceIDLIST, pSrc + 4, faceIDListSize);
-    pSrc += 4 + faceIDListSize;
+    stream.ReadVector(&pFaceIDLIST);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    free(pOMAP);
-    pOMAP = (unsigned int *)malloc(0x10000);
-    memcpy(pOMAP, pSrc, 65536);
-    pSrc += 65536;
+    stream.ReadRaw(&pOMAP);
 
     pGameLoadingUI_ProgressBar->Progress();
-
-    memcpy(&uNumSpawnPoints, pSrc, 4);
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    assert(sizeof(SpawnPointMM7) == 24);
-    uint spawnPointsSize = uNumSpawnPoints * sizeof(SpawnPointMM7);
-    pSpawnPoints = (SpawnPointMM7 *)malloc(spawnPointsSize);
-
-    memcpy(pSpawnPoints, pSrc + 4, spawnPointsSize);
-    pSrc += 4 + spawnPointsSize;
+    static_assert(sizeof(SpawnPointMM7) == 24);
+    stream.ReadVector(&pSpawnPoints);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ****************.ddm file*********************//
-    free(pSrcMem);
 
-    auto ddm_filename = filename;
+    std::string ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    pSrcMem = pNew_LOD->LoadCompressed(ddm_filename);
+    pSrcMem.reset(pNew_LOD->LoadCompressed(ddm_filename, &srcSize));
 
-    if (pSrcMem != nullptr) {
-        pSrc = (uint8_t*)pSrcMem;
+    if (pSrcMem) {
+        stream.Reset(pSrcMem.get(), srcSize);
 
         static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
-        memcpy(&ddm, pSrc, sizeof(DDM_DLV_Header));
-        pSrc += sizeof(DDM_DLV_Header);
+        stream.ReadRaw(&ddm);
     }
     uint actualNumFacesInLevel = 0;
     for (BSPModel &model : pBModels) {
@@ -1085,7 +989,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
         ddm.uNumDecorations &&
         (ddm.uNumFacesInBModels != actualNumFacesInLevel ||
          ddm.uNumBModels != pBModels.size() ||
-         ddm.uNumDecorations != uNumLevelDecorations);
+         ddm.uNumDecorations != pLevelDecorations.size());
 
     if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
         respawn_interval_days = 0x1BAF800;
@@ -1094,47 +998,43 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
         days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
         !ddm.uLastRepawnDay;
 
-    char Src[968];
-    char Dst[968];
+    std::array<char, 968> Src;
+    std::array<char, 968> Dst;
 
     if (object_count_in_level_changed_since_save || should_respawn) {
         if (object_count_in_level_changed_since_save) {
-            memset(Dst, 0, 968);
-            memset(Src, 0, 968);
+            memset(Dst.data(), 0, 968);
+            memset(Src.data(), 0, 968);
         }
         if (should_respawn) {
-            memcpy(Dst, pSrc, 968);
-            memcpy(Src, pSrc + 968, 968);
+            stream.ReadRaw(&Dst);
+            stream.ReadRaw(&Src);
         }
-        free(pSrcMem);
 
         ddm.uLastRepawnDay = days_played;
         if (!object_count_in_level_changed_since_save)
             ++ddm.uNumRespawns;
 
         *outdoors_was_respawned = true;
-        pSrcMem = pGames_LOD->LoadCompressed(ddm_filename);
-        pSrc = (uint8_t*)pSrcMem;
-        pSrc += sizeof(DDM_DLV_Header);
+        pSrcMem.reset(pGames_LOD->LoadCompressed(ddm_filename, &srcSize));
+        stream.Reset(pSrcMem.get(), srcSize);
+        stream.Skip(sizeof(DDM_DLV_Header));
     } else {
         *outdoors_was_respawned = 0;
     }
-    memcpy(uFullyRevealedCellOnMap, pSrc, 968);
-    memcpy(uPartiallyRevealedCellOnMap, pSrc + 968, 968);
-    pSrc += 2 * 968;
+    stream.ReadRaw(&uFullyRevealedCellOnMap);
+    stream.ReadRaw(&uPartiallyRevealedCellOnMap);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     if (*outdoors_was_respawned) {
-        memcpy(uFullyRevealedCellOnMap, Dst, 968);
-        memcpy(uPartiallyRevealedCellOnMap, Src, 968);
+        memcpy(uFullyRevealedCellOnMap, &Dst, 968);
+        memcpy(uPartiallyRevealedCellOnMap, &Src, 968);
     }
 
     for (BSPModel &model : pBModels) {
-        for (ODMFace &face : model.pFaces) {
-            memcpy(&face.uAttributes, pSrc, 4);
-            pSrc += 4;
-        }
+        for (ODMFace &face : model.pFaces)
+            stream.ReadRaw(&face.uAttributes);
 
         for (ODMFace &face : model.pFaces) {
             if (face.sCogTriggeredID) {
@@ -1149,55 +1049,40 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
-        memcpy(&pLevelDecorations[i].uFlags, pSrc, 2);
-        pSrc += 2;
-    }
+    for (uint i = 0; i < pLevelDecorations.size(); ++i)
+        stream.ReadRaw(&pLevelDecorations[i].uFlags);
+
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+
+    static_assert(sizeof(Actor_MM7) == 836);
+
+    std::vector<Actor_MM7> mm7actors;
+    stream.ReadVector(&mm7actors);
+    uNumActors = mm7actors.size(); // TODO: make a vector
+    for (int i = 0; i < uNumActors; ++i)
+        mm7actors[i].Deserialize(&pActors[i]);
+
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
+
+    static_assert(sizeof(SpriteObject) == 112);
+
+    stream.ReadVector(&pSpriteObjects);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    memcpy(&uNumActors, pSrc, 4);
-    if (uNumActors > 500) logger->Warning("Can't load file!");
+    stream.Skip(ChestsDeserialize(stream.Ptr()));
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    assert(sizeof(Actor_MM7) == 836);
-
-    Actor_MM7 *tmp_actor = (Actor_MM7 *)malloc(sizeof(Actor_MM7));
-
-    for (int i = 0; i < uNumActors; ++i) {
-        memcpy(tmp_actor, pSrc + 4 + i * sizeof(Actor_MM7), sizeof(Actor_MM7));
-        tmp_actor->Deserialize(&pActors[i]);
-    }
-    free(tmp_actor);
-
-    pSrc += 4 + uNumActors * sizeof(Actor_MM7);
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    memcpy(&uNumSpriteObjects, pSrc, 4);
-    assert(uNumSpriteObjects <= 1000 && "Too many objects");
-    assert(sizeof(SpriteObject) == 112);
+    static_assert(sizeof(stru_5E4C90_MapPersistVars) == 0xC8);
+    stream.ReadRaw(&stru_5E4C90_MapPersistVars);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    memcpy(pSpriteObjects.data(), pSrc + 4,
-           uNumSpriteObjects * sizeof(SpriteObject));
-
-    pSrc += 4 + uNumSpriteObjects * sizeof(SpriteObject);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    pSrc += ChestsDeserialize((char*)pSrc);
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-
-    memcpy(&stru_5E4C90_MapPersistVars, pSrc, 0xC8);
-    pSrc += 0xC8;
-
-    pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
-    memcpy(&loc_time, pSrc, 0x38u);
-
-    free(pSrcMem);
+    static_assert(sizeof(loc_time) == 0x38);
+    stream.ReadRaw(&loc_time);
 
     pTileTable->InitializeTileset(Tileset_Dirt);
     pTileTable->InitializeTileset(Tileset_Snow);
@@ -1377,7 +1262,7 @@ int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
                                                   signed int sY) {
     int v3;  // esi@5
 
-    if (sX < 0 || sX > 127 || sY < 0 || sY > 127 || !this->pTerrain.pTilemap)
+    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
         return 0;
 
     v3 = this->pTerrain.pTilemap[sY * 128 + sX];
@@ -1389,7 +1274,7 @@ int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
 
 //----- (0047EE16) --------------------------------------------------------
 int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
-    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127 || !pTerrain.pHeightmap)
+    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
         return 0;
 
     return 32 * pTerrain.pHeightmap[sZ * 128 + sX];
@@ -1504,7 +1389,7 @@ bool OutdoorLocation::PrepareDecorations() {
         v8 = 1;
     }
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
+    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
@@ -1531,8 +1416,8 @@ bool OutdoorLocation::PrepareDecorations() {
 }
 
 void OutdoorLocation::ArrangeSpriteObjects() {
-    if ((int)uNumSpriteObjects > 0) {
-        for (int i = 0; i < (signed int)uNumSpriteObjects; ++i) {
+    if (!pSpriteObjects.empty()) {
+        for (int i = 0; i < (signed int)pSpriteObjects.size(); ++i) {
             if (pSpriteObjects[i].uObjectDescID) {
                 if (!(pSpriteObjects[i].uAttributes & 8) && !pSpriteObjects[i].IsUnpickable()) {
                     bool bOnWater = false;
@@ -2084,10 +1969,6 @@ void OutdoorLocation::subconstuctor() {
     field_F0 = 0;
     field_F4 = 0x40000000u;
     // DLVHeader::DLVHeader(&v1->ddm);
-    pSpawnPoints = 0;
-    pCmap = 0;
-    pFaceIDLIST = 0;
-    pOMAP = 0;
 }
 
 //----- (00473893) --------------------------------------------------------
@@ -3589,8 +3470,8 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
 
     if (outdoor_was_respawned && map_id) {
-        for (uint i = 0; i < pOutdoor->uNumSpawnPoints; ++i) {
-            SpawnPointMM7 *spawn = pOutdoor->pSpawnPoints + i;
+        for (uint i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
+            SpawnPointMM7 *spawn = &pOutdoor->pSpawnPoints[i];
 
             if (spawn->IsMonsterSpawn())
                 SpawnEncounter(map_info, spawn, 0, 0, 0);

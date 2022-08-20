@@ -38,10 +38,6 @@ struct DMap {
 struct OutdoorLocationTerrain {
     //----- (0047C794) --------------------------------------------------------
     inline OutdoorLocationTerrain() {
-        pHeightmap = nullptr;
-        pTilemap = nullptr;
-        pAttributemap = nullptr;
-        pDmap = nullptr;
         this->field_10 = 0;
         this->field_12 = 0;
     }
@@ -53,10 +49,11 @@ struct OutdoorLocationTerrain {
     bool ZeroLandscape();
     bool Initialize();
 
-    uint8_t *pHeightmap;
-    uint8_t *pTilemap;
-    uint8_t *pAttributemap;
-    struct DMap *pDmap;
+
+    std::array<uint8_t, 128 * 128> pHeightmap;
+    std::array<uint8_t, 128 * 128> pTilemap;
+    std::array<uint8_t, 128 * 128> pAttributemap;
+    std::array<DMap, 128 * 128> pDmap;
     int16_t field_10 = 0;
     int16_t field_12 = 0;
     int16_t field_14 = 0;
@@ -118,21 +115,19 @@ struct OutdoorLocation {
     std::string location_file_description;
     std::string sky_texture_filename;
     std::string ground_tileset;
-    OutdoorLocationTileType pTileTypes[4];  // [3]  road tileset
+    std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3]  road tileset
     struct OutdoorLocationTerrain pTerrain;
-    void *pCmap;
+    std::array<uint16_t, 128 * 128> pCmap; // Unused
     BSPModelList pBModels;
-    unsigned int numFaceIDListElems;
-    uint16_t *pFaceIDLIST;
-    unsigned int *pOMAP;
+    std::vector<uint16_t> pFaceIDLIST;
+    std::array<unsigned int, 128 * 128> pOMAP;
     Texture *sky_texture = nullptr;        // signed int sSky_TextureID;
     Texture *main_tile_texture;  // signed int sMainTile_BitmapID;
     int16_t field_F0;
     int16_t field_F2;
     int field_F4;
     char field_F8[968];
-    unsigned int uNumSpawnPoints;
-    struct SpawnPointMM7 *pSpawnPoints;
+    std::vector<SpawnPointMM7> pSpawnPoints;
     struct DDM_DLV_Header ddm;
     LocationTime_stru1 loc_time;
     unsigned char

@@ -1228,7 +1228,7 @@ void init_event_triggers() {
     uint id = pDecorationList->GetDecorIdByName("Event Trigger");
 
     num_event_triggers = 0;
-    for (uint i = 0; i < uNumLevelDecorations; ++i)
+    for (uint i = 0; i < pLevelDecorations.size(); ++i)
         if (pLevelDecorations[i].uDecorationDescID == id)
             event_triggers[num_event_triggers++] = i;
 }
@@ -1254,7 +1254,7 @@ void check_event_triggers() {
             }
         } else if (pLevelDecorations[event_triggers[i]].uFlags &
                    LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
-            for (size_t j = 0; j < uNumSpriteObjects; j++) {
+            for (size_t j = 0; j < pSpriteObjects.size(); j++) {
                 if (pLevelDecorations[event_triggers[i]]
                         .vPosition.GetDistanceTo(pSpriteObjects[j].vPosition) <
                     pLevelDecorations[event_triggers[i]].uTriggerRange)

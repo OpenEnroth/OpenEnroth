@@ -228,7 +228,7 @@ void stru262_TurnBased::End(bool bPlaySound) {
             pActors[PID_ID(pQueue[i].uPackedID)].ResetQueue();
     }
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uAttributes & 4)
             pSpriteObjects[i].uAttributes &= ~0x04;
     }

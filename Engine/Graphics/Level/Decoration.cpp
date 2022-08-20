@@ -6,8 +6,7 @@
 #include "../../Party.h"
 #include "Engine/Engine.h"
 
-std::array<LevelDecoration, 3000> pLevelDecorations;
-size_t uNumLevelDecorations;
+std::vector<LevelDecoration> pLevelDecorations;
 LevelDecoration* activeLevelDecoration;
 
 //----- (004583B0) --------------------------------------------------------

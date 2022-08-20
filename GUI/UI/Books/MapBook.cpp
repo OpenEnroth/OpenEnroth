@@ -248,10 +248,10 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     } else {  // indoors
         unsigned int Colour_Black = Color16(0, 0, 0);
 
-        if (pIndoor->pMapOutlines->uNumOutlines) {
+        if (!pIndoor->pMapOutlines.empty()) {
             render->BeginLines2D();
-            for (uint i = 0; i < pIndoor->pMapOutlines->uNumOutlines; ++i) {
-                BLVMapOutline *pOutline = &pIndoor->pMapOutlines->pOutlines[i];
+            for (uint i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
+                BLVMapOutline *pOutline = &pIndoor->pMapOutlines[i];
 
                 if (pIndoor->pFaces[pOutline->uFace1ID].Visible() &&
                     pIndoor->pFaces[pOutline->uFace2ID].Visible()) {
@@ -318,9 +318,9 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         render->DrawTransparentRedShade(ArrowXPos / 640.0f, ArrowYPos / 480.0f, game_ui_minimap_dirs[ArrowOctant]);
     }
 
-    if ((signed int)uNumLevelDecorations > 0) {
+    if (!pLevelDecorations.empty()) {
         render->BeginLines2D();
-        for (uint i = 0; i < (signed int)uNumLevelDecorations; ++i) {
+        for (uint i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
                 int DecY = pLevelDecorations[i].vPosition.y - pCenterY;
                 int DecX = pLevelDecorations[i].vPosition.x - pCenterX;

@@ -492,11 +492,11 @@ size_t ChestsSerialize(char *pData) {
     return 4 + uNumChests * sizeof(Chest);
 }
 
-size_t ChestsDeserialize(char *pData) {
+size_t ChestsDeserialize(const char *pData) {
     vChests.clear();
     uint32_t uNumChests = 0;
     memcpy(&uNumChests, pData, 4);
-    Chest *pChests = (Chest*)(pData + 4);
+    const Chest *pChests = (const Chest*)(pData + 4);
     for (int i = 0; i < uNumChests; i++) {
         vChests.push_back(pChests[i]);
     }

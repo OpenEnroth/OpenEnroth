@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 #include <string>
 
 #include "Engine/Strings.h"
@@ -383,8 +384,7 @@ extern std::array<const char *, 7> pMerchantsIdentifyPhrases;
 extern char *pTransitionsTXT_Raw;
 extern char *pAutonoteTXT_Raw;
 extern char *pQuestsTXT_Raw;
-extern unsigned int uNumTerrainNormals;
-extern struct Vec3_float_ *pTerrainNormals;
+extern std::vector<Vec3_float_> pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 extern int dword_A74C88;

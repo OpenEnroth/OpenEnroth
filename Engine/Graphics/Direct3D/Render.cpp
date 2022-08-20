@@ -396,18 +396,18 @@ void Render::DrawTerrainD3D() {  // New function
             uint norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * z) + 2 /*+ 1*/ ];  // 2 is top tri // 3 is bottom
             uint bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * z) + 3];
 
-            assert(norm_idx < uNumTerrainNormals);
-            assert(bottnormidx < uNumTerrainNormals);
+            assert(norm_idx < pTerrainNormals.size());
+            assert(bottnormidx < pTerrainNormals.size());
 
             Vec3_float_ *norm = &pTerrainNormals[norm_idx];
             Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
 
-            if (norm_idx < 0 || norm_idx > uNumTerrainNormals - 1)
+            if (norm_idx < 0 || norm_idx >= pTerrainNormals.size())
                 norm = 0;
             else
                 norm = &pTerrainNormals[norm_idx];
 
-            if (bottnormidx < 0 || bottnormidx > uNumTerrainNormals - 1)
+            if (bottnormidx < 0 || bottnormidx >= pTerrainNormals.size())
                 norm2 = 0;
             else
                 norm2 = &pTerrainNormals[bottnormidx];
@@ -805,7 +805,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
     unsigned __int16 *v37;  // [sp+84h] [bp-20h]@9
     int v38;                // [sp+88h] [bp-1Ch]@9
 
-    for (unsigned int i = 0; i < uNumLevelDecorations; ++i) {
+    for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
         // LevelDecoration* decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
              pLevelDecorations[i].IsObeliskChestActive()) &&
@@ -2166,7 +2166,7 @@ void Render::DrawIndoorFaces() {
             unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
             int LightLevel;                     // [sp+34h] [bp+Ch]@25
 
-            if (uFaceID >= pIndoor->uNumFaces)
+            if (uFaceID >= pIndoor->pFaces.size())
                 continue;
 
             static RenderVertexSoft static_vertices_buff_in[64];  // buff in

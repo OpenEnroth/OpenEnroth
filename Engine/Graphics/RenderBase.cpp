@@ -108,7 +108,7 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
 }
 
 void RenderBase::DrawSpriteObjects_ODM() {
-    for (unsigned int i = 0; i < uNumSpriteObjects; ++i) {
+    for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *object = &pSpriteObjects[i];
         // auto v0 = (char *)&pSpriteObjects[i].uSectorID;
         // v0 = (char *)&pSpriteObjects[0].uSectorID;

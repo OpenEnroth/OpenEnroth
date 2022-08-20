@@ -1,11 +1,13 @@
 #pragma once
+
+#include <vector>
+
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/SpriteObjectType.h"
 #include "Engine/VectorTypes.h"
 
 class SpriteFrame;
 
-#define MAX_SPRITE_OBJECTS 1000
 /*   72 */
 #pragma pack(push, 1)
 struct SpriteObject {
@@ -36,7 +38,7 @@ struct SpriteObject {
 
     SPRITE_OBJECT_TYPE uType;
     // unsigned __int16 uType;
-    unsigned __int16 uObjectDescID;
+    unsigned __int16 uObjectDescID = 0;
     Vec3_int_ vPosition;
     Vec3_short_ vVelocity;
     unsigned __int16 uFacing;
@@ -62,8 +64,7 @@ struct SpriteObject {
 
 void CompactLayingItemsList();
 
-extern size_t uNumSpriteObjects;
-extern std::array<SpriteObject, MAX_SPRITE_OBJECTS> pSpriteObjects;
+extern std::vector<SpriteObject> pSpriteObjects;
 
 bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2);
 void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int a2);  // idb

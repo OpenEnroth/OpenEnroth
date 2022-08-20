@@ -293,7 +293,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
         BLVSector *pSector = &pIndoor->pSectors[uSectorID];
 
         for (uint i = 0; i < pSector->uNumLights; ++i) {
-            BLVLightMM7 *this_light = pIndoor->pLights + pSector->pLights[i];
+            BLVLightMM7 *this_light = &pIndoor->pLights[pSector->pLights[i]];
             light_radius = this_light->uRadius;
 
             if (~this_light->uAtributes & 8) {
@@ -344,7 +344,7 @@ void UpdateObjects() {
     int v18;  // [sp+4h] [bp-10h]@27
     int v19;  // [sp+8h] [bp-Ch]@27
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uAttributes & OBJECT_40) {
             pSpriteObjects[i].uAttributes &= ~OBJECT_40;
         } else {
@@ -2157,7 +2157,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
     unsigned __int16 *v37;  // [sp+84h] [bp-20h]@9
     int v38;                // [sp+88h] [bp-1Ch]@9
 
-    for (unsigned int i = 0; i < uNumLevelDecorations; ++i) {
+    for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
         // LevelDecoration* decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
             pLevelDecorations[i].IsObeliskChestActive()) &&
@@ -2633,8 +2633,8 @@ void RenderOpenGL::DrawTerrainD3D() {
                 // next calculate all vertices vertices
                 uint norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
                 uint bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
-                assert(norm_idx < uNumTerrainNormals);
-                assert(bottnormidx < uNumTerrainNormals);
+                assert(norm_idx < pTerrainNormals.size());
+                assert(bottnormidx < pTerrainNormals.size());
                 Vec3_float_ *norm = &pTerrainNormals[norm_idx];
                 Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
 
@@ -2992,8 +2992,8 @@ void RenderOpenGL::DrawTerrainD3D() {
 
                 uint norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
                 uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
-                assert(norm_idx < uNumTerrainNormals);
-                assert(bottnormidx < uNumTerrainNormals);
+                assert(norm_idx < pTerrainNormals.size());
+                assert(bottnormidx < pTerrainNormals.size());
                 Vec3_float_ *norm = &pTerrainNormals[norm_idx];
                 Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
 
@@ -4867,7 +4867,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
 
 
-            for (int test = 0; test < pIndoor->uNumFaces; test++) {
+            for (int test = 0; test < pIndoor->pFaces.size(); test++) {
                 BLVFace* face = &pIndoor->pFaces[test];
 
                 if (face->Portal()) continue;
@@ -5052,7 +5052,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     4, pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding);*/
 
                 unsigned int uFaceID = pBspRenderer->faces[i].uFaceID;
-                if (uFaceID >= pIndoor->uNumFaces)
+                if (uFaceID >= pIndoor->pFaces.size())
                     continue;
                 BLVFace* face = &pIndoor->pFaces[uFaceID];
 
@@ -5251,7 +5251,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         int16_t mintest = 0;
 
-        for (int i = 0; i < pIndoor->uNumSectors; i++) {
+        for (int i = 0; i < pIndoor->pSectors.size(); i++) {
             mintest = std::max(mintest, pIndoor->pSectors[i].uMinAmbientLightLevel);
         }
 
@@ -5483,7 +5483,7 @@ void RenderOpenGL::DrawIndoorFaces() {
         static RenderVertexSoft static_vertices_buff_in[64];  // buff in
 
         // loop over faces
-        for (int test = 0; test < pIndoor->uNumFaces; test++) {
+        for (int test = 0; test < pIndoor->pFaces.size(); test++) {
             BLVFace* pface = &pIndoor->pFaces[test];
 
             if (pface->Portal()) continue;

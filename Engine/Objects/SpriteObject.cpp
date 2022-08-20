@@ -33,8 +33,7 @@ using EngineIoc = Engine_::IocContainer;
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 static std::shared_ptr<ParticleEngine> particle_engine = EngineIoc::ResolveParticleEngine();
 
-size_t uNumSpriteObjects;
-std::array<SpriteObject, MAX_SPRITE_OBJECTS> pSpriteObjects;
+std::vector<SpriteObject> pSpriteObjects;
 
 //----- (00404828) --------------------------------------------------------
 SpriteObject::SpriteObject() {
@@ -67,17 +66,17 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // find free sprite slot
-    int sprite_slot = 1000;
-    for (unsigned int i = 0; i < MAX_SPRITE_OBJECTS; ++i) {
+    int sprite_slot = -1;
+    for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
         if (!pSpriteObjects[i].uObjectDescID) {
             sprite_slot = i;
             break;
         }
     }
 
-    // return if too many sprties already
-    if (sprite_slot >= MAX_SPRITE_OBJECTS) {
-        return -1;
+    if (sprite_slot == -1) {
+        sprite_slot = pSpriteObjects.size();
+        pSpriteObjects.emplace_back();
     }
 
     // set initial position
@@ -85,7 +84,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     field_64.y = vPosition.y;
     field_64.z = vPosition.z;
 
-    assert(sizeof(SpriteObject) == 0x70);
+    static_assert(sizeof(SpriteObject) == 0x70);
 
     // move sprite so it looks like it originates from char portrait
     switch (which_char) {
@@ -126,10 +125,10 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     }
 
     // copy sprite object into slot
-    memcpy(&pSpriteObjects[sprite_slot], this, sizeof(*this));
-    if (sprite_slot >= (int)uNumSpriteObjects) {
-        uNumSpriteObjects = sprite_slot + 1;
+    if (sprite_slot >= (int)pSpriteObjects.size()) {
+        pSpriteObjects.resize(sprite_slot + 1);
     }
+    memcpy(&pSpriteObjects[sprite_slot], this, sizeof(*this));
     return sprite_slot;
 }
 
@@ -884,7 +883,7 @@ void SpriteObject::OnInteraction(unsigned int uLayingItemID) {
 void CompactLayingItemsList() {
     int new_obj_pos = 0;
 
-    for (int i = 0; i < MAX_SPRITE_OBJECTS; ++i) {
+    for (int i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (i != new_obj_pos) {
                 memcpy(&pSpriteObjects[new_obj_pos], &pSpriteObjects[i],
@@ -894,11 +893,12 @@ void CompactLayingItemsList() {
             new_obj_pos++;
         }
     }
-    uNumSpriteObjects = new_obj_pos;
+
+    pSpriteObjects.resize(new_obj_pos);
 }
 
 void SpriteObject::InitializeSpriteObjects() {
-    for (size_t i = 0; i < uNumSpriteObjects; ++i) {
+    for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *item = &pSpriteObjects[i];
         if (item->uType &&
             (item->uSoundID & 8 || pObjectList->pObjects[item->uType].uFlags &

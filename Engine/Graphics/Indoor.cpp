@@ -28,6 +28,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Serialization/LegacyImages.h"
+#include "Engine/Serialization/MemoryInput.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
 #include "Engine/stru367.h"
@@ -43,6 +44,7 @@
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
+#include "src/tools/FreeDeleter.h"
 
 
 IndoorLocation *pIndoor = new IndoorLocation;
@@ -196,7 +198,7 @@ void BspRenderer::AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFa
 
     nodes[num_nodes].viewing_portal_id = -1;
 
-    if (uFaceID > pIndoor->uNumFaces) return;
+    if (uFaceID >= pIndoor->pFaces.size()) return;
     BLVFace* pFace = &pIndoor->pFaces[uFaceID];
 
     if (!pFace->Portal()) {
@@ -459,7 +461,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
     unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
     int LightLevel;                     // [sp+34h] [bp+Ch]@25
 
-    if (uFaceID >= pIndoor->uNumFaces)
+    if (uFaceID >= pIndoor->pFaces.size())
         return;
 
     static RenderVertexSoft static_vertices_buff_in[64];  // buff in
@@ -648,53 +650,19 @@ void BLVFace::SetTexture(const std::string &filename) {
 
 //----- (00498B15) --------------------------------------------------------
 void IndoorLocation::Release() {
-    free(this->ptr_0002B4_doors_ddata);
-    this->ptr_0002B4_doors_ddata = NULL;
-
-    free(this->ptr_0002B0_sector_rdata);
-    this->ptr_0002B0_sector_rdata = NULL;
-
-    free(this->ptr_0002B8_sector_lrdata);
-    this->ptr_0002B8_sector_lrdata = NULL;
-
-    free(this->pLFaces);
-    this->pLFaces = NULL;
-
-    free(this->pSpawnPoints);
-    this->pSpawnPoints = NULL;
-
-    this->uNumSectors = 0;
-    this->uNumFaces = 0;
-    this->uNumVertices = 0;
-    this->uNumNodes = 0;
-    this->uNumDoors = 0;
-    this->uNumLights = 0;
-
-    free(this->pVertices);
-    this->pVertices = NULL;
-
-    //  pfaces alloc by new during load
-    //  free(this->pFaces);
-    delete[] this->pFaces;
-    this->pFaces = NULL;
-
-    free(this->pFaceExtras);
-    this->pFaceExtras = NULL;
-
-    free(this->pSectors);
-    this->pSectors = NULL;
-
-    free(this->pLights);
-    this->pLights = NULL;
-
-    free(this->pDoors);
-    this->pDoors = NULL;
-
-    free(this->pNodes);
-    this->pNodes = NULL;
-
-    free(this->pMapOutlines);
-    this->pMapOutlines = NULL;
+    this->ptr_0002B4_doors_ddata.clear();
+    this->ptr_0002B0_sector_rdata.clear();
+    this->ptr_0002B8_sector_lrdata.clear();
+    this->pLFaces.clear();
+    this->pSpawnPoints.clear();
+    this->pSectors.clear();
+    this->pFaces.clear();
+    this->pFaceExtras.clear();
+    this->pVertices.clear();
+    this->pNodes.clear();
+    this->pDoors.clear();
+    this->pLights.clear();
+    this->pMapOutlines.clear();
 
     render->ReleaseBSP();
 
@@ -703,32 +671,7 @@ void IndoorLocation::Release() {
 
 //----- (00498C45) --------------------------------------------------------
 bool IndoorLocation::Alloc() {
-    pVertices = (Vec3_short_ *)malloc(15000 * sizeof(Vec3_short_));  // 0x15F90u
-
-    //  pfaces alloc by new during load
-    //  pFaces = (BLVFace *)malloc(10000 * sizeof(BLVFace));             // 0xEA600u
-
-    pFaceExtras = (BLVFaceExtra *)malloc(5000 * sizeof(BLVFaceExtra));     // 0x2BF20u
-    pSectors = (BLVSector *)malloc(512 * sizeof(BLVSector));     // 0xE800u
-    pLights = (BLVLightMM7 *)malloc(400 * sizeof(BLVLightMM7));  // 0x1900u
-    pDoors = (BLVDoor *)malloc(200 * sizeof(BLVDoor));           // 0x3E80u
-    pNodes = (BSPNode *)malloc(5000 * sizeof(BSPNode));          // 0x9C40u
-    pMapOutlines = (BLVMapOutlines *)malloc(sizeof(BLVMapOutlines));  // 0x14824u
-    if (pVertices /*&& pFaces*/ && pFaceExtras && pSectors && pLights && pDoors &&
-        pNodes && pMapOutlines) {
-        memset(pVertices, 0, 15000 * sizeof(Vec3_short_));
-        //  memset(pFaces, 0, 10000 * sizeof(BLVFace));
-        memset(pFaceExtras, 0, 5000 * sizeof(BLVFaceExtra));
-        memset(pSectors, 0, 512 * sizeof(BLVSector));
-        memset(pLights, 0, 400 * sizeof(BLVLightMM7));
-        memset(pDoors, 0, 200 * sizeof(BLVDoor));
-        memset(pNodes, 0, 5000 * sizeof(BSPNode));
-        memset(pMapOutlines, 0, sizeof(BLVMapOutlines));
-        return true;
-    } else {
-        __debugbreak();
-        return false;
-    }
+    return true; // TODO: drop this method.
 }
 
 //----- (00444810) --------------------------------------------------------
@@ -743,7 +686,7 @@ unsigned int IndoorLocation::GetLocationIndex(const char *Str1) {
 //----- (004488F7) --------------------------------------------------------
 void IndoorLocation::ToggleLight(signed int sLightID, unsigned int bToggle) {
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor &&
-        (sLightID <= pIndoor->uNumLights - 1) && (sLightID >= 0)) {
+        (sLightID <= pIndoor->pLights.size() - 1) && (sLightID >= 0)) {
         if (bToggle)
             pIndoor->pLights[sLightID].uAtributes &= 0xFFFFFFF7;
         else
@@ -777,38 +720,29 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         return false;
 
     size_t blv_size = 0;
-    void *rawData = pGames_LOD->LoadCompressed(blv_filename, &blv_size);
-    char *pData = (char*)rawData;
+    std::unique_ptr<void, FreeDeleter> rawData;
+    rawData.reset(pGames_LOD->LoadCompressed(blv_filename, &blv_size));
+    MemoryInput stream(rawData.get(), blv_size);
 
     bLoaded = true;
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&blv, pData, sizeof(BLVHeader));
-    pData += sizeof(BLVHeader);
-    memcpy(&uNumVertices, pData, 4);
-    pData += 4;
-    memcpy(pVertices, pData, uNumVertices * sizeof(Vec3_short_));
+    stream.ReadRaw(&blv);
+    stream.ReadVector(&pVertices);
 
     pGameLoadingUI_ProgressBar->Progress();
-
-    memcpy(&uNumFaces, pData += uNumVertices * sizeof(Vec3_short_), 4);
-    pData += 4;
-
     pGameLoadingUI_ProgressBar->Progress();
 
-    // memcpy(pFaces, pData, uNumFaces * sizeof(BLVFace));
-    auto face_data = (BLVFace_MM7 *)pData;
-    pFaces = new BLVFace[uNumFaces];
-    for (unsigned int i = 0; i < uNumFaces; ++i) {
-        pFaces[i].Deserialize(face_data);
-        face_data++;
-    }
+    std::vector<BLVFace_MM7> mm7faces;
+    stream.ReadVector(&mm7faces);
+    pFaces.resize(mm7faces.size());
+    for (unsigned int i = 0; i < mm7faces.size(); ++i)
+        pFaces[i].Deserialize(&mm7faces[i]);
 
-    pLFaces = (unsigned __int16 *)malloc(blv.uFaces_fdata_Size);
-    memcpy(pLFaces, pData += uNumFaces * sizeof(BLVFace_MM7), blv.uFaces_fdata_Size);
+    stream.ReadSizedVector(&pLFaces, blv.uFaces_fdata_Size / sizeof(uint16_t));
 
-    for (uint i = 0, j = 0; i < uNumFaces; ++i) {
+    for (uint i = 0, j = 0; i < pFaces.size(); ++i) {
         BLVFace *pFace = &pFaces[i];
 
         pFace->pVertexIDs = &pLFaces[j];
@@ -833,42 +767,34 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pData += blv.uFaces_fdata_Size;
-
-    for (uint i = 0; i < uNumFaces; ++i) {
+    for (uint i = 0; i < pFaces.size(); ++i) {
         BLVFace *pFace = &pFaces[i];
 
-        char pTexName[16];
-        strncpy(pTexName, pData, 10);
-        pData += 10;
-
-        pFace->SetTexture(std::string(pTexName));
+        std::string texName;
+        stream.ReadSizedString(&texName, 10);
+        pFace->SetTexture(texName);
     }
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumFaceExtras, pData, 4);
-    memcpy(pFaceExtras, pData += 4, uNumFaceExtras * sizeof(BLVFaceExtra));
-    pData += uNumFaceExtras * sizeof(BLVFaceExtra);
+    stream.ReadVector(&pFaceExtras);
 
     pGameLoadingUI_ProgressBar->Progress();
 
     // v108 = (char *)v107 + 36 * uNumFaceExtras;
     // v245 = 0;
     // *(int *)((char *)&uSourceLen + 1) = 0;
-    for (uint i = 0; i < uNumFaceExtras; ++i) {
-        char pTexName[32];
-        strncpy(pTexName, pData, 10);
-        pData += 10;
+    for (uint i = 0; i < pFaceExtras.size(); ++i) {
+        std::string texName;
+        stream.ReadSizedString(&texName, 10);
 
-        if (!strcmp(pTexName, ""))
+        if (texName.empty())
             pFaceExtras[i].uAdditionalBitmapID = -1;
         else
-            pFaceExtras[i].uAdditionalBitmapID =
-                pBitmaps_LOD->LoadTexture(pTexName);
+            pFaceExtras[i].uAdditionalBitmapID = pBitmaps_LOD->LoadTexture(texName);
     }
 
-    for (uint i = 0; i < uNumFaces; ++i) {
+    for (uint i = 0; i < pFaces.size(); ++i) {
         BLVFace *pFace = &pFaces[i];
         BLVFaceExtra *pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
 
@@ -882,27 +808,18 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumSectors, pData, 4);
-
-    // memcpy(pSectors, pData + 4, uNumSectors * sizeof(BLVSector));
-
-    BLVSector_MM7 *tmp_sector = (BLVSector_MM7 *)malloc(sizeof(BLVSector_MM7));
-    for (int i = 0; i < uNumSectors; ++i) {
-        memcpy(tmp_sector, pData + 4 + i * sizeof(BLVSector_MM7), sizeof(BLVSector_MM7));
-        tmp_sector->Deserialize(&pSectors[i]);
-    }
-    free(tmp_sector);
-
-    pData += 4 + uNumSectors * sizeof(BLVSector_MM7);
+    std::vector<BLVSector_MM7> mm7sectors;
+    stream.ReadVector(&mm7sectors);
+    pSectors.resize(mm7sectors.size());
+    for (int i = 0; i < mm7sectors.size(); ++i)
+        mm7sectors[i].Deserialize(&pSectors[i]);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    ptr_0002B0_sector_rdata =
-        (unsigned short *)malloc(blv.uSector_rdata_Size);  //, "L.RData");
-    memcpy(ptr_0002B0_sector_rdata, pData, blv.uSector_rdata_Size);
-    pData += blv.uSector_rdata_Size;
+    stream.ReadSizedVector(&ptr_0002B0_sector_rdata, blv.uSector_rdata_Size / sizeof(uint16_t));
+    ptr_0002B0_sector_rdata.push_back(0); // make the element past the end addressable.
 
-    for (uint i = 0, j = 0; i < uNumSectors; ++i) {
+    for (uint i = 0, j = 0; i < pSectors.size(); ++i) {
         BLVSector *pSector = &pSectors[i];
 
         pSector->pFloors = &ptr_0002B0_sector_rdata[j];
@@ -933,84 +850,69 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         j += pSector->uNumMarkers;
     }
 
-    ptr_0002B8_sector_lrdata =
-        (unsigned __int16 *)malloc(blv.uSector_lrdata_Size);  //, "L.RLData");
-    memcpy(ptr_0002B8_sector_lrdata, pData, blv.uSector_lrdata_Size);
-    pData += blv.uSector_lrdata_Size;
+    stream.ReadSizedVector(&ptr_0002B8_sector_lrdata, blv.uSector_lrdata_Size / sizeof(uint16_t));
+    ptr_0002B8_sector_lrdata.push_back(0); // make the element past the end addressable.
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0, j = 0; i < uNumSectors; ++i) {
-        pSectors[i].pLights = ptr_0002B8_sector_lrdata + j;
+    for (uint i = 0, j = 0; i < pSectors.size(); ++i) {
+        pSectors[i].pLights = &ptr_0002B8_sector_lrdata[j];
         j += pSectors[i].uNumLights;
     }
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumDoors, pData, 4);
-    pData += 4;
+    uint32_t uNumDoors;
+    stream.ReadRaw(&uNumDoors);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumLevelDecorations, pData, 4);
-    memcpy(pLevelDecorations.data(), pData + 4,
-           uNumLevelDecorations * sizeof(LevelDecoration));
-    pData += 4 + uNumLevelDecorations * sizeof(LevelDecoration);
+    stream.ReadVector(&pLevelDecorations);
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
-        pLevelDecorations[i].uDecorationDescID =
-            pDecorationList->GetDecorIdByName(pData);
+    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
+        std::string name;
+        stream.ReadSizedString(&name, 32);
 
-        pData += 32;
+        pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(name);
     }
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumLights, pData, 4);
-    memcpy(pLights, pData + 4, uNumLights * sizeof(BLVLightMM7));
-    pData += 4 + uNumLights * sizeof(BLVLightMM7);
+    stream.ReadVector(&pLights);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumNodes, pData, 4);
-    memcpy(pNodes, pData + 4, uNumNodes * sizeof(BSPNode));
-    pData += 4 + uNumNodes * sizeof(BSPNode);
+    stream.ReadVector(&pNodes);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumSpawnPoints, pData, 4);
-    pSpawnPoints = (SpawnPointMM7 *)malloc(uNumSpawnPoints * sizeof(SpawnPointMM7));
-    memcpy(pSpawnPoints, pData + 4, uNumSpawnPoints * sizeof(SpawnPointMM7));
-    pData += 4 + uNumSpawnPoints * sizeof(SpawnPointMM7);
+    stream.ReadVector(&pSpawnPoints);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&pMapOutlines->uNumOutlines, pData, 4);
-    memcpy(pMapOutlines->pOutlines, pData + 4, pMapOutlines->uNumOutlines * sizeof(BLVMapOutline));
-    free(rawData);
+    stream.ReadVector(&pMapOutlines);
 
     std::string dlv_filename = std::string(filename);
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
     bool bResetSpawn = false;
     size_t dlv_size = 0;
-    rawData = pNew_LOD->LoadCompressed(dlv_filename, &dlv_size);
-    if (rawData != nullptr) {
-        pData = (char*)rawData;
-        memcpy(&dlv, pData, sizeof(DDM_DLV_Header));
-        pData += sizeof(DDM_DLV_Header);
+    rawData.reset(pNew_LOD->LoadCompressed(dlv_filename, &dlv_size));
+    if (rawData) {
+        stream.Reset(rawData.get(), dlv_size);
+        stream.ReadRaw(&dlv);
     } else {
         bResetSpawn = true;
     }
 
     if (dlv.uNumFacesInBModels > 0) {
         if (dlv.uNumDecorations > 0) {
-            if (dlv.uNumFacesInBModels != uNumFaces ||
-                dlv.uNumDecorations != uNumLevelDecorations)
+            if (dlv.uNumFacesInBModels != pFaces.size() ||
+                dlv.uNumDecorations != pLevelDecorations.size())
                 bResetSpawn = true;
         }
     }
@@ -1025,41 +927,41 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         bRespawnLocation = true;
     }
 
-    char SavedOutlines[875];
+    std::array<char, 875> SavedOutlines = {{}};
     if (bResetSpawn || (bRespawnLocation || !dlv.uLastRepawnDay)) {
         if (bResetSpawn) {
-            memset(SavedOutlines, 0, 875);
+            // do nothing, SavedOutlines are already filled with zeros.
         } else if (bRespawnLocation || !dlv.uLastRepawnDay) {
-            memcpy(SavedOutlines, pData, 875);
+            stream.ReadRaw(&SavedOutlines);
         }
 
         dlv.uLastRepawnDay = num_days_played;
         if (!bResetSpawn) ++dlv.uNumRespawns;
         *(int *)pDest = 1;
 
-        pData = (char*)pGames_LOD->LoadCompressed(dlv_filename);
-        pData += sizeof(DDM_DLV_Header);
+        rawData.reset(pGames_LOD->LoadCompressed(dlv_filename, &dlv_size));
+        stream.Reset(rawData.get(), dlv_size);
+        stream.Skip(sizeof(DDM_DLV_Header));
     } else {
         *(int*)pDest = 0;
     }
 
-    memcpy(_visible_outlines, pData, 875);
-    pData += 875;
+    stream.ReadRaw(&_visible_outlines);
 
-    if (*(int *)pDest) memcpy(_visible_outlines, SavedOutlines, 875);
+    if (*(int *)pDest)
+        _visible_outlines = SavedOutlines;
 
-    for (uint i = 0; i < pMapOutlines->uNumOutlines; ++i) {
-        BLVMapOutline *pVertex = &pMapOutlines->pOutlines[i];
+    for (uint i = 0; i < pMapOutlines.size(); ++i) {
+        BLVMapOutline *pVertex = &pMapOutlines[i];
         if ((unsigned __int8)(1 << (7 - i % 8)) & _visible_outlines[i / 8])
             pVertex->uFlags |= 1;
     }
 
-    for (uint i = 0; i < uNumFaces; ++i) {
+    for (uint i = 0; i < pFaces.size(); ++i) {
         BLVFace *pFace = &pFaces[i];
         BLVFaceExtra *pFaceExtra = &pFaceExtras[pFace->uFaceExtraID];
 
-        memcpy(&pFace->uAttributes, pData, 4);
-        pData += 4;
+        stream.ReadRaw(&pFace->uAttributes);
 
         if (pFaceExtra->uEventID) {
             if (pFaceExtra->HasEventHint())
@@ -1071,38 +973,25 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
-        memcpy(&pLevelDecorations[i].uFlags, pData, 2);
-        pData += 2;
-    }
+    for (uint i = 0; i < pLevelDecorations.size(); ++i)
+        stream.ReadRaw(&pLevelDecorations[i].uFlags);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumActors, pData, 4);
-
-    // memcpy(&pActors, pData + 4, uNumActors * sizeof(Actor));
-    // pData += 4 + uNumActors * sizeof(Actor);
-    Actor_MM7* tmp_actor = (Actor_MM7*)malloc(sizeof(Actor_MM7));
-
-    for (int i = 0; i < uNumActors; ++i) {
-        memcpy(tmp_actor, pData + 4 + i * sizeof(Actor_MM7), sizeof(Actor_MM7));
-        tmp_actor->Deserialize(&pActors[i]);
-    }
-    free(tmp_actor);
-
-    pData += 4 + uNumActors * sizeof(Actor_MM7);
+    std::vector<Actor_MM7> mm7actors;
+    stream.ReadVector(&mm7actors);
+    uNumActors = mm7actors.size();
+    for (int i = 0; i < uNumActors; ++i)
+        mm7actors[i].Deserialize(&pActors[i]);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&uNumSpriteObjects, pData, 4);
-    memcpy(pSpriteObjects.data(), pData + 4,
-           uNumSpriteObjects * sizeof(SpriteObject));
-    pData += 4 + uNumSpriteObjects * sizeof(SpriteObject);
+    stream.ReadVector(&pSpriteObjects);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & 0x0100)) {
             pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
             pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
@@ -1111,33 +1000,23 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    pData += ChestsDeserialize(pData);
+    stream.Skip(ChestsDeserialize(stream.Ptr()));
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    // memcpy(pDoors, pData, 0x3E80);
-    // pData += 0x3E80
-    BLVDoor_MM7 *tmp_door = (BLVDoor_MM7 *)malloc(sizeof(BLVDoor_MM7));
-    for (int i = 0; i < uNumDoors; ++i) {
-        memcpy(tmp_door, pData + i * sizeof(BLVDoor_MM7), sizeof(BLVDoor_MM7));
-        tmp_door->Deserialize(&pDoors[i]);
-    }
-    free(tmp_door);
-    pData += uNumDoors * sizeof(BLVDoor_MM7);
+    std::vector<BLVDoor_MM7> mm7doors;
+    stream.ReadSizedVector(&mm7doors, uNumDoors);
+    pDoors.resize(uNumDoors);
+    for (int i = 0; i < uNumDoors; ++i)
+        mm7doors[i].Deserialize(&pDoors[i]);
 
     // v201 = (const char *)blv.uDoors_ddata_Size;
     // v200 = (size_t)ptr_0002B4_doors_ddata;
     // v170 = malloc(ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size, "L.DData");
     // v171 = blv.uDoors_ddata_Size;
-    ptr_0002B4_doors_ddata = (uint16_t*)malloc(blv.uDoors_ddata_Size);  //, "L.DData");
-    if (ptr_0002B4_doors_ddata == nullptr) {
-        log->Warning("Malloc error");
-        Error("Malloc");  // is this recoverable
-    }
-
-    memcpy(ptr_0002B4_doors_ddata, pData, blv.uDoors_ddata_Size);
-    pData += blv.uDoors_ddata_Size;
+    stream.ReadSizedVector(&ptr_0002B4_doors_ddata, blv.uDoors_ddata_Size / sizeof(uint16_t));
+    ptr_0002B4_doors_ddata.push_back(0); // make the element past the end addressable.
 
     // Src = (BLVFace *)((char *)Src + v171);
     // v172 = 0;
@@ -1186,15 +1065,11 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&stru_5E4C90_MapPersistVars, pData, 0xC8);
-    pData += 0xC8;
+    stream.ReadRaw(&stru_5E4C90_MapPersistVars);
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    memcpy(&stru1, pData, 0x38u);
-    pData += 0x38;
-
-    free(rawData);
+    stream.ReadRaw(&stru1);
 
     return 0;
 }
@@ -1202,7 +1077,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 //----- (0049AC17) --------------------------------------------------------
 int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) return 0;
-    if (uNumSectors < 2) {
+    if (pSectors.size() < 2) {
         // __debugbreak();
         return 0;
     }
@@ -1212,7 +1087,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
     int NumFoundFaceStore = 0;
 
     // loop through sectors
-    for (uint i = 1; i < uNumSectors; ++i) {
+    for (uint i = 1; i < pSectors.size(); ++i) {
         if (NumFoundFaceStore >= 5) break;
 
         BLVSector *pSector = &pSectors[i];
@@ -1500,7 +1375,7 @@ void BLV_UpdateDoors() {
     SoundID eDoorSoundID = (SoundID)pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
 
     // loop over all doors
-    for (uint i = 0; i < pIndoor->uNumDoors; ++i) {
+    for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
         BLVDoor *door = &pIndoor->pDoors[i];
 
         // door not moving currently
@@ -2120,8 +1995,8 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
     if (!map_id) pDest = 0;
     if (pDest == 1) {
-        for (uint i = 0; i < pIndoor->uNumSpawnPoints; ++i) {
-            auto spawn = pIndoor->pSpawnPoints + i;
+        for (uint i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
+            auto spawn = &pIndoor->pSpawnPoints[i];
             if (spawn->IsMonsterSpawn())
                 SpawnEncounter(map_info, spawn, 0, 0, 0);
             else
@@ -2130,7 +2005,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
         RespawnGlobalDecorations();
     }
 
-    for (uint i = 0; i < pIndoor->uNumDoors; ++i) {
+    for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
         if (pIndoor->pDoors[i].uAttributes & 0x01) {
             pIndoor->pDoors[i].uState = BLVDoor::Opening;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
@@ -2158,7 +2033,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     pGameLoadingUI_ProgressBar->Progress();
 
     v35 = 0;
-    for (uint i = 0; i < uNumLevelDecorations; ++i) {
+    for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
 
         DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
@@ -2203,7 +2078,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (pSpriteObjects[i].containing_item.uItemID) {
                 if (pSpriteObjects[i].containing_item.uItemID != 220 &&
@@ -2501,7 +2376,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
 void IndoorLocation::PrepareItemsRenderList_BLV() {
     unsigned int v6;     // eax@12
 
-    for (uint i = 0; i < uNumSpriteObjects; ++i) {
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
             if (pSpriteObjects[i].HasSprite()) {
                 if ((pSpriteObjects[i].uType < 1000 || pSpriteObjects[i].uType >= 10000) &&
@@ -3152,7 +3027,7 @@ char DoInteractionWithTopmostZObject(int pid) {
 
     switch (type) {
         case OBJECT_Item: {  // take the item
-            if (pSpriteObjects[id].IsUnpickable() || id >= MAX_SPRITE_OBJECTS || !pSpriteObjects[id].uObjectDescID) {
+            if (pSpriteObjects[id].IsUnpickable() || id >= pSpriteObjects.size() || !pSpriteObjects[id].uObjectDescID) {
                 return 1;
             }
 
@@ -3652,7 +3527,7 @@ void Door_switch_animation(unsigned int uDoorID, int a2) {
     int old_state;       // eax@1
     signed int door_id;  // esi@2
 
-    if (!pIndoor->pDoors) return;
+    if (pIndoor->pDoors.empty()) return;
     for (door_id = 0; door_id < 200; ++door_id) {
         if (pIndoor->pDoors[door_id].uDoorID == uDoorID) break;
     }

@@ -331,8 +331,8 @@ void TeleportToStartingPoint(MapStartPoint point) {
 
     strcpy(pName, model_name);
     if (pDecorationList->GetDecorIdByName(pName)) {
-        if (uNumLevelDecorations > 0) {
-            for (size_t i = 0; i < uNumLevelDecorations; ++i) {
+        if (!pLevelDecorations.empty()) {
+            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
                     pParty->vPosition.x = pLevelDecorations[i].vPosition.x;
                     pParty->vPosition.y = pLevelDecorations[i].vPosition.y;

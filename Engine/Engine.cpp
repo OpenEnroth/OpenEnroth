@@ -355,7 +355,7 @@ void Engine::DrawGUI() {
             pPrimaryWindow->DrawText(
                 pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255),
                 StringPrintf("Party Sector ID:        %u/%u\n", sector_id,
-                    pIndoor->uNumSectors),
+                    (unsigned int)pIndoor->pSectors.size()),
                 0, 0, 0);
         }
         pPrimaryWindow->DrawText(
@@ -827,9 +827,6 @@ void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
 
     Level_LoadEvtAndStr(mapName);
     LoadLevel_InitializeLevelEvt();
-
-    for (uint i = 0; i < 1000; ++i)
-        pSpriteObjects[i].uObjectDescID = 0;
 
     v5 = pMapStats->GetMapInfo(pCurrentMapName);
 
@@ -1371,7 +1368,7 @@ void Engine::_461103_load_level_sub() {
     if (engine->config->NoActors())
         uNumActors = 0;
     if (engine->config->NoDecorations())
-        uNumLevelDecorations = 0;
+        pLevelDecorations.clear();
     init_event_triggers();
 
     pGameLoadingUI_ProgressBar->Progress();
@@ -1428,7 +1425,7 @@ void GameUI_StatusBar_Update(bool force_hide) {
 
 void sub_44861E_set_texture_indoor(unsigned int uFaceCog,
                                    const std::string &filename) {
-    for (uint i = 1; i < pIndoor->uNumFaceExtras; ++i) {
+    for (uint i = 1; i < pIndoor->pFaceExtras.size(); ++i) {
         auto extra = &pIndoor->pFaceExtras[i];
         if (extra->sCogNumber == uFaceCog) {
             auto face = &pIndoor->pFaces[extra->face_id];
@@ -1472,7 +1469,7 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename) {
 void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-            for (uint i = 1; i < (unsigned int)pIndoor->uNumFaceExtras; ++i) {
+            for (uint i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
                 if (pIndoor->pFaceExtras[i].sCogNumber == sCogNumber) {
                     if (on)
                         pIndoor->pFaces[pIndoor->pFaceExtras[i].face_id]
@@ -1502,7 +1499,7 @@ void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
 
 //----- (0044882F) --------------------------------------------------------
 void SetDecorationSprite(uint16_t uCog, bool bHide, const char *pFileName) {
-    for (size_t i = 0; i < uNumLevelDecorations; i++) {
+    for (size_t i = 0; i < pLevelDecorations.size(); i++) {
         if (pLevelDecorations[i].uCog == uCog) {
             if (pFileName && strcmp(pFileName, "0")) {
                 pLevelDecorations[i].uDecorationDescID = pDecorationList->GetDecorIdByName(pFileName);
