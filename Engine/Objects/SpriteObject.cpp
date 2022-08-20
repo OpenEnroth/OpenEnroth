@@ -391,14 +391,14 @@ LABEL_13:
             }
             // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.x) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.x += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+            pSpriteObjects[uLayingItemID].vPosition.x += collision_state.adjusted_move_distance * collision_state.direction.x;
             // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.y) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.y += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+            pSpriteObjects[uLayingItemID].vPosition.y += collision_state.adjusted_move_distance * collision_state.direction.y;
             // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.z) >> 16);
             v28 = (short)collision_state.uSectorID;
-            pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+            pSpriteObjects[uLayingItemID].vPosition.z += collision_state.adjusted_move_distance * collision_state.direction.z;
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
             pSpriteObjects[uLayingItemID].uSectorID = v28;
             collision_state.total_move_distance += collision_state.adjusted_move_distance;
@@ -429,8 +429,8 @@ LABEL_13:
                               face->pFacePlaneOLD.vNormal.y * pSpriteObjects[uLayingItemID].vVelocity.y +
                               face->pFacePlaneOLD.vNormal.z * pSpriteObjects[uLayingItemID].vVelocity.z) >>
                           16;
-                    if ((collision_state.speed >> 3) > v56)
-                        v56 = collision_state.speed >> 3;
+                    if ((collision_state.speed / 8) > v56)
+                        v56 = collision_state.speed / 8;
                     // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
                     // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
                     v60 = fixpoint_mul(v56, face->pFacePlaneOLD.vNormal.z);
@@ -597,19 +597,19 @@ LABEL_25:
             // __int64)collision_state.direction.x) >> 16;
 
             pSpriteObject->vPosition.x +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+                collision_state.adjusted_move_distance * collision_state.direction.x;
 
             // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.y) >> 16;
 
             pSpriteObject->vPosition.y +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+                collision_state.adjusted_move_distance * collision_state.direction.y;
 
             // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.z) >> 16;
 
             pSpriteObject->vPosition.z +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+                collision_state.adjusted_move_distance * collision_state.direction.z;
 
             pSpriteObject->uSectorID = collision_state.uSectorID;
             collision_state.total_move_distance += collision_state.adjusted_move_distance;
@@ -644,8 +644,8 @@ LABEL_25:
                               pIndoor->pFaces[v15].pFacePlane_old.vNormal.z *
                                   pSpriteObject->vVelocity.z) >>
                           16;
-                    if ((collision_state.speed >> 3) > floor_lvl)
-                        floor_lvl = collision_state.speed >> 3;
+                    if ((collision_state.speed / 8) > floor_lvl)
+                        floor_lvl = collision_state.speed / 8;
                     pSpriteObject->vVelocity.x +=
                         2 *
                         fixpoint_mul(

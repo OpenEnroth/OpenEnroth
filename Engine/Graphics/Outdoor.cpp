@@ -2551,13 +2551,11 @@ void ODM_ProcessPartyActions() {
             _angle_y = collision_state.new_position_lo.y;
             v40 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            _angle_x = pX + fixpoint_mul(collision_state.adjusted_move_distance,
-                                         collision_state.direction.x);
-            _angle_y = pY + fixpoint_mul(collision_state.adjusted_move_distance,
-                                         collision_state.direction.y);
+            _angle_x = pX + collision_state.adjusted_move_distance * collision_state.direction.x;
+            _angle_y = pY + collision_state.adjusted_move_distance * collision_state.direction.y;
             // pModel = (BSPModel *)fixpoint_mul(collision_state.adjusted_move_distance,
             // collision_state.direction.z);
-            v40 = fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z) + party_new_Z;
+            v40 = collision_state.adjusted_move_distance * collision_state.direction.z + party_new_Z;
         }
         v122 = v40;
         ODM_GetFloorLevel(_angle_x, _angle_y, v40, pParty->uPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
@@ -2649,8 +2647,8 @@ void ODM_ProcessPartyActions() {
                 v118 = abs(v128 * pODMFace->pFacePlaneOLD.vNormal.y +
                            fall_speed * pODMFace->pFacePlaneOLD.vNormal.z +
                            v2 * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
-                if ((collision_state.speed >> 3) > v118)
-                    v118 = collision_state.speed >> 3;
+                if ((collision_state.speed / 8) > v118)
+                    v118 = collision_state.speed / 8;
                 v2 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.x);
                 v128 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.y);
                 v54 = 0;
@@ -2676,8 +2674,8 @@ void ODM_ProcessPartyActions() {
                 v118 = abs(v128 * pODMFace->pFacePlaneOLD.vNormal.y +
                            fall_speed * pODMFace->pFacePlaneOLD.vNormal.z +
                            v2 * pODMFace->pFacePlaneOLD.vNormal.x) >> 16;
-                if ((collision_state.speed >> 3) > v118)
-                    v118 = collision_state.speed >> 3;
+                if ((collision_state.speed / 8) > v118)
+                    v118 = collision_state.speed / 8;
                 v2 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.x);
                 v128 += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.y);
                 fall_speed += fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
@@ -3210,7 +3208,7 @@ void UpdateActors_ODM() {
             int v71 = i > 1;
             if (collision_state.adjusted_move_distance < collision_state.move_distance)
                 Slope_High =
-                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+                    collision_state.adjusted_move_distance * collision_state.direction.z;
             // v34 = 0;
             int v35 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             bool bOnWater = false;
@@ -3238,22 +3236,21 @@ void UpdateActors_ODM() {
                 }
             }
             if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-                pActors[Actor_ITR].vPosition.x = (short)collision_state.new_position_lo.x;
-                pActors[Actor_ITR].vPosition.y = (short)collision_state.new_position_lo.y;
-                pActors[Actor_ITR].vPosition.z = (short)collision_state.new_position_lo.z -
-                                           (short)collision_state.radius_lo -
-                                           1;
+                pActors[Actor_ITR].vPosition.x = collision_state.new_position_lo.x;
+                pActors[Actor_ITR].vPosition.y = collision_state.new_position_lo.y;
+                pActors[Actor_ITR].vPosition.z = collision_state.new_position_lo.z -
+                                           collision_state.radius_lo - 1;
                 break;
             }
 
             pActors[Actor_ITR].vPosition.x +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+                collision_state.adjusted_move_distance * collision_state.direction.x;
 
             pActors[Actor_ITR].vPosition.y +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+                collision_state.adjusted_move_distance * collision_state.direction.y;
 
             pActors[Actor_ITR].vPosition.z +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+                collision_state.adjusted_move_distance * collision_state.direction.z;
             collision_state.total_move_distance += collision_state.adjusted_move_distance;
             unsigned int v39 = PID_ID(collision_state.pid);
             int Angle_To_Decor;
@@ -3340,8 +3337,8 @@ void UpdateActors_ODM() {
                                        face->pFacePlaneOLD.vNormal.x *
                                            pActors[Actor_ITR].vVelocity.x) >>
                                    16;
-                            if ((collision_state.speed >> 3) > v72b)
-                                v72b = collision_state.speed >> 3;
+                            if ((collision_state.speed / 8) > v72b)
+                                v72b = collision_state.speed / 8;
 
                             pActors[Actor_ITR].vVelocity.x +=
                                 fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.x);

@@ -162,16 +162,16 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
     };
 
     collide_once(
-        ToFloatVector(collision_state.position_lo),
-        ToFloatVector(collision_state.new_position_lo),
-        ToFloatVectorFromFixpoint(collision_state.direction),
+        collision_state.position_lo,
+        collision_state.new_position_lo,
+        collision_state.direction,
         collision_state.radius_lo);
 
     if(collision_state.check_hi)
         collide_once(
-            ToFloatVector(collision_state.position_hi),
-            ToFloatVector(collision_state.new_position_hi),
-            ToFloatVectorFromFixpoint(collision_state.direction),
+            collision_state.position_hi,
+            collision_state.new_position_hi,
+            collision_state.direction,
             collision_state.radius_hi);
 }
 
@@ -204,7 +204,7 @@ static bool CollideWithCylinder(const Vec3_float_ &center_lo, float radius, floa
     // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
     // thus this actually is length(dist) * sin(dist, collision_state.direction).
     // This in turn is the distance from cylinder center to the line of actor's movement.
-    Vec3_float_ dir = ToFloatVectorFromFixpoint(collision_state.direction);
+    Vec3_float_ dir = collision_state.direction;
     float closest_dist = dist_x * dir.y - dist_y * dir.x;
     if (abs(closest_dist) > sum_radius)
         return false; // No chance to collide.
@@ -250,47 +250,34 @@ static void CollideWithDecoration(int id) {
 /* =============================
  * Implementation of public API.
  */
-bool CollisionState::PrepareAndCheckIfStationary(int dt) {
-    this->speed = integer_sqrt(
-        this->velocity.z * this->velocity.z +
-        this->velocity.y * this->velocity.y +
-        this->velocity.x * this->velocity.x);
+bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
+    if (!dt_fp)
+        dt_fp = pEventTimer->dt_fixpoint;
+    float dt = fixpoint_to_float(dt_fp);
 
-    if (this->speed != 0) {
-        this->direction.x = fixpoint_div(this->velocity.x, this->speed);
-        this->direction.y = fixpoint_div(this->velocity.y, this->speed);
-        this->direction.z = fixpoint_div(this->velocity.z, this->speed);
+    this->speed = Length(this->velocity);
+
+    if (!FuzzyIsNull(this->speed)) {
+        this->direction = this->velocity / this->speed;
     } else {
-        this->direction.x = 0;
-        this->direction.y = 0;
-        this->direction.z = 65536;
+        this->direction = Vec3_float_(0, 0, 1.0f);
     }
 
-    if (!dt)
-        dt = pEventTimer->dt_fixpoint;
-
-    this->move_distance = fixpoint_mul(dt, this->speed) - this->total_move_distance;
+    this->move_distance = dt * this->speed - this->total_move_distance;
     if (this->move_distance <= 0)
         return true;
 
-    this->new_position_hi.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
-    this->new_position_lo.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
+    this->new_position_hi = this->position_hi + this->move_distance * this->direction;
+    this->new_position_lo = this->position_lo + this->move_distance * this->direction;
 
-    this->new_position_hi.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
-    this->new_position_lo.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
-
-    this->new_position_hi.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_hi.z;
-    this->new_position_lo.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_lo.z;
-
-    this->bbox.x1 = std::min(this->position_lo.x, this->new_position_lo.x) - this->radius_lo;
-    this->bbox.x2 = std::max(this->position_lo.x, this->new_position_lo.x) + this->radius_lo;
-    this->bbox.y1 = std::min(this->position_lo.y, this->new_position_lo.y) - this->radius_lo;
-    this->bbox.y2 = std::max(this->position_lo.y, this->new_position_lo.y) + this->radius_lo;
-    this->bbox.z1 = std::min(this->position_lo.z, this->new_position_lo.z) - this->radius_lo;
-    this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi.z) + this->radius_hi;
+    this->bbox =
+        BBox_float_::FromPoint(this->position_lo, this->radius_lo) |
+        BBox_float_::FromPoint(this->new_position_lo, this->radius_lo) |
+        BBox_float_::FromPoint(this->position_hi, this->radius_hi) |
+        BBox_float_::FromPoint(this->new_position_hi, this->radius_hi);
 
     this->pid = 0;
-    this->adjusted_move_distance = 0xFFFFFFu;
+    this->adjusted_move_distance = std::numeric_limits<float>::max();
 
     return  false;
 }
@@ -307,7 +294,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
         if (!collision_state.bbox.Intersects(pFace->pBounding))
             continue;
 
-        float distance = abs(pFace->pFacePlane.SignedDistanceTo(ToFloatVector(collision_state.position_lo)));
+        float distance = abs(pFace->pFacePlane.SignedDistanceTo(collision_state.position_lo));
         if(distance > collision_state.move_distance + 16)
             continue;
 
@@ -397,13 +384,13 @@ bool CollideIndoorWithPortals() {
         if (!collision_state.bbox.Intersects(face->pBounding))
             continue;
 
-        float distance_lo_old = face->pFacePlane.SignedDistanceTo(ToFloatVector(collision_state.position_lo));
-        float distance_lo_new = face->pFacePlane.SignedDistanceTo(ToFloatVector(collision_state.new_position_lo));
+        float distance_lo_old = face->pFacePlane.SignedDistanceTo(collision_state.position_lo);
+        float distance_lo_new = face->pFacePlane.SignedDistanceTo(collision_state.new_position_lo);
         float move_distance = collision_state.move_distance;
         if ((distance_lo_old < collision_state.radius_lo || distance_lo_new < collision_state.radius_lo) &&
             (distance_lo_old > -collision_state.radius_lo || distance_lo_new > -collision_state.radius_lo) &&
-            CollidePointWithFace(face, ToFloatVector(collision_state.position_lo),
-                ToFloatVector(collision_state.direction), &move_distance, MODEL_INDOOR) &&
+            CollidePointWithFace(face, collision_state.position_lo,
+                collision_state.direction, &move_distance, MODEL_INDOOR) &&
             move_distance < min_move_distance) {
             min_move_distance = move_distance;
             portal_id = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
@@ -416,7 +403,7 @@ bool CollideIndoorWithPortals() {
         } else {
             collision_state.uSectorID = pIndoor->pFaces[portal_id].uSectorID;
         }
-        collision_state.adjusted_move_distance = 0xFFFFFFF;
+        collision_state.adjusted_move_distance = std::numeric_limits<float>::max();
         return false;
     }
 
@@ -449,7 +436,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
         // seemed not worth it.
 
-        BBox_int_ bbox;
+        BBox_float_ bbox;
         bbox.x1 = pSpriteObjects[i].vPosition.x - object->uRadius;
         bbox.x2 = pSpriteObjects[i].vPosition.x + object->uRadius;
         bbox.y1 = pSpriteObjects[i].vPosition.y - object->uRadius;
@@ -463,7 +450,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         float dist_y = pSpriteObjects[i].vPosition.y - collision_state.position_lo.y;
         float sum_radius = object->uHeight + collision_state.radius_lo;
 
-        Vec3_float_ dir = ToFloatVectorFromFixpoint(collision_state.direction);
+        Vec3_float_ dir = collision_state.direction;
         float closest_dist = dist_x * dir.y - dist_y * dir.x;
         if (abs(closest_dist) > sum_radius)
             continue;

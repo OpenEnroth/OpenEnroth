@@ -10,11 +10,13 @@
 #define pi_double 3.14159265358979323846
 
 __int64 fixpoint_mul(int, int);
-// __int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2);
 __int64 fixpoint_div(int, int);
-// __int64 fixpoint_sub_unknown(int, int);
-// int fixpoint_from_float(float value);
-// int fixpoint_from_int(int lhv, int rhv);
+
+// These shouldn't compile:
+void fixpoint_mul(float, float) = delete;
+void fixpoint_div(float, float) = delete;
+void fixpoint_mul(double, double) = delete;
+void fixpoint_div(double, double) = delete;
 
 /**
  * @param value                         Fixed-point value.

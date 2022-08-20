@@ -200,6 +200,17 @@ struct BBox {
     T z1 = 0;
     T z2 = 0;
 
+    static BBox FromPoint(const Vec3<T> &center, T radius) {
+        BBox result;
+        result.x1 = center.x - radius;
+        result.x2 = center.x + radius;
+        result.y1 = center.y - radius;
+        result.y2 = center.y + radius;
+        result.z1 = center.z - radius;
+        result.z2 = center.z + radius;
+        return result;
+    }
+
     bool ContainsXY(T x, T y) const {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
@@ -214,6 +225,17 @@ struct BBox {
             this->x1 <= other.x2 && this->x2 >= other.x1 &&
             this->y1 <= other.y2 && this->y2 >= other.y1 &&
             this->z1 <= other.z2 && this->z2 >= other.z1;
+    }
+
+    friend BBox operator|(const BBox &l, const BBox &r) {
+        BBox result;
+        result.x1 = std::min(l.x1, r.x1);
+        result.x2 = std::max(l.x2, r.x2);
+        result.y1 = std::min(l.y1, r.y1);
+        result.y2 = std::max(l.y2, r.y2);
+        result.z1 = std::min(l.z1, r.z1);
+        result.z2 = std::max(l.z2, r.z2);
+        return result;
     }
 };
 #pragma pack(pop)
