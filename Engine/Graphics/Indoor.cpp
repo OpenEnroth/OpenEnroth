@@ -1926,7 +1926,7 @@ void UpdateActors_BLV() {
 }
 
 //----- (00460A78) --------------------------------------------------------
-void PrepareToLoadBLV(unsigned int bLoading) {
+void PrepareToLoadBLV(bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
     unsigned int map_id;            // eax@8
     MapInfo *map_info;              // edi@9
