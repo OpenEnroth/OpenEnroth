@@ -445,7 +445,7 @@ LABEL_13:
                         EventProcessor(face->sCogTriggeredID, 0, 1);
                 }
             }
-        LABEL_74:
+        //LABEL_74:
             pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
             pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
             pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
@@ -457,7 +457,7 @@ LABEL_13:
             pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
         pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT->Cos(v38) * v57;
         pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT->Sin(v38 - TrigLUT->uIntegerHalfPi) * v57;
-        goto LABEL_74;
+        //goto LABEL_74; // This goto results in an infinite loop, commented out.
     }
 }
 
