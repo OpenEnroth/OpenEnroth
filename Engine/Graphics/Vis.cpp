@@ -141,11 +141,8 @@ bool Vis::IsPolygonOccludedByBillboard(RenderVertexSoft *vertices,
         if (IsPointInsideD3DBillboard(billboard, x, y)) {
             if (v13 == -1)
                 v13 = i;
-            else if (pBillboardRenderList[billboard->sParentBillboardID]
-                         .screen_space_z <
-                     pBillboardRenderList[render->pBillboardRenderListD3D[v13]
-                                              .sParentBillboardID]
-                         .screen_space_z)
+            else if (pBillboardRenderList[billboard->sParentBillboardID].screen_space_z <
+                     pBillboardRenderList[render->pBillboardRenderListD3D[v13].sParentBillboardID].screen_space_z)
                 v13 = i;
         }
     }
@@ -234,11 +231,9 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                                Vis_SelectionFilter *filter) {
     for (uint i = 0; i < render->uNumBillboardsToDraw; ++i) {
         RenderBillboardD3D *d3d_billboard = &render->pBillboardRenderListD3D[i];
-        if (is_part_of_selection((void *)i, filter) &&
-            IsPointInsideD3DBillboard(d3d_billboard, fX, fY)) {
+        if (is_part_of_selection((void *)i, filter) && IsPointInsideD3DBillboard(d3d_billboard, fX, fY)) {
             if (DoesRayIntersectBillboard(fPickDepth, i)) {
-                RenderBillboard *billboard =
-                    &pBillboardRenderList[d3d_billboard->sParentBillboardID];
+                RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
                 list->AddObject((void *)d3d_billboard->sParentBillboardID,
                                 VisObjectType_Sprite, billboard->screen_space_z,
@@ -894,8 +889,7 @@ void Vis::PickBillboards_Keyboard(float pick_depth, Vis_SelectionList *list,
 
         if (is_part_of_selection((void *)i, filter)) {
             if (DoesRayIntersectBillboard(pick_depth, i)) {
-                RenderBillboard *billboard =
-                    &pBillboardRenderList[d3d_billboard->sParentBillboardID];
+                RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
                 list->AddObject((void *)d3d_billboard->sParentBillboardID,
                                 VisObjectType_Sprite, billboard->screen_space_z,
