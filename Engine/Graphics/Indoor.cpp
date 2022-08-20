@@ -1932,8 +1932,6 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     MapInfo *map_info;              // edi@9
     int v4;                         // eax@11
     char v28;                       // zf@81
-    signed int v30;                 // edi@94
-    std::array<int, 4> v34{};       // [sp+3E8h] [bp-2Ch]@96
     int v35;                        // [sp+3F8h] [bp-1Ch]@1
     int v38;                        // [sp+404h] [bp-10h]@1
     int pDest;                      // [sp+40Ch] [bp-8h]@1
@@ -1956,25 +1954,23 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     pPaletteManager->pPalette_tintColor[1] = 0;
     pPaletteManager->pPalette_tintColor[2] = 0;
     pPaletteManager->RecalculateAll();
-    if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;
+    if (_A750D8_player_speech_timer)
+        _A750D8_player_speech_timer = 0;
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
         v38 = GetAlertStatus();
     } else {
-        map_info = (MapInfo *)bLoading;
+        map_info = nullptr;
     }
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
 
     pStationaryLightsStack->uNumLightsActive = 0;
     v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1,
-                       respawn_interval, (char *)&pDest) -
-         1;
-    if (!v4) Error("Unable to open %s", pCurrentMapName.c_str());
-
-    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str());
-
+                       respawn_interval, (char *)&pDest) - 1;
+    if (v4 == 0) Error("Unable to open %s", pCurrentMapName.c_str());
+    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str()); // TODO: these checks never trigger.
     if (v4 == 2) Error("Attempt to open new level before clearing old");
     if (v4 == 3) Error("Out of memory loading indoor level");
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
@@ -1982,7 +1978,9 @@ void PrepareToLoadBLV(unsigned int bLoading) {
         SpriteObject::InitializeSpriteObjects();
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
-    if (!map_id) pDest = 0;
+    if (!map_id)
+        pDest = 0;
+
     if (pDest == 1) {
         for (uint i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
@@ -2128,17 +2126,19 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     }
     viewparams->_443365();
     PlayLevelMusic();
-    if (!bLoading) {
-        v30 = 0;
-        for (uint pl_id = 1; pl_id <= 4; ++pl_id) {
-            if (pPlayers[pl_id]->CanAct()) v34[v30++] = pl_id;
-        }
-        if (v30) {
-            if (pDest) {
-                _A750D8_player_speech_timer = 256;
-                PlayerSpeechID = SPEECH_EnterDungeon;
-                uSpeakingCharacter = v34[rand() % v30];
-            }
+
+    // Active character speaks.
+    if (!bLoading && pDest) {
+        std::vector<int> active;
+
+        for (int i = 1; i <= 4; i++)
+            if (pPlayers[i]->CanAct())
+                active.push_back(i);
+
+        if (!active.empty()) {
+            _A750D8_player_speech_timer = 256;
+            PlayerSpeechID = SPEECH_EnterDungeon;
+            uSpeakingCharacter = active[rand() % active.size()];
         }
     }
 }
