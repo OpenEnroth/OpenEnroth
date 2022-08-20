@@ -306,14 +306,14 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     if (DrawArrow == 1) {
         int ArrowOctant = 0;
         int PartyDirection = pParty->sRotationZ & TrigLUT->uDoublePiMask;
-        if ((signed int)PartyDirection <= 1920) ArrowOctant = 6;
-        if ((signed int)PartyDirection < 1664) ArrowOctant = 5;
-        if ((signed int)PartyDirection <= 1408) ArrowOctant = 4;
-        if ((signed int)PartyDirection < 1152) ArrowOctant = 3;
-        if ((signed int)PartyDirection <= 896) ArrowOctant = 2;
-        if ((signed int)PartyDirection < 640) ArrowOctant = 1;
-        if ((signed int)PartyDirection <= 384) ArrowOctant = 0;
-        if ((signed int)PartyDirection < 128 || (signed int)PartyDirection > 1920) ArrowOctant = 7;
+        if (PartyDirection <= 1920) ArrowOctant = 6;
+        if (PartyDirection < 1664) ArrowOctant = 5;
+        if (PartyDirection <= 1408) ArrowOctant = 4;
+        if (PartyDirection < 1152) ArrowOctant = 3;
+        if (PartyDirection <= 896) ArrowOctant = 2;
+        if (PartyDirection < 640) ArrowOctant = 1;
+        if (PartyDirection <= 384) ArrowOctant = 0;
+        if (PartyDirection < 128 || PartyDirection > 1920) ArrowOctant = 7;
 
         render->DrawTransparentRedShade(ArrowXPos / 640.0f, ArrowYPos / 480.0f, game_ui_minimap_dirs[ArrowOctant]);
     }
