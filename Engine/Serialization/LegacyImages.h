@@ -73,7 +73,7 @@ struct BLVFace_MM7 {  // 60h
     uint16_t uBitmapID;
     uint16_t uSectorID;
     int16_t uBackSectorID;
-    struct BBox_short_ pBounding;
+    BBox_short_ pBounding;
     uint8_t uPolygonType;
     uint8_t uNumVertices;
     char field_5E;

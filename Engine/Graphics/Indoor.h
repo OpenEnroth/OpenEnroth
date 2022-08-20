@@ -10,6 +10,7 @@
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Camera.h"
+#include "Engine/VectorTypes.h"
 
 struct IndoorLocation;
 
@@ -471,7 +472,7 @@ struct BLVFace {  // 60h
 
     uint16_t uSectorID;
     int16_t uBackSectorID;
-    struct BBox_short_ pBounding {};
+    BBox_short_ pBounding;
     PolygonType uPolygonType;
     uint8_t uNumVertices;
     char field_5E = 0;

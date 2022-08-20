@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "../VectorTypes.h"
+#include "Engine/VectorTypes.h"
 
 #define FACE_IsPortal           0x00000001
 #define FACE_IsSecret           0x00000002
@@ -156,7 +156,7 @@ struct ODMFace {
 
     int16_t sTextureDeltaU = 0;
     int16_t sTextureDeltaV = 0;
-    struct BBox_short_ pBoundingBox {};
+    BBox_short_ pBoundingBox;
     int16_t sCogNumber = 0;
     int16_t sCogTriggeredID = 0;
     int16_t sCogTriggerType = 0;

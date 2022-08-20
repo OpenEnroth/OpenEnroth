@@ -191,41 +191,25 @@ struct Plane_int_ {
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct BBox_short_ {
-    int16_t x1 = 0;
-    int16_t x2 = 0;
-    int16_t y1 = 0;
-    int16_t y2 = 0;
-    int16_t z1 = 0;
-    int16_t z2 = 0;
+template<class T>
+struct BBox {
+    T x1 = 0;
+    T x2 = 0;
+    T y1 = 0;
+    T y2 = 0;
+    T z1 = 0;
+    T z2 = 0;
 
-    bool ContainsXY(int x, int y) const {
+    bool ContainsXY(T x, T y) const {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 
-    bool Contains(const Vec3_short_ &pos) const {
+    bool Contains(const Vec3<T> &pos) const {
         return x1 <= pos.x && pos.x <= x2 && y1 <= pos.y && pos.y <= y2 && z1 <= pos.z && pos.z <= z2;
     }
-};
-#pragma pack(pop)
 
-#pragma pack(push, 1)
-struct BBox_int_ {
-    int x1 = 0;
-    int x2 = 0;
-    int y1 = 0;
-    int y2 = 0;
-    int z1 = 0;
-    int z2 = 0;
-
-    bool Intersects(const BBox_short_ &other) const {
-        return
-            this->x1 <= other.x2 && this->x2 >= other.x1 &&
-            this->y1 <= other.y2 && this->y2 >= other.y1 &&
-            this->z1 <= other.z2 && this->z2 >= other.z1;
-    }
-
-    bool Intersects(const BBox_int_ &other) const {
+    template<class U>
+    bool Intersects(const BBox<U> &other) const {
         return
             this->x1 <= other.x2 && this->x2 >= other.x1 &&
             this->y1 <= other.y2 && this->y2 >= other.y1 &&
@@ -233,6 +217,10 @@ struct BBox_int_ {
     }
 };
 #pragma pack(pop)
+
+using BBox_int_ = BBox<int>;
+using BBox_short_ = BBox<short>;
+using BBox_float_ = BBox<float>;
 
 #pragma pack(push, 1)
 struct Plane_float_ {
