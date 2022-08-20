@@ -40,6 +40,13 @@ inline void normalize_to_fixpoint(int *x, int *y, int *z) {
     *z *= mult;
 }
 
+inline bool FuzzyIsNull(float value) {
+    return std::abs(value) < 0.00001f;
+}
+
+inline bool FuzzyIsNull(double value) {
+    return std::abs(value) < 0.000000000001;
+}
 
 // #pragma pack(push, 1)
 // struct fixed {  // fixed-point decimal

@@ -79,7 +79,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radiu
  * @param face                          Polygon to check collision against.
  * @param pos                           Actor position to check.
  * @param dir                           Movement direction as a unit vector in fixpoint format.
- * @param move_distance[in,out]         Current movement distance along the `dir` axis. This parameter is not touched
+ * @param out_move_distance[in,out]     Current movement distance along the `dir` axis. This parameter is not touched
  *                                      when the function returns false. If the function returns true, then the
  *                                      distance required to hit the polygon is stored here. Note that this effectively
  *                                      means that this function can only decrease `move_distance`, but never increase
@@ -88,48 +88,42 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radiu
  * @return                              Whether the actor, modeled as a point, hits the provided polygon if moving from
  *                                      `pos` along the `dir` axis by at most `move_distance`.
  */
-static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *move_distance,
+static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *out_move_distance,
                                  int model_idx) {
     // _fp suffix => that's a fixpoint number
 
     // dot_product(dir, normal) is a cosine of an angle between them.
-    int cos_dir_normal_fp =
-        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+    float cos_dir_normal = Dot(ToFloatVectorFromFixpoint(dir), face->pFacePlane.vNormal);
 
-    if (cos_dir_normal_fp == 0)
+    if (FuzzyIsNull(cos_dir_normal))
         return false; // dir is perpendicular to face normal.
 
     if (face->uAttributes & FACE_ETHEREAL)
         return false;
 
-    if (cos_dir_normal_fp > 0 && !face->Portal())
+    if (cos_dir_normal > 0 && !face->Portal())
         return false; // We're facing away && face is not a portal.
 
-    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos);
+    float pos_face_distance = face->pFacePlane.SignedDistanceTo(ToFloatVector(pos));
 
-    if (cos_dir_normal_fp < 0 && pos_face_distance_fp < 0)
+    if (cos_dir_normal < 0 && pos_face_distance < 0)
         return false; // Facing towards the face but already inside the model.
 
-    if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
+    if (cos_dir_normal > 0 && pos_face_distance > 0)
         return false; // Facing away from the face and outside the model.
 
     // How far we need to move along the `dir` axis to hit face.
-    int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
+    float move_distance = -pos_face_distance / cos_dir_normal;
 
-    Vec3_short_ new_pos;
-    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) + 0x8000) >> 16);
-    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) + 0x8000) >> 16);
-    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) + 0x8000) >> 16);
+    Vec3_float_ new_pos = ToFloatVector(pos) + move_distance * ToFloatVectorFromFixpoint(dir);
 
-    if (move_distance_fp > *move_distance << 16)
+    if (move_distance > *out_move_distance)
         return false; // No correction needed.
 
-    if (!face->Contains(new_pos, model_idx))
+    if (!face->Contains(ToIntVector(new_pos), model_idx))
         return false;
 
-    *move_distance = move_distance_fp >> 16;
+    *out_move_distance = move_distance;
     return true;
 }
 
@@ -343,6 +337,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             // TODO: we should really either merge two face classes, or template the functions down the chain call here.
             BLVFace face;
             face.pFacePlane_old = mface.pFacePlaneOLD;
+            face.pFacePlane = mface.pFacePlane;
             face.uAttributes = mface.uAttributes;
             face.pBounding = mface.pBoundingBox;
             face.zCalc = mface.zCalc;
