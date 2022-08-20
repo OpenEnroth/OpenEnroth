@@ -23,7 +23,7 @@ CollisionState collision_state;
  * @param pos                           Actor position to check.
  * @param radius                        Actor radius.
  * @param dir                           Movement direction as a unit vector in fixpoint format.
- * @param move_distance[out]            Move distance along the `dir` axis required to touch the provided polygon.
+ * @param out_move_distance[out]        Move distance along the `dir` axis required to touch the provided polygon.
  *                                      Always non-negative. This parameter is not set if the function returns false.
  *                                      Note that "touching" in this context means that the distance from the actor's
  *                                      center to the polygon equals actor's radius.
@@ -33,52 +33,41 @@ CollisionState collision_state;
  *                                      polygon if moving along the `dir` axis.
  */
 static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
-                                  int *move_distance, bool ignore_ethereal, int model_idx) {
+                                  int *out_move_distance, bool ignore_ethereal, int model_idx) {
     if (ignore_ethereal && face->Ethereal())
         return false;
 
-    // _fp suffix => that's a fixpoint number
-
     // dot_product(dir, normal) is a cosine of an angle between them.
-    int cos_dir_normal_fp =
-        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+    float cos_dir_normal = Dot(ToFloatVectorFromFixpoint(dir), face->pFacePlane.vNormal);
 
-    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
-    int radius_fp = radius << 16;
-
-    int64_t overshoot;
-    signed int move_distance_fp;
+    float pos_face_distance = face->pFacePlane.SignedDistanceTo(ToFloatVector(pos));
 
     // How deep into the model that the face belongs to we already are,
     // positive value => actor's sphere already intersects the model.
-    int overshoot_fp = -pos_face_distance_fp + radius_fp;
-    if (abs(overshoot_fp) < radius_fp) {
+    float overshoot = -pos_face_distance + radius;
+    float move_distance = 0;
+    if (abs(overshoot) < radius) {
         // We got here => we're not that deep into the model. Can just push us back a little.
-        overshoot = abs(overshoot_fp) >> 16;
-        move_distance_fp = 0;
+        move_distance = 0;
     } else {
         // We got here => we're already inside the model. Or way outside.
         // We just say we overshot by radius. No idea why.
         overshoot = radius;
 
         // Then this is a correction needed to bring us to the point where actor's sphere is just touching the face.
-        move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
+        move_distance = overshoot / cos_dir_normal;
     }
 
-    Vec3_short_ new_pos;
-    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) - overshoot * face->pFacePlane_old.vNormal.x) >> 16);
-    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
-    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
+    Vec3_float_ new_pos =
+        ToFloatVector(pos) + move_distance * ToFloatVectorFromFixpoint(dir) - overshoot * face->pFacePlane.vNormal;
 
-    if (!face->Contains(new_pos, model_idx))
+    if (!face->Contains(ToIntVector(new_pos), model_idx))
         return false; // We've just managed to slide past the face, so pretend no collision happened.
 
-    if (move_distance_fp < 0) {
-        *move_distance = 0;
+    if (move_distance < 0) {
+        *out_move_distance = 0;
     } else {
-        *move_distance = move_distance_fp >> 16;
+        *out_move_distance = move_distance;
     }
 
     return true;

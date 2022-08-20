@@ -11,13 +11,13 @@ uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 template<class From, class To>
 struct vector_conversion_allowed : std::false_type {};
 
-// Allow widening vector conversions.
-template<>
-struct vector_conversion_allowed<int16_t, int32_t> : std::true_type {};
-template<>
-struct vector_conversion_allowed<int16_t, int64_t> : std::true_type {};
-template<>
-struct vector_conversion_allowed<int32_t, int64_t> : std::true_type {};
+#define WOMM_ALLOW_VECTOR_CONVERSION(FROM, TO) \
+template<> \
+struct vector_conversion_allowed<FROM, TO> : std::true_type {};
+
+WOMM_ALLOW_VECTOR_CONVERSION(int16_t, int32_t)
+WOMM_ALLOW_VECTOR_CONVERSION(int16_t, int64_t)
+WOMM_ALLOW_VECTOR_CONVERSION(int32_t, int64_t)
 
 #pragma pack(push, 1)
 template <class T>
@@ -73,6 +73,22 @@ struct Vec3 {
         z *= denom;
     }
 
+    friend Vec3<int> ToIntVector(const Vec3 &v) requires std::is_floating_point_v<T> {
+        return Vec3<int>(std::round(v.x), std::round(v.y), std::round(v.z));
+    }
+
+    friend Vec3<int> ToFixpointVector(const Vec3 &v) requires std::is_floating_point_v<T> {
+        return Vec3<int>(std::round(v.x * 65536.0), std::round(v.y * 65536.0), std::round(v.z * 65536.0));
+    }
+
+    friend Vec3<float> ToFloatVector(const Vec3 &v) requires std::is_integral_v<T> {
+        return Vec3<float>(v.x, v.y, v.z);
+    }
+
+    friend Vec3<float> ToFloatVectorFromFixpoint(const Vec3 &v) requires std::is_integral_v<T> {
+        return Vec3<float>(v.x / 65536.0, v.y / 65536.0, v.z / 65536.0);
+    }
+
     friend T LengthSqr(const Vec3 &v) {
         return v.x * v.x + v.y * v.y + v.z * v.z;
     }
@@ -91,6 +107,14 @@ struct Vec3 {
 
     friend Vec3 operator/(const Vec3 &l, T r) {
         return Vec3(l.x / r, l.y / r, l.z / r);
+    }
+
+    friend Vec3 operator*(const Vec3 &l, T r) {
+        return Vec3(l.x * r, l.y * r, l.z * r);
+    }
+
+    friend Vec3 operator*(T l, const Vec3 &r) {
+        return r * l;
     }
 
     friend Vec3 Cross(const Vec3 &l, const Vec3 &r) {
@@ -214,6 +238,17 @@ struct BBox_int_ {
 struct Plane_float_ {
     Vec3_float_ vNormal;
     float dist = 0.0f;
+
+    /**
+     * @param point                     Point to calculate distance to.
+     * @return                          Signed distance to the provided point from this plane. Positive value
+     *                                  means that `point` is in the half-space that the normal is pointing to,
+     *                                  and this usually is "outside" the model that the face belongs to.
+     */
+    float SignedDistanceTo(const Vec3_float_ &point) {
+        return this->dist + this->vNormal.x * point.x + this->vNormal.y * point.y + this->vNormal.z * point.z;
+    }
+
 };
 #pragma pack(pop)
 
