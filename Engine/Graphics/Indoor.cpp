@@ -1956,6 +1956,8 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     bNoNPCHiring = false;
     pDest = 1;
     uCurrentlyLoadedLevelType = LEVEL_Indoor;
+    pBLVRenderParams->uPartySectorID = 0;
+    pBLVRenderParams->uPartyEyeSectorID = 0;
 
     engine->SetUnderwater(
         Is_out15odm_underwater());
