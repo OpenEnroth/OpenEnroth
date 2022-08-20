@@ -1226,7 +1226,6 @@ Render::Render(
 
     uNumBillboardsToDraw = 0;
 
-    hd_water_tile_id = -1;
     hd_water_current_frame = 0;
 
     this->p2DGraphics = nullptr;
