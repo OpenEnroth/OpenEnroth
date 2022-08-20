@@ -1728,6 +1728,9 @@ int RenderOpenGL::GetActorsInViewport(int pDepth) {
     if ((signed int)render->uNumBillboardsToDraw > 0) {
         for (a1a = 0; (signed int)a1a < (signed int)v12; ++a1a) {
             v3 = render->pBillboardRenderListD3D[a1a].sParentBillboardID;
+            if(v3 == -1)
+                continue; // E.g. spell particle.
+
             v5 = (unsigned __int16)pBillboardRenderList[v3].object_pid;
             if (PID_TYPE(v5) == OBJECT_Actor) {
                 if (pBillboardRenderList[v3].screen_space_z <= pDepth) {
