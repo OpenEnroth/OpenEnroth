@@ -1581,10 +1581,11 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
                                 // TODO: nine slice
                                 return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented yet"));
                             }
-
                             break;
                         case(lua_nk_style_type_vec2):
                             lua_check_ret(lua_nk_parse_vec2(L, -1, (struct nk_vec2*)prop.ptr));
+                            break;
+                        default:
                             break;
                     }
                 }
