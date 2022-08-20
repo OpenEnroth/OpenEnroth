@@ -1620,10 +1620,10 @@ void UpdateActors_BLV() {
             if (moveSpeed > 1000)
                 moveSpeed = 1000;
 
-            pActors[actor_id].vVelocity.x = fixpoint_mul(TrigLUT->Cos(pActors[actor_id].uYawAngle), moveSpeed);
-            pActors[actor_id].vVelocity.y = fixpoint_mul(TrigLUT->Sin(pActors[actor_id].uYawAngle), moveSpeed);
+            pActors[actor_id].vVelocity.x = TrigLUT->Cos(pActors[actor_id].uYawAngle) * moveSpeed;
+            pActors[actor_id].vVelocity.y = TrigLUT->Sin(pActors[actor_id].uYawAngle) * moveSpeed;
             if (isFlying)
-                pActors[actor_id].vVelocity.z = fixpoint_mul(TrigLUT->Sin(pActors[actor_id].uPitchAngle), moveSpeed);
+                pActors[actor_id].vVelocity.z = TrigLUT->Sin(pActors[actor_id].uPitchAngle) * moveSpeed;
         } else {  // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
             pActors[actor_id].vVelocity.x = fixpoint_mul(55000, pActors[actor_id].vVelocity.x);
@@ -1827,8 +1827,8 @@ void UpdateActors_BLV() {
                                     v45 = TrigLUT->Atan2(
                                         pActors[actor_id].vPosition.x - pLevelDecorations[v37].vPosition.x,
                                         pActors[actor_id].vPosition.y - pLevelDecorations[v37].vPosition.y);
-                                    pActors[actor_id].vVelocity.x = fixpoint_mul(TrigLUT->Cos(v45), _this);
-                                    pActors[actor_id].vVelocity.y = fixpoint_mul(TrigLUT->Sin(v45), _this);
+                                    pActors[actor_id].vVelocity.x = TrigLUT->Cos(v45) * _this;
+                                    pActors[actor_id].vVelocity.y = TrigLUT->Sin(v45) * _this;
                                     pActors[actor_id].vVelocity.x =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                     pActors[actor_id].vVelocity.y =
@@ -3239,38 +3239,38 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_StrafeLeft:
-                party_dx -= fixpoint_mul(TrigLUT->Sin(angle), static_cast<int>(pParty->uWalkSpeed * fWalkSpeedMultiplier / 2));
-                party_dy += fixpoint_mul(TrigLUT->Cos(angle), static_cast<int>(pParty->uWalkSpeed * fWalkSpeedMultiplier / 2));
+                party_dx -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                party_dy += TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_StrafeRight:
-                party_dx += fixpoint_mul(TrigLUT->Sin(angle), static_cast<int>(pParty->uWalkSpeed * fWalkSpeedMultiplier / 2));
-                party_dy -= fixpoint_mul(TrigLUT->Cos(angle), static_cast<int>(pParty->uWalkSpeed * fWalkSpeedMultiplier / 2));
+                party_dy -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                party_dx += TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkForward:
-                party_dx += fixpoint_mul(TrigLUT->Cos(angle), static_cast<int>(pParty->uWalkSpeed * fWalkSpeedMultiplier));
-                party_dy += fixpoint_mul(TrigLUT->Sin(angle), static_cast<int>(pParty->uWalkSpeed * fWalkSpeedMultiplier));
+                party_dx += TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                party_dy += TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkBackward:
-                party_dx -= fixpoint_mul(TrigLUT->Cos(angle), static_cast<int>(pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier));
-                party_dy -= fixpoint_mul(TrigLUT->Sin(angle), static_cast<int>(pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier));
+                party_dx -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                party_dy -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_RunForward:
-                party_dx += fixpoint_mul(TrigLUT->Cos(angle), static_cast<int>(2 * pParty->uWalkSpeed * fWalkSpeedMultiplier));
-                party_dy += fixpoint_mul(TrigLUT->Sin(angle), static_cast<int>(2 * pParty->uWalkSpeed * fWalkSpeedMultiplier));
+                party_dx += TrigLUT->Cos(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                party_dy += TrigLUT->Sin(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
             case PARTY_RunBackward:
-                party_dx -= fixpoint_mul(TrigLUT->Cos(angle), static_cast<int>(pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier));
-                party_dy -= fixpoint_mul(TrigLUT->Sin(angle), static_cast<int>(pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier));
+                party_dx -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                party_dy -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
@@ -3416,8 +3416,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 new_party_x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
                 new_party_y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
             int len = integer_sqrt(party_dx * party_dx + party_dy * party_dy);
-            party_dx = fixpoint_mul(TrigLUT->Cos(angle), len);
-            party_dy = fixpoint_mul(TrigLUT->Sin(angle), len);
+            party_dx = TrigLUT->Cos(angle) * len;
+            party_dy = TrigLUT->Sin(angle) * len;
         } else if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
             BLVFace *pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
             if (pFace->uPolygonType == POLYGON_Floor) {

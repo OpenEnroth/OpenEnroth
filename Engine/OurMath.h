@@ -2,8 +2,9 @@
 
 #include <cassert>
 #include <cmath>
-#include <limits>
 #include <cstdint>
+#include <array>
+#include <limits>
 
 #include "Engine/MM7.h"
 
@@ -107,26 +108,40 @@ inline bool FuzzyIsNull(double value) {
 // };
 // #pragma pack(pop)
 
-/*  186 */
-#pragma pack(push, 1)
-struct TrigTableLookup {
+/**
+ * Lookup table for trigonometric functions.
+ */
+class TrigTableLookup {
+ public:
+    static const int uIntegerPi = 1024;
+    static const int uIntegerHalfPi = 512;
+    static const int uIntegerDoublePi = 2048;
+    static const int uDoublePiMask = 2047;
+    static const int uPiMask = 1023;
+    static const int uHalfPiMask = 511;
+
     TrigTableLookup();
 
-    int Cos(int angle);
-    unsigned int Atan2(int x, int y);
-    int Sin(int angle);
+    /**
+     * @param angle                     Angle in 1/2048ths of a full circle.
+     * @return                          Cosine of the provided angle.
+     */
+    float Cos(int angle) const;
 
-    int pTanTable[520];
-    int pCosTable[520];
-    int pInvCosTable[520];
-    static const unsigned int uIntegerPi = 1024;
-    static const unsigned int uIntegerHalfPi = 512;
-    static const unsigned int uIntegerDoublePi = 2048;
-    static const unsigned int uDoublePiMask = 2047;
-    static const unsigned int uPiMask = 1023;
-    static const unsigned int uHalfPiMask = 511;
+    /**
+     * @param angle                     Angle in 1/2048ths of a full circle.
+     * @return                          Sine of the provided angle.
+     */
+    float Sin(int angle) const;
+
+    /**
+     * @return                          Angle in 1/2048ths of a full circle. Actual result is in range [0, 2047].
+     */
+    int Atan2(int x, int y) const;
+
+ private:
+    std::array<float, uIntegerHalfPi + 1> pCosTable;
 };
-#pragma pack(pop)
 
 template <typename FloatType>
 inline int bankersRounding(const FloatType &value) {
@@ -158,4 +173,4 @@ inline int bankersRounding<double>(const double &inValue) {
     return c.l;
 }
 
-extern struct TrigTableLookup *TrigLUT;
+extern TrigTableLookup *TrigLUT;

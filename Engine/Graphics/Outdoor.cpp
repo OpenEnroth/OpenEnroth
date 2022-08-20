@@ -2442,7 +2442,7 @@ void ODM_ProcessPartyActions() {
     pParty->sRotationY = _angle_x;
     //-------------------------------------------
     if (pParty->bFlying) {
-        v129 = fixpoint_mul(4, TrigLUT->Cos(OS_GetTime()));
+        v129 = 4 * TrigLUT->Cos(OS_GetTime());
         party_new_Z = v113 + v129;
         if (pModel_) party_new_Z = v113;
         if (pParty->FlyActive())
@@ -2614,9 +2614,9 @@ void ODM_ProcessPartyActions() {
             v129 = TrigLUT->Atan2(
                 _angle_x - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.x,
                 _angle_y - pLevelDecorations[(signed int)collision_state.pid >> 3].vPosition.y);
-            v2 = fixpoint_mul(TrigLUT->Cos(v129), integer_sqrt(v2 * v2 + v128 * v128));
-            v122 = fixpoint_mul(TrigLUT->Sin(v129), integer_sqrt(v2 * v2 + v128 * v128));
-            v128 = fixpoint_mul(TrigLUT->Sin(v129), integer_sqrt(v2 * v2 + v128 * v128));
+            v2 = TrigLUT->Cos(v129) * integer_sqrt(v2 * v2 + v128 * v128);
+            v122 = TrigLUT->Sin(v129) * integer_sqrt(v2 * v2 + v128 * v128);
+            v128 = TrigLUT->Sin(v129) * integer_sqrt(v2 * v2 + v128 * v128);
         }
 
         if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
@@ -3100,12 +3100,12 @@ void UpdateActors_ODM() {
             if (Actor_Speed > 1000) Actor_Speed = 1000;
 
             pActors[Actor_ITR].vVelocity.x =
-                fixpoint_mul(TrigLUT->Cos(pActors[Actor_ITR].uYawAngle), Actor_Speed);
+                TrigLUT->Cos(pActors[Actor_ITR].uYawAngle) * Actor_Speed;
             pActors[Actor_ITR].vVelocity.y =
-                fixpoint_mul(TrigLUT->Sin(pActors[Actor_ITR].uYawAngle), Actor_Speed);
+                TrigLUT->Sin(pActors[Actor_ITR].uYawAngle) * Actor_Speed;
             if (uIsFlying) {
-                pActors[Actor_ITR].vVelocity.z = fixpoint_mul(
-                    TrigLUT->Sin(pActors[Actor_ITR].uPitchAngle), Actor_Speed);
+                pActors[Actor_ITR].vVelocity.z =
+                    TrigLUT->Sin(pActors[Actor_ITR].uPitchAngle) * Actor_Speed;
             }
         } else {
             pActors[Actor_ITR].vVelocity.x =
@@ -3306,9 +3306,9 @@ void UpdateActors_ODM() {
                             pLevelDecorations[v39].vPosition.y);
 
                     pActors[Actor_ITR].vVelocity.x =
-                        fixpoint_mul(TrigLUT->Cos(Angle_To_Decor), Coll_Speed);
+                        TrigLUT->Cos(Angle_To_Decor) * Coll_Speed;
                     pActors[Actor_ITR].vVelocity.y =
-                        fixpoint_mul(TrigLUT->Sin(Angle_To_Decor), Coll_Speed);
+                        TrigLUT->Sin(Angle_To_Decor) * Coll_Speed;
                     break;
                 case OBJECT_BModel:
                     ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9]

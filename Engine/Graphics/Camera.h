@@ -161,10 +161,6 @@ struct Camera3D {
     float fRotationZCosine = 0;
     float fRotationYSine = 0;
     float fRotationYCosine = 0;
-    int int_sine_Z = 0;
-    int int_cosine_Z = 0;
-    int int_sine_y = 0;
-    int int_cosine_y = 0;
 
     glm::vec3 vCameraPos {};
 

@@ -442,10 +442,10 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
 
     // TODO(pskelton): clean up
 
-    float cosz = pCamera3D->fRotationZCosine;  // int_cosine_Z;
-    float cosx = pCamera3D->fRotationYCosine;  // int_cosine_y;
-    float sinz = pCamera3D->fRotationZSine;  // int_sine_Z;
-    float sinx = pCamera3D->fRotationYSine;  // int_sine_y;
+    float cosz = pCamera3D->fRotationZCosine;
+    float cosx = pCamera3D->fRotationYCosine;
+    float sinz = pCamera3D->fRotationZSine;
+    float sinx = pCamera3D->fRotationYSine;
 
     // positions all minus ?
     float v11 = cosz * -pCamera3D->vCameraPos.x + sinz * -pCamera3D->vCameraPos.y;

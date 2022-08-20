@@ -658,11 +658,6 @@ void Camera3D::CalculateRotations(int camera_rot_y, int camera_rot_z) {
 
     fRotationYSine = sin((pi_double + pi_double) * (double)sRotationY / 2048.0);
     fRotationYCosine = cos((pi_double + pi_double) * (double)sRotationY / 2048.0);
-
-    int_sine_Z = TrigLUT->Sin(sRotationZ);
-    int_cosine_Z = TrigLUT->Cos(sRotationZ);
-    int_sine_y = TrigLUT->Sin(sRotationY);
-    int_cosine_y = TrigLUT->Cos(sRotationY);
 }
 
 //----- (00436A6D) --------------------------------------------------------

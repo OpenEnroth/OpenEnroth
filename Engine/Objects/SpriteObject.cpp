@@ -115,13 +115,9 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
 
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {
-        long long v13 =
-            fixpoint_mul(TrigLUT->Cos(yaw), TrigLUT->Cos(pitch));
-        long long a5a =
-            fixpoint_mul(TrigLUT->Sin(yaw), TrigLUT->Cos(pitch));
-        vVelocity.x = fixpoint_mul(v13, speed);
-        vVelocity.y = fixpoint_mul(a5a, speed);
-        vVelocity.z = fixpoint_mul(TrigLUT->Sin(pitch), speed);
+        vVelocity.x = TrigLUT->Cos(yaw) * TrigLUT->Cos(pitch) * speed;
+        vVelocity.y = TrigLUT->Sin(yaw) * TrigLUT->Cos(pitch) * speed;
+        vVelocity.z = TrigLUT->Sin(pitch) * speed;
     }
 
     // copy sprite object into slot
@@ -459,10 +455,8 @@ LABEL_13:
         v38 = TrigLUT->Atan2(
             pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
             pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
-        pSpriteObjects[uLayingItemID].vVelocity.x =
-            fixpoint_mul(TrigLUT->Cos(v38), v57);
-        pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(
-            TrigLUT->Sin(v38 - TrigLUT->uIntegerHalfPi), v57);
+        pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT->Cos(v38) * v57;
+        pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT->Sin(v38 - TrigLUT->uIntegerHalfPi) * v57;
         goto LABEL_74;
     }
 }
@@ -629,10 +623,8 @@ LABEL_25:
                                            pLevelDecorations[v15].vPosition.x,
                                        pSpriteObject->vPosition.y -
                                            pLevelDecorations[v15].vPosition.y);
-                pSpriteObject->vVelocity.x =
-                    fixpoint_mul(TrigLUT->Cos(v23), v40);
-                pSpriteObject->vVelocity.y =
-                    fixpoint_mul(TrigLUT->Sin(v23), v40);
+                pSpriteObject->vVelocity.x = TrigLUT->Cos(v23) * v40;
+                pSpriteObject->vVelocity.y = TrigLUT->Sin(v23) * v40;
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
