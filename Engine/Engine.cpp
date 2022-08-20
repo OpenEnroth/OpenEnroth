@@ -737,7 +737,7 @@ return Result::Success;
 
 //----- (0044EB5A) --------------------------------------------------------
 void Engine::OutlineSelection() {
-    if (!vis->default_list.uNumPointers)
+    if (!vis->default_list.uSize)
         return;
 
     Vis_ObjectInfo *object_info = vis->default_list.object_pointers[0];
@@ -750,13 +750,13 @@ void Engine::OutlineSelection() {
 
             case VisObjectType_Face: {
                 if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                    ODMFace *face = (ODMFace *)object_info->object;
+                    ODMFace *face = std::get<ODMFace *>(object_info->object);
                     if (face->uAttributes & FACE_OUTLINED)
                         face->uAttributes &= ~FACE_OUTLINED;
                     else
                         face->uAttributes |= FACE_OUTLINED;
                 } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    BLVFace *face = (BLVFace *)object_info->object;
+                    BLVFace *face = std::get<BLVFace *>(object_info->object);
                     if (face->uAttributes & FACE_OUTLINED)
                         face->uAttributes &= ~FACE_OUTLINED;
                     else

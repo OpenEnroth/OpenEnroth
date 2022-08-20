@@ -1,4 +1,7 @@
 #pragma once
+
+#include <variant>
+
 #include "Engine/Graphics/IRender.h"
 
 enum VisObjectType : uint32_t {
@@ -40,12 +43,14 @@ struct Vis_PIDAndDepth {
 };
 #pragma pack(pop)
 
+using Vis_Object = std::variant<std::monostate, int /* index */, ODMFace *, BLVFace *>;
+
 #pragma pack(push, 1)
 struct Vis_ObjectInfo {
-    void *object;
-    uint16_t object_pid;
-    int16_t depth;
-    VisObjectType object_type;
+    Vis_Object object;
+    uint16_t object_pid = PID_INVALID;
+    int16_t depth = -1;
+    VisObjectType object_type = VisObjectType_Any;
 };
 #pragma pack(pop)
 
@@ -53,24 +58,21 @@ struct Vis_ObjectInfo {
 struct Vis_SelectionList {
     enum PointerCreationType { All = 0, Unique = 1 };
 
-    Vis_SelectionList();
-    //----- (004C0585) --------------------------------------------------------
-    ~Vis_SelectionList() {}
     Vis_ObjectInfo *SelectionPointers(int a2, int a3);
     void create_object_pointers(PointerCreationType type = All);
+    void sort_object_pointers();
 
-    inline void AddObject(void *object, VisObjectType type, int depth,
-                          int pid) {
-        object_pool[uNumPointers].object = object;
-        object_pool[uNumPointers].object_type = type;
-        object_pool[uNumPointers].depth = depth;
-        object_pool[uNumPointers].object_pid = pid;
-        uNumPointers++;
+    inline void AddObject(Vis_Object object, VisObjectType type, int depth, int pid) {
+        object_pool[uSize].object = object;
+        object_pool[uSize].object_type = type;
+        object_pool[uSize].depth = depth;
+        object_pool[uSize].object_pid = pid;
+        uSize++;
     }
 
-    Vis_ObjectInfo object_pool[512] {};
-    Vis_ObjectInfo* object_pointers[512] {};
-    unsigned int uNumPointers;
+    std::array<Vis_ObjectInfo, 512> object_pool;
+    std::array<Vis_ObjectInfo*, 512> object_pointers = {{}};
+    unsigned int uSize = 0;
 };
 #pragma pack(pop)
 
@@ -107,7 +109,7 @@ class Vis {
                                 Vis_SelectionFilter *filter,
                                 bool only_reachable);
 
-    bool is_part_of_selection(void *uD3DBillboardIdx_or_pBLVFace_or_pODMFace,
+    bool is_part_of_selection(const Vis_Object &what,
                               Vis_SelectionFilter *filter);
     bool DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx);
     Vis_ObjectInfo *DetermineFacetIntersection(struct BLVFace *face,
@@ -137,7 +139,6 @@ class Vis {
                               signed int sModelID);
     void CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY,
                      float fPickDepth);
-    void sort_object_pointers(Vis_ObjectInfo **pPointers, int start, int end);
     void SortVerticesByX(struct RenderVertexD3D3 *pArray, unsigned int uStart,
                          unsigned int uEnd);
     void SortVerticesByY(struct RenderVertexD3D3 *pArray, unsigned int uStart,
