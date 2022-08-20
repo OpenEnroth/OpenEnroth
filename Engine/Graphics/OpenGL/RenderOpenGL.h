@@ -30,14 +30,14 @@ class RenderOpenGL : public RenderBase {
 
     virtual bool Initialize() override;
 
-    virtual bool NuklearInitialize(struct nk_tex_font *tfont);
-    virtual bool NuklearCreateDevice();
-    virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer);
-    virtual void NuklearRelease();
-    virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size);
-    virtual void NuklearFontFree(struct nk_tex_font *tfont);
-    virtual struct nk_image NuklearImageLoad(Image *img);
-    virtual void NuklearImageFree(Image *img);
+    virtual bool NuklearInitialize(struct nk_tex_font *tfont) override;
+    virtual bool NuklearCreateDevice() override;
+    virtual bool NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer) override;
+    virtual void NuklearRelease() override;
+    virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) override;
+    virtual void NuklearFontFree(struct nk_tex_font *tfont) override;
+    virtual struct nk_image NuklearImageLoad(Image *img) override;
+    virtual void NuklearImageFree(Image *img) override;
 
     virtual Texture *CreateTexture_Paletted(const std::string &name) override;
     virtual Texture *CreateTexture_ColorKey(const std::string &name, uint16_t colorkey) override;
@@ -116,7 +116,7 @@ class RenderOpenGL : public RenderBase {
                                unsigned int uZ, unsigned int uW) override;
     virtual void ResetUIClipRect() override;
 
-    virtual void DrawTextureNew(float u, float v, class Image *, uint32_t colourmask = 0xFFFFFFFF);
+    virtual void DrawTextureNew(float u, float v, class Image *, uint32_t colourmask = 0xFFFFFFFF) override;
     virtual void DrawTextureAlphaNew(float u, float v, class Image *) override;
 
         virtual void DrawTextureCustomHeight(float u, float v, class Image *,
@@ -208,11 +208,11 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawIndoorFaces() override;
     virtual void DrawIndoorBatched() override;
 
-    virtual void ReleaseTerrain();
-    virtual void ReleaseBSP();
+    virtual void ReleaseTerrain() override;
+    virtual void ReleaseBSP() override;
 
-    virtual void DrawTwodVerts();
-    virtual void DrawBillboards();
+    virtual void DrawTwodVerts() override;
+    void DrawBillboards();
 
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;

@@ -1502,7 +1502,6 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
         return 0;  // liches are not affected by self magics
 
     int resist_value = 0;
-
     switch (dmg_type) {  // get resistance
         case DMGT_FIRE:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE);
@@ -1511,23 +1510,21 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR);
             break;
         case DMGT_COLD:
-            resist_value =
-                GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER);
+            resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER);
             break;
         case DMGT_EARTH:
-            resist_value =
-                GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
+            resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
             break;
-
         case DMGT_SPIRIT:
-            resist_value =
-                GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_SPIRIT);
+            resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_SPIRIT);
             break;
         case DMGT_MIND:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND);
             break;
         case DMGT_BODY:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
+            break;
+        default:
             break;
     }
 
@@ -3134,6 +3131,8 @@ int Player::GetActualSkillLevel(
             if (CheckHiredNPCSpeciality(Burglar)) bonus_value += 8;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM);
         } break;
+        default:
+            break;
     }
 
     if (uSkillType == PLAYER_SKILL_CLUB) {
@@ -3269,6 +3268,8 @@ int Player::GetSkillBonus(
                             wearingArmor = true;
                             multiplier = GetMultiplierForSkillLevel(
                                 itemSkillType, 1, 1, 1, 1);
+                            break;
+                        default:
                             break;
                     }
                     ACSum += multiplier * (currArmorSkillLevel & 0x3F);

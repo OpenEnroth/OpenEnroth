@@ -130,7 +130,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(unsigned int x, unsigned int y,
     pBtn_ExitCancel = CreateButton(
         0x1D7u, 0x1BDu, 0xA9u, 0x23u, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_DIALOGUE_EXIT),
-        {{ui_exit_cancel_button_background}}
+        {ui_exit_cancel_button_background}
     );
     if (wData.val != 1) {
         int num_dialugue_options = 0;
@@ -714,6 +714,8 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                 break;
             case DIALOGUE_SCRIPTED_LINE_6:
                 npc_event_id = speakingNPC->dialogue_6_evt_id;
+                break;
+            default:
                 break;
         }
         if ((npc_event_id >= 200) && (npc_event_id <= 310)) {

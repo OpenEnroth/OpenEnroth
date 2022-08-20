@@ -1550,7 +1550,6 @@ void UpdateActors_BLV() {
     // int v4;                  // eax@8
     // __int16 v5;              // ax@11
     // signed __int64 v10;      // qax@18
-    int v22;                 // edi@46
     unsigned int v24;        // eax@51
     int v27;                 // ST08_4@54
     int v28;                 // edi@54
@@ -1655,7 +1654,6 @@ void UpdateActors_BLV() {
             collision_state.check_hi = true;
             collision_state.radius_hi = pActors[actor_id].uActorRadius;
             collision_state.radius_lo = pActors[actor_id].uActorRadius;
-            v22 = 0;
             for (int attempt = 0; attempt < 100; attempt++) {
                 collision_state.position_hi.x = pActors[actor_id].vPosition.x;
                 collision_state.position_lo.x = collision_state.position_hi.x;
@@ -1671,7 +1669,7 @@ void UpdateActors_BLV() {
                 collision_state.velocity.y = pActors[actor_id].vVelocity.y;
                 collision_state.velocity.z = pActors[actor_id].vVelocity.z;
                 collision_state.uSectorID = pActors[actor_id].uSectorID;
-                if (!collision_state.PrepareAndCheckIfStationary(v22)) {
+                if (!collision_state.PrepareAndCheckIfStationary(0)) {
                     v58 = 0;
                     v24 = 8 * actor_id;
                     HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor_id);
@@ -1736,54 +1734,48 @@ void UpdateActors_BLV() {
                                             fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                         pActors[actor_id].vVelocity.z =
                                             fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                        v22 = 0;
                                         continue;
                                     }
                                     if (pActors[actor_id].pMonsterInfo.uHostilityType) {
                                         if (!v56) {
-                                            Actor::AI_Flee(actor_id, collision_state.pid, v22, (AIDirection *)v22);
+                                            Actor::AI_Flee(actor_id, collision_state.pid, 0, nullptr);
                                             pActors[actor_id].vVelocity.x =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                             pActors[actor_id].vVelocity.y =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                             pActors[actor_id].vVelocity.z =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            v22 = 0;
                                             continue;
                                         }
                                     } else {
                                         if (!v56) {
                                             if (!pActors[v37].pMonsterInfo.uHostilityType) {
-                                                Actor::AI_FaceObject(actor_id, collision_state.pid,
-                                                                    v22, (AIDirection *)v22);
+                                                Actor::AI_FaceObject(actor_id, collision_state.pid, 0, nullptr);
                                                 pActors[actor_id].vVelocity.x =
                                                     fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                                 pActors[actor_id].vVelocity.y =
                                                     fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                                 pActors[actor_id].vVelocity.z =
                                                     fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                                v22 = 0;
                                                 continue;
                                             }
-                                            Actor::AI_Flee(actor_id, collision_state.pid, v22, (AIDirection *)v22);
+                                            Actor::AI_Flee(actor_id, collision_state.pid, 0, nullptr);
                                             pActors[actor_id].vVelocity.x =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                             pActors[actor_id].vVelocity.y =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                             pActors[actor_id].vVelocity.z =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            v22 = 0;
                                             continue;
                                         }
                                     }
-                                    Actor::AI_StandOrBored(actor_id, 4, v22, &v53);
+                                    Actor::AI_StandOrBored(actor_id, 4, 0, &v53);
                                     pActors[actor_id].vVelocity.x =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                     pActors[actor_id].vVelocity.y =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                     pActors[actor_id].vVelocity.z =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    v22 = 0;
                                     continue;
                                 }
                                 if (PID_TYPE(collision_state.pid) == OBJECT_Player) {
@@ -1810,14 +1802,13 @@ void UpdateActors_BLV() {
                                             fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
                                         continue;
                                     }
-                                    Actor::AI_FaceObject(actor_id, collision_state.pid, v22, (AIDirection *)v22);
+                                    Actor::AI_FaceObject(actor_id, collision_state.pid, 0, nullptr);
                                     pActors[actor_id].vVelocity.x =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                     pActors[actor_id].vVelocity.y =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                     pActors[actor_id].vVelocity.z =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    v22 = 0;
                                     continue;
                                 }
                                 if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
@@ -1835,7 +1826,6 @@ void UpdateActors_BLV() {
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                     pActors[actor_id].vVelocity.z =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    v22 = 0;
                                     continue;
                                 }
                                 if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
@@ -1854,7 +1844,6 @@ void UpdateActors_BLV() {
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                             pActors[actor_id].vVelocity.z =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            v22 = 0;
                                             continue;
                                         }
                                     } else {
@@ -1896,7 +1885,6 @@ void UpdateActors_BLV() {
                                 pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                 pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                 pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                v22 = 0;
                                 continue;
                             } else {
                                 pActors[actor_id].vPosition.x = collision_state.new_position_lo.x;
@@ -1917,9 +1905,8 @@ void UpdateActors_BLV() {
                         if (pParty->bTurnBasedModeOn &&
                             (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
                             continue;
-                        if (!pActors[actor_id].pMonsterInfo.uHostilityType ||
-                            v56 != v22) {
-                            Actor::AI_StandOrBored(actor_id, 4, v22, &v52);
+                        if (!pActors[actor_id].pMonsterInfo.uHostilityType || v56 != 0) {
+                            Actor::AI_StandOrBored(actor_id, 4, 0, &v52);
                             continue;
                         }
                     }
@@ -2404,7 +2391,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     // centre sprite on coords
                     int modz = pSpriteObjects[i].vPosition.z;
                     if (v4->uFlags & 0x20)
-                       modz -= (int)((v4->scale, v4->hw_sprites[v9]->uBufferHeight) / 2);
+                       modz -= (int)((v4->scale * v4->hw_sprites[v9]->uBufferHeight) / 2);
 
                     int16_t v34 = 0;
                     if (v4->uFlags & 2) v34 = 2;

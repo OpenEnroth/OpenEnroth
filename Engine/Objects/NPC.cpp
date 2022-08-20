@@ -1052,13 +1052,13 @@ void NPCHireableDialogPrepare() {
     NPCData *v1;    // edi@1
 
     v0 = 0;
-    v1 = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount + -(dword_591080 != 0))];  //- 1
+    v1 = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, 0, 0, window->GetWidth(), 350, 0);
     pBtn_ExitCancel = pDialogueWindow->CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_CANCEL),
-        {{ui_exit_cancel_button_background}}
+        {ui_exit_cancel_button_background}
     );
     pDialogueWindow->CreateButton(0, 0, 0, 0, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
     if (pNPCStats->pProfessions[v1->profession].pBenefits) {
@@ -1096,11 +1096,11 @@ void _4B4224_UpdateNPCTopics(int _this) {
         );
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             566, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::N,
-            localization->GetString(LSTR_CANCEL), {{ui_buttdesc2}}
+            localization->GetString(LSTR_CANCEL), {ui_buttdesc2}
         );
         pBtn_YES = pDialogueWindow->CreateButton(
             486, 445, 75, 33, 1, 0, UIMSG_BF, 1, GameKey::Y,
-            transition_button_label.c_str(), {{ui_buttyes2}});
+            transition_button_label.c_str(), {ui_buttyes2});
         pDialogueWindow->CreateButton(
             pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63u, 73u, 1, 0,
             UIMSG_BF, 1u, GameKey::Space, transition_button_label.c_str());
@@ -1120,7 +1120,7 @@ void _4B4224_UpdateNPCTopics(int _this) {
         pBtn_ExitCancel = pDialogueWindow->CreateButton(
             471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
             localization->GetString(LSTR_END_CONVERSATION),
-            {{ui_exit_cancel_button_background}}
+            {ui_exit_cancel_button_background}
         );
         pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0, UIMSG_BuyInShop_Identify_Repair, 0);
         if (pDialogueNPCCount == 1 && dword_591080) {
@@ -1310,9 +1310,9 @@ const char *GetProfessionActionText(NPCProf prof) {
     case Piper:
     case FallenWizard:
         return pNPCStats->pProfessions[(int)prof].pActionText;
+    default:
+        return pNPCTopics[407].pTopic;
     }
-
-    return pNPCTopics[407].pTopic;
 }
 
 //----- (004BB756) --------------------------------------------------------

@@ -723,6 +723,8 @@ void Game::EventLoop() {
                                 break;
                             }
                             break;
+                        default:
+                            break;
                     }
                     if (pModalWindow) {
                         pModalWindow->Release();
@@ -1273,6 +1275,8 @@ void Game::EventLoop() {
                                     break;
                                 case UIMSG_HiredNPC_CastSpell:
                                     pSpellInfo->uFlags &= ~0x0200u;
+                                    break;
+                                default:
                                     break;
                             }
                             pSpellInfo->uPlayerID_2 = uMessageParam;

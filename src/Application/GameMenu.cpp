@@ -497,6 +497,9 @@ void Menu::EventLoop() {
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 }
                 continue;
+
+            default:
+                break;
         }
     }
 }

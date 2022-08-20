@@ -1537,6 +1537,8 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
                             case(lua_nk_style_type_vec2):
                                 memcpy(bprop.ptr, sprop.ptr, sizeof(struct nk_vec2));
                                 break;
+                            default:
+                                break;
                         }
                     }
                 }
@@ -2860,6 +2862,9 @@ static int lua_nk_style_get(lua_State *L) {
             lua_pushnumber(L, vec2->y);
             lua_rawset(L, -3);
             return 1;
+
+        default:
+            break;
     }
 
     return luaL_argerror(L, 3, lua_pushfstring(L, "not implemented yet"));

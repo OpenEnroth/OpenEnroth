@@ -1828,13 +1828,11 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
     unsigned int v6;        // edi@9
     int v7;                 // eax@9
     SpriteFrame *frame;     // eax@9
-    unsigned __int16 *v10;  // eax@9
     int v13;                // ecx@9
     int r;                 // ecx@20
     int g;                 // dl@20
     int b_;                // eax@20
     Particle_sw local_0;    // [sp+Ch] [bp-98h]@7
-    unsigned __int16 *v37;  // [sp+84h] [bp-20h]@9
     int v38;                // [sp+88h] [bp-1Ch]@9
 
     for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
@@ -1863,7 +1861,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                     // v8 = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                     // v6 + v7);
 
-                    v10 = (unsigned __int16 *)TrigLUT->Atan2(
+                    int v10 = TrigLUT->Atan2(
                         pLevelDecorations[i].vPosition.x -
                         pCamera3D->vCameraPos.x,
                         pLevelDecorations[i].vPosition.y -
@@ -1876,7 +1874,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                         (int64_t)v10) >>
                         8) &
                         7;
-                    v37 = (unsigned __int16 *)v13;
+                    int v37 = v13;
                     if (frame->uFlags & 2) v38 = 2;
                     if ((256 << v13) & frame->uFlags) v38 |= 4;
                     if (frame->uFlags & 0x40000) v38 |= 0x40;
