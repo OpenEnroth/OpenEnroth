@@ -36,14 +36,16 @@ const float pi = static_cast<float>(M_PI);
 
 #pragma pack(push, 1)
 template <class T>
-struct Vec3 : public Vec2<T> {
+struct Vec3 {
+    T x;
+    T y;
     T z;
 
-    explicit Vec3(T a = 0, T b = 0, T c = 0) : Vec2<T>(a, b), z(c) {}
+    explicit Vec3(T a = 0, T b = 0, T c = 0) : x(a), y(b), z(c) {}
 
     // TODO: rewrite with requires clause when we have C++20
     template<class OtherT, class = std::enable_if_t<vector_conversion_allowed<OtherT, T>::value>>
-    Vec3(const Vec3<OtherT> &other) : Vec2<T>(other.x, other.y), z(other.z) {}
+    Vec3(const Vec3<OtherT> &other) : x(other.x), y(other.y), z(other.z) {}
 
     template <class U>
     inline uint32_t GetDistanceTo(Vec3<U> &o) {
