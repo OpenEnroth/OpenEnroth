@@ -1712,9 +1712,9 @@ void RenderOpenGL::SavePCXScreenshot() {
 }
 
 
-// should this be combined / moved out of render
+// TODO: should this be combined / moved out of render
 int RenderOpenGL::GetActorsInViewport(int pDepth) {
-    unsigned int
+    int
         v3;  // eax@2 применяется в закле Жар печи для подсчёта кол-ва монстров
              // видимых группе и заполнения массива id видимых монстров
     unsigned int v5;   // eax@2
