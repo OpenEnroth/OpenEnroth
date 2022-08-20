@@ -375,7 +375,7 @@ class IRender {
     virtual void BeginLightmaps2() = 0;
     virtual void EndLightmaps2() = 0;
     virtual bool DrawLightmap(struct Lightmap *pLightmap,
-                              struct Vec3_float_ *pColorMult, float z_bias) = 0;
+                              Vec3_float_ *pColorMult, float z_bias) = 0;
 
     virtual void BeginDecals() = 0;
     virtual void EndDecals() = 0;

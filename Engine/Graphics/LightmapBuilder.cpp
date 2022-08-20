@@ -166,8 +166,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
         (float)pLight->vPosition.z >= bounding_z2)
         return false;
 
-    Vec3_float_::NegDot(&TerrainVertices->vWorldPosition, pNormal,
-                        light_tile_dist);
+    *light_tile_dist = -Dot(TerrainVertices->vWorldPosition, *pNormal);
     float p_dot = ((float)pLight->vPosition.x * pNormal->x +
                    (float)pLight->vPosition.y * pNormal->y +
                    (float)pLight->vPosition.z * pNormal->z + *light_tile_dist) +

@@ -7742,11 +7742,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
-        Vec3_int_ a3;
-        a3.x = actor->vPosition.x - pParty->vPosition.x;
-        a3.y = actor->vPosition.y - pParty->vPosition.y;
-        a3.z = actor->vPosition.z - pParty->vPosition.z;
-        Vec3_int_::Normalize(&a3.x, &a3.y, &a3.z);
+        Vec3_int_ a3 = actor->vPosition - pParty->vPosition;
+        normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
         Actor::DamageMonsterFromParty(PID(OBJECT_Player, uActiveCharacter - 1),
                                       target_id, &a3);

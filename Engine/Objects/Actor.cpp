@@ -5282,7 +5282,7 @@ void area_of_effect__damage_evaluate() {
 
                         // check line of sight
                         if (Check_LineOfSight(pActors[target_id].vPosition.x, pActors[target_id].vPosition.y, pActors[target_id].vPosition.z + 50, attacker_coord)) {
-                            Vec3_int_::Normalize(&xdiff, &ydiff, &zvec);
+                            normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
                             AttackerInfo.vec_4B4[attack_index].x = xdiff;
                             AttackerInfo.vec_4B4[attack_index].y = ydiff;
                             AttackerInfo.vec_4B4[attack_index].z = zvec;
@@ -5349,7 +5349,7 @@ void area_of_effect__damage_evaluate() {
                                            pActors[actorID].vPosition.y,
                                            pActors[actorID].vPosition.z + 50,
                                            attacker_coord)) {
-                                Vec3_int_::Normalize(&xdiff, &ydiff, &zvec);
+                                normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
                                 AttackerInfo.vec_4B4[attack_index].x = xdiff;
                                 AttackerInfo.vec_4B4[attack_index].y = ydiff;
                                 AttackerInfo.vec_4B4[attack_index].z = zvec;

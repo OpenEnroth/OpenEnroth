@@ -22,10 +22,12 @@ struct vector_conversion_allowed<int32_t, int64_t> : std::true_type {};
 #pragma pack(push, 1)
 template <class T>
 struct Vec2 {
-    T x;
-    T y;
+    T x = 0;
+    T y = 0;
 
-    explicit Vec2(T a = 0, T b = 0) : x(a), y(b) {}
+    Vec2() = default;
+
+    Vec2(T a, T b) : x(a), y(b) {}
 };
 #pragma pack(pop)
 
@@ -37,20 +39,20 @@ const float pi = static_cast<float>(M_PI);
 #pragma pack(push, 1)
 template <class T>
 struct Vec3 {
-    T x;
-    T y;
-    T z;
+    T x = 0;
+    T y = 0;
+    T z = 0;
 
-    explicit Vec3(T a = 0, T b = 0, T c = 0) : x(a), y(b), z(c) {}
+    Vec3() = default;
+    Vec3(const Vec3 &other) = default;
 
-    // TODO: rewrite with requires clause when we have C++20
-    template<class OtherT, class = std::enable_if_t<vector_conversion_allowed<OtherT, T>::value>>
+    template<class OtherT> requires vector_conversion_allowed<OtherT, T>::value
     Vec3(const Vec3<OtherT> &other) : x(other.x), y(other.y), z(other.z) {}
 
-    template <class U>
-    inline uint32_t GetDistanceTo(Vec3<U> &o) {
-        return int_get_vector_length(abs(this->x - o.x), abs(this->y - o.y),
-                                     abs(this->z - o.z));
+    Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
+
+    inline T GetDistanceTo(const Vec3 &o) {
+        return Length(*this - o);
     }
 
     static void Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz) {
@@ -64,24 +66,19 @@ struct Vec3 {
         *outz = v.z + (int)(sinf_x * (float)(sDepth /*>> 16*/));
     }
 
-    static void Normalize(T *x, T *y, T *z) {
-        extern int integer_sqrt(int val);
-        int denom = *y * *y + *z * *z + *x * *x;
-        int mult = 65536 / (integer_sqrt(denom) | 1);
-        *x *= mult;
-        *y *= mult;
-        *z *= mult;
+    void Normalize() requires std::is_floating_point_v<T> {
+        T denom = static_cast<T>(1.0) / Length(*this);
+        x *= denom;
+        y *= denom;
+        z *= denom;
     }
 
-    void Normalize_float() {
-        double x = this->x;
-        double y = this->y;
-        double z = this->z;
-        double s = sqrt(x * x + y * y + z * z);
+    friend T LengthSqr(const Vec3 &v) {
+        return v.x * v.x + v.y * v.y + v.z * v.z;
+    }
 
-        this->x = bankersRounding(x / s);
-        this->y = bankersRounding(y / s);
-        this->z = bankersRounding(z / s);
+    friend T Length(const Vec3 &v) {
+        return std::sqrt(LengthSqr(v));
     }
 
     friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
@@ -109,35 +106,14 @@ struct Vec3 {
 using Vec3_short_ = Vec3<int16_t>;
 using Vec3_int_ = Vec3<int32_t>;
 using Vec3_int64_ = Vec3<int64_t>;
-
-#pragma pack(push, 1)
-struct Vec3_float_ {
-    void Normalize();
-
-    static Vec3_float_ *Cross(Vec3_float_ *v1, Vec3_float_ *pOut, float x,
-                              float y, float z) {
-        pOut->x = z * v1->y - y * v1->z;
-        pOut->y = x * v1->z - z * v1->x;
-        pOut->z = y * v1->x - x * v1->y;
-        return pOut;
-    }
-
-    inline static float NegDot(Vec3_float_ *a1, Vec3_float_ *a2, float *a3) {
-        return *a3 = -(a1->z * a2->z + a1->y * a2->y + a1->x * a2->x);
-    }
-
-    float x;
-    float y;
-    float z;
-};
-#pragma pack(pop)
+using Vec3_float_ = Vec3<float>;
 
 #pragma pack(push, 1)
 struct Vec4_int_ {
-    int x;
-    int y;
-    int z;
-    int w;
+    int x = 0;
+    int y = 0;
+    int z = 0;
+    int w = 0;
 };
 #pragma pack(pop)
 
@@ -192,12 +168,12 @@ struct Plane_int_ {
 
 #pragma pack(push, 1)
 struct BBox_short_ {
-    int16_t x1;
-    int16_t x2;
-    int16_t y1;
-    int16_t y2;
-    int16_t z1;
-    int16_t z2;
+    int16_t x1 = 0;
+    int16_t x2 = 0;
+    int16_t y1 = 0;
+    int16_t y2 = 0;
+    int16_t z1 = 0;
+    int16_t z2 = 0;
 
     bool ContainsXY(int x, int y) const {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
@@ -211,12 +187,12 @@ struct BBox_short_ {
 
 #pragma pack(push, 1)
 struct BBox_int_ {
-    int x1;
-    int x2;
-    int y1;
-    int y2;
-    int z1;
-    int z2;
+    int x1 = 0;
+    int x2 = 0;
+    int y1 = 0;
+    int y2 = 0;
+    int z1 = 0;
+    int z2 = 0;
 
     bool Intersects(const BBox_short_ &other) const {
         return
@@ -236,8 +212,8 @@ struct BBox_int_ {
 
 #pragma pack(push, 1)
 struct Plane_float_ {
-    struct Vec3_float_ vNormal;
-    float dist;
+    Vec3_float_ vNormal;
+    float dist = 0.0f;
 };
 #pragma pack(pop)
 

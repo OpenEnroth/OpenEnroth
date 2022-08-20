@@ -1712,7 +1712,7 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
         layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
         layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
 
-        Vec3_int_::Normalize(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
+        normalize_to_fixpoint(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
                              &layingitem_vel_50FDFC.z);
         DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID),
                                 pSpriteObjects[uLayingItemID].field_61,
@@ -1722,7 +1722,7 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
         layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
         layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
 
-        Vec3_int_::Normalize(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
+        normalize_to_fixpoint(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
                              &layingitem_vel_50FDFC.z);
         switch (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid)) {
             case OBJECT_Actor:

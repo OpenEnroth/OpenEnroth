@@ -28,6 +28,19 @@ int integer_sqrt(int val);
 int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides);  // idb
 inline int round_to_int(float x) { return (int)floor(x + 0.5f); }
 
+/**
+ * Takes a non-fixpoint vector and normalizes it, resulting in a fixpoint vector.
+ */
+inline void normalize_to_fixpoint(int *x, int *y, int *z) {
+    extern int integer_sqrt(int val);
+    int denom = *y * *y + *z * *z + *x * *x;
+    int mult = 65536 / (integer_sqrt(denom) | 1);
+    *x *= mult;
+    *y *= mult;
+    *z *= mult;
+}
+
+
 // #pragma pack(push, 1)
 // struct fixed {  // fixed-point decimal
 //    inline fixed() : _internal(0) {}

@@ -190,9 +190,9 @@ struct stru154 {
 
     void GetFacePlaneAndClassify(struct ODMFace *a2,
                                  struct BSPVertexBuffer *a3);
-    void ClassifyPolygon(struct Vec3_float_ *pNormal, float dist);
+    void ClassifyPolygon(Vec3_float_ *pNormal, float dist);
     void GetFacePlane(struct ODMFace *pFace, struct BSPVertexBuffer *pVertices,
-                      struct Vec3_float_ *pOutNormal, float *pOutDist);
+                      Vec3_float_ *pOutNormal, float *pOutDist);
 
     Plane_float_ face_plane {};
     PolygonType polygonType {};
@@ -454,7 +454,7 @@ struct BLVFace {  // 60h
      */
     bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, int override_plane = 0) const;
 
-    struct Plane_float_ pFacePlane {};
+    struct Plane_float_ pFacePlane;
     struct Plane_int_ pFacePlane_old;
     PlaneZCalc_int64_ zCalc;
     uint32_t uAttributes;

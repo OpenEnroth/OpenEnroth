@@ -1756,7 +1756,7 @@ void RenderOpenGL::BeginLightmaps() { return; }
 void RenderOpenGL::EndLightmaps() { return; }
 void RenderOpenGL::BeginLightmaps2() { return; }
 void RenderOpenGL::EndLightmaps2() { return; }
-bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, struct Vec3_float_ *pColorMult, float z_bias) {
+bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_bias) {
     return true;
 }
 

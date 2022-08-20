@@ -3795,7 +3795,6 @@ void stru154::GetFacePlane(ODMFace *pFace, BSPVertexBuffer *pVertices,
                            Vec3_float_ *pOutNormal, float *pOutDist) {
     Vec3_float_ FirstPairVec;
     Vec3_float_ SecPairVec;
-    Vec3_float_ *CPReturn;
     Vec3_float_ CrossProd;
 
     if (pFace->uNumVertices >= 2) {
@@ -3814,7 +3813,7 @@ void stru154::GetFacePlane(ODMFace *pFace, BSPVertexBuffer *pVertices,
             SecPairVec.z = pVertices->pVertices[pFace->pVertexIDs[i + 2]].z -
                   pVertices->pVertices[pFace->pVertexIDs[i + 1]].z;
 
-            CPReturn = Vec3_float_::Cross(&FirstPairVec, &CrossProd, SecPairVec.x, SecPairVec.y, SecPairVec.z);
+            CrossProd = Cross(FirstPairVec, SecPairVec);
 
             if (CrossProd.x != 0.0 || CrossProd.y != 0.0 || CrossProd.z != 0.0) {
                 CrossProd.Normalize();

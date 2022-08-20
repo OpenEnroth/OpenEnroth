@@ -409,17 +409,8 @@ bool stru10::CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
                             RenderVertexSoft *pFaceBounding2,
                             Vec3_float_ *pRayStart,
                             IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
-    Vec3_float_ ray_dir;
-    Vec3_float_ pRay2;
-
-    ray_dir.x = pFaceBounding1->vWorldPosition.x - pRayStart->x;  // get ray for cmera to bounding1
-    ray_dir.y = pFaceBounding1->vWorldPosition.y - pRayStart->y;
-    ray_dir.z = pFaceBounding1->vWorldPosition.z - pRayStart->z;
-    Vec3_float_::Cross(
-        &ray_dir, &pRay2,
-        pFaceBounding2->vWorldPosition.x - pFaceBounding1->vWorldPosition.x,
-        pFaceBounding2->vWorldPosition.y - pFaceBounding1->vWorldPosition.y,
-        pFaceBounding2->vWorldPosition.z - pFaceBounding1->vWorldPosition.z);
+    Vec3_float_ ray_dir = pFaceBounding1->vWorldPosition - *pRayStart; // get ray for cmera to bounding1
+    Vec3_float_ pRay2 = Cross(ray_dir, pFaceBounding2->vWorldPosition - pFaceBounding1->vWorldPosition);
 
     float sqr_mag = pRay2.x * pRay2.x + pRay2.y * pRay2.y + pRay2.z * pRay2.z;
     if (fabsf(sqr_mag) > 1e-6f) {
