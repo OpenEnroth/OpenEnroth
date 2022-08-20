@@ -3846,7 +3846,9 @@ void Render::PackScreenshot(unsigned int width, unsigned int height, void *data,
 }
 
 int Render::GetActorsInViewport(int pDepth) {
-    unsigned int
+    // TODO: merge this function with RenderOpenGL::GetActorsInViewport
+
+    int
         v3;  // eax@2 применяется в закле Жар печи для подсчёта кол-ва монстров
              // видимых группе и заполнения массива id видимых монстров
     unsigned int v5;   // eax@2
@@ -3860,6 +3862,9 @@ int Render::GetActorsInViewport(int pDepth) {
     if ((signed int)GetBillboardDrawListSize() > 0) {
         for (a1a = 0; (signed int)a1a < (signed int)v12; ++a1a) {
             v3 = GetParentBillboardID(a1a);
+            if(v3 == -1)
+                continue;
+
             v5 = (unsigned __int16)pBillboardRenderList[v3].object_pid;
             if (PID_TYPE(v5) == OBJECT_Actor) {
                 if (pBillboardRenderList[v3].screen_space_z <= pDepth) {
