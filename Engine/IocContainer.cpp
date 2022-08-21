@@ -16,7 +16,7 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/LightmapBuilder.h"
-#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"

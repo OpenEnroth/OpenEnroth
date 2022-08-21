@@ -42,7 +42,7 @@ set(GRAPHICS_HEADERS BSPModel.h
                      Camera.h
                      IRender.h
                      LightmapBuilder.h
-                     Lights.h
+                     LightsStack.h
                      Outdoor.h
                      Overlays.h
                      Nuklear.h

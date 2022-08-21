@@ -9,7 +9,7 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
-#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -1191,7 +1191,7 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall ||
                this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
         if (abs(this->pFacePlane_old.vNormal.z) < 46441) {
-            Vec3_float_ a1;
+            Vec3_float_ a1 {};
             a1.x = (double)-this->pFacePlane_old.vNormal.y;
             a1.y = (double)this->pFacePlane_old.vNormal.x;
             a1.z = 0.0;
@@ -1349,7 +1349,7 @@ void BLV_UpdateDoors() {
     // signed int v20;      // eax@24
     int v24;             // esi@25
     int v25;             // eax@25
-    signed __int64 v27;  // qtt@27
+    signed __int64 v27 {};  // qtt@27
     BLVFaceExtra *v28;   // esi@32
     int v32;             // eax@34
     Vec3_short_ *v34;    // eax@35
@@ -1946,7 +1946,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     int v4;                         // eax@11
     char v28;                       // zf@81
     signed int v30;                 // edi@94
-    int v34[4];                     // [sp+3E8h] [bp-2Ch]@96
+    int v34[4] {};                     // [sp+3E8h] [bp-2Ch]@96
     int v35;                        // [sp+3F8h] [bp-1Ch]@1
     int v38;                        // [sp+404h] [bp-10h]@1
     int pDest;                      // [sp+40Ch] [bp-8h]@1
@@ -3756,7 +3756,7 @@ int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t fa
 
 //----- (0049B04D) --------------------------------------------------------
 void stru154::GetFacePlaneAndClassify(ODMFace *a2, BSPVertexBuffer *a3) {
-    Vec3_float_ OutPlaneNorm;
+    Vec3_float_ OutPlaneNorm {};
     float OutPlaneDist;
 
     OutPlaneNorm.x = 0.0;

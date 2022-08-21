@@ -4,9 +4,10 @@
 #include "Engine/stru314.h"
 
 #include "Engine/Graphics/LightmapBuilder.h"
-#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ClippingFunctions.h"
+#include "Engine/Graphics/Weather.h"
 
 using EngineIoc = Engine_::IocContainer;
 
@@ -345,7 +346,7 @@ bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *pFace,
 //----- (0045DA56) --------------------------------------------------------
 bool LightmapBuilder::DoDraw_183808_Lightmaps(float z_bias) {
     // For indoor light (X)
-    Vec3_float_ v;  // [sp+Ch] [bp-1Ch]@2
+    Vec3_float_ v {};  // [sp+Ch] [bp-1Ch]@2
     v.z = 1.0;
     v.y = 1.0;
     v.x = 1.0;
@@ -649,7 +650,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     if (!engine->config->AllowDynamicBrigtness()) {
         lightmap->fBrightness = flt_3C8C2C_lightmaps_brightness;
     } else {
-        Vec3_float_ a1;  // [sp+2Ch] [bp-20h]@8
+        Vec3_float_ a1 {};  // [sp+2Ch] [bp-20h]@8
         a1.x = (double)pos->x - lightmap->position_x;
         a1.y = (double)pos->y - lightmap->position_y;
         a1.z = (double)pos->z - lightmap->position_z;
@@ -792,7 +793,7 @@ void LightmapBuilder::DrawLightmaps(int indices) {
 
         render->BeginLightmaps();
 
-        Vec3_float_ arg4;
+        Vec3_float_ arg4 {};
         arg4.x = 1.0f;
         arg4.y = 1.0f;
         arg4.z = 1.0f;
@@ -835,13 +836,13 @@ int *LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
     double v9;             // st6@2
     char *v10;             // eax@3
     double v11;            // st7@5
-    __int64 v12;           // ST2C_8@5
-    float v13;             // edx@5
+    __int64 v12 {};           // ST2C_8@5
+    float v13 {};             // edx@5
     int v14;               // eax@5
     float v15;             // ST10_4@5
-    Vec3_float_ v16;       // ST00_12@5
+    Vec3_float_ v16 {};       // ST00_12@5
     double v17;            // st7@5
-    int a5;                // [sp+2Ch] [bp-1Ch]@1
+    int a5 {};                // [sp+2Ch] [bp-1Ch]@1
     float v19;             // [sp+30h] [bp-18h]@1
     float v20;             // [sp+34h] [bp-14h]@1
     // LightmapBuilder *thisa; // [sp+38h] [bp-10h]@1
@@ -898,7 +899,7 @@ int *LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
 //----- (0045CB89) --------------------------------------------------------
 int LightmapBuilder::_45CB89(RenderVertexSoft *a1, int a2) {
     int v3;       // edx@1
-    int result;   // eax@2
+    int result {};   // eax@2
     char *v5;     // ecx@2
     double v6;    // st7@4
     __int16 v7 = 0;   // fps@4
@@ -992,8 +993,8 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3,
     double v19;          // st7@10
     double v20;          // st7@10
     std::string v21;     // [sp-10h] [bp-40h]@13
-    const char *v22[6];  // [sp+0h] [bp-30h]@10
-    double v23;          // [sp+18h] [bp-18h]@1
+    const char *v22[6] {};  // [sp+0h] [bp-30h]@10
+    double v23 {};          // [sp+18h] [bp-18h]@1
                          //  double v24; // [sp+20h] [bp-10h]@1
     int v25;             // [sp+28h] [bp-8h]@1
     int v26;             // [sp+2Ch] [bp-4h]@1
@@ -1069,4 +1070,161 @@ void LightmapBuilder::DrawDebugOutlines(
                 this->MobileLights[i].pVertices,
                 this->MobileLights[i].NumVertices, 0xC04000, 0.00019999999f);
     }
+}
+
+// TODO(pskelton): move out of gl
+int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, RenderBillboard *pBillboard) {
+    int dimminglevel = 0;
+
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+        return 8 * (31 - max_dimm) | ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
+
+    if (pParty->armageddon_timer) return 0xFFFF0000;
+
+    bool isNight = pWeather->bNight;
+    if (engine->IsUnderwater())
+        isNight = false;
+
+    if (isNight) {
+        int partylightpower = 1;
+        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
+            partylightpower = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
+        float partylightdist = partylightpower * 1024.0f;
+
+        dimminglevel = 216;
+        if (distance <= partylightdist && !bNoLight) {
+            if (distance >= 0.0f) {
+                dimminglevel = static_cast<int>(floorf(0.5f + distance * 216.0f / partylightdist));
+                dimminglevel = std::clamp(dimminglevel, 0, 216);
+            }
+        }
+
+        if (pBillboard) dimminglevel = 8 * _43F55F_get_billboard_light_level(pBillboard, dimminglevel >> 3);
+        dimminglevel = std::clamp(dimminglevel, 0, 216);
+        return (255 - dimminglevel) | ((255 - dimminglevel) << 16) | ((255 - dimminglevel) << 8);
+    }
+
+    // daytime
+    if (fabsf(distance) < 1.0e-6f) return 0xFFF8F8F8;
+
+    // dim in measured in 8-steps
+    int rangewidth = 8 * (max_dimm - min_dimm);
+    rangewidth = std::clamp(rangewidth, 0, 216);
+
+    float fog_density_mult = 216.0f;
+    if (bNoLight)
+        fog_density_mult += distance / pODMRenderParams->shading_dist_shade * 32.0f;
+
+    dimminglevel = static_cast<int>(rangewidth + floorf(pOutdoor->fFogDensity * fog_density_mult + 0.5f));
+
+    if (pBillboard) dimminglevel = 8 * _43F55F_get_billboard_light_level(pBillboard, dimminglevel >> 3);
+    dimminglevel = std::clamp(dimminglevel, rangewidth, 216);
+    if (dimminglevel > 8 * pOutdoor->max_terrain_dimming_level)
+        dimminglevel = 8 * pOutdoor->max_terrain_dimming_level;
+
+    if (!engine->IsUnderwater()) {
+        return (255 - dimminglevel) | ((255 - dimminglevel) << 16) | ((255 - dimminglevel) << 8);
+    } else {
+        // underwater
+        float col = (255 - dimminglevel) * 0.0039215689f;
+        int red = static_cast<int>(floorf(col * 16.0f + 0.5f));
+        int grn = static_cast<int>(floorf(col * 194.0f + 0.5f));
+        int blue = static_cast<int>(floorf(col * 153.0f + 0.5f));
+        return blue | (grn << 8) | (red << 16);
+    }
+}
+
+// // TODO(pskelton): move out of gl
+// ----- (0043F5C8) --------------------------------------------------------
+int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {
+    int lightlevel = uBaseLightLevel;
+    float light_radius{};
+    float distX{};
+    float distY{};
+    float distZ{};
+    unsigned int approx_distance;
+
+    // mobile lights
+    for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
+        MobileLight *p = &pMobileLightsStack->pLights[i];
+        light_radius = p->uRadius;
+
+        distX = abs(p->vPosition.x - x);
+        if (distX <= light_radius) {
+            distY = abs(p->vPosition.y - y);
+            if (distY <= light_radius) {
+                distZ = abs(p->vPosition.z - z);
+                if (distZ <= light_radius) {
+                    approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
+                    if (approx_distance < light_radius)
+                        //* ORIGONAL */lightlevel += ((unsigned __int64)(30i64 *(signed int)(approx_distance << 16) / light_radius) >> 16) - 30;
+                        lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
+                }
+            }
+        }
+    }
+
+    // sector lights
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        BLVSector *pSector = &pIndoor->pSectors[uSectorID];
+
+        for (uint i = 0; i < pSector->uNumLights; ++i) {
+            BLVLightMM7 *this_light = &pIndoor->pLights[pSector->pLights[i]];
+            light_radius = this_light->uRadius;
+
+            if (~this_light->uAtributes & 8) {
+                distX = abs(this_light->vPosition.x - x);
+                if (distX <= light_radius) {
+                    distY = abs(this_light->vPosition.y - y);
+                    if (distY <= light_radius) {
+                        distZ = abs(this_light->vPosition.z - z);
+                        if (distZ <= light_radius) {
+                            approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
+                            if (approx_distance < light_radius)
+                                lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // stationary lights
+    for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
+        StationaryLight *p = &pStationaryLightsStack->pLights[i];
+        light_radius = p->uRadius;
+
+        distX = abs(p->vPosition.x - x);
+        if (distX <= light_radius) {
+            distY = abs(p->vPosition.y - y);
+            if (distY <= light_radius) {
+                distZ = abs(p->vPosition.z - z);
+                if (distZ <= light_radius) {
+                    approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
+                    if (approx_distance < light_radius)
+                        lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
+                }
+            }
+        }
+    }
+
+    lightlevel = std::clamp(lightlevel, 0, 31);
+    return lightlevel;
+}
+
+// TODO(pskelton): move out of gl
+int _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel) {
+    int v3 = 0;
+
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+        v3 = pIndoor->pSectors[a1->uIndoorSectorID].uMinAmbientLightLevel;
+    } else {
+        if (uBaseLightLevel == -1) {
+            v3 = a1->dimming_level;
+        } else {
+            v3 = uBaseLightLevel;
+        }
+    }
+
+    return GetLightLevelAtPoint(v3, a1->uIndoorSectorID, a1->world_x, a1->world_y, a1->world_z);
 }

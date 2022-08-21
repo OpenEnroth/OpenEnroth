@@ -141,6 +141,11 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) :
     if (!ingame) {
         main_menu_background = assets->GetImage_PCXFromIconsLOD("lsave640.pcx");
         render->DrawTextureNew(0, 0, main_menu_background);
+    } else {
+        render->DrawTextureAlphaNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+        render->DrawTextureAlphaNew(241 / 640.0f, 302 / 480.0f, saveload_ui_loadu);
+        render->DrawTextureAlphaNew(18 / 640.0f, 139 / 480.0f, saveload_ui_load_up);
+        render->DrawTextureAlphaNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
     }
 
     // GUIWindow::GUIWindow

@@ -1,6 +1,6 @@
 #include "Engine/Log.h"
 
-#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/LightsStack.h"
 
 //----- (00467D88) --------------------------------------------------------
 bool LightsStack_MobileLight_::AddLight(int16_t x, int16_t y, int16_t z,

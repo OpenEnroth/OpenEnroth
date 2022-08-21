@@ -41,7 +41,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
@@ -104,229 +104,6 @@ void GL_Check_Errors(bool breakonerr = true) {
 }
 
 // TODO(pskelton): move out of gl
-bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
-    // checks if model is visible in FOV cone
-    float halfangle = (pCamera3D->odm_fov_rad) / 2.0f;
-    float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
-    float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
-
-    // approx distance
-    int dist = int_get_vector_length(abs(static_cast<int>(rayx)), abs(static_cast<int>(rayy)), 0);
-    *reachable = false;
-    if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
-
-    // dot product of camvec and ray - size in forward
-    float frontvec = rayx * pCamera3D->fRotationZCosine + rayy * pCamera3D->fRotationZSine;
-    if (pCamera3D->sRotationY) { frontvec *= pCamera3D->fRotationYCosine;}
-
-    // dot product of camvec and ray - size in left
-    float leftvec = rayy * pCamera3D->fRotationZCosine - rayx * pCamera3D->fRotationZSine;
-
-    // which half fov is ray in direction of - compare slopes
-    float sloperem = 0.0;
-    if (leftvec >= 0) {  // acute - left
-        sloperem = frontvec * sin(halfangle) - leftvec * cos(halfangle);
-    } else {  // obtuse - right
-        sloperem = frontvec * sin(halfangle) + leftvec * cos(halfangle);
-    }
-
-    // view range check
-    if (dist <= pCamera3D->GetFarClip() + 2048) {
-        // boudning point inside cone
-        if (sloperem >= 0) return true;
-        // bounding radius inside cone
-        if (abs(sloperem) < model->sBoundingRadius + 512) return true;
-    }
-
-    // not visible
-    return false;
-}
-
-// TODO(pskelton): move out of gl
-// returns 32 bit int
-int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5) {
-    signed int v6 = 0;   // edx@1
-    //int isNight;          // eax@3
-    float v9;       // st7@12
-    int v11;         // ecx@28
-    float v15;      // st7@44
-    int v18;         // ST14_4@44
-    //signed int v20;  // [sp+10h] [bp-4h]@10
-    float a3c;       // [sp+1Ch] [bp+8h]@44
-    int a5a;         // [sp+24h] [bp+10h]@44
-
-
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        return 8 * (31 - max_dimm) | ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
-
-    if (pParty->armageddon_timer) return 0xFFFF0000;
-
-    bool isNight = pWeather->bNight;
-    if (engine->IsUnderwater())
-        isNight = false;
-
-    if (isNight) {
-        int v20 = 1;
-        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-            v20 = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        v9 = v20 * 1024.0f;
-
-        if (a4) { // dont light sky poly
-            v6 = 216;
-            goto LABEL_20;
-        }
-
-        if (distance <= v9) {
-            if (distance > 0.0f) {
-                // a4b = distance * 216.0 / device_caps;
-                // v10 = a4b + 6.7553994e15;
-                // v6 = LODWORD(v10);
-                v6 = static_cast<int>(floorf(0.5f + distance * 216.0f / v9));
-                if (v6 > 216) {
-                    v6 = 216;
-                    goto LABEL_20;
-                }
-            }
-        } else {
-            v6 = 216;
-        }
-
-        if (distance != 0.0) {
-        LABEL_20:
-            if (a5) v6 = 8 * _43F55F_get_billboard_light_level(a5, v6 >> 3);
-            if (v6 > 216) v6 = 216;
-            return (255 - v6) | ((255 - v6) << 16) | ((255 - v6) << 8);
-        }
-        // LABEL_19:
-        v6 = 216;
-        goto LABEL_20;
-    }
-
-    // daytime
-    if (fabsf(distance) < 1.0e-6f) return 0xFFF8F8F8;
-
-    // dim in measured in 8-steps
-    v11 = 8 * (max_dimm - min_dimm);
-    // v12 = v11;
-    if (v11 >= 0) {
-        if (v11 > 216) v11 = 216;
-    } else {
-        v11 = 0;
-    }
-
-    float fog_density_mult = 216.0f;
-    if (a4)
-        fog_density_mult +=
-            distance / pODMRenderParams->shading_dist_shade * 32.0f;
-
-    v6 = static_cast<int>(v11 + floorf(pOutdoor->fFogDensity * fog_density_mult + 0.5f));
-
-    if (a5) v6 = 8 * _43F55F_get_billboard_light_level(a5, v6 >> 3);
-    if (v6 > 216) v6 = 216;
-    if (v6 < v11) v6 = v11;
-    if (v6 > 8 * pOutdoor->max_terrain_dimming_level)
-        v6 = 8 * pOutdoor->max_terrain_dimming_level;
-    if (!engine->IsUnderwater()) {
-        return (255 - v6) | ((255 - v6) << 16) | ((255 - v6) << 8);
-    } else {
-        v15 = (255 - v6) * 0.0039215689f;
-        a3c = v15;
-        // a4c = v15 * 16.0;
-        // v16 = a4c + 6.7553994e15;
-        a5a = static_cast<int>(floorf(v15 * 16.0f + 0.5f));  // LODWORD(v16);
-                                          // a4d = a3c * 194.0;
-                                          // v17 = a4d + 6.7553994e15;
-        v18 = static_cast<int>(floorf(a3c * 194.0f + 0.5f));  // LODWORD(v17);
-                                           // a3d = a3c * 153.0;
-                                           // v19 = a3d + 6.7553994e15;
-        return (int)floorf(a3c * 153.0f + 0.5f) /*LODWORD(v19)*/ |
-               ((v18 | (a5a << 8)) << 8);
-    }
-}
-
-
-
-void RenderOpenGL::MaskGameViewport() {
-    // do not want in opengl mode
-}
-
-// ----- (0043F5C8) --------------------------------------------------------
-int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {
-    int lightlevel = uBaseLightLevel;
-    float light_radius{};
-    float distX{};
-    float distY{};
-    float distZ{};
-    unsigned int approx_distance;
-
-    // mobile lights
-    for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
-        MobileLight *p = &pMobileLightsStack->pLights[i];
-        light_radius = p->uRadius;
-
-        distX = abs(p->vPosition.x - x);
-        if (distX <= light_radius) {
-            distY = abs(p->vPosition.y - y);
-            if (distY <= light_radius) {
-                distZ = abs(p->vPosition.z - z);
-                if (distZ <= light_radius) {
-                    approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
-                    if (approx_distance < light_radius)
-         //* ORIGONAL */lightlevel += ((unsigned __int64)(30i64 *(signed int)(approx_distance << 16) / light_radius) >> 16) - 30;
-                        lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
-                }
-            }
-        }
-    }
-
-    // sector lights
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        BLVSector *pSector = &pIndoor->pSectors[uSectorID];
-
-        for (uint i = 0; i < pSector->uNumLights; ++i) {
-            BLVLightMM7 *this_light = &pIndoor->pLights[pSector->pLights[i]];
-            light_radius = this_light->uRadius;
-
-            if (~this_light->uAtributes & 8) {
-                distX = abs(this_light->vPosition.x - x);
-                if (distX <= light_radius) {
-                    distY = abs(this_light->vPosition.y - y);
-                    if (distY <= light_radius) {
-                        distZ = abs(this_light->vPosition.z - z);
-                        if (distZ <= light_radius) {
-                            approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
-                            if (approx_distance < light_radius)
-                                lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // stationary lights
-    for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
-        StationaryLight* p = &pStationaryLightsStack->pLights[i];
-        light_radius = p->uRadius;
-
-        distX = abs(p->vPosition.x - x);
-        if (distX <= light_radius) {
-            distY = abs(p->vPosition.y - y);
-            if (distY <= light_radius) {
-                distZ = abs(p->vPosition.z - z);
-                if (distZ <= light_radius) {
-                    approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
-                    if (approx_distance < light_radius)
-                        lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
-                }
-            }
-        }
-    }
-
-    lightlevel = std::clamp(lightlevel, 0, 31);
-    return lightlevel;
-}
-
 void UpdateObjects() {
     int v5;   // ecx@6
     int v7;   // eax@9
@@ -399,24 +176,8 @@ void UpdateObjects() {
     }
 }
 
-int _43F55F_get_billboard_light_level(RenderBillboard *a1,
-                                      int uBaseLightLevel) {
-    int v3 = 0;
 
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        v3 = pIndoor->pSectors[a1->uIndoorSectorID].uMinAmbientLightLevel;
-    } else {
-        if (uBaseLightLevel == -1) {
-            v3 = a1->dimming_level;
-        } else {
-            v3 = uBaseLightLevel;
-        }
-    }
-
-    return GetLightLevelAtPoint(
-        v3, a1->uIndoorSectorID, a1->world_x, a1->world_y, a1->world_z);
-}
-
+// TODO(pskelton): move out of gl
 unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
     unsigned int result = uLayingItemID;
     if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & 0x10) {
@@ -507,6 +268,10 @@ RenderOpenGL::RenderOpenGL(
 RenderOpenGL::~RenderOpenGL() { logger->Info("RenderGl - Destructor"); }
 
 void RenderOpenGL::Release() { logger->Info("RenderGL - Release"); }
+
+void RenderOpenGL::MaskGameViewport() {
+    // do not want in opengl mode
+}
 
 void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
     uint winwidth{ window->GetWidth() };
@@ -2845,7 +2610,7 @@ void RenderOpenGL::DrawTerrainD3D() {
     glUniform3fv(glGetUniformLocation(terrainshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), ambient, ambient, ambient);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), diffuseon * 1.0, diffuseon * 0.8, 0.0);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
 
     // red colouring
     if (pParty->armageddon_timer) {
@@ -4557,7 +4322,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glUniform3fv(glGetUniformLocation(outbuildshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.ambient"), ambient, ambient, ambient);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f));
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.specular"), diffuseon * 1.0f, diffuseon * 0.8f, 0.0f);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
 
     if (pParty->armageddon_timer) {
         glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), 1.0f, 0.0f, 0.0f);
