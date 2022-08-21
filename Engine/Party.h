@@ -270,13 +270,13 @@ struct Party {
     bool IsPartyGood();
     size_t ImmolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
     int field_0_set25_unused;
-    unsigned int uPartyHeight;
-    unsigned int uDefaultPartyHeight;
+    int uPartyHeight;
+    int uDefaultPartyHeight;
     int sEyelevel;
-    unsigned int uDefaultEyelevel;
+    int uDefaultEyelevel;
     int radius; // party radius, 37 by default.
     int y_rotation_granularity;
-    unsigned int uWalkSpeed;
+    int uWalkSpeed;
     int y_rotation_speed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
     int field_28_set0_unused;
