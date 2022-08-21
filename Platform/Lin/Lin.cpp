@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <dirent.h>
+#include <glob.h>
 #include <fnmatch.h>
 #include <sys/stat.h>
 #include <sys/time.h>

@@ -13,27 +13,27 @@ struct CollisionState {
      * @param dt                        Time delta, in fixpoint seconds.
      * @return                          True if there is no movement, false otherwise.
      */
-    bool PrepareAndCheckIfStationary(int dt);
+    bool PrepareAndCheckIfStationary(int dt_fp);
 
     // actor is modeled as two spheres, basically "feet" & "head". Collisions are then done for both spheres.
 
     bool check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
-    int radius_lo;   // radius of the lo ("feet") sphere.
-    int radius_hi;  // radius of the hi ("head") sphere.
-    Vec3_int_ position_lo; // center of the lo sphere.
-    Vec3_int_ position_hi; // center of the hi sphere.
-    Vec3_int_ new_position_lo; // desired new position for the center of the lo sphere.
-    Vec3_int_ new_position_hi; // desired new position for the center of the hi sphere.
-    Vec3_int_ velocity;  // Movement vector.
-    Vec3_int_ direction;  // Movement direction, basically velocity as a unit vector.
-    int speed = 0;  // Velocity magnitude.
-    int total_move_distance;  // Total move distance, accumulated between collision iterations, starts at 0.
-    int move_distance;  // Desired movement distance for current iteration, minus the distance already covered.
-    int adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
+    float radius_lo;   // radius of the lo ("feet") sphere.
+    float radius_hi;  // radius of the hi ("head") sphere.
+    Vec3_float_ position_lo; // center of the lo sphere.
+    Vec3_float_ position_hi; // center of the hi sphere.
+    Vec3_float_ new_position_lo; // desired new position for the center of the lo sphere.
+    Vec3_float_ new_position_hi; // desired new position for the center of the hi sphere.
+    Vec3_float_ velocity;  // Movement vector.
+    Vec3_float_ direction;  // Movement direction, basically velocity as a unit vector.
+    float speed = 0;  // Velocity magnitude.
+    float total_move_distance;  // Total move distance, accumulated between collision iterations, starts at 0.
+    float move_distance;  // Desired movement distance for current iteration, minus the distance already covered.
+    float adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
     unsigned int uSectorID = 0;  // Indoor sector id.
     unsigned int pid;  // PID of the object that we're collided with.
     int ignored_face_id;  // Don't check collisions with this face.
-    BBox_int_ bbox = { 0, 0, 0, 0, 0, 0 };
+    BBox_float_ bbox;
 };
 
 extern CollisionState collision_state;

@@ -13,7 +13,6 @@ struct Lightmap {  // карта света, текстура для налож�
     Lightmap();
     virtual ~Lightmap() {}
 
-    // void ( ***vdestructor_ptr)(Lightmap *, bool);
     signed int NumVertices;
     RenderVertexSoft pVertices[64];
     __int16 position_x;  //позиция источника света
@@ -46,22 +45,22 @@ class LightmapBuilder {
     // int _45D426_sw(struct Span *a1, struct Edge **a2, unsigned int a3, struct
     // Edge *a4, int a5); bool _45D3C7_sw(struct Polygon *a1);
     bool StackLight_TerrainFace(struct StationaryLight *pLight,
-                                struct Vec3_float_ *pNormal, float *a3,
+                                Vec3_float_ *pNormal, float *a3,
                                 struct RenderVertexSoft *a1,
                                 unsigned int uStripType, int X,
                                 unsigned int *pSlot);
-    bool StackLights_TerrainFace(struct Vec3_float_ *pNormal, float *a3,
+    bool StackLights_TerrainFace(Vec3_float_ *pNormal, float *a3,
                                  struct RenderVertexSoft *a1,
                                  unsigned int uStripType, bool bLightBackfaces);
     bool ApplyLight_ODM(struct StationaryLight *pLight, struct ODMFace *pFace,
                         unsigned int *pSlot, bool bLightBackfaces);
     bool ApplyLights_OutdoorFace(struct ODMFace *pFace);
-    double _45CC0C_light(struct Vec3_float_ a1, float a2, float a3,
-                         struct Vec3_float_ *pNormal, float a5, int uLightType);
+    double _45CC0C_light(Vec3_float_ a1, float a2, float a3,
+                         Vec3_float_ *pNormal, float a5, int uLightType);
     int *_45CBD4(struct RenderVertexSoft *a2, int a3, int *a4, int *a5);
     int _45CB89(struct RenderVertexSoft *a1, int a2);
     int *_45CA88(struct LightsData *a2, struct RenderVertexSoft *a3, int a4,
-                struct Vec3_float_ *pNormal);
+                Vec3_float_ *pNormal);
     bool ApplyLight_BLV(struct StationaryLight *pLight, struct BLVFace *a2,
                         unsigned int *pSlot, bool bLightBackfaces, char *a5);
     bool ApplyLights_IndoorFace(unsigned int uFaceID);
@@ -76,7 +75,6 @@ class LightmapBuilder {
                      unsigned int uNumVertices, struct RenderVertexSoft *a5,
                      struct IndoorCameraD3D_Vec4 *, char uClipFlag);
 
-    // void ( ***vdestructor_ptr)(LightmapBuilder *, bool);
     // std::vector<Lightmap> std__vector_000004;
     // std::vector<Lightmap> std__vector_183808;
     Lightmap StationaryLights[512];      // std__vector_000004

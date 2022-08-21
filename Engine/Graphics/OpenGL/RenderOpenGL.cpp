@@ -442,10 +442,10 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
 
     // TODO(pskelton): clean up
 
-    float cosz = pCamera3D->fRotationZCosine;  // int_cosine_Z;
-    float cosx = pCamera3D->fRotationYCosine;  // int_cosine_y;
-    float sinz = pCamera3D->fRotationZSine;  // int_sine_Z;
-    float sinx = pCamera3D->fRotationYSine;  // int_sine_y;
+    float cosz = pCamera3D->fRotationZCosine;
+    float cosx = pCamera3D->fRotationYCosine;
+    float sinz = pCamera3D->fRotationZSine;
+    float sinx = pCamera3D->fRotationYSine;
 
     // positions all minus ?
     float v11 = cosz * -pCamera3D->vCameraPos.x + sinz * -pCamera3D->vCameraPos.y;
@@ -1712,9 +1712,9 @@ void RenderOpenGL::SavePCXScreenshot() {
 }
 
 
-// should this be combined / moved out of render
+// TODO: should this be combined / moved out of render
 int RenderOpenGL::GetActorsInViewport(int pDepth) {
-    unsigned int
+    int
         v3;  // eax@2 применяется в закле Жар печи для подсчёта кол-ва монстров
              // видимых группе и заполнения массива id видимых монстров
     unsigned int v5;   // eax@2
@@ -1728,6 +1728,9 @@ int RenderOpenGL::GetActorsInViewport(int pDepth) {
     if ((signed int)render->uNumBillboardsToDraw > 0) {
         for (a1a = 0; (signed int)a1a < (signed int)v12; ++a1a) {
             v3 = render->pBillboardRenderListD3D[a1a].sParentBillboardID;
+            if(v3 == -1)
+                continue; // E.g. spell particle.
+
             v5 = (unsigned __int16)pBillboardRenderList[v3].object_pid;
             if (PID_TYPE(v5) == OBJECT_Actor) {
                 if (pBillboardRenderList[v3].screen_space_z <= pDepth) {
@@ -1756,7 +1759,7 @@ void RenderOpenGL::BeginLightmaps() { return; }
 void RenderOpenGL::EndLightmaps() { return; }
 void RenderOpenGL::BeginLightmaps2() { return; }
 void RenderOpenGL::EndLightmaps2() { return; }
-bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, struct Vec3_float_ *pColorMult, float z_bias) {
+bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_bias) {
     return true;
 }
 

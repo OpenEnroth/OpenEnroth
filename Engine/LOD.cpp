@@ -1057,11 +1057,6 @@ int LODFile_IconsBitmaps::ReloadTexture(Texture_MM7 *pDst,
 int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
                                              const std::string &pContainer,
                                              enum TEXTURE_TYPE eTextureType) {
-    //int result;        // esi@14
-    unsigned int v14;  // eax@21
-    // size_t v22;        // ST2C_4@29
-    // const void *v23;   // ecx@29
-
     size_t data_size = 0;
     FILE *pFile = FindContainer(pContainer, &data_size);
     if (pFile == nullptr) {
@@ -1085,23 +1080,6 @@ int LODFile_IconsBitmaps::LoadTextureFromLOD(Texture_MM7 *pOutTex,
             ptr_011BB4 = new char[1000];
             memset(ptr_011BB4, 0, 1000);
         }
-        if (!iequals(pContainer, "wtrdr")) {
-            if (iequals(pContainer, "WtrTyl"))
-                render->hd_water_tile_id = uNumLoadedFiles;
-            v14 = uNumLoadedFiles;
-            // result = render->LoadTexture(pContainer, pOutTex->palette_id1,
-            // (void **)&pHardwareSurfaces[v14], (void
-            // **)&pHardwareTextures[v14]);
-            //result = 1;
-        } else {
-            char *temp_container;
-            temp_container = (char *)malloc(pContainer.size() + 2);
-            *temp_container = 104;  // 'h'
-            strcpy(temp_container + 1, pContainer.c_str());
-            //result = 1;
-            free((void *)temp_container);
-        }
-        //return result;
     }
 
     // ICONS

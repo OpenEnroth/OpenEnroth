@@ -1,138 +1,37 @@
 #include "Engine/OurMath.h"
 #include "Engine/Engine.h"
 
+TrigTableLookup* TrigLUT = new TrigTableLookup();
+
 //----- (00452969) --------------------------------------------------------
 TrigTableLookup::TrigTableLookup() {
-    // populates tables
-
-    double v3;  // ST18_8@2
-
-    this->pTanTable[0] = 0;
-    this->pCosTable[0] = 65536;
-    this->pInvCosTable[0] = 65536;
-    for (int i = 1; i < (signed int)this->uIntegerHalfPi; i++) {
-        v3 = (double)i * pi_double / (double)uIntegerPi;
-        pTanTable[i] =
-            (signed __int64)(tan(v3) * (double)this->pCosTable[0] + 0.5);
-        pCosTable[i] =
-            (signed __int64)(cos(v3) * (double)this->pCosTable[0] + 0.5);
-        pInvCosTable[i] =
-            (signed __int64)(1.0 / cos(v3) * (double)this->pCosTable[0] + 0.5);
-    }
-    for (int i = this->uIntegerHalfPi; i < 520; i++) {
-        this->pTanTable[i] = 0xEFFFFFFFu;
-        this->pCosTable[i] = 0;
-        this->pInvCosTable[i] = 0xEFFFFFFFu;
-    }
+    for (int i = 0; i <= this->uIntegerHalfPi; i++)
+        pCosTable[i] = std::cos(i * pi_double / uIntegerPi);
 }
 
 //----- (00402CAE) --------------------------------------------------------
-int TrigTableLookup::Cos(int angle) {
-    int v2;  // eax@1
+float TrigTableLookup::Cos(int angle) const {
+    angle &= uDoublePiMask;
 
-    // a2: (angle - uIntegerHalfPi)    for  sin(angle)
-    //    (angle)                     for  cos(angle)
-
-    v2 = uDoublePiMask & angle;
-
-    if (v2 > uIntegerPi) v2 = uIntegerDoublePi - v2;
-    if (v2 >= uIntegerHalfPi)
-        return -pCosTable[uIntegerPi - v2];
+    if (angle > uIntegerPi)
+        angle = uIntegerDoublePi - angle;
+    if (angle >= uIntegerHalfPi)
+        return -pCosTable[uIntegerPi - angle];
     else
-        return pCosTable[v2];
-}
-
-//----- (0045281E) --------------------------------------------------------
-//    Calculates atan2(y/x)
-// return value: angle in integer format (multiplier of Pi/1024)
-unsigned int TrigTableLookup::Atan2(int x, int y) {
-    signed int quadrant;
-    __int64 dividend;
-    int quotient;
-    int lowIdx;
-    int highIdx;
-    int angle;
-
-    int X = x;
-    int Y = y;
-
-    if (abs(X) < 65536) {
-        if ((abs(Y) >> 15) >= abs(X)) X = 0;
-    }
-
-    if (!X) {
-        if (Y > 0) {
-            return uIntegerHalfPi;  // Pi/2
-        } else {
-            return uIntegerHalfPi + uIntegerPi;  // 3*(Pi/2)
-        }
-    }
-
-    if (Y) {
-        if (X < 0) {
-            X = -X;
-            if (Y > 0) {
-                quadrant = 4;
-            } else {
-                quadrant = 3;
-            }
-        } else {
-            if (Y > 0) {
-                quadrant = 1;
-            } else {
-                quadrant = 2;
-            }
-        }
-
-        if (Y < 0) Y = -Y;
-
-        HEXRAYS_LODWORD(dividend) = Y << 16;
-        HEXRAYS_HIDWORD(dividend) = Y >> 16;
-        quotient = dividend / X;
-
-        // looks like binary search
-        {
-            int i;
-            highIdx = uIntegerHalfPi;
-            lowIdx = 0;
-
-            for (i = 0; i < 6; ++i) {
-                if (quotient <= pTanTable[(lowIdx + highIdx) / 2])
-                    highIdx = (lowIdx + highIdx) / 2;
-                else
-                    lowIdx = (lowIdx + highIdx) / 2;
-            }
-        }
-
-        angle = lowIdx + 1;
-        while (angle < (highIdx - 1) && quotient >= pTanTable[angle]) ++angle;
-
-        switch (quadrant) {
-            case 1:  // X > 0, Y > 0
-                return angle;
-
-            case 2:                               // X > 0, Y < 0
-                return uIntegerDoublePi - angle;  // 2*Pi - angle
-
-            case 3:                         // X > 0, Y < 0
-                return uIntegerPi + angle;  // Pi + angle
-
-            case 4:                         // X < 0, Y > 0
-                return uIntegerPi - angle;  // Pi - angle
-        }
-
-        // should never get here
-        return 0;
-    }
-
-    if (X < 0)  // Y == 0, X < 0
-        return uIntegerPi;
-
-    return 0;
+        return pCosTable[angle];
 }
 
 //----- (0042EBDB) --------------------------------------------------------
-int TrigTableLookup::Sin(int angle) { return Cos(angle - this->uIntegerHalfPi); }
+float TrigTableLookup::Sin(int angle) const {
+    return Cos(angle - this->uIntegerHalfPi);
+}
+
+//----- (0045281E) --------------------------------------------------------
+int TrigTableLookup::Atan2(int x, int y) const {
+    double angle = std::atan2(static_cast<double>(y), static_cast<double>(x));
+
+    return static_cast<int>(angle / pi_double * 1024) & uDoublePiMask;
+}
 
 //----- (0042EBBE) --------------------------------------------------------
 //----- (004453C0) mm6-----------------------------------------------------

@@ -24,7 +24,6 @@ Lightmap::Lightmap() {
     NumVertices = -1;
     for (uint i = 0; i < 64; ++i) pVertices[i].flt_2C = 0.0f;
     this->field_C18 = 0;
-    // this->vdestructor_ptr = &Lightmap_pvdtor;
     uColorMask = 0;
     position_z = 0;
     position_y = 0;
@@ -167,8 +166,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
         (float)pLight->vPosition.z >= bounding_z2)
         return false;
 
-    Vec3_float_::NegDot(&TerrainVertices->vWorldPosition, pNormal,
-                        light_tile_dist);
+    *light_tile_dist = -Dot(TerrainVertices->vWorldPosition, *pNormal);
     float p_dot = ((float)pLight->vPosition.x * pNormal->x +
                    (float)pLight->vPosition.y * pNormal->y +
                    (float)pLight->vPosition.z * pNormal->z + *light_tile_dist) +

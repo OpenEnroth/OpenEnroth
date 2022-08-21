@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build-linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -16,17 +16,17 @@ jobs:
         fetch-depth: 0
     - name: Install
       run: |
-        export CC=gcc-9 && export CXX=g++-9
+        export CC=gcc-10 && export CXX=g++-10
         git submodule update --init
         mkdir out && cd out
         if [ "${{ matrix.Platform }}" = "x64" ]; then
-        sudo apt-get update && sudo apt-get install -y gcc-8 g++-8 libglu1-mesa-dev libavformat-dev libavcodec-dev libswscale-dev libopenal-dev libsdl2-dev zlib1g-dev
+        sudo apt-get update && sudo apt-get install -y gcc-10 g++-10 libglu1-mesa-dev libavformat-dev libavcodec-dev libswscale-dev libopenal-dev libsdl2-dev zlib1g-dev
         cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
         fi
         if [ "${{ matrix.Platform }}" = "x86" ]; then
         export libxml2_ver=2.9.4+dfsg1-6.1ubuntu1.3
         sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y libxml2=$libxml2_ver libxml2-dev=$libxml2_ver libxml2:i386=$libxml2_ver
-        sudo apt-get install -y gcc-multilib g++-8-multilib libglu1-mesa-dev:i386 libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386 libopenal-dev:i386 libsdl2-dev:i386 zlib1g-dev:i386
+        sudo apt-get install -y gcc-multilib g++-10-multilib libglu1-mesa-dev:i386 libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386 libopenal-dev:i386 libsdl2-dev:i386 zlib1g-dev:i386
         CFLAGS="-m32" CXXFLAGS="-m32" cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.Configuration }}
         fi
     - name: Build

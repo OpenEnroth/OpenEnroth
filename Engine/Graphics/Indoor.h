@@ -10,6 +10,7 @@
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/Camera.h"
+#include "Engine/VectorTypes.h"
 
 struct IndoorLocation;
 
@@ -190,11 +191,10 @@ struct stru154 {
 
     void GetFacePlaneAndClassify(struct ODMFace *a2,
                                  struct BSPVertexBuffer *a3);
-    void ClassifyPolygon(struct Vec3_float_ *pNormal, float dist);
+    void ClassifyPolygon(Vec3_float_ *pNormal, float dist);
     void GetFacePlane(struct ODMFace *pFace, struct BSPVertexBuffer *pVertices,
-                      struct Vec3_float_ *pOutNormal, float *pOutDist);
+                      Vec3_float_ *pOutNormal, float *pOutDist);
 
-    void (***vdestructor_ptr)(stru154 *, bool) = nullptr;
     Plane_float_ face_plane {};
     PolygonType polygonType {};
     char field_15 = 0;
@@ -455,7 +455,7 @@ struct BLVFace {  // 60h
      */
     bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, int override_plane = 0) const;
 
-    struct Plane_float_ pFacePlane {};
+    struct Plane_float_ pFacePlane;
     struct Plane_int_ pFacePlane_old;
     PlaneZCalc_int64_ zCalc;
     uint32_t uAttributes;
@@ -472,7 +472,7 @@ struct BLVFace {  // 60h
 
     uint16_t uSectorID;
     int16_t uBackSectorID;
-    struct BBox_short_ pBounding {};
+    BBox_short_ pBounding;
     PolygonType uPolygonType;
     uint8_t uNumVertices;
     char field_5E = 0;
@@ -675,9 +675,11 @@ void BLV_UpdateUserInputAndOther();
 /**
  * @param pos                           Actor's position.
  * @param uSectorID                     Actor's sector id.
- * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position.
+ * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position, or `-1`
+ *                                      if wrong sector is supplied or actor is out of bounds.
  * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
- *                                      If wrong sector is supplied, `-30000` is returned.
+ *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
+ *                                      returned.
  */
 int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
@@ -747,10 +749,12 @@ void FindBillboardsLightLevels_BLV();
  * @param pos                           Actor's position.
  * @param[in,out] pSectorID             Actor's cached sector id. If the cached sector id is no longer valid (e.g. an
  *                                      actor has already moved to another sector), then the new sector id is returned
- *                                      in this output parameter.
- * @param[out] pFaceID                  Id of the floor face on which the actor is standing. Not updated if floor face
- *                                      is not found.
- * @return                              Z coordinate for the floor at (X, Y).
+ *                                      in this output parameter. If the actor moves out of level bounds (this happens),
+ *                                      then this parameter is set to 0.
+ * @param[out] pFaceID                  Id of the floor face on which the actor is standing, or `-1` if actor is outside
+ *                                      the level boundaries.
+ * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
+ *                                      level boundaries.
  */
 int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 

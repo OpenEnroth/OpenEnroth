@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Engine/VectorTypes.h>
+
 /*  127 */
 #pragma pack(push, 1)
 struct stru10 {
@@ -11,7 +13,7 @@ struct stru10 {
     bool CalcPortalFrustum(struct RenderVertexSoft *pFaceBounding, struct IndoorCameraD3D_Vec4 *pPortalDataFrustum);
     bool CalcPortalFrustumPlane(struct RenderVertexSoft *pFaceBounding1,
                         struct RenderVertexSoft *pFaceBounding2,
-                        struct Vec3_float_ *pRayStart,
+                        Vec3_float_ *pRayStart,
                         struct IndoorCameraD3D_Vec4 *pPortalDataFrustum);
     bool CalcFaceBounding(struct BLVFace *pFace,
                           struct RenderVertexSoft *pFaceLimits,
@@ -21,7 +23,5 @@ struct stru10 {
                            struct RenderVertexSoft pOutVertices[4]);
     void _49CE9E(struct BLVFace *pFace, struct RenderVertexSoft *pVertices,
                  unsigned int uNumVertices, RenderVertexSoft *pOutLimits);
-
-    void (***vdestructor_ptr)(stru10 *, bool) = nullptr;
 };
 #pragma pack(pop)

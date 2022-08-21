@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cmath>
 #include <type_traits>
+#include <algorithm>
 
 #include "OurMath.h"
 
@@ -11,21 +12,23 @@ uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 template<class From, class To>
 struct vector_conversion_allowed : std::false_type {};
 
-// Allow widening vector conversions.
-template<>
-struct vector_conversion_allowed<int16_t, int32_t> : std::true_type {};
-template<>
-struct vector_conversion_allowed<int16_t, int64_t> : std::true_type {};
-template<>
-struct vector_conversion_allowed<int32_t, int64_t> : std::true_type {};
+#define WOMM_ALLOW_VECTOR_CONVERSION(FROM, TO) \
+template<> \
+struct vector_conversion_allowed<FROM, TO> : std::true_type {};
+
+WOMM_ALLOW_VECTOR_CONVERSION(int16_t, int32_t)
+WOMM_ALLOW_VECTOR_CONVERSION(int16_t, int64_t)
+WOMM_ALLOW_VECTOR_CONVERSION(int32_t, int64_t)
 
 #pragma pack(push, 1)
 template <class T>
 struct Vec2 {
-    T x;
-    T y;
+    T x = 0;
+    T y = 0;
 
-    explicit Vec2(T a = 0, T b = 0) : x(a), y(b) {}
+    Vec2() = default;
+
+    Vec2(T a, T b) : x(a), y(b) {}
 };
 #pragma pack(pop)
 
@@ -36,19 +39,21 @@ const float pi = static_cast<float>(M_PI);
 
 #pragma pack(push, 1)
 template <class T>
-struct Vec3 : public Vec2<T> {
-    T z;
+struct Vec3 {
+    T x = 0;
+    T y = 0;
+    T z = 0;
 
-    explicit Vec3(T a = 0, T b = 0, T c = 0) : Vec2<T>(a, b), z(c) {}
+    Vec3() = default;
+    Vec3(const Vec3 &other) = default;
 
-    // TODO: rewrite with requires clause when we have C++20
-    template<class OtherT, class = std::enable_if_t<vector_conversion_allowed<OtherT, T>::value>>
-    Vec3(const Vec3<OtherT> &other) : Vec2<T>(other.x, other.y), z(other.z) {}
+    template<class OtherT> requires vector_conversion_allowed<OtherT, T>::value
+    Vec3(const Vec3<OtherT> &other) : x(other.x), y(other.y), z(other.z) {}
 
-    template <class U>
-    inline uint32_t GetDistanceTo(Vec3<U> &o) {
-        return int_get_vector_length(abs(this->x - o.x), abs(this->y - o.y),
-                                     abs(this->z - o.z));
+    Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
+
+    inline T GetDistanceTo(const Vec3 &o) {
+        return Length(*this - o);
     }
 
     static void Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz) {
@@ -62,24 +67,35 @@ struct Vec3 : public Vec2<T> {
         *outz = v.z + (int)(sinf_x * (float)(sDepth /*>> 16*/));
     }
 
-    static void Normalize(T *x, T *y, T *z) {
-        extern int integer_sqrt(int val);
-        int denom = *y * *y + *z * *z + *x * *x;
-        int mult = 65536 / (integer_sqrt(denom) | 1);
-        *x *= mult;
-        *y *= mult;
-        *z *= mult;
+    void Normalize() requires std::is_floating_point_v<T> {
+        T denom = static_cast<T>(1.0) / Length(*this);
+        x *= denom;
+        y *= denom;
+        z *= denom;
     }
 
-    void Normalize_float() {
-        double x = this->x;
-        double y = this->y;
-        double z = this->z;
-        double s = sqrt(x * x + y * y + z * z);
+    friend Vec3<int> ToIntVector(const Vec3 &v) requires std::is_floating_point_v<T> {
+        return Vec3<int>(std::round(v.x), std::round(v.y), std::round(v.z));
+    }
 
-        this->x = bankersRounding(x / s);
-        this->y = bankersRounding(y / s);
-        this->z = bankersRounding(z / s);
+    friend Vec3<int> ToFixpointVector(const Vec3 &v) requires std::is_floating_point_v<T> {
+        return Vec3<int>(std::round(v.x * 65536.0), std::round(v.y * 65536.0), std::round(v.z * 65536.0));
+    }
+
+    friend Vec3<float> ToFloatVector(const Vec3 &v) requires std::is_integral_v<T> {
+        return Vec3<float>(v.x, v.y, v.z);
+    }
+
+    friend Vec3<float> ToFloatVectorFromFixpoint(const Vec3 &v) requires std::is_integral_v<T> {
+        return Vec3<float>(v.x / 65536.0, v.y / 65536.0, v.z / 65536.0);
+    }
+
+    friend T LengthSqr(const Vec3 &v) {
+        return v.x * v.x + v.y * v.y + v.z * v.z;
+    }
+
+    friend T Length(const Vec3 &v) {
+        return std::sqrt(LengthSqr(v));
     }
 
     friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
@@ -92,6 +108,14 @@ struct Vec3 : public Vec2<T> {
 
     friend Vec3 operator/(const Vec3 &l, T r) {
         return Vec3(l.x / r, l.y / r, l.z / r);
+    }
+
+    friend Vec3 operator*(const Vec3 &l, T r) {
+        return Vec3(l.x * r, l.y * r, l.z * r);
+    }
+
+    friend Vec3 operator*(T l, const Vec3 &r) {
+        return r * l;
     }
 
     friend Vec3 Cross(const Vec3 &l, const Vec3 &r) {
@@ -107,35 +131,14 @@ struct Vec3 : public Vec2<T> {
 using Vec3_short_ = Vec3<int16_t>;
 using Vec3_int_ = Vec3<int32_t>;
 using Vec3_int64_ = Vec3<int64_t>;
-
-#pragma pack(push, 1)
-struct Vec3_float_ {
-    void Normalize();
-
-    static Vec3_float_ *Cross(Vec3_float_ *v1, Vec3_float_ *pOut, float x,
-                              float y, float z) {
-        pOut->x = z * v1->y - y * v1->z;
-        pOut->y = x * v1->z - z * v1->x;
-        pOut->z = y * v1->x - x * v1->y;
-        return pOut;
-    }
-
-    inline static float NegDot(Vec3_float_ *a1, Vec3_float_ *a2, float *a3) {
-        return *a3 = -(a1->z * a2->z + a1->y * a2->y + a1->x * a2->x);
-    }
-
-    float x;
-    float y;
-    float z;
-};
-#pragma pack(pop)
+using Vec3_float_ = Vec3<float>;
 
 #pragma pack(push, 1)
 struct Vec4_int_ {
-    int x;
-    int y;
-    int z;
-    int w;
+    int x = 0;
+    int y = 0;
+    int z = 0;
+    int w = 0;
 };
 #pragma pack(pop)
 
@@ -189,53 +192,73 @@ struct Plane_int_ {
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct BBox_short_ {
-    int16_t x1;
-    int16_t x2;
-    int16_t y1;
-    int16_t y2;
-    int16_t z1;
-    int16_t z2;
+template<class T>
+struct BBox {
+    T x1 = 0;
+    T x2 = 0;
+    T y1 = 0;
+    T y2 = 0;
+    T z1 = 0;
+    T z2 = 0;
 
-    bool ContainsXY(int x, int y) const {
+    static BBox FromPoint(const Vec3<T> &center, T radius) {
+        BBox result;
+        result.x1 = center.x - radius;
+        result.x2 = center.x + radius;
+        result.y1 = center.y - radius;
+        result.y2 = center.y + radius;
+        result.z1 = center.z - radius;
+        result.z2 = center.z + radius;
+        return result;
+    }
+
+    bool ContainsXY(T x, T y) const {
         return x >= x1 && x <= x2 && y >= y1 && y <= y2;
     }
 
-    bool Contains(const Vec3_short_ &pos) const {
+    bool Contains(const Vec3<T> &pos) const {
         return x1 <= pos.x && pos.x <= x2 && y1 <= pos.y && pos.y <= y2 && z1 <= pos.z && pos.z <= z2;
     }
-};
-#pragma pack(pop)
 
-#pragma pack(push, 1)
-struct BBox_int_ {
-    int x1;
-    int x2;
-    int y1;
-    int y2;
-    int z1;
-    int z2;
-
-    bool Intersects(const BBox_short_ &other) const {
+    template<class U>
+    bool Intersects(const BBox<U> &other) const {
         return
             this->x1 <= other.x2 && this->x2 >= other.x1 &&
             this->y1 <= other.y2 && this->y2 >= other.y1 &&
             this->z1 <= other.z2 && this->z2 >= other.z1;
     }
 
-    bool Intersects(const BBox_int_ &other) const {
-        return
-            this->x1 <= other.x2 && this->x2 >= other.x1 &&
-            this->y1 <= other.y2 && this->y2 >= other.y1 &&
-            this->z1 <= other.z2 && this->z2 >= other.z1;
+    friend BBox operator|(const BBox &l, const BBox &r) {
+        BBox result;
+        result.x1 = std::min(l.x1, r.x1);
+        result.x2 = std::max(l.x2, r.x2);
+        result.y1 = std::min(l.y1, r.y1);
+        result.y2 = std::max(l.y2, r.y2);
+        result.z1 = std::min(l.z1, r.z1);
+        result.z2 = std::max(l.z2, r.z2);
+        return result;
     }
 };
 #pragma pack(pop)
+
+using BBox_int_ = BBox<int>;
+using BBox_short_ = BBox<short>;
+using BBox_float_ = BBox<float>;
 
 #pragma pack(push, 1)
 struct Plane_float_ {
-    struct Vec3_float_ vNormal;
-    float dist;
+    Vec3_float_ vNormal;
+    float dist = 0.0f;
+
+    /**
+     * @param point                     Point to calculate distance to.
+     * @return                          Signed distance to the provided point from this plane. Positive value
+     *                                  means that `point` is in the half-space that the normal is pointing to,
+     *                                  and this usually is "outside" the model that the face belongs to.
+     */
+    float SignedDistanceTo(const Vec3_float_ &point) {
+        return this->dist + this->vNormal.x * point.x + this->vNormal.y * point.y + this->vNormal.z * point.z;
+    }
 };
 #pragma pack(pop)
 

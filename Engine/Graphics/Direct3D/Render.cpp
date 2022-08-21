@@ -1226,7 +1226,6 @@ Render::Render(
 
     uNumBillboardsToDraw = 0;
 
-    hd_water_tile_id = -1;
     hd_water_current_frame = 0;
 
     this->p2DGraphics = nullptr;
@@ -3847,7 +3846,9 @@ void Render::PackScreenshot(unsigned int width, unsigned int height, void *data,
 }
 
 int Render::GetActorsInViewport(int pDepth) {
-    unsigned int
+    // TODO: merge this function with RenderOpenGL::GetActorsInViewport
+
+    int
         v3;  // eax@2 применяется в закле Жар печи для подсчёта кол-ва монстров
              // видимых группе и заполнения массива id видимых монстров
     unsigned int v5;   // eax@2
@@ -3861,6 +3862,9 @@ int Render::GetActorsInViewport(int pDepth) {
     if ((signed int)GetBillboardDrawListSize() > 0) {
         for (a1a = 0; (signed int)a1a < (signed int)v12; ++a1a) {
             v3 = GetParentBillboardID(a1a);
+            if(v3 == -1)
+                continue;
+
             v5 = (unsigned __int16)pBillboardRenderList[v3].object_pid;
             if (PID_TYPE(v5) == OBJECT_Actor) {
                 if (pBillboardRenderList[v3].screen_space_z <= pDepth) {
@@ -4499,15 +4503,14 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
         // v81 = (const void
         // *)fixpoint_mul(pSkyPolygon.ptr_38->viewing_angle_from_west_east, v35);
         v36 =
-            (int)(fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_Z * 65536.0,
-            (int)v35) +
-                pSkyPolygon.ptr_38->CamVecLeft_Y * 65536.0);
+            fixpoint_mul(static_cast<int>(pSkyPolygon.ptr_38->CamVecLeft_Z * 65536.0), (int)v35) +
+            pSkyPolygon.ptr_38->CamVecLeft_Y * 65536.0;
 
         v81 = v35;
         inter_left = v36;
         // toggle_flag = pSkyPolygon.ptr_38->viewing_angle_from_north_south;
         v81 = (const void *)fixpoint_mul(
-            pSkyPolygon.ptr_38->CamVecFront_Z * 65536.0, (int)v35);
+            static_cast<int>(pSkyPolygon.ptr_38->CamVecFront_Z * 65536.0), (int)v35);
         toggle_flag = (int)v35;
         v75 = (RenderVertexSoft *)((char *)v81 +
             int(pSkyPolygon.ptr_38->CamVecFront_Y * 65536.0));
@@ -4542,9 +4545,10 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
             toggle_flag = 2 * (signed __int64)y_proj;
             v81 = (const void *)fixpoint_mul(
                 pSkyPolygon.v_18.z,
+                static_cast<int>(
                 (((double)blv_horizon_height_offset - ((double)(2 * (signed __int64)y_proj) -
                     VertexRenderList[j].vWorldViewProjY)) *
-                    (double)fp_over_viewplanedist));
+                    (double)fp_over_viewplanedist)));
             X = (int)((char *)v81 + pSkyPolygon.v_18.x);
         }
         HEXRAYS_LODWORD(v42) = v77 << 16;
@@ -4553,16 +4557,16 @@ void Render::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID) {
         v81 = v37;
 
         // toggle_flag = pSkyPolygon.ptr_38->angle_from_west;
-        v81 = (const void *)fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_X * 65536.0f,
+        v81 = (const void *)fixpoint_mul(static_cast<int>(pSkyPolygon.ptr_38->CamVecLeft_X * 65536.0f),
             (int)v37);
-        v43 = inter_left + fixpoint_mul(pSkyPolygon.ptr_38->CamVecLeft_X * 65536.0f, (int)v37);
+        v43 = inter_left + fixpoint_mul(static_cast<int>(pSkyPolygon.ptr_38->CamVecLeft_X * 65536.0f), (int)v37);
         inter_left = (unsigned int)v37;
         y_proj = v43;
 
         // toggle_flag = pSkyPolygon.ptr_38->angle_from_south;
         v75 = (RenderVertexSoft *)((char *)v75 +
             fixpoint_mul(
-                pSkyPolygon.ptr_38->CamVecFront_X * 65536.0f,
+                static_cast<int>(pSkyPolygon.ptr_38->CamVecFront_X * 65536.0f),
                 (int)v37));
         // inter_left = fixpoint_mul(v43, v42 / X);
         v81 = (const void *)fixpoint_mul((int)v75, v42 / X);

@@ -68,7 +68,6 @@ struct Vis_SelectionList {
         uNumPointers++;
     }
 
-    void (***vdestructor_ptr)(Vis_SelectionList *, bool) = nullptr;
     Vis_ObjectInfo object_pool[512] {};
     Vis_ObjectInfo* object_pointers[512] {};
     unsigned int uNumPointers;
@@ -148,7 +147,6 @@ class Vis {
     void SortByScreenSpaceY(struct RenderVertexSoft *pArray, int start,
                             int end);
 
-    // void ( ***vdestructor_ptr)(Vis *, bool);
     Vis_SelectionList default_list;
     RenderVertexSoft stru_200C;
     RenderVertexSoft stru_203C;

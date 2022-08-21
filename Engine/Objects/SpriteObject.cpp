@@ -115,13 +115,9 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
 
     // calcualte angle velocity - could use rotate func here as above
     if (speed) {
-        long long v13 =
-            fixpoint_mul(TrigLUT->Cos(yaw), TrigLUT->Cos(pitch));
-        long long a5a =
-            fixpoint_mul(TrigLUT->Sin(yaw), TrigLUT->Cos(pitch));
-        vVelocity.x = fixpoint_mul(v13, speed);
-        vVelocity.y = fixpoint_mul(a5a, speed);
-        vVelocity.z = fixpoint_mul(TrigLUT->Sin(pitch), speed);
+        vVelocity.x = TrigLUT->Cos(yaw) * TrigLUT->Cos(pitch) * speed;
+        vVelocity.y = TrigLUT->Sin(yaw) * TrigLUT->Cos(pitch) * speed;
+        vVelocity.z = TrigLUT->Sin(pitch) * speed;
     }
 
     // copy sprite object into slot
@@ -391,14 +387,14 @@ LABEL_13:
             }
             // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.x) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.x += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+            pSpriteObjects[uLayingItemID].vPosition.x += collision_state.adjusted_move_distance * collision_state.direction.x;
             // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.y) >> 16);
-            pSpriteObjects[uLayingItemID].vPosition.y += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+            pSpriteObjects[uLayingItemID].vPosition.y += collision_state.adjusted_move_distance * collision_state.direction.y;
             // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.z) >> 16);
             v28 = (short)collision_state.uSectorID;
-            pSpriteObjects[uLayingItemID].vPosition.z += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+            pSpriteObjects[uLayingItemID].vPosition.z += collision_state.adjusted_move_distance * collision_state.direction.z;
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
             pSpriteObjects[uLayingItemID].uSectorID = v28;
             collision_state.total_move_distance += collision_state.adjusted_move_distance;
@@ -429,8 +425,8 @@ LABEL_13:
                               face->pFacePlaneOLD.vNormal.y * pSpriteObjects[uLayingItemID].vVelocity.y +
                               face->pFacePlaneOLD.vNormal.z * pSpriteObjects[uLayingItemID].vVelocity.z) >>
                           16;
-                    if ((collision_state.speed >> 3) > v56)
-                        v56 = collision_state.speed >> 3;
+                    if ((collision_state.speed / 8) > v56)
+                        v56 = collision_state.speed / 8;
                     // v57 = fixpoint_mul(v56, face->pFacePlane.vNormal.x);
                     // v58 = fixpoint_mul(v56, face->pFacePlane.vNormal.y);
                     v60 = fixpoint_mul(v56, face->pFacePlaneOLD.vNormal.z);
@@ -449,7 +445,7 @@ LABEL_13:
                         EventProcessor(face->sCogTriggeredID, 0, 1);
                 }
             }
-        LABEL_74:
+        //LABEL_74:
             pSpriteObjects[uLayingItemID].vVelocity.x = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.x);
             pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.y);
             pSpriteObjects[uLayingItemID].vVelocity.z = fixpoint_mul(58500, pSpriteObjects[uLayingItemID].vVelocity.z);
@@ -459,11 +455,9 @@ LABEL_13:
         v38 = TrigLUT->Atan2(
             pSpriteObjects[uLayingItemID].vPosition.x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
             pSpriteObjects[uLayingItemID].vPosition.y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
-        pSpriteObjects[uLayingItemID].vVelocity.x =
-            fixpoint_mul(TrigLUT->Cos(v38), v57);
-        pSpriteObjects[uLayingItemID].vVelocity.y = fixpoint_mul(
-            TrigLUT->Sin(v38 - TrigLUT->uIntegerHalfPi), v57);
-        goto LABEL_74;
+        pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT->Cos(v38) * v57;
+        pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT->Sin(v38 - TrigLUT->uIntegerHalfPi) * v57;
+        //goto LABEL_74; // This goto results in an infinite loop, commented out.
     }
 }
 
@@ -472,20 +466,20 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
     SpriteObject *pSpriteObject = &pSpriteObjects[uLayingItemID];
     ObjectDesc *pObject = &pObjectList->pObjects[pSpriteObject->uObjectDescID];
 
-    pSpriteObject->uSectorID = pIndoor->GetSector(pSpriteObject->vPosition);
-
-    unsigned int uFaceID;
-
-    int floor_lvl = BLV_GetFloorLevel(pSpriteObject->vPosition, pSpriteObject->uSectorID, &uFaceID);
-
-    // object out of bounds
-    if (abs(pSpriteObject->vPosition.x) > 32767 ||
-        abs(pSpriteObject->vPosition.y) > 32767 ||
-        abs(pSpriteObject->vPosition.z) > 20000 ||
-        floor_lvl <= -30000 && (pSpriteObject->uSectorID == 0)) {
+    // Break early if we're out of bounds.
+    if (abs(pSpriteObject->vPosition.x) > 32767 || abs(pSpriteObject->vPosition.y) > 32767 || abs(pSpriteObject->vPosition.z) > 20000) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;
     }
+
+    unsigned int uFaceID;
+    unsigned int uSectorID = pSpriteObject->uSectorID; // TODO: this should go straight into GetIndoorFloorZ as a pointer.
+    int floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition, &uSectorID, &uFaceID);
+    if (floor_lvl <= -30000) {
+        SpriteObject::OnInteraction(uLayingItemID);
+        return;
+    }
+    pSpriteObject->uSectorID = uSectorID;
 
     int v15;               // ebx@46
     int v17;                      // eax@50
@@ -597,19 +591,19 @@ LABEL_25:
             // __int64)collision_state.direction.x) >> 16;
 
             pSpriteObject->vPosition.x +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+                collision_state.adjusted_move_distance * collision_state.direction.x;
 
             // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.y) >> 16;
 
             pSpriteObject->vPosition.y +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+                collision_state.adjusted_move_distance * collision_state.direction.y;
 
             // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
             // __int64)collision_state.direction.z) >> 16;
 
             pSpriteObject->vPosition.z +=
-                fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+                collision_state.adjusted_move_distance * collision_state.direction.z;
 
             pSpriteObject->uSectorID = collision_state.uSectorID;
             collision_state.total_move_distance += collision_state.adjusted_move_distance;
@@ -629,10 +623,8 @@ LABEL_25:
                                            pLevelDecorations[v15].vPosition.x,
                                        pSpriteObject->vPosition.y -
                                            pLevelDecorations[v15].vPosition.y);
-                pSpriteObject->vVelocity.x =
-                    fixpoint_mul(TrigLUT->Cos(v23), v40);
-                pSpriteObject->vVelocity.y =
-                    fixpoint_mul(TrigLUT->Sin(v23), v40);
+                pSpriteObject->vVelocity.x = TrigLUT->Cos(v23) * v40;
+                pSpriteObject->vVelocity.y = TrigLUT->Sin(v23) * v40;
             }
             if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
                 collision_state.ignored_face_id = PID_ID(collision_state.pid);
@@ -644,8 +636,8 @@ LABEL_25:
                               pIndoor->pFaces[v15].pFacePlane_old.vNormal.z *
                                   pSpriteObject->vVelocity.z) >>
                           16;
-                    if ((collision_state.speed >> 3) > floor_lvl)
-                        floor_lvl = collision_state.speed >> 3;
+                    if ((collision_state.speed / 8) > floor_lvl)
+                        floor_lvl = collision_state.speed / 8;
                     pSpriteObject->vVelocity.x +=
                         2 *
                         fixpoint_mul(
@@ -873,8 +865,8 @@ uint8_t SpriteObject::GetParticleTrailColorB() {
 void SpriteObject::OnInteraction(unsigned int uLayingItemID) {
     pSpriteObjects[uLayingItemID].uObjectDescID = 0;
     if (pParty->bTurnBasedModeOn) {
-        if (pSpriteObjects[uLayingItemID].uAttributes & 4) {
-            pSpriteObjects[uLayingItemID].uAttributes &= 0xFFFB;  // ~0x00000004
+        if (pSpriteObjects[uLayingItemID].uAttributes & 0x4) {
+            pSpriteObjects[uLayingItemID].uAttributes &= ~0x4;
             --pTurnEngine->pending_actions;
         }
     }
@@ -1712,7 +1704,7 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
         layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
         layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
 
-        Vec3_int_::Normalize(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
+        normalize_to_fixpoint(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
                              &layingitem_vel_50FDFC.z);
         DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID),
                                 pSpriteObjects[uLayingItemID].field_61,
@@ -1722,7 +1714,7 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
         layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
         layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
 
-        Vec3_int_::Normalize(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
+        normalize_to_fixpoint(&layingitem_vel_50FDFC.x, &layingitem_vel_50FDFC.y,
                              &layingitem_vel_50FDFC.z);
         switch (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid)) {
             case OBJECT_Actor:

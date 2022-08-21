@@ -1,6 +1,7 @@
 #include "Collisions.h"
 
 #include <algorithm>
+#include <limits>
 
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -23,7 +24,7 @@ CollisionState collision_state;
  * @param pos                           Actor position to check.
  * @param radius                        Actor radius.
  * @param dir                           Movement direction as a unit vector in fixpoint format.
- * @param move_distance[out]            Move distance along the `dir` axis required to touch the provided polygon.
+ * @param out_move_distance[out]        Move distance along the `dir` axis required to touch the provided polygon.
  *                                      Always non-negative. This parameter is not set if the function returns false.
  *                                      Note that "touching" in this context means that the distance from the actor's
  *                                      center to the polygon equals actor's radius.
@@ -32,53 +33,42 @@ CollisionState collision_state;
  * @return                              Whether the actor, basically modeled as a sphere, can actually collide with the
  *                                      polygon if moving along the `dir` axis.
  */
-static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radius, const Vec3_int_ &dir,
-                                  int *move_distance, bool ignore_ethereal, int model_idx) {
+static bool CollideSphereWithFace(BLVFace *face, const Vec3_float_ &pos, float radius, const Vec3_float_ &dir,
+                                  float *out_move_distance, bool ignore_ethereal, int model_idx) {
     if (ignore_ethereal && face->Ethereal())
         return false;
 
-    // _fp suffix => that's a fixpoint number
-
     // dot_product(dir, normal) is a cosine of an angle between them.
-    int cos_dir_normal_fp =
-        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+    float cos_dir_normal = Dot(dir, face->pFacePlane.vNormal);
 
-    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos.x, pos.y, pos.z);
-    int radius_fp = radius << 16;
-
-    int64_t overshoot;
-    signed int move_distance_fp;
+    float pos_face_distance = face->pFacePlane.SignedDistanceTo(pos);
 
     // How deep into the model that the face belongs to we already are,
     // positive value => actor's sphere already intersects the model.
-    int overshoot_fp = -pos_face_distance_fp + radius_fp;
-    if (abs(overshoot_fp) < radius_fp) {
+    float overshoot = -pos_face_distance + radius;
+    float move_distance = 0;
+    if (abs(overshoot) < radius) {
         // We got here => we're not that deep into the model. Can just push us back a little.
-        overshoot = abs(overshoot_fp) >> 16;
-        move_distance_fp = 0;
+        move_distance = 0;
     } else {
         // We got here => we're already inside the model. Or way outside.
         // We just say we overshot by radius. No idea why.
         overshoot = radius;
 
         // Then this is a correction needed to bring us to the point where actor's sphere is just touching the face.
-        move_distance_fp = fixpoint_div(overshoot_fp, cos_dir_normal_fp);
+        move_distance = overshoot / cos_dir_normal;
     }
 
-    Vec3_short_ new_pos;
-    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) - overshoot * face->pFacePlane_old.vNormal.x) >> 16);
-    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) - overshoot * face->pFacePlane_old.vNormal.y) >> 16);
-    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) - overshoot * face->pFacePlane_old.vNormal.z) >> 16);
+    Vec3_float_ new_pos =
+        pos + move_distance * dir - overshoot * face->pFacePlane.vNormal;
 
-    if (!face->Contains(new_pos, model_idx))
+    if (!face->Contains(ToIntVector(new_pos), model_idx))
         return false; // We've just managed to slide past the face, so pretend no collision happened.
 
-    if (move_distance_fp < 0) {
-        *move_distance = 0;
+    if (move_distance < 0) {
+        *out_move_distance = 0;
     } else {
-        *move_distance = move_distance_fp >> 16;
+        *out_move_distance = move_distance;
     }
 
     return true;
@@ -90,7 +80,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radiu
  * @param face                          Polygon to check collision against.
  * @param pos                           Actor position to check.
  * @param dir                           Movement direction as a unit vector in fixpoint format.
- * @param move_distance[in,out]         Current movement distance along the `dir` axis. This parameter is not touched
+ * @param out_move_distance[in,out]     Current movement distance along the `dir` axis. This parameter is not touched
  *                                      when the function returns false. If the function returns true, then the
  *                                      distance required to hit the polygon is stored here. Note that this effectively
  *                                      means that this function can only decrease `move_distance`, but never increase
@@ -99,48 +89,42 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_int_ &pos, int radiu
  * @return                              Whether the actor, modeled as a point, hits the provided polygon if moving from
  *                                      `pos` along the `dir` axis by at most `move_distance`.
  */
-static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3_int_ &dir, int *move_distance,
+static bool CollidePointWithFace(BLVFace *face, const Vec3_float_ &pos, const Vec3_float_ &dir, float *out_move_distance,
                                  int model_idx) {
     // _fp suffix => that's a fixpoint number
 
     // dot_product(dir, normal) is a cosine of an angle between them.
-    int cos_dir_normal_fp =
-        fixpoint_mul(dir.x, face->pFacePlane_old.vNormal.x) +
-        fixpoint_mul(dir.y, face->pFacePlane_old.vNormal.y) +
-        fixpoint_mul(dir.z, face->pFacePlane_old.vNormal.z);
+    float cos_dir_normal = Dot(dir, face->pFacePlane.vNormal);
 
-    if (cos_dir_normal_fp == 0)
+    if (FuzzyIsNull(cos_dir_normal))
         return false; // dir is perpendicular to face normal.
 
     if (face->uAttributes & FACE_ETHEREAL)
         return false;
 
-    if (cos_dir_normal_fp > 0 && !face->Portal())
+    if (cos_dir_normal > 0 && !face->Portal())
         return false; // We're facing away && face is not a portal.
 
-    int pos_face_distance_fp = face->pFacePlane_old.SignedDistanceToAsFixpoint(pos);
+    float pos_face_distance = face->pFacePlane.SignedDistanceTo(pos);
 
-    if (cos_dir_normal_fp < 0 && pos_face_distance_fp < 0)
+    if (cos_dir_normal < 0 && pos_face_distance < 0)
         return false; // Facing towards the face but already inside the model.
 
-    if (cos_dir_normal_fp > 0 && pos_face_distance_fp > 0)
+    if (cos_dir_normal > 0 && pos_face_distance > 0)
         return false; // Facing away from the face and outside the model.
 
     // How far we need to move along the `dir` axis to hit face.
-    int move_distance_fp = fixpoint_div(-pos_face_distance_fp, cos_dir_normal_fp);
+    float move_distance = -pos_face_distance / cos_dir_normal;
 
-    Vec3_short_ new_pos;
-    new_pos.x = pos.x + ((fixpoint_mul(move_distance_fp, dir.x) + 0x8000) >> 16);
-    new_pos.y = pos.y + ((fixpoint_mul(move_distance_fp, dir.y) + 0x8000) >> 16);
-    new_pos.z = pos.z + ((fixpoint_mul(move_distance_fp, dir.z) + 0x8000) >> 16);
+    Vec3_float_ new_pos = pos + move_distance * dir;
 
-    if (move_distance_fp > *move_distance << 16)
+    if (move_distance > *out_move_distance)
         return false; // No correction needed.
 
-    if (!face->Contains(new_pos, model_idx))
+    if (!face->Contains(ToIntVector(new_pos), model_idx))
         return false;
 
-    *move_distance = move_distance_fp >> 16;
+    *out_move_distance = move_distance;
     return true;
 }
 
@@ -154,12 +138,12 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_int_ &pos, const Vec3
  * @param model_idx                     Model index, or `MODEL_INDOOR`.
 */
 static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal, int model_idx) {
-    auto collide_once = [&](const Vec3_int_ &old_pos, const Vec3_int_ &new_pos, const Vec3_int_ &dir, int radius) {
-        int distance_old = face->pFacePlane_old.SignedDistanceTo(old_pos);
-        int distance_new = face->pFacePlane_old.SignedDistanceTo(new_pos);
+    auto collide_once = [&](const Vec3_float_ &old_pos, const Vec3_float_ &new_pos, const Vec3_float_ &dir, int radius) {
+        float distance_old = face->pFacePlane.SignedDistanceTo(old_pos);
+        float distance_new = face->pFacePlane.SignedDistanceTo(new_pos);
         if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
             bool have_collision = false;
-            int move_distance = collision_state.move_distance;
+            float move_distance = collision_state.move_distance;
             if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, ignore_ethereal, model_idx)) {
                 have_collision = true;
             } else {
@@ -177,12 +161,18 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
         }
     };
 
-    collide_once(collision_state.position_lo, collision_state.new_position_lo, collision_state.direction,
-                 collision_state.radius_lo);
+    collide_once(
+        collision_state.position_lo,
+        collision_state.new_position_lo,
+        collision_state.direction,
+        collision_state.radius_lo);
 
     if(collision_state.check_hi)
-        collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction,
-                     collision_state.radius_hi);
+        collide_once(
+            collision_state.position_hi,
+            collision_state.new_position_hi,
+            collision_state.direction,
+            collision_state.radius_hi);
 }
 
 /**
@@ -195,8 +185,8 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
  * @param jagged_top                    See `CollideWithParty`.
  * @return                              Whether there is a collision.
  */
-static bool CollideWithCylinder(const Vec3_int_ &center_lo, int radius, int height, int pid, bool jagged_top) {
-    BBox_int_ bbox;
+static bool CollideWithCylinder(const Vec3_float_ &center_lo, float radius, float height, int pid, bool jagged_top) {
+    BBox_float_ bbox;
     bbox.x1 = center_lo.x - radius;
     bbox.x2 = center_lo.x + radius;
     bbox.y1 = center_lo.y - radius;
@@ -207,30 +197,31 @@ static bool CollideWithCylinder(const Vec3_int_ &center_lo, int radius, int heig
         return false;
 
     // dist vector points from position center into cylinder center.
-    int dist_x = center_lo.x - collision_state.position_lo.x;
-    int dist_y = center_lo.y - collision_state.position_lo.y;
-    int sum_radius = collision_state.radius_lo + radius;
+    float dist_x = center_lo.x - collision_state.position_lo.x;
+    float dist_y = center_lo.y - collision_state.position_lo.y;
+    float sum_radius = collision_state.radius_lo + radius;
 
     // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
     // thus this actually is length(dist) * sin(dist, collision_state.direction).
     // This in turn is the distance from cylinder center to the line of actor's movement.
-    int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
+    Vec3_float_ dir = collision_state.direction;
+    float closest_dist = dist_x * dir.y - dist_y * dir.x;
     if (abs(closest_dist) > sum_radius)
         return false; // No chance to collide.
 
     // Length of dist vector projected onto collision_state.direction.
-    int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
+    float dist_dot_dir = dist_x * dir.x + dist_y * dir.y;
     if (dist_dot_dir <= 0)
         return false; // We're moving away from the cylinder.
 
     // Z-coordinate of the actor at the point closest to the cylinder in XY plane.
-    int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
+    float closest_z = collision_state.position_lo.z + dir.z * dist_dot_dir;
     if (closest_z < bbox.z1 || (closest_z > bbox.z2 && !jagged_top))
         return false;
 
     // That's how far can we go along the collision_state.direction axis until the actor touches the cylinder,
     // i.e. distance between them goes below sum_radius.
-    int move_distance = dist_dot_dir - integer_sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
+    float move_distance = dist_dot_dir - std::sqrt(sum_radius * sum_radius - closest_dist * closest_dist);
     if (move_distance < 0)
         move_distance = 0;
 
@@ -250,7 +241,8 @@ static void CollideWithDecoration(int id) {
     if (desc->CanMoveThrough())
         return;
 
-    CollideWithCylinder(decor->vPosition, desc->uRadius, desc->uDecorationHeight, PID(OBJECT_Decoration, id), false);
+    CollideWithCylinder(
+        ToFloatVector(decor->vPosition), desc->uRadius, desc->uDecorationHeight, PID(OBJECT_Decoration, id), false);
 }
 
 
@@ -258,47 +250,34 @@ static void CollideWithDecoration(int id) {
 /* =============================
  * Implementation of public API.
  */
-bool CollisionState::PrepareAndCheckIfStationary(int dt) {
-    this->speed = integer_sqrt(
-        this->velocity.z * this->velocity.z +
-        this->velocity.y * this->velocity.y +
-        this->velocity.x * this->velocity.x);
+bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
+    if (!dt_fp)
+        dt_fp = pEventTimer->dt_fixpoint;
+    float dt = fixpoint_to_float(dt_fp);
 
-    if (this->speed != 0) {
-        this->direction.x = fixpoint_div(this->velocity.x, this->speed);
-        this->direction.y = fixpoint_div(this->velocity.y, this->speed);
-        this->direction.z = fixpoint_div(this->velocity.z, this->speed);
+    this->speed = Length(this->velocity);
+
+    if (!FuzzyIsNull(this->speed)) {
+        this->direction = this->velocity / this->speed;
     } else {
-        this->direction.x = 0;
-        this->direction.y = 0;
-        this->direction.z = 65536;
+        this->direction = Vec3_float_(0, 0, 1.0f);
     }
 
-    if (!dt)
-        dt = pEventTimer->dt_fixpoint;
-
-    this->move_distance = fixpoint_mul(dt, this->speed) - this->total_move_distance;
+    this->move_distance = dt * this->speed - this->total_move_distance;
     if (this->move_distance <= 0)
         return true;
 
-    this->new_position_hi.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
-    this->new_position_lo.x = fixpoint_mul(this->move_distance, this->direction.x) + this->position_lo.x;
+    this->new_position_hi = this->position_hi + this->move_distance * this->direction;
+    this->new_position_lo = this->position_lo + this->move_distance * this->direction;
 
-    this->new_position_hi.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
-    this->new_position_lo.y = fixpoint_mul(this->move_distance, this->direction.y) + this->position_lo.y;
-
-    this->new_position_hi.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_hi.z;
-    this->new_position_lo.z = fixpoint_mul(this->move_distance, this->direction.z) + this->position_lo.z;
-
-    this->bbox.x1 = std::min(this->position_lo.x, this->new_position_lo.x) - this->radius_lo;
-    this->bbox.x2 = std::max(this->position_lo.x, this->new_position_lo.x) + this->radius_lo;
-    this->bbox.y1 = std::min(this->position_lo.y, this->new_position_lo.y) - this->radius_lo;
-    this->bbox.y2 = std::max(this->position_lo.y, this->new_position_lo.y) + this->radius_lo;
-    this->bbox.z1 = std::min(this->position_lo.z, this->new_position_lo.z) - this->radius_lo;
-    this->bbox.z2 = std::max(this->position_hi.z, this->new_position_hi.z) + this->radius_hi;
+    this->bbox =
+        BBox_float_::FromPoint(this->position_lo, this->radius_lo) |
+        BBox_float_::FromPoint(this->new_position_lo, this->radius_lo) |
+        BBox_float_::FromPoint(this->position_hi, this->radius_hi) |
+        BBox_float_::FromPoint(this->new_position_hi, this->radius_hi);
 
     this->pid = 0;
-    this->adjusted_move_distance = 0xFFFFFFu;
+    this->adjusted_move_distance = std::numeric_limits<float>::max();
 
     return  false;
 }
@@ -315,7 +294,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
         if (!collision_state.bbox.Intersects(pFace->pBounding))
             continue;
 
-        int distance = abs(pFace->pFacePlane_old.SignedDistanceTo(collision_state.position_lo));
+        float distance = abs(pFace->pFacePlane.SignedDistanceTo(collision_state.position_lo));
         if(distance > collision_state.move_distance + 16)
             continue;
 
@@ -354,6 +333,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
             // TODO: we should really either merge two face classes, or template the functions down the chain call here.
             BLVFace face;
             face.pFacePlane_old = mface.pFacePlaneOLD;
+            face.pFacePlane = mface.pFacePlane;
             face.uAttributes = mface.uAttributes;
             face.pBounding = mface.pBoundingBox;
             face.zCalc = mface.zCalc;
@@ -398,19 +378,19 @@ void CollideOutdoorWithDecorations(int grid_x, int grid_y) {
 
 bool CollideIndoorWithPortals() {
     int portal_id = 0;            // [sp+10h] [bp-4h]@15
-    unsigned int min_move_distance = 0xFFFFFF;
+    float min_move_distance = std::numeric_limits<float>::max();
     for (unsigned int i = 0; i < pIndoor->pSectors[collision_state.uSectorID].uNumPortals; ++i) {
         BLVFace *face = &pIndoor->pFaces[pIndoor->pSectors[collision_state.uSectorID].pPortals[i]];
         if (!collision_state.bbox.Intersects(face->pBounding))
             continue;
 
-        int distance_lo_old = face->pFacePlane_old.SignedDistanceTo(collision_state.position_lo);
-        int distance_lo_new = face->pFacePlane_old.SignedDistanceTo(collision_state.new_position_lo);
-        int move_distance = collision_state.move_distance;
+        float distance_lo_old = face->pFacePlane.SignedDistanceTo(collision_state.position_lo);
+        float distance_lo_new = face->pFacePlane.SignedDistanceTo(collision_state.new_position_lo);
+        float move_distance = collision_state.move_distance;
         if ((distance_lo_old < collision_state.radius_lo || distance_lo_new < collision_state.radius_lo) &&
             (distance_lo_old > -collision_state.radius_lo || distance_lo_new > -collision_state.radius_lo) &&
-            CollidePointWithFace(face, collision_state.position_lo, collision_state.direction, &move_distance,
-                MODEL_INDOOR) &&
+            CollidePointWithFace(face, collision_state.position_lo,
+                collision_state.direction, &move_distance, MODEL_INDOOR) &&
             move_distance < min_move_distance) {
             min_move_distance = move_distance;
             portal_id = pIndoor->pSectors[collision_state.uSectorID].pPortals[i];
@@ -423,7 +403,7 @@ bool CollideIndoorWithPortals() {
         } else {
             collision_state.uSectorID = pIndoor->pFaces[portal_id].uSectorID;
         }
-        collision_state.adjusted_move_distance = 0xFFFFFFF;
+        collision_state.adjusted_move_distance = std::numeric_limits<float>::max();
         return false;
     }
 
@@ -436,11 +416,12 @@ bool CollideWithActor(int actor_idx, int override_radius) {
         actor->uAIState == Dead || actor->uAIState == Summoned)
         return false;
 
-    int radius = actor->uActorRadius;
+    float radius = actor->uActorRadius;
     if (override_radius != 0)
         radius = override_radius;
 
-    return CollideWithCylinder(actor->vPosition, radius, actor->uActorHeight, PID(OBJECT_Actor, actor_idx), true);
+    return CollideWithCylinder(
+        ToFloatVector(actor->vPosition), radius, actor->uActorHeight, PID(OBJECT_Actor, actor_idx), true);
 }
 
 void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
@@ -455,7 +436,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
         // seemed not worth it.
 
-        BBox_int_ bbox;
+        BBox_float_ bbox;
         bbox.x1 = pSpriteObjects[i].vPosition.x - object->uRadius;
         bbox.x2 = pSpriteObjects[i].vPosition.x + object->uRadius;
         bbox.y1 = pSpriteObjects[i].vPosition.y - object->uRadius;
@@ -465,19 +446,20 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         if (!collision_state.bbox.Intersects(bbox))
             continue;
 
-        int dist_x = pSpriteObjects[i].vPosition.x - collision_state.position_lo.x;
-        int dist_y = pSpriteObjects[i].vPosition.y - collision_state.position_lo.y;
-        int sum_radius = object->uHeight + collision_state.radius_lo;
+        float dist_x = pSpriteObjects[i].vPosition.x - collision_state.position_lo.x;
+        float dist_y = pSpriteObjects[i].vPosition.y - collision_state.position_lo.y;
+        float sum_radius = object->uHeight + collision_state.radius_lo;
 
-        int closest_dist = (dist_x * collision_state.direction.y - dist_y * collision_state.direction.x) >> 16;
+        Vec3_float_ dir = collision_state.direction;
+        float closest_dist = dist_x * dir.y - dist_y * dir.x;
         if (abs(closest_dist) > sum_radius)
             continue;
 
-        int dist_dot_dir = (dist_x * collision_state.direction.x + dist_y * collision_state.direction.y) >> 16;
+        float dist_dot_dir = dist_x * dir.x + dist_y * dir.y;
         if (dist_dot_dir <= 0)
             continue;
 
-        int closest_z = collision_state.position_lo.z + fixpoint_mul(collision_state.direction.z, dist_dot_dir);
+        float closest_z = collision_state.position_lo.z + dir.z * dist_dot_dir;
         if (closest_z < bbox.z1 - collision_state.radius_lo || closest_z > bbox.z2 + collision_state.radius_lo)
             continue;
 
@@ -487,6 +469,6 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
 }
 
 void CollideWithParty(bool jagged_top) {
-    CollideWithCylinder(pParty->vPosition, 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
+    CollideWithCylinder(ToFloatVector(pParty->vPosition), 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
 }
 

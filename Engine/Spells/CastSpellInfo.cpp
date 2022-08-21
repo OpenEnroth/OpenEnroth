@@ -258,9 +258,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.uSoundID = pCastSpell->sound_id;
                 pPlayer = &pParty->pPlayers[pCastSpell->uPlayerID];
                 memcpy(&pSpellSprite.containing_item, &pPlayer->pInventoryItemList[pPlayer->pEquipment.uBow - 1], sizeof(pSpellSprite.containing_item));
-                pSpellSprite.uAttributes = 256;
+                pSpellSprite.uAttributes = 0x100;
                 if (pParty->bTurnBasedModeOn) {
-                    pSpellSprite.uAttributes = 260;
+                    pSpellSprite.uAttributes = 0x104;
                 }
                 for (int i = 0; i < amount; ++i) {
                     if (i)

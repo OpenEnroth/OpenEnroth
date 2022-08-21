@@ -312,7 +312,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(struct Polygon* terrpoly, Vec3_float
                     WorldMaxZ + bloodsplat_container->pBloodsplats_to_apply[i].radius >
                     bloodsplat_container->pBloodsplats_to_apply[i].z) {
                     // check plane distance
-                    Vec3_float_::NegDot(&triverts->vWorldPosition, terrnorm, tridotdist);
+                    *tridotdist = -Dot(triverts->vWorldPosition, *terrnorm);
 
                     planedist = terrnorm->y * bloodsplat_container->pBloodsplats_to_apply[i].y +
                         terrnorm->z * bloodsplat_container->pBloodsplats_to_apply[i].z +

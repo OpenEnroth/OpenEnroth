@@ -1,6 +1,7 @@
-#include "Engine/Log.h"
+#include "ImageLoader.h"
 
-#include "Engine/ZlibWrapper.h"
+#include <unordered_set>
+#include <string_view>
 
 #include "Engine/ErrorHandling.h"
 #include "Engine/Graphics/HWLContainer.h"
@@ -9,9 +10,27 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Log.h"
+#include "Engine/ZlibWrapper.h"
 
 #include "Platform/Api.h"
 
+// List of textures that require additional processing for transparent pixels.
+// TODO: move to WoMM config file.
+static const std::unordered_set<std::string_view> transparentTextures = {
+    "hwtrdre",
+    "hwtrdrne",
+    "hwtrdrs",
+    "hwtrdrsw",
+    "hwtrdrxne",
+    "hwtrdrxse",
+    "hwtrdrn",
+    "hwtrdrnw",
+    "hwtrdrse",
+    "hwtrdrw",
+    "hwtrdrxnw",
+    "hwtrdrxsw"
+};
 
 uint32_t *MakeImageSolid(unsigned int width, unsigned int height,
                          uint8_t *pixels, uint8_t *palette) {
@@ -370,30 +389,32 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
         size_t w = tex->header.uTextureWidth;
         size_t h = tex->header.uTextureHeight;
 
+        bool haveTransparency = transparentTextures.contains(tex->header.pName);
+
         for (size_t y = 0; y < h; y++) {
             for (size_t x = 0; x < w; x++) {
                 size_t p = y * w + x;
 
                 int pal = tex->paletted_pixels[p];
-                if (pal != 0) {
+                if (haveTransparency && pal == 0) {
+                    ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
+                } else {
                     pixels[p * 4 + 0] = tex->pPalette24[3 * pal + 2];
                     pixels[p * 4 + 1] = tex->pPalette24[3 * pal + 1];
                     pixels[p * 4 + 2] = tex->pPalette24[3 * pal + 0];
                     pixels[p * 4 + 3] = 255;
-                } else {
-                    ProcessTransparentPixel(tex->paletted_pixels, tex->pPalette24, x, y, w, h, &pixels[p * 4]);
                 }
             }
         }
 
-            *format = IMAGE_FORMAT_A8R8G8B8;
-            *width = tex->header.uTextureWidth;
-            *height = tex->header.uTextureHeight;
-            *out_pixels = pixels;
-            *out_palette = tex->pPalette24;
-            return true;
-        } else {
-            uint16_t* pixels = new uint16_t[num_pixels];
+        *format = IMAGE_FORMAT_A8R8G8B8;
+        *width = tex->header.uTextureWidth;
+        *height = tex->header.uTextureHeight;
+        *out_pixels = pixels;
+        *out_palette = tex->pPalette24;
+        return true;
+    } else {
+        uint16_t* pixels = new uint16_t[num_pixels];
 
         HWLTexture* hwl = render->LoadHwlBitmap(this->resource_name);
         if (hwl) {

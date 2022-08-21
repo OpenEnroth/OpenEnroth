@@ -1620,10 +1620,10 @@ void UpdateActors_BLV() {
             if (moveSpeed > 1000)
                 moveSpeed = 1000;
 
-            pActors[actor_id].vVelocity.x = fixpoint_mul(TrigLUT->Cos(pActors[actor_id].uYawAngle), moveSpeed);
-            pActors[actor_id].vVelocity.y = fixpoint_mul(TrigLUT->Sin(pActors[actor_id].uYawAngle), moveSpeed);
+            pActors[actor_id].vVelocity.x = TrigLUT->Cos(pActors[actor_id].uYawAngle) * moveSpeed;
+            pActors[actor_id].vVelocity.y = TrigLUT->Sin(pActors[actor_id].uYawAngle) * moveSpeed;
             if (isFlying)
-                pActors[actor_id].vVelocity.z = fixpoint_mul(TrigLUT->Sin(pActors[actor_id].uPitchAngle), moveSpeed);
+                pActors[actor_id].vVelocity.z = TrigLUT->Sin(pActors[actor_id].uPitchAngle) * moveSpeed;
         } else {  // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
             pActors[actor_id].vVelocity.x = fixpoint_mul(55000, pActors[actor_id].vVelocity.x);
@@ -1666,7 +1666,7 @@ void UpdateActors_BLV() {
                                          pActors[actor_id].uActorRadius + pActors[actor_id].uActorHeight - 1;
                 if (collision_state.position_hi.z < collision_state.position_lo.z)
                     collision_state.position_hi.z = pActors[actor_id].vPosition.z +
-                    pActors[actor_id].uActorRadius + 1;
+                        pActors[actor_id].uActorRadius + 1;
                 collision_state.velocity.x = pActors[actor_id].vVelocity.x;
                 collision_state.velocity.y = pActors[actor_id].vVelocity.y;
                 collision_state.velocity.z = pActors[actor_id].vVelocity.z;
@@ -1700,29 +1700,29 @@ void UpdateActors_BLV() {
                         v32 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
                     } else {
                         v30 = pActors[actor_id].vPosition.x +
-                              fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+                              collision_state.adjusted_move_distance * collision_state.direction.x;
                         v31 = pActors[actor_id].vPosition.y +
-                              fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+                              collision_state.adjusted_move_distance * collision_state.direction.y;
                         v32 = pActors[actor_id].vPosition.z +
-                              fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+                              collision_state.adjusted_move_distance * collision_state.direction.z;
                     }
                     v33 = GetIndoorFloorZ(Vec3_int_(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
+                    if (v33 == -30000)
+                        break; // Actor out of bounds, running more iterations won't help.
                     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && pActors[actor_id].uAIState == Dead) {
                         pActors[actor_id].uAIState = Removed;
                         continue;
                     }
                     if (isAboveGround || isFlying || !(pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
-                        if (v33 == -30000)
-                            continue;
                         if (pActors[actor_id].uCurrentActionAnimation != 1 ||
                             v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
                             if (collision_state.adjusted_move_distance < collision_state.move_distance) {
                                 pActors[actor_id].vPosition.x +=
-                                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
+                                    collision_state.adjusted_move_distance * collision_state.direction.x;
                                 pActors[actor_id].vPosition.y +=
-                                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+                                    collision_state.adjusted_move_distance * collision_state.direction.y;
                                 pActors[actor_id].vPosition.z +=
-                                    fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+                                    collision_state.adjusted_move_distance * collision_state.direction.z;
                                 pActors[actor_id].uSectorID = (short)collision_state.uSectorID;
                                 collision_state.total_move_distance += collision_state.adjusted_move_distance;
                                 v37 = PID_ID(collision_state.pid);
@@ -1827,8 +1827,8 @@ void UpdateActors_BLV() {
                                     v45 = TrigLUT->Atan2(
                                         pActors[actor_id].vPosition.x - pLevelDecorations[v37].vPosition.x,
                                         pActors[actor_id].vPosition.y - pLevelDecorations[v37].vPosition.y);
-                                    pActors[actor_id].vVelocity.x = fixpoint_mul(TrigLUT->Cos(v45), _this);
-                                    pActors[actor_id].vVelocity.y = fixpoint_mul(TrigLUT->Sin(v45), _this);
+                                    pActors[actor_id].vVelocity.x = TrigLUT->Cos(v45) * _this;
+                                    pActors[actor_id].vVelocity.y = TrigLUT->Sin(v45) * _this;
                                     pActors[actor_id].vVelocity.x =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                     pActors[actor_id].vVelocity.y =
@@ -1864,8 +1864,8 @@ void UpdateActors_BLV() {
                                                       pActors[actor_id].vVelocity.y +
                                                   pIndoor->pFaces[v37].pFacePlane_old.vNormal.z *
                                                       pActors[actor_id].vVelocity.z) >> 16;
-                                        if ((collision_state.speed >> 3) > v61)
-                                            v61 = collision_state.speed >> 3;
+                                        if ((collision_state.speed / 8) > v61)
+                                            v61 = collision_state.speed / 8;
                                         pActors[actor_id].vVelocity.x +=
                                             fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.x);
                                         pActors[actor_id].vVelocity.y +=
@@ -1899,11 +1899,11 @@ void UpdateActors_BLV() {
                                 v22 = 0;
                                 continue;
                             } else {
-                                pActors[actor_id].vPosition.x = (short)collision_state.new_position_lo.x;
-                                pActors[actor_id].vPosition.y = (short)collision_state.new_position_lo.y;
-                                pActors[actor_id].vPosition.z = (short)collision_state.new_position_lo.z -
-                                    (short)collision_state.radius_lo - 1;
-                                pActors[actor_id].uSectorID = (short)collision_state.uSectorID;
+                                pActors[actor_id].vPosition.x = collision_state.new_position_lo.x;
+                                pActors[actor_id].vPosition.y = collision_state.new_position_lo.y;
+                                pActors[actor_id].vPosition.z = collision_state.new_position_lo.z -
+                                    collision_state.radius_lo - 1;
+                                pActors[actor_id].uSectorID = collision_state.uSectorID;
                                 // goto LABEL_123;
                                 break;
                             }
@@ -1956,6 +1956,8 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     bNoNPCHiring = false;
     pDest = 1;
     uCurrentlyLoadedLevelType = LEVEL_Indoor;
+    pBLVRenderParams->uPartySectorID = 0;
+    pBLVRenderParams->uPartyEyeSectorID = 0;
 
     engine->SetUnderwater(
         Is_out15odm_underwater());
@@ -2221,8 +2223,9 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
         if (engine->config->verbose_logging)
-            logger->Warning("Floorlvl fail");
+            logger->Warning("Floorlvl fail: %i %i %i", pos.x, pos.y, pos.z);
 
+        *pFaceID = -1;
         return -30000;
     }
 
@@ -3236,38 +3239,38 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_StrafeLeft:
-                party_dx -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-                party_dy += fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                party_dx -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                party_dy += TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_StrafeRight:
-                party_dx += fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
-                party_dy -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier / 2);
+                party_dy -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
+                party_dx += TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkForward:
-                party_dx += fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                party_dy += fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                party_dx += TrigLUT->Cos(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                party_dy += TrigLUT->Sin(angle) * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkBackward:
-                party_dx -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-                party_dy -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                party_dx -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                party_dy -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_RunForward:
-                party_dx += fixpoint_mul(TrigLUT->Cos(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
-                party_dy += fixpoint_mul(TrigLUT->Sin(angle), 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier);
+                party_dx += TrigLUT->Cos(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
+                party_dy += TrigLUT->Sin(angle) * 2 * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
             case PARTY_RunBackward:
-                party_dx -= fixpoint_mul(TrigLUT->Cos(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
-                party_dy -= fixpoint_mul(TrigLUT->Sin(angle), pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier);
+                party_dx -= TrigLUT->Cos(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                party_dy -= TrigLUT->Sin(angle) * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
@@ -3347,11 +3350,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         new_party_z = party_z;
         collision_state.position_hi.x = new_party_x;
         collision_state.position_hi.y = new_party_y;
-        collision_state.position_hi.z = (pParty->uPartyHeight - 32) + party_z + 1;
+        collision_state.position_hi.z = (pParty->uPartyHeight - 32.0f) + party_z + 1.0f;
 
         collision_state.position_lo.x = new_party_x;
         collision_state.position_lo.y = new_party_y;
-        collision_state.position_lo.z = collision_state.radius_lo + party_z + 1;
+        collision_state.position_lo.z = collision_state.radius_lo + party_z + 1.0f;
 
         collision_state.velocity.x = party_dx;
         collision_state.velocity.y = party_dy;
@@ -3380,9 +3383,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             adjusted_pos.y = collision_state.new_position_lo.y;
             adjusted_pos.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         } else {
-            adjusted_pos.x = new_party_x + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
-            adjusted_pos.y = new_party_y + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
-            adjusted_pos.z = new_party_z + fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+            adjusted_pos.x = new_party_x + collision_state.adjusted_move_distance * collision_state.direction.x;
+            adjusted_pos.y = new_party_y + collision_state.adjusted_move_distance * collision_state.direction.y;
+            adjusted_pos.z = new_party_z + collision_state.adjusted_move_distance * collision_state.direction.z;
         }
         int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3_int_(0, 0, 40), &collision_state.uSectorID, &uFaceID);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - new_party_z > 128)
@@ -3397,10 +3400,10 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
 
-        new_party_x += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.x);
-        new_party_y += fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.y);
+        new_party_x += collision_state.adjusted_move_distance * collision_state.direction.x;
+        new_party_y += collision_state.adjusted_move_distance * collision_state.direction.y;
         unsigned long long new_party_z_tmp = new_party_z +
-            fixpoint_mul(collision_state.adjusted_move_distance, collision_state.direction.z);
+            collision_state.adjusted_move_distance * collision_state.direction.z;
 
         if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
@@ -3413,8 +3416,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 new_party_x - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.x,
                 new_party_y - pLevelDecorations[PID_ID(collision_state.pid)].vPosition.y);
             int len = integer_sqrt(party_dx * party_dx + party_dy * party_dy);
-            party_dx = fixpoint_mul(TrigLUT->Cos(angle), len);
-            party_dy = fixpoint_mul(TrigLUT->Sin(angle), len);
+            party_dx = TrigLUT->Cos(angle) * len;
+            party_dy = TrigLUT->Sin(angle) * len;
         } else if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
             BLVFace *pFace = &pIndoor->pFaces[PID_ID(collision_state.pid)];
             if (pFace->uPolygonType == POLYGON_Floor) {
@@ -3435,8 +3438,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     party_dy * pFace->pFacePlane_old.vNormal.y +
                     pParty->uFallSpeed * pFace->pFacePlane_old.vNormal.z) >> 16;
 
-                if ((collision_state.speed >> 3) > speed_dot_normal)
-                    speed_dot_normal = collision_state.speed >> 3;
+                if ((collision_state.speed / 8) > speed_dot_normal)
+                    speed_dot_normal = collision_state.speed / 8;
 
                 party_dx += fixpoint_mul(speed_dot_normal, pFace->pFacePlane_old.vNormal.x);
                 party_dy += fixpoint_mul(speed_dot_normal, pFace->pFacePlane_old.vNormal.y);
@@ -3794,7 +3797,6 @@ void stru154::GetFacePlane(ODMFace *pFace, BSPVertexBuffer *pVertices,
                            Vec3_float_ *pOutNormal, float *pOutDist) {
     Vec3_float_ FirstPairVec;
     Vec3_float_ SecPairVec;
-    Vec3_float_ *CPReturn;
     Vec3_float_ CrossProd;
 
     if (pFace->uNumVertices >= 2) {
@@ -3813,7 +3815,7 @@ void stru154::GetFacePlane(ODMFace *pFace, BSPVertexBuffer *pVertices,
             SecPairVec.z = pVertices->pVertices[pFace->pVertexIDs[i + 2]].z -
                   pVertices->pVertices[pFace->pVertexIDs[i + 1]].z;
 
-            CPReturn = Vec3_float_::Cross(&FirstPairVec, &CrossProd, SecPairVec.x, SecPairVec.y, SecPairVec.z);
+            CrossProd = Cross(FirstPairVec, SecPairVec);
 
             if (CrossProd.x != 0.0 || CrossProd.y != 0.0 || CrossProd.z != 0.0) {
                 CrossProd.Normalize();
@@ -3852,23 +3854,19 @@ void FindBillboardsLightLevels_BLV() {
 }
 
 int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
-    uint uFaceID = -1;
-    int floor_z = BLV_GetFloorLevel(pos, *pSectorID, &uFaceID);
-
-    if (floor_z != -30000 && floor_z <= pos.z + 50) {
-        *pFaceID = uFaceID;
-        return floor_z;
+    if (*pSectorID != 0) {
+        int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
+        if (result != -30000 && result <= pos.z + 50)
+            return result;
     }
 
-    uint uSectorID = pIndoor->GetSector(pos);
-    *pSectorID = uSectorID;
-
-    floor_z = BLV_GetFloorLevel(pos, uSectorID, &uFaceID);
-    if (uSectorID && floor_z != -30000)
-        *pFaceID = uFaceID;
-    else
+    *pSectorID = pIndoor->GetSector(pos);
+    if (*pSectorID == 0) {
+        *pFaceID = -1;
         return -30000;
-    return floor_z;
+    }
+
+    return BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
 }
 
 //----- (0047272C) --------------------------------------------------------
@@ -3883,9 +3881,9 @@ int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, un
 
     int result;
     for (const Vec3_int_ &attempt : attempts) {
-        *pSectorID = pIndoor->GetSector(attempt);
+        *pSectorID = 0; // Make sure GetIndoorFloorZ recalculates sector id from provided coordinates.
         result = GetIndoorFloorZ(attempt, pSectorID, pFaceID);
-        if (result != -30000 && *pSectorID)
+        if (result != -30000)
             return result;
     }
     return result; // Return the last result anyway.

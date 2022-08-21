@@ -48,7 +48,7 @@ struct stru9 {
     bool ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
         RenderVertexSoft *pOutVertices,
         unsigned int* pOutNumVertices,
-        struct Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
+        Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
         int unused);
     void AddVertex(struct VertexBuffer *pVertexBuffer,
                    struct RenderVertexSoft *pVertex);
@@ -59,7 +59,5 @@ struct stru9 {
                              struct RenderVertexSoft *a2, struct stru312 *a3);
     bool DoDecalVertsNeedClipping(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
                  struct RenderVertexSoft *a3, struct stru312 *a4);
-
-    void (***vdestructor_ptr)(stru9 *, bool) = nullptr;
 };
 #pragma pack(pop)

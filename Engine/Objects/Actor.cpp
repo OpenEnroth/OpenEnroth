@@ -1065,9 +1065,9 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
         pOut->uDistance = (uint)v33;
         pOut->uDistanceXZ = (uint)sqrt(outy2 + outx2);
         pOut->uYawAngle =
-            TrigLUT->Atan2((signed __int64)v31, (signed __int64)v32);
+            TrigLUT->Atan2(v31, v32);
         pOut->uPitchAngle =
-            TrigLUT->Atan2(pOut->uDistanceXZ, (signed __int64)a4a);
+            TrigLUT->Atan2(pOut->uDistanceXZ, a4a);
     }
 }
 
@@ -2049,8 +2049,8 @@ void Actor::AI_Pursue1(unsigned int uActorID, unsigned int a2, signed int arg0,
         v18 = 16;
 
     v7->uYawAngle = TrigLUT->Atan2(
-        pParty->vPosition.x + (int)fixpoint_mul(TrigLUT->Cos(v18 + TrigLUT->uIntegerPi + v10->uYawAngle), v10->uDistanceXZ) - v7->vPosition.x,
-        pParty->vPosition.y + (int)fixpoint_mul(TrigLUT->Sin(v18 + TrigLUT->uIntegerPi + v10->uYawAngle), v10->uDistanceXZ) - v7->vPosition.y);
+        pParty->vPosition.x + TrigLUT->Cos(v18 + TrigLUT->uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.x,
+        pParty->vPosition.y + TrigLUT->Sin(v18 + TrigLUT->uIntegerPi + v10->uYawAngle) * v10->uDistanceXZ - v7->vPosition.y);
     if (uActionLength)
         v7->uCurrentActionLength = uActionLength;
     else
@@ -2625,8 +2625,8 @@ void Actor::SummonMinion(int summonerId) {
     }
     v27 = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
     v13 = rand() % 2048;
-    v15 = fixpoint_mul(TrigLUT->Cos(v13), v27) + this->vPosition.x;
-    v17 = fixpoint_mul(TrigLUT->Sin(v13), v27) + this->vPosition.y;
+    v15 = TrigLUT->Cos(v13) * v27 + this->vPosition.x;
+    v17 = TrigLUT->Sin(v13) * v27 + this->vPosition.y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
@@ -4916,11 +4916,9 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
         pActors[uActorIndex].uMovementSpeed =
             pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
         v10 = rand() % 2048;
-        pActors[uActorIndex].vInitialPosition.x =
-            pParty->vPosition.x + fixpoint_mul(TrigLUT->Cos(v10), v19);
+        pActors[uActorIndex].vInitialPosition.x = pParty->vPosition.x + TrigLUT->Cos(v10) * v19;
         pActors[uActorIndex].vPosition.x = pActors[uActorIndex].vInitialPosition.x;
-        pActors[uActorIndex].vInitialPosition.y =
-            pParty->vPosition.y + fixpoint_mul(TrigLUT->Sin(v10), v19);
+        pActors[uActorIndex].vInitialPosition.y = pParty->vPosition.y + TrigLUT->Sin(v10) * v19;
         pActors[uActorIndex].vPosition.y = pActors[uActorIndex].vInitialPosition.y;
         pActors[uActorIndex].vInitialPosition.z = pParty->vPosition.z;
         pActors[uActorIndex].vPosition.z = pActors[uActorIndex].vInitialPosition.z;
@@ -5189,9 +5187,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         pMonster->PrepareSprites(0);
         pMonster->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
         v32 = rand();
-        a3 = fixpoint_mul(TrigLUT->Cos(v32 % 2048), v52);
+        a3 = TrigLUT->Cos(v32 % 2048) * v52;
         pPosX = a3 + spawn->vPosition.x;
-        a3 = fixpoint_mul(TrigLUT->Sin(v32 % 2048), v52);
+        a3 = TrigLUT->Sin(v32 % 2048) * v52;
         a4 = a3 + spawn->vPosition.y;
         a3 = spawn->vPosition.z;
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -5282,7 +5280,7 @@ void area_of_effect__damage_evaluate() {
 
                         // check line of sight
                         if (Check_LineOfSight(pActors[target_id].vPosition.x, pActors[target_id].vPosition.y, pActors[target_id].vPosition.z + 50, attacker_coord)) {
-                            Vec3_int_::Normalize(&xdiff, &ydiff, &zvec);
+                            normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
                             AttackerInfo.vec_4B4[attack_index].x = xdiff;
                             AttackerInfo.vec_4B4[attack_index].y = ydiff;
                             AttackerInfo.vec_4B4[attack_index].z = zvec;
@@ -5349,7 +5347,7 @@ void area_of_effect__damage_evaluate() {
                                            pActors[actorID].vPosition.y,
                                            pActors[actorID].vPosition.z + 50,
                                            attacker_coord)) {
-                                Vec3_int_::Normalize(&xdiff, &ydiff, &zvec);
+                                normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
                                 AttackerInfo.vec_4B4[attack_index].x = xdiff;
                                 AttackerInfo.vec_4B4[attack_index].y = ydiff;
                                 AttackerInfo.vec_4B4[attack_index].z = zvec;

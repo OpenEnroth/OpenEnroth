@@ -16,10 +16,9 @@
 #include "MapInfo.h"
 #include "OurMath.h"
 
-struct TrigTableLookup* TrigLUT = new TrigTableLookup;
-struct MapStats *pMapStats;
-struct Viewport *pViewport = new Viewport;
-struct ViewingParams *viewparams = new ViewingParams;
+MapStats *pMapStats;
+Viewport *pViewport = new Viewport;
+ViewingParams *viewparams = new ViewingParams;
 stru123 stru_5E4C90_MapPersistVars;
 stru298 AttackerInfo;
 std::array<Autonote, 196> pAutonoteTxt;

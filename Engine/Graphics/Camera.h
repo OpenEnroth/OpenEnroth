@@ -19,8 +19,6 @@ struct IndoorCameraD3D_Vec3 {
     //----- (004C039C) --------------------------------------------------------
     // void ~IndoorCameraD3D_Vec3() {}
 
-    // void ( ***vdestructor_ptr)(IndoorCameraD3D_Vec3 *, bool);
-
     union {
         struct {
             float x;
@@ -119,8 +117,8 @@ struct Camera3D {
                                unsigned int uOutNumVertices, float z_stuff);
     bool is_face_faced_to_cameraBLV(struct BLVFace *pFace);
     bool is_face_faced_to_cameraODM(struct ODMFace* pFace, struct RenderVertexSoft* a2);
-    bool GetFacetOrientation(char polyType, struct Vec3_float_ *a2,
-                             struct Vec3_float_ *a3, struct Vec3_float_ *a4);
+    bool GetFacetOrientation(char polyType, Vec3_float_ *a2,
+                             Vec3_float_ *a3, Vec3_float_ *a4);
     void ViewTransfrom_OffsetUV(struct RenderVertexSoft *pVertices,
                                 unsigned int uNumVertices,
                                 struct RenderVertexSoft *pOutVertices,
@@ -163,10 +161,6 @@ struct Camera3D {
     float fRotationZCosine = 0;
     float fRotationYSine = 0;
     float fRotationYCosine = 0;
-    int int_sine_Z = 0;
-    int int_cosine_Z = 0;
-    int int_sine_y = 0;
-    int int_cosine_y = 0;
 
     glm::vec3 vCameraPos {};
 

@@ -208,7 +208,6 @@ class IRender {
         uFogColor = 0;
         memset(pHDWaterBitmapIDs, 0, sizeof(pHDWaterBitmapIDs));
         hd_water_current_frame = 0;
-        hd_water_tile_id = 0;
         pBeforePresentFunction = 0;
         memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));
         uNumBillboardsToDraw = 0;
@@ -376,7 +375,7 @@ class IRender {
     virtual void BeginLightmaps2() = 0;
     virtual void EndLightmaps2() = 0;
     virtual bool DrawLightmap(struct Lightmap *pLightmap,
-                              struct Vec3_float_ *pColorMult, float z_bias) = 0;
+                              Vec3_float_ *pColorMult, float z_bias) = 0;
 
     virtual void BeginDecals() = 0;
     virtual void EndDecals() = 0;
@@ -442,7 +441,6 @@ class IRender {
     uint32_t uFogColor;
     unsigned int pHDWaterBitmapIDs[7];
     int hd_water_current_frame;
-    int hd_water_tile_id;
     Texture *hd_water_tile_anim[7];
     void (*pBeforePresentFunction)();
     RenderBillboardD3D pBillboardRenderListD3D[1000];

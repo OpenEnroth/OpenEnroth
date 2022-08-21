@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Time.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/VectorTypes.h"
 
 #pragma pack(push, 1)
 struct ODMFace_MM7 {
@@ -26,7 +27,7 @@ struct ODMFace_MM7 {
     int16_t uTextureID;
     int16_t sTextureDeltaU;
     int16_t sTextureDeltaV;
-    struct BBox_short_ pBoundingBox;
+    BBox_short_ pBoundingBox;
     int16_t sCogNumber;
     int16_t sCogTriggeredID;
     int16_t sCogTriggerType;
