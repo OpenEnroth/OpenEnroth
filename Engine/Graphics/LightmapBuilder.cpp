@@ -1072,7 +1072,6 @@ void LightmapBuilder::DrawDebugOutlines(
     }
 }
 
-// TODO(pskelton): move out of gl
 int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, RenderBillboard *pBillboard) {
     int dimminglevel = 0;
 
@@ -1134,7 +1133,6 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
     }
 }
 
-// // TODO(pskelton): move out of gl
 // ----- (0043F5C8) --------------------------------------------------------
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {
     int lightlevel = uBaseLightLevel;
@@ -1212,7 +1210,6 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
     return lightlevel;
 }
 
-// TODO(pskelton): move out of gl
 int _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel) {
     int v3 = 0;
 

@@ -103,90 +103,6 @@ void GL_Check_Errors(bool breakonerr = true) {
     }
 }
 
-// TODO(pskelton): move out of gl
-void UpdateObjects() {
-    int v5;   // ecx@6
-    int v7;   // eax@9
-    int v11;  // eax@17
-    int v12;  // edi@27
-    int v18;  // [sp+4h] [bp-10h]@27
-    int v19;  // [sp+8h] [bp-Ch]@27
-
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].uAttributes & OBJECT_40) {
-            pSpriteObjects[i].uAttributes &= ~OBJECT_40;
-        } else {
-            ObjectDesc *object =
-                &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
-            if (pSpriteObjects[i].AttachedToActor()) {
-                v5 = PID_ID(pSpriteObjects[i].spell_target_pid);
-                pSpriteObjects[i].vPosition.x = pActors[v5].vPosition.x;
-                pSpriteObjects[i].vPosition.y = pActors[v5].vPosition.y;
-                pSpriteObjects[i].vPosition.z =
-                    pActors[v5].vPosition.z + pActors[v5].uActorHeight;
-                if (!pSpriteObjects[i].uObjectDescID) continue;
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
-                if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) continue;
-                if (pSpriteObjects[i].uSpriteFrameID >= 0) {
-                    v7 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
-                        v7 = pSpriteObjects[i].field_20;
-                    if (pSpriteObjects[i].uSpriteFrameID < v7) continue;
-                }
-                SpriteObject::OnInteraction(i);
-                continue;
-            }
-            if (pSpriteObjects[i].uObjectDescID) {
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
-                if (object->uFlags & OBJECT_DESC_TEMPORARY) {
-                    if (pSpriteObjects[i].uSpriteFrameID < 0) {
-                        SpriteObject::OnInteraction(i);
-                        continue;
-                    }
-                    v11 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
-                        v11 = pSpriteObjects[i].field_20;
-                }
-                if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
-                    pSpriteObjects[i].uSpriteFrameID < v11) {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-                        SpriteObject::UpdateObject_fn0_BLV(i);
-                    else
-                        SpriteObject::UpdateObject_fn0_ODM(i);
-                    if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
-                        continue;
-                    }
-                    v12 = abs(pParty->vPosition.x -
-                              pSpriteObjects[i].vPosition.x);
-                    v18 = abs(pParty->vPosition.y -
-                              pSpriteObjects[i].vPosition.y);
-                    v19 = abs(pParty->vPosition.z -
-                              pSpriteObjects[i].vPosition.z);
-                    if (int_get_vector_length(v12, v18, v19) <= 5120) continue;
-                    SpriteObject::OnInteraction(i);
-                    continue;
-                }
-                if (!(object->uFlags & OBJECT_DESC_INTERACTABLE)) {
-                    SpriteObject::OnInteraction(i);
-                    continue;
-                }
-                _46BFFA_update_spell_fx(i, PID(OBJECT_Item, i));
-            }
-        }
-    }
-}
-
-
-// TODO(pskelton): move out of gl
-unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
-    unsigned int result = uLayingItemID;
-    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & 0x10) {
-        result = _46BFFA_update_spell_fx(uLayingItemID, a2);
-    }
-    return result;
-}
-
-
 // sky billboard stuff
 
 void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y2, int z2) {
@@ -227,7 +143,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
         this->CamVecLeft_Z = static_cast<float>(z1);  // dy
     }
 
-    // set 2 position transfrom (0 6 0) looks like cam front vector
+    // set 2 position transfrom (0 1 0) looks like cam front vector
     if (pCamera3D->sRotationY) {
         float v19 = (x2 * cosz) + (y2 * sinz);
 
@@ -1201,43 +1117,48 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
 //_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
 // a6 is time, a7 is 0, a8 is 63
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
-    // TODO(pskelton): sort this - forcing the draw is slow - precalculate/ shader
+    // TODO(pskelton): sort this - precalculate/ shader
+    static Texture *cachedtemp[14]{};
+    static int cachetime[14]{ -1 };
 
     if (img) {
-        uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
-        int width = img->GetWidth();
-        int height = img->GetHeight();
-        Texture *temp = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
-        uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        std::string_view tempstr{ *img->GetName() };
+        int number = tempstr[4] - 48;
+        int number2 = tempstr[5] - 48;
 
-        uint8_t *texpix24 = (uint8_t *)img->GetPalettePixels();
-        uint8_t thispix;
-        int palindex;
-
-        for (int dy = 0; dy < height; ++dy) {
-            for (int dx = 0; dx < width; ++dx) {
-                thispix = *texpix24;
-                if (thispix >= 0 && thispix <= 63) {
-                    palindex = (time + thispix) % (2 * 63);
-                    if (palindex >= 63)
-                        palindex = (2 * 63) - palindex;
-                    temppix[dx + dy * width] = Color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
-                }
-                ++texpix24;
+        int thisslot = 10 * number + number2 - 1;
+        if (cachetime[thisslot] != time) {
+            int width = img->GetWidth();
+            int height = img->GetHeight();
+            if (!cachedtemp[thisslot]) {
+                cachedtemp[thisslot] = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
             }
+
+            uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
+            uint32_t *temppix = (uint32_t *)cachedtemp[thisslot]->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+            uint8_t *texpix24 = (uint8_t *)img->GetPalettePixels();
+            uint8_t thispix;
+            int palindex;
+
+            for (int dy = 0; dy < height; ++dy) {
+                for (int dx = 0; dx < width; ++dx) {
+                    thispix = *texpix24;
+                    if (thispix >= 0 && thispix <= 63) {
+                        palindex = (time + thispix) % (2 * 63);
+                        if (palindex >= 63)
+                            palindex = (2 * 63) - palindex;
+                        temppix[dx + dy * width] = Color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
+                    }
+                    ++texpix24;
+                }
+            }
+            cachetime[thisslot] = time;
+            render->Update_Texture(cachedtemp[thisslot]);
         }
 
-        // draw image
-        render->Update_Texture(temp);
-        render->DrawTextureAlphaNew(u, v, temp);
-
-        render->DrawTwodVerts();
-
-        temp->Release();
+        render->DrawTextureAlphaNew(u, v, cachedtemp[thisslot]);
     }
 }
-
-
 
 void RenderOpenGL::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
     Rect rct;
