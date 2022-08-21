@@ -369,6 +369,18 @@ const void *Image::GetPalette() {
     return nullptr;
 }
 
+const void *Image::GetPalettePixels() {
+    if (!initialized) {
+        LoadImageData();
+    }
+
+    if (initialized) {
+        return this->palettepixels;
+    }
+
+    return nullptr;
+}
+
 std::string* Image::GetName() {
     if (!loader) __debugbreak();
     return loader->GetResourceNamePtr();

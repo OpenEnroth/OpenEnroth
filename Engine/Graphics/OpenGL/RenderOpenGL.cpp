@@ -1445,7 +1445,7 @@ void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time
         Texture *temp = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
         uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
-        uint8_t *texpix24 = (uint8_t *)img->GetPixels(IMAGE_FORMAT_R8G8B8);
+        uint8_t *texpix24 = (uint8_t *)img->GetPalettePixels();
         uint8_t thispix;
         int palindex;
 
