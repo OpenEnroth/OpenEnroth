@@ -2989,6 +2989,8 @@ int Player::GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2) {
             v3 = this->pPlayerBuffs[PLAYER_BUFF_STONESKIN].uPower;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN].uPower;
             break;
+        default:
+            break;
     }
     return v3 + v4;
 }
@@ -3404,14 +3406,12 @@ int Player::GetSkillBonus(
                                 baseSkillBonus =
                                     multiplier * (currItemSkillLevel & 0x3F);
                                 return armsMasterBonus + baseSkillBonus;
-                                break;
                             case PLAYER_SKILL_SWORD:
                                 multiplier = GetMultiplierForSkillLevel(
                                     PLAYER_SKILL_SWORD, 0, 0, 0, 0);
                                 baseSkillBonus =
                                     multiplier * (currItemSkillLevel & 0x3F);
                                 return armsMasterBonus + baseSkillBonus;
-                                break;
                             case PLAYER_SKILL_MACE:
                             case PLAYER_SKILL_SPEAR:
                                 multiplier = GetMultiplierForSkillLevel(
@@ -3419,13 +3419,13 @@ int Player::GetSkillBonus(
                                 baseSkillBonus =
                                     multiplier * (currItemSkillLevel & 0x3F);
                                 return armsMasterBonus + baseSkillBonus;
-                                break;
                             case PLAYER_SKILL_AXE:
                                 multiplier = GetMultiplierForSkillLevel(
                                     PLAYER_SKILL_AXE, 0, 0, 1, 1);
                                 baseSkillBonus =
                                     multiplier * (currItemSkillLevel & 0x3F);
                                 return armsMasterBonus + baseSkillBonus;
+                            default:
                                 break;
                         }
                     }
@@ -4581,7 +4581,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                             playerAffected->sResBodyBase += thisa;
                             break;
                         default:
-                            ("Unexpected attribute");
+                            // ("Unexpected attribute");
                             return;
                     }
                     status = StringPrintf(
@@ -5019,7 +5019,7 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
                         GameTime::FromHours(pValue)) <=
                        pParty->GetPlayingTime();
             }
-            break;
+            return false;
 
         case VAR_ReputationInCurrentLocation:
             v19 = &pOutdoor->ddm;
@@ -5060,9 +5060,9 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
                 }
             }
             return false;
+        default:
+            return false;
     }
-
-    return false;
 }
 
 //----- (0044A5CB) --------------------------------------------------------
@@ -5612,6 +5612,8 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             return;
         case VAR_LearningSkill:
             SetSkillByEvent(&Player::skillLearning, var_value);
+            return;
+        default:
             return;
     }
 }
@@ -6742,6 +6744,8 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             return;
         case VAR_ArenaWinsLord:
             pParty->uNumArenaLordWins -= (char)pValue;
+            return;
+        default:
             return;
     }
 }

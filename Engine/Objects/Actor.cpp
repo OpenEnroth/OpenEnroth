@@ -4889,7 +4889,7 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
 
     // find first free index
     uint uActorIndex = 0;
-    for (uActorIndex; uActorIndex < uNumActors; uActorIndex++) {
+    for (; uActorIndex < uNumActors; uActorIndex++) {
         if (pActors[uActorIndex].uAIState == Removed) break;
     }
 

@@ -2774,8 +2774,6 @@ static int lua_nk_style_from_table(lua_State *L) {
                 table[NK_COLOR_CHART_COLOR_HIGHLIGHT] = color;
             else if (!strcmp(key, "combo"))
                 table[NK_COLOR_COMBO] = color;
-            else if (!strcmp(key, "count"))
-                table[NK_COLOR_COUNT] = color;
             else if (!strcmp(key, "edit"))
                 table[NK_COLOR_EDIT] = color;
             else if (!strcmp(key, "edit_cursor"))

@@ -1460,19 +1460,21 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_DARK_SHRINKING_RAY: {
             int v143 = 17030;
             switch (pSpriteObjects[uLayingItemID].uType) {
-                case 6040:
+                case SPRITE_SPELL_MIND_CHARM:
                     v143 = 15040;
                     break;
-                case 4010:
+                case SPRITE_SPELL_EARTH_SLOW:
                     v143 = 13010;
                     break;
-                case 9030:
+                case SPRITE_SPELL_DARK_SHRINKING_RAY:
                     v143 = 18030;
+                    break;
+                default:
                     break;
             }
             v138 = 1;
             if (PID_TYPE(a2) != OBJECT_Actor) {
-                if (pSpriteObjects[uLayingItemID].uType != 9030 ||
+                if (pSpriteObjects[uLayingItemID].uType != SPRITE_SPELL_DARK_SHRINKING_RAY ||
                     pSpriteObjects[uLayingItemID].spell_skill != 4) {
                     SpriteObject::OnInteraction(uLayingItemID);
                     return 0;
@@ -1731,6 +1733,8 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
             case OBJECT_Item:
                 ItemDamageFromActor(PID(OBJECT_Item, uLayingItemID), PID_ID(a2),
                                     &layingitem_vel_50FDFC);
+                break;
+            default:
                 break;
         }
     }

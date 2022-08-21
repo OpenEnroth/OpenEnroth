@@ -436,6 +436,8 @@ void GUIWindow_PartyCreation::Update() {
                     pParty->pPlayers[i].pName, 130, 0);
                 SetCurrentMenuID(MENU_NAMEPANELESC);
                 break;
+            default:
+                break;
             }
         } else {
             pGUIWindow_CurrentMenu->DrawTextInRect(pFontCreate, pIntervalX, 124,
