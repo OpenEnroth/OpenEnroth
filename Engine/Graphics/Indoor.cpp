@@ -3350,11 +3350,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         new_party_z = party_z;
         collision_state.position_hi.x = new_party_x;
         collision_state.position_hi.y = new_party_y;
-        collision_state.position_hi.z = (pParty->uPartyHeight - 32) + party_z + 1;
+        collision_state.position_hi.z = (pParty->uPartyHeight - 32.0f) + party_z + 1.0f;
 
         collision_state.position_lo.x = new_party_x;
         collision_state.position_lo.y = new_party_y;
-        collision_state.position_lo.z = collision_state.radius_lo + party_z + 1;
+        collision_state.position_lo.z = collision_state.radius_lo + party_z + 1.0f;
 
         collision_state.velocity.x = party_dx;
         collision_state.velocity.y = party_dy;
