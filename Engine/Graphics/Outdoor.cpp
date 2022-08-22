@@ -10,7 +10,7 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
-#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Sprites.h"
@@ -998,8 +998,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
         days_played - ddm.uLastRepawnDay >= respawn_interval_days ||
         !ddm.uLastRepawnDay;
 
-    std::array<char, 968> Src;
-    std::array<char, 968> Dst;
+    std::array<char, 968> Src {};
+    std::array<char, 968> Dst {};
 
     if (object_count_in_level_changed_since_save || should_respawn) {
         if (object_count_in_level_changed_since_save) {
@@ -1680,7 +1680,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
     int v18;                  // edx@26
     int v19;                  // eax@28
     int v22;                  // edx@30
-    __int64 v23;              // qtt@30
+    __int64 v23 {};              // qtt@30
     int v24;                  // eax@36
     int v25;                  // ecx@38
     int current_floor_level;  // ecx@43
@@ -2921,7 +2921,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
     int v14;      // edx@27
     int v16;      // ST18_4@29
     int v17;      // edx@29
-    int64_t v18;  // qtt@29
+    int64_t v18 {};  // qtt@29
     int v19;      // eax@35
     int v20;      // ecx@37
     int v22;      // ebx@42

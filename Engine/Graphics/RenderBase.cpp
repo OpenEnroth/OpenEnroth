@@ -12,7 +12,7 @@
 
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/LightmapBuilder.h"
-#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"

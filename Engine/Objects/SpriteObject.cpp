@@ -1735,3 +1735,83 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
         }
     }
 }
+
+void UpdateObjects() {
+    int v5;   // ecx@6
+    int v7;   // eax@9
+    int v11;  // eax@17
+    int v12;  // edi@27
+    int v18;  // [sp+4h] [bp-10h]@27
+    int v19;  // [sp+8h] [bp-Ch]@27
+
+    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
+        if (pSpriteObjects[i].uAttributes & OBJECT_40) {
+            pSpriteObjects[i].uAttributes &= ~OBJECT_40;
+        } else {
+            ObjectDesc *object =
+                &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
+            if (pSpriteObjects[i].AttachedToActor()) {
+                v5 = PID_ID(pSpriteObjects[i].spell_target_pid);
+                pSpriteObjects[i].vPosition.x = pActors[v5].vPosition.x;
+                pSpriteObjects[i].vPosition.y = pActors[v5].vPosition.y;
+                pSpriteObjects[i].vPosition.z =
+                    pActors[v5].vPosition.z + pActors[v5].uActorHeight;
+                if (!pSpriteObjects[i].uObjectDescID) continue;
+                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
+                if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) continue;
+                if (pSpriteObjects[i].uSpriteFrameID >= 0) {
+                    v7 = object->uLifetime;
+                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
+                        v7 = pSpriteObjects[i].field_20;
+                    if (pSpriteObjects[i].uSpriteFrameID < v7) continue;
+                }
+                SpriteObject::OnInteraction(i);
+                continue;
+            }
+            if (pSpriteObjects[i].uObjectDescID) {
+                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
+                if (object->uFlags & OBJECT_DESC_TEMPORARY) {
+                    if (pSpriteObjects[i].uSpriteFrameID < 0) {
+                        SpriteObject::OnInteraction(i);
+                        continue;
+                    }
+                    v11 = object->uLifetime;
+                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
+                        v11 = pSpriteObjects[i].field_20;
+                }
+                if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
+                    pSpriteObjects[i].uSpriteFrameID < v11) {
+                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+                        SpriteObject::UpdateObject_fn0_BLV(i);
+                    else
+                        SpriteObject::UpdateObject_fn0_ODM(i);
+                    if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
+                        continue;
+                    }
+                    v12 = abs(pParty->vPosition.x -
+                        pSpriteObjects[i].vPosition.x);
+                    v18 = abs(pParty->vPosition.y -
+                        pSpriteObjects[i].vPosition.y);
+                    v19 = abs(pParty->vPosition.z -
+                        pSpriteObjects[i].vPosition.z);
+                    if (int_get_vector_length(v12, v18, v19) <= 5120) continue;
+                    SpriteObject::OnInteraction(i);
+                    continue;
+                }
+                if (!(object->uFlags & OBJECT_DESC_INTERACTABLE)) {
+                    SpriteObject::OnInteraction(i);
+                    continue;
+                }
+                _46BFFA_update_spell_fx(i, PID(OBJECT_Item, i));
+            }
+        }
+    }
+}
+
+unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
+    unsigned int result = uLayingItemID;
+    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & 0x10) {
+        result = _46BFFA_update_spell_fx(uLayingItemID, a2);
+    }
+    return result;
+}

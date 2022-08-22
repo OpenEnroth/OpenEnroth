@@ -529,14 +529,13 @@ void Menu::MenuLoop() {
 
         GameUI_WritePointedObjectStatusString();
         render->BeginScene();
-        {
-            EventLoop();
-            engine->DrawGUI();
-            GUI_UpdateWindows();
-            GameUI_StatusBar_Draw();
-        }
+        engine->DrawGUI();
+        GUI_UpdateWindows();
+        GameUI_StatusBar_Draw();
         render->EndScene();
         render->Present();
+
+        EventLoop();
     }
 
     pGUIWindow_CurrentMenu->Release();

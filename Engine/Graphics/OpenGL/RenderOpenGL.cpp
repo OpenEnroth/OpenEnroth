@@ -41,7 +41,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Lights.h"
+#include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #include "Engine/Graphics/OpenGL/TextureOpenGL.h"
@@ -103,338 +103,6 @@ void GL_Check_Errors(bool breakonerr = true) {
     }
 }
 
-void Polygon::_normalize_v_18() {
-    double len = sqrt((double)this->v_18.z * (double)this->v_18.z +
-                     (double)this->v_18.y * (double)this->v_18.y +
-                     (double)this->v_18.x * (double)this->v_18.x);
-    if (fabs(len) < 1e-6) {
-        v_18.x = 0;
-        v_18.y = 0;
-        v_18.z = 65536;
-    } else {
-        v_18.x = round_to_int(static_cast<float>(this->v_18.x / len * 65536.0));
-        v_18.y = round_to_int(static_cast<float>(this->v_18.y / len * 65536.0));
-        v_18.z = round_to_int(static_cast<float>(this->v_18.z / len * 65536.0));
-    }
-}
-
-bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
-    // checks if model is visible in FOV cone
-    float halfangle = (pCamera3D->odm_fov_rad) / 2.0f;
-    float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
-    float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
-
-    // approx distance
-    int dist = int_get_vector_length(abs(static_cast<int>(rayx)), abs(static_cast<int>(rayy)), 0);
-    *reachable = false;
-    if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
-
-    // dot product of camvec and ray - size in forward
-    float frontvec = rayx * pCamera3D->fRotationZCosine + rayy * pCamera3D->fRotationZSine;
-    if (pCamera3D->sRotationY) { frontvec *= pCamera3D->fRotationYCosine;}
-
-    // dot product of camvec and ray - size in left
-    float leftvec = rayy * pCamera3D->fRotationZCosine - rayx * pCamera3D->fRotationZSine;
-
-    // which half fov is ray in direction of - compare slopes
-    float sloperem = 0.0;
-    if (leftvec >= 0) {  // acute - left
-        sloperem = frontvec * sin(halfangle) - leftvec * cos(halfangle);
-    } else {  // obtuse - right
-        sloperem = frontvec * sin(halfangle) + leftvec * cos(halfangle);
-    }
-
-    // view range check
-    if (dist <= pCamera3D->GetFarClip() + 2048) {
-        // boudning point inside cone
-        if (sloperem >= 0) return true;
-        // bounding radius inside cone
-        if (abs(sloperem) < model->sBoundingRadius + 512) return true;
-    }
-
-    // not visible
-    return false;
-}
-
-int GetActorTintColor(int max_dimm, int min_dimm, float distance, int a4, RenderBillboard *a5) {
-    signed int v6;   // edx@1
-    int v8;          // eax@3
-    float v9;       // st7@12
-    int v11;         // ecx@28
-    float v15;      // st7@44
-    int v18;         // ST14_4@44
-    signed int v20;  // [sp+10h] [bp-4h]@10
-    float a3c;       // [sp+1Ch] [bp+8h]@44
-    int a5a;         // [sp+24h] [bp+10h]@44
-
-    // v5 = a2;
-    v6 = 0;
-
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-        return 8 * (31 - max_dimm) | ((8 * (31 - max_dimm) | ((31 - max_dimm) << 11)) << 8);
-
-    if (pParty->armageddon_timer) return 0xFFFF0000;
-
-    v8 = pWeather->bNight;
-    if (engine->IsUnderwater())
-        v8 = 0;
-    if (v8) {
-        v20 = 1;
-        if (pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].Active())
-            v20 = pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
-        v9 = v20 * 1024.0f;
-        if (a4) {
-            v6 = 216;
-            goto LABEL_20;
-        }
-        if (distance <= v9) {
-            if (distance > 0.0f) {
-                // a4b = distance * 216.0 / device_caps;
-                // v10 = a4b + 6.7553994e15;
-                // v6 = LODWORD(v10);
-                v6 = static_cast<int>(floorf(0.5f + distance * 216.0f / v9));
-                if (v6 > 216) {
-                    v6 = 216;
-                    goto LABEL_20;
-                }
-            }
-        } else {
-            v6 = 216;
-        }
-        if (distance != 0.0) {
-        LABEL_20:
-            if (a5) v6 = 8 * _43F55F_get_billboard_light_level(a5, v6 >> 3);
-            if (v6 > 216) v6 = 216;
-            return (255 - v6) | ((255 - v6) << 16) | ((255 - v6) << 8);
-        }
-        // LABEL_19:
-        v6 = 216;
-        goto LABEL_20;
-    }
-
-    if (fabsf(distance) < 1.0e-6f) return 0xFFF8F8F8;
-
-    // dim in measured in 8-steps
-    v11 = 8 * (max_dimm - min_dimm);
-    // v12 = v11;
-    if (v11 >= 0) {
-        if (v11 > 216) v11 = 216;
-    } else {
-        v11 = 0;
-    }
-
-    float fog_density_mult = 216.0f;
-    if (a4)
-        fog_density_mult +=
-            distance / pODMRenderParams->shading_dist_shade * 32.0f;
-
-    v6 = static_cast<int>(v11 + floorf(pOutdoor->fFogDensity * fog_density_mult + 0.5f));
-
-    if (a5) v6 = 8 * _43F55F_get_billboard_light_level(a5, v6 >> 3);
-    if (v6 > 216) v6 = 216;
-    if (v6 < v11) v6 = v11;
-    if (v6 > 8 * pOutdoor->max_terrain_dimming_level)
-        v6 = 8 * pOutdoor->max_terrain_dimming_level;
-    if (!engine->IsUnderwater()) {
-        return (255 - v6) | ((255 - v6) << 16) | ((255 - v6) << 8);
-    } else {
-        v15 = (255 - v6) * 0.0039215689f;
-        a3c = v15;
-        // a4c = v15 * 16.0;
-        // v16 = a4c + 6.7553994e15;
-        a5a = static_cast<int>(floorf(v15 * 16.0f + 0.5f));  // LODWORD(v16);
-                                          // a4d = a3c * 194.0;
-                                          // v17 = a4d + 6.7553994e15;
-        v18 = static_cast<int>(floorf(a3c * 194.0f + 0.5f));  // LODWORD(v17);
-                                           // a3d = a3c * 153.0;
-                                           // v19 = a3d + 6.7553994e15;
-        return (int)floorf(a3c * 153.0f + 0.5f) /*LODWORD(v19)*/ |
-               ((v18 | (a5a << 8)) << 8);
-    }
-}
-
-
-
-void RenderOpenGL::MaskGameViewport() {
-    // do not want in opengl mode
-}
-
-// ----- (0043F5C8) --------------------------------------------------------
-int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {
-    int lightlevel = uBaseLightLevel;
-    float light_radius{};
-    float distX{};
-    float distY{};
-    float distZ{};
-    unsigned int approx_distance;
-
-    // mobile lights
-    for (uint i = 0; i < pMobileLightsStack->uNumLightsActive; ++i) {
-        MobileLight *p = &pMobileLightsStack->pLights[i];
-        light_radius = p->uRadius;
-
-        distX = abs(p->vPosition.x - x);
-        if (distX <= light_radius) {
-            distY = abs(p->vPosition.y - y);
-            if (distY <= light_radius) {
-                distZ = abs(p->vPosition.z - z);
-                if (distZ <= light_radius) {
-                    approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
-                    if (approx_distance < light_radius)
-         //* ORIGONAL */lightlevel += ((unsigned __int64)(30i64 *(signed int)(approx_distance << 16) / light_radius) >> 16) - 30;
-                        lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
-                }
-            }
-        }
-    }
-
-    // sector lights
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        BLVSector *pSector = &pIndoor->pSectors[uSectorID];
-
-        for (uint i = 0; i < pSector->uNumLights; ++i) {
-            BLVLightMM7 *this_light = &pIndoor->pLights[pSector->pLights[i]];
-            light_radius = this_light->uRadius;
-
-            if (~this_light->uAtributes & 8) {
-                distX = abs(this_light->vPosition.x - x);
-                if (distX <= light_radius) {
-                    distY = abs(this_light->vPosition.y - y);
-                    if (distY <= light_radius) {
-                        distZ = abs(this_light->vPosition.z - z);
-                        if (distZ <= light_radius) {
-                            approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
-                            if (approx_distance < light_radius)
-                                lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // stationary lights
-    for (uint i = 0; i < pStationaryLightsStack->uNumLightsActive; ++i) {
-        StationaryLight* p = &pStationaryLightsStack->pLights[i];
-        light_radius = p->uRadius;
-
-        distX = abs(p->vPosition.x - x);
-        if (distX <= light_radius) {
-            distY = abs(p->vPosition.y - y);
-            if (distY <= light_radius) {
-                distZ = abs(p->vPosition.z - z);
-                if (distZ <= light_radius) {
-                    approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
-                    if (approx_distance < light_radius)
-                        lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
-                }
-            }
-        }
-    }
-
-    lightlevel = std::clamp(lightlevel, 0, 31);
-    return lightlevel;
-}
-
-void UpdateObjects() {
-    int v5;   // ecx@6
-    int v7;   // eax@9
-    int v11;  // eax@17
-    int v12;  // edi@27
-    int v18;  // [sp+4h] [bp-10h]@27
-    int v19;  // [sp+8h] [bp-Ch]@27
-
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].uAttributes & OBJECT_40) {
-            pSpriteObjects[i].uAttributes &= ~OBJECT_40;
-        } else {
-            ObjectDesc *object =
-                &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
-            if (pSpriteObjects[i].AttachedToActor()) {
-                v5 = PID_ID(pSpriteObjects[i].spell_target_pid);
-                pSpriteObjects[i].vPosition.x = pActors[v5].vPosition.x;
-                pSpriteObjects[i].vPosition.y = pActors[v5].vPosition.y;
-                pSpriteObjects[i].vPosition.z =
-                    pActors[v5].vPosition.z + pActors[v5].uActorHeight;
-                if (!pSpriteObjects[i].uObjectDescID) continue;
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
-                if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) continue;
-                if (pSpriteObjects[i].uSpriteFrameID >= 0) {
-                    v7 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
-                        v7 = pSpriteObjects[i].field_20;
-                    if (pSpriteObjects[i].uSpriteFrameID < v7) continue;
-                }
-                SpriteObject::OnInteraction(i);
-                continue;
-            }
-            if (pSpriteObjects[i].uObjectDescID) {
-                pSpriteObjects[i].uSpriteFrameID += pEventTimer->uTimeElapsed;
-                if (object->uFlags & OBJECT_DESC_TEMPORARY) {
-                    if (pSpriteObjects[i].uSpriteFrameID < 0) {
-                        SpriteObject::OnInteraction(i);
-                        continue;
-                    }
-                    v11 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
-                        v11 = pSpriteObjects[i].field_20;
-                }
-                if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||
-                    pSpriteObjects[i].uSpriteFrameID < v11) {
-                    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-                        SpriteObject::UpdateObject_fn0_BLV(i);
-                    else
-                        SpriteObject::UpdateObject_fn0_ODM(i);
-                    if (!pParty->bTurnBasedModeOn || !(pSpriteObjects[i].uSectorID & 4)) {
-                        continue;
-                    }
-                    v12 = abs(pParty->vPosition.x -
-                              pSpriteObjects[i].vPosition.x);
-                    v18 = abs(pParty->vPosition.y -
-                              pSpriteObjects[i].vPosition.y);
-                    v19 = abs(pParty->vPosition.z -
-                              pSpriteObjects[i].vPosition.z);
-                    if (int_get_vector_length(v12, v18, v19) <= 5120) continue;
-                    SpriteObject::OnInteraction(i);
-                    continue;
-                }
-                if (!(object->uFlags & OBJECT_DESC_INTERACTABLE)) {
-                    SpriteObject::OnInteraction(i);
-                    continue;
-                }
-                _46BFFA_update_spell_fx(i, PID(OBJECT_Item, i));
-            }
-        }
-    }
-}
-
-int _43F55F_get_billboard_light_level(RenderBillboard *a1,
-                                      int uBaseLightLevel) {
-    int v3 = 0;
-
-    if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-        v3 = pIndoor->pSectors[a1->uIndoorSectorID].uMinAmbientLightLevel;
-    } else {
-        if (uBaseLightLevel == -1) {
-            v3 = a1->dimming_level;
-        } else {
-            v3 = uBaseLightLevel;
-        }
-    }
-
-    return GetLightLevelAtPoint(
-        v3, a1->uIndoorSectorID, a1->world_x, a1->world_y, a1->world_z);
-}
-
-unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
-    unsigned int result = uLayingItemID;
-    if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & 0x10) {
-        result = _46BFFA_update_spell_fx(uLayingItemID, a2);
-    }
-    return result;
-}
-
-
 // sky billboard stuff
 
 void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y2, int z2) {
@@ -475,7 +143,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
         this->CamVecLeft_Z = static_cast<float>(z1);  // dy
     }
 
-    // set 2 position transfrom (0 6 0) looks like cam front vector
+    // set 2 position transfrom (0 1 0) looks like cam front vector
     if (pCamera3D->sRotationY) {
         float v19 = (x2 * cosz) + (y2 * sinz);
 
@@ -516,6 +184,10 @@ RenderOpenGL::RenderOpenGL(
 RenderOpenGL::~RenderOpenGL() { logger->Info("RenderGl - Destructor"); }
 
 void RenderOpenGL::Release() { logger->Info("RenderGL - Release"); }
+
+void RenderOpenGL::MaskGameViewport() {
+    // do not want in opengl mode
+}
 
 void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
     uint winwidth{ window->GetWidth() };
@@ -1445,43 +1117,48 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
 //_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
 // a6 is time, a7 is 0, a8 is 63
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
-    // TODO(pskelton): sort this - forcing the draw is slow - precalculate/ shader
+    // TODO(pskelton): sort this - precalculate/ shader
+    static std::array<Texture *, 14> cachedtemp {};
+    static std::array<int, 14> cachetime { -1 };
 
     if (img) {
-        uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
-        int width = img->GetWidth();
-        int height = img->GetHeight();
-        Texture *temp = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
-        uint32_t *temppix = (uint32_t *)temp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        std::string_view tempstr{ *img->GetName() };
+        int number = tempstr[4] - 48;
+        int number2 = tempstr[5] - 48;
 
-        uint8_t *texpix24 = (uint8_t *)img->GetPixels(IMAGE_FORMAT_R8G8B8);
-        uint8_t thispix;
-        int palindex;
-
-        for (int dy = 0; dy < height; ++dy) {
-            for (int dx = 0; dx < width; ++dx) {
-                thispix = *texpix24;
-                if (thispix >= 0 && thispix <= 63) {
-                    palindex = (time + thispix) % (2 * 63);
-                    if (palindex >= 63)
-                        palindex = (2 * 63) - palindex;
-                    temppix[dx + dy * width] = Color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
-                }
-                ++texpix24;
+        int thisslot = 10 * number + number2 - 1;
+        if (cachetime[thisslot] != time) {
+            int width = img->GetWidth();
+            int height = img->GetHeight();
+            if (!cachedtemp[thisslot]) {
+                cachedtemp[thisslot] = CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
             }
+
+            uint8_t *palpoint24 = (uint8_t *)img->GetPalette();
+            uint32_t *temppix = (uint32_t *)cachedtemp[thisslot]->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+            uint8_t *texpix24 = (uint8_t *)img->GetPalettePixels();
+            uint8_t thispix;
+            int palindex;
+
+            for (int dy = 0; dy < height; ++dy) {
+                for (int dx = 0; dx < width; ++dx) {
+                    thispix = *texpix24;
+                    if (thispix >= 0 && thispix <= 63) {
+                        palindex = (time + thispix) % (2 * 63);
+                        if (palindex >= 63)
+                            palindex = (2 * 63) - palindex;
+                        temppix[dx + dy * width] = Color32(palpoint24[palindex * 3], palpoint24[palindex * 3 + 1], palpoint24[palindex * 3 + 2]);
+                    }
+                    ++texpix24;
+                }
+            }
+            cachetime[thisslot] = time;
+            render->Update_Texture(cachedtemp[thisslot]);
         }
 
-        // draw image
-        render->Update_Texture(temp);
-        render->DrawTextureAlphaNew(u, v, temp);
-
-        render->DrawTwodVerts();
-
-        temp->Release();
+        render->DrawTextureAlphaNew(u, v, cachedtemp[thisslot]);
     }
 }
-
-
 
 void RenderOpenGL::DrawMonsterPortrait(Rect rc, SpriteFrame *Portrait, int Y_Offset) {
     Rect rct;
@@ -2487,10 +2164,10 @@ void RenderOpenGL::_set_3d_modelview_matrix() {
 
     // build view matrix with glm
     glm::vec3 campos = glm::vec3(camera_x, camera_y, camera_z);
-    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0 * pi_double * pCamera3D->sRotationZ / 2048.0f),
-        camera_y - sinf(2.0 * pi_double * pCamera3D->sRotationZ / 2048.0f),
-        camera_z - tanf(2.0 * pi_double * -pCamera3D->sRotationY / 2048.0f));
-    glm::vec3 upvec = glm::vec3(0.0, 0.0, 1.0);
+    glm::vec3 eyepos = glm::vec3(camera_x - cosf(2.0f * pi_double * pCamera3D->sRotationZ / 2048.0f),
+        camera_y - sinf(2.0f * pi_double * pCamera3D->sRotationZ / 2048.0f),
+        camera_z - tanf(2.0f * pi_double * -pCamera3D->sRotationY / 2048.0f));
+    glm::vec3 upvec = glm::vec3(0.0f, 0.0f, 1.0f);
 
     viewmat = glm::lookAtLH(campos, eyepos, upvec);
 
@@ -2561,8 +2238,8 @@ void RenderOpenGL::DrawTerrainD3D() {
         // generate vertex locations
         for (unsigned int y = 0; y < 128; ++y) {
             for (unsigned int x = 0; x < 128; ++x) {
-                pTerrainVertices[y * 128 + x].vWorldPosition.x = (-64 + (signed)x) * blockScale;
-                pTerrainVertices[y * 128 + x].vWorldPosition.y = (64 - (signed)y) * blockScale;
+                pTerrainVertices[y * 128 + x].vWorldPosition.x = (-64.0f + x) * blockScale;
+                pTerrainVertices[y * 128 + x].vWorldPosition.y = (64.0f - y) * blockScale;
                 pTerrainVertices[y * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[y * 128 + x];
             }
         }
@@ -2854,7 +2531,7 @@ void RenderOpenGL::DrawTerrainD3D() {
     glUniform3fv(glGetUniformLocation(terrainshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), ambient, ambient, ambient);
     glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), diffuseon * 1.0, diffuseon * 0.8, 0.0);
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
 
     // red colouring
     if (pParty->armageddon_timer) {
@@ -4164,6 +3841,8 @@ void RenderOpenGL::Present() {
     GL_Check_Errors();
     window->OpenGlSwapBuffers();
 
+    ClearBlack();
+
     // crude frame rate limiting
     const int MAX_FRAME_RATE = 200;
     const int MIN_FRAME_TIME = 1000 / MAX_FRAME_RATE;
@@ -4566,7 +4245,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glUniform3fv(glGetUniformLocation(outbuildshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight[0]);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.ambient"), ambient, ambient, ambient);
     glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f));
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.specular"), diffuseon * 1.0f, diffuseon * 0.8f, 0.0f);
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
 
     if (pParty->armageddon_timer) {
         glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), 1.0f, 0.0f, 0.0f);
@@ -5945,7 +5624,7 @@ void RenderOpenGL::DrawTwodVerts() {
     while (offset < twodvertscnt) {
         // set texture
         GLfloat thistex = twodshaderstore[offset].texid;
-        glBindTexture(GL_TEXTURE_2D, twodshaderstore[offset].texid);
+        glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(twodshaderstore[offset].texid));
 
         int cnt = 0;
         do {

@@ -683,7 +683,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
     int a2;                  // [sp+60h] [bp-Ch]@16
     const char *lpsz;        // [sp+68h] [bp-4h]@6
 
-    char buf[4096];
+    std::array<char, 4096> buf {};
     if (bNoNPCHiring != 1) {
         v1 = 0;
         /*do
@@ -1455,11 +1455,9 @@ void GameUI_DrawCharacterSelectionFrame() {
 
 //----- (0044162D) --------------------------------------------------------
 void GameUI_DrawPartySpells() {
-    unsigned int v0;       // ebp@1
+    unsigned int v0 = OS_GetTime() / 20;
     Image *spell_texture;  // [sp-4h] [bp-1Ch]@12
-    // Texture_MM7 *v9; // [sp-4h] [bp-1Ch]@21
 
-    v0 = OS_GetTime() / 20;
     for (uint i = 0; i < 14; ++i) {
         if (pParty->pPartyBuffs[byte_4E5DD8[i]].Active()) {
             render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640.,
@@ -1614,10 +1612,10 @@ void GameUI_DrawPortraits(unsigned int _this) {
                      1) /
                         640.0f,
                     388 / 480.0f, pPortrait);
-            if (pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active() |
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active() |
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active() |
-                pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active() |
+            if (pPlayer->pPlayerBuffs[PLAYER_BUFF_BLESS].Active() ||
+                pPlayer->pPlayerBuffs[PLAYER_BUFF_HASTE].Active() ||
+                pPlayer->pPlayerBuffs[PLAYER_BUFF_HEROISM].Active() ||
+                pPlayer->pPlayerBuffs[PLAYER_BUFF_SHIELD].Active() ||
                 pPlayer->pPlayerBuffs[PLAYER_BUFF_STONESKIN].Active()) {
                 _441A4E_overlay_on_portrait(i);
             }
@@ -2005,7 +2003,7 @@ void GameUI_DrawHiredNPCs() {
     int v22;                        // [sp+34h] [bp-8h]@2
     unsigned __int8 pNPC_limit_ID;  // [sp+3Bh] [bp-1h]@2
 
-    char buf[4096];
+    std::array<char, 4096> buf {};
     if (bNoNPCHiring != 1) {
         pNPC_limit_ID = 0;
         v22 = 0;
@@ -2136,7 +2134,7 @@ __int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
     bool v5;                                   // ecx@4
     SpriteFrame *pFrame;                       // eax@6
     int v8;                                    // eax@6
-    SoftwareBillboard v10;                     // [sp+Ch] [bp-5Ch]@1
+    SoftwareBillboard v10 {};                     // [sp+Ch] [bp-5Ch]@1
     int v11;                                   // [sp+5Ch] [bp-Ch]@6
     int v12;                                   // [sp+60h] [bp-8h]@1
 

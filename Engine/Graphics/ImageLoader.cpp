@@ -94,12 +94,13 @@ uint32_t *MakeImageColorKey(unsigned int width, unsigned int height,
 
 bool Paletted_Img_Loader::Load(unsigned int *out_width,
     unsigned int *out_height, void **out_pixels,
-    IMAGE_FORMAT *out_format, void **out_palette) {
+    IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
     *out_format = IMAGE_INVALID_FORMAT;
     *out_palette = nullptr;
+    *out_palettepixels = nullptr;
 
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(resource_name, TEXTURE_24BIT_PALETTE));
 
@@ -111,11 +112,16 @@ bool Paletted_Img_Loader::Load(unsigned int *out_width,
     int size = tex->header.uTextureWidth * tex->header.uTextureHeight;
     uint8_t *store = new uint8_t[size];
     memcpy(store, tex->paletted_pixels, size);
-    *out_pixels = store;
+    *out_palettepixels = store;
 
     uint8_t *storepal = new uint8_t[3 * 256];
     memcpy(storepal, tex->pPalette24, 3 * 256);
     *out_palette = storepal;
+
+    // make the actual image
+    *out_pixels = MakeImageAlpha(tex->header.uTextureWidth,
+        tex->header.uTextureHeight,
+        tex->paletted_pixels, tex->pPalette24);
 
     if (*out_pixels == nullptr) {
         return false;
@@ -130,7 +136,7 @@ bool Paletted_Img_Loader::Load(unsigned int *out_width,
 
 bool ColorKey_LOD_Loader::Load(unsigned int *out_width,
                                unsigned int *out_height, void **out_pixels,
-                               IMAGE_FORMAT *out_format, void **out_palette) {
+                               IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
@@ -167,7 +173,7 @@ bool ColorKey_LOD_Loader::Load(unsigned int *out_width,
 
 bool Image16bit_LOD_Loader::Load(unsigned int *out_width,
                                  unsigned int *out_height, void **out_pixels,
-                                 IMAGE_FORMAT *out_format, void **out_palette) {
+                                 IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
@@ -203,7 +209,7 @@ bool Image16bit_LOD_Loader::Load(unsigned int *out_width,
 }
 
 bool Alpha_LOD_Loader::Load(unsigned int *out_width, unsigned int *out_height,
-                            void **out_pixels, IMAGE_FORMAT *out_format, void **out_palette) {
+                            void **out_pixels, IMAGE_FORMAT *out_format, void **out_palette, void **out_palettepixels) {
     *out_width = 0;
     *out_height = 0;
     *out_pixels = nullptr;
@@ -253,7 +259,7 @@ bool PCX_Loader::InternalLoad(void *file, size_t filesize,
 }
 
 bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
-                           void **pixels, IMAGE_FORMAT *format, void **out_palette) {
+                           void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -284,7 +290,7 @@ bool PCX_File_Loader::Load(unsigned int *width, unsigned int *height,
 }
 
 bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,
-                              void **pixels, IMAGE_FORMAT *format, void **out_palette) {
+                              void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -306,7 +312,7 @@ bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,
 }
 
 bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
-                                     void **pixels, IMAGE_FORMAT *format, void **out_palette) {
+                                     void **pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     *width = 0;
     *height = 0;
     *pixels = nullptr;
@@ -377,7 +383,7 @@ static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,
 }
 
 bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
-                              void **out_pixels, IMAGE_FORMAT *format, void **out_palette) {
+                              void **out_pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     Texture_MM7 *tex = lod->GetTexture(lod->LoadTexture(this->resource_name));
     int num_pixels = tex->header.uTextureWidth * tex->header.uTextureHeight;
 
@@ -442,7 +448,7 @@ bool Bitmaps_LOD_Loader::Load(unsigned int *width, unsigned int *height,
 }
 
 bool Sprites_LOD_Loader::Load(unsigned int *width, unsigned int *height,
-                              void **out_pixels, IMAGE_FORMAT *format, void **out_palette) {
+                              void **out_pixels, IMAGE_FORMAT *format, void **out_palette, void **out_palettepixels) {
     *width = 0;
     *height = 0;
     *out_pixels = nullptr;

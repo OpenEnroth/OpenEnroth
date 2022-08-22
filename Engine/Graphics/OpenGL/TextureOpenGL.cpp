@@ -59,12 +59,14 @@ bool TextureOpenGL::LoadImageData() {
     if (!this->initialized) {
         void *pixels {nullptr};
         void *palette {nullptr};
+        void *palettepixels {nullptr};
 
         this->initialized =
-            this->loader->Load(&width, &height, &pixels, &native_format, &palette);
+            this->loader->Load(&width, &height, &pixels, &native_format, &palette, &palettepixels);
         if (this->initialized && this->native_format != IMAGE_INVALID_FORMAT) {
             this->pixels[native_format] = pixels;
             this->palette24 = palette;
+            this->palettepixels = palettepixels;
             this->initialized = render->MoveTextureToDevice(this);
             if (!this->initialized) {
                 __debugbreak();

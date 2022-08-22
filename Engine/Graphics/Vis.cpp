@@ -344,6 +344,53 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     }
 }
 
+/**
+ * Original offset ??
+ *
+ * @param model                         Pointer to model to check against.
+ * @param reachable_depth               A depth distance for checking interaction against.
+ * @param reachable[out]                Whether the model is within the reachable depth specified.
+ * 
+ * @return                              Whether the bounding radius of the model is visible within the camera FOV cone.
+ */
+bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
+    // checks if model is visible in FOV cone
+    float halfangle = (pCamera3D->odm_fov_rad) / 2.0f;
+    float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
+    float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
+
+    // approx distance
+    int dist = int_get_vector_length(abs(static_cast<int>(rayx)), abs(static_cast<int>(rayy)), 0);
+    *reachable = false;
+    if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
+
+    // dot product of camvec and ray - size in forward
+    float frontvec = rayx * pCamera3D->fRotationZCosine + rayy * pCamera3D->fRotationZSine;
+    if (pCamera3D->sRotationY) { frontvec *= pCamera3D->fRotationYCosine; }
+
+    // dot product of camvec and ray - size in left
+    float leftvec = rayy * pCamera3D->fRotationZCosine - rayx * pCamera3D->fRotationZSine;
+
+    // which half fov is ray in direction of - compare slopes
+    float sloperem = 0.0;
+    if (leftvec >= 0) {  // acute - left
+        sloperem = frontvec * sin(halfangle) - leftvec * cos(halfangle);
+    } else {  // obtuse - right
+        sloperem = frontvec * sin(halfangle) + leftvec * cos(halfangle);
+    }
+
+    // view range check
+    if (dist <= pCamera3D->GetFarClip() + 2048) {
+        // boudning point inside cone
+        if (sloperem >= 0) return true;
+        // bounding radius inside cone
+        if (abs(sloperem) < model->sBoundingRadius + 512) return true;
+    }
+
+    // not visible
+    return false;
+}
+
 void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                                  Vis_SelectionList *list,
                                  Vis_SelectionFilter *filter,
