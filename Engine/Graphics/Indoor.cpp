@@ -992,7 +992,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
 
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & 0x0100)) {
+        if (pSpriteObjects[i].containing_item.uItemID && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
             pSpriteObjects[i].uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID;
             pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
         }
@@ -1550,7 +1550,6 @@ void UpdateActors_BLV() {
     // int v4;                  // eax@8
     // __int16 v5;              // ax@11
     // signed __int64 v10;      // qax@18
-    int v22;                 // edi@46
     unsigned int v24;        // eax@51
     int v27;                 // ST08_4@54
     int v28;                 // edi@54
@@ -1655,7 +1654,6 @@ void UpdateActors_BLV() {
             collision_state.check_hi = true;
             collision_state.radius_hi = pActors[actor_id].uActorRadius;
             collision_state.radius_lo = pActors[actor_id].uActorRadius;
-            v22 = 0;
             for (int attempt = 0; attempt < 100; attempt++) {
                 collision_state.position_hi.x = pActors[actor_id].vPosition.x;
                 collision_state.position_lo.x = collision_state.position_hi.x;
@@ -1671,7 +1669,7 @@ void UpdateActors_BLV() {
                 collision_state.velocity.y = pActors[actor_id].vVelocity.y;
                 collision_state.velocity.z = pActors[actor_id].vVelocity.z;
                 collision_state.uSectorID = pActors[actor_id].uSectorID;
-                if (!collision_state.PrepareAndCheckIfStationary(v22)) {
+                if (!collision_state.PrepareAndCheckIfStationary(0)) {
                     v58 = 0;
                     v24 = 8 * actor_id;
                     HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor_id);
@@ -1736,54 +1734,48 @@ void UpdateActors_BLV() {
                                             fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                         pActors[actor_id].vVelocity.z =
                                             fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                        v22 = 0;
                                         continue;
                                     }
                                     if (pActors[actor_id].pMonsterInfo.uHostilityType) {
                                         if (!v56) {
-                                            Actor::AI_Flee(actor_id, collision_state.pid, v22, (AIDirection *)v22);
+                                            Actor::AI_Flee(actor_id, collision_state.pid, 0, nullptr);
                                             pActors[actor_id].vVelocity.x =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                             pActors[actor_id].vVelocity.y =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                             pActors[actor_id].vVelocity.z =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            v22 = 0;
                                             continue;
                                         }
                                     } else {
                                         if (!v56) {
                                             if (!pActors[v37].pMonsterInfo.uHostilityType) {
-                                                Actor::AI_FaceObject(actor_id, collision_state.pid,
-                                                                    v22, (AIDirection *)v22);
+                                                Actor::AI_FaceObject(actor_id, collision_state.pid, 0, nullptr);
                                                 pActors[actor_id].vVelocity.x =
                                                     fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                                 pActors[actor_id].vVelocity.y =
                                                     fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                                 pActors[actor_id].vVelocity.z =
                                                     fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                                v22 = 0;
                                                 continue;
                                             }
-                                            Actor::AI_Flee(actor_id, collision_state.pid, v22, (AIDirection *)v22);
+                                            Actor::AI_Flee(actor_id, collision_state.pid, 0, nullptr);
                                             pActors[actor_id].vVelocity.x =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                             pActors[actor_id].vVelocity.y =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                             pActors[actor_id].vVelocity.z =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            v22 = 0;
                                             continue;
                                         }
                                     }
-                                    Actor::AI_StandOrBored(actor_id, 4, v22, &v53);
+                                    Actor::AI_StandOrBored(actor_id, 4, 0, &v53);
                                     pActors[actor_id].vVelocity.x =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                     pActors[actor_id].vVelocity.y =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                     pActors[actor_id].vVelocity.z =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    v22 = 0;
                                     continue;
                                 }
                                 if (PID_TYPE(collision_state.pid) == OBJECT_Player) {
@@ -1810,14 +1802,13 @@ void UpdateActors_BLV() {
                                             fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
                                         continue;
                                     }
-                                    Actor::AI_FaceObject(actor_id, collision_state.pid, v22, (AIDirection *)v22);
+                                    Actor::AI_FaceObject(actor_id, collision_state.pid, 0, nullptr);
                                     pActors[actor_id].vVelocity.x =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                     pActors[actor_id].vVelocity.y =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                     pActors[actor_id].vVelocity.z =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    v22 = 0;
                                     continue;
                                 }
                                 if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
@@ -1835,7 +1826,6 @@ void UpdateActors_BLV() {
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                     pActors[actor_id].vVelocity.z =
                                         fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    v22 = 0;
                                     continue;
                                 }
                                 if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
@@ -1854,7 +1844,6 @@ void UpdateActors_BLV() {
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                             pActors[actor_id].vVelocity.z =
                                                 fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            v22 = 0;
                                             continue;
                                         }
                                     } else {
@@ -1896,7 +1885,6 @@ void UpdateActors_BLV() {
                                 pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
                                 pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
                                 pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                v22 = 0;
                                 continue;
                             } else {
                                 pActors[actor_id].vPosition.x = collision_state.new_position_lo.x;
@@ -1917,9 +1905,8 @@ void UpdateActors_BLV() {
                         if (pParty->bTurnBasedModeOn &&
                             (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
                             continue;
-                        if (!pActors[actor_id].pMonsterInfo.uHostilityType ||
-                            v56 != v22) {
-                            Actor::AI_StandOrBored(actor_id, 4, v22, &v52);
+                        if (!pActors[actor_id].pMonsterInfo.uHostilityType || v56 != 0) {
+                            Actor::AI_StandOrBored(actor_id, 4, 0, &v52);
                             continue;
                         }
                     }
@@ -1939,14 +1926,12 @@ void UpdateActors_BLV() {
 }
 
 //----- (00460A78) --------------------------------------------------------
-void PrepareToLoadBLV(unsigned int bLoading) {
+void PrepareToLoadBLV(bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
     unsigned int map_id;            // eax@8
     MapInfo *map_info;              // edi@9
     int v4;                         // eax@11
     char v28;                       // zf@81
-    signed int v30;                 // edi@94
-    std::array<int, 4> v34{};       // [sp+3E8h] [bp-2Ch]@96
     int v35;                        // [sp+3F8h] [bp-1Ch]@1
     int v38;                        // [sp+404h] [bp-10h]@1
     int pDest;                      // [sp+40Ch] [bp-8h]@1
@@ -1969,25 +1954,23 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     pPaletteManager->pPalette_tintColor[1] = 0;
     pPaletteManager->pPalette_tintColor[2] = 0;
     pPaletteManager->RecalculateAll();
-    if (_A750D8_player_speech_timer) _A750D8_player_speech_timer = 0;
+    if (_A750D8_player_speech_timer)
+        _A750D8_player_speech_timer = 0;
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = pMapStats->pInfos[map_id].uRespawnIntervalDays;
         v38 = GetAlertStatus();
     } else {
-        map_info = (MapInfo *)bLoading;
+        map_info = nullptr;
     }
     dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
 
     pStationaryLightsStack->uNumLightsActive = 0;
     v4 = pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().GetDays() + 1,
-                       respawn_interval, (char *)&pDest) -
-         1;
-    if (!v4) Error("Unable to open %s", pCurrentMapName.c_str());
-
-    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str());
-
+                       respawn_interval, (char *)&pDest) - 1;
+    if (v4 == 0) Error("Unable to open %s", pCurrentMapName.c_str());
+    if (v4 == 1) Error("File %s is not a BLV File", pCurrentMapName.c_str()); // TODO: these checks never trigger.
     if (v4 == 2) Error("Attempt to open new level before clearing old");
     if (v4 == 3) Error("Out of memory loading indoor level");
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
@@ -1995,7 +1978,9 @@ void PrepareToLoadBLV(unsigned int bLoading) {
         SpriteObject::InitializeSpriteObjects();
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
-    if (!map_id) pDest = 0;
+    if (!map_id)
+        pDest = 0;
+
     if (pDest == 1) {
         for (uint i = 0; i < pIndoor->pSpawnPoints.size(); ++i) {
             auto spawn = &pIndoor->pSpawnPoints[i];
@@ -2141,17 +2126,19 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     }
     viewparams->_443365();
     PlayLevelMusic();
-    if (!bLoading) {
-        v30 = 0;
-        for (uint pl_id = 1; pl_id <= 4; ++pl_id) {
-            if (pPlayers[pl_id]->CanAct()) v34[v30++] = pl_id;
-        }
-        if (v30) {
-            if (pDest) {
-                _A750D8_player_speech_timer = 256;
-                PlayerSpeechID = SPEECH_EnterDungeon;
-                uSpeakingCharacter = v34[rand() % v30];
-            }
+
+    // Active character speaks.
+    if (!bLoading && pDest) {
+        std::vector<int> active;
+
+        for (int i = 1; i <= 4; i++)
+            if (pPlayers[i]->CanAct())
+                active.push_back(i);
+
+        if (!active.empty()) {
+            _A750D8_player_speech_timer = 256;
+            PlayerSpeechID = SPEECH_EnterDungeon;
+            uSpeakingCharacter = active[rand() % active.size()];
         }
     }
 }
@@ -2404,7 +2391,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     // centre sprite on coords
                     int modz = pSpriteObjects[i].vPosition.z;
                     if (v4->uFlags & 0x20)
-                       modz -= (int)((v4->scale, v4->hw_sprites[v9]->uBufferHeight) / 2);
+                       modz -= (int)((v4->scale * v4->hw_sprites[v9]->uBufferHeight) / 2);
 
                     int16_t v34 = 0;
                     if (v4->uFlags & 2) v34 = 2;
@@ -2445,7 +2432,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
-                        pSpriteObjects[i].uAttributes |= 1;
+                        pSpriteObjects[i].uAttributes |= SPRITE_VISIBLE;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
                         // if ( render->pRenderD3D )

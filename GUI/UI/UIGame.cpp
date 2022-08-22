@@ -140,26 +140,26 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     pBtn_NewGame = CreateButton(0x13u, 0x9Bu, 0xD6u, 0x28u, 1, 0,
                                 UIMSG_StartNewGame, 0, GameKey::N,
                                 localization->GetString(LSTR_NEW_GAME),
-                                {{game_ui_menu_new}});
+                                {game_ui_menu_new});
     pBtn_SaveGame = CreateButton(0x13u, 0xD1u, 0xD6u, 0x28u, 1, 0,
                                  UIMSG_Game_OpenSaveGameDialog, 0, GameKey::S,
                                  localization->GetString(LSTR_SAVE_GAME),
-                                 {{game_ui_menu_save}});
+                                 {game_ui_menu_save});
     pBtn_LoadGame = CreateButton(19, 263, 0xD6u, 0x28u, 1, 0,
                                  UIMSG_Game_OpenLoadGameDialog, 0, GameKey::L,
                                  localization->GetString(LSTR_LOAD_GAME),
-                                 {{game_ui_menu_load}});
+                                 {game_ui_menu_load});
     pBtn_GameControls = CreateButton(
         241, 155, 214, 40, 1, 0, UIMSG_Game_OpenOptionsDialog, 0, GameKey::C,
-        localization->GetString(LSTR_OPTIONS), {{game_ui_menu_controls}}
+        localization->GetString(LSTR_OPTIONS), {game_ui_menu_controls}
     );
     pBtn_QuitGame = CreateButton(241, 209, 214, 40, 1, 0, UIMSG_Quit, 0, GameKey::Q,
                                  localization->GetString(LSTR_QUIT),
-                                 {{game_ui_menu_quit}});
+                                 {game_ui_menu_quit});
     pBtn_Resume = CreateButton(
         241, 263, 214, 40, 1, 0, UIMSG_GameMenu_ReturnToGame, 0, GameKey::R,
         localization->GetString(LSTR_RETURN_TO_GAME),
-        {{game_ui_menu_resume}});
+        {game_ui_menu_resume});
     _41D08F_set_keyboard_control_group(6, 1, 0, 0);
 }
 
@@ -499,26 +499,26 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
 
     pBtn_SliderLeft = CreateButton(
         243, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 4, GameKey::None, "",
-        {{options_menu_skin.uTextureID_ArrowLeft}});
+        {options_menu_skin.uTextureID_ArrowLeft});
     pBtn_SliderRight = CreateButton(
         435, 162, 16, 16, 1, 0, UIMSG_ChangeSoundVolume, 5, GameKey::None, "",
-        {{options_menu_skin.uTextureID_ArrowRight}});
+        {options_menu_skin.uTextureID_ArrowRight});
     CreateButton(263, 162, 172, 17, 1, 0, UIMSG_ChangeSoundVolume, 0);
 
     pBtn_SliderLeft = CreateButton(
         243, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 4, GameKey::None, "",
-        {{options_menu_skin.uTextureID_ArrowLeft}});
+        {options_menu_skin.uTextureID_ArrowLeft});
     pBtn_SliderRight = CreateButton(
         435, 216, 16, 16, 1, 0, UIMSG_ChangeMusicVolume, 5, GameKey::None, "",
-        {{options_menu_skin.uTextureID_ArrowRight}});
+        {options_menu_skin.uTextureID_ArrowRight});
     CreateButton(263, 216, 172, 17, 1, 0, UIMSG_ChangeMusicVolume, 0);
 
     pBtn_SliderLeft = CreateButton(
         243, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 4, GameKey::None, "",
-        {{options_menu_skin.uTextureID_ArrowLeft}});
+        {options_menu_skin.uTextureID_ArrowLeft});
     pBtn_SliderRight = CreateButton(
         435, 270, 16, 16, 1, 0, UIMSG_ChangeVoiceVolume, 5, GameKey::None, "",
-        {{options_menu_skin.uTextureID_ArrowRight}});
+        {options_menu_skin.uTextureID_ArrowRight});
     CreateButton(263, 270, 172, 17, 1, 0, UIMSG_ChangeVoiceVolume, 0);
 
     CreateButton(241, 302, 214, 40, 1, 0, UIMSG_Escape, 0, GameKey::None, localization->GetString(LSTR_RETURN_TO_GAME));

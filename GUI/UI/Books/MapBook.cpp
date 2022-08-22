@@ -56,11 +56,11 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     pBtn_Book_1 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 1, 50, 34, 1,
         0, UIMSG_ClickBooksBtn, 0, GameKey::None, localization->GetString(LSTR_ZOOM_IN),
-        {{ui_book_button1_on}});
+        {ui_book_button1_on});
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38, 50, 34,
         1, 0, UIMSG_ClickBooksBtn, 1, GameKey::None, localization->GetString(LSTR_ZOOM_OUT),
-        {{ui_book_button2_on}});
+        {ui_book_button2_on});
     pBtn_Book_3 = CreateButton(
         pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 113, 50, 34,
         1, 0, UIMSG_ClickBooksBtn, 2, GameKey::None,

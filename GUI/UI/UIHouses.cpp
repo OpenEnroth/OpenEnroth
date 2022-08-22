@@ -422,19 +422,20 @@ void InitializaDialogueOptions_Shops(BuildingType type) {
     case BuildingType_WeaponShop:
     case BuildingType_ArmorShop:
     case BuildingType_MagicShop:
-    {
         CreateShopDialogueButtonAtRow(0, DIALOGUE_SHOP_SELL);
         CreateShopDialogueButtonAtRow(1, DIALOGUE_SHOP_IDENTIFY);
         CreateShopDialogueButtonAtRow(2, DIALOGUE_SHOP_REPAIR);
         pDialogueWindow->_41D08F_set_keyboard_control_group(3, 1, 0, 2);
-    } break;
+        break;
 
     case BuildingType_AlchemistShop:
-    {
         CreateShopDialogueButtonAtRow(0, DIALOGUE_SHOP_SELL);
         CreateShopDialogueButtonAtRow(1, DIALOGUE_SHOP_IDENTIFY);
         pDialogueWindow->_41D08F_set_keyboard_control_group(2, 1, 0, 2);
-    } break;
+        break;
+
+    default:
+        break;
     }
 
     dword_F8B1E0 = pDialogueWindow->pNumPresenceButton;
@@ -900,7 +901,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             pBtn_ExitCancel = pDialogueWindow->CreateButton(
                 526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
                 localization->GetString(LSTR_END_CONVERSATION),
-                { { ui_buttdesc2 } });
+                {ui_buttdesc2});
             pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
                 UIMSG_BuyInShop_Identify_Repair, 0);
         }
@@ -918,7 +919,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 pBtn_ExitCancel = pDialogueWindow->CreateButton(
                     526, 445, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
                     localization->GetString(LSTR_END_CONVERSATION),
-                    { { ui_buttdesc2 } });
+                    {ui_buttdesc2});
                 pDialogueWindow->CreateButton(8, 8, 450, 320, 1, 0,
                     UIMSG_BuyInShop_Identify_Repair, 0);
             } else if (uActiveCharacter) {
@@ -2922,7 +2923,7 @@ void SimpleHouseDialog() {
     }
     house_window.uFrameWidth -= 10;
     house_window.uFrameZ -= 10;
-    pNPC = HouseNPCData[(uint64_t)((char *)pDialogueNPCCount + -(dword_591080 != 0))];  //- 1
+    pNPC = HouseNPCData[pDialogueNPCCount + -(dword_591080 != 0)];  //- 1
 
     house_window.DrawTitleText(pFontCreate, 483, 113,
         Color16(0x15u, 0x99u, 0xE9u), NameAndTitle(pNPC), 3);
@@ -3350,7 +3351,7 @@ int HouseDialogPressCloseBtn() {
 
     switch (dialog_menu_id) {
     case -1:
-        _4B4224_UpdateNPCTopics((int64_t)((char *)pDialogueNPCCount - 1));
+        _4B4224_UpdateNPCTopics(pDialogueNPCCount - 1);
         BackToHouseMenu();
         break;
 
@@ -3547,6 +3548,8 @@ void FillAviableSkillsToTeach(BuildingType type) {
         num_options = 2;
         options[0] = DIALOGUE_LEARN_ARMSMASTER;
         options[1] = DIALOGUE_LEARN_BODYBUILDING;
+        break;
+    default:
         break;
     }
 
@@ -3746,7 +3749,7 @@ GUIWindow_House::GUIWindow_House(unsigned int x, unsigned int y, unsigned int wi
     pBtn_ExitCancel = CreateButton(
         471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_EXIT_BUILDING),
-        { { ui_exit_cancel_button_background } });
+        {ui_exit_cancel_button_background});
     for (int v26 = 0; v26 < uNumDialogueNPCPortraits; ++v26) {
         const char *v29;
         std::string v30;

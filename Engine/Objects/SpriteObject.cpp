@@ -865,8 +865,8 @@ uint8_t SpriteObject::GetParticleTrailColorB() {
 void SpriteObject::OnInteraction(unsigned int uLayingItemID) {
     pSpriteObjects[uLayingItemID].uObjectDescID = 0;
     if (pParty->bTurnBasedModeOn) {
-        if (pSpriteObjects[uLayingItemID].uAttributes & 0x4) {
-            pSpriteObjects[uLayingItemID].uAttributes &= ~0x4;
+        if (pSpriteObjects[uLayingItemID].uAttributes & SPRITE_HALT_TURN_BASED) {
+            pSpriteObjects[uLayingItemID].uAttributes &= ~SPRITE_HALT_TURN_BASED;
             --pTurnEngine->pending_actions;
         }
     }
@@ -953,7 +953,7 @@ bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
     pSpellObject.uSpriteFrameID = 0;
     pSpellObject.spell_caster_pid = 0;
     pSpellObject.spell_target_pid = 0;
-    if (!(pSpellObject.uAttributes & 0x10)) {
+    if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
         if (pItemsTable->uAllItemsCount) {
             for (uint i = 1; i < pItemsTable->uAllItemsCount; ++i) {
                 if (pItemsTable->pItems[i].uSpriteID == sprite)
@@ -1034,9 +1034,9 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             return 1;
     }
     if (pParty->bTurnBasedModeOn) {
-        if (pSpriteObjects[uLayingItemID].uAttributes & 4) {
+        if (pSpriteObjects[uLayingItemID].uAttributes & SPRITE_HALT_TURN_BASED) {
             --pTurnEngine->pending_actions;
-            pSpriteObjects[uLayingItemID].uAttributes &= 0xFFFB;  // ~0x00000004
+            pSpriteObjects[uLayingItemID].uAttributes &= ~SPRITE_HALT_TURN_BASED;
         }
     }
     if (PID_TYPE(a2) == OBJECT_BModel &&
@@ -1460,19 +1460,21 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_DARK_SHRINKING_RAY: {
             int v143 = 17030;
             switch (pSpriteObjects[uLayingItemID].uType) {
-                case 6040:
+                case SPRITE_SPELL_MIND_CHARM:
                     v143 = 15040;
                     break;
-                case 4010:
+                case SPRITE_SPELL_EARTH_SLOW:
                     v143 = 13010;
                     break;
-                case 9030:
+                case SPRITE_SPELL_DARK_SHRINKING_RAY:
                     v143 = 18030;
+                    break;
+                default:
                     break;
             }
             v138 = 1;
             if (PID_TYPE(a2) != OBJECT_Actor) {
-                if (pSpriteObjects[uLayingItemID].uType != 9030 ||
+                if (pSpriteObjects[uLayingItemID].uType != SPRITE_SPELL_DARK_SHRINKING_RAY ||
                     pSpriteObjects[uLayingItemID].spell_skill != 4) {
                     SpriteObject::OnInteraction(uLayingItemID);
                     return 0;
@@ -1732,6 +1734,8 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
                 ItemDamageFromActor(PID(OBJECT_Item, uLayingItemID), PID_ID(a2),
                                     &layingitem_vel_50FDFC);
                 break;
+            default:
+                break;
         }
     }
 }
@@ -1745,8 +1749,8 @@ void UpdateObjects() {
     int v19;  // [sp+8h] [bp-Ch]@27
 
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].uAttributes & OBJECT_40) {
-            pSpriteObjects[i].uAttributes &= ~OBJECT_40;
+        if (pSpriteObjects[i].uAttributes & SPRITE_SKIP_A_FRAME) {
+            pSpriteObjects[i].uAttributes &= ~SPRITE_SKIP_A_FRAME;
         } else {
             ObjectDesc *object =
                 &pObjectList->pObjects[pSpriteObjects[i].uObjectDescID];
@@ -1776,7 +1780,7 @@ void UpdateObjects() {
                         continue;
                     }
                     v11 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
+                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY)
                         v11 = pSpriteObjects[i].field_20;
                 }
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY) ||

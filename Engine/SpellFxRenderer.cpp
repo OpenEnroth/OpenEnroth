@@ -768,62 +768,62 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             AddMobileLight(a2, 0xFF0000, 256);
             return false;
 
-        case 601:  // SPRITE_OBJECT_EXPLODE:
+        case SPRITE_OBJECT_EXPLODE_IMPACT:
             // __debugbreak();  // what kind of effect is this?
             AddMobileLight(a2, 0xFF3C1E, 256);
             return true;
 
-        case 546:
-        case 547:
-        case 548:
-        case 549:
-        case 551:
-        case 552:
-        case 553:
-        case 554:
-        case 557:
-        case 558:
-        case 559:
-        case 560:
-        case 561:
-        case 562:
-        case 563:
-        case 564:
-        case 565:
-        case 566:
-        case 567:
-        case 568:
-        case 569:
-        case 570:
-        case 571:
-        case 572:
-        case 573:
-        case 574:
-        case 575:
-        case 576:
-        case 577:
-        case 578:
-        case 579:
-        case 580:
-        case 581:
-        case 582:
-        case 583:
-        case 584:
-        case 585:
-        case 586:
-        case 587:
-        case 588:
-        case 589:
-        case 590:
-        case 591:
-        case 592:
-        case 593:
-        case 594:
-        case 595:
-        case 596:
-        case 597:
-        case 598:
-        case 599:
+        case SPRITE_546:
+        case SPRITE_547:
+        case SPRITE_548:
+        case SPRITE_549:
+        case SPRITE_551:
+        case SPRITE_552:
+        case SPRITE_553:
+        case SPRITE_554:
+        case SPRITE_557:
+        case SPRITE_558:
+        case SPRITE_559:
+        case SPRITE_560:
+        case SPRITE_561:
+        case SPRITE_562:
+        case SPRITE_563:
+        case SPRITE_564:
+        case SPRITE_565:
+        case SPRITE_566:
+        case SPRITE_567:
+        case SPRITE_568:
+        case SPRITE_569:
+        case SPRITE_570:
+        case SPRITE_571:
+        case SPRITE_572:
+        case SPRITE_573:
+        case SPRITE_574:
+        case SPRITE_575:
+        case SPRITE_576:
+        case SPRITE_577:
+        case SPRITE_578:
+        case SPRITE_579:
+        case SPRITE_580:
+        case SPRITE_581:
+        case SPRITE_582:
+        case SPRITE_583:
+        case SPRITE_584:
+        case SPRITE_585:
+        case SPRITE_586:
+        case SPRITE_587:
+        case SPRITE_588:
+        case SPRITE_589:
+        case SPRITE_590:
+        case SPRITE_591:
+        case SPRITE_592:
+        case SPRITE_593:
+        case SPRITE_594:
+        case SPRITE_595:
+        case SPRITE_596:
+        case SPRITE_597:
+        case SPRITE_598:
+        case SPRITE_599:
             _4A75CC_single_spell_collision_particle(a2, 0xFF3C1E, effpar01);
             return false;
 
@@ -1083,9 +1083,10 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
         case SPRITE_SPELL_DARK_DRAGON_BREATH:
         case SPRITE_SPELL_DARK_DRAGON_BREATH_1:
             return true;
-    }
 
-    return false;
+        default:
+            return false;
+    }
 }
 
 //----- (004A89BD) --------------------------------------------------------

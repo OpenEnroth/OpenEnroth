@@ -1162,6 +1162,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
                 //            pSoundList->LoadSound(SOUND_RunSwamp, 0);  //по
                 //            болоту pSoundList->LoadSound(SOUND_WalkSwamp, 0);
                 break;
+            default:
+                break;
         }
     }
     return true;
@@ -1419,7 +1421,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
     if (!pSpriteObjects.empty()) {
         for (int i = 0; i < (signed int)pSpriteObjects.size(); ++i) {
             if (pSpriteObjects[i].uObjectDescID) {
-                if (!(pSpriteObjects[i].uAttributes & 8) && !pSpriteObjects[i].IsUnpickable()) {
+                if (!(pSpriteObjects[i].uAttributes & SPRITE_DROPPED_BY_PLAYER) && !pSpriteObjects[i].IsUnpickable()) {
                     bool bOnWater = false;
                     pSpriteObjects[i].vPosition.z =
                         GetTerrainHeightsAroundParty2(
@@ -3310,7 +3312,7 @@ void UpdateActors_ODM() {
                     pActors[Actor_ITR].vVelocity.y =
                         TrigLUT->Sin(Angle_To_Decor) * Coll_Speed;
                     break;
-                case OBJECT_BModel:
+                case OBJECT_BModel: {
                     ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9]
                                 .pFaces[v39 & 0x3F];
                     if (!face->Ethereal()) {
@@ -3363,6 +3365,9 @@ void UpdateActors_ODM() {
                             }
                         }
                     }
+                }
+                    break;
+                default:
                     break;
             }
 

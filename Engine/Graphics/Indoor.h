@@ -688,7 +688,7 @@ void BLV_ProcessPartyActions();
 void Door_switch_animation(unsigned int uDoorID, int a2);  // idb: sub_449A49
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
-void PrepareToLoadBLV(unsigned int bLoading);
+void PrepareToLoadBLV(bool bLoading);
 int GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
 int DropTreasureAt(int trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);

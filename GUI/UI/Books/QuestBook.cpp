@@ -45,13 +45,13 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() : GUIWindow_Book() {
         ui_book_button1_on->GetWidth(), ui_book_button1_on->GetWidth(), 1, 0,
         UIMSG_ClickBooksBtn, 0xBu, GameKey::None,
         localization->GetString(LSTR_SCROLL_UP),
-        {{ui_book_button1_on}});
+        {ui_book_button1_on});
     pBtn_Book_2 = CreateButton(
         pViewport->uViewportTL_X + 398, pViewport->uViewportTL_Y + 38,
         ui_book_button2_on->GetWidth(), ui_book_button2_on->GetHeight(), 1, 0,
         UIMSG_ClickBooksBtn, 0xAu, GameKey::None,
         localization->GetString(LSTR_SCROLL_DOWN),
-        {{ui_book_button2_on}});
+        {ui_book_button2_on});
     num_achieved_awards = 0;
     memset(achieved_awards.data(), 0, 4000);
     for (uint i = books_primary_item_per_page; i < 512; ++i) {

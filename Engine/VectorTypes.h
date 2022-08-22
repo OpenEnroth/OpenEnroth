@@ -52,10 +52,6 @@ struct Vec3 {
 
     Vec3(T a, T b, T c) : x(a), y(b), z(c) {}
 
-    inline T GetDistanceTo(const Vec3 &o) {
-        return Length(*this - o);
-    }
-
     static void Rotate(T sDepth, T sRotY, T sRotX, Vec3<T> v, T *outx, T *outy, T *outz) {
         float cosf_x = cos(pi * sRotX / 1024.0f);
         float sinf_x = sin(pi * sRotX / 1024.0f);

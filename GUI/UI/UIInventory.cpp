@@ -51,7 +51,7 @@ GUIWindow_Inventory_CastSpell::GUIWindow_Inventory_CastSpell(
     pBtn_ExitCancel = CreateButton(
         392, 318, 75, 33, 1, 0, UIMSG_Escape, 0, GameKey::None,
         localization->GetString(LSTR_CANCEL),
-        { { ui_buttdesc2 } }
+        {ui_buttdesc2}
     );
     GameUI_SetStatusBar(LSTR_CHOOSE_TARGET);
     current_character_screen_window = WINDOW_CharacterWindow_Inventory;

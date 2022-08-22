@@ -192,7 +192,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
                     int projected_y = 0;
                     pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-                    object->uAttributes |= 1;
+                    object->uAttributes |= SPRITE_VISIBLE;
                     pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
                     pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
                     pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
@@ -212,7 +212,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
                     pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
                     pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                     pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-                    //          if (!(object->uAttributes & 0x20)) {
+                    //          if (!(object->uAttributes & SPRITE_NO_Z_BUFFER)) {
                     //            if (!pRenderD3D) {
                     //              __debugbreak();
                     //              pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z

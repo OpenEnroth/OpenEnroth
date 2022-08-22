@@ -371,6 +371,9 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                     inspect_item->GetDamageDice() + inspect_item->GetDamageMod()
                 );
             break;
+
+        default:
+            break;
     }
 
     if (!GoldAmount) {
@@ -499,34 +502,33 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
-            (inspect_item->special_enchantment ||
-             inspect_item->uEnchantmentType)) {
-            v67.Initialize(inspect_item->uExpireTime -
-                           pParty->GetPlayingTime());
+            (inspect_item->special_enchantment || inspect_item->uEnchantmentType)) {
+            v67.Initialize(inspect_item->uExpireTime - pParty->GetPlayingTime());
 
             std::string txt4 = "Duration:";
-            Str = (char *)(v67.field_18_expire_year - game_starting_year);
-            if (v67.field_18_expire_year != 1168) {
-                txt4 += StringPrintf(" %d:yr", v67.field_18_expire_year - game_starting_year);
-            }
+            bool formatting = false;
 
-            if ((((v67.field_14_exprie_month || Str) &&
-                      ((txt4 +=
-                        StringPrintf(" %d:mo", v67.field_14_exprie_month),
-                        v67.field_14_exprie_month) ||
-                       Str) ||
-                  v67.field_C_expire_day) &&
-                     ((txt4 += StringPrintf(" %d:dy", v67.field_C_expire_day),
-                       v67.field_14_exprie_month) ||
-                      Str || v67.field_C_expire_day) ||
-                 v67.field_8_expire_hour) &&
-                    ((txt4 += StringPrintf(" %d:hr", v67.field_8_expire_hour),
-                      v67.field_14_exprie_month) ||
-                     Str || v67.field_C_expire_day ||
-                     v67.field_8_expire_hour) ||
-                v67.field_4_expire_minute) {
+            int years = v67.field_18_expire_year - game_starting_year;
+            formatting |= years != 0;
+            if (formatting)
+                txt4 += StringPrintf(" %d:yr", years);
+
+            formatting |= v67.field_14_exprie_month != 0;
+            if (formatting)
+                txt4 += StringPrintf(" %d:mo", v67.field_14_exprie_month);
+
+            formatting |= v67.field_C_expire_day != 0;
+            if (formatting)
+                txt4 += StringPrintf(" %d:dy", v67.field_C_expire_day);
+
+            formatting |= v67.field_8_expire_hour != 0;
+            if (formatting)
+                txt4 += StringPrintf(" %d:hr", v67.field_8_expire_hour);
+
+            formatting |= v67.field_4_expire_minute != 0;
+            if (formatting)
                 txt4 += StringPrintf(" %d:mn", v67.field_4_expire_minute);
-            }
+
             iteminfo_window.DrawText(
                 pFontComic, 100,
                 iteminfo_window.uFrameHeight - 2 * pFontComic->GetHeight(), 0,
@@ -1724,6 +1726,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             popup_window
                                 .sHint = localization->GetClassDescription(
                                 pParty->pPlayers[pButton->msg_param].classType);
+                            break;
+                        default:
                             break;
                     }
                     if (pButton->msg > UIMSG_44 &&

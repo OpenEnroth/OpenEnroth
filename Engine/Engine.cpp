@@ -737,7 +737,7 @@ return Result::Success;
 
 //----- (0044EB5A) --------------------------------------------------------
 void Engine::OutlineSelection() {
-    if (!vis->default_list.uNumPointers)
+    if (!vis->default_list.uSize)
         return;
 
     Vis_ObjectInfo *object_info = vis->default_list.object_pointers[0];
@@ -750,13 +750,13 @@ void Engine::OutlineSelection() {
 
             case VisObjectType_Face: {
                 if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-                    ODMFace *face = (ODMFace *)object_info->object;
+                    ODMFace *face = std::get<ODMFace *>(object_info->object);
                     if (face->uAttributes & FACE_OUTLINED)
                         face->uAttributes &= ~FACE_OUTLINED;
                     else
                         face->uAttributes |= FACE_OUTLINED;
                 } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
-                    BLVFace *face = (BLVFace *)object_info->object;
+                    BLVFace *face = std::get<BLVFace *>(object_info->object);
                     if (face->uAttributes & FACE_OUTLINED)
                         face->uAttributes &= ~FACE_OUTLINED;
                     else
@@ -808,13 +808,13 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     pParty->uFlags = PARTY_FLAGS_1_ForceRedraw;
     CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-    DoPrepareWorld(0, (_0_box_loading_1_fullscreen == 0) + 1);
+    DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
     pMiscTimer->Resume();
     pEventTimer->Resume();
 }
 
 //----- (00464866) --------------------------------------------------------
-void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box) {
+void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     // char *v3;         // eax@1
     unsigned int v5;  // eax@3
 
@@ -1230,7 +1230,7 @@ void MM7Initialization() {
 }
 
 //----- (004610AA) --------------------------------------------------------
-void PrepareToLoadODM(unsigned int bLoading, ODMRenderParams *a2) {
+void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
     pGameLoadingUI_ProgressBar->Reset(27);
     uCurrentlyLoadedLevelType = LEVEL_Outdoor;
 

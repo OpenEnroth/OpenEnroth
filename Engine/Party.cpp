@@ -1162,7 +1162,7 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
             object.vPosition.z = pParty->sEyelevel + pParty->vPosition.z;
             object.uSoundID = 0;
             object.uFacing = 0;
-            object.uAttributes = 8;
+            object.uAttributes = SPRITE_DROPPED_BY_PLAYER;
             object.uSpriteFrameID = 0;
             object.uSectorID = pIndoor->GetSector(pParty->vPosition.x, pParty->vPosition.y,
                                                   pParty->sEyelevel + pParty->vPosition.z);

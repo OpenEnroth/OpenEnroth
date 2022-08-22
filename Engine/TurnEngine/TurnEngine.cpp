@@ -229,8 +229,8 @@ void stru262_TurnBased::End(bool bPlaySound) {
     }
 
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].uAttributes & 4)
-            pSpriteObjects[i].uAttributes &= ~0x04;
+        if (pSpriteObjects[i].uAttributes & SPRITE_HALT_TURN_BASED)
+            pSpriteObjects[i].uAttributes &= ~SPRITE_HALT_TURN_BASED;
     }
 
     for (i = 0; i < uActorQueueSize; ++i) {

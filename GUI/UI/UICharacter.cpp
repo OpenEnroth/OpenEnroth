@@ -918,9 +918,12 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Player *player) {
             case Award_PrisonTerms:
                 str = StringPrintf(v6, pParty->uNumPrisonTerms);
                 break;
+            default:
+                break;
         }
 
-        if (str.length() < 1) str = std::string(v6);
+        if (str.empty())
+            str = std::string(v6);
 
         awards_window.DrawText(
             pFontArrus, 0, 0,

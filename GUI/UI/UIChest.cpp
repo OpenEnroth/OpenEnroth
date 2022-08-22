@@ -27,7 +27,7 @@ GUIWindow_Chest::GUIWindow_Chest(unsigned int chest_id)
     pBtn_ExitCancel =
         CreateButton(471, 445, 169, 35, 1, 0, UIMSG_Escape, 0, GameKey::None,
                      localization->GetString(LSTR_DIALOGUE_EXIT),
-                     {{ui_exit_cancel_button_background}});
+                     {ui_exit_cancel_button_background});
     CreateButton(7, 8, 460, 343, 1, 0, UIMSG_CHEST_ClickItem, 0);
     current_screen_type = CURRENT_SCREEN::SCREEN_CHEST;
     pEventTimer->Pause();

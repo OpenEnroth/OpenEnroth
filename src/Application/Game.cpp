@@ -723,6 +723,8 @@ void Game::EventLoop() {
                                 break;
                             }
                             break;
+                        default:
+                            break;
                     }
                     if (pModalWindow) {
                         pModalWindow->Release();
@@ -1273,6 +1275,8 @@ void Game::EventLoop() {
                                     break;
                                 case UIMSG_HiredNPC_CastSpell:
                                     pSpellInfo->uFlags &= ~0x0200u;
+                                    break;
+                                default:
                                     break;
                             }
                             pSpellInfo->uPlayerID_2 = uMessageParam;
@@ -2407,6 +2411,8 @@ void Game::EventLoop() {
 
                     break;
                 case UIMSG_DebugSpecialItem:
+                    if (uActiveCharacter == 0)
+                        continue;
                     pItemID = rand() % 500;
                     for (uint i = 0; i < 500; ++i) {
                         if (pItemID + i > 499) pItemID = 0;
@@ -2418,6 +2424,8 @@ void Game::EventLoop() {
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugGenItem:
+                    if (uActiveCharacter == 0)
+                        continue;
                     pItemID = rand() % 500;
                     for (uint i = 0; i < 500; ++i) {
                         if (pItemID + i > 499) pItemID = 0;
@@ -2430,12 +2438,18 @@ void Game::EventLoop() {
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugKillChar:
+                    if (uActiveCharacter == 0)
+                        continue;
                     pPlayers[uActiveCharacter]->SetCondition(Condition_Dead, 0);
                     continue;
                 case UIMSG_DebugEradicate:
+                    if (uActiveCharacter == 0)
+                        continue;
                     pPlayers[uActiveCharacter]->SetCondition(Condition_Eradicated, 0);
                     continue;
                 case UIMSG_DebugFullHeal:
+                    if (uActiveCharacter == 0)
+                        continue;
                     pPlayers[uActiveCharacter]->conditions_times.fill(GameTime(0));
                     pPlayers[uActiveCharacter]->sHealth =
                         pPlayers[uActiveCharacter]->GetMaxHealth();
@@ -2652,11 +2666,11 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_DebugGiveSkillP:
                     for (uint i = 0; i < 4; ++i) pParty->pPlayers[i].uSkillPoints += 50;
-                    pPlayers[uActiveCharacter]->PlayAwardSound_Anim();
+                    pPlayers[std::max(uActiveCharacter, 1u)]->PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveEXP:
                     pParty->GivePartyExp(20000);
-                    pPlayers[uActiveCharacter]->PlayAwardSound_Anim();
+                    pPlayers[std::max(uActiveCharacter, 1u)]->PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveGold:
                     Party::AddGold(10000);

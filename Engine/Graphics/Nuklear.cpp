@@ -1537,6 +1537,8 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
                             case(lua_nk_style_type_vec2):
                                 memcpy(bprop.ptr, sprop.ptr, sizeof(struct nk_vec2));
                                 break;
+                            default:
+                                break;
                         }
                     }
                 }
@@ -1579,10 +1581,11 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
                                 // TODO: nine slice
                                 return luaL_argerror(L, -1, lua_pushfstring(L, "not implemented yet"));
                             }
-
                             break;
                         case(lua_nk_style_type_vec2):
                             lua_check_ret(lua_nk_parse_vec2(L, -1, (struct nk_vec2*)prop.ptr));
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -2771,8 +2774,6 @@ static int lua_nk_style_from_table(lua_State *L) {
                 table[NK_COLOR_CHART_COLOR_HIGHLIGHT] = color;
             else if (!strcmp(key, "combo"))
                 table[NK_COLOR_COMBO] = color;
-            else if (!strcmp(key, "count"))
-                table[NK_COLOR_COUNT] = color;
             else if (!strcmp(key, "edit"))
                 table[NK_COLOR_EDIT] = color;
             else if (!strcmp(key, "edit_cursor"))
@@ -2860,6 +2861,9 @@ static int lua_nk_style_get(lua_State *L) {
             lua_pushnumber(L, vec2->y);
             lua_rawset(L, -3);
             return 1;
+
+        default:
+            break;
     }
 
     return luaL_argerror(L, 3, lua_pushfstring(L, "not implemented yet"));

@@ -320,7 +320,7 @@ bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *pFace,
               pFace->pFacePlane.dist;
 
 
-        if ((bLightBackfaces || Distance >= 0.0f) && fabsf(Distance) <= pLight->uRadius) {
+        if ((bLightBackfaces || Distance >= 0.0f) && std::abs(Distance) <= pLight->uRadius) {
             unsigned int slot = *pSlot;
 
             Lights._blv_lights_radii[slot] = pLight->uRadius;

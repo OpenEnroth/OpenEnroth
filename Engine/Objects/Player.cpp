@@ -1502,7 +1502,6 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
         return 0;  // liches are not affected by self magics
 
     int resist_value = 0;
-
     switch (dmg_type) {  // get resistance
         case DMGT_FIRE:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE);
@@ -1511,23 +1510,21 @@ int Player::CalculateIncommingDamage(DAMAGE_TYPE dmg_type, int dmg) {
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR);
             break;
         case DMGT_COLD:
-            resist_value =
-                GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER);
+            resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER);
             break;
         case DMGT_EARTH:
-            resist_value =
-                GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
+            resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH);
             break;
-
         case DMGT_SPIRIT:
-            resist_value =
-                GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_SPIRIT);
+            resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_SPIRIT);
             break;
         case DMGT_MIND:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND);
             break;
         case DMGT_BODY:
             resist_value = GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY);
+            break;
+        default:
             break;
     }
 
@@ -2992,6 +2989,8 @@ int Player::GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2) {
             v3 = this->pPlayerBuffs[PLAYER_BUFF_STONESKIN].uPower;
             v4 = pParty->pPartyBuffs[PARTY_BUFF_STONE_SKIN].uPower;
             break;
+        default:
+            break;
     }
     return v3 + v4;
 }
@@ -3134,6 +3133,8 @@ int Player::GetActualSkillLevel(
             if (CheckHiredNPCSpeciality(Burglar)) bonus_value += 8;
             bonus_value += GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_TRAP_DISARM);
         } break;
+        default:
+            break;
     }
 
     if (uSkillType == PLAYER_SKILL_CLUB) {
@@ -3270,6 +3271,8 @@ int Player::GetSkillBonus(
                             multiplier = GetMultiplierForSkillLevel(
                                 itemSkillType, 1, 1, 1, 1);
                             break;
+                        default:
+                            break;
                     }
                     ACSum += multiplier * (currArmorSkillLevel & 0x3F);
                 }
@@ -3403,14 +3406,12 @@ int Player::GetSkillBonus(
                                 baseSkillBonus =
                                     multiplier * (currItemSkillLevel & 0x3F);
                                 return armsMasterBonus + baseSkillBonus;
-                                break;
                             case PLAYER_SKILL_SWORD:
                                 multiplier = GetMultiplierForSkillLevel(
                                     PLAYER_SKILL_SWORD, 0, 0, 0, 0);
                                 baseSkillBonus =
                                     multiplier * (currItemSkillLevel & 0x3F);
                                 return armsMasterBonus + baseSkillBonus;
-                                break;
                             case PLAYER_SKILL_MACE:
                             case PLAYER_SKILL_SPEAR:
                                 multiplier = GetMultiplierForSkillLevel(
@@ -3418,13 +3419,13 @@ int Player::GetSkillBonus(
                                 baseSkillBonus =
                                     multiplier * (currItemSkillLevel & 0x3F);
                                 return armsMasterBonus + baseSkillBonus;
-                                break;
                             case PLAYER_SKILL_AXE:
                                 multiplier = GetMultiplierForSkillLevel(
                                     PLAYER_SKILL_AXE, 0, 0, 1, 1);
                                 baseSkillBonus =
                                     multiplier * (currItemSkillLevel & 0x3F);
                                 return armsMasterBonus + baseSkillBonus;
+                            default:
                                 break;
                         }
                     }
@@ -4580,7 +4581,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                             playerAffected->sResBodyBase += thisa;
                             break;
                         default:
-                            ("Unexpected attribute");
+                            // ("Unexpected attribute");
                             return;
                     }
                     status = StringPrintf(
@@ -5018,7 +5019,7 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
                         GameTime::FromHours(pValue)) <=
                        pParty->GetPlayingTime();
             }
-            break;
+            return false;
 
         case VAR_ReputationInCurrentLocation:
             v19 = &pOutdoor->ddm;
@@ -5059,9 +5060,9 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
                 }
             }
             return false;
+        default:
+            return false;
     }
-
-    return false;
 }
 
 //----- (0044A5CB) --------------------------------------------------------
@@ -5611,6 +5612,8 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             return;
         case VAR_LearningSkill:
             SetSkillByEvent(&Player::skillLearning, var_value);
+            return;
+        default:
             return;
     }
 }
@@ -6741,6 +6744,8 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             return;
         case VAR_ArenaWinsLord:
             pParty->uNumArenaLordWins -= (char)pValue;
+            return;
+        default:
             return;
     }
 }

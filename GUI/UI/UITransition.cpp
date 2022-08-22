@@ -152,11 +152,11 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     current_screen_type = CURRENT_SCREEN::SCREEN_INPUT_BLV;
     pBtn_ExitCancel = CreateButton(
         0x236u, 0x1BDu, 0x4Bu, 0x21u, 1, 0, UIMSG_TransitionWindowCloseBtn, 0,
-        GameKey::N, localization->GetString(LSTR_CANCEL), {{ui_buttdesc2}}
+        GameKey::N, localization->GetString(LSTR_CANCEL), {ui_buttdesc2}
     );
     pBtn_YES = CreateButton(
         0x1E6u, 0x1BDu, 0x4Bu, 0x21u, 1, 0,
-        UIMSG_TransitionUI_Confirm, 0, GameKey::Y, hint, {{ui_buttyes2}});
+        UIMSG_TransitionUI_Confirm, 0, GameKey::Y, hint, {ui_buttyes2});
     CreateButton(
         pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 0x3Fu, 0x49u, 1,
         0, UIMSG_TransitionUI_Confirm, 1, GameKey::Space, hint);
@@ -199,10 +199,10 @@ GUIWindow_Travel::GUIWindow_Travel()
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
     pBtn_ExitCancel = CreateButton(
         566, 445, 75, 33, 1, 0, UIMSG_CHANGE_LOCATION_ClickCancelBtn, 0, GameKey::N,
-        localization->GetString(LSTR_STAY_IN_THIS_AREA), {{ui_buttdesc2}}
+        localization->GetString(LSTR_STAY_IN_THIS_AREA), {ui_buttdesc2}
     );
     pBtn_YES = CreateButton(486, 445, 75, 33, 1, 0, UIMSG_OnTravelByFoot, 0,
-        GameKey::Y, hint, {{ui_buttyes2}});
+        GameKey::Y, hint, {ui_buttyes2});
     CreateButton(pNPCPortraits_x[0][0], pNPCPortraits_y[0][0], 63, 73, 1, 0,
                  UIMSG_OnTravelByFoot, 1, GameKey::Space, hint);
     CreateButton(8, 8, 460, 344, 1, 0, UIMSG_OnTravelByFoot, 1, GameKey::None, hint);

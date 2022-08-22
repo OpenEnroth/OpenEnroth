@@ -12,7 +12,7 @@ class SpriteFrame;
 #pragma pack(push, 1)
 struct SpriteObject {
     inline bool AttachedToActor() const {
-        return (uAttributes & OBJECT_ATTACHED_TO_ACTOR) != 0;
+        return uAttributes & SPRITE_ATTACHED_TO_HEAD;
     }
 
     SpriteObject();
@@ -43,7 +43,7 @@ struct SpriteObject {
     Vec3_short_ vVelocity;
     unsigned __int16 uFacing;
     unsigned __int16 uSoundID;
-    unsigned __int16 uAttributes;
+    unsigned __int16 uAttributes; // see SPRITE_ATTRIBUTES
     __int16 uSectorID;
     unsigned __int16 uSpriteFrameID;
     __int16 field_20;

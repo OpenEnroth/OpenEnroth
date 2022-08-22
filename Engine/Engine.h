@@ -529,7 +529,7 @@ void back_to_game();
 
 void UpdateUserInput_and_MapSpecificStuff();
 void PrepareWorld(unsigned int _0_box_loading_1_fullscreen);
-void DoPrepareWorld(unsigned int bLoading, int _1_fullscreen_loading_2_box);
+void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box);
 
 void FinalInitialization();
 bool CheckMM7CD(char c);
@@ -537,7 +537,7 @@ bool CheckMM7CD(char c);
 void MM6_Initialize();
 void MM7Initialization();
 
-void PrepareToLoadODM(unsigned int bLoading, struct ODMRenderParams *a2);
+void PrepareToLoadODM(bool bLoading, struct ODMRenderParams *a2);
 void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
 void InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();

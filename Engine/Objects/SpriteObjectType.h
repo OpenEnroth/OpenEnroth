@@ -33,6 +33,57 @@ enum SPRITE_OBJECT_TYPE : uint16_t {
 
     SPRITE_WATER_SPLASH = 800,
 
+    SPRITE_546 = 546,
+    SPRITE_547 = 547,
+    SPRITE_548 = 548,
+    SPRITE_549 = 549,
+    SPRITE_551 = 551,
+    SPRITE_552 = 552,
+    SPRITE_553 = 553,
+    SPRITE_554 = 554,
+    SPRITE_557 = 557,
+    SPRITE_558 = 558,
+    SPRITE_559 = 559,
+    SPRITE_560 = 560,
+    SPRITE_561 = 561,
+    SPRITE_562 = 562,
+    SPRITE_563 = 563,
+    SPRITE_564 = 564,
+    SPRITE_565 = 565,
+    SPRITE_566 = 566,
+    SPRITE_567 = 567,
+    SPRITE_568 = 568,
+    SPRITE_569 = 569,
+    SPRITE_570 = 570,
+    SPRITE_571 = 571,
+    SPRITE_572 = 572,
+    SPRITE_573 = 573,
+    SPRITE_574 = 574,
+    SPRITE_575 = 575,
+    SPRITE_576 = 576,
+    SPRITE_577 = 577,
+    SPRITE_578 = 578,
+    SPRITE_579 = 579,
+    SPRITE_580 = 580,
+    SPRITE_581 = 581,
+    SPRITE_582 = 582,
+    SPRITE_583 = 583,
+    SPRITE_584 = 584,
+    SPRITE_585 = 585,
+    SPRITE_586 = 586,
+    SPRITE_587 = 587,
+    SPRITE_588 = 588,
+    SPRITE_589 = 589,
+    SPRITE_590 = 590,
+    SPRITE_591 = 591,
+    SPRITE_592 = 592,
+    SPRITE_593 = 593,
+    SPRITE_594 = 594,
+    SPRITE_595 = 595,
+    SPRITE_596 = 596,
+    SPRITE_597 = 597,
+    SPRITE_598 = 598,
+    SPRITE_599 = 599,
     SPRITE_811 = 811,
     SPRITE_812 = 812,
     SPRITE_813 = 813,
@@ -178,4 +229,19 @@ enum SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_SPELL_DARK_SOULDRINKER = 9100,
 };
 
-enum { OBJECT_40 = 0x40, OBJECT_ATTACHED_TO_ACTOR = 0x80 };
+/**
+ * Sprite attributes, values taken from MMExtension, see MMExtension code,
+ * function `structs.f.MapObject(define)`.
+ */
+enum SPRITE_ATTRIBUTES : uint16_t {
+    SPRITE_VISIBLE = 0x0001,
+    SPRITE_TEMPORARY = 0x0002,
+    SPRITE_HALT_TURN_BASED = 0x0004,    // turn based mode must wait until this object hits or is removed
+    SPRITE_DROPPED_BY_PLAYER = 0x0008,
+    SPRITE_IGNORE_RANGE = 0x0010,       // override any range limits of this object
+    SPRITE_NO_Z_BUFFER = 0x0020,        // object should not check zbuffer
+    SPRITE_SKIP_A_FRAME = 0x0040,       // object movement will not update for one frame
+    SPRITE_ATTACHED_TO_HEAD = 0x0080,   // object moves with target, seemingly attached to it's head.
+    SPRITE_MISSILE = 0x0100,            // item field contains the launching weapon
+    SPRITE_REMOVED = 0x0200,            // item was removed
+};

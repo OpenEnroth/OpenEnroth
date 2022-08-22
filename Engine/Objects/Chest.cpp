@@ -121,8 +121,9 @@ bool Chest::Open(int uChestID) {
             v.z = pObjectZ;
             Vec3_int_::Rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z,
                               &pOut.y);
-            SpriteObject::Drop_Item_At(pSpriteID[pRandom], pOut.x,
-                                                pOut.z, pOut.y, 0, 1, 0, 48, 0);
+            SpriteObject::Drop_Item_At(
+                pSpriteID[pRandom], pOut.x, pOut.z, pOut.y, 0, 1, 0,
+                SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER, 0);
 
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = 0;
@@ -135,7 +136,7 @@ bool Chest::Open(int uChestID) {
             pSpellObject.vPosition.x = pOut.x;
             pSpellObject.vPosition.z = pOut.y;
             pSpellObject.uSoundID = 0;
-            pSpellObject.uAttributes = 48;
+            pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;
             pSpellObject.uSectorID = pIndoor->GetSector(pOut);
             pSpellObject.uSpriteFrameID = 0;
             pSpellObject.spell_caster_pid = 0;
