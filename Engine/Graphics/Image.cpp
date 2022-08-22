@@ -357,6 +357,12 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
     return nullptr;
 }
 
+
+/**
+ * New function.
+ *
+ * @return                              Returns pointer to image R8G8B8 palette. Size 3 * 256.
+ */
 const void *Image::GetPalette() {
     if (!initialized) {
         LoadImageData();
@@ -369,6 +375,11 @@ const void *Image::GetPalette() {
     return nullptr;
 }
 
+/**
+ * New function.
+ *
+ * @return                              Returns pointer to image pixels 8 bit palette lookup. Size 1 * width * height.
+ */
 const void *Image::GetPalettePixels() {
     if (!initialized) {
         LoadImageData();

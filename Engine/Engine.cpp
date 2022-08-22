@@ -284,7 +284,7 @@ void Engine::DrawGUI() {
     }
 
 
-    if (!pMovie_Track) {  // ! pVideoPlayer->pSmackerMovie)
+    if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION) {  // ! pVideoPlayer->pSmackerMovie)
         GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
         if (v4) {
             if (!PauseGameDrawing() /*&& render->pRenderD3D*/) {
@@ -366,7 +366,10 @@ void Engine::DrawGUI() {
             0, 0, 0);
 
         std::string floor_level_str;
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+
+        if (uGameState == GAME_STATE_CHANGE_LOCATION) {
+            floor_level_str = "Loading Level!";
+        } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             uint uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3_int_(0,0,40) */, sector_id, &uFaceID);

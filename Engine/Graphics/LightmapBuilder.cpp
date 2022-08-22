@@ -346,7 +346,7 @@ bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *pFace,
 //----- (0045DA56) --------------------------------------------------------
 bool LightmapBuilder::DoDraw_183808_Lightmaps(float z_bias) {
     // For indoor light (X)
-    Vec3_float_ v {};  // [sp+Ch] [bp-1Ch]@2
+    Vec3_float_ v;  // [sp+Ch] [bp-1Ch]@2
     v.z = 1.0;
     v.y = 1.0;
     v.x = 1.0;
@@ -650,7 +650,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     if (!engine->config->AllowDynamicBrigtness()) {
         lightmap->fBrightness = flt_3C8C2C_lightmaps_brightness;
     } else {
-        Vec3_float_ a1 {};  // [sp+2Ch] [bp-20h]@8
+        Vec3_float_ a1;  // [sp+2Ch] [bp-20h]@8
         a1.x = (double)pos->x - lightmap->position_x;
         a1.y = (double)pos->y - lightmap->position_y;
         a1.z = (double)pos->z - lightmap->position_z;
@@ -793,7 +793,7 @@ void LightmapBuilder::DrawLightmaps(int indices) {
 
         render->BeginLightmaps();
 
-        Vec3_float_ arg4 {};
+        Vec3_float_ arg4;
         arg4.x = 1.0f;
         arg4.y = 1.0f;
         arg4.z = 1.0f;
@@ -840,7 +840,7 @@ int *LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
     float v13 {};             // edx@5
     int v14;               // eax@5
     float v15;             // ST10_4@5
-    Vec3_float_ v16 {};       // ST00_12@5
+    Vec3_float_ v16;       // ST00_12@5
     double v17;            // st7@5
     int a5 {};                // [sp+2Ch] [bp-1Ch]@1
     float v19;             // [sp+30h] [bp-18h]@1
@@ -993,7 +993,7 @@ double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3,
     double v19;          // st7@10
     double v20;          // st7@10
     std::string v21;     // [sp-10h] [bp-40h]@13
-    const char *v22[6] {};  // [sp+0h] [bp-30h]@10
+    std::array<const char *, 6> v22 {};  // [sp+0h] [bp-30h]@10
     double v23 {};          // [sp+18h] [bp-18h]@1
                          //  double v24; // [sp+20h] [bp-10h]@1
     int v25;             // [sp+28h] [bp-8h]@1
@@ -1072,6 +1072,17 @@ void LightmapBuilder::DrawDebugOutlines(
     }
 }
 
+// TODO(pskelton): Remove this from render classes
+/**
+ * Original offset ??.
+ *
+ * @param max_dimm                      Maximum dimming level allowed (0-31). 31 * 8 ~ 255.
+ * @param min_dimm                      Minimum dimming level allowed (0-31).
+ * @param distance                      Depth distance to billboard.
+ * @param pBillboard                    Pointer to the billboard to test against or Nullptr.
+ *
+ * @return                              Return 32bit colour ARGB.
+ */
 int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, RenderBillboard *pBillboard) {
     int dimminglevel = 0;
 
@@ -1133,7 +1144,15 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
     }
 }
 
-// ----- (0043F5C8) --------------------------------------------------------
+/**
+ * Original offset 0x43F5C8.
+ *
+ * @param uBaseLightLevel               Starting dimming level at point (0-31).
+ * @param uSectorID                     Sector ID if indoors or 0.
+ * @param x, y, z                       Co-ords of point.
+ * 
+ * @return                              Dimming level (0-31) with lights effect added.
+ */
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {
     int lightlevel = uBaseLightLevel;
     float light_radius{};
@@ -1210,6 +1229,14 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
     return lightlevel;
 }
 
+/**
+ * Original offset 0x43F55F.
+ *
+ * @param *a1                           Pointer to billboard to check.
+ * @param uBaseLightLevel               Base light dimming value (0-31).
+ *
+ * @return                              Billboard dimming value (0-31) with lights applied.
+ */
 int _43F55F_get_billboard_light_level(RenderBillboard *a1, int uBaseLightLevel) {
     int v3 = 0;
 

@@ -1191,7 +1191,7 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall ||
                this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
         if (abs(this->pFacePlane_old.vNormal.z) < 46441) {
-            Vec3_float_ a1 {};
+            Vec3_float_ a1;
             a1.x = (double)-this->pFacePlane_old.vNormal.y;
             a1.y = (double)this->pFacePlane_old.vNormal.x;
             a1.z = 0.0;
@@ -1946,7 +1946,7 @@ void PrepareToLoadBLV(unsigned int bLoading) {
     int v4;                         // eax@11
     char v28;                       // zf@81
     signed int v30;                 // edi@94
-    int v34[4] {};                     // [sp+3E8h] [bp-2Ch]@96
+    std::array<int, 4> v34{};       // [sp+3E8h] [bp-2Ch]@96
     int v35;                        // [sp+3F8h] [bp-1Ch]@1
     int v38;                        // [sp+404h] [bp-10h]@1
     int pDest;                      // [sp+40Ch] [bp-8h]@1
@@ -3756,7 +3756,7 @@ int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t fa
 
 //----- (0049B04D) --------------------------------------------------------
 void stru154::GetFacePlaneAndClassify(ODMFace *a2, BSPVertexBuffer *a3) {
-    Vec3_float_ OutPlaneNorm {};
+    Vec3_float_ OutPlaneNorm;
     float OutPlaneDist;
 
     OutPlaneNorm.x = 0.0;

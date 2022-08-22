@@ -160,7 +160,7 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, int 
             }
         }
     }
-    render->EndTextNew();
+    // render->EndTextNew();
 }
 
 void DrawCharToBuff(uint32_t *draw_buff, uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
@@ -558,7 +558,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
             }
         } while (++v14 < v30);
     }
-    render->EndTextNew();
+    // render->EndTextNew();
 }
 
 int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY, uint16_t uColor, const std::string &str, int rect_width, int reverse_text) {

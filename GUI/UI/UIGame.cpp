@@ -683,7 +683,7 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
     int a2;                  // [sp+60h] [bp-Ch]@16
     const char *lpsz;        // [sp+68h] [bp-4h]@6
 
-    char buf[4096] {};
+    std::array<char, 4096> buf {};
     if (bNoNPCHiring != 1) {
         v1 = 0;
         /*do
@@ -2003,7 +2003,7 @@ void GameUI_DrawHiredNPCs() {
     int v22;                        // [sp+34h] [bp-8h]@2
     unsigned __int8 pNPC_limit_ID;  // [sp+3Bh] [bp-1h]@2
 
-    char buf[4096] {};
+    std::array<char, 4096> buf {};
     if (bNoNPCHiring != 1) {
         pNPC_limit_ID = 0;
         v22 = 0;

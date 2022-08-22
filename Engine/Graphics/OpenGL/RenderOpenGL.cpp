@@ -1118,8 +1118,8 @@ void RenderOpenGL::BlendTextures(int x, int y, Image* imgin, Image* imgblend, in
 // a6 is time, a7 is 0, a8 is 63
 void RenderOpenGL::TexturePixelRotateDraw(float u, float v, Image *img, int time) {
     // TODO(pskelton): sort this - precalculate/ shader
-    static Texture *cachedtemp[14]{};
-    static int cachetime[14]{ -1 };
+    static std::array<Texture *, 14> cachedtemp {};
+    static std::array<int, 14> cachetime { -1 };
 
     if (img) {
         std::string_view tempstr{ *img->GetName() };
@@ -3840,6 +3840,8 @@ void RenderOpenGL::Present() {
 
     GL_Check_Errors();
     window->OpenGlSwapBuffers();
+
+    ClearBlack();
 
     // crude frame rate limiting
     const int MAX_FRAME_RATE = 200;

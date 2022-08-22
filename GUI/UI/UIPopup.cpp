@@ -732,7 +732,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                       localization->GetString(LSTR_EFFECTS), 0, 0, 0);
     if (!for_effects) {
         pWindow->DrawText(pFontSmallnum, 28, pFontSmallnum->GetHeight() + 193,
-                          Color16(0xE1u, 255, 0x9Bu),
+                          Color16(255, 255, 255),
                           localization->GetString(LSTR_UNKNOWN_VALUE), 0, 0, 0);
     } else {
         pText = "";

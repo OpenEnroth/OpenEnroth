@@ -344,6 +344,15 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     }
 }
 
+/**
+ * Original offset ??
+ *
+ * @param model                         Pointer to model to check against.
+ * @param reachable_depth               A depth distance for checking interaction against.
+ * @param reachable[out]                Whether the model is within the reachable depth specified.
+ * 
+ * @return                              Whether the bounding radius of the model is visible within the camera FOV cone.
+ */
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // checks if model is visible in FOV cone
     float halfangle = (pCamera3D->odm_fov_rad) / 2.0f;
