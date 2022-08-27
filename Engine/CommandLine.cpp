@@ -97,7 +97,7 @@ bool CommandLine::TryGetValue(const std::string& key, std::shared_ptr<std::strin
 
                     *out_value = std::make_shared<std::string>(value);
                 } else {
-                    *out_value = std::make_shared<std::string>("");
+                    return false;
                 }
             }
             return true;

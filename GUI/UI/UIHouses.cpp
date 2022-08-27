@@ -3804,7 +3804,7 @@ void GUIWindow_House::Release() {
     }
 
     dword_5C35D4 = 0;
-    if (engine->config->flip_on_exit) {
+    if (engine->config->settings.GetFlipOnExit()) {
         pParty->sRotationZ = (TrigLUT->uIntegerDoublePi - 1) & (TrigLUT->uIntegerPi + pParty->sRotationZ);
         pCamera3D->sRotationZ = pParty->sRotationZ;
     }

@@ -8,7 +8,6 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Engine.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Platform/Sdl2Window.h"
 
@@ -172,9 +171,9 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
     Sdl2Window::Sdl2WinParams *params = new(Sdl2WinParams);
 
     params->flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
-    params->x = engine->config->window_x;
-    params->y = engine->config->window_y;
-    params->display = engine->config->display;
+    params->x = config->window.GetPositionX();
+    params->y = config->window.GetPositionY();
+    params->display = config->window.GetDisplay();
     int displays = SDL_GetNumVideoDisplays();
     if (params->display > displays - 1)
         params->display = 0;
@@ -187,8 +186,8 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
             displayBounds[i].w, displayBounds[i].h);
     }
 
-    if (engine->config->fullscreen) {
-        if (engine->config->borderless)
+    if (config->window.GetFullscreen()) {
+        if (config->window.GetBorderless())
             params->flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         else
             params->flags |= SDL_WINDOW_FULLSCREEN;
@@ -196,7 +195,7 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
         params->x = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
         params->y = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
     } else {
-        if (engine->config->borderless)
+        if (config->window.GetBorderless())
             params->flags |= SDL_WINDOW_BORDERLESS;
 
         if (params->x >= 0 && params->x < displayBounds[params->display].w)
@@ -222,13 +221,13 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
     }
 
     sdlWindow = SDL_CreateWindow(
-        engine->config->window_title.c_str(),
+        config->window.GetTitle().c_str(),
         params->x, params->y,
-        engine->config->window_width, engine->config->window_height,
+        config->window.GetWidth(), config->window.GetHeight(),
         params->flags
     );
 
-    engine->SetConfigWindowDisplay(params->display);
+    config->window.SetDisplay(params->display);
 
     delete params;
 
@@ -236,7 +235,7 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
         return nullptr;
     }
 
-    if (!engine->config->no_grab) {
+    if (config->window.GetMouseGrab()) {
         SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
     }
 
@@ -257,7 +256,7 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
     return sdlWindow;
 }
 
-void Sdl2Window::DestroySDLWindow() {
+void Sdl2Window::Release() {
     if (sdlWindow) {
         SDL_DestroyWindow(sdlWindow);
         sdlWindow = nullptr;
@@ -531,7 +530,7 @@ SDL_Window* Sdl2Window::getSDLWindow() {
 void Sdl2Window::SetFullscreenMode() {
     Uint32 flags;
 
-    if (engine->config->borderless)
+    if (config->window.GetBorderless())
         flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
     else
         flags = SDL_WINDOW_FULLSCREEN;
@@ -551,8 +550,8 @@ void Sdl2Window::SetWindowedMode(int new_window_width, int new_window_height) {
     SDL_SetWindowSize(sdlWindow, new_window_width, new_window_height);
     SDL_SetWindowPosition(sdlWindow, params->x, params->y);
 
-    engine->SetConfigWindowDisplay(params->display);
-    engine->SetConfigWindowDimensions(new_window_width, new_window_height);
+    config->window.SetDisplay(params->display);
+    config->window.SetDimensions(new_window_width, new_window_height);
 
     delete params;
 }

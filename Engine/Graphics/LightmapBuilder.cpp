@@ -188,12 +188,12 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
     Lights._blv_lights_types[*pSlot] = pLight->uLightType;
 
     v57 = Lights._blv_lights_types[*pSlot];
-    if (render->config->is_using_specular && Lights._blv_lights_types[*pSlot] & 4)
+    if (render->config->graphics.GetSpecular() && Lights._blv_lights_types[*pSlot] & 4)
         v57 = _4E94D2_light_type;
     Lights._blv_lights_types[*pSlot] = v57;
 
     int id = 4 * *pSlot;
-    if (render->config->is_using_specular) {
+    if (render->config->graphics.GetSpecular()) {
         if (Lights._blv_lights_types[*pSlot] & 4) {
             Lights._blv_lights_rs[id] = Lights._blv_lights_rs[id] * 0.3300000131130219f;
             Lights._blv_lights_gs[id] = Lights._blv_lights_gs[id] * 0.3300000131130219f;
@@ -236,11 +236,11 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
                 abs((int)floorf(v10 + 0.5f));
             Lights._blv_lights_types[*pSlot] = pLight->uLightType;
             v14 = Lights._blv_lights_types[*pSlot];
-            if (render->config->is_using_specular && Lights._blv_lights_types[*pSlot] & 4)
+            if (render->config->graphics.GetSpecular() && Lights._blv_lights_types[*pSlot] & 4)
                 v14 = _4E94D2_light_type;
             Lights._blv_lights_types[*pSlot] = v14;
             result = 4 * *pSlot;
-            if (render->config->is_using_specular) {
+            if (render->config->graphics.GetSpecular()) {
                 __debugbreak();
                 if (Lights._blv_lights_types[*pSlot] & 4) {
                     *(float *)((char *)Lights._blv_lights_rs + result) =

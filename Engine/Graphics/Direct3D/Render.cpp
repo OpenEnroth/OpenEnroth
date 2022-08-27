@@ -123,7 +123,7 @@ Texture *Render::CreateTexture_Blank(unsigned int width, unsigned int height,
 
 
 Texture *Render::CreateTexture(const std::string &name) {
-    return TextureD3D::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->use_hwl_bitmaps));
+    return TextureD3D::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->graphics.GetHWLBitmaps()));
 }
 
 Texture *Render::CreateSprite(const std::string &name, unsigned int palette_id,
@@ -619,7 +619,7 @@ void Render::DrawTerrainD3D() {  // New function
                 float far_clip_distance = pCamera3D->GetFarClip();
                 float near_clip_distance = pCamera3D->GetNearClip();
 
-                if (engine->config->extended_draw_distance)
+                if (engine->config->graphics.extended_draw_distance)
                     far_clip_distance = 0x5000;
                 bool neer_clip = array_73D150[0].vWorldViewPosition.x < near_clip_distance ||
                     array_73D150[1].vWorldViewPosition.x < near_clip_distance ||
@@ -820,7 +820,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                                                         v6 + v7);
 
-                    if (engine->config->seasons_change) {
+                    if (engine->config->graphics.GetSeasonsChange()) {
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
                     }
 
@@ -855,7 +855,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
                         r = 255;
                         g = 255;
                         b_ = 255;
-                        if (render->config->is_using_colored_lights) {
+                        if (render->config->graphics.GetColoredLights()) {
                             r = decor_desc->uColoredLightRed;
                             g = decor_desc->uColoredLightGreen;
                             b_ = decor_desc->uColoredLightBlue;
@@ -1027,7 +1027,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 engine->AlterGamma_ODM(pFace, &thistri->Verts[0].diffuse);
 
                 thistri->Verts[0].specular = 0;
-                if (config->is_using_specular)
+                if (config->graphics.GetSpecular())
                     thistri->Verts[0].specular = sub_47C3D7_get_fog_specular(
                         0, 0, VertexRenderList[0].vWorldViewPosition.x);
 
@@ -1054,7 +1054,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                     engine->AlterGamma_ODM(pFace, &thistri->Verts[i].diffuse);
 
                     thistri->Verts[i].specular = 0;
-                    if (config->is_using_specular)
+                    if (config->graphics.GetSpecular())
                         thistri->Verts[i].specular = sub_47C3D7_get_fog_specular(
                             0, 0, VertexRenderList[z + i].vWorldViewPosition.x);
 
@@ -1095,7 +1095,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 d3d_vertex_buffer[i].diffuse = GetActorTintColor(
                     pPolygon->dimming_level, 0,
                     VertexRenderList[i].vWorldViewPosition.x, 0, 0);
-                if (config->is_using_specular)
+                if (config->graphics.GetSpecular())
                     d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(
                         0, 0, VertexRenderList[i].vWorldViewPosition.x);
                 else
@@ -1107,7 +1107,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE));
             ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
                                                              D3DTADDRESS_WRAP));
-            if (config->is_using_specular)
+            if (config->graphics.GetSpecular())
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
 
             ErrD3D(pRenderD3D->pDevice->SetTexture(0, nullptr));
@@ -1128,7 +1128,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 0, texture->GetDirect3DTexture()));
             ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
                                                              D3DTADDRESS_WRAP));
-            if (!config->is_using_specular)
+            if (!config->graphics.GetSpecular())
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
 
             ErrD3D(pRenderD3D->pDevice->SetRenderState(
@@ -1143,7 +1143,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
                 d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
             drawcalls++;
 
-            if (config->is_using_specular) {
+            if (config->graphics.GetSpecular()) {
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
 
                 for (uint i = 0; i < uNumVertices; ++i) {
@@ -1183,10 +1183,10 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
         }
     }
 
-    if (engine->config->debug_terrain) {
+    if (engine->config->debug.GetTerrain()) {
         pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x0000FFFF, 0.0);
     }
-    if (engine->config->show_picked_face) {
+    if (engine->config->debug.GetShowPickedFace()) {
         if (pFace->uAttributes & FACE_OUTLINED) {
             RenderVertexSoft cam;
             cam.vWorldPosition.x = pCamera3D->vCameraPos.x;
@@ -1198,6 +1198,7 @@ void Render::DrawPolygon(struct Polygon *pPolygon) {
 }
 
 Render::Render(
+    std::shared_ptr<Application::GameConfig> config,
     std::shared_ptr<OSWindow> window,
     DecalBuilder* decal_builder,
     LightmapBuilder* lightmap_builder,
@@ -1205,7 +1206,7 @@ Render::Render(
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis* vis,
     Log* logger
-) : RenderBase(window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(config, window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     this->pDirectDraw4 = nullptr;
     this->pFrontBuffer4 = nullptr;
     this->pBackBuffer4 = nullptr;
@@ -1612,7 +1613,7 @@ void Render::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int a3, in
     int uSrcPitch;           // [sp+1Ch] [bp-8h]@5
 
     if (!pArcomageGame->pBlit_Copy_pixels) {
-        if (engine->config->verbose_logging)
+        if (engine->config->debug.GetVerboseLogging())
             logger->Warning("Missing Arcomage Sprite Sheet");
         return;
     }
@@ -1947,10 +1948,10 @@ void Render::BeginSceneD3D() {
             pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,
                                                 uFogColor & 0xFFFFFF);
             pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0);
-            SetUsingSpecular(true);
+            config->graphics.SetSpecular(true);
         } else {
             pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
-            SetUsingSpecular(false);
+            config->graphics.SetSpecular(false);
         }
     }
 }
@@ -2013,7 +2014,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                     a4->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x,
                     0, 0);
             thistri->Verts[0].specular = 0;
-                if (config->is_using_specular)
+                if (config->graphics.GetSpecular())
                     thistri->Verts[0].specular = sub_47C3D7_get_fog_specular(
                         0, 0, VertexRenderList[0].vWorldViewPosition.x);
 
@@ -2034,7 +2035,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                     a4->dimming_level, 0, VertexRenderList[z+ i].vWorldViewPosition.x,
                     0, 0);
                 thistri->Verts[i].specular = 0;
-                if (config->is_using_specular)
+                if (config->graphics.GetSpecular())
                     thistri->Verts[i].specular = sub_47C3D7_get_fog_specular(
                         0, 0, VertexRenderList[z+ i].vWorldViewPosition.x);
 
@@ -2061,7 +2062,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                 1.0 / (VertexRenderList[i].vWorldViewPosition.x + 0.0000001);
             d3d_vertex_buffer[i].diffuse = GetActorTintColor(a4->dimming_level, 0, VertexRenderList[i].vWorldViewPosition.x, 0, 0);
             d3d_vertex_buffer[i].specular = 0;
-            if (config->is_using_specular)
+            if (config->graphics.GetSpecular())
                 d3d_vertex_buffer[i].specular = sub_47C3D7_get_fog_specular(
                     0, 0, VertexRenderList[i].vWorldViewPosition.x);
             d3d_vertex_buffer[i].texcoord.x = VertexRenderList[i].u;
@@ -2071,7 +2072,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
                                                    FALSE));
         ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
                                                          D3DTADDRESS_WRAP));
-        if (config->is_using_specular)
+        if (config->graphics.GetSpecular())
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
 
         ErrD3D(pRenderD3D->pDevice->SetTexture(0, 0));
@@ -2090,7 +2091,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
         }
         ErrD3D(pRenderD3D->pDevice->SetTexture(0, texture->GetDirect3DTexture()));  //текстурка
         ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP));
-        if (!config->is_using_specular) {
+        if (!config->graphics.GetSpecular()) {
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
         }
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
@@ -2104,7 +2105,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
         drawcalls++;
 
-        if (config->is_using_specular) {
+        if (config->graphics.GetSpecular()) {
             ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
             ErrD3D(pRenderD3D->pDevice->SetTexture(0, 0));
             for (uint i = 0; i < uNumVertices; ++i) {
@@ -2137,7 +2138,7 @@ void Render::DrawTerrainPolygon(struct Polygon *a4, bool transparent,
         //}
     }
 
-    if (engine->config->debug_terrain)
+    if (engine->config->debug.GetTerrain())
         pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FFFFFF, 0.0);
 }
 
@@ -2326,7 +2327,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
     // perception
     // engine->AlterGamma_BLV(pFace, &sCorrectedColor);
 
-    if (engine->CanSaturateFaces() && (pFace->uAttributes & FACE_IsSecret)) {
+    if (engine->config->CanSaturateFaces() && (pFace->uAttributes & FACE_IsSecret)) {
         uint eightSeconds = OS_GetTime() % 3000;
         float angle = (eightSeconds / 3000.0f) * 2 * 3.1415f;
 
@@ -2382,7 +2383,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                     1.0 / array_507D30[0].vWorldViewPosition.x;
                 thistri->Verts[0].diffuse = sCorrectedColor;
                 thistri->Verts[0].specular = 0;
-                if (config->is_using_specular)
+                if (config->graphics.GetSpecular())
                     thistri->Verts[0].specular = 0;
 
                 thistri->Verts[0].texcoord.x = array_507D30[0].u / (double)pFace->GetTexture()->GetWidth();
@@ -2400,7 +2401,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                         1.0 / array_507D30[i].vWorldViewPosition.x;
                     thistri->Verts[i].diffuse = sCorrectedColor;
                     thistri->Verts[i].specular = 0;
-                    if (config->is_using_specular)
+                    if (config->graphics.GetSpecular())
                         thistri->Verts[i].specular = 0;
 
                     thistri->Verts[i].texcoord.x = array_507D30[z + i].u / (double)pFace->GetTexture()->GetWidth();
@@ -2469,7 +2470,7 @@ void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
         }
     }
 
-    if (engine->config->debug_terrain)
+    if (engine->config->debug.GetTerrain())
         pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FF0000, 0.0);
 }
 
@@ -2526,7 +2527,7 @@ void Render::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     if (pSoftBillboard->uFlags & 4) {
         v31 = v31 * -1.0;
     }
-    if (config->is_tinting && pSoftBillboard->sTintColor) {
+    if (config->graphics.GetTinting() && pSoftBillboard->sTintColor) {
         v11 = ::GetActorTintColor(dimming_level, 0,
                                   pSoftBillboard->screen_space_z, 0, 0);
         v12 = BlendColors(pSoftBillboard->sTintColor, v11);
@@ -3521,7 +3522,7 @@ void Render::DoRenderBillboards_D3D() {
         drawcalls++;
     }
 
-    if (config->is_using_fog) {
+    if (config->graphics.GetFog()) {
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF));
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0));
@@ -3537,8 +3538,8 @@ void Render::DoRenderBillboards_D3D() {
 void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
     switch (a1) {
         case RenderBillboardD3D::Transparent: {
-            if (config->is_using_fog) {
-                SetUsingFog(false);
+            if (engine->config->graphics.GetFog()) {
+                engine->config->graphics.SetFog(false);
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, GetLevelFogColor() & 0xFFFFFF));
                 ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0));
@@ -3554,9 +3555,9 @@ void Render::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
         case RenderBillboardD3D::Opaque_1:
         case RenderBillboardD3D::Opaque_2:
         case RenderBillboardD3D::Opaque_3: {
-            if (config->is_using_specular) {
-                if (!config->is_using_fog) {
-                    SetUsingFog(true);
+            if (engine->config->graphics.GetSpecular()) {
+                if (!engine->config->graphics.GetFog()) {
+                    engine->config->graphics.SetFog(true);
                     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
                 }
             }
@@ -3891,7 +3892,7 @@ int Render::GetActorsInViewport(int pDepth) {
 void Render::BeginLightmaps() {
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
 
-    if (config->is_using_specular)
+    if (config->graphics.GetSpecular())
         pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE));
@@ -3916,7 +3917,7 @@ void Render::EndLightmaps() {
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE));
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
 
-    if (config->is_using_specular) {
+    if (config->graphics.GetSpecular()) {
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, uFogColor));
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, 0));
@@ -3924,7 +3925,7 @@ void Render::EndLightmaps() {
 }
 
 void Render::BeginLightmaps2() {
-    if (config->is_using_specular)
+    if (config->graphics.GetSpecular())
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
 
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE));
@@ -3950,7 +3951,7 @@ void Render::EndLightmaps2() {
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE));
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW));
 
-    if (config->is_using_specular)
+    if (config->graphics.GetSpecular())
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
 }
 
@@ -4017,7 +4018,7 @@ void Render::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertic
 
 void Render::BeginDecals() {
     // code chunk from 0049C304
-    if (config->is_using_specular)
+    if (config->graphics.GetSpecular())
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE));
     ErrD3D(pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP));
 
@@ -4043,7 +4044,7 @@ void Render::EndDecals() {
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE));
     ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO));
 
-    if (config->is_using_specular)
+    if (config->graphics.GetSpecular())
         ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE));
 }
 
@@ -4630,7 +4631,7 @@ void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     if (uNumVertices >= 3) {
         this->pRenderD3D->pDevice->SetTextureStageState(0, D3DTSS_ADDRESS,
             D3DTADDRESS_WRAP);
-        if (config->is_using_specular) {
+        if (config->graphics.GetSpecular()) {
             this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
             this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
             this->pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
@@ -4643,7 +4644,7 @@ void Render::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
 
             pVertices[i].diffuse = ::GetActorTintColor(31, 0, VertexRenderList[i].vWorldViewPosition.x, 1, 0);
             int v7 = 0;
-            if (config->is_using_specular)
+            if (config->graphics.GetSpecular())
                 v7 = sub_47C3D7_get_fog_specular(0, 1, VertexRenderList[i].vWorldViewPosition.x);
             pVertices[i].specular = v7;
             pVertices[i].texcoord.x = VertexRenderList[i].u;
@@ -4694,7 +4695,7 @@ void Render::DrawIndoorSkyPolygon(int uNumVertices, struct Polygon *pSkyPolygon)
             d3d_vertex_buffer, uNumVertices, D3DDP_DONOTLIGHT));
         drawcalls++;
 
-        if (engine->config->debug_terrain)
+        if (engine->config->debug.GetTerrain())
             pCamera3D->debug_outline_d3d(d3d_vertex_buffer, uNumVertices, 0x00FF0000, 0.0);
     }
 }

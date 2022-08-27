@@ -398,7 +398,7 @@ void BspRenderer::MakeVisibleSectorList() {
             pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[uNumVisibleNotEmptySectors++] = nodes[i].uSectorID;
     }
 
-    if (engine->config->verbose_logging)
+    if (engine->config->debug.GetVerboseLogging())
         logger->Info("uNumVisibleNotEmptySectors: %i", uNumVisibleNotEmptySectors);
 
     assert(uNumVisibleNotEmptySectors < 10 && "Testing visible sector limits");
@@ -1117,7 +1117,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
+            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.GetFloorChecksEps(), FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break;
@@ -1569,7 +1569,7 @@ void UpdateActors_BLV() {
     unsigned int uFaceID;    // [sp+50h] [bp-10h]@6
     int v61;                 // [sp+54h] [bp-Ch]@14
 
-    if (engine->config->no_actors)
+    if (engine->config->debug.GetNoActors())
         return;  // uNumActors = 0;
 
     for (unsigned int actor_id = 0; actor_id < uNumActors; actor_id++) {
@@ -1944,8 +1944,7 @@ void PrepareToLoadBLV(bool bLoading) {
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
 
-    engine->SetUnderwater(
-        Is_out15odm_underwater());
+    engine->SetUnderwater(Is_out15odm_underwater());
 
     if ((pCurrentMapName == "out15.odm") || (pCurrentMapName == "d23.blv")) {
         bNoNPCHiring = true;
@@ -2035,7 +2034,7 @@ void PrepareToLoadBLV(bool bLoading) {
                 if (decoration->uLightRadius) {
                     unsigned char r = 255, g = 255, b = 255;
                     if (/*render->pRenderD3D*/ true &&
-                        render->config->is_using_colored_lights) {
+                        render->config->graphics.GetColoredLights()) {
                         r = decoration->uColoredLightRed;
                         g = decoration->uColoredLightGreen;
                         b = decoration->uColoredLightBlue;
@@ -2161,7 +2160,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
         if (pFloor->Ethereal())
             continue;
 
-        if (!pFloor->Contains(pos, MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
+        if (!pFloor->Contains(pos, MODEL_INDOOR, engine->config->gameplay.GetFloorChecksEps(), FACE_XY_PLANE))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -2192,7 +2191,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
             if (portal->uPolygonType != POLYGON_Floor)
                 continue;
 
-            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->floor_checks_eps, FACE_XY_PLANE))
+            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.GetFloorChecksEps(), FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;
@@ -2210,7 +2209,7 @@ int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int
 
     // no face found - probably wrong sector supplied
     if (!FacesFound) {
-        if (engine->config->verbose_logging)
+        if (engine->config->debug.GetVerboseLogging())
             logger->Warning("Floorlvl fail: %i %i %i", pos.x, pos.y, pos.z);
 
         *pFaceID = -1;
@@ -3159,7 +3158,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     // update timer for walking sounds
-    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer > 0)
+    if (engine->config->settings.GetWalkSound() && pParty->walk_sound_timer > 0)
         pParty->walk_sound_timer = std::max(0, pParty->walk_sound_timer - static_cast<int>(pEventTimer->uTimeElapsed));
 
     // party is below floor level?
@@ -3200,28 +3199,28 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
-                if (engine->config->turn_speed > 0)
-                    angle = TrigLUT->uDoublePiMask & (angle + engine->config->turn_speed);
+                if (engine->config->settings.GetTurnSpeed() > 0)
+                    angle = TrigLUT->uDoublePiMask & (angle + (int)engine->config->settings.GetTurnSpeed());
                 else
                     angle = TrigLUT->uDoublePiMask & (angle + static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
-                if (engine->config->turn_speed > 0)
-                    angle = TrigLUT->uDoublePiMask & (angle - engine->config->turn_speed);
+                if (engine->config->settings.GetTurnSpeed() > 0)
+                    angle = TrigLUT->uDoublePiMask & (angle - (int)engine->config->settings.GetTurnSpeed());
                 else
                     angle = TrigLUT->uDoublePiMask & (angle - static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
-                if (engine->config->turn_speed > 0)
-                    angle = TrigLUT->uDoublePiMask & (angle + engine->config->turn_speed);
+                if (engine->config->settings.GetTurnSpeed() > 0)
+                    angle = TrigLUT->uDoublePiMask & (angle + (int)engine->config->settings.GetTurnSpeed());
                 else
                     angle = TrigLUT->uDoublePiMask & (angle + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnRight:
-                if (engine->config->turn_speed > 0)
-                    angle = TrigLUT->uDoublePiMask & (angle - engine->config->turn_speed);
+                if (engine->config->settings.GetTurnSpeed() > 0)
+                    angle = TrigLUT->uDoublePiMask & (angle - (int)engine->config->settings.GetTurnSpeed());
                 else
                     angle = TrigLUT->uDoublePiMask & (angle - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
@@ -3263,7 +3262,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_LookUp:
-                vertical_angle += engine->config->vertical_turn_speed;
+                vertical_angle += engine->config->settings.GetVerticalTurnSpeed();
                 if (vertical_angle > 128)
                     vertical_angle = 128;
                 if (uActiveCharacter)
@@ -3271,7 +3270,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break;
 
             case PARTY_LookDown:
-                vertical_angle -= engine->config->vertical_turn_speed;
+                vertical_angle -= engine->config->settings.GetVerticalTurnSpeed();
                 if (vertical_angle < -128)
                     vertical_angle = -128;
                 if (uActiveCharacter)
@@ -3466,7 +3465,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     uint pX_ = abs(pParty->vPosition.x - new_party_x);
     uint pY_ = abs(pParty->vPosition.y - new_party_y);
     uint pZ_ = abs(pParty->vPosition.z - new_party_z);
-    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
+    if (engine->config->settings.GetWalkSound() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
         if (party_running_flag && (!hovering || not_high_fall)) {  // Бег и (не прыжок или не высокое падение )
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {

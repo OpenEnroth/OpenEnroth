@@ -285,17 +285,17 @@ void Menu::EventLoop() {
                 pAudioPlayer->PlaySound(SOUND_ClickMovingSelector, 0, 0, -1, 0, 0);
                 continue;
             case UIMSG_ToggleBloodsplats:
-                engine->ToggleBloodsplats();
+                engine->config->graphics.ToggleBloodSplats();
                 continue;
             case UIMSG_ToggleColoredLights:
-                render->ToggleColoredLights();
+                engine->config->graphics.ToggleColoredLights();
                 continue;
             case UIMSG_ToggleTint:
-                render->ToggleTint();
+                engine->config->graphics.ToggleTinting();
                 continue;
 
             case UIMSG_ChangeMusicVolume: {
-                int new_level = engine->config->music_level;
+                int new_level = engine->config->settings.GetMusicLevel();
                 if (param == 4) {
                     new_level -= 1;
                     new OnButtonClick2(243, 216, 0, 0, pBtn_SliderLeft, std::string(), false);
@@ -307,15 +307,15 @@ void Menu::EventLoop() {
                     new_level = (pt.x - 263) / 17;  // for mouse
                 }
 
-                engine->SetMusicLevel(new_level);
-                pAudioPlayer->SetMusicVolume(engine->config->music_level);
+                engine->config->settings.SetMusicLevel(new_level);
+                pAudioPlayer->SetMusicVolume(engine->config->settings.GetMusicLevel());
                 // if (engine->config->music_level > 0)
                 //    pAudioPlayer->PlaySound(SOUND_hurp, -1, 0, -1, 0, 0);
                 continue;
             }
 
             case UIMSG_ChangeSoundVolume: {
-                int new_level = engine->config->sound_level;
+                int new_level = engine->config->settings.GetSoundLevel();
                 if (param == 4) {
                     new_level -= 1;
                     new OnButtonClick2(243, 162, 0, 0, pBtn_SliderLeft, std::string(), false);
@@ -327,26 +327,26 @@ void Menu::EventLoop() {
                     new_level = (pt.x - 263) / 17;
                 }
 
-                engine->SetSoundLevel(new_level);
+                engine->config->settings.SetSoundLevel(new_level);
 
-                pAudioPlayer->SetMasterVolume(engine->config->sound_level);
+                pAudioPlayer->SetMasterVolume(engine->config->settings.GetSoundLevel());
                 pAudioPlayer->PlaySound(SOUND_church, -1, 0, -1, 0, 0);
                 continue;
             }
             case UIMSG_ToggleFlipOnExit:
-                engine->ToggleFlipOnExit();
+                engine->config->settings.ToggleFlipOnExit();
                 continue;
             case UIMSG_ToggleAlwaysRun:
-                engine->ToggleAlwaysRun();
+                engine->config->settings.ToggleAlwaysRun();
                 continue;
             case UIMSG_ToggleWalkSound:
-                engine->ToggleWalkSound();
+                engine->config->settings.ToggleWalkSound();
                 continue;
             case UIMSG_ToggleShowDamage:
-                engine->ToggleShowDamage();
+                engine->config->settings.ToggleShowHits();
                 continue;
             case UIMSG_ChangeVoiceVolume: {
-                int new_level = engine->config->voice_level;
+                int new_level = engine->config->settings.GetVoiceLevel();
                 if (param == 4) {
                     new_level -= 1;
                     new OnButtonClick2(243, 270, 0, 0, pBtn_SliderLeft, std::string(), false);
@@ -358,16 +358,16 @@ void Menu::EventLoop() {
                     new_level = (pt.x - 263) / 17;
                 }
 
-                engine->SetVoiceLevel(new_level);
-                pAudioPlayer->SetVoiceVolume(engine->config->voice_level);
-                if (engine->config->voice_level > 0)
+                engine->config->settings.SetVoiceLevel(new_level);
+                pAudioPlayer->SetVoiceVolume(engine->config->settings.GetVoiceLevel());
+                if (engine->config->settings.GetVoiceLevel() > 0)
                     pAudioPlayer->PlaySound(SOUND_hf445a, 44, 0, -1, 0, 0);
                 continue;
             }
             case UIMSG_SetTurnSpeed:
                 if (param)
                     pParty->sRotationZ = param * pParty->sRotationZ / param;
-                engine->SetTurnSpeed(param);
+                engine->config->settings.SetTurnSpeed(param);
                 continue;
 
             case UIMSG_SetGraphicsMode:
@@ -426,22 +426,22 @@ void Menu::EventLoop() {
                     current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS) {
-                    options_menu_skin.Relaease();
-                    OS_SetAppInt("soundflag", engine->config->sound_level);
-                    OS_SetAppInt("musicflag", engine->config->music_level);
-                    OS_SetAppInt("CharVoices", engine->config->voice_level);
-                    OS_SetAppInt("WalkSound", engine->config->NoWalkSound() ? 0 : 1);
-                    OS_SetAppInt("ShowDamage", engine->config->NoShowDamage() ? 0 : 1);
+                    options_menu_skin.Release();
+                    OS_SetAppInt("soundflag", engine->config->settings.GetSoundLevel());
+                    OS_SetAppInt("musicflag", engine->config->settings.GetMusicLevel());
+                    OS_SetAppInt("CharVoices", engine->config->settings.GetVoiceLevel());
+                    OS_SetAppInt("WalkSound", engine->config->settings.GetWalkSound());
+                    OS_SetAppInt("ShowDamage", engine->config->settings.GetShowHits());
                     // OS_SetAppInt("graphicsmode", (unsigned
                     // __int8)byte_6BE388_graphicsmode);
-                    OS_SetAppInt("valAlwaysRun", engine->config->always_run ? 1 : 0);
-                    OS_SetAppInt("FlipOnExit", engine->config->flip_on_exit ? 1 : 0);
+                    OS_SetAppInt("valAlwaysRun", engine->config->settings.GetAlwaysRun());
+                    OS_SetAppInt("FlipOnExit", engine->config->settings.GetFlipOnExit());
 
-                    if (engine->config->turn_speed == 0)
+                    if (engine->config->settings.GetTurnSpeed() == 0)
                         OS_SetAppInt("TurnDelta", 3);
-                    else if (engine->config->turn_speed == 64)
+                    else if (engine->config->settings.GetTurnSpeed() == 64)
                         OS_SetAppInt("TurnDelta", 2);
-                    else if (engine->config->turn_speed == 128)
+                    else if (engine->config->settings.GetTurnSpeed() == 128)
                         OS_SetAppInt("TurnDelta", 1);
 
                     pGUIWindow_CurrentMenu->Release();
@@ -450,9 +450,9 @@ void Menu::EventLoop() {
                 } else if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS) {
                     // if ( render->pRenderD3D )
                     {
-                        OS_SetAppInt("Colored Lights", render->config->is_using_colored_lights);
-                        OS_SetAppInt("Tinting", render->config->is_tinting);
-                        OS_SetAppInt("Bloodsplats", engine->config->NoBloodsplats() ? 0 : 1);
+                        OS_SetAppInt("Colored Lights", render->config->graphics.GetColoredLights());
+                        OS_SetAppInt("Tinting", render->config->graphics.GetTinting());
+                        OS_SetAppInt("Bloodsplats", engine->config->graphics.GetBloodSplats());
                     }
 
                     pGUIWindow_CurrentMenu->Release();

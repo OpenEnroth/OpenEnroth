@@ -248,7 +248,7 @@ bool PCX_Loader::InternalLoad(void *file, size_t filesize,
                                    unsigned int *width, unsigned int *height,
                                    void **pixels, IMAGE_FORMAT *format) {
     IMAGE_FORMAT request_format = IMAGE_FORMAT_A8R8G8B8;
-    if (engine->config->renderer_name == "DirectDraw")
+    if (engine->config->graphics.GetRenderer() == "DirectDraw")
         request_format = IMAGE_FORMAT_R5G6B5;
 
     *pixels = PCX::Decode(file, filesize, width, height, format, request_format);

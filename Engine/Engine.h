@@ -10,8 +10,6 @@
 #endif
 
 #include "Engine/AssetsManager.h"
-#include "Engine/EngineConfig.h"
-#include "Engine/EngineConfigFactory.h"
 #include "Engine/ErrorHandling.h"
 #include "Engine/Log.h"
 #include "Engine/MM7.h"
@@ -26,6 +24,9 @@
 #include "Io/KeyboardActionMapping.h"
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
+
+#include "src/Application/GameConfig.h"
+#include "src/tools/DataPath.h"
 
 class Nuklear;
 using Io::KeyboardActionMapping;
@@ -90,23 +91,15 @@ class GammaController;
 struct stru9;
 struct stru10;
 
-using Engine_::EngineConfig;
-using Engine_::EngineConfigFactory;
-
 /*  104 */
 #pragma pack(push, 1)
 struct Engine {
  public:
-    Engine();
+    Engine(std::shared_ptr<Application::GameConfig> config);
     virtual ~Engine();
 
     // void _44E904_gamma_saturation_adjust();
     // bool InitializeGammaController();
-    inline bool Configure(std::shared_ptr<const EngineConfig> config) {
-        this->config = config;
-        return true;
-    }
-
     void Initialize();
     bool PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
                    bool bOutline, struct Vis_SelectionFilter *sprite_filter,
@@ -133,337 +126,19 @@ struct Engine {
     void DropHeldItem();
     bool MM7_Initialize();
 
-    inline bool IsUnderwater() const { return config->IsUnderwater(); }
-    inline bool CanSaturateFaces() const { return config->CanSaturateFaces(); }  // this is for perception - move to party
-    inline bool AllowSnow() const { return config->allow_snow; }
-    inline void SetUnderwater(bool is_underwater) {
-        EngineConfigFactory engineConfigFactory;
-        auto new_config = engineConfigFactory.Clone(config);
-        new_config->SetUnderwater(is_underwater);
-
-        this->config = new_config;
-    }
-    inline void SetSaturateFaces(bool saturate) {
-        EngineConfigFactory engineConfigFactory;
-        auto new_config = engineConfigFactory.Clone(config);
-        new_config->SetSaturateFaces(saturate);
-
-        this->config = new_config;
-    }
-    inline void SetForceRedraw(bool redraw) {
-        EngineConfigFactory engineConfigFactory;
-        auto new_config = engineConfigFactory.Clone(config);
-        new_config->SetForceRedraw(redraw);
-
-        this->config = new_config;
-    }
-    inline void SetTargetingMode(bool is_targeting) {
-        MutateConfig(
-            [is_targeting](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->SetTargetingMode(is_targeting);
-            });
-    }
-    inline void SetDebugWizardEye(bool wizard_eye) {
-        MutateConfig(
-            [wizard_eye](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->debug_wizard_eye = wizard_eye;
-            });
-    }
-    inline void SetDebugAllMagic(bool all_magic) {
-        MutateConfig(
-            [all_magic](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->debug_all_magic = all_magic;
-            });
-    }
-    inline void SetDebugShowFps(bool show_fps) {
-        MutateConfig(
-            [show_fps](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->show_fps = show_fps;
-            });
-    }
-    inline void SetDebugShowPickedFace(bool show_picked_face) {
-        MutateConfig(
-            [show_picked_face](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->show_picked_face = show_picked_face;
-            });
-    }
-    inline void SetDebugPortalOutlines(bool portal_outlines) {
-        MutateConfig(
-            [portal_outlines](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->debug_portal_outlines = portal_outlines;
-            });
-    }
-    inline void SetDebugTurboSpeed(bool turbo_speed) {
-        MutateConfig(
-            [turbo_speed](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->debug_turbo_speed = turbo_speed;
-            });
-    }
-    inline void SetSeasonsChange(bool seasons_change) {
-        MutateConfig(
-            [seasons_change](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->seasons_change = seasons_change;
-            });
-    }
-    inline void SetAllowSnow(bool allow_snow) {
-        MutateConfig(
-            [allow_snow](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->allow_snow = allow_snow;
-            });
-    }
-    inline void SetExtendedDrawDistance(bool extended_draw_distance) {
-        MutateConfig(
-            [extended_draw_distance](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->extended_draw_distance = extended_draw_distance;
-            });
-    }
-    inline void SetVerboseLogging(bool verbose_logging) {
-        MutateConfig(
-            [verbose_logging](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->verbose_logging = verbose_logging;
-            });
-    }
-    inline void SetNoActors(bool no_actors) {
-        MutateConfig(
-            [no_actors](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->no_actors = no_actors;
-            });
-    }
-    inline void SetAllowLightmaps(bool allow_lightmaps) {
-        MutateConfig(
-            [allow_lightmaps](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->allow_lightmaps = allow_lightmaps;
-            });
-    }
-    inline void SetConfigWindowDisplay(int display) {
-        MutateConfig(
-            [display](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->display = display;
-            });
-    }
-    inline void SetConfigWindowPosition(int window_x, int window_y) {
-        MutateConfig(
-            [window_x, window_y](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->window_x = window_x;
-                cfg->window_y = window_y;
-            });
-    }
-    inline void SetConfigWindowDimensions(int window_width, int window_height) {
-        MutateConfig(
-            [window_width, window_height](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->window_width = window_width;
-                cfg->window_height = window_height;
-            });
-    }
-    inline void SetDebugLightmapsDecals(bool debug_lightmaps_decals) {
-        MutateConfig(
-            [debug_lightmaps_decals](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->debug_lightmaps_decals = debug_lightmaps_decals;
-            });
-    }
-    inline void SetDebugTerrain(bool debug_terrain) {
-        MutateConfig(
-            [debug_terrain](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->debug_terrain = debug_terrain;
-            });
-    }
-    inline void ToggleAlwaysRun() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->ToggleAlwaysRun();
-            });
-    }
-    inline void ToggleFlipOnExit() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->ToggleFlipOnExit();
-            });
-    }
-    inline void ToggleFullscreen() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->ToggleFullscreen();
-            });
-    }
-    inline void ToggleWalkSound() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->ToggleWalkSound();
-            });
-    }
-    inline void ToggleShowDamage() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->ToggleShowDamage();
-            });
-    }
-    inline void ToggleBloodsplats() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->ToggleBloodsplats();
-            });
-    }
-
-    inline void ToggleDebugTownPortal() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugTownPortal();
-        });
-    }
-
-    inline void ToggleDebugWizardEye() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugWizardEye();
-        });
-    }
-
-    inline void ToggleDebugAllMagic() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugAllMagic();
-        });
-    }
-
-    inline void ToggleDebugTerrain() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugTerrain();
-        });
-    }
-
-    inline void ToggleDebugLightmap() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugLightmap();
-        });
-    }
-
-    inline void ToggleDebugTurboSpeed() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugTurboSpeed();
-        });
-    }
-
-    inline void ToggleDebugNoActors() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugNoActors();
-        });
-    }
-
-    inline void ToggleDebugSnow() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugSnow();
-        });
-    }
-
-    inline void ToggleDebugNoDamage() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugNoDamage();
-        });
-    }
-
-    inline void ToggleDebugPortalLines() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugPortalLines();
-        });
-    }
-
-    inline void ToggleDebugPickedFace() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugPickedFace();
-        });
-    }
-
-    inline void ToggleDebugShowFPS() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugShowFPS();
-        });
-    }
-
-    inline void ToggleDebugSeasonsChange() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-            cfg->ToggleDebugSeasonsChange();
-        });
-    }
-
-    inline void ToggleExtendedDrawDistance() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->ToggleExtendedDrawDistance();
-            });
-    }
-
-    inline void ToggleVerboseLogging() {
-        MutateConfig(
-            [](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->ToggleVerboseLogging();
-            });
-    }
-
-    inline void SetMusicLevel(int level) {
-        MutateConfig(
-            [level](std::shared_ptr<EngineConfig> &cfg) {
-                int lvl = level;
-                if (lvl < 0)
-                    lvl = 0;
-                if (lvl > 9)
-                    lvl = 9;
-
-                cfg->music_level = lvl;
-            });
-    }
-    inline void SetSoundLevel(int level) {
-        MutateConfig(
-            [level](std::shared_ptr<EngineConfig> &cfg) {
-                int lvl = level;
-                if (lvl < 0)
-                    lvl = 0;
-                if (lvl > 9)
-                    lvl = 9;
-
-                cfg->sound_level = lvl;
-            });
-    }
-    inline void SetVoiceLevel(int level) {
-        MutateConfig(
-            [level](std::shared_ptr<EngineConfig> &cfg) {
-                int lvl = level;
-                if (lvl < 0)
-                    lvl = 0;
-                if (lvl > 9)
-                    lvl = 9;
-
-                cfg->voice_level = lvl;
-            });
-    }
-    inline void SetTurnSpeed(int turn_speed) {
-        MutateConfig(
-            [turn_speed](std::shared_ptr<EngineConfig> &cfg) {
-                cfg->turn_speed = turn_speed;
-            });
-    }
-    inline void MutateConfig(std::function<void(std::shared_ptr<EngineConfig> &)> mutator) {
-        EngineConfigFactory engineConfigFactory;
-        this->Configure(
-            engineConfigFactory.Mutate(config, mutator));
-    }
-
+    bool is_underwater = false;
+    bool is_targeting = false;
+    inline bool IsTargetingMode() const { return is_targeting; }
+    inline void SetTargetingMode(bool is_targeting) { this->is_targeting = is_targeting; }
+    inline bool IsUnderwater() const { return is_underwater; }
+    inline void SetUnderwater(bool is_underwater) { this->is_underwater = is_underwater; }
 
     std::shared_ptr<KeyboardInputHandler> GetKeyboardInputHandler() const {
         return keyboardInputHandler;
     }
 
 
-    std::shared_ptr<const EngineConfig> config;
+    std::shared_ptr<Application::GameConfig> config;
     Game__StationaryLight pStationaryLights[25];
     char field_2C0[1092];
     unsigned int uNumStationaryLights;
@@ -517,8 +192,8 @@ struct Engine {
     std::shared_ptr<Nuklear> nuklear = nullptr;
     std::shared_ptr<ParticleEngine> particle_engine = nullptr;
     Vis *vis = nullptr;
-    std::shared_ptr<KeyboardInputHandler> keyboardInputHandler;
-    std::shared_ptr<KeyboardActionMapping> keyboardActionMapping;
+    std::shared_ptr<KeyboardInputHandler> keyboardInputHandler = nullptr;
+    std::shared_ptr<KeyboardActionMapping> keyboardActionMapping = nullptr;
 };
 #pragma pack(pop)
 
@@ -567,14 +242,3 @@ void Transition_StopSound_Autosave(const char *pMapName,
 void OnTimer(int);
 void TeleportToNWCDungeon();
 
-void SetDataPath(const std::string &data_path);
-
-std::string MakeDataPath(std::initializer_list<std::string_view> paths);
-template<typename ... Ts>
-std::string MakeDataPath(Ts&&... paths) {
-    static_assert(((std::is_same<typename std::decay<Ts>::type, std::string>::value ||
-        std::is_same<typename std::decay<Ts>::type, const char*>::value) || ...),
-        "T must be a basic string");
-    return MakeDataPath({ paths... });
-}
-std::string MakeTempPath(const char *file_rel_path);

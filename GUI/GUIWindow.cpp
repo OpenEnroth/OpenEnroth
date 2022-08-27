@@ -998,7 +998,7 @@ void GUI_UpdateWindows() {
         UI_OnKeyDown(GameKey::PageDown);
     }
 
-    if (engine->config->verbose_logging)
+    if (engine->config->debug.GetVerboseLogging())
         logger->Info("Windowlist size:  %i", lWindowList.size());
 
     // should never activte this - gameui window should always be open

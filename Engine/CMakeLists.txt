@@ -22,8 +22,6 @@ set(ENGINE_SOURCES AssetsManager.cpp
                    VectorTypes.cpp
                    ZlibWrapper.cpp
                    IocContainer.cpp
-                   EngineConfig.cpp
-                   EngineConfigFactory.cpp
                    EngineFactory.cpp)
 
 set(ENGINE_HEADERS AssetsManager.h
@@ -61,8 +59,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    VectorTypes.h
                    ZlibWrapper.h
                    IocContainer.h
-                   EngineConfig.h
-                   EngineConfigFactory.h
                    EngineFactory.h)
 
 if(WIN32)

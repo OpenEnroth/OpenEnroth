@@ -7,12 +7,10 @@
 
 #include "Arcomage/Arcomage.h"
 
-#include "Engine/EngineConfig.h"
 #include "Engine/Events.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/IRenderConfig.h"
 #include "Engine/Graphics/IRenderFactory.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
@@ -112,33 +110,6 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 */
 
 std::shared_ptr<Engine> engine;
-static std::string s_data_path;
-
-void SetDataPath(const std::string &data_path) { s_data_path = data_path; }
-
-std::string MakeDataPath(std::initializer_list<std::string_view> paths) {
-    std::string res = s_data_path;
-    std::string sep;
-
-    sep.push_back(OS_GetDirSeparator());
-
-    for (auto p : paths) {
-        if (!p.empty()) {
-            if (!res.empty())
-                res += sep;
-
-            res += p;
-        }
-    }
-
-    res = OS_casepath(res);
-
-    return res;
-}
-
-std::string MakeTempPath(const char *file_rel_path) {
-    return std::filesystem::temp_directory_path().string() + OS_GetDirSeparator() + file_rel_path;
-}
 
 uint32_t Color32(uint16_t color16) {
     uint32_t c = color16;
@@ -161,14 +132,19 @@ uint16_t Color16(uint32_t r, uint32_t g, uint32_t b) {
 void Engine_DeinitializeAndTerminate(int exitCode) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     engine->Deinitialize();  // called twice?
-    if (render) render->Release();
-    window = nullptr;
+
+    if (render)
+        render->Release();
+
+    if (window)
+        window->Release();
+
     exit(exitCode);
 }
 
 //----- (0044103C) --------------------------------------------------------
 void Engine::Draw() {
-    SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
+    engine->config->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
     pCamera3D->sRotationY = pParty->sRotationY;
     pCamera3D->sRotationZ = pParty->sRotationZ;
@@ -337,7 +313,7 @@ void Engine::DrawGUI() {
 
     ++frames_this_second;
 
-    if (engine->config->show_fps) {
+    if (engine->config->debug.GetShowFPS()) {
         if (render_framerate) {
             pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(255, 255, 255),
                 StringPrintf("FPS: % .4f", framerate), 0,
@@ -432,14 +408,14 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
         sprite_filter = &vis_sprite_filter_2;
         depth = pCamera3D->GetMouseInfoDepth();
     } else {
-        if (config->IsTargetingMode()) {
+        if (engine->IsTargetingMode()) {
             face_filter = &vis_face_filter;
             sprite_filter = &vis_sprite_filter_1;
         } else {
             face_filter = &vis_face_filter;
             sprite_filter = &vis_sprite_filter_4;
         }
-        depth = config->ranged_attack_depth;
+        depth = config->gameplay.GetRangedAttackDepth();
     }
     // depth = v2;
 
@@ -464,10 +440,10 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     }*/
     // v6 = qword_5C6DF0 - field_E10;
     if (qword_5C6DF0/* - field_E10 == 1*/)
-        engine->SetForceRedraw(true);
+        engine->config->SetForceRedraw(true);
 
     if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        engine->SetForceRedraw(true);
+        engine->config->SetForceRedraw(true);
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
     return true;
@@ -475,7 +451,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
 
 //----- (0044EDE4) --------------------------------------------------------
 bool Engine::AlterGamma_BLV(BLVFace *pFace, unsigned int *pColor) {
-    if (CanSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
+    if (engine->config->CanSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -484,7 +460,7 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, unsigned int *pColor) {
 }
 
 bool Engine::AlterGamma_ODM(ODMFace *pFace, unsigned int *pColor) {
-    if (engine->CanSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
+    if (engine->config->CanSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -494,20 +470,18 @@ bool Engine::AlterGamma_ODM(ODMFace *pFace, unsigned int *pColor) {
 
 //----- (004645FA) --------------------------------------------------------
 void Engine::Deinitialize() {
+    if (mouse)
+        mouse->Deactivate();
+
     OS_SetAppInt("startinwindow", 1);  // render->bWindowMode);
     // if (render->bWindowMode)
     {
         OS_SetAppInt("window X", window->GetX());
         OS_SetAppInt("window Y", window->GetY());
     }
-    OS_SetAppInt("valAlwaysRun", config->always_run ? 1 : 0);
+    OS_SetAppInt("valAlwaysRun", config->settings.GetAlwaysRun() ? 1 : 0);
     pItemsTable->Release();
     pNPCStats->Release();
-
-    if (mouse)
-        mouse->Deactivate();
-
-    render = nullptr;
 
     pNew_LOD->FreeSubIndexAndIO();
 
@@ -516,7 +490,7 @@ void Engine::Deinitialize() {
 
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
-    if (/*uFlags & 0x04*/ engine->config->debug_lightmaps_decals) {
+    if (/*uFlags & 0x04*/ engine->config->debug.GetLightmapDecals()) {
         lightmap_builder->DrawDebugOutlines(-1);
         decal_builder->DrawDecalDebugOutlines();
     }
@@ -538,7 +512,7 @@ int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
     float a4a;  // [sp+1Ch] [bp+10h]@9
     float a4b;  // [sp+1Ch] [bp+10h]@11
 
-    if (CanSaturateFaces() && a2->field_59 == 5 &&
+    if (engine->config->CanSaturateFaces() && a2->field_59 == 5 &&
         a2->pODMFace->uAttributes & FACE_IsSecret) {
         v4 = (double)a4;
         a2a = v4;
@@ -590,7 +564,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     float v14;  // [sp+1Ch] [bp+10h]@8
     float v15;  // [sp+1Ch] [bp+10h]@10
 
-    if (engine->CanSaturateFaces() && a2->uAttributes & FACE_IsSecret) {
+    if (engine->config->CanSaturateFaces() && a2->uAttributes & FACE_IsSecret) {
         v4 = (double)a4;
         v11 = v4;
         *a3 |= 2u;
@@ -625,7 +599,8 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 }
 
 //----- (0044E4B7) --------------------------------------------------------
-Engine::Engine() {
+Engine::Engine(std::shared_ptr<Application::GameConfig> config) {
+    this->config = config;
     this->log = EngineIoc::ResolveLogger();
     this->bloodsplat_container = EngineIoc::ResolveBloodsplatContainer();
     this->decal_builder = EngineIoc::ResolveDecalBuilder();
@@ -657,8 +632,8 @@ Engine::Engine() {
     // pKeyboardInstance = new Keyboard;
     // pGammaController = new GammaController;
 
-    keyboardInputHandler = nullptr;
-    keyboardActionMapping = nullptr;
+    keyboardInputHandler = ::keyboardInputHandler;
+    keyboardActionMapping = ::keyboardActionMapping;
 }
 
 //----- (0044E7F3) --------------------------------------------------------
@@ -1046,7 +1021,7 @@ bool Engine::MM7_Initialize() {
         free(sounds_mm8);
     }
 
-    if (!config->NoSound())
+    if (!config->debug.GetNoSound())
         pAudioPlayer->Initialize();
 
     pMediaPlayer = new MPlayer();
@@ -1081,7 +1056,7 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    if (!engine->config->NoSound())
+    if (!engine->config->debug.GetNoSound())
         pSoundList->Initialize();
 
     for (uint i = 0; i < 4; ++i) {
@@ -1289,7 +1264,7 @@ void Engine::_461103_load_level_sub() {
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
-    if (engine->config->no_actors)
+    if (engine->config->debug.GetNoActors())
         uNumActors = 0;
 
     GenerateItemsInChest();
@@ -1368,9 +1343,9 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    if (engine->config->NoActors())
+    if (engine->config->debug.GetNoActors())
         uNumActors = 0;
-    if (engine->config->NoDecorations())
+    if (engine->config->debug.GetNoDecorations())
         pLevelDecorations.clear();
     init_event_triggers();
 

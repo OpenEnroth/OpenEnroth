@@ -310,7 +310,7 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     RenderVertexSoft v26;
 
     // show portal outlines debug
-    if (engine->config->debug_portal_outlines) {
+    if (engine->config->debug.GetPortalOutlines()) {
         // portal frustums
         v26.vWorldPosition.x = pCamera3D->vCameraPos.x;
         v26.vWorldPosition.y = pCamera3D->vCameraPos.y;

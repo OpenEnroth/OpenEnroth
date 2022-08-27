@@ -25,6 +25,7 @@ bool SortByTransThenTex(const BatchTriangles* lhs, const BatchTriangles* rhs);
 class Render : public RenderBase {
  public:
     Render(
+        std::shared_ptr<Application::GameConfig> config,
         std::shared_ptr<OSWindow> window,
         DecalBuilder* decal_builder,
         LightmapBuilder* lightmap_builder,

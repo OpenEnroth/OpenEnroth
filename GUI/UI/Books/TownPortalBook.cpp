@@ -82,7 +82,7 @@ void GUIWindow_TownPortalBook::Update() {
         QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED,     QBIT_FOUNTAIN_IN_EVENMORN_ISLE_ACTIVATED,
         QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED,   QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED};
     for (uint i = 0; i < 6; ++i) {
-        if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[i]) || engine->config->debug_town_portal)
+        if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[i]) || engine->config->debug.GetTownPortal())
             render->ZDrawTextureAlpha(pTownPortalBook_xs[i] / 640.0f,
                                       pTownPortalBook_ys[i] / 480.0f,
                                       ui_book_townportal_icons[i], i + 1);
@@ -92,7 +92,7 @@ void GUIWindow_TownPortalBook::Update() {
     v3 = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderWidth()] & 0xFFFF;
 
     if (v3) {
-        if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]) || engine->config->debug_town_portal)
+        if (_449B57_test_bit(pParty->_quest_bits, fountain_bits_lut[v3 - 1]) || engine->config->debug.GetTownPortal())
             render->DrawTextureAlphaNew(pTownPortalBook_xs[v3 - 1] / 640.0f,
                                         pTownPortalBook_ys[v3 - 1] / 480.0f,
                                         ui_book_townportal_icons[v3 - 1]);

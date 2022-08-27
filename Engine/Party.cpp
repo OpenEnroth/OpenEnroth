@@ -348,7 +348,7 @@ void Party::GiveFood(int amount) {
 }
 
 int Party::GetGold() const {
-    if (engine->config->debug_infinite_gold) {
+    if (engine->config->debug.GetInfiniteGold()) {
         return 99999;
     }
 
@@ -356,7 +356,7 @@ int Party::GetGold() const {
 }
 
 int Party::GetFood() const {
-    if (engine->config->debug_infinite_food) {
+    if (engine->config->debug.GetInfiniteFood()) {
         return 99999;
     }
 

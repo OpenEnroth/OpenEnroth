@@ -9,7 +9,6 @@
 #include "Platform/Api.h"
 
 #include "Engine/Engine.h"
-#include "Engine/EngineConfig.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -235,8 +234,8 @@ void LoadGame(unsigned int uSlot) {
 
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
     // pAudioPlayer->SetMasterVolume(engine->config->sound_level);
-    if (engine->config->turn_speed > 0) {
-        pParty->sRotationZ = engine->config->turn_speed * pParty->sRotationZ / engine->config->turn_speed;
+    if (engine->config->settings.GetTurnSpeed() > 0) {
+        pParty->sRotationZ = engine->config->settings.GetTurnSpeed() * pParty->sRotationZ / engine->config->settings.GetTurnSpeed();
     }
     MM7Initialization();
 

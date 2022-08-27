@@ -26,8 +26,6 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      Level/Decoration.cpp
                      OpenGL/RenderOpenGL.cpp
                      OpenGL/TextureOpenGL.cpp
-                     IRenderConfig.cpp
-                     IRenderConfigFactory.cpp
                      IRenderFactory.cpp
                      HWLContainer.cpp)
 
@@ -62,8 +60,6 @@ set(GRAPHICS_HEADERS BSPModel.h
                      OpenGL/RenderOpenGL.h
                      OpenGL/TextureOpenGL.h
                      OpenGL/GLShaderLoader.h
-                     IRenderConfig.h
-                     IRenderConfigFactory.h
                      IRenderFactory.h
                      HWLContainer.h)
 

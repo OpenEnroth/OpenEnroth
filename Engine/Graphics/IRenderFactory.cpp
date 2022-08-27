@@ -1,8 +1,6 @@
 #include "Engine/Graphics/IRenderFactory.h"
 
 #include "Engine/IocContainer.h"
-#include "Engine/Graphics/IRenderConfig.h"
-#include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/OpenGL/RenderOpenGL.h"
 #ifdef _WINDOWS
 #include "Engine/Graphics/Direct3D/Render.h"
@@ -12,24 +10,21 @@
 
 using EngineIoc = Engine_::IocContainer;
 using Graphics::IRenderFactory;
-using Graphics::IRenderConfig;
-using Graphics::IRenderConfigFactory;
 
-std::shared_ptr<IRender> IRenderFactory::Create(
-    std::shared_ptr<OSWindow> window,
-    const std::string &renderer_name,
-    bool is_fullscreen
-) {
-    IRenderConfigFactory renderConfigFactory;
-    auto config = renderConfigFactory.Create(renderer_name, is_fullscreen);
-    config->render_width = window->GetWidth();
-    config->render_height = window->GetHeight();
+std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::GameConfig> config, std::shared_ptr<OSWindow> window) {
+    RendererType rendererType = RendererType::OpenGL;
+    std::shared_ptr<IRender> renderer = nullptr;
 
-    std::shared_ptr<IRender> renderer;
-    switch (config->renderer_type) {
+#ifdef _WINDOWS
+    if (config->graphics.GetRenderer() == "DirectDraw")
+        rendererType = RendererType::DirectDraw;
+#endif
+
+    switch (rendererType) {
 #ifdef _WINDOWS
         case RendererType::DirectDraw:
             renderer = std::make_shared<Render>(
+                config,
                 window,
                 EngineIoc::ResolveDecalBuilder(),
                 EngineIoc::ResolveLightmapBuilder(),
@@ -38,11 +33,13 @@ std::shared_ptr<IRender> IRenderFactory::Create(
                 EngineIoc::ResolveVis(),
                 EngineIoc::ResolveLogger()
             );
+            config->graphics.SetRenderer("DirectDraw");
             break;
 #endif
 
-        case RendererType::OpenGl:
+        case RendererType::OpenGL:
             renderer = std::make_shared<RenderOpenGL>(
+                config,
                 window,
                 EngineIoc::ResolveDecalBuilder(),
                 EngineIoc::ResolveLightmapBuilder(),
@@ -51,14 +48,12 @@ std::shared_ptr<IRender> IRenderFactory::Create(
                 EngineIoc::ResolveVis(),
                 EngineIoc::ResolveLogger()
             );
+            config->graphics.SetRenderer("OpenGL");
+            break;
+
+        default:
             break;
     }
 
-    if (renderer) {
-        if (renderer->Configure(config)) {
-            return renderer;
-        }
-    }
-
-    return nullptr;
+    return renderer;
 }

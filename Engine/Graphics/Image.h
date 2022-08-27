@@ -155,7 +155,7 @@ extern TextureFrameTable *pTextureFrameTable;
 
 struct OptionsMenuSkin {
     OptionsMenuSkin();
-    void Relaease();
+    void Release();
 
     Image *uTextureID_Background;       // 507C60
     Image *uTextureID_TurnSpeed[3];     // 507C64

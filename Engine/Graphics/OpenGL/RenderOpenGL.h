@@ -18,6 +18,7 @@
 class RenderOpenGL : public RenderBase {
  public:
     RenderOpenGL(
+        std::shared_ptr<Application::GameConfig> config,
         std::shared_ptr<OSWindow> window,
         DecalBuilder* decal_builder,
         LightmapBuilder* lightmap_builder,

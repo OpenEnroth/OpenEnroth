@@ -27,6 +27,8 @@ class OSWindow {
     OSWindow();
     virtual ~OSWindow() {}
 
+    virtual void Release() = 0;
+
     virtual void SetFullscreenMode() = 0;
     virtual void SetWindowedMode(int new_window_width, int new_window_height) = 0;
     virtual void SetCursor(bool on) = 0;
