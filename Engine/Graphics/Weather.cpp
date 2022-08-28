@@ -48,7 +48,7 @@ void Weather::Initialize() {
 }
 
 void Weather::Draw() {
-    if (!bRenderSnow && engine->config->graphics.GetSnow()) {
+    if (!bRenderSnow && engine->config->graphics.Snow.Get()) {
         DrawSnow();
     }
 }

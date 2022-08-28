@@ -340,7 +340,7 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
                     new unsigned char[num_pixels *
                                       IMAGE_FORMAT_BytesPerPixel(format)];
                 if (cvt(width * height, native_pixels, cvt_pixels)) {
-                    if (engine->config->debug.GetVerboseLogging())
+                    if (engine->config->debug.VerboseLogging.Get())
                         logger->Info("Image pixel format conversion");
                     return this->pixels[format] = cvt_pixels;
                 } else {

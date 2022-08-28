@@ -26,9 +26,9 @@ Camera3D::Camera3D() {
 //----- (0043643E) --------------------------------------------------------
 float Camera3D::GetMouseInfoDepth() {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        return engine->config->gameplay.GetMouseInfoDepthOutdoor();
+        return engine->config->gameplay.MouseInfoDepthOutdoor.Get();
     else
-        return engine->config->gameplay.GetMouseInfoDepthIndoor();
+        return engine->config->gameplay.MouseInfoDepthIndoor.Get();
 }
 
 //----- (004364C5) --------------------------------------------------------

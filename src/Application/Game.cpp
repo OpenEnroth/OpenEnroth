@@ -148,6 +148,8 @@ int Game::Run() {
 
     SetDataPath(FindMm7Directory());
 
+    config->Startup();
+
     window = OSWindowFactory().Create(config);
     ::window = window;
 
@@ -257,7 +259,7 @@ bool Game::Loop() {
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (engine->config->debug.GetNoMargareth()) {
+            if (engine->config->debug.NoMargareth.Get()) {
                 _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_MARGARETH_OFF, 1);
             }
 
@@ -325,13 +327,13 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
     bGameoverLoop = true;
 
     render->PresentBlackScreen();
-    if (!engine->config->debug.GetNoVideo()) {
-        if (!engine->config->debug.GetNoLogo()) {
+    if (!engine->config->debug.NoVideo.Get()) {
+        if (!engine->config->debug.NoLogo.Get()) {
             pMediaPlayer->PlayFullscreenMovie("3dologo");
             pMediaPlayer->PlayFullscreenMovie("new world logo");
             pMediaPlayer->PlayFullscreenMovie("jvc");
         }
-        if (!engine->config->debug.GetNoIntro()) {
+        if (!engine->config->debug.NoIntro.Get()) {
             pMediaPlayer->PlayFullscreenMovie("Intro");
         }
     }
@@ -1510,7 +1512,7 @@ void Game::EventLoop() {
                         v63 = 206;
                     }
                     if (!_449B57_test_bit(pParty->_quest_bits, v63)
-                        && !engine->config->debug.GetTownPortal())
+                        && !engine->config->debug.TownPortal.Get())
                         return;
                     goto LABEL_486;
                 case UIMSG_HintTownPortal: {
@@ -1538,7 +1540,7 @@ void Game::EventLoop() {
                     }
 
                     if (!_449B57_test_bit(pParty->_quest_bits, v68)
-                        && !engine->config->debug.GetTownPortal()) {
+                        && !engine->config->debug.TownPortal.Get()) {
                         render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
@@ -1665,7 +1667,7 @@ void Game::EventLoop() {
                     v83 = vis->get_picked_object_zbuf_val();
                     v44 = v83.object_pid;
                     v84 = v83.depth;
-                    if (PID_TYPE(v44) != 3 || v84 >= engine->config->gameplay.GetRangedAttackDepth())
+                    if (PID_TYPE(v44) != 3 || v84 >= engine->config->gameplay.RangedAttackDepth.Get())
                         continue;
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
@@ -1816,7 +1818,7 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                         continue;
                     } else {
-                        if (engine->config->debug.GetVerboseLogging()) {
+                        if (engine->config->debug.VerboseLogging.Get()) {
                             if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE) logger->Info("Party is airborne");
                             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) logger->Info("Party on water");
                         }
@@ -1986,7 +1988,7 @@ void Game::EventLoop() {
                     uAction = 0;
                     for (uint i = 0; i < 9; i++) {
                         if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i] ||
-                            engine->config->debug.GetAllMagic()) {
+                            engine->config->debug.AllMagic.Get()) {
                             if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == i)
                                 uAction = skill_count;
                             v217[skill_count++] = i;
@@ -2024,7 +2026,7 @@ void Game::EventLoop() {
                     //  uNumSeconds = (unsigned int)pPlayers[uActiveCharacter];
                     Player *player = pPlayers[uActiveCharacter];
                     if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
-                        || engine->config->debug.GetAllMagic()) {
+                        || engine->config->debug.AllMagic.Get()) {
                         if (quick_spell_at_page - 1 == uMessageParam) {
                             pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();
@@ -2677,31 +2679,31 @@ void Game::EventLoop() {
                     Party::AddGold(10000);
                     continue;
                 case UIMSG_DebugTownPortal:
-                    engine->config->debug.ToggleTownPortal();
+                    engine->config->debug.TownPortal.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugWizardEye:
-                    engine->config->debug.ToggleWizardEye();
+                    engine->config->debug.WizardEye.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugAllMagic:
-                    engine->config->debug.ToggleAllMagic();
+                    engine->config->debug.AllMagic.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugTerrain:
-                    engine->config->debug.ToggleTerrain();
+                    engine->config->debug.Terrain.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugLightmap:
-                    engine->config->debug.ToggleLightmapDecals();
+                    engine->config->debug.LightmapDecals.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugTurboSpeed:
-                    engine->config->debug.ToggleTurboSpeed();
+                    engine->config->debug.TurboSpeed.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugNoActors:
-                    engine->config->debug.ToggleNoActors();
+                    engine->config->debug.NoActors.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugExtendedDrawDistance:
@@ -2709,31 +2711,31 @@ void Game::EventLoop() {
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugSnow:
-                    engine->config->graphics.ToggleSnow();
+                    engine->config->graphics.Snow.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugNoDamage:
-                    engine->config->debug.ToggleNoDamage();
+                    engine->config->debug.NoDamage.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugPortalLines:
-                    engine->config->debug.TogglePortalOutlines();
+                    engine->config->debug.PortalOutlines.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugPickedFace:
-                    engine->config->debug.ToggleShowPickedFace();
+                    engine->config->debug.ShowPickedFace.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugShowFPS:
-                    engine->config->debug.ToggleShowFPS();
+                    engine->config->debug.ShowFPS.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugSeasonsChange:
-                    engine->config->graphics.ToggleSeasonsChange();
+                    engine->config->graphics.SeasonsChange.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugVerboseLogging:
-                    engine->config->debug.ToggleVerboseLogging();
+                    engine->config->debug.VerboseLogging.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 default:
@@ -2767,7 +2769,7 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    engine->PickKeyboard(engine->config->gameplay.GetKeyboardInteractionDepth(),
+    engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.Get(),
                          keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
                          &vis_sprite_filter_3, &vis_door_filter);
 

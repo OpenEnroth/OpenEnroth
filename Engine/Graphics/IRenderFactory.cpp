@@ -16,7 +16,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
     std::shared_ptr<IRender> renderer = nullptr;
 
 #ifdef _WINDOWS
-    if (config->graphics.GetRenderer() == "DirectDraw")
+    if (config->graphics.Renderer.Get() == "DirectDraw")
         rendererType = RendererType::DirectDraw;
 #endif
 
@@ -33,7 +33,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
                 EngineIoc::ResolveVis(),
                 EngineIoc::ResolveLogger()
             );
-            config->graphics.SetRenderer("DirectDraw");
+            config->graphics.Renderer.Set("DirectDraw");
             break;
 #endif
 
@@ -48,7 +48,7 @@ std::shared_ptr<IRender> IRenderFactory::Create(std::shared_ptr<Application::Gam
                 EngineIoc::ResolveVis(),
                 EngineIoc::ResolveLogger()
             );
-            config->graphics.SetRenderer("OpenGL");
+            config->graphics.Renderer.Set("OpenGL");
             break;
 
         default:

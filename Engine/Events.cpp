@@ -320,7 +320,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     v133 = 0;
     EvtTargetObj = targetObj;
     dword_5B65C4_cancelEventProcessing = 0;
-    if (engine->config->debug.GetVerboseLogging())
+    if (engine->config->debug.VerboseLogging.Get())
         logger->Warning("Processing EventID: %d", uEventID);
 
     if (!uEventID) {

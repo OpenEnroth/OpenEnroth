@@ -13,59 +13,72 @@ using Application::GameConfig;
 
 mINI::INIStructure ini;
 
-int LoadOptionInteger(std::string section, std::string key, int def_value) {
-    std::string v = ini[section].get(key);
-    if (v.empty())
-        return def_value;
+void LoadOption(std::string section, GameConfig::ConfigValue<bool> *val) {
+    bool r = true;
+    std::string v = ini[section].get(val->Name());
 
-    return std::stoi(v);
-}
-
-float LoadOptionFloat(std::string section, std::string key, float def_value) {
-    std::string v = ini[section].get(key);
-    if (v.empty())
-        return def_value;
-
-    return std::stof(v);
-}
-
-bool LoadOptionBool(std::string section, std::string key, bool def_value) {
-    std::string v = ini[section].get(key);
-    if (v.empty())
-        return def_value;
+    if (v.empty()) {
+        val->Reset();
+        return;
+    }
 
     if (v == "false" || v == "0")
-        return false;
+        r = false;
 
-    return true;
+    val->Set(r);
 }
 
-std::string LoadOptionString(std::string section, std::string key, std::string def_value) {
-    std::string v = ini[section].get(key);
-    if (v.empty())
-        return def_value;
+void LoadOption(std::string section, GameConfig::ConfigValue<float> *val) {
+    std::string v = ini[section].get(val->Name());
 
-    return v;
+    if (v.empty()) {
+        val->Reset();
+        return;
+    }
+
+    val->Set(std::stof(v));
 }
 
-void SaveOption(std::string section, std::string key, std::string value) {
-    ini[section].set(key, value);
+void LoadOption(std::string section, GameConfig::ConfigValue<int> *val) {
+    std::string v = ini[section].get(val->Name());
+
+    if (v.empty()) {
+        val->Reset();
+        return;
+    }
+
+    val->Set(std::stoi(v));
 }
 
-void SaveOption(std::string section, std::string key, int value) {
-    ini[section].set(key, std::to_string(value));
+void LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val) {
+    std::string v = ini[section].get(val->Name());
+
+    if (v.empty()) {
+        val->Reset();
+        return;
+    }
+
+    val->Set(v);
 }
 
-void SaveOption(std::string section, std::string key, float value) {
-    ini[section].set(key, std::to_string(value));
-}
-
-void SaveOption(std::string section, std::string key, bool value) {
+void SaveOption(std::string section, GameConfig::ConfigValue<bool> *val) {
     std::string v = "false";
-    if (value)
+    if (val->Get())
         v = "true";
 
-    ini[section].set(key, v);
+    ini[section].set(val->Name(), v);
+}
+
+void SaveOption(std::string section, GameConfig::ConfigValue<int> *val) {
+    ini[section].set(val->Name(), std::to_string(val->Get()));
+}
+
+void SaveOption(std::string section, GameConfig::ConfigValue<float> *val) {
+    ini[section].set(val->Name(), std::to_string(val->Get()));
+}
+
+void SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val) {
+    ini[section].set(val->Name(), val->Get());
 }
 
 void GameConfig::DefaultConfiguration() {
@@ -79,12 +92,9 @@ void GameConfig::DefaultConfiguration() {
     window.Default();
 }
 
-inline std::string BoolStr(bool value) {
-    return value ? "true" : "false";
-}
-
 void GameConfig::LoadConfiguration() {
-    mINI::INIFile file(MakeDataPath(config_file));
+    std::string path = MakeDataPath(config_file);
+    mINI::INIFile file(path);
 
     if (file.read(ini)) {
         debug.Load();
@@ -94,10 +104,10 @@ void GameConfig::LoadConfiguration() {
         settings.Load();
         window.Load();
 
-        printf("Configuration file '%s' loaded!\n", config_file.c_str());
+        printf("Configuration file '%s' loaded!\n", path.c_str());
     } else {
         DefaultConfiguration();
-        printf("Cound not read configuration file '%s'! Loaded default configuration instead!\n", config_file.c_str());
+        printf("Cound not read configuration file '%s'! Loaded default configuration instead!\n", path.c_str());
     }
 }
 
@@ -114,436 +124,387 @@ void GameConfig::SaveConfiguration() {
     file.write(ini, true);
 }
 
-GameConfig::GameConfig(const std::string &command_line_str) {
-    command_line = std::make_shared<CommandLine>(command_line_str);
-
+void GameConfig::Startup() {
     LoadConfiguration();
 
     std::shared_ptr<std::string> value;
     if (command_line->TryFindKey("-nointro")) {
-        debug.SetNoIntro(true);
+        debug.NoIntro.Set(true);
     }
     if (command_line->TryFindKey("-nologo")) {
-        debug.SetNoLogo(true);
+        debug.NoLogo.Set(true);
     }
     if (command_line->TryFindKey("-nosound")) {
-        debug.SetNoSound(true);
+        debug.NoSound.Set(true);
     }
     if (command_line->TryFindKey("-novideo")) {
-        debug.SetNoVideo(true);
+        debug.NoVideo.Set(true);
     }
     if (command_line->TryFindKey("-nomarg")) {
-        debug.SetNoMargareth(true);
+        debug.NoMargareth.Set(true);
+    }
+    if (command_line->TryFindKey("-verbose")) {
+        debug.VerboseLogging.Set(true);
     }
     if (command_line->TryGetValue("render", &value)) {
-        graphics.SetRenderer(*value);
+        graphics.Renderer.Set(*value);
     }
     if (command_line->TryFindKey("-nowalksound")) {
-        settings.SetWalkSound(false);
+        settings.WalkSound.Set(false);
     }
     if (command_line->TryFindKey("-nograb")) {
-        window.SetMouseGrab(false);
+        window.MouseGrab.Set(false);
     }
     if (command_line->TryGetValue("display", &value)) {
-        window.SetDisplay(std::stoi(*value));
+        window.Display.Set(std::stoi(*value));
     }
     if (command_line->TryGetValue("window_width", &value)) {
-        window.SetWidth(std::stoi(*value));
+        window.Width.Set(std::stoi(*value));
     }
     if (command_line->TryGetValue("window_height", &value)) {
-        window.SetHeight(std::stoi(*value));
+        window.Height.Set(std::stoi(*value));
     }
     if (command_line->TryGetValue("window_x", &value)) {
-        window.SetPositionX(std::stoi(*value));
+        window.PositionX.Set(std::stoi(*value));
     }
     if (command_line->TryGetValue("window_y", &value)) {
-        window.SetPositionY(std::stoi(*value));
+        window.PositionY.Set(std::stoi(*value));
     }
     if (command_line->TryGetValue("fullscreen", &value)) {
-        window.SetFullscreen(std::stoi(*value));
+        window.Fullscreen.Set(std::stoi(*value));
     }
     if (command_line->TryGetValue("borderless", &value)) {
-        window.SetBorderless(std::stoi(*value));
+        window.Borderless.Set(std::stoi(*value));
     }
     // minimal debug, w/o full magic etc.
     if (command_line->TryFindKey("-debug")) {
-        debug.SetShowFPS(true);
-        debug.SetShowPickedFace(true);
-        debug.SetTownPortal(true);
-        debug.SetInfiniteFood(true);
-        debug.SetInfiniteGold(true);
+        debug.ShowFPS.Set(true);
+        debug.ShowPickedFace.Set(true);
+        debug.TownPortal.Set(true);
+        debug.InfiniteFood.Set(true);
+        debug.InfiniteGold.Set(true);
     }
 }
 
-bool GameConfig::SectionCheck(std::string section) {
-    if (section == debug.section_name || section == gameplay.section_name || section == graphics.section_name ||
-        section == keybindings.section_name || section == settings.section_name || section == window.section_name)
-        return false;
-
-    return true;
-}
-
-bool GameConfig::SetCustomString(std::string section, std::string key, std::string value) {
-    if (!SectionCheck(section))
-        return false;
-
-    SaveOption(section, key, value);
-
-    return true;
-}
-bool GameConfig::SetCustomBool(std::string section, std::string key, bool value) {
-    if (!SectionCheck(section))
-        return false;
-
-    SaveOption(section, key, value);
-
-    return true;
-}
-bool GameConfig::SetCustomInteger(std::string section, std::string key, int value) {
-    if (!SectionCheck(section))
-        return false;
-
-    SaveOption(section, key, value);
-
-    return true;
-}
-bool GameConfig::SetCustomFloat(std::string section, std::string key, float value) {
-    if (!SectionCheck(section))
-        return false;
-
-    SaveOption(section, key, value);
-
-    return true;
-}
-
-std::string GameConfig::GetCustomString(std::string section, std::string key, std::string def_value) {
-    return LoadOptionString(section, key, def_value);
-}
-
-bool GameConfig::GetCustomBool(std::string section, std::string key, bool def_value) {
-    return LoadOptionBool(section, key, def_value);
-}
-
-int GameConfig::GetCustomInteger(std::string section, std::string key, int def_value) {
-    return LoadOptionInteger(section, key, def_value);
-}
-
-float GameConfig::GetCustomFloat(std::string section, std::string key, float def_value) {
-    return LoadOptionFloat(section, key, def_value);
+GameConfig::GameConfig(const std::string &command_line_str) {
+    command_line = std::make_shared<CommandLine>(command_line_str);
 }
 
 void GameConfig::Debug::Default() {
-    SetAllMagic(DefaultAllMagic());
-    SetInfiniteFood(DefaultInfiniteFood());
-    SetInfiniteGold(DefaultInfiniteGold());
-    SetLightmapDecals(DefaultLightmapDecals());
-    SetPortalOutlines(DefaultPortalOutlines());
-    SetTerrain(DefaultTerrain());
-    SetTownPortal(DefaultTownPortal());
-    SetTurboSpeed(DefaultTurboSpeed());
-    SetWizardEye(DefaultWizardEye());
-    SetShowFPS(DefaultShowFPS());
-    SetShowPickedFace(DefaultShowPickedFace());
-    SetNoActors(DefaultNoActors());
-    SetNoDamage(DefaultNoDamage());
-    SetNoDecorations(DefaultNoDecorations());
-    SetNoIntro(DefaultNoIntro());
-    SetNoLogo(DefaultNoLogo());
-    SetNoMargareth(DefaultNoMargareth());
-    SetNoSound(DefaultNoSound());
-    SetNoVideo(DefaultNoVideo());
-    SetVerboseLogging(DefaultVerboseLogging());
+    AllMagic.Reset();
+    InfiniteFood.Reset();
+    InfiniteGold.Reset();
+    LightmapDecals.Reset();
+    PortalOutlines.Reset();
+    Terrain.Reset();
+    TownPortal.Reset();
+    TurboSpeed.Reset();
+    WizardEye.Reset();
+    ShowFPS.Reset();
+    ShowPickedFace.Reset();
+    NoActors.Reset();
+    NoDamage.Reset();
+    NoDecorations.Reset();
+    NoIntro.Reset();
+    NoLogo.Reset();
+    NoSound.Reset();
+    NoVideo.Reset();
+    NoMargareth.Reset();
+    VerboseLogging.Reset();
 }
 
 void GameConfig::Debug::Load() {
-    SetAllMagic(LoadOptionBool(section_name, "all_magic", DefaultAllMagic()));
-    SetInfiniteFood(LoadOptionBool(section_name, "infinite_food", DefaultInfiniteFood()));
-    SetInfiniteGold(LoadOptionBool(section_name, "infinite_gold", DefaultInfiniteGold()));
-    SetLightmapDecals(LoadOptionBool(section_name, "lightmap_decals", DefaultLightmapDecals()));
-    SetTerrain(LoadOptionBool(section_name, "terrain", DefaultTerrain()));
-    SetTownPortal(LoadOptionBool(section_name, "town_portal", DefaultTownPortal()));
-    SetTurboSpeed(LoadOptionBool(section_name, "turbo_speed", DefaultTurboSpeed()));
-    SetWizardEye(LoadOptionBool(section_name, "wizard_eye", DefaultWizardEye()));
-    SetShowFPS(LoadOptionBool(section_name, "show_fps", DefaultShowFPS()));
-    SetShowPickedFace(LoadOptionBool(section_name, "show_picked_face", DefaultShowPickedFace()));
-    SetNoActors(LoadOptionBool(section_name, "no_actors", DefaultNoActors()));
-    SetNoDamage(LoadOptionBool(section_name, "no_damage", DefaultNoDamage()));
-    SetNoDecorations(LoadOptionBool(section_name, "no_decorations", DefaultNoDecorations()));
-    SetNoIntro(LoadOptionBool(section_name, "no_intro", DefaultNoIntro()));
-    SetNoLogo(LoadOptionBool(section_name, "no_logo", DefaultNoLogo()));
-    SetNoMargareth(LoadOptionBool(section_name, "no_margareth", DefaultNoMargareth()));
-    SetNoSound(LoadOptionBool(section_name, "no_sound", DefaultNoSound()));
-    SetNoVideo(LoadOptionBool(section_name, "no_video", DefaultNoVideo()));
-    SetVerboseLogging(LoadOptionBool(section_name, "verbose_logging", DefaultVerboseLogging()));
+    LoadOption(section_name, &AllMagic);
+    LoadOption(section_name, &InfiniteFood);
+    LoadOption(section_name, &InfiniteGold);
+    LoadOption(section_name, &LightmapDecals);
+    LoadOption(section_name, &PortalOutlines);
+    LoadOption(section_name, &Terrain);
+    LoadOption(section_name, &TownPortal);
+    LoadOption(section_name, &TurboSpeed);
+    LoadOption(section_name, &WizardEye);
+    LoadOption(section_name, &ShowFPS);
+    LoadOption(section_name, &ShowPickedFace);
+    LoadOption(section_name, &NoActors);
+    LoadOption(section_name, &NoDamage);
+    LoadOption(section_name, &NoDecorations);
+    LoadOption(section_name, &NoIntro);
+    LoadOption(section_name, &NoLogo);
+    LoadOption(section_name, &NoSound);
+    LoadOption(section_name, &NoVideo);
+    LoadOption(section_name, &NoMargareth);
+    LoadOption(section_name, &VerboseLogging);
 }
 
 void GameConfig::Debug::Save() {
-    SaveOption(section_name, "all_magic", GetAllMagic());
-    SaveOption(section_name, "infinite_food", GetInfiniteFood());
-    SaveOption(section_name, "infinite_gold", GetInfiniteGold());
-    SaveOption(section_name, "lightmaps_decals", GetLightmapDecals());
-    SaveOption(section_name, "town_portal", GetTownPortal());
-    SaveOption(section_name, "turbo_speed", GetTurboSpeed());
-    SaveOption(section_name, "wizard_eye", GetWizardEye());
-    SaveOption(section_name, "show_fps", GetShowFPS());
-    SaveOption(section_name, "show_picked_face", GetShowPickedFace());
-    SaveOption(section_name, "no_actors", GetNoActors());
-    SaveOption(section_name, "no_damage", GetNoDamage());
-    SaveOption(section_name, "no_decorations", GetNoDecorations());
-    SaveOption(section_name, "no_intro", GetNoIntro());
-    SaveOption(section_name, "no_logo", GetNoLogo());
-    SaveOption(section_name, "no_margareth", GetNoMargareth());
-    SaveOption(section_name, "no_sound", GetNoSound());
-    SaveOption(section_name, "no_video", GetNoVideo());
-    SaveOption(section_name, "verbose_logging", GetVerboseLogging());
+    SaveOption(section_name, &AllMagic);
+    SaveOption(section_name, &InfiniteFood);
+    SaveOption(section_name, &InfiniteGold);
+    SaveOption(section_name, &LightmapDecals);
+    SaveOption(section_name, &PortalOutlines);
+    SaveOption(section_name, &Terrain);
+    SaveOption(section_name, &TownPortal);
+    SaveOption(section_name, &TurboSpeed);
+    SaveOption(section_name, &WizardEye);
+    SaveOption(section_name, &ShowFPS);
+    SaveOption(section_name, &ShowPickedFace);
+    SaveOption(section_name, &NoActors);
+    SaveOption(section_name, &NoDamage);
+    SaveOption(section_name, &NoDecorations);
+    SaveOption(section_name, &NoIntro);
+    SaveOption(section_name, &NoLogo);
+    SaveOption(section_name, &NoSound);
+    SaveOption(section_name, &NoVideo);
+    SaveOption(section_name, &NoMargareth);
+    SaveOption(section_name, &VerboseLogging);
 }
 
 void GameConfig::Gameplay::Default() {
-    SetMaxFlightHeight(DefaultMaxFlightHeight());
-    SetArtifactLimit(DefaultArtifactLimit());
-    SetMouseInteractionDepth(DefaultMouseInteractionDepth());
-    SetKeyboardInteractionDepth(DefaultKeyboardInteractionDepth());
-    SetMouseInfoDepthIndoor(DefaultMouseInfoDepthIndoor());
-    SetMouseInfoDepthOutdoor(DefaultMouseInfoDepthOutdoor());
-    SetRangedAttackDepth(DefaultRangedAttackDepth());
-    SetFloorChecksEps(DefaultFloorChecksEps());
-    SetShowUndentifiedItem(DefaultShowUndentifiedItem());
+    MaxFlightHeight.Reset();
+    ArtifactLimit.Reset();
+    MouseInteractionDepth.Reset();
+    KeyboardInteractionDepth.Reset();
+    MouseInfoDepthIndoor.Reset();
+    MouseInfoDepthOutdoor.Reset();
+    RangedAttackDepth.Reset();
+    FloorChecksEps.Reset();
+    ShowUndentifiedItem.Reset();
 }
 
 void GameConfig::Gameplay::Load() {
-    SetMaxFlightHeight(LoadOptionInteger(section_name, "max_flight_height", DefaultMaxFlightHeight()));
-    SetArtifactLimit(LoadOptionInteger(section_name, "artifact_limit", DefaultArtifactLimit()));
-    SetMouseInteractionDepth(LoadOptionFloat(section_name, "mouse_interaction_depth", DefaultMouseInteractionDepth()));
-    SetKeyboardInteractionDepth(LoadOptionFloat(section_name, "keyboard_interaction_depth", DefaultKeyboardInteractionDepth()));
-    SetMouseInfoDepthIndoor(LoadOptionFloat(section_name, "mouse_info_depth_indoor", DefaultMouseInfoDepthIndoor()));
-    SetMouseInfoDepthOutdoor(LoadOptionFloat(section_name, "mouse_info_depth_outdoor", DefaultMouseInfoDepthOutdoor()));
-    SetRangedAttackDepth(LoadOptionFloat(section_name, "ranged_attack_depth", DefaultRangedAttackDepth()));
-    SetFloorChecksEps(LoadOptionInteger(section_name, "floor_checks_eps", DefaultFloorChecksEps()));
-    SetShowUndentifiedItem(LoadOptionBool(section_name, "show_unidentified_item", DefaultShowUndentifiedItem()));
+    LoadOption(section_name, &MaxFlightHeight);
+    LoadOption(section_name, &ArtifactLimit);
+    LoadOption(section_name, &MouseInteractionDepth);
+    LoadOption(section_name, &KeyboardInteractionDepth);
+    LoadOption(section_name, &MouseInfoDepthIndoor);
+    LoadOption(section_name, &MouseInfoDepthOutdoor);
+    LoadOption(section_name, &RangedAttackDepth);
+    LoadOption(section_name, &FloorChecksEps);
+    LoadOption(section_name, &ShowUndentifiedItem);
 }
 
 void GameConfig::Gameplay::Save() {
-    SaveOption(section_name, "max_flight_height", GetMaxFlightHeight());
-    SaveOption(section_name, "artifact_limit", GetArtifactLimit());
-    SaveOption(section_name, "mouse_interaction_depth", GetMouseInteractionDepth());
-    SaveOption(section_name, "keyboard_interaction_depth", GetKeyboardInteractionDepth());
-    SaveOption(section_name, "mouse_info_depth_indoor", GetMouseInfoDepthIndoor());
-    SaveOption(section_name, "mouse_info_depth_outdoor", GetMouseInfoDepthOutdoor());
-    SaveOption(section_name, "ranged_attack_depth", GetRangedAttackDepth());
-    SaveOption(section_name, "floor_checks_eps", GetFloorChecksEps());
-    SaveOption(section_name, "show_unidentified_item", GetShowUndentifiedItem());
+    SaveOption(section_name, &MaxFlightHeight);
+    SaveOption(section_name, &ArtifactLimit);
+    SaveOption(section_name, &MouseInteractionDepth);
+    SaveOption(section_name, &KeyboardInteractionDepth);
+    SaveOption(section_name, &MouseInfoDepthIndoor);
+    SaveOption(section_name, &MouseInfoDepthOutdoor);
+    SaveOption(section_name, &RangedAttackDepth);
+    SaveOption(section_name, &FloorChecksEps);
+    SaveOption(section_name, &ShowUndentifiedItem);
 }
 
 void GameConfig::Graphics::Default() {
-    SetRenderer(DefaultRenderer());
-    SetBloodSplats(DefaultBloodSplats());
-    SetColoredLights(DefaultColoredLight());
-    SetTinting(DefaultTinting());
-    SetHWLBitmaps(DefaultHWLBitmaps());
-    SetHWLSprites(DefaultHWLSprites());
-    SetGamma(DefaultGamma());
-    SetSnow(DefaultSnow());
-    SetSeasonsChange(DefaultSeasonsChange());
-    SetSpecular(DefaultFog());
-    SetFog(DefaultFog());
+    Renderer.Reset();
+    BloodSplats.Reset();
+    ColoredLights.Reset();
+    Tinting.Reset();
+    HWLBitmaps.Reset();
+    HWLSprites.Reset();
+    Gamma.Reset();
+    Snow.Reset();
+    SeasonsChange.Reset();
+    Specular.Reset();
+    Fog.Reset();
 }
 
 void GameConfig::Graphics::Load() {
-    SetRenderer(LoadOptionString(section_name, "renderer", DefaultRenderer()));
-    SetBloodSplats(LoadOptionBool(section_name, "bloodsplats", DefaultBloodSplats()));
-    SetColoredLights(LoadOptionBool(section_name, "tinting", DefaultColoredLight()));
-    SetTinting(LoadOptionBool(section_name, "tinting", DefaultTinting()));
-    SetHWLBitmaps(LoadOptionBool(section_name, "hwl_bitmaps", DefaultHWLBitmaps()));
-    SetHWLSprites(LoadOptionBool(section_name, "hwl_sprites", DefaultHWLSprites()));
-    SetGamma(LoadOptionInteger(section_name, "gamma", DefaultGamma()));
-    SetSnow(LoadOptionBool(section_name, "snow", DefaultSnow()));
-    SetSeasonsChange(LoadOptionBool(section_name, "seasons_change", DefaultSeasonsChange()));
-    SetSpecular(LoadOptionBool(section_name, "specular", DefaultSpecular()));
-    SetFog(LoadOptionBool(section_name, "fog", DefaultFog()));
+    LoadOption(section_name, &Renderer);
+    LoadOption(section_name, &BloodSplats);
+    LoadOption(section_name, &ColoredLights);
+    LoadOption(section_name, &Tinting);
+    LoadOption(section_name, &HWLBitmaps);
+    LoadOption(section_name, &HWLSprites);
+    LoadOption(section_name, &Gamma);
+    LoadOption(section_name, &Snow);
+    LoadOption(section_name, &SeasonsChange);
+    LoadOption(section_name, &Specular);
+    LoadOption(section_name, &Fog);
 }
 
 void GameConfig::Graphics::Save() {
-    SaveOption(section_name, "renderer", GetRenderer());
-    SaveOption(section_name, "bloodsplats", GetBloodSplats());
-    SaveOption(section_name, "colored_lights", GetColoredLights());
-    SaveOption(section_name, "tinting", GetTinting());
-    SaveOption(section_name, "hwl_bitmaps", GetHWLBitmaps());
-    SaveOption(section_name, "hwl_sprites", GetHWLSprites());
-    SaveOption(section_name, "gamma", GetGamma());
-    SaveOption(section_name, "snow", GetSnow());
-    SaveOption(section_name, "seasons_change", GetSeasonsChange());
-    SaveOption(section_name, "specular", GetSpecular());
-    SaveOption(section_name, "fog", GetFog());
+    SaveOption(section_name, &Renderer);
+    SaveOption(section_name, &BloodSplats);
+    SaveOption(section_name, &ColoredLights);
+    SaveOption(section_name, &Tinting);
+    SaveOption(section_name, &HWLBitmaps);
+    SaveOption(section_name, &HWLSprites);
+    SaveOption(section_name, &Gamma);
+    SaveOption(section_name, &Snow);
+    SaveOption(section_name, &SeasonsChange);
+    SaveOption(section_name, &Specular);
+    SaveOption(section_name, &Fog);
 }
 
 void GameConfig::Keybindings::Default() {
-    SetForward(DefaultForward());
-    SetBackward(DefaultBackward());
-    SetLeft(DefaultLeft());
-    SetRight(DefaultRight());
-    SetAttack(DefaultAttack());
-    SetCastReady(DefaultCastReady());
-    SetYell(DefaultYell());
-    SetJump(DefaultJump());
-    SetCombat(DefaultCombat());
-    SetEventTrigger(DefaultEventTrigger());
-    SetCast(DefaultCast());
-    SetPass(DefaultPass());
-    SetCharCycle(DefaultCharCycle());
-    SetQuest(DefaultQuest());
-    SetQuickReference(DefaultQuickReference());
-    SetRest(DefaultRest());
-    SetTimeCalendar(DefaultTimeCalendar());
-    SetAutoNotes(DefaultAutoNotes());
-    SetMapBook(DefaultMapBook());
-    SetLookUp(DefaultLookUp());
-    SetLookDown(DefaultLookDown());
-    SetCenterView(DefaultCenterView());
-    SetZoomIn(DefaultZoomIn());
-    SetZoomOut(DefaultZoomOut());
-    SetFlyUp(DefaultFlyUp());
-    SetFlyDown(DefaultFlyDown());
-    SetLand(DefaultLand());
-    SetAlwaysRun(DefaultAlwaysRun());
-    SetStepLeft(DefaultStepLeft());
-    SetStepRight(DefaultStepRight());
+    Forward.Reset();
+    Backward.Reset();
+    Left.Reset();
+    Right.Reset();
+    Attack.Reset();
+    CastReady.Reset();
+    Yell.Reset();
+    Jump.Reset();
+    Combat.Reset();
+    EventTrigger.Reset();
+    Cast.Reset();
+    Pass.Reset();
+    CharCycle.Reset();
+    Quest.Reset();
+    QuickReference.Reset();
+    Rest.Reset();
+    TimeCalendar.Reset();
+    AutoNotes.Reset();
+    MapBook.Reset();
+    LookUp.Reset();
+    LookDown.Reset();
+    CenterView.Reset();
+    ZoomIn.Reset();
+    ZoomOut.Reset();
+    FlyUp.Reset();
+    FlyDown.Reset();
+    Land.Reset();
+    AlwaysRun.Reset();
+    StepLeft.Reset();
+    StepRight.Reset();
 }
 
 void GameConfig::Keybindings::Load() {
-    SetForward(LoadOptionString(section_name, "forward", DefaultForward()));
-    SetBackward(LoadOptionString(section_name, "backward", DefaultBackward()));
-    SetLeft(LoadOptionString(section_name, "left", DefaultLeft()));
-    SetRight(LoadOptionString(section_name, "right", DefaultRight()));
-    SetAttack(LoadOptionString(section_name, "attack", DefaultAttack()));
-    SetCastReady(LoadOptionString(section_name, "cast_ready", DefaultCastReady()));
-    SetYell(LoadOptionString(section_name, "yell", DefaultYell()));
-    SetJump(LoadOptionString(section_name, "jump", DefaultJump()));
-    SetCombat(LoadOptionString(section_name, "combat", DefaultCombat()));
-    SetEventTrigger(LoadOptionString(section_name, "event_trigger", DefaultEventTrigger()));
-    SetCast(LoadOptionString(section_name, "cast", DefaultCast()));
-    SetPass(LoadOptionString(section_name, "pass", DefaultPass()));
-    SetCharCycle(LoadOptionString(section_name, "char_cycle", DefaultCharCycle()));
-    SetQuest(LoadOptionString(section_name, "quest", DefaultQuest()));
-    SetQuickReference(LoadOptionString(section_name, "quick_reference", DefaultQuickReference()));
-    SetRest(LoadOptionString(section_name, "rest", DefaultRest()));
-    SetTimeCalendar(LoadOptionString(section_name, "time_calendar", DefaultTimeCalendar()));
-    SetAutoNotes(LoadOptionString(section_name, "auto_notes", DefaultAutoNotes()));
-    SetMapBook(LoadOptionString(section_name, "map_book", DefaultMapBook()));
-    SetLookUp(LoadOptionString(section_name, "look_up", DefaultLookUp()));
-    SetLookDown(LoadOptionString(section_name, "look_down", DefaultLookDown()));
-    SetCenterView(LoadOptionString(section_name, "center_view", DefaultCenterView()));
-    SetZoomIn(LoadOptionString(section_name, "zoom_in", DefaultZoomIn()));
-    SetZoomOut(LoadOptionString(section_name, "zoom_out", DefaultZoomOut()));
-    SetFlyUp(LoadOptionString(section_name, "fly_up", DefaultFlyUp()));
-    SetFlyDown(LoadOptionString(section_name, "fly_down", DefaultFlyDown()));
-    SetLand(LoadOptionString(section_name, "land", DefaultLand()));
-    SetAlwaysRun(LoadOptionString(section_name, "always_run", DefaultAlwaysRun()));
-    SetStepLeft(LoadOptionString(section_name, "step_left", DefaultStepLeft()));
-    SetStepRight(LoadOptionString(section_name, "step_right", DefaultStepRight()));
+    LoadOption(section_name, &Forward);
+    LoadOption(section_name, &Backward);
+    LoadOption(section_name, &Left);
+    LoadOption(section_name, &Right);
+    LoadOption(section_name, &Attack);
+    LoadOption(section_name, &CastReady);
+    LoadOption(section_name, &Yell);
+    LoadOption(section_name, &Jump);
+    LoadOption(section_name, &Combat);
+    LoadOption(section_name, &EventTrigger);
+    LoadOption(section_name, &Cast);
+    LoadOption(section_name, &Pass);
+    LoadOption(section_name, &CharCycle);
+    LoadOption(section_name, &Quest);
+    LoadOption(section_name, &QuickReference);
+    LoadOption(section_name, &Rest);
+    LoadOption(section_name, &TimeCalendar);
+    LoadOption(section_name, &AutoNotes);
+    LoadOption(section_name, &MapBook);
+    LoadOption(section_name, &LookUp);
+    LoadOption(section_name, &LookDown);
+    LoadOption(section_name, &CenterView);
+    LoadOption(section_name, &ZoomIn);
+    LoadOption(section_name, &ZoomOut);
+    LoadOption(section_name, &FlyUp);
+    LoadOption(section_name, &FlyDown);
+    LoadOption(section_name, &Land);
+    LoadOption(section_name, &AlwaysRun);
+    LoadOption(section_name, &StepLeft);
+    LoadOption(section_name, &StepRight);
 }
 
 void GameConfig::Keybindings::Save() {
-    SaveOption(section_name, "forward", GetForward());
-    SaveOption(section_name, "backward", GetBackward());
-    SaveOption(section_name, "left", GetLeft());
-    SaveOption(section_name, "right", GetRight());
-    SaveOption(section_name, "attack", GetAttack());
-    SaveOption(section_name, "cast_ready", GetCastReady());
-    SaveOption(section_name, "yell", GetYell());
-    SaveOption(section_name, "jump", GetJump());
-    SaveOption(section_name, "combat", GetCombat());
-    SaveOption(section_name, "event_trigger", GetEventTrigger());
-    SaveOption(section_name, "cast", GetCast());
-    SaveOption(section_name, "pass", GetPass());
-    SaveOption(section_name, "char_cycle", GetCharCycle());
-    SaveOption(section_name, "quest", GetQuest());
-    SaveOption(section_name, "quick_reference", GetQuickReference());
-    SaveOption(section_name, "rest", GetRest());
-    SaveOption(section_name, "time_calendar", GetTimeCalendar());
-    SaveOption(section_name, "auto_notes", GetAutoNotes());
-    SaveOption(section_name, "map_book", GetMapBook());
-    SaveOption(section_name, "look_up", GetLookUp());
-    SaveOption(section_name, "look_down", GetLookDown());
-    SaveOption(section_name, "center_view", GetCenterView());
-    SaveOption(section_name, "zoom_in", GetZoomIn());
-    SaveOption(section_name, "zoom_out", GetZoomOut());
-    SaveOption(section_name, "fly_up", GetFlyUp());
-    SaveOption(section_name, "fly_down", GetFlyDown());
-    SaveOption(section_name, "land", GetLand());
-    SaveOption(section_name, "always_run", GetAlwaysRun());
-    SaveOption(section_name, "step_left", GetStepLeft());
-    SaveOption(section_name, "step_right", GetStepRight());
+    SaveOption(section_name, &Forward);
+    SaveOption(section_name, &Backward);
+    SaveOption(section_name, &Left);
+    SaveOption(section_name, &Right);
+    SaveOption(section_name, &Attack);
+    SaveOption(section_name, &CastReady);
+    SaveOption(section_name, &Yell);
+    SaveOption(section_name, &Jump);
+    SaveOption(section_name, &Combat);
+    SaveOption(section_name, &EventTrigger);
+    SaveOption(section_name, &Cast);
+    SaveOption(section_name, &Pass);
+    SaveOption(section_name, &CharCycle);
+    SaveOption(section_name, &Quest);
+    SaveOption(section_name, &QuickReference);
+    SaveOption(section_name, &Rest);
+    SaveOption(section_name, &TimeCalendar);
+    SaveOption(section_name, &AutoNotes);
+    SaveOption(section_name, &MapBook);
+    SaveOption(section_name, &LookUp);
+    SaveOption(section_name, &LookDown);
+    SaveOption(section_name, &CenterView);
+    SaveOption(section_name, &ZoomIn);
+    SaveOption(section_name, &ZoomOut);
+    SaveOption(section_name, &FlyUp);
+    SaveOption(section_name, &FlyDown);
+    SaveOption(section_name, &Land);
+    SaveOption(section_name, &AlwaysRun);
+    SaveOption(section_name, &StepLeft);
+    SaveOption(section_name, &StepRight);
 }
 
 void GameConfig::Settings::Default() {
-    SetAlwaysRun(DefaultAlwaysRun());
-    SetFlipOnExit(DefaultFlipOnExit());
-    SetShowHits(DefaultShowHits());
-    SetMusicLevel(DefaultMusicLevel());
-    SetSoundLevel(DefaultSoundLevel());
-    SetVoiceLevel(DefaultVoiceLevel());
-    SetTurnSpeed(DefaultTurnSpeed());
-    SetVerticalTurnSpeed(DefaultVerticalSpeed());
-    SetWalkSound(DefaultWalkSound());
+    AlwaysRun.Reset();
+    FlipOnExit.Reset();
+    ShowHits.Reset();
+    MusicLevel.Reset();
+    SoundLevel.Reset();
+    VoiceLevel.Reset();
+    TurnSpeed.Reset();
+    VerticalTurnSpeed.Reset();
+    WalkSound.Reset();
 }
 
 void GameConfig::Settings::Load() {
-    SetAlwaysRun(LoadOptionBool(section_name, "always_run", DefaultAlwaysRun()));
-    SetFlipOnExit(LoadOptionBool(section_name, "flip_on_exit", DefaultFlipOnExit()));
-    SetShowHits(LoadOptionBool(section_name, "show_hits", DefaultShowHits()));
-    SetMusicLevel(LoadOptionInteger(section_name, "music_level", DefaultMusicLevel()));
-    SetSoundLevel(LoadOptionInteger(section_name, "sound_level", DefaultSoundLevel()));
-    SetVoiceLevel(LoadOptionInteger(section_name, "voice_level", DefaultVoiceLevel()));
-    SetTurnSpeed(LoadOptionInteger(section_name, "turn_speed", DefaultTurnSpeed()));
-    SetVerticalTurnSpeed(LoadOptionInteger(section_name, "vertical_turn_speed", DefaultVerticalSpeed()));
-    SetWalkSound(LoadOptionBool(section_name, "walk_sound", DefaultWalkSound()));
+    LoadOption(section_name, &AlwaysRun);
+    LoadOption(section_name, &FlipOnExit);
+    LoadOption(section_name, &ShowHits);
+    LoadOption(section_name, &MusicLevel);
+    LoadOption(section_name, &SoundLevel);
+    LoadOption(section_name, &VoiceLevel);
+    LoadOption(section_name, &TurnSpeed);
+    LoadOption(section_name, &VerticalTurnSpeed);
+    LoadOption(section_name, &WalkSound);
 }
 
 void GameConfig::Settings::Save() {
-    SaveOption(section_name, "always_run", GetAlwaysRun());
-    SaveOption(section_name, "flip_on_exit", GetFlipOnExit());
-    SaveOption(section_name, "show_hits", GetShowHits());
-    SaveOption(section_name, "music_level", GetMusicLevel());
-    SaveOption(section_name, "sound_level", GetSoundLevel());
-    SaveOption(section_name, "voice_level", GetVoiceLevel());
-    SaveOption(section_name, "turn_speed", GetTurnSpeed());
-    SaveOption(section_name, "vertical_turn_speed", GetVerticalTurnSpeed());
-    SaveOption(section_name, "walk_sound", GetWalkSound());
+    SaveOption(section_name, &AlwaysRun);
+    SaveOption(section_name, &FlipOnExit);
+    SaveOption(section_name, &ShowHits);
+    SaveOption(section_name, &MusicLevel);
+    SaveOption(section_name, &SoundLevel);
+    SaveOption(section_name, &VoiceLevel);
+    SaveOption(section_name, &TurnSpeed);
+    SaveOption(section_name, &VerticalTurnSpeed);
+    SaveOption(section_name, &WalkSound);
 }
 
 void GameConfig::Window::Default() {
-    SetBorderless(DefaultBorderless());
-    SetDisplay(DefaultDisplay());
-    SetFullscreen(DefaultFullscreen());
-    SetMouseGrab(DefaultMouseGrab());
-    SetHeight(DefaultHeight());
-    SetWidth(DefaultWidth());
-    SetPositionX(DefaultPositionX());
-    SetPositionY(DefaultPositionY());
-    SetTitle(DefaultTitle());
+    Title.Reset();
+    Borderless.Reset();
+    Display.Reset();
+    Fullscreen.Reset();
+    MouseGrab.Reset();
+    Height.Reset();
+    Width.Reset();
+    PositionX.Reset();
+    PositionY.Reset();
 }
 
 void GameConfig::Window::Load() {
-    SetBorderless(LoadOptionBool(section_name, "borderless", DefaultBorderless()));
-    SetFullscreen(LoadOptionBool(section_name, "fullscreen", DefaultFullscreen()));
-    SetDisplay(LoadOptionInteger(section_name, "display", DefaultDisplay()));
-    SetPositionX(LoadOptionInteger(section_name, "position_x", DefaultPositionX()));
-    SetPositionY(LoadOptionInteger(section_name, "position_y", DefaultPositionY()));
-    SetWidth(LoadOptionInteger(section_name, "width", DefaultWidth()));
-    SetHeight(LoadOptionInteger(section_name, "height", DefaultHeight()));
-    SetMouseGrab(LoadOptionBool(section_name, "mouse_grab", DefaultMouseGrab()));
-    SetTitle(LoadOptionString(section_name, "title", DefaultTitle()));
+    LoadOption(section_name, &Title);
+    LoadOption(section_name, &Borderless);
+    LoadOption(section_name, &Fullscreen);
+    LoadOption(section_name, &Display);
+    LoadOption(section_name, &PositionX);
+    LoadOption(section_name, &PositionY);
+    LoadOption(section_name, &Width);
+    LoadOption(section_name, &Height);
+    LoadOption(section_name, &MouseGrab);
 }
 
 void GameConfig::Window::Save() {
-    SaveOption(section_name, "borderless", GetBorderless());
-    SaveOption(section_name, "fullscreen", GetFullscreen());
-    SaveOption(section_name, "display", GetDisplay());
-    SaveOption(section_name, "position_x", GetPositionX());
-    SaveOption(section_name, "position_y", GetPositionY());
-    SaveOption(section_name, "width", GetWidth());
-    SaveOption(section_name, "height", GetHeight());
-    SaveOption(section_name, "mouse_grab", GetMouseGrab());
-    SaveOption(section_name, "title", GetTitle());
+    SaveOption(section_name, &Borderless);
+    SaveOption(section_name, &Fullscreen);
+    SaveOption(section_name, &Display);
+    SaveOption(section_name, &PositionX);
+    SaveOption(section_name, &PositionY);
+    SaveOption(section_name, &Width);
+    SaveOption(section_name, &Height);
+    SaveOption(section_name, &MouseGrab);
+    SaveOption(section_name, &Title);
 }
 

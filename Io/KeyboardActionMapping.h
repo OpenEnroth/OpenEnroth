@@ -9,6 +9,8 @@
 
 #include "src/Application/GameConfig.h"
 
+using Application::GameConfig;
+
 namespace Io {
     enum class KeyToggleType {
         TOGGLE_Continuously = 0,
@@ -23,7 +25,7 @@ namespace Io {
     };
 
     struct KeyboardActionMapping {
-        KeyboardActionMapping(std::shared_ptr<Application::GameConfig> config);
+        KeyboardActionMapping(std::shared_ptr<GameConfig> config);
 
         void MapKey(InputAction action, GameKey key);
         void MapKey(InputAction action, GameKey key, KeyToggleType type);
@@ -32,9 +34,10 @@ namespace Io {
         GameKey GetKey(InputAction action) const;
         KeyToggleType GetToggleType(InputAction action) const;
 
+        GameConfig::ConfigValue<std::string> *InputActionToConfigKey(InputAction action);
         GameKey ConfigDefaultKey(InputAction action);
-        void ConfigSetKey(InputAction action, GameKey key);
         GameKey ConfigGetKey(InputAction action);
+        void ConfigSetKey(InputAction action, GameKey key);
 
         void ReadMappings();
         void StoreMappings();

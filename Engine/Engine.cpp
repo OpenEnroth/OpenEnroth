@@ -313,7 +313,7 @@ void Engine::DrawGUI() {
 
     ++frames_this_second;
 
-    if (engine->config->debug.GetShowFPS()) {
+    if (engine->config->debug.ShowFPS.Get()) {
         if (render_framerate) {
             pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(255, 255, 255),
                 StringPrintf("FPS: % .4f", framerate), 0,
@@ -415,7 +415,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
             face_filter = &vis_face_filter;
             sprite_filter = &vis_sprite_filter_4;
         }
-        depth = config->gameplay.GetRangedAttackDepth();
+        depth = config->gameplay.RangedAttackDepth.Get();
     }
     // depth = v2;
 
@@ -479,7 +479,7 @@ void Engine::Deinitialize() {
         OS_SetAppInt("window X", window->GetX());
         OS_SetAppInt("window Y", window->GetY());
     }
-    OS_SetAppInt("valAlwaysRun", config->settings.GetAlwaysRun() ? 1 : 0);
+    OS_SetAppInt("valAlwaysRun", config->settings.AlwaysRun.Get() ? 1 : 0);
     pItemsTable->Release();
     pNPCStats->Release();
 
@@ -490,7 +490,7 @@ void Engine::Deinitialize() {
 
 //----- (0044EE7C) --------------------------------------------------------
 bool Engine::draw_debug_outlines() {
-    if (/*uFlags & 0x04*/ engine->config->debug.GetLightmapDecals()) {
+    if (/*uFlags & 0x04*/ engine->config->debug.LightmapDecals.Get()) {
         lightmap_builder->DrawDebugOutlines(-1);
         decal_builder->DrawDecalDebugOutlines();
     }
@@ -1021,7 +1021,7 @@ bool Engine::MM7_Initialize() {
         free(sounds_mm8);
     }
 
-    if (!config->debug.GetNoSound())
+    if (!config->debug.NoSound.Get())
         pAudioPlayer->Initialize();
 
     pMediaPlayer = new MPlayer();
@@ -1056,7 +1056,7 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    if (!engine->config->debug.GetNoSound())
+    if (!engine->config->debug.NoSound.Get())
         pSoundList->Initialize();
 
     for (uint i = 0; i < 4; ++i) {
@@ -1264,7 +1264,7 @@ void Engine::_461103_load_level_sub() {
     int v20;  // [sp+18h] [bp-44h]@14
     int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
-    if (engine->config->debug.GetNoActors())
+    if (engine->config->debug.NoActors.Get())
         uNumActors = 0;
 
     GenerateItemsInChest();
@@ -1343,9 +1343,9 @@ void Engine::_461103_load_level_sub() {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    if (engine->config->debug.GetNoActors())
+    if (engine->config->debug.NoActors.Get())
         uNumActors = 0;
-    if (engine->config->debug.GetNoDecorations())
+    if (engine->config->debug.NoDecorations.Get())
         pLevelDecorations.clear();
     init_event_triggers();
 

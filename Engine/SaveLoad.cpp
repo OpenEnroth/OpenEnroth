@@ -234,8 +234,8 @@ void LoadGame(unsigned int uSlot) {
 
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
     // pAudioPlayer->SetMasterVolume(engine->config->sound_level);
-    if (engine->config->settings.GetTurnSpeed() > 0) {
-        pParty->sRotationZ = engine->config->settings.GetTurnSpeed() * pParty->sRotationZ / engine->config->settings.GetTurnSpeed();
+    if (engine->config->settings.TurnSpeed.Get() > 0) {
+        pParty->sRotationZ = engine->config->settings.TurnSpeed.Get() * pParty->sRotationZ / engine->config->settings.TurnSpeed.Get();
     }
     MM7Initialization();
 

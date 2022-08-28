@@ -229,7 +229,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             int skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(PLAYER_SKILL_TYPE(quickSpellNumber / 11 + 12));
 
             int uRequiredMana = 0;
-            if (!engine->config->debug.GetAllMagic()) {
+            if (!engine->config->debug.AllMagic.Get()) {
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_level - 1];
             }
 
@@ -314,7 +314,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
             break;
 
         case InputAction::AlwaysRun:
-            engine->config->settings.ToggleAlwaysRun();
+            engine->config->settings.AlwaysRun.Toggle();
             break;
 
         default:
@@ -331,7 +331,7 @@ void KeyboardInputHandler::GenerateGameplayActions() {
 
 //----- (0042FC4E) --------------------------------------------------------
 void KeyboardInputHandler::GenerateInputActions() {
-    if (!engine->config->settings.GetAlwaysRun()) {
+    if (!engine->config->settings.AlwaysRun.Get()) {
         if (IsRunKeyToggled()) {
             pParty->uFlags2 |= PARTY_FLAGS_2_RUNNING;
         } else {

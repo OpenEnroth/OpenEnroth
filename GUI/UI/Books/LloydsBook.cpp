@@ -52,7 +52,7 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook() : GUIWindow_Book() {
     else if (water_skill & 0x40)
         max_beacons = 3;
 
-    if (engine->config->debug.GetAllMagic())
+    if (engine->config->debug.AllMagic.Get())
         max_beacons = 5;
 
     for (int i = 0; i < max_beacons; ++i) {
@@ -108,7 +108,7 @@ void GUIWindow_LloydsBook::Update() {
     } else if (pPlayer->pActiveSkills[PLAYER_SKILL_WATER] & 0x40) {
         uNumMaxBeacons = 3;
     }
-    if (engine->config->debug.GetAllMagic())
+    if (engine->config->debug.AllMagic.Get())
         uNumMaxBeacons = 5;
 
     if (uNumMaxBeacons > 0) {

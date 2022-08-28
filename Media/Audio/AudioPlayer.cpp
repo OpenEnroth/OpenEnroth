@@ -114,7 +114,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         return;
     }
 
-    if (!engine->config->debug.GetNoSound() && bPlayerReady && engine->config->settings.GetMusicLevel() > 0) {
+    if (!engine->config->debug.NoSound.Get() && bPlayerReady && engine->config->settings.MusicLevel.Get() > 0) {
         if (pCurrentMusicTrack) {
             pCurrentMusicTrack->Stop();
         }
@@ -131,7 +131,7 @@ void AudioPlayer::MusicPlayTrack(MusicID eTrack) {
         if (pCurrentMusicTrack) {
             currentMusicTrack = eTrack;
             pCurrentMusicTrack->SetVolume(
-                pSoundVolumeLevels[engine->config->settings.GetMusicLevel()]);
+                pSoundVolumeLevels[engine->config->settings.MusicLevel.Get()]);
             pCurrentMusicTrack->Play();
         }
     }
@@ -237,7 +237,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     //logger->Info("AudioPlayer: trying to load sound id %u", eSoundID);
 
-    if (engine->config->settings.GetSoundLevel() < 1 || (eSoundID == SOUND_Invalid)) {
+    if (engine->config->settings.SoundLevel.Get() < 1 || (eSoundID == SOUND_Invalid)) {
         return;
     }
 
@@ -374,7 +374,7 @@ void AudioPlayer::ResumeSounds() {
     while (iter != mapSounds.end()) {
         SoundInfo &si = iter->second;
         if (si.sample) {
-            if (si.sample->Resume() && engine->config->debug.GetVerboseLogging())
+            if (si.sample->Resume() && engine->config->debug.VerboseLogging.Get())
                 logger->Info("sound resumed: %s", si.sName.c_str());
         }
         ++iter;
@@ -397,7 +397,7 @@ void AudioPlayer::PauseSounds(int uType) {
         while (iter != mapSounds.end()) {
             SoundInfo &si = iter->second;
             if (si.sample) {
-                if (si.sample->Pause() && engine->config->debug.GetVerboseLogging())
+                if (si.sample->Pause() && engine->config->debug.VerboseLogging.Get())
                     logger->Info("sound paused: %s", si.sName.c_str());
             }
             ++iter;
@@ -409,7 +409,7 @@ void AudioPlayer::PauseSounds(int uType) {
             SoundInfo &si = iter->second;
             if (si.sample) {
                 if (si.last_pid <= 0) {
-                    if (si.sample->Pause() && engine->config->debug.GetVerboseLogging())
+                    if (si.sample->Pause() && engine->config->debug.VerboseLogging.Get())
                         logger->Info("sound paused: %s", si.sName.c_str());
                 }
             }
@@ -454,10 +454,10 @@ void AudioPlayer::Initialize() {
     currentMusicTrack = 0;
     uMasterVolume = 127;
 
-    pAudioPlayer->SetMasterVolume(engine->config->settings.GetSoundLevel());
-    pAudioPlayer->SetVoiceVolume(engine->config->settings.GetVoiceLevel());
+    pAudioPlayer->SetMasterVolume(engine->config->settings.SoundLevel.Get());
+    pAudioPlayer->SetVoiceVolume(engine->config->settings.VoiceLevel.Get());
     if (bPlayerReady) {
-        SetMusicVolume(engine->config->settings.GetMusicLevel());
+        SetMusicVolume(engine->config->settings.MusicLevel.Get());
     }
     LoadAudioSnd();
 

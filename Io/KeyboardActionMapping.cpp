@@ -173,296 +173,129 @@ KeyToggleType GetToggleType(InputAction action) {
         return KeyToggleType::TOGGLE_Continuously;
 }
 
-GameKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
-    GameKey key = GameKey::None;
+GameConfig::ConfigValue<std::string> *KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
+    GameConfig::ConfigValue<std::string> *val = nullptr;
 
     switch (action) {
         case(InputAction::MoveForward):
-            TryParseDisplayName(config->keybindings.DefaultForward(), &key);
+            val = &config->keybindings.Forward;
             break;
         case(InputAction::MoveBackwards):
-            TryParseDisplayName(config->keybindings.DefaultBackward(), &key);
+            val = &config->keybindings.Backward;
             break;
         case(InputAction::TurnLeft):
-            TryParseDisplayName(config->keybindings.DefaultLeft(), &key);
+            val = &config->keybindings.Left;
             break;
         case(InputAction::TurnRight):
-            TryParseDisplayName(config->keybindings.DefaultRight(), &key);
+            val = &config->keybindings.Right;
             break;
         case(InputAction::Attack):
-            TryParseDisplayName(config->keybindings.DefaultAttack(), &key);
+            val = &config->keybindings.Attack;
             break;
         case(InputAction::CastReady):
-            TryParseDisplayName(config->keybindings.DefaultCastReady(), &key);
+            val = &config->keybindings.CastReady;
             break;
         case(InputAction::Yell):
-            TryParseDisplayName(config->keybindings.DefaultYell(), &key);
+            val = &config->keybindings.Yell;
             break;
         case(InputAction::Jump):
-            TryParseDisplayName(config->keybindings.DefaultJump(), &key);
+            val = &config->keybindings.Jump;
             break;
         case(InputAction::Combat):
-            TryParseDisplayName(config->keybindings.DefaultCombat(), &key);
+            val = &config->keybindings.Combat;
             break;
         case(InputAction::EventTrigger):
-            TryParseDisplayName(config->keybindings.DefaultEventTrigger(), &key);
+            val = &config->keybindings.EventTrigger;
             break;
         case(InputAction::Cast):
-            TryParseDisplayName(config->keybindings.DefaultCast(), &key);
+            val = &config->keybindings.Cast;
             break;
         case(InputAction::Pass):
-            TryParseDisplayName(config->keybindings.DefaultPass(), &key);
+            val = &config->keybindings.Pass;
             break;
         case(InputAction::CharCycle):
-            TryParseDisplayName(config->keybindings.DefaultCharCycle(), &key);
+            val = &config->keybindings.CharCycle;
             break;
         case(InputAction::Quest):
-            TryParseDisplayName(config->keybindings.DefaultQuest(), &key);
+            val = &config->keybindings.Quest;
             break;
         case(InputAction::QuickRef):
-            TryParseDisplayName(config->keybindings.DefaultQuickReference(), &key);
+            val = &config->keybindings.QuickReference;
             break;
         case(InputAction::Rest):
-            TryParseDisplayName(config->keybindings.DefaultRest(), &key);
+            val = &config->keybindings.Rest;
             break;
         case(InputAction::TimeCal):
-            TryParseDisplayName(config->keybindings.DefaultTimeCalendar(), &key);
+            val = &config->keybindings.TimeCalendar;
             break;
         case(InputAction::Autonotes):
-            TryParseDisplayName(config->keybindings.DefaultAutoNotes(), &key);
+            val = &config->keybindings.AutoNotes;
             break;
         case(InputAction::Mapbook):
-            TryParseDisplayName(config->keybindings.DefaultMapBook(), &key);
+            val = &config->keybindings.MapBook;
             break;
         case(InputAction::LookUp):
-            TryParseDisplayName(config->keybindings.DefaultLookUp(), &key);
+            val = &config->keybindings.LookUp;
             break;
         case(InputAction::LookDown):
-            TryParseDisplayName(config->keybindings.DefaultLookDown(), &key);
+            val = &config->keybindings.LookDown;
             break;
         case(InputAction::CenterView):
-            TryParseDisplayName(config->keybindings.DefaultCenterView(), &key);
+            val = &config->keybindings.CenterView;
             break;
         case(InputAction::ZoomIn):
-            TryParseDisplayName(config->keybindings.DefaultZoomIn(), &key);
+            val = &config->keybindings.ZoomIn;
             break;
         case(InputAction::ZoomOut):
-            TryParseDisplayName(config->keybindings.DefaultZoomOut(), &key);
+            val = &config->keybindings.ZoomOut;
             break;
         case(InputAction::FlyUp):
-            TryParseDisplayName(config->keybindings.DefaultFlyUp(), &key);
+            val = &config->keybindings.FlyUp;
             break;
         case(InputAction::FlyDown):
-            TryParseDisplayName(config->keybindings.DefaultFlyDown(), &key);
+            val = &config->keybindings.FlyDown;
             break;
         case(InputAction::Land):
-            TryParseDisplayName(config->keybindings.DefaultLand(), &key);
+            val = &config->keybindings.Land;
             break;
         case(InputAction::AlwaysRun):
-            TryParseDisplayName(config->keybindings.DefaultAlwaysRun(), &key);
+            val = &config->keybindings.AlwaysRun;
             break;
         case(InputAction::StrafeLeft):
-            TryParseDisplayName(config->keybindings.DefaultStepLeft(), &key);
+            val = &config->keybindings.StepLeft;
             break;
         case(InputAction::StrafeRight):
-            TryParseDisplayName(config->keybindings.DefaultStepRight(), &key);
+            val = &config->keybindings.StepRight;
             break;
     }
 
-    return GameKey::None;
+    return val;
+}
+
+GameKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
+    GameKey key = GameKey::None;
+    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
+
+    if (val)
+        TryParseDisplayName(val->Default(), &key);
+
+    return key;
 }
 
 GameKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
     GameKey key = GameKey::None;
+    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
 
-    switch (action) {
-        case(InputAction::MoveForward):
-            TryParseDisplayName(config->keybindings.GetForward(), &key);
-            break;
-        case(InputAction::MoveBackwards):
-            TryParseDisplayName(config->keybindings.GetBackward(), &key);
-            break;
-        case(InputAction::TurnLeft):
-            TryParseDisplayName(config->keybindings.GetLeft(), &key);
-            break;
-        case(InputAction::TurnRight):
-            TryParseDisplayName(config->keybindings.GetRight(), &key);
-            break;
-        case(InputAction::Attack):
-            TryParseDisplayName(config->keybindings.GetAttack(), &key);
-            break;
-        case(InputAction::CastReady):
-            TryParseDisplayName(config->keybindings.GetCastReady(), &key);
-            break;
-        case(InputAction::Yell):
-            TryParseDisplayName(config->keybindings.GetYell(), &key);
-            break;
-        case(InputAction::Jump):
-            TryParseDisplayName(config->keybindings.GetJump(), &key);
-            break;
-        case(InputAction::Combat):
-            TryParseDisplayName(config->keybindings.GetCombat(), &key);
-            break;
-        case(InputAction::EventTrigger):
-            TryParseDisplayName(config->keybindings.GetEventTrigger(), &key);
-            break;
-        case(InputAction::Cast):
-            TryParseDisplayName(config->keybindings.GetCast(), &key);
-            break;
-        case(InputAction::Pass):
-            TryParseDisplayName(config->keybindings.GetPass(), &key);
-            break;
-        case(InputAction::CharCycle):
-            TryParseDisplayName(config->keybindings.GetCharCycle(), &key);
-            break;
-        case(InputAction::Quest):
-            TryParseDisplayName(config->keybindings.GetQuest(), &key);
-            break;
-        case(InputAction::QuickRef):
-            TryParseDisplayName(config->keybindings.GetQuickReference(), &key);
-            break;
-        case(InputAction::Rest):
-            TryParseDisplayName(config->keybindings.GetRest(), &key);
-            break;
-        case(InputAction::TimeCal):
-            TryParseDisplayName(config->keybindings.GetTimeCalendar(), &key);
-            break;
-        case(InputAction::Autonotes):
-            TryParseDisplayName(config->keybindings.GetAutoNotes(), &key);
-            break;
-        case(InputAction::Mapbook):
-            TryParseDisplayName(config->keybindings.GetMapBook(), &key);
-            break;
-        case(InputAction::LookUp):
-            TryParseDisplayName(config->keybindings.GetLookUp(), &key);
-            break;
-        case(InputAction::LookDown):
-            TryParseDisplayName(config->keybindings.GetLookDown(), &key);
-            break;
-        case(InputAction::CenterView):
-            TryParseDisplayName(config->keybindings.GetCenterView(), &key);
-            break;
-        case(InputAction::ZoomIn):
-            TryParseDisplayName(config->keybindings.GetZoomIn(), &key);
-            break;
-        case(InputAction::ZoomOut):
-            TryParseDisplayName(config->keybindings.GetZoomOut(), &key);
-            break;
-        case(InputAction::FlyUp):
-            TryParseDisplayName(config->keybindings.GetFlyUp(), &key);
-            break;
-        case(InputAction::FlyDown):
-            TryParseDisplayName(config->keybindings.GetFlyDown(), &key);
-            break;
-        case(InputAction::Land):
-            TryParseDisplayName(config->keybindings.GetLand(), &key);
-            break;
-        case(InputAction::AlwaysRun):
-            TryParseDisplayName(config->keybindings.GetAlwaysRun(), &key);
-            break;
-        case(InputAction::StrafeLeft):
-            TryParseDisplayName(config->keybindings.GetStepLeft(), &key);
-            break;
-        case(InputAction::StrafeRight):
-            TryParseDisplayName(config->keybindings.GetStepRight(), &key);
-            break;
-    }
+    if (val)
+        TryParseDisplayName(val->Get(), &key);
 
     return key;
 }
 
 void KeyboardActionMapping::ConfigSetKey(InputAction action, GameKey key) {
-    switch (action) {
-        case(InputAction::MoveForward):
-            config->keybindings.SetForward(GetDisplayName(key));
-            break;
-        case(InputAction::MoveBackwards):
-            config->keybindings.SetBackward(GetDisplayName(key));
-            break;
-        case(InputAction::TurnLeft):
-            config->keybindings.SetLeft(GetDisplayName(key));
-            break;
-        case(InputAction::TurnRight):
-            config->keybindings.SetRight(GetDisplayName(key));
-            break;
-        case(InputAction::Attack):
-            config->keybindings.SetAttack(GetDisplayName(key));
-            break;
-        case(InputAction::CastReady):
-            config->keybindings.SetCastReady(GetDisplayName(key));
-            break;
-        case(InputAction::Yell):
-            config->keybindings.SetYell(GetDisplayName(key));
-            break;
-        case(InputAction::Jump):
-            config->keybindings.SetJump(GetDisplayName(key));
-            break;
-        case(InputAction::Combat):
-            config->keybindings.SetCombat(GetDisplayName(key));
-            break;
-        case(InputAction::EventTrigger):
-            config->keybindings.SetEventTrigger(GetDisplayName(key));
-            break;
-        case(InputAction::Cast):
-            config->keybindings.SetCast(GetDisplayName(key));
-            break;
-        case(InputAction::Pass):
-            config->keybindings.SetPass(GetDisplayName(key));
-            break;
-        case(InputAction::CharCycle):
-            config->keybindings.SetCharCycle(GetDisplayName(key));
-            break;
-        case(InputAction::Quest):
-            config->keybindings.SetQuest(GetDisplayName(key));
-            break;
-        case(InputAction::QuickRef):
-            config->keybindings.SetQuickReference(GetDisplayName(key));
-            break;
-        case(InputAction::Rest):
-            config->keybindings.SetRest(GetDisplayName(key));
-            break;
-        case(InputAction::TimeCal):
-            config->keybindings.SetTimeCalendar(GetDisplayName(key));
-            break;
-        case(InputAction::Autonotes):
-            config->keybindings.SetAutoNotes(GetDisplayName(key));
-            break;
-        case(InputAction::Mapbook):
-            config->keybindings.SetMapBook(GetDisplayName(key));
-            break;
-        case(InputAction::LookUp):
-            config->keybindings.SetLookUp(GetDisplayName(key));
-            break;
-        case(InputAction::LookDown):
-            config->keybindings.SetLookDown(GetDisplayName(key));
-            break;
-        case(InputAction::CenterView):
-            config->keybindings.SetCenterView(GetDisplayName(key));
-            break;
-        case(InputAction::ZoomIn):
-            config->keybindings.SetZoomIn(GetDisplayName(key));
-            break;
-        case(InputAction::ZoomOut):
-            config->keybindings.SetZoomOut(GetDisplayName(key));
-            break;
-        case(InputAction::FlyUp):
-            config->keybindings.SetFlyUp(GetDisplayName(key));
-            break;
-        case(InputAction::FlyDown):
-            config->keybindings.SetFlyDown(GetDisplayName(key));
-            break;
-        case(InputAction::Land):
-            config->keybindings.SetLand(GetDisplayName(key));
-            break;
-        case(InputAction::AlwaysRun):
-            config->keybindings.SetAlwaysRun(GetDisplayName(key));
-            break;
-        case(InputAction::StrafeLeft):
-            config->keybindings.SetStepLeft(GetDisplayName(key));
-            break;
-        case(InputAction::StrafeRight):
-            config->keybindings.SetStepRight(GetDisplayName(key));
-            break;
-    }
+    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
+
+    if (val)
+        val->Set(GetDisplayName(key));
 }
 

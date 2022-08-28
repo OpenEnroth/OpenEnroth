@@ -125,7 +125,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 target_undead = 0;
 
             // find the closest target
-            spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.GetRangedAttackDepth(), 1, target_undead);
+            spell_targeted_at = stru_50C198.FindClosestActor(engine->config->gameplay.RangedAttackDepth.Get(), 1, target_undead);
             spell_pointed_target = mouse->uPointingObjectID;
 
             if (mouse->uPointingObjectID &&
@@ -182,14 +182,14 @@ void CastSpellInfoHelpers::CastSpell() {
             spell_level = pPlayer->GetActualSkillLevel(which_skill);
             skill_level = pPlayer->GetActualSkillMastery(which_skill);
 
-            if (engine->config->debug.GetAllMagic()) {
+            if (engine->config->debug.AllMagic.Get()) {
                 spell_level = 10;
                 skill_level = 4;
             }
         }
 
         if (pCastSpell->uSpellID < SPELL_BOW_ARROW) {
-            if (pCastSpell->forced_spell_skill_level || engine->config->debug.GetAllMagic())
+            if (pCastSpell->forced_spell_skill_level || engine->config->debug.AllMagic.Get())
                 uRequiredMana = 0;
             else
                 uRequiredMana = pSpellDatas[pCastSpell->uSpellID].mana_per_skill[skill_level - 1];
@@ -1364,7 +1364,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;
                 }
-                if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() && !engine->config->debug.GetAllMagic()) {
+                if (!pPlayers[pCastSpell->uPlayerID + 1]->GetMaxMana() && !engine->config->debug.AllMagic.Get()) {
                     GameUI_SetStatusBar(LSTR_SPELL_FAILED);
                     pAudioPlayer->PlaySound(SOUND_spellfail0201, 0, 0, -1, 0, 0);
                     break;

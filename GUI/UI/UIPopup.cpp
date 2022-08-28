@@ -1033,7 +1033,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
 
     // ps - test to track ai states
-    if (engine->config->debug.GetVerboseLogging()) {
+    if (engine->config->debug.VerboseLogging.Get()) {
         auto txttest = StringPrintf("AI State: %d", pActors[uActorID].uAIState);
         pFontSmallnum->GetLineWidth(txttest);
         pWindow->DrawTitleText(
