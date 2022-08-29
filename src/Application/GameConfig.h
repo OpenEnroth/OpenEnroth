@@ -43,7 +43,7 @@ namespace Application {
                 value = defValue;
             }
 
-            inline void Toggle() {
+            inline void Toggle() requires std::is_same_v<T, bool> {
                 value = !value;
             }
 

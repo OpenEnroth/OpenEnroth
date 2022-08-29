@@ -234,6 +234,8 @@ void LoadGame(unsigned int uSlot) {
 
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
     // pAudioPlayer->SetMasterVolume(engine->config->sound_level);
+
+    // TODO: what is this magic? old party position correction with current angle settings?
     if (engine->config->settings.TurnSpeed.Get() > 0) {
         pParty->sRotationZ = engine->config->settings.TurnSpeed.Get() * pParty->sRotationZ / engine->config->settings.TurnSpeed.Get();
     }

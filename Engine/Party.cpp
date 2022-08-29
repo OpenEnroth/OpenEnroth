@@ -719,7 +719,7 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->sRotationY = 0;
     this->uFallSpeed = 0;
     this->field_28_set0_unused = 0;
-    this->uDefaultPartyHeight = engine->config->gameplay.PartyWalkSpeed.Get(); // was 120?
+    this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.Get(); // was 120?
     this->radius = 37;
     this->y_rotation_granularity = 25;
     this->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();

@@ -2706,7 +2706,7 @@ void Game::EventLoop() {
                     engine->config->debug.NoActors.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
-                case UIMSG_DebugVacant:
+                case UIMSG_DebugUnused:
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugSnow:

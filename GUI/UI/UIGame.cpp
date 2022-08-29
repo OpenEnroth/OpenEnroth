@@ -2231,7 +2231,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, GameKey::None, "DEBUG TOGGLE LIGHTMAP DECAL");
     GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, GameKey::None, "DEBUG TOGGLE TURBO SPEED");
     GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, GameKey::None, "DEBUG TOGGLE ACTORS");
-    GUIButton *pBtn_DebugVacant = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugVacant, 0, GameKey::None, "DEBUG TOGGLE VACANT");
+    GUIButton *pBtn_DebugUnused = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG TOGGLE UNUSED");
 
     GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, GameKey::None, "DEBUG TOGGLE SNOW");
     GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, GameKey::None, "DEBUG TOGGLE PORTAL OUTLINES");
@@ -2286,8 +2286,8 @@ void GUIWindow_DebugMenu::Update() {
 
     buttonbox(13, 221, "Lightmap", engine->config->debug.LightmapDecals.Get());
     buttonbox(127, 221, "Turbo", engine->config->debug.TurboSpeed.Get());
-    buttonbox(241, 221, "Actors", engine->config->debug.NoActors.Get());
-    buttonbox(354, 221, "Vacant", 2);
+    buttonbox(241, 221, "No Actors", engine->config->debug.NoActors.Get());
+    buttonbox(354, 221, "Unused", 2);
 
     buttonbox(13, 248, "Snow", engine->config->graphics.Snow.Get());
     buttonbox(127, 248, "Portal Lines", engine->config->debug.PortalOutlines.Get());

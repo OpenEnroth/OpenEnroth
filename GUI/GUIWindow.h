@@ -254,7 +254,7 @@ enum UIMessageType : uint32_t {
     UIMSG_DebugNoDamage = 980,
     UIMSG_DebugFullHeal = 981,
     UIMSG_DebugSnow = 982,
-    UIMSG_DebugVacant = 983,
+    UIMSG_DebugUnused = 983,
     UIMSG_DebugNoActors = 984,
     UIMSG_DebugTurboSpeed = 985,
     UIMSG_DebugLightmap = 986,
