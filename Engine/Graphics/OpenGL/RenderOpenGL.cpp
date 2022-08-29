@@ -1384,7 +1384,8 @@ void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height,
 
 void RenderOpenGL::SavePCXScreenshot() {
     char file_name[40];
-    sprintf(file_name, "screen%0.2i.pcx", ScreenshotFileNumber++ % 100);
+    engine->config->settings.ScreenshotNumber.Set(engine->config->settings.ScreenshotNumber.Get() + 1);
+    sprintf(file_name, "screen%0.2i.pcx", engine->config->settings.ScreenshotNumber.Get() % 100);
 
     SaveWinnersCertificate(file_name);
 }

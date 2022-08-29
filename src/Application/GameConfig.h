@@ -363,6 +363,9 @@ namespace Application {
             /** Voice volume level */
             ConfigValue<int> VoiceLevel = ConfigValue<int>("voice_level", 5, &ValidateLevel);
 
+            /** Last saved screenshot number */
+            ConfigValue<int> ScreenshotNumber = ConfigValue<int>("screenshot_number", 0);
+
             /** Discrete turn speed, 0 - smooth, x16 - 64 degress turn, x32 - 128 degress turn.
               * Only smooth is usable on modern machines. */
             ConfigValue<float> TurnSpeed = ConfigValue<float>("turn_speed", 0.0f, &ValidateTurnSpeed);

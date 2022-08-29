@@ -94,7 +94,6 @@ extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY;
 extern std::array<int, 2> Party_Spec_Motion_status_ids;  // dword_4EE07C
 extern std::array<short, 28> word_4EE150;
-extern int ScreenshotFileNumber;  // dword_4EFA80
 extern int16_t word_4F0576[];
 
 extern std::array<int, 32> guild_mambership_flags;

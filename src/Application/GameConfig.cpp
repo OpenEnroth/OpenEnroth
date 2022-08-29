@@ -480,6 +480,7 @@ void GameConfig::Settings::Default() {
     AlwaysRun.Reset();
     FlipOnExit.Reset();
     MusicLevel.Reset();
+    ScreenshotNumber.Reset();
     ShowHits.Reset();
     SoundLevel.Reset();
     TurnSpeed.Reset();
@@ -492,6 +493,7 @@ void GameConfig::Settings::Load() {
     LoadOption(section_name, &AlwaysRun);
     LoadOption(section_name, &FlipOnExit);
     LoadOption(section_name, &MusicLevel);
+    LoadOption(section_name, &ScreenshotNumber);
     LoadOption(section_name, &ShowHits);
     LoadOption(section_name, &SoundLevel);
     LoadOption(section_name, &TurnSpeed);
@@ -504,6 +506,7 @@ void GameConfig::Settings::Save() {
     SaveOption(section_name, &AlwaysRun);
     SaveOption(section_name, &FlipOnExit);
     SaveOption(section_name, &MusicLevel);
+    SaveOption(section_name, &ScreenshotNumber);
     SaveOption(section_name, &ShowHits);
     SaveOption(section_name, &SoundLevel);
     SaveOption(section_name, &TurnSpeed);
