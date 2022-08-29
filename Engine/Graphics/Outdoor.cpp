@@ -142,7 +142,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
                              WorldPosToGridCellY(pParty->vPosition.y),
                              1);
     engine->SetForceRedraw(false);
-    if (render->IsUsingSpecular())
+    if (engine->IsSpecular())
         lightmap_builder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
     else
         lightmap_builder->uFlags &= ~LIGHTMAP_FLAGS_USE_SPECULAR;
@@ -158,12 +158,24 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 
     render->DrawSpriteObjects_ODM();
     render->TransformBillboardsAndSetPalettesODM();
+
+    // temp hack to show snow every third day in winter
+    switch (pParty->uCurrentMonth) {
+        case 11:
+        case 0:
+        case 1:
+            pWeather->bRenderSnow = (pParty->uCurrentDayOfMonth % 3) == 0;
+            break;
+        default:
+            pWeather->bRenderSnow = false;
+            break;
+    }
 }
 
 //----- (00441CFF) --------------------------------------------------------
 void OutdoorLocation::Draw() {
     bool redrawWorld = true;
-    if (!(pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) && !engine->config->ForceRedraw())
+    if (!(pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) && !engine->IsForceRedraw())
         redrawWorld = false;
     pOutdoor->ExecDraw(redrawWorld);
 
@@ -1166,6 +1178,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
                 break;
         }
     }
+
     return true;
 }
 
@@ -1206,7 +1219,7 @@ TileDesc *OutdoorLocation::DoGetTile(int sX, int sY) {
       v3 = v3 + this->pTileTypes[3].uTileID - 198;
     }
 
-    if (engine->config->seasons_change) {
+    if (engine->config->graphics.SeasonsChange.Get()) {
         switch (pParty->uCurrentMonth) {
             case 11:
             case 0:
@@ -2116,7 +2129,7 @@ void ODM_ProcessPartyActions() {
     not_high_fall = party_new_Z - v111 <= 32;
     //****************************************
     // timer update(обновить таймер звука ходьбы)
-    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer) {
+    if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer) {
         if (pParty->walk_sound_timer >= pEventTimer->uTimeElapsed)
             pParty->walk_sound_timer -= pEventTimer->uTimeElapsed;
         else
@@ -2169,14 +2182,14 @@ void ODM_ProcessPartyActions() {
                 if (engine->IsUnderwater() ||
                     pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
                     (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 ||
-                    engine->config->debug_all_magic)) {
-                    if (pParty->vPosition.z < engine->config->max_flight_height || hovering) {
+                    engine->config->debug.AllMagic.Get())) {
+                    if (pParty->vPosition.z < engine->config->gameplay.MaxFlightHeight.Get() || hovering) {
                         party_new_Z += 30;
                         v113 += 30;
                         pParty->bFlying = true;
-                        if (party_new_Z > engine->config->max_flight_height) {
-                            party_new_Z = engine->config->max_flight_height;
-                            v113 = engine->config->max_flight_height;
+                        if (party_new_Z > engine->config->gameplay.MaxFlightHeight.Get()) {
+                            party_new_Z = engine->config->gameplay.MaxFlightHeight.Get();
+                            v113 = engine->config->gameplay.MaxFlightHeight.Get();
                         }
                         v1 = 0;
                         v2 = 0;
@@ -2226,8 +2239,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_TurnLeft:  // поворот влево
-                if (engine->config->turn_speed > 0)
-                    _angle_y += engine->config->turn_speed;  // descrete turn
+                if (engine->config->settings.TurnSpeed.Get() > 0)
+                    _angle_y += engine->config->settings.TurnSpeed.Get();  // descrete turn
                 else
                     _angle_y += dturn * fTurnSpeedMultiplier;  // time-based smooth turn
 
@@ -2235,8 +2248,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_TurnRight:  // поворот вправо
-                if (engine->config->turn_speed > 0)
-                    _angle_y -= engine->config->turn_speed;
+                if (engine->config->settings.TurnSpeed.Get() > 0)
+                    _angle_y -= engine->config->settings.TurnSpeed.Get();
                 else
                     _angle_y -= dturn * fTurnSpeedMultiplier;
 
@@ -2244,8 +2257,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_FastTurnLeft:  // быстрый поворот влево
-                if (engine->config->turn_speed > 0)
-                    _angle_y += engine->config->turn_speed;
+                if (engine->config->settings.TurnSpeed.Get() > 0)
+                    _angle_y += engine->config->settings.TurnSpeed.Get();
                 else
                     _angle_y += 2.0f * fTurnSpeedMultiplier * (double)dturn;
 
@@ -2253,8 +2266,8 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_FastTurnRight:  // быстрый поворот вправо
-                if (engine->config->turn_speed > 0)
-                    _angle_y -= engine->config->turn_speed;
+                if (engine->config->settings.TurnSpeed.Get() > 0)
+                    _angle_y -= engine->config->settings.TurnSpeed.Get();
                 else
                     _angle_y -= 2.0f * fTurnSpeedMultiplier * (double)dturn;
 
@@ -2303,7 +2316,7 @@ void ODM_ProcessPartyActions() {
                 int dx = cos_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
                 int dy = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
 
-                if (engine->config->debug_turbo_speed) {
+                if (engine->config->debug.TurboSpeed.Get()) {
                     v2 += dx * 12;
                     v1 += dy * 12;
                 } else {
@@ -2346,7 +2359,7 @@ void ODM_ProcessPartyActions() {
                                      * (signed __int64)(signed int)(2 *
                     (unsigned __int64)(signed __int64)((double)_walk_speed *
                     fWalkSpeedMultiplier))) >> 16;*/
-                    if (engine->config->debug_turbo_speed) {
+                    if (engine->config->debug.TurboSpeed.Get()) {
                         v2 += dx * 12;
                         v1 += dy * 12;
                     } else {
@@ -2402,14 +2415,14 @@ void ODM_ProcessPartyActions() {
                 break;
 
             case PARTY_LookUp:
-                _angle_x += engine->config->vertical_turn_speed;
+                _angle_x += engine->config->settings.VerticalTurnSpeed.Get();
                 if (_angle_x > 128) _angle_x = 128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookUp, 0);
                 break;
 
             case PARTY_LookDown:
-                _angle_x -= engine->config->vertical_turn_speed;
+                _angle_x -= engine->config->settings.VerticalTurnSpeed.Get();
                 if (_angle_x < -128) _angle_x = -128;
                 if (uActiveCharacter)
                     pPlayers[uActiveCharacter]->PlaySound(SPEECH_LookDown, 0);
@@ -2704,7 +2717,7 @@ void ODM_ProcessPartyActions() {
     uint pX_ = abs(pParty->vPosition.x - pX);
     uint pY_ = abs(pParty->vPosition.y - pY);
     uint pZ_ = abs(pParty->vPosition.z - party_new_Z);
-    if (!engine->config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
+    if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);  // stop sound
         if (party_running_flag && (!hovering || not_high_fall)) {
             if (integer_sqrt(pX_ * pX_ + pY_ * pY_ + pZ_ * pZ_) >= 16) {
@@ -2854,7 +2867,7 @@ void ODM_ProcessPartyActions() {
                 }
             }
         }
-    } else if (!engine->config->NoWalkSound() && pParty->walk_sound_timer <= 0) {
+    } else if (engine->config->settings.WalkSound.Get() && pParty->walk_sound_timer <= 0) {
         pAudioPlayer->StopAll(804);
         pParty->walk_sound_timer = 64;
     }
@@ -3055,7 +3068,7 @@ void sub_487DA9() {
 
 //----- (004706C6) --------------------------------------------------------
 void UpdateActors_ODM() {
-    if (engine->config->no_actors)
+    if (engine->config->debug.NoActors.Get())
         return;  // uNumActors = 0;
 
     for (unsigned int Actor_ITR = 0; Actor_ITR < uNumActors; ++Actor_ITR) {

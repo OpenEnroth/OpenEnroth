@@ -6,13 +6,7 @@
 #include "Engine/Point.h"
 #include "Engine/Strings.h"
 
-int OS_GetAppInt(const char *pKey, int uDefValue);
-void OS_SetAppInt(const char *pKey, int val);
-
 bool OS_GetAppString(const char *path, char *out_string, int out_string_size);
-void OS_GetAppString(const char *pKeyName, char *pOutString, int uBufLen,
-                     const char *pDefaultValue);
-void OS_SetAppString(const char *pKey, const char *pString);
 
 void OS_MsgBox(const char *msg, const char *title);
 

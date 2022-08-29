@@ -8,7 +8,6 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Engine.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Platform/Sdl2Window.h"
 
@@ -172,9 +171,9 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
     Sdl2Window::Sdl2WinParams *params = new(Sdl2WinParams);
 
     params->flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
-    params->x = engine->config->window_x;
-    params->y = engine->config->window_y;
-    params->display = engine->config->display;
+    params->x = config->window.PositionX.Get();
+    params->y = config->window.PositionY.Get();
+    params->display = config->window.Display.Get();
     int displays = SDL_GetNumVideoDisplays();
     if (params->display > displays - 1)
         params->display = 0;
@@ -187,8 +186,8 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
             displayBounds[i].w, displayBounds[i].h);
     }
 
-    if (engine->config->fullscreen) {
-        if (engine->config->borderless)
+    if (config->window.Fullscreen.Get()) {
+        if (config->window.Borderless.Get())
             params->flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         else
             params->flags |= SDL_WINDOW_FULLSCREEN;
@@ -196,7 +195,7 @@ Sdl2Window::Sdl2WinParams *Sdl2Window::CalculateWindowParameters() {
         params->x = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
         params->y = SDL_WINDOWPOS_CENTERED_DISPLAY(params->display);
     } else {
-        if (engine->config->borderless)
+        if (config->window.Borderless.Get())
             params->flags |= SDL_WINDOW_BORDERLESS;
 
         if (params->x >= 0 && params->x < displayBounds[params->display].w)
@@ -222,13 +221,13 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
     }
 
     sdlWindow = SDL_CreateWindow(
-        engine->config->window_title.c_str(),
+        config->window.Title.Get().c_str(),
         params->x, params->y,
-        engine->config->window_width, engine->config->window_height,
+        config->window.Width.Get(), config->window.Height.Get(),
         params->flags
     );
 
-    engine->SetConfigWindowDisplay(params->display);
+    config->window.Display.Set(params->display);
 
     delete params;
 
@@ -236,7 +235,7 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
         return nullptr;
     }
 
-    if (!engine->config->no_grab) {
+    if (config->window.MouseGrab.Get()) {
         SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
     }
 
@@ -257,7 +256,7 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
     return sdlWindow;
 }
 
-void Sdl2Window::DestroySDLWindow() {
+void Sdl2Window::Release() {
     if (sdlWindow) {
         SDL_DestroyWindow(sdlWindow);
         sdlWindow = nullptr;
@@ -470,15 +469,24 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
 
         case SDL_WINDOWEVENT: {
             switch (e.window.event) {
-                case SDL_WINDOWEVENT_EXPOSED: {
+                case SDL_WINDOWEVENT_EXPOSED:
                     gameCallback->OnPaint();
-                } break;
-                case SDL_WINDOWEVENT_FOCUS_LOST: {
+                    break;
+
+                case SDL_WINDOWEVENT_FOCUS_LOST:
                     gameCallback->OnDeactivated();
-                } break;
-                case SDL_WINDOWEVENT_FOCUS_GAINED: {
+                    break;
+
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
                     gameCallback->OnActivated();
-                } break;
+                    break;
+
+                case SDL_WINDOWEVENT_MOVED:
+                    SaveWindowPosition();
+                    break;
+
+                default:
+                    break;
             }
         } break;
     }
@@ -531,7 +539,7 @@ SDL_Window* Sdl2Window::getSDLWindow() {
 void Sdl2Window::SetFullscreenMode() {
     Uint32 flags;
 
-    if (engine->config->borderless)
+    if (config->window.Borderless.Get())
         flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
     else
         flags = SDL_WINDOW_FULLSCREEN;
@@ -551,8 +559,9 @@ void Sdl2Window::SetWindowedMode(int new_window_width, int new_window_height) {
     SDL_SetWindowSize(sdlWindow, new_window_width, new_window_height);
     SDL_SetWindowPosition(sdlWindow, params->x, params->y);
 
-    engine->SetConfigWindowDisplay(params->display);
-    engine->SetConfigWindowDimensions(new_window_width, new_window_height);
+    config->window.Display.Set(params->display);
+    config->window.Width.Set(new_window_width);
+    config->window.Height.Set(new_window_height);
 
     delete params;
 }
@@ -594,6 +603,27 @@ unsigned int Sdl2Window::GetHeight() const {
 
 void Sdl2Window::SetWindowArea(int width, int height) {
     SDL_SetWindowSize(sdlWindow, width, height);
+}
+
+void Sdl2Window::SaveWindowPosition() {
+    std::vector<SDL_Rect> displayBounds;
+    int x, y;
+
+    SDL_GetWindowPosition(sdlWindow, &x, &y);
+
+    int display = SDL_GetWindowDisplayIndex(sdlWindow);
+    config->window.Display.Set(display);;
+
+    if (!config->window.Fullscreen.Get()) {
+        int displays = SDL_GetNumVideoDisplays();
+        for (int i = 0; i < displays; i++) {
+            displayBounds.push_back(SDL_Rect());
+            SDL_GetDisplayBounds(i, &displayBounds.back());
+        }
+
+        config->window.PositionX.Set(x - displayBounds[display].x);
+        config->window.PositionY.Set(y - displayBounds[display].y);
+    }
 }
 
 bool Sdl2Window::OnOSMenu(int item_id) {

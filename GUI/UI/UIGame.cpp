@@ -402,11 +402,11 @@ void GUIWindow_GameVideoOptions::Update() {
         );
     }
 
-    if (!engine->config->NoBloodsplats())
+    if (engine->config->graphics.BloodSplats.Get())
         render->DrawTextureAlphaNew(20 / 640.0f, 281 / 480.0f, game_ui_menu_options_video_bloodsplats);
-    if (render->config->is_using_colored_lights)
+    if (engine->config->graphics.ColoredLights.Get())
         render->DrawTextureAlphaNew(20 / 640.0f, 303 / 480.0f, game_ui_menu_options_video_coloredlights);
-    if (render->config->is_tinting)
+    if (engine->config->graphics.Tinting.Get())
         render->DrawTextureAlphaNew(20 / 640.0f, 325 / 480.0f, game_ui_menu_options_video_tinting);
 }
 
@@ -428,7 +428,7 @@ OptionsMenuSkin::OptionsMenuSkin()
     for (uint i = 0; i < 10; ++i) uTextureID_SoundLevels[i] = 0;
 }
 
-void OptionsMenuSkin::Relaease() {
+void OptionsMenuSkin::Release() {
 #define RELEASE(img)        \
     {                       \
         if (img) {          \
@@ -531,7 +531,7 @@ void GUIWindow_GameOptions::Update() {
     render->DrawTextureAlphaNew(8 / 640.0f, 132 / 480.0f,
                                 options_menu_skin.uTextureID_Background);
 
-    switch (engine->config->turn_speed) {
+    switch ((int)engine->config->settings.TurnSpeed.Get()) {
         case 64:
             render->DrawTextureAlphaNew(
                 BtnTurnCoord[1] / 640.0f, 270 / 480.0f,
@@ -549,36 +549,36 @@ void GUIWindow_GameOptions::Update() {
             break;
     }
 
-    if (!engine->config->no_walk_sound) {
+    if (engine->config->settings.WalkSound.Get()) {
         render->DrawTextureAlphaNew(
             20 / 640.0f, 303 / 480.0f,
             options_menu_skin.uTextureID_WalkSound);
     }
-    if (engine->config->show_damage) {
+    if (engine->config->settings.ShowHits.Get()) {
         render->DrawTextureAlphaNew(
             128 / 640.0f, 303 / 480.0f,
             options_menu_skin.uTextureID_ShowDamage);
     }
-    if (engine->config->flip_on_exit) {
+    if (engine->config->settings.FlipOnExit.Get()) {
         render->DrawTextureAlphaNew(
             128 / 640.0f, 325 / 480.0f,
             options_menu_skin.uTextureID_FlipOnExit);
     }
-    if (engine->config->always_run) {
+    if (engine->config->settings.AlwaysRun.Get()) {
         render->DrawTextureAlphaNew(
             20 / 640.0f, 325 / 480.0f,
             options_menu_skin.uTextureID_AlwaysRun);
     }
 
     render->DrawTextureAlphaNew(
-        (265 + 17 * engine->config->sound_level) / 640.0f, 162 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine->config->sound_level]);
+        (265 + 17 * engine->config->settings.SoundLevel.Get()) / 640.0f, 162 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.SoundLevel.Get()]);
     render->DrawTextureAlphaNew(
-        (265 + 17 * engine->config->music_level) / 640.0f, 216 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine->config->music_level]);
+        (265 + 17 * engine->config->settings.MusicLevel.Get()) / 640.0f, 216 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.MusicLevel.Get()]);
     render->DrawTextureAlphaNew(
-        (265 + 17 * engine->config->voice_level) / 640.0f, 270 / 480.0f,
-        options_menu_skin.uTextureID_SoundLevels[engine->config->voice_level]);
+        (265 + 17 * engine->config->settings.VoiceLevel.Get()) / 640.0f, 270 / 480.0f,
+        options_menu_skin.uTextureID_SoundLevels[engine->config->settings.VoiceLevel.Get()]);
 }
 
 void GameUI_OnPlayerPortraitLeftClick(unsigned int uPlayerID) {
@@ -1703,7 +1703,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         uWizardEyeSkillLevel = std::max(2, uWizardEyeSkillLevel);
     }
 
-    if (engine->config->debug_wizard_eye) {
+    if (engine->config->debug.WizardEye.Get()) {
         bWizardEyeActive = true;
         uWizardEyeSkillLevel = 3;
     }
@@ -2231,7 +2231,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, GameKey::None, "DEBUG TOGGLE LIGHTMAP DECAL");
     GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, GameKey::None, "DEBUG TOGGLE TURBO SPEED");
     GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, GameKey::None, "DEBUG TOGGLE ACTORS");
-    GUIButton *pBtn_DebugExtendedDrawDistance = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugExtendedDrawDistance, 0, GameKey::None, "DEBUG TOGGLE EXTENDED DRAW DISTANCE");
+    GUIButton *pBtn_DebugUnused = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG TOGGLE UNUSED");
 
     GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, GameKey::None, "DEBUG TOGGLE SNOW");
     GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, GameKey::None, "DEBUG TOGGLE PORTAL OUTLINES");
@@ -2265,7 +2265,7 @@ void GUIWindow_DebugMenu::Update() {
 
     pGUIWindow_CurrentMenu->DrawText(pFontArrus, 0, 10, 0, "Debug Menu", 0, 0, 0);
 
-    buttonbox(13, 140, "Town Portal", engine->config->debug_town_portal);
+    buttonbox(13, 140, "Town Portal", engine->config->debug.TownPortal.Get());
     buttonbox(127, 140, "Give Gold", 2);
     buttonbox(241, 140, "Give EXP", 2);
     buttonbox(354, 140, "Give Skill", 2);
@@ -2276,25 +2276,26 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(354, 167, "Take Food", 2);
 
     int col = 0;
-    if (pParty->alignment == PartyAlignment::PartyAlignment_Evil) col = 2;
-    if (pParty->alignment == PartyAlignment::PartyAlignment_Neutral) col = 1;
+    if (pParty->alignment == PartyAlignment::PartyAlignment_Evil) col = 0;
+    if (pParty->alignment == PartyAlignment::PartyAlignment_Good) col = 1;
+    if (pParty->alignment == PartyAlignment::PartyAlignment_Neutral) col = 2;
     buttonbox(13, 194, "Alignment", col);
-    buttonbox(127, 194, "WizardEye", engine->config->debug_wizard_eye);
-    buttonbox(241, 194, "All Magic", engine->config->debug_all_magic);
-    buttonbox(354, 194, "Terrain", engine->config->debug_terrain);
+    buttonbox(127, 194, "WizardEye", engine->config->debug.WizardEye.Get());
+    buttonbox(241, 194, "All Magic", engine->config->debug.AllMagic.Get());
+    buttonbox(354, 194, "Terrain", engine->config->debug.Terrain.Get());
 
-    buttonbox(13, 221, "Lightmap", engine->config->debug_lightmaps_decals);
-    buttonbox(127, 221, "Turbo", engine->config->debug_turbo_speed);
-    buttonbox(241, 221, "Actors", engine->config->no_actors);
-    buttonbox(354, 221, "Draw Dist", engine->config->extended_draw_distance);
+    buttonbox(13, 221, "Lightmap", engine->config->debug.LightmapDecals.Get());
+    buttonbox(127, 221, "Turbo", engine->config->debug.TurboSpeed.Get());
+    buttonbox(241, 221, "No Actors", engine->config->debug.NoActors.Get());
+    buttonbox(354, 221, "Unused", 2);
 
-    buttonbox(13, 248, "Snow", engine->config->allow_snow);
-    buttonbox(127, 248, "Portal Lines", engine->config->debug_portal_outlines);
-    buttonbox(241, 248, "Picked Face", engine->config->show_picked_face);
-    buttonbox(354, 248, "Show FPS", engine->config->show_fps);
+    buttonbox(13, 248, "Snow", engine->config->graphics.Snow.Get());
+    buttonbox(127, 248, "Portal Lines", engine->config->debug.PortalOutlines.Get());
+    buttonbox(241, 248, "Picked Face", engine->config->debug.ShowPickedFace.Get());
+    buttonbox(354, 248, "Show FPS", engine->config->debug.ShowFPS.Get());
 
-    buttonbox(13, 275, "Seasons", engine->config->seasons_change);
-    buttonbox(127, 275, "Verbose Log", engine->config->verbose_logging);
+    buttonbox(13, 275, "Seasons", engine->config->graphics.SeasonsChange.Get());
+    buttonbox(127, 275, "Verbose Log", engine->config->debug.VerboseLogging.Get());
     buttonbox(241, 275, "Gen Item", 2);
     buttonbox(354, 275, "Special Item", 2);
 
@@ -2303,7 +2304,7 @@ void GUIWindow_DebugMenu::Update() {
 
     buttonbox(13, 329, "Dead", 2);
     buttonbox(127, 329, "Eradicate", 2);
-    buttonbox(241, 329, "No Damage", engine->config->no_damage);
+    buttonbox(241, 329, "No Damage", engine->config->debug.NoDamage.Get());
     buttonbox(354, 329, "Full Heal", 2);
 
     //render->DrawTwodVerts();

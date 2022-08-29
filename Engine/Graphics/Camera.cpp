@@ -26,9 +26,9 @@ Camera3D::Camera3D() {
 //----- (0043643E) --------------------------------------------------------
 float Camera3D::GetMouseInfoDepth() {
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
-        return engine->config->mouse_info_depth_outdoor;
+        return engine->config->gameplay.MouseInfoDepthOutdoor.Get();
     else
-        return engine->config->mouse_info_depth_indoor;
+        return engine->config->gameplay.MouseInfoDepthIndoor.Get();
 }
 
 //----- (004364C5) --------------------------------------------------------
@@ -48,11 +48,11 @@ void Camera3D::ViewTransfrom_OffsetUV(RenderVertexSoft *pVertices,
 }
 
 float Camera3D::GetNearClip() const {
-    return 4.0f;
+    return engine->config->graphics.ClipNearDistance.Get();
 }
 
 float Camera3D::GetFarClip() const {
-    return engine->config->extended_draw_distance? (2.5f * 16192.0f) : 16192.0f;
+    return engine->config->graphics.ClipFarDistance.Get();
 }
 
 // ViewTransformAndClipTest

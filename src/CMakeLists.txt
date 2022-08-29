@@ -8,6 +8,7 @@ set(GAME_SOURCES Application/Game.cpp
                  Application/GameOver.cpp
                  Application/GameWindowHandler.cpp
                  Application/IocContainer.cpp
+                 tools/DataPath.cpp
                  tools/MemBuffer.cpp)
 
 set(GAME_HEADERS Application/Game.h
@@ -17,6 +18,7 @@ set(GAME_HEADERS Application/Game.h
                  Application/GameOver.h
                  Application/IocContainer.h
                  Application/GameWindowHandler.h
+                 tools/DataPath.h
                  tools/MemBuffer.h
                  tools/FreeDeleter.h)
 

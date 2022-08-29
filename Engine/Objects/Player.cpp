@@ -275,7 +275,7 @@ int PlayerCreation_GetUnspentAttributePointCount() {
 
 //----- (00427730) --------------------------------------------------------
 bool Player::CanCastSpell(unsigned int uRequiredMana) {
-    if (engine->config->debug_all_magic) return true;
+    if (engine->config->debug.AllMagic.Get()) return true;
     if (sMana >= uRequiredMana) {  // enough mana
         sMana -= uRequiredMana;    // removes mana
         return true;
@@ -1804,7 +1804,7 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
     SetAsleep(GameTime(0));  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
-    if (!engine->config->NoDamage()) {
+    if (!engine->config->debug.NoDamage.Get()) {
         sHealth -= recieved_dmg;     // reduce health
     }
 
@@ -7050,15 +7050,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                     } else {
                         // actor has died from retaliation
                         // add bloodsplat
-                        if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 && !engine->config->NoBloodsplats()) {
-                            int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
-                                    ? 10 * actorPtr->uActorRadius
-                                    : actorPtr->uActorRadius;
-                            decal_builder->AddBloodsplat(
-                                actorPtr->vPosition.x,
-                                actorPtr->vPosition.y,
-                                actorPtr->vPosition.z, 1.0, 0.0, 0.0,
-                                (float)splatRadius);
+                        if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 && engine->config->graphics.BloodSplats.Get()) {
+                            float splatRadius = actorPtr->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                            decal_builder->AddBloodsplat(actorPtr->vPosition.x, actorPtr->vPosition.y, actorPtr->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
                         }
                         Actor::Die(uActorID);
                         Actor::ApplyFineForKillingPeasant(uActorID);
@@ -7077,7 +7071,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         }
 
         // special attack trigger
-        if (!engine->config->NoDamage() && actorPtr->pMonsterInfo.uSpecialAttackType &&
+        if (!engine->config->debug.NoDamage.Get() && actorPtr->pMonsterInfo.uSpecialAttackType &&
             rand() % 100 < actorPtr->pMonsterInfo.uLevel *
                                 actorPtr->pMonsterInfo.uSpecialAttackLevel) {
             playerPtr->ReceiveSpecialAttackEffect(actorPtr->pMonsterInfo.uSpecialAttackType, actorPtr);
@@ -7232,15 +7226,9 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                         } else {
                             // actor killed by retaliation
                             if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
-                                !engine->config->NoBloodsplats()) {
-                                int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
-                                        ? 10 * actorPtr->uActorRadius
-                                        : actorPtr->uActorRadius;
-                                decal_builder->AddBloodsplat(
-                                    actorPtr->vPosition.x,
-                                    actorPtr->vPosition.y,
-                                    actorPtr->vPosition.z, 1.0, 0.0, 0.0,
-                                    (float)splatRadius);
+                                engine->config->graphics.BloodSplats.Get()) {
+                                float splatRadius = actorPtr->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                                decal_builder->AddBloodsplat(actorPtr->vPosition.x, actorPtr->vPosition.y, actorPtr->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
                             }
 
                             Actor::Die(uActorID);
@@ -7259,7 +7247,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
             }
 
             // special attack trigger
-            if (!dmgSource && !engine->config->NoDamage() &&
+            if (!dmgSource && !engine->config->debug.NoDamage.Get() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
                 rand() % 100 < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
@@ -7887,7 +7875,7 @@ void Player::PlaySound(PlayerSpeech speech, int a3) {
     unsigned int expressionDuration = 0;
 
     unsigned int pickedSoundID = 0;
-    if (engine->config->voice_level > 0) {
+    if (engine->config->settings.VoiceLevel.Get() > 0) {
         for (int i = 0; i < 2; i++) {
             if (SoundSetAction[speech][i]) {
                 speechVariantArray[speechCount] = SoundSetAction[speech][i];

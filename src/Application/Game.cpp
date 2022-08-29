@@ -148,16 +148,9 @@ int Game::Run() {
 
     SetDataPath(FindMm7Directory());
 
-    EngineFactory engineFactory;
-    engine = engineFactory.CreateEngine(config->command_line);
-    ::engine = engine;
+    config->Startup();
 
-    if (!engine) {
-        log->Warning("Engine creation failed");
-        return -1;
-    }
-
-    window = OSWindowFactory().Create();
+    window = OSWindowFactory().Create(config);
     ::window = window;
 
     if (!window) {
@@ -165,11 +158,7 @@ int Game::Run() {
         return -1;
     }
 
-    render = IRenderFactory().Create(
-        window,
-        engine->config->renderer_name,
-        false
-    );
+    render = IRenderFactory().Create(config, window);
     ::render = render;
 
     if (!render) {
@@ -188,7 +177,7 @@ int Game::Run() {
     }
     ::nuklear = nuklear;
 
-    keyboardActionMapping = std::make_shared<KeyboardActionMapping>();
+    keyboardActionMapping = std::make_shared<KeyboardActionMapping>(config);
     ::keyboardActionMapping = keyboardActionMapping;
 
     keyboardInputHandler = std::make_shared<KeyboardInputHandler>(
@@ -199,8 +188,14 @@ int Game::Run() {
     mouse = EngineIoc::ResolveMouse();
     ::mouse = mouse;
 
-    engine->keyboardActionMapping = keyboardActionMapping;
-    engine->keyboardInputHandler = keyboardInputHandler;
+    EngineFactory engineFactory;
+    engine = engineFactory.CreateEngine(config);
+    ::engine = engine;
+
+    if (!engine) {
+        log->Warning("Engine creation failed");
+        return -1;
+    }
 
     engine->Initialize();
 
@@ -226,11 +221,19 @@ int Game::Run() {
         ::engine = nullptr;
     }
 
+    if (render) {
+        render->Release();
+        render = nullptr;
+    }
+
+    if (window) {
+        window->Release();
+        config->SaveConfiguration();
+        window = nullptr;
+    }
+
     return 0;
 }
-
-
-
 
 bool Game::Loop() {
     while (1) {
@@ -256,7 +259,7 @@ bool Game::Loop() {
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
-            if (engine->config->NoMargareth()) {
+            if (engine->config->debug.NoMargareth.Get()) {
                 _449B7E_toggle_bit(pParty->_quest_bits, QBIT_EMERALD_ISLAND_MARGARETH_OFF, 1);
             }
 
@@ -324,13 +327,13 @@ void ShowMM7IntroVideo_and_LoadingScreen() {
     bGameoverLoop = true;
 
     render->PresentBlackScreen();
-    if (!engine->config->NoVideo()) {
-        if (!engine->config->no_logo) {
+    if (!engine->config->debug.NoVideo.Get()) {
+        if (!engine->config->debug.NoLogo.Get()) {
             pMediaPlayer->PlayFullscreenMovie("3dologo");
             pMediaPlayer->PlayFullscreenMovie("new world logo");
             pMediaPlayer->PlayFullscreenMovie("jvc");
         }
-        if (!engine->config->no_intro) {
+        if (!engine->config->debug.NoIntro.Get()) {
             pMediaPlayer->PlayFullscreenMovie("Intro");
         }
     }
@@ -1509,7 +1512,7 @@ void Game::EventLoop() {
                         v63 = 206;
                     }
                     if (!_449B57_test_bit(pParty->_quest_bits, v63)
-                        && !engine->config->debug_town_portal)
+                        && !engine->config->debug.TownPortal.Get())
                         return;
                     goto LABEL_486;
                 case UIMSG_HintTownPortal: {
@@ -1537,7 +1540,7 @@ void Game::EventLoop() {
                     }
 
                     if (!_449B57_test_bit(pParty->_quest_bits, v68)
-                        && !engine->config->debug_town_portal) {
+                        && !engine->config->debug.TownPortal.Get()) {
                         render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
                         continue;
                     }
@@ -1664,7 +1667,7 @@ void Game::EventLoop() {
                     v83 = vis->get_picked_object_zbuf_val();
                     v44 = v83.object_pid;
                     v84 = v83.depth;
-                    if (PID_TYPE(v44) != 3 || v84 >= engine->config->ranged_attack_depth)
+                    if (PID_TYPE(v44) != 3 || v84 >= engine->config->gameplay.RangedAttackDepth.Get())
                         continue;
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
@@ -1815,7 +1818,7 @@ void Game::EventLoop() {
                         pGUIWindow_CurrentMenu = new GUIWindow_Rest();
                         continue;
                     } else {
-                        if (engine->config->verbose_logging) {
+                        if (engine->config->debug.VerboseLogging.Get()) {
                             if (pParty->uFlags & PARTY_FLAGS_1_AIRBORNE) logger->Info("Party is airborne");
                             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) logger->Info("Party on water");
                         }
@@ -1985,7 +1988,7 @@ void Game::EventLoop() {
                     uAction = 0;
                     for (uint i = 0; i < 9; i++) {
                         if (pPlayers[uActiveCharacter]->pActiveSkills[PLAYER_SKILL_FIRE + i] ||
-                            engine->config->debug_all_magic) {
+                            engine->config->debug.AllMagic.Get()) {
                             if (pPlayers[uActiveCharacter]->lastOpenedSpellbookPage == i)
                                 uAction = skill_count;
                             v217[skill_count++] = i;
@@ -2023,7 +2026,7 @@ void Game::EventLoop() {
                     //  uNumSeconds = (unsigned int)pPlayers[uActiveCharacter];
                     Player *player = pPlayers[uActiveCharacter];
                     if (player->spellbook.pChapters[player->lastOpenedSpellbookPage].bIsSpellAvailable[uMessageParam]
-                        || engine->config->debug_all_magic) {
+                        || engine->config->debug.AllMagic.Get()) {
                         if (quick_spell_at_page - 1 == uMessageParam) {
                             pGUIWindow_CurrentMenu->Release();  // spellbook close
                             pEventTimer->Resume();
@@ -2676,63 +2679,62 @@ void Game::EventLoop() {
                     Party::AddGold(10000);
                     continue;
                 case UIMSG_DebugTownPortal:
-                    engine->ToggleDebugTownPortal();
+                    engine->config->debug.TownPortal.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugWizardEye:
-                    engine->ToggleDebugWizardEye();
+                    engine->config->debug.WizardEye.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugAllMagic:
-                    engine->ToggleDebugAllMagic();
+                    engine->config->debug.AllMagic.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugTerrain:
-                    engine->ToggleDebugTerrain();
+                    engine->config->debug.Terrain.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugLightmap:
-                    engine->ToggleDebugLightmap();
+                    engine->config->debug.LightmapDecals.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugTurboSpeed:
-                    engine->ToggleDebugTurboSpeed();
+                    engine->config->debug.TurboSpeed.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugNoActors:
-                    engine->ToggleDebugNoActors();
+                    engine->config->debug.NoActors.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
-                case UIMSG_DebugExtendedDrawDistance:
-                    engine->ToggleExtendedDrawDistance();
+                case UIMSG_DebugUnused:
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugSnow:
-                    engine->ToggleDebugSnow();
+                    engine->config->graphics.Snow.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugNoDamage:
-                    engine->ToggleDebugNoDamage();
+                    engine->config->debug.NoDamage.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugPortalLines:
-                    engine->ToggleDebugPortalLines();
+                    engine->config->debug.PortalOutlines.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugPickedFace:
-                    engine->ToggleDebugPickedFace();
+                    engine->config->debug.ShowPickedFace.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugShowFPS:
-                    engine->ToggleDebugShowFPS();
+                    engine->config->debug.ShowFPS.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugSeasonsChange:
-                    engine->ToggleDebugSeasonsChange();
+                    engine->config->graphics.SeasonsChange.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 case UIMSG_DebugVerboseLogging:
-                    engine->ToggleVerboseLogging();
+                    engine->config->debug.VerboseLogging.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
                 default:
@@ -2766,7 +2768,7 @@ void Game::EventLoop() {
 
 //----- (0046A14B) --------------------------------------------------------
 void Game::OnPressSpace() {
-    engine->PickKeyboard(engine->config->keyboard_interaction_depth,
+    engine->PickKeyboard(engine->config->gameplay.KeyboardInteractionDepth.Get(),
                          keyboardInputHandler->IsKeyboardPickingOutlineToggled(),
                          &vis_sprite_filter_3, &vis_door_filter);
 

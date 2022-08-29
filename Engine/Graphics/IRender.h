@@ -2,18 +2,14 @@
 #include <memory>
 #include <string>
 
-#include "Engine/Graphics/IRenderConfig.h"
-#include "Engine/Graphics/IRenderConfigFactory.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Texture.h"
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"
 #include "Engine/VectorTypes.h"
+#include "src/Application/GameConfig.h"
 
-
-using Graphics::IRenderConfig;
-using Graphics::IRenderConfigFactory;
 
 class OSWindow;
 class Sprite;
@@ -188,6 +184,7 @@ class HWLTexture;
 class IRender {
  public:
     inline IRender(
+        std::shared_ptr<Application::GameConfig> config,
         std::shared_ptr<OSWindow> window,
         DecalBuilder *decal_builder,
         LightmapBuilder *lightmap_builder,
@@ -196,6 +193,7 @@ class IRender {
         Vis *vis,
         Log *logger
     ) {
+        this->config = config;
         this->window = window;
         this->decal_builder = decal_builder;
         this->lightmap_builder = lightmap_builder;
@@ -214,11 +212,6 @@ class IRender {
         drawcalls = 0;
     }
     virtual ~IRender() {}
-
-    virtual bool Configure(std::shared_ptr<const IRenderConfig> config) {
-        this->config = config;
-        return true;
-    }
 
     virtual bool Initialize() = 0;
 
@@ -404,39 +397,7 @@ class IRender {
 
     virtual void DrawTwodVerts() = 0;
 
-    inline void ToggleTint() {
-        IRenderConfigFactory renderConfigFactory;
-        auto new_config = renderConfigFactory.Clone(config);
-        new_config->is_tinting = !new_config->is_tinting;
-
-        this->config = new_config;
-    }
-    inline void ToggleColoredLights() {
-        IRenderConfigFactory renderConfigFactory;
-        auto new_config = renderConfigFactory.Clone(config);
-        new_config->is_using_colored_lights = !new_config->is_using_colored_lights;
-
-        this->config = new_config;
-    }
-    inline void SetUsingSpecular(bool is_using_specular) {
-        IRenderConfigFactory renderConfigFactory;
-        auto new_config = renderConfigFactory.Clone(config);
-        new_config->is_using_specular = is_using_specular;
-
-        this->config = new_config;
-    }
-    inline void SetUsingFog(bool is_using_fog) {
-        IRenderConfigFactory renderConfigFactory;
-        auto new_config = renderConfigFactory.Clone(config);
-        new_config->is_using_fog = is_using_fog;
-
-        this->config = new_config;
-    }
-
-    inline bool IsUsingSpecular() const { return config->is_using_specular; }
-
-
-    std::shared_ptr<const IRenderConfig> config;
+    std::shared_ptr<Application::GameConfig> config = nullptr;
     int *pActiveZBuffer;
     uint32_t uFogColor;
     unsigned int pHDWaterBitmapIDs[7];

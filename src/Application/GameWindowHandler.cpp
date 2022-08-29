@@ -73,7 +73,7 @@ void GameWindowHandler::OnMouseLeftClick(int x, int y) {
         }
 
         if (engine) {
-            engine->PickMouse(engine->config->mouse_interaction_depth, x, y, false,
+            engine->PickMouse(engine->config->gameplay.MouseInteractionDepth.Get(), x, y, false,
                               &vis_sprite_filter_3, &vis_door_filter);
         }
 
@@ -275,9 +275,9 @@ void GameWindowHandler::OnDeactivated() {
 }
 
 void GameWindowHandler::OnToggleFullscreen() {
-    engine->ToggleFullscreen();
-    if (engine->config->fullscreen)
+    engine->config->window.Fullscreen.Toggle();
+    if (engine->config->window.Fullscreen.Get())
         window->SetFullscreenMode();
     else
-        window->SetWindowedMode(engine->config->window_width, engine->config->window_height);
+        window->SetWindowedMode(engine->config->window.Width.Get(), engine->config->window.Height.Get());
 }

@@ -22,8 +22,8 @@
 
 bool RenderBase::Initialize() {
     window->SetWindowArea(
-        config->render_width,
-        config->render_height
+        config->window.Width.Get(),
+        config->window.Height.Get()
     );
 
     if (!pD3DBitmaps.Open(MakeDataPath("data", "d3dbitmap.hwl"))) {
@@ -37,7 +37,7 @@ bool RenderBase::Initialize() {
 }
 
 void RenderBase::PostInitialization() {
-    if (!config->IsFullscreen()) {
+    if (!config->window.Fullscreen.Get()) {
         // window->SetWindowedMode(game_width, game_height);
         SwitchToWindow();
     } else {
@@ -294,14 +294,14 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
 
     unsigned int diffuse = ::GetActorTintColor(
         dimming_level, 0, a2->screen_space_z, 0, pBillboard);
-    if (config->is_tinting && a2->sTintColor & 0x00FFFFFF) {
+    if (config->graphics.Tinting.Get() && a2->sTintColor & 0x00FFFFFF) {
         diffuse = BlendColors(a2->sTintColor, diffuse);
         if (a2->sTintColor & 0xFF000000)
             diffuse = 0x007F7F7F & ((unsigned int)diffuse >> 1);
     }
 
     unsigned int specular = 0;
-    if (config->is_using_specular) {
+    if (engine->IsSpecular()) {
         specular = sub_47C3D7_get_fog_specular(0, 0, a2->screen_space_z);
     }
 

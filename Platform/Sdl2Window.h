@@ -9,8 +9,8 @@
 
 class Sdl2Window : public OSWindow {
  public:
-    inline Sdl2Window()
-        : OSWindow() {
+    inline Sdl2Window(std::shared_ptr<Application::GameConfig> config): OSWindow() {
+        this->config = config;
     }
 
     void SetFullscreenMode() override;
@@ -22,6 +22,7 @@ class Sdl2Window : public OSWindow {
     unsigned int GetWidth() const override;
     unsigned int GetHeight() const override;
     void SetWindowArea(int width, int height) override;
+    void SaveWindowPosition();
 
     bool OnOSMenu(int item_id) override;
 
@@ -46,11 +47,12 @@ class Sdl2Window : public OSWindow {
     SDL_Window* getSDLWindow();
     SDL_GLContext* getSDLOpenGlContext();
     SDL_Window* CreateSDLWindow();
-    void DestroySDLWindow();
+    void Release() override;
 
     // window<->renderer integration, probably should be a separate class
     void OpenGlCreate() override;
     void OpenGlSwapBuffers() override;
+    std::shared_ptr<Application::GameConfig> config = nullptr;
 
  private:
     struct Sdl2WinParams {

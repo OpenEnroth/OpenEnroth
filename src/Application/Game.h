@@ -28,7 +28,7 @@ class Game {
          this->menu = GameIoc::ResolveGameMenu();
      }
 
-     bool Configure(std::shared_ptr<const GameConfig> config) {
+     bool Configure(std::shared_ptr<GameConfig> config) {
          this->config = config;
          return true;
      }
@@ -45,7 +45,7 @@ class Game {
      void ProcessInputActions();
 
 
-     std::shared_ptr<const GameConfig> config;
+     std::shared_ptr<GameConfig> config;
      std::shared_ptr<Engine> engine;
      std::shared_ptr<OSWindow> window;
      std::shared_ptr<IRender> render;

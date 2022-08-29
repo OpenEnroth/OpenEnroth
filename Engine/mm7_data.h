@@ -29,7 +29,6 @@ extern int game_viewport_w;
 extern int pWindowList_at_506F50_minus1_indexing[1];
 extern int dword_4C9890[10];
 extern int dword_4C9920[16];
-extern char _4D864C_force_sw_render_rules;
 extern float flt_4D86CC;
 extern int dword_4D86D8;
 
@@ -95,7 +94,6 @@ extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsX;
 extern std::array<unsigned int, 2> pHiredNPCsIconsOffsetsY;
 extern std::array<int, 2> Party_Spec_Motion_status_ids;  // dword_4EE07C
 extern std::array<short, 28> word_4EE150;
-extern int ScreenshotFileNumber;  // dword_4EFA80
 extern int16_t word_4F0576[];
 
 extern std::array<int, 32> guild_mambership_flags;

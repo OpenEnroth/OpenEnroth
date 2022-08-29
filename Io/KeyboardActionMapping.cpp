@@ -83,12 +83,16 @@ void KeyboardActionMapping::MapKey(InputAction action, GameKey key, KeyToggleTyp
 }
 
 GameKey KeyboardActionMapping::MapDefaultKey(InputAction action) {
+/*
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
         if (keyMappingParams[i].m_cmdId == action) {
             return keyMappingParams[i].m_key;
         }
     }
+
     return GameKey::None;
+*/
+    return ConfigDefaultKey(action);
 }
 
 //----- (00459C82) --------------------------------------------------------
@@ -101,7 +105,9 @@ KeyToggleType KeyboardActionMapping::GetToggleType(InputAction action) const {
 }
 
 //----- (00459C8D) --------------------------------------------------------
-KeyboardActionMapping::KeyboardActionMapping() {
+KeyboardActionMapping::KeyboardActionMapping(std::shared_ptr<Application::GameConfig> config) {
+    this->config = config;
+
     SetDefaultMapping();
     ReadMappings();
 }
@@ -109,9 +115,8 @@ KeyboardActionMapping::KeyboardActionMapping() {
 //----- (00459CC4) --------------------------------------------------------
 void KeyboardActionMapping::SetDefaultMapping() {
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
-        MapKey(keyMappingParams[i].m_cmdId,
-                      keyMappingParams[i].m_key,
-                      keyMappingParams[i].m_toggType);
+        //MapKey(keyMappingParams[i].m_cmdId, keyMappingParams[i].m_key, keyMappingParams[i].m_toggType);
+        MapKey(keyMappingParams[i].m_cmdId, ConfigDefaultKey(keyMappingParams[i].m_cmdId), keyMappingParams[i].m_toggType);
     }
 }
 
@@ -121,16 +126,21 @@ void KeyboardActionMapping::ReadMappings() {
 
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
         const char *keyName = keyMappingParams[i].m_keyName.c_str();
-        GameKey commandDefaultKeyCode = keyMappingParams[i].m_key;
+        //GameKey commandDefaultKeyCode = keyMappingParams[i].m_key;
         InputAction commandId = keyMappingParams[i].m_cmdId;
         KeyToggleType toggType = keyMappingParams[i].m_toggType;
 
-        OS_GetAppString(keyName, str, 32, "DEFAULT");
-        GameKey parsedKey = GameKey::None;
-        if (strcmp(str, "DEFAULT") != 0 && TryParseDisplayName(str, &parsedKey))
-            MapKey(commandId, parsedKey);
+        //GameKey parsedKey = GameKey::None;
+        //if (strcmp(str, "DEFAULT") != 0 && TryParseDisplayName(str, &parsedKey))
+        //    MapKey(commandId, parsedKey);
+        //else
+        //    MapKey(commandId, commandDefaultKeyCode);
+        GameKey key = ConfigGetKey(commandId);
+        if (key != GameKey::None)
+            MapKey(commandId, key);
         else
-            MapKey(commandId, commandDefaultKeyCode);
+            MapKey(commandId, ConfigDefaultKey(commandId));
+
         keyToggleMap[commandId] = toggType;
     }
 }
@@ -138,8 +148,9 @@ void KeyboardActionMapping::ReadMappings() {
 //----- (0045A960) --------------------------------------------------------
 void KeyboardActionMapping::StoreMappings() {
     for (size_t i = 0; i < keyMappingParams.size(); i++) {
-        std::string display_name = GetDisplayName(GetKey(keyMappingParams[i].m_cmdId));
-        OS_SetAppString(keyMappingParams[i].m_keyName.c_str(), display_name.c_str());
+        //std::string display_name = GetDisplayName(GetKey(keyMappingParams[i].m_cmdId));
+        //OS_SetAppString(keyMappingParams[i].m_keyName.c_str(), display_name.c_str());
+        ConfigSetKey(keyMappingParams[i].m_cmdId, GetKey(keyMappingParams[i].m_cmdId));
     }
 }
 
@@ -160,3 +171,130 @@ KeyToggleType GetToggleType(InputAction action) {
     else
         return KeyToggleType::TOGGLE_Continuously;
 }
+
+GameConfig::ConfigValue<std::string> *KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
+    GameConfig::ConfigValue<std::string> *val = nullptr;
+
+    switch (action) {
+        case(InputAction::MoveForward):
+            val = &config->keybindings.Forward;
+            break;
+        case(InputAction::MoveBackwards):
+            val = &config->keybindings.Backward;
+            break;
+        case(InputAction::TurnLeft):
+            val = &config->keybindings.Left;
+            break;
+        case(InputAction::TurnRight):
+            val = &config->keybindings.Right;
+            break;
+        case(InputAction::Attack):
+            val = &config->keybindings.Attack;
+            break;
+        case(InputAction::CastReady):
+            val = &config->keybindings.CastReady;
+            break;
+        case(InputAction::Yell):
+            val = &config->keybindings.Yell;
+            break;
+        case(InputAction::Jump):
+            val = &config->keybindings.Jump;
+            break;
+        case(InputAction::Combat):
+            val = &config->keybindings.Combat;
+            break;
+        case(InputAction::EventTrigger):
+            val = &config->keybindings.EventTrigger;
+            break;
+        case(InputAction::Cast):
+            val = &config->keybindings.Cast;
+            break;
+        case(InputAction::Pass):
+            val = &config->keybindings.Pass;
+            break;
+        case(InputAction::CharCycle):
+            val = &config->keybindings.CharCycle;
+            break;
+        case(InputAction::Quest):
+            val = &config->keybindings.Quest;
+            break;
+        case(InputAction::QuickRef):
+            val = &config->keybindings.QuickReference;
+            break;
+        case(InputAction::Rest):
+            val = &config->keybindings.Rest;
+            break;
+        case(InputAction::TimeCal):
+            val = &config->keybindings.TimeCalendar;
+            break;
+        case(InputAction::Autonotes):
+            val = &config->keybindings.AutoNotes;
+            break;
+        case(InputAction::Mapbook):
+            val = &config->keybindings.MapBook;
+            break;
+        case(InputAction::LookUp):
+            val = &config->keybindings.LookUp;
+            break;
+        case(InputAction::LookDown):
+            val = &config->keybindings.LookDown;
+            break;
+        case(InputAction::CenterView):
+            val = &config->keybindings.CenterView;
+            break;
+        case(InputAction::ZoomIn):
+            val = &config->keybindings.ZoomIn;
+            break;
+        case(InputAction::ZoomOut):
+            val = &config->keybindings.ZoomOut;
+            break;
+        case(InputAction::FlyUp):
+            val = &config->keybindings.FlyUp;
+            break;
+        case(InputAction::FlyDown):
+            val = &config->keybindings.FlyDown;
+            break;
+        case(InputAction::Land):
+            val = &config->keybindings.Land;
+            break;
+        case(InputAction::AlwaysRun):
+            val = &config->keybindings.AlwaysRun;
+            break;
+        case(InputAction::StrafeLeft):
+            val = &config->keybindings.StepLeft;
+            break;
+        case(InputAction::StrafeRight):
+            val = &config->keybindings.StepRight;
+            break;
+    }
+
+    return val;
+}
+
+GameKey KeyboardActionMapping::ConfigDefaultKey(InputAction action) {
+    GameKey key = GameKey::None;
+    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
+
+    if (val)
+        TryParseDisplayName(val->Default(), &key);
+
+    return key;
+}
+
+GameKey KeyboardActionMapping::ConfigGetKey(InputAction action) {
+    GameKey key = GameKey::None;
+    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
+
+    if (val)
+        TryParseDisplayName(val->Get(), &key);
+
+    return key;
+}
+
+void KeyboardActionMapping::ConfigSetKey(InputAction action, GameKey key) {
+    GameConfig::ConfigValue<std::string> *val = InputActionToConfigKey(action);
+
+    if (val)
+        val->Set(GetDisplayName(key));
+}
+

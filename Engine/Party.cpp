@@ -73,11 +73,11 @@ void Party::CountHirelings() {  // non hired followers
 //----- (mm6c::004858D0) --------------------------------------------------
 void Party::Zero() {
     field_0_set25_unused = 25;
-    uPartyHeight = uDefaultPartyHeight = 192;
-    sEyelevel = uDefaultEyelevel = 160;
+    uPartyHeight = uDefaultPartyHeight = engine->config->gameplay.PartyHeight.Get();
+    sEyelevel = uDefaultEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
     radius = 37;
     y_rotation_granularity = 25;
-    uWalkSpeed = 384;
+    uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
     y_rotation_speed = 90;
     jump_strength = 5;
     field_28_set0_unused = 0;
@@ -348,7 +348,7 @@ void Party::GiveFood(int amount) {
 }
 
 int Party::GetGold() const {
-    if (engine->config->debug_infinite_gold) {
+    if (engine->config->debug.InfiniteGold.Get()) {
         return 99999;
     }
 
@@ -356,7 +356,7 @@ int Party::GetGold() const {
 }
 
 int Party::GetFood() const {
-    if (engine->config->debug_infinite_food) {
+    if (engine->config->debug.InfiniteFood.Get()) {
         return 99999;
     }
 
@@ -594,9 +594,9 @@ void Party::Reset() {
     Zero();
 
     field_708_set15_unused = 15;
-    sEyelevel = 160;
-    uNumGold = 200;
-    uNumFoodRations = 7;
+    sEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
+    uNumGold = engine->config->gameplay.NewGameGold.Get();
+    uNumFoodRations = engine->config->gameplay.NewGameFood.Get();
 
     alignment = PartyAlignment::PartyAlignment_Neutral;
     SetUserInterface(alignment, true);
@@ -719,10 +719,10 @@ void Party::ResetPosMiscAndSpellBuffs() {
     this->sRotationY = 0;
     this->uFallSpeed = 0;
     this->field_28_set0_unused = 0;
-    this->uDefaultPartyHeight = 120;
+    this->uDefaultPartyHeight = engine->config->gameplay.PartyHeight.Get(); // was 120?
     this->radius = 37;
     this->y_rotation_granularity = 25;
-    this->uWalkSpeed = 384;
+    this->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
     this->y_rotation_speed = 90;
     this->jump_strength = 5;
     this->_6FC_water_lava_timer = 0;

@@ -167,6 +167,7 @@ void SkyBillboardStruct::CalcSkyFrustumVec(int x1, int y1, int z1, int x2, int y
 }
 
 RenderOpenGL::RenderOpenGL(
+    std::shared_ptr<Application::GameConfig> config,
     std::shared_ptr<OSWindow> window,
     DecalBuilder* decal_builder,
     LightmapBuilder* lightmap_builder,
@@ -174,7 +175,7 @@ RenderOpenGL::RenderOpenGL(
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis* vis,
     Log* logger
-) : RenderBase(window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
+) : RenderBase(config, window, decal_builder, lightmap_builder, spellfx, particle_engine, vis, logger) {
     clip_w = 0;
     clip_x = 0;
     clip_y = 0;
@@ -298,7 +299,7 @@ linesverts lineshaderstore[2000] = {};
 int linevertscnt = 0;
 
 void RenderOpenGL::BeginLines2D() {
-    if (linevertscnt && engine->config->verbose_logging)
+    if (linevertscnt && engine->config->debug.VerboseLogging.Get())
         logger->Warning("BeginLines with points still stored in buffer");
 
     DrawTwodVerts();
@@ -451,7 +452,7 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     if (pSoftBillboard->uFlags & 4) {
         v31 = v31 * -1.0f;
     }
-    if (config->is_tinting && pSoftBillboard->sTintColor) {
+    if (config->graphics.Tinting.Get() && pSoftBillboard->sTintColor) {
         v11 = ::GetActorTintColor(dimming_level, 0,
             pSoftBillboard->screen_space_z, 0, 0);
         v12 = BlendColors(pSoftBillboard->sTintColor, v11);
@@ -887,7 +888,7 @@ void RenderOpenGL::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 
 void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     if (!img) {
-        if (engine->config->verbose_logging)
+        if (engine->config->debug.VerboseLogging.Get())
             logger->Warning("Null img passed to DrawImage");
         return;
     }
@@ -1383,7 +1384,8 @@ void RenderOpenGL::PackScreenshot(unsigned int width, unsigned int height,
 
 void RenderOpenGL::SavePCXScreenshot() {
     char file_name[40];
-    sprintf(file_name, "screen%0.2i.pcx", ScreenshotFileNumber++ % 100);
+    engine->config->settings.ScreenshotNumber.Set(engine->config->settings.ScreenshotNumber.Get() + 1);
+    sprintf(file_name, "screen%0.2i.pcx", engine->config->settings.ScreenshotNumber.Get() % 100);
 
     SaveWinnersCertificate(file_name);
 }
@@ -1700,7 +1702,7 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     TextureOpenGL *texture = (TextureOpenGL*)pArcomageGame->pSprites;
 
     if (!texture) {
-        if (engine->config->verbose_logging)
+        if (engine->config->debug.VerboseLogging.Get())
             logger->Warning("Missing Arcomage Sprite Sheet");
         return;
     }
@@ -1850,7 +1852,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                         v6 + v7);
 
-                    if (engine->config->seasons_change) {
+                    if (engine->config->graphics.SeasonsChange.Get()) {
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + v7, pParty->uCurrentMonth);
                     }
 
@@ -1885,7 +1887,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                         r = 255;
                         g = 255;
                         b_ = 255;
-                        if (render->config->is_using_colored_lights) {
+                        if (render->config->graphics.ColoredLights.Get()) {
                             r = decor_desc->uColoredLightRed;
                             g = decor_desc->uColoredLightGreen;
                             b_ = decor_desc->uColoredLightBlue;
@@ -2071,7 +2073,7 @@ Texture *RenderOpenGL::CreateTexture_Blank(unsigned int width, unsigned int heig
 
 
 Texture *RenderOpenGL::CreateTexture(const std::string &name) {
-    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->use_hwl_bitmaps));
+    return TextureOpenGL::Create(new Bitmaps_LOD_Loader(pBitmaps_LOD, name, engine->config->graphics.HWLBitmaps.Get()));
 }
 
 Texture *RenderOpenGL::CreateSprite(const std::string &name, unsigned int palette_id,
@@ -2120,7 +2122,7 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         // takes care of endian flip from literals here - hence BGRA
         gl_format = GL_BGRA;
     } else {
-        if (engine->config->verbose_logging)
+        if (engine->config->debug.VerboseLogging.Get())
             log->Warning("Image %s not loaded!", t->GetName()->c_str());
     }
 
@@ -2477,7 +2479,7 @@ void RenderOpenGL::DrawTerrainD3D() {
     // actual drawing
 
     // terrain debug
-    if (engine->config->debug_terrain)
+    if (engine->config->debug.Terrain.Get())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -2638,7 +2640,7 @@ void RenderOpenGL::DrawTerrainD3D() {
     glBindTexture(GL_TEXTURE_2D, NULL);
 
     //end terrain debug
-    if (engine->config->debug_terrain)
+    if (engine->config->debug.Terrain.Get())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     GL_Check_Errors();
@@ -3000,7 +3002,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
     _set_ortho_projection(1);
     _set_ortho_modelview();
 
-    if (billbstorecnt && engine->config->verbose_logging)
+    if (billbstorecnt && engine->config->debug.VerboseLogging.Get())
         logger->Warning("Billboard shader store isnt empty!");
 
     // track loaded tex
@@ -3217,7 +3219,7 @@ void RenderOpenGL::DrawBillboards() {
 
         glDrawArrays(GL_TRIANGLES, offset, (6 * cnt));
 
-        if (engine->config->verbose_logging) {
+        if (engine->config->debug.VerboseLogging.Get()) {
             if (cnt > 1) logger->Info("billb batch %i", cnt);
         }
 
@@ -3335,7 +3337,7 @@ void RenderOpenGL::DrawTextureAlphaNew(float u, float v, Image *img) {
 void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourmask) {
     TextureOpenGL *texture = dynamic_cast<TextureOpenGL *>(tex);
     if (!texture) {
-        if (engine->config->verbose_logging)
+        if (engine->config->debug.VerboseLogging.Get())
             logger->Info("Null texture passed to DrawTextureNew");
         return;
     }
@@ -3458,7 +3460,7 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
 void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, int custom_height) {
     TextureOpenGL* texture = dynamic_cast<TextureOpenGL*>(img);
     if (!texture) {
-        if (engine->config->verbose_logging)
+        if (engine->config->debug.VerboseLogging.Get())
             logger->Info("Null texture passed to DrawTextureCustomHeight");
         return;
     }
@@ -3842,8 +3844,7 @@ void RenderOpenGL::Present() {
     ClearBlack();
 
     // crude frame rate limiting
-    const int MAX_FRAME_RATE = 200;
-    const int MIN_FRAME_TIME = 1000 / MAX_FRAME_RATE;
+    const float MIN_FRAME_TIME = 1000000000 / (float)engine->config->graphics.FPSLimit.Get();
 
     static std::chrono::time_point<std::chrono::high_resolution_clock> lastframe{ std::chrono::high_resolution_clock::now() };
     uint64_t framedt{};
@@ -3852,7 +3853,7 @@ void RenderOpenGL::Present() {
     // run in circles
     do {
         now = std::chrono::high_resolution_clock::now();
-        framedt = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastframe).count();
+        framedt = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastframe).count();
     } while (framedt < MIN_FRAME_TIME);
     lastframe = now;
 }
@@ -4209,7 +4210,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // terrain debug
-    if (engine->config->debug_terrain)
+    if (engine->config->debug.Terrain.Get())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -4362,7 +4363,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
     glBindTexture(GL_TEXTURE_2D, NULL);
 
     //end terrain debug
-    if (engine->config->debug_terrain)
+    if (engine->config->debug.Terrain.Get())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     GL_Check_Errors();
@@ -4876,7 +4877,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // terrain debug
-        if (engine->config->debug_terrain)
+        if (engine->config->debug.Terrain.Get())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -5142,7 +5143,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
         //end terrain debug
-        if (engine->config->debug_terrain)
+        if (engine->config->debug.Terrain.Get())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
@@ -5635,7 +5636,7 @@ void RenderOpenGL::DrawTwodVerts() {
 
         glDrawArrays(GL_TRIANGLES, offset, (6*cnt));
 
-        if (engine->config->verbose_logging) {
+        if (engine->config->debug.VerboseLogging.Get()) {
             if (cnt > 1) logger->Info("twod batch %i", cnt);
         }
 

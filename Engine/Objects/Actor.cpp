@@ -3330,7 +3330,6 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     unsigned __int16 v16;            // cx@25
-    int v33;                         // eax@100
     int v40;                         // ebx@107
     int extraRecoveryTime;           // qax@125
     unsigned __int16 v43;            // ax@132
@@ -3547,7 +3546,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     if (pMonster->sCurrentHP > 0) {
         Actor::AI_Stun(uActorID_Monster, a1, 0);
         Actor::AggroSurroundingPeasants(uActorID_Monster, 1);
-        if (!engine->config->NoShowDamage()) {
+        if (engine->config->settings.ShowHits.Get()) {
             if (projectileSprite)
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
@@ -3565,14 +3564,9 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         }
     } else {
         if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster & 1) {
-            if (!engine->config->NoBloodsplats()) {
-                v33 = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
-                          ? 10 * pMonster->uActorRadius
-                          : pMonster->uActorRadius;
-                decal_builder->AddBloodsplat((float)pMonster->vPosition.x,
-                                             (float)pMonster->vPosition.y,
-                                             (float)pMonster->vPosition.z, 1.0,
-                                             0.0, 0.0, (float)v33);
+            if (engine->config->graphics.BloodSplats.Get()) {
+                float splatRadius = pMonster->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                decal_builder->AddBloodsplat((float)pMonster->vPosition.x, (float)pMonster->vPosition.y, (float)pMonster->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
             }
         }
         Actor::Die(uActorID_Monster);
@@ -3585,7 +3579,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (rand() % 100 < 20)
             v40 = ((signed int)pMonster->pMonsterInfo.uHP >= 100) + 1;
         player->PlaySound((PlayerSpeech)v40, 0);
-        if (!engine->config->NoShowDamage()) {
+        if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
                 player->pName,
@@ -3605,7 +3599,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         if (!pParty->bTurnBasedModeOn)
             extraRecoveryTime = (int)(debug_combat_recovery_mul * flt_debugrecmod3 * 20.0);
         pMonster->pMonsterInfo.uRecoveryTime += extraRecoveryTime;
-        if (!engine->config->NoShowDamage()) {
+        if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_STUNS_S,
                 player->pName,
@@ -3619,7 +3613,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
         v45 = SkillToMastery(v43);
         GameTime v46 = GameTime(0, v43 & 63);  // ??
         pMonster->pActorBuffs[ACTOR_BUFF_PARALYZED].Apply((pParty->GetPlayingTime() + v46), v45, 0, 0, 0);
-        if (!engine->config->NoShowDamage()) {
+        if (engine->config->settings.ShowHits.Get()) {
             GameUI_SetStatusBar(
                 LSTR_FMT_S_PARALYZES_S,
                 player->pName,
