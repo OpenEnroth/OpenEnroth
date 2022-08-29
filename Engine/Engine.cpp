@@ -882,10 +882,6 @@ bool MM7_LoadLods() {
     return true;
 }
 
-const int default_party_walk_speed = 384;
-const int default_party_eye_level = 160;
-const int default_party_height = 192;
-
 //----- (004651F4) --------------------------------------------------------
 bool Engine::MM7_Initialize() {
     srand(OS_GetTime());
@@ -896,11 +892,9 @@ bool Engine::MM7_Initialize() {
     pParty = new Party();
 
     memset(&pParty->pHirelings, 0, sizeof(pParty->pHirelings));
-    pParty->uWalkSpeed = default_party_walk_speed;
-    pParty->uDefaultEyelevel = default_party_eye_level;
-    pParty->sEyelevel = default_party_eye_level;
-    pParty->uDefaultPartyHeight = default_party_height;
-    pParty->uPartyHeight = default_party_height;
+    pParty->uDefaultEyelevel = pParty->sEyelevel = engine->config->gameplay.PartyEyeLevel.Get();
+    pParty->uDefaultPartyHeight = pParty->uPartyHeight = engine->config->gameplay.PartyHeight.Get();
+    pParty->uWalkSpeed = engine->config->gameplay.PartyWalkSpeed.Get();
 
     MM6_Initialize();
 

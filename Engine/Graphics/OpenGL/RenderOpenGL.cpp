@@ -3843,8 +3843,7 @@ void RenderOpenGL::Present() {
     ClearBlack();
 
     // crude frame rate limiting
-    const int MAX_FRAME_RATE = 200;
-    const int MIN_FRAME_TIME = 1000 / MAX_FRAME_RATE;
+    const float MIN_FRAME_TIME = 1000000000 / (float)engine->config->graphics.FPSLimit.Get();
 
     static std::chrono::time_point<std::chrono::high_resolution_clock> lastframe{ std::chrono::high_resolution_clock::now() };
     uint64_t framedt{};
@@ -3853,7 +3852,7 @@ void RenderOpenGL::Present() {
     // run in circles
     do {
         now = std::chrono::high_resolution_clock::now();
-        framedt = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastframe).count();
+        framedt = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastframe).count();
     } while (framedt < MIN_FRAME_TIME);
     lastframe = now;
 }

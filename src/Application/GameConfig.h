@@ -156,6 +156,13 @@ namespace Application {
             /** Maximum depth for item pickup / opening chests / activating levers / etc with a mouse. */
             ConfigValue<float> MouseInteractionDepth = ConfigValue<float>("mouse_interaction_depth", 512.0f, &ValidateInteractionDepth);
 
+            ConfigValue<int> NewGameFood = ConfigValue<int>("new_game_food", 7);
+            ConfigValue<int> NewGameGold = ConfigValue<int>("new_game_gold", 200);
+
+            ConfigValue<int> PartyEyeLevel = ConfigValue<int>("party_eye_level", 160);
+            ConfigValue<int> PartyHeight = ConfigValue<int>("party_height", 192);
+            ConfigValue<int> PartyWalkSpeed = ConfigValue<int>("party_walk_speed", 384);
+
             /** Max depth for ranged attacks and ranged spells. It's impossible to target monsters that are further away
               * than this value. Incidentally this is also the depth at which status bar tips are displayed on mouse over. */
             ConfigValue<float> RangedAttackDepth = ConfigValue<float>("ranged_attack_depth", 5120.0f, &ValidateRangedAttackDepth);
@@ -236,6 +243,9 @@ namespace Application {
 
             /** Currently not in use, should disable fog effect just like a snow. */
             ConfigValue<bool> Fog = ConfigValue<bool>("fog", false);
+
+            /** FPS Limit */
+            ConfigValue<int> FPSLimit = ConfigValue<int>("fps_limit", 60);
 
             /** Isn't currently in use? */
             ConfigValue<int> Gamma = ConfigValue<int>("gamma", 4, &ValidateGamma);

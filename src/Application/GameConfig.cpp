@@ -266,6 +266,11 @@ void GameConfig::Gameplay::Default() {
     MouseInfoDepthIndoor.Reset();
     MouseInfoDepthOutdoor.Reset();
     MouseInteractionDepth.Reset();
+    NewGameFood.Reset();
+    NewGameGold.Reset();
+    PartyEyeLevel.Reset();
+    PartyHeight.Reset();
+    PartyWalkSpeed.Reset();
     RangedAttackDepth.Reset();
     ShowUndentifiedItem.Reset();
 }
@@ -279,6 +284,11 @@ void GameConfig::Gameplay::Load() {
     LoadOption(section_name, &MouseInfoDepthIndoor);
     LoadOption(section_name, &MouseInfoDepthOutdoor);
     LoadOption(section_name, &MouseInteractionDepth);
+    LoadOption(section_name, &NewGameFood);
+    LoadOption(section_name, &NewGameGold);
+    LoadOption(section_name, &PartyEyeLevel);
+    LoadOption(section_name, &PartyHeight);
+    LoadOption(section_name, &PartyWalkSpeed);
     LoadOption(section_name, &RangedAttackDepth);
     LoadOption(section_name, &ShowUndentifiedItem);
 }
@@ -292,6 +302,11 @@ void GameConfig::Gameplay::Save() {
     SaveOption(section_name, &MouseInfoDepthIndoor);
     SaveOption(section_name, &MouseInfoDepthOutdoor);
     SaveOption(section_name, &MouseInteractionDepth);
+    SaveOption(section_name, &NewGameFood);
+    SaveOption(section_name, &NewGameGold);
+    SaveOption(section_name, &PartyEyeLevel);
+    SaveOption(section_name, &PartyHeight);
+    SaveOption(section_name, &PartyWalkSpeed);
     SaveOption(section_name, &RangedAttackDepth);
     SaveOption(section_name, &ShowUndentifiedItem);
 }
@@ -306,6 +321,7 @@ void GameConfig::Graphics::Default() {
     D3DDevice.Reset();
     DynamicBrightness.Reset();
     Fog.Reset();
+    FPSLimit.Reset();
     Gamma.Reset();
     HWLBitmaps.Reset();
     HWLSprites.Reset();
@@ -327,6 +343,7 @@ void GameConfig::Graphics::Load() {
     LoadOption(section_name, &D3DDevice);
     LoadOption(section_name, &DynamicBrightness);
     LoadOption(section_name, &Fog);
+    LoadOption(section_name, &FPSLimit);
     LoadOption(section_name, &Gamma);
     LoadOption(section_name, &HWLBitmaps);
     LoadOption(section_name, &HWLSprites);
@@ -348,6 +365,7 @@ void GameConfig::Graphics::Save() {
     SaveOption(section_name, &D3DDevice);
     SaveOption(section_name, &DynamicBrightness);
     SaveOption(section_name, &Fog);
+    SaveOption(section_name, &FPSLimit);
     SaveOption(section_name, &Gamma);
     SaveOption(section_name, &HWLBitmaps);
     SaveOption(section_name, &HWLSprites);
