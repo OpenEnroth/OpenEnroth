@@ -308,7 +308,7 @@ namespace Application {
             ConfigValue<std::string> MapBook = ConfigValue<std::string>("map_book", "M", &ValidateKey);
             ConfigValue<std::string> Pass = ConfigValue<std::string>("pass", "B", &ValidateKey);
             ConfigValue<std::string> Quest = ConfigValue<std::string>("quest", "Q", &ValidateKey);
-            ConfigValue<std::string> QuickReference = ConfigValue<std::string>("quick_reference", "Q", &ValidateKey);
+            ConfigValue<std::string> QuickReference = ConfigValue<std::string>("quick_reference", "Z", &ValidateKey);
             ConfigValue<std::string> Rest = ConfigValue<std::string>("rest", "R", &ValidateKey);
             ConfigValue<std::string> Right = ConfigValue<std::string>("right", "RIGHT", &ValidateKey);
             ConfigValue<std::string> StepLeft = ConfigValue<std::string>("step_left", "L BRACKET", &ValidateKey);
