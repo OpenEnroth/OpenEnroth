@@ -130,7 +130,6 @@ void KeyboardActionMapping::ReadMappings() {
         InputAction commandId = keyMappingParams[i].m_cmdId;
         KeyToggleType toggType = keyMappingParams[i].m_toggType;
 
-        //OS_GetAppString(keyName, str, 32, "DEFAULT");
         //GameKey parsedKey = GameKey::None;
         //if (strcmp(str, "DEFAULT") != 0 && TryParseDisplayName(str, &parsedKey))
         //    MapKey(commandId, parsedKey);

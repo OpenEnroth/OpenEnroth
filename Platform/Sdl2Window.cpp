@@ -469,15 +469,24 @@ void Sdl2Window::MessageProc(const SDL_Event &e) {
 
         case SDL_WINDOWEVENT: {
             switch (e.window.event) {
-                case SDL_WINDOWEVENT_EXPOSED: {
+                case SDL_WINDOWEVENT_EXPOSED:
                     gameCallback->OnPaint();
-                } break;
-                case SDL_WINDOWEVENT_FOCUS_LOST: {
+                    break;
+
+                case SDL_WINDOWEVENT_FOCUS_LOST:
                     gameCallback->OnDeactivated();
-                } break;
-                case SDL_WINDOWEVENT_FOCUS_GAINED: {
+                    break;
+
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
                     gameCallback->OnActivated();
-                } break;
+                    break;
+
+                case SDL_WINDOWEVENT_MOVED:
+                    SaveWindowPosition();
+                    break;
+
+                default:
+                    break;
             }
         } break;
     }
@@ -594,6 +603,27 @@ unsigned int Sdl2Window::GetHeight() const {
 
 void Sdl2Window::SetWindowArea(int width, int height) {
     SDL_SetWindowSize(sdlWindow, width, height);
+}
+
+void Sdl2Window::SaveWindowPosition() {
+    std::vector<SDL_Rect> displayBounds;
+    int x, y;
+
+    SDL_GetWindowPosition(sdlWindow, &x, &y);
+
+    int display = SDL_GetWindowDisplayIndex(sdlWindow);
+    config->window.Display.Set(display);;
+
+    if (!config->window.Fullscreen.Get()) {
+        int displays = SDL_GetNumVideoDisplays();
+        for (int i = 0; i < displays; i++) {
+            displayBounds.push_back(SDL_Rect());
+            SDL_GetDisplayBounds(i, &displayBounds.back());
+        }
+
+        config->window.PositionX.Set(x - displayBounds[display].x);
+        config->window.PositionY.Set(y - displayBounds[display].y);
+    }
 }
 
 bool Sdl2Window::OnOSMenu(int item_id) {

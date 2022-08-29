@@ -144,7 +144,7 @@ void Engine_DeinitializeAndTerminate(int exitCode) {
 
 //----- (0044103C) --------------------------------------------------------
 void Engine::Draw() {
-    engine->config->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
+    engine->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
 
     pCamera3D->sRotationY = pParty->sRotationY;
     pCamera3D->sRotationZ = pParty->sRotationZ;
@@ -440,10 +440,10 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
     }*/
     // v6 = qword_5C6DF0 - field_E10;
     if (qword_5C6DF0/* - field_E10 == 1*/)
-        engine->config->SetForceRedraw(true);
+        engine->SetForceRedraw(true);
 
     if (uNumStationaryLights_in_pStationaryLightsStack != pStationaryLightsStack->uNumLightsActive) {
-        engine->config->SetForceRedraw(true);
+        engine->SetForceRedraw(true);
         uNumStationaryLights_in_pStationaryLightsStack = pStationaryLightsStack->uNumLightsActive;
     }
     return true;
@@ -451,7 +451,7 @@ bool Engine::_44EEA7() {  // cursor picking - particle update
 
 //----- (0044EDE4) --------------------------------------------------------
 bool Engine::AlterGamma_BLV(BLVFace *pFace, unsigned int *pColor) {
-    if (engine->config->CanSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
+    if (engine->IsSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -460,7 +460,7 @@ bool Engine::AlterGamma_BLV(BLVFace *pFace, unsigned int *pColor) {
 }
 
 bool Engine::AlterGamma_ODM(ODMFace *pFace, unsigned int *pColor) {
-    if (engine->config->CanSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
+    if (engine->IsSaturateFaces() && pFace->uAttributes & FACE_IsSecret) {
         *pColor = ReplaceHSV(*pColor, 1.0, fSaturation, -1.0);
         return true;
     } else {
@@ -473,13 +473,6 @@ void Engine::Deinitialize() {
     if (mouse)
         mouse->Deactivate();
 
-    OS_SetAppInt("startinwindow", 1);  // render->bWindowMode);
-    // if (render->bWindowMode)
-    {
-        OS_SetAppInt("window X", window->GetX());
-        OS_SetAppInt("window Y", window->GetY());
-    }
-    OS_SetAppInt("valAlwaysRun", config->settings.AlwaysRun.Get() ? 1 : 0);
     pItemsTable->Release();
     pNPCStats->Release();
 
@@ -512,7 +505,7 @@ int Engine::_44EC23_saturate_face_odm(Polygon *a2, int *a3, signed int a4) {
     float a4a;  // [sp+1Ch] [bp+10h]@9
     float a4b;  // [sp+1Ch] [bp+10h]@11
 
-    if (engine->config->CanSaturateFaces() && a2->field_59 == 5 &&
+    if (engine->IsSaturateFaces() && a2->field_59 == 5 &&
         a2->pODMFace->uAttributes & FACE_IsSecret) {
         v4 = (double)a4;
         a2a = v4;
@@ -564,7 +557,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
     float v14;  // [sp+1Ch] [bp+10h]@8
     float v15;  // [sp+1Ch] [bp+10h]@10
 
-    if (engine->config->CanSaturateFaces() && a2->uAttributes & FACE_IsSecret) {
+    if (engine->IsSaturateFaces() && a2->uAttributes & FACE_IsSecret) {
         v4 = (double)a4;
         v11 = v4;
         *a3 |= 2u;
@@ -1387,9 +1380,7 @@ void InitializeTurnBasedAnimations(void *_this) {
 
 //----- (0046BDA8) --------------------------------------------------------
 unsigned int GetGravityStrength() {
-    int v0 = ~(unsigned char)engine->config->flags2 & GAME_FLAGS_2_ALTER_GRAVITY;
-    v0 |= 2;
-    return (unsigned int)v0 >> 1;
+    return engine->config->gameplay.Gravity.Get();
 }
 
 //----- (00448B45) --------------------------------------------------------

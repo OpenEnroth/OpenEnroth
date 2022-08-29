@@ -4,26 +4,6 @@
 
 #include "Engine/CommandLine.h"
 
-// TODO [config]: Clean up these defines
-#define GAME_FLAGS_1_01                         0x01     // do not render terrain / bmodels(odm), lightmaps render bmodels in white(blv)
-#define GAME_FLAGS_1_02                         0x02     // only 0th lod, no lightning
-#define GAME_FLAGS_1_04                         0x04     // draw lightmaps / decals debug outlines
-#define GAME_FLAGS_1_DRAW_BLV_DEBUGS            0x08     // draw portal debug outlines
-#define GAME_FLAGS_1_40                         0x40     //
-#define GAME_FLAGS_1_FORCE_LEGACY_PROJECTION    0x80     // force camera / culling / projection mode : BLV
-#define GAME_FLAGS_1_400                        0x400    //
-#define GAME_FLAGS_1_800                        0x800    //
-#define GAME_FLAGS_1_TORCHLIGHT                 0x1000   // do Torchlight lightning
-#define GAME_FLAGS_1_40000_sw_alter_palettes    0x40000  // software render alter palettes
-#define GAME_FLAGS_1_HUGE_BLOODSPLATS           0x80000  // huge bloodsplats on bosses
-
-#define GAME_FLAGS_2_FORCE_REDRAW               0x01     // force redraw this frame
-#define GAME_FLAGS_2_SATURATE_LIGHTMAPS         0x02     // alter lightmaps saturation
-#define GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS   0x04     // allows dynamic brightness calculation on lightmaps
-#define GAME_FLAGS_2_ALTER_GRAVITY              0x08     // underwater effect, no gravity (for out15.odm - Shoals)
-#define GAME_FLAGS_2_TARGETING_MODE             0x10     // spell targeting, current cursor is "MICON2" (crosshair)
-#define GAME_FLAGS_2_DRAW_BLOODSPLATS           0x20
-
 using Engine_::CommandLine;
 
 namespace Application {
@@ -96,6 +76,8 @@ namespace Application {
             /** Draw BLV portal frames. */
             ConfigValue<bool> PortalOutlines = ConfigValue<bool>("portal_outlines", false);
             ConfigValue<bool> Terrain = ConfigValue<bool>("terrain", false);
+
+            /** Bypass only activated by fountains locations block for town portal spell. */
             ConfigValue<bool> TownPortal = ConfigValue<bool>("town_portal", false);
 
             /** Increase party movement speed by 12x. Most likely you want to use that option with no_damage option enabled as collision physics often will shoot you in the air. */
@@ -103,6 +85,8 @@ namespace Application {
 
             /** Game will behave like spell wizard eye is casted and it will never expire. */
             ConfigValue<bool> WizardEye = ConfigValue<bool>("wizard_eye", false);
+
+            /** Activate debug HUD which show FPS and various other realtime debug information */
             ConfigValue<bool> ShowFPS = ConfigValue<bool>("show_fps", false);
 
             /** Face pointed by mouse will flash with red for buildings or green for indoor. */
@@ -131,6 +115,8 @@ namespace Application {
 
             /** Disable Margareth's tour messages on Emerald Island. */
             ConfigValue<bool> NoMargareth = ConfigValue<bool>("no_margareth", false);
+
+            /** Verbose logging to debug console. Can be extremely spammy. */
             ConfigValue<bool> VerboseLogging = ConfigValue<bool>("verbose_logging", false);
 
          private:
@@ -146,29 +132,33 @@ namespace Application {
             void Load();
             void Save();
 
-            ConfigValue<int> MaxFlightHeight = ConfigValue<int>("max_flight_height", 4000, &ValidateMaxFlightHeight);
-
             /** Artifact limit after which artifacts are no longer generated in loot. 0 - disable limit. */
             ConfigValue<int> ArtifactLimit = ConfigValue<int>("artifact_limit", 13, &ValidateArtifactLimit);
 
-            /** Maximum depth for item pickup / opening chests / activating levers / etc with a mouse. */
-            ConfigValue<float> MouseInteractionDepth = ConfigValue<float>("mouse_interaction_depth", 512.0f, &ValidateInteractionDepth);
+            /** Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level.
+              * This is needed because there are actual holes in level geometry sometimes, up to several units wide. */
+            ConfigValue<int> FloorChecksEps = ConfigValue<int>("floor_checks_eps", 3, &ValidateFloorChecksEps);
+
+            /** Gravity strength, the higher the more gravity, 0 - disable gravity completely. */
+            ConfigValue<int> Gravity = ConfigValue<int>("gravity", 5);
 
             /** Maximum depth for item pickup / opening chests / activating levers / etc with a keyboard (by pressing space). */
             ConfigValue<float> KeyboardInteractionDepth = ConfigValue<float>("keyboard_interaction_depth", 512.0f, &ValidateInteractionDepth);
+
+            /** Maximum height which you can go with fly spell */
+            ConfigValue<int> MaxFlightHeight = ConfigValue<int>("max_flight_height", 4000, &ValidateMaxFlightHeight);
 
             /** Maximum depth at which right clicking on a monster produces a popup.
               * Also somehow this is the max depth for the souldrinker spell. */
             ConfigValue<float> MouseInfoDepthIndoor = ConfigValue<float>("mouse_info_depth_indoor", 16192.0f, &ValidateInteractionDepth);
             ConfigValue<float> MouseInfoDepthOutdoor = ConfigValue<float>("mouse_info_depth_outdoor", 12800.0f, &ValidateInteractionDepth); // That's 25 * 512, so 25 cells.
 
-            /** Max depth for ranged attacks and ranged spells. It's impossible to target monsters that are father away
+            /** Maximum depth for item pickup / opening chests / activating levers / etc with a mouse. */
+            ConfigValue<float> MouseInteractionDepth = ConfigValue<float>("mouse_interaction_depth", 512.0f, &ValidateInteractionDepth);
+
+            /** Max depth for ranged attacks and ranged spells. It's impossible to target monsters that are further away
               * than this value. Incidentally this is also the depth at which status bar tips are displayed on mouse over. */
             ConfigValue<float> RangedAttackDepth = ConfigValue<float>("ranged_attack_depth", 5120.0f, &ValidateRangedAttackDepth);
-
-            /** Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level.
-              * This is needed because there are actual holes in level geometry sometimes, up to several units wide. */
-            ConfigValue<int> FloorChecksEps = ConfigValue<int>("floor_checks_eps", 3, &ValidateFloorChecksEps);
 
             /** Show unidentified items in green mask in inventory, otherwise vanilla behaviour when green mask applied in shops only. */
             ConfigValue<bool> ShowUndentifiedItem = ConfigValue<bool>("show_unidentified_item", false);
@@ -223,27 +213,52 @@ namespace Application {
             void Save();
 
             ConfigValue<std::string> Renderer = ConfigValue<std::string>("renderer", "OpenGL", &ValidateRenderer);
+
+            /** Alternative pallete mode, depends on software mode rules */
+            ConfigValue<bool> AlternativePaletteMode = ConfigValue<bool>("alternative_palette_mode", false);
+
+            /** Enable bloodsplats under corpses */
             ConfigValue<bool> BloodSplats = ConfigValue<bool>("bloodsplats", true);
+
+            /** Bloodsplats radius multiplier. */
+            ConfigValue<float> BloodSplatsMultiplier = ConfigValue<float>("bloodsplats_multiplier", 1.0f);
+
+            ConfigValue<float> ClipFarDistance = ConfigValue<float>("clip_far_distance", 16192.0f);
+            ConfigValue<float> ClipNearDistance = ConfigValue<float>("clip_near_distance", 4.0f);
+
             ConfigValue<bool> ColoredLights = ConfigValue<bool>("colored_lights", true);
-            ConfigValue<bool> Tinting = ConfigValue<bool>("tinting", false);
 
-            /** use low-resolution bitmaps from HWL file instead of hi-resolution ones from LOD */
-            ConfigValue<bool> HWLBitmaps = ConfigValue<bool>("hwl_bitmaps", false);
+            /** D3D device number which was set by setup program in vanilla for hardware mode. */
+            ConfigValue<int> D3DDevice = ConfigValue<int>("d3d_device", 0);
 
-            /** use low-resolution sprites from HWL file instead of hi-resolution ones from LOD */
-            ConfigValue<bool> HWLSprites = ConfigValue<bool>("hwl_sprites", false);
+            /** Need to be eventually deleted and replaced with gamma? */
+            ConfigValue<bool> DynamicBrightness = ConfigValue<bool>("dynamic_brightness", true);
 
-            /** not in use? */
-            ConfigValue<int> Gamma = ConfigValue<int>("gamma", 4, &ValidateGamma);
-            ConfigValue<bool> Snow = ConfigValue<bool>("snow", false);
-            ConfigValue<bool> SeasonsChange = ConfigValue<bool>("seasons_change", true);
-            ConfigValue<bool> Specular = ConfigValue<bool>("specular", false);
+            /** Currently not in use, should disable fog effect just like a snow. */
             ConfigValue<bool> Fog = ConfigValue<bool>("fog", false);
 
-            inline void ToggleExtendedDrawDistance() { extended_draw_distance = !extended_draw_distance; }
+            /** Isn't currently in use? */
+            ConfigValue<int> Gamma = ConfigValue<int>("gamma", 4, &ValidateGamma);
 
-            // TODO [config]: remove this and move distance limits to config
-            bool extended_draw_distance;    // 2.5x draw distance
+            /** Use low-resolution bitmaps from HWL file instead of hi-resolution ones from LOD. */
+            ConfigValue<bool> HWLBitmaps = ConfigValue<bool>("hwl_bitmaps", false);
+
+            /** Use low-resolution sprites from HWL file instead of hi-resolution ones from LOD. */
+            ConfigValue<bool> HWLSprites = ConfigValue<bool>("hwl_sprites", false);
+
+            /** Allow changing trees/ground depending on current season (originally was only used in MM6) */
+            ConfigValue<bool> SeasonsChange = ConfigValue<bool>("seasons_change", true);
+
+            /** Snow effect from MM6 where it was activated by event. Currently it shows every third day in winter. */
+            ConfigValue<bool> Snow = ConfigValue<bool>("snow", false);
+
+            /** Vanilla's rendering rules from software mode. Still much code use this option. */
+            ConfigValue<bool> SoftwareModeRules = ConfigValue<bool>("software_mode_rules", false);
+
+            /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of pain was thrown at them. */
+            ConfigValue<bool> Tinting = ConfigValue<bool>("tinting", false);
+
+            ConfigValue<bool> Torchlight = ConfigValue<bool>("torchlight", true);
 
          private:
             static std::string ValidateRenderer(std::string renderer) {
@@ -272,36 +287,36 @@ namespace Application {
             void Load();
             void Save();
 
-            ConfigValue<std::string> Forward = ConfigValue<std::string>("forward", "UP", &ValidateKey);
-            ConfigValue<std::string> Backward = ConfigValue<std::string>("backward", "DOWN", &ValidateKey);
-            ConfigValue<std::string> Left = ConfigValue<std::string>("left", "LEFT", &ValidateKey);
-            ConfigValue<std::string> Right = ConfigValue<std::string>("right", "RIGHT", &ValidateKey);
+            ConfigValue<std::string> AlwaysRun = ConfigValue<std::string>("always_run", "U", &ValidateKey);
             ConfigValue<std::string> Attack = ConfigValue<std::string>("attack", "A", &ValidateKey);
+            ConfigValue<std::string> AutoNotes = ConfigValue<std::string>("auto_notes", "N", &ValidateKey);
+            ConfigValue<std::string> Backward = ConfigValue<std::string>("backward", "DOWN", &ValidateKey);
+            ConfigValue<std::string> Cast = ConfigValue<std::string>("cast", "C", &ValidateKey);
             ConfigValue<std::string> CastReady = ConfigValue<std::string>("cast_ready", "S", &ValidateKey);
-            ConfigValue<std::string> Yell = ConfigValue<std::string>("yell", "Y", &ValidateKey);
-            ConfigValue<std::string> Jump = ConfigValue<std::string>("jump", "X", &ValidateKey);
+            ConfigValue<std::string> CenterView = ConfigValue<std::string>("center_view", "END", &ValidateKey);
+            ConfigValue<std::string> CharCycle = ConfigValue<std::string>("char_cycle", "TAB", &ValidateKey);
             ConfigValue<std::string> Combat = ConfigValue<std::string>("combat", "RETURN", &ValidateKey);
             ConfigValue<std::string> EventTrigger = ConfigValue<std::string>("event_trigger", "SPACE", &ValidateKey);
-            ConfigValue<std::string> Cast = ConfigValue<std::string>("cast", "C", &ValidateKey);
+            ConfigValue<std::string> FlyDown = ConfigValue<std::string>("fly_down", "INSERT", &ValidateKey);
+            ConfigValue<std::string> FlyUp = ConfigValue<std::string>("fly_up", "PAGE UP", &ValidateKey);
+            ConfigValue<std::string> Forward = ConfigValue<std::string>("forward", "UP", &ValidateKey);
+            ConfigValue<std::string> Jump = ConfigValue<std::string>("jump", "X", &ValidateKey);
+            ConfigValue<std::string> Land = ConfigValue<std::string>("land", "HOME", &ValidateKey);
+            ConfigValue<std::string> Left = ConfigValue<std::string>("left", "LEFT", &ValidateKey);
+            ConfigValue<std::string> LookDown = ConfigValue<std::string>("look_down", "DELETE", &ValidateKey);
+            ConfigValue<std::string> LookUp = ConfigValue<std::string>("look_up", "PAGE DOWN", &ValidateKey);
+            ConfigValue<std::string> MapBook = ConfigValue<std::string>("map_book", "M", &ValidateKey);
             ConfigValue<std::string> Pass = ConfigValue<std::string>("pass", "B", &ValidateKey);
-            ConfigValue<std::string> Quest = ConfigValue<std::string>("pass", "Q", &ValidateKey);
-            ConfigValue<std::string> CharCycle = ConfigValue<std::string>("char_cycle", "TAB", &ValidateKey);
+            ConfigValue<std::string> Quest = ConfigValue<std::string>("quest", "Q", &ValidateKey);
             ConfigValue<std::string> QuickReference = ConfigValue<std::string>("quick_reference", "Q", &ValidateKey);
             ConfigValue<std::string> Rest = ConfigValue<std::string>("rest", "R", &ValidateKey);
-            ConfigValue<std::string> TimeCalendar = ConfigValue<std::string>("time_calendar", "T", &ValidateKey);
-            ConfigValue<std::string> AutoNotes = ConfigValue<std::string>("auto_notes", "N", &ValidateKey);
-            ConfigValue<std::string> MapBook = ConfigValue<std::string>("map_book", "M", &ValidateKey);
-            ConfigValue<std::string> LookUp = ConfigValue<std::string>("look_up", "PAGE DOWN", &ValidateKey);
-            ConfigValue<std::string> LookDown = ConfigValue<std::string>("look_down", "DELETE", &ValidateKey);
-            ConfigValue<std::string> CenterView = ConfigValue<std::string>("center_view", "END", &ValidateKey);
-            ConfigValue<std::string> ZoomIn = ConfigValue<std::string>("zoom_in", "ADD", &ValidateKey);
-            ConfigValue<std::string> ZoomOut = ConfigValue<std::string>("zoom_out", "SUBTRACT", &ValidateKey);
-            ConfigValue<std::string> FlyUp = ConfigValue<std::string>("fly_up", "PAGE UP", &ValidateKey);
-            ConfigValue<std::string> FlyDown = ConfigValue<std::string>("fly_down", "INSERT", &ValidateKey);
-            ConfigValue<std::string> Land = ConfigValue<std::string>("land", "HOME", &ValidateKey);
-            ConfigValue<std::string> AlwaysRun = ConfigValue<std::string>("always_run", "U", &ValidateKey);
+            ConfigValue<std::string> Right = ConfigValue<std::string>("right", "RIGHT", &ValidateKey);
             ConfigValue<std::string> StepLeft = ConfigValue<std::string>("step_left", "L BRACKET", &ValidateKey);
             ConfigValue<std::string> StepRight = ConfigValue<std::string>("step_right", "R BRACKET", &ValidateKey);
+            ConfigValue<std::string> TimeCalendar = ConfigValue<std::string>("time_calendar", "T", &ValidateKey);
+            ConfigValue<std::string> Yell = ConfigValue<std::string>("yell", "Y", &ValidateKey);
+            ConfigValue<std::string> ZoomIn = ConfigValue<std::string>("zoom_in", "ADD", &ValidateKey);
+            ConfigValue<std::string> ZoomOut = ConfigValue<std::string>("zoom_out", "SUBTRACT", &ValidateKey);
 
          private:
             static std::string ValidateKey(std::string key) {
@@ -323,7 +338,7 @@ namespace Application {
             /** true - run, false - walk */
             ConfigValue<bool> AlwaysRun = ConfigValue<bool>("always_run", true);
 
-            /** Horizontal view flip when exiting buildings */
+            /** Horizontal view flip upon exiting buildings */
             ConfigValue<bool> FlipOnExit = ConfigValue<bool>("flip_on_exit", false);
 
             /** Show hits status in status bar */
@@ -342,7 +357,7 @@ namespace Application {
               * Only smooth is usable on modern machines. */
             ConfigValue<float> TurnSpeed = ConfigValue<float>("turn_speed", 0.0f, &ValidateTurnSpeed);
 
-            /** Discrete vertical turn speed (mm7 default is 25). */
+            /** Discrete vertical turn speed. */
             ConfigValue<int> VerticalTurnSpeed = ConfigValue<int>("vertical_turn_speed", 25, &ValidateVerticalTurnSpeed);
 
             /** Party footstep's sound while moving. */
@@ -410,7 +425,7 @@ namespace Application {
             ConfigValue<int> Width = ConfigValue<int>("width", 640, &ValidateWidth);
             ConfigValue<int> Height = ConfigValue<int>("height", 480, &ValidateHeight);
 
-            /** Don't grab mouse. When false, you cannot move the mouse outside the game window while it is in focus. */
+            /** Grab mouse. When true you cannot move the mouse outside the game window while it is in focus. */
             ConfigValue<bool> MouseGrab = ConfigValue<bool>("mouse_grab", true);
 
          private:
@@ -441,36 +456,6 @@ namespace Application {
         };
 
         Window window;
-
-        // TODO [config]: Clean up this block
-        inline bool Flag1_1() const { return flags1 & GAME_FLAGS_1_01; }
-        inline bool Flag1_2() const { return flags1 & GAME_FLAGS_1_02; }
-        inline bool ForceLegacyProjection() const { return flags1 & GAME_FLAGS_1_FORCE_LEGACY_PROJECTION; }
-        inline bool NoHugeBloodsplats() const { return flags1 & GAME_FLAGS_1_HUGE_BLOODSPLATS; }
-        inline bool AlterPalettes() const { return flags1 & GAME_FLAGS_1_40000_sw_alter_palettes; }
-        inline bool DrawBlvDebugs() const { return flags1 & GAME_FLAGS_1_DRAW_BLV_DEBUGS; }
-        inline bool TorchlightEffect() const { return flags1 & GAME_FLAGS_1_TORCHLIGHT; }
-        inline bool CanSaturateFaces() const { return flags2 & GAME_FLAGS_2_SATURATE_LIGHTMAPS; }
-        void SetSaturateFaces(bool saturate) {
-            if (saturate)
-                flags2 |= GAME_FLAGS_2_SATURATE_LIGHTMAPS;
-            else
-                flags2 &= ~GAME_FLAGS_2_SATURATE_LIGHTMAPS;
-        }
-        void SetForceRedraw(bool redraw) {
-            if (redraw)
-                flags2 |= GAME_FLAGS_2_FORCE_REDRAW;
-            else
-                flags2 &= ~GAME_FLAGS_2_FORCE_REDRAW;
-        }
-        inline bool ForceRedraw() const { return flags2 & GAME_FLAGS_2_FORCE_REDRAW; }
-        inline bool AllowDynamicBrigtness() const { return flags2 & GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS; }
-
-        // GAME_FLAGS_1_*
-        int flags1 = GAME_FLAGS_1_40 | GAME_FLAGS_1_800;
-
-        // GAME_FLAGS_2_*
-        int flags2 = GAME_FLAGS_2_ALLOW_DYNAMIC_BRIGHTNESS | GAME_FLAGS_2_DRAW_BLOODSPLATS | GAME_FLAGS_2_SATURATE_LIGHTMAPS;
 
      private:
     };

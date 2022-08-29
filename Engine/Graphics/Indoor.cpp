@@ -111,7 +111,7 @@ void PrepareDrawLists_BLV() {
     uNumSpritesDrawnThisFrame = 0;
     uNumBillboardsToDraw = 0;
 
-    if (!_4D864C_force_sw_render_rules || !engine->config->TorchlightEffect()) {  // lightspot around party
+    if (!engine->config->graphics.SoftwareModeRules.Get() || engine->config->graphics.Torchlight.Get()) {  // lightspot around party
         TorchLightPower = 800;
         if (pParty->TorchlightActive()) {
             // max is 800 * torchlight

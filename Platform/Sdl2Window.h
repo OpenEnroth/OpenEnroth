@@ -22,6 +22,7 @@ class Sdl2Window : public OSWindow {
     unsigned int GetWidth() const override;
     unsigned int GetHeight() const override;
     void SetWindowArea(int width, int height) override;
+    void SaveWindowPosition();
 
     bool OnOSMenu(int item_id) override;
 

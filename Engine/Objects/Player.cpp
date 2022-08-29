@@ -7051,14 +7051,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                         // actor has died from retaliation
                         // add bloodsplat
                         if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 && engine->config->graphics.BloodSplats.Get()) {
-                            int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
-                                    ? 10 * actorPtr->uActorRadius
-                                    : actorPtr->uActorRadius;
-                            decal_builder->AddBloodsplat(
-                                actorPtr->vPosition.x,
-                                actorPtr->vPosition.y,
-                                actorPtr->vPosition.z, 1.0, 0.0, 0.0,
-                                (float)splatRadius);
+                            float splatRadius = actorPtr->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                            decal_builder->AddBloodsplat(actorPtr->vPosition.x, actorPtr->vPosition.y, actorPtr->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
                         }
                         Actor::Die(uActorID);
                         Actor::ApplyFineForKillingPeasant(uActorID);
@@ -7233,14 +7227,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                             // actor killed by retaliation
                             if (pMonsterStats->pInfos[actorPtr->pMonsterInfo.uID].bQuestMonster & 1 &&
                                 engine->config->graphics.BloodSplats.Get()) {
-                                int splatRadius = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
-                                        ? 10 * actorPtr->uActorRadius
-                                        : actorPtr->uActorRadius;
-                                decal_builder->AddBloodsplat(
-                                    actorPtr->vPosition.x,
-                                    actorPtr->vPosition.y,
-                                    actorPtr->vPosition.z, 1.0, 0.0, 0.0,
-                                    (float)splatRadius);
+                                float splatRadius = actorPtr->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                                decal_builder->AddBloodsplat(actorPtr->vPosition.x, actorPtr->vPosition.y, actorPtr->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
                             }
 
                             Actor::Die(uActorID);

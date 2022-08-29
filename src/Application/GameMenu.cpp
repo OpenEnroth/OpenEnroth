@@ -427,34 +427,10 @@ void Menu::EventLoop() {
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == CURRENT_SCREEN::SCREEN_OPTIONS) {
                     options_menu_skin.Release();
-                    OS_SetAppInt("soundflag", engine->config->settings.SoundLevel.Get());
-                    OS_SetAppInt("musicflag", engine->config->settings.MusicLevel.Get());
-                    OS_SetAppInt("CharVoices", engine->config->settings.VoiceLevel.Get());
-                    OS_SetAppInt("WalkSound", engine->config->settings.WalkSound.Get());
-                    OS_SetAppInt("ShowDamage", engine->config->settings.ShowHits.Get());
-                    // OS_SetAppInt("graphicsmode", (unsigned
-                    // __int8)byte_6BE388_graphicsmode);
-                    OS_SetAppInt("valAlwaysRun", engine->config->settings.AlwaysRun.Get());
-                    OS_SetAppInt("FlipOnExit", engine->config->settings.FlipOnExit.Get());
-
-                    if (engine->config->settings.TurnSpeed.Get() == 0)
-                        OS_SetAppInt("TurnDelta", 3);
-                    else if (engine->config->settings.TurnSpeed.Get() == 64)
-                        OS_SetAppInt("TurnDelta", 2);
-                    else if (engine->config->settings.TurnSpeed.Get() == 128)
-                        OS_SetAppInt("TurnDelta", 1);
-
                     pGUIWindow_CurrentMenu->Release();
                     current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == CURRENT_SCREEN::SCREEN_VIDEO_OPTIONS) {
-                    // if ( render->pRenderD3D )
-                    {
-                        OS_SetAppInt("Colored Lights", render->config->graphics.ColoredLights.Get());
-                        OS_SetAppInt("Tinting", render->config->graphics.Tinting.Get());
-                        OS_SetAppInt("Bloodsplats", engine->config->graphics.BloodSplats.Get());
-                    }
-
                     pGUIWindow_CurrentMenu->Release();
                     current_screen_type = CURRENT_SCREEN::SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();

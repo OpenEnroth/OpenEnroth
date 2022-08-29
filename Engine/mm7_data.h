@@ -29,7 +29,6 @@ extern int game_viewport_w;
 extern int pWindowList_at_506F50_minus1_indexing[1];
 extern int dword_4C9890[10];
 extern int dword_4C9920[16];
-extern char _4D864C_force_sw_render_rules;
 extern float flt_4D86CC;
 extern int dword_4D86D8;
 

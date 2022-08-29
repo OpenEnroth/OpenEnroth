@@ -141,8 +141,8 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
         UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
                              WorldPosToGridCellY(pParty->vPosition.y),
                              1);
-    engine->config->SetForceRedraw(false);
-    if (engine->config->graphics.Specular.Get())
+    engine->SetForceRedraw(false);
+    if (engine->IsSpecular())
         lightmap_builder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
     else
         lightmap_builder->uFlags &= ~LIGHTMAP_FLAGS_USE_SPECULAR;
@@ -158,12 +158,24 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 
     render->DrawSpriteObjects_ODM();
     render->TransformBillboardsAndSetPalettesODM();
+
+    // temp hack to show snow every third day in winter
+    switch (pParty->uCurrentMonth) {
+        case 11:
+        case 0:
+        case 1:
+            pWeather->bRenderSnow = (pParty->uCurrentDayOfMonth % 3) == 0;
+            break;
+        default:
+            pWeather->bRenderSnow = false;
+            break;
+    }
 }
 
 //----- (00441CFF) --------------------------------------------------------
 void OutdoorLocation::Draw() {
     bool redrawWorld = true;
-    if (!(pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) && !engine->config->ForceRedraw())
+    if (!(pParty->uFlags & PARTY_FLAGS_1_ForceRedraw) && !engine->IsForceRedraw())
         redrawWorld = false;
     pOutdoor->ExecDraw(redrawWorld);
 
@@ -1166,6 +1178,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
                 break;
         }
     }
+
     return true;
 }
 

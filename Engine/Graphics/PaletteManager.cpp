@@ -773,7 +773,7 @@ uint16_t *PaletteManager::Get(int paletteIdx) {
 uint16_t *PaletteManager::Get_Mist_or_Red_LUT(int paletteIdx, int a2, char a3) {
     int v3;  // eax@4
 
-    if (a3 & 2 || _4D864C_force_sw_render_rules && engine->config->AlterPalettes())
+    if (a3 & 2 || engine->config->graphics.SoftwareModeRules.Get() && engine->config->graphics.AlternativePaletteMode.Get())
         v3 = 32 * paletteIdx + a2 + 3275;
     else
         v3 = 32 * paletteIdx + a2 + 1675;
@@ -785,7 +785,7 @@ uint16_t *PaletteManager::Get_Mist_or_Red_LUT(int paletteIdx, int a2, char a3) {
 uint16_t *PaletteManager::Get_Dark_or_Red_LUT(int paletteIdx, int a2, char a3) {
     int v3;  // eax@4
 
-    if (a3 & 2 || _4D864C_force_sw_render_rules && engine->config->AlterPalettes())
+    if (a3 & 2 || engine->config->graphics.SoftwareModeRules.Get() && engine->config->graphics.AlternativePaletteMode.Get())
         v3 = 32 * paletteIdx + a2 + 3275;
     else
         v3 = 32 * paletteIdx + a2 + 75;
@@ -797,7 +797,7 @@ uint16_t *PaletteManager::Get_Dark_or_Red_LUT(int paletteIdx, int a2, char a3) {
 uint16_t *PaletteManager::_47C30E_get_palette(int paletteIdx, char a2) {
     char *result;  // eax@4
 
-    if (a2 & 2 || _4D864C_force_sw_render_rules && engine->config->AlterPalettes())
+    if (a2 & 2 || engine->config->graphics.SoftwareModeRules.Get() && engine->config->graphics.AlternativePaletteMode.Get())
         result = (char *)pPaletteManager->field_199600_palettes[paletteIdx];
     else
         result = (char *)pPaletteManager->field_D1600[paletteIdx];
@@ -808,7 +808,7 @@ uint16_t *PaletteManager::_47C30E_get_palette(int paletteIdx, char a2) {
 uint16_t *PaletteManager::_47C33F_get_palette(int paletteIdx, char a2) {
     unsigned __int16 *result;  // eax@4
 
-    if (a2 & 2 || _4D864C_force_sw_render_rules && engine->config->AlterPalettes())
+    if (a2 & 2 || engine->config->graphics.SoftwareModeRules.Get() && engine->config->graphics.AlternativePaletteMode.Get())
         result = (unsigned __int16 *)pPaletteManager->field_199600_palettes[paletteIdx];
     else
         result = (unsigned __int16 *)pPaletteManager->pPalette1[paletteIdx];

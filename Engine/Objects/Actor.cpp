@@ -3330,7 +3330,6 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     unsigned __int16 v16;            // cx@25
-    int v33;                         // eax@100
     int v40;                         // ebx@107
     int extraRecoveryTime;           // qax@125
     unsigned __int16 v43;            // ax@132
@@ -3566,13 +3565,8 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
     } else {
         if (pMonsterStats->pInfos[pMonster->pMonsterInfo.uID].bQuestMonster & 1) {
             if (engine->config->graphics.BloodSplats.Get()) {
-                v33 = _4D864C_force_sw_render_rules && !engine->config->NoHugeBloodsplats()
-                          ? 10 * pMonster->uActorRadius
-                          : pMonster->uActorRadius;
-                decal_builder->AddBloodsplat((float)pMonster->vPosition.x,
-                                             (float)pMonster->vPosition.y,
-                                             (float)pMonster->vPosition.z, 1.0,
-                                             0.0, 0.0, (float)v33);
+                float splatRadius = pMonster->uActorRadius * engine->config->graphics.BloodSplatsMultiplier.Get();
+                decal_builder->AddBloodsplat((float)pMonster->vPosition.x, (float)pMonster->vPosition.y, (float)pMonster->vPosition.z, 1.0, 0.0, 0.0, splatRadius);
             }
         }
         Actor::Die(uActorID_Monster);

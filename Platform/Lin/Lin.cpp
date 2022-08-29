@@ -61,29 +61,6 @@ bool OS_GetAppString(const char* path, char* out_string, int out_string_size) {
     return false;
 }
 
-int OS_GetAppInt(const char* pKey, int uDefValue) {
-    unsigned int cbData;         // [sp+8h] [bp-20h]@1
-    const char *lpValueName;     // [sp+Ch] [bp-1Ch]@1
-    unsigned int dwDisposition;  // [sp+10h] [bp-18h]@2
-    unsigned char Data[4];       // [sp+14h] [bp-14h]@5
-
-    lpValueName = pKey;
-    cbData = 4;
-    *(int *)Data = uDefValue;
-
-    return *(int *)Data;
-}
-
-void OS_SetAppString(const char* pKey, const char* pString) {
-}
-
-void OS_GetAppString(const char* pKeyName, char* pOutString, int uBufLen,
-    const char* pDefaultValue) {
-}
-
-void OS_SetAppInt(const char* pKey, int val) {
-}
-
 char OS_GetDirSeparator() {
     return '/';
 }

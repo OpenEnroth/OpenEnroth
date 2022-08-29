@@ -301,7 +301,7 @@ void RenderBase::TransformBillboard(SoftwareBillboard *a2,
     }
 
     unsigned int specular = 0;
-    if (config->graphics.Specular.Get()) {
+    if (engine->IsSpecular()) {
         specular = sub_47C3D7_get_fog_specular(0, 0, a2->screen_space_z);
     }
 

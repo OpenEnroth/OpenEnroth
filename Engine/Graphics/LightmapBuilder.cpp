@@ -188,12 +188,12 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
     Lights._blv_lights_types[*pSlot] = pLight->uLightType;
 
     v57 = Lights._blv_lights_types[*pSlot];
-    if (render->config->graphics.Specular.Get() && Lights._blv_lights_types[*pSlot] & 4)
+    if (engine->IsSpecular() && Lights._blv_lights_types[*pSlot] & 4)
         v57 = _4E94D2_light_type;
     Lights._blv_lights_types[*pSlot] = v57;
 
     int id = 4 * *pSlot;
-    if (render->config->graphics.Specular.Get()) {
+    if (engine->IsSpecular()) {
         if (Lights._blv_lights_types[*pSlot] & 4) {
             Lights._blv_lights_rs[id] = Lights._blv_lights_rs[id] * 0.3300000131130219f;
             Lights._blv_lights_gs[id] = Lights._blv_lights_gs[id] * 0.3300000131130219f;
@@ -236,11 +236,11 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
                 abs((int)floorf(v10 + 0.5f));
             Lights._blv_lights_types[*pSlot] = pLight->uLightType;
             v14 = Lights._blv_lights_types[*pSlot];
-            if (render->config->graphics.Specular.Get() && Lights._blv_lights_types[*pSlot] & 4)
+            if (engine->IsSpecular() && Lights._blv_lights_types[*pSlot] & 4)
                 v14 = _4E94D2_light_type;
             Lights._blv_lights_types[*pSlot] = v14;
             result = 4 * *pSlot;
-            if (render->config->graphics.Specular.Get()) {
+            if (engine->IsSpecular()) {
                 __debugbreak();
                 if (Lights._blv_lights_types[*pSlot] & 4) {
                     *(float *)((char *)Lights._blv_lights_rs + result) =
@@ -647,7 +647,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     lightmap->NumVertices = 4;
 
     // Brightness(яркость)/////////////////////////////////
-    if (!engine->config->AllowDynamicBrigtness()) {
+    if (!engine->config->graphics.DynamicBrightness.Get()) {
         lightmap->fBrightness = flt_3C8C2C_lightmaps_brightness;
     } else {
         Vec3_float_ a1;  // [sp+2Ch] [bp-20h]@8
@@ -785,7 +785,7 @@ void LightmapBuilder::DrawLightmaps(int indices) {
     // For outdoor terrain and indoor light (VI)(VI)
 
     if (StationaryLightsCount > 0) {
-        if (_4D864C_force_sw_render_rules && engine->config->Flag1_1()) {
+        if (engine->config->graphics.SoftwareModeRules.Get()) {
             __debugbreak();
             return;
         }
