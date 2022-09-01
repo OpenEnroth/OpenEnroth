@@ -18,6 +18,7 @@ set(GAME_HEADERS Application/Game.h
                  Application/GameOver.h
                  Application/IocContainer.h
                  Application/GameWindowHandler.h
+                 tools/Flags.h
                  tools/DataPath.h
                  tools/MemBuffer.h
                  tools/FreeDeleter.h)

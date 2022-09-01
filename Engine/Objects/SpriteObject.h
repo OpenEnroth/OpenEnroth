@@ -32,7 +32,7 @@ struct SpriteObject {
     static void OnInteraction(unsigned int uLayingItemID);
     static bool Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x, int y,
                                       int z, int a4, int count, int a7,
-                                      unsigned __int16 attributes, ItemGen *a9);
+                                      SPRITE_ATTRIBUTES attributes, ItemGen *a9);
     static void Create_Splash_Object(int x, int y, int z);
     static void InitializeSpriteObjects();
 
@@ -43,7 +43,7 @@ struct SpriteObject {
     Vec3_short_ vVelocity;
     unsigned __int16 uFacing;
     unsigned __int16 uSoundID;
-    unsigned __int16 uAttributes; // see SPRITE_ATTRIBUTES
+    SPRITE_ATTRIBUTES uAttributes;
     __int16 uSectorID;
     unsigned __int16 uSpriteFrameID;
     __int16 field_20;
