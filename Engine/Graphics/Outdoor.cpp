@@ -1692,7 +1692,6 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
 int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater,
                       int *bmodel_pid, int bWaterWalk) {
-
     std::array<int, 20> current_Face_id;                   // dword_721110
     std::array<int, 20> current_BModel_id;                 // dword_721160
     std::array<int, 20> odm_floor_level;                   // idb
