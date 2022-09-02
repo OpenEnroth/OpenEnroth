@@ -7,6 +7,7 @@
 #include "Engine/Strings.h"
 #include "Engine/Time.h"
 #include "Engine/MM7.h"
+#include "Engine/Autonotes.h"
 
 #include "GUI/GUIDialogues.h"
 
@@ -139,7 +140,7 @@ extern int BtnDown_flag;                     // BtnDown_flag
 extern int BtnUp_flag;                       // BtnUp_flag
 extern int quick_spell_at_page;
 extern char byte_506550;
-extern int _506568_autonote_type;  // 506568
+extern AUTONOTE_TYPE _506568_autonote_type;  // 506568
 extern bool bRecallingBeacon;
 extern int uLastPointedObjectID;
 extern int dword_506980_uW;

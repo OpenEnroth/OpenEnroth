@@ -526,7 +526,7 @@ int BtnDown_flag;                     // BtnDown_flag
 int BtnUp_flag;                       // BtnUp_flag
 int quick_spell_at_page;
 char byte_506550;
-int _506568_autonote_type;
+AUTONOTE_TYPE _506568_autonote_type;
 bool bRecallingBeacon;
 int uLastPointedObjectID;
 // unsigned __int8 bMonsterInfoUI_bDollInitialized;
