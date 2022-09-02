@@ -1172,7 +1172,7 @@ void Game::EventLoop() {
                         v47 = pActors[v46].uAIState == Dead;
                         if (!v47) continue;
                         pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                        pSpellInfo->uFlags &= ~0x40u;
+                        pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
                         pSpellInfo->uPlayerID_2 = uMessageParam;
                         pSpellInfo->spell_target_pid = v44;
                         pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
@@ -1192,7 +1192,7 @@ void Game::EventLoop() {
                                0x10) == 0;
                         if (!v47) continue;
                         pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                        pSpellInfo->uFlags &= ~0x40u;
+                        pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
                         pSpellInfo->uPlayerID_2 = uMessageParam;
                         pSpellInfo->spell_target_pid = v44;
                         pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
@@ -1216,7 +1216,7 @@ void Game::EventLoop() {
                                 continue;
                             v44 = uNumSeconds;
                             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                            pSpellInfo->uFlags &= ~0x40u;
+                            pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
                             pSpellInfo->uPlayerID_2 = uMessageParam;
                             pSpellInfo->spell_target_pid = v44;
                             pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
@@ -1236,7 +1236,7 @@ void Game::EventLoop() {
                     }
                     if (v48) continue;
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                    pSpellInfo->uFlags &= ~0x40u;
+                    pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
                     pSpellInfo->uPlayerID_2 = uMessageParam;
                     pSpellInfo->spell_target_pid = v44;
                     pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
@@ -1266,13 +1266,13 @@ void Game::EventLoop() {
                             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                             switch (uMessage) {
                                 case UIMSG_CastSpell_Character_Big_Improvement:
-                                    pSpellInfo->uFlags &= ~0x02u;
+                                    pSpellInfo->uFlags &= ~ON_CAST_WholeParty_BigImprovementAnim;
                                     break;
                                 case UIMSG_CastSpell_Character_Small_Improvement:
-                                    pSpellInfo->uFlags &= ~0x0100u;
+                                    pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
                                     break;
                                 case UIMSG_HiredNPC_CastSpell:
-                                    pSpellInfo->uFlags &= ~0x0200u;
+                                    pSpellInfo->uFlags &= ~ON_CAST_DarkSacrifice;
                                     break;
                                 default:
                                     break;
@@ -1634,12 +1634,12 @@ void Game::EventLoop() {
                         continue;
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
-                        pSpellInfo->uFlags &= ~0x08;
+                        pSpellInfo->uFlags &= ~ON_CAST_TargetCrosshair;
                     } else {
                         if (uMessage == UIMSG_CastSpell_Monster_Improvement)
-                            pSpellInfo->uFlags &= ~0x0100u;
+                            pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
                         else
-                            pSpellInfo->uFlags &= ~0x0200u;
+                            pSpellInfo->uFlags &= ~ON_CAST_DarkSacrifice;
                     }
                     pSpellInfo->uPlayerID_2 = uMessageParam;
                     pSpellInfo->spell_target_pid = v44;
@@ -2027,7 +2027,7 @@ void Game::EventLoop() {
                     __debugbreak();
                     if (pTurnEngine->turn_stage != TE_MOVEMENT)
                         _42777D_CastSpell_UseWand_ShootArrow(
-                            (SPELL_TYPE)uMessageParam, v199, 133, 1, 0);
+                            (SPELL_TYPE)uMessageParam, v199, 133, ON_CAST_0x0001, 0);
                     continue;
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;

@@ -3782,7 +3782,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
 //----- (00427DA0) --------------------------------------------------------
 size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
-                         __int16 skill_level, uint16_t uFlags,
+                         __int16 skill_level, SpellCastFlags uFlags,
                          int spell_sound_id) {
     // uFlags: ON_CAST_*
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
@@ -3823,7 +3823,7 @@ void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/ca
 //----- (0042777D) --------------------------------------------------------
 void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                                           unsigned int uPlayerID,
-                                          unsigned int a4, __int16 flags,
+                                          unsigned int a4, SpellCastFlags flags,
                                           int a6) {
     unsigned __int16 v9;   // cx@16
     unsigned int v10;      // eax@18

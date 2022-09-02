@@ -2412,35 +2412,35 @@ void TempleDialog() {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
                     v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(
-                        SPELL_AIR_WIZARD_EYE, uActiveCharacter - 1, v30, 48, 0);
+                        SPELL_AIR_WIZARD_EYE, uActiveCharacter - 1, v30, ON_CAST_0x0010 | ON_CAST_NoRecoverySpell, 0);
                 }
                 if (v26->uReputation <= -10) {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
                     v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(
                         SPELL_SPIRIT_PRESERVATION, uActiveCharacter - 1, v30,
-                        48, 0);
+                        ON_CAST_0x0010 | ON_CAST_NoRecoverySpell, 0);
                 }
                 if (v26->uReputation <= -15) {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
                     v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(
                         SPELL_BODY_PROTECTION_FROM_MAGIC, uActiveCharacter - 1,
-                        v30, 48, 0);
+                        v30, ON_CAST_0x0010 | ON_CAST_NoRecoverySpell, 0);
                 }
                 if (v26->uReputation <= -20) {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
                     v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(
                         SPELL_LIGHT_HOUR_OF_POWER, uActiveCharacter - 1, v30,
-                        48, 0);
+                        ON_CAST_0x0010 | ON_CAST_NoRecoverySpell, 0);
                 }
                 if (v26->uReputation <= -25) {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
                     v30 |= 0x80;
                     _42777D_CastSpell_UseWand_ShootArrow(
                         SPELL_LIGHT_DAY_OF_PROTECTION, uActiveCharacter - 1,
-                        v30, 48, 0);
+                        v30, ON_CAST_0x0010 | ON_CAST_NoRecoverySpell, 0);
                 }
             }
             ++byte_F8B1EF[uActiveCharacter];
