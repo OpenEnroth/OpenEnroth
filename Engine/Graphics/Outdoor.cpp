@@ -1692,170 +1692,86 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
 int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater,
                       int *bmodel_pid, int bWaterWalk) {
-    int v18;                  // edx@26
-    int v19;                  // eax@28
-    int v22;                  // edx@30
-    __int64 v23 {};              // qtt@30
-    int v24;                  // eax@36
-    int v25;                  // ecx@38
-    int current_floor_level;  // ecx@43
-    int v29;                  // edx@44
-    int v39;                  // [sp+20h] [bp-20h]@9
-    bool current_vertices_Y;  // [sp+30h] [bp-10h]@22
-    bool next_vertices_Y;     // [sp+34h] [bp-Ch]@24
-    int number_hits;          // [sp+58h] [bp+18h]@22
-    int next_floor_level;     // [sp+58h] [bp+18h]@43
 
-    int v46 = 1;
+    std::array<int, 20> current_Face_id;                   // dword_721110
+    std::array<int, 20> current_BModel_id;                 // dword_721160
+    std::array<int, 20> odm_floor_level;                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
-    odm_floor_level[0] =
-        GetTerrainHeightsAroundParty2(X, Y, pIsOnWater, bWaterWalk);
+    odm_floor_level[0] = GetTerrainHeightsAroundParty2(X, Y, pIsOnWater, bWaterWalk);
+
+    int surface_count = 1;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (X <= model.pBoundingBox.x2 && X >= model.pBoundingBox.x1 && Y <= model.pBoundingBox.y2 &&
-            Y >= model.pBoundingBox.y1) {
-            if (!model.pFaces.empty()) {
-                v39 = 0;
-                for (ODMFace &face : model.pFaces) {
-                    if (face.Ethereal()) {
-                        continue;
-                    }
-                    if ((face.uPolygonType == POLYGON_Floor ||
-                         face.uPolygonType == POLYGON_InBetweenFloorAndWall) &&
-                        X <= face.pBoundingBox.x2 &&
-                        X >= face.pBoundingBox.x1 &&
-                        Y <= face.pBoundingBox.y2 &&
-                        Y >= face.pBoundingBox.y1) {
-                        for (uint i = 0; i < face.uNumVertices; ++i) {
-                            odm_floor_face_vert_coord_X[2 * i] =
-                                face.pXInterceptDisplacements[i] +
-                                model.pVertices.pVertices[face.pVertexIDs[i]].x;
-                            odm_floor_face_vert_coord_Y[2 * i] =
-                                face.pYInterceptDisplacements[i] +
-                                model.pVertices.pVertices[face.pVertexIDs[i]].y;
-                            odm_floor_face_vert_coord_X[2 * i + 1] =
-                                face.pXInterceptDisplacements[i] +
-                                model.pVertices
-                                    .pVertices[face.pVertexIDs[i + 1]]
-                                    .x;
-                            odm_floor_face_vert_coord_Y[2 * i + 1] =
-                                face.pYInterceptDisplacements[i] +
-                                model.pVertices
-                                    .pVertices[face.pVertexIDs[i + 1]]
-                                    .y;
-                        }
-                        odm_floor_face_vert_coord_X[2 * face.uNumVertices] =
-                            odm_floor_face_vert_coord_X[0];
-                        odm_floor_face_vert_coord_Y[2 * face.uNumVertices] =
-                            odm_floor_face_vert_coord_Y[0];
+        if (!model.pBoundingBox.ContainsXY(X, Y))
+            continue;
 
-                        current_vertices_Y =
-                            odm_floor_face_vert_coord_Y[0] >= Y;
-                        number_hits = 0;
-                        if (2 * face.uNumVertices > 0) {
-                            for (int i = 0; i < 2 * face.uNumVertices; ++i) {
-                                if (number_hits >= 2) break;
-                                // v36 = odm_floor_face_vert_coord_Y[i + 1];
-                                next_vertices_Y =
-                                    odm_floor_face_vert_coord_Y[i + 1] >= Y;
-                                if (current_vertices_Y !=
-                                    next_vertices_Y) {  // проверка по Y
-                                    v18 =
-                                        odm_floor_face_vert_coord_X[i + 1] >= X
-                                            ? 0
-                                            : 2;
-                                    v19 = v18 |
-                                          (odm_floor_face_vert_coord_X[i] < X);
-                                    if (v19 != 3) {
-                                        if (!v19) {
-                                            ++number_hits;
-                                        } else {
-                                            HEXRAYS_LODWORD(v23) =
-                                                (Y -
-                                                 odm_floor_face_vert_coord_Y[i])
-                                                << 16;
-                                            HEXRAYS_HIDWORD(v23) =
-                                                (Y - odm_floor_face_vert_coord_Y
-                                                         [i]) >>
-                                                16;
-                                            v22 =
-                                                ((((odm_floor_face_vert_coord_X
-                                                        [i + 1] -
-                                                    odm_floor_face_vert_coord_X
-                                                        [i]) *
-                                                   v23 /
-                                                   (odm_floor_face_vert_coord_Y
-                                                        [i + 1] -
-                                                    odm_floor_face_vert_coord_Y
-                                                        [i])) >>
-                                                  16) +
-                                                 odm_floor_face_vert_coord_X
-                                                     [i]);
-                                            if (v22 >= X) ++number_hits;
-                                        }
-                                    }
-                                }
-                                current_vertices_Y = next_vertices_Y;
-                            }
-                            if (number_hits == 1) {
-                                if (v46 >= 20) break;
-                                if (face.uPolygonType == POLYGON_Floor) {
-                                    v24 = model.pVertices
-                                        .pVertices[face.pVertexIDs[0]]
-                                        .z;
-                                } else {
-                                    v24 = face.zCalc.Calculate(X, Y);
-                                }
-                                v25 = v46++;
-                                odm_floor_level[v25] = v24;
-                                current_BModel_id[v25] = model.index;
-                                current_Face_id[v25] = face.index;
-                            }
-                        }
-                    }
-                }
+        if (model.pFaces.empty())
+            continue;
+
+        for (ODMFace &face : model.pFaces) {
+            if (face.Ethereal())
+                continue;
+
+            if (face.uNumVertices == 0)
+                continue;
+
+            if (face.uPolygonType != POLYGON_Floor && face.uPolygonType != POLYGON_InBetweenFloorAndWall)
+                continue;
+
+            if (!face.pBoundingBox.ContainsXY(X, Y))
+                continue;
+
+            int slack = engine->config->gameplay.FloorChecksEps.Get();
+            if (!face.Contains(Vec3_int_(X, Y, 0), model.index, slack, FACE_XY_PLANE))
+                continue;
+
+            int floor_level;
+            if (face.uPolygonType == POLYGON_Floor) {
+                floor_level = model.pVertices.pVertices[face.pVertexIDs[0]].z;
+            } else {
+                floor_level = face.zCalc.Calculate(X, Y);
             }
+            odm_floor_level[surface_count] = floor_level;
+            current_BModel_id[surface_count] = model.index;
+            current_Face_id[surface_count] = face.index;
+            surface_count++;
+
+            if (surface_count >= 20)
+                break;
         }
     }
-    if (v46 == 1) {
+
+    if (surface_count == 1) {
         *bmodel_pid = 0;
-        return odm_floor_level[0];
+        return odm_floor_level[0]; // No bmodels, just the terrain.
     }
-    current_floor_level = 0;
-    v29 = 0;
-    if (v46 <= 1) {
-        *bmodel_pid = 0;
-    } else {
-        current_floor_level = odm_floor_level[0];
-        for (uint i = 1; i < v46; ++i) {
-            next_floor_level = odm_floor_level[i];
-            if (current_floor_level <= Z + 5) {
-                if (next_floor_level >= current_floor_level &&
-                    next_floor_level <= Z + 5) {
-                    current_floor_level = next_floor_level;
-                    v29 = i;
-                }
-            } else if (next_floor_level < current_floor_level) {
-                current_floor_level = next_floor_level;
-                v29 = i;
+
+    int current_floor_level = odm_floor_level[0];
+    int current_idx = 0;
+    for (uint i = 1; i < surface_count; ++i) {
+        if (current_floor_level <= Z + 5) {
+            if (odm_floor_level[i] >= current_floor_level && odm_floor_level[i] <= Z + 5) {
+                current_floor_level = odm_floor_level[i];
+                current_idx = i;
             }
+        } else if (odm_floor_level[i] < current_floor_level) {
+            current_floor_level = odm_floor_level[i];
+            current_idx = i;
         }
-        if (!v29)
-            *bmodel_pid = 0;
-        else
-            *bmodel_pid = current_Face_id[v29] | (current_BModel_id[v29] << 6);
     }
-    if (v29) {
+    if (!current_idx)
+        *bmodel_pid = 0;
+    else
+        *bmodel_pid = current_Face_id[current_idx] | (current_BModel_id[current_idx] << 6);
+
+    if (current_idx) {
         *pIsOnWater = false;
-        if (pOutdoor->pBModels[current_BModel_id[v29]]
-                .pFaces[current_Face_id[v29]]
-                .Fluid())
+        if (pOutdoor->pBModels[current_BModel_id[current_idx]].pFaces[current_Face_id[current_idx]].Fluid())
             *pIsOnWater = true;
     }
-    if (odm_floor_level[v29] >= odm_floor_level[0])
-        odm_floor_level[0] = odm_floor_level[v29];
-    return odm_floor_level[0];
+
+    return std::max(odm_floor_level[0], odm_floor_level[current_idx]);
 }
 
 // not sure if right- or left-handed coordinate space assumed, so this could be
