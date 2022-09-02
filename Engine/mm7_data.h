@@ -362,9 +362,6 @@ extern std::array<int, 20> dword_720ED0;
 extern std::array<int, 20> ceiling_height_level;
 extern std::array<int16_t, 104> odm_floor_face_vert_coord_Y;  // word_720F70
 extern std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
-extern std::array<int, 20> current_Face_id;                   // dword_721110
-extern std::array<int, 20> current_BModel_id;                 // dword_721160
-extern std::array<int, 20> odm_floor_level;  // idb dword_7211B0
 extern Vec3_int_ blv_prev_party_pos;
 extern char *dword_722F10;  // idb
 extern std::array<const char *, 513> pQuestTable;

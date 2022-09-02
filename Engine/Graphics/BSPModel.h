@@ -135,7 +135,7 @@ struct ODMFace {
     /**
      * @see BLVFace::Contains
      */
-    bool Contains(const Vec3_int_ &pos, int model_idx, int override_plane = 0) const;
+    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, int override_plane = 0) const;
 
     unsigned int index = 0;
     struct Plane_float_ pFacePlane;

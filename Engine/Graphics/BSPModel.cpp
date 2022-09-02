@@ -233,10 +233,10 @@ bool ODMFace::HasEventHint() {
         return true;
 }
 
-bool ODMFace::Contains(const Vec3_int_ &pos, int model_idx, int override_plane) const {
+bool ODMFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, int override_plane) const {
     BLVFace face;
     face.uAttributes = this->uAttributes;
     face.uNumVertices = this->uNumVertices;
     face.pVertexIDs = const_cast<uint16_t *>(this->pVertexIDs.data());
-    return face.Contains(pos, model_idx, override_plane);
+    return face.Contains(pos, model_idx, slack, override_plane);
 }
