@@ -180,7 +180,7 @@ bool ODMFace::Deserialize(ODMFace_MM7 *mm7) {
     this->pFacePlane.dist = this->pFacePlaneOLD.dist / 65536.0;
 
     this->zCalc.Init(this->pFacePlaneOLD);
-    this->uAttributes = mm7->uAttributes;
+    this->uAttributes = FaceAttributes::FromUnderlying(mm7->uAttributes);
     this->pVertexIDs = mm7->pVertexIDs;
     this->pTextureUIDs = mm7->pTextureUIDs;
     this->pTextureVIDs = mm7->pTextureVIDs;
@@ -233,7 +233,7 @@ bool ODMFace::HasEventHint() {
         return true;
 }
 
-bool ODMFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, int override_plane) const {
+bool ODMFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, FaceAttributes override_plane) const {
     BLVFace face;
     face.uAttributes = this->uAttributes;
     face.uNumVertices = this->uNumVertices;

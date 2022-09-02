@@ -1430,7 +1430,7 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename) {
 }
 
 //----- (0044892E) --------------------------------------------------------
-void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
+void sub_44892E_set_faces_bit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             for (uint i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {

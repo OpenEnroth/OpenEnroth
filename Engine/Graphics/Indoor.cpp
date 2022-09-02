@@ -78,7 +78,7 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     this->pFacePlane = data->pFacePlane;
     this->pFacePlane_old = data->pFacePlane_old;
     this->zCalc.Init(this->pFacePlane_old);
-    this->uAttributes = data->uAttributes;
+    this->uAttributes = FaceAttributes::FromUnderlying(data->uAttributes);
     this->pVertexIDs = nullptr;
     this->pXInterceptDisplacements = nullptr;
     this->pYInterceptDisplacements = nullptr;
@@ -1229,9 +1229,12 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     return;
 }
 
-void BLVFace::Flatten(FlatFace *points, int model_idx, int override_plane) const {
-    int plane = override_plane;
-    if (plane == 0)
+void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_plane) const {
+    Assert(!override_plane ||
+            override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
+
+    FaceAttributes plane = override_plane;
+    if (!plane)
         plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
 
     auto do_flatten = [&](auto &&vertex_accessor) {
@@ -1264,12 +1267,15 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, int override_plane) const
     }
 }
 
-bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, int override_plane) const {
+bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, FaceAttributes override_plane) const {
+    Assert(!override_plane ||
+            override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
+
     if (this->uNumVertices <= 0)
         return false;
 
-    int plane = override_plane;
-    if (plane == 0)
+    FaceAttributes plane = override_plane;
+    if (!plane)
         plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
 
     FlatFace points;

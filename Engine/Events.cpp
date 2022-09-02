@@ -872,7 +872,7 @@ LABEL_47:
                     break;
                 case EVENT_SetFacesBit:
                     sub_44892E_set_faces_bit(EVT_DWORD(_evt->v5),
-                                             EVT_DWORD(_evt->v9), _evt->v13);
+                                             static_cast<FaceAttribute>(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleChestFlag:

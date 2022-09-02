@@ -20,6 +20,7 @@
 #include "Engine/mm7_data.h"
 
 #include "Engine/Graphics/Polygon.h"
+#include "Engine/Graphics/BSPModel.h"
 
 #include "Io/KeyboardActionMapping.h"
 #include "Io/KeyboardInputHandler.h"
@@ -231,7 +232,7 @@ unsigned int GetGravityStrength();
 void GameUI_StatusBar_Update(bool force_hide = false);
 
 void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename);
-void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on);
+void sub_44892E_set_faces_bit(int sCogNumber, FaceAttribute bit, int on);
 void SetDecorationSprite(uint16_t uCog, bool bHide,
                          const char *pFileName);  // idb
 void _494035_timed_effects__water_walking_damage__etc();

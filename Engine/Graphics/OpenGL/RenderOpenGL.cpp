@@ -4148,7 +4148,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                                     attribflags |= 0x1000;
 
                                 if (face.uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                                    attribflags |= FACE_OUTLINED;
+                                    attribflags |= 0x00010000;
 
                                 // load up verts here
                                 for (int z = 0; z < (face.uNumVertices - 2); z++) {
@@ -4578,7 +4578,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     attribflags |= 0x1000;
 
                 if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                    attribflags |= FACE_OUTLINED;
+                    attribflags |= 0x00010000;
 
                 // check if tile->name is already in list
                 auto mapiter = bsptexmap.find(*texname);
@@ -4815,7 +4815,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             attribflags |= 0x1000;
 
                         if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                            attribflags |= FACE_OUTLINED;
+                            attribflags |= 0x00010000;
 
                         texlayer = face->texlayer;
                         texunit = face->texunit;
