@@ -20,7 +20,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ItemTable.h"
-#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
@@ -31,7 +30,6 @@
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/ZlibWrapper.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"

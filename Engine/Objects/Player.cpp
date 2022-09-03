@@ -1,7 +1,6 @@
 #include "Engine/Objects/Player.h"
 
 #include <algorithm>
-#include <functional>
 
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"

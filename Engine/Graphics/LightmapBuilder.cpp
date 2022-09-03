@@ -1,9 +1,10 @@
+#include "LightmapBuilder.h"
+
 #include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/stru314.h"
 
-#include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ClippingFunctions.h"
@@ -1150,7 +1151,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
  * @param uBaseLightLevel               Starting dimming level at point (0-31).
  * @param uSectorID                     Sector ID if indoors or 0.
  * @param x, y, z                       Co-ords of point.
- * 
+ *
  * @return                              Dimming level (0-31) with lights effect added.
  */
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {

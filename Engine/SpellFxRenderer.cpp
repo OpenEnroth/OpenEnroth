@@ -19,7 +19,6 @@
 #include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Tables/IconFrameTable.h"

@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <algorithm>
 #include <string>
-#include <vector>
 
 #include "Platform/Api.h"
 

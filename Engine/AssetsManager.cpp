@@ -2,7 +2,6 @@
 
 #include <algorithm>
 
-#include "Engine/Engine.h"
 #include "Engine/LOD.h"
 
 #include "Engine/Graphics/IRender.h"

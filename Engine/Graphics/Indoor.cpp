@@ -31,10 +31,8 @@
 #include "Engine/Serialization/MemoryInput.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
-#include "Engine/stru367.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/ZlibWrapper.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"

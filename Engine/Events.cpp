@@ -2,8 +2,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
 #include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Viewport.h"

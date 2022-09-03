@@ -1,12 +1,5 @@
 #include "Engine/Engine.h"
 
-#include <filesystem>
-#include <algorithm>
-
-#include "src/Application/Game.h"
-
-#include "Arcomage/Arcomage.h"
-
 #include "Engine/Events.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"

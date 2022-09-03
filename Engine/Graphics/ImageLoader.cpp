@@ -7,13 +7,9 @@
 #include "Engine/Graphics/HWLContainer.h"
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/ImageFormatConverter.h"
-#include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/PCX.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Log.h"
 #include "Engine/ZlibWrapper.h"
-
-#include "Platform/Api.h"
 
 // List of textures that require additional processing for transparent pixels.
 // TODO: move to WoMM config file.

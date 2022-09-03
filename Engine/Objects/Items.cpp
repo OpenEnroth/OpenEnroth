@@ -8,7 +8,6 @@
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
-#include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/Monsters.h"
@@ -19,7 +18,6 @@
 #include "Engine/Tables/StorylineTextTable.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
 
 

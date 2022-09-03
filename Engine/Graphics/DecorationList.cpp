@@ -2,13 +2,10 @@
 
 #include <cstdlib>
 
-#include "Engine/Tables/FrameTableInc.h"
 #include "Engine/stru123.h"
 #include "Engine/Engine.h"
 #include "Level/Decoration.h"
 #include "Sprites.h"
-
-#include "Platform/Api.h"
 
 DecorationList *pDecorationList;
 

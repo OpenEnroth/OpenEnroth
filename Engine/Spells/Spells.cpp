@@ -1,8 +1,8 @@
 #include "Engine/Spells/Spells.h"
 
 #include <map>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
@@ -12,9 +12,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SpellFxRenderer.h"
-
-#include "../OurMath.h"
-#include "../Party.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

@@ -7,7 +7,6 @@
 #include "Engine/SpellFxRenderer.h"
 
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Graphics/Camera.h"
