@@ -338,7 +338,7 @@ struct BLVDoor {  // 50h
         Closing = 3
     };
 
-    uint32_t uAttributes;
+    DoorAttributes uAttributes;
     uint32_t uDoorID;
     uint32_t uTimeSinceTriggered;
     Vec3_int_ vDirection;

@@ -1386,7 +1386,7 @@ void BLV_UpdateDoors() {
 
         // door not moving currently
         if (door->uState == BLVDoor::Closed || door->uState == BLVDoor::Open) {
-            door->uAttributes &= 0xFFFFFFFDu;  // ~0x2
+            door->uAttributes &= ~DOOR_SETTING_UP;
             continue;
         }
 
@@ -2001,17 +2001,17 @@ void PrepareToLoadBLV(bool bLoading) {
         if (pIndoor->pDoors[i].uAttributes & 0x01) {
             pIndoor->pDoors[i].uState = BLVDoor::Opening;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-            pIndoor->pDoors[i].uAttributes = 2;
+            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
 
         if (pIndoor->pDoors[i].uState == BLVDoor::Closed) {
             pIndoor->pDoors[i].uState = BLVDoor::Closing;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-            pIndoor->pDoors[i].uAttributes = 2;
+            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         } else if (pIndoor->pDoors[i].uState == BLVDoor::Open) {
             pIndoor->pDoors[i].uState = BLVDoor::Opening;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-            pIndoor->pDoors[i].uAttributes = 2;
+            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
     }
 

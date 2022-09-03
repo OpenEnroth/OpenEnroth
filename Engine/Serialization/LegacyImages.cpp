@@ -1375,7 +1375,7 @@ void BLVDoor_MM7::Serialize(BLVDoor *door) {
 }
 
 void BLVDoor_MM7::Deserialize(BLVDoor *door) {
-    door->uAttributes = this->uAttributes;
+    door->uAttributes = DoorAttributes::FromUnderlying(this->uAttributes);
     door->uDoorID = this->uDoorID;
     door->uTimeSinceTriggered = this->uTimeSinceTriggered;
     door->vDirection = this->vDirection;
