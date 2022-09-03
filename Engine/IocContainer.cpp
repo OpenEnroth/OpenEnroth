@@ -3,8 +3,6 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Events.h"
-#include "Engine/Events2D.h"
-#include "Engine/LOD.h"
 #include "Engine/MapsLongTimer.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
@@ -21,7 +19,6 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 
 #include "Engine/Graphics/Level/Decoration.h"
@@ -29,8 +26,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Monsters.h"
-#include "Engine/Objects/NPC.h"
-#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/Player.h"
 #include "Engine/Objects/SpriteObject.h"
 
@@ -40,7 +35,6 @@
 
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
 
 #include "Io/Mouse.h"
 
