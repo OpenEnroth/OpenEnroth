@@ -13,6 +13,10 @@ Build/Visual Studio 2017/Debug
 .vscode/*
 *.code-workspace
 
+# CLion
+.idea
+cmake-build-debug
+
 # CMake
 ## Default output folder used by Visual Studio
 out
