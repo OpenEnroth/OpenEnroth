@@ -1429,14 +1429,8 @@ void BLV_UpdateDoors() {
         for (j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
             Vec3_short_ *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            face->pFacePlane_old.dist =
-                -(v17->x * face->pFacePlane_old.vNormal.x +
-                  v17->y * face->pFacePlane_old.vNormal.y +
-                  v17->z * face->pFacePlane_old.vNormal.z);
-            face->pFacePlane.dist =
-                -((double)v17->z * face->pFacePlane.vNormal.z +
-                  (double)v17->y * face->pFacePlane.vNormal.y +
-                  (double)v17->x * face->pFacePlane.vNormal.x); // TODO: needs fixpoint_to_float here?
+            face->pFacePlane_old.dist = -Dot(*v17, face->pFacePlane_old.vNormal);
+            face->pFacePlane.dist = -Dot(ToFloatVector(*v17), face->pFacePlane.vNormal);
             if (face->pFacePlane_old.vNormal.z) {
                 v24 = abs(face->pFacePlane_old.dist >> 15);
                 v25 = abs(face->pFacePlane_old.vNormal.z);
@@ -1719,13 +1713,9 @@ void UpdateActors_BLV() {
                         if (pActors[actor_id].uCurrentActionAnimation != 1 ||
                             v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
                             if (collision_state.adjusted_move_distance < collision_state.move_distance) {
-                                pActors[actor_id].vPosition.x +=
-                                    collision_state.adjusted_move_distance * collision_state.direction.x;
-                                pActors[actor_id].vPosition.y +=
-                                    collision_state.adjusted_move_distance * collision_state.direction.y;
-                                pActors[actor_id].vPosition.z +=
-                                    collision_state.adjusted_move_distance * collision_state.direction.z;
-                                pActors[actor_id].uSectorID = (short)collision_state.uSectorID;
+                                pActors[actor_id].vPosition +=
+                                    ToShortVector(collision_state.adjusted_move_distance * collision_state.direction);
+                                pActors[actor_id].uSectorID = collision_state.uSectorID;
                                 collision_state.total_move_distance += collision_state.adjusted_move_distance;
                                 v37 = PID_ID(collision_state.pid);
                                 if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {

@@ -70,6 +70,10 @@ struct Vec3 {
         z *= denom;
     }
 
+    friend Vec3<short> ToShortVector(const Vec3 &v) requires std::is_floating_point_v<T> {
+        return Vec3<short>(std::round(v.x), std::round(v.y), std::round(v.z));
+    }
+
     friend Vec3<int> ToIntVector(const Vec3 &v) requires std::is_floating_point_v<T> {
         return Vec3<int>(std::round(v.x), std::round(v.y), std::round(v.z));
     }
@@ -112,6 +116,11 @@ struct Vec3 {
 
     friend Vec3 operator*(T l, const Vec3 &r) {
         return r * l;
+    }
+
+    Vec3 &operator+=(const Vec3 &v) {
+        *this = *this + v;
+        return *this;
     }
 
     friend Vec3 Cross(const Vec3 &l, const Vec3 &r) {
