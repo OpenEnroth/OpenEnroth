@@ -192,20 +192,20 @@ void SpellBookGenerator() {  // for GuildDialogs
     int randomnum;  // esi@7
 
     for (int i = 0; i < 12; ++i) {
-        if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= 5) {
-            if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= 13) {
+        if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild) {
+            if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_DarkGuild) {
                 pItemNum = rand() %
                     word_4F0F30[window_SpeakInHouse->wData.val - 139]
-                    + 11 * p2DEvents[window_SpeakInHouse->wData.val - 1].uType
+                    + 11 * std::to_underlying(p2DEvents[window_SpeakInHouse->wData.val - 1].uType)
                     + 345;
             } else {
-                if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == 14)
+                if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_ElementalGuild)
                     randomnum = rand() % 4;
-                else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == 15)
+                else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_SelfGuild)
                     randomnum = rand() % 3 + 4;
-                else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == 16)
+                else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_16)
                     randomnum = rand() % 2 + 7;
-                if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= 16)
+                if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_16)
                     pItemNum = rand() %
                         word_4F0F30[window_SpeakInHouse->wData.val - 139]
                         + 11 * randomnum + 400;

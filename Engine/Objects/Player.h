@@ -5,6 +5,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
+#include "Engine/Events2D.h"
 #include "Engine/Conditions.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Items.h"
@@ -233,7 +234,7 @@ struct Player {
     unsigned int GetStatColor(int uStat);
     bool DiscardConditionIfLastsLongerThan(Condition uCondition,
                                            GameTime time);
-    int SelectPhrasesTransaction(ItemGen* pItem, int building_type,
+    int SelectPhrasesTransaction(ItemGen* pItem, BuildingType building_type,
                                  int BuildID_2Events, int a5);
     int GetBodybuilding();
     int GetMeditation();

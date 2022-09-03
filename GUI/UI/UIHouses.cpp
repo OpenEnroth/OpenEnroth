@@ -133,202 +133,202 @@ unsigned char transport_routes[20][4] = {
 };
 
 std::array<const stru159, 196> pAnimatedRooms = { {  // 0x4E5F70
-    { "", 0x4, 0x1F4, 0, 0, 0 },
-    { "Human Armor01", 0x20, 0x2C0, 2, 58, 0 },
-    { "Necromancer Armor01", 0x20, 0x2D7, 2, 70, 0 },
-    { "Dwarven Armor01", 0x20, 0x2EE, 2, 5, 0 },
-    { "Wizard Armor", 0x20, 0x3BD, 2, 19, 0 },
-    { "Warlock Armor", 0x20, 0x2D6, 2, 35, 0 },
-    { "Elf Armor", 0x20, 0x2BC, 2, 79, 0 },
-    { "Human Alchemisht01", 0xE, 0x2BE, 4, 95, 0 },
-    { "Necromancer Alchemist01", 0xE, 0x2D6, 4, 69, 0 },
-    { "Dwarven Achemist01", 0xE, 0x387, 4, 4, 0 },
-    { "Wizard Alchemist", 0xE, 0x232, 4, 25, 0 },
-    { "Warlock Alchemist", 0xE, 0x2BE, 4, 42, 0 },
-    { "Elf Alchemist", 0xE, 0x38A, 4, 84, 0 },
-    { "Human Bank01", 0x6, 0x384, 22, 52, 0 },
-    { "Necromancer Bank01", 0x6, 0x2D8, 22, 71, 0 },
-    { "Dwarven Bank", 0x6, 0x2F3, 22, 6, 0 },
-    { "Wizard Bank", 0x6, 0x3BA, 22, 20, 0 },
-    { "Warlock Bank", 0x6, 0x39F, 22, 36, 0 },
-    { "Elf Bank", 0x6, 0x2BC, 22, 71, 0 },
-    { "Boat01", 0xF, 0x4C, 28, 53, 3 },
-    { "Boat01d", 0xF, 0x4C, 28, 53, 3 },
-    { "Human Magic Shop01", 0xA, 0x2C8, 3, 54, 0 },
-    { "Necromancer Magic Shop01", 0xE, 0x2DC, 3, 66, 0 },
-    { "Dwarven Magic Shop01", 0x2A, 0x2EF, 3, 91, 0 },
-    { "Wizard Magic Shop", 0x1E, 0x2DF, 3, 15, 0 },
-    { "Warlock Magic Shop", 0x7, 0x3B9, 3, 15, 0 },
-    { "Elf Magic Shop", 0x24, 0x2CC, 3, 82, 0 },
-    { "Human Stables01", 0x21, 0x31, 27, 48, 3 },
-    { "Necromancer Stables", 0x21, 0x2DD, 27, 67, 3 },
-    { "", 0x21, 0x2F0, 27, 91, 3 },
-    { "Wizard Stables", 0x21, 0x3BA, 27, 16, 3 },
-    { "Warlock Stables", 0x21, 0x181, 27, 77, 3 },
-    { "Elf Stables", 0x21, 0x195, 27, 77, 3 },
-    { "Human Tavern01", 0xD, 0x2C2, 21, 49, 0 },
-    { "Necromancer Tavern 01", 0xD, 0x3B0, 21, 57, 0 },
-    { "Dwarven Tavern01", 0xD, 0x2FE, 21, 94, 0 },
-    { "Wizard Tavern", 0xD, 0x3BB, 21, 17, 0 },
-    { "Warlock Tavern", 0xD, 0x3A8, 21, 33, 0 },
-    { "Elf Tavern", 0xD, 0x2CD, 21, 78, 0 },
-    { "Human Temple01", 0x24, 0x2DB, 23, 50, 3 },
-    { "Necromancer Temple", 0x24, 0x2DF, 23, 60, 3 },
-    { "Dwarven Temple01", 0x24, 0x2F1, 23, 86, 3 },
-    { "Wizard Temple", 0x24, 0x2E0, 23, 10, 3 },
-    { "Warlock Temple", 0x24, 0x3A4, 23, 27, 3 },
-    { "Elf Temple", 0x24, 0x2CE, 23, 72, 3 },
-    { "Human Town Hall", 0x10, 0x39C, 17, 14, 0 },
-    { "Necromancer Town Hall01", 0x10, 0x3A4, 17, 61, 0 },
-    { "Dwarven Town Hall", 0x10, 0x2DB, 17, 88, 0 },
-    { "Wizard Town Hall", 0x10, 0x3BD, 17, 11, 0 },
-    { "Warlock Town Hall", 0x10, 0x2DB, 17, 28, 0 },
-    { "Elf Town Hall", 0x10, 0x27A, 17, 73, 0 },
-    { "Human Training Ground01", 0x18, 0x2C7, 30, 44, 0 },
-    { "Necromancer Training Ground", 0x18, 0x3AD, 30, 62, 0 },
-    { "Dwarven Training Ground", 0x18, 0x2F2, 30, 89, 0 },
-    { "Wizard Training Ground", 0x18, 0x3A3, 30, 12, 0 },
-    { "Warlock Training Ground", 0x18, 0x3A6, 30, 29, 0 },
-    { "Elf Training Ground", 0x18, 0x19F, 30, 74, 0 },
-    { "Human Weapon Smith01", 0x16, 0x2C1, 1, 45, 4 },
-    { "Necromancer Weapon Smith01", 0x16, 0x2D9, 1, 63, 4 },
-    { "Dwarven Weapon Smith01", 0x16, 0x2EE, 1, 82, 4 },
-    { "Wizard Weapon Smith", 0x16, 0x2D5, 1, 13, 4 },
-    { "Warlock Weapon Smith", 0x16, 0x2D7, 1, 23, 4 },
-    { "Elf Weapon Smith", 0x16, 0x2CA, 1, 75, 4 },
-    { "Air Guild", 0x1D, 0xA4, 6, 1, 3 },
-    { "Body Guild", 0x19, 0x3BF, 11, 2, 0 },
-    { "Dark Guild", 0x19, 0x2D1, 13, 3, 0 },
-    { "Earth Guild", 0x19, 0x2CB, 8, 83, 0 },
-    { "Fire Guild", 0x1C, 0x2BF, 5, 56, 0 },
-    { "Light Guild", 0x1C, 0x2D5, 12, 46, 0 },
-    { "Mind Guild", 0x1C, 0xE5, 10, 40, 0 },
-    { "Spirit Guild", 0x1C, 0x2D2, 9, 41, 0 },
-    { "Water Guild", 0x1B, 0x2D3, 7, 24, 0 },
-    { "Lord And Judge Out01", 1, 0, 29, 39, 0 },
-    { "Human Poor House 1", 8, 0, 29, 0, 0 },
-    { "Human Poor House 2", 8, 0, 29, 0, 0 },
-    { "Human Poor House 3", 8, 0, 29, 0, 0 },
-    { "Human Medium House 1", 8, 0, 29, 0, 0 },
-    { "Human Medium House 2", 8, 0, 29, 0, 0 },
-    { "Human Medium House 3", 8, 0, 29, 0, 0 },
-    { "Human Rich House 1", 8, 0, 29, 0, 0 },
-    { "Human Rich House 2", 8, 0, 29, 0, 0 },
-    { "Human Rich House 3", 8, 0, 29, 0, 0 },
-    { "Elven Poor House 1", 8, 0, 29, 0, 0 },
-    { "Elven Poor House 2", 8, 0, 29, 0, 0 },
-    { "Elven Poor House 3", 8, 0, 29, 0, 0 },
-    { "Elven Medium House 1", 8, 0, 29, 0, 0 },
-    { "Elven Medium House 2", 8, 0, 29, 0, 0 },
-    { "Elven Medium House 3", 8, 0, 29, 0, 0 },
-    { "Elven Rich House 1", 8, 0, 29, 0, 0 },
-    { "Elven Rich House 2", 8, 0, 29, 0, 0 },
-    { "Elven Rich House 3", 8, 0, 29, 0, 0 },
-    { "Dwarven Poor House 1", 8, 0, 29, 0, 0 },
-    { "Dwarven Poor House 2", 8, 0, 29, 0, 0 },
-    { "Dwarven Poor House 3", 8, 0, 29, 0, 0 },
-    { "Dwarven Medium House 1", 8, 0, 29, 0, 0 },
-    { "Dwarven Medium house 2", 8, 0, 29, 0, 0 },
-    { "Dwarven Medium House 3", 8, 0, 29, 0, 0 },
-    { "Dwarven Rich House 1", 8, 0, 29, 0, 0 },
-    { "Dwarven Rich House 2", 8, 0, 29, 0, 0 },
-    { "Dwarven Rich House 3", 8, 0, 29, 0, 0 },
-    { "Wizard Poor House 1", 8, 0, 29, 0, 0 },
-    { "Wizard Poor House 2", 8, 0, 29, 0, 0 },
-    { "Wizard Poor House 3", 8, 0, 29, 0, 0 },
-    { "Wizard Medium House 1", 8, 0, 29, 0, 0 },
-    { "Wizard Medium House 2", 8, 0, 29, 0, 0 },
-    { "Wizard Mdeium House 3", 8, 0, 29, 0, 0 },
-    { "Wizard Rich House 1", 8, 0, 29, 0, 0 },
-    { "Wizard Rich House 2", 8, 0, 29, 0, 0 },
-    { "Wizard Rich House 3", 8, 0, 29, 0, 0 },
-    { "Necromancer Poor House 1", 8, 0, 29, 0, 0 },
-    { "Necromancer Poor House 2", 8, 0, 29, 0, 0 },
-    { "Necromancer Poor House 3", 8, 0, 29, 0, 0 },
-    { "Necromancer Medium House 1", 8, 0, 29, 0, 0 },
-    { "Necromancer Medium House 2", 8, 0, 29, 0, 0 },
-    { "Necromancer Mdeium House 3", 8, 0, 29, 0, 0 },
-    { "Necromancer Rich House 1", 8, 0, 29, 0, 0 },
-    { "Necromancer Rich House 2", 8, 0, 29, 0, 0 },
-    { "Necromancer Rich House 3", 8, 0, 29, 0, 0 },
-    { "Warlock Poor House 1", 8, 0, 29, 0, 0 },
-    { "Warlock Poor House 2", 8, 0, 29, 0, 0 },
-    { "Warlock Poor House 3", 8, 0, 29, 0, 0 },
-    { "Warlock Medium House 1", 8, 0, 29, 0, 0 },
-    { "Warlock Medium House 2", 8, 0, 29, 0, 0 },
-    { "Warlock Mdeium House 3", 8, 0, 29, 0, 0 },
-    { "Warlock Rich House 1", 8, 0, 29, 0, 0 },
-    { "Warlock Rich House 2", 8, 0, 29, 0, 0 },
-    { "Warlock Rich House 3", 8, 0, 29, 0, 0 },
-    { "Out01 Temple of the Moon", 0x24, 0, 25, 0, 0 },
-    { "Out01 Dragon Cave", 0x24, 0, 25, 0, 0 },
-    { "Out02 Castle Harmondy", 0x24, 0, 25, 0, 0 },
-    { "Out02 White Cliff Cave", 0x24, 0, 25, 0, 0 },
-    { "Out03 Erathian Sewer", 0x24, 0, 25, 0, 0 },
-    { "Out03 Fort Riverstride", 0x24, 0, 25, 0, 0 },
-    { "Out03 Castle Gryphonheart", 0x24, 0, 25, 0, 0 },
-    { "Out04 Elf Castle", 0x24, 0, 25, 0, 0 },
-    { "Out04 Tularean Caves", 0x24, 0, 25, 0, 0 },
-    { "Out04 Clanker's Laboratory", 0x24, 0, 25, 0, 0 },
-    { "Out05 Hall of the Pit", 0x24, 0, 25, 0, 0 },
-    { "Out05 Watchtower 6", 0x24, 0, 25, 0, 0 },
-    { "Out06 School of Sorcery", 0x24, 0, 25, 0, 0 },
-    { "Out06 Red Dwarf Mines", 0x24, 0, 25, 0, 0 },
-    { "Out07 Castle Lambert", 0x24, 0, 25, 0, 0 },
-    { "Out07 Walls of Mist", 0x24, 0, 25, 0, 0 },
-    { "Out07 Temple of the Light", 0x24, 0, 25, 0, 0 },
-    { "Out08 Evil Entrance", 0x24, 0, 25, 0, 0 },
-    { "Out08 Breeding Zone", 0x24, 0, 25, 0, 0 },
-    { "Out08 Temple of the Dark", 0x24, 0, 25, 0, 0 },
-    { "Out09 Grand Temple of the Moon", 0x24, 0, 25, 0, 0 },
-    { "Out09 Grand Tempple of the Sun", 0x24, 0, 25, 0, 0 },
-    { "Out10 Thunderfist Mountain", 0x24, 0, 25, 0, 0 },
-    { "Out10 The Maze", 0x24, 0, 25, 0, 0 },
-    { "Out10 Connecting Tunnel Cave #1", 0x24, 0, 25, 0, 0 },
-    { "", 0x24, 0, 25, 0, 0 },
-    { "", 0x24, 0, 25, 0, 0 },
-    { "Out11 Stone City", 0x24, 0, 25, 0, 0 },
-    { "", 0x24, 0, 25, 0, 0 },
-    { "Out12 Colony Zod", 0x24, 0, 25, 0, 0 },
-    { "Out12 Connecting Tunnel Cave #1", 0x24, 0, 25, 0, 0 },
-    { "", 0x24, 0, 25, 0, 0 },
-    { "", 0x24, 0, 25, 0, 0 },
-    { "Out13 Mercenary Guild", 0x24, 0, 25, 0, 0 },
-    { "Out13 Tidewater Caverns", 0x24, 0, 25, 0, 0 },
-    { "Out13 Wine Cellar", 0x24, 0, 25, 0, 0 },
-    { "Out14 Titan's Stronghold", 0x24, 0, 25, 0, 0 },
-    { "Out14 Temple Of Baa", 0x24, 0, 25, 0, 0 },
-    { "Out14 Hall under the Hill", 0x24, 0, 25, 0, 0 },
-    { "Out15 The Linclon", 0x24, 0, 25, 0, 0 },
-    { "Jail", 0x24, 0, 31, 0, 0 },
-    { "Harmondale Throne Room", 0x24, 0, 29, 0, 0 },
-    { "Gryphonheart Throne Room", 0x24, 0, 20, 0, 0 },
-    { "Elf Castle Throne Room", 0x24, 0, 20, 0, 0 },
-    { "Wizard Castle Throne Room", 0x24, 0, 20, 0, 0 },
-    { "Necromancer Casstle Trone Room", 0x24, 0, 20, 0, 0 },
-    { "Master Thief", 0x24, 0, 29, 0, 0 },
-    { "Dwarven King", 0x24, 0, 20, 0, 0 },
-    { "Arms Master", 0x24, 0, 29, 0, 0 },
-    { "Warlock", 0x24, 0, 29, 0, 0 },
-    { "Lord Markam", 0x24, 0, 20, 0, 0 },
-    { "Arbiter Neutral Town", 0x24, 0, 29, 0, 0 },
-    { "Arbiter Good Town", 0x24, 0, 29, 0, 0 },
-    { "Arbiter Evil Town", 0x24, 0, 29, 0, 0 },
-    { "Necromancer Throne Room Empty", 0x24, 0, 20, 0, 0 },
-    { "", 0x24, 0, 29, 0, 0 },
-    { "", 0x24, 0, 29, 0, 0 },
-    { "", 0x24, 0, 29, 0, 0 },
-    { "", 0x24, 0, 29, 0, 0 },
-    { "Boat01", 0xF, 0, 29, 53, 3 },
-    { "", 0x24, 0, 28, 0, 0 },
-    { "", 0x24, 0, 28, 0, 0 },
-    { "", 0x24, 0, 28, 0, 0 },
-    { "", 0x24, 0, 29, 0, 0 },
-    { "Arbiter Room Neutral", 0x24, 0, 29, 0, 0 },
-    { "Out02 Castle Harmondy Abandoned", 0x24, 0, 25, 0, 0 },
-    { "Human Temple02", 0x24, 0x3AB, 23, 27, 0 },
-    { "Player Castle Good", 0x24, 0, 25, 0, 0 },
-    { "Player Castle Bad", 0x24, 0, 25, 0, 0 }
+    { "", 0x4, 0x1F4, BuildingType_Invalid, 0, 0 },
+    { "Human Armor01", 0x20, 0x2C0, BuildingType_ArmorShop, 58, 0 },
+    { "Necromancer Armor01", 0x20, 0x2D7, BuildingType_ArmorShop, 70, 0 },
+    { "Dwarven Armor01", 0x20, 0x2EE, BuildingType_ArmorShop, 5, 0 },
+    { "Wizard Armor", 0x20, 0x3BD, BuildingType_ArmorShop, 19, 0 },
+    { "Warlock Armor", 0x20, 0x2D6, BuildingType_ArmorShop, 35, 0 },
+    { "Elf Armor", 0x20, 0x2BC, BuildingType_ArmorShop, 79, 0 },
+    { "Human Alchemisht01", 0xE, 0x2BE, BuildingType_AlchemistShop, 95, 0 },
+    { "Necromancer Alchemist01", 0xE, 0x2D6, BuildingType_AlchemistShop, 69, 0 },
+    { "Dwarven Achemist01", 0xE, 0x387, BuildingType_AlchemistShop, 4, 0 },
+    { "Wizard Alchemist", 0xE, 0x232, BuildingType_AlchemistShop, 25, 0 },
+    { "Warlock Alchemist", 0xE, 0x2BE, BuildingType_AlchemistShop, 42, 0 },
+    { "Elf Alchemist", 0xE, 0x38A, BuildingType_AlchemistShop, 84, 0 },
+    { "Human Bank01", 0x6, 0x384, BuildingType_Bank, 52, 0 },
+    { "Necromancer Bank01", 0x6, 0x2D8, BuildingType_Bank, 71, 0 },
+    { "Dwarven Bank", 0x6, 0x2F3, BuildingType_Bank, 6, 0 },
+    { "Wizard Bank", 0x6, 0x3BA, BuildingType_Bank, 20, 0 },
+    { "Warlock Bank", 0x6, 0x39F, BuildingType_Bank, 36, 0 },
+    { "Elf Bank", 0x6, 0x2BC, BuildingType_Bank, 71, 0 },
+    { "Boat01", 0xF, 0x4C, BuildingType_Boats, 53, 3 },
+    { "Boat01d", 0xF, 0x4C, BuildingType_Boats, 53, 3 },
+    { "Human Magic Shop01", 0xA, 0x2C8, BuildingType_MagicShop, 54, 0 },
+    { "Necromancer Magic Shop01", 0xE, 0x2DC, BuildingType_MagicShop, 66, 0 },
+    { "Dwarven Magic Shop01", 0x2A, 0x2EF, BuildingType_MagicShop, 91, 0 },
+    { "Wizard Magic Shop", 0x1E, 0x2DF, BuildingType_MagicShop, 15, 0 },
+    { "Warlock Magic Shop", 0x7, 0x3B9, BuildingType_MagicShop, 15, 0 },
+    { "Elf Magic Shop", 0x24, 0x2CC, BuildingType_MagicShop, 82, 0 },
+    { "Human Stables01", 0x21, 0x31, BuildingType_Stables, 48, 3 },
+    { "Necromancer Stables", 0x21, 0x2DD, BuildingType_Stables, 67, 3 },
+    { "", 0x21, 0x2F0, BuildingType_Stables, 91, 3 },
+    { "Wizard Stables", 0x21, 0x3BA, BuildingType_Stables, 16, 3 },
+    { "Warlock Stables", 0x21, 0x181, BuildingType_Stables, 77, 3 },
+    { "Elf Stables", 0x21, 0x195, BuildingType_Stables, 77, 3 },
+    { "Human Tavern01", 0xD, 0x2C2, BuildingType_Tavern, 49, 0 },
+    { "Necromancer Tavern 01", 0xD, 0x3B0, BuildingType_Tavern, 57, 0 },
+    { "Dwarven Tavern01", 0xD, 0x2FE, BuildingType_Tavern, 94, 0 },
+    { "Wizard Tavern", 0xD, 0x3BB, BuildingType_Tavern, 17, 0 },
+    { "Warlock Tavern", 0xD, 0x3A8, BuildingType_Tavern, 33, 0 },
+    { "Elf Tavern", 0xD, 0x2CD, BuildingType_Tavern, 78, 0 },
+    { "Human Temple01", 0x24, 0x2DB, BuildingType_Temple, 50, 3 },
+    { "Necromancer Temple", 0x24, 0x2DF, BuildingType_Temple, 60, 3 },
+    { "Dwarven Temple01", 0x24, 0x2F1, BuildingType_Temple, 86, 3 },
+    { "Wizard Temple", 0x24, 0x2E0, BuildingType_Temple, 10, 3 },
+    { "Warlock Temple", 0x24, 0x3A4, BuildingType_Temple, 27, 3 },
+    { "Elf Temple", 0x24, 0x2CE, BuildingType_Temple, 72, 3 },
+    { "Human Town Hall", 0x10, 0x39C, BuildingType_TownHall, 14, 0 },
+    { "Necromancer Town Hall01", 0x10, 0x3A4, BuildingType_TownHall, 61, 0 },
+    { "Dwarven Town Hall", 0x10, 0x2DB, BuildingType_TownHall, 88, 0 },
+    { "Wizard Town Hall", 0x10, 0x3BD, BuildingType_TownHall, 11, 0 },
+    { "Warlock Town Hall", 0x10, 0x2DB, BuildingType_TownHall, 28, 0 },
+    { "Elf Town Hall", 0x10, 0x27A, BuildingType_TownHall, 73, 0 },
+    { "Human Training Ground01", 0x18, 0x2C7, BuildingType_Training, 44, 0 },
+    { "Necromancer Training Ground", 0x18, 0x3AD, BuildingType_Training, 62, 0 },
+    { "Dwarven Training Ground", 0x18, 0x2F2, BuildingType_Training, 89, 0 },
+    { "Wizard Training Ground", 0x18, 0x3A3, BuildingType_Training, 12, 0 },
+    { "Warlock Training Ground", 0x18, 0x3A6, BuildingType_Training, 29, 0 },
+    { "Elf Training Ground", 0x18, 0x19F, BuildingType_Training, 74, 0 },
+    { "Human Weapon Smith01", 0x16, 0x2C1, BuildingType_WeaponShop, 45, 4 },
+    { "Necromancer Weapon Smith01", 0x16, 0x2D9, BuildingType_WeaponShop, 63, 4 },
+    { "Dwarven Weapon Smith01", 0x16, 0x2EE, BuildingType_WeaponShop, 82, 4 },
+    { "Wizard Weapon Smith", 0x16, 0x2D5, BuildingType_WeaponShop, 13, 4 },
+    { "Warlock Weapon Smith", 0x16, 0x2D7, BuildingType_WeaponShop, 23, 4 },
+    { "Elf Weapon Smith", 0x16, 0x2CA, BuildingType_WeaponShop, 75, 4 },
+    { "Air Guild", 0x1D, 0xA4, BuildingType_AirGuild, 1, 3 },
+    { "Body Guild", 0x19, 0x3BF, BuildingType_BodyGuild, 2, 0 },
+    { "Dark Guild", 0x19, 0x2D1, BuildingType_DarkGuild, 3, 0 },
+    { "Earth Guild", 0x19, 0x2CB, BuildingType_EarthGuild, 83, 0 },
+    { "Fire Guild", 0x1C, 0x2BF, BuildingType_FireGuild, 56, 0 },
+    { "Light Guild", 0x1C, 0x2D5, BuildingType_LightGuild, 46, 0 },
+    { "Mind Guild", 0x1C, 0xE5, BuildingType_MindGuild, 40, 0 },
+    { "Spirit Guild", 0x1C, 0x2D2, BuildingType_SpiritGuild, 41, 0 },
+    { "Water Guild", 0x1B, 0x2D3, BuildingType_WaterGuild, 24, 0 },
+    { "Lord And Judge Out01", 1, 0, BuildingType_House, 39, 0 },
+    { "Human Poor House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Human Poor House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Human Poor House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Human Medium House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Human Medium House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Human Medium House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Human Rich House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Human Rich House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Human Rich House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Poor House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Poor House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Poor House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Medium House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Medium House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Medium House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Rich House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Rich House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Elven Rich House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Poor House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Poor House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Poor House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Medium House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Medium house 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Medium House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Rich House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Rich House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Dwarven Rich House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Poor House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Poor House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Poor House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Medium House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Medium House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Mdeium House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Rich House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Rich House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Wizard Rich House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Poor House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Poor House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Poor House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Medium House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Medium House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Mdeium House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Rich House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Rich House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Rich House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Poor House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Poor House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Poor House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Medium House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Medium House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Mdeium House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Rich House 1", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Rich House 2", 8, 0, BuildingType_House, 0, 0 },
+    { "Warlock Rich House 3", 8, 0, BuildingType_House, 0, 0 },
+    { "Out01 Temple of the Moon", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out01 Dragon Cave", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out02 Castle Harmondy", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out02 White Cliff Cave", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out03 Erathian Sewer", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out03 Fort Riverstride", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out03 Castle Gryphonheart", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out04 Elf Castle", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out04 Tularean Caves", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out04 Clanker's Laboratory", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out05 Hall of the Pit", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out05 Watchtower 6", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out06 School of Sorcery", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out06 Red Dwarf Mines", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out07 Castle Lambert", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out07 Walls of Mist", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out07 Temple of the Light", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out08 Evil Entrance", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out08 Breeding Zone", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out08 Temple of the Dark", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out09 Grand Temple of the Moon", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out09 Grand Tempple of the Sun", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out10 Thunderfist Mountain", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out10 The Maze", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out10 Connecting Tunnel Cave #1", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out11 Stone City", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out12 Colony Zod", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out12 Connecting Tunnel Cave #1", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out13 Mercenary Guild", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out13 Tidewater Caverns", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out13 Wine Cellar", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out14 Titan's Stronghold", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out14 Temple Of Baa", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out14 Hall under the Hill", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Out15 The Linclon", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Jail", 0x24, 0, BuildingType_Jail, 0, 0 },
+    { "Harmondale Throne Room", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Gryphonheart Throne Room", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
+    { "Elf Castle Throne Room", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
+    { "Wizard Castle Throne Room", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
+    { "Necromancer Casstle Trone Room", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
+    { "Master Thief", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Dwarven King", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
+    { "Arms Master", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Warlock", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Lord Markam", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
+    { "Arbiter Neutral Town", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Arbiter Good Town", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Arbiter Evil Town", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Necromancer Throne Room Empty", 0x24, 0, BuildingType_Throne_Room, 0, 0 },
+    { "", 0x24, 0, BuildingType_House, 0, 0 },
+    { "", 0x24, 0, BuildingType_House, 0, 0 },
+    { "", 0x24, 0, BuildingType_House, 0, 0 },
+    { "", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Boat01", 0xF, 0, BuildingType_House, 53, 3 },
+    { "", 0x24, 0, BuildingType_Boats, 0, 0 },
+    { "", 0x24, 0, BuildingType_Boats, 0, 0 },
+    { "", 0x24, 0, BuildingType_Boats, 0, 0 },
+    { "", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Arbiter Room Neutral", 0x24, 0, BuildingType_House, 0, 0 },
+    { "Out02 Castle Harmondy Abandoned", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Human Temple02", 0x24, 0x3AB, BuildingType_Temple, 27, 0 },
+    { "Player Castle Good", 0x24, 0, BuildingType_Unic, 0, 0 },
+    { "Player Castle Bad", 0x24, 0, BuildingType_Unic, 0, 0 }
 } };
 
 static std::array<const char *, 19> _4F03B8_shop_background_names = {
@@ -341,7 +341,20 @@ struct ITEM_VARIATION {
     unsigned __int16 item_class[4];
 };
 
-std::array<const char, 5> uItemsAmountPerShopType = { 0, 6, 8, 12, 12 };
+int ItemAmountForShop(BuildingType buildingType) {
+    switch(buildingType) {
+    case BuildingType_WeaponShop:
+        return 6;
+    case BuildingType_ArmorShop:
+        return 8;
+    case BuildingType_MagicShop:
+        return 12;
+    case BuildingType_AlchemistShop:
+        return 12;
+    default:
+        return 0;
+    }
+}
 
 const ITEM_VARIATION shopWeap_variation_ord[15] = {
     { 0, { 00, 00, 00, 00 } }, { 1, { 23, 27, 20, 20 } }, { 1, { 23, 24, 28, 20 } },
@@ -395,7 +408,7 @@ const ITEM_VARIATION shopArmr_variation_spc[28] = {
     { 5, { 33, 33, 33, 33 } }
 };
 
-void FillAviableSkillsToTeach(enum BuildingType type);
+void FillAviableSkillsToTeach(BuildingType type);
 
 //----- (004B3A72) --------------------------------------------------------
 void InitializaDialogueOptions_Tavern(BuildingType type) {
@@ -729,7 +742,7 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
 
         uCurrentHouse_Animation = p2DEvents[uHouseID - 1].uAnimationID;
         in_current_building_type =
-            (BuildingType)pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
+            pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
         if (in_current_building_type == BuildingType_Throne_Room &&
             pParty->uFine) {  // going 2 jail
             uCurrentHouse_Animation =
@@ -737,7 +750,6 @@ bool EnterHouse(enum HOUSE_ID uHouseID) {
             uHouseID = HOUSE_JAIL;
             pParty->GetPlayingTime().AddYears(1);  // += 123863040;
             in_current_building_type =
-                (BuildingType)
                 pAnimatedRooms[p2DEvents[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE]
                 .uAnimationID]
                 .uBuildingType;
@@ -1294,13 +1306,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                     .generation_interval_days));
         }
         if (option == DIALOGUE_SHOP_BUY_STANDARD) {
-            if (uItemsAmountPerShopType
-                [p2DEvents[window_SpeakInHouse->wData.val - 1].uType]) {
-                for (uint i = 0;
-                    i < (unsigned __int8)uItemsAmountPerShopType
-                    [p2DEvents[
-                    window_SpeakInHouse->wData.val - 1].uType];
-                    ++i) {
+            if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - 1].uType)) {
+                for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - 1].uType); ++i) {
                     if (pParty
                         ->StandartItemsInShops[window_SpeakInHouse
                         ->wData.val][i].uItemID)
@@ -1311,18 +1318,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
-                if (uItemsAmountPerShopType
-                    [p2DEvents
-                    [window_SpeakInHouse->wData.val - 1]
-                .uType]) {
-                    for (uint i = 0;
-                        i <
-                        (unsigned __int8)uItemsAmountPerShopType
-                        [p2DEvents[
-                        window_SpeakInHouse->wData.val -
-                        1]
-                        .uType];
-                        ++i) {
+                if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - 1].uType)) {
+                    for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - 1].uType); ++i) {
                         if (pParty
                             ->StandartItemsInShops
                             [window_SpeakInHouse->wData.val][i]
@@ -1336,13 +1333,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             }
         }
         if (option == DIALOGUE_SHOP_BUY_SPECIAL) {
-            if (uItemsAmountPerShopType
-                [p2DEvents[window_SpeakInHouse->wData.val - 1].uType]) {
-                for (uint i = 0;
-                    i < (unsigned __int8)uItemsAmountPerShopType
-                    [p2DEvents[
-                    window_SpeakInHouse->wData.val - 1].uType];
-                    ++i) {
+            if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - 1].uType)) {
+                for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - 1].uType); ++i) {
                     if (pParty->SpecialItemsInShops[
                         window_SpeakInHouse->wData.val][i].uItemID)
                         shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
@@ -1352,15 +1344,8 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 }
             }
             if (in_current_building_type == BuildingType_WeaponShop) {
-                if (uItemsAmountPerShopType
-                    [p2DEvents
-                    [window_SpeakInHouse->wData.val - 1]
-                .uType]) {
-                    for (uint i = 0;
-                        i < (unsigned __int8)uItemsAmountPerShopType
-                            [p2DEvents[
-                            window_SpeakInHouse->wData.val - 1].uType];
-                        ++i) {
+                if (ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - 1].uType)) {
+                    for (uint i = 0; i < ItemAmountForShop(p2DEvents[window_SpeakInHouse->wData.val - 1].uType); ++i) {
                         if (pParty->SpecialItemsInShops[
                             window_SpeakInHouse->wData.val][i].uItemID)
                             weapons_Ypos[i] = rand() %
@@ -2752,9 +2737,8 @@ void sub_4B6478() {
     dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
-    v32 = (unsigned __int8)(((p2DEvents
-            [window_SpeakInHouse->wData.val - 1]
-    .uType != 18) - 1) & 0x96) + 100;
+    v32 = (unsigned __int8)
+            (((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_18) - 1) & 0x96) + 100;
     v3 = (signed __int64)((double)v32 *
         p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     pPrice = v3 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
@@ -3604,11 +3588,8 @@ void GenerateSpecialShopItems() {
     int mdf;
 
     shop_index = window_SpeakInHouse->wData.val;
-    if (uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType]) {
-        for (item_count = 0;
-            item_count <
-            uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType];
-            ++item_count) {
+    if (ItemAmountForShop(p2DEvents[shop_index - 1].uType)) {
+        for (item_count = 0; item_count < ItemAmountForShop(p2DEvents[shop_index - 1].uType); ++item_count) {
             if (shop_index <= 14) {  // weapon shop
                 treasure_lvl =
                     shopWeap_variation_spc[shop_index].treasure_level;
@@ -3656,11 +3637,8 @@ void GenerateStandartShopItems() {
     int mdf;
 
     shop_index = window_SpeakInHouse->wData.val;
-    if (uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType]) {
-        for (item_count = 0;
-            item_count <
-            uItemsAmountPerShopType[p2DEvents[shop_index - 1].uType];
-            ++item_count) {
+    if (ItemAmountForShop(p2DEvents[shop_index - 1].uType)) {
+        for (item_count = 0; item_count < ItemAmountForShop(p2DEvents[shop_index - 1].uType); ++item_count) {
             if (shop_index <= 14) {  // weapon shop
                 treasure_lvl =
                     shopWeap_variation_ord[shop_index].treasure_level;

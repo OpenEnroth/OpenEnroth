@@ -1560,7 +1560,7 @@ int GetItemTextureFilename(char* pOut, signed int item_id, int index,
 bool ItemGen::MerchandiseTest(int _2da_idx) {
     bool test;
 
-    if ((p2DEvents[_2da_idx - 1].uType != 4 ||
+    if ((p2DEvents[_2da_idx - 1].uType != BuildingType_AlchemistShop ||
          (signed int)this->uItemID < 740 || (signed int)this->uItemID > 771) &&
             ((signed int)this->uItemID >= 600 ||
              (signed int)this->uItemID >= 529 &&

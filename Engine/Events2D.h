@@ -1,7 +1,8 @@
 #pragma once
 
 /*  296 */
-enum BuildingType : unsigned short {
+enum class BuildingType : unsigned short {
+    BuildingType_Invalid = 0,
     BuildingType_WeaponShop = 1,
     BuildingType_ArmorShop = 2,
     BuildingType_MagicShop = 3,
@@ -34,6 +35,7 @@ enum BuildingType : unsigned short {
     BuildingType_Training = 30,
     BuildingType_Jail = 31
 };
+using enum BuildingType;
 
 /*  168 */
 #pragma pack(push, 1)

@@ -42,7 +42,7 @@ static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
 NZIArray<struct Player*, 5> pPlayers;
 
-enum PlayerSpeech PlayerSpeechID;
+PlayerSpeech PlayerSpeechID;
 
 // Race Stat Points Bonus/ Penalty
 struct PlayerCreation_AttributeProps {
@@ -8005,7 +8005,7 @@ bool Player::IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
 
 //----- (00490EEE) --------------------------------------------------------
 int Player::SelectPhrasesTransaction(
-    ItemGen* pItem, int building_type, int BuildID_2Events,
+    ItemGen* pItem, BuildingType building_type, int BuildID_2Events,
     int ShopMenuType) {  // TODO(_): probably move this somewhere else, not really
                          // Player:: stuff
     unsigned int idemId;   // edx@1
