@@ -3772,7 +3772,7 @@ void CastSpellInfoHelpers::CastSpell() {
             pPlayer->PlaySound(SPEECH_CastSpell, 0);
         }
         if (spell_sound_flag) {
-            pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, 0);
+            pAudioPlayer->PlaySpellSound(pCastSpell->uSpellID, -1);
         }
 
         pCastSpell->uSpellID = 0;

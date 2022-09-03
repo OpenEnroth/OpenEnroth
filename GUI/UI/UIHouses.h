@@ -84,6 +84,16 @@ void MagicShopDialog();
 void GuildDialog();
 void sub_4B6478();
 bool IsTravelAvailable(int a1);
+
+/**
+ * New function.
+ *
+ * @param shcedule_id                   Index to transport_schedule.
+ * 
+ * @return                              Number of days travel by transport will take with hireling modifiers.
+ */
+int GetTravelTimeTransportDays(int shcedule_id);
+
 void TravelByTransport();
 void TempleDialog();
 void TownHallDialog();

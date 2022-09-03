@@ -13,6 +13,7 @@ class GUIWindow_Book : public GUIWindow {
 
  protected:
     void BasicBookInitialization();
+    GUIWindow *pChildBooksOverlay{ nullptr };
 
  private:
     void InitializeFonts();

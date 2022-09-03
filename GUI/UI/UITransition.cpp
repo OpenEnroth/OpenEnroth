@@ -84,6 +84,9 @@ GUIWindow_Transition::GUIWindow_Transition(uint anim_id, uint exit_pic_id,
     pAudioPlayer->PauseSounds(-1);
     current_screen_type = CURRENT_SCREEN::SCREEN_CHANGE_LOCATION;
 
+    mapid = pMapStats->GetMapInfo(pCurrentMapName);
+    mapname = pLocationName;
+
     std::string filename;
     switch (pParty->alignment) {
         case PartyAlignment::PartyAlignment_Good:
@@ -262,7 +265,7 @@ void GUIWindow_Travel::Update() {
 
 void GUIWindow_Transition::Update() {
     unsigned int v9 =
-        IndoorLocation::GetLocationIndex(Party_Teleport_Map_Name);
+        IndoorLocation::GetLocationIndex(mapname.c_str());
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureAlphaNew((pNPCPortraits_x[0][0] - 4) / 640.0f,
                                 (pNPCPortraits_y[0][0] - 4) / 480.0f,
@@ -273,9 +276,9 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureAlphaNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     render->DrawTextureAlphaNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureAlphaNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-    unsigned int map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    unsigned int map_id = mapid;
     if ((pMovie_Track || v9) && *Party_Teleport_Map_Name != ' ') {
-        map_id = pMapStats->GetMapInfo(Party_Teleport_Map_Name);
+        map_id = pMapStats->GetMapInfo(mapname);
     }
 
     GUIWindow transition_window = *pPrimaryWindow;

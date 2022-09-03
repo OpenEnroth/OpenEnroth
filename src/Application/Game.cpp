@@ -716,12 +716,12 @@ void Game::EventLoop() {
                         case CURRENT_SCREEN::SCREEN_INPUT_BLV:
                         case CURRENT_SCREEN::SCREEN_QUICK_REFERENCE:
                             if (dword_50CDC8) break;
-                            CloseWindowBackground();
+                            PlayButtonClickSound();
                             uMessageParam = 1;
                             break;
                         case CURRENT_SCREEN::SCREEN_HOUSE:
                             if (!dword_50CDC8) {
-                                CloseWindowBackground();
+                                PlayButtonClickSound();
                                 uMessageParam = 1;
                                 break;
                             }
@@ -803,11 +803,11 @@ void Game::EventLoop() {
                                         OnEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_BOOKS:
-                                        if (pBooksButtonOverlay != nullptr) {
-                                            pBooksButtonOverlay->Release();
+                                        //if (pBooksButtonOverlay != nullptr) {
+                                        //    pBooksButtonOverlay->Release();
                                             // crt_deconstruct_ptr_6A0118();
-                                            pBooksButtonOverlay = 0;
-                                        }
+                                        //    pBooksButtonOverlay = 0;
+                                        //}
                                         pEventTimer->Resume();
                                         OnEscape();
                                         continue;
@@ -996,7 +996,7 @@ void Game::EventLoop() {
                 case UIMSG_TransitionUI_Confirm:
                     pMessageQueue_50CBD0->Flush();
                     dword_50CDC8 = 1;
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -1, 0, -1, 0, 0);
 
                     // PlayHouseSound(  // this is wrong - what is it meant to do??
                     //    uCurrentHouse_Animation,
@@ -1032,7 +1032,7 @@ void Game::EventLoop() {
                             v38 = Party_Teleport_Z_Speed;
                         }
                         if (*Party_Teleport_Map_Name != 48) {
-                            pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
+                            //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                             Start_Party_Teleport_Flag =
                                 Party_Teleport_X_Pos |
                                 Party_Teleport_Y_Pos |
@@ -1050,13 +1050,13 @@ void Game::EventLoop() {
                     if (iequals(s_SavedMapName.data(), "d05.blv"))
                         pParty->GetPlayingTime().AddDays(4);
 
-                    CloseWindowBackground();
+                    PlayButtonClickSound();
                     DialogueEnding();
                     back_to_game();
                     OnEscape();
                     continue;
                 case UIMSG_TransitionWindowCloseBtn:
-                    CloseWindowBackground();
+                    PlayButtonClickSound();
                     pMediaPlayer->Unload();
                     DialogueEnding();
                     viewparams->bRedrawGameUI = true;
@@ -1079,7 +1079,7 @@ void Game::EventLoop() {
                                                        pParty->vPosition.y,
                                                        pOut, 20) != 1) {
                         viewparams->bRedrawGameUI = 1;
-                        CloseWindowBackground();
+                        PlayButtonClickSound();
                         if (pParty->vPosition.x < -22528)
                             pParty->vPosition.x = -22528;
                         if (pParty->vPosition.x > 22528)
@@ -1154,7 +1154,7 @@ void Game::EventLoop() {
                     viewparams->bRedrawGameUI = 1;
                     continue;
                 case UIMSG_CHANGE_LOCATION_ClickCancelBtn:
-                    CloseWindowBackground();
+                    PlayButtonClickSound();
                     if (pParty->vPosition.x < -22528)
                         pParty->vPosition.x = -22528;
                     if (pParty->vPosition.x > 22528)
@@ -1418,10 +1418,10 @@ void Game::EventLoop() {
                             pParty->sRotationY = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
                         }
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-                        if (pBooksButtonOverlay != nullptr) {
-                            pBooksButtonOverlay->Release();
-                            pBooksButtonOverlay = nullptr;
-                        }
+                        //if (pBooksButtonOverlay != nullptr) {
+                        //    pBooksButtonOverlay->Release();
+                         //   pBooksButtonOverlay = nullptr;
+                        //}
                         pGUIWindow_CurrentMenu->Release();
                         pGUIWindow_CurrentMenu = 0;
                     } else {
@@ -1429,92 +1429,69 @@ void Game::EventLoop() {
                     }
                     continue;
                 case UIMSG_ClickTownInTP:
-                    if (uMessageParam) {
-                        switch (uMessageParam) {
-                            case 1:
-                                v63 = 208;
-                                break;
-                            case 2:
-                                v63 = 207;
-                                break;
-                            case 3:
-                                v63 = 211;
-                                break;
-                            case 4:
-                                v63 = 209;
-                                break;
-                            default:
-                                if (uMessageParam != 5) {
-                                LABEL_486:
-                                    SaveGame(1, 0);
-                                    v64 =
-                                        pMapStats->GetMapInfo(pCurrentMapName);
-                                    v65 = uMessageParam;
-                                    // if in current map
-                                    if (v64 == TownPortalList[uMessageParam]
-                                                   .uMapInfoID) {
-                                        pParty->vPosition.x =
-                                            TownPortalList[v65].pos.x;
-                                        pParty->vPosition.y =
-                                            TownPortalList[v65].pos.y;
-                                        pParty->vPosition.z =
-                                            TownPortalList[v65].pos.z;
-                                        pParty->uFallStartZ =
-                                            pParty->vPosition.z;
-                                        pParty->sRotationZ =
-                                            TownPortalList[v65].rot_y;
-                                        pParty->sRotationY =
-                                            TownPortalList[v65].rot_x;
-                                    } else {  // if change map
-                                        SaveGame(1, 0);
-                                        OnMapLeave();
-                                        dword_6BE364_game_settings_1 |=
-                                            GAME_SETTINGS_0001;
-                                        uGameState = GAME_STATE_CHANGE_LOCATION;
-                                        pCurrentMapName =
-                                               pMapStats->pInfos[TownPortalList[uMessageParam].uMapInfoID]
-                                                   .pFilename;
-                                        Start_Party_Teleport_Flag = 1;
-                                        Party_Teleport_X_Pos =
-                                            TownPortalList[uMessageParam].pos.x;
-                                        Party_Teleport_Y_Pos =
-                                            TownPortalList[uMessageParam].pos.y;
-                                        Party_Teleport_Z_Pos =
-                                            TownPortalList[uMessageParam].pos.z;
-                                        v66 =
-                                            TownPortalList[uMessageParam].rot_x;
-                                        Party_Teleport_Cam_Yaw =
-                                            TownPortalList[uMessageParam].rot_y;
-                                        Party_Teleport_Cam_Pitch =
-                                            v66;
-                                        Actor::InitializeActors();
-                                    }
-                                    //                            v67 =
-                                    //                            (char*)pGUIWindow_CurrentMenu->sHint;
-                                    //                            if (v67)
-                                    //                                *((int
-                                    //                                *)v67 +
-                                    //                                17) = 1;
-                                    //                            else
-                                    pParty
-                                        ->pPlayers[(unsigned __int8)
-                                                       town_portal_caster_id]
-                                        .CanCastSpell(0x14u);
-
-                                    pMessageQueue_50CBD0->AddGUIMessage(
-                                        UIMSG_Escape, 1, 0);
-                                    continue;
-                                }
-                                v63 = 210;
-                                break;
-                        }
-                    } else {
-                        v63 = 206;
+                    //if (uGameState == GAME_STATE_CHANGE_LOCATION) continue;
+                    switch (uMessageParam) {
+                        case 0:
+                            v63 = 206;
+                            break;
+                        case 1:
+                            v63 = 208;
+                            break;
+                        case 2:
+                            v63 = 207;
+                            break;
+                        case 3:
+                            v63 = 211;
+                            break;
+                        case 4:
+                            v63 = 209;
+                            break;
+                        case 5:
+                            v63 = 210;
+                            break;
+                        default:
+                            Assert(true && "Bad TP param");
+                            break;
                     }
-                    if (!_449B57_test_bit(pParty->_quest_bits, v63)
-                        && !engine->config->debug.TownPortal.Get())
-                        return;
-                    goto LABEL_486;
+
+                    // check if tp location is unlocked
+                    if (!_449B57_test_bit(pParty->_quest_bits, v63) && !engine->config->debug.TownPortal.Get())
+                        continue;
+
+                    // begin TP
+                    SaveGame(1, 0);
+                    v64 = pMapStats->GetMapInfo(pCurrentMapName);
+                    v65 = uMessageParam;
+                    // if in current map
+                    if (v64 == TownPortalList[uMessageParam].uMapInfoID) {
+                        pParty->vPosition.x = TownPortalList[v65].pos.x;
+                        pParty->vPosition.y = TownPortalList[v65].pos.y;
+                        pParty->vPosition.z = TownPortalList[v65].pos.z;
+                        pParty->uFallStartZ = pParty->vPosition.z;
+                        pParty->sRotationZ = TownPortalList[v65].rot_y;
+                        pParty->sRotationY = TownPortalList[v65].rot_x;
+                        // take mana
+                        pParty->pPlayers[(unsigned __int8)town_portal_caster_id].CanCastSpell(0x14u);
+                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                        continue;
+                    } else {  // if change map
+                        SaveGame(1, 0);
+                        OnMapLeave();
+                        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
+                        uGameState = GAME_STATE_CHANGE_LOCATION;
+                        pCurrentMapName = pMapStats->pInfos[TownPortalList[uMessageParam].uMapInfoID].pFilename;
+                        Start_Party_Teleport_Flag = 1;
+                        Party_Teleport_X_Pos = TownPortalList[uMessageParam].pos.x;
+                        Party_Teleport_Y_Pos = TownPortalList[uMessageParam].pos.y;
+                        Party_Teleport_Z_Pos = TownPortalList[uMessageParam].pos.z;
+                        Party_Teleport_Cam_Yaw = TownPortalList[uMessageParam].rot_y;
+                        Party_Teleport_Cam_Pitch = TownPortalList[uMessageParam].rot_x;
+                        Actor::InitializeActors();
+                    }
+
+                    pParty->pPlayers[(unsigned __int8)town_portal_caster_id].CanCastSpell(0x14u);
+                    pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
+                    continue;
                 case UIMSG_HintTownPortal: {
                     std::string v69;
                     if (uMessageParam) {
@@ -2866,12 +2843,15 @@ void Game::GameLoop() {
                 game_finished = true;
                 continue;
             }
+
+
             if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // смена локации
                 pAudioPlayer->PauseSounds(-1);
                 PrepareWorld(0);
                 uGameState = GAME_STATE_PLAYING;
                 continue;
             }
+
             // if ((signed int)uGameState <= GAME_STATE_5 || uGameState ==
             // GAME_STATE_GAME_QUITTING_TO_MAIN_MENU)//GAME_STATE_NEWGAME_OUT_GAMEMENU,
             // GAME_STATE_LOADING_GAME

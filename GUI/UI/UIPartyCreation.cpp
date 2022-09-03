@@ -685,6 +685,11 @@ void GUIWindow_PartyCreation::Update() {
     pGUIWindow_CurrentMenu->DrawText(pFontCreate, pTextCenter + 533, 394,
         Color16(0xD1, 0xBB, 0x61),
         localization->GetString(LSTR_BONUS), 0, 0, 0);
+
+    // force draw so overlays dont get muddled
+    render->DrawTwodVerts();
+    render->EndTextNew();
+
     pBonusNum = PlayerCreation_GetUnspentAttributePointCount();
 
     auto unspent_attribute_bonus_label = StringPrintf("%d", pBonusNum);
@@ -706,6 +711,10 @@ void GUIWindow_PartyCreation::Update() {
         message_window.uFrameW = 239;
         message_window.DrawMessageBox(0);
     }
+
+    // force draw so overlays dont get muddled
+    render->DrawTwodVerts();
+    render->EndTextNew();
     render->EndScene();
 }
 

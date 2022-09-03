@@ -1428,104 +1428,83 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     }
 }
 
-void TravelByTransport() {
-    signed int v4;                 // ebx@1
-    stru365_travel_info *pTravel;  // esi@7
-    signed int v12;                // esi@13
-    signed int v13;                // edi@14
-    int v14;                       // eax@26
-    int v15;                       // edi@26
-    int pTextHeight;               // eax@36
-    int pRealTextHeight;           // esi@36
-    int schedule_id;               // esi@39
-    GUIButton *pButton;            // ebx@39
-    signed int v25;                // eax@41
-    MapInfo pMap;                  // [sp-3Ch] [bp-2CCh]@62
-    char pTopicArray[5][100];      // [sp+14h] [bp-27Ch]@37
-    int pPrimaryTextHeight;        // [sp+260h] [bp-30h]@36
-    int index;                     // [sp+27Ch] [bp-14h]@36
-    unsigned int pPrice;           // [sp+288h] [bp-8h]@1
-    int travel_time;               // [sp+28Ch] [bp-4h]@48
-    enum PlayerSpeech pSpeech;
-    unsigned int pCurrentButton;
+int GetTravelTimeTransportDays(int schedule_id) {
+    int travel_time = transport_schedule[schedule_id].uTravelTime;
+    if (window_SpeakInHouse->wData.val >= HOUSE_BOATS_EMERALD_ISLE) {
+        if (CheckHiredNPCSpeciality(Sailor)) travel_time -= 2;
+        if (CheckHiredNPCSpeciality(Navigator)) travel_time -= 3;
+        if (CheckHiredNPCSpeciality(Pirate)) travel_time -= 2;
+    } else {
+        if (CheckHiredNPCSpeciality(Horseman)) travel_time -= 2;
+    }
+    if (CheckHiredNPCSpeciality(Explorer)) --travel_time;
 
+    if (travel_time < 1) travel_time = 1;
+    return travel_time;
+}
+
+void TravelByTransport() {
     GUIWindow travel_window = *window_SpeakInHouse;
     travel_window.uFrameX = 483;
     travel_window.uFrameWidth = 143;
     travel_window.uFrameZ = 334;
 
-    v4 = p2DEvents[window_SpeakInHouse->wData.val - 1].uType ==
-        BuildingType_Stables
-        ? 25
-        : 50;
-    v4 *= p2DEvents[window_SpeakInHouse->wData.val - 1]
-        .fPriceMultiplier;
+    int base_price = p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_Stables ? 25 : 50;
+    base_price *= p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
+    int pPrice = base_price * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+    if (pPrice < base_price / 3) pPrice = base_price / 3;
 
-    pPrice = v4 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
-    if ((signed int)pPrice < v4 / 3) pPrice = v4 / 3;
     if (dialog_menu_id == DIALOGUE_MAIN) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
-            index = 0;
-            strcpy(pTopicArray[4], "");
+            int index = 0;
 
-            std::string str = localization->FormatString(
-                LSTR_FMT_TRAVEL_COST_D_GOLD, pPrice);
-            pTextHeight =
-                pFontArrus->CalcTextHeight(str, travel_window.uFrameWidth, 0);
-            pRealTextHeight = pTextHeight + (pFontArrus->GetHeight() - 3) + 146;
-            pPrimaryTextHeight = pRealTextHeight;
-            pCurrentButton = 2;
+            std::string travelcost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, pPrice);
+            int pTextHeight = pFontArrus->CalcTextHeight(travelcost, travel_window.uFrameWidth, 0);
+            int pRealTextHeight = pTextHeight + (pFontArrus->GetHeight() - 3) + 146;
+            int pPrimaryTextHeight = pRealTextHeight;
+
+            int pCurrentButton = 2;
+            int lastsched{ 255 };
+            std::string pTopicArray[5]{};
+
             for (uint i = pDialogueWindow->pStartingPosActiveItem;
-                i < (unsigned int)(pDialogueWindow->pNumPresenceButton +
-                    pDialogueWindow->pStartingPosActiveItem);
+                i < (unsigned int)(pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem);
                 ++i) {
-                schedule_id =
+                int schedule_id =
                     transport_routes[window_SpeakInHouse->wData.val -
                     HOUSE_STABLES_HARMONDALE][index];
-                pButton = pDialogueWindow->GetControl(i);
+                GUIButton *pButton = pDialogueWindow->GetControl(i);
 
-                if (schedule_id != 255) {
+                bool route_active = 0;
+
+                if (schedule_id != 255 && (lastsched != schedule_id)) {
                     Assert(schedule_id < 35);
                     if (pCurrentButton >= 6)
-                        v25 = true;
+                        route_active = true;
                     else
-                        v25 = transport_schedule[schedule_id]
-                        .pSchedule[pParty->uCurrentDayOfMonth % 7];
+                        route_active = transport_schedule[schedule_id].pSchedule[pParty->uCurrentDayOfMonth % 7];
                 }
 
-                if (schedule_id != 255 && v25 &&
+                lastsched = schedule_id;
+
+                if (schedule_id != 255 && route_active &&
                     (!transport_schedule[schedule_id].uQuestBit ||
-                        _449B57_test_bit(
-                            pParty->_quest_bits,
-                            transport_schedule[schedule_id].uQuestBit))) {
+                        _449B57_test_bit(pParty->_quest_bits, transport_schedule[schedule_id].uQuestBit))) {
+                    uint16_t color{};
                     if (pDialogueWindow->pCurrentPosActiveItem == pCurrentButton)
-                        sprintf(pTopicArray[index], "\f%05d", Color16(255, 255, 155));
+                        color = Color16(255, 255, 155);
                     else
-                        sprintf(pTopicArray[index], "\f%05d", Color16(255, 255, 255));
+                        color = Color16(255, 255, 255);
 
-                    travel_time = transport_schedule[schedule_id].uTravelTime;
-                    if (window_SpeakInHouse->wData.val >= HOUSE_BOATS_EMERALD_ISLE) {
-                        if (CheckHiredNPCSpeciality(Sailor)) travel_time -= 2;
-                        if (CheckHiredNPCSpeciality(Navigator)) travel_time -= 3;
-                        if (CheckHiredNPCSpeciality(Pirate)) travel_time -= 2;
-                    } else {
-                        if (CheckHiredNPCSpeciality(Horseman)) travel_time -= 2;
-                    }
-                    if (CheckHiredNPCSpeciality(Explorer)) --travel_time;
+                    pTopicArray[index] = StringPrintf("\f%05d", color);
 
-                    if (travel_time < 1) travel_time = 1;
+                    int travel_time = GetTravelTimeTransportDays(schedule_id);
+
                     if (schedule_id != 255) {
-                        memcpy(
-                            &pMap,
-                            &pMapStats->pInfos[transport_schedule[schedule_id]
-                            .uMapInfoID],
-                            0x44u);
                         std::string str = localization->FormatString(
-                            LSTR_FMT_D_DAYS_TO_S,
-                            travel_time,
-                            pMap.pName.c_str());
-                        strcat(pTopicArray[index], str.c_str());
-                        strcat(pTopicArray[index], "\n \n");
+                            LSTR_FMT_D_DAYS_TO_S, travel_time,
+                            pMapStats->pInfos[transport_schedule[schedule_id].uMapInfoID].pName.c_str());
+                        pTopicArray[index] += str + "\n \n";
                         pButton->uY = pRealTextHeight;
                         pTextHeight = pFontArrus->CalcTextHeight(str, travel_window.uFrameWidth, 0);
                         pButton->uHeight = pTextHeight;
@@ -1533,7 +1512,7 @@ void TravelByTransport() {
                         pRealTextHeight += (pFontArrus->GetHeight() - 3) + pTextHeight;
                     }
                 } else {
-                    strcpy(pTopicArray[index], "");
+                    pTopicArray[index] = "";
                     if (pButton) {
                         pButton->uW = 0;
                         pButton->uHeight = 0;
@@ -1543,18 +1522,16 @@ void TravelByTransport() {
                 ++index;
                 ++pCurrentButton;
             }
+
             if (pRealTextHeight != pPrimaryTextHeight) {
-                __debugbreak();  // first %s on format string is ambiguous state
-                                 // of pTmpBuf2
-                travel_window.DrawTitleText(
-                    pFontArrus, 0, 146, 0,
-                    StringPrintf("%s\n \n%s%s%s%s%s", "", pTopicArray[0],
-                        pTopicArray[1], pTopicArray[2], pTopicArray[3],
-                        pTopicArray[4]),
+                // height differences means we have travel options
+                travel_window.DrawTitleText(pFontArrus, 0, 146, 0,
+                    StringPrintf("%s\n \n%s%s%s%s%s", travelcost.c_str(),
+                        pTopicArray[0].c_str(), pTopicArray[1].c_str(), pTopicArray[2].c_str(),
+                        pTopicArray[3].c_str(), pTopicArray[4].c_str()),
                     3);
             } else {
-                travel_window.DrawTitleText(
-                    pFontArrus, 0, (174 -
+                travel_window.DrawTitleText(pFontArrus, 0, (174 -
                         pFontArrus->CalcTextHeight(
                             localization->GetString(LSTR_COME_BACK_ANOTHER_DAY),
                             travel_window.uFrameWidth, 0)) / 2 + 138,
@@ -1563,7 +1540,7 @@ void TravelByTransport() {
                 pAudioPlayer->PauseSounds(-1);
             }
         }
-    } else {  //после нажатия топика
+    } else {  //после нажатия топика - travel option selected
         if (dialog_menu_id >= DIALOGUE_TRANSPORT_SCHEDULE_1 &&
             dialog_menu_id <= DIALOGUE_TRANSPORT_SCHEDULE_4) {
             if (pParty->GetGold() < pPrice) {
@@ -1575,13 +1552,10 @@ void TravelByTransport() {
 
             Party::TakeGold(pPrice);
 
-            pTravel =
-                &transport_schedule
-                [transport_routes[
-                window_SpeakInHouse->wData.val -
-                HOUSE_STABLES_HARMONDALE]
-                [dialog_menu_id -
-                DIALOGUE_TRANSPORT_SCHEDULE_1]];
+            stru365_travel_info *pTravel = &transport_schedule[transport_routes
+                        [window_SpeakInHouse->wData.val -HOUSE_STABLES_HARMONDALE]
+                        [dialog_menu_id -DIALOGUE_TRANSPORT_SCHEDULE_1]];
+
             if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
                 if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].pFilename) {
                     SaveGame(1, 0);
@@ -1590,8 +1564,7 @@ void TravelByTransport() {
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                     Party_Teleport_Cam_Pitch = 0;
                     Party_Teleport_Z_Speed = 0;
-                    Party_Teleport_Cam_Yaw =
-                        pTravel->arrival_rot_y;
+                    Party_Teleport_Cam_Yaw = pTravel->arrival_rot_y;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     Party_Teleport_X_Pos = pTravel->arrival_x;
                     Party_Teleport_Y_Pos = pTravel->arrival_y;
@@ -1599,6 +1572,7 @@ void TravelByTransport() {
                     Start_Party_Teleport_Flag = pTravel->arrival_x | pTravel->arrival_y |
                         pTravel->arrival_z | pTravel->arrival_rot_y;
                 } else {
+                    // travelling to map we are already in
                     pCamera3D->sRotationZ = 0;
 
                     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
@@ -1609,28 +1583,27 @@ void TravelByTransport() {
                     pParty->sRotationY = 0;
                     pParty->sRotationZ = pTravel->arrival_rot_y;
                 }
-                PlayHouseSound(window_SpeakInHouse->wData.val,
-                    HouseSound_NotEnoughMoney_TrainingSuccessful);
-                v12 = pTravel->uTravelTime;
-                if (window_SpeakInHouse->wData.val >= 63) {
+
+                PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_NotEnoughMoney_TrainingSuccessful);
+                int traveltimedays = GetTravelTimeTransportDays(transport_routes[window_SpeakInHouse->wData.val -
+                    HOUSE_STABLES_HARMONDALE][dialog_menu_id - DIALOGUE_TRANSPORT_SCHEDULE_1]);
+
+                enum PlayerSpeech pSpeech;
+                int speechlength{};
+                if (window_SpeakInHouse->wData.val >= HOUSE_BOATS_EMERALD_ISLE) {
                     pSpeech = SPEECH_TravelBoat;
-                    v13 = 2500;
-                    if (CheckHiredNPCSpeciality(Sailor)) v12 -= 2;
-                    if (CheckHiredNPCSpeciality(Navigator)) v12 -= 3;
-                    if (CheckHiredNPCSpeciality(Pirate)) v12 -= 2;
+                    speechlength = 2500;
                 } else {
                     pSpeech = SPEECH_TravelHorse;
-                    v13 = 1500;
-                    if (CheckHiredNPCSpeciality(Horseman)) v12 -= 2;
+                    speechlength = 1500;
                 }
-                if (CheckHiredNPCSpeciality(Explorer)) --v12;
-                if (v12 < 1) v12 = 1;
-                RestAndHeal(24 * 60 * v12);
+
+                RestAndHeal(24 * 60 * traveltimedays);
                 pPlayers[uActiveCharacter]->PlaySound(pSpeech, 0);
-                v14 = OS_GetTime();
-                v15 = v14 + v13;
-                if (v15 < v14) v15 = v14;
-                while (OS_GetTime() < v15) OS_Sleep(1);
+                int currenttime = OS_GetTime();
+                int pauselength = currenttime + speechlength;
+                if (pauselength < currenttime) pauselength = currenttime;
+                while (OS_GetTime() < pauselength) OS_Sleep(1);
                 while (HouseDialogPressCloseBtn());
                 pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 0, 0);
                 return;

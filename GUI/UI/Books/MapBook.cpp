@@ -35,7 +35,7 @@ GUIWindow_MapBook::GUIWindow_MapBook() : GUIWindow_Book() {
     viewparams->sViewCenterX = pParty->vPosition.x;
     viewparams->sViewCenterY = pParty->vPosition.y;
     pAudioPlayer->PauseSounds(-1);
-    pBooksButtonOverlay = new GUIWindow_BooksButtonOverlay(546, 353, 0, 0, pBtn_Maps);
+    /*pBooksButtonOverlay*/ pChildBooksOverlay = new GUIWindow_BooksButtonOverlay(546, 353, 0, 0, pBtn_Maps);
 
     MapBookOpen = 1;
 
