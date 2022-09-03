@@ -166,7 +166,7 @@ struct SpellBuff {
     unsigned __int16 uSkill;
     unsigned __int16 uOverlayID;
     unsigned __int8 uCaster;
-    unsigned __int8 uFlags;
+    unsigned __int8 uFlags; // 0x1 => cast at grandmaster
 };
 #pragma pack(pop)
 
