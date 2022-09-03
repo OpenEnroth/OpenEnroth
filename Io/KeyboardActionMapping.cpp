@@ -266,6 +266,8 @@ GameConfig::ConfigValue<std::string> *KeyboardActionMapping::InputActionToConfig
         case(InputAction::StrafeRight):
             val = &config->keybindings.StepRight;
             break;
+        default:
+            break;
     }
 
     return val;

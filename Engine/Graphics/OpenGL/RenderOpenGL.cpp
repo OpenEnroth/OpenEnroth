@@ -1263,7 +1263,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDist_X;
 
     uint _507D30_idx = 0;
-    for (_507D30_idx; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
+    for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
         // outbound screen x dist
         float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - array_507D30[_507D30_idx].vWorldViewProjX);
         // outbound screen y dist

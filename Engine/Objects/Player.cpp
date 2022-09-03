@@ -720,6 +720,9 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
 
             PlaySound(SPEECH_CheatedDeath, 0);
             break;
+
+        default:
+            break;
     }
 
     int players_before = 0;
