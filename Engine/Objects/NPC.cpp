@@ -1325,13 +1325,29 @@ int UseNPCSkill(NPCProf profession) {
         } break;
 
         case ExpertHealer: {
-            for (int i = 0; i < 4; ++i) {
-                pParty->pPlayers[i].sHealth =
-                    pParty->pPlayers[i].GetMaxHealth();
+            std::array<Condition, 15> conditionsToHeal = {{
+                Condition_Cursed,
+                Condition_Weak,
+                Condition_Sleep,
+                Condition_Fear,
+                Condition_Drunk,
+                Condition_Insane,
+                Condition_Poison_Weak,
+                Condition_Disease_Weak,
+                Condition_Poison_Medium,
+                Condition_Disease_Medium,
+                Condition_Poison_Severe,
+                Condition_Disease_Severe,
+                Condition_Paralyzed,
+                Condition_Unconcious,
+                Condition_Good
+            }};
 
-                for (int j = 0; j < 14; ++j)
-                    pParty->pPlayers[i].conditions_times[j].Reset();
-                pParty->pPlayers[i].conditions_times[Condition_Good].Reset();
+            for (int i = 0; i < 4; ++i) {
+                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
+
+                for (Condition condition: conditionsToHeal)
+                    pParty->pPlayers[i].conditions.Reset(condition);
             }
         } break;
 
@@ -1339,18 +1355,14 @@ int UseNPCSkill(NPCProf profession) {
             for (int i = 0; i < 4; ++i) {
                 __debugbreak();  // Ritor1:needed cleaned(Необходимо почистить)
                 Player *player = &pParty->pPlayers[i];
-                pParty->pPlayers[i].sHealth =
-                    pParty->pPlayers[i].GetMaxHealth();
+                pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
 
-                int v5 = HEXRAYS_LODWORD(
-                    player->conditions_times[19]);  // *((int *)v4 - 32);
-                int v6 = HEXRAYS_HIDWORD(
-                    player->conditions_times[19]);  // *((int *)v4 - 31);
-                memset(&pParty->pPlayers[i].conditions_times, 0,
-                       sizeof(pParty->pPlayers[i].conditions_times));
+                //int v5 = HEXRAYS_LODWORD(player->conditions_times[19]);  // *((int *)v4 - 32);
+                //int v6 = HEXRAYS_HIDWORD(player->conditions_times[19]);  // *((int *)v4 - 31);
+                pParty->pPlayers[i].conditions.ResetAll();
 
-                *(int *)&player->pActiveSkills[PLAYER_SKILL_SHIELD] = v5;
-                *(int *)&player->pActiveSkills[PLAYER_SKILL_CHAIN] = v6;
+                //*(int *)&player->pActiveSkills[PLAYER_SKILL_SHIELD] = v5;
+                //*(int *)&player->pActiveSkills[PLAYER_SKILL_CHAIN] = v6;
             }
         } break;
 

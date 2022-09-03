@@ -316,21 +316,21 @@ void Party_Image_MM7::Serialize(Party *party) {
 
     for (unsigned int i = 0; i < 10; ++i)
         this->PartyTimes.bountyHunting_next_generation_time[i] =
-            party->PartyTimes.bountyHunting_next_generation_time[i];
+            party->PartyTimes.bountyHunting_next_generation_time[i].value;
     for (unsigned int i = 0; i < 85; ++i)
         this->PartyTimes.Shops_next_generation_time[i] =
-            party->PartyTimes.Shops_next_generation_time[i];
+            party->PartyTimes.Shops_next_generation_time[i].value;
     for (unsigned int i = 0; i < 53; ++i)
         this->PartyTimes._shop_ban_times[i] =
-            party->PartyTimes._shop_ban_times[i];
+            party->PartyTimes._shop_ban_times[i].value;
     for (unsigned int i = 0; i < 10; ++i)
         this->PartyTimes.CounterEventValues[i] =
-            party->PartyTimes.CounterEventValues[i];
+            party->PartyTimes.CounterEventValues[i].value;
     for (unsigned int i = 0; i < 29; ++i)
         this->PartyTimes.HistoryEventTimes[i] =
-            party->PartyTimes.HistoryEventTimes[i];
+            party->PartyTimes.HistoryEventTimes[i].value;
     for (unsigned int i = 0; i < 20; ++i)
-        this->PartyTimes._s_times[i] = party->PartyTimes._s_times[i];
+        this->PartyTimes._s_times[i] = party->PartyTimes._s_times[i].value;
 
     this->vPosition.x = party->vPosition.x;
     this->vPosition.y = party->vPosition.y;
@@ -644,7 +644,7 @@ void Player_Image_MM7::Serialize(Player *player) {
     memset(this, 0, sizeof(*this));
 
     for (unsigned int i = 0; i < 20; ++i)
-        this->pConditions[i] = player->conditions_times[i].value;
+        this->pConditions[i] = player->conditions.Get(static_cast<Condition>(i)).value;
 
     this->uExperience = player->uExperience;
 
@@ -783,7 +783,7 @@ void Player_Image_MM7::Serialize(Player *player) {
             continue;
         }
         this->pInstalledBeacons[i].uBeaconTime =
-            player->vBeacons[i].uBeaconTime;
+            player->vBeacons[i].uBeaconTime.value;
         this->pInstalledBeacons[i].PartyPos_X =
             player->vBeacons[i].PartyPos_X;
         this->pInstalledBeacons[i].PartyPos_Y =
@@ -807,7 +807,7 @@ void Player_Image_MM7::Serialize(Player *player) {
 
 void Player_Image_MM7::Deserialize(Player* player) {
     for (unsigned int i = 0; i < 20; ++i)
-        player->conditions_times[i].value = this->pConditions[i];
+        player->conditions.Set(static_cast<Condition>(i), GameTime(this->pConditions[i]));
 
     player->uExperience = this->uExperience;
 

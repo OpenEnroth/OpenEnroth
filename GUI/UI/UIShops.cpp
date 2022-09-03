@@ -1600,9 +1600,7 @@ void GetHouseGoodbyeSpeech() {
             PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
             return;
         }
-        if ((signed __int64)pParty->PartyTimes
-                ._shop_ban_times[window_SpeakInHouse->wData.val] <=
-            pParty->GetPlayingTime()) {
+        if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] <= pParty->GetPlayingTime()) {
             if (pParty->GetGold() <= 10000) {
                 if (!dword_F8B1E4) return;
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);

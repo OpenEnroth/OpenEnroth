@@ -929,7 +929,7 @@ void GameUI_DrawRightPanelItems() {
 
     static bool _50697C_book_flasher;
 
-    if (pParty->GetPlayingTime() - GameUI_RightPanel_BookFlashTimer > 128) {
+    if (pParty->GetPlayingTime() - GameUI_RightPanel_BookFlashTimer > GameTime(128)) {
         GameUI_RightPanel_BookFlashTimer = pParty->GetPlayingTime();
         _50697C_book_flasher = !_50697C_book_flasher;
     }
@@ -2082,7 +2082,7 @@ unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
 }
 
 //----- (00417939) --------------------------------------------------------
-int GetConditionDrawColor(unsigned int uConditionIdx) {
+int GetConditionDrawColor(Condition uConditionIdx) {
     switch (uConditionIdx) {
         case Condition_Zombie:
         case Condition_Good:

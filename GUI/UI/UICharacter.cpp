@@ -1917,8 +1917,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         StringPrintf("%s: \f%05d%s\n",
                      localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
-                     localization->GetCharacterConditionName(
-                         player->GetMajorConditionIdx()));
+                     localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str12, 226,
                                            0);
 

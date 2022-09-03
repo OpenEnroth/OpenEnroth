@@ -2769,9 +2769,9 @@ void Actor::UpdateActorAI() {
                 }
                 for (int i = 1; i <= 4; i++) {
                     pPlayer = pPlayers[i];
-                    if (!pPlayer->conditions_times[Condition_Dead] &&
-                        !pPlayer->conditions_times[Condition_Pertified] &&
-                        !pPlayer->conditions_times[Condition_Eradicated])
+                    if (!pPlayer->conditions.Has(Condition_Dead) &&
+                        !pPlayer->conditions.Has(Condition_Pertified) &&
+                        !pPlayer->conditions.Has(Condition_Eradicated))
                         pPlayer->ReceiveDamage(v4, DMGT_MAGICAL);
                 }
             }
@@ -3767,16 +3767,11 @@ int stru319::which_player_to_attack(Actor *pActor) {
                         for_race == pPlayers[j + 1]->GetRace())
                         flag = true;
                     if (flag == true) {
-                        if (!(pPlayers[j + 1]
-                                  ->conditions_times[Condition_Paralyzed] ||
-                              pPlayers[j + 1]
-                                  ->conditions_times[Condition_Unconcious] ||
-                              pPlayers[j + 1]
-                                  ->conditions_times[Condition_Dead] ||
-                              pPlayers[j + 1]
-                                  ->conditions_times[Condition_Pertified] ||
-                              pPlayers[j + 1]
-                                  ->conditions_times[Condition_Eradicated]))
+                        if (!(pPlayers[j + 1]->conditions.Has(Condition_Paralyzed) ||
+                              pPlayers[j + 1]->conditions.Has(Condition_Unconcious) ||
+                              pPlayers[j + 1]->conditions.Has(Condition_Dead) ||
+                              pPlayers[j + 1]->conditions.Has(Condition_Pertified) ||
+                              pPlayers[j + 1]->conditions.Has(Condition_Eradicated)))
                             Victims_list[v2++] = j;
                     }
                 }
@@ -3785,11 +3780,11 @@ int stru319::which_player_to_attack(Actor *pActor) {
         if (v2) return Victims_list[rand() % v2];
     }
     for (uint i = 0; i < 4; ++i) {
-        if (!(pPlayers[i + 1]->conditions_times[Condition_Paralyzed] ||
-              pPlayers[i + 1]->conditions_times[Condition_Unconcious] ||
-              pPlayers[i + 1]->conditions_times[Condition_Dead] ||
-              pPlayers[i + 1]->conditions_times[Condition_Pertified] ||
-              pPlayers[i + 1]->conditions_times[Condition_Eradicated]))
+        if (!(pPlayers[i + 1]->conditions.Has(Condition_Paralyzed) ||
+              pPlayers[i + 1]->conditions.Has(Condition_Unconcious) ||
+              pPlayers[i + 1]->conditions.Has(Condition_Dead) ||
+              pPlayers[i + 1]->conditions.Has(Condition_Pertified) ||
+              pPlayers[i + 1]->conditions.Has(Condition_Eradicated)))
             Victims_list[v2++] = i;
     }
     if (v2)
@@ -5306,9 +5301,9 @@ void area_of_effect__damage_evaluate() {
                                pParty->vPosition.z + pParty->sEyelevel,
                                attacker_coord)) {
                     for (uint i = 0; i < 4; ++i) {
-                        if (!pParty->pPlayers[i].conditions_times[Condition_Dead] &&
-                            !pParty->pPlayers[i].conditions_times[Condition_Pertified] &&
-                            !pParty->pPlayers[i].conditions_times[Condition_Eradicated]) {
+                        if (!pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
+                            !pParty->pPlayers[i].conditions.Has(Condition_Pertified) &&
+                            !pParty->pPlayers[i].conditions.Has(Condition_Eradicated)) {
                             DamagePlayerFromMonster(
                                 AttackerInfo.pIDs[attack_index],
                                 AttackerInfo.attack_special[attack_index],

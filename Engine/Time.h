@@ -59,11 +59,11 @@ struct GameTime {
     void Reset() { this->value = 0; }
     bool Valid() const { return this->value > 0; }
 
-    GameTime operator+(GameTime &rhs) {
-        return GameTime(this->value + rhs.value);
+    friend GameTime operator+(const GameTime &l, const GameTime &r) {
+        return GameTime(l.value + r.value);
     }
-    GameTime operator-(GameTime &rhs) {
-        return GameTime(this->value - rhs.value);
+    friend GameTime operator-(const GameTime &l, const GameTime &r) {
+        return GameTime(l.value - r.value);
     }
     GameTime &operator+=(GameTime &rhs) {
         this->value += rhs.value;
@@ -79,7 +79,7 @@ struct GameTime {
         return this->Valid();
     }  // unsafe bool was casuing many problems
 
-    operator int() { return static_cast<int>(this->value); }  // cast operator conversion require
+    explicit operator int64_t() { return this->value; }  // cast operator conversion require
 
     static GameTime FromSeconds(int seconds) {
         return GameTime(seconds, 0, 0, 0, 0, 0, 0);

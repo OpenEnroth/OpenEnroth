@@ -110,6 +110,35 @@ union PlayerEquipment {
 #define STEAL_SUCCESS  2
 
 
+class PlayerConditions {
+ public:
+    bool Has(Condition condition) const {
+        return this->times_[std::to_underlying(condition)].Valid();
+    }
+
+    void Reset(Condition condition) {
+        this->times_[std::to_underlying(condition)].Reset();
+    }
+
+    void ResetAll() {
+        for(size_t i = 0; i < times_.size(); i++)
+            times_[i].Reset();
+    }
+
+    void Set(Condition condition, GameTime time) {
+        this->times_[std::to_underlying(condition)] = time;
+    }
+
+    GameTime Get(Condition condition) const {
+        return this->times_[std::to_underlying(condition)];
+    }
+
+private:
+    /** Game time when condition has started. */
+    std::array<GameTime, 20> times_;
+};
+
+
 struct Player {
     static const unsigned int INVETORYSLOTSWIDTH = 14;
     static const unsigned int INVETORYSLOTSHEIGHT = 9;
@@ -183,7 +212,7 @@ struct Player {
     int GetActualResistance(enum CHARACTER_ATTRIBUTE_TYPE a2);
     void SetRecoveryTime(signed int sRecoveryTime);
     void RandomizeName();
-    unsigned int GetMajorConditionIdx();
+    Condition GetMajorConditionIdx();
     int GetParameterBonus(int player_parameter);
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment);
     int GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false);
@@ -202,7 +231,7 @@ struct Player {
     void IncreaseAttribute(int eAttribute);
     void Zero();
     unsigned int GetStatColor(int uStat);
-    bool DiscardConditionIfLastsLongerThan(unsigned int uCondition,
+    bool DiscardConditionIfLastsLongerThan(Condition uCondition,
                                            GameTime time);
     int SelectPhrasesTransaction(ItemGen* pItem, int building_type,
                                  int BuildID_2Events, int a5);
@@ -227,7 +256,7 @@ struct Player {
     bool CanAct();
     bool CanSteal();
     bool CanEquip_RaceAndAlignmentCheck(unsigned int uItemID);
-    void SetCondition(unsigned int uConditionIdx, int blockable);
+    void SetCondition(Condition uConditionIdx, int blockable);
     bool IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary = true);
     void PlaySound(PlayerSpeech speech, int a3);
     void PlayEmotion(CHARACTER_EXPRESSION_ID expression, int duration);
@@ -245,11 +274,11 @@ struct Player {
     int GetBuyingPrice(unsigned int uRealValue, float price_multiplier);
     int GetPriceSell(ItemGen itemx, float price_multiplier);
     int GetTempleHealCostModifier(float price_multi);
-    int GetConditionDaysPassed(unsigned int uCondition);
+    int GetConditionDaysPassed(Condition uCondition);
     bool NothingOrJustBlastersEquipped();
     void SalesProcess(unsigned int inventory_idnx, int item_index,
                       int _2devent_idx);  // 0x4BE2DD
-    bool Recover(int dt);
+    bool Recover(GameTime dt);
     bool CanCastSpell(unsigned int uRequiredMana);
     void PlayAwardSound();
     void EquipBody(ITEM_EQUIP_TYPE uEquipType);
@@ -346,7 +375,7 @@ struct Player {
     void CleanupBeacons();
     bool SetBeacon(size_t index, size_t power);
 
-    std::array<GameTime, 20> conditions_times;
+    PlayerConditions conditions;
     unsigned __int64 uExperience;
     char pName[16];
     PLAYER_SEX uSex;

@@ -1101,7 +1101,7 @@ void Game::EventLoop() {
                             if (pParty->GetFood() < GetTravelTime()) {
                                 pPlayer7 = pParty->pPlayers.data();
                                 do {
-                                    pPlayer7->SetCondition(1, 0);
+                                    pPlayer7->SetCondition(Condition_Weak, 0);
                                     ++pPlayer7;
                                 } while ((int64_t)pPlayer7 < (int64_t)pParty->pHirelings.data());
                                 ++pParty->days_played_without_rest;
@@ -1110,7 +1110,7 @@ void Game::EventLoop() {
                         } else {
                             pPlayer8 = pParty->pPlayers.data();
                             do {
-                                pPlayer8->SetCondition(1, 0);
+                                pPlayer8->SetCondition(Condition_Weak, 0);
                                 ++pPlayer8;
                             } while ((int64_t)pPlayer8 <
                                      (int64_t)pParty->pHirelings.data());
@@ -1812,14 +1812,10 @@ void Game::EventLoop() {
                             pPlayers[uActiveCharacter]->CanAct())
                             pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughFood, 0);
                     } else {
-                        pParty->pPlayers[3].conditions_times[Condition_Sleep] =
-                            pParty->GetPlayingTime();
-                        pParty->pPlayers[2].conditions_times[Condition_Sleep] =
-                            pParty->GetPlayingTime();
-                        pParty->pPlayers[1].conditions_times[Condition_Sleep] =
-                            pParty->GetPlayingTime();
-                        pParty->pPlayers[0].conditions_times[Condition_Sleep] =
-                            pParty->GetPlayingTime();
+                        pParty->pPlayers[3].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
+                        pParty->pPlayers[2].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
+                        pParty->pPlayers[1].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
+                        pParty->pPlayers[0].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
                         v90 = pMapStats->GetMapInfo(pCurrentMapName);
                         if (!v90)
                             v90 = rand() % (signed int)pMapStats->uNumMaps + 1;
@@ -1839,9 +1835,7 @@ void Game::EventLoop() {
 
                             if (encounter_index) {
                                 pPlayerNum = rand() % 4;
-                                pParty->pPlayers[pPlayerNum]
-                                    .conditions_times[Condition_Sleep]
-                                    .Reset();
+                                pParty->pPlayers[pPlayerNum].conditions.Reset(Condition_Sleep);
                                 v95 = rand();
                                 Rest(v95 % 6 + 60);
                                 _506F18_num_minutes_to_sleep = 0;
@@ -2270,8 +2264,7 @@ void Game::EventLoop() {
 
                     auto status = NameAndTitle(pPlayer5->pName, pPlayer5->classType);
                         + ": "
-                        + std::string(localization->GetCharacterConditionName(
-                            pPlayer5->GetMajorConditionIdx()));
+                        + std::string(localization->GetCharacterConditionName(pPlayer5->GetMajorConditionIdx()));
                     GameUI_StatusBar_Set(status);
 
                     mouse->uPointingObjectID =
@@ -2416,7 +2409,7 @@ void Game::EventLoop() {
                 case UIMSG_DebugFullHeal:
                     if (uActiveCharacter == 0)
                         continue;
-                    pPlayers[uActiveCharacter]->conditions_times.fill(GameTime(0));
+                    pPlayers[uActiveCharacter]->conditions.ResetAll();
                     pPlayers[uActiveCharacter]->sHealth =
                         pPlayers[uActiveCharacter]->GetMaxHealth();
                     pPlayers[uActiveCharacter]->sMana =
@@ -2885,7 +2878,7 @@ void Game::GameLoop() {
                     pParty->bTurnBasedModeOn = false;
                 }
                 for (int i = 1; i < 5; ++i) {
-                    pPlayers[i]->conditions_times.fill(GameTime(0));
+                    pPlayers[i]->conditions.ResetAll();
                     pPlayers[i]->pPlayerBuffs.fill(
                         SpellBuff());  // ???
                                        // memset(pParty->pPlayers[i].conditions_times.data(),

@@ -730,7 +730,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
                      unsigned int uHeight);  // idb
 void DrawMM7CopyrightWindow();
 void GUI_UpdateWindows();
-int GetConditionDrawColor(unsigned int uConditionIdx);  // idb
+int GetConditionDrawColor(Condition uConditionIdx);  // idb
 void FillAwardsData();
 void CreateAwardsScrollBar();
 void ReleaseAwardsScrollBar();

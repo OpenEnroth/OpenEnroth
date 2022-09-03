@@ -2320,8 +2320,7 @@ void TempleDialog() {
         }
         Party::TakeGold(pPrice);
 
-        pPlayers[uActiveCharacter]->conditions_times.fill(
-            GameTime(0));  // sets all condition times to zero
+        pPlayers[uActiveCharacter]->conditions.ResetAll();
         pPlayers[uActiveCharacter]->sHealth =
             pPlayers[uActiveCharacter]->GetMaxHealth();
         pPlayers[uActiveCharacter]->sMana =
@@ -2330,9 +2329,8 @@ void TempleDialog() {
         if (window_SpeakInHouse->wData.val != 78 &&
             (window_SpeakInHouse->wData.val <= 80 ||
             window_SpeakInHouse->wData.val > 82)) {
-            if (pPlayers[uActiveCharacter]
-                ->conditions_times[Condition_Zombie]
-                .Valid()) {  // если состояние зомби
+            if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Zombie)) {
+                // если состояние зомби
                 pPlayers[uActiveCharacter]->uCurrentFace =
                     pPlayers[uActiveCharacter]->uPrevFace;
                 pPlayers[uActiveCharacter]->uVoiceID =
@@ -2347,22 +2345,14 @@ void TempleDialog() {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
             return;
         }
-        if (pPlayers[uActiveCharacter]
-            ->conditions_times[Condition_Zombie]
-            .Valid()) {
+        if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Zombie)) {
             // LODWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie])
             // =
             // LODWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie]);
         } else {
-            if (!pPlayers[uActiveCharacter]
-                ->conditions_times[Condition_Eradicated]
-                .Valid() &&
-                !pPlayers[uActiveCharacter]
-                ->conditions_times[Condition_Pertified]
-                .Valid() &&
-                !pPlayers[uActiveCharacter]
-                ->conditions_times[Condition_Dead]
-                .Valid()) {
+            if (!pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated) &&
+                !pPlayers[uActiveCharacter]->conditions.Has(Condition_Pertified) &&
+                !pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead)) {
                 pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
                 pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
@@ -2381,14 +2371,12 @@ void TempleDialog() {
             GameUI_ReloadPlayerPortraits(
                 uActiveCharacter - 1,
                 (pPlayers[uActiveCharacter]->GetSexByVoice() != 0) + 23);
-            pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie] =
-                pParty->GetPlayingTime();
+            pPlayers[uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
             // v39 = (GUIWindow *)HIDWORD(pParty->uTimePlayed);
         }
         // HIDWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie]) =
         // (int)v39;
-        pPlayers[uActiveCharacter]->conditions_times[Condition_Zombie] =
-            pParty->GetPlayingTime();
+        pPlayers[uActiveCharacter]->conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
         pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
         pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);
         pOtherOverlayList->_4418B1(20, uActiveCharacter + 99, 0, 65536);
