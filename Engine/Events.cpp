@@ -118,7 +118,7 @@ void LoadLevel_InitializeLevelEvt() {
 
     if (!uLevelEVT_Size) return;
 
-    memset(MapsLongTimersList, 0, 3200);
+    MapsLongTimersList.fill(MapsLongTimer());
     memset(pLevelEVT_Index.data(), 80, sizeof(EventIndex) * 4400);
 
     uLevelEVT_NumEvents = 0;

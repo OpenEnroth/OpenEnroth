@@ -162,7 +162,7 @@ std::array<__int32, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sph
      0x00000028, 0x0000000B, 0x00000031, 0x00000031, 0x0000002D, 0x00000041}};
 
 #include "MapsLongTimer.h"
-MapsLongTimer MapsLongTimersList[100];
+std::array<MapsLongTimer, 100> MapsLongTimersList;
 
 #include "Engine/Tables/IconFrameTable.h"
 struct IconFrameTable *pIconsFrameTable;
