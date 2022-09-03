@@ -1622,7 +1622,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (v14->uFlags & 0x20000) v62 |= 0x80;
         if ((256 << Sprite_Octant) & v14->uFlags) v62 |= 4;
         if (v15->uGlowRadius) {
-            pMobileLightsStack->AddLight(x, y, z, 0, v15->uGlowRadius, 0xFFu,
+            pMobileLightsStack->AddLight(Vec3_float_(x, y, z), 0, v15->uGlowRadius, 0xFFu,
                                          0xFFu, 0xFFu, _4E94D3_light_type);
         }
 

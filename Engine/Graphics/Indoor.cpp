@@ -140,9 +140,11 @@ void PrepareDrawLists_BLV() {
             pParty->flt_TorchlightColorB = 96;
         }
 
+        // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
+        Vec3_float_ pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
+
         pMobileLightsStack->AddLight(
-            pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y,
-            pCamera3D->vCameraPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
+            pos, pBLVRenderParams->uPartySectorID, TorchLightPower,
             floorf(pParty->flt_TorchlightColorR + 0.5f),
             floorf(pParty->flt_TorchlightColorG + 0.5f),
             floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
@@ -2034,10 +2036,8 @@ void PrepareToLoadBLV(bool bLoading) {
                         b = decoration->uColoredLightBlue;
                     }
                     pStationaryLightsStack->AddLight(
-                        pLevelDecorations[i].vPosition.x,
-                        pLevelDecorations[i].vPosition.y,
-                        pLevelDecorations[i].vPosition.z +
-                            decoration->uDecorationHeight,
+                        ToFloatVector(pLevelDecorations[i].vPosition) +
+                            Vec3_float_(0, 0, decoration->uDecorationHeight),
                         decoration->uLightRadius, r, g, b, _4E94D0_light_type);
                 }
             }
@@ -2278,8 +2278,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
         if ((256 << v6) & v9->uFlags) v41 |= 4;
         if (v9->uGlowRadius) {
             pMobileLightsStack->AddLight(
-                pActors[i].vPosition.x, pActors[i].vPosition.y,
-                pActors[i].vPosition.z, pActors[i].uSectorID, v9->uGlowRadius,
+                ToFloatVector(pActors[i].vPosition), pActors[i].uSectorID, v9->uGlowRadius,
                 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
 
@@ -2394,9 +2393,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     if ((256 << v9) & v4->uFlags) v34 |= 4;
                     if (a6) {
                         pMobileLightsStack->AddLight(
-                            pSpriteObjects[i].vPosition.x,
-                            pSpriteObjects[i].vPosition.y,
-                            pSpriteObjects[i].vPosition.z,
+                            ToFloatVector(pSpriteObjects[i].vPosition),
                             pSpriteObjects[i].uSectorID, a6,
                             pSpriteObjects[i].GetParticleTrailColorR(),
                             pSpriteObjects[i].GetParticleTrailColorG(),

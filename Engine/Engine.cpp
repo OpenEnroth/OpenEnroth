@@ -377,7 +377,7 @@ void Engine::PushStationaryLights(int a2) {
     for (int i = 0; i < uNumStationaryLights; ++i) {
         pLight = &pStationaryLights[i];
         pStationaryLightsStack->AddLight(
-            pLight->vPosition.x, pLight->vPosition.y, pLight->vPosition.z,
+            pLight->vPosition,
             pLight->flt_18, pLight->vRGBColor.x, pLight->vRGBColor.y,
             pLight->vRGBColor.z, _4E94D0_light_type);
     }

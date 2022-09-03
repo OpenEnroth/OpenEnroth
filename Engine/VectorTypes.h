@@ -243,6 +243,17 @@ struct BBox {
         result.z2 = std::max(l.z2, r.z2);
         return result;
     }
+
+    BBox Expanded(T radius) const {
+        BBox result;
+        result.x1 = this->x1 - radius;
+        result.x2 = this->x2 + radius;
+        result.y1 = this->y1 - radius;
+        result.y2 = this->y2 + radius;
+        result.z1 = this->z1 - radius;
+        result.z2 = this->z2 + radius;
+        return result;
+    }
 };
 #pragma pack(pop)
 
