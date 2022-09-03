@@ -12,8 +12,15 @@ $ make
 ```
 or select platform dependent [generator](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for your favorite IDE.
 
+Minimum required compiler versions are as follows:
+* Visual Studio 2019
+* GCC 11
+* Clang 13
 
-This has been tested on Visual Studio 2019 - your experiences with other IDE's may vary.
+The following IDEs have been tested and should work fine:
+* Visual Studio 2019
+* Visual Studio Code (2022 or later)
+* CLion (2022 or later)
 
 
 Dependencies
