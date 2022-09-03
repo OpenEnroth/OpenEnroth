@@ -512,7 +512,7 @@ void Game::EventLoop() {
     int encounter_index;           // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
                                   //    char v197; // [sp+2Bh] [bp-5D1h]@101
-    enum UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
+    UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     unsigned int v199 {};            // [sp+30h] [bp-5CCh]@7
     char *v200 = nullptr;                   // [sp+34h] [bp-5C8h]@518
     // int v213;                     // [sp+98h] [bp-564h]@385

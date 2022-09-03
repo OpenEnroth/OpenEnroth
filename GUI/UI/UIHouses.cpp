@@ -664,7 +664,7 @@ bool HouseUI_CheckIfPlayerCanInteract() {
 }
 
 //----- (0044622E) --------------------------------------------------------
-bool EnterHouse(enum HOUSE_ID uHouseID) {
+bool EnterHouse(HOUSE_ID uHouseID) {
     int uOpenTime;   // eax@5
     int uCloseTime;  // esi@5
                      // unsigned int v5; // esi@5
@@ -1423,7 +1423,6 @@ int GetTravelTimeTransportDays(int schedule_id) {
         if (CheckHiredNPCSpeciality(Horseman)) travel_time -= 2;
     }
     if (CheckHiredNPCSpeciality(Explorer)) --travel_time;
-
     if (travel_time < 1) travel_time = 1;
     return travel_time;
 }
@@ -1571,7 +1570,7 @@ void TravelByTransport() {
                 int traveltimedays = GetTravelTimeTransportDays(transport_routes[window_SpeakInHouse->wData.val -
                     HOUSE_STABLES_HARMONDALE][dialog_menu_id - DIALOGUE_TRANSPORT_SCHEDULE_1]);
 
-                enum PlayerSpeech pSpeech;
+                PlayerSpeech pSpeech;
                 int speechlength{};
                 if (window_SpeakInHouse->wData.val >= HOUSE_BOATS_EMERALD_ISLE) {
                     pSpeech = SPEECH_TravelBoat;

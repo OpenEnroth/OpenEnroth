@@ -2473,7 +2473,7 @@ unsigned int Player::GetActualAge() {
 }
 
 //----- (0048E73F) --------------------------------------------------------
-int Player::GetBaseResistance(enum CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
     int v7;  // esi@20
     int racialBonus = 0;
     __int16* resStat;
@@ -2517,7 +2517,7 @@ int Player::GetBaseResistance(enum CHARACTER_ATTRIBUTE_TYPE a2) {
 }
 
 //----- (0048E7D0) --------------------------------------------------------
-int Player::GetActualResistance(enum CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
     signed int v10 = 0;  // [sp+14h] [bp-4h]@1
     __int16* resStat;
     int result;
@@ -2648,8 +2648,7 @@ int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) {
 }
 
 //----- (0048EAAE) --------------------------------------------------------
-int Player::GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr,
-                          bool getOnlyMainHandDmg /*= false*/) {
+int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg /*= false*/) {
     int v5;                     // edi@1
     int v9;                     // eax@49
     int v14;                    // ecx@58
@@ -2934,7 +2933,7 @@ int Player::GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr,
 }
 
 //----- (0048F73C) --------------------------------------------------------
-int Player::GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) {
     int v3 = 0;  // eax@4
     int v4 = 0;  // ecx@5
 
@@ -3192,9 +3191,8 @@ int Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
 }
 
 //----- (0048FC00) --------------------------------------------------------
-int Player::GetSkillBonus(
-    enum CHARACTER_ATTRIBUTE_TYPE
-        inSkill) {  // TODO(_): move the individual implementations to attribute
+int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
+                    // TODO(_): move the individual implementations to attribute
                     // classes once possible ?? check
     int armsMasterBonus;
 
@@ -4666,7 +4664,7 @@ bool CmpSkillValue(int valToCompare, int skillValue) {
 }
 
 //----- (00449BB4) --------------------------------------------------------
-bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
+bool Player::CompareVariable(VariableType VarNum, int pValue) {
     // in some cases this calls only calls v4 >= pValue, which i've
     // changed to return false, since these values are supposed to
     // be positive and v4 was -1 by default
@@ -5077,7 +5075,7 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
 }
 
 //----- (0044A5CB) --------------------------------------------------------
-void Player::SetVariable(enum VariableType var_type, signed int var_value) {
+void Player::SetVariable(VariableType var_type, signed int var_value) {
     unsigned int v6;      // esi@13
     unsigned int v7;      // esi@14
     signed int v11;       // eax@30
@@ -5664,7 +5662,7 @@ void Player::SetSkillByEvent(unsigned __int16 Player::*skillToSet,
 }
 
 //----- (0044AFFB) --------------------------------------------------------
-void Player::AddVariable(enum VariableType var_type, signed int val) {
+void Player::AddVariable(VariableType var_type, signed int val) {
     int v6;               // eax@15
     unsigned int v7;      // esi@18
     DDM_DLV_Header* v27;  // eax@153
@@ -6214,7 +6212,7 @@ void Player::AddSkillByEvent(unsigned __int16 Player::*skillToSet,
 }
 
 //----- (0044B9C4) --------------------------------------------------------
-void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
+void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
     DDM_DLV_Header* locationHeader;  // eax@90
     int randGold;
     int randFood;

@@ -1038,7 +1038,7 @@ void GameUI_WritePointedObjectStatusString() {
     // GUIWindow *pWindow;                // edi@7
     // GUIButton *pButton;                // ecx@11
     int requiredSkillpoints;           // ecx@19
-    enum UIMessageType pMessageType1;  // esi@24
+    UIMessageType pMessageType1;  // esi@24
     int invmatrixindex;                // eax@41
     ItemGen *pItemGen;                 // ecx@44
     // int v16;                           // ecx@46
@@ -1046,8 +1046,8 @@ void GameUI_WritePointedObjectStatusString() {
     signed int v18b;
     signed int pickedObjectID = 0;     // ecx@63
     BLVFace *pFace;                    // eax@69
-    enum UIMessageType pMessageType2;  // esi@110
-    enum UIMessageType pMessageType3;  // edx@117
+    UIMessageType pMessageType2;  // esi@110
+    UIMessageType pMessageType3;  // edx@117
     unsigned int pX;                   // [sp+D4h] [bp-Ch]@1
     unsigned int pY;                   // [sp+D8h] [bp-8h]@1
 

@@ -146,12 +146,12 @@ struct Player {
 
     Player();
 
-    void SetVariable(enum VariableType var, signed int a3);
-    void AddVariable(enum VariableType var, signed int val);
-    void SubtractVariable(enum VariableType VarNum, signed int pValue);
-    bool CompareVariable(enum VariableType VarNum, signed int pValue);
+    void SetVariable(VariableType var, signed int a3);
+    void AddVariable(VariableType var, signed int val);
+    void SubtractVariable(VariableType VarNum, signed int pValue);
+    bool CompareVariable(VariableType VarNum, signed int pValue);
     void UseItem_DrinkPotion_etc(signed int a2, int a3);
-    bool AddItem(struct ItemGen* pItem);
+    bool AddItem(ItemGen* pItem);
     int GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
                            unsigned short Player::*attrValue,
                            unsigned short Player::*attrBonus);
@@ -209,18 +209,18 @@ struct Player {
     int GetActualAC();
     unsigned int GetBaseAge();
     unsigned int GetActualAge();
-    int GetBaseResistance(enum CHARACTER_ATTRIBUTE_TYPE a2);
-    int GetActualResistance(enum CHARACTER_ATTRIBUTE_TYPE a2);
+    int GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2);
+    int GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2);
     void SetRecoveryTime(signed int sRecoveryTime);
     void RandomizeName();
     Condition GetMajorConditionIdx();
     int GetParameterBonus(int player_parameter);
     int GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment);
-    int GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false);
-    int GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
+    int GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool a3 = false);
+    int GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     int GetActualSkillLevel(PLAYER_SKILL_TYPE uSkillType);
     int GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType);
-    int GetSkillBonus(enum CHARACTER_ATTRIBUTE_TYPE a2);
+    int GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE a2);
     CHARACTER_RACE GetRace() const;
     std::string GetRaceName() const;
     PLAYER_SEX GetSexByVoice();

@@ -177,7 +177,7 @@ void GUIMessageQueue::Clear() {
     std::swap(qMessages, empty);
 }
 
-void GUIMessageQueue::PopMessage(enum UIMessageType *pType, int *pParam,
+void GUIMessageQueue::PopMessage(UIMessageType *pType, int *pParam,
     int *a4) {
     *pType = (UIMessageType)-1;
     *pParam = 0;

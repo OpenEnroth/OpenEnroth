@@ -492,7 +492,7 @@ Image *ui_character_inventory_paperdoll_rings_close = nullptr;
 std::array<Image *, 16> paperdoll_dbrds;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
-    unsigned int uActiveCharacter, enum CURRENT_SCREEN screen)
+    unsigned int uActiveCharacter, CURRENT_SCREEN screen)
     : GUIWindow(WINDOW_CharacterRecord, 0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter) {
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
