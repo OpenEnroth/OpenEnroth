@@ -930,7 +930,7 @@ void SpriteObject::_46BEF1_apply_spells_aoe() {
 //----- (0042F7EB) --------------------------------------------------------
 bool SpriteObject::Drop_Item_At(SPRITE_OBJECT_TYPE sprite, int x,
                                          int y, int z, int a4, int count,
-                                         int a7, unsigned __int16 attributes,
+                                         int a7, SPRITE_ATTRIBUTES attributes,
                                          ItemGen *a9) {
     SpriteObject pSpellObject;       // [sp+Ch] [bp-78h]@1
 

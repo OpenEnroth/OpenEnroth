@@ -12,8 +12,15 @@ $ make
 ```
 or select platform dependent [generator](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for your favorite IDE.
 
+Minimum required compiler versions are as follows:
+* Visual Studio 2019
+* GCC 11
+* Clang 13
 
-This has been tested on Visual Studio 2019 - your experiences with other IDE's may vary.
+The following IDEs have been tested and should work fine:
+* Visual Studio 2019
+* Visual Studio Code (2022 or later)
+* CLion (2022 or later)
 
 
 Dependencies
@@ -58,5 +65,5 @@ Some additional style preferences that we follow, in no particular order:
 * `*` and `&` in type declarations are preceded by a space. So it's `char *string`, and not `char* string`.
 * Documentation should be in doxydoc format with `\` used for tags, and starting with `/**` comment introducer.
 * Documentation should be written in English. There are some leftover comments in Russian throughout the codebase, feel free to translate them into English when you have a chance.
-
 * Please leave original function offsets intact (eg '//----- (00436523)')
+* Use `enum class`es followed by `using enum` statements instead of ordinary `enum`s. This provides type safety without changing the syntax. For flags, use `Flags` class.
