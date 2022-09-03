@@ -1346,7 +1346,7 @@ int UseNPCSkill(NPCProf profession) {
             for (int i = 0; i < 4; ++i) {
                 pParty->pPlayers[i].sHealth = pParty->pPlayers[i].GetMaxHealth();
 
-                for (Condition condition: conditionsToHeal)
+                for (Condition condition : conditionsToHeal)
                     pParty->pPlayers[i].conditions.Reset(condition);
             }
         } break;

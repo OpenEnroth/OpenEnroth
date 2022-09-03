@@ -134,7 +134,7 @@ class PlayerConditions {
         return this->times_[std::to_underlying(condition)];
     }
 
-private:
+ private:
     /** Game time when condition has started. */
     std::array<GameTime, 20> times_;
 };
