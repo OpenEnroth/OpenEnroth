@@ -23,7 +23,6 @@ enum class Condition : uint32_t {
     Condition_Eradicated = 16,
     Condition_Zombie = 17,
     Condition_Good = 18,
-    Condition_Unknown_19 = 19,
 };
 using enum Condition;
 
