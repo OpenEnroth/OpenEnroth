@@ -347,9 +347,7 @@ void Engine::DrawGUI() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
             bool on_water = false;
             int bmodel_pid;
-            int floor_level = ODM_GetFloorLevel(
-                pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z,
-                0, &on_water, &bmodel_pid, false);
+            int floor_level = ODM_GetFloorLevel(pParty->vPosition, 0, &on_water, &bmodel_pid, false);
             floor_level_str = StringPrintf(
                 "ODM_GetFloorLevel: %d   on_water: %s  on: %s\n",
                 floor_level, on_water ? "true" : "false",
