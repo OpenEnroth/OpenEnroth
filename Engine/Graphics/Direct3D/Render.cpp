@@ -859,10 +859,8 @@ void Render::PrepareDecorationsRenderList_ODM() {
                             b_ = decor_desc->uColoredLightBlue;
                         }
                         pStationaryLightsStack->AddLight(
-                            pLevelDecorations[i].vPosition.x,
-                            pLevelDecorations[i].vPosition.y,
-                            pLevelDecorations[i].vPosition.z +
-                                decor_desc->uDecorationHeight / 2,
+                            ToFloatVector(pLevelDecorations[i].vPosition) +
+                                Vec3_float_(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
                     }  // for light
 
