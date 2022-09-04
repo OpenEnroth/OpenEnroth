@@ -1883,7 +1883,6 @@ void ODM_ProcessPartyActions() {
     signed int v44;    // edx@184
     int v45;           // ecx@200
     BSPModel *pModel;  // eax@203
-    bool pModel_;
     ODMFace *pODMFace;   // esi@203
     int v48;             // eax@203
     int v54;             // eax@215
@@ -1902,7 +1901,6 @@ void ODM_ProcessPartyActions() {
     bool not_high_fall;  // [sp+1Ch] [bp-78h]@33
     int v102;            // [sp+20h] [bp-74h]@1
     int trigger_id = 0;  // [sp+24h] [bp-70h]@1
-    bool bFeatherFall;   // [sp+28h] [bp-6Ch]@4
     int bonus;
     int on_ground;            // [sp+2Ch] [bp-68h]@24
     bool bWaterWalk;          // [sp+30h] [bp-64h]@1
@@ -1911,7 +1909,6 @@ void ODM_ProcessPartyActions() {
     int v111;                 // [sp+44h] [bp-50h]@14
     bool hovering;            // [sp+48h] [bp-4Ch]@1
     int v113;                 // [sp+4Ch] [bp-48h]@1
-    bool party_running_flag;  // [sp+50h] [bp-44h]@1
     int _walk_speed;          // [sp+54h] [bp-40h]@48
     int pX;                   // [sp+58h] [bp-3Ch]@1
     int pY;                   // [sp+5Ch] [bp-38h]@1
@@ -1920,7 +1917,6 @@ void ODM_ProcessPartyActions() {
     int _angle_x;             // [sp+68h] [bp-2Ch]@48
     unsigned int v122;        // [sp+70h] [bp-24h]@180
 
-    bool party_walking_flag;  // [sp+78h] [bp-1Ch]@1
     int _angle_y;             // [sp+7Ch] [bp-18h]@48
     int v128;                 // [sp+88h] [bp-Ch]@1
     int v129;                 // [sp+8Ch] [bp-8h]@92
@@ -1938,16 +1934,15 @@ void ODM_ProcessPartyActions() {
 
     v113 = pParty->sPartyPrevZ;
     hovering = false;
-    bool partyAtHighSlope =
-        IsTerrainSlopeTooHigh(pParty->vPosition.x, pParty->vPosition.y);
-    party_running_flag = false;
-    party_walking_flag = false;
+    bool partyAtHighSlope = IsTerrainSlopeTooHigh(pParty->vPosition.x, pParty->vPosition.y);
+    bool party_running_flag = false;
+    bool party_walking_flag = false;
     v102 = 0;
-    pModel_ = false;
+    bool pModel_ = false;
     bWaterWalk = false;
     //************************************
     // Проверка падение пера
-    bFeatherFall = pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
+    bool bFeatherFall = pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
     //************************************
     // Проверка хождения по воде
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
@@ -1963,9 +1958,8 @@ void ODM_ProcessPartyActions() {
     // определение уровня пола
     int bmodel_standing_on_pid;  // данные 3D model'и
     bool is_on_water = false;     // на воду
-    floor_level =
-        ODM_GetFloorLevel(pX, pY, party_new_Z, pParty->uPartyHeight,
-                          &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
+    floor_level = ODM_GetFloorLevel(pX, pY, party_new_Z, pParty->uPartyHeight,
+                                    &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
     int is_not_on_bmodel = bmodel_standing_on_pid == 0;  // не на 3D model
 
     v111 = floor_level;  // ???
@@ -2027,17 +2021,13 @@ void ODM_ProcessPartyActions() {
     //*****************************************
     // установить на чём стоит группа
     if (!hovering) {  // не в воздухе
-        if (pParty->floor_face_pid !=
-            PID(OBJECT_BModel, bmodel_standing_on_pid)) {
-            if (bmodel_standing_on_pid) {
-                int BModel_id = bmodel_standing_on_pid >> 6;
-                if (BModel_id < pOutdoor->pBModels.size()) {
-                    int face_id = bmodel_standing_on_pid & 0x3F;
-                    if (pOutdoor->pBModels[BModel_id].pFaces[face_id].uAttributes & FACE_PRESSURE_PLATE) {
-                        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);
-                        trigger_id = pOutdoor->pBModels[BModel_id].pFaces[face_id].sCogTriggeredID;
-                        // EVT, панель имеет событие
-                    }
+        if (pParty->floor_face_pid != PID(OBJECT_BModel, bmodel_standing_on_pid) && bmodel_standing_on_pid) {
+            int BModel_id = bmodel_standing_on_pid >> 6;
+            if (BModel_id < pOutdoor->pBModels.size()) {
+                int face_id = bmodel_standing_on_pid & 0x3F;
+                if (pOutdoor->pBModels[BModel_id].pFaces[face_id].uAttributes & FACE_PRESSURE_PLATE) {
+                    trigger_id = pOutdoor->pBModels[BModel_id].pFaces[face_id].sCogTriggeredID;
+                    // EVT, панель имеет событие
                 }
             }
         }
@@ -2085,12 +2075,10 @@ void ODM_ProcessPartyActions() {
                             pParty->field_6E4_set0_unused = 0;
                             pPartyActionQueue->uNumActions = 0;
                             pParty->uFlags |= PARTY_FLAGS_1_LANDING;
-                            pParty->vPosition.z =
-                                ceiling_height - pParty->uPartyHeight - 31;
+                            pParty->vPosition.z = ceiling_height - pParty->uPartyHeight - 31;
                             pParty->sPartyPrevZ = party_new_Z;
                             pParty->bFlying = false;
-                            party_new_Z =
-                                ceiling_height - pParty->uPartyHeight - 31;
+                            party_new_Z = ceiling_height - pParty->uPartyHeight - 31;
                             v113 = pParty->sPartyPrevZ;
                         }
                         pParty->uFallSpeed = 0;
@@ -2143,7 +2131,7 @@ void ODM_ProcessPartyActions() {
                 if (engine->config->settings.TurnSpeed.Get() > 0)
                     _angle_y += engine->config->settings.TurnSpeed.Get();
                 else
-                    _angle_y += 2.0f * fTurnSpeedMultiplier * (double)dturn;
+                    _angle_y += 2.0f * fTurnSpeedMultiplier * dturn;
 
                 _angle_y &= TrigLUT->uDoublePiMask;
                 break;
@@ -2152,7 +2140,7 @@ void ODM_ProcessPartyActions() {
                 if (engine->config->settings.TurnSpeed.Get() > 0)
                     _angle_y -= engine->config->settings.TurnSpeed.Get();
                 else
-                    _angle_y -= 2.0f * fTurnSpeedMultiplier * (double)dturn;
+                    _angle_y -= 2.0f * fTurnSpeedMultiplier * dturn;
 
                 _angle_y &= TrigLUT->uDoublePiMask;
                 break;
@@ -2264,8 +2252,7 @@ void ODM_ProcessPartyActions() {
                 int dx = cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 v2 -= dx;
 
-                int dy =
-                    sin_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                int dy = sin_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 v1 -= dy;
 
                 v128 = v1;
@@ -2429,9 +2416,8 @@ void ODM_ProcessPartyActions() {
 
         collision_state.uSectorID = 0;
         v36 = 0;
-        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
             v36 = 13312;
-        }
         if (collision_state.PrepareAndCheckIfStationary(v36))
             break;
 
@@ -2439,8 +2425,7 @@ void ODM_ProcessPartyActions() {
         // v37 = WorldPosToGridCellY(pParty->vPosition.y);
         // v38 = WorldPosToGridCellX(pParty->vPosition.x);
         CollideOutdoorWithDecorations(
-            WorldPosToGridCellX(pParty->vPosition.x),
-            WorldPosToGridCellY(pParty->vPosition.y));
+                WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y));
         _46ED8A_collide_against_sprite_objects(4);
         for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
             CollideWithActor(actor_id, 0);
@@ -2536,9 +2521,8 @@ void ODM_ProcessPartyActions() {
                 if (pParty->floor_face_pid != v45 &&
                     pODMFace->Pressure_Plate()) {
                     pParty->floor_face_pid = v45;
-                    trigger_id =
-                        pODMFace->sCogTriggeredID;  // this one triggers tour
-                                                    // events??
+                    trigger_id = pODMFace->sCogTriggeredID;  // this one triggers tour
+                                                             // events??
                 }
             }
             if (!v129 && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || v119)) {  // упёрся в столб
@@ -2553,8 +2537,7 @@ void ODM_ProcessPartyActions() {
                 if (!v119)
                     v54 = fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
                 pParty->uFallSpeed += v54;
-                v55 =
-                    collision_state.radius_lo -
+                v55 = collision_state.radius_lo -
                     pODMFace->pFacePlaneOLD.SignedDistanceTo(_angle_x, _angle_y, v122);
                 if (v55 > 0) {
                     pX = _angle_x + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
@@ -2610,8 +2593,7 @@ void ODM_ProcessPartyActions() {
                     pAudioPlayer->PlaySound(SOUND_RunWood, -1 /*804*/, 1, -1, 0, 0);  // бег на 3D Modelи
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
-                        WorldPosToGridCellX(pParty->vPosition.x),
-                        WorldPosToGridCellY(pParty->vPosition.y) - 1, 1);
+                        WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y) - 1, 1);
                     pAudioPlayer->PlaySound((SoundID)v87, -1 /*804*/, 1, -1, 0, 0);  // бег по земле 56
                 }
                 pParty->walk_sound_timer = 96;  // таймер для бега
@@ -2624,8 +2606,7 @@ void ODM_ProcessPartyActions() {
                     pAudioPlayer->PlaySound(SOUND_WalkWood, -1 /*804*/, 1, -1, 0, 0);  // хождение на 3D Modelи
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
-                        WorldPosToGridCellX(pParty->vPosition.x),
-                        WorldPosToGridCellY(pParty->vPosition.y) - 1, 0);
+                        WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y) - 1, 0);
                     pAudioPlayer->PlaySound((SoundID)v87, -1 /*804*/, 1, -1, 0, 0);  // хождение по земле
                 }
                 pParty->walk_sound_timer = 144;  // таймер для ходьбы
@@ -2803,12 +2784,9 @@ void ODM_ProcessPartyActions() {
             pParty->uFallStartZ = party_new_Z;
         }
         if (v102 && pParty->vPosition.z < ceiling_height &&
-            (signed int)(pParty->uPartyHeight + pParty->vPosition.z) >=
-                ceiling_height) {
-            pParty->vPosition.z =
-                pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
-            pParty->sPartyPrevZ =
-                pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
+            (signed int)(pParty->uPartyHeight + pParty->vPosition.z) >= ceiling_height) {
+            pParty->vPosition.z = pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
+            pParty->sPartyPrevZ = pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
         }
     }
 }
