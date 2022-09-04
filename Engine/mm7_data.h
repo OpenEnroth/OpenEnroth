@@ -356,11 +356,6 @@ extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
 extern std::array<int, 100> dword_720020_zvalues;
 extern std::array<int, 299> dword_7201B0_zvalues;
-extern std::array<int16_t, 777> word_720CE0_ys;  // idb
-extern std::array<int16_t, 777> word_720DB0_xs;  // idb
-extern std::array<int, 20> dword_720E80;
-extern std::array<int, 20> dword_720ED0;
-extern std::array<int, 20> ceiling_height_level;
 extern std::array<int16_t, 104> odm_floor_face_vert_coord_Y;  // word_720F70
 extern std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
 extern Vec3_int_ blv_prev_party_pos;

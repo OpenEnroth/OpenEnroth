@@ -2813,118 +2813,73 @@ void ODM_ProcessPartyActions() {
     }
 }
 
-int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
-                     int *pFaceID) {
-    int v13;      // eax@25
-    int v14;      // edx@27
-    int v16;      // ST18_4@29
-    int v17;      // edx@29
-    int64_t v18 {};  // qtt@29
-    int v19;      // eax@35
-    int v20;      // ecx@37
-    int v22;      // ebx@42
-    int v27;      // [sp+10h] [bp-34h]@21
-    bool v34;     // [sp+30h] [bp-14h]@21
-    bool v35;     // [sp+34h] [bp-10h]@23
-    int v37;      // [sp+38h] [bp-Ch]@21
-    int v38;      // [sp+38h] [bp-Ch]@42
-    int v39;      // [sp+3Ch] [bp-8h]@1
+int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pFaceID) {
+    std::array<int, 20> face_indices;
+    std::array<int, 20> model_indices;
+    std::array<int, 20> ceiling_height_level;
+    model_indices[0] = -1;
+    face_indices[0] = -1;
+    ceiling_height_level[0] = 10000;  // no ceiling
 
-    dword_720ED0[0] = -1;
-    dword_720E80[0] = -1;
-    v39 = 1;
-    ceiling_height_level[0] = 10000;  // нет потолка
+    int ceiling_count = 1;
+
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (Party_X <= model.pBoundingBox.x2 && Party_X >= model.pBoundingBox.x1 &&
-            Party_Y <= model.pBoundingBox.y2 && Party_Y >= model.pBoundingBox.y1) {
-            for (ODMFace &face : model.pFaces) {
-                if ((face.uPolygonType == POLYGON_Ceiling ||
-                     face.uPolygonType == POLYGON_InBetweenCeilingAndWall) &&
-                    !face.Ethereal() && Party_X <= face.pBoundingBox.x2 &&
-                    Party_X >= face.pBoundingBox.x1 &&
-                    Party_Y <= face.pBoundingBox.y2 &&
-                    Party_Y >= face.pBoundingBox.y1) {
-                    for (uint v = 0; v < face.uNumVertices; v++) {
-                        word_720DB0_xs[2 * v] =
-                            face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices[face.pVertexIDs[v]].x;
-                        word_720CE0_ys[2 * v] =
-                            face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices[face.pVertexIDs[v]].y;
-                        word_720DB0_xs[2 * v + 1] =
-                            face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices[face.pVertexIDs[v + 1]].x;
-                        word_720CE0_ys[2 * v + 1] =
-                            face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices[face.pVertexIDs[v + 1]].y;
-                    }
-                    v27 = 2 * face.uNumVertices;
-                    word_720DB0_xs[2 * face.uNumVertices] = word_720DB0_xs[0];
-                    word_720CE0_ys[2 * face.uNumVertices] = word_720CE0_ys[0];
-                    v34 = word_720CE0_ys[0] >= Party_Y;
-                    v37 = 0;
-                    for (uint v = 0; v < v27; ++v) {
-                        if (v37 >= 2) break;
-                        v35 = word_720CE0_ys[v + 1] >= Party_Y;
-                        if (v34 != v35) {
-                            v13 = word_720DB0_xs[v + 1] >= Party_X ? 0 : 2;
-                            v14 = v13 | (word_720DB0_xs[v] < Party_X);
-                            if (v14 != 3) {
-                                if (!v14 ||
-                                    (v16 = word_720CE0_ys[v + 1] -
-                                           word_720CE0_ys[v],
-                                     v17 = Party_Y - word_720CE0_ys[v],
-                                     HEXRAYS_LODWORD(v18) = v17 << 16,
-                                     HEXRAYS_HIDWORD(v18) = v17 >> 16,
-                                     (int)(((uint64_t)(
-                                                ((int)word_720DB0_xs[v + 1] -
-                                                 (int)word_720DB0_xs[v]) *
-                                                v18 / v16) >>
-                                            16) +
-                                           word_720DB0_xs[v]) >= Party_X))
-                                    ++v37;
-                            }
-                        }
-                        v34 = v35;
-                    }
-                    if (v37 == 1) {
-                        if (v39 >= 20) break;
-                        if (face.uPolygonType == POLYGON_Ceiling)
-                            v19 =
-                                model.pVertices[face.pVertexIDs[0]].z;
-                        else
-                            v19 = face.zCalc.Calculate(Party_X, Party_Y);
-                        v20 = v39++;
-                        ceiling_height_level[v20] = v19;
-                        dword_720ED0[v20] = model.index;
-                        dword_720E80[v20] = face.index;
-                    }
-                }
-            }
+        if (!model.pBoundingBox.ContainsXY(Party_X, Party_Y))
+            continue;
+
+        for (ODMFace &face : model.pFaces) {
+            if (face.Ethereal())
+                continue;
+
+            if (face.uPolygonType != POLYGON_Ceiling && face.uPolygonType != POLYGON_InBetweenCeilingAndWall)
+                continue;
+
+            if (!face.pBoundingBox.ContainsXY(Party_X, Party_Y))
+                continue;
+
+            int slack = engine->config->gameplay.FloorChecksEps.Get();
+            if (!face.Contains(Vec3_int_(Party_X, Party_Y, 0), model.index, slack, FACE_XY_PLANE))
+                continue;
+
+            if (ceiling_count >= 20)
+                break;
+
+            int height_level;
+            if (face.uPolygonType == POLYGON_Ceiling)
+                height_level = model.pVertices[face.pVertexIDs[0]].z;
+            else
+                height_level = face.zCalc.Calculate(Party_X, Party_Y);
+
+            ceiling_height_level[ceiling_count] = height_level;
+            model_indices[ceiling_count] = model.index;
+            face_indices[ceiling_count] = face.index;
+
+            ++ceiling_count;
         }
     }
 
-    if (!v39) {
-        pFaceID = 0;
+    if (!ceiling_count) {
+        *pFaceID = 0;
         return ceiling_height_level[0];
     }
-    v22 = 0;
-    for (v38 = 0; v38 < v39; ++v38) {
-        if (ceiling_height_level[v38] == ceiling_height_level[0])
-            v22 = v38;
-        else if (ceiling_height_level[v38] < ceiling_height_level[0] &&
-                 ceiling_height_level[0] > Party_ZHeight + 15)
-            v22 = v38;
-        else if (ceiling_height_level[v38] > ceiling_height_level[0] &&
-                 ceiling_height_level[v38] <= Party_ZHeight + 15)
-            v22 = v38;
+
+    int result_idx = 0;
+    for (int i = 0; i < ceiling_count; ++i) {
+        if (ceiling_height_level[i] == ceiling_height_level[0])
+            result_idx = i;
+        else if (ceiling_height_level[i] < ceiling_height_level[0] && ceiling_height_level[0] > Party_ZHeight + 15)
+            result_idx = i;
+        else if (ceiling_height_level[i] > ceiling_height_level[0] && ceiling_height_level[i] <= Party_ZHeight + 15)
+            result_idx = i;
     }
-    if (v22) {
-        *(int *)pFaceID = dword_720E80[v22] | (dword_720ED0[v22] << 6);
-        return ceiling_height_level[v22];  // если есть преграда
+
+    if (result_idx != 0) {
+        *pFaceID = face_indices[result_idx] | (model_indices[result_idx] << 6);
+        return ceiling_height_level[result_idx];
+    } else {
+        *pFaceID = 0;
+        return ceiling_height_level[result_idx];
     }
-    pFaceID = 0;
-    return ceiling_height_level[v22];  // нет никакой преграды
 }
 
 //----- (00464839) --------------------------------------------------------
