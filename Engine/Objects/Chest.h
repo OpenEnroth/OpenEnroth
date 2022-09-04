@@ -66,7 +66,6 @@ void RemoveItemAtChestIndex(int index);
 void GenerateItemsInChest();
 
 size_t ChestsSerialize(char *pData);
-size_t ChestsDeserialize(const char *pData);
 
 extern ChestList *pChestList;
 extern std::vector<Chest> vChests;

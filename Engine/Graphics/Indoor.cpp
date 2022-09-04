@@ -1000,7 +1000,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    stream.Skip(ChestsDeserialize(stream.Ptr()));
+    stream.ReadVector(&vChests);
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
