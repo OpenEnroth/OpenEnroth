@@ -13,6 +13,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
 #include "Engine/Spells/Spells.h"
+#include "src/tools/Workaround.h"
 
 
 struct LloydBeacon {

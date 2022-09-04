@@ -21,6 +21,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "src/tools/Workaround.h"
+
 using EngineIoc = Engine_::IocContainer;
 
 void GuildDialog() {

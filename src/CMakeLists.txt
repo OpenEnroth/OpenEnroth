@@ -21,7 +21,8 @@ set(GAME_HEADERS Application/Game.h
                  tools/Flags.h
                  tools/DataPath.h
                  tools/MemBuffer.h
-                 tools/FreeDeleter.h)
+                 tools/FreeDeleter.h
+                 tools/Workaround.h)
 
 if(WIN32)
 else()
