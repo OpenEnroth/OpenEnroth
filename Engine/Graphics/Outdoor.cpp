@@ -813,11 +813,6 @@ bool OutdoorLocationTerrain::ZeroLandscape() {
     return true;
 }
 
-//----- (0047CD44) --------------------------------------------------------
-bool OutdoorLocationTerrain::Initialize() {
-    return true; // TODO: drop this function
-}
-
 //----- (0047CDE2) --------------------------------------------------------
 void OutdoorLocation::CreateDebugLocation() {
     this->level_filename = "blank";
@@ -831,7 +826,6 @@ void OutdoorLocation::CreateDebugLocation() {
     this->LoadTileGroupIds();
     this->LoadRoadTileset();
     this->pSpawnPoints.clear();
-    this->pTerrain.Initialize();
     this->pTerrain.ZeroLandscape();
     this->pTerrain.FillDMap(0, 0, 128, 128);
 
@@ -925,7 +919,6 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // *******************Terrain**************************//
-    pTerrain.Initialize();
     stream.ReadRaw(&pTerrain.pHeightmap);  // карта высот
     stream.ReadRaw(&pTerrain.pTilemap);  // карта тайлов
     stream.ReadRaw(&pTerrain.pAttributemap);  // карта аттрибутов
