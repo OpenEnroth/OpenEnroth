@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <string>
+#include <utility>
 
 #include "Engine/Objects/NPCProf.h"
 #include "Engine/Objects/PlayerEnums.h"
