@@ -1762,45 +1762,36 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
 // normal of inverse normal
 // for a right-handed system, that would be an inverse normal
 //----- (0046DCC8) --------------------------------------------------------
-void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out) {
+void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3_int_ *out) {
     uint grid_x = WorldPosToGridCellX(pos_x);
-    uint grid_z = WorldPosToGridCellY(pos_z) - 1;
+    uint grid_y = WorldPosToGridCellY(pos_y) - 1;
 
     int grid_pos_x1 = GridCellToWorldPosX(grid_x);
     int grid_pos_x2 = GridCellToWorldPosX(grid_x + 1);
-    int grid_pos_z1 = GridCellToWorldPosZ(grid_z);
-    int grid_pos_z2 = GridCellToWorldPosZ(grid_z + 1);
+    int grid_pos_y1 = GridCellToWorldPosZ(grid_y);
+    int grid_pos_y2 = GridCellToWorldPosZ(grid_y + 1);
 
-    int x1z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z);
-    int x2z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z);
-    int x2z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
-    int x1z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z + 1);
+    int x1y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y);
+    int x2y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y);
+    int x2y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
+    int x1y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
 
-    float side1_dx, side1_dy, side1_dz, side2_dx, side2_dy, side2_dz;
+    Vec3_float_ side1, side2;
 
-    int dx = abs(pos_x - grid_pos_x1), dz = abs(grid_pos_z1 - pos_z);
-    if (dz >= dx) {
-        side2_dx = (double)(grid_pos_x2 - grid_pos_x1);
-        side2_dz =
-            0.0;  // (double)(grid_pos_z2 - grid_pos_z2);  // bug?  z2 - z2
-        side2_dy = (double)(x2z2_y - x1z2_y);
+    //float side1_dx, side1_dz, side1_dy, side2_dx, side2_dz, side2_dy;
 
-        side1_dx = 0.0;  // (double)(grid_pos_x1 - grid_pos_x1);
-        side1_dz = (double)(grid_pos_z1 - grid_pos_z2);  //       z1 - z2 yes
-        side1_dy = (double)(x1z1_y - x1z2_y);
-        // logger->Warning("%S %S %u\n", __FILE__, __FUNCTION__, __LINE__);
+    int dx = abs(pos_x - grid_pos_x1);
+    int dy = abs(grid_pos_y1 - pos_y);
+    if (dy >= dx) {
+        side2 = Vec3_float_(grid_pos_x2 - grid_pos_x1, 0.0f, x2y2_z - x1y2_z);
+        side1 = Vec3_float_(0.0f, grid_pos_y1 - grid_pos_y2, x1y1_z - x1y2_z);
         /*       |\
            side1 |  \
                  |____\
                  side 2      */
     } else {
-        side2_dx = (double)(grid_pos_x1 - grid_pos_x2);
-        side2_dz = 0.0;  // (double)(grid_pos_z1 - grid_pos_z1);
-        side2_dy = (double)(x1z1_y - x2z1_y);
-
-        side1_dx = 0.0;  // (double)(grid_pos_x2 - grid_pos_x1);
-        side1_dz = (double)(grid_pos_z2 - grid_pos_z1);
-        side1_dy = (double)(x2z2_y - x2z1_y);
+        side2 = Vec3_float_(grid_pos_x1 - grid_pos_x2, 0.0f, x1y1_z - x2y1_z);
+        side1 = Vec3_float_(0.0f, grid_pos_y2 - grid_pos_y1, x2y2_z - x2y1_z);
         /*   side 2
              _____
              \    |
@@ -1808,20 +1799,12 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out) {
                  \|       */
     }
 
-    float nx = side1_dy * side2_dz - side1_dz * side2_dy;
-    float ny = side1_dx * side2_dy - side1_dy * side2_dx;
-    float nz = side1_dz * side2_dx - side1_dx * side2_dz;
-
-    float mag = sqrt(nx * nx + ny * ny + nz * nz);
+    Vec3_float_ n = Cross(side2, side1);
+    float mag = Length(n);
     if (fabsf(mag) < 1e-6f) {
-        out->y = 0;
-        out->x = 0;
-        out->z = 65536;
+        *out = Vec3_int_(0, 0, 65536);
     } else {
-        float invmag = 1.0 / mag;
-        out->x = invmag * nx * 65536.0;
-        out->y = invmag * ny * 65536.0;
-        out->z = invmag * nz * 65536.0;
+        *out = ToFixpointVector(n / mag);
     }
 }
 //----- (0046BE0A) --------------------------------------------------------
