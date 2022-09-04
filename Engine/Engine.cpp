@@ -1807,10 +1807,15 @@ void RegeneratePartyHealthMana() {
         redraw_flag = false;
         int times_triggered = (current_time - last_reg_time) / 5;
 
+        // TODO: actually this looks like it never triggers.
+        // we get cursed_times, which is a time the player was cursed since the start of the game (a very large number),
+        // and compare it with times_triggered, which is a small number
+
         // chance to flight break due to a curse
         if (pParty->FlyActive()) {
             if (pParty->bFlying) {
                 if (!(pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1)) {
+                    // uPower is 0 for GM, 1 for every other skill level
                     unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
 
                     int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;

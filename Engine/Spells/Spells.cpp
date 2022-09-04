@@ -361,6 +361,8 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
 bool SpellBuff::Apply(GameTime expire_time, unsigned __int16 uSkillLevel,
                       unsigned __int16 uPower, int uOverlayID,
                       unsigned __int8 caster) {
+    Assert(uSkillLevel >= 1 && uSkillLevel <= 4);
+
     if (this->expire_time && (expire_time < this->expire_time)) {
         return false;
     }
