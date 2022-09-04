@@ -92,7 +92,7 @@ bool IsTravelAvailable(int a1);
  * 
  * @return                              Number of days travel by transport will take with hireling modifiers.
  */
-int GetTravelTimeTransportDays(int shcedule_id);
+int GetTravelTimeTransportDays(int schedule_id);
 
 void TravelByTransport();
 void TempleDialog();

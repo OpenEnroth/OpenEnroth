@@ -1500,17 +1500,15 @@ void TravelByTransport() {
 
                     int travel_time = GetTravelTimeTransportDays(schedule_id);
 
-                    if (schedule_id != 255) {
-                        std::string str = localization->FormatString(
-                            LSTR_FMT_D_DAYS_TO_S, travel_time,
-                            pMapStats->pInfos[transport_schedule[schedule_id].uMapInfoID].pName.c_str());
-                        pTopicArray[index] += str + "\n \n";
-                        pButton->uY = pRealTextHeight;
-                        pTextHeight = pFontArrus->CalcTextHeight(str, travel_window.uFrameWidth, 0);
-                        pButton->uHeight = pTextHeight;
-                        pButton->uW = pButton->uY + pTextHeight - 1 + 6;
-                        pRealTextHeight += (pFontArrus->GetHeight() - 3) + pTextHeight;
-                    }
+                    std::string str = localization->FormatString(
+                        LSTR_FMT_D_DAYS_TO_S, travel_time,
+                        pMapStats->pInfos[transport_schedule[schedule_id].uMapInfoID].pName.c_str());
+                    pTopicArray[index] += str + "\n \n";
+                    pButton->uY = pRealTextHeight;
+                    pTextHeight = pFontArrus->CalcTextHeight(str, travel_window.uFrameWidth, 0);
+                    pButton->uHeight = pTextHeight;
+                    pButton->uW = pButton->uY + pTextHeight - 1 + 6;
+                    pRealTextHeight += (pFontArrus->GetHeight() - 3) + pTextHeight;
                 } else {
                     pTopicArray[index] = "";
                     if (pButton) {

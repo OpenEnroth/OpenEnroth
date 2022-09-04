@@ -143,6 +143,16 @@ class AudioPlayer {
     bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
     PMemBuffer LoadSound(const std::string &pSoundName);
     PMemBuffer LoadSound(int uSoundID);
+
+    /**
+     * @param spell                     Spell ID of spell. Indexes into word_4EE088_sound_ids.
+     * @param pid                       PID of sound originator or, 0 for generic ui sound, -1(PID_INVALID)
+     *                                  for resetable (playing this sound again whilst its playing will stop
+     *                                  it and start from beginning) exclusive (sound should not be stopped
+     *                                  by system on ui events) sound and other < 0 for non resetable sounds
+     *                                  (will not restart if played again whilst already playing). NB 
+     *                                  system use of exclusive sounds is inconsistent.
+     */
     void PlaySpellSound(unsigned int spell, unsigned int pid);
 
  protected:

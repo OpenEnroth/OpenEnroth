@@ -803,11 +803,6 @@ void Game::EventLoop() {
                                         OnEscape();
                                         continue;
                                     case CURRENT_SCREEN::SCREEN_BOOKS:
-                                        //if (pBooksButtonOverlay != nullptr) {
-                                        //    pBooksButtonOverlay->Release();
-                                            // crt_deconstruct_ptr_6A0118();
-                                        //    pBooksButtonOverlay = 0;
-                                        //}
                                         pEventTimer->Resume();
                                         OnEscape();
                                         continue;
@@ -996,7 +991,7 @@ void Game::EventLoop() {
                 case UIMSG_TransitionUI_Confirm:
                     pMessageQueue_50CBD0->Flush();
                     dword_50CDC8 = 1;
-                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -1, 0, -1, 0, 0);
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, PID_INVALID, 0, -1, 0, 0);
 
                     // PlayHouseSound(  // this is wrong - what is it meant to do??
                     //    uCurrentHouse_Animation,
@@ -1418,10 +1413,6 @@ void Game::EventLoop() {
                             pParty->sRotationY = pPlayer9->vBeacons[uMessageParam].PartyRot_Y;
                         }
                         pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-                        //if (pBooksButtonOverlay != nullptr) {
-                        //    pBooksButtonOverlay->Release();
-                         //   pBooksButtonOverlay = nullptr;
-                        //}
                         pGUIWindow_CurrentMenu->Release();
                         pGUIWindow_CurrentMenu = 0;
                     } else {
@@ -1470,12 +1461,7 @@ void Game::EventLoop() {
                         pParty->uFallStartZ = pParty->vPosition.z;
                         pParty->sRotationZ = TownPortalList[v65].rot_y;
                         pParty->sRotationY = TownPortalList[v65].rot_x;
-                        // take mana
-                        pParty->pPlayers[(unsigned __int8)town_portal_caster_id].CanCastSpell(0x14u);
-                        pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
-                        continue;
                     } else {  // if change map
-                        SaveGame(1, 0);
                         OnMapLeave();
                         dword_6BE364_game_settings_1 |= GAME_SETTINGS_0001;
                         uGameState = GAME_STATE_CHANGE_LOCATION;
