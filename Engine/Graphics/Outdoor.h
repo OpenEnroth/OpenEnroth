@@ -77,7 +77,7 @@ struct OutdoorLocation {
     int DoGetSomeOtherTileInfo(int gridX, int gridY);
     int DoGetHeightOnTerrain(signed int sX, signed int sZ);
     int GetSoundIdByPosition(signed int X_pos, signed int Y_pos, int a4);
-    int UpdateDiscoveredArea(int a2, int a3, int a4);
+    int UpdateDiscoveredArea(int a2, int a3, int unused);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
     bool _47F0E2();
@@ -181,7 +181,7 @@ struct OutdoorLocation {
 extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
-int ODM_GetFloorLevel(const Vec3_int_ &pos, int __unused, bool *pOnWater,
+int ODM_GetFloorLevel(const Vec3_int_ &pos, int unused, bool *pOnWater,
                       int *bmodel_pid, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
@@ -194,7 +194,7 @@ void sub_487DA9();
 void ODM_LoadAndInitialize(const std::string &pLevelFilename,
                            struct ODMRenderParams *thisa);
 unsigned int GetLevelFogColor();
-int sub_47C3D7_get_fog_specular(int __unused, int a2, float a3);
+int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
 unsigned int WorldPosToGridCellX(int);
 unsigned int WorldPosToGridCellY(int);
 int GridCellToWorldPosX(int);

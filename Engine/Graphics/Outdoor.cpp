@@ -56,7 +56,7 @@ struct FogProbabilityTableEntry {
     unsigned char small_fog_chance;
     unsigned char average_fog_chance;
     unsigned char dense_fog_chance;
-    unsigned char __unused__;
+    unsigned char unused;
 } fog_probability_table[15] = {
     {20, 10, 5, 0},   // MAP_EMERALD_ISLE
     {20, 10, 5, 0},   // MAP_HARMONDALE
@@ -1317,21 +1317,17 @@ int OutdoorLocation::GetSoundIdByPosition(signed int X_pos, signed int Y_pos,
 }
 
 //----- (0047EF60) --------------------------------------------------------
-int OutdoorLocation::UpdateDiscoveredArea(int X_grid_pos, int Y_grid_poa,
-                                          int a4) {
+int OutdoorLocation::UpdateDiscoveredArea(int X_grid_pos, int Y_grid_poa, int unused) {
     for (int i = -10; i < 10; i++) {
         int currYpos = Y_grid_poa + i - 20;
         for (int j = -10; j < 10; j++) {
             int currXpos = X_grid_pos + j - 20;
             int distanceSquared = i * i + j * j;
-            if (distanceSquared <= 100 && currYpos >= 0 && currYpos <= 87 &&
-                currXpos >= 0 && currXpos <= 87) {
+            if (distanceSquared <= 100 && currYpos >= 0 && currYpos <= 87 && currXpos >= 0 && currXpos <= 87) {
                 unsigned char v13 = 1 << (7 - currXpos % 8);
-                this->uPartiallyRevealedCellOnMap[currYpos][currXpos / 8] |=
-                    v13;
+                this->uPartiallyRevealedCellOnMap[currYpos][currXpos / 8] |= v13;
                 if (distanceSquared <= 49)
-                    this->uFullyRevealedCellOnMap[currYpos][currXpos / 8] |=
-                        v13;
+                    this->uFullyRevealedCellOnMap[currYpos][currXpos / 8] |= v13;
             }
         }
     }
@@ -1339,23 +1335,19 @@ int OutdoorLocation::UpdateDiscoveredArea(int X_grid_pos, int Y_grid_poa,
 }
 
 //----- (0047F04C) --------------------------------------------------------
-bool OutdoorLocation::IsMapCellFullyRevealed(signed int x_pos,
-                                             signed int y_pos) {
+bool OutdoorLocation::IsMapCellFullyRevealed(int x_pos, int y_pos) {
     if (x_pos < 0 || x_pos >= 88 || y_pos < 0 || y_pos >= 88)
         return false;
     else
-        return (uFullyRevealedCellOnMap[y_pos][x_pos / 8] &
-                (1 << (7 - (x_pos) % 8))) != 0;
+        return (uFullyRevealedCellOnMap[y_pos][x_pos / 8] & (1 << (7 - (x_pos) % 8))) != 0;
 }
 
 //----- (0047F097) --------------------------------------------------------
-bool OutdoorLocation::IsMapCellPartiallyRevealed(signed int x_pos,
-                                                 signed int y_pos) {
+bool OutdoorLocation::IsMapCellPartiallyRevealed(int x_pos, int y_pos) {
     if (x_pos < 0 || x_pos >= 88 || y_pos < 0 || y_pos >= 88)
         return false;
     else
-        return (uPartiallyRevealedCellOnMap[y_pos][x_pos / 8] &
-                (1 << (7 - (x_pos) % 8))) != 0;
+        return (uPartiallyRevealedCellOnMap[y_pos][x_pos / 8] & (1 << (7 - (x_pos) % 8))) != 0;
 }
 
 //----- (0047F0E2) --------------------------------------------------------
@@ -1367,7 +1359,7 @@ bool OutdoorLocation::_47F0E2() {
                 pBitmaps_LOD->pTextures[i].paletted_pixels,
                 pBitmaps_LOD->pTextures[i].header.palette_id2,
                 pBitmaps_LOD->pTextures[i].header.uTextureWidth *
-                    pBitmaps_LOD->pTextures[i].header.uTextureHeight);
+                pBitmaps_LOD->pTextures[i].header.uTextureHeight);
     }
     return 1;
 }
@@ -1666,7 +1658,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
     }
 }
 
-int ODM_GetFloorLevel(const Vec3_int_ &pos, int __unused, bool *pIsOnWater,
+int ODM_GetFloorLevel(const Vec3_int_ &pos, int unused, bool *pIsOnWater,
                       int *bmodel_pid, int bWaterWalk) {
     std::array<int, 20> current_Face_id;                   // dword_721110
     std::array<int, 20> current_BModel_id;                 // dword_721160
@@ -3339,7 +3331,7 @@ unsigned int GetLevelFogColor() {
     return 0;
 }
 
-int sub_47C3D7_get_fog_specular(int __unused, int a2, float a3) {
+int sub_47C3D7_get_fog_specular(int unused, int a2, float a3) {
     int v7;
 
     int v3 = pWeather->bNight;
