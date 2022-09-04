@@ -776,7 +776,6 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
 std::string GameUI_GetMinimapHintText() {
     double v3;            // st7@1
     int v7;               // eax@4
-    const char *v14;      // eax@8
     unsigned int pMapID;  // eax@14
     int global_coord_X;   // [sp+10h] [bp-1Ch]@1
     int global_coord_Y;   // [sp+14h] [bp-18h]@1
@@ -806,12 +805,9 @@ std::string GameUI_GetMinimapHintText() {
                 for (ODMFace &face : model.pFaces) {
                     if (face.sCogTriggeredID) {
                         if (!(face.uAttributes & FACE_HAS_EVENT)) {
-                            v14 = GetEventHintString(face.sCogTriggeredID);
-                            if (v14) {
-                                if (!iequals(v14, "")) {
-                                    result = v14;
-                                }
-                            }
+                            std::string hintString = GetEventHintString(face.sCogTriggeredID);
+                            if (!hintString.empty())
+                                result = hintString;
                         }
                     }
                 }
@@ -1106,21 +1102,19 @@ void GameUI_WritePointedObjectStatusString() {
                         pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
                     GameUI_StatusBar_Set(pText);
                 } else {
-                    char *hintString = GetEventHintString(pLevelDecorations[pickedObjectID].uEventID);
-                    if (hintString[0] != '\0') {
+                    std::string hintString = GetEventHintString(pLevelDecorations[pickedObjectID].uEventID);
+                    if (!hintString.empty()) {
                         GameUI_StatusBar_Set(hintString);
                     }
                 }  // intentional fallthrough
             } else if (PID_TYPE(pickedObject.object_pid) == OBJECT_BModel) {
                 if (pickedObject.depth < 0x200u) {
-                    char *newString = nullptr;
+                    std::string newString;
                     if (uCurrentlyLoadedLevelType != LEVEL_Indoor) {
                         v18b = PID_ID(pickedObject.object_pid) >> 6;
                         short triggeredId = pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F].sCogTriggeredID;
                         if (triggeredId != 0) {
-                            newString = GetEventHintString(
-                                pOutdoor->pBModels[v18b]
-                                    .pFaces[pickedObjectID & 0x3F]
+                            newString = GetEventHintString(pOutdoor->pBModels[v18b].pFaces[pickedObjectID & 0x3F]
                                     .sCogTriggeredID);
                         }
                     } else {
@@ -1130,13 +1124,11 @@ void GameUI_WritePointedObjectStatusString() {
                                 pIndoor->pFaceExtras[pFace->uFaceExtraID]
                                     .uEventID;
                             if (eventId != 0) {
-                                newString = GetEventHintString(
-                                    pIndoor->pFaceExtras[pFace->uFaceExtraID]
-                                        .uEventID);
+                                newString = GetEventHintString(pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID);
                             }
                         }
                     }
-                    if (newString) {
+                    if (!newString.empty()) {
                         GameUI_StatusBar_Set(newString);
                         if (mouse->uPointingObjectID == 0 &&
                             uLastPointedObjectID != 0) {
