@@ -209,33 +209,27 @@ double OutdoorLocation::GetFogDensityByTime() {
 
 //----- (00488EB1) --------------------------------------------------------
 int OutdoorLocation::GetSomeOtherTileInfo(int sX, int sY) {
-    // OutdoorLocation *v3; // esi@1
-    unsigned int v4;  // edi@1
-    unsigned int v5;  // eax@1
-                      //  int result; // eax@5
-
     /*  v3 = this;
-      v4 = WorldPosToGridCellY(sY);
-      v5 = WorldPosToGridCellX(sX);
-      if ( (v5 & 0x80000000u) != 0 || (signed int)v5 > 127 || (v4 & 0x80000000u)
-      != 0 || (signed int)v4 > 127 ) result = 0; else result =
-      ActuallyGetSomeOtherTileInfo(v5, v4); return result;*/
-    v4 = WorldPosToGridCellY(sY);
-    v5 = WorldPosToGridCellX(sX);
-    if (v5 < 0 || v5 > 127 || v4 < 0 || v4 > 127) return 0;
-    return ActuallyGetSomeOtherTileInfo(v5, v4);
+      gridY = WorldPosToGridCellY(sY);
+      gridX = WorldPosToGridCellX(sX);
+      if ( (gridX & 0x80000000u) != 0 || (signed int)gridX > 127 || (gridY & 0x80000000u)
+      != 0 || (signed int)gridY > 127 ) result = 0; else result =
+      DoGetSomeOtherTileInfo(gridX, gridY); return result;*/
+    int gridY = WorldPosToGridCellY(sY);
+    int gridX = WorldPosToGridCellX(sX);
+    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
+        return 0;
+    return DoGetSomeOtherTileInfo(gridX, gridY);
 }
 
 //----- (00488EEF) --------------------------------------------------------
-TileDesc *OutdoorLocation::GetTile(signed int sX, signed int sY) {
-    signed int v4;  // edi@1
-    signed int v5;  // eax@1
+TileDesc *OutdoorLocation::GetTile(int sX, int sY) {
+    int gridY = WorldPosToGridCellY(sY);
+    int gridX = WorldPosToGridCellX(sX);
+    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
+        return nullptr;
 
-    v4 = WorldPosToGridCellY(sY);
-    v5 = WorldPosToGridCellX(sX);
-    if (v5 < 0 || v5 > 127 || v4 < 0 || v4 > 127) return nullptr;
-
-    return this->DoGetTile(v5, v4);
+    return this->DoGetTile(gridX, gridY);
 }
 
 //----- (00488F2E) --------------------------------------------------------
@@ -436,8 +430,7 @@ void OutdoorLocation::MessWithLUN() {
     this->uSpriteID_LUN_SUN = pSpriteFrameTable->FastFindSprite("LUN-SUN");
     this->field_D14 = -131072;
     for (uint i = 0; i < 8; i++)
-        pSpriteFrameTable->InitializeSprite(
-            this->pSpriteIDs_LUN[i]);  // v2 += 2;
+        pSpriteFrameTable->InitializeSprite(this->pSpriteIDs_LUN[i]);  // v2 += 2;
     pSpriteFrameTable->InitializeSprite(this->uSpriteID_LUN_SUN);
 }
 
@@ -1252,25 +1245,21 @@ TileDesc *OutdoorLocation::DoGetTile(int sX, int sY) {
 }
 
 //----- (0047ED83) --------------------------------------------------------
-int OutdoorLocation::_47ED83(signed int a2, signed int a3) {
-    if (a2 < 0 || a2 > 127 || a3 < 0 || a3 > 127)
+int OutdoorLocation::_47ED83(signed int gridX, signed int gridY) {
+    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 
-    return *(&this->pTerrain.pTilemap[128 * a3] + a2);
+    return this->pTerrain.pTilemap[128 * gridY + gridX];
 }
 
 //----- (0047EDB3) --------------------------------------------------------
-int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
-                                                  signed int sY) {
-    int v3;  // esi@5
-
-    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
+int OutdoorLocation::DoGetSomeOtherTileInfo(int gridX, int gridY) {
+    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 
-    v3 = this->pTerrain.pTilemap[sY * 128 + sX];
+    int v3 = this->pTerrain.pTilemap[gridY * 128 + gridX];
     if (v3 >= 90)
-        v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID -
-             36 * ((v3 - 90) / 36) - 90;
+        v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID - 36 * ((v3 - 90) / 36) - 90;
     return pTileTable->pTiles[v3].uAttributes;
 }
 
@@ -1770,8 +1759,8 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3_int_ *out) {
 
     int grid_pos_x1 = GridCellToWorldPosX(grid_x);
     int grid_pos_x2 = GridCellToWorldPosX(grid_x + 1);
-    int grid_pos_y1 = GridCellToWorldPosZ(grid_y);
-    int grid_pos_y2 = GridCellToWorldPosZ(grid_y + 1);
+    int grid_pos_y1 = GridCellToWorldPosY(grid_y);
+    int grid_pos_y2 = GridCellToWorldPosY(grid_y + 1);
 
     int x1y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y);
     int x2y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y);
@@ -2630,9 +2619,9 @@ void ODM_ProcessPartyActions() {
     int pMap_Y = WorldPosToGridCellY(pParty->vPosition.y) - 1;
     unsigned int v114_a = WorldPosToGridCellX(pX);
     v66 = WorldPosToGridCellY(pY) - 1;
-    unsigned int v122_a = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, pMap_Y) / 2) & 1;
-    v122 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(v114_a, pMap_Y) / 2) & 1;
-    v69 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, v66) / 2) & 1;
+    unsigned int v122_a = (~(unsigned int) pOutdoor->DoGetSomeOtherTileInfo(pMap_X, pMap_Y) / 2) & 1;
+    v122 = (~(unsigned int) pOutdoor->DoGetSomeOtherTileInfo(v114_a, pMap_Y) / 2) & 1;
+    v69 = (~(unsigned int) pOutdoor->DoGetSomeOtherTileInfo(pMap_X, v66) / 2) & 1;
 
     // -(обновление координат группы)---------------------------------------
     v68 = 0;
@@ -3205,15 +3194,15 @@ void UpdateActors_ODM() {
         // WATER TILE CHECKING
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
-            unsigned int Tile_1_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
-                WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x),
-                WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y) - 1) >>
+            unsigned int Tile_1_Land = ((unsigned int)~pOutdoor->DoGetSomeOtherTileInfo(
+                    WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x),
+                    WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y) - 1) >>
                 1) & 1;
-            unsigned int Tile_2_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
-                WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x +
-                    pActors[Actor_ITR].vVelocity.x),
-                WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y +
-                    pActors[Actor_ITR].vVelocity.y) - 1) >>
+            unsigned int Tile_2_Land = ((unsigned int)~pOutdoor->DoGetSomeOtherTileInfo(
+                    WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x +
+                                        pActors[Actor_ITR].vVelocity.x),
+                    WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y +
+                                        pActors[Actor_ITR].vVelocity.y) - 1) >>
                 1) & 1;
 
             if (!uIsFlying && Tile_1_Land && !Tile_2_Land) {
@@ -3234,10 +3223,10 @@ void UpdateActors_ODM() {
                     // scan surrounding cells for land
                     for (int j = Grid_Z - 1; j <= Grid_Z + 1; j++) {
                         Tile_Test_Land = ((unsigned int)~pOutdoor->
-                            ActuallyGetSomeOtherTileInfo(i, j - 1) >> 1) & 1;
+                                DoGetSomeOtherTileInfo(i, j - 1) >> 1) & 1;
                         if (Tile_Test_Land) {  // found land
                             int target_x = GridCellToWorldPosX(i);
-                            int target_y = GridCellToWorldPosZ(j - 1);
+                            int target_y = GridCellToWorldPosY(j - 1);
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
                                 pActors[Actor_ITR].uYawAngle = TrigLUT->Atan2(target_x -
                                     pActors[Actor_ITR].vPosition.x, target_y -
@@ -3350,7 +3339,7 @@ unsigned int GetLevelFogColor() {
     return 0;
 }
 
-int sub_47C3D7_get_fog_specular(int a1, int a2, float a3) {
+int sub_47C3D7_get_fog_specular(int __unused, int a2, float a3) {
     int v7;
 
     int v3 = pWeather->bNight;
@@ -3408,23 +3397,21 @@ int sub_47C3D7_get_fog_specular(int a1, int a2, float a3) {
 
 //----- (0047F44B) --------------------------------------------------------
 unsigned int WorldPosToGridCellX(int sWorldPosX) {
-    return (sWorldPosX >> 9) +
-           64;  // sar is in original exe, resulting -880 / 512 = -1
-                //                               and -880 sar 9 = -2
+    return (sWorldPosX >> 9) + 64;  // sar is in original exe, resulting -880 / 512 = -1
+                                    //                               and -880 sar 9 = -2
 }
 
 //----- (0047F458) --------------------------------------------------------
 unsigned int WorldPosToGridCellY(int sWorldPosY) {
-    return 64 - (sWorldPosY >>
-                 9);  // sar is in original exe, resulting -880 / 512 = -1
-                      //                               and -880 sar 9 = -2
+    return 64 - (sWorldPosY >> 9);  // sar is in original exe, resulting -880 / 512 = -1
+                                    //                               and -880 sar 9 = -2
 }
 
 //----- (0047F469) --------------------------------------------------------
 int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 
 //----- (0047F476) --------------------------------------------------------
-int GridCellToWorldPosZ(int a1) { return (64 - a1) << 9; }
+int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
 
 
 //----- (004823F4) --------------------------------------------------------
@@ -3452,13 +3439,13 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
     // GridCellToWorldPosX(grid_x + 1);
     // dword_76D574_terrain_cell_world_pos_around_party_x =
     // GridCellToWorldPosX(grid_x);
-    int party_grid_z1 = GridCellToWorldPosZ(grid_z);
+    int party_grid_z1 = GridCellToWorldPosY(grid_z);
     // dword_76D55C_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(grid_z);
+    // GridCellToWorldPosY(grid_z);
     // dword_76D560_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(grid_z + 1);
+    // GridCellToWorldPosY(grid_z + 1);
     // dword_76D564_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(grid_z + 1);
+    // GridCellToWorldPosY(grid_z + 1);
     int party_x1z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z);
     int party_x2z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z);
     int party_x2z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
@@ -3496,7 +3483,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
 }
 
 //----- (0048257A) --------------------------------------------------------
-int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAboveWater) {
+int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAboveWater) {
     //  int result; // eax@9
     int v8;          // ebx@11
     int v9;          // eax@11
@@ -3505,19 +3492,19 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     signed int v14;  // [sp+14h] [bp-4h]@3
     int v15;         // [sp+24h] [bp+Ch]@11
 
-    unsigned int grid_x = WorldPosToGridCellX(a1);
-    unsigned int grid_z = WorldPosToGridCellY(a2) - 1;
+    unsigned int grid_x = WorldPosToGridCellX(x);
+    unsigned int grid_z = WorldPosToGridCellY(y) - 1;
 
     int grid_x1 = GridCellToWorldPosX(grid_x),
         grid_x2 = GridCellToWorldPosX(grid_x + 1);
-    int grid_z1 = GridCellToWorldPosZ(grid_z),
-        grid_z2 = GridCellToWorldPosZ(grid_z + 1);
+    int grid_z1 = GridCellToWorldPosY(grid_z),
+        grid_z2 = GridCellToWorldPosY(grid_z + 1);
 
     int y_x1z1 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z),
         y_x2z1 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z),
         y_x2z2 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1),
         y_x1z2 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z + 1);
-    // v4 = WorldPosToGridCellX(a1);
+    // v4 = WorldPosToGridCellX(x);
     // v5 = WorldPosToGridCellY(v12) - 1;
     // dword_76D538_terrain_cell_world_pos_around_party_x =
     // GridCellToWorldPosX(v4);
@@ -3528,13 +3515,13 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     // dword_76D544_terrain_cell_world_pos_around_party_x =
     // GridCellToWorldPosX(v4);
     // dword_76D528_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(v5);
+    // GridCellToWorldPosY(v5);
     // dword_76D52C_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(v5);
+    // GridCellToWorldPosY(v5);
     // dword_76D530_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(v5 + 1);
+    // GridCellToWorldPosY(v5 + 1);
     // dword_76D534_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(v5 + 1);
+    // GridCellToWorldPosY(v5 + 1);
     // dword_76D518_terrain_cell_world_pos_around_party_y =
     // pOutdoor->DoGetHeightOnTerrain(v4, v5);
     // dword_76D51C_terrain_cell_world_pos_around_party_y =
@@ -3544,23 +3531,23 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     // dword_76D524_terrain_cell_world_pos_around_party_y =
     // pOutdoor->DoGetHeightOnTerrain(v4, v5 + 1);
     *pIsOnWater = false;
-    if (pOutdoor->ActuallyGetSomeOtherTileInfo(grid_x, grid_z) & 2)
+    if (pOutdoor->DoGetSomeOtherTileInfo(grid_x, grid_z) & 2)
         *pIsOnWater = true;
     v14 = 0;
     if (!bFloatAboveWater && *pIsOnWater) v14 = -60;
     if (y_x1z1 != y_x2z1 || y_x2z1 != y_x2z2 || y_x2z2 != y_x1z2) {
-        if (abs(grid_z1 - a2) >= abs(a1 - grid_x1)) {
+        if (abs(grid_z1 - y) >= abs(x - grid_x1)) {
             v8 = y_x1z2;
             v9 = y_x2z2;
             v10 = y_x1z1;
-            v15 = a1 - grid_x1;
-            v13 = a2 - grid_z2;
+            v15 = x - grid_x1;
+            v13 = y - grid_z2;
         } else {
             v8 = y_x2z1;
             v9 = y_x1z1;
             v10 = y_x2z2;
-            v15 = grid_x2 - a1;
-            v13 = grid_z1 - a2;
+            v15 = grid_x2 - x;
+            v13 = grid_z1 - y;
         }
         return v14 + v8 + fixpoint_mul(v13, (v10 - v8) * 128) +
                fixpoint_mul(v15, (v9 - v8) * 128);
