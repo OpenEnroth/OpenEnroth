@@ -1262,7 +1262,7 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
         });
     } else {
         do_flatten([&](int index) -> const auto &{
-            return pOutdoor->pBModels[model_idx].pVertices.pVertices[this->pVertexIDs[index]];
+            return pOutdoor->pBModels[model_idx].pVertices[this->pVertexIDs[index]];
         });
     }
 }
@@ -3732,7 +3732,7 @@ int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t fa
 }
 
 //----- (0049B04D) --------------------------------------------------------
-void stru154::GetFacePlaneAndClassify(ODMFace *a2, BSPVertexBuffer *a3) {
+void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3_int_> &a3) {
     Vec3_float_ OutPlaneNorm;
     float OutPlaneDist;
 
@@ -3771,7 +3771,7 @@ void stru154::ClassifyPolygon(Vec3_float_ *pNormal, float dist) {
 }
 
 //----- (0049B13D) --------------------------------------------------------
-void stru154::GetFacePlane(ODMFace *pFace, BSPVertexBuffer *pVertices,
+void stru154::GetFacePlane(ODMFace *pFace, const std::vector<Vec3_int_> &pVertices,
                            Vec3_float_ *pOutNormal, float *pOutDist) {
     Vec3_float_ FirstPairVec;
     Vec3_float_ SecPairVec;
@@ -3779,32 +3779,15 @@ void stru154::GetFacePlane(ODMFace *pFace, BSPVertexBuffer *pVertices,
 
     if (pFace->uNumVertices >= 2) {
         for (int i = 0; i < pFace->uNumVertices - 2; i++) {
-            FirstPairVec.x = pVertices->pVertices[pFace->pVertexIDs[i + 1]].x -
-                   pVertices->pVertices[pFace->pVertexIDs[i]].x;
-            FirstPairVec.y = pVertices->pVertices[pFace->pVertexIDs[i + 1]].y -
-                   pVertices->pVertices[pFace->pVertexIDs[i]].y;
-            FirstPairVec.z = pVertices->pVertices[pFace->pVertexIDs[i + 1]].z -
-                   pVertices->pVertices[pFace->pVertexIDs[i]].z;
-
-            SecPairVec.x = pVertices->pVertices[pFace->pVertexIDs[i + 2]].x -
-                  pVertices->pVertices[pFace->pVertexIDs[i + 1]].x;
-            SecPairVec.y = pVertices->pVertices[pFace->pVertexIDs[i + 2]].y -
-                  pVertices->pVertices[pFace->pVertexIDs[i + 1]].y;
-            SecPairVec.z = pVertices->pVertices[pFace->pVertexIDs[i + 2]].z -
-                  pVertices->pVertices[pFace->pVertexIDs[i + 1]].z;
+            FirstPairVec = ToFloatVector(pVertices[pFace->pVertexIDs[i + 1]] - pVertices[pFace->pVertexIDs[i]]);
+            SecPairVec = ToFloatVector(pVertices[pFace->pVertexIDs[i + 2]] - pVertices[pFace->pVertexIDs[i + 1]]);
 
             CrossProd = Cross(FirstPairVec, SecPairVec);
 
             if (CrossProd.x != 0.0 || CrossProd.y != 0.0 || CrossProd.z != 0.0) {
                 CrossProd.Normalize();
-
-                pOutNormal->x = CrossProd.x;
-                pOutNormal->y = CrossProd.y;
-                pOutNormal->z = CrossProd.z;
-
-                *pOutDist = -(pVertices->pVertices[pFace->pVertexIDs[i]].x * CrossProd.x +
-                      pVertices->pVertices[pFace->pVertexIDs[i]].y * CrossProd.y +
-                      pVertices->pVertices[pFace->pVertexIDs[i]].z * CrossProd.z);
+                *pOutNormal = CrossProd;
+                *pOutDist = -Dot(ToFloatVector(pVertices[pFace->pVertexIDs[i]]), CrossProd);
                 return;
             }
         }

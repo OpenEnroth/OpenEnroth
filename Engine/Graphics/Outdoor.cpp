@@ -848,15 +848,9 @@ void OutdoorLocation::Release() {
     this->sky_texture_filename = "sky043";
     this->ground_tileset = "hm005";
 
-    while (!pBModels.empty()) {
-        pBModels.back().Release();
-        pBModels.pop_back();
-    }
-
+    pBModels.clear();
     pSpawnPoints.clear();
-
     pTerrain.Release();
-
     pFaceIDLIST.clear();
     pTerrainNormals.clear();
 
@@ -936,7 +930,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ************BModels************************//
-    stream.Skip(pBModels.Load(stream.Ptr()));
+    pBModels.Load(&stream);
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ******************Decorations**********************//
@@ -1718,7 +1712,7 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
 
             int floor_level;
             if (face.uPolygonType == POLYGON_Floor) {
-                floor_level = model.pVertices.pVertices[face.pVertexIDs[0]].z;
+                floor_level = model.pVertices[face.pVertexIDs[0]].z;
             } else {
                 floor_level = face.zCalc.Calculate(X, Y);
             }
@@ -2551,7 +2545,7 @@ void ODM_ProcessPartyActions() {
                 v119 = 0;
             if (pODMFace->uPolygonType == POLYGON_Floor) {
                 if (fall_speed < 0) fall_speed = 0;
-                party_new_Z = pModel->pVertices.pVertices[pODMFace->pVertexIDs[0]].z + 1;
+                party_new_Z = pModel->pVertices[pODMFace->pVertexIDs[0]].z + 1;
                 if (v2 * v2 + v128 * v128 < 400) {
                     v2 = 0;
                     *(float *)&v128 = 0.0;
@@ -2870,22 +2864,16 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                     for (uint v = 0; v < face.uNumVertices; v++) {
                         word_720DB0_xs[2 * v] =
                             face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices.pVertices[face.pVertexIDs[v]]
-                                .x;
+                            (short)model.pVertices[face.pVertexIDs[v]].x;
                         word_720CE0_ys[2 * v] =
                             face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices.pVertices[face.pVertexIDs[v]]
-                                .y;
+                            (short)model.pVertices[face.pVertexIDs[v]].y;
                         word_720DB0_xs[2 * v + 1] =
                             face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices
-                                .pVertices[face.pVertexIDs[v + 1]]
-                                .x;
+                            (short)model.pVertices[face.pVertexIDs[v + 1]].x;
                         word_720CE0_ys[2 * v + 1] =
                             face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices
-                                .pVertices[face.pVertexIDs[v + 1]]
-                                .y;
+                            (short)model.pVertices[face.pVertexIDs[v + 1]].y;
                     }
                     v27 = 2 * face.uNumVertices;
                     word_720DB0_xs[2 * face.uNumVertices] = word_720DB0_xs[0];
@@ -2920,7 +2908,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                         if (v39 >= 20) break;
                         if (face.uPolygonType == POLYGON_Ceiling)
                             v19 =
-                                model.pVertices.pVertices[face.pVertexIDs[0]].z;
+                                model.pVertices[face.pVertexIDs[0]].z;
                         else
                             v19 = face.zCalc.Calculate(Party_X, Party_Y);
                         v20 = v39++;
@@ -3239,9 +3227,7 @@ void UpdateActors_ODM() {
                             pActors[Actor_ITR].vVelocity.z = 0;
                             pActors[Actor_ITR].vPosition.z =
                                 (short)pOutdoor->pBModels[collision_state.pid >> 9]
-                                    .pVertices.pVertices[face->pVertexIDs[0]]
-                                    .z +
-                                1;
+                                    .pVertices[face->pVertexIDs[0]].z + 1;
                             if (pActors[Actor_ITR].vVelocity.x *
                                         pActors[Actor_ITR].vVelocity.x +
                                     pActors[Actor_ITR].vVelocity.y *

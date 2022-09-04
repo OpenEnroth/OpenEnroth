@@ -410,7 +410,7 @@ LABEL_13:
                 face = &bmodel->pFaces[PID_ID(collision_state.pid) & 0x3F];
                 if (face->uPolygonType == POLYGON_Floor) {
                     pSpriteObjects[uLayingItemID].vPosition.z =
-                        bmodel->pVertices.pVertices[face->pVertexIDs[0]].z + 1;
+                        bmodel->pVertices[face->pVertexIDs[0]].z + 1;
                     if (pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
                             pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y >= 400) {
                         if (face->uAttributes & FACE_TriggerByObject)

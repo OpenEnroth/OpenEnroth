@@ -3654,11 +3654,11 @@ void Render::DrawBuildingsD3D() {
             for (uint vertex_id = 1; vertex_id <= face.uNumVertices;
                  vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+                    model.pVertices[face.pVertexIDs[vertex_id - 1]].x;
                 array_73D150[vertex_id - 1].vWorldPosition.y =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+                    model.pVertices[face.pVertexIDs[vertex_id - 1]].y;
                 array_73D150[vertex_id - 1].vWorldPosition.z =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+                    model.pVertices[face.pVertexIDs[vertex_id - 1]].z;
                 array_73D150[vertex_id - 1].u =
                     (poly->sTextureDeltaU +
                      (__int16)face.pTextureUIDs[vertex_id - 1]) *
@@ -3669,7 +3669,7 @@ void Render::DrawBuildingsD3D() {
                     (1.0 / (double)poly->texture->GetHeight());
             }
             for (uint i = 1; i <= face.uNumVertices; i++) {
-                if (model.pVertices.pVertices[face.pVertexIDs[0]].z ==
+                if (model.pVertices[face.pVertexIDs[0]].z ==
                     array_73D150[i - 1].vWorldPosition.z)
                     ++v53;
                 pCamera3D->ViewTransform(&array_73D150[i - 1], 1);
@@ -3720,7 +3720,7 @@ void Render::DrawBuildingsD3D() {
                 if (Lights.uNumLightsApplied > 0 || decal_builder->uNumSplatsThisFace > 0) {
                     v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
 
-                   static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
+                   static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, model.pVertices);
                     if (decal_builder->uNumSplatsThisFace > 0) {
                         decal_builder->BuildAndApplyDecals(
                             31 - poly->dimming_level, 2,

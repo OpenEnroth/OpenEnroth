@@ -4122,10 +4122,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                 if (!model.pFaces.empty()) {
                     for (ODMFace &face : model.pFaces) {
                         if (!face.Invisible()) {
-                            array_73D150[0].vWorldPosition.x = model.pVertices.pVertices[face.pVertexIDs[0]].x;
-                            array_73D150[0].vWorldPosition.y = model.pVertices.pVertices[face.pVertexIDs[0]].y;
-                            array_73D150[0].vWorldPosition.z = model.pVertices.pVertices[face.pVertexIDs[0]].z;
-
+                            array_73D150[0].vWorldPosition = ToFloatVector(model.pVertices[face.pVertexIDs[0]]);
 
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                                 int texunit = face.texunit;
@@ -4154,9 +4151,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
                                     GLshaderverts* thisvert = &outbuildshaderstore[texunit][numoutbuildverts[texunit]];
 
                                     // copy first
-                                    thisvert->x = model.pVertices.pVertices[face.pVertexIDs[0]].x;
-                                    thisvert->y = model.pVertices.pVertices[face.pVertexIDs[0]].y;
-                                    thisvert->z = model.pVertices.pVertices[face.pVertexIDs[0]].z;
+                                    thisvert->x = model.pVertices[face.pVertexIDs[0]].x;
+                                    thisvert->y = model.pVertices[face.pVertexIDs[0]].y;
+                                    thisvert->z = model.pVertices[face.pVertexIDs[0]].z;
                                     thisvert->u = face.pTextureUIDs[0] + face.sTextureDeltaU;
                                     thisvert->v = face.pTextureVIDs[0] + face.sTextureDeltaV;
                                     thisvert->texunit = texunit;
@@ -4169,9 +4166,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
                                     // copy other two (z+1)(z+2)
                                     for (uint i = 1; i < 3; ++i) {
-                                        thisvert->x = model.pVertices.pVertices[face.pVertexIDs[z + i]].x;
-                                        thisvert->y = model.pVertices.pVertices[face.pVertexIDs[z + i]].y;
-                                        thisvert->z = model.pVertices.pVertices[face.pVertexIDs[z + i]].z;
+                                        thisvert->x = model.pVertices[face.pVertexIDs[z + i]].x;
+                                        thisvert->y = model.pVertices[face.pVertexIDs[z + i]].y;
+                                        thisvert->z = model.pVertices[face.pVertexIDs[z + i]].z;
                                         thisvert->u = face.pTextureUIDs[z + i] + face.sTextureDeltaU;
                                         thisvert->v = face.pTextureVIDs[z + i] + face.sTextureDeltaV;
                                         thisvert->texunit = texunit;
@@ -4407,11 +4404,11 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
             for (uint vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].x;
+                    model.pVertices[face.pVertexIDs[vertex_id - 1]].x;
                 array_73D150[vertex_id - 1].vWorldPosition.y =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].y;
+                    model.pVertices[face.pVertexIDs[vertex_id - 1]].y;
                 array_73D150[vertex_id - 1].vWorldPosition.z =
-                    model.pVertices.pVertices[face.pVertexIDs[vertex_id - 1]].z;
+                    model.pVertices[face.pVertexIDs[vertex_id - 1]].z;
             }
 
 
@@ -4447,7 +4444,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                 if (decal_builder->uNumSplatsThisFace > 0) {
                     //v31 = nearclip ? 3 : farclip != 0 ? 5 : 0;
 
-                    static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, &model.pVertices);
+                    static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, model.pVertices);
                     if (decal_builder->uNumSplatsThisFace > 0) {
                         decal_builder->BuildAndApplyDecals(
                             31 - poly->dimming_level, 2,
