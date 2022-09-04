@@ -180,7 +180,7 @@ bool ODMFace::Deserialize(ODMFace_MM7 *mm7) {
     this->pFacePlane.dist = this->pFacePlaneOLD.dist / 65536.0;
 
     this->zCalc.Init(this->pFacePlaneOLD);
-    this->uAttributes = FaceAttributes::FromUnderlying(mm7->uAttributes);
+    this->uAttributes = FaceAttributes(mm7->uAttributes);
     this->pVertexIDs = mm7->pVertexIDs;
     this->pTextureUIDs = mm7->pTextureUIDs;
     this->pTextureVIDs = mm7->pTextureVIDs;

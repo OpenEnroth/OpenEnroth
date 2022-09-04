@@ -76,7 +76,7 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     this->pFacePlane = data->pFacePlane;
     this->pFacePlane_old = data->pFacePlane_old;
     this->zCalc.Init(this->pFacePlane_old);
-    this->uAttributes = FaceAttributes::FromUnderlying(data->uAttributes);
+    this->uAttributes = FaceAttributes(data->uAttributes);
     this->pVertexIDs = nullptr;
     this->pXInterceptDisplacements = nullptr;
     this->pYInterceptDisplacements = nullptr;

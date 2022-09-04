@@ -30,46 +30,44 @@ class Flags {
     using enumeration_type = Enum;
     using underlying_type = std::underlying_type_t<Enum>;
 
-    constexpr Flags(std::nullptr_t = 0)
-        : value_(0)
+    constexpr Flags(std::nullptr_t = 0) :
+        value_(0)
     {}
 
-    constexpr Flags(enumeration_type value)
-        : value_(static_cast<underlying_type>(value))
+    constexpr Flags(enumeration_type value) :
+        value_(static_cast<underlying_type>(value))
     {}
 
-    constexpr underlying_type ToUnderlying() const {
+    explicit constexpr Flags(underlying_type value) :
+        value_(value)
+    {}
+
+    explicit operator underlying_type() const {
         return value_;
     }
 
-    constexpr static Flags FromUnderlying(underlying_type value) {
-        Flags result;
-        result.value_ = value;
-        return result;
-    }
-
     constexpr friend Flags operator|(Flags l, Flags r) {
-        return FromUnderlying(l.value_ | r.value_);
+        return Flags(l.value_ | r.value_);
     }
 
     constexpr friend Flags operator|(enumeration_type l, Flags r) {
-        return FromUnderlying(static_cast<underlying_type>(l) | r.value_);
+        return Flags(static_cast<underlying_type>(l) | r.value_);
     }
 
     constexpr friend Flags operator|(Flags l, enumeration_type r) {
-        return FromUnderlying(l.value_ | static_cast<underlying_type>(r));
+        return Flags(l.value_ | static_cast<underlying_type>(r));
     }
 
     constexpr friend Flags operator&(Flags l, Flags r) {
-        return FromUnderlying(l.value_ & r.value_);
+        return Flags(l.value_ & r.value_);
     }
 
     constexpr friend Flags operator&(enumeration_type l, Flags r) {
-        return FromUnderlying(static_cast<underlying_type>(l) & r.value_);
+        return Flags(static_cast<underlying_type>(l) & r.value_);
     }
 
     constexpr friend Flags operator&(Flags l, enumeration_type r) {
-        return FromUnderlying(l.value_ & static_cast<underlying_type>(r));
+        return Flags(l.value_ & static_cast<underlying_type>(r));
     }
 
     constexpr friend bool operator==(Flags l, Flags r) {
@@ -117,7 +115,7 @@ class Flags {
     }
 
     constexpr Flags operator~() const {
-        return FromUnderlying(~value_);
+        return Flags(~value_);
     }
 
     constexpr bool operator!() const {
