@@ -237,7 +237,7 @@ static void CollideWithDecoration(int id) {
     if (decor->uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
 
-    DecorationDesc *desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
+    const DecorationDesc *desc = pDecorationList->GetDecoration(decor->uDecorationDescID);
     if (desc->CanMoveThrough())
         return;
 

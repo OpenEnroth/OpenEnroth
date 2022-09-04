@@ -1384,7 +1384,7 @@ bool OutdoorLocation::PrepareDecorations() {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
-        DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
+        const DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
         if (decoration->uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9) {
             // pSoundList->LoadSound(decoration.uSoundID, 0);
             _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;

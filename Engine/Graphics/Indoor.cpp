@@ -2018,7 +2018,7 @@ void PrepareToLoadBLV(bool bLoading) {
     for (uint i = 0; i < pLevelDecorations.size(); ++i) {
         pDecorationList->InitializeDecorationSprite(pLevelDecorations[i].uDecorationDescID);
 
-        DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
 
         if (decoration->uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9) {
             // pSoundList->LoadSound(decoration->uSoundID, 0);
@@ -2464,7 +2464,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     if (pLevelDecorations[uDecorationID].uFlags & LEVEL_DECORATION_INVISIBLE)
         return;
 
-    DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[uDecorationID].uDecorationDescID);
+    const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[uDecorationID].uDecorationDescID);
 
     if (decoration->uFlags & DECORATION_DESC_EMITS_FIRE) {
         memset(&particle, 0, sizeof(Particle_sw));  // fire,  like at the Pit's tavern

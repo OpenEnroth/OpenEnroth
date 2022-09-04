@@ -83,4 +83,4 @@ struct SpriteFrameTable {
 
 extern struct SpriteFrameTable *pSpriteFrameTable;
 
-SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t, int month);
+SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month);
