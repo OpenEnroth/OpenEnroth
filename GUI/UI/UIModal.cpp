@@ -6,7 +6,7 @@
 
 #include "Platform/OSWindow.h"
 
-enum CURRENT_SCREEN modal_window_prev_screen_type;
+CURRENT_SCREEN modal_window_prev_screen_type;
 
 GUIWindow_Modal::GUIWindow_Modal(const char *message, UIMessageType on_release_event)
     : GUIWindow(WINDOW_ModalWindow, 0, 0, window->GetWidth(), window->GetHeight(),

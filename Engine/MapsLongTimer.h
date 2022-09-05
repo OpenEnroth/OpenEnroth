@@ -1,8 +1,11 @@
 #pragma once
+
+#include <array>
+
 #include "Engine/Time.h"
 
 /*  169 */
-#pragma pack(push, 1)
+// Originally packed struct
 struct MapsLongTimer {
     GameTime NextStartTime {};  // timer will either fire event at this time (type
                              // 2, field_C == 0)
@@ -16,8 +19,7 @@ struct MapsLongTimer {
     int16_t HoursInterval = 0;
     int16_t MinutesInterval = 0;
     int16_t SecondsInterval = 0;
-    int16_t timer_evt_type = 0;
+    EventType timer_evt_type = EVENT_Invalid; // Originally int16_t
     int16_t field_1E = 0;
 };
-#pragma pack(pop)
-extern MapsLongTimer MapsLongTimersList[100];  // 5B5928
+extern std::array<MapsLongTimer, 100> MapsLongTimersList;  // 5B5928

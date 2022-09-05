@@ -5,45 +5,59 @@
 #include <string>
 
 #include "Engine/VectorTypes.h"
+#include "src/tools/Flags.h"
 
-#define FACE_IsPortal           0x00000001
-#define FACE_IsSecret           0x00000002
-#define FACE_FlowDown           0x00000004
-#define FACE_TexAlignDown       0x00000008
-#define FACE_IsFluid            0x00000010
-#define FACE_FlowUp             0x00000020
-#define FACE_FlowLeft           0x00000040
-#define FACE_SeenByParty        0x00000080
-#define FACE_XY_PLANE           0x00000100
-#define FACE_XZ_PLANE           0x00000200
-#define FACE_YZ_PLANE           0x00000400
-#define FACE_FlowRight          0x00000800
-#define FACE_TexAlignLeft       0x00001000
-#define FACE_IsInvisible        0x00002000
-#define FACE_TEXTURE_FRAME      0x00004000  // Texture ID is a frameset from TextureFrameTable, otherwise BitmapID
-#define FACE_TexAlignRight      0x00008000
-#define FACE_OUTLINED           0x00010000  // outline face debug
-#define FACE_TexAlignBottom     0x00020000
-#define FACE_TexMoveByDoor      0x00040000
-#define FACE_UNKOWN_10          0x00080000
-#define FACE_HAS_EVENT          0x00100000
-#define FACE_INDOOR_CARPET      0x00200000
-#define FACE_INDOOR_SKY         0x00400000
-#define FACE_FlipNormalU        0x00800000
-#define FACE_FlipNormalV        0x01000000
-#define FACE_CLICKABLE          0x02000000  // Event can be triggered by clicking on the facet.
-#define FACE_PRESSURE_PLATE     0x04000000  // Event can be triggered by stepping on the facet.
-#define FACE_INDICATE           0x06000000  // face has status bar string on hover
-#define FACE_TriggerByMonster   0x08000000
-#define FACE_TriggerByObject    0x10000000
-#define FACE_ETHEREAL           0x20000000  // Untouchable. You can pass through it.
-#define FACE_IsLava             0x40000000
-#define FACE_IsPicked           0x80000000  // mouse is hovering
+enum class FaceAttribute : uint32_t {
+    FACE_IsPortal          = 0x00000001,
+    FACE_IsSecret          = 0x00000002,
+    FACE_FlowDown          = 0x00000004,
+    FACE_TexAlignDown      = 0x00000008,
+    FACE_IsFluid           = 0x00000010,
+    FACE_FlowUp            = 0x00000020,
+    FACE_FlowLeft          = 0x00000040,
+    FACE_SeenByParty       = 0x00000080,
+    FACE_XY_PLANE          = 0x00000100,
+    FACE_XZ_PLANE          = 0x00000200,
+    FACE_YZ_PLANE          = 0x00000400,
+    FACE_FlowRight         = 0x00000800,
+    FACE_TexAlignLeft      = 0x00001000,
+    FACE_IsInvisible       = 0x00002000,
+    FACE_TEXTURE_FRAME     = 0x00004000,  // Texture ID is a frameset from TextureFrameTable, otherwise BitmapID
+    FACE_TexAlignRight     = 0x00008000,
+    FACE_OUTLINED          = 0x00010000,  // outline face debug
+    FACE_TexAlignBottom    = 0x00020000,
+    FACE_TexMoveByDoor     = 0x00040000,
+    FACE_UNKOWN_10         = 0x00080000,  // MMExt: TriggerByTouch, doesn't work anymore
+    FACE_HAS_EVENT         = 0x00100000,  // MMExt: IsEventJustHint, [MM7+]
+    FACE_INDOOR_CARPET     = 0x00200000,  // MMExt: AlternativeSound
+    FACE_INDOOR_SKY        = 0x00400000,  // MMExt: outdoor in software mode: horizontal flow
+    FACE_FlipNormalU       = 0x00800000,
+    FACE_FlipNormalV       = 0x01000000,
+    FACE_CLICKABLE         = 0x02000000,  // Event can be triggered by clicking on the facet.
+    FACE_PRESSURE_PLATE    = 0x04000000,  // Event can be triggered by stepping on the facet.
+    FACE_INDICATE          = 0x06000000,  // face has status bar string on hover
+    FACE_TriggerByMonster  = 0x08000000,
+    FACE_TriggerByObject   = 0x10000000,
+    FACE_ETHEREAL          = 0x20000000,  // Untouchable. You can pass through it.
+                                          // MMExt: great for vertical facets of stairs.
+                                          // [MM7+] Shouldn't be used for sloped floor, like it's used in MM6.
+    FACE_IsLava            = 0x40000000,
+    FACE_IsPicked          = 0x80000000,  // mouse is hovering
+                                          // TODO: MMExt: HasData, are we talking about BLVFaceExtra?
+};
+using enum FaceAttribute;
+DECLARE_FLAGS(FaceAttributes, FaceAttribute)
+DECLARE_OPERATORS_FOR_FLAGS(FaceAttributes)
 
 // door attr
-#define DOOR_TRIGGERED          0x00000001
-#define DOOR_SETTING_UP         0x00000002
-#define DOOR_NOSOUND            0x00000004
+enum class DoorAttribute : uint32_t {
+    DOOR_TRIGGERED         = 0x00000001,
+    DOOR_SETTING_UP        = 0x00000002,
+    DOOR_NOSOUND           = 0x00000004,
+};
+using enum DoorAttribute;
+DECLARE_FLAGS(DoorAttributes, DoorAttribute)
+DECLARE_OPERATORS_FOR_FLAGS(DoorAttributes)
 
 #pragma pack(push, 1)
 struct BSPNode {
@@ -101,21 +115,21 @@ struct ODMFace {
     bool HasEventHint();
 
     inline bool Invisible() const {
-        return (uAttributes & FACE_IsInvisible) != 0;
+        return uAttributes & FACE_IsInvisible;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return (uAttributes & FACE_IsPortal) != 0; }
-    inline bool Fluid() const { return (uAttributes & FACE_IsFluid) != 0; }
+    inline bool Portal() const { return uAttributes & FACE_IsPortal; }
+    inline bool Fluid() const { return uAttributes & FACE_IsFluid; }
     inline bool Indoor_sky() const {
-        return (uAttributes & FACE_INDOOR_SKY) != 0;
+        return uAttributes & FACE_INDOOR_SKY;
     }
     inline bool Clickable() const {
-        return (uAttributes & FACE_CLICKABLE) != 0;
+        return uAttributes & FACE_CLICKABLE;
     }
     inline bool Pressure_Plate() const {
-        return (uAttributes & FACE_PRESSURE_PLATE) != 0;
+        return uAttributes & FACE_PRESSURE_PLATE;
     }
-    inline bool Ethereal() const { return (uAttributes & FACE_ETHEREAL) != 0; }
+    inline bool Ethereal() const { return uAttributes & FACE_ETHEREAL; }
 
     inline bool IsTextureFrameTable() {
         return this->uAttributes & FACE_TEXTURE_FRAME;
@@ -135,13 +149,13 @@ struct ODMFace {
     /**
      * @see BLVFace::Contains
      */
-    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, int override_plane = 0) const;
+    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
     unsigned int index = 0;
     struct Plane_float_ pFacePlane;
     struct Plane_int_ pFacePlaneOLD;
     PlaneZCalc_int64_ zCalc;
-    uint32_t uAttributes = 0;
+    FaceAttributes uAttributes = 0;
     std::array<uint16_t, 20> pVertexIDs = {{}};
     std::array<int16_t, 20> pTextureUIDs = {{}};
     std::array<int16_t, 20> pTextureVIDs = {{}};

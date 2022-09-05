@@ -4,7 +4,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/LOD.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Party.h"
@@ -316,21 +315,21 @@ void Party_Image_MM7::Serialize(Party *party) {
 
     for (unsigned int i = 0; i < 10; ++i)
         this->PartyTimes.bountyHunting_next_generation_time[i] =
-            party->PartyTimes.bountyHunting_next_generation_time[i];
+            party->PartyTimes.bountyHunting_next_generation_time[i].value;
     for (unsigned int i = 0; i < 85; ++i)
         this->PartyTimes.Shops_next_generation_time[i] =
-            party->PartyTimes.Shops_next_generation_time[i];
+            party->PartyTimes.Shops_next_generation_time[i].value;
     for (unsigned int i = 0; i < 53; ++i)
         this->PartyTimes._shop_ban_times[i] =
-            party->PartyTimes._shop_ban_times[i];
+            party->PartyTimes._shop_ban_times[i].value;
     for (unsigned int i = 0; i < 10; ++i)
         this->PartyTimes.CounterEventValues[i] =
-            party->PartyTimes.CounterEventValues[i];
+            party->PartyTimes.CounterEventValues[i].value;
     for (unsigned int i = 0; i < 29; ++i)
         this->PartyTimes.HistoryEventTimes[i] =
-            party->PartyTimes.HistoryEventTimes[i];
+            party->PartyTimes.HistoryEventTimes[i].value;
     for (unsigned int i = 0; i < 20; ++i)
-        this->PartyTimes._s_times[i] = party->PartyTimes._s_times[i];
+        this->PartyTimes._s_times[i] = party->PartyTimes._s_times[i].value;
 
     this->vPosition.x = party->vPosition.x;
     this->vPosition.y = party->vPosition.y;
@@ -644,7 +643,7 @@ void Player_Image_MM7::Serialize(Player *player) {
     memset(this, 0, sizeof(*this));
 
     for (unsigned int i = 0; i < 20; ++i)
-        this->pConditions[i] = player->conditions_times[i].value;
+        this->pConditions[i] = player->conditions.Get(static_cast<Condition>(i)).value;
 
     this->uExperience = player->uExperience;
 
@@ -783,7 +782,7 @@ void Player_Image_MM7::Serialize(Player *player) {
             continue;
         }
         this->pInstalledBeacons[i].uBeaconTime =
-            player->vBeacons[i].uBeaconTime;
+            player->vBeacons[i].uBeaconTime.value;
         this->pInstalledBeacons[i].PartyPos_X =
             player->vBeacons[i].PartyPos_X;
         this->pInstalledBeacons[i].PartyPos_Y =
@@ -807,7 +806,7 @@ void Player_Image_MM7::Serialize(Player *player) {
 
 void Player_Image_MM7::Deserialize(Player* player) {
     for (unsigned int i = 0; i < 20; ++i)
-        player->conditions_times[i].value = this->pConditions[i];
+        player->conditions.Set(static_cast<Condition>(i), GameTime(this->pConditions[i]));
 
     player->uExperience = this->uExperience;
 
@@ -1359,7 +1358,7 @@ void Actor_MM7::Deserialize(Actor *actor) {
 }
 
 void BLVDoor_MM7::Serialize(BLVDoor *door) {
-    this->uAttributes = door->uAttributes;
+    this->uAttributes = std::to_underlying(door->uAttributes);
     this->uDoorID = door->uDoorID;
     this->uTimeSinceTriggered = door->uTimeSinceTriggered;
     this->vDirection = door->vDirection;
@@ -1375,7 +1374,7 @@ void BLVDoor_MM7::Serialize(BLVDoor *door) {
 }
 
 void BLVDoor_MM7::Deserialize(BLVDoor *door) {
-    door->uAttributes = this->uAttributes;
+    door->uAttributes = DoorAttributes(this->uAttributes);
     door->uDoorID = this->uDoorID;
     door->uTimeSinceTriggered = this->uTimeSinceTriggered;
     door->vDirection = this->vDirection;

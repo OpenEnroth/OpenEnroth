@@ -1,12 +1,5 @@
 #include "Engine/Engine.h"
 
-#include <filesystem>
-#include <algorithm>
-
-#include "src/Application/Game.h"
-
-#include "Arcomage/Arcomage.h"
-
 #include "Engine/Events.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -384,7 +377,7 @@ void Engine::PushStationaryLights(int a2) {
     for (int i = 0; i < uNumStationaryLights; ++i) {
         pLight = &pStationaryLights[i];
         pStationaryLightsStack->AddLight(
-            pLight->vPosition.x, pLight->vPosition.y, pLight->vPosition.z,
+            pLight->vPosition,
             pLight->flt_18, pLight->vRGBColor.x, pLight->vRGBColor.y,
             pLight->vRGBColor.z, _4E94D0_light_type);
     }
@@ -1430,7 +1423,7 @@ void sub_44861E_set_texture(unsigned int uFaceCog, const char *pFilename) {
 }
 
 //----- (0044892E) --------------------------------------------------------
-void sub_44892E_set_faces_bit(int sCogNumber, int bit, int on) {
+void sub_44892E_set_faces_bit(int sCogNumber, FaceAttribute bit, int on) {
     if (sCogNumber) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             for (uint i = 1; i < (unsigned int)pIndoor->pFaceExtras.size(); ++i) {
@@ -1621,7 +1614,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     for (uint pl = 1; pl <= 4; pl++) {
         if (pPlayers[pl]->uTimeToRecovery)
-            pPlayers[pl]->Recover(a2a);  //восстановление активности
+            pPlayers[pl]->Recover(GameTime(a2a));  //восстановление активности
         if (pPlayers[pl]->GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
                     pPlayers[pl]->sHealth + pPlayers[pl]->uEndurance >=
                 1 ||
@@ -1721,12 +1714,12 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 viewparams->bRedrawGameUI = true;
             }
         }
-        if (pPlayers[pl]->conditions_times[Condition_Sleep].Valid() ||
-            pPlayers[pl]->conditions_times[Condition_Paralyzed].Valid() ||
-            pPlayers[pl]->conditions_times[Condition_Unconcious].Valid() ||
-            pPlayers[pl]->conditions_times[Condition_Dead].Valid() ||
-            pPlayers[pl]->conditions_times[Condition_Pertified].Valid() ||
-            pPlayers[pl]->conditions_times[Condition_Eradicated].Valid()) {
+        if (pPlayers[pl]->conditions.Has(Condition_Sleep) ||
+            pPlayers[pl]->conditions.Has(Condition_Paralyzed) ||
+            pPlayers[pl]->conditions.Has(Condition_Unconcious) ||
+            pPlayers[pl]->conditions.Has(Condition_Dead) ||
+            pPlayers[pl]->conditions.Has(Condition_Pertified) ||
+            pPlayers[pl]->conditions.Has(Condition_Eradicated)) {
             --party_condition_flag;
         }
 
@@ -1768,8 +1761,8 @@ void _494035_timed_effects__water_walking_damage__etc() {
     if (!party_condition_flag) {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
             for (uint pl = 1; pl <= 4; pl++) {
-                if (pPlayers[pl]->conditions_times[Condition_Sleep].Valid()) {
-                    pPlayers[pl]->conditions_times[Condition_Sleep].Reset();
+                if (pPlayers[pl]->conditions.Has(Condition_Sleep)) {
+                    pPlayers[pl]->conditions.Reset(Condition_Sleep);
                     party_condition_flag = 1;
                     break;
                 }
@@ -1781,16 +1774,12 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
     if (uActiveCharacter) {  // выбор следующего после пропускающего ход
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
-            if (pPlayers[uActiveCharacter]->conditions_times[Condition_Sleep] ||
-                pPlayers[uActiveCharacter]
-                    ->conditions_times[Condition_Paralyzed] ||
-                pPlayers[uActiveCharacter]
-                    ->conditions_times[Condition_Unconcious] ||
-                pPlayers[uActiveCharacter]->conditions_times[Condition_Dead] ||
-                pPlayers[uActiveCharacter]
-                    ->conditions_times[Condition_Pertified] ||
-                pPlayers[uActiveCharacter]
-                    ->conditions_times[Condition_Eradicated]) {
+            if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Sleep) ||
+                pPlayers[uActiveCharacter]->conditions.Has(Condition_Paralyzed) ||
+                pPlayers[uActiveCharacter]->conditions.Has(Condition_Unconcious) ||
+                pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead) ||
+                pPlayers[uActiveCharacter]->conditions.Has(Condition_Pertified) ||
+                pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated)) {
                 viewparams->bRedrawGameUI = true;
                 uActiveCharacter = pParty->GetNextActiveCharacter();
             }
@@ -1818,20 +1807,25 @@ void RegeneratePartyHealthMana() {
         redraw_flag = false;
         int times_triggered = (current_time - last_reg_time) / 5;
 
+        // TODO: actually this looks like it never triggers.
+        // we get cursed_times, which is a time the player was cursed since the start of the game (a very large number),
+        // and compare it with times_triggered, which is a small number
+
         // chance to flight break due to a curse
         if (pParty->FlyActive()) {
             if (pParty->bFlying) {
                 if (!(pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1)) {
+                    // uPower is 0 for GM, 1 for every other skill level
                     unsigned short spell_power = times_triggered * pParty->pPartyBuffs[PARTY_BUFF_FLY].uPower;
 
-                    auto cursed_times = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].conditions_times[Condition_Cursed];
-                    if (cursed_times->Valid()) {
-                        if (cursed_times->value < spell_power) {
-                            cursed_times = 0;
-                            pParty->uFlags &= 0xFFFFFFBF;
-                            pParty->bFlying = false;
-                            redraw_flag = true;
-                        }
+                    int caster = pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1;
+                    GameTime cursed_times = pParty->pPlayers[caster].conditions.Get(Condition_Cursed);
+                    if (cursed_times.Valid() && cursed_times.value < spell_power) {
+                        // TODO: cursed_times was a pointer before, and we had cursed_times = 0 here,
+                        // was this meant to cancel the curse?
+                        pParty->uFlags &= 0xFFFFFFBF;
+                        pParty->bFlying = false;
+                        redraw_flag = true;
                     }
                 }
             }
@@ -1841,13 +1835,15 @@ void RegeneratePartyHealthMana() {
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAGS_1_STANDING_ON_WATER) {
                 if (!(pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uFlags & 1)) {  // taking on water
-                    auto cursed_times = &pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1].conditions_times[Condition_Cursed];
-                    cursed_times->value -= times_triggered;
-                    if (cursed_times->value <= 0) {
-                        cursed_times->value = 0;
+                    int caster = pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].uCaster - 1;
+                    GameTime cursed_times = pParty->pPlayers[caster].conditions.Get(Condition_Cursed);
+                    cursed_times.value -= times_triggered;
+                    if (cursed_times.value <= 0) {
+                        cursed_times.value = 0;
                         pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
                         redraw_flag = true;
                     }
+                    pParty->pPlayers[caster].conditions.Set(Condition_Cursed, cursed_times);
                 }
             }
         }
@@ -1927,23 +1923,22 @@ void RegeneratePartyHealthMana() {
                     }
 
                     if (recovery_HP &&
-                        !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
-                        !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                        !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
+                        !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
                         if (pParty->pPlayers[playerID].sHealth <
                             pParty->pPlayers[playerID].GetMaxHealth()) {
                             ++pParty->pPlayers[playerID].sHealth;
                         }
-                        if (pParty->pPlayers[playerID].conditions_times[Condition_Unconcious] &&
+                        if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconcious) &&
                             pParty->pPlayers[playerID].sHealth > 0) {
-                            pParty->pPlayers[playerID].conditions_times[Condition_Unconcious]
-                                .Reset();
+                            pParty->pPlayers[playerID].conditions.Reset(Condition_Unconcious);
                         }
                         redraw_flag = true;
                     }
 
                     if (recovery_SP &&
-                        !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
-                        !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                        !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
+                        !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
                         if (pParty->pPlayers[playerID].sMana <
                             pParty->pPlayers[playerID].GetMaxMana())
                             ++pParty->pPlayers[playerID].sMana;
@@ -1951,22 +1946,21 @@ void RegeneratePartyHealthMana() {
                     }
 
                     if (decrease_HP &&
-                        !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
-                        !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                        !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
+                        !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
                         --pParty->pPlayers[playerID].sHealth;
-                        if (!(pParty->pPlayers[playerID].conditions_times[Condition_Unconcious]) &&
+                        if (!(pParty->pPlayers[playerID].conditions.Has(Condition_Unconcious)) &&
                             pParty->pPlayers[playerID].sHealth < 0) {
-                            pParty->pPlayers[playerID].conditions_times[Condition_Unconcious] = pParty->GetPlayingTime();
+                            pParty->pPlayers[playerID].conditions.Set(Condition_Unconcious, pParty->GetPlayingTime());
                         }
                         if (pParty->pPlayers[playerID].sHealth < 1) {
                             if (pParty->pPlayers[playerID].sHealth +
                                 pParty->pPlayers[playerID].uEndurance +
-                                pParty->pPlayers[playerID].GetItemsBonus(
-                                    CHARACTER_ATTRIBUTE_ENDURANCE) >= 1 ||
+                                pParty->pPlayers[playerID].GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1 ||
                                 pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].expire_time) {
-                                pParty->pPlayers[playerID].conditions_times[Condition_Unconcious] = pParty->GetPlayingTime();
-                            } else if (!pParty->pPlayers[playerID].conditions_times[Condition_Dead]) {
-                                pParty->pPlayers[playerID].conditions_times[Condition_Dead] = pParty->GetPlayingTime();
+                                pParty->pPlayers[playerID].conditions.Set(Condition_Unconcious, pParty->GetPlayingTime());
+                            } else if (!pParty->pPlayers[playerID].conditions.Has(Condition_Dead)) {
+                                pParty->pPlayers[playerID].conditions.Set(Condition_Dead, pParty->GetPlayingTime());
                             }
                         }
                         redraw_flag = true;
@@ -1976,16 +1970,16 @@ void RegeneratePartyHealthMana() {
 
             // regeneration buff
             if (pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].expire_time &&
-                !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
-                !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
+                !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
                 pParty->pPlayers[playerID].sHealth += 5 * pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_REGENERATION].uPower;
                 if (pParty->pPlayers[playerID].sHealth >
                     pParty->pPlayers[playerID].GetMaxHealth()) {
                     pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].GetMaxHealth();
                 }
-                if (pParty->pPlayers[playerID].conditions_times[Condition_Unconcious] &&
+                if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconcious) &&
                     pParty->pPlayers[playerID].sHealth > 0) {
-                    pParty->pPlayers[playerID].conditions_times[Condition_Unconcious].Reset();
+                    pParty->pPlayers[playerID].conditions.Reset(Condition_Unconcious);
                 }
                 redraw_flag = true;
             }
@@ -2008,8 +2002,8 @@ void RegeneratePartyHealthMana() {
                         lich_has_jar = true;
                 }
 
-                if (!pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
-                    !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+                if (!pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
+                    !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
                     if (pParty->pPlayers[playerID].sHealth >
                         pParty->pPlayers[playerID].GetMaxHealth() / 2) {
                         pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].sHealth - 2;
@@ -2028,9 +2022,9 @@ void RegeneratePartyHealthMana() {
             }
 
             // for zombie
-            if (pParty->pPlayers[playerID].conditions_times[Condition_Zombie] &&
-                !pParty->pPlayers[playerID].conditions_times[Condition_Dead] &&
-                !pParty->pPlayers[playerID].conditions_times[Condition_Eradicated]) {
+            if (pParty->pPlayers[playerID].conditions.Has(Condition_Zombie) &&
+                !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
+                !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
                 if (pParty->pPlayers[playerID].sHealth >
                     pParty->pPlayers[playerID].GetMaxHealth() / 2) {
                     pParty->pPlayers[playerID].sHealth =

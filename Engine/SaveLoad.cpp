@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <algorithm>
 #include <string>
-#include <vector>
 
 #include "Platform/Api.h"
 
@@ -380,7 +379,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
             }
             LloydBeacon *beacon = &player->vBeacons[j];
             Image *image = beacon->image;
-            if ((beacon->uBeaconTime != 0) && (image != nullptr)) {
+            if ((beacon->uBeaconTime.Valid()) && (image != nullptr)) {
                 const void *pixels = image->GetPixels(IMAGE_FORMAT_A8R8G8B8);
                 if (!pixels)
                     __debugbreak();

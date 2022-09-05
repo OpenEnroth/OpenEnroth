@@ -1282,7 +1282,7 @@ void ShowPopupShopItem() {
     int invindex;
     int testpos;
 
-    if (in_current_building_type <= 0) return;
+    if (in_current_building_type == BuildingType_Invalid) return;
     if (dialog_menu_id < DIALOGUE_SHOP_BUY_STANDARD) return;
 
     Point pt = EngineIoc::ResolveMouse()->GetCursorPos();
@@ -1590,7 +1590,7 @@ void GetHouseGoodbyeSpeech() {
     signed int v5;  // edi@20
     int v7[4];      // [sp+Ch] [bp-10h]@12
 
-    if (in_current_building_type > 0) {
+    if (in_current_building_type != BuildingType_Invalid) {
         if (in_current_building_type > BuildingType_MagicShop) {
             if (in_current_building_type == BuildingType_Bank) {
                 if (!dword_F8B1E4) return;
@@ -1600,9 +1600,7 @@ void GetHouseGoodbyeSpeech() {
             PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Greeting_2);
             return;
         }
-        if ((signed __int64)pParty->PartyTimes
-                ._shop_ban_times[window_SpeakInHouse->wData.val] <=
-            pParty->GetPlayingTime()) {
+        if (pParty->PartyTimes._shop_ban_times[window_SpeakInHouse->wData.val] <= pParty->GetPlayingTime()) {
             if (pParty->GetGold() <= 10000) {
                 if (!dword_F8B1E4) return;
                 PlayHouseSound(window_SpeakInHouse->wData.val, HouseSound_Goodbye);

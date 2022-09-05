@@ -31,10 +31,8 @@
 #include "Engine/Serialization/MemoryInput.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
-#include "Engine/stru367.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/ZlibWrapper.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -78,7 +76,7 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     this->pFacePlane = data->pFacePlane;
     this->pFacePlane_old = data->pFacePlane_old;
     this->zCalc.Init(this->pFacePlane_old);
-    this->uAttributes = data->uAttributes;
+    this->uAttributes = FaceAttributes(data->uAttributes);
     this->pVertexIDs = nullptr;
     this->pXInterceptDisplacements = nullptr;
     this->pYInterceptDisplacements = nullptr;
@@ -142,9 +140,11 @@ void PrepareDrawLists_BLV() {
             pParty->flt_TorchlightColorB = 96;
         }
 
+        // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
+        Vec3_float_ pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
+
         pMobileLightsStack->AddLight(
-            pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y,
-            pCamera3D->vCameraPos.z, pBLVRenderParams->uPartySectorID, TorchLightPower,
+            pos, pBLVRenderParams->uPartySectorID, TorchLightPower,
             floorf(pParty->flt_TorchlightColorR + 0.5f),
             floorf(pParty->flt_TorchlightColorG + 0.5f),
             floorf(pParty->flt_TorchlightColorB + 0.5f), _4E94D0_light_type);
@@ -1229,9 +1229,12 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     return;
 }
 
-void BLVFace::Flatten(FlatFace *points, int model_idx, int override_plane) const {
-    int plane = override_plane;
-    if (plane == 0)
+void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_plane) const {
+    Assert(!override_plane ||
+            override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
+
+    FaceAttributes plane = override_plane;
+    if (!plane)
         plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
 
     auto do_flatten = [&](auto &&vertex_accessor) {
@@ -1264,12 +1267,15 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, int override_plane) const
     }
 }
 
-bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, int override_plane) const {
+bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, FaceAttributes override_plane) const {
+    Assert(!override_plane ||
+            override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
+
     if (this->uNumVertices <= 0)
         return false;
 
-    int plane = override_plane;
-    if (plane == 0)
+    FaceAttributes plane = override_plane;
+    if (!plane)
         plane = this->uAttributes & (FACE_XY_PLANE | FACE_YZ_PLANE | FACE_XZ_PLANE);
 
     FlatFace points;
@@ -1380,7 +1386,7 @@ void BLV_UpdateDoors() {
 
         // door not moving currently
         if (door->uState == BLVDoor::Closed || door->uState == BLVDoor::Open) {
-            door->uAttributes &= 0xFFFFFFFDu;  // ~0x2
+            door->uAttributes &= ~DOOR_SETTING_UP;
             continue;
         }
 
@@ -1425,14 +1431,8 @@ void BLV_UpdateDoors() {
         for (j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
             Vec3_short_ *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
-            face->pFacePlane_old.dist =
-                -(v17->x * face->pFacePlane_old.vNormal.x +
-                  v17->y * face->pFacePlane_old.vNormal.y +
-                  v17->z * face->pFacePlane_old.vNormal.z);
-            face->pFacePlane.dist =
-                -((double)v17->z * face->pFacePlane.vNormal.z +
-                  (double)v17->y * face->pFacePlane.vNormal.y +
-                  (double)v17->x * face->pFacePlane.vNormal.x); // TODO: needs fixpoint_to_float here?
+            face->pFacePlane_old.dist = -Dot(*v17, face->pFacePlane_old.vNormal);
+            face->pFacePlane.dist = -Dot(ToFloatVector(*v17), face->pFacePlane.vNormal);
             if (face->pFacePlane_old.vNormal.z) {
                 v24 = abs(face->pFacePlane_old.dist >> 15);
                 v25 = abs(face->pFacePlane_old.vNormal.z);
@@ -1715,13 +1715,9 @@ void UpdateActors_BLV() {
                         if (pActors[actor_id].uCurrentActionAnimation != 1 ||
                             v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
                             if (collision_state.adjusted_move_distance < collision_state.move_distance) {
-                                pActors[actor_id].vPosition.x +=
-                                    collision_state.adjusted_move_distance * collision_state.direction.x;
-                                pActors[actor_id].vPosition.y +=
-                                    collision_state.adjusted_move_distance * collision_state.direction.y;
-                                pActors[actor_id].vPosition.z +=
-                                    collision_state.adjusted_move_distance * collision_state.direction.z;
-                                pActors[actor_id].uSectorID = (short)collision_state.uSectorID;
+                                pActors[actor_id].vPosition +=
+                                    ToShortVector(collision_state.adjusted_move_distance * collision_state.direction);
+                                pActors[actor_id].uSectorID = collision_state.uSectorID;
                                 collision_state.total_move_distance += collision_state.adjusted_move_distance;
                                 v37 = PID_ID(collision_state.pid);
                                 if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
@@ -1992,20 +1988,20 @@ void PrepareToLoadBLV(bool bLoading) {
     }
 
     for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
-        if (pIndoor->pDoors[i].uAttributes & 0x01) {
+        if (pIndoor->pDoors[i].uAttributes & DOOR_TRIGGERED) {
             pIndoor->pDoors[i].uState = BLVDoor::Opening;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-            pIndoor->pDoors[i].uAttributes = 2;
+            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
 
         if (pIndoor->pDoors[i].uState == BLVDoor::Closed) {
             pIndoor->pDoors[i].uState = BLVDoor::Closing;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-            pIndoor->pDoors[i].uAttributes = 2;
+            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         } else if (pIndoor->pDoors[i].uState == BLVDoor::Open) {
             pIndoor->pDoors[i].uState = BLVDoor::Opening;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
-            pIndoor->pDoors[i].uAttributes = 2;
+            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
     }
 
@@ -2040,10 +2036,8 @@ void PrepareToLoadBLV(bool bLoading) {
                         b = decoration->uColoredLightBlue;
                     }
                     pStationaryLightsStack->AddLight(
-                        pLevelDecorations[i].vPosition.x,
-                        pLevelDecorations[i].vPosition.y,
-                        pLevelDecorations[i].vPosition.z +
-                            decoration->uDecorationHeight,
+                        ToFloatVector(pLevelDecorations[i].vPosition) +
+                            Vec3_float_(0, 0, decoration->uDecorationHeight),
                         decoration->uLightRadius, r, g, b, _4E94D0_light_type);
                 }
             }
@@ -2284,8 +2278,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
         if ((256 << v6) & v9->uFlags) v41 |= 4;
         if (v9->uGlowRadius) {
             pMobileLightsStack->AddLight(
-                pActors[i].vPosition.x, pActors[i].vPosition.y,
-                pActors[i].vPosition.z, pActors[i].uSectorID, v9->uGlowRadius,
+                ToFloatVector(pActors[i].vPosition), pActors[i].uSectorID, v9->uGlowRadius,
                 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
 
@@ -2400,9 +2393,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     if ((256 << v9) & v4->uFlags) v34 |= 4;
                     if (a6) {
                         pMobileLightsStack->AddLight(
-                            pSpriteObjects[i].vPosition.x,
-                            pSpriteObjects[i].vPosition.y,
-                            pSpriteObjects[i].vPosition.z,
+                            ToFloatVector(pSpriteObjects[i].vPosition),
                             pSpriteObjects[i].uSectorID, a6,
                             pSpriteObjects[i].GetParticleTrailColorR(),
                             pSpriteObjects[i].GetParticleTrailColorG(),

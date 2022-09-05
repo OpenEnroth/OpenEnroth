@@ -1,9 +1,10 @@
+#include "LightmapBuilder.h"
+
 #include <string>
 
 #include "Engine/Engine.h"
 #include "Engine/stru314.h"
 
-#include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ClippingFunctions.h"
@@ -99,17 +100,9 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
                                              unsigned int *pSlot) {
     // For outdoor terrain light (II)
     //  bool result; // eax@1
-    float maxz;      // st7@11
-                      //  char v20; // c2@11
-                      //  signed int v52; // ecx@17
     char v57;         // dl@18
     // std::string v58;  // [sp-18h] [bp-38h]@10
-                      //  double v61; // [sp+Ch] [bp-14h]@11
-    float minz;       // [sp+14h] [bp-Ch]@11
-    float tX_0 = 0;
-    float tX_1 = 0;
-    float tY_0 = 0;
-    float tY_1 = 0;  // [sp+1Ch] [bp-4h]@5
+    BBox_float_ bbox;
 
     //  x0,y0      x1,y1 // this is actuall ccw??
     //  .____________.
@@ -121,57 +114,39 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
 
     if (pLight->uRadius <= 0) return false;
     if (uStripType == 4) {
-        tX_0 = TerrainVertices[0].vWorldPosition.x;
-        tX_1 = TerrainVertices[3].vWorldPosition.x;
+        bbox.x1 = TerrainVertices[0].vWorldPosition.x;
+        bbox.x2 = TerrainVertices[3].vWorldPosition.x;
 
-        tY_0 = TerrainVertices[1].vWorldPosition.y;
-        tY_1 = TerrainVertices[0].vWorldPosition.y;
+        bbox.y1 = TerrainVertices[1].vWorldPosition.y;
+        bbox.y2 =  TerrainVertices[0].vWorldPosition.y;
     } else if (uStripType == 3) {
         // __debugbreak();
         if ((unsigned char)X) {
-            tX_0 = TerrainVertices[0].vWorldPosition.x;
-            tX_1 = TerrainVertices[2].vWorldPosition.x;
+            bbox.x1 = TerrainVertices[0].vWorldPosition.x;
+            bbox.x2 = TerrainVertices[2].vWorldPosition.x;
 
-            tY_0 = TerrainVertices[1].vWorldPosition.y;
-            tY_1 = TerrainVertices[2].vWorldPosition.y;
+            bbox.y1 = TerrainVertices[1].vWorldPosition.y;
+            bbox.y2 = TerrainVertices[2].vWorldPosition.y;
         } else {
-            tX_0 = TerrainVertices[1].vWorldPosition.x;
-            tX_1 = TerrainVertices[2].vWorldPosition.x;
+            bbox.x1 = TerrainVertices[1].vWorldPosition.x;
+            bbox.x2 = TerrainVertices[2].vWorldPosition.x;
 
-            tY_0 = TerrainVertices[1].vWorldPosition.y;
-            tY_1 = TerrainVertices[0].vWorldPosition.y;
+            bbox.y1 = TerrainVertices[1].vWorldPosition.y;
+            bbox.y2 = TerrainVertices[0].vWorldPosition.y;
         }
     } else {
         log->Warning("Uknown strip type detected!");
     }
 
-    minz = pOutdoor->GetPolygonMinZ(TerrainVertices, uStripType);
-    maxz = pOutdoor->GetPolygonMaxZ(TerrainVertices, uStripType);
-
-    float bounding_x1 = tX_0 - (float)pLight->uRadius;  // 13 976 - 128 =
-                                                        // 13848.0
-    float bounding_y1 = tY_0 - (float)pLight->uRadius;  // 3 800 - 128 = 3672.0
-    float bounding_z1 = minz - (float)pLight->uRadius;  // -26.0
-
-    float bounding_x2 =
-        (float)pLight->uRadius + tX_1;  // 13 877 + 128 =  14005.0
-    float bounding_y2 = (float)pLight->uRadius + tY_1;  // 3 792 + 128 =  3920.0
-    float bounding_z2 = (float)pLight->uRadius + maxz;  // 260.0
+    bbox.z1 = pOutdoor->GetPolygonMinZ(TerrainVertices, uStripType);
+    bbox.z2 = pOutdoor->GetPolygonMaxZ(TerrainVertices, uStripType);
 
     //проверяем вершины
-    if ((float)pLight->vPosition.x <= bounding_x1 ||
-        (float)pLight->vPosition.x >= bounding_x2 ||
-        (float)pLight->vPosition.y <= bounding_y1 ||
-        (float)pLight->vPosition.y >= bounding_y2 ||
-        (float)pLight->vPosition.z <= bounding_z1 ||
-        (float)pLight->vPosition.z >= bounding_z2)
+    if (!bbox.Expanded(pLight->uRadius).Contains(pLight->vPosition))
         return false;
 
     *light_tile_dist = -Dot(TerrainVertices->vWorldPosition, *pNormal);
-    float p_dot = ((float)pLight->vPosition.x * pNormal->x +
-                   (float)pLight->vPosition.y * pNormal->y +
-                   (float)pLight->vPosition.z * pNormal->z + *light_tile_dist) +
-                  0.5f;
+    float p_dot = Dot(pLight->vPosition, *pNormal) + *light_tile_dist + 0.5f;
     if (p_dot > pLight->uRadius) return false;
 
     Lights._blv_lights_radii[*pSlot] = pLight->uRadius;
@@ -215,13 +190,8 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
 
     if (!pLight->uRadius) return false;
 
-    if ((pLight->vPosition.x > pFace->pBoundingBox.x1 - pLight->uRadius) &&
-        pLight->vPosition.x < pLight->uRadius + pFace->pBoundingBox.x2 &&
-        (pLight->vPosition.y > pFace->pBoundingBox.y1 - pLight->uRadius) &&
-        pLight->vPosition.y < pLight->uRadius + pFace->pBoundingBox.y2 &&
-        (pLight->vPosition.z > pFace->pBoundingBox.z1 - pLight->uRadius) &&
-        pLight->vPosition.z < pLight->uRadius + pFace->pBoundingBox.z2) {
-        v10 = pFace->pFacePlaneOLD.SignedDistanceTo(pLight->vPosition);
+    if (pFace->pBoundingBox.Expanded(pLight->uRadius).Contains(ToShortVector(pLight->vPosition))) {
+        v10 = pFace->pFacePlane.SignedDistanceTo(pLight->vPosition);
 
         if (((bLightBackfaces) || v10 >= 0.0f) && fabsf(v10) <= pLight->uRadius) {
             Lights._blv_lights_radii[*pSlot] = pLight->uRadius;
@@ -308,17 +278,8 @@ bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *pFace,
     if (!pLight->uRadius)  // 800
         return false;
 
-    if (pLight->vPosition.x > pFace->pBounding.x1 - pLight->uRadius &&
-        pLight->vPosition.x < pFace->pBounding.x2 + pLight->uRadius &&
-        pLight->vPosition.y > pFace->pBounding.y1 - pLight->uRadius &&
-        pLight->vPosition.y < pFace->pBounding.y2 + pLight->uRadius &&
-        pLight->vPosition.z > pFace->pBounding.z1 - pLight->uRadius &&
-        pLight->vPosition.z < pFace->pBounding.z2 + pLight->uRadius) {
-        Distance = (double)pLight->vPosition.z * pFace->pFacePlane.vNormal.z +
-              (double)pLight->vPosition.y * pFace->pFacePlane.vNormal.y +
-              (double)pLight->vPosition.x * pFace->pFacePlane.vNormal.x +
-              pFace->pFacePlane.dist;
-
+    if (pFace->pBounding.Expanded(pLight->uRadius).Contains(ToShortVector(pLight->vPosition))) {
+        Distance = pFace->pFacePlane.SignedDistanceTo(pLight->vPosition);
 
         if ((bLightBackfaces || Distance >= 0.0f) && std::abs(Distance) <= pLight->uRadius) {
             unsigned int slot = *pSlot;
@@ -1150,7 +1111,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
  * @param uBaseLightLevel               Starting dimming level at point (0-31).
  * @param uSectorID                     Sector ID if indoors or 0.
  * @param x, y, z                       Co-ords of point.
- * 
+ *
  * @return                              Dimming level (0-31) with lights effect added.
  */
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z) {

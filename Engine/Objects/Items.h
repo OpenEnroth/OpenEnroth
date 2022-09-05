@@ -254,5 +254,4 @@ class EquipemntPair {
 int GetItemTextureFilename(char *pOut, signed int item_id, int index,
                            int shoulder);
 
-extern std::array<const char, 5> uItemsAmountPerShopType;
 extern ItemGen* ptr_50C9A4_ItemToEnchant;

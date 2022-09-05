@@ -105,8 +105,8 @@ void AlchemistDialog();
 void ArmorShopDialog();
 void SimpleHouseDialog();
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option);
-void PrepareHouse(enum HOUSE_ID house);  // idb
-bool EnterHouse(enum HOUSE_ID uHouseID);
+void PrepareHouse(HOUSE_ID house);  // idb
+bool EnterHouse(HOUSE_ID uHouseID);
 void BackToHouseMenu();
 
 void InitializaDialogueOptions_Tavern(BuildingType type);  // idb

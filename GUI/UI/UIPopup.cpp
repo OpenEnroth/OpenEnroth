@@ -1196,16 +1196,13 @@ void CharacterUI_StatsTab_ShowHint() {
         {
             auto str = std::string(pPlayerConditionAttributeDescription) + "\n";
 
-            extern std::array<unsigned int, 18> pConditionImportancyTable;
+            extern std::array<Condition, 18> pConditionImportancyTable;
             for (uint i = 0; i < 18; ++i) {
-                if (pPlayers[uActiveCharacter]
-                        ->conditions_times[pConditionImportancyTable[i]]
-                        .Valid()) {
+                if (pPlayers[uActiveCharacter]->conditions.Has(pConditionImportancyTable[i])) {
                     str += " \n";
-                    auto condition_time =
+                    GameTime condition_time =
                         pParty->GetPlayingTime() -
-                        pPlayers[uActiveCharacter]
-                            ->conditions_times[pConditionImportancyTable[i]];
+                                pPlayers[uActiveCharacter]->conditions.Get(pConditionImportancyTable[i]);
                     pHour = condition_time.GetHoursOfDay();
                     pDay = condition_time.GetDays();
                     pTextColor =

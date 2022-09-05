@@ -492,7 +492,7 @@ Image *ui_character_inventory_paperdoll_rings_close = nullptr;
 std::array<Image *, 16> paperdoll_dbrds;
 
 GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(
-    unsigned int uActiveCharacter, enum CURRENT_SCREEN screen)
+    unsigned int uActiveCharacter, CURRENT_SCREEN screen)
     : GUIWindow(WINDOW_CharacterRecord, 0, 0, window->GetWidth(), window->GetHeight(), uActiveCharacter) {
     pEventTimer->Pause();
     pAudioPlayer->PauseSounds(-1);
@@ -1917,8 +1917,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Player *player) {
         StringPrintf("%s: \f%05d%s\n",
                      localization->GetString(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()),
-                     localization->GetCharacterConditionName(
-                         player->GetMajorConditionIdx()));
+                     localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
     pGUIWindow_CurrentMenu->DrawTextInRect(pFontArrus, 26, pY, 0, str12, 226,
                                            0);
 
@@ -2761,7 +2760,7 @@ void OnPaperdollLeftClick() {
              *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
              *pEquipType;*/
             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-            pSpellInfo->uFlags &= 0x7F;
+            pSpellInfo->uFlags &= ~ON_CAST_Enchantment;
             pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
             pSpellInfo->spell_target_pid = pPlayers[uActiveCharacter]->pEquipment.pIndices[pos];
             pSpellInfo->field_6 = pEquipType;
@@ -2836,7 +2835,7 @@ void OnPaperdollLeftClick() {
                  *pEquipType;*/
                 pSpellInfo =
                     static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                pSpellInfo->uFlags &= 0x7F;
+                pSpellInfo->uFlags &= ~ON_CAST_Enchantment;
                 pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
                 pSpellInfo->spell_target_pid = v34 - 1;
                 pSpellInfo->field_6 = pEquipType;

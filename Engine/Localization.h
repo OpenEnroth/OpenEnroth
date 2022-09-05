@@ -1,9 +1,13 @@
 ﻿#pragma once
 
 #include <string>
+#include <utility>
 
 #include "Engine/Objects/NPCProf.h"
 #include "Engine/Objects/PlayerEnums.h"
+#include "Engine/Conditions.h"
+
+#include "src/tools/Workaround.h"
 
 
 #define LSTR_AC                               0   // "AC"
@@ -489,8 +493,8 @@ class Localization {
         return this->skill_descriptions_grand[index];
     }
 
-    const char *GetCharacterConditionName(unsigned int index) const {
-        return this->character_conditions[index];
+    const char *GetCharacterConditionName(Condition index) const {
+        return this->character_conditions[std::to_underlying(index)];
     }
 
     const char *GetAmPm(unsigned int index) const {

@@ -7,7 +7,6 @@
 #include "Engine/SpellFxRenderer.h"
 
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 
 #include "Engine/Graphics/Camera.h"
@@ -177,7 +176,8 @@ void RenderBase::DrawSpriteObjects_ODM() {
             if (frame->uFlags & 0x40000) v46 |= 0x40;
             if (frame->uFlags & 0x20000) v46 |= 0x80;
             if (a6) {
-                pMobileLightsStack->AddLight(x, y, z, object->uSectorID, a6, 0xFF, 0xFF, 0xFF, _4E94D3_light_type);
+                pMobileLightsStack->AddLight(ToFloatVector(object->vPosition),
+                                             object->uSectorID, a6, 0xFF, 0xFF, 0xFF, _4E94D3_light_type);
             }
 
             int view_x = 0;

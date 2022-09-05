@@ -1,10 +1,7 @@
 #include "Engine/Graphics/Camera.h"
 
-#include <cstdlib>
-
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
-#include "Engine/Log.h"
 #include "Engine/OurMath.h"
 
 #include "Engine/Graphics/Indoor.h"

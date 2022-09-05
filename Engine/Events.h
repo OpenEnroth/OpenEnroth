@@ -19,54 +19,9 @@ struct EventIndex {
 };
 #pragma pack(pop)
 
-// raw event struct
-// header
-//  size_event 1 header+data
-//  event id  2 3
-// event_sequence_num
-// event data
-#pragma pack(push, 1)
-struct _evt_raw {
-    unsigned char _e_size;
-    unsigned char v1;
-    unsigned char v2;
-    unsigned char v3;
-
-    unsigned char _e_type;
-    unsigned char v5;
-    unsigned char v6;
-    unsigned char v7;
-    unsigned char v8;
-    unsigned char v9;
-    unsigned char v10;
-    unsigned char v11;
-    unsigned char v12;
-    unsigned char v13;
-    unsigned char v14;
-    unsigned char v15;
-    unsigned char v16;
-    unsigned char v17;
-    unsigned char v18;
-    unsigned char v19;
-    unsigned char v20;
-    unsigned char v21;
-    unsigned char v22;
-    unsigned char v23;
-    unsigned char v24;
-    unsigned char v25;
-    unsigned char v26;
-    unsigned char v27;
-    unsigned char v28;
-    unsigned char v29;
-    unsigned char v30;
-    unsigned char v31;
-    unsigned char v32;
-    unsigned char tail[128];
-};
-#pragma pack(pop)
-
 /*  310 */
-enum EventType {
+enum class EventType : uint8_t {
+    EVENT_Invalid = 0x0,
     EVENT_Exit = 0x1,
     EVENT_SpeakInHouse = 0x2,
     EVENT_PlaySound = 0x3,
@@ -133,6 +88,53 @@ enum EventType {
     EVENT_IsTotalBountyHuntingAwardInRange = 0x43,
     EVENT_IsNPCInParty = 0x44,
 };
+using enum EventType;
+
+// raw event struct
+// header
+//  size_event 1 header+data
+//  event id  2 3
+// event_sequence_num
+// event data
+#pragma pack(push, 1)
+struct _evt_raw {
+    unsigned char _e_size;
+    unsigned char v1;
+    unsigned char v2;
+    unsigned char v3;
+
+    EventType _e_type;
+    unsigned char v5;
+    unsigned char v6;
+    unsigned char v7;
+    unsigned char v8;
+    unsigned char v9;
+    unsigned char v10;
+    unsigned char v11;
+    unsigned char v12;
+    unsigned char v13;
+    unsigned char v14;
+    unsigned char v15;
+    unsigned char v16;
+    unsigned char v17;
+    unsigned char v18;
+    unsigned char v19;
+    unsigned char v20;
+    unsigned char v21;
+    unsigned char v22;
+    unsigned char v23;
+    unsigned char v24;
+    unsigned char v25;
+    unsigned char v26;
+    unsigned char v27;
+    unsigned char v28;
+    unsigned char v29;
+    unsigned char v30;
+    unsigned char v31;
+    unsigned char v32;
+    unsigned char tail[128];
+};
+#pragma pack(pop)
 
 /*  311 */
 enum VariableType {

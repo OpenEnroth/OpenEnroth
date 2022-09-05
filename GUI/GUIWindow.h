@@ -730,7 +730,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
                      unsigned int uHeight);  // idb
 void DrawMM7CopyrightWindow();
 void GUI_UpdateWindows();
-int GetConditionDrawColor(unsigned int uConditionIdx);  // idb
+int GetConditionDrawColor(Condition uConditionIdx);  // idb
 void FillAwardsData();
 void CreateAwardsScrollBar();
 void ReleaseAwardsScrollBar();
@@ -744,7 +744,7 @@ void DrawBuff_remaining_time_string(int uY, GUIWindow *window,
                                     GameTime remaining_time, GUIFont *Font);
 void GameUI_DrawItemInfo(struct ItemGen* inspect_item);   // idb
 void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *window);
-void SetUserInterface(enum PartyAlignment alignment, bool bReplace);
+void SetUserInterface(PartyAlignment alignment, bool bReplace);
 void CreateMsgScrollWindow(signed int mscroll_id);
 void free_book_subwindow();
 void CreateScrollWindow();

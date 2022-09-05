@@ -162,11 +162,11 @@ struct SpellBuff {
     bool Expired() const { return this->expire_time.value < 0; }
 
     GameTime expire_time;
-    unsigned __int16 uPower;
-    unsigned __int16 uSkill;
+    unsigned __int16 uPower; // Spell power, semantics are spell-specific.
+    unsigned __int16 uSkill; // 1-4, normal to grandmaster.
     unsigned __int16 uOverlayID;
     unsigned __int8 uCaster;
-    unsigned __int8 uFlags;
+    unsigned __int8 uFlags; // 0x1 => cast at grandmaster.
 };
 #pragma pack(pop)
 

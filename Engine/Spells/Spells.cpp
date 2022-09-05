@@ -1,8 +1,8 @@
 #include "Engine/Spells/Spells.h"
 
 #include <map>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
@@ -12,9 +12,6 @@
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/SpellFxRenderer.h"
-
-#include "../OurMath.h"
-#include "../Party.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -364,6 +361,8 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
 bool SpellBuff::Apply(GameTime expire_time, unsigned __int16 uSkillLevel,
                       unsigned __int16 uPower, int uOverlayID,
                       unsigned __int8 caster) {
+    Assert(uSkillLevel >= 1 && uSkillLevel <= 4);
+
     if (this->expire_time && (expire_time < this->expire_time)) {
         return false;
     }

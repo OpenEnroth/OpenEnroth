@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>
@@ -9,13 +8,11 @@
 #include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Localization.h"
 
 #include "GUI/GUIWindow.h"
 #include "Io/GameKey.h"
 
 #include "Platform/OSWindow.h"
-#include "Platform/Api.h"
 
 using Io::GameKey;
 

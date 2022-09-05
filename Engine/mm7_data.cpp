@@ -1,8 +1,5 @@
 #include "Engine/mm7_data.h"
 
-#include "Engine/Engine.h"
-
-#include "GUI/GUIWindow.h"
 #include "Party.h"
 
 #include "Engine/Autonotes.h"
@@ -11,7 +8,6 @@
 #include "Engine/stru123.h"
 #include "Engine/stru160.h"
 #include "Engine/stru298.h"
-#include "Engine/stru314.h"
 #include "Engine/stru367.h"
 #include "MapInfo.h"
 #include "OurMath.h"
@@ -162,7 +158,7 @@ std::array<__int32, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sph
      0x00000028, 0x0000000B, 0x00000031, 0x00000031, 0x0000002D, 0x00000041}};
 
 #include "MapsLongTimer.h"
-MapsLongTimer MapsLongTimersList[100];
+std::array<MapsLongTimer, 100> MapsLongTimersList;
 
 #include "Engine/Tables/IconFrameTable.h"
 struct IconFrameTable *pIconsFrameTable;
@@ -526,7 +522,7 @@ int BtnDown_flag;                     // BtnDown_flag
 int BtnUp_flag;                       // BtnUp_flag
 int quick_spell_at_page;
 char byte_506550;
-int _506568_autonote_type;
+AUTONOTE_TYPE _506568_autonote_type;
 bool bRecallingBeacon;
 int uLastPointedObjectID;
 // unsigned __int8 bMonsterInfoUI_bDollInitialized;

@@ -2,7 +2,7 @@
 #include <array>
 
 /*  351 */
-enum AUTONOTE_TYPE : uint32_t {
+enum class AUTONOTE_TYPE : uint32_t {
     AUTONOTE_POTION_RECEPIE = 0,
     AUTONOTE_STAT_HINT = 1,
     AUTONOTE_OBELISK = 2,
@@ -10,6 +10,7 @@ enum AUTONOTE_TYPE : uint32_t {
     AUTONOTE_MISC = 4,
     AUTONOTE_TEACHER = 5,
 };
+using enum AUTONOTE_TYPE;
 
 /*  350 */
 #pragma pack(push, 1)

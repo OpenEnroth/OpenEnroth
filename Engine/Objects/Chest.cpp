@@ -1,6 +1,5 @@
 #include "Engine/Objects/Chest.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "Engine/Engine.h"
@@ -18,8 +17,6 @@
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
-#include "Engine/Tables/FrameTableInc.h"
-#include "Engine/Time.h"
 
 #include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"

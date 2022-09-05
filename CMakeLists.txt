@@ -48,11 +48,13 @@ message(STATUS "PROJECT_VERSION_MAJOR = ${PROJECT_VERSION_MAJOR}")
 message(STATUS "PROJECT_VERSION_MINOR = ${PROJECT_VERSION_MINOR}")
 message(STATUS "PROJECT_VERSION_PATCH = ${PROJECT_VERSION_PATCH}")
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(CMAKE_CXX_FLAGS "-std=c++2a ${CMAKE_CXX_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread -lavutil -lswresample")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-  set(CMAKE_CXX_FLAGS "-std=c++17 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+  set(CMAKE_CXX_FLAGS "-stdlib=libc++ ${CMAKE_CXX_FLAGS}")
 else()
   add_definitions(-DWINDOWS_IGNORE_PACKING_MISMATCH="") # vs2019 complains about using #pragma pack()
   add_definitions(-DNOMINMAX) # please don't pull in these macros from <Windows.h>
@@ -61,8 +63,6 @@ else()
   add_definitions(-D_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
   set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
-  set(CMAKE_CXX_STANDARD 23)
-  set(CXX_STANDARD_REQUIRED ON)
 endif()
 
 set(THIRDPARTY_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)

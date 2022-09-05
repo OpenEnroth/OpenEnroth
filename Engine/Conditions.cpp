@@ -4,6 +4,8 @@
 
 #include "Engine/Party.h"
 
+#include "src/tools/Workaround.h"
+
 std::array<ConditionProcessor, 18> conditionArray = {{
     // hint: condname, protfrommagic, gmprot, enchantment, ...
     ConditionProcessor(Condition_Cursed, false, false, 0),
@@ -28,10 +30,9 @@ std::array<ConditionProcessor, 18> conditionArray = {{
     ConditionProcessor(Condition_Zombie, false, false, 0)
 }};
 
-bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, int condToCheck,
-                                          int blockable) {
+bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToCheck, int blockable) {
     if (!blockable) return true;
-    ConditionProcessor* thisProc = &conditionArray[condToCheck];
+    ConditionProcessor* thisProc = &conditionArray[std::to_underlying(condToCheck)];
     if (thisProc->m_IsBlockedByProtFromMagic &&
         pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].expire_time) {
         if (!(thisProc->m_DoesNeedGmProtFromMagic &&

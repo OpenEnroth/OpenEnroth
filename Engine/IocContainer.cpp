@@ -3,8 +3,6 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Events.h"
-#include "Engine/Events2D.h"
-#include "Engine/LOD.h"
 #include "Engine/MapsLongTimer.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
@@ -21,7 +19,6 @@
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 
 #include "Engine/Graphics/Level/Decoration.h"
@@ -29,8 +26,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Monsters.h"
-#include "Engine/Objects/NPC.h"
-#include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/Player.h"
 #include "Engine/Objects/SpriteObject.h"
 
@@ -40,7 +35,6 @@
 
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/PlayerFrameTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
 
 #include "Io/Mouse.h"
 
@@ -180,13 +174,13 @@ void IntegrityTest() {
     static_assert(sizeof(BLVLightMM7) == 0x10, "Wrong type size");
     static_assert(sizeof(PlayerBuffAnim) == 0x10, "Wrong type size");
     //static_assert(sizeof(StationaryLight) == 0xC, "Wrong type size");
-    static_assert(sizeof(MobileLight) == 0x12, "Wrong type size");
+    //static_assert(sizeof(MobileLight) == 0x12, "Wrong type size");
     //static_assert(sizeof(stru141_actor_collision_object) == 0xA8, "Wrong type size");
     static_assert(sizeof(ActionQueue) == 0x7C, "Wrong type size");
     static_assert(sizeof(PaletteManager) == 0x267AF0, "Wrong type size");
     static_assert(sizeof(TrailParticle) == 0x18, "Wrong type size");
     static_assert(sizeof(EventIndex) == 0xC, "Wrong type size");
-    static_assert(sizeof(MapsLongTimer) == 0x20, "Wrong type size");
+    //static_assert(sizeof(MapsLongTimer) == 0x20, "Wrong type size");
     static_assert(sizeof(SavegameHeader) == 0x64, "Wrong type size");
     static_assert(sizeof(FactionTable) == 0x1EF1, "Wrong type size");
     static_assert(sizeof(PartyTimeStruct) == 0x678, "Wrong type size");

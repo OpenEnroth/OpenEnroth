@@ -4,8 +4,6 @@
 
 #include "Platform/Api.h"
 
-#include "FrameTableInc.h"
-
 
 //----- (00494AED) --------------------------------------------------------
 unsigned int PlayerFrameTable::GetFrameIdByExpression(

@@ -126,7 +126,7 @@ class AudioPlayer {
     void SetMasterVolume(int level);
     void SetVoiceVolume(int level);
 
-    void MusicPlayTrack(enum MusicID eTrack);
+    void MusicPlayTrack(MusicID eTrack);
     void MusicStart();
     void MusicStop();
     void MusicPause();

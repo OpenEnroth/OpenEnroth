@@ -3,7 +3,7 @@
 
 #include "Engine/Objects/Items.h"
 
-enum Condition : uint32_t {
+enum class Condition : uint32_t {
     Condition_Cursed = 0,
     Condition_Weak = 1,
     Condition_Sleep = 2,
@@ -22,8 +22,9 @@ enum Condition : uint32_t {
     Condition_Pertified = 15,
     Condition_Eradicated = 16,
     Condition_Zombie = 17,
-    Condition_Good = 18
+    Condition_Good = 18,
 };
+using enum Condition;
 
 struct Player;
 class ConditionProcessor {
@@ -32,7 +33,7 @@ class ConditionProcessor {
     bool m_DoesNeedGmProtFromMagic;
     int m_WorkingEnchantment;
     std::array<EquipemntPair, 3> m_equipmentPairs;
-    ConditionProcessor(int, bool isblocked, bool needsGm, int enchantment,
+    ConditionProcessor(Condition, bool isblocked, bool needsGm, int enchantment,
                        ITEM_TYPE itemtype1 = (ITEM_TYPE)0,
                        ITEM_EQUIP_TYPE itemslot1 = (ITEM_EQUIP_TYPE)0,
                        ITEM_TYPE itemtype2 = (ITEM_TYPE)0,
@@ -50,7 +51,7 @@ class ConditionProcessor {
         m_equipmentPairs[2].m_EquipSlot = itemslot3;
     }
 
-    static bool IsPlayerAffected(Player*, int, int);
+    static bool IsPlayerAffected(Player*, Condition, int);
 };
 
 extern std::array<ConditionProcessor, 18> conditionArray;

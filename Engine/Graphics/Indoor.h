@@ -338,7 +338,7 @@ struct BLVDoor {  // 50h
         Closing = 3
     };
 
-    uint32_t uAttributes;
+    DoorAttributes uAttributes;
     uint32_t uDoorID;
     uint32_t uTimeSinceTriggered;
     Vec3_int_ vDirection;
@@ -406,21 +406,21 @@ struct BLVFace {  // 60h
     bool Deserialize(struct BLVFace_MM7 *);
 
     inline bool Invisible() const {
-        return (uAttributes & FACE_IsInvisible) != 0;
+        return uAttributes & FACE_IsInvisible;
     }
     inline bool Visible() const { return !Invisible(); }
-    inline bool Portal() const { return (uAttributes & FACE_IsPortal) != 0; } // TODO: rename IsPortal.
-    inline bool Fluid() const { return (uAttributes & FACE_IsFluid) != 0; }
+    inline bool Portal() const { return uAttributes & FACE_IsPortal; } // TODO: rename IsPortal.
+    inline bool Fluid() const { return uAttributes & FACE_IsFluid; }
     inline bool Indoor_sky() const {
-        return (uAttributes & FACE_INDOOR_SKY) != 0;
+        return uAttributes & FACE_INDOOR_SKY;
     }
     inline bool Clickable() const {
-        return (uAttributes & FACE_CLICKABLE) != 0;
+        return uAttributes & FACE_CLICKABLE;
     }
     inline bool Pressure_Plate() const {
-        return (uAttributes & FACE_PRESSURE_PLATE) != 0;
+        return uAttributes & FACE_PRESSURE_PLATE;
     }
-    inline bool Ethereal() const { return (uAttributes & FACE_ETHEREAL) != 0; }
+    inline bool Ethereal() const { return uAttributes & FACE_ETHEREAL; }
 
     inline bool IsTextureFrameTable() const {
         return this->uAttributes & FACE_TEXTURE_FRAME;
@@ -439,7 +439,7 @@ struct BLVFace {  // 60h
      * @param override_plane            Plane override.
      * @see BLVFace::Contains
      */
-    void Flatten(FlatFace *points, int model_idx, int override_plane = 0) const;
+    void Flatten(FlatFace *points, int model_idx, FaceAttributes override_plane = 0) const;
 
     /**
      * @param pos                       Point to check.
@@ -453,12 +453,12 @@ struct BLVFace {  // 60h
      * @return                          Whether the point lies inside this polygon, if projected on the face's
      *                                  primary plane.
      */
-    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, int override_plane = 0) const;
+    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
     struct Plane_float_ pFacePlane;
     struct Plane_int_ pFacePlane_old;
     PlaneZCalc_int64_ zCalc;
-    uint32_t uAttributes;
+    FaceAttributes uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
     int16_t *pYInterceptDisplacements;

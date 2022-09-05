@@ -1263,7 +1263,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDist_X;
 
     uint _507D30_idx = 0;
-    for (_507D30_idx; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
+    for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
         // outbound screen x dist
         float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - array_507D30[_507D30_idx].vWorldViewProjX);
         // outbound screen y dist
@@ -1893,10 +1893,8 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                             b_ = decor_desc->uColoredLightBlue;
                         }
                         pStationaryLightsStack->AddLight(
-                            pLevelDecorations[i].vPosition.x,
-                            pLevelDecorations[i].vPosition.y,
-                            pLevelDecorations[i].vPosition.z +
-                            decor_desc->uDecorationHeight / 2,
+                            ToFloatVector(pLevelDecorations[i].vPosition) +
+                                Vec3_float_(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
                     }  // for light
 
@@ -4148,7 +4146,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                                     attribflags |= 0x1000;
 
                                 if (face.uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                                    attribflags |= FACE_OUTLINED;
+                                    attribflags |= 0x00010000;
 
                                 // load up verts here
                                 for (int z = 0; z < (face.uNumVertices - 2); z++) {
@@ -4498,7 +4496,7 @@ void RenderOpenGL::DrawIndoorFaces() {
 
 
                 // kludge for getting lights in  visible sectors
-                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition.x, test.vPosition.y, test.vPosition.z);
+                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(ToIntVector(test.vPosition));
 
                 if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
             }
@@ -4578,7 +4576,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                     attribflags |= 0x1000;
 
                 if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                    attribflags |= FACE_OUTLINED;
+                    attribflags |= 0x00010000;
 
                 // check if tile->name is already in list
                 auto mapiter = bsptexmap.find(*texname);
@@ -4815,7 +4813,7 @@ void RenderOpenGL::DrawIndoorFaces() {
                             attribflags |= 0x1000;
 
                         if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                            attribflags |= FACE_OUTLINED;
+                            attribflags |= 0x00010000;
 
                         texlayer = face->texlayer;
                         texunit = face->texunit;

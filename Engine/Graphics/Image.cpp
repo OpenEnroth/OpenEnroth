@@ -3,7 +3,6 @@
 #include <algorithm>
 
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
 #include "Engine/OurMath.h"
 #include "Engine/ZlibWrapper.h"
 
@@ -12,12 +11,6 @@
 #include "Engine/Graphics/Texture.h"
 
 #include "Engine/Serialization/LegacyImages.h"
-
-#include "Engine/Tables/FrameTableInc.h"
-
-#include "Platform/Api.h"
-
-#include "PaletteManager.h"
 
 
 struct TextureFrameTable *pTextureFrameTable;

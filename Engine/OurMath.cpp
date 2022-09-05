@@ -1,5 +1,4 @@
 #include "Engine/OurMath.h"
-#include "Engine/Engine.h"
 
 TrigTableLookup* TrigLUT = new TrigTableLookup();
 

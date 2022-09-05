@@ -3,7 +3,7 @@
 
 class GUIWindow_CharacterRecord : public GUIWindow {
  public:
-    GUIWindow_CharacterRecord(unsigned int uActiveCharacter, enum CURRENT_SCREEN screen);
+    GUIWindow_CharacterRecord(unsigned int uActiveCharacter, CURRENT_SCREEN screen);
     virtual ~GUIWindow_CharacterRecord() {}
 
     virtual void Update();

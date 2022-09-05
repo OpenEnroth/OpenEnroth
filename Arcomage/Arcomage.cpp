@@ -17,7 +17,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
 void SetStartConditions();
@@ -43,14 +42,14 @@ void DrawBeastsCount(const std::string &str, Point *pXY);
 void DrawPlayersTowers();
 void DrawPlayersWall();
 void DrawCards();
-void DrawCardAnimation(int a1);
+void DrawCardAnimation(int animation_stage);
 int GetPlayerHandCardCount(int player_num);
 int DrawCardsRectangles(int player_num);
 bool DiscardCard(int player_num, int card_slot_index);
 bool PlayCard(int player_num, int card_slot_num);
 bool CanCardBePlayed(int player_num, int hand_card_indx);
 void ApplyCardToPlayer(int player_num, unsigned int uCardID);
-int new_explosion_effect(Point *a1, int a2);
+int new_explosion_effect(Point *startXY, int effect_value);
 int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
@@ -113,8 +112,8 @@ struct am_ai_cardpowerstruct {
 
 am_ai_cardpowerstruct cards_power[10];
 
-bool Player_Gets_First_Turn = 1;  // who starts the game
-bool Player_Cards_Shift = 1;  // shifts the cards round at the bottom of the screen so they arent all level
+bool Player_Gets_First_Turn = true;  // who starts the game
+bool Player_Cards_Shift = true;  // shifts the cards round at the bottom of the screen so they arent all level
 char use_start_bonus = 1;
 
 int start_tower_height;
@@ -857,16 +856,16 @@ void ArcomageGame::Loop() {
     // reset timer
     pArcomageGame->event_timer_time = (int)pEventTimer->Time();
 
-    bool am_turn_not_finished = 0;
+    bool am_turn_not_finished = false;
     while (!pArcomageGame->GameOver) {
         pArcomageGame->force_redraw_1 = 1;
-        am_turn_not_finished = 1;
+        am_turn_not_finished = true;
         IncreaseResourcesInTurn(current_player_num);
         // LABEL_8:
         while (am_turn_not_finished) {
             played_card_id = -1;
             GetNextCardFromDeck(current_player_num);
-            while (1) {
+            while (true) {
                 am_turn_not_finished = PlayerTurn(current_player_num);
                 if (GetPlayerHandCardCount(current_player_num) <=
                     minimum_cards_at_hand) {
@@ -3015,7 +3014,7 @@ void SetStartConditions() {
 void am_DrawText(const std::string &str, Point *pXY) {
     pPrimaryWindow->DrawText(pFontComic, pXY->x,
                              pXY->y - ((pFontComic->GetHeight() - 3) / 2) + 3,
-                             0, str, 0, 0, 0);
+                             0, str, false, 0, 0);
 }
 
 void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill) {

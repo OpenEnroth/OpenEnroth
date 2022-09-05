@@ -1,7 +1,6 @@
 #include "Engine/Objects/Player.h"
 
 #include <algorithm>
-#include <functional>
 
 #include "Engine/Autonotes.h"
 #include "Engine/Awards.h"
@@ -42,7 +41,7 @@ static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
 NZIArray<struct Player*, 5> pPlayers;
 
-enum PlayerSpeech PlayerSpeechID;
+PlayerSpeech PlayerSpeechID;
 
 // Race Stat Points Bonus/ Penalty
 struct PlayerCreation_AttributeProps {
@@ -191,8 +190,26 @@ unsigned char pAgingAttributeModifier[7][4] = {
 
 unsigned int pAgeingTable[4] = {50, 100, 150, 0xFFFF};
 
-std::array<unsigned int, 18> pConditionImportancyTable = {
-    {16, 15, 14, 17, 13, 2, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 1, 0}};
+std::array<Condition, 18> pConditionImportancyTable = {{
+    Condition_Eradicated,
+    Condition_Pertified,
+    Condition_Dead,
+    Condition_Zombie,
+    Condition_Unconcious,
+    Condition_Sleep,
+    Condition_Paralyzed,
+    Condition_Disease_Severe,
+    Condition_Poison_Severe,
+    Condition_Disease_Medium,
+    Condition_Poison_Medium,
+    Condition_Disease_Weak,
+    Condition_Poison_Weak,
+    Condition_Insane,
+    Condition_Drunk,
+    Condition_Fear,
+    Condition_Weak,
+    Condition_Cursed
+}};
 
 short param_to_bonus_table[29] = {
     500, 400, 350, 300, 275, 250, 225, 200, 175, 150, 125, 100, 75, 50, 40,
@@ -319,15 +336,15 @@ bool Player::NothingOrJustBlastersEquipped() {
 }
 
 //----- (004B8040) --------------------------------------------------------
-int Player::GetConditionDaysPassed(
-    unsigned int
-        condition) {  // PS - CHECK ?? is this the intedned behavior - RETURN
-                      // NUMBER OF DAYS CONDITION HAS BEEN ACTIVE FOR
+int Player::GetConditionDaysPassed(Condition condition) {
+    // PS - CHECK ?? is this the intedned behavior - RETURN
+    // NUMBER OF DAYS CONDITION HAS BEEN ACTIVE FOR
 
-    if (this->conditions_times[condition].Valid() == false) return 0;
+    if (!this->conditions.Has(condition))
+        return 0;
 
     GameTime playtime = pParty->GetPlayingTime();
-    GameTime condtime = this->conditions_times[condition];
+    GameTime condtime = this->conditions.Get(condition);
     GameTime diff = playtime - condtime;
 
     return diff.GetDays() + 1;
@@ -335,24 +352,24 @@ int Player::GetConditionDaysPassed(
 
 //----- (004B807C) --------------------------------------------------------
 int Player::GetTempleHealCostModifier(float price_multi) {
-    unsigned int conditionIdx = GetMajorConditionIdx();  // get worse condition
+    Condition conditionIdx = GetMajorConditionIdx();  // get worse condition
     int conditionTimeMultiplier = 1;
     int baseConditionMultiplier =
         1;  // condition good unless otherwise , base price for health and mana
     int high_mult;
     int result;
 
-    if (conditionIdx >= 14 &&
-        conditionIdx <= 16) {  // dead, petri, erad - serious
-        if (conditionIdx <= 15)
+    if (conditionIdx >= Condition_Dead &&
+        conditionIdx <= Condition_Eradicated) {  // dead, petri, erad - serious
+        if (conditionIdx <= Condition_Pertified)
             baseConditionMultiplier = 5;  // dead or petri
         else
             baseConditionMultiplier = 10;  // erad
 
         conditionTimeMultiplier = GetConditionDaysPassed(conditionIdx);
-    } else if (conditionIdx < 14) {  // all other conditions
+    } else if (conditionIdx < Condition_Dead) {  // all other conditions
         for (int i = 0; i <= 13; i++) {
-            high_mult = GetConditionDaysPassed(i);
+            high_mult = GetConditionDaysPassed(static_cast<Condition>(i));
 
             if (high_mult >
                 conditionTimeMultiplier)  // get worst other condition
@@ -617,8 +634,8 @@ bool Player::CanEquip_RaceAndAlignmentCheck(unsigned int uItemID) {
 }
 
 //----- (00492D65) --------------------------------------------------------
-void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
-    if (conditions_times[uConditionIdx])  // cant get the same condition twice
+void Player::SetCondition(Condition uConditionIdx, int blockable) {
+    if (conditions.Has(uConditionIdx))  // cant get the same condition twice
         return;
 
     if (!ConditionProcessor::IsPlayerAffected(this, uConditionIdx,
@@ -686,7 +703,7 @@ void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
                 IsZombie() || !IsDead())  // cant zombified
                 return;
 
-            conditions_times.fill(GameTime(0));
+            conditions.ResetAll();
             sHealth = GetMaxHealth();
             sMana = 0;
             uPrevFace = uCurrentFace;
@@ -702,16 +719,17 @@ void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
 
             PlaySound(SPEECH_CheatedDeath, 0);
             break;
+
+        default:
+            break;
     }
 
     int players_before = 0;
-    for (int i = 1; i < 5;
-         ++i) {  // count active players veofre activating condition
+    for (int i = 1; i < 5; ++i) {  // count active players veofre activating condition
         if (pPlayers[i]->CanAct()) ++players_before;
     }
 
-    conditions_times[uConditionIdx] =
-        pParty->GetPlayingTime();  // set ocndition
+    conditions.Set(uConditionIdx, pParty->GetPlayingTime());  // set ocndition
 
     int remainig_player = 0;  // who is left now
     int players_after = 0;
@@ -722,11 +740,9 @@ void Player::SetCondition(unsigned int uConditionIdx, int blockable) {
         }
     }
 
-    if ((players_before == 2) &&
-        (players_after ==
-         1))  // if was 2 and now down to 1 - "its just you and me now"
-        pPlayers[remainig_player]->PlaySound(
-            SPEECH_LastManStanding, 0);  //скорее всего обнадёжывающий возглас последнего
+    if ((players_before == 2) && (players_after == 1))  // if was 2 and now down to 1 - "its just you and me now"
+        pPlayers[remainig_player]->PlaySound(SPEECH_LastManStanding, 0);
+    // ^ скорее всего обнадёжывающий возглас последнего
 
     return;
 }
@@ -1156,7 +1172,7 @@ int Player::GetActualAttribute(CHARACTER_ATTRIBUTE_TYPE attrId,
     }
 
     uchar uConditionMult = pConditionAttributeModifier
-        [attrId][GetMajorConditionIdx()];  // weak from disease or poison ect
+        [attrId][std::to_underlying(GetMajorConditionIdx())];  // weak from disease or poison ect
     int magicBonus = GetMagicalBonus(attrId);
     int itemBonus = GetItemsBonus(attrId);
 
@@ -2457,7 +2473,7 @@ unsigned int Player::GetActualAge() {
 }
 
 //----- (0048E73F) --------------------------------------------------------
-int Player::GetBaseResistance(enum CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
     int v7;  // esi@20
     int racialBonus = 0;
     __int16* resStat;
@@ -2501,7 +2517,7 @@ int Player::GetBaseResistance(enum CHARACTER_ATTRIBUTE_TYPE a2) {
 }
 
 //----- (0048E7D0) --------------------------------------------------------
-int Player::GetActualResistance(enum CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
     signed int v10 = 0;  // [sp+14h] [bp-4h]@1
     __int16* resStat;
     int result;
@@ -2551,10 +2567,9 @@ int Player::GetActualResistance(enum CHARACTER_ATTRIBUTE_TYPE a2) {
 }
 
 //----- (0048E8F5) --------------------------------------------------------
-bool Player::Recover(int dt) {
+bool Player::Recover(GameTime dt) {
     int timepassed =
-        (int)(dt * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 +
-              dt);
+        dt.value * GetSpecialItemBonus(ITEM_ENCHANTMENT_OF_RECOVERY) * 0.01 + dt.value;
 
     if (uTimeToRecovery > timepassed) {  // need more time till recovery
         uTimeToRecovery -= timepassed;
@@ -2592,12 +2607,12 @@ void Player::RandomizeName() {
 }
 
 //----- (0048E9F4) --------------------------------------------------------
-unsigned int Player::GetMajorConditionIdx() {
+Condition Player::GetMajorConditionIdx() {
     for (uint i = 0; i < 18; ++i) {
-        if (conditions_times[pConditionImportancyTable[i]].Valid())
+        if (conditions.Has(pConditionImportancyTable[i]))
             return pConditionImportancyTable[i];  // return worst condition
     }
-    return 18;  // condition good
+    return Condition_Good;  // condition good
 }
 
 //----- (0048EA1B) --------------------------------------------------------
@@ -2633,8 +2648,7 @@ int Player::GetSpecialItemBonus(ITEM_ENCHANTMENT enchantment) {
 }
 
 //----- (0048EAAE) --------------------------------------------------------
-int Player::GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr,
-                          bool getOnlyMainHandDmg /*= false*/) {
+int Player::GetItemsBonus(CHARACTER_ATTRIBUTE_TYPE attr, bool getOnlyMainHandDmg /*= false*/) {
     int v5;                     // edi@1
     int v9;                     // eax@49
     int v14;                    // ecx@58
@@ -2919,7 +2933,7 @@ int Player::GetItemsBonus(enum CHARACTER_ATTRIBUTE_TYPE attr,
 }
 
 //----- (0048F73C) --------------------------------------------------------
-int Player::GetMagicalBonus(enum CHARACTER_ATTRIBUTE_TYPE a2) {
+int Player::GetMagicalBonus(CHARACTER_ATTRIBUTE_TYPE a2) {
     int v3 = 0;  // eax@4
     int v4 = 0;  // ecx@5
 
@@ -3177,9 +3191,8 @@ int Player::GetActualSkillMastery(PLAYER_SKILL_TYPE uSkillType) {
 }
 
 //----- (0048FC00) --------------------------------------------------------
-int Player::GetSkillBonus(
-    enum CHARACTER_ATTRIBUTE_TYPE
-        inSkill) {  // TODO(_): move the individual implementations to attribute
+int Player::GetSkillBonus(CHARACTER_ATTRIBUTE_TYPE inSkill) {
+                    // TODO(_): move the individual implementations to attribute
                     // classes once possible ?? check
     int armsMasterBonus;
 
@@ -3832,10 +3845,10 @@ unsigned int Player::GetStatColor(int uStat) {
 }
 
 //----- (004908A8) --------------------------------------------------------
-bool Player::DiscardConditionIfLastsLongerThan(unsigned int uCondition,
+bool Player::DiscardConditionIfLastsLongerThan(Condition uCondition,
                                                GameTime time) {
-    if (conditions_times[uCondition] && (time < conditions_times[uCondition])) {
-        conditions_times[uCondition].Reset();
+    if (conditions.Has(uCondition) && time < conditions.Get(uCondition)) {
+        conditions.Reset(uCondition);
         return true;
     } else {
         return false;
@@ -3938,36 +3951,31 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 break;
 
             case 224:  // Cure Weakness
-                playerAffected->conditions_times[Condition_Weak].Reset();
+                playerAffected->conditions.Reset(Condition_Weak);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 225:  // Cure Disease
-                playerAffected->conditions_times[Condition_Disease_Severe]
-                    .Reset();
-                playerAffected->conditions_times[Condition_Disease_Medium]
-                    .Reset();
-                playerAffected->conditions_times[Condition_Disease_Weak]
-                    .Reset();
+                playerAffected->conditions.Reset(Condition_Disease_Severe);
+                playerAffected->conditions.Reset(Condition_Disease_Medium);
+                playerAffected->conditions.Reset(Condition_Disease_Weak);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 226:  // Cure Poison
-                playerAffected->conditions_times[Condition_Poison_Severe]
-                    .Reset();
-                playerAffected->conditions_times[Condition_Poison_Medium]
-                    .Reset();
-                playerAffected->conditions_times[Condition_Poison_Weak].Reset();
+                playerAffected->conditions.Reset(Condition_Poison_Severe);
+                playerAffected->conditions.Reset(Condition_Poison_Medium);
+                playerAffected->conditions.Reset(Condition_Poison_Weak);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 227:  // Awaken
-                playerAffected->conditions_times[Condition_Sleep].Reset();
+                playerAffected->conditions.Reset(Condition_Sleep);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 228:  // Haste
-                if (!playerAffected->conditions_times[Condition_Weak]) {
+                if (!playerAffected->conditions.Has(Condition_Weak)) {
                     auto duration =
                         GameTime(0, TIME_SECONDS_PER_QUANT *
                                         pParty->pPickedItem.uEnchantmentType);
@@ -4045,15 +4053,15 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             }
 
             case 237:  // Remove Fear
-                playerAffected->conditions_times[Condition_Fear].Reset();
+                playerAffected->conditions.Reset(Condition_Fear);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 238:  // Remove Curse
-                playerAffected->conditions_times[Condition_Cursed].Reset();
+                playerAffected->conditions.Reset(Condition_Cursed);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
             case 239:  // Cure Insanity
-                playerAffected->conditions_times[Condition_Insane].Reset();
+                playerAffected->conditions.Reset(Condition_Insane);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
@@ -4130,18 +4138,18 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             }
 
             case 251:  // Cure Paralysis
-                playerAffected->conditions_times[Condition_Paralyzed].Reset();
+                playerAffected->conditions.Reset(Condition_Paralyzed);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
             case 252:  // Divine Restoration
-                v30 = playerAffected->conditions_times[Condition_Dead];
-                v32 = playerAffected->conditions_times[Condition_Pertified];
-                v34 = playerAffected->conditions_times[Condition_Eradicated];
-                conditions_times.fill(GameTime(0));
-                playerAffected->conditions_times[Condition_Dead] = GameTime(v30);
-                playerAffected->conditions_times[Condition_Pertified] = GameTime(v32);
-                playerAffected->conditions_times[Condition_Eradicated] = GameTime(v34);
+                v30 = playerAffected->conditions.Get(Condition_Dead).value;
+                v32 = playerAffected->conditions.Get(Condition_Pertified).value;
+                v34 = playerAffected->conditions.Get(Condition_Eradicated).value;
+                conditions.ResetAll();
+                playerAffected->conditions.Set(Condition_Dead, GameTime(v30));
+                playerAffected->conditions.Set(Condition_Pertified, GameTime(v32));
+                playerAffected->conditions.Set(Condition_Eradicated, GameTime(v34));
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
@@ -4243,7 +4251,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             }
 
             case 262:  // Stone to Flesh
-                playerAffected->conditions_times[Condition_Pertified].Reset();
+                playerAffected->conditions.Reset(Condition_Pertified);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
@@ -4360,7 +4368,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             pGUIWindow_CurrentMenu->Release();
             current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
             viewparams->bRedrawGameUI = 1;
-            _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)scroll_id, player_num - 1, 0x85u, 1, 0);
+            _42777D_CastSpell_UseWand_ShootArrow((SPELL_TYPE)scroll_id, player_num - 1, 0x85u, ON_CAST_CastViaScroll, 0);
         } else {
             mouse->RemoveHoldingItem();
             pMessageQueue_50C9E8->AddGUIMessage(UIMSG_SpellScrollUse, scroll_id, player_num - 1);
@@ -4656,7 +4664,7 @@ bool CmpSkillValue(int valToCompare, int skillValue) {
 }
 
 //----- (00449BB4) --------------------------------------------------------
-bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
+bool Player::CompareVariable(VariableType VarNum, int pValue) {
     // in some cases this calls only calls v4 >= pValue, which i've
     // changed to return false, since these values are supposed to
     // be positive and v4 was -1 by default
@@ -4891,45 +4899,46 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
         case VAR_LearningSkill:
             return CmpSkillValue(pValue, this->skillLearning);
         case VAR_Cursed:
-            return conditions_times[Condition_Cursed].Valid();
+            return conditions.Has(Condition_Cursed);
         case VAR_Weak:
-            return conditions_times[Condition_Weak].Valid();
+            return conditions.Has(Condition_Weak);
         case VAR_Asleep:
-            return conditions_times[Condition_Sleep].Valid();
+            return conditions.Has(Condition_Sleep);
         case VAR_Afraid:
-            return conditions_times[Condition_Fear].Valid();
+            return conditions.Has(Condition_Fear);
         case VAR_Drunk:
-            return conditions_times[Condition_Drunk].Valid();
+            return conditions.Has(Condition_Drunk);
         case VAR_Insane:
-            return conditions_times[Condition_Insane].Valid();
+            return conditions.Has(Condition_Insane);
         case VAR_PoisonedGreen:
-            return conditions_times[Condition_Poison_Weak].Valid();
+            return conditions.Has(Condition_Poison_Weak);
         case VAR_DiseasedGreen:
-            return conditions_times[Condition_Disease_Weak].Valid();
+            return conditions.Has(Condition_Disease_Weak);
         case VAR_PoisonedYellow:
-            return conditions_times[Condition_Poison_Medium].Valid();
+            return conditions.Has(Condition_Poison_Medium);
         case VAR_DiseasedYellow:
-            return conditions_times[Condition_Disease_Medium].Valid();
+            return conditions.Has(Condition_Disease_Medium);
         case VAR_PoisonedRed:
-            return conditions_times[Condition_Poison_Severe].Valid();
+            return conditions.Has(Condition_Poison_Severe);
         case VAR_DiseasedRed:
-            return conditions_times[Condition_Disease_Severe].Valid();
+            return conditions.Has(Condition_Disease_Severe);
         case VAR_Paralyzed:
-            return conditions_times[Condition_Paralyzed].Valid();
+            return conditions.Has(Condition_Paralyzed);
         case VAR_Unconsious:
-            return conditions_times[Condition_Unconcious].Valid();
+            return conditions.Has(Condition_Unconcious);
         case VAR_Dead:
-            return conditions_times[Condition_Dead].Valid();
+            return conditions.Has(Condition_Dead);
         case VAR_Stoned:
-            return conditions_times[Condition_Pertified].Valid();
+            return conditions.Has(Condition_Pertified);
         case VAR_Eradicated:
-            return conditions_times[Condition_Eradicated].Valid();
-        case VAR_MajorCondition:
-            v4 = GetMajorConditionIdx();
-            if (v4 != 18) {
-                return v4 >= pValue;
+            return conditions.Has(Condition_Eradicated);
+        case VAR_MajorCondition: {
+            Condition condition = GetMajorConditionIdx();
+            if (condition != Condition_Good) {
+                return std::to_underlying(condition) >= pValue;
             }
             return true;
+        }
         case VAR_AutoNotes:  // TODO(_): find out why the double subtraction. or
                              // whether this is even used
             test_bit_value = 0x80u >> (pValue - 2) % 8;
@@ -5066,7 +5075,7 @@ bool Player::CompareVariable(enum VariableType VarNum, int pValue) {
 }
 
 //----- (0044A5CB) --------------------------------------------------------
-void Player::SetVariable(enum VariableType var_type, signed int var_value) {
+void Player::SetVariable(VariableType var_type, signed int var_value) {
     unsigned int v6;      // esi@13
     unsigned int v7;      // esi@14
     signed int v11;       // eax@30
@@ -5431,7 +5440,7 @@ void Player::SetVariable(enum VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_MajorCondition:
-            conditions_times.fill(GameTime(0));
+            conditions.ResetAll();
             PlayAwardSound_Anim();
             return;
         case VAR_AutoNotes:
@@ -5653,7 +5662,7 @@ void Player::SetSkillByEvent(unsigned __int16 Player::*skillToSet,
 }
 
 //----- (0044AFFB) --------------------------------------------------------
-void Player::AddVariable(enum VariableType var_type, signed int val) {
+void Player::AddVariable(VariableType var_type, signed int val) {
     int v6;               // eax@15
     unsigned int v7;      // esi@18
     DDM_DLV_Header* v27;  // eax@153
@@ -6003,7 +6012,7 @@ void Player::AddVariable(enum VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_MajorCondition:
-            conditions_times.fill(GameTime(0));
+            conditions.ResetAll();
             PlayAwardSound_Anim97();
             return;
         case VAR_AutoNotes:
@@ -6203,7 +6212,7 @@ void Player::AddSkillByEvent(unsigned __int16 Player::*skillToSet,
 }
 
 //----- (0044B9C4) --------------------------------------------------------
-void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
+void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
     DDM_DLV_Header* locationHeader;  // eax@90
     int randGold;
     int randFood;
@@ -6604,71 +6613,71 @@ void Player::SubtractVariable(enum VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_Cursed:
-            this->conditions_times[Condition_Cursed].Reset();
+            this->conditions.Reset(Condition_Cursed);
             PlayAwardSound_Anim98();
             return;
         case VAR_Weak:
-            this->conditions_times[Condition_Weak].Reset();
+            this->conditions.Reset(Condition_Weak);
             PlayAwardSound_Anim98();
             return;
         case VAR_Asleep:
-            this->conditions_times[Condition_Sleep].Reset();
+            this->conditions.Reset(Condition_Sleep);
             PlayAwardSound_Anim98();
             return;
         case VAR_Afraid:
-            this->conditions_times[Condition_Fear].Reset();
+            this->conditions.Reset(Condition_Fear);
             PlayAwardSound_Anim98();
             return;
         case VAR_Drunk:
-            this->conditions_times[Condition_Drunk].Reset();
+            this->conditions.Reset(Condition_Drunk);
             PlayAwardSound_Anim98();
             return;
         case VAR_Insane:
-            this->conditions_times[Condition_Insane].Reset();
+            this->conditions.Reset(Condition_Insane);
             PlayAwardSound_Anim98();
             return;
         case VAR_PoisonedGreen:
-            this->conditions_times[Condition_Poison_Weak].Reset();
+            this->conditions.Reset(Condition_Poison_Weak);
             PlayAwardSound_Anim98();
             return;
         case VAR_DiseasedGreen:
-            this->conditions_times[Condition_Disease_Weak].Reset();
+            this->conditions.Reset(Condition_Disease_Weak);
             PlayAwardSound_Anim98();
             return;
         case VAR_PoisonedYellow:
-            this->conditions_times[Condition_Poison_Medium].Reset();
+            this->conditions.Reset(Condition_Poison_Medium);
             PlayAwardSound_Anim98();
             return;
         case VAR_DiseasedYellow:
-            this->conditions_times[Condition_Disease_Medium].Reset();
+            this->conditions.Reset(Condition_Disease_Medium);
             PlayAwardSound_Anim98();
             return;
         case VAR_PoisonedRed:
-            this->conditions_times[Condition_Poison_Severe].Reset();
+            this->conditions.Reset(Condition_Poison_Severe);
             PlayAwardSound_Anim98();
             return;
         case VAR_DiseasedRed:
-            this->conditions_times[Condition_Disease_Severe].Reset();
+            this->conditions.Reset(Condition_Disease_Severe);
             PlayAwardSound_Anim98();
             return;
         case VAR_Paralyzed:
-            this->conditions_times[Condition_Paralyzed].Reset();
+            this->conditions.Reset(Condition_Paralyzed);
             PlayAwardSound_Anim98();
             return;
         case VAR_Unconsious:
-            this->conditions_times[Condition_Unconcious].Reset();
+            this->conditions.Reset(Condition_Unconcious);
             PlayAwardSound_Anim98();
             return;
         case VAR_Dead:
-            this->conditions_times[Condition_Dead].Reset();
+            this->conditions.Reset(Condition_Dead);
             PlayAwardSound_Anim98();
             return;
         case VAR_Stoned:
-            this->conditions_times[Condition_Pertified].Reset();
+            this->conditions.Reset(Condition_Pertified);
             PlayAwardSound_Anim98();
             return;
         case VAR_Eradicated:
-            this->conditions_times[Condition_Eradicated].Reset();
+            this->conditions.Reset(Condition_Eradicated);
             PlayAwardSound_Anim98();
             return;
         case VAR_AutoNotes:
@@ -7323,7 +7332,7 @@ void Player::OnInventoryLeftClick() {
                      *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
                      *invMatrixIndex;*/
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                    pSpellInfo->uFlags &= 0x7F;
+                    pSpellInfo->uFlags &= ~ON_CAST_Enchantment;
                     pSpellInfo->uPlayerID_2 = uActiveCharacter - 1;
                     pSpellInfo->spell_target_pid = enchantedItemPos - 1;
                     pSpellInfo->field_6 = this->GetItemMainInventoryIndex(invMatrixIndex);
@@ -7402,115 +7411,115 @@ void Player::OnInventoryLeftClick() {
 }  // func
 
 bool Player::IsWeak() const {
-    return this->conditions_times[Condition_Weak].Valid();
+    return this->conditions.Has(Condition_Weak);
 }
 
 bool Player::IsDead() const {
-    return this->conditions_times[Condition_Dead].Valid();
+    return this->conditions.Has(Condition_Dead);
 }
 
 bool Player::IsEradicated() const {
-    return this->conditions_times[Condition_Eradicated].Valid();
+    return this->conditions.Has(Condition_Eradicated);
 }
 
 bool Player::IsZombie() const {
-    return this->conditions_times[Condition_Zombie].Valid();
+    return this->conditions.Has(Condition_Zombie);
 }
 
 bool Player::IsCursed() const {
-    return this->conditions_times[Condition_Cursed].Valid();
+    return this->conditions.Has(Condition_Cursed);
 }
 
 bool Player::IsPertified() const {
-    return this->conditions_times[Condition_Pertified].Valid();
+    return this->conditions.Has(Condition_Pertified);
 }
 
 bool Player::IsUnconcious() const {
-    return this->conditions_times[Condition_Unconcious].Valid();
+    return this->conditions.Has(Condition_Unconcious);
 }
 
 bool Player::IsAsleep() const {
-    return this->conditions_times[Condition_Sleep].Valid();
+    return this->conditions.Has(Condition_Sleep);
 }
 
 bool Player::IsParalyzed() const {
-    return this->conditions_times[Condition_Paralyzed].Valid();
+    return this->conditions.Has(Condition_Paralyzed);
 }
 
 bool Player::IsDrunk() const {
-    return this->conditions_times[Condition_Drunk].Valid();
+    return this->conditions.Has(Condition_Drunk);
 }
 
 void Player::SetCursed(GameTime time) {
-    this->conditions_times[Condition_Cursed] = time;
+    this->conditions.Set(Condition_Cursed, time);
 }
 
 void Player::SetWeak(GameTime time) {
-    this->conditions_times[Condition_Weak] = time;
+    this->conditions.Set(Condition_Weak, time);
 }
 
 void Player::SetAsleep(GameTime time) {
-    this->conditions_times[Condition_Sleep] = time;
+    this->conditions.Set(Condition_Sleep, time);
 }
 
 void Player::SetAfraid(GameTime time) {
-    this->conditions_times[Condition_Fear] = time;
+    this->conditions.Set(Condition_Fear, time);
 }
 
 void Player::SetDrunk(GameTime time) {
-    this->conditions_times[Condition_Drunk] = time;
+    this->conditions.Set(Condition_Drunk, time);
 }
 
 void Player::SetInsane(GameTime time) {
-    this->conditions_times[Condition_Insane] = time;
+    this->conditions.Set(Condition_Insane, time);
 }
 
 void Player::SetPoisonWeak(GameTime time) {
-    this->conditions_times[Condition_Poison_Weak] = time;
+    this->conditions.Set(Condition_Poison_Weak, time);
 }
 
 void Player::SetDiseaseWeak(GameTime time) {
-    this->conditions_times[Condition_Disease_Weak] = time;
+    this->conditions.Set(Condition_Disease_Weak, time);
 }
 
 void Player::SetPoisonMedium(GameTime time) {
-    this->conditions_times[Condition_Poison_Medium] = time;
+    this->conditions.Set(Condition_Poison_Medium, time);
 }
 
 void Player::SetDiseaseMedium(GameTime time) {
-    this->conditions_times[Condition_Disease_Medium] = time;
+    this->conditions.Set(Condition_Disease_Medium, time);
 }
 
 void Player::SetPoisonSevere(GameTime time) {
-    this->conditions_times[Condition_Poison_Severe] = time;
+    this->conditions.Set(Condition_Poison_Severe, time);
 }
 
 void Player::SetDiseaseSevere(GameTime time) {
-    this->conditions_times[Condition_Disease_Severe] = time;
+    this->conditions.Set(Condition_Disease_Severe, time);
 }
 
 void Player::SetParalyzed(GameTime time) {
-    this->conditions_times[Condition_Paralyzed] = time;
+    this->conditions.Set(Condition_Paralyzed, time);
 }
 
 void Player::SetUnconcious(GameTime time) {
-    this->conditions_times[Condition_Unconcious] = time;
+    this->conditions.Set(Condition_Unconcious, time);
 }
 
 void Player::SetDead(GameTime time) {
-    this->conditions_times[Condition_Dead] = time;
+    this->conditions.Set(Condition_Dead, time);
 }
 
 void Player::SetPertified(GameTime time) {
-    this->conditions_times[Condition_Pertified] = time;
+    this->conditions.Set(Condition_Pertified, time);
 }
 
 void Player::SetEradicated(GameTime time) {
-    this->conditions_times[Condition_Eradicated] = time;
+    this->conditions.Set(Condition_Eradicated, time);
 }
 
 void Player::SetZombie(GameTime time) {
-    this->conditions_times[Condition_Zombie] = time;
+    this->conditions.Set(Condition_Zombie, time);
 }
 
 void Player::SetCondWeakWithBlockCheck(int blockable) {
@@ -7993,7 +8002,7 @@ bool Player::IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
 
 //----- (00490EEE) --------------------------------------------------------
 int Player::SelectPhrasesTransaction(
-    ItemGen* pItem, int building_type, int BuildID_2Events,
+    ItemGen* pItem, BuildingType building_type, int BuildID_2Events,
     int ShopMenuType) {  // TODO(_): probably move this somewhere else, not really
                          // Player:: stuff
     unsigned int idemId;   // edx@1
@@ -8089,7 +8098,7 @@ Player::Player() {
     pName[0] = 0;
     uCurrentFace = 0;
     uVoiceID = 0;
-    conditions_times.fill(GameTime(0));
+    conditions.ResetAll();
 
     field_BB = 0;
 

@@ -2,8 +2,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
 #include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Viewport.h"
@@ -118,7 +116,7 @@ void LoadLevel_InitializeLevelEvt() {
 
     if (!uLevelEVT_Size) return;
 
-    memset(MapsLongTimersList, 0, 3200);
+    MapsLongTimersList.fill(MapsLongTimer());
     memset(pLevelEVT_Index.data(), 80, sizeof(EventIndex) * 4400);
 
     uLevelEVT_NumEvents = 0;
@@ -872,7 +870,7 @@ LABEL_47:
                     break;
                 case EVENT_SetFacesBit:
                     sub_44892E_set_faces_bit(EVT_DWORD(_evt->v5),
-                                             EVT_DWORD(_evt->v9), _evt->v13);
+                                             static_cast<FaceAttribute>(EVT_DWORD(_evt->v9)), _evt->v13);
                     ++curr_seq_num;
                     break;
                 case EVENT_ToggleChestFlag:

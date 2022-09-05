@@ -651,7 +651,7 @@ void Party::Reset() {
 
     for (uint i = 0; i < 4; ++i) {
         pPlayers[i].uTimeToRecovery = 0;
-        for (uint j = 0; j < 20; ++j) pPlayers[i].conditions_times[j].Reset();
+        pPlayers[i].conditions.ResetAll();
 
         for (uint j = 0; j < 24; ++j) pPlayers[i].pPlayerBuffs[j].Reset();
 
@@ -750,7 +750,7 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
         player->uExpressionTimePassed +=
             (unsigned short)pMiscTimer->uTimeElapsed;
 
-        uint condition = player->GetMajorConditionIdx();
+        Condition condition = player->GetMajorConditionIdx();
         if (condition == Condition_Good || condition == Condition_Zombie) {
             if (player->uExpressionTimePassed < player->uExpressionTimeLength)
                 continue;
@@ -887,17 +887,17 @@ void Party::RestAndHeal() {
         for (uint i = 0; i < 20; ++i) pPlayer->pPlayerBuffs[i].Reset();
 
         pPlayer->Zero();
-        if (pPlayer->conditions_times[Condition_Dead] ||
-            pPlayer->conditions_times[Condition_Pertified] ||
-            pPlayer->conditions_times[Condition_Eradicated]) {
+        if (pPlayer->conditions.Has(Condition_Dead) ||
+            pPlayer->conditions.Has(Condition_Pertified) ||
+            pPlayer->conditions.Has(Condition_Eradicated)) {
             continue;
         }
 
-        pPlayer->conditions_times[Condition_Unconcious].Reset();
-        pPlayer->conditions_times[Condition_Drunk].Reset();
-        pPlayer->conditions_times[Condition_Fear].Reset();
-        pPlayer->conditions_times[Condition_Sleep].Reset();
-        pPlayer->conditions_times[Condition_Weak].Reset();
+        pPlayer->conditions.Reset(Condition_Unconcious);
+        pPlayer->conditions.Reset(Condition_Drunk);
+        pPlayer->conditions.Reset(Condition_Fear);
+        pPlayer->conditions.Reset(Condition_Sleep);
+        pPlayer->conditions.Reset(Condition_Weak);
 
         pPlayer->uTimeToRecovery = 0;
         pPlayer->sHealth = pPlayer->GetMaxHealth();
@@ -917,23 +917,24 @@ void Party::RestAndHeal() {
             }
         }
 
-        if (pPlayer->conditions_times[Condition_Zombie]) {
+        if (pPlayer->conditions.Has(Condition_Zombie)) {
             pPlayer->sMana = 0;
             pPlayer->sHealth /= 2;
-        } else if (pPlayer->conditions_times[Condition_Poison_Severe] ||
-                   pPlayer->conditions_times[Condition_Disease_Severe]) {
+        } else if (pPlayer->conditions.Has(Condition_Poison_Severe) ||
+                   pPlayer->conditions.Has(Condition_Disease_Severe)) {
             pPlayer->sHealth /= 4;
             pPlayer->sMana /= 4;
-        } else if (pPlayer->conditions_times[Condition_Poison_Medium] ||
-                   pPlayer->conditions_times[Condition_Disease_Medium]) {
+        } else if (pPlayer->conditions.Has(Condition_Poison_Medium) ||
+                   pPlayer->conditions.Has(Condition_Disease_Medium)) {
             pPlayer->sHealth /= 3;
             pPlayer->sMana /= 3;
-        } else if (pPlayer->conditions_times[Condition_Poison_Weak] ||
-                   pPlayer->conditions_times[Condition_Disease_Weak]) {
+        } else if (pPlayer->conditions.Has(Condition_Poison_Weak) ||
+                   pPlayer->conditions.Has(Condition_Disease_Weak)) {
             pPlayer->sHealth /= 2;
             pPlayer->sMana /= 2;
         }
-        if (pPlayer->conditions_times[Condition_Insane]) pPlayer->sMana = 0;
+        if (pPlayer->conditions.Has(Condition_Insane))
+            pPlayer->sMana = 0;
         UpdatePlayersAndHirelingsEmotions();
     }
     pParty->days_played_without_rest = 0;
@@ -1028,23 +1029,20 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
     if (pEXPNum > 0) {
         pActivePlayerCount = 0;
         for (uint i = 0; i < 4; ++i) {
-            if (!pParty->pPlayers[i].conditions_times[Condition_Unconcious] &&
-                !pParty->pPlayers[i].conditions_times[Condition_Dead] &&
-                !pParty->pPlayers[i].conditions_times[Condition_Pertified] &&
-                !pParty->pPlayers[i].conditions_times[Condition_Eradicated]) {
+            if (!pParty->pPlayers[i].conditions.Has(Condition_Unconcious) &&
+                !pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
+                !pParty->pPlayers[i].conditions.Has(Condition_Pertified) &&
+                !pParty->pPlayers[i].conditions.Has(Condition_Eradicated)) {
                 pActivePlayerCount++;
             }
         }
         if (pActivePlayerCount) {
             pEXPNum = pEXPNum / pActivePlayerCount;
             for (uint i = 0; i < 4; ++i) {
-                if (!pParty->pPlayers[i]
-                         .conditions_times[Condition_Unconcious] &&
-                    !pParty->pPlayers[i].conditions_times[Condition_Dead] &&
-                    !pParty->pPlayers[i]
-                         .conditions_times[Condition_Pertified] &&
-                    !pParty->pPlayers[i]
-                         .conditions_times[Condition_Eradicated]) {
+                if (!pParty->pPlayers[i].conditions.Has(Condition_Unconcious) &&
+                    !pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
+                    !pParty->pPlayers[i].conditions.Has(Condition_Pertified) &&
+                    !pParty->pPlayers[i].conditions.Has(Condition_Eradicated)) {
                     pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
                     pParty->pPlayers[i].uExperience += playermodexp;

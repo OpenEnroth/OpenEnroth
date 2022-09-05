@@ -11,7 +11,6 @@
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/Texture.h"
 #include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Objects/Actor.h"
@@ -27,7 +26,7 @@ Vis_SelectionFilter vis_sprite_filter_2 = {
 Vis_SelectionFilter vis_face_filter = {
     VisObjectType_Face, OBJECT_Any, -1, 0, None};  // 00F93E44
 Vis_SelectionFilter vis_door_filter = {
-    VisObjectType_Face, OBJECT_BLVDoor, -1, FACE_HAS_EVENT, None };  // 00F93E58
+    VisObjectType_Face, OBJECT_BLVDoor, -1, static_cast<int>(FACE_HAS_EVENT), None };  // 00F93E58
 Vis_SelectionFilter vis_sprite_filter_3 = {
     VisObjectType_Sprite, OBJECT_Decoration, -1, 0, ExclusionIfNoEvent};  // 00F93E6C
 Vis_SelectionFilter vis_sprite_filter_4 = {
@@ -349,7 +348,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
  * @param model                         Pointer to model to check against.
  * @param reachable_depth               A depth distance for checking interaction against.
  * @param reachable[out]                Whether the model is within the reachable depth specified.
- * 
+ *
  * @return                              Whether the bounding radius of the model is visible within the camera FOV cone.
  */
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
@@ -996,7 +995,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
         }
 
         case VisObjectType_Face: {
-            uint face_attrib = 0;
+            FaceAttributes face_attrib;
             bool no_event = true;
             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                 ODMFace *face = std::get<ODMFace *>(what);
@@ -1012,10 +1011,10 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
 
             if (filter->object_type != OBJECT_BLVDoor) return true;
 
-            auto invalid_face_attrib = face_attrib & filter->no_at_ai_state;
+            FaceAttributes invalid_face_attrib = face_attrib & FaceAttributes(filter->no_at_ai_state);
             if (no_event || invalid_face_attrib)  // face_attrib = 0x2009408 incorrect
                 return false;
-            return (face_attrib & filter->at_ai_state) != 0;
+            return face_attrib & FaceAttributes(filter->at_ai_state);
         }
 
         default:

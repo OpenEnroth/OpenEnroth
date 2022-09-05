@@ -8,7 +8,6 @@
 #include "Engine/Localization.h"
 #include "Engine/LOD.h"
 #include "Engine/MapInfo.h"
-#include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/ItemTable.h"
 #include "Engine/Objects/Monsters.h"
@@ -19,7 +18,6 @@
 #include "Engine/Tables/StorylineTextTable.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
 
 
@@ -1560,7 +1558,7 @@ int GetItemTextureFilename(char* pOut, signed int item_id, int index,
 bool ItemGen::MerchandiseTest(int _2da_idx) {
     bool test;
 
-    if ((p2DEvents[_2da_idx - 1].uType != 4 ||
+    if ((p2DEvents[_2da_idx - 1].uType != BuildingType_AlchemistShop ||
          (signed int)this->uItemID < 740 || (signed int)this->uItemID > 771) &&
             ((signed int)this->uItemID >= 600 ||
              (signed int)this->uItemID >= 529 &&

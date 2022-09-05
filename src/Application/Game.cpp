@@ -512,7 +512,7 @@ void Game::EventLoop() {
     int encounter_index;           // [sp+20h] [bp-5DCh]@23
     unsigned int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
                                   //    char v197; // [sp+2Bh] [bp-5D1h]@101
-    enum UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
+    UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     unsigned int v199 {};            // [sp+30h] [bp-5CCh]@7
     char *v200 = nullptr;                   // [sp+34h] [bp-5C8h]@518
     // int v213;                     // [sp+98h] [bp-564h]@385
@@ -1101,7 +1101,7 @@ void Game::EventLoop() {
                             if (pParty->GetFood() < GetTravelTime()) {
                                 pPlayer7 = pParty->pPlayers.data();
                                 do {
-                                    pPlayer7->SetCondition(1, 0);
+                                    pPlayer7->SetCondition(Condition_Weak, 0);
                                     ++pPlayer7;
                                 } while ((int64_t)pPlayer7 < (int64_t)pParty->pHirelings.data());
                                 ++pParty->days_played_without_rest;
@@ -1110,7 +1110,7 @@ void Game::EventLoop() {
                         } else {
                             pPlayer8 = pParty->pPlayers.data();
                             do {
-                                pPlayer8->SetCondition(1, 0);
+                                pPlayer8->SetCondition(Condition_Weak, 0);
                                 ++pPlayer8;
                             } while ((int64_t)pPlayer8 <
                                      (int64_t)pParty->pHirelings.data());
@@ -1172,7 +1172,7 @@ void Game::EventLoop() {
                         v47 = pActors[v46].uAIState == Dead;
                         if (!v47) continue;
                         pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                        pSpellInfo->uFlags &= ~0x40u;
+                        pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
                         pSpellInfo->uPlayerID_2 = uMessageParam;
                         pSpellInfo->spell_target_pid = v44;
                         pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
@@ -1192,7 +1192,7 @@ void Game::EventLoop() {
                                0x10) == 0;
                         if (!v47) continue;
                         pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                        pSpellInfo->uFlags &= ~0x40u;
+                        pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
                         pSpellInfo->uPlayerID_2 = uMessageParam;
                         pSpellInfo->spell_target_pid = v44;
                         pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
@@ -1216,7 +1216,7 @@ void Game::EventLoop() {
                                 continue;
                             v44 = uNumSeconds;
                             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                            pSpellInfo->uFlags &= ~0x40u;
+                            pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
                             pSpellInfo->uPlayerID_2 = uMessageParam;
                             pSpellInfo->spell_target_pid = v44;
                             pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(300);
@@ -1236,7 +1236,7 @@ void Game::EventLoop() {
                     }
                     if (v48) continue;
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
-                    pSpellInfo->uFlags &= ~0x40u;
+                    pSpellInfo->uFlags &= ~ON_CAST_Telekenesis;
                     pSpellInfo->uPlayerID_2 = uMessageParam;
                     pSpellInfo->spell_target_pid = v44;
                     pParty->pPlayers[pSpellInfo->uPlayerID].SetRecoveryTime(
@@ -1266,13 +1266,13 @@ void Game::EventLoop() {
                             pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                             switch (uMessage) {
                                 case UIMSG_CastSpell_Character_Big_Improvement:
-                                    pSpellInfo->uFlags &= ~0x02u;
+                                    pSpellInfo->uFlags &= ~ON_CAST_WholeParty_BigImprovementAnim;
                                     break;
                                 case UIMSG_CastSpell_Character_Small_Improvement:
-                                    pSpellInfo->uFlags &= ~0x0100u;
+                                    pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
                                     break;
                                 case UIMSG_HiredNPC_CastSpell:
-                                    pSpellInfo->uFlags &= ~0x0200u;
+                                    pSpellInfo->uFlags &= ~ON_CAST_DarkSacrifice;
                                     break;
                                 default:
                                     break;
@@ -1634,12 +1634,12 @@ void Game::EventLoop() {
                         continue;
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {
-                        pSpellInfo->uFlags &= ~0x08;
+                        pSpellInfo->uFlags &= ~ON_CAST_TargetCrosshair;
                     } else {
                         if (uMessage == UIMSG_CastSpell_Monster_Improvement)
-                            pSpellInfo->uFlags &= ~0x0100u;
+                            pSpellInfo->uFlags &= ~ON_CAST_MonsterSparkles;
                         else
-                            pSpellInfo->uFlags &= ~0x0200u;
+                            pSpellInfo->uFlags &= ~ON_CAST_DarkSacrifice;
                     }
                     pSpellInfo->uPlayerID_2 = uMessageParam;
                     pSpellInfo->spell_target_pid = v44;
@@ -1812,14 +1812,10 @@ void Game::EventLoop() {
                             pPlayers[uActiveCharacter]->CanAct())
                             pPlayers[uActiveCharacter]->PlaySound(SPEECH_NotEnoughFood, 0);
                     } else {
-                        pParty->pPlayers[3].conditions_times[Condition_Sleep] =
-                            pParty->GetPlayingTime();
-                        pParty->pPlayers[2].conditions_times[Condition_Sleep] =
-                            pParty->GetPlayingTime();
-                        pParty->pPlayers[1].conditions_times[Condition_Sleep] =
-                            pParty->GetPlayingTime();
-                        pParty->pPlayers[0].conditions_times[Condition_Sleep] =
-                            pParty->GetPlayingTime();
+                        pParty->pPlayers[3].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
+                        pParty->pPlayers[2].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
+                        pParty->pPlayers[1].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
+                        pParty->pPlayers[0].conditions.Set(Condition_Sleep, pParty->GetPlayingTime());
                         v90 = pMapStats->GetMapInfo(pCurrentMapName);
                         if (!v90)
                             v90 = rand() % (signed int)pMapStats->uNumMaps + 1;
@@ -1839,9 +1835,7 @@ void Game::EventLoop() {
 
                             if (encounter_index) {
                                 pPlayerNum = rand() % 4;
-                                pParty->pPlayers[pPlayerNum]
-                                    .conditions_times[Condition_Sleep]
-                                    .Reset();
+                                pParty->pPlayers[pPlayerNum].conditions.Reset(Condition_Sleep);
                                 v95 = rand();
                                 Rest(v95 % 6 + 60);
                                 _506F18_num_minutes_to_sleep = 0;
@@ -2027,7 +2021,7 @@ void Game::EventLoop() {
                     __debugbreak();
                     if (pTurnEngine->turn_stage != TE_MOVEMENT)
                         _42777D_CastSpell_UseWand_ShootArrow(
-                            (SPELL_TYPE)uMessageParam, v199, 133, 1, 0);
+                            (SPELL_TYPE)uMessageParam, v199, 133, ON_CAST_CastViaScroll, 0);
                     continue;
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
@@ -2270,8 +2264,7 @@ void Game::EventLoop() {
 
                     auto status = NameAndTitle(pPlayer5->pName, pPlayer5->classType);
                         + ": "
-                        + std::string(localization->GetCharacterConditionName(
-                            pPlayer5->GetMajorConditionIdx()));
+                        + std::string(localization->GetCharacterConditionName(pPlayer5->GetMajorConditionIdx()));
                     GameUI_StatusBar_Set(status);
 
                     mouse->uPointingObjectID =
@@ -2416,7 +2409,7 @@ void Game::EventLoop() {
                 case UIMSG_DebugFullHeal:
                     if (uActiveCharacter == 0)
                         continue;
-                    pPlayers[uActiveCharacter]->conditions_times.fill(GameTime(0));
+                    pPlayers[uActiveCharacter]->conditions.ResetAll();
                     pPlayers[uActiveCharacter]->sHealth =
                         pPlayers[uActiveCharacter]->GetMaxHealth();
                     pPlayers[uActiveCharacter]->sMana =
@@ -2885,7 +2878,7 @@ void Game::GameLoop() {
                     pParty->bTurnBasedModeOn = false;
                 }
                 for (int i = 1; i < 5; ++i) {
-                    pPlayers[i]->conditions_times.fill(GameTime(0));
+                    pPlayers[i]->conditions.ResetAll();
                     pPlayers[i]->pPlayerBuffs.fill(
                         SpellBuff());  // ???
                                        // memset(pParty->pPlayers[i].conditions_times.data(),

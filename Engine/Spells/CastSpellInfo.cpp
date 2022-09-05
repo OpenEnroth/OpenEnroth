@@ -897,7 +897,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (pPlayer->CanCastSpell(uRequiredMana)) {
                     spell_sound_flag = true;
                     for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                        if (pParty->pPlayers[pl_id].conditions_times[Condition_Weak].Valid())
+                        if (pParty->pPlayers[pl_id].conditions.Has(Condition_Weak))
                             spell_sound_flag = false;
                     }
                     if (spell_sound_flag) {
@@ -1478,12 +1478,8 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 for (int i = 0; i < 4; i++) {
                     if (skill_level == 4) {
-                        if (pParty->pPlayers[i]
-                                .conditions_times[Condition_Sleep]
-                                .Valid()) {
-                            pParty->pPlayers[i]
-                                .conditions_times[Condition_Sleep]
-                                .Reset();
+                        if (pParty->pPlayers[i].conditions.Has(Condition_Sleep)) {
+                            pParty->pPlayers[i].conditions.Reset(Condition_Sleep);
                             pParty->pPlayers[i].PlaySound(SPEECH_Awaken, 0);
                         }
                     } else {
@@ -1869,13 +1865,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana))
                     break;
-                if (pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Pertified]
-                        .Valid()) {
+                if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Pertified)) {
                     if (skill_level == 4) {  // for GM
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Pertified]
-                            .Reset();
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Pertified);
                         spell_sound_flag = true;
                         break;
                     }
@@ -2050,25 +2042,19 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                if (!pParty->pPlayers[pCastSpell->uPlayerID_2]
-                         .conditions_times[Condition_Cursed]
-                         .Valid()) {
+                if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
                     spell_sound_flag = true;
                     break;
                 }
                 if (skill_level == 4) {  // GM
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Cursed]
-                        .Reset();
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Cursed);
                 } else {
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .DiscardConditionIfLastsLongerThan(
                             Condition_Cursed,
                             GameTime(pParty->GetPlayingTime() -
                                 GameTime::FromSeconds(amount)));
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Cursed]
-                            .Valid()) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Cursed)) {
                         spell_sound_flag = true;
                         break;
                     }
@@ -2185,20 +2171,14 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 pOtherOverlayList->_4418B1(5080, pCastSpell->uPlayerID_2 + 100,
                                            0, 65536);
-                if (!pParty->pPlayers[pCastSpell->uPlayerID_2]
-                         .conditions_times[Condition_Dead]
-                         .Valid()) {
+                if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
                     spell_sound_flag = true;
                     break;
                 }
                 pParty->pPlayers[pCastSpell->uPlayerID_2].sHealth = 1;
                 if (skill_level == 4) {
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Dead]
-                        .Reset();
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Unconcious]
-                        .Reset();
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconcious);
                 } else {
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .DiscardConditionIfLastsLongerThan(
@@ -2228,15 +2208,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 int mean_life = 0;
                 int pl_array[4] {};
                 for (uint pl_id = 1; pl_id <= 4; pl_id++) {
-                    if (!pPlayers[pl_id]
-                             ->conditions_times[Condition_Dead]
-                             .Valid() &&
-                        !pPlayers[pl_id]
-                             ->conditions_times[Condition_Pertified]
-                             .Valid() &&
-                        !pPlayers[pl_id]
-                             ->conditions_times[Condition_Eradicated]
-                             .Valid())
+                    if (!pPlayers[pl_id]->conditions.Has(Condition_Dead) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Pertified) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Eradicated))
                         pl_array[active_pl_num++] = pl_id;
                 }
                 for (uint i = 0; i < active_pl_num; i++)
@@ -2277,27 +2251,14 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
-                if (pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Eradicated]
-                        .Valid() ||
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Dead]
-                        .Valid()) {
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID_2]
-                             .conditions_times[Condition_Weak]
-                             .Valid())
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(
-                            SPEECH_Weak, 0);
+                if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Eradicated) ||
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
+                    if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak))
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_Weak, 0);
                     if (skill_level == 4) {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Eradicated]
-                            .Reset();
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Dead]
-                            .Reset();
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Unconcious]
-                            .Reset();
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Eradicated);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconcious);
                     } else {
                         pParty->pPlayers[pCastSpell->uPlayerID_2]
                             .DiscardConditionIfLastsLongerThan(
@@ -2346,16 +2307,12 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                if (!pParty->pPlayers[pCastSpell->uPlayerID_2]
-                         .conditions_times[Condition_Paralyzed]
-                         .Valid()) {
+                if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Paralyzed)) {
                     spell_sound_flag = true;
                     break;
                 }
                 if (skill_level == 4) {
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Paralyzed]
-                        .Reset();
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Paralyzed);
                     spell_sound_flag = true;
                     break;
                 }
@@ -2390,16 +2347,12 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                if (!pParty->pPlayers[pCastSpell->uPlayerID_2]
-                         .conditions_times[Condition_Fear]
-                         .Valid()) {
+                if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Fear)) {
                     spell_sound_flag = true;
                     break;
                 }
                 if (skill_level == 4) {
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Fear]
-                        .Reset();
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Fear);
                     spell_sound_flag = true;
                     break;
                 }
@@ -2683,18 +2636,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                if (pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Insane]
-                        .Valid()) {
-                    if (!pParty->pPlayers[pCastSpell->uPlayerID_2]
-                             .conditions_times[Condition_Weak]
-                             .Valid())
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(
-                            SPEECH_Weak, 0);
+                if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Insane)) {
+                    if (!pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak))
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].PlaySound(SPEECH_Weak, 0);
                     if (skill_level == 4)
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Insane]
-                            .Reset();
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Insane);
                     else
                         pParty->pPlayers[pCastSpell->uPlayerID_2]
                             .DiscardConditionIfLastsLongerThan(
@@ -2809,13 +2755,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                if (pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Weak]
-                        .Valid()) {
+                if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Weak)) {
                     if (skill_level == 4) {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Weak]
-                            .Reset();
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Weak);
                         spell_sound_flag = true;
                         break;
                     }
@@ -2892,25 +2834,13 @@ void CastSpellInfoHelpers::CastSpell() {
 
                 spell_fx_renderer->SetPlayerBuffAnim(
                     pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                if (pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Poison_Weak]
-                        .Valid() ||
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Poison_Medium]
-                        .Valid() ||
-                    pParty->pPlayers[pCastSpell->uPlayerID_2]
-                        .conditions_times[Condition_Poison_Severe]
-                        .Valid()) {
+                if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Weak) ||
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Medium) ||
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Poison_Severe)) {
                     if (skill_level == 4) {
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Poison_Weak]
-                            .Reset();
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Poison_Medium]
-                            .Reset();
-                        pParty->pPlayers[pCastSpell->uPlayerID_2]
-                            .conditions_times[Condition_Poison_Severe]
-                            .Reset();
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Weak);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Medium);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Poison_Severe);
                         spell_sound_flag = true;
                         break;
                     }
@@ -3304,9 +3234,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         .Apply(GameTime(pParty->GetPlayingTime() +
                                    GameTime::FromSeconds(300 * amount * spell_level + 60)),
                                skill_level, spell_level + 5, 0, 0);
-                    if (pParty->pPlayers[pl_id]
-                            .conditions_times[Condition_Weak]
-                            .Valid())
+                    if (pParty->pPlayers[pl_id].conditions.Has(Condition_Weak))
                         player_weak = true;
                 }
 
@@ -3341,10 +3269,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana)) break;
                 for (uint pl_id = 0; pl_id < 4; pl_id++) {
-                    for (uint buff_id = 0; buff_id <= 19; buff_id++)
-                        pParty->pPlayers[pl_id]
-                            .conditions_times[buff_id]
-                            .Reset();
+                    pParty->pPlayers[pl_id].conditions.ResetAll();
                     pParty->pPlayers[pl_id].sHealth = pParty->pPlayers[pl_id].GetMaxHealth();
                     pParty->pPlayers[pl_id].sMana = pParty->pPlayers[pl_id].GetMaxMana();
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pl_id);
@@ -3381,10 +3306,11 @@ void CastSpellInfoHelpers::CastSpell() {
                 if (!pCastSpell->spell_target_pid) {
                     spell_fx_renderer->SetPlayerBuffAnim(
                         pCastSpell->uSpellID, pCastSpell->uPlayerID_2);
-                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions_times[Condition_Dead].Valid()) {
+                    if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Dead)) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(Condition_Zombie, 1);
                         GameUI_ReloadPlayerPortraits(pCastSpell->uPlayerID_2, (pParty->pPlayers[pCastSpell->uPlayerID_2].GetSexByVoice() != 0) + 23);
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions_times[Condition_Zombie] = pParty->GetPlayingTime();
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Set(Condition_Zombie, pParty->GetPlayingTime());
+                        // TODO: why call SetCondition and then conditions.Set?
                     }
                     break;
                 }
@@ -3684,12 +3610,12 @@ void CastSpellInfoHelpers::CastSpell() {
                 int pl_num = 0;
                 int pl_array[4] {};
                 for (uint pl_id = 1; pl_id <= 4; ++pl_id) {
-                    if (!pPlayers[pl_id]->conditions_times[Condition_Sleep].Valid() &&
-                        !pPlayers[pl_id]->conditions_times[Condition_Paralyzed].Valid() &&
-                        !pPlayers[pl_id]->conditions_times[Condition_Unconcious].Valid() &&
-                        !pPlayers[pl_id]->conditions_times[Condition_Dead].Valid() &&
-                        !pPlayers[pl_id]->conditions_times[Condition_Pertified].Valid() &&
-                        !pPlayers[pl_id]->conditions_times[Condition_Eradicated].Valid()) {
+                    if (!pPlayers[pl_id]->conditions.Has(Condition_Sleep) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Paralyzed) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Unconcious) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Dead) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Pertified) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Eradicated)) {
                         pl_array[pl_num++] = pl_id;
                     }
                 }
@@ -3782,14 +3708,14 @@ void CastSpellInfoHelpers::CastSpell() {
 
 //----- (00427DA0) --------------------------------------------------------
 size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
-                         __int16 skill_level, uint16_t uFlags,
+                         __int16 skill_level, SpellCastFlags uFlags,
                          int spell_sound_id) {
     // uFlags: ON_CAST_*
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
         if (!pCastSpellInfo[i].uSpellID) {
             pCastSpellInfo[i].uSpellID = uSpellID;
             pCastSpellInfo[i].uPlayerID = uPlayerID;
-            if (uFlags & 0x10) pCastSpellInfo[i].uPlayerID_2 = uPlayerID;
+            if (uFlags & ON_CAST_TargetIsParty) pCastSpellInfo[i].uPlayerID_2 = uPlayerID;
             pCastSpellInfo[i].field_6 = 0;
             pCastSpellInfo[i].spell_target_pid = 0;
             pCastSpellInfo[i].uFlags = uFlags;
@@ -3823,7 +3749,7 @@ void CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress() {  // reset failed/ca
 //----- (0042777D) --------------------------------------------------------
 void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                                           unsigned int uPlayerID,
-                                          unsigned int a4, __int16 flags,
+                                          unsigned int a4, SpellCastFlags flags,
                                           int a6) {
     unsigned __int16 v9;   // cx@16
     unsigned int v10;      // eax@18
@@ -3845,7 +3771,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
     // v7 = &pParty->pPlayers[uPlayerID];
     assert(uPlayerID < 4);
     Player *player = &pParty->pPlayers[uPlayerID];
-    if (!(flags & 0x10)) {
+    if (!(flags & ON_CAST_TargetIsParty)) {
         switch (spell) {
             case SPELL_SPIRIT_FATE:
             case SPELL_BODY_FIRST_AID:
