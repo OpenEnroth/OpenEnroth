@@ -1196,20 +1196,15 @@ void CharacterUI_StatsTab_ShowHint() {
         {
             auto str = std::string(pPlayerConditionAttributeDescription) + "\n";
 
-            extern std::array<Condition, 18> pConditionImportancyTable;
-            for (uint i = 0; i < 18; ++i) {
-                if (pPlayers[uActiveCharacter]->conditions.Has(pConditionImportancyTable[i])) {
+            for (Condition condition : conditionImportancyTable()) {
+                if (pPlayers[uActiveCharacter]->conditions.Has(condition)) {
                     str += " \n";
                     GameTime condition_time =
-                        pParty->GetPlayingTime() -
-                                pPlayers[uActiveCharacter]->conditions.Get(pConditionImportancyTable[i]);
+                        pParty->GetPlayingTime() - pPlayers[uActiveCharacter]->conditions.Get(condition);
                     pHour = condition_time.GetHoursOfDay();
                     pDay = condition_time.GetDays();
-                    pTextColor =
-                        GetConditionDrawColor(pConditionImportancyTable[i]);
-                    str += StringPrintf(format_4E2DE8, pTextColor,
-                                        localization->GetCharacterConditionName(
-                                            pConditionImportancyTable[i]));
+                    pTextColor = GetConditionDrawColor(condition);
+                    str += StringPrintf(format_4E2DE8, pTextColor, localization->GetCharacterConditionName(condition));
                     if (pHour && pHour <= 1)
                         pHourWord = localization->GetString(LSTR_HOUR);
                     else

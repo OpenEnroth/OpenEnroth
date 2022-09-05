@@ -3,6 +3,8 @@
 
 #include "Engine/Objects/Items.h"
 
+struct Player;
+
 enum class Condition : uint32_t {
     Condition_Cursed = 0,
     Condition_Weak = 1,
@@ -26,7 +28,6 @@ enum class Condition : uint32_t {
 };
 using enum Condition;
 
-struct Player;
 class ConditionProcessor {
  public:
     bool m_IsBlockedByProtFromMagic;
@@ -51,7 +52,9 @@ class ConditionProcessor {
         m_equipmentPairs[2].m_EquipSlot = itemslot3;
     }
 
-    static bool IsPlayerAffected(Player*, Condition, int);
+    static bool IsPlayerAffected(Player *, Condition, int);
 };
 
 extern std::array<ConditionProcessor, 18> conditionArray;
+
+const std::array<Condition, 18> &conditionImportancyTable();

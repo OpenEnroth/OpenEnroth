@@ -30,6 +30,48 @@ std::array<ConditionProcessor, 18> conditionArray = {{
     ConditionProcessor(Condition_Zombie, false, false, 0)
 }};
 
+std::array<Condition, 18> conditionImportancyTableDefault = {{
+   Condition_Eradicated,
+   Condition_Petrified,
+   Condition_Dead,
+   Condition_Zombie,
+   Condition_Unconscious,
+   Condition_Sleep,
+   Condition_Paralyzed,
+   Condition_Disease_Severe,
+   Condition_Poison_Severe,
+   Condition_Disease_Medium,
+   Condition_Poison_Medium,
+   Condition_Disease_Weak,
+   Condition_Poison_Weak,
+   Condition_Insane,
+   Condition_Drunk,
+   Condition_Fear,
+   Condition_Weak,
+   Condition_Cursed
+}};
+
+std::array<Condition, 18> conditionImportancyTableGrayface = {{
+   Condition_Eradicated,
+   Condition_Dead,
+   Condition_Petrified,
+   Condition_Unconscious,
+   Condition_Paralyzed,
+   Condition_Sleep,
+   Condition_Weak,
+   Condition_Cursed,
+   Condition_Disease_Severe,
+   Condition_Poison_Severe,
+   Condition_Disease_Medium,
+   Condition_Poison_Medium,
+   Condition_Disease_Weak,
+   Condition_Poison_Weak,
+   Condition_Insane,
+   Condition_Drunk,
+   Condition_Fear,
+   Condition_Zombie
+}};
+
 bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToCheck, int blockable) {
     if (!blockable) return true;
     ConditionProcessor* thisProc = &conditionArray[std::to_underlying(condToCheck)];
@@ -59,4 +101,11 @@ bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToChec
         }
     }
     return true;
+}
+
+const std::array<Condition, 18> &conditionImportancyTable() {
+    if (engine->config->gameplay.UseGrayfaceConditionPriorities.Get())
+        return conditionImportancyTableGrayface;
+    else
+        return conditionImportancyTableDefault;
 }

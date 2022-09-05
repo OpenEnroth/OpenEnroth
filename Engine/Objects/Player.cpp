@@ -190,27 +190,6 @@ unsigned char pAgingAttributeModifier[7][4] = {
 
 unsigned int pAgeingTable[4] = {50, 100, 150, 0xFFFF};
 
-std::array<Condition, 18> pConditionImportancyTable = {{
-    Condition_Eradicated,
-    Condition_Petrified,
-    Condition_Dead,
-    Condition_Zombie,
-    Condition_Unconscious,
-    Condition_Sleep,
-    Condition_Paralyzed,
-    Condition_Disease_Severe,
-    Condition_Poison_Severe,
-    Condition_Disease_Medium,
-    Condition_Poison_Medium,
-    Condition_Disease_Weak,
-    Condition_Poison_Weak,
-    Condition_Insane,
-    Condition_Drunk,
-    Condition_Fear,
-    Condition_Weak,
-    Condition_Cursed
-}};
-
 short param_to_bonus_table[29] = {
     500, 400, 350, 300, 275, 250, 225, 200, 175, 150, 125, 100, 75, 50, 40,
     35,  30,  25,  21,  19,  17,  15,  13,  11,  9,   7,   5,   3,  0};
@@ -2608,9 +2587,9 @@ void Player::RandomizeName() {
 
 //----- (0048E9F4) --------------------------------------------------------
 Condition Player::GetMajorConditionIdx() {
-    for (uint i = 0; i < 18; ++i) {
-        if (conditions.Has(pConditionImportancyTable[i]))
-            return pConditionImportancyTable[i];  // return worst condition
+    for (Condition condition : conditionImportancyTable()) {
+        if (conditions.Has(condition))
+            return condition;  // return worst condition
     }
     return Condition_Good;  // condition good
 }
