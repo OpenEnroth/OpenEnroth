@@ -12,10 +12,11 @@ class Sprite;
 #define MAX_LOD_SPRITES 1500
 
 /*  354 */
-enum TEXTURE_TYPE {
+enum class TEXTURE_TYPE {
     TEXTURE_DEFAULT = 0,
     TEXTURE_24BIT_PALETTE = 0x1,
 };
+using enum TEXTURE_TYPE;
 
 namespace LOD {
 #pragma pack(push, 1)
@@ -130,13 +131,9 @@ class LODFile_IconsBitmaps : public LOD::File {
     unsigned int FindTextureByName(const std::string &pName);
     bool Load(const std::string &pFilename, const std::string &pFolderName);
     void ReleaseAll();
-    unsigned int LoadTexture(const std::string &pContainer,
-                             enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    struct Texture_MM7 *LoadTexturePtr(
-        const std::string &pContainer,
-        enum TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
-    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer,
-                           enum TEXTURE_TYPE eTextureType);
+    unsigned int LoadTexture(const std::string &pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
+    struct Texture_MM7 *LoadTexturePtr(const std::string &pContainer, TEXTURE_TYPE uTextureType = TEXTURE_DEFAULT);
+    int LoadTextureFromLOD(struct Texture_MM7 *pOutTex, const std::string &pContainer, TEXTURE_TYPE eTextureType);
     int ReloadTexture(struct Texture_MM7 *pDst, const std::string &pContainer,
                       int mode);
     void ReleaseHardwareTextures();
