@@ -747,7 +747,7 @@ void Engine::OutlineSelection() {
 
 
 //----- (0042FC15) --------------------------------------------------------
-void CloseWindowBackground() {
+void PlayButtonClickSound() {
     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, -2, 0, -1, 0, 0);
 }
 
@@ -773,7 +773,7 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 
     pEventTimer->Pause();
     pMiscTimer->Pause();
-    pParty->uFlags = PARTY_FLAGS_1_ForceRedraw;
+    pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     CastSpellInfoHelpers::Cancel_Spell_Cast_In_Progress();
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
@@ -1191,6 +1191,7 @@ void MM7Initialization() {
                          viewparams->uScreen_BttmR_Y);
 }
 
+// TODO(pskelton): move to outdoor?
 //----- (004610AA) --------------------------------------------------------
 void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
     pGameLoadingUI_ProgressBar->Reset(27);

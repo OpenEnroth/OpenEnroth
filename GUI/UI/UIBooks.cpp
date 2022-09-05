@@ -59,8 +59,9 @@ void GUIWindow_Book::Release() {
     pAudioPlayer->PlaySound(SOUND_closebook, 0, 0, -1, 0, 0);
     MapBookOpen = 0;
 
-    if (pBooksButtonOverlay)
-        pBooksButtonOverlay->Release();
+    if (pChildBooksOverlay)
+        pChildBooksOverlay->Release();
+
 
     GUIWindow::Release();
 }

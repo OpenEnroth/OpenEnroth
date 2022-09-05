@@ -52,26 +52,12 @@ using Io::InputAction;
 GUIWindow *pPrimaryWindow;
 
 GUIWindow *pGUIWindow_CurrentMenu;
-
-
-//GUIWindow *pChestWindow;
-
 GUIWindow *pDialogueWindow;
 GUIWindow *window_SpeakInHouse;
-
 GUIWindow *pGUIWindow_ScrollWindow; // reading a message scroll
-
 GUIWindow *ptr_507BC8;  // screen 19 - not used?
-
-//GUIWindow *ptr_507BD0;
 GUIWindow *pGUIWindow_CastTargetedSpell;
-
 GUIWindow *pModalWindow; // UIMSG_ShowFinalWindow
-
-//GUIWindow *pGUIWindow_EscMessageWindow;
-
-GUIWindow *pBooksButtonOverlay; // child of books windows
-
 GUIWindow *pGUIWindow2; // branchless dialougue
 
 typedef struct _RGBColor {
@@ -2474,10 +2460,25 @@ WindowManager windowManager;
 void WindowManager::DeleteAllVisibleWindows() {
     while (lWindowList.size() > 1) {
         GUIWindow *pWindow = lWindowList.front();
+        // game ui should never be released
+        if (pWindow->eWindowType == WINDOW_GameUI) continue;
         pWindow->Release();
         delete pWindow;
-        lWindowList.pop_front();
     }
+
+    // reset screen state after deleting all windows
+    pGUIWindow_CurrentMenu = nullptr;
+    pDialogueWindow = nullptr;
+    window_SpeakInHouse = nullptr;
+    pGUIWindow_ScrollWindow = nullptr; // reading a message scroll
+    ptr_507BC8 = nullptr;  // screen 19 - not used?
+    pGUIWindow_CastTargetedSpell = nullptr;
+    pModalWindow = nullptr; // UIMSG_ShowFinalWindow
+    pGUIWindow2 = nullptr; // branchless dialougue
+
+    current_screen_type = CURRENT_SCREEN::SCREEN_GAME;
+    pMessageQueue_50C9E8->Clear();
+    pMessageQueue_50CBD0->Clear();
 }
 
 void MainMenuUI_LoadFontsAndSomeStuff() {

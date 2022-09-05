@@ -20,6 +20,9 @@ class GUIWindow_Transition : public GUIWindow {
 
     virtual void Update();
     virtual void Release();
+
+    int mapid{};
+    std::string mapname{};
 };
 
 extern std::string transition_button_label;

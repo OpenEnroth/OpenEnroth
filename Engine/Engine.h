@@ -211,7 +211,7 @@ struct Engine {
 
 extern std::shared_ptr<Engine> engine;
 
-void CloseWindowBackground();
+void PlayButtonClickSound();
 void back_to_game();
 
 void UpdateUserInput_and_MapSpecificStuff();

@@ -788,7 +788,6 @@ extern GUIWindow *pGUIWindow_CurrentMenu;
 extern GUIWindow *pGUIWindow_CastTargetedSpell;
 extern GUIWindow *pModalWindow;
 //extern GUIWindow *pGUIWindow_EscMessageWindow;
-extern GUIWindow *pBooksButtonOverlay;
 extern GUIWindow *pGUIWindow2;
 
 extern unsigned int ui_mainmenu_copyright_color;

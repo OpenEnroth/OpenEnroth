@@ -3613,6 +3613,10 @@ void RenderOpenGL::BeginTextNew(Texture *main, Texture *shadow) {
 void RenderOpenGL::EndTextNew() {
     if (!textvertscnt) return;
 
+    if (twodvertscnt) {
+        DrawTwodVerts();
+    }
+
     if (textVAO == 0) {
         glGenVertexArrays(1, &textVAO);
         glGenBuffers(1, &textVBO);
@@ -3840,8 +3844,6 @@ void RenderOpenGL::Present() {
 
     GL_Check_Errors();
     window->OpenGlSwapBuffers();
-
-    ClearBlack();
 
     // crude frame rate limiting
     const float MIN_FRAME_TIME = 1000000000 / (float)engine->config->graphics.FPSLimit.Get();
@@ -5551,10 +5553,6 @@ void RenderOpenGL::ReleaseBSP() {
 
 void RenderOpenGL::DrawTwodVerts() {
     if (!twodvertscnt) return;
-
-    if (textvertscnt) {
-        EndTextNew();
-    }
 
     int savex = this->clip_x;
     int savey = this->clip_y;
