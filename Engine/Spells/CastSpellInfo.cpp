@@ -3715,7 +3715,7 @@ size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
         if (!pCastSpellInfo[i].uSpellID) {
             pCastSpellInfo[i].uSpellID = uSpellID;
             pCastSpellInfo[i].uPlayerID = uPlayerID;
-            if (uFlags & 0x10) pCastSpellInfo[i].uPlayerID_2 = uPlayerID;
+            if (uFlags & ON_CAST_TargetIsParty) pCastSpellInfo[i].uPlayerID_2 = uPlayerID;
             pCastSpellInfo[i].field_6 = 0;
             pCastSpellInfo[i].spell_target_pid = 0;
             pCastSpellInfo[i].uFlags = uFlags;
@@ -3771,7 +3771,7 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
     // v7 = &pParty->pPlayers[uPlayerID];
     assert(uPlayerID < 4);
     Player *player = &pParty->pPlayers[uPlayerID];
-    if (!(flags & 0x10)) {
+    if (!(flags & ON_CAST_TargetIsParty)) {
         switch (spell) {
             case SPELL_SPIRIT_FATE:
             case SPELL_BODY_FIRST_AID:

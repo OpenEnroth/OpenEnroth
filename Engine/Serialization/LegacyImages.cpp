@@ -1358,7 +1358,7 @@ void Actor_MM7::Deserialize(Actor *actor) {
 }
 
 void BLVDoor_MM7::Serialize(BLVDoor *door) {
-    this->uAttributes = door->uAttributes;
+    this->uAttributes = std::to_underlying(door->uAttributes);
     this->uDoorID = door->uDoorID;
     this->uTimeSinceTriggered = door->uTimeSinceTriggered;
     this->vDirection = door->vDirection;

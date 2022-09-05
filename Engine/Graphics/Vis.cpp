@@ -995,7 +995,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
         }
 
         case VisObjectType_Face: {
-            uint face_attrib = 0;
+            FaceAttributes face_attrib;
             bool no_event = true;
             if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
                 ODMFace *face = std::get<ODMFace *>(what);
@@ -1011,10 +1011,10 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
 
             if (filter->object_type != OBJECT_BLVDoor) return true;
 
-            auto invalid_face_attrib = face_attrib & filter->no_at_ai_state;
+            FaceAttributes invalid_face_attrib = face_attrib & FaceAttributes(filter->no_at_ai_state);
             if (no_event || invalid_face_attrib)  // face_attrib = 0x2009408 incorrect
                 return false;
-            return (face_attrib & filter->at_ai_state) != 0;
+            return face_attrib & FaceAttributes(filter->at_ai_state);
         }
 
         default:

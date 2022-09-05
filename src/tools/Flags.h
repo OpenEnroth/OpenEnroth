@@ -26,6 +26,9 @@ template <class Enum>
 class Flags {
     static_assert(std::is_enum<Enum>::value, "Expecting an enumeration");
 
+    struct Dummy {};
+    static void fake_true(Dummy *) {}
+    using fake_bool = void (*)(Dummy*);
  public:
     using enumeration_type = Enum;
     using underlying_type = std::underlying_type_t<Enum>;
@@ -78,22 +81,6 @@ class Flags {
         return static_cast<underlying_type>(l) == r.value_;
     }
 
-    constexpr friend bool operator==(Flags l, enumeration_type r) {
-        return l.value_ == static_cast<underlying_type>(r);
-    }
-
-    constexpr friend bool operator!=(Flags l, Flags r) {
-        return l.value_ != r.value_;
-    }
-
-    constexpr friend bool operator!=(enumeration_type l, Flags r) {
-        return static_cast<underlying_type>(l) != r.value_;
-    }
-
-    constexpr friend bool operator!=(Flags l, enumeration_type r) {
-        return l.value_ != static_cast<underlying_type>(r);
-    }
-
     constexpr Flags& operator&=(Flags mask) {
         *this = *this & mask;
         return *this;
@@ -122,8 +109,20 @@ class Flags {
         return !value_;
     }
 
-    constexpr operator bool() const {
-        return value_;
+    /**
+     * Implicit operator bool with some dark magic on top.
+     *
+     * Explicit operator bool doesn't work here because then we can't just write `if (flags & SOME_FLAG)`.
+     * Implicit operator bool also allows to do arithmetic on top of the returned result, so something like
+     * `return flags == 0x16` actually compiles, albeit in a totally unexpected way (comparing `bool` to
+     * `0x16` always returns false).
+     *
+     * Thus the solution with a function pointer.
+     *
+     * @returns                         Whether there are no flags set.
+     */
+    constexpr operator fake_bool() const {
+        return value_ ? &fake_true : nullptr;
     }
 
  private:
@@ -143,3 +142,10 @@ class Flags {
         return ~FLAGS(value);                                                   \
     }
 
+
+namespace std {
+    template<class Enum>
+    typename Flags<Enum>::underlying_type to_underlying(Flags<Enum> flags) {
+        return static_cast<typename Flags<Enum>::underlying_type>(flags);
+    }
+}

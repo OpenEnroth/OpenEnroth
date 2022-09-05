@@ -1988,7 +1988,7 @@ void PrepareToLoadBLV(bool bLoading) {
     }
 
     for (uint i = 0; i < pIndoor->pDoors.size(); ++i) {
-        if (pIndoor->pDoors[i].uAttributes & 0x01) {
+        if (pIndoor->pDoors[i].uAttributes & DOOR_TRIGGERED) {
             pIndoor->pDoors[i].uState = BLVDoor::Opening;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360;
             pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;

@@ -17,11 +17,11 @@ class GUIWindow;
 
 // flags
 enum class SpellCastFlag : uint16_t {
-    ON_CAST_0x0001 = 0x0001,
+    ON_CAST_CastViaScroll = 0x0001,
     ON_CAST_WholeParty_BigImprovementAnim = 0x0002,
     ON_CAST_0x0004 = 0x0004,
     ON_CAST_TargetCrosshair = 0x0008,
-    ON_CAST_0x0010 = 0x0010,
+    ON_CAST_TargetIsParty = 0x0010,
     ON_CAST_NoRecoverySpell = 0x0020,
     ON_CAST_Telekenesis = 0x0040,
     ON_CAST_Enchantment = 0x0080,
@@ -31,7 +31,6 @@ enum class SpellCastFlag : uint16_t {
         ON_CAST_WholeParty_BigImprovementAnim | ON_CAST_TargetCrosshair |
         ON_CAST_Telekenesis | ON_CAST_Enchantment | ON_CAST_MonsterSparkles |
         ON_CAST_DarkSacrifice,
-    ON_CAST_Mask_0x007F = 0x007F,
 };
 using enum SpellCastFlag;
 DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)

@@ -1765,7 +1765,7 @@ void UpdateObjects() {
                 if (!(object->uFlags & OBJECT_DESC_TEMPORARY)) continue;
                 if (pSpriteObjects[i].uSpriteFrameID >= 0) {
                     v7 = object->uLifetime;
-                    if (pSpriteObjects[i].uAttributes & ITEM_BROKEN)
+                    if (pSpriteObjects[i].uAttributes & SPRITE_TEMPORARY)
                         v7 = pSpriteObjects[i].field_20;
                     if (pSpriteObjects[i].uSpriteFrameID < v7) continue;
                 }

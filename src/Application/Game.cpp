@@ -2021,7 +2021,7 @@ void Game::EventLoop() {
                     __debugbreak();
                     if (pTurnEngine->turn_stage != TE_MOVEMENT)
                         _42777D_CastSpell_UseWand_ShootArrow(
-                            (SPELL_TYPE)uMessageParam, v199, 133, ON_CAST_0x0001, 0);
+                            (SPELL_TYPE)uMessageParam, v199, 133, ON_CAST_CastViaScroll, 0);
                     continue;
                 case UIMSG_SpellBookWindow:
                     if (pTurnEngine->turn_stage == TE_MOVEMENT) continue;
