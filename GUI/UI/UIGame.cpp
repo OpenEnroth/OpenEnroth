@@ -2093,13 +2093,13 @@ int GetConditionDrawColor(Condition uConditionIdx) {
         case Condition_Poison_Medium:
         case Condition_Disease_Medium:
         case Condition_Paralyzed:
-        case Condition_Unconcious:
+        case Condition_Unconscious:
             return ui_character_condition_moderate_color;
 
         case Condition_Poison_Severe:
         case Condition_Disease_Severe:
         case Condition_Dead:
-        case Condition_Pertified:
+        case Condition_Petrified:
         case Condition_Eradicated:
             return ui_character_condition_severe_color;
     }

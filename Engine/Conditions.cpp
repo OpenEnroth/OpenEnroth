@@ -22,9 +22,9 @@ std::array<ConditionProcessor, 18> conditionArray = {{
     ConditionProcessor(Condition_Disease_Severe, true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
     ConditionProcessor(Condition_Paralyzed, false, false, ITEM_ENCHANTMENT_OF_FREEDOM, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
                        ITEM_ARTIFACT_GHOULSBANE, EQIUP_ANY),
-    ConditionProcessor(Condition_Unconcious, false, false, 0),
+    ConditionProcessor(Condition_Unconscious, false, false, 0),
     ConditionProcessor(Condition_Dead, true, true, 0),
-    ConditionProcessor(Condition_Pertified, true, false, ITEM_ENCHANTMENT_OF_MEDUSA, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
+    ConditionProcessor(Condition_Petrified, true, false, ITEM_ENCHANTMENT_OF_MEDUSA, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
                        ITEM_RELIC_KELEBRIM, EQIUP_ANY),
     ConditionProcessor(Condition_Eradicated, true, true, 0),
     ConditionProcessor(Condition_Zombie, false, false, 0)

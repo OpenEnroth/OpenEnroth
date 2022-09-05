@@ -192,10 +192,10 @@ unsigned int pAgeingTable[4] = {50, 100, 150, 0xFFFF};
 
 std::array<Condition, 18> pConditionImportancyTable = {{
     Condition_Eradicated,
-    Condition_Pertified,
+    Condition_Petrified,
     Condition_Dead,
     Condition_Zombie,
-    Condition_Unconcious,
+    Condition_Unconscious,
     Condition_Sleep,
     Condition_Paralyzed,
     Condition_Disease_Severe,
@@ -361,7 +361,7 @@ int Player::GetTempleHealCostModifier(float price_multi) {
 
     if (conditionIdx >= Condition_Dead &&
         conditionIdx <= Condition_Eradicated) {  // dead, petri, erad - serious
-        if (conditionIdx <= Condition_Pertified)
+        if (conditionIdx <= Condition_Petrified)
             baseConditionMultiplier = 5;  // dead or petri
         else
             baseConditionMultiplier = 10;  // erad
@@ -677,7 +677,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
         case Condition_Paralyzed:
             break;  // nosound
 
-        case Condition_Unconcious:
+        case Condition_Unconscious:
             PlaySound(SPEECH_Unconscious, 0);
             if (sHealth > 0) sHealth = 0;
             break;
@@ -688,7 +688,7 @@ void Player::SetCondition(Condition uConditionIdx, int blockable) {
             if (sMana > 0) sMana = 0;
             break;
 
-        case Condition_Pertified:
+        case Condition_Petrified:
             PlaySound(SPEECH_Petrified, 0);
             break;
 
@@ -2109,7 +2109,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_UNCONSCIOUS:
-                SetCondition(Condition_Unconcious, 1);
+                SetCondition(Condition_Unconscious, 1);
                 pAudioPlayer->PlaySound(SOUND_star4, 0, 0, -1, 0, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
@@ -2123,7 +2123,7 @@ int Player::ReceiveSpecialAttackEffect(
                 break;
 
             case SPECIAL_ATTACK_PETRIFIED:
-                SetCondition(Condition_Pertified, 1);
+                SetCondition(Condition_Petrified, 1);
                 pAudioPlayer->PlaySound(SOUND_eradicate, 0, 0, -1, 0, 0);
                 spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
@@ -4144,11 +4144,11 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
 
             case 252:  // Divine Restoration
                 v30 = playerAffected->conditions.Get(Condition_Dead).value;
-                v32 = playerAffected->conditions.Get(Condition_Pertified).value;
+                v32 = playerAffected->conditions.Get(Condition_Petrified).value;
                 v34 = playerAffected->conditions.Get(Condition_Eradicated).value;
                 conditions.ResetAll();
                 playerAffected->conditions.Set(Condition_Dead, GameTime(v30));
-                playerAffected->conditions.Set(Condition_Pertified, GameTime(v32));
+                playerAffected->conditions.Set(Condition_Petrified, GameTime(v32));
                 playerAffected->conditions.Set(Condition_Eradicated, GameTime(v34));
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
@@ -4251,7 +4251,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             }
 
             case 262:  // Stone to Flesh
-                playerAffected->conditions.Reset(Condition_Pertified);
+                playerAffected->conditions.Reset(Condition_Petrified);
                 playerAffected->PlaySound(SPEECH_DrinkPotion, 0);
                 break;
 
@@ -4615,7 +4615,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                 pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
             } else if (pParty->uCurrentDayOfMonth == 4 ||
                        pParty->uCurrentDayOfMonth == 25) {
-                playerAffected->SetCondition(Condition_Pertified, 0);
+                playerAffected->SetCondition(Condition_Petrified, 0);
                 pAudioPlayer->PlaySound(SOUND_gong, 0, 0, -1, 0, 0);
             }
             return;
@@ -4925,11 +4925,11 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_Paralyzed:
             return conditions.Has(Condition_Paralyzed);
         case VAR_Unconsious:
-            return conditions.Has(Condition_Unconcious);
+            return conditions.Has(Condition_Unconscious);
         case VAR_Dead:
             return conditions.Has(Condition_Dead);
         case VAR_Stoned:
-            return conditions.Has(Condition_Pertified);
+            return conditions.Has(Condition_Petrified);
         case VAR_Eradicated:
             return conditions.Has(Condition_Eradicated);
         case VAR_MajorCondition: {
@@ -5424,7 +5424,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_Unconsious:
-            this->SetCondition(Condition_Unconcious, 1);
+            this->SetCondition(Condition_Unconscious, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Dead:
@@ -5432,7 +5432,7 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_Stoned:
-            this->SetCondition(Condition_Pertified, 1);
+            this->SetCondition(Condition_Petrified, 1);
             PlayAwardSound_Anim();
             return;
         case VAR_Eradicated:
@@ -5996,7 +5996,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_Unconsious:
-            this->SetCondition(Condition_Unconcious, 1);
+            this->SetCondition(Condition_Unconscious, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Dead:
@@ -6004,7 +6004,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_Stoned:
-            this->SetCondition(Condition_Pertified, 1);
+            this->SetCondition(Condition_Petrified, 1);
             PlayAwardSound_Anim97();
             return;
         case VAR_Eradicated:
@@ -6665,7 +6665,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_Unconsious:
-            this->conditions.Reset(Condition_Unconcious);
+            this->conditions.Reset(Condition_Unconscious);
             PlayAwardSound_Anim98();
             return;
         case VAR_Dead:
@@ -6673,7 +6673,7 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_Stoned:
-            this->conditions.Reset(Condition_Pertified);
+            this->conditions.Reset(Condition_Petrified);
             PlayAwardSound_Anim98();
             return;
         case VAR_Eradicated:
@@ -7431,11 +7431,11 @@ bool Player::IsCursed() const {
 }
 
 bool Player::IsPertified() const {
-    return this->conditions.Has(Condition_Pertified);
+    return this->conditions.Has(Condition_Petrified);
 }
 
 bool Player::IsUnconcious() const {
-    return this->conditions.Has(Condition_Unconcious);
+    return this->conditions.Has(Condition_Unconscious);
 }
 
 bool Player::IsAsleep() const {
@@ -7503,7 +7503,7 @@ void Player::SetParalyzed(GameTime time) {
 }
 
 void Player::SetUnconcious(GameTime time) {
-    this->conditions.Set(Condition_Unconcious, time);
+    this->conditions.Set(Condition_Unconscious, time);
 }
 
 void Player::SetDead(GameTime time) {
@@ -7511,7 +7511,7 @@ void Player::SetDead(GameTime time) {
 }
 
 void Player::SetPertified(GameTime time) {
-    this->conditions.Set(Condition_Pertified, time);
+    this->conditions.Set(Condition_Petrified, time);
 }
 
 void Player::SetEradicated(GameTime time) {
