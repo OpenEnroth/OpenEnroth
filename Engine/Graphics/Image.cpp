@@ -71,6 +71,11 @@ void TextureFrameTable::ToFile() {
     if (file == nullptr) {
         Error("Unable to save dtft.bin!", 0);
     }
+
+    // TODO the code below won't work because this static_assert fails
+    // static_assert(sizeof(TextureFrameTable) == 0x14u);
+    __debugbreak();
+
     fwrite(v1, 4u, 1u, file);
     fwrite(v1->pTextures, 0x14u, v1->sNumTextures, file);
     fclose(file);
