@@ -680,7 +680,6 @@ char byte_69BD41_unused;
 int pSaveListPosition;
 unsigned int uLoadGameUI_SelectedSlot;
 char cMM7GameCDDriveLetter;  // idb
-unsigned int uGameState;
 int uDefaultTravelTime_ByFoot;
 int day_attrib;
 int day_fogrange_1;

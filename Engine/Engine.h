@@ -37,7 +37,7 @@ using Io::Mouse;
 void Engine_DeinitializeAndTerminate(int exitCode);
 
 /*  320 */
-enum GAME_STATE {
+enum class GAME_STATE {
     GAME_STATE_PLAYING = 0,
     GAME_FINISHED = 1,
     GAME_STATE_CHANGE_LOCATION = 2,
@@ -50,6 +50,9 @@ enum GAME_STATE {
     GAME_STATE_FINAL_WINDOW = 9,
     GAME_STATE_A = 10
 };
+using enum GAME_STATE;
+
+extern GAME_STATE uGameState;
 
 /*  105 */
 #pragma pack(push, 1)

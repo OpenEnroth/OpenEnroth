@@ -103,6 +103,7 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 */
 
 std::shared_ptr<Engine> engine;
+GAME_STATE uGameState;
 
 uint32_t Color32(uint16_t color16) {
     uint32_t c = color16;
