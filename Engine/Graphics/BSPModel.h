@@ -27,10 +27,10 @@ enum class FaceAttribute : uint32_t {
     FACE_OUTLINED          = 0x00010000,  // outline face debug
     FACE_TexAlignBottom    = 0x00020000,
     FACE_TexMoveByDoor     = 0x00040000,
-    FACE_UNKOWN_10         = 0x00080000,
-    FACE_HAS_EVENT         = 0x00100000,
-    FACE_INDOOR_CARPET     = 0x00200000,
-    FACE_INDOOR_SKY        = 0x00400000,
+    FACE_UNKOWN_10         = 0x00080000,  // MMExt: TriggerByTouch, doesn't work anymore
+    FACE_HAS_EVENT         = 0x00100000,  // MMExt: IsEventJustHint, [MM7+]
+    FACE_INDOOR_CARPET     = 0x00200000,  // MMExt: AlternativeSound
+    FACE_INDOOR_SKY        = 0x00400000,  // MMExt: outdoor in software mode: horizontal flow
     FACE_FlipNormalU       = 0x00800000,
     FACE_FlipNormalV       = 0x01000000,
     FACE_CLICKABLE         = 0x02000000,  // Event can be triggered by clicking on the facet.
@@ -39,8 +39,11 @@ enum class FaceAttribute : uint32_t {
     FACE_TriggerByMonster  = 0x08000000,
     FACE_TriggerByObject   = 0x10000000,
     FACE_ETHEREAL          = 0x20000000,  // Untouchable. You can pass through it.
+                                          // MMExt: great for vertical facets of stairs.
+                                          // [MM7+] Shouldn't be used for sloped floor, like it's used in MM6.
     FACE_IsLava            = 0x40000000,
     FACE_IsPicked          = 0x80000000,  // mouse is hovering
+                                          // TODO: MMExt: HasData, are we talking about BLVFaceExtra?
 };
 using enum FaceAttribute;
 DECLARE_FLAGS(FaceAttributes, FaceAttribute)
