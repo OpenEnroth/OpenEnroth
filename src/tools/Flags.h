@@ -28,7 +28,8 @@ class Flags {
 
     struct Dummy {};
     static void fake_true(Dummy *) {}
-    using fake_bool = void (*)(Dummy*);
+    using fake_bool = void (*)(Dummy *);
+
  public:
     using enumeration_type = Enum;
     using underlying_type = std::underlying_type_t<Enum>;
