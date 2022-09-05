@@ -46,7 +46,7 @@ namespace Application {
             using Callback = std::function<void()>;
 
             void RunAll(const std::vector<Callback> &callbacks) {
-                for (const Callback &callback: callbacks)
+                for (const Callback &callback : callbacks)
                     callback();
             }
 
@@ -63,8 +63,7 @@ namespace Application {
             using validator_type = T (*)(T);
 
             ConfigValue(ConfigSection *section, const std::string &n, T d, validator_type v = nullptr) :
-                name(n), defValue(d), value(d), validator(v)
-            {
+                name(n), defValue(d), value(d), validator(v) {
                 section->Register(this);
             }
 
