@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/IocContainer.h"
