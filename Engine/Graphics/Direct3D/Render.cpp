@@ -808,7 +808,7 @@ void Render::PrepareDecorationsRenderList_ODM() {
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
              pLevelDecorations[i].IsObeliskChestActive()) &&
             !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
-            DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
+            const DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
             if (!(decor_desc->uFlags & 0x80)) {
                 if (!(decor_desc->uFlags & 0x22)) {
                     v6 = pMiscTimer->uTotalGameTimeElapsed;
