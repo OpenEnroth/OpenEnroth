@@ -6,55 +6,94 @@
 #include <functional>
 
 #include "Engine/CommandLine.h"
+#include "Engine/IocContainer.h"
+#include "Engine/Log.h"
 
 using Engine_::CommandLine;
+using EngineIoc = Engine_::IocContainer;
 
 namespace Application {
     class GameConfig {
+        const std::string config_file = "womm.ini";
+        std::shared_ptr<CommandLine> command_line = nullptr;
+        Log *logger = nullptr;
+
+        using Callback = std::function<void()>;
+
+        std::vector<Callback> resetCallbacks;
+        std::vector<Callback> loadCallbacks;
+        std::vector<Callback> saveCallbacks;
+
      public:
-        explicit GameConfig(const std::string &command_line);
+        GameConfig(const std::string &command_line) {
+             this->command_line = std::make_shared<CommandLine>(command_line);
+             this->logger = EngineIoc::ResolveLogger();
+        }
+        ~GameConfig();
+
         void Startup();
-        void DefaultConfiguration();
         void LoadConfiguration();
         void SaveConfiguration();
+
+        void ResetSections() {
+            RunAll(resetCallbacks);
+        }
+
+        void LoadSections() {
+            RunAll(loadCallbacks);
+        }
+
+        void SaveSections() {
+            RunAll(saveCallbacks);
+        }
+
+        class ConfigSection;
+        void Register(ConfigSection *section) {
+            resetCallbacks.push_back([section] { section->Reset(); });
+            saveCallbacks.push_back([section] { section->Save(); });
+            loadCallbacks.push_back([section] { section->Load(); });
+        }
 
         template <class T>
         class ConfigValue;
 
         class ConfigSection {
          public:
-            ConfigSection(const std::string &sectionName): sectionName_(sectionName) {}
+            ConfigSection(GameConfig *config, const std::string &sectionName): sectionName(sectionName) {
+                config->Register(this);
+            }
             ConfigSection(const ConfigSection &other) = delete; // non-copyable
             ConfigSection(ConfigSection&& other) = delete; // non-movable
 
-            void Default() {
-                RunAll(resetCallbacks_);
+            void Reset() {
+                RunAll(resetCallbacks);
             }
 
             void Load() {
-                RunAll(loadCallbacks_);
+                RunAll(loadCallbacks);
             }
 
             void Save() {
-                RunAll(saveCallbacks_);
+                RunAll(saveCallbacks);
             }
 
             template<class T>
-            void Register(ConfigValue<T> *value);
+            void Register(ConfigValue<T> *value) {
+                resetCallbacks.push_back([value] { value->Reset(); });
+                saveCallbacks.push_back([value, this] { SaveOption(sectionName, value); });
+                loadCallbacks.push_back([value, this] { LoadOption(sectionName, value); });
+            }
 
          private:
-            using Callback = std::function<void()>;
-
             void RunAll(const std::vector<Callback> &callbacks) {
                 for (const Callback &callback : callbacks)
                     callback();
             }
 
-         private:
-            std::vector<Callback> resetCallbacks_;
-            std::vector<Callback> loadCallbacks_;
-            std::vector<Callback> saveCallbacks_;
-            std::string sectionName_;
+            std::vector<Callback> resetCallbacks;
+            std::vector<Callback> loadCallbacks;
+            std::vector<Callback> saveCallbacks;
+            std::string sectionName;
         };
 
         template <class T>
@@ -101,12 +140,9 @@ namespace Application {
              validator_type validator;
         };
 
-        const std::string config_file = "womm.ini";
-        std::shared_ptr<CommandLine> command_line;
-
         class Debug : public ConfigSection {
          public:
-            Debug() : ConfigSection("debug") {}
+            Debug(GameConfig *config) : ConfigSection(config, "debug") {}
 
             /** Enable all available spells for each character in spellbook bypassing all class restrictions. Currently also all skills will behave like they are on GM level. */
             ConfigValue<bool> AllMagic = ConfigValue<bool>(this, "all_magic", false);
@@ -165,11 +201,11 @@ namespace Application {
          private:
         };
 
-        Debug debug;
+        Debug debug{ this };
 
         class Gameplay : public ConfigSection {
          public:
-            Gameplay(): ConfigSection("gameplay") {}
+            Gameplay(GameConfig *config): ConfigSection(config, "gameplay") {}
 
             /** Artifact limit after which artifacts are no longer generated in loot. 0 - disable limit. */
             ConfigValue<int> ArtifactLimit = ConfigValue<int>(this, "artifact_limit", 13, &ValidateArtifactLimit);
@@ -181,7 +217,7 @@ namespace Application {
             /** Gravity strength, the higher the more gravity, 0 - disable gravity completely. */
             ConfigValue<int> Gravity = ConfigValue<int>(this, "gravity", 5);
 
-            /** Maximum depth for item pickup / opening chests / activating levers / etc with a keyboard (by pressing space). */
+            /** Maximum depth for item pickup / opening chests / activating levers / etc with a keyboard (by pressing trigger key). */
             ConfigValue<float> KeyboardInteractionDepth = ConfigValue<float>(this, "keyboard_interaction_depth", 512.0f, &ValidateInteractionDepth);
 
             /** Maximum height which you can go with fly spell */
@@ -248,11 +284,11 @@ namespace Application {
             }
         };
 
-        Gameplay gameplay;
+        Gameplay gameplay{ this };
 
         class Graphics : public ConfigSection {
          public:
-            Graphics(): ConfigSection("graphics") {}
+            Graphics(GameConfig *config): ConfigSection(config, "graphics") {}
 
             ConfigValue<std::string> Renderer = ConfigValue<std::string>(this, "renderer", "OpenGL", &ValidateRenderer);
 
@@ -322,11 +358,11 @@ namespace Application {
             }
         };
 
-        Graphics graphics;
+        Graphics graphics{ this };
 
         class Keybindings : public ConfigSection {
          public:
-            Keybindings() : ConfigSection("keybindings") {}
+            Keybindings(GameConfig *config) : ConfigSection(config, "keybindings") {}
 
             ConfigValue<std::string> AlwaysRun = ConfigValue<std::string>(this, "always_run", "U", &ValidateKey);
             ConfigValue<std::string> Attack = ConfigValue<std::string>(this, "attack", "A", &ValidateKey);
@@ -366,11 +402,11 @@ namespace Application {
             }
         };
 
-        Keybindings keybindings;
+        Keybindings keybindings{ this };
 
         class Settings : public ConfigSection {
          public:
-            Settings() : ConfigSection("settings") {}
+            Settings(GameConfig *config) : ConfigSection(config, "settings") {}
 
             /** true - run, false - walk */
             ConfigValue<bool> AlwaysRun = ConfigValue<bool>(this, "always_run", true);
@@ -430,11 +466,11 @@ namespace Application {
             }
         };
 
-        Settings settings;
+        Settings settings{ this };
 
         class Window : public ConfigSection {
          public:
-            Window(): ConfigSection("window") {}
+            Window(GameConfig *config): ConfigSection(config, "window") {}
 
             ConfigValue<std::string> Title = ConfigValue<std::string>(this, "title", "World of Might and Magic", &ValidateTitle);
 
@@ -442,7 +478,7 @@ namespace Application {
              * Borderless mode.
              *
              * It removes window borders. For fullscreen mode instead of going into traditional exclusive fullscreen mode it goes into fake fullscreen mode.
-             * Fake fullscreen mode reposition window top-left corner to 0,0 ignoring window position coordinates.
+             * Fake fullscreen mode reposition window's top-left corner to 0,0 ignoring window position coordinates.
              * And also resize window to display size.
              */
             ConfigValue<bool> Borderless = ConfigValue<bool>(this, "borderless", false);
@@ -491,26 +527,23 @@ namespace Application {
             }
         };
 
-        Window window;
+        Window window{ this };
 
      private:
+         void RunAll(const std::vector<Callback> &callbacks) {
+             for (const Callback &callback : callbacks)
+                 callback();
+         }
+
+         static void LoadOption(std::string section, GameConfig::ConfigValue<bool> *val);
+         static void LoadOption(std::string section, GameConfig::ConfigValue<float> *val);
+         static void LoadOption(std::string section, GameConfig::ConfigValue<int> *val);
+         static void LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val);
+
+         static void SaveOption(std::string section, GameConfig::ConfigValue<bool> *val);
+         static void SaveOption(std::string section, GameConfig::ConfigValue<int> *val);
+         static void SaveOption(std::string section, GameConfig::ConfigValue<float> *val);
+         static void SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val);
     };
-
-    void LoadOption(std::string section, GameConfig::ConfigValue<bool> *val);
-    void LoadOption(std::string section, GameConfig::ConfigValue<float> *val);
-    void LoadOption(std::string section, GameConfig::ConfigValue<int> *val);
-    void LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val);
-
-    void SaveOption(std::string section, GameConfig::ConfigValue<bool> *val);
-    void SaveOption(std::string section, GameConfig::ConfigValue<int> *val);
-    void SaveOption(std::string section, GameConfig::ConfigValue<float> *val);
-    void SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val);
-
-    template<class T>
-    void GameConfig::ConfigSection::Register(ConfigValue<T> *value) {
-        resetCallbacks_.push_back([=] { value->Reset(); });
-        saveCallbacks_.push_back([=] { SaveOption(sectionName_, value); });
-        loadCallbacks_.push_back([=] { LoadOption(sectionName_, value); });
-    }
 
 }  // namespace Application
