@@ -13,7 +13,7 @@ using Application::GameConfig;
 
 mINI::INIStructure ini;
 
-void Application::LoadOption(std::string section, GameConfig::ConfigValue<bool> *val) {
+void GameConfig::LoadOption(std::string section, GameConfig::ConfigValue<bool> *val) {
     bool r = true;
     std::string v = ini[section].get(val->Name());
 
@@ -28,7 +28,7 @@ void Application::LoadOption(std::string section, GameConfig::ConfigValue<bool> 
     val->Set(r);
 }
 
-void Application::LoadOption(std::string section, GameConfig::ConfigValue<float> *val) {
+void GameConfig::LoadOption(std::string section, GameConfig::ConfigValue<float> *val) {
     std::string v = ini[section].get(val->Name());
 
     if (v.empty()) {
@@ -39,7 +39,7 @@ void Application::LoadOption(std::string section, GameConfig::ConfigValue<float>
     val->Set(std::stof(v));
 }
 
-void Application::LoadOption(std::string section, GameConfig::ConfigValue<int> *val) {
+void GameConfig::LoadOption(std::string section, GameConfig::ConfigValue<int> *val) {
     std::string v = ini[section].get(val->Name());
 
     if (v.empty()) {
@@ -50,7 +50,7 @@ void Application::LoadOption(std::string section, GameConfig::ConfigValue<int> *
     val->Set(std::stoi(v));
 }
 
-void Application::LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val) {
+void GameConfig::LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val) {
     std::string v = ini[section].get(val->Name());
 
     if (v.empty()) {
@@ -61,7 +61,7 @@ void Application::LoadOption(std::string section, GameConfig::ConfigValue<std::s
     val->Set(v);
 }
 
-void Application::SaveOption(std::string section, GameConfig::ConfigValue<bool> *val) {
+void GameConfig::SaveOption(std::string section, GameConfig::ConfigValue<bool> *val) {
     std::string v = "false";
     if (val->Get())
         v = "true";
@@ -69,25 +69,16 @@ void Application::SaveOption(std::string section, GameConfig::ConfigValue<bool> 
     ini[section].set(val->Name(), v);
 }
 
-void Application::SaveOption(std::string section, GameConfig::ConfigValue<int> *val) {
+void GameConfig::SaveOption(std::string section, GameConfig::ConfigValue<int> *val) {
     ini[section].set(val->Name(), std::to_string(val->Get()));
 }
 
-void Application::SaveOption(std::string section, GameConfig::ConfigValue<float> *val) {
+void GameConfig::SaveOption(std::string section, GameConfig::ConfigValue<float> *val) {
     ini[section].set(val->Name(), std::to_string(val->Get()));
 }
 
-void Application::SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val) {
+void GameConfig::SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val) {
     ini[section].set(val->Name(), val->Get());
-}
-
-void GameConfig::DefaultConfiguration() {
-    debug.Default();
-    gameplay.Default();
-    graphics.Default();
-    keybindings.Default();
-    settings.Default();
-    window.Default();
 }
 
 void GameConfig::LoadConfiguration() {
@@ -95,29 +86,18 @@ void GameConfig::LoadConfiguration() {
     mINI::INIFile file(path);
 
     if (file.read(ini)) {
-        debug.Load();
-        gameplay.Load();
-        graphics.Load();
-        keybindings.Load();
-        settings.Load();
-        window.Load();
-
-        printf("Configuration file '%s' loaded!\n", path.c_str());
+        LoadSections();
+        logger->Info("Configuration file '%s' loaded!", path.c_str());
     } else {
-        DefaultConfiguration();
-        printf("Cound not read configuration file '%s'! Loaded default configuration instead!\n", path.c_str());
+        ResetSections();
+        logger->Warning("Cound not read configuration file '%s'! Loaded default configuration instead!", path.c_str());
     }
 }
 
 void GameConfig::SaveConfiguration() {
     mINI::INIFile file(MakeDataPath(config_file));
 
-    debug.Save();
-    gameplay.Save();
-    graphics.Save();
-    keybindings.Save();
-    settings.Save();
-    window.Save();
+    SaveSections();
 
     file.write(ini, true);
 }
@@ -184,6 +164,6 @@ void GameConfig::Startup() {
     }
 }
 
-GameConfig::GameConfig(const std::string &command_line_str) {
-    command_line = std::make_shared<CommandLine>(command_line_str);
+GameConfig::~GameConfig() {
+    ini.clear();
 }
