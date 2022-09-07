@@ -113,8 +113,10 @@ class Flags {
     /**
      * Implicit operator bool with some dark magic on top.
      *
-     * Explicit operator bool doesn't work here because then we can't just write `if (flags & SOME_FLAG)`.
-     * Implicit operator bool also allows to do arithmetic on top of the returned result, so something like
+     * Explicit operator bool doesn't work here because then we can't just write `return flags & SOME_FLAG` in
+     * a function returning `bool`.
+     *
+     * Implicit operator bool allows to do arithmetic on top of the returned result, so something like
      * `return flags == 0x16` actually compiles, albeit in a totally unexpected way (comparing `bool` to
      * `0x16` always returns false).
      *
