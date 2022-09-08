@@ -1,0 +1,78 @@
+name: Linux
+
+on:
+  pull_request:
+  push:
+  release:
+    types: published
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+        architecture: [x86, x64]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+        if [ "${{ matrix.architecture }}" = "x86" ]; then
+          sudo dpkg --add-architecture i386
+        fi
+        sudo apt-get update
+        if [ "${{ matrix.architecture }}" = "x86" ]; then
+          sudo apt-get install -y gcc-12-multilib g++-12-multilib
+          sudo apt-get install -y libglu1-mesa-dev:i386 zlib1g-dev:i386
+          sudo apt-get install -y libavformat-dev:i386 libavcodec-dev:i386 libswscale-dev:i386
+          sudo apt-get install -y libopenal-dev:i386
+          sudo apt-get install -y libsdl2-dev:i386
+        fi
+        if [ "${{ matrix.architecture }}" = "x64" ]; then
+          sudo apt-get install -y gcc-12 g++-12
+          sudo apt-get install -y libglu1-mesa-dev zlib1g-dev
+          sudo apt-get install -y libavformat-dev libavcodec-dev libswscale-dev
+          sudo apt-get install -y libopenal-dev
+          sudo apt-get install -y libsdl2-dev
+        fi
+
+    - name: Configure
+      run: |
+        if [ "${{ matrix.architecture }}" = "x86" ]; then
+          export CFLAGS="-m32" CXXFLAGS="-m32" 
+        fi
+        export CC=gcc-12 && export CXX=g++-12
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+
+    - name: Build
+      working-directory: build
+      run: |
+        make -j$(nproc)
+
+    - name: Prepare artifact
+      run: |
+        mkdir dist
+        cp build/World_of_Might_and_Magic dist/
+        cp -r resources/* dist/
+
+    - name: Copy Shared libs
+      run: |
+        mkdir libs
+        ldd build/World_of_Might_and_Magic | grep '=> /' | awk '{print $3;}' | xargs -I '{}' cp -v '{}' ./libs/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: World of Might and Magic (Linux, ${{ matrix.configuration }}, ${{ matrix.architecture }})
+        path: dist/**
+
+    - name: Upload shared libs
+      uses: actions/upload-artifact@v3
+      with:
+        name: Shared Libraries (${{ matrix.architecture }})
+        path: libs/**

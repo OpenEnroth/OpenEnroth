@@ -1,0 +1,35 @@
+name: Doxygen
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: "recursive"
+
+    - name: Install Doxygen
+      run: |
+        sudo apt-get install doxygen -y
+
+    - name: Generate Documentation
+      run: |
+        export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
+        doxygen Doxyfile
+        touch docs/html/.nojekyll
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4.4.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
+        folder: docs/html
+        target-folder: .
+

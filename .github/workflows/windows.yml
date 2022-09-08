@@ -1,0 +1,51 @@
+name: Windows
+
+on:
+  pull_request:
+  push:
+  release:
+    types: published
+
+jobs:
+  build_windows:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+        architecture: [x86, x64]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - name: Setup environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.architecture }}
+
+    - name: Configure
+      run: |
+        cmake -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+
+    - name: Build
+      working-directory: build
+      shell: cmd
+      run: |
+        nmake
+
+    - name: Prepare artifact
+      shell: cmd
+      run: |
+        mkdir dist
+        copy build\World_of_Might_and_Magic.exe dist\ /Y
+        copy build\*.dll dist\ /Y
+        xcopy resources dist\ /E/H/C/I
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: World of Might and Magic (Windows, ${{ matrix.configuration }}, ${{ matrix.architecture }})
+        path: |
+          dist/**
