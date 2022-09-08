@@ -343,11 +343,9 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
 }
 
 /**
- * Original offset ??
- *
  * @param model                         Pointer to model to check against.
  * @param reachable_depth               A depth distance for checking interaction against.
- * @param reachable[out]                Whether the model is within the reachable depth specified.
+ * @param[out] reachable                Whether the model is within the reachable depth specified.
  *
  * @return                              Whether the bounding radius of the model is visible within the camera FOV cone.
  */

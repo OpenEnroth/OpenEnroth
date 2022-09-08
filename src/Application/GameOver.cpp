@@ -27,6 +27,7 @@
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
+using namespace Application;
 
 //----- (004BF91E) --------------------------------------------------------
 void Application::GameOver_Loop(int v15) {

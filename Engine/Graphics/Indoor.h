@@ -432,7 +432,7 @@ struct BLVFace {  // 60h
     }
 
     /**
-     * @param points[out]               Coordinate storage. The storage is populated by the coordinates of this
+     * @param[out] points               Coordinate storage. The storage is populated by the coordinates of this
      *                                  face's vertices projected onto this face's primary plane.
      * @param model_idx                 Model that this face belongs to, or `MODEL_INDOOR` for faces in indoor
      *                                  locations.
@@ -744,8 +744,9 @@ struct BspRenderer {  // stru170
 
 void FindBillboardsLightLevels_BLV();
 
-// TODO: looks like this also works for ceilings, reflect in docs?
 /**
+ * @todo looks like this also works for ceilings, reflect in docs?
+ *
  * @param pos                           Actor's position.
  * @param[in,out] pSectorID             Actor's cached sector id. If the cached sector id is no longer valid (e.g. an
  *                                      actor has already moved to another sector), then the new sector id is returned
@@ -759,7 +760,7 @@ void FindBillboardsLightLevels_BLV();
 int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 
 /**
- * Original offset 0x0047272C.
+ * @offset 0x0047272C.
  *
  * Same as `GetIndoorFloorZ`, but also tries jiggling the party around a bit if the collision point couldn't be
  * found.

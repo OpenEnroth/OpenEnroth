@@ -1033,13 +1033,13 @@ void LightmapBuilder::DrawDebugOutlines(
     }
 }
 
-// TODO(pskelton): Remove this from render classes
 /**
- * Original offset ??.
+ * @todo(pskelton) Remove this from render classes
  *
  * @param max_dimm                      Maximum dimming level allowed (0-31). 31 * 8 ~ 255.
  * @param min_dimm                      Minimum dimming level allowed (0-31).
  * @param distance                      Depth distance to billboard.
+ * @param bNoLight                      No light dimming.
  * @param pBillboard                    Pointer to the billboard to test against or Nullptr.
  *
  * @return                              Return 32bit colour ARGB.
@@ -1106,7 +1106,7 @@ int GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight, 
 }
 
 /**
- * Original offset 0x43F5C8.
+ * @offset 0x0043F5C8.
  *
  * @param uBaseLightLevel               Starting dimming level at point (0-31).
  * @param uSectorID                     Sector ID if indoors or 0.
@@ -1191,7 +1191,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
 }
 
 /**
- * Original offset 0x43F55F.
+ * @offset 0x0043F55F.
  *
  * @param *a1                           Pointer to billboard to check.
  * @param uBaseLightLevel               Base light dimming value (0-31).

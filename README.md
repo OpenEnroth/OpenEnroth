@@ -4,13 +4,13 @@ Might and Magic VI-VIII engine remake using original data & code.
 Allows playing original game + introduce customizations & modifications.
 Currently only MM7 is playable. Support for 6 & 8 will be added in the future.
 
-![Windows](https://github.com/gp-alex/world-of-might-and-magic/workflows/Windows/badge.svg) ![Linux](https://github.com/gp-alex/world-of-might-and-magic/workflows/Linux/badge.svg) [![AppVeyor](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true&passingText=passing&failingText=failing&pendingText=pending)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
+[![Windows](https://github.com/gp-alex/world-of-might-and-magic/workflows/Windows/badge.svg)](https://github.com/gp-alex/world-of-might-and-magic/actions/workflows/windows.yml) [![Linux](https://github.com/gp-alex/world-of-might-and-magic/workflows/Linux/badge.svg)](https://github.com/gp-alex/world-of-might-and-magic/actions/workflows/linux.yml) [![AppVeyor](https://ci.appveyor.com/api/projects/status/nlno5vo74jf6rnt3/branch/master?svg=true&passingText=passing&failingText=failing&pendingText=pending)](https://ci.appveyor.com/project/gp-alex/world-of-might-and-magic)
 
-![Style Checker](https://github.com/gp-alex/world-of-might-and-magic/workflows/Style/badge.svg) [![Coverity Status](https://scan.coverity.com/projects/16434/badge.svg)](https://scan.coverity.com/projects/world-of-might-and-magic)
+[![Style Checker](https://github.com/gp-alex/world-of-might-and-magic/workflows/Style/badge.svg)](https://github.com/gp-alex/world-of-might-and-magic/actions/workflows/style.yml) [![Coverity Status](https://scan.coverity.com/projects/16434/badge.svg)](https://scan.coverity.com/projects/world-of-might-and-magic)
 
 ![screenshot_main](https://user-images.githubusercontent.com/24377109/79051217-491a7800-7c2f-11ea-85c7-f9120b7d79dd.png)
 
-Discord [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq) 
+Discord [![Discord channel invite](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq) 
 ---------------
 Join our discord channel to discuss, track progress or involve in development of this project.
 
