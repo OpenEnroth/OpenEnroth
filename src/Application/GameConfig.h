@@ -20,6 +20,13 @@ namespace Application {
         template <class T>
         class ConfigValue;
 
+     private:
+        const std::string config_file = "womm.ini";
+        std::shared_ptr<CommandLine> command_line = nullptr;
+        Log *logger = nullptr;
+        std::vector<ConfigSection *> sections;
+
+    public:
         GameConfig(const std::string &command_line) {
              this->command_line = std::make_shared<CommandLine>(command_line);
              this->logger = EngineIoc::ResolveLogger();
@@ -534,13 +541,6 @@ namespace Application {
         static void SaveOption(std::string section, GameConfig::ConfigValue<int> *val);
         static void SaveOption(std::string section, GameConfig::ConfigValue<float> *val);
         static void SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val);
-
-     private:
-        const std::string config_file = "womm.ini";
-        std::shared_ptr<CommandLine> command_line = nullptr;
-        Log *logger = nullptr;
-
-        std::vector<ConfigSection *> sections;
     };
 
 }  // namespace Application
