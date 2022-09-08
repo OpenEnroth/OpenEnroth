@@ -31,17 +31,17 @@ namespace Application {
         void SaveConfiguration();
 
         void ResetSections() {
-            for (ConfigSection *section: sections)
+            for (ConfigSection *section : sections)
                 section->Reset();
         }
 
         void LoadSections() {
-            for (ConfigSection *section: sections)
+            for (ConfigSection *section : sections)
                 section->Load();
         }
 
         void SaveSections() {
-            for (ConfigSection *section: sections)
+            for (ConfigSection *section : sections)
                 section->Save();
         }
 
