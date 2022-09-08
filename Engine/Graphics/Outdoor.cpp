@@ -56,7 +56,7 @@ struct FogProbabilityTableEntry {
     unsigned char small_fog_chance;
     unsigned char average_fog_chance;
     unsigned char dense_fog_chance;
-    unsigned char __unused__;
+    unsigned char unused;
 } fog_probability_table[15] = {
     {20, 10, 5, 0},   // MAP_EMERALD_ISLE
     {20, 10, 5, 0},   // MAP_HARMONDALE
@@ -209,33 +209,27 @@ double OutdoorLocation::GetFogDensityByTime() {
 
 //----- (00488EB1) --------------------------------------------------------
 int OutdoorLocation::GetSomeOtherTileInfo(int sX, int sY) {
-    // OutdoorLocation *v3; // esi@1
-    unsigned int v4;  // edi@1
-    unsigned int v5;  // eax@1
-                      //  int result; // eax@5
-
     /*  v3 = this;
-      v4 = WorldPosToGridCellY(sY);
-      v5 = WorldPosToGridCellX(sX);
-      if ( (v5 & 0x80000000u) != 0 || (signed int)v5 > 127 || (v4 & 0x80000000u)
-      != 0 || (signed int)v4 > 127 ) result = 0; else result =
-      ActuallyGetSomeOtherTileInfo(v5, v4); return result;*/
-    v4 = WorldPosToGridCellY(sY);
-    v5 = WorldPosToGridCellX(sX);
-    if (v5 < 0 || v5 > 127 || v4 < 0 || v4 > 127) return 0;
-    return ActuallyGetSomeOtherTileInfo(v5, v4);
+      gridY = WorldPosToGridCellY(sY);
+      gridX = WorldPosToGridCellX(sX);
+      if ( (gridX & 0x80000000u) != 0 || (signed int)gridX > 127 || (gridY & 0x80000000u)
+      != 0 || (signed int)gridY > 127 ) result = 0; else result =
+      DoGetSomeOtherTileInfo(gridX, gridY); return result;*/
+    int gridY = WorldPosToGridCellY(sY);
+    int gridX = WorldPosToGridCellX(sX);
+    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
+        return 0;
+    return DoGetSomeOtherTileInfo(gridX, gridY);
 }
 
 //----- (00488EEF) --------------------------------------------------------
-TileDesc *OutdoorLocation::GetTile(signed int sX, signed int sY) {
-    signed int v4;  // edi@1
-    signed int v5;  // eax@1
+TileDesc *OutdoorLocation::GetTile(int sX, int sY) {
+    int gridY = WorldPosToGridCellY(sY);
+    int gridX = WorldPosToGridCellX(sX);
+    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
+        return nullptr;
 
-    v4 = WorldPosToGridCellY(sY);
-    v5 = WorldPosToGridCellX(sX);
-    if (v5 < 0 || v5 > 127 || v4 < 0 || v4 > 127) return nullptr;
-
-    return this->DoGetTile(v5, v4);
+    return this->DoGetTile(gridX, gridY);
 }
 
 //----- (00488F2E) --------------------------------------------------------
@@ -436,8 +430,7 @@ void OutdoorLocation::MessWithLUN() {
     this->uSpriteID_LUN_SUN = pSpriteFrameTable->FastFindSprite("LUN-SUN");
     this->field_D14 = -131072;
     for (uint i = 0; i < 8; i++)
-        pSpriteFrameTable->InitializeSprite(
-            this->pSpriteIDs_LUN[i]);  // v2 += 2;
+        pSpriteFrameTable->InitializeSprite(this->pSpriteIDs_LUN[i]);  // v2 += 2;
     pSpriteFrameTable->InitializeSprite(this->uSpriteID_LUN_SUN);
 }
 
@@ -467,12 +460,14 @@ void OutdoorLocation::UpdateFog() {
     fFogDensity = GetFogDensityByTime();
 }
 
-int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(int x, int y, int z) {
+int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(const Vec3_int_ &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(x, y, z, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
+    ODM_GetFloorLevel(pos, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
     if (pParty->IsAirborne() || bmodel_standing_on_pid || is_on_water)
         return 2;
+
+    // TODO: we're passing in pos and then using pParty->vPosition, why?
     int v7 = _47ED83(WorldPosToGridCellX(pParty->vPosition.x),
                      WorldPosToGridCellY(pParty->vPosition.y) - 1);
     switch (pTileTable->pTiles[GetTileIdByTileMapId(v7)].tileset) {
@@ -813,11 +808,6 @@ bool OutdoorLocationTerrain::ZeroLandscape() {
     return true;
 }
 
-//----- (0047CD44) --------------------------------------------------------
-bool OutdoorLocationTerrain::Initialize() {
-    return true; // TODO: drop this function
-}
-
 //----- (0047CDE2) --------------------------------------------------------
 void OutdoorLocation::CreateDebugLocation() {
     this->level_filename = "blank";
@@ -831,7 +821,6 @@ void OutdoorLocation::CreateDebugLocation() {
     this->LoadTileGroupIds();
     this->LoadRoadTileset();
     this->pSpawnPoints.clear();
-    this->pTerrain.Initialize();
     this->pTerrain.ZeroLandscape();
     this->pTerrain.FillDMap(0, 0, 128, 128);
 
@@ -854,15 +843,9 @@ void OutdoorLocation::Release() {
     this->sky_texture_filename = "sky043";
     this->ground_tileset = "hm005";
 
-    while (!pBModels.empty()) {
-        pBModels.back().Release();
-        pBModels.pop_back();
-    }
-
+    pBModels.clear();
     pSpawnPoints.clear();
-
     pTerrain.Release();
-
     pFaceIDLIST.clear();
     pTerrainNormals.clear();
 
@@ -925,7 +908,6 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // *******************Terrain**************************//
-    pTerrain.Initialize();
     stream.ReadRaw(&pTerrain.pHeightmap);  // карта высот
     stream.ReadRaw(&pTerrain.pTilemap);  // карта тайлов
     stream.ReadRaw(&pTerrain.pAttributemap);  // карта аттрибутов
@@ -943,7 +925,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ************BModels************************//
-    stream.Skip(pBModels.Load(stream.Ptr()));
+    pBModels.Load(&stream);
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
     // ******************Decorations**********************//
@@ -1082,7 +1064,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    stream.Skip(ChestsDeserialize(stream.Ptr()));
+    stream.ReadVector(&vChests);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
@@ -1263,25 +1245,21 @@ TileDesc *OutdoorLocation::DoGetTile(int sX, int sY) {
 }
 
 //----- (0047ED83) --------------------------------------------------------
-int OutdoorLocation::_47ED83(signed int a2, signed int a3) {
-    if (a2 < 0 || a2 > 127 || a3 < 0 || a3 > 127)
+int OutdoorLocation::_47ED83(signed int gridX, signed int gridY) {
+    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 
-    return *(&this->pTerrain.pTilemap[128 * a3] + a2);
+    return this->pTerrain.pTilemap[128 * gridY + gridX];
 }
 
 //----- (0047EDB3) --------------------------------------------------------
-int OutdoorLocation::ActuallyGetSomeOtherTileInfo(signed int sX,
-                                                  signed int sY) {
-    int v3;  // esi@5
-
-    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
+int OutdoorLocation::DoGetSomeOtherTileInfo(int gridX, int gridY) {
+    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 
-    v3 = this->pTerrain.pTilemap[sY * 128 + sX];
+    int v3 = this->pTerrain.pTilemap[gridY * 128 + gridX];
     if (v3 >= 90)
-        v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID -
-             36 * ((v3 - 90) / 36) - 90;
+        v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID - 36 * ((v3 - 90) / 36) - 90;
     return pTileTable->pTiles[v3].uAttributes;
 }
 
@@ -1339,21 +1317,17 @@ int OutdoorLocation::GetSoundIdByPosition(signed int X_pos, signed int Y_pos,
 }
 
 //----- (0047EF60) --------------------------------------------------------
-int OutdoorLocation::UpdateDiscoveredArea(int X_grid_pos, int Y_grid_poa,
-                                          int a4) {
+int OutdoorLocation::UpdateDiscoveredArea(int X_grid_pos, int Y_grid_poa, int unused) {
     for (int i = -10; i < 10; i++) {
         int currYpos = Y_grid_poa + i - 20;
         for (int j = -10; j < 10; j++) {
             int currXpos = X_grid_pos + j - 20;
             int distanceSquared = i * i + j * j;
-            if (distanceSquared <= 100 && currYpos >= 0 && currYpos <= 87 &&
-                currXpos >= 0 && currXpos <= 87) {
+            if (distanceSquared <= 100 && currYpos >= 0 && currYpos <= 87 && currXpos >= 0 && currXpos <= 87) {
                 unsigned char v13 = 1 << (7 - currXpos % 8);
-                this->uPartiallyRevealedCellOnMap[currYpos][currXpos / 8] |=
-                    v13;
+                this->uPartiallyRevealedCellOnMap[currYpos][currXpos / 8] |= v13;
                 if (distanceSquared <= 49)
-                    this->uFullyRevealedCellOnMap[currYpos][currXpos / 8] |=
-                        v13;
+                    this->uFullyRevealedCellOnMap[currYpos][currXpos / 8] |= v13;
             }
         }
     }
@@ -1361,23 +1335,19 @@ int OutdoorLocation::UpdateDiscoveredArea(int X_grid_pos, int Y_grid_poa,
 }
 
 //----- (0047F04C) --------------------------------------------------------
-bool OutdoorLocation::IsMapCellFullyRevealed(signed int x_pos,
-                                             signed int y_pos) {
+bool OutdoorLocation::IsMapCellFullyRevealed(int x_pos, int y_pos) {
     if (x_pos < 0 || x_pos >= 88 || y_pos < 0 || y_pos >= 88)
         return false;
     else
-        return (uFullyRevealedCellOnMap[y_pos][x_pos / 8] &
-                (1 << (7 - (x_pos) % 8))) != 0;
+        return (uFullyRevealedCellOnMap[y_pos][x_pos / 8] & (1 << (7 - (x_pos) % 8))) != 0;
 }
 
 //----- (0047F097) --------------------------------------------------------
-bool OutdoorLocation::IsMapCellPartiallyRevealed(signed int x_pos,
-                                                 signed int y_pos) {
+bool OutdoorLocation::IsMapCellPartiallyRevealed(int x_pos, int y_pos) {
     if (x_pos < 0 || x_pos >= 88 || y_pos < 0 || y_pos >= 88)
         return false;
     else
-        return (uPartiallyRevealedCellOnMap[y_pos][x_pos / 8] &
-                (1 << (7 - (x_pos) % 8))) != 0;
+        return (uPartiallyRevealedCellOnMap[y_pos][x_pos / 8] & (1 << (7 - (x_pos) % 8))) != 0;
 }
 
 //----- (0047F0E2) --------------------------------------------------------
@@ -1389,7 +1359,7 @@ bool OutdoorLocation::_47F0E2() {
                 pBitmaps_LOD->pTextures[i].paletted_pixels,
                 pBitmaps_LOD->pTextures[i].header.palette_id2,
                 pBitmaps_LOD->pTextures[i].header.uTextureWidth *
-                    pBitmaps_LOD->pTextures[i].header.uTextureHeight);
+                pBitmaps_LOD->pTextures[i].header.uTextureHeight);
     }
     return 1;
 }
@@ -1406,7 +1376,7 @@ bool OutdoorLocation::PrepareDecorations() {
         LevelDecoration *decor = &pLevelDecorations[i];
 
         pDecorationList->InitializeDecorationSprite(decor->uDecorationDescID);
-        DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
+        const DecorationDesc *decoration = pDecorationList->GetDecoration(decor->uDecorationDescID);
         if (decoration->uSoundID && _6807E0_num_decorations_with_sounds_6807B8 < 9) {
             // pSoundList->LoadSound(decoration.uSoundID, 0);
             _6807B8_level_decorations_ids[_6807E0_num_decorations_with_sounds_6807B8++] = i;
@@ -1688,19 +1658,19 @@ void OutdoorLocation::PrepareActorsDrawList() {
     }
 }
 
-int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater,
+int ODM_GetFloorLevel(const Vec3_int_ &pos, int unused, bool *pIsOnWater,
                       int *bmodel_pid, int bWaterWalk) {
     std::array<int, 20> current_Face_id;                   // dword_721110
     std::array<int, 20> current_BModel_id;                 // dword_721160
     std::array<int, 20> odm_floor_level;                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
-    odm_floor_level[0] = GetTerrainHeightsAroundParty2(X, Y, pIsOnWater, bWaterWalk);
+    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos.x, pos.y, pIsOnWater, bWaterWalk);
 
     int surface_count = 1;
 
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (!model.pBoundingBox.ContainsXY(X, Y))
+        if (!model.pBoundingBox.ContainsXY(pos.x, pos.y))
             continue;
 
         if (model.pFaces.empty())
@@ -1716,18 +1686,18 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
             if (face.uPolygonType != POLYGON_Floor && face.uPolygonType != POLYGON_InBetweenFloorAndWall)
                 continue;
 
-            if (!face.pBoundingBox.ContainsXY(X, Y))
+            if (!face.pBoundingBox.ContainsXY(pos.x, pos.y))
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.Get();
-            if (!face.Contains(Vec3_int_(X, Y, 0), model.index, slack, FACE_XY_PLANE))
+            if (!face.Contains(pos, model.index, slack, FACE_XY_PLANE))
                 continue;
 
             int floor_level;
             if (face.uPolygonType == POLYGON_Floor) {
-                floor_level = model.pVertices.pVertices[face.pVertexIDs[0]].z;
+                floor_level = model.pVertices[face.pVertexIDs[0]].z;
             } else {
-                floor_level = face.zCalc.Calculate(X, Y);
+                floor_level = face.zCalc.Calculate(pos.x, pos.y);
             }
             odm_floor_level[surface_count] = floor_level;
             current_BModel_id[surface_count] = model.index;
@@ -1747,8 +1717,8 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
     int current_floor_level = odm_floor_level[0];
     int current_idx = 0;
     for (uint i = 1; i < surface_count; ++i) {
-        if (current_floor_level <= Z + 5) {
-            if (odm_floor_level[i] >= current_floor_level && odm_floor_level[i] <= Z + 5) {
+        if (current_floor_level <= pos.z + 5) {
+            if (odm_floor_level[i] >= current_floor_level && odm_floor_level[i] <= pos.z + 5) {
                 current_floor_level = odm_floor_level[i];
                 current_idx = i;
             }
@@ -1775,45 +1745,36 @@ int ODM_GetFloorLevel(int X, signed int Y, int Z, int __unused, bool *pIsOnWater
 // normal of inverse normal
 // for a right-handed system, that would be an inverse normal
 //----- (0046DCC8) --------------------------------------------------------
-void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out) {
+void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3_int_ *out) {
     uint grid_x = WorldPosToGridCellX(pos_x);
-    uint grid_z = WorldPosToGridCellY(pos_z) - 1;
+    uint grid_y = WorldPosToGridCellY(pos_y) - 1;
 
     int grid_pos_x1 = GridCellToWorldPosX(grid_x);
     int grid_pos_x2 = GridCellToWorldPosX(grid_x + 1);
-    int grid_pos_z1 = GridCellToWorldPosZ(grid_z);
-    int grid_pos_z2 = GridCellToWorldPosZ(grid_z + 1);
+    int grid_pos_y1 = GridCellToWorldPosY(grid_y);
+    int grid_pos_y2 = GridCellToWorldPosY(grid_y + 1);
 
-    int x1z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z);
-    int x2z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z);
-    int x2z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
-    int x1z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z + 1);
+    int x1y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y);
+    int x2y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y);
+    int x2y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
+    int x1y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
 
-    float side1_dx, side1_dy, side1_dz, side2_dx, side2_dy, side2_dz;
+    Vec3_float_ side1, side2;
 
-    int dx = abs(pos_x - grid_pos_x1), dz = abs(grid_pos_z1 - pos_z);
-    if (dz >= dx) {
-        side2_dx = (double)(grid_pos_x2 - grid_pos_x1);
-        side2_dz =
-            0.0;  // (double)(grid_pos_z2 - grid_pos_z2);  // bug?  z2 - z2
-        side2_dy = (double)(x2z2_y - x1z2_y);
+    //float side1_dx, side1_dz, side1_dy, side2_dx, side2_dz, side2_dy;
 
-        side1_dx = 0.0;  // (double)(grid_pos_x1 - grid_pos_x1);
-        side1_dz = (double)(grid_pos_z1 - grid_pos_z2);  //       z1 - z2 yes
-        side1_dy = (double)(x1z1_y - x1z2_y);
-        // logger->Warning("%S %S %u\n", __FILE__, __FUNCTION__, __LINE__);
+    int dx = abs(pos_x - grid_pos_x1);
+    int dy = abs(grid_pos_y1 - pos_y);
+    if (dy >= dx) {
+        side2 = Vec3_float_(grid_pos_x2 - grid_pos_x1, 0.0f, x2y2_z - x1y2_z);
+        side1 = Vec3_float_(0.0f, grid_pos_y1 - grid_pos_y2, x1y1_z - x1y2_z);
         /*       |\
            side1 |  \
                  |____\
                  side 2      */
     } else {
-        side2_dx = (double)(grid_pos_x1 - grid_pos_x2);
-        side2_dz = 0.0;  // (double)(grid_pos_z1 - grid_pos_z1);
-        side2_dy = (double)(x1z1_y - x2z1_y);
-
-        side1_dx = 0.0;  // (double)(grid_pos_x2 - grid_pos_x1);
-        side1_dz = (double)(grid_pos_z2 - grid_pos_z1);
-        side1_dy = (double)(x2z2_y - x2z1_y);
+        side2 = Vec3_float_(grid_pos_x1 - grid_pos_x2, 0.0f, x1y1_z - x2y1_z);
+        side1 = Vec3_float_(0.0f, grid_pos_y2 - grid_pos_y1, x2y2_z - x2y1_z);
         /*   side 2
              _____
              \    |
@@ -1821,20 +1782,12 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out) {
                  \|       */
     }
 
-    float nx = side1_dy * side2_dz - side1_dz * side2_dy;
-    float ny = side1_dx * side2_dy - side1_dy * side2_dx;
-    float nz = side1_dz * side2_dx - side1_dx * side2_dz;
-
-    float mag = sqrt(nx * nx + ny * ny + nz * nz);
+    Vec3_float_ n = Cross(side2, side1);
+    float mag = Length(n);
     if (fabsf(mag) < 1e-6f) {
-        out->y = 0;
-        out->x = 0;
-        out->z = 65536;
+        *out = Vec3_int_(0, 0, 65536);
     } else {
-        float invmag = 1.0 / mag;
-        out->x = invmag * nx * 65536.0;
-        out->y = invmag * ny * 65536.0;
-        out->z = invmag * nz * 65536.0;
+        *out = ToFixpointVector(n / mag);
     }
 }
 //----- (0046BE0A) --------------------------------------------------------
@@ -1913,7 +1866,6 @@ void ODM_ProcessPartyActions() {
     signed int v44;    // edx@184
     int v45;           // ecx@200
     BSPModel *pModel;  // eax@203
-    bool pModel_;
     ODMFace *pODMFace;   // esi@203
     int v48;             // eax@203
     int v54;             // eax@215
@@ -1932,7 +1884,6 @@ void ODM_ProcessPartyActions() {
     bool not_high_fall;  // [sp+1Ch] [bp-78h]@33
     int v102;            // [sp+20h] [bp-74h]@1
     int trigger_id = 0;  // [sp+24h] [bp-70h]@1
-    bool bFeatherFall;   // [sp+28h] [bp-6Ch]@4
     int bonus;
     int on_ground;            // [sp+2Ch] [bp-68h]@24
     bool bWaterWalk;          // [sp+30h] [bp-64h]@1
@@ -1941,7 +1892,6 @@ void ODM_ProcessPartyActions() {
     int v111;                 // [sp+44h] [bp-50h]@14
     bool hovering;            // [sp+48h] [bp-4Ch]@1
     int v113;                 // [sp+4Ch] [bp-48h]@1
-    bool party_running_flag;  // [sp+50h] [bp-44h]@1
     int _walk_speed;          // [sp+54h] [bp-40h]@48
     int pX;                   // [sp+58h] [bp-3Ch]@1
     int pY;                   // [sp+5Ch] [bp-38h]@1
@@ -1950,7 +1900,6 @@ void ODM_ProcessPartyActions() {
     int _angle_x;             // [sp+68h] [bp-2Ch]@48
     unsigned int v122;        // [sp+70h] [bp-24h]@180
 
-    bool party_walking_flag;  // [sp+78h] [bp-1Ch]@1
     int _angle_y;             // [sp+7Ch] [bp-18h]@48
     int v128;                 // [sp+88h] [bp-Ch]@1
     int v129;                 // [sp+8Ch] [bp-8h]@92
@@ -1968,16 +1917,15 @@ void ODM_ProcessPartyActions() {
 
     v113 = pParty->sPartyPrevZ;
     hovering = false;
-    bool partyAtHighSlope =
-        IsTerrainSlopeTooHigh(pParty->vPosition.x, pParty->vPosition.y);
-    party_running_flag = false;
-    party_walking_flag = false;
+    bool partyAtHighSlope = IsTerrainSlopeTooHigh(pParty->vPosition.x, pParty->vPosition.y);
+    bool party_running_flag = false;
+    bool party_walking_flag = false;
     v102 = 0;
-    pModel_ = false;
+    bool pModel_ = false;
     bWaterWalk = false;
     //************************************
     // Проверка падение пера
-    bFeatherFall = pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
+    bool bFeatherFall = pParty->FeatherFallActive() || pParty->WearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT);
     //************************************
     // Проверка хождения по воде
     pParty->uFlags &= ~PARTY_FLAGS_1_STANDING_ON_WATER;
@@ -1993,9 +1941,8 @@ void ODM_ProcessPartyActions() {
     // определение уровня пола
     int bmodel_standing_on_pid;  // данные 3D model'и
     bool is_on_water = false;     // на воду
-    floor_level =
-        ODM_GetFloorLevel(pX, pY, party_new_Z, pParty->uPartyHeight,
-                          &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
+    floor_level = ODM_GetFloorLevel(Vec3_int_(pX, pY, party_new_Z), pParty->uPartyHeight,
+                                    &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
     int is_not_on_bmodel = bmodel_standing_on_pid == 0;  // не на 3D model
 
     v111 = floor_level;  // ???
@@ -2057,17 +2004,13 @@ void ODM_ProcessPartyActions() {
     //*****************************************
     // установить на чём стоит группа
     if (!hovering) {  // не в воздухе
-        if (pParty->floor_face_pid !=
-            PID(OBJECT_BModel, bmodel_standing_on_pid)) {
-            if (bmodel_standing_on_pid) {
-                int BModel_id = bmodel_standing_on_pid >> 6;
-                if (BModel_id < pOutdoor->pBModels.size()) {
-                    int face_id = bmodel_standing_on_pid & 0x3F;
-                    if (pOutdoor->pBModels[BModel_id].pFaces[face_id].uAttributes & FACE_PRESSURE_PLATE) {
-                        pParty->floor_face_pid = PID(OBJECT_BModel, bmodel_standing_on_pid);
-                        trigger_id = pOutdoor->pBModels[BModel_id].pFaces[face_id].sCogTriggeredID;
-                        // EVT, панель имеет событие
-                    }
+        if (pParty->floor_face_pid != PID(OBJECT_BModel, bmodel_standing_on_pid) && bmodel_standing_on_pid) {
+            int BModel_id = bmodel_standing_on_pid >> 6;
+            if (BModel_id < pOutdoor->pBModels.size()) {
+                int face_id = bmodel_standing_on_pid & 0x3F;
+                if (pOutdoor->pBModels[BModel_id].pFaces[face_id].uAttributes & FACE_PRESSURE_PLATE) {
+                    trigger_id = pOutdoor->pBModels[BModel_id].pFaces[face_id].sCogTriggeredID;
+                    // EVT, панель имеет событие
                 }
             }
         }
@@ -2115,12 +2058,10 @@ void ODM_ProcessPartyActions() {
                             pParty->field_6E4_set0_unused = 0;
                             pPartyActionQueue->uNumActions = 0;
                             pParty->uFlags |= PARTY_FLAGS_1_LANDING;
-                            pParty->vPosition.z =
-                                ceiling_height - pParty->uPartyHeight - 31;
+                            pParty->vPosition.z = ceiling_height - pParty->uPartyHeight - 31;
                             pParty->sPartyPrevZ = party_new_Z;
                             pParty->bFlying = false;
-                            party_new_Z =
-                                ceiling_height - pParty->uPartyHeight - 31;
+                            party_new_Z = ceiling_height - pParty->uPartyHeight - 31;
                             v113 = pParty->sPartyPrevZ;
                         }
                         pParty->uFallSpeed = 0;
@@ -2173,7 +2114,7 @@ void ODM_ProcessPartyActions() {
                 if (engine->config->settings.TurnSpeed.Get() > 0)
                     _angle_y += engine->config->settings.TurnSpeed.Get();
                 else
-                    _angle_y += 2.0f * fTurnSpeedMultiplier * (double)dturn;
+                    _angle_y += 2.0f * fTurnSpeedMultiplier * dturn;
 
                 _angle_y &= TrigLUT->uDoublePiMask;
                 break;
@@ -2182,7 +2123,7 @@ void ODM_ProcessPartyActions() {
                 if (engine->config->settings.TurnSpeed.Get() > 0)
                     _angle_y -= engine->config->settings.TurnSpeed.Get();
                 else
-                    _angle_y -= 2.0f * fTurnSpeedMultiplier * (double)dturn;
+                    _angle_y -= 2.0f * fTurnSpeedMultiplier * dturn;
 
                 _angle_y &= TrigLUT->uDoublePiMask;
                 break;
@@ -2294,8 +2235,7 @@ void ODM_ProcessPartyActions() {
                 int dx = cos_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 v2 -= dx;
 
-                int dy =
-                    sin_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
+                int dy = sin_y * pParty->uWalkSpeed * fBackwardWalkSpeedMultiplier;
                 v1 -= dy;
 
                 v128 = v1;
@@ -2459,9 +2399,8 @@ void ODM_ProcessPartyActions() {
 
         collision_state.uSectorID = 0;
         v36 = 0;
-        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
             v36 = 13312;
-        }
         if (collision_state.PrepareAndCheckIfStationary(v36))
             break;
 
@@ -2469,8 +2408,7 @@ void ODM_ProcessPartyActions() {
         // v37 = WorldPosToGridCellY(pParty->vPosition.y);
         // v38 = WorldPosToGridCellX(pParty->vPosition.x);
         CollideOutdoorWithDecorations(
-            WorldPosToGridCellX(pParty->vPosition.x),
-            WorldPosToGridCellY(pParty->vPosition.y));
+                WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y));
         _46ED8A_collide_against_sprite_objects(4);
         for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
             CollideWithActor(actor_id, 0);
@@ -2486,9 +2424,10 @@ void ODM_ProcessPartyActions() {
             v40 = collision_state.adjusted_move_distance * collision_state.direction.z + party_new_Z;
         }
         v122 = v40;
-        ODM_GetFloorLevel(_angle_x, _angle_y, v40, pParty->uPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
-        v129 = ODM_GetFloorLevel(_angle_x, pY, v40, pParty->uPartyHeight, &is_on_water, &v97, 0);
-        int v119 = ODM_GetFloorLevel(pX, _angle_y, v40, pParty->uPartyHeight, &is_on_water, &v110, 0);
+        ODM_GetFloorLevel(Vec3_int_(_angle_x, _angle_y, v40),
+                          pParty->uPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
+        v129 = ODM_GetFloorLevel(Vec3_int_(_angle_x, pY, v40), pParty->uPartyHeight, &is_on_water, &v97, 0);
+        int v119 = ODM_GetFloorLevel(Vec3_int_(pX, _angle_y, v40), pParty->uPartyHeight, &is_on_water, &v110, 0);
         bool v42_ = (BSPModel *)IsTerrainSlopeTooHigh(_angle_x, pY);
         v42 = IsTerrainSlopeTooHigh(pX, _angle_y);
         is_not_on_bmodel = false;
@@ -2508,7 +2447,7 @@ void ODM_ProcessPartyActions() {
             } else if (v43) {
                 pY = _angle_y;
             } else {
-                int new_ = ODM_GetFloorLevel(_angle_x, _angle_y, v40, pParty->uPartyHeight, &is_on_water,
+                int new_ = ODM_GetFloorLevel(Vec3_int_(_angle_x, _angle_y, v40), pParty->uPartyHeight, &is_on_water,
                                              &bmodel_standing_on_pid, 0);
                 if (IsTerrainSlopeTooHigh(_angle_x, _angle_y) && new_ <= party_new_Z) {
                     v43 = 1;
@@ -2558,7 +2497,7 @@ void ODM_ProcessPartyActions() {
                 v119 = 0;
             if (pODMFace->uPolygonType == POLYGON_Floor) {
                 if (fall_speed < 0) fall_speed = 0;
-                party_new_Z = pModel->pVertices.pVertices[pODMFace->pVertexIDs[0]].z + 1;
+                party_new_Z = pModel->pVertices[pODMFace->pVertexIDs[0]].z + 1;
                 if (v2 * v2 + v128 * v128 < 400) {
                     v2 = 0;
                     *(float *)&v128 = 0.0;
@@ -2566,9 +2505,8 @@ void ODM_ProcessPartyActions() {
                 if (pParty->floor_face_pid != v45 &&
                     pODMFace->Pressure_Plate()) {
                     pParty->floor_face_pid = v45;
-                    trigger_id =
-                        pODMFace->sCogTriggeredID;  // this one triggers tour
-                                                    // events??
+                    trigger_id = pODMFace->sCogTriggeredID;  // this one triggers tour
+                                                             // events??
                 }
             }
             if (!v129 && (pODMFace->uPolygonType != POLYGON_InBetweenFloorAndWall || v119)) {  // упёрся в столб
@@ -2583,8 +2521,7 @@ void ODM_ProcessPartyActions() {
                 if (!v119)
                     v54 = fixpoint_mul(v118, pODMFace->pFacePlaneOLD.vNormal.z);
                 pParty->uFallSpeed += v54;
-                v55 =
-                    collision_state.radius_lo -
+                v55 = collision_state.radius_lo -
                     pODMFace->pFacePlaneOLD.SignedDistanceTo(_angle_x, _angle_y, v122);
                 if (v55 > 0) {
                     pX = _angle_x + fixpoint_mul(pODMFace->pFacePlaneOLD.vNormal.x, v55);
@@ -2640,8 +2577,7 @@ void ODM_ProcessPartyActions() {
                     pAudioPlayer->PlaySound(SOUND_RunWood, -1 /*804*/, 1, -1, 0, 0);  // бег на 3D Modelи
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
-                        WorldPosToGridCellX(pParty->vPosition.x),
-                        WorldPosToGridCellY(pParty->vPosition.y) - 1, 1);
+                        WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y) - 1, 1);
                     pAudioPlayer->PlaySound((SoundID)v87, -1 /*804*/, 1, -1, 0, 0);  // бег по земле 56
                 }
                 pParty->walk_sound_timer = 96;  // таймер для бега
@@ -2654,8 +2590,7 @@ void ODM_ProcessPartyActions() {
                     pAudioPlayer->PlaySound(SOUND_WalkWood, -1 /*804*/, 1, -1, 0, 0);  // хождение на 3D Modelи
                 } else {
                     v87 = pOutdoor->GetSoundIdByPosition(
-                        WorldPosToGridCellX(pParty->vPosition.x),
-                        WorldPosToGridCellY(pParty->vPosition.y) - 1, 0);
+                        WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y) - 1, 0);
                     pAudioPlayer->PlaySound((SoundID)v87, -1 /*804*/, 1, -1, 0, 0);  // хождение по земле
                 }
                 pParty->walk_sound_timer = 144;  // таймер для ходьбы
@@ -2676,9 +2611,9 @@ void ODM_ProcessPartyActions() {
     int pMap_Y = WorldPosToGridCellY(pParty->vPosition.y) - 1;
     unsigned int v114_a = WorldPosToGridCellX(pX);
     v66 = WorldPosToGridCellY(pY) - 1;
-    unsigned int v122_a = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, pMap_Y) / 2) & 1;
-    v122 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(v114_a, pMap_Y) / 2) & 1;
-    v69 = (~(unsigned int)pOutdoor->ActuallyGetSomeOtherTileInfo(pMap_X, v66) / 2) & 1;
+    unsigned int v122_a = (~(unsigned int) pOutdoor->DoGetSomeOtherTileInfo(pMap_X, pMap_Y) / 2) & 1;
+    v122 = (~(unsigned int) pOutdoor->DoGetSomeOtherTileInfo(v114_a, pMap_Y) / 2) & 1;
+    v69 = (~(unsigned int) pOutdoor->DoGetSomeOtherTileInfo(pMap_X, v66) / 2) & 1;
 
     // -(обновление координат группы)---------------------------------------
     v68 = 0;
@@ -2833,134 +2768,80 @@ void ODM_ProcessPartyActions() {
             pParty->uFallStartZ = party_new_Z;
         }
         if (v102 && pParty->vPosition.z < ceiling_height &&
-            (signed int)(pParty->uPartyHeight + pParty->vPosition.z) >=
-                ceiling_height) {
-            pParty->vPosition.z =
-                pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
-            pParty->sPartyPrevZ =
-                pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
+            (signed int)(pParty->uPartyHeight + pParty->vPosition.z) >= ceiling_height) {
+            pParty->vPosition.z = pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
+            pParty->sPartyPrevZ = pParty->vPosition.z + pParty->uPartyHeight - ceiling_height + 1;
         }
     }
 }
 
-int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
-                     int *pFaceID) {
-    int v13;      // eax@25
-    int v14;      // edx@27
-    int v16;      // ST18_4@29
-    int v17;      // edx@29
-    int64_t v18 {};  // qtt@29
-    int v19;      // eax@35
-    int v20;      // ecx@37
-    int v22;      // ebx@42
-    int v27;      // [sp+10h] [bp-34h]@21
-    bool v34;     // [sp+30h] [bp-14h]@21
-    bool v35;     // [sp+34h] [bp-10h]@23
-    int v37;      // [sp+38h] [bp-Ch]@21
-    int v38;      // [sp+38h] [bp-Ch]@42
-    int v39;      // [sp+3Ch] [bp-8h]@1
+int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pFaceID) {
+    std::array<int, 20> face_indices;
+    std::array<int, 20> model_indices;
+    std::array<int, 20> ceiling_height_level;
+    model_indices[0] = -1;
+    face_indices[0] = -1;
+    ceiling_height_level[0] = 10000;  // no ceiling
 
-    dword_720ED0[0] = -1;
-    dword_720E80[0] = -1;
-    v39 = 1;
-    ceiling_height_level[0] = 10000;  // нет потолка
+    int ceiling_count = 1;
+
     for (BSPModel &model : pOutdoor->pBModels) {
-        if (Party_X <= model.pBoundingBox.x2 && Party_X >= model.pBoundingBox.x1 &&
-            Party_Y <= model.pBoundingBox.y2 && Party_Y >= model.pBoundingBox.y1) {
-            for (ODMFace &face : model.pFaces) {
-                if ((face.uPolygonType == POLYGON_Ceiling ||
-                     face.uPolygonType == POLYGON_InBetweenCeilingAndWall) &&
-                    !face.Ethereal() && Party_X <= face.pBoundingBox.x2 &&
-                    Party_X >= face.pBoundingBox.x1 &&
-                    Party_Y <= face.pBoundingBox.y2 &&
-                    Party_Y >= face.pBoundingBox.y1) {
-                    for (uint v = 0; v < face.uNumVertices; v++) {
-                        word_720DB0_xs[2 * v] =
-                            face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices.pVertices[face.pVertexIDs[v]]
-                                .x;
-                        word_720CE0_ys[2 * v] =
-                            face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices.pVertices[face.pVertexIDs[v]]
-                                .y;
-                        word_720DB0_xs[2 * v + 1] =
-                            face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices
-                                .pVertices[face.pVertexIDs[v + 1]]
-                                .x;
-                        word_720CE0_ys[2 * v + 1] =
-                            face.pXInterceptDisplacements[v] +
-                            (short)model.pVertices
-                                .pVertices[face.pVertexIDs[v + 1]]
-                                .y;
-                    }
-                    v27 = 2 * face.uNumVertices;
-                    word_720DB0_xs[2 * face.uNumVertices] = word_720DB0_xs[0];
-                    word_720CE0_ys[2 * face.uNumVertices] = word_720CE0_ys[0];
-                    v34 = word_720CE0_ys[0] >= Party_Y;
-                    v37 = 0;
-                    for (uint v = 0; v < v27; ++v) {
-                        if (v37 >= 2) break;
-                        v35 = word_720CE0_ys[v + 1] >= Party_Y;
-                        if (v34 != v35) {
-                            v13 = word_720DB0_xs[v + 1] >= Party_X ? 0 : 2;
-                            v14 = v13 | (word_720DB0_xs[v] < Party_X);
-                            if (v14 != 3) {
-                                if (!v14 ||
-                                    (v16 = word_720CE0_ys[v + 1] -
-                                           word_720CE0_ys[v],
-                                     v17 = Party_Y - word_720CE0_ys[v],
-                                     HEXRAYS_LODWORD(v18) = v17 << 16,
-                                     HEXRAYS_HIDWORD(v18) = v17 >> 16,
-                                     (int)(((uint64_t)(
-                                                ((int)word_720DB0_xs[v + 1] -
-                                                 (int)word_720DB0_xs[v]) *
-                                                v18 / v16) >>
-                                            16) +
-                                           word_720DB0_xs[v]) >= Party_X))
-                                    ++v37;
-                            }
-                        }
-                        v34 = v35;
-                    }
-                    if (v37 == 1) {
-                        if (v39 >= 20) break;
-                        if (face.uPolygonType == POLYGON_Ceiling)
-                            v19 =
-                                model.pVertices.pVertices[face.pVertexIDs[0]].z;
-                        else
-                            v19 = face.zCalc.Calculate(Party_X, Party_Y);
-                        v20 = v39++;
-                        ceiling_height_level[v20] = v19;
-                        dword_720ED0[v20] = model.index;
-                        dword_720E80[v20] = face.index;
-                    }
-                }
-            }
+        if (!model.pBoundingBox.ContainsXY(Party_X, Party_Y))
+            continue;
+
+        for (ODMFace &face : model.pFaces) {
+            if (face.Ethereal())
+                continue;
+
+            if (face.uPolygonType != POLYGON_Ceiling && face.uPolygonType != POLYGON_InBetweenCeilingAndWall)
+                continue;
+
+            if (!face.pBoundingBox.ContainsXY(Party_X, Party_Y))
+                continue;
+
+            int slack = engine->config->gameplay.FloorChecksEps.Get();
+            if (!face.Contains(Vec3_int_(Party_X, Party_Y, 0), model.index, slack, FACE_XY_PLANE))
+                continue;
+
+            if (ceiling_count >= 20)
+                break;
+
+            int height_level;
+            if (face.uPolygonType == POLYGON_Ceiling)
+                height_level = model.pVertices[face.pVertexIDs[0]].z;
+            else
+                height_level = face.zCalc.Calculate(Party_X, Party_Y);
+
+            ceiling_height_level[ceiling_count] = height_level;
+            model_indices[ceiling_count] = model.index;
+            face_indices[ceiling_count] = face.index;
+
+            ++ceiling_count;
         }
     }
 
-    if (!v39) {
-        pFaceID = 0;
+    if (!ceiling_count) {
+        *pFaceID = 0;
         return ceiling_height_level[0];
     }
-    v22 = 0;
-    for (v38 = 0; v38 < v39; ++v38) {
-        if (ceiling_height_level[v38] == ceiling_height_level[0])
-            v22 = v38;
-        else if (ceiling_height_level[v38] < ceiling_height_level[0] &&
-                 ceiling_height_level[0] > Party_ZHeight + 15)
-            v22 = v38;
-        else if (ceiling_height_level[v38] > ceiling_height_level[0] &&
-                 ceiling_height_level[v38] <= Party_ZHeight + 15)
-            v22 = v38;
+
+    int result_idx = 0;
+    for (int i = 0; i < ceiling_count; ++i) {
+        if (ceiling_height_level[i] == ceiling_height_level[0])
+            result_idx = i;
+        else if (ceiling_height_level[i] < ceiling_height_level[0] && ceiling_height_level[0] > Party_ZHeight + 15)
+            result_idx = i;
+        else if (ceiling_height_level[i] > ceiling_height_level[0] && ceiling_height_level[i] <= Party_ZHeight + 15)
+            result_idx = i;
     }
-    if (v22) {
-        *(int *)pFaceID = dword_720E80[v22] | (dword_720ED0[v22] << 6);
-        return ceiling_height_level[v22];  // если есть преграда
+
+    if (result_idx != 0) {
+        *pFaceID = face_indices[result_idx] | (model_indices[result_idx] << 6);
+        return ceiling_height_level[result_idx];
+    } else {
+        *pFaceID = 0;
+        return ceiling_height_level[result_idx];
     }
-    pFaceID = 0;
-    return ceiling_height_level[v22];  // нет никакой преграды
 }
 
 //----- (00464839) --------------------------------------------------------
@@ -3001,9 +2882,7 @@ void UpdateActors_ODM() {
                                     pActors[Actor_ITR].vPosition.y);
         unsigned int Model_On_PID = 0;
         bool uIsOnWater = false;
-        int Floor_Level = ODM_GetFloorLevel(
-            pActors[Actor_ITR].vPosition.x, pActors[Actor_ITR].vPosition.y,
-            pActors[Actor_ITR].vPosition.z, pActors[Actor_ITR].uActorHeight, &uIsOnWater,
+        int Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].vPosition, pActors[Actor_ITR].uActorHeight, &uIsOnWater,
             (int *)&Model_On_PID, Water_Walk);
         bool Actor_On_Terrain = Model_On_PID == 0;
 
@@ -3142,8 +3021,7 @@ void UpdateActors_ODM() {
             bool bOnWater = false;
             int Splash_Model_On;
             int Splash_Floor = ODM_GetFloorLevel(
-                collision_state.new_position_lo.x, collision_state.new_position_lo.y,
-                collision_state.new_position_lo.z - collision_state.radius_lo - 1,
+                ToIntVector(collision_state.new_position_lo) - Vec3_int_(0, 0, collision_state.radius_lo + 1),
                 pActors[Actor_ITR].uActorHeight, &bOnWater, &Splash_Model_On, 0);
             if (uIsOnWater) {
                 if (v35 < Splash_Floor + 60) {
@@ -3246,9 +3124,7 @@ void UpdateActors_ODM() {
                             pActors[Actor_ITR].vVelocity.z = 0;
                             pActors[Actor_ITR].vPosition.z =
                                 (short)pOutdoor->pBModels[collision_state.pid >> 9]
-                                    .pVertices.pVertices[face->pVertexIDs[0]]
-                                    .z +
-                                1;
+                                    .pVertices[face->pVertexIDs[0]].z + 1;
                             if (pActors[Actor_ITR].vVelocity.x *
                                         pActors[Actor_ITR].vVelocity.x +
                                     pActors[Actor_ITR].vVelocity.y *
@@ -3310,15 +3186,15 @@ void UpdateActors_ODM() {
         // WATER TILE CHECKING
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
-            unsigned int Tile_1_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
-                WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x),
-                WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y) - 1) >>
+            unsigned int Tile_1_Land = ((unsigned int)~pOutdoor->DoGetSomeOtherTileInfo(
+                    WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x),
+                    WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y) - 1) >>
                 1) & 1;
-            unsigned int Tile_2_Land = ((unsigned int)~pOutdoor->ActuallyGetSomeOtherTileInfo(
-                WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x +
-                    pActors[Actor_ITR].vVelocity.x),
-                WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y +
-                    pActors[Actor_ITR].vVelocity.y) - 1) >>
+            unsigned int Tile_2_Land = ((unsigned int)~pOutdoor->DoGetSomeOtherTileInfo(
+                    WorldPosToGridCellX(pActors[Actor_ITR].vPosition.x +
+                                        pActors[Actor_ITR].vVelocity.x),
+                    WorldPosToGridCellY(pActors[Actor_ITR].vPosition.y +
+                                        pActors[Actor_ITR].vVelocity.y) - 1) >>
                 1) & 1;
 
             if (!uIsFlying && Tile_1_Land && !Tile_2_Land) {
@@ -3339,10 +3215,10 @@ void UpdateActors_ODM() {
                     // scan surrounding cells for land
                     for (int j = Grid_Z - 1; j <= Grid_Z + 1; j++) {
                         Tile_Test_Land = ((unsigned int)~pOutdoor->
-                            ActuallyGetSomeOtherTileInfo(i, j - 1) >> 1) & 1;
+                                DoGetSomeOtherTileInfo(i, j - 1) >> 1) & 1;
                         if (Tile_Test_Land) {  // found land
                             int target_x = GridCellToWorldPosX(i);
-                            int target_y = GridCellToWorldPosZ(j - 1);
+                            int target_y = GridCellToWorldPosY(j - 1);
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
                                 pActors[Actor_ITR].uYawAngle = TrigLUT->Atan2(target_x -
                                     pActors[Actor_ITR].vPosition.x, target_y -
@@ -3455,7 +3331,7 @@ unsigned int GetLevelFogColor() {
     return 0;
 }
 
-int sub_47C3D7_get_fog_specular(int a1, int a2, float a3) {
+int sub_47C3D7_get_fog_specular(int unused, int a2, float a3) {
     int v7;
 
     int v3 = pWeather->bNight;
@@ -3513,23 +3389,21 @@ int sub_47C3D7_get_fog_specular(int a1, int a2, float a3) {
 
 //----- (0047F44B) --------------------------------------------------------
 unsigned int WorldPosToGridCellX(int sWorldPosX) {
-    return (sWorldPosX >> 9) +
-           64;  // sar is in original exe, resulting -880 / 512 = -1
-                //                               and -880 sar 9 = -2
+    return (sWorldPosX >> 9) + 64;  // sar is in original exe, resulting -880 / 512 = -1
+                                    //                               and -880 sar 9 = -2
 }
 
 //----- (0047F458) --------------------------------------------------------
 unsigned int WorldPosToGridCellY(int sWorldPosY) {
-    return 64 - (sWorldPosY >>
-                 9);  // sar is in original exe, resulting -880 / 512 = -1
-                      //                               and -880 sar 9 = -2
+    return 64 - (sWorldPosY >> 9);  // sar is in original exe, resulting -880 / 512 = -1
+                                    //                               and -880 sar 9 = -2
 }
 
 //----- (0047F469) --------------------------------------------------------
 int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 
 //----- (0047F476) --------------------------------------------------------
-int GridCellToWorldPosZ(int a1) { return (64 - a1) << 9; }
+int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
 
 
 //----- (004823F4) --------------------------------------------------------
@@ -3557,13 +3431,13 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
     // GridCellToWorldPosX(grid_x + 1);
     // dword_76D574_terrain_cell_world_pos_around_party_x =
     // GridCellToWorldPosX(grid_x);
-    int party_grid_z1 = GridCellToWorldPosZ(grid_z);
+    int party_grid_z1 = GridCellToWorldPosY(grid_z);
     // dword_76D55C_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(grid_z);
+    // GridCellToWorldPosY(grid_z);
     // dword_76D560_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(grid_z + 1);
+    // GridCellToWorldPosY(grid_z + 1);
     // dword_76D564_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(grid_z + 1);
+    // GridCellToWorldPosY(grid_z + 1);
     int party_x1z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z);
     int party_x2z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z);
     int party_x2z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
@@ -3601,7 +3475,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
 }
 
 //----- (0048257A) --------------------------------------------------------
-int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAboveWater) {
+int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAboveWater) {
     //  int result; // eax@9
     int v8;          // ebx@11
     int v9;          // eax@11
@@ -3610,19 +3484,19 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     signed int v14;  // [sp+14h] [bp-4h]@3
     int v15;         // [sp+24h] [bp+Ch]@11
 
-    unsigned int grid_x = WorldPosToGridCellX(a1);
-    unsigned int grid_z = WorldPosToGridCellY(a2) - 1;
+    unsigned int grid_x = WorldPosToGridCellX(x);
+    unsigned int grid_z = WorldPosToGridCellY(y) - 1;
 
     int grid_x1 = GridCellToWorldPosX(grid_x),
         grid_x2 = GridCellToWorldPosX(grid_x + 1);
-    int grid_z1 = GridCellToWorldPosZ(grid_z),
-        grid_z2 = GridCellToWorldPosZ(grid_z + 1);
+    int grid_z1 = GridCellToWorldPosY(grid_z),
+        grid_z2 = GridCellToWorldPosY(grid_z + 1);
 
     int y_x1z1 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z),
         y_x2z1 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z),
         y_x2z2 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1),
         y_x1z2 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z + 1);
-    // v4 = WorldPosToGridCellX(a1);
+    // v4 = WorldPosToGridCellX(x);
     // v5 = WorldPosToGridCellY(v12) - 1;
     // dword_76D538_terrain_cell_world_pos_around_party_x =
     // GridCellToWorldPosX(v4);
@@ -3633,13 +3507,13 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     // dword_76D544_terrain_cell_world_pos_around_party_x =
     // GridCellToWorldPosX(v4);
     // dword_76D528_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(v5);
+    // GridCellToWorldPosY(v5);
     // dword_76D52C_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(v5);
+    // GridCellToWorldPosY(v5);
     // dword_76D530_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(v5 + 1);
+    // GridCellToWorldPosY(v5 + 1);
     // dword_76D534_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosZ(v5 + 1);
+    // GridCellToWorldPosY(v5 + 1);
     // dword_76D518_terrain_cell_world_pos_around_party_y =
     // pOutdoor->DoGetHeightOnTerrain(v4, v5);
     // dword_76D51C_terrain_cell_world_pos_around_party_y =
@@ -3649,23 +3523,23 @@ int GetTerrainHeightsAroundParty2(int a1, int a2, bool *pIsOnWater, int bFloatAb
     // dword_76D524_terrain_cell_world_pos_around_party_y =
     // pOutdoor->DoGetHeightOnTerrain(v4, v5 + 1);
     *pIsOnWater = false;
-    if (pOutdoor->ActuallyGetSomeOtherTileInfo(grid_x, grid_z) & 2)
+    if (pOutdoor->DoGetSomeOtherTileInfo(grid_x, grid_z) & 2)
         *pIsOnWater = true;
     v14 = 0;
     if (!bFloatAboveWater && *pIsOnWater) v14 = -60;
     if (y_x1z1 != y_x2z1 || y_x2z1 != y_x2z2 || y_x2z2 != y_x1z2) {
-        if (abs(grid_z1 - a2) >= abs(a1 - grid_x1)) {
+        if (abs(grid_z1 - y) >= abs(x - grid_x1)) {
             v8 = y_x1z2;
             v9 = y_x2z2;
             v10 = y_x1z1;
-            v15 = a1 - grid_x1;
-            v13 = a2 - grid_z2;
+            v15 = x - grid_x1;
+            v13 = y - grid_z2;
         } else {
             v8 = y_x2z1;
             v9 = y_x1z1;
             v10 = y_x2z2;
-            v15 = grid_x2 - a1;
-            v13 = grid_z1 - a2;
+            v15 = grid_x2 - x;
+            v13 = grid_z1 - y;
         }
         return v14 + v8 + fixpoint_mul(v13, (v10 - v8) * 128) +
                fixpoint_mul(v15, (v9 - v8) * 128);

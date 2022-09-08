@@ -1865,17 +1865,17 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
                 if (!pPlayer->CanCastSpell(uRequiredMana))
                     break;
-                if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Pertified)) {
+                if (pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Has(Condition_Petrified)) {
                     if (skill_level == 4) {  // for GM
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Pertified);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Petrified);
                         spell_sound_flag = true;
                         break;
                     }
 
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .DiscardConditionIfLastsLongerThan(
-                            Condition_Pertified,
-                            GameTime(pParty->GetPlayingTime() -
+                                Condition_Petrified,
+                                GameTime(pParty->GetPlayingTime() -
                                 GameTime::FromSeconds(amount)));
                 }
                 spell_sound_flag = true;
@@ -2178,7 +2178,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pParty->pPlayers[pCastSpell->uPlayerID_2].sHealth = 1;
                 if (skill_level == 4) {
                     pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
-                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconcious);
+                    pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
                 } else {
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .DiscardConditionIfLastsLongerThan(
@@ -2186,8 +2186,8 @@ void CastSpellInfoHelpers::CastSpell() {
                                                 GameTime::FromSeconds(amount)));
                     pParty->pPlayers[pCastSpell->uPlayerID_2]
                         .DiscardConditionIfLastsLongerThan(
-                            Condition_Unconcious,
-                            GameTime(pParty->GetPlayingTime() -
+                                Condition_Unconscious,
+                                GameTime(pParty->GetPlayingTime() -
                                 GameTime::FromSeconds(amount)));
                 }
                 pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(
@@ -2209,7 +2209,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 int pl_array[4] {};
                 for (uint pl_id = 1; pl_id <= 4; pl_id++) {
                     if (!pPlayers[pl_id]->conditions.Has(Condition_Dead) &&
-                        !pPlayers[pl_id]->conditions.Has(Condition_Pertified) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Petrified) &&
                         !pPlayers[pl_id]->conditions.Has(Condition_Eradicated))
                         pl_array[active_pl_num++] = pl_id;
                 }
@@ -2258,7 +2258,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     if (skill_level == 4) {
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Eradicated);
                         pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Dead);
-                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconcious);
+                        pParty->pPlayers[pCastSpell->uPlayerID_2].conditions.Reset(Condition_Unconscious);
                     } else {
                         pParty->pPlayers[pCastSpell->uPlayerID_2]
                             .DiscardConditionIfLastsLongerThan(
@@ -2272,8 +2272,8 @@ void CastSpellInfoHelpers::CastSpell() {
                                     GameTime::FromSeconds(amount)));
                         pParty->pPlayers[pCastSpell->uPlayerID_2]
                             .DiscardConditionIfLastsLongerThan(
-                                Condition_Unconcious,
-                                GameTime(pParty->GetPlayingTime() -
+                                    Condition_Unconscious,
+                                    GameTime(pParty->GetPlayingTime() -
                                     GameTime::FromSeconds(amount)));
                     }
                     pParty->pPlayers[pCastSpell->uPlayerID_2].SetCondition(
@@ -3612,9 +3612,9 @@ void CastSpellInfoHelpers::CastSpell() {
                 for (uint pl_id = 1; pl_id <= 4; ++pl_id) {
                     if (!pPlayers[pl_id]->conditions.Has(Condition_Sleep) &&
                         !pPlayers[pl_id]->conditions.Has(Condition_Paralyzed) &&
-                        !pPlayers[pl_id]->conditions.Has(Condition_Unconcious) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Unconscious) &&
                         !pPlayers[pl_id]->conditions.Has(Condition_Dead) &&
-                        !pPlayers[pl_id]->conditions.Has(Condition_Pertified) &&
+                        !pPlayers[pl_id]->conditions.Has(Condition_Petrified) &&
                         !pPlayers[pl_id]->conditions.Has(Condition_Eradicated)) {
                         pl_array[pl_num++] = pl_id;
                     }

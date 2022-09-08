@@ -1339,7 +1339,7 @@ int UseNPCSkill(NPCProf profession) {
                 Condition_Poison_Severe,
                 Condition_Disease_Severe,
                 Condition_Paralyzed,
-                Condition_Unconcious,
+                Condition_Unconscious,
                 Condition_Good
             }};
 

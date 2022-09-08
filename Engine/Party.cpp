@@ -809,7 +809,7 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
                 case Condition_Dead:
                     player->expression = CHARACTER_EXPRESSION_DEAD;
                     break;
-                case Condition_Pertified:
+                case Condition_Petrified:
                     player->expression = CHARACTER_EXPRESSION_PERTIFIED;
                     break;
                 case Condition_Eradicated:
@@ -846,7 +846,7 @@ void Party::UpdatePlayersAndHirelingsEmotions() {
                 case Condition_Paralyzed:
                     player->expression = CHARACTER_EXPRESSION_PARALYZED;
                     break;
-                case Condition_Unconcious:
+                case Condition_Unconscious:
                     player->expression = CHARACTER_EXPRESSION_UNCONCIOUS;
                     break;
                 default:
@@ -888,12 +888,12 @@ void Party::RestAndHeal() {
 
         pPlayer->Zero();
         if (pPlayer->conditions.Has(Condition_Dead) ||
-            pPlayer->conditions.Has(Condition_Pertified) ||
+            pPlayer->conditions.Has(Condition_Petrified) ||
             pPlayer->conditions.Has(Condition_Eradicated)) {
             continue;
         }
 
-        pPlayer->conditions.Reset(Condition_Unconcious);
+        pPlayer->conditions.Reset(Condition_Unconscious);
         pPlayer->conditions.Reset(Condition_Drunk);
         pPlayer->conditions.Reset(Condition_Fear);
         pPlayer->conditions.Reset(Condition_Sleep);
@@ -1029,9 +1029,9 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
     if (pEXPNum > 0) {
         pActivePlayerCount = 0;
         for (uint i = 0; i < 4; ++i) {
-            if (!pParty->pPlayers[i].conditions.Has(Condition_Unconcious) &&
+            if (!pParty->pPlayers[i].conditions.Has(Condition_Unconscious) &&
                 !pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
-                !pParty->pPlayers[i].conditions.Has(Condition_Pertified) &&
+                !pParty->pPlayers[i].conditions.Has(Condition_Petrified) &&
                 !pParty->pPlayers[i].conditions.Has(Condition_Eradicated)) {
                 pActivePlayerCount++;
             }
@@ -1039,9 +1039,9 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
         if (pActivePlayerCount) {
             pEXPNum = pEXPNum / pActivePlayerCount;
             for (uint i = 0; i < 4; ++i) {
-                if (!pParty->pPlayers[i].conditions.Has(Condition_Unconcious) &&
+                if (!pParty->pPlayers[i].conditions.Has(Condition_Unconscious) &&
                     !pParty->pPlayers[i].conditions.Has(Condition_Dead) &&
-                    !pParty->pPlayers[i].conditions.Has(Condition_Pertified) &&
+                    !pParty->pPlayers[i].conditions.Has(Condition_Petrified) &&
                     !pParty->pPlayers[i].conditions.Has(Condition_Eradicated)) {
                     pLearningPercent = pParty->pPlayers[i].GetLearningPercent();
                     playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;

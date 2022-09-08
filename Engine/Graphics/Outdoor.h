@@ -47,7 +47,6 @@ struct OutdoorLocationTerrain {
     void FillDMap(int X, int Y, int W, int Z);
     int _47CB57(unsigned char *pixels_8bit, int a2, int num_pixels);
     bool ZeroLandscape();
-    bool Initialize();
 
 
     std::array<uint8_t, 128 * 128> pHeightmap;
@@ -74,11 +73,11 @@ struct OutdoorLocation {
     bool Load(const std::string &filename, int days_played,
               int respawn_interval_days, bool *outdoors_was_respawned);
     int GetTileIdByTileMapId(signed int a2);
-    int _47ED83(signed int a2, signed int a3);
-    int ActuallyGetSomeOtherTileInfo(signed int uX, signed int uY);
+    int _47ED83(int gridX, int gridY);
+    int DoGetSomeOtherTileInfo(int gridX, int gridY);
     int DoGetHeightOnTerrain(signed int sX, signed int sZ);
     int GetSoundIdByPosition(signed int X_pos, signed int Y_pos, int a4);
-    int UpdateDiscoveredArea(int a2, int a3, int a4);
+    int UpdateDiscoveredArea(int a2, int a3, int unused);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
     bool _47F0E2();
@@ -101,7 +100,7 @@ struct OutdoorLocation {
     void MessWithLUN();
     void UpdateSunlightVectors();
     void UpdateFog();
-    int GetNumFoodRequiredToRestInCurrentPos(int x, signed int y, int z);
+    int GetNumFoodRequiredToRestInCurrentPos(const Vec3_int_ &pos);
     void SetFog();
     void Draw();
 
@@ -182,11 +181,11 @@ struct OutdoorLocation {
 extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
-int ODM_GetFloorLevel(int X, signed int Y, int Z, int, bool *pOnWater,
+int ODM_GetFloorLevel(const Vec3_int_ &pos, int unused, bool *pOnWater,
                       int *bmodel_pid, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
-void ODM_GetTerrainNormalAt(int pos_x, int pos_z, Vec3_int_ *out);
+void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3_int_ *out);
 void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
 char Is_out15odm_underwater();
@@ -195,11 +194,11 @@ void sub_487DA9();
 void ODM_LoadAndInitialize(const std::string &pLevelFilename,
                            struct ODMRenderParams *thisa);
 unsigned int GetLevelFogColor();
-int sub_47C3D7_get_fog_specular(int a1, int a2, float a3);
+int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
 unsigned int WorldPosToGridCellX(int);
 unsigned int WorldPosToGridCellY(int);
 int GridCellToWorldPosX(int);
-int GridCellToWorldPosZ(int);
+int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
 bool IsTerrainSlopeTooHigh(int pos_x, int pos_y);
-int GetTerrainHeightsAroundParty2(int a1, int a2, bool *a3, int a4);
+int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAboveWater);

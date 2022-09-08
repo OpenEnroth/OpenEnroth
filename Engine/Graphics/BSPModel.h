@@ -7,6 +7,9 @@
 #include "Engine/VectorTypes.h"
 #include "src/tools/Flags.h"
 
+class MemoryInput;
+struct ODMFace_MM7;
+
 enum class FaceAttribute : uint32_t {
     FACE_IsPortal          = 0x00000001,
     FACE_IsSecret          = 0x00000002,
@@ -65,13 +68,6 @@ struct BSPNode {
     int16_t uBack;
     int16_t uBSPFaceIDOffset;
     int16_t uNumBSPFaces;
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-struct BSPVertexBuffer {
-    uint32_t uNumVertices;
-    Vec3_int_ *pVertices;
 };
 #pragma pack(pop)
 
@@ -143,7 +139,7 @@ struct ODMFace {
     void SetTexture(const std::string &filename);
     Texture *GetTexture();
 
-    bool Deserialize(struct ODMFace_MM7 *);
+    bool Deserialize(const ODMFace_MM7 *);
 
     // TODO: does this really have to be two separate functions?
     /**
@@ -190,8 +186,6 @@ struct ODMFace {
 
 class BSPModel {
  public:
-    void Release();
-
     unsigned int index = 0;
     std::string pModelName;
     std::string pModelName2;
@@ -209,13 +203,13 @@ class BSPModel {
     Vec3_int_ vBoundingCenter {};
     int32_t sBoundingRadius = 0;
 
-    struct BSPVertexBuffer pVertices {};
+    std::vector<Vec3_int_> pVertices;
     std::vector<ODMFace> pFaces;
-    uint16_t *pFacesOrdering = nullptr;
+    std::vector<uint16_t> pFacesOrdering;
     std::vector<BSPNode> pNodes;
 };
 
 class BSPModelList : public std::vector<BSPModel> {
  public:
-    size_t Load(const char *data);
+    void Load(MemoryInput *stream);
 };

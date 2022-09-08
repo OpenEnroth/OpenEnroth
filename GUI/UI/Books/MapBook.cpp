@@ -340,7 +340,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
     }
 }
 
-const char *GetMapBookHintText(int mouse_x, int mouse_y) {
+std::string GetMapBookHintText(int mouse_x, int mouse_y) {
     int v20 = viewparams->sViewCenterX;
     int v21 = viewparams->sViewCenterY;
     if (viewparams->uMapBookMapZoom == 384) {
@@ -356,7 +356,7 @@ const char *GetMapBookHintText(int mouse_x, int mouse_y) {
     int global_coord_X = (__int64)((double)(pX - 229.) * v0 + (double)v20);
     int global_coord_Y = (__int64)((double)v21 - (double)(pY - 181.) * v0);
 
-    const char *result = "";
+    std::string result;
 
     // In the mapbook only lady Margaret dispays for defoult zoom(В
     // книге карты только Леди Маргарита всплывает при дефолтном зуме)
@@ -373,11 +373,9 @@ const char *GetMapBookHintText(int mouse_x, int mouse_y) {
                 for (ODMFace &face : model.pFaces) {
                     if (face.sCogTriggeredID) {
                         if (!(face.uAttributes & FACE_HAS_EVENT)) {
-                            if (GetEventHintString(face.sCogTriggeredID)) {
-                                if (!iequals(GetEventHintString(face.sCogTriggeredID), "")) {
-                                    result = GetEventHintString(face.sCogTriggeredID);
-                                }
-                            }
+                            std::string hintString = GetEventHintString(face.sCogTriggeredID);
+                            if (!hintString.empty())
+                                result = hintString;
                         }
                     }
                 }

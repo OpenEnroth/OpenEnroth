@@ -9,7 +9,9 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Time.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Serialization/MemoryInput.h"
 #include "Engine/VectorTypes.h"
+
 
 #pragma pack(push, 1)
 struct ODMFace_MM7 {
@@ -46,24 +48,13 @@ struct ODMFace_MM7 {
 };
 #pragma pack(pop)
 
-size_t BSPModelList::Load(const char *data) {
+void BSPModelList::Load(MemoryInput *stream) {
     static_assert(sizeof(BSPModelData) == 188, "Wrong type size");
     static_assert(sizeof(BSPNode) == 8, "Wrong type size");
     static_assert(sizeof(Vec3_int_) == 12, "Wrong type size");
 
-    const char *start = data;
-
-    uint32_t uNumBModels;
-    memcpy(&uNumBModels, data, 4);  // количество BModel'ей
-    data += 4;
-
     std::vector<BSPModelData> models;
-    for (unsigned int i = 0; i < uNumBModels; ++i) {
-        BSPModelData model;
-        memcpy(&model, data, sizeof(BSPModelData));
-        data += sizeof(BSPModelData);
-        models.push_back(model);
-    }
+    stream->ReadVector(&models);
 
     unsigned int model_index = 0;
     for (BSPModelData &model : models) {
@@ -92,60 +83,34 @@ size_t BSPModelList::Load(const char *data) {
         new_model.vBoundingCenter = model.vBoundingCenter;
         new_model.sBoundingRadius = model.sBoundingRadius;
 
-        unsigned int verticesSize = model.uNumVertices * sizeof(Vec3_int_);
-        new_model.pVertices.pVertices = (Vec3_int_ *)malloc(verticesSize);
-        memcpy(new_model.pVertices.pVertices, data, verticesSize);
-        data += verticesSize;
+        stream->ReadSizedVector(&new_model.pVertices, model.uNumVertices);
 
-        for (size_t i = 0; i < model.uNumFaces; i++) {
-            new_model.pFaces.emplace_back();
-            ODMFace &face = new_model.pFaces.back();
-            face.index = i;
-            face.Deserialize((ODMFace_MM7 *)data);
-            data += sizeof(ODMFace_MM7);
+        std::vector<ODMFace_MM7> mm7faces;
+        stream->ReadSizedVector(&mm7faces, model.uNumFaces);
+        new_model.pFaces.resize(mm7faces.size());
+        for (size_t i = 0; i < mm7faces.size(); i++) {
+            new_model.pFaces[i].index = i;
+            new_model.pFaces[i].Deserialize(&mm7faces[i]);
         }
 
-        unsigned int facesOrderingSize = model.uNumFaces * sizeof(short);
-        new_model.pFacesOrdering = (uint16_t *)malloc(facesOrderingSize);
+        stream->ReadSizedVector(&new_model.pFacesOrdering, model.uNumFaces);
+        stream->ReadSizedVector(&new_model.pNodes, model.uNumNodes);
 
-        memcpy(new_model.pFacesOrdering, data, facesOrderingSize);
-        data += facesOrderingSize;
+        std::string textureName;
+        for (size_t i = 0; i < model.uNumFaces; ++i) {
+            stream->ReadSizedString(&textureName, 10);
+            new_model.pFaces[i].SetTexture(textureName);
 
-        for (size_t i = 0; i < model.uNumNodes; i++) {
-            BSPNode node;
-            memcpy(&node, data, sizeof(BSPNode));
-            new_model.pNodes.push_back(node);
-            data += sizeof(BSPNode);
-        }
-
-        const char *textureFilenames =
-            (const char *)malloc(10 * model.uNumFaces);
-        memcpy((char *)textureFilenames, data, 10 * model.uNumFaces);
-        data += 10 * model.uNumFaces;
-        for (unsigned int j = 0; j < model.uNumFaces; ++j) {
-            const char *texFilename = &textureFilenames[j * 10];
-            new_model.pFaces[j].SetTexture(texFilename);
-            if (new_model.pFaces[j].sCogTriggeredID) {
-                if (new_model.pFaces[j].HasEventHint())
-                    new_model.pFaces[j].uAttributes |= FACE_HAS_EVENT;
+            if (new_model.pFaces[i].sCogTriggeredID) {
+                if (new_model.pFaces[i].HasEventHint())
+                    new_model.pFaces[i].uAttributes |= FACE_HAS_EVENT;
                 else
-                    new_model.pFaces[j].uAttributes &= ~FACE_HAS_EVENT;
+                    new_model.pFaces[i].uAttributes &= ~FACE_HAS_EVENT;
             }
         }
 
-        free((void *)textureFilenames);
-
         model_index++;
     }
-
-    return data - start;
-}
-
-void BSPModel::Release() {
-    free(this->pVertices.pVertices);
-    this->pVertices.pVertices = 0;
-    free(this->pFacesOrdering);
-    this->pFacesOrdering = nullptr;
 }
 
 // ODMFace
@@ -172,7 +137,7 @@ void ODMFace::SetTexture(const std::string &filename) {
     this->resource = assets->GetBitmap(filename);
 }
 
-bool ODMFace::Deserialize(ODMFace_MM7 *mm7) {
+bool ODMFace::Deserialize(const ODMFace_MM7 *mm7) {
     this->pFacePlaneOLD = mm7->pFacePlane;
     this->pFacePlane.vNormal.x = this->pFacePlaneOLD.vNormal.x / 65536.0;
     this->pFacePlane.vNormal.y = this->pFacePlaneOLD.vNormal.y / 65536.0;

@@ -680,7 +680,6 @@ char byte_69BD41_unused;
 int pSaveListPosition;
 unsigned int uLoadGameUI_SelectedSlot;
 char cMM7GameCDDriveLetter;  // idb
-unsigned int uGameState;
 int uDefaultTravelTime_ByFoot;
 int day_attrib;
 int day_fogrange_1;
@@ -707,11 +706,6 @@ std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;
-std::array<__int16, 777> word_720CE0_ys;  // idb
-std::array<__int16, 777> word_720DB0_xs;  // idb
-std::array<int, 20> dword_720E80;
-std::array<int, 20> dword_720ED0;
-std::array<int, 20> ceiling_height_level;
 std::array<__int16, 104> odm_floor_face_vert_coord_Y;  // word_720F70
 std::array<__int16, 104> odm_floor_face_vert_coord_X;  // word_721040
 Vec3_int_ blv_prev_party_pos;

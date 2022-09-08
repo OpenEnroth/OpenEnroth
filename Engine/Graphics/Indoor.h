@@ -189,10 +189,10 @@ struct stru154 {
     //----- (0049B027) --------------------------------------------------------
     inline ~stru154() {}
 
-    void GetFacePlaneAndClassify(struct ODMFace *a2,
-                                 struct BSPVertexBuffer *a3);
+    void GetFacePlaneAndClassify(ODMFace *a2,
+                                 const std::vector<Vec3_int_> &a3);
     void ClassifyPolygon(Vec3_float_ *pNormal, float dist);
-    void GetFacePlane(struct ODMFace *pFace, struct BSPVertexBuffer *pVertices,
+    void GetFacePlane(ODMFace *pFace, const std::vector<Vec3_int_> &pVertices,
                       Vec3_float_ *pOutNormal, float *pOutDist);
 
     Plane_float_ face_plane {};

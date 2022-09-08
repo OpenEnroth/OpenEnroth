@@ -22,12 +22,54 @@ std::array<ConditionProcessor, 18> conditionArray = {{
     ConditionProcessor(Condition_Disease_Severe, true, false, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK),
     ConditionProcessor(Condition_Paralyzed, false, false, ITEM_ENCHANTMENT_OF_FREEDOM, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
                        ITEM_ARTIFACT_GHOULSBANE, EQIUP_ANY),
-    ConditionProcessor(Condition_Unconcious, false, false, 0),
+    ConditionProcessor(Condition_Unconscious, false, false, 0),
     ConditionProcessor(Condition_Dead, true, true, 0),
-    ConditionProcessor(Condition_Pertified, true, false, ITEM_ENCHANTMENT_OF_MEDUSA, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
+    ConditionProcessor(Condition_Petrified, true, false, ITEM_ENCHANTMENT_OF_MEDUSA, ITEM_ARTIFACT_YORUBA, EQUIP_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, EQUIP_CLOAK,
                        ITEM_RELIC_KELEBRIM, EQIUP_ANY),
     ConditionProcessor(Condition_Eradicated, true, true, 0),
     ConditionProcessor(Condition_Zombie, false, false, 0)
+}};
+
+std::array<Condition, 18> conditionImportancyTableDefault = {{
+    Condition_Eradicated,
+    Condition_Petrified,
+    Condition_Dead,
+    Condition_Zombie,
+    Condition_Unconscious,
+    Condition_Sleep,
+    Condition_Paralyzed,
+    Condition_Disease_Severe,
+    Condition_Poison_Severe,
+    Condition_Disease_Medium,
+    Condition_Poison_Medium,
+    Condition_Disease_Weak,
+    Condition_Poison_Weak,
+    Condition_Insane,
+    Condition_Drunk,
+    Condition_Fear,
+    Condition_Weak,
+    Condition_Cursed
+}};
+
+std::array<Condition, 18> conditionImportancyTableGrayface = {{
+    Condition_Eradicated,
+    Condition_Dead,
+    Condition_Petrified,
+    Condition_Unconscious,
+    Condition_Paralyzed,
+    Condition_Sleep,
+    Condition_Weak,
+    Condition_Cursed,
+    Condition_Disease_Severe,
+    Condition_Poison_Severe,
+    Condition_Disease_Medium,
+    Condition_Poison_Medium,
+    Condition_Disease_Weak,
+    Condition_Poison_Weak,
+    Condition_Insane,
+    Condition_Drunk,
+    Condition_Fear,
+    Condition_Zombie
 }};
 
 bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToCheck, int blockable) {
@@ -59,4 +101,11 @@ bool ConditionProcessor::IsPlayerAffected(Player* inPlayer, Condition condToChec
         }
     }
     return true;
+}
+
+const std::array<Condition, 18> &conditionImportancyTable() {
+    if (engine->config->gameplay.UseGrayfaceConditionPriorities.Get())
+        return conditionImportancyTableGrayface;
+    else
+        return conditionImportancyTableDefault;
 }

@@ -1177,17 +1177,16 @@ LABEL_47:
 }
 
 //----- (00444732) --------------------------------------------------------
-char *GetEventHintString(unsigned int uEventID) {
+std::string GetEventHintString(unsigned int uEventID) {
     signed int event_index;  // edx@1
     int event_pos;           // esi@4
-    char *result;            // eax@6
     unsigned int str_index;  // eax@9
     int i;                   // esi@11
     _evt_raw *test_evt;
     _evt_raw *last_evt;
 
     event_index = 0;
-    if (uLevelEVT_NumEvents <= 0) return NULL;
+    if (uLevelEVT_NumEvents <= 0) return std::string();
 
     // v2 = (char *)&pLevelEVT_Index[0].uEventOffsetInEVT;
     while (1) {
@@ -1198,12 +1197,13 @@ char *GetEventHintString(unsigned int uEventID) {
             if (test_evt->_e_type == EVENT_MouseOver) break;
         }
         ++event_index;
-        if (event_index >= uLevelEVT_NumEvents) return NULL;
+        if (event_index >= uLevelEVT_NumEvents)
+            return std::string();
     }
     test_evt = (_evt_raw *)&pLevelEVT[event_pos];
     if (test_evt->_e_type == EVENT_SpeakInHouse) {
         str_index = EVT_DWORD(test_evt->v5);
-        result = (char *)p2DEvents[str_index - 1].pName;
+        return p2DEvents[str_index - 1].pName;
     } else {
         for (i = event_index + 1; pLevelEVT_Index[i].event_id == uEventID;
              ++i) {
@@ -1215,10 +1215,8 @@ char *GetEventHintString(unsigned int uEventID) {
                     return (char *)p2DEvents[str_index - 1].pName;
             }
         }
-        result = &pLevelStr[pLevelStrOffsets[EVT_BYTE(last_evt->v5)]];
+        return &pLevelStr[pLevelStrOffsets[EVT_BYTE(last_evt->v5)]];
     }
-
-    return result;
 }
 
 //----- (004613C4) --------------------------------------------------------

@@ -164,10 +164,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                                 pSpriteObjects[uLayingItemID].vPosition.y);
     v55 = 0;
     bool on_water = false;
-    v6 = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition.x,
-                           pSpriteObjects[uLayingItemID].vPosition.y,
-                           pSpriteObjects[uLayingItemID].vPosition.z,
-                           object->uHeight, &on_water, &v55, 0);
+    v6 = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &on_water, &v55, 0);
     v7 = v6;
     v54 = v6;
     v8 = v6 + 1;
@@ -328,8 +325,7 @@ LABEL_13:
             v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             v49 = false;
             v27 = ODM_GetFloorLevel(
-                collision_state.new_position_lo.x, collision_state.new_position_lo.y,
-                collision_state.new_position_lo.z - collision_state.radius_lo - 1,
+                ToIntVector(collision_state.new_position_lo) - Vec3_int_(0, 0, collision_state.radius_lo + 1),
                 object->uHeight, &v49, &v50, 0);
             if (on_water && v26 < v27 + 60) {
                 if (v50)
@@ -410,7 +406,7 @@ LABEL_13:
                 face = &bmodel->pFaces[PID_ID(collision_state.pid) & 0x3F];
                 if (face->uPolygonType == POLYGON_Floor) {
                     pSpriteObjects[uLayingItemID].vPosition.z =
-                        bmodel->pVertices.pVertices[face->pVertexIDs[0]].z + 1;
+                        bmodel->pVertices[face->pVertexIDs[0]].z + 1;
                     if (pSpriteObjects[uLayingItemID].vVelocity.x * pSpriteObjects[uLayingItemID].vVelocity.x +
                             pSpriteObjects[uLayingItemID].vVelocity.y * pSpriteObjects[uLayingItemID].vVelocity.y >= 400) {
                         if (face->uAttributes & FACE_TriggerByObject)

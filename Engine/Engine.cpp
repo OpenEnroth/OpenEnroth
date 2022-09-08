@@ -103,6 +103,7 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 */
 
 std::shared_ptr<Engine> engine;
+GAME_STATE uGameState;
 
 uint32_t Color32(uint16_t color16) {
     uint32_t c = color16;
@@ -347,9 +348,7 @@ void Engine::DrawGUI() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
             bool on_water = false;
             int bmodel_pid;
-            int floor_level = ODM_GetFloorLevel(
-                pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z,
-                0, &on_water, &bmodel_pid, false);
+            int floor_level = ODM_GetFloorLevel(pParty->vPosition, 0, &on_water, &bmodel_pid, false);
             floor_level_str = StringPrintf(
                 "ODM_GetFloorLevel: %d   on_water: %s  on: %s\n",
                 floor_level, on_water ? "true" : "false",
@@ -1202,7 +1201,7 @@ void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
         for (int i = 0; i < _6807E0_num_decorations_with_sounds_6807B8; i++) {
             int ind = _6807B8_level_decorations_ids[i];
             LevelDecoration dec = pLevelDecorations[ind];
-            DecorationDesc* decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
+            const DecorationDesc* decoration = pDecorationList->GetDecoration(dec.uDecorationDescID);
             pAudioPlayer->PlaySound(SoundID(decoration->uSoundID), PID(OBJECT_Decoration, ind), 0, 0, 0, 0);
         }
     }
@@ -1620,7 +1619,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 1 ||
             pPlayers[pl]->pPlayerBuffs[PLAYER_BUFF_PRESERVATION].Active()) {
             if (pPlayers[pl]->sHealth < 1)
-                pPlayers[pl]->SetCondition(Condition_Unconcious, 0);
+                pPlayers[pl]->SetCondition(Condition_Unconscious, 0);
         } else {
             pPlayers[pl]->SetCondition(Condition_Dead, 0);
         }
@@ -1716,9 +1715,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
         }
         if (pPlayers[pl]->conditions.Has(Condition_Sleep) ||
             pPlayers[pl]->conditions.Has(Condition_Paralyzed) ||
-            pPlayers[pl]->conditions.Has(Condition_Unconcious) ||
+            pPlayers[pl]->conditions.Has(Condition_Unconscious) ||
             pPlayers[pl]->conditions.Has(Condition_Dead) ||
-            pPlayers[pl]->conditions.Has(Condition_Pertified) ||
+            pPlayers[pl]->conditions.Has(Condition_Petrified) ||
             pPlayers[pl]->conditions.Has(Condition_Eradicated)) {
             --party_condition_flag;
         }
@@ -1776,9 +1775,9 @@ void _494035_timed_effects__water_walking_damage__etc() {
         if (current_screen_type != CURRENT_SCREEN::SCREEN_REST) {
             if (pPlayers[uActiveCharacter]->conditions.Has(Condition_Sleep) ||
                 pPlayers[uActiveCharacter]->conditions.Has(Condition_Paralyzed) ||
-                pPlayers[uActiveCharacter]->conditions.Has(Condition_Unconcious) ||
+                pPlayers[uActiveCharacter]->conditions.Has(Condition_Unconscious) ||
                 pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead) ||
-                pPlayers[uActiveCharacter]->conditions.Has(Condition_Pertified) ||
+                pPlayers[uActiveCharacter]->conditions.Has(Condition_Petrified) ||
                 pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated)) {
                 viewparams->bRedrawGameUI = true;
                 uActiveCharacter = pParty->GetNextActiveCharacter();
@@ -1929,9 +1928,9 @@ void RegeneratePartyHealthMana() {
                             pParty->pPlayers[playerID].GetMaxHealth()) {
                             ++pParty->pPlayers[playerID].sHealth;
                         }
-                        if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconcious) &&
+                        if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious) &&
                             pParty->pPlayers[playerID].sHealth > 0) {
-                            pParty->pPlayers[playerID].conditions.Reset(Condition_Unconcious);
+                            pParty->pPlayers[playerID].conditions.Reset(Condition_Unconscious);
                         }
                         redraw_flag = true;
                     }
@@ -1949,16 +1948,16 @@ void RegeneratePartyHealthMana() {
                         !pParty->pPlayers[playerID].conditions.Has(Condition_Dead) &&
                         !pParty->pPlayers[playerID].conditions.Has(Condition_Eradicated)) {
                         --pParty->pPlayers[playerID].sHealth;
-                        if (!(pParty->pPlayers[playerID].conditions.Has(Condition_Unconcious)) &&
+                        if (!(pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious)) &&
                             pParty->pPlayers[playerID].sHealth < 0) {
-                            pParty->pPlayers[playerID].conditions.Set(Condition_Unconcious, pParty->GetPlayingTime());
+                            pParty->pPlayers[playerID].conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
                         }
                         if (pParty->pPlayers[playerID].sHealth < 1) {
                             if (pParty->pPlayers[playerID].sHealth +
                                 pParty->pPlayers[playerID].uEndurance +
                                 pParty->pPlayers[playerID].GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1 ||
                                 pParty->pPlayers[playerID].pPlayerBuffs[PLAYER_BUFF_PRESERVATION].expire_time) {
-                                pParty->pPlayers[playerID].conditions.Set(Condition_Unconcious, pParty->GetPlayingTime());
+                                pParty->pPlayers[playerID].conditions.Set(Condition_Unconscious, pParty->GetPlayingTime());
                             } else if (!pParty->pPlayers[playerID].conditions.Has(Condition_Dead)) {
                                 pParty->pPlayers[playerID].conditions.Set(Condition_Dead, pParty->GetPlayingTime());
                             }
@@ -1977,9 +1976,9 @@ void RegeneratePartyHealthMana() {
                     pParty->pPlayers[playerID].GetMaxHealth()) {
                     pParty->pPlayers[playerID].sHealth = pParty->pPlayers[playerID].GetMaxHealth();
                 }
-                if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconcious) &&
+                if (pParty->pPlayers[playerID].conditions.Has(Condition_Unconscious) &&
                     pParty->pPlayers[playerID].sHealth > 0) {
-                    pParty->pPlayers[playerID].conditions.Reset(Condition_Unconcious);
+                    pParty->pPlayers[playerID].conditions.Reset(Condition_Unconscious);
                 }
                 redraw_flag = true;
             }

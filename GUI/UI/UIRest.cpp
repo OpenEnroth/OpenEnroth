@@ -68,8 +68,7 @@ void PrepareToLoadRestUI() {
     uRestUI_FoodRequiredToRest = 2;
     if (uCurrentlyLoadedLevelType == LEVEL_Outdoor)
         uRestUI_FoodRequiredToRest =
-            pOutdoor->GetNumFoodRequiredToRestInCurrentPos(
-                pParty->vPosition.x, pParty->vPosition.y, pParty->vPosition.z);
+            pOutdoor->GetNumFoodRequiredToRestInCurrentPos(pParty->vPosition);
     if (PartyHasDragon()) {
         for (uint i = 0; i < 4; ++i) {
             if (pParty->pPlayers[i].classType == PLAYER_CLASS_WARLOCK)

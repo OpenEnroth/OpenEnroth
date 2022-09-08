@@ -337,7 +337,7 @@ unsigned int LoadEventsToBuffer(const std::string& pContainerName, char *pBuffer
 void Initialize_GlobalEVT();
 void LoadLevel_InitializeLevelEvt();
 void EventProcessor(int uEventID, int a2, int a3, int entry_line = 0);
-char *GetEventHintString(unsigned int uEventID);  // idb
+std::string GetEventHintString(unsigned int uEventID);  // idb
 
 /*  312 */
 #pragma pack(push, 1)

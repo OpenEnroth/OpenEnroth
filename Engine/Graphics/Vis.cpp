@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/IocContainer.h"
@@ -67,16 +68,9 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         uint bmodel_id = pid >> 9;
-        Vec3_int_ *v =
-            (Vec3_int_ *)pOutdoor->pBModels[bmodel_id].pVertices.pVertices;
-        for (uint i = 0; i < face->uNumVertices; ++i) {
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition.x =
-                (float)v[face->pVertexIDs[i]].x;
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition.y =
-                (float)v[face->pVertexIDs[i]].y;
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition.z =
-                (float)v[face->pVertexIDs[i]].z;
-        }
+        const std::vector<Vec3_int_> &v = pOutdoor->pBModels[bmodel_id].pVertices;
+        for (uint i = 0; i < face->uNumVertices; ++i)
+            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = ToFloatVector(v[face->pVertexIDs[i]]);
     } else {
         assert(false);
     }

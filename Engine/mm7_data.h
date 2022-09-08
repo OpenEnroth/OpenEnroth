@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Strings.h"
 #include "Engine/Time.h"
 #include "Engine/MM7.h"
 #include "Engine/Autonotes.h"
@@ -299,7 +298,6 @@ extern char byte_69BD41_unused;
 extern int pSaveListPosition;
 extern unsigned int uLoadGameUI_SelectedSlot;
 extern char cMM7GameCDDriveLetter;  // idb
-extern unsigned int uGameState;
 extern int uDefaultTravelTime_ByFoot;
 extern int day_attrib;
 extern int day_fogrange_1;
@@ -356,11 +354,6 @@ extern std::string s_SavedMapName;
 extern char bNoNPCHiring;
 extern std::array<int, 100> dword_720020_zvalues;
 extern std::array<int, 299> dword_7201B0_zvalues;
-extern std::array<int16_t, 777> word_720CE0_ys;  // idb
-extern std::array<int16_t, 777> word_720DB0_xs;  // idb
-extern std::array<int, 20> dword_720E80;
-extern std::array<int, 20> dword_720ED0;
-extern std::array<int, 20> ceiling_height_level;
 extern std::array<int16_t, 104> odm_floor_face_vert_coord_Y;  // word_720F70
 extern std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
 extern Vec3_int_ blv_prev_party_pos;

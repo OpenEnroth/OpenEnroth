@@ -2335,7 +2335,7 @@ void TempleDialog() {
             // LODWORD(pPlayers[uActiveCharacter]->pConditions[Condition_Zombie]);
         } else {
             if (!pPlayers[uActiveCharacter]->conditions.Has(Condition_Eradicated) &&
-                !pPlayers[uActiveCharacter]->conditions.Has(Condition_Pertified) &&
+                !pPlayers[uActiveCharacter]->conditions.Has(Condition_Petrified) &&
                 !pPlayers[uActiveCharacter]->conditions.Has(Condition_Dead)) {
                 pAudioPlayer->PlaySound((SoundID)SOUND_heal, -1, 0, -1, 0, 0);
                 pPlayers[uActiveCharacter]->PlaySound(SPEECH_TempleHeal, 0);

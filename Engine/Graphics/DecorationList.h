@@ -23,14 +23,14 @@ enum DECORATION_DESC_FLAGS {
 /*   54 */
 #pragma pack(push, 1)
 struct DecorationDesc_mm6 {
-    inline bool CanMoveThrough() {
+    inline bool CanMoveThrough() const {
         return (uFlags & DECORATION_DESC_MOVE_THROUGH) != 0;
     }
-    inline bool DontDraw() { return (uFlags & DECORATION_DESC_DONT_DRAW) != 0; }
-    inline bool SoundOnDawn() {
+    inline bool DontDraw() const { return (uFlags & DECORATION_DESC_DONT_DRAW) != 0; }
+    inline bool SoundOnDawn() const {
         return (uFlags & DECORATION_DESC_SOUND_ON_DAWN) != 0;
     }
-    inline bool SoundOnDusk() {
+    inline bool SoundOnDusk() const {
         return (uFlags & DECORATION_DESC_SOUND_ON_DUSK) != 0;
     }
 
@@ -62,7 +62,8 @@ class DecorationList {
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     void InitializeDecorationSprite(unsigned int uDecID);
     uint16_t GetDecorIdByName(std::string_view pName);
-    DecorationDesc *GetDecoration(unsigned int index) {
+
+    const DecorationDesc *GetDecoration(unsigned int index) const {
         return &pDecorations[index];
     }
 

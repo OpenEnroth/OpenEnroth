@@ -115,7 +115,7 @@ union PlayerEquipment {
 
 class PlayerConditions {
  public:
-    bool Has(Condition condition) const {
+    [[nodiscard]] bool Has(Condition condition) const {
         return this->times_[std::to_underlying(condition)].Valid();
     }
 
@@ -132,7 +132,7 @@ class PlayerConditions {
         this->times_[std::to_underlying(condition)] = time;
     }
 
-    GameTime Get(Condition condition) const {
+    [[nodiscard]] GameTime Get(Condition condition) const {
         return this->times_[std::to_underlying(condition)];
     }
 

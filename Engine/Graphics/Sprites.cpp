@@ -432,7 +432,7 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
         pSpritePFrames[i] = &pSpriteSFrames[pSpriteEFrames[i]];
 }
 
-SpriteFrame *LevelDecorationChangeSeason(DecorationDesc *desc, int t, int month) {
+SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, int t, int month) {
     switch (month/*pParty->uCurrentMonth*/) {
         // case 531 (tree60), 536 (tree65), 537 (tree66) have no autumn/winter
         // sprites
