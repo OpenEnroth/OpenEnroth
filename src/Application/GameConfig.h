@@ -26,7 +26,7 @@ namespace Application {
         Log *logger = nullptr;
         std::vector<ConfigSection *> sections;
 
-    public:
+     public:
         GameConfig(const std::string &command_line) {
              this->command_line = std::make_shared<CommandLine>(command_line);
              this->logger = EngineIoc::ResolveLogger();
