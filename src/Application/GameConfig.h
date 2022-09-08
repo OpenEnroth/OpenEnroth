@@ -238,7 +238,7 @@ namespace Application {
             ConfigValue<bool> ShowUndentifiedItem = ConfigValue<bool>(this, "show_unidentified_item", false);
 
             /** Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority).  */
-            ConfigValue<bool> UseGrayfaceConditionPriorities = ConfigValue<bool>(this, "use_grayface_condition_priorities", false);
+            ConfigValue<bool> UseGrayfaceConditionPriorities = ConfigValue<bool>(this, "use_grayface_condition_priorities", true);
 
          private:
             static int ValidateMaxFlightHeight(int max_flight_height) {
