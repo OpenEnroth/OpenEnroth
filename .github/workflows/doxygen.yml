@@ -3,8 +3,7 @@ name: Doxygen
 on:
   push:
     branches:
-      - dev
-  workflow_dispatch:
+      - master
 
 jobs:
   deploy:

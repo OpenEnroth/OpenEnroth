@@ -27,10 +27,10 @@
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
-using namespace Application;
+namespace Application {
 
 //----- (004BF91E) --------------------------------------------------------
-void Application::GameOver_Loop(int v15) {
+void GameOver_Loop(int v15) {
     const char *v1;       // eax@2
     unsigned int result;  // eax@3
     const char *v7;       // edx@10
@@ -100,7 +100,7 @@ void Application::GameOver_Loop(int v15) {
         pWindow.DrawTitleText(
             pFont, 1,
             i * ((unsigned char)pFont->GetHeight() - 2) +
-                (unsigned char)pFont->GetHeight() + 46,
+            (unsigned char)pFont->GetHeight() + 46,
             1,
             localization->FormatString(
                 LSTR_FMT_S_THE_LEVEL_D_S,
@@ -131,7 +131,7 @@ void Application::GameOver_Loop(int v15) {
     );
 
     pWindow.DrawTitleText(pFont, 1, pWindow.uFrameHeight, 1,
-                          localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);
+        localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
     render->EndScene();
     render->Present();
@@ -175,3 +175,5 @@ void Application::GameOver_Loop(int v15) {
     }
     bGameoverLoop = false;
 }
+
+} // namespace Application
