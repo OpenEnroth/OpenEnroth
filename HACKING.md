@@ -50,8 +50,8 @@ You will require the following installed on your computer: Git and Visual Studio
 
 * Clone, fork or download the repo `https://github.com/gp-alex/world-of-might-and-magic.git`
 * Open the folder in Visual Studio
-* Select build configuration (x32 or x64) and wait for CMake cache to complete
-* Select startup item as World of Might and Magic
+* Select build configuration (x32 or x64) and wait for CMake configuration to complete
+* Select startup item as `World_of_Might_and_Magic.exe`
 * Run!
 
 __Be aware__ that Visual Studio has a bug with git submodules not syncing between branches.
@@ -59,7 +59,7 @@ So when checking out the branch or switching to different branch you may need to
 
 Support
 ---------------
-Still having problems? Try the ask for help on our discord. [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)
+Still having problems? Try to ask for help on our discord. [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)
 
 
 Coding style
