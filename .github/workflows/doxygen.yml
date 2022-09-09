@@ -7,7 +7,7 @@ on:
     types: published
 
 jobs:
-  generate:
+  generate_documentation:
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout
@@ -32,10 +32,10 @@ jobs:
         name: Documentation
         path: docs/html
 
-  deploy:
+  deploy_documentation:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-22.04
-    needs: generate
+    needs: generate_documentation
     steps:
     - name: Checkout
       uses: actions/checkout@v2
