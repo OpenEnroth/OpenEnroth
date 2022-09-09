@@ -1,12 +1,13 @@
 name: Doxygen
 
 on:
+  pull_request:
   push:
-    branches:
-      - master
+  release:
+    types: published
 
 jobs:
-  deploy:
+  generate:
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout
@@ -24,6 +25,11 @@ jobs:
         doxygen Doxyfile
         touch docs/html/.nojekyll
 
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: generate
+    if: github.ref == 'refs/heads/master'
+    steps:
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
@@ -31,4 +37,3 @@ jobs:
         branch: gh-pages
         folder: docs/html
         target-folder: .
-
