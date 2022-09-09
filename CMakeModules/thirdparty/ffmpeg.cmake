@@ -40,6 +40,7 @@ ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/swscale-5.dll")
 
 else()  # WIN32
 find_package(FFmpeg COMPONENTS AVCODEC AVFORMAT AVUTIL SWSCALE SWRESAMPLE REQUIRED)
-target_link_libraries(ffmpeg ${FFMPEG_LIBRARIES})
+include_directories(ffmpeg "${FFMPEG_INCLUDE_DIRS}")
+target_link_libraries(ffmpeg "${FFMPEG_LIBRARIES}")
 
 endif()
