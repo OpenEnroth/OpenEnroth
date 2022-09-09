@@ -37,6 +37,11 @@ jobs:
     runs-on: ubuntu-22.04
     needs: generate
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: "recursive"
+
     - name: Download Artifact
       uses: actions/download-artifact@v3
       with:
