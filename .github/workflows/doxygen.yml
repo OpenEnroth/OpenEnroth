@@ -17,12 +17,13 @@ jobs:
 
     - name: Install Doxygen
       run: |
-        sudo apt-get install doxygen -y
+        # sudo apt-get install doxygen -y
+        curl https://www.doxygen.nl/files/doxygen-1.9.5.linux.bin.tar.gz | tar xzf - --strip-components=2 doxygen-1.9.5/bin/doxygen -C .
 
     - name: Generate Documentation
       run: |
         export PROJECT_NUMBER="$(git describe --always --tags --dirty)"
-        doxygen Doxyfile
+        ./doxygen Doxyfile
         touch docs/html/.nojekyll
 
   deploy:
