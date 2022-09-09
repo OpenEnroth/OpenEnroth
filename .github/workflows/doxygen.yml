@@ -26,11 +26,23 @@ jobs:
         ./doxygen Doxyfile
         touch docs/html/.nojekyll
 
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Documentation
+        path: docs/html
+
   deploy:
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-22.04
     needs: generate
-    if: github.ref == 'refs/heads/master'
     steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: Documentation
+        path: docs/html
+
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.4.0
       with:
