@@ -14,15 +14,17 @@ using EngineIoc = Engine_::IocContainer;
 
 namespace Application {
     class GameConfig {
+     public:
+        class ConfigSection;
+
+        template <class T>
+        class ConfigValue;
+
+     private:
         const std::string config_file = "womm.ini";
         std::shared_ptr<CommandLine> command_line = nullptr;
         Log *logger = nullptr;
-
-        using Callback = std::function<void()>;
-
-        std::vector<Callback> resetCallbacks;
-        std::vector<Callback> loadCallbacks;
-        std::vector<Callback> saveCallbacks;
+        std::vector<ConfigSection *> sections;
 
      public:
         GameConfig(const std::string &command_line) {
@@ -36,26 +38,23 @@ namespace Application {
         void SaveConfiguration();
 
         void ResetSections() {
-            RunAll(resetCallbacks);
+            for (ConfigSection *section : sections)
+                section->Reset();
         }
 
         void LoadSections() {
-            RunAll(loadCallbacks);
+            for (ConfigSection *section : sections)
+                section->Load();
         }
 
         void SaveSections() {
-            RunAll(saveCallbacks);
+            for (ConfigSection *section : sections)
+                section->Save();
         }
 
-        class ConfigSection;
         void Register(ConfigSection *section) {
-            resetCallbacks.push_back([section] { section->Reset(); });
-            saveCallbacks.push_back([section] { section->Save(); });
-            loadCallbacks.push_back([section] { section->Load(); });
+            sections.push_back(section);
         }
-
-        template <class T>
-        class ConfigValue;
 
         class ConfigSection {
          public:
@@ -85,6 +84,8 @@ namespace Application {
             }
 
          private:
+            using Callback = std::function<void()>;
+
             void RunAll(const std::vector<Callback> &callbacks) {
                 for (const Callback &callback : callbacks)
                     callback();
@@ -197,8 +198,6 @@ namespace Application {
 
             /** Verbose logging to debug console. Can be extremely spammy. */
             ConfigValue<bool> VerboseLogging = ConfigValue<bool>(this, "verbose_logging", false);
-
-         private:
         };
 
         Debug debug{ this };
@@ -246,7 +245,7 @@ namespace Application {
             ConfigValue<bool> ShowUndentifiedItem = ConfigValue<bool>(this, "show_unidentified_item", false);
 
             /** Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority).  */
-            ConfigValue<bool> UseGrayfaceConditionPriorities = ConfigValue<bool>(this, "use_grayface_condition_priorities", false);
+            ConfigValue<bool> UseGrayfaceConditionPriorities = ConfigValue<bool>(this, "use_grayface_condition_priorities", true);
 
          private:
             static int ValidateMaxFlightHeight(int max_flight_height) {
@@ -533,20 +532,15 @@ namespace Application {
         Window window{ this };
 
      private:
-         void RunAll(const std::vector<Callback> &callbacks) {
-             for (const Callback &callback : callbacks)
-                 callback();
-         }
+        static void LoadOption(std::string section, GameConfig::ConfigValue<bool> *val);
+        static void LoadOption(std::string section, GameConfig::ConfigValue<float> *val);
+        static void LoadOption(std::string section, GameConfig::ConfigValue<int> *val);
+        static void LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val);
 
-         static void LoadOption(std::string section, GameConfig::ConfigValue<bool> *val);
-         static void LoadOption(std::string section, GameConfig::ConfigValue<float> *val);
-         static void LoadOption(std::string section, GameConfig::ConfigValue<int> *val);
-         static void LoadOption(std::string section, GameConfig::ConfigValue<std::string> *val);
-
-         static void SaveOption(std::string section, GameConfig::ConfigValue<bool> *val);
-         static void SaveOption(std::string section, GameConfig::ConfigValue<int> *val);
-         static void SaveOption(std::string section, GameConfig::ConfigValue<float> *val);
-         static void SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val);
+        static void SaveOption(std::string section, GameConfig::ConfigValue<bool> *val);
+        static void SaveOption(std::string section, GameConfig::ConfigValue<int> *val);
+        static void SaveOption(std::string section, GameConfig::ConfigValue<float> *val);
+        static void SaveOption(std::string section, GameConfig::ConfigValue<std::string> *val);
     };
 
 }  // namespace Application
