@@ -27,6 +27,12 @@ build
 # 3d-party libs are auto-resolved by cmake
 lib
 
+# Doxygen
+docs
+
+# Release
+dist
+
 # patch artifacts
 *.orig
 *.rej

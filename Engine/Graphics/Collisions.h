@@ -6,11 +6,11 @@ struct BLVFace;
 
 struct CollisionState {
     /**
-     * Original offset 0x0047050A.
+     * @offset 0x0047050A.
      *
      * Prepares this struct by filling all necessary fields, and checks whether there is actually no movement.
      *
-     * @param dt                        Time delta, in fixpoint seconds. Pass `0` to take the correct value from
+     * @param dt_fp                     Time delta, in fixpoint seconds. Pass `0` to take the correct value from
      *                                  global `pEventTimer`.
      * @return                          True if there is no movement, false otherwise.
      */
@@ -40,7 +40,7 @@ struct CollisionState {
 extern CollisionState collision_state;
 
 /**
- * Original offset 0x46E44E.
+ * @offset 0x0046E44E.
  *
  * Performs collisions with level geometry in indoor levels. Updates `collision_state`.
  *
@@ -49,7 +49,7 @@ extern CollisionState collision_state;
 void CollideIndoorWithGeometry(bool ignore_ethereal);
 
 /**
- * Original offset 0x46E889.
+ * @offset 0x0046E889.
  *
  * Performs collisions with models in outdoor levels. Updates `collision_state`.
  *
@@ -58,12 +58,12 @@ void CollideIndoorWithGeometry(bool ignore_ethereal);
 void CollideOutdoorWithModels(bool ignore_ethereal);
 
 /**
- * Original offset 0x46E0B2.
+ * @offset 0x0046E0B2.
  */
 void CollideIndoorWithDecorations();
 
 /**
- * Original offset 0x46E26D.
+ * @offset 0x0046E26D.
  *
  * @param grid_x                        Grid x coordinate.
  * @param grid_y                        Grid y coordinate.
@@ -71,7 +71,7 @@ void CollideIndoorWithDecorations();
 void CollideOutdoorWithDecorations(int grid_x, int grid_y);
 
 /**
- * Original offset 0x46F04E.
+ * @offset 0x0046F04E.
  *
  * Performs collision checks with portals. Updates `collision_state`. If the collision did happen, then
  * `adjusted_move_distance` member is set to `0xFFFFFF` (basically a large number).
@@ -81,7 +81,7 @@ void CollideOutdoorWithDecorations(int grid_x, int grid_y);
 bool CollideIndoorWithPortals();
 
 /**
- * Original offset 0x46DF1A.
+ * @offset 0x0046DF1A.
  *
  * @param actor_idx                     Actor index.
  * @param override_radius               Override actor's radius. Pass zero to use original radius.
@@ -93,7 +93,7 @@ bool CollideWithActor(int actor_idx, int override_radius);
 void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 
 /**
- * Original offset 0x46EF01.
+ * @offset 0x0046EF01.
  *
  * @param jagged_top                Makes collision happen even if the monster would end up above the party.
  *                                  However, for the collision to happen, corresponding bounding boxes still need to

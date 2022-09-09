@@ -18,13 +18,13 @@ CollisionState collision_state;
  */
 
 /**
- * Original offsets 0x47531C, 0x4754BF (two functions merged into one).
+ * @offset 0x0047531C, 0x004754BF.
  *
  * @param face                          Polygon to check collision against.
  * @param pos                           Actor position to check.
  * @param radius                        Actor radius.
  * @param dir                           Movement direction as a unit vector in fixpoint format.
- * @param out_move_distance[out]        Move distance along the `dir` axis required to touch the provided polygon.
+ * @param[out] out_move_distance        Move distance along the `dir` axis required to touch the provided polygon.
  *                                      Always non-negative. This parameter is not set if the function returns false.
  *                                      Note that "touching" in this context means that the distance from the actor's
  *                                      center to the polygon equals actor's radius.
@@ -75,12 +75,12 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_float_ &pos, float r
 }
 
 /**
- * Original offset 0x475D85, 0x475F30 (two functions merged into one).
+ * @offset 0x00475D85, 0x00475F30.
  *
  * @param face                          Polygon to check collision against.
  * @param pos                           Actor position to check.
  * @param dir                           Movement direction as a unit vector in fixpoint format.
- * @param out_move_distance[in,out]     Current movement distance along the `dir` axis. This parameter is not touched
+ * @param[in,out] out_move_distance     Current movement distance along the `dir` axis. This parameter is not touched
  *                                      when the function returns false. If the function returns true, then the
  *                                      distance required to hit the polygon is stored here. Note that this effectively
  *                                      means that this function can only decrease `move_distance`, but never increase

@@ -1284,7 +1284,7 @@ void RenderOpenGL::DrawIndoorSky(unsigned int uNumVertices, unsigned int uFaceID
         array_507D30[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->GetHeight());
 
         // this basically acts as texture perspective correction
-        array_507D30[_507D30_idx]._rhw = /*1.0f /*/ worldviewdepth;
+        array_507D30[_507D30_idx]._rhw = worldviewdepth;
     }
 
     // no clipped polygon so draw and return??
@@ -2835,7 +2835,7 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
 
             // this basically acts as texture perspective correction
-            VertexRenderList[i]._rhw = /*1.0 /*/ (double)(worldviewdepth);
+            VertexRenderList[i]._rhw = (double)(worldviewdepth);
         }
 
         _set_ortho_projection(1);

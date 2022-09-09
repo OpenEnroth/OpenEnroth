@@ -39,16 +39,8 @@ ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/swresample-3.dll")
 ADD_GLOBAL_DEPENDENCY("${FFMPEG_BIN_DIR}/swscale-5.dll")
 
 else()  # WIN32
-find_package(FFmpeg COMPONENTS AVCODEC AVFORMAT SWSCALE REQUIRED)
+find_package(FFmpeg COMPONENTS AVCODEC AVFORMAT AVUTIL SWSCALE SWRESAMPLE REQUIRED)
+include_directories(ffmpeg "${FFMPEG_INCLUDE_DIRS}")
 target_link_libraries(ffmpeg "${FFMPEG_LIBRARIES}")
-
-if (APPLE)
-    include_directories(
-            "/usr/local/include"
-    )
-    find_library(AVUTIL_LIBRARY avutil)
-    find_library(SWRESAMPLE_LIBRARY swresample)
-    target_link_libraries(ffmpeg ${AVUTIL_LIBRARY} ${SWRESAMPLE_LIBRARY})
-endif()
 
 endif()

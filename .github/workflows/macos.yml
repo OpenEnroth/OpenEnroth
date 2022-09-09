@@ -1,0 +1,49 @@
+name: MacOS
+
+on:
+  pull_request:
+  push:
+  release:
+    types: published
+
+jobs:
+  build_macos:
+    runs-on: macos-12
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+        architecture: [x64]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+        brew install ffmpeg@4
+        brew install sdl2
+
+    - name: Configure
+      run: |
+        cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DCMAKE_PREFIX_PATH="/usr/local/opt/ffmpeg@4"
+
+    - name: Build
+      working-directory: build
+      run: |
+        alias nproc="sysctl -n hw.logicalcpu"
+        make -j$(nproc)
+
+    - name: Prepare artifact
+      run: |
+        mkdir dist
+        cp -r build/World_of_Might_and_Magic.app dist/
+        cp -r resources/* dist/
+        hdiutil create World_of_Might_and_Magic.dmg -ov -volname "World of Might and Magic" -fs HFS+ -srcfolder dist
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: World of Might and Magic (MacOS, ${{ matrix.configuration }}, ${{ matrix.architecture }})
+        path: World_of_Might_and_Magic.dmg
