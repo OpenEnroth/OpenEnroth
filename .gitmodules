@@ -1,6 +1,7 @@
 [submodule "thirdparty/luajit"]
 	path = thirdparty/luajit/luajit
 	url = https://github.com/LuaJIT/LuaJIT
+	branch = v2.1
 [submodule "thirdparty/glm"]
 	path = thirdparty/glm
 	url = https://github.com/g-truc/glm
