@@ -1,60 +1,40 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 project("World of Might and Magic")
-set(PROJECT_VERSION "0.2.0")
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/Bootstrapper.cmake)
+set(PROJECT_VERSION "Unknown")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
+include(Git)
 
-find_package(Git)
-if(GIT_FOUND)
-  execute_process(COMMAND ${GIT_EXECUTABLE} describe --always --tags --dirty
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                  OUTPUT_VARIABLE WMM_VERSION
-                  OUTPUT_STRIP_TRAILING_WHITESPACE)
-  if(WMM_VERSION)
-    string(FIND ${WMM_VERSION} "." VERSION_FULL)
-    if(VERSION_FULL STREQUAL "-1")
-      string(REGEX REPLACE "^([0-9]+)\\..*" "\\1" PROJECT_VERSION_MAJOR "${PROJECT_VERSION}")
-      string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" PROJECT_VERSION_MINOR "${PROJECT_VERSION}")
-      execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short=7 HEAD
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                    OUTPUT_VARIABLE PROJECT_VERSION_PATCH
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-      set(WMM_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-      set(PROJECT_VERSION "${WMM_VERSION}")
-    else()
-      string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" PROJECT_VERSION_MAJOR "${WMM_VERSION}")
-      string(REGEX REPLACE "^v[0-9]+\\.([0-9]+).*" "\\1" PROJECT_VERSION_MINOR "${WMM_VERSION}")
-      string(REGEX REPLACE "^v[0-9]+\\.[0-9]+.*-g([0-9a-f]+).*" "\\1" PROJECT_VERSION_PATCH "${WMM_VERSION}")
-      set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-    endif()
-  else()
-    set(WMM_VERSION "${PROJECT_VERSION}")
-    string(REGEX REPLACE "^([0-9]+)\\..*" "\\1" PROJECT_VERSION_MAJOR "${PROJECT_VERSION}")
-    string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" PROJECT_VERSION_MINOR "${PROJECT_VERSION}")
-    string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" PROJECT_VERSION_PATCH "${PROJECT_VERSION}")
-  endif()
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set(BUILD_PLATFORM "darwin")
+  set(APPLE TRUE)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set(BUILD_PLATFORM "linux")
 else()
-  set(WMM_VERSION "${PROJECT_VERSION}")
-  string(REGEX REPLACE "^([0-9]+)\\..*" "\\1" PROJECT_VERSION_MAJOR "${PROJECT_VERSION}")
-  string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" PROJECT_VERSION_MINOR "${PROJECT_VERSION}")
-  string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" PROJECT_VERSION_PATCH "${PROJECT_VERSION}")
+  set(BUILD_PLATFORM "win32")
 endif()
 
-message(STATUS "WMM_VERSION = ${WMM_VERSION}")
-message(STATUS "PROJECT_VERSION = ${PROJECT_VERSION}")
-message(STATUS "PROJECT_VERSION_MAJOR = ${PROJECT_VERSION_MAJOR}")
-message(STATUS "PROJECT_VERSION_MINOR = ${PROJECT_VERSION_MINOR}")
-message(STATUS "PROJECT_VERSION_PATCH = ${PROJECT_VERSION_PATCH}")
+# Support both 32 and 64 bit builds
+if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
+  set(BUILD_TYPE "x64")
+else ()
+  set(BUILD_TYPE "x86")
+endif ()
+
+message(STATUS "WoMM version: ${PROJECT_VERSION}")
+message(STATUS "Build type: ${BUILD_TYPE}")
+message(STATUS "Build platform: ${BUILD_PLATFORM}")
+
+if(NOT BUILD_TYPE STREQUAL "x86" )
+  message(WARNING "Please note that currently only x86 builds are relatively stable" )
+endif()
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   set(CMAKE_EXE_LINKER_FLAGS "-fuse-ld=gold -pthread")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-else()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_definitions(-DWINDOWS_IGNORE_PACKING_MISMATCH="") # vs2019 complains about using #pragma pack()
   add_definitions(-DNOMINMAX) # please don't pull in these macros from <Windows.h>
   add_definitions(-D_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
@@ -77,11 +57,17 @@ add_definitions(-DPACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-a
 include(CppLint)
 enable_check_style()
 
+if(NOT WIN32)
+  include_directories("/usr/local/include")
+  link_directories("/usr/local/lib")
+endif()
+
+include(PrebuiltDeps)
+
 add_subdirectory(${GLAD_DIRECTORY})
+add_subdirectory(${GLM_DIRECTORY})
 add_subdirectory(${LUAJIT_DIRECTORY})
 add_subdirectory(${NUKLEAR_DIRECTORY})
-
-add_subdirectory(${GLM_DIRECTORY})
 
 add_subdirectory(Arcomage)
 add_subdirectory(Engine)
@@ -92,47 +78,15 @@ add_subdirectory(Launcher)
 add_subdirectory(Media)
 add_subdirectory(Platform)
 
+set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
+
 add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 ./Engine/Engine.cpp)
-target_compile_features (World_of_Might_and_Magic
-  INTERFACE
-    # Enable C++17 standard compliance
-    cxx_std_17
-)
 target_check_style(World_of_Might_and_Magic)
 
-target_link_libraries(World_of_Might_and_Magic zlib sdl2 ffmpeg)
-if(WIN32)
-target_link_libraries(World_of_Might_and_Magic ddraw.lib dxguid.lib)
-else()
-message(STATUS "ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
-message(STATUS "SDL_LIBRARIES = ${SDL_LIBRARIES}")
-message(STATUS "FFMPEG_LIBRARIES = ${FFMPEG_LIBRARIES}")
-message(STATUS "OpenAL_LIBRARY = ${OPENAL_LIBRARY}")
-message(STATUS "OPENGL_opengl_LIBRARY = ${OPENGL_opengl_LIBRARY}")
-message(STATUS "OPENGL_glu_LIBRARY = ${OPENGL_glu_LIBRARY}")
-
-target_link_libraries(World_of_Might_and_Magic ${OPENGL_opengl_LIBRARY} ${OPENGL_glu_LIBRARY})
-
-# For OSX 10.14 and below
-if (APPLE)
-  find_library(COCOA_LIBRARY Cocoa)
-  find_library(CARBON_LIBRARY Carbon)
-  find_library(COREAUDIO_LIBRARY CoreAudio)
-  find_library(COREVIDEO_LIBRARY CoreVideo)
-  find_library(IOKIT_LIBRARY IOKit)
-  find_library(FORCEFEEDBACK_LIBRARY ForceFeedback)
-  find_library(ICONV_LIBRARY iconv)
-  find_library(AUDIOTOOLBOX_LIBRARY AudioToolbox)
-  target_link_libraries(World_of_Might_and_Magic ${COCOA_LIBRARY} ${CARBON_LIBRARY} ${COREAUDIO_LIBRARY} ${COREVIDEO_LIBRARY} ${IOKIT_LIBRARY} ${FORCEFEEDBACK_LIBRARY} ${ICONV_LIBRARY} ${AUDIOTOOLBOX_LIBRARY})
-  target_link_libraries(World_of_Might_and_Magic ${AVUTIL_LIBRARY} ${SWRESAMPLE_LIBRARY})
-endif()
-
-endif()
-set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
 target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization glad nuklear libluajit glm)
 
 set_property(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
 )
 
 RESOLVE_DEPENDENCIES(World_of_Might_and_Magic)

@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(SPELLS_SOURCES CastSpellInfo.cpp
-		   Spells.cpp)
+                   Spells.cpp)
 
 set(SPELLS_HEADERS CastSpellInfo.h
-		   Spells.h)
+                   Spells.h)
 
 if(WIN32)
 else()

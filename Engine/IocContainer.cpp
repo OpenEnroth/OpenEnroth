@@ -52,7 +52,8 @@ Log *IocContainer::ResolveLogger() {
     if (!logger) {
         logger = new Log();
         logger->Initialize();
-        logger->Info("World of Might and Magic build %s %s", __DATE__, __TIME__);
+        logger->Info("World of Might and Magic version: %s", PROJECT_VERSION);
+        logger->Info("Compilation date: %s %s", __DATE__, __TIME__);
     }
     return logger;
 }

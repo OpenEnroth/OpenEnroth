@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(SERIALIZATION_SOURCES LegacyImages.cpp)
 
-set(SERIALIZATION_HEADERS LegacyImages.h MemoryInput.h)
+set(SERIALIZATION_HEADERS LegacyImages.h
+                          MemoryInput.h)
 
 if(WIN32)
 else()

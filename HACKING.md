@@ -13,7 +13,7 @@ Main dependencies:
 On windows above dependencies are resolved automatically during cmake phase but you must also have Windows SDK v10.0.20348.0 or higher installed.
 
 Additional dependencies:
-* CMake 3.20+ with exception of 3.20.21032501-MSVC_2 from VS2019
+* CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work)
 * Python 3.x (optional, for style checker functionality)
 
 Minimum required compiler versions are as follows:
@@ -22,7 +22,7 @@ Minimum required compiler versions are as follows:
 * Clang 13
 
 The following IDEs have been tested and should work fine:
-* Visual Studio 2019 or later
+* Visual Studio (2019 or later)
 * Visual Studio Code (2022 or later)
 * CLion (2022 or later)
 
@@ -53,6 +53,8 @@ You will require the following installed on your computer: Git and Visual Studio
 * Select build configuration (x32 or x64) and wait for CMake configuration to complete
 * Select startup item as `World_of_Might_and_Magic.exe`
 * Run!
+
+If you wish you can also disable autoresolving main dependencies by turning off `MSVC_PREBUILT_DEPS` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.
 
 __Be aware__ that Visual Studio has a bug with git submodules not syncing between branches.
 So when checking out the branch or switching to different branch you may need to run the following command manually: `git submodule update --init`

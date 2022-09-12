@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(ENGINE_SOURCES AssetsManager.cpp
                    CommandLine.cpp
@@ -61,15 +61,14 @@ set(ENGINE_HEADERS AssetsManager.h
                    IocContainer.h
                    EngineFactory.h)
 
-if(WIN32)
-else()
-endif()
-
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)
 
-target_link_libraries(engine zlib)
 target_link_libraries(engine game)
+target_compile_definitions(engine PRIVATE PROJECT_VERSION="${PROJECT_VERSION}")
+
+include_directories(${INCLUDE_DIRECTORIES} ${ZLIB_INCLUDE_DIRS})
+target_link_libraries(engine ${ZLIB_LIBRARIES})
 
 add_subdirectory(Graphics)
 add_subdirectory(Objects)
@@ -77,3 +76,5 @@ add_subdirectory(Serialization)
 add_subdirectory(Spells)
 add_subdirectory(Tables)
 add_subdirectory(TurnEngine)
+
+message(VERBOSE "ZLIB_LIBRARIES: ${ZLIB_LIBRARIES}")

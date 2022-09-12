@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -14,9 +14,5 @@ set(LAUNCHER_RESOURCES ico128.ico
                        Resource.rc
                        shield-flip.bmp
                        shield.bmp)
-
-if(WIN32)
-else()
-endif()
 
 add_library(Launcher STATIC ${LAUNCHER_SOURCES} ${LAUNCHER_HEADERS})
