@@ -71,7 +71,7 @@ target_compile_definitions(engine PRIVATE PROJECT_VERSION="${PROJECT_VERSION}"
                                           BUILD_TYPE="${BUILD_TYPE}")
 
 include_directories(${INCLUDE_DIRECTORIES} ${ZLIB_INCLUDE_DIRS})
-target_link_libraries(engine ${ZLIB_LIBRARIES})
+target_link_libraries(engine utility ${ZLIB_LIBRARIES})
 
 add_subdirectory(Graphics)
 add_subdirectory(Objects)

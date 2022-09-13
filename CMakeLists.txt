@@ -84,14 +84,15 @@ add_subdirectory(${GLM_DIRECTORY})
 add_subdirectory(${LUAJIT_DIRECTORY})
 add_subdirectory(${NUKLEAR_DIRECTORY})
 
+add_subdirectory(Application)
 add_subdirectory(Arcomage)
 add_subdirectory(Engine)
-add_subdirectory(src)
 add_subdirectory(GUI)
 add_subdirectory(Io)
 add_subdirectory(Launcher)
 add_subdirectory(Media)
 add_subdirectory(Platform)
+add_subdirectory(Utility)
 
 set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
 

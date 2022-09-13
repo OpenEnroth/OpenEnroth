@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-#include <src/tools/Flags.h>
+#include "Utility/Flags.h"
 
 enum SPRITE_OBJECT_TYPE : uint16_t {
     SPRITE_NULL = 0,

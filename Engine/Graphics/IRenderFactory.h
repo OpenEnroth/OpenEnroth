@@ -2,7 +2,7 @@
 #include <memory>
 #include <string>
 
-#include "src/Application/GameConfig.h"
+#include "Application/GameConfig.h"
 
 class IRender;
 class OSWindow;

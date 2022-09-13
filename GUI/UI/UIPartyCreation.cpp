@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <string>
 
-#include "src/Application/Game.h"
+#include "Application/Game.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

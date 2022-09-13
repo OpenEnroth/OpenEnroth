@@ -5,7 +5,7 @@
 #include <string>
 
 #include "Engine/VectorTypes.h"
-#include "src/tools/Flags.h"
+#include "Utility/Flags.h"
 
 class MemoryInput;
 struct ODMFace_MM7;

@@ -1,12 +1,12 @@
-#include "src/Application/Game.h"
+#include "Game.h"
 
 #include <algorithm>
 #include <string>
 
 #include "Arcomage/Arcomage.h"
 
-#include "src/Application/GameFactory.h"
-#include "src/Application/GameMenu.h"
+#include "GameFactory.h"
+#include "GameMenu.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

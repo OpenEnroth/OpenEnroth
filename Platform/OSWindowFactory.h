@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "src/Application/GameConfig.h"
+#include "Application/GameConfig.h"
 
 class OSWindow;
 class OSWindowFactory {

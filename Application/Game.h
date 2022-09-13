@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
 
-#include "src/Application/GameConfig.h"
-#include "src/Application/GameMenu.h"
-#include "src/Application/IocContainer.h"
+#include "GameConfig.h"
+#include "GameMenu.h"
+#include "IocContainer.h"
 
 #include "Engine/Engine.h"
 #include "Engine/IocContainer.h"

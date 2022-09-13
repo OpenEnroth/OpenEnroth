@@ -1,10 +1,10 @@
-#include "src/Application/GameConfig.h"
+#include "GameConfig.h"
 
 #include <algorithm>
 #include <cctype>
 #include <string>
 
-#include "src/tools/DataPath.h"
+#include "Utility/DataPath.h"
 
 #define MINI_CASE_SENSITIVE
 #include "thirdparty/mini/src/mini/ini.h"

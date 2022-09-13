@@ -42,7 +42,7 @@
 
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
-#include "src/tools/FreeDeleter.h"
+#include "Utility/FreeDeleter.h"
 
 
 IndoorLocation *pIndoor = new IndoorLocation;

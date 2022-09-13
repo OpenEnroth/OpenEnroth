@@ -8,7 +8,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Rect.h"
 #include "Engine/VectorTypes.h"
-#include "src/Application/GameConfig.h"
+#include "Application/GameConfig.h"
 
 
 class OSWindow;

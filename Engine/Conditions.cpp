@@ -4,7 +4,7 @@
 
 #include "Engine/Party.h"
 
-#include "src/tools/Workaround.h"
+#include "Utility/Workaround.h"
 
 std::array<ConditionProcessor, 18> conditionArray = {{
     // hint: condname, protfrommagic, gmprot, enchantment, ...

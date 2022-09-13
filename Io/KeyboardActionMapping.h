@@ -7,7 +7,7 @@
 #include "Io/GameKey.h"
 #include "Io/InputAction.h"
 
-#include "src/Application/GameConfig.h"
+#include "Application/GameConfig.h"
 
 using Application::GameConfig;
 

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "src/Application/GameOver.h"
+#include "Application/GameOver.h"
 
 #include "Arcomage/Arcomage.h"
 

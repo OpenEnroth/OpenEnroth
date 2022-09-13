@@ -4,7 +4,7 @@
 #include "Engine/Point.h"
 #include "Engine/Log.h"
 
-#include "src/Application/GameWindowHandler.h"
+#include "Application/GameWindowHandler.h"
 
 #include "Io/IKeyboardController.h"
 #include "Io/IMouseController.h"

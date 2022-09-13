@@ -26,4 +26,4 @@ endif()
 add_library(objects STATIC ${OBJECTS_SOURCES} ${OBJECTS_HEADERS})
 target_check_style(objects)
 
-target_link_libraries(objects engine gui)
+target_link_libraries(objects engine gui utility)

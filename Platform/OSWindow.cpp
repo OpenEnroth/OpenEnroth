@@ -2,7 +2,7 @@
 
 #include "Engine/IocContainer.h"
 
-#include "src/Application/IocContainer.h"
+#include "Application/IocContainer.h"
 
 
 std::shared_ptr<OSWindow> window = nullptr;

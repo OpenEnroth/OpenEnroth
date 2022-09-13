@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <cstring>
 
-#include "src/tools/Flags.h"
+#include "Utility/Flags.h"
 
 #include "Spells.h"
 

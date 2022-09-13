@@ -26,8 +26,8 @@
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
 
-#include "src/Application/GameConfig.h"
-#include "src/tools/DataPath.h"
+#include "Application/GameConfig.h"
+#include "Utility/DataPath.h"
 
 class Nuklear;
 using Io::KeyboardActionMapping;
