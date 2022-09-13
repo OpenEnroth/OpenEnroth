@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "src/Application/Game.h"
+#include "Application/Game.h"
 
 #include "Platform/Api.h"
 
