@@ -105,7 +105,7 @@ class AVStreamWrapper {
     AVMediaType type;
     int stream_idx;
     AVStream *stream;
-    AVCodec *dec;
+    const AVCodec *dec;
     AVCodecContext *dec_ctx;
     std::queue<PMemBuffer, std::deque<PMemBuffer>> queue;
 };
@@ -1048,7 +1048,7 @@ bool AudioBaseDataSource::Open() {
         return false;
     }
 
-    AVCodec *codec = nullptr;
+    const AVCodec *codec = nullptr;
     iStreamIndex = av_find_best_stream(pFormatContext, AVMEDIA_TYPE_AUDIO, -1,
                                        -1, &codec, 0);
     if (iStreamIndex < 0) {
