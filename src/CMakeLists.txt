@@ -24,10 +24,6 @@ set(GAME_HEADERS Application/Game.h
                  tools/FreeDeleter.h
                  tools/Workaround.h)
 
-if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS "-fpermissive ${CMAKE_CXX_FLAGS}")
-endif()
-
 add_library(game STATIC ${GAME_SOURCES} ${GAME_HEADERS})
 target_check_style(game)
 

@@ -54,7 +54,7 @@ You will require the following installed on your computer: Git and Visual Studio
 * Select startup item as `World_of_Might_and_Magic.exe`
 * Run!
 
-If you wish you can also disable autoresolving main dependencies by turning off `MSVC_PREBUILT_DEPS` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.
+If you wish you can also disable autoresolving main dependencies by turning off `PREBUILT_DEPENDENCIES` cmake option and pass your own dependencies source, e.g. via [vcpkg](https://github.com/microsoft/vcpkg) integration.
 
 __Be aware__ that Visual Studio has a bug with git submodules not syncing between branches.
 So when checking out the branch or switching to different branch you may need to run the following command manually: `git submodule update --init`

@@ -1,29 +1,44 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 project("World of Might and Magic")
-set(PROJECT_VERSION "Unknown")
+set(PROJECT_VERSION "unknown")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
 include(Git)
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(WIN32)
+  set(BUILD_PLATFORM "win32")
+elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
   set(BUILD_PLATFORM "darwin")
   set(APPLE TRUE)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
   set(BUILD_PLATFORM "linux")
+elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+  set(BUILD_PLATFORM "freebsd")
 else()
-  set(BUILD_PLATFORM "win32")
+  set(BUILD_PLATFORM "unknown")
 endif()
 
-# Support both 32 and 64 bit builds
-if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
+# TODO: We should replace this with proper architecture detection like DetectArchitecture in luajit
+if (CMAKE_SIZEOF_VOID_P MATCHES 8)
   set(BUILD_TYPE "x64")
 else ()
   set(BUILD_TYPE "x86")
 endif ()
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set(BUILD_COMPILER "gcc")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+  set(BUILD_COMPILER "clang")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  set(BUILD_COMPILER "msvc")
+else()
+  set(BUILD_COMPILER "unknown")
+endif()
+
 message(STATUS "WoMM version: ${PROJECT_VERSION}")
-message(STATUS "Build type: ${BUILD_TYPE}")
+message(STATUS "Build compiler: ${BUILD_COMPILER}")
 message(STATUS "Build platform: ${BUILD_PLATFORM}")
+message(STATUS "Build type: ${BUILD_TYPE}")
 
 if(NOT BUILD_TYPE STREQUAL "x86" )
   message(WARNING "Please note that currently only x86 builds are relatively stable" )
@@ -62,7 +77,7 @@ if(NOT WIN32)
   link_directories("/usr/local/lib")
 endif()
 
-include(PrebuiltDeps)
+include(Dependencies)
 
 add_subdirectory(${GLAD_DIRECTORY})
 add_subdirectory(${GLM_DIRECTORY})
@@ -89,4 +104,4 @@ set_property(
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT World_of_Might_and_Magic
 )
 
-RESOLVE_DEPENDENCIES(World_of_Might_and_Magic)
+PREBUILT_DEPENDENCIES_RESOLVE(World_of_Might_and_Magic)

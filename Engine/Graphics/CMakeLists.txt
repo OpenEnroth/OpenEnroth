@@ -80,8 +80,9 @@ find_package(OpenGL REQUIRED)
 
 target_link_libraries(graphics ${OPENGL_opengl_LIBRARY} ${OPENGL_glu_LIBRARY})
 
-if(WIN32)
+if(WIN32 AND BUILD_TYPE STREQUAL "x86")
   target_link_libraries(graphics ddraw.lib dxguid.lib)
+  target_compile_definitions(graphics PRIVATE DDRAW_ENABLED)
 endif()
 
 message(VERBOSE "OPENGL_opengl_LIBRARY: ${OPENGL_opengl_LIBRARY}")
