@@ -1,8 +1,4 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
-
-if(APPLE)
-  add_definitions(-DFF_API_NEXT)
-endif()
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(MEDIA_SOURCES Media.cpp
                   MediaPlayer.cpp
@@ -14,16 +10,16 @@ set(MEDIA_HEADERS Media.h
                   Audio/AudioPlayer.h
                   Audio/OpenALSoundProvider.h)
 
-if(WIN32)
-else()
+add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
+
+if(APPLE)
+  add_definitions(-DFF_API_NEXT -Wno-deprecated-declarations)
 endif()
 
-add_library(media STATIC ${MEDIA_SOURCES} ${MEDIA_HEADERS})
+include_directories(${INCLUDE_DIRECTORIES} ${OPENAL_INCLUDE_DIRS} ${FFMPEG_INCLUDE_DIRS})
+target_link_libraries(media ${OPENAL_LIBRARY} ${AVCODEC_LIBRARIES} ${AVFORMAT_LIBRARIES} ${AVUTIL_LIBRARIES} ${SWSCALE_LIBRARIES} ${SWRESAMPLE_LIBRARIES})
+
 target_check_style(media)
 
-if(WIN32)
-target_link_libraries(media openal)
-else()
-target_link_libraries(media ${OPENAL_LIBRARY})
-endif()
-target_link_libraries(media ffmpeg)
+message(VERBOSE "FFMPEG_LIBRARIES: ${FFMPEG_LIBRARIES}")
+message(VERBOSE "OPENAL_LIBRARY: ${OPENAL_LIBRARY}")

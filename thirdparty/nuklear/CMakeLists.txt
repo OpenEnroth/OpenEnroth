@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 project(nuclear)
 
@@ -45,8 +45,8 @@ set(NUKLEAR_SOURCES nuklear_9slice.c
                     nuklear_window.c)
 
 set(NUKLEAR_HEADERS nuklear_config.h
-                 stb_rect_pack.h
-                 stb_truetype.h)
+                    stb_rect_pack.h
+                    stb_truetype.h)
 
 add_library(nuklear STATIC ${NUKLEAR_SOURCES} ${NUKLEAR_HEADERS})
 target_check_style(nuklear)

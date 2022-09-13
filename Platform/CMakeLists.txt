@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(PLATFORM_SOURCES OSWindow.cpp
                      OSWindowFactory.cpp
@@ -17,13 +17,17 @@ set(PLATFORM_HEADERS Api.h
 )
 
 if(WIN32)
-    list(APPEND PLATFORM_SOURCES Win/AppSettings.cpp Win/Win.cpp)
-    list(APPEND PLATFORM_HEADERS Win/Win.h)
+  list(APPEND PLATFORM_SOURCES Win/AppSettings.cpp Win/Win.cpp)
+  list(APPEND PLATFORM_HEADERS Win/Win.h)
 else()
-    list(APPEND PLATFORM_SOURCES Lin/Lin.cpp)
+  list(APPEND PLATFORM_SOURCES Lin/Lin.cpp)
 endif()
+
+include_directories(${INCLUDE_DIRECTORIES} ${SDL2_INCLUDE_DIRS})
 
 add_library(platform STATIC ${PLATFORM_SOURCES} ${PLATFORM_HEADERS})
 target_check_style(platform)
 
-target_link_libraries(platform sdl2)
+target_link_libraries(platform ${SDL2_LIBRARIES})
+
+message(VERBOSE "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")

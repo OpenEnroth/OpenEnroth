@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(OBJECTS_SOURCES Actor.cpp
                     Chest.cpp
@@ -19,11 +19,11 @@ set(OBJECTS_HEADERS Actor.h
                     PlayerEnums.h
                     SpriteObject.h)
 
-if(WIN32)
-else()
+if(NOT WIN32)
   set(CMAKE_CXX_FLAGS "-fpermissive ${CMAKE_CXX_FLAGS}")
 endif()
 
 add_library(objects STATIC ${OBJECTS_SOURCES} ${OBJECTS_HEADERS})
-target_link_libraries(objects engine gui)
 target_check_style(objects)
+
+target_link_libraries(objects engine gui)
