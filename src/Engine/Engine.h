@@ -6,7 +6,7 @@
 #include <string>
 #include <climits>
 #ifndef _WINDOWS
-#include "Platform/Lin/Lin.h"
+#include "Platform/Posix/Posix.h"
 #endif
 
 #include "Engine/AssetsManager.h"

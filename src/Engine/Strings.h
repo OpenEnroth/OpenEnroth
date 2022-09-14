@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cstring>
 #ifndef _WINDOWS
-#include "Platform/Lin/Lin.h"
+#include "Platform/Posix/Posix.h"
 #endif
 
 std::string StringPrintf(const char *fmt, ...);

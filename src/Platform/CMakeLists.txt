@@ -20,7 +20,7 @@ if(WIN32)
   list(APPEND PLATFORM_SOURCES Win/AppSettings.cpp Win/Win.cpp)
   list(APPEND PLATFORM_HEADERS Win/Win.h)
 else()
-  list(APPEND PLATFORM_SOURCES Lin/Lin.cpp)
+  list(APPEND PLATFORM_SOURCES Posix/Posix.cpp)
 endif()
 
 include_directories(${INCLUDE_DIRECTORIES} ${SDL2_INCLUDE_DIRS})

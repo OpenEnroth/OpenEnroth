@@ -3,7 +3,7 @@
 #ifdef _WINDOWS
 #include <io.h>
 #else
-#include "Platform/Lin/Lin.h"
+#include "Platform/Posix/Posix.h"
 #endif
 #include <string>
 
