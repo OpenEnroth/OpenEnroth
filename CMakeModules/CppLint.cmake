@@ -36,3 +36,5 @@ function(target_check_style TARGET)
     set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "check_style")
   endif()
 endfunction()
+
+enable_check_style()

@@ -1,4 +1,4 @@
-#include "Platform/Lin/Lin.h"
+#include "Platform/Posix/Posix.h"
 
 #include <SDL.h>
 #include <dirent.h>

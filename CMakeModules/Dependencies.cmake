@@ -1,3 +1,8 @@
+if(NOT WIN32)
+  include_directories("/usr/local/include")
+  link_directories("/usr/local/lib")
+endif()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set(PREBUILT_DEPENDENCIES ON CACHE BOOL "Use prebuilt dependencies")
 else()
