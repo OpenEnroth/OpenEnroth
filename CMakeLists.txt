@@ -65,7 +65,7 @@ set(NUKLEAR_DIRECTORY ${THIRDPARTY_DIRECTORY}/nuklear)
 set(LUAJIT_DIRECTORY ${THIRDPARTY_DIRECTORY}/luajit)
 set(GLM_DIRECTORY ${THIRDPARTY_DIRECTORY}/glm)
 
-include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${THIRDPARTY_DIRECTORY} ${LUAJIT_DIRECTORY}/luajit/src ${GLAD_DIRECTORY}/include ${GLM_DIRECTORY}/glm)
+include_directories(${INCLUDE_DIRECTORIES} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR} ${THIRDPARTY_DIRECTORY} ${LUAJIT_DIRECTORY}/luajit/src ${GLAD_DIRECTORY}/include ${GLM_DIRECTORY}/glm)
 
 add_definitions(-DPACKAGE_BUGREPORT="https://github.com/gp-alex/world-of-might-and-magic/issues")
 
@@ -84,18 +84,19 @@ add_subdirectory(${GLM_DIRECTORY})
 add_subdirectory(${LUAJIT_DIRECTORY})
 add_subdirectory(${NUKLEAR_DIRECTORY})
 
-add_subdirectory(Arcomage)
-add_subdirectory(Engine)
-add_subdirectory(src)
-add_subdirectory(GUI)
-add_subdirectory(Io)
-add_subdirectory(Launcher)
-add_subdirectory(Media)
-add_subdirectory(Platform)
+add_subdirectory(src/Application)
+add_subdirectory(src/Arcomage)
+add_subdirectory(src/Engine)
+add_subdirectory(src/GUI)
+add_subdirectory(src/Io)
+add_subdirectory(src/Launcher)
+add_subdirectory(src/Media)
+add_subdirectory(src/Platform)
+add_subdirectory(src/Utility)
 
 set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
 
-add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 ./Engine/Engine.cpp)
+add_executable(World_of_Might_and_Magic MACOSX_BUNDLE WIN32 ./src/Engine/Engine.cpp)
 target_check_style(World_of_Might_and_Magic)
 
 target_link_libraries(World_of_Might_and_Magic game arcomage engine gui io media platform objects spells tables graphics turnengine serialization glad nuklear libluajit glm)

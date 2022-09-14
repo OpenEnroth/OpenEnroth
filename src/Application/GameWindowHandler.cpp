@@ -1,4 +1,4 @@
-#include "src/Application/GameWindowHandler.h"
+#include "GameWindowHandler.h"
 
 #include "Arcomage/Arcomage.h"
 
@@ -21,7 +21,7 @@
 
 #include "Platform/OSWindow.h"
 
-#include "src/Application/IocContainer.h"
+#include "IocContainer.h"
 
 
 using EngineIoc = Engine_::IocContainer;

@@ -1,9 +1,9 @@
 #include <map>
 #include <string>
 
-#include "src/Application/GameMenu.h"
+#include "GameMenu.h"
 
-#include "src/Application/Game.h"
+#include "Game.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

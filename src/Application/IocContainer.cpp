@@ -1,7 +1,7 @@
-#include "src/Application/IocContainer.h"
+#include "IocContainer.h"
 
-#include "src/Application/GameMenu.h"
-#include "src/Application/GameWindowHandler.h"
+#include "GameMenu.h"
+#include "GameWindowHandler.h"
 
 
 using Application::IocContainer;

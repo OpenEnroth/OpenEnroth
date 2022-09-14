@@ -1,6 +1,6 @@
 #include <string>
 
-#include "src/Application/GameOver.h"
+#include "GameOver.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"

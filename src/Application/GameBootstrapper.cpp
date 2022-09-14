@@ -1,9 +1,9 @@
 #include <memory>
 #include <string>
 
-#include "src/Application/Game.h"
-#include "src/Application/GameConfig.h"
-#include "src/Application/GameFactory.h"
+#include "Game.h"
+#include "GameConfig.h"
+#include "GameFactory.h"
 
 using Application::Game;
 using Application::GameConfig;
