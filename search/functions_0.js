@@ -91,6 +91,6 @@ var searchData=
   ['_5fset_5f3d_5fprojection_5fmatrix_88',['_set_3d_projection_matrix',['../classRenderOpenGL.html#a7d5ffdf04f796810a19224b04d0ff3ea',1,'RenderOpenGL']]],
   ['_5fset_5fortho_5fmodelview_89',['_set_ortho_modelview',['../classRenderOpenGL.html#aba07e6fc89c29aa14955190507c90546',1,'RenderOpenGL']]],
   ['_5fset_5fortho_5fprojection_90',['_set_ortho_projection',['../classRenderOpenGL.html#a5a8f73f1f24c87c1e20c0822c48757ea',1,'RenderOpenGL']]],
-  ['_5fstrlwr_91',['_strlwr',['../Lin_8h.html#ab93d9b7d60d4e5013ff1746649265f86',1,'Lin.h']]],
-  ['_5fstrrev_92',['_strrev',['../Lin_8h.html#ab1af1bad4a814ccc8bf547ada5f6dbf8',1,'Lin.h']]]
+  ['_5fstrlwr_91',['_strlwr',['../Posix_8h.html#ab93d9b7d60d4e5013ff1746649265f86',1,'Posix.h']]],
+  ['_5fstrrev_92',['_strrev',['../Posix_8h.html#ab1af1bad4a814ccc8bf547ada5f6dbf8',1,'Posix.h']]]
 ];

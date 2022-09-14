@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>World of Might and Magic: GUI/UI/UIGame.cpp File Reference</title>
+<title>World of Might and Magic: src/GUI/UI/UIGame.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;420564d</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;befbe06</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_171b764decf33d63a7df2fab4f4bc6d8.html">GUI</a></li><li class="navelem"><a class="el" href="dir_008f70fed27c4008afe49ab10279d8cb.html">UI</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_4e4e2e75df7fa6971448b424c011c8b5.html">GUI</a></li><li class="navelem"><a class="el" href="dir_a1c8096ddc6fb80a9bdd2e9a1b465426.html">UI</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -85,7 +85,7 @@ $(function() {
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="UIGame_8h.html">GUI/UI/UIGame.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Game_8h.html">src/Application/Game.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Game_8h.html">Application/Game.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Events_8h.html">Engine/Events.h</a>&quot;</code><br />
@@ -302,8 +302,8 @@ Variables</h2></td></tr>
 <tr class="separator:a4ae2ad7c33f435cd3ae927d2f385250f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f70373e8d65f7f76d15ae2ff1511076"><td class="memItemLeft" align="right" valign="top">InputAction&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a6f70373e8d65f7f76d15ae2ff1511076">currently_selected_action_for_binding</a></td></tr>
 <tr class="separator:a6f70373e8d65f7f76d15ae2ff1511076"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a979368a7f3588cd9e91fcd2c0784a810"><td class="memItemLeft" align="right" valign="top">std::map&lt; InputAction, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a979368a7f3588cd9e91fcd2c0784a810">key_map_conflicted</a></td></tr>
-<tr class="separator:a979368a7f3588cd9e91fcd2c0784a810"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac779193a7bd296fbdcabc8799a780aa0"><td class="memItemLeft" align="right" valign="top">std::map&lt; InputAction, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0">key_map_conflicted</a></td></tr>
+<tr class="separator:ac779193a7bd296fbdcabc8799a780aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3a4903d356396f1bd04b4bc9ff2c6ec"><td class="memItemLeft" align="right" valign="top">std::map&lt; InputAction, GameKey &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#ac3a4903d356396f1bd04b4bc9ff2c6ec">prev_key_map</a></td></tr>
 <tr class="separator:ac3a4903d356396f1bd04b4bc9ff2c6ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad8fee78c22b710592f9800e5126ede8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structOptionsMenuSkin.html">OptionsMenuSkin</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#aad8fee78c22b710592f9800e5126ede8">options_menu_skin</a></td></tr>
@@ -343,7 +343,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="Engine_8cpp.html#a8df51996eaa93ee226542e4ebb9d6f14">EngineIoc</a> =  <a class="el" href="classEngine___1_1IocContainer.html">Engine_::IocContainer</a></td>
+          <td class="memname">using <a class="el" href="Game_8h.html#a8df51996eaa93ee226542e4ebb9d6f14">EngineIoc</a> =  <a class="el" href="classEngine___1_1IocContainer.html">Engine_::IocContainer</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1658,8 +1658,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a979368a7f3588cd9e91fcd2c0784a810" name="a979368a7f3588cd9e91fcd2c0784a810"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a979368a7f3588cd9e91fcd2c0784a810">&#9670;&#160;</a></span>key_map_conflicted</h2>
+<a id="ac779193a7bd296fbdcabc8799a780aa0" name="ac779193a7bd296fbdcabc8799a780aa0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac779193a7bd296fbdcabc8799a780aa0">&#9670;&#160;</a></span>key_map_conflicted</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1668,7 +1668,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt; InputAction, bool &gt; key_map_conflicted</td>
+          <td class="memname">std::map&lt;InputAction, bool&gt; key_map_conflicted</td>
         </tr>
       </table>
   </td>

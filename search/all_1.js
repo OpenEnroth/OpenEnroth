@@ -185,7 +185,7 @@ var searchData=
   ['apothecary_182',['Apothecary',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4afb46b7805ed6b6dbb010cc48d04c5898',1,'NPCProf.h']]],
   ['appenddirectory_183',['AppendDirectory',['../classLOD_1_1WriteableFile.html#a20d1b14cd29a6d4538063732c802cd09',1,'LOD::WriteableFile']]],
   ['application_184',['Application',['../namespaceApplication.html',1,'']]],
-  ['applicationioc_185',['ApplicationIoc',['../GameWindowHandler_8cpp.html#af5f0ed64b6030ceaa0ab5a064fbf456a',1,'ApplicationIoc():&#160;GameWindowHandler.cpp'],['../OSWindow_8cpp.html#af5f0ed64b6030ceaa0ab5a064fbf456a',1,'ApplicationIoc():&#160;OSWindow.cpp']]],
+  ['applicationioc_185',['ApplicationIoc',['../OSWindow_8cpp.html#af5f0ed64b6030ceaa0ab5a064fbf456a',1,'ApplicationIoc():&#160;OSWindow.cpp'],['../GameWindowHandler_8cpp.html#af5f0ed64b6030ceaa0ab5a064fbf456a',1,'ApplicationIoc():&#160;GameWindowHandler.cpp']]],
   ['apply_186',['Apply',['../structSpellBuff.html#a8803557ab6370bc592c8cc85e0d59bb1',1,'SpellBuff']]],
   ['apply_5fspell_5fsprite_5fdamage_187',['Apply_Spell_Sprite_Damage',['../SpriteObject_8h.html#a7af9807540bbdd47e8970676870e5517',1,'Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int a2):&#160;SpriteObject.h'],['../SpriteObject_8cpp.html#a69a73b76a11b84d9cb301950e719670c',1,'Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2):&#160;SpriteObject.cpp']]],
   ['apply_5fto_5fboth_188',['APPLY_TO_BOTH',['../Arcomage_8cpp.html#ab4b6e488f7717cbb1ea499cdc1c3b9aa',1,'Arcomage.cpp']]],

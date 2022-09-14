@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>World of Might and Magic: Platform/Lin/Lin.cpp File Reference</title>
+<title>World of Might and Magic: src/Platform/Posix/Posix.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;420564d</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;befbe06</span>
    </div>
   </td>
  </tr>
@@ -69,16 +69,16 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_46f0a310448968fe371c870cd868aa1f.html">Platform</a></li><li class="navelem"><a class="el" href="dir_e33f3207d07518b48f353a450e8d8269.html">Lin</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6d0941966393c11bd90ec42cc10d3b81.html">Platform</a></li><li class="navelem"><a class="el" href="dir_383322319370632078019f1fa9e5d4d4.html">Posix</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">Lin.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">Posix.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Lin_8h.html">Platform/Lin/Lin.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="Posix_8h.html">Platform/Posix/Posix.h</a>&quot;</code><br />
 <code>#include &lt;SDL.h&gt;</code><br />
 <code>#include &lt;dirent.h&gt;</code><br />
 <code>#include &lt;glob.h&gt;</code><br />
@@ -93,25 +93,25 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a31deacbca65ef0527fe0c3795dee1864"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#a31deacbca65ef0527fe0c3795dee1864">OS_MsgBox</a> (const char *msg, const char *title)</td></tr>
+<tr class="memitem:a31deacbca65ef0527fe0c3795dee1864"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#a31deacbca65ef0527fe0c3795dee1864">OS_MsgBox</a> (const char *msg, const char *title)</td></tr>
 <tr class="separator:a31deacbca65ef0527fe0c3795dee1864"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0cda4967d55e3ade51d622720b64936"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#ac0cda4967d55e3ade51d622720b64936">OS_GetTime</a> ()</td></tr>
+<tr class="memitem:ac0cda4967d55e3ade51d622720b64936"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#ac0cda4967d55e3ade51d622720b64936">OS_GetTime</a> ()</td></tr>
 <tr class="separator:ac0cda4967d55e3ade51d622720b64936"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a613b304c6f652a7c69a38c599eeed7e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#a613b304c6f652a7c69a38c599eeed7e0">OS_ShowCursor</a> (bool show)</td></tr>
+<tr class="memitem:a613b304c6f652a7c69a38c599eeed7e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#a613b304c6f652a7c69a38c599eeed7e0">OS_ShowCursor</a> (bool show)</td></tr>
 <tr class="separator:a613b304c6f652a7c69a38c599eeed7e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7d412f0b97d32aa54005f85a72ba8b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#af7d412f0b97d32aa54005f85a72ba8b3">OS_Sleep</a> (int ms)</td></tr>
+<tr class="memitem:af7d412f0b97d32aa54005f85a72ba8b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#af7d412f0b97d32aa54005f85a72ba8b3">OS_Sleep</a> (int ms)</td></tr>
 <tr class="separator:af7d412f0b97d32aa54005f85a72ba8b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d3a103186dfe38a891a15131aa4a0de"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#a5d3a103186dfe38a891a15131aa4a0de">OS_OpenConsole</a> ()</td></tr>
+<tr class="memitem:a5d3a103186dfe38a891a15131aa4a0de"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#a5d3a103186dfe38a891a15131aa4a0de">OS_OpenConsole</a> ()</td></tr>
 <tr class="separator:a5d3a103186dfe38a891a15131aa4a0de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa657eb112ec27c6d0c9cf1cb0a059df"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#aaa657eb112ec27c6d0c9cf1cb0a059df">OS_FindFiles</a> (const std::string &amp;folder, const std::string &amp;mask)</td></tr>
+<tr class="memitem:aaa657eb112ec27c6d0c9cf1cb0a059df"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#aaa657eb112ec27c6d0c9cf1cb0a059df">OS_FindFiles</a> (const std::string &amp;folder, const std::string &amp;mask)</td></tr>
 <tr class="separator:aaa657eb112ec27c6d0c9cf1cb0a059df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a830acc9f064bc234e0e87be40be2bf12"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#a830acc9f064bc234e0e87be40be2bf12">OS_GetAppString</a> (const char *path, char *out_string, int out_string_size)</td></tr>
+<tr class="memitem:a830acc9f064bc234e0e87be40be2bf12"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#a830acc9f064bc234e0e87be40be2bf12">OS_GetAppString</a> (const char *path, char *out_string, int out_string_size)</td></tr>
 <tr class="separator:a830acc9f064bc234e0e87be40be2bf12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a644eff0115908b0b84fd93e2911d05"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#a8a644eff0115908b0b84fd93e2911d05">OS_GetDirSeparator</a> ()</td></tr>
+<tr class="memitem:a8a644eff0115908b0b84fd93e2911d05"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#a8a644eff0115908b0b84fd93e2911d05">OS_GetDirSeparator</a> ()</td></tr>
 <tr class="separator:a8a644eff0115908b0b84fd93e2911d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4d34faa1bcff6cc48049eb556235b57"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#ab4d34faa1bcff6cc48049eb556235b57">OS_casepath</a> (std::string path)</td></tr>
+<tr class="memitem:ab4d34faa1bcff6cc48049eb556235b57"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#ab4d34faa1bcff6cc48049eb556235b57">OS_casepath</a> (std::string path)</td></tr>
 <tr class="separator:ab4d34faa1bcff6cc48049eb556235b57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4acde6faece0d46b75f593c76734aa92"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Lin_8cpp.html#a4acde6faece0d46b75f593c76734aa92">OS_FileExists</a> (const std::string &amp;path)</td></tr>
+<tr class="memitem:a4acde6faece0d46b75f593c76734aa92"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Posix_8cpp.html#a4acde6faece0d46b75f593c76734aa92">OS_FileExists</a> (const std::string &amp;path)</td></tr>
 <tr class="separator:a4acde6faece0d46b75f593c76734aa92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
