@@ -3476,7 +3476,6 @@ void RenderOpenGL::DrawBillboards() {
     GL_Check_Errors();
 }
 
-
 //----- (004A1DA8) --------------------------------------------------------
 void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
     return;
@@ -5671,6 +5670,65 @@ bool RenderOpenGL::InitShaders() {
     return true;
 }
 
+void RenderOpenGL::ReloadShaders() {
+    logger->Info("Reloading Shaders...");
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    logger->Info("Re Building outdoors terrain shader...");
+    terrainshader.reload();
+    logger->Info("Re Building outdoors building shader...");
+    outbuildshader.reload();
+    ReleaseTerrain();
+
+    logger->Info("Re Building indoors bsp shader...");
+    bspshader.reload();
+    ReleaseBSP();
+
+    logger->Info("Re Building text shader...");
+    textshader.reload();
+    glDeleteVertexArrays(1, &textVAO);
+    glDeleteBuffers(1, &textVBO);
+    textVAO = textVBO = 0;
+    textvertscnt = 0;
+
+    logger->Info("Re Building line shader...");
+    lineshader.reload();
+    glDeleteVertexArrays(1, &lineVAO);
+    glDeleteBuffers(1, &lineVBO);
+    lineVAO = lineVBO = 0;
+    linevertscnt = 0;
+
+    logger->Info("Re Building two-d shader...");
+    twodshader.reload();
+    glDeleteVertexArrays(1, &twodVAO);
+    glDeleteBuffers(1, &twodVBO);
+    twodVAO = twodVBO = 0;
+    twodvertscnt = 0;
+
+    logger->Info("Re Building billboard shader...");
+    billbshader.reload();
+    glDeleteVertexArrays(1, &billbVAO);
+    glDeleteBuffers(1, &billbVBO);
+    billbVAO = billbVBO = 0;
+    billbstorecnt = 0;
+
+    logger->Info("Re Building decal shader...");
+    decalshader.reload();
+    glDeleteVertexArrays(1, &decalVAO);
+    glDeleteBuffers(1, &decalVBO);
+    decalVAO = decalVBO = 0;
+    numdecalverts = 0;
+
+    logger->Info("Re Building force perspective shader... ");
+    forcepershader.reload();
+    glDeleteVertexArrays(1, &forceperVAO);
+    glDeleteBuffers(1, &forceperVBO);
+    forceperVAO = forceperVBO = 0;
+    forceperstorecnt = 0;
+}
+
 void RenderOpenGL::ReleaseTerrain() {
     /*GLuint terrainVBO, terrainVAO;
     GLuint terraintextures[8];
@@ -5797,12 +5855,14 @@ void RenderOpenGL::DrawTwodVerts() {
     GL_Check_Errors();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    GL_Check_Errors();
 
     glBindVertexArray(twodVAO);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
+    GL_Check_Errors();
 
     glUseProgram(twodshader.ID);
     GL_Check_Errors();

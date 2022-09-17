@@ -271,6 +271,8 @@ enum UIMessageType : uint32_t {
     UIMSG_DebugGiveGold = 997,
     UIMSG_DebugTownPortal = 998,
     UIMSG_OpenDebugMenu = 999,
+    UIMSG_DebugReloadShader = 1000,
+    UIMSG_DebugUnused = 1001,
 };
 
 /*  251 */

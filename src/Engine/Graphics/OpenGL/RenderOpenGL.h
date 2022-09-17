@@ -215,6 +215,8 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawTwodVerts() override;
     void DrawBillboards();
 
+    virtual void ReloadShaders() override;
+
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;
 

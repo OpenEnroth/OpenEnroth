@@ -2695,6 +2695,10 @@ void Game::EventLoop() {
                     engine->config->debug.VerboseLogging.Toggle();
                     pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
                     continue;
+                case UIMSG_DebugReloadShader:
+                    render->ReloadShaders();
+                    pAudioPlayer->PlaySound(SOUND_StartMainChoice02, 0, 0, -1, 0, 0);
+                    continue;
                 default:
                     continue;
             }

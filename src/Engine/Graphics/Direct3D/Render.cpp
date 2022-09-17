@@ -2303,6 +2303,10 @@ void Render::DrawIndoorFaces() {
     DrawIndoorBatched();
 }
 
+void Render::ReloadShaders() {
+    // blank here
+}
+
 
 void Render::DrawIndoorPolygon(unsigned int uNumVertices, BLVFace *pFace,
                                int uPackedID, unsigned int uColor, int a8) {
