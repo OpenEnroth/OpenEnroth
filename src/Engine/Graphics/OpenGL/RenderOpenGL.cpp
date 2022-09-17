@@ -5617,52 +5617,52 @@ bool RenderOpenGL::InitShaders() {
     }
 
     logger->Info("Building outdoors terrain shader...");
-    terrainshader.build(MakeDataPath("shaders", "glterrain.vs").c_str(), MakeDataPath("shaders", "glterrain.fs").c_str());
+    terrainshader.build(MakeDataPath("shaders", "glterrain.vert").c_str(), MakeDataPath("shaders", "glterrain.frag").c_str());
     if (terrainshader.ID == 0)
         return false;
 
     logger->Info("Building outdoors building shader...");
-    outbuildshader.build(MakeDataPath("shaders", "gloutbuild.vs").c_str(), MakeDataPath("shaders", "gloutbuild.fs").c_str());
+    outbuildshader.build(MakeDataPath("shaders", "gloutbuild.vert").c_str(), MakeDataPath("shaders", "gloutbuild.frag").c_str());
     if (outbuildshader.ID == 0)
         return false;
 
     logger->Info("Building indoors bsp shader...");
-    bspshader.build(MakeDataPath("shaders", "glbspshader.vs").c_str(), MakeDataPath("shaders", "glbspshader.fs").c_str());
+    bspshader.build(MakeDataPath("shaders", "glbspshader.vert").c_str(), MakeDataPath("shaders", "glbspshader.frag").c_str());
     if (bspshader.ID == 0)
         return false;
 
     logger->Info("Building text shader...");
-    textshader.build(MakeDataPath("shaders", "gltextshader.vs").c_str(), MakeDataPath("shaders", "gltextshader.fs").c_str());
+    textshader.build(MakeDataPath("shaders", "gltextshader.vert").c_str(), MakeDataPath("shaders", "gltextshader.frag").c_str());
     if (textshader.ID == 0)
         return false;
     textVAO = 0;
 
     logger->Info("Building line shader...");
-    lineshader.build(MakeDataPath("shaders", "gllinesshader.vs").c_str(), MakeDataPath("shaders", "gllinesshader.fs").c_str());
+    lineshader.build(MakeDataPath("shaders", "gllinesshader.vert").c_str(), MakeDataPath("shaders", "gllinesshader.frag").c_str());
     if (lineshader.ID == 0)
         return false;
     lineVAO = 0;
 
     logger->Info("Building two-d shader...");
-    twodshader.build(MakeDataPath("shaders", "gltwodshader.vs").c_str(), MakeDataPath("shaders", "gltwodshader.fs").c_str());
+    twodshader.build(MakeDataPath("shaders", "gltwodshader.vert").c_str(), MakeDataPath("shaders", "gltwodshader.frag").c_str());
     if (twodshader.ID == 0)
         return false;
     twodVAO = 0;
 
     logger->Info("Building billboard shader...");
-    billbshader.build(MakeDataPath("shaders", "glbillbshader.vs").c_str(), MakeDataPath("shaders", "glbillbshader.fs").c_str());
+    billbshader.build(MakeDataPath("shaders", "glbillbshader.vert").c_str(), MakeDataPath("shaders", "glbillbshader.frag").c_str());
     if (billbshader.ID == 0)
         return false;
     billbVAO = 0;
 
     logger->Info("Building decal shader...");
-    decalshader.build(MakeDataPath("shaders", "gldecalshader.vs").c_str(), MakeDataPath("shaders", "gldecalshader.fs").c_str());
+    decalshader.build(MakeDataPath("shaders", "gldecalshader.vert").c_str(), MakeDataPath("shaders", "gldecalshader.frag").c_str());
     if (decalshader.ID == 0)
         return false;
     decalVAO = 0;
 
     logger->Info("Building force perspective shader... ");
-    forcepershader.build(MakeDataPath("shaders", "glforcepershader.vs").c_str(), MakeDataPath("shaders", "glforcepershader.fs").c_str());
+    forcepershader.build(MakeDataPath("shaders", "glforcepershader.vert").c_str(), MakeDataPath("shaders", "glforcepershader.frag").c_str());
     if (forcepershader.ID == 0)
         return false;
     forceperVAO = 0;
