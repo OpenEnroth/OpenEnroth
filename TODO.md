@@ -16,6 +16,7 @@
 * Additional features:
   - Harden party logic so that team size can be varied.
   - Map editor? i think there was a semi complete example somewhere.
+  - Fog should reduce ability of party to autoaim
 
 * QoL improvements:
   - global merchant / identify skills?

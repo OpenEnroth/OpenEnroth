@@ -140,7 +140,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
                              WorldPosToGridCellY(pParty->vPosition.y),
                              1);
     engine->SetForceRedraw(false);
-    if (engine->IsSpecular())
+    if (engine->IsSpecular_FogIsOn())
         lightmap_builder->uFlags |= LIGHTMAP_FLAGS_USE_SPECULAR;
     else
         lightmap_builder->uFlags &= ~LIGHTMAP_FLAGS_USE_SPECULAR;
@@ -496,7 +496,7 @@ void OutdoorLocation::SetFog() {
         map_id == MAP_THE_PIT || map_id > MAP_SHOALS)
         return;
 
-    uint chance = rand() % 100;
+    uint chance = 19; //rand() % 100;
 
     if (chance < fog_probability_table[map_id - 1].small_fog_chance) {
         ::day_fogrange_1 = 4096;
@@ -3309,7 +3309,7 @@ void ODM_LoadAndInitialize(const std::string &pFilename, ODMRenderParams *thisa)
 
     MM7Initialization();
 }
-
+// returns 0xXXYYZZ fog color
 unsigned int GetLevelFogColor() {
     if (engine->IsUnderwater()) {
         return 0xFF258F5C;
@@ -3337,48 +3337,53 @@ unsigned int GetLevelFogColor() {
     return 0;
 }
 
-int sub_47C3D7_get_fog_specular(int unused, int a2, float a3) {
+// returns 0xZZ000000
+// basically how much fog should be applied 255-0 (no fog -> max fog)
+int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
     int v7;
 
-    int v3 = pWeather->bNight;
-    if (engine->IsUnderwater())
-        v3 = 0;
+    bool isNight = pWeather->bNight;
+    if (engine->IsUnderwater()) isNight = false;
+
     if (pParty->armageddon_timer ||
         !(day_attrib & DAY_ATTRIB_FOG) && !engine->IsUnderwater())
         return 0xFF000000;
-    if (v3) {
-        if (a3 < (double)day_fogrange_1) {
+    if (isNight) {
+        if (screen_depth < (double)day_fogrange_1) {
             v7 = 0;
-            if (a3 == 0.0) v7 = 216;
-            if (a2) v7 = 248;
-            return (-1 - v7) << 24;
+            if (screen_depth == 0.0) v7 = 216;
+            if (isSky) v7 = 248;
+            return (255 - v7) << 24;
         } else {
-            if (a3 > (double)day_fogrange_2) {
+            if (screen_depth > (double)day_fogrange_2) {
                 v7 = 216;
-                if (a3 == 0.0) v7 = 216;
-                if (a2) v7 = 248;
-                return (-1 - v7) << 24;
+                if (screen_depth == 0.0) v7 = 216;
+                if (isSky) v7 = 248;
+                return (255 - v7) << 24;
             }
-            v7 = (signed __int64)((a3 - (double)day_fogrange_1) /
+            v7 = (signed __int64)((screen_depth - (double)day_fogrange_1) /
                                   ((double)day_fogrange_2 -
                                    (double)day_fogrange_1) *
                                   216.0);
         }
     } else {
-        if (a3 < (double)day_fogrange_1) {
+        if (screen_depth < (double)day_fogrange_1) {
+            // no fog
             v7 = 0;
-            if (a3 == 0.0) v7 = 216;
-            if (a2) v7 = 248;
-            return (-1 - v7) << 24;
+            if (screen_depth == 0.0) v7 = 216;
+            if (isSky) v7 = 248;
+            return (255 - v7) << 24;
         } else {
-            if (a3 > (double)day_fogrange_2) {
+            if (screen_depth > (double)day_fogrange_2) {
+                // full fog
                 v7 = 216;
-                if (a3 == 0.0) v7 = 216;
-                if (a2) v7 = 248;
-                return (-1 - v7) << 24;
+                if (screen_depth == 0.0) v7 = 216;
+                if (isSky) v7 = 248;
+                return (255 - v7) << 24;
             } else {
+                // linear interpolation
                 v7 =
-                    floorf(((a3 - (double)day_fogrange_1) * 216.0 /
+                    floorf(((screen_depth - (double)day_fogrange_1) * 216.0 /
                     ((double)day_fogrange_2 - (double)day_fogrange_1)) +
                         0.5f);
             }
@@ -3387,10 +3392,10 @@ int sub_47C3D7_get_fog_specular(int unused, int a2, float a3) {
     if (v7 > 216) {
         v7 = 216;
     } else {
-        if (a3 == 0.0) v7 = 216;
+        if (screen_depth == 0.0) v7 = 216;
     }
-    if (a2) v7 = 248;
-    return (-1 - v7) << 24;
+    if (isSky) v7 = 248;
+    return (255 - v7) << 24;
 }
 
 //----- (0047F44B) --------------------------------------------------------

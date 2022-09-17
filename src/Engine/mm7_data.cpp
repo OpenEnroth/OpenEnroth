@@ -682,8 +682,8 @@ unsigned int uLoadGameUI_SelectedSlot;
 char cMM7GameCDDriveLetter;  // idb
 int uDefaultTravelTime_ByFoot;
 int day_attrib;
-int day_fogrange_1;
-int day_fogrange_2;
+int day_fogrange_1; // fog start dist
+int day_fogrange_2; // fog end dist
 struct TileTable *pTileTable;                                        // idb
 std::array<char, 777> pDefaultSkyTexture;                            // idb
 std::array<char, 16> byte_6BE124_cfg_textures_DefaultGroundTexture;  // idb

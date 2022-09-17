@@ -341,44 +341,32 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
  * @param reachable_depth               A depth distance for checking interaction against.
  * @param[out] reachable                Whether the model is within the reachable depth specified.
  *
- * @return                              Whether the bounding radius of the model is visible within the camera FOV cone.
+ * @return                              Whether the bounding radius of the model is visible within the camera frustum planes.
  */
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
-    // checks if model is visible in FOV cone
-    float halfangle = (pCamera3D->odm_fov_rad) / 2.0f;
+    // approx distance - for reachable checks
     float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
     float rayy = model->vBoundingCenter.y - pCamera3D->vCameraPos.y;
-
-    // approx distance
     int dist = int_get_vector_length(abs(static_cast<int>(rayx)), abs(static_cast<int>(rayy)), 0);
     *reachable = false;
     if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
 
-    // dot product of camvec and ray - size in forward
-    float frontvec = rayx * pCamera3D->fRotationZCosine + rayy * pCamera3D->fRotationZSine;
-    if (pCamera3D->sRotationY) { frontvec *= pCamera3D->fRotationYCosine; }
+    // to avoid small objects not showing up give a more generous radius
+    float radius{ static_cast<float>(model->sBoundingRadius) };
+    if (radius < 512.0f) radius = 512.0f;
 
-    // dot product of camvec and ray - size in left
-    float leftvec = rayy * pCamera3D->fRotationZCosine - rayx * pCamera3D->fRotationZSine;
-
-    // which half fov is ray in direction of - compare slopes
-    float sloperem = 0.0;
-    if (leftvec >= 0) {  // acute - left
-        sloperem = frontvec * sin(halfangle) - leftvec * cos(halfangle);
-    } else {  // obtuse - right
-        sloperem = frontvec * sin(halfangle) + leftvec * cos(halfangle);
+    // vBoundingCenter must be within all four of the camera frustum planes to be visible
+    // TODO(pskelton): only using 2 planes here (l+r) - four planes inaccurate -- investigate
+    Vec3_float_ center{ ToFloatVector(model->vBoundingCenter) };
+    for (int i = 0; i < 2; i++) {
+        Vec3_float_ planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
+        float planedist{ pCamera3D->FrustumPlanes[i].w };
+        if ((Dot(center, planenormal) - planedist) < -radius) {
+            return false;
+        }
     }
 
-    // view range check
-    if (dist <= pCamera3D->GetFarClip() + 2048) {
-        // boudning point inside cone
-        if (sloperem >= 0) return true;
-        // bounding radius inside cone
-        if (abs(sloperem) < model->sBoundingRadius + 512) return true;
-    }
-
-    // not visible
-    return false;
+    return true;
 }
 
 void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,

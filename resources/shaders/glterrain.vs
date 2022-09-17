@@ -11,17 +11,19 @@ out vec2 texuv;
 flat out vec2 olayer;
 out vec3 vsPos;
 out vec3 vsNorm;
+out vec4 viewspace;
 
 uniform mat4 view;
 uniform mat4 projection;
 
 void main() {
+	viewspace = view * vec4(vaPos, 1.0);
 	gl_Position = projection * view * vec4(vaPos, 1.0);
 
 	// rgb unused
-	float opacity = smoothstep(1.0 , 0.99999, gl_Position.z / gl_Position.w);
-	if (gl_Position.z < 0.0) opacity = 1.0;
-	vertexColour = vec4(0.0, 0.0, 0.0, opacity);
+	//float opacity = smoothstep(1.0 , 0.99999, gl_Position.z / gl_Position.w); 
+	//if (gl_Position.z < 0.0) opacity = 1.0;
+	vertexColour = vec4(0.0, 0.0, 0.0, 1.0);
 
 	texuv = vaTexUV;
 	olayer = vaTexLayer;

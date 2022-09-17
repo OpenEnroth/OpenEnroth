@@ -303,8 +303,11 @@ namespace Application {
             /** Bloodsplats radius multiplier. */
             ConfigValue<float> BloodSplatsMultiplier = ConfigValue<float>(this, "bloodsplats_multiplier", 1.0f);
 
+            /** Do Bloodsplats fade. */
+            ConfigValue<bool> BloodSplatsFade = ConfigValue<bool>(this, "bloodsplats_fade", true);
+
             ConfigValue<float> ClipFarDistance = ConfigValue<float>(this, "clip_far_distance", 16192.0f);
-            ConfigValue<float> ClipNearDistance = ConfigValue<float>(this, "clip_near_distance", 4.0f);
+            ConfigValue<float> ClipNearDistance = ConfigValue<float>(this, "clip_near_distance", 32.0f);
 
             ConfigValue<bool> ColoredLights = ConfigValue<bool>(this, "colored_lights", true);
 
@@ -314,8 +317,14 @@ namespace Application {
             /** Need to be eventually deleted and replaced with gamma? */
             ConfigValue<bool> DynamicBrightness = ConfigValue<bool>(this, "dynamic_brightness", true);
 
-            /** Currently not in use, should disable fog effect just like a snow. */
-            ConfigValue<bool> Fog = ConfigValue<bool>(this, "fog", false);
+            /** Disable fog effect - at far clip and on fog weather */
+            ConfigValue<bool> Fog = ConfigValue<bool>(this, "fog", true);
+
+            /** Adjusts fog height for bottom sky horizon */
+            ConfigValue<int> FogHorizon = ConfigValue<int>(this, "fog_horizon", 39);
+
+            /** Adjust starting depth ratio of distance fog */
+            ConfigValue<float> FogDepthRatio = ConfigValue<float>(this, "fog_ratio", 0.75f);
 
             /** FPS Limit */
             ConfigValue<int> FPSLimit = ConfigValue<int>(this, "fps_limit", 60);

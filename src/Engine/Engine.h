@@ -134,8 +134,9 @@ struct Engine {
     bool is_targeting = false;
     bool is_saturate_faces = false;
     bool is_forceredraw = false;
-    bool is_specular = false;
-    bool is_fog = false;
+    bool is_specular_FogIsOn = false;
+    bool is_fog = false; // keeps track of whether fog enabled in d3d
+
     inline bool IsTargetingMode() const { return is_targeting; }
     inline void SetTargetingMode(bool is_targeting) { this->is_targeting = is_targeting; }
     inline bool IsUnderwater() const { return is_underwater; }
@@ -144,10 +145,10 @@ struct Engine {
     inline void SetSaturateFaces(bool is_saturate_faces) { this->is_saturate_faces = is_saturate_faces; }
     inline bool IsForceRedraw() const { return is_forceredraw; }
     inline void SetForceRedraw(bool is_forceredraw) { this->is_forceredraw = is_forceredraw; }
-    inline bool IsSpecular() const { return is_specular; }
-    inline void SetSpecular(bool is_specular) { this->is_specular = is_specular; }
+    inline bool IsSpecular_FogIsOn() const { return is_specular_FogIsOn; }
+    inline void SetSpecular_FogIsOn(bool is_specular_FogIsOn) { this->is_specular_FogIsOn = is_specular_FogIsOn; }
     inline bool IsFog() const { return is_fog; }
-    inline void SetFog(bool is_fog) { this->is_fog = is_fog; }
+    inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
 
     std::shared_ptr<KeyboardInputHandler> GetKeyboardInputHandler() const {
         return keyboardInputHandler;

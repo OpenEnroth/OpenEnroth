@@ -5,6 +5,7 @@ in vec2 texuv;
 flat in vec2 olayer;
 in vec3 vsPos;
 in vec3 vsNorm;
+in vec4 viewspace;
 
 out vec4 FragColour;
 
@@ -34,6 +35,13 @@ struct PointLight {
     vec3 specular;
 };
 
+struct FogParam {
+    vec3 color;
+    float fogstart;
+    float fogmiddle;
+    float fogend;
+};
+
 uniform int waterframe;
 uniform Sunlight sun;
 uniform vec3 CameraPos;
@@ -43,11 +51,13 @@ uniform PointLight fspointlights[num_point_lights];
 
 uniform sampler2DArray textureArray0;
 uniform sampler2DArray textureArray1;
+uniform FogParam fog;
 
 
 // funcs
 vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+float getFogRatio(FogParam fogpar, float dist);
 
 void main() {
 
@@ -88,8 +98,33 @@ void main() {
     }
 
     vec3 clamps = result;
-    FragColour = vec4(clamps, vertexColour.a);
+    if (fog.fogstart == fog.fogend) {
+        FragColour = vec4(clamps, vertexColour.a);
+        return;
+    }
 
+    float dist = abs(viewspace.z / viewspace.w);
+    float alpha = 0.0;
+    if (fog.fogmiddle > fog.fogstart) {
+        if (fog.fogmiddle / 2.0 > dist) {
+            alpha = 1.0;
+        } else {
+            alpha = (fog.fogmiddle - dist) / (fog.fogmiddle / 2.0);
+        }
+    }
+
+    float fograt = getFogRatio(fog, dist);
+    FragColour = mix(vec4(clamps, vertexColour.a), vec4(fog.color, alpha), fograt);
+}
+
+float getFogRatio(FogParam fogpar, float dist) {
+    float result = 0.0;
+    if (fogpar.fogstart < fogpar.fogmiddle) {
+        result = smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist);
+    } else {
+        result = smoothstep(fogpar.fogstart, fogpar.fogend, dist);
+    }
+    return result;
 }
 
 // calculates the color when using a directional light.

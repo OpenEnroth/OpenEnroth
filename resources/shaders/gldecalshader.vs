@@ -12,6 +12,7 @@ out vec2 texuv;
 //out vec3 vsPos;
 //out vec3 vsNorm;
 //flat out int vsAttrib;
+out vec4 viewspace;
 
 uniform mat4 view;
 uniform mat4 projection;
@@ -19,6 +20,7 @@ uniform mat4 projection;
 uniform float decalbias;
 
 void main() {
+	viewspace = view * vec4(vaPos, 1.0);
 	gl_Position = projection * view * vec4(vaPos, 1.0);
 	gl_Position -= vec4(0, 0, decalbias, 0);
 

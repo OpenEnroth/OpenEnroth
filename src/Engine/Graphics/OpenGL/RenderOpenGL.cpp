@@ -395,6 +395,8 @@ void RenderOpenGL::BeginSceneD3D() {
 
     render->uNumBillboardsToDraw = 0;  // moved from drawbillboards - cant reset this until mouse picking finished
     GL_Check_Errors();
+
+    SetFogParametersGL();
 }
 
 extern unsigned int BlendColors(unsigned int a1, unsigned int a2);
@@ -624,10 +626,12 @@ struct forcepersverts {
     GLfloat w;
     GLfloat u;
     GLfloat v;
-    GLfloat q;
+    GLfloat q;  // rhw
+    GLfloat screenspace;
     GLfloat r;
     GLfloat g;
     GLfloat b;
+    GLfloat a;
 };
 
 forcepersverts forceperstore[50]{};
@@ -655,8 +659,8 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     float srcxmod = (float)yDifference * v16 * srcfovoworldview;
     float srcymod = (float)xDifference * v16 * srcfovoworldview;
 
-    float v20 = srcworldview * 1000.0f / pCamera3D->GetFarClip();
-    float v25 = dstworldview * 1000.0f / pCamera3D->GetFarClip();
+    float v20 = srcworldview * 4000.0f / pCamera3D->GetNearClip() / pCamera3D->GetFarClip();
+    float v25 = dstworldview * 4000.0f / pCamera3D->GetNearClip() / pCamera3D->GetFarClip();
     float srcrhw = 1.0f / srcworldview;
     float dstxmod = (float)yDifference * v16 * dstfovoworldview;
     float dstymod = (float)xDifference * v16 * dstfovoworldview;
@@ -728,9 +732,11 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
         thisvert->u = v29[0].texcoord.x;
         thisvert->v = v29[0].texcoord.y;
         thisvert->q = v29[0].rhw;
+        thisvert->screenspace = srcworldview;
         thisvert->r = 1.0f;
         thisvert->g = 1.0f;
         thisvert->b = 1.0f;
+        thisvert->a = 1.0f;
         thisvert++;
 
         // copy other two (z+1)(z+2)
@@ -742,9 +748,11 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
             thisvert->u = v29[z + i].texcoord.x;
             thisvert->v = v29[z + i].texcoord.y;
             thisvert->q = v29[z + i].rhw;
+            thisvert->screenspace = (z + i == 3) ? srcworldview: dstworldview;
             thisvert->r = 1.0f;
             thisvert->g = 1.0f;
             thisvert->b = 1.0f;
+            thisvert->a = 1.0f;
             thisvert++;
         }
 
@@ -1533,6 +1541,12 @@ void RenderOpenGL::EndDecals() {
     // set view
     glUniformMatrix4fv(glGetUniformLocation(decalshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
+    // set fog uniforms
+    glUniform3f(glGetUniformLocation(decalshader.ID, "fog.color"), fogr, fogg, fogb);
+    glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogstart"), GLfloat(fogstart));
+    glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
+    glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogend"), GLfloat(fogend));
+
     // set bias
     glUniform1f(glGetUniformLocation(decalshader.ID, "decalbias"), GLfloat(0.002f));
 
@@ -1891,6 +1905,10 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                             r = decor_desc->uColoredLightRed;
                             g = decor_desc->uColoredLightGreen;
                             b_ = decor_desc->uColoredLightBlue;
+                            // to avoid blank lights
+                            if (!r && !g && !b_) {
+                                r = g = b_ = 255;
+                            }
                         }
                         pStationaryLightsStack->AddLight(
                             ToFloatVector(pLevelDecorations[i].vPosition) +
@@ -2514,6 +2532,12 @@ void RenderOpenGL::DrawTerrainD3D() {
     glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray0"), GLint(0));
     glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray1"), GLint(1));
 
+    // set fog uniforms
+    glUniform3f(glGetUniformLocation(terrainshader.ID, "fog.color"), fogr, fogg, fogb);
+    glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogstart"), GLfloat(fogstart));
+    glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
+    glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogend"), GLfloat(fogend));
+
     GLfloat camera[3] {};
     camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0));
     camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0));
@@ -2838,6 +2862,28 @@ void RenderOpenGL::DrawOutdoorSkyD3D() {
             VertexRenderList[i]._rhw = (double)(worldviewdepth);
         }
 
+        if (engine->config->graphics.Fog.Get()) {
+            // fade sky
+            VertexRenderList[4].vWorldViewProjX = (double)pViewport->uViewportTL_X;
+            VertexRenderList[4].vWorldViewProjY = (double)pViewport->uViewportTL_Y;
+            VertexRenderList[5].vWorldViewProjX = (double)pViewport->uViewportTL_X;
+            VertexRenderList[5].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.Get();
+            VertexRenderList[6].vWorldViewProjX = (double)pViewport->uViewportBR_X;
+            VertexRenderList[6].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.Get();
+            VertexRenderList[7].vWorldViewProjX = (double)pViewport->uViewportBR_X;
+            VertexRenderList[7].vWorldViewProjY = (double)pViewport->uViewportTL_Y;
+
+            // sub sky
+            VertexRenderList[8].vWorldViewProjX = (double)pViewport->uViewportTL_X;
+            VertexRenderList[8].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.Get();
+            VertexRenderList[9].vWorldViewProjX = (double)pViewport->uViewportTL_X;
+            VertexRenderList[9].vWorldViewProjY = (double)pViewport->uViewportBR_Y + 1;
+            VertexRenderList[10].vWorldViewProjX = (double)pViewport->uViewportBR_X;
+            VertexRenderList[10].vWorldViewProjY = (double)pViewport->uViewportBR_Y + 1;
+            VertexRenderList[11].vWorldViewProjX = (double)pViewport->uViewportBR_X;
+            VertexRenderList[11].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.Get();
+        }
+
         _set_ortho_projection(1);
         _set_ortho_modelview();
         DrawOutdoorSkyPolygon(&pSkyPolygon);
@@ -2854,12 +2900,16 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+    uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
+    uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
+    float scrspace{ pCamera3D->GetFarClip() };
+
+
+
     // load up poly
     for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
-        uint uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0);
-        uint uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
 
         // copy first
         thisvert->x = VertexRenderList[0].vWorldViewProjX;
@@ -2869,16 +2919,15 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
         thisvert->u = VertexRenderList[0].u;
         thisvert->v = VertexRenderList[0].v;
         thisvert->q = 1.0f;
+        thisvert->screenspace = scrspace;
         thisvert->r = (uTintR) / 255.0f;
         thisvert->g = (uTintG) / 255.0f;
         thisvert->b = (uTintB) / 255.0f;
+        thisvert->a = 1.0f;
         thisvert++;
 
         // copy other two (z+1)(z+2)
         for (uint i = 1; i < 3; ++i) {
-            uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[z + i].vWorldViewPosition.x, 1, 0);
-            uTintR = (uTint >> 16) & 0xFF, uTintG = (uTint >> 8) & 0xFF, uTintB = uTint & 0xFF;
-
             thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
             thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
             thisvert->z = 1.0f;
@@ -2886,14 +2935,102 @@ void RenderOpenGL::DrawOutdoorSkyPolygon(struct Polygon *pSkyPolygon) {
             thisvert->u = VertexRenderList[z + i].u;
             thisvert->v = VertexRenderList[z + i].v;
             thisvert->q = 1.0f;
+            thisvert->screenspace = scrspace;
             thisvert->r = (uTintR) / 255.0f;
             thisvert->g = (uTintG) / 255.0f;
             thisvert->b = (uTintB) / 255.0f;
+            thisvert->a = 1.0f;
             thisvert++;
         }
 
         forceperstorecnt += 3;
         assert(forceperstorecnt <= 40);
+    }
+
+    if (engine->config->graphics.Fog.Get()) {
+        // draw blend sky
+        // load up poly
+        for (int z = 4; z < 6; z++) {
+            // 456, 467..
+            forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+
+            // copy first
+            thisvert->x = VertexRenderList[4].vWorldViewProjX;
+            thisvert->y = VertexRenderList[4].vWorldViewProjY;
+            thisvert->z = 1.0f;
+            thisvert->w = 1.0f;
+            thisvert->u = 0.5f;
+            thisvert->v = 0.5f;
+            thisvert->q = 1.0f;
+            thisvert->screenspace = scrspace;
+            thisvert->r = (uTintR) / 255.0f;
+            thisvert->g = (uTintG) / 255.0f;
+            thisvert->b = (uTintB) / 255.0f;
+            thisvert->a = 0.0f;
+            thisvert++;
+
+            // copy other two (z+1)(z+2)
+            for (uint i = 1; i < 3; ++i) {
+                thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
+                thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+                thisvert->z = 1.0f;
+                thisvert->w = 1.0f;
+                thisvert->u = 0.5f;
+                thisvert->v = 0.5f;
+                thisvert->q = 1.0f;
+                thisvert->screenspace = scrspace;
+                thisvert->r = (uTintR) / 255.0f;
+                thisvert->g = (uTintG) / 255.0f;
+                thisvert->b = (uTintB) / 255.0f;
+                thisvert->a = ((z + i) == 7) ? 0.0f : 1.0f;
+                thisvert++;
+            }
+
+            forceperstorecnt += 3;
+            assert(forceperstorecnt <= 40);
+        }
+
+        // draw sub sky
+        // load up poly
+        for (int z = 8; z < 10; z++) {
+            // 456, 467..
+            forcepersverts *thisvert = &forceperstore[forceperstorecnt];
+
+            // copy first
+            thisvert->x = VertexRenderList[8].vWorldViewProjX;
+            thisvert->y = VertexRenderList[8].vWorldViewProjY;
+            thisvert->z = 1.0f;
+            thisvert->w = 1.0f;
+            thisvert->u = 0.5f;
+            thisvert->v = 0.5f;
+            thisvert->q = 1.0f;
+            thisvert->screenspace = scrspace;
+            thisvert->r = (uTintR) / 255.0f;
+            thisvert->g = (uTintG) / 255.0f;
+            thisvert->b = (uTintB) / 255.0f;
+            thisvert->a = 1.0f;
+            thisvert++;
+
+            // copy other two (z+1)(z+2)
+            for (uint i = 1; i < 3; ++i) {
+                thisvert->x = VertexRenderList[z + i].vWorldViewProjX;
+                thisvert->y = VertexRenderList[z + i].vWorldViewProjY;
+                thisvert->z = 1.0f;
+                thisvert->w = 1.0f;
+                thisvert->u = 0.5f;
+                thisvert->v = 0.5f;
+                thisvert->q = 1.0f;
+                thisvert->screenspace = scrspace;
+                thisvert->r = (uTintR) / 255.0f;
+                thisvert->g = (uTintG) / 255.0f;
+                thisvert->b = (uTintB) / 255.0f;
+                thisvert->a = 1.0f;
+                thisvert++;
+            }
+
+            forceperstorecnt += 3;
+            assert(forceperstorecnt <= 40);
+        }
     }
 
     DrawForcePerVerts();
@@ -2912,14 +3049,17 @@ void RenderOpenGL::DrawForcePerVerts() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(forceperstore), forceperstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)0);
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(4 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(4 * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
-        // colour
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(7 * sizeof(GLfloat)));
+        // screen space depth
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(7 * sizeof(GLfloat)));
         glEnableVertexAttribArray(2);
+        // colour
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(8 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(3);
     }
 
     GL_Check_Errors();
@@ -2938,27 +3078,76 @@ void RenderOpenGL::DrawForcePerVerts() {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
 
     glUseProgram(forcepershader.ID);
     GL_Check_Errors();
 
     // set sampler to texure0
-    glUniform1i(glGetUniformLocation(billbshader.ID, "texture0"), GLint(0));
+    glUniform1i(glGetUniformLocation(forcepershader.ID, "texture0"), GLint(0));
 
     //// set projection
-    glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(forcepershader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
-    glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(forcepershader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+
+    // set fog - force perspective is handled slightly differently becuase of the sky
+    float fpfogr{1.0f}, fpfogg{1.0f}, fpfogb{1.0f};
+    int fpfogstart{};
+    int fpfogend{};
+    int fpfogmiddle{};
+    uint fpfogcol{ GetLevelFogColor() };
+
+    if (engine->config->graphics.Fog.Get() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+        if (fpfogcol) {
+            fpfogstart = day_fogrange_1;
+            fpfogmiddle = day_fogrange_2;
+            fpfogend = pCamera3D->GetFarClip();
+            fpfogr = fpfogg = fpfogb = (GetLevelFogColor() & 0xFF) / 255.0f;
+        } else {
+            fpfogstart = pCamera3D->GetFarClip();
+            fpfogmiddle = 0.0f;
+            fpfogend = fpfogstart + 1;
+            fpfogr = fpfogg = fpfogb = forceperstore[0].r;
+        }
+    } else {
+        fpfogstart = pCamera3D->GetFarClip();
+        fpfogmiddle = 0.0f;
+        fpfogend = fpfogstart;
+    }
+
+    // set fog uniforms
+    glUniform3f(glGetUniformLocation(forcepershader.ID, "fog.color"), fpfogr, fpfogg, fpfogb);
+    glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogstart"), GLfloat(fpfogstart));
+    glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogmiddle"), GLfloat(fpfogmiddle));
+    glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogend"), GLfloat(fpfogend));
+
+
     GL_Check_Errors();
 
-    glDrawArrays(GL_TRIANGLES, 0, forceperstorecnt);
+    //draw 6 for main sky / spell
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     ++drawcalls;
+
+    static Texture *effpar03 = assets->GetBitmap("effpar03");
+    auto texture = (TextureOpenGL *)effpar03;
+    float gltexid = static_cast<float>(texture->GetOpenGlTexture());
+
+    //change texture to balnk and draw rest
+    if (forceperstorecnt > 6) {
+        glBindTexture(GL_TEXTURE_2D,  gltexid);
+
+        glDrawArrays(GL_TRIANGLES, 6, forceperstorecnt - 6);
+        ++drawcalls;
+    }
 
     GL_Check_Errors();
     glUseProgram(0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -2966,6 +3155,33 @@ void RenderOpenGL::DrawForcePerVerts() {
 
     forceperstorecnt = 0;
     GL_Check_Errors();
+}
+
+void RenderOpenGL::SetFogParametersGL() {
+    uint fogcol{ GetLevelFogColor() };
+
+    if (engine->config->graphics.Fog.Get() && uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
+        if (fogcol) {
+            fogstart = day_fogrange_1;
+            fogmiddle = day_fogrange_2;
+            fogend = pCamera3D->GetFarClip();
+            fogr = fogg = fogb = (GetLevelFogColor() & 0xFF) / 255.0f;
+        } else {
+            fogend = pCamera3D->GetFarClip();
+            fogmiddle = 0.0f;
+            fogstart = fogend * engine->config->graphics.FogDepthRatio.Get();
+
+            // grabs sky back fog colour
+            uint uTint = GetActorTintColor(31, 0, fogend, 1, 0);
+            uTint = uTint & 0xFF;
+            fogr = fogg = fogb = uTint / 255.0f;
+        }
+    } else {
+        // puts fog beyond viewclip so we never see it
+        fogstart = pCamera3D->GetFarClip();
+        fogmiddle = 0.0f;
+        fogend = pCamera3D->GetFarClip();
+    }
 }
 
 void RenderOpenGL::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
@@ -2984,6 +3200,7 @@ struct billbverts {
     GLfloat g;
     GLfloat b;
     GLfloat a;
+    GLfloat screenspace;
     GLfloat texid;
     GLfloat blend;
 };
@@ -3034,7 +3251,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         auto billboard = &pBillboardRenderListD3D[i];
         auto b = &pBillboardRenderList[i];
 
-        float oneoz = 1. / billboard->screen_space_z;
+        float oneoz = 1.0f / billboard->screen_space_z;
         float thisdepth = (oneoz - oneon) / (oneof - oneon);
 
         float thisblend = static_cast<float>(billboard->opacity);
@@ -3050,6 +3267,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
         billbstorecnt++;
@@ -3063,6 +3281,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].g = ((billboard->pQuads[1].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[1].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
         billbstorecnt++;
@@ -3076,6 +3295,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
         billbstorecnt++;
@@ -3091,6 +3311,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
         billbstorecnt++;
@@ -3104,6 +3325,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
         billbstorecnt++;
@@ -3117,6 +3339,7 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].g = ((billboard->pQuads[3].diffuse >> 8) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
         billbstore[billbstorecnt].a = 1;
+        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
         billbstorecnt++;
@@ -3150,16 +3373,19 @@ void RenderOpenGL::DrawBillboards() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(billbstore), billbstore, GL_DYNAMIC_DRAW);
 
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)0);
         glEnableVertexAttribArray(0);
         // tex uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(3 * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
         // colour
-        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(5 * sizeof(GLfloat)));
         glEnableVertexAttribArray(2);
+        // screenspace
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(3);
         // texid
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (12 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
         glEnableVertexAttribArray(3);
     }
 
@@ -3180,6 +3406,7 @@ void RenderOpenGL::DrawBillboards() {
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
 
     glUseProgram(billbshader.ID);
     GL_Check_Errors();
@@ -3191,6 +3418,13 @@ void RenderOpenGL::DrawBillboards() {
     glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
     glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+
+    // set fog uniforms
+    glUniform3f(glGetUniformLocation(billbshader.ID, "fog.color"), fogr, fogg, fogb);
+    glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogstart));
+    glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
+    glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogend"), GLfloat(fogend));
+
     GL_Check_Errors();
 
     int offset = 0;
@@ -3232,6 +3466,7 @@ void RenderOpenGL::DrawBillboards() {
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(4);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -3245,45 +3480,6 @@ void RenderOpenGL::DrawBillboards() {
 //----- (004A1DA8) --------------------------------------------------------
 void RenderOpenGL::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1) {
     return;
-
-    //switch (a1) {
-    //    case RenderBillboardD3D::Transparent: {
-    //        if (config->is_using_fog) {
-    //            SetUsingFog(false);
-    //            glEnable(GL_FOG);
-    //            glFogi(GL_FOG_MODE, GL_EXP);
-
-    //            GLfloat fog_color[] = {
-    //                ((GetLevelFogColor() >> 16) & 0xFF) / 255.0f,
-    //                ((GetLevelFogColor() >> 8) & 0xFF) / 255.0f,
-    //                ((GetLevelFogColor() >> 0) & 0xFF) / 255.0f, 1.0f};
-    //            glFogfv(GL_FOG_COLOR, fog_color);
-    //        }
-
-    //        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //    } break;
-
-    //    case RenderBillboardD3D::Opaque_1:
-    //    case RenderBillboardD3D::Opaque_2:
-    //    case RenderBillboardD3D::Opaque_3: {
-    //        if (config->is_using_specular) {
-    //            if (!config->is_using_fog) {
-    //                SetUsingFog(true);
-    //                glDisable(GL_FOG);
-    //            }
-    //        }
-
-    //        glBlendFunc(GL_ONE, GL_ONE);  // zero
-    //    } break;
-
-    //    default:
-    //        log->Warning(
-    //            "SetBillboardBlendOptions: invalid opacity type (%u)", a1);
-    //        assert(false);
-    //        break;
-    //}
-
-    //GL_Check_Errors();
 }
 
 void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
@@ -3868,6 +4064,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
     // verts are streamed to gpu as required
     // textures can be different sizes
 
+    // TODO(pskelton): might have to pass a texture width through for the waterr flow textures to size right
+    // and get the correct water speed
+
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
@@ -4228,6 +4427,12 @@ void RenderOpenGL::DrawBuildingsD3D() {
     // set texture unit location
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "textureArray0"), GLint(0));
 
+    // set fog uniforms
+    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fog.color"), fogr, fogg, fogb);
+    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogstart"), GLfloat(fogstart));
+    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
+    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogend"), GLfloat(fogend));
+
     GLfloat camera[3] {};
     camera[0] = (float)(pParty->vPosition.x - pParty->y_rotation_granularity * cosf(2 * pi_double * pParty->sRotationZ / 2048.0f));
     camera[1] = (float)(pParty->vPosition.y - pParty->y_rotation_granularity * sinf(2 * pi_double * pParty->sRotationZ / 2048.0f));
@@ -4472,7 +4677,8 @@ int numBSPverts[16] = { 0 };
 void RenderOpenGL::DrawIndoorFaces() {
     // void RenderOpenGL::DrawIndoorBSP() {
 
-
+    // TODO(pskelton): might have to pass a texture width through for the waterr flow textures to size right
+    // and get the correct water speed
 
 
         glEnable(GL_CULL_FACE);

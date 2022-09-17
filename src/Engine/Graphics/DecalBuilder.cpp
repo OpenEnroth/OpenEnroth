@@ -13,6 +13,7 @@
 float Decal::Fade_by_time() {
     // splats dont fade
     if (!(decal_flags & DecalFlagsFade)) return 1.0f;
+    if (!engine->config->graphics.BloodSplatsFade.Get()) return 1.0f;
 
     // splats fade
     int64_t delta = fadetime - pEventTimer->Time();

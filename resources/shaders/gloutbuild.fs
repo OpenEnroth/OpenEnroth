@@ -6,6 +6,7 @@ flat in vec2 olayer;
 in vec3 vsPos;
 in vec3 vsNorm;
 flat in int vsAttrib;
+in vec4 viewspace;
 
 out vec4 FragColour;
 
@@ -29,6 +30,13 @@ struct PointLight {
     vec3 specular;
 };
 
+struct FogParam {
+    vec3 color;
+    float fogstart;
+    float fogmiddle;
+    float fogend;
+};
+
 uniform int waterframe;
 uniform Sunlight sun;
 uniform vec3 CameraPos;
@@ -39,20 +47,22 @@ uniform int watertiles;
 uniform PointLight fspointlights[num_point_lights];
 
 uniform sampler2DArray textureArray0;
+uniform FogParam fog;
 
 // funcs
 vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+float getFogRatio(FogParam fogpar, float dist);
 
 void main() {
 
 	vec3 fragnorm = normalize(vsNorm);
     vec3 fragviewdir = normalize(CameraPos - vsPos);
 
-	vec4 fragcol = vec4(1);
-    vec2 texcoords = vec2(0);
-    vec2 texuvmod = vec2(0);
-    vec2 deltas = vec2(0);
+	vec4 fragcol = vec4(1.0);
+    vec2 texcoords = vec2(1.0);
+    vec2 texuvmod = vec2(0.0);
+    vec2 deltas = vec2(0.0);
 
     // texture flow mods
     if (abs(vsNorm.z) >= 0.9) {
@@ -71,12 +81,12 @@ void main() {
 
     deltas.x = texuvmod.x * (flowtimer & int(textureSize(textureArray0,0).x-1));
     deltas.y = texuvmod.y * (flowtimer & int(textureSize(textureArray0,0).y-1));
-    texcoords.x = (deltas.x*4.0 + texuv.x) / textureSize(textureArray0,0).x;
-    texcoords.y = (deltas.y*4.0 + texuv.y) / textureSize(textureArray0,0).y; 
+    texcoords.x = (deltas.x + texuv.x) / textureSize(textureArray0,0).x;
+    texcoords.y = (deltas.y + texuv.y) / textureSize(textureArray0,0).y; 
     fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer.y));
 
-    vec4 toplayer = texture(textureArray0, vec3(texcoords.x/4.0,texcoords.y/4.0,0));
-    vec4 watercol = texture(textureArray0, vec3(texcoords.x/4.0,texcoords.y/4.0,waterframe));
+    vec4 toplayer = texture(textureArray0, vec3(texcoords.x,texcoords.y,0));
+    vec4 watercol = texture(textureArray0, vec3(texcoords.x,texcoords.y,waterframe));
 
     if ((watertiles == 1) && (olayer.y == 0)){
         if ((vsAttrib & 0x3C00) != 0){ // water anim disabled
@@ -119,8 +129,36 @@ void main() {
         dull = vec3(1,1,1);
     }
 
-	FragColour = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
+    if (fog.fogstart == fog.fogend) {
+        FragColour = vec4(clamps, vertexColour.a);
+        return;
+    }
 
+    float dist = abs(viewspace.z / viewspace.w);
+    float alpha = 0.0;
+
+    if (fog.fogmiddle > fog.fogstart) {
+        if (fog.fogmiddle / 2.0 > dist) {
+            alpha = 1.0;
+        } else {
+            alpha = (fog.fogmiddle - dist) / (fog.fogmiddle / 2.0);
+        }
+    }
+
+	vec4 inter = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
+	float fograt = getFogRatio(fog, abs(viewspace.z/ viewspace.w));
+	FragColour = mix(inter, vec4(fog.color, alpha), fograt);
+
+}
+
+float getFogRatio(FogParam fogpar, float dist) {
+    float result = 0.0;
+    if (fogpar.fogstart < fogpar.fogmiddle) {
+        result = smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist);
+    } else {
+        result = smoothstep(fogpar.fogstart, fogpar.fogend, dist);
+    }
+    return result;
 }
 
 // calculates the color when using a directional light.
