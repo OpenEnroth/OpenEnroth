@@ -62,9 +62,6 @@ bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
     float v17;            // ST04_4@8
     float v18;            // ST00_4@8
 
-    // TODO(pskelton): 300.0 is probably meant to be camera view plane dist - check and change
-    
-
     if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDist_X ||
         (v2 = pCamera3D->ViewPlaneDist_X < p[1].vWorldViewPosition.x, v3 = 0,
          v4 = pCamera3D->ViewPlaneDist_X == p[1].vWorldViewPosition.x,

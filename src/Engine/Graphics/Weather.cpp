@@ -18,29 +18,28 @@ void Weather::DrawSnow() {
             size = 2;
             base = 5;
         }
+
         Screen_Coord[i].x += rand() % base - base / 2;
         Screen_Coord[i].y += rand() % size + size;
-        if (Screen_Coord[i].x < (int)viewparams->uScreen_topL_X) {
-            Screen_Coord[i].x = viewparams->uScreen_BttmR_X + rand() % base;
-        } else if (Screen_Coord[i].x >=
-                   ((int)viewparams->uScreen_BttmR_X - size)) {
-            Screen_Coord[i].x = viewparams->uScreen_topL_X - rand() % base;
+        if (Screen_Coord[i].x < pViewport->uViewportTL_X) {
+            Screen_Coord[i].x = pViewport->uViewportTL_X + rand() % base;
+        } else if (Screen_Coord[i].x >= (pViewport->uViewportBR_X - size)) {
+            Screen_Coord[i].x = pViewport->uViewportBR_X - rand() % base;
         }
-        if (Screen_Coord[i].y >= ((int)viewparams->uScreen_BttmR_Y - size)) {
-            Screen_Coord[i].y = viewparams->uScreen_topL_Y;
-            Screen_Coord[i].x = viewparams->uScreen_topL_X +
-                                (rand() % (viewparams->uScreen_BttmR_X -
-                                           viewparams->uScreen_topL_X - size));
+        if (Screen_Coord[i].y >= (pViewport->uViewportBR_Y - size)) {
+            Screen_Coord[i].y = pViewport->uViewportTL_Y;
+            Screen_Coord[i].x = pViewport->uViewportTL_X +
+                                (rand() % (pViewport->uViewportBR_X -
+                                    pViewport->uViewportTL_X - size));
         }
 
-        render->FillRectFast(Screen_Coord[i].x, Screen_Coord[i].y, size, size,
-                             0xFFFF);
+        render->FillRectFast(Screen_Coord[i].x, Screen_Coord[i].y, size, size, 0xFFFF);
     }
 }
 
 void Weather::Initialize() {
-    int width = pViewport->uScreen_BR_X - pViewport->uScreen_TL_X - 4;
-    int height = pViewport->uScreen_BR_Y - pViewport->uScreen_TL_Y - 4;
+    int width = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
+    int height = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
     for (Point &point : Screen_Coord) {
         point.x = pViewport->uViewportTL_X + rand() % width;
         point.y = pViewport->uViewportTL_Y + rand() % height;
@@ -58,18 +57,17 @@ bool Weather::OnPlayerTurn(int dangle) {
         return false;
     }
 
-    unsigned int screen_width =
-        viewparams->uScreen_BttmR_X - viewparams->uScreen_topL_X;
+    unsigned int screen_width = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
 
     for (Point &point : Screen_Coord) {
         point.x += dangle;
-        if (point.x < (int)viewparams->uScreen_BttmR_X - 4) {
-            if (point.x >= (int)viewparams->uScreen_topL_X) {
+        if (point.x < pViewport->uViewportBR_X) {
+            if (point.x >= pViewport->uViewportTL_X) {
                 continue;
             }
             point.x += screen_width;
         } else {
-            point.x -= screen_width + 4;
+            point.x -= screen_width;
         }
     }
 

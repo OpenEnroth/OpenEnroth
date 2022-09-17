@@ -2,6 +2,9 @@
 
 #include <cstdint>
 
+// TODO(pskelton): combined viewport and viewing params?? or at least not have multiple places
+// where screen coords and viewport coords are held
+
 /*  149 */
 #pragma pack(push, 1)
 struct Viewport {
@@ -14,14 +17,16 @@ struct Viewport {
     void SetViewport(int uX, int uY, int uZ, int uW);
     bool Contains(unsigned int x, unsigned int y);
 
-    int uScreen_TL_X;
-    int uScreen_TL_Y;
-    int uScreen_BR_X;
-    int uScreen_BR_Y;
+    int uScreen_TL_X;  // 0
+    int uScreen_TL_Y;  // 0
+    int uScreen_BR_X;  // 639
+    int uScreen_BR_Y;  // 479
+
     int uViewportTL_X;
     int uViewportTL_Y;
     int uViewportBR_X;
     int uViewportBR_Y;
+
     int uScreenWidth;
     int uScreenHeight;
     int uScreenCenterX;
@@ -50,15 +55,17 @@ struct ViewingParams {
     void AdjustPosition();
     void _443365();
 
-    int uSomeX = 0;  // game viewport co ords
+    int uSomeX = 0;  // game screen co ords
     int uSomeY = 0;
     int uSomeZ = 0;
     int uSomeW = 0;
 
-    unsigned int uScreen_topL_X = 0;
-    unsigned int uScreen_topL_Y = 0;
-    unsigned int uScreen_BttmR_X = 0;
-    unsigned int uScreen_BttmR_Y = 0;
+    // viewport coords
+    unsigned int uScreen_topL_X = 0; // 8
+    unsigned int uScreen_topL_Y = 0; // 8
+    unsigned int uScreen_BttmR_X = 0; // 468
+    unsigned int uScreen_BttmR_Y = 0;  // 352
+
     int field_20 = 0;
     unsigned int uMinimapZoom = 0;
     int field_28 = 0;  // zoom level in po2
