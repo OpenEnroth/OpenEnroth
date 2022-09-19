@@ -361,10 +361,12 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
 
     si.last_pid = pid;
 
-    if (si.sName == "")
-        logger->Info("AudioPlayer: playing sound %u", eSoundID);
-    else
-        logger->Info("AudioPlayer: playing sound %u with name '%s'", eSoundID, si.sName.c_str());
+    if (engine->config->debug.VerboseLogging.Get()) {
+        if (si.sName == "")
+            logger->Info("AudioPlayer: playing sound %u", eSoundID);
+        else
+            logger->Info("AudioPlayer: playing sound %u with name '%s'", eSoundID, si.sName.c_str());
+    }
 
     return;
 }

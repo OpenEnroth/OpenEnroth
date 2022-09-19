@@ -463,7 +463,6 @@ void GameUI_DrawItemInfo(struct ItemGen *inspect_item) {
                                      2.) /
                                     480.0f,
                                 inspect_item_image);
-    logger->Info("draw item");
 
     v34 = (int)(v85 + 35);
     Str = out_text;

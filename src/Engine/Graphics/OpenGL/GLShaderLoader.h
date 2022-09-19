@@ -119,8 +119,6 @@ class GLShader {
             glDeleteShader(geometry);
 
         if (tempID) {
-            logger->Info("SHADER success");
-
             // set var members on first load
             if (reload == false) {
                 ID = tempID;
@@ -131,7 +129,7 @@ class GLShader {
             return tempID;
         }
 
-        logger->Info("SHADER failure");
+        logger->Warning("SHADER failure");
         return 0;
     }
 
@@ -139,7 +137,6 @@ class GLShader {
         int tryreload = build(sVertpath.c_str(), sFragpath.c_str(), true);
 
         if (tryreload) {
-            logger->Info("Shader rebuilt successfully");
             glDeleteProgram(ID);
             ID = tryreload;
             return true;

@@ -29,7 +29,8 @@
   - Currently engine fps is heavily CPU bound in directX mode. This is because of the amount of draw calls outside, optimized batching on draw terrain traingles will give FPS boost.
 
   * Minor Projects:
-  - Remove zdrawtexturealpha 
+  - Remove zdrawtexturealpha
+  - Reduce logger spam
 
   * Major Projects:
   - New GUI/ window system
@@ -38,3 +39,4 @@
   - Check WOMM features all fixes of Grayface patches
   - Add all Grayface patch enchancements to WOMM
   - Lua scripting
+  - Debug logger improvements

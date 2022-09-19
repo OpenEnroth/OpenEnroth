@@ -1565,7 +1565,6 @@ void RenderOpenGL::EndDecals() {
     glEnableVertexAttribArray(4);
 
     glDrawArrays(GL_TRIANGLES, 0, numdecalverts);
-    // logger->Info("Decal verts %i ", numdecalverts);
     drawcalls++;
     GL_Check_Errors();
 
@@ -3450,11 +3449,6 @@ void RenderOpenGL::DrawBillboards() {
         } while (billbstore[offset + (cnt * 6)].texid == thistex && billbstore[offset + (cnt * 6)].blend == thisblend);
 
         glDrawArrays(GL_TRIANGLES, offset, (6 * cnt));
-
-        if (engine->config->debug.VerboseLogging.Get()) {
-            if (cnt > 1) logger->Info("billb batch %i", cnt);
-        }
-
         drawcalls++;
 
         offset += (6 * cnt);
@@ -5094,8 +5088,6 @@ void RenderOpenGL::DrawIndoorFaces() {
             //}
         }
 
-        //logger->Info("vefore");
-
         //glBindVertexArray(bspVAO);
         //glEnableVertexAttribArray(0);
         //glEnableVertexAttribArray(1);
@@ -5105,7 +5097,6 @@ void RenderOpenGL::DrawIndoorFaces() {
 
         glUseProgram(bspshader.ID);
 
-        //logger->Info("after");
         //// set projection
         glUniformMatrix4fv(glGetUniformLocation(bspshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
         //// set view
@@ -5293,8 +5284,6 @@ void RenderOpenGL::DrawIndoorFaces() {
             //        Light_tile_dist, VertList, uStripType, bLightBackfaces,
             //        &num_lights);
         }
-
-        // logger->Info("Frame");
 
         // blank lights
 
@@ -5616,57 +5605,70 @@ bool RenderOpenGL::InitShaders() {
         return false;
     }
 
-    logger->Info("Building outdoors terrain shader...");
+    logger->Info("Initialising GL shaders!");
+
+
     terrainshader.build(MakeDataPath("shaders", "glterrain.vert").c_str(), MakeDataPath("shaders", "glterrain.frag").c_str());
-    if (terrainshader.ID == 0)
+    if (terrainshader.ID == 0) {
+        logger->Warning("Terrain shader failed to compile!");
         return false;
+    }
 
-    logger->Info("Building outdoors building shader...");
     outbuildshader.build(MakeDataPath("shaders", "gloutbuild.vert").c_str(), MakeDataPath("shaders", "gloutbuild.frag").c_str());
-    if (outbuildshader.ID == 0)
+    if (outbuildshader.ID == 0) {
+        logger->Warning("Outdoors building shader failed to compile!");
         return false;
+    }
 
-    logger->Info("Building indoors bsp shader...");
     bspshader.build(MakeDataPath("shaders", "glbspshader.vert").c_str(), MakeDataPath("shaders", "glbspshader.frag").c_str());
-    if (bspshader.ID == 0)
+    if (bspshader.ID == 0) {
+        logger->Warning("Indoors bsp shader failed to compile!");
         return false;
+    }
 
-    logger->Info("Building text shader...");
     textshader.build(MakeDataPath("shaders", "gltextshader.vert").c_str(), MakeDataPath("shaders", "gltextshader.frag").c_str());
-    if (textshader.ID == 0)
+    if (textshader.ID == 0) {
+        logger->Warning("Text shader failed to compile!");
         return false;
+    }
     textVAO = 0;
 
-    logger->Info("Building line shader...");
     lineshader.build(MakeDataPath("shaders", "gllinesshader.vert").c_str(), MakeDataPath("shaders", "gllinesshader.frag").c_str());
-    if (lineshader.ID == 0)
+    if (lineshader.ID == 0) {
+        logger->Warning("Lines shader failed to compile!");
         return false;
+    }
     lineVAO = 0;
 
-    logger->Info("Building two-d shader...");
     twodshader.build(MakeDataPath("shaders", "gltwodshader.vert").c_str(), MakeDataPath("shaders", "gltwodshader.frag").c_str());
-    if (twodshader.ID == 0)
+    if (twodshader.ID == 0) {
+        logger->Warning("2d shader failed to compile!");
         return false;
+    }
     twodVAO = 0;
 
-    logger->Info("Building billboard shader...");
     billbshader.build(MakeDataPath("shaders", "glbillbshader.vert").c_str(), MakeDataPath("shaders", "glbillbshader.frag").c_str());
-    if (billbshader.ID == 0)
+    if (billbshader.ID == 0) {
+        logger->Warning("Billboards shader failed to compile!");
         return false;
+    }
     billbVAO = 0;
 
-    logger->Info("Building decal shader...");
     decalshader.build(MakeDataPath("shaders", "gldecalshader.vert").c_str(), MakeDataPath("shaders", "gldecalshader.frag").c_str());
-    if (decalshader.ID == 0)
+    if (decalshader.ID == 0) {
+        logger->Warning("Decals shader failed to compile!");
         return false;
+    }
     decalVAO = 0;
 
-    logger->Info("Building force perspective shader... ");
     forcepershader.build(MakeDataPath("shaders", "glforcepershader.vert").c_str(), MakeDataPath("shaders", "glforcepershader.frag").c_str());
-    if (forcepershader.ID == 0)
+    if (forcepershader.ID == 0) {
+        logger->Warning("Forced perspective shader failed to compile!");
         return false;
+    }
     forceperVAO = 0;
 
+    logger->Info("Shaders compiled successfully");
     return true;
 }
 
@@ -5676,53 +5678,44 @@ void RenderOpenGL::ReloadShaders() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    logger->Info("Re Building outdoors terrain shader...");
-    terrainshader.reload();
-    logger->Info("Re Building outdoors building shader...");
-    outbuildshader.reload();
+    if (!terrainshader.reload()) logger->Warning("Terrain shader failed to reload!");
+    if (!outbuildshader.reload()) logger->Warning("Outdoor buildings shader failed to reload!");
     ReleaseTerrain();
 
-    logger->Info("Re Building indoors bsp shader...");
-    bspshader.reload();
+    if (!bspshader.reload()) logger->Warning("BSP shader failed to reload!");
     ReleaseBSP();
 
-    logger->Info("Re Building text shader...");
-    textshader.reload();
+    if (!textshader.reload()) logger->Warning("Text shader faied to reload!");
     glDeleteVertexArrays(1, &textVAO);
     glDeleteBuffers(1, &textVBO);
     textVAO = textVBO = 0;
     textvertscnt = 0;
 
-    logger->Info("Re Building line shader...");
-    lineshader.reload();
+    if (!lineshader.reload()) logger->Warning("Line shader failed to reload!");
     glDeleteVertexArrays(1, &lineVAO);
     glDeleteBuffers(1, &lineVBO);
     lineVAO = lineVBO = 0;
     linevertscnt = 0;
 
-    logger->Info("Re Building two-d shader...");
-    twodshader.reload();
+    if (!twodshader.reload()) logger->Warning("2d shader failed to reload!");
     glDeleteVertexArrays(1, &twodVAO);
     glDeleteBuffers(1, &twodVBO);
     twodVAO = twodVBO = 0;
     twodvertscnt = 0;
 
-    logger->Info("Re Building billboard shader...");
-    billbshader.reload();
+    if (!billbshader.reload()) logger->Warning("Billboard shader failed to reload!");
     glDeleteVertexArrays(1, &billbVAO);
     glDeleteBuffers(1, &billbVBO);
     billbVAO = billbVBO = 0;
     billbstorecnt = 0;
 
-    logger->Info("Re Building decal shader...");
-    decalshader.reload();
+    if (!decalshader.reload()) logger->Warning("Decal shader failed to reload!");
     glDeleteVertexArrays(1, &decalVAO);
     glDeleteBuffers(1, &decalVBO);
     decalVAO = decalVBO = 0;
     numdecalverts = 0;
 
-    logger->Info("Re Building force perspective shader... ");
-    forcepershader.reload();
+    if (!forcepershader.reload()) logger->Warning("Forced perspective shader failed to reload!");
     glDeleteVertexArrays(1, &forceperVAO);
     glDeleteBuffers(1, &forceperVBO);
     forceperVAO = forceperVBO = 0;
@@ -5896,11 +5889,6 @@ void RenderOpenGL::DrawTwodVerts() {
         } while (twodshaderstore[offset + (cnt * 6)].texid == thistex);
 
         glDrawArrays(GL_TRIANGLES, offset, (6*cnt));
-
-        if (engine->config->debug.VerboseLogging.Get()) {
-            if (cnt > 1) logger->Info("twod batch %i", cnt);
-        }
-
         drawcalls++;
 
         offset += (6*cnt);
