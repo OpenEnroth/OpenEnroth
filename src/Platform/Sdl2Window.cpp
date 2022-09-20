@@ -239,20 +239,6 @@ SDL_Window* Sdl2Window::CreateSDLWindow() {
         SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
     }
 
-    int renderer_index = -1;
-    for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i) {
-        SDL_RendererInfo info = {0};
-        if (SDL_GetRenderDriverInfo(i, &info) == 0) {
-            if (std::string(info.name) == "opengl") {
-                renderer_index = i;
-            }
-        }
-    }
-    sdlRenderer = SDL_CreateRenderer(sdlWindow, renderer_index, SDL_RENDERER_TARGETTEXTURE);
-    if (sdlRenderer == nullptr) {
-        return nullptr;
-    }
-
     return sdlWindow;
 }
 

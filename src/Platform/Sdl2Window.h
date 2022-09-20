@@ -62,7 +62,6 @@ class Sdl2Window : public OSWindow {
         int display;
     };
     SDL_Window *sdlWindow = nullptr;
-    SDL_Renderer *sdlRenderer = nullptr;
     SDL_GLContext sdlOpenGlContext = nullptr;
 
     Sdl2WinParams *CalculateWindowParameters();

@@ -17,10 +17,12 @@ set(PLATFORM_HEADERS Api.h
 )
 
 if(WIN32)
-  list(APPEND PLATFORM_SOURCES Win/AppSettings.cpp Win/Win.cpp)
+  list(APPEND PLATFORM_SOURCES Win/AppSettings.cpp
+                               Win/Win.cpp)
   list(APPEND PLATFORM_HEADERS Win/Win.h)
 else()
   list(APPEND PLATFORM_SOURCES Posix/Posix.cpp)
+  list(APPEND PLATFORM_HEADERS Posix/Posix.h)
 endif()
 
 include_directories(${INCLUDE_DIRECTORIES} ${SDL2_INCLUDE_DIRS})
