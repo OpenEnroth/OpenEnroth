@@ -244,7 +244,7 @@ namespace Application {
             /** Show unidentified items in green mask in inventory, otherwise vanilla behaviour when green mask applied in shops only. */
             ConfigValue<bool> ShowUndentifiedItem = ConfigValue<bool>(this, "show_unidentified_item", false);
 
-            /** Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority).  */
+            /** Use condition priorities from Grayface patches (e.g. Zombie has the lowest priority). */
             ConfigValue<bool> UseGrayfaceConditionPriorities = ConfigValue<bool>(this, "use_grayface_condition_priorities", true);
 
          private:
@@ -341,7 +341,12 @@ namespace Application {
             /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of pain was thrown at them. */
             ConfigValue<bool> Tinting = ConfigValue<bool>(this, "tinting", false);
 
+            /** Torchlight lighting */
             ConfigValue<bool> Torchlight = ConfigValue<bool>(this, "torchlight", true);
+
+            /** Enable synchronization of framerate with monitor vertical refresh rate. */
+            ConfigValue<bool> VSync = ConfigValue<bool>(this, "vsync", false);
+
 
          private:
             static std::string ValidateRenderer(std::string renderer) {
