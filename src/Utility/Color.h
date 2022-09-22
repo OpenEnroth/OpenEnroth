@@ -1,11 +1,6 @@
 #pragma once
 
-#include <memory>
-#include <string>
-#include <vector>
 #include <functional>
-
-#include "Engine/Graphics/IRender.h"
 
 static uint16_t Color16(uint8_t r, uint8_t g, uint8_t b) {
     return (b >> (8 - 5)) | 0x7E0 & (g << (6 + 5 - 8)) | 0xF800 & (r << (6 + 5 + 5 - 8));
@@ -38,11 +33,11 @@ class ColorTable {
      public:
         Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
 
-        int16_t C16() {
+        uint16_t C16() {
             return Color16(r, g, b);
         }
 
-        int32_t C32(uint8_t a = 255) {
+        uint32_t C32(uint8_t a = 255) {
             return Color32(r, g, b, a);
         }
 

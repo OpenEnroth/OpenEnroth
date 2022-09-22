@@ -18,7 +18,6 @@
 #include "Media/MediaPlayer.h"
 
 #include "Platform/OSWindow.h"
-#include "Utility/Color.h"
 
 void SetStartConditions();
 void SetStartGameData();
@@ -406,7 +405,7 @@ int new_explosion_effect(Point* startXY, int effect_value) {
 }
 
 void DrawSparks() {
-    uint32_t rgb_pixel_color{};
+    uint16_t rgb_pixel_color{};
 
     for (int i = 0; i < 10; ++i) {
         if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
