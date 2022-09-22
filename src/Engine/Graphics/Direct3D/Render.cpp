@@ -3055,15 +3055,6 @@ void Render::ResetUIClipRect() {
         Gdiplus::Rect(0, 0, window->GetWidth(), window->GetHeight()));
 }
 
-uint32_t Color32_SwapRedBlue(uint16_t color16) {
-    uint32_t c = color16;
-    unsigned int b = (c & 31) * 8;
-    unsigned int g = ((c >> 5) & 63) * 4;
-    unsigned int r = ((c >> 11) & 31) * 8;
-
-    return (b << 16) | (g << 8) | r;
-}
-
 Gdiplus::Bitmap *Render::BitmapWithImage(Image *image) {
     if (image == nullptr) {
         return nullptr;

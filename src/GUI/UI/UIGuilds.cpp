@@ -1,5 +1,7 @@
 #include "GUI/UI/UIGuilds.h"
 
+#include <string>
+
 #include "Engine/Engine.h"
 #include "Engine/Events2D.h"
 #include "Engine/Graphics/IRender.h"
@@ -27,7 +29,6 @@ using EngineIoc = Engine_::IocContainer;
 
 void GuildDialog() {
     int pTextHeight;              // eax@55
-    bool pSkillFlag;              // [sp+2DCh] [bp-10h]@35
     int dialogopts;               // [sp+2E0h] [bp-Ch]@35
 
     int all_text_height;
@@ -38,24 +39,17 @@ void GuildDialog() {
     working_window.uFrameWidth = 148;
     working_window.uFrameZ = 334;
 
-    int base_teach_price =
-        (p2DEvents[window_SpeakInHouse->wData.val - 1]
-             .fPriceMultiplier *
-         500.0);
-    int pPrice = base_teach_price *
-                 (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
-    if (pPrice < base_teach_price / 3) pPrice = base_teach_price / 3;
+    int base_teach_price = (p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier * 500.0);
+    int pPrice = base_teach_price * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
+    if (pPrice < base_teach_price / 3)
+        pPrice = base_teach_price / 3;
 
     if (dialog_menu_id == DIALOGUE_MAIN) {  // change to switch??
-        if (!_449B57_test_bit(
-                (uint8_t *)pPlayers[uActiveCharacter]->_achieved_awards_bits,
-                guild_mambership_flags[window_SpeakInHouse->wData.val - 139])) {
+        if (!_449B57_test_bit((uint8_t *)pPlayers[uActiveCharacter]->_achieved_awards_bits, guild_membership_flags[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE])) {
             // you must be a member
             pTextHeight = pFontArrus->CalcTextHeight(
                 pNPCTopics[121].pText, working_window.uFrameWidth, 0);
-            working_window.DrawTitleText(
-                pFontArrus, 0, (212 - pTextHeight) / 2 + 101,
-                Color16(0xFFu, 0xFFu, 0x9Bu), pNPCTopics[121].pText, 3);
+            working_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.C16(), pNPCTopics[121].pText, 3);
             pDialogueWindow->pNumPresenceButton = 0;
             return;
         }
@@ -65,29 +59,16 @@ void GuildDialog() {
         }
 
         dialogopts = 0;
-        pSkillFlag = false;
         all_text_height = 0;
-        for (int i = pDialogueWindow->pStartingPosActiveItem;
-             i < pDialogueWindow->pNumPresenceButton +
-                     pDialogueWindow->pStartingPosActiveItem;
-             ++i) {
+        for (int i = pDialogueWindow->pStartingPosActiveItem; i < pDialogueWindow->pNumPresenceButton + pDialogueWindow->pStartingPosActiveItem; ++i) {
             if (pDialogueWindow->GetControl(i)->msg_param == DIALOGUE_GUILD_BUY_BOOKS) {
-                all_text_height += pFontArrus->CalcTextHeight(
-                    localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth,
-                    0);
+                all_text_height += pFontArrus->CalcTextHeight(localization->GetString(LSTR_BUY_SPELLS), working_window.uFrameWidth, 0);
                 dialogopts++;
             } else {
-                auto skill = GetLearningDialogueSkill(
-                    (DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param
-                );
-                if (byte_4ED970_skill_learn_ability_by_class_table
-                        [pPlayers[uActiveCharacter]->classType][skill] &&
-                    !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
-                    all_text_height += pFontArrus->CalcTextHeight(
-                        localization->GetSkillName(skill),
-                        working_window.uFrameWidth, 0, 0);
+                PLAYER_SKILL_TYPE skill = GetLearningDialogueSkill((DIALOGUE_TYPE)pDialogueWindow->GetControl(i)->msg_param);
+                if (byte_4ED970_skill_learn_ability_by_class_table[pPlayers[uActiveCharacter]->classType][skill] && !pPlayers[uActiveCharacter]->pActiveSkills[skill]) {
+                    all_text_height += pFontArrus->CalcTextHeight(localization->GetSkillName(skill), working_window.uFrameWidth, 0, 0);
                     dialogopts++;
-                    pSkillFlag = true;
                 }
             }
         }
@@ -102,18 +83,11 @@ void GuildDialog() {
 
         for (pX = 32; pX < 452; pX += 70) {  // top row
             if (pParty->SpellBooksInGuilds
-                [window_SpeakInHouse->wData.val - 139][itemxind].uItemID) {
-                render->DrawTextureAlphaNew(
-                    pX / 640.0f, 90 / 480.0f,
-                    shop_ui_items_in_store[itemxind]);
+                [window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind].uItemID) {
+                render->DrawTextureAlphaNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[itemxind]);
             }
-            if (pParty
-                    ->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139]
-                                        [itemxind + 6]
-                    .uItemID) {
-                render->DrawTextureAlphaNew(
-                    pX / 640.0f, 250 / 480.0f,
-                    shop_ui_items_in_store[itemxind + 6]);
+            if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][itemxind + 6].uItemID) {
+                render->DrawTextureAlphaNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[itemxind + 6]);
             }
 
             ++itemxind;
@@ -122,19 +96,15 @@ void GuildDialog() {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             int itemcount = 0;
             for (uint i = 0; i < 12; ++i) {
-                if (pParty->SpellBooksInGuilds
-                    [window_SpeakInHouse->wData.val - 139][i].uItemID > 0)
+                if (pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID > 0)
                     ++itemcount;
             }
 
-            GameUI_StatusBar_DrawImmediate(
-                localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
+            GameUI_StatusBar_DrawImmediate(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), 0);
 
             if (!itemcount) {  // shop empty
                 working_window.DrawShops_next_generation_time_string(
-                    pParty->PartyTimes
-                        .Shops_next_generation_time[window_SpeakInHouse->wData.val - 139] -
-                    pParty->GetPlayingTime());
+                    pParty->PartyTimes.Shops_next_generation_time[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] - pParty->GetPlayingTime());
                 return;
             }
 
@@ -145,7 +115,7 @@ void GuildDialog() {
                     testx += 6;
                 }
 
-                ItemGen *item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139][testx];
+                ItemGen *item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][testx];
 
                 if (item->uItemID) {
                     int testpos;
@@ -155,27 +125,13 @@ void GuildDialog() {
                         testpos = 32 + 70 * testx;
                     }
 
-                    if (pt.x >= testpos &&
-                        pt.x <=
-                            testpos +
-                                shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((pt.y >= 90 &&
-                            pt.y <= (90 + shop_ui_items_in_store[testx]
-                                                  ->GetHeight())) ||
-                            (pt.y >= 250 &&
-                             pt.y <= (250 + shop_ui_items_in_store[testx]
-                                                   ->GetHeight()))) {
-                            auto str = BuildDialogueString(
-                                pMerchantsBuyPhrases
-                                    [pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
+                    if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+                        if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+                            std::string str = BuildDialogueString(pMerchantsBuyPhrases[pPlayers[uActiveCharacter]->SelectPhrasesTransaction(
                                              item, BuildingType_MagicShop, window_SpeakInHouse->wData.val, 2)],
-                                uActiveCharacter - 1, item,
-                                window_SpeakInHouse->wData.val, 2);
-                            pTextHeight = pFontArrus->CalcTextHeight(
-                                str, working_window.uFrameWidth, 0);
-                            working_window.DrawTitleText(
-                                pFontArrus, 0, (174 - pTextHeight) / 2 + 138,
-                                Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                                uActiveCharacter - 1, item, window_SpeakInHouse->wData.val, 2);
+                            pTextHeight = pFontArrus->CalcTextHeight(str, working_window.uFrameWidth, 0);
+                            working_window.DrawTitleText(pFontArrus, 0, (174 - pTextHeight) / 2 + 138, colorTable.White.C16(), str, 3);
                             return;
                         }
                     }
@@ -196,21 +152,16 @@ void SpellBookGenerator() {  // for GuildDialogs
     for (int i = 0; i < 12; ++i) {
         if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild) {
             if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_DarkGuild) {
-                pItemNum = rand() %
-                    word_4F0F30[window_SpeakInHouse->wData.val - 139]
-                    + 11 * std::to_underlying(p2DEvents[window_SpeakInHouse->wData.val - 1].uType)
-                    + 345;
+                pItemNum = rand() % word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] + 11 * std::to_underlying(p2DEvents[window_SpeakInHouse->wData.val - 1].uType) + 345;
             } else {
                 if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_ElementalGuild)
                     randomnum = rand() % 4;
                 else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_SelfGuild)
                     randomnum = rand() % 3 + 4;
-                else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_16)
+                else if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType == BuildingType_MirroredPath)
                     randomnum = rand() % 2 + 7;
-                if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_16)
-                    pItemNum = rand() %
-                        word_4F0F30[window_SpeakInHouse->wData.val - 139]
-                        + 11 * randomnum + 400;
+                if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_MirroredPath)
+                    pItemNum = rand() % word_4F0F30[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE] + 11 * randomnum + 400;
             }
         }
 
@@ -219,12 +170,11 @@ void SpellBookGenerator() {  // for GuildDialogs
                 pItemNum = ITEM_SPELLBOOK_LIGHT_SUN_BURST;
         }
 
-        ItemGen *item_spellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139][i];
+        ItemGen *item_spellbook = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i];
         item_spellbook->Reset();
-        pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139][i].uItemID = pItemNum;
-        pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139][i].IsIdentified();
+        pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].uItemID = pItemNum;
+        pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][i].SetIdentified();
 
-        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(
-            pItemsTable->pItems[pItemNum].pIconName, render->teal_mask_16);
+        shop_ui_items_in_store[i] = assets->GetImage_ColorKey(pItemsTable->pItems[pItemNum].pIconName, render->teal_mask_16);
     }
 }

@@ -187,14 +187,24 @@ struct Party {
     void PickedItem_PlaceInInventory_or_Drop();
 
     int GetGold() const;
-    static void SetGold(int amount);
-    static void AddGold(int amount);
-    static void TakeGold(int amount);
+    void SetGold(int amount);
+    void AddGold(int amount);
+    void TakeGold(int amount);
 
     int GetFood() const;
-    static void SetFood(int amount);
-    static void TakeFood(int amount);
-    static void GiveFood(int amount);
+    void SetFood(int amount);
+    void TakeFood(int amount);
+    void GiveFood(int amount);
+
+    int GetBankGold() const;
+    void SetBankGold(int amount);
+    void AddBankGold(int amount);
+    void TakeBankGold(int amount);
+
+    int GetFine() const;
+    void SetFine(int amount);
+    void AddFine(int amount);
+    void TakeFine(int amount);
 
     static void Sleep8Hours();
 

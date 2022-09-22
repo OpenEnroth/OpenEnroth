@@ -1182,7 +1182,7 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
 }
 
 void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, unsigned __int16 mask) {
-    uint col = Color32(255, 255, 255);
+    uint32_t col = colorTable.White.C32();
 
     if (mask)
         col = Color32(mask);

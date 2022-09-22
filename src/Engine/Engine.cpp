@@ -105,24 +105,6 @@ torchB.icon->texture->GetWidth()) / 640.0f, 48 / 480.0f, icon->texture);
 std::shared_ptr<Engine> engine;
 GAME_STATE uGameState;
 
-uint32_t Color32(uint16_t color16) {
-    uint32_t c = color16;
-    uint32_t b = (c & 31) * 8;
-    uint32_t g = ((c >> 5) & 63) * 4;
-    uint32_t r = ((c >> 11) & 31) * 8;
-
-    return Color32(r, g, b);
-}
-
-uint32_t Color32(uint32_t r, uint32_t g, uint32_t b, uint32_t a) {
-    return (a << 24) | (r << 16) | (g << 8) | b;
-}
-
-uint16_t Color16(uint32_t r, uint32_t g, uint32_t b) {
-    return (b >> (8 - 5)) | 0x7E0 & (g << (6 + 5 - 8)) |
-        0xF800 & (r << (6 + 5 + 5 - 8));
-}
-
 void Engine_DeinitializeAndTerminate(int exitCode) {
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     engine->Deinitialize();  // called twice?
@@ -309,12 +291,12 @@ void Engine::DrawGUI() {
 
     if (engine->config->debug.ShowFPS.Get()) {
         if (render_framerate) {
-            pPrimaryWindow->DrawText(pFontArrus, 494, 0, Color16(255, 255, 255),
+            pPrimaryWindow->DrawText(pFontArrus, 494, 0, colorTable.White.C16(),
                 StringPrintf("FPS: % .4f", framerate), 0,
                 0, 0);
         }
 
-        pPrimaryWindow->DrawText(pFontArrus, 300, 0, Color16(255, 255, 255),
+        pPrimaryWindow->DrawText(pFontArrus, 300, 0, colorTable.White.C16(),
             StringPrintf("DrawCalls: %d", render->drawcalls), 0, 0, 0);
         render->drawcalls = 0;
 
@@ -323,13 +305,13 @@ void Engine::DrawGUI() {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             int sector_id = pBLVRenderParams->uPartySectorID;
             pPrimaryWindow->DrawText(
-                pFontArrus, 16, debug_info_offset = 16, Color16(255, 255, 255),
+                pFontArrus, 16, debug_info_offset = 16, colorTable.White.C16(),
                 StringPrintf("Party Sector ID:        %u/%u\n", sector_id,
                     (unsigned int)pIndoor->pSectors.size()),
                 0, 0, 0);
         }
         pPrimaryWindow->DrawText(
-            pFontArrus, 16, debug_info_offset + 16, Color16(255, 255, 255),
+            pFontArrus, 16, debug_info_offset + 16, colorTable.White.C16(),
             StringPrintf("Party Position:         % d % d % d",
                 pParty->vPosition.x, pParty->vPosition.y,
                 pParty->vPosition.z),
@@ -359,7 +341,7 @@ void Engine::DrawGUI() {
         }
 
         pPrimaryWindow->DrawText(pFontArrus, 16, debug_info_offset + 16 + 16,
-            Color16(255, 255, 255), floor_level_str, 0, 0,
+            colorTable.White.C16(), floor_level_str, 0, 0,
             0);
     }
 }
@@ -1531,7 +1513,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
                 pParty->pPlayers[i].SetCondWeakWithBlockCheck(0);
 
             if (pParty->GetFood() > 0) {
-                Party::TakeFood(1);
+                pParty->TakeFood(1);
             } else {
                 for (uint i = 0; i < 4; ++i) {
                     pParty->pPlayers[i].sHealth =

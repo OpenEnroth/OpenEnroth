@@ -289,7 +289,7 @@ void Player::SalesProcess(unsigned int inventory_idnx, int item_index, int _2dev
 
     // remove item and add gold
     RemoveItemAtInventoryIndex(inventory_idnx);
-    Party::AddGold(sell_price);
+    pParty->AddGold(sell_price);
 }
 
 //----- (0043EEF3) --------------------------------------------------------
@@ -4523,7 +4523,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
                     );
                     break;
                 case 8:
-                    Party::GiveFood(5 * thisa);
+                    pParty->GiveFood(5 * thisa);
                     status = StringPrintf(
                         "+%u %s", 5 * thisa, localization->GetString(LSTR_FOOD)
                     );
@@ -4599,7 +4599,7 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
             }
             return;
         } else if (pParty->pPickedItem.uItemID == ITEM_RED_APPLE) {
-            Party::GiveFood(1);
+            pParty->GiveFood(1);
             pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
         } else if (pParty->pPickedItem.uItemID == ITEM_LUTE) {
             pAudioPlayer->PlaySound(SOUND_luteguitar, 0, 0, -1, 0, 0);
@@ -5055,11 +5055,10 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
 
 //----- (0044A5CB) --------------------------------------------------------
 void Player::SetVariable(VariableType var_type, signed int var_value) {
-    unsigned int v6;      // esi@13
-    unsigned int v7;      // esi@14
-    signed int v11;       // eax@30
-    DDM_DLV_Header* v24;  // ecx@148
-    ItemGen item;         // [sp+Ch] [bp-28h]@52
+    int gold;
+    int food;
+    DDM_DLV_Header* ddm;
+    ItemGen item;
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[var_type - VAR_History_0]) {
@@ -5108,10 +5107,10 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
                 if (this->sResEarthBase < 20) this->sResEarthBase = 20;
                 this->sResMindBase = 200;
                 this->sResBodyBase = 200;
-                v11 = this->GetSexByVoice();
+                int sex = this->GetSexByVoice();
                 this->uPrevVoiceID = this->uVoiceID;
                 this->uPrevFace = this->uCurrentFace;
-                if (v11) {
+                if (sex) {
                     this->uCurrentFace = 21;
                     this->uVoiceID = 21;
                 } else {
@@ -5183,24 +5182,22 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
                 pParty->pIsArtifactFound[var_value - 500] = 1;
             return;
         case VAR_FixedGold:
-            Party::SetGold(var_value);
+            pParty->SetGold(var_value);
             return;
         case VAR_RandomGold:
-            v6 = rand() % var_value + 1;
-            Party::SetGold(v6);
-            GameUI_SetStatusBar(LSTR_FMT_YOU_HAVE_D_GOLD, v6);
+            gold = rand() % var_value + 1;
+            pParty->SetGold(gold);
+            GameUI_SetStatusBar(LSTR_FMT_YOU_HAVE_D_GOLD, gold);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_FixedFood:
-            Party::SetFood(var_value);
+            pParty->SetFood(var_value);
             PlayAwardSound_Anim();
             return;
         case VAR_RandomFood:
-            v7 = rand() % var_value + 1;
-            Party::SetFood(v7);
-            GameUI_SetStatusBar(
-                localization->FormatString(
-                    LSTR_FMT_YOU_HAVE_D_FOOD, v7));
+            food = rand() % var_value + 1;
+            pParty->SetFood(food);
+            GameUI_SetStatusBar(localization->FormatString(LSTR_FMT_YOU_HAVE_D_FOOD, food));
             GameUI_DrawFoodAndGold();
             PlayAwardSound_Anim();
             return;
@@ -5461,10 +5458,14 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             return;
 
         case VAR_ReputationInCurrentLocation:
-            v24 = &pOutdoor->ddm;
-            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v24 = &pIndoor->dlv;
-            v24->uReputation = var_value;
-            if (var_value > 10000) v24->uReputation = 10000;
+            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
+                ddm = &pIndoor->dlv;
+            else
+                ddm = &pOutdoor->ddm;
+
+            ddm->uReputation = var_value;
+            if (var_value > 10000)
+                ddm->uReputation = 10000;
             return;
         case VAR_GoldInBank:
             pParty->uNumGoldInBank = var_value;
@@ -5642,10 +5643,10 @@ void Player::SetSkillByEvent(unsigned __int16 Player::*skillToSet,
 
 //----- (0044AFFB) --------------------------------------------------------
 void Player::AddVariable(VariableType var_type, signed int val) {
-    int v6;               // eax@15
-    unsigned int v7;      // esi@18
-    DDM_DLV_Header* v27;  // eax@153
-    ItemGen item;         // [sp+Ch] [bp-2Ch]@45
+    int gold;
+    int food;
+    DDM_DLV_Header* ddm;
+    ItemGen item;
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
         pParty->PartyTimes.CounterEventValues[var_type - VAR_Counter1] = pParty->GetPlayingTime();
@@ -5688,15 +5689,15 @@ void Player::AddVariable(VariableType var_type, signed int val) {
     switch (var_type) {
         case VAR_RandomGold:
             if (val == 0) val = 1;
-            v6 = rand();
-            pParty->PartyFindsGold(v6 % val + 1, 1);
+            gold = rand();
+            pParty->PartyFindsGold(gold % val + 1, 1);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_RandomFood:
             if (val == 0) val = 1;
-            v7 = rand() % val + 1;
-            Party::GiveFood(v7);
-            GameUI_SetStatusBar(LSTR_FMT_YOU_FIND_D_FOOD, v7);
+            food = rand() % val + 1;
+            pParty->GiveFood(food);
+            GameUI_SetStatusBar(LSTR_FMT_YOU_FIND_D_FOOD, food);
             GameUI_DrawFoodAndGold();
             PlayAwardSound();
             return;
@@ -5803,7 +5804,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             PlayAwardSound_Anim97_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FixedFood:
-            Party::GiveFood(val);
+            pParty->GiveFood(val);
             GameUI_SetStatusBar(LSTR_FMT_YOU_FIND_D_FOOD, val);
             PlayAwardSound();
             return;
@@ -6018,10 +6019,14 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             this->uSkillPoints += val;
             return;
         case VAR_ReputationInCurrentLocation:
-            v27 = &pOutdoor->ddm;
-            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor) v27 = &pIndoor->dlv;
-            v27->uReputation += val;
-            if (v27->uReputation > 10000) v27->uReputation = 10000;
+            if (uCurrentlyLoadedLevelType != LEVEL_Outdoor)
+                ddm = &pIndoor->dlv;
+            else
+                ddm = &pOutdoor->ddm;
+
+            ddm->uReputation += val;
+            if (ddm->uReputation > 10000)
+                ddm->uReputation = 10000;
             return;
         case VAR_GoldInBank:
             pParty->uNumGoldInBank += val;
@@ -6278,25 +6283,25 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
                 dword_5B65C4_cancelEventProcessing = 1;
                 return;
             }
-            Party::TakeGold(pValue);
+            pParty->TakeGold(pValue);
             return;
         case VAR_RandomGold:
             randGold = rand() % (signed int)pValue + 1;
             if (randGold > pParty->GetGold())
                 randGold = pParty->GetGold();
-            Party::TakeGold(randGold);
+            pParty->TakeGold(randGold);
             GameUI_SetStatusBar(LSTR_FMT_YOU_LOSE_D_GOLD, randGold);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_FixedFood:
-            Party::TakeFood(pValue);
+            pParty->TakeFood(pValue);
             PlayAwardSound_Anim98();
             return;
         case VAR_RandomFood:
             randFood = rand() % (signed int)pValue + 1;
             if (randFood > pParty->GetFood())
                 randFood = pParty->GetFood();
-            Party::TakeFood(randFood);
+            pParty->TakeFood(randFood);
             GameUI_SetStatusBar(LSTR_FMT_YOU_LOSE_D_FOOD, randFood);
             GameUI_DrawFoodAndGold();
             PlayAwardSound_Anim98();

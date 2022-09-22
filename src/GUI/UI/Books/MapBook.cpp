@@ -227,11 +227,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                         if (pOutdoor->IsMapCellPartiallyRevealed(map_tile_X,
                             map_tile_Y)) {
                             if (!((i + ScreenCenterX + j) % 2))
-                                minitempix[j + i * screenWidth] = Color32(12, 12, 12);  // greyed out
+                                minitempix[j + i * screenWidth] = colorTable.CodGray.C32();
                             else
                                 minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];
                         } else {
-                            minitempix[j + i * screenWidth] = Color32(0, 0, 0);  // black
+                            minitempix[j + i * screenWidth] = colorTable.Black.C32();
                         }
                     } else {
                         minitempix[j + i * screenWidth] = minimap_pixels[scaled_posX + scaled_posY * textr_width];
@@ -246,8 +246,6 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         render->Update_Texture(minimaptemp);
         render->DrawTextureAlphaNew(tl_x / 640., tl_y / 480., minimaptemp);
     } else {  // indoors
-        unsigned int Colour_Black = Color16(0, 0, 0);
-
         if (!pIndoor->pMapOutlines.empty()) {
             render->BeginLines2D();
             for (uint i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
@@ -270,7 +268,7 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                         int linez = ScreenCenterX + fixpoint_mul(Vert2X, viewparams->uMapBookMapZoom);
                         int linew = ScreenCenterY - fixpoint_mul(Vert2Y, viewparams->uMapBookMapZoom);
 
-                        render->RasterLine2D(linex, liney, linez, linew, Colour_Black);
+                        render->RasterLine2D(linex, liney, linez, linew, colorTable.Black.C16());
                     }
                 }
             }
@@ -328,11 +326,11 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
                 int decypos = ScreenCenterY - fixpoint_mul(DecY, viewparams->uMapBookMapZoom);
 
                 if (viewparams->uMapBookMapZoom > 512) {
-                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, Color16(0xFFu, 0xFFu, 0xFFu));
-                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, Color16(0xFFu, 0xFFu, 0xFFu));
-                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, Color16(0xFFu, 0xFFu, 0xFFu));
+                    render->RasterLine2D(decxpos - 1, decypos - 1, decxpos - 1, decypos + 1, colorTable.White.C16());
+                    render->RasterLine2D(decxpos, decypos - 1, decxpos, decypos + 1, colorTable.White.C16());
+                    render->RasterLine2D(decxpos + 1, decypos - 1, decxpos + 1, decypos + 1, colorTable.White.C16());
                 } else {
-                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, Color16(0xFF, 0xFF, 0xFF));
+                    render->RasterLine2D(decxpos, decypos, decxpos, decypos, colorTable.White.C16());
                 }
             }
         }

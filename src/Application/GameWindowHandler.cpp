@@ -43,6 +43,9 @@ void GameWindowHandler::OnScreenshot() {
 bool GameWindowHandler::OnChar(GameKey key, int c) {
     bool textInputHandled = false;
 
+    if (!keyboardInputHandler)
+        return false;
+
     // backspace, enter, esc (text input), controls binding
     textInputHandled |= keyboardInputHandler->ProcessTextInput(key, c);
 
@@ -151,6 +154,9 @@ extern bool _507B98_ctrl_pressed;
 extern InputAction currently_selected_action_for_binding;
 
 void GameWindowHandler::OnKey(GameKey key) {
+    if (!keyboardInputHandler)
+        return;
+
     if (currently_selected_action_for_binding != InputAction::Invalid) {
         // we're setting a key binding in options
         keyboardInputHandler->ProcessTextInput(key, -1);

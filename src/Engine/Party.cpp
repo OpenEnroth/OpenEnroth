@@ -323,36 +323,24 @@ void ui_play_food_anim() {
 
 //----- (00492AD5) --------------------------------------------------------
 void Party::SetFood(int amount) {
-    pParty->uNumFoodRations = amount;
+    if (amount > 65535)
+        amount = 65535;
+    else if (amount < 0)
+        amount = 0;
+
+    uNumFoodRations = amount;
+
     ui_play_food_anim();
 }
 
 //----- (00492B03) --------------------------------------------------------
 void Party::TakeFood(int amount) {
-    if (pParty->uNumFoodRations <= amount)
-        pParty->uNumFoodRations = 0;
-    else
-        pParty->uNumFoodRations -= amount;
-
-    ui_play_food_anim();
+    SetFood(GetFood() - amount);
 }
 
 //----- (00492B42) --------------------------------------------------------
 void Party::GiveFood(int amount) {
-    pParty->uNumFoodRations += amount;
-
-    if (pParty->uNumFoodRations > 0xFFFF)
-        Party::SetFood(0xFFFFu);
-
-    ui_play_food_anim();
-}
-
-int Party::GetGold() const {
-    if (engine->config->debug.InfiniteGold.Get()) {
-        return 99999;
-    }
-
-    return uNumGold;
+    SetFood(GetFood() + amount);
 }
 
 int Party::GetFood() const {
@@ -363,25 +351,69 @@ int Party::GetFood() const {
     return uNumFoodRations;
 }
 
+int Party::GetGold() const {
+    if (engine->config->debug.InfiniteGold.Get()) {
+        return 99999;
+    }
+
+    return uNumGold;
+}
+
 //----- (00492B70) --------------------------------------------------------
 void Party::SetGold(int amount) {
-    pParty->uNumGold = amount;
+    if (amount < 0)
+        amount = 0;
+
+    uNumGold = amount;
 
     ui_play_gold_anim();
 }
 
 void Party::AddGold(int amount) {
-    SetGold(pParty->GetGold() + amount);
+    SetGold(GetGold() + amount);
 }
 
 //----- (00492BB6) --------------------------------------------------------
 void Party::TakeGold(int amount) {
-    if (amount <= pParty->uNumGold)
-        pParty->uNumGold -= amount;
-    else
-        pParty->uNumGold = 0;
+    SetGold(GetGold() - amount);
+}
 
-    ui_play_gold_anim();
+int Party::GetBankGold() const {
+    return uNumGoldInBank;
+}
+
+void Party::SetBankGold(int amount) {
+    if (amount < 0)
+        amount = 0;
+
+    uNumGoldInBank = amount;
+}
+
+void Party::AddBankGold(int amount) {
+    SetBankGold(GetBankGold() + amount);
+}
+
+void Party::TakeBankGold(int amount) {
+    SetBankGold(GetBankGold() - amount);
+}
+
+int Party::GetFine() const {
+    return uFine;
+}
+
+void Party::SetFine(int amount) {
+    if (amount < 0)
+        amount = 0;
+
+    uFine = amount;
+}
+
+void Party::AddFine(int amount) {
+    SetFine(GetFine() + amount);
+}
+
+void Party::TakeFine(int amount) {
+    SetFine(GetFine() - amount);
 }
 
 //----- (0049135E) --------------------------------------------------------

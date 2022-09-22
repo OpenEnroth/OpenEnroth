@@ -96,7 +96,7 @@ extern std::array<int, 2> Party_Spec_Motion_status_ids;  // dword_4EE07C
 extern std::array<short, 28> word_4EE150;
 extern int16_t word_4F0576[];
 
-extern std::array<int, 32> guild_mambership_flags;
+extern std::array<int, 32> guild_membership_flags;
 extern std::array<int16_t, 49> word_4F0754;
 extern std::array<int16_t, 54> _4F0882_evt_VAR_PlayerItemInHands_vals;
 extern std::array<unsigned short, 6> pMaxLevelPerTrainingHallType;

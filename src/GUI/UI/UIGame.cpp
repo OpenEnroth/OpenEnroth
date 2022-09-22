@@ -760,14 +760,10 @@ void GameUI_DrawNPCPopup(void *_this) {  // PopupWindowForBenefitAndJoinText
                     (popup_window.uFrameY + 36) / 480.0f,
                     assets->GetImage_ColorKey(tex_name, render->teal_mask_16));
 
-                popup_window.DrawTitleText(
-                    pFontArrus, 0, 12, Color16(0xFFu, 0xFFu, 0x9Bu), NameAndTitle(pNPC), 3);
+                popup_window.DrawTitleText(pFontArrus, 0, 12, colorTable.PaleCanary.C16(), NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
-                popup_window.uFrameZ =
-                    popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(
-                    pFontArrus, 100, 36, 0,
-                    BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
+                popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
+                popup_window.DrawText(pFontArrus, 100, 36, 0, BuildDialogueString((char *)lpsz, uActiveCharacter - 1, 0, 0, 0));
             }
         }
     }
@@ -2311,10 +2307,10 @@ void buttonbox(int x, int y, const char* text, int col) {
     render->FillRectFast(x, y, width+1, height+1, Color16(50, 50, 50));
 
     //render->BeginLines2D();
-    render->RasterLine2D(x-1, y-1, x+width+1, y-1, Color16(0xE1u, 255, 0x9Bu));
-    render->RasterLine2D(x-1, y-1, x-1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
-    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
-    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, Color16(0xE1u, 255, 0x9Bu));
+    render->RasterLine2D(x-1, y-1, x+width+1, y-1, colorTable.Jonquil.C16());
+    render->RasterLine2D(x-1, y-1, x-1, y+height+1, colorTable.Jonquil.C16());
+    render->RasterLine2D(x-1, y+height+1, x+width+1, y+height+1, colorTable.Jonquil.C16());
+    render->RasterLine2D(x+width+1, y-1, x+width+1, y+height+1, colorTable.Jonquil.C16());
     //render->EndLines2D();
 
     uint16_t colour = ui_character_condition_severe_color;

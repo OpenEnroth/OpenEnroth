@@ -672,7 +672,7 @@ LABEL_47:
                 case EVENT_Compare:
                     pValue = EVT_DWORD(_evt->v7);
                     if (player_choose <= 3) {
-                        if (pPlayers[player_choose]->CompareVariable(
+                        if (pParty->pPlayers[player_choose].CompareVariable(
                                 (enum VariableType)EVT_WORD(_evt->v5),
                                 pValue)) {
                             // v124 = -1;
@@ -1185,8 +1185,11 @@ std::string GetEventHintString(unsigned int uEventID) {
     _evt_raw *test_evt;
     _evt_raw *last_evt;
 
+    std::string result;
+
     event_index = 0;
-    if (uLevelEVT_NumEvents <= 0) return std::string();
+    if (uLevelEVT_NumEvents <= 0)
+        return result;
 
     // v2 = (char *)&pLevelEVT_Index[0].uEventOffsetInEVT;
     while (1) {
@@ -1194,28 +1197,39 @@ std::string GetEventHintString(unsigned int uEventID) {
             test_evt = (_evt_raw *)&pLevelEVT[pLevelEVT_Index[event_index].uEventOffsetInEVT];
             last_evt = test_evt;
             event_pos = pLevelEVT_Index[event_index + 1].uEventOffsetInEVT;
-            if (test_evt->_e_type == EVENT_MouseOver) break;
+            if (test_evt->_e_type == EVENT_MouseOver)
+                break;
         }
         ++event_index;
         if (event_index >= uLevelEVT_NumEvents)
-            return std::string();
+            return result;
     }
     test_evt = (_evt_raw *)&pLevelEVT[event_pos];
     if (test_evt->_e_type == EVENT_SpeakInHouse) {
         str_index = EVT_DWORD(test_evt->v5);
-        return p2DEvents[str_index - 1].pName;
+        if (p2DEvents[str_index - 1].pName != NULL)
+            result = p2DEvents[str_index - 1].pName;
+
+        return result;
     } else {
-        for (i = event_index + 1; pLevelEVT_Index[i].event_id == uEventID;
-             ++i) {
+        for (i = event_index + 1; pLevelEVT_Index[i].event_id == uEventID; ++i) {
             event_pos = pLevelEVT_Index[i].uEventOffsetInEVT;
             test_evt = (_evt_raw *)&pLevelEVT[event_pos];
             if (test_evt->_e_type == EVENT_SpeakInHouse) {
                 str_index = EVT_DWORD(test_evt->v5);
-                if (str_index < 525)  // 600
-                    return (char *)p2DEvents[str_index - 1].pName;
+                if (str_index < 525) {  // 600
+                    if (p2DEvents[str_index - 1].pName != NULL)
+                        result = p2DEvents[str_index - 1].pName;
+
+                    return result;
+                }
             }
         }
-        return &pLevelStr[pLevelStrOffsets[EVT_BYTE(last_evt->v5)]];
+
+        if (&pLevelStr[pLevelStrOffsets[EVT_BYTE(last_evt->v5)]] != NULL)
+            result = &pLevelStr[pLevelStrOffsets[EVT_BYTE(last_evt->v5)]];
+
+        return result;
     }
 }
 

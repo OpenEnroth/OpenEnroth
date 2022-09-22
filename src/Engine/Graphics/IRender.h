@@ -9,7 +9,7 @@
 #include "Engine/Rect.h"
 #include "Engine/VectorTypes.h"
 #include "Application/GameConfig.h"
-
+#include "Utility/Color.h"
 
 class OSWindow;
 class Sprite;
@@ -49,11 +49,6 @@ struct RenderBillboard {
     unsigned int sTintColor;
     SpriteFrame *pSpriteFrame;
 };
-
-uint16_t Color16(uint32_t r, uint32_t g, uint32_t b);
-uint32_t Color32(uint16_t color16);
-uint32_t Color32(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 0xFF);
-uint32_t Color32_SwapRedBlue(uint16_t color16);
 
 /*   88 */
 #pragma pack(push, 1)

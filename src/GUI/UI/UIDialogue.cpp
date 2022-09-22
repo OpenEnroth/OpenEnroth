@@ -641,9 +641,7 @@ void OnSelectNPCDialogueOption(DIALOGUE_TYPE option) {
                     dword_7241C8 = 0;
                     return;
                 }
-                Party::TakeGold(
-                    pNPCStats->pProfessions[speakingNPC->profession].uHirePrice
-                );
+                pParty->TakeGold(pNPCStats->pProfessions[speakingNPC->profession].uHirePrice);
             }
             speakingNPC->uFlags |= 0x80u;
             if (pParty->pHirelings[0].pName) {
