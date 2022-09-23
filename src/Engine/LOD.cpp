@@ -265,9 +265,9 @@ int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
     dir.field_F = 0;
     dir.uDataSize = 0;
     dir.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
-    pLODName = lod_name;
+    pLODPath = lod_name;
 
-    pFile = fopen(pLODName.c_str(), "wb+");
+    pFile = OS_fopen(pLODPath, "wb+");
     if (!pFile) return 3;
     fwrite(pHeader, sizeof(LOD::FileHeader), 1, pFile);
     fwrite(&dir, sizeof(LOD::Directory), 1, pFile);
@@ -437,7 +437,7 @@ LODFile_IconsBitmaps::LODFile_IconsBitmaps() : LOD::File() {
 bool LOD::WriteableFile::_4621A7() {  // закрыть и загрузить записываемый ф-л(при
                                     // сохранении)
     CloseWriteFile();
-    return LoadFile(pLODName, 0);
+    return LoadFile(pLODPath, 0);
 }
 
 bool LOD::WriteableFile::FixDirectoryOffsets() {
@@ -453,8 +453,8 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
         temp_offset += pSubIndices[i].uDataSize;
     }
 
-    std::string Filename = MakeTempPath("lod.tmp");
-    FILE *tmp_file = fopen(Filename.c_str(), "wb+");
+    std::filesystem::path tempPath = MakeTempPath("lod.tmp");
+    FILE *tmp_file = OS_fopen(tempPath, "wb+");
     if (tmp_file == nullptr) {
         return 5;
     }
@@ -486,12 +486,12 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
     fclose(pOutputFileHandle);
     pOutputFileHandle = nullptr;
     CloseWriteFile();
-    remove(MakeTempPath("lodapp.tmp").c_str());
-    remove(pLODName.c_str());
-    rename(Filename.c_str(), pLODName.c_str());
+    std::filesystem::remove(MakeTempPath("lodapp.tmp"));
+    std::filesystem::remove(pLODPath);
+    std::filesystem::rename(tempPath, pLODPath);
     CloseWriteFile();
 
-    return LoadFile(pLODName.c_str(), 0);
+    return LoadFile(pLODPath.c_str(), 0);
 }
 
 bool LOD::WriteableFile::AppendDirectory(const std::string &file_name, const void *pData, size_t data_size) {
@@ -511,7 +511,7 @@ int LOD::WriteableFile::CreateTempFile() {
 
     if (pIOBuffer && uIOBufferSize) {
         uNumSubDirs = 0;
-        pOutputFileHandle = fopen(MakeTempPath("lodapp.tmp").c_str(), "wb+");
+        pOutputFileHandle = OS_fopen(MakeTempPath("lodapp.tmp"), "wb+");
         return pOutputFileHandle ? 1 : 7;
     } else {
         return 5;
@@ -577,8 +577,8 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     }
 
     int size_correction = 0;
-    std::string Filename = MakeDataPath("lod.tmp");
-    FILE *tmp_file = fopen(Filename.c_str(), "wb+");
+    std::filesystem::path tempPath = MakeDataPath("lod.tmp"); // TODO: should be MakeTempPath?
+    FILE *tmp_file = OS_fopen(tempPath, "wb+");
     if (!tmp_file) return 5;
     if (!bRewrite_data)
         size_correction = 0;
@@ -659,12 +659,12 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     // replace old file by new with added data
     fclose(tmp_file);
     CloseWriteFile();
-    remove(pLODName.c_str());
-    rename(Filename.c_str(), pLODName.c_str());
+    std::filesystem::remove(pLODPath);
+    std::filesystem::rename(tempPath, pLODPath);
     CloseWriteFile();
 
     // reload new
-    LoadFile(pLODName, 0);  // isFileOpened == true, next file
+    LoadFile(pLODPath, 0);  // isFileOpened == true, next file
     return 0;
 }
 
@@ -675,13 +675,13 @@ LOD::WriteableFile::WriteableFile() {
     pOutputFileHandle = nullptr;
 }
 
-bool LOD::WriteableFile::LoadFile(const std::string &pFilename, bool bWriting) {
-    pFile = fopen(pFilename.c_str(), bWriting ? "rb" : "rb+");
+bool LOD::WriteableFile::LoadFile(const std::filesystem::path &filePath, bool bWriting) {
+    pFile = OS_fopen(filePath, bWriting ? "rb" : "rb+");
     if (pFile == nullptr) {
         return false;  // возможно файл не закрыт, поэтому не открывается
     }
 
-    pLODName = pFilename;
+    pLODPath = filePath;
     fread(&header, sizeof(LOD::FileHeader), 1, pFile);
 
     LOD::Directory lod_indx;
@@ -752,17 +752,17 @@ bool LOD::File::Open(const std::string &sFilename) {
     return LoadSubIndices(pRoot.front().pFilename);
 }
 
-bool LOD::File::OpenFile(const std::string &sFilename) {
+bool LOD::File::OpenFile(const std::filesystem::path &filePath) {
     if (isFileOpened) {
         Close();
     }
 
-    pFile = fopen(sFilename.c_str(), "rb");
+    pFile = OS_fopen(filePath, "rb");
     if (pFile == nullptr) {
         return false;
     }
 
-    pLODName = sFilename;
+    pLODPath = filePath;
 
     return true;
 }

@@ -59,30 +59,21 @@ std::vector<std::string> OS_FindFiles(const std::string &folder, const std::stri
     return result;
 }
 
-char OS_GetDirSeparator() {
-    return '\\';
+std::filesystem::path OS_makepath(std::string path) {
+    return path;
 }
 
-std::string OS_casepath(std::string path) {
-    std::string r;
-    std::string sep;
+std::filesystem::path OS_casepath(std::filesystem::path path) {
+    return path;
+}
 
-    sep.push_back(OS_GetDirSeparator());
+FILE *OS_fopen(std::filesystem::path path, const char *mode) {
+    std::wstring wmode;
+    if (mode)
+        for (; *mode; mode++)
+            wmode.push_back(*mode);
 
-    std::stringstream ss(path);
-    std::string s;
-
-    while (std::getline(ss, s, OS_GetDirSeparator())) {
-        if (s.empty())
-            continue;
-
-        if (!r.empty())
-            r += sep;
-
-        r += s;
-    }
-
-    return r;
+    return _wfopen(path.c_str(), wmode.c_str());
 }
 
 bool OS_FileExists(const std::string& path) {

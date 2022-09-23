@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstring>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -75,14 +76,14 @@ class File {
 
  protected:
     FILE *FindContainer(const std::string &filename, size_t *data_size = nullptr);
-    virtual bool OpenFile(const std::string &sFilename);
+    virtual bool OpenFile(const std::filesystem::path &filePath);
     bool LoadHeader();
     bool LoadSubIndices(const std::string &sFolder);
     virtual void ResetSubIndices();
 
  protected:
     FILE *pFile;
-    std::string pLODName;
+    std::filesystem::path pLODPath;
     bool isFileOpened;
 
     struct FileHeader header;
@@ -98,7 +99,7 @@ class File {
 class WriteableFile : public File {
  public:
     WriteableFile();
-    bool LoadFile(const std::string &pFilename, bool bWriting);
+    bool LoadFile(const std::filesystem::path &filePath, bool bWriting);
     unsigned int Write(const std::string &file_name, const void *pDirData, size_t size, int a4);
     void CloseWriteFile();
     int CreateTempFile();
