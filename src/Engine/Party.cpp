@@ -937,10 +937,7 @@ void Party::RestAndHeal() {
         if (pPlayer->classType == PLAYER_CLASS_LICH) {
             have_vessels_soul = false;
             for (uint i = 0; i < 126; i++) {
-                if (pPlayer->pInventoryItemList[i].uItemID ==
-                        ITEM_LICH_JAR_FULL &&
-                    pPlayer->pInventoryItemList[i].uHolderPlayer ==
-                        pPlayerID + 1)
+                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID + 1)
                     have_vessels_soul = true;
             }
             if (!have_vessels_soul) {

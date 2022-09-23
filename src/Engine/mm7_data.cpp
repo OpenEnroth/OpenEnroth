@@ -628,7 +628,7 @@ unsigned int game_ui_status_bar_event_string_time_left;
 int bForceDrawFooter;
 int _5C35C0_force_party_death = false;
 int bDialogueUI_InitializeActor_NPC_ID;
-char *p2DEventsTXT_Raw;
+char *p2DEventsTXT_Raw = nullptr;
 
 int dword_5C35D4;
 char byte_5C45AF[777];
@@ -662,13 +662,13 @@ struct FactionTable *pFactionTable;
 
 std::array<char, 777> byte_5E4C15;
 
-char *pMonstersTXT_Raw;
-char *pMonsterPlacementTXT_Raw;
-char *pSpellsTXT_Raw;
-char *pMapStatsTXT_Raw;
-char *pHostileTXT_Raw;
-char *pPotionsTXT_Raw;
-char *pPotionNotesTXT_Raw;
+char *pMonstersTXT_Raw = nullptr;
+char *pMonsterPlacementTXT_Raw = nullptr;
+char *pSpellsTXT_Raw = nullptr;
+char *pMapStatsTXT_Raw = nullptr;
+char *pHostileTXT_Raw = nullptr;
+char *pPotionsTXT_Raw = nullptr;
+char *pPotionNotesTXT_Raw = nullptr;
 
 std::array<int, 777> _6807B8_level_decorations_ids;  // idb -level decoratiosn sound
 int _6807E0_num_decorations_with_sounds_6807B8;
@@ -714,16 +714,16 @@ std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related;  // idb
 std::array<const char *, 82> pScrolls;
 int dword_7241C8;
-char *pAwardsTXT_Raw;
-char *pScrollsTXT_Raw;
-char *pMerchantsTXT_Raw;
+char *pAwardsTXT_Raw = nullptr;
+char *pScrollsTXT_Raw = nullptr;
+char *pMerchantsTXT_Raw = nullptr;
 std::array<const char *, 7> pMerchantsBuyPhrases;
 std::array<const char *, 7> pMerchantsSellPhrases;
 std::array<const char *, 7> pMerchantsRepairPhrases;
 std::array<const char *, 7> pMerchantsIdentifyPhrases;
-char *pTransitionsTXT_Raw;
-char *pAutonoteTXT_Raw;
-char *pQuestsTXT_Raw;
+char *pTransitionsTXT_Raw = nullptr;
+char *pAutonoteTXT_Raw = nullptr;
+char *pQuestsTXT_Raw = nullptr;
 std::vector<Vec3_float_> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;

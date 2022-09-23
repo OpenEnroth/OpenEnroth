@@ -1605,38 +1605,22 @@ void TownHallDialog() {
     }
     case DIALOGUE_TOWNHALL_MESSAGE:
     {
-        current_npc_text = StringPrintf(
-            bountyHunting_text,
-            StringPrintf(
-                "\f%05d%s\f%05d", colorTable.PaleCanary.C16(),
-                pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting]
-                .pName,
-                colorTable.White.C16()).c_str(),
-            100 *
-            pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting]
-            .uLevel);
+        current_npc_text = StringPrintf(bountyHunting_text,
+            StringPrintf("\f%05d%s\f%05d", colorTable.PaleCanary.C16(), pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].pName, colorTable.White.C16()).c_str(),
+                100 * pMonsterStats->pInfos[bountyHunting_monster_id_for_hunting].uLevel);
         GUIWindow window = *pDialogueWindow;
         window.uFrameWidth = 458;
         window.uFrameZ = 457;
         pOutString = pFontArrus;
-        pTextHeight = pFontArrus->CalcTextHeight(current_npc_text,
-            window.uFrameWidth, 13) +
-            7;
+        pTextHeight = pFontArrus->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
         if (352 - pTextHeight < 8) {
             pOutString = pFontCreate;
-            pTextHeight = pFontCreate->CalcTextHeight(
-                current_npc_text, window.uFrameWidth, 13) +
-                7;
+            pTextHeight = pFontCreate->CalcTextHeight(current_npc_text, window.uFrameWidth, 13) + 7;
         }
-        render->DrawTextureCustomHeight(8 / 640.0f,
-            (352 - pTextHeight) / 480.0f,
-            ui_leather_mm7, pTextHeight);
-        render->DrawTextureAlphaNew(
-            8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        window.DrawText(pOutString, 13, 354 - pTextHeight, 0,
-            pOutString->FitTextInAWindow(
-                current_npc_text, window.uFrameWidth, 13),
-            0, 0, 0);
+        render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
+        render->DrawTextureAlphaNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
+        // window.DrawText(pOutString, 13, 354 - pTextHeight, 0, pOutString->FitTextInAWindow(current_npc_text, window.uFrameWidth, 13), 0, 0, 0);
+        window.DrawText(pOutString, 13, 354 - pTextHeight, 0, current_npc_text, 0, 0, 0);
         break;
     }
     case DIALOGUE_TOWNHALL_PAY_FINE:
@@ -2810,20 +2794,7 @@ void SimpleHouseDialog() {
                 pButton->msg_param = 0;
                 v15 = "";
             }
-            if (uDialogueType != DIALOGUE_84_oracle) {
-                pButton->sLabel = v15;
-                continue;
-            }
 
-            // oracle
-            current_npc_text = StringPrintf(
-                current_npc_text.c_str(),
-                StringPrintf("\f%05d%s\f00000\n",
-                    colorTable.Jonquil.C16(),
-                    // gets set to item_id in OracleDialogue (weird)
-                    pItemsTable->pItems[guild_membership_approved]
-                    .pUnidentifiedName)
-                .c_str());
             pButton->sLabel = v15;
             continue;
 

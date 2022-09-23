@@ -1678,65 +1678,61 @@ void _4B3FE5_training_dialogue(int eventId) {
     dialog_menu_id = DIALOGUE_OTHER;
 }
 
-//----- (004B1ECE) --------------------------------------------------------
+/**
+ * @offset 0x004B1ECE.
+ *
+ * @brief Oracle's 'I lost it!' dialog option
+ */
 void OracleDialogue() {
-    __int16 *v0;     // edi@1
-    signed int v4;   // eax@9
-    int v5;          // ebx@11
-    signed int v8;   // edi@14
-    ItemGen *v9;     // [sp+Ch] [bp-Ch]@11
-    signed int v10;  // [sp+10h] [bp-8h]@13
-    int v11;         // [sp+14h] [bp-4h]@1
+    ItemGen *item = nullptr;
+    int item_id = -1;
 
-    guild_membership_approved = 0;
-    v11 = 0;
-    uDialogueType = DIALOGUE_84_oracle;
+    // display "You never had it" if nothing missing will be found
     current_npc_text = (char *)pNPCTopics[667].pText;
-    v0 = _4F0882_evt_VAR_PlayerItemInHands_vals.data();
 
-    for (uint i = 0; i <= 53; i++) {
-        if ((unsigned __int16)_449B57_test_bit(pParty->_quest_bits, *v0)) {
-            for (uint pl = 0; pl < 4; pl++) {
-                if (pParty->pPlayers[pl].CompareVariable(VAR_PlayerItemInHands, *(v0 + 1)))
-                    break;
+    int i = 0;
+    for (i = 0; i < 54; i+=2) {
+        // only items with special subquest in range 212-237 and also 241 are recoverable
+        int quest_id = _4F0882_evt_VAR_PlayerItemInHands_vals[i];
+        if (_449B57_test_bit(pParty->_quest_bits, quest_id)) {
+            int search_item_id = _4F0882_evt_VAR_PlayerItemInHands_vals[i + 1];
+            if (!pParty->HasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
+                item_id = search_item_id;
+                break;
             }
         }
-        ++v11;
     }
-    if (v0 <= &_4F0882_evt_VAR_PlayerItemInHands_vals[53]) {
-        current_npc_text = (char *)pNPCTopics[666].pText;  // Here's %s that you lost. Be careful
-        v4 = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
-        guild_membership_approved = _4F0882_evt_VAR_PlayerItemInHands_vals[2 * v11];
-        pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, v4);
+
+    // missing item found
+    if (item_id >= 0) {
+        pParty->pPlayers[0].AddVariable(VAR_PlayerItemInHands, item_id);
+        // display "Here's %s that you lost. Be careful"
+        current_npc_text = StringPrintf(pNPCTopics[666].pText,
+            StringPrintf("\f%05d%s\f00000", colorTable.Jonquil.C16(), pItemsTable->pItems[item_id].pUnidentifiedName).c_str());
     }
-    if (guild_membership_approved == ITEM_LICH_JAR_FULL) {
-        v5 = 0;
-        // v12 = pParty->pPlayers.data();//[0].uClass;
-        v9 = 0;
-        // while ( 1 )
+
+    // missing item is lich jar and we need to bind soul vessel to lich class character
+    if (item_id == ITEM_LICH_JAR_FULL) {
         for (uint i = 0; i < 4; i++) {
             if (pParty->pPlayers[i].classType == PLAYER_CLASS_LICH) {
-                v10 = 0;
-                // v6 =
-                // pParty->pPlayers.data();//[0].pInventoryItems[0].field_1A;
+                bool have_vessels_soul = false;
                 for (uint pl = 0; pl < 4; pl++) {
-                    for (v8 = 0; v8 < 126; v8++) {  // 138
-                        if (pParty->pPlayers[pl].pInventoryItemList[v8].uItemID == ITEM_LICH_JAR_FULL) {
-                            if (!pParty->pPlayers[pl].pInventoryItemList[v8].uHolderPlayer)
-                                v9 = &pParty->pPlayers[pl].pInventoryItemList[v8];
-                            if (pParty->pPlayers[pl].pInventoryItemList[v8].uHolderPlayer == v5)
-                                v10 = 1;
+                    for (int idx = 0; idx < 126; idx++) {
+                        if (pParty->pPlayers[pl].pInventoryItemList[idx].uItemID == ITEM_LICH_JAR_FULL) {
+                            if (!pParty->pPlayers[pl].pInventoryItemList[idx].uHolderPlayer)
+                                item = &pParty->pPlayers[pl].pInventoryItemList[idx];
+                            if (pParty->pPlayers[pl].pInventoryItemList[idx].uHolderPlayer == i + 1)
+                                have_vessels_soul = true;
                         }
                     }
                 }
-                if (!v10) break;
+
+                if (item && !have_vessels_soul) {
+                    item->uHolderPlayer = i + 1;
+                    break;
+                }
             }
-            //      ++v12;
-            ++v5;
-            //  if ( v12 > &pParty->pPlayers[3] )
-            //  return;
         }
-        if (v9) v9->uHolderPlayer = v5;
     }
 }
 

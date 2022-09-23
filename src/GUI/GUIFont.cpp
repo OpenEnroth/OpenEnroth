@@ -360,7 +360,7 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int 
                 break;
             }
             case  '\n':
-            {  // Line Feed 0A 10 (êîíåö ñòðîêè)
+            {  // Line Feed 0A 10 (конец строки)
                 string_pixel_Width = start_pixel_offset;
                 possible_transition_point = i;
                 break;
@@ -384,14 +384,13 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int 
                 break;
             }
             default:
-                if ((string_pixel_Width + pData->pMetrics[c].uWidth + pData->pMetrics[c].uLeftSpacing +
-                    pData->pMetrics[c].uRightSpacing) < width) {  // íàðàùèâàíèå äëèíû ñòðîêè èëè ïåðåíîñ
+                if ((string_pixel_Width + pData->pMetrics[c].uWidth + pData->pMetrics[c].uLeftSpacing + pData->pMetrics[c].uRightSpacing) < width) {  // наращивание длины строки или перенос
                     if (i > possible_transition_point)
                         string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
                     string_pixel_Width += pData->pMetrics[c].uWidth;
                     if (i < uInStrLen)
                         string_pixel_Width += pData->pMetrics[c].uRightSpacing;
-                } else {  // ïåðåíîñ ñòðîêè è ñëîâà
+                } else {  // перенос строки и слова
                     temp_string[possible_transition_point] = '\n';
                     string_pixel_Width = start_pixel_offset;
                     if (i > possible_transition_point) {
