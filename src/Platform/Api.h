@@ -23,8 +23,6 @@ bool OS_OpenConsole();
 unsigned int OS_GetTime();
 uint64_t OS_GetPrecisionTime();
 
-std::vector<std::string> OS_FindFiles(const std::string &folder, const std::string &mask);
-
 /**
  * On linux and on mac this function handles home-relative paths, so this is the preferred method of constructing
  * absolute paths instead of calling `std::filesystem::path` constructor.

@@ -38,25 +38,6 @@ bool OS_OpenConsole() {
     return true;
 }
 
-std::vector<std::string> OS_FindFiles(const std::string& folder, const std::string& mask) {
-    std::vector<std::string> result;
-
-    struct dirent *entry;
-    DIR *dp;
-    int flags = FNM_PATHNAME | FNM_PERIOD | FNM_CASEFOLD;
-
-    dp = opendir(folder.c_str());
-    if (dp != NULL) {
-        while ((entry = readdir(dp)))
-            if (fnmatch(mask.c_str(), entry->d_name, flags) == 0)
-                result.push_back(entry->d_name);
-        closedir(dp);
-    }
-
-    return result;
-}
-
-
 //////////////////// There is no Windows Registry ////////////////////
 
 bool OS_GetAppString(const char* path, char* out_string, int out_string_size) {
