@@ -51,7 +51,8 @@ void DecorationList::ToFile() {
         Error("Unable to save ddeclist.bin!", 0);
     }
 
-    fwrite(this, 4, 1, file);
+    uint32_t size = this->pDecorations.size();
+    fwrite(&size, 4, 1, file);
     fwrite(&pDecorations[0], sizeof(DecorationDesc), pDecorations.size(), file);
     fclose(file);
 }
