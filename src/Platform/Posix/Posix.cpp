@@ -58,7 +58,7 @@ std::filesystem::path OS_casepath(std::filesystem::path path) {
     if (path.is_relative())
         result = std::filesystem::path(".");
 
-    for (const std::string &part: path) {
+    for (const std::string &part : path) {
         if (part == "/") {
             result = part;
             continue;
@@ -66,7 +66,7 @@ std::filesystem::path OS_casepath(std::filesystem::path path) {
 
         std::string foundPart;
         std::error_code error;
-        for (const std::filesystem::directory_entry &entry: std::filesystem::directory_iterator(result, error)) {
+        for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(result, error)) {
             std::string entryName = entry.path().filename().string();
 
             if (iequals(entryName, part)) {
