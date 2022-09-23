@@ -5,6 +5,7 @@
 #include "Engine/stru123.h"
 #include "Engine/Engine.h"
 #include "Level/Decoration.h"
+#include "Platform/Api.h"
 #include "Sprites.h"
 
 DecorationList *pDecorationList;
@@ -46,7 +47,7 @@ void DecorationList::InitializeDecorationSprite(unsigned int uDecID) {
 }
 
 void DecorationList::ToFile() {
-    FILE *file = fopen(MakeDataPath("data", "ddeclist.bin").c_str(), "wb");
+    FILE *file = OS_fopen(MakeDataPath("data", "ddeclist.bin"), "wb");
     if (file == nullptr) {
         Error("Unable to save ddeclist.bin!", 0);
     }

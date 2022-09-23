@@ -110,12 +110,9 @@ void OverlayList::InitializeSprites() {
 
 //----- (00458DBC) --------------------------------------------------------
 void OverlayList::ToFile() {
-    FILE *v2;  // eax@1
-    // FILE *v3; // edi@1
-
-    v2 = fopen(MakeDataPath("data", "doverlay.bin").c_str(), "wb");
-    // v3 = v2;
-    if (!v2) Error("Unable to save doverlay.bin!");
+    FILE *v2 = OS_fopen(MakeDataPath("data", "doverlay.bin"), "wb");
+    if (!v2)
+        Error("Unable to save doverlay.bin!");
     fwrite(this, 4, 1, v2);
     fwrite(this->pOverlays, 8, this->uNumOverlays, v2);
     fclose(v2);

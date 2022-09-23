@@ -15,6 +15,8 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
 
+#include "Platform/Api.h"
+
 struct SpriteFrameTable *pSpriteFrameTable;
 
 //----- (0044D4D8) --------------------------------------------------------
@@ -323,7 +325,7 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
 }
 
 void SpriteFrameTable::ToFile() {
-    FILE *file = fopen(MakeDataPath("data", "dsft.bin").c_str(), "wb");
+    FILE *file = OS_fopen(MakeDataPath("data", "dsft.bin"), "wb");
     if (file == nullptr) {
         Error("Unable to save dsft.bin!");
     }
