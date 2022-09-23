@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "Application.h"
-#include "Engine/Strings.h"
+#include "Utility/String.h"
 
 bool OS_GetAppStringRecursive(HKEY parent_key, const char *path,
                               char *out_string, int out_string_size) {

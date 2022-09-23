@@ -6,7 +6,7 @@
 #include <cstdio>
 
 #include "Engine/Point.h"
-#include "Engine/Strings.h"
+#include "Utility/String.h"
 
 bool OS_GetAppString(const char *path, char *out_string, int out_string_size);
 

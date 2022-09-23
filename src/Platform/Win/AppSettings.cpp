@@ -1,6 +1,6 @@
 #include "Platform/Win/Win.h"
 
-#include "Engine/Strings.h"
+#include "Utility/String.h"
 
 bool OS_GetAppStringRecursive(
     HKEY parent_key,

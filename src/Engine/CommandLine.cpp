@@ -6,7 +6,7 @@
 
 #include "Engine/CommandLine.h"
 
-#include "Engine/Strings.h"
+#include "Utility/String.h"
 
 using Engine_::CommandLine;
 

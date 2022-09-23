@@ -15,7 +15,6 @@
 #include "Engine/MM7.h"
 #include "Engine/MapInfo.h"
 #include "Engine/IocContainer.h"
-#include "Engine/Strings.h"
 #include "Engine/VectorTypes.h"
 #include "Engine/mm7_data.h"
 
@@ -28,6 +27,7 @@
 
 #include "Application/GameConfig.h"
 #include "Utility/DataPath.h"
+#include "Utility/String.h"
 
 class Nuklear;
 using Io::KeyboardActionMapping;
