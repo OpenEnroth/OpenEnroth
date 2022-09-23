@@ -147,7 +147,12 @@ std::string FindMm7Directory() {
 int Game::Run() {
     IntegrityTest();
 
-    SetDataPath(FindMm7Directory());
+    std::string mm7dir = FindMm7Directory();
+    if(mm7dir.empty()) {
+        log->Warning("MM7 directory not found, please set WOMM_PATH_OVERRIDE environment variable");
+        return -1;
+    }
+    SetDataPath(mm7dir);
 
     config->Startup();
 
