@@ -310,8 +310,8 @@ LABEL_13:
                 if ((PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid) >=
                      0) &&
                     (PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid) <
-                     (signed int)(uNumActors - 1))) {
-                    for (v56 = 0; v56 < uNumActors; ++v56) {
+                     (signed int)(pActors.size() - 1))) {
+                    for (v56 = 0; v56 < pActors.size(); ++v56) {
                         if (pActors[PID_ID(pSpriteObjects[uLayingItemID]
                                                .spell_caster_pid)]
                                 .GetActorsRelation(&pActors[v56]))
@@ -319,7 +319,7 @@ LABEL_13:
                     }
                 }
             } else {
-                for (i = 0; i < (signed int)uNumActors; ++i)
+                for (i = 0; i < (signed int)pActors.size(); ++i)
                     CollideWithActor(i, 0);
             }
             v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
@@ -523,7 +523,7 @@ LABEL_25:
                 if (PID_TYPE(pSpriteObject->spell_caster_pid) != OBJECT_Player)
                     CollideWithParty(true);
 
-                for (int actloop = 0; actloop < (signed int)uNumActors; ++actloop) {
+                for (int actloop = 0; actloop < (signed int)pActors.size(); ++actloop) {
                     // dont collide against self
                     if (PID_TYPE(pSpriteObject->spell_caster_pid) == OBJECT_Actor) {
                         if (PID_ID(pSpriteObject->spell_caster_pid) == actloop) continue;
@@ -899,8 +899,8 @@ void SpriteObject::InitializeSpriteObjects() {
 void SpriteObject::_46BEF1_apply_spells_aoe() {
     __debugbreak();  // Ritor1
 
-    if (uNumActors > 0) {
-        for (size_t i = 0; i < uNumActors; ++i) {
+    if (pActors.size() > 0) {
+        for (size_t i = 0; i < pActors.size(); ++i) {
             if (pActors[i].CanAct()) {
                 int v7 = pActors[i].vPosition.x - this->vPosition.x;
                 int v9 = pActors[i].vPosition.y - this->vPosition.y;

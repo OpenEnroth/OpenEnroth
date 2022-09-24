@@ -315,8 +315,7 @@ struct Actor {
 
 // extern Actor pMonsterInfoUI_Doll;
 
-extern std::array<Actor, 500> pActors;
-extern size_t uNumActors;
+extern std::vector<Actor> pActors;
 
 bool CheckActors_proximity();
 int IsActorAlive(unsigned int uType, unsigned int uParam,
@@ -326,7 +325,7 @@ void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
                           unsigned int bToggle);
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
-int Spawn_Light_Elemental(int spell_power, int caster_skill_level,
+void Spawn_Light_Elemental(int spell_power, int caster_skill_level,
                                      int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, struct SpawnPointMM7 *spawn,
                     int a3, int a4, int a5);

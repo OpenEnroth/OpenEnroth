@@ -1051,8 +1051,8 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     std::vector<Actor_MM7> mm7actors;
     stream.ReadVector(&mm7actors);
-    uNumActors = mm7actors.size(); // TODO: make a vector
-    for (int i = 0; i < uNumActors; ++i)
+    pActors.resize(mm7actors.size());
+    for (int i = 0; i < mm7actors.size(); ++i)
         mm7actors[i].Deserialize(&pActors[i]);
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
@@ -1428,7 +1428,7 @@ bool OutdoorLocation::InitalizeActors(int a1) {
                        //  int v9; // [sp+34Ch] [bp-4h]@1
 
     alert_status = 0;
-    for (int i = 0; i < uNumActors; ++i) {
+    for (int i = 0; i < pActors.size(); ++i) {
         if (!(pActors[i].uAttributes & ACTOR_UNKNOW7)) {
             if (alert_status != 1) {
                 pActors[i].uCurrentActionTime = 0;
@@ -1521,7 +1521,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
     int x;             // [sp+44h] [bp-1Ch]@5
     __int16 v62;       // [sp+5Ch] [bp-4h]@25
 
-    for (int i = 0; i < uNumActors; ++i) {
+    for (int i = 0; i < pActors.size(); ++i) {
         pActors[i].uAttributes &= ~ACTOR_VISIBLE;
         if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled) {
             continue;
@@ -2416,7 +2416,7 @@ void ODM_ProcessPartyActions() {
         CollideOutdoorWithDecorations(
                 WorldPosToGridCellX(pParty->vPosition.x), WorldPosToGridCellY(pParty->vPosition.y));
         _46ED8A_collide_against_sprite_objects(4);
-        for (uint actor_id = 0; actor_id < (signed int)uNumActors; ++actor_id)
+        for (uint actor_id = 0; actor_id < (signed int)pActors.size(); ++actor_id)
             CollideWithActor(actor_id, 0);
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             _angle_x = collision_state.new_position_lo.x;
@@ -2871,7 +2871,7 @@ void UpdateActors_ODM() {
     if (engine->config->debug.NoActors.Get())
         return;  // uNumActors = 0;
 
-    for (unsigned int Actor_ITR = 0; Actor_ITR < uNumActors; ++Actor_ITR) {
+    for (unsigned int Actor_ITR = 0; Actor_ITR < pActors.size(); ++Actor_ITR) {
         if (pActors[Actor_ITR].uAIState == Removed || pActors[Actor_ITR].uAIState == Disabled ||
             pActors[Actor_ITR].uAIState == Summoned || !pActors[Actor_ITR].uMovementSpeed)
                 continue;

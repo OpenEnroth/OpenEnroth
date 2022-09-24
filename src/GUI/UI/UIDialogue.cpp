@@ -417,7 +417,7 @@ void GUIWindow_Dialogue::Update() {
         if (pParty->field_7B5_in_arena_quest &&
             pParty->field_7B5_in_arena_quest != -1) {
             int num_dead_actors = 0;
-            for (uint i = 0; i < uNumActors; ++i) {
+            for (uint i = 0; i < pActors.size(); ++i) {
                 if (pActors[i].uAIState == Dead ||
                     pActors[i].uAIState == Removed ||
                     pActors[i].uAIState == Disabled) {
@@ -427,7 +427,7 @@ void GUIWindow_Dialogue::Update() {
                     if (sumonner_type == OBJECT_Player) ++num_dead_actors;
                 }
             }
-            if (num_dead_actors == uNumActors) {
+            if (num_dead_actors == pActors.size()) {
                 pButton->sLabel = localization->GetString(LSTR_COLLECT_PRIZE);
             }
         }

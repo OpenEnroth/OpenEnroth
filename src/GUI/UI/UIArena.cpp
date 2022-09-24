@@ -42,7 +42,7 @@ void Arena_SelectionFightLevel() {
             uDialogueType = DIALOGUE_ARENA_ALREADY_WON;
         } else {
             int v0 = 0;
-            for (size_t i = 0; i < uNumActors; i++) {
+            for (size_t i = 0; i < pActors.size(); i++) {
                 if (pActors[i].uAIState == Dead ||
                     pActors[i].uAIState == Removed ||
                     pActors[i].uAIState == Disabled ||
@@ -50,7 +50,7 @@ void Arena_SelectionFightLevel() {
                         PID_TYPE(pActors[i].uSummonerID) == OBJECT_Player)
                     ++v0;
             }
-            if (v0 >= (signed int)uNumActors || (signed int)uNumActors <= 0) {
+            if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
                 ++*((char *)&pParty->monster_for_hunting_killed[3] +
                     (unsigned __int8)pParty->field_7B5_in_arena_quest +

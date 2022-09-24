@@ -267,7 +267,7 @@ void stru262_TurnBased::AITurnBasedAction() {
     int shrinked;
     int j;
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         curr_actor = &pActors[i];
         shrinked = pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active();
         for (j = 0; j < 22; ++j) {  // check expired spell Buffs

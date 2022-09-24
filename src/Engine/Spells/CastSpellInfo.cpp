@@ -3039,8 +3039,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         assert(false);
                 }
                 int mon_num = 0;
-                for (uint monster_id = 0; monster_id < uNumActors;
-                     monster_id++) {
+                for (uint monster_id = 0; monster_id < pActors.size(); monster_id++) {
                     if (pActors[monster_id].uAIState != Dead &&
                         pActors[monster_id].uAIState != Removed &&
                         pActors[monster_id].uAIState != Disabled &&

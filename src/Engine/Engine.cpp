@@ -790,7 +790,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         (pCurrentMapName == "d10.blv")) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
-        for (uint i = 0; i < uNumActors; ++i) {
+        for (uint i = 0; i < pActors.size(); ++i) {
             pActors[i].pMonsterInfo.uTreasureType = 0;
             pActors[i].pMonsterInfo.uTreasureDiceRolls = 0;
             pActors[i].pMonsterInfo.uExp = 0;
@@ -1227,7 +1227,7 @@ void Engine::_461103_load_level_sub() {
     int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
     if (engine->config->debug.NoActors.Get())
-        uNumActors = 0;
+        pActors.clear();
 
     GenerateItemsInChest();
     pGameLoadingUI_ProgressBar->Progress();
@@ -1238,7 +1238,7 @@ void Engine::_461103_load_level_sub() {
     v19 = pMapStats->GetMapInfo(pCurrentMapName);
 
     // v15 = 0;
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         // Actor* pActor = &pActors[i];
         // v2 = (char *)&pActors[0].uNPC_ID;
         // do
@@ -1284,7 +1284,7 @@ void Engine::_461103_load_level_sub() {
     v20 = 0;
     // v16 = v1;
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         // v7 = (char *)&pActors[0].pMonsterInfo;
         // do
         //{
@@ -1306,7 +1306,7 @@ void Engine::_461103_load_level_sub() {
     pGameLoadingUI_ProgressBar->Progress();
 
     if (engine->config->debug.NoActors.Get())
-        uNumActors = 0;
+        pActors.clear();
     if (engine->config->debug.NoDecorations.Get())
         pLevelDecorations.clear();
     init_event_triggers();

@@ -986,8 +986,8 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     std::vector<Actor_MM7> mm7actors;
     stream.ReadVector(&mm7actors);
-    uNumActors = mm7actors.size();
-    for (int i = 0; i < uNumActors; ++i)
+    pActors.resize(mm7actors.size());
+    for (int i = 0; i < mm7actors.size(); ++i)
         mm7actors[i].Deserialize(&pActors[i]);
 
     pGameLoadingUI_ProgressBar->Progress();
@@ -1557,7 +1557,7 @@ void UpdateActors_BLV() {
     if (engine->config->debug.NoActors.Get())
         return;
 
-    for (unsigned int actor_id = 0; actor_id < uNumActors; actor_id++) {
+    for (unsigned int actor_id = 0; actor_id < pActors.size(); actor_id++) {
         if (pActors[actor_id].uAIState == Removed ||
             pActors[actor_id].uAIState == Disabled ||
             pActors[actor_id].uAIState == Summoned ||
@@ -1796,7 +1796,7 @@ void PrepareToLoadBLV(bool bLoading) {
     // INDOOR initialize actors
     v38 = 0;
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         if (pActors[i].uAttributes & ACTOR_UNKNOW7) {
             if (!map_id) {
                 pActors[i].pMonsterInfo.field_3E = 19;
@@ -1963,7 +1963,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
     // signed int y; // [sp+4Ch] [bp-8h]@32
     // int x; // [sp+50h] [bp-4h]@32
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled)
             continue;
 
@@ -3072,7 +3072,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         for (uint j = 0; j < 100; ++j) {
             CollideIndoorWithGeometry(true);
             CollideIndoorWithDecorations();
-            for (int k = 0; k < uNumActors; ++k)
+            for (int k = 0; k < pActors.size(); ++k)
                 CollideWithActor(k, 0);
             if (CollideIndoorWithPortals())
                 break; // No portal collisions => can break.
