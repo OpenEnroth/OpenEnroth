@@ -2435,40 +2435,7 @@ void Actor::UpdateAnimation() {
 
 //----- (00459671) --------------------------------------------------------
 void Actor::Reset() {
-    this->pActorName[0] = 0;
-    this->word_000086_some_monster_id = 0;
-    this->sNPC_ID = 0;
-    this->vPosition.z = 0;
-    this->vPosition.y = 0;
-    this->vPosition.x = 0;
-    this->vVelocity.z = 0;
-    this->vVelocity.y = 0;
-    this->vVelocity.x = 0;
-    this->uYawAngle = 0;
-    this->uPitchAngle = 0;
-    this->uAttributes = 0;
-    this->uSectorID = 0;
-    this->uCurrentActionTime = 0;
-    this->vInitialPosition.z = 0;
-    this->vInitialPosition.y = 0;
-    this->vInitialPosition.x = 0;
-    this->vGuardingPosition.z = 0;
-    this->vGuardingPosition.y = 0;
-    this->vGuardingPosition.x = 0;
-    this->uTetherDistance = 256;
-    this->uActorRadius = 32;
-    this->uActorHeight = 128;
-    this->uAIState = Standing;
-    this->uCurrentActionAnimation = ANIM_Standing;
-    this->uMovementSpeed = 200;
-    this->uCarriedItemID = 0;
-    this->uGroup = 0;
-    this->uAlly = 0;
-    this->uSummonerID = 0;
-    this->uLastCharacterIDToHit = 0;
-    this->dword_000334_unique_name = 0;
-    memset(this->pSpriteIDs.data(), 0, sizeof(pSpriteIDs));
-    memset(this->pActorBuffs.data(), 0, 0x160u);
+    *this = Actor();
 }
 
 //----- (0045959A) --------------------------------------------------------

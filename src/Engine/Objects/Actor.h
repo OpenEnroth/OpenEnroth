@@ -153,21 +153,6 @@ class GUIWindow;
 /*   66 */
 #pragma pack(push, 1)
 struct Actor {
-    //----- (0041F4C1) --------------------------------------------------------
-    inline Actor() {
-        signed int i;  // edx@1
-
-        for (i = 0; i < 22; i++) {
-            this->pActorBuffs[i].uSkill = 0;
-            this->pActorBuffs[i].uPower = 0;
-            this->pActorBuffs[i].expire_time.value = 0;
-            this->pActorBuffs[i].uCaster = 0;
-            this->pActorBuffs[i].uFlags = 0;
-        }
-        for (i = 0; i < 4; i++) this->ActorHasItems[i].Reset();
-        Reset();
-    }
-
     void SummonMinion(int summonerId);
     void Reset();
     void Remove();

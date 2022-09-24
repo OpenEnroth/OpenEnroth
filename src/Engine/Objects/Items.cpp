@@ -139,16 +139,7 @@ int ItemGen::_439DF3_get_additional_damage(DAMAGE_TYPE* damage_type,
 
 //----- (00402F07) --------------------------------------------------------
 void ItemGen::Reset() {
-    this->uHolderPlayer = 0;
-    this->uAttributes = 0;
-    this->uNumCharges = 0;
-    this->uMaxCharges = 0;
-    this->special_enchantment = ITEM_ENCHANTMENT_NULL;
-    this->m_enchantmentStrength = 0;
-    this->uEnchantmentType = 0;
-    this->uItemID = ITEM_NULL;
-    this->uBodyAnchor = 0;
-    this->uExpireTime.Reset();
+    *this = ItemGen();
 }
 
 //----- (00458260) --------------------------------------------------------

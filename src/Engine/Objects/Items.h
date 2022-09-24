@@ -63,7 +63,7 @@ struct ItemGen {  // 0x24
     uint8_t GetDamageMod();
     bool MerchandiseTest(int _2da_idx);
 
-    int32_t uItemID = 0;               // 0
+    int32_t uItemID = ITEM_NULL;        // 0
     int32_t uEnchantmentType = 0;       // 4
     int32_t m_enchantmentStrength = 0;  // 8
     ITEM_ENCHANTMENT special_enchantment = ITEM_ENCHANTMENT_NULL;  // 0c
