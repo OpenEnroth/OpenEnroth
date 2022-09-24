@@ -538,7 +538,15 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
             continue;
         }
 
-        if (isAboveGround || isFlying || !(pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
+        if (!isAboveGround && !isFlying && (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
+            if (pParty->bTurnBasedModeOn &&
+                (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
+                continue;
+            if (!actor.pMonsterInfo.uHostilityType || v56 != 0) {
+                Actor::AI_StandOrBored(actor.id, 4, 0, &v52);
+                continue;
+            }
+        } else {
             if (actor.uCurrentActionAnimation != 1 ||
                 floorZ >= actor.vPosition.z - 100 || isAboveGround || isFlying) {
                 if (collision_state.adjusted_move_distance < collision_state.move_distance) {
@@ -682,13 +690,6 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                 actor.uYawAngle += 100;
             } else {
                 actor.uYawAngle -= 100;
-            }
-        } else {
-            if (pParty->bTurnBasedModeOn && (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
-                continue;
-            if (!actor.pMonsterInfo.uHostilityType || v56 != 0) {
-                Actor::AI_StandOrBored(actor.id, 4, 0, &v52);
-                continue;
             }
         }
     }
