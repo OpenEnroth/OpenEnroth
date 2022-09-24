@@ -899,24 +899,22 @@ void SpriteObject::InitializeSpriteObjects() {
 void SpriteObject::_46BEF1_apply_spells_aoe() {
     __debugbreak();  // Ritor1
 
-    if (pActors.size() > 0) {
-        for (size_t i = 0; i < pActors.size(); ++i) {
-            if (pActors[i].CanAct()) {
-                int v7 = pActors[i].vPosition.x - this->vPosition.x;
-                int v9 = pActors[i].vPosition.y - this->vPosition.y;
-                int v10 = pActors[i].uActorHeight / 2 + pActors[i].vPosition.z -
-                          this->vVelocity.y;
+    for (size_t i = 0; i < pActors.size(); ++i) {
+        if (pActors[i].CanAct()) {
+            int v7 = pActors[i].vPosition.x - this->vPosition.x;
+            int v9 = pActors[i].vPosition.y - this->vPosition.y;
+            int v10 = pActors[i].uActorHeight / 2 + pActors[i].vPosition.z -
+                      this->vVelocity.y;
 
-                int v11 = this->vVelocity.x * this->vVelocity.x;
+            int v11 = this->vVelocity.x * this->vVelocity.x;
 
-                if (v11 >= v7 * v7 + v9 * v9 + v10 * v10) {
-                    if (pActors[i].DoesDmgTypeDoDamage(DMGT_DARK)) {
-                        pActors[i].pActorBuffs[this->spell_id].Apply(
-                            GameTime(pParty->GetPlayingTime() +
-                                GameTime::FromSeconds(this->spell_level)),
-                            this->spell_skill, 4, 0, 0);
-                        pActors[i].uAttributes |= 0x80000;
-                    }
+            if (v11 >= v7 * v7 + v9 * v9 + v10 * v10) {
+                if (pActors[i].DoesDmgTypeDoDamage(DMGT_DARK)) {
+                    pActors[i].pActorBuffs[this->spell_id].Apply(
+                        GameTime(pParty->GetPlayingTime() +
+                            GameTime::FromSeconds(this->spell_level)),
+                        this->spell_skill, 4, 0, 0);
+                    pActors[i].uAttributes |= 0x80000;
                 }
             }
         }

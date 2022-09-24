@@ -4526,22 +4526,20 @@ int Actor::MakeActorAIList_BLV() {
     ai_arrays_size = num_actors_detect_player;
 
     // add any actors than can act and are in the same sector
-    if ((signed int)pActors.size() > 0) {
-        for (uint i = 0; i < (signed int)pActors.size(); ++i) {
-            if (pActors[i].CanAct() && pActors[i].uSectorID == party_sector) {
-                int v25 = 0;
-                if (num_actors_detect_player <= 0) {
-                    pActors[i].uAttributes |= ACTOR_ACTIVE;
-                    ai_array_detected_actor_ids[ai_arrays_size++] = i;
-                } else {
-                    // convoluted way of checking that this actor is not already on the list
-                    while (ai_array_detected_actor_ids[v25] != i) {
-                        ++v25;
-                        if (v25 >= num_actors_detect_player) {
-                            pActors[i].uAttributes |= ACTOR_ACTIVE;
-                            ai_array_detected_actor_ids[ai_arrays_size++] = i;
-                            break;
-                        }
+    for (uint i = 0; i < (signed int)pActors.size(); ++i) {
+        if (pActors[i].CanAct() && pActors[i].uSectorID == party_sector) {
+            int v25 = 0;
+            if (num_actors_detect_player <= 0) {
+                pActors[i].uAttributes |= ACTOR_ACTIVE;
+                ai_array_detected_actor_ids[ai_arrays_size++] = i;
+            } else {
+                // convoluted way of checking that this actor is not already on the list
+                while (ai_array_detected_actor_ids[v25] != i) {
+                    ++v25;
+                    if (v25 >= num_actors_detect_player) {
+                        pActors[i].uAttributes |= ACTOR_ACTIVE;
+                        ai_array_detected_actor_ids[ai_arrays_size++] = i;
+                        break;
                     }
                 }
             }
@@ -5271,45 +5269,43 @@ void area_of_effect__damage_evaluate() {
                 }
             }
 
-            if (pActors.size() > 0) {  // actors damage(повреждения другим участникам)
-                for (int actorID = 0; actorID < pActors.size(); ++actorID) {
-                    if (pActors[actorID].CanAct()) {
-                        int xdiff = pActors[actorID].vPosition.x - AttackerInfo.pXs[attack_index];
-                        int xsq = xdiff * xdiff;
-                        int ydiff = pActors[actorID].vPosition.y - AttackerInfo.pYs[attack_index];
-                        int ysq = ydiff * ydiff;
-                        int zdiff = ((pActors[actorID].uActorHeight / 2) + pActors[actorID].vPosition.z) - AttackerInfo.pZs[attack_index];
-                        int zsq = zdiff * zdiff;
-                        unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius) * (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius);
-                        int zvec = pActors[actorID].vPosition.z;
+            for (int actorID = 0; actorID < pActors.size(); ++actorID) {
+                if (pActors[actorID].CanAct()) {
+                    int xdiff = pActors[actorID].vPosition.x - AttackerInfo.pXs[attack_index];
+                    int xsq = xdiff * xdiff;
+                    int ydiff = pActors[actorID].vPosition.y - AttackerInfo.pYs[attack_index];
+                    int ysq = ydiff * ydiff;
+                    int zdiff = ((pActors[actorID].uActorHeight / 2) + pActors[actorID].vPosition.z) - AttackerInfo.pZs[attack_index];
+                    int zsq = zdiff * zdiff;
+                    unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius) * (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius);
+                    int zvec = pActors[actorID].vPosition.z;
 
-                        // check range
-                        if (xsq + ysq + zsq < rangesq) {
-                            attacker_coord.x = AttackerInfo.pXs[attack_index];
-                            attacker_coord.y = AttackerInfo.pYs[attack_index];
-                            attacker_coord.z = AttackerInfo.pZs[attack_index];
+                    // check range
+                    if (xsq + ysq + zsq < rangesq) {
+                        attacker_coord.x = AttackerInfo.pXs[attack_index];
+                        attacker_coord.y = AttackerInfo.pYs[attack_index];
+                        attacker_coord.z = AttackerInfo.pZs[attack_index];
 
-                            // check line of sight
-                            if (Check_LineOfSight(pActors[actorID].vPosition.x,
-                                           pActors[actorID].vPosition.y,
-                                           pActors[actorID].vPosition.z + 50,
-                                           attacker_coord)) {
-                                normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
-                                AttackerInfo.vec_4B4[attack_index].x = xdiff;
-                                AttackerInfo.vec_4B4[attack_index].y = ydiff;
-                                AttackerInfo.vec_4B4[attack_index].z = zvec;
-                                switch (attacker_PID_type) {
-                                    case OBJECT_Player:
-                                        Actor::DamageMonsterFromParty(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
-                                        break;
-                                    case OBJECT_Actor:
-                                        if (sprite_obj_ptr && pActors[attacker_PID_id].GetActorsRelation(&pActors[actorID]))
-                                            Actor::ActorDamageFromMonster(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index], sprite_obj_ptr->field_61);
-                                        break;
-                                    case OBJECT_Item:
-                                        ItemDamageFromActor(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
-                                        break;
-                                }
+                        // check line of sight
+                        if (Check_LineOfSight(pActors[actorID].vPosition.x,
+                                       pActors[actorID].vPosition.y,
+                                       pActors[actorID].vPosition.z + 50,
+                                       attacker_coord)) {
+                            normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
+                            AttackerInfo.vec_4B4[attack_index].x = xdiff;
+                            AttackerInfo.vec_4B4[attack_index].y = ydiff;
+                            AttackerInfo.vec_4B4[attack_index].z = zvec;
+                            switch (attacker_PID_type) {
+                                case OBJECT_Player:
+                                    Actor::DamageMonsterFromParty(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
+                                    break;
+                                case OBJECT_Actor:
+                                    if (sprite_obj_ptr && pActors[attacker_PID_id].GetActorsRelation(&pActors[actorID]))
+                                        Actor::ActorDamageFromMonster(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index], sprite_obj_ptr->field_61);
+                                    break;
+                                case OBJECT_Item:
+                                    ItemDamageFromActor(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
+                                    break;
                             }
                         }
                     }
