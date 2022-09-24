@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;befbe06</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4850e0b</span>
    </div>
   </td>
  </tr>
@@ -90,6 +90,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Rect_8h.html">Engine/Rect.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="VectorTypes_8h.html">Engine/VectorTypes.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GameConfig_8h.html">Application/GameConfig.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Color_8h.html">Utility/Color.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -121,14 +122,6 @@ Namespaces</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a6945bcb6854c648afd995364124e3e17"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#a6945bcb6854c648afd995364124e3e17">PauseGameDrawing</a> ()</td></tr>
 <tr class="separator:a6945bcb6854c648afd995364124e3e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08aa5a1574881457a84b6365c8899183"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#a08aa5a1574881457a84b6365c8899183">Color16</a> (uint32_t r, uint32_t g, uint32_t b)</td></tr>
-<tr class="separator:a08aa5a1574881457a84b6365c8899183"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fa4621a9002451f0e3066f2e027bfd3"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#a3fa4621a9002451f0e3066f2e027bfd3">Color32</a> (uint16_t color16)</td></tr>
-<tr class="separator:a3fa4621a9002451f0e3066f2e027bfd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa41b040026174999af455170972398d5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#aa41b040026174999af455170972398d5">Color32</a> (uint32_t r, uint32_t g, uint32_t b, uint32_t a=0xFF)</td></tr>
-<tr class="separator:aa41b040026174999af455170972398d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe787a6b00a07a93257d34149363fdd5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#afe787a6b00a07a93257d34149363fdd5">Color32_SwapRedBlue</a> (uint16_t color16)</td></tr>
-<tr class="separator:afe787a6b00a07a93257d34149363fdd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2366089c55cc5e42ff2e8d95b4b43e7e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#a2366089c55cc5e42ff2e8d95b4b43e7e">ODM_NearClip</a> (unsigned int uVertexID)</td></tr>
 <tr class="separator:a2366089c55cc5e42ff2e8d95b4b43e7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2b8592615b91fc5af64de95b76d6dcd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IRender_8h.html#ac2b8592615b91fc5af64de95b76d6dcd">ODM_FarClip</a> (unsigned int uNumVertices)</td></tr>
@@ -249,116 +242,6 @@ Variables</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a08aa5a1574881457a84b6365c8899183" name="a08aa5a1574881457a84b6365c8899183"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a08aa5a1574881457a84b6365c8899183">&#9670;&#160;</a></span>Color16()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint16_t Color16 </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>r</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>g</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3fa4621a9002451f0e3066f2e027bfd3" name="a3fa4621a9002451f0e3066f2e027bfd3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3fa4621a9002451f0e3066f2e027bfd3">&#9670;&#160;</a></span>Color32() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t Color32 </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color16</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa41b040026174999af455170972398d5" name="aa41b040026174999af455170972398d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa41b040026174999af455170972398d5">&#9670;&#160;</a></span>Color32() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t Color32 </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>r</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>g</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>b</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>a</em> = <code>0xFF</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afe787a6b00a07a93257d34149363fdd5" name="afe787a6b00a07a93257d34149363fdd5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe787a6b00a07a93257d34149363fdd5">&#9670;&#160;</a></span>Color32_SwapRedBlue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t Color32_SwapRedBlue </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>color16</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
