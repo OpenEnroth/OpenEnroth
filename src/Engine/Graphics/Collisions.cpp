@@ -474,7 +474,7 @@ void CollideWithParty(bool jagged_top) {
     CollideWithCylinder(ToFloatVector(pParty->vPosition), 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
 }
 
-void ProcessActorCollisionsBLV(int actor_id, unsigned int uFaceID, bool isAboveGround, bool isFlying) {
+void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveGround, bool isFlying) {
     int v58;                 // [sp+48h] [bp-18h]@51
     unsigned int v24;        // eax@51
     int v61;                 // [sp+54h] [bp-Ch]@14
@@ -497,32 +497,32 @@ void ProcessActorCollisionsBLV(int actor_id, unsigned int uFaceID, bool isAboveG
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
-    collision_state.radius_hi = pActors[actor_id].uActorRadius;
-    collision_state.radius_lo = pActors[actor_id].uActorRadius;
+    collision_state.radius_hi = actor.uActorRadius;
+    collision_state.radius_lo = actor.uActorRadius;
     for (int attempt = 0; attempt < 100; attempt++) {
-        collision_state.position_hi = ToFloatVector(pActors[actor_id].vPosition);
+        collision_state.position_hi = ToFloatVector(actor.vPosition);
         collision_state.position_lo = collision_state.position_hi;
-        collision_state.position_lo.z += pActors[actor_id].uActorRadius + 1;
-        collision_state.position_hi.z += pActors[actor_id].uActorHeight - pActors[actor_id].uActorRadius - 1;
+        collision_state.position_lo.z += actor.uActorRadius + 1;
+        collision_state.position_hi.z += actor.uActorHeight - actor.uActorRadius - 1;
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
 
-        collision_state.velocity = ToFloatVector(pActors[actor_id].vVelocity);
-        collision_state.uSectorID = pActors[actor_id].uSectorID;
+        collision_state.velocity = ToFloatVector(actor.vVelocity);
+        collision_state.uSectorID = actor.uSectorID;
         if (!collision_state.PrepareAndCheckIfStationary(0)) {
             v58 = 0;
-            v24 = 8 * actor_id;
-            HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor_id);
+            v24 = 8 * actor.id;
+            HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor.id);
             for (v61 = 0; v61 < 100; ++v61) {
                 CollideIndoorWithGeometry(true);
                 CollideIndoorWithDecorations();
                 CollideWithParty(false);
                 _46ED8A_collide_against_sprite_objects(v24);
                 for (uint j = 0; j < ai_arrays_size; j++) {
-                    if (ai_near_actors_ids[j] != actor_id) {
-                        v27 = abs(pActors[ai_near_actors_ids[j]].vPosition.z - pActors[actor_id].vPosition.z);
-                        v28 = abs(pActors[ai_near_actors_ids[j]].vPosition.y - pActors[actor_id].vPosition.y);
-                        v29 = abs(pActors[ai_near_actors_ids[j]].vPosition.x - pActors[actor_id].vPosition.x);
-                        if (int_get_vector_length(v29, v28, v27) >= pActors[actor_id].uActorRadius +
+                    if (ai_near_actors_ids[j] != actor.id) {
+                        v27 = abs(pActors[ai_near_actors_ids[j]].vPosition.z - actor.vPosition.z);
+                        v28 = abs(pActors[ai_near_actors_ids[j]].vPosition.y - actor.vPosition.y);
+                        v29 = abs(pActors[ai_near_actors_ids[j]].vPosition.x - actor.vPosition.x);
+                        if (int_get_vector_length(v29, v28, v27) >= actor.uActorRadius +
                                                                     (signed int) pActors[ai_near_actors_ids[j]].uActorRadius &&
                             CollideWithActor(ai_near_actors_ids[j], 40))
                             ++v58;
@@ -536,85 +536,85 @@ void ProcessActorCollisionsBLV(int actor_id, unsigned int uFaceID, bool isAboveG
                 v31 = collision_state.new_position_lo.y;
                 v32 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             } else {
-                v30 = pActors[actor_id].vPosition.x +
+                v30 = actor.vPosition.x +
                       collision_state.adjusted_move_distance * collision_state.direction.x;
-                v31 = pActors[actor_id].vPosition.y +
+                v31 = actor.vPosition.y +
                       collision_state.adjusted_move_distance * collision_state.direction.y;
-                v32 = pActors[actor_id].vPosition.z +
+                v32 = actor.vPosition.z +
                       collision_state.adjusted_move_distance * collision_state.direction.z;
             }
             v33 = GetIndoorFloorZ(Vec3i(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
             if (v33 == -30000)
                 break; // Actor out of bounds, running more iterations won't help.
-            if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && pActors[actor_id].uAIState == Dead) {
-                pActors[actor_id].uAIState = Removed;
+            if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && actor.uAIState == Dead) {
+                actor.uAIState = Removed;
                 continue;
             }
             if (isAboveGround || isFlying || !(pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
-                if (pActors[actor_id].uCurrentActionAnimation != 1 ||
-                    v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
+                if (actor.uCurrentActionAnimation != 1 ||
+                    v33 >= actor.vPosition.z - 100 || isAboveGround || isFlying) {
                     if (collision_state.adjusted_move_distance < collision_state.move_distance) {
-                        pActors[actor_id].vPosition +=
+                        actor.vPosition +=
                                 ToShortVector(collision_state.adjusted_move_distance * collision_state.direction);
-                        pActors[actor_id].uSectorID = collision_state.uSectorID;
+                        actor.uSectorID = collision_state.uSectorID;
                         collision_state.total_move_distance += collision_state.adjusted_move_distance;
                         v37 = PID_ID(collision_state.pid);
                         if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
                             if (pParty->bTurnBasedModeOn &&
                                 (pTurnEngine->turn_stage == TE_ATTACK ||
                                  pTurnEngine->turn_stage == TE_MOVEMENT)) {
-                                pActors[actor_id].vVelocity.x =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                pActors[actor_id].vVelocity.y =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                pActors[actor_id].vVelocity.z =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                actor.vVelocity.x =
+                                        fixpoint_mul(58500, actor.vVelocity.x);
+                                actor.vVelocity.y =
+                                        fixpoint_mul(58500, actor.vVelocity.y);
+                                actor.vVelocity.z =
+                                        fixpoint_mul(58500, actor.vVelocity.z);
                                 continue;
                             }
-                            if (pActors[actor_id].pMonsterInfo.uHostilityType) {
+                            if (actor.pMonsterInfo.uHostilityType) {
                                 if (!v56) {
-                                    Actor::AI_Flee(actor_id, collision_state.pid, 0, nullptr);
-                                    pActors[actor_id].vVelocity.x =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                    pActors[actor_id].vVelocity.y =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                    pActors[actor_id].vVelocity.z =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                                    actor.vVelocity.x =
+                                            fixpoint_mul(58500, actor.vVelocity.x);
+                                    actor.vVelocity.y =
+                                            fixpoint_mul(58500, actor.vVelocity.y);
+                                    actor.vVelocity.z =
+                                            fixpoint_mul(58500, actor.vVelocity.z);
                                     continue;
                                 }
                             } else {
                                 if (!v56) {
                                     if (!pActors[v37].pMonsterInfo.uHostilityType) {
-                                        Actor::AI_FaceObject(actor_id, collision_state.pid, 0, nullptr);
-                                        pActors[actor_id].vVelocity.x =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                        pActors[actor_id].vVelocity.y =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                        pActors[actor_id].vVelocity.z =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                        Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                                        actor.vVelocity.x =
+                                                fixpoint_mul(58500, actor.vVelocity.x);
+                                        actor.vVelocity.y =
+                                                fixpoint_mul(58500, actor.vVelocity.y);
+                                        actor.vVelocity.z =
+                                                fixpoint_mul(58500, actor.vVelocity.z);
                                         continue;
                                     }
-                                    Actor::AI_Flee(actor_id, collision_state.pid, 0, nullptr);
-                                    pActors[actor_id].vVelocity.x =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                    pActors[actor_id].vVelocity.y =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                    pActors[actor_id].vVelocity.z =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                                    actor.vVelocity.x =
+                                            fixpoint_mul(58500, actor.vVelocity.x);
+                                    actor.vVelocity.y =
+                                            fixpoint_mul(58500, actor.vVelocity.y);
+                                    actor.vVelocity.z =
+                                            fixpoint_mul(58500, actor.vVelocity.z);
                                     continue;
                                 }
                             }
-                            Actor::AI_StandOrBored(actor_id, 4, 0, &v53);
-                            pActors[actor_id].vVelocity.x =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                            pActors[actor_id].vVelocity.y =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                            pActors[actor_id].vVelocity.z =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                            Actor::AI_StandOrBored(actor.id, 4, 0, &v53);
+                            actor.vVelocity.x =
+                                    fixpoint_mul(58500, actor.vVelocity.x);
+                            actor.vVelocity.y =
+                                    fixpoint_mul(58500, actor.vVelocity.y);
+                            actor.vVelocity.z =
+                                    fixpoint_mul(58500, actor.vVelocity.z);
                             continue;
                         }
                         if (PID_TYPE(collision_state.pid) == OBJECT_Player) {
-                            if (pActors[actor_id].GetActorsRelation(0)) {
+                            if (actor.GetActorsRelation(0)) {
                                 // v51 =
                                 // __OFSUB__(HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime),
                                 // v22); v49 =
@@ -622,126 +622,123 @@ void ProcessActorCollisionsBLV(int actor_id, unsigned int uFaceID, bool isAboveG
                                 // == v22; v50 =
                                 // HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
                                 // - v22 < 0;
-                                pActors[actor_id].vVelocity.y = 0;
-                                pActors[actor_id].vVelocity.x = 0;
+                                actor.vVelocity.y = 0;
+                                actor.vVelocity.x = 0;
                                 if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
                                     pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
                                 }
 
                                 viewparams->bRedrawGameUI = 1;
-                                pActors[actor_id].vVelocity.x =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                pActors[actor_id].vVelocity.y =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                pActors[actor_id].vVelocity.z =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                actor.vVelocity.x =
+                                        fixpoint_mul(58500, actor.vVelocity.x);
+                                actor.vVelocity.y =
+                                        fixpoint_mul(58500, actor.vVelocity.y);
+                                actor.vVelocity.z =
+                                        fixpoint_mul(58500, actor.vVelocity.z);
                                 continue;
                             }
-                            Actor::AI_FaceObject(actor_id, collision_state.pid, 0, nullptr);
-                            pActors[actor_id].vVelocity.x =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                            pActors[actor_id].vVelocity.y =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                            pActors[actor_id].vVelocity.z =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                            Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                            actor.vVelocity.x =
+                                    fixpoint_mul(58500, actor.vVelocity.x);
+                            actor.vVelocity.y =
+                                    fixpoint_mul(58500, actor.vVelocity.y);
+                            actor.vVelocity.z =
+                                    fixpoint_mul(58500, actor.vVelocity.z);
                             continue;
                         }
                         if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
                             _this = integer_sqrt(
-                                    pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
-                                    pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y);
+                                    actor.vVelocity.x * actor.vVelocity.x +
+                                    actor.vVelocity.y * actor.vVelocity.y);
                             v45 = TrigLUT->Atan2(
-                                    pActors[actor_id].vPosition.x - pLevelDecorations[v37].vPosition.x,
-                                    pActors[actor_id].vPosition.y - pLevelDecorations[v37].vPosition.y);
-                            pActors[actor_id].vVelocity.x = TrigLUT->Cos(v45) * _this;
-                            pActors[actor_id].vVelocity.y = TrigLUT->Sin(v45) * _this;
-                            pActors[actor_id].vVelocity.x =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                            pActors[actor_id].vVelocity.y =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                            pActors[actor_id].vVelocity.z =
-                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                    actor.vPosition.x - pLevelDecorations[v37].vPosition.x,
+                                    actor.vPosition.y - pLevelDecorations[v37].vPosition.y);
+                            actor.vVelocity.x = TrigLUT->Cos(v45) * _this;
+                            actor.vVelocity.y = TrigLUT->Sin(v45) * _this;
+                            actor.vVelocity.x =
+                                    fixpoint_mul(58500, actor.vVelocity.x);
+                            actor.vVelocity.y =
+                                    fixpoint_mul(58500, actor.vVelocity.y);
+                            actor.vVelocity.z =
+                                    fixpoint_mul(58500, actor.vVelocity.z);
                             continue;
                         }
                         if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
                             collision_state.ignored_face_id = PID_ID(collision_state.pid);
                             if (pIndoor->pFaces[v37].uPolygonType == 3) {
-                                pActors[actor_id].vVelocity.z = 0;
-                                pActors[actor_id].vPosition.z =
-                                        pIndoor->pVertices[*pIndoor->pFaces[v37].pVertexIDs].z + 1;
-                                if (pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
-                                    pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y < 400) {
-                                    pActors[actor_id].vVelocity.y = 0;
-                                    pActors[actor_id].vVelocity.x = 0;
-                                    pActors[actor_id].vVelocity.x =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                    pActors[actor_id].vVelocity.y =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                    pActors[actor_id].vVelocity.z =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                                actor.vVelocity.z = 0;
+                                actor.vPosition.z = pIndoor->pVertices[*pIndoor->pFaces[v37].pVertexIDs].z + 1;
+                                if (actor.vVelocity.x * actor.vVelocity.x +
+                                    actor.vVelocity.y * actor.vVelocity.y < 400) {
+                                    actor.vVelocity.y = 0;
+                                    actor.vVelocity.x = 0;
+                                    actor.vVelocity.x =
+                                            fixpoint_mul(58500, actor.vVelocity.x);
+                                    actor.vVelocity.y =
+                                            fixpoint_mul(58500, actor.vVelocity.y);
+                                    actor.vVelocity.z =
+                                            fixpoint_mul(58500, actor.vVelocity.z);
                                     continue;
                                 }
                             } else {
                                 v61 = abs(pIndoor->pFaces[v37].pFacePlane_old.vNormal.x *
-                                          pActors[actor_id].vVelocity.x +
+                                          actor.vVelocity.x +
                                           pIndoor->pFaces[v37].pFacePlane_old.vNormal.y *
-                                          pActors[actor_id].vVelocity.y +
+                                          actor.vVelocity.y +
                                           pIndoor->pFaces[v37].pFacePlane_old.vNormal.z *
-                                          pActors[actor_id].vVelocity.z) >> 16;
+                                          actor.vVelocity.z) >> 16;
                                 if ((collision_state.speed / 8) > v61)
                                     v61 = collision_state.speed / 8;
-                                pActors[actor_id].vVelocity.x +=
+                                actor.vVelocity.x +=
                                         fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.x);
-                                pActors[actor_id].vVelocity.y +=
+                                actor.vVelocity.y +=
                                         fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.y);
-                                pActors[actor_id].vVelocity.z +=
+                                actor.vVelocity.z +=
                                         fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.z);
                                 if (pIndoor->pFaces[v37].uPolygonType != 4 &&
                                     pIndoor->pFaces[v37].uPolygonType != 3) {
                                     v44 = collision_state.radius_lo -
-                                          pIndoor->pFaces[v37].pFacePlane_old.
-                                                  SignedDistanceTo(pActors[actor_id].vPosition);
+                                          pIndoor->pFaces[v37].pFacePlane_old.SignedDistanceTo(actor.vPosition);
                                     if (v44 > 0) {
-                                        pActors[actor_id].vPosition.x +=
+                                        actor.vPosition.x +=
                                                 fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.x);
-                                        pActors[actor_id].vPosition.y +=
+                                        actor.vPosition.y +=
                                                 fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.y);
-                                        pActors[actor_id].vPosition.z +=
+                                        actor.vPosition.z +=
                                                 fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.z);
                                     }
-                                    pActors[actor_id].uYawAngle = TrigLUT->Atan2(
-                                            pActors[actor_id].vVelocity.x, pActors[actor_id].vVelocity.y);
+                                    actor.uYawAngle = TrigLUT->Atan2(actor.vVelocity.x, actor.vVelocity.y);
                                 }
                             }
                             if (pIndoor->pFaces[v37].uAttributes & FACE_TriggerByMonster)
                                 EventProcessor(
                                         pIndoor->pFaceExtras[pIndoor->pFaces[v37].uFaceExtraID].uEventID, 0, 1);
                         }
-                        pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                        pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                        pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
+                        actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                        actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                        actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
                         continue;
                     } else {
-                        pActors[actor_id].vPosition.x = collision_state.new_position_lo.x;
-                        pActors[actor_id].vPosition.y = collision_state.new_position_lo.y;
-                        pActors[actor_id].vPosition.z = collision_state.new_position_lo.z -
+                        actor.vPosition.x = collision_state.new_position_lo.x;
+                        actor.vPosition.y = collision_state.new_position_lo.y;
+                        actor.vPosition.z = collision_state.new_position_lo.z -
                                                         collision_state.radius_lo - 1;
-                        pActors[actor_id].uSectorID = collision_state.uSectorID;
+                        actor.uSectorID = collision_state.uSectorID;
                         // goto LABEL_123;
                         break;
                     }
 
-                } else if (pActors[actor_id].vPosition.x & 1) {
-                    pActors[actor_id].uYawAngle += 100;
+                } else if (actor.vPosition.x & 1) {
+                    actor.uYawAngle += 100;
                 } else {
-                    pActors[actor_id].uYawAngle -= 100;
+                    actor.uYawAngle -= 100;
                 }
             } else {
                 if (pParty->bTurnBasedModeOn &&
                     (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
                     continue;
-                if (!pActors[actor_id].pMonsterInfo.uHostilityType || v56 != 0) {
-                    Actor::AI_StandOrBored(actor_id, 4, 0, &v52);
+                if (!actor.pMonsterInfo.uHostilityType || v56 != 0) {
+                    Actor::AI_StandOrBored(actor.id, 4, 0, &v52);
                     continue;
                 }
             }

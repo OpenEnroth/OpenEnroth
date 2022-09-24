@@ -3,6 +3,7 @@
 #include "Engine/VectorTypes.h"
 
 struct BLVFace;
+class Actor;
 
 struct CollisionState {
     /**
@@ -102,4 +103,4 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this);
 void CollideWithParty(bool jagged_top);
 
 
-void ProcessActorCollisionsBLV(int actor_id, unsigned int uFaceID, bool isAboveGround, bool isFlying);
+void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveGround, bool isFlying);

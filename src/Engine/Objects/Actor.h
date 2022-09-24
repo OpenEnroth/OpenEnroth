@@ -152,7 +152,8 @@ class GUIWindow;
 
 /*   66 */
 #pragma pack(push, 1)
-struct Actor {
+class Actor {
+ public:
     Actor() {}
     Actor(int id): id(id) {}
 

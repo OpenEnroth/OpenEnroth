@@ -1552,50 +1552,40 @@ void BLV_UpdateDoors() {
 
 //----- (0046F90C) --------------------------------------------------------
 void UpdateActors_BLV() {
-    unsigned int uFaceID;
-
     if (engine->config->debug.NoActors.Get())
         return;
 
-    for (unsigned int actor_id = 0; actor_id < pActors.size(); actor_id++) {
-        if (pActors[actor_id].uAIState == Removed ||
-            pActors[actor_id].uAIState == Disabled ||
-            pActors[actor_id].uAIState == Summoned ||
-            !pActors[actor_id].uMovementSpeed)
+    for (Actor &actor: pActors) {
+        if (actor.uAIState == Removed || actor.uAIState == Disabled || actor.uAIState == Summoned || actor.uMovementSpeed == 0)
             continue;
 
-        unsigned int uSectorID = pActors[actor_id].uSectorID;
-        int floor_z = GetIndoorFloorZ(pActors[actor_id].vPosition, &uSectorID, &uFaceID);
-        pActors[actor_id].uSectorID = uSectorID;
+        unsigned int uFaceID;
+        unsigned int uSectorID = actor.uSectorID;
+        int floor_z = GetIndoorFloorZ(actor.vPosition, &uSectorID, &uFaceID);
+        actor.uSectorID = uSectorID;
 
-        bool isFlying = pActors[actor_id].pMonsterInfo.uFlying;
-        if (!pActors[actor_id].CanAct())
+        if (uSectorID == 0 || floor_z <= -30000)
+            continue;
+
+        bool isFlying = actor.pMonsterInfo.uFlying;
+        if (!actor.CanAct())
             isFlying = false;
 
         bool isAboveGround = false;
-        if (pActors[actor_id].vPosition.z > floor_z + 1)
+        if (actor.vPosition.z > floor_z + 1)
             isAboveGround = true;
 
-        if (floor_z <= -30000) {
-            uSectorID = pIndoor->GetSector(pActors[actor_id].vPosition);
-            pActors[actor_id].uSectorID = uSectorID;
-            floor_z = BLV_GetFloorLevel(pActors[actor_id].vPosition, uSectorID, &uFaceID);
-            if (uSectorID == 0 || floor_z == -30000)
-                continue;
-        }
+        if (actor.uCurrentActionAnimation == ANIM_Walking) {  // actor is moving
+            int moveSpeed = actor.uMovementSpeed;
 
-        if (pActors[actor_id].uCurrentActionAnimation == ANIM_Walking) {  // actor is moving
-            int moveSpeed = pActors[actor_id].uMovementSpeed;
-
-            if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].Active()) {
-                if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower)
-                    moveSpeed = pActors[actor_id].uMovementSpeed /
-                                pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
+            if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].Active()) {
+                if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].uPower)
+                    moveSpeed = actor.uMovementSpeed / actor.pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
                 else
-                    moveSpeed = pActors[actor_id].uMovementSpeed / 2;
+                    moveSpeed = actor.uMovementSpeed / 2;
             }
 
-            if (pActors[actor_id].uAIState == Pursuing || pActors[actor_id].uAIState == Fleeing)
+            if (actor.uAIState == Pursuing || actor.uAIState == Fleeing)
                 moveSpeed *= 2;
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT)
@@ -1604,43 +1594,43 @@ void UpdateActors_BLV() {
             if (moveSpeed > 1000)
                 moveSpeed = 1000;
 
-            pActors[actor_id].vVelocity.x = TrigLUT->Cos(pActors[actor_id].uYawAngle) * moveSpeed;
-            pActors[actor_id].vVelocity.y = TrigLUT->Sin(pActors[actor_id].uYawAngle) * moveSpeed;
+            actor.vVelocity.x = TrigLUT->Cos(actor.uYawAngle) * moveSpeed;
+            actor.vVelocity.y = TrigLUT->Sin(actor.uYawAngle) * moveSpeed;
             if (isFlying)
-                pActors[actor_id].vVelocity.z = TrigLUT->Sin(pActors[actor_id].uPitchAngle) * moveSpeed;
-        } else {  // actor is not moving
+                actor.vVelocity.z = TrigLUT->Sin(actor.uPitchAngle) * moveSpeed;
+        } else {
+            // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
-            pActors[actor_id].vVelocity.x = fixpoint_mul(55000, pActors[actor_id].vVelocity.x);
-            pActors[actor_id].vVelocity.y = fixpoint_mul(55000, pActors[actor_id].vVelocity.y);
+            actor.vVelocity.x = fixpoint_mul(55000, actor.vVelocity.x);
+            actor.vVelocity.y = fixpoint_mul(55000, actor.vVelocity.y);
             if (isFlying)
-                pActors[actor_id].vVelocity.z = fixpoint_mul(55000, pActors[actor_id].vVelocity.z);
+                actor.vVelocity.z = fixpoint_mul(55000, actor.vVelocity.z);
         }
 
-        if (pActors[actor_id].vPosition.z <= floor_z) {
-            pActors[actor_id].vPosition.z = floor_z + 1;
+        if (actor.vPosition.z <= floor_z) {
+            actor.vPosition.z = floor_z + 1;
             if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
-                if (pActors[actor_id].vVelocity.z < 0)
-                    pActors[actor_id].vVelocity.z = 0;
+                if (actor.vVelocity.z < 0)
+                    actor.vVelocity.z = 0;
             } else {
                 // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 45000)
-                    pActors[actor_id].vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+                    actor.vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         } else {
             if (isAboveGround && !isFlying)
-                pActors[actor_id].vVelocity.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
+                actor.vVelocity.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
         }
 
-        if (LengthSqr(pActors[actor_id].vVelocity) >= 400) {
-            ProcessActorCollisionsBLV(actor_id, uFaceID, isAboveGround, isFlying);
+        if (LengthSqr(actor.vVelocity) >= 400) {
+            ProcessActorCollisionsBLV(actor, uFaceID, isAboveGround, isFlying);
         } else {
-            pActors[actor_id].vVelocity = Vec3s(0, 0, 0);
+            actor.vVelocity = Vec3s(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
-                if (pActors[actor_id].uAIState == Dead)
-                    pActors[actor_id].uAIState = Removed;
+                if (actor.uAIState == Dead)
+                    actor.uAIState = Removed;
             }
         }
-        // LABEL_123:
     }
 }
 
