@@ -525,10 +525,8 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
             }
 
             if (!isAboveGround && !isFlying) {
-                if (actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly || isInCrowd) {
-                    AIDirection v52;
-                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, &v52);
-                }
+                if (actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly || isInCrowd)
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
 
                 break; // Trying to walk into indoor sky, bad idea!
             }
@@ -591,8 +589,7 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                     }
                 }
             }
-            AIDirection v53;
-            Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, &v53);
+            Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
             actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
             actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
             actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
