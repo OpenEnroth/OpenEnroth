@@ -1652,28 +1652,20 @@ void UpdateActors_BLV() {
                 pActors[actor_id].vVelocity.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
         }
 
-        if (pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
-                pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y +
-                pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >= 400) {
+        if (LengthSqr(pActors[actor_id].vVelocity) >= 400) {
             collision_state.ignored_face_id = -1;
             collision_state.total_move_distance = 0;
             collision_state.check_hi = true;
             collision_state.radius_hi = pActors[actor_id].uActorRadius;
             collision_state.radius_lo = pActors[actor_id].uActorRadius;
             for (int attempt = 0; attempt < 100; attempt++) {
-                collision_state.position_hi.x = pActors[actor_id].vPosition.x;
-                collision_state.position_lo.x = collision_state.position_hi.x;
-                collision_state.position_hi.y = pActors[actor_id].vPosition.y;
-                collision_state.position_lo.y = collision_state.position_hi.y;
-                collision_state.position_lo.z = pActors[actor_id].vPosition.z + pActors[actor_id].uActorRadius + 1;
-                collision_state.position_hi.z = pActors[actor_id].vPosition.z -
-                                         pActors[actor_id].uActorRadius + pActors[actor_id].uActorHeight - 1;
-                if (collision_state.position_hi.z < collision_state.position_lo.z)
-                    collision_state.position_hi.z = pActors[actor_id].vPosition.z +
-                        pActors[actor_id].uActorRadius + 1;
-                collision_state.velocity.x = pActors[actor_id].vVelocity.x;
-                collision_state.velocity.y = pActors[actor_id].vVelocity.y;
-                collision_state.velocity.z = pActors[actor_id].vVelocity.z;
+                collision_state.position_hi = ToFloatVector(pActors[actor_id].vPosition);
+                collision_state.position_lo = collision_state.position_hi;
+                collision_state.position_lo.z += pActors[actor_id].uActorRadius + 1;
+                collision_state.position_hi.z += pActors[actor_id].uActorHeight - pActors[actor_id].uActorRadius - 1;
+                collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
+
+                collision_state.velocity = ToFloatVector(pActors[actor_id].vVelocity);
                 collision_state.uSectorID = pActors[actor_id].uSectorID;
                 if (!collision_state.PrepareAndCheckIfStationary(0)) {
                     v58 = 0;
@@ -1915,9 +1907,7 @@ void UpdateActors_BLV() {
                 }
             }
         } else {
-            pActors[actor_id].vVelocity.z = 0;
-            pActors[actor_id].vVelocity.y = 0;
-            pActors[actor_id].vVelocity.x = 0;
+            pActors[actor_id].vVelocity = Vec3_short_(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (pActors[actor_id].uAIState == Dead)
                     pActors[actor_id].uAIState = Removed;
