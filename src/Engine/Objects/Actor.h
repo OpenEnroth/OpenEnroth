@@ -153,6 +153,9 @@ class GUIWindow;
 /*   66 */
 #pragma pack(push, 1)
 struct Actor {
+    Actor() {}
+    Actor(int id): id(id) {}
+
     void SummonMinion(int summonerId);
     void Reset();
     void Remove();
@@ -248,7 +251,7 @@ struct Actor {
     static void AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
                                              int a3);
 
-    static void Arena_summon_actor(int monster_id, int16_t x, int y, int z);
+    static void Arena_summon_actor(int monster_id, int x, int y, int z);
     static void DamageMonsterFromParty(int a1, unsigned int uActorID_Monster,
                                        Vec3i *pVelocity);
     static void MakeActorAIList_ODM();
@@ -271,6 +274,7 @@ struct Actor {
     int CalcMagicalDamageToActor(DAMAGE_TYPE dmgType, int incomingDmg);
     bool DoesDmgTypeDoDamage(DAMAGE_TYPE uType);
 
+    int id = -1; // Actor index in pActors array.
     std::string pActorName;
     int16_t sNPC_ID = 0;
     int16_t field_22 = 0;
@@ -333,3 +337,11 @@ void area_of_effect__damage_evaluate();
 double sub_43AE12(signed int a1);
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
                          Vec3i *pVelocity);
+
+/**
+ * Allocates a new actor in `pActors` array.
+ *
+ * @return                              Pointer to a newly allocated actor, or `nullptr` if the actor count limit
+ *                                      has been hit.
+ */
+Actor *AllocateActor();
