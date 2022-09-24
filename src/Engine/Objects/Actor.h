@@ -286,45 +286,45 @@ struct Actor {
     int CalcMagicalDamageToActor(DAMAGE_TYPE dmgType, int incomingDmg);
     bool DoesDmgTypeDoDamage(DAMAGE_TYPE uType);
 
-    char pActorName[32];
-    int16_t sNPC_ID;
-    int16_t field_22;
-    unsigned int uAttributes;
-    int16_t sCurrentHP;
-    char field_2A[2];
-    struct MonsterInfo pMonsterInfo;
-    int16_t word_000084_range_attack;
-    int16_t word_000086_some_monster_id;  // base monster class monsterlist id
-    uint16_t uActorRadius;
-    uint16_t uActorHeight;
-    uint16_t uMovementSpeed;
+    std::string pActorName;
+    int16_t sNPC_ID = 0;
+    int16_t field_22 = 0;
+    unsigned int uAttributes = 0;
+    int16_t sCurrentHP = 0;
+    char field_2A[2] = {};
+    MonsterInfo pMonsterInfo;
+    int16_t word_000084_range_attack = 0;
+    int16_t word_000086_some_monster_id = 0;  // base monster class monsterlist id
+    uint16_t uActorRadius = 32;
+    uint16_t uActorHeight = 128;
+    uint16_t uMovementSpeed = 200;
     Vec3s vPosition;
     Vec3s vVelocity;
-    uint16_t uYawAngle;
-    uint16_t uPitchAngle;
-    int16_t uSectorID;
-    uint16_t uCurrentActionLength;
+    uint16_t uYawAngle = 0;
+    uint16_t uPitchAngle = 0;
+    int16_t uSectorID = 0;
+    uint16_t uCurrentActionLength = 0;
     Vec3s vInitialPosition;
     Vec3s vGuardingPosition;
-    uint16_t uTetherDistance;
-    AIState uAIState;
-    uint16_t uCurrentActionAnimation;
-    uint16_t uCarriedItemID;  // carried items are special items the
-                              // ncp carries (ie lute from bard)
-    char field_B6;
-    char field_B7;
-    unsigned int uCurrentActionTime;
-    uint16_t pSpriteIDs[8];
-    uint16_t pSoundSampleIDs[4];  // 1 die     3 bored
-    struct SpellBuff pActorBuffs[22];
-    struct ItemGen ActorHasItems[4];
-    unsigned int uGroup;
-    unsigned int uAlly;
-    struct ActorJob pScheduledJobs[8];
-    unsigned int uSummonerID;
-    unsigned int uLastCharacterIDToHit;
-    int dword_000334_unique_name;
-    char field_338[12];
+    uint16_t uTetherDistance = 256;
+    AIState uAIState = Standing;
+    uint16_t uCurrentActionAnimation = ANIM_Standing; // TODO: use enum ActorAnimation
+    uint16_t uCarriedItemID = 0;  // carried items are special items the
+                                  // ncp carries (ie lute from bard)
+    char field_B6 = 0;
+    char field_B7 = 0;
+    unsigned int uCurrentActionTime = 0;
+    std::array<uint16_t, 8> pSpriteIDs = {{}};
+    std::array<uint16_t, 4> pSoundSampleIDs = {{}};  // 1 die     3 bored
+    std::array<SpellBuff, 22> pActorBuffs;
+    std::array<ItemGen, 4> ActorHasItems;
+    unsigned int uGroup = 0;
+    unsigned int uAlly = 0;
+    std::array<ActorJob, 8> pScheduledJobs;
+    unsigned int uSummonerID = 0;
+    unsigned int uLastCharacterIDToHit = 0;
+    int dword_000334_unique_name = 0;
+    char field_338[12] = {};
 };
 #pragma pack(pop)
 

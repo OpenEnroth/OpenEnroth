@@ -2127,10 +2127,9 @@ int Player::ReceiveSpecialAttackEffect(
                 return 1;
                 break;
 
-            case SPECIAL_ATTACK_STEAL:
+            case SPECIAL_ATTACK_STEAL: {
                 PlaySound(SPEECH_ItemBroken, 0);
-                void* actoritems;
-                actoritems = pActor->ActorHasItems;
+                void *actoritems = &pActor->ActorHasItems[0];
                 if (pActor->ActorHasItems[0].uItemID) {
                     actoritems = &pActor->ActorHasItems[1];
                     if (pActor->ActorHasItems[1].uItemID) {
@@ -2148,6 +2147,7 @@ int Player::ReceiveSpecialAttackEffect(
                 spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
+            }
 
             case SPECIAL_ATTACK_AGING:
                 PlaySound(SPEECH_Aging, 0);

@@ -2467,8 +2467,8 @@ void Actor::Reset() {
     this->uSummonerID = 0;
     this->uLastCharacterIDToHit = 0;
     this->dword_000334_unique_name = 0;
-    memset(this->pSpriteIDs, 0, sizeof(pSpriteIDs));
-    memset(this->pActorBuffs, 0, 0x160u);
+    memset(this->pSpriteIDs.data(), 0, sizeof(pSpriteIDs));
+    memset(this->pActorBuffs.data(), 0, 0x160u);
 }
 
 //----- (0045959A) --------------------------------------------------------
@@ -2653,7 +2653,7 @@ void Actor::SummonMinion(int summonerId) {
     actor = &pActors[uNumActors];
     v9 = &pMonsterStats->pInfos[v7 + 1];
     pActors[uNumActors].Reset();
-    strcpy(actor->pActorName, v9->pName);
+    actor->pActorName = v9->pName;
     actor->sCurrentHP = (short)v9->uHP;
     actor->pMonsterInfo = *v9;
     actor->word_000086_some_monster_id = summonMonsterBaseType;
@@ -3551,14 +3551,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
                     player->pName,
-                    pMonster->pActorName,
+                    pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
             else
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_HITS_S_FOR_U,
                     player->pName,
-                    pMonster->pActorName,
+                    pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
         }
@@ -3584,7 +3584,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
                 player->pName,
                 uDamageAmount,
-                pMonster->pActorName
+                pMonster->pActorName.c_str()
             );
         }
     }
@@ -3645,18 +3645,13 @@ void Actor::Arena_summon_actor(int monster_id, __int16 x, int y, int z) {
         if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
             v16 = pIndoor->GetSector(x, y, z);
         pActors[uNumActors].Reset();
-        strcpy(pActors[uNumActors].pActorName,
-               pMonsterStats->pInfos[monster_id].pName);
-        pActors[uNumActors].sCurrentHP =
-            (short)pMonsterStats->pInfos[monster_id].uHP;
+        pActors[uNumActors].pActorName = pMonsterStats->pInfos[monster_id].pName;
+        pActors[uNumActors].sCurrentHP = (short)pMonsterStats->pInfos[monster_id].uHP;
         pActors[uNumActors].pMonsterInfo = pMonsterStats->pInfos[monster_id];
         pActors[uNumActors].word_000086_some_monster_id = monster_id;
-        pActors[uNumActors].uActorRadius =
-            pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;
-        pActors[uNumActors].uActorHeight =
-            pMonsterList->pMonsters[monster_id - 1].uMonsterHeight;
-        pActors[uNumActors].uMovementSpeed =
-            pMonsterList->pMonsters[monster_id - 1].uMovementSpeed;
+        pActors[uNumActors].uActorRadius = pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;
+        pActors[uNumActors].uActorHeight = pMonsterList->pMonsters[monster_id - 1].uMonsterHeight;
+        pActors[uNumActors].uMovementSpeed = pMonsterList->pMonsters[monster_id - 1].uMovementSpeed;
         pActors[uNumActors].vInitialPosition.x = x;
         pActors[uNumActors].vPosition.x = x;
         pActors[uNumActors].uAttributes |= ACTOR_AGGRESSOR;
@@ -3672,8 +3667,7 @@ void Actor::Arena_summon_actor(int monster_id, __int16 x, int y, int z) {
         pActors[uNumActors].uTetherDistance = 256;
         pActors[uNumActors].uSectorID = v16;
         pActors[uNumActors].uGroup = 1;
-        pActors[uNumActors].pMonsterInfo.uHostilityType =
-            MonsterInfo::Hostility_Long;
+        pActors[uNumActors].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
         pActors[uNumActors].PrepareSprites(0);
         //    for ( int i = 0; i < 4; i++)
         //      pSoundList->LoadSound(pMonsterList->pMonsters[monster_id -
@@ -4063,9 +4057,9 @@ void Actor::LootActor() {
         if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
         this->uCarriedItemID = 0;
         if (this->ActorHasItems[0].uItemID) {
-            if (!pParty->AddItemToParty(this->ActorHasItems)) {
+            if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
                 pParty->PickedItem_PlaceInInventory_or_Drop();
-                pParty->SetHoldingItem(this->ActorHasItems);
+                pParty->SetHoldingItem(&this->ActorHasItems[0]);
             }
             this->ActorHasItems[0].Reset();
         }
@@ -4108,9 +4102,9 @@ void Actor::LootActor() {
         }
     }
     if (this->ActorHasItems[0].uItemID) {
-        if (!pParty->AddItemToParty(this->ActorHasItems)) {
+        if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
             pParty->PickedItem_PlaceInInventory_or_Drop();
-            pParty->SetHoldingItem(this->ActorHasItems);
+            pParty->SetHoldingItem(&this->ActorHasItems[0]);
             itemFound = true;
         }
         this->ActorHasItems[0].Reset();
@@ -4825,7 +4819,7 @@ bool SpawnActor(unsigned int uMonsterID) {
         if ((signed int)uMonsterID >= (signed int)pMonsterList->uNumMonsters)
             v1 = 0;
         memset(&actor, 0, sizeof(Actor));
-        strcpy(actor.pActorName, pMonsterStats->pInfos[v1 + 1].pName);
+        actor.pActorName = pMonsterStats->pInfos[v1 + 1].pName;
         actor.sCurrentHP = (short)pMonsterStats->pInfos[v1 + 1].uHP;
         actor.pMonsterInfo = pMonsterStats->pInfos[v1 + 1];
         actor.word_000086_some_monster_id = v1 + 1;
@@ -4892,18 +4886,16 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
             v21 = pBLVRenderParams->uPartySectorID;
         v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
         pActors[uActorIndex].Reset();
-        strcpy(pActors[uActorIndex].pActorName, pMonsterStats->pInfos[uMonsterID + 1].pName);
+        pActors[uActorIndex].pActorName = pMonsterStats->pInfos[uMonsterID + 1].pName;
         pActors[uActorIndex].sCurrentHP = pMonsterStats->pInfos[uMonsterID + 1].uHP;
-        memcpy(&pActors[uActorIndex].pMonsterInfo, &pMonsterStats->pInfos[uMonsterID + 1],
-               sizeof(MonsterInfo));
+        memcpy(&pActors[uActorIndex].pMonsterInfo, &pMonsterStats->pInfos[uMonsterID + 1], sizeof(MonsterInfo));
         pActors[uActorIndex].word_000086_some_monster_id = uMonsterID + 1;
         pActors[uActorIndex].uActorRadius = pMonsterList->pMonsters[uMonsterID].uMonsterRadius;
         pActors[uActorIndex].uActorHeight = pMonsterList->pMonsters[uMonsterID].uMonsterHeight;
         pActors[uActorIndex].pMonsterInfo.uTreasureDiceRolls = 0;
         pActors[uActorIndex].pMonsterInfo.uTreasureType = 0;
         pActors[uActorIndex].pMonsterInfo.uExp = 0;
-        pActors[uActorIndex].uMovementSpeed =
-            pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
+        pActors[uActorIndex].uMovementSpeed = pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
         v10 = rand() % 2048;
         pActors[uActorIndex].vInitialPosition.x = pParty->vPosition.x + TrigLUT->Cos(v10) * v19;
         pActors[uActorIndex].vPosition.x = pActors[uActorIndex].vInitialPosition.x;
@@ -4914,8 +4906,7 @@ int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_
         pActors[uActorIndex].uTetherDistance = 256;
         pActors[uActorIndex].uSectorID = v21;
         pActors[uActorIndex].PrepareSprites(0);
-        pActors[uActorIndex].pMonsterInfo.uHostilityType =
-            MonsterInfo::Hostility_Friendly;
+        pActors[uActorIndex].pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
         pActors[uActorIndex].uAlly = 9999;
         pActors[uActorIndex].uGroup = 0;
         pActors[uActorIndex].uCurrentActionTime = 0;
@@ -5152,7 +5143,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture.c_str());
         if (!v28) v28 = 1;
         Src = &pMonsterStats->pInfos[v28];
-        strcpy(pMonster->pActorName, Src->pName);
+        pMonster->pActorName = Src->pName;
         pMonster->sCurrentHP = Src->uHP;
         assert(sizeof(MonsterInfo_MM7) == 88);
 
