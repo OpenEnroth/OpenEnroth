@@ -500,10 +500,9 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
     collision_state.radius_hi = actor.uActorRadius;
     collision_state.radius_lo = actor.uActorRadius;
     for (int attempt = 0; attempt < 100; attempt++) {
-        collision_state.position_hi = ToFloatVector(actor.vPosition);
-        collision_state.position_lo = collision_state.position_hi;
-        collision_state.position_lo.z += actor.uActorRadius + 1;
-        collision_state.position_hi.z += actor.uActorHeight - actor.uActorRadius - 1;
+        collision_state.position_lo = collision_state.position_hi + Vec3f(0, 0, actor.uActorRadius + 1);
+        collision_state.position_hi =
+            ToFloatVector(actor.vPosition) + Vec3f(0, 0, actor.uActorHeight - actor.uActorRadius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
 
         collision_state.velocity = ToFloatVector(actor.vVelocity);
