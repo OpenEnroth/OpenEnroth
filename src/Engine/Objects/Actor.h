@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Engine/IocContainer.h"
 
 #include "../Spells/Spells.h"
