@@ -4799,12 +4799,8 @@ bool SpawnActor(unsigned int uMonsterID) {
         actor.vPosition.z = (short)pOut.y;
         pSprites_LOD->DeleteSomeSprites();
         pPaletteManager->ResetNonTestLocked();
-        v6 = pActors.size() - 1;
-        if (dword_5C6DF8 == 1) {
-            dword_5C6DF8 = 0;
-            v6 = pActors.size();
-            pActors.emplace_back();
-        }
+        v6 = pActors.size();
+        pActors.emplace_back();
         pActors[v6] = actor;
         pActors[v6].PrepareSprites(1);
         result = 1;

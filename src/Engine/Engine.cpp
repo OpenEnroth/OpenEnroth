@@ -1233,7 +1233,6 @@ void Engine::_461103_load_level_sub() {
     pGameLoadingUI_ProgressBar->Progress();
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pParty->field_7B5_in_arena_quest = 0;
-    dword_5C6DF8 = 1;
     pNPCStats->uNewlNPCBufPos = 0;
     v19 = pMapStats->GetMapInfo(pCurrentMapName);
 

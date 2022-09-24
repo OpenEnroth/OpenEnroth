@@ -258,7 +258,6 @@ extern std::array<char, 10000> pTmpBuf3;
 extern std::array<char, 100> Journal_limitation_factor;
 extern int ui_current_text_color;
 extern int64_t qword_5C6DF0;
-extern int dword_5C6DF8;
 extern char *pHealthPointsAttributeDescription;
 extern char *pSpellPointsAttributeDescription;
 extern char *pArmourClassAttributeDescription;

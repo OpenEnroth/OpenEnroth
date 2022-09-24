@@ -636,7 +636,6 @@ char byte_5C45AF[777];
 std::array<char, 100> Journal_limitation_factor;
 int ui_current_text_color;
 int64_t qword_5C6DF0;
-int dword_5C6DF8;
 char *pHealthPointsAttributeDescription;
 char *pSpellPointsAttributeDescription;
 char *pArmourClassAttributeDescription;
