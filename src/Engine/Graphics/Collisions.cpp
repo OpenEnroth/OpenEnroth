@@ -475,13 +475,6 @@ void CollideWithParty(bool jagged_top) {
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveGround, bool isFlying) {
-    int v37;          // ebx@85
-    AIDirection v53;         // [sp+1Ch] [bp-44h]@116
-    unsigned int _this;      // [sp+44h] [bp-1Ch]@51
-    int v45;                 // edi@101
-    int v44;                 // ecx@96
-
-
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
@@ -556,15 +549,16 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
             actor.vPosition.y = collision_state.new_position_lo.y;
             actor.vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             actor.uSectorID = collision_state.uSectorID;
-            // goto LABEL_123;
             break; // No collisions happened.
         }
 
         actor.vPosition += (collision_state.adjusted_move_distance * collision_state.direction).ToShort();
         actor.uSectorID = collision_state.uSectorID;
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
-        v37 = PID_ID(collision_state.pid);
-        if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
+        int id = PID_ID(collision_state.pid);
+        int type = PID_TYPE(collision_state.pid);
+
+        if (type == OBJECT_Actor) {
             if (pParty->bTurnBasedModeOn &&
                 (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT)) {
                 actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
@@ -572,7 +566,7 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                 actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
                 continue;
             }
-            if (actor.pMonsterInfo.uHostilityType) {
+            if (actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly) {
                 if (!isInCrowd) {
                     Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
                     actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
@@ -582,27 +576,30 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                 }
             } else {
                 if (!isInCrowd) {
-                    if (!pActors[v37].pMonsterInfo.uHostilityType) {
+                    if (pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
                         Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
                         actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
                         actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
                         actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
                         continue;
+                    } else {
+                        Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                        actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                        actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                        actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+                        continue;
                     }
-                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
-                    actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                    actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                    actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-                    continue;
                 }
             }
-            Actor::AI_StandOrBored(actor.id, 4, 0, &v53);
+            AIDirection v53;
+            Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, &v53);
             actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
             actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
             actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
             continue;
         }
-        if (PID_TYPE(collision_state.pid) == OBJECT_Player) {
+
+        if (type == OBJECT_Player) {
             if (actor.GetActorsRelation(0)) {
                 // v51 =
                 // __OFSUB__(HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime),
@@ -622,65 +619,58 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                 actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
                 actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
                 continue;
+            } else {
+                Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+                continue;
             }
-            Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
-            actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-            actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-            actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
-            continue;
         }
-        if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
-            _this = integer_sqrt(
+
+        if (type == OBJECT_Decoration) {
+            unsigned int speed = integer_sqrt(
                     actor.vVelocity.x * actor.vVelocity.x +
                     actor.vVelocity.y * actor.vVelocity.y);
-            v45 = TrigLUT->Atan2(
-                    actor.vPosition.x - pLevelDecorations[v37].vPosition.x,
-                    actor.vPosition.y - pLevelDecorations[v37].vPosition.y);
-            actor.vVelocity.x = TrigLUT->Cos(v45) * _this;
-            actor.vVelocity.y = TrigLUT->Sin(v45) * _this;
+            int angle = TrigLUT->Atan2(
+                    actor.vPosition.x - pLevelDecorations[id].vPosition.x,
+                    actor.vPosition.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
+            actor.vVelocity.x = TrigLUT->Cos(angle) * speed;
+            actor.vVelocity.y = TrigLUT->Sin(angle) * speed;
             actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
             actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
             actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
             continue;
         }
-        if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
+
+        if (type == OBJECT_BModel) {
+            BLVFace *face = &pIndoor->pFaces[id];
+
             collision_state.ignored_face_id = PID_ID(collision_state.pid);
-            if (pIndoor->pFaces[v37].uPolygonType == 3) {
+            if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
                 actor.vVelocity.z = 0;
-                actor.vPosition.z = pIndoor->pVertices[*pIndoor->pFaces[v37].pVertexIDs].z + 1;
-                if (actor.vVelocity.x * actor.vVelocity.x +
-                    actor.vVelocity.y * actor.vVelocity.y < 400) {
-                    actor.vVelocity.y = 0;
+                actor.vPosition.z = pIndoor->pVertices[face->pVertexIDs[0]].z + 1;
+                if (actor.vVelocity.LengthSqr() < 400) {
                     actor.vVelocity.x = 0;
-                    actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
-                    actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
-                    actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+                    actor.vVelocity.y = 0;
                     continue;
                 }
             } else {
-                int v61 = abs(pIndoor->pFaces[v37].pFacePlane_old.vNormal.x * actor.vVelocity.x +
-                          pIndoor->pFaces[v37].pFacePlane_old.vNormal.y * actor.vVelocity.y +
-                          pIndoor->pFaces[v37].pFacePlane_old.vNormal.z * actor.vVelocity.z) >> 16;
-                if ((collision_state.speed / 8) > v61)
-                    v61 = collision_state.speed / 8;
-                actor.vVelocity.x += fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.x);
-                actor.vVelocity.y += fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.y);
-                actor.vVelocity.z += fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.z);
-                if (pIndoor->pFaces[v37].uPolygonType != 4 &&
-                    pIndoor->pFaces[v37].uPolygonType != 3) {
-                    v44 = collision_state.radius_lo -
-                          pIndoor->pFaces[v37].pFacePlane_old.SignedDistanceTo(actor.vPosition);
-                    if (v44 > 0) {
-                        actor.vPosition.x += fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.x);
-                        actor.vPosition.y += fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.y);
-                        actor.vPosition.z += fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.z);
-                    }
+                float velocityDotNormal = Dot(face->pFacePlane.vNormal, actor.vVelocity.ToFloat());
+                velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
+                actor.vVelocity += (velocityDotNormal * face->pFacePlane.vNormal).ToShort();
+                if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                    float overshoot =
+                        collision_state.radius_lo - face->pFacePlane.SignedDistanceTo(actor.vPosition.ToFloat());
+                    if (overshoot > 0)
+                        actor.vPosition += (overshoot * pIndoor->pFaces[id].pFacePlane.vNormal).ToShort();
                     actor.uYawAngle = TrigLUT->Atan2(actor.vVelocity.x, actor.vVelocity.y);
                 }
             }
-            if (pIndoor->pFaces[v37].uAttributes & FACE_TriggerByMonster)
-                EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[v37].uFaceExtraID].uEventID, 0, 1);
+            if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
+                EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, 0, 1);
         }
+
         actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
         actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
         actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
