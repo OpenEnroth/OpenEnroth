@@ -267,7 +267,7 @@ int LOD::WriteableFile::CreateNewLod(LOD::FileHeader *pHeader,
     dir.uOfsetFromSubindicesStart = sizeof(LOD::FileHeader) + sizeof(LOD::Directory);
     pLODPath = lod_name;
 
-    pFile = OS_fopen(pLODPath, "wb+");
+    pFile = fopen(pLODPath.c_str(), "wb+");
     if (!pFile) return 3;
     fwrite(pHeader, sizeof(LOD::FileHeader), 1, pFile);
     fwrite(&dir, sizeof(LOD::Directory), 1, pFile);
@@ -453,8 +453,8 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
         temp_offset += pSubIndices[i].uDataSize;
     }
 
-    std::filesystem::path tempPath = MakeTempPath("lod.tmp");
-    FILE *tmp_file = OS_fopen(tempPath, "wb+");
+    std::string tempPath = MakeTempPath("lod.tmp");
+    FILE *tmp_file = fopen(tempPath.c_str(), "wb+");
     if (tmp_file == nullptr) {
         return 5;
     }
@@ -511,7 +511,7 @@ int LOD::WriteableFile::CreateTempFile() {
 
     if (pIOBuffer && uIOBufferSize) {
         uNumSubDirs = 0;
-        pOutputFileHandle = OS_fopen(MakeTempPath("lodapp.tmp"), "wb+");
+        pOutputFileHandle = fopen(MakeTempPath("lodapp.tmp").c_str(), "wb+");
         return pOutputFileHandle ? 1 : 7;
     } else {
         return 5;
@@ -577,8 +577,8 @@ unsigned int LOD::WriteableFile::Write(const std::string &file_name, const void 
     }
 
     int size_correction = 0;
-    std::filesystem::path tempPath = MakeDataPath("lod.tmp"); // TODO: should be MakeTempPath?
-    FILE *tmp_file = OS_fopen(tempPath, "wb+");
+    std::string tempPath = MakeDataPath("lod.tmp"); // TODO: should be MakeTempPath?
+    FILE *tmp_file = fopen(tempPath.c_str(), "wb+");
     if (!tmp_file) return 5;
     if (!bRewrite_data)
         size_correction = 0;
@@ -675,8 +675,8 @@ LOD::WriteableFile::WriteableFile() {
     pOutputFileHandle = nullptr;
 }
 
-bool LOD::WriteableFile::LoadFile(const std::filesystem::path &filePath, bool bWriting) {
-    pFile = OS_fopen(filePath, bWriting ? "rb" : "rb+");
+bool LOD::WriteableFile::LoadFile(const std::string &filePath, bool bWriting) {
+    pFile = fopen(filePath.c_str(), bWriting ? "rb" : "rb+");
     if (pFile == nullptr) {
         return false;  // возможно файл не закрыт, поэтому не открывается
     }
@@ -752,12 +752,12 @@ bool LOD::File::Open(const std::string &sFilename) {
     return LoadSubIndices(pRoot.front().pFilename);
 }
 
-bool LOD::File::OpenFile(const std::filesystem::path &filePath) {
+bool LOD::File::OpenFile(const std::string &filePath) {
     if (isFileOpened) {
         Close();
     }
 
-    pFile = OS_fopen(filePath, "rb");
+    pFile = fopen(filePath.c_str(), "rb");
     if (pFile == nullptr) {
         return false;
     }

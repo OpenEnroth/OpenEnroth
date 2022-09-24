@@ -71,7 +71,7 @@ unsigned int TileTable::GetTileId(unsigned int uTerrainType,
 
 //----- (00487FB4) --------------------------------------------------------
 void TileTable::ToFile() {
-    FILE *v2 = OS_fopen(MakeDataPath("data", "dtile.bin"), "wb");
+    FILE *v2 = fopen(MakeDataPath("data", "dtile.bin").c_str(), "wb");
     if (!v2)
         Error("Unable to save dtile.bin!");
     fwrite(&this->sNumTiles, 4u, 1u, v2);

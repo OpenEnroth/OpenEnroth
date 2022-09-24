@@ -71,7 +71,7 @@ void IconFrameTable::InitializeAnimation(unsigned int uIconID) {
 
 //----- (0049500A) --------------------------------------------------------
 void IconFrameTable::ToFile() {
-    FILE *v2 = OS_fopen(MakeDataPath("data", "dift.bin"), "wb");
+    FILE *v2 = fopen(MakeDataPath("data", "dift.bin").c_str(), "wb");
     if (!v2)
         Error("Unable to save dift.bin!");
     fwrite(&this->uNumIcons, 4, 1, v2);

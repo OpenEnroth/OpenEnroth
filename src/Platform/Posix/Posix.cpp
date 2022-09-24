@@ -85,10 +85,6 @@ std::filesystem::path OS_casepath(std::filesystem::path path) {
     return result;
 }
 
-FILE *OS_fopen(std::filesystem::path path, const char *mode) {
-    return fopen(path.c_str(), mode);
-}
-
 bool OS_FileExists(const std::string& path) {
     return _access(path.c_str(), 0) != -1;
 }

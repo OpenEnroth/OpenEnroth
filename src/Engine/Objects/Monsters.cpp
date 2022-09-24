@@ -427,7 +427,7 @@ void MonsterList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
 
 //----- (00459860) --------------------------------------------------------
 void MonsterList::ToFile() {
-    FILE *v2 = OS_fopen(MakeDataPath("data", "dmonlist.bin"), "wb");
+    FILE *v2 = fopen(MakeDataPath("data", "dmonlist.bin").c_str(), "wb");
     if (!v2)
         Error("Unable to save dmonlist.bin!");
     fwrite(&this->uNumMonsters, 4u, 1u, v2);

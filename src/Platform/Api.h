@@ -43,13 +43,4 @@ std::filesystem::path OS_makepath(std::string path);
  */
 std::filesystem::path OS_casepath(std::filesystem::path path);
 
-/**
- * A counterpart to the standard `fopen` that works with `std::filesystem::path`.
- *
- * @param path                          Path to the file to open.
- * @param mode                          Open mode.
- * @return                              Opened file pointer, or `nullptr` in case of an error.
- */
-FILE *OS_fopen(std::filesystem::path path, const char *mode);
-
 bool OS_FileExists(const std::string &path);

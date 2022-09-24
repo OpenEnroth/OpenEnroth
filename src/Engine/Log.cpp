@@ -45,7 +45,7 @@ void Log::Warning(const char *pFormat, ...) {
 
 //----- (004BE386) --------------------------------------------------------
 void log_error(const char *pMessage) {
-    FILE *f = OS_fopen(MakeDataPath("errorlog.txt"), "a");
+    FILE *f = fopen(MakeDataPath("errorlog.txt").c_str(), "a");
     if (f) {
         fprintf(f, "%s\n", pMessage);
         fclose(f);

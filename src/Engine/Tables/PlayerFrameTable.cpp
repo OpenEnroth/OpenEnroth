@@ -61,7 +61,7 @@ PlayerFrame *PlayerFrameTable::GetFrameBy_y(int *pFramesetID, int *pAnimTime,
 
 //----- (00494BC3) --------------------------------------------------------
 void PlayerFrameTable::ToFile() {
-    FILE *v2 = OS_fopen(MakeDataPath("data", "dpft.bin"), "wb");
+    FILE *v2 = fopen(MakeDataPath("data", "dpft.bin").c_str(), "wb");
     if (!v2)
         Error("Unable to save dpft.bin");
     fwrite(&this->uNumFrames, 4, 1, v2);

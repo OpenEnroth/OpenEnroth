@@ -45,15 +45,6 @@ std::filesystem::path OS_casepath(std::filesystem::path path) {
     return path;
 }
 
-FILE *OS_fopen(std::filesystem::path path, const char *mode) {
-    std::wstring wmode;
-    if (mode)
-        for (; *mode; mode++)
-            wmode.push_back(*mode);
-
-    return _wfopen(path.c_str(), wmode.c_str());
-}
-
 bool OS_FileExists(const std::string& path) {
     return _access(path.c_str(), 0) != -1;
 }
