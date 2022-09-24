@@ -1555,7 +1555,7 @@ void UpdateActors_BLV() {
     if (engine->config->debug.NoActors.Get())
         return;
 
-    for (Actor &actor: pActors) {
+    for (Actor &actor : pActors) {
         if (actor.uAIState == Removed || actor.uAIState == Disabled || actor.uAIState == Summoned || actor.uMovementSpeed == 0)
             continue;
 
