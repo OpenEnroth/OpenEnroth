@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <algorithm>
 
 #include "Engine/CommandLine.h"
 #include "Engine/IocContainer.h"
@@ -347,11 +348,15 @@ namespace Application {
             /** Vanilla's rendering rules from software mode. Still much code use this option. */
             ConfigValue<bool> SoftwareModeRules = ConfigValue<bool>(this, "software_mode_rules", false);
 
-            /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of pain was thrown at them. */
+            /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of paint was thrown at them. */
             ConfigValue<bool> Tinting = ConfigValue<bool>(this, "tinting", false);
 
             /** Torchlight lighting */
             ConfigValue<bool> Torchlight = ConfigValue<bool>(this, "torchlight", true);
+            ConfigValue<bool> LightsFlicker = ConfigValue<bool>(this, "lightsflicker", false);
+
+            /** Max number of BSP sectors to display. */
+            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 6, &ValidateMaxSectors);
 
             /** Enable synchronization of framerate with monitor vertical refresh rate. */
             ConfigValue<bool> VSync = ConfigValue<bool>(this, "vsync", false);
@@ -371,6 +376,10 @@ namespace Application {
                     return 9;
 
                 return level;
+            }
+            static int ValidateMaxSectors(int sectors) {
+                sectors = std::clamp(sectors, 1, 150);
+                return sectors;
             }
         };
 

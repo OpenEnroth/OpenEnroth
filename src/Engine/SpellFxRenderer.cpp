@@ -73,11 +73,11 @@ bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
             v8 = pCamera3D->ViewPlaneDist_X == p[1].vWorldViewPosition.x;
 
             if (!(v6 | v8)) {
-                logger->Info("sr_42620A reject");
+                //logger->Info("sr_42620A reject");
                 return false;
             }
         }
-        logger->Info("sr_42620A pass");
+        //logger->Info("sr_42620A pass");
         v9 = pCamera3D->ViewPlaneDist_X < p->vWorldViewPosition.x;
         v10 = 0;
         v11 = pCamera3D->ViewPlaneDist_X == p->vWorldViewPosition.x;

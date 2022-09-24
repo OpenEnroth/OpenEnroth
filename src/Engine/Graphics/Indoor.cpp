@@ -117,17 +117,21 @@ void PrepareDrawLists_BLV() {
             int MinTorch = TorchLightPower;
             int MaxTorch = TorchLightPower * pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;
 
-            // torchlight flickering effect
-            // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
-            int ran = rand();
-            int mod = ((ran - (RAND_MAX * .4)) / 200);
-            TorchLightPower = (pParty->TorchLightLastIntensity + mod);
+            if (engine->config->graphics.LightsFlicker.Get()) {
+                // torchlight flickering effect
+                // TorchLightPower *= pParty->pPartyBuffs[PARTY_BUFF_TORCHLIGHT].uPower;  // 2,3,4
+                int ran = rand();
+                int mod = ((ran - (RAND_MAX * .4)) / 200);
+                TorchLightPower = (pParty->TorchLightLastIntensity + mod);
 
-            // clamp
-            if (TorchLightPower < MinTorch)
-                TorchLightPower = MinTorch;
-            if (TorchLightPower > MaxTorch)
+                // clamp
+                if (TorchLightPower < MinTorch)
+                    TorchLightPower = MinTorch;
+                if (TorchLightPower > MaxTorch)
+                    TorchLightPower = MaxTorch;
+            } else {
                 TorchLightPower = MaxTorch;
+            }
         }
 
         pParty->TorchLightLastIntensity = TorchLightPower;
@@ -396,12 +400,12 @@ void BspRenderer::MakeVisibleSectorList() {
 
         if (!onlist)
             pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[uNumVisibleNotEmptySectors++] = nodes[i].uSectorID;
+
+        // drop all sectors beyond config limit
+        if (uNumVisibleNotEmptySectors >= engine->config->graphics.MaxVisibleSectors.Get()) {
+            break;
+        }
     }
-
-    if (engine->config->debug.VerboseLogging.Get())
-        logger->Info("uNumVisibleNotEmptySectors: %i", uNumVisibleNotEmptySectors);
-
-    assert(uNumVisibleNotEmptySectors < 10 && "Testing visible sector limits");
 }
 
 //----- (00440B44) --------------------------------------------------------
@@ -646,6 +650,8 @@ void BLVFace::SetTexture(const std::string &filename) {
     }
 
     this->resource = assets->GetBitmap(filename);
+    this->texlayer = -1;
+    this->texunit = -1;
 }
 
 //----- (00498B15) --------------------------------------------------------

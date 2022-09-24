@@ -4321,6 +4321,24 @@ void RenderOpenGL::DrawBuildingsD3D() {
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                                 int texunit = face.texunit;
                                 int texlayer = face.texlayer;
+
+                                if (texlayer == -1) { // texture has been reset - see if its in the map
+                                    TextureOpenGL *tex = (TextureOpenGL *)face.GetTexture();
+                                    std::string *texname = tex->GetName();
+                                    auto mapiter = bsptexmap.find(*texname);
+                                    if (mapiter != bsptexmap.end()) {
+                                        // if so, extract unit and layer
+                                        int unitlayer = mapiter->second;
+                                        face.texlayer = texlayer = unitlayer & 0xFF;
+                                        face.texunit = texunit = (unitlayer & 0xFF00) >> 8;
+                                    } else {
+                                        logger->Warning("Texture not found in map!");
+                                        // TODO(pskelton): set to water for now - are there any instances where this will occur??
+                                        face.texlayer = 0;
+                                        face.texunit = 0;
+                                    }
+                                }
+
                                 int attribflags = 0;
 
                                 if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
@@ -5015,6 +5033,24 @@ void RenderOpenGL::DrawIndoorFaces() {
 
                         texlayer = face->texlayer;
                         texunit = face->texunit;
+
+                        if (texlayer == -1) { // texture has been reset - see if its in the map
+                            TextureOpenGL *tex = (TextureOpenGL *)face->GetTexture();
+                            std::string *texname = tex->GetName();
+                            auto mapiter = bsptexmap.find(*texname);
+                            if (mapiter != bsptexmap.end()) {
+                                // if so, extract unit and layer
+                                int unitlayer = mapiter->second;
+                                face->texlayer = texlayer = unitlayer & 0xFF;
+                                face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
+                            } else {
+                                logger->Warning("Texture not found in map!");
+                                // TODO(pskelton): set to water for now - are there any instances where this will occur??
+                                face->texlayer = 0;
+                                face->texunit = 0;
+                            }
+                        }
+
 
                         for (int z = 0; z < (face->uNumVertices - 2); z++) {
                             // 123, 134, 145, 156..

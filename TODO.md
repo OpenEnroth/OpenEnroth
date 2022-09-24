@@ -28,11 +28,12 @@
 * Optimization targets:
   - Currently engine fps is heavily CPU bound in directX mode. This is because of the amount of draw calls outside, optimized batching on draw terrain traingles will give FPS boost.
 
-  * Minor Projects:
+* Minor Projects:
   - Remove zdrawtexturealpha
   - Reduce logger spam
+  - Drop all software mode rules code
 
-  * Major Projects:
+* Major Projects:
   - New GUI/ window system
   - New sounds system
   - New (.WMM)?? save format with extended capabilites??

@@ -44,7 +44,7 @@ float getFogRatio(FogParam fogpar, float dist) {
     if (fog.fogstart > fog.fogmiddle) {
         result = smoothstep(fogpar.fogstart, fogpar.fogend, dist);
     } else {
-        result = smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist);
+        result = 0.25 + smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist) * 0.75;
     }
     return result;
 }

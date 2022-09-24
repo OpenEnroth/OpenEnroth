@@ -135,6 +135,8 @@ void ODMFace::SetTexture(const std::string &filename) {
     }
 
     this->resource = assets->GetBitmap(filename);
+    this->texlayer = -1;
+    this->texunit = -1;
 }
 
 bool ODMFace::Deserialize(const ODMFace_MM7 *mm7) {

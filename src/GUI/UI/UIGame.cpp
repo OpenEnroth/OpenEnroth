@@ -2231,7 +2231,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, GameKey::None, "DEBUG GENERATE RANDOM ITEM");
     GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, GameKey::None, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
-    GUIButton *pBtn_DebugReloadShaders = CreateButton(13, 302, width, height, 1, 0, UIMSG_DebugReloadShader, 0, GameKey::None, "DEBUG RELOAD SHADERS");
+    GUIButton *pBtn_DebugReloadShaders = CreateButton(13, 302, width, height, 1, 0, UIMSG_DebugReloadShader, 0, GameKey::Backspace, "DEBUG RELOAD SHADERS");
     GUIButton *pBtn_DebugUnused1 = CreateButton(127, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused1");
     GUIButton *pBtn_DebugUnused2 = CreateButton(241, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused2");
     GUIButton *pBtn_DebugUnused3 = CreateButton(354, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused3");

@@ -496,7 +496,7 @@ void OutdoorLocation::SetFog() {
         map_id == MAP_THE_PIT || map_id > MAP_SHOALS)
         return;
 
-    uint chance = 19; //rand() % 100;
+    uint chance = rand() % 100;
 
     if (chance < fog_probability_table[map_id - 1].small_fog_chance) {
         ::day_fogrange_1 = 4096;

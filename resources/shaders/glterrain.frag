@@ -120,7 +120,7 @@ void main() {
 float getFogRatio(FogParam fogpar, float dist) {
     float result = 0.0;
     if (fogpar.fogstart < fogpar.fogmiddle) {
-        result = smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist);
+        result = 0.25 + smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist) * 0.75;
     } else {
         result = smoothstep(fogpar.fogstart, fogpar.fogend, dist);
     }
