@@ -471,7 +471,6 @@ int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 unsigned int GetMaxMipLevels(unsigned int uDim);
 
-unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);
 void UpdateObjects();
 
 class BSPModel;

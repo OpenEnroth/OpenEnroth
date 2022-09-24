@@ -66,5 +66,6 @@ void CompactLayingItemsList();
 
 extern std::vector<SpriteObject> pSpriteObjects;
 
-bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2);
-void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int a2);  // idb
+bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int pid);
+void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int pid);  // idb
+unsigned int sub_46DEF2(signed int pid, unsigned int uLayingItemID);

@@ -1002,7 +1002,7 @@ void SpriteObject::Create_Splash_Object(int x, int y, int z) {  // splash on wat
     }
 }
 
-bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
+bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
     int v90;                // ST34_4@159
     int v91;                // eax@159
     unsigned int v107 = 0;      // edx@220
@@ -1018,12 +1018,12 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
     int v152;        // [sp+24h] [bp-8h]@208
 
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
-    if (PID_TYPE(a2) == OBJECT_Actor) {
+    if (PID_TYPE(pid) == OBJECT_Actor) {
         if (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) == OBJECT_Actor &&
-            !pActors[PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid)].GetActorsRelation(&pActors[PID_ID(a2)]))
+            !pActors[PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid)].GetActorsRelation(&pActors[PID_ID(pid)]))
             return 1;
     } else {
-        if (PID_TYPE(a2) == OBJECT_Player &&
+        if (PID_TYPE(pid) == OBJECT_Player &&
             PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) == OBJECT_Player)
             return 1;
     }
@@ -1033,7 +1033,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             pSpriteObjects[uLayingItemID].uAttributes &= ~SPRITE_HALT_TURN_BASED;
         }
     }
-    if (PID_TYPE(a2) == OBJECT_BModel &&
+    if (PID_TYPE(pid) == OBJECT_BModel &&
         PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid) != OBJECT_Player) {
         if (PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid) < 500)  // bugfix  PID_ID(v2->spell_caster_pid)==1000
             pActors[PID_ID(pSpriteObjects[uLayingItemID].spell_caster_pid)].uAttributes |= ACTOR_UNKNOW5;
@@ -1043,13 +1043,13 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_FIRE_FIRE_SPIKE:
         case SPRITE_SPELL_AIR_SPARKS:
         case SPRITE_SPELL_DARK_TOXIC_CLOUD: {
-            if (PID_TYPE(a2) == OBJECT_BModel
-                || PID_TYPE(a2) == OBJECT_Decoration
-                || PID_TYPE(a2) == OBJECT_Any) {
+            if (PID_TYPE(pid) == OBJECT_BModel
+                || PID_TYPE(pid) == OBJECT_Decoration
+                || PID_TYPE(pid) == OBJECT_Any) {
                 return 1;
             }
-            if (PID_TYPE(a2) != OBJECT_Item) {
-                Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+            if (PID_TYPE(pid) != OBJECT_Item) {
+                Apply_Spell_Sprite_Damage(uLayingItemID, pid);
                 pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
                 pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
                 if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1093,7 +1093,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_PROJECTILE_530:
         case SPRITE_PROJECTILE_535:
         case SPRITE_PROJECTILE_540: {
-            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, pid);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1117,7 +1117,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
                 pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-                Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+                Apply_Spell_Sprite_Damage(uLayingItemID, pid);
                 SpriteObject::OnInteraction(uLayingItemID);
                 int v16 = 0;
                 if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
@@ -1194,7 +1194,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_EARTH_MASS_DISTORTION:
         case SPRITE_SPELL_MIND_MIND_BLAST:
         case SPRITE_SPELL_MIND_PSYCHIC_SHOCK: {
-            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, pid);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1220,7 +1220,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         }
 
         case SPRITE_BLASTER_PROJECTILE: {
-            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, pid);
             pSpriteObjects[uLayingItemID].uType = SPRITE_BLASTER_IMPACT;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_BLASTER_IMPACT);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1277,7 +1277,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
-            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, pid);
             int v16 = 0;
             if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
                 v16 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1294,7 +1294,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         }
 
         case SPRITE_SPELL_EARTH_ROCK_BLAST: {
-            if (PID_TYPE(a2) == 6 || PID_TYPE(a2) == 5 || !PID_TYPE(a2)) {
+            if (PID_TYPE(pid) == 6 || PID_TYPE(pid) == 5 || !PID_TYPE(pid)) {
                 return 1;
             }
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT;
@@ -1390,10 +1390,10 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         }
 
         case SPRITE_SPELL_LIGHT_DESTROY_UNDEAD: {
-            if (PID_TYPE(a2) == OBJECT_Actor &&
-                MonsterStats::BelongsToSupertype(pActors[PID_ID(a2)].pMonsterInfo.uID,
+            if (PID_TYPE(pid) == OBJECT_Actor &&
+                MonsterStats::BelongsToSupertype(pActors[PID_ID(pid)].pMonsterInfo.uID,
                                                  MONSTER_SUPERTYPE_UNDEAD)) {
-                                                 Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+                                                 Apply_Spell_Sprite_Damage(uLayingItemID, pid);
             }
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_LIGHT_DESTROY_UNDEAD_1;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_LIGHT_DESTROY_UNDEAD_1);
@@ -1424,7 +1424,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         case SPRITE_SPELL_BODY_FLYING_FIST:
         case SPRITE_SPELL_LIGHT_LIGHT_BOLT:
         case SPRITE_SPELL_LIGHT_SUNRAY: {
-            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, pid);
             pSpriteObjects[uLayingItemID].uType = (SPRITE_OBJECT_TYPE)(pSpriteObjects[uLayingItemID].uType + 1);
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[uLayingItemID].uType);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1467,7 +1467,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
                     break;
             }
             v138 = 1;
-            if (PID_TYPE(a2) != OBJECT_Actor) {
+            if (PID_TYPE(pid) != OBJECT_Actor) {
                 if (pSpriteObjects[uLayingItemID].uType != SPRITE_SPELL_DARK_SHRINKING_RAY ||
                     pSpriteObjects[uLayingItemID].spell_skill != 4) {
                     SpriteObject::OnInteraction(uLayingItemID);
@@ -1512,7 +1512,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
                 } else {
                     if (v152 >= 3) v150 = 4;
                 }
-                pActors[PID_ID(a2)].uAttributes |= ACTOR_AGGRESSOR;
+                pActors[PID_ID(pid)].uAttributes |= ACTOR_AGGRESSOR;
                 v107 = v135;
             }
             if (pSpriteObjects[uLayingItemID].uType == SPRITE_SPELL_MIND_CHARM) {
@@ -1534,8 +1534,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
             }
             if (pSpriteObjects[uLayingItemID].uType != SPRITE_SPELL_DARK_SHRINKING_RAY ||
                 v152 != 4) {
-                v108 = PID_ID(a2);
-                if (pActors[PID_ID(a2)].DoesDmgTypeDoDamage((DAMAGE_TYPE)v107)) {
+                v108 = PID_ID(pid);
+                if (pActors[PID_ID(pid)].DoesDmgTypeDoDamage((DAMAGE_TYPE)v107)) {
                     v138 = 0;
                     if (pSpriteObjects[uLayingItemID].uType ==
                         SPRITE_SPELL_LIGHT_PARALYZE) {
@@ -1580,7 +1580,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
         }
 
         case SPRITE_SPELL_DARK_SHARPMETAL: {
-            Apply_Spell_Sprite_Damage(uLayingItemID, a2);
+            Apply_Spell_Sprite_Damage(uLayingItemID, pid);
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_DARK_SHARPMETAL_IMPACT;
             pSpriteObjects[uLayingItemID].uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
             if (pSpriteObjects[uLayingItemID].uObjectDescID == 0) {
@@ -1649,7 +1649,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
 
         case SPRITE_SPELL_FIRE_METEOR_SHOWER:
         case SPRITE_SPELL_AIR_STARBURST: {
-            if (PID_TYPE(a2) == 3) return 1;
+            if (PID_TYPE(pid) == 3) return 1;
             // else go to next case
         }
 
@@ -1694,8 +1694,8 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int a2) {
 }
 
 //----- (0043A97E) --------------------------------------------------------
-void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
-    if (PID_TYPE(a2) == OBJECT_Player) {
+void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int pid) {
+    if (PID_TYPE(pid) == OBJECT_Player) {
         layingitem_vel_50FDFC.x = pSpriteObjects[uLayingItemID].vVelocity.x;
         layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
         layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
@@ -1705,7 +1705,7 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
         DamagePlayerFromMonster(PID(OBJECT_Item, uLayingItemID),
                                 pSpriteObjects[uLayingItemID].field_61,
                                 &layingitem_vel_50FDFC, -1);
-    } else if (PID_TYPE(a2) == OBJECT_Actor) {
+    } else if (PID_TYPE(pid) == OBJECT_Actor) {
         layingitem_vel_50FDFC.x = pSpriteObjects[uLayingItemID].vVelocity.x;
         layingitem_vel_50FDFC.y = pSpriteObjects[uLayingItemID].vVelocity.y;
         layingitem_vel_50FDFC.z = pSpriteObjects[uLayingItemID].vVelocity.z;
@@ -1715,17 +1715,17 @@ void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, int a2) {
         switch (PID_TYPE(pSpriteObjects[uLayingItemID].spell_caster_pid)) {
             case OBJECT_Actor:
                 Actor::ActorDamageFromMonster(
-                    PID(OBJECT_Item, uLayingItemID), PID_ID(a2),
+                    PID(OBJECT_Item, uLayingItemID), PID_ID(pid),
                     &layingitem_vel_50FDFC,
                     pSpriteObjects[uLayingItemID].field_61);
                 break;
             case OBJECT_Player:
                 Actor::DamageMonsterFromParty(PID(OBJECT_Item, uLayingItemID),
-                                              PID_ID(a2),
+                                              PID_ID(pid),
                                               &layingitem_vel_50FDFC);
                 break;
             case OBJECT_Item:
-                ItemDamageFromActor(PID(OBJECT_Item, uLayingItemID), PID_ID(a2),
+                ItemDamageFromActor(PID(OBJECT_Item, uLayingItemID), PID_ID(pid),
                                     &layingitem_vel_50FDFC);
                 break;
             default:
@@ -1806,10 +1806,10 @@ void UpdateObjects() {
     }
 }
 
-unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID) {
+unsigned int sub_46DEF2(signed int pid, unsigned int uLayingItemID) {
     unsigned int result = uLayingItemID;
     if (pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID].uFlags & 0x10) {
-        result = _46BFFA_update_spell_fx(uLayingItemID, a2);
+        result = _46BFFA_update_spell_fx(uLayingItemID, pid);
     }
     return result;
 }
