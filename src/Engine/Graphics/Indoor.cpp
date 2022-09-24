@@ -1438,7 +1438,7 @@ void BLV_UpdateDoors() {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
             Vec3s *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
             face->pFacePlane_old.dist = -Dot(*v17, face->pFacePlane_old.vNormal);
-            face->pFacePlane.dist = -Dot(ToFloatVector(*v17), face->pFacePlane.vNormal);
+            face->pFacePlane.dist = -Dot(v17->ToFloat(), face->pFacePlane.vNormal);
             if (face->pFacePlane_old.vNormal.z) {
                 v24 = abs(face->pFacePlane_old.dist >> 15);
                 v25 = abs(face->pFacePlane_old.vNormal.z);
@@ -1622,7 +1622,7 @@ void UpdateActors_BLV() {
                 actor.vVelocity.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
         }
 
-        if (LengthSqr(actor.vVelocity) >= 400) {
+        if (actor.vVelocity.LengthSqr() >= 400) {
             ProcessActorCollisionsBLV(actor, uFaceID, isAboveGround, isFlying);
         } else {
             actor.vVelocity = Vec3s(0, 0, 0);
@@ -1749,7 +1749,7 @@ void PrepareToLoadBLV(bool bLoading) {
                         b = decoration->uColoredLightBlue;
                     }
                     pStationaryLightsStack->AddLight(
-                            ToFloatVector(pLevelDecorations[i].vPosition) +
+                            pLevelDecorations[i].vPosition.ToFloat() +
                             Vec3f(0, 0, decoration->uDecorationHeight),
                         decoration->uLightRadius, r, g, b, _4E94D0_light_type);
                 }
@@ -1991,7 +1991,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
         if ((256 << v6) & v9->uFlags) v41 |= 4;
         if (v9->uGlowRadius) {
             pMobileLightsStack->AddLight(
-                ToFloatVector(pActors[i].vPosition), pActors[i].uSectorID, v9->uGlowRadius,
+                pActors[i].vPosition.ToFloat(), pActors[i].uSectorID, v9->uGlowRadius,
                 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
 
@@ -2106,7 +2106,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     if ((256 << v9) & v4->uFlags) v34 |= 4;
                     if (a6) {
                         pMobileLightsStack->AddLight(
-                            ToFloatVector(pSpriteObjects[i].vPosition),
+                            pSpriteObjects[i].vPosition.ToFloat(),
                             pSpriteObjects[i].uSectorID, a6,
                             pSpriteObjects[i].GetParticleTrailColorR(),
                             pSpriteObjects[i].GetParticleTrailColorG(),
@@ -3490,15 +3490,15 @@ void stru154::GetFacePlane(ODMFace *pFace, const std::vector<Vec3i> &pVertices,
 
     if (pFace->uNumVertices >= 2) {
         for (int i = 0; i < pFace->uNumVertices - 2; i++) {
-            FirstPairVec = ToFloatVector(pVertices[pFace->pVertexIDs[i + 1]] - pVertices[pFace->pVertexIDs[i]]);
-            SecPairVec = ToFloatVector(pVertices[pFace->pVertexIDs[i + 2]] - pVertices[pFace->pVertexIDs[i + 1]]);
+            FirstPairVec = (pVertices[pFace->pVertexIDs[i + 1]] - pVertices[pFace->pVertexIDs[i]]).ToFloat();
+            SecPairVec = (pVertices[pFace->pVertexIDs[i + 2]] - pVertices[pFace->pVertexIDs[i + 1]]).ToFloat();
 
             CrossProd = Cross(FirstPairVec, SecPairVec);
 
             if (CrossProd.x != 0.0 || CrossProd.y != 0.0 || CrossProd.z != 0.0) {
                 CrossProd.Normalize();
                 *pOutNormal = CrossProd;
-                *pOutDist = -Dot(ToFloatVector(pVertices[pFace->pVertexIDs[i]]), CrossProd);
+                *pOutDist = -Dot(pVertices[pFace->pVertexIDs[i]].ToFloat(), CrossProd);
                 return;
             }
         }

@@ -190,7 +190,7 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
 
     if (!pLight->uRadius) return false;
 
-    if (pFace->pBoundingBox.Expanded(pLight->uRadius).Contains(ToShortVector(pLight->vPosition))) {
+    if (pFace->pBoundingBox.Expanded(pLight->uRadius).Contains(pLight->vPosition.ToShort())) {
         v10 = pFace->pFacePlane.SignedDistanceTo(pLight->vPosition);
 
         if (((bLightBackfaces) || v10 >= 0.0f) && fabsf(v10) <= pLight->uRadius) {
@@ -278,7 +278,7 @@ bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *pFace,
     if (!pLight->uRadius)  // 800
         return false;
 
-    if (pFace->pBounding.Expanded(pLight->uRadius).Contains(ToShortVector(pLight->vPosition))) {
+    if (pFace->pBounding.Expanded(pLight->uRadius).Contains(pLight->vPosition.ToShort())) {
         Distance = pFace->pFacePlane.SignedDistanceTo(pLight->vPosition);
 
         if ((bLightBackfaces || Distance >= 0.0f) && std::abs(Distance) <= pLight->uRadius) {

@@ -70,7 +70,7 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, unsigned int pid,
         uint bmodel_id = pid >> 9;
         const std::vector<Vec3i> &v = pOutdoor->pBModels[bmodel_id].pVertices;
         for (uint i = 0; i < face->uNumVertices; ++i)
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = ToFloatVector(v[face->pVertexIDs[i]]);
+            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]].ToFloat();
     } else {
         assert(false);
     }

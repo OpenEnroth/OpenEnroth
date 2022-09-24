@@ -60,38 +60,39 @@ struct Vec3 {
     }
 
     void Normalize() requires std::is_floating_point_v<T> {
-        T denom = static_cast<T>(1.0) / Length(*this);
+        T denom = static_cast<T>(1.0) / this->Length();
         x *= denom;
         y *= denom;
         z *= denom;
     }
 
-    friend Vec3<short> ToShortVector(const Vec3 &v) requires std::is_floating_point_v<T> {
-        return Vec3<short>(std::round(v.x), std::round(v.y), std::round(v.z));
+    Vec3<short> ToShort() const requires std::is_floating_point_v<T> {
+        return Vec3<short>(std::round(x), std::round(y), std::round(z));
     }
 
-    friend Vec3<int> ToIntVector(const Vec3 &v) requires std::is_floating_point_v<T> {
-        return Vec3<int>(std::round(v.x), std::round(v.y), std::round(v.z));
+    Vec3<int> ToInt() const requires std::is_floating_point_v<T> {
+        return Vec3<int>(std::round(x), std::round(y), std::round(z));
     }
 
-    friend Vec3<int> ToFixpointVector(const Vec3 &v) requires std::is_floating_point_v<T> {
-        return Vec3<int>(std::round(v.x * 65536.0), std::round(v.y * 65536.0), std::round(v.z * 65536.0));
+    Vec3<int> ToFixpoint() const requires std::is_floating_point_v<T> {
+        return Vec3<int>(std::round(x * 65536.0), std::round(y * 65536.0), std::round(z * 65536.0));
     }
 
-    friend Vec3<float> ToFloatVector(const Vec3 &v) requires std::is_integral_v<T> {
-        return Vec3<float>(v.x, v.y, v.z);
+    Vec3<float> ToFloat() const requires std::is_integral_v<T> {
+        return Vec3<float>(x, y, z);
     }
 
-    friend Vec3<float> ToFloatVectorFromFixpoint(const Vec3 &v) requires std::is_integral_v<T> {
-        return Vec3<float>(v.x / 65536.0, v.y / 65536.0, v.z / 65536.0);
+    Vec3<float> ToFloatFromFixpoint() const requires std::is_integral_v<T> {
+        return Vec3<float>(x / 65536.0, y / 65536.0, z / 65536.0);
     }
 
-    friend T LengthSqr(const Vec3 &v) {
-        return v.x * v.x + v.y * v.y + v.z * v.z;
+    auto LengthSqr() const {
+        // Note that auto return type is important because this way Vec3s::LengthSqr returns int.
+        return x * x + y * y + z * z;
     }
 
-    friend T Length(const Vec3 &v) {
-        return std::sqrt(LengthSqr(v));
+    T Length() const {
+        return std::sqrt(LengthSqr());
     }
 
     friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {

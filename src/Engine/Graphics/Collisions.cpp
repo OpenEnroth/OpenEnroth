@@ -64,7 +64,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius,
     Vec3f new_pos =
         pos + move_distance * dir - overshoot * face->pFacePlane.vNormal;
 
-    if (!face->Contains(ToIntVector(new_pos), model_idx))
+    if (!face->Contains(new_pos.ToInt(), model_idx))
         return false; // We've just managed to slide past the face, so pretend no collision happened.
 
     if (move_distance < 0) {
@@ -123,7 +123,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     if (move_distance > *out_move_distance)
         return false; // No correction needed.
 
-    if (!face->Contains(ToIntVector(new_pos), model_idx))
+    if (!face->Contains(new_pos.ToInt(), model_idx))
         return false;
 
     *out_move_distance = move_distance;
@@ -244,7 +244,7 @@ static void CollideWithDecoration(int id) {
         return;
 
     CollideWithCylinder(
-        ToFloatVector(decor->vPosition), desc->uRadius, desc->uDecorationHeight, PID(OBJECT_Decoration, id), false);
+        decor->vPosition.ToFloat(), desc->uRadius, desc->uDecorationHeight, PID(OBJECT_Decoration, id), false);
 }
 
 
@@ -257,7 +257,7 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
         dt_fp = pEventTimer->dt_fixpoint;
     float dt = fixpoint_to_float(dt_fp);
 
-    this->speed = Length(this->velocity);
+    this->speed = this->velocity.Length();
 
     if (!FuzzyIsNull(this->speed)) {
         this->direction = this->velocity / this->speed;
@@ -423,7 +423,7 @@ bool CollideWithActor(int actor_idx, int override_radius) {
         radius = override_radius;
 
     return CollideWithCylinder(
-        ToFloatVector(actor->vPosition), radius, actor->uActorHeight, PID(OBJECT_Actor, actor_idx), true);
+        actor->vPosition.ToFloat(), radius, actor->uActorHeight, PID(OBJECT_Actor, actor_idx), true);
 }
 
 void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
@@ -471,7 +471,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
 }
 
 void CollideWithParty(bool jagged_top) {
-    CollideWithCylinder(ToFloatVector(pParty->vPosition), 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
+    CollideWithCylinder(pParty->vPosition.ToFloat(), 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveGround, bool isFlying) {
@@ -500,12 +500,12 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
     collision_state.radius_hi = actor.uActorRadius;
     collision_state.radius_lo = actor.uActorRadius;
     for (int attempt = 0; attempt < 100; attempt++) {
-        collision_state.position_lo = ToFloatVector(actor.vPosition) + Vec3f(0, 0, actor.uActorRadius + 1);
+        collision_state.position_lo = actor.vPosition.ToFloat() + Vec3f(0, 0, actor.uActorRadius + 1);
         collision_state.position_hi =
-            ToFloatVector(actor.vPosition) + Vec3f(0, 0, actor.uActorHeight - actor.uActorRadius - 1);
+            actor.vPosition.ToFloat() + Vec3f(0, 0, actor.uActorHeight - actor.uActorRadius - 1);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
 
-        collision_state.velocity = ToFloatVector(actor.vVelocity);
+        collision_state.velocity = actor.vVelocity.ToFloat();
         collision_state.uSectorID = actor.uSectorID;
         if (collision_state.PrepareAndCheckIfStationary(0))
             continue;
@@ -553,7 +553,7 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                 v33 >= actor.vPosition.z - 100 || isAboveGround || isFlying) {
                 if (collision_state.adjusted_move_distance < collision_state.move_distance) {
                     actor.vPosition +=
-                            ToShortVector(collision_state.adjusted_move_distance * collision_state.direction);
+                            (collision_state.adjusted_move_distance * collision_state.direction).ToShort();
                     actor.uSectorID = collision_state.uSectorID;
                     collision_state.total_move_distance += collision_state.adjusted_move_distance;
                     v37 = PID_ID(collision_state.pid);

@@ -176,7 +176,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
             if (frame->uFlags & 0x40000) v46 |= 0x40;
             if (frame->uFlags & 0x20000) v46 |= 0x80;
             if (a6) {
-                pMobileLightsStack->AddLight(ToFloatVector(object->vPosition),
+                pMobileLightsStack->AddLight(object->vPosition.ToFloat(),
                                              object->uSectorID, a6, 0xFF, 0xFF, 0xFF, _4E94D3_light_type);
             }
 

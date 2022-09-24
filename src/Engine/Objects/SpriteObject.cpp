@@ -325,7 +325,7 @@ LABEL_13:
             v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             v49 = false;
             v27 = ODM_GetFloorLevel(
-                ToIntVector(collision_state.new_position_lo) - Vec3i(0, 0, collision_state.radius_lo + 1),
+                collision_state.new_position_lo.ToInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
                 object->uHeight, &v49, &v50, 0);
             if (on_water && v26 < v27 + 60) {
                 if (v50)

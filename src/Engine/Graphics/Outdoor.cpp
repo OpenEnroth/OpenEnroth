@@ -1783,11 +1783,11 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
     }
 
     Vec3f n = Cross(side2, side1);
-    float mag = Length(n);
+    float mag = n.Length();
     if (fabsf(mag) < 1e-6f) {
         *out = Vec3i(0, 0, 65536);
     } else {
-        *out = ToFixpointVector(n / mag);
+        *out = (n / mag).ToFixpoint();
     }
 }
 //----- (0046BE0A) --------------------------------------------------------
@@ -3027,7 +3027,7 @@ void UpdateActors_ODM() {
             bool bOnWater = false;
             int Splash_Model_On;
             int Splash_Floor = ODM_GetFloorLevel(
-                ToIntVector(collision_state.new_position_lo) - Vec3i(0, 0, collision_state.radius_lo + 1),
+                collision_state.new_position_lo.ToInt() - Vec3i(0, 0, collision_state.radius_lo + 1),
                 pActors[Actor_ITR].uActorHeight, &bOnWater, &Splash_Model_On, 0);
             if (uIsOnWater) {
                 if (v35 < Splash_Floor + 60) {
