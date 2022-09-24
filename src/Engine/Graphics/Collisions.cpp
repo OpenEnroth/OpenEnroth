@@ -279,7 +279,7 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
         BBoxf::FromPoint(this->new_position_hi, this->radius_hi);
 
     this->pid = 0;
-    this->adjusted_move_distance = std::numeric_limits<float>::max();
+    this->adjusted_move_distance = this->move_distance;
 
     return false;
 }
@@ -405,7 +405,7 @@ bool CollideIndoorWithPortals() {
         } else {
             collision_state.uSectorID = pIndoor->pFaces[portal_id].uSectorID;
         }
-        collision_state.adjusted_move_distance = std::numeric_limits<float>::max();
+        collision_state.adjusted_move_distance = collision_state.move_distance;
         return false;
     }
 
@@ -520,16 +520,10 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
         }
         bool isInCrowd = collisionsWithOtherActors > 1;
 
-        Vec3f newPos;
-        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            newPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
-        } else {
-            newPos = actor.vPosition.ToFloat() + collision_state.adjusted_move_distance * collision_state.direction;
-        }
-
+        Vec3f newPos = actor.vPosition.ToFloat() + collision_state.adjusted_move_distance * collision_state.direction;
         int floorZ = GetIndoorFloorZ(newPos.ToInt(), &collision_state.uSectorID, &uFaceID);
         if (floorZ == -30000)
-            break; // Actor out of bounds, running more iterations won't help.
+            break; // New pos is out of bounds, running more iterations won't help.
 
         if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
             if (actor.uAIState == Dead) {
@@ -543,7 +537,7 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                     Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, &v52);
                 }
 
-                break; // Standing on indoor sky, what now?
+                break; // Trying to walk into indoor sky, bad idea!
             }
         }
 
