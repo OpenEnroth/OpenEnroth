@@ -198,7 +198,7 @@ struct Player {
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
     void Heal(int amount);
     int ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
-    int ReceiveSpecialAttackEffect(int attType, struct Actor* pActor);
+    int ReceiveSpecialAttackEffect(int attType, Actor* pActor);
     unsigned int GetSpellSchool(unsigned int uSpellID);
     int GetAttackRecoveryTime(bool bRangedAttack);
 

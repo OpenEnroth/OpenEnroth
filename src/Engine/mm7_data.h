@@ -15,6 +15,7 @@
 #include "VectorTypes.h"
 
 class GUIButton;
+class Actor;
 
 //-------------------------------------------------------------------------
 // Data declarations
@@ -205,7 +206,7 @@ extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
 extern GameTime _5773B8_event_timer;  // 5773B8
 
-extern struct Actor *pDialogue_SpeakingActor;
+extern Actor *pDialogue_SpeakingActor;
 extern DIALOGUE_TYPE uDialogueType;
 extern signed int sDialogue_SpeakingActorNPC_ID;
 extern struct LevelDecoration *_591094_decoration;

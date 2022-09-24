@@ -1832,7 +1832,7 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 //----- (0048DCF6) --------------------------------------------------------
 int Player::ReceiveSpecialAttackEffect(
     int attType,
-    struct Actor* pActor) {  // long function - consider breaking into two??
+    Actor* pActor) {  // long function - consider breaking into two??
 
     SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE)attType;
 

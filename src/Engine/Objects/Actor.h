@@ -9,6 +9,7 @@
 #include "Monsters.h"
 
 using EngineIoc = Engine_::IocContainer;
+class Actor;
 
 /*  357 */
 #pragma pack(push, 1)
@@ -17,7 +18,7 @@ struct stru319 {
         this->vis = EngineIoc::ResolveVis();
     }
 
-    int which_player_to_attack(struct Actor *pActor);
+    int which_player_to_attack(Actor *pActor);
     int _427546(int a2);
     int FindClosestActor(int pick_depth, int a3, int target_undead);
 

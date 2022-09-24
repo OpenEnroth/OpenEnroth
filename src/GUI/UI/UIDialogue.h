@@ -14,7 +14,7 @@ class GUIWindow_Dialogue : public GUIWindow {
     virtual void Release();
 };
 
-void GameUI_InitializeDialogue(struct Actor *actor, int bPlayerSaysHello);
+void GameUI_InitializeDialogue(Actor *actor, int bPlayerSaysHello);
 
 class GUIWindow_GenericDialogue : public GUIWindow {
  public:
