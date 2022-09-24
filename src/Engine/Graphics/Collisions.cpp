@@ -541,7 +541,13 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
             }
         }
 
-        if (actor.uCurrentActionAnimation != ANIM_Walking || floorZ >= actor.vPosition.z - 100 || isAboveGround || isFlying) {
+        if (actor.uCurrentActionAnimation == ANIM_Walking && floorZ < actor.vPosition.z - 100 && !isAboveGround && !isFlying) {
+            if (actor.vPosition.x & 1) {
+                actor.uYawAngle += 100;
+            } else {
+                actor.uYawAngle -= 100;
+            }
+        } else {
             if (collision_state.adjusted_move_distance < collision_state.move_distance) {
                 actor.vPosition += (collision_state.adjusted_move_distance * collision_state.direction).ToShort();
                 actor.uSectorID = collision_state.uSectorID;
@@ -676,11 +682,6 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                 // goto LABEL_123;
                 break;
             }
-
-        } else if (actor.vPosition.x & 1) {
-            actor.uYawAngle += 100;
-        } else {
-            actor.uYawAngle -= 100;
         }
     }
 }
