@@ -1369,16 +1369,16 @@ int UseNPCSkill(NPCProf profession) {
         case Cook: {
             if (pParty->GetFood() >= 13) return 1;
 
-            Party::GiveFood(1);
+            pParty->GiveFood(1);
         } break;
 
         case Chef: {
             if (pParty->GetFood() >= 13) return 1;
 
             if (pParty->GetFood() == 13)
-                Party::GiveFood(1);
+                pParty->GiveFood(1);
             else
-                Party::GiveFood(2);
+                pParty->GiveFood(2);
         } break;
 
         case WindMaster: {

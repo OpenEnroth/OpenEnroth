@@ -5,9 +5,7 @@ set(ACROMAGE_SOURCES Arcomage.cpp
 
 set(ACROMAGE_HEADERS Arcomage.h)
 
-if(WIN32)
-else()
-endif()
-
 add_library(arcomage STATIC ${ACROMAGE_SOURCES} ${ACROMAGE_HEADERS})
+target_link_libraries(arcomage utility)
+
 target_check_style(arcomage)

@@ -70,9 +70,9 @@ void ShopDialogMain(GUIWindow dialogwin) {
                          1;
             pButton->uW = textoffset + 6;
 
-            pColorText = Color16(0xE1u, 0xCDu, 0x23u);
+            pColorText = colorTable.Jonquil.C16();
             if (pDialogueWindow->pCurrentPosActiveItem != i)
-                pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
+                pColorText = colorTable.White.C16();
 
             dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText,
                                     pShopOptions[pNumString], 3);
@@ -123,9 +123,9 @@ void ShopDialogDisplayEquip(GUIWindow dialogwin,
                      1;
         pButton->uW = textoffset + 6;
 
-        pColorText = Color16(0xE1u, 0xCDu, 0x23u);
+        pColorText = colorTable.Jonquil.C16();
         if (pDialogueWindow->pCurrentPosActiveItem != i)
-            pColorText = Color16(0xFFu, 0xFFu, 0xFFu);
+            pColorText = colorTable.White.C16();
         dialogwin.DrawTitleText(pFontArrus, 0, pButton->uY, pColorText,
                                 pShopOptions[pNumString], 3);
         ++pNumString;
@@ -160,7 +160,7 @@ void ShopDialogSellEquip(GUIWindow dialogwin, BuildingType building) {
                                                str, dialogwin.uFrameWidth, 0)) /
                                             2 +
                                         138,
-                                    Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                                    colorTable.White.C16(), str, 3);
         }
     }
 }
@@ -196,7 +196,7 @@ void ShopDialogIdentify(GUIWindow dialogwin, BuildingType building) {
 
             dialogwin.DrawTitleText(pFontArrus, 0,
                 (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
-                Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                colorTable.White.C16(), str, 3);
         }
     }
 }
@@ -228,7 +228,7 @@ void ShopDialogRepair(GUIWindow dialogwin, BuildingType building) {
                 window_SpeakInHouse->wData.val, 5);
             dialogwin.DrawTitleText(pFontArrus, 0,
                 (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
-                Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                colorTable.White.C16(), str, 3);
         }
     }
 }
@@ -353,7 +353,7 @@ void WeaponShopWares(GUIWindow dialogwin, bool special) {
                                            str, dialogwin.uFrameWidth, 0)) /
                                         2 +
                                     138,
-                                Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                                colorTable.White.C16(), str, 3);
                         }
                     }
                 }
@@ -516,7 +516,7 @@ void ArmorShopWares(GUIWindow dialogwin, bool special) {
                             dialogwin.DrawTitleText(
                                 pFontArrus, 0,
                                 (174 - pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + 138,
-                                Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                                colorTable.White.C16(), str, 3);
                         }
                     }
                 }
@@ -690,7 +690,7 @@ void AlchemyMagicShopWares(GUIWindow dialogwin, BuildingType building,
                                            str, dialogwin.uFrameWidth, 0)) /
                                         2 +
                                     138,
-                                Color16(0xFFu, 0xFFu, 0xFFu), str, 3);
+                                colorTable.White.C16(), str, 3);
                         }
                     }
                 }
@@ -849,34 +849,26 @@ void UIShop_Buy_Identify_Repair() {
                         testpos = 32 + 70 * testx;
                     }
 
-                    if (pt.x >= testpos &&
-                        pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                        if ((pt.y >= 90 &&
-                            pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
-                            (pt.y >= 250 &&
-                                pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
-                            pPriceMultiplier =
-                                p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
-                            uPriceItemService = pPlayers[uActiveCharacter]->GetBuyingPrice(
-                                    bought_item->GetValue(), pPriceMultiplier);
+                    if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+                        if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) ||
+                            (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+                            pPriceMultiplier = p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier;
+                            uPriceItemService = pPlayers[uActiveCharacter]->GetBuyingPrice(bought_item->GetValue(), pPriceMultiplier);
 
                             if (pParty->GetGold() < uPriceItemService) {
-                                PlayHouseSound(
-                                    window_SpeakInHouse->wData.val,
-                                    (HouseSoundID)2);
+                                PlayHouseSound(window_SpeakInHouse->wData.val, (HouseSoundID)2);
                                 GameUI_SetStatusBar(LSTR_NOT_ENOUGH_GOLD);
                                 return;
                             }
 
-                            taken_item = pPlayers[uActiveCharacter]->AddItem(
-                                -1, bought_item->uItemID);
+                            taken_item = pPlayers[uActiveCharacter]->AddItem(-1, bought_item->uItemID);
                             if (taken_item) {
                                 bought_item->SetIdentified();
                                 memcpy(
                                     &pPlayers[uActiveCharacter]->pInventoryItemList[taken_item - 1],
                                     bought_item, 0x24u);
                                 dword_F8B1E4 = 1;
-                                Party::TakeGold(uPriceItemService);
+                                pParty->TakeGold(uPriceItemService);
                                 viewparams->bRedrawGameUI = 1;
                                 bought_item->Reset();
                                 render->ClearZBuffer();
@@ -937,7 +929,7 @@ void UIShop_Buy_Identify_Repair() {
                 if (item->MerchandiseTest(window_SpeakInHouse->wData.val)) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         dword_F8B1E4 = 1;
-                        Party::TakeGold(uPriceItemService);
+                        pParty->TakeGold(uPriceItemService);
                         item->uAttributes |= ITEM_IDENTIFIED;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_ShopIdentify, 0);
                         GameUI_SetStatusBar(LSTR_DONE);
@@ -977,7 +969,7 @@ void UIShop_Buy_Identify_Repair() {
                 if (item->MerchandiseTest(window_SpeakInHouse->wData.val)) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         dword_F8B1E4 = 1;
-                        Party::TakeGold(uPriceItemService);
+                        pParty->TakeGold(uPriceItemService);
                         item->uAttributes =
                             (item->uAttributes & 0xFFFFFFFD) | 1;
                         pPlayers[uActiveCharacter]->PlaySound(SPEECH_ShopRepair, 0);
@@ -1199,7 +1191,7 @@ void UIShop_Buy_Identify_Repair() {
                                           uNumSeconds, a6);
                 } else {
                     dword_F8B1E4 = 1;
-                    Party::TakeGold(uPriceItemService);
+                    pParty->TakeGold(uPriceItemService);
                 }
                 viewparams->bRedrawGameUI = 1;
                 bought_item->Reset();
@@ -1231,13 +1223,13 @@ void UIShop_Buy_Identify_Repair() {
                             if (in_current_building_type == BuildingType_Training)
                                 v55 = HouseSound_Goodbye;
                             else
-                                v55 = HouseSound_NotEnoughMoney_TrainingSuccessful;
+                                v55 = HouseSound_NotEnoughMoney;
                             PlayHouseSound(
                                 window_SpeakInHouse->wData.val,
                                 (HouseSoundID)v55);
                             return;
                         }
-                        Party::TakeGold(uPriceItemService);
+                        pParty->TakeGold(uPriceItemService);
                         dword_F8B1E4 = 1;
                         *pSkill = 1;
                         pPlayers[uActiveCharacter]->PlaySound((PlayerSpeech)78, 0);
@@ -1468,16 +1460,14 @@ void ShowPopupShopItem() {
         }
     }
 
-    if (in_current_building_type <= BuildingType_16 &&
-        dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
+    if (in_current_building_type <= BuildingType_MirroredPath && dialog_menu_id == DIALOGUE_GUILD_BUY_BOOKS) {
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {
                 testx += 6;
             }
 
-            item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - 139]
-                                              [testx];
+            item = &pParty->SpellBooksInGuilds[window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE][testx];
 
             if (item->uItemID) {
                 int testpos;
@@ -1487,21 +1477,10 @@ void ShowPopupShopItem() {
                     testpos = 32 + 70 * testx;
                 }
 
-                if (pt.x >= testpos &&
-                    pt.x <=
-                        testpos + shop_ui_items_in_store[testx]->GetWidth()) {
-                    if ((pt.y >= 90 &&
-                        pt.y <=
-                             (90 +
-                              shop_ui_items_in_store[testx]->GetHeight())) ||
-                        (pt.y >= 250 &&
-                            pt.y <=
-                             (250 +
-                              shop_ui_items_in_store[testx]->GetHeight()))) {
-                        unsigned int guildId =
-                            window_SpeakInHouse->wData.val - 139;
-                        sub_4B1523_showSpellbookInfo(
-                            pParty->SpellBooksInGuilds[guildId][testx].uItemID);
+                if (pt.x >= testpos && pt.x <= testpos + shop_ui_items_in_store[testx]->GetWidth()) {
+                    if ((pt.y >= 90 && pt.y <= (90 + shop_ui_items_in_store[testx]->GetHeight())) || (pt.y >= 250 && pt.y <= (250 + shop_ui_items_in_store[testx]->GetHeight()))) {
+                        unsigned int guildId = window_SpeakInHouse->wData.val - HOUSE_FIRE_GUILD_INITIATE_EMERALD_ISLE;
+                        sub_4B1523_showSpellbookInfo(pParty->SpellBooksInGuilds[guildId][testx].uItemID);
                     }
                 }
             }
@@ -1569,7 +1548,7 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     v7 = pSpellStats->pInfos[spellId].pName;
     a1.uFrameZ = a1.uFrameX + a1.uFrameWidth - 1;
     a1.uFrameW = a1.uFrameHeight + a1.uFrameY - 1;
-    v8 = Color16(0xFFu, 0xFFu, 0x9Bu);
+    v8 = colorTable.PaleCanary.C16();
     a1.DrawTitleText(pFontArrus, 0x78u, 0xCu, v8, v7, 3u);
     a1.DrawText(pFontSmallnum, 120, 44, 0, str, 0, 0, 0);
     a1.uFrameZ = a1.uFrameX + 107;
@@ -1577,10 +1556,8 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     a1.DrawTitleText(pFontComic, 0xCu, 0x4Bu, 0,
                      localization->GetSkillName(static_cast<PLAYER_SKILL_TYPE>(spellSchool / 4 + 12)), 3u);
 
-    str = StringPrintf("%s\n%d", localization->GetString(LSTR_SP_COST),
-                       pSpellDatas[spellId].uNormalLevelMana);
-    a1.DrawTitleText(pFontComic, 0xCu,
-                     a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
+    str = StringPrintf("%s\n%d", localization->GetString(LSTR_SP_COST), pSpellDatas[spellId].uNormalLevelMana);
+    a1.DrawTitleText(pFontComic, 0xCu, a1.uFrameHeight - pFontComic->GetHeight() - 16, 0, str, 3);
 }
 
 //----- (004B1D27) --------------------------------------------------------

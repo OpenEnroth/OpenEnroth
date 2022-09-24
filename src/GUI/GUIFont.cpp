@@ -73,11 +73,11 @@ GUIFont *GUIFont::LoadFont(const char *pFontFile, const char *pFontPalette) {
                 if (*pCharPixels) {
                     if (*pCharPixels != 1) {
                         // add to normal
-                        pPixelsfont[offset + x + y * 512] = Color32(255, 255, 255);
+                        pPixelsfont[offset + x + y * 512] = colorTable.White.C32();
                     }
                     if (*pCharPixels == 1) {
                         // add to shadow
-                        pPixelsshadow[offset + x + y * 512] = Color32(255, 255, 255);
+                        pPixelsshadow[offset + x + y * 512] = colorTable.White.C32();
                     }
                 }
                 ++pCharPixels;
@@ -137,7 +137,7 @@ void GUIFont::DrawTextLine(const std::string &text, uint16_t uDefaultColor, int 
                     uint16_t draw_color = text_color;
                     uint8_t *pCharPixels = &pData->pFontData[pData->font_pixels_offset[c]];
                     if (!text_color) {
-                        draw_color = Color16(255, 255, 255);
+                        draw_color = colorTable.White.C16();
                     }
 
                     int xsq = c % 16;
@@ -360,7 +360,7 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int 
                 break;
             }
             case  '\n':
-            {  // Line Feed 0A 10 (êîíåö ñòðîêè)
+            {  // Line Feed 0A 10 (конец строки)
                 string_pixel_Width = start_pixel_offset;
                 possible_transition_point = i;
                 break;
@@ -384,14 +384,13 @@ std::string GUIFont::FitTextInAWindow(const std::string &inString, unsigned int 
                 break;
             }
             default:
-                if ((string_pixel_Width + pData->pMetrics[c].uWidth + pData->pMetrics[c].uLeftSpacing +
-                    pData->pMetrics[c].uRightSpacing) < width) {  // íàðàùèâàíèå äëèíû ñòðîêè èëè ïåðåíîñ
+                if ((string_pixel_Width + pData->pMetrics[c].uWidth + pData->pMetrics[c].uLeftSpacing + pData->pMetrics[c].uRightSpacing) < width) {  // наращивание длины строки или перенос
                     if (i > possible_transition_point)
                         string_pixel_Width += pData->pMetrics[c].uLeftSpacing;
                     string_pixel_Width += pData->pMetrics[c].uWidth;
                     if (i < uInStrLen)
                         string_pixel_Width += pData->pMetrics[c].uRightSpacing;
-                } else {  // ïåðåíîñ ñòðîêè è ñëîâà
+                } else {  // перенос строки и слова
                     temp_string[possible_transition_point] = '\n';
                     string_pixel_Width = start_pixel_offset;
                     if (i > possible_transition_point) {
@@ -546,7 +545,7 @@ void GUIFont::DrawText(GUIWindow *pWindow, int uX, int uY, uint16_t uFontColor, 
                         render->DrawTextAlpha(out_x, out_y, letter_pixels, pData->pMetrics[c].uWidth, pData->uFontHeight, pData->pFontPalettes[0], present_time_transparency);
 
                         render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color16(r, g, b));
-                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color16(0, 0, 0));
+                        render->DrawTextNew(out_x, out_y, pData->pMetrics[c].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.C16());
                     }
 
                     out_x += pData->pMetrics[c].uWidth;
@@ -699,7 +698,7 @@ int GUIFont::DrawTextInRect(GUIWindow *pWindow, unsigned int uX, unsigned int uY
                     float v2 = (ysq * 32.0f + pData->uFontHeight) / 512.0f;
 
                     render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 0, Color16(r, g, b));
-                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, Color16(0, 0, 0));
+                    render->DrawTextNew(text_pos_x, text_pos_y, pData->pMetrics[v15].uWidth, pData->uFontHeight, u1, v1, u2, v2, 1, colorTable.Black.C16());
 
                     render->DrawTextAlpha(text_pos_x, text_pos_y, char_pix_ptr, char_width, pData->uFontHeight, pData->pFontPalettes[0], false);
                 }

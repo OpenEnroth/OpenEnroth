@@ -1,7 +1,7 @@
 #pragma once
 
 /*  296 */
-enum class BuildingType : unsigned short {
+enum class BuildingType: uint16_t {
     BuildingType_Invalid = 0,
     BuildingType_WeaponShop = 1,
     BuildingType_ArmorShop = 2,
@@ -16,24 +16,28 @@ enum class BuildingType : unsigned short {
     BuildingType_BodyGuild = 11,
     BuildingType_LightGuild = 12,
     BuildingType_DarkGuild = 13,
-    BuildingType_ElementalGuild = 14,
-    BuildingType_SelfGuild = 15,
-    BuildingType_16 = 16,
+    BuildingType_ElementalGuild = 14, // In MM6 it was Element Guild
+    BuildingType_SelfGuild = 15, // Exist only in MM6 and MM8
+    BuildingType_MirroredPath = 16, // Mirrored Path Guild of Light and Dark (not made it into any released game)
     BuildingType_TownHall = 17,
-    BuildingType_18 = 18,
-    BuildingType_19 = 19,
+    BuildingType_MercenaryGuild = 18,
+    BuildingType_TownHall_MM6 = 19,
     BuildingType_Throne_Room = 20,
     BuildingType_Tavern = 21,
     BuildingType_Bank = 22,
     BuildingType_Temple = 23,
-    BuildingType_24 = 24,
-    BuildingType_Unic = 25,
-    BuildingType_1A = 26,
+    BuildingType_Castle = 24,
+    BuildingType_Dungeon = 25,
+    BuildingType_Seer = 26,
     BuildingType_Stables = 27,
     BuildingType_Boats = 28,
     BuildingType_House = 29,
     BuildingType_Training = 30,
-    BuildingType_Jail = 31
+    BuildingType_Jail = 31,
+    BuildingType_Circus = 32, // MM6 Circus
+    BuildingType_GeneralStore = 33, // MM6 General Store (where it was 3)
+    BuildingType_ShadowGuild = 34, // MM6 Thieves Guild (where it was 17)
+    BuildingType_AdventuresInn = 35 // MM6 Adventurer's Inn
 };
 using enum BuildingType;
 

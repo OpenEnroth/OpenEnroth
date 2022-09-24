@@ -19,11 +19,11 @@
 }}
 
 #ifdef _DEBUG
-#define STBTT_malloc malloc
-#define STBTT_free free
+#define STBTT_malloc(ptr, userdata) malloc(ptr)
+#define STBTT_free(ptr, userdata) free(ptr)
 #endif
 
-#define STBTT_RASTERIZER_VERSION 1
+#define STBTT_RASTERIZER_VERSION 2
 
 #include "nuklear.h"
 #include "nuklear_internal.h"

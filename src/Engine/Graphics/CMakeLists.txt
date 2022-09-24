@@ -4,6 +4,8 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      Collisions.cpp
                      DecalBuilder.cpp
                      DecorationList.cpp
+                     HWLContainer.cpp
+                     IRenderFactory.cpp
                      Image.cpp
                      ImageLoader.cpp
                      Indoor.cpp
@@ -25,14 +27,14 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      Weather.cpp
                      Level/Decoration.cpp
                      OpenGL/RenderOpenGL.cpp
-                     OpenGL/TextureOpenGL.cpp
-                     IRenderFactory.cpp
-                     HWLContainer.cpp)
+                     OpenGL/TextureOpenGL.cpp)
 
 set(GRAPHICS_HEADERS BSPModel.h
                      Collisions.h
                      DecalBuilder.h
                      DecorationList.h
+                     HWLContainer.h
+                     IRenderFactory.h
                      Image.h
                      ImageFormatConverter.h
                      ImageLoader.h
@@ -56,12 +58,10 @@ set(GRAPHICS_HEADERS BSPModel.h
                      Viewport.h
                      Vis.h
                      Weather.h
-                     Level/Decoration.h
+                     OpenGL/GLShaderLoader.h
                      OpenGL/RenderOpenGL.h
                      OpenGL/TextureOpenGL.h
-                     OpenGL/GLShaderLoader.h
-                     IRenderFactory.h
-                     HWLContainer.h)
+                     Level/Decoration.h)
 
 if(WIN32)
   list(APPEND GRAPHICS_SOURCES Direct3D/Render.cpp

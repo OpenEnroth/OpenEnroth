@@ -33,10 +33,7 @@ GUICredits::GUICredits() :
     // cred_texture = Image::Create(width, height, IMAGE_FORMAT_A8R8G8B8);
     cred_texture = render->CreateTexture_Blank(width, height, IMAGE_FORMAT_A8R8G8B8);
 
-    // дать шрифт и цвета тексту
-    pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height,
-        Color16(0x70u, 0x8Fu, 0xFEu), Color16(0xECu, 0xE6u, 0x9Cu),
-        text, cred_texture);
+    pFontQuick->DrawCreditsEntry(pFontCChar, 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue.C16(), colorTable.Primrose.C16(), text, cred_texture);
 
     render->Update_Texture(cred_texture);
     free(text);

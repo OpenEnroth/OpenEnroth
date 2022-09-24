@@ -2075,8 +2075,9 @@ void ODM_ProcessPartyActions() {
                     pParty->bFlying = false;
                     if (engine->IsUnderwater() ||
                         pParty->pPartyBuffs[PARTY_BUFF_FLY].uFlags & 1 ||
-                        pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0) {
-                            // *(int *)&pParty->pArtifactsFound[6972 *
+                        (pParty->pPlayers[pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster - 1].sMana > 0 ||
+                        engine->config->debug.AllMagic.Get())) {
+                        // *(int *)&pParty->pArtifactsFound[6972 *
                             // pParty->pPartyBuffs[PARTY_BUFF_FLY].uCaster + 10] > 0 )
                         party_new_Z -= 30;
                         v113 -= 30;
@@ -2193,8 +2194,13 @@ void ODM_ProcessPartyActions() {
                 int dy = sin_y * pParty->uWalkSpeed * fWalkSpeedMultiplier;
 
                 if (pParty->bFlying) {  // лететь вперёд
-                    v2 += 4 * dx;
-                    v1 += 4 * dy;
+                    if (engine->config->debug.TurboSpeed.Get()) {
+                        v2 += dx * 24;
+                        v1 += dy * 24;
+                    } else {
+                        v2 += 4 * dx;
+                        v1 += 4 * dy;
+                    }
 
                     v128 = v1;
                 } else if (partyAtHighSlope &&

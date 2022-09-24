@@ -1182,7 +1182,7 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
 }
 
 void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, unsigned __int16 mask) {
-    uint col = Color32(255, 255, 255);
+    uint32_t col = colorTable.White.C32();
 
     if (mask)
         col = Color32(mask);
@@ -3843,19 +3843,21 @@ void RenderOpenGL::Present() {
     GL_Check_Errors();
     window->OpenGlSwapBuffers();
 
-    // crude frame rate limiting
-    const float MIN_FRAME_TIME = 1000000000 / (float)engine->config->graphics.FPSLimit.Get();
+    if (engine->config->graphics.FPSLimit.Get() > 0) {
+        // crude frame rate limiting
+        const float MIN_FRAME_TIME = 1000000000 / (float)engine->config->graphics.FPSLimit.Get();
 
-    static std::chrono::time_point<std::chrono::high_resolution_clock> lastframe{ std::chrono::high_resolution_clock::now() };
-    uint64_t framedt{};
-    std::chrono::time_point<std::chrono::high_resolution_clock> now{};
+        static std::chrono::time_point<std::chrono::high_resolution_clock> lastframe{ std::chrono::high_resolution_clock::now() };
+        uint64_t framedt{};
+        std::chrono::time_point<std::chrono::high_resolution_clock> now{};
 
-    // run in circles
-    do {
-        now = std::chrono::high_resolution_clock::now();
-        framedt = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastframe).count();
-    } while (framedt < MIN_FRAME_TIME);
-    lastframe = now;
+        // run in circles
+        do {
+            now = std::chrono::high_resolution_clock::now();
+            framedt = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastframe).count();
+        } while (framedt < MIN_FRAME_TIME);
+        lastframe = now;
+    }
 }
 
 GLshaderverts *outbuildshaderstore[16] = { nullptr };

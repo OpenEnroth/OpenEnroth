@@ -9,6 +9,7 @@
 #include "GameMenu.h"
 
 #include "Engine/AssetsManager.h"
+#include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineFactory.h"
 #include "Engine/Events.h"
@@ -995,7 +996,7 @@ void Game::EventLoop() {
 
                     // PlayHouseSound(  // this is wrong - what is it meant to do??
                     //    uCurrentHouse_Animation,
-                    //    HouseSound_NotEnoughMoney_TrainingSuccessful);
+                    //    HouseSound_NotEnoughMoney);
 
                     if (pMovie_Track) pMediaPlayer->Unload();
                     DialogueEnding();
@@ -1106,7 +1107,7 @@ void Game::EventLoop() {
                                 } while ((int64_t)pPlayer7 < (int64_t)pParty->pHirelings.data());
                                 ++pParty->days_played_without_rest;
                             }
-                            Party::TakeFood(GetTravelTime());
+                            pParty->TakeFood(GetTravelTime());
                         } else {
                             pPlayer8 = pParty->pPlayers.data();
                             do {
@@ -1847,7 +1848,7 @@ void Game::EventLoop() {
                                 continue;
                             }
                         }
-                        Party::TakeFood(uRestUI_FoodRequiredToRest);
+                        pParty->TakeFood(uRestUI_FoodRequiredToRest);
                         _506F18_num_minutes_to_sleep = 480;
                         _506F14_resting_stage = 2;
                         pParty->RestAndHeal();
@@ -2632,7 +2633,7 @@ void Game::EventLoop() {
                     pPlayers[std::max(uActiveCharacter, 1u)]->PlayAwardSound_Anim();
                     continue;
                 case UIMSG_DebugGiveGold:
-                    Party::AddGold(10000);
+                    pParty->AddGold(10000);
                     continue;
                 case UIMSG_DebugTownPortal:
                     engine->config->debug.TownPortal.Toggle();
@@ -2865,7 +2866,7 @@ void Game::GameLoop() {
                 SaveGame(0, 0);
                 ++pParty->uNumDeaths;
                 for (uint i = 0; i < 4; ++i)
-                    pParty->pPlayers[i].SetVariable(VAR_Award, 85);
+                    pParty->pPlayers[i].SetVariable(VAR_Award, Award_Deaths);
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime().AddDays(7);  // += 2580480
                 HEXRAYS_LOWORD(pParty->uFlags) &= ~0x204;

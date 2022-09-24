@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
@@ -166,26 +167,16 @@ void GUIWindow_Rest::Update() {
         tmp_button.uWidth = 171;
         tmp_button.uHeight = 37;
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(
-            localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate,
-            Color16(10, 0, 0), Color16(230, 214, 193));
+        tmp_button.DrawLabel(localization->GetString(LSTR_REST_AND_HEAL_8_HOURS), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
         tmp_button.pParent = 0;
 
         auto str1 = StringPrintf("\r408%d", uRestUI_FoodRequiredToRest);
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 0, 164, Color16(10, 0, 0), str1, 0, 0, Color16(230, 214, 193));
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 0, 164, colorTable.Diesel.C16(), str1, 0, 0, colorTable.StarkWhite.C16());
 
-        pButton_RestUI_WaitUntilDawn->DrawLabel(
-            localization->GetString(LSTR_WAIT_UNTIL_DAWN), pFontCreate,
-            Color16(10, 0, 0), Color16(230, 214, 193));
-        pButton_RestUI_Wait1Hour->DrawLabel(
-            localization->GetString(LSTR_WAIT_1_HOUR), pFontCreate,
-            Color16(10, 0, 0), Color16(230, 214, 193));
-        pButton_RestUI_Wait5Minutes->DrawLabel(
-            localization->GetString(LSTR_WAIT_5_MINUTES), pFontCreate,
-            Color16(10, 0, 0), Color16(230, 214, 193));
-        pButton_RestUI_Exit->DrawLabel(
-            localization->GetString(LSTR_EXIT_REST), pFontCreate,
-            Color16(10, 0, 0), Color16(230, 214, 193));
+        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(LSTR_WAIT_UNTIL_DAWN), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
+        pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(LSTR_WAIT_1_HOUR), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
+        pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(LSTR_WAIT_5_MINUTES), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
+        pButton_RestUI_Exit->DrawLabel(localization->GetString(LSTR_EXIT_REST), pFontCreate, colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
         tmp_button.uX = 45;
         tmp_button.uY = 199;
 
@@ -198,37 +189,18 @@ void GUIWindow_Rest::Update() {
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
         tmp_button.DrawLabel(
             localization->GetString(LSTR_WAIT_WITHOUT_HEALING), pFontCreate,
-           Color16(10, 0, 0), Color16(230, 214, 193));
+           colorTable.Diesel.C16(), colorTable.StarkWhite.C16());
         tmp_button.pParent = 0;
-        auto str2 = StringPrintf(
-            "%d:%02d %s", am_pm_hours, pParty->uCurrentMinute,
-            localization->GetAmPm(
-                (pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168,
-                                         Color16(10, 0, 0), str2, 0, 0,
-                                         Color16(230, 214, 193));
-        auto str3 = StringPrintf(
-            "%s\r190%d", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1
-        );
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190,
-                                         Color16(10, 0, 0), str3, 0, 0,
-                                         Color16(230, 214, 193));
-        auto str4 = StringPrintf(
-            "%s\r190%d", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1
-        );
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 222,
-                                         Color16(10, 0, 0), str4, 0, 0,
-                                         Color16(230, 214, 193));
-        auto str5 = StringPrintf(
-            "%s\r190%d", localization->GetString(LSTR_YEAR), pParty->uCurrentYear
-        );
-        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 254,
-                                         Color16(10, 0, 0), str5, 0, 0,
-                                         Color16(230, 214, 193));
+        std::string str2 = StringPrintf("%d:%02d %s", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 368, 168, colorTable.Diesel.C16(), str2, 0, 0, colorTable.StarkWhite.C16());
+        std::string str3 = StringPrintf("%s\r190%d", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 190, colorTable.Diesel.C16(), str3, 0, 0, colorTable.StarkWhite.C16());
+        std::string str4 = StringPrintf("%s\r190%d", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 222, colorTable.Diesel.C16(), str4, 0, 0, colorTable.StarkWhite.C16());
+        std::string str5 = StringPrintf("%s\r190%d", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
+        pGUIWindow_CurrentMenu->DrawText(pFontCreate, 350, 254, colorTable.Diesel.C16(), str5, 0, 0, colorTable.StarkWhite.C16());
         if (_506F14_resting_stage) Party::Sleep8Hours();
     } else {
-        new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0,
-            pButton_RestUI_Exit,
-            localization->GetString(LSTR_EXIT_REST));
+        new OnCancel(pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY, 0, 0, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
     }
 }

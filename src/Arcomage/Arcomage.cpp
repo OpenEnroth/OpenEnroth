@@ -405,13 +405,13 @@ int new_explosion_effect(Point* startXY, int effect_value) {
 }
 
 void DrawSparks() {
-    int rgb_pixel_color{};
+    uint16_t rgb_pixel_color{};
 
     for (int i = 0; i < 10; ++i) {
         if (am_effects_array[i].have_effect && (am_effects_array[i].explosion_eff->IsEffectActive() == 2)) {
             // set the pixel color
-            rgb_pixel_color = Color16(0, 255, 0);  // green
-            if (!am_effects_array[i].effect_sign) rgb_pixel_color = Color16(255, 0, 0);  // red
+            rgb_pixel_color = colorTable.Green.C16();
+            if (!am_effects_array[i].effect_sign) rgb_pixel_color = colorTable.Red.C16();
 
             // draw sparks
             for (int j = 0; j < 150; ++j) {
@@ -531,12 +531,12 @@ bool ArcomageGame::LoadSprites() {
     // mask out blue
     uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8R8G8B8);
     int width = pArcomageGame->pSprites->GetWidth();
-    uint32_t mask = Color32(0, 0, 255);
+    uint32_t mask = colorTable.Blue.C32();
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < pArcomageGame->pSprites->GetHeight(); ++y) {
             int index{ x + y * width };
             if (pix[index] == mask)
-                pix[index] = Color32(0, 0, 0, 0);
+                pix[index] = colorTable.Black.C32(0);
         }
     }
     render->Update_Texture(pArcomageGame->pSprites);
