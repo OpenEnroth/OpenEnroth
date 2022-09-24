@@ -24,7 +24,7 @@ struct ObjectDesc {
     int16_t uObjectID;
     int16_t uRadius;
     int16_t uHeight;
-    int16_t uFlags;
+    int16_t uFlags; // TODO: OBJECT_DESC_FLAGS
     uint16_t uSpriteID;
     int16_t uLifetime;
     uint32_t uParticleTrailColor;

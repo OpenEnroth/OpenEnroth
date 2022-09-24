@@ -281,7 +281,7 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     this->pid = 0;
     this->adjusted_move_distance = std::numeric_limits<float>::max();
 
-    return  false;
+    return false;
 }
 
 void CollideIndoorWithGeometry(bool ignore_ethereal) {
@@ -496,7 +496,7 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
         collision_state.velocity = actor.vVelocity.ToFloat();
         collision_state.uSectorID = actor.uSectorID;
         if (collision_state.PrepareAndCheckIfStationary(0))
-            continue;
+            break;
 
         int collisionsWithOtherActors = 0;
         unsigned int pid = PID(OBJECT_Actor, actor.id);
@@ -507,12 +507,13 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
             _46ED8A_collide_against_sprite_objects(pid);
             for (uint j = 0; j < ai_arrays_size; j++) {
                 int actor2_id = ai_near_actors_ids[j];
-                if (actor2_id != actor.id) {
-                    Actor &actor2 = pActors[actor2_id];
-                    if ((actor2.vPosition - actor.vPosition).Length() >= actor.uActorRadius + actor2.uActorRadius &&
-                        CollideWithActor(actor2_id, 40))
-                        ++collisionsWithOtherActors;
-                }
+                if (actor2_id == actor.id)
+                    continue;
+
+                Actor &actor2 = pActors[actor2_id];
+                if ((actor2.vPosition - actor.vPosition).Length() >= actor.uActorRadius + actor2.uActorRadius &&
+                    CollideWithActor(actor2_id, 40))
+                    ++collisionsWithOtherActors;
             }
             if (CollideIndoorWithPortals())
                 break;
@@ -533,24 +534,20 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
         if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
             if (actor.uAIState == Dead) {
                 actor.uAIState = Removed;
-                continue; // TODO: break?
+                break; // Actor removed, no point in running more iterations.
             }
 
             if (!isAboveGround && !isFlying) {
-                if (pParty->bTurnBasedModeOn &&
-                    (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
-                    continue; // TODO: break?
                 if (actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly || isInCrowd) {
                     AIDirection v52;
-                    Actor::AI_StandOrBored(actor.id, 4, 0, &v52);
-                    continue; // TODO: break?
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, &v52);
                 }
 
-                continue; // TODO: break?
+                break; // Standing on indoor sky, what now?
             }
         }
 
-        if (actor.uCurrentActionAnimation != 1 || floorZ >= actor.vPosition.z - 100 || isAboveGround || isFlying) {
+        if (actor.uCurrentActionAnimation != ANIM_Walking || floorZ >= actor.vPosition.z - 100 || isAboveGround || isFlying) {
             if (collision_state.adjusted_move_distance < collision_state.move_distance) {
                 actor.vPosition += (collision_state.adjusted_move_distance * collision_state.direction).ToShort();
                 actor.uSectorID = collision_state.uSectorID;
