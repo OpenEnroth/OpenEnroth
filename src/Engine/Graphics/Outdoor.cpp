@@ -460,7 +460,7 @@ void OutdoorLocation::UpdateFog() {
     fFogDensity = GetFogDensityByTime();
 }
 
-int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(const Vec3_int_ &pos) {
+int OutdoorLocation::GetNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
     ODM_GetFloorLevel(pos, pParty->uDefaultPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
@@ -1592,7 +1592,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (v14->uFlags & 0x20000) v62 |= 0x80;
         if ((256 << Sprite_Octant) & v14->uFlags) v62 |= 4;
         if (v15->uGlowRadius) {
-            pMobileLightsStack->AddLight(Vec3_float_(x, y, z), 0, v15->uGlowRadius, 0xFFu,
+            pMobileLightsStack->AddLight(Vec3f(x, y, z), 0, v15->uGlowRadius, 0xFFu,
                                          0xFFu, 0xFFu, _4E94D3_light_type);
         }
 
@@ -1658,7 +1658,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
     }
 }
 
-int ODM_GetFloorLevel(const Vec3_int_ &pos, int unused, bool *pIsOnWater,
+int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
                       int *bmodel_pid, int bWaterWalk) {
     std::array<int, 20> current_Face_id;                   // dword_721110
     std::array<int, 20> current_BModel_id;                 // dword_721160
@@ -1745,7 +1745,7 @@ int ODM_GetFloorLevel(const Vec3_int_ &pos, int unused, bool *pIsOnWater,
 // normal of inverse normal
 // for a right-handed system, that would be an inverse normal
 //----- (0046DCC8) --------------------------------------------------------
-void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3_int_ *out) {
+void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
     uint grid_x = WorldPosToGridCellX(pos_x);
     uint grid_y = WorldPosToGridCellY(pos_y) - 1;
 
@@ -1759,22 +1759,22 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3_int_ *out) {
     int x2y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
     int x1y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
 
-    Vec3_float_ side1, side2;
+    Vec3f side1, side2;
 
     //float side1_dx, side1_dz, side1_dy, side2_dx, side2_dz, side2_dy;
 
     int dx = abs(pos_x - grid_pos_x1);
     int dy = abs(grid_pos_y1 - pos_y);
     if (dy >= dx) {
-        side2 = Vec3_float_(grid_pos_x2 - grid_pos_x1, 0.0f, x2y2_z - x1y2_z);
-        side1 = Vec3_float_(0.0f, grid_pos_y1 - grid_pos_y2, x1y1_z - x1y2_z);
+        side2 = Vec3f(grid_pos_x2 - grid_pos_x1, 0.0f, x2y2_z - x1y2_z);
+        side1 = Vec3f(0.0f, grid_pos_y1 - grid_pos_y2, x1y1_z - x1y2_z);
         /*       |\
            side1 |  \
                  |____\
                  side 2      */
     } else {
-        side2 = Vec3_float_(grid_pos_x1 - grid_pos_x2, 0.0f, x1y1_z - x2y1_z);
-        side1 = Vec3_float_(0.0f, grid_pos_y2 - grid_pos_y1, x2y2_z - x2y1_z);
+        side2 = Vec3f(grid_pos_x1 - grid_pos_x2, 0.0f, x1y1_z - x2y1_z);
+        side1 = Vec3f(0.0f, grid_pos_y2 - grid_pos_y1, x2y2_z - x2y1_z);
         /*   side 2
              _____
              \    |
@@ -1782,10 +1782,10 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3_int_ *out) {
                  \|       */
     }
 
-    Vec3_float_ n = Cross(side2, side1);
+    Vec3f n = Cross(side2, side1);
     float mag = Length(n);
     if (fabsf(mag) < 1e-6f) {
-        *out = Vec3_int_(0, 0, 65536);
+        *out = Vec3i(0, 0, 65536);
     } else {
         *out = ToFixpointVector(n / mag);
     }
@@ -1880,7 +1880,7 @@ void ODM_ProcessPartyActions() {
     int pTerrainHeight;  // eax@321
     int v87;             // [sp-20h] [bp-B4h]@248
     int v97;             // [sp+Ch] [bp-88h]@180
-    Vec3_int_ v98;
+    Vec3i v98;
     bool not_high_fall;  // [sp+1Ch] [bp-78h]@33
     int v102;            // [sp+20h] [bp-74h]@1
     int trigger_id = 0;  // [sp+24h] [bp-70h]@1
@@ -1941,7 +1941,7 @@ void ODM_ProcessPartyActions() {
     // определение уровня пола
     int bmodel_standing_on_pid;  // данные 3D model'и
     bool is_on_water = false;     // на воду
-    floor_level = ODM_GetFloorLevel(Vec3_int_(pX, pY, party_new_Z), pParty->uPartyHeight,
+    floor_level = ODM_GetFloorLevel(Vec3i(pX, pY, party_new_Z), pParty->uPartyHeight,
                                     &is_on_water, &bmodel_standing_on_pid, bWaterWalk);
     int is_not_on_bmodel = bmodel_standing_on_pid == 0;  // не на 3D model
 
@@ -2430,10 +2430,10 @@ void ODM_ProcessPartyActions() {
             v40 = collision_state.adjusted_move_distance * collision_state.direction.z + party_new_Z;
         }
         v122 = v40;
-        ODM_GetFloorLevel(Vec3_int_(_angle_x, _angle_y, v40),
+        ODM_GetFloorLevel(Vec3i(_angle_x, _angle_y, v40),
                           pParty->uPartyHeight, &is_on_water, &bmodel_standing_on_pid, 0);
-        v129 = ODM_GetFloorLevel(Vec3_int_(_angle_x, pY, v40), pParty->uPartyHeight, &is_on_water, &v97, 0);
-        int v119 = ODM_GetFloorLevel(Vec3_int_(pX, _angle_y, v40), pParty->uPartyHeight, &is_on_water, &v110, 0);
+        v129 = ODM_GetFloorLevel(Vec3i(_angle_x, pY, v40), pParty->uPartyHeight, &is_on_water, &v97, 0);
+        int v119 = ODM_GetFloorLevel(Vec3i(pX, _angle_y, v40), pParty->uPartyHeight, &is_on_water, &v110, 0);
         bool v42_ = (BSPModel *)IsTerrainSlopeTooHigh(_angle_x, pY);
         v42 = IsTerrainSlopeTooHigh(pX, _angle_y);
         is_not_on_bmodel = false;
@@ -2453,7 +2453,7 @@ void ODM_ProcessPartyActions() {
             } else if (v43) {
                 pY = _angle_y;
             } else {
-                int new_ = ODM_GetFloorLevel(Vec3_int_(_angle_x, _angle_y, v40), pParty->uPartyHeight, &is_on_water,
+                int new_ = ODM_GetFloorLevel(Vec3i(_angle_x, _angle_y, v40), pParty->uPartyHeight, &is_on_water,
                                              &bmodel_standing_on_pid, 0);
                 if (IsTerrainSlopeTooHigh(_angle_x, _angle_y) && new_ <= party_new_Z) {
                     v43 = 1;
@@ -2806,7 +2806,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.Get();
-            if (!face.Contains(Vec3_int_(Party_X, Party_Y, 0), model.index, slack, FACE_XY_PLANE))
+            if (!face.Contains(Vec3i(Party_X, Party_Y, 0), model.index, slack, FACE_XY_PLANE))
                 continue;
 
             if (ceiling_count >= 20)
@@ -2938,7 +2938,7 @@ void UpdateActors_ODM() {
         // GRAVITY
         if (!uIsAboveFloor || uIsFlying) {
             if (Slope_High && !uIsAboveFloor && Actor_On_Terrain) {
-                Vec3_int_ Terrain_Norm;
+                Vec3i Terrain_Norm;
                 pActors[Actor_ITR].vPosition.z = Floor_Level;
                 ODM_GetTerrainNormalAt(pActors[Actor_ITR].vPosition.x,
                                        pActors[Actor_ITR].vPosition.y, &Terrain_Norm);
@@ -3027,7 +3027,7 @@ void UpdateActors_ODM() {
             bool bOnWater = false;
             int Splash_Model_On;
             int Splash_Floor = ODM_GetFloorLevel(
-                ToIntVector(collision_state.new_position_lo) - Vec3_int_(0, 0, collision_state.radius_lo + 1),
+                ToIntVector(collision_state.new_position_lo) - Vec3i(0, 0, collision_state.radius_lo + 1),
                 pActors[Actor_ITR].uActorHeight, &bOnWater, &Splash_Model_On, 0);
             if (uIsOnWater) {
                 if (v35 < Splash_Floor + 60) {

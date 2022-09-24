@@ -91,16 +91,16 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            Vec3_int_::Rotate((24/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3i::Rotate((24/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 2:
-            Vec3_int_::Rotate((8/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3i::Rotate((8/*<<16*/), 2048 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 3:
-            Vec3_int_::Rotate((8/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3i::Rotate((8/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         case 4:
-            Vec3_int_::Rotate((24/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
+            Vec3i::Rotate((24/*<<16*/), 1024 - uFacing, 0, vPosition, &vPosition.x, &vPosition.y, &vPosition.z);
             break;
         default:
             assert(false);
@@ -148,7 +148,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
     int v38;           // eax@72
     int v44;           // eax@77
     int v50;           // [sp+10h] [bp-98h]@52
-    Vec3_int_ v51;     // [sp+14h] [bp-94h]@11
+    Vec3i v51;     // [sp+14h] [bp-94h]@11
     Particle_sw Dst;   // [sp+20h] [bp-88h]@45
     int v54;           // [sp+8Ch] [bp-1Ch]@1
     int v55;           // [sp+90h] [bp-18h]@1
@@ -325,7 +325,7 @@ LABEL_13:
             v26 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             v49 = false;
             v27 = ODM_GetFloorLevel(
-                ToIntVector(collision_state.new_position_lo) - Vec3_int_(0, 0, collision_state.radius_lo + 1),
+                ToIntVector(collision_state.new_position_lo) - Vec3i(0, 0, collision_state.radius_lo + 1),
                 object->uHeight, &v49, &v50, 0);
             if (on_water && v26 < v27 + 60) {
                 if (v50)

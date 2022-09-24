@@ -63,14 +63,14 @@ void CastSpellInfoHelpers::CastSpell() {
 
     unsigned __int64 v685 {};          // [sp+D08h] [bp-17Ch]@416
     unsigned __int64 v687 {};          // [sp+D24h] [bp-160h]@327
-    Vec3_int_ v688;                 // [sp+D2Ch] [bp-158h]@943
-    Vec3_int_ v691;                 // [sp+D38h] [bp-14Ch]@137
-    Vec3_int_ v694;                 // [sp+D44h] [bp-140h]@982
-    Vec3_int_ v697;                 // [sp+D50h] [bp-134h]@129
-    Vec3_int_ v700;                 // [sp+D5Ch] [bp-128h]@339
-    Vec3_int_ v701;                 // [sp+D68h] [bp-11Ch]@286
-    Vec3_int_ v704;                 // [sp+D74h] [bp-110h]@132
-    Vec3_int_ v707;                 // [sp+D80h] [bp-104h]@1127
+    Vec3i v688;                 // [sp+D2Ch] [bp-158h]@943
+    Vec3i v691;                 // [sp+D38h] [bp-14Ch]@137
+    Vec3i v694;                 // [sp+D44h] [bp-140h]@982
+    Vec3i v697;                 // [sp+D50h] [bp-134h]@129
+    Vec3i v700;                 // [sp+D5Ch] [bp-128h]@339
+    Vec3i v701;                 // [sp+D68h] [bp-11Ch]@286
+    Vec3i v704;                 // [sp+D74h] [bp-110h]@132
+    Vec3i v707;                 // [sp+D80h] [bp-104h]@1127
     // int v710;                       // [sp+D8Ch] [bp-F8h]@1156
 
     AIDirection target_direction;  // [sp+DA4h] [bp-E0h]@21
@@ -282,7 +282,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 2);
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
@@ -369,7 +369,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 3);
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;
@@ -520,7 +520,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 3);
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
@@ -557,7 +557,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                 pSpellSprite.uAttributes = 0;
-                pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 2);
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;
                 pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
@@ -592,7 +592,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.spell_level = spell_level;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.uAttributes = 0;
-                    pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 3);
+                    pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.uSpriteFrameID = 0;
                     pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
@@ -708,7 +708,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     break;
                 pSpellSprite.containing_item.Reset();
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 3);
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;
@@ -1270,7 +1270,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 3);
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;
@@ -1521,7 +1521,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.spell_level = spell_level;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
                     pSpellSprite.uAttributes = 0;
-                    pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 3);
+                    pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.uSpriteFrameID = 0;
                     pSpellSprite.spell_caster_pid = PID(OBJECT_Player, pCastSpell->uPlayerID);
@@ -1542,7 +1542,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.spell_level = spell_level;
                     pSpellSprite.spell_skill = skill_level;
                     pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                    pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 3);
+                    pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                     pSpellSprite.uAttributes = 0;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.uSpriteFrameID = 0;
@@ -1890,7 +1890,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID =
                     pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 3);
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 3);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;
@@ -3392,7 +3392,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 pSpellSprite.spell_level = spell_level;
                 pSpellSprite.spell_skill = skill_level;
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(pSpellSprite.uType);
-                pSpellSprite.vPosition = pParty->vPosition + Vec3_int_(0, 0, pParty->uPartyHeight / 2);
+                pSpellSprite.vPosition = pParty->vPosition + Vec3i(0, 0, pParty->uPartyHeight / 2);
                 pSpellSprite.uAttributes = 0;
                 pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 pSpellSprite.uSpriteFrameID = 0;

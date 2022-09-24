@@ -187,7 +187,7 @@ class Render : public RenderBase {
     virtual void BeginLightmaps2() override;
     virtual void EndLightmaps2() override;
     virtual bool DrawLightmap(struct Lightmap *pLightmap,
-                              Vec3_float_ *pColorMult, float z_bias) override;
+                              Vec3f *pColorMult, float z_bias) override;
 
     virtual void BeginDecals() override;
     virtual void EndDecals() override;

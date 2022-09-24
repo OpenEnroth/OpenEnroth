@@ -33,7 +33,7 @@ CollisionState collision_state;
  * @return                              Whether the actor, basically modeled as a sphere, can actually collide with the
  *                                      polygon if moving along the `dir` axis.
  */
-static bool CollideSphereWithFace(BLVFace *face, const Vec3_float_ &pos, float radius, const Vec3_float_ &dir,
+static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius, const Vec3f &dir,
                                   float *out_move_distance, bool ignore_ethereal, int model_idx) {
     if (ignore_ethereal && face->Ethereal())
         return false;
@@ -59,7 +59,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_float_ &pos, float r
         move_distance = overshoot / cos_dir_normal;
     }
 
-    Vec3_float_ new_pos =
+    Vec3f new_pos =
         pos + move_distance * dir - overshoot * face->pFacePlane.vNormal;
 
     if (!face->Contains(ToIntVector(new_pos), model_idx))
@@ -89,7 +89,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_float_ &pos, float r
  * @return                              Whether the actor, modeled as a point, hits the provided polygon if moving from
  *                                      `pos` along the `dir` axis by at most `move_distance`.
  */
-static bool CollidePointWithFace(BLVFace *face, const Vec3_float_ &pos, const Vec3_float_ &dir, float *out_move_distance,
+static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &dir, float *out_move_distance,
                                  int model_idx) {
     // _fp suffix => that's a fixpoint number
 
@@ -116,7 +116,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_float_ &pos, const Ve
     // How far we need to move along the `dir` axis to hit face.
     float move_distance = -pos_face_distance / cos_dir_normal;
 
-    Vec3_float_ new_pos = pos + move_distance * dir;
+    Vec3f new_pos = pos + move_distance * dir;
 
     if (move_distance > *out_move_distance)
         return false; // No correction needed.
@@ -138,7 +138,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_float_ &pos, const Ve
  * @param model_idx                     Model index, or `MODEL_INDOOR`.
 */
 static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal, int model_idx) {
-    auto collide_once = [&](const Vec3_float_ &old_pos, const Vec3_float_ &new_pos, const Vec3_float_ &dir, int radius) {
+    auto collide_once = [&](const Vec3f &old_pos, const Vec3f &new_pos, const Vec3f &dir, int radius) {
         float distance_old = face->pFacePlane.SignedDistanceTo(old_pos);
         float distance_new = face->pFacePlane.SignedDistanceTo(new_pos);
         if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
@@ -185,8 +185,8 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
  * @param jagged_top                    See `CollideWithParty`.
  * @return                              Whether there is a collision.
  */
-static bool CollideWithCylinder(const Vec3_float_ &center_lo, float radius, float height, int pid, bool jagged_top) {
-    BBox_float_ bbox;
+static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, int pid, bool jagged_top) {
+    BBoxf bbox;
     bbox.x1 = center_lo.x - radius;
     bbox.x2 = center_lo.x + radius;
     bbox.y1 = center_lo.y - radius;
@@ -204,7 +204,7 @@ static bool CollideWithCylinder(const Vec3_float_ &center_lo, float radius, floa
     // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
     // thus this actually is length(dist) * sin(dist, collision_state.direction).
     // This in turn is the distance from cylinder center to the line of actor's movement.
-    Vec3_float_ dir = collision_state.direction;
+    Vec3f dir = collision_state.direction;
     float closest_dist = dist_x * dir.y - dist_y * dir.x;
     if (abs(closest_dist) > sum_radius)
         return false; // No chance to collide.
@@ -260,7 +260,7 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     if (!FuzzyIsNull(this->speed)) {
         this->direction = this->velocity / this->speed;
     } else {
-        this->direction = Vec3_float_(0, 0, 1.0f);
+        this->direction = Vec3f(0, 0, 1.0f);
     }
 
     this->move_distance = dt * this->speed - this->total_move_distance;
@@ -271,10 +271,10 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     this->new_position_lo = this->position_lo + this->move_distance * this->direction;
 
     this->bbox =
-        BBox_float_::FromPoint(this->position_lo, this->radius_lo) |
-        BBox_float_::FromPoint(this->new_position_lo, this->radius_lo) |
-        BBox_float_::FromPoint(this->position_hi, this->radius_hi) |
-        BBox_float_::FromPoint(this->new_position_hi, this->radius_hi);
+        BBoxf::FromPoint(this->position_lo, this->radius_lo) |
+        BBoxf::FromPoint(this->new_position_lo, this->radius_lo) |
+        BBoxf::FromPoint(this->position_hi, this->radius_hi) |
+        BBoxf::FromPoint(this->new_position_hi, this->radius_hi);
 
     this->pid = 0;
     this->adjusted_move_distance = std::numeric_limits<float>::max();
@@ -436,7 +436,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
         // seemed not worth it.
 
-        BBox_float_ bbox;
+        BBoxf bbox;
         bbox.x1 = pSpriteObjects[i].vPosition.x - object->uRadius;
         bbox.x2 = pSpriteObjects[i].vPosition.x + object->uRadius;
         bbox.y1 = pSpriteObjects[i].vPosition.y - object->uRadius;
@@ -450,7 +450,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         float dist_y = pSpriteObjects[i].vPosition.y - collision_state.position_lo.y;
         float sum_radius = object->uHeight + collision_state.radius_lo;
 
-        Vec3_float_ dir = collision_state.direction;
+        Vec3f dir = collision_state.direction;
         float closest_dist = dist_x * dir.y - dist_y * dir.x;
         if (abs(closest_dist) > sum_radius)
             continue;

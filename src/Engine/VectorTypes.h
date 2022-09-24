@@ -7,8 +7,6 @@
 
 #include "OurMath.h"
 
-uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
-
 template<class From, class To>
 struct vector_conversion_allowed : std::false_type {};
 
@@ -32,10 +30,8 @@ struct Vec2 {
 };
 #pragma pack(pop)
 
-using Vec2_int_ = Vec2<int32_t>;
-using Vec2_float_ = Vec2<float>;
-
-const float pi = static_cast<float>(M_PI);
+using Vec2i = Vec2<int32_t>;
+using Vec2f = Vec2<float>;
 
 #pragma pack(push, 1)
 template <class T>
@@ -133,24 +129,14 @@ struct Vec3 {
 };
 #pragma pack(pop)
 
-using Vec3_short_ = Vec3<int16_t>;
-using Vec3_int_ = Vec3<int32_t>;
-using Vec3_int64_ = Vec3<int64_t>;
-using Vec3_float_ = Vec3<float>;
-
-#pragma pack(push, 1)
-struct Vec4_int_ {
-    int x = 0;
-    int y = 0;
-    int z = 0;
-    int w = 0;
-};
-#pragma pack(pop)
+using Vec3s = Vec3<int16_t>;
+using Vec3i = Vec3<int32_t>;
+using Vec3f = Vec3<float>;
 
 /*   82 */
 #pragma pack(push, 1)
-struct Plane_int_ {
-    Vec3_int_ vNormal; // Plane normal, unit vector stored as fixpoint.
+struct Planei {
+    Vec3i vNormal; // Plane normal, unit vector stored as fixpoint.
     int dist = 0;      // D in A*x + B*y + C*z + D = 0 (basically D = -A*x_0 - B*y_0 - C*z_0), stored as fixpoint.
 
     /**
@@ -159,7 +145,7 @@ struct Plane_int_ {
      *                                  means that `point` is in the half-space that the normal is pointing to,
      *                                  and this usually is "outside" the model that the face belongs to.
      */
-    int SignedDistanceTo(const Vec3_int_ &point) {
+    int SignedDistanceTo(const Vec3i &point) {
         return SignedDistanceTo(point.x, point.y, point.z);
     }
 
@@ -167,28 +153,28 @@ struct Plane_int_ {
      * Same as `SignedDistanceTo`, but returns the distance as a fixpoint number. To get the distance in original
      * coordinates, divide by 2^16.
      *
-     * @see SignedDistanceTo(const Vec3_int_ &)
+     * @see SignedDistanceTo(const Vec3i &)
      */
-    int SignedDistanceToAsFixpoint(const Vec3_int_ &point) {
+    int SignedDistanceToAsFixpoint(const Vec3i &point) {
         return SignedDistanceToAsFixpoint(point.x, point.y, point.z);
     }
 
     /**
-     * @see SignedDistanceTo(const Vec3_int_ &)
+     * @see SignedDistanceTo(const Vec3i &)
      */
-    int SignedDistanceTo(const Vec3_short_ &point) {
+    int SignedDistanceTo(const Vec3s &point) {
         return SignedDistanceTo(point.x, point.y, point.z);
     }
 
     /**
-     * @see SignedDistanceTo(const Vec3_int_ &)
+     * @see SignedDistanceTo(const Vec3i &)
      */
     int SignedDistanceTo(int x, int y, int z) {
         return SignedDistanceToAsFixpoint(x, y, z) >> 16;
     }
 
     /**
-     * @see SignedDistanceToAsFixpoint(const Vec3_int_ &)
+     * @see SignedDistanceToAsFixpoint(const Vec3i &)
      */
     int SignedDistanceToAsFixpoint(int x, int y, int z) {
         return this->dist + this->vNormal.x * x + this->vNormal.y * y + this->vNormal.z * z;
@@ -257,13 +243,13 @@ struct BBox {
 };
 #pragma pack(pop)
 
-using BBox_int_ = BBox<int>;
-using BBox_short_ = BBox<short>;
-using BBox_float_ = BBox<float>;
+using BBoxi = BBox<int>;
+using BBoxs = BBox<short>;
+using BBoxf = BBox<float>;
 
 #pragma pack(push, 1)
-struct Plane_float_ {
-    Vec3_float_ vNormal;
+struct Planef {
+    Vec3f vNormal;
     float dist = 0.0f;
 
     /**
@@ -272,7 +258,7 @@ struct Plane_float_ {
      *                                  means that `point` is in the half-space that the normal is pointing to,
      *                                  and this usually is "outside" the model that the face belongs to.
      */
-    float SignedDistanceTo(const Vec3_float_ &point) {
+    float SignedDistanceTo(const Vec3f &point) {
         return this->dist + this->vNormal.x * point.x + this->vNormal.y * point.y + this->vNormal.z * point.z;
     }
 };
@@ -284,7 +270,7 @@ struct Plane_float_ {
  *
  * Coefficients are stored in fixpoint format (16 fraction bits).
  */
-struct PlaneZCalc_int64_ {
+struct PlaneZCalcll {
     int64_t a = 0;
     int64_t b = 0;
     int64_t c = 0;
@@ -293,7 +279,7 @@ struct PlaneZCalc_int64_ {
         return static_cast<int32_t>((a * x + b * y + c + 0x8000) >> 16);
     }
 
-    void Init(const Plane_int_ &plane) {
+    void Init(const Planei &plane) {
         if (plane.vNormal.z == 0) {
             this->a = this->b = this->c = 0;
         } else {

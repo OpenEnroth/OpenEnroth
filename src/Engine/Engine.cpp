@@ -324,7 +324,7 @@ void Engine::DrawGUI() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             uint uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
-            int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3_int_(0,0,40) */, sector_id, &uFaceID);
+            int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = StringPrintf(
                 "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -1831,7 +1831,7 @@ void RegeneratePartyHealthMana() {
 
         // immolation fire spell aura damage
         if (pParty->ImmolationActive()) {
-            Vec3_int_ cords;
+            Vec3i cords;
             cords.x = 0;
             cords.y = 0;
             cords.z = 0;

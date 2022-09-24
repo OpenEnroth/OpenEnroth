@@ -12,9 +12,9 @@ struct stru10 {
                  struct RenderVertexSoft *pOutBounding);
     bool CalcPortalFrustum(struct RenderVertexSoft *pFaceBounding, struct IndoorCameraD3D_Vec4 *pPortalDataFrustum);
     bool CalcPortalFrustumPlane(struct RenderVertexSoft *pFaceBounding1,
-                        struct RenderVertexSoft *pFaceBounding2,
-                        Vec3_float_ *pRayStart,
-                        struct IndoorCameraD3D_Vec4 *pPortalDataFrustum);
+                                struct RenderVertexSoft *pFaceBounding2,
+                                Vec3f *pRayStart,
+                                struct IndoorCameraD3D_Vec4 *pPortalDataFrustum);
     bool CalcFaceBounding(struct BLVFace *pFace,
                           struct RenderVertexSoft *pFaceLimits,
                           unsigned int uNumVertices,

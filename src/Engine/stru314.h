@@ -23,9 +23,9 @@ struct stru314 {  // facet normals face / wall / celings
     //----- (00489B96) --------------------------------------------------------
     inline ~stru314() {}
 
-    Vec3_float_ Normal;
-    Vec3_float_ field_10;
-    Vec3_float_ field_1C;
+    Vec3f Normal;
+    Vec3f field_10;
+    Vec3f field_1C;
     float dist = 0;
 };
 #pragma pack(pop)

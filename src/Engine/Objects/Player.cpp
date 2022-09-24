@@ -6898,7 +6898,7 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos, signed int targetchar) {
+void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, signed int targetchar) {
     // target player? if any
 
     Player* playerPtr;            // ebx@3
@@ -7728,7 +7728,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
-        Vec3_int_ a3 = actor->vPosition - pParty->vPosition;
+        Vec3i a3 = actor->vPosition - pParty->vPosition;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
         Actor::DamageMonsterFromParty(PID(OBJECT_Player, uActiveCharacter - 1),

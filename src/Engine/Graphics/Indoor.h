@@ -20,9 +20,9 @@ using EngineIoc = Engine_::IocContainer;
 #pragma pack(push, 1)
 struct LightsData {
     int field_0;
-    Plane_int_ plane_4;
-    Vec3_int_ vec_14;
-    Vec3_int_ vec_20;
+    Planei plane_4;
+    Vec3i vec_14;
+    Vec3i vec_20;
     unsigned int uCurrentAmbientLightLevel;  // 0 to 31
     int field_30;
     int field_34;
@@ -31,15 +31,15 @@ struct LightsData {
     int field_44;
     int field_48;
     char field_4C[8];
-    Vec3_int_ rotated_normal;
-    Vec3_int_ vec_60;
+    Vec3i rotated_normal;
+    Vec3i vec_60;
     int field_6C;
-    Vec3_int_ vec_70;
+    Vec3i vec_70;
     int field_7C;
-    Vec3_int_ vec_80;
-    Vec3_int_ vec_8C;
+    Vec3i vec_80;
+    Vec3i vec_8C;
     int field_98;
-    Vec3_int_ vec_9C;
+    Vec3i vec_9C;
     int field_A8;
     unsigned int uNumLightsApplied;
     int _blv_lights_radii[20];
@@ -190,12 +190,12 @@ struct stru154 {
     inline ~stru154() {}
 
     void GetFacePlaneAndClassify(ODMFace *a2,
-                                 const std::vector<Vec3_int_> &a3);
-    void ClassifyPolygon(Vec3_float_ *pNormal, float dist);
-    void GetFacePlane(ODMFace *pFace, const std::vector<Vec3_int_> &pVertices,
-                      Vec3_float_ *pOutNormal, float *pOutDist);
+                                 const std::vector<Vec3i> &a3);
+    void ClassifyPolygon(Vec3f *pNormal, float dist);
+    void GetFacePlane(ODMFace *pFace, const std::vector<Vec3i> &pVertices,
+                      Vec3f *pOutNormal, float *pOutDist);
 
-    Plane_float_ face_plane {};
+    Planef face_plane {};
     PolygonType polygonType {};
     char field_15 = 0;
     char field_16 = 0;
@@ -246,7 +246,7 @@ extern LEVEL_TYPE uCurrentlyLoadedLevelType;
 /*   86 */
 #pragma pack(push, 1)
 struct SpawnPointMM6 {
-    Vec3_int_ vPosition;
+    Vec3i vPosition;
     uint16_t uRadius;
     uint16_t uKind;
     uint16_t uIndex;
@@ -266,7 +266,7 @@ struct SpawnPointMM7 {
         uGroup = 0;
     }
 
-    Vec3_int_ vPosition;
+    Vec3i vPosition;
     uint16_t uRadius;
     uint16_t uKind;
     uint16_t uIndex;
@@ -300,7 +300,7 @@ struct BLVSectorMM8 {
 /*   97 */
 #pragma pack(push, 1)
 struct BLVLightMM6 {
-    Vec3_short_ vPosition;
+    Vec3s vPosition;
     int16_t uRadius;
     int16_t uAttributes;
     uint16_t uBrightness;
@@ -310,7 +310,7 @@ struct BLVLightMM6 {
 /*   98 */
 #pragma pack(push, 1)
 struct BLVLightMM7 {  // 10h
-    Vec3_short_ vPosition;
+    Vec3s vPosition;
     int16_t uRadius;
     char uRed;
     char uGreen;
@@ -341,7 +341,7 @@ struct BLVDoor {  // 50h
     DoorAttributes uAttributes;
     uint32_t uDoorID;
     uint32_t uTimeSinceTriggered;
-    Vec3_int_ vDirection;
+    Vec3i vDirection;
     int32_t uMoveLength;
     int32_t uOpenSpeed;
     int32_t uCloseSpeed;
@@ -397,7 +397,7 @@ struct BLVFace {  // 60h
         this->pXInterceptDisplacements = nullptr;
     }
 
-    void _get_normals(Vec3_int_ *a2, Vec3_int_ *a3);
+    void _get_normals(Vec3i *a2, Vec3i *a3);
     void FromODM(struct ODMFace *face);
 
     void SetTexture(const std::string &filename);
@@ -453,11 +453,11 @@ struct BLVFace {  // 60h
      * @return                          Whether the point lies inside this polygon, if projected on the face's
      *                                  primary plane.
      */
-    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
+    bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
-    struct Plane_float_ pFacePlane;
-    struct Plane_int_ pFacePlane_old;
-    PlaneZCalc_int64_ zCalc;
+    struct Planef pFacePlane;
+    struct Planei pFacePlane_old;
+    PlaneZCalcll zCalc;
     FaceAttributes uAttributes;
     uint16_t *pVertexIDs = nullptr;
     int16_t *pXInterceptDisplacements;
@@ -472,7 +472,7 @@ struct BLVFace {  // 60h
 
     uint16_t uSectorID;
     int16_t uBackSectorID;
-    BBox_short_ pBounding;
+    BBoxs pBounding;
     PolygonType uPolygonType;
     uint8_t uNumVertices;
     char field_5E = 0;
@@ -549,7 +549,7 @@ struct BLVSector {  // 0x74
     int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually
     int16_t uFirstBSPNode;
     int16_t exit_tag;
-    BBox_short_ pBounding;
+    BBoxs pBounding;
 };
 #pragma pack(pop)
 
@@ -573,11 +573,11 @@ struct IndoorLocation {
      */
     int GetSector(int sX, int sY, int sZ);
 
-    int GetSector(const Vec3_int_ &pos) {
+    int GetSector(const Vec3i &pos) {
         return GetSector(pos.x, pos.y, pos.z);
     }
 
-    int GetSector(const Vec3_short_ &pos) {
+    int GetSector(const Vec3s &pos) {
         return GetSector(pos.x, pos.y, pos.z);
     }
 
@@ -604,7 +604,7 @@ struct IndoorLocation {
     unsigned int bLoaded = 0;
     char field_54[404];
     BLVHeader blv;
-    std::vector<Vec3_short_> pVertices;
+    std::vector<Vec3s> pVertices;
     std::vector<BLVFace> pFaces;
     std::vector<BLVFaceExtra> pFaceExtras;
     std::vector<BLVSector> pSectors;
@@ -681,7 +681,7 @@ void BLV_UpdateUserInputAndOther();
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
  *                                      returned.
  */
-int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int *pFaceID);
+int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pFaceID);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
@@ -757,7 +757,7 @@ void FindBillboardsLightLevels_BLV();
  * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
  *                                      level boundaries.
  */
-int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
+int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 
 /**
  * @offset 0x0047272C.
@@ -767,8 +767,8 @@ int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int 
  *
  * @see GetIndoorFloorZ
  */
-int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID);
+int GetApproximateIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID);
 
-bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3_int_ from);
+bool Check_LineOfSight(int to_x, int to_y, int to_z, Vec3i from);
 
 extern struct BspRenderer* pBspRenderer;

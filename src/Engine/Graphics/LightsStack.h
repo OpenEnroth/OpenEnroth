@@ -10,7 +10,7 @@ using EngineIoc = Engine_::IocContainer;
 /*  257 */
 #pragma pack(push, 1)
 struct StationaryLight {
-    Vec3_float_ vPosition {};
+    Vec3f vPosition {};
     int16_t uRadius = 0;
     uint8_t uLightColorR = 0;
     uint8_t uLightColorG = 0;
@@ -22,7 +22,7 @@ struct StationaryLight {
 
 #pragma pack(push, 1)
 struct MobileLight {
-    Vec3_float_ vPosition {};
+    Vec3f vPosition {};
     int16_t uRadius = 0;
     uint8_t uLightColorR = 0;
     uint8_t uLightColorG = 0;
@@ -60,7 +60,7 @@ struct LightsStack_StationaryLight_ {
     inline unsigned int GetNumLights() { return uNumLightsActive; }
 
     //----- (004AD3C8) --------------------------------------------------------
-    bool AddLight(const Vec3_float_ &pos, int16_t a5, unsigned char r,
+    bool AddLight(const Vec3f &pos, int16_t a5, unsigned char r,
                   unsigned char g, unsigned char b, char uLightType);
 
     std::array<StationaryLight, 400> pLights;
@@ -81,7 +81,7 @@ struct LightsStack_MobileLight_ {
     //----- (00467D55) --------------------------------------------------------
     virtual ~LightsStack_MobileLight_() { this->uNumLightsActive = 0; }
 
-    bool AddLight(const Vec3_float_ &pos, int16_t uSectorID,
+    bool AddLight(const Vec3f &pos, int16_t uSectorID,
                   int uRadius, uint8_t r, uint8_t g,
                   uint8_t b, char uLightType);
 

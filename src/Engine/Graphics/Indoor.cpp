@@ -145,7 +145,7 @@ void PrepareDrawLists_BLV() {
         }
 
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
-        Vec3_float_ pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
+        Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
 
         pMobileLightsStack->AddLight(
             pos, pBLVRenderParams->uPartySectorID, TorchLightPower,
@@ -357,7 +357,7 @@ void BLVRenderParams::Reset() {
     this->field_0_timer_ = pEventTimer->uTotalGameTimeElapsed;
 
     this->uPartySectorID = pIndoor->GetSector(pParty->vPosition);
-    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->vPosition + Vec3_int_(0, 0, pParty->sEyelevel));
+    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel));
 
     if (!this->uPartySectorID) {
         __debugbreak();  // shouldnt happen, please provide savegame
@@ -1123,7 +1123,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.Get(), FACE_XY_PLANE))
+            if (pFace->Contains(Vec3i(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.Get(), FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break;
@@ -1174,7 +1174,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 }
 
 //----- (00498A41) --------------------------------------------------------
-void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
+void BLVFace::_get_normals(Vec3i *a2, Vec3i *a3) {
     if (this->uPolygonType == POLYGON_VerticalWall) {
         a2->x = -this->pFacePlane_old.vNormal.y;
         a2->y = this->pFacePlane_old.vNormal.x;
@@ -1197,7 +1197,7 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall ||
                this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
         if (abs(this->pFacePlane_old.vNormal.z) < 46441) {
-            Vec3_float_ a1;
+            Vec3f a1;
             a1.x = (double)-this->pFacePlane_old.vNormal.y;
             a1.y = (double)this->pFacePlane_old.vNormal.x;
             a1.z = 0.0;
@@ -1273,7 +1273,7 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
     }
 }
 
-bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, FaceAttributes override_plane) const {
+bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttributes override_plane) const {
     Assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
@@ -1364,17 +1364,17 @@ void BLV_UpdateDoors() {
     signed __int64 v27 {};  // qtt@27
     BLVFaceExtra *v28;   // esi@32
     int v32;             // eax@34
-    Vec3_short_ *v34;    // eax@35
+    Vec3s *v34;    // eax@35
     int v35;             // ecx@35
     int v36;             // edx@35
     signed int v37;      // eax@35
     signed int v38;      // edx@35
     int v39;             // eax@35
     int v40;             // edx@35
-    Vec3_short_ *v43;    // edi@36
+    Vec3s *v43;    // edi@36
     int v57;             // eax@58
-    Vec3_int_ v67;
-    Vec3_int_ v70;
+    Vec3i v67;
+    Vec3i v70;
     int v75;               // [sp+28h] [bp-3Ch]@36
     int v76;               // [sp+2Ch] [bp-38h]@36
     int v77;               // [sp+30h] [bp-34h]@36
@@ -1436,7 +1436,7 @@ void BLV_UpdateDoors() {
 
         for (j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            Vec3_short_ *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
+            Vec3s *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
             face->pFacePlane_old.dist = -Dot(*v17, face->pFacePlane_old.vNormal);
             face->pFacePlane.dist = -Dot(ToFloatVector(*v17), face->pFacePlane.vNormal);
             if (face->pFacePlane_old.vNormal.z) {
@@ -1702,7 +1702,7 @@ void UpdateActors_BLV() {
                         v32 = pActors[actor_id].vPosition.z +
                               collision_state.adjusted_move_distance * collision_state.direction.z;
                     }
-                    v33 = GetIndoorFloorZ(Vec3_int_(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
+                    v33 = GetIndoorFloorZ(Vec3i(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
                     if (v33 == -30000)
                         break; // Actor out of bounds, running more iterations won't help.
                     if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && pActors[actor_id].uAIState == Dead) {
@@ -1907,7 +1907,7 @@ void UpdateActors_BLV() {
                 }
             }
         } else {
-            pActors[actor_id].vVelocity = Vec3_short_(0, 0, 0);
+            pActors[actor_id].vVelocity = Vec3s(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (pActors[actor_id].uAIState == Dead)
                     pActors[actor_id].uAIState = Removed;
@@ -2032,8 +2032,8 @@ void PrepareToLoadBLV(bool bLoading) {
                         b = decoration->uColoredLightBlue;
                     }
                     pStationaryLightsStack->AddLight(
-                        ToFloatVector(pLevelDecorations[i].vPosition) +
-                            Vec3_float_(0, 0, decoration->uDecorationHeight),
+                            ToFloatVector(pLevelDecorations[i].vPosition) +
+                            Vec3f(0, 0, decoration->uDecorationHeight),
                         decoration->uLightRadius, r, g, b, _4E94D0_light_type);
                 }
             }
@@ -2133,7 +2133,7 @@ void PrepareToLoadBLV(bool bLoading) {
 }
 
 //----- (0046CEC3) --------------------------------------------------------
-int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int *pFaceID) {
+int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pFaceID) {
     // stores faces and floor z levels
     int FacesFound = 0;
     int blv_floor_z[5] = { 0 };
@@ -2566,7 +2566,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 }
 
 //----- (00407A1C) --------------------------------------------------------
-bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_From) {  // target xyz from position v true on clear
+bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3i Pos_From) {  // target xyz from position v true on clear
     int dist_y;       // edi@2
     int dist_z;       // ebx@2
     int dist_x;       // esi@2
@@ -2675,15 +2675,15 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
     bool LOS_Obscurred = 0;
     bool LOS_Obscurred2 = 0;
 
-    Vec3_int_ TargetVec;
+    Vec3i TargetVec;
     TargetVec.z = target_z;
     TargetVec.x = target_x;
     TargetVec.y = target_y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         // offset 32 to side and check LOS
-        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2750,7 +2750,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                 if (v69 <= abs(v66)) {
                     v108 = fixpoint_div(ShiftDotDist, v107);
                     if (v108 >= 0) {
-                        Vec3_int_ pos = Vec3_int_(
+                        Vec3i pos = Vec3i(
                             ShiftedTargetX + ((signed int)(fixpoint_mul(v108, X_VecDist) + 0x8000) >> 16),
                             ShiftedTargetY + ((signed int)(fixpoint_mul(v108, Y_VecDist) + 0x8000) >> 16),
                             ShiftedTargetZ + ((signed int)(fixpoint_mul(v108, Z_VecDist) + 0x8000) >> 16));
@@ -2764,8 +2764,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
         }
 
         // offset other side and repeat check
-        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2821,7 +2821,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                 if (v_4c <= abs(v91)) {
                     vd = fixpoint_div(v93, vc);
                     if (vd >= 0) {
-                        Vec3_int_ pos = Vec3_int_(
+                        Vec3i pos = Vec3i(
                             ShiftedTargetX + ((signed int)(fixpoint_mul(vd, v144) + 0x8000) >> 16),
                             ShiftedTargetY + ((signed int)(fixpoint_mul(vd, v80) + 0x8000) >> 16),
                             ShiftedTargetZ + ((signed int)(fixpoint_mul(vd, v81) + 0x8000) >> 16));
@@ -2838,8 +2838,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
     // outdooor
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         // offset 32 to side and check LOS
-        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2909,7 +2909,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
 
                         // less than zero means intersection is behind target point
                         if (v110 >= 0) {
-                            Vec3_int_ pos = Vec3_int_(
+                            Vec3i pos = Vec3i(
                                 ShiftedTargetX + ((signed int)(fixpoint_mul(v110, rayxnorm) + 0x8000) >> 16),
                                 ShiftedTargetY + ((signed int)(fixpoint_mul(v110, rayynorm) + 0x8000) >> 16),
                                 ShiftedTargetZ + ((signed int)(fixpoint_mul(v110, rayznorm) + 0x8000) >> 16));
@@ -2924,8 +2924,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
         }
 
         // offset 32 to other side and check LOS
-        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2980,7 +2980,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                         // vb = v43 / va;
                         vb = fixpoint_div(v42, va);
                         if (vb >= 0) {
-                            Vec3_int_ pos = Vec3_int_(
+                            Vec3i pos = Vec3i(
                                 ShiftedTargetX + ((int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
                                 ShiftedTargetY + ((int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
                                 ShiftedTargetZ + ((int)(fixpoint_mul(vb, v35) + 0x8000) >> 16));
@@ -3088,13 +3088,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     unsigned int uSectorID = pBLVRenderParams->uPartySectorID;
     unsigned int uFaceID = -1;
     int party_z = pParty->vPosition.z;
-    int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
+    int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &uSectorID, &uFaceID);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floor_z == -30000 || uFaceID == -1) {
-        floor_z = GetApproximateIndoorFloorZ(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
+        floor_z = GetApproximateIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &uSectorID, &uFaceID);
         if (floor_z == -30000 || uFaceID == -1) {
             __debugbreak();  // level built with errors
             pParty->vPosition = blv_prev_party_pos;
@@ -3351,7 +3351,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 break; // No portal collisions => can break.
         }
 
-        Vec3_int_ adjusted_pos;
+        Vec3i adjusted_pos;
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             adjusted_pos.x = collision_state.new_position_lo.x;
             adjusted_pos.y = collision_state.new_position_lo.y;
@@ -3361,7 +3361,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             adjusted_pos.y = new_party_y + collision_state.adjusted_move_distance * collision_state.direction.y;
             adjusted_pos.z = new_party_z + collision_state.adjusted_move_distance * collision_state.direction.z;
         }
-        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3_int_(0, 0, 40), &collision_state.uSectorID, &uFaceID);
+        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3i(0, 0, 40), &collision_state.uSectorID, &uFaceID);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - new_party_z > 128)
             return; // TODO: whaaa?
 
@@ -3726,8 +3726,8 @@ int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t fa
 }
 
 //----- (0049B04D) --------------------------------------------------------
-void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3_int_> &a3) {
-    Vec3_float_ OutPlaneNorm;
+void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3i> &a3) {
+    Vec3f OutPlaneNorm;
     float OutPlaneDist;
 
     OutPlaneNorm.x = 0.0;
@@ -3750,7 +3750,7 @@ void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3_int_> 
 }
 
 //----- (0049B0C9) --------------------------------------------------------
-void stru154::ClassifyPolygon(Vec3_float_ *pNormal, float dist) {
+void stru154::ClassifyPolygon(Vec3f *pNormal, float dist) {
     if (fabsf(pNormal->z) < 1e-6f)
         polygonType = POLYGON_VerticalWall;
     else if (fabsf(pNormal->x) < 1e-6f && fabsf(pNormal->y) < 1e-6f)
@@ -3765,11 +3765,11 @@ void stru154::ClassifyPolygon(Vec3_float_ *pNormal, float dist) {
 }
 
 //----- (0049B13D) --------------------------------------------------------
-void stru154::GetFacePlane(ODMFace *pFace, const std::vector<Vec3_int_> &pVertices,
-                           Vec3_float_ *pOutNormal, float *pOutDist) {
-    Vec3_float_ FirstPairVec;
-    Vec3_float_ SecPairVec;
-    Vec3_float_ CrossProd;
+void stru154::GetFacePlane(ODMFace *pFace, const std::vector<Vec3i> &pVertices,
+                           Vec3f *pOutNormal, float *pOutDist) {
+    Vec3f FirstPairVec;
+    Vec3f SecPairVec;
+    Vec3f CrossProd;
 
     if (pFace->uNumVertices >= 2) {
         for (int i = 0; i < pFace->uNumVertices - 2; i++) {
@@ -3808,7 +3808,7 @@ void FindBillboardsLightLevels_BLV() {
     }
 }
 
-int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
     if (*pSectorID != 0) {
         int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
         if (result != -30000 && result <= pos.z + 50)
@@ -3825,17 +3825,17 @@ int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int 
 }
 
 //----- (0047272C) --------------------------------------------------------
-int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
-    std::array<Vec3_int_, 5> attempts = {{
-        pos + Vec3_int_(-2, 0, 40),
-        pos + Vec3_int_(2, 0, 40),
-        pos + Vec3_int_(0, -2, 40),
-        pos + Vec3_int_(0, 2, 40),
-        pos + Vec3_int_(0, 0, 140)
+int GetApproximateIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+    std::array<Vec3i, 5> attempts = {{
+        pos + Vec3i(-2, 0, 40),
+        pos + Vec3i(2, 0, 40),
+        pos + Vec3i(0, -2, 40),
+        pos + Vec3i(0, 2, 40),
+        pos + Vec3i(0, 0, 140)
     }};
 
     int result;
-    for (const Vec3_int_ &attempt : attempts) {
+    for (const Vec3i &attempt : attempts) {
         *pSectorID = 0; // Make sure GetIndoorFloorZ recalculates sector id from provided coordinates.
         result = GetIndoorFloorZ(attempt, pSectorID, pFaceID);
         if (result != -30000)

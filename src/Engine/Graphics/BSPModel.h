@@ -87,7 +87,7 @@ struct BSPModelData {
     uint32_t uNumDecorations = 0;
     int32_t sCenterX = 0;
     int32_t sCenterY = 0;
-    Vec3_int_ vPosition {};
+    Vec3i vPosition {};
     int32_t sMinX = 0;
     int32_t sMinY = 0;
     int32_t sMinZ = 0;
@@ -100,7 +100,7 @@ struct BSPModelData {
     int32_t sSomeOtherMaxX = 0;
     int32_t sSomeOtherMaxY = 0;
     int32_t sSomeOtherMaxZ = 0;
-    Vec3_int_ vBoundingCenter {};
+    Vec3i vBoundingCenter {};
     int32_t sBoundingRadius = 0;
 };
 #pragma pack(pop)
@@ -145,12 +145,12 @@ struct ODMFace {
     /**
      * @see BLVFace::Contains
      */
-    bool Contains(const Vec3_int_ &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
+    bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
     unsigned int index = 0;
-    struct Plane_float_ pFacePlane;
-    struct Plane_int_ pFacePlaneOLD;
-    PlaneZCalc_int64_ zCalc;
+    struct Planef pFacePlane;
+    struct Planei pFacePlaneOLD;
+    PlaneZCalcll zCalc;
     FaceAttributes uAttributes = 0;
     std::array<uint16_t, 20> pVertexIDs = {{}};
     std::array<int16_t, 20> pTextureUIDs = {{}};
@@ -166,7 +166,7 @@ struct ODMFace {
 
     int16_t sTextureDeltaU = 0;
     int16_t sTextureDeltaV = 0;
-    BBox_short_ pBoundingBox;
+    BBoxs pBoundingBox;
     int16_t sCogNumber = 0;
     int16_t sCogTriggeredID = 0;
     int16_t sCogTriggerType = 0;
@@ -192,18 +192,18 @@ class BSPModel {
     int32_t field_40 = 0;
     int32_t sCenterX = 0;
     int32_t sCenterY = 0;
-    Vec3_int_ vPosition {};
-    BBox_int_ pBoundingBox = {0, 0, 0, 0, 0, 0};
+    Vec3i vPosition {};
+    BBoxi pBoundingBox = {0, 0, 0, 0, 0, 0};
     int32_t sSomeOtherMinX = 0;
     int32_t sSomeOtherMinY = 0;
     int32_t sSomeOtherMinZ = 0;
     int32_t sSomeOtherMaxX = 0;
     int32_t sSomeOtherMaxY = 0;
     int32_t sSomeOtherMaxZ = 0;
-    Vec3_int_ vBoundingCenter {};
+    Vec3i vBoundingCenter {};
     int32_t sBoundingRadius = 0;
 
-    std::vector<Vec3_int_> pVertices;
+    std::vector<Vec3i> pVertices;
     std::vector<ODMFace> pFaces;
     std::vector<uint16_t> pFacesOrdering;
     std::vector<BSPNode> pNodes;

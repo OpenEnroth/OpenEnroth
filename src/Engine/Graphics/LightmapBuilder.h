@@ -36,7 +36,7 @@ class LightmapBuilder {
     {}
 
     void Draw_183808_Lightmaps();  //используется для мобильного света
-    // bool DrawLightmap(Lightmap *a1, Vec3_float_ *pColorMult, float z_bias);
+    // bool DrawLightmap(Lightmap *a1, Vec3f *pColorMult, float z_bias);
     bool DoDraw_183808_Lightmaps(float a2);  //используется для мобильного света
     void DrawLightmaps(int indices);
     void DrawLightmapsType(int type);
@@ -45,28 +45,28 @@ class LightmapBuilder {
     // int _45D426_sw(struct Span *a1, struct Edge **a2, unsigned int a3, struct
     // Edge *a4, int a5); bool _45D3C7_sw(struct Polygon *a1);
     bool StackLight_TerrainFace(struct StationaryLight *pLight,
-                                Vec3_float_ *pNormal, float *a3,
+                                Vec3f *pNormal, float *a3,
                                 struct RenderVertexSoft *a1,
                                 unsigned int uStripType, int X,
                                 unsigned int *pSlot);
-    bool StackLights_TerrainFace(Vec3_float_ *pNormal, float *a3,
+    bool StackLights_TerrainFace(Vec3f *pNormal, float *a3,
                                  struct RenderVertexSoft *a1,
                                  unsigned int uStripType, bool bLightBackfaces);
     bool ApplyLight_ODM(struct StationaryLight *pLight, struct ODMFace *pFace,
                         unsigned int *pSlot, bool bLightBackfaces);
     bool ApplyLights_OutdoorFace(struct ODMFace *pFace);
-    double _45CC0C_light(Vec3_float_ a1, float a2, float a3,
-                         Vec3_float_ *pNormal, float a5, int uLightType);
+    double _45CC0C_light(Vec3f a1, float a2, float a3,
+                         Vec3f *pNormal, float a5, int uLightType);
     int *_45CBD4(struct RenderVertexSoft *a2, int a3, int *a4, int *a5);
     int _45CB89(struct RenderVertexSoft *a1, int a2);
     int *_45CA88(struct LightsData *a2, struct RenderVertexSoft *a3, int a4,
-                Vec3_float_ *pNormal);
+                 Vec3f *pNormal);
     bool ApplyLight_BLV(struct StationaryLight *pLight, struct BLVFace *a2,
                         unsigned int *pSlot, bool bLightBackfaces, char *a5);
     bool ApplyLights_IndoorFace(unsigned int uFaceID);
     int _45C6D6(int a2, struct RenderVertexSoft *a3, Lightmap *pLightmap);
     int _45C4B9(int a2, struct RenderVertexSoft *a3, Lightmap *pLightmap);
-    bool _45BE86_build_light_polygon(Vec3_int_ *pos, float radius,
+    bool _45BE86_build_light_polygon(Vec3i *pos, float radius,
                                      unsigned int uColorMask, float dot_dist,
                                      int uLightType, struct stru314 *a7,
                                      unsigned int uNumVertices,

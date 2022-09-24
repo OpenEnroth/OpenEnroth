@@ -576,7 +576,7 @@ struct NPCData *ptr_50C9E0;
 // int dword_50C9E8; // idb
 // int dword_50C9EC[120];
 int dword_50CDC8;
-Vec3_int_ layingitem_vel_50FDFC;
+Vec3i layingitem_vel_50FDFC;
 char pStartingMapName[32];  // idb
 std::array<unsigned __int8, 5> IsPlayerWearingWatersuit;
 std::array<char, 54> party_has_equipment;
@@ -708,7 +708,7 @@ std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;
 std::array<__int16, 104> odm_floor_face_vert_coord_Y;  // word_720F70
 std::array<__int16, 104> odm_floor_face_vert_coord_X;  // word_721040
-Vec3_int_ blv_prev_party_pos;
+Vec3i blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
 std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related;  // idb
@@ -724,7 +724,7 @@ std::array<const char *, 7> pMerchantsIdentifyPhrases;
 char *pTransitionsTXT_Raw = nullptr;
 char *pAutonoteTXT_Raw = nullptr;
 char *pQuestsTXT_Raw = nullptr;
-std::vector<Vec3_float_> pTerrainNormals;
+std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 int dword_A74C88;

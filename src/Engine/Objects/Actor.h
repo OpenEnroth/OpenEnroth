@@ -128,7 +128,7 @@ enum ActorAnimation : __int32 {
 /*  247 */
 #pragma pack(push, 1)
 struct AIDirection {
-    Vec3_int_ vDirection{};
+    Vec3i vDirection{};
     unsigned int uDistance = 0;
     unsigned int uDistanceXZ = 0;
     unsigned int uYawAngle = 0;
@@ -139,7 +139,7 @@ struct AIDirection {
 /*   71 */
 #pragma pack(push, 1)
 struct ActorJob {
-    Vec3_short_ vPos;
+    Vec3s vPos;
     unsigned __int16 uAttributes = 0;
     unsigned __int8 uAction = 0;
     unsigned __int8 uHour = 0;
@@ -246,7 +246,7 @@ struct Actor {
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
                                int uSpellID, int a4, unsigned int uSkillLevel);
     static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
-                                       Vec3_int_ *pVelocity, int a4);
+                                       Vec3i *pVelocity, int a4);
 
     static unsigned short GetObjDescId(int spellId);
 
@@ -265,7 +265,7 @@ struct Actor {
 
     static void Arena_summon_actor(int monster_id, int16_t x, int y, int z);
     static void DamageMonsterFromParty(int a1, unsigned int uActorID_Monster,
-                                       Vec3_int_ *pVelocity);
+                                       Vec3i *pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();
@@ -298,14 +298,14 @@ struct Actor {
     uint16_t uActorRadius;
     uint16_t uActorHeight;
     uint16_t uMovementSpeed;
-    Vec3_short_ vPosition;
-    Vec3_short_ vVelocity;
+    Vec3s vPosition;
+    Vec3s vVelocity;
     uint16_t uYawAngle;
     uint16_t uPitchAngle;
     int16_t uSectorID;
     uint16_t uCurrentActionLength;
-    Vec3_short_ vInitialPosition;
-    Vec3_short_ vGuardingPosition;
+    Vec3s vInitialPosition;
+    Vec3s vGuardingPosition;
     uint16_t uTetherDistance;
     AIState uAIState;
     uint16_t uCurrentActionAnimation;
@@ -348,4 +348,4 @@ void SpawnEncounter(struct MapInfo *pMapInfo, struct SpawnPointMM7 *spawn,
 void area_of_effect__damage_evaluate();
 double sub_43AE12(signed int a1);
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
-                         Vec3_int_ *pVelocity);
+                         Vec3i *pVelocity);

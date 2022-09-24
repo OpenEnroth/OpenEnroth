@@ -247,7 +247,7 @@ struct SpellBookIconPos {
 /*  154 */
 #pragma pack(push, 1)
 struct TownPortalData {
-    Vec3_int_ pos;
+    Vec3i pos;
     __int16 rot_y;
     __int16 rot_x;
     unsigned __int16 uMapInfoID;

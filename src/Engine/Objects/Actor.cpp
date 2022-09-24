@@ -898,7 +898,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
     float v31;        // st7@45
     float v32;        // st6@45
     float v33;        // st7@45
-    Vec3_int_ v37;    // [sp-10h] [bp-5Ch]@15
+    Vec3i v37;    // [sp-10h] [bp-5Ch]@15
     AIDirection v41;  // [sp+14h] [bp-38h]@46
     float outy2 = 0;      // [sp+38h] [bp-14h]@33
     float outx2 = 0;      // [sp+3Ch] [bp-10h]@33
@@ -937,7 +937,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3_int_::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 3) {
@@ -946,7 +946,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3_int_::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 2) {
@@ -955,7 +955,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3_int_::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 1) {
@@ -964,7 +964,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3_int_::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
         }
@@ -1153,7 +1153,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
     int16_t v6;        // esi@6
     int16_t v7;        // edi@6
     signed int v8;     // eax@7
-    Vec3_int_ v10;     // ST04_12@9
+    Vec3i v10;     // ST04_12@9
     AIDirection *v12;  // eax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@12
     AIDirection v20;   // [sp+28h] [bp-2Ch]@12
@@ -1417,7 +1417,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
     int16_t v4;          // esi@3
     int16_t v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3_int_ v7;        // ST04_12@6
+    Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     __int16 v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
@@ -1491,7 +1491,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
     int16_t v4;          // esi@3
     int16_t v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3_int_ v7;        // ST04_12@6
+    Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     __int16 v13;         // ax@10
     signed int v16;      // ecx@17
@@ -1566,7 +1566,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
     int16_t v4;          // esi@3
     int16_t v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3_int_ v7;        // ST04_12@6
+    Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     __int16 v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
@@ -1631,7 +1631,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     int v4;            // esi@3
     int v5;            // edi@3
     signed int v6;     // eax@4
-    Vec3_int_ v7;      // ST04_12@6
+    Vec3i v7;      // ST04_12@6
     AIDirection *v10;  // eax@9
     __int16 v14;       // ax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@10
@@ -1663,7 +1663,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
     if (Check_LineOfSight(v4, v5, v22, v7) ||
-        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3_int_(v4, v5, v22))) {
+        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(v4, v5, v22))) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -2499,7 +2499,7 @@ void Actor::Remove() { this->uAIState = Removed; }
 
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(signed int attacker_id,
-                                   unsigned int actor_id, Vec3_int_ *pVelocity,
+                                   unsigned int actor_id, Vec3i *pVelocity,
                                    signed int a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
@@ -2631,7 +2631,7 @@ void Actor::SummonMinion(int summonerId) {
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
         if (result != actorSector) return;
-        result = BLV_GetFloorLevel(Vec3_int_(v15, v17, v27), result, &monsterId);
+        result = BLV_GetFloorLevel(Vec3i(v15, v17, v27), result, &monsterId);
         if (result != -30000) return;
         if (abs(result - v27) > 1024) return;
     }
@@ -3326,7 +3326,7 @@ void Actor::InitializeActors() {
 }
 //----- (00439474) --------------------------------------------------------
 void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
-                                   Vec3_int_ *pVelocity) {
+                                   Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     unsigned __int16 v16;            // cx@25
@@ -4720,7 +4720,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
     int current_sector = obj1_sector;
     int next_sector = 0;
     BLVFace* portalface;
-    Vec3_short_* portalverts;
+    Vec3s* portalverts;
 
     // loop through portals
     for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {
@@ -4770,7 +4770,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
             if (intersect < 0) continue;
 
             // check if point along ray is in portal face
-            Vec3_int_ pos = Vec3_int_(obj1_x + (rayxnorm * intersect) + 0.5,
+            Vec3i pos = Vec3i(obj1_x + (rayxnorm * intersect) + 0.5,
                 obj1_y + (rayynorm * intersect) + 0.5,
                 obj1_z + (rayznorm * intersect) + 0.5);
             if (!portalface->Contains(pos, MODEL_INDOOR)) {
@@ -4816,7 +4816,7 @@ bool SpawnActor(unsigned int uMonsterID) {
     bool result;      // eax@2
     unsigned int v6;  // ecx@5
     Actor actor;      // [sp+4h] [bp-350h]@5
-    Vec3_int_ pOut;   // [sp+348h] [bp-Ch]@5
+    Vec3i pOut;   // [sp+348h] [bp-Ch]@5
 
     v1 = uMonsterID;
     if (uNumActors == 499) {
@@ -4833,7 +4833,7 @@ bool SpawnActor(unsigned int uMonsterID) {
         actor.uActorHeight = pMonsterList->pMonsters[v1].uMonsterHeight;
         actor.uMovementSpeed = pMonsterList->pMonsters[v1].uMovementSpeed;
 
-        Vec3_int_::Rotate(200, pParty->sRotationZ, 0, pParty->vPosition,
+        Vec3i::Rotate(200, pParty->sRotationZ, 0, pParty->vPosition,
                           &pOut.x, &pOut.z, &pOut.y);
         actor.vInitialPosition.x = pOut.x;
         actor.vPosition.x = pOut.x;
@@ -5188,7 +5188,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         }
         v37 = pIndoor->GetSector(pPosX, a4, spawn->vPosition.z);
         if (v37 == pSector) {
-            v38 = BLV_GetFloorLevel(Vec3_int_(pPosX, a4, a3), v37, &uFaceID);
+            v38 = BLV_GetFloorLevel(Vec3i(pPosX, a4, a3), v37, &uFaceID);
             v39 = v38;
             if (v38 != -30000) {
                 if (abs(v38 - a3) <= 1024) {
@@ -5207,7 +5207,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
 
 //----- (00438F8F) --------------------------------------------------------
 void area_of_effect__damage_evaluate() {
-    Vec3_int_ attacker_coord;
+    Vec3i attacker_coord;
     SpriteObject *sprite_obj_ptr = nullptr;
 
     for (int attack_index = 0; attack_index < AttackerInfo.count; ++attack_index) {
@@ -5389,7 +5389,7 @@ double sub_43AE12(signed int a1) {
 
 //----- (0043B057) --------------------------------------------------------
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
-                         Vec3_int_ *pVelocity) {
+                         Vec3i *pVelocity) {
     int v6;      // eax@4
     int damage;  // edi@4
     int a2a;     // [sp+Ch] [bp-4h]@8

@@ -105,8 +105,8 @@ struct DecalBuilder {
         RenderVertexSoft* faceverts, char uClipFlags);
     bool ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID);
     bool ApplyBloodSplat_OutdoorFace(ODMFace* pFace);
-    bool ApplyBloodSplatToTerrain(struct Polygon* a2, Vec3_float_* a3, float* a4,
-        struct RenderVertexSoft* a5, unsigned int uStripType, char a7);
+    bool ApplyBloodSplatToTerrain(struct Polygon* a2, Vec3f* a3, float* a4,
+                                  struct RenderVertexSoft* a5, unsigned int uStripType, char a7);
     void DrawDecals(float z_bias);
     void DrawBloodsplats();
     void DrawDecalDebugOutlines();

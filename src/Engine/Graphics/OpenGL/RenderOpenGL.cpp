@@ -1446,7 +1446,7 @@ void RenderOpenGL::BeginLightmaps() { return; }
 void RenderOpenGL::EndLightmaps() { return; }
 void RenderOpenGL::BeginLightmaps2() { return; }
 void RenderOpenGL::EndLightmaps2() { return; }
-bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, Vec3_float_ *pColorMult, float z_bias) {
+bool RenderOpenGL::DrawLightmap(struct Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
     return true;
 }
 
@@ -1910,8 +1910,8 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                             }
                         }
                         pStationaryLightsStack->AddLight(
-                            ToFloatVector(pLevelDecorations[i].vPosition) +
-                                Vec3_float_(0, 0, decor_desc->uDecorationHeight / 2),
+                                ToFloatVector(pLevelDecorations[i].vPosition) +
+                                Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
                     }  // for light
 
@@ -2330,8 +2330,8 @@ void RenderOpenGL::DrawTerrainD3D() {
                 uint bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
                 assert(norm_idx < pTerrainNormals.size());
                 assert(bottnormidx < pTerrainNormals.size());
-                Vec3_float_ *norm = &pTerrainNormals[norm_idx];
-                Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
+                Vec3f *norm = &pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -2695,8 +2695,8 @@ void RenderOpenGL::DrawTerrainD3D() {
                 uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
                 assert(norm_idx < pTerrainNormals.size());
                 assert(bottnormidx < pTerrainNormals.size());
-                Vec3_float_ *norm = &pTerrainNormals[norm_idx];
-                Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
+                Vec3f *norm = &pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
 
                 float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
                 pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f1 + 0.5f);

@@ -10,6 +10,8 @@
 
 #define pi_double 3.14159265358979323846
 
+const float pi = static_cast<float>(M_PI);
+
 __int64 fixpoint_mul(int, int);
 __int64 fixpoint_div(int, int);
 
@@ -42,6 +44,8 @@ inline void normalize_to_fixpoint(int *x, int *y, int *z) {
     *y *= mult;
     *z *= mult;
 }
+
+uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 
 inline bool FuzzyIsNull(float value) {
     return std::abs(value) < 0.00001f;

@@ -46,10 +46,10 @@ struct stru9 {
                  struct RenderVertexSoft *pVertices2,
                  unsigned int *pOutNumVertices);
     bool ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
-        RenderVertexSoft *pOutVertices,
-        unsigned int* pOutNumVertices,
-        Vec3_float_ *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
-        int unused);
+                                 RenderVertexSoft *pOutVertices,
+                                 unsigned int* pOutNumVertices,
+                                 Vec3f *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
+                                 int unused);
     void AddVertex(struct VertexBuffer *pVertexBuffer,
                    struct RenderVertexSoft *pVertex);
     bool AdjustVertToClipEdge(struct RenderVertexSoft *a1, struct RenderVertexSoft *a2,
