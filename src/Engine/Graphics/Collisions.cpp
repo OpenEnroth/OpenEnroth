@@ -476,16 +476,7 @@ void CollideWithParty(bool jagged_top) {
 
 void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveGround, bool isFlying) {
     int v58;                 // [sp+48h] [bp-18h]@51
-    unsigned int v24;        // eax@51
-    int v61;                 // [sp+54h] [bp-Ch]@14
-    int v27;                 // ST08_4@54
-    int v28;                 // edi@54
-    int v29;                 // eax@54
     int v56;                 // [sp+40h] [bp-20h]@6
-    int v30;                 // ecx@62
-    int v31;                 // ebx@62
-    int v32;                 // eax@62
-    int v33;                 // eax@64
     int v37;          // ebx@85
     AIDirection v53;         // [sp+1Ch] [bp-44h]@116
     unsigned int _this;      // [sp+44h] [bp-1Ch]@51
@@ -511,46 +502,45 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
             continue;
 
         v58 = 0;
-        v24 = 8 * actor.id;
-        HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor.id);
-        for (v61 = 0; v61 < 100; ++v61) {
+        unsigned int pid = PID(OBJECT_Actor, actor.id);
+        for (int i = 0; i < 100; ++i) {
             CollideIndoorWithGeometry(true);
             CollideIndoorWithDecorations();
             CollideWithParty(false);
-            _46ED8A_collide_against_sprite_objects(v24);
+            _46ED8A_collide_against_sprite_objects(pid);
             for (uint j = 0; j < ai_arrays_size; j++) {
-                if (ai_near_actors_ids[j] != actor.id) {
-                    v27 = abs(pActors[ai_near_actors_ids[j]].vPosition.z - actor.vPosition.z);
-                    v28 = abs(pActors[ai_near_actors_ids[j]].vPosition.y - actor.vPosition.y);
-                    v29 = abs(pActors[ai_near_actors_ids[j]].vPosition.x - actor.vPosition.x);
-                    if (int_get_vector_length(v29, v28, v27) >= actor.uActorRadius +
-                                                                (signed int) pActors[ai_near_actors_ids[j]].uActorRadius &&
-                        CollideWithActor(ai_near_actors_ids[j], 40))
+                int actor2_id = ai_near_actors_ids[j];
+                if (actor2_id != actor.id) {
+                    Actor &actor2 = pActors[actor2_id];
+                    if ((actor2.vPosition - actor.vPosition).Length() >= actor.uActorRadius + actor2.uActorRadius &&
+                        CollideWithActor(actor2_id, 40))
                         ++v58;
                 }
             }
-            if (CollideIndoorWithPortals()) break;
+            if (CollideIndoorWithPortals())
+                break;
         }
         v56 = v58 > 1;
+
+        Vec3f newPos;
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            v30 = collision_state.new_position_lo.x;
-            v31 = collision_state.new_position_lo.y;
-            v32 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+            newPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
         } else {
-            v30 = actor.vPosition.x + collision_state.adjusted_move_distance * collision_state.direction.x;
-            v31 = actor.vPosition.y + collision_state.adjusted_move_distance * collision_state.direction.y;
-            v32 = actor.vPosition.z + collision_state.adjusted_move_distance * collision_state.direction.z;
+            newPos = actor.vPosition.ToFloat() + collision_state.adjusted_move_distance * collision_state.direction;
         }
-        v33 = GetIndoorFloorZ(Vec3i(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
-        if (v33 == -30000)
+
+        int floorZ = GetIndoorFloorZ(newPos.ToInt(), &collision_state.uSectorID, &uFaceID);
+        if (floorZ == -30000)
             break; // Actor out of bounds, running more iterations won't help.
+
         if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && actor.uAIState == Dead) {
             actor.uAIState = Removed;
             continue;
         }
+
         if (isAboveGround || isFlying || !(pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
             if (actor.uCurrentActionAnimation != 1 ||
-                v33 >= actor.vPosition.z - 100 || isAboveGround || isFlying) {
+                floorZ >= actor.vPosition.z - 100 || isAboveGround || isFlying) {
                 if (collision_state.adjusted_move_distance < collision_state.move_distance) {
                     actor.vPosition +=
                             (collision_state.adjusted_move_distance * collision_state.direction).ToShort();
@@ -652,7 +642,7 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                                 continue;
                             }
                         } else {
-                            v61 = abs(pIndoor->pFaces[v37].pFacePlane_old.vNormal.x * actor.vVelocity.x +
+                            int v61 = abs(pIndoor->pFaces[v37].pFacePlane_old.vNormal.x * actor.vVelocity.x +
                                       pIndoor->pFaces[v37].pFacePlane_old.vNormal.y * actor.vVelocity.y +
                                       pIndoor->pFaces[v37].pFacePlane_old.vNormal.z * actor.vVelocity.z) >> 16;
                             if ((collision_state.speed / 8) > v61)
