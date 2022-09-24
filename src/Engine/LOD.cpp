@@ -1,5 +1,7 @@
 #include "Engine/LOD.h"
 
+#include <filesystem>
+
 #include "Engine/Engine.h"
 #include "Engine/ZlibWrapper.h"
 
@@ -491,7 +493,7 @@ bool LOD::WriteableFile::FixDirectoryOffsets() {
     std::filesystem::rename(tempPath, pLODPath);
     CloseWriteFile();
 
-    return LoadFile(pLODPath.c_str(), 0);
+    return LoadFile(pLODPath, 0);
 }
 
 bool LOD::WriteableFile::AppendDirectory(const std::string &file_name, const void *pData, size_t data_size) {
