@@ -357,9 +357,9 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
 
     // vBoundingCenter must be within all four of the camera frustum planes to be visible
     // TODO(pskelton): only using 2 planes here (l+r) - four planes inaccurate -- investigate
-    Vec3_float_ center{ ToFloatVector(model->vBoundingCenter) };
+    Vec3f center = model->vBoundingCenter.ToFloat();
     for (int i = 0; i < 2; i++) {
-        Vec3_float_ planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
+        Vec3f planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
         float planedist{ pCamera3D->FrustumPlanes[i].w };
         if ((Dot(center, planenormal) - planedist) < -radius) {
             return false;
