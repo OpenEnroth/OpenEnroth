@@ -56,10 +56,10 @@ void main() {
 	vec3 fragnorm = normalize(vsNorm);
     vec3 fragviewdir = normalize(CameraPos - vsPos);
 
-    vec4 fragcol = vec4(1);
-    vec2 texcoords = vec2(0);
-    vec2 texuvmod = vec2(0);
-    vec2 deltas = vec2(0);
+    vec4 fragcol = vec4(1.0);
+    vec2 texcoords = vec2(0.0);
+    vec2 texuvmod = vec2(0.0);
+    vec2 deltas = vec2(0.0);
 
     // texture flow mods
     if (abs(vsNorm.z) >= 0.9) {
@@ -78,12 +78,12 @@ void main() {
 
     deltas.x = texuvmod.x * (flowtimer & int(textureSize(textureArray0,0).x-1));
     deltas.y = texuvmod.y * (flowtimer & int(textureSize(textureArray0,0).y-1));
-    texcoords.x = (deltas.x*4.0 + texuv.x) / textureSize(textureArray0,0).x;
-    texcoords.y = (deltas.y*4.0 + texuv.y) / textureSize(textureArray0,0).y; 
+    texcoords.x = (deltas.x + texuv.x) / textureSize(textureArray0,0).x;
+    texcoords.y = (deltas.y + texuv.y) / textureSize(textureArray0,0).y; 
     fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer.y));
 
-    vec4 toplayer = texture(textureArray0, vec3(texcoords.x/4.0,texcoords.y/4.0,0));
-    vec4 watercol = texture(textureArray0, vec3(texcoords.x/4.0,texcoords.y/4.0,waterframe));
+    vec4 toplayer = texture(textureArray0, vec3(texcoords.x,texcoords.y,0));
+    vec4 watercol = texture(textureArray0, vec3(texcoords.x,texcoords.y,waterframe));
 
     if ((watertiles == 1) && (olayer.y == 0)){
         if ((vsAttrib & 0x3C00) != 0){ // water anim disabled

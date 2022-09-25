@@ -392,6 +392,8 @@ class IRender {
 
     virtual void DrawTwodVerts() = 0;
 
+    virtual void ReloadShaders() = 0;
+
     std::shared_ptr<Application::GameConfig> config = nullptr;
     int *pActiveZBuffer;
     uint32_t uFogColor;

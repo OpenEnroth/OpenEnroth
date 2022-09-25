@@ -15,16 +15,19 @@
 
 class GLShader {
  public:
-    unsigned int ID;
+     unsigned int ID{};
 
     GLShader() {
         ID = 0;
     }
 
+    std::string sVertpath{};
+    std::string sFragpath{};
+    std::string sGeopath{};
+
     // TODO(pskelton): save paths on construction for on the fly reloading
     // TODO(pskelton): consider map for uniform locations
     // TODO(pskelton): split into .h/.cpp?
-    // TODO(pskelton): errors -> logger
 
     // constructor generates the shader on the fly
     // ------------------------------------------------------------------------
@@ -34,8 +37,7 @@ class GLShader {
     }
 
     // or build to reconstruct
-    bool build(const char *vertexPath, const char *fragmentPath, const char *geometryPath = nullptr) {
-        ID = 0;
+    int build(const char *vertexPath, const char *fragmentPath, bool reload = false, const char *geometryPath = nullptr) {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
         std::string fragmentCode;
@@ -102,24 +104,47 @@ class GLShader {
         }
 
         // shader Program
-        ID = glCreateProgram();
-        glAttachShader(ID, vertex);
-        glAttachShader(ID, fragment);
+        int tempID = glCreateProgram();
+        glAttachShader(tempID, vertex);
+        glAttachShader(tempID, fragment);
         if (geometryPath != nullptr)
-            glAttachShader(ID, geometry);
-        glLinkProgram(ID);
-        checkCompileErrors(ID, "PROGRAM");
+            glAttachShader(tempID, geometry);
+        glLinkProgram(tempID);
+        bool NOerror = checkCompileErrors(tempID, "PROGRAM");
+        if (!NOerror) tempID = 0;
         // delete the shaders as they're linked into our program now and no longer necessery
         glDeleteShader(vertex);
         glDeleteShader(fragment);
         if (geometryPath != nullptr)
             glDeleteShader(geometry);
 
-        std::cout << "SHADER success" << std::endl;
+        if (tempID) {
+            // set var members on first load
+            if (reload == false) {
+                ID = tempID;
+                sVertpath = vertexPath;
+                sFragpath = fragmentPath;
+                if (geometryPath != nullptr) sGeopath = geometryPath;
+            }
+            return tempID;
+        }
 
-        return ID != 0;
+        logger->Warning("SHADER failure");
+        return 0;
     }
 
+    bool reload() {
+        int tryreload = build(sVertpath.c_str(), sFragpath.c_str(), true);
+
+        if (tryreload) {
+            glDeleteProgram(ID);
+            ID = tryreload;
+            return true;
+        }
+
+        logger->Info("Shader reload failed - reverting");
+        return false;
+    }
 
     // activate the shader
     void use() {
@@ -186,24 +211,25 @@ class GLShader {
 
  private:
     // utility function for checking shader compilation/linking errors.
-    void checkCompileErrors(GLuint shader, std::string type) {
+    bool checkCompileErrors(GLuint shader, std::string type) {
         GLint success;
         GLchar infoLog[1024];
         if (type != "PROGRAM") {
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
             if (!success) {
-                ID = 0;
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
                 logger->Warning("-------------------------\n\nERROR::SHADER_COMPILATION_ERROR of type: %s\n%s--------------------------------------", type.c_str(), infoLog);
+                return false;
             }
         } else {
             glGetProgramiv(shader, GL_LINK_STATUS, &success);
             if (!success) {
-                ID = 0;
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
                 logger->Warning("-------------------------\n\nERROR::PROGRAM_LINKING_ERROR of type: %s\n%s--------------------------------------", type.c_str(), infoLog);
+                return false;
             }
         }
+        return true;
     }
 };
 #endif

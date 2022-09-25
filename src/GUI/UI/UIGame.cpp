@@ -2219,7 +2219,7 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugLightMap = CreateButton(13, 221, width, height, 1, 0, UIMSG_DebugLightmap, 0, GameKey::None, "DEBUG TOGGLE LIGHTMAP DECAL");
     GUIButton *pBtn_DebugTurbo = CreateButton(127, 221, width, height, 1, 0, UIMSG_DebugTurboSpeed, 0, GameKey::None, "DEBUG TOGGLE TURBO SPEED");
     GUIButton *pBtn_DebugNoActors = CreateButton(241, 221, width, height, 1, 0, UIMSG_DebugNoActors, 0, GameKey::None, "DEBUG TOGGLE ACTORS");
-    GUIButton *pBtn_DebugUnused = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG TOGGLE UNUSED");
+    GUIButton *pBtn_DebugUnused = CreateButton(354, 221, width, height, 1, 0, UIMSG_DebugFog, 0, GameKey::None, "DEBUG TOGGLE FOG");
 
     GUIButton *pBtn_DebugSnow = CreateButton(13, 248, width, height, 1, 0, UIMSG_DebugSnow, 0, GameKey::None, "DEBUG TOGGLE SNOW");
     GUIButton *pBtn_DebugPortalLines = CreateButton(127, 248, width, height, 1, 0, UIMSG_DebugPortalLines, 0, GameKey::None, "DEBUG TOGGLE PORTAL OUTLINES");
@@ -2231,7 +2231,10 @@ GUIWindow_DebugMenu::GUIWindow_DebugMenu()
     GUIButton *pBtn_DebugGenItem = CreateButton(241, 275, width, height, 1, 0, UIMSG_DebugGenItem, 0, GameKey::None, "DEBUG GENERATE RANDOM ITEM");
     GUIButton *pBtn_DebugSpecialItem = CreateButton(354, 275, width, height, 1, 0, UIMSG_DebugSpecialItem, 0, GameKey::None, "DEBUG GENERATE RANDOM SPECIAL ITEM");
 
-    //
+    GUIButton *pBtn_DebugReloadShaders = CreateButton(13, 302, width, height, 1, 0, UIMSG_DebugReloadShader, 0, GameKey::Backspace, "DEBUG RELOAD SHADERS");
+    GUIButton *pBtn_DebugUnused1 = CreateButton(127, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused1");
+    GUIButton *pBtn_DebugUnused2 = CreateButton(241, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused2");
+    GUIButton *pBtn_DebugUnused3 = CreateButton(354, 302, width, height, 1, 0, UIMSG_DebugUnused, 0, GameKey::None, "DEBUG unused3");
 
     GUIButton *pBtn_DebugKillChar = CreateButton(13, 329, width, height, 1, 0, UIMSG_DebugKillChar, 0, GameKey::None, "DEBUG KILL SELECTED CHARACTER");
     GUIButton *pBtn_DebugEradicate = CreateButton(127, 329, width, height, 1, 0, UIMSG_DebugEradicate, 0, GameKey::None, "DEBUG ERADICATE SELECTED CHARACTER");
@@ -2275,7 +2278,7 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(13, 221, "Lightmap", engine->config->debug.LightmapDecals.Get());
     buttonbox(127, 221, "Turbo", engine->config->debug.TurboSpeed.Get());
     buttonbox(241, 221, "No Actors", engine->config->debug.NoActors.Get());
-    buttonbox(354, 221, "Unused", 2);
+    buttonbox(354, 221, "Fog", engine->config->graphics.Fog.Get());
 
     buttonbox(13, 248, "Snow", engine->config->graphics.Snow.Get());
     buttonbox(127, 248, "Portal Lines", engine->config->debug.PortalOutlines.Get());
@@ -2286,6 +2289,11 @@ void GUIWindow_DebugMenu::Update() {
     buttonbox(127, 275, "Verbose Log", engine->config->debug.VerboseLogging.Get());
     buttonbox(241, 275, "Gen Item", 2);
     buttonbox(354, 275, "Special Item", 2);
+
+    buttonbox(13, 302, "HOT Shaders", 2);
+    buttonbox(127, 302, "Unused1", 2);
+    buttonbox(241, 302, "Unused2", 2);
+    buttonbox(354, 302, "Unused3", 2);
 
     // times ??
     // conditions ??

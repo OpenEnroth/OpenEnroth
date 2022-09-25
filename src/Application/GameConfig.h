@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <algorithm>
 
 #include "Engine/CommandLine.h"
 #include "Engine/IocContainer.h"
@@ -303,8 +304,11 @@ namespace Application {
             /** Bloodsplats radius multiplier. */
             ConfigValue<float> BloodSplatsMultiplier = ConfigValue<float>(this, "bloodsplats_multiplier", 1.0f);
 
+            /** Do Bloodsplats fade. */
+            ConfigValue<bool> BloodSplatsFade = ConfigValue<bool>(this, "bloodsplats_fade", true);
+
             ConfigValue<float> ClipFarDistance = ConfigValue<float>(this, "clip_far_distance", 16192.0f);
-            ConfigValue<float> ClipNearDistance = ConfigValue<float>(this, "clip_near_distance", 4.0f);
+            ConfigValue<float> ClipNearDistance = ConfigValue<float>(this, "clip_near_distance", 32.0f);
 
             ConfigValue<bool> ColoredLights = ConfigValue<bool>(this, "colored_lights", true);
 
@@ -314,8 +318,14 @@ namespace Application {
             /** Need to be eventually deleted and replaced with gamma? */
             ConfigValue<bool> DynamicBrightness = ConfigValue<bool>(this, "dynamic_brightness", true);
 
-            /** Currently not in use, should disable fog effect just like a snow. */
-            ConfigValue<bool> Fog = ConfigValue<bool>(this, "fog", false);
+            /** Disable fog effect - at far clip and on fog weather */
+            ConfigValue<bool> Fog = ConfigValue<bool>(this, "fog", true);
+
+            /** Adjusts fog height for bottom sky horizon */
+            ConfigValue<int> FogHorizon = ConfigValue<int>(this, "fog_horizon", 39);
+
+            /** Adjust starting depth ratio of distance fog */
+            ConfigValue<float> FogDepthRatio = ConfigValue<float>(this, "fog_ratio", 0.75f);
 
             /** FPS Limit */
             ConfigValue<int> FPSLimit = ConfigValue<int>(this, "fps_limit", 60);
@@ -338,11 +348,15 @@ namespace Application {
             /** Vanilla's rendering rules from software mode. Still much code use this option. */
             ConfigValue<bool> SoftwareModeRules = ConfigValue<bool>(this, "software_mode_rules", false);
 
-            /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of pain was thrown at them. */
+            /** Vanilla's monster coloring method from hardware mode. When monsters look like bucket of paint was thrown at them. */
             ConfigValue<bool> Tinting = ConfigValue<bool>(this, "tinting", false);
 
             /** Torchlight lighting */
             ConfigValue<bool> Torchlight = ConfigValue<bool>(this, "torchlight", true);
+            ConfigValue<bool> LightsFlicker = ConfigValue<bool>(this, "lightsflicker", false);
+
+            /** Max number of BSP sectors to display. */
+            ConfigValue<int> MaxVisibleSectors = ConfigValue<int>(this, "maxvisiblesectors", 6, &ValidateMaxSectors);
 
             /** Enable synchronization of framerate with monitor vertical refresh rate. */
             ConfigValue<bool> VSync = ConfigValue<bool>(this, "vsync", false);
@@ -362,6 +376,10 @@ namespace Application {
                     return 9;
 
                 return level;
+            }
+            static int ValidateMaxSectors(int sectors) {
+                sectors = std::clamp(sectors, 1, 150);
+                return sectors;
             }
         };
 

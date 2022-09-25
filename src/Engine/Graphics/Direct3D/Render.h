@@ -212,6 +212,8 @@ class Render : public RenderBase {
 
     virtual void DrawIndoorFaces() override;
 
+    virtual void ReloadShaders() override;
+
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;
 

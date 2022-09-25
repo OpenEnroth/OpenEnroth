@@ -189,6 +189,8 @@ void GameWindowHandler::OnKey(GameKey key) {
             OnToggleFullscreen();
         } else if (key == GameKey::Tilde) {
             pMessageQueue_50CBD0->AddGUIMessage(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
+        } else if (key == GameKey::Backspace && current_screen_type == CURRENT_SCREEN::SCREEN_GAME) {
+            pMessageQueue_50CBD0->AddGUIMessage(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
         } else if (key == GameKey::Left || key == GameKey::Right || key == GameKey::Up || key == GameKey::Down) {
             if (current_screen_type != CURRENT_SCREEN::SCREEN_GAME &&
                 current_screen_type != CURRENT_SCREEN::SCREEN_MODAL_WINDOW) {

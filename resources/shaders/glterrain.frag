@@ -5,7 +5,7 @@ in vec2 texuv;
 flat in vec2 olayer;
 in vec3 vsPos;
 in vec3 vsNorm;
-flat in int vsAttrib;
+in vec4 viewspace;
 
 out vec4 FragColour;
 
@@ -22,6 +22,12 @@ struct PointLight {
     float type;  // 0- off, 1- stat, 2 - mob
 
     vec3 position;
+
+    // dont use these atm
+    //float constant;
+    //float linear;
+    //float quadratic;
+
     float radius;
 
     vec3 ambient;
@@ -29,70 +35,55 @@ struct PointLight {
     vec3 specular;
 };
 
+struct FogParam {
+    vec3 color;
+    float fogstart;
+    float fogmiddle;
+    float fogend;
+};
+
 uniform int waterframe;
 uniform Sunlight sun;
 uniform vec3 CameraPos;
-uniform int flowtimer;
-uniform int watertiles;
 
 #define num_point_lights 20
 uniform PointLight fspointlights[num_point_lights];
 
 uniform sampler2DArray textureArray0;
+uniform sampler2DArray textureArray1;
+uniform FogParam fog;
+
 
 // funcs
 vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+float getFogRatio(FogParam fogpar, float dist);
 
 void main() {
 
 	vec3 fragnorm = normalize(vsNorm);
     vec3 fragviewdir = normalize(CameraPos - vsPos);
 
-	vec4 fragcol = vec4(1);
-    vec2 texcoords = vec2(0);
-    vec2 texuvmod = vec2(0);
-    vec2 deltas = vec2(0);
+    // get water textures at point
+    vec4 watercol = texture(textureArray0, vec3(texuv.x,texuv.y,waterframe));
 
-    // texture flow mods
-    if (abs(vsNorm.z) >= 0.9) {
-        if ((vsAttrib & 0x400) > 0) texuvmod.y = 1;
-        if ((vsAttrib & 0x800) > 0) texuvmod.y = -1;
-    } else {
-        if ((vsAttrib & 0x400) > 0) texuvmod.y = -1;
-        if ((vsAttrib & 0x800) > 0) texuvmod.y = 1;
+	vec4 fragcol = vec4(0);
+
+    // get normal texture at point
+    fragcol = texture(textureArray1, vec3(texuv.x,texuv.y,olayer.y));
+
+    // replace texture with water if alpha or a water tile
+    if (fragcol.a == 0 || olayer.x == 0){
+        fragcol = watercol;
     }
 
-    if ((vsAttrib & 0x1000) > 0) {
-        texuvmod.x = -1;    
-    } else if ((vsAttrib & 0x2000) > 0) {
-        texuvmod.x = 1;    
-    }
-
-    deltas.x = texuvmod.x * (flowtimer & int(textureSize(textureArray0,0).x-1));
-    deltas.y = texuvmod.y * (flowtimer & int(textureSize(textureArray0,0).y-1));
-    texcoords.x = (deltas.x*4.0 + texuv.x) / textureSize(textureArray0,0).x;
-    texcoords.y = (deltas.y*4.0 + texuv.y) / textureSize(textureArray0,0).y; 
-    fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer.y));
-
-    vec4 toplayer = texture(textureArray0, vec3(texcoords.x/4.0,texcoords.y/4.0,0));
-    vec4 watercol = texture(textureArray0, vec3(texcoords.x/4.0,texcoords.y/4.0,waterframe));
-
-    if ((watertiles == 1) && (olayer.y == 0)){
-        if ((vsAttrib & 0x3C00) != 0){ // water anim disabled
-            fragcol = toplayer;
-        } else {
-            fragcol = watercol;
-        }
-    }
-
-    // sunlight
-	vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1)); //fragcol.rgb);
+    // apply sun
+	vec3 result = CalcSunLight(sun, fragnorm, fragviewdir, vec3(1));
     result = clamp(result, 0.0, 0.85);
 
     result += CalcPointLight(fspointlights[0], fragnorm, vsPos, fragviewdir);
 
-    // stack stationary
+    // stack stationary lights
     for(int i = 1; i < num_point_lights; i++) {
         if (fspointlights[i].type == 1)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
@@ -100,27 +91,40 @@ void main() {
 
     result *= fragcol.rgb;
 
-    // stack mobile
-
+    // stack mobile lights
     for(int i = 1; i < num_point_lights; i++) {
         if (fspointlights[i].type == 2)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
     }
 
-    vec3 clamps = result; // fragcol.rgb *  // clamp(result,0,1) * ; 
-
-    vec3 dull;
-
-    // percpetion red fade
-    if ((vsAttrib & 0x10000) > 0) {
-        float ss = (sin(flowtimer/30.0)+ 1.0) / 2.0;
-        dull = vec3(1, ss, ss);
-    } else {
-        dull = vec3(1,1,1);
+    vec3 clamps = result;
+    if (fog.fogstart == fog.fogend) {
+        FragColour = vec4(clamps, vertexColour.a);
+        return;
     }
 
-	FragColour = vec4(clamps, vertexColour.a) * vec4(dull,1); // result, 1.0);
+    float dist = abs(viewspace.z / viewspace.w);
+    float alpha = 0.0;
+    if (fog.fogmiddle > fog.fogstart) {
+        if (fog.fogmiddle / 2.0 > dist) {
+            alpha = 1.0;
+        } else {
+            alpha = (fog.fogmiddle - dist) / (fog.fogmiddle / 2.0);
+        }
+    }
 
+    float fograt = getFogRatio(fog, dist);
+    FragColour = mix(vec4(clamps, vertexColour.a), vec4(fog.color, alpha), fograt);
+}
+
+float getFogRatio(FogParam fogpar, float dist) {
+    float result = 0.0;
+    if (fogpar.fogstart < fogpar.fogmiddle) {
+        result = 0.25 + smoothstep(fogpar.fogstart, fogpar.fogmiddle, dist) * 0.75;
+    } else {
+        result = smoothstep(fogpar.fogstart, fogpar.fogend, dist);
+    }
+    return result;
 }
 
 // calculates the color when using a directional light.
@@ -168,4 +172,4 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     diffuse *= attenuation;
     specular *= attenuation;
     return (ambient + diffuse + specular);
-} 
+}

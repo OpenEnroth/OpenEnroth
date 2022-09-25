@@ -16,6 +16,8 @@
 * Additional features:
   - Harden party logic so that team size can be varied.
   - Map editor? i think there was a semi complete example somewhere.
+  - Fog should reduce ability of party to autoaim
+  - 'Of light' items which add glow around party
 
 * QoL improvements:
   - global merchant / identify skills?
@@ -26,3 +28,16 @@
 * Optimization targets:
   - Currently engine fps is heavily CPU bound in directX mode. This is because of the amount of draw calls outside, optimized batching on draw terrain traingles will give FPS boost.
 
+* Minor Projects:
+  - Remove zdrawtexturealpha
+  - Reduce logger spam
+  - Drop all software mode rules code
+
+* Major Projects:
+  - New GUI/ window system
+  - New sounds system
+  - New (.WMM)?? save format with extended capabilites??
+  - Check WOMM features all fixes of Grayface patches
+  - Add all Grayface patch enchancements to WOMM
+  - Lua scripting
+  - Debug logger improvements

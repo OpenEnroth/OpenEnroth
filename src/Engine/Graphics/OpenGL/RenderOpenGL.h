@@ -215,6 +215,8 @@ class RenderOpenGL : public RenderBase {
     virtual void DrawTwodVerts() override;
     void DrawBillboards();
 
+    virtual void ReloadShaders() override;
+
  public:
     virtual void WritePixel16(int x, int y, uint16_t color) override;
 
@@ -229,6 +231,8 @@ class RenderOpenGL : public RenderBase {
     void DrawIndoorSkyPolygon(signed int uNumVertices,
                               struct Polygon *pSkyPolygon);
     void DrawForcePerVerts();
+
+    void SetFogParametersGL();
 
     void SavePCXImage16(const std::string &filename, uint16_t *picture_data,
         int width, int height);
@@ -306,6 +310,11 @@ class RenderOpenGL : public RenderBase {
     // forced perspective shader
     GLuint forceperVBO, forceperVAO;
 
+    // Fog parameters
+    float fogr{}, fogg{}, fogb{};
+    int fogstart{};
+    int fogmiddle{};
+    int fogend{};
 
     struct nk_vertex {
         float position[2];
