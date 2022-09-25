@@ -149,7 +149,7 @@ int Game::Run() {
 
     std::string mm7dir = FindMm7Directory();
     if(mm7dir.empty()) {
-        log->Info("MM7 directory not found, consider using WOMM_PATH_OVERRIDE environment variable,"
+        log->Info("MM7 directory not found, consider using WOMM_PATH_OVERRIDE environment variable, "
                   "launching with expectation that current directory is MM7 directory");
     }
     SetDataPath(mm7dir);
