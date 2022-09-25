@@ -1300,6 +1300,20 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
         v = pos.z;
     }
 
+#if 0
+    // Old algo for reference.
+    bool inside = false;
+    for (int i = 0, j = this->uNumVertices - 1; i < this->uNumVertices; j = i++) {
+        if ((points.v[i] > v) == (points.v[j] > v))
+            continue;
+
+        int edge_x = points.u[i] + (points.u[j] - points.u[i]) * (v - points.v[i]) / (points.v[j] - points.v[i]);
+        if (u < edge_x)
+            inside = !inside;
+    }
+    return inside;
+#endif
+
     // The polygons we're dealing with are convex, so instead of the usual ray casting algorithm we can simply
     // check that the point in question lies on the same side relative to all of the polygon's edges.
     int sign = 0;
@@ -1330,7 +1344,7 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
             return false;
         }
     }
-    return true;
+    return sign != 0; // sign == 0 means we have a face with 1 vertex and somehow this happens.
 }
 
 //----- (0044C23B) --------------------------------------------------------
