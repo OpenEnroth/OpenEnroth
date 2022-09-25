@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;c91ca16</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4f42506</span>
    </div>
   </td>
  </tr>
@@ -80,8 +80,10 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
+<code>#include &lt;cstdio&gt;</code><br />
 <code>#include &quot;<a class="el" href="Point_8h.html">Engine/Point.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Strings_8h.html">Engine/Strings.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -99,31 +101,38 @@ Functions</h2></td></tr>
 <tr class="separator:ac0cda4967d55e3ade51d622720b64936"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9035b2d1cb606d985454a0fc660957c1"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Api_8h.html#a9035b2d1cb606d985454a0fc660957c1">OS_GetPrecisionTime</a> ()</td></tr>
 <tr class="separator:a9035b2d1cb606d985454a0fc660957c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa657eb112ec27c6d0c9cf1cb0a059df"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Api_8h.html#aaa657eb112ec27c6d0c9cf1cb0a059df">OS_FindFiles</a> (const std::string &amp;folder, const std::string &amp;mask)</td></tr>
-<tr class="separator:aaa657eb112ec27c6d0c9cf1cb0a059df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a116b3c95b00f526cf73d992e744250c1"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Api_8h.html#a116b3c95b00f526cf73d992e744250c1">OS_GetDirSeparator</a> (void)</td></tr>
-<tr class="separator:a116b3c95b00f526cf73d992e744250c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4d34faa1bcff6cc48049eb556235b57"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Api_8h.html#ab4d34faa1bcff6cc48049eb556235b57">OS_casepath</a> (std::string path)</td></tr>
-<tr class="separator:ab4d34faa1bcff6cc48049eb556235b57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada68ea036b5bee821d426f8b51a4690c"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Api_8h.html#ada68ea036b5bee821d426f8b51a4690c">OS_makepath</a> (std::string path)</td></tr>
+<tr class="separator:ada68ea036b5bee821d426f8b51a4690c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f1100314229eccfa28918450493d5d5"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Api_8h.html#a8f1100314229eccfa28918450493d5d5">OS_casepath</a> (std::filesystem::path path)</td></tr>
+<tr class="separator:a8f1100314229eccfa28918450493d5d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4acde6faece0d46b75f593c76734aa92"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Api_8h.html#a4acde6faece0d46b75f593c76734aa92">OS_FileExists</a> (const std::string &amp;path)</td></tr>
 <tr class="separator:a4acde6faece0d46b75f593c76734aa92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ab4d34faa1bcff6cc48049eb556235b57" name="ab4d34faa1bcff6cc48049eb556235b57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4d34faa1bcff6cc48049eb556235b57">&#9670;&#160;</a></span>OS_casepath()</h2>
+<a id="a8f1100314229eccfa28918450493d5d5" name="a8f1100314229eccfa28918450493d5d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f1100314229eccfa28918450493d5d5">&#9670;&#160;</a></span>OS_casepath()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string OS_casepath </td>
+          <td class="memname">std::filesystem::path OS_casepath </td>
           <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
+          <td class="paramtype">std::filesystem::path&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >This function emulates windows behavior on posix. You pass in a path, this function traverses it as if the underlying filesystem was case-insensitive, and returns a case-corrected path that actually exists.</p>
+<p >On windows this function just returns the path as is.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Requested path. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Case-corrected path. </dd></dl>
 
 </div>
 </div>
@@ -139,34 +148,6 @@ Functions</h2></td></tr>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aaa657eb112ec27c6d0c9cf1cb0a059df" name="aaa657eb112ec27c6d0c9cf1cb0a059df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa657eb112ec27c6d0c9cf1cb0a059df">&#9670;&#160;</a></span>OS_FindFiles()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; std::string &gt; OS_FindFiles </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>folder</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>mask</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -207,24 +188,6 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a116b3c95b00f526cf73d992e744250c1" name="a116b3c95b00f526cf73d992e744250c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a116b3c95b00f526cf73d992e744250c1">&#9670;&#160;</a></span>OS_GetDirSeparator()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char OS_GetDirSeparator </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a9035b2d1cb606d985454a0fc660957c1" name="a9035b2d1cb606d985454a0fc660957c1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9035b2d1cb606d985454a0fc660957c1">&#9670;&#160;</a></span>OS_GetPrecisionTime()</h2>
 
@@ -257,6 +220,32 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Current value of a monotonic clock in milliseconds (1/1000s of a second). </dd></dl>
+
+</div>
+</div>
+<a id="ada68ea036b5bee821d426f8b51a4690c" name="ada68ea036b5bee821d426f8b51a4690c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada68ea036b5bee821d426f8b51a4690c">&#9670;&#160;</a></span>OS_makepath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::filesystem::path OS_makepath </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >On linux and on mac this function handles home-relative paths, so this is the preferred method of constructing absolute paths instead of calling <code>std::filesystem::path</code> constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Path as a string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Path as <code>std::filesystem::path</code>. </dd></dl>
 
 </div>
 </div>

@@ -14,7 +14,7 @@ var searchData=
   ['makeimagealpha_11',['MakeImageAlpha',['../ImageLoader_8cpp.html#a163d245f00cf50a6f6b5e9a0ed2338fd',1,'ImageLoader.cpp']]],
   ['makeimagecolorkey_12',['MakeImageColorKey',['../ImageLoader_8cpp.html#aa741fbe2dfd434c94dab5f621d06a9fb',1,'ImageLoader.cpp']]],
   ['makeimagesolid_13',['MakeImageSolid',['../ImageLoader_8cpp.html#a468759cf57a1d2be638f7b0968cc25c1',1,'ImageLoader.cpp']]],
-  ['makelower_14',['MakeLower',['../Strings_8cpp.html#a86d2770160c54fbedbb6dba2f38c3dc9',1,'MakeLower(const std::string &amp;text):&#160;Strings.cpp'],['../Strings_8h.html#a86d2770160c54fbedbb6dba2f38c3dc9',1,'MakeLower(const std::string &amp;text):&#160;Strings.cpp']]],
+  ['makelower_14',['MakeLower',['../String_8cpp.html#a86d2770160c54fbedbb6dba2f38c3dc9',1,'MakeLower(const std::string &amp;text):&#160;String.cpp'],['../String_8h.html#a86d2770160c54fbedbb6dba2f38c3dc9',1,'MakeLower(const std::string &amp;text):&#160;String.cpp']]],
   ['makeparticlebillboardandpush_15',['MakeParticleBillboardAndPush',['../classRenderBase.html#a4066bd07b80374166cb41166412340f2',1,'RenderBase::MakeParticleBillboardAndPush()'],['../classIRender.html#a2e261dcefcdcd0f92386ae36b709dacd',1,'IRender::MakeParticleBillboardAndPush()']]],
   ['makescreenshot16_16',['MakeScreenshot16',['../classRenderOpenGL.html#a9c1afb82aa9a1e6d543c63e2473c68f6',1,'RenderOpenGL::MakeScreenshot16()'],['../classRender.html#a1bd3a5f1deebf43aa4680421fe0621fe',1,'Render::MakeScreenshot16()']]],
   ['maketemppath_17',['MakeTempPath',['../DataPath_8h.html#aee012efb3907a0773b42808a49f3345a',1,'MakeTempPath(const char *file_rel_path):&#160;DataPath.cpp'],['../DataPath_8cpp.html#aee012efb3907a0773b42808a49f3345a',1,'MakeTempPath(const char *file_rel_path):&#160;DataPath.cpp']]],

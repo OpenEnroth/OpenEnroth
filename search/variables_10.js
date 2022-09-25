@@ -397,7 +397,7 @@ var searchData=
   ['plloydsbeaconspreviewxs_394',['pLloydsBeaconsPreviewXs',['../LloydsBook_8cpp.html#a6a539be608fd29a4112fff37216a486e',1,'LloydsBook.cpp']]],
   ['plloydsbeaconspreviewys_395',['pLloydsBeaconsPreviewYs',['../LloydsBook_8cpp.html#ad484563859c26cdb792de87190d5c854',1,'LloydsBook.cpp']]],
   ['plocationname_396',['pLocationName',['../structSavegameHeader.html#a3eeaf2e0f110ab3159d759aff0cf3200',1,'SavegameHeader']]],
-  ['plodname_397',['pLODName',['../classLOD_1_1File.html#a62ad1d1e5f915b685c2fd19a64417f01',1,'LOD::File']]],
+  ['plodpath_397',['pLODPath',['../classLOD_1_1File.html#a03131bdfcd8578dd692934ff6a392d1f',1,'LOD::File']]],
   ['pmagic_398',['pMagic',['../structODMHeader.html#a84e54e0850baa75cbf296d7d9e52ffb2',1,'ODMHeader::pMagic()'],['../structCompressedHeader.html#ab1f35aca3d1ba2214f6fef8b1a80b84f',1,'CompressedHeader::pMagic()']]],
   ['pmagicskills_399',['pMagicSkills',['../UICharacter_8cpp.html#a76a81c1e9d6f68fab9fc9d9e43674047',1,'UICharacter.cpp']]],
   ['pmanabarpos_400',['pManaBarPos',['../mm7__data_8h.html#abada2f56e55b7e4614271e54d9bdc7f7',1,'pManaBarPos():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#abada2f56e55b7e4614271e54d9bdc7f7',1,'pManaBarPos():&#160;mm7_data.cpp']]],
