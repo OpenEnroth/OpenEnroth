@@ -149,7 +149,7 @@ var searchData=
   ['issaturatefaces_146',['IsSaturateFaces',['../structEngine.html#ae0b1402d69d26a4d6f2aefbd32240020',1,'Engine']]],
   ['isskilllearningdialogue_147',['IsSkillLearningDialogue',['../GUIDialogues_8h.html#ad6e0874d44d74726f9b68c85e5494a53',1,'GUIDialogues.h']]],
   ['isspecialname_148',['IsSpecialName',['../mm7text__ru_8cpp.html#a20fd879e0dfe9f113a87a611f353a725',1,'mm7text_ru.cpp']]],
-  ['isspecular_149',['IsSpecular',['../structEngine.html#aebbf97ead8f795f2314a59b8b73877f8',1,'Engine']]],
+  ['isspecular_5ffogison_149',['IsSpecular_FogIsOn',['../structEngine.html#a014fab3f3e2de790cb0eb35d69a0b075',1,'Engine']]],
   ['isspellbackcycletoggled_150',['IsSpellBackcycleToggled',['../classIo_1_1KeyboardInputHandler.html#a386b5a531c6c666ed0db972ea3d8f5ec',1,'Io::KeyboardInputHandler']]],
   ['isstealingtoggled_151',['IsStealingToggled',['../classIo_1_1KeyboardInputHandler.html#ad79082532ace063e7e1a775fe9fe1b15',1,'Io::KeyboardInputHandler']]],
   ['isstolen_152',['IsStolen',['../structItemGen.html#a54bbf797a219cf77f0c08f6452443b93',1,'ItemGen']]],

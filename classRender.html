@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4850e0b</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;c91ca16</span>
    </div>
   </td>
  </tr>
@@ -301,6 +301,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afdbdce114d0fac85a69f2620f0fc24df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d14e7826b0dd35df4c4dd4cceff220f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRender.html#a7d14e7826b0dd35df4c4dd4cceff220f">DrawIndoorFaces</a> () override</td></tr>
 <tr class="separator:a7d14e7826b0dd35df4c4dd4cceff220f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a79d845f3806683c83b1a24cc878d35"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRender.html#a0a79d845f3806683c83b1a24cc878d35">ReloadShaders</a> () override</td></tr>
+<tr class="separator:a0a79d845f3806683c83b1a24cc878d35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a9116cb49d285dd20fcda2884ff2476"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRender.html#a7a9116cb49d285dd20fcda2884ff2476">WritePixel16</a> (int x, int y, uint16_t color) override</td></tr>
 <tr class="separator:a7a9116cb49d285dd20fcda2884ff2476"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b7508551b7ddfc79badbfedbef04b38"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRender.html#a2b7508551b7ddfc79badbfedbef04b38">GetRenderWidth</a> () const override</td></tr>
@@ -541,6 +543,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0838832b098523e7ac02cd5e499eb148 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfbff9bcb735079ba54dc01b77e2b301 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#adfbff9bcb735079ba54dc01b77e2b301">DrawTwodVerts</a> ()=0</td></tr>
 <tr class="separator:adfbff9bcb735079ba54dc01b77e2b301 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64b75ae58f37d81aa4b1fce9d03c3da4 inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a64b75ae58f37d81aa4b1fce9d03c3da4">ReloadShaders</a> ()=0</td></tr>
+<tr class="separator:a64b75ae58f37d81aa4b1fce9d03c3da4 inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a182ff1e20d7a82c6c400e8732ddfa52e inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#a182ff1e20d7a82c6c400e8732ddfa52e">WritePixel16</a> (int x, int y, uint16_t color)=0</td></tr>
 <tr class="separator:a182ff1e20d7a82c6c400e8732ddfa52e inherit pub_methods_classIRender"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafb9bd4a1435005d5f31266328785a6d inherit pub_methods_classIRender"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIRender.html#aafb9bd4a1435005d5f31266328785a6d">GetRenderWidth</a> () const =0</td></tr>
@@ -4488,6 +4492,33 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classIRender.html#aac446770a7f1b656ae69986b464a2e5c">IRender</a>.</p>
+
+</div>
+</div>
+<a id="a0a79d845f3806683c83b1a24cc878d35" name="a0a79d845f3806683c83b1a24cc878d35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a79d845f3806683c83b1a24cc878d35">&#9670;&#160;</a></span>ReloadShaders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Render::ReloadShaders </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classIRender.html#a64b75ae58f37d81aa4b1fce9d03c3da4">IRender</a>.</p>
 
 </div>
 </div>

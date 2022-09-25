@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4850e0b</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;c91ca16</span>
    </div>
   </td>
  </tr>
@@ -86,20 +86,28 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a71d842a6a99dac037c8d0f91e4de593b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d325c5559cb9ef12f885c20cef14a5d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a5d325c5559cb9ef12f885c20cef14a5d">GLShader</a> (const char *vertexPath, const char *fragmentPath, const char *geometryPath=nullptr)</td></tr>
 <tr class="separator:a5d325c5559cb9ef12f885c20cef14a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68ec1bfba92d63793ff00851f04ad7ff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a68ec1bfba92d63793ff00851f04ad7ff">build</a> (const char *vertexPath, const char *fragmentPath, const char *geometryPath=nullptr)</td></tr>
-<tr class="separator:a68ec1bfba92d63793ff00851f04ad7ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42f5469782e6c298e217e62303dfba68"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a42f5469782e6c298e217e62303dfba68">build</a> (const char *vertexPath, const char *fragmentPath, bool <a class="el" href="classGLShader.html#af74c08c56a0c1290b3e8c922ea8cbfd4">reload</a>=false, const char *geometryPath=nullptr)</td></tr>
+<tr class="separator:a42f5469782e6c298e217e62303dfba68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af74c08c56a0c1290b3e8c922ea8cbfd4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#af74c08c56a0c1290b3e8c922ea8cbfd4">reload</a> ()</td></tr>
+<tr class="separator:af74c08c56a0c1290b3e8c922ea8cbfd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af765a2607d1d4cc056aabd9295702e09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#af765a2607d1d4cc056aabd9295702e09">use</a> ()</td></tr>
 <tr class="separator:af765a2607d1d4cc056aabd9295702e09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:abc5e80c1895af424b40f86131337101f"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#abc5e80c1895af424b40f86131337101f">ID</a></td></tr>
+<tr class="memitem:abc5e80c1895af424b40f86131337101f"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#abc5e80c1895af424b40f86131337101f">ID</a> {}</td></tr>
 <tr class="separator:abc5e80c1895af424b40f86131337101f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d6bc2298642752246e262914178ce21"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a4d6bc2298642752246e262914178ce21">sVertpath</a> {}</td></tr>
+<tr class="separator:a4d6bc2298642752246e262914178ce21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac13aeffae510d360e2e856667a4f90b9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#ac13aeffae510d360e2e856667a4f90b9">sFragpath</a> {}</td></tr>
+<tr class="separator:ac13aeffae510d360e2e856667a4f90b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e2dfdd4dd439e1043c140a2beb3c4c4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a0e2dfdd4dd439e1043c140a2beb3c4c4">sGeopath</a> {}</td></tr>
+<tr class="separator:a0e2dfdd4dd439e1043c140a2beb3c4c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a7b82273f2d7aa9f0d73759c275973425"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a7b82273f2d7aa9f0d73759c275973425">checkCompileErrors</a> (GLuint shader, std::string type)</td></tr>
-<tr class="separator:a7b82273f2d7aa9f0d73759c275973425"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01bb4e6505dc419a21a64c1a7097d63a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGLShader.html#a01bb4e6505dc419a21a64c1a7097d63a">checkCompileErrors</a> (GLuint shader, std::string type)</td></tr>
+<tr class="separator:a01bb4e6505dc419a21a64c1a7097d63a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a71d842a6a99dac037c8d0f91e4de593b" name="a71d842a6a99dac037c8d0f91e4de593b"></a>
@@ -170,8 +178,8 @@ Private Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a68ec1bfba92d63793ff00851f04ad7ff" name="a68ec1bfba92d63793ff00851f04ad7ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68ec1bfba92d63793ff00851f04ad7ff">&#9670;&#160;</a></span>build()</h2>
+<a id="a42f5469782e6c298e217e62303dfba68" name="a42f5469782e6c298e217e62303dfba68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42f5469782e6c298e217e62303dfba68">&#9670;&#160;</a></span>build()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -180,7 +188,7 @@ Private Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool GLShader::build </td>
+          <td class="memname">int GLShader::build </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>vertexPath</em>, </td>
@@ -190,6 +198,12 @@ Private Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>fragmentPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>reload</em> = <code>false</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -212,8 +226,8 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7b82273f2d7aa9f0d73759c275973425" name="a7b82273f2d7aa9f0d73759c275973425"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b82273f2d7aa9f0d73759c275973425">&#9670;&#160;</a></span>checkCompileErrors()</h2>
+<a id="a01bb4e6505dc419a21a64c1a7097d63a" name="a01bb4e6505dc419a21a64c1a7097d63a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01bb4e6505dc419a21a64c1a7097d63a">&#9670;&#160;</a></span>checkCompileErrors()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,7 +236,7 @@ Private Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void GLShader::checkCompileErrors </td>
+          <td class="memname">bool GLShader::checkCompileErrors </td>
           <td>(</td>
           <td class="paramtype">GLuint&#160;</td>
           <td class="paramname"><em>shader</em>, </td>
@@ -242,6 +256,31 @@ Private Member Functions</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af74c08c56a0c1290b3e8c922ea8cbfd4" name="af74c08c56a0c1290b3e8c922ea8cbfd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af74c08c56a0c1290b3e8c922ea8cbfd4">&#9670;&#160;</a></span>reload()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GLShader::reload </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -281,7 +320,49 @@ Private Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int GLShader::ID</td>
+          <td class="memname">unsigned int GLShader::ID {}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac13aeffae510d360e2e856667a4f90b9" name="ac13aeffae510d360e2e856667a4f90b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac13aeffae510d360e2e856667a4f90b9">&#9670;&#160;</a></span>sFragpath</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string GLShader::sFragpath {}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0e2dfdd4dd439e1043c140a2beb3c4c4" name="a0e2dfdd4dd439e1043c140a2beb3c4c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e2dfdd4dd439e1043c140a2beb3c4c4">&#9670;&#160;</a></span>sGeopath</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string GLShader::sGeopath {}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4d6bc2298642752246e262914178ce21" name="a4d6bc2298642752246e262914178ce21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d6bc2298642752246e262914178ce21">&#9670;&#160;</a></span>sVertpath</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string GLShader::sVertpath {}</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -28,7 +28,7 @@ var searchData=
   ['is_5fforceredraw_25',['is_forceredraw',['../structEngine.html#a4ae2a485285f7b936590f55f8d841804',1,'Engine']]],
   ['is_5fjoinable_26',['is_joinable',['../structNPCData.html#a01879e4caf1820ffb7b0996cba4363e4',1,'NPCData']]],
   ['is_5fsaturate_5ffaces_27',['is_saturate_faces',['../structEngine.html#ae83fe82526a453c8333cf4cd2decd935',1,'Engine']]],
-  ['is_5fspecular_28',['is_specular',['../structEngine.html#a88adeec499edf64ae0a6a5c126177eec',1,'Engine']]],
+  ['is_5fspecular_5ffogison_28',['is_specular_FogIsOn',['../structEngine.html#a6a1bd7ef0cc487903b5094b24d4ed52c',1,'Engine']]],
   ['is_5ftargeting_29',['is_targeting',['../structEngine.html#aa40b577d4946f6bca596eb26d200a8fd',1,'Engine']]],
   ['is_5funderwater_30',['is_underwater',['../structEngine.html#a6ffa1b4807b59574731b7185149f079e',1,'Engine']]],
   ['isfileopened_31',['isFileOpened',['../classLOD_1_1File.html#a8f762d0ab8fac8fdcf8fa4d66cec32ed',1,'LOD::File']]],
