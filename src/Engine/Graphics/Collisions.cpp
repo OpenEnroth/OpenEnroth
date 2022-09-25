@@ -503,6 +503,8 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
                 if (actor2_id == actor.id)
                     continue;
 
+                // TODO: why we're checking that distance is greater that r1+r2? Shouldn't we check that it's less?
+                // Investigate, white a comment here.
                 Actor &actor2 = pActors[actor2_id];
                 if ((actor2.vPosition - actor.vPosition).Length() >= actor.uActorRadius + actor2.uActorRadius &&
                     CollideWithActor(actor2_id, 40))
