@@ -516,12 +516,12 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         bool isInCrowd = collisionsWithOtherActors > 1;
 
         Vec3f newPos = actor.vPosition.ToFloat() + collision_state.adjusted_move_distance * collision_state.direction;
-        unsigned int uFaceID;
-        int floorZ = GetIndoorFloorZ(newPos.ToInt(), &collision_state.uSectorID, &uFaceID);
-        if (floorZ == -30000)
+        unsigned int newFaceID;
+        int newFloorZ = GetIndoorFloorZ(newPos.ToInt(), &collision_state.uSectorID, &newFaceID);
+        if (newFloorZ == -30000)
             break; // New pos is out of bounds, running more iterations won't help.
 
-        if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
+        if (pIndoor->pFaces[newFaceID].uAttributes & FACE_INDOOR_SKY) {
             if (actor.uAIState == Dead) {
                 actor.uAIState = Removed;
                 break; // Actor removed, no point in running more iterations.
@@ -536,7 +536,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         }
 
         // Prevent actors from falling off ledges.
-        if (actor.uCurrentActionAnimation == ANIM_Walking && floorZ < actor.vPosition.z - 100 && !isAboveGround && !isFlying) {
+        if (actor.uCurrentActionAnimation == ANIM_Walking && newFloorZ < actor.vPosition.z - 100 && !isAboveGround && !isFlying) {
             if (actor.vPosition.x & 1) {
                 actor.uYawAngle += 100;
             } else {
@@ -545,16 +545,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             break; // We'll try again in the next frame.
         }
 
-        if (FuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance)) {
-            actor.vPosition.x = collision_state.new_position_lo.x;
-            actor.vPosition.y = collision_state.new_position_lo.y;
-            actor.vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
-            actor.uSectorID = collision_state.uSectorID;
-            break; // No collisions happened.
-        }
-
-        actor.vPosition += (collision_state.adjusted_move_distance * collision_state.direction).ToShort();
+        actor.vPosition = newPos.ToShort();
         actor.uSectorID = collision_state.uSectorID;
+        if (FuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance))
+            break; // No collisions happened.
+
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         int id = PID_ID(collision_state.pid);
         int type = PID_TYPE(collision_state.pid);
