@@ -16,7 +16,6 @@ set(ENGINE_SOURCES AssetsManager.cpp
                    Random.cpp
                    SaveLoad.cpp
                    SpellFxRenderer.cpp
-                   Strings.cpp
                    stru298.cpp
                    Time.cpp
                    VectorTypes.cpp
@@ -48,7 +47,6 @@ set(ENGINE_HEADERS AssetsManager.h
                    Rect.h
                    SaveLoad.h
                    SpellFxRenderer.h
-                   Strings.h
                    stru123.h
                    stru159.h
                    stru160.h

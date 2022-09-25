@@ -12,6 +12,7 @@
 
 #include "Engine/Serialization/LegacyImages.h"
 
+#include "Platform/Api.h"
 
 struct TextureFrameTable *pTextureFrameTable;
 
@@ -66,18 +67,16 @@ Texture *TextureFrame::GetTexture() {
 }
 
 void TextureFrameTable::ToFile() {
-    TextureFrameTable *v1 = this;
     FILE *file = fopen(MakeDataPath("data", "dtft.bin").c_str(), "wb");
-    if (file == nullptr) {
+    if (file == nullptr)
         Error("Unable to save dtft.bin!", 0);
-    }
 
     // TODO the code below won't work because this static_assert fails
     // static_assert(sizeof(TextureFrameTable) == 0x14u);
     __debugbreak();
 
-    fwrite(v1, 4u, 1u, file);
-    fwrite(v1->pTextures, 0x14u, v1->sNumTextures, file);
+    fwrite(&this->sNumTextures, 4u, 1u, file);
+    fwrite(this->pTextures, 0x14u, this->sNumTextures, file);
     fclose(file);
 }
 

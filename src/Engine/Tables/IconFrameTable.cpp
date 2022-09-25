@@ -71,17 +71,10 @@ void IconFrameTable::InitializeAnimation(unsigned int uIconID) {
 
 //----- (0049500A) --------------------------------------------------------
 void IconFrameTable::ToFile() {
-    // IconFrameTable *v1; // esi@1
-    FILE *v2;  // eax@1
-    // FILE *v3; // edi@1
-
-    // IconFrameTable* Str = this;
-
-    // v1 = Str;
-    v2 = fopen(MakeDataPath("data", "dift.bin").c_str(), "wb");
-    // v3 = v2;
-    if (!v2) Error("Unable to save dift.bin!");
-    fwrite(this, 4, 1, v2);
+    FILE *v2 = fopen(MakeDataPath("data", "dift.bin").c_str(), "wb");
+    if (!v2)
+        Error("Unable to save dift.bin!");
+    fwrite(&this->uNumIcons, 4, 1, v2);
     fwrite(this->pIcons, 0x20u, this->uNumIcons, v2);
     fclose(v2);
 }

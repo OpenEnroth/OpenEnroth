@@ -15,6 +15,8 @@
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
 
+#include "Platform/Api.h"
+
 struct SpriteFrameTable *pSpriteFrameTable;
 
 //----- (0044D4D8) --------------------------------------------------------

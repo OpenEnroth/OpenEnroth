@@ -427,17 +427,12 @@ void MonsterList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
 
 //----- (00459860) --------------------------------------------------------
 void MonsterList::ToFile() {
-    MonsterList *v1;  // esi@1
-    FILE *v2;         // eax@1
-    FILE *v3;         // edi@1
-
-    v1 = this;
-    v2 = fopen(MakeDataPath("data", "dmonlist.bin").c_str(), "wb");
-    v3 = v2;
-    if (!v2) Error("Unable to save dmonlist.bin!");
-    fwrite(v1, 4u, 1u, v2);
-    fwrite(v1->pMonsters, 0x98u, v1->uNumMonsters, v3);
-    fclose(v3);
+    FILE *v2 = fopen(MakeDataPath("data", "dmonlist.bin").c_str(), "wb");
+    if (!v2)
+        Error("Unable to save dmonlist.bin!");
+    fwrite(&this->uNumMonsters, 4u, 1u, v2);
+    fwrite(this->pMonsters, 0x98u, this->uNumMonsters, v2);
+    fclose(v2);
 }
 
 //----- (004563FF) --------------------------------------------------------

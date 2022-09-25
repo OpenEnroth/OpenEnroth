@@ -77,3 +77,4 @@ Some additional style preferences that we follow, in no particular order:
 * Documentation should be written in English. There are some leftover comments in Russian throughout the codebase, feel free to translate them into English when you have a chance.
 * Please leave original function offsets intact. If you have a chance move them to doxygen comments using offset alias (eg `@offset 0xCAFEBEEF.`)
 * Use `enum class`es followed by `using enum` statements instead of ordinary `enum`s. This provides type safety without changing the syntax. For flags, use `Flags` class.
+* Use `MM_` prefix for macro naming.

@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-#include "Engine/Strings.h"
+#include "Utility/String.h"
 #include "Media/Media.h"
 
 enum SoundID {
@@ -150,7 +150,7 @@ class AudioPlayer {
      *                                  for resetable (playing this sound again whilst its playing will stop
      *                                  it and start from beginning) exclusive (sound should not be stopped
      *                                  by system on ui events) sound and other < 0 for non resetable sounds
-     *                                  (will not restart if played again whilst already playing). NB 
+     *                                  (will not restart if played again whilst already playing). NB
      *                                  system use of exclusive sounds is inconsistent.
      */
     void PlaySpellSound(unsigned int spell, unsigned int pid);

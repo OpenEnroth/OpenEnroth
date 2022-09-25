@@ -37,52 +37,12 @@ bool OS_OpenConsole() {
     return false;
 }
 
-std::vector<std::string> OS_FindFiles(const std::string &folder, const std::string &mask) {
-    std::vector<std::string> result;
-
-    std::string path = folder + "\\" + mask;
-
-    WIN32_FIND_DATAA ffd = { 0 };
-    HANDLE hFind = FindFirstFileA(path.c_str(), &ffd);
-    if (INVALID_HANDLE_VALUE == hFind) {
-        return result;
-    }
-
-    do {
-        if ((ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-            result.push_back(ffd.cFileName);
-        }
-    } while (FindNextFileA(hFind, &ffd) != 0);
-
-    FindClose(hFind);
-
-    return result;
+std::filesystem::path OS_makepath(std::string path) {
+    return path;
 }
 
-char OS_GetDirSeparator() {
-    return '\\';
-}
-
-std::string OS_casepath(std::string path) {
-    std::string r;
-    std::string sep;
-
-    sep.push_back(OS_GetDirSeparator());
-
-    std::stringstream ss(path);
-    std::string s;
-
-    while (std::getline(ss, s, OS_GetDirSeparator())) {
-        if (s.empty())
-            continue;
-
-        if (!r.empty())
-            r += sep;
-
-        r += s;
-    }
-
-    return r;
+std::filesystem::path OS_casepath(std::filesystem::path path) {
+    return path;
 }
 
 bool OS_FileExists(const std::string& path) {

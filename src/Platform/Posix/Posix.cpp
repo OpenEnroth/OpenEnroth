@@ -11,8 +11,10 @@
 #include <cstring>
 #include <sstream>
 #include <vector>
+#include <filesystem>
 
 #include "Engine/Point.h"
+#include "Utility/String.h"
 
 void OS_MsgBox(const char *msg, const char *title) {
     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title, msg, nullptr);
@@ -36,109 +38,51 @@ bool OS_OpenConsole() {
     return true;
 }
 
-std::vector<std::string> OS_FindFiles(const std::string& folder, const std::string& mask) {
-    std::vector<std::string> result;
-
-    struct dirent *entry;
-    DIR *dp;
-    int flags = FNM_PATHNAME | FNM_PERIOD | FNM_CASEFOLD;
-
-    dp = opendir(folder.c_str());
-    if (dp != NULL) {
-        while ((entry = readdir(dp)))
-            if (fnmatch(mask.c_str(), entry->d_name, flags) == 0)
-                result.push_back(entry->d_name);
-        closedir(dp);
-    }
-
-    return result;
-}
-
-
 //////////////////// There is no Windows Registry ////////////////////
 
 bool OS_GetAppString(const char* path, char* out_string, int out_string_size) {
     return false;
 }
 
-char OS_GetDirSeparator() {
-    return '/';
+std::filesystem::path OS_makepath(std::string path) {
+    if (path.starts_with("~/"))
+        return std::getenv("HOME") + std::filesystem::path::preferred_separator + path.substr(2);
+    return path;
 }
 
-std::string OS_casepath(std::string path) {
-    std::string r;
-    std::string sep;
+std::filesystem::path OS_casepath(std::filesystem::path path) {
+    if (path.empty())
+        return path;
 
-    sep.push_back(OS_GetDirSeparator());
-    size_t pos = 0;
+    std::filesystem::path result;
+    if (path.is_relative())
+        result = std::filesystem::path(".");
 
-    DIR *d = nullptr;
-    if (!path.substr(0, 1).compare(sep)) {
-        r = sep;
-        d = opendir("/");
-    } else {
-        d = opendir(".");
-    }
-
-    std::stringstream ss (path);
-    std::string s;
-
-    while (std::getline(ss, s, OS_GetDirSeparator())) {
-        if (s.empty())
-            continue;
-
-        if (!d) {
-            if (!r.empty() && r.compare(sep))
-                r += sep;
-            r += s;
-
+    for (const std::string &part : path) {
+        if (part == "/") {
+            result = part;
             continue;
         }
 
-        bool found = false;
-        struct dirent *e = readdir(d);
-        while (e) {
-            if (strcasecmp(s.c_str(), e->d_name) == 0) {
-                found = true;
+        std::string foundPart;
+        std::error_code error;
+        for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(result, error)) {
+            std::string entryName = entry.path().filename().string();
 
-                if (!r.empty() && r.compare(sep))
-                    r += sep;
-                r += e->d_name;
-
-                // some filesystems like reiserfs don't set entry type and we need additional step
-                if (e->d_type == DT_UNKNOWN) {
-                    struct stat st;
-                    if (stat(r.c_str(), &st) != -1) {
-                        if (S_ISDIR(st.st_mode))
-                            e->d_type = DT_DIR;
-                    }
-                }
-
-                if (e->d_type == DT_DIR) {
-                    closedir(d);
-                    d = opendir(r.c_str());
-                } else {
-                    closedir(d);
-                    d = nullptr;
-                }
-
+            if (iequals(entryName, part)) {
+                foundPart = entryName;
                 break;
             }
-
-            e = readdir(d);
         }
 
-        if (!found) {
-            if (!r.empty() && r.compare(sep))
-                r += sep;
-            r += s;
-        }
+        // If nothing is found then we just give up and expect the file not found error to be handled by the caller.
+        if (foundPart.empty())
+            foundPart = part;
+
+        result /= foundPart;
     }
 
-    if (d)
-        closedir(d);
-
-    return r;
+    return result;
 }
 
 bool OS_FileExists(const std::string& path) {

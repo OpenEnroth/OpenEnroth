@@ -45,16 +45,10 @@ void Log::Warning(const char *pFormat, ...) {
 
 //----- (004BE386) --------------------------------------------------------
 void log_error(const char *pMessage) {
-    const char *v1;  // edi@1
-    FILE *f;         // eax@1
-    FILE *v3;        // esi@1
-
-    v1 = pMessage;
-    f = fopen(MakeDataPath("errorlog.txt").c_str(), "a");
-    v3 = f;
+    FILE *f = fopen(MakeDataPath("errorlog.txt").c_str(), "a");
     if (f) {
-        fprintf(f, "%s\n", v1);
-        fclose(v3);
-        fflush(v3);
+        fprintf(f, "%s\n", pMessage);
+        fclose(f);
+        fflush(f);
     }
 }

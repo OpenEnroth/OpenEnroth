@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "Engine/Strings.h"
+#include "Utility/String.h"
 
 /*  321 */
 enum DECORATION_DESC_FLAGS {

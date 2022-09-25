@@ -12,13 +12,13 @@ uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 template<class From, class To>
 struct vector_conversion_allowed : std::false_type {};
 
-#define WOMM_ALLOW_VECTOR_CONVERSION(FROM, TO) \
+#define MM_ALLOW_VECTOR_CONVERSION(FROM, TO) \
 template<> \
 struct vector_conversion_allowed<FROM, TO> : std::true_type {};
 
-WOMM_ALLOW_VECTOR_CONVERSION(int16_t, int32_t)
-WOMM_ALLOW_VECTOR_CONVERSION(int16_t, int64_t)
-WOMM_ALLOW_VECTOR_CONVERSION(int32_t, int64_t)
+MM_ALLOW_VECTOR_CONVERSION(int16_t, int32_t)
+MM_ALLOW_VECTOR_CONVERSION(int16_t, int64_t)
+MM_ALLOW_VECTOR_CONVERSION(int32_t, int64_t)
 
 #pragma pack(push, 1)
 template <class T>

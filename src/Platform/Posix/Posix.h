@@ -7,12 +7,12 @@
 #define MM_ARCH_X86
 #elif defined(_M_X64) || defined(__amd64__) || defined(__x86_64__)
 #define MM_ARCH_X64
+#elif defined(_M_ARM) || defined(__arm__)
+#define MM_ARCH_ARM
+#elif defined (_M_ARM64) || defined(__aarch64__)
+#define MM_ARCH_ARM64
 #else
 #error UNSUPPORTED PLATFORM
-// #elif defined(_M_ARM) || defined(__arm__)
-// #define MM_ARCH_ARM
-// #elif defined (_M_ARM64) || defined(__aarch64__)
-// #define MM_ARCH_ARM64
 #endif
 
 #define _stricmp strcasecmp

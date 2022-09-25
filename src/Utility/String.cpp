@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "Engine/Strings.h"
+#include "Utility/String.h"
 
 std::string StringFromInt(int value) { return StringPrintf("%d", value); }
 

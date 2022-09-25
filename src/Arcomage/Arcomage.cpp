@@ -7,7 +7,7 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
-#include "Engine/Strings.h"
+#include "Utility/String.h"
 #include "Engine/Time.h"
 
 #include "GUI/GUIFont.h"
