@@ -545,7 +545,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             break; // We'll try again in the next frame.
         }
 
-        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+        if (FuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance)) {
             actor.vPosition.x = collision_state.new_position_lo.x;
             actor.vPosition.y = collision_state.new_position_lo.y;
             actor.vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;

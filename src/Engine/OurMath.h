@@ -47,13 +47,22 @@ inline void normalize_to_fixpoint(int *x, int *y, int *z) {
 
 uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
 
-inline bool FuzzyIsNull(float value) {
+[[nodiscard]] inline bool FuzzyIsNull(float value) {
     return std::abs(value) < 0.00001f;
 }
 
-inline bool FuzzyIsNull(double value) {
+[[nodiscard]] inline bool FuzzyIsNull(double value) {
     return std::abs(value) < 0.000000000001;
 }
+
+[[nodiscard]] inline bool FuzzyEquals(float l, float r) {
+    return std::abs(l - r) * 100000.f <= std::min(std::abs(l), std::abs(r));
+}
+
+[[nodiscard]] inline bool FuzzyEquals(double l, double r) {
+    return std::abs(l - r) * 1000000000000. <= std::min(std::abs(l), std::abs(r));
+}
+
 
 // #pragma pack(push, 1)
 // struct fixed {  // fixed-point decimal
