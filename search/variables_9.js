@@ -2,7 +2,7 @@ var searchData=
 [
   ['icon_0',['icon',['../classUIAnimation.html#af6287bb806d40192b476cab940e98cca',1,'UIAnimation']]],
   ['icon_5fname_1',['icon_name',['../classSpriteFrame.html#ae53e14745143405c2d34108afe11d9d6',1,'SpriteFrame']]],
-  ['id_2',['id',['../classIcon.html#a5df8df867f5e2d240d9c1bff2633a8ab',1,'Icon']]],
+  ['id_2',['id',['../classActor.html#a0d2b93f5baefded4573b9f89aa5bda9a',1,'Actor::id()'],['../classIcon.html#a5df8df867f5e2d240d9c1bff2633a8ab',1,'Icon::id()']]],
   ['id_3',['ID',['../classGLShader.html#abc5e80c1895af424b40f86131337101f',1,'GLShader']]],
   ['igchestitems_4',['igChestItems',['../structChest.html#aeabe7e861f198346d31ba627a0783ba6',1,'Chest']]],
   ['ignored_5fface_5fid_5',['ignored_face_id',['../structCollisionState.html#a3c350446a9665e00bc6af1cea8ea99cf',1,'CollisionState']]],

@@ -11,7 +11,7 @@ var searchData=
   ['weather_8',['Weather',['../classWeather.html#aa404c94fec05b825454a7309827767c6',1,'Weather']]],
   ['wetsuitoff_9',['WetsuitOff',['../UICharacter_8cpp.html#a2750510181a3547e09758419f0bf1ce8',1,'UICharacter.cpp']]],
   ['wetsuiton_10',['WetsuitOn',['../UICharacter_8cpp.html#ad5c64f8a520c6a5e1aec82f3923ba9dc',1,'UICharacter.cpp']]],
-  ['which_5fplayer_5fto_5fattack_11',['which_player_to_attack',['../structstru319.html#ad671a05f41362ef16ca2e46f4bac8bef',1,'stru319']]],
+  ['which_5fplayer_5fto_5fattack_11',['which_player_to_attack',['../structstru319.html#a933b24bd5d5d683b7c1604d2a0d929d0',1,'stru319']]],
   ['window_12',['Window',['../classApplication_1_1GameConfig_1_1Window.html#a4f3b203db56aae61e743b5810491a144',1,'Application::GameConfig::Window']]],
   ['windowdata_13',['WindowData',['../structWindowData.html#a6f5b80420bdee170da5d0d41c279fc6a',1,'WindowData::WindowData()'],['../structWindowData.html#ae217fae6b6a1539adf4bbc59eb33cd47',1,'WindowData::WindowData(int value)'],['../structWindowData.html#a8ccdaa0705b6bf6890262751cd27c2cc',1,'WindowData::WindowData(void *value)']]],
   ['windowmanager_14',['WindowManager',['../classWindowManager.html#a3a283b34c19aaa20296befaabad4d29b',1,'WindowManager']]],

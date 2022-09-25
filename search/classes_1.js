@@ -2,7 +2,7 @@ var searchData=
 [
   ['acromagecardontable_0',['AcromageCardOnTable',['../structAcromageCardOnTable.html',1,'']]],
   ['actionqueue_1',['ActionQueue',['../structActionQueue.html',1,'']]],
-  ['actor_2',['Actor',['../structActor.html',1,'']]],
+  ['actor_2',['Actor',['../classActor.html',1,'']]],
   ['actor_5fmm7_3',['Actor_MM7',['../structActor__MM7.html',1,'']]],
   ['actorjob_4',['ActorJob',['../structActorJob.html',1,'']]],
   ['aidirection_5',['AIDirection',['../structAIDirection.html',1,'']]],

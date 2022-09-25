@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['a_0',['a',['../structtwodverts.html#af8d1b73307d9b7bd2ec3478dbf3ff8a0',1,'twodverts::a()'],['../structbillbverts.html#aa4d690423304fd86d2bc9fda56d8cb88',1,'billbverts::a()'],['../structParticle.html#a8820cc4b7d902fc100a7c4d23dee99ef',1,'Particle::a()'],['../structPlaneZCalc__int64__.html#a692bd5311518185ce1250bb6d5aa6485',1,'PlaneZCalc_int64_::a()'],['../structforcepersverts.html#a097658bcd729ee81c271bda89e3a4a3b',1,'forcepersverts::a()']]],
+  ['a_0',['a',['../structtwodverts.html#af8d1b73307d9b7bd2ec3478dbf3ff8a0',1,'twodverts::a()'],['../structbillbverts.html#aa4d690423304fd86d2bc9fda56d8cb88',1,'billbverts::a()'],['../structParticle.html#a8820cc4b7d902fc100a7c4d23dee99ef',1,'Particle::a()'],['../structPlaneZCalcll.html#ae8b25f6908692974f4319c8391066358',1,'PlaneZCalcll::a()'],['../structforcepersverts.html#a097658bcd729ee81c271bda89e3a4a3b',1,'forcepersverts::a()']]],
   ['achieved_5fawards_1',['achieved_awards',['../Awards_8h.html#a59ea37880b4aacf483157b99ea1dfbe8',1,'achieved_awards():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a59ea37880b4aacf483157b99ea1dfbe8',1,'achieved_awards():&#160;mm7_data.cpp']]],
   ['actionkeymap_2',['actionKeyMap',['../structIo_1_1KeyboardActionMapping.html#a095f007cd88a58ade43a27891cfdf529',1,'Io::KeyboardActionMapping']]],
   ['actionmapping_3',['actionMapping',['../classIo_1_1KeyboardInputHandler.html#ab62e8fbc7452e3b03d72196bccfcb8e4',1,'Io::KeyboardInputHandler']]],
   ['activeleveldecoration_4',['activeLevelDecoration',['../Decoration_8h.html#ad0fa06b8c2179a9134b5d63f3949a141',1,'activeLevelDecoration():&#160;Decoration.cpp'],['../Decoration_8cpp.html#ad0fa06b8c2179a9134b5d63f3949a141',1,'activeLevelDecoration():&#160;Decoration.cpp']]],
   ['actor_5finitiative_5',['actor_initiative',['../structTurnBased__QueueElem.html#a6e6c47a75445b3ca4e283507b2607802',1,'TurnBased_QueueElem']]],
-  ['actorhasitems_6',['ActorHasItems',['../structActor.html#adc5164c53c2d84244e5f016c63ea2917',1,'Actor::ActorHasItems()'],['../structActor__MM7.html#a1b0ff0e2203e589a86bc7a20bb9717c0',1,'Actor_MM7::ActorHasItems()']]],
+  ['actorhasitems_6',['ActorHasItems',['../classActor.html#affe877106b9df2d98395bba293c92d21',1,'Actor::ActorHasItems()'],['../structActor__MM7.html#a1b0ff0e2203e589a86bc7a20bb9717c0',1,'Actor_MM7::ActorHasItems()']]],
   ['adjusted_5fmove_5fdistance_7',['adjusted_move_distance',['../structCollisionState.html#a28b8469f6c4da9223674b7ad9cf09df3',1,'CollisionState']]],
   ['ai_5faction_5ftype_8',['AI_action_type',['../structTurnBased__QueueElem.html#a329b2a80c31447f59526adbaf297e376',1,'TurnBased_QueueElem']]],
   ['ai_5farray_5fdetected_5factor_5fdist_9',['ai_array_detected_actor_dist',['../mm7__data_8h.html#a20e52b88f699397eb1e933b331a00181',1,'ai_array_detected_actor_dist():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a20e52b88f699397eb1e933b331a00181',1,'ai_array_detected_actor_dist():&#160;mm7_data.cpp']]],

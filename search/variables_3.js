@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['c_0',['c',['../structPlaneZCalc__int64__.html#af66f80c71b2741bd02a91c587d5e5075',1,'PlaneZCalc_int64_']]],
+  ['c_0',['c',['../structPlaneZCalcll.html#a2d46a23237e7d4cf8cc986814b2cc89b',1,'PlaneZCalcll']]],
   ['callback_1',['callback',['../structhotkey.html#af88570706966c57eff85a6b0f5b9c6da',1,'hotkey']]],
   ['camfrontdot_2',['CamFrontDot',['../structSkyBillboardStruct.html#a26100c475d402d987dcc84f7dfbddfea',1,'SkyBillboardStruct']]],
   ['camleftdot_3',['CamLeftDot',['../structSkyBillboardStruct.html#af4bf3b6b15bae3fc719727263f65b87d',1,'SkyBillboardStruct']]],

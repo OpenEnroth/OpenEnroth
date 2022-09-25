@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['b_0',['b',['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat::b()'],['../structBloodsplat.html#a24ec35724d73bf7376874d1fb41e4273',1,'Bloodsplat::b()'],['../structlinesverts.html#ade249d9b3e97f734f0347d35d4cfaba5',1,'linesverts::b()'],['../structforcepersverts.html#ae5ec624da708a98003eb2a4391c2bcb7',1,'forcepersverts::b()'],['../structtwodverts.html#abd16609113d1c5c1ce9f589bde2147ca',1,'twodverts::b()'],['../structbillbverts.html#ac9693477cc983e98f64ebfe563011eb9',1,'billbverts::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structParticle.html#a51cfab8e12d3ee7f3569e390f5b9c7de',1,'Particle::b()'],['../structFormat.html#a916d6797dc1b96f8764091f830949b47',1,'Format::b()'],['../structPlaneZCalc__int64__.html#a15d76bd616ec2f8774c8b89ac8b600e9',1,'PlaneZCalc_int64_::b()'],['../classColorTable_1_1Color.html#a90516d250e84d92b5fecbd35190d3e31',1,'ColorTable::Color::b()']]],
+  ['b_0',['b',['../structGame__Bloodsplat.html#a150c404c40cba7084350b0eb030ac670',1,'Game_Bloodsplat::b()'],['../structBloodsplat.html#a24ec35724d73bf7376874d1fb41e4273',1,'Bloodsplat::b()'],['../structlinesverts.html#ade249d9b3e97f734f0347d35d4cfaba5',1,'linesverts::b()'],['../structforcepersverts.html#ae5ec624da708a98003eb2a4391c2bcb7',1,'forcepersverts::b()'],['../structtwodverts.html#abd16609113d1c5c1ce9f589bde2147ca',1,'twodverts::b()'],['../structbillbverts.html#ac9693477cc983e98f64ebfe563011eb9',1,'billbverts::b()'],['../structParticle__sw.html#aa3e18dc9778ddc2f4888d93d8a1e1c8a',1,'Particle_sw::b()'],['../structParticle.html#a51cfab8e12d3ee7f3569e390f5b9c7de',1,'Particle::b()'],['../structFormat.html#a916d6797dc1b96f8764091f830949b47',1,'Format::b()'],['../structPlaneZCalcll.html#a5219a3cc6fd0b88efdcbaad4ddc56489',1,'PlaneZCalcll::b()'],['../classColorTable_1_1Color.html#a90516d250e84d92b5fecbd35190d3e31',1,'ColorTable::Color::b()']]],
   ['b_1',['B',['../struct__RGBColor.html#a61c36a4c8c26fb02dec6723b3f647b42',1,'_RGBColor']]],
   ['backward_2',['Backward',['../classApplication_1_1GameConfig_1_1Keybindings.html#a99c7388dbec8cf1f8d5d380741c9fddc',1,'Application::GameConfig::Keybindings']]],
   ['bactive_3',['bActive',['../classIo_1_1Mouse.html#a2c4810a09a156e2a025ee88aa2f1cda0',1,'Io::Mouse']]],
@@ -8,7 +8,7 @@ var searchData=
   ['basedamage_5',['baseDamage',['../classSpellData.html#a8e8022ffcbdd77612231289518dae7c8',1,'SpellData']]],
   ['batchdrawtriangles_6',['BatchDrawTriangles',['../Render_8cpp.html#a8f87c48d60f04e9aa71a461e6d680719',1,'Render.cpp']]],
   ['batchtrianglesstore_7',['BatchTrianglesStore',['../Render_8cpp.html#ab2f509e6bf0bfc567927f31b27fd80be',1,'Render.cpp']]],
-  ['bbox_8',['bbox',['../structCollisionState.html#a5dbb783565b7be97ca97f612d3d29dfe',1,'CollisionState']]],
+  ['bbox_8',['bbox',['../structCollisionState.html#a6d1f6b79e8c539d0b5744024b178458f',1,'CollisionState']]],
   ['bdecompressed_9',['bDecompressed',['../structSoundDesc.html#a41f1525857619f336c6f9d22b144f37f',1,'SoundDesc']]],
   ['bdialogueui_5finitializeactor_5fnpc_5fid_10',['bDialogueUI_InitializeActor_NPC_ID',['../mm7__data_8h.html#aeec6b47a335bd82456f0dc589ee5ef97',1,'bDialogueUI_InitializeActor_NPC_ID():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#aeec6b47a335bd82456f0dc589ee5ef97',1,'bDialogueUI_InitializeActor_NPC_ID():&#160;mm7_data.cpp']]],
   ['bdonotrenderdecorations_11',['bDoNotRenderDecorations',['../structODMRenderParams.html#a82b415c746ddb3949d23d5002eed3fb3',1,'ODMRenderParams']]],
@@ -49,7 +49,7 @@ var searchData=
   ['blv_46',['blv',['../structIndoorLocation.html#a64be8f484f885b0e0ddbb774cd9ab3b1',1,'IndoorLocation']]],
   ['blv_5ffov_5fdeg_47',['blv_fov_deg',['../structCamera3D.html#a57e7849c374219e4955b362616bac748',1,'Camera3D']]],
   ['blv_5ffov_5frad_48',['blv_fov_rad',['../structCamera3D.html#a3c012ad7bcda3d3ed3cb58a290e7a0a9',1,'Camera3D']]],
-  ['blv_5fprev_5fparty_5fpos_49',['blv_prev_party_pos',['../mm7__data_8cpp.html#ac732da136c08da4f07f8daf3950de1bd',1,'blv_prev_party_pos():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ac732da136c08da4f07f8daf3950de1bd',1,'blv_prev_party_pos():&#160;mm7_data.cpp']]],
+  ['blv_5fprev_5fparty_5fpos_49',['blv_prev_party_pos',['../mm7__data_8cpp.html#a6c6b1777154634979ababd2d3f3b4924',1,'blv_prev_party_pos():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a6c6b1777154634979ababd2d3f3b4924',1,'blv_prev_party_pos():&#160;mm7_data.cpp']]],
   ['bnight_50',['bNight',['../classWeather.html#a6fd1f47e7bb79b6332c97880d5fd1676',1,'Weather']]],
   ['bnonpchiring_51',['bNoNPCHiring',['../mm7__data_8h.html#a3bbc0ef2fe0e4c5fac711da91f15ed00',1,'bNoNPCHiring():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a3bbc0ef2fe0e4c5fac711da91f15ed00',1,'bNoNPCHiring():&#160;mm7_data.cpp']]],
   ['bnosky_52',['bNoSky',['../structODMRenderParams.html#acfc6f3f022a33b17e8ec135a0b765126',1,'ODMRenderParams']]],

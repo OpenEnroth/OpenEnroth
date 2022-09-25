@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4f42506</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;8d49793</span>
    </div>
   </td>
  </tr>
@@ -85,6 +85,7 @@ $(function() {
 <code>#include &lt;cmath&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;array&gt;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
 <code>#include &quot;<a class="el" href="MM7_8h.html">Engine/MM7.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -122,10 +123,16 @@ Functions</h2></td></tr>
 <tr class="separator:a50ee4d4946888926bdf5a920129a322a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f838fe0aefa3fbd3985207608846e9d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#a8f838fe0aefa3fbd3985207608846e9d">normalize_to_fixpoint</a> (int *x, int *y, int *z)</td></tr>
 <tr class="separator:a8f838fe0aefa3fbd3985207608846e9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5eb2b4017143261b8e3f12f6c796a11c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#a5eb2b4017143261b8e3f12f6c796a11c">int_get_vector_length</a> (int32_t x, int32_t y, int32_t z)</td></tr>
+<tr class="separator:a5eb2b4017143261b8e3f12f6c796a11c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0aa148338790307f6735d538bd4b9c2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#ac0aa148338790307f6735d538bd4b9c2">FuzzyIsNull</a> (float value)</td></tr>
 <tr class="separator:ac0aa148338790307f6735d538bd4b9c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1269e19d1509fc3066969d7c31353032"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#a1269e19d1509fc3066969d7c31353032">FuzzyIsNull</a> (double value)</td></tr>
 <tr class="separator:a1269e19d1509fc3066969d7c31353032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fb9b31d7b0e8f1fbe847277a079b1ad"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#a5fb9b31d7b0e8f1fbe847277a079b1ad">FuzzyEquals</a> (float l, float r)</td></tr>
+<tr class="separator:a5fb9b31d7b0e8f1fbe847277a079b1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c841e1cf5b6eaa3cc8d49b737e85975"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#a1c841e1cf5b6eaa3cc8d49b737e85975">FuzzyEquals</a> (double l, double r)</td></tr>
+<tr class="separator:a1c841e1cf5b6eaa3cc8d49b737e85975"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2a1e13f594afe4778ee046c1a6763a5"><td class="memTemplParams" colspan="2">template&lt;typename FloatType &gt; </td></tr>
 <tr class="memitem:ab2a1e13f594afe4778ee046c1a6763a5"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#ab2a1e13f594afe4778ee046c1a6763a5">bankersRounding</a> (const FloatType &amp;value)</td></tr>
 <tr class="separator:ab2a1e13f594afe4778ee046c1a6763a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,6 +145,8 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:abce8f0db8a5282e441988c8d2e73f79e"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#abce8f0db8a5282e441988c8d2e73f79e">pi</a> = static_cast&lt;float&gt;(M_PI)</td></tr>
+<tr class="separator:abce8f0db8a5282e441988c8d2e73f79e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2a604cd90c1bb1a6fd61d97fdf8a0f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTrigTableLookup.html">TrigTableLookup</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OurMath_8h.html#ad2a604cd90c1bb1a6fd61d97fdf8a0f4">TrigLUT</a></td></tr>
 <tr class="separator:ad2a604cd90c1bb1a6fd61d97fdf8a0f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -474,6 +483,78 @@ template&lt;&gt; </div>
 
 </div>
 </div>
+<a id="a1c841e1cf5b6eaa3cc8d49b737e85975" name="a1c841e1cf5b6eaa3cc8d49b737e85975"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c841e1cf5b6eaa3cc8d49b737e85975">&#9670;&#160;</a></span>FuzzyEquals() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FuzzyEquals </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5fb9b31d7b0e8f1fbe847277a079b1ad" name="a5fb9b31d7b0e8f1fbe847277a079b1ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fb9b31d7b0e8f1fbe847277a079b1ad">&#9670;&#160;</a></span>FuzzyEquals() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FuzzyEquals </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1269e19d1509fc3066969d7c31353032" name="a1269e19d1509fc3066969d7c31353032"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1269e19d1509fc3066969d7c31353032">&#9670;&#160;</a></span>FuzzyIsNull() <span class="overload">[1/2]</span></h2>
 
@@ -543,6 +624,40 @@ template&lt;&gt; </div>
           <td></td>
           <td class="paramtype">unsigned int&#160;</td>
           <td class="paramname"><em>uDiceSides</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5eb2b4017143261b8e3f12f6c796a11c" name="a5eb2b4017143261b8e3f12f6c796a11c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5eb2b4017143261b8e3f12f6c796a11c">&#9670;&#160;</a></span>int_get_vector_length()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t int_get_vector_length </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>z</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -642,6 +757,20 @@ template&lt;&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="abce8f0db8a5282e441988c8d2e73f79e" name="abce8f0db8a5282e441988c8d2e73f79e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abce8f0db8a5282e441988c8d2e73f79e">&#9670;&#160;</a></span>pi</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float pi = static_cast&lt;float&gt;(M_PI)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad2a604cd90c1bb1a6fd61d97fdf8a0f4" name="ad2a604cd90c1bb1a6fd61d97fdf8a0f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad2a604cd90c1bb1a6fd61d97fdf8a0f4">&#9670;&#160;</a></span>TrigLUT</h2>
 

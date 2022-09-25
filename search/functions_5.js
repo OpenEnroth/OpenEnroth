@@ -29,6 +29,6 @@ var searchData=
   ['executecredits_26',['ExecuteCredits',['../classGUICredits.html#a552d14f116789f5ff5d7d58b4fd20951',1,'GUICredits']]],
   ['expanded_27',['Expanded',['../structBBox.html#aee73ac3f08e0f2c5f328ea70bbd3ae96',1,'BBox']]],
   ['expired_28',['Expired',['../structSpellBuff.html#a82ae66dc29fa0c9404dc1044aa0ae922',1,'SpellBuff']]],
-  ['explode_29',['Explode',['../structActor.html#aa03a8044db9c631c68d58499d4f630d0',1,'Actor']]],
+  ['explode_29',['Explode',['../classActor.html#aa03a8044db9c631c68d58499d4f630d0',1,'Actor']]],
   ['explosiontraps_30',['ExplosionTraps',['../structSpriteObject.html#a3696129b81f11c45e8c1ba7c1c53327e',1,'SpriteObject']]]
 ];

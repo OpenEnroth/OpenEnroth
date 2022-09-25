@@ -42,6 +42,6 @@ var searchData=
   ['rightclickportraitxmin_39',['RightClickPortraitXmin',['../mm7__data_8h.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a38667c9339bdb5e4135ba5b93944c07f',1,'RightClickPortraitXmin():&#160;mm7_data.cpp']]],
   ['rot_5fx_40',['rot_x',['../structTownPortalData.html#a172092dc004e2181e1012d78d382e782',1,'TownPortalData']]],
   ['rot_5fy_41',['rot_y',['../structTownPortalData.html#a5a91a10db6f71505493b5eb1d9de0080',1,'TownPortalData']]],
-  ['rotated_5fnormal_42',['rotated_normal',['../structLightsData.html#a28839318e986775e67873934a6c5e0b1',1,'LightsData']]],
+  ['rotated_5fnormal_42',['rotated_normal',['../structLightsData.html#a0f92fde30cff4753d4cfadb6ab41fcd4',1,'LightsData']]],
   ['rotation_5fspeed_43',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
 ];

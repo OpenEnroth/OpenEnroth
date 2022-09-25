@@ -187,7 +187,7 @@ var searchData=
   ['experthealer_184',['ExpertHealer',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a70d6f857e09796de36f8b967da31dbbf',1,'NPCProf.h']]],
   ['expire_5ftime_185',['expire_time',['../structSpellBuff.html#af39ece8d281254a31a4e65db8a1139a9',1,'SpellBuff']]],
   ['expired_186',['Expired',['../structSpellBuff.html#a82ae66dc29fa0c9404dc1044aa0ae922',1,'SpellBuff']]],
-  ['explode_187',['Explode',['../structActor.html#aa03a8044db9c631c68d58499d4f630d0',1,'Actor']]],
+  ['explode_187',['Explode',['../classActor.html#aa03a8044db9c631c68d58499d4f630d0',1,'Actor']]],
   ['explorer_188',['Explorer',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a45f4e61dfb1852d701d865458d61a6ed',1,'NPCProf.h']]],
   ['explosion_5feff_189',['explosion_eff',['../structam__effects__struct.html#a6c6098584f02d609d48ba2e064533c95',1,'am_effects_struct']]],
   ['explosion_5feffect_5fstruct_190',['explosion_effect_struct',['../structexplosion__effect__struct.html',1,'']]],
