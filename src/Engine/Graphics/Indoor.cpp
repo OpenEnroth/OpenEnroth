@@ -988,7 +988,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     stream.ReadVector(&mm7actors);
     pActors.clear();
     for (int i = 0; i < mm7actors.size(); ++i)
-        mm7actors[i].Deserialize(AllocateActor());
+        mm7actors[i].Deserialize(AllocateActor(true));
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();

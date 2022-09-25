@@ -338,10 +338,16 @@ double sub_43AE12(signed int a1);
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
                          Vec3i *pVelocity);
 
+// TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses
+// appendOnly=false. And this actually makes sense as actor ids can be stored in all kinds of places (e.g. inside
+// projectiles as a reference to the caster), so in practice reusing actor ids will lead to rare bugs.
+// What can we do with this?
 /**
  * Allocates a new actor in `pActors` array.
  *
+ * @param appendOnly                    If true, this function doesn't try to find an empty (removed) spot in the
+ *                                      actors list, and only appends new actors to the end.
  * @return                              Pointer to a newly allocated actor, or `nullptr` if the actor count limit
  *                                      has been hit.
  */
-Actor *AllocateActor();
+Actor *AllocateActor(bool appendOnly);

@@ -2617,7 +2617,7 @@ void Actor::SummonMinion(int summonerId) {
             summonMonsterBaseType += 1;
     }
     v7 = summonMonsterBaseType - 1;
-    Actor *actor = AllocateActor();
+    Actor *actor = AllocateActor(true);
     if (!actor)
         return;
 
@@ -3605,7 +3605,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 
 //----- (004BBF61) --------------------------------------------------------
 void Actor::Arena_summon_actor(int monster_id, int x, int y, int z) {
-    Actor *actor = AllocateActor();
+    Actor *actor = AllocateActor(true);
     if (!actor)
         return;
 
@@ -4764,7 +4764,7 @@ bool SpawnActor(unsigned int uMonsterID) {
     unsigned int v1;  // ebx@1
     unsigned int v6;  // ecx@5
 
-    Actor *actor = AllocateActor();
+    Actor *actor = AllocateActor(true);
     if (!actor)
         return false;
 
@@ -4812,7 +4812,7 @@ void Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration
         cMonsterName = "Elemental Light A";
     unsigned int uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
 
-    Actor *actor = AllocateActor();
+    Actor *actor = AllocateActor(false);
     if (!actor)
         return; // Too many actors.
 
@@ -5032,7 +5032,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
 
     // spawning loop
     for (int i = v53; i < NumToSpawn; ++i) {
-        Actor *pMonster = AllocateActor();
+        Actor *pMonster = AllocateActor(true);
         if (!pMonster)
             continue;
 
@@ -5363,11 +5363,13 @@ void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
     }
 }
 
-Actor *AllocateActor() {
-    for (size_t i = 0; i < pActors.size(); i++) {
-        if (pActors[i].uAIState == Removed) {
-            pActors[i].Reset();
-            return &pActors[i];
+Actor *AllocateActor(bool appendOnly) {
+    if (!appendOnly) {
+        for (size_t i = 0; i < pActors.size(); i++) {
+            if (pActors[i].uAIState == Removed) {
+                pActors[i].Reset();
+                return &pActors[i];
+            }
         }
     }
 
