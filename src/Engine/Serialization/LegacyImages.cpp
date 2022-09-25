@@ -1128,8 +1128,8 @@ void UIAnimation_MM7::Deserialize(UIAnimation *anim) {
 }
 
 void Actor_MM7::Serialize(Actor *actor) {
-    for (unsigned int i = 0; i < 32; ++i)
-        this->pActorName[i] = actor->pActorName[i];
+    memset(this->pActorName, 0, sizeof(this->pActorName));
+    memcpy(this->pActorName, actor->pActorName.data(), std::min(actor->pActorName.size(), sizeof(this->pActorName) - 1));
 
     this->sNPC_ID = actor->sNPC_ID;
     this->field_22 = actor->field_22;
@@ -1243,9 +1243,7 @@ void Actor_MM7::Serialize(Actor *actor) {
 }
 
 void Actor_MM7::Deserialize(Actor *actor) {
-    for (unsigned int i = 0; i < 32; ++i)
-        actor->pActorName[i] = this->pActorName[i];
-
+    actor->pActorName = this->pActorName;
     actor->sNPC_ID = this->sNPC_ID;
     actor->field_22 = this->field_22;
     actor->uAttributes = this->uAttributes;

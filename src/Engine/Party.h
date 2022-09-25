@@ -293,10 +293,10 @@ struct Party {
     GameTime playing_time;  // unsigned __int64 uTimePlayed;
     GameTime last_regenerated;
     PartyTimeStruct PartyTimes;
-    Vec3_int_ vPosition;
+    Vec3i vPosition;
     int sRotationZ;
     int sRotationY;
-    Vec3_int_ vPrevPosition;
+    Vec3i vPrevPosition;
     int sPrevRotationZ;
     int sPrevRotationY;
     int sPrevEyelevel;

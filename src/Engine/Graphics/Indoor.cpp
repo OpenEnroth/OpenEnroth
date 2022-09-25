@@ -145,7 +145,7 @@ void PrepareDrawLists_BLV() {
         }
 
         // TODO: either add conversion functions, or keep only glm / only Vec3_* classes.
-        Vec3_float_ pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
+        Vec3f pos(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z);
 
         pMobileLightsStack->AddLight(
             pos, pBLVRenderParams->uPartySectorID, TorchLightPower,
@@ -357,7 +357,7 @@ void BLVRenderParams::Reset() {
     this->field_0_timer_ = pEventTimer->uTotalGameTimeElapsed;
 
     this->uPartySectorID = pIndoor->GetSector(pParty->vPosition);
-    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->vPosition + Vec3_int_(0, 0, pParty->sEyelevel));
+    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->vPosition + Vec3i(0, 0, pParty->sEyelevel));
 
     if (!this->uPartySectorID) {
         __debugbreak();  // shouldnt happen, please provide savegame
@@ -986,9 +986,9 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     std::vector<Actor_MM7> mm7actors;
     stream.ReadVector(&mm7actors);
-    uNumActors = mm7actors.size();
-    for (int i = 0; i < uNumActors; ++i)
-        mm7actors[i].Deserialize(&pActors[i]);
+    pActors.clear();
+    for (int i = 0; i < mm7actors.size(); ++i)
+        mm7actors[i].Deserialize(AllocateActor(true));
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
@@ -1123,7 +1123,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->Contains(Vec3_int_(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.Get(), FACE_XY_PLANE))
+            if (pFace->Contains(Vec3i(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.Get(), FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break;
@@ -1174,7 +1174,7 @@ int IndoorLocation::GetSector(int sX, int sY, int sZ) {
 }
 
 //----- (00498A41) --------------------------------------------------------
-void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
+void BLVFace::_get_normals(Vec3i *a2, Vec3i *a3) {
     if (this->uPolygonType == POLYGON_VerticalWall) {
         a2->x = -this->pFacePlane_old.vNormal.y;
         a2->y = this->pFacePlane_old.vNormal.x;
@@ -1197,7 +1197,7 @@ void BLVFace::_get_normals(Vec3_int_ *a2, Vec3_int_ *a3) {
     } else if (this->uPolygonType == POLYGON_InBetweenFloorAndWall ||
                this->uPolygonType == POLYGON_InBetweenCeilingAndWall) {
         if (abs(this->pFacePlane_old.vNormal.z) < 46441) {
-            Vec3_float_ a1;
+            Vec3f a1;
             a1.x = (double)-this->pFacePlane_old.vNormal.y;
             a1.y = (double)this->pFacePlane_old.vNormal.x;
             a1.z = 0.0;
@@ -1273,7 +1273,7 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
     }
 }
 
-bool BLVFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, FaceAttributes override_plane) const {
+bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttributes override_plane) const {
     Assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
@@ -1364,17 +1364,17 @@ void BLV_UpdateDoors() {
     signed __int64 v27 {};  // qtt@27
     BLVFaceExtra *v28;   // esi@32
     int v32;             // eax@34
-    Vec3_short_ *v34;    // eax@35
+    Vec3s *v34;    // eax@35
     int v35;             // ecx@35
     int v36;             // edx@35
     signed int v37;      // eax@35
     signed int v38;      // edx@35
     int v39;             // eax@35
     int v40;             // edx@35
-    Vec3_short_ *v43;    // edi@36
+    Vec3s *v43;    // edi@36
     int v57;             // eax@58
-    Vec3_int_ v67;
-    Vec3_int_ v70;
+    Vec3i v67;
+    Vec3i v70;
     int v75;               // [sp+28h] [bp-3Ch]@36
     int v76;               // [sp+2Ch] [bp-38h]@36
     int v77;               // [sp+30h] [bp-34h]@36
@@ -1436,9 +1436,9 @@ void BLV_UpdateDoors() {
 
         for (j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            Vec3_short_ *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
+            Vec3s *v17 = &pIndoor->pVertices[face->pVertexIDs[0]];
             face->pFacePlane_old.dist = -Dot(*v17, face->pFacePlane_old.vNormal);
-            face->pFacePlane.dist = -Dot(ToFloatVector(*v17), face->pFacePlane.vNormal);
+            face->pFacePlane.dist = -Dot(v17->ToFloat(), face->pFacePlane.vNormal);
             if (face->pFacePlane_old.vNormal.z) {
                 v24 = abs(face->pFacePlane_old.dist >> 15);
                 v25 = abs(face->pFacePlane_old.vNormal.z);
@@ -1552,71 +1552,40 @@ void BLV_UpdateDoors() {
 
 //----- (0046F90C) --------------------------------------------------------
 void UpdateActors_BLV() {
-    // int v3;                  // eax@6
-    // int v4;                  // eax@8
-    // __int16 v5;              // ax@11
-    // signed __int64 v10;      // qax@18
-    unsigned int v24;        // eax@51
-    int v27;                 // ST08_4@54
-    int v28;                 // edi@54
-    int v29;                 // eax@54
-    int v30;                 // ecx@62
-    int v31;                 // ebx@62
-    int v32;                 // eax@62
-    int v33;                 // eax@64
-    int v37;          // ebx@85
-    int v44;                 // ecx@96
-    int v45;                 // edi@101
-    AIDirection v52;         // [sp+0h] [bp-60h]@75
-    AIDirection v53;         // [sp+1Ch] [bp-44h]@116
-    int v56;                 // [sp+40h] [bp-20h]@6
-    unsigned int _this;      // [sp+44h] [bp-1Ch]@51
-    int v58;                 // [sp+48h] [bp-18h]@51
-    unsigned int uFaceID;    // [sp+50h] [bp-10h]@6
-    int v61;                 // [sp+54h] [bp-Ch]@14
-
     if (engine->config->debug.NoActors.Get())
-        return;  // uNumActors = 0;
+        return;
 
-    for (unsigned int actor_id = 0; actor_id < uNumActors; actor_id++) {
-        if (pActors[actor_id].uAIState == Removed ||
-            pActors[actor_id].uAIState == Disabled ||
-            pActors[actor_id].uAIState == Summoned ||
-            !pActors[actor_id].uMovementSpeed)
+    for (Actor &actor : pActors) {
+        if (actor.uAIState == Removed || actor.uAIState == Disabled || actor.uAIState == Summoned || actor.uMovementSpeed == 0)
             continue;
 
-        unsigned int uSectorID = pActors[actor_id].uSectorID;
-        int floor_z = GetIndoorFloorZ(pActors[actor_id].vPosition, &uSectorID, &uFaceID);
-        pActors[actor_id].uSectorID = uSectorID;
+        unsigned int uFaceID;
+        unsigned int uSectorID = actor.uSectorID;
+        int floorZ = GetIndoorFloorZ(actor.vPosition, &uSectorID, &uFaceID);
+        actor.uSectorID = uSectorID;
 
-        bool isFlying = pActors[actor_id].pMonsterInfo.uFlying;
-        if (!pActors[actor_id].CanAct())
+        if (uSectorID == 0 || floorZ <= -30000)
+            continue;
+
+        bool isFlying = actor.pMonsterInfo.uFlying;
+        if (!actor.CanAct())
             isFlying = false;
 
-        bool isAboveGround = 0;
-        if (pActors[actor_id].vPosition.z > floor_z + 1)
-            isAboveGround = 1;
+        bool isAboveGround = false;
+        if (actor.vPosition.z > floorZ + 1)
+            isAboveGround = true;
 
-        if (floor_z <= -30000) {
-            uSectorID = pIndoor->GetSector(pActors[actor_id].vPosition);
-            pActors[actor_id].uSectorID = uSectorID;
-            floor_z = BLV_GetFloorLevel(pActors[actor_id].vPosition, uSectorID, &uFaceID);
-            if (uSectorID == 0 || floor_z == -30000)
-                continue;
-        }
+        if (actor.uCurrentActionAnimation == ANIM_Walking) {  // actor is moving
+            int moveSpeed = actor.uMovementSpeed;
 
-        if (pActors[actor_id].uCurrentActionAnimation == ANIM_Walking) {  // actor is moving
-            int moveSpeed = pActors[actor_id].uMovementSpeed;
-
-            if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].Active()) {
-                if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower)
-                    moveSpeed = pActors[actor_id].uMovementSpeed /
-                                pActors[actor_id].pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
+            if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].Active()) {
+                if (actor.pActorBuffs[ACTOR_BUFF_SLOWED].uPower)
+                    moveSpeed = actor.uMovementSpeed / actor.pActorBuffs[ACTOR_BUFF_SLOWED].uPower;
                 else
-                    moveSpeed = pActors[actor_id].uMovementSpeed / 2;
+                    moveSpeed = actor.uMovementSpeed / 2;
             }
 
-            if (pActors[actor_id].uAIState == Pursuing || pActors[actor_id].uAIState == Fleeing)
+            if (actor.uAIState == Pursuing || actor.uAIState == Fleeing)
                 moveSpeed *= 2;
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_WAIT)
@@ -1625,305 +1594,43 @@ void UpdateActors_BLV() {
             if (moveSpeed > 1000)
                 moveSpeed = 1000;
 
-            pActors[actor_id].vVelocity.x = TrigLUT->Cos(pActors[actor_id].uYawAngle) * moveSpeed;
-            pActors[actor_id].vVelocity.y = TrigLUT->Sin(pActors[actor_id].uYawAngle) * moveSpeed;
+            actor.vVelocity.x = TrigLUT->Cos(actor.uYawAngle) * moveSpeed;
+            actor.vVelocity.y = TrigLUT->Sin(actor.uYawAngle) * moveSpeed;
             if (isFlying)
-                pActors[actor_id].vVelocity.z = TrigLUT->Sin(pActors[actor_id].uPitchAngle) * moveSpeed;
-        } else {  // actor is not moving
+                actor.vVelocity.z = TrigLUT->Sin(actor.uPitchAngle) * moveSpeed;
+        } else {
+            // actor is not moving
             // fixpoint(55000) = 0.83923339843, appears to be velocity decay.
-            pActors[actor_id].vVelocity.x = fixpoint_mul(55000, pActors[actor_id].vVelocity.x);
-            pActors[actor_id].vVelocity.y = fixpoint_mul(55000, pActors[actor_id].vVelocity.y);
+            actor.vVelocity.x = fixpoint_mul(55000, actor.vVelocity.x);
+            actor.vVelocity.y = fixpoint_mul(55000, actor.vVelocity.y);
             if (isFlying)
-                pActors[actor_id].vVelocity.z = fixpoint_mul(55000, pActors[actor_id].vVelocity.z);
+                actor.vVelocity.z = fixpoint_mul(55000, actor.vVelocity.z);
         }
 
-        if (pActors[actor_id].vPosition.z <= floor_z) {
-            pActors[actor_id].vPosition.z = floor_z + 1;
+        if (actor.vPosition.z <= floorZ) {
+            actor.vPosition.z = floorZ + 1;
             if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
-                if (pActors[actor_id].vVelocity.z < 0)
-                    pActors[actor_id].vVelocity.z = 0;
+                if (actor.vVelocity.z < 0)
+                    actor.vVelocity.z = 0;
             } else {
                 // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].pFacePlane_old.vNormal.z < 45000)
-                    pActors[actor_id].vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
+                    actor.vVelocity.z -= pEventTimer->uTimeElapsed * GetGravityStrength();
             }
         } else {
             if (isAboveGround && !isFlying)
-                pActors[actor_id].vVelocity.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
+                actor.vVelocity.z += -8 * pEventTimer->uTimeElapsed * GetGravityStrength();
         }
 
-        if (pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
-                pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y +
-                pActors[actor_id].vVelocity.z * pActors[actor_id].vVelocity.z >= 400) {
-            collision_state.ignored_face_id = -1;
-            collision_state.total_move_distance = 0;
-            collision_state.check_hi = true;
-            collision_state.radius_hi = pActors[actor_id].uActorRadius;
-            collision_state.radius_lo = pActors[actor_id].uActorRadius;
-            for (int attempt = 0; attempt < 100; attempt++) {
-                collision_state.position_hi.x = pActors[actor_id].vPosition.x;
-                collision_state.position_lo.x = collision_state.position_hi.x;
-                collision_state.position_hi.y = pActors[actor_id].vPosition.y;
-                collision_state.position_lo.y = collision_state.position_hi.y;
-                collision_state.position_lo.z = pActors[actor_id].vPosition.z + pActors[actor_id].uActorRadius + 1;
-                collision_state.position_hi.z = pActors[actor_id].vPosition.z -
-                                         pActors[actor_id].uActorRadius + pActors[actor_id].uActorHeight - 1;
-                if (collision_state.position_hi.z < collision_state.position_lo.z)
-                    collision_state.position_hi.z = pActors[actor_id].vPosition.z +
-                        pActors[actor_id].uActorRadius + 1;
-                collision_state.velocity.x = pActors[actor_id].vVelocity.x;
-                collision_state.velocity.y = pActors[actor_id].vVelocity.y;
-                collision_state.velocity.z = pActors[actor_id].vVelocity.z;
-                collision_state.uSectorID = pActors[actor_id].uSectorID;
-                if (!collision_state.PrepareAndCheckIfStationary(0)) {
-                    v58 = 0;
-                    v24 = 8 * actor_id;
-                    HEXRAYS_LOBYTE(v24) = PID(OBJECT_Actor, actor_id);
-                    for (v61 = 0; v61 < 100; ++v61) {
-                        CollideIndoorWithGeometry(true);
-                        CollideIndoorWithDecorations();
-                        CollideWithParty(false);
-                        _46ED8A_collide_against_sprite_objects(v24);
-                        for (uint j = 0; j < ai_arrays_size; j++) {
-                            if (ai_near_actors_ids[j] != actor_id) {
-                                v27 = abs(pActors[ai_near_actors_ids[j]].vPosition.z - pActors[actor_id].vPosition.z);
-                                v28 = abs(pActors[ai_near_actors_ids[j]].vPosition.y - pActors[actor_id].vPosition.y);
-                                v29 = abs(pActors[ai_near_actors_ids[j]].vPosition.x - pActors[actor_id].vPosition.x);
-                                if (int_get_vector_length(v29, v28, v27) >= pActors[actor_id].uActorRadius +
-                                            (signed int) pActors[ai_near_actors_ids[j]].uActorRadius &&
-                                    CollideWithActor(ai_near_actors_ids[j], 40))
-                                    ++v58;
-                            }
-                        }
-                        if (CollideIndoorWithPortals()) break;
-                    }
-                    v56 = v58 > 1;
-                    if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-                        v30 = collision_state.new_position_lo.x;
-                        v31 = collision_state.new_position_lo.y;
-                        v32 = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
-                    } else {
-                        v30 = pActors[actor_id].vPosition.x +
-                              collision_state.adjusted_move_distance * collision_state.direction.x;
-                        v31 = pActors[actor_id].vPosition.y +
-                              collision_state.adjusted_move_distance * collision_state.direction.y;
-                        v32 = pActors[actor_id].vPosition.z +
-                              collision_state.adjusted_move_distance * collision_state.direction.z;
-                    }
-                    v33 = GetIndoorFloorZ(Vec3_int_(v30, v31, v32), &collision_state.uSectorID, &uFaceID);
-                    if (v33 == -30000)
-                        break; // Actor out of bounds, running more iterations won't help.
-                    if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY && pActors[actor_id].uAIState == Dead) {
-                        pActors[actor_id].uAIState = Removed;
-                        continue;
-                    }
-                    if (isAboveGround || isFlying || !(pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY)) {
-                        if (pActors[actor_id].uCurrentActionAnimation != 1 ||
-                            v33 >= pActors[actor_id].vPosition.z - 100 || isAboveGround || isFlying) {
-                            if (collision_state.adjusted_move_distance < collision_state.move_distance) {
-                                pActors[actor_id].vPosition +=
-                                    ToShortVector(collision_state.adjusted_move_distance * collision_state.direction);
-                                pActors[actor_id].uSectorID = collision_state.uSectorID;
-                                collision_state.total_move_distance += collision_state.adjusted_move_distance;
-                                v37 = PID_ID(collision_state.pid);
-                                if (PID_TYPE(collision_state.pid) == OBJECT_Actor) {
-                                    if (pParty->bTurnBasedModeOn &&
-                                        (pTurnEngine->turn_stage == TE_ATTACK ||
-                                         pTurnEngine->turn_stage == TE_MOVEMENT)) {
-                                        pActors[actor_id].vVelocity.x =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                        pActors[actor_id].vVelocity.y =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                        pActors[actor_id].vVelocity.z =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                        continue;
-                                    }
-                                    if (pActors[actor_id].pMonsterInfo.uHostilityType) {
-                                        if (!v56) {
-                                            Actor::AI_Flee(actor_id, collision_state.pid, 0, nullptr);
-                                            pActors[actor_id].vVelocity.x =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                            pActors[actor_id].vVelocity.y =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                            pActors[actor_id].vVelocity.z =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            continue;
-                                        }
-                                    } else {
-                                        if (!v56) {
-                                            if (!pActors[v37].pMonsterInfo.uHostilityType) {
-                                                Actor::AI_FaceObject(actor_id, collision_state.pid, 0, nullptr);
-                                                pActors[actor_id].vVelocity.x =
-                                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                                pActors[actor_id].vVelocity.y =
-                                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                                pActors[actor_id].vVelocity.z =
-                                                    fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                                continue;
-                                            }
-                                            Actor::AI_Flee(actor_id, collision_state.pid, 0, nullptr);
-                                            pActors[actor_id].vVelocity.x =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                            pActors[actor_id].vVelocity.y =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                            pActors[actor_id].vVelocity.z =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            continue;
-                                        }
-                                    }
-                                    Actor::AI_StandOrBored(actor_id, 4, 0, &v53);
-                                    pActors[actor_id].vVelocity.x =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                    pActors[actor_id].vVelocity.y =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                    pActors[actor_id].vVelocity.z =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    continue;
-                                }
-                                if (PID_TYPE(collision_state.pid) == OBJECT_Player) {
-                                    if (pActors[actor_id].GetActorsRelation(0)) {
-                                        // v51 =
-                                        // __OFSUB__(HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime),
-                                        // v22); v49 =
-                                        // HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
-                                        // == v22; v50 =
-                                        // HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
-                                        // - v22 < 0;
-                                        pActors[actor_id].vVelocity.y = 0;
-                                        pActors[actor_id].vVelocity.x = 0;
-                                        if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
-                                            pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
-                                        }
-
-                                        viewparams->bRedrawGameUI = 1;
-                                        pActors[actor_id].vVelocity.x =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                        pActors[actor_id].vVelocity.y =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                        pActors[actor_id].vVelocity.z =
-                                            fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                        continue;
-                                    }
-                                    Actor::AI_FaceObject(actor_id, collision_state.pid, 0, nullptr);
-                                    pActors[actor_id].vVelocity.x =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                    pActors[actor_id].vVelocity.y =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                    pActors[actor_id].vVelocity.z =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    continue;
-                                }
-                                if (PID_TYPE(collision_state.pid) == OBJECT_Decoration) {
-                                    _this = integer_sqrt(
-                                        pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
-                                        pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y);
-                                    v45 = TrigLUT->Atan2(
-                                        pActors[actor_id].vPosition.x - pLevelDecorations[v37].vPosition.x,
-                                        pActors[actor_id].vPosition.y - pLevelDecorations[v37].vPosition.y);
-                                    pActors[actor_id].vVelocity.x = TrigLUT->Cos(v45) * _this;
-                                    pActors[actor_id].vVelocity.y = TrigLUT->Sin(v45) * _this;
-                                    pActors[actor_id].vVelocity.x =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                    pActors[actor_id].vVelocity.y =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                    pActors[actor_id].vVelocity.z =
-                                        fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                    continue;
-                                }
-                                if (PID_TYPE(collision_state.pid) == OBJECT_BModel) {
-                                    collision_state.ignored_face_id = PID_ID(collision_state.pid);
-                                    if (pIndoor->pFaces[v37].uPolygonType == 3) {
-                                        pActors[actor_id].vVelocity.z = 0;
-                                        pActors[actor_id].vPosition.z =
-                                            pIndoor->pVertices[*pIndoor->pFaces[v37].pVertexIDs].z + 1;
-                                        if (pActors[actor_id].vVelocity.x * pActors[actor_id].vVelocity.x +
-                                                pActors[actor_id].vVelocity.y * pActors[actor_id].vVelocity.y < 400) {
-                                            pActors[actor_id].vVelocity.y = 0;
-                                            pActors[actor_id].vVelocity.x = 0;
-                                            pActors[actor_id].vVelocity.x =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                            pActors[actor_id].vVelocity.y =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                            pActors[actor_id].vVelocity.z =
-                                                fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                            continue;
-                                        }
-                                    } else {
-                                        v61 = abs(pIndoor->pFaces[v37].pFacePlane_old.vNormal.x *
-                                                      pActors[actor_id].vVelocity.x +
-                                                  pIndoor->pFaces[v37].pFacePlane_old.vNormal.y *
-                                                      pActors[actor_id].vVelocity.y +
-                                                  pIndoor->pFaces[v37].pFacePlane_old.vNormal.z *
-                                                      pActors[actor_id].vVelocity.z) >> 16;
-                                        if ((collision_state.speed / 8) > v61)
-                                            v61 = collision_state.speed / 8;
-                                        pActors[actor_id].vVelocity.x +=
-                                            fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.x);
-                                        pActors[actor_id].vVelocity.y +=
-                                            fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.y);
-                                        pActors[actor_id].vVelocity.z +=
-                                            fixpoint_mul(v61, pIndoor->pFaces[v37].pFacePlane_old.vNormal.z);
-                                        if (pIndoor->pFaces[v37].uPolygonType != 4 &&
-                                            pIndoor->pFaces[v37].uPolygonType != 3) {
-                                            v44 = collision_state.radius_lo -
-                                                pIndoor->pFaces[v37].pFacePlane_old.
-                                                    SignedDistanceTo(pActors[actor_id].vPosition);
-                                            if (v44 > 0) {
-                                                pActors[actor_id].vPosition.x +=
-                                                    fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.x);
-                                                pActors[actor_id].vPosition.y +=
-                                                    fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.y);
-                                                pActors[actor_id].vPosition.z +=
-                                                    fixpoint_mul(v44, pIndoor->pFaces[v37].pFacePlane_old.vNormal.z);
-                                            }
-                                            pActors[actor_id].uYawAngle = TrigLUT->Atan2(
-                                                pActors[actor_id].vVelocity.x, pActors[actor_id].vVelocity.y);
-                                        }
-                                    }
-                                    if (pIndoor->pFaces[v37].uAttributes & FACE_TriggerByMonster)
-                                        EventProcessor(
-                                            pIndoor->pFaceExtras[pIndoor->pFaces[v37].uFaceExtraID].uEventID, 0, 1);
-                                }
-                                pActors[actor_id].vVelocity.x = fixpoint_mul(58500, pActors[actor_id].vVelocity.x);
-                                pActors[actor_id].vVelocity.y = fixpoint_mul(58500, pActors[actor_id].vVelocity.y);
-                                pActors[actor_id].vVelocity.z = fixpoint_mul(58500, pActors[actor_id].vVelocity.z);
-                                continue;
-                            } else {
-                                pActors[actor_id].vPosition.x = collision_state.new_position_lo.x;
-                                pActors[actor_id].vPosition.y = collision_state.new_position_lo.y;
-                                pActors[actor_id].vPosition.z = collision_state.new_position_lo.z -
-                                    collision_state.radius_lo - 1;
-                                pActors[actor_id].uSectorID = collision_state.uSectorID;
-                                // goto LABEL_123;
-                                break;
-                            }
-
-                        } else if (pActors[actor_id].vPosition.x & 1) {
-                            pActors[actor_id].uYawAngle += 100;
-                        } else {
-                            pActors[actor_id].uYawAngle -= 100;
-                        }
-                    } else {
-                        if (pParty->bTurnBasedModeOn &&
-                            (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT))
-                            continue;
-                        if (!pActors[actor_id].pMonsterInfo.uHostilityType || v56 != 0) {
-                            Actor::AI_StandOrBored(actor_id, 4, 0, &v52);
-                            continue;
-                        }
-                    }
-                }
-            }
+        if (actor.vVelocity.LengthSqr() >= 400) {
+            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         } else {
-            pActors[actor_id].vVelocity.z = 0;
-            pActors[actor_id].vVelocity.y = 0;
-            pActors[actor_id].vVelocity.x = 0;
+            actor.vVelocity = Vec3s(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
-                if (pActors[actor_id].uAIState == Dead)
-                    pActors[actor_id].uAIState = Removed;
+                if (actor.uAIState == Dead)
+                    actor.uAIState = Removed;
             }
         }
-        // LABEL_123:
     }
 }
 
@@ -2042,8 +1749,8 @@ void PrepareToLoadBLV(bool bLoading) {
                         b = decoration->uColoredLightBlue;
                     }
                     pStationaryLightsStack->AddLight(
-                        ToFloatVector(pLevelDecorations[i].vPosition) +
-                            Vec3_float_(0, 0, decoration->uDecorationHeight),
+                            pLevelDecorations[i].vPosition.ToFloat() +
+                            Vec3f(0, 0, decoration->uDecorationHeight),
                         decoration->uLightRadius, r, g, b, _4E94D0_light_type);
                 }
             }
@@ -2079,7 +1786,7 @@ void PrepareToLoadBLV(bool bLoading) {
     // INDOOR initialize actors
     v38 = 0;
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         if (pActors[i].uAttributes & ACTOR_UNKNOW7) {
             if (!map_id) {
                 pActors[i].pMonsterInfo.field_3E = 19;
@@ -2143,7 +1850,7 @@ void PrepareToLoadBLV(bool bLoading) {
 }
 
 //----- (0046CEC3) --------------------------------------------------------
-int BLV_GetFloorLevel(const Vec3_int_ &pos, unsigned int uSectorID, unsigned int *pFaceID) {
+int BLV_GetFloorLevel(const Vec3i &pos, unsigned int uSectorID, unsigned int *pFaceID) {
     // stores faces and floor z levels
     int FacesFound = 0;
     int blv_floor_z[5] = { 0 };
@@ -2246,7 +1953,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
     // signed int y; // [sp+4Ch] [bp-8h]@32
     // int x; // [sp+50h] [bp-4h]@32
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         if (pActors[i].uAIState == Removed || pActors[i].uAIState == Disabled)
             continue;
 
@@ -2284,7 +1991,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
         if ((256 << v6) & v9->uFlags) v41 |= 4;
         if (v9->uGlowRadius) {
             pMobileLightsStack->AddLight(
-                ToFloatVector(pActors[i].vPosition), pActors[i].uSectorID, v9->uGlowRadius,
+                pActors[i].vPosition.ToFloat(), pActors[i].uSectorID, v9->uGlowRadius,
                 0xFFu, 0xFFu, 0xFFu, _4E94D3_light_type);
         }
 
@@ -2399,7 +2106,7 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
                     if ((256 << v9) & v4->uFlags) v34 |= 4;
                     if (a6) {
                         pMobileLightsStack->AddLight(
-                            ToFloatVector(pSpriteObjects[i].vPosition),
+                            pSpriteObjects[i].vPosition.ToFloat(),
                             pSpriteObjects[i].uSectorID, a6,
                             pSpriteObjects[i].GetParticleTrailColorR(),
                             pSpriteObjects[i].GetParticleTrailColorG(),
@@ -2576,7 +2283,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 }
 
 //----- (00407A1C) --------------------------------------------------------
-bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_From) {  // target xyz from position v true on clear
+bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3i Pos_From) {  // target xyz from position v true on clear
     int dist_y;       // edi@2
     int dist_z;       // ebx@2
     int dist_x;       // esi@2
@@ -2685,15 +2392,15 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
     bool LOS_Obscurred = 0;
     bool LOS_Obscurred2 = 0;
 
-    Vec3_int_ TargetVec;
+    Vec3i TargetVec;
     TargetVec.z = target_z;
     TargetVec.x = target_x;
     TargetVec.y = target_y;
 
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         // offset 32 to side and check LOS
-        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2760,7 +2467,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                 if (v69 <= abs(v66)) {
                     v108 = fixpoint_div(ShiftDotDist, v107);
                     if (v108 >= 0) {
-                        Vec3_int_ pos = Vec3_int_(
+                        Vec3i pos = Vec3i(
                             ShiftedTargetX + ((signed int)(fixpoint_mul(v108, X_VecDist) + 0x8000) >> 16),
                             ShiftedTargetY + ((signed int)(fixpoint_mul(v108, Y_VecDist) + 0x8000) >> 16),
                             ShiftedTargetZ + ((signed int)(fixpoint_mul(v108, Z_VecDist) + 0x8000) >> 16));
@@ -2774,8 +2481,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
         }
 
         // offset other side and repeat check
-        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2831,7 +2538,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                 if (v_4c <= abs(v91)) {
                     vd = fixpoint_div(v93, vc);
                     if (vd >= 0) {
-                        Vec3_int_ pos = Vec3_int_(
+                        Vec3i pos = Vec3i(
                             ShiftedTargetX + ((signed int)(fixpoint_mul(vd, v144) + 0x8000) >> 16),
                             ShiftedTargetY + ((signed int)(fixpoint_mul(vd, v80) + 0x8000) >> 16),
                             ShiftedTargetZ + ((signed int)(fixpoint_mul(vd, v81) + 0x8000) >> 16));
@@ -2848,8 +2555,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
     // outdooor
     } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
         // offset 32 to side and check LOS
-        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, TrigLUT->uIntegerHalfPi + AngleToTarget, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2919,7 +2626,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
 
                         // less than zero means intersection is behind target point
                         if (v110 >= 0) {
-                            Vec3_int_ pos = Vec3_int_(
+                            Vec3i pos = Vec3i(
                                 ShiftedTargetX + ((signed int)(fixpoint_mul(v110, rayxnorm) + 0x8000) >> 16),
                                 ShiftedTargetY + ((signed int)(fixpoint_mul(v110, rayynorm) + 0x8000) >> 16),
                                 ShiftedTargetZ + ((signed int)(fixpoint_mul(v110, rayznorm) + 0x8000) >> 16));
@@ -2934,8 +2641,8 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
         }
 
         // offset 32 to other side and check LOS
-        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
-        Vec3_int_::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, TargetVec, &ShiftedTargetX, &ShiftedTargetY, &ShiftedTargetZ);
+        Vec3i::Rotate(32, AngleToTarget - TrigLUT->uIntegerHalfPi, 0, Pos_From, &ShiftedFromX, &ShiftedFromY, &ShiftedFromz);
         dist_y = ShiftedFromY - ShiftedTargetY;
         dist_z = ShiftedFromz - ShiftedTargetZ;
         dist_x = ShiftedFromX - ShiftedTargetX;
@@ -2990,7 +2697,7 @@ bool Check_LineOfSight(int target_x, int target_y, int target_z, Vec3_int_ Pos_F
                         // vb = v43 / va;
                         vb = fixpoint_div(v42, va);
                         if (vb >= 0) {
-                            Vec3_int_ pos = Vec3_int_(
+                            Vec3i pos = Vec3i(
                                 ShiftedTargetX + ((int)(fixpoint_mul(vb, v126) + 0x8000) >> 16),
                                 ShiftedTargetY + ((int)(fixpoint_mul(vb, v122) + 0x8000) >> 16),
                                 ShiftedTargetZ + ((int)(fixpoint_mul(vb, v35) + 0x8000) >> 16));
@@ -3098,13 +2805,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     unsigned int uSectorID = pBLVRenderParams->uPartySectorID;
     unsigned int uFaceID = -1;
     int party_z = pParty->vPosition.z;
-    int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
+    int floor_z = GetIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &uSectorID, &uFaceID);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floor_z == -30000 || uFaceID == -1) {
-        floor_z = GetApproximateIndoorFloorZ(pParty->vPosition + Vec3_int_(0, 0, 40), &uSectorID, &uFaceID);
+        floor_z = GetApproximateIndoorFloorZ(pParty->vPosition + Vec3i(0, 0, 40), &uSectorID, &uFaceID);
         if (floor_z == -30000 || uFaceID == -1) {
             __debugbreak();  // level built with errors
             pParty->vPosition = blv_prev_party_pos;
@@ -3355,13 +3062,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         for (uint j = 0; j < 100; ++j) {
             CollideIndoorWithGeometry(true);
             CollideIndoorWithDecorations();
-            for (int k = 0; k < uNumActors; ++k)
+            for (int k = 0; k < pActors.size(); ++k)
                 CollideWithActor(k, 0);
             if (CollideIndoorWithPortals())
                 break; // No portal collisions => can break.
         }
 
-        Vec3_int_ adjusted_pos;
+        Vec3i adjusted_pos;
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             adjusted_pos.x = collision_state.new_position_lo.x;
             adjusted_pos.y = collision_state.new_position_lo.y;
@@ -3371,7 +3078,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
             adjusted_pos.y = new_party_y + collision_state.adjusted_move_distance * collision_state.direction.y;
             adjusted_pos.z = new_party_z + collision_state.adjusted_move_distance * collision_state.direction.z;
         }
-        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3_int_(0, 0, 40), &collision_state.uSectorID, &uFaceID);
+        int adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3i(0, 0, 40), &collision_state.uSectorID, &uFaceID);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - new_party_z > 128)
             return; // TODO: whaaa?
 
@@ -3736,8 +3443,8 @@ int DropTreasureAt(int trs_level, int trs_type, int x, int y, int z, uint16_t fa
 }
 
 //----- (0049B04D) --------------------------------------------------------
-void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3_int_> &a3) {
-    Vec3_float_ OutPlaneNorm;
+void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3i> &a3) {
+    Vec3f OutPlaneNorm;
     float OutPlaneDist;
 
     OutPlaneNorm.x = 0.0;
@@ -3760,7 +3467,7 @@ void stru154::GetFacePlaneAndClassify(ODMFace *a2, const std::vector<Vec3_int_> 
 }
 
 //----- (0049B0C9) --------------------------------------------------------
-void stru154::ClassifyPolygon(Vec3_float_ *pNormal, float dist) {
+void stru154::ClassifyPolygon(Vec3f *pNormal, float dist) {
     if (fabsf(pNormal->z) < 1e-6f)
         polygonType = POLYGON_VerticalWall;
     else if (fabsf(pNormal->x) < 1e-6f && fabsf(pNormal->y) < 1e-6f)
@@ -3775,23 +3482,23 @@ void stru154::ClassifyPolygon(Vec3_float_ *pNormal, float dist) {
 }
 
 //----- (0049B13D) --------------------------------------------------------
-void stru154::GetFacePlane(ODMFace *pFace, const std::vector<Vec3_int_> &pVertices,
-                           Vec3_float_ *pOutNormal, float *pOutDist) {
-    Vec3_float_ FirstPairVec;
-    Vec3_float_ SecPairVec;
-    Vec3_float_ CrossProd;
+void stru154::GetFacePlane(ODMFace *pFace, const std::vector<Vec3i> &pVertices,
+                           Vec3f *pOutNormal, float *pOutDist) {
+    Vec3f FirstPairVec;
+    Vec3f SecPairVec;
+    Vec3f CrossProd;
 
     if (pFace->uNumVertices >= 2) {
         for (int i = 0; i < pFace->uNumVertices - 2; i++) {
-            FirstPairVec = ToFloatVector(pVertices[pFace->pVertexIDs[i + 1]] - pVertices[pFace->pVertexIDs[i]]);
-            SecPairVec = ToFloatVector(pVertices[pFace->pVertexIDs[i + 2]] - pVertices[pFace->pVertexIDs[i + 1]]);
+            FirstPairVec = (pVertices[pFace->pVertexIDs[i + 1]] - pVertices[pFace->pVertexIDs[i]]).ToFloat();
+            SecPairVec = (pVertices[pFace->pVertexIDs[i + 2]] - pVertices[pFace->pVertexIDs[i + 1]]).ToFloat();
 
             CrossProd = Cross(FirstPairVec, SecPairVec);
 
             if (CrossProd.x != 0.0 || CrossProd.y != 0.0 || CrossProd.z != 0.0) {
                 CrossProd.Normalize();
                 *pOutNormal = CrossProd;
-                *pOutDist = -Dot(ToFloatVector(pVertices[pFace->pVertexIDs[i]]), CrossProd);
+                *pOutDist = -Dot(pVertices[pFace->pVertexIDs[i]].ToFloat(), CrossProd);
                 return;
             }
         }
@@ -3818,7 +3525,7 @@ void FindBillboardsLightLevels_BLV() {
     }
 }
 
-int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+int GetIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
     if (*pSectorID != 0) {
         int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
         if (result != -30000 && result <= pos.z + 50)
@@ -3835,17 +3542,17 @@ int GetIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int 
 }
 
 //----- (0047272C) --------------------------------------------------------
-int GetApproximateIndoorFloorZ(const Vec3_int_ &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
-    std::array<Vec3_int_, 5> attempts = {{
-        pos + Vec3_int_(-2, 0, 40),
-        pos + Vec3_int_(2, 0, 40),
-        pos + Vec3_int_(0, -2, 40),
-        pos + Vec3_int_(0, 2, 40),
-        pos + Vec3_int_(0, 0, 140)
+int GetApproximateIndoorFloorZ(const Vec3i &pos, unsigned int *pSectorID, unsigned int *pFaceID) {
+    std::array<Vec3i, 5> attempts = {{
+        pos + Vec3i(-2, 0, 40),
+        pos + Vec3i(2, 0, 40),
+        pos + Vec3i(0, -2, 40),
+        pos + Vec3i(0, 2, 40),
+        pos + Vec3i(0, 0, 140)
     }};
 
     int result;
-    for (const Vec3_int_ &attempt : attempts) {
+    for (const Vec3i &attempt : attempts) {
         *pSectorID = 0; // Make sure GetIndoorFloorZ recalculates sector id from provided coordinates.
         result = GetIndoorFloorZ(attempt, pSectorID, pFaceID);
         if (result != -30000)

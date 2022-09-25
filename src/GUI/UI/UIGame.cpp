@@ -1856,8 +1856,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
             }
         }
-        for (uint i = 0; i < uNumActors;
-             ++i) {  // draw actors(отрисовка монстров и нпс)
+        for (uint i = 0; i < pActors.size(); ++i) {  // draw actors(отрисовка монстров и нпс)
             if (pActors[i].uAIState != Removed &&
                 pActors[i].uAIState != Disabled &&
                 (pActors[i].uAIState == Dead || pActors[i].ActorNearby())) {

@@ -433,6 +433,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 data_write_pos += 2;
             }
 
+            uint32_t uNumActors = pActors.size();
             memcpy(data_write_pos, &uNumActors, 4);
             data_write_pos += 4;
 
@@ -496,6 +497,7 @@ void SaveGame(bool IsAutoSAve, bool NotSaveWorld) {
                 memcpy(data_write_pos, &pLevelDecorations[i].uFlags, 2);
                 data_write_pos += 2;
             }
+            uint32_t uNumActors = pActors.size();
             memcpy(data_write_pos, &uNumActors, 4);
             data_write_pos += 4;
 

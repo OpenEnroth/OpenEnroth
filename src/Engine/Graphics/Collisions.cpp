@@ -10,6 +10,8 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
+#include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/Graphics/Viewport.h"
 
 CollisionState collision_state;
 
@@ -33,7 +35,7 @@ CollisionState collision_state;
  * @return                              Whether the actor, basically modeled as a sphere, can actually collide with the
  *                                      polygon if moving along the `dir` axis.
  */
-static bool CollideSphereWithFace(BLVFace *face, const Vec3_float_ &pos, float radius, const Vec3_float_ &dir,
+static bool CollideSphereWithFace(BLVFace *face, const Vec3f &pos, float radius, const Vec3f &dir,
                                   float *out_move_distance, bool ignore_ethereal, int model_idx) {
     if (ignore_ethereal && face->Ethereal())
         return false;
@@ -59,10 +61,10 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_float_ &pos, float r
         move_distance = overshoot / cos_dir_normal;
     }
 
-    Vec3_float_ new_pos =
+    Vec3f new_pos =
         pos + move_distance * dir - overshoot * face->pFacePlane.vNormal;
 
-    if (!face->Contains(ToIntVector(new_pos), model_idx))
+    if (!face->Contains(new_pos.ToInt(), model_idx))
         return false; // We've just managed to slide past the face, so pretend no collision happened.
 
     if (move_distance < 0) {
@@ -89,7 +91,7 @@ static bool CollideSphereWithFace(BLVFace *face, const Vec3_float_ &pos, float r
  * @return                              Whether the actor, modeled as a point, hits the provided polygon if moving from
  *                                      `pos` along the `dir` axis by at most `move_distance`.
  */
-static bool CollidePointWithFace(BLVFace *face, const Vec3_float_ &pos, const Vec3_float_ &dir, float *out_move_distance,
+static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &dir, float *out_move_distance,
                                  int model_idx) {
     // _fp suffix => that's a fixpoint number
 
@@ -116,12 +118,12 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_float_ &pos, const Ve
     // How far we need to move along the `dir` axis to hit face.
     float move_distance = -pos_face_distance / cos_dir_normal;
 
-    Vec3_float_ new_pos = pos + move_distance * dir;
+    Vec3f new_pos = pos + move_distance * dir;
 
     if (move_distance > *out_move_distance)
         return false; // No correction needed.
 
-    if (!face->Contains(ToIntVector(new_pos), model_idx))
+    if (!face->Contains(new_pos.ToInt(), model_idx))
         return false;
 
     *out_move_distance = move_distance;
@@ -138,7 +140,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3_float_ &pos, const Ve
  * @param model_idx                     Model index, or `MODEL_INDOOR`.
 */
 static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_ethereal, int model_idx) {
-    auto collide_once = [&](const Vec3_float_ &old_pos, const Vec3_float_ &new_pos, const Vec3_float_ &dir, int radius) {
+    auto collide_once = [&](const Vec3f &old_pos, const Vec3f &new_pos, const Vec3f &dir, int radius) {
         float distance_old = face->pFacePlane.SignedDistanceTo(old_pos);
         float distance_new = face->pFacePlane.SignedDistanceTo(new_pos);
         if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
@@ -185,8 +187,8 @@ static void CollideBodyWithFace(BLVFace *face, int face_pid, bool ignore_etherea
  * @param jagged_top                    See `CollideWithParty`.
  * @return                              Whether there is a collision.
  */
-static bool CollideWithCylinder(const Vec3_float_ &center_lo, float radius, float height, int pid, bool jagged_top) {
-    BBox_float_ bbox;
+static bool CollideWithCylinder(const Vec3f &center_lo, float radius, float height, int pid, bool jagged_top) {
+    BBoxf bbox;
     bbox.x1 = center_lo.x - radius;
     bbox.x2 = center_lo.x + radius;
     bbox.y1 = center_lo.y - radius;
@@ -204,7 +206,7 @@ static bool CollideWithCylinder(const Vec3_float_ &center_lo, float radius, floa
     // Area of the parallelogram formed by dist and collision_state.direction. Direction is a unit vector,
     // thus this actually is length(dist) * sin(dist, collision_state.direction).
     // This in turn is the distance from cylinder center to the line of actor's movement.
-    Vec3_float_ dir = collision_state.direction;
+    Vec3f dir = collision_state.direction;
     float closest_dist = dist_x * dir.y - dist_y * dir.x;
     if (abs(closest_dist) > sum_radius)
         return false; // No chance to collide.
@@ -242,7 +244,7 @@ static void CollideWithDecoration(int id) {
         return;
 
     CollideWithCylinder(
-        ToFloatVector(decor->vPosition), desc->uRadius, desc->uDecorationHeight, PID(OBJECT_Decoration, id), false);
+        decor->vPosition.ToFloat(), desc->uRadius, desc->uDecorationHeight, PID(OBJECT_Decoration, id), false);
 }
 
 
@@ -255,12 +257,12 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
         dt_fp = pEventTimer->dt_fixpoint;
     float dt = fixpoint_to_float(dt_fp);
 
-    this->speed = Length(this->velocity);
+    this->speed = this->velocity.Length();
 
     if (!FuzzyIsNull(this->speed)) {
         this->direction = this->velocity / this->speed;
     } else {
-        this->direction = Vec3_float_(0, 0, 1.0f);
+        this->direction = Vec3f(0, 0, 1.0f);
     }
 
     this->move_distance = dt * this->speed - this->total_move_distance;
@@ -271,15 +273,15 @@ bool CollisionState::PrepareAndCheckIfStationary(int dt_fp) {
     this->new_position_lo = this->position_lo + this->move_distance * this->direction;
 
     this->bbox =
-        BBox_float_::FromPoint(this->position_lo, this->radius_lo) |
-        BBox_float_::FromPoint(this->new_position_lo, this->radius_lo) |
-        BBox_float_::FromPoint(this->position_hi, this->radius_hi) |
-        BBox_float_::FromPoint(this->new_position_hi, this->radius_hi);
+        BBoxf::FromPoint(this->position_lo, this->radius_lo) |
+        BBoxf::FromPoint(this->new_position_lo, this->radius_lo) |
+        BBoxf::FromPoint(this->position_hi, this->radius_hi) |
+        BBoxf::FromPoint(this->new_position_hi, this->radius_hi);
 
     this->pid = 0;
-    this->adjusted_move_distance = std::numeric_limits<float>::max();
+    this->adjusted_move_distance = this->move_distance;
 
-    return  false;
+    return false;
 }
 
 void CollideIndoorWithGeometry(bool ignore_ethereal) {
@@ -403,7 +405,7 @@ bool CollideIndoorWithPortals() {
         } else {
             collision_state.uSectorID = pIndoor->pFaces[portal_id].uSectorID;
         }
-        collision_state.adjusted_move_distance = std::numeric_limits<float>::max();
+        collision_state.adjusted_move_distance = collision_state.move_distance;
         return false;
     }
 
@@ -421,10 +423,10 @@ bool CollideWithActor(int actor_idx, int override_radius) {
         radius = override_radius;
 
     return CollideWithCylinder(
-        ToFloatVector(actor->vPosition), radius, actor->uActorHeight, PID(OBJECT_Actor, actor_idx), true);
+        actor->vPosition.ToFloat(), radius, actor->uActorHeight, PID(OBJECT_Actor, actor_idx), true);
 }
 
-void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
+void _46ED8A_collide_against_sprite_objects(unsigned int pid) {
     for (uint i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID == 0)
             continue;
@@ -436,7 +438,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         // This code is very close to what we have in CollideWithCylinder, but factoring out common parts just
         // seemed not worth it.
 
-        BBox_float_ bbox;
+        BBoxf bbox;
         bbox.x1 = pSpriteObjects[i].vPosition.x - object->uRadius;
         bbox.x2 = pSpriteObjects[i].vPosition.x + object->uRadius;
         bbox.y1 = pSpriteObjects[i].vPosition.y - object->uRadius;
@@ -450,7 +452,7 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
         float dist_y = pSpriteObjects[i].vPosition.y - collision_state.position_lo.y;
         float sum_radius = object->uHeight + collision_state.radius_lo;
 
-        Vec3_float_ dir = collision_state.direction;
+        Vec3f dir = collision_state.direction;
         float closest_dist = dist_x * dir.y - dist_y * dir.x;
         if (abs(closest_dist) > sum_radius)
             continue;
@@ -464,11 +466,207 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this) {
             continue;
 
         if (dist_dot_dir < collision_state.adjusted_move_distance)
-            sub_46DEF2(_this, i);
+            sub_46DEF2(pid, i);
     }
 }
 
 void CollideWithParty(bool jagged_top) {
-    CollideWithCylinder(ToFloatVector(pParty->vPosition), 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
+    CollideWithCylinder(pParty->vPosition.ToFloat(), 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
 }
 
+void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
+    collision_state.ignored_face_id = -1;
+    collision_state.total_move_distance = 0;
+    collision_state.check_hi = true;
+    collision_state.radius_hi = actor.uActorRadius;
+    collision_state.radius_lo = actor.uActorRadius;
+    for (int attempt = 0; attempt < 100; attempt++) {
+        collision_state.position_lo = actor.vPosition.ToFloat() + Vec3f(0, 0, actor.uActorRadius + 1);
+        collision_state.position_hi =
+            actor.vPosition.ToFloat() + Vec3f(0, 0, actor.uActorHeight - actor.uActorRadius - 1);
+        collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
+
+        collision_state.velocity = actor.vVelocity.ToFloat();
+        collision_state.uSectorID = actor.uSectorID;
+        if (collision_state.PrepareAndCheckIfStationary(0))
+            break;
+
+        int collisionsWithOtherActors = 0;
+        unsigned int pid = PID(OBJECT_Actor, actor.id);
+        for (int i = 0; i < 100; ++i) {
+            CollideIndoorWithGeometry(true);
+            CollideIndoorWithDecorations();
+            CollideWithParty(false);
+            _46ED8A_collide_against_sprite_objects(pid);
+            for (uint j = 0; j < ai_arrays_size; j++) {
+                int actor2_id = ai_near_actors_ids[j];
+                if (actor2_id == actor.id)
+                    continue;
+
+                // TODO: why we're checking that distance is greater that r1+r2? Shouldn't we check that it's less?
+                // Investigate, white a comment here.
+                Actor &actor2 = pActors[actor2_id];
+                if ((actor2.vPosition - actor.vPosition).Length() >= actor.uActorRadius + actor2.uActorRadius &&
+                    CollideWithActor(actor2_id, 40))
+                    ++collisionsWithOtherActors;
+            }
+            if (CollideIndoorWithPortals())
+                break;
+        }
+        bool isInCrowd = collisionsWithOtherActors > 1;
+
+        Vec3f newPos = actor.vPosition.ToFloat() + collision_state.adjusted_move_distance * collision_state.direction;
+        unsigned int newFaceID;
+        int newFloorZ = GetIndoorFloorZ(newPos.ToInt(), &collision_state.uSectorID, &newFaceID);
+        if (newFloorZ == -30000)
+            break; // New pos is out of bounds, running more iterations won't help.
+
+        if (pIndoor->pFaces[newFaceID].uAttributes & FACE_INDOOR_SKY) {
+            if (actor.uAIState == Dead) {
+                actor.uAIState = Removed;
+                break; // Actor removed, no point in running more iterations.
+            }
+
+            if (!isAboveGround && !isFlying) {
+                if (actor.pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly || isInCrowd)
+                    Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
+
+                break; // Trying to walk into indoor sky, bad idea!
+            }
+        }
+
+        // Prevent actors from falling off ledges.
+        if (actor.uCurrentActionAnimation == ANIM_Walking && newFloorZ < actor.vPosition.z - 100 && !isAboveGround && !isFlying) {
+            if (actor.vPosition.x & 1) {
+                actor.uYawAngle += 100;
+            } else {
+                actor.uYawAngle -= 100;
+            }
+            break; // We'll try again in the next frame.
+        }
+
+        actor.vPosition = newPos.ToShort();
+        actor.uSectorID = collision_state.uSectorID;
+        if (FuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance))
+            break; // No collisions happened.
+
+        collision_state.total_move_distance += collision_state.adjusted_move_distance;
+        int id = PID_ID(collision_state.pid);
+        int type = PID_TYPE(collision_state.pid);
+
+        if (type == OBJECT_Actor) {
+            if (pParty->bTurnBasedModeOn &&
+                (pTurnEngine->turn_stage == TE_ATTACK || pTurnEngine->turn_stage == TE_MOVEMENT)) {
+                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+                continue;
+            }
+            if (actor.pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Friendly) {
+                if (!isInCrowd) {
+                    Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                    actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                    actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                    actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+                    continue;
+                }
+            } else {
+                if (!isInCrowd) {
+                    if (pActors[id].pMonsterInfo.uHostilityType == MonsterInfo::Hostility_Friendly) {
+                        Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                        actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                        actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                        actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+                        continue;
+                    } else {
+                        Actor::AI_Flee(actor.id, collision_state.pid, 0, nullptr);
+                        actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                        actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                        actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+                        continue;
+                    }
+                }
+            }
+            Actor::AI_StandOrBored(actor.id, PID(OBJECT_Player, 0), 0, nullptr);
+            actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+            actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+            actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+            continue;
+        }
+
+        if (type == OBJECT_Player) {
+            if (actor.GetActorsRelation(0)) {
+                // v51 =
+                // __OFSUB__(HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime),
+                // v22); v49 =
+                // HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
+                // == v22; v50 =
+                // HIDWORD(pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].uExpireTime)
+                // - v22 < 0;
+                actor.vVelocity.y = 0;
+                actor.vVelocity.x = 0;
+                if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active()) {
+                    pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
+                }
+
+                viewparams->bRedrawGameUI = 1;
+                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+            } else {
+                Actor::AI_FaceObject(actor.id, collision_state.pid, 0, nullptr);
+                actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+                actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+                actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+            }
+            continue;
+        }
+
+        if (type == OBJECT_Decoration) {
+            unsigned int speed = integer_sqrt(
+                    actor.vVelocity.x * actor.vVelocity.x +
+                    actor.vVelocity.y * actor.vVelocity.y);
+            int angle = TrigLUT->Atan2(
+                    actor.vPosition.x - pLevelDecorations[id].vPosition.x,
+                    actor.vPosition.y - pLevelDecorations[id].vPosition.y); // Face away from the decoration.
+            actor.vVelocity.x = TrigLUT->Cos(angle) * speed;
+            actor.vVelocity.y = TrigLUT->Sin(angle) * speed;
+            actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+            actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+            actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+            continue;
+        }
+
+        if (type == OBJECT_BModel) {
+            BLVFace *face = &pIndoor->pFaces[id];
+
+            collision_state.ignored_face_id = PID_ID(collision_state.pid);
+            if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
+                actor.vVelocity.z = 0;
+                actor.vPosition.z = pIndoor->pVertices[face->pVertexIDs[0]].z + 1;
+                if (actor.vVelocity.LengthSqr() < 400) {
+                    actor.vVelocity.x = 0;
+                    actor.vVelocity.y = 0;
+                    continue;
+                }
+            } else {
+                float velocityDotNormal = Dot(face->pFacePlane.vNormal, actor.vVelocity.ToFloat());
+                velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
+                actor.vVelocity += (velocityDotNormal * face->pFacePlane.vNormal).ToShort();
+                if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                    float overshoot =
+                        collision_state.radius_lo - face->pFacePlane.SignedDistanceTo(actor.vPosition.ToFloat());
+                    if (overshoot > 0)
+                        actor.vPosition += (overshoot * pIndoor->pFaces[id].pFacePlane.vNormal).ToShort();
+                    actor.uYawAngle = TrigLUT->Atan2(actor.vVelocity.x, actor.vVelocity.y);
+                }
+            }
+            if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
+                EventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, 0, 1);
+        }
+
+        actor.vVelocity.x = fixpoint_mul(58500, actor.vVelocity.x);
+        actor.vVelocity.y = fixpoint_mul(58500, actor.vVelocity.y);
+        actor.vVelocity.z = fixpoint_mul(58500, actor.vVelocity.z);
+    }
+}

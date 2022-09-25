@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <memory>
 
+class Actor;
 class Texture;
 class ParticleEngine;
 
@@ -131,10 +132,10 @@ struct SpellFxRenderer {
         SpriteObject *a1, unsigned int uDiffuse, Texture *texture, float a4);
     void _4A7C07_stun_spell_fx(struct SpriteObject *a2);
     void AddProjectile(struct SpriteObject *a2, int a3, Texture *);
-    void _4A7E89_sparkles_on_actor_after_it_casts_buff(struct Actor *pActor,
+    void _4A7E89_sparkles_on_actor_after_it_casts_buff(Actor *pActor,
                                                        unsigned int uDiffuse);
     void _4A7F74(int x, int y, int z);
-    float _4A806F_get_mass_distortion_value(struct Actor *pActor);
+    float _4A806F_get_mass_distortion_value(Actor *pActor);
     // void _4A80DC_implosion_particle_sw(struct SpriteObject *a2);
     bool RenderAsSprite(struct SpriteObject *a2);
     void SetPlayerBuffAnim(uint16_t uSpellID, uint16_t uPlayerID);

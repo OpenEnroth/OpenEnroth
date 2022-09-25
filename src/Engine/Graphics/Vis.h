@@ -135,7 +135,7 @@ class Vis {
                             struct RenderVertexSoft *pRayEnd, float *pDepth,
                             RenderVertexSoft *Intersection, BLVFace *pFace,
                             signed int pBModelID);
-    bool CheckIntersectBModel(BLVFace *pFace, Vec3_short_ IntersectPoint,
+    bool CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint,
                               signed int sModelID);
     void CastPickRay(RenderVertexSoft *pRay, float fMouseX, float fMouseY,
                      float fPickDepth);

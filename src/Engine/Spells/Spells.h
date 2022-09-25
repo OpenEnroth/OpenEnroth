@@ -144,14 +144,6 @@ enum SPELL_SCHOOL : int {
 /*   68 */
 #pragma pack(push, 1)
 struct SpellBuff {
-    inline SpellBuff() {
-        uPower = 0;
-        uSkill = 0;
-        uOverlayID = 0;
-        uCaster = 0;
-        uFlags = 0;
-    }
-
     bool Apply(GameTime time, unsigned __int16 uSkillLevel,
                unsigned __int16 uPower, int uOverlayID, unsigned __int8 caster);
     void Reset();
@@ -162,11 +154,11 @@ struct SpellBuff {
     bool Expired() const { return this->expire_time.value < 0; }
 
     GameTime expire_time;
-    unsigned __int16 uPower; // Spell power, semantics are spell-specific.
-    unsigned __int16 uSkill; // 1-4, normal to grandmaster.
-    unsigned __int16 uOverlayID;
-    unsigned __int8 uCaster;
-    unsigned __int8 uFlags; // 0x1 => cast at grandmaster.
+    unsigned __int16 uPower = 0; // Spell power, semantics are spell-specific.
+    unsigned __int16 uSkill = 0; // 1-4, normal to grandmaster.
+    unsigned __int16 uOverlayID = 0;
+    unsigned __int8 uCaster = 0;
+    unsigned __int8 uFlags = 0; // 0x1 => cast at grandmaster.
 };
 #pragma pack(pop)
 
@@ -247,7 +239,7 @@ struct SpellBookIconPos {
 /*  154 */
 #pragma pack(push, 1)
 struct TownPortalData {
-    Vec3_int_ pos;
+    Vec3i pos;
     __int16 rot_y;
     __int16 rot_x;
     unsigned __int16 uMapInfoID;

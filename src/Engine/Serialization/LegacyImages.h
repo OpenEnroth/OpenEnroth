@@ -57,8 +57,8 @@ struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
 /*   93 */
 #pragma pack(push, 1)
 struct BLVFace_MM7 {  // 60h
-    struct Plane_float_ pFacePlane;
-    struct Plane_int_ pFacePlane_old;
+    struct Planef pFacePlane;
+    struct Planei pFacePlane_old;
     int zCalc1;
     int zCalc2;
     int zCalc3;
@@ -73,7 +73,7 @@ struct BLVFace_MM7 {  // 60h
     uint16_t uBitmapID;
     uint16_t uSectorID;
     int16_t uBackSectorID;
-    BBox_short_ pBounding;
+    BBoxs pBounding;
     uint8_t uPolygonType;
     uint8_t uNumVertices;
     char field_5E;
@@ -447,10 +447,10 @@ struct Party_Image_MM7 {
     /* 0002C */ uint64_t uTimePlayed;
     /* 00034 */ int64_t uLastRegenerationTime;
     /* 0003C */ PartyTimeStruct_Image_MM7 PartyTimes;
-    /* 006B4 */ Vec3_int_ vPosition;
+    /* 006B4 */ Vec3i vPosition;
     /* 006C0 */ int sRotationZ;
     /* 006C4 */ int sRotationY;
-    /* 006C8 */ Vec3_int_ vPrevPosition;
+    /* 006C8 */ Vec3i vPrevPosition;
     /* 006D4 */ int sPrevRotationZ;
     /* 006D8 */ int sPrevRotationY;
     /* 006DC */ int sPrevEyelevel;
@@ -698,14 +698,14 @@ struct Actor_MM7 {
     uint16_t uActorRadius;
     uint16_t uActorHeight;
     uint16_t uMovementSpeed;
-    Vec3_short_ vPosition;
-    Vec3_short_ vVelocity;
+    Vec3s vPosition;
+    Vec3s vVelocity;
     uint16_t uYawAngle;
     uint16_t uPitchAngle;
     int16_t uSectorID;
     uint16_t uCurrentActionLength;
-    Vec3_short_ vInitialPosition;
-    Vec3_short_ vGuardingPosition;
+    Vec3s vInitialPosition;
+    Vec3s vGuardingPosition;
     uint16_t uTetherDistance;
     int16_t uAIState;
     uint16_t uCurrentActionAnimation;
@@ -738,7 +738,7 @@ struct BLVDoor_MM7 {  // 50h
     uint32_t uAttributes;
     uint32_t uDoorID;
     uint32_t uTimeSinceTriggered;
-    Vec3_int_ vDirection;
+    Vec3i vDirection;
     uint32_t uMoveLength;
     uint32_t uOpenSpeed;
     uint32_t uCloseSpeed;
@@ -807,7 +807,7 @@ struct BLVSector_MM7 {  // 0x74
     int16_t uMinAmbientLightLevel;
     int16_t uFirstBSPNode;
     int16_t exit_tag;
-    BBox_short_ pBounding;
+    BBoxs pBounding;
 };
 #pragma pack(pop)
 

@@ -1727,7 +1727,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
     signed int potionID;        // edx@27
     // unsigned int pOut_y;        // edx@57
     double v31;                 // st7@112
-    Vec3_int_ v39;              // [sp-18h] [bp-A8h]@83
+    Vec3i v39;              // [sp-18h] [bp-A8h]@83
     GUIWindow message_window;   // [sp+Ch] [bp-84h]@137
     unsigned int damage_level;  // [sp+8Ch] [bp-4h]@23
 
@@ -2088,7 +2088,7 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
             v39.y = pParty->vPosition.y;
 
             int rot_x, rot_y, rot_z;
-            Vec3_int_::Rotate(64, pParty->sRotationZ, pParty->sRotationY, v39,
+            Vec3i::Rotate(64, pParty->sRotationZ, pParty->sRotationY, v39,
                               &rot_x, &rot_y, &rot_z);
             SpriteObject::Drop_Item_At(
                 SPRITE_SPELL_FIRE_FIREBALL_IMPACT, rot_x, rot_y, rot_z, 0, 1, 0,

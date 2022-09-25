@@ -4,11 +4,14 @@
 #include <cmath>
 #include <cstdint>
 #include <array>
+#include <algorithm>
 #include <limits>
 
 #include "Engine/MM7.h"
 
 #define pi_double 3.14159265358979323846
+
+const float pi = static_cast<float>(M_PI);
 
 __int64 fixpoint_mul(int, int);
 __int64 fixpoint_div(int, int);
@@ -43,13 +46,24 @@ inline void normalize_to_fixpoint(int *x, int *y, int *z) {
     *z *= mult;
 }
 
-inline bool FuzzyIsNull(float value) {
+uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z);
+
+[[nodiscard]] inline bool FuzzyIsNull(float value) {
     return std::abs(value) < 0.00001f;
 }
 
-inline bool FuzzyIsNull(double value) {
+[[nodiscard]] inline bool FuzzyIsNull(double value) {
     return std::abs(value) < 0.000000000001;
 }
+
+[[nodiscard]] inline bool FuzzyEquals(float l, float r) {
+    return std::abs(l - r) * 100000.f <= std::min(std::abs(l), std::abs(r));
+}
+
+[[nodiscard]] inline bool FuzzyEquals(double l, double r) {
+    return std::abs(l - r) * 1000000000000. <= std::min(std::abs(l), std::abs(r));
+}
+
 
 // #pragma pack(push, 1)
 // struct fixed {  // fixed-point decimal

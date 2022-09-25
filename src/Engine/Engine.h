@@ -57,8 +57,8 @@ extern GAME_STATE uGameState;
 /*  105 */
 #pragma pack(push, 1)
 struct Game__StationaryLight {
-    Vec3_float_ vPosition;
-    Vec3_float_ vRGBColor;
+    Vec3f vPosition;
+    Vec3f vRGBColor;
     float flt_18;
 };
 #pragma pack(pop)

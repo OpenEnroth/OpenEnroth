@@ -40,10 +40,10 @@ bool Chest::Open(int uChestID) {
     double dir_y;                     // st6@23
     double length_vector;             // st7@23
     int pDepth;                       // ecx@26
-    Vec3_int_ v;                      // ST4C_12@28
+    Vec3i v;                      // ST4C_12@28
     bool flag_shout;                  // edi@28
     SPRITE_OBJECT_TYPE pSpriteID[4];  // [sp+84h] [bp-40h]@16
-    Vec3_int_ pOut;                   // [sp+A0h] [bp-24h]@28
+    Vec3i pOut;                   // [sp+A0h] [bp-24h]@28
     int pObjectY = 0;                     // [sp+B0h] [bp-14h]@21
     int sRotX;                        // [sp+B4h] [bp-10h]@23
     float dir_z;                      // [sp+BCh] [bp-8h]@23
@@ -116,7 +116,7 @@ bool Chest::Open(int uChestID) {
             v.x = pObjectX;
             v.y = pObjectY;
             v.z = pObjectZ;
-            Vec3_int_::Rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z,
+            Vec3i::Rotate(pDepth, sRotX, sRotY, v, &pOut.x, &pOut.z,
                               &pOut.y);
             SpriteObject::Drop_Item_At(
                 pSpriteID[pRandom], pOut.x, pOut.z, pOut.y, 0, 1, 0,

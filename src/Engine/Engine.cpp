@@ -324,7 +324,7 @@ void Engine::DrawGUI() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
             uint uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
-            int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3_int_(0,0,40) */, sector_id, &uFaceID);
+            int floor_level = BLV_GetFloorLevel(pParty->vPosition/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = StringPrintf(
                 "BLV_GetFloorLevel: %d   face_id %d\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
@@ -790,7 +790,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         (pCurrentMapName == "d10.blv")) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
-        for (uint i = 0; i < uNumActors; ++i) {
+        for (uint i = 0; i < pActors.size(); ++i) {
             pActors[i].pMonsterInfo.uTreasureType = 0;
             pActors[i].pMonsterInfo.uTreasureDiceRolls = 0;
             pActors[i].pMonsterInfo.uExp = 0;
@@ -1227,18 +1227,17 @@ void Engine::_461103_load_level_sub() {
     int v21[16] {};     // [sp+1Ch] [bp-40h]@17
 
     if (engine->config->debug.NoActors.Get())
-        uNumActors = 0;
+        pActors.clear();
 
     GenerateItemsInChest();
     pGameLoadingUI_ProgressBar->Progress();
     pParty->uFlags |= PARTY_FLAGS_1_ForceRedraw;
     pParty->field_7B5_in_arena_quest = 0;
-    dword_5C6DF8 = 1;
     pNPCStats->uNewlNPCBufPos = 0;
     v19 = pMapStats->GetMapInfo(pCurrentMapName);
 
     // v15 = 0;
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         // Actor* pActor = &pActors[i];
         // v2 = (char *)&pActors[0].uNPC_ID;
         // do
@@ -1284,7 +1283,7 @@ void Engine::_461103_load_level_sub() {
     v20 = 0;
     // v16 = v1;
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         // v7 = (char *)&pActors[0].pMonsterInfo;
         // do
         //{
@@ -1306,7 +1305,7 @@ void Engine::_461103_load_level_sub() {
     pGameLoadingUI_ProgressBar->Progress();
 
     if (engine->config->debug.NoActors.Get())
-        uNumActors = 0;
+        pActors.clear();
     if (engine->config->debug.NoDecorations.Get())
         pLevelDecorations.clear();
     init_event_triggers();
@@ -1831,7 +1830,7 @@ void RegeneratePartyHealthMana() {
 
         // immolation fire spell aura damage
         if (pParty->ImmolationActive()) {
-            Vec3_int_ cords;
+            Vec3i cords;
             cords.x = 0;
             cords.y = 0;
             cords.z = 0;

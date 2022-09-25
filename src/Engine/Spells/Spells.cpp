@@ -20,12 +20,12 @@ using EngineIoc = Engine_::IocContainer;
 SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
 std::array<TownPortalData, 6> TownPortalList =  // 4ECBB8
-    {{{Vec3_int_(-5121, 2107, 1), 1536, 0, 21, 0}, // harmondale
-      {Vec3_int_(-15148, -10240, 1473), 0, 0, 4, 0}, // tularean
-      {Vec3_int_(-10519, 5375, 753), 512, 0, 3, 0}, // erathia
-      {Vec3_int_(3114, -11055, 513), 0, 0, 10, 0},  // nighon
-      {Vec3_int_(-158, 7624, 1), 512, 0, 7, 0},     // celeste
-      {Vec3_int_(-1837, -4247, 65), 65, 0, 8, 0}}};  // pit
+    {{{Vec3i(-5121, 2107, 1), 1536, 0, 21, 0}, // harmondale
+      {Vec3i(-15148, -10240, 1473), 0, 0, 4, 0}, // tularean
+      {Vec3i(-10519, 5375, 753), 512, 0, 3, 0}, // erathia
+      {Vec3i(3114, -11055, 513), 0, 0, 10, 0},  // nighon
+      {Vec3i(-158, 7624, 1), 512, 0, 7, 0},     // celeste
+      {Vec3i(-1837, -4247, 65), 65, 0, 8, 0}}};  // pit
 
 struct SpellStats *pSpellStats = nullptr;
 

@@ -18,7 +18,6 @@ set(ENGINE_SOURCES AssetsManager.cpp
                    SpellFxRenderer.cpp
                    stru298.cpp
                    Time.cpp
-                   VectorTypes.cpp
                    ZlibWrapper.cpp
                    IocContainer.cpp
                    EngineFactory.cpp)

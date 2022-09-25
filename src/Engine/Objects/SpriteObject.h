@@ -39,8 +39,8 @@ struct SpriteObject {
     SPRITE_OBJECT_TYPE uType;
     // unsigned __int16 uType;
     unsigned __int16 uObjectDescID = 0; // Zero means free slot, can reuse.
-    Vec3_int_ vPosition;
-    Vec3_short_ vVelocity;
+    Vec3i vPosition;
+    Vec3s vVelocity;
     unsigned __int16 uFacing;
     unsigned __int16 uSoundID;
     SPRITE_ATTRIBUTES uAttributes;
@@ -58,7 +58,7 @@ struct SpriteObject {
     char field_60_distance_related_prolly_lod;
     char field_61;
     char field_62[2]{};
-    Vec3_int_ field_64;  // starting position
+    Vec3i field_64;  // starting position
 };
 #pragma pack(pop)
 
@@ -66,5 +66,6 @@ void CompactLayingItemsList();
 
 extern std::vector<SpriteObject> pSpriteObjects;
 
-bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int a2);
-void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int a2);  // idb
+bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, signed int pid);
+void Apply_Spell_Sprite_Damage(unsigned int uLayingItemID, signed int pid);  // idb
+unsigned int sub_46DEF2(signed int pid, unsigned int uLayingItemID);

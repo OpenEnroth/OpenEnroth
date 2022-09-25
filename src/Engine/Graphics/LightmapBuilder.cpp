@@ -93,7 +93,7 @@ bool LightmapBuilder::ApplyLights_OutdoorFace(ODMFace *pFace) {
 
 //----- (0045D0D5) --------------------------------------------------------
 bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
-                                             Vec3_float_ *pNormal,
+                                             Vec3f *pNormal,
                                              float *light_tile_dist,
                                              RenderVertexSoft *TerrainVertices,
                                              unsigned int uStripType, int X,
@@ -102,7 +102,7 @@ bool LightmapBuilder::StackLight_TerrainFace(StationaryLight *pLight,
     //  bool result; // eax@1
     char v57;         // dl@18
     // std::string v58;  // [sp-18h] [bp-38h]@10
-    BBox_float_ bbox;
+    BBoxf bbox;
 
     //  x0,y0      x1,y1 // this is actuall ccw??
     //  .____________.
@@ -190,7 +190,7 @@ bool LightmapBuilder::ApplyLight_ODM(StationaryLight *pLight, ODMFace *pFace,
 
     if (!pLight->uRadius) return false;
 
-    if (pFace->pBoundingBox.Expanded(pLight->uRadius).Contains(ToShortVector(pLight->vPosition))) {
+    if (pFace->pBoundingBox.Expanded(pLight->uRadius).Contains(pLight->vPosition.ToShort())) {
         v10 = pFace->pFacePlane.SignedDistanceTo(pLight->vPosition);
 
         if (((bLightBackfaces) || v10 >= 0.0f) && fabsf(v10) <= pLight->uRadius) {
@@ -278,7 +278,7 @@ bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *pFace,
     if (!pLight->uRadius)  // 800
         return false;
 
-    if (pFace->pBounding.Expanded(pLight->uRadius).Contains(ToShortVector(pLight->vPosition))) {
+    if (pFace->pBounding.Expanded(pLight->uRadius).Contains(pLight->vPosition.ToShort())) {
         Distance = pFace->pFacePlane.SignedDistanceTo(pLight->vPosition);
 
         if ((bLightBackfaces || Distance >= 0.0f) && std::abs(Distance) <= pLight->uRadius) {
@@ -307,7 +307,7 @@ bool LightmapBuilder::ApplyLight_BLV(StationaryLight *pLight, BLVFace *pFace,
 //----- (0045DA56) --------------------------------------------------------
 bool LightmapBuilder::DoDraw_183808_Lightmaps(float z_bias) {
     // For indoor light (X)
-    Vec3_float_ v;  // [sp+Ch] [bp-1Ch]@2
+    Vec3f v;  // [sp+Ch] [bp-1Ch]@2
     v.z = 1.0;
     v.y = 1.0;
     v.x = 1.0;
@@ -426,7 +426,7 @@ int LightmapBuilder::_45C4B9(int a2, RenderVertexSoft *a3,
 // //////////////////////FOR OUTDOOR
 // /TERRAIN//////////////////////////////////////////
 // ----- (0045D036) --------------------------------------------------------
-bool LightmapBuilder::StackLights_TerrainFace(Vec3_float_ *pNormal,
+bool LightmapBuilder::StackLights_TerrainFace(Vec3f *pNormal,
                                               float *Light_tile_dist,
                                               RenderVertexSoft *VertList,
                                               unsigned int uStripType,
@@ -462,7 +462,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsig
     // lightmap_builder->ApplyLights(&Lights, &faceplane, uNumVerticesa, VertsTransformed, pVertices, 0);
 
     // For outdoor terrain and indoor light (III)(III)
-    Vec3_int_ pos;         // [sp+2Ch] [bp-40h]@21
+    Vec3i pos;         // [sp+2Ch] [bp-40h]@21
     RenderVertexSoft *a9;  // [sp+68h] [bp-4h]@8
 
     if (!uNumVertices) return false;
@@ -521,7 +521,7 @@ bool LightmapBuilder::ApplyLights(LightsData *pLights, stru154 *FacePlane, unsig
 }
 
 //----- (0045BE86) --------------------------------------------------------
-bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, unsigned int uColorMask, float dot_dist,
+bool LightmapBuilder::_45BE86_build_light_polygon(Vec3i *pos, float radius, unsigned int uColorMask, float dot_dist,
     int uLightType, stru314 *FacePlaneNormals, unsigned int uNumVertices, RenderVertexSoft *a9, char uClipFlag) {
 
     // For outdoor terrain and indoor light (IV)(IV)
@@ -611,7 +611,7 @@ bool LightmapBuilder::_45BE86_build_light_polygon(Vec3_int_ *pos, float radius, 
     if (!engine->config->graphics.DynamicBrightness.Get()) {
         lightmap->fBrightness = flt_3C8C2C_lightmaps_brightness;
     } else {
-        Vec3_float_ a1;  // [sp+2Ch] [bp-20h]@8
+        Vec3f a1;  // [sp+2Ch] [bp-20h]@8
         a1.x = (double)pos->x - lightmap->position_x;
         a1.y = (double)pos->y - lightmap->position_y;
         a1.z = (double)pos->z - lightmap->position_z;
@@ -754,7 +754,7 @@ void LightmapBuilder::DrawLightmaps(int indices) {
 
         render->BeginLightmaps();
 
-        Vec3_float_ arg4;
+        Vec3f arg4;
         arg4.x = 1.0f;
         arg4.y = 1.0f;
         arg4.z = 1.0f;
@@ -789,7 +789,7 @@ void LightmapBuilder::Draw_183808_Lightmaps() {
 // //////////////////////OTHER////////////////////////////////////////////////////////
 // ----- (0045CA88) --------------------------------------------------------
 int *LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
-                             Vec3_float_ *pNormal) {
+                              Vec3f *pNormal) {
     int *result;            // eax@1
     LightsData *v6;        // ecx@2
     RenderVertexSoft *v7;  // ebx@2
@@ -801,7 +801,7 @@ int *LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
     float v13 {};             // edx@5
     int v14;               // eax@5
     float v15;             // ST10_4@5
-    Vec3_float_ v16;       // ST00_12@5
+    Vec3f v16;       // ST00_12@5
     double v17;            // st7@5
     int a5 {};                // [sp+2Ch] [bp-1Ch]@1
     float v19;             // [sp+30h] [bp-18h]@1
@@ -941,8 +941,8 @@ int *LightmapBuilder::_45CBD4(RenderVertexSoft *a2, int a3, int *a4, int *a5) {
 }
 
 //----- (0045CC0C) --------------------------------------------------------
-double LightmapBuilder::_45CC0C_light(Vec3_float_ a1, float a2, float a3,
-                                      Vec3_float_ *pNormal, float a5,
+double LightmapBuilder::_45CC0C_light(Vec3f a1, float a2, float a3,
+                                      Vec3f *pNormal, float a5,
                                       int uLightType) {
     float v7;            // esi@1
     int v8;              // eax@1

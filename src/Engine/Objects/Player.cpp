@@ -1832,7 +1832,7 @@ int Player::ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type) {
 //----- (0048DCF6) --------------------------------------------------------
 int Player::ReceiveSpecialAttackEffect(
     int attType,
-    struct Actor* pActor) {  // long function - consider breaking into two??
+    Actor* pActor) {  // long function - consider breaking into two??
 
     SPECIAL_ATTACK_TYPE attTypeCast = (SPECIAL_ATTACK_TYPE)attType;
 
@@ -2127,10 +2127,9 @@ int Player::ReceiveSpecialAttackEffect(
                 return 1;
                 break;
 
-            case SPECIAL_ATTACK_STEAL:
+            case SPECIAL_ATTACK_STEAL: {
                 PlaySound(SPEECH_ItemBroken, 0);
-                void* actoritems;
-                actoritems = pActor->ActorHasItems;
+                void *actoritems = &pActor->ActorHasItems[0];
                 if (pActor->ActorHasItems[0].uItemID) {
                     actoritems = &pActor->ActorHasItems[1];
                     if (pActor->ActorHasItems[1].uItemID) {
@@ -2148,6 +2147,7 @@ int Player::ReceiveSpecialAttackEffect(
                 spell_fx_renderer->SetPlayerBuffAnim(0x99u, whichplayer);
                 return 1;
                 break;
+            }
 
             case SPECIAL_ATTACK_AGING:
                 PlaySound(SPEECH_Aging, 0);
@@ -6898,18 +6898,14 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos, signed int targetchar) {
+void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, signed int targetchar) {
     // target player? if any
 
-    Player* playerPtr;            // ebx@3
-    Actor* actorPtr;              // esi@3
     int spellId;                  // eax@38
     signed int recvdMagicDmg;     // eax@139
     int v72[4] {};                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
-
-    unsigned int uActorID = PID_ID(uObjID);
     int pidtype = PID_TYPE(uObjID);
 
     /*    OBJECT_Any = 0x0,
@@ -6920,11 +6916,13 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
     OBJECT_Decoration = 0x5,
     OBJECT_BModel = 0x6,*/
 
-    if (pidtype != 2) {  // not an item
+    if (pidtype != OBJECT_Item) {  // not an item
         // hit by monster
-        if (pidtype != 3) __debugbreak();
+        if (pidtype != OBJECT_Actor) __debugbreak();
 
         if (targetchar == -1) __debugbreak();
+
+        unsigned int uActorID = PID_ID(uObjID);
 
         // test
         // if (/*uActorType == OBJECT_Player &&*/ !_A750D8_player_speech_timer) {
@@ -6933,9 +6931,8 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         //    uSpeakingCharacter = 1;
         // }
         // test
-
-        playerPtr = &pParty->pPlayers[targetchar];
-        actorPtr = &pActors[uActorID];
+        Player *playerPtr = &pParty->pPlayers[targetchar];
+        Actor *actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->sHealth;
         if (PID_TYPE(uObjID) != 3 || !actorPtr->ActorHitOrMiss(playerPtr))
             return;
@@ -7089,11 +7086,12 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
         viewparams->bRedrawGameUI = 1;
         return;
     } else {  // is an item
-        SpriteObject* spritefrom = &pSpriteObjects[uActorID];
+        int spriteId = PID_ID(uObjID);
+        SpriteObject* spritefrom = &pSpriteObjects[spriteId];
         int uActorType = PID_TYPE(spritefrom->spell_caster_pid);
         int uActorID = PID_ID(spritefrom->spell_caster_pid);
 
-        if (uActorType == 2) {  // item
+        if (uActorType == OBJECT_Item) {
             Player* playerPtr;  // eax@81
 
             // select char target or pick random
@@ -7130,7 +7128,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3_int_* pPos
                 uSpeakingCharacter = uActorID + 1;
             }
             return;
-        } else if (uActorType == 3) {  // missile fired by actor
+        } else if (uActorType == OBJECT_Actor) {  // missile fired by actor
             Actor* actorPtr = &pActors[uActorID];
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
             Player* playerPtr = &pParty->pPlayers[targetchar];
@@ -7728,7 +7726,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
-        Vec3_int_ a3 = actor->vPosition - pParty->vPosition;
+        Vec3i a3 = actor->vPosition - pParty->vPosition;
         normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
 
         Actor::DamageMonsterFromParty(PID(OBJECT_Player, uActiveCharacter - 1),

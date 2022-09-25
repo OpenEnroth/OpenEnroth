@@ -3,7 +3,7 @@
 #include "Engine/Graphics/LightsStack.h"
 
 //----- (00467D88) --------------------------------------------------------
-bool LightsStack_MobileLight_::AddLight(const Vec3_float_ &pos,
+bool LightsStack_MobileLight_::AddLight(const Vec3f &pos,
                                         int16_t uSectorID, int uRadius,
                                         uint8_t r, uint8_t g,
                                         uint8_t b, char uLightType) {
@@ -25,7 +25,7 @@ bool LightsStack_MobileLight_::AddLight(const Vec3_float_ &pos,
     return true;
 }
 
-bool LightsStack_StationaryLight_::AddLight(const Vec3_float_ &pos,
+bool LightsStack_StationaryLight_::AddLight(const Vec3f &pos,
                                             int16_t a5, unsigned char r,
                                             unsigned char g, unsigned char b,
                                             char uLightType) {

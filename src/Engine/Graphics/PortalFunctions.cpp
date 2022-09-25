@@ -155,7 +155,7 @@ void stru10::CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
 bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
                               unsigned int uNumVertices,
                               RenderVertexSoft *pOutBounding) {
-    Vec3_float_ a1;
+    Vec3f a1;
     a1.x = 0.0f;
     a1.y = 0.0f;
     a1.z = 0.0f;
@@ -388,7 +388,7 @@ bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
 
 //----- (0049C720) --------------------------------------------------------
 bool stru10::CalcPortalFrustum(RenderVertexSoft *pFaceBounding, IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
-    Vec3_float_ pRayStart;
+    Vec3f pRayStart;
     pRayStart.x = (double)pCamera3D->vCameraPos.x;
     pRayStart.y = (double)pCamera3D->vCameraPos.y;
     pRayStart.z = (double)pCamera3D->vCameraPos.z;
@@ -405,11 +405,11 @@ bool stru10::CalcPortalFrustum(RenderVertexSoft *pFaceBounding, IndoorCameraD3D_
 
 //----- (0049C7C5) --------------------------------------------------------
 bool stru10::CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
-                            RenderVertexSoft *pFaceBounding2,
-                            Vec3_float_ *pRayStart,
-                            IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
-    Vec3_float_ ray_dir = pFaceBounding1->vWorldPosition - *pRayStart; // get ray for cmera to bounding1
-    Vec3_float_ pRay2 = Cross(ray_dir, pFaceBounding2->vWorldPosition - pFaceBounding1->vWorldPosition);
+                                    RenderVertexSoft *pFaceBounding2,
+                                    Vec3f *pRayStart,
+                                    IndoorCameraD3D_Vec4 *pPortalDataFrustum) {
+    Vec3f ray_dir = pFaceBounding1->vWorldPosition - *pRayStart; // get ray for cmera to bounding1
+    Vec3f pRay2 = Cross(ray_dir, pFaceBounding2->vWorldPosition - pFaceBounding1->vWorldPosition);
 
     float sqr_mag = pRay2.x * pRay2.x + pRay2.y * pRay2.y + pRay2.z * pRay2.z;
     if (fabsf(sqr_mag) > 1e-6f) {

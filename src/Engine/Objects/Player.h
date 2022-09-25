@@ -198,7 +198,7 @@ struct Player {
     int StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
     void Heal(int amount);
     int ReceiveDamage(signed int amount, DAMAGE_TYPE dmg_type);
-    int ReceiveSpecialAttackEffect(int attType, struct Actor* pActor);
+    int ReceiveSpecialAttackEffect(int attType, Actor* pActor);
     unsigned int GetSpellSchool(unsigned int uSpellID);
     int GetAttackRecoveryTime(bool bRangedAttack);
 
@@ -544,7 +544,7 @@ struct Player {
     char field_1B3B_set0_unused;
 };
 
-void DamagePlayerFromMonster(unsigned int uObjID, int a2, Vec3_int_* pPos, signed int a4);
+void DamagePlayerFromMonster(unsigned int uObjID, int a2, Vec3i* pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();

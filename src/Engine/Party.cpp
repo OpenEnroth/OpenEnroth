@@ -724,7 +724,7 @@ void Party::Yell() {
     }
 
     if (!pParty->bTurnBasedModeOn) {
-        for (unsigned int i = 0; i < uNumActors; i++) {
+        for (unsigned int i = 0; i < pActors.size(); i++) {
             v0 = &pActors[i];
             if (v0->Actor::CanAct() &&
                 v0->pMonsterInfo.uHostilityType !=
@@ -1258,7 +1258,7 @@ size_t Party::ImmolationAffectedActors(int *affected, size_t affectedArrSize, si
     int x, y, z;
     int affectedCount = 0;
 
-    for (size_t i = 0; i < uNumActors; ++i) {
+    for (size_t i = 0; i < pActors.size(); ++i) {
         x = abs(pActors[i].vPosition.x - this->vPosition.x);
         y = abs(pActors[i].vPosition.y - this->vPosition.y);
         z = abs(pActors[i].vPosition.z - this->vPosition.z);

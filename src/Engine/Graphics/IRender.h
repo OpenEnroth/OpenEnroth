@@ -93,8 +93,8 @@ extern ODMRenderParams *pODMRenderParams;
 struct RenderVertexSoft {
     inline RenderVertexSoft() : flt_2C(0.0f) {}
 
-    Vec3_float_ vWorldPosition {};
-    Vec3_float_ vWorldViewPosition {};
+    Vec3f vWorldPosition {};
+    Vec3f vWorldViewPosition {};
     float vWorldViewProjX = 0;
     float vWorldViewProjY = 0;
     float _rhw = 0;
@@ -107,11 +107,11 @@ struct RenderVertexSoft {
 /*  112 */
 #pragma pack(push, 1)
 struct RenderVertexD3D3 {
-    Vec3_float_ pos {};
+    Vec3f pos {};
     float rhw = 0;
     unsigned int diffuse = 0;
     unsigned int specular = 0;
-    Vec2_float_ texcoord {};
+    Vec2f texcoord {};
 };
 #pragma pack(pop)
 
@@ -363,7 +363,7 @@ class IRender {
     virtual void BeginLightmaps2() = 0;
     virtual void EndLightmaps2() = 0;
     virtual bool DrawLightmap(struct Lightmap *pLightmap,
-                              Vec3_float_ *pColorMult, float z_bias) = 0;
+                              Vec3f *pColorMult, float z_bias) = 0;
 
     virtual void BeginDecals() = 0;
     virtual void EndDecals() = 0;
@@ -471,7 +471,6 @@ int _43F55F_get_billboard_light_level(struct RenderBillboard *a1,
 int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, float y, float z);
 unsigned int GetMaxMipLevels(unsigned int uDim);
 
-unsigned int sub_46DEF2(signed int a2, unsigned int uLayingItemID);
 void UpdateObjects();
 
 class BSPModel;

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
@@ -42,8 +43,7 @@ using EngineIoc = Engine_::IocContainer;
 static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
 static SpellFxRenderer *spell_fx_renderer = EngineIoc::ResolveSpellFxRenderer();
 
-std::array<Actor, 500> pActors;
-size_t uNumActors;
+std::vector<Actor> pActors;
 
 stru319 stru_50C198;  // idb
 
@@ -117,7 +117,7 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
 
 //----- (00448A40) --------------------------------------------------------
 void Actor::ToggleFlag(signed int uActorID, unsigned int uFlag, int bToggle) {
-    if (uActorID >= 0 && uActorID <= (signed int)(uNumActors - 1)) {
+    if (uActorID >= 0 && uActorID <= (signed int)(pActors.size() - 1)) {
         if (bToggle) {
             pActors[uActorID].uAttributes |= uFlag;
         } else {
@@ -132,8 +132,8 @@ void Actor::ToggleFlag(signed int uActorID, unsigned int uFlag, int bToggle) {
 
 //----- (00448518) --------------------------------------------------------
 void sub_448518_npc_set_item(int npc, unsigned int item, int a3) {
-    for (uint i = 0; i < uNumActors; i++) {
-        if (pActors[uNumActors].sNPC_ID == npc) Actor::GiveItem(i, item, a3);
+    for (uint i = 0; i < pActors.size(); i++) {
+        if (pActors[i].sNPC_ID == npc) Actor::GiveItem(i, item, a3);
     }
 }
 
@@ -141,7 +141,7 @@ void sub_448518_npc_set_item(int npc, unsigned int item, int a3) {
 void Actor::GiveItem(signed int uActorID, unsigned int uItemID,
                      unsigned int bGive) {
     if ((uActorID >= 0) &&
-        (signed int)uActorID <= (signed int)(uNumActors - 1)) {
+        (signed int)uActorID <= (signed int)(pActors.size() - 1)) {
         if (bGive) {
             if (pActors[uActorID].uCarriedItemID == ITEM_NULL)
                 pActors[uActorID].uCarriedItemID = uItemID;
@@ -730,7 +730,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
     Actor *victim = &pActors[uActorID];
     if (a2 == 1) victim->uAttributes |= ACTOR_AGGRESSOR;
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
         if (!actor->CanAct() || i == uActorID) continue;
 
@@ -898,7 +898,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
     float v31;        // st7@45
     float v32;        // st6@45
     float v33;        // st7@45
-    Vec3_int_ v37;    // [sp-10h] [bp-5Ch]@15
+    Vec3i v37;    // [sp-10h] [bp-5Ch]@15
     AIDirection v41;  // [sp+14h] [bp-38h]@46
     float outy2 = 0;      // [sp+38h] [bp-14h]@33
     float outx2 = 0;      // [sp+3Ch] [bp-10h]@33
@@ -937,7 +937,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3_int_::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 3) {
@@ -946,7 +946,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                     pParty->vPosition.z + (signed int)pParty->uPartyHeight / 3;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3_int_::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 2) {
@@ -955,7 +955,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3_int_::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::Rotate(8, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
             if (v4 == 1) {
@@ -964,7 +964,7 @@ void Actor::GetDirectionInfo(unsigned int uObj1ID, unsigned int uObj2ID,
                 v18 = TrigLUT->uIntegerHalfPi + pParty->sRotationZ;
                 v37.x = pParty->vPosition.x;
                 v37.y = pParty->vPosition.y;
-                Vec3_int_::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
+                Vec3i::Rotate(24, v18, 0, v37, &outx, &outy, &outz);
                 break;
             }
         }
@@ -1111,7 +1111,7 @@ void Actor::AI_StandOrBored(unsigned int uActorID, signed int uObjID,
 //----- (00403EB6) --------------------------------------------------------
 void Actor::AI_Stand(unsigned int uActorID, unsigned int object_to_face_pid,
                      unsigned int uActionLength, AIDirection *a4) {
-    assert(uActorID < uNumActors);
+    assert(uActorID < pActors.size());
     // Actor* actor = &pActors[uActorID];
 
     AIDirection a3;
@@ -1153,14 +1153,14 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, signed int sTargetPid,
     int16_t v6;        // esi@6
     int16_t v7;        // edi@6
     signed int v8;     // eax@7
-    Vec3_int_ v10;     // ST04_12@9
+    Vec3i v10;     // ST04_12@9
     AIDirection *v12;  // eax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@12
     AIDirection v20;   // [sp+28h] [bp-2Ch]@12
     int v23;           // [sp+4Ch] [bp-8h]@6
     unsigned int v25;  // [sp+5Ch] [bp+8h]@13
 
-    assert(uActorID < uNumActors);
+    assert(uActorID < pActors.size());
 
     if (pActors[uActorID].pMonsterInfo.uMovementType ==
             MONSTER_MOVEMENT_TYPE_STAIONARY &&
@@ -1417,7 +1417,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
     int16_t v4;          // esi@3
     int16_t v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3_int_ v7;        // ST04_12@6
+    Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     __int16 v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
@@ -1491,7 +1491,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
     int16_t v4;          // esi@3
     int16_t v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3_int_ v7;        // ST04_12@6
+    Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     __int16 v13;         // ax@10
     signed int v16;      // ecx@17
@@ -1566,7 +1566,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
     int16_t v4;          // esi@3
     int16_t v5;          // edi@3
     signed int v6;       // eax@4
-    Vec3_int_ v7;        // ST04_12@6
+    Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
     __int16 v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
@@ -1631,7 +1631,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     int v4;            // esi@3
     int v5;            // edi@3
     signed int v6;     // eax@4
-    Vec3_int_ v7;      // ST04_12@6
+    Vec3i v7;      // ST04_12@6
     AIDirection *v10;  // eax@9
     __int16 v14;       // ax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@10
@@ -1663,7 +1663,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     v7.y = v3->vPosition.y;
     v7.x = v3->vPosition.x;
     if (Check_LineOfSight(v4, v5, v22, v7) ||
-        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3_int_(v4, v5, v22))) {
+        Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(v4, v5, v22))) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(PID(OBJECT_Actor, uActorID), sTargetPid,
                                     &a3, 0);
@@ -2241,10 +2241,10 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
     v5 = 0;
     *a2 = 0;
     closestId = 0;
-    assert(uActorID < uNumActors);
+    assert(uActorID < pActors.size());
     Actor *thisActor = &pActors[uActorID];
 
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
         if (actor->uAIState == Dead || actor->uAIState == Dying ||
             actor->uAIState == Removed || actor->uAIState == Summoned ||
@@ -2417,8 +2417,7 @@ void Actor::UpdateAnimation() {
             break;
 
         case Dead:
-            if (pSpriteFrameTable->pSpriteSFrames[pSpriteIDs[ANIM_Dead]]
-                    .hw_sprites[0] == nullptr)
+            if (pSpriteFrameTable->pSpriteSFrames[pSpriteIDs[ANIM_Dead]].hw_sprites[0] == nullptr)
                 uAIState = Removed;
             else
                 uCurrentActionAnimation = ANIM_Dead;
@@ -2435,40 +2434,9 @@ void Actor::UpdateAnimation() {
 
 //----- (00459671) --------------------------------------------------------
 void Actor::Reset() {
-    this->pActorName[0] = 0;
-    this->word_000086_some_monster_id = 0;
-    this->sNPC_ID = 0;
-    this->vPosition.z = 0;
-    this->vPosition.y = 0;
-    this->vPosition.x = 0;
-    this->vVelocity.z = 0;
-    this->vVelocity.y = 0;
-    this->vVelocity.x = 0;
-    this->uYawAngle = 0;
-    this->uPitchAngle = 0;
-    this->uAttributes = 0;
-    this->uSectorID = 0;
-    this->uCurrentActionTime = 0;
-    this->vInitialPosition.z = 0;
-    this->vInitialPosition.y = 0;
-    this->vInitialPosition.x = 0;
-    this->vGuardingPosition.z = 0;
-    this->vGuardingPosition.y = 0;
-    this->vGuardingPosition.x = 0;
-    this->uTetherDistance = 256;
-    this->uActorRadius = 32;
-    this->uActorHeight = 128;
-    this->uAIState = Standing;
-    this->uCurrentActionAnimation = ANIM_Standing;
-    this->uMovementSpeed = 200;
-    this->uCarriedItemID = 0;
-    this->uGroup = 0;
-    this->uAlly = 0;
-    this->uSummonerID = 0;
-    this->uLastCharacterIDToHit = 0;
-    this->dword_000334_unique_name = 0;
-    memset(this->pSpriteIDs, 0, sizeof(pSpriteIDs));
-    memset(this->pActorBuffs, 0, 0x160u);
+    int id = this->id;
+    *this = Actor();
+    this->id = id;
 }
 
 //----- (0045959A) --------------------------------------------------------
@@ -2499,7 +2467,7 @@ void Actor::Remove() { this->uAIState = Removed; }
 
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(signed int attacker_id,
-                                   unsigned int actor_id, Vec3_int_ *pVelocity,
+                                   unsigned int actor_id, Vec3i *pVelocity,
                                    signed int a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
@@ -2602,7 +2570,6 @@ void Actor::SummonMinion(int summonerId) {
     int summonMonsterBaseType;         // esi@1
     int v5;                            // edx@2
     int v7;                            // edi@10
-    Actor *actor;                      // esi@10
     MonsterInfo *v9;                   // ebx@10
     // MonsterDesc *v10; // edi@10
     int v13;                 // ebx@10
@@ -2631,7 +2598,7 @@ void Actor::SummonMinion(int summonerId) {
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
         result = pIndoor->GetSector(v15, v17, this->vPosition.z);
         if (result != actorSector) return;
-        result = BLV_GetFloorLevel(Vec3_int_(v15, v17, v27), result, &monsterId);
+        result = BLV_GetFloorLevel(Vec3i(v15, v17, v27), result, &monsterId);
         if (result != -30000) return;
         if (abs(result - v27) > 1024) return;
     }
@@ -2650,10 +2617,12 @@ void Actor::SummonMinion(int summonerId) {
             summonMonsterBaseType += 1;
     }
     v7 = summonMonsterBaseType - 1;
-    actor = &pActors[uNumActors];
+    Actor *actor = AllocateActor(true);
+    if (!actor)
+        return;
+
     v9 = &pMonsterStats->pInfos[v7 + 1];
-    pActors[uNumActors].Reset();
-    strcpy(actor->pActorName, v9->pName);
+    actor->pActorName = v9->pName;
     actor->sCurrentHP = (short)v9->uHP;
     actor->pMonsterInfo = *v9;
     actor->word_000086_some_monster_id = summonMonsterBaseType;
@@ -2682,9 +2651,9 @@ void Actor::SummonMinion(int summonerId) {
     actor->uCurrentActionLength = 256;
     actor->UpdateAnimation();
 
-    ++uNumActors;
     ++this->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
-    if (ActorEnemy()) actor->uAttributes |= ACTOR_AGGRESSOR;
+    if (ActorEnemy())
+        actor->uAttributes |= ACTOR_AGGRESSOR;
     actor->uSummonerID = PID(OBJECT_Actor, summonerId);
 }
 
@@ -2747,7 +2716,7 @@ void Actor::UpdateActorAI() {
             v4 = pParty->armageddonDamage + 50;
             if (pParty->armageddon_timer <= 0) {
                 pParty->armageddon_timer = 0;
-                for (size_t i = 0; i < uNumActors; i++) {
+                for (size_t i = 0; i < pActors.size(); i++) {
                     pActor = &pActors[i];
                     if (pActor->CanAct()) {
                         sDmg = pActor->CalcMagicalDamageToActor((DAMAGE_TYPE)5,
@@ -2786,7 +2755,7 @@ void Actor::UpdateActorAI() {
     }
 
     // this loops over all actors in background ai state
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         pActor = &pActors[i];
         ai_near_actors_targets_pid[i] = OBJECT_Player;
 
@@ -2852,7 +2821,7 @@ void Actor::UpdateActorAI() {
     // loops over for the actors in "full" ai state
     for (v78 = 0; v78 < ai_arrays_size; ++v78) {
         uint actor_id = ai_near_actors_ids[v78];
-        assert(actor_id < uNumActors);
+        assert(actor_id < pActors.size());
 
         pActor = &pActors[actor_id];
 
@@ -3236,7 +3205,7 @@ unsigned int Actor::SearchActorByGroup(unsigned int *pTotalActors,
     int v8 = GetAlertStatus();
     *pTotalActors = 0;
     result = 0;
-    for (uint i = 0; i < uNumActors; i++) {
+    for (uint i = 0; i < pActors.size(); i++) {
         if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == v8 &&
             pActors[i].uGroup == uGroup) {
             ++*pTotalActors;
@@ -3254,7 +3223,7 @@ unsigned int Actor::SearchActorByMonsterID(unsigned int *pTotalActors,
     v8 = GetAlertStatus();
     *pTotalActors = 0;
     result = 0;
-    for (uint i = 0; i < uNumActors; i++) {
+    for (uint i = 0; i < pActors.size(); i++) {
         if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == v8 &&
             pActors[i].pMonsterInfo.field_33 == uMonsterID) {
             ++*pTotalActors;
@@ -3271,7 +3240,7 @@ unsigned int Actor::SearchAliveActors(unsigned int *pTotalActors) {
     v2 = GetAlertStatus();
     result = 0;
     *pTotalActors = 0;
-    for (uint i = 0; i < uNumActors; i++) {
+    for (uint i = 0; i < pActors.size(); i++) {
         if ((pActors[i].uAttributes & ACTOR_UNKNOW7) == v2) {
             ++*pTotalActors;
             if (pActors[i].IsNotAlive() == 1) ++result;
@@ -3298,7 +3267,7 @@ void Actor::InitializeActors() {
         "%s %s %u", __FILE__, __FUNCTION__,
         __LINE__);  // ai_near_actors_targets_pid[i] for AI_Stand seems always
                     // 0;  original code behaviour is identical
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
 
         if (actor->CanAct() || actor->uAIState == Disabled) {
@@ -3326,7 +3295,7 @@ void Actor::InitializeActors() {
 }
 //----- (00439474) --------------------------------------------------------
 void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
-                                   Vec3_int_ *pVelocity) {
+                                   Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     unsigned __int16 v16;            // cx@25
@@ -3551,14 +3520,14 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_SHOOTS_S_FOR_U,
                     player->pName,
-                    pMonster->pActorName,
+                    pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
             else
                 GameUI_SetStatusBar(
                     LSTR_FMT_S_HITS_S_FOR_U,
                     player->pName,
-                    pMonster->pActorName,
+                    pMonster->pActorName.c_str(),
                     uDamageAmount
                 );
         }
@@ -3584,7 +3553,7 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                 LSTR_FMT_S_INFLICTS_U_KILLING_S,
                 player->pName,
                 uDamageAmount,
-                pMonster->pActorName
+                pMonster->pActorName.c_str()
             );
         }
     }
@@ -3635,59 +3604,50 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
 }
 
 //----- (004BBF61) --------------------------------------------------------
-void Actor::Arena_summon_actor(int monster_id, __int16 x, int y, int z) {
-    // int v12;      // ebx@7
-    // int v13;      // eax@8
-    __int16 v16;  // [sp+10h] [bp-4h]@3
+void Actor::Arena_summon_actor(int monster_id, int x, int y, int z) {
+    Actor *actor = AllocateActor(true);
+    if (!actor)
+        return;
 
-    if (uNumActors < 500) {
-        v16 = 0;
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-            v16 = pIndoor->GetSector(x, y, z);
-        pActors[uNumActors].Reset();
-        strcpy(pActors[uNumActors].pActorName,
-               pMonsterStats->pInfos[monster_id].pName);
-        pActors[uNumActors].sCurrentHP =
-            (short)pMonsterStats->pInfos[monster_id].uHP;
-        pActors[uNumActors].pMonsterInfo = pMonsterStats->pInfos[monster_id];
-        pActors[uNumActors].word_000086_some_monster_id = monster_id;
-        pActors[uNumActors].uActorRadius =
-            pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;
-        pActors[uNumActors].uActorHeight =
-            pMonsterList->pMonsters[monster_id - 1].uMonsterHeight;
-        pActors[uNumActors].uMovementSpeed =
-            pMonsterList->pMonsters[monster_id - 1].uMovementSpeed;
-        pActors[uNumActors].vInitialPosition.x = x;
-        pActors[uNumActors].vPosition.x = x;
-        pActors[uNumActors].uAttributes |= ACTOR_AGGRESSOR;
-        pActors[uNumActors].pMonsterInfo.uTreasureType = 0;
-        pActors[uNumActors].pMonsterInfo.uTreasureLevel = 0;
-        pActors[uNumActors].pMonsterInfo.uTreasureDiceSides = 0;
-        pActors[uNumActors].pMonsterInfo.uTreasureDiceRolls = 0;
-        pActors[uNumActors].pMonsterInfo.uTreasureDropChance = 0;
-        pActors[uNumActors].vInitialPosition.y = y;
-        pActors[uNumActors].vPosition.y = y;
-        pActors[uNumActors].vInitialPosition.z = z;
-        pActors[uNumActors].vPosition.z = z;
-        pActors[uNumActors].uTetherDistance = 256;
-        pActors[uNumActors].uSectorID = v16;
-        pActors[uNumActors].uGroup = 1;
-        pActors[uNumActors].pMonsterInfo.uHostilityType =
-            MonsterInfo::Hostility_Long;
-        pActors[uNumActors].PrepareSprites(0);
-        //    for ( int i = 0; i < 4; i++)
-        //      pSoundList->LoadSound(pMonsterList->pMonsters[monster_id -
-        //      1].pSoundSampleIDs[i], 0);
-        //    v12 = 0;
-        //    do
-        //    {
-        //      v13 = pSoundList->LoadSound(v12 +
-        //      word_4EE088_sound_ids[pMonsterStats->pInfos[monster_id].uSpell1ID],
-        //      1); v12++;
-        //    }
-        //    while ( v13 );
-        ++uNumActors;
-    }
+    int v16 = 0;
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+        v16 = pIndoor->GetSector(x, y, z);
+
+    actor->pActorName = pMonsterStats->pInfos[monster_id].pName;
+    actor->sCurrentHP = (short)pMonsterStats->pInfos[monster_id].uHP;
+    actor->pMonsterInfo = pMonsterStats->pInfos[monster_id];
+    actor->word_000086_some_monster_id = monster_id;
+    actor->uActorRadius = pMonsterList->pMonsters[monster_id - 1].uMonsterRadius;
+    actor->uActorHeight = pMonsterList->pMonsters[monster_id - 1].uMonsterHeight;
+    actor->uMovementSpeed = pMonsterList->pMonsters[monster_id - 1].uMovementSpeed;
+    actor->vInitialPosition.x = x;
+    actor->vPosition.x = x;
+    actor->uAttributes |= ACTOR_AGGRESSOR;
+    actor->pMonsterInfo.uTreasureType = 0;
+    actor->pMonsterInfo.uTreasureLevel = 0;
+    actor->pMonsterInfo.uTreasureDiceSides = 0;
+    actor->pMonsterInfo.uTreasureDiceRolls = 0;
+    actor->pMonsterInfo.uTreasureDropChance = 0;
+    actor->vInitialPosition.y = y;
+    actor->vPosition.y = y;
+    actor->vInitialPosition.z = z;
+    actor->vPosition.z = z;
+    actor->uTetherDistance = 256;
+    actor->uSectorID = v16;
+    actor->uGroup = 1;
+    actor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Long;
+    actor->PrepareSprites(0);
+    //    for ( int i = 0; i < 4; i++)
+    //      pSoundList->LoadSound(pMonsterList->pMonsters[monster_id -
+    //      1].pSoundSampleIDs[i], 0);
+    //    v12 = 0;
+    //    do
+    //    {
+    //      v13 = pSoundList->LoadSound(v12 +
+    //      word_4EE088_sound_ids[pMonsterStats->pInfos[monster_id].uSpell1ID],
+    //      1); v12++;
+    //    }
+    //    while ( v13 );
 }
 
 //----- (00426E10) --------------------------------------------------------
@@ -3975,8 +3935,7 @@ bool CheckActors_proximity() {
     distance = 5120;
     if (uCurrentlyLoadedLevelType == LEVEL_Indoor) distance = 2560;
 
-    if ((signed int)uNumActors <= 0) return false;
-    for (uint i = 0; i < (signed int)uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         for_x = abs(pActors[i].vPosition.x - pParty->vPosition.x);
         for_y = abs(pActors[i].vPosition.y - pParty->vPosition.y);
         for_z = abs(pActors[i].vPosition.z - pParty->vPosition.z);
@@ -4063,9 +4022,9 @@ void Actor::LootActor() {
         if (!pParty->AddItemToParty(&Dst)) pParty->SetHoldingItem(&Dst);
         this->uCarriedItemID = 0;
         if (this->ActorHasItems[0].uItemID) {
-            if (!pParty->AddItemToParty(this->ActorHasItems)) {
+            if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
                 pParty->PickedItem_PlaceInInventory_or_Drop();
-                pParty->SetHoldingItem(this->ActorHasItems);
+                pParty->SetHoldingItem(&this->ActorHasItems[0]);
             }
             this->ActorHasItems[0].Reset();
         }
@@ -4108,9 +4067,9 @@ void Actor::LootActor() {
         }
     }
     if (this->ActorHasItems[0].uItemID) {
-        if (!pParty->AddItemToParty(this->ActorHasItems)) {
+        if (!pParty->AddItemToParty(&this->ActorHasItems[0])) {
             pParty->PickedItem_PlaceInInventory_or_Drop();
-            pParty->SetHoldingItem(this->ActorHasItems);
+            pParty->SetHoldingItem(&this->ActorHasItems[0]);
             itemFound = true;
         }
         this->ActorHasItems[0].Reset();
@@ -4174,25 +4133,17 @@ bool Actor::_427102_IsOkToCastSpell(enum SPELL_TYPE spell) {
 
 //----- (0042704B) --------------------------------------------------------
 ABILITY_INDEX Actor::special_ability_use_check(int a2) {
-    signed int okToCastSpell1;  // ebx@5
-    signed int okToCastSpell2;  // edi@5
-
-    if (this->pMonsterInfo.uSpecialAbilityType == 2 &&
-        this->pMonsterInfo.uSpecialAbilityDamageDiceBonus < 3 &&
+    if (this->pMonsterInfo.uSpecialAbilityType == 2 && this->pMonsterInfo.uSpecialAbilityDamageDiceBonus < 3 &&
         rand() % 100 < 5)
         this->SummonMinion(a2);
-    okToCastSpell1 =
-        this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell1ID);
-    okToCastSpell2 =
-        this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell2ID);
-    if (okToCastSpell1 && this->pMonsterInfo.uSpell1UseChance &&
-        rand() % 100 < this->pMonsterInfo.uSpell1UseChance)
+
+    bool okToCastSpell1 = this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell1ID);
+    bool okToCastSpell2 = this->_427102_IsOkToCastSpell((SPELL_TYPE)this->pMonsterInfo.uSpell2ID);
+    if (okToCastSpell1 && this->pMonsterInfo.uSpell1UseChance && rand() % 100 < this->pMonsterInfo.uSpell1UseChance)
         return ABILITY_SPELL1;
-    if (okToCastSpell2 && this->pMonsterInfo.uSpell2UseChance &&
-        rand() % 100 < this->pMonsterInfo.uSpell2UseChance)
+    if (okToCastSpell2 && this->pMonsterInfo.uSpell2UseChance && rand() % 100 < this->pMonsterInfo.uSpell2UseChance)
         return ABILITY_SPELL2;
-    if (this->pMonsterInfo.uAttack2Chance &&
-        rand() % 100 < this->pMonsterInfo.uAttack2Chance)
+    if (this->pMonsterInfo.uAttack2Chance && rand() % 100 < this->pMonsterInfo.uAttack2Chance)
         return ABILITY_ATTACK2;
     return ABILITY_ATTACK1;
 }
@@ -4366,7 +4317,7 @@ void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
                           unsigned int bToggle) {
     if (uGroupID) {
         if (bToggle) {
-            for (uint i = 0; i < (unsigned int)uNumActors; ++i) {
+            for (uint i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].uGroup == uGroupID) {
                     pActors[i].uAttributes |= uFlag;
                     if (uFlag == 0x10000) {
@@ -4376,7 +4327,7 @@ void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
                 }
             }
         } else {
-            for (uint i = 0; i < (unsigned int)uNumActors; ++i) {
+            for (uint i = 0; i < (unsigned int)pActors.size(); ++i) {
                 if (pActors[i].uGroup == uGroupID) {
                     if (uFlag == 0x10000) {
                         if (pActors[i].uAIState != Dead) {
@@ -4404,7 +4355,7 @@ void Actor::MakeActorAIList_ODM() {
     pParty->uFlags &= 0xFFFFFFCF;  // ~0x30
 
     ai_arrays_size = 0;
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
 
         actor->ResetFullAiState();  // ~0x400
@@ -4503,7 +4454,7 @@ int Actor::MakeActorAIList_BLV() {
 
     // find actors that are in range and can act
     uint active_actor_count = 0;
-    for (uint i = 0; i < uNumActors; ++i) {
+    for (uint i = 0; i < pActors.size(); ++i) {
         pActors[i].ResetFullAiState();  // ~0x0400
 
         if (!pActors[i].CanAct()) {
@@ -4569,22 +4520,20 @@ int Actor::MakeActorAIList_BLV() {
     ai_arrays_size = num_actors_detect_player;
 
     // add any actors than can act and are in the same sector
-    if ((signed int)uNumActors > 0) {
-        for (uint i = 0; i < (signed int)uNumActors; ++i) {
-            if (pActors[i].CanAct() && pActors[i].uSectorID == party_sector) {
-                int v25 = 0;
-                if (num_actors_detect_player <= 0) {
-                    pActors[i].uAttributes |= ACTOR_ACTIVE;
-                    ai_array_detected_actor_ids[ai_arrays_size++] = i;
-                } else {
-                    // convoluted way of checking that this actor is not already on the list
-                    while (ai_array_detected_actor_ids[v25] != i) {
-                        ++v25;
-                        if (v25 >= num_actors_detect_player) {
-                            pActors[i].uAttributes |= ACTOR_ACTIVE;
-                            ai_array_detected_actor_ids[ai_arrays_size++] = i;
-                            break;
-                        }
+    for (uint i = 0; i < (signed int)pActors.size(); ++i) {
+        if (pActors[i].CanAct() && pActors[i].uSectorID == party_sector) {
+            int v25 = 0;
+            if (num_actors_detect_player <= 0) {
+                pActors[i].uAttributes |= ACTOR_ACTIVE;
+                ai_array_detected_actor_ids[ai_arrays_size++] = i;
+            } else {
+                // convoluted way of checking that this actor is not already on the list
+                while (ai_array_detected_actor_ids[v25] != i) {
+                    ++v25;
+                    if (v25 >= num_actors_detect_player) {
+                        pActors[i].uAttributes |= ACTOR_ACTIVE;
+                        ai_array_detected_actor_ids[ai_arrays_size++] = i;
+                        break;
                     }
                 }
             }
@@ -4720,7 +4669,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
     int current_sector = obj1_sector;
     int next_sector = 0;
     BLVFace* portalface;
-    Vec3_short_* portalverts;
+    Vec3s* portalverts;
 
     // loop through portals
     for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {
@@ -4770,7 +4719,7 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
             if (intersect < 0) continue;
 
             // check if point along ray is in portal face
-            Vec3_int_ pos = Vec3_int_(obj1_x + (rayxnorm * intersect) + 0.5,
+            Vec3i pos = Vec3i(obj1_x + (rayxnorm * intersect) + 0.5,
                 obj1_y + (rayynorm * intersect) + 0.5,
                 obj1_z + (rayznorm * intersect) + 0.5);
             if (!portalface->Contains(pos, MODEL_INDOOR)) {
@@ -4813,133 +4762,108 @@ bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID) {
 //----- (00450B0A) --------------------------------------------------------
 bool SpawnActor(unsigned int uMonsterID) {
     unsigned int v1;  // ebx@1
-    bool result;      // eax@2
     unsigned int v6;  // ecx@5
-    Actor actor;      // [sp+4h] [bp-350h]@5
-    Vec3_int_ pOut;   // [sp+348h] [bp-Ch]@5
+
+    Actor *actor = AllocateActor(true);
+    if (!actor)
+        return false;
 
     v1 = uMonsterID;
-    if (uNumActors == 499) {
-        result = 0;
-    } else {
-        if ((signed int)uMonsterID >= (signed int)pMonsterList->uNumMonsters)
-            v1 = 0;
-        memset(&actor, 0, sizeof(Actor));
-        strcpy(actor.pActorName, pMonsterStats->pInfos[v1 + 1].pName);
-        actor.sCurrentHP = (short)pMonsterStats->pInfos[v1 + 1].uHP;
-        actor.pMonsterInfo = pMonsterStats->pInfos[v1 + 1];
-        actor.word_000086_some_monster_id = v1 + 1;
-        actor.uActorRadius = pMonsterList->pMonsters[v1].uMonsterRadius;
-        actor.uActorHeight = pMonsterList->pMonsters[v1].uMonsterHeight;
-        actor.uMovementSpeed = pMonsterList->pMonsters[v1].uMovementSpeed;
+    if ((signed int)uMonsterID >= (signed int)pMonsterList->uNumMonsters)
+        v1 = 0;
 
-        Vec3_int_::Rotate(200, pParty->sRotationZ, 0, pParty->vPosition,
-                          &pOut.x, &pOut.z, &pOut.y);
-        actor.vInitialPosition.x = pOut.x;
-        actor.vPosition.x = pOut.x;
-        actor.uTetherDistance = 256;
-        actor.vInitialPosition.y = (short)pOut.z;
-        actor.vPosition.y = (short)pOut.z;
-        actor.vInitialPosition.z = (short)pOut.y;
-        actor.vPosition.z = (short)pOut.y;
-        pSprites_LOD->DeleteSomeSprites();
-        pPaletteManager->ResetNonTestLocked();
-        v6 = uNumActors - 1;
-        if (dword_5C6DF8 == 1) {
-            dword_5C6DF8 = 0;
-            v6 = uNumActors++;
-        }
-        pActors[v6] = actor;
-        pActors[v6].PrepareSprites(1);
-        result = 1;
-    }
-    return result;
+    Vec3i pOut;
+    Vec3i::Rotate(200, pParty->sRotationZ, 0, pParty->vPosition, &pOut.x, &pOut.y, &pOut.z);
+
+    actor->pActorName = pMonsterStats->pInfos[v1 + 1].pName;
+    actor->sCurrentHP = pMonsterStats->pInfos[v1 + 1].uHP;
+    actor->pMonsterInfo = pMonsterStats->pInfos[v1 + 1];
+    actor->word_000086_some_monster_id = v1 + 1;
+    actor->uActorRadius = pMonsterList->pMonsters[v1].uMonsterRadius;
+    actor->uActorHeight = pMonsterList->pMonsters[v1].uMonsterHeight;
+    actor->uMovementSpeed = pMonsterList->pMonsters[v1].uMovementSpeed;
+    actor->vInitialPosition.x = pOut.x;
+    actor->vPosition.x = pOut.x;
+    actor->uTetherDistance = 256;
+    actor->vInitialPosition.y = pOut.y;
+    actor->vPosition.y = pOut.y;
+    actor->vInitialPosition.z = pOut.z;
+    actor->vPosition.z = pOut.z;
+
+    pSprites_LOD->DeleteSomeSprites();
+    pPaletteManager->ResetNonTestLocked();
+
+    actor->PrepareSprites(1);
+
+    return true;
 }
 
 //----- (0044FA4C) --------------------------------------------------------
-int Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_game_seconds) {
-    int result;     // eax@13
-    int v10;               // ebx@16
-    const char *cMonsterName;       // [sp-4h] [bp-24h]@2
+void Spawn_Light_Elemental(int spell_power, int caster_skill_level, int duration_game_seconds) {
     unsigned int uFaceID;  // [sp+8h] [bp-18h]@16
-    int v19;               // [sp+Ch] [bp-14h]@16
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
-    int v21;               // [sp+14h] [bp-Ch]@14
-    unsigned int uMonsterID;      // [sp+1Ch] [bp-4h]@6
 
+    const char *cMonsterName;       // [sp-4h] [bp-24h]@2
     if (caster_skill_level == 4)
         cMonsterName = "Elemental Light C";
     else if (caster_skill_level == 3)
         cMonsterName = "Elemental Light B";
     else
         cMonsterName = "Elemental Light A";
+    unsigned int uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
 
-    uMonsterID = pMonsterList->GetMonsterIDByName(cMonsterName);
+    Actor *actor = AllocateActor(false);
+    if (!actor)
+        return; // Too many actors.
 
-    // find first free index
-    uint uActorIndex = 0;
-    for (; uActorIndex < uNumActors; uActorIndex++) {
-        if (pActors[uActorIndex].uAIState == Removed) break;
+    int partySectorId = 0;
+    if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
+        partySectorId = pBLVRenderParams->uPartySectorID;
+
+    int radius = uCurrentlyLoadedLevelType == LEVEL_Outdoor ? 128 : 64;
+    int angle = rand() % 2048;
+
+    actor->pActorName = pMonsterStats->pInfos[uMonsterID + 1].pName;
+    actor->sCurrentHP = pMonsterStats->pInfos[uMonsterID + 1].uHP;
+    actor->pMonsterInfo = pMonsterStats->pInfos[uMonsterID + 1];
+    actor->word_000086_some_monster_id = uMonsterID + 1;
+    actor->uActorRadius = pMonsterList->pMonsters[uMonsterID].uMonsterRadius;
+    actor->uActorHeight = pMonsterList->pMonsters[uMonsterID].uMonsterHeight;
+    actor->pMonsterInfo.uTreasureDiceRolls = 0;
+    actor->pMonsterInfo.uTreasureType = 0;
+    actor->pMonsterInfo.uExp = 0;
+    actor->uMovementSpeed = pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
+    actor->vInitialPosition.x = pParty->vPosition.x + TrigLUT->Cos(angle) * radius;
+    actor->vInitialPosition.y = pParty->vPosition.y + TrigLUT->Sin(angle) * radius;
+    actor->vInitialPosition.z = pParty->vPosition.z;
+    actor->vPosition = actor->vInitialPosition;
+    actor->uTetherDistance = 256;
+    actor->uSectorID = partySectorId;
+    actor->PrepareSprites(0);
+    actor->pMonsterInfo.uHostilityType = MonsterInfo::Hostility_Friendly;
+    actor->uAlly = 9999;
+    actor->uGroup = 0;
+    actor->uCurrentActionTime = 0;
+    actor->uAIState = Summoned;
+    actor->uCurrentActionLength = 256;
+    actor->UpdateAnimation();
+
+    int sectorId = pIndoor->GetSector(actor->vPosition);
+    int zlevel;
+    int zdiff;
+    if (uCurrentlyLoadedLevelType == LEVEL_Outdoor ||
+            sectorId == partySectorId &&
+            (zlevel = BLV_GetFloorLevel(actor->vPosition, sectorId, &uFaceID), zlevel != -30000) &&
+            (zdiff = abs(zlevel - pParty->vPosition.z), zdiff <= 1024)) {
+        actor->uSummonerID = PID(OBJECT_Player, spell_power);
+
+        GameTime spell_length = GameTime::FromSeconds(duration_game_seconds);
+
+        actor->pActorBuffs[ACTOR_BUFF_SUMMONED].Apply((pParty->GetPlayingTime() + spell_length),
+            caster_skill_level, spell_power, 0, 0);
+    } else {
+        actor->Remove();
     }
-
-    result = uNumActors + 1;
-
-
-    // use free slot or first new slot
-    if (uActorIndex != uNumActors || result < 500) {
-        v21 = 0;
-        if (uCurrentlyLoadedLevelType == LEVEL_Indoor)
-            v21 = pBLVRenderParams->uPartySectorID;
-        v19 = (((uCurrentlyLoadedLevelType != LEVEL_Outdoor) - 1) & 0x40) + 64;
-        pActors[uActorIndex].Reset();
-        strcpy(pActors[uActorIndex].pActorName, pMonsterStats->pInfos[uMonsterID + 1].pName);
-        pActors[uActorIndex].sCurrentHP = pMonsterStats->pInfos[uMonsterID + 1].uHP;
-        memcpy(&pActors[uActorIndex].pMonsterInfo, &pMonsterStats->pInfos[uMonsterID + 1],
-               sizeof(MonsterInfo));
-        pActors[uActorIndex].word_000086_some_monster_id = uMonsterID + 1;
-        pActors[uActorIndex].uActorRadius = pMonsterList->pMonsters[uMonsterID].uMonsterRadius;
-        pActors[uActorIndex].uActorHeight = pMonsterList->pMonsters[uMonsterID].uMonsterHeight;
-        pActors[uActorIndex].pMonsterInfo.uTreasureDiceRolls = 0;
-        pActors[uActorIndex].pMonsterInfo.uTreasureType = 0;
-        pActors[uActorIndex].pMonsterInfo.uExp = 0;
-        pActors[uActorIndex].uMovementSpeed =
-            pMonsterList->pMonsters[uMonsterID].uMovementSpeed;
-        v10 = rand() % 2048;
-        pActors[uActorIndex].vInitialPosition.x = pParty->vPosition.x + TrigLUT->Cos(v10) * v19;
-        pActors[uActorIndex].vPosition.x = pActors[uActorIndex].vInitialPosition.x;
-        pActors[uActorIndex].vInitialPosition.y = pParty->vPosition.y + TrigLUT->Sin(v10) * v19;
-        pActors[uActorIndex].vPosition.y = pActors[uActorIndex].vInitialPosition.y;
-        pActors[uActorIndex].vInitialPosition.z = pParty->vPosition.z;
-        pActors[uActorIndex].vPosition.z = pActors[uActorIndex].vInitialPosition.z;
-        pActors[uActorIndex].uTetherDistance = 256;
-        pActors[uActorIndex].uSectorID = v21;
-        pActors[uActorIndex].PrepareSprites(0);
-        pActors[uActorIndex].pMonsterInfo.uHostilityType =
-            MonsterInfo::Hostility_Friendly;
-        pActors[uActorIndex].uAlly = 9999;
-        pActors[uActorIndex].uGroup = 0;
-        pActors[uActorIndex].uCurrentActionTime = 0;
-        pActors[uActorIndex].uAIState = Summoned;
-        pActors[uActorIndex].uCurrentActionLength = 256;
-        pActors[uActorIndex].UpdateAnimation();
-
-        result = pIndoor->GetSector(pActors[uActorIndex].vPosition);
-        if (uCurrentlyLoadedLevelType == LEVEL_Outdoor ||
-            result == v21 &&
-                (result = BLV_GetFloorLevel(pActors[uActorIndex].vPosition, result, &uFaceID),
-                 result != -30000) &&
-                (result = abs(result - pParty->vPosition.z), result <= 1024)) {
-            if (uActorIndex == uNumActors) ++uNumActors;
-            pActors[uActorIndex].uSummonerID = PID(OBJECT_Player, spell_power);
-
-            GameTime spell_length = GameTime::FromSeconds(duration_game_seconds);
-
-            result = pActors[uActorIndex].pActorBuffs[ACTOR_BUFF_SUMMONED].Apply(
-                (pParty->GetPlayingTime() + spell_length),
-                caster_skill_level, spell_power, 0, 0);
-        }
-    }
-    return result;
 }
 
 //----- (0044F57C) --------------------------------------------------------
@@ -4951,7 +4875,6 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     char v8;               // zf@5
     int v12;               // edx@9
     // int v18;               // esi@31
-    Actor *pMonster;       // esi@35
     int v23;               // edx@36
     int v24;        // edi@36
     int v25;               // ecx@36
@@ -5093,7 +5016,6 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
     if (a4) NumToSpawn = a4;
     // v18 = NumToSpawn;
     if (NumToSpawn <= 0) return;
-    if ((signed int)(NumToSpawn + uNumActors) >= 500) return;
 
     pSector = 0;
     pPosX = spawn->vPosition.x;
@@ -5110,8 +5032,9 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
 
     // spawning loop
     for (int i = v53; i < NumToSpawn; ++i) {
-        pMonster = &pActors[uNumActors];
-        pActors[uNumActors].Reset();
+        Actor *pMonster = AllocateActor(true);
+        if (!pMonster)
+            continue;
 
         // random monster levels ABC
         if (v57) {
@@ -5152,7 +5075,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture.c_str());
         if (!v28) v28 = 1;
         Src = &pMonsterStats->pInfos[v28];
-        strcpy(pMonster->pActorName, Src->pName);
+        pMonster->pActorName = Src->pName;
         pMonster->sCurrentHP = Src->uHP;
         assert(sizeof(MonsterInfo_MM7) == 88);
 
@@ -5182,23 +5105,27 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
         a4 = a3 + spawn->vPosition.y;
         a3 = spawn->vPosition.z;
         if (uCurrentlyLoadedLevelType == LEVEL_Outdoor) {
-            if (a5) pMonster->uAttributes |= ACTOR_AGGRESSOR;
-            ++uNumActors;
+            if (a5)
+                pMonster->uAttributes |= ACTOR_AGGRESSOR;
             continue;
         }
         v37 = pIndoor->GetSector(pPosX, a4, spawn->vPosition.z);
         if (v37 == pSector) {
-            v38 = BLV_GetFloorLevel(Vec3_int_(pPosX, a4, a3), v37, &uFaceID);
+            v38 = BLV_GetFloorLevel(Vec3i(pPosX, a4, a3), v37, &uFaceID);
             v39 = v38;
             if (v38 != -30000) {
                 if (abs(v38 - a3) <= 1024) {
                     a3 = v39;
-                    if (a5) pMonster->uAttributes |= ACTOR_AGGRESSOR;
-                    ++uNumActors;
+                    if (a5)
+                        pMonster->uAttributes |= ACTOR_AGGRESSOR;
                     continue;
                 }
             }
         }
+
+        // Actor was spawned too far away, remove it.
+        pMonster->Remove();
+
         // v53 = (char *)v53 + 1;
         // result = v53;
     }
@@ -5207,7 +5134,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
 
 //----- (00438F8F) --------------------------------------------------------
 void area_of_effect__damage_evaluate() {
-    Vec3_int_ attacker_coord;
+    Vec3i attacker_coord;
     SpriteObject *sprite_obj_ptr = nullptr;
 
     for (int attack_index = 0; attack_index < AttackerInfo.count; ++attack_index) {
@@ -5313,45 +5240,43 @@ void area_of_effect__damage_evaluate() {
                 }
             }
 
-            if (uNumActors > 0) {  // actors damage(повреждения другим участникам)
-                for (int actorID = 0; actorID < uNumActors; ++actorID) {
-                    if (pActors[actorID].CanAct()) {
-                        int xdiff = pActors[actorID].vPosition.x - AttackerInfo.pXs[attack_index];
-                        int xsq = xdiff * xdiff;
-                        int ydiff = pActors[actorID].vPosition.y - AttackerInfo.pYs[attack_index];
-                        int ysq = ydiff * ydiff;
-                        int zdiff = ((pActors[actorID].uActorHeight / 2) + pActors[actorID].vPosition.z) - AttackerInfo.pZs[attack_index];
-                        int zsq = zdiff * zdiff;
-                        unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius) * (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius);
-                        int zvec = pActors[actorID].vPosition.z;
+            for (int actorID = 0; actorID < pActors.size(); ++actorID) {
+                if (pActors[actorID].CanAct()) {
+                    int xdiff = pActors[actorID].vPosition.x - AttackerInfo.pXs[attack_index];
+                    int xsq = xdiff * xdiff;
+                    int ydiff = pActors[actorID].vPosition.y - AttackerInfo.pYs[attack_index];
+                    int ysq = ydiff * ydiff;
+                    int zdiff = ((pActors[actorID].uActorHeight / 2) + pActors[actorID].vPosition.z) - AttackerInfo.pZs[attack_index];
+                    int zsq = zdiff * zdiff;
+                    unsigned int rangesq = (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius) * (AttackerInfo.attack_range[attack_index] + pActors[actorID].uActorRadius);
+                    int zvec = pActors[actorID].vPosition.z;
 
-                        // check range
-                        if (xsq + ysq + zsq < rangesq) {
-                            attacker_coord.x = AttackerInfo.pXs[attack_index];
-                            attacker_coord.y = AttackerInfo.pYs[attack_index];
-                            attacker_coord.z = AttackerInfo.pZs[attack_index];
+                    // check range
+                    if (xsq + ysq + zsq < rangesq) {
+                        attacker_coord.x = AttackerInfo.pXs[attack_index];
+                        attacker_coord.y = AttackerInfo.pYs[attack_index];
+                        attacker_coord.z = AttackerInfo.pZs[attack_index];
 
-                            // check line of sight
-                            if (Check_LineOfSight(pActors[actorID].vPosition.x,
-                                           pActors[actorID].vPosition.y,
-                                           pActors[actorID].vPosition.z + 50,
-                                           attacker_coord)) {
-                                normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
-                                AttackerInfo.vec_4B4[attack_index].x = xdiff;
-                                AttackerInfo.vec_4B4[attack_index].y = ydiff;
-                                AttackerInfo.vec_4B4[attack_index].z = zvec;
-                                switch (attacker_PID_type) {
-                                    case OBJECT_Player:
-                                        Actor::DamageMonsterFromParty(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
-                                        break;
-                                    case OBJECT_Actor:
-                                        if (sprite_obj_ptr && pActors[attacker_PID_id].GetActorsRelation(&pActors[actorID]))
-                                            Actor::ActorDamageFromMonster(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index], sprite_obj_ptr->field_61);
-                                        break;
-                                    case OBJECT_Item:
-                                        ItemDamageFromActor(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
-                                        break;
-                                }
+                        // check line of sight
+                        if (Check_LineOfSight(pActors[actorID].vPosition.x,
+                                       pActors[actorID].vPosition.y,
+                                       pActors[actorID].vPosition.z + 50,
+                                       attacker_coord)) {
+                            normalize_to_fixpoint(&xdiff, &ydiff, &zvec);
+                            AttackerInfo.vec_4B4[attack_index].x = xdiff;
+                            AttackerInfo.vec_4B4[attack_index].y = ydiff;
+                            AttackerInfo.vec_4B4[attack_index].z = zvec;
+                            switch (attacker_PID_type) {
+                                case OBJECT_Player:
+                                    Actor::DamageMonsterFromParty(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
+                                    break;
+                                case OBJECT_Actor:
+                                    if (sprite_obj_ptr && pActors[attacker_PID_id].GetActorsRelation(&pActors[actorID]))
+                                        Actor::ActorDamageFromMonster(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index], sprite_obj_ptr->field_61);
+                                    break;
+                                case OBJECT_Item:
+                                    ItemDamageFromActor(AttackerInfo.pIDs[attack_index], actorID, &AttackerInfo.vec_4B4[attack_index]);
+                                    break;
                             }
                         }
                     }
@@ -5389,7 +5314,7 @@ double sub_43AE12(signed int a1) {
 
 //----- (0043B057) --------------------------------------------------------
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
-                         Vec3_int_ *pVelocity) {
+                         Vec3i *pVelocity) {
     int v6;      // eax@4
     int damage;  // edi@4
     int a2a;     // [sp+Ch] [bp-4h]@8
@@ -5436,4 +5361,20 @@ void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
             }
         }
     }
+}
+
+Actor *AllocateActor(bool appendOnly) {
+    if (!appendOnly) {
+        for (size_t i = 0; i < pActors.size(); i++) {
+            if (pActors[i].uAIState == Removed) {
+                pActors[i].Reset();
+                return &pActors[i];
+            }
+        }
+    }
+
+    if (pActors.size() >= 500)
+        return nullptr; // Too many actors.
+
+    return &pActors.emplace_back(Actor(pActors.size()));
 }

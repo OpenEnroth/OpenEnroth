@@ -1,5 +1,7 @@
 #include "Engine/OurMath.h"
 
+#include <utility>
+
 TrigTableLookup* TrigLUT = new TrigTableLookup();
 
 //----- (00452969) --------------------------------------------------------
@@ -105,4 +107,18 @@ int GetDiceResult(unsigned int uNumDice, unsigned int uDiceSides) {
         return v3;
     }
     return 0;
+}
+
+uint32_t int_get_vector_length(int32_t x, int32_t y, int32_t z) { // approx distance
+    if (x < y) {
+        std::swap(x, y);
+    }
+    if (x < z) {
+        std::swap(x, z);
+    }
+    if (y < z) {
+        std::swap(y, z);
+    }
+
+    return x + (11 * y >> 5) + (z >> 2);
 }

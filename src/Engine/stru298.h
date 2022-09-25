@@ -18,7 +18,7 @@ struct stru298 {
     int16_t attack_range[100];  // range
     char attack_type[100];  // melee = 1 / spells = 0
     char attack_special[100];  // special ability
-    Vec3_int_ vec_4B4[100];  // attack vector
+    Vec3i vec_4B4[100];  // attack vector
 };
 #pragma pack(pop)
 

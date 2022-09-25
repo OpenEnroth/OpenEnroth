@@ -3,6 +3,7 @@
 #include "Engine/VectorTypes.h"
 
 struct BLVFace;
+class Actor;
 
 struct CollisionState {
     /**
@@ -21,12 +22,12 @@ struct CollisionState {
     bool check_hi;  // Check the hi sphere collisions. If not set, only the lo sphere is checked.
     float radius_lo;   // radius of the lo ("feet") sphere.
     float radius_hi;  // radius of the hi ("head") sphere.
-    Vec3_float_ position_lo; // center of the lo sphere.
-    Vec3_float_ position_hi; // center of the hi sphere.
-    Vec3_float_ new_position_lo; // desired new position for the center of the lo sphere.
-    Vec3_float_ new_position_hi; // desired new position for the center of the hi sphere.
-    Vec3_float_ velocity;  // Movement vector.
-    Vec3_float_ direction;  // Movement direction, basically velocity as a unit vector.
+    Vec3f position_lo; // center of the lo sphere.
+    Vec3f position_hi; // center of the hi sphere.
+    Vec3f new_position_lo; // desired new position for the center of the lo sphere.
+    Vec3f new_position_hi; // desired new position for the center of the hi sphere.
+    Vec3f velocity;  // Movement vector.
+    Vec3f direction;  // Movement direction, basically velocity as a unit vector.
     float speed = 0;  // Velocity magnitude.
     float total_move_distance;  // Total move distance, accumulated between collision iterations, starts at 0.
     float move_distance;  // Desired movement distance for current iteration, minus the distance already covered.
@@ -34,7 +35,7 @@ struct CollisionState {
     unsigned int uSectorID = 0;  // Indoor sector id.
     unsigned int pid;  // PID of the object that we're collided with.
     int ignored_face_id;  // Don't check collisions with this face.
-    BBox_float_ bbox;
+    BBoxf bbox;
 };
 
 extern CollisionState collision_state;
@@ -90,7 +91,7 @@ bool CollideIndoorWithPortals();
 bool CollideWithActor(int actor_idx, int override_radius);
 
 
-void _46ED8A_collide_against_sprite_objects(unsigned int _this);
+void _46ED8A_collide_against_sprite_objects(unsigned int pid);
 
 /**
  * @offset 0x0046EF01.
@@ -101,4 +102,12 @@ void _46ED8A_collide_against_sprite_objects(unsigned int _this);
  */
 void CollideWithParty(bool jagged_top);
 
-
+/**
+ * Handles actor movement - performs collision detection, updates actor's position, handles sliding on slopes,
+ * deceleration, etc.
+ *
+ * @param actor                     Actor to move.
+ * @param isAboveGround             Whether the actor is currently above ground (stands on air, basically).
+ * @param isFlying                  Whether the actor is a flying creature that can fly (e.g. not paralyzed).
+ */
+void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying);

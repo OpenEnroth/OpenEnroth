@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "Engine/IocContainer.h"
 
 #include "../Spells/Spells.h"
@@ -7,6 +10,7 @@
 #include "Monsters.h"
 
 using EngineIoc = Engine_::IocContainer;
+class Actor;
 
 /*  357 */
 #pragma pack(push, 1)
@@ -15,7 +19,7 @@ struct stru319 {
         this->vis = EngineIoc::ResolveVis();
     }
 
-    int which_player_to_attack(struct Actor *pActor);
+    int which_player_to_attack(Actor *pActor);
     int _427546(int a2);
     int FindClosestActor(int pick_depth, int a3, int target_undead);
 
@@ -128,7 +132,7 @@ enum ActorAnimation : __int32 {
 /*  247 */
 #pragma pack(push, 1)
 struct AIDirection {
-    Vec3_int_ vDirection{};
+    Vec3i vDirection{};
     unsigned int uDistance = 0;
     unsigned int uDistanceXZ = 0;
     unsigned int uYawAngle = 0;
@@ -139,7 +143,7 @@ struct AIDirection {
 /*   71 */
 #pragma pack(push, 1)
 struct ActorJob {
-    Vec3_short_ vPos;
+    Vec3s vPos;
     unsigned __int16 uAttributes = 0;
     unsigned __int8 uAction = 0;
     unsigned __int8 uHour = 0;
@@ -152,21 +156,10 @@ class GUIWindow;
 
 /*   66 */
 #pragma pack(push, 1)
-struct Actor {
-    //----- (0041F4C1) --------------------------------------------------------
-    inline Actor() {
-        signed int i;  // edx@1
-
-        for (i = 0; i < 22; i++) {
-            this->pActorBuffs[i].uSkill = 0;
-            this->pActorBuffs[i].uPower = 0;
-            this->pActorBuffs[i].expire_time.value = 0;
-            this->pActorBuffs[i].uCaster = 0;
-            this->pActorBuffs[i].uFlags = 0;
-        }
-        for (i = 0; i < 4; i++) this->ActorHasItems[i].Reset();
-        Reset();
-    }
+class Actor {
+ public:
+    Actor() {}
+    Actor(int id): id(id) {}
 
     void SummonMinion(int summonerId);
     void Reset();
@@ -246,7 +239,7 @@ struct Actor {
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
                                int uSpellID, int a4, unsigned int uSkillLevel);
     static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
-                                       Vec3_int_ *pVelocity, int a4);
+                                       Vec3i *pVelocity, int a4);
 
     static unsigned short GetObjDescId(int spellId);
 
@@ -263,9 +256,9 @@ struct Actor {
     static void AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
                                              int a3);
 
-    static void Arena_summon_actor(int monster_id, int16_t x, int y, int z);
+    static void Arena_summon_actor(int monster_id, int x, int y, int z);
     static void DamageMonsterFromParty(int a1, unsigned int uActorID_Monster,
-                                       Vec3_int_ *pVelocity);
+                                       Vec3i *pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();
@@ -286,52 +279,52 @@ struct Actor {
     int CalcMagicalDamageToActor(DAMAGE_TYPE dmgType, int incomingDmg);
     bool DoesDmgTypeDoDamage(DAMAGE_TYPE uType);
 
-    char pActorName[32];
-    int16_t sNPC_ID;
-    int16_t field_22;
-    unsigned int uAttributes;
-    int16_t sCurrentHP;
-    char field_2A[2];
-    struct MonsterInfo pMonsterInfo;
-    int16_t word_000084_range_attack;
-    int16_t word_000086_some_monster_id;  // base monster class monsterlist id
-    uint16_t uActorRadius;
-    uint16_t uActorHeight;
-    uint16_t uMovementSpeed;
-    Vec3_short_ vPosition;
-    Vec3_short_ vVelocity;
-    uint16_t uYawAngle;
-    uint16_t uPitchAngle;
-    int16_t uSectorID;
-    uint16_t uCurrentActionLength;
-    Vec3_short_ vInitialPosition;
-    Vec3_short_ vGuardingPosition;
-    uint16_t uTetherDistance;
-    AIState uAIState;
-    uint16_t uCurrentActionAnimation;
-    uint16_t uCarriedItemID;  // carried items are special items the
-                              // ncp carries (ie lute from bard)
-    char field_B6;
-    char field_B7;
-    unsigned int uCurrentActionTime;
-    uint16_t pSpriteIDs[8];
-    uint16_t pSoundSampleIDs[4];  // 1 die     3 bored
-    struct SpellBuff pActorBuffs[22];
-    struct ItemGen ActorHasItems[4];
-    unsigned int uGroup;
-    unsigned int uAlly;
-    struct ActorJob pScheduledJobs[8];
-    unsigned int uSummonerID;
-    unsigned int uLastCharacterIDToHit;
-    int dword_000334_unique_name;
-    char field_338[12];
+    int id = -1; // Actor index in pActors array.
+    std::string pActorName;
+    int16_t sNPC_ID = 0;
+    int16_t field_22 = 0;
+    unsigned int uAttributes = 0;
+    int16_t sCurrentHP = 0;
+    char field_2A[2] = {};
+    MonsterInfo pMonsterInfo;
+    int16_t word_000084_range_attack = 0;
+    int16_t word_000086_some_monster_id = 0;  // base monster class monsterlist id
+    uint16_t uActorRadius = 32;
+    uint16_t uActorHeight = 128;
+    uint16_t uMovementSpeed = 200;
+    Vec3s vPosition;
+    Vec3s vVelocity;
+    uint16_t uYawAngle = 0;
+    uint16_t uPitchAngle = 0;
+    int16_t uSectorID = 0;
+    uint16_t uCurrentActionLength = 0;
+    Vec3s vInitialPosition;
+    Vec3s vGuardingPosition;
+    uint16_t uTetherDistance = 256;
+    AIState uAIState = Standing;
+    uint16_t uCurrentActionAnimation = ANIM_Standing; // TODO: use enum ActorAnimation
+    uint16_t uCarriedItemID = 0;  // carried items are special items the
+                                  // ncp carries (ie lute from bard)
+    char field_B6 = 0;
+    char field_B7 = 0;
+    unsigned int uCurrentActionTime = 0;
+    std::array<uint16_t, 8> pSpriteIDs = {{}};
+    std::array<uint16_t, 4> pSoundSampleIDs = {{}};  // 1 die     3 bored
+    std::array<SpellBuff, 22> pActorBuffs;
+    std::array<ItemGen, 4> ActorHasItems;
+    unsigned int uGroup = 0;
+    unsigned int uAlly = 0;
+    std::array<ActorJob, 8> pScheduledJobs;
+    unsigned int uSummonerID = 0;
+    unsigned int uLastCharacterIDToHit = 0;
+    int dword_000334_unique_name = 0;
+    char field_338[12] = {};
 };
 #pragma pack(pop)
 
 // extern Actor pMonsterInfoUI_Doll;
 
-extern std::array<Actor, 500> pActors;
-extern size_t uNumActors;
+extern std::vector<Actor> pActors;
 
 bool CheckActors_proximity();
 int IsActorAlive(unsigned int uType, unsigned int uParam,
@@ -341,11 +334,25 @@ void ToggleActorGroupFlag(unsigned int uGroupID, unsigned int uFlag,
                           unsigned int bToggle);
 bool Detect_Between_Objects(unsigned int uObjID, unsigned int uObj2ID);
 bool SpawnActor(unsigned int uMonsterID);
-int Spawn_Light_Elemental(int spell_power, int caster_skill_level,
+void Spawn_Light_Elemental(int spell_power, int caster_skill_level,
                                      int duration_game_seconds);
 void SpawnEncounter(struct MapInfo *pMapInfo, struct SpawnPointMM7 *spawn,
                     int a3, int a4, int a5);
 void area_of_effect__damage_evaluate();
 double sub_43AE12(signed int a1);
 void ItemDamageFromActor(unsigned int uObjID, unsigned int uActorID,
-                         Vec3_int_ *pVelocity);
+                         Vec3i *pVelocity);
+
+// TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses
+// appendOnly=false. And this actually makes sense as actor ids can be stored in all kinds of places (e.g. inside
+// projectiles as a reference to the caster), so in practice reusing actor ids will lead to rare bugs.
+// What can we do with this?
+/**
+ * Allocates a new actor in `pActors` array.
+ *
+ * @param appendOnly                    If true, this function doesn't try to find an empty (removed) spot in the
+ *                                      actors list, and only appends new actors to the end.
+ * @return                              Pointer to a newly allocated actor, or `nullptr` if the actor count limit
+ *                                      has been hit.
+ */
+Actor *AllocateActor(bool appendOnly);

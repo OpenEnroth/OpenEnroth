@@ -172,8 +172,8 @@ void ViewingParams::InitGrayPalette() {
 
 //----- (00443365) --------------------------------------------------------
 void ViewingParams::_443365() {
-    Vec3_short_ *v3;  // eax@4
-    Vec3_short_ *v6;  // eax@12
+    Vec3s *v3;  // eax@4
+    Vec3s *v6;  // eax@12
     int minimum_y;    // [sp+10h] [bp-10h]@2
     int maximum_y;    // [sp+14h] [bp-Ch]@2
     int minimum_x;    // [sp+18h] [bp-8h]@2

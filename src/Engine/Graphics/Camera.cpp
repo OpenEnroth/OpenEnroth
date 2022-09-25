@@ -100,8 +100,8 @@ void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
 }
 
 //----- (00436932) --------------------------------------------------------
-bool Camera3D::GetFacetOrientation(char polyType, Vec3_float_ *a2,
-                                          Vec3_float_ *a3, Vec3_float_ *a4) {
+bool Camera3D::GetFacetOrientation(char polyType, Vec3f *a2,
+                                   Vec3f *a3, Vec3f *a4) {
     switch ((PolygonType)polyType) {
         case POLYGON_VerticalWall:
             a4->x = -a2->y;
@@ -518,7 +518,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft* pInVertices,
 
     RenderVertexSoft* v14;  // eax@8
     RenderVertexSoft* v15;  // edx@8
-    Vec3_float_ FrustumPlaneVec {};         // [sp+18h] [bp-3Ch]@12
+    Vec3f FrustumPlaneVec {};         // [sp+18h] [bp-3Ch]@12
     // float v17; // [sp+44h] [bp-10h]@1
     // int v18; // [sp+48h] [bp-Ch]@5
     // stru9 *thisa; // [sp+4Ch] [bp-8h]@1

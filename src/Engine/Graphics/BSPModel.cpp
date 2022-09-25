@@ -15,7 +15,7 @@
 
 #pragma pack(push, 1)
 struct ODMFace_MM7 {
-    struct Plane_int_ pFacePlane;
+    struct Planei pFacePlane;
     int zCalc1;
     int zCalc2;
     int zCalc3;
@@ -29,7 +29,7 @@ struct ODMFace_MM7 {
     int16_t uTextureID;
     int16_t sTextureDeltaU;
     int16_t sTextureDeltaV;
-    BBox_short_ pBoundingBox;
+    BBoxs pBoundingBox;
     int16_t sCogNumber;
     int16_t sCogTriggeredID;
     int16_t sCogTriggerType;
@@ -51,7 +51,7 @@ struct ODMFace_MM7 {
 void BSPModelList::Load(MemoryInput *stream) {
     static_assert(sizeof(BSPModelData) == 188, "Wrong type size");
     static_assert(sizeof(BSPNode) == 8, "Wrong type size");
-    static_assert(sizeof(Vec3_int_) == 12, "Wrong type size");
+    static_assert(sizeof(Vec3i) == 12, "Wrong type size");
 
     std::vector<BSPModelData> models;
     stream->ReadVector(&models);
@@ -200,7 +200,7 @@ bool ODMFace::HasEventHint() {
         return true;
 }
 
-bool ODMFace::Contains(const Vec3_int_ &pos, int model_idx, int slack, FaceAttributes override_plane) const {
+bool ODMFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttributes override_plane) const {
     BLVFace face;
     face.uAttributes = this->uAttributes;
     face.uNumVertices = this->uNumVertices;

@@ -203,7 +203,7 @@ void Mouse::DrawCursor() {
             v9 = 2 * pMouse->uCursorBitmapPitch;
           }
 
-          Vec2_int_ point;
+          Vec2i point;
           point.x = pCursorBitmapPos.x;
           point.y = pCursorBitmapPos.y;
 

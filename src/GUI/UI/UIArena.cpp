@@ -20,17 +20,17 @@
 #include "Media/Audio/AudioPlayer.h"
 
 
-std::array<Vec2_int_, 20> pMonsterArenaPlacements = {{
-    Vec2_int_(1524, 8332),    Vec2_int_(2186, 8844),
-    Vec2_int_(3219, 9339),    Vec2_int_(4500, 9339),
-    Vec2_int_(5323, 9004),    Vec2_int_(0x177D, 0x2098),
-    Vec2_int_(0x50B, 0x1E15), Vec2_int_(0x18FF, 0x1E15),
-    Vec2_int_(0x50B, 0xD69),  Vec2_int_(0x18FF, 0x1B15),
-    Vec2_int_(0x50B, 0x1021), Vec2_int_(0x18FF, 0x1848),
-    Vec2_int_(0x50B, 0x12D7), Vec2_int_(0x18FF, 0x15A3),
-    Vec2_int_(0x50B, 0x14DB), Vec2_int_(0x18FF, 0x12D7),
-    Vec2_int_(0x50B, 0x1848), Vec2_int_(0x18FF, 0x1021),
-    Vec2_int_(0x50B, 0x1B15), Vec2_int_(0x18FF, 0xD69),
+std::array<Vec2i, 20> pMonsterArenaPlacements = {{
+    Vec2i(1524, 8332),    Vec2i(2186, 8844),
+    Vec2i(3219, 9339),    Vec2i(4500, 9339),
+    Vec2i(5323, 9004),    Vec2i(0x177D, 0x2098),
+    Vec2i(0x50B, 0x1E15), Vec2i(0x18FF, 0x1E15),
+    Vec2i(0x50B, 0xD69),  Vec2i(0x18FF, 0x1B15),
+    Vec2i(0x50B, 0x1021), Vec2i(0x18FF, 0x1848),
+    Vec2i(0x50B, 0x12D7), Vec2i(0x18FF, 0x15A3),
+    Vec2i(0x50B, 0x14DB), Vec2i(0x18FF, 0x12D7),
+    Vec2i(0x50B, 0x1848), Vec2i(0x18FF, 0x1021),
+    Vec2i(0x50B, 0x1B15), Vec2i(0x18FF, 0xD69),
 }};
 
 void Arena_SelectionFightLevel() {
@@ -42,7 +42,7 @@ void Arena_SelectionFightLevel() {
             uDialogueType = DIALOGUE_ARENA_ALREADY_WON;
         } else {
             int v0 = 0;
-            for (size_t i = 0; i < uNumActors; i++) {
+            for (size_t i = 0; i < pActors.size(); i++) {
                 if (pActors[i].uAIState == Dead ||
                     pActors[i].uAIState == Removed ||
                     pActors[i].uAIState == Disabled ||
@@ -50,7 +50,7 @@ void Arena_SelectionFightLevel() {
                         PID_TYPE(pActors[i].uSummonerID) == OBJECT_Player)
                     ++v0;
             }
-            if (v0 >= (signed int)uNumActors || (signed int)uNumActors <= 0) {
+            if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
                 ++*((char *)&pParty->monster_for_hunting_killed[3] +
                     (unsigned __int8)pParty->field_7B5_in_arena_quest +

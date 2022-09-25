@@ -549,7 +549,7 @@ LABEL_47:
                             ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
                            << 8);
                     __debugbreak();
-                    for (uint actor_id = 0; actor_id < uNumActors; actor_id++) {
+                    for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
                         if (pActors[actor_id].uGroup == v38)
                             pActors[actor_id].uGroup = v39;
                     }
@@ -565,7 +565,7 @@ LABEL_47:
                             ((_evt->v11 + ((uint)_evt->v12 << 8)) << 8))
                            << 8);
                     __debugbreak();
-                    for (uint actor_id = 0; actor_id < uNumActors; actor_id++) {
+                    for (uint actor_id = 0; actor_id < pActors.size(); actor_id++) {
                         if (pActors[actor_id].uGroup == v42)
                             pActors[actor_id].uAlly = v43;
                     }
@@ -1249,19 +1249,19 @@ void check_event_triggers() {
         const LevelDecoration &decoration = pLevelDecorations[event_triggers[i]];
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_TOUCH)
-            if (Length(decoration.vPosition - pParty->vPosition) < decoration.uTriggerRange)
+            if ((decoration.vPosition - pParty->vPosition).Length() < decoration.uTriggerRange)
                 EventProcessor(decoration.uEventID, PID(OBJECT_Decoration, i), 1);
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_MONSTER) {
-            for (size_t j = 0; j < uNumActors; j++) {
-                if (Length(decoration.vPosition - pActors[j].vPosition) < decoration.uTriggerRange)
+            for (size_t j = 0; j < pActors.size(); j++) {
+                if ((decoration.vPosition - pActors[j].vPosition).Length() < decoration.uTriggerRange)
                     EventProcessor(decoration.uEventID, 0, 1);
             }
         }
 
         if (decoration.uFlags & LEVEL_DECORATION_TRIGGERED_BY_OBJECT) {
             for (size_t j = 0; j < pSpriteObjects.size(); j++) {
-                if (Length(decoration.vPosition - pSpriteObjects[j].vPosition) < decoration.uTriggerRange)
+                if ((decoration.vPosition - pSpriteObjects[j].vPosition).Length() < decoration.uTriggerRange)
                     EventProcessor(decoration.uEventID, 0, 1);
             }
         }
@@ -1319,11 +1319,10 @@ void sub_448CF4_spawn_monsters(__int16 typeindex, __int16 level, int count,
     pSpawnPoint.uIndex = typeindex + 2 * level + level;
     map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id) {
-        old_num_actors = uNumActors;
+        old_num_actors = pActors.size();
         SpawnEncounter(&pMapStats->pInfos[map_id], &pSpawnPoint, 0, count, 0);
         Actor::GetDirectionInfo(PID(OBJECT_Actor, old_num_actors), 4, &v15, 1);
-        for (uint i = (unsigned int)old_num_actors;
-             i < (unsigned int)uNumActors; ++i) {
+        for (uint i = old_num_actors; i < pActors.size(); ++i) {
             pActors[i].PrepareSprites(0);
             pActors[i].uYawAngle = v15.uYawAngle;
             pActors[i].dword_000334_unique_name = uUniqueName;

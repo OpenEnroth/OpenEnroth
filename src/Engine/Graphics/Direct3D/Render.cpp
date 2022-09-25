@@ -399,8 +399,8 @@ void Render::DrawTerrainD3D() {  // New function
             assert(norm_idx < pTerrainNormals.size());
             assert(bottnormidx < pTerrainNormals.size());
 
-            Vec3_float_ *norm = &pTerrainNormals[norm_idx];
-            Vec3_float_ *norm2 = &pTerrainNormals[bottnormidx];
+            Vec3f *norm = &pTerrainNormals[norm_idx];
+            Vec3f *norm2 = &pTerrainNormals[bottnormidx];
 
             if (norm_idx < 0 || norm_idx >= pTerrainNormals.size())
                 norm = 0;
@@ -859,8 +859,8 @@ void Render::PrepareDecorationsRenderList_ODM() {
                             b_ = decor_desc->uColoredLightBlue;
                         }
                         pStationaryLightsStack->AddLight(
-                            ToFloatVector(pLevelDecorations[i].vPosition) +
-                                Vec3_float_(0, 0, decor_desc->uDecorationHeight / 2),
+                            pLevelDecorations[i].vPosition.ToFloat() +
+                                Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->uGlowRadius, r, g, b_, _4E94D0_light_type);
                     }  // for light
 
@@ -1542,7 +1542,7 @@ bool Render::InitializeFullscreen() {
     return true;
 }
 
-bool Render::DrawLightmap(Lightmap *pLightmap, Vec3_float_ *pColorMult,
+bool Render::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult,
                           float z_bias) {
     // For outdoor terrain and indoor light (VII)(VII)
     if (pLightmap->NumVertices < 3) {
@@ -4184,7 +4184,7 @@ unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3,
 //    int v3;           // ecx@4
 //    int v4;           // eax@4
 //    int v5;           // edx@4
-//    Vec3_int_ thisa;  // [sp+Ch] [bp-10h]@8
+//    Vec3i thisa;  // [sp+Ch] [bp-10h]@8
 //    int v11;          // [sp+18h] [bp-4h]@4
 //
 //    if (!this->pODMFace->pFacePlane.vNormal.z) {

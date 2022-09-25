@@ -190,7 +190,7 @@ void IntegrityTest() {
     static_assert(sizeof(LightsData) == 0x3FC, "Wrong type size");
     static_assert(sizeof(TravelInfo) == 0x20, "Wrong type size");
     static_assert(sizeof(stru336) == 0x798, "Wrong type size");
-    static_assert(sizeof(Vec3_short_) == 6, "Wrong type size");
+    static_assert(sizeof(Vec3s) == 6, "Wrong type size");
     static_assert(sizeof(BLVFaceExtra) == 36, "Wrong type size");
     static_assert(sizeof(LevelDecoration) == 32, "Wrong type size");
     static_assert(sizeof(BLVLightMM7) == 16, "Wrong type size");

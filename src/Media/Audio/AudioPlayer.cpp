@@ -307,7 +307,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
                 break;
             }
             case OBJECT_Actor: {
-                assert(object_id < uNumActors);
+                assert(object_id < pActors.size());
 
                 provider->SetListenerPosition(pParty->vPosition.x / 50.f,
                                               pParty->vPosition.y / 50.f,
