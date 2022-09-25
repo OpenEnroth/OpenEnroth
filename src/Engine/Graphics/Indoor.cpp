@@ -1561,10 +1561,10 @@ void UpdateActors_BLV() {
 
         unsigned int uFaceID;
         unsigned int uSectorID = actor.uSectorID;
-        int floor_z = GetIndoorFloorZ(actor.vPosition, &uSectorID, &uFaceID);
+        int floorZ = GetIndoorFloorZ(actor.vPosition, &uSectorID, &uFaceID);
         actor.uSectorID = uSectorID;
 
-        if (uSectorID == 0 || floor_z <= -30000)
+        if (uSectorID == 0 || floorZ <= -30000)
             continue;
 
         bool isFlying = actor.pMonsterInfo.uFlying;
@@ -1572,7 +1572,7 @@ void UpdateActors_BLV() {
             isFlying = false;
 
         bool isAboveGround = false;
-        if (actor.vPosition.z > floor_z + 1)
+        if (actor.vPosition.z > floorZ + 1)
             isAboveGround = true;
 
         if (actor.uCurrentActionAnimation == ANIM_Walking) {  // actor is moving
@@ -1607,8 +1607,8 @@ void UpdateActors_BLV() {
                 actor.vVelocity.z = fixpoint_mul(55000, actor.vVelocity.z);
         }
 
-        if (actor.vPosition.z <= floor_z) {
-            actor.vPosition.z = floor_z + 1;
+        if (actor.vPosition.z <= floorZ) {
+            actor.vPosition.z = floorZ + 1;
             if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
                 if (actor.vVelocity.z < 0)
                     actor.vVelocity.z = 0;
@@ -1623,7 +1623,7 @@ void UpdateActors_BLV() {
         }
 
         if (actor.vVelocity.LengthSqr() >= 400) {
-            ProcessActorCollisionsBLV(actor, uFaceID, isAboveGround, isFlying);
+            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         } else {
             actor.vVelocity = Vec3s(0, 0, 0);
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {

@@ -474,7 +474,7 @@ void CollideWithParty(bool jagged_top) {
     CollideWithCylinder(pParty->vPosition.ToFloat(), 2 * pParty->radius, pParty->uPartyHeight, 4, jagged_top);
 }
 
-void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveGround, bool isFlying) {
+void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
     collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
@@ -516,6 +516,7 @@ void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveG
         bool isInCrowd = collisionsWithOtherActors > 1;
 
         Vec3f newPos = actor.vPosition.ToFloat() + collision_state.adjusted_move_distance * collision_state.direction;
+        unsigned int uFaceID;
         int floorZ = GetIndoorFloorZ(newPos.ToInt(), &collision_state.uSectorID, &uFaceID);
         if (floorZ == -30000)
             break; // New pos is out of bounds, running more iterations won't help.

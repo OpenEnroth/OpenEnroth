@@ -103,4 +103,4 @@ void _46ED8A_collide_against_sprite_objects(unsigned int pid);
 void CollideWithParty(bool jagged_top);
 
 
-void ProcessActorCollisionsBLV(Actor &actor, unsigned int uFaceID, bool isAboveGround, bool isFlying);
+void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying);
