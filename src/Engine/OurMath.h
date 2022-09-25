@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdint>
 #include <array>
+#include <algorithm>
 #include <limits>
 
 #include "Engine/MM7.h"
