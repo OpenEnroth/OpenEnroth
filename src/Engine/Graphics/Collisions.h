@@ -102,5 +102,12 @@ void _46ED8A_collide_against_sprite_objects(unsigned int pid);
  */
 void CollideWithParty(bool jagged_top);
 
-
+/**
+ * Handles actor movement - performs collision detection, updates actor's position, handles sliding on slopes,
+ * deceleration, etc.
+ *
+ * @param actor                     Actor to move.
+ * @param isAboveGround             Whether the actor is currently above ground (stands on air, basically).
+ * @param isFlying                  Whether the actor is a flying creature that can fly (e.g. not paralyzed).
+ */
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying);
