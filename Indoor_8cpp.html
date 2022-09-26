@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;230cc2d</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(function() {
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Events_8h.html">Engine/Events.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="BspRenderer_8h.html">Engine/Graphics/BspRenderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Collisions_8h.html">Engine/Graphics/Collisions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DecalBuilder_8h.html">Engine/Graphics/DecalBuilder.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Graphics/DecorationList.h</a>&quot;</code><br />
@@ -124,12 +125,6 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:ab7663442878fb1d9ce8c4293f7206c0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#ab7663442878fb1d9ce8c4293f7206c0e">PrepareDrawLists_BLV</a> ()</td></tr>
 <tr class="separator:ab7663442878fb1d9ce8c4293f7206c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0073e365c3163911ee4db4a32c7de350"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a0073e365c3163911ee4db4a32c7de350">PrepareBspRenderList_BLV</a> ()</td></tr>
-<tr class="separator:a0073e365c3163911ee4db4a32c7de350"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a534cdbc98d19d62d4851f971866fb86c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a534cdbc98d19d62d4851f971866fb86c">AddBspNodeToRenderList</a> (unsigned int node_id)</td></tr>
-<tr class="separator:a534cdbc98d19d62d4851f971866fb86c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bf86faaeabb31e6e5dab6f65f438bf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a9bf86faaeabb31e6e5dab6f65f438bf6">AddNodeBSPFaces</a> (unsigned int node_id, unsigned int uFirstNode)</td></tr>
-<tr class="separator:a9bf86faaeabb31e6e5dab6f65f438bf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac83cfb3a77e6e270b6876da36fd86fc5"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#ac83cfb3a77e6e270b6876da36fd86fc5">FaceFlowTextureOffset</a> (unsigned int uFaceID)</td></tr>
 <tr class="separator:ac83cfb3a77e6e270b6876da36fd86fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2040a9ae01357a0cee15336316e4e0ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a2040a9ae01357a0cee15336316e4e0ff">BLV_UpdateDoors</a> ()</td></tr>
@@ -177,60 +172,12 @@ Variables</h2></td></tr>
 <tr class="separator:a9925e4982aa4139b8ffdbb19eab31aca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31f0a0a004df11d06e74d3b1ebbd23a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structstru337__unused.html">stru337_unused</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a31f0a0a004df11d06e74d3b1ebbd23a4">_DLV_header_unused</a></td></tr>
 <tr class="separator:a31f0a0a004df11d06e74d3b1ebbd23a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aead0a7f6d83b07ad95ccffe27ae9044e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBspRenderer.html">BspRenderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#aead0a7f6d83b07ad95ccffe27ae9044e">pBspRenderer</a> = new <a class="el" href="structBspRenderer.html">BspRenderer</a></td></tr>
-<tr class="separator:aead0a7f6d83b07ad95ccffe27ae9044e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dec23e62a69ef4ed4f20c3a5d11c767"><td class="memItemLeft" align="right" valign="top">unsigned __int16&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a1dec23e62a69ef4ed4f20c3a5d11c767">pDoorSoundIDsByLocationID</a> [78]</td></tr>
 <tr class="separator:a1dec23e62a69ef4ed4f20c3a5d11c767"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7204929de76f2cc3e43a6f5e92875fb"><td class="memItemLeft" align="right" valign="top">std::array&lt; const char *, 11 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#ad7204929de76f2cc3e43a6f5e92875fb">_4E6BDC_loc_names</a></td></tr>
 <tr class="separator:ad7204929de76f2cc3e43a6f5e92875fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a534cdbc98d19d62d4851f971866fb86c" name="a534cdbc98d19d62d4851f971866fb86c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a534cdbc98d19d62d4851f971866fb86c">&#9670;&#160;</a></span>AddBspNodeToRenderList()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void AddBspNodeToRenderList </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>node_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9bf86faaeabb31e6e5dab6f65f438bf6" name="a9bf86faaeabb31e6e5dab6f65f438bf6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9bf86faaeabb31e6e5dab6f65f438bf6">&#9670;&#160;</a></span>AddNodeBSPFaces()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void AddNodeBSPFaces </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>node_id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uFirstNode</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a22f20848f1052b5e1c7195cfca4fdb7d" name="a22f20848f1052b5e1c7195cfca4fdb7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a22f20848f1052b5e1c7195cfca4fdb7d">&#9670;&#160;</a></span>BLV_GetFloorLevel()</h2>
 
@@ -648,23 +595,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a0073e365c3163911ee4db4a32c7de350" name="a0073e365c3163911ee4db4a32c7de350"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0073e365c3163911ee4db4a32c7de350">&#9670;&#160;</a></span>PrepareBspRenderList_BLV()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PrepareBspRenderList_BLV </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ab7663442878fb1d9ce8c4293f7206c0e" name="ab7663442878fb1d9ce8c4293f7206c0e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab7663442878fb1d9ce8c4293f7206c0e">&#9670;&#160;</a></span>PrepareDrawLists_BLV()</h2>
 
@@ -800,20 +730,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structBLVRenderParams.html">BLVRenderParams</a>* pBLVRenderParams = new <a class="el" href="structBLVRenderParams.html">BLVRenderParams</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aead0a7f6d83b07ad95ccffe27ae9044e" name="aead0a7f6d83b07ad95ccffe27ae9044e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aead0a7f6d83b07ad95ccffe27ae9044e">&#9670;&#160;</a></span>pBspRenderer</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structBspRenderer.html">BspRenderer</a>* pBspRenderer = new <a class="el" href="structBspRenderer.html">BspRenderer</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

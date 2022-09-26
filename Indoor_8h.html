@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;230cc2d</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
    </div>
   </td>
  </tr>
@@ -90,7 +90,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="Engine_2IocContainer_8h.html">Engine/IocContainer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BSPModel_8h.html">Engine/Graphics/BSPModel.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Camera_8h.html">Engine/Graphics/Camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="VectorTypes_8h.html">Engine/VectorTypes.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
@@ -143,12 +142,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVRenderParams.html">BLVRenderParams</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer__ViewportNode.html">BspRenderer_ViewportNode</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspFace.html">BspFace</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html">BspRenderer</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -157,18 +150,6 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a91fb3e69af7609c2810f12d81ecf6fab"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6fab">PolygonType</a> : uint8_t { <br />
-&#160;&#160;<a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6faba219c780f23139ee0bd2b01e49c70cb3b">POLYGON_Invalid</a> = 0x0
-, <a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6fabaed80b99ffcd2645296ed9e7af033e2bb">POLYGON_VerticalWall</a> = 0x1
-, <a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6faba7b70e3e9b8c294e030e2d7f32c54dbcf">POLYGON_unk</a> = 0x2
-, <a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6fabae4490b69eafeea478f87b3c1e9712254">POLYGON_Floor</a> = 0x3
-, <br />
-&#160;&#160;<a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6fabadbd72c7f032c1d8a85e8c928083d9ce8">POLYGON_InBetweenFloorAndWall</a> = 0x4
-, <a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6fabae1e308275ba818e9fcd75162bcdbd4d7">POLYGON_Ceiling</a> = 0x5
-, <a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6faba212f1c353912c54d258c088ffa7f80c4">POLYGON_InBetweenCeilingAndWall</a> = 0x6
-<br />
- }</td></tr>
-<tr class="separator:a91fb3e69af7609c2810f12d81ecf6fab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24bf8802234f411139f3a641894c3f70"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70">LEVEL_TYPE</a> { <a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70aa500030e80dddeabc1b2bb4a375580ac">LEVEL_null</a> = 0
 , <a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70a15a823faa9b1cebf4eec0ccc61356569">LEVEL_Indoor</a> = 0x1
 , <a class="el" href="Indoor_8h.html#a24bf8802234f411139f3a641894c3f70a7763b53aec991f1e72fe3d2d88304ed3">LEVEL_Outdoor</a> = 0x2
@@ -180,12 +161,6 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a0073e365c3163911ee4db4a32c7de350"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a0073e365c3163911ee4db4a32c7de350">PrepareBspRenderList_BLV</a> ()</td></tr>
-<tr class="separator:a0073e365c3163911ee4db4a32c7de350"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a534cdbc98d19d62d4851f971866fb86c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a534cdbc98d19d62d4851f971866fb86c">AddBspNodeToRenderList</a> (unsigned int node_id)</td></tr>
-<tr class="separator:a534cdbc98d19d62d4851f971866fb86c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bf86faaeabb31e6e5dab6f65f438bf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a9bf86faaeabb31e6e5dab6f65f438bf6">AddNodeBSPFaces</a> (unsigned int node_id, unsigned int uFirstNode)</td></tr>
-<tr class="separator:a9bf86faaeabb31e6e5dab6f65f438bf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a086d58ef699669d6bafa59d91159b276"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a086d58ef699669d6bafa59d91159b276">DoInteractionWithTopmostZObject</a> (int pid)</td></tr>
 <tr class="separator:a086d58ef699669d6bafa59d91159b276"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac83cfb3a77e6e270b6876da36fd86fc5"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#ac83cfb3a77e6e270b6876da36fd86fc5">FaceFlowTextureOffset</a> (unsigned int uFaceID)</td></tr>
@@ -290,76 +265,7 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a91fb3e69af7609c2810f12d81ecf6fab" name="a91fb3e69af7609c2810f12d81ecf6fab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91fb3e69af7609c2810f12d81ecf6fab">&#9670;&#160;</a></span>PolygonType</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6fab">PolygonType</a> : uint8_t</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a91fb3e69af7609c2810f12d81ecf6faba219c780f23139ee0bd2b01e49c70cb3b" name="a91fb3e69af7609c2810f12d81ecf6faba219c780f23139ee0bd2b01e49c70cb3b"></a>POLYGON_Invalid&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a91fb3e69af7609c2810f12d81ecf6fabaed80b99ffcd2645296ed9e7af033e2bb" name="a91fb3e69af7609c2810f12d81ecf6fabaed80b99ffcd2645296ed9e7af033e2bb"></a>POLYGON_VerticalWall&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a91fb3e69af7609c2810f12d81ecf6faba7b70e3e9b8c294e030e2d7f32c54dbcf" name="a91fb3e69af7609c2810f12d81ecf6faba7b70e3e9b8c294e030e2d7f32c54dbcf"></a>POLYGON_unk&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a91fb3e69af7609c2810f12d81ecf6fabae4490b69eafeea478f87b3c1e9712254" name="a91fb3e69af7609c2810f12d81ecf6fabae4490b69eafeea478f87b3c1e9712254"></a>POLYGON_Floor&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a91fb3e69af7609c2810f12d81ecf6fabadbd72c7f032c1d8a85e8c928083d9ce8" name="a91fb3e69af7609c2810f12d81ecf6fabadbd72c7f032c1d8a85e8c928083d9ce8"></a>POLYGON_InBetweenFloorAndWall&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a91fb3e69af7609c2810f12d81ecf6fabae1e308275ba818e9fcd75162bcdbd4d7" name="a91fb3e69af7609c2810f12d81ecf6fabae1e308275ba818e9fcd75162bcdbd4d7"></a>POLYGON_Ceiling&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a91fb3e69af7609c2810f12d81ecf6faba212f1c353912c54d258c088ffa7f80c4" name="a91fb3e69af7609c2810f12d81ecf6faba212f1c353912c54d258c088ffa7f80c4"></a>POLYGON_InBetweenCeilingAndWall&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a534cdbc98d19d62d4851f971866fb86c" name="a534cdbc98d19d62d4851f971866fb86c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a534cdbc98d19d62d4851f971866fb86c">&#9670;&#160;</a></span>AddBspNodeToRenderList()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void AddBspNodeToRenderList </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>node_id</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9bf86faaeabb31e6e5dab6f65f438bf6" name="a9bf86faaeabb31e6e5dab6f65f438bf6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9bf86faaeabb31e6e5dab6f65f438bf6">&#9670;&#160;</a></span>AddNodeBSPFaces()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void AddNodeBSPFaces </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>node_id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uFirstNode</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a22f20848f1052b5e1c7195cfca4fdb7d" name="a22f20848f1052b5e1c7195cfca4fdb7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a22f20848f1052b5e1c7195cfca4fdb7d">&#9670;&#160;</a></span>BLV_GetFloorLevel()</h2>
 
@@ -774,23 +680,6 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Z coordinate for the floor at (X, Y), or <code>-30000</code> if actor is outside the level boundaries. </dd></dl>
-
-</div>
-</div>
-<a id="a0073e365c3163911ee4db4a32c7de350" name="a0073e365c3163911ee4db4a32c7de350"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0073e365c3163911ee4db4a32c7de350">&#9670;&#160;</a></span>PrepareBspRenderList_BLV()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PrepareBspRenderList_BLV </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 
 </div>
 </div>

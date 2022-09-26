@@ -13,5 +13,5 @@ var searchData=
   ['player_5fskill_5ftype_10',['PLAYER_SKILL_TYPE',['../PlayerEnums_8h.html#a882aeeabc7e03f0fa334764a909ab3f5',1,'PlayerEnums.h']]],
   ['playerspeech_11',['PlayerSpeech',['../PlayerEnums_8h.html#ab50a2a71840e11476f69875990dc7265',1,'PlayerEnums.h']]],
   ['pointercreationtype_12',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
-  ['polygontype_13',['PolygonType',['../Indoor_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'Indoor.h']]]
+  ['polygontype_13',['PolygonType',['../BSPModel_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'BSPModel.h']]]
 ];

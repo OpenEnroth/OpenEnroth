@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;230cc2d</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="Engine_2IocContainer_8h.html">Engine/IocContainer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IRender_8h.html">Engine/Graphics/IRender.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BSPModel_8h.html">Engine/Graphics/BSPModel.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -102,16 +103,16 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a6024669615269f127b83f29f8745d0cf"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DecalBuilder_8h.html#a6024669615269f127b83f29f8745d0cf">DecalFlags</a> { <a class="el" href="DecalBuilder_8h.html#a6024669615269f127b83f29f8745d0cfa6dce003d910eeb9fee802cda8e086629">DecalFlagsNone</a> = 0x0
-, <a class="el" href="DecalBuilder_8h.html#a6024669615269f127b83f29f8745d0cfa2941d43247caee99d67fea09a2ca65f4">DecalFlagsFade</a> = 0x1
+<tr class="memitem:ac489ae5fe7efc98274ba75ffb11f244d"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DecalBuilder_8h.html#ac489ae5fe7efc98274ba75ffb11f244d">DecalFlag</a> : int { <a class="el" href="DecalBuilder_8h.html#ac489ae5fe7efc98274ba75ffb11f244dab94ea76ea3c3e6285f15f6ca4ade3b92">DecalFlagsNone</a> = 0x0
+, <a class="el" href="DecalBuilder_8h.html#ac489ae5fe7efc98274ba75ffb11f244daa2a4be6ec1eee9ba6dd8e68e9b1381ad">DecalFlagsFade</a> = 0x1
  }</td></tr>
-<tr class="separator:a6024669615269f127b83f29f8745d0cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa2cebabf49f1f8888a392a062a3c8860"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DecalBuilder_8h.html#aa2cebabf49f1f8888a392a062a3c8860">LocationFlags</a> { <a class="el" href="DecalBuilder_8h.html#aa2cebabf49f1f8888a392a062a3c8860acd550fc2c0a6e5d902e1857399a31c3d">LocationNone</a> = 0x0
-, <a class="el" href="DecalBuilder_8h.html#aa2cebabf49f1f8888a392a062a3c8860a8a446172dd6faa33c107cc3cd237925f">LocationIndoors</a> = 0x1
-, <a class="el" href="DecalBuilder_8h.html#aa2cebabf49f1f8888a392a062a3c8860a5a90e2e81c8f0131b99a5167dbb49c2d">LocationBuildings</a> = 0x2
-, <a class="el" href="DecalBuilder_8h.html#aa2cebabf49f1f8888a392a062a3c8860a316c673ea17db380e99bbeebd5d635ee">LocationTerrain</a> = 0x4
+<tr class="separator:ac489ae5fe7efc98274ba75ffb11f244d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af07e5b4c09b3a5482d69151f92f4cb94"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DecalBuilder_8h.html#af07e5b4c09b3a5482d69151f92f4cb94">LocationFlag</a> { <a class="el" href="DecalBuilder_8h.html#af07e5b4c09b3a5482d69151f92f4cb94a91f165791d8997d1de3da645a7562382">LocationNone</a> = 0x0
+, <a class="el" href="DecalBuilder_8h.html#af07e5b4c09b3a5482d69151f92f4cb94a3164d201099ec9028f467abce03c1116">LocationIndoors</a> = 0x1
+, <a class="el" href="DecalBuilder_8h.html#af07e5b4c09b3a5482d69151f92f4cb94a916d52bb38f3c4bb90a4588a8555fe93">LocationBuildings</a> = 0x2
+, <a class="el" href="DecalBuilder_8h.html#af07e5b4c09b3a5482d69151f92f4cb94a6141ef5b06ee2f3d38c3ddc72430ab80">LocationTerrain</a> = 0x4
  }</td></tr>
-<tr class="separator:aa2cebabf49f1f8888a392a062a3c8860"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:af07e5b4c09b3a5482d69151f92f4cb94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="a8df51996eaa93ee226542e4ebb9d6f14" name="a8df51996eaa93ee226542e4ebb9d6f14"></a>
@@ -129,40 +130,56 @@ Enumerations</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a6024669615269f127b83f29f8745d0cf" name="a6024669615269f127b83f29f8745d0cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6024669615269f127b83f29f8745d0cf">&#9670;&#160;</a></span>DecalFlags</h2>
+<a id="ac489ae5fe7efc98274ba75ffb11f244d" name="ac489ae5fe7efc98274ba75ffb11f244d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac489ae5fe7efc98274ba75ffb11f244d">&#9670;&#160;</a></span>DecalFlag</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="DecalBuilder_8h.html#a6024669615269f127b83f29f8745d0cf">DecalFlags</a></td>
+          <td class="memname">enum class <a class="el" href="DecalBuilder_8h.html#ac489ae5fe7efc98274ba75ffb11f244d">DecalFlag</a> : int</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6024669615269f127b83f29f8745d0cfa6dce003d910eeb9fee802cda8e086629" name="a6024669615269f127b83f29f8745d0cfa6dce003d910eeb9fee802cda8e086629"></a>DecalFlagsNone&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a6024669615269f127b83f29f8745d0cfa2941d43247caee99d67fea09a2ca65f4" name="a6024669615269f127b83f29f8745d0cfa2941d43247caee99d67fea09a2ca65f4"></a>DecalFlagsFade&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac489ae5fe7efc98274ba75ffb11f244dab94ea76ea3c3e6285f15f6ca4ade3b92" name="ac489ae5fe7efc98274ba75ffb11f244dab94ea76ea3c3e6285f15f6ca4ade3b92"></a>DecalFlagsNone&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac489ae5fe7efc98274ba75ffb11f244daa2a4be6ec1eee9ba6dd8e68e9b1381ad" name="ac489ae5fe7efc98274ba75ffb11f244daa2a4be6ec1eee9ba6dd8e68e9b1381ad"></a>DecalFlagsFade&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="aa2cebabf49f1f8888a392a062a3c8860" name="aa2cebabf49f1f8888a392a062a3c8860"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa2cebabf49f1f8888a392a062a3c8860">&#9670;&#160;</a></span>LocationFlags</h2>
+<a id="af07e5b4c09b3a5482d69151f92f4cb94" name="af07e5b4c09b3a5482d69151f92f4cb94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af07e5b4c09b3a5482d69151f92f4cb94">&#9670;&#160;</a></span>LocationFlag</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="DecalBuilder_8h.html#aa2cebabf49f1f8888a392a062a3c8860">LocationFlags</a></td>
+          <td class="memname">enum class <a class="el" href="DecalBuilder_8h.html#af07e5b4c09b3a5482d69151f92f4cb94">LocationFlag</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aa2cebabf49f1f8888a392a062a3c8860acd550fc2c0a6e5d902e1857399a31c3d" name="aa2cebabf49f1f8888a392a062a3c8860acd550fc2c0a6e5d902e1857399a31c3d"></a>LocationNone&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa2cebabf49f1f8888a392a062a3c8860a8a446172dd6faa33c107cc3cd237925f" name="aa2cebabf49f1f8888a392a062a3c8860a8a446172dd6faa33c107cc3cd237925f"></a>LocationIndoors&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa2cebabf49f1f8888a392a062a3c8860a5a90e2e81c8f0131b99a5167dbb49c2d" name="aa2cebabf49f1f8888a392a062a3c8860a5a90e2e81c8f0131b99a5167dbb49c2d"></a>LocationBuildings&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aa2cebabf49f1f8888a392a062a3c8860a316c673ea17db380e99bbeebd5d635ee" name="aa2cebabf49f1f8888a392a062a3c8860a316c673ea17db380e99bbeebd5d635ee"></a>LocationTerrain&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af07e5b4c09b3a5482d69151f92f4cb94a91f165791d8997d1de3da645a7562382" name="af07e5b4c09b3a5482d69151f92f4cb94a91f165791d8997d1de3da645a7562382"></a>LocationNone&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af07e5b4c09b3a5482d69151f92f4cb94a3164d201099ec9028f467abce03c1116" name="af07e5b4c09b3a5482d69151f92f4cb94a3164d201099ec9028f467abce03c1116"></a>LocationIndoors&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af07e5b4c09b3a5482d69151f92f4cb94a916d52bb38f3c4bb90a4588a8555fe93" name="af07e5b4c09b3a5482d69151f92f4cb94a916d52bb38f3c4bb90a4588a8555fe93"></a>LocationBuildings&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af07e5b4c09b3a5482d69151f92f4cb94a6141ef5b06ee2f3d38c3ddc72430ab80" name="af07e5b4c09b3a5482d69151f92f4cb94a6141ef5b06ee2f3d38c3ddc72430ab80"></a>LocationTerrain&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

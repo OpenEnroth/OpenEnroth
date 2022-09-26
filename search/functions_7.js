@@ -158,7 +158,7 @@ var searchData=
   ['getexperiencerequiredforlevel_155',['GetExperienceRequiredForLevel',['../UIPopup_8h.html#ac84938a5fd4c0fe66580ecb601d54758',1,'GetExperienceRequiredForLevel(int level):&#160;UIPopup.cpp'],['../UIPopup_8cpp.html#ac84938a5fd4c0fe66580ecb601d54758',1,'GetExperienceRequiredForLevel(int level):&#160;UIPopup.cpp']]],
   ['getfaceplane_156',['GetFacePlane',['../structstru154.html#a70d997555a8dcbdbf50ea5e724fd59d9',1,'stru154']]],
   ['getfaceplaneandclassify_157',['GetFacePlaneAndClassify',['../structstru154.html#a35f91f10b9da7982f789d3f97d7b2500',1,'stru154']]],
-  ['getfacetorientation_158',['GetFacetOrientation',['../structCamera3D.html#aae12a724be91e26d3038f365ef6330c4',1,'Camera3D']]],
+  ['getfacetorientation_158',['GetFacetOrientation',['../structCamera3D.html#a871d164330165853a14031c61040c22b',1,'Camera3D']]],
   ['getfarclip_159',['GetFarClip',['../structCamera3D.html#ac267696a8db161c3018482502e85c110',1,'Camera3D']]],
   ['getfine_160',['GetFine',['../structParty.html#a1232b036fb4152149d8a85a99131260e',1,'Party']]],
   ['getfirstcanact_161',['GetFirstCanAct',['../structParty.html#ab12dc32d73ddaf11d93860fbf190b603',1,'Party']]],

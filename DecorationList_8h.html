@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;230cc2d</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
    </div>
   </td>
  </tr>
@@ -84,6 +84,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="String_8h.html">Utility/String.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -96,23 +97,23 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a42f9bbc31afc3e6e6188e052f5047423"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423">DECORATION_DESC_FLAGS</a> { <br />
-&#160;&#160;<a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423ad9cb98bad8614ff5a6c636ad3768a6e1">DECORATION_DESC_MOVE_THROUGH</a> = 0x0001
-, <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423abf8a71be59cdaa72677280fa3b5694aa">DECORATION_DESC_DONT_DRAW</a> = 0x0002
-, <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423a0d8abe6e00e59efa3489c90c9c9a40fc">DECORATION_DESC_FLICKER_SLOW</a> = 0x0004
-, <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423aee6d1fe30a6de93e35e291449301a075">DECORATION_DESC_FICKER_AVERAGE</a> = 0x0008
+<tr class="memitem:a6620f1d9d0b338b86e67566bd64d4867"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867">DECORATION_DESC_FLAG</a> : uint16_t { <br />
+&#160;&#160;<a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867ada1fb8e614c658d1b7deb0c3fb7ebda9">DECORATION_DESC_MOVE_THROUGH</a> = 0x0001
+, <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867a7024bb7f24cc390108f66c5f8766115c">DECORATION_DESC_DONT_DRAW</a> = 0x0002
+, <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867a610bf3edf39a31276d3e44c50c2dd549">DECORATION_DESC_FLICKER_SLOW</a> = 0x0004
+, <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867abfd266834e1672d278dad3bc1b427f72">DECORATION_DESC_FICKER_AVERAGE</a> = 0x0008
 , <br />
-&#160;&#160;<a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423ac5419e7039e6caae565a0095b42dc2d1">DECORATION_DESC_FICKER_FAST</a> = 0x0010
-, <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423afc0629f17b5aa2417ac160021977849e">DECORATION_DESC_MARKER</a> = 0x0020
-, <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423af0011999e1b78d5866a2ea4112868067">DECORATION_DESC_SLOW_LOOP</a> = 0x0040
-, <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423a2b76b2e8e1e182944977fb0a51d3ba60">DECORATION_DESC_EMITS_FIRE</a> = 0x0080
+&#160;&#160;<a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867a6c5428beb86cc80a4be29faf619db97f">DECORATION_DESC_FICKER_FAST</a> = 0x0010
+, <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867aa3eb549702014e70dbc071a4fd519c2a">DECORATION_DESC_MARKER</a> = 0x0020
+, <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867a9df229a9e24a1512fae26737178271f5">DECORATION_DESC_SLOW_LOOP</a> = 0x0040
+, <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867a494a4be1e2298d2302dd53dd5b298350">DECORATION_DESC_EMITS_FIRE</a> = 0x0080
 , <br />
-&#160;&#160;<a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423a51a441453bfe73b55ddd3ad8b242eeb0">DECORATION_DESC_SOUND_ON_DAWN</a> = 0x0100
-, <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423aeec641fffa78af705a56ca39bb3280ca">DECORATION_DESC_SOUND_ON_DUSK</a> = 0x0200
-, <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423a35515e42b810b2356bc8b33d812eafc9">DECORATION_DESC_EMITS_SMOKE</a> = 0x0400
+&#160;&#160;<a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867a306785880a2b7ac24c1d016bb1ed8d6b">DECORATION_DESC_SOUND_ON_DAWN</a> = 0x0100
+, <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867a9858f400e0c1e7430198e0aea5ee8944">DECORATION_DESC_SOUND_ON_DUSK</a> = 0x0200
+, <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867afe50763e880f45b38d27742277931f67">DECORATION_DESC_EMITS_SMOKE</a> = 0x0400
 <br />
  }</td></tr>
-<tr class="separator:a42f9bbc31afc3e6e6188e052f5047423"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a6620f1d9d0b338b86e67566bd64d4867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -125,29 +126,37 @@ Variables</h2></td></tr>
 <tr class="separator:a5ed59043b39398415701d59ce1f86a49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a42f9bbc31afc3e6e6188e052f5047423" name="a42f9bbc31afc3e6e6188e052f5047423"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42f9bbc31afc3e6e6188e052f5047423">&#9670;&#160;</a></span>DECORATION_DESC_FLAGS</h2>
+<a id="a6620f1d9d0b338b86e67566bd64d4867" name="a6620f1d9d0b338b86e67566bd64d4867"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6620f1d9d0b338b86e67566bd64d4867">&#9670;&#160;</a></span>DECORATION_DESC_FLAG</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="DecorationList_8h.html#a42f9bbc31afc3e6e6188e052f5047423">DECORATION_DESC_FLAGS</a></td>
+          <td class="memname">enum class <a class="el" href="DecorationList_8h.html#a6620f1d9d0b338b86e67566bd64d4867">DECORATION_DESC_FLAG</a> : uint16_t</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423ad9cb98bad8614ff5a6c636ad3768a6e1" name="a42f9bbc31afc3e6e6188e052f5047423ad9cb98bad8614ff5a6c636ad3768a6e1"></a>DECORATION_DESC_MOVE_THROUGH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423abf8a71be59cdaa72677280fa3b5694aa" name="a42f9bbc31afc3e6e6188e052f5047423abf8a71be59cdaa72677280fa3b5694aa"></a>DECORATION_DESC_DONT_DRAW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423a0d8abe6e00e59efa3489c90c9c9a40fc" name="a42f9bbc31afc3e6e6188e052f5047423a0d8abe6e00e59efa3489c90c9c9a40fc"></a>DECORATION_DESC_FLICKER_SLOW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423aee6d1fe30a6de93e35e291449301a075" name="a42f9bbc31afc3e6e6188e052f5047423aee6d1fe30a6de93e35e291449301a075"></a>DECORATION_DESC_FICKER_AVERAGE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423ac5419e7039e6caae565a0095b42dc2d1" name="a42f9bbc31afc3e6e6188e052f5047423ac5419e7039e6caae565a0095b42dc2d1"></a>DECORATION_DESC_FICKER_FAST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423afc0629f17b5aa2417ac160021977849e" name="a42f9bbc31afc3e6e6188e052f5047423afc0629f17b5aa2417ac160021977849e"></a>DECORATION_DESC_MARKER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423af0011999e1b78d5866a2ea4112868067" name="a42f9bbc31afc3e6e6188e052f5047423af0011999e1b78d5866a2ea4112868067"></a>DECORATION_DESC_SLOW_LOOP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423a2b76b2e8e1e182944977fb0a51d3ba60" name="a42f9bbc31afc3e6e6188e052f5047423a2b76b2e8e1e182944977fb0a51d3ba60"></a>DECORATION_DESC_EMITS_FIRE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423a51a441453bfe73b55ddd3ad8b242eeb0" name="a42f9bbc31afc3e6e6188e052f5047423a51a441453bfe73b55ddd3ad8b242eeb0"></a>DECORATION_DESC_SOUND_ON_DAWN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423aeec641fffa78af705a56ca39bb3280ca" name="a42f9bbc31afc3e6e6188e052f5047423aeec641fffa78af705a56ca39bb3280ca"></a>DECORATION_DESC_SOUND_ON_DUSK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a42f9bbc31afc3e6e6188e052f5047423a35515e42b810b2356bc8b33d812eafc9" name="a42f9bbc31afc3e6e6188e052f5047423a35515e42b810b2356bc8b33d812eafc9"></a>DECORATION_DESC_EMITS_SMOKE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867ada1fb8e614c658d1b7deb0c3fb7ebda9" name="a6620f1d9d0b338b86e67566bd64d4867ada1fb8e614c658d1b7deb0c3fb7ebda9"></a>DECORATION_DESC_MOVE_THROUGH&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867a7024bb7f24cc390108f66c5f8766115c" name="a6620f1d9d0b338b86e67566bd64d4867a7024bb7f24cc390108f66c5f8766115c"></a>DECORATION_DESC_DONT_DRAW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867a610bf3edf39a31276d3e44c50c2dd549" name="a6620f1d9d0b338b86e67566bd64d4867a610bf3edf39a31276d3e44c50c2dd549"></a>DECORATION_DESC_FLICKER_SLOW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867abfd266834e1672d278dad3bc1b427f72" name="a6620f1d9d0b338b86e67566bd64d4867abfd266834e1672d278dad3bc1b427f72"></a>DECORATION_DESC_FICKER_AVERAGE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867a6c5428beb86cc80a4be29faf619db97f" name="a6620f1d9d0b338b86e67566bd64d4867a6c5428beb86cc80a4be29faf619db97f"></a>DECORATION_DESC_FICKER_FAST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867aa3eb549702014e70dbc071a4fd519c2a" name="a6620f1d9d0b338b86e67566bd64d4867aa3eb549702014e70dbc071a4fd519c2a"></a>DECORATION_DESC_MARKER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867a9df229a9e24a1512fae26737178271f5" name="a6620f1d9d0b338b86e67566bd64d4867a9df229a9e24a1512fae26737178271f5"></a>DECORATION_DESC_SLOW_LOOP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867a494a4be1e2298d2302dd53dd5b298350" name="a6620f1d9d0b338b86e67566bd64d4867a494a4be1e2298d2302dd53dd5b298350"></a>DECORATION_DESC_EMITS_FIRE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867a306785880a2b7ac24c1d016bb1ed8d6b" name="a6620f1d9d0b338b86e67566bd64d4867a306785880a2b7ac24c1d016bb1ed8d6b"></a>DECORATION_DESC_SOUND_ON_DAWN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867a9858f400e0c1e7430198e0aea5ee8944" name="a6620f1d9d0b338b86e67566bd64d4867a9858f400e0c1e7430198e0aea5ee8944"></a>DECORATION_DESC_SOUND_ON_DUSK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6620f1d9d0b338b86e67566bd64d4867afe50763e880f45b38d27742277931f67" name="a6620f1d9d0b338b86e67566bd64d4867afe50763e880f45b38d27742277931f67"></a>DECORATION_DESC_EMITS_SMOKE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

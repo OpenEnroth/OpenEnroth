@@ -30,9 +30,9 @@ var searchData=
   ['on_5fcast_5ftargetisparty_27',['ON_CAST_TargetIsParty',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa5796f3b43ac02a5adc1f47f5e42877c8',1,'CastSpellInfo.h']]],
   ['on_5fcast_5ftelekenesis_28',['ON_CAST_Telekenesis',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa43827abab12a73cede51efe5d1095299',1,'CastSpellInfo.h']]],
   ['on_5fcast_5fwholeparty_5fbigimprovementanim_29',['ON_CAST_WholeParty_BigImprovementAnim',['../CastSpellInfo_8h.html#a889063f13dc96df1a7636304713a022fa3d281023d4f9699c3ccc99bd5cc7199f',1,'CastSpellInfo.h']]],
-  ['opaque_5f1_30',['Opaque_1',['../structRenderBillboardD3D.html#aefe0c017fb0e2d7f0e2a603c19647016afe55f0aa7267325f6c9a3ef6d3c28d11',1,'RenderBillboardD3D']]],
-  ['opaque_5f2_31',['Opaque_2',['../structRenderBillboardD3D.html#aefe0c017fb0e2d7f0e2a603c19647016a248f4848a2d8ef5982f75fbd2cec2f66',1,'RenderBillboardD3D']]],
-  ['opaque_5f3_32',['Opaque_3',['../structRenderBillboardD3D.html#aefe0c017fb0e2d7f0e2a603c19647016a0c0b408b4041005bf24a404a733aa514',1,'RenderBillboardD3D']]],
+  ['opaque_5f1_30',['Opaque_1',['../structRenderBillboardD3D.html#aefe0c017fb0e2d7f0e2a603c19647016a00d02778174c82814778fa7901e20b17',1,'RenderBillboardD3D']]],
+  ['opaque_5f2_31',['Opaque_2',['../structRenderBillboardD3D.html#aefe0c017fb0e2d7f0e2a603c19647016a4d4df4408fe95ae6374fb18413df479e',1,'RenderBillboardD3D']]],
+  ['opaque_5f3_32',['Opaque_3',['../structRenderBillboardD3D.html#aefe0c017fb0e2d7f0e2a603c19647016a1a32bbc94bc5a45596a5418fa4d217a3',1,'RenderBillboardD3D']]],
   ['open_33',['Open',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832ab93af758077ddf72d379461bd33dab98',1,'BLVDoor']]],
   ['opengl_34',['OpenGL',['../IRenderFactory_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6cea760716b590ee7c0adc25f434f577d8be',1,'IRenderFactory.h']]],
   ['opening_35',['Opening',['../structBLVDoor.html#a938bde09f5649e4d1982d7e51a31b832a73064c29c09158bd9e6503c2af97b268',1,'BLVDoor']]]
