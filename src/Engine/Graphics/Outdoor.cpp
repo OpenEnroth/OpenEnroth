@@ -3127,7 +3127,7 @@ void UpdateActors_ODM() {
                     ODMFace * face = &pOutdoor->pBModels[collision_state.pid >> 9]
                                 .pFaces[v39 & 0x3F];
                     if (!face->Ethereal()) {
-                        if (face->uPolygonType == 3) {
+                        if (face->uPolygonType == POLYGON_Floor) {
                             pActors[Actor_ITR].vVelocity.z = 0;
                             pActors[Actor_ITR].vPosition.z =
                                 (short)pOutdoor->pBModels[collision_state.pid >> 9]
@@ -3157,7 +3157,7 @@ void UpdateActors_ODM() {
                                 fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.y);
                             pActors[Actor_ITR].vVelocity.z +=
                                 fixpoint_mul(v72b, face->pFacePlaneOLD.vNormal.z);
-                            if (face->uPolygonType != 4) {
+                            if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
                                 int v46 = collision_state.radius_lo -
                                     face->pFacePlaneOLD.SignedDistanceTo(pActors[Actor_ITR].vPosition);
                                 if (v46 > 0) {

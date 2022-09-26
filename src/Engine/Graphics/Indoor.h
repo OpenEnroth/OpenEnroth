@@ -167,17 +167,6 @@ struct stru337_unused {
 #pragma pack(pop)
 extern stru337_unused _DLV_header_unused;
 
-/*  291 */
-enum PolygonType : uint8_t {
-    POLYGON_Invalid = 0x0,
-    POLYGON_VerticalWall = 0x1,
-    POLYGON_unk = 0x2,
-    POLYGON_Floor = 0x3,
-    POLYGON_InBetweenFloorAndWall = 0x4,
-    POLYGON_Ceiling = 0x5,
-    POLYGON_InBetweenCeilingAndWall = 0x6,
-};
-
 /*  147 */
 #pragma pack(push, 1)
 
