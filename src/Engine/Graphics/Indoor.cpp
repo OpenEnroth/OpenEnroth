@@ -512,7 +512,7 @@ void IndoorLocation::ExecDraw_d3d(unsigned int uFaceID,
             }
 
             // blood draw
-            decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, 1, &FacePlaneHolder,
+            decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, LocationIndoors, &FacePlaneHolder,
                 pFace->uNumVertices, static_vertices_buff_in,
                 0, pFace->uSectorID);
         }

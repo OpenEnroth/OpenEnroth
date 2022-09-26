@@ -2726,7 +2726,7 @@ void RenderOpenGL::DrawTerrainD3D() {
                 decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm, &Light_tile_dist, VertexRenderList, 3, 1);
                 static_sub_0048034E_stru_154.ClassifyPolygon(norm, Light_tile_dist);
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, 4, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0/**(float*)&uClipFlag*/, -1);
+                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0/**(float*)&uClipFlag*/, -1);
 
                 //bottom tri
                 float _f = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
@@ -2749,7 +2749,7 @@ void RenderOpenGL::DrawTerrainD3D() {
                 decal_builder->ApplyBloodSplatToTerrain(pTilePolygon, norm2, &Light_tile_dist, VertexRenderList, 3, 0);
                 static_sub_0048034E_stru_154.ClassifyPolygon(norm2, Light_tile_dist);
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, 4, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0/**(float*)&uClipFlag_2*/, -1);
+                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, &static_sub_0048034E_stru_154, 3, VertexRenderList, 0/**(float*)&uClipFlag_2*/, -1);
             }
         }
     }
@@ -4665,7 +4665,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                     static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, model.pVertices);
                     if (decal_builder->uNumSplatsThisFace > 0) {
                         decal_builder->BuildAndApplyDecals(
-                            31 - poly->dimming_level, 2,
+                            31 - poly->dimming_level, LocationBuildings,
                             &static_RenderBuildingsD3D_stru_73C834,
                             face.uNumVertices, VertexRenderList, (char)v31,
                             -1);
@@ -5433,7 +5433,7 @@ void RenderOpenGL::DrawIndoorFaces() {
             }
 
             // blood draw
-            decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, 1, &FacePlaneHolder,
+            decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, LocationIndoors, &FacePlaneHolder,
                 pface->uNumVertices, static_vertices_buff_in,
                 0, pface->uSectorID);
         }

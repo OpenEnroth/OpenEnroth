@@ -16,12 +16,15 @@ using enum DecalFlag;
 DECLARE_FLAGS(DecalFlags, DecalFlag)
 DECLARE_OPERATORS_FOR_FLAGS(DecalFlags)
 
-enum LocationFlags {
+enum class LocationFlag {
     LocationNone = 0x0,
     LocationIndoors = 0x1,
     LocationBuildings = 0x2,
     LocationTerrain = 0x4
 };
+using enum LocationFlag;
+DECLARE_FLAGS(LocationFlags, LocationFlag)
+DECLARE_OPERATORS_FOR_FLAGS(LocationFlags)
 
 // bloodsplats are created at enemy death as locations of where blood decal needs to be applied
 struct Bloodsplat {
@@ -86,10 +89,10 @@ struct DecalBuilder {
 
     void AddBloodsplat(float x, float y, float z, float r, float g, float b, float radius);
     void Reset(bool bPreserveBloodsplats);
-    char BuildAndApplyDecals(int light_level, char LocationFlags, struct stru154* FacePlane, int NumFaceVerts,
-        RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID);
+    char BuildAndApplyDecals(int light_level, LocationFlags locationFlags, struct stru154* FacePlane, int NumFaceVerts,
+                             RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID);
     bool Build_Decal_Geometry(
-        int LightLevel, char LocationFlags, Bloodsplat* blood, float DecalRadius,
+        int LightLevel, LocationFlags locationFlags, Bloodsplat* blood, float DecalRadius,
         unsigned int uColorMultiplier, float DecalDotDist, struct stru314* FacetNormals, signed int numfaceverts,
         RenderVertexSoft* faceverts, char uClipFlags);
     bool ApplyBloodsplatDecals_IndoorFace(unsigned int uFaceID);
