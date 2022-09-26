@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include <glm.hpp>
+
 #include "Engine/Tables/TileFrameTable.h"
 
 #include "Engine/Graphics/BSPModel.h"

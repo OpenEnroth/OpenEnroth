@@ -126,13 +126,14 @@ struct RenderBillboardD3D {
           screen_space_z(0),
           sParentBillboardID(-1) {}
 
-    enum OpacityType : uint32_t {
+    enum class OpacityType : uint32_t {
         Transparent = 0,
         Opaque_1 = 1,
         Opaque_2 = 2,
         Opaque_3 = 3,
         NoBlend = 0xFFFFFFFF
     };
+    using enum OpacityType;
 
     Texture *texture;  // void *gapi_texture;//IDirect3DTexture2 *pTexture; for d3d
     unsigned int uNumVertices;

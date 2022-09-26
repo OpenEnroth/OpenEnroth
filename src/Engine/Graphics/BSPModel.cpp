@@ -168,7 +168,7 @@ bool ODMFace::Deserialize(const ODMFace_MM7 *mm7) {
     this->uGradientVertex3 = mm7->uGradientVertex3;
     this->uGradientVertex4 = mm7->uGradientVertex4;
     this->uNumVertices = mm7->uNumVertices;
-    this->uPolygonType = mm7->uPolygonType;
+    this->uPolygonType = PolygonType(mm7->uPolygonType);
     this->uShadeType = mm7->uShadeType;
     this->bVisible = mm7->bVisible;
     this->field_132 = mm7->field_132;

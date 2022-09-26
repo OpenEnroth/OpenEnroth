@@ -117,7 +117,7 @@ struct Camera3D {
                                unsigned int uOutNumVertices, float z_stuff);
     bool is_face_faced_to_cameraBLV(struct BLVFace *pFace);
     bool is_face_faced_to_cameraODM(struct ODMFace* pFace, struct RenderVertexSoft* a2);
-    bool GetFacetOrientation(char polyType, Vec3f *a2,
+    bool GetFacetOrientation(PolygonType polyType, Vec3f *a2,
                              Vec3f *a3, Vec3f *a4);
     void ViewTransfrom_OffsetUV(struct RenderVertexSoft *pVertices,
                                 unsigned int uNumVertices,

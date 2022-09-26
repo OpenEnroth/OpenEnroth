@@ -9,6 +9,8 @@
 
 #include "Engine/Engine.h"
 
+#include "Engine/Graphics/BspRenderer.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Direct3D/RenderD3D.h"
@@ -472,7 +474,7 @@ void Render::DrawTerrainD3D() {  // New function
 
                     if (decal_builder->uNumSplatsThisFace > 0)
                         decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level,
-                            4, &static_sub_0048034E_stru_154,
+                            LocationTerrain, &static_sub_0048034E_stru_154,
                             3, VertexRenderList,
                             *(float *)&uClipFlag, -1);
                     if (Lights.uNumLightsApplied > 0)
@@ -568,7 +570,7 @@ void Render::DrawTerrainD3D() {  // New function
 
                         if (decal_builder->uNumSplatsThisFace > 0)
                             decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level,
-                                4, &static_sub_0048034E_stru_154_2,
+                                LocationTerrain, &static_sub_0048034E_stru_154_2,
                                 3, VertexRenderList,
                                 *(float *)&uClipFlag_2, -1);
                         if (Lights.uNumLightsApplied > 0)
@@ -641,7 +643,7 @@ void Render::DrawTerrainD3D() {  // New function
 
                     if (decal_builder->uNumSplatsThisFace > 0)
                         decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level,
-                            4, &static_sub_0048034E_stru_154,
+                            LocationTerrain, &static_sub_0048034E_stru_154,
                             a5, VertexRenderList,
                             *(float *)&uClipFlag, -1);
 
@@ -809,8 +811,8 @@ void Render::PrepareDecorationsRenderList_ODM() {
              pLevelDecorations[i].IsObeliskChestActive()) &&
             !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
             const DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
-            if (!(decor_desc->uFlags & 0x80)) {
-                if (!(decor_desc->uFlags & 0x22)) {
+            if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
+                if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
                     v6 = pMiscTimer->uTotalGameTimeElapsed;
                     v7 = abs(pLevelDecorations[i].vPosition.x +
                              pLevelDecorations[i].vPosition.y);
@@ -2208,7 +2210,7 @@ void Render::DrawIndoorFaces() {
                     }
 
                     // blood draw
-                    decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, 1, &FacePlaneHolder,
+                    decal_builder->BuildAndApplyDecals(Lights.uCurrentAmbientLightLevel, LocationIndoors, &FacePlaneHolder,
                         pFace->uNumVertices, static_vertices_buff_in,
                         0, pFace->uSectorID);
                 }
@@ -3718,7 +3720,7 @@ void Render::DrawBuildingsD3D() {
                    static_RenderBuildingsD3D_stru_73C834.GetFacePlaneAndClassify(&face, model.pVertices);
                     if (decal_builder->uNumSplatsThisFace > 0) {
                         decal_builder->BuildAndApplyDecals(
-                            31 - poly->dimming_level, 2,
+                            31 - poly->dimming_level, LocationBuildings,
                             &static_RenderBuildingsD3D_stru_73C834,
                             face.uNumVertices, VertexRenderList, (char)v31,
                             -1);

@@ -9,7 +9,6 @@
 
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Graphics/IRender.h"
-#include "Engine/Graphics/Camera.h"
 #include "Engine/VectorTypes.h"
 
 struct IndoorLocation;
@@ -167,17 +166,6 @@ struct stru337_unused {
 };
 #pragma pack(pop)
 extern stru337_unused _DLV_header_unused;
-
-/*  291 */
-enum PolygonType : uint8_t {
-    POLYGON_Invalid = 0x0,
-    POLYGON_VerticalWall = 0x1,
-    POLYGON_unk = 0x2,
-    POLYGON_Floor = 0x3,
-    POLYGON_InBetweenFloorAndWall = 0x4,
-    POLYGON_Ceiling = 0x5,
-    POLYGON_InBetweenCeilingAndWall = 0x6,
-};
 
 /*  147 */
 #pragma pack(push, 1)
@@ -664,9 +652,6 @@ struct BLVRenderParams {
 #pragma pack(pop)
 extern BLVRenderParams *pBLVRenderParams;
 
-void PrepareBspRenderList_BLV();
-void AddBspNodeToRenderList(unsigned int node_id);
-void AddNodeBSPFaces(unsigned int node_id, unsigned int uFirstNode);  // idb
 char DoInteractionWithTopmostZObject(int pid);
 // int sub_4AAEA6_transform(struct RenderVertexSoft *a1);
 unsigned int FaceFlowTextureOffset(unsigned int uFaceID);  // idb
@@ -692,55 +677,6 @@ void PrepareToLoadBLV(bool bLoading);
 int GetAlertStatus();
 int SpawnEncounterMonsters(struct MapInfo *a1, int a2);
 int DropTreasureAt(int trs_level, signed int trs_type, int x, int y, int z, uint16_t facing);
-
-
-/*  164 */
-#pragma pack(push, 1)
-struct BspRenderer_ViewportNode {
-    //----- (0043F2BF) --------------------------------------------------------
-    inline BspRenderer_ViewportNode() {}
-
-    //----- (0043F2A9) --------------------------------------------------------
-    ~BspRenderer_ViewportNode() {}
-
-    uint16_t uSectorID = 0;  // sector that this node shows
-    uint16_t uFaceID;
-    unsigned int viewing_portal_id;  // portal/ node through which we're seeing this node
-    IndoorCameraD3D_Vec4 ViewportNodeFrustum[4];  // frustum planes of portal
-    RenderVertexSoft pPortalBounding[4];  // extents of portal
-};
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-struct BspFace {
-    uint16_t uFaceID;
-    uint16_t uNodeID;
-};
-#pragma pack(pop)
-
-/*  163 */
-#pragma pack(push, 1)
-struct BspRenderer {  // stru170
-    //----- (0043F282) --------------------------------------------------------
-    inline BspRenderer() {
-        num_faces = 0;
-        num_nodes = 0;
-        uNumVisibleNotEmptySectors = 0;
-    }
-
-    void AddFaceToRenderList_d3d(unsigned int node_id, unsigned int uFaceID);
-    void MakeVisibleSectorList();
-
-    unsigned int num_faces;
-    BspFace faces[1000]{};
-
-    unsigned int num_nodes;
-    BspRenderer_ViewportNode nodes[150];
-
-    unsigned int uNumVisibleNotEmptySectors;
-    uint16_t pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[150]{};
-};
-#pragma pack(pop)
 
 void FindBillboardsLightLevels_BLV();
 

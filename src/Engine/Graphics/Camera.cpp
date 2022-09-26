@@ -100,7 +100,7 @@ void Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices) {
 }
 
 //----- (00436932) --------------------------------------------------------
-bool Camera3D::GetFacetOrientation(char polyType, Vec3f *a2,
+bool Camera3D::GetFacetOrientation(PolygonType polyType, Vec3f *a2,
                                    Vec3f *a3, Vec3f *a4) {
     switch ((PolygonType)polyType) {
         case POLYGON_VerticalWall:

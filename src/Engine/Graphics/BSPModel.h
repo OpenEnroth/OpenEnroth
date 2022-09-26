@@ -62,6 +62,18 @@ using enum DoorAttribute;
 DECLARE_FLAGS(DoorAttributes, DoorAttribute)
 DECLARE_OPERATORS_FOR_FLAGS(DoorAttributes)
 
+/*  291 */
+enum class PolygonType : uint8_t {
+    POLYGON_Invalid = 0x0,
+    POLYGON_VerticalWall = 0x1,
+    POLYGON_unk = 0x2,
+    POLYGON_Floor = 0x3,
+    POLYGON_InBetweenFloorAndWall = 0x4,
+    POLYGON_Ceiling = 0x5,
+    POLYGON_InBetweenCeilingAndWall = 0x6,
+};
+using enum PolygonType;
+
 #pragma pack(push, 1)
 struct BSPNode {
     int16_t uFront;
@@ -177,7 +189,7 @@ struct ODMFace {
     uint8_t uGradientVertex3 = 0;
     uint8_t uGradientVertex4 = 0;
     uint8_t uNumVertices = 0;
-    uint8_t uPolygonType = 0;  // TODO: It's PolygonType actually, not uint8_t
+    PolygonType uPolygonType = POLYGON_Invalid;
     uint8_t uShadeType = 0;  // could be minimum shade
     uint8_t bVisible = 0;
     char field_132 = 0;

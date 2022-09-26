@@ -3,6 +3,7 @@
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
 #include "Engine/Events.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"

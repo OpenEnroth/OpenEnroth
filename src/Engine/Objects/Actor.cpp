@@ -7,6 +7,7 @@
 
 #include "Engine/Awards.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"

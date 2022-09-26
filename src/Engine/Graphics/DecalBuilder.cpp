@@ -1,6 +1,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/OurMath.h"
 #include "Engine/Time.h"
 #include "Engine/stru314.h"
@@ -58,9 +59,8 @@ void DecalBuilder::Reset(bool bPreserveBloodsplats) {
 }
 
 //----- (0049B540) --------------------------------------------------------
-char DecalBuilder::BuildAndApplyDecals(int light_level, char LocationFlags, stru154* FacePlane, int NumFaceVerts,
-    RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID) {
-
+char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFlags, stru154* FacePlane, int NumFaceVerts,
+                                       RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID) {
     if (!NumFaceVerts) return 0;
 
     static stru314 static_FacePlane;
@@ -85,7 +85,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, char LocationFlags, stru
             int BloodSplatX = (signed __int64)buildsplat->x;
 
             if (!this->Build_Decal_Geometry(
-                point_light_level, LocationFlags,
+                point_light_level, locationFlags,
                 buildsplat,
                 buildsplat->radius,
                 ColourMult,
@@ -99,7 +99,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, char LocationFlags, stru
 
 //----- (0049B790) --------------------------------------------------------
 bool DecalBuilder::Build_Decal_Geometry(
-    int LightLevel, char LocationFlags, Bloodsplat* blood, float DecalRadius,
+    int LightLevel, LocationFlags locationFlags, Bloodsplat* blood, float DecalRadius,
     unsigned int uColorMultiplier, float DecalDotDist, stru314* FacetNormals, signed int numfaceverts,
     RenderVertexSoft* faceverts, char uClipFlags) {
 
@@ -109,7 +109,7 @@ bool DecalBuilder::Build_Decal_Geometry(
     decal->decal_flags = blood->blood_flags;
 
     // buildings decals dont fade ??
-    if (LocationFlags & LocationBuildings) decal->decal_flags = DecalFlagsNone;
+    if (locationFlags & LocationBuildings) decal->decal_flags = DecalFlagsNone;
 
     this->field_30C028 = DecalRadius - DecalDotDist;
     this->field_30C02C = sqrt((DecalRadius + DecalRadius - this->field_30C028) * this->field_30C028);

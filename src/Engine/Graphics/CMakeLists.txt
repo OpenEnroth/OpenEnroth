@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
 set(GRAPHICS_SOURCES BSPModel.cpp
+                     BspRenderer.cpp
                      Collisions.cpp
                      DecalBuilder.cpp
                      DecorationList.cpp
@@ -30,6 +31,7 @@ set(GRAPHICS_SOURCES BSPModel.cpp
                      OpenGL/TextureOpenGL.cpp)
 
 set(GRAPHICS_HEADERS BSPModel.h
+                     BspRenderer.h
                      Collisions.h
                      DecalBuilder.h
                      DecorationList.h
