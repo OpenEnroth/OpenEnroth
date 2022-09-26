@@ -4,9 +4,10 @@
 #include <vector>
 
 #include "Utility/String.h"
+#include "Utility/Flags.h"
 
 /*  321 */
-enum DECORATION_DESC_FLAGS {
+enum class DECORATION_DESC_FLAG : uint16_t {
     DECORATION_DESC_MOVE_THROUGH = 0x0001,
     DECORATION_DESC_DONT_DRAW = 0x0002,
     DECORATION_DESC_FLICKER_SLOW = 0x0004,
@@ -19,19 +20,22 @@ enum DECORATION_DESC_FLAGS {
     DECORATION_DESC_SOUND_ON_DUSK = 0x0200,
     DECORATION_DESC_EMITS_SMOKE = 0x0400,
 };
+using enum DECORATION_DESC_FLAG;
+DECLARE_FLAGS(DECORATION_DESC_FLAGS, DECORATION_DESC_FLAG)
+DECLARE_OPERATORS_FOR_FLAGS(DECORATION_DESC_FLAGS)
 
 /*   54 */
 #pragma pack(push, 1)
 struct DecorationDesc_mm6 {
     inline bool CanMoveThrough() const {
-        return (uFlags & DECORATION_DESC_MOVE_THROUGH) != 0;
+        return uFlags & DECORATION_DESC_MOVE_THROUGH;
     }
-    inline bool DontDraw() const { return (uFlags & DECORATION_DESC_DONT_DRAW) != 0; }
+    inline bool DontDraw() const { return uFlags & DECORATION_DESC_DONT_DRAW; }
     inline bool SoundOnDawn() const {
-        return (uFlags & DECORATION_DESC_SOUND_ON_DAWN) != 0;
+        return uFlags & DECORATION_DESC_SOUND_ON_DAWN;
     }
     inline bool SoundOnDusk() const {
-        return (uFlags & DECORATION_DESC_SOUND_ON_DUSK) != 0;
+        return uFlags & DECORATION_DESC_SOUND_ON_DUSK;
     }
 
     char pName[32];
@@ -41,7 +45,7 @@ struct DecorationDesc_mm6 {
     int16_t uRadius;
     int16_t uLightRadius;
     uint16_t uSpriteID;
-    int16_t uFlags;
+    DECORATION_DESC_FLAGS uFlags;
     int16_t uSoundID;
     int16_t _pad;
 };
