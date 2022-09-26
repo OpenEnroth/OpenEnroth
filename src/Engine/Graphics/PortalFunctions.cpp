@@ -1,6 +1,7 @@
 #include "Engine/Graphics/PortalFunctions.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Camera.h"
 #include "Indoor.h"
 
 int _49CE9E_sub0_x(RenderVertexSoft *pVertices, unsigned int uNumVertices,

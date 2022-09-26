@@ -35,6 +35,7 @@
 #include <glm/glm/gtc/matrix_transform.hpp>
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/LightmapBuilder.h"

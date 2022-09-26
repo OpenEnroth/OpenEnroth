@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/stru314.h"
 
 #include "Engine/Graphics/LightsStack.h"

@@ -1,6 +1,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Camera.h"
 #include "Engine/OurMath.h"
 #include "Engine/Time.h"
 #include "Engine/stru314.h"
