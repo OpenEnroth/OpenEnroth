@@ -9,6 +9,7 @@
 
 #include "Engine/Engine.h"
 
+#include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
 #include "Engine/Graphics/Direct3D/RenderD3D.h"
