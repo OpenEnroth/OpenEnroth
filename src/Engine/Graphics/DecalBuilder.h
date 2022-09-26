@@ -1,16 +1,20 @@
 #pragma once
 
 #include "Engine/IocContainer.h"
-
 #include "Engine/Graphics/IRender.h"
 #include "Engine/Graphics/BSPModel.h"
 
+#include "Utility/Flags.h"
+
 using EngineIoc = Engine_::IocContainer;
 
-enum DecalFlags {
+enum class DecalFlag : int {
     DecalFlagsNone = 0x0,
     DecalFlagsFade = 0x1
 };
+using enum DecalFlag;
+DECLARE_FLAGS(DecalFlags, DecalFlag)
+DECLARE_OPERATORS_FOR_FLAGS(DecalFlags)
 
 enum LocationFlags {
     LocationNone = 0x0,
@@ -21,31 +25,16 @@ enum LocationFlags {
 
 // bloodsplats are created at enemy death as locations of where blood decal needs to be applied
 struct Bloodsplat {
-    inline Bloodsplat() {
-        this->x = 0;
-        this->y = 0;
-        this->z = 0;
-        this->radius = 0;
-        this->dot_dist = 0;
-        this->r = 0;
-        this->g = 0;
-        this->b = 0;
-        this->blood_flags = DecalFlagsNone;
-        this->fade_timer = 0;
-    }
-
-    virtual ~Bloodsplat() {}
-
-    float x;
-    float y;
-    float z;
-    float radius;
-    float dot_dist;
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    int blood_flags;
-    uint64_t fade_timer;
+    float x = 0;
+    float y = 0;
+    float z = 0;
+    float radius = 0;
+    float dot_dist = 0;
+    unsigned char r = 0;
+    unsigned char g = 0;
+    unsigned char b = 0;
+    DecalFlags blood_flags = DecalFlagsNone;
+    uint64_t fade_timer = 0;
 };
 
 // store for all the bloodsplats to be applied
@@ -82,7 +71,7 @@ struct Decal {
     int DimmingLevel;
 
     uint64_t fadetime;
-    int decal_flags;
+    DecalFlags decal_flags;
 };
 
 // contains all of above
