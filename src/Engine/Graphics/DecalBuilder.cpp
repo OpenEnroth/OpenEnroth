@@ -61,7 +61,6 @@ void DecalBuilder::Reset(bool bPreserveBloodsplats) {
 //----- (0049B540) --------------------------------------------------------
 char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFlags, stru154* FacePlane, int NumFaceVerts,
                                        RenderVertexSoft* FaceVerts, char ClipFlags, unsigned int uSectorID) {
-
     if (!NumFaceVerts) return 0;
 
     static stru314 static_FacePlane;
