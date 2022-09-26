@@ -9,6 +9,7 @@
 
 #include "Engine/Engine.h"
 
+#include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -810,8 +811,8 @@ void Render::PrepareDecorationsRenderList_ODM() {
              pLevelDecorations[i].IsObeliskChestActive()) &&
             !(pLevelDecorations[i].uFlags & LEVEL_DECORATION_INVISIBLE)) {
             const DecorationDesc *decor_desc = pDecorationList->GetDecoration(pLevelDecorations[i].uDecorationDescID);
-            if (!(decor_desc->uFlags & 0x80)) {
-                if (!(decor_desc->uFlags & 0x22)) {
+            if (!(decor_desc->uFlags & DECORATION_DESC_EMITS_FIRE)) {
+                if (!(decor_desc->uFlags & (DECORATION_DESC_MARKER | DECORATION_DESC_DONT_DRAW))) {
                     v6 = pMiscTimer->uTotalGameTimeElapsed;
                     v7 = abs(pLevelDecorations[i].vPosition.x +
                              pLevelDecorations[i].vPosition.y);
