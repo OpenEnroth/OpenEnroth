@@ -2,7 +2,9 @@
 
 #include <string>
 
-enum IMAGE_FORMAT {
+#include "Utility/IndexedArray.h"
+
+enum class IMAGE_FORMAT {
     IMAGE_FORMAT_R5G6B5 = 0,
     IMAGE_FORMAT_A1R5G5B5,
     IMAGE_FORMAT_A8R8G8B8,
@@ -12,6 +14,7 @@ enum IMAGE_FORMAT {
     IMAGE_NUM_FORMATS,
     IMAGE_INVALID_FORMAT = -1,
 };
+using enum IMAGE_FORMAT;
 
 unsigned int IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT format);
 const char *IMAGE_FORMAT_ToString(IMAGE_FORMAT format);
@@ -19,16 +22,7 @@ const char *IMAGE_FORMAT_ToString(IMAGE_FORMAT format);
 class ImageLoader;
 class Image {
  public:
-    explicit Image(bool lazy_initialization = true)
-        : lazy_initialization(lazy_initialization),
-          initialized(false),
-          loader(nullptr),
-          width(0),
-          height(0),
-          native_format(IMAGE_INVALID_FORMAT) {
-        for (unsigned int i = 0; i < IMAGE_NUM_FORMATS; ++i)
-            pixels[i] = nullptr;
-    }
+    explicit Image(bool lazy_initialization = true): lazy_initialization(lazy_initialization) {}
     virtual ~Image() {}
 
     static Image *Create(unsigned int width, unsigned int height,
@@ -47,14 +41,14 @@ class Image {
     bool Release();
 
  protected:
-    bool lazy_initialization = 0;
-    bool initialized = 0;
-    ImageLoader *loader = NULL;
+    bool lazy_initialization = false;
+    bool initialized = false;
+    ImageLoader *loader = nullptr;
 
     unsigned int width = 0;
     unsigned int height = 0;
     IMAGE_FORMAT native_format = IMAGE_INVALID_FORMAT;
-    void* pixels[IMAGE_NUM_FORMATS]{};
+    IndexedArray<void *, IMAGE_NUM_FORMATS> pixels = {{}};
     void* palette24 = nullptr;
     void* palettepixels = nullptr;
 

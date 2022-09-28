@@ -9,6 +9,7 @@ set(UTILITY_HEADERS Color.h
                     DataPath.h
                     Flags.h
                     FreeDeleter.h
+                    IndexedArray.h
                     MemBuffer.h
                     String.h
                     Workaround.h)

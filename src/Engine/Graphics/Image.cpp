@@ -281,52 +281,46 @@ const void *Image::GetPixels(IMAGE_FORMAT format) {
 
         auto native_pixels = this->pixels[this->native_format];
         if (native_pixels) {
-            static ImageFormatConverter
-                converters[IMAGE_NUM_FORMATS][IMAGE_NUM_FORMATS] = {
-                    // IMAGE_FORMAT_R5G6B5 ->
-                    {
-                        nullptr,                   // IMAGE_FORMAT_R5G6B5
-                        nullptr,                   // IMAGE_FORMAT_A1R5G5B5
-                        Image_R5G6B5_to_A8R8G8B8,  // IMAGE_FORMAT_A8R8G8B8
-                        nullptr,    // IMAGE_FORMAT_R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
-                    },
+            static constinit IndexedArray<IndexedArray<ImageFormatConverter, IMAGE_NUM_FORMATS>, IMAGE_NUM_FORMATS> converters = {
+                {IMAGE_FORMAT_R5G6B5, {
+                    {IMAGE_FORMAT_R5G6B5,       nullptr},
+                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
+                    {IMAGE_FORMAT_A8R8G8B8,     Image_R5G6B5_to_A8R8G8B8},
+                    {IMAGE_FORMAT_R8G8B8,       nullptr},
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                }},
 
-                    // IMAGE_FORMAT_A1R5G5B5 ->
-                    {
-                        nullptr,                     // IMAGE_FORMAT_R5G6B5
-                        nullptr,                     // IMAGE_FORMAT_A1R5G5B5
-                        Image_A1R5G5B5_to_A8R8G8B8,  // IMAGE_FORMAT_A8R8G8B8
-                        nullptr,                     // IMAGE_FORMAT_R8G8B8
-                        nullptr,                     // IMAGE_FORMAT_R8G8B8A8
-                    },
+                {IMAGE_FORMAT_A1R5G5B5, {
+                    {IMAGE_FORMAT_R5G6B5,       nullptr},
+                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
+                    {IMAGE_FORMAT_A8R8G8B8,     Image_A1R5G5B5_to_A8R8G8B8},
+                    {IMAGE_FORMAT_R8G8B8,       nullptr},
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                }},
 
-                    // IMAGE_FORMAT_A8R8G8B8 ->
-                    {
-                        nullptr,                    // IMAGE_FORMAT_R5G6B5
-                        Image_A8R8G8B8_to_A1R5G5B5, // IMAGE_FORMAT_A1R5G5B5
-                        nullptr,                   // IMAGE_FORMAT_A8R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
-                    },
+                {IMAGE_FORMAT_A8R8G8B8, {
+                    {IMAGE_FORMAT_R5G6B5,       nullptr},
+                    {IMAGE_FORMAT_A1R5G5B5,     Image_A8R8G8B8_to_A1R5G5B5},
+                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
+                    {IMAGE_FORMAT_R8G8B8,       nullptr},
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                }},
 
-                    // IMAGE_FORMAT_R8G8B8 ->
-                    {
-                        nullptr,                   // IMAGE_FORMAT_R5G6B5
-                        nullptr,                   // IMAGE_FORMAT_A1R5G5B5
-                        Image_R8G8B8_to_A8R8G8B8,  // IMAGE_FORMAT_A8R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8
-                        nullptr,                    // IMAGE_FORMAT_R8G8B8A8
-                    },
+                {IMAGE_FORMAT_R8G8B8, {
+                    {IMAGE_FORMAT_R5G6B5,       nullptr},
+                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
+                    {IMAGE_FORMAT_A8R8G8B8,     Image_R8G8B8_to_A8R8G8B8},
+                    {IMAGE_FORMAT_R8G8B8,       nullptr},
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                }},
 
-                    // IMAGE_FORMAT_R8G8B8A8 ->
-                    {
-                        nullptr,                 // IMAGE_FORMAT_R5G6B5
-                        nullptr,                   // IMAGE_FORMAT_A1R5G5B5
-                        nullptr,                  // IMAGE_FORMAT_A8R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8
-                        nullptr,                   // IMAGE_FORMAT_R8G8B8A8
-                    },
+                {IMAGE_FORMAT_R8G8B8A8, {
+                    {IMAGE_FORMAT_R5G6B5,       nullptr},
+                    {IMAGE_FORMAT_A1R5G5B5,     nullptr},
+                    {IMAGE_FORMAT_A8R8G8B8,     nullptr},
+                    {IMAGE_FORMAT_R8G8B8,       nullptr},
+                    {IMAGE_FORMAT_R8G8B8A8,     nullptr}
+                }}
             };
 
             ImageFormatConverter cvt = converters[this->native_format][format];
@@ -405,12 +399,9 @@ bool Image::Release() {
             loader = nullptr;
         }
 
-        for (unsigned int i = 0; i < IMAGE_NUM_FORMATS; ++i) {
-            if (pixels[i]) {
-                delete[] pixels[i];
-                pixels[i] = nullptr;
-            }
-        }
+        for (void *ptr : pixels)
+            delete[] ptr;
+        pixels.fill(nullptr);
 
         native_format = IMAGE_INVALID_FORMAT;
         width = 0;
