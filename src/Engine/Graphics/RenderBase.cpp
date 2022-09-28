@@ -106,6 +106,8 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
     return v7;
 }
 
+// can this be combined with indoor draw sprite objects??
+// TODO: Move this to outdoors or sprites
 void RenderBase::DrawSpriteObjects_ODM() {
     for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
         SpriteObject *object = &pSpriteObjects[i];
@@ -187,46 +189,55 @@ void RenderBase::DrawSpriteObjects_ODM() {
             bool visible = pCamera3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
 
             if (visible) {
-                // if (abs(view_x) >= abs(view_y)) {
+                if (2 * abs(view_x) >= abs(view_y)) {
                     int projected_x = 0;
                     int projected_y = 0;
                     pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-                    object->uAttributes |= SPRITE_VISIBLE;
-                    pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
-                    pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
-                    pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
+                    float billb_scale = frame->scale * pCamera3D->ViewPlaneDist_X / view_x;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = frame->scale * pCamera3D->ViewPlaneDist_X / view_x;
-                    pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = frame->scale * pCamera3D->ViewPlaneDist_X / view_x;
+                    int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[(int64_t)v9]->uBufferWidth / 2.0f);
+                    int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[(int64_t)v9]->uBufferHeight);
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
-                    pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
-                    pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
-                    pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
+                    if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
+                        projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
+                        if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                            object->uAttributes |= SPRITE_VISIBLE;
+                            pBillboardRenderList[::uNumBillboardsToDraw].uPalette = frame->uPaletteIndex;
+                            pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
+                            pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected_x;
-                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
-                    pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = view_x;
+                            pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = billb_scale;
+                            pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = billb_scale;
 
-                    pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
-                    pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
-                    pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-                    //          if (!(object->uAttributes & SPRITE_NO_Z_BUFFER)) {
-                    //            if (!pRenderD3D) {
-                    //              __debugbreak();
-                    //              pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z
-                    //              = 0;
-                    //              pBillboardRenderList[::uNumBillboardsToDraw].object_pid
-                    //              = 0;
-                    //            }
-                    //          }
+                            pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
+                            pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
+                            pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
+                            pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
 
-                    assert(::uNumBillboardsToDraw < 499);
-                    ++::uNumBillboardsToDraw;
-                    ++uNumSpritesDrawnThisFrame;
+                            pBillboardRenderList[::uNumBillboardsToDraw].screen_space_x = projected_x;
+                            pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
+                            pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = view_x;
 
-               // }
+                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
+                            pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
+                            pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
+                            //          if (!(object->uAttributes & SPRITE_NO_Z_BUFFER)) {
+                            //            if (!pRenderD3D) {
+                            //              __debugbreak();
+                            //              pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z
+                            //              = 0;
+                            //              pBillboardRenderList[::uNumBillboardsToDraw].object_pid
+                            //              = 0;
+                            //            }
+                            //          }
+
+                            assert(::uNumBillboardsToDraw < 499);
+                            ++::uNumBillboardsToDraw;
+                            ++uNumSpritesDrawnThisFrame;
+                        }
+                    }
+                }
             }
         }
     }

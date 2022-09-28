@@ -1875,6 +1875,7 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
     }
 }
 
+// combine with void RenderBase::DrawSpriteObjects_ODM()?
 //----- (0044028F) --------------------------------------------------------
 void IndoorLocation::PrepareItemsRenderList_BLV() {
     unsigned int v6;     // eax@12
@@ -1934,37 +1935,49 @@ void IndoorLocation::PrepareItemsRenderList_BLV() {
 
 
                     if (visible) {
-                        int projected_x = 0;
-                        int projected_y = 0;
-                        pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
+                        if (2 * abs(view_x) >= abs(view_y)) {
+                            int projected_x = 0;
+                            int projected_y = 0;
+                            pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-                        assert(uNumBillboardsToDraw < 499);
-                        ++uNumBillboardsToDraw;
-                        ++uNumSpritesDrawnThisFrame;
+                            float billb_scale = v4->scale * pCamera3D->ViewPlaneDist_X / view_x;
 
-                        pSpriteObjects[i].uAttributes |= SPRITE_VISIBLE;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
-                        // if ( render->pRenderD3D )
-                        {
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pCamera3D->ViewPlaneDist_X;
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pCamera3D->ViewPlaneDist_Y;
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =
-                                v4->scale * (int)floorf(pCamera3D->ViewPlaneDist_X + 0.5f) / view_x;
-                            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                                v4->scale * (int)floorf(pCamera3D->ViewPlaneDist_X + 0.5f) / view_x;
+                            int screen_space_half_width = static_cast<int>(billb_scale * v4->hw_sprites[(int64_t)v9]->uBufferWidth / 2.0f);
+                            int screen_space_height = static_cast<int>(billb_scale * v4->hw_sprites[(int64_t)v9]->uBufferHeight);
+
+                            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
+                                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
+                                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                                    assert(uNumBillboardsToDraw < 499);
+                                    ++uNumBillboardsToDraw;
+                                    ++uNumSpritesDrawnThisFrame;
+
+                                    pSpriteObjects[i].uAttributes |= SPRITE_VISIBLE;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
+                                    // if ( render->pRenderD3D )
+                                    {
+                                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pCamera3D->ViewPlaneDist_X;
+                                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pCamera3D->ViewPlaneDist_Y;
+                                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =
+                                            billb_scale;
+                                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
+                                            billb_scale;
+                                    }
+
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                                    pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item, i);
+                                }
+                            }
                         }
-
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item, i);
                     }
                 }
             }
@@ -2040,51 +2053,60 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                                    &view_x, &view_y, &view_z);
 
     if (visible) {
-        if (abs(view_x) >= abs(view_y)) {
+        if (2 * abs(view_x) >= abs(view_y)) {
             int projected_x = 0;
             int projected_y = 0;
-            pCamera3D->Project(view_x, view_y, view_z, &projected_x,
-                                      &projected_y);
+            pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-            assert(uNumBillboardsToDraw < 500);
-            ++uNumBillboardsToDraw;
-            ++uNumDecorationsDrawnThisFrame;
+            float billb_scale = v11->scale * pCamera3D->ViewPlaneDist_X / view_x;
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite =
-                v11->hw_sprites[v9];
+            int screen_space_half_width = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uBufferWidth / 2.0f);
+            int screen_space_height = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uBufferHeight);
 
-            if (v11->hw_sprites[v9]->texture->GetHeight() == 0 || v11->hw_sprites[v9]->texture->GetWidth() == 0)
-                __debugbreak();
+            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
+                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
+                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                    assert(uNumBillboardsToDraw < 500);
+                    ++uNumBillboardsToDraw;
+                    ++uNumDecorationsDrawnThisFrame;
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette =
-                v11->uPaletteIndex;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
-                uSectorID;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite =
+                        v11->hw_sprites[v9];
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x =
-                pCamera3D->ViewPlaneDist_X;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y =
-                pCamera3D->ViewPlaneDist_Y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = v11->scale * (int)floorf(pCamera3D->ViewPlaneDist_X + 0.5f) / view_x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = v11->scale * (int)floorf(pCamera3D->ViewPlaneDist_Y + 0.5f) / view_x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
-                pLevelDecorations[uDecorationID].vPosition.x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_y =
-                pLevelDecorations[uDecorationID].vPosition.y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].world_z =
-                pLevelDecorations[uDecorationID].vPosition.z;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x =
-                projected_x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y =
-                projected_y;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z =
-                view_x;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid =
-                PID(OBJECT_Decoration, uDecorationID);
+                    if (v11->hw_sprites[v9]->texture->GetHeight() == 0 || v11->hw_sprites[v9]->texture->GetWidth() == 0)
+                        __debugbreak();
 
-            pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
-            pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette =
+                        v11->uPaletteIndex;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
+                        uSectorID;
+
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x =
+                        pCamera3D->ViewPlaneDist_X;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y =
+                        pCamera3D->ViewPlaneDist_Y;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = billb_scale;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = billb_scale;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v30;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_x =
+                        pLevelDecorations[uDecorationID].vPosition.x;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_y =
+                        pLevelDecorations[uDecorationID].vPosition.y;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_z =
+                        pLevelDecorations[uDecorationID].vPosition.z;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x =
+                        projected_x;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y =
+                        projected_y;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z =
+                        view_x;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid =
+                        PID(OBJECT_Decoration, uDecorationID);
+
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v11;
+                }
+            }
         }
     }
 }

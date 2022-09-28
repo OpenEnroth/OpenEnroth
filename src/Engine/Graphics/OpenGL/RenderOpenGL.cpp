@@ -205,7 +205,7 @@ void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
     unsigned __int8 *p = sPixels;
     for (uint y = 0; y < (unsigned int)winheight; ++y) {
         for (uint x = 0; x < (unsigned int)winwidth; ++x) {
-            p = sPixels + 3 * (int)(x) + 3 * (int)(winheight - y) * winwidth;
+            p = sPixels + 3 * (int)(x) + 3 * (int)(winheight -1 - y) * winwidth;
 
             *for_pixels = Color16(*p & 255, *(p + 1) & 255, *(p + 2) & 255);
             ++for_pixels;
@@ -414,10 +414,10 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     float v20;  // st3@14
     int v21;     // ecx@16
     float v22;  // st3@16
-    float v27;   // [sp+24h] [bp-Ch]@5
-    float v29;   // [sp+2Ch] [bp-4h]@5
-    float v31;   // [sp+3Ch] [bp+Ch]@5
-    float a1;    // [sp+40h] [bp+10h]@5
+    float sprite_height;   // [sp+24h] [bp-Ch]@5
+    //float scr_proj_factor_y;   // [sp+2Ch] [bp-4h]@5
+    float half_sprite_width;   // [sp+3Ch] [bp+Ch]@5
+    float scr_proj_factor_x;    // [sp+40h] [bp+10h]@5
 
     // if (this->uNumD3DSceneBegins == 0) {
     //    return;
@@ -448,12 +448,12 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
         pSoftBillboard->sParentBillboardID;
     // v25 = pSoftBillboard->uScreenSpaceX;
     // v24 = pSoftBillboard->uScreenSpaceY;
-    a1 = pSoftBillboard->screenspace_projection_factor_x;
-    v29 = pSoftBillboard->screenspace_projection_factor_y;
-    v31 = static_cast<float>((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
-    v27 = static_cast<float>(pSprite->uBufferHeight - pSprite->uAreaY);
+    scr_proj_factor_x = pSoftBillboard->screenspace_projection_factor_x;
+    //scr_proj_factor_y = pSoftBillboard->screenspace_projection_factor_y;
+    half_sprite_width = static_cast<float>((pSprite->uBufferWidth >> 1) - pSprite->uAreaX);
+    sprite_height = static_cast<float>(pSprite->uBufferHeight - pSprite->uAreaY);
     if (pSoftBillboard->uFlags & 4) {
-        v31 = v31 * -1.0f;
+        half_sprite_width = half_sprite_width * -1.0f;
     }
     if (config->graphics.Tinting.Get() && pSoftBillboard->sTintColor) {
         v11 = ::GetActorTintColor(dimming_level, 0,
@@ -471,11 +471,11 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].pQuads[0].specular = 0;
     pBillboardRenderListD3D[v7].pQuads[0].diffuse = v12;
     pBillboardRenderListD3D[v7].pQuads[0].pos.x =
-        pSoftBillboard->screen_space_x - v31 * a1;
+        pSoftBillboard->screen_space_x - half_sprite_width * scr_proj_factor_x;
     // v14 = (double)v24;
     // v32 = v14;
     pBillboardRenderListD3D[v7].pQuads[0].pos.y =
-        pSoftBillboard->screen_space_y - v27 * v29;
+        pSoftBillboard->screen_space_y - sprite_height * scr_proj_factor_x;
     v15 = 1.0f - 1.0f / (pSoftBillboard->screen_space_z * 0.061758894f);
     pBillboardRenderListD3D[v7].pQuads[0].pos.z = v15;
     v16 = 1.0f / pSoftBillboard->screen_space_z;
@@ -492,9 +492,9 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].pQuads[1].specular = 0;
     pBillboardRenderListD3D[v7].pQuads[1].diffuse = v12;
     pBillboardRenderListD3D[v7].pQuads[1].pos.x =
-        pSoftBillboard->screen_space_x - v17 * a1;
+        pSoftBillboard->screen_space_x - v17 * scr_proj_factor_x;
     pBillboardRenderListD3D[v7].pQuads[1].pos.y =
-        pSoftBillboard->screen_space_y - v18 * v29;
+        pSoftBillboard->screen_space_y - v18 * scr_proj_factor_x;
     pBillboardRenderListD3D[v7].pQuads[1].pos.z = v15;
     pBillboardRenderListD3D[v7].pQuads[1].rhw = v16;
     pBillboardRenderListD3D[v7].pQuads[1].texcoord.x = 0.0;
@@ -508,9 +508,9 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].pQuads[2].specular = 0;
     pBillboardRenderListD3D[v7].pQuads[2].diffuse = v12;
     pBillboardRenderListD3D[v7].pQuads[2].pos.x =
-        v20 * a1 + pSoftBillboard->screen_space_x;
+        v20 * scr_proj_factor_x + pSoftBillboard->screen_space_x;
     pBillboardRenderListD3D[v7].pQuads[2].pos.y =
-        pSoftBillboard->screen_space_y - v19 * v29;
+        pSoftBillboard->screen_space_y - v19 * scr_proj_factor_x;
     pBillboardRenderListD3D[v7].pQuads[2].pos.z = v15;
     pBillboardRenderListD3D[v7].pQuads[2].rhw = v16;
     pBillboardRenderListD3D[v7].pQuads[2].texcoord.x = 1.0;
@@ -524,9 +524,9 @@ void RenderOpenGL::DrawBillboard_Indoor(SoftwareBillboard *pSoftBillboard,
     pBillboardRenderListD3D[v7].pQuads[3].specular = 0;
     pBillboardRenderListD3D[v7].pQuads[3].diffuse = v12;
     pBillboardRenderListD3D[v7].pQuads[3].pos.x =
-        v22 * a1 + pSoftBillboard->screen_space_x;
+        v22 * scr_proj_factor_x + pSoftBillboard->screen_space_x;
     pBillboardRenderListD3D[v7].pQuads[3].pos.y =
-        pSoftBillboard->screen_space_y - v21 * v29;
+        pSoftBillboard->screen_space_y - v21 * scr_proj_factor_x;
     pBillboardRenderListD3D[v7].pQuads[3].pos.z = v15;
     pBillboardRenderListD3D[v7].pQuads[3].rhw = v16;
     pBillboardRenderListD3D[v7].pQuads[3].texcoord.x = 1.0;
@@ -561,6 +561,10 @@ void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diff
     pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
     pBillboardRenderListD3D[v5].z_order = depth;
 
+    pBillboardRenderListD3D[v5].pQuads[3].pos.x = 0.0f;
+    pBillboardRenderListD3D[v5].pQuads[3].pos.y = 0.0f;
+    pBillboardRenderListD3D[v5].pQuads[3].pos.z = 0.0f;
+
     for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
         pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
         pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
@@ -583,8 +587,8 @@ void RenderOpenGL::BillboardSphereSpellFX(struct SpellFX_Billboard *a1, int diff
         pBillboardRenderListD3D[v5].pQuads[i].diffuse = v12;
         pBillboardRenderListD3D[v5].pQuads[i].specular = 0;
 
-        pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.0;
-        pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.0;
+        pBillboardRenderListD3D[v5].pQuads[i].texcoord.x = 0.5;
+        pBillboardRenderListD3D[v5].pQuads[i].texcoord.y = 0.5;
     }
 }
 
@@ -1852,6 +1856,8 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
     int v38;                // [sp+88h] [bp-1Ch]@9
 
     for (unsigned int i = 0; i < pLevelDecorations.size(); ++i) {
+        if (::uNumBillboardsToDraw >= 500) return;
+
         // LevelDecoration* decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||
             pLevelDecorations[i].IsObeliskChestActive()) &&
@@ -1937,54 +1943,36 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
                         if (2 * abs(view_x) >= abs(view_y)) {
                             int projected_x = 0;
                             int projected_y = 0;
-                            pCamera3D->Project(view_x, view_y, view_z,
-                                &projected_x,
-                                &projected_y);
+                            pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
                             float _v41 = frame->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
 
                             int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uBufferWidth / 2.0f);
+                            int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uBufferHeight);
 
-                            if (projected_x + screen_space_half_width >=
-                                (signed int)pViewport->uViewportTL_X &&
-                                projected_x - screen_space_half_width <=
-                                (signed int)pViewport->uViewportBR_X) {
-                                if (::uNumBillboardsToDraw >= 500) return;
-                                ::uNumBillboardsToDraw++;
-                                ++uNumDecorationsDrawnThisFrame;
+                            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
+                                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
+                                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                                    ::uNumBillboardsToDraw++;
+                                    ++uNumDecorationsDrawnThisFrame;
 
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .hwsprite = frame->hw_sprites[(int64_t)v37];
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .world_x = pLevelDecorations[i].vPosition.x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .world_y = pLevelDecorations[i].vPosition.y;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .world_z = pLevelDecorations[i].vPosition.z;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screen_space_x = projected_x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screen_space_y = projected_y;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screen_space_z = view_x;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screenspace_projection_factor_x = _v41;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .screenspace_projection_factor_y = _v41;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .uPalette = frame->uPaletteIndex;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .field_1E = v38 | 0x200;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .uIndoorSectorID = 0;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .object_pid = PID(OBJECT_Decoration, i);
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .dimming_level = 0;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .pSpriteFrame = frame;
-                                pBillboardRenderList[::uNumBillboardsToDraw - 1]
-                                    .sTintColor = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[(int64_t)v37];
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].world_x = pLevelDecorations[i].vPosition.x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].world_y = pLevelDecorations[i].vPosition.y;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].world_z = pLevelDecorations[i].vPosition.z;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_x = projected_x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_y = projected_y;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_z = view_x;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPalette = frame->uPaletteIndex;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Decoration, i);
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].dimming_level = 0;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].pSpriteFrame = frame;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].sTintColor = 0;
+                                }
                             }
                         }
                     }
@@ -3240,7 +3228,9 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
             auto texture = (TextureOpenGL *)pBillboardRenderListD3D[i].texture;
             gltexid = texture->GetOpenGlTexture();
         } else {
-            gltexid = 0;
+            static Texture *effpar03 = assets->GetBitmap("effpar03");
+            auto texture = (TextureOpenGL *)effpar03;
+            gltexid = static_cast<float>(texture->GetOpenGlTexture());
         }
 
         //if (gltexid != testtexid) {
@@ -3302,47 +3292,49 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
 
         ////////////////////////////////
 
-        billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
-        billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
-        billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[0].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[0].texcoord.y;
-        billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].a = 1;
-        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-        billbstore[billbstorecnt].texid = gltexid;
-        billbstore[billbstorecnt].blend = thisblend;
-        billbstorecnt++;
+        if (billboard->pQuads[3].pos.x != 0.0f && billboard->pQuads[3].pos.y != 0.0f && billboard->pQuads[3].pos.z != 0.0f) {
+            billbstore[billbstorecnt].x = billboard->pQuads[0].pos.x;
+            billbstore[billbstorecnt].y = billboard->pQuads[0].pos.y;
+            billbstore[billbstorecnt].z = thisdepth;
+            billbstore[billbstorecnt].u = billboard->pQuads[0].texcoord.x;
+            billbstore[billbstorecnt].v = billboard->pQuads[0].texcoord.y;
+            billbstore[billbstorecnt].r = ((billboard->pQuads[0].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].g = ((billboard->pQuads[0].diffuse >> 8) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].b = ((billboard->pQuads[0].diffuse >> 0) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].a = 1;
+            billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
+            billbstore[billbstorecnt].texid = gltexid;
+            billbstore[billbstorecnt].blend = thisblend;
+            billbstorecnt++;
 
-        billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
-        billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
-        billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[2].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[2].texcoord.y;
-        billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].a = 1;
-        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-        billbstore[billbstorecnt].texid = gltexid;
-        billbstore[billbstorecnt].blend = thisblend;
-        billbstorecnt++;
+            billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
+            billbstore[billbstorecnt].y = billboard->pQuads[2].pos.y;
+            billbstore[billbstorecnt].z = thisdepth;
+            billbstore[billbstorecnt].u = billboard->pQuads[2].texcoord.x;
+            billbstore[billbstorecnt].v = billboard->pQuads[2].texcoord.y;
+            billbstore[billbstorecnt].r = ((billboard->pQuads[2].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].g = ((billboard->pQuads[2].diffuse >> 8) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].b = ((billboard->pQuads[2].diffuse >> 0) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].a = 1;
+            billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
+            billbstore[billbstorecnt].texid = gltexid;
+            billbstore[billbstorecnt].blend = thisblend;
+            billbstorecnt++;
 
-        billbstore[billbstorecnt].x = billboard->pQuads[3].pos.x;
-        billbstore[billbstorecnt].y = billboard->pQuads[3].pos.y;
-        billbstore[billbstorecnt].z = thisdepth;
-        billbstore[billbstorecnt].u = billboard->pQuads[3].texcoord.x;
-        billbstore[billbstorecnt].v = billboard->pQuads[3].texcoord.y;
-        billbstore[billbstorecnt].r = ((billboard->pQuads[3].diffuse >> 16) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].g = ((billboard->pQuads[3].diffuse >> 8) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
-        billbstore[billbstorecnt].a = 1;
-        billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
-        billbstore[billbstorecnt].texid = gltexid;
-        billbstore[billbstorecnt].blend = thisblend;
-        billbstorecnt++;
+            billbstore[billbstorecnt].x = billboard->pQuads[3].pos.x;
+            billbstore[billbstorecnt].y = billboard->pQuads[3].pos.y;
+            billbstore[billbstorecnt].z = thisdepth;
+            billbstore[billbstorecnt].u = billboard->pQuads[3].texcoord.x;
+            billbstore[billbstorecnt].v = billboard->pQuads[3].texcoord.y;
+            billbstore[billbstorecnt].r = ((billboard->pQuads[3].diffuse >> 16) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].g = ((billboard->pQuads[3].diffuse >> 8) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].b = ((billboard->pQuads[3].diffuse >> 0) & 0xFF) / 255.0f;
+            billbstore[billbstorecnt].a = 1;
+            billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
+            billbstore[billbstorecnt].texid = gltexid;
+            billbstore[billbstorecnt].blend = thisblend;
+            billbstorecnt++;
+        }
 
         if (billbstorecnt > 990) {
             DrawBillboards();
@@ -3443,16 +3435,16 @@ void RenderOpenGL::DrawBillboards() {
         int cnt = 0;
         do {
             cnt++;
-            if (offset + (6 * cnt) > billbstorecnt) {
+            if (offset + (3 * cnt) > billbstorecnt) {
                 --cnt;
                 break;
             }
-        } while (billbstore[offset + (cnt * 6)].texid == thistex && billbstore[offset + (cnt * 6)].blend == thisblend);
+        } while (billbstore[offset + (cnt * 3)].texid == thistex && billbstore[offset + (cnt * 3)].blend == thisblend);
 
-        glDrawArrays(GL_TRIANGLES, offset, (6 * cnt));
+        glDrawArrays(GL_TRIANGLES, offset, (3 * cnt));
         drawcalls++;
 
-        offset += (6 * cnt);
+        offset += (3 * cnt);
     }
 
     GL_Check_Errors();
