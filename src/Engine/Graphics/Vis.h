@@ -56,7 +56,8 @@ struct Vis_ObjectInfo {
 
 #pragma pack(push, 1)
 struct Vis_SelectionList {
-    enum PointerCreationType { All = 0, Unique = 1 };
+    enum class PointerCreationType { All = 0, Unique = 1 };
+    using enum PointerCreationType;
 
     Vis_ObjectInfo *SelectionPointers(int a2, int a3);
     void create_object_pointers(PointerCreationType type = All);
