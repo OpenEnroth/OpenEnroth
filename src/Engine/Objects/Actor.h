@@ -4,10 +4,11 @@
 #include <string>
 
 #include "Engine/IocContainer.h"
+#include "Engine/Spells/Spells.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
 
-#include "../Spells/Spells.h"
-#include "Items.h"
-#include "Monsters.h"
+#include "Utility/IndexedArray.h"
 
 using EngineIoc = Engine_::IocContainer;
 class Actor;
@@ -39,7 +40,7 @@ enum ABILITY_INDEX {
 };
 
 /*  361 */
-enum ACTOR_BUFF_INDEX {
+enum class ACTOR_BUFF_INDEX {
     ACTOR_BUFF_CHARM = 1,
     ACTOR_BUFF_SUMMONED = 2,
     ACTOR_BUFF_SHRINK = 3,
@@ -61,7 +62,9 @@ enum ACTOR_BUFF_INDEX {
     ACTOR_BUFF_HASTE = 19,
     ACTOR_BUFF_PAIN_REFLECTION = 20,
     ACTOR_BUFF_PAIN_HAMMERHANDS = 21,
+    ACTOR_BUFF_COUNT
 };
+using enum ACTOR_BUFF_INDEX;
 
 /*  295 */
 enum class ObjectType {
@@ -311,7 +314,7 @@ class Actor {
     unsigned int uCurrentActionTime = 0;
     std::array<uint16_t, 8> pSpriteIDs = {{}};
     std::array<uint16_t, 4> pSoundSampleIDs = {{}};  // 1 die     3 bored
-    std::array<SpellBuff, 22> pActorBuffs;
+    IndexedArray<SpellBuff, ACTOR_BUFF_COUNT> pActorBuffs;
     std::array<ItemGen, 4> ActorHasItems;
     unsigned int uGroup = 0;
     unsigned int uAlly = 0;

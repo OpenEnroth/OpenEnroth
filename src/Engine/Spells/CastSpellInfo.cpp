@@ -3007,11 +3007,8 @@ void CastSpellInfoHelpers::CastSpell() {
                         PID(OBJECT_Actor,
                             _50BF30_actors_in_viewport_ids[spell_targeted_at]);
                     pSpellSprite.Create(0, 0, 0, 0);
-                    for (int i = 0; i < 22; ++i)
-                        pActors
-                            [_50BF30_actors_in_viewport_ids[spell_targeted_at]]
-                                .pActorBuffs[i]
-                                .Reset();
+                    for (SpellBuff &buff : pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]].pActorBuffs)
+                        buff.Reset();
                 }
                 spell_sound_flag = true;
                 break;

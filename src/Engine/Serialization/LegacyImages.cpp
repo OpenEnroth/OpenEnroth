@@ -1223,7 +1223,7 @@ void Actor_MM7::Serialize(Actor *actor) {
         this->pSoundSampleIDs[i] = actor->pSoundSampleIDs[i];
 
     for (unsigned int i = 0; i < 22; ++i)
-        this->pActorBuffs[i] = actor->pActorBuffs[i];
+        this->pActorBuffs[i] = actor->pActorBuffs[ACTOR_BUFF_INDEX(i)];
 
     for (unsigned int i = 0; i < 4; ++i)
         this->ActorHasItems[i] = actor->ActorHasItems[i];
@@ -1336,7 +1336,7 @@ void Actor_MM7::Deserialize(Actor *actor) {
         actor->pSoundSampleIDs[i] = this->pSoundSampleIDs[i];
 
     for (unsigned int i = 0; i < 22; ++i)
-        actor->pActorBuffs[i] = this->pActorBuffs[i];
+        actor->pActorBuffs[ACTOR_BUFF_INDEX(i)] = this->pActorBuffs[i];
 
     for (unsigned int i = 0; i < 4; ++i)
         actor->ActorHasItems[i] = this->ActorHasItems[i];

@@ -270,11 +270,9 @@ void stru262_TurnBased::AITurnBasedAction() {
     for (uint i = 0; i < pActors.size(); ++i) {
         curr_actor = &pActors[i];
         shrinked = pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active();
-        for (j = 0; j < 22; ++j) {  // check expired spell Buffs
-            if (j != 10)
-                pActors[i].pActorBuffs[j].IsBuffExpiredToTime(
-                    pParty->GetPlayingTime());
-        }
+        for (auto &&pair : pActors[i].pActorBuffs.map_view())
+            if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
+                pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
         if (shrinked && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
             pActors[i].uActorHeight =
                 pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1]

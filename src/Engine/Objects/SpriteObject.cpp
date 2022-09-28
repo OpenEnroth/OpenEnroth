@@ -910,7 +910,7 @@ void SpriteObject::_46BEF1_apply_spells_aoe() {
 
             if (v11 >= v7 * v7 + v9 * v9 + v10 * v10) {
                 if (pActors[i].DoesDmgTypeDoDamage(DMGT_DARK)) {
-                    pActors[i].pActorBuffs[this->spell_id].Apply(
+                    pActors[i].pActorBuffs[ACTOR_BUFF_INDEX(this->spell_id)].Apply(
                         GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(this->spell_level)),
                         this->spell_skill, 4, 0, 0);
@@ -1542,7 +1542,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                         pActors[v108].uAIState = Standing;
                         pActors[v108].UpdateAnimation();
                     }
-                    pActors[v108].pActorBuffs[v136].Apply(
+                    pActors[v108].pActorBuffs[ACTOR_BUFF_INDEX(v136)].Apply(
                         GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v137)),
                         v152, v150, 0, 0);
                 }

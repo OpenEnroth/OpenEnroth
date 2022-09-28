@@ -1925,7 +1925,8 @@ void Actor::Die(unsigned int uActorID) {
         if (pParty->monster_id_for_hunting[i] == actor->pMonsterInfo.uID)
             pParty->monster_for_hunting_killed[i] = true;
 
-    for (uint i = 0; i < 22; ++i) actor->pActorBuffs[i].Reset();
+    for (SpellBuff &buff : actor->pActorBuffs)
+        buff.Reset();
 
     ItemGen drop;
     drop.Reset();
@@ -2769,11 +2770,9 @@ void Actor::UpdateActorAI() {
         if (!pActor->sCurrentHP && pActor->uAIState != Dying) Actor::Die(i);
 
         // Kill buffs if expired
-        for (uint j = 0; j < 22; ++j) {
-            if (j != 10)
-                pActor->pActorBuffs[j].IsBuffExpiredToTime(
-                    pParty->GetPlayingTime());
-        }
+        for (auto &&pair: pActor->pActorBuffs.map_view())
+            if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
+                pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         // If shrink expired: reset height
         if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
@@ -2853,11 +2852,9 @@ void Actor::UpdateActorAI() {
 
         if (!pActor->sCurrentHP) Actor::Die(actor_id);
 
-        for (int i = 0; i < 22; i++) {
-            if (i != 10)
-                pActor->pActorBuffs[i].IsBuffExpiredToTime(
-                    pParty->GetPlayingTime());
-        }
+        for (auto &&pair: pActor->pActorBuffs.map_view())
+            if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
+                pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
 
         if (pActor->pActorBuffs[ACTOR_BUFF_SHRINK].Expired()) {
             pActor->uActorHeight =
