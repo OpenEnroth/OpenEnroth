@@ -552,7 +552,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         int id = PID_ID(collision_state.pid);
-        int type = PID_TYPE(collision_state.pid);
+        ObjectType type = PID_TYPE(collision_state.pid);
 
         if (type == OBJECT_Actor) {
             if (pParty->bTurnBasedModeOn &&

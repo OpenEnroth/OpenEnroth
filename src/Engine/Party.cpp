@@ -1182,7 +1182,7 @@ void Party::PickedItem_PlaceInInventory_or_Drop() {
         if (CharIndex == 4) {
             SpriteObject object;
             object.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
-            object.spell_caster_pid = OBJECT_Player;
+            object.spell_caster_pid = PID(OBJECT_Player, 0);
             object.uObjectDescID = pObjectList->ObjectIDByItemID(object.uType);
             object.vPosition.y = pParty->vPosition.y;
             object.vPosition.x = pParty->vPosition.x;

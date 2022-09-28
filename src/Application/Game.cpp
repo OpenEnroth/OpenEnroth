@@ -447,7 +447,7 @@ void Game::EventLoop() {
     int v38;                    // eax@358
     int v42 {};                    // eax@396
     signed int v44;             // eax@398
-    int v45;                    // edx@398
+    ObjectType v45;                    // edx@398
     signed int v46;             // ecx@398
     char v47;                   // zf@399
     char v48;                   // zf@405
@@ -1174,7 +1174,7 @@ void Game::EventLoop() {
                     v45 = PID_TYPE(v44);
                     uNumSeconds = v44;
                     v46 = PID_ID(v44);
-                    if (v45 == 3) {
+                    if (v45 == OBJECT_Actor) {
                         v47 = pActors[v46].uAIState == Dead;
                         if (!v47) continue;
                         pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
@@ -1191,7 +1191,7 @@ void Game::EventLoop() {
                         back_to_game();
                         continue;
                     }
-                    if (v45 == 2) {
+                    if (v45 == OBJECT_Item) {
                         v47 = (pObjectList
                                    ->pObjects[pSpriteObjects[v46].uObjectDescID]
                                    .uFlags &
@@ -1211,10 +1211,10 @@ void Game::EventLoop() {
                         back_to_game();
                         continue;
                     }
-                    if (v45 == 5) {
+                    if (v45 == OBJECT_Decoration) {
                         v48 = pLevelDecorations[v46].uEventID == 0;
                     } else {
-                        if (v45 != 6) continue;
+                        if (v45 != OBJECT_BModel) continue;
                         if (uCurrentlyLoadedLevelType != 1) {
                             pODMFace = &pOutdoor->pBModels[v44 >> 9].pFaces[v46 & 0x3F];
                             if (!pODMFace->Clickable() ||
@@ -1636,7 +1636,7 @@ void Game::EventLoop() {
                     v83 = vis->get_picked_object_zbuf_val();
                     v44 = v83.object_pid;
                     v84 = v83.depth;
-                    if (PID_TYPE(v44) != 3 || v84 >= engine->config->gameplay.RangedAttackDepth.Get())
+                    if (PID_TYPE(v44) != OBJECT_Actor || v84 >= engine->config->gameplay.RangedAttackDepth.Get())
                         continue;
                     pSpellInfo = static_cast<CastSpellInfo *>(pGUIWindow_CastTargetedSpell->wData.ptr);
                     if (uMessage == UIMSG_CastSpell_Shoot_Monster) {

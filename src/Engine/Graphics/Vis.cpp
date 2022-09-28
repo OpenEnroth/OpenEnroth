@@ -414,14 +414,14 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
 }
 
 //----- (004C1944) --------------------------------------------------------
-unsigned short Vis::PickClosestActor(int object_id, unsigned int pick_depth,
+unsigned short Vis::PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                                      VisSelectFlags select_flags, int not_at_ai_state, int at_ai_state) {
     Vis_SelectionFilter selectionFilter;  // [sp+18h] [bp-20h]@3
 
     static Vis_SelectionList Vis_static_sub_4C1944_stru_F8BDE8;
 
     selectionFilter.vis_object_type = VisObjectType_Sprite;
-    selectionFilter.object_type = object_id;
+    selectionFilter.object_type = object_type;
     selectionFilter.at_ai_state = at_ai_state;
     selectionFilter.no_at_ai_state = not_at_ai_state;
     selectionFilter.select_flags = select_flags;
@@ -928,7 +928,7 @@ bool Vis::is_part_of_selection(const Vis_Object &what, Vis_SelectionFilter *filt
 
             // v5 = filter->select_flags;
             int object_idx = PID_ID(pBillboardRenderList[parentBillboardId].object_pid);
-            int object_type = PID_TYPE(pBillboardRenderList[parentBillboardId].object_pid);
+            ObjectType object_type = PID_TYPE(pBillboardRenderList[parentBillboardId].object_pid);
             if (filter->select_flags & ExcludeType) {
                 return object_type != filter->object_type;
             }

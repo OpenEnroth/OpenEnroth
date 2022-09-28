@@ -64,7 +64,7 @@ enum ACTOR_BUFF_INDEX {
 };
 
 /*  295 */
-enum ObjectType {
+enum class ObjectType {
     OBJECT_Any = 0x0,
     OBJECT_BLVDoor = 0x1,
     OBJECT_Item = 0x2,
@@ -73,6 +73,7 @@ enum ObjectType {
     OBJECT_Decoration = 0x5,
     OBJECT_BModel = 0x6,
 };
+using enum ObjectType;
 
 /*  264 */
 enum AIState : unsigned __int16 {

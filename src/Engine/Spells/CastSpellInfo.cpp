@@ -90,7 +90,7 @@ void CastSpellInfoHelpers::CastSpell() {
     int spellduration;
     signed int spell_targeted_at = 0;  // [sp+E7Ch] [bp-8h]@14
     int amount = 0;                    // [sp+E80h] [bp-4h]@1
-    int obj_type;
+    ObjectType obj_type;
     // ItemDesc *_item;
 
     SpriteObject pSpellSprite;  // [sp+DDCh] [bp-A8h]@1

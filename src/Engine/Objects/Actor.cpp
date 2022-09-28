@@ -1717,7 +1717,7 @@ void Actor::AI_RandomMove(unsigned int uActor_id, unsigned int uTarget_id,
     if (MonsterStats::BelongsToSupertype(pActors[uActor_id].pMonsterInfo.uID,
                                          MONSTER_SUPERTYPE_TREANT)) {
         if (!uActionLength) uActionLength = 256;
-        Actor::AI_StandOrBored(uActor_id, OBJECT_Player, uActionLength,
+        Actor::AI_StandOrBored(uActor_id, PID(OBJECT_Player, 0), uActionLength,
                                &doNotInitializeBecauseShouldBeRandom);
         return;
     }
@@ -2304,7 +2304,7 @@ void Actor::_SelectTarget(unsigned int uActorID, int *a2,
             v17 = abs(thisActor->vPosition.z - pParty->vPosition.z);
             if (v16 <= v15 && v28 <= v15 && v17 <= v15 &&
                 (v16 * v16 + v28 * v28 + v17 * v17 < lowestRadius)) {
-                *a2 = OBJECT_Player;
+                *a2 = PID(OBJECT_Player, 0);
             }
         }
     }
@@ -2682,7 +2682,7 @@ void Actor::UpdateActorAI() {
     int v70;                 // [sp-10h] [bp-C0h]@213
     AIDirection v72;         // [sp+0h] [bp-B0h]@246
     AIDirection a3;          // [sp+1Ch] [bp-94h]@129
-    int target_pid_type;     // [sp+70h] [bp-40h]@83
+    ObjectType target_pid_type;     // [sp+70h] [bp-40h]@83
     signed int a1;           // [sp+74h] [bp-3Ch]@129
     int v78;                 // [sp+78h] [bp-38h]@79
     AIDirection *pDir;       // [sp+7Ch] [bp-34h]@129
@@ -2758,7 +2758,7 @@ void Actor::UpdateActorAI() {
     // this loops over all actors in background ai state
     for (uint i = 0; i < pActors.size(); ++i) {
         pActor = &pActors[i];
-        ai_near_actors_targets_pid[i] = OBJECT_Player;
+        ai_near_actors_targets_pid[i] = PID(OBJECT_Player, 0);
 
         // Skip actor if: Dead / Removed / Disabled / or in full ai state
         if (pActor->uAIState == Dead || pActor->uAIState == Removed ||
@@ -2808,7 +2808,7 @@ void Actor::UpdateActorAI() {
             pActor->uAIState = Dead;
         } else {
             if (pActor->uAIState != Summoned) {
-                Actor::AI_StandOrBored(i, OBJECT_Player, 256, nullptr);
+                Actor::AI_StandOrBored(i, PID(OBJECT_Player, 0), 256, nullptr);
                 continue;
             }
             pActor->uAIState = Standing;
@@ -4510,7 +4510,7 @@ int Actor::MakeActorAIList_BLV() {
     for (int i = 0; i < active_actor_count; i++) {
         if (pActors[ai_near_actors_ids[i]].ActorNearby() ||
             Detect_Between_Objects(
-                PID(OBJECT_Actor, ai_near_actors_ids[i]), OBJECT_Player)) {
+                PID(OBJECT_Actor, ai_near_actors_ids[i]), PID(OBJECT_Player, 0))) {
             pActors[ai_near_actors_ids[i]].uAttributes |= ACTOR_NEARBY;
             ai_array_detected_actor_ids[num_actors_detect_player] = ai_near_actors_ids[i];
             ai_array_detected_actor_dist[num_actors_detect_player++] = ai_near_actors_distances[i];
@@ -5139,7 +5139,7 @@ void area_of_effect__damage_evaluate() {
     SpriteObject *sprite_obj_ptr = nullptr;
 
     for (int attack_index = 0; attack_index < AttackerInfo.count; ++attack_index) {
-        int attacker_PID_type = PID_TYPE(AttackerInfo.pIDs[attack_index]);
+        ObjectType attacker_PID_type = PID_TYPE(AttackerInfo.pIDs[attack_index]);
         int attacker_PID_id = PID_ID(AttackerInfo.pIDs[attack_index]);
 
         // attacker is an item (sprite)
@@ -5151,10 +5151,10 @@ void area_of_effect__damage_evaluate() {
 
         if (AttackerInfo.attack_type[attack_index] & 1) {  // melee attack
             unsigned int target_id = PID_ID(ai_near_actors_targets_pid[attacker_PID_id]);
-            int target_type = PID_TYPE(ai_near_actors_targets_pid[attacker_PID_id]) - 3;
+            ObjectType target_type = PID_TYPE(ai_near_actors_targets_pid[attacker_PID_id]);
 
-            if (target_type) {
-                if (target_type == 1) {  // party damage from monsters(повреждения группе от монстров)
+            if (target_type != OBJECT_Actor) {
+                if (target_type == OBJECT_Player) {  // party damage from monsters(повреждения группе от монстров)
                     int xdiff = pParty->vPosition.x - AttackerInfo.pXs[attack_index];
                     int xsq = xdiff * xdiff;
                     int ydiff = pParty->vPosition.y - AttackerInfo.pYs[attack_index];

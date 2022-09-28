@@ -487,7 +487,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_sprites.uSectorID = pIndoor->GetSector(fromx, fromy, fromz);
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
             spell_sprites.uSpriteFrameID = 0;
-            spell_sprites.spell_caster_pid = 8000 | OBJECT_Item;
+            spell_sprites.spell_caster_pid = PID(OBJECT_Item, 1000); // 8000 | OBJECT_Item;
             spell_sprites.uSoundID = 0;
             break;
     }

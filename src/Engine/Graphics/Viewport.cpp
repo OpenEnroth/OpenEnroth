@@ -290,7 +290,7 @@ void Engine::DropHeldItem() {
     a1.uType = (SPRITE_OBJECT_TYPE)pItemsTable->pItems[pParty->pPickedItem.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition.y = pParty->vPosition.y;
-    a1.spell_caster_pid = OBJECT_Player;
+    a1.spell_caster_pid = PID(OBJECT_Player, 0);
     a1.vPosition.x = pParty->vPosition.x;
     a1.vPosition.z = pParty->sEyelevel + pParty->vPosition.z;
     a1.uSoundID = 0;

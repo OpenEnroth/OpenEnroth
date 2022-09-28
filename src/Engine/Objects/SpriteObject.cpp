@@ -1294,7 +1294,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
         }
 
         case SPRITE_SPELL_EARTH_ROCK_BLAST: {
-            if (PID_TYPE(pid) == 6 || PID_TYPE(pid) == 5 || !PID_TYPE(pid)) {
+            if (PID_TYPE(pid) == OBJECT_BModel || PID_TYPE(pid) == OBJECT_Decoration || PID_TYPE(pid) == OBJECT_Any) {
                 return 1;
             }
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT;
@@ -1649,7 +1649,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
 
         case SPRITE_SPELL_FIRE_METEOR_SHOWER:
         case SPRITE_SPELL_AIR_STARBURST: {
-            if (PID_TYPE(pid) == 3) return 1;
+            if (PID_TYPE(pid) == OBJECT_Actor) return 1;
             // else go to next case
         }
 

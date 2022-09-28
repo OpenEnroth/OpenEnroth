@@ -6906,7 +6906,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
     int v72[4] {};                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
-    int pidtype = PID_TYPE(uObjID);
+    ObjectType pidtype = PID_TYPE(uObjID);
 
     /*    OBJECT_Any = 0x0,
     OBJECT_BLVDoor = 0x1,
@@ -6934,7 +6934,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
         Player *playerPtr = &pParty->pPlayers[targetchar];
         Actor *actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->sHealth;
-        if (PID_TYPE(uObjID) != 3 || !actorPtr->ActorHitOrMiss(playerPtr))
+        if (PID_TYPE(uObjID) != OBJECT_Actor || !actorPtr->ActorHitOrMiss(playerPtr))
             return;
 
         // GM unarmed 1% chance to evade attacks per skill point
@@ -7088,7 +7088,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
     } else {  // is an item
         int spriteId = PID_ID(uObjID);
         SpriteObject* spritefrom = &pSpriteObjects[spriteId];
-        int uActorType = PID_TYPE(spritefrom->spell_caster_pid);
+        ObjectType uActorType = PID_TYPE(spritefrom->spell_caster_pid);
         int uActorID = PID_ID(spritefrom->spell_caster_pid);
 
         if (uActorType == OBJECT_Item) {
@@ -7680,7 +7680,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
     // v7 = pMouse->uPointingObjectID;
 
     int target_pid = mouse->uPointingObjectID;
-    int target_type = PID_TYPE(target_pid), target_id = PID_ID(target_pid);
+    ObjectType target_type = PID_TYPE(target_pid);
+    int target_id = PID_ID(target_pid);
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
         target_type = PID_TYPE(target_pid);

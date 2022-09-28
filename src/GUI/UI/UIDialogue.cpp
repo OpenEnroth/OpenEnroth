@@ -423,7 +423,7 @@ void GUIWindow_Dialogue::Update() {
                     pActors[i].uAIState == Disabled) {
                     ++num_dead_actors;
                 } else {
-                    int sumonner_type = PID_TYPE(pActors[i].uSummonerID);
+                    ObjectType sumonner_type = PID_TYPE(pActors[i].uSummonerID);
                     if (sumonner_type == OBJECT_Player) ++num_dead_actors;
                 }
             }

@@ -27,7 +27,7 @@ void stru262_TurnBased::SortTurnQueue() {
     TurnBased_QueueElem *test_element;  // ecx@18
     TurnBased_QueueElem temp_elem;
     int i, j;
-    unsigned int p_type;
+    ObjectType p_type;
     unsigned int p_id;
 
     active_actors = this->uActorQueueSize;
