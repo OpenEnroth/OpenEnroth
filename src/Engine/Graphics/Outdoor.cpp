@@ -155,7 +155,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     if (!pODMRenderParams->bDoNotRenderDecorations)
         render->PrepareDecorationsRenderList_ODM();
 
-    render->DrawSpriteObjects_ODM();
+    render->DrawSpriteObjects();
     render->TransformBillboardsAndSetPalettesODM();
 
     // temp hack to show snow every third day in winter

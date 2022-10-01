@@ -37,7 +37,7 @@ struct RenderBillboard {
     Sprite *hwsprite;  // signed __int16 HwSpriteID;
     int16_t uPalette;
     int16_t uIndoorSectorID;
-    int16_t field_1E;
+    int16_t field_1E;  // flags
     int16_t world_x;
     int16_t world_y;
     int16_t world_z;
@@ -343,7 +343,7 @@ class IRender {
     virtual void DrawOutdoorSkyD3D() = 0;
 
     virtual void PrepareDecorationsRenderList_ODM() = 0;
-    virtual void DrawSpriteObjects_ODM() = 0;
+    virtual void DrawSpriteObjects() = 0;
 
     virtual void DrawTerrainD3D() = 0;
 

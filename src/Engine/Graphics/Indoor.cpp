@@ -155,7 +155,10 @@ void PrepareDrawLists_BLV() {
     }
 
     PrepareBspRenderList_BLV();
-    pIndoor->PrepareItemsRenderList_BLV();
+
+    //pIndoor->PrepareItemsRenderList_BLV();
+    render->DrawSpriteObjects();
+
     pIndoor->PrepareActorRenderList_BLV();
 
      for (uint i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
@@ -1872,116 +1875,6 @@ void IndoorLocation::PrepareActorRenderList_BLV() {  // combines this with outdo
                 }
            // }
         //}
-    }
-}
-
-// combine with void RenderBase::DrawSpriteObjects_ODM()?
-//----- (0044028F) --------------------------------------------------------
-void IndoorLocation::PrepareItemsRenderList_BLV() {
-    unsigned int v6;     // eax@12
-
-    for (uint i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].uObjectDescID) {
-            if (pSpriteObjects[i].HasSprite()) {
-                if ((pSpriteObjects[i].uType < 1000 || pSpriteObjects[i].uType >= 10000) &&
-                        (pSpriteObjects[i].uType < 500 || pSpriteObjects[i].uType >= 600) &&
-                        (pSpriteObjects[i].uType < 811 || pSpriteObjects[i].uType >= 815) ||
-                    spell_fx_renderer->RenderAsSprite(&pSpriteObjects[i])) {
-                    SpriteFrame *v4 = pSpriteObjects[i].GetSpriteFrame();
-
-                    int a6 = v4->uGlowRadius * pSpriteObjects[i].field_22_glow_radius_multiplier;
-                    v6 = TrigLUT->Atan2(pSpriteObjects[i].vPosition.x - pCamera3D->vCameraPos.x,
-                                            pSpriteObjects[i].vPosition.y - pCamera3D->vCameraPos.y);
-                    int v7 = pSpriteObjects[i].uFacing;
-                    int v9 = ((int)(TrigLUT->uIntegerPi + ((int)TrigLUT->uIntegerPi >> 3) + v7 - v6) >> 8) & 7;
-
-                    pBillboardRenderList[uNumBillboardsToDraw].hwsprite = v4->hw_sprites[v9];
-                    // error catching
-                    if (v4->texture_name == "null") continue;
-                    if (v4->hw_sprites[v9]->texture->GetHeight() == 0 || v4->hw_sprites[v9]->texture->GetWidth() == 0)
-                        __debugbreak();
-
-                    // centre sprite on coords
-                    int modz = pSpriteObjects[i].vPosition.z;
-                    if (v4->uFlags & 0x20)
-                       modz -= (int)((v4->scale * v4->hw_sprites[v9]->uBufferHeight) / 2);
-
-                    int16_t v34 = 0;
-                    if (v4->uFlags & 2) v34 = 2;
-                    if (v4->uFlags & 0x40000) v34 |= 0x40;
-                    if (v4->uFlags & 0x20000) v34 |= 0x80;
-                    // v11 = (int *)(256 << v9);
-                    if ((256 << v9) & v4->uFlags) v34 |= 4;
-                    if (a6) {
-                        pMobileLightsStack->AddLight(
-                            pSpriteObjects[i].vPosition.ToFloat(),
-                            pSpriteObjects[i].uSectorID, a6,
-                            pSpriteObjects[i].GetParticleTrailColorR(),
-                            pSpriteObjects[i].GetParticleTrailColorG(),
-                            pSpriteObjects[i].GetParticleTrailColorB(),
-                            _4E94D3_light_type);
-                    }
-
-                    int view_x = 0;
-                    int view_y = 0;
-                    int view_z = 0;
-
-                    bool visible = pCamera3D->ViewClip(pSpriteObjects[i].vPosition.x,
-                                                              pSpriteObjects[i].vPosition.y,
-                                                              modz,
-                                                              &view_x, &view_y, &view_z);
-
-                    view_x -= 0.005;
-
-
-                    if (visible) {
-                        if (2 * abs(view_x) >= abs(view_y)) {
-                            int projected_x = 0;
-                            int projected_y = 0;
-                            pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
-
-                            float billb_scale = v4->scale * pCamera3D->ViewPlaneDist_X / view_x;
-
-                            int screen_space_half_width = static_cast<int>(billb_scale * v4->hw_sprites[(int64_t)v9]->uBufferWidth / 2.0f);
-                            int screen_space_height = static_cast<int>(billb_scale * v4->hw_sprites[(int64_t)v9]->uBufferHeight);
-
-                            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
-                                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
-                                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
-                                    assert(uNumBillboardsToDraw < 499);
-                                    ++uNumBillboardsToDraw;
-                                    ++uNumSpritesDrawnThisFrame;
-
-                                    pSpriteObjects[i].uAttributes |= SPRITE_VISIBLE;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v4->uPaletteIndex;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pSpriteObjects[i].uSectorID;
-                                    // if ( render->pRenderD3D )
-                                    {
-                                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_x = pCamera3D->ViewPlaneDist_X;
-                                        pBillboardRenderList[uNumBillboardsToDraw - 1].fov_y = pCamera3D->ViewPlaneDist_Y;
-                                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x =
-                                            billb_scale;
-                                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y =
-                                            billb_scale;
-                                    }
-
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v34;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_x = pSpriteObjects[i].vPosition.x;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_y = pSpriteObjects[i].vPosition.y;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].world_z = pSpriteObjects[i].vPosition.z;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_x = projected_x;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_y = projected_y;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor = 0;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v4;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].screen_space_z = view_x;
-                                    pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Item, i);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 

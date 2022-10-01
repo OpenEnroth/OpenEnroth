@@ -106,86 +106,81 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
     return v7;
 }
 
-// can this be combined with indoor draw sprite objects??
-// TODO: Move this to outdoors or sprites
-void RenderBase::DrawSpriteObjects_ODM() {
+
+// TODO: Move this to sprites
+// combined with IndoorLocation::PrepareItemsRenderList_BLV() (0044028F)
+void RenderBase::DrawSpriteObjects() {
     for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
+        // exit if we are at max sprites
+        if (::uNumBillboardsToDraw >= 500) break;
+
         SpriteObject *object = &pSpriteObjects[i];
-        // auto v0 = (char *)&pSpriteObjects[i].uSectorID;
-        // v0 = (char *)&pSpriteObjects[0].uSectorID;
-        // do
-        //{
-
-        // if (object->uType == 601) __debugbreak();
-
         if (!object->uObjectDescID) {  // item probably pciked up - this also gets wiped at end of sprite anims/ particle effects
-            // __debugbreak();
             continue;
         }
-
-
         if (!object->HasSprite()) {
-            // __debugbreak();
             continue;
         }
 
-        // v1 = &pObjectList->pObjects[*((short *)v0 - 13)];
-        // if ( !(v1->uFlags & 1) )
-        //{
-        // v2 = *((short *)v0 - 14)
-        // v2 = object->uType;
+        int x = object->vPosition.x;
+        int y = object->vPosition.y;
+        int z = object->vPosition.z;
+
+        // TODO ?
+        // if indoors visible sector check
+        // if outdoors frustum actor sphere check
 
         // render as sprte 500 - 9081
-
-        if (spell_fx_renderer->RenderAsSprite(object) || ((object->uType < 1000 || object->uType >= 10000) && (object->uType < 500 || object->uType >= 600))) {
-            // a5 = *(short *)v0;
-            int x = object->vPosition.x;
-            int y = object->vPosition.y;
-            int z = object->vPosition.z;
+        if (spell_fx_renderer->RenderAsSprite(object) ||
+            ((object->uType < 1000 || object->uType >= 10000) &&
+                (object->uType < 500 || object->uType >= 600) &&
+                (object->uType < 811 || object->uType >= 815))) {
             SpriteFrame *frame = object->GetSpriteFrame();
-
-            if (frame->icon_name == "null") {
-                __debugbreak();
+            if (frame->icon_name == "null" || frame->texture_name == "null") {
+                if (engine->config->debug.VerboseLogging.Get())
+                    logger->Warning("Trying to draw sprite with null frame");
                 continue;
             }
 
-            int a6 = frame->uGlowRadius * object->field_22_glow_radius_multiplier;
-
             // sprite angle to camera
-            unsigned int v6 = TrigLUT->Atan2(
-                object->vPosition.x - pCamera3D->vCameraPos.x,
-                object->vPosition.y - pCamera3D->vCameraPos.y);
-            // LOWORD(v7) = object->uFacing;
-            // v8 = v36;
-            int v9 = ((int)(TrigLUT->uIntegerPi + ((int)TrigLUT->uIntegerPi >> 3) +
-                            object->uFacing - v6) >> 8) & 7;
+            unsigned int angle = TrigLUT->Atan2(x - pCamera3D->vCameraPos.x, y - pCamera3D->vCameraPos.y);
+            int octant = ((TrigLUT->uIntegerPi + (TrigLUT->uIntegerPi >> 3) + object->uFacing - angle) >> 8) & 7;
 
-            if (::uNumBillboardsToDraw == 500) break;
-
-            pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[v9];
+            pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[octant];
             // error catching
-            if (frame->hw_sprites[v9]->texture->GetHeight() == 0 || frame->hw_sprites[v9]->texture->GetWidth() == 0)
-                __debugbreak();
-
-            if (frame->uFlags & 0x20) {
-                // v8 = v36;
-                z -= (frame->scale * frame->hw_sprites[v9]->uBufferHeight) / 2;
+            if (frame->hw_sprites[octant]->texture->GetHeight() == 0 || frame->hw_sprites[octant]->texture->GetWidth() == 0) {
+                if (engine->config->debug.VerboseLogging.Get())
+                    logger->Warning("Trying to draw sprite with empty octant texture");
+                continue;
             }
-            int16_t v46 = 0;
-            if (frame->uFlags & 2) v46 = 2;
-            // v11 = (int *)(256 << device_caps);
-            if ((256 << v9) & frame->uFlags) v46 |= 4;
-            if (frame->uFlags & 0x40000) v46 |= 0x40;
-            if (frame->uFlags & 0x20000) v46 |= 0x80;
-            if (a6) {
+
+            // centre sprite
+            if (frame->uFlags & 0x20) {
+                z -= (frame->scale * frame->hw_sprites[octant]->uBufferHeight) / 2;
+            }
+
+            int16_t setflags = 0;
+            if (frame->uFlags & 2) setflags = 2;
+            if ((256 << octant) & frame->uFlags) setflags |= 4;
+            if (frame->uFlags & 0x40000) setflags |= 0x40;
+            if (frame->uFlags & 0x20000) setflags |= 0x80;
+
+            // lighting
+            int lightradius = frame->uGlowRadius * object->field_22_glow_radius_multiplier;
+            int red = pSpriteObjects[i].GetParticleTrailColorR();
+            if (red == 0) red = 0xFF;
+            int green = pSpriteObjects[i].GetParticleTrailColorG();
+            if (green == 0) green = 0xFF;
+            int blue = pSpriteObjects[i].GetParticleTrailColorB();
+            if (blue == 0) blue = 0xFF;
+            if (lightradius) {
                 pMobileLightsStack->AddLight(object->vPosition.ToFloat(),
-                                             object->uSectorID, a6, 0xFF, 0xFF, 0xFF, _4E94D3_light_type);
+                                             object->uSectorID, lightradius, red, green, blue, _4E94D3_light_type);
             }
 
             int view_x = 0;
             int view_y = 0;
             int view_z = 0;
-
             bool visible = pCamera3D->ViewClip(x, y, z, &view_x, &view_y, &view_z);
 
             if (visible) {
@@ -196,8 +191,8 @@ void RenderBase::DrawSpriteObjects_ODM() {
 
                     float billb_scale = frame->scale * pCamera3D->ViewPlaneDist_X / view_x;
 
-                    int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[(int64_t)v9]->uBufferWidth / 2.0f);
-                    int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[(int64_t)v9]->uBufferHeight);
+                    int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uBufferWidth / 2.0f);
+                    int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uBufferHeight);
 
                     if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
                         projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
@@ -210,7 +205,7 @@ void RenderBase::DrawSpriteObjects_ODM() {
                             pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_x = billb_scale;
                             pBillboardRenderList[::uNumBillboardsToDraw].screenspace_projection_factor_y = billb_scale;
 
-                            pBillboardRenderList[::uNumBillboardsToDraw].field_1E = v46;
+                            pBillboardRenderList[::uNumBillboardsToDraw].field_1E = setflags;
                             pBillboardRenderList[::uNumBillboardsToDraw].world_x = x;
                             pBillboardRenderList[::uNumBillboardsToDraw].world_y = y;
                             pBillboardRenderList[::uNumBillboardsToDraw].world_z = z;
@@ -222,17 +217,8 @@ void RenderBase::DrawSpriteObjects_ODM() {
                             pBillboardRenderList[::uNumBillboardsToDraw].object_pid = PID(OBJECT_Item, i);
                             pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                             pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = 0;
-                            //          if (!(object->uAttributes & SPRITE_NO_Z_BUFFER)) {
-                            //            if (!pRenderD3D) {
-                            //              __debugbreak();
-                            //              pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z
-                            //              = 0;
-                            //              pBillboardRenderList[::uNumBillboardsToDraw].object_pid
-                            //              = 0;
-                            //            }
-                            //          }
 
-                            assert(::uNumBillboardsToDraw < 499);
+                            assert(::uNumBillboardsToDraw < 500);
                             ++::uNumBillboardsToDraw;
                             ++uNumSpritesDrawnThisFrame;
                         }
