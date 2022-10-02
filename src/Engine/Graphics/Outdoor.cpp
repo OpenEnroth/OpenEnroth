@@ -31,6 +31,8 @@
 #include "Engine/Tables/TileFrameTable.h"
 #include "Engine/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
+#include "Engine/Graphics/Vis.h"
+#include "Engine/Graphics/BspRenderer.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -1514,23 +1516,14 @@ bool OutdoorLocation::LoadTileGroupIds() {
     return true;
 }
 
+// TODO: move to actors?
+//  combined with IndoorLocation::PrepareActorRenderList_BLV() (0043FDED) ----
 //----- (0047B42C) --------------------------------------------------------
 void OutdoorLocation::PrepareActorsDrawList() {
-    int z;             // esi@5
-    float v4;          // ST48_4@8
     unsigned int Angle_To_Cam;   // eax@11
     signed int Cur_Action_Time;    // eax@16
-    SpriteFrame *v14;  // eax@24
-    SpriteFrame *v15;  // ebx@25
-                       //    int v22; // ecx@41
-                       //    int v23; // ST5C_4@43
+    SpriteFrame *frame;  // eax@24
     int Sprite_Octant;           // [sp+24h] [bp-3Ch]@11
-                       //    int v48; // [sp+30h] [bp-30h]@41
-    signed int v49;    // [sp+34h] [bp-2Ch]@5
-                       //    int v51; // [sp+34h] [bp-2Ch]@41
-    int y;             // [sp+40h] [bp-20h]@5
-    int x;             // [sp+44h] [bp-1Ch]@5
-    __int16 v62;       // [sp+5Ch] [bp-4h]@25
 
     for (int i = 0; i < pActors.size(); ++i) {
         pActors[i].uAttributes &= ~ACTOR_VISIBLE;
@@ -1540,43 +1533,37 @@ void OutdoorLocation::PrepareActorsDrawList() {
 
         if (uNumBillboardsToDraw >= 500) return;
 
-        z = pActors[i].vPosition.z;
-        v49 = 0;
-        x = pActors[i].vPosition.x;
-        y = pActors[i].vPosition.y;
-        if (pActors[i].uAIState == Summoned) {
-            if (PID_TYPE(pActors[i].uSummonerID) != OBJECT_Actor ||
-                pActors[PID_ID(pActors[i].uSummonerID)]
-                        .pMonsterInfo.uSpecialAbilityDamageDiceSides != 1) {
-                z += floorf(pActors[i].uActorHeight * 0.5f + 0.5f);
-            } else {
-                v49 = 1;
-                spell_fx_renderer->_4A7F74(pActors[i].vPosition.x, pActors[i].vPosition.y, z);
-                v4 = (1.0 - (double)pActors[i].uCurrentActionTime /
-                                (double)pActors[i].uCurrentActionLength) *
-                     (double)(2 * pActors[i].uActorHeight);
-                z -= floorf(v4 + 0.5f);
-                if (z > pActors[i].vPosition.z) z = pActors[i].vPosition.z;
+        // view culling
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            bool onlist = false;
+            for (uint j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
+                if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == pActors[i].uSectorID) {
+                    onlist = true;
+                    break;
+                }
             }
+            if (!onlist) continue;
+        } else {
+            if (!IsSphereInFrustum(pActors[i].vPosition.ToFloat(), pActors[i].uActorRadius)) continue;
         }
+
+        int z = pActors[i].vPosition.z;
+        int x = pActors[i].vPosition.x;
+        int y = pActors[i].vPosition.y;
 
         Angle_To_Cam = TrigLUT->Atan2(
             pActors[i].vPosition.x - pCamera3D->vCameraPos.x,
             pActors[i].vPosition.y - pCamera3D->vCameraPos.y);
 
-        // int v9 = 0;
-        // HEXRAYS_LOWORD(v9) = pActors[i].uYawAngle;
         Sprite_Octant = ((signed int)(TrigLUT->uIntegerPi +
                             ((signed int)TrigLUT->uIntegerPi >> 3) + pActors[i].uYawAngle -
                             Angle_To_Cam) >> 8) & 7;
 
-
+        Cur_Action_Time = pActors[i].uCurrentActionTime;
         if (pParty->bTurnBasedModeOn) {
-            Cur_Action_Time = pActors[i].uCurrentActionTime;
             if (pActors[i].uCurrentActionAnimation == 1)
                 Cur_Action_Time = 32 * i + pMiscTimer->uTotalGameTimeElapsed;
         } else {
-            Cur_Action_Time = pActors[i].uCurrentActionTime;
             if (pActors[i].uCurrentActionAnimation == 1)
                 Cur_Action_Time = 32 * i + pEventTimer->uTotalGameTimeElapsed;
         }
@@ -1584,28 +1571,48 @@ void OutdoorLocation::PrepareActorsDrawList() {
         if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active() ||
             pActors[i].pActorBuffs[ACTOR_BUFF_PARALYZED].Active())
             Cur_Action_Time = 0;
+
+        int v49 = 0;
+        float v4 = 0.0f;
+        if (pActors[i].uAIState == Summoned) {
+            if (PID_TYPE(pActors[i].uSummonerID) != OBJECT_Actor ||
+                pActors[PID_ID(pActors[i].uSummonerID)]
+                .pMonsterInfo.uSpecialAbilityDamageDiceSides != 1) {
+                z += floorf(pActors[i].uActorHeight * 0.5f + 0.5f);
+            } else {
+                v49 = 1;
+                spell_fx_renderer->_4A7F74(pActors[i].vPosition.x, pActors[i].vPosition.y, z);
+                v4 = (1.0 - (double)pActors[i].uCurrentActionTime /
+                    (double)pActors[i].uCurrentActionLength) *
+                    (double)(2 * pActors[i].uActorHeight);
+                z -= floorf(v4 + 0.5f);
+                if (z > pActors[i].vPosition.z) z = pActors[i].vPosition.z;
+            }
+        }
+
+
         if (pActors[i].uAIState == Summoned && !v49)
-            v14 = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time);
+            frame = pSpriteFrameTable->GetFrame(uSpriteID_Spell11, Cur_Action_Time);
         else if (pActors[i].uAIState == Resurrected)
-            v14 = pSpriteFrameTable->GetFrameBy_x(
+            frame = pSpriteFrameTable->GetFrameBy_x(
                 pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], Cur_Action_Time);
         else
-            v14 = pSpriteFrameTable->GetFrame(
+            frame = pSpriteFrameTable->GetFrame(
                 pActors[i].pSpriteIDs[pActors[i].uCurrentActionAnimation], Cur_Action_Time);
 
         // no sprite frame to draw
-        if (v14->icon_name == "null") continue  /* __debugbreak()*/;
-        if (v14->hw_sprites[0] == nullptr) __debugbreak();
+        if (frame->icon_name == "null") continue;
+        if (frame->hw_sprites[Sprite_Octant]->texture->GetHeight() == 0 || frame->hw_sprites[Sprite_Octant]->texture->GetWidth() == 0)
+            __debugbreak();
 
-        v62 = 0;
-        v15 = v14;
-        // v16 = (int *)v14->uFlags;
-        if (v14->uFlags & 2) v62 = 2;
-        if (v14->uFlags & 0x40000) v62 |= 0x40;
-        if (v14->uFlags & 0x20000) v62 |= 0x80;
-        if ((256 << Sprite_Octant) & v14->uFlags) v62 |= 4;
-        if (v15->uGlowRadius) {
-            pMobileLightsStack->AddLight(Vec3f(x, y, z), 0, v15->uGlowRadius, 0xFFu,
+        int flags = 0;
+        // v16 = (int *)frame->uFlags;
+        if (frame->uFlags & 2) flags = 2;
+        if (frame->uFlags & 0x40000) flags |= 0x40;
+        if (frame->uFlags & 0x20000) flags |= 0x80;
+        if ((256 << Sprite_Octant) & frame->uFlags) flags |= 4;
+        if (frame->uGlowRadius) {
+            pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].uSectorID, frame->uGlowRadius, 0xFFu,
                                          0xFFu, 0xFFu, _4E94D3_light_type);
         }
 
@@ -1616,12 +1623,11 @@ void OutdoorLocation::PrepareActorsDrawList() {
             if (2 * abs(view_x) >= abs(view_y)) {
                 int projected_x = 0;
                 int projected_y = 0;
-                pCamera3D->Project(view_x, view_y, view_z, &projected_x,
-                                          &projected_y);
+                pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
-                float _v26 = v15->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
-                int screen_space_half_width = static_cast<int>(_v26 * v15->hw_sprites[Sprite_Octant]->uBufferWidth / 2.0f);
-                int screen_space_height = static_cast<int>(_v26 * v15->hw_sprites[Sprite_Octant]->uBufferHeight);
+                float proj_scale = frame->scale * (pCamera3D->ViewPlaneDist_X) / (view_x);
+                int screen_space_half_width = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uBufferWidth / 2.0f);
+                int screen_space_height = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uBufferHeight);
 
                 if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
                     projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
@@ -1630,17 +1636,12 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         ++uNumSpritesDrawnThisFrame;
 
                         pActors[i].uAttributes |= ACTOR_VISIBLE;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = v15->hw_sprites[Sprite_Octant];
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[Sprite_Octant];
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].uSectorID;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = frame->uPaletteIndex;
 
-                        if (v15->hw_sprites[Sprite_Octant]->texture->GetHeight() == 0 || v15->hw_sprites[Sprite_Octant]->texture->GetWidth() == 0)
-                            __debugbreak();
-
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPalette = v15->uPaletteIndex;
-
-
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v26;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v26;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = proj_scale;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = proj_scale;
 
                         if (pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active() &&
                             pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].uPower > 0) {
@@ -1664,13 +1665,13 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pBillboardRenderList[uNumBillboardsToDraw - 1].object_pid = PID(OBJECT_Actor, i);
                         pBillboardRenderList[uNumBillboardsToDraw - 1].field_14_actor_id = i;
 
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = v62 | 0x200;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = v15;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E = flags | 0x200;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].pSpriteFrame = frame;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].sTintColor =
                             pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1].sTintColor;  // *((int *)&v35[v36] - 36);
                         if (pActors[i].pActorBuffs[ACTOR_BUFF_STONED].Active()) {
                             pBillboardRenderList[uNumBillboardsToDraw - 1].field_1E =
-                                v62 | 0x200;
+                                flags | 0x100;
                         }
                     }
                 }
