@@ -2770,7 +2770,7 @@ void Actor::UpdateActorAI() {
         if (!pActor->sCurrentHP && pActor->uAIState != Dying) Actor::Die(i);
 
         // Kill buffs if expired
-        for (auto &&pair: pActor->pActorBuffs.map_view())
+        for (auto &&pair : pActor->pActorBuffs.map_view())
             if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
                 pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
 
@@ -2852,7 +2852,7 @@ void Actor::UpdateActorAI() {
 
         if (!pActor->sCurrentHP) Actor::Die(actor_id);
 
-        for (auto &&pair: pActor->pActorBuffs.map_view())
+        for (auto &&pair : pActor->pActorBuffs.map_view())
             if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
                 pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
 

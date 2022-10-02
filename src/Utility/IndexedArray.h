@@ -3,6 +3,7 @@
 #include <cassert>
 #include <array>
 #include <type_traits>
+#include <utility>
 
 
 namespace detail {
@@ -20,7 +21,7 @@ class IndexedArrayMapIterator {
     // Note that this is a very basic implementation that's doesn't even satisfy
     // the iterator concept. The goal here is to just make the range-based for loop work.
 
-    constexpr IndexedArrayMapIterator() {};
+    constexpr IndexedArrayMapIterator() {}
     constexpr IndexedArrayMapIterator(Array *array, key_type pos): array_(array), pos_(pos) {}
 
     constexpr friend bool operator==(IndexedArrayMapIterator l, IndexedArrayMapSentinel r) {
@@ -42,7 +43,7 @@ class IndexedArrayMapIterator {
         return tmp;
     }
 
-private:
+ private:
     Array *array_ = nullptr;
     key_type pos_ = key_type();
 };
@@ -111,7 +112,7 @@ class IndexedArray: public std::array<T, static_cast<size_t>(Size)> {
                 value = init.begin()->second;
         } else {
             // And this is a normal map-like constructor
-            for (const auto &pair: init)
+            for (const auto &pair : init)
                 (*this)[pair.first] = pair.second;
         }
     }
