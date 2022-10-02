@@ -35,30 +35,6 @@ static std::shared_ptr<ParticleEngine> particle_engine = EngineIoc::ResolveParti
 
 std::vector<SpriteObject> pSpriteObjects;
 
-//----- (00404828) --------------------------------------------------------
-SpriteObject::SpriteObject() {
-    field_22_glow_radius_multiplier = 1;
-    uSoundID = 0;
-    uFacing = 0;
-    vVelocity.z = 0;
-    vVelocity.y = 0;
-    vVelocity.x = 0;
-    uType = SPRITE_NULL;
-    uObjectDescID = 0;
-    field_61 = ABILITY_ATTACK1;
-    field_60_distance_related_prolly_lod = 0;
-    field_20 = 0;
-    uSpriteFrameID = 0;
-    spell_skill = 0;
-    spell_level = 0;
-    spell_id = 0;
-    field_54 = 0;
-    uSectorID = 0;
-    uAttributes = 0;
-    spell_target_pid = 0;
-    spell_caster_pid = 0;
-}
-
 int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     // check for valid sprite object
     if (!uObjectDescID) {
