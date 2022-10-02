@@ -32,12 +32,15 @@ struct stru319 {
 
 extern stru319 stru_50C198;  // idb
 
-enum ABILITY_INDEX {
+enum class ABILITY_INDEX : char {
     ABILITY_ATTACK1 = 0,
     ABILITY_ATTACK2 = 1,
     ABILITY_SPELL1 = 2,
     ABILITY_SPELL2 = 3,
+    ABILITY_SPECIAL = 4, // E.g. gogs exploding on death
+    ABILITY_UNKNOWN = 5, // TODO: what is this? Can we just drop it?
 };
+using enum ABILITY_INDEX;
 
 /*  361 */
 enum class ACTOR_BUFF_INDEX {
@@ -239,11 +242,11 @@ class Actor {
                                  struct AIDirection *pOut, int a4);
     static void Explode(unsigned int uActorID);
     static void AI_RangedAttack(unsigned int uActorID, struct AIDirection *a2,
-                                int type, char a4);
+                                int type, ABILITY_INDEX a4);
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
-                               int uSpellID, int a4, unsigned int uSkillLevel);
+                               int uSpellID, ABILITY_INDEX a4, unsigned int uSkillLevel);
     static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
-                                       Vec3i *pVelocity, int a4);
+                                       Vec3i *pVelocity, ABILITY_INDEX a4);
 
     static unsigned short GetObjDescId(int spellId);
 
@@ -256,7 +259,7 @@ class Actor {
                            int bToggle);
     static void ApplyFineForKillingPeasant(unsigned int uActorID);
     static void DrawHealthBar(Actor *actor, GUIWindow *window);
-    int _43B3E0_CalcDamage(signed int dmgSource);
+    int _43B3E0_CalcDamage(ABILITY_INDEX dmgSource);
     static void AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
                                              int a3);
 

@@ -205,7 +205,7 @@ void Actor::SetRandomGoldIfTheresNoItem() {
 
 //----- (00404AC7) --------------------------------------------------------
 void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
-                           int uSpellID, int a4, unsigned int uSkillLevel) {
+                           int uSpellID, ABILITY_INDEX a4, unsigned int uSkillLevel) {
     Actor *actorPtr;            // esi@1
     unsigned int realPoints;    // edi@1
     unsigned int masteryLevel;  // eax@1
@@ -296,7 +296,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             else
                 a1.field_60_distance_related_prolly_lod = 3;
 
-            a1.field_61 = 2;
+            a1.field_61 = ABILITY_SPELL1;
             v91 = a1.Create(
                 pDir->uYawAngle, pDir->uPitchAngle,
                 pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
@@ -378,7 +378,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     a1.field_60_distance_related_prolly_lod = 2;
                 else
                     a1.field_60_distance_related_prolly_lod = 3;
-                a1.field_61 = 2;
+                a1.field_61 = ABILITY_SPELL1;
                 v36 = a1.Create(
                     v32, pitch,
                     pObjectList->pObjects[(signed __int16)a1.uObjectDescID]
@@ -750,7 +750,7 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
 
 //----- (00404874) --------------------------------------------------------
 void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
-                            int type, char a4) {
+                            int type, ABILITY_INDEX a4) {
     char specAb;  // al@1
     int v13;      // edx@28
 
@@ -870,7 +870,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.spell_caster_pid = PID(OBJECT_Actor, uActorID);
     a1.spell_target_pid = 0;
     a1.field_60_distance_related_prolly_lod = 3;
-    a1.field_61 = 4;
+    a1.field_61 = ABILITY_SPECIAL;
     a1.Create(0, 0, 0, 0);
     return;
 }
@@ -1315,7 +1315,7 @@ void Actor::AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
 }
 
 //----- (0043B3E0) --------------------------------------------------------
-int Actor::_43B3E0_CalcDamage(signed int dmgSource) {
+int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     int v2;        // ebp@1
     int v3;               // eax@9
     int v4;        // edi@9
@@ -1329,7 +1329,7 @@ int Actor::_43B3E0_CalcDamage(signed int dmgSource) {
     v11 = 0;
 
     switch (dmgSource) {
-        case 0:
+        case ABILITY_ATTACK1:
             if (this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].Active())
                 v2 = this->pActorBuffs[ACTOR_BUFF_HOUR_OF_POWER].uPower;
             if (this->pActorBuffs[ACTOR_BUFF_HEROISM].Active() &&
@@ -1341,24 +1341,24 @@ int Actor::_43B3E0_CalcDamage(signed int dmgSource) {
             v4 = this->pMonsterInfo.uAttack1DamageDiceSides;
             v5 = this->pMonsterInfo.uAttack1DamageBonus;
             break;
-        case 1:
+        case ABILITY_ATTACK2:
             v3 = this->pMonsterInfo.uAttack2DamageDiceRolls;
             v4 = this->pMonsterInfo.uAttack2DamageDiceSides;
             v5 = this->pMonsterInfo.uAttack2DamageBonus;
             break;
-        case 2:
+        case ABILITY_SPELL1:
             v8 = this->pMonsterInfo.uSpellSkillAndMastery1;
             v9 = this->pMonsterInfo.uSpell1ID;
             v10 = SkillToMastery(v8);
             return _43AFE3_calc_spell_damage(v9, v8 & 0x3F, v10, 0);
             break;
-        case 3:
+        case ABILITY_SPELL2:
             v8 = this->pMonsterInfo.uSpellSkillAndMastery2;
             v9 = this->pMonsterInfo.uSpell2ID;
             v10 = SkillToMastery(v8);
             return _43AFE3_calc_spell_damage(v9, v8 & 0x3F, v10, 0);
             break;
-        case 4:
+        case ABILITY_SPECIAL:
             v3 = this->pMonsterInfo.uSpecialAbilityDamageDiceRolls;
             v4 = this->pMonsterInfo.uSpecialAbilityDamageDiceSides;
             v5 = this->pMonsterInfo.uSpecialAbilityDamageDiceBonus;
@@ -2470,7 +2470,7 @@ void Actor::Remove() { this->uAIState = Removed; }
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(signed int attacker_id,
                                    unsigned int actor_id, Vec3i *pVelocity,
-                                   signed int a4) {
+                                   ABILITY_INDEX a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
     signed int v12;    // ecx@20
@@ -2504,25 +2504,25 @@ void Actor::ActorDamageFromMonster(signed int attacker_id,
                 }
                 if (pActors[actor_id].pActorBuffs[ACTOR_BUFF_STONED].Active())
                     dmgToRecv = 0;
-                if (a4 == 0) {
+                if (a4 == ABILITY_ATTACK1) {
                     v12 =
                         pActors[PID_ID(attacker_id)].pMonsterInfo.uAttack1Type;
-                } else if (a4 == 1) {
+                } else if (a4 == ABILITY_ATTACK2) {
                     v12 =
                         pActors[PID_ID(attacker_id)].pMonsterInfo.uAttack2Type;
                     if (pActors[actor_id]
                             .pActorBuffs[ACTOR_BUFF_SHIELD]
                             .Active())
                         dmgToRecv = dmgToRecv / 2;
-                } else if (a4 == 2) {
+                } else if (a4 == ABILITY_SPELL1) {
                     v12 = pSpellStats
                         ->pInfos[pActors[actor_id].pMonsterInfo.uSpell1ID]
                         .uSchool;
-                } else if (a4 == 3) {
+                } else if (a4 == ABILITY_SPELL2) {
                     v12 = pSpellStats
                         ->pInfos[pActors[actor_id].pMonsterInfo.uSpell2ID]
                         .uSchool;
-                } else if (a4 == 4) {
+                } else if (a4 == ABILITY_SPECIAL) {
                     v12 = pActors[PID_ID(attacker_id)]
                         .pMonsterInfo.field_3C_some_special_attack;
                 } else {
@@ -2670,12 +2670,12 @@ void Actor::UpdateActorAI() {
     unsigned int v28;        // eax@123
     int v33;                 // eax@144
     int v34;                 // eax@147
-    char v35;                // al@150
+    ABILITY_INDEX v35;                // al@150
     unsigned int v36;        // edi@152
     signed int v37;          // eax@154
     double v42;              // st7@176
     double v43;              // st6@176
-    int v45;                 // eax@192
+    ABILITY_INDEX v45;                 // eax@192
     unsigned __int8 v46;     // cl@197
     signed int v47;          // st7@206
     uint v58;                // st7@246
@@ -2916,18 +2916,18 @@ void Actor::UpdateActorAI() {
                                  v35, 1);
             } else if (pActor->uAIState == AttackingRanged1) {
                 v34 = pActor->pMonsterInfo.uMissleAttack1Type;
-                Actor::AI_RangedAttack(actor_id, pDir, v34, 0);  // light missile
+                Actor::AI_RangedAttack(actor_id, pDir, v34, ABILITY_ATTACK1);  // light missile
             } else if (pActor->uAIState == AttackingRanged2) {
                 v34 = pActor->pMonsterInfo.uMissleAttack2Type;
-                Actor::AI_RangedAttack(actor_id, pDir, v34, 1);  // arrow
+                Actor::AI_RangedAttack(actor_id, pDir, v34, ABILITY_ATTACK2);  // arrow
             } else if (pActor->uAIState == AttackingRanged3) {
                 v65 = pActor->pMonsterInfo.uSpellSkillAndMastery1;
                 v33 = pActor->pMonsterInfo.uSpell1ID;
-                Actor::AI_SpellAttack(actor_id, pDir, v33, 2, v65);
+                Actor::AI_SpellAttack(actor_id, pDir, v33, ABILITY_SPELL1, v65);
             } else if (pActor->uAIState == AttackingRanged4) {
                 v65 = pActor->pMonsterInfo.uSpellSkillAndMastery2;
                 v33 = pActor->pMonsterInfo.uSpell2ID;
-                Actor::AI_SpellAttack(actor_id, pDir, v33, 3, v65);
+                Actor::AI_SpellAttack(actor_id, pDir, v33, ABILITY_SPELL2, v65);
             }
         }
 
@@ -3006,7 +3006,7 @@ void Actor::UpdateActorAI() {
             pActor->uAttributes &= ~ACTOR_UNKNOW5;  // ~0x40000
             if (v81 < 5120) {
                 v45 = pActor->special_ability_use_check(actor_id);
-                if (v45 == 0) {
+                if (v45 == ABILITY_ATTACK1) {
                     if (pActor->pMonsterInfo.uMissleAttack1Type) {
                         if ((int)pActor->pMonsterInfo.uRecoveryTime <= 0) {
                             Actor::AI_MissileAttack1(actor_id, target_pid,
@@ -3048,15 +3048,15 @@ void Actor::UpdateActorAI() {
                         }
                     }
                     continue;
-                } else if (v45 == 2 || v45 == 3) {
-                    if (v45 == 2)
+                } else if (v45 == ABILITY_SPELL1 || v45 == ABILITY_SPELL2) {
+                    if (v45 == ABILITY_SPELL1)
                         v46 = pActor->pMonsterInfo.uSpell1ID;
                     else
                         v46 = pActor->pMonsterInfo.uSpell2ID;
                     if (v46) {
                         if ((signed int)pActor->pMonsterInfo.uRecoveryTime <=
                             0) {
-                            if (v45 == 2)
+                            if (v45 == ABILITY_SPELL1)
                                 Actor::AI_SpellAttack1(actor_id, target_pid,
                                                        pDir);
                             else
@@ -3071,6 +3071,7 @@ void Actor::UpdateActorAI() {
                                 v47, pDir);
                         }
                     } else {
+                        // v45 == ABILITY_ATTACK2
                         if ((double)v81 >= radiusMultiplier * 307.2) {
                             if (pActor->pMonsterInfo.uMovementType ==
                                 MONSTER_MOVEMENT_TYPE_STAIONARY) {
@@ -3096,9 +3097,8 @@ void Actor::UpdateActorAI() {
             }
         }
 
-        if (pActor->pMonsterInfo.uHostilityType !=
-                MonsterInfo::Hostility_Long ||
-            !target_pid || v81 >= 5120 || v45 != 1) {
+        if (pActor->pMonsterInfo.uHostilityType != MonsterInfo::Hostility_Long ||
+            !target_pid || v81 >= 5120 || v45 != ABILITY_ATTACK2) {
             if (pActor->pMonsterInfo.uMovementType ==
                 MONSTER_MOVEMENT_TYPE_SHORT) {
                 Actor::AI_RandomMove(actor_id, 4, 1024, 0);

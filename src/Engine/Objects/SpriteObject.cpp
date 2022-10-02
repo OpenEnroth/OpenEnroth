@@ -45,7 +45,7 @@ SpriteObject::SpriteObject() {
     vVelocity.x = 0;
     uType = SPRITE_NULL;
     uObjectDescID = 0;
-    field_61 = 0;
+    field_61 = ABILITY_ATTACK1;
     field_60_distance_related_prolly_lod = 0;
     field_20 = 0;
     uSpriteFrameID = 0;
@@ -1171,7 +1171,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                              pSpriteObjects[uLayingItemID].vPosition.x,
                              pSpriteObjects[uLayingItemID].vPosition.y,
                              pSpriteObjects[uLayingItemID].vPosition.z,
-                             0, 0);
+                             ABILITY_ATTACK1, 0);
             if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(pSpriteObjects[uLayingItemID].vPosition.x,
                                                                 pSpriteObjects[uLayingItemID].vPosition.y,
@@ -1310,7 +1310,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                              pSpriteObjects[uLayingItemID].vPosition.x,
                              pSpriteObjects[uLayingItemID].vPosition.y,
                              pSpriteObjects[uLayingItemID].vPosition.z,
-                             0, 0);
+                             ABILITY_ATTACK1, 0);
             int v78 = 0;
             if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
                 v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
