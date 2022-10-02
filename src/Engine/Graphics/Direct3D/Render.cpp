@@ -4176,7 +4176,7 @@ unsigned int _452442_color_cvt(unsigned __int16 a1, unsigned __int16 a2, int a3,
     v12 = v7 + v11;
     HEXRAYS_LOWORD(v7) = v8 & 0xE0;
     __debugbreak();  // warning C4700: uninitialized local variable 'v10' used
-    return (PID_TYPE(v8) + PID_TYPE(v5) + PID_TYPE(a3a) + PID_TYPE(v6)) |
+    return ((int)PID_TYPE(v8) + (int)PID_TYPE(v5) + (int)PID_TYPE(a3a) + (int)PID_TYPE(v6)) |
            (v7 + v12) |
            ((v8 & 0x1C00) + (v5 & 0x1C00) + v9 +
             (__PAIR__(v10, (unsigned __int16)a4 >> 2) & 0x1C00));
