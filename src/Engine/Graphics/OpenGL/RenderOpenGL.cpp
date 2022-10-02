@@ -5632,13 +5632,18 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
 // gl shaders
 bool RenderOpenGL::InitShaders() {
     if (!std::filesystem::exists(MakeDataPath("shaders"))) {
-        std::filesystem::create_directories(MakeDataPath("shaders"));
-        logger->Warning("Copy shader files into 'shaders'!");
+        logger->Warning("\n ----------- ERROR ----------- \nExpected to find folder:\n\n %s\n", MakeDataPath("shaders").c_str());
+        logger->Warning("Please create it and copy shader files in!\n\n --------------------------------------------");
+        return false;
+    }
+
+    if (std::filesystem::is_empty(MakeDataPath("shaders"))) {
+        logger->Warning("\n ----------- ERROR ----------- \nShader folder %s is empty", MakeDataPath("shaders").c_str());
+        logger->Warning(" Please copy shader files in! \n ---------------------------------------\n");
         return false;
     }
 
     logger->Info("Initialising GL shaders!");
-
 
     terrainshader.build(MakeDataPath("shaders", "glterrain.vert").c_str(), MakeDataPath("shaders", "glterrain.frag").c_str());
     if (terrainshader.ID == 0) {

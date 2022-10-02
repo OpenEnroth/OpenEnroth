@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <filesystem>
 
 #include "glad/gl.h"
 #include <glm.hpp>
@@ -52,8 +53,16 @@ class GLShader {
 
         try {
             // open files
+            if (!std::filesystem::exists(vertexPath)) {
+                logger->Warning("\n --------------- ERROR ------------- \nCannot find shader file at path : \n %s\n", vertexPath);
+            }
             vShaderFile.open(vertexPath);
+
+            if (!std::filesystem::exists(fragmentPath)) {
+                logger->Warning("\n --------------- ERROR ------------- \nCannot find shader file at path : \n %s\n", fragmentPath);
+            }
             fShaderFile.open(fragmentPath);
+
             std::stringstream vShaderStream, fShaderStream;
             // read file's buffer contents into streams
             vShaderStream << vShaderFile.rdbuf();

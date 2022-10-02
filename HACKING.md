@@ -6,7 +6,7 @@ Dependencies
 ---------------
 Main dependencies:
 * [SDL2](https://www.libsdl.org/download-2.0.php) - crossplatform media framework
-* [FFmpeg](https://ffmpeg.zeranoe.com/builds/) - video support
+* [FFmpeg](https://ffmpeg.zeranoe.com/builds/) - video support (NB 5.x currently unsupported)
 * [OpenAL](https://www.openal.org/downloads/OpenAL11CoreSDK.zip) - audio support
 * [Zlib](http://gnuwin32.sourceforge.net/packages/zlib.htm) - compression
 
@@ -58,6 +58,12 @@ If you wish you can also disable autoresolving main dependencies by turning off 
 
 __Be aware__ that Visual Studio has a bug with git submodules not syncing between branches.
 So when checking out the branch or switching to different branch you may need to run the following command manually: `git submodule update --init`
+
+Project Resources
+---------------
+The Git repo contains some additional resources required for the engine to run.
+Please copy the entire 'shaders' file from the subdirectory 'resources' to the location of the game assets.
+Please check the logger output for the required path if you are unsure.
 
 Support
 ---------------
