@@ -1038,6 +1038,16 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
                 }
             }
         }
+
+        // TODO(pskelton) : more accurate calculation?
+        // pskelton - many models have bounding z in wrong position testing this
+        if (model.vBoundingCenter.z < model.pBoundingBox.z1) {
+            model.vBoundingCenter.z = model.pBoundingBox.z1;
+        }
+        // pskelton - many models have bounding radius that doesnt cover roof geometry testing this
+        if (model.vBoundingCenter.z + model.sBoundingRadius < model.pBoundingBox.z2) {
+            model.sBoundingRadius = model.pBoundingBox.z2 - model.vBoundingCenter.z;
+        }
     }
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки

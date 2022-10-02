@@ -156,7 +156,6 @@ void PrepareDrawLists_BLV() {
 
     PrepareBspRenderList_BLV();
 
-    //pIndoor->PrepareItemsRenderList_BLV();
     render->DrawSpriteObjects();
 
     pIndoor->PrepareActorRenderList_BLV();

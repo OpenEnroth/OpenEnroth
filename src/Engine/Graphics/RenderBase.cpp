@@ -13,8 +13,11 @@
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Graphics/Vis.h"
 
 #include "Platform/OSWindow.h"
 
@@ -107,7 +110,7 @@ unsigned int RenderBase::Billboard_ProbablyAddToListAndSortByZOrder(float z) {
 }
 
 
-// TODO: Move this to sprites
+// TODO: Move this to sprites ?
 // combined with IndoorLocation::PrepareItemsRenderList_BLV() (0044028F)
 void RenderBase::DrawSpriteObjects() {
     for (unsigned int i = 0; i < pSpriteObjects.size(); ++i) {
@@ -126,9 +129,19 @@ void RenderBase::DrawSpriteObjects() {
         int y = object->vPosition.y;
         int z = object->vPosition.z;
 
-        // TODO ?
-        // if indoors visible sector check
-        // if outdoors frustum actor sphere check
+        // view culling
+        if (uCurrentlyLoadedLevelType == LEVEL_Indoor) {
+            bool onlist = false;
+            for (uint j = 0; j < pBspRenderer->uNumVisibleNotEmptySectors; j++) {
+                if (pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == object->uSectorID) {
+                    onlist = true;
+                    break;
+                }
+            }
+            if (!onlist) continue;
+        } else {
+            if (!IsSphereInFrustum(object->vPosition.ToFloat(), 512.0f)) continue;
+        }
 
         // render as sprte 500 - 9081
         if (spell_fx_renderer->RenderAsSprite(object) ||

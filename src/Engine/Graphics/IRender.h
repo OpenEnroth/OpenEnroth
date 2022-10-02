@@ -476,5 +476,4 @@ void UpdateObjects();
 
 class BSPModel;
 
-bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable);
 inline uint32_t PixelDim(uint32_t pix, int dimming);

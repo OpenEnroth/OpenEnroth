@@ -159,3 +159,21 @@ class Vis {
     Log *log = nullptr;
 };
 #pragma pack(pop)
+
+
+/**
+ * @param model                         Pointer to model to check against.
+ * @param reachable_depth               A depth distance for checking interaction against.
+ * @param[out] reachable                Whether the model is within the reachable depth specified.
+ *
+ * @return                              Whether the bounding radius of the model is visible within the camera frustum planes.
+ */
+bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable);
+
+/**
+ * @param center                        Vec3f of centre point of sphere.
+ * @param radius                        Float of sphere radius.
+ *
+ * @return                              Whether the bounding radius of the sphere is visible within the camera frustum planes.
+ */
+bool IsSphereInFrustum(Vec3f center, float radius);
