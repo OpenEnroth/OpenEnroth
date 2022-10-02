@@ -177,3 +177,11 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable);
  * @return                              Whether the bounding radius of the sphere is visible within the camera frustum planes.
  */
 bool IsSphereInFrustum(Vec3f center, float radius);
+
+/**
+ * @param center                        Vec3f of centre point of cylinder.
+ * @param radius                        Float of cylinder radius.
+ *
+ * @return                              Whether the cylinder is visible within the L/R camera frustum planes.
+ */
+bool IsCylinderInFrustum(Vec3f center, float radius);

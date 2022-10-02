@@ -1041,15 +1041,11 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
             }
         }
 
-        // TODO(pskelton) : more accurate calculation?
-        // pskelton - many models have bounding z in wrong position testing this
-        if (model.vBoundingCenter.z < model.pBoundingBox.z1) {
-            model.vBoundingCenter.z = model.pBoundingBox.z1;
-        }
-        // pskelton - many models have bounding radius that doesnt cover roof geometry testing this
-        if (model.vBoundingCenter.z + model.sBoundingRadius < model.pBoundingBox.z2) {
-            model.sBoundingRadius = model.pBoundingBox.z2 - model.vBoundingCenter.z;
-        }
+        // calculate bounding sphere for model
+        Vec3f topLeft = Vec3f(model.pBoundingBox.x1, model.pBoundingBox.y1, model.pBoundingBox.z1);
+        Vec3f bottomRight = Vec3f(model.pBoundingBox.x2, model.pBoundingBox.y2, model.pBoundingBox.z2);
+        model.vBoundingCenter = ((topLeft + bottomRight) / 2.0f).ToInt();
+        model.sBoundingRadius = (topLeft - model.vBoundingCenter.ToFloat()).Length();
     }
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
@@ -1544,7 +1540,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
             }
             if (!onlist) continue;
         } else {
-            if (!IsSphereInFrustum(pActors[i].vPosition.ToFloat(), pActors[i].uActorRadius)) continue;
+            if (!IsCylinderInFrustum(pActors[i].vPosition.ToFloat(), pActors[i].uActorRadius)) continue;
         }
 
         int z = pActors[i].vPosition.z;

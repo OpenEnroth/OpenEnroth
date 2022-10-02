@@ -1859,7 +1859,7 @@ void RenderOpenGL::PrepareDecorationsRenderList_ODM() {
         if (::uNumBillboardsToDraw >= 500) return;
 
         // view cull
-        if (!IsSphereInFrustum(pLevelDecorations[i].vPosition.ToFloat(), 512.0f)) continue;
+        if (!IsCylinderInFrustum(pLevelDecorations[i].vPosition.ToFloat(), 512.0f)) continue;
 
         // LevelDecoration* decor = &pLevelDecorations[i];
         if ((!(pLevelDecorations[i].uFlags & LEVEL_DECORATION_OBELISK_CHEST) ||

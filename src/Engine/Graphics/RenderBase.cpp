@@ -140,7 +140,7 @@ void RenderBase::DrawSpriteObjects() {
             }
             if (!onlist) continue;
         } else {
-            if (!IsSphereInFrustum(object->vPosition.ToFloat(), 512.0f)) continue;
+            if (!IsCylinderInFrustum(object->vPosition.ToFloat(), 512.0f)) continue;
         }
 
         // render as sprte 500 - 9081

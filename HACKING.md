@@ -62,7 +62,7 @@ So when checking out the branch or switching to different branch you may need to
 Project Resources
 ---------------
 The Git repo contains some additional resources required for the engine to run.
-Please copy the entire 'shaders' file from the subdirectory 'resources' to the location of the game assets.
+Please copy the entire 'shaders' folder from the subdirectory 'resources' to the location of the game assets.
 Please check the logger output for the required path if you are unsure.
 
 Support

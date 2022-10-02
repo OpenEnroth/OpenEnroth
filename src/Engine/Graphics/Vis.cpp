@@ -365,6 +365,18 @@ bool IsSphereInFrustum(Vec3f center, float radius) {
     return true;
 }
 
+bool IsCylinderInFrustum(Vec3f center, float radius) {
+    // center must be within left / right frustum planes to be visible
+    for (int i = 0; i < 2; i++) {
+        Vec3f planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
+        float planedist{ pCamera3D->FrustumPlanes[i].w };
+        if ((Dot(center, planenormal) - planedist) < -radius) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void Vis::PickOutdoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
                                  Vis_SelectionList *list,
                                  Vis_SelectionFilter *filter,
