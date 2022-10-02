@@ -18,7 +18,7 @@ class IndexedArrayMapIterator {
     using base_reference = std::conditional_t<is_const, typename Array::const_reference, typename Array::reference>;
     using reference = std::pair<key_type, base_reference>;
 
-    // Note that this is a very basic implementation that's doesn't even satisfy
+    // Note that this is a very basic implementation that doesn't even satisfy
     // the iterator concept. The goal here is to just make the range-based for loop work.
 
     constexpr IndexedArrayMapIterator() {}
@@ -49,12 +49,17 @@ class IndexedArrayMapIterator {
 };
 
 template<class Array>
-constexpr IndexedArrayMapIterator<Array> begin(const IndexedArrayMapIterator<Array> &iterator) {
-    return iterator;
+struct IndexedArrayMapRange {
+    IndexedArrayMapIterator<Array> begin;
+};
+
+template<class Array>
+constexpr IndexedArrayMapIterator<Array> begin(const IndexedArrayMapRange<Array> &range) {
+    return range.begin;
 }
 
 template<class Array>
-constexpr IndexedArrayMapSentinel end(const IndexedArrayMapIterator<Array> &) {
+constexpr IndexedArrayMapSentinel end(const IndexedArrayMapRange<Array> &) {
     return {};
 }
 
@@ -66,6 +71,41 @@ constexpr IndexedArrayMapSentinel end(const IndexedArrayMapIterator<Array> &) {
  * inferred from the `Size` parameter), and supports an `std::map`-like initialization, so that the user doesn't have
  * to manually double check that the order of the values in the initializer matches the order of the values of the
  * enum that's used for indexing.
+ *
+ * Some code examples:
+ * @code
+ * enum class TriBool {
+ *    True,
+ *    False,
+ *    DontKnow,
+ *    TriBool_Size
+ * };
+ * using enum TriBool;
+ *
+ * // IndexedArray supports the same initialization syntax as `std::array`.
+ * IndexedArray<std::string, TriBool_Size> userMessageMap = {{}};
+ *
+ * // And it can also be constructed like an `std::map`.
+ * IndexedArray<std::string, TriBool_Size> defaultMessageMap = {
+ *     {True, "true"},
+ *     {False, "false"},
+ *     {DontKnow, "unknown"}
+ * };
+ *
+ * extern TriBool f(int);
+ *
+ * // Access IndexedArray elements using enum values as indices.
+ * std::cout << "f(10)=" << defaultMessageMap[f(10)] << std::endl;
+ *
+ * // Iterate through the IndexedArray like it's an array...
+ * for (auto &value : userMessageMap)
+ *     value.clear();
+ *
+ * // ...or pretend it's a map. Note the `auto &&` here, due to the nature of the proxy iterators involved, using
+ * // `auto &` won't work.
+ * for (auto &&pair : defaultMessageMap.map_view())
+ *     userMessageMap[pair.first] = pair.second;
+ * @endcode
  *
  * @tparam T                            Array element type.
  * @tparam Size                         Array size. Value must be of enum type.
@@ -83,19 +123,37 @@ class IndexedArray: public std::array<T, static_cast<size_t>(Size)> {
 
     /**
      * Creates an uninitialized indexed array.
+     *
+     * This is the constructor that gets called when you use aggregate initialization, so the behavior is the same as
+     * with `std::array`:
+     * @code
+     * IndexedArray<int, TriBool_Size> uninitializedIntegers = {};
+     * @endcode
+     *
+     * If you want to default-initialize array elements, see the other constructor.
      */
     constexpr IndexedArray() {}
 
     /**
      * An `std::map`-like constructor for indexed array. The size of the provided initializer list must match
-     * array size.
+     * array size. Alternatively, this constructor can be used to default-initialize the indexed array using the same
+     * syntax as is used for `std::array`.
      *
      * Example usage:
      * @code
-     * constinit IndexedArray<int, MonsterCount> MaxHP = {
-     *     {Peasant, 1}
-     *     {AzureDragon, 1000},
+     * enum class Monster {
+     *     Peasant,
+     *     AzureDragon,
+     *     MonsterCount
      * };
+     * using enum Monster;
+     *
+     * constinit IndexedArray<int, MonsterCount> maxHP = {
+     *     {Peasant, 1}
+     *     {AzureDragon, 1000}
+     * };
+     *
+     * IndexedArray<int, MonsterCount> killCount = {{}}; // ints inside the array are default-initialized to zero.
      * @endcode
      *
      * @param init                      Initializer list of key-value pairs.
@@ -106,12 +164,10 @@ class IndexedArray: public std::array<T, static_cast<size_t>(Size)> {
 
         if (init.size() == 1) {
             // This is support for = {{}} initialization syntax, the same one as for std::array.
-            // Note that = {} still leaves the array uninitialized (calling default constructor).
-
             for (value_type &value : *this)
                 value = init.begin()->second;
         } else {
-            // And this is a normal map-like constructor
+            // And this is a normal map-like constructor.
             for (const auto &pair : init)
                 (*this)[pair.first] = pair.second;
         }
@@ -129,12 +185,12 @@ class IndexedArray: public std::array<T, static_cast<size_t>(Size)> {
      *
      * @return                          Map-like view over the elements of this indexed array.
      */
-    constexpr detail::IndexedArrayMapIterator<IndexedArray> map_view() {
-        return {this, key_type()};
+    constexpr detail::IndexedArrayMapRange<IndexedArray> map_view() {
+        return {{this, key_type()}};
     }
 
-    constexpr detail::IndexedArrayMapIterator<const IndexedArray> map_view() const {
-        return {this, key_type()};
+    constexpr detail::IndexedArrayMapRange<const IndexedArray> map_view() const {
+        return {{this, key_type()}};
     }
 
     using base_type::begin;
