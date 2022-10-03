@@ -5752,7 +5752,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             _449B7E_toggle_bit(this->_achieved_awards_bits, val, 1);
             return;
         case VAR_Experience:
-            this->uExperience = std::min((uint64_t)(this->uExperience + val), 4000000000ull);
+            this->uExperience = std::min((uint64_t)(this->uExperience + val), UINT64_C(4000000000));
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
