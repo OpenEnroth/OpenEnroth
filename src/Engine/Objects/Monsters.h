@@ -199,29 +199,18 @@ struct MonsterStats {
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct MonsterDesc_mm6 {
-    uint16_t uMonsterHeight;
-    uint16_t uMonsterRadius;
-    uint16_t uMovementSpeed;
-    int16_t uToHitRadius;
-    uint16_t pSoundSampleIDs[4];
-    char pMonsterName[32];
-    char pSpriteNames[10][10];
-};
-
 struct MonsterDesc {
     uint16_t uMonsterHeight;
     uint16_t uMonsterRadius;
     uint16_t uMovementSpeed;
     int16_t uToHitRadius;
-    unsigned int sTintColor;
+    uint32_t sTintColor;
     uint16_t pSoundSampleIDs[4];
     char pMonsterName[32];
     char pSpriteNames[10][10];
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
 struct MonsterList {
     int16_t GetMonsterIDByName(const char *pMonsterName);
     void ToFile();
@@ -230,7 +219,6 @@ struct MonsterList {
 
     std::vector<MonsterDesc> pMonsters;
 };
-#pragma pack(pop)
 
 extern struct MonsterStats *pMonsterStats;
 extern struct MonsterList *pMonsterList;

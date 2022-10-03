@@ -28,6 +28,7 @@ class Icon;
 struct OtherOverlayList;
 struct Timer;
 struct Party;
+struct MonsterDesc;
 
 #pragma pack(push, 1)
 
@@ -704,10 +705,44 @@ struct MonsterInfo_MM7 {
 static_assert(sizeof(MonsterInfo_MM7) == 0x58);
 
 
+struct MonsterDesc_MM6 {
+    MonsterDesc_MM6() { memzero(this); }
+
+    void Deserialize(MonsterDesc *);
+
+    uint16_t uMonsterHeight;
+    uint16_t uMonsterRadius;
+    uint16_t uMovementSpeed;
+    int16_t uToHitRadius;
+    uint16_t pSoundSampleIDs[4];
+    char pMonsterName[32];
+    char pSpriteNames[10][10];
+};
+static_assert(sizeof(MonsterDesc_MM6) == 148);
+
+
+struct MonsterDesc_MM7 {
+    MonsterDesc_MM7() { memzero(this); }
+
+    void Deserialize(MonsterDesc *);
+    void Serialize(const MonsterDesc *);
+
+    uint16_t uMonsterHeight;
+    uint16_t uMonsterRadius;
+    uint16_t uMovementSpeed;
+    int16_t uToHitRadius;
+    uint32_t sTintColor;
+    uint16_t pSoundSampleIDs[4];
+    char pMonsterName[32];
+    char pSpriteNames[10][10];
+};
+static_assert(sizeof(MonsterDesc_MM7) == 152);
+
+
 struct Actor_MM7 {
     Actor_MM7() { memzero(this); }
 
-    void Serialize(Actor *);
+    void Serialize(Actor *); // TODO: const
     void Deserialize(Actor *);
 
     char pActorName[32];

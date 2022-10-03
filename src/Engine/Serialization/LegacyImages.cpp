@@ -10,6 +10,8 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
 
+#include "Utility/Color.h"
+
 void Timer_Image_MM7::Serialize(Timer *timer) {
     memset(this, 0, sizeof(*this));
 
@@ -1015,6 +1017,39 @@ void UIAnimation_MM7::Deserialize(UIAnimation *anim) {
     /* 008 */ anim->x = x;
     /* 00A */ anim->y = y;
     /* 00C */ anim->field_C = field_C;
+}
+
+void MonsterDesc_MM6::Deserialize(MonsterDesc *desc) {
+    desc->uMonsterHeight = this->uMonsterHeight;
+    desc->uMonsterRadius = this->uMonsterRadius;
+    desc->uMovementSpeed = this->uMovementSpeed;
+    desc->uToHitRadius = this->uToHitRadius;
+    desc->sTintColor = colorTable.White.C32();
+    memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
+    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
+    memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
+}
+
+void MonsterDesc_MM7::Deserialize(MonsterDesc *desc) {
+    desc->uMonsterHeight = this->uMonsterHeight;
+    desc->uMonsterRadius = this->uMonsterRadius;
+    desc->uMovementSpeed = this->uMovementSpeed;
+    desc->uToHitRadius = this->uToHitRadius;
+    desc->sTintColor = this->sTintColor;
+    memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
+    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
+    memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
+}
+
+void MonsterDesc_MM7::Serialize(const MonsterDesc *desc) {
+    this->uMonsterHeight = desc->uMonsterHeight;
+    this->uMonsterRadius = desc->uMonsterRadius;
+    this->uMovementSpeed = desc->uMovementSpeed;
+    this->uToHitRadius = desc->uToHitRadius;
+    this->sTintColor = desc->sTintColor;
+    memcpy(this->pSoundSampleIDs, desc->pSoundSampleIDs, sizeof(desc->pSoundSampleIDs));
+    memcpy(this->pMonsterName, desc->pMonsterName, sizeof(desc->pMonsterName));
+    memcpy(this->pSpriteNames, desc->pSpriteNames, sizeof(desc->pSpriteNames));
 }
 
 void Actor_MM7::Serialize(Actor *actor) {

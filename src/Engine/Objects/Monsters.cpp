@@ -4,6 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Serialization/MemoryInput.h"
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
 
@@ -402,7 +403,7 @@ void MonsterList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
     pMonsters.resize(uNumMonsters);
     memcpy(pMonsters.data(), (char *)data_mm7 + 4, num_mm7_monsters * sizeof(MonsterDesc));
     for (uint i = 0; i < num_mm6_monsters; ++i) {
-        auto src = (MonsterDesc_mm6 *)((char *)data_mm6 + 4) + i;
+        auto src = (MonsterDesc_MM6 *)((char *)data_mm6 + 4) + i;
         MonsterDesc *dst = &pMonsters[num_mm7_monsters + i];
 
         dst->uMonsterHeight = src->uMonsterHeight;
