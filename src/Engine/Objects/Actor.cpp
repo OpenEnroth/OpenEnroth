@@ -4767,7 +4767,7 @@ bool SpawnActor(unsigned int uMonsterID) {
         return false;
 
     v1 = uMonsterID;
-    if ((signed int)uMonsterID >= (signed int)pMonsterList->uNumMonsters)
+    if (uMonsterID >= pMonsterList->pMonsters.size())
         v1 = 0;
 
     Vec3i pOut;

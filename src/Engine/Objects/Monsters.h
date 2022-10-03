@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 /*  334 */
 enum MONSTER_TYPE {
@@ -222,17 +223,12 @@ struct MonsterDesc {
 
 #pragma pack(push, 1)
 struct MonsterList {
-    inline MonsterList()
-        :  //----- (00458429)
-          uNumMonsters(0),
-          pMonsters(nullptr) {}
     int16_t GetMonsterIDByName(const char *pMonsterName);
     void ToFile();
     void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
     bool FromFileTxt(const char *Args);
 
-    signed int uNumMonsters;
-    struct MonsterDesc *pMonsters;
+    std::vector<MonsterDesc> pMonsters;
 };
 #pragma pack(pop)
 

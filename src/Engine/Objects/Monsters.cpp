@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Engine/Engine.h"
+#include "Engine/Serialization/MemoryInput.h"
 
 #include "Platform/Api.h"
 
@@ -267,7 +268,6 @@ int ParseSpecialAttack(char *spec_att_str) {
 
 //----- (004598FC) --------------------------------------------------------
 bool MonsterList::FromFileTxt(const char *Args) {
-    MonsterList *v2;        // ebx@1
     FILE *v3;               // eax@1
     unsigned int v4;        // esi@3
     void *v5;               // eax@9
@@ -311,7 +311,6 @@ bool MonsterList::FromFileTxt(const char *Args) {
     unsigned int Argsa;     // [sp+310h] [bp+8h]@3
     int Argsb;              // [sp+310h] [bp+8h]@16
 
-    v2 = this;
     v3 = fopen(Args, "r");
     File = v3;
     if (!v3) Error("MonsterRaceListStruct::load - Unable to open file: %s.");
@@ -326,21 +325,18 @@ bool MonsterList::FromFileTxt(const char *Args) {
         } while (fgets(&Buf, 490, File));
         v4 = Argsa;
     }
-    v2->uNumMonsters = v4;
-    v5 = malloc(sizeof(MonsterDesc) * v4);
-    v2->pMonsters = (MonsterDesc *)v5;
-    if (!v5) Error("MonsterRaceListStruct::load - Out of Memory!");
 
+    this->pMonsters.clear();
     v6 = File;
-    v2->uNumMonsters = 0;
     fseek(v6, 0, 0);
     for (i = fgets(&Buf, 490, File); i; i = fgets(&Buf, 490, File)) {
         *strchr(&Buf, 10) = 0;
         memcpy(&v25, frame_table_txt_parser(&Buf, &v24), sizeof(v25));
         v8 = 0;
         if (v25.uPropCount && *v25.pProperties[0] != 47) {
-            strcpy(v2->pMonsters[v2->uNumMonsters].pMonsterName,
-                   v25.pProperties[0]);
+            MonsterDesc &monster = this->pMonsters.emplace_back();
+
+            strcpy(monster.pMonsterName, v25.pProperties[0]);
             v35 = 0;
             v36 = 1;
             v37 = 7;
@@ -358,36 +354,33 @@ bool MonsterList::FromFileTxt(const char *Args) {
             v33 = 6;
             v34 = 7;
             do {
-                strcpy(v2->pMonsters[v2->uNumMonsters]
-                           .pSpriteNames[(unsigned __int8)*(&v35 + v8)],
-                       v25.pProperties[(unsigned __int8)*(&v27 + v8)]);
+                strcpy(monster.pSpriteNames[(unsigned __int8)*(&v35 + v8)], v25.pProperties[(unsigned __int8)*(&v27 + v8)]);
                 ++v8;
             } while (v8 < 8);
             v9 = atoi(v25.pProperties[8]);
             v10 = v25.pProperties[9];
-            v2->pMonsters[v2->uNumMonsters].uMonsterHeight = v9;
+            monster.uMonsterHeight = v9;
             v11 = atoi(v10);
             v12 = v25.pProperties[10];
-            v2->pMonsters[v2->uNumMonsters].uMovementSpeed = v11;
+            monster.uMovementSpeed = v11;
             v13 = atoi(v12);
             v14 = v25.pProperties[11];
-            v2->pMonsters[v2->uNumMonsters].uMonsterRadius = v13;
+            monster.uMonsterRadius = v13;
             v15 = atoi(v14);
             v16 = v25.pProperties[12];
-            v2->pMonsters[v2->uNumMonsters].uToHitRadius = v15;
+            monster.uToHitRadius = v15;
             v17 = (unsigned __int8)atoi(v16);
             Argsb = atoi(v25.pProperties[13]) & 0xFF;
             v26 = atoi(v25.pProperties[14]) & 0xFF;
             v18 = atoi(v25.pProperties[15]);
-            v2->pMonsters[v2->uNumMonsters].sTintColor =
+            monster.sTintColor =
                 v18 | ((v26 | ((Argsb | (v17 << 8)) << 8)) << 8);
             v19 = 0;
             do {
                 v20 = atoi(v25.pProperties[v19 + 16]);
                 v21 = v19++;
-                v2->pMonsters[v2->uNumMonsters].pSoundSampleIDs[v21] = v20;
+                monster.pSoundSampleIDs[v21] = v20;
             } while (v19 < 4);
-            ++v2->uNumMonsters;
         }
     }
     fclose(File);
@@ -400,13 +393,14 @@ void MonsterList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
          num_mm7_monsters = data_mm7 ? *(int *)data_mm7 : 0,
          num_mm8_monsters = data_mm8 ? *(int *)data_mm8 : 0;
 
-    uNumMonsters = num_mm6_monsters + num_mm7_monsters + num_mm8_monsters;
+    uint uNumMonsters = num_mm6_monsters + num_mm7_monsters + num_mm8_monsters;
     Assert(uNumMonsters);
     Assert(!num_mm8_monsters);
 
-    pMonsters = (MonsterDesc *)malloc(sizeof(MonsterDesc) * uNumMonsters);
-    memcpy(pMonsters, (char *)data_mm7 + 4,
-           num_mm7_monsters * sizeof(MonsterDesc));
+    // TODO: use MemoryInput.
+
+    pMonsters.resize(uNumMonsters);
+    memcpy(pMonsters.data(), (char *)data_mm7 + 4, num_mm7_monsters * sizeof(MonsterDesc));
     for (uint i = 0; i < num_mm6_monsters; ++i) {
         auto src = (MonsterDesc_mm6 *)((char *)data_mm6 + 4) + i;
         MonsterDesc *dst = &pMonsters[num_mm7_monsters + i];
@@ -421,7 +415,7 @@ void MonsterList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
         memcpy(dst->pMonsterName, src->pMonsterName, sizeof(src->pMonsterName));
         memcpy(dst->pSpriteNames, src->pSpriteNames, sizeof(src->pSpriteNames));
     }
-    memcpy(pMonsters + num_mm6_monsters + num_mm7_monsters,
+    memcpy(pMonsters.data() + num_mm6_monsters + num_mm7_monsters,
            (char *)data_mm8 + 4, num_mm8_monsters * sizeof(MonsterDesc));
 }
 
@@ -430,8 +424,12 @@ void MonsterList::ToFile() {
     FILE *v2 = fopen(MakeDataPath("data", "dmonlist.bin").c_str(), "wb");
     if (!v2)
         Error("Unable to save dmonlist.bin!");
-    fwrite(&this->uNumMonsters, 4u, 1u, v2);
-    fwrite(this->pMonsters, 0x98u, this->uNumMonsters, v2);
+
+    static_assert(sizeof(MonsterDesc) == 0x98u);
+
+    uint32_t uNumMonsters = this->pMonsters.size();
+    fwrite(&uNumMonsters, 4u, 1u, v2);
+    fwrite(this->pMonsters.data(), 0x98u, uNumMonsters, v2);
     fclose(v2);
 }
 
@@ -1120,7 +1118,7 @@ void MonsterStats::Initialize() {
                                                 .uSpecialAbilityDamageDiceRolls =
                                                 0;
                                         }
-                                        if (pMonsterList->uNumMonsters) {
+                                        if (!pMonsterList->pMonsters.empty()) {
                                             pInfos[curr_rec_num]
                                                 .field_3C_some_special_attack =
                                                 pMonsterList
@@ -1181,7 +1179,7 @@ void MonsterStats::Initialize() {
 //----- (0044FA08) --------------------------------------------------------
 signed __int16 MonsterList::GetMonsterIDByName(const char *pMonsterName) {
     if (!pMonsterName) return -1;
-    for (signed __int16 i = 0; i <= uNumMonsters; ++i) {
+    for (signed __int16 i = 0; i < pMonsters.size(); ++i) {
         if (iequals(pMonsters[i].pMonsterName, pMonsterName))
             return i;
     }
