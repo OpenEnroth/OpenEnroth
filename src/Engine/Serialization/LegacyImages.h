@@ -30,10 +30,15 @@ struct OtherOverlayList;
 struct Timer;
 struct Party;
 
-/*   42 */
+template<class T>
+inline void memzero(T *dst) {
+    memset(dst, 0, sizeof(*dst));
+}
+
 #pragma pack(push, 1)
+
 struct SpriteFrame_MM6 {
-    SpriteFrame_MM6();
+    SpriteFrame_MM6() { memzero(this); }
 
     char pIconName[12];
     char pTextureName[12];    // c
@@ -49,18 +54,17 @@ static_assert(sizeof(SpriteFrame_MM6) == 56);
 
 
 struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
-    SpriteFrame_MM7();
+    SpriteFrame_MM7() { memzero(this); }
 
     int16_t uAnimLength;
     int16_t _pad;
 };
 static_assert(sizeof(SpriteFrame_MM7) == 60);
 
-#pragma pack(pop)
 
-/*   93 */
-#pragma pack(push, 1)
-struct BLVFace_MM7 {  // 60h
+struct BLVFace_MM7 {
+    BLVFace_MM7() { memzero(this); }
+
     struct Planef pFacePlane;
     struct Planei pFacePlane_old;
     int zCalc1;
@@ -83,11 +87,12 @@ struct BLVFace_MM7 {  // 60h
     char field_5E;
     char field_5F;
 };
-#pragma pack(pop)
+static_assert(sizeof(BLVFace_MM7) == 0x60);
 
-/*   48 */
-#pragma pack(push, 1)
-struct TileDesc_MM7 {  // 26
+
+struct TileDesc_MM7 {
+    TileDesc_MM7() { memzero(this); }
+
     char pTileName[16];
     uint16_t uTileID;
     uint16_t uBitmapID;
@@ -95,21 +100,23 @@ struct TileDesc_MM7 {  // 26
     uint16_t uSection;
     uint16_t uAttributes;
 };
-#pragma pack(pop)
+static_assert(sizeof(TileDesc_MM7) == 26);
 
-#pragma pack(push, 1)
+
 struct TextureFrame_MM7 {
+    TextureFrame_MM7() { memzero(this); }
+
     char pTextureName[12];
     int16_t uTextureID;
     int16_t uAnimTime;
     int16_t uAnimLength;
     int16_t uFlags;
 };
-#pragma pack(pop)
+static_assert(sizeof(TextureFrame_MM7) == 20);
 
-#pragma pack(push, 1)
+
 struct NPCData_Image_MM7 {
-    NPCData_Image_MM7();
+    NPCData_Image_MM7() { memzero(this); }
 
     void Serialize(NPCData *item);
     void Deserialize(NPCData *item);
@@ -138,8 +145,9 @@ struct NPCData_Image_MM7 {
 };
 static_assert(sizeof(NPCData_Image_MM7) == 0x4C);
 
+
 struct ItemGen_Image_MM7 {
-    ItemGen_Image_MM7();
+    ItemGen_Image_MM7() { memzero(this); }
 
     void Serialize(ItemGen *item);
     void Deserialize(ItemGen *item);
@@ -176,8 +184,9 @@ struct ItemGen_Image_MM7 {
 };
 static_assert(sizeof(ItemGen_Image_MM7) == 0x24);
 
+
 struct SpellBuff_Image_MM7 {
-    SpellBuff_Image_MM7();
+    SpellBuff_Image_MM7() { memzero(this); }
 
     void Serialize(SpellBuff *item);
     void Deserialize(SpellBuff *item);
@@ -192,16 +201,18 @@ struct SpellBuff_Image_MM7 {
 };
 static_assert(sizeof(SpellBuff_Image_MM7) == 0x10);
 
+
 struct PlayerSpellbookChapter_Image_MM7 {
-    PlayerSpellbookChapter_Image_MM7();
+    PlayerSpellbookChapter_Image_MM7() { memzero(this); }
 
     /* 00 */ char bIsSpellAvailable[11];
     /* 0B */
 };
 static_assert(sizeof(PlayerSpellbookChapter_Image_MM7) == 0xB);
 
+
 struct PlayerSpells_Image_MM7 {
-    PlayerSpells_Image_MM7();
+    PlayerSpells_Image_MM7() { memzero(this); }
 
     union {
         struct {
@@ -218,8 +229,9 @@ struct PlayerSpells_Image_MM7 {
 };
 static_assert(sizeof(PlayerSpells_Image_MM7) == 0x64);
 
+
 union PlayerEquipment_Image_MM7 {
-    PlayerEquipment_Image_MM7();
+    PlayerEquipment_Image_MM7() { memzero(this); }
 
     union {
         struct {
@@ -241,8 +253,9 @@ union PlayerEquipment_Image_MM7 {
 };
 static_assert(sizeof(PlayerEquipment_Image_MM7) == 0x40);
 
+
 struct LloydBeacon_Image_MM7 {
-    LloydBeacon_Image_MM7();
+    LloydBeacon_Image_MM7() { memzero(this); }
 
     /* 00 */ uint64_t uBeaconTime;
     /* 08 */ int32_t PartyPos_X;
@@ -256,8 +269,9 @@ struct LloydBeacon_Image_MM7 {
 };
 static_assert(sizeof(LloydBeacon_Image_MM7) == 0x1C);
 
+
 struct Player_Image_MM7 {
-    Player_Image_MM7();
+    Player_Image_MM7() { memzero(this); }
 
     void Serialize(Player *);
     void Deserialize(Player *);
@@ -428,8 +442,9 @@ struct Player_Image_MM7 {
 };
 static_assert(sizeof(Player_Image_MM7) == 0x1B3C);
 
+
 struct PartyTimeStruct_Image_MM7 {
-    PartyTimeStruct_Image_MM7();
+    PartyTimeStruct_Image_MM7()  { memzero(this); }
 
     /* 000 */ int64_t bountyHunting_next_generation_time[10];
     /* 050 */ int64_t Shops_next_generation_time[85];  // field_50
@@ -441,8 +456,9 @@ struct PartyTimeStruct_Image_MM7 {
 };
 static_assert(sizeof(PartyTimeStruct_Image_MM7) == 0x678);
 
+
 struct Party_Image_MM7 {
-    Party_Image_MM7();
+    Party_Image_MM7() { memzero(this); }
 
     void Serialize(Party *);
     void Deserialize(Party *);
@@ -543,8 +559,9 @@ struct Party_Image_MM7 {
 };
 static_assert(sizeof(Party_Image_MM7) == 0x16238);
 
+
 struct Timer_Image_MM7 {
-    Timer_Image_MM7();
+    Timer_Image_MM7() { memzero(this); }
 
     void Serialize(Timer *);
     void Deserialize(Timer *);
@@ -563,9 +580,9 @@ struct Timer_Image_MM7 {
 };
 static_assert(sizeof(Timer_Image_MM7) == 0x28);
 
-/*  282 */
+
 struct OtherOverlay_Image_MM7 {
-    OtherOverlay_Image_MM7();
+    OtherOverlay_Image_MM7() { memzero(this); }
 
     /* 00 */ int16_t field_0;
     /* 02 */ int16_t field_2;
@@ -580,9 +597,9 @@ struct OtherOverlay_Image_MM7 {
 };
 static_assert(sizeof(OtherOverlay_Image_MM7) == 0x14);
 
-/*   63 */
+
 struct OtherOverlayList_Image_MM7 {
-    OtherOverlayList_Image_MM7();
+    OtherOverlayList_Image_MM7()  { memzero(this); }
 
     void Serialize(OtherOverlayList *);
     void Deserialize(OtherOverlayList *);
@@ -593,12 +610,10 @@ struct OtherOverlayList_Image_MM7 {
     /* 3F0 */
 };
 static_assert(sizeof(OtherOverlayList_Image_MM7) == 0x3F0);
-#pragma pack(pop)
 
-/*   44 */
-#pragma pack(push, 1)
+
 struct IconFrame_MM7 {
-    IconFrame_MM7();
+    IconFrame_MM7() { memzero(this); }
 
     void Serialize(Icon *);
     void Deserialize(Icon *);
@@ -611,12 +626,10 @@ struct IconFrame_MM7 {
     /* 01E */ uint16_t uTextureID;
 };
 static_assert(sizeof(IconFrame_MM7) == 0x20);
-#pragma pack(pop)
 
-/*   76 */
-#pragma pack(push, 1)
+
 struct UIAnimation_MM7 {
-    UIAnimation_MM7();
+    UIAnimation_MM7() { memzero(this); }
 
     void Serialize(UIAnimation *);
     void Deserialize(UIAnimation *);
@@ -630,12 +643,10 @@ struct UIAnimation_MM7 {
     /* 00C */ char field_C;
 };
 static_assert(sizeof(UIAnimation_MM7) == 0xD);
-#pragma pack(pop)
 
-/*  187 */
-#pragma pack(push, 1)
+
 struct MonsterInfo_MM7 {
-    MonsterInfo_MM7();
+    MonsterInfo_MM7() { memzero(this); }
 
     int32_t pName;
     int32_t pPictureName;
@@ -697,12 +708,10 @@ struct MonsterInfo_MM7 {
     unsigned int uAttackPreference;
 };
 static_assert(sizeof(MonsterInfo_MM7) == 0x58);
-#pragma pack(pop)
 
-/*   66 */
-#pragma pack(push, 1)
+
 struct Actor_MM7 {
-    Actor_MM7();
+    Actor_MM7() { memzero(this); }
 
     void Serialize(Actor *);
     void Deserialize(Actor *);
@@ -747,12 +756,10 @@ struct Actor_MM7 {
     char field_338[12];
 };
 static_assert(sizeof(Actor_MM7) == 0x344);
-#pragma pack(pop)
 
-/*  100 */
-#pragma pack(push, 1)
-struct BLVDoor_MM7 {  // 50h
-    BLVDoor_MM7();
+
+struct BLVDoor_MM7 {
+    BLVDoor_MM7() { memzero(this); }
 
     void Serialize(BLVDoor *);
     void Deserialize(BLVDoor *);
@@ -780,12 +787,10 @@ struct BLVDoor_MM7 {  // 50h
     int16_t field_4E;
 };
 static_assert(sizeof(BLVDoor_MM7) == 0x50);
-#pragma pack(pop)
 
-/*   95 */
-#pragma pack(push, 1)
-struct BLVSector_MM7 {  // 0x74
-    BLVSector_MM7();
+
+struct BLVSector_MM7 {
+    BLVSector_MM7() { memzero(this); }
 
     void Serialize(BLVSector *);
     void Deserialize(BLVSector *);
@@ -833,11 +838,10 @@ struct BLVSector_MM7 {  // 0x74
     BBoxs pBounding;
 };
 static_assert(sizeof(BLVSector_MM7) == 0x74);
-#pragma pack(pop)
 
-#pragma pack(push, 1)
+
 struct FontData_MM7 {
-    FontData_MM7();
+    FontData_MM7() { memzero(this); }
 
     void Serialize(FontData *);
     void Deserialize(FontData *, size_t size);
@@ -856,4 +860,5 @@ struct FontData_MM7 {
     uint8_t pFontData[0];  // array of font pixels
 };
 static_assert(sizeof(FontData_MM7) == 0x1020);
+
 #pragma pack(pop)
