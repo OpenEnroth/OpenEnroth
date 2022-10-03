@@ -34,6 +34,8 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Utility/Memory.h"
+
 using EngineIoc = Engine_::IocContainer;
 
 static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();

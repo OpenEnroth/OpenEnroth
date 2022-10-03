@@ -65,6 +65,8 @@
 #include "Platform/Api.h"
 #include "Platform/OSWindow.h"
 
+#include "Utility/Memory.h"
+
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
 #endif

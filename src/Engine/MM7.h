@@ -10,13 +10,6 @@ typedef unsigned int uint;
 
 typedef unsigned int uint;
 
-inline void memset32(void *ptr, uint32_t value, int count) {
-    uint32_t *p = (uint32_t *)ptr;
-    for (int i = 0; i < count; i++) {
-        *p++ = value;
-    }
-}
-
 #if defined(__GNUC__)
 typedef long long ll;
 typedef unsigned long long ull;

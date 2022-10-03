@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Engine/Graphics/ParticleEngine.h"
-
 #include "Engine/Objects/Actor.h"
-
 #include "Engine/Spells/Spells.h"
-
 #include "Engine/VectorTypes.h"
 
 #include "GUI/GUIFont.h"
+
+#include "Utility/Memory.h"
 
 /*
  * Party, timers, NPCs and other stuff is binary dumped into resources/savegame
@@ -29,11 +28,6 @@ class Icon;
 struct OtherOverlayList;
 struct Timer;
 struct Party;
-
-template<class T>
-inline void memzero(T *dst) {
-    memset(dst, 0, sizeof(*dst));
-}
 
 #pragma pack(push, 1)
 

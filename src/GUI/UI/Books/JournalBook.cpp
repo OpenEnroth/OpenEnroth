@@ -19,6 +19,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Memory.h"
+
 Image *ui_book_journal_background = nullptr;
 
 GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
