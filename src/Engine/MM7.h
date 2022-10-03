@@ -8,7 +8,6 @@ typedef unsigned int uint;
 #define PID_ID(pid) (uint32_t)(((pid)&0xFFFF) >> 3)  // extract value
 #define PID_INVALID (uint16_t)(-1)
 
-// typedef char _UNKNOWN;
 typedef unsigned int uint;
 
 inline void memset32(void *ptr, uint32_t value, int count) {
@@ -130,29 +129,6 @@ typedef ull uint64;
 #define SWORD6(x) SWORDn(x, 6)
 #define SWORD7(x) SWORDn(x, 7)
 
-
-// sign flag
-template <class T>
-int8 __SETS__(T x) {
-    if (sizeof(T) == 1) return int8(x) < 0;
-    if (sizeof(T) == 2) return int16(x) < 0;
-    if (sizeof(T) == 4) return int32(x) < 0;
-    return int64(x) < 0;
-}
-
-// overflow flag of subtraction (x-y)
-template <class T, class U>
-int8 __OFSUB__(T x, U y) {
-    if (sizeof(T) < sizeof(U)) {
-        U x2 = x;
-        int8 sx = __SETS__(x2);
-        return (sx ^ __SETS__(y)) & (sx ^ __SETS__(x2 - y));
-    } else {
-        T y2 = y;
-        int8 sx = __SETS__(x);
-        return (sx ^ __SETS__(y2)) & (sx ^ __SETS__(x - y2));
-    }
-}
 
 /*  297 */
 enum SoundType {
