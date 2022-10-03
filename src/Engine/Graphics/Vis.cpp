@@ -337,13 +337,6 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, RenderVertexSoft *pRay,
     }
 }
 
-/**
- * @param model                         Pointer to model to check against.
- * @param reachable_depth               A depth distance for checking interaction against.
- * @param[out] reachable                Whether the model is within the reachable depth specified.
- *
- * @return                              Whether the bounding radius of the model is visible within the camera frustum planes.
- */
 bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     // approx distance - for reachable checks
     float rayx = model->vBoundingCenter.x - pCamera3D->vCameraPos.x;
@@ -356,10 +349,12 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     float radius{ static_cast<float>(model->sBoundingRadius) };
     if (radius < 512.0f) radius = 512.0f;
 
-    // vBoundingCenter must be within all four of the camera frustum planes to be visible
-    // TODO(pskelton): only using 2 planes here (l+r) - four planes inaccurate -- investigate
-    Vec3f center = model->vBoundingCenter.ToFloat();
-    for (int i = 0; i < 2; i++) {
+    return IsSphereInFrustum(model->vBoundingCenter.ToFloat(), radius);
+}
+
+bool IsSphereInFrustum(Vec3f center, float radius) {
+    // center must be within all four of the camera frustum planes to be visible
+    for (int i = 0; i < 4; i++) {
         Vec3f planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
         float planedist{ pCamera3D->FrustumPlanes[i].w };
         if ((Dot(center, planenormal) - planedist) < -radius) {
@@ -367,6 +362,18 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
         }
     }
 
+    return true;
+}
+
+bool IsCylinderInFrustum(Vec3f center, float radius) {
+    // center must be within left / right frustum planes to be visible
+    for (int i = 0; i < 2; i++) {
+        Vec3f planenormal{ pCamera3D->FrustumPlanes[i].x, pCamera3D->FrustumPlanes[i].y, pCamera3D->FrustumPlanes[i].z };
+        float planedist{ pCamera3D->FrustumPlanes[i].w };
+        if ((Dot(center, planenormal) - planedist) < -radius) {
+            return false;
+        }
+    }
     return true;
 }
 

@@ -22,7 +22,7 @@ class RenderBase : public IRender {
     virtual bool Initialize() override;
 
     virtual void TransformBillboardsAndSetPalettesODM() override;
-    virtual void DrawSpriteObjects_ODM() override;
+    virtual void DrawSpriteObjects() override;
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                                   Texture *texture,
                                                   unsigned int uDiffuse,

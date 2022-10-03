@@ -253,6 +253,8 @@ void ParticleEngine::DrawParticles_BLV() {
 
         if (!ViewProject_TrueIfStillVisible_BLV(i)) continue;
 
+        // TODO(pskelton): reinstate this guard check
+
         if (true) {
             /*p->uScreenSpaceX >= pBLVRenderParams->uViewportX &&
             p->uScreenSpaceX < pBLVRenderParams->uViewportZ &&
