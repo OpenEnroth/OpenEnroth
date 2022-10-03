@@ -105,7 +105,11 @@ class AVStreamWrapper {
     AVMediaType type;
     int stream_idx;
     AVStream *stream;
+#if LIBAVFORMAT_VERSION_MAJOR >= 59
+    const AVCodec *dec;
+#else
     AVCodec *dec;
+#endif
     AVCodecContext *dec_ctx;
     std::queue<PMemBuffer, std::deque<PMemBuffer>> queue;
 };
@@ -1048,7 +1052,11 @@ bool AudioBaseDataSource::Open() {
         return false;
     }
 
+#if LIBAVFORMAT_VERSION_MAJOR >= 59
+    const AVCodec *codec = nullptr;
+#else
     AVCodec *codec = nullptr;
+#endif
     iStreamIndex = av_find_best_stream(pFormatContext, AVMEDIA_TYPE_AUDIO, -1,
                                        -1, &codec, 0);
     if (iStreamIndex < 0) {
