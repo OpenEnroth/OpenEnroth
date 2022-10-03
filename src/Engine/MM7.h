@@ -12,24 +12,11 @@ typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned long ulong;
 
-typedef char int8;
-typedef signed char sint8;
-typedef unsigned char uint8;
-typedef short int16;
-typedef signed short sint16;
-typedef unsigned short uint16;
-typedef int int32;
-typedef signed int sint32;
-typedef unsigned int uint32;
-typedef int64_t int64;
-typedef int64_t sint64;
-typedef uint64_t uint64;
-
 // Partially defined types:
-#define _BYTE uint8
-#define _WORD uint16
-#define _DWORD uint32
-#define _QWORD uint64
+#define _BYTE uint8_t
+#define _WORD uint16_t
+#define _DWORD uint32_t
+#define _QWORD uint64_t
 
 #define HEXRAYS_LOBYTE(x) (*((_BYTE *)&(x)))    // low byte
 #define HEXRAYS_LOWORD(x) (*((_WORD *)&(x)))    // low word
@@ -63,14 +50,14 @@ typedef uint64_t uint64;
 #define WORD7(x) WORDn(x, 7)
 
 // now signed macros (the same but with sign extension)
-#define HEXRAYS_SLOBYTE(x) (*((int8 *)&(x)))
-#define HEXRAYS_SLOWORD(x) (*((int16 *)&(x)))
-#define HEXRAYS_SLODWORD(x) (*((int32 *)&(x)))
-#define HEXRAYS_SHIBYTE(x) (*((int8 *)&(x) + 1))
-#define HEXRAYS_SHIWORD(x) (*((int16 *)&(x) + 1))
-#define HEXRAYS_SHIDWORD(x) (*((int32 *)&(x) + 1))
-#define SBYTEn(x, n) (*((int8 *)&(x) + n))
-#define SWORDn(x, n) (*((int16 *)&(x) + n))
+#define HEXRAYS_SLOBYTE(x) (*((int8_t *)&(x)))
+#define HEXRAYS_SLOWORD(x) (*((int16_t *)&(x)))
+#define HEXRAYS_SLODWORD(x) (*((int32_t *)&(x)))
+#define HEXRAYS_SHIBYTE(x) (*((int8_t *)&(x) + 1))
+#define HEXRAYS_SHIWORD(x) (*((int16_t *)&(x) + 1))
+#define HEXRAYS_SHIDWORD(x) (*((int32_t *)&(x) + 1))
+#define SBYTEn(x, n) (*((int8_t *)&(x) + n))
+#define SWORDn(x, n) (*((int16_t *)&(x) + n))
 #define SBYTE1(x) SBYTEn(x, 1)
 #define SBYTE2(x) SBYTEn(x, 2)
 #define SBYTE3(x) SBYTEn(x, 3)

@@ -2544,11 +2544,11 @@ void Actor::ActorDamageFromMonster(signed int attacker_id,
                             pActors[actor_id].pMonsterInfo.uID,
                             MONSTER_SUPERTYPE_TREANT)) {
                         pVelocity->x =
-                            (int32)fixpoint_mul(pushDistance, pVelocity->x);
+                            (int32_t)fixpoint_mul(pushDistance, pVelocity->x);
                         pVelocity->y =
-                            (int32)fixpoint_mul(pushDistance, pVelocity->y);
+                            (int32_t)fixpoint_mul(pushDistance, pVelocity->y);
                         pVelocity->z =
-                            (int32)fixpoint_mul(pushDistance, pVelocity->z);
+                            (int32_t)fixpoint_mul(pushDistance, pVelocity->z);
                         pActors[actor_id].vVelocity.x =
                             50 * (short)pVelocity->x;
                         pActors[actor_id].vVelocity.y =
@@ -2575,8 +2575,8 @@ void Actor::SummonMinion(int summonerId) {
     MonsterInfo *v9;                   // ebx@10
     // MonsterDesc *v10; // edi@10
     int v13;                 // ebx@10
-    int64 v15;                 // edi@10
-    int64 v17;                 // ebx@10
+    int64_t v15;                 // edi@10
+    int64_t v17;                 // ebx@10
     unsigned int v19;        // qax@10
     int result;              // eax@13
     unsigned int monsterId;  // [sp+10h] [bp-18h]@8
