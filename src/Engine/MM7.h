@@ -130,70 +130,6 @@ typedef ull uint64;
 #define SWORD6(x) SWORDn(x, 6)
 #define SWORD7(x) SWORDn(x, 7)
 
-// Generate a reference to pair of operands
-template <class T>
-int16 __PAIR__(int8 high, T low) {
-    return (((int16)high) << sizeof(high) * 8) | uint8(low);
-}
-template <class T>
-int32 __PAIR__(int16 high, T low) {
-    return (((int32)high) << sizeof(high) * 8) | uint16(low);
-}
-template <class T>
-int64 __PAIR__(int32 high, T low) {
-    return (((int64)high) << sizeof(high) * 8) | uint32(low);
-}
-template <class T>
-uint16 __PAIR__(uint8 high, T low) {
-    return (((uint16)high) << sizeof(high) * 8) | uint8(low);
-}
-template <class T>
-uint32 __PAIR__(uint16 high, T low) {
-    return (((uint32)high) << sizeof(high) * 8) | uint16(low);
-}
-template <class T>
-uint64 __PAIR__(uint32 high, T low) {
-    return (((uint64)high) << sizeof(high) * 8) | uint32(low);
-}
-
-// rotate left
-template <class T>
-T __ROL__(T value, uint count) {
-    const uint nbits = sizeof(T) * 8;
-    count %= nbits;
-
-    T high = value >> (nbits - count);
-    value <<= count;
-    value |= high;
-    return value;
-}
-
-// rotate right
-template <class T>
-T __ROR__(T value, uint count) {
-    const uint nbits = sizeof(T) * 8;
-    count %= nbits;
-
-    T low = value << (nbits - count);
-    value >>= count;
-    value |= low;
-    return value;
-}
-
-// carry flag of left shift
-template <class T>
-int8 __MKCSHL__(T value, uint count) {
-    const uint nbits = sizeof(T) * 8;
-    count %= nbits;
-
-    return (value >> (nbits - count)) & 1;
-}
-
-// carry flag of right shift
-template <class T>
-int8 __MKCSHR__(T value, uint count) {
-    return (value >> (count - 1)) & 1;
-}
 
 // sign flag
 template <class T>
@@ -216,40 +152,6 @@ int8 __OFSUB__(T x, U y) {
         int8 sx = __SETS__(x);
         return (sx ^ __SETS__(y2)) & (sx ^ __SETS__(x - y2));
     }
-}
-
-// overflow flag of addition (x+y)
-template <class T, class U>
-int8 __OFADD__(T x, U y) {
-    if (sizeof(T) < sizeof(U)) {
-        U x2 = x;
-        int8 sx = __SETS__(x2);
-        return ((1 ^ sx) ^ __SETS__(y)) & (sx ^ __SETS__(x2 + y));
-    } else {
-        T y2 = y;
-        int8 sx = __SETS__(x);
-        return ((1 ^ sx) ^ __SETS__(y2)) & (sx ^ __SETS__(x + y2));
-    }
-}
-
-// carry flag of subtraction (x-y)
-template <class T, class U>
-int8 __CFSUB__(T x, U y) {
-    int size = sizeof(T) > sizeof(U) ? sizeof(T) : sizeof(U);
-    if (size == 1) return uint8(x) < uint8(y);
-    if (size == 2) return uint16(x) < uint16(y);
-    if (size == 4) return uint32(x) < uint32(y);
-    return uint64(x) < uint64(y);
-}
-
-// carry flag of addition (x+y)
-template <class T, class U>
-int8 __CFADD__(T x, U y) {
-    int size = sizeof(T) > sizeof(U) ? sizeof(T) : sizeof(U);
-    if (size == 1) return uint8(x) > uint8(x + y);
-    if (size == 2) return uint16(x) > uint16(x + y);
-    if (size == 4) return uint32(x) > uint32(x + y);
-    return uint64(x) > uint64(x + y);
 }
 
 /*  297 */
