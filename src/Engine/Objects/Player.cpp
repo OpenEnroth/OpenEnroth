@@ -6898,7 +6898,7 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, signed int targetchar) {
+void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i* pPos, signed int targetchar) {
     // target player? if any
 
     int spellId;                  // eax@38
@@ -6906,7 +6906,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
     int v72[4] {};                   // [sp+30h] [bp-24h]@164
     int healthBeforeRecvdDamage;  // [sp+48h] [bp-Ch]@3
 
-    int pidtype = PID_TYPE(uObjID);
+    ObjectType pidtype = PID_TYPE(uObjID);
 
     /*    OBJECT_Any = 0x0,
     OBJECT_BLVDoor = 0x1,
@@ -6934,7 +6934,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
         Player *playerPtr = &pParty->pPlayers[targetchar];
         Actor *actorPtr = &pActors[uActorID];
         healthBeforeRecvdDamage = playerPtr->sHealth;
-        if (PID_TYPE(uObjID) != 3 || !actorPtr->ActorHitOrMiss(playerPtr))
+        if (PID_TYPE(uObjID) != OBJECT_Actor || !actorPtr->ActorHitOrMiss(playerPtr))
             return;
 
         // GM unarmed 1% chance to evade attacks per skill point
@@ -6999,25 +6999,25 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
 
         int damageType;
         switch (dmgSource) {
-            case 0:
+            case ABILITY_ATTACK1:
                 damageType = actorPtr->pMonsterInfo.uAttack1Type;
                 break;
-            case 1:
+            case ABILITY_ATTACK2:
                 damageType = actorPtr->pMonsterInfo.uAttack2Type;
                 break;
-            case 2:
+            case ABILITY_SPELL1:
                 spellId = actorPtr->pMonsterInfo.uSpell1ID;
                 damageType = pSpellStats->pInfos[spellId].uSchool;
                 break;
-            case 3:
+            case ABILITY_SPELL2:
                 spellId = actorPtr->pMonsterInfo.uSpell2ID;
                 damageType = pSpellStats->pInfos[spellId].uSchool;
                 break;
-            case 4:
+            case ABILITY_SPECIAL:
                 damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
                 break;
             default:
-            case 5:
+            case ABILITY_UNKNOWN:
                 damageType = 4;  // DMGT_PHISYCAL
                 break;
         }
@@ -7088,7 +7088,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
     } else {  // is an item
         int spriteId = PID_ID(uObjID);
         SpriteObject* spritefrom = &pSpriteObjects[spriteId];
-        int uActorType = PID_TYPE(spritefrom->spell_caster_pid);
+        ObjectType uActorType = PID_TYPE(spritefrom->spell_caster_pid);
         int uActorID = PID_ID(spritefrom->spell_caster_pid);
 
         if (uActorType == OBJECT_Item) {
@@ -7181,24 +7181,24 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
 
             int damageType;
             switch (dmgSource) {
-                case 0:
+                case ABILITY_ATTACK1:
                     damageType = actorPtr->pMonsterInfo.uAttack1Type;
                     break;
-                case 1:
+                case ABILITY_ATTACK2:
                     damageType = actorPtr->pMonsterInfo.uAttack2Type;
                     break;
-                case 2:
+                case ABILITY_SPELL1:
                     spellId = actorPtr->pMonsterInfo.uSpell1ID;
                     damageType = pSpellStats->pInfos[spellId].uSchool;
                     break;
-                case 3:
+                case ABILITY_SPELL2:
                     spellId = actorPtr->pMonsterInfo.uSpell2ID;
                     damageType = pSpellStats->pInfos[spellId].uSchool;
                     break;
-                case 4:
+                case ABILITY_SPECIAL:
                     damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
                     break;
-                case 5:
+                case ABILITY_UNKNOWN:
                     damageType = 4;
                     break;
             }
@@ -7238,7 +7238,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, int dmgSource, Vec3i* pPos, si
             }
 
             // special attack trigger
-            if (!dmgSource && !engine->config->debug.NoDamage.Get() &&
+            if (dmgSource == ABILITY_ATTACK1 && !engine->config->debug.NoDamage.Get() &&
                 actorPtr->pMonsterInfo.uSpecialAttackType &&
                 rand() % 100 < actorPtr->pMonsterInfo.uLevel *
                                    actorPtr->pMonsterInfo.uSpecialAttackLevel) {
@@ -7680,7 +7680,8 @@ void Player::_42ECB5_PlayerAttacksActor() {
     // v7 = pMouse->uPointingObjectID;
 
     int target_pid = mouse->uPointingObjectID;
-    int target_type = PID_TYPE(target_pid), target_id = PID_ID(target_pid);
+    ObjectType target_type = PID_TYPE(target_pid);
+    int target_id = PID_ID(target_pid);
     if (target_type != OBJECT_Actor || !pActors[target_id].CanAct()) {
         target_pid = stru_50C198.FindClosestActor(5120, 0, 0);
         target_type = PID_TYPE(target_pid);
@@ -7831,7 +7832,7 @@ void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
     int id = a1a.Create(0, 0, 0, 0);
     if (id != -1)
         AttackerInfo.Add(PID(OBJECT_Item, id), a5, (short)a1a.vPosition.x,
-                         (short)a1a.vPosition.y, (short)a1a.vPosition.z, 0, 0);
+                         (short)a1a.vPosition.y, (short)a1a.vPosition.z, ABILITY_ATTACK1, 0);
 }
 
 //----- (00458244) --------------------------------------------------------

@@ -3,6 +3,7 @@
 #include <variant>
 
 #include "Engine/Graphics/IRender.h"
+#include "Engine/Objects/Actor.h"
 
 enum VisObjectType : uint32_t {
     VisObjectType_Any = 0,
@@ -23,7 +24,7 @@ enum VisSelectFlags : uint32_t {
 // NOTE: The variable names here are correct when the filter is used for VisObjectType_Sprite, but wrong for VisObjectType_Face
 struct Vis_SelectionFilter {  // stru157
     VisObjectType vis_object_type;
-    int object_type;  // OBJECT_Actor, OBJECT_Player etc
+    ObjectType object_type;
     int at_ai_state;
     int no_at_ai_state;
     VisSelectFlags select_flags;
@@ -56,7 +57,8 @@ struct Vis_ObjectInfo {
 
 #pragma pack(push, 1)
 struct Vis_SelectionList {
-    enum PointerCreationType { All = 0, Unique = 1 };
+    enum class PointerCreationType { All = 0, Unique = 1 };
+    using enum PointerCreationType;
 
     Vis_ObjectInfo *SelectionPointers(int a2, int a3);
     void create_object_pointers(PointerCreationType type = All);
@@ -125,7 +127,7 @@ class Vis {
                                      float *out_center_y);
     bool IsPointInsideD3DBillboard(struct RenderBillboardD3D *a1, float x,
                                    float y);
-    unsigned short PickClosestActor(int object_id, unsigned int pick_depth,
+    unsigned short PickClosestActor(ObjectType object_type, unsigned int pick_depth,
                                     VisSelectFlags selectFlags, int not_at_ai_state, int at_ai_state);
     void _4C1A02();
     void SortVectors_x(RenderVertexSoft *pArray, int start, int end);

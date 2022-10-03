@@ -35,30 +35,6 @@ static std::shared_ptr<ParticleEngine> particle_engine = EngineIoc::ResolveParti
 
 std::vector<SpriteObject> pSpriteObjects;
 
-//----- (00404828) --------------------------------------------------------
-SpriteObject::SpriteObject() {
-    field_22_glow_radius_multiplier = 1;
-    uSoundID = 0;
-    uFacing = 0;
-    vVelocity.z = 0;
-    vVelocity.y = 0;
-    vVelocity.x = 0;
-    uType = SPRITE_NULL;
-    uObjectDescID = 0;
-    field_61 = 0;
-    field_60_distance_related_prolly_lod = 0;
-    field_20 = 0;
-    uSpriteFrameID = 0;
-    spell_skill = 0;
-    spell_level = 0;
-    spell_id = 0;
-    field_54 = 0;
-    uSectorID = 0;
-    uAttributes = 0;
-    spell_target_pid = 0;
-    spell_caster_pid = 0;
-}
-
 int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     // check for valid sprite object
     if (!uObjectDescID) {
@@ -910,7 +886,7 @@ void SpriteObject::_46BEF1_apply_spells_aoe() {
 
             if (v11 >= v7 * v7 + v9 * v9 + v10 * v10) {
                 if (pActors[i].DoesDmgTypeDoDamage(DMGT_DARK)) {
-                    pActors[i].pActorBuffs[this->spell_id].Apply(
+                    pActors[i].pActorBuffs[ACTOR_BUFF_INDEX(this->spell_id)].Apply(
                         GameTime(pParty->GetPlayingTime() +
                             GameTime::FromSeconds(this->spell_level)),
                         this->spell_skill, 4, 0, 0);
@@ -1171,7 +1147,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                              pSpriteObjects[uLayingItemID].vPosition.x,
                              pSpriteObjects[uLayingItemID].vPosition.y,
                              pSpriteObjects[uLayingItemID].vPosition.z,
-                             0, 0);
+                             ABILITY_ATTACK1, 0);
             if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(pSpriteObjects[uLayingItemID].vPosition.x,
                                                                 pSpriteObjects[uLayingItemID].vPosition.y,
@@ -1294,7 +1270,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
         }
 
         case SPRITE_SPELL_EARTH_ROCK_BLAST: {
-            if (PID_TYPE(pid) == 6 || PID_TYPE(pid) == 5 || !PID_TYPE(pid)) {
+            if (PID_TYPE(pid) == OBJECT_BModel || PID_TYPE(pid) == OBJECT_Decoration || PID_TYPE(pid) == OBJECT_Any) {
                 return 1;
             }
             pSpriteObjects[uLayingItemID].uType = SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT;
@@ -1310,7 +1286,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                              pSpriteObjects[uLayingItemID].vPosition.x,
                              pSpriteObjects[uLayingItemID].vPosition.y,
                              pSpriteObjects[uLayingItemID].vPosition.z,
-                             0, 0);
+                             ABILITY_ATTACK1, 0);
             int v78 = 0;
             if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
                 v78 = pSpriteObjects[uLayingItemID].uSoundID + 4;
@@ -1542,7 +1518,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
                         pActors[v108].uAIState = Standing;
                         pActors[v108].UpdateAnimation();
                     }
-                    pActors[v108].pActorBuffs[v136].Apply(
+                    pActors[v108].pActorBuffs[ACTOR_BUFF_INDEX(v136)].Apply(
                         GameTime(pParty->GetPlayingTime() + GameTime::FromSeconds(v137)),
                         v152, v150, 0, 0);
                 }
@@ -1649,7 +1625,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
 
         case SPRITE_SPELL_FIRE_METEOR_SHOWER:
         case SPRITE_SPELL_AIR_STARBURST: {
-            if (PID_TYPE(pid) == 3) return 1;
+            if (PID_TYPE(pid) == OBJECT_Actor) return 1;
             // else go to next case
         }
 

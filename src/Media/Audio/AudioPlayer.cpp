@@ -199,7 +199,7 @@ void AudioPlayer::SetMasterVolume(int level) {
         SoundInfo &si = iter->second;
         if (si.sample) {
             // if not voice sample - set volume
-            if (PID_TYPE(si.last_pid) != 4)
+            if (PID_TYPE(si.last_pid) != OBJECT_Player)
                 si.sample->SetVolume(uMasterVolume);
         }
         ++iter;
@@ -216,7 +216,7 @@ void AudioPlayer::SetVoiceVolume(int level) {
         SoundInfo &si = iter->second;
         if (si.sample) {
             // if voice sample - set volume
-            if (PID_TYPE(si.last_pid) == 4)
+            if (PID_TYPE(si.last_pid) == OBJECT_Player)
                 si.sample->SetVolume(uVoiceVolume);
         }
         ++iter;

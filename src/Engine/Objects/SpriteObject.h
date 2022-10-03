@@ -4,6 +4,7 @@
 
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/SpriteObjectType.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/VectorTypes.h"
 
 class SpriteFrame;
@@ -15,7 +16,6 @@ struct SpriteObject {
         return uAttributes & SPRITE_ATTACHED_TO_HEAD;
     }
 
-    SpriteObject();
     int Create(int yaw, int pitch, int a4, int a5);
     void _46BEF1_apply_spells_aoe();
     void ExplosionTraps();
@@ -36,28 +36,28 @@ struct SpriteObject {
     static void Create_Splash_Object(int x, int y, int z);
     static void InitializeSpriteObjects();
 
-    SPRITE_OBJECT_TYPE uType;
+    SPRITE_OBJECT_TYPE uType = SPRITE_NULL;
     // unsigned __int16 uType;
     unsigned __int16 uObjectDescID = 0; // Zero means free slot, can reuse.
     Vec3i vPosition;
     Vec3s vVelocity;
-    unsigned __int16 uFacing;
-    unsigned __int16 uSoundID;
+    unsigned __int16 uFacing = 0;
+    unsigned __int16 uSoundID = 0;
     SPRITE_ATTRIBUTES uAttributes;
-    __int16 uSectorID;
-    unsigned __int16 uSpriteFrameID;
-    __int16 field_20;
-    __int16 field_22_glow_radius_multiplier;
-    struct ItemGen containing_item;
-    int spell_id;
-    int spell_level;
-    int spell_skill;
-    int field_54;
-    int spell_caster_pid;
-    int spell_target_pid;
-    char field_60_distance_related_prolly_lod;
-    char field_61;
-    char field_62[2]{};
+    __int16 uSectorID = 0;
+    unsigned __int16 uSpriteFrameID = 0;
+    __int16 field_20 = 0;
+    __int16 field_22_glow_radius_multiplier = 1;
+    ItemGen containing_item;
+    int spell_id = 0;
+    int spell_level = 0;
+    int spell_skill = 0;
+    int field_54 = 0;
+    int spell_caster_pid = 0;
+    int spell_target_pid = 0;
+    char field_60_distance_related_prolly_lod = 0;
+    ABILITY_INDEX field_61 = ABILITY_ATTACK1;
+    char field_62[2] = {};
     Vec3i field_64;  // starting position
 };
 #pragma pack(pop)

@@ -4,10 +4,11 @@
 #include <string>
 
 #include "Engine/IocContainer.h"
+#include "Engine/Spells/Spells.h"
+#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Monsters.h"
 
-#include "../Spells/Spells.h"
-#include "Items.h"
-#include "Monsters.h"
+#include "Utility/IndexedArray.h"
 
 using EngineIoc = Engine_::IocContainer;
 class Actor;
@@ -31,15 +32,18 @@ struct stru319 {
 
 extern stru319 stru_50C198;  // idb
 
-enum ABILITY_INDEX {
+enum class ABILITY_INDEX : char {
     ABILITY_ATTACK1 = 0,
     ABILITY_ATTACK2 = 1,
     ABILITY_SPELL1 = 2,
     ABILITY_SPELL2 = 3,
+    ABILITY_SPECIAL = 4, // E.g. gogs exploding on death
+    ABILITY_UNKNOWN = 5, // TODO: what is this? Can we just drop it?
 };
+using enum ABILITY_INDEX;
 
 /*  361 */
-enum ACTOR_BUFF_INDEX {
+enum class ACTOR_BUFF_INDEX {
     ACTOR_BUFF_CHARM = 1,
     ACTOR_BUFF_SUMMONED = 2,
     ACTOR_BUFF_SHRINK = 3,
@@ -61,10 +65,12 @@ enum ACTOR_BUFF_INDEX {
     ACTOR_BUFF_HASTE = 19,
     ACTOR_BUFF_PAIN_REFLECTION = 20,
     ACTOR_BUFF_PAIN_HAMMERHANDS = 21,
+    ACTOR_BUFF_COUNT
 };
+using enum ACTOR_BUFF_INDEX;
 
 /*  295 */
-enum ObjectType {
+enum class ObjectType {
     OBJECT_Any = 0x0,
     OBJECT_BLVDoor = 0x1,
     OBJECT_Item = 0x2,
@@ -73,6 +79,7 @@ enum ObjectType {
     OBJECT_Decoration = 0x5,
     OBJECT_BModel = 0x6,
 };
+using enum ObjectType;
 
 /*  264 */
 enum AIState : unsigned __int16 {
@@ -235,11 +242,11 @@ class Actor {
                                  struct AIDirection *pOut, int a4);
     static void Explode(unsigned int uActorID);
     static void AI_RangedAttack(unsigned int uActorID, struct AIDirection *a2,
-                                int type, char a4);
+                                int type, ABILITY_INDEX a4);
     static void AI_SpellAttack(unsigned int uActorID, struct AIDirection *pDir,
-                               int uSpellID, int a4, unsigned int uSkillLevel);
+                               int uSpellID, ABILITY_INDEX a4, unsigned int uSkillLevel);
     static void ActorDamageFromMonster(int attacker_id, unsigned int actor_id,
-                                       Vec3i *pVelocity, int a4);
+                                       Vec3i *pVelocity, ABILITY_INDEX a4);
 
     static unsigned short GetObjDescId(int spellId);
 
@@ -252,7 +259,7 @@ class Actor {
                            int bToggle);
     static void ApplyFineForKillingPeasant(unsigned int uActorID);
     static void DrawHealthBar(Actor *actor, GUIWindow *window);
-    int _43B3E0_CalcDamage(signed int dmgSource);
+    int _43B3E0_CalcDamage(ABILITY_INDEX dmgSource);
     static void AddBloodsplatOnDamageOverlay(unsigned int uActorID, int a2,
                                              int a3);
 
@@ -310,7 +317,7 @@ class Actor {
     unsigned int uCurrentActionTime = 0;
     std::array<uint16_t, 8> pSpriteIDs = {{}};
     std::array<uint16_t, 4> pSoundSampleIDs = {{}};  // 1 die     3 bored
-    std::array<SpellBuff, 22> pActorBuffs;
+    IndexedArray<SpellBuff, ACTOR_BUFF_COUNT> pActorBuffs;
     std::array<ItemGen, 4> ActorHasItems;
     unsigned int uGroup = 0;
     unsigned int uAlly = 0;

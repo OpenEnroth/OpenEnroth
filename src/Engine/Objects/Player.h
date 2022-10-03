@@ -9,6 +9,7 @@
 #include "Engine/Events2D.h"
 #include "Engine/Conditions.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/PlayerEnums.h"
@@ -544,7 +545,7 @@ struct Player {
     char field_1B3B_set0_unused;
 };
 
-void DamagePlayerFromMonster(unsigned int uObjID, int a2, Vec3i* pPos, signed int a4);
+void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i* pPos, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int PlayerCreation_GetUnspentAttributePointCount();

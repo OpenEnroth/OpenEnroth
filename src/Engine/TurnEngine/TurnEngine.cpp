@@ -27,7 +27,7 @@ void stru262_TurnBased::SortTurnQueue() {
     TurnBased_QueueElem *test_element;  // ecx@18
     TurnBased_QueueElem temp_elem;
     int i, j;
-    unsigned int p_type;
+    ObjectType p_type;
     unsigned int p_id;
 
     active_actors = this->uActorQueueSize;
@@ -270,11 +270,9 @@ void stru262_TurnBased::AITurnBasedAction() {
     for (uint i = 0; i < pActors.size(); ++i) {
         curr_actor = &pActors[i];
         shrinked = pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Active();
-        for (j = 0; j < 22; ++j) {  // check expired spell Buffs
-            if (j != 10)
-                pActors[i].pActorBuffs[j].IsBuffExpiredToTime(
-                    pParty->GetPlayingTime());
-        }
+        for (auto &&pair : pActors[i].pActorBuffs.map_view())
+            if (pair.first != ACTOR_BUFF_MASS_DISTORTION)
+                pair.second.IsBuffExpiredToTime(pParty->GetPlayingTime());
         if (shrinked && pActors[i].pActorBuffs[ACTOR_BUFF_SHRINK].Expired())
             pActors[i].uActorHeight =
                 pMonsterList->pMonsters[pActors[i].pMonsterInfo.uID - 1]
@@ -601,7 +599,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
     // int v3; // eax@1
     unsigned int actor_id;  // ebx@2
     // Actor *v5; // esi@2
-    char v19;        // al@24
+    ABILITY_INDEX v19;        // al@24
     AIDirection a3;  // [sp+Ch] [bp-3Ch]@2
     AIDirection a4;  // [sp+28h] [bp-20h]@2
     // TurnBased_QueueElem *v28; // [sp+44h] [bp-4h]@1
@@ -644,7 +642,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                         Actor::AI_RangedAttack(
                             actor_id, &a4,
                             pActors[actor_id].pMonsterInfo.uMissleAttack1Type,
-                            0);
+                            ABILITY_ATTACK1);
                         Actor::AI_Stand(actor_id,
                                         ai_near_actors_targets_pid[actor_id], 0,
                                         &a4);
@@ -664,7 +662,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                         Actor::AI_RangedAttack(
                             actor_id, &a4,
                             pActors[actor_id].pMonsterInfo.uMissleAttack2Type,
-                            1);
+                            ABILITY_ATTACK2);
                         Actor::AI_Stand(actor_id,
                                         ai_near_actors_targets_pid[actor_id], 0,
                                         &a4);
@@ -672,7 +670,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                     case AttackingRanged3:
                         Actor::AI_SpellAttack(
                             actor_id, &a4,
-                            pActors[actor_id].pMonsterInfo.uSpell1ID, 2,
+                            pActors[actor_id].pMonsterInfo.uSpell1ID, ABILITY_SPELL1,
                             pActors[actor_id]
                                 .pMonsterInfo.uSpellSkillAndMastery1);
                         Actor::AI_Stand(actor_id,
@@ -682,7 +680,7 @@ void stru262_TurnBased::AIAttacks(unsigned int queue_index) {
                     case AttackingRanged4:
                         Actor::AI_SpellAttack(
                             actor_id, &a4,
-                            pActors[actor_id].pMonsterInfo.uSpell2ID, 3,
+                            pActors[actor_id].pMonsterInfo.uSpell2ID, ABILITY_SPELL2,
                             pActors[actor_id]
                                 .pMonsterInfo.uSpellSkillAndMastery2);
                         Actor::AI_Stand(actor_id,
@@ -711,7 +709,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
     AIDirection v7;         // esi@10
     int v9;                 // ecx@10
     signed int v10;         // eax@13
-    int v14;                // eax@29
+    ABILITY_INDEX v14;                // eax@29
     AIDirection a3;         // [sp+Ch] [bp-44h]@10
     AIDirection v18;        // [sp+28h] [bp-28h]@10
     signed int v22;         // [sp+58h] [bp+8h]@10
@@ -774,21 +772,27 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 v14 = pActors[actor_id].special_ability_use_check(actor_id);
                 pQueue[queue_index].AI_action_type = TE_AI_STAND;
                 switch (v14) {
-                    case 1:
+                    case ABILITY_ATTACK1:
+                        if (pActors[actor_id].pMonsterInfo.uMissleAttack1Type) {
+                            Actor::AI_MissileAttack1(actor_id, v22, &v18);
+                            pQueue[queue_index].AI_action_type =
+                                    TE_AI_RANGED_ATTACK;
+                        }
+                    case ABILITY_ATTACK2:
                         if (pActors[actor_id].pMonsterInfo.uMissleAttack2Type) {
                             Actor::AI_MissileAttack2(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                 TE_AI_RANGED_ATTACK;
                         }
                         break;
-                    case 2:
+                    case ABILITY_SPELL1:
                         if (pActors[actor_id].pMonsterInfo.uSpell1ID) {
                             Actor::AI_SpellAttack1(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                 TE_AI_RANGED_ATTACK;
                         }
                         break;
-                    case 3:
+                    case ABILITY_SPELL2:
                         if (pActors[actor_id].pMonsterInfo.uSpell2ID) {
                             Actor::AI_SpellAttack2(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
@@ -796,11 +800,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                         }
                         break;
                     default:
-                        if (pActors[actor_id].pMonsterInfo.uMissleAttack1Type) {
-                            Actor::AI_MissileAttack1(actor_id, v22, &v18);
-                            pQueue[queue_index].AI_action_type =
-                                TE_AI_RANGED_ATTACK;
-                        }
+                        Assert(false && "Unreachable");
                 }
                 // if (!pQueue[queue_index].AI_action_type)
                 if ((double)v9 < 307.2) {

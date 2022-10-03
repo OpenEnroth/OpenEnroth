@@ -90,7 +90,7 @@ void CastSpellInfoHelpers::CastSpell() {
     int spellduration;
     signed int spell_targeted_at = 0;  // [sp+E7Ch] [bp-8h]@14
     int amount = 0;                    // [sp+E80h] [bp-4h]@1
-    int obj_type;
+    ObjectType obj_type;
     // ItemDesc *_item;
 
     SpriteObject pSpellSprite;  // [sp+DDCh] [bp-A8h]@1
@@ -3007,11 +3007,8 @@ void CastSpellInfoHelpers::CastSpell() {
                         PID(OBJECT_Actor,
                             _50BF30_actors_in_viewport_ids[spell_targeted_at]);
                     pSpellSprite.Create(0, 0, 0, 0);
-                    for (int i = 0; i < 22; ++i)
-                        pActors
-                            [_50BF30_actors_in_viewport_ids[spell_targeted_at]]
-                                .pActorBuffs[i]
-                                .Reset();
+                    for (SpellBuff &buff : pActors[_50BF30_actors_in_viewport_ids[spell_targeted_at]].pActorBuffs)
+                        buff.Reset();
                 }
                 spell_sound_flag = true;
                 break;
