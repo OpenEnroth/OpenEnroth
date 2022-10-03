@@ -6,6 +6,8 @@
 
 #include "Engine/Graphics/DecorationList.h"
 
+#include "Utility/Blob.h"
+
 class Texture;
 
 class Sprite {
@@ -63,7 +65,7 @@ struct SpriteFrameTable {
         pSpriteEFrames = nullptr;
     }
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void ReleaseSFrames();
     void ResetLoadedFlags();
     void InitializeSprite(signed int uSpriteID);

@@ -507,12 +507,7 @@ class Localization {
     }
 
  public:
-    Localization()
-        : localization_raw(nullptr),
-          localization_strings(nullptr),
-          class_desc_raw(nullptr),
-          attribute_desc_raw(nullptr),
-          skill_desc_raw(nullptr) {}
+    Localization() {}
 
  private:
     void InitializeMm6ItemCategories();
@@ -532,11 +527,11 @@ class Localization {
     void InitializeNpcProfessionNames();
 
  private:
-    char *localization_raw;
-    const char **localization_strings;
-    char *class_desc_raw;
-    char *attribute_desc_raw;
-    char *skill_desc_raw;
+    std::string localization_raw;
+    const char **localization_strings = nullptr;
+    std::string class_desc_raw;
+    std::string attribute_desc_raw;
+    std::string skill_desc_raw;
 
     const char* mm6_item_categories[14]{};
     const char* month_names[12]{};

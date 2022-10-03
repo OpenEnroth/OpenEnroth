@@ -5,6 +5,8 @@
 
 #include "Engine/Objects/Items.h"
 
+#include "Utility/Blob.h"
+
 enum CHEST_FLAGS {
     CHEST_TRAPPED = 0x1,
     CHEST_ITEMS_PLACED = 0x2,
@@ -24,7 +26,7 @@ class ChestList {
  public:
     ChestList() {}
 
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
 
  public:
     std::vector<ChestDesc> vChests;

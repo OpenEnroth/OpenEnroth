@@ -449,29 +449,29 @@ ChestDesc::ChestDesc(struct ChestDesc_mm7 *pChest) {
     uTextureID = pChest->uTextureID;
 }
 
-void ChestList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
+void ChestList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
     static_assert(sizeof(ChestDesc_mm7) == 36, "Wrong type size");
 
-    unsigned int num_mm6_chests = data_mm6 ? *(uint32_t*)data_mm6 : 0;
-    unsigned int num_mm7_chests = data_mm7 ? *(uint32_t*)data_mm7 : 0;
-    unsigned int num_mm8_chests = data_mm8 ? *(uint32_t*)data_mm8 : 0;
+    unsigned int num_mm6_chests = data_mm6 ? *(uint32_t*)data_mm6.data() : 0;
+    unsigned int num_mm7_chests = data_mm7 ? *(uint32_t*)data_mm7.data() : 0;
+    unsigned int num_mm8_chests = data_mm8 ? *(uint32_t*)data_mm8.data() : 0;
 
     assert(num_mm7_chests);
     assert(!num_mm8_chests);
 
-    ChestDesc_mm7 *pChests = (ChestDesc_mm7*)((char*)data_mm7 + 4);
+    ChestDesc_mm7 *pChests = (ChestDesc_mm7*)((char*)data_mm7.data() + 4);
     for (int i = 0; i < num_mm7_chests; i++) {
         ChestDesc chest(pChests + i);
         vChests.push_back(chest);
     }
 
-    pChests = (ChestDesc_mm7*)((char*)data_mm6 + 4);
+    pChests = (ChestDesc_mm7*)((char*)data_mm6.data() + 4);
     for (int i = 0; i < num_mm6_chests; i++) {
         ChestDesc chest(pChests + i);
         vChests.push_back(chest);
     }
 
-    pChests = (ChestDesc_mm7*)((char*)data_mm8 + 4);
+    pChests = (ChestDesc_mm7*)((char*)data_mm8.data() + 4);
     for (int i = 0; i < num_mm8_chests; i++) {
         ChestDesc chest(pChests + i);
         vChests.push_back(chest);

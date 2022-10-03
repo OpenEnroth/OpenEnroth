@@ -397,10 +397,9 @@ void SpellStats::Initialize() {
 
     char *test_string;
 
-    free(pSpellsTXT_Raw);
-    pSpellsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("spells.txt");
+    pSpellsTXT_Raw = pEvents_LOD->LoadCompressedTexture("spells.txt").string_view();
 
-    strtok(pSpellsTXT_Raw, "\r");
+    strtok(pSpellsTXT_Raw.data(), "\r");
     for (int i = 1; i < 100; ++i) {
         if (((i % 11) - 1) == 0) strtok(NULL, "\r");
         test_string = strtok(NULL, "\r") + 1;

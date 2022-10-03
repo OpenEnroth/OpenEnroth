@@ -251,7 +251,7 @@ extern unsigned int game_ui_status_bar_event_string_time_left;
 extern int bForceDrawFooter;
 extern int _5C35C0_force_party_death;
 extern int bDialogueUI_InitializeActor_NPC_ID;
-extern char *p2DEventsTXT_Raw;
+extern std::string p2DEventsTXT_Raw;
 
 extern int dword_5C35D4;
 extern char byte_5C45AF[];
@@ -280,11 +280,11 @@ extern char *pBodyResistanceAttributeDescription;
 extern char *pSkillPointsAttributeDescription;
 extern struct FactionTable *pFactionTable;
 
-extern char *pMonstersTXT_Raw;
-extern char *pMonsterPlacementTXT_Raw;
-extern char *pSpellsTXT_Raw;
+extern std::string pMonstersTXT_Raw;
+extern std::string pMonsterPlacementTXT_Raw;
+extern std::string pSpellsTXT_Raw;
 extern char *pMapStatsTXT_Raw;
-extern char *pHostileTXT_Raw;
+extern std::string pHostileTXT_Raw;
 extern char *pPotionsTXT_Raw;
 extern char *pPotionNotesTXT_Raw;
 
@@ -363,16 +363,16 @@ extern char *dword_723718_autonote_related;  // idb
 extern std::array<const char *, 82> pScrolls;
 extern int dword_7241C8;
 
-extern char *pAwardsTXT_Raw;
-extern char *pScrollsTXT_Raw;
-extern char *pMerchantsTXT_Raw;
+extern std::string pAwardsTXT_Raw;
+extern std::string pScrollsTXT_Raw;
+extern std::string pMerchantsTXT_Raw;
 extern std::array<const char *, 7> pMerchantsBuyPhrases;
 extern std::array<const char *, 7> pMerchantsSellPhrases;
 extern std::array<const char *, 7> pMerchantsRepairPhrases;
 extern std::array<const char *, 7> pMerchantsIdentifyPhrases;
-extern char *pTransitionsTXT_Raw;
-extern char *pAutonoteTXT_Raw;
-extern char *pQuestsTXT_Raw;
+extern std::string pTransitionsTXT_Raw;
+extern std::string pAutonoteTXT_Raw;
+extern std::string pQuestsTXT_Raw;
 extern std::vector<Vec3f> pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;

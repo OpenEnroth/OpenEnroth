@@ -165,9 +165,8 @@ void NPCStats::InitializeNPCText() {
     char *tmp_pos;
     int decode_step;
 
-    free(pNPCTextTXT_Raw);
-    pNPCTextTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npctext.txt");
-    strtok(pNPCTextTXT_Raw, "\r");
+    pNPCTextTXT_Raw = pEvents_LOD->LoadCompressedTexture("npctext.txt").string_view();
+    strtok(pNPCTextTXT_Raw.data(), "\r");
 
     for (i = 0; i < 789; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -193,9 +192,8 @@ void NPCStats::InitializeNPCText() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 2) && !break_loop);
     }
-    free(pNPCTopicTXT_Raw);
-    pNPCTopicTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npctopic.txt");
-    strtok(pNPCTopicTXT_Raw, "\r");
+    pNPCTopicTXT_Raw = pEvents_LOD->LoadCompressedTexture("npctopic.txt").string_view();
+    strtok(pNPCTopicTXT_Raw.data(), "\r");
 
     for (i = 1; i <= 579; ++i) {  // NPC topics count limit
         test_string = strtok(NULL, "\r") + 1;
@@ -222,9 +220,8 @@ void NPCStats::InitializeNPCText() {
         } while ((decode_step < 2) && !break_loop);
     }
 
-    free(pNPCDistTXT_Raw);
-    pNPCDistTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npcdist.txt");
-    strtok(pNPCDistTXT_Raw, "\r");
+    pNPCDistTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcdist.txt").string_view();
+    strtok(pNPCDistTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
 
     for (i = 1; i < 59; ++i) {
@@ -266,8 +263,7 @@ void NPCStats::InitializeNPCText() {
         pProfessionChance[i].professionChancePerArea[59] = 0;
     }
 
-    free(pNPCDistTXT_Raw);
-    pNPCDistTXT_Raw = nullptr;
+    pNPCDistTXT_Raw.clear();
 }
 
 //----- (00476C60) --------------------------------------------------------
@@ -291,8 +287,8 @@ void NPCStats::InitializeNPCData() {
     char *tmp_pos;
     int decode_step;
 
-    pNPCDataTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npcdata.txt");
-    strtok(pNPCDataTXT_Raw, "\r");
+    pNPCDataTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcdata.txt").string_view();
+    strtok(pNPCDataTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
 
     for (i = 0; i < 500; ++i) {
@@ -355,8 +351,8 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 16) && !break_loop);
     }
     uNumNewNPCs = 501;
-    pNPCGreetTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npcgreet.txt");
-    strtok(pNPCGreetTXT_Raw, "\r");
+    pNPCGreetTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcgreet.txt").string_view();
+    strtok(pNPCGreetTXT_Raw.data(), "\r");
     for (i = 1; i <= 205; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -388,8 +384,8 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 3) && !break_loop);
     }
 
-    pNCPGroupTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npcgroup.txt");
-    strtok(pNCPGroupTXT_Raw, "\r");
+    pNCPGroupTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcgroup.txt").string_view();
+    strtok(pNCPGroupTXT_Raw.data(), "\r");
 
     for (i = 0; i < 51; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -415,8 +411,8 @@ void NPCStats::InitializeNPCData() {
         } while ((decode_step < 2) && !break_loop);
     }
 
-    pNPCNewsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npcnews.txt");
-    strtok(pNPCNewsTXT_Raw, "\r");
+    pNPCNewsTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcnews.txt").string_view();
+    strtok(pNPCNewsTXT_Raw.data(), "\r");
 
     for (i = 0; i < 51; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -461,8 +457,8 @@ void NPCStats::Initialize() {
     InitializeMerchants();
     InitializeScrolls();
 
-    pNPCNamesTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npcnames.txt");
-    strtok(pNPCNamesTXT_Raw, "\r");
+    pNPCNamesTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcnames.txt").string_view();
+    strtok(pNPCNamesTXT_Raw.data(), "\r");
 
     uNewlNPCBufPos = 0;
 
@@ -501,8 +497,8 @@ void NPCStats::Initialize() {
     }
     uNumNPCNames[0] = i;
 
-    pNPCProfTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("npcprof.txt");
-    strtok(pNPCProfTXT_Raw, "\r");
+    pNPCProfTXT_Raw = pEvents_LOD->LoadCompressedTexture("npcprof.txt").string_view();
+    strtok(pNPCProfTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -555,24 +551,15 @@ void NPCStats::Initialize() {
 
 //----- (00477266) --------------------------------------------------------
 void NPCStats::Release() {
-    free(pNPCTopicTXT_Raw);
-    pNPCTopicTXT_Raw = nullptr;
-    free(pNPCTextTXT_Raw);
-    pNPCTextTXT_Raw = nullptr;
-    free(pNPCNewsTXT_Raw);
-    pNPCNewsTXT_Raw = nullptr;
-    free(pNPCProfTXT_Raw);
-    pNPCProfTXT_Raw = nullptr;
-    free(pNPCNamesTXT_Raw);
-    pNPCNamesTXT_Raw = nullptr;
-    free(pNPCDataTXT_Raw);
-    pNPCDataTXT_Raw = nullptr;
-    free(pNPCDistTXT_Raw);
-    pNPCDistTXT_Raw = nullptr;
-    free(pNPCGreetTXT_Raw);
-    pNPCGreetTXT_Raw = nullptr;
-    free(pNCPGroupTXT_Raw);
-    pNCPGroupTXT_Raw = nullptr;
+    pNPCTopicTXT_Raw.clear();
+    pNPCTextTXT_Raw.clear();
+    pNPCNewsTXT_Raw.clear();
+    pNPCProfTXT_Raw.clear();
+    pNPCNamesTXT_Raw.clear();
+    pNPCDataTXT_Raw.clear();
+    pNPCDistTXT_Raw.clear();
+    pNPCGreetTXT_Raw.clear();
+    pNCPGroupTXT_Raw.clear();
 }
 
 //----- (0047730C) --------------------------------------------------------
@@ -775,9 +762,8 @@ void InitializeAwards() {
     char *tmp_pos;
     int decode_step;
 
-    free(pAwardsTXT_Raw);
-    pAwardsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("awards.txt");
-    strtok(pAwardsTXT_Raw, "\r");
+    pAwardsTXT_Raw = pEvents_LOD->LoadCompressedTexture("awards.txt").string_view();
+    strtok(pAwardsTXT_Raw.data(), "\r");
 
     for (i = 1; i < 105; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -818,9 +804,8 @@ void InitializeScrolls() {
     char *tmp_pos;
     int decode_step;
 
-    free(pScrollsTXT_Raw);
-    pScrollsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("scroll.txt");
-    strtok(pScrollsTXT_Raw, "\r");
+    pScrollsTXT_Raw = pEvents_LOD->LoadCompressedTexture("scroll.txt").string_view();
+    strtok(pScrollsTXT_Raw.data(), "\r");
     for (i = 0; i < 82; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -856,9 +841,8 @@ void InitializeMerchants() {
     char *tmp_pos;
     int decode_step;
 
-    free(pMerchantsTXT_Raw);
-    pMerchantsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("merchant.txt");
-    strtok(pMerchantsTXT_Raw, "\r");
+    pMerchantsTXT_Raw = pEvents_LOD->LoadCompressedTexture("merchant.txt").string_view();
+    strtok(pMerchantsTXT_Raw.data(), "\r");
 
     for (i = 0; i < 7; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -909,9 +893,8 @@ void InitializeTransitions() {
     char *tmp_pos;
     int decode_step;
 
-    free(pTransitionsTXT_Raw);
-    pTransitionsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("trans.txt");
-    strtok(pTransitionsTXT_Raw, "\r");
+    pTransitionsTXT_Raw = pEvents_LOD->LoadCompressedTexture("trans.txt").string_view();
+    strtok(pTransitionsTXT_Raw.data(), "\r");
 
     for (i = 0; i < 464; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -949,9 +932,8 @@ void InitializeAutonotes() {
     char *tmp_pos;
     int decode_step;
 
-    free(pAutonoteTXT_Raw);
-    pAutonoteTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("autonote.txt");
-    strtok(pAutonoteTXT_Raw, "\r");
+    pAutonoteTXT_Raw = pEvents_LOD->LoadCompressedTexture("autonote.txt").string_view();
+    strtok(pAutonoteTXT_Raw.data(), "\r");
 
     for (i = 0; i < 195; ++i) {
         test_string = strtok(NULL, "\r") + 1;
@@ -1016,9 +998,8 @@ void InitializeQuests() {
     char *tmp_pos;
     int decode_step;
 
-    free(pQuestsTXT_Raw);
-    pQuestsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("quests.txt");
-    strtok(pQuestsTXT_Raw, "\r");
+    pQuestsTXT_Raw = pEvents_LOD->LoadCompressedTexture("quests.txt").string_view();
+    strtok(pQuestsTXT_Raw.data(), "\r");
     memset(pQuestTable.data(), 0, sizeof(pQuestTable));
     for (i = 0; i < 512; ++i) {
         test_string = strtok(NULL, "\r") + 1;

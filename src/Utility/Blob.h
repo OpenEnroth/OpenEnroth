@@ -3,6 +3,7 @@
 #include <cassert>
 #include <utility>
 #include <memory>
+#include <string_view>
 
 class Blob final {
  public:
@@ -68,6 +69,10 @@ class Blob final {
 
     explicit operator bool() const {
         return !empty();
+    }
+
+    std::string_view string_view() const {
+        return std::string_view(static_cast<const char *>(data_), size_);
     }
 
  private:

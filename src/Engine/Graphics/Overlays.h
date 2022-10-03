@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <array>
 
+#include "Utility/Blob.h"
+
 /*  282 */
 #pragma pack(push, 1)
 struct OtherOverlay {
@@ -58,7 +60,7 @@ struct OverlayList {
           pOverlays(nullptr) {}
 
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     bool FromFileTxt(const char *Args);
     void InitializeSprites();
 

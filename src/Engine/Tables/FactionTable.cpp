@@ -15,9 +15,8 @@ void FactionTable::Initialize() {
     int decode_step;
     //  int item_counter;
 
-    free(pHostileTXT_Raw);
-    pHostileTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("hostile.txt");
-    strtok(pHostileTXT_Raw, "\r");
+    pHostileTXT_Raw = pEvents_LOD->LoadCompressedTexture("hostile.txt").string_view();
+    strtok(pHostileTXT_Raw.data(), "\r");
     for (i = 0; i < 89; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -42,6 +41,5 @@ void FactionTable::Initialize() {
             test_string = tmp_pos + 1;
         } while ((decode_step < 92) && !break_loop);
     }
-    free(pHostileTXT_Raw);
-    pHostileTXT_Raw = nullptr;
+    pHostileTXT_Raw.clear();
 }

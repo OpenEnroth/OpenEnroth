@@ -58,15 +58,13 @@ _2devent p2DEvents[525];
 
 unsigned int LoadEventsToBuffer(const std::string& pContainerName, char *pBuffer,
                                 unsigned int uBufferSize) {
-    size_t size = 0;
-    void *ptr = pEvents_LOD->LoadCompressedTexture(pContainerName, &size);
-    if ((ptr == nullptr) || (size > uBufferSize)) {
-        Error("File %s Size %lu - Buffer size %lu", pContainerName.c_str(), size, uBufferSize);
+    Blob blob = pEvents_LOD->LoadCompressedTexture(pContainerName);
+    if (!blob || (blob.size() > uBufferSize)) {
+        Error("File %s Size %lu - Buffer size %lu", pContainerName.c_str(), blob.size(), uBufferSize);
     }
 
-    memcpy(pBuffer, ptr, size);
-    free(ptr);
-    return size;
+    memcpy(pBuffer, blob.data(), blob.size());
+    return blob.size();
 }
 
 //----- (00443DA1) --------------------------------------------------------

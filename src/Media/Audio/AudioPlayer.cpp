@@ -74,19 +74,19 @@ struct SoundDesc : public SoundDesc_mm6 {
 
 void SoundList::Initialize() {}
 
-void SoundList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
+void SoundList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
     static_assert(sizeof(SoundDesc_mm6) == 112, "Wrong type size");
     static_assert(sizeof(SoundDesc) == 120, "Wrong type size");
 
-    size_t num_mm6_sounds = data_mm6 ? *(uint32_t *)data_mm6 : 0;
-    size_t num_mm7_sounds = data_mm7 ? *(uint32_t *)data_mm7 : 0;
-    size_t num_mm8_sounds = data_mm8 ? *(uint32_t *)data_mm8 : 0;
+    size_t num_mm6_sounds = data_mm6 ? *(uint32_t *)data_mm6.data() : 0;
+    size_t num_mm7_sounds = data_mm7 ? *(uint32_t *)data_mm7.data() : 0;
+    size_t num_mm8_sounds = data_mm8 ? *(uint32_t *)data_mm8.data() : 0;
 
     unsigned int sNumSounds = num_mm6_sounds + num_mm7_sounds + num_mm8_sounds;
     assert(sNumSounds);
     assert(!num_mm8_sounds);
 
-    SoundDesc *sounds = (SoundDesc *)((char *)data_mm7 + 4);
+    SoundDesc *sounds = (SoundDesc *)((char *)data_mm7.data() + 4);
     for (size_t i = 0; i < num_mm7_sounds; i++) {
         SoundInfo si;
         si.sName = (char *)sounds[i].pSoundName;
@@ -96,7 +96,7 @@ void SoundList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
         mapSounds[si.uSoundID] = si;
     }
 
-    SoundDesc_mm6 *sounds_mm6 = (SoundDesc_mm6 *)((char *)data_mm6 + 4);
+    SoundDesc_mm6 *sounds_mm6 = (SoundDesc_mm6 *)((char *)data_mm6.data() + 4);
     for (size_t i = 0; i < num_mm6_sounds; i++) {
         SoundInfo si;
         si.sName = (char *)sounds_mm6[i].pSoundName;

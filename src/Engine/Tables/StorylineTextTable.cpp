@@ -5,7 +5,7 @@
 #include "Utility/String.h"
 #include "../LOD.h"
 
-char *pHistoryTXT_Raw;
+std::string pHistoryTXT_Raw;
 struct StorylineText *pStorylineText;
 
 extern std::vector<char *> Tokenize(char *input, const char separator);
@@ -14,9 +14,8 @@ extern std::vector<char *> Tokenize(char *input, const char separator);
 void StorylineText::Initialize() {
     char *test_string;
 
-    free(pHistoryTXT_Raw);
-    pHistoryTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("history.txt");
-    strtok(pHistoryTXT_Raw, "\r");
+    pHistoryTXT_Raw = pEvents_LOD->LoadCompressedTexture("history.txt").string_view();
+    strtok(pHistoryTXT_Raw.data(), "\r");
 
     StoreLine[0].pText = nullptr;
     StoreLine[0].pPageTitle = nullptr;

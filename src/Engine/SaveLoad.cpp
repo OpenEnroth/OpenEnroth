@@ -92,20 +92,21 @@ void LoadGame(unsigned int uSlot) {
     pNew_LOD->LoadFile(to_file_path, 0);
 
     static_assert(sizeof(SavegameHeader) == 100, "Wrong type size");
-    SavegameHeader *header = (SavegameHeader*)pNew_LOD->LoadRaw("header.bin");
+    Blob headerBlob = pNew_LOD->LoadRaw("header.bin");
+    SavegameHeader *header = (SavegameHeader*)headerBlob.data();
     if (header == nullptr) {
         logger->Warning(localization->FormatString(
             LSTR_FMT_SAVEGAME_CORRUPTED, 100).c_str());
     }
 
     {
-        Party_Image_MM7 *serialization = (Party_Image_MM7*)pNew_LOD->LoadRaw("party.bin");
+        Blob partyBlob = pNew_LOD->LoadRaw("party.bin");
+        Party_Image_MM7 *serialization = (Party_Image_MM7*)partyBlob.data();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 101).c_str());
         } else {
             serialization->Deserialize(pParty);
-            free(serialization);
 
             pParty->bTurnBasedModeOn = false;  // We always start in realtime after loading a game.
 
@@ -126,29 +127,30 @@ void LoadGame(unsigned int uSlot) {
     }
 
     {
-        Timer_Image_MM7 *serialization = (Timer_Image_MM7*)pNew_LOD->LoadRaw("clock.bin");
+        Blob timerBlob = pNew_LOD->LoadRaw("clock.bin");
+        Timer_Image_MM7 *serialization = (Timer_Image_MM7*)timerBlob.data();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 102).c_str());
         } else {
             serialization->Deserialize(pEventTimer);
-            free(serialization);
         }
     }
 
     {
-        OtherOverlayList_Image_MM7 *serialization = (OtherOverlayList_Image_MM7*)pNew_LOD->LoadRaw("overlay.bin");
+        Blob blob = pNew_LOD->LoadRaw("overlay.bin");
+        OtherOverlayList_Image_MM7 *serialization = (OtherOverlayList_Image_MM7*)blob.data();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 103).c_str());
         } else {
             serialization->Deserialize(pOtherOverlayList);
-            free(serialization);
         }
     }
 
     {
-        NPCData_Image_MM7 *serialization = (NPCData_Image_MM7*)pNew_LOD->LoadRaw("npcdata.bin");
+        Blob blob = pNew_LOD->LoadRaw("npcdata.bin");
+        NPCData_Image_MM7 *serialization = (NPCData_Image_MM7*)blob.data();
         if (serialization == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 104).c_str());
@@ -157,12 +159,12 @@ void LoadGame(unsigned int uSlot) {
                 serialization[i].Deserialize(pNPCStats->pNewNPCData + i);
             }
             pNPCStats->OnLoadSetNPC_Names();
-            free(serialization);
         }
     }
 
     {
-        void *npcgroup = pNew_LOD->LoadRaw("npcgroup.bin");
+        Blob blob = pNew_LOD->LoadRaw("npcgroup.bin");
+        void *npcgroup = blob.data();
         if (npcgroup == nullptr) {
             logger->Warning(localization->FormatString(
                 LSTR_FMT_SAVEGAME_CORRUPTED, 105).c_str());
@@ -172,7 +174,6 @@ void LoadGame(unsigned int uSlot) {
         } else {
             memcpy(pNPCStats->pGroups_copy, npcgroup, sizeof(pNPCStats->pGroups_copy));
         }
-        free(npcgroup);
     }
 
     uActiveCharacter = 0;
@@ -220,7 +221,6 @@ void LoadGame(unsigned int uSlot) {
     }
 
     pCurrentMapName = header->pLocationName;
-    free(header);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_0001;
 
@@ -645,10 +645,8 @@ void SaveNewGame() {
 
         for (size_t i = pGames_LOD->GetSubNodesCount() / 2; i < pGames_LOD->GetSubNodesCount(); ++i) {  // копирование файлов с 76 по 151
             std::string name = pGames_LOD->GetSubNodeName(i);
-            size_t size = 0;
-            void *data = pGames_LOD->LoadRaw(name, &size);
-            pNew_LOD->AppendDirectory(name, data, size);
-            free(data);
+            Blob data = pGames_LOD->LoadRaw(name);
+            pNew_LOD->AppendDirectory(name, data.data(), data.size());
         }
 
         strcpy(pSavegameHeader[0].pLocationName, "out01.odm");

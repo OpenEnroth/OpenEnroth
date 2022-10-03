@@ -5,6 +5,7 @@
 
 #include "Utility/String.h"
 #include "Utility/Flags.h"
+#include "Utility/Blob.h"
 
 /*  321 */
 enum class DECORATION_DESC_FLAG : uint16_t {
@@ -63,7 +64,7 @@ class DecorationList {
     inline DecorationList() {}
 
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void InitializeDecorationSprite(unsigned int uDecID);
     uint16_t GetDecorIdByName(std::string_view pName);
 

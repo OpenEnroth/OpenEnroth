@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <string>
 
 #include "Engine/Objects/NPCProf.h"
 
@@ -83,10 +84,7 @@ struct NPCGreeting {
 /*  137 */
 #pragma pack(push, 1)
 struct NPCStats {
-    inline NPCStats()
-        : pNPCTopicTXT_Raw(nullptr),
-          pNPCTextTXT_Raw(nullptr),
-          pNPCDistTXT_Raw(nullptr) {
+    inline NPCStats() {
         uNumNPCNames[0] = uNumNPCNames[1] = 0;
     }
 
@@ -119,15 +117,15 @@ struct NPCStats {
     int field_17FC8 = 0;
     unsigned int uNumNPCProfessions;
     unsigned int uNumNPCNames[2];  // 0 male 1 female
-    char *pNPCDataTXT_Raw;
-    char *pNPCNamesTXT_Raw;
-    char *pNPCProfTXT_Raw;
-    char *pNPCNewsTXT_Raw;
-    char *pNPCTopicTXT_Raw;
-    char *pNPCTextTXT_Raw;
-    char *pNPCDistTXT_Raw;
-    char *pNPCGreetTXT_Raw;
-    char *pNCPGroupTXT_Raw;
+    std::string pNPCDataTXT_Raw;
+    std::string pNPCNamesTXT_Raw;
+    std::string pNPCProfTXT_Raw;
+    std::string pNPCNewsTXT_Raw;
+    std::string pNPCTopicTXT_Raw;
+    std::string pNPCTextTXT_Raw;
+    std::string pNPCDistTXT_Raw;
+    std::string pNPCGreetTXT_Raw;
+    std::string pNCPGroupTXT_Raw;
 
     static int dword_AE336C_LastMispronouncedNameFirstLetter;
     static int dword_AE3370_LastMispronouncedNameResult;

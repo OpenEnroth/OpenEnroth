@@ -3,8 +3,10 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include <memory>
 
 #include "Utility/String.h"
+#include "Utility/Blob.h"
 #include "Media/Media.h"
 
 enum SoundID {
@@ -172,7 +174,7 @@ class SoundList {
     inline SoundList() {}
 
     void Initialize();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
 };
 
 struct SoundData;

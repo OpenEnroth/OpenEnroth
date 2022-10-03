@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "Utility/Blob.h"
+
 /*  334 */
 enum MONSTER_TYPE {
     MONSTER_DEVIL_1 = 0x16,
@@ -214,7 +216,7 @@ struct MonsterDesc {
 struct MonsterList {
     int16_t GetMonsterIDByName(const char *pMonsterName);
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     bool FromFileTxt(const char *Args);
 
     std::vector<MonsterDesc> pMonsters;

@@ -519,10 +519,8 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     if (!Alloc())
         return false;
 
-    size_t blv_size = 0;
-    std::unique_ptr<void, FreeDeleter> rawData;
-    rawData.reset(pGames_LOD->LoadCompressed(blv_filename, &blv_size));
-    MemoryInput stream(rawData.get(), blv_size);
+    Blob blob = pGames_LOD->LoadCompressed(blv_filename);
+    MemoryInput stream(blob.data(), blob.size());
 
     bLoaded = true;
 
@@ -700,10 +698,9 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
     bool bResetSpawn = false;
-    size_t dlv_size = 0;
-    rawData.reset(pNew_LOD->LoadCompressed(dlv_filename, &dlv_size));
-    if (rawData) {
-        stream.Reset(rawData.get(), dlv_size);
+    blob = pNew_LOD->LoadCompressed(dlv_filename);
+    if (blob) {
+        stream.Reset(blob.data(), blob.size());
         stream.ReadRaw(&dlv);
     } else {
         bResetSpawn = true;
@@ -739,8 +736,8 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         if (!bResetSpawn) ++dlv.uNumRespawns;
         *(int *)pDest = 1;
 
-        rawData.reset(pGames_LOD->LoadCompressed(dlv_filename, &dlv_size));
-        stream.Reset(rawData.get(), dlv_size);
+        blob = pGames_LOD->LoadCompressed(dlv_filename);
+        stream.Reset(blob.data(), blob.size());
         stream.Skip(sizeof(DDM_DLV_Header));
     } else {
         *(int*)pDest = 0;

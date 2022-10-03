@@ -80,10 +80,10 @@ void TextureFrameTable::ToFile() {
     fclose(file);
 }
 
-void TextureFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
-    uint num_mm6_frames = data_mm6 ? *(int *)data_mm6 : 0,
-         num_mm7_frames = data_mm7 ? *(int *)data_mm7 : 0,
-         num_mm8_frames = data_mm8 ? *(int *)data_mm8 : 0;
+void TextureFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
+    uint num_mm6_frames = data_mm6 ? *(int *)data_mm6.data() : 0,
+         num_mm7_frames = data_mm7 ? *(int *)data_mm7.data() : 0,
+         num_mm8_frames = data_mm8 ? *(int *)data_mm8.data() : 0;
 
     this->sNumTextures =
         /*num_mm6_frames + */ num_mm7_frames /*+ num_mm8_frames*/;
@@ -91,7 +91,7 @@ void TextureFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8)
     // Assert(!num_mm8_frames);
 
     TextureFrame_MM7 *frame_data =
-        (TextureFrame_MM7 *)((unsigned char *)data_mm7 + 4);
+        (TextureFrame_MM7 *)((unsigned char *)data_mm7.data() + 4);
     auto frames = new TextureFrame[this->sNumTextures];
     for (unsigned int i = 0; i < this->sNumTextures; ++i) {
         frames[i].name = frame_data->pTextureName;
