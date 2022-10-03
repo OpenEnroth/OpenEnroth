@@ -103,16 +103,3 @@ struct TravelInfo {
 };
 #pragma pack(pop)
 
-/*  376 */
-#pragma pack(push, 1)
-struct stru336 {
-    int field_0;
-    int field_4;
-    int field_8;
-    int field_C;
-    int field_10;
-    int field_14;
-    int16_t field_18[480];
-    int16_t field_3D8[480];
-};
-#pragma pack(pop)
