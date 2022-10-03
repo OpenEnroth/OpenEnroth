@@ -3839,42 +3839,25 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             case SPELL_SPIRIT_PRESERVATION:
                 v9 = a4;
                 if (!a4) v9 = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
-                // goto LABEL_18;
                 v10 = SkillToMastery(v9);
-                v12 = __OFSUB__(v10, 3);
-                v11 = ((v10 - 3) & 0x80000000u) != 0;
-                // goto LABEL_24;
-                if (v11 ^ v12) {
+                if (v10 >= 3)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
-                    break;
-                }
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
                 v9 = a4;
                 if (!a4) v9 = player->pActiveSkills[PLAYER_SKILL_DARK];
-                // LABEL_18:
                 v10 = SkillToMastery(v9);
-                v12 = __OFSUB__(v10, 3);
-                v11 = ((v10 - 3) & 0x80000000u) != 0;
-                // goto LABEL_24;
-                if (v11 ^ v12) {
+                if (v10 >= 3)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
-                    break;
-                }
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
                 v13 = a4;
                 if (!a4) v13 = player->pActiveSkills[PLAYER_SKILL_BODY];
                 v14 = SkillToMastery(v13);
-                v12 = __OFSUB__(v14, 4);
-                v11 = ((v14 - 4) & 0x80000000u) != 0;
-                // LABEL_24:
-                if (v11 ^ v12) {
+                if (v14 >= 4)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
-                    break;
-                }
                 break;
 
             case SPELL_EARTH_STONE_TO_FLESH:
