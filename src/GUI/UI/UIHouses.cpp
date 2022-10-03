@@ -63,7 +63,7 @@ void GenerateSpecialShopItems();
 struct stru365_travel_info {
     unsigned char uMapInfoID;
     unsigned char pSchedule[7];
-    unsigned int uTravelTime;
+    unsigned int uTravelTime; // In days.
     int arrival_x;
     int arrival_y;
     int arrival_z;

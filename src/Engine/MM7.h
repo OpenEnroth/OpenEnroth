@@ -87,19 +87,3 @@ enum SoundType {
     SOUND_StartTurnBasedMode = 0xCF,
     SOUND_FlipOnExit = 0x4E21,
 };
-
-/*  362 */
-#pragma pack(push, 1)
-struct TravelInfo {
-    char uMapID;
-    char pSchedule[7];
-    char uDaysCount;
-    char field_9[3];
-    int x;
-    int y;
-    int z;
-    int direction;
-    int field_1C;
-};
-#pragma pack(pop)
-

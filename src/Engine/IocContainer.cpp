@@ -188,7 +188,6 @@ void IntegrityTest() {
     static_assert(sizeof(CastSpellInfo) == 0x14, "Wrong type size");
     static_assert(sizeof(ArcomageCard) == 0x6C, "Wrong type size");
     static_assert(sizeof(LightsData) == 0x3FC, "Wrong type size");
-    static_assert(sizeof(TravelInfo) == 0x20, "Wrong type size");
     static_assert(sizeof(Vec3s) == 6, "Wrong type size");
     static_assert(sizeof(BLVFaceExtra) == 36, "Wrong type size");
     static_assert(sizeof(LevelDecoration) == 32, "Wrong type size");
