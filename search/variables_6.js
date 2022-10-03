@@ -183,7 +183,7 @@ var searchData=
   ['field_5f60_180',['field_60',['../structODMRenderParams.html#a3b188cbb812ba372208a6fe7a33f36ce',1,'ODMRenderParams::field_60()'],['../structViewingParams.html#aaaa49a0360a491bead9b3b4672d4c3c9',1,'ViewingParams::field_60()']]],
   ['field_5f604_181',['field_604',['../structstru2__LineList.html#a38974254f319077a60015cf500534d3d',1,'stru2_LineList']]],
   ['field_5f60_5fdistance_5frelated_5fprolly_5flod_182',['field_60_distance_related_prolly_lod',['../structSpriteObject.html#a0b8a844a307e3814e7b396443da81fd9',1,'SpriteObject']]],
-  ['field_5f61_183',['field_61',['../structSpriteObject.html#aeb275050616125ca10134e8948274f3e',1,'SpriteObject']]],
+  ['field_5f61_183',['field_61',['../structSpriteObject.html#a1cf43f7187ceed39b2bfda6c717ba2b8',1,'SpriteObject']]],
   ['field_5f62_184',['field_62',['../structSpriteObject.html#a98201f83353c8652a4f62124d0afa29e',1,'SpriteObject']]],
   ['field_5f64_185',['field_64',['../structViewingParams.html#a89dd234770994b33e4c465dd32e9ee44',1,'ViewingParams::field_64()'],['../structSpriteObject.html#a8c65e42c69a4b72c13b28f0f3bcbc1bc',1,'SpriteObject::field_64()'],['../structSpellFX__Billboard.html#ad5898318c9300ecad32cdfa60a2f73d6',1,'SpellFX_Billboard::field_64()']]],
   ['field_5f68_186',['field_68',['../structViewingParams.html#a2870c160c77b133c2ba4964fd1780a01',1,'ViewingParams']]],

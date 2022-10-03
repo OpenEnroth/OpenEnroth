@@ -30,7 +30,7 @@ var searchData=
   ['pcx_5frle_5fdecode_27',['pcx_rle_decode',['../PCX_8cpp.html#a4ca8596e96ab8252cc822005e79d2793',1,'PCX.cpp']]],
   ['pickbillboards_5fkeyboard_28',['PickBillboards_Keyboard',['../classVis.html#a9b45b6714b627310af4609d1bf5e250d',1,'Vis']]],
   ['pickbillboards_5fmouse_29',['PickBillboards_Mouse',['../classVis.html#a0be64465d62f710858d956b0091d4bcf',1,'Vis']]],
-  ['pickclosestactor_30',['PickClosestActor',['../classVis.html#a7b6331f84ef890d653372f25daf0df5b',1,'Vis']]],
+  ['pickclosestactor_30',['PickClosestActor',['../classVis.html#aa4265772e3be9d6b6f87f5a27fe0a248',1,'Vis']]],
   ['pickeditem_5fplaceininventory_5for_5fdrop_31',['PickedItem_PlaceInInventory_or_Drop',['../structParty.html#a15c2127c4a8cfc44e855c86b1669dbce',1,'Party']]],
   ['pickindoorfaces_5fkeyboard_32',['PickIndoorFaces_Keyboard',['../classVis.html#aecd975091f73e04120b1b6b2c0394239',1,'Vis']]],
   ['pickindoorfaces_5fmouse_33',['PickIndoorFaces_Mouse',['../classVis.html#ad9141000db2ce36fd1675c317929b46b',1,'Vis']]],

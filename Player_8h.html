@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;610835c</span>
    </div>
   </td>
  </tr>
@@ -89,6 +89,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="Events2D_8h.html">Engine/Events2D.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Conditions_8h.html">Engine/Conditions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Actor_8h.html">Engine/Objects/Actor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Items_8h.html">Engine/Objects/Items.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlayerEnums_8h.html">Engine/Objects/PlayerEnums.h</a>&quot;</code><br />
@@ -121,8 +122,8 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab3ac4582a20919c8e0ed3b52f9210023"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#ab3ac4582a20919c8e0ed3b52f9210023">DamagePlayerFromMonster</a> (unsigned int uObjID, int a2, <a class="el" href="VectorTypes_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pPos, signed int a4)</td></tr>
-<tr class="separator:ab3ac4582a20919c8e0ed3b52f9210023"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01bbadf30f7ce71859f74f8bf33fc2f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#a01bbadf30f7ce71859f74f8bf33fc2f9">DamagePlayerFromMonster</a> (unsigned int uObjID, <a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> dmgSource, <a class="el" href="VectorTypes_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> *pPos, signed int a4)</td></tr>
+<tr class="separator:a01bbadf30f7ce71859f74f8bf33fc2f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ba8f3184b97a7bae5235a13a21c60f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#a2ba8f3184b97a7bae5235a13a21c60f3">IsDwarfPresentInParty</a> (bool b)</td></tr>
 <tr class="separator:a2ba8f3184b97a7bae5235a13a21c60f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Player_8h.html#abb181cd130e631d1c79d1d3507bcfe6f">ShouldLoadTexturesForRaceAndGender</a> (unsigned int _this)</td></tr>
@@ -203,8 +204,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ab3ac4582a20919c8e0ed3b52f9210023" name="ab3ac4582a20919c8e0ed3b52f9210023"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3ac4582a20919c8e0ed3b52f9210023">&#9670;&#160;</a></span>DamagePlayerFromMonster()</h2>
+<a id="a01bbadf30f7ce71859f74f8bf33fc2f9" name="a01bbadf30f7ce71859f74f8bf33fc2f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01bbadf30f7ce71859f74f8bf33fc2f9">&#9670;&#160;</a></span>DamagePlayerFromMonster()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -218,8 +219,8 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a2</em>, </td>
+          <td class="paramtype"><a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a>&#160;</td>
+          <td class="paramname"><em>dmgSource</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

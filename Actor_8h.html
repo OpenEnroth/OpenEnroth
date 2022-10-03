@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;610835c</span>
    </div>
   </td>
  </tr>
@@ -86,9 +86,10 @@ $(function() {
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_2IocContainer_8h.html">Engine/IocContainer.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Spells_8h.html">../Spells/Spells.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Items_8h.html">Items.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Monsters_8h.html">Monsters.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Spells_8h.html">Engine/Spells/Spells.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Items_8h.html">Engine/Objects/Items.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Monsters_8h.html">Engine/Objects/Monsters.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -139,51 +140,57 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a8141b4fdbe87dfd21fb6e8ad08c2b12f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a8141b4fdbe87dfd21fb6e8ad08c2b12f">ABILITY_INDEX</a> { <a class="el" href="Actor_8h.html#a8141b4fdbe87dfd21fb6e8ad08c2b12fa012c8ca3a00db780241dacb909560e2f">ABILITY_ATTACK1</a> = 0
-, <a class="el" href="Actor_8h.html#a8141b4fdbe87dfd21fb6e8ad08c2b12fae300ce612668a27febca0195a51fdb12">ABILITY_ATTACK2</a> = 1
-, <a class="el" href="Actor_8h.html#a8141b4fdbe87dfd21fb6e8ad08c2b12fa971b0997d1e0cfef689a33b46815b0b4">ABILITY_SPELL1</a> = 2
-, <a class="el" href="Actor_8h.html#a8141b4fdbe87dfd21fb6e8ad08c2b12faaa735b50fd657d0cdfbed0dd7a2e1ae1">ABILITY_SPELL2</a> = 3
+<tr class="memitem:a224eb67ac920c1beeacc7956d5c95fa2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> : char { <br />
+&#160;&#160;<a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2a9bbcd860d4efbd784d66379a6b00e659">ABILITY_ATTACK1</a> = 0
+, <a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2a3fbb036d21464fbf2fb2a4905123eb04">ABILITY_ATTACK2</a> = 1
+, <a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2ac0632cc0f40dda684fd87edd58755cfb">ABILITY_SPELL1</a> = 2
+, <a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2a8309c6bcf1cf6dd69d1e2a0610563b97">ABILITY_SPELL2</a> = 3
+, <br />
+&#160;&#160;<a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2a483f5630855fb26bf93af694181c046c">ABILITY_SPECIAL</a> = 4
+, <a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2a6ae779a2290be6e9f2d8ba71997a8d0a">ABILITY_UNKNOWN</a> = 5
+<br />
  }</td></tr>
-<tr class="separator:a8141b4fdbe87dfd21fb6e8ad08c2b12f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae52eebc972ce5a2808557b0a16cc97e2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2">ACTOR_BUFF_INDEX</a> { <br />
-&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a77cbef04b10ddb07c47e434ed52b076b">ACTOR_BUFF_CHARM</a> = 1
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a8df766205ef34a9d50e26fcfad15b300">ACTOR_BUFF_SUMMONED</a> = 2
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2ad8c6e44ffea8919a2c7b1b0056cec185">ACTOR_BUFF_SHRINK</a> = 3
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a033492f7dc6d40f7952c617a67631c42">ACTOR_BUFF_AFRAID</a> = 4
+<tr class="separator:a224eb67ac920c1beeacc7956d5c95fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae52eebc972ce5a2808557b0a16cc97e2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2">ACTOR_BUFF_INDEX</a> { <br />
+&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2ac851dc549720061a1d4a03cb06904a4d">ACTOR_BUFF_CHARM</a> = 1
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a75fe6e71305430856073d550e32a810d">ACTOR_BUFF_SUMMONED</a> = 2
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a880f5cb996f795a8aa6bfcf02aac933e">ACTOR_BUFF_SHRINK</a> = 3
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2aac6c91003c50440ed2c91dfc6bd667a8">ACTOR_BUFF_AFRAID</a> = 4
 , <br />
-&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2ab1f0fbc8c55169deb03854166376f5ad">ACTOR_BUFF_STONED</a> = 5
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a101bef79c5b3965ca85d12f28b33497f">ACTOR_BUFF_PARALYZED</a> = 6
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2ac0f36f918b244680e0181aff7086f990">ACTOR_BUFF_SLOWED</a> = 7
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a9f44877f5de60f41feb6fb93491a7873">ACTOR_BUFF_SOMETHING_THAT_HALVES_AC</a> = 8
+&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a5cfb5e2dd6dcdc4f7d3ad9c801aea9b7">ACTOR_BUFF_STONED</a> = 5
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a9ecfac351172a19512fd2d35912debd8">ACTOR_BUFF_PARALYZED</a> = 6
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a7d5e3460fa6d51595e16b0fd97990a82">ACTOR_BUFF_SLOWED</a> = 7
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2aa8f011e8e6155a3805364f570a74895b">ACTOR_BUFF_SOMETHING_THAT_HALVES_AC</a> = 8
 , <br />
-&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2adf841169091bfd0770321707e1983574">ACTOR_BUFF_BERSERK</a> = 9
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a1ce2a713f5ea48073b671672c8ed53ff">ACTOR_BUFF_MASS_DISTORTION</a> = 10
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a0fb683f576d5419ce3681600d7dafbe9">ACTOR_BUFF_FATE</a> = 11
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a9cf09156f22a0f78d7019336585e2484">ACTOR_BUFF_ENSLAVED</a> = 12
+&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a8d60a231b332619fd8ac24df2a1830de">ACTOR_BUFF_BERSERK</a> = 9
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a66a37b4f8d28f6e546ee817790f66f6f">ACTOR_BUFF_MASS_DISTORTION</a> = 10
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a902d5932b1c5c7da461542c4e02da4a1">ACTOR_BUFF_FATE</a> = 11
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2af1db04c573819b4cd438c1ca75c50270">ACTOR_BUFF_ENSLAVED</a> = 12
 , <br />
-&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a40eb3ccd7366a0ca4de70194753b105b">ACTOR_BUFF_DAY_OF_PROTECTION</a> = 13
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a287030049b90556e2b85775f75030acd">ACTOR_BUFF_HOUR_OF_POWER</a> = 14
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2adcb216373c306ec953f4c60550f16dc4">ACTOR_BUFF_SHIELD</a> = 15
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a7ef211dd730cecd1ecafd36c473d253b">ACTOR_BUFF_STONESKIN</a> = 16
+&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2ab019d1270118ef95881172f38d268c01">ACTOR_BUFF_DAY_OF_PROTECTION</a> = 13
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a2e260e6d73c7e195090365771ebaf0a2">ACTOR_BUFF_HOUR_OF_POWER</a> = 14
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2aa41762796b3f7c5d5ad241e6176e72d3">ACTOR_BUFF_SHIELD</a> = 15
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a657f51c8479a859df973b61793edd49d">ACTOR_BUFF_STONESKIN</a> = 16
 , <br />
-&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a71ae4b424c4ce9697b6ca2e2c53e09ee">ACTOR_BUFF_BLESS</a> = 17
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a83c30fd9dca23d31489ae6d7bebd64d2">ACTOR_BUFF_HEROISM</a> = 18
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a918c71ffa5407457c4d793e1eefd0b2a">ACTOR_BUFF_HASTE</a> = 19
-, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a4898eb5d6575e9f5f327066d537c94b7">ACTOR_BUFF_PAIN_REFLECTION</a> = 20
+&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a8d79ba3bd1d95b9d7b94402643f43abf">ACTOR_BUFF_BLESS</a> = 17
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a328de078d207b7a7495ec200576a4f7a">ACTOR_BUFF_HEROISM</a> = 18
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2affeb1623e30373180644bf17a7fbc7a2">ACTOR_BUFF_HASTE</a> = 19
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a5591fb3fa25c46bffec2e26a517c4162">ACTOR_BUFF_PAIN_REFLECTION</a> = 20
 , <br />
-&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2aed3c5458387dcfbfac581518e99889a6">ACTOR_BUFF_PAIN_HAMMERHANDS</a> = 21
+&#160;&#160;<a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a1463581683b7cc0a9671adc866d8c4bb">ACTOR_BUFF_PAIN_HAMMERHANDS</a> = 21
+, <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2a24379b2d854b553f8a6bc7c4bcbc0023">ACTOR_BUFF_COUNT</a>
 <br />
  }</td></tr>
 <tr class="separator:ae52eebc972ce5a2808557b0a16cc97e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a842c5e2e69277690b064bf363c017980"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a> { <br />
-&#160;&#160;<a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980adbc9b375cb2ebec44f1789c443653a3d">OBJECT_Any</a> = 0x0
-, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ae3390b212d5f3eeefff092aba2974d3d">OBJECT_BLVDoor</a> = 0x1
-, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980af4e29e4b20cbac0b34cab311f8190c93">OBJECT_Item</a> = 0x2
-, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a0f8c1453a4cce0baf27513cd140928b8">OBJECT_Actor</a> = 0x3
+<tr class="memitem:a842c5e2e69277690b064bf363c017980"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a> { <br />
+&#160;&#160;<a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980aaeca3555a4e2789f527a87a11ac44d86">OBJECT_Any</a> = 0x0
+, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a85527d69c1b483687841f7ed0228c55d">OBJECT_BLVDoor</a> = 0x1
+, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a3af58f70a502929f924f163b29fabe80">OBJECT_Item</a> = 0x2
+, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980af39b344af8f7ed4cc960f637981e067d">OBJECT_Actor</a> = 0x3
 , <br />
-&#160;&#160;<a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ad702ee31024c11a3578a494ba5a703ce">OBJECT_Player</a> = 0x4
-, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a9b9b3fca30299798264309bce9668219">OBJECT_Decoration</a> = 0x5
-, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a0d69e402064195caa7ba69fdd47d863e">OBJECT_BModel</a> = 0x6
+&#160;&#160;<a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ae2b1e182a57c6ab27af33c89adc002f4">OBJECT_Player</a> = 0x4
+, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a">OBJECT_Decoration</a> = 0x5
+, <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980aa8987dbdcb97d8d9dd630ad4d041224e">OBJECT_BModel</a> = 0x6
 <br />
  }</td></tr>
 <tr class="separator:a842c5e2e69277690b064bf363c017980"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -476,22 +483,32 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a8141b4fdbe87dfd21fb6e8ad08c2b12f" name="a8141b4fdbe87dfd21fb6e8ad08c2b12f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8141b4fdbe87dfd21fb6e8ad08c2b12f">&#9670;&#160;</a></span>ABILITY_INDEX</h2>
+<a id="a224eb67ac920c1beeacc7956d5c95fa2" name="a224eb67ac920c1beeacc7956d5c95fa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a224eb67ac920c1beeacc7956d5c95fa2">&#9670;&#160;</a></span>ABILITY_INDEX</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Actor_8h.html#a8141b4fdbe87dfd21fb6e8ad08c2b12f">ABILITY_INDEX</a></td>
+          <td class="memname">enum class <a class="el" href="Actor_8h.html#a224eb67ac920c1beeacc7956d5c95fa2">ABILITY_INDEX</a> : char</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8141b4fdbe87dfd21fb6e8ad08c2b12fa012c8ca3a00db780241dacb909560e2f" name="a8141b4fdbe87dfd21fb6e8ad08c2b12fa012c8ca3a00db780241dacb909560e2f"></a>ABILITY_ATTACK1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a8141b4fdbe87dfd21fb6e8ad08c2b12fae300ce612668a27febca0195a51fdb12" name="a8141b4fdbe87dfd21fb6e8ad08c2b12fae300ce612668a27febca0195a51fdb12"></a>ABILITY_ATTACK2&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a8141b4fdbe87dfd21fb6e8ad08c2b12fa971b0997d1e0cfef689a33b46815b0b4" name="a8141b4fdbe87dfd21fb6e8ad08c2b12fa971b0997d1e0cfef689a33b46815b0b4"></a>ABILITY_SPELL1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a8141b4fdbe87dfd21fb6e8ad08c2b12faaa735b50fd657d0cdfbed0dd7a2e1ae1" name="a8141b4fdbe87dfd21fb6e8ad08c2b12faaa735b50fd657d0cdfbed0dd7a2e1ae1"></a>ABILITY_SPELL2&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a224eb67ac920c1beeacc7956d5c95fa2a9bbcd860d4efbd784d66379a6b00e659" name="a224eb67ac920c1beeacc7956d5c95fa2a9bbcd860d4efbd784d66379a6b00e659"></a>ABILITY_ATTACK1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224eb67ac920c1beeacc7956d5c95fa2a3fbb036d21464fbf2fb2a4905123eb04" name="a224eb67ac920c1beeacc7956d5c95fa2a3fbb036d21464fbf2fb2a4905123eb04"></a>ABILITY_ATTACK2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224eb67ac920c1beeacc7956d5c95fa2ac0632cc0f40dda684fd87edd58755cfb" name="a224eb67ac920c1beeacc7956d5c95fa2ac0632cc0f40dda684fd87edd58755cfb"></a>ABILITY_SPELL1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224eb67ac920c1beeacc7956d5c95fa2a8309c6bcf1cf6dd69d1e2a0610563b97" name="a224eb67ac920c1beeacc7956d5c95fa2a8309c6bcf1cf6dd69d1e2a0610563b97"></a>ABILITY_SPELL2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224eb67ac920c1beeacc7956d5c95fa2a483f5630855fb26bf93af694181c046c" name="a224eb67ac920c1beeacc7956d5c95fa2a483f5630855fb26bf93af694181c046c"></a>ABILITY_SPECIAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224eb67ac920c1beeacc7956d5c95fa2a6ae779a2290be6e9f2d8ba71997a8d0a" name="a224eb67ac920c1beeacc7956d5c95fa2a6ae779a2290be6e9f2d8ba71997a8d0a"></a>ABILITY_UNKNOWN&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -501,34 +518,43 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2">ACTOR_BUFF_INDEX</a></td>
+          <td class="memname">enum class <a class="el" href="Actor_8h.html#ae52eebc972ce5a2808557b0a16cc97e2">ACTOR_BUFF_INDEX</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a77cbef04b10ddb07c47e434ed52b076b" name="ae52eebc972ce5a2808557b0a16cc97e2a77cbef04b10ddb07c47e434ed52b076b"></a>ACTOR_BUFF_CHARM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a8df766205ef34a9d50e26fcfad15b300" name="ae52eebc972ce5a2808557b0a16cc97e2a8df766205ef34a9d50e26fcfad15b300"></a>ACTOR_BUFF_SUMMONED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2ad8c6e44ffea8919a2c7b1b0056cec185" name="ae52eebc972ce5a2808557b0a16cc97e2ad8c6e44ffea8919a2c7b1b0056cec185"></a>ACTOR_BUFF_SHRINK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a033492f7dc6d40f7952c617a67631c42" name="ae52eebc972ce5a2808557b0a16cc97e2a033492f7dc6d40f7952c617a67631c42"></a>ACTOR_BUFF_AFRAID&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2ab1f0fbc8c55169deb03854166376f5ad" name="ae52eebc972ce5a2808557b0a16cc97e2ab1f0fbc8c55169deb03854166376f5ad"></a>ACTOR_BUFF_STONED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a101bef79c5b3965ca85d12f28b33497f" name="ae52eebc972ce5a2808557b0a16cc97e2a101bef79c5b3965ca85d12f28b33497f"></a>ACTOR_BUFF_PARALYZED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2ac0f36f918b244680e0181aff7086f990" name="ae52eebc972ce5a2808557b0a16cc97e2ac0f36f918b244680e0181aff7086f990"></a>ACTOR_BUFF_SLOWED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a9f44877f5de60f41feb6fb93491a7873" name="ae52eebc972ce5a2808557b0a16cc97e2a9f44877f5de60f41feb6fb93491a7873"></a>ACTOR_BUFF_SOMETHING_THAT_HALVES_AC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2adf841169091bfd0770321707e1983574" name="ae52eebc972ce5a2808557b0a16cc97e2adf841169091bfd0770321707e1983574"></a>ACTOR_BUFF_BERSERK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a1ce2a713f5ea48073b671672c8ed53ff" name="ae52eebc972ce5a2808557b0a16cc97e2a1ce2a713f5ea48073b671672c8ed53ff"></a>ACTOR_BUFF_MASS_DISTORTION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a0fb683f576d5419ce3681600d7dafbe9" name="ae52eebc972ce5a2808557b0a16cc97e2a0fb683f576d5419ce3681600d7dafbe9"></a>ACTOR_BUFF_FATE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a9cf09156f22a0f78d7019336585e2484" name="ae52eebc972ce5a2808557b0a16cc97e2a9cf09156f22a0f78d7019336585e2484"></a>ACTOR_BUFF_ENSLAVED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a40eb3ccd7366a0ca4de70194753b105b" name="ae52eebc972ce5a2808557b0a16cc97e2a40eb3ccd7366a0ca4de70194753b105b"></a>ACTOR_BUFF_DAY_OF_PROTECTION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a287030049b90556e2b85775f75030acd" name="ae52eebc972ce5a2808557b0a16cc97e2a287030049b90556e2b85775f75030acd"></a>ACTOR_BUFF_HOUR_OF_POWER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2adcb216373c306ec953f4c60550f16dc4" name="ae52eebc972ce5a2808557b0a16cc97e2adcb216373c306ec953f4c60550f16dc4"></a>ACTOR_BUFF_SHIELD&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a7ef211dd730cecd1ecafd36c473d253b" name="ae52eebc972ce5a2808557b0a16cc97e2a7ef211dd730cecd1ecafd36c473d253b"></a>ACTOR_BUFF_STONESKIN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a71ae4b424c4ce9697b6ca2e2c53e09ee" name="ae52eebc972ce5a2808557b0a16cc97e2a71ae4b424c4ce9697b6ca2e2c53e09ee"></a>ACTOR_BUFF_BLESS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a83c30fd9dca23d31489ae6d7bebd64d2" name="ae52eebc972ce5a2808557b0a16cc97e2a83c30fd9dca23d31489ae6d7bebd64d2"></a>ACTOR_BUFF_HEROISM&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a918c71ffa5407457c4d793e1eefd0b2a" name="ae52eebc972ce5a2808557b0a16cc97e2a918c71ffa5407457c4d793e1eefd0b2a"></a>ACTOR_BUFF_HASTE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a4898eb5d6575e9f5f327066d537c94b7" name="ae52eebc972ce5a2808557b0a16cc97e2a4898eb5d6575e9f5f327066d537c94b7"></a>ACTOR_BUFF_PAIN_REFLECTION&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2aed3c5458387dcfbfac581518e99889a6" name="ae52eebc972ce5a2808557b0a16cc97e2aed3c5458387dcfbfac581518e99889a6"></a>ACTOR_BUFF_PAIN_HAMMERHANDS&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2ac851dc549720061a1d4a03cb06904a4d" name="ae52eebc972ce5a2808557b0a16cc97e2ac851dc549720061a1d4a03cb06904a4d"></a>ACTOR_BUFF_CHARM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a75fe6e71305430856073d550e32a810d" name="ae52eebc972ce5a2808557b0a16cc97e2a75fe6e71305430856073d550e32a810d"></a>ACTOR_BUFF_SUMMONED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a880f5cb996f795a8aa6bfcf02aac933e" name="ae52eebc972ce5a2808557b0a16cc97e2a880f5cb996f795a8aa6bfcf02aac933e"></a>ACTOR_BUFF_SHRINK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2aac6c91003c50440ed2c91dfc6bd667a8" name="ae52eebc972ce5a2808557b0a16cc97e2aac6c91003c50440ed2c91dfc6bd667a8"></a>ACTOR_BUFF_AFRAID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a5cfb5e2dd6dcdc4f7d3ad9c801aea9b7" name="ae52eebc972ce5a2808557b0a16cc97e2a5cfb5e2dd6dcdc4f7d3ad9c801aea9b7"></a>ACTOR_BUFF_STONED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a9ecfac351172a19512fd2d35912debd8" name="ae52eebc972ce5a2808557b0a16cc97e2a9ecfac351172a19512fd2d35912debd8"></a>ACTOR_BUFF_PARALYZED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a7d5e3460fa6d51595e16b0fd97990a82" name="ae52eebc972ce5a2808557b0a16cc97e2a7d5e3460fa6d51595e16b0fd97990a82"></a>ACTOR_BUFF_SLOWED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2aa8f011e8e6155a3805364f570a74895b" name="ae52eebc972ce5a2808557b0a16cc97e2aa8f011e8e6155a3805364f570a74895b"></a>ACTOR_BUFF_SOMETHING_THAT_HALVES_AC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a8d60a231b332619fd8ac24df2a1830de" name="ae52eebc972ce5a2808557b0a16cc97e2a8d60a231b332619fd8ac24df2a1830de"></a>ACTOR_BUFF_BERSERK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a66a37b4f8d28f6e546ee817790f66f6f" name="ae52eebc972ce5a2808557b0a16cc97e2a66a37b4f8d28f6e546ee817790f66f6f"></a>ACTOR_BUFF_MASS_DISTORTION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a902d5932b1c5c7da461542c4e02da4a1" name="ae52eebc972ce5a2808557b0a16cc97e2a902d5932b1c5c7da461542c4e02da4a1"></a>ACTOR_BUFF_FATE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2af1db04c573819b4cd438c1ca75c50270" name="ae52eebc972ce5a2808557b0a16cc97e2af1db04c573819b4cd438c1ca75c50270"></a>ACTOR_BUFF_ENSLAVED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2ab019d1270118ef95881172f38d268c01" name="ae52eebc972ce5a2808557b0a16cc97e2ab019d1270118ef95881172f38d268c01"></a>ACTOR_BUFF_DAY_OF_PROTECTION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a2e260e6d73c7e195090365771ebaf0a2" name="ae52eebc972ce5a2808557b0a16cc97e2a2e260e6d73c7e195090365771ebaf0a2"></a>ACTOR_BUFF_HOUR_OF_POWER&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2aa41762796b3f7c5d5ad241e6176e72d3" name="ae52eebc972ce5a2808557b0a16cc97e2aa41762796b3f7c5d5ad241e6176e72d3"></a>ACTOR_BUFF_SHIELD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a657f51c8479a859df973b61793edd49d" name="ae52eebc972ce5a2808557b0a16cc97e2a657f51c8479a859df973b61793edd49d"></a>ACTOR_BUFF_STONESKIN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a8d79ba3bd1d95b9d7b94402643f43abf" name="ae52eebc972ce5a2808557b0a16cc97e2a8d79ba3bd1d95b9d7b94402643f43abf"></a>ACTOR_BUFF_BLESS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a328de078d207b7a7495ec200576a4f7a" name="ae52eebc972ce5a2808557b0a16cc97e2a328de078d207b7a7495ec200576a4f7a"></a>ACTOR_BUFF_HEROISM&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2affeb1623e30373180644bf17a7fbc7a2" name="ae52eebc972ce5a2808557b0a16cc97e2affeb1623e30373180644bf17a7fbc7a2"></a>ACTOR_BUFF_HASTE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a5591fb3fa25c46bffec2e26a517c4162" name="ae52eebc972ce5a2808557b0a16cc97e2a5591fb3fa25c46bffec2e26a517c4162"></a>ACTOR_BUFF_PAIN_REFLECTION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a1463581683b7cc0a9671adc866d8c4bb" name="ae52eebc972ce5a2808557b0a16cc97e2a1463581683b7cc0a9671adc866d8c4bb"></a>ACTOR_BUFF_PAIN_HAMMERHANDS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae52eebc972ce5a2808557b0a16cc97e2a24379b2d854b553f8a6bc7c4bcbc0023" name="ae52eebc972ce5a2808557b0a16cc97e2a24379b2d854b553f8a6bc7c4bcbc0023"></a>ACTOR_BUFF_COUNT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -598,20 +624,28 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a></td>
+          <td class="memname">enum class <a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980adbc9b375cb2ebec44f1789c443653a3d" name="a842c5e2e69277690b064bf363c017980adbc9b375cb2ebec44f1789c443653a3d"></a>OBJECT_Any&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980ae3390b212d5f3eeefff092aba2974d3d" name="a842c5e2e69277690b064bf363c017980ae3390b212d5f3eeefff092aba2974d3d"></a>OBJECT_BLVDoor&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980af4e29e4b20cbac0b34cab311f8190c93" name="a842c5e2e69277690b064bf363c017980af4e29e4b20cbac0b34cab311f8190c93"></a>OBJECT_Item&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980a0f8c1453a4cce0baf27513cd140928b8" name="a842c5e2e69277690b064bf363c017980a0f8c1453a4cce0baf27513cd140928b8"></a>OBJECT_Actor&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980ad702ee31024c11a3578a494ba5a703ce" name="a842c5e2e69277690b064bf363c017980ad702ee31024c11a3578a494ba5a703ce"></a>OBJECT_Player&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980a9b9b3fca30299798264309bce9668219" name="a842c5e2e69277690b064bf363c017980a9b9b3fca30299798264309bce9668219"></a>OBJECT_Decoration&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980a0d69e402064195caa7ba69fdd47d863e" name="a842c5e2e69277690b064bf363c017980a0d69e402064195caa7ba69fdd47d863e"></a>OBJECT_BModel&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980aaeca3555a4e2789f527a87a11ac44d86" name="a842c5e2e69277690b064bf363c017980aaeca3555a4e2789f527a87a11ac44d86"></a>OBJECT_Any&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980a85527d69c1b483687841f7ed0228c55d" name="a842c5e2e69277690b064bf363c017980a85527d69c1b483687841f7ed0228c55d"></a>OBJECT_BLVDoor&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980a3af58f70a502929f924f163b29fabe80" name="a842c5e2e69277690b064bf363c017980a3af58f70a502929f924f163b29fabe80"></a>OBJECT_Item&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980af39b344af8f7ed4cc960f637981e067d" name="a842c5e2e69277690b064bf363c017980af39b344af8f7ed4cc960f637981e067d"></a>OBJECT_Actor&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980ae2b1e182a57c6ab27af33c89adc002f4" name="a842c5e2e69277690b064bf363c017980ae2b1e182a57c6ab27af33c89adc002f4"></a>OBJECT_Player&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a" name="a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a"></a>OBJECT_Decoration&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a842c5e2e69277690b064bf363c017980aa8987dbdcb97d8d9dd630ad4d041224e" name="a842c5e2e69277690b064bf363c017980aa8987dbdcb97d8d9dd630ad4d041224e"></a>OBJECT_BModel&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

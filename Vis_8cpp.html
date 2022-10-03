@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;610835c</span>
    </div>
   </td>
  </tr>
@@ -110,6 +110,10 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a258a00a10314a1783c87252bfb3608fa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#a258a00a10314a1783c87252bfb3608fa">IsBModelVisible</a> (<a class="el" href="classBSPModel.html">BSPModel</a> *model, int reachable_depth, bool *reachable)</td></tr>
 <tr class="separator:a258a00a10314a1783c87252bfb3608fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e731ac1cf5a301e08532749aa560572"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#a3e731ac1cf5a301e08532749aa560572">IsSphereInFrustum</a> (<a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> center, float radius)</td></tr>
+<tr class="separator:a3e731ac1cf5a301e08532749aa560572"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad634e7f4f6e46e144db7345596c9c2e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#aad634e7f4f6e46e144db7345596c9c2e">IsCylinderInFrustum</a> (<a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> center, float radius)</td></tr>
+<tr class="separator:aad634e7f4f6e46e144db7345596c9c2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2e52010fb087140f33be2076a8b0e3e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structVis__PIDAndDepth.html">Vis_PIDAndDepth</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#ab2e52010fb087140f33be2076a8b0e3e">InvalidPIDAndDepth</a> ()</td></tr>
 <tr class="separator:ab2e52010fb087140f33be2076a8b0e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cb23e12d16fd52723821bd1bc5a5d5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#a4cb23e12d16fd52723821bd1bc5a5d5a">UnprojectX</a> (int x)</td></tr>
@@ -225,6 +229,78 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="aad634e7f4f6e46e144db7345596c9c2e" name="aad634e7f4f6e46e144db7345596c9c2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad634e7f4f6e46e144db7345596c9c2e">&#9670;&#160;</a></span>IsCylinderInFrustum()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool IsCylinderInFrustum </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radius</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">center</td><td>Vec3f of centre point of cylinder. </td></tr>
+    <tr><td class="paramname">radius</td><td>Float of cylinder radius.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the cylinder is visible within the L/R camera frustum planes. </dd></dl>
+
+</div>
+</div>
+<a id="a3e731ac1cf5a301e08532749aa560572" name="a3e731ac1cf5a301e08532749aa560572"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e731ac1cf5a301e08532749aa560572">&#9670;&#160;</a></span>IsSphereInFrustum()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool IsSphereInFrustum </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radius</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">center</td><td>Vec3f of centre point of sphere. </td></tr>
+    <tr><td class="paramname">radius</td><td>Float of sphere radius.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the bounding radius of the sphere is visible within the camera frustum planes. </dd></dl>
+
+</div>
+</div>
 <a id="a4cb23e12d16fd52723821bd1bc5a5d5a" name="a4cb23e12d16fd52723821bd1bc5a5d5a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4cb23e12d16fd52723821bd1bc5a5d5a">&#9670;&#160;</a></span>UnprojectX()</h2>
 
@@ -274,11 +350,11 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea">VisObjectType_Face</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ae3390b212d5f3eeefff092aba2974d3d">OBJECT_BLVDoor</a>, -1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<a class="code hl_enumvalue" href="BSPModel_8h.html#a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744">FACE_HAS_EVENT</a>), <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a> }</div>
-<div class="ttc" id="aActor_8h_html_a842c5e2e69277690b064bf363c017980ae3390b212d5f3eeefff092aba2974d3d"><div class="ttname"><a href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ae3390b212d5f3eeefff092aba2974d3d">OBJECT_BLVDoor</a></div><div class="ttdeci">@ OBJECT_BLVDoor</div><div class="ttdef"><b>Definition:</b> Actor.h:69</div></div>
+<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea">VisObjectType_Face</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a85527d69c1b483687841f7ed0228c55d">OBJECT_BLVDoor</a>, -1, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<a class="code hl_enumvalue" href="BSPModel_8h.html#a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744">FACE_HAS_EVENT</a>), <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a> }</div>
+<div class="ttc" id="aActor_8h_html_a842c5e2e69277690b064bf363c017980a85527d69c1b483687841f7ed0228c55d"><div class="ttname"><a href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a85527d69c1b483687841f7ed0228c55d">ObjectType::OBJECT_BLVDoor</a></div><div class="ttdeci">@ OBJECT_BLVDoor</div></div>
 <div class="ttc" id="aBSPModel_8h_html_a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744"><div class="ttname"><a href="BSPModel_8h.html#a079bbade04352a97179d3cd8302d08aba2173d678f28bc40084cc39fa97538744">FaceAttribute::FACE_HAS_EVENT</a></div><div class="ttdeci">@ FACE_HAS_EVENT</div></div>
-<div class="ttc" id="aVis_8h_html_aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af"><div class="ttname"><a href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a></div><div class="ttdeci">@ None</div><div class="ttdef"><b>Definition:</b> Vis.h:14</div></div>
-<div class="ttc" id="aVis_8h_html_ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea"><div class="ttname"><a href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea">VisObjectType_Face</a></div><div class="ttdeci">@ VisObjectType_Face</div><div class="ttdef"><b>Definition:</b> Vis.h:10</div></div>
+<div class="ttc" id="aVis_8h_html_aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af"><div class="ttname"><a href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a></div><div class="ttdeci">@ None</div><div class="ttdef"><b>Definition:</b> Vis.h:15</div></div>
+<div class="ttc" id="aVis_8h_html_ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea"><div class="ttname"><a href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea">VisObjectType_Face</a></div><div class="ttdeci">@ VisObjectType_Face</div><div class="ttdef"><b>Definition:</b> Vis.h:11</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -294,8 +370,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea">VisObjectType_Face</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980adbc9b375cb2ebec44f1789c443653a3d">OBJECT_Any</a>, -1, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a>}</div>
-<div class="ttc" id="aActor_8h_html_a842c5e2e69277690b064bf363c017980adbc9b375cb2ebec44f1789c443653a3d"><div class="ttname"><a href="Actor_8h.html#a842c5e2e69277690b064bf363c017980adbc9b375cb2ebec44f1789c443653a3d">OBJECT_Any</a></div><div class="ttdeci">@ OBJECT_Any</div><div class="ttdef"><b>Definition:</b> Actor.h:68</div></div>
+<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea181847fc56fbbbbf7e6425be645bd9ea">VisObjectType_Face</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980aaeca3555a4e2789f527a87a11ac44d86">OBJECT_Any</a>, -1, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a>}</div>
+<div class="ttc" id="aActor_8h_html_a842c5e2e69277690b064bf363c017980aaeca3555a4e2789f527a87a11ac44d86"><div class="ttname"><a href="Actor_8h.html#a842c5e2e69277690b064bf363c017980aaeca3555a4e2789f527a87a11ac44d86">ObjectType::OBJECT_Any</a></div><div class="ttdeci">@ OBJECT_Any</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -311,10 +387,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a9b9b3fca30299798264309bce9668219">OBJECT_Decoration</a>, 0, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d">ExcludeType</a>}</div>
-<div class="ttc" id="aActor_8h_html_a842c5e2e69277690b064bf363c017980a9b9b3fca30299798264309bce9668219"><div class="ttname"><a href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a9b9b3fca30299798264309bce9668219">OBJECT_Decoration</a></div><div class="ttdeci">@ OBJECT_Decoration</div><div class="ttdef"><b>Definition:</b> Actor.h:73</div></div>
-<div class="ttc" id="aVis_8h_html_aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d"><div class="ttname"><a href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d">ExcludeType</a></div><div class="ttdeci">@ ExcludeType</div><div class="ttdef"><b>Definition:</b> Vis.h:16</div></div>
-<div class="ttc" id="aVis_8h_html_ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa"><div class="ttname"><a href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a></div><div class="ttdeci">@ VisObjectType_Sprite</div><div class="ttdef"><b>Definition:</b> Vis.h:9</div></div>
+<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a">OBJECT_Decoration</a>, 0, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d">ExcludeType</a>}</div>
+<div class="ttc" id="aActor_8h_html_a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a"><div class="ttname"><a href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a">ObjectType::OBJECT_Decoration</a></div><div class="ttdeci">@ OBJECT_Decoration</div></div>
+<div class="ttc" id="aVis_8h_html_aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d"><div class="ttname"><a href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d">ExcludeType</a></div><div class="ttdeci">@ ExcludeType</div><div class="ttdef"><b>Definition:</b> Vis.h:17</div></div>
+<div class="ttc" id="aVis_8h_html_ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa"><div class="ttname"><a href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a></div><div class="ttdeci">@ VisObjectType_Sprite</div><div class="ttdef"><b>Definition:</b> Vis.h:10</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -330,7 +406,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a9b9b3fca30299798264309bce9668219">OBJECT_Decoration</a>, 0, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d">ExcludeType</a>}</div>
+<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a">OBJECT_Decoration</a>, 0, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca1952681d05fa87ce53265961cd68719d">ExcludeType</a>}</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -346,8 +422,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a9b9b3fca30299798264309bce9668219">OBJECT_Decoration</a>, -1, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac">ExclusionIfNoEvent</a>}</div>
-<div class="ttc" id="aVis_8h_html_aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac"><div class="ttname"><a href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac">ExclusionIfNoEvent</a></div><div class="ttdeci">@ ExclusionIfNoEvent</div><div class="ttdef"><b>Definition:</b> Vis.h:17</div></div>
+<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eae22ab771ab9e99711aaa43ca9c188ffa">VisObjectType_Sprite</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980ad08d53cb9bc43039d988bb0f660b775a">OBJECT_Decoration</a>, -1, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac">ExclusionIfNoEvent</a>}</div>
+<div class="ttc" id="aVis_8h_html_aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac"><div class="ttname"><a href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355ca7b84718c91374fe2524bc7944b6544ac">ExclusionIfNoEvent</a></div><div class="ttdeci">@ ExclusionIfNoEvent</div><div class="ttdef"><b>Definition:</b> Vis.h:18</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -363,9 +439,9 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d">VisObjectType_Any</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980af4e29e4b20cbac0b34cab311f8190c93">OBJECT_Item</a>, -1, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a> }</div>
-<div class="ttc" id="aActor_8h_html_a842c5e2e69277690b064bf363c017980af4e29e4b20cbac0b34cab311f8190c93"><div class="ttname"><a href="Actor_8h.html#a842c5e2e69277690b064bf363c017980af4e29e4b20cbac0b34cab311f8190c93">OBJECT_Item</a></div><div class="ttdeci">@ OBJECT_Item</div><div class="ttdef"><b>Definition:</b> Actor.h:70</div></div>
-<div class="ttc" id="aVis_8h_html_ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d"><div class="ttname"><a href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d">VisObjectType_Any</a></div><div class="ttdeci">@ VisObjectType_Any</div><div class="ttdef"><b>Definition:</b> Vis.h:8</div></div>
+<div class="line">    <a class="code hl_enumvalue" href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d">VisObjectType_Any</a>, <a class="code hl_enumvalue" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a3af58f70a502929f924f163b29fabe80">OBJECT_Item</a>, -1, 0, <a class="code hl_enumvalue" href="Vis_8h.html#aa0e1584b10e9b28e435aa1dd0a42355cac9d3e887722f2bc482bcca9d41c512af">None</a> }</div>
+<div class="ttc" id="aActor_8h_html_a842c5e2e69277690b064bf363c017980a3af58f70a502929f924f163b29fabe80"><div class="ttname"><a href="Actor_8h.html#a842c5e2e69277690b064bf363c017980a3af58f70a502929f924f163b29fabe80">ObjectType::OBJECT_Item</a></div><div class="ttdeci">@ OBJECT_Item</div></div>
+<div class="ttc" id="aVis_8h_html_ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d"><div class="ttname"><a href="Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eadc0e957887a5d2750d8d3d39c995cc6d">VisObjectType_Any</a></div><div class="ttdeci">@ VisObjectType_Any</div><div class="ttdef"><b>Definition:</b> Vis.h:9</div></div>
 </div><!-- fragment -->
 </div>
 </div>

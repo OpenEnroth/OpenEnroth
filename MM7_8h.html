@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;610835c</span>
    </div>
   </td>
  </tr>
@@ -96,9 +96,9 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a6fa21b10ef8fe82bdc1df5e108443326"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a6fa21b10ef8fe82bdc1df5e108443326">PID</a>(type,  id)&#160;&#160;&#160;(uint16_t)((((8 * (id))) | (type)) &amp; 0xFFFF)</td></tr>
+<tr class="memitem:a6fa21b10ef8fe82bdc1df5e108443326"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a6fa21b10ef8fe82bdc1df5e108443326">PID</a>(type,  id)&#160;&#160;&#160;(uint16_t)((((8 * (id))) | (<a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(type))) &amp; 0xFFFF)</td></tr>
 <tr class="separator:a6fa21b10ef8fe82bdc1df5e108443326"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4903b6581bb3f493187d6f1ab22b067"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ac4903b6581bb3f493187d6f1ab22b067">PID_TYPE</a>(pid)&#160;&#160;&#160;(<a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a>)((pid)&amp;7)</td></tr>
+<tr class="memitem:ac4903b6581bb3f493187d6f1ab22b067"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ac4903b6581bb3f493187d6f1ab22b067">PID_TYPE</a>(pid)&#160;&#160;&#160;static_cast&lt;<a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a>&gt;((pid)&amp;7)</td></tr>
 <tr class="separator:ac4903b6581bb3f493187d6f1ab22b067"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68568b83affb311e29e223a91832ccf3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a68568b83affb311e29e223a91832ccf3">PID_ID</a>(pid)&#160;&#160;&#160;(uint32_t)(((pid)&amp;0xFFFF) &gt;&gt; 3)</td></tr>
 <tr class="separator:a68568b83affb311e29e223a91832ccf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -939,7 +939,7 @@ Variables</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(uint16_t)((((8 * (id))) | (type)) &amp; 0xFFFF)</td>
+          <td></td><td>&#160;&#160;&#160;(uint16_t)((((8 * (id))) | (<a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(type))) &amp; 0xFFFF)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -989,7 +989,7 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">pid</td><td>)</td>
-          <td>&#160;&#160;&#160;(<a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a>)((pid)&amp;7)</td>
+          <td>&#160;&#160;&#160;static_cast&lt;<a class="el" href="Actor_8h.html#a842c5e2e69277690b064bf363c017980">ObjectType</a>&gt;((pid)&amp;7)</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;e010a29</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;610835c</span>
    </div>
   </td>
  </tr>
@@ -82,6 +82,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -104,15 +105,15 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a9852684147e651e988ed71ddc71426d5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> { <br />
-&#160;&#160;<a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5a084250a20788687c01a5edbee1ba4826">IMAGE_FORMAT_R5G6B5</a> = 0
-, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5af2c4c766ccb8f356906c1f3880afb621">IMAGE_FORMAT_A1R5G5B5</a>
-, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5ad3252ba7aa36752eb19ec11850374554">IMAGE_FORMAT_A8R8G8B8</a>
-, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5a5a256b26843d1f71f88509a9a1b1a28e">IMAGE_FORMAT_R8G8B8</a>
+<tr class="memitem:a9852684147e651e988ed71ddc71426d5"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a> { <br />
+&#160;&#160;<a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5a50aecfaefdd929761f6dbb3f826a1f73">IMAGE_FORMAT_R5G6B5</a> = 0
+, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5a59dfb9972b183fb45363906d6fa60de6">IMAGE_FORMAT_A1R5G5B5</a>
+, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5ad696534656fe12274372d9359323c794">IMAGE_FORMAT_A8R8G8B8</a>
+, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5acefbdd8b471b40cbf7135227507e5aa7">IMAGE_FORMAT_R8G8B8</a>
 , <br />
-&#160;&#160;<a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5ad6ee8ec9413a236a3a0cbe797fab3122">IMAGE_FORMAT_R8G8B8A8</a>
-, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5a790f82d06a241db989ed7c7075655bf9">IMAGE_NUM_FORMATS</a>
-, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5a117148770d7556407e3e3d594f13d5c1">IMAGE_INVALID_FORMAT</a> = -1
+&#160;&#160;<a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5ae3afc28ed665f2a2e18f19cdb5466bab">IMAGE_FORMAT_R8G8B8A8</a>
+, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5aef570b1796a7538839b3e651366341cf">IMAGE_NUM_FORMATS</a>
+, <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5a27a3c2fb5bb5fcb972d08ec3888768a5">IMAGE_INVALID_FORMAT</a> = -1
 <br />
  }</td></tr>
 <tr class="separator:a9852684147e651e988ed71ddc71426d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -145,20 +146,28 @@ Variables</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a></td>
+          <td class="memname">enum class <a class="el" href="Image_8h.html#a9852684147e651e988ed71ddc71426d5">IMAGE_FORMAT</a></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5a084250a20788687c01a5edbee1ba4826" name="a9852684147e651e988ed71ddc71426d5a084250a20788687c01a5edbee1ba4826"></a>IMAGE_FORMAT_R5G6B5&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5af2c4c766ccb8f356906c1f3880afb621" name="a9852684147e651e988ed71ddc71426d5af2c4c766ccb8f356906c1f3880afb621"></a>IMAGE_FORMAT_A1R5G5B5&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5ad3252ba7aa36752eb19ec11850374554" name="a9852684147e651e988ed71ddc71426d5ad3252ba7aa36752eb19ec11850374554"></a>IMAGE_FORMAT_A8R8G8B8&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5a5a256b26843d1f71f88509a9a1b1a28e" name="a9852684147e651e988ed71ddc71426d5a5a256b26843d1f71f88509a9a1b1a28e"></a>IMAGE_FORMAT_R8G8B8&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5ad6ee8ec9413a236a3a0cbe797fab3122" name="a9852684147e651e988ed71ddc71426d5ad6ee8ec9413a236a3a0cbe797fab3122"></a>IMAGE_FORMAT_R8G8B8A8&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5a790f82d06a241db989ed7c7075655bf9" name="a9852684147e651e988ed71ddc71426d5a790f82d06a241db989ed7c7075655bf9"></a>IMAGE_NUM_FORMATS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5a117148770d7556407e3e3d594f13d5c1" name="a9852684147e651e988ed71ddc71426d5a117148770d7556407e3e3d594f13d5c1"></a>IMAGE_INVALID_FORMAT&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5a50aecfaefdd929761f6dbb3f826a1f73" name="a9852684147e651e988ed71ddc71426d5a50aecfaefdd929761f6dbb3f826a1f73"></a>IMAGE_FORMAT_R5G6B5&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5a59dfb9972b183fb45363906d6fa60de6" name="a9852684147e651e988ed71ddc71426d5a59dfb9972b183fb45363906d6fa60de6"></a>IMAGE_FORMAT_A1R5G5B5&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5ad696534656fe12274372d9359323c794" name="a9852684147e651e988ed71ddc71426d5ad696534656fe12274372d9359323c794"></a>IMAGE_FORMAT_A8R8G8B8&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5acefbdd8b471b40cbf7135227507e5aa7" name="a9852684147e651e988ed71ddc71426d5acefbdd8b471b40cbf7135227507e5aa7"></a>IMAGE_FORMAT_R8G8B8&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5ae3afc28ed665f2a2e18f19cdb5466bab" name="a9852684147e651e988ed71ddc71426d5ae3afc28ed665f2a2e18f19cdb5466bab"></a>IMAGE_FORMAT_R8G8B8A8&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5aef570b1796a7538839b3e651366341cf" name="a9852684147e651e988ed71ddc71426d5aef570b1796a7538839b3e651366341cf"></a>IMAGE_NUM_FORMATS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9852684147e651e988ed71ddc71426d5a27a3c2fb5bb5fcb972d08ec3888768a5" name="a9852684147e651e988ed71ddc71426d5a27a3c2fb5bb5fcb972d08ec3888768a5"></a>IMAGE_INVALID_FORMAT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
