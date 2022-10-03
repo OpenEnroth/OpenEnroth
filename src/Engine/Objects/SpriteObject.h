@@ -38,16 +38,16 @@ struct SpriteObject {
 
     SPRITE_OBJECT_TYPE uType = SPRITE_NULL;
     // unsigned __int16 uType;
-    unsigned __int16 uObjectDescID = 0; // Zero means free slot, can reuse.
+    uint16_t uObjectDescID = 0; // Zero means free slot, can reuse.
     Vec3i vPosition;
     Vec3s vVelocity;
-    unsigned __int16 uFacing = 0;
-    unsigned __int16 uSoundID = 0;
+    uint16_t uFacing = 0;
+    uint16_t uSoundID = 0;
     SPRITE_ATTRIBUTES uAttributes;
-    __int16 uSectorID = 0;
-    unsigned __int16 uSpriteFrameID = 0;
-    __int16 field_20 = 0;
-    __int16 field_22_glow_radius_multiplier = 1;
+    int16_t uSectorID = 0;
+    uint16_t uSpriteFrameID = 0;
+    int16_t field_20 = 0;
+    int16_t field_22_glow_radius_multiplier = 1;
     ItemGen containing_item;
     int spell_id = 0;
     int spell_level = 0;

@@ -200,9 +200,9 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         int scale_increment = (1 << (loc_power + 16)) / viewparams->uMapBookMapZoom;
         double MapSizeScale = (double)(1 << (16 - loc_power));
         int stepX_r_resets =
-            (unsigned int)(signed __int64)
+            (unsigned int)(int64_t)
             ((double)(pCenterX - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
-        int stepY_r = (int)(signed __int64)
+        int stepY_r = (int)(int64_t)
             ((double)(-pCenterY - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int scaled_posY = stepY_r >> 16;
 
@@ -210,8 +210,8 @@ void DrawBook_Map_sub(unsigned int tl_x, unsigned int tl_y, unsigned int br_x, i
         if (!minimaptemp) {
             minimaptemp = render->CreateTexture_Blank(screenWidth, screenHeight, IMAGE_FORMAT_A8R8G8B8);
         }
-        auto minitempix = (unsigned __int32 *)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
-        auto minimap_pixels = (unsigned __int32 *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        auto minitempix = (uint32_t *)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        auto minimap_pixels = (uint32_t *)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         int textr_width = viewparams->location_minimap->GetWidth();
 
         // nearest neiborhood scaling
@@ -351,8 +351,8 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
 
     double v0 = 1.0 / (float)((signed int)viewparams->uMapBookMapZoom * 0.000015258789);
 
-    int global_coord_X = (__int64)((double)(pX - 229.) * v0 + (double)v20);
-    int global_coord_Y = (__int64)((double)v21 - (double)(pY - 181.) * v0);
+    int global_coord_X = (int64_t)((double)(pX - 229.) * v0 + (double)v20);
+    int global_coord_Y = (int64_t)((double)v21 - (double)(pY - 181.) * v0);
 
     std::string result;
 

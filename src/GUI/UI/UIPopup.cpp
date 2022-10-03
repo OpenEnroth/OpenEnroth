@@ -599,7 +599,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 8 *
                 pSpriteFrameTable
                     ->pSpriteSFrames[pActors[uActorID].pSpriteIDs
-                                         [(signed __int16)pMonsterInfoUI_Doll
+                                         [(int16_t)pMonsterInfoUI_Doll
                                               .uCurrentActionAnimation]]
                     .uAnimLength;
         }
@@ -653,7 +653,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pPlayers[uActiveCharacter]->GetActualSkillLevel(
             PLAYER_SKILL_MONSTER_ID)) {
         skill_points =
-            (unsigned __int8)pPlayers[uActiveCharacter]->GetActualSkillLevel(
+            (uint8_t)pPlayers[uActiveCharacter]->GetActualSkillLevel(
                 PLAYER_SKILL_MONSTER_ID);
         skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(
                           PLAYER_SKILL_MONSTER_ID) -
@@ -1874,9 +1874,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             v31 = (70.0 - (double)pParty->pPickedItem.uEnchantmentType) * 0.01;
             if (v31 < 0.0) v31 = 0.0;
-            item->uMaxCharges = (signed __int64)((double)item->uMaxCharges -
+            item->uMaxCharges = (int64_t)((double)item->uMaxCharges -
                                  v31 * (double)item->uMaxCharges);
-            item->uNumCharges = (signed __int64)((double)item->uMaxCharges -
+            item->uNumCharges = (int64_t)((double)item->uMaxCharges -
                                  v31 * (double)item->uMaxCharges);
 
             mouse->RemoveHoldingItem();
@@ -2170,9 +2170,9 @@ unsigned int GetSpellColor(signed int a1) {
 }
 
 //----- (004B46F8) --------------------------------------------------------
-unsigned __int64 GetExperienceRequiredForLevel(int level) {
+uint64_t GetExperienceRequiredForLevel(int level) {
     int effectiveLevel = 0;
     for (int i = 0; i < level; ++i)
         effectiveLevel += i + 1;
-    return (unsigned __int64)(1000 * effectiveLevel);
+    return (uint64_t)(1000 * effectiveLevel);
 }

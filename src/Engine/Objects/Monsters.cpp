@@ -17,8 +17,8 @@ struct MonsterList *pMonsterList;
 unsigned int ParseSpellType(struct FrameTableTxtLine *tbl, int *next_token);
 
 int ParseAttackType(const char *damage_type_str);
-void ParseDamage(char *damage_str, unsigned __int8 *dice_rolls,
-                 unsigned __int8 *dice_sides, unsigned __int8 *dmg_bonus);
+void ParseDamage(char *damage_str, uint8_t *dice_rolls,
+                 uint8_t *dice_sides, uint8_t *dmg_bonus);
 int ParseMissleAttackType(const char *missle_attack_str);
 int ParseSpecialAttack(const char *spec_att_str);
 
@@ -153,8 +153,8 @@ int ParseAttackType(const char *damage_type_str) {
 }
 
 //----- (00454D7D) --------------------------------------------------------
-void ParseDamage(char *damage_str, unsigned __int8 *dice_rolls,
-                 unsigned __int8 *dice_sides, unsigned __int8 *dmg_bonus) {
+void ParseDamage(char *damage_str, uint8_t *dice_rolls,
+                 uint8_t *dice_sides, uint8_t *dmg_bonus) {
     int str_len = 0;
     int str_pos = 0;
     bool dice_flag = false;
@@ -274,18 +274,18 @@ bool MonsterList::FromFileTxt(const char *Args) {
     FILE *v6;               // ST14_4@11
     char *i;                // eax@11
     signed int v8;          // esi@12
-    unsigned __int16 v9;    // ax@16
+    uint16_t v9;    // ax@16
     const char *v10;        // ST18_4@16
-    unsigned __int16 v11;   // ax@16
+    uint16_t v11;   // ax@16
     const char *v12;        // ST14_4@16
-    unsigned __int16 v13;   // ax@16
+    uint16_t v13;   // ax@16
     const char *v14;        // ST10_4@16
-    __int16 v15;            // ax@16
+    int16_t v15;            // ax@16
     const char *v16;        // ST0C_4@16
     int v17;                // esi@16
-    unsigned __int8 v18;    // al@16
+    uint8_t v18;    // al@16
     signed int v19;         // esi@16
-    unsigned __int16 v20;   // ax@17
+    uint16_t v20;   // ax@17
     int v21;                // ecx@17
     char Buf;               // [sp+4h] [bp-304h]@3
     FrameTableTxtLine v24;  // [sp+1F8h] [bp-110h]@4
@@ -354,7 +354,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
             v33 = 6;
             v34 = 7;
             do {
-                strcpy(monster.pSpriteNames[(unsigned __int8)*(&v35 + v8)], v25.pProperties[(unsigned __int8)*(&v27 + v8)]);
+                strcpy(monster.pSpriteNames[(uint8_t)*(&v35 + v8)], v25.pProperties[(uint8_t)*(&v27 + v8)]);
                 ++v8;
             } while (v8 < 8);
             v9 = atoi(v25.pProperties[8]);
@@ -369,7 +369,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
             v15 = atoi(v14);
             v16 = v25.pProperties[12];
             monster.uToHitRadius = v15;
-            v17 = (unsigned __int8)atoi(v16);
+            v17 = (uint8_t)atoi(v16);
             Argsb = atoi(v25.pProperties[13]) & 0xFF;
             v26 = atoi(v25.pProperties[14]) & 0xFF;
             v18 = atoi(v25.pProperties[15]);
@@ -1177,9 +1177,9 @@ void MonsterStats::Initialize() {
 }
 
 //----- (0044FA08) --------------------------------------------------------
-signed __int16 MonsterList::GetMonsterIDByName(const char *pMonsterName) {
+int16_t MonsterList::GetMonsterIDByName(const char *pMonsterName) {
     if (!pMonsterName) return -1;
-    for (signed __int16 i = 0; i < pMonsters.size(); ++i) {
+    for (int16_t i = 0; i < pMonsters.size(); ++i) {
         if (iequals(pMonsters[i].pMonsterName, pMonsterName))
             return i;
     }

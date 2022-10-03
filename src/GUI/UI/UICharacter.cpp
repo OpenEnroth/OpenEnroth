@@ -2241,7 +2241,7 @@ void OnPaperdollLeftClick() {
                             // pitem.Reset();
 
     unsigned int pSkillType;  // esi@5
-    // unsigned __int16 v5; // ax@7
+    // uint16_t v5; // ax@7
     // int equippos; // esi@27
     // int v8; // eax@29
     int v17;  // eax@44

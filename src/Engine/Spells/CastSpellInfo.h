@@ -48,9 +48,9 @@ struct CastSpellInfo {
     uint16_t uSpellID;
     uint16_t uPlayerID;
     uint16_t uPlayerID_2;
-    __int16 field_6;
+    int16_t field_6;
     SpellCastFlags uFlags;
-    __int16 forced_spell_skill_level;
+    int16_t forced_spell_skill_level;
     int spell_target_pid;
     int sound_id;
 };

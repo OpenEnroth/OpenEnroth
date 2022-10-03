@@ -544,7 +544,7 @@ void GUIWindow_PartyCreation::Update() {
 
     strcpy(pText, localization->GetString(LSTR_CLASS));
     for (int i = strlen(pText) - 1; i >= 0; i--)
-        pText[i] = toupper((unsigned __int8)pText[i]);
+        pText[i] = toupper((uint8_t)pText[i]);
 
     uClassType = pParty->pPlayers[uPlayerCreationUI_SelectedCharacter].classType;
     pTextCenter = pFontCreate->AlignText_Center(193, pText);

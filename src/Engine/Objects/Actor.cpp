@@ -348,7 +348,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                     v32 = 0;
                     pitch = 0;
                 } else {
-                    v31 = (signed __int64)sqrt((float)(v119 + v120));
+                    v31 = (int64_t)sqrt((float)(v119 + v120));
                     v32 = TrigLUT->Atan2(spellnumb, (int)v28);
                     pitch = TrigLUT->Atan2(v31, (int)spellnumc);
                 }
@@ -381,7 +381,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 a1.field_61 = ABILITY_SPELL1;
                 v36 = a1.Create(
                     v32, pitch,
-                    pObjectList->pObjects[(signed __int16)a1.uObjectDescID]
+                    pObjectList->pObjects[(int16_t)a1.uObjectDescID]
                         .uSpeed,
                     0);
                 if (v36 != -1) {
@@ -827,7 +827,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
 
     a1.field_61 = a4;
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
-              pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed,
+              pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed,
               0);
     if (pActors[uActorID].pMonsterInfo.uSpecialAbilityType == 1) {
         specAb = pActors[uActorID].pMonsterInfo.uSpecialAbilityDamageDiceBonus;
@@ -839,13 +839,13 @@ void Actor::AI_RangedAttack(unsigned int uActorID, struct AIDirection *pDir,
             a1.Create(
                 pDir->uYawAngle + 30,  // TODO(_) find out why the YawAngle change
                 pDir->uPitchAngle,
-                pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed,
+                pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed,
                 0);
             v13 = pDir->uYawAngle - 30;
         }
         a1.Create(
             v13, pDir->uPitchAngle,
-            pObjectList->pObjects[(signed __int16)a1.uObjectDescID].uSpeed, 0);
+            pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
     }
     return;
 }
@@ -1320,7 +1320,7 @@ int Actor::_43B3E0_CalcDamage(ABILITY_INDEX dmgSource) {
     int v3;               // eax@9
     int v4;        // edi@9
     int v5;               // esi@9
-    unsigned __int16 v8;  // si@21
+    uint16_t v8;  // si@21
     int v9;               // edi@21
     int v10;       // eax@23
     int v11;              // [sp+10h] [bp-4h]@1
@@ -1420,7 +1420,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, signed int edx0,
     signed int v6;       // eax@4
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
-    __int16 v13;         // ax@10
+    int16_t v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
     int v19;             // [sp+44h] [bp-10h]@6
@@ -1494,7 +1494,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, signed int sTargetPid,
     signed int v6;       // eax@4
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
-    __int16 v13;         // ax@10
+    int16_t v13;         // ax@10
     signed int v16;      // ecx@17
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v18;     // [sp+28h] [bp-2Ch]@9
@@ -1569,7 +1569,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, signed int sTargetPid,
     signed int v6;       // eax@4
     Vec3i v7;        // ST04_12@6
     AIDirection *v9;     // eax@8
-    __int16 v13;         // ax@10
+    int16_t v13;         // ax@10
     AIDirection a3;      // [sp+Ch] [bp-48h]@9
     AIDirection v17;     // [sp+28h] [bp-2Ch]@9
     int v18;             // [sp+44h] [bp-10h]@6
@@ -1634,7 +1634,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, signed int sTargetPid,
     signed int v6;     // eax@4
     Vec3i v7;      // ST04_12@6
     AIDirection *v10;  // eax@9
-    __int16 v14;       // ax@11
+    int16_t v14;       // ax@11
     AIDirection a3;    // [sp+Ch] [bp-48h]@10
     AIDirection v18;   // [sp+28h] [bp-2Ch]@10
     int v19;           // [sp+44h] [bp-10h]@6
@@ -1766,7 +1766,7 @@ char Actor::_4031C1_update_job_never_gets_called(
     ActorJob *v7; // eax@2
     signed int v8; // edi@2
     ActorJob *v9; // ecx@2
-    __int16 v10; // cx@15
+    int16_t v10; // cx@15
     signed int v12; // [sp+8h] [bp-4h]@1
 
     v3 = uActorID;
@@ -1817,7 +1817,7 @@ char Actor::_4031C1_update_job_never_gets_called(
 //----- (004030AD) --------------------------------------------------------
 void Actor::AI_Stun(unsigned int uActorID, signed int edx0,
                     int stunRegardlessOfState) {
-    __int16 v7;      // ax@16
+    int16_t v7;      // ax@16
     AIDirection a3;  // [sp+Ch] [bp-40h]@16
 
     if (pActors[uActorID].uAIState == Fleeing)
@@ -2113,8 +2113,8 @@ void Actor::AI_Pursue2(unsigned int uActorID, unsigned int a2,
     Actor *v7;             // ebx@1
     unsigned int v8;       // ecx@1
     AIDirection *v10;      // esi@7
-    signed __int16 v13;    // cx@19
-    unsigned __int16 v14;  // ax@25
+    int16_t v13;    // cx@19
+    uint16_t v14;  // ax@25
     AIDirection a3;        // [sp+Ch] [bp-40h]@8
     AIDirection v18;       // [sp+28h] [bp-24h]@8
 
@@ -2169,9 +2169,9 @@ void Actor::AI_Pursue3(unsigned int uActorID, unsigned int a2,
     int v5;                // eax@1
     Actor *v6;             // ebx@1
     int v7;                // ecx@1
-    signed __int16 v12;    // cx@19
-    __int16 v14;           // ax@25
-    unsigned __int16 v16;  // ax@28
+    int16_t v12;    // cx@19
+    int16_t v14;           // ax@25
+    uint16_t v16;  // ax@28
     AIDirection a3;        // [sp+Ch] [bp-40h]@8
     AIDirection *v20;      // [sp+28h] [bp-24h]@8
 
@@ -2568,7 +2568,7 @@ void Actor::ActorDamageFromMonster(signed int attacker_id,
 
 //----- (0044FD29) --------------------------------------------------------
 void Actor::SummonMinion(int summonerId) {
-    unsigned __int8 extraSummonLevel;  // al@1
+    uint8_t extraSummonLevel;  // al@1
     int summonMonsterBaseType;         // esi@1
     int v5;                            // edx@2
     int v7;                            // edi@10
@@ -2665,7 +2665,7 @@ void Actor::UpdateActorAI() {
     signed int sDmg;  // eax@14
     Player *pPlayer;  // ecx@21
     Actor *pActor;    // esi@34
-    // unsigned __int16 v22; // ax@86
+    // uint16_t v22; // ax@86
     unsigned int v27;        // ecx@123
     unsigned int v28;        // eax@123
     int v33;                 // eax@144
@@ -2676,7 +2676,7 @@ void Actor::UpdateActorAI() {
     double v42;              // st7@176
     double v43;              // st6@176
     ABILITY_INDEX v45;                 // eax@192
-    unsigned __int8 v46;     // cl@197
+    uint8_t v46;     // cl@197
     signed int v47;          // st7@206
     uint v58;                // st7@246
     unsigned int v65;        // [sp-10h] [bp-C0h]@144
@@ -3296,12 +3296,12 @@ void Actor::DamageMonsterFromParty(signed int a1, unsigned int uActorID_Monster,
                                    Vec3i *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
-    unsigned __int16 v16;            // cx@25
+    uint16_t v16;            // cx@25
     int v40;                         // ebx@107
     int extraRecoveryTime;           // qax@125
-    unsigned __int16 v43;            // ax@132
-    unsigned __int16 v45;            // ax@132
-    // unsigned __int64 v46; // [sp+Ch] [bp-60h]@6
+    uint16_t v43;            // ax@132
+    uint16_t v45;            // ax@132
+    // uint64_t v46; // [sp+Ch] [bp-60h]@6
     signed int a4;                    // [sp+44h] [bp-28h]@1
     bool IsAdditionalDamagePossible;  // [sp+50h] [bp-1Ch]@1
     int v61;                          // [sp+58h] [bp-14h]@1
@@ -3776,7 +3776,7 @@ int stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
     //  signed int v10; // ebx@10
     //  int v11; // edi@11
     // Actor *v12; // esi@12
-    // unsigned __int16 v13; // ax@12
+    // uint16_t v13; // ax@12
     //  int v14; // eax@22
     // char v15; // zf@30
     //  int v16; // esi@32
@@ -3784,7 +3784,7 @@ int stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
     //  stru319 *v18; // eax@39
     //  int v19; // edx@39
     //  int v20; // ecx@41
-    //  unsigned __int16 v21; // ax@42
+    //  uint16_t v21; // ax@42
     //  unsigned int v22; // [sp+8h] [bp-24h]@11
     // unsigned int v23; // [sp+Ch] [bp-20h]@7
     stru319 *v24;  // [sp+10h] [bp-1Ch]@1
@@ -3806,7 +3806,7 @@ int stru319::FindClosestActor(int pick_depth, int a3 /*Relates to targeting/not 
         if (target_undead) select_flags |= TargetUndead;
         v7 = vis->PickClosestActor(OBJECT_Actor, pick_depth, static_cast<VisSelectFlags>(select_flags), 657456, -1);
         if (v7 != -1)
-            return (unsigned __int16)v7;
+            return (uint16_t)v7;
         else
             return 0;
     }
@@ -3972,7 +3972,7 @@ void StatusBarItemFound(int num_gold_found, const char * item_unidentified_name)
 //----- (00426A5A) --------------------------------------------------------
 void Actor::LootActor() {
     signed int v2;       // edi@1
-    unsigned __int8 v7;  // al@30
+    uint8_t v7;  // al@30
     ItemGen Dst;         // [sp+Ch] [bp-2Ch]@1
     bool itemFound;      // [sp+30h] [bp-8h]@1
     int v14;             // [sp+34h] [bp-4h]@1
@@ -5061,7 +5061,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
 
         v50 = pMonsterList->GetMonsterIDByName(Str2.c_str());
         pTexture = Str2;
-        if ((signed __int16)v50 == -1) {
+        if ((int16_t)v50 == -1) {
             logger->Warning(
                 "Can't create random monster: '%s'! See MapStats.txt and "
                 "Monsters.txt!",
@@ -5069,7 +5069,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPointMM7 *spawn, int a3, int a4, int
             Engine_DeinitializeAndTerminate(0);
         }
 
-        v27 = &pMonsterList->pMonsters[(signed __int16)v50];
+        v27 = &pMonsterList->pMonsters[(int16_t)v50];
         v28 = pMonsterStats->FindMonsterByTextureName(pTexture.c_str());
         if (!v28) v28 = 1;
         Src = &pMonsterStats->pInfos[v28];

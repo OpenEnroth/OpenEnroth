@@ -605,7 +605,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
       signed int v10; // ebx@14
       int v11; // edi@16
       signed int v12; // ST28_4@18
-      signed __int64 v13; // qtt@18
+      int64_t v13; // qtt@18
       signed int result; // eax@21
       int v15; // [sp+10h] [bp-Ch]@10
       signed int v16; // [sp+18h] [bp-4h]@10
@@ -653,7 +653,7 @@ bool Vis::CheckIntersectBModel(BLVFace *pFace, Vec3s IntersectPoint, signed int 
     intersect_face_vertex_coords_list_a[i], LODWORD(v13) = v12 << 16,
                   HIDWORD(v13) = v12 >> 16,
                   intersect_face_vertex_coords_list_a[i]
-                + ((signed int)(((unsigned __int64)(v13 /
+                + ((signed int)(((uint64_t)(v13 /
     (intersect_face_vertex_coords_list_b[i + 1] -
     intersect_face_vertex_coords_list_b[i])
                                                   * (signed int)((b -

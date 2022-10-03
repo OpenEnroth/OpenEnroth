@@ -82,7 +82,7 @@ char DecalBuilder::BuildAndApplyDecals(int light_level, LocationFlags locationFl
                     buildsplat->x, buildsplat->y, buildsplat->z);
 
             int ColourMult = buildsplat->b | (buildsplat->g << 8) | (buildsplat->r << 16);
-            int BloodSplatX = (signed __int64)buildsplat->x;
+            int BloodSplatX = (int64_t)buildsplat->x;
 
             if (!this->Build_Decal_Geometry(
                 point_light_level, locationFlags,
@@ -115,9 +115,9 @@ bool DecalBuilder::Build_Decal_Geometry(
     this->field_30C02C = sqrt((DecalRadius + DecalRadius - this->field_30C028) * this->field_30C028);
 
     this->flt_30C030 = 1.0 - (DecalRadius - this->field_30C02C) / DecalRadius;
-    decal->DecalXPos = (signed __int64)(blood->x - DecalDotDist * FacetNormals->Normal.x);
-    decal->DecalYPos = (signed __int64)(blood->y - DecalDotDist * FacetNormals->Normal.y);
-    decal->DecalZPos = (signed __int64)(blood->z - DecalDotDist * FacetNormals->Normal.z);
+    decal->DecalXPos = (int64_t)(blood->x - DecalDotDist * FacetNormals->Normal.x);
+    decal->DecalYPos = (int64_t)(blood->y - DecalDotDist * FacetNormals->Normal.y);
+    decal->DecalZPos = (int64_t)(blood->z - DecalDotDist * FacetNormals->Normal.z);
 
     // for decal size
     this->field_30C034 = DecalRadius * this->flt_30C030;

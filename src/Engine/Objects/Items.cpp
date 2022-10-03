@@ -494,7 +494,7 @@ void ItemsTable::LoadPotions() {
     char* test_string;
     unsigned int uRow;
     unsigned int uColumn;
-    unsigned __int8 potion_value;
+    uint8_t potion_value;
 
     free(pPotionNotesTXT_Raw);
     std::vector<char *> tokens;
@@ -541,7 +541,7 @@ void ItemsTable::LoadPotionNotes() {
     char* test_string;
     unsigned int uRow;
     unsigned int uColumn;
-    unsigned __int8 potion_note;
+    uint8_t potion_note;
 
     free(pPotionNotesTXT_Raw);
     std::vector<char *> tokens;
@@ -615,7 +615,7 @@ std::string ItemGen::GetDisplayName() {
 
 //----- (004564B3) --------------------------------------------------------
 std::string ItemGen::GetIdentifiedName() {
-    unsigned __int8 equip_type;
+    uint8_t equip_type;
 
     equip_type = GetItemEquipType();
     if ((equip_type == EQUIP_REAGENT) || (equip_type == EQUIP_POTION) ||
@@ -863,7 +863,7 @@ void ItemsTable::GenerateItem(int treasure_level, unsigned int uTreasureType,
     }
 
     if (out_item->uItemID == ITEM_SPELLBOOK_LIGHT_DIVINE_INTERVENTION &&
-        !(unsigned __int16)_449B57_test_bit(pParty->_quest_bits, 239))
+        !(uint16_t)_449B57_test_bit(pParty->_quest_bits, 239))
         out_item->uItemID = ITEM_SPELLBOOK_LIGHT_SUN_BURST;
     if (pItemsTable->pItems[out_item->uItemID].uItemID_Rep_St)
         out_item->uAttributes = 0;
@@ -999,7 +999,7 @@ bool ItemGen::GenerateArtifact() {
 static void AddToMap(
     std::map<int, std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>*>& maptoadd,
     int enchId, CHARACTER_ATTRIBUTE_TYPE attrId, int bonusValue /*= 0*/,
-    unsigned __int16 Player::*skillPtr /*= NULL*/) {
+    uint16_t Player::*skillPtr /*= NULL*/) {
     auto key = maptoadd.find(enchId);
     std::map<CHARACTER_ATTRIBUTE_TYPE, CEnchantment*>* currMap;
     if (key == maptoadd.end()) {
@@ -1445,15 +1445,15 @@ char* ItemGen::GetIconName() {
     return pItemsTable->pItems[this->uItemID].pIconName;
 }
 
-unsigned __int8 ItemGen::GetDamageDice() {
+uint8_t ItemGen::GetDamageDice() {
     return pItemsTable->pItems[this->uItemID].uDamageDice;
 }
 
-unsigned __int8 ItemGen::GetDamageRoll() {
+uint8_t ItemGen::GetDamageRoll() {
     return pItemsTable->pItems[this->uItemID].uDamageRoll;
 }
 
-unsigned __int8 ItemGen::GetDamageMod() {
+uint8_t ItemGen::GetDamageMod() {
     return pItemsTable->pItems[this->uItemID].uDamageMod;
 }
 

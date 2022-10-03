@@ -32,10 +32,10 @@ void OtherOverlayList::Reset() {
 int OtherOverlayList::_4418B1(int a2, int a3, int a4, int a5) { return 0; }
 
 //----- (004418B6) --------------------------------------------------------
-int OtherOverlayList::_4418B6(int uOverlayID, __int16 a3, int a4, int a5,
-                              __int16 a6) {
+int OtherOverlayList::_4418B6(int uOverlayID, int16_t a3, int a4, int a5,
+                              int16_t a6) {
     signed int v9;  // esi@6
-    __int16 v11;    // dx@11
+    int16_t v11;    // dx@11
 
     for (uint i = 0; i < 50; ++i) {
         if (this->pOverlays[i].field_6 <= 0) {
@@ -139,7 +139,7 @@ void OverlayList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
 
 //----- (00458E4F) --------------------------------------------------------
 bool OverlayList::FromFileTxt(const char *Args) {
-    __int32 v3;       // edi@1
+    int32_t v3;       // edi@1
     FILE *v4;         // eax@1
     unsigned int v5;  // esi@3
     void *v7;         // eax@9

@@ -18,7 +18,7 @@ unsigned int PlayerFrameTable::GetFrameIdByExpression(
 PlayerFrame *PlayerFrameTable::GetFrameBy_x(unsigned int uFramesetID,
                                             unsigned int uFrameID) {
     unsigned int v3;      // esi@1
-    __int16 v6;           // dx@2
+    int16_t v6;           // dx@2
     int v7;               // edx@3
     char *i;              // eax@3
     int v9;               // ecx@5
@@ -27,7 +27,7 @@ PlayerFrame *PlayerFrameTable::GetFrameBy_x(unsigned int uFramesetID,
     v3 = uFramesetID;
     if (this->pFrames[uFramesetID].uFlags & 1 &&
         (v6 = this->pFrames[uFramesetID].uAnimLength) != 0) {
-        v7 = ((signed int)uFrameID >> 3) % (unsigned __int16)v6;
+        v7 = ((signed int)uFrameID >> 3) % (uint16_t)v6;
         for (i = (char *)&this->pFrames[uFramesetID].uAnimTime;; i += 10) {
             v9 = *(short *)i;
             if (v7 <= v9) break;
@@ -95,9 +95,9 @@ void PlayerFrameTable::FromFile(void *data_mm6, void *data_mm7,
 //        void *v5;  // eax@10
 //        FILE *v6;  // ST0C_4@12
 //        char *i;   // eax@12
-//        //  __int16 v8; // ax@15
+//        //  int16_t v8; // ax@15
 //        //  const char *v9; // ST10_4@15
-//        //  unsigned __int16 v10; // ax@15
+//        //  uint16_t v10; // ax@15
 //        //  const char *v11; // ST0C_4@15
 //        int j;  // esi@15
 //        //  int v13; // eax@17

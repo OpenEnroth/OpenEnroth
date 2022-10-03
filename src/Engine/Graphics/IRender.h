@@ -34,7 +34,7 @@ struct RenderBillboard {
     float fov_x;
     float fov_y;
     int field_14_actor_id;
-    Sprite *hwsprite;  // signed __int16 HwSpriteID;
+    Sprite *hwsprite;  // int16_t HwSpriteID;
     int16_t uPalette;
     int16_t uIndoorSectorID;
     int16_t field_1E;  // flags

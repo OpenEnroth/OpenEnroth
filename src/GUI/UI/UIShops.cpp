@@ -239,7 +239,7 @@ void ShopDialogLearn(GUIWindow dialogwin) {
     uint item_num = 0;
     int all_text_height = 0;
 
-    int baseprice = (signed __int64)(p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
+    int baseprice = (int64_t)(p2DEvents[window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
     int pPrice = baseprice * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
     if (pPrice < baseprice / 3)
         pPrice = baseprice / 3;
@@ -806,7 +806,7 @@ void UIShop_Buy_Identify_Repair() {
     int v39;                   // eax@63
     int v42;                   // esi@74
     signed int v43;            // ebx@74
-    unsigned __int16 *pSkill;  // esi@77
+    uint16_t *pSkill;  // esi@77
     int v55;                   // [sp+0h] [bp-B4h]@26
     int a6;                    // [sp+98h] [bp-1Ch]@57
     int a3;                    // [sp+9Ch] [bp-18h]@53
@@ -1209,7 +1209,7 @@ void UIShop_Buy_Identify_Repair() {
         {
             if (IsSkillLearningDialogue(dialog_menu_id)) {
                 v42 = GetLearningDialogueSkill(dialog_menu_id);
-                v43 = (signed __int64)(p2DEvents[
+                v43 = (int64_t)(p2DEvents[
                     window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
                 uPriceItemService = v43 *
                     (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
@@ -1493,7 +1493,7 @@ void sub_4B1523_showSpellbookInfo(int spellItemId) {
     long v5;              // ecx@4
     int v6;               // eax@10
     char *v7;             // ST44_4@12
-    unsigned __int16 v8;  // ax@12
+    uint16_t v8;  // ax@12
     int v13;              // [sp+6Ch] [bp-8h]@4
     int v14;              // [sp+70h] [bp-4h]@4
 

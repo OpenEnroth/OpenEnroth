@@ -53,12 +53,12 @@ void Arena_SelectionFightLevel() {
             if (v0 >= (signed int)pActors.size() || (signed int)pActors.size() <= 0) {
                 uDialogueType = DIALOGUE_ARENA_REWARD;
                 ++*((char *)&pParty->monster_for_hunting_killed[3] +
-                    (unsigned __int8)pParty->field_7B5_in_arena_quest +
+                    (uint8_t)pParty->field_7B5_in_arena_quest +
                     1);  // Ritor1:I dont know
                 for (uint i = 0; i < 4; i++)
                     pParty->pPlayers[i].SetVariable(
                         VAR_Award,
-                        (unsigned __int8)pParty->field_7B5_in_arena_quest + 3);
+                        (uint8_t)pParty->field_7B5_in_arena_quest + 3);
                 pParty->PartyFindsGold(gold_transaction_amount, 0);
                 pAudioPlayer->PlaySound(SOUND_51heroism03, 0, 0, -1, 0, 0);
                 pParty->field_7B5_in_arena_quest = -1;
@@ -103,8 +103,8 @@ void ArenaFight() {
     int v18;                 // edx@53
     int i;                   // edi@55
     signed int v22;          // [sp-4h] [bp-144h]@51
-    __int16 v23[100] {};        // [sp+Ch] [bp-134h]@39
-    __int16 monster_ids[6] {};  // [sp+128h] [bp-18h]@56
+    int16_t v23[100] {};        // [sp+Ch] [bp-134h]@39
+    int16_t monster_ids[6] {};  // [sp+128h] [bp-18h]@56
     int v26;                 // [sp+134h] [bp-Ch]@1
     int num_monsters;        // [sp+13Ch] [bp-4h]@17
 
@@ -172,7 +172,7 @@ void ArenaFight() {
         num_monsters = v4;
         v4 /= 2;
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_SQUIRE) {
-        // v5 = (signed __int64)((double)v26 * 1.5);
+        // v5 = (int64_t)((double)v26 * 1.5);
         num_monsters = (int)((double)v26 * 1.5);
         v4 /= 2;
     } else if (uDialogueType == DIALOGUE_ARENA_SELECT_KNIGHT) {
@@ -197,7 +197,7 @@ void ArenaFight() {
                     pMonsterStats->pInfos[i].uID,
                     MONSTER_SUPERTYPE_8)) {  //! MonsterStats::BelongsToSupertype(*((short
                                              //! *)v7 + 22), MONSTER_SUPERTYPE_8)
-                // v8 = (unsigned __int8)pMonsterStats->pInfos[i].uLevel;
+                // v8 = (uint8_t)pMonsterStats->pInfos[i].uLevel;
                 if (pMonsterStats->pInfos[i].uLevel >= v4) {
                     if (pMonsterStats->pInfos[i].uLevel <= num_monsters)
                         v23[v6++] = i;

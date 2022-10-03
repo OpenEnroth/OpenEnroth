@@ -204,7 +204,7 @@ void RenderOpenGL::SaveWinnersCertificate(const char *a1) {
 
     // reverse pixels from ogl (uses BL as 0,0)
     uint16_t *for_pixels = pPixels;
-    unsigned __int8 *p = sPixels;
+    uint8_t *p = sPixels;
     for (uint y = 0; y < (unsigned int)winheight; ++y) {
         for (uint x = 0; x < (unsigned int)winwidth; ++x) {
             p = sPixels + 3 * (int)(x) + 3 * (int)(winheight -1 - y) * winwidth;
@@ -363,7 +363,7 @@ void RenderOpenGL::EndLines2D() {
 }
 
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                                signed int uW, unsigned __int16 uColor) {
+                                signed int uW, uint16_t uColor) {
     float b = ((uColor & 0x1F)*8) / 255.0f;
     float g = (((uColor >> 5) & 0x3F)*4) / 255.0f;
     float r = (((uColor >> 11) & 0x1F)*8) / 255.0f;
@@ -1196,7 +1196,7 @@ void RenderOpenGL::DrawTransparentGreenShade(float u, float v, Image *pTexture) 
     DrawMasked(u, v, pTexture, 0, 0x07E0);
 }
 
-void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, unsigned __int16 mask) {
+void RenderOpenGL::DrawMasked(float u, float v, Image *pTexture, unsigned int color_dimming_level, uint16_t mask) {
     uint32_t col = colorTable.White.C32();
 
     if (mask)
@@ -1350,7 +1350,7 @@ unsigned short *RenderOpenGL::MakeScreenshot16(int width, int height) {
     } else {
         for (uint y = 0; y < (unsigned int)height; ++y) {
             for (uint x = 0; x < (unsigned int)width; ++x) {
-                unsigned __int8 *p;
+                uint8_t *p;
 
                 p = sPixels + 3 * (int)(x * interval_x + 8.0) + 3 * (int)(window->GetHeight() - (y * interval_y) - 8.0) * window->GetWidth();
 
@@ -1425,7 +1425,7 @@ int RenderOpenGL::GetActorsInViewport(int pDepth) {
             if(v3 == -1)
                 continue; // E.g. spell particle.
 
-            v5 = (unsigned __int16)pBillboardRenderList[v3].object_pid;
+            v5 = (uint16_t)pBillboardRenderList[v3].object_pid;
             if (PID_TYPE(v5) == OBJECT_Actor) {
                 if (pBillboardRenderList[v3].screen_space_z <= pDepth) {
                     v6 = PID_ID(v5);
@@ -2124,10 +2124,10 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
     int gl_format = GL_RGB;
         // native_format == IMAGE_FORMAT_A1R5G5B5 ? GL_RGBA : GL_RGB;
 
-    unsigned __int8 *pixels = nullptr;
+    uint8_t *pixels = nullptr;
     if (native_format == IMAGE_FORMAT_R5G6B5 || native_format == IMAGE_FORMAT_A1R5G5B5 || native_format == IMAGE_FORMAT_A8R8G8B8 || native_format == IMAGE_FORMAT_R8G8B8A8
          || native_format == IMAGE_FORMAT_R8G8B8) {
-        pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+        pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         // takes care of endian flip from literals here - hence BGRA
         gl_format = GL_BGRA;
     } else {
@@ -6258,7 +6258,7 @@ void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
 struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
     GLuint texid;
     auto t = (TextureOpenGL *)img;
-    //unsigned __int8 *pixels = (unsigned __int8 *)t->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+    //uint8_t *pixels = (uint8_t *)t->GetPixels(IMAGE_FORMAT_A8R8G8B8);
     texid = t->GetOpenGlTexture();
 
     //glGenTextures(1, &texid);

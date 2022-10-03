@@ -55,7 +55,7 @@ LightsData Lights;
 stru337_unused _DLV_header_unused;
 // std::array<stru352, 480> stru_F83B80;
 
-unsigned __int16 pDoorSoundIDsByLocationID[78] = {
+uint16_t pDoorSoundIDsByLocationID[78] = {
     300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
     300, 300, 300, 404, 302, 306, 308, 304, 308, 302, 400, 302, 300,
     308, 308, 306, 308, 308, 304, 300, 404, 406, 300, 400, 406, 404,
@@ -84,7 +84,7 @@ bool BLVFace::Deserialize(BLVFace_MM7 *data) {
     this->pVertexUIDs = nullptr;
     this->pVertexVIDs = nullptr;
     this->uFaceExtraID = data->uFaceExtraID;
-    // unsigned __int16  uBitmapID;
+    // uint16_t  uBitmapID;
     this->uSectorID = data->uSectorID;
     this->uBackSectorID = data->uBackSectorID;
     this->pBounding = data->pBounding;
@@ -753,7 +753,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     for (uint i = 0; i < pMapOutlines.size(); ++i) {
         BLVMapOutline *pVertex = &pMapOutlines[i];
-        if ((unsigned __int8)(1 << (7 - i % 8)) & _visible_outlines[i / 8])
+        if ((uint8_t)(1 << (7 - i % 8)) & _visible_outlines[i / 8])
             pVertex->uFlags |= 1;
     }
 
@@ -997,8 +997,8 @@ void BLVFace::_get_normals(Vec3i *a2, Vec3i *a3) {
             a1.z = 0.0;
             a1.Normalize();
 
-            a2->x = (signed __int64)(a1.x * 65536.0);
-            a2->y = (signed __int64)(a1.y * 65536.0);
+            a2->x = (int64_t)(a1.x * 65536.0);
+            a2->y = (int64_t)(a1.y * 65536.0);
             a2->z = 0;
 
             a3->y = 0;
@@ -1170,7 +1170,7 @@ void BLV_UpdateDoors() {
     // signed int v20;      // eax@24
     int v24;             // esi@25
     int v25;             // eax@25
-    signed __int64 v27 {};  // qtt@27
+    int64_t v27 {};  // qtt@27
     BLVFaceExtra *v28;   // esi@32
     int v32;             // eax@34
     Vec3s *v34;    // eax@35
@@ -1270,15 +1270,15 @@ void BLV_UpdateDoors() {
             {
             if ( !(face->uAttributes & FACE_TexMoveByDoor) )
             continue;
-            v83 = (unsigned __int64)(door->vDirection.x * (signed __int64)v70.x)
-            >> 16; v85 = (unsigned __int64)(door->vDirection.y * (signed
-            __int64)v70.y) >> 16; v84 = (unsigned __int64)(door->vDirection.z *
-            (signed __int64)v70.z) >> 16; v29 = open_distance; v28->sTextureDeltaU =
-            -((v83 + v85 + v84) * (signed __int64)open_distance) >> 16; v85 = (unsigned
-            __int64)(door->vDirection.x * (signed __int64)v67.x) >> 16; v83 =
-            (unsigned __int64)(door->vDirection.y * (signed __int64)v67.y) >>
-            16; v84 = (unsigned __int64)(door->vDirection.z * (signed
-            __int64)v67.z) >> 16; v31 = (v85 + v83 + v84) * (signed __int64)v29;
+            v83 = (uint64_t)(door->vDirection.x * (int64_t)v70.x)
+            >> 16; v85 = (uint64_t)(door->vDirection.y * (signed
+            int64_t)v70.y) >> 16; v84 = (uint64_t)(door->vDirection.z *
+            (int64_t)v70.z) >> 16; v29 = open_distance; v28->sTextureDeltaU =
+            -((v83 + v85 + v84) * (int64_t)open_distance) >> 16; v85 = (unsigned
+            int64_t)(door->vDirection.x * (int64_t)v67.x) >> 16; v83 =
+            (uint64_t)(door->vDirection.y * (int64_t)v67.y) >>
+            16; v84 = (uint64_t)(door->vDirection.z * (signed
+            int64_t)v67.z) >> 16; v31 = (v85 + v83 + v84) * (int64_t)v29;
             v32 = v31 >> 16;
             v57 = -v32;
             v28->sTextureDeltaV = v57;
@@ -1302,11 +1302,11 @@ void BLV_UpdateDoors() {
             v82 = v40;
             for (uint j = 1; j < face->uNumVertices; ++j) {
                 v43 = &pIndoor->pVertices[face->pVertexIDs[j]];
-                v76 = ((__int64)v70.z * v43->z + (__int64)v70.x * v43->x +
-                       (__int64)v70.y * v43->y) >>
+                v76 = ((int64_t)v70.z * v43->z + (int64_t)v70.x * v43->x +
+                       (int64_t)v70.y * v43->y) >>
                       16;
-                v77 = ((__int64)v67.x * v43->x + (__int64)v67.y * v43->y +
-                       (__int64)v43->z * v67.z) >>
+                v77 = ((int64_t)v67.x * v43->x + (int64_t)v67.y * v43->y +
+                       (int64_t)v43->z * v67.z) >>
                       16;
                 if (v76 < v39) v39 = v76;
                 if (v77 < v40) v40 = v77;

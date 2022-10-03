@@ -556,7 +556,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
     int v13;                      // edi@7
     int v14;                      // edx@9
                                   //  int v15; // eax@15
-    unsigned __int8 *pMapHeight;  // ebx@15
+    uint8_t *pMapHeight;  // ebx@15
     char *v17;                      // eax@15
     int v18;                      // ecx@15
     int v19;                      // esi@15
@@ -668,7 +668,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         if (v31 > 31.0) v31 = 31.0;
                         v44 = 2 * (v14 + v13 * this->field_10);
                         // pOutLocTerrain = pOutLocTerrain2;
-                        *((char *)this->pDmap.data() + v44 + 1) = (signed __int64)v31;
+                        *((char *)this->pDmap.data() + v44 + 1) = (int64_t)v31;
 
                         v32 = v49 - (v49 - 512);
                         v33 = (double)-((v42 - v40) * (v19 - v41));
@@ -688,7 +688,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         if (v38 < 0.0) v38 = 0.0;
                         if (v38 > 31.0) v38 = 31.0;
                         // v13 = v48;
-                        *((char *)this->pDmap.data() + v44) = (signed __int64)v38;
+                        *((char *)this->pDmap.data() + v44) = (int64_t)v38;
                         // v14 = v50;
                         result = v49;
                     }
@@ -709,7 +709,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
 int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
                                     int num_pixels) {
     int result;  // eax@2
-                        //  unsigned __int16 *v5; // edx@3
+                        //  uint16_t *v5; // edx@3
                         //  double v6; // st7@3
                         //  int v8; // eax@3
                         //  int v9; // eax@4
@@ -720,7 +720,7 @@ int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
                         //  char *v14; // esi@10
                         //  signed int v15; // ecx@10
                         //  char v16[256]; // [sp+4h] [bp-124h]@9
-                        //  unsigned __int16 *v17; // [sp+104h] [bp-24h]@3
+                        //  uint16_t *v17; // [sp+104h] [bp-24h]@3
                         //  float v22; // [sp+118h] [bp-10h]@3
                         //  float v23; // [sp+11Ch] [bp-Ch]@3
                         //  int i; // [sp+120h] [bp-8h]@3
@@ -767,14 +767,14 @@ int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
       }
       v11 = 1.0 / (double)a2a;
       a3a = v11;
-      v25 = (signed __int64)(a3a * v22);
-      i = (signed __int64)(a3a * v23);
+      v25 = (int64_t)(a3a * v22);
+      i = (int64_t)(a3a * v23);
       v12 = 0;
       a2b = num_b_bits + num_g_bits;
       while ( 1 )
       {
         v13 = v17[v12];
-        a3b = abs((__int64)(signed __int64)(v11 * v6) - ((signed int)(r_mask &
+        a3b = abs((int64_t)(int64_t)(v11 * v6) - ((signed int)(r_mask &
     v17[v12]) >> a2b)); BYTE3(a3b) = abs((signed)v25 - ((signed int)(g_mask &
     v13) >> num_b_bits)) + a3b; v16[v12++] = abs((signed)i - (signed)(b_mask &
     v13)) + BYTE3(a3b); if ( v12 >= 256 ) break;
@@ -784,9 +784,9 @@ int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
       v15 = 0;
       do
       {
-        if ( (unsigned __int8)v16[v15] < (signed int)v14 )
+        if ( (uint8_t)v16[v15] < (signed int)v14 )
         {
-          v14 = (char *)(unsigned __int8)v16[v15];
+          v14 = (char *)(uint8_t)v16[v15];
           result = v15;
         }
         ++v15;
@@ -1894,7 +1894,7 @@ void ODM_ProcessPartyActions() {
     bool v77;            // edx@297
     bool v78;            // ecx@303
     short *v79;             // ecx@314
-    __int16 v80;         // dx@317
+    int16_t v80;         // dx@317
     int pTerrainHeight;  // eax@321
     int v87;             // [sp-20h] [bp-B4h]@248
     int v97;             // [sp+Ch] [bp-88h]@180
@@ -2039,13 +2039,13 @@ void ODM_ProcessPartyActions() {
     _angle_y = pParty->sRotationZ;
     _angle_x = pParty->sRotationY;
     // v126 = pEventTimer->dt_fixpoint;
-    /*v119 = (Player **)((unsigned __int64)(pEventTimer->dt_fixpoint
-                                        * (signed __int64)((signed
+    /*v119 = (Player **)((uint64_t)(pEventTimer->dt_fixpoint
+                                        * (int64_t)((signed
        int)(pParty->field_20_prolly_turn_speed
                                                                       *
        TrigLUT->uIntegerPi) / 180)) >> 16);*/
-    __int64 dturn =
-        ((__int64) pEventTimer->dt_fixpoint * pParty->y_rotation_speed * TrigLUT->uIntegerPi / 180) >> 16;
+    int64_t dturn =
+        ((int64_t) pEventTimer->dt_fixpoint * pParty->y_rotation_speed * TrigLUT->uIntegerPi / 180) >> 16;
     while (pPartyActionQueue->uNumActions) {
         switch (pPartyActionQueue->Next()) {
             case PARTY_FlyUp:  // полёт вверх
@@ -2229,13 +2229,13 @@ void ODM_ProcessPartyActions() {
                     v128 = v1;
                     party_walking_flag = true;
                 } else {
-                    /*v2 += (unsigned __int64)(TrigLUT->Cos(_angle_y)
-                                     * (signed __int64)(signed int)(2 *
-                    (unsigned __int64)(signed __int64)((double)_walk_speed *
+                    /*v2 += (uint64_t)(TrigLUT->Cos(_angle_y)
+                                     * (int64_t)(signed int)(2 *
+                    (uint64_t)(int64_t)((double)_walk_speed *
                     fWalkSpeedMultiplier))) >> 16; v1 += (unsigned
-                    __int64)((signed int)TrigLUT->Sin(_angle_y)
-                                     * (signed __int64)(signed int)(2 *
-                    (unsigned __int64)(signed __int64)((double)_walk_speed *
+                    int64_t)((signed int)TrigLUT->Sin(_angle_y)
+                                     * (int64_t)(signed int)(2 *
+                    (uint64_t)(int64_t)((double)_walk_speed *
                     fWalkSpeedMultiplier))) >> 16;*/
                     if (engine->config->debug.TurboSpeed.Get()) {
                         v2 += dx * 12;
@@ -2678,7 +2678,7 @@ void ODM_ProcessPartyActions() {
                                 DMGT_PHISYCAL);
                             v110 = 20 - pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualEndurance());
                             pPlayers[i]->SetRecoveryTime(
-                                (signed __int64)((double)v110 * debug_non_combat_recovery_mul * flt_debugrecmod3));
+                                (int64_t)((double)v110 * debug_non_combat_recovery_mul * flt_debugrecmod3));
                         }
                         // v73 = pParty->vPosition.z;
                     }
@@ -2784,7 +2784,7 @@ void ODM_ProcessPartyActions() {
                             DMGT_PHISYCAL);
                         v110 = 20 - pPlayers[i]->GetParameterBonus(pPlayers[i]->GetActualEndurance());
                         pPlayers[i]->SetRecoveryTime(
-                            (signed __int64)((double)v110 * debug_non_combat_recovery_mul * flt_debugrecmod3));
+                            (int64_t)((double)v110 * debug_non_combat_recovery_mul * flt_debugrecmod3));
                     }
                     // v82 = pParty->vPosition.z;
                 }
@@ -3344,7 +3344,7 @@ unsigned int GetLevelFogColor() {
             int v2 = -(pWeather->bNight != 1);
             return (v2 & 0xE0E0E1) - 0xE0E0E1;
         } else {
-            __int64 v1 = (__int64)((1.0 - pOutdoor->fFogDensity) * 200.0 +
+            int64_t v1 = (int64_t)((1.0 - pOutdoor->fFogDensity) * 200.0 +
                                    pOutdoor->fFogDensity * 31.0);
             return v1 |
                    (((unsigned int)v1 | (((unsigned int)v1 | 0xFFFFFF00) << 8))
@@ -3379,7 +3379,7 @@ int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
                 if (isSky) v7 = 248;
                 return (255 - v7) << 24;
             }
-            v7 = (signed __int64)((screen_depth - (double)day_fogrange_1) /
+            v7 = (int64_t)((screen_depth - (double)day_fogrange_1) /
                                   ((double)day_fogrange_2 -
                                    (double)day_fogrange_1) *
                                   216.0);

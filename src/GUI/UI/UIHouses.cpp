@@ -339,8 +339,8 @@ static std::array<const char *, 19> _4F03B8_shop_background_names = {
     "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF", "MAGSHELF" } };
 
 struct ITEM_VARIATION {
-    unsigned __int16 treasure_level;
-    unsigned __int16 item_class[4];
+    uint16_t treasure_level;
+    uint16_t item_class[4];
 };
 
 int ItemAmountForShop(BuildingType buildingType) {
@@ -380,9 +380,9 @@ const ITEM_VARIATION shopArmr_variation_ord[28] = {
     { 4, { 33, 31, 32, 34 } }
 };
 
-const unsigned __int16 shopMagic_treasure_lvl[14] = { 0, 1, 1, 2, 2, 4, 4,
+const uint16_t shopMagic_treasure_lvl[14] = { 0, 1, 1, 2, 2, 4, 4,
 3, 2, 2, 2, 2, 2, 2 };
-const unsigned __int16 shopAlch_treasure_lvl[13] = { 0, 1, 1, 2, 2, 3, 3,
+const uint16_t shopAlch_treasure_lvl[13] = { 0, 1, 1, 2, 2, 3, 3,
 4, 4, 2, 2, 2, 2 };
 
 const ITEM_VARIATION shopWeap_variation_spc[15] = {
@@ -393,9 +393,9 @@ const ITEM_VARIATION shopWeap_variation_spc[15] = {
     { 4, { 24, 24, 27, 20 } }, { 4, { 30, 26, 26, 26 } }, { 4, { 28, 25, 28, 29 } }
 };
 
-const unsigned __int16 shopMagicSpc_treasure_lvl[14] = { 0, 2, 2, 3, 3, 5, 5,
+const uint16_t shopMagicSpc_treasure_lvl[14] = { 0, 2, 2, 3, 3, 5, 5,
 4, 3, 3, 3, 3, 3, 3 };
-const unsigned __int16 shopAlchSpc_treasure_lvl[13] = { 0, 2, 2, 3, 3, 4, 4,
+const uint16_t shopAlchSpc_treasure_lvl[13] = { 0, 2, 2, 3, 3, 4, 4,
 5, 5, 3, 2, 2, 2 };
 
 const ITEM_VARIATION shopArmr_variation_spc[28] = {
@@ -742,7 +742,7 @@ bool EnterHouse(HOUSE_ID uHouseID) {
         uCurrentHouse_Animation = p2DEvents[uHouseID - HOUSE_SMITH_EMERALD_ISLE].uAnimationID;
         in_current_building_type = pAnimatedRooms[uCurrentHouse_Animation].uBuildingType;
         if (in_current_building_type == BuildingType_Throne_Room && pParty->uFine) {  // going to jail
-            uCurrentHouse_Animation = (signed __int16)p2DEvents[186].uAnimationID;
+            uCurrentHouse_Animation = (int16_t)p2DEvents[186].uAnimationID;
             uHouseID = HOUSE_JAIL;
             pParty->GetPlayingTime().AddYears(1);  // += 123863040;
             in_current_building_type = pAnimatedRooms[p2DEvents[HOUSE_LORD_AND_JUDGE_EMERALD_ISLE].uAnimationID].uBuildingType;
@@ -801,7 +801,7 @@ bool EnterHouse(HOUSE_ID uHouseID) {
 
 //----- (0044606A) --------------------------------------------------------
 void PrepareHouse(HOUSE_ID house) {
-    __int16 uExitMapID;  // ax@2
+    int16_t uExitMapID;  // ax@2
                          //  int v7; // ebx@11
                          //  int v13; // [sp+30h] [bp-30h]@11
     int npc_id_arr[6];   // [sp+34h] [bp-2Ch]@1
@@ -874,7 +874,7 @@ void PlayHouseSound(unsigned int uHouseID, HouseSoundID sound) {
 void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     int experience_for_next_level;  // eax@5
     int v16;                        // eax@32
-    __int16 v24;                    // ax@163
+    int16_t v24;                    // ax@163
     signed int v36;                 // esi@227
     int pPrice;                     // ecx@227
 
@@ -893,7 +893,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (pPlayers[uActiveCharacter]->uLevel <
                     pMaxLevelPerTrainingHallType
                     [window_SpeakInHouse->wData.val - 89] &&
-                    (signed __int64)pPlayers[uActiveCharacter]->uExperience <
+                    (int64_t)pPlayers[uActiveCharacter]->uExperience <
                     1000 * experience_for_next_level)  // test experience
                     return;
             }
@@ -978,30 +978,30 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (!v16) {
                     while (1) {
                         v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((unsigned __int16)v24 < 115 ||
-                            (unsigned __int16)v24 > 132) {
-                            if (((unsigned __int16)v24 < 235 ||
-                                (unsigned __int16)v24 > 252) &&
-                                ((unsigned __int16)v24 < 133 ||
-                                (unsigned __int16)v24 > 150) &&
-                                    ((unsigned __int16)v24 < 0x97u ||
-                                (unsigned __int16)v24 > 0xBAu) &&
-                                        ((unsigned __int16)v24 < 0xBEu ||
-                                (unsigned __int16)v24 > 0xC0u) &&
-                                            ((unsigned __int16)v24 < 0xC4u ||
-                                (unsigned __int16)v24 > 0xC6u) &&
-                                                ((unsigned __int16)v24 < 0x2Bu ||
-                                (unsigned __int16)v24 > 0x2Du) &&
-                                                    ((unsigned __int16)v24 < 0xCDu ||
-                                (unsigned __int16)v24 > 0xCFu) &&
-                                                        ((unsigned __int16)v24 < 0x5Eu ||
-                                (unsigned __int16)v24 > 0x60u) &&
-                                                            ((unsigned __int16)v24 < 0xFDu ||
-                                (unsigned __int16)v24 > 0xFFu) &&
-                                                                ((unsigned __int16)v24 < 0x6Du ||
-                                (unsigned __int16)v24 > 0x6Fu) &&
-                                                                    ((unsigned __int16)v24 < 0x61u ||
-                                (unsigned __int16)v24 > 0x63u))
+                        if ((uint16_t)v24 < 115 ||
+                            (uint16_t)v24 > 132) {
+                            if (((uint16_t)v24 < 235 ||
+                                (uint16_t)v24 > 252) &&
+                                ((uint16_t)v24 < 133 ||
+                                (uint16_t)v24 > 150) &&
+                                    ((uint16_t)v24 < 0x97u ||
+                                (uint16_t)v24 > 0xBAu) &&
+                                        ((uint16_t)v24 < 0xBEu ||
+                                (uint16_t)v24 > 0xC0u) &&
+                                            ((uint16_t)v24 < 0xC4u ||
+                                (uint16_t)v24 > 0xC6u) &&
+                                                ((uint16_t)v24 < 0x2Bu ||
+                                (uint16_t)v24 > 0x2Du) &&
+                                                    ((uint16_t)v24 < 0xCDu ||
+                                (uint16_t)v24 > 0xCFu) &&
+                                                        ((uint16_t)v24 < 0x5Eu ||
+                                (uint16_t)v24 > 0x60u) &&
+                                                            ((uint16_t)v24 < 0xFDu ||
+                                (uint16_t)v24 > 0xFFu) &&
+                                                                ((uint16_t)v24 < 0x6Du ||
+                                (uint16_t)v24 > 0x6Fu) &&
+                                                                    ((uint16_t)v24 < 0x61u ||
+                                (uint16_t)v24 > 0x63u))
                                 break;
                         }
                         pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = rand() % 258 + 1;
@@ -1010,36 +1010,36 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (v16 == 1) {
                     while (1) {
                         v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((unsigned __int16)v24 < 115 ||
-                            (unsigned __int16)v24 > 132) {
-                            if (((unsigned __int16)v24 < 0xE8u ||
-                                (unsigned __int16)v24 > 0xF9u) &&
-                                ((unsigned __int16)v24 < 0x85u ||
-                                (unsigned __int16)v24 > 0x96u) &&
-                                    ((unsigned __int16)v24 < 0x97u ||
-                                (unsigned __int16)v24 > 0xBAu) &&
-                                        ((unsigned __int16)v24 < 0xBEu ||
-                                (unsigned __int16)v24 > 0xC0u) &&
-                                            ((unsigned __int16)v24 < 0xC4u ||
-                                (unsigned __int16)v24 > 0xC6u) &&
-                                                ((unsigned __int16)v24 < 0x2Bu ||
-                                (unsigned __int16)v24 > 0x2Du) &&
-                                                    ((unsigned __int16)v24 < 0x52u ||
-                                (unsigned __int16)v24 > 0x54u) &&
-                                                        ((unsigned __int16)v24 < 4 ||
-                                (unsigned __int16)v24 > 6) &&
-                                                            ((unsigned __int16)v24 < 0x37u ||
-                                (unsigned __int16)v24 > 0x39u) &&
-                                                                ((unsigned __int16)v24 < 0x3Au ||
-                                (unsigned __int16)v24 > 0x3Cu) &&
-                                                                    ((unsigned __int16)v24 < 0x3Du ||
-                                (unsigned __int16)v24 > 0x3Fu) &&
-                                                                        ((unsigned __int16)v24 < 0xFDu ||
-                                (unsigned __int16)v24 > 0xFFu) &&
-                                                                            ((unsigned __int16)v24 < 0x61u ||
-                                (unsigned __int16)v24 > 0x63u) &&
-                                                                                ((unsigned __int16)v24 < 0xCDu ||
-                                (unsigned __int16)v24 > 0xCFu))
+                        if ((uint16_t)v24 < 115 ||
+                            (uint16_t)v24 > 132) {
+                            if (((uint16_t)v24 < 0xE8u ||
+                                (uint16_t)v24 > 0xF9u) &&
+                                ((uint16_t)v24 < 0x85u ||
+                                (uint16_t)v24 > 0x96u) &&
+                                    ((uint16_t)v24 < 0x97u ||
+                                (uint16_t)v24 > 0xBAu) &&
+                                        ((uint16_t)v24 < 0xBEu ||
+                                (uint16_t)v24 > 0xC0u) &&
+                                            ((uint16_t)v24 < 0xC4u ||
+                                (uint16_t)v24 > 0xC6u) &&
+                                                ((uint16_t)v24 < 0x2Bu ||
+                                (uint16_t)v24 > 0x2Du) &&
+                                                    ((uint16_t)v24 < 0x52u ||
+                                (uint16_t)v24 > 0x54u) &&
+                                                        ((uint16_t)v24 < 4 ||
+                                (uint16_t)v24 > 6) &&
+                                                            ((uint16_t)v24 < 0x37u ||
+                                (uint16_t)v24 > 0x39u) &&
+                                                                ((uint16_t)v24 < 0x3Au ||
+                                (uint16_t)v24 > 0x3Cu) &&
+                                                                    ((uint16_t)v24 < 0x3Du ||
+                                (uint16_t)v24 > 0x3Fu) &&
+                                                                        ((uint16_t)v24 < 0xFDu ||
+                                (uint16_t)v24 > 0xFFu) &&
+                                                                            ((uint16_t)v24 < 0x61u ||
+                                (uint16_t)v24 > 0x63u) &&
+                                                                                ((uint16_t)v24 < 0xCDu ||
+                                (uint16_t)v24 > 0xCFu))
                                 break;
                         }
                         pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = rand() % 258 + 1;
@@ -1048,30 +1048,30 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (v16 == 2) {
                     while (1) {
                         v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((unsigned __int16)v24 < 0x73u ||
-                            (unsigned __int16)v24 > 0x84u) {
-                            if (((unsigned __int16)v24 < 0xE8u ||
-                                (unsigned __int16)v24 > 0xF9u) &&
-                                ((unsigned __int16)v24 < 0x85u ||
-                                (unsigned __int16)v24 > 0x96u) &&
-                                    ((unsigned __int16)v24 < 0x97u ||
-                                (unsigned __int16)v24 > 0xBAu) &&
-                                        ((unsigned __int16)v24 < 0xBEu ||
-                                (unsigned __int16)v24 > 0xC0u) &&
-                                            ((unsigned __int16)v24 < 0xC4u ||
-                                (unsigned __int16)v24 > 0xC6u) &&
-                                                ((unsigned __int16)v24 < 0x2Bu ||
-                                (unsigned __int16)v24 > 0x2Du) &&
-                                                    ((unsigned __int16)v24 < 0x31u ||
-                                (unsigned __int16)v24 > 0x33u) &&
-                                                        ((unsigned __int16)v24 < 0x34u ||
-                                (unsigned __int16)v24 > 0x36u) &&
-                                                            ((unsigned __int16)v24 < 0xFDu ||
-                                (unsigned __int16)v24 > 0xFFu) &&
-                                                                ((unsigned __int16)v24 < 0x61u ||
-                                (unsigned __int16)v24 > 0x63u) &&
-                                                                    ((unsigned __int16)v24 < 0x1Cu ||
-                                (unsigned __int16)v24 > 0x1Eu))
+                        if ((uint16_t)v24 < 0x73u ||
+                            (uint16_t)v24 > 0x84u) {
+                            if (((uint16_t)v24 < 0xE8u ||
+                                (uint16_t)v24 > 0xF9u) &&
+                                ((uint16_t)v24 < 0x85u ||
+                                (uint16_t)v24 > 0x96u) &&
+                                    ((uint16_t)v24 < 0x97u ||
+                                (uint16_t)v24 > 0xBAu) &&
+                                        ((uint16_t)v24 < 0xBEu ||
+                                (uint16_t)v24 > 0xC0u) &&
+                                            ((uint16_t)v24 < 0xC4u ||
+                                (uint16_t)v24 > 0xC6u) &&
+                                                ((uint16_t)v24 < 0x2Bu ||
+                                (uint16_t)v24 > 0x2Du) &&
+                                                    ((uint16_t)v24 < 0x31u ||
+                                (uint16_t)v24 > 0x33u) &&
+                                                        ((uint16_t)v24 < 0x34u ||
+                                (uint16_t)v24 > 0x36u) &&
+                                                            ((uint16_t)v24 < 0xFDu ||
+                                (uint16_t)v24 > 0xFFu) &&
+                                                                ((uint16_t)v24 < 0x61u ||
+                                (uint16_t)v24 > 0x63u) &&
+                                                                    ((uint16_t)v24 < 0x1Cu ||
+                                (uint16_t)v24 > 0x1Eu))
                                 break;
                         }
                         pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = rand() % 258 + 1;
@@ -1080,36 +1080,36 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (v16 == 3) {
                     while (1) {
                         v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((unsigned __int16)v24 < 0x73u ||
-                            (unsigned __int16)v24 > 0x84u) {
-                            if (((unsigned __int16)v24 < 0xE8u ||
-                                (unsigned __int16)v24 > 0xF9u) &&
-                                ((unsigned __int16)v24 < 0x85u ||
-                                (unsigned __int16)v24 > 0x96u) &&
-                                    ((unsigned __int16)v24 < 0x97u ||
-                                (unsigned __int16)v24 > 0xBAu) &&
-                                        ((unsigned __int16)v24 < 0xBEu ||
-                                (unsigned __int16)v24 > 0xC0u) &&
-                                            ((unsigned __int16)v24 < 0xC4u ||
-                                (unsigned __int16)v24 > 0xC6u) &&
-                                                ((unsigned __int16)v24 < 0x2Bu ||
-                                (unsigned __int16)v24 > 0x2Du) &&
-                                                    ((unsigned __int16)v24 < 0x5Eu ||
-                                (unsigned __int16)v24 > 0x60u) &&
-                                                        ((unsigned __int16)v24 < 0x43u ||
-                                (unsigned __int16)v24 > 0x45u) &&
-                                                            ((unsigned __int16)v24 < 0x4Fu ||
-                                (unsigned __int16)v24 > 0x51u) &&
-                                                                ((unsigned __int16)v24 < 0xC1u ||
-                                (unsigned __int16)v24 > 0xC3u) &&
-                                                                    ((unsigned __int16)v24 < 0x13u ||
-                                (unsigned __int16)v24 > 0x15u) &&
-                                                                        ((unsigned __int16)v24 < 0xFDu ||
-                                (unsigned __int16)v24 > 0xFFu) &&
-                                                                            ((unsigned __int16)v24 < 0x61u ||
-                                (unsigned __int16)v24 > 0x63u) &&
-                                                                                ((unsigned __int16)v24 < 0x6Au ||
-                                (unsigned __int16)v24 > 0x6Cu))
+                        if ((uint16_t)v24 < 0x73u ||
+                            (uint16_t)v24 > 0x84u) {
+                            if (((uint16_t)v24 < 0xE8u ||
+                                (uint16_t)v24 > 0xF9u) &&
+                                ((uint16_t)v24 < 0x85u ||
+                                (uint16_t)v24 > 0x96u) &&
+                                    ((uint16_t)v24 < 0x97u ||
+                                (uint16_t)v24 > 0xBAu) &&
+                                        ((uint16_t)v24 < 0xBEu ||
+                                (uint16_t)v24 > 0xC0u) &&
+                                            ((uint16_t)v24 < 0xC4u ||
+                                (uint16_t)v24 > 0xC6u) &&
+                                                ((uint16_t)v24 < 0x2Bu ||
+                                (uint16_t)v24 > 0x2Du) &&
+                                                    ((uint16_t)v24 < 0x5Eu ||
+                                (uint16_t)v24 > 0x60u) &&
+                                                        ((uint16_t)v24 < 0x43u ||
+                                (uint16_t)v24 > 0x45u) &&
+                                                            ((uint16_t)v24 < 0x4Fu ||
+                                (uint16_t)v24 > 0x51u) &&
+                                                                ((uint16_t)v24 < 0xC1u ||
+                                (uint16_t)v24 > 0xC3u) &&
+                                                                    ((uint16_t)v24 < 0x13u ||
+                                (uint16_t)v24 > 0x15u) &&
+                                                                        ((uint16_t)v24 < 0xFDu ||
+                                (uint16_t)v24 > 0xFFu) &&
+                                                                            ((uint16_t)v24 < 0x61u ||
+                                (uint16_t)v24 > 0x63u) &&
+                                                                                ((uint16_t)v24 < 0x6Au ||
+                                (uint16_t)v24 > 0x6Cu))
                                 break;
                         }
                         pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = rand() % 258 + 1;
@@ -1118,44 +1118,44 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
                 if (v16 == 4) {
                     while (1) {
                         v24 = pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE];
-                        if ((unsigned __int16)v24 < 0x73u ||
-                            (unsigned __int16)v24 > 0x84u) {
-                            if (((unsigned __int16)v24 < 0xE8u ||
-                                (unsigned __int16)v24 > 0xF9u) &&
-                                ((unsigned __int16)v24 < 0x85u ||
-                                (unsigned __int16)v24 > 0x96u) &&
-                                    ((unsigned __int16)v24 < 0x97u ||
-                                (unsigned __int16)v24 > 0xBAu) &&
-                                        ((unsigned __int16)v24 < 0xBEu ||
-                                (unsigned __int16)v24 > 0xC0u) &&
-                                            ((unsigned __int16)v24 < 0xC4u ||
-                                (unsigned __int16)v24 > 0xC6u) &&
-                                                ((unsigned __int16)v24 < 0x2Bu ||
-                                (unsigned __int16)v24 > 0x2Du) &&
-                                                    ((unsigned __int16)v24 < 0x6Du ||
-                                (unsigned __int16)v24 > 0x6Fu) &&
-                                                        ((unsigned __int16)v24 < 0x46u ||
-                                (unsigned __int16)v24 > 0x48u) &&
-                                                            ((unsigned __int16)v24 < 0x100u ||
-                                (unsigned __int16)v24 > 0x102u) &&
-                                                                ((unsigned __int16)v24 < 0xD9u ||
-                                (unsigned __int16)v24 > 0xDBu) &&
-                                                                    ((unsigned __int16)v24 < 0xC7u ||
-                                (unsigned __int16)v24 > 0xC9u) &&
-                                                                        ((unsigned __int16)v24 < 0xE5u ||
-                                (unsigned __int16)v24 > 0xE7u) &&
-                                                                            ((unsigned __int16)v24 < 0xDFu ||
-                                (unsigned __int16)v24 > 0xE1u) &&
-                                                                                ((unsigned __int16)v24 < 0x5Bu ||
-                                (unsigned __int16)v24 > 0x5Du) &&
-                                                                                    ((unsigned __int16)v24 < 0x49u ||
-                                (unsigned __int16)v24 > 0x4Bu) &&
-                                                                                        ((unsigned __int16)v24 < 0xFDu ||
-                                (unsigned __int16)v24 > 0xFFu) &&
-                                                                                            ((unsigned __int16)v24 < 0x61u ||
-                                (unsigned __int16)v24 > 0x63u) &&
-                                                                                                ((unsigned __int16)v24 < 0x10u ||
-                                (unsigned __int16)v24 > 0x12u))
+                        if ((uint16_t)v24 < 0x73u ||
+                            (uint16_t)v24 > 0x84u) {
+                            if (((uint16_t)v24 < 0xE8u ||
+                                (uint16_t)v24 > 0xF9u) &&
+                                ((uint16_t)v24 < 0x85u ||
+                                (uint16_t)v24 > 0x96u) &&
+                                    ((uint16_t)v24 < 0x97u ||
+                                (uint16_t)v24 > 0xBAu) &&
+                                        ((uint16_t)v24 < 0xBEu ||
+                                (uint16_t)v24 > 0xC0u) &&
+                                            ((uint16_t)v24 < 0xC4u ||
+                                (uint16_t)v24 > 0xC6u) &&
+                                                ((uint16_t)v24 < 0x2Bu ||
+                                (uint16_t)v24 > 0x2Du) &&
+                                                    ((uint16_t)v24 < 0x6Du ||
+                                (uint16_t)v24 > 0x6Fu) &&
+                                                        ((uint16_t)v24 < 0x46u ||
+                                (uint16_t)v24 > 0x48u) &&
+                                                            ((uint16_t)v24 < 0x100u ||
+                                (uint16_t)v24 > 0x102u) &&
+                                                                ((uint16_t)v24 < 0xD9u ||
+                                (uint16_t)v24 > 0xDBu) &&
+                                                                    ((uint16_t)v24 < 0xC7u ||
+                                (uint16_t)v24 > 0xC9u) &&
+                                                                        ((uint16_t)v24 < 0xE5u ||
+                                (uint16_t)v24 > 0xE7u) &&
+                                                                            ((uint16_t)v24 < 0xDFu ||
+                                (uint16_t)v24 > 0xE1u) &&
+                                                                                ((uint16_t)v24 < 0x5Bu ||
+                                (uint16_t)v24 > 0x5Du) &&
+                                                                                    ((uint16_t)v24 < 0x49u ||
+                                (uint16_t)v24 > 0x4Bu) &&
+                                                                                        ((uint16_t)v24 < 0xFDu ||
+                                (uint16_t)v24 > 0xFFu) &&
+                                                                                            ((uint16_t)v24 < 0x61u ||
+                                (uint16_t)v24 > 0x63u) &&
+                                                                                                ((uint16_t)v24 < 0x10u ||
+                                (uint16_t)v24 > 0x12u))
                                 break;
                         }
                         pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] = rand() % 258 + 1;
@@ -1170,7 +1170,7 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
             } else {
                 if (pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE] > 0) {  // get prize
                     pParty->PartyFindsGold(
-                        100 * pMonsterStats->pInfos[(unsigned __int16)pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel, 0);
+                        100 * pMonsterStats->pInfos[(uint16_t)pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel, 0);
                     for (uint i = 0; i < 4; ++i)
                         pParty->pPlayers[i].SetVariable(VAR_Award, Award_BountiesCollected);
                     pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel;
@@ -1320,12 +1320,12 @@ void OnSelectShopDialogueOption(DIALOGUE_TYPE option) {
     default:
     {
         if (IsSkillLearningDialogue(option)) {
-            v36 = (signed __int64)(p2DEvents[
+            v36 = (int64_t)(p2DEvents[
                     window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
             if (p2DEvents[window_SpeakInHouse->wData.val - 1].uType >= BuildingType_FireGuild &&
                 p2DEvents[window_SpeakInHouse->wData.val - 1].uType <= BuildingType_SelfGuild) {
                 // guild prices use the other multipler
-                v36 = (signed __int64)(p2DEvents[
+                v36 = (int64_t)(p2DEvents[
                     window_SpeakInHouse->wData.val - 1].fPriceMultiplier * 500.0);
             }
 
@@ -1551,7 +1551,7 @@ void TownHallDialog() {
     int v17;                      // ebx@28
     GUIButton *pButton;           // eax@30
     int pTextHeight;              // eax@30
-    unsigned __int16 pTextColor;  // ax@30
+    uint16_t pTextColor;  // ax@30
     int v29;                      // [sp+10Ch] [bp-10h]@28
     int v31;                      // [sp+114h] [bp-8h]@29
     GUIFont *pOutString;          // [sp+118h] [bp-4h]@21
@@ -1776,9 +1776,9 @@ void TavernDialog() {
                                     //  signed int v53; // edi@81
     const char *pText;              // [sp-4h] [bp-278h]@93
     unsigned int pTopic1Height;     // [sp+26Fh] [bp-5h]@55
-    unsigned __int8 pTopic2Height;  // [sp+267h] [bp-Dh]@57
-    unsigned __int8 pTopic3Height;  // [sp+253h] [bp-21h]@59
-    unsigned __int8 pTopic4Height = 0;
+    uint8_t pTopic2Height;  // [sp+267h] [bp-Dh]@57
+    uint8_t pTopic3Height;  // [sp+253h] [bp-21h]@59
+    uint8_t pTopic4Height = 0;
     int pTextHeight;
     int all_text_height;  // [sp+260h] [bp-14h]@18
     GUIFont *pOutString;
@@ -1991,7 +1991,7 @@ void TavernDialog() {
     {
         if (!HouseUI_CheckIfPlayerCanInteract()) return;
         pSkillCount = 0;
-        v9 = (signed __int64)(p2DEvents[
+        v9 = (int64_t)(p2DEvents[
             window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
         pPriceSkill = v9 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
         if (pPriceSkill < v9 / 3) pPriceSkill = v9 / 3;
@@ -2089,11 +2089,11 @@ void TavernDialog() {
 void TempleDialog() {
     int pPrice;                   // edi@1
     int pTextHeight;              // eax@11
-    unsigned __int16 pTextColor;  // ax@21
+    uint16_t pTextColor;  // ax@21
     DDM_DLV_Header *ddm;          // edi@29
     unsigned int v30;             // edx@36
     GUIButton *pButton;           // edi@64
-    unsigned __int8 index;        // [sp+1B7h] [bp-Dh]@64
+    uint8_t index;        // [sp+1B7h] [bp-Dh]@64
     int v64;                      // [sp+1B8h] [bp-Ch]@6
     unsigned int pCurrentItem;    // [sp+1BCh] [bp-8h]@6
     int all_text_height;          // [sp+1C0h] [bp-4h]@6
@@ -2258,7 +2258,7 @@ void TempleDialog() {
                 ddm->uReputation = ddm->uReputation - 1;
                 if (ddm->uReputation - 1 < -5) ddm->uReputation = -5;
             }
-            if ((unsigned __int8)byte_F8B1EF[uActiveCharacter] == pParty->uCurrentDayOfMonth % 7) {
+            if ((uint8_t)byte_F8B1EF[uActiveCharacter] == pParty->uCurrentDayOfMonth % 7) {
                 if (ddm->uReputation <= -5) {
                     v30 = pParty->uCurrentDayOfMonth % 7 + 1;
                     v30 |= 0x80;
@@ -2311,7 +2311,7 @@ void TempleDialog() {
         if (HouseUI_CheckIfPlayerCanInteract()) {
             all_text_height = 0;
             pCurrentItem =
-                (signed __int64)(p2DEvents[
+                (int64_t)(p2DEvents[
                     window_SpeakInHouse->wData.val -
                     1]
                     .flt_24 *
@@ -2346,7 +2346,7 @@ void TempleDialog() {
 }
 
 void TrainingDialog(const char *s) {
-    unsigned __int64 v5;  // edi@3
+    uint64_t v5;  // edi@3
     int v8;               // edx@4
     double v9;            // st7@6
     signed int v10;       // esi@6
@@ -2381,7 +2381,7 @@ void TrainingDialog(const char *s) {
         if (v8 == 4) v8 = 3;
         v9 = (double)pPlayers[uActiveCharacter]->uLevel;
         v69 = v8;
-        v10 = (signed __int64)(v9 *
+        v10 = (int64_t)(v9 *
             p2DEvents[window_SpeakInHouse->wData.val - 1]
             .fPriceMultiplier *
             (double)v8);
@@ -2487,7 +2487,7 @@ void TrainingDialog(const char *s) {
                 pMaxLevelPerTrainingHallType
                 [window_SpeakInHouse->wData.val -
                 HOUSE_TRAINING_HALL_EMERALD_ISLE]) {
-                if ((signed __int64)pPlayers[uActiveCharacter]->uExperience >=
+                if ((int64_t)pPlayers[uActiveCharacter]->uExperience >=
                     v5) {
                     if (pParty->GetGold() >= pPrice) {
                         pParty->TakeGold(pPrice);
@@ -2564,7 +2564,7 @@ void TrainingDialog(const char *s) {
     //-------------------------------------------------------------
     if (dialog_menu_id == DIALOGUE_LEARN_SKILLS) {
         if (HouseUI_CheckIfPlayerCanInteract()) {
-            v14 = (signed __int64)(p2DEvents[
+            v14 = (int64_t)(p2DEvents[
                 window_SpeakInHouse->wData.val - 1].flt_24 * 500.0);
             pPrice = v14 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
 
@@ -2614,14 +2614,14 @@ void MercenaryGuildDialog() {
     dialog_window.uFrameWidth = 143;
     dialog_window.uFrameZ = 334;
 
-    v32 = (unsigned __int8)
+    v32 = (uint8_t)
             (((p2DEvents[window_SpeakInHouse->wData.val - 1].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
-    v3 = (signed __int64)((double)v32 *
+    v3 = (int64_t)((double)v32 *
         p2DEvents[window_SpeakInHouse->wData.val - 1].fPriceMultiplier);
     pPrice = v3 * (100 - pPlayers[uActiveCharacter]->GetMerchant()) / 100;
     if (pPrice < v3 / 3) pPrice = v3 / 3;
     if (dialog_menu_id == DIALOGUE_MAIN) {
-        if (!_449B57_test_bit((unsigned __int8 *)pPlayers[uActiveCharacter]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
+        if (!_449B57_test_bit((uint8_t *)pPlayers[uActiveCharacter]->_achieved_awards_bits, word_4F0754[2 * window_SpeakInHouse->wData.val])) {
             // 171 looks like Mercenary Stronghold message from NPCNews.txt in MM6
             pTextHeight = pFontArrus->CalcTextHeight(pNPCTopics[171].pText, dialog_window.uFrameWidth, 0);
             dialog_window.DrawTitleText(pFontArrus, 0, (212 - pTextHeight) / 2 + 101, colorTable.PaleCanary.C16(), pNPCTopics[171].pText, 3);
@@ -2696,7 +2696,7 @@ void SimpleHouseDialog() {
     int v36;
     signed int all_text_height;   // ecx@54
     int v40;                      // edi@57
-    unsigned __int16 pTextColor;  // ax@60
+    uint16_t pTextColor;  // ax@60
     GUIFont *pTextFont;           // ebx@64
     int pTextHeight;
     GUIWindow w;      // [sp+Ch] [bp-110h]@64
@@ -2852,7 +2852,7 @@ void SimpleHouseDialog() {
                 StringPrintf("\f%05d%s\f%05d", colorTable.PaleCanary.C16(),
                     v31, colorTable.White.C16())
                 .c_str(),
-                100 * (unsigned __int8)v29[8]);
+                100 * (uint8_t)v29[8]);
 
             pButton->sLabel.clear();
             continue;

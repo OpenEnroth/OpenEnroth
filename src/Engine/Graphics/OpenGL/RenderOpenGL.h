@@ -75,7 +75,7 @@ class RenderOpenGL : public RenderBase {
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
     virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                              signed int uW, unsigned __int16 uColor) override;
+                              signed int uW, uint16_t uColor) override;
 
     virtual void ClearZBuffer() override;
     virtual void RestoreFrontBuffer() override;
@@ -137,7 +137,7 @@ class RenderOpenGL : public RenderBase {
 
     virtual void DrawMasked(float u, float v, class Image *img,
                             unsigned int color_dimming_level,
-                            unsigned __int16 mask) override;
+                            uint16_t mask) override;
     virtual void DrawTextureGrayShade(float u, float v, class Image *a4) override;
     virtual void DrawTransparentRedShade(float u, float v, class Image *a4) override;
     virtual void DrawTransparentGreenShade(float u, float v,

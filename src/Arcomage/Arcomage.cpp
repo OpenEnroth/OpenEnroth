@@ -54,7 +54,7 @@ int ApplyDamageToBuildings(int player_num, int damage);
 void GameResultsApply();
 
 void am_DrawText(const std::string &str, Point *pXY);
-void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill);
+void DrawRect(Rect *pXYZW, uint16_t uColor, char bSolidFill);
 int rand_interval(int min, int max);  // idb
 
 unsigned int R8G8B8_to_TargetFormat(int uColor) {
@@ -62,16 +62,16 @@ unsigned int R8G8B8_to_TargetFormat(int uColor) {
 }
 
 struct ArcomageStartConditions {
-    __int16 max_tower;
-    __int16 max_resources;
-    __int16 tower_height;
-    __int16 wall_height;
-    __int16 quarry_level;
-    __int16 magic_level;
-    __int16 zoo_level;
-    __int16 bricks_amount;
-    __int16 gems_amount;
-    __int16 beasts_amount;
+    int16_t max_tower;
+    int16_t max_resources;
+    int16_t tower_height;
+    int16_t wall_height;
+    int16_t quarry_level;
+    int16_t magic_level;
+    int16_t zoo_level;
+    int16_t bricks_amount;
+    int16_t gems_amount;
+    int16_t beasts_amount;
     int mastery_lvl;
 };
 
@@ -526,7 +526,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
 bool ArcomageGame::LoadSprites() {
     // load layout sprite
     pArcomageGame->pSprites = assets->GetImage_PCXFromIconsLOD("sprites.pcx");
-    pArcomageGame->pSpritesPixels = (unsigned __int16 *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_R5G6B5);
+    pArcomageGame->pSpritesPixels = (uint16_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_R5G6B5);
 
     // mask out blue
     uint32_t *pix = (uint32_t *)pArcomageGame->pSprites->GetPixels(IMAGE_FORMAT_A8R8G8B8);
@@ -3017,7 +3017,7 @@ void am_DrawText(const std::string &str, Point *pXY) {
                              0, str, false, 0, 0);
 }
 
-void DrawRect(Rect *pXYZW, unsigned __int16 uColor, char bSolidFill) {
+void DrawRect(Rect *pXYZW, uint16_t uColor, char bSolidFill) {
     if (bSolidFill) {
         int width = pXYZW->z - pXYZW->x;
         int height = pXYZW->w - pXYZW->y;

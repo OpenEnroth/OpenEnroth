@@ -454,7 +454,7 @@ void Game::EventLoop() {
     BLVFace *pBLVFace;          // ecx@410
     ODMFace *pODMFace;          // ecx@412
     CastSpellInfo *pSpellInfo;  // ecx@415
-    __int16 v53;                // ax@431
+    int16_t v53;                // ax@431
     int v54;                    // eax@432
     int v55;                    // ecx@432
     int v56;                    // edx@432
@@ -462,12 +462,12 @@ void Game::EventLoop() {
     Player *pPlayer;            // edx@442
     unsigned int pMapNum;       // eax@445
     signed int v60;             // ST64_4@459
-    __int16 v63;                // dx@479
+    int16_t v63;                // dx@479
     unsigned int v64;           // eax@486
     int v65;                    // ecx@486
     int v66;                    // eax@488
     // char *v67;                  // eax@489
-    __int16 v68;                // dx@498
+    int16_t v68;                // dx@498
     // int v70;                    // eax@525
     // int v71;                    // edi@527
     // NPCData *pNPCData3;         // esi@527
@@ -980,7 +980,7 @@ void Game::EventLoop() {
                         new OnButtonClick2(626, 179, 0, 0, pBtn_NPCRight);
                         v37 = (pParty->pHirelings[0].pName != 0) +
                               (pParty->pHirelings[1].pName != 0) +
-                              (unsigned __int8)pParty->cNonHireFollowers - 2;
+                              (uint8_t)pParty->cNonHireFollowers - 2;
                         // v37 is max scroll position
                         if (pParty->hirelingScrollPosition < v37) {
                             ++pParty->hirelingScrollPosition;
@@ -1170,7 +1170,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_CastSpell_Telekinesis:
                     HEXRAYS_LOWORD(v42) = vis->get_picked_object_zbuf_val().object_pid;
-                    v44 = (unsigned __int16)v42;
+                    v44 = (uint16_t)v42;
                     v45 = PID_TYPE(v44);
                     uNumSeconds = v44;
                     v46 = PID_ID(v44);
@@ -1392,7 +1392,7 @@ void Game::EventLoop() {
                         pTurnEngine->ApplyPlayerAction();
                     } else {
                         pPlayer9->SetRecoveryTime(
-                            (__int64)(debug_non_combat_recovery_mul *
+                            (int64_t)(debug_non_combat_recovery_mul *
                                              (double)sRecoveryTime *
                                              flt_debugrecmod3));
                     }
@@ -1481,7 +1481,7 @@ void Game::EventLoop() {
                         Actor::InitializeActors();
                     }
 
-                    pParty->pPlayers[(unsigned __int8)town_portal_caster_id].CanCastSpell(0x14u);
+                    pParty->pPlayers[(uint8_t)town_portal_caster_id].CanCastSpell(0x14u);
                     pMessageQueue_50CBD0->AddGUIMessage(UIMSG_Escape, 1, 0);
                     continue;
                 case UIMSG_HintTownPortal: {
@@ -2314,7 +2314,7 @@ void Game::EventLoop() {
                     continue;
                 case UIMSG_F:  // what event?
                     __debugbreak();
-                    //pButton2 = (GUIButton *)(unsigned __int16)vis->get_picked_object_zbuf_val().object_pid;
+                    //pButton2 = (GUIButton *)(uint16_t)vis->get_picked_object_zbuf_val().object_pid;
                     __debugbreak();  // GUIWindow::Create(0, 0, 0, 0, WINDOW_F, (int)pButton2, 0);
                     continue;
                 case UIMSG_54:  // what event?

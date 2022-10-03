@@ -266,7 +266,7 @@ void EventProcessor(int uEventID, int targetObj, int canShowMessages,
     int v21;               // eax@40
     int v22;               // edx@40
     int v23;               // eax@40
-    unsigned __int16 v24;  // ax@45
+    uint16_t v24;  // ax@45
     LevelDecoration *v26;  // eax@55
     int v27;               // eax@57
     int pEventID;          // eax@58
@@ -826,7 +826,7 @@ LABEL_47:
                     break;
                 case EVENT_RandomGoTo:
                     // v124 = -1;
-                    v11 = (unsigned __int8)*(
+                    v11 = (uint8_t)*(
                         &_evt->v5 +
                         rand() % ((_evt->v5 != 0) + (_evt->v6 != 0) +
                                   (_evt->v7 != 0) + (_evt->v8 != 0) +
@@ -836,8 +836,8 @@ LABEL_47:
                     v4 = -1;
                     break;
                 case EVENT_ReceiveDamage:
-                    if ((unsigned __int8)_evt->v5 <= 3) {
-                        pParty->pPlayers[(unsigned __int8)_evt->v5]
+                    if ((uint8_t)_evt->v5 <= 3) {
+                        pParty->pPlayers[(uint8_t)_evt->v5]
                             .ReceiveDamage(EVT_DWORD(_evt->v7),
                                            (DAMAGE_TYPE)_evt->v6);
                         ++curr_seq_num;
@@ -1302,7 +1302,7 @@ bool sub_4465DF_check_season(int a1) {
 }
 
 //----- (00448CF4) --------------------------------------------------------
-void sub_448CF4_spawn_monsters(__int16 typeindex, __int16 level, int count,
+void sub_448CF4_spawn_monsters(int16_t typeindex, int16_t level, int count,
                                int x, int y, int z, int group,
                                unsigned int uUniqueName) {
     unsigned int map_id;        // eax@1

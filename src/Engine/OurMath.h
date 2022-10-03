@@ -13,8 +13,8 @@
 
 const float pi = static_cast<float>(M_PI);
 
-__int64 fixpoint_mul(int, int);
-__int64 fixpoint_div(int, int);
+int64_t fixpoint_mul(int, int);
+int64_t fixpoint_div(int, int);
 
 // These shouldn't compile:
 void fixpoint_mul(float, float) = delete;

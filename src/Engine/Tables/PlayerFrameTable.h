@@ -6,10 +6,10 @@
 #pragma pack(push, 1)
 struct PlayerFrame {
     CHARACTER_EXPRESSION_ID expression;
-    unsigned __int16 uTextureID;
-    __int16 uAnimTime;
-    __int16 uAnimLength;
-    __int16 uFlags;
+    uint16_t uTextureID;
+    int16_t uAnimTime;
+    int16_t uAnimLength;
+    int16_t uFlags;
 };
 #pragma pack(pop)
 

@@ -19,7 +19,7 @@ void OS_MsgBox(const char *msg, const char *title) {
 
 unsigned int OS_GetTime() { return GetTickCount(); }
 
-unsigned __int64 OS_GetPrecisionTime() { return timeGetTime(); }
+uint64_t OS_GetPrecisionTime() { return timeGetTime(); }
 
 void OS_ShowCursor(bool show) { ShowCursor(show ? 1 : 0); }
 

@@ -37,19 +37,19 @@ int TrigTableLookup::Atan2(int x, int y) const {
 //----- (0042EBBE) --------------------------------------------------------
 //----- (004453C0) mm6-----------------------------------------------------
 //----- (004A1760) mm6_chinese---------------------------------------------
-__int64 fixpoint_mul(int a1, int a2) {
-    return ((__int64)a1 * (__int64)a2) >> 16;
+int64_t fixpoint_mul(int a1, int a2) {
+    return ((int64_t)a1 * (int64_t)a2) >> 16;
 }
 
-// __int64 fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2) {
+// int64_t fixpoint_dot(int x1, int x2, int y1, int y2, int z1, int z2) {
 //    return fixpoint_mul(x1, x2) + fixpoint_mul(y1, y2) + fixpoint_mul(z1, z2);
 // }
 
 //----- (004A1780) mm6_chinese---------------------------------------------
-__int64 fixpoint_div(int a1, int a2) { return ((__int64)a1 << 16) / a2; }
+int64_t fixpoint_div(int a1, int a2) { return ((int64_t)a1 << 16) / a2; }
 
-// __int64 fixpoint_sub_unknown(int a1, int a2) {
-//    return (((__int64)a1 << 16) * a2) >> 16;
+// int64_t fixpoint_sub_unknown(int a1, int a2) {
+//    return (((int64_t)a1 << 16) * a2) >> 16;
 // }
 
 ////----- (0048B561) --------------------------------------------------------

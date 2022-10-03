@@ -1,37 +1,12 @@
 #pragma once
 #include <array>
-
-typedef unsigned int uint;
+#include <cstdint>
 
 #define PID(type, id) (uint16_t)((((8 * (id))) | (std::to_underlying(type))) & 0xFFFF)  // packed id
 #define PID_TYPE(pid) static_cast<ObjectType>((pid)&7)          // extract type
 #define PID_ID(pid) (uint32_t)(((pid)&0xFFFF) >> 3)  // extract value
 #define PID_INVALID (uint16_t)(-1)
 
-typedef unsigned int uint;
-
-#if defined(__GNUC__)
-typedef long long ll;
-typedef unsigned long long ull;
-#define __int64 long long
-#define __int32 int
-#define __int16 short
-#define __int8 char
-#define MAKELL(num) num##LL
-#define FMT_64 "ll"
-#elif defined(_MSC_VER)
-typedef __int64 ll;
-typedef unsigned __int64 ull;
-#define MAKELL(num) num##i64
-#define FMT_64 "I64"
-#elif defined(__BORLANDC__)
-typedef __int64 ll;
-typedef unsigned __int64 ull;
-#define MAKELL(num) num##i64
-#define FMT_64 "L"
-#else
-#error "unknown compiler"
-#endif
 typedef unsigned int uint;
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -46,18 +21,15 @@ typedef unsigned short uint16;
 typedef int int32;
 typedef signed int sint32;
 typedef unsigned int uint32;
-typedef ll int64;
-typedef ll sint64;
-typedef ull uint64;
+typedef int64_t int64;
+typedef int64_t sint64;
+typedef uint64_t uint64;
 
 // Partially defined types:
 #define _BYTE uint8
 #define _WORD uint16
 #define _DWORD uint32
 #define _QWORD uint64
-#if !defined(_MSC_VER)
-#define _LONGLONG __int128
-#endif
 
 #define HEXRAYS_LOBYTE(x) (*((_BYTE *)&(x)))    // low byte
 #define HEXRAYS_LOWORD(x) (*((_WORD *)&(x)))    // low word
@@ -148,10 +120,10 @@ struct TravelInfo {
 /*  374 */
 #pragma pack(push, 1)
 struct stat_coord {
-    __int16 x;
-    __int16 y;
-    __int16 width;
-    __int16 height;
+    int16_t x;
+    int16_t y;
+    int16_t width;
+    int16_t height;
 };
 #pragma pack(pop)
 extern std::array<stat_coord, 26> stat_string_coord;
@@ -165,7 +137,7 @@ struct stru336 {
     int field_C;
     int field_10;
     int field_14;
-    __int16 field_18[480];
-    __int16 field_3D8[480];
+    int16_t field_18[480];
+    int16_t field_3D8[480];
 };
 #pragma pack(pop)
