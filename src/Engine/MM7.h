@@ -1,5 +1,4 @@
 #pragma once
-#include <array>
 #include <cstdint>
 
 #define PID(type, id) (uint16_t)((((8 * (id))) | (std::to_underlying(type))) & 0xFFFF)  // packed id
@@ -103,17 +102,6 @@ struct TravelInfo {
     int field_1C;
 };
 #pragma pack(pop)
-
-/*  374 */
-#pragma pack(push, 1)
-struct stat_coord {
-    int16_t x;
-    int16_t y;
-    int16_t width;
-    int16_t height;
-};
-#pragma pack(pop)
-extern std::array<stat_coord, 26> stat_string_coord;
 
 /*  376 */
 #pragma pack(push, 1)
