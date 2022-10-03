@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Engine/Rect.h"
-#include "Utility/MemBuffer.h"
+#include "Utility/Blob.h"
 
 class IAudioDataSource {
  public:
@@ -16,12 +16,12 @@ class IAudioDataSource {
 
     virtual size_t GetSampleRate() = 0;
     virtual size_t GetChannelCount() = 0;
-    virtual PMemBuffer GetNextBuffer() = 0;
+    virtual std::shared_ptr<Blob> GetNextBuffer() = 0;
 };
 typedef std::shared_ptr<IAudioDataSource> PAudioDataSource;
 
 PAudioDataSource CreateAudioFileDataSource(const std::string &file_name);
-PAudioDataSource CreateAudioBufferDataSource(PMemBuffer buffer);
+PAudioDataSource CreateAudioBufferDataSource(std::shared_ptr<Blob> buffer);
 
 class IAudioTrack {
  public:
@@ -59,7 +59,7 @@ class IAudioSample {
 };
 typedef std::shared_ptr<IAudioSample> PAudioSample;
 
-PAudioSample CreateAudioSample(PMemBuffer buffer);
+PAudioSample CreateAudioSample(std::shared_ptr<Blob> buffer);
 
 class IVideoDataSource {
  public:
@@ -72,7 +72,7 @@ class IVideoDataSource {
     virtual size_t GetFrameRate() = 0;
     virtual size_t GetWidth() = 0;
     virtual size_t GetHeight() = 0;
-    virtual PMemBuffer GetNextFrame() = 0;
+    virtual std::shared_ptr<Blob> GetNextFrame() = 0;
 };
 typedef std::shared_ptr<IAudioDataSource> PAudioDataSource;
 
@@ -87,7 +87,7 @@ class IMovie {
     virtual bool Play(bool loop = false) = 0;
     virtual bool Stop() = 0;
     virtual bool IsPlaying() const = 0;
-    virtual PMemBuffer GetFrame() = 0;
+    virtual std::shared_ptr<Blob> GetFrame() = 0;
     virtual std::string GetFormat() = 0;
     virtual void PlayBink(Rect rect) = 0;
 };

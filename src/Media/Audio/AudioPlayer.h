@@ -141,8 +141,8 @@ class AudioPlayer {
     void LoadAudioSnd();
     void ResumeSounds();
     bool FindSound(const std::string &pName, struct AudioPlayer::SoundHeader *header);
-    PMemBuffer LoadSound(const std::string &pSoundName);
-    PMemBuffer LoadSound(int uSoundID);
+    std::shared_ptr<Blob> LoadSound(const std::string &pSoundName);
+    std::shared_ptr<Blob> LoadSound(int uSoundID);
 
     /**
      * @param spell                     Spell ID of spell. Indexes into word_4EE088_sound_ids.

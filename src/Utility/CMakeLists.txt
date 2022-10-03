@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 3.20.4 FATAL_ERROR)
 
-set(UTILITY_SOURCES Color.cpp
+set(UTILITY_SOURCES Blob.cpp
+                    Color.cpp
                     DataPath.cpp
-                    MemBuffer.cpp
                     String.cpp)
 
-set(UTILITY_HEADERS Color.h
+set(UTILITY_HEADERS Blob.h
+                    Color.h
                     DataPath.h
                     Flags.h
                     FreeDeleter.h
                     IndexedArray.h
-                    MemBuffer.h
                     Memory.h
                     String.h
-                    Workaround.h)
+                    Workaround.h Blob.cpp)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)

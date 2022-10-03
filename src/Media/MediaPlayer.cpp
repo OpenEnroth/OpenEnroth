@@ -111,7 +111,7 @@ class AVStreamWrapper {
     AVCodec *dec;
 #endif
     AVCodecContext *dec_ctx;
-    std::queue<PMemBuffer, std::deque<PMemBuffer>> queue;
+    std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> queue;
 };
 
 class AVAudioStream : public AVStreamWrapper {
@@ -137,8 +137,8 @@ class AVAudioStream : public AVStreamWrapper {
         return true;
     }
 
-    PMemBuffer decode_frame(AVPacket *avpacket) {
-        PMemBuffer result;
+    std::shared_ptr<Blob> decode_frame(AVPacket *avpacket) {
+        std::shared_ptr<Blob> result;
         AVFrame *frame = av_frame_alloc();
 
         if (!queue.empty()) {
@@ -157,10 +157,9 @@ class AVAudioStream : public AVStreamWrapper {
                     av_frame_free(&frame);
                     return result;
                 }
-                PMemBuffer tmp_buf = AllocMemBuffer(
-                    frame->nb_samples * 2 * 2);
+                std::shared_ptr<Blob> tmp_buf = Blob::AllocateShared(frame->nb_samples * 2 * 2);
                 uint8_t *dst_channels[8] = { 0 };
-                dst_channels[0] = (uint8_t*)tmp_buf->GetData();
+                dst_channels[0] = (uint8_t*)tmp_buf->data();
                 int got_samples = swr_convert(
                     converter, dst_channels, frame->nb_samples,
                     (const uint8_t**)frame->data, frame->nb_samples);
@@ -211,8 +210,8 @@ class AVVideoStream : public AVStreamWrapper {
         return true;
     }
 
-    PMemBuffer decode_frame(AVPacket *avpacket) {
-        PMemBuffer result;
+    std::shared_ptr<Blob> decode_frame(AVPacket *avpacket) {
+        std::shared_ptr<Blob> result;
         AVFrame *frame = av_frame_alloc();
 
         if (!queue.empty()) {
@@ -236,8 +235,8 @@ class AVVideoStream : public AVStreamWrapper {
                     assert(false);
                 }
                 uint8_t *data[4] = { nullptr, nullptr, nullptr, nullptr };
-                PMemBuffer tmp_buf = AllocMemBuffer(frame->height * linesizes[0] * 2);
-                data[0] = (uint8_t*)tmp_buf->GetData();
+                std::shared_ptr<Blob> tmp_buf = Blob::AllocateShared(frame->height * linesizes[0] * 2);
+                data[0] = (uint8_t*)tmp_buf->data();
 
                 if (sws_scale(converter, frame->data, frame->linesize, 0, frame->height,
                     data, linesizes) < 0) {
@@ -259,7 +258,7 @@ class AVVideoStream : public AVStreamWrapper {
         return result;
     }
 
-    PMemBuffer last_frame;
+    std::shared_ptr<Blob> last_frame;
     double frames_per_second;
     double frame_len;
     SwsContext *converter;
@@ -377,7 +376,7 @@ class Movie : public IMovie {
         return Load("dummyFilename");
     }
 
-    virtual PMemBuffer GetFrame() {
+    virtual std::shared_ptr<Blob> GetFrame() {
         if (!playing) {
             return nullptr;
         }
@@ -428,11 +427,11 @@ class Movie : public IMovie {
             // Is this a packet from the video stream?
             // audio packet - queue into playing
             if (avpacket->stream_index == audio.stream_idx) {
-                PMemBuffer buffer = audio.decode_frame(avpacket);
+                std::shared_ptr<Blob> buffer = audio.decode_frame(avpacket);
                 if (buffer) {
                     provider->Stream16(audio_data_in_device,
-                                       buffer->GetSize() / 2,
-                                       buffer->GetData());
+                                       buffer->size() / 2,
+                                       buffer->data());
                 }
             } else if (avpacket->stream_index == video.stream_idx) {
               // Decode video frame
@@ -459,12 +458,12 @@ class Movie : public IMovie {
         Texture* tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
 
         // holds decoded audio
-        std::queue<PMemBuffer, std::deque<PMemBuffer>> buffq;
+        std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> buffq;
 
         // loop through once and add all audio packets to queue
         while (av_read_frame(format_ctx, &packet) >= 0) {
             if (packet.stream_index == audio.stream_idx) {
-                PMemBuffer buffer = audio.decode_frame(&packet);
+                std::shared_ptr<Blob> buffer = audio.decode_frame(&packet);
                 if (buffer) buffq.push(buffer);
             }
         }
@@ -501,7 +500,7 @@ class Movie : public IMovie {
 
             if (packet.stream_index == video.stream_idx) {
                 // check if anymore sound frames still in decoder
-                PMemBuffer buffer = audio.decode_frame(NULL);
+                std::shared_ptr<Blob> buffer = audio.decode_frame(NULL);
                 if (buffer) buffq.push(buffer);
 
                 // stream required sound frames
@@ -510,8 +509,8 @@ class Movie : public IMovie {
                 for (int i = 0; i < audioupdaterate; i++) {
                     if (!buffq.empty()) {
                         provider->Stream16(audio_data_in_device,
-                                            buffq.front()->GetSize() / 2,
-                                            buffq.front()->GetData());
+                                            buffq.front()->size() / 2,
+                                            buffq.front()->data());
                         buffq.pop();
                     }
                 }
@@ -519,14 +518,14 @@ class Movie : public IMovie {
                 // Decode video frame and show
                 lastvideopts = packet.pts;
                 video.decode_frame(&packet);
-                PMemBuffer tmp_buf = video.last_frame;
+                std::shared_ptr<Blob> tmp_buf = video.last_frame;
 
                 render->BeginScene();
                 // update pixels from buffer
                 uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
                 unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
                 unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
-                memcpy(pix, tmp_buf->GetData(), num_pixels_bytes);
+                memcpy(pix, tmp_buf->data(), num_pixels_bytes);
 
                 // update texture
                 render->Update_Texture(tex);
@@ -781,7 +780,7 @@ void MPlayer::HouseMovieLoop() {
         tex = render->CreateTexture_Blank(pMovie_Track->GetWidth(), pMovie_Track->GetHeight(), IMAGE_FORMAT_A8R8G8B8);
     }
 
-    PMemBuffer buffer = pMovie_Track->GetFrame();
+    std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
     if (buffer) {
         Rect rect;
         rect.x = 8;
@@ -793,7 +792,7 @@ void MPlayer::HouseMovieLoop() {
         uint32_t *pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
         unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
         unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
-        memcpy(pix, buffer->GetData(), num_pixels_bytes);
+        memcpy(pix, buffer->data(), num_pixels_bytes);
 
         // update texture
         render->Update_Texture(tex);
@@ -869,7 +868,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
 
             OS_Sleep(2);
 
-            PMemBuffer buffer = pMovie_Track->GetFrame();
+            std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
             if (!buffer) {
                 break;
             }
@@ -878,7 +877,7 @@ void MPlayer::PlayFullscreenMovie(const std::string &pFilename) {
             uint32_t* pix = (uint32_t*)tex->GetPixels(IMAGE_FORMAT_A8R8G8B8);
             unsigned int num_pixels = tex->GetWidth() * tex->GetHeight();
             unsigned int num_pixels_bytes = num_pixels * IMAGE_FORMAT_BytesPerPixel(IMAGE_FORMAT_A8R8G8B8);
-            memcpy(pix, buffer->GetData(), num_pixels_bytes);
+            memcpy(pix, buffer->data(), num_pixels_bytes);
 
             // update texture
             render->Update_Texture(tex);
@@ -1025,7 +1024,7 @@ class AudioBaseDataSource : public IAudioDataSource {
 
     virtual size_t GetSampleRate();
     virtual size_t GetChannelCount();
-    virtual PMemBuffer GetNextBuffer();
+    virtual std::shared_ptr<Blob> GetNextBuffer();
 
  protected:
     AVFormatContext *pFormatContext;
@@ -1033,7 +1032,7 @@ class AudioBaseDataSource : public IAudioDataSource {
     AVCodecContext *pCodecContext;
     SwrContext *pConverter;
     bool bOpened;
-    std::queue<PMemBuffer, std::deque<PMemBuffer>> queue;
+    std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> queue;
 };
 
 AudioBaseDataSource::AudioBaseDataSource() {
@@ -1149,8 +1148,8 @@ size_t AudioBaseDataSource::GetChannelCount() {
     return pCodecContext->channels;
 }
 
-PMemBuffer AudioBaseDataSource::GetNextBuffer() {
-    PMemBuffer buffer;
+std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
+    std::shared_ptr<Blob> buffer;
 
     if (!queue.empty()) {
         buffer = queue.front();
@@ -1161,7 +1160,7 @@ PMemBuffer AudioBaseDataSource::GetNextBuffer() {
 
     if (av_read_frame(pFormatContext, packet) >= 0) {
         if (avcodec_send_packet(pCodecContext, packet) >= 0) {
-            PMemBuffer result;
+            std::shared_ptr<Blob> result;
             AVFrame *frame = av_frame_alloc();
             int res = 0;
             while (res >= 0) {
@@ -1172,10 +1171,9 @@ PMemBuffer AudioBaseDataSource::GetNextBuffer() {
                 if (res < 0) {
                     return buffer;
                 }
-                PMemBuffer tmp_buf = AllocMemBuffer(
-                    frame->nb_samples * pCodecContext->channels * 2);
+                std::shared_ptr<Blob> tmp_buf = Blob::AllocateShared(frame->nb_samples * pCodecContext->channels * 2);
                 uint8_t *dst_channels[8] = {0};
-                dst_channels[0] = (uint8_t *)tmp_buf->GetData();
+                dst_channels[0] = (uint8_t *)tmp_buf->data();
                 int got_samples = swr_convert(
                     pConverter, dst_channels, frame->nb_samples,
                     (const uint8_t **)frame->data, frame->nb_samples);
@@ -1235,13 +1233,13 @@ bool AudioFileDataSource::Open() {
 
 class AudioBufferDataSource : public AudioBaseDataSource {
  public:
-    explicit AudioBufferDataSource(PMemBuffer buffer);
+    explicit AudioBufferDataSource(std::shared_ptr<Blob> buffer);
     virtual ~AudioBufferDataSource() {}
 
     bool Open();
 
  protected:
-    PMemBuffer buffer;
+    std::shared_ptr<Blob> buffer;
     uint8_t *buf_pos;
     uint8_t *buf_end;
     uint8_t *avio_ctx_buffer;
@@ -1255,7 +1253,7 @@ class AudioBufferDataSource : public AudioBaseDataSource {
     int64_t Seek(void *opaque, int64_t offset, int whence);
 };
 
-AudioBufferDataSource::AudioBufferDataSource(PMemBuffer buffer)
+AudioBufferDataSource::AudioBufferDataSource(std::shared_ptr<Blob> buffer)
     : buffer(buffer) {
     buf_pos = nullptr;
     buf_end = nullptr;
@@ -1289,8 +1287,8 @@ bool AudioBufferDataSource::Open() {
 
     pFormatContext->pb = avio_ctx;
 
-    buf_pos = (uint8_t*)buffer->GetData();
-    buf_end = buf_pos + buffer->GetSize();
+    buf_pos = (uint8_t*)buffer->data();
+    buf_end = buf_pos + buffer->size();
 
     // Open audio file
     if (avformat_open_input(&pFormatContext, nullptr, nullptr, nullptr) < 0) {
@@ -1328,12 +1326,12 @@ int64_t AudioBufferDataSource::seek(void *opaque, int64_t offset, int whence) {
 
 int64_t AudioBufferDataSource::Seek(void *opaque, int64_t offset, int whence) {
     if ((whence & AVSEEK_SIZE) == AVSEEK_SIZE) {
-        return buffer->GetSize();
+        return buffer->size();
     }
     int force = whence & AVSEEK_FORCE;
     whence &= ~AVSEEK_FORCE;
     whence &= ~AVSEEK_SIZE;
-    uint8_t *buf_start = (uint8_t*)buffer->GetData();
+    uint8_t *buf_start = (uint8_t*)buffer->data();
     if (whence == SEEK_SET) {
         buf_pos = std::clamp(buf_start + offset, buf_start, buf_end);
         return buf_pos - buf_start;
@@ -1354,9 +1352,8 @@ PAudioDataSource CreateAudioFileDataSource(const std::string &file_name) {
         source);
 }
 
-PAudioDataSource CreateAudioBufferDataSource(PMemBuffer buffer) {
+PAudioDataSource CreateAudioBufferDataSource(std::shared_ptr<Blob> buffer) {
     std::shared_ptr<AudioBufferDataSource> source =
         std::make_shared<AudioBufferDataSource>(buffer);
-    return std::dynamic_pointer_cast<IAudioDataSource, AudioBufferDataSource>(
-        source);
+    return std::dynamic_pointer_cast<IAudioDataSource, AudioBufferDataSource>(source);
 }

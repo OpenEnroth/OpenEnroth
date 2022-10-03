@@ -48,7 +48,7 @@ class SoundInfo {
     SOUND_TYPE eType;
     uint32_t uSoundID;
     uint32_t uFlags;
-    PMemBuffer buffer;
+    std::shared_ptr<Blob> buffer;
     PAudioSample sample;
     uint32_t last_pid = PID_INVALID;
 };
@@ -250,7 +250,7 @@ void AudioPlayer::PlaySound(SoundID eSoundID, int pid, unsigned int uNumRepeats,
     //logger->Info("AudioPlayer: sound id %u found as '%s'", eSoundID, si.sName.c_str());
 
     if (!si.sample) {
-        PMemBuffer buffer;
+        std::shared_ptr<Blob> buffer;
 
         if (si.sName == "") {  // enable this for bonus sound effects
             //logger->Info("AudioPlayer: trying to load bonus sound %u", eSoundID);
@@ -490,7 +490,7 @@ bool AudioPlayer::FindSound(const std::string &pName, AudioPlayer::SoundHeader *
 }
 
 
-PMemBuffer AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by ID index) - plays some interesting files
+std::shared_ptr<Blob> AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load sound by ID index) - plays some interesting files
     SoundHeader header = { 0 };
 
     if (uSoundID < 0 || uSoundID > mSoundHeaders.size())
@@ -507,47 +507,47 @@ PMemBuffer AudioPlayer::LoadSound(int uSoundID) {  // bit of a kludge (load soun
     header = it->second;
 
     // read into buffer
-    PMemBuffer buffer = AllocMemBuffer(header.uDecompressedSize);
+    std::shared_ptr<Blob> buffer = Blob::AllocateShared(header.uDecompressedSize);
 
     fAudioSnd.seekg(header.uFileOffset, std::ios_base::beg);
     if (header.uCompressedSize >= header.uDecompressedSize) {
         header.uCompressedSize = header.uDecompressedSize;
         if (header.uDecompressedSize) {
-            fAudioSnd.read((char*)buffer->GetData(), header.uDecompressedSize);
+            fAudioSnd.read((char*)buffer->data(), header.uDecompressedSize);
         } else {
             logger->Warning("Can't load sound file!");
         }
     } else {
-        PMemBuffer compressed = AllocMemBuffer(header.uCompressedSize);
-        fAudioSnd.read((char*)compressed->GetData(), header.uCompressedSize);
-        buffer = zlib::Uncompress(compressed);
+        std::shared_ptr<Blob> compressed = Blob::AllocateShared(header.uCompressedSize);
+        fAudioSnd.read((char*)compressed->data(), header.uCompressedSize);
+        buffer = std::make_shared<Blob>(zlib::Uncompress(*compressed));
     }
 
     return buffer;
 }
 
 
-PMemBuffer AudioPlayer::LoadSound(const std::string &pSoundName) {
+std::shared_ptr<Blob> AudioPlayer::LoadSound(const std::string &pSoundName) {
     SoundHeader header = { 0 };
     if (!FindSound(pSoundName, &header)) {
         logger->Warning("AudioPlayer: %s can't load sound header!", pSoundName.c_str());
         return nullptr;
     }
 
-    PMemBuffer buffer = AllocMemBuffer(header.uDecompressedSize);
+    std::shared_ptr<Blob> buffer = Blob::AllocateShared(header.uDecompressedSize);
 
     fAudioSnd.seekg(header.uFileOffset, std::ios_base::beg);
     if (header.uCompressedSize >= header.uDecompressedSize) {
         header.uCompressedSize = header.uDecompressedSize;
         if (header.uDecompressedSize) {
-            fAudioSnd.read((char*)buffer->GetData(), header.uDecompressedSize);
+            fAudioSnd.read((char*)buffer->data(), header.uDecompressedSize);
         } else {
             logger->Warning("AudioPlayer: %s can't load sound file!", pSoundName.c_str());
         }
     } else {
-        PMemBuffer compressed = AllocMemBuffer(header.uCompressedSize);
-        fAudioSnd.read((char*)compressed->GetData(), header.uCompressedSize);
-        buffer = zlib::Uncompress(compressed);
+        std::shared_ptr<Blob> compressed = Blob::AllocateShared(header.uCompressedSize);
+        fAudioSnd.read((char*)compressed->data(), header.uCompressedSize);
+        *buffer = zlib::Uncompress(*compressed);
     }
 
     return buffer;

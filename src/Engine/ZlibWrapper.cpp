@@ -1,5 +1,8 @@
 #include "Engine/ZlibWrapper.h"
-#include <string.h>
+
+#include <cstring>
+
+#include "Utility/FreeDeleter.h"
 
 namespace zlib {
 #include <zlib.h>
@@ -18,49 +21,45 @@ int Compress(void *dest, unsigned int *destLen, void *source, unsigned int sourc
     return result;
 }
 
-PMemBuffer Compress(PMemBuffer source) {
-    uLongf destLen = source->GetSize();
-    Bytef *dest = nullptr;
+Blob Compress(const Blob &source) {
+    uLongf destLen = source.size();
+    std::unique_ptr<void, FreeDeleter> dest;
     int res = Z_BUF_ERROR;
     while (res == Z_BUF_ERROR) {
-        if (dest != nullptr) {
-            free(dest);
-            dest = nullptr;
+        if (dest) {
+            dest.reset();
             destLen *= 2;
         }
-        dest = static_cast<Bytef *>(malloc(destLen));
-        res = compress(dest, &destLen, static_cast<const Bytef *>(source->GetData()), source->GetSize());
+        dest.reset(malloc(destLen));
+        res = compress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
     }
 
-    PMemBuffer result = nullptr;
+    Blob result;
     if (res == Z_OK) {
-        result = AllocMemBuffer(destLen);
-        memcpy(const_cast<void *>(result->GetData()), dest, destLen);
+        result = Blob::Allocate(destLen);
+        memcpy(result.data(), dest.get(), destLen);
     }
-    free(dest);
     return result;
 }
 
-PMemBuffer Uncompress(PMemBuffer source) {
-    uLongf destLen = source->GetSize() * 4;
-    Bytef *dest = nullptr;
+Blob Uncompress(const Blob &source) {
+    uLongf destLen = source.size() * 4;
+    std::unique_ptr<void, FreeDeleter> dest;
     int res = Z_BUF_ERROR;
     while (res == Z_BUF_ERROR) {
-        if (dest != nullptr) {
-            free(dest);
-            dest = nullptr;
+        if (dest) {
+            dest.reset();
             destLen *= 2;
         }
-        dest = static_cast<Bytef *>(malloc(destLen));
-        res = uncompress(dest, &destLen, static_cast<const Bytef *>(source->GetData()), source->GetSize());
+        dest.reset(malloc(destLen));
+        res = uncompress(static_cast<Bytef *>(dest.get()), &destLen, static_cast<const Bytef *>(source.data()), source.size());
     }
 
-    PMemBuffer result = nullptr;
+    Blob result;
     if (res == Z_OK) {
-        result = AllocMemBuffer(destLen);
-        memcpy(const_cast<void *>(result->GetData()), dest, destLen);
+        result = Blob::Allocate(destLen);
+        memcpy(result.data(), dest.get(), destLen);
     }
-    free(dest);
     return result;
 }
 
