@@ -11,9 +11,9 @@
 #include "GUI/GUIFont.h"
 
 /*
- *  Party, timers, NPCs and other stuff is binary dumped into resources/savegame
+ * Party, timers, NPCs and other stuff is binary dumped into resources/savegame
  * files, which limits ability to alter these structures without breaking
- * compatibility. This module is used to serialzie and deserialize native game
+ * compatibility. This module is used to serialize and deserialize native game
  * structures intro their current representations without breaking compatibility
  * with original files.
  */
@@ -45,6 +45,8 @@ struct SpriteFrame_MM6 {
     int16_t uPaletteIndex;
     int16_t uAnimTime;
 };
+static_assert(sizeof(SpriteFrame_MM6) == 56);
+
 
 struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
     SpriteFrame_MM7();
@@ -52,6 +54,8 @@ struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
     int16_t uAnimLength;
     int16_t _pad;
 };
+static_assert(sizeof(SpriteFrame_MM7) == 60);
+
 #pragma pack(pop)
 
 /*   93 */
@@ -132,6 +136,7 @@ struct NPCData_Image_MM7 {
     /* 48 */ int news_topic;
     /* 4C */
 };
+static_assert(sizeof(NPCData_Image_MM7) == 0x4C);
 
 struct ItemGen_Image_MM7 {
     ItemGen_Image_MM7();
@@ -169,6 +174,7 @@ struct ItemGen_Image_MM7 {
     /* 1B */ char field_1B;
     /* 1C */ uint64_t uExpireTime;
 };
+static_assert(sizeof(ItemGen_Image_MM7) == 0x24);
 
 struct SpellBuff_Image_MM7 {
     SpellBuff_Image_MM7();
@@ -184,6 +190,7 @@ struct SpellBuff_Image_MM7 {
     /* 0F */ uint8_t uFlags;
     /* 10 */
 };
+static_assert(sizeof(SpellBuff_Image_MM7) == 0x10);
 
 struct PlayerSpellbookChapter_Image_MM7 {
     PlayerSpellbookChapter_Image_MM7();
@@ -191,6 +198,8 @@ struct PlayerSpellbookChapter_Image_MM7 {
     /* 00 */ char bIsSpellAvailable[11];
     /* 0B */
 };
+static_assert(sizeof(PlayerSpellbookChapter_Image_MM7) == 0xB);
+
 struct PlayerSpells_Image_MM7 {
     PlayerSpells_Image_MM7();
 
@@ -207,6 +216,7 @@ struct PlayerSpells_Image_MM7 {
         };
     };
 };
+static_assert(sizeof(PlayerSpells_Image_MM7) == 0x64);
 
 union PlayerEquipment_Image_MM7 {
     PlayerEquipment_Image_MM7();
@@ -229,6 +239,7 @@ union PlayerEquipment_Image_MM7 {
         unsigned int pIndices[16];
     };
 };
+static_assert(sizeof(PlayerEquipment_Image_MM7) == 0x40);
 
 struct LloydBeacon_Image_MM7 {
     LloydBeacon_Image_MM7();
@@ -243,6 +254,7 @@ struct LloydBeacon_Image_MM7 {
     /* 1A */ uint16_t SaveFileID;
     /* 1C */
 };
+static_assert(sizeof(LloydBeacon_Image_MM7) == 0x1C);
 
 struct Player_Image_MM7 {
     Player_Image_MM7();
@@ -414,6 +426,7 @@ struct Player_Image_MM7 {
     /* 1B3B */ char field_1B3B;
     /* 1B3C */
 };
+static_assert(sizeof(Player_Image_MM7) == 0x1B3C);
 
 struct PartyTimeStruct_Image_MM7 {
     PartyTimeStruct_Image_MM7();
@@ -426,6 +439,7 @@ struct PartyTimeStruct_Image_MM7 {
     /* 5D8 */ uint64_t _s_times[20];  // 5d8 440h+8*51     //(0xACD44Ch in Silvo's binary)
     /* 678 */
 };
+static_assert(sizeof(PartyTimeStruct_Image_MM7) == 0x678);
 
 struct Party_Image_MM7 {
     Party_Image_MM7();
@@ -527,6 +541,7 @@ struct Party_Image_MM7 {
     /* 16234 */ float flt_TorchlightColorB;
     /* 16238 */
 };
+static_assert(sizeof(Party_Image_MM7) == 0x16238);
 
 struct Timer_Image_MM7 {
     Timer_Image_MM7();
@@ -546,6 +561,7 @@ struct Timer_Image_MM7 {
     /* 24 */ uint32_t uTotalGameTimeElapsed;
     /* 28 */
 };
+static_assert(sizeof(Timer_Image_MM7) == 0x28);
 
 /*  282 */
 struct OtherOverlay_Image_MM7 {
@@ -562,6 +578,7 @@ struct OtherOverlay_Image_MM7 {
     /* 10 */ int field_10;
     /* 14 */
 };
+static_assert(sizeof(OtherOverlay_Image_MM7) == 0x14);
 
 /*   63 */
 struct OtherOverlayList_Image_MM7 {
@@ -575,6 +592,7 @@ struct OtherOverlayList_Image_MM7 {
     /* 3EC */ int bRedraw;
     /* 3F0 */
 };
+static_assert(sizeof(OtherOverlayList_Image_MM7) == 0x3F0);
 #pragma pack(pop)
 
 /*   44 */
@@ -592,6 +610,7 @@ struct IconFrame_MM7 {
     /* 01C */ int16_t uFlags;  // 0x01 - more icons in this animation
     /* 01E */ uint16_t uTextureID;
 };
+static_assert(sizeof(IconFrame_MM7) == 0x20);
 #pragma pack(pop)
 
 /*   76 */
@@ -610,6 +629,7 @@ struct UIAnimation_MM7 {
     /* 00A */ int16_t y;
     /* 00C */ char field_C;
 };
+static_assert(sizeof(UIAnimation_MM7) == 0xD);
 #pragma pack(pop)
 
 /*  187 */
@@ -676,6 +696,7 @@ struct MonsterInfo_MM7 {
     signed int uRecoveryTime;
     unsigned int uAttackPreference;
 };
+static_assert(sizeof(MonsterInfo_MM7) == 0x58);
 #pragma pack(pop)
 
 /*   66 */
@@ -725,6 +746,7 @@ struct Actor_MM7 {
     int dword_000334_unique_name;
     char field_338[12];
 };
+static_assert(sizeof(Actor_MM7) == 0x344);
 #pragma pack(pop)
 
 /*  100 */
@@ -757,6 +779,7 @@ struct BLVDoor_MM7 {  // 50h
     uint16_t uState;
     int16_t field_4E;
 };
+static_assert(sizeof(BLVDoor_MM7) == 0x50);
 #pragma pack(pop)
 
 /*   95 */
@@ -809,6 +832,7 @@ struct BLVSector_MM7 {  // 0x74
     int16_t exit_tag;
     BBoxs pBounding;
 };
+static_assert(sizeof(BLVSector_MM7) == 0x74);
 #pragma pack(pop)
 
 #pragma pack(push, 1)
@@ -831,4 +855,5 @@ struct FontData_MM7 {
     uint32_t font_pixels_offset[256];
     uint8_t pFontData[0];  // array of font pixels
 };
+static_assert(sizeof(FontData_MM7) == 0x1020);
 #pragma pack(pop)

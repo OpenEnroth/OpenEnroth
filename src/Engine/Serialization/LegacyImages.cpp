@@ -11,112 +11,90 @@
 #include "Engine/Time.h"
 
 SpriteFrame_MM6::SpriteFrame_MM6() {
-    Assert(sizeof(*this) == 56);
     memset(this, 0, sizeof(*this));
 }
 
 SpriteFrame_MM7::SpriteFrame_MM7() {
-    Assert(sizeof(*this) == 60);
     memset(this, 0, sizeof(*this));
 }
 
 NPCData_Image_MM7::NPCData_Image_MM7() {
-    Assert(sizeof(*this) == 0x4C);
     memset(this, 0, sizeof(*this));
 }
 
 ItemGen_Image_MM7::ItemGen_Image_MM7() {
-    Assert(sizeof(*this) == 0x24);
     memset(this, 0, sizeof(*this));
 }
 
 SpellBuff_Image_MM7::SpellBuff_Image_MM7() {
-    Assert(sizeof(*this) == 0x10);
     memset(this, 0, sizeof(*this));
 }
 
 PlayerSpellbookChapter_Image_MM7::PlayerSpellbookChapter_Image_MM7() {
-    Assert(sizeof(*this) == 0xB);
     memset(this, 0, sizeof(*this));
 }
 
 PlayerSpells_Image_MM7::PlayerSpells_Image_MM7() {
-    Assert(sizeof(*this) == 0x64);
     memset(this, 0, sizeof(*this));
 }
 
 PlayerEquipment_Image_MM7::PlayerEquipment_Image_MM7() {
-    Assert(sizeof(*this) == 0x40);
     memset(this, 0, sizeof(*this));
 }
 
 LloydBeacon_Image_MM7::LloydBeacon_Image_MM7() {
-    Assert(sizeof(*this) == 0x1C);
     memset(this, 0, sizeof(*this));
 }
 
 Player_Image_MM7::Player_Image_MM7() {
-    Assert(sizeof(*this) == 0x1B3C);
     memset(this, 0, sizeof(*this));
 }
 
 PartyTimeStruct_Image_MM7::PartyTimeStruct_Image_MM7() {
-    Assert(sizeof(*this) == 0x678);
     memset(this, 0, sizeof(*this));
 }
 
 Party_Image_MM7::Party_Image_MM7() {
-    Assert(sizeof(*this) == 0x16238);
     memset(this, 0, sizeof(*this));
 }
 
 Timer_Image_MM7::Timer_Image_MM7() {
-    Assert(sizeof(*this) == 0x28);
     memset(this, 0, sizeof(*this));
 }
 
 OtherOverlay_Image_MM7::OtherOverlay_Image_MM7() {
-    Assert(sizeof(*this) == 0x14);
     memset(this, 0, sizeof(*this));
 }
 
 OtherOverlayList_Image_MM7::OtherOverlayList_Image_MM7() {
-    Assert(sizeof(*this) == 0x3F0);
     memset(this, 0, sizeof(*this));
 }
 
 IconFrame_MM7::IconFrame_MM7() {
-    Assert(sizeof(*this) == 0x20);
     memset(this, 0, sizeof(*this));
 }
 
 UIAnimation_MM7::UIAnimation_MM7() {
-    Assert(sizeof(*this) == 0xD);
     memset(this, 0, sizeof(*this));
 }
 
 MonsterInfo_MM7::MonsterInfo_MM7() {
-    Assert(sizeof(*this) == 0x58);
     memset(this, 0, sizeof(*this));
 }
 
 Actor_MM7::Actor_MM7() {
-    Assert(sizeof(*this) == 0x344);
     memset(this, 0, sizeof(*this));
 }
 
 BLVSector_MM7::BLVSector_MM7() {
-    Assert(sizeof(*this) == 0x74);
     memset(this, 0, sizeof(*this));
 }
 
 BLVDoor_MM7::BLVDoor_MM7() {
-    Assert(sizeof(*this) == 0x50);
     memset(this, 0, sizeof(*this));
 }
 
 FontData_MM7::FontData_MM7() {
-    Assert(sizeof(*this) == 0x1020);
     memset(this, 0, sizeof(*this));
 }
 
