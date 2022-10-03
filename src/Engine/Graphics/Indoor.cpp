@@ -1071,8 +1071,8 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     Assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
-    if (this->uNumVertices <= 0)
-        return false;
+    if (this->uNumVertices <= 3)
+        return false; // This does happen.
 
     FaceAttributes plane = override_plane;
     if (!plane)
@@ -1111,9 +1111,7 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     // The polygons we're dealing with are convex, so instead of the usual ray casting algorithm we can simply
     // check that the point in question lies on the same side relative to all of the polygon's edges.
     int sign = 0;
-    for (int i = 0; i < this->uNumVertices; i++) {
-        int j = (i + 1) % this->uNumVertices;
-
+    for (int i = 0, j = this->uNumVertices - 1; i < this->uNumVertices; j = i++) {
         int a_u = points.u[j] - points.u[i];
         int a_v = points.v[j] - points.v[i];
         int b_u = u - points.u[i];
@@ -1138,7 +1136,10 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
             return false;
         }
     }
-    return sign != 0; // sign == 0 means we have a face with 1 vertex and somehow this happens.
+
+    // sign == 0 means we got an invalid polygon, so we return false in this case
+    // (invalid polygons don't contain points).
+    return sign != 0;
 }
 
 //----- (0044C23B) --------------------------------------------------------
