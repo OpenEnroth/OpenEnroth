@@ -2,8 +2,8 @@ var searchData=
 [
   ['icon_0',['icon',['../classUIAnimation.html#af6287bb806d40192b476cab940e98cca',1,'UIAnimation']]],
   ['icon_5fname_1',['icon_name',['../classSpriteFrame.html#ae53e14745143405c2d34108afe11d9d6',1,'SpriteFrame']]],
-  ['id_2',['id',['../classActor.html#a0d2b93f5baefded4573b9f89aa5bda9a',1,'Actor::id()'],['../classIcon.html#a5df8df867f5e2d240d9c1bff2633a8ab',1,'Icon::id()']]],
-  ['id_3',['ID',['../classGLShader.html#abc5e80c1895af424b40f86131337101f',1,'GLShader']]],
+  ['id_2',['ID',['../classGLShader.html#abc5e80c1895af424b40f86131337101f',1,'GLShader']]],
+  ['id_3',['id',['../classActor.html#a0d2b93f5baefded4573b9f89aa5bda9a',1,'Actor::id()'],['../classIcon.html#a5df8df867f5e2d240d9c1bff2633a8ab',1,'Icon::id()']]],
   ['igchestitems_4',['igChestItems',['../structChest.html#aeabe7e861f198346d31ba627a0783ba6',1,'Chest']]],
   ['ignored_5fface_5fid_5',['ignored_face_id',['../structCollisionState.html#a3c350446a9665e00bc6af1cea8ea99cf',1,'CollisionState']]],
   ['image_6',['image',['../structLloydBeacon.html#adbba0d774b6da3e6794273c98f0c5db8',1,'LloydBeacon']]],
@@ -34,9 +34,9 @@ var searchData=
   ['is_5funderwater_31',['is_underwater',['../structEngine.html#a6ffa1b4807b59574731b7185149f079e',1,'Engine']]],
   ['isfileopened_32',['isFileOpened',['../classLOD_1_1File.html#a8f762d0ab8fac8fdcf8fa4d66cec32ed',1,'LOD::File']]],
   ['ishisturn_33',['IsHisTurn',['../structArcomagePlayer.html#a03b280aeaaf6239d3a33ead04bd56efd',1,'ArcomagePlayer']]],
-  ['isplayerwearingwatersuit_34',['IsPlayerWearingWatersuit',['../mm7__data_8cpp.html#afcb823a579a80cc09e312c13baeb94e9',1,'IsPlayerWearingWatersuit():&#160;mm7_data.cpp'],['../mm7__data_8h.html#aac46b967c11f6bb4d1804b604f07b10f',1,'IsPlayerWearingWatersuit():&#160;mm7_data.cpp']]],
+  ['isplayerwearingwatersuit_34',['IsPlayerWearingWatersuit',['../mm7__data_8cpp.html#aac46b967c11f6bb4d1804b604f07b10f',1,'IsPlayerWearingWatersuit():&#160;mm7_data.cpp'],['../mm7__data_8h.html#aac46b967c11f6bb4d1804b604f07b10f',1,'IsPlayerWearingWatersuit():&#160;mm7_data.cpp']]],
   ['istreamindex_35',['iStreamIndex',['../classAudioBaseDataSource.html#a975642e6b538e7407a2ce15b380e44cd',1,'AudioBaseDataSource']]],
-  ['item_5fclass_36',['item_class',['../structITEM__VARIATION.html#a858d0ace9eac8d405dc44592641e1586',1,'ITEM_VARIATION']]],
+  ['item_5fclass_36',['item_class',['../structITEM__VARIATION.html#a68c41260aca5ff950cdf95748a610d09',1,'ITEM_VARIATION']]],
   ['itreasurelevel_37',['iTreasureLevel',['../structItemSpecialEnchantment.html#a22bf7d65df3d20738fdf7019411462e3',1,'ItemSpecialEnchantment']]],
   ['ivalue_38',['iValue',['../structItemSpecialEnchantment.html#a05f8d0012274d6807e5402e3680b9f33',1,'ItemSpecialEnchantment']]]
 ];

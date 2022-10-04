@@ -38,7 +38,7 @@ var searchData=
   ['castpickray_35',['CastPickRay',['../classVis.html#ab8b15bdf51a2c5a6cdd7b1e18369f974',1,'Vis']]],
   ['castspell_36',['CastSpell',['../namespaceCastSpellInfoHelpers.html#a6052d6cd95b7e41e49a09aa311996b30',1,'CastSpellInfoHelpers']]],
   ['castspellinfo_37',['CastSpellInfo',['../structCastSpellInfo.html#adb79acbad053a1b5867374bca16021ff',1,'CastSpellInfo']]],
-  ['cenchantment_38',['CEnchantment',['../structCEnchantment.html#ace81b0fcc5992028e5a6c8e81eb80b49',1,'CEnchantment']]],
+  ['cenchantment_38',['CEnchantment',['../structCEnchantment.html#ad5da1180f3c9a9055b905706c7ae5788',1,'CEnchantment']]],
   ['centeronpartyzoomin_39',['CenterOnPartyZoomIn',['../structViewingParams.html#a0c86f1e8dce1fc0ff1aedd8c9b3dad3d',1,'ViewingParams']]],
   ['centeronpartyzoomout_40',['CenterOnPartyZoomOut',['../structViewingParams.html#a495412ae93d005ebb03c6dfd77b88c05',1,'ViewingParams']]],
   ['changeactivation_41',['ChangeActivation',['../classIo_1_1Mouse.html#adc305cd4fe5635fe8b060a2eae857e2a',1,'Io::Mouse']]],

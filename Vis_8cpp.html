@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4ab735f</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;7b015bd</span>
    </div>
   </td>
  </tr>
@@ -110,6 +110,10 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a258a00a10314a1783c87252bfb3608fa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#a258a00a10314a1783c87252bfb3608fa">IsBModelVisible</a> (<a class="el" href="classBSPModel.html">BSPModel</a> *model, int reachable_depth, bool *reachable)</td></tr>
 <tr class="separator:a258a00a10314a1783c87252bfb3608fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e731ac1cf5a301e08532749aa560572"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#a3e731ac1cf5a301e08532749aa560572">IsSphereInFrustum</a> (<a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> center, float radius)</td></tr>
+<tr class="separator:a3e731ac1cf5a301e08532749aa560572"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad634e7f4f6e46e144db7345596c9c2e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#aad634e7f4f6e46e144db7345596c9c2e">IsCylinderInFrustum</a> (<a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> center, float radius)</td></tr>
+<tr class="separator:aad634e7f4f6e46e144db7345596c9c2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2e52010fb087140f33be2076a8b0e3e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structVis__PIDAndDepth.html">Vis_PIDAndDepth</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#ab2e52010fb087140f33be2076a8b0e3e">InvalidPIDAndDepth</a> ()</td></tr>
 <tr class="separator:ab2e52010fb087140f33be2076a8b0e3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cb23e12d16fd52723821bd1bc5a5d5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Vis_8cpp.html#a4cb23e12d16fd52723821bd1bc5a5d5a">UnprojectX</a> (int x)</td></tr>
@@ -222,6 +226,78 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Whether the bounding radius of the model is visible within the camera frustum planes. </dd></dl>
+
+</div>
+</div>
+<a id="aad634e7f4f6e46e144db7345596c9c2e" name="aad634e7f4f6e46e144db7345596c9c2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad634e7f4f6e46e144db7345596c9c2e">&#9670;&#160;</a></span>IsCylinderInFrustum()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool IsCylinderInFrustum </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radius</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">center</td><td>Vec3f of centre point of cylinder. </td></tr>
+    <tr><td class="paramname">radius</td><td>Float of cylinder radius.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the cylinder is visible within the L/R camera frustum planes. </dd></dl>
+
+</div>
+</div>
+<a id="a3e731ac1cf5a301e08532749aa560572" name="a3e731ac1cf5a301e08532749aa560572"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e731ac1cf5a301e08532749aa560572">&#9670;&#160;</a></span>IsSphereInFrustum()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool IsSphereInFrustum </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="VectorTypes_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>center</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radius</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">center</td><td>Vec3f of centre point of sphere. </td></tr>
+    <tr><td class="paramname">radius</td><td>Float of sphere radius.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether the bounding radius of the sphere is visible within the camera frustum planes. </dd></dl>
 
 </div>
 </div>

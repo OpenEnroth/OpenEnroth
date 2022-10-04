@@ -17,8 +17,7 @@ var searchData=
   ['trackbuffer_14',['TrackBuffer',['../structOpenALSoundProvider_1_1TrackBuffer.html',1,'OpenALSoundProvider']]],
   ['trailparticle_15',['TrailParticle',['../structTrailParticle.html',1,'']]],
   ['trailparticlegenerator_16',['TrailParticleGenerator',['../structTrailParticleGenerator.html',1,'']]],
-  ['travelinfo_17',['TravelInfo',['../structTravelInfo.html',1,'']]],
-  ['trigtablelookup_18',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
-  ['turnbased_5fqueueelem_19',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
-  ['twodverts_20',['twodverts',['../structtwodverts.html',1,'']]]
+  ['trigtablelookup_17',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
+  ['turnbased_5fqueueelem_18',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
+  ['twodverts_19',['twodverts',['../structtwodverts.html',1,'']]]
 ];

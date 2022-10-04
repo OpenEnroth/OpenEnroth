@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4ab735f</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;7b015bd</span>
    </div>
   </td>
  </tr>
@@ -82,6 +82,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="Monsters_8h.html">Engine/Objects/Monsters.h</a>&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MemoryInput_8h.html">Engine/Serialization/MemoryInput.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Api_8h.html">Platform/Api.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LOD_8h.html">../LOD.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FrameTableInc_8h.html">../Tables/FrameTableInc.h</a>&quot;</code><br />
@@ -92,8 +93,8 @@ Functions</h2></td></tr>
 <tr class="separator:ade9b7cfbbaa90ca33fa67c49848ad19b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a023cf329f14e298a3267500933cddf5d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8cpp.html#a023cf329f14e298a3267500933cddf5d">ParseAttackType</a> (const char *damage_type_str)</td></tr>
 <tr class="separator:a023cf329f14e298a3267500933cddf5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a372956c05fdd73b700ce94fd77cd0450"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8cpp.html#a372956c05fdd73b700ce94fd77cd0450">ParseDamage</a> (char *damage_str, unsigned __int8 *dice_rolls, unsigned __int8 *dice_sides, unsigned __int8 *dmg_bonus)</td></tr>
-<tr class="separator:a372956c05fdd73b700ce94fd77cd0450"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19779f973e09aa29a4453cbb78bba716"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8cpp.html#a19779f973e09aa29a4453cbb78bba716">ParseDamage</a> (char *damage_str, uint8_t *dice_rolls, uint8_t *dice_sides, uint8_t *dmg_bonus)</td></tr>
+<tr class="separator:a19779f973e09aa29a4453cbb78bba716"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e4a096de3777b8fe375c4e2e1e618c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8cpp.html#a4e4a096de3777b8fe375c4e2e1e618c3">ParseMissleAttackType</a> (const char *missle_attack_str)</td></tr>
 <tr class="separator:a4e4a096de3777b8fe375c4e2e1e618c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50b540877b608aba8eb8e278c27f0595"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Monsters_8cpp.html#a50b540877b608aba8eb8e278c27f0595">ParseSpecialAttack</a> (const char *spec_att_str)</td></tr>
@@ -127,8 +128,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a372956c05fdd73b700ce94fd77cd0450" name="a372956c05fdd73b700ce94fd77cd0450"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a372956c05fdd73b700ce94fd77cd0450">&#9670;&#160;</a></span>ParseDamage()</h2>
+<a id="a19779f973e09aa29a4453cbb78bba716" name="a19779f973e09aa29a4453cbb78bba716"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19779f973e09aa29a4453cbb78bba716">&#9670;&#160;</a></span>ParseDamage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -142,19 +143,19 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned __int8 *&#160;</td>
+          <td class="paramtype">uint8_t *&#160;</td>
           <td class="paramname"><em>dice_rolls</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned __int8 *&#160;</td>
+          <td class="paramtype">uint8_t *&#160;</td>
           <td class="paramname"><em>dice_sides</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned __int8 *&#160;</td>
+          <td class="paramtype">uint8_t *&#160;</td>
           <td class="paramname"><em>dmg_bonus</em>&#160;</td>
         </tr>
         <tr>

@@ -78,7 +78,7 @@ var searchData=
   ['gamma_5fpreview_5fimage_75',['gamma_preview_image',['../Game_8cpp.html#ac6f4e0c573a089ef4ae9dcec20e4d531',1,'gamma_preview_image():&#160;Game.cpp'],['../Game_8h.html#ae0d7c78f764d67256a5bcf2351b2bda1',1,'gamma_preview_image():&#160;Game.cpp']]],
   ['gdiplusstartupinput_76',['gdiplusStartupInput',['../classRender.html#a5378f2fb71e37e6dc7d81eb7bd3c2562',1,'Render']]],
   ['gdiplustoken_77',['gdiplusToken',['../classRender.html#a326afbe3dc8b64c46b26714229940e9e',1,'Render']]],
-  ['gems_5famount_78',['gems_amount',['../structArcomageStartConditions.html#a7a6bcd9efb108f4047cd6bc08a8bf097',1,'ArcomageStartConditions']]],
+  ['gems_5famount_78',['gems_amount',['../structArcomageStartConditions.html#a25723a754e76e76e5ec3d2357802c9a4',1,'ArcomageStartConditions']]],
   ['gender_79',['gender',['../structGenderTableEntry.html#a01a9af90782f16840ed9dd4058bddf5b',1,'GenderTableEntry']]],
   ['gender_5ftable_80',['gender_table',['../mm7text__ru_8cpp.html#aa4d4b6d178c81a28e77289f0eab918c7',1,'mm7text_ru.cpp']]],
   ['gender_5ftable_5fcaps_81',['gender_table_caps',['../mm7text__ru_8cpp.html#a9e3972d5534f46aab22dcb29b0eac287',1,'mm7text_ru.cpp']]],

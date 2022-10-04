@@ -630,11 +630,11 @@ var searchData=
   ['sprite_5fvisible_627',['SPRITE_VISIBLE',['../SpriteObjectType_8h.html#a489124fbf5862dfb8da84be030730224ac088abd92f4369e8cfbc7e07a13e86b4',1,'SpriteObjectType.h']]],
   ['sprite_5fwater_5fsplash_628',['SPRITE_WATER_SPLASH',['../SpriteObjectType_8h.html#adf728ba73bf3ba5ece5de3e673fedde9a365d8b42654cf90c865a9632565d8b78',1,'SpriteObjectType.h']]],
   ['squire_629',['Squire',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a3b97a31593c658e836db4f21a5a5b8e0',1,'NPCProf.h']]],
-  ['standing_630',['Standing',['../Actor_8h.html#a7ba2f80ccb636f036886752421356766ac9c8037391915651ed355bd20bbd22e2',1,'Actor.h']]],
-  ['stoned_631',['Stoned',['../Actor_8h.html#a7ba2f80ccb636f036886752421356766a8b5a0e7857ddfe908e5f2390fc0e4da6',1,'Actor.h']]],
+  ['standing_630',['Standing',['../Actor_8h.html#a75a2677e7281dc615368b0814c395fedac9c8037391915651ed355bd20bbd22e2',1,'Actor.h']]],
+  ['stoned_631',['Stoned',['../Actor_8h.html#a75a2677e7281dc615368b0814c395feda8b5a0e7857ddfe908e5f2390fc0e4da6',1,'Actor.h']]],
   ['strafeleft_632',['StrafeLeft',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca619850cebb4607f51de326bd78c27429',1,'Io']]],
   ['straferight_633',['StrafeRight',['../namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9b4d85f3d87b8e67d74e087541ed3743',1,'Io']]],
-  ['stunned_634',['Stunned',['../Actor_8h.html#a7ba2f80ccb636f036886752421356766a7ca8e46aa9f42cb6b820acc6a6e62ca1',1,'Actor.h']]],
+  ['stunned_634',['Stunned',['../Actor_8h.html#a75a2677e7281dc615368b0814c395feda7ca8e46aa9f42cb6b820acc6a6e62ca1',1,'Actor.h']]],
   ['subtract_635',['Subtract',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a1d9baf077ee87921f57a8fe42d510b65',1,'Io']]],
-  ['summoned_636',['Summoned',['../Actor_8h.html#a7ba2f80ccb636f036886752421356766acdc439284b26ca2fd174f1feb7218f1f',1,'Actor.h']]]
+  ['summoned_636',['Summoned',['../Actor_8h.html#a75a2677e7281dc615368b0814c395fedacdc439284b26ca2fd174f1feb7218f1f',1,'Actor.h']]]
 ];

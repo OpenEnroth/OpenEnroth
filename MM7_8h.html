@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;4ab735f</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;7b015bd</span>
    </div>
   </td>
  </tr>
@@ -74,26 +74,14 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle"><div class="title">MM7.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;array&gt;</code><br />
+<div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTravelInfo.html">TravelInfo</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstat__coord.html">stat_coord</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstru336.html">stru336</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a6fa21b10ef8fe82bdc1df5e108443326"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a6fa21b10ef8fe82bdc1df5e108443326">PID</a>(type,  id)&#160;&#160;&#160;(uint16_t)((((8 * (id))) | (<a class="el" href="namespacestd.html#a3a31c7a5a45f5c168f309a3066d4d6ae">std::to_underlying</a>(type))) &amp; 0xFFFF)</td></tr>
@@ -104,16 +92,14 @@ Macros</h2></td></tr>
 <tr class="separator:a68568b83affb311e29e223a91832ccf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51fcc1ce2e7a0c1f057fc1e2d54b5e2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a51fcc1ce2e7a0c1f057fc1e2d54b5e2d">PID_INVALID</a>&#160;&#160;&#160;(uint16_t)(-1)</td></tr>
 <tr class="separator:a51fcc1ce2e7a0c1f057fc1e2d54b5e2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c4a5a502819677943d4b3d5e8d08de7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a7c4a5a502819677943d4b3d5e8d08de7">_BYTE</a>&#160;&#160;&#160;<a class="el" href="MM7_8h.html#adde6aaee8457bee49c2a92621fe22b79">uint8</a></td></tr>
+<tr class="memitem:a7c4a5a502819677943d4b3d5e8d08de7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a7c4a5a502819677943d4b3d5e8d08de7">_BYTE</a>&#160;&#160;&#160;uint8_t</td></tr>
 <tr class="separator:a7c4a5a502819677943d4b3d5e8d08de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a00b1cec47fad19b2c0a0f4ffc2d3d7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a0a00b1cec47fad19b2c0a0f4ffc2d3d7">_WORD</a>&#160;&#160;&#160;<a class="el" href="MM7_8h.html#a05f6b0ae8f6a6e135b0e290c25fe0e4e">uint16</a></td></tr>
+<tr class="memitem:a0a00b1cec47fad19b2c0a0f4ffc2d3d7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a0a00b1cec47fad19b2c0a0f4ffc2d3d7">_WORD</a>&#160;&#160;&#160;uint16_t</td></tr>
 <tr class="separator:a0a00b1cec47fad19b2c0a0f4ffc2d3d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a133dea6182724d7bab8345fe9c68c456"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a133dea6182724d7bab8345fe9c68c456">_DWORD</a>&#160;&#160;&#160;<a class="el" href="MM7_8h.html#a1134b580f8da4de94ca6b1de4d37975e">uint32</a></td></tr>
+<tr class="memitem:a133dea6182724d7bab8345fe9c68c456"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a133dea6182724d7bab8345fe9c68c456">_DWORD</a>&#160;&#160;&#160;uint32_t</td></tr>
 <tr class="separator:a133dea6182724d7bab8345fe9c68c456"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acef3408296153a04d08007ae1e766aee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#acef3408296153a04d08007ae1e766aee">_QWORD</a>&#160;&#160;&#160;<a class="el" href="MM7_8h.html#a20e3bd7609c6ce94e9bcd863f8e7113b">uint64</a></td></tr>
+<tr class="memitem:acef3408296153a04d08007ae1e766aee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#acef3408296153a04d08007ae1e766aee">_QWORD</a>&#160;&#160;&#160;uint64_t</td></tr>
 <tr class="separator:acef3408296153a04d08007ae1e766aee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa15ff93bb94096a877790093f60cab39"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#aa15ff93bb94096a877790093f60cab39">_LONGLONG</a>&#160;&#160;&#160;__int128</td></tr>
-<tr class="separator:aa15ff93bb94096a877790093f60cab39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a900ef3b36a281227fb987b47195e3b70"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a900ef3b36a281227fb987b47195e3b70">HEXRAYS_LOBYTE</a>(x)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a7c4a5a502819677943d4b3d5e8d08de7">_BYTE</a> *)&amp;(x)))</td></tr>
 <tr class="separator:a900ef3b36a281227fb987b47195e3b70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af10b4a86928e1119e89274137f5ff1e0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#af10b4a86928e1119e89274137f5ff1e0">HEXRAYS_LOWORD</a>(x)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a0a00b1cec47fad19b2c0a0f4ffc2d3d7">_WORD</a> *)&amp;(x)))</td></tr>
@@ -174,21 +160,21 @@ Macros</h2></td></tr>
 <tr class="separator:a699f93562225bb715d341bf268e5fde3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70c998c323ef0ce1e7e8fc47df3667d0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a70c998c323ef0ce1e7e8fc47df3667d0">WORD7</a>(x)&#160;&#160;&#160;<a class="el" href="MM7_8h.html#a01e5523289f6e4aceed1cb536c3b2ea8">WORDn</a>(x, 7)</td></tr>
 <tr class="separator:a70c998c323ef0ce1e7e8fc47df3667d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4966e4ff40e39f9f8b7d8b82aa1bea66"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a4966e4ff40e39f9f8b7d8b82aa1bea66">HEXRAYS_SLOBYTE</a>(x)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> *)&amp;(x)))</td></tr>
+<tr class="memitem:a4966e4ff40e39f9f8b7d8b82aa1bea66"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a4966e4ff40e39f9f8b7d8b82aa1bea66">HEXRAYS_SLOBYTE</a>(x)&#160;&#160;&#160;(*((int8_t *)&amp;(x)))</td></tr>
 <tr class="separator:a4966e4ff40e39f9f8b7d8b82aa1bea66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af04776caa0684354498b76513175e37f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#af04776caa0684354498b76513175e37f">HEXRAYS_SLOWORD</a>(x)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a> *)&amp;(x)))</td></tr>
+<tr class="memitem:af04776caa0684354498b76513175e37f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#af04776caa0684354498b76513175e37f">HEXRAYS_SLOWORD</a>(x)&#160;&#160;&#160;(*((int16_t *)&amp;(x)))</td></tr>
 <tr class="separator:af04776caa0684354498b76513175e37f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0041bf48bb84de849c1d14fc417f84b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ae0041bf48bb84de849c1d14fc417f84b">HEXRAYS_SLODWORD</a>(x)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a> *)&amp;(x)))</td></tr>
+<tr class="memitem:ae0041bf48bb84de849c1d14fc417f84b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ae0041bf48bb84de849c1d14fc417f84b">HEXRAYS_SLODWORD</a>(x)&#160;&#160;&#160;(*((int32_t *)&amp;(x)))</td></tr>
 <tr class="separator:ae0041bf48bb84de849c1d14fc417f84b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a948cc6e93bbd92b9bf53d0093f7e9998"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a948cc6e93bbd92b9bf53d0093f7e9998">HEXRAYS_SHIBYTE</a>(x)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> *)&amp;(x) + 1))</td></tr>
+<tr class="memitem:a948cc6e93bbd92b9bf53d0093f7e9998"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a948cc6e93bbd92b9bf53d0093f7e9998">HEXRAYS_SHIBYTE</a>(x)&#160;&#160;&#160;(*((int8_t *)&amp;(x) + 1))</td></tr>
 <tr class="separator:a948cc6e93bbd92b9bf53d0093f7e9998"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68beab3fc690421bb71dc5e0244c5a48"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a68beab3fc690421bb71dc5e0244c5a48">HEXRAYS_SHIWORD</a>(x)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a> *)&amp;(x) + 1))</td></tr>
+<tr class="memitem:a68beab3fc690421bb71dc5e0244c5a48"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a68beab3fc690421bb71dc5e0244c5a48">HEXRAYS_SHIWORD</a>(x)&#160;&#160;&#160;(*((int16_t *)&amp;(x) + 1))</td></tr>
 <tr class="separator:a68beab3fc690421bb71dc5e0244c5a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8573c92132096f56ee7d7cf8246ee300"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a8573c92132096f56ee7d7cf8246ee300">HEXRAYS_SHIDWORD</a>(x)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a> *)&amp;(x) + 1))</td></tr>
+<tr class="memitem:a8573c92132096f56ee7d7cf8246ee300"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a8573c92132096f56ee7d7cf8246ee300">HEXRAYS_SHIDWORD</a>(x)&#160;&#160;&#160;(*((int32_t *)&amp;(x) + 1))</td></tr>
 <tr class="separator:a8573c92132096f56ee7d7cf8246ee300"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0fc901cd7cacfe3a956ccce5da4e751"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ae0fc901cd7cacfe3a956ccce5da4e751">SBYTEn</a>(x,  n)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> *)&amp;(x) + n))</td></tr>
+<tr class="memitem:ae0fc901cd7cacfe3a956ccce5da4e751"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ae0fc901cd7cacfe3a956ccce5da4e751">SBYTEn</a>(x,  n)&#160;&#160;&#160;(*((int8_t *)&amp;(x) + n))</td></tr>
 <tr class="separator:ae0fc901cd7cacfe3a956ccce5da4e751"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa902dd1c7666ea41745dac278f01331"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#afa902dd1c7666ea41745dac278f01331">SWORDn</a>(x,  n)&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a> *)&amp;(x) + n))</td></tr>
+<tr class="memitem:afa902dd1c7666ea41745dac278f01331"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#afa902dd1c7666ea41745dac278f01331">SWORDn</a>(x,  n)&#160;&#160;&#160;(*((int16_t *)&amp;(x) + n))</td></tr>
 <tr class="separator:afa902dd1c7666ea41745dac278f01331"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4098ca077950332309582d46701cc0b5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a4098ca077950332309582d46701cc0b5">SBYTE1</a>(x)&#160;&#160;&#160;<a class="el" href="MM7_8h.html#ae0fc901cd7cacfe3a956ccce5da4e751">SBYTEn</a>(x, 1)</td></tr>
 <tr class="separator:a4098ca077950332309582d46701cc0b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -245,30 +231,6 @@ Typedefs</h2></td></tr>
 <tr class="separator:ab95f123a6c9bcfee6a343170ef8c5f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a718b4eb2652c286f4d42dc18a8e71a1a"><td class="memItemLeft" align="right" valign="top">typedef unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a718b4eb2652c286f4d42dc18a8e71a1a">ulong</a></td></tr>
 <tr class="separator:a718b4eb2652c286f4d42dc18a8e71a1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae47c588f3ab8c61121c1c7ab7edc47cd"><td class="memItemLeft" align="right" valign="top">typedef char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a></td></tr>
-<tr class="separator:ae47c588f3ab8c61121c1c7ab7edc47cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a6408291ee3cfd0760a61ac64084154"><td class="memItemLeft" align="right" valign="top">typedef signed char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a1a6408291ee3cfd0760a61ac64084154">sint8</a></td></tr>
-<tr class="separator:a1a6408291ee3cfd0760a61ac64084154"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adde6aaee8457bee49c2a92621fe22b79"><td class="memItemLeft" align="right" valign="top">typedef unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#adde6aaee8457bee49c2a92621fe22b79">uint8</a></td></tr>
-<tr class="separator:adde6aaee8457bee49c2a92621fe22b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4355d16fcf9f644c9ac84293f0b1801f"><td class="memItemLeft" align="right" valign="top">typedef short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a></td></tr>
-<tr class="separator:a4355d16fcf9f644c9ac84293f0b1801f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74df79fde3c518e55b29ce6360a9c76e"><td class="memItemLeft" align="right" valign="top">typedef signed short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a74df79fde3c518e55b29ce6360a9c76e">sint16</a></td></tr>
-<tr class="separator:a74df79fde3c518e55b29ce6360a9c76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05f6b0ae8f6a6e135b0e290c25fe0e4e"><td class="memItemLeft" align="right" valign="top">typedef unsigned short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a05f6b0ae8f6a6e135b0e290c25fe0e4e">uint16</a></td></tr>
-<tr class="separator:a05f6b0ae8f6a6e135b0e290c25fe0e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56f1a81c92849566ae864511088eb7e8"><td class="memItemLeft" align="right" valign="top">typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a></td></tr>
-<tr class="separator:a56f1a81c92849566ae864511088eb7e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0573de65958b4fda3a0460ed417dafb8"><td class="memItemLeft" align="right" valign="top">typedef signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a0573de65958b4fda3a0460ed417dafb8">sint32</a></td></tr>
-<tr class="separator:a0573de65958b4fda3a0460ed417dafb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1134b580f8da4de94ca6b1de4d37975e"><td class="memItemLeft" align="right" valign="top">typedef unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a1134b580f8da4de94ca6b1de4d37975e">uint32</a></td></tr>
-<tr class="separator:a1134b580f8da4de94ca6b1de4d37975e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24dd79fd0210b290d11f01053417eaff"><td class="memItemLeft" align="right" valign="top">typedef ll&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a24dd79fd0210b290d11f01053417eaff">int64</a></td></tr>
-<tr class="separator:a24dd79fd0210b290d11f01053417eaff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa273d99d2941f62f9d006b29013816e6"><td class="memItemLeft" align="right" valign="top">typedef ll&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#aa273d99d2941f62f9d006b29013816e6">sint64</a></td></tr>
-<tr class="separator:aa273d99d2941f62f9d006b29013816e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20e3bd7609c6ce94e9bcd863f8e7113b"><td class="memItemLeft" align="right" valign="top">typedef ull&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a20e3bd7609c6ce94e9bcd863f8e7113b">uint64</a></td></tr>
-<tr class="separator:a20e3bd7609c6ce94e9bcd863f8e7113b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -277,61 +239,6 @@ Enumerations</h2></td></tr>
 , <a class="el" href="MM7_8h.html#ad2af16bf27c1b83797f1c32686caf1a3a0ef2ef613bc21f1867312e48c5efeb65">SOUND_FlipOnExit</a> = 0x4E21
  }</td></tr>
 <tr class="separator:ad2af16bf27c1b83797f1c32686caf1a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:afcf95e3a294e5646a7e76ca294b9c64a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#afcf95e3a294e5646a7e76ca294b9c64a">memset32</a> (void *ptr, uint32_t value, int count)</td></tr>
-<tr class="separator:afcf95e3a294e5646a7e76ca294b9c64a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade8660c8fbc06ea3f2ec08c8c9016922"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ade8660c8fbc06ea3f2ec08c8c9016922"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ade8660c8fbc06ea3f2ec08c8c9016922">__PAIR__</a> (<a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> high, T low)</td></tr>
-<tr class="separator:ade8660c8fbc06ea3f2ec08c8c9016922"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7701fcedfd6e9e396dddc89d3fec8fa8"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a7701fcedfd6e9e396dddc89d3fec8fa8"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a7701fcedfd6e9e396dddc89d3fec8fa8">__PAIR__</a> (<a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a> high, T low)</td></tr>
-<tr class="separator:a7701fcedfd6e9e396dddc89d3fec8fa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b888de354fa77c68e5a95603ac46261"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a2b888de354fa77c68e5a95603ac46261"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a24dd79fd0210b290d11f01053417eaff">int64</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a2b888de354fa77c68e5a95603ac46261">__PAIR__</a> (<a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a> high, T low)</td></tr>
-<tr class="separator:a2b888de354fa77c68e5a95603ac46261"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad03c70b56df56ee85969eefcf7203a29"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad03c70b56df56ee85969eefcf7203a29"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a05f6b0ae8f6a6e135b0e290c25fe0e4e">uint16</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ad03c70b56df56ee85969eefcf7203a29">__PAIR__</a> (<a class="el" href="MM7_8h.html#adde6aaee8457bee49c2a92621fe22b79">uint8</a> high, T low)</td></tr>
-<tr class="separator:ad03c70b56df56ee85969eefcf7203a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a577ddb3c5c51bc12eae8db44de1ee964"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a577ddb3c5c51bc12eae8db44de1ee964"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a1134b580f8da4de94ca6b1de4d37975e">uint32</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a577ddb3c5c51bc12eae8db44de1ee964">__PAIR__</a> (<a class="el" href="MM7_8h.html#a05f6b0ae8f6a6e135b0e290c25fe0e4e">uint16</a> high, T low)</td></tr>
-<tr class="separator:a577ddb3c5c51bc12eae8db44de1ee964"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56473ad95ec23e766591be7ba155e497"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a56473ad95ec23e766591be7ba155e497"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#a20e3bd7609c6ce94e9bcd863f8e7113b">uint64</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a56473ad95ec23e766591be7ba155e497">__PAIR__</a> (<a class="el" href="MM7_8h.html#a1134b580f8da4de94ca6b1de4d37975e">uint32</a> high, T low)</td></tr>
-<tr class="separator:a56473ad95ec23e766591be7ba155e497"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21039ae0d4e5a4b2a1d165567fc05d02"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a21039ae0d4e5a4b2a1d165567fc05d02"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a21039ae0d4e5a4b2a1d165567fc05d02">__ROL__</a> (T value, <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> count)</td></tr>
-<tr class="separator:a21039ae0d4e5a4b2a1d165567fc05d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace01122df18d45a95b5c88a43fcc095f"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ace01122df18d45a95b5c88a43fcc095f"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ace01122df18d45a95b5c88a43fcc095f">__ROR__</a> (T value, <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> count)</td></tr>
-<tr class="separator:ace01122df18d45a95b5c88a43fcc095f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae70701c79f4d881a91064e6cd8271e36"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:ae70701c79f4d881a91064e6cd8271e36"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#ae70701c79f4d881a91064e6cd8271e36">__MKCSHL__</a> (T value, <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> count)</td></tr>
-<tr class="separator:ae70701c79f4d881a91064e6cd8271e36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba89d793836cda04c2f349757ab543b4"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:aba89d793836cda04c2f349757ab543b4"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#aba89d793836cda04c2f349757ab543b4">__MKCSHR__</a> (T value, <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a> count)</td></tr>
-<tr class="separator:aba89d793836cda04c2f349757ab543b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e8026270ed89cdb00d7e135a0f0c55d"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a4e8026270ed89cdb00d7e135a0f0c55d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a4e8026270ed89cdb00d7e135a0f0c55d">__SETS__</a> (T x)</td></tr>
-<tr class="separator:a4e8026270ed89cdb00d7e135a0f0c55d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82b63e8f54902c2b305e727c7372761f"><td class="memTemplParams" colspan="2">template&lt;class T , class U &gt; </td></tr>
-<tr class="memitem:a82b63e8f54902c2b305e727c7372761f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a82b63e8f54902c2b305e727c7372761f">__OFSUB__</a> (T x, U y)</td></tr>
-<tr class="separator:a82b63e8f54902c2b305e727c7372761f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a071509de961ad1bd67b2f17b810040c6"><td class="memTemplParams" colspan="2">template&lt;class T , class U &gt; </td></tr>
-<tr class="memitem:a071509de961ad1bd67b2f17b810040c6"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a071509de961ad1bd67b2f17b810040c6">__OFADD__</a> (T x, U y)</td></tr>
-<tr class="separator:a071509de961ad1bd67b2f17b810040c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa49a169457d2105e22827987774581f9"><td class="memTemplParams" colspan="2">template&lt;class T , class U &gt; </td></tr>
-<tr class="memitem:aa49a169457d2105e22827987774581f9"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#aa49a169457d2105e22827987774581f9">__CFSUB__</a> (T x, U y)</td></tr>
-<tr class="separator:aa49a169457d2105e22827987774581f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a916a12bfc69120b607e4c3fbbd90c74d"><td class="memTemplParams" colspan="2">template&lt;class T , class U &gt; </td></tr>
-<tr class="memitem:a916a12bfc69120b607e4c3fbbd90c74d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a916a12bfc69120b607e4c3fbbd90c74d">__CFADD__</a> (T x, U y)</td></tr>
-<tr class="separator:a916a12bfc69120b607e4c3fbbd90c74d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a056b74c7b973eaef125974f21d279f33"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structstat__coord.html">stat_coord</a>, 26 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="MM7_8h.html#a056b74c7b973eaef125974f21d279f33">stat_string_coord</a></td></tr>
-<tr class="separator:a056b74c7b973eaef125974f21d279f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a7c4a5a502819677943d4b3d5e8d08de7" name="a7c4a5a502819677943d4b3d5e8d08de7"></a>
@@ -341,7 +248,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _BYTE&#160;&#160;&#160;<a class="el" href="MM7_8h.html#adde6aaee8457bee49c2a92621fe22b79">uint8</a></td>
+          <td class="memname">#define _BYTE&#160;&#160;&#160;uint8_t</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -355,21 +262,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _DWORD&#160;&#160;&#160;<a class="el" href="MM7_8h.html#a1134b580f8da4de94ca6b1de4d37975e">uint32</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa15ff93bb94096a877790093f60cab39" name="aa15ff93bb94096a877790093f60cab39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa15ff93bb94096a877790093f60cab39">&#9670;&#160;</a></span>_LONGLONG</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define _LONGLONG&#160;&#160;&#160;__int128</td>
+          <td class="memname">#define _DWORD&#160;&#160;&#160;uint32_t</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -383,7 +276,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _QWORD&#160;&#160;&#160;<a class="el" href="MM7_8h.html#a20e3bd7609c6ce94e9bcd863f8e7113b">uint64</a></td>
+          <td class="memname">#define _QWORD&#160;&#160;&#160;uint64_t</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -397,7 +290,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define _WORD&#160;&#160;&#160;<a class="el" href="MM7_8h.html#a05f6b0ae8f6a6e135b0e290c25fe0e4e">uint16</a></td>
+          <td class="memname">#define _WORD&#160;&#160;&#160;uint16_t</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -821,7 +714,7 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> *)&amp;(x) + 1))</td>
+          <td>&#160;&#160;&#160;(*((int8_t *)&amp;(x) + 1))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -839,7 +732,7 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a> *)&amp;(x) + 1))</td>
+          <td>&#160;&#160;&#160;(*((int32_t *)&amp;(x) + 1))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -857,7 +750,7 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a> *)&amp;(x) + 1))</td>
+          <td>&#160;&#160;&#160;(*((int16_t *)&amp;(x) + 1))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -875,7 +768,7 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> *)&amp;(x)))</td>
+          <td>&#160;&#160;&#160;(*((int8_t *)&amp;(x)))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -893,7 +786,7 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a> *)&amp;(x)))</td>
+          <td>&#160;&#160;&#160;(*((int32_t *)&amp;(x)))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -911,7 +804,7 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">x</td><td>)</td>
-          <td>&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a> *)&amp;(x)))</td>
+          <td>&#160;&#160;&#160;(*((int16_t *)&amp;(x)))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1287,7 +1180,7 @@ Variables</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> *)&amp;(x) + n))</td>
+          <td></td><td>&#160;&#160;&#160;(*((int8_t *)&amp;(x) + n))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1441,7 +1334,7 @@ Variables</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(*((<a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a> *)&amp;(x) + n))</td>
+          <td></td><td>&#160;&#160;&#160;(*((int16_t *)&amp;(x) + n))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1603,118 +1496,6 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a4355d16fcf9f644c9ac84293f0b1801f" name="a4355d16fcf9f644c9ac84293f0b1801f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4355d16fcf9f644c9ac84293f0b1801f">&#9670;&#160;</a></span>int16</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef short <a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a56f1a81c92849566ae864511088eb7e8" name="a56f1a81c92849566ae864511088eb7e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56f1a81c92849566ae864511088eb7e8">&#9670;&#160;</a></span>int32</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef int <a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a24dd79fd0210b290d11f01053417eaff" name="a24dd79fd0210b290d11f01053417eaff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24dd79fd0210b290d11f01053417eaff">&#9670;&#160;</a></span>int64</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef ll <a class="el" href="MM7_8h.html#a24dd79fd0210b290d11f01053417eaff">int64</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae47c588f3ab8c61121c1c7ab7edc47cd" name="ae47c588f3ab8c61121c1c7ab7edc47cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae47c588f3ab8c61121c1c7ab7edc47cd">&#9670;&#160;</a></span>int8</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef char <a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a74df79fde3c518e55b29ce6360a9c76e" name="a74df79fde3c518e55b29ce6360a9c76e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74df79fde3c518e55b29ce6360a9c76e">&#9670;&#160;</a></span>sint16</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef signed short <a class="el" href="MM7_8h.html#a74df79fde3c518e55b29ce6360a9c76e">sint16</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0573de65958b4fda3a0460ed417dafb8" name="a0573de65958b4fda3a0460ed417dafb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0573de65958b4fda3a0460ed417dafb8">&#9670;&#160;</a></span>sint32</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef signed int <a class="el" href="MM7_8h.html#a0573de65958b4fda3a0460ed417dafb8">sint32</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa273d99d2941f62f9d006b29013816e6" name="aa273d99d2941f62f9d006b29013816e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa273d99d2941f62f9d006b29013816e6">&#9670;&#160;</a></span>sint64</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef ll <a class="el" href="MM7_8h.html#aa273d99d2941f62f9d006b29013816e6">sint64</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1a6408291ee3cfd0760a61ac64084154" name="a1a6408291ee3cfd0760a61ac64084154"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a6408291ee3cfd0760a61ac64084154">&#9670;&#160;</a></span>sint8</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef signed char <a class="el" href="MM7_8h.html#a1a6408291ee3cfd0760a61ac64084154">sint8</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a65f85814a8290f9797005d3b28e7e5fc" name="a65f85814a8290f9797005d3b28e7e5fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a65f85814a8290f9797005d3b28e7e5fc">&#9670;&#160;</a></span>uchar</h2>
 
@@ -1737,62 +1518,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">typedef unsigned int <a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a05f6b0ae8f6a6e135b0e290c25fe0e4e" name="a05f6b0ae8f6a6e135b0e290c25fe0e4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05f6b0ae8f6a6e135b0e290c25fe0e4e">&#9670;&#160;</a></span>uint16</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef unsigned short <a class="el" href="MM7_8h.html#a05f6b0ae8f6a6e135b0e290c25fe0e4e">uint16</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1134b580f8da4de94ca6b1de4d37975e" name="a1134b580f8da4de94ca6b1de4d37975e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1134b580f8da4de94ca6b1de4d37975e">&#9670;&#160;</a></span>uint32</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef unsigned int <a class="el" href="MM7_8h.html#a1134b580f8da4de94ca6b1de4d37975e">uint32</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a20e3bd7609c6ce94e9bcd863f8e7113b" name="a20e3bd7609c6ce94e9bcd863f8e7113b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20e3bd7609c6ce94e9bcd863f8e7113b">&#9670;&#160;</a></span>uint64</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef ull <a class="el" href="MM7_8h.html#a20e3bd7609c6ce94e9bcd863f8e7113b">uint64</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adde6aaee8457bee49c2a92621fe22b79" name="adde6aaee8457bee49c2a92621fe22b79"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adde6aaee8457bee49c2a92621fe22b79">&#9670;&#160;</a></span>uint8</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef unsigned char <a class="el" href="MM7_8h.html#adde6aaee8457bee49c2a92621fe22b79">uint8</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1844,512 +1569,6 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="ad2af16bf27c1b83797f1c32686caf1a3ad7a87a1ace6b0541e0edc850a2912228" name="ad2af16bf27c1b83797f1c32686caf1a3ad7a87a1ace6b0541e0edc850a2912228"></a>SOUND_StartTurnBasedMode&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ad2af16bf27c1b83797f1c32686caf1a3a0ef2ef613bc21f1867312e48c5efeb65" name="ad2af16bf27c1b83797f1c32686caf1a3a0ef2ef613bc21f1867312e48c5efeb65"></a>SOUND_FlipOnExit&#160;</td><td class="fielddoc"></td></tr>
 </table>
-
-</div>
-</div>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a916a12bfc69120b607e4c3fbbd90c74d" name="a916a12bfc69120b607e4c3fbbd90c74d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a916a12bfc69120b607e4c3fbbd90c74d">&#9670;&#160;</a></span>__CFADD__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , class U &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> __CFADD__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">U&#160;</td>
-          <td class="paramname"><em>y</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa49a169457d2105e22827987774581f9" name="aa49a169457d2105e22827987774581f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa49a169457d2105e22827987774581f9">&#9670;&#160;</a></span>__CFSUB__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , class U &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> __CFSUB__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">U&#160;</td>
-          <td class="paramname"><em>y</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae70701c79f4d881a91064e6cd8271e36" name="ae70701c79f4d881a91064e6cd8271e36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae70701c79f4d881a91064e6cd8271e36">&#9670;&#160;</a></span>__MKCSHL__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> __MKCSHL__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td>
-          <td class="paramname"><em>count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aba89d793836cda04c2f349757ab543b4" name="aba89d793836cda04c2f349757ab543b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba89d793836cda04c2f349757ab543b4">&#9670;&#160;</a></span>__MKCSHR__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> __MKCSHR__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td>
-          <td class="paramname"><em>count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a071509de961ad1bd67b2f17b810040c6" name="a071509de961ad1bd67b2f17b810040c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a071509de961ad1bd67b2f17b810040c6">&#9670;&#160;</a></span>__OFADD__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , class U &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> __OFADD__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">U&#160;</td>
-          <td class="paramname"><em>y</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a82b63e8f54902c2b305e727c7372761f" name="a82b63e8f54902c2b305e727c7372761f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82b63e8f54902c2b305e727c7372761f">&#9670;&#160;</a></span>__OFSUB__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T , class U &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> __OFSUB__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">U&#160;</td>
-          <td class="paramname"><em>y</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7701fcedfd6e9e396dddc89d3fec8fa8" name="a7701fcedfd6e9e396dddc89d3fec8fa8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7701fcedfd6e9e396dddc89d3fec8fa8">&#9670;&#160;</a></span>__PAIR__() <span class="overload">[1/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a> __PAIR__ </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a>&#160;</td>
-          <td class="paramname"><em>high</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>low</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2b888de354fa77c68e5a95603ac46261" name="a2b888de354fa77c68e5a95603ac46261"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b888de354fa77c68e5a95603ac46261">&#9670;&#160;</a></span>__PAIR__() <span class="overload">[2/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#a24dd79fd0210b290d11f01053417eaff">int64</a> __PAIR__ </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#a56f1a81c92849566ae864511088eb7e8">int32</a>&#160;</td>
-          <td class="paramname"><em>high</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>low</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ade8660c8fbc06ea3f2ec08c8c9016922" name="ade8660c8fbc06ea3f2ec08c8c9016922"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade8660c8fbc06ea3f2ec08c8c9016922">&#9670;&#160;</a></span>__PAIR__() <span class="overload">[3/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#a4355d16fcf9f644c9ac84293f0b1801f">int16</a> __PAIR__ </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a>&#160;</td>
-          <td class="paramname"><em>high</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>low</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a577ddb3c5c51bc12eae8db44de1ee964" name="a577ddb3c5c51bc12eae8db44de1ee964"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a577ddb3c5c51bc12eae8db44de1ee964">&#9670;&#160;</a></span>__PAIR__() <span class="overload">[4/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#a1134b580f8da4de94ca6b1de4d37975e">uint32</a> __PAIR__ </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#a05f6b0ae8f6a6e135b0e290c25fe0e4e">uint16</a>&#160;</td>
-          <td class="paramname"><em>high</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>low</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a56473ad95ec23e766591be7ba155e497" name="a56473ad95ec23e766591be7ba155e497"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56473ad95ec23e766591be7ba155e497">&#9670;&#160;</a></span>__PAIR__() <span class="overload">[5/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#a20e3bd7609c6ce94e9bcd863f8e7113b">uint64</a> __PAIR__ </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#a1134b580f8da4de94ca6b1de4d37975e">uint32</a>&#160;</td>
-          <td class="paramname"><em>high</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>low</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad03c70b56df56ee85969eefcf7203a29" name="ad03c70b56df56ee85969eefcf7203a29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad03c70b56df56ee85969eefcf7203a29">&#9670;&#160;</a></span>__PAIR__() <span class="overload">[6/6]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#a05f6b0ae8f6a6e135b0e290c25fe0e4e">uint16</a> __PAIR__ </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#adde6aaee8457bee49c2a92621fe22b79">uint8</a>&#160;</td>
-          <td class="paramname"><em>high</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>low</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a21039ae0d4e5a4b2a1d165567fc05d02" name="a21039ae0d4e5a4b2a1d165567fc05d02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a21039ae0d4e5a4b2a1d165567fc05d02">&#9670;&#160;</a></span>__ROL__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">T __ROL__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td>
-          <td class="paramname"><em>count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ace01122df18d45a95b5c88a43fcc095f" name="ace01122df18d45a95b5c88a43fcc095f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace01122df18d45a95b5c88a43fcc095f">&#9670;&#160;</a></span>__ROR__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">T __ROR__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="MM7_8h.html#a91ad9478d81a7aaf2593e8d9c3d06a14">uint</a>&#160;</td>
-          <td class="paramname"><em>count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4e8026270ed89cdb00d7e135a0f0c55d" name="a4e8026270ed89cdb00d7e135a0f0c55d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e8026270ed89cdb00d7e135a0f0c55d">&#9670;&#160;</a></span>__SETS__()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="MM7_8h.html#ae47c588f3ab8c61121c1c7ab7edc47cd">int8</a> __SETS__ </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>x</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="afcf95e3a294e5646a7e76ca294b9c64a" name="afcf95e3a294e5646a7e76ca294b9c64a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afcf95e3a294e5646a7e76ca294b9c64a">&#9670;&#160;</a></span>memset32()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void memset32 </td>
-          <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>ptr</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a056b74c7b973eaef125974f21d279f33" name="a056b74c7b973eaef125974f21d279f33"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a056b74c7b973eaef125974f21d279f33">&#9670;&#160;</a></span>stat_string_coord</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structstat__coord.html">stat_coord</a>, 26&gt; stat_string_coord</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

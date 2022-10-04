@@ -1,7 +1,7 @@
 var searchData=
 [
   ['d_0',['D',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863af623e75af30e62bbd73d6df5b50bb7b5',1,'Io']]],
-  ['dead_1',['Dead',['../Actor_8h.html#a7ba2f80ccb636f036886752421356766a2f872369e520d046b46b7cd0b49b1882',1,'Actor.h']]],
+  ['dead_1',['Dead',['../Actor_8h.html#a75a2677e7281dc615368b0814c395feda2f872369e520d046b46b7cd0b49b1882',1,'Actor.h']]],
   ['decalflagsfade_2',['DecalFlagsFade',['../DecalBuilder_8h.html#ac489ae5fe7efc98274ba75ffb11f244daa2a4be6ec1eee9ba6dd8e68e9b1381ad',1,'DecalBuilder.h']]],
   ['decalflagsnone_3',['DecalFlagsNone',['../DecalBuilder_8h.html#ac489ae5fe7efc98274ba75ffb11f244dab94ea76ea3c3e6285f15f6ca4ade3b92',1,'DecalBuilder.h']]],
   ['decimal_4',['Decimal',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a937504f318f04eaf0f1d701df4c4d7f3',1,'Io']]],
@@ -128,7 +128,7 @@ var searchData=
   ['digit9_125',['Digit9',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863aa9296fb8a66948e9094d45022b8212ca',1,'Io']]],
   ['diplomat_126',['Diplomat',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4a9ff251ffa1cd6ab837aacd5930a3107b',1,'NPCProf.h']]],
   ['directdraw_127',['DirectDraw',['../IRenderFactory_8h.html#ae9c668e3a273ce92b9f4e134d0cbd6ceaa3ad3cded8219daa47be18264fa03086',1,'IRenderFactory.h']]],
-  ['disabled_128',['Disabled',['../Actor_8h.html#a7ba2f80ccb636f036886752421356766af31108c24daa76e574c8259d9fe46c09',1,'Actor.h']]],
+  ['disabled_128',['Disabled',['../Actor_8h.html#a75a2677e7281dc615368b0814c395fedaf31108c24daa76e574c8259d9fe46c09',1,'Actor.h']]],
   ['dmgt_5fbody_129',['DMGT_BODY',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891ad99a82c8bedd48dba4e43cb4a5034d69',1,'ItemEnums.h']]],
   ['dmgt_5fcold_130',['DMGT_COLD',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891aa9fe5f5972f888e4c52291a1357bc1c9',1,'ItemEnums.h']]],
   ['dmgt_5fdark_131',['DMGT_DARK',['../ItemEnums_8h.html#a55231e9660ce1c5b6f7613a3f9d66891af5c7da060e6d34b3378058811fa78061',1,'ItemEnums.h']]],
@@ -145,5 +145,5 @@ var searchData=
   ['door_5ftriggered_142',['DOOR_TRIGGERED',['../BSPModel_8h.html#aca4fbb5b4731d33480ddc765e71c176ea1f0f611f92f0d184b09f13a87480604b',1,'BSPModel.h']]],
   ['down_143',['Down',['../namespaceIo.html#adcde3b7dbf4d9947be1ca5d22ecb2863a08a38277b0309070706f6652eeae9a53',1,'Io']]],
   ['duper_144',['Duper',['../NPCProf_8h.html#ae6501f571f97d74c2c78fddcb371bad4af6d28093d199a8f5262d9e53b3e11827',1,'NPCProf.h']]],
-  ['dying_145',['Dying',['../Actor_8h.html#a7ba2f80ccb636f036886752421356766a96cc2a0090ada376561406d48d1f2089',1,'Actor.h']]]
+  ['dying_145',['Dying',['../Actor_8h.html#a75a2677e7281dc615368b0814c395feda96cc2a0090ada376561406d48d1f2089',1,'Actor.h']]]
 ];

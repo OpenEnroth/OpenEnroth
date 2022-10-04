@@ -54,14 +54,13 @@ var searchData=
   ['stru316_51',['stru316',['../structstru316.html',1,'']]],
   ['stru319_52',['stru319',['../structstru319.html',1,'']]],
   ['stru324_5fspell_5fid_5fto_5fsprite_5fmapping_53',['stru324_spell_id_to_sprite_mapping',['../structstru324__spell__id__to__sprite__mapping.html',1,'']]],
-  ['stru336_54',['stru336',['../structstru336.html',1,'']]],
-  ['stru337_5fstru0_55',['stru337_stru0',['../structstru337__stru0.html',1,'']]],
-  ['stru337_5funused_56',['stru337_unused',['../structstru337__unused.html',1,'']]],
-  ['stru352_57',['stru352',['../structstru352.html',1,'']]],
-  ['stru355_58',['stru355',['../structstru355.html',1,'']]],
-  ['stru365_5ftravel_5finfo_59',['stru365_travel_info',['../structstru365__travel__info.html',1,'']]],
-  ['stru367_60',['stru367',['../structstru367.html',1,'']]],
-  ['stru6_5fstru2_61',['stru6_stru2',['../structstru6__stru2.html',1,'']]],
-  ['stru9_62',['stru9',['../structstru9.html',1,'']]],
-  ['summoneditem_63',['SummonedItem',['../structSummonedItem.html',1,'']]]
+  ['stru337_5fstru0_54',['stru337_stru0',['../structstru337__stru0.html',1,'']]],
+  ['stru337_5funused_55',['stru337_unused',['../structstru337__unused.html',1,'']]],
+  ['stru352_56',['stru352',['../structstru352.html',1,'']]],
+  ['stru355_57',['stru355',['../structstru355.html',1,'']]],
+  ['stru365_5ftravel_5finfo_58',['stru365_travel_info',['../structstru365__travel__info.html',1,'']]],
+  ['stru367_59',['stru367',['../structstru367.html',1,'']]],
+  ['stru6_5fstru2_60',['stru6_stru2',['../structstru6__stru2.html',1,'']]],
+  ['stru9_61',['stru9',['../structstru9.html',1,'']]],
+  ['summoneditem_62',['SummonedItem',['../structSummonedItem.html',1,'']]]
 ];

@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['r_0',['r',['../structFormat.html#a5d70fe81d4178bfacc988c1de92f7d20',1,'Format']]],
+  ['r_0',['r',['../classColorTable_1_1Color.html#a68cba873714b9799dc4d7bc73aae55af',1,'ColorTable::Color::r()'],['../structGame__Bloodsplat.html#af38580817716cf60a435deda141f2025',1,'Game_Bloodsplat::r()']]],
   ['r_1',['R',['../struct__RGBColor.html#a3f00f209e8703b7ab54070318413f35c',1,'_RGBColor']]],
-  ['r_2',['r',['../classColorTable_1_1Color.html#a68cba873714b9799dc4d7bc73aae55af',1,'ColorTable::Color::r()'],['../structParticle.html#ac6e465fd885df766096eb088016023b5',1,'Particle::r()'],['../structParticle__sw.html#a8de6a23ba04bd5a0a32eb69a8a4ac372',1,'Particle_sw::r()'],['../structbillbverts.html#a322362f52932f88424037ce08afb8433',1,'billbverts::r()'],['../structtwodverts.html#a18c558c9b1b57dd4ab4455416cb07461',1,'twodverts::r()'],['../structforcepersverts.html#af13b0b2e1baf99d07021ec93fd3e11db',1,'forcepersverts::r()'],['../structlinesverts.html#aabe20586de741974c4bf5decd689069d',1,'linesverts::r()'],['../structBloodsplat.html#a99dc78fc264fc095af4053962d8a57ef',1,'Bloodsplat::r()'],['../structGame__Bloodsplat.html#af38580817716cf60a435deda141f2025',1,'Game_Bloodsplat::r()']]],
+  ['r_2',['r',['../structFormat.html#a5d70fe81d4178bfacc988c1de92f7d20',1,'Format::r()'],['../structParticle.html#ac6e465fd885df766096eb088016023b5',1,'Particle::r()'],['../structParticle__sw.html#a8de6a23ba04bd5a0a32eb69a8a4ac372',1,'Particle_sw::r()'],['../structbillbverts.html#a322362f52932f88424037ce08afb8433',1,'billbverts::r()'],['../structtwodverts.html#a18c558c9b1b57dd4ab4455416cb07461',1,'twodverts::r()'],['../structforcepersverts.html#af13b0b2e1baf99d07021ec93fd3e11db',1,'forcepersverts::r()'],['../structlinesverts.html#aabe20586de741974c4bf5decd689069d',1,'linesverts::r()'],['../structBloodsplat.html#a99dc78fc264fc095af4053962d8a57ef',1,'Bloodsplat::r()']]],
   ['radius_3',['radius',['../structGame__Bloodsplat.html#aa4a446cb413a5881c5d57d7a05044b25',1,'Game_Bloodsplat::radius()'],['../structBloodsplat.html#ad0b8866f68b836b7faa917922d7fd697',1,'Bloodsplat::radius()'],['../structParty.html#a679d943d5f5a2147e2d83d57638cbb6e',1,'Party::radius()'],['../structParty__Image__MM7.html#aa9bb47da38b2eafec4a47da36d9c50a0',1,'Party_Image_MM7::radius()']]],
   ['radius_5fhi_4',['radius_hi',['../structCollisionState.html#a65f8b2eadc96fffe84779020a30da612',1,'CollisionState']]],
   ['radius_5flo_5',['radius_lo',['../structCollisionState.html#a75bf78e37808d9bdef22e8794bf572d0',1,'CollisionState']]],
@@ -10,9 +10,9 @@ var searchData=
   ['range_7',['range',['../structRandom.html#a9c19a7e006be8277a5b4a8b4d94b5baf',1,'Random']]],
   ['rangedattackdepth_8',['RangedAttackDepth',['../classApplication_1_1GameConfig_1_1Gameplay.html#af2c752b4392185ca1ffb430ff00e5cd0',1,'Application::GameConfig::Gameplay']]],
   ['receives_5fkeyboard_5finput_9',['receives_keyboard_input',['../classGUIWindow.html#aaedaee57b8df9772e3d7a1a19d2b02e8',1,'GUIWindow']]],
-  ['recovery_5fper_5fskill_10',['recovery_per_skill',['../classSpellData.html#a5fefd46e5cf1c83d72b0310fb49d65cc',1,'SpellData']]],
-  ['red_11',['red',['../structGLdecalverts.html#aaf45c445abb8d8eb45335455bba1ad00',1,'GLdecalverts']]],
-  ['red_12',['Red',['../classColorTable.html#a68b9a56fa9c09baa7f92b311e87c2a87',1,'ColorTable']]],
+  ['recovery_5fper_5fskill_10',['recovery_per_skill',['../classSpellData.html#a0cab291bda882b4dcfe5b7348324a851',1,'SpellData']]],
+  ['red_11',['Red',['../classColorTable.html#a68b9a56fa9c09baa7f92b311e87c2a87',1,'ColorTable']]],
+  ['red_12',['red',['../structGLdecalverts.html#aaf45c445abb8d8eb45335455bba1ad00',1,'GLdecalverts']]],
   ['reef_13',['Reef',['../classColorTable.html#a467d4d2feb2dc7c538438242498eaf3d',1,'ColorTable']]],
   ['regularbonusmap_14',['regularBonusMap',['../Items_8cpp.html#af5cd7aa4c901842aef87c3ae57f40b66',1,'Items.cpp']]],
   ['relations_15',['relations',['../structFactionTable.html#a8841090571c6b9f6a4579b4700e1b791',1,'FactionTable']]],
@@ -38,10 +38,10 @@ var searchData=
   ['rest_5fui_5fsky_5fframe_5fcurrent_35',['rest_ui_sky_frame_current',['../UIRest_8cpp.html#a9500e27ed48226c2682b5e72e86b33fd',1,'rest_ui_sky_frame_current():&#160;UIRest.cpp'],['../UIRest_8h.html#ac296e29920fa5a1a196659518808e6b6',1,'rest_ui_sky_frame_current():&#160;UIRest.cpp']]],
   ['rhw_36',['rhw',['../structRenderVertexD3D3.html#a20896950efa27111b72e1f8f1ab8faab',1,'RenderVertexD3D3']]],
   ['right_37',['Right',['../classApplication_1_1GameConfig_1_1Keybindings.html#a468e7a51438e98d95c2d8f21c58eb1e9',1,'Application::GameConfig::Keybindings']]],
-  ['rightclickportraitxmax_38',['RightClickPortraitXmax',['../mm7__data_8h.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#af17836ff27f09c90b8cc753522661cc3',1,'RightClickPortraitXmax():&#160;mm7_data.cpp']]],
-  ['rightclickportraitxmin_39',['RightClickPortraitXmin',['../mm7__data_8h.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a38667c9339bdb5e4135ba5b93944c07f',1,'RightClickPortraitXmin():&#160;mm7_data.cpp']]],
-  ['rot_5fx_40',['rot_x',['../structTownPortalData.html#a172092dc004e2181e1012d78d382e782',1,'TownPortalData']]],
-  ['rot_5fy_41',['rot_y',['../structTownPortalData.html#a5a91a10db6f71505493b5eb1d9de0080',1,'TownPortalData']]],
+  ['rightclickportraitxmax_38',['RightClickPortraitXmax',['../mm7__data_8h.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a1e0bb2e5df8caceb874ccbac8afb592b',1,'RightClickPortraitXmax():&#160;mm7_data.cpp']]],
+  ['rightclickportraitxmin_39',['RightClickPortraitXmin',['../mm7__data_8h.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a271bcf3fdc5ff14473042faddbd0cfa3',1,'RightClickPortraitXmin():&#160;mm7_data.cpp']]],
+  ['rot_5fx_40',['rot_x',['../structTownPortalData.html#a4e82ac9655728eaeaecabc8eca40b71a',1,'TownPortalData']]],
+  ['rot_5fy_41',['rot_y',['../structTownPortalData.html#ac1f4f99e78574e664ce01b4ca5c72a27',1,'TownPortalData']]],
   ['rotated_5fnormal_42',['rotated_normal',['../structLightsData.html#a0f92fde30cff4753d4cfadb6ab41fcd4',1,'LightsData']]],
   ['rotation_5fspeed_43',['rotation_speed',['../structParticle.html#afc3be85262f36cb5f78cf3a51d8e61b3',1,'Particle']]]
 ];

@@ -79,7 +79,7 @@ var searchData=
   ['_5fpuianim_5fwizardeye_76',['_pUIAnim_WizardEye',['../Party_8cpp.html#af964b423abb946fcf3ec10babd767823',1,'Party.cpp']]],
   ['_5fpuianum_5ftorchlight_77',['_pUIAnum_Torchlight',['../Party_8cpp.html#a175b7af4a0e2125d58d90b043a28b2ff',1,'Party.cpp']]],
   ['_5fquest_5fbit_78',['_quest_bit',['../struct__2devent.html#a17fef9dd46d1bc9a8647f1df2578d463',1,'_2devent']]],
-  ['_5fquest_5fbits_79',['_quest_bits',['../structParty__Image__MM7.html#a5d445e0c496e39e18c167f9a6fc14316',1,'Party_Image_MM7::_quest_bits()'],['../structParty.html#ab5b1378cc25e8c4deb49847ead3e7187',1,'Party::_quest_bits()']]],
+  ['_5fquest_5fbits_79',['_quest_bits',['../structParty__Image__MM7.html#a5d445e0c496e39e18c167f9a6fc14316',1,'Party_Image_MM7::_quest_bits()'],['../structParty.html#ae85494596b792ece195b942cd47a1d17',1,'Party::_quest_bits()']]],
   ['_5franged_5fatk_5fbonus_80',['_ranged_atk_bonus',['../structPlayer.html#ad502f8f9bbaadde3d14f3ad65d93577e',1,'Player::_ranged_atk_bonus()'],['../structPlayer__Image__MM7.html#ac6ee8c5ce463a89b99ecd5b39bdbedd7',1,'Player_Image_MM7::_ranged_atk_bonus()']]],
   ['_5franged_5fdmg_5fbonus_81',['_ranged_dmg_bonus',['../structPlayer.html#a0ccee602e571ff91a05e2d66a0164950',1,'Player::_ranged_dmg_bonus()'],['../structPlayer__Image__MM7.html#a8112c444b06ee6b0f32897aeb885a6e2',1,'Player_Image_MM7::_ranged_dmg_bonus()']]],
   ['_5frep_82',['_rep',['../struct__2devent.html#a9a1f7e013f32f8eebc1e37528d8985f6',1,'_2devent']]],
