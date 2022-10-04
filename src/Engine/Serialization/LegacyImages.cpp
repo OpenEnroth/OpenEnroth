@@ -1417,3 +1417,39 @@ void FontData_MM7::Deserialize(FontData *font, size_t size) {
 
     font->pFontData.assign(this->pFontData, &this->pFontData[size - 4128]);
 }
+
+void ODMFace_MM7::Deserialize(ODMFace *face) {
+    face->pFacePlaneOLD = this->pFacePlane;
+    face->pFacePlane.vNormal.x = face->pFacePlaneOLD.vNormal.x / 65536.0;
+    face->pFacePlane.vNormal.y = face->pFacePlaneOLD.vNormal.y / 65536.0;
+    face->pFacePlane.vNormal.z = face->pFacePlaneOLD.vNormal.z / 65536.0;
+    face->pFacePlane.dist = face->pFacePlaneOLD.dist / 65536.0;
+
+    face->zCalc.Init(face->pFacePlaneOLD);
+    face->uAttributes = FaceAttributes(this->uAttributes);
+    face->pVertexIDs = this->pVertexIDs;
+    face->pTextureUIDs = this->pTextureUIDs;
+    face->pTextureVIDs = this->pTextureVIDs;
+    face->pXInterceptDisplacements = this->pXInterceptDisplacements;
+    face->pYInterceptDisplacements = this->pYInterceptDisplacements;
+    face->pZInterceptDisplacements = this->pZInterceptDisplacements;
+    face->resource = nullptr;
+    face->sTextureDeltaU = this->sTextureDeltaU;
+    face->sTextureDeltaV = this->sTextureDeltaV;
+    face->pBoundingBox = this->pBoundingBox;
+    face->sCogNumber = this->sCogNumber;
+    face->sCogTriggeredID = this->sCogTriggeredID;
+    face->sCogTriggerType = this->sCogTriggerType;
+    face->field_128 = this->field_128;
+    face->field_129 = this->field_129;
+    face->uGradientVertex1 = this->uGradientVertex1;
+    face->uGradientVertex2 = this->uGradientVertex2;
+    face->uGradientVertex3 = this->uGradientVertex3;
+    face->uGradientVertex4 = this->uGradientVertex4;
+    face->uNumVertices = this->uNumVertices;
+    face->uPolygonType = PolygonType(this->uPolygonType);
+    face->uShadeType = this->uShadeType;
+    face->bVisible = this->bVisible;
+    face->field_132 = this->field_132;
+    face->field_133 = this->field_133;
+}

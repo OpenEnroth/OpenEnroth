@@ -29,6 +29,7 @@ struct OtherOverlayList;
 struct Timer;
 struct Party;
 struct MonsterDesc;
+struct ODMFace;
 
 #pragma pack(push, 1)
 
@@ -889,5 +890,44 @@ struct FontData_MM7 {
     uint8_t pFontData[0];  // array of font pixels
 };
 static_assert(sizeof(FontData_MM7) == 0x1020);
+
+
+struct ODMFace_MM7 {
+    ODMFace_MM7() { memzero(this); }
+
+    void Deserialize(ODMFace *);
+
+    Planei pFacePlane;
+    int zCalc1;
+    int zCalc2;
+    int zCalc3;
+    unsigned int uAttributes;
+    std::array<uint16_t, 20> pVertexIDs;
+    std::array<int16_t, 20> pTextureUIDs;
+    std::array<int16_t, 20> pTextureVIDs;
+    std::array<int16_t, 20> pXInterceptDisplacements;
+    std::array<int16_t, 20> pYInterceptDisplacements;
+    std::array<int16_t, 20> pZInterceptDisplacements;
+    int16_t uTextureID;
+    int16_t sTextureDeltaU;
+    int16_t sTextureDeltaV;
+    BBoxs pBoundingBox;
+    int16_t sCogNumber;
+    int16_t sCogTriggeredID;
+    int16_t sCogTriggerType;
+    char field_128;
+    char field_129;
+    uint8_t uGradientVertex1;
+    uint8_t uGradientVertex2;
+    uint8_t uGradientVertex3;
+    uint8_t uGradientVertex4;
+    uint8_t uNumVertices;
+    uint8_t uPolygonType;
+    uint8_t uShadeType;
+    uint8_t bVisible;
+    char field_132;
+    char field_133;
+};
+//static_assert(sizeof(ODMFace_MM7) == 182);
 
 #pragma pack(pop)
