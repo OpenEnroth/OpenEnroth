@@ -11,11 +11,11 @@
 
 class MemoryInput {
  public:
-    enum class VectorStoreMode {
+    // TODO: gcc chokes if this is turned into enum class, retest with GCC 12.3+
+    enum VectorStoreMode {
         Append,
         Overwrite
     };
-    using enum VectorStoreMode;
 
     MemoryInput() {}
 
