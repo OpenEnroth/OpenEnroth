@@ -507,12 +507,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    std::vector<BLVFace_MM7> mm7faces;
-    stream.ReadVector(&mm7faces);
-    pFaces.resize(mm7faces.size());
-    for (unsigned int i = 0; i < mm7faces.size(); ++i)
-        mm7faces[i].Deserialize(&pFaces[i]);
-
+    stream.ReadLegacyVector<BLVFace_MM7>(&pFaces);
     stream.ReadSizedVector(&pLFaces, blv.uFaces_fdata_Size / sizeof(uint16_t));
 
     for (uint i = 0, j = 0; i < pFaces.size(); ++i) {
@@ -581,11 +576,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    std::vector<BLVSector_MM7> mm7sectors;
-    stream.ReadVector(&mm7sectors);
-    pSectors.resize(mm7sectors.size());
-    for (int i = 0; i < mm7sectors.size(); ++i)
-        mm7sectors[i].Deserialize(&pSectors[i]);
+    stream.ReadLegacyVector<BLVSector_MM7>(&pSectors);
 
     pGameLoadingUI_ProgressBar->Progress();
 
@@ -749,11 +740,9 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    std::vector<Actor_MM7> mm7actors;
-    stream.ReadVector(&mm7actors);
-    pActors.clear();
-    for (int i = 0; i < mm7actors.size(); ++i)
-        mm7actors[i].Deserialize(AllocateActor(true));
+    stream.ReadLegacyVector<Actor_MM7>(&pActors);
+    for(size_t i = 0; i < pActors.size(); i++)
+        pActors[i].id = i;
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
@@ -776,11 +765,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    std::vector<BLVDoor_MM7> mm7doors;
-    stream.ReadSizedVector(&mm7doors, uNumDoors);
-    pDoors.resize(uNumDoors);
-    for (int i = 0; i < uNumDoors; ++i)
-        mm7doors[i].Deserialize(&pDoors[i]);
+    stream.ReadSizedLegacyVector<BLVDoor_MM7>(&pDoors, uNumDoors);
 
     // v201 = (const char *)blv.uDoors_ddata_Size;
     // v200 = (size_t)ptr_0002B4_doors_ddata;

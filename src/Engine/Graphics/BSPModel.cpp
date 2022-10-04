@@ -51,13 +51,9 @@ void BSPModelList::Load(MemoryInput *stream) {
 
         stream->ReadSizedVector(&new_model.pVertices, model.uNumVertices);
 
-        std::vector<ODMFace_MM7> mm7faces;
-        stream->ReadSizedVector(&mm7faces, model.uNumFaces);
-        new_model.pFaces.resize(mm7faces.size());
-        for (size_t i = 0; i < mm7faces.size(); i++) {
+        stream->ReadSizedLegacyVector<ODMFace_MM7>(&new_model.pFaces, model.uNumFaces);
+        for (size_t i = 0; i < new_model.pFaces.size(); i++)
             new_model.pFaces[i].index = i;
-            mm7faces[i].Deserialize(&new_model.pFaces[i]);
-        }
 
         stream->ReadSizedVector(&new_model.pFacesOrdering, model.uNumFaces);
         stream->ReadSizedVector(&new_model.pNodes, model.uNumNodes);

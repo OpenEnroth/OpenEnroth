@@ -1052,13 +1052,9 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    static_assert(sizeof(Actor_MM7) == 836);
-
-    std::vector<Actor_MM7> mm7actors;
-    stream.ReadVector(&mm7actors);
-    pActors.clear();
-    for (int i = 0; i < mm7actors.size(); ++i)
-        mm7actors[i].Deserialize(AllocateActor(true));
+    stream.ReadLegacyVector<Actor_MM7>(&pActors);
+    for(size_t i = 0; i < pActors.size(); i++)
+        pActors[i].id = i;
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки

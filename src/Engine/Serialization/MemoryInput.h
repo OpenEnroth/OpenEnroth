@@ -48,15 +48,22 @@ class MemoryInput {
 
     template<class T>
     void ReadVector(std::vector<T> *dst) {
-        uint32_t size;
-        ReadRaw(&size);
-        ReadSizedVector(dst, size);
+        ReadVectorInternal(dst);
+    }
+
+    template<class LegacyT, class T>
+    void ReadLegacyVector(std::vector<T> *dst) {
+        ReadVectorInternal<LegacyT>(dst);
     }
 
     template<class T>
     void ReadSizedVector(std::vector<T> *dst, size_t size) {
-        dst->resize(size);
-        ReadRawArray(dst->data(), size);
+        ReadVectorInternal(dst, size);
+    }
+
+    template<class LegacyT, class T>
+    void ReadSizedLegacyVector(std::vector<T> *dst, size_t size) {
+        ReadVectorInternal<LegacyT>(dst, size);
     }
 
     void ReadSizedString(std::string *dst, size_t size) {
@@ -76,6 +83,27 @@ class MemoryInput {
         const void *result = data_;
         data_ += size;
         return result;
+    }
+
+ private:
+    template<class LegacyT = void, class T>
+    void ReadVectorInternal(std::vector<T> *dst, size_t explicitSize = static_cast<size_t>(-1)) {
+        uint32_t size = explicitSize;
+        if (explicitSize == static_cast<size_t>(-1))
+            ReadRaw(&size);
+
+        if constexpr (std::is_same_v<LegacyT, void>) {
+            dst->resize(size);
+            ReadRawArray(dst->data(), size);
+        } else {
+            std::vector<LegacyT> tmp;
+            tmp.resize(size);
+            ReadRawArray(tmp.data(), size);
+
+            dst->resize(tmp.size());
+            for(size_t i = 0; i < tmp.size(); i++)
+                tmp[i].Deserialize(&(*dst)[i]);
+        }
     }
 
  private:
