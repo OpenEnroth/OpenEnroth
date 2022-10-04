@@ -72,30 +72,6 @@ std::array<const char *, 11> _4E6BDC_loc_names = {
     "mdk01.blv", "mdt01.blv", "mdr01.blv", "mdt10.blv",
     "mdt09.blv", "mdt15.blv", "mdt11.blv"};
 
-bool BLVFace::Deserialize(BLVFace_MM7 *data) {
-    this->pFacePlane = data->pFacePlane;
-    this->pFacePlane_old = data->pFacePlane_old;
-    this->zCalc.Init(this->pFacePlane_old);
-    this->uAttributes = FaceAttributes(data->uAttributes);
-    this->pVertexIDs = nullptr;
-    this->pXInterceptDisplacements = nullptr;
-    this->pYInterceptDisplacements = nullptr;
-    this->pZInterceptDisplacements = nullptr;
-    this->pVertexUIDs = nullptr;
-    this->pVertexVIDs = nullptr;
-    this->uFaceExtraID = data->uFaceExtraID;
-    // uint16_t  uBitmapID;
-    this->uSectorID = data->uSectorID;
-    this->uBackSectorID = data->uBackSectorID;
-    this->pBounding = data->pBounding;
-    this->uPolygonType = (PolygonType)data->uPolygonType;
-    this->uNumVertices = data->uNumVertices;
-    this->field_5E = data->field_5E;
-    this->field_5F = data->field_5F;
-
-    return true;
-}
-
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
     int TorchLightPower;           // eax@4
@@ -535,7 +511,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     stream.ReadVector(&mm7faces);
     pFaces.resize(mm7faces.size());
     for (unsigned int i = 0; i < mm7faces.size(); ++i)
-        pFaces[i].Deserialize(&mm7faces[i]);
+        mm7faces[i].Deserialize(&pFaces[i]);
 
     stream.ReadSizedVector(&pLFaces, blv.uFaces_fdata_Size / sizeof(uint16_t));
 

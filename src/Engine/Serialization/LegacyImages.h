@@ -61,8 +61,10 @@ static_assert(sizeof(SpriteFrame_MM7) == 60);
 struct BLVFace_MM7 {
     BLVFace_MM7() { memzero(this); }
 
-    struct Planef pFacePlane;
-    struct Planei pFacePlane_old;
+    void Deserialize(BLVFace *face);
+
+    Planef pFacePlane;
+    Planei pFacePlane_old;
     int zCalc1;
     int zCalc2;
     int zCalc3;

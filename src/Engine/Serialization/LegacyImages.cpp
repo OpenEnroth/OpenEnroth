@@ -12,6 +12,28 @@
 
 #include "Utility/Color.h"
 
+void BLVFace_MM7::Deserialize(BLVFace *face) {
+    face->pFacePlane = this->pFacePlane;
+    face->pFacePlane_old = this->pFacePlane_old;
+    face->zCalc.Init(face->pFacePlane_old);
+    face->uAttributes = FaceAttributes(this->uAttributes);
+    face->pVertexIDs = nullptr;
+    face->pXInterceptDisplacements = nullptr;
+    face->pYInterceptDisplacements = nullptr;
+    face->pZInterceptDisplacements = nullptr;
+    face->pVertexUIDs = nullptr;
+    face->pVertexVIDs = nullptr;
+    face->uFaceExtraID = this->uFaceExtraID;
+    face->resource = nullptr;
+    face->uSectorID = this->uSectorID;
+    face->uBackSectorID = this->uBackSectorID;
+    face->pBounding = this->pBounding;
+    face->uPolygonType = PolygonType(this->uPolygonType);
+    face->uNumVertices = this->uNumVertices;
+    face->field_5E = this->field_5E;
+    face->field_5F = this->field_5F;
+}
+
 void Timer_Image_MM7::Serialize(const Timer *timer) {
     memset(this, 0, sizeof(*this));
 
