@@ -1027,7 +1027,7 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     Assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
-    if (this->uNumVertices <= 3)
+    if (this->uNumVertices < 3)
         return false; // This does happen.
 
     FaceAttributes plane = override_plane;
