@@ -5,11 +5,20 @@
 #include <stdexcept>
 #include <memory>
 #include <utility>
+#include <type_traits>
 
 #include "Utility/Blob.h"
 
 class MemoryInput {
  public:
+    enum class VectorStoreMode {
+        Append,
+        Overwrite
+    };
+    using enum VectorStoreMode;
+
+    MemoryInput() {}
+
     MemoryInput(const void *data, size_t size) {
         Reset(data, size);
     }
@@ -47,23 +56,23 @@ class MemoryInput {
     }
 
     template<class T>
-    void ReadVector(std::vector<T> *dst) {
-        ReadVectorInternal(dst);
+    void ReadVector(std::vector<T> *dst, VectorStoreMode mode = Overwrite) {
+        ReadVectorInternal(dst, mode);
     }
 
     template<class LegacyT, class T>
-    void ReadLegacyVector(std::vector<T> *dst) {
-        ReadVectorInternal<LegacyT>(dst);
+    void ReadLegacyVector(std::vector<T> *dst, VectorStoreMode mode = Overwrite) {
+        ReadVectorInternal<LegacyT>(dst, mode);
     }
 
     template<class T>
-    void ReadSizedVector(std::vector<T> *dst, size_t size) {
-        ReadVectorInternal(dst, size);
+    void ReadSizedVector(std::vector<T> *dst, size_t size, VectorStoreMode mode = Overwrite) {
+        ReadVectorInternal(dst, mode, size);
     }
 
     template<class LegacyT, class T>
-    void ReadSizedLegacyVector(std::vector<T> *dst, size_t size) {
-        ReadVectorInternal<LegacyT>(dst, size);
+    void ReadSizedLegacyVector(std::vector<T> *dst, size_t size, VectorStoreMode mode = Overwrite) {
+        ReadVectorInternal<LegacyT>(dst, mode, size);
     }
 
     void ReadSizedString(std::string *dst, size_t size) {
@@ -87,22 +96,25 @@ class MemoryInput {
 
  private:
     template<class LegacyT = void, class T>
-    void ReadVectorInternal(std::vector<T> *dst, size_t explicitSize = static_cast<size_t>(-1)) {
+    void ReadVectorInternal(std::vector<T> *dst, VectorStoreMode mode, size_t explicitSize = static_cast<size_t>(-1)) {
         uint32_t size = explicitSize;
         if (explicitSize == static_cast<size_t>(-1))
             ReadRaw(&size);
 
-        if constexpr (std::is_same_v<LegacyT, void>) {
-            dst->resize(size);
-            ReadRawArray(dst->data(), size);
-        } else {
-            std::vector<LegacyT> tmp;
-            tmp.resize(size);
-            ReadRawArray(tmp.data(), size);
+        if (mode == Overwrite)
+            dst->clear();
+        dst->reserve(dst->size() + size);
 
-            dst->resize(tmp.size());
-            for(size_t i = 0; i < tmp.size(); i++)
-                tmp[i].Deserialize(&(*dst)[i]);
+        constexpr bool isLegacyMode = !std::is_same_v<LegacyT, void>;
+        std::conditional_t<isLegacyMode, LegacyT, char> tmp;
+
+        for (size_t i = 0; i < size; i++) {
+            if constexpr (isLegacyMode) {
+                ReadRaw(&tmp);
+                tmp.Deserialize(&dst->emplace_back());
+            } else {
+                ReadRaw(&dst->emplace_back());
+            }
         }
     }
 
