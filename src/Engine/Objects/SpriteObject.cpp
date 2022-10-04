@@ -114,13 +114,13 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
     int i;  // edi@50
     int v26;       // edi@52
     int v27;       // eax@52
-    __int16 v28;   // cx@55
+    int16_t v28;   // cx@55
     int v29;       // eax@55
     // signed int v30; // edi@59
     BSPModel *bmodel;  // ecx@61
     ODMFace *face;     // edi@61
     int v36;           // ecx@67
-    __int16 v37;       // ax@67
+    int16_t v37;       // ax@67
     int v38;           // eax@72
     int v44;           // eax@77
     int v50;           // [sp+10h] [bp-98h]@52
@@ -173,13 +173,13 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                       v51.z * pSpriteObjects[uLayingItemID].vVelocity.z +
                       v51.x * pSpriteObjects[uLayingItemID].vVelocity.x) >>
                   16;
-            // v60 = ((unsigned __int64)(v56 * (signed __int64)v51.x) >> 16);
+            // v60 = ((uint64_t)(v56 * (int64_t)v51.x) >> 16);
             pSpriteObjects[uLayingItemID].vVelocity.x +=
                 fixpoint_mul(v56, v51.x);
-            // v60 = ((unsigned __int64)(v56 * (signed __int64)v51.y) >> 16);
+            // v60 = ((uint64_t)(v56 * (int64_t)v51.y) >> 16);
             pSpriteObjects[uLayingItemID].vVelocity.y +=
                 fixpoint_mul(v56, v51.y);
-            // v60 = ((unsigned __int64)(v56 * (signed __int64)v51.z) >> 16);
+            // v60 = ((uint64_t)(v56 * (int64_t)v51.z) >> 16);
             pSpriteObjects[uLayingItemID].vVelocity.z +=
                 fixpoint_mul(v56, v51.z);
             v7 = v54;
@@ -194,7 +194,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
         if (!(object->uFlags & OBJECT_DESC_BOUNCE) ||
             (v21 = -pSpriteObjects[uLayingItemID].vVelocity.z >> 1,
              pSpriteObjects[uLayingItemID].vVelocity.z = v21,
-             (signed __int16)v21 < 10))
+             (int16_t)v21 < 10))
             pSpriteObjects[uLayingItemID].vVelocity.z = 0;
 
         pSpriteObjects[uLayingItemID].vVelocity.x =
@@ -220,7 +220,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
                 Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                            ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
-                Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
+                Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
                 Dst.texture = spell_fx_renderer->effpar01;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
@@ -234,7 +234,7 @@ void SpriteObject::UpdateObject_fn0_ODM(unsigned int uLayingItemID) {
             } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
                 Dst.uDiffuse = rand();
-                Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
+                Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
                 Dst.texture = spell_fx_renderer->effpar03;
                 Dst.particle_size = 1.0f;
                 particle_engine->AddParticle(&Dst);
@@ -334,7 +334,7 @@ LABEL_13:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
-                    Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
+                    Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -350,21 +350,21 @@ LABEL_13:
                 } else if (object->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
                     Dst.uDiffuse = rand();
-                    Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
+                    Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
                     Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
                 }
                 return;
             }
-            // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
-            // __int64)collision_state.direction.x) >> 16);
+            // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed
+            // int64_t)collision_state.direction.x) >> 16);
             pSpriteObjects[uLayingItemID].vPosition.x += collision_state.adjusted_move_distance * collision_state.direction.x;
-            // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
-            // __int64)collision_state.direction.y) >> 16);
+            // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed
+            // int64_t)collision_state.direction.y) >> 16);
             pSpriteObjects[uLayingItemID].vPosition.y += collision_state.adjusted_move_distance * collision_state.direction.y;
-            // v60 = ((unsigned __int64)(collision_state.adjusted_move_distance * (signed
-            // __int64)collision_state.direction.z) >> 16);
+            // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed
+            // int64_t)collision_state.direction.z) >> 16);
             v28 = (short)collision_state.uSectorID;
             pSpriteObjects[uLayingItemID].vPosition.z += collision_state.adjusted_move_distance * collision_state.direction.z;
             v29 = pSpriteObjects[uLayingItemID].vPosition.z;
@@ -408,7 +408,7 @@ LABEL_13:
                         v37 = 2 * (short)v60;
                     } else {
                         v36 = v60;
-                        pSpriteObjects[uLayingItemID].vVelocity.z += (signed __int16)v60;
+                        pSpriteObjects[uLayingItemID].vVelocity.z += (int16_t)v60;
                         v58 = fixpoint_mul(0x7D00, v36);
                         v37 = fixpoint_mul(32000, v36);
                     }
@@ -455,7 +455,7 @@ void SpriteObject::UpdateObject_fn0_BLV(unsigned int uLayingItemID) {
 
     int v15;               // ebx@46
     int v17;                      // eax@50
-    __int16 v22;                  // ax@57
+    int16_t v22;                  // ax@57
     int v23;                      // edi@62
     Particle_sw Dst;              // [sp+Ch] [bp-84h]@18
 
@@ -536,7 +536,7 @@ LABEL_25:
                     Dst.type = ParticleType_Bitmap | ParticleType_Rotating |
                                ParticleType_8;
                     Dst.uDiffuse = 0xFF3C1E;
-                    Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
+                    Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
                     Dst.texture = spell_fx_renderer->effpar01;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
@@ -552,27 +552,27 @@ LABEL_25:
                 } else if (pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                     Dst.type = ParticleType_Bitmap | ParticleType_8;
                     Dst.uDiffuse = rand();
-                    Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
+                    Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
                     Dst.texture = spell_fx_renderer->effpar03;
                     Dst.particle_size = 1.0f;
                     particle_engine->AddParticle(&Dst);
                 }
                 return;
             }
-            // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
-            // __int64)collision_state.direction.x) >> 16;
+            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed
+            // int64_t)collision_state.direction.x) >> 16;
 
             pSpriteObject->vPosition.x +=
                 collision_state.adjusted_move_distance * collision_state.direction.x;
 
-            // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
-            // __int64)collision_state.direction.y) >> 16;
+            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed
+            // int64_t)collision_state.direction.y) >> 16;
 
             pSpriteObject->vPosition.y +=
                 collision_state.adjusted_move_distance * collision_state.direction.y;
 
-            // v40 = (unsigned __int64)(collision_state.adjusted_move_distance * (signed
-            // __int64)collision_state.direction.z) >> 16;
+            // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed
+            // int64_t)collision_state.direction.z) >> 16;
 
             pSpriteObject->vPosition.z +=
                 collision_state.adjusted_move_distance * collision_state.direction.z;
@@ -644,7 +644,7 @@ LABEL_25:
                 if (pObject->uFlags & OBJECT_DESC_BOUNCE) {
                     v17 = -pSpriteObject->vVelocity.z / 2;
                     pSpriteObject->vVelocity.z = v17;
-                    if ((signed __int16)v17 < 10)
+                    if ((int16_t)v17 < 10)
                         pSpriteObject->vVelocity.z = 0;
                     if (pIndoor->pFaces[v15].uAttributes & FACE_TriggerByObject)
                         EventProcessor(
@@ -724,7 +724,7 @@ LABEL_25:
                            ParticleType_8;
                 Dst.uDiffuse = 0xFF3C1E;
                 Dst.particle_size = 1.0f;
-                Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
+                Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
                 Dst.texture = spell_fx_renderer->effpar01;
                 particle_engine->AddParticle(&Dst);
                 return;
@@ -740,7 +740,7 @@ LABEL_25:
                 Dst.type = ParticleType_Bitmap | ParticleType_8;
                 Dst.uDiffuse = rand();
                 Dst.particle_size = 1.0f;
-                Dst.timeToLive = (unsigned __int8)(rand() & 0x80) + 128;
+                Dst.timeToLive = (uint8_t)(rand() & 0x80) + 128;
                 Dst.texture = spell_fx_renderer->effpar03;
                 particle_engine->AddParticle(&Dst);
             }
@@ -1615,7 +1615,7 @@ bool _46BFFA_update_spell_fx(unsigned int uLayingItemID, int pid) {
             pSpriteObjects[uLayingItemID].vPosition.z,
             object->uParticleTrailColor); if
             (!pSpriteObjects[uLayingItemID].uSoundID) v47 = 0; else v47 =
-            (signed __int16)pSpriteObjects[uLayingItemID].uSoundID + 4; v125 =
+            (int16_t)pSpriteObjects[uLayingItemID].uSoundID + 4; v125 =
             word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id - 1] +
             1; pAudioPlayer->PlaySound((SoundID)v125, v102, 0, -1, 0, v47, 0,
             0); return 0;

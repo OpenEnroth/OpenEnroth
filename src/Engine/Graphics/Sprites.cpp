@@ -41,19 +41,19 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
     // int v5; // eax@3
     //    SpriteFrame *v6; // ecx@5
     //    int v7; // eax@5
-    // __int16 v8; // ax@6
+    // int16_t v8; // ax@6
     // signed int v9; // edx@6
     // int v10; // ecx@6
     //    signed int v11; // edi@10
-    // __int16 v12; // ax@16
+    // int16_t v12; // ax@16
     //    int v13; // ecx@16
     // size_t v14; // eax@19
     //    signed int v15; // edi@19
-    //    __int16 v16; // ax@27
+    //    int16_t v16; // ax@27
     //    int v17; // ecx@27
     //    signed int v18; // edi@29
     //    SpriteFrame *v19; // eax@30
-    //    __int16 v20; // ax@45
+    //    int16_t v20; // ax@45
     //    int v21; // ecx@45
 
     char Str[32];          // [sp+Ch] [bp-3Ch]@19
@@ -295,7 +295,7 @@ SpriteFrame *SpriteFrameTable::GetFrameBy_x(unsigned int uSpriteID,
                                             signed int a3) {
     SpriteFrame *v3;      // edi@1
     SpriteFrame *v4;      // esi@1
-    __int16 v5;           // ax@2
+    int16_t v5;           // ax@2
     int v6;               // ecx@3
     int v7;               // edx@3
     unsigned int v8;      // eax@3
@@ -402,7 +402,7 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
     }
 
     this->uNumEFrames = num_mm7_eframes /*+ num_mm6_eframes + num_mm8_eframes*/;
-    this->pSpriteEFrames = (__int16 *)malloc(uNumSpriteFrames * sizeof(short));
+    this->pSpriteEFrames = (int16_t *)malloc(uNumSpriteFrames * sizeof(short));
 
     uint mm7_frames_size = num_mm7_frames * sizeof(SpriteFrame_MM7);
     memcpy(pSpriteEFrames, (char *)data_mm7 + 8 + mm7_frames_size,

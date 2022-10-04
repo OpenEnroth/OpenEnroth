@@ -595,18 +595,18 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
     int uPortretMin;          // [sp+24h] [bp+Ch]@1
     int uPortretMax;
 
-    static const unsigned __int8 NPCSexGenTable[86] = {
+    static const uint8_t NPCSexGenTable[86] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
         1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0,
         1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0};
-    static const unsigned __int8 NPCRaceGenTable[86] = {
+    static const uint8_t NPCRaceGenTable[86] = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,
         1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0};
 
-    unsigned __int8 seed = (unsigned __int8)((double)(npc_uid - 1) / 3.0);
+    uint8_t seed = (uint8_t)((double)(npc_uid - 1) / 3.0);
     uNPCSex = NPCSexGenTable[seed];
     uRace = NPCRaceGenTable[seed];
     pNPCDataBuff->uSex = uNPCSex;
@@ -712,8 +712,8 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, int npc_uid,
 }
 
 //----- (00495366) --------------------------------------------------------
-char *NPCStats::sub_495366_MispronounceName(unsigned __int8 firstLetter,
-                                            unsigned __int8 genderId) {
+char *NPCStats::sub_495366_MispronounceName(uint8_t firstLetter,
+                                            uint8_t genderId) {
     int pickedName;  // edx@2
 
     if (firstLetter == dword_AE336C_LastMispronouncedNameFirstLetter) {
@@ -1292,7 +1292,7 @@ int GetGreetType(signed int SpeakingNPC_ID) {
             ++v8;
         } while (v1 < (signed int)pNPCStats->uNumNewNPCs);
     }
-    return ((unsigned __int8)buf[v3] < 2) + 1;
+    return ((uint8_t)buf[v3] < 2) + 1;
 }
 
 //----- (00445308) --------------------------------------------------------

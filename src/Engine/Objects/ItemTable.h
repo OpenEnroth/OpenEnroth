@@ -32,8 +32,8 @@ struct ItemsTable {
     char field_C6D0[5000];
     char field_DA58[5000];
     char field_EDE0[384];
-    unsigned __int16 potion_data[50][50];  // 77B2h*2=EF64h  -102ECh
-    unsigned __int16 potion_note[50][50];  // 8176h*2=102ECh -11674h
+    uint16_t potion_data[50][50];  // 77B2h*2=EF64h  -102ECh
+    uint16_t potion_note[50][50];  // 8176h*2=102ECh -11674h
     char* pItemsTXT_Raw = nullptr;              // 11674h
     char* pRndItemsTXT_Raw = nullptr;
     char* pStdItemsTXT_Raw = nullptr;           // 1167Ch

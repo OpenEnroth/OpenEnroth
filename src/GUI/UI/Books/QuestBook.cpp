@@ -138,7 +138,7 @@ void GUIWindow_QuestBook::Update() {
         pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
         --books_page_number;
         books_primary_item_per_page -=
-            (unsigned __int8)books_num_items_per_page[books_page_number];
+            (uint8_t)books_num_items_per_page[books_page_number];
     }
     if (!num_achieved_awards || !books_primary_item_per_page) {
         books_page_number = 0;

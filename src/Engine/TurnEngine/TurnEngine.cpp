@@ -93,7 +93,7 @@ void stru262_TurnBased::SortTurnQueue() {
         if (PID_TYPE(pQueue[i].uPackedID) ==
             OBJECT_Player)  // set recovery times
             pParty->pPlayers[PID_ID(pQueue[i].uPackedID)].uTimeToRecovery =
-                (unsigned __int16)((double)pQueue[i].actor_initiative *
+                (uint16_t)((double)pQueue[i].actor_initiative *
                                    0.46875);
     }
 }
@@ -238,11 +238,11 @@ void stru262_TurnBased::End(bool bPlaySound) {
         objID = PID_ID(pQueue[i].uPackedID);
         if (objType == OBJECT_Player)
             pPlayers[objID + 1]->uTimeToRecovery =
-                (unsigned __int16)((double)pQueue[i].actor_initiative *
+                (uint16_t)((double)pQueue[i].actor_initiative *
                                    flt_debugrecmod3);
         else if (objType == OBJECT_Actor)
             pActors[objID].pMonsterInfo.uRecoveryTime =
-                (unsigned __int16)((double)pQueue[i].actor_initiative *
+                (uint16_t)((double)pQueue[i].actor_initiative *
                                    flt_debugrecmod3);
     }
     pAudioPlayer->PauseSounds(-1);
@@ -734,7 +734,7 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
             v9 = a3.uDistance - pActors[actor_id].uActorRadius;
             if (v9 < 0) v9 = 0;
             if (PID_TYPE(v22) == OBJECT_Actor)
-                // v10 = (unsigned __int8)*(&byte_5C8D1A[89 *
+                // v10 = (uint8_t)*(&byte_5C8D1A[89 *
                 // (pMonsterStats->pInfos[pActors[PID_ID(v22)].pMonsterInfo.uID].uID
                 // - 1) / 3] + (v5->pMonsterInfo.uID - 1) / 3);
                 v10 = pFactionTable->relations
@@ -919,7 +919,7 @@ void stru262_TurnBased::ActorAIDoAdditionalMove() {
 bool stru262_TurnBased::ActorMove(signed int queue_position) {
     AIDirection v9;                // esi@10
     int v11;                       // ecx@10
-    unsigned __int8 pHostileType;  // al@12
+    uint8_t pHostileType;  // al@12
     AIDirection a3;                // [sp+Ch] [bp-48h]@10
     AIDirection pDir;              // [sp+28h] [bp-2Ch]@10
     unsigned int uActorID;         // [sp+50h] [bp-4h]@2

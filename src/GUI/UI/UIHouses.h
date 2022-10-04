@@ -74,7 +74,7 @@ enum HOUSE_ID {
     HOUSE_THRONEROOM_WIN_EVIL = 601   // Final task completion for evil side
 };
 
-enum HouseSoundID : unsigned __int32 {
+enum HouseSoundID : uint32_t {
     HouseSound_Greeting = 1,  // General greeting
     HouseSound_NotEnoughMoney = 2,
     HouseSound_Greeting_2 = 3,  // Polite Greeting when you're guild member

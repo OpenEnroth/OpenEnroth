@@ -47,17 +47,17 @@ unsigned int ModulateColor(unsigned int diffuse, float multiplier) {
 
 //----- (0042620A) --------------------------------------------------------
 bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
-    //  __int16 v1; // fps@1
-    unsigned __int8 v2;   // c0@2
+    //  int16_t v1; // fps@1
+    uint8_t v2;   // c0@2
     char v3;              // c2@2
-    unsigned __int8 v4;   // c3@2
+    uint8_t v4;   // c3@2
                           //  bool result; // eax@2
-    unsigned __int8 v6;   // c0@4
+    uint8_t v6;   // c0@4
     char v7;              // c2@4
-    unsigned __int8 v8;   // c3@4
-    unsigned __int8 v9;   // c0@6
+    uint8_t v8;   // c3@4
+    uint8_t v9;   // c0@6
     char v10;             // c2@6
-    unsigned __int8 v11;  // c3@6
+    uint8_t v11;  // c3@6
     float v13;            // ST04_4@7
     float v14;            // ST00_4@7
     float v17;            // ST04_4@8
@@ -591,11 +591,11 @@ void SpellFxRenderer::_4A7E89_sparkles_on_actor_after_it_casts_buff(
     pActora = 50;
     Dst.particle_size = 1.0;
     do {
-        v7 = (unsigned __int8)rand() + v3->vPosition.x - 127;
+        v7 = (uint8_t)rand() + v3->vPosition.x - 127;
         Dst.x = (float)v7;
-        v7 = (unsigned __int8)rand() + v3->vPosition.y - 127;
+        v7 = (uint8_t)rand() + v3->vPosition.y - 127;
         Dst.y = (float)v7;
-        v7 = v3->vPosition.z + (unsigned __int8)rand();
+        v7 = v3->vPosition.z + (uint8_t)rand();
         Dst.z = (float)v7;
         if (uDiffuse) {
             Dst.uDiffuse = uDiffuse;
@@ -1093,8 +1093,8 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 }
 
 //----- (004A89BD) --------------------------------------------------------
-void SpellFxRenderer::SetPlayerBuffAnim(unsigned __int16 uSpellID,
-                                        unsigned __int16 uPlayerID) {
+void SpellFxRenderer::SetPlayerBuffAnim(uint16_t uSpellID,
+                                        uint16_t uPlayerID) {
     // SpellFxRenderer *v3; // edi@1
     PlayerBuffAnim *v4;  // esi@1
     const char *v6;      // [sp-4h] [bp-10h]@2

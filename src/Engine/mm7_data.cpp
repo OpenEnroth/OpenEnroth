@@ -91,7 +91,7 @@ std::array<stru160, 66> array_4EB8B8 = {  // vertices for spheres
      stru160(-0.8164970f, 0.4082480f, -0.4082480f),
      stru160(-0.4082480f, 0.8164970f, -0.4082480f)}};
 std::array<stru160, 128> array_4EBBD0;
-std::array<__int32, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sphere
+std::array<int32_t, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sphere
     {0x00000000, 0x00000001, 0x00000002, 0x00000001, 0x00000003, 0x00000002,
      0x00000001, 0x00000004, 0x00000003, 0x00000003, 0x00000005, 0x00000002,
      0x00000004, 0x00000006, 0x00000003, 0x00000006, 0x00000007, 0x00000003,
@@ -166,23 +166,6 @@ struct IconFrameTable *pIconsFrameTable;
 #include "Engine/Tables/PlayerFrameTable.h"
 struct PlayerFrameTable *pPlayerFrameTable;  // idb
 
-std::array<stat_coord, 26> stat_string_coord =  // 4E2940
-    {{
-        {0x1A, 0x39, 0xDC, 0x12},   {0x1A, 0x4A, 0xDC, 0x12},
-        {0x1A, 0x5B, 0xDC, 0x12},   {0x1A, 0x6C, 0xDC, 0x12},
-        {0x1A, 0x7D, 0xDC, 0x12},   {0x1A, 0x8E, 0xDC, 0x12},
-        {0x1A, 0x9F, 0xDC, 0x12},   {0x1A, 0xC6, 0xDC, 0x12},
-        {0x1A, 0xD7, 0xDC, 0x12},   {0x1A, 0xE8, 0xDC, 0x12},
-        {0x1A, 0x10C, 0xDC, 0x12},  {0x1A, 0x11E, 0xDC, 0x12},
-        {0x111, 0x36, 0xBA, 0x12},  {0x111, 0x47, 0xBA, 0x12},
-        {0x111, 0x58, 0xBA, 0x12},  {0x111, 0x7E, 0xBA, 0x12},
-        {0x111, 0x8F, 0xBA, 0x12},  {0x111, 0xA0, 0xBA, 0x12},
-        {0x111, 0xB1, 0xBA, 0x12},  {0x111, 0xCA, 0xBA, 0x12},
-        {0x111, 0xDD, 0xBA, 0x12},  {0x111, 0xF0, 0xBA, 0x12},
-        {0x111, 0x103, 0xBA, 0x12}, {0x111, 0x116, 0xBA, 0x12},
-        {0x111, 0x129, 0xBA, 0x12}, {0x13E, 0x12, 0x89, 0x12},
-    }};
-
 //-------------------------------------------------------------------------
 // Data declarations
 
@@ -217,8 +200,8 @@ std::array<int, 8> BtnTurnCoord = {{
     0x7,
     0x3B,
 }};
-std::array<__int16, 4> RightClickPortraitXmin = {{20, 131, 242, 357}};
-std::array<__int16, 4> RightClickPortraitXmax = {{83, 198, 312, 423}};
+std::array<int16_t, 4> RightClickPortraitXmin = {{20, 131, 242, 357}};
+std::array<int16_t, 4> RightClickPortraitXmax = {{83, 198, 312, 423}};
 
 std::array<unsigned int, 4> pHealthBarPos = {{23, 138, 251, 366}}; //was 22, 137
 std::array<unsigned int, 4> pManaBarPos = {{102, 217, 331, 447}};
@@ -271,7 +254,7 @@ std::array<unsigned char, 14> byte_4E5DD8 = {
      PARTY_BUFF_RESIST_BODY, PARTY_BUFF_HEROISM, PARTY_BUFF_HASTE,
      PARTY_BUFF_SHIELD, PARTY_BUFF_STONE_SKIN, PARTY_BUFF_PROTECTION_FROM_MAGIC,
      PARTY_BUFF_IMMOLATION, PARTY_BUFF_DAY_OF_GODS}};
-std::array<unsigned __int8, 14> pPartySpellbuffsUI_smthns = {
+std::array<uint8_t, 14> pPartySpellbuffsUI_smthns = {
     {14, 1, 10, 4, 7, 2, 9, 3, 6, 15, 8, 3, 12, 0}};
 
 std::array<std::array<int, 6>, 6> pNPCPortraits_x = {{
@@ -508,7 +491,7 @@ int lloyds_beacon_sound_id;  // dword_50633C
 signed int sRecoveryTime;    // idb
 unsigned int uRequiredMana;  // idb
 int _506348_current_lloyd_playerid;
-__int64 lloyds_beacon_spell_level;  // qword_506350 604800 *sepell level
+int64_t lloyds_beacon_spell_level;  // qword_506350 604800 *sepell level
 int MapBookOpen;
 int books_page_number;
 int books_primary_item_per_page;
@@ -525,7 +508,7 @@ char byte_506550;
 AUTONOTE_TYPE _506568_autonote_type;
 bool bRecallingBeacon;
 int uLastPointedObjectID;
-// unsigned __int8 bMonsterInfoUI_bDollInitialized;
+// uint8_t bMonsterInfoUI_bDollInitialized;
 int dword_506980_uW;
 int dword_506984_uZ;
 int dword_506988_uY;
@@ -578,12 +561,12 @@ struct NPCData *ptr_50C9E0;
 int dword_50CDC8;
 Vec3i layingitem_vel_50FDFC;
 char pStartingMapName[32];  // idb
-std::array<unsigned __int8, 5> IsPlayerWearingWatersuit;
+std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 std::array<char, 54> party_has_equipment;
 std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
 unsigned int uNumBlueFacesInBLVMinimap;  // could remove
-std::array<unsigned __int16, 50> pBlueFacesInBLVMinimapIDs;
+std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
 std::array<class Image *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
@@ -705,8 +688,8 @@ std::string s_SavedMapName;  // idb
 char bNoNPCHiring = false;
 std::array<int, 100> dword_720020_zvalues;
 std::array<int, 299> dword_7201B0_zvalues;
-std::array<__int16, 104> odm_floor_face_vert_coord_Y;  // word_720F70
-std::array<__int16, 104> odm_floor_face_vert_coord_X;  // word_721040
+std::array<int16_t, 104> odm_floor_face_vert_coord_Y;  // word_720F70
+std::array<int16_t, 104> odm_floor_face_vert_coord_X;  // word_721040
 Vec3i blv_prev_party_pos;
 std::array<NPCTopic, 789> pNPCTopics;
 std::array<const char *, 513> pQuestTable;

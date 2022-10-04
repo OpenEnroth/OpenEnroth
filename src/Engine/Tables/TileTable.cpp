@@ -121,9 +121,9 @@ int TileTable::FromFileTxt(const char *pFilename) {
     FILE *v3;               // eax@1
     unsigned int v4;        // ebx@3
     void *v5;               // eax@9
-    unsigned __int16 v6;    // ax@14
+    uint16_t v6;    // ax@14
     const char *v7;         // ST14_4@14
-    unsigned __int16 v8;    // ax@14
+    uint16_t v8;    // ax@14
     const char *v9;         // esi@14
     const char *v35;        // esi@67
     int j;                  // edi@152

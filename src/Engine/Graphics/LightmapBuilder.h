@@ -15,10 +15,10 @@ struct Lightmap {  // карта света, текстура для налож�
 
     signed int NumVertices;
     RenderVertexSoft pVertices[64];
-    __int16 position_x;  //позиция источника света
-    __int16 position_y;
-    __int16 position_z;
-    __int16 field_C0E;  //нигде не используется
+    int16_t position_x;  //позиция источника света
+    int16_t position_y;
+    int16_t position_z;
+    int16_t field_C0E;  //нигде не используется
     unsigned int uColorMask;
     float fBrightness;  //яркость
     int field_C18;      //нигде не используется

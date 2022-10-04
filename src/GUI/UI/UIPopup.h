@@ -2,7 +2,7 @@
 #include <string>
 
 unsigned int GetSpellColor(signed int a1);
-unsigned __int64 GetExperienceRequiredForLevel(int level);
+uint64_t GetExperienceRequiredForLevel(int level);
 void CharacterUI_DrawTooltip(const char *title, std::string &content);
 
 class Image;

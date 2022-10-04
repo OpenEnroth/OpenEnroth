@@ -5,7 +5,7 @@
 struct Player;
 
 typedef struct CEnchantment {
-    CEnchantment(int bonus, unsigned __int16 Player::* skillPtr = nullptr)
+    CEnchantment(int bonus, uint16_t Player::* skillPtr = nullptr)
         : statPtr(skillPtr), statBonus(bonus) {}
 
     uint16_t Player::* statPtr;

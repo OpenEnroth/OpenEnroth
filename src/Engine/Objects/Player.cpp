@@ -34,6 +34,8 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 
+#include "Utility/Memory.h"
+
 using EngineIoc = Engine_::IocContainer;
 
 static DecalBuilder *decal_builder = EngineIoc::ResolveDecalBuilder();
@@ -521,7 +523,7 @@ unsigned int Player::GetItemMainInventoryIndex(int inout_item_cell) {
 void Player::ItemsPotionDmgBreak(int enchant_count) {
     int avalible_items = 0;
 
-    __int16 item_index_tabl[138];                         // table holding items
+    int16_t item_index_tabl[138];                         // table holding items
     memset(item_index_tabl, 0, sizeof(item_index_tabl));  // set to zero
 
     for (int i = 0; i < 138; ++i) {  // scan through and log in table
@@ -2455,7 +2457,7 @@ unsigned int Player::GetActualAge() {
 int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
     int v7;  // esi@20
     int racialBonus = 0;
-    __int16* resStat;
+    int16_t* resStat;
     int result;
 
     switch (a2) {
@@ -2498,7 +2500,7 @@ int Player::GetBaseResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
 //----- (0048E7D0) --------------------------------------------------------
 int Player::GetActualResistance(CHARACTER_ATTRIBUTE_TYPE a2) {
     signed int v10 = 0;  // [sp+14h] [bp-4h]@1
-    __int16* resStat;
+    int16_t* resStat;
     int result;
     int baseRes;
 
@@ -3642,7 +3644,7 @@ PLAYER_SKILL_TYPE Player::GetSkillIdxByOrder(signed int order) {
 }
 
 //----- (0049048D) --------------------------------------------------------
-// unsigned __int16 PartyCreation_BtnMinusClick(Player *_this, int eAttribute)
+// uint16_t PartyCreation_BtnMinusClick(Player *_this, int eAttribute)
 void Player::DecreaseAttribute(int eAttribute) {
     int pBaseValue;    // ecx@1
     int pDroppedStep;  // ebx@1
@@ -3842,17 +3844,17 @@ void Player::UseItem_DrinkPotion_etc(signed int player_num, int a3) {
     // const char *v13; // eax@45
     signed int v15;        // edi@68
     int v16;               // edx@73
-    unsigned __int16 v17;  // edi@73
+    uint16_t v17;  // edi@73
     unsigned int v18;      // eax@73
                            //    const char *v22; // eax@84
     int scroll_id;         // esi@96
     int v25;               // eax@109
     int v26;               // eax@113
     int new_mana_val;      // edi@114
-    __int64 v30;           // edi@137
-    __int64 v32;           // ST3C_4@137
-    __int64 v34;           // ST34_4@137
-    unsigned __int16 v50;  // [sp-Ch] [bp-38h]@120
+    int64_t v30;           // edi@137
+    int64_t v32;           // ST3C_4@137
+    int64_t v34;           // ST34_4@137
+    uint16_t v50;  // [sp-Ch] [bp-38h]@120
     signed int v67;        // [sp-4h] [bp-30h]@77
     char v72;              // [sp+20h] [bp-Ch]@68
     signed int v73;        // [sp+24h] [bp-8h]@1
@@ -4650,19 +4652,19 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
     Assert(pValue >= 0, "Compare variable shouldn't have negative arguments");
 
     signed int v4;                         // edi@1
-    unsigned __int8 test_bit_value;        // eax@25
-    unsigned __int8 byteWithRequestedBit;  // cl@25
+    uint8_t test_bit_value;        // eax@25
+    uint8_t byteWithRequestedBit;  // cl@25
     DDM_DLV_Header* v19;                   // eax@122
     DDM_DLV_Header* v21;                   // eax@126
     int actStat;                           // ebx@161
     int baseStat;                          // eax@161
 
     if ((signed int)VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74)
-        return (unsigned __int8)stru_5E4C90_MapPersistVars.field_0[VarNum - VAR_MapPersistentVariable_0] >= pValue;  // originally (unsigned __int8)byte_5E4C15[VarNum];
+        return (uint8_t)stru_5E4C90_MapPersistVars.field_0[VarNum - VAR_MapPersistentVariable_0] >= pValue;  // originally (uint8_t)byte_5E4C15[VarNum];
 
     // not really sure whether the number gets up to 99, but can't ignore the possibility
     if ((signed int)VarNum >= VAR_MapPersistentVariable_75 && VarNum <= VAR_MapPersistentVariable_99)
-        return (unsigned __int8)stru_5E4C90_MapPersistVars._decor_events[VarNum - VAR_MapPersistentVariable_75] >= pValue;
+        return (uint8_t)stru_5E4C90_MapPersistVars._decor_events[VarNum - VAR_MapPersistentVariable_75] >= pValue;
 
     switch (VarNum) {
         case VAR_Sex:
@@ -4952,9 +4954,9 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
             baseStat = GetBaseLuck();
             return (actStat >= baseStat);
         case VAR_PlayerBits:
-            test_bit_value = 0x80u >> ((signed __int16)pValue - 1) % 8;
+            test_bit_value = 0x80u >> ((int16_t)pValue - 1) % 8;
             byteWithRequestedBit =
-                this->playerEventBits[((signed __int16)pValue - 1) / 8];
+                this->playerEventBits[((int16_t)pValue - 1) / 8];
             return (test_bit_value & byteWithRequestedBit) != 0;
         case VAR_NPCs2:
             return pNPCStats->pNewNPCData[pValue].Hired();
@@ -5031,11 +5033,11 @@ bool Player::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_PrisonTerms:
             return pParty->uNumPrisonTerms >= pValue;
         case VAR_ArenaWinsPage:
-            return (unsigned __int8)pParty->uNumArenaPageWins >= pValue;
+            return (uint8_t)pParty->uNumArenaPageWins >= pValue;
         case VAR_ArenaWinsSquire:
-            return (unsigned __int8)pParty->uNumArenaSquireWins >= pValue;
+            return (uint8_t)pParty->uNumArenaSquireWins >= pValue;
         case VAR_ArenaWinsKnight:
-            return (unsigned __int8)pParty->uNumArenaKnightWins >= pValue;
+            return (uint8_t)pParty->uNumArenaKnightWins >= pValue;
         case VAR_ArenaWinsLord:
             return pParty->uNumArenaLordWins >= pValue;
         case VAR_Invisible:
@@ -5137,15 +5139,15 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             this->sMana = GetMaxMana();
             return;
         case VAR_ACModifier:
-            this->sACModifier = (unsigned __int8)var_value;
+            this->sACModifier = (uint8_t)var_value;
             PlayAwardSound_Anim();
             return;
         case VAR_BaseLevel:
-            this->uLevel = (unsigned __int8)var_value;
+            this->uLevel = (uint8_t)var_value;
             PlayAwardSound_Anim();
             return;
         case VAR_LevelModifier:
-            this->sLevelModifier = (unsigned __int8)var_value;
+            this->sLevelModifier = (uint8_t)var_value;
             PlayAwardSound_Anim();
             return;
         case VAR_Age:
@@ -5202,149 +5204,149 @@ void Player::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_BaseMight:
-            this->uMight = (unsigned __int8)var_value;
+            this->uMight = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseIntellect:
-            this->uIntelligence = (unsigned __int8)var_value;
+            this->uIntelligence = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BasePersonality:
-            this->uWillpower = (unsigned __int8)var_value;
+            this->uWillpower = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseEndurance:
-            this->uEndurance = (unsigned __int8)var_value;
+            this->uEndurance = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseSpeed:
-            this->uSpeed = (unsigned __int8)var_value;
+            this->uSpeed = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseAccuracy:
-            this->uAccuracy = (unsigned __int8)var_value;
+            this->uAccuracy = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseLuck:
-            this->uLuck = (unsigned __int8)var_value;
+            this->uLuck = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
-            this->uMightBonus = (unsigned __int8)var_value;
+            this->uMightBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
-            this->uIntelligenceBonus = (unsigned __int8)var_value;
+            this->uIntelligenceBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uWillpowerBonus = (unsigned __int8)var_value;
+            this->uWillpowerBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
-            this->uEnduranceBonus = (unsigned __int8)var_value;
+            this->uEnduranceBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
-            this->uSpeedBonus = (unsigned __int8)var_value;
+            this->uSpeedBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
-            this->uAccuracyBonus = (unsigned __int8)var_value;
+            this->uAccuracyBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
-            this->uLuckBonus = (unsigned __int8)var_value;
+            this->uLuckBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistance:
-            this->sResFireBase = (unsigned __int8)var_value;
+            this->sResFireBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_AirResistance:
-            this->sResAirBase = (unsigned __int8)var_value;
+            this->sResAirBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_WaterResistance:
-            this->sResWaterBase = (unsigned __int8)var_value;
+            this->sResWaterBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_EarthResistance:
-            this->sResEarthBase = (unsigned __int8)var_value;
+            this->sResEarthBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_SpiritResistance:
-            this->sResSpiritBase = (unsigned __int8)var_value;
+            this->sResSpiritBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MindResistance:
-            this->sResMindBase = (unsigned __int8)var_value;
+            this->sResMindBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BodyResistance:
-            this->sResBodyBase = (unsigned __int8)var_value;
+            this->sResBodyBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_LightResistance:
-            this->sResLightBase = (unsigned __int8)var_value;
+            this->sResLightBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_DarkResistance:
-            this->sResDarkBase = (unsigned __int8)var_value;
+            this->sResDarkBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MagicResistance:
-            this->sResMagicBase = (unsigned __int8)var_value;
+            this->sResMagicBase = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistanceBonus:
-            this->sResFireBonus = (unsigned __int8)var_value;
+            this->sResFireBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_AirResistanceBonus:
-            this->sResAirBonus = (unsigned __int8)var_value;
+            this->sResAirBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_WaterResistanceBonus:
-            this->sResWaterBonus = (unsigned __int8)var_value;
+            this->sResWaterBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EarthResistanceBonus:
-            this->sResEarthBonus = (unsigned __int8)var_value;
+            this->sResEarthBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpiritResistanceBonus:
-            this->sResSpiritBonus = (unsigned __int8)var_value;
+            this->sResSpiritBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_MindResistanceBonus:
-            this->sResMindBonus = (unsigned __int8)var_value;
+            this->sResMindBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_BodyResistanceBonus:
-            this->sResBodyBonus = (unsigned __int8)var_value;
+            this->sResBodyBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_LightResistanceBonus:
-            this->sResLightBonus = (unsigned __int8)var_value;
+            this->sResLightBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_DarkResistanceBonus:
-            this->sResDarkBonus = (unsigned __int8)var_value;
+            this->sResDarkBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_PhysicalResistanceBonus:
             Error("Physical res. bonus not used");
             return;
         case VAR_MagicResistanceBonus:
-            this->sResMagicBonus = (unsigned __int8)var_value;
+            this->sResMagicBonus = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_StatBonusInc);
             return;
         case VAR_Cursed:
@@ -5628,9 +5630,9 @@ void Player::PlayAwardSound_Anim_Face(PlayerSpeech speech) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::SetSkillByEvent(unsigned __int16 Player::*skillToSet,
-                             unsigned __int16 skillValue) {
-    unsigned __int16 currSkillValue = this->*skillToSet;
+void Player::SetSkillByEvent(uint16_t Player::*skillToSet,
+                             uint16_t skillValue) {
+    uint16_t currSkillValue = this->*skillToSet;
     if (skillValue > 63) {  // the original had the condition reversed which was probably wrong
         this->*skillToSet = skillValue | (currSkillValue & 63);
     } else {
@@ -5750,7 +5752,7 @@ void Player::AddVariable(VariableType var_type, signed int val) {
             _449B7E_toggle_bit(this->_achieved_awards_bits, val, 1);
             return;
         case VAR_Experience:
-            this->uExperience = std::min((unsigned __int64)(this->uExperience + val), 4000000000ull);
+            this->uExperience = std::min((uint64_t)(this->uExperience + val), UINT64_C(4000000000));
             PlayAwardSound_Anim97();
             return;
         case VAR_QBits_QuestsDone:
@@ -6182,11 +6184,11 @@ void Player::PlayAwardSound_Anim97_Face(PlayerSpeech speech) {
 }
 
 //----- (new function) --------------------------------------------------------
-void Player::AddSkillByEvent(unsigned __int16 Player::*skillToSet,
-                             unsigned __int16 addSkillValue) {
+void Player::AddSkillByEvent(uint16_t Player::*skillToSet,
+                             uint16_t addSkillValue) {
     if (addSkillValue > 63) {
         this->*skillToSet =
-            (unsigned __int8)addSkillValue | this->*skillToSet & 63;
+            (uint8_t)addSkillValue | this->*skillToSet & 63;
     } else {
         this->*skillToSet = std::min(this->*skillToSet + addSkillValue, 60) |
                             this->*skillToSet & 0xC0;
@@ -6227,30 +6229,30 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             PlayAwardSound_Anim98();
             return;
         case VAR_ACModifier:
-            this->sACModifier -= (unsigned __int8)pValue;
+            this->sACModifier -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_BaseLevel:
-            this->uLevel -= (unsigned __int8)pValue;
+            this->uLevel -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_LevelModifier:
-            this->sLevelModifier -= (unsigned __int8)pValue;
+            this->sLevelModifier -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_Age:
-            this->sAgeModifier -= (signed __int16)pValue;
+            this->sAgeModifier -= (int16_t)pValue;
             return;
         case VAR_Award:
             _449B7E_toggle_bit(this->_achieved_awards_bits,
-                               (signed __int16)pValue, 0);
+                               (int16_t)pValue, 0);
             return;
         case VAR_Experience:
             this->uExperience -= pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_QBits_QuestsDone:
-            _449B7E_toggle_bit(pParty->_quest_bits, (__int16)pValue, 0);
+            _449B7E_toggle_bit(pParty->_quest_bits, (int16_t)pValue, 0);
             this->PlaySound(SPEECH_AwardGot, 0);
             return;
         case VAR_PlayerItemInHands:
@@ -6308,292 +6310,292 @@ void Player::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
-            this->uMightBonus -= (unsigned __int16)pValue;
+            this->uMightBonus -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
-            this->uIntelligenceBonus -= (unsigned __int16)pValue;
+            this->uIntelligenceBonus -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uWillpowerBonus -= (unsigned __int16)pValue;
+            this->uWillpowerBonus -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
-            this->uEnduranceBonus -= (unsigned __int16)pValue;
+            this->uEnduranceBonus -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
-            this->uSpeedBonus -= (unsigned __int16)pValue;
+            this->uSpeedBonus -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
-            this->uAccuracyBonus -= (unsigned __int16)pValue;
+            this->uAccuracyBonus -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
-            this->uLuckBonus -= (unsigned __int16)pValue;
+            this->uLuckBonus -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_BaseMight:
-            this->uMight -= (unsigned __int16)pValue;
+            this->uMight -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseIntellect:
-            this->uIntelligence -= (unsigned __int16)pValue;
+            this->uIntelligence -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BasePersonality:
-            this->uWillpower -= (unsigned __int16)pValue;
+            this->uWillpower -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseEndurance:
-            this->uEndurance -= (unsigned __int16)pValue;
+            this->uEndurance -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseSpeed:
-            this->uSpeed -= (unsigned __int16)pValue;
+            this->uSpeed -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseAccuracy:
-            this->uAccuracy -= (unsigned __int16)pValue;
+            this->uAccuracy -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BaseLuck:
-            this->uLuck -= (unsigned __int16)pValue;
+            this->uLuck -= (uint16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistance:
-            this->sResFireBase -= (signed __int16)pValue;
+            this->sResFireBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_AirResistance:
-            this->sResAirBase -= (signed __int16)pValue;
+            this->sResAirBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_WaterResistance:
-            this->sResWaterBase -= (signed __int16)pValue;
+            this->sResWaterBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_EarthResistance:
-            this->sResEarthBase -= (signed __int16)pValue;
+            this->sResEarthBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_SpiritResistance:
-            this->sResSpiritBase -= (signed __int16)pValue;
+            this->sResSpiritBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MindResistance:
-            this->sResMindBase -= (signed __int16)pValue;
+            this->sResMindBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_BodyResistance:
-            this->sResBodyBase -= (signed __int16)pValue;
+            this->sResBodyBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_LightResistance:
-            this->sResLightBase -= (signed __int16)pValue;
+            this->sResLightBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_DarkResistance:
-            this->sResDarkBase -= (signed __int16)pValue;
+            this->sResDarkBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_MagicResistance:
-            this->sResMagicBase -= (signed __int16)pValue;
+            this->sResMagicBase -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_FireResistanceBonus:
-            this->sResFireBonus -= (signed __int16)pValue;
+            this->sResFireBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_AirResistanceBonus:
-            this->sResAirBonus -= (signed __int16)pValue;
+            this->sResAirBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBaseInc);
             return;
         case VAR_WaterResistanceBonus:
-            this->sResWaterBonus -= (signed __int16)pValue;
+            this->sResWaterBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_EarthResistanceBonus:
-            this->sResEarthBonus -= (signed __int16)pValue;
+            this->sResEarthBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_SpiritResistanceBonus:
-            this->sResSpiritBonus -= (signed __int16)pValue;
+            this->sResSpiritBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_MindResistanceBonus:
-            this->sResMindBonus -= (signed __int16)pValue;
+            this->sResMindBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_BodyResistanceBonus:
-            this->sResBodyBonus -= (signed __int16)pValue;
+            this->sResBodyBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_LightResistanceBonus:
-            this->sResLightBonus -= (signed __int16)pValue;
+            this->sResLightBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_DarkResistanceBonus:
-            this->sResDarkBonus -= (signed __int16)pValue;
+            this->sResDarkBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_MagicResistanceBonus:
-            this->sResMagicBonus -= (signed __int16)pValue;
+            this->sResMagicBonus -= (int16_t)pValue;
             this->PlayAwardSound_Anim98_Face(SPEECH_StatBonusInc);
             return;
         case VAR_StaffSkill:
-            this->skillStaff -= (unsigned __int8)pValue;
+            this->skillStaff -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_SwordSkill:
-            this->skillSword -= (unsigned __int8)pValue;
+            this->skillSword -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_DaggerSkill:
-            this->skillDagger -= (unsigned __int8)pValue;
+            this->skillDagger -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_AxeSkill:
-            this->skillAxe -= (unsigned __int8)pValue;
+            this->skillAxe -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_SpearSkill:
-            this->skillSpear -= (unsigned __int8)pValue;
+            this->skillSpear -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_BowSkill:
-            this->skillBow -= (unsigned __int8)pValue;
+            this->skillBow -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_MaceSkill:
-            this->skillMace -= (unsigned __int8)pValue;
+            this->skillMace -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_BlasterSkill:
-            this->skillBlaster -= (unsigned __int8)pValue;
+            this->skillBlaster -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_ShieldSkill:
-            this->skillShield -= (unsigned __int8)pValue;
+            this->skillShield -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_LeatherSkill:
-            this->skillLearning -= (unsigned __int8)pValue;
+            this->skillLearning -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_SkillChain:
-            this->skillChain -= (unsigned __int8)pValue;
+            this->skillChain -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_PlateSkill:
-            this->skillPlate -= (unsigned __int8)pValue;
+            this->skillPlate -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_FireSkill:
-            this->skillFire -= (unsigned __int8)pValue;
+            this->skillFire -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_AirSkill:
-            this->skillAir -= (unsigned __int8)pValue;
+            this->skillAir -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_WaterSkill:
-            this->skillWater -= (unsigned __int8)pValue;
+            this->skillWater -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_EarthSkill:
-            this->skillEarth -= (unsigned __int8)pValue;
+            this->skillEarth -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_SpiritSkill:
-            this->skillSpirit -= (unsigned __int8)pValue;
+            this->skillSpirit -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_MindSkill:
-            this->skillMind -= (unsigned __int8)pValue;
+            this->skillMind -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_BodySkill:
-            this->skillBody -= (unsigned __int8)pValue;
+            this->skillBody -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_LightSkill:
-            this->skillLight -= (unsigned __int8)pValue;
+            this->skillLight -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_DarkSkill:
-            this->skillDark -= (unsigned __int8)pValue;
+            this->skillDark -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_IdentifyItemSkill:
-            this->skillItemId -= (unsigned __int8)pValue;
+            this->skillItemId -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_MerchantSkill:
-            this->skillMerchant -= (unsigned __int8)pValue;
+            this->skillMerchant -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_RepairSkill:
-            this->skillRepair -= (unsigned __int8)pValue;
+            this->skillRepair -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_BodybuildingSkill:
-            this->skillBodybuilding -= (unsigned __int8)pValue;
+            this->skillBodybuilding -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_MeditationSkill:
-            this->skillMeditation -= (unsigned __int8)pValue;
+            this->skillMeditation -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_PerceptionSkill:
-            this->skillPerception -= (unsigned __int8)pValue;
+            this->skillPerception -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_DiplomacySkill:
-            this->skillDiplomacy -= (unsigned __int8)pValue;
+            this->skillDiplomacy -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_ThieverySkill:
             Error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
-            this->skillDisarmTrap -= (unsigned __int8)pValue;
+            this->skillDisarmTrap -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_DodgeSkill:
-            this->skillDodge -= (unsigned __int8)pValue;
+            this->skillDodge -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_UnarmedSkill:
-            this->skillUnarmed -= (unsigned __int8)pValue;
+            this->skillUnarmed -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_IdentifyMonsterSkill:
-            this->skillMonsterId -= (unsigned __int8)pValue;
+            this->skillMonsterId -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_ArmsmasterSkill:
-            this->skillArmsmaster -= (unsigned __int8)pValue;
+            this->skillArmsmaster -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_StealingSkill:
-            this->skillStealing -= (unsigned __int8)pValue;
+            this->skillStealing -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_AlchemySkill:
-            this->skillAlchemy -= (unsigned __int8)pValue;
+            this->skillAlchemy -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_LearningSkill:
-            this->skillLearning -= (unsigned __int8)pValue;
+            this->skillLearning -= (uint8_t)pValue;
             PlayAwardSound_Anim98();
             return;
         case VAR_Cursed:
@@ -6992,7 +6994,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
         // calc damage
         int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
         if (actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].Active()) {
-            __int16 spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
+            int16_t spellPower = actorPtr->pActorBuffs[ACTOR_BUFF_SHRINK].uPower;
             if (spellPower > 0)
                 dmgToReceive /= spellPower;
         }
@@ -7133,7 +7135,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
             if (targetchar == -1) targetchar = stru_50C198.which_player_to_attack(actorPtr);
             Player* playerPtr = &pParty->pPlayers[targetchar];
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
-            unsigned __int16 spriteType = spritefrom->uType;
+            uint16_t spriteType = spritefrom->uType;
 
             if (spritefrom->uType == 545) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
@@ -7205,7 +7207,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
 
             int reflectedDmg = playerPtr->ReceiveDamage(dmgToReceive, (DAMAGE_TYPE)damageType);
             if (playerPtr->pPlayerBuffs[PLAYER_BUFF_PAIN_REFLECTION].Active()) {
-                unsigned __int16 actorState = actorPtr->uAIState;
+                uint16_t actorState = actorPtr->uAIState;
                 if (actorState != Dying && actorState != Dead) {
                     recvdMagicDmg = actorPtr->CalcMagicalDamageToActor((DAMAGE_TYPE)damageType, reflectedDmg);
                     actorPtr->sCurrentHP -= recvdMagicDmg;
@@ -7801,7 +7803,7 @@ void Player::_42ECB5_PlayerAttacksActor() {
 
 //----- (0042FA66) --------------------------------------------------------
 void Player::_42FA66_do_explosive_impact(int xpos, int ypos, int zpos, int a4,
-                                         __int16 a5, signed int actchar) {
+                                         int16_t a5, signed int actchar) {
         // EXPLOSIVE IMPACT OF ARTIFACT SPLITTER
 
     // a5 is range?
@@ -7957,22 +7959,22 @@ bool Player::IsClass(PLAYER_CLASS_TYPE class_type, bool check_honorary) {
     switch (class_type) {
     case PLAYER_CLASS_PRIEST_OF_SUN:
         return _449B57_test_bit(
-            (unsigned __int8*)_achieved_awards_bits,
+            (uint8_t*)_achieved_awards_bits,
             Award_Promotion_PriestOfLight_Honorary
         );
     case PLAYER_CLASS_PRIEST_OF_MOON:
         return _449B57_test_bit(
-            (unsigned __int8*)_achieved_awards_bits,
+            (uint8_t*)_achieved_awards_bits,
             Award_Promotion_PriestOfDark_Honorary
         );
     case PLAYER_CLASS_ARCHMAGE:
         return _449B57_test_bit(
-            (unsigned __int8*)_achieved_awards_bits,
+            (uint8_t*)_achieved_awards_bits,
             Award_Promotion_Archmage_Honorary
         );
     case PLAYER_CLASS_LICH:
         return _449B57_test_bit(
-            (unsigned __int8*)_achieved_awards_bits,
+            (uint8_t*)_achieved_awards_bits,
             Award_Promotion_Lich_Honorary
         );
         break;

@@ -368,7 +368,7 @@ void Engine::PushStationaryLights(int a2) {
 //----- (0044EEA7) --------------------------------------------------------
 bool Engine::_44EEA7() {  // cursor picking - particle update
     float depth;               // ST00_4@9
-    // __int64 v6;                // kr00_8@21
+    // int64_t v6;                // kr00_8@21
     Vis_SelectionFilter *sprite_filter;  // [sp+10h] [bp-18h]@2
     Vis_SelectionFilter *face_filter;  // [sp+14h] [bp-14h]@2
 
@@ -1220,7 +1220,7 @@ void Engine::_461103_load_level_sub() {
     int v8;   // ecx@16
     // int v12;         // esi@25
     // int v13;         // eax@26
-    __int16 v14;     // ax@41
+    int16_t v14;     // ax@41
     int v17;  // [sp+14h] [bp-48h]@3
     // int v18;  // [sp+14h] [bp-48h]@23
     int v19;         // [sp+18h] [bp-44h]@1
@@ -1578,7 +1578,7 @@ void _494035_timed_effects__water_walking_damage__etc() {
 
         for (uint pl = 1; pl <= 4; pl++) {
             pPlayers[pl]->ReceiveDamage(
-                (signed __int64)pPlayers[pl]->GetMaxHealth() * 0.1, DMGT_FIRE);
+                (int64_t)pPlayers[pl]->GetMaxHealth() * 0.1, DMGT_FIRE);
             if (pParty->uFlags & PARTY_FLAGS_1_BURNING) {
                 GameUI_SetStatusBarShortNotification(localization->GetString(LSTR_ON_FIRE));
             }
@@ -2239,7 +2239,7 @@ void OnTimer(int) {
         return;
     }
 
-    __int64 v13 = (pParty->GetPlayingTime() - _5773B8_event_timer).value / 128;
+    int64_t v13 = (pParty->GetPlayingTime() - _5773B8_event_timer).value / 128;
     if (!v13) return;
 
     _5773B8_event_timer = pParty->GetPlayingTime();

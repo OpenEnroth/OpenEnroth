@@ -11,6 +11,7 @@ set(UTILITY_HEADERS Color.h
                     FreeDeleter.h
                     IndexedArray.h
                     MemBuffer.h
+                    Memory.h
                     String.h
                     Workaround.h)
 

@@ -306,7 +306,7 @@ enum VariableType {
     VAR_ItemEquipped = 0x13B,
 };
 
-#define EVT_WORD(x) *(unsigned __int16 *)&x
+#define EVT_WORD(x) *(uint16_t *)&x
 #define EVT_DWORD(x) *(unsigned int *)&x
 #define EVT_STRING(x) (unsigned char *)&x
 #define EVT_BYTE(x) (unsigned char)x

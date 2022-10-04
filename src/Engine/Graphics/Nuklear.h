@@ -10,18 +10,18 @@
 
 class Nuklear {
  public:
-     enum NUKLEAR_MODE: __int32 {
+     enum NUKLEAR_MODE: int32_t {
          NUKLEAR_MODE_SHARED = 1,
          NUKLEAR_MODE_EXCLUSIVE
      };
 
-     enum NUKLEAR_ACTION: __int32 {
+     enum NUKLEAR_ACTION: int32_t {
          NUKLEAR_ACTION_CREATE = 1,
          NUKLEAR_ACTION_DRAW,
          NUKLEAR_ACTION_RELEASE
      };
 
-     enum NUKLEAR_STAGE: __int32 {
+     enum NUKLEAR_STAGE: int32_t {
          NUKLEAR_STAGE_PRE = 1,
          NUKLEAR_STAGE_POST
      };

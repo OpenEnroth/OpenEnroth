@@ -144,13 +144,13 @@ std::array<stru324_spell_id_to_sprite_mapping, 103>
       { SPRITE_ARROW_PROJECTILE, 0},
       { SPRITE_BLASTER_PROJECTILE, 0}}};
 
-SpellData::SpellData(__int16 innormalMana, __int16 inExpertLevelMana,
-                     __int16 inMasterLevelMana, __int16 inMagisterLevelMana,
-                     __int16 inNormalLevelRecovery,
-                     __int16 inExpertLevelRecovery,
-                     __int16 inMasterLevelRecovery,
-                     __int16 inMagisterLevelRecovery, __int8 inbaseDamage,
-                     __int8 inbonusSkillDamage, __int16 instats)
+SpellData::SpellData(int16_t innormalMana, int16_t inExpertLevelMana,
+                     int16_t inMasterLevelMana, int16_t inMagisterLevelMana,
+                     int16_t inNormalLevelRecovery,
+                     int16_t inExpertLevelRecovery,
+                     int16_t inMasterLevelRecovery,
+                     int16_t inMagisterLevelRecovery, int8_t inbaseDamage,
+                     int8_t inbonusSkillDamage, int16_t instats)
     : uNormalLevelMana(innormalMana),
       uExpertLevelMana(inExpertLevelMana),
       uMasterLevelMana(inMasterLevelMana),
@@ -358,9 +358,9 @@ bool SpellBuff::IsBuffExpiredToTime(GameTime time) {
 }
 
 //----- (004584E0) --------------------------------------------------------
-bool SpellBuff::Apply(GameTime expire_time, unsigned __int16 uSkillLevel,
-                      unsigned __int16 uPower, int uOverlayID,
-                      unsigned __int8 caster) {
+bool SpellBuff::Apply(GameTime expire_time, uint16_t uSkillLevel,
+                      uint16_t uPower, int uOverlayID,
+                      uint8_t caster) {
     Assert(uSkillLevel >= 1 && uSkillLevel <= 4);
 
     if (this->expire_time && (expire_time < this->expire_time)) {
@@ -517,7 +517,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             spell_sprites.uSoundID = 0;
             launch_speed =
                 pObjectList
-                    ->pObjects[(signed __int16)spell_sprites.uObjectDescID]
+                    ->pObjects[(int16_t)spell_sprites.uObjectDescID]
                     .uSpeed;
             spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             //    pAudioPlayer->PlaySound((SoundID)word_4EE088_sound_ids[uSpellID],
@@ -531,7 +531,7 @@ void EventCastSpell(int uSpellID, int uSkillLevel, int uSkill, int fromx,
             if (spell_num_objects == 1) {
                 launch_speed =
                     pObjectList
-                        ->pObjects[(signed __int16)spell_sprites.uObjectDescID]
+                        ->pObjects[(int16_t)spell_sprites.uObjectDescID]
                         .uSpeed;
                 spriteid = spell_sprites.Create(yaw, pitch, launch_speed, 0);
             } else {

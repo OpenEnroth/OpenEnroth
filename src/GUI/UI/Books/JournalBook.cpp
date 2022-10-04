@@ -19,6 +19,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/Memory.h"
+
 Image *ui_book_journal_background = nullptr;
 
 GUIWindow_JournalBook::GUIWindow_JournalBook() : GUIWindow_Book() {
@@ -168,7 +170,7 @@ void GUIWindow_JournalBook::Update() {
         pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
         --books_page_number;
         books_primary_item_per_page -=
-            (unsigned __int8)books_num_items_per_page[books_page_number];
+            (uint8_t)books_num_items_per_page[books_page_number];
     }
     if (!num_achieved_awards || books_primary_item_per_page < 1) {
         books_primary_item_per_page = 0;
@@ -187,7 +189,7 @@ void GUIWindow_JournalBook::Update() {
             &pParty->PartyTimes.HistoryEventTimes[index]);
         std::string pStringOnPage = pAutonoteFont->GetPageTop(
             str.c_str(), &journal_window, 1,
-            (unsigned __int8)
+            (uint8_t)
                 Journal_limitation_factor[books_primary_item_per_page]);
         journal_window.DrawText(
             pAutonoteFont, 1, 0, ui_book_journal_text_color, pStringOnPage, 0,

@@ -67,7 +67,7 @@ struct Game__StationaryLight {
 #pragma pack(push, 1)
 struct Game_stru0 {
     int field_0;
-    unsigned __int8 *ptr_4;
+    uint8_t *ptr_4;
     int field_8;
     int field_C;
 };
@@ -182,8 +182,8 @@ struct Engine {
     int uNumStationaryLights_in_pStationaryLightsStack;
     // unsigned int __depricated1;  // unsigned int bGammaControlInitialized;
     float fSaturation;
-    // unsigned __int64 __depricated2;  // unsigned __int64 uSomeGammaStartTime;
-    // unsigned __int64 __depricated3;  // __int64 uSomeGammaDeltaTime;
+    // uint64_t __depricated2;  // uint64_t uSomeGammaStartTime;
+    // uint64_t __depricated3;  // int64_t uSomeGammaDeltaTime;
     // void ThreadWard *pThreadWardInstance;
     // ParticleEngine *pParticleEngine;
     // Mouse *pMouseInstance;

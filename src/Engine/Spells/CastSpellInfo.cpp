@@ -53,17 +53,17 @@ void CastSpellInfoHelpers::CastSpell() {
     int spell_spray_angle_start;
     int spell_spray_angle_end;
                            //  int v396; // eax@752
-    __int16 v448;          // ax@864
+    int16_t v448;          // ax@864
     DDM_DLV_Header *v613;  // eax@1108
     int v642;              // edi@1156
     int v643;              // eax@1156
     int v659;              // [sp+0h] [bp-E84h]@123
-    // unsigned __int64 v663; // [sp+0h] [bp-E84h]@639
+    // uint64_t v663; // [sp+0h] [bp-E84h]@639
     int target_undead;              // [sp+4h] [bp-E80h]@12
     PLAYER_SKILL_TYPE which_skill;  // [sp+4h] [bp-E80h]@25
 
-    unsigned __int64 v685 {};          // [sp+D08h] [bp-17Ch]@416
-    unsigned __int64 v687 {};          // [sp+D24h] [bp-160h]@327
+    uint64_t v685 {};          // [sp+D08h] [bp-17Ch]@416
+    uint64_t v687 {};          // [sp+D24h] [bp-160h]@327
     Vec3i v688;                 // [sp+D2Ch] [bp-158h]@943
     Vec3i v691;                 // [sp+D38h] [bp-14Ch]@137
     Vec3i v694;                 // [sp+D44h] [bp-140h]@982
@@ -1101,7 +1101,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     dist_Y = pParty->vPosition.y + 2048 * pCamera3D->fRotationZSine;
                     dist_Z = pParty->vPosition.z;
                 }
-                unsigned __int64 k = 0;
+                uint64_t k = 0;
                 int j = 0;
                 if (meteor_num > 0) {
                     v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
@@ -1113,7 +1113,7 @@ void CastSpellInfoHelpers::CastSpell() {
                             HEXRAYS_HIDWORD(v687) = 0;
                         } else {
                             HEXRAYS_HIDWORD(v687) = TrigLUT->Atan2(
-                                (signed __int64)sqrt((float)(j * j + k * k)),
+                                (int64_t)sqrt((float)(j * j + k * k)),
                                 (double)spell_targeted_at - 2500);
                             HEXRAYS_LODWORD(v687) = TrigLUT->Atan2(j, k);
                         }
@@ -1180,7 +1180,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     pSpellSprite.vPosition.x = pActors[_50BF30_actors_in_viewport_ids[i]].vPosition.x;
                     pSpellSprite.vPosition.y = pActors[_50BF30_actors_in_viewport_ids[i]].vPosition.y;
                     pSpellSprite.vPosition.z = pActors[_50BF30_actors_in_viewport_ids[i]].vPosition.z -
-                        (unsigned int)(signed __int64)((double)pActors
+                        (unsigned int)(int64_t)((double)pActors
                                                            [_50BF30_actors_in_viewport_ids
                                                                 [i]].uActorHeight * -0.8);
                     pSpellSprite.spell_target_pid = PID(OBJECT_Actor, _50BF30_actors_in_viewport_ids[i]);
@@ -1406,7 +1406,7 @@ void CastSpellInfoHelpers::CastSpell() {
                     dist_Y = pParty->vPosition.y + 2048 * pCamera3D->fRotationZSine;
                     dist_Z = pParty->vPosition.z;
                 }
-                unsigned __int64 k = 0;
+                uint64_t k = 0;
                 int j = 0;
                 v730_int = obj_type == OBJECT_Actor ? spell_targeted_at : 0;
                 for (uint star_num = 20; star_num; star_num--) {
@@ -1420,7 +1420,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         HEXRAYS_HIDWORD(v685) = 0;
                     } else {
                         HEXRAYS_HIDWORD(v685) = TrigLUT->Atan2(
-                            (signed __int64)sqrt((float)(j * j + k * k)),
+                            (int64_t)sqrt((float)(j * j + k * k)),
                             ((double)spell_targeted_at + (double)dist_Z -
                              (double)(dist_Z + 2500)));
                         HEXRAYS_LODWORD(v685) = TrigLUT->Atan2(j, k);
@@ -2998,7 +2998,7 @@ void CastSpellInfoHelpers::CastSpell() {
                         pActors
                             [_50BF30_actors_in_viewport_ids[spell_targeted_at]]
                                 .vPosition.z -
-                        (unsigned int)(signed __int64)((double)pActors
+                        (unsigned int)(int64_t)((double)pActors
                                                            [_50BF30_actors_in_viewport_ids
                                                                 [spell_targeted_at]]
                                                                .uActorHeight *
@@ -3618,7 +3618,7 @@ void CastSpellInfoHelpers::CastSpell() {
                 }
                 for (uint j = 0; j < pl_num; j++) {
                     pPlayers[pl_array[j]]->sHealth +=
-                        (signed __int64)((double)(signed int)amount /
+                        (int64_t)((double)(signed int)amount /
                                          (double)pl_num);
                     if (pPlayers[pl_array[j]]->sHealth > pPlayers[pl_array[j]]->GetMaxHealth())
                         pPlayers[pl_array[j]]->sHealth = pPlayers[pl_array[j]]->GetMaxHealth();
@@ -3705,7 +3705,7 @@ void CastSpellInfoHelpers::CastSpell() {
 
 //----- (00427DA0) --------------------------------------------------------
 size_t PushCastSpellInfo(uint16_t uSpellID, uint16_t uPlayerID,
-                         __int16 skill_level, SpellCastFlags uFlags,
+                         int16_t skill_level, SpellCastFlags uFlags,
                          int spell_sound_id) {
     // uFlags: ON_CAST_*
     for (size_t i = 0; i < CastSpellInfoCount; i++) {
@@ -3748,11 +3748,11 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
                                           unsigned int uPlayerID,
                                           unsigned int a4, SpellCastFlags flags,
                                           int a6) {
-    unsigned __int16 v9;   // cx@16
+    uint16_t v9;   // cx@16
     unsigned int v10;      // eax@18
-    unsigned __int8 v11;   // sf@18
-    unsigned __int8 v12;   // of@18
-    unsigned __int16 v13;  // cx@21
+    uint8_t v11;   // sf@18
+    uint8_t v12;   // of@18
+    uint16_t v13;  // cx@21
     unsigned int v14;      // eax@23
 
     // if (!pParty->bTurnBasedModeOn
@@ -3839,42 +3839,25 @@ void _42777D_CastSpell_UseWand_ShootArrow(SPELL_TYPE spell,
             case SPELL_SPIRIT_PRESERVATION:
                 v9 = a4;
                 if (!a4) v9 = player->pActiveSkills[PLAYER_SKILL_SPIRIT];
-                // goto LABEL_18;
                 v10 = SkillToMastery(v9);
-                v12 = __OFSUB__(v10, 3);
-                v11 = ((v10 - 3) & 0x80000000u) != 0;
-                // goto LABEL_24;
-                if (v11 ^ v12) {
+                if (v10 >= 3)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
-                    break;
-                }
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
                 v9 = a4;
                 if (!a4) v9 = player->pActiveSkills[PLAYER_SKILL_DARK];
-                // LABEL_18:
                 v10 = SkillToMastery(v9);
-                v12 = __OFSUB__(v10, 3);
-                v11 = ((v10 - 3) & 0x80000000u) != 0;
-                // goto LABEL_24;
-                if (v11 ^ v12) {
+                if (v10 >= 3)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
-                    break;
-                }
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
                 v13 = a4;
                 if (!a4) v13 = player->pActiveSkills[PLAYER_SKILL_BODY];
                 v14 = SkillToMastery(v13);
-                v12 = __OFSUB__(v14, 4);
-                v11 = ((v14 - 4) & 0x80000000u) != 0;
-                // LABEL_24:
-                if (v11 ^ v12) {
+                if (v14 >= 4)
                     flags |= ON_CAST_WholeParty_BigImprovementAnim;
-                    break;
-                }
                 break;
 
             case SPELL_EARTH_STONE_TO_FLESH:

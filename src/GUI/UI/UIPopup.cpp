@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <array>
 #include <string>
 
 #include "Engine/Engine.h"
@@ -41,6 +42,34 @@ Image *messagebox_border_top = nullptr;     // 507698
 Image *messagebox_border_bottom = nullptr;  // 5076A4
 Image *messagebox_border_left = nullptr;    // 50769C
 Image *messagebox_border_right = nullptr;   // 5076A0
+
+/*  374 */
+#pragma pack(push, 1)
+struct stat_coord {
+    int16_t x;
+    int16_t y;
+    int16_t width;
+    int16_t height;
+};
+#pragma pack(pop)
+
+std::array<stat_coord, 26> stat_string_coord =  // 4E2940
+{{
+     {0x1A, 0x39, 0xDC, 0x12},   {0x1A, 0x4A, 0xDC, 0x12},
+     {0x1A, 0x5B, 0xDC, 0x12},   {0x1A, 0x6C, 0xDC, 0x12},
+     {0x1A, 0x7D, 0xDC, 0x12},   {0x1A, 0x8E, 0xDC, 0x12},
+     {0x1A, 0x9F, 0xDC, 0x12},   {0x1A, 0xC6, 0xDC, 0x12},
+     {0x1A, 0xD7, 0xDC, 0x12},   {0x1A, 0xE8, 0xDC, 0x12},
+     {0x1A, 0x10C, 0xDC, 0x12},  {0x1A, 0x11E, 0xDC, 0x12},
+     {0x111, 0x36, 0xBA, 0x12},  {0x111, 0x47, 0xBA, 0x12},
+     {0x111, 0x58, 0xBA, 0x12},  {0x111, 0x7E, 0xBA, 0x12},
+     {0x111, 0x8F, 0xBA, 0x12},  {0x111, 0xA0, 0xBA, 0x12},
+     {0x111, 0xB1, 0xBA, 0x12},  {0x111, 0xCA, 0xBA, 0x12},
+     {0x111, 0xDD, 0xBA, 0x12},  {0x111, 0xF0, 0xBA, 0x12},
+     {0x111, 0x103, 0xBA, 0x12}, {0x111, 0x116, 0xBA, 0x12},
+     {0x111, 0x129, 0xBA, 0x12}, {0x13E, 0x12, 0x89, 0x12},
+}};
+
 
 //----- (004179BC) --------------------------------------------------------
 void CharacterUI_DrawTooltip(const char *title, std::string &content) {
@@ -599,7 +628,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                 8 *
                 pSpriteFrameTable
                     ->pSpriteSFrames[pActors[uActorID].pSpriteIDs
-                                         [(signed __int16)pMonsterInfoUI_Doll
+                                         [(int16_t)pMonsterInfoUI_Doll
                                               .uCurrentActionAnimation]]
                     .uAnimLength;
         }
@@ -653,7 +682,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pPlayers[uActiveCharacter]->GetActualSkillLevel(
             PLAYER_SKILL_MONSTER_ID)) {
         skill_points =
-            (unsigned __int8)pPlayers[uActiveCharacter]->GetActualSkillLevel(
+            (uint8_t)pPlayers[uActiveCharacter]->GetActualSkillLevel(
                 PLAYER_SKILL_MONSTER_ID);
         skill_level = pPlayers[uActiveCharacter]->GetActualSkillMastery(
                           PLAYER_SKILL_MONSTER_ID) -
@@ -1874,9 +1903,9 @@ void Inventory_ItemPopupAndAlchemy() {  // needs cleaning
 
             v31 = (70.0 - (double)pParty->pPickedItem.uEnchantmentType) * 0.01;
             if (v31 < 0.0) v31 = 0.0;
-            item->uMaxCharges = (signed __int64)((double)item->uMaxCharges -
+            item->uMaxCharges = (int64_t)((double)item->uMaxCharges -
                                  v31 * (double)item->uMaxCharges);
-            item->uNumCharges = (signed __int64)((double)item->uMaxCharges -
+            item->uNumCharges = (int64_t)((double)item->uMaxCharges -
                                  v31 * (double)item->uMaxCharges);
 
             mouse->RemoveHoldingItem();
@@ -2170,9 +2199,9 @@ unsigned int GetSpellColor(signed int a1) {
 }
 
 //----- (004B46F8) --------------------------------------------------------
-unsigned __int64 GetExperienceRequiredForLevel(int level) {
+uint64_t GetExperienceRequiredForLevel(int level) {
     int effectiveLevel = 0;
     for (int i = 0; i < level; ++i)
         effectiveLevel += i + 1;
-    return (unsigned __int64)(1000 * effectiveLevel);
+    return (uint64_t)(1000 * effectiveLevel);
 }

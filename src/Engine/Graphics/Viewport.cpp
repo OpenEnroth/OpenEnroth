@@ -327,7 +327,7 @@ void Engine::OnGameViewportClick() {
 
     if (PID_TYPE(pid) == OBJECT_Item) {
         int item_id = PID_ID(pid);
-        // v21 = (signed int)(unsigned __int16)v0 >> 3;
+        // v21 = (signed int)(uint16_t)v0 >> 3;
         if (pSpriteObjects[item_id].IsUnpickable() ||
             item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {
             if (pParty->pPickedItem.uItemID) {

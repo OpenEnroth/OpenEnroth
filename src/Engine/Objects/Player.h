@@ -302,10 +302,10 @@ struct Player {
     float GetArmorRecoveryMultiplierFromSkillLevel(
         unsigned char armour_skill_type, float param2, float param3,
         float param4, float param5);
-    void SetSkillByEvent(unsigned __int16 Player::*skillToSet,
-                         unsigned __int16 skillValue);
-    void AddSkillByEvent(unsigned __int16 Player::*skillToSet,
-                         unsigned __int16 addSkillValue);
+    void SetSkillByEvent(uint16_t Player::*skillToSet,
+                         uint16_t skillValue);
+    void AddSkillByEvent(uint16_t Player::*skillToSet,
+                         uint16_t addSkillValue);
     void PlayAwardSound_Anim();
     void PlayAwardSound_Anim_Face(PlayerSpeech speech);
     void PlayAwardSound_Anim97();
@@ -374,36 +374,36 @@ struct Player {
 
     static void _42ECB5_PlayerAttacksActor();
     static void _42FA66_do_explosive_impact(int xpos, int ypos, int zpos,
-                                            int a4, __int16 a5,
+                                            int a4, int16_t a5,
                                             signed int actchar);
     void CleanupBeacons();
     bool SetBeacon(size_t index, size_t power);
 
     PlayerConditions conditions;
-    unsigned __int64 uExperience;
+    uint64_t uExperience;
     char pName[16];
     PLAYER_SEX uSex;
     PLAYER_CLASS_TYPE classType;
-    unsigned __int8 uCurrentFace;
+    uint8_t uCurrentFace;
     char field_BB;
-    unsigned __int16 uMight;
-    unsigned __int16 uMightBonus;
-    unsigned __int16 uIntelligence;
-    unsigned __int16 uIntelligenceBonus;
-    unsigned __int16 uWillpower;
-    unsigned __int16 uWillpowerBonus;
-    unsigned __int16 uEndurance;
-    unsigned __int16 uEnduranceBonus;
-    unsigned __int16 uSpeed;
-    unsigned __int16 uSpeedBonus;
-    unsigned __int16 uAccuracy;
-    unsigned __int16 uAccuracyBonus;
-    unsigned __int16 uLuck;
-    unsigned __int16 uLuckBonus;
-    __int16 sACModifier;
-    unsigned __int16 uLevel;
-    __int16 sLevelModifier;
-    __int16 sAgeModifier;
+    uint16_t uMight;
+    uint16_t uMightBonus;
+    uint16_t uIntelligence;
+    uint16_t uIntelligenceBonus;
+    uint16_t uWillpower;
+    uint16_t uWillpowerBonus;
+    uint16_t uEndurance;
+    uint16_t uEnduranceBonus;
+    uint16_t uSpeed;
+    uint16_t uSpeedBonus;
+    uint16_t uAccuracy;
+    uint16_t uAccuracyBonus;
+    uint16_t uLuck;
+    uint16_t uLuckBonus;
+    int16_t sACModifier;
+    uint16_t uLevel;
+    int16_t sLevelModifier;
+    int16_t sAgeModifier;
     int field_E0;
     int field_E4;
     int field_E8;
@@ -416,45 +416,45 @@ struct Player {
     int field_104;
     union {
         struct {
-            unsigned __int16 skillStaff;
-            unsigned __int16 skillSword;
-            unsigned __int16 skillDagger;
-            unsigned __int16 skillAxe;
-            unsigned __int16 skillSpear;
-            unsigned __int16 skillBow;
-            unsigned __int16 skillMace;
-            unsigned __int16 skillBlaster;
-            unsigned __int16 skillShield;
-            unsigned __int16 skillLeather;
-            unsigned __int16 skillChain;
-            unsigned __int16 skillPlate;
-            unsigned __int16 skillFire;
-            unsigned __int16 skillAir;
-            unsigned __int16 skillWater;
-            unsigned __int16 skillEarth;
-            unsigned __int16 skillSpirit;
-            unsigned __int16 skillMind;
-            unsigned __int16 skillBody;
-            unsigned __int16 skillLight;
-            unsigned __int16 skillDark;
-            unsigned __int16 skillItemId;
-            unsigned __int16 skillMerchant;
-            unsigned __int16 skillRepair;
-            unsigned __int16 skillBodybuilding;
-            unsigned __int16 skillMeditation;
-            unsigned __int16 skillPerception;
-            unsigned __int16 skillDiplomacy;
-            unsigned __int16 skillThievery;
-            unsigned __int16 skillDisarmTrap;
-            unsigned __int16 skillDodge;
-            unsigned __int16 skillUnarmed;
-            unsigned __int16 skillMonsterId;
-            unsigned __int16 skillArmsmaster;
-            unsigned __int16 skillStealing;
-            unsigned __int16 skillAlchemy;
-            unsigned __int16 skillLearning;
+            uint16_t skillStaff;
+            uint16_t skillSword;
+            uint16_t skillDagger;
+            uint16_t skillAxe;
+            uint16_t skillSpear;
+            uint16_t skillBow;
+            uint16_t skillMace;
+            uint16_t skillBlaster;
+            uint16_t skillShield;
+            uint16_t skillLeather;
+            uint16_t skillChain;
+            uint16_t skillPlate;
+            uint16_t skillFire;
+            uint16_t skillAir;
+            uint16_t skillWater;
+            uint16_t skillEarth;
+            uint16_t skillSpirit;
+            uint16_t skillMind;
+            uint16_t skillBody;
+            uint16_t skillLight;
+            uint16_t skillDark;
+            uint16_t skillItemId;
+            uint16_t skillMerchant;
+            uint16_t skillRepair;
+            uint16_t skillBodybuilding;
+            uint16_t skillMeditation;
+            uint16_t skillPerception;
+            uint16_t skillDiplomacy;
+            uint16_t skillThievery;
+            uint16_t skillDisarmTrap;
+            uint16_t skillDodge;
+            uint16_t skillUnarmed;
+            uint16_t skillMonsterId;
+            uint16_t skillArmsmaster;
+            uint16_t skillStealing;
+            uint16_t skillAlchemy;
+            uint16_t skillLearning;
         };
-        std::array<unsigned __int16, 37>
+        std::array<uint16_t, 37>
             pActiveSkills;  // this encodes level and mastery using bitwise
                             // comparison   ( & 0x3F for level) ( & 0x1C0
                             // mastery 1-4)
@@ -478,35 +478,35 @@ struct Player {
     };
 
     std::array<int, 126> pInventoryMatrix;
-    __int16 sResFireBase;
-    __int16 sResAirBase;
-    __int16 sResWaterBase;
-    __int16 sResEarthBase;
-    __int16 sResPhysicalBase;
-    __int16 sResMagicBase;
-    __int16 sResSpiritBase;
-    __int16 sResMindBase;
-    __int16 sResBodyBase;
-    __int16 sResLightBase;
-    __int16 sResDarkBase;
-    __int16 sResFireBonus;
-    __int16 sResAirBonus;
-    __int16 sResWaterBonus;
-    __int16 sResEarthBonus;
-    __int16 sResPhysicalBonus;
-    __int16 sResMagicBonus;
-    __int16 sResSpiritBonus;
-    __int16 sResMindBonus;
-    __int16 sResBodyBonus;
-    __int16 sResLightBonus;
-    __int16 sResDarkBonus;
+    int16_t sResFireBase;
+    int16_t sResAirBase;
+    int16_t sResWaterBase;
+    int16_t sResEarthBase;
+    int16_t sResPhysicalBase;
+    int16_t sResMagicBase;
+    int16_t sResSpiritBase;
+    int16_t sResMindBase;
+    int16_t sResBodyBase;
+    int16_t sResLightBase;
+    int16_t sResDarkBase;
+    int16_t sResFireBonus;
+    int16_t sResAirBonus;
+    int16_t sResWaterBonus;
+    int16_t sResEarthBonus;
+    int16_t sResPhysicalBonus;
+    int16_t sResMagicBonus;
+    int16_t sResSpiritBonus;
+    int16_t sResMindBonus;
+    int16_t sResBodyBonus;
+    int16_t sResLightBonus;
+    int16_t sResDarkBonus;
     std::array<SpellBuff, 24> pPlayerBuffs;
     unsigned int uVoiceID;
     int uPrevVoiceID;
     int uPrevFace;
     int field_192C;
     int field_1930;
-    unsigned __int16 uTimeToRecovery;
+    uint16_t uTimeToRecovery;
     char field_1936;
     char field_1937;
     unsigned int uSkillPoints;
@@ -518,7 +518,7 @@ struct Player {
     char field_1A4C;
     char field_1A4D;
     char lastOpenedSpellbookPage;
-    unsigned __int8 uQuickSpell;
+    uint8_t uQuickSpell;
     char playerEventBits[64];
     char _some_attack_bonus;
     char field_1A91;
@@ -533,9 +533,9 @@ struct Player {
     char uFullManaBonus;
     char _mana_related;
     CHARACTER_EXPRESSION_ID expression;
-    unsigned __int16 uExpressionTimePassed;
-    unsigned __int16 uExpressionTimeLength;
-    __int16 uExpressionImageIndex;
+    uint16_t uExpressionTimePassed;
+    uint16_t uExpressionTimeLength;
+    int16_t uExpressionImageIndex;
     int _expression21_animtime;
     int _expression21_frameset;
     std::vector<LloydBeacon> vBeacons;

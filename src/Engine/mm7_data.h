@@ -122,7 +122,7 @@ extern int lloyds_beacon_sound_id;  // dword_50633C
 extern signed int sRecoveryTime;    // idb
 extern unsigned int uRequiredMana;  // idb
 extern int _506348_current_lloyd_playerid;
-extern __int64 lloyds_beacon_spell_level;  // qword_506350
+extern int64_t lloyds_beacon_spell_level;  // qword_506350
 extern int MapBookOpen;
 // extern Texture_MM7 *dword_50640C[];
 extern int

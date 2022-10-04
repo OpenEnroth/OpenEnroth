@@ -45,7 +45,7 @@ void GameOver_Loop(int v15) {
     unsigned int v19;       // [sp+B8h] [bp-18h]@5
     int v20;                // [sp+BCh] [bp-14h]@7
     GUIFont *pFont;         // [sp+C4h] [bp-Ch]@1
-    unsigned __int64 v23;   // [sp+C8h] [bp-8h]@5
+    uint64_t v23;   // [sp+C8h] [bp-8h]@5
 
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
     bGameoverLoop = true;
@@ -110,7 +110,7 @@ void GameOver_Loop(int v15) {
             3);
         v23 += pParty->pPlayers[i].uExperience;
     }
-    v23 = (signed __int64)v23 / v19;
+    v23 = (int64_t)v23 / v19;
     std::string v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont, 1, 5 * (pFont->GetHeight() + 11), 1, v6, 0);
 

@@ -676,7 +676,7 @@ void GUIWindow::DrawShops_next_generation_time_string(GameTime time) {
 
 void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
     int vertical_margin,
-    unsigned __int16 uDefaultColor, const std::string &str,
+    uint16_t uDefaultColor, const std::string &str,
     int line_spacing) {
     this->DrawTitleText(font, horizontal_margin, vertical_margin, uDefaultColor,
         str.c_str(), line_spacing);
@@ -685,7 +685,7 @@ void GUIWindow::DrawTitleText(GUIFont *font, int horizontal_margin,
 //----- (0044D406) --------------------------------------------------------
 void GUIWindow::DrawTitleText(GUIFont *pFont, int uHorizontalMargin,
     int uVerticalMargin,
-    unsigned __int16 uDefaultColor,
+    uint16_t uDefaultColor,
     const char *pInString, int uLineSpacing) {
     int width = this->uFrameWidth - uHorizontalMargin;
     ui_current_text_color = uDefaultColor;
@@ -1777,7 +1777,7 @@ void CheckBountyRespawnAndAward() {
             bountyHunting_text = pNPCTopics[353].pText;
     } else {  // get prize
         if (pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]) {
-            pParty->PartyFindsGold(100 * pMonsterStats->pInfos[(unsigned __int16)pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel, 0);
+            pParty->PartyFindsGold(100 * pMonsterStats->pInfos[(uint16_t)pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel, 0);
             for (uint i = 0; i < 4; ++i)
                 pParty->pPlayers[i].SetVariable(VAR_Award, Award_BountiesCollected);
             pParty->uNumBountiesCollected += 100 * pMonsterStats->pInfos[pParty->monster_id_for_hunting[window_SpeakInHouse->wData.val - HOUSE_TOWNHALL_HARMONDALE]].uLevel;
@@ -1797,7 +1797,7 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     int pointsInSkillWOutMastery;    // ebx@7
     int classBaseId;                 // eax@8
     unsigned int skillMastery;       // eax@29
-    unsigned __int16 pointsInSkill;  // [sp+1Ch] [bp-10h]@7
+    uint16_t pointsInSkill;  // [sp+1Ch] [bp-10h]@7
     int masteryLevelBeingTaught;     // [sp+24h] [bp-8h]@7
 
     guild_membership_approved = false;
@@ -2110,22 +2110,22 @@ std::string _4B254D_SkillMasteryTeacher(int trainerInfo) {
     return std::string("");
 }
 
-std::string BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID, ItemGen *a3, int eventId, int a5, GameTime *a6) {
+std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID, ItemGen *a3, int eventId, int a5, GameTime *a6) {
     std::string str = std::string(lpsz);
     return BuildDialogueString(str, uPlayerID, a3, eventId, a5, a6);
 }
 
 //----- (00495461) --------------------------------------------------------
-std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, ItemGen *a3, int eventId, int shop_screen, GameTime *a6) {
+std::string BuildDialogueString(std::string &str, uint8_t uPlayerID, ItemGen *a3, int eventId, int shop_screen, GameTime *a6) {
     char v1[256] = "";
     Player *pPlayer;       // ebx@3
     const char *pText;     // esi@7
     int v17;               // eax@10
-    signed __int64 v18;    // qax@18
-    unsigned __int8 *v20;  // ebx@32
+    int64_t v18;    // qax@18
+    uint8_t *v20;  // ebx@32
     int v21;               // ecx@34
     int v29;               // eax@68
-    __int16 v55[56] {};       // [sp+10h] [bp-128h]@34
+    int16_t v55[56] {};       // [sp+10h] [bp-128h]@34
     SummonedItem v56;      // [sp+80h] [bp-B8h]@107
     int v63;               // [sp+12Ch] [bp-Ch]@32
 
@@ -2192,7 +2192,7 @@ std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID, Ite
                 break;
             case 8:
                 v63 = 0;
-                v20 = (unsigned __int8 *)pPlayer->_achieved_awards_bits;
+                v20 = (uint8_t *)pPlayer->_achieved_awards_bits;
                 for (uint _i = 0; _i < 28; ++_i) {
                     if (_449B57_test_bit(
                         v20, word_4EE150[i])) {

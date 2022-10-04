@@ -32,18 +32,18 @@ struct Polygon {
     int field_24 = 0;  // dot dist
     int sTextureDeltaU = 0;
     int sTextureDeltaV = 0;
-    __int16 flags = 0;  // &2 -> Water  &3C00 still water (no anim)
-    __int16 field_32 = 0;
+    int16_t flags = 0;  // &2 -> Water  &3C00 still water (no anim)
+    int16_t field_32 = 0;
     int field_34 = 0;
     struct SkyBillboardStruct *ptr_38 = nullptr;
     Texture *texture = nullptr;  // struct Texture_MM7 *pTexture;
     Span *_unused_prolly_head = nullptr;
     Span *_unused_prolly_tail = nullptr;
     int **ptr_48 = nullptr;
-    unsigned __int16 uTileBitmapID = 0;
-    __int16 field_4E = 0;
-    __int16 pid = 0;
-    __int16 field_52 = 0;
+    uint16_t uTileBitmapID = 0;
+    int16_t field_4E = 0;
+    int16_t pid = 0;
+    int16_t field_52 = 0;
     ODMFace *pODMFace = nullptr;
     char dimming_level = 0;
     char field_59 = 0;
@@ -51,8 +51,8 @@ struct Polygon {
     char field_5B = 0;
     char terrain_grid_z = 0;
     char terrain_grid_x = 0;
-    unsigned __int8 uBModelID = 0;
-    unsigned __int8 uBModelFaceID = 0;
+    uint8_t uBModelID = 0;
+    uint8_t uBModelFaceID = 0;
     Edge* pEdgeList1[20] {};
     unsigned int uEdgeList1Size = 0;
     Edge* pEdgeList2[20] {};

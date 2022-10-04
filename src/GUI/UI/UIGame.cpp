@@ -782,9 +782,9 @@ std::string GameUI_GetMinimapHintText() {
     mouse->GetClickPos(&pX, &pY);
     v3 = 1.0 / (float)((signed int)viewparams->uMinimapZoom * 0.000015258789);
     global_coord_X =
-        (__int64)((double)(pX - 557) * v3 + (double)pParty->vPosition.x);
+        (int64_t)((double)(pX - 557) * v3 + (double)pParty->vPosition.x);
     global_coord_Y =
-        (__int64)((double)pParty->vPosition.y - (double)(pY - 74) * v3);
+        (int64_t)((double)pParty->vPosition.y - (double)(pY - 74) * v3);
     if (uCurrentlyLoadedLevelType != LEVEL_Outdoor ||
         pOutdoor->pBModels.empty()) {
         pMapID = pMapStats->GetMapInfo(pCurrentMapName);
@@ -980,7 +980,7 @@ void GameUI_DrawLifeManaBars() {
             if (v3 > 0.0) {
                 render->SetUIClipRect(
                     v17 + pHealthBarPos[i],
-                    (signed __int64)((1.0 - v3) * pTextureHealth->GetHeight()) +
+                    (int64_t)((1.0 - v3) * pTextureHealth->GetHeight()) +
                         402,
                     v17 + pHealthBarPos[i] + pTextureHealth->GetWidth(),
                     pTextureHealth->GetHeight() + 402);
@@ -997,7 +997,7 @@ void GameUI_DrawLifeManaBars() {
             if (i == 2) v17 = 1;
             render->SetUIClipRect(
                 v17 + pManaBarPos[i],
-                (signed __int64)((1.0 - v7) * game_ui_bar_blue->GetHeight()) +
+                (int64_t)((1.0 - v7) * game_ui_bar_blue->GetHeight()) +
                     402,
                 v17 + pManaBarPos[i] + game_ui_bar_blue->GetWidth(),
                 game_ui_bar_blue->GetHeight() + 402);
@@ -1664,7 +1664,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     int LineGreyDim;         // eax@23
     double startx;      // st7@30
     signed int ypix;  // eax@37
-    // unsigned __int16 *v28; // ecx@37
+    // uint16_t *v28; // ecx@37
     signed int xpix;       // edi@40
     int pPoint_X;         // edi@72
     int pPoint_Y;         // ebx@72
@@ -1702,7 +1702,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             minimaptemp = render->CreateTexture_Blank(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
         }
 
-        static unsigned __int16 pOdmMinimap[117][137];
+        static uint16_t pOdmMinimap[117][137];
         assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
 
         bool partymoved = pParty->uFlags & PARTY_FLAGS_1_ForceRedraw;
@@ -1741,9 +1741,9 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 assert(uWidth == 137 && uHeight == 117);
 
                 ushort MapImgWidth = viewparams->location_minimap->GetWidth();
-                auto pMapLod0Line = (unsigned __int32*)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+                auto pMapLod0Line = (uint32_t*)viewparams->location_minimap->GetPixels(IMAGE_FORMAT_A8R8G8B8);
                 // Image *minimaptemp = Image::Create(uWidth, uHeight, IMAGE_FORMAT_A8R8G8B8);
-                auto minitempix = (unsigned __int32*)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
+                auto minitempix = (uint32_t*)minimaptemp->GetPixels(IMAGE_FORMAT_A8R8G8B8);
 
                 for (int y = 0; y < uHeight; ++y) {
                     for (int x = 0; x < uWidth; ++x) {
@@ -1988,7 +1988,7 @@ void GameUI_DrawHiredNPCs() {
     char pContainer[20];            // [sp+Ch] [bp-30h]@18
     signed int uFrameID;            // [sp+24h] [bp-18h]@19
     int v22;                        // [sp+34h] [bp-8h]@2
-    unsigned __int8 pNPC_limit_ID;  // [sp+3Bh] [bp-1h]@2
+    uint8_t pNPC_limit_ID;  // [sp+3Bh] [bp-1h]@2
 
     std::array<char, 4096> buf {};
     if (bNoNPCHiring != 1) {
@@ -2012,9 +2012,9 @@ void GameUI_DrawHiredNPCs() {
 
         for (int i = pParty->hirelingScrollPosition;
              i < v22 && pNPC_limit_ID < 2; i++) {
-            if ((unsigned __int8)buf[i] >= 2) {
+            if ((uint8_t)buf[i] >= 2) {
                 sprintf(pContainer, "NPC%03d",
-                        pNPCStats->pNPCData[(unsigned __int8)buf[i] + 499]
+                        pNPCStats->pNPCData[(uint8_t)buf[i] + 499]
                             .uPortraitID);
                 render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
@@ -2023,13 +2023,13 @@ void GameUI_DrawHiredNPCs() {
             } else {
                 sprintf(
                     pContainer, "NPC%03d",
-                    pParty->pHirelings[(unsigned __int8)buf[i]].uPortraitID);
+                    pParty->pHirelings[(uint8_t)buf[i]].uPortraitID);
                 render->DrawTextureAlphaNew(
                     pHiredNPCsIconsOffsetsX[pNPC_limit_ID] / 640.0f,
                     pHiredNPCsIconsOffsetsY[pNPC_limit_ID] / 480.0f,
                     assets->GetImage_ColorKey(pContainer, render->teal_mask_16));
-                if (pParty->pHirelings[(unsigned __int8)buf[i]].dialogue_1_evt_id == 1) {
-                    uFrameID = pParty->pHirelings[(unsigned __int8)buf[i]].dialogue_2_evt_id;
+                if (pParty->pHirelings[(uint8_t)buf[i]].dialogue_1_evt_id == 1) {
+                    uFrameID = pParty->pHirelings[(uint8_t)buf[i]].dialogue_2_evt_id;
                     v13 = 0;
                     if (pIconsFrameTable->uNumIcons) {
                         for (v13 = 0; v13 < pIconsFrameTable->uNumIcons; ++v13) {
@@ -2051,7 +2051,7 @@ void GameUI_DrawHiredNPCs() {
 //----- (004178FE) --------------------------------------------------------
 unsigned int UI_GetHealthManaAndOtherQualitiesStringColor(int actual_value,
                                                           int base_value) {
-    unsigned __int16 R, G, B;
+    uint16_t R, G, B;
 
     if (actual_value == base_value) {
         R = 0, G = 0, B = 0;  // White
@@ -2115,8 +2115,8 @@ std::string GetReputationString(int reputation) {
         return localization->GetString(LSTR_REPUTATION_RESPECTED);
 }
 
-__int16 _441A4E_overlay_on_portrait(int a1) {  // for blessing
-    __int16 result;                            // ax@1
+int16_t _441A4E_overlay_on_portrait(int a1) {  // for blessing
+    int16_t result;                            // ax@1
     int v2;                                    // ebx@1
     bool v5;                                   // ecx@4
     SpriteFrame *pFrame;                       // eax@6

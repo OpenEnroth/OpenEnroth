@@ -276,7 +276,7 @@ enum UIMessageType : uint32_t {
 };
 
 /*  251 */
-enum MENU_STATE : __int32 {
+enum MENU_STATE : int32_t {
     MENU_MAIN = 0,
     MENU_NEWGAME = 1,
     MENU_CREDITS = 2,
@@ -457,8 +457,8 @@ class GUIWindow {
     void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const char *str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
     void DrawText(GUIFont *font, int x, int y, unsigned short uFontColor, const std::string &str, bool present_time_transparency = false, int max_text_height = 0, int uFontShadowColor = 0);
 
-    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const char *pInString, int line_spacing);
-    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, unsigned __int16 uDefaultColor, const std::string &str, int line_spacing);
+    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, uint16_t uDefaultColor, const char *pInString, int line_spacing);
+    void DrawTitleText(GUIFont *font, int horizontal_margin, int vertical_margin, uint16_t uDefaultColor, const std::string &str, int line_spacing);
 
     void DrawShops_next_generation_time_string(GameTime time);
     void HouseDialogManager();
@@ -760,10 +760,10 @@ void _4B3FE5_training_dialogue(int a4);
 void OracleDialogue();
 void CheckBountyRespawnAndAward();
 std::string _4B254D_SkillMasteryTeacher(int trainerInfo);
-std::string BuildDialogueString(const char *lpsz, unsigned __int8 uPlayerID,
+std::string BuildDialogueString(const char *lpsz, uint8_t uPlayerID,
                            struct ItemGen *a3, int eventId, int a5,
                            GameTime *a6 = nullptr);
-std::string BuildDialogueString(std::string &str, unsigned __int8 uPlayerID,
+std::string BuildDialogueString(std::string &str, uint8_t uPlayerID,
                            struct ItemGen *a3, int eventId, int shop_screen,
                            GameTime *a6 = nullptr);
 int const_2();

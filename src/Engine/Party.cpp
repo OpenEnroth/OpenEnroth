@@ -418,7 +418,7 @@ void Party::TakeFine(int amount) {
 
 //----- (0049135E) --------------------------------------------------------
 unsigned int Party::GetPartyFame() {
-    unsigned __int64 total_exp = 0;
+    uint64_t total_exp = 0;
     for (uint i = 0; i < 4; ++i) total_exp += pPlayers[i].uExperience;
     return std::min(
         (unsigned int)(total_exp / 1000),
@@ -1294,13 +1294,13 @@ int GetTravelTime() {
 // 6BD07C: using guessed type int uDefaultTravelTime_ByFoot;
 
 //----- (00449B57) --------------------------------------------------------
-bool _449B57_test_bit(unsigned __int8 *a1, __int16 a2) {
+bool _449B57_test_bit(uint8_t *a1, int16_t a2) {
     return (a1[(a2 - 1) >> 3] & (0x80 >> (a2 - 1) % 8)) != 0;
 }
 
 //----- (00449B7E) --------------------------------------------------------
-void _449B7E_toggle_bit(unsigned char *pArray, __int16 a2,
-                        unsigned __int16 bToggle) {
+void _449B7E_toggle_bit(unsigned char *pArray, int16_t a2,
+                        uint16_t bToggle) {
     signed int v3;          // esi@1
     unsigned char set_bit;  // edx@1
 

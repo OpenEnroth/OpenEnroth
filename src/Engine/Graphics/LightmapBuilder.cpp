@@ -798,7 +798,7 @@ int *LightmapBuilder::_45CA88(LightsData *a2, RenderVertexSoft *a3, int a4,
     double v9;             // st6@2
     char *v10;             // eax@3
     double v11;            // st7@5
-    __int64 v12 {};           // ST2C_8@5
+    int64_t v12 {};           // ST2C_8@5
     float v13 {};             // edx@5
     int v14;               // eax@5
     float v15;             // ST10_4@5
@@ -864,13 +864,13 @@ int LightmapBuilder::_45CB89(RenderVertexSoft *a1, int a2) {
     int result {};   // eax@2
     char *v5;     // ecx@2
     double v6;    // st7@4
-    __int16 v7 = 0;   // fps@4
+    int16_t v7 = 0;   // fps@4
     char v8;      // c0@4
     char v9;      // c2@4
     char v10;     // c3@4
     double v11;   // st7@5
     double v12;   // st7@6
-    __int16 v13 = 0;  // fps@6
+    int16_t v13 = 0;  // fps@6
     char v14;     // c0@6
     char v15;     // c2@6
     char v16;     // c3@6
@@ -1136,7 +1136,7 @@ int GetLightLevelAtPoint(unsigned int uBaseLightLevel, int uSectorID, float x, f
                 if (distZ <= light_radius) {
                     approx_distance = int_get_vector_length(static_cast<int>(distX), static_cast<int>(distY), static_cast<int>(distZ));
                     if (approx_distance < light_radius)
-                        //* ORIGONAL */lightlevel += ((unsigned __int64)(30i64 *(signed int)(approx_distance << 16) / light_radius) >> 16) - 30;
+                        //* ORIGONAL */lightlevel += ((uint64_t)(30i64 *(signed int)(approx_distance << 16) / light_radius) >> 16) - 30;
                         lightlevel += static_cast<int> (30 * approx_distance / light_radius) - 30;
                 }
             }

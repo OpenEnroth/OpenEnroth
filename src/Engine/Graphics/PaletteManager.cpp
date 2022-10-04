@@ -201,25 +201,25 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
     //  float v15; // ST08_4@8
     //  float v16; // ST04_4@8
     //  float v17; // ST00_4@8
-    // unsigned __int8 v18; // sf@8
-    // unsigned __int8 v19; // of@8
+    // uint8_t v18; // sf@8
+    // uint8_t v19; // of@8
     // int v20; // eax@10
     double v21;  // st5@11
     // float v22; // ST0C_4@13
     unsigned int v23;  // eax@13
-    // __int16 v24; // bx@16
+    // int16_t v24; // bx@16
     // int v25; // eax@16
     double v26;  // st7@20
     // float v27; // ST0C_4@22
     unsigned int v28;  // eax@22
-    // __int16 v29; // bx@25
-    // __int16 *v30; // eax@25
+    // int16_t v29; // bx@25
+    // int16_t *v30; // eax@25
     // int v31; // eax@27
     double v32;  // st5@28
     // float v33; // ST0C_4@30
     // float v34; // ST08_4@30
     unsigned int v35;    // ebx@30
-    signed __int64 v36;  // qax@33
+    int64_t v36;  // qax@33
     signed int v37;      // edx@33
     char v38;            // cl@33
     unsigned int v39;    // ebx@33
@@ -228,7 +228,7 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
     unsigned int v42;    // ecx@35
     // int v43; // eax@39
     signed int v44;  // edx@39
-    // unsigned __int8 v45; // al@40
+    // uint8_t v45; // al@40
     // double v46; // st6@43
     // signed int v47; // eax@43
     // int v48; // eax@45
@@ -237,7 +237,7 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
     // unsigned int v51; // ebx@49
     int v52;             // edi@55
     int v53;             // ebx@55
-    signed __int64 v54;  // qax@55
+    int64_t v54;  // qax@55
     double v55;          // st7@56
     unsigned int v56;    // ecx@57
     unsigned int v57;    // ecx@59
@@ -287,14 +287,14 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
         // v10 = (float *)((char *)local_v + v8);
         // v11 = (float *)((char *)local_h + v8);
         // v12 = pPalette_tintColor[1];
-        // LODWORD(v75) = pPalette_tintColor[2] + (unsigned __int8)v3[2];
-        // v13 = pPalette_tintColor[1] + (unsigned __int8)v3[1];
-        // LODWORD(v14) = (unsigned __int8)*v3;
-        // v15 = (double)((unsigned __int8)v3[2] + pPalette_tintColor[2]) /
+        // LODWORD(v75) = pPalette_tintColor[2] + (uint8_t)v3[2];
+        // v13 = pPalette_tintColor[1] + (uint8_t)v3[1];
+        // LODWORD(v14) = (uint8_t)*v3;
+        // v15 = (double)((uint8_t)v3[2] + pPalette_tintColor[2]) /
         // (2.0f * 255.0f); LODWORD(v75) = v13; LODWORD(v75) = (unsigned
-        // __int8)*v3 + pPalette_tintColor[0]; v16 = (double)((unsigned
-        // __int8)v3[1] + pPalette_tintColor[1]) / 510.0f; v17 =
-        // (double)((unsigned __int8)*v3 + pPalette_tintColor[0]) / 510.0f;
+        // int8_t)*v3 + pPalette_tintColor[0]; v16 = (double)((unsigned
+        // int8_t)v3[1] + pPalette_tintColor[1]) / 510.0f; v17 =
+        // (double)((uint8_t)*v3 + pPalette_tintColor[0]) / 510.0f;
         // RGB2HSV(v17, v16, v15, &local_h[i], &local_s[i], &local_v[i]);
         // v3 += 3;
         // v8 = i + 4;
@@ -311,11 +311,11 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
         /*v4 = 0;
         do
         {
-          LODWORD(v75) = (unsigned __int8)v3[2];
+          LODWORD(v75) = (uint8_t)v3[2];
           v5 = (double)SLODWORD(v75) * 0.00392156862745098;
-          LODWORD(v75) = (unsigned __int8)v3[1];
+          LODWORD(v75) = (uint8_t)v3[1];
           v6 = (double)SLODWORD(v75) * 0.00392156862745098;
-          LODWORD(v75) = (unsigned __int8)*v3;
+          LODWORD(v75) = (uint8_t)*v3;
           v7 = (double)SLODWORD(v75) * 0.00392156862745098;
           RGB2HSV(v7, v6, v5, &local_h[v4], &local_s[v4], &local_v[v4]);
           ++v4;
@@ -353,14 +353,14 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
             } else {
                 Error("(%u)", v23);
             }
-            // v24 = (unsigned __int32)a3 | ((unsigned __int32)a2a <<
-            // v2->uNumTargetBBits) | ((unsigned __int32)a1 <<
+            // v24 = (uint32_t)a3 | ((uint32_t)a2a <<
+            // v2->uNumTargetBBits) | ((uint32_t)a1 <<
             // (v2->uNumTargetBBits + v2->uNumTargetGBits)); v25 = v73; v73 += 2;
             // *(short *)v25 = v24;
             pPalette1[paletteIdx][i][j] =
-                (unsigned __int32)a3 |
-                ((unsigned __int32)a2a << v2->uNumTargetBBits) |
-                ((unsigned __int32)a1
+                (uint32_t)a3 |
+                ((uint32_t)a2a << v2->uNumTargetBBits) |
+                ((uint32_t)a1
                  << (v2->uNumTargetBBits + v2->uNumTargetGBits));
             // v20 = i + 4;
             // v19 = __OFSUB__(i + 4, 1024);
@@ -401,19 +401,19 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
                 Error("(%u)", v23);
             }
 
-            // v29 = (unsigned __int64)(signed __int64)a3 | ((unsigned
-            // __int16)(signed __int64)a2a << v2->uNumTargetBBits) | (unsigned
-            // __int16)((unsigned __int16)(signed __int64)a1 <<
-            // (v2->uNumTargetBBits + v28)); v30 = (__int16 *)v73;
+            // v29 = (uint64_t)(int64_t)a3 | ((unsigned
+            // int16_t)(int64_t)a2a << v2->uNumTargetBBits) | (unsigned
+            // int16_t)((uint16_t)(int64_t)a1 <<
+            // (v2->uNumTargetBBits + v28)); v30 = (int16_t *)v73;
             // ++i;
             // v73 += 2;
             // v19 = __OFSUB__(i, 256);
             // v18 = i - 256 < 0;
             // *v30 = v29;
             field_199600_palettes[paletteIdx][i][j] =
-                (unsigned __int64)(signed __int64)a3 |
-                ((unsigned __int16)(signed __int64)a2a << v2->uNumTargetBBits) |
-                (unsigned __int16)((unsigned __int16)(signed __int64)a1
+                (uint64_t)(int64_t)a3 |
+                ((uint16_t)(int64_t)a2a << v2->uNumTargetBBits) |
+                (uint16_t)((uint16_t)(int64_t)a1
                                    << (v2->uNumTargetBBits + v28));
         }
         // while ( v18 ^ v19 );
@@ -449,7 +449,7 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
             Error("(%u)", v23);
         }
 
-        v36 = (signed __int64)((a1 + a2a + a3) * 0.3333333333333333 * 8.0);
+        v36 = (int64_t)((a1 + a2a + a3) * 0.3333333333333333 * 8.0);
         v37 = (signed int)v36 >> (8 - v2->uNumTargetRBits);
         v38 = 8 - v35;
         v39 = v2->uNumTargetBBits;
@@ -463,9 +463,9 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
         // v43 = v73;
         v44 = v37 << (v39 + v2->uNumTargetGBits);
         // v73 += 2;
-        // *(short *)v43 = v79 | ((short)v40 << v39) | (unsigned __int16)v44;
+        // *(short *)v43 = v79 | ((short)v40 << v39) | (uint16_t)v44;
         field_261600[paletteIdx][i] =
-            v79 | ((unsigned short)v40 << v39) | (unsigned __int16)v44;
+            v79 | ((unsigned short)v40 << v39) | (uint16_t)v44;
         // v31 = i + 4;
         // v19 = __OFSUB__(i + 4, 1024);
         // v18 = i - 1020 < 0;
@@ -522,19 +522,19 @@ void PaletteManager::CalcPalettes_LUT(int paletteIdx) {
             if (pPalette_mistColor[0] || pPalette_mistColor[1] ||
                 pPalette_mistColor[2]) {
                 v55 = (double)i / 31.0f;
-                v52 = (signed __int64)((double)(1 << v2->uNumTargetRBits) *
+                v52 = (int64_t)((double)(1 << v2->uNumTargetRBits) *
                                            mist_a * v55 +
                                        a1 * (1.0 - v55));
-                v53 = (signed __int64)((double)(1 << v2->uNumTargetGBits) *
+                v53 = (int64_t)((double)(1 << v2->uNumTargetGBits) *
                                            mist_b * v55 +
                                        a2a * (1.0 - v55));
-                v54 = (signed __int64)((double)(1 << v2->uNumTargetBBits) *
+                v54 = (int64_t)((double)(1 << v2->uNumTargetBBits) *
                                            mist_c * v55 +
                                        a3 * (1.0 - v55));
             } else {
-                v52 = (signed __int64)a1;
-                v53 = (signed __int64)a2a;
-                v54 = (signed __int64)a3;
+                v52 = (int64_t)a1;
+                v53 = (int64_t)a2a;
+                v54 = (int64_t)a3;
             }
 
             v56 = v2->uNumTargetRBits;
@@ -777,7 +777,7 @@ uint16_t *PaletteManager::Get_Mist_or_Red_LUT(int paletteIdx, int a2, char a3) {
         v3 = 32 * paletteIdx + a2 + 3275;
     else
         v3 = 32 * paletteIdx + a2 + 1675;
-    return (unsigned __int16 *)((char *)&pPaletteManager + 512 * v3);
+    return (uint16_t *)((char *)&pPaletteManager + 512 * v3);
 }
 // 4D864C: using guessed type char _4D864C_force_sw_render_rules;
 
@@ -789,7 +789,7 @@ uint16_t *PaletteManager::Get_Dark_or_Red_LUT(int paletteIdx, int a2, char a3) {
         v3 = 32 * paletteIdx + a2 + 3275;
     else
         v3 = 32 * paletteIdx + a2 + 75;
-    return (unsigned __int16 *)((char *)&pPaletteManager + 512 * v3);
+    return (uint16_t *)((char *)&pPaletteManager + 512 * v3);
 }
 // 4D864C: using guessed type char _4D864C_force_sw_render_rules;
 
@@ -801,17 +801,17 @@ uint16_t *PaletteManager::_47C30E_get_palette(int paletteIdx, char a2) {
         result = (char *)pPaletteManager->field_199600_palettes[paletteIdx];
     else
         result = (char *)pPaletteManager->field_D1600[paletteIdx];
-    return (unsigned __int16 *)result;
+    return (uint16_t *)result;
 }
 
 //----- (0047C33F) --------------------------------------------------------
 uint16_t *PaletteManager::_47C33F_get_palette(int paletteIdx, char a2) {
-    unsigned __int16 *result;  // eax@4
+    uint16_t *result;  // eax@4
 
     if (a2 & 2 || engine->config->graphics.SoftwareModeRules.Get() && engine->config->graphics.AlternativePaletteMode.Get())
-        result = (unsigned __int16 *)pPaletteManager->field_199600_palettes[paletteIdx];
+        result = (uint16_t *)pPaletteManager->field_199600_palettes[paletteIdx];
     else
-        result = (unsigned __int16 *)pPaletteManager->pPalette1[paletteIdx];
+        result = (uint16_t *)pPaletteManager->pPalette1[paletteIdx];
     return result;
 }
 

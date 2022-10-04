@@ -82,7 +82,7 @@ enum class ObjectType {
 using enum ObjectType;
 
 /*  264 */
-enum AIState : unsigned __int16 {
+enum AIState : uint16_t {
     Standing = 0x0,
     Tethered = 0x1,
     AttackingMelee = 0x2,
@@ -106,7 +106,7 @@ enum AIState : unsigned __int16 {
 };
 
 /*  265 */
-enum ActorAnimation : __int32 {
+enum ActorAnimation : int32_t {
     ANIM_Standing = 0x0,
     ANIM_Walking = 0x1,
     ANIM_AtkMelee = 0x2,
@@ -151,11 +151,11 @@ struct AIDirection {
 #pragma pack(push, 1)
 struct ActorJob {
     Vec3s vPos;
-    unsigned __int16 uAttributes = 0;
-    unsigned __int8 uAction = 0;
-    unsigned __int8 uHour = 0;
-    unsigned __int8 uDay = 0;
-    unsigned __int8 uMonth = 0;
+    uint16_t uAttributes = 0;
+    uint8_t uAction = 0;
+    uint8_t uHour = 0;
+    uint8_t uDay = 0;
+    uint8_t uMonth = 0;
 };
 #pragma pack(pop)
 

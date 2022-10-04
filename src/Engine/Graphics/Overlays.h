@@ -11,10 +11,10 @@ struct OtherOverlay {
 
     int16_t field_0;
     int16_t field_2;
-    int16_t sprite_frame_time;  // __int16 field_4;
+    int16_t sprite_frame_time;  // int16_t field_4;
     int16_t field_6;
-    int16_t screen_space_x;  // __int16 field_8;
-    int16_t screen_space_y;  // __int16 field_A;
+    int16_t screen_space_x;  // int16_t field_8;
+    int16_t screen_space_y;  // int16_t field_A;
     int16_t field_C;
     int16_t field_E;
     int field_10;

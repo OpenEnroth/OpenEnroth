@@ -7,7 +7,7 @@
 #include "Engine/LOD.h"
 
 HRESULT __stdcall DDrawDisplayModesEnumerator(DDSURFACEDESC2 *pSurfaceDesc,
-                                              __int16 *found_compatible_mode) {
+                                              int16_t *found_compatible_mode) {
     if (pSurfaceDesc->ddsCaps.dwCaps | DDSCAPS_3DDEVICE) {
         *found_compatible_mode = 1;
         return S_OK;

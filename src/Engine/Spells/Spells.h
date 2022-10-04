@@ -144,8 +144,8 @@ enum SPELL_SCHOOL : int {
 /*   68 */
 #pragma pack(push, 1)
 struct SpellBuff {
-    bool Apply(GameTime time, unsigned __int16 uSkillLevel,
-               unsigned __int16 uPower, int uOverlayID, unsigned __int8 caster);
+    bool Apply(GameTime time, uint16_t uSkillLevel,
+               uint16_t uPower, int uOverlayID, uint8_t caster);
     void Reset();
     bool IsBuffExpiredToTime(GameTime time);
 
@@ -154,11 +154,11 @@ struct SpellBuff {
     bool Expired() const { return this->expire_time.value < 0; }
 
     GameTime expire_time;
-    unsigned __int16 uPower = 0; // Spell power, semantics are spell-specific.
-    unsigned __int16 uSkill = 0; // 1-4, normal to grandmaster.
-    unsigned __int16 uOverlayID = 0;
-    unsigned __int8 uCaster = 0;
-    unsigned __int8 uFlags = 0; // 0x1 => cast at grandmaster.
+    uint16_t uPower = 0; // Spell power, semantics are spell-specific.
+    uint16_t uSkill = 0; // 1-4, normal to grandmaster.
+    uint16_t uOverlayID = 0;
+    uint8_t uCaster = 0;
+    uint8_t uFlags = 0; // 0x1 => cast at grandmaster.
 };
 #pragma pack(pop)
 
@@ -188,7 +188,7 @@ struct SpellStats {
 #pragma pack(push, 1)
 struct stru324_spell_id_to_sprite_mapping {  // stru324_spell
     SPRITE_OBJECT_TYPE uSpriteType;
-    __int16 field_2;
+    int16_t field_2;
 };
 #pragma pack(pop)
 
@@ -196,35 +196,35 @@ struct stru324_spell_id_to_sprite_mapping {  // stru324_spell
 #pragma pack(push, 1)
 class SpellData {
  public:
-    SpellData(__int16 innormalMana, __int16 inExpertLevelMana,
-              __int16 inMasterLevelMana, __int16 inMagisterLevelMana,
-              __int16 inNormalLevelRecovery, __int16 inExpertLevelRecovery,
-              __int16 inMasterLevelRecovery, __int16 inMagisterLevelRecovery,
-              __int8 inbaseDamage, __int8 inbonusSkillDamage, __int16 instats);
+    SpellData(int16_t innormalMana, int16_t inExpertLevelMana,
+              int16_t inMasterLevelMana, int16_t inMagisterLevelMana,
+              int16_t inNormalLevelRecovery, int16_t inExpertLevelRecovery,
+              int16_t inMasterLevelRecovery, int16_t inMagisterLevelRecovery,
+              int8_t inbaseDamage, int8_t inbonusSkillDamage, int16_t instats);
     union {
-        unsigned __int16 mana_per_skill[4];
+        uint16_t mana_per_skill[4];
         struct {
-            unsigned __int16 uNormalLevelMana;
-            unsigned __int16 uExpertLevelMana;
-            unsigned __int16 uMasterLevelMana;
-            unsigned __int16 uMagisterLevelMana;
+            uint16_t uNormalLevelMana;
+            uint16_t uExpertLevelMana;
+            uint16_t uMasterLevelMana;
+            uint16_t uMagisterLevelMana;
         };
     };
     union {
-        unsigned __int16 recovery_per_skill[4];
+        uint16_t recovery_per_skill[4];
         struct {
-            unsigned __int16 uNormalLevelRecovery;
-            unsigned __int16 uExpertLevelRecovery;
-            unsigned __int16 uMasterLevelRecovery;
-            unsigned __int16 uMagisterLevelRecovery;
+            uint16_t uNormalLevelRecovery;
+            uint16_t uExpertLevelRecovery;
+            uint16_t uMasterLevelRecovery;
+            uint16_t uMagisterLevelRecovery;
         };
     };
-    __int8 baseDamage;
-    __int8 bonusSkillDamage;
-    __int16 stats;
+    int8_t baseDamage;
+    int8_t bonusSkillDamage;
+    int16_t stats;
     // char field_12;
     // char field_13;
-    // __int16 field_14;
+    // int16_t field_14;
 };
 #pragma pack(pop)
 
@@ -240,10 +240,10 @@ struct SpellBookIconPos {
 #pragma pack(push, 1)
 struct TownPortalData {
     Vec3i pos;
-    __int16 rot_y;
-    __int16 rot_x;
-    unsigned __int16 uMapInfoID;
-    __int16 field_12;
+    int16_t rot_y;
+    int16_t rot_x;
+    uint16_t uMapInfoID;
+    int16_t field_12;
 };
 #pragma pack(pop)
 extern std::array<TownPortalData, 6> TownPortalList;  // 4ECBB8

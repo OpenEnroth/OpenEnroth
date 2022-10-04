@@ -139,7 +139,7 @@ struct ActionQueue {
 };
 #pragma pack(pop)
 
-enum class PartyAlignment: __int32 {
+enum class PartyAlignment: int32_t {
     PartyAlignment_Good = 0,
     PartyAlignment_Neutral = 1,
     PartyAlignment_Evil = 2
@@ -290,7 +290,7 @@ struct Party {
     int y_rotation_speed;  // deg/s
     int jump_strength; // jump strength, higher value => higher jumps, default 5.
     int field_28_set0_unused;
-    GameTime playing_time;  // unsigned __int64 uTimePlayed;
+    GameTime playing_time;  // uint64_t uTimePlayed;
     GameTime last_regenerated;
     PartyTimeStruct PartyTimes;
     Vec3i vPosition;
@@ -311,7 +311,7 @@ struct Party {
     int uFallStartZ;
     unsigned int bFlying;
     char field_708_set15_unused;
-    unsigned __int8 hirelingScrollPosition;
+    uint8_t hirelingScrollPosition;
     char cNonHireFollowers;  // number of non hireling party guests
     char field_70B_set0_unused;
     unsigned int uCurrentYear;
@@ -331,11 +331,11 @@ struct Party {
     int uNumPrisonTerms;
     unsigned int uNumBountiesCollected;
     int field_74C_set0_unused;
-    std::array<__int16, 5> monster_id_for_hunting;
-    std::array<__int16, 5> monster_for_hunting_killed;
+    std::array<int16_t, 5> monster_id_for_hunting;
+    std::array<int16_t, 5> monster_for_hunting_killed;
     unsigned char days_played_without_rest;
-    unsigned __int8 _quest_bits[64];
-    std::array<unsigned __int8, 16> pArcomageWins;
+    uint8_t _quest_bits[64];
+    std::array<uint8_t, 16> pArcomageWins;
     char field_7B5_in_arena_quest;
     char uNumArenaPageWins;
     char uNumArenaSquireWins;

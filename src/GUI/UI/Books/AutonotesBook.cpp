@@ -327,7 +327,7 @@ void GUIWindow_AutonotesBook::Update() {
         num_achieved_awards = 0;
         for (uint i = 1; i <= 195; ++i) {
             if (pAutonoteTxt[i].eType == _506568_autonote_type) {
-                if ((unsigned __int16)_449B57_test_bit(pParty->_autonote_bits, i)
+                if ((uint16_t)_449B57_test_bit(pParty->_autonote_bits, i)
                     && (char *)pAutonoteTxt[i].pText)
                     achieved_awards[num_achieved_awards++] = (AwardType)i;
             }
@@ -346,7 +346,7 @@ void GUIWindow_AutonotesBook::Update() {
                                                 // закладки пролистать назад)
             --books_page_number;
             books_primary_item_per_page -=
-                (unsigned __int8)books_num_items_per_page[books_page_number];
+                (uint8_t)books_num_items_per_page[books_page_number];
             pAudioPlayer->PlaySound(SOUND_openbook, 0, 0, -1, 0, 0);
         }
         if (!num_achieved_awards ||
