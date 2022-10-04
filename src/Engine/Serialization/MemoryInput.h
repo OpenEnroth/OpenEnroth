@@ -3,6 +3,9 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <memory>
+
+#include "Utility/Blob.h"
 
 class MemoryInput {
  public:
@@ -10,9 +13,26 @@ class MemoryInput {
         Reset(data, size);
     }
 
+    explicit MemoryInput(const Blob &blob) {
+        Reset(blob);
+    }
+
+    explicit MemoryInput(Blob &&blob) {
+        Reset(std::move(blob));
+    }
+
     void Reset(const void *data, size_t size) {
         data_ = static_cast<const char *>(data);
         end_ = static_cast<const char *>(data) + size;
+    }
+
+    void Reset(const Blob &blob) {
+        Reset(blob.data(), blob.size());
+    }
+
+    void Reset(Blob &&blob) {
+        Reset(blob.data(), blob.size());
+        ownedMemory_ = std::make_unique<Blob>(std::move(blob));
     }
 
     template<class T>
@@ -63,6 +83,7 @@ class MemoryInput {
     }
 
  private:
+    std::unique_ptr<Blob> ownedMemory_;
     const char *data_ = nullptr;
     const char *end_ = nullptr;
 };

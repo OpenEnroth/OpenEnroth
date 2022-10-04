@@ -890,8 +890,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
-    Blob blob = pGames_LOD->LoadCompressed(odm_filename);
-    MemoryInput stream(blob.data(), blob.size());
+    MemoryInput stream(pGames_LOD->LoadCompressed(odm_filename));
 
     stream.ReadSizedString(&this->level_filename, 32);
     stream.ReadSizedString(&this->location_filename, 32);
@@ -961,10 +960,10 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     std::string ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    blob = pNew_LOD->LoadCompressed(ddm_filename);
+    Blob blob = pNew_LOD->LoadCompressed(ddm_filename);
 
     if (blob) {
-        stream.Reset(blob.data(), blob.size());
+        stream.Reset(blob);
 
         static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
         stream.ReadRaw(&ddm);
@@ -1009,8 +1008,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
             ++ddm.uNumRespawns;
 
         *outdoors_was_respawned = true;
-        blob = pGames_LOD->LoadCompressed(ddm_filename);
-        stream.Reset(blob.data(), blob.size());
+        stream.Reset(pGames_LOD->LoadCompressed(ddm_filename));
         stream.Skip(sizeof(DDM_DLV_Header));
     } else {
         *outdoors_was_respawned = 0;
