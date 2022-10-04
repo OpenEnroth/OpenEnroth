@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <memory>
+#include <utility>
 
 #include "Utility/Blob.h"
 
