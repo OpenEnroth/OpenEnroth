@@ -12,7 +12,7 @@
 
 #include "Utility/Color.h"
 
-void Timer_Image_MM7::Serialize(Timer *timer) {
+void Timer_Image_MM7::Serialize(const Timer *timer) {
     memset(this, 0, sizeof(*this));
 
     this->bReady = timer->bReady;
@@ -40,7 +40,7 @@ void Timer_Image_MM7::Deserialize(Timer *timer) {
     timer->uTotalGameTimeElapsed = this->uTotalGameTimeElapsed;
 }
 
-void NPCData_Image_MM7::Serialize(NPCData *npc) {
+void NPCData_Image_MM7::Serialize(const NPCData *npc) {
     memset(this, 0, sizeof(*this));
 
     if (npc->pName) {
@@ -96,7 +96,7 @@ void NPCData_Image_MM7::Deserialize(NPCData *npc) {
     npc->news_topic = this->news_topic;
 }
 
-void OtherOverlayList_Image_MM7::Serialize(OtherOverlayList *list) {
+void OtherOverlayList_Image_MM7::Serialize(const OtherOverlayList *list) {
     memset(this, 0, sizeof(*this));
 
     this->bRedraw = list->bRedraw;
@@ -138,7 +138,7 @@ void OtherOverlayList_Image_MM7::Deserialize(OtherOverlayList *list) {
     }
 }
 
-void SpellBuff_Image_MM7::Serialize(SpellBuff *buff) {
+void SpellBuff_Image_MM7::Serialize(const SpellBuff *buff) {
     memset(this, 0, sizeof(*this));
 
     this->uExpireTime = buff->expire_time.value;
@@ -158,7 +158,7 @@ void SpellBuff_Image_MM7::Deserialize(SpellBuff *buff) {
     buff->uFlags = this->uFlags;
 }
 
-void ItemGen_Image_MM7::Serialize(ItemGen *item) {
+void ItemGen_Image_MM7::Serialize(const ItemGen *item) {
     memset(this, 0, sizeof(*this));
 
     this->uItemID = item->uItemID;
@@ -188,7 +188,7 @@ void ItemGen_Image_MM7::Deserialize(ItemGen *item) {
     item->uExpireTime.value = this->uExpireTime;
 }
 
-void Party_Image_MM7::Serialize(Party *party) {
+void Party_Image_MM7::Serialize(const Party *party) {
     memset(this, 0, sizeof(*this));
 
     this->field_0 = party->field_0_set25_unused;
@@ -531,7 +531,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->flt_TorchlightColorB = this->flt_TorchlightColorB;
 }
 
-void Player_Image_MM7::Serialize(Player *player) {
+void Player_Image_MM7::Serialize(const Player *player) {
     memset(this, 0, sizeof(*this));
 
     for (unsigned int i = 0; i < 20; ++i)
@@ -980,7 +980,7 @@ void Player_Image_MM7::Deserialize(Player* player) {
     player->field_1B3B_set0_unused = this->field_1B3B;
 }
 
-void IconFrame_MM7::Serialize(Icon *icon) {
+void IconFrame_MM7::Serialize(const Icon *icon) {
     strcpy(pAnimationName, icon->GetAnimationName());
     uAnimLength = icon->GetAnimLength();
 
@@ -998,7 +998,7 @@ void IconFrame_MM7::Deserialize(Icon *icon) {
     icon->uFlags = uFlags;
 }
 
-void UIAnimation_MM7::Serialize(UIAnimation *anim) {
+void UIAnimation_MM7::Serialize(const UIAnimation *anim) {
     /* 000 */ uIconID = anim->icon->id;
     /* 002 */ field_2 = anim->field_2;
     /* 004 */ uAnimTime = anim->uAnimTime;
@@ -1030,17 +1030,6 @@ void MonsterDesc_MM6::Deserialize(MonsterDesc *desc) {
     memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
 }
 
-void MonsterDesc_MM7::Deserialize(MonsterDesc *desc) {
-    desc->uMonsterHeight = this->uMonsterHeight;
-    desc->uMonsterRadius = this->uMonsterRadius;
-    desc->uMovementSpeed = this->uMovementSpeed;
-    desc->uToHitRadius = this->uToHitRadius;
-    desc->sTintColor = this->sTintColor;
-    memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
-    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
-    memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
-}
-
 void MonsterDesc_MM7::Serialize(const MonsterDesc *desc) {
     this->uMonsterHeight = desc->uMonsterHeight;
     this->uMonsterRadius = desc->uMonsterRadius;
@@ -1052,7 +1041,18 @@ void MonsterDesc_MM7::Serialize(const MonsterDesc *desc) {
     memcpy(this->pSpriteNames, desc->pSpriteNames, sizeof(desc->pSpriteNames));
 }
 
-void Actor_MM7::Serialize(Actor *actor) {
+void MonsterDesc_MM7::Deserialize(MonsterDesc *desc) {
+    desc->uMonsterHeight = this->uMonsterHeight;
+    desc->uMonsterRadius = this->uMonsterRadius;
+    desc->uMovementSpeed = this->uMovementSpeed;
+    desc->uToHitRadius = this->uToHitRadius;
+    desc->sTintColor = this->sTintColor;
+    memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
+    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
+    memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
+}
+
+void Actor_MM7::Serialize(const Actor *actor) {
     memset(this->pActorName, 0, sizeof(this->pActorName));
     memcpy(this->pActorName, actor->pActorName.data(), std::min(actor->pActorName.size(), sizeof(this->pActorName) - 1));
 
@@ -1280,7 +1280,7 @@ void Actor_MM7::Deserialize(Actor *actor) {
         actor->field_338[i] = this->field_338[i];
 }
 
-void BLVDoor_MM7::Serialize(BLVDoor *door) {
+void BLVDoor_MM7::Serialize(const BLVDoor *door) {
     this->uAttributes = std::to_underlying(door->uAttributes);
     this->uDoorID = door->uDoorID;
     this->uTimeSinceTriggered = door->uTimeSinceTriggered;
@@ -1312,7 +1312,7 @@ void BLVDoor_MM7::Deserialize(BLVDoor *door) {
     door->field_4E = this->field_4E;
 }
 
-void BLVSector_MM7::Serialize(BLVSector *sector) {
+void BLVSector_MM7::Serialize(const BLVSector *sector) {
     this->field_0 = sector->field_0;
     this->uNumFloors = sector->uNumFloors;
     this->field_6 = sector->field_6;
@@ -1380,7 +1380,7 @@ void BLVSector_MM7::Deserialize(BLVSector *sector) {
     sector->pBounding = this->pBounding;
 }
 
-void FontData_MM7::Serialize(FontData *font) {
+void FontData_MM7::Serialize(const FontData *font) {
     this->cFirstChar = font->cFirstChar;
     this->cLastChar = font->cLastChar;
     this->field_2 = font->field_2;
