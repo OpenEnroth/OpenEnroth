@@ -7019,7 +7019,6 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
                 break;
             default:
-            case ABILITY_UNKNOWN:
                 damageType = 4;  // DMGT_PHISYCAL
                 break;
         }
@@ -7200,7 +7199,7 @@ void DamagePlayerFromMonster(unsigned int uObjID, ABILITY_INDEX dmgSource, Vec3i
                 case ABILITY_SPECIAL:
                     damageType = actorPtr->pMonsterInfo.field_3C_some_special_attack;
                     break;
-                case ABILITY_UNKNOWN:
+                default:
                     damageType = 4;
                     break;
             }
