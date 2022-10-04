@@ -5,19 +5,22 @@
 #include <memory>
 #include <string_view>
 
+class BlobHandler {
+ public:
+    virtual void destroy(void *data, size_t size) = 0;
+};
+
 class Blob final {
  public:
-    using deleter_type = void(*)(void *, size_t);
-
     Blob() {}
 
-    Blob(void *data, size_t size, deleter_type deleter) {
-        assert(data ? size > 0 && deleter : true);
-        assert(!data ? size == 0 && !deleter : true);
+    Blob(void *data, size_t size, BlobHandler *handler) {
+        assert(data ? size > 0 && handler : true);
+        assert(!data ? size == 0 && !handler : true);
 
         data_ = data;
         size_ = size;
-        deleter_ = deleter;
+        handler_ = handler;
     }
 
     Blob(const Blob &) = delete; // Blobs are non-copyable.
@@ -27,8 +30,8 @@ class Blob final {
     }
 
     ~Blob() {
-        if (deleter_)
-            deleter_(data_, size_);
+        if (handler_)
+            handler_->destroy(data_, size_);
     }
 
     Blob &operator=(const Blob &) = delete; // Blobs are non-copyable.
@@ -44,7 +47,7 @@ class Blob final {
     friend void swap(Blob &l, Blob &r) {
         std::swap(l.data_, r.data_);
         std::swap(l.size_, r.size_);
-        std::swap(l.deleter_, r.deleter_);
+        std::swap(l.handler_, r.handler_);
     }
 
     size_t size() const {
@@ -78,5 +81,5 @@ class Blob final {
  private:
     void *data_ = nullptr;
     size_t size_ = 0;
-    deleter_type deleter_ = nullptr;
+    BlobHandler *handler_ = nullptr;
 };

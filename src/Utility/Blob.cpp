@@ -1,15 +1,21 @@
 #include "Blob.h"
 
-static void free_deleter(void *data, size_t) {
-    free(data);
-}
+class FreeBlobHandler : public BlobHandler {
+ public:
+    virtual void destroy(void *data, size_t) override {
+        free(data);
+        // Note that we don't call `delete this` here.
+    }
+};
+
+constinit FreeBlobHandler staticFreeBlobHandler = {};
 
 Blob Blob::Allocate(size_t size) {
     Blob result;
 
     result.data_ = malloc(size); // We don't handle allocation failures.
     result.size_ = size;
-    result.deleter_ = &free_deleter;
+    result.handler_ = &staticFreeBlobHandler;
 
     return result;
 }
