@@ -13,7 +13,7 @@ set(UTILITY_HEADERS Blob.h
                     IndexedArray.h
                     Memory.h
                     String.h
-                    Workaround.h Blob.cpp)
+                    Workaround.h)
 
 add_library(utility STATIC ${UTILITY_SOURCES} ${UTILITY_HEADERS})
 target_check_style(utility)
