@@ -77,11 +77,6 @@ class MemoryInput {
         return result;
     }
 
-    // TODO: drop
-    const char *Ptr() const {
-        return data_;
-    }
-
  private:
     std::unique_ptr<Blob> ownedMemory_;
     const char *data_ = nullptr;
