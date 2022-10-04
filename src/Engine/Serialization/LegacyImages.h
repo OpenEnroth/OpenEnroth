@@ -930,6 +930,6 @@ struct ODMFace_MM7 {
     char field_132;
     char field_133;
 };
-//static_assert(sizeof(ODMFace_MM7) == 182);
+static_assert(sizeof(ODMFace_MM7) == 308);
 
 #pragma pack(pop)
