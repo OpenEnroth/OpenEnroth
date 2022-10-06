@@ -10,6 +10,13 @@ class BlobHandler {
     virtual void destroy(void *data, size_t size) = 0;
 };
 
+
+/**
+ * `Blob` is an abstraction that couples a contiguous memory region with the knowledge of how to deallocate it.
+ *
+ * Deallocation is type-erased (like it's done in `std::shared_ptr`), so you don't have to pass in deleter as
+ * a template parameter.
+ */
 class Blob final {
  public:
     Blob() {}
