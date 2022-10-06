@@ -2672,15 +2672,17 @@ void RenderOpenGL::DrawTerrainD3D() {
         int splaty = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].y;
         int splatz = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].z;
         int testx = WorldPosToGridCellX(splatx);
-        int testy = WorldPosToGridCellY(splaty);
+        int testy = WorldPosToGridCellY(splaty) - 1;
         // use terrain squares in block surrounding to try and stack faces
 
-        for (int loopy = (testy - 1); loopy < (testy + 1); ++loopy) {
-            for (int loopx = (testx - 1); loopx < (testx + 1); ++loopx) {
+        int scope = std::ceil(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius / 512);
+
+        for (int loopy = (testy - scope); loopy <= (testy + scope); ++loopy) {
+            for (int loopx = (testx - scope); loopx <= (testx + scope); ++loopx) {
                 if (loopy < 0) continue;
-                if (loopy > 126) continue;
+                if (loopy > 127) continue;
                 if (loopx < 0) continue;
-                if (loopx > 126) continue;
+                if (loopx > 127) continue;
 
                 struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
                 pTilePolygon->flags = pOutdoor->GetSomeOtherTileInfo(loopx, loopy);

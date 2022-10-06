@@ -140,7 +140,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     // engine->PrepareBloodsplats(); // not used?
     if (bRedraw)
         UpdateDiscoveredArea(WorldPosToGridCellX(pParty->vPosition.x),
-                             WorldPosToGridCellY(pParty->vPosition.y),
+                             WorldPosToGridCellY(pParty->vPosition.y)-1,
                              1);
     engine->SetForceRedraw(false);
     if (engine->IsSpecular_FogIsOn())
