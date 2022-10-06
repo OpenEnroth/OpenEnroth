@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 #include "Utility/Blob.h"
 
@@ -208,7 +209,7 @@ struct MonsterDesc {
     int16_t uToHitRadius;
     uint32_t sTintColor;
     uint16_t pSoundSampleIDs[4];
-    char pMonsterName[32];
+    std::string pMonsterName;
     char pSpriteNames[10][10];
 };
 #pragma pack(pop)

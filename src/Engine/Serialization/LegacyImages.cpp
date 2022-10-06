@@ -12,6 +12,12 @@
 
 #include "Utility/Color.h"
 
+template<size_t N>
+static void Serialize(const std::string &src, char (&dst)[N]) {
+    memset(dst, 0, N);
+    memcpy(dst, src.data(), std::min(src.size(), N - 1));
+}
+
 void BLVFace_MM7::Deserialize(BLVFace *face) {
     face->pFacePlane = this->pFacePlane;
     face->pFacePlane_old = this->pFacePlane_old;
@@ -1048,7 +1054,7 @@ void MonsterDesc_MM6::Deserialize(MonsterDesc *desc) {
     desc->uToHitRadius = this->uToHitRadius;
     desc->sTintColor = colorTable.White.C32();
     memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
-    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
+    desc->pMonsterName = this->pMonsterName;
     memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
 }
 
@@ -1059,7 +1065,7 @@ void MonsterDesc_MM7::Serialize(const MonsterDesc *desc) {
     this->uToHitRadius = desc->uToHitRadius;
     this->sTintColor = desc->sTintColor;
     memcpy(this->pSoundSampleIDs, desc->pSoundSampleIDs, sizeof(desc->pSoundSampleIDs));
-    memcpy(this->pMonsterName, desc->pMonsterName, sizeof(desc->pMonsterName));
+    ::Serialize(desc->pMonsterName, this->pMonsterName);
     memcpy(this->pSpriteNames, desc->pSpriteNames, sizeof(desc->pSpriteNames));
 }
 
@@ -1070,13 +1076,12 @@ void MonsterDesc_MM7::Deserialize(MonsterDesc *desc) {
     desc->uToHitRadius = this->uToHitRadius;
     desc->sTintColor = this->sTintColor;
     memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
-    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
+    desc->pMonsterName = this->pMonsterName;
     memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
 }
 
 void Actor_MM7::Serialize(const Actor *actor) {
-    memset(this->pActorName, 0, sizeof(this->pActorName));
-    memcpy(this->pActorName, actor->pActorName.data(), std::min(actor->pActorName.size(), sizeof(this->pActorName) - 1));
+    ::Serialize(actor->pActorName, this->pActorName);
 
     this->sNPC_ID = actor->sNPC_ID;
     this->field_22 = actor->field_22;

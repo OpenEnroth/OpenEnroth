@@ -4,6 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Serialization/MemoryInput.h"
+#include "Engine/Serialization/MemoryOutput.h"
 #include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
@@ -337,7 +338,7 @@ bool MonsterList::FromFileTxt(const char *Args) {
         if (v25.uPropCount && *v25.pProperties[0] != 47) {
             MonsterDesc &monster = this->pMonsters.emplace_back();
 
-            strcpy(monster.pMonsterName, v25.pProperties[0]);
+            monster.pMonsterName = v25.pProperties[0];
             v35 = 0;
             v36 = 1;
             v37 = 7;
@@ -418,11 +419,11 @@ void MonsterList::ToFile() {
     if (!v2)
         Error("Unable to save dmonlist.bin!");
 
-    static_assert(sizeof(MonsterDesc) == 0x98u);
+    MemoryOutput stream;
+    stream.WriteLegacyVector<MonsterDesc_MM7>(this->pMonsters);
+    Blob blob = stream.Finish();
 
-    uint32_t uNumMonsters = this->pMonsters.size();
-    fwrite(&uNumMonsters, 4u, 1u, v2);
-    fwrite(this->pMonsters.data(), 0x98u, uNumMonsters, v2);
+    fwrite(blob.data(), blob.size(), 1, v2);
     fclose(v2);
 }
 
