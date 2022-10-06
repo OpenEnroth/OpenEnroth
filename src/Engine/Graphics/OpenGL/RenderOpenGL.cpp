@@ -2270,7 +2270,7 @@ void RenderOpenGL::DrawTerrainD3D() {
                 // map is 127 x 127 squares - each square has two triangles - each tri has 3 verts
 
                 // first find all required textures for terrain and add to map
-                auto tile = pOutdoor->DoGetTile(x, y);
+                auto tile = pOutdoor->GetTileDescByGrid(x, y);
                 int tileunit = 0;
                 int tilelayer = 0;
 
@@ -2672,7 +2672,7 @@ void RenderOpenGL::DrawTerrainD3D() {
         int splaty = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].y;
         int splatz = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].z;
         int testx = WorldPosToGridCellX(splatx);
-        int testy = WorldPosToGridCellY(splaty) - 1;
+        int testy = WorldPosToGridCellY(splaty);
         // use terrain squares in block surrounding to try and stack faces
 
         int scope = std::ceil(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius / 512);
@@ -2685,7 +2685,7 @@ void RenderOpenGL::DrawTerrainD3D() {
                 if (loopx > 127) continue;
 
                 struct Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
-                pTilePolygon->flags = pOutdoor->GetSomeOtherTileInfo(loopx, loopy);
+                pTilePolygon->flags = pOutdoor->GetTileAttribByGrid(loopx, loopy);
 
                 uint norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
                 uint bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
@@ -4129,7 +4129,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
                         std::string *texname = tex->GetName();
                         // gather up all texture and shaderverts data
 
-                        //auto tile = pOutdoor->DoGetTile(x, y);
+                        //auto tile = pOutdoor->GetTileDescByGrid(x, y);
 
                         int texunit = 0;
                         int texlayer = 0;
@@ -4288,7 +4288,7 @@ void RenderOpenGL::DrawBuildingsD3D() {
             //ignore wtrtyl
             //laod in
 
-            //auto tile = pOutdoor->DoGetTile(0, 0);
+            //auto tile = pOutdoor->GetTileDescByGrid(0, 0);
             //bool border = tile->IsWaterBorderTile();
 
 

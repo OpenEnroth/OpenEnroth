@@ -76,7 +76,7 @@ struct OutdoorLocation {
               int respawn_interval_days, bool *outdoors_was_respawned);
     int GetTileIdByTileMapId(signed int a2);
     int _47ED83(int gridX, int gridY);
-    int DoGetSomeOtherTileInfo(int gridX, int gridY);
+    int GetTileAttribByGrid(int gridX, int gridY);
     int DoGetHeightOnTerrain(signed int sX, signed int sZ);
     int GetSoundIdByPosition(signed int X_pos, signed int Y_pos, int a4);
     int UpdateDiscoveredArea(int a2, int a3, int unused);
@@ -89,9 +89,9 @@ struct OutdoorLocation {
     bool LoadRoadTileset();
     bool LoadTileGroupIds();
     double GetFogDensityByTime();
-    int GetSomeOtherTileInfo(int sX, int sY);
-    TileDesc *GetTile(int sX, int sZ);
-    TileDesc *DoGetTile(int uX, int uZ);
+    int GetTileAttribByPos(int sX, int sY);
+    TileDesc *GetTileDescByPos(int sX, int sZ);
+    TileDesc *GetTileDescByGrid(int uX, int uZ);
     int GetHeightOnTerrain(int sX, int sZ);
     bool Initialize(const std::string &filename, int days_played,
                     int respawn_interval_days,

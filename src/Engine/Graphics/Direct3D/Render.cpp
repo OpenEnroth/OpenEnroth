@@ -314,11 +314,12 @@ void Render::DrawTerrainD3D() {  // New function
             // *)&pBitmaps_LOD->pHardwareTextures[pTilePolygon->uTileBitmapID];
             // if (pTilePolygon->uTileBitmapID == 0xFFFF)
             //    continue;
-            auto tile = pOutdoor->DoGetTile(x, z);
+            auto tile = pOutdoor->GetTileDescByGrid(x, z);
             if (!tile) continue;
 
-            // pTile->flags = 0x8010 |pOutdoor->GetSomeOtherTileInfo(x, z);
-            pTilePolygon->flags = pOutdoor->GetSomeOtherTileInfo(x, z);
+            // pTile->flags = 0x8010 |pOutdoor->GetTileAttribByPos(x, z);
+            pTilePolygon->flags = pOutdoor->GetTileAttribByGrid(x, z);
+
             pTilePolygon->field_32 = 0;
             pTilePolygon->field_59 = 1;
             pTilePolygon->sTextureDeltaU = 0;
