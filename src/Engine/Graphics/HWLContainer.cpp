@@ -116,10 +116,10 @@ HWLTexture *HWLContainer::LoadTexture(const std::string &pName) {
 
     pTex->pPixels = new uint16_t[pTex->uWidth * pTex->uHeight];
     if (textureHeader.uCompressedSize) {
-        PMemBuffer buffer = AllocMemBuffer(textureHeader.uCompressedSize);
-        fread((void*)buffer->GetData(), textureHeader.uCompressedSize, 1, pFile);
+        Blob buffer = Blob::Allocate(textureHeader.uCompressedSize);
+        fread(buffer.data(), buffer.size(), 1, pFile);
         buffer = zlib::Uncompress(buffer);
-        memcpy(pTex->pPixels, buffer->GetData(), buffer->GetSize());
+        memcpy(pTex->pPixels, buffer.data(), buffer.size()); // TODO: gotta check size here.
     } else {
         fread(pTex->pPixels, 2, pTex->uWidth * pTex->uHeight, pFile);
     }

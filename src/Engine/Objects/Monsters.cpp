@@ -4,6 +4,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Serialization/MemoryInput.h"
+#include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
 
@@ -388,35 +389,27 @@ bool MonsterList::FromFileTxt(const char *Args) {
 }
 
 //----- (004598AF) --------------------------------------------------------
-void MonsterList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
-    uint num_mm6_monsters = data_mm6 ? *(int *)data_mm6 : 0,
-         num_mm7_monsters = data_mm7 ? *(int *)data_mm7 : 0,
-         num_mm8_monsters = data_mm8 ? *(int *)data_mm8 : 0;
+void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
+    Assert(!data_mm8);
 
-    uint uNumMonsters = num_mm6_monsters + num_mm7_monsters + num_mm8_monsters;
-    Assert(uNumMonsters);
-    Assert(!num_mm8_monsters);
+    MemoryInput stream;
 
-    // TODO: use MemoryInput.
-
-    pMonsters.resize(uNumMonsters);
-    memcpy(pMonsters.data(), (char *)data_mm7 + 4, num_mm7_monsters * sizeof(MonsterDesc));
-    for (uint i = 0; i < num_mm6_monsters; ++i) {
-        auto src = (MonsterDesc_mm6 *)((char *)data_mm6 + 4) + i;
-        MonsterDesc *dst = &pMonsters[num_mm7_monsters + i];
-
-        dst->uMonsterHeight = src->uMonsterHeight;
-        dst->uMonsterRadius = src->uMonsterRadius;
-        dst->uMovementSpeed = src->uMovementSpeed;
-        dst->uToHitRadius = src->uToHitRadius;
-        dst->sTintColor = -1;
-        memcpy(dst->pSoundSampleIDs, src->pSoundSampleIDs,
-               sizeof(src->pSoundSampleIDs));
-        memcpy(dst->pMonsterName, src->pMonsterName, sizeof(src->pMonsterName));
-        memcpy(dst->pSpriteNames, src->pSpriteNames, sizeof(src->pSpriteNames));
+    if (data_mm7) {
+        stream.Reset(data_mm7);
+        stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters);
     }
-    memcpy(pMonsters.data() + num_mm6_monsters + num_mm7_monsters,
-           (char *)data_mm8 + 4, num_mm8_monsters * sizeof(MonsterDesc));
+
+    if (data_mm6) {
+        stream.Reset(data_mm6);
+        stream.ReadLegacyVector<MonsterDesc_MM6>(&pMonsters, MemoryInput::Append);
+    }
+
+    if (data_mm8) {
+        stream.Reset(data_mm8);
+        stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, MemoryInput::Append);
+    }
+
+    Assert(!pMonsters.empty());
 }
 
 //----- (00459860) --------------------------------------------------------
@@ -455,8 +448,8 @@ void MonsterStats::InitializePlacements() {
     int decode_step;
     //  int item_counter;
 
-    pMonsterPlacementTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("placemon.txt");
-    strtok(pMonsterPlacementTXT_Raw, "\r");
+    pMonsterPlacementTXT_Raw = pEvents_LOD->LoadCompressedTexture("placemon.txt").string_view();
+    strtok(pMonsterPlacementTXT_Raw.data(), "\r");
     for (i = 1; i < 31; ++i) {
         test_string = strtok(NULL, "\r") + 1;
         break_loop = false;
@@ -500,9 +493,8 @@ void MonsterStats::Initialize() {
     FrameTableTxtLine parsed_field;
     std::string str;
 
-    free(pMonstersTXT_Raw);
-    pMonstersTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("monsters.txt");
-    strtok(pMonstersTXT_Raw, "\r");
+    pMonstersTXT_Raw = pEvents_LOD->LoadCompressedTexture("monsters.txt").string_view();
+    strtok(pMonstersTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");

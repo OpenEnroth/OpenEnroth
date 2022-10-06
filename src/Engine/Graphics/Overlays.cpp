@@ -119,22 +119,22 @@ void OverlayList::ToFile() {
 }
 
 //----- (00458E08) --------------------------------------------------------
-void OverlayList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
-    uint num_mm6_overlays = data_mm6 ? *(int *)data_mm6 : 0,
-         num_mm7_overlays = data_mm7 ? *(int *)data_mm7 : 0,
-         num_mm8_overlays = data_mm8 ? *(int *)data_mm8 : 0;
+void OverlayList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
+    uint num_mm6_overlays = data_mm6 ? *(int *)data_mm6.data() : 0,
+         num_mm7_overlays = data_mm7 ? *(int *)data_mm7.data() : 0,
+         num_mm8_overlays = data_mm8 ? *(int *)data_mm8.data() : 0;
 
     uNumOverlays = num_mm6_overlays + num_mm7_overlays + num_mm8_overlays;
     Assert(uNumOverlays);
     Assert(!num_mm8_overlays);
 
     pOverlays = (OverlayDesc *)malloc(uNumOverlays * sizeof(OverlayDesc));
-    memcpy(pOverlays, (char *)data_mm7 + 4,
+    memcpy(pOverlays, (char *)data_mm7.data() + 4,
            num_mm7_overlays * sizeof(OverlayDesc));
-    memcpy(pOverlays + num_mm7_overlays, (char *)data_mm6 + 4,
+    memcpy(pOverlays + num_mm7_overlays, (char *)data_mm6.data() + 4,
            num_mm6_overlays * sizeof(OverlayDesc));
     memcpy(pOverlays + num_mm6_overlays + num_mm7_overlays,
-           (char *)data_mm8 + 4, num_mm8_overlays * sizeof(OverlayDesc));
+           (char *)data_mm8.data() + 4, num_mm8_overlays * sizeof(OverlayDesc));
 }
 
 //----- (00458E4F) --------------------------------------------------------

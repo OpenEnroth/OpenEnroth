@@ -2,6 +2,8 @@
 
 #include "Engine/Objects/Player.h"
 
+#include "Utility/Blob.h"
+
 /*   46 */
 #pragma pack(push, 1)
 struct PlayerFrame {
@@ -22,7 +24,7 @@ struct PlayerFrameTable {
     PlayerFrame *GetFrameBy_x(unsigned int uFramesetID, unsigned int uFrameID);
     PlayerFrame *GetFrameBy_y(int *a2, int *a3, int a4);
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     int FromFileTxt(const char *Args);
 
     unsigned int uNumFrames;

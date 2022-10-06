@@ -8,7 +8,6 @@
 #include "Utility/Flags.h"
 
 class MemoryInput;
-struct ODMFace_MM7;
 
 enum class FaceAttribute : uint32_t {
     FACE_IsPortal          = 0x00000001,
@@ -150,8 +149,6 @@ struct ODMFace {
 
     void SetTexture(const std::string &filename);
     Texture *GetTexture();
-
-    bool Deserialize(const ODMFace_MM7 *);
 
     // TODO: does this really have to be two separate functions?
     /**

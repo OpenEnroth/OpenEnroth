@@ -391,8 +391,6 @@ struct BLVFace {  // 60h
     void SetTexture(const std::string &filename);
     Texture *GetTexture();
 
-    bool Deserialize(struct BLVFace_MM7 *);
-
     inline bool Invisible() const {
         return uAttributes & FACE_IsInvisible;
     }

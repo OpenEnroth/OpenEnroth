@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Engine/Graphics/Image.h"
+#include "Utility/Blob.h"
 
 class Sprite;
 
@@ -64,9 +65,9 @@ class File {
     bool Open(const std::string &pFilename);
     void Close();
 
-    void *LoadRaw(const std::string &pContainer, size_t *data_size = nullptr);
-    void *LoadCompressedTexture(const std::string &pContainer, size_t *data_size = nullptr);
-    void *LoadCompressed(const std::string &pContainer, size_t *data_size = nullptr);
+    Blob LoadRaw(const std::string &pContainer);
+    Blob LoadCompressedTexture(const std::string &pContainer);
+    Blob LoadCompressed(const std::string &pContainer);
     bool DoesContainerExist(const std::string &filename);
 
     std::string GetSubNodeName(size_t index) const { return pSubIndices[index].pFilename; }

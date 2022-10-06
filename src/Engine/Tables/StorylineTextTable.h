@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 #pragma pack(push, 1)
 struct StorylineRecord {
@@ -24,5 +25,5 @@ struct StorylineText {
 };
 #pragma pack(pop)
 
-extern char* pHistoryTXT_Raw;
+extern std::string pHistoryTXT_Raw;
 extern struct StorylineText* pStorylineText;

@@ -611,7 +611,7 @@ unsigned int game_ui_status_bar_event_string_time_left;
 int bForceDrawFooter;
 int _5C35C0_force_party_death = false;
 int bDialogueUI_InitializeActor_NPC_ID;
-char *p2DEventsTXT_Raw = nullptr;
+std::string p2DEventsTXT_Raw;
 
 int dword_5C35D4;
 char byte_5C45AF[777];
@@ -644,11 +644,11 @@ struct FactionTable *pFactionTable;
 
 std::array<char, 777> byte_5E4C15;
 
-char *pMonstersTXT_Raw = nullptr;
-char *pMonsterPlacementTXT_Raw = nullptr;
-char *pSpellsTXT_Raw = nullptr;
+std::string pMonstersTXT_Raw;
+std::string pMonsterPlacementTXT_Raw;
+std::string pSpellsTXT_Raw;
 char *pMapStatsTXT_Raw = nullptr;
-char *pHostileTXT_Raw = nullptr;
+std::string pHostileTXT_Raw;
 char *pPotionsTXT_Raw = nullptr;
 char *pPotionNotesTXT_Raw = nullptr;
 
@@ -696,16 +696,16 @@ std::array<const char *, 513> pQuestTable;
 char *dword_723718_autonote_related;  // idb
 std::array<const char *, 82> pScrolls;
 int dword_7241C8;
-char *pAwardsTXT_Raw = nullptr;
-char *pScrollsTXT_Raw = nullptr;
-char *pMerchantsTXT_Raw = nullptr;
+std::string pAwardsTXT_Raw;
+std::string pScrollsTXT_Raw;
+std::string pMerchantsTXT_Raw;
 std::array<const char *, 7> pMerchantsBuyPhrases;
 std::array<const char *, 7> pMerchantsSellPhrases;
 std::array<const char *, 7> pMerchantsRepairPhrases;
 std::array<const char *, 7> pMerchantsIdentifyPhrases;
-char *pTransitionsTXT_Raw = nullptr;
-char *pAutonoteTXT_Raw = nullptr;
-char *pQuestsTXT_Raw = nullptr;
+std::string pTransitionsTXT_Raw;
+std::string pAutonoteTXT_Raw;
+std::string pQuestsTXT_Raw;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;

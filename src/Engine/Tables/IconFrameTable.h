@@ -4,6 +4,8 @@
 #include <cstring>
 #include <cstdint>
 
+#include "Utility/Blob.h"
+
 class Texture;
 
 class Icon {
@@ -58,7 +60,7 @@ struct IconFrameTable {
     Icon *GetFrame(unsigned int uIconID, unsigned int frame_time);
     void InitializeAnimation(unsigned int uIconID);
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     int FromFileTxt(const char *Args);
     // int GetIconAnimLength(unsigned int uIconID);
 

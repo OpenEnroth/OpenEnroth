@@ -11,21 +11,21 @@
 DecorationList *pDecorationList;
 
 //----- (0045864C) --------------------------------------------------------
-void DecorationList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
-    size_t num_mm6_decs = data_mm6 ? *(uint32_t*)data_mm6 : 0;
-    size_t num_mm7_decs = data_mm7 ? *(uint32_t*)data_mm7 : 0;
-    size_t num_mm8_decs = data_mm8 ? *(uint32_t*)data_mm8 : 0;
+void DecorationList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
+    size_t num_mm6_decs = data_mm6 ? *(uint32_t*)data_mm6.data() : 0;
+    size_t num_mm7_decs = data_mm7 ? *(uint32_t*)data_mm7.data() : 0;
+    size_t num_mm8_decs = data_mm8 ? *(uint32_t*)data_mm8.data() : 0;
 
     size_t uNumDecorations = num_mm6_decs + num_mm7_decs + num_mm8_decs;
     Assert(uNumDecorations);
     Assert(!num_mm8_decs);
 
-    DecorationDesc *decors = (DecorationDesc*)((char*)data_mm7 + 4);
+    DecorationDesc *decors = (DecorationDesc*)((char*)data_mm7.data() + 4);
     for (size_t i = 0; i < num_mm7_decs; i++) {
         pDecorations.push_back(decors[i]);
     }
 
-    DecorationDesc_mm6 *decors_mm6 = (DecorationDesc_mm6*)((char*)data_mm6 + 4);
+    DecorationDesc_mm6 *decors_mm6 = (DecorationDesc_mm6*)((char*)data_mm6.data() + 4);
     for (size_t i = 0; i < num_mm6_decs; ++i) {
         DecorationDesc decor;
         static_cast<DecorationDesc_mm6 &>(decor) = decors_mm6[i];
@@ -36,7 +36,7 @@ void DecorationList::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
         pDecorations.push_back(decor);
     }
 
-    DecorationDesc *decors_mm8 = (DecorationDesc*)((char*)data_mm8 + 4);
+    DecorationDesc *decors_mm8 = (DecorationDesc*)((char*)data_mm8.data() + 4);
     for (size_t i = 0; i < num_mm8_decs; i++) {
         pDecorations.push_back(decors_mm8[i]);
     }

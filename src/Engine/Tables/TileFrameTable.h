@@ -4,6 +4,8 @@
 
 #include "Engine/AssetsManager.h"
 
+#include "Utility/Blob.h"
+
 /*  327 */
 enum TILE_DESC_FLAGS {
     TILE_DESC_NULL = 0,
@@ -129,7 +131,7 @@ struct TileTable {
     int GetTileForTerrainType(signed int a1, bool a2);
     unsigned int GetTileId(unsigned int uTerrainType, unsigned int uSection);
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     int FromFileTxt(const char *pFilename);
 
     int sNumTiles;

@@ -2950,9 +2950,8 @@ void InitializeBuildingResidents() {
     char *tmp_pos;
     int decode_step;
 
-    free(p2DEventsTXT_Raw);
-    p2DEventsTXT_Raw = (char *)pEvents_LOD->LoadCompressedTexture("2dEvents.txt");
-    strtok(p2DEventsTXT_Raw, "\r");
+    p2DEventsTXT_Raw = pEvents_LOD->LoadCompressedTexture("2dEvents.txt").string_view();
+    strtok(p2DEventsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
 
     for (i = 0; i < 525; ++i) {

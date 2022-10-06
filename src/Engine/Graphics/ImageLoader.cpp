@@ -293,18 +293,13 @@ bool PCX_LOD_Raw_Loader::Load(unsigned int *width, unsigned int *height,
     *format = IMAGE_INVALID_FORMAT;
     *out_palette = nullptr;
 
-    size_t size;
-    void *data = lod->LoadRaw(resource_name, &size);
-    if (data == nullptr) {
+    Blob data = lod->LoadRaw(resource_name);
+    if (!data) {
         log->Warning("Unable to load %s", this->resource_name.c_str());
         return false;
     }
 
-    bool res = InternalLoad(data, size, width, height, pixels, format);
-
-    free(data);
-
-    return res;
+    return InternalLoad(data.data(), data.size(), width, height, pixels, format);
 }
 
 bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
@@ -315,18 +310,13 @@ bool PCX_LOD_Compressed_Loader::Load(unsigned int *width, unsigned int *height,
     *out_palette = nullptr;
     *format = IMAGE_INVALID_FORMAT;
 
-    size_t data_size = 0;
-    void *pcx_data = lod->LoadCompressedTexture(resource_name, &data_size);
-    if (pcx_data == nullptr) {
+    Blob pcx_data = lod->LoadCompressedTexture(resource_name);
+    if (!pcx_data) {
         log->Warning("Unable to load %s", resource_name.c_str());
         return false;
     }
 
-    bool res = InternalLoad(pcx_data, data_size, width, height, pixels, format);
-
-    free(pcx_data);
-
-    return res;
+    return InternalLoad(pcx_data.data(), pcx_data.size(), width, height, pixels, format);
 }
 
 static void ProcessTransparentPixel(uint8_t* pixels, uint8_t* palette,

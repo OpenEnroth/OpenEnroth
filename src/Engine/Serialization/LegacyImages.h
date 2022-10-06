@@ -28,6 +28,8 @@ class Icon;
 struct OtherOverlayList;
 struct Timer;
 struct Party;
+struct MonsterDesc;
+struct ODMFace;
 
 #pragma pack(push, 1)
 
@@ -59,8 +61,10 @@ static_assert(sizeof(SpriteFrame_MM7) == 60);
 struct BLVFace_MM7 {
     BLVFace_MM7() { memzero(this); }
 
-    struct Planef pFacePlane;
-    struct Planei pFacePlane_old;
+    void Deserialize(BLVFace *face);
+
+    Planef pFacePlane;
+    Planei pFacePlane_old;
     int zCalc1;
     int zCalc2;
     int zCalc3;
@@ -112,7 +116,7 @@ static_assert(sizeof(TextureFrame_MM7) == 20);
 struct NPCData_Image_MM7 {
     NPCData_Image_MM7() { memzero(this); }
 
-    void Serialize(NPCData *item);
+    void Serialize(const NPCData *item);
     void Deserialize(NPCData *item);
 
     /* 00 */ int32_t pName;  // char *pName;
@@ -143,7 +147,7 @@ static_assert(sizeof(NPCData_Image_MM7) == 0x4C);
 struct ItemGen_Image_MM7 {
     ItemGen_Image_MM7() { memzero(this); }
 
-    void Serialize(ItemGen *item);
+    void Serialize(const ItemGen *item);
     void Deserialize(ItemGen *item);
 
     /* 00 */ int uItemID;
@@ -182,7 +186,7 @@ static_assert(sizeof(ItemGen_Image_MM7) == 0x24);
 struct SpellBuff_Image_MM7 {
     SpellBuff_Image_MM7() { memzero(this); }
 
-    void Serialize(SpellBuff *item);
+    void Serialize(const SpellBuff *item);
     void Deserialize(SpellBuff *item);
 
     /* 00 */ int64_t uExpireTime;
@@ -267,7 +271,7 @@ static_assert(sizeof(LloydBeacon_Image_MM7) == 0x1C);
 struct Player_Image_MM7 {
     Player_Image_MM7() { memzero(this); }
 
-    void Serialize(Player *);
+    void Serialize(const Player *);
     void Deserialize(Player *);
 
     /* 0000 */ int64_t pConditions[20];
@@ -454,7 +458,7 @@ static_assert(sizeof(PartyTimeStruct_Image_MM7) == 0x678);
 struct Party_Image_MM7 {
     Party_Image_MM7() { memzero(this); }
 
-    void Serialize(Party *);
+    void Serialize(const Party *);
     void Deserialize(Party *);
 
     /* 00000 */ int field_0;
@@ -557,7 +561,7 @@ static_assert(sizeof(Party_Image_MM7) == 0x16238);
 struct Timer_Image_MM7 {
     Timer_Image_MM7() { memzero(this); }
 
-    void Serialize(Timer *);
+    void Serialize(const Timer *);
     void Deserialize(Timer *);
 
     /* 00 */ uint32_t bReady;
@@ -595,7 +599,7 @@ static_assert(sizeof(OtherOverlay_Image_MM7) == 0x14);
 struct OtherOverlayList_Image_MM7 {
     OtherOverlayList_Image_MM7()  { memzero(this); }
 
-    void Serialize(OtherOverlayList *);
+    void Serialize(const OtherOverlayList *);
     void Deserialize(OtherOverlayList *);
 
     /* 000 */ OtherOverlay_Image_MM7 pOverlays[50];
@@ -609,7 +613,7 @@ static_assert(sizeof(OtherOverlayList_Image_MM7) == 0x3F0);
 struct IconFrame_MM7 {
     IconFrame_MM7() { memzero(this); }
 
-    void Serialize(Icon *);
+    void Serialize(const Icon *);
     void Deserialize(Icon *);
 
     /* 000 */ char pAnimationName[12];
@@ -625,7 +629,7 @@ static_assert(sizeof(IconFrame_MM7) == 0x20);
 struct UIAnimation_MM7 {
     UIAnimation_MM7() { memzero(this); }
 
-    void Serialize(UIAnimation *);
+    void Serialize(const UIAnimation *);
     void Deserialize(UIAnimation *);
 
     /* 000 */ uint16_t uIconID;
@@ -704,10 +708,44 @@ struct MonsterInfo_MM7 {
 static_assert(sizeof(MonsterInfo_MM7) == 0x58);
 
 
+struct MonsterDesc_MM6 {
+    MonsterDesc_MM6() { memzero(this); }
+
+    void Deserialize(MonsterDesc *);
+
+    uint16_t uMonsterHeight;
+    uint16_t uMonsterRadius;
+    uint16_t uMovementSpeed;
+    int16_t uToHitRadius;
+    uint16_t pSoundSampleIDs[4];
+    char pMonsterName[32];
+    char pSpriteNames[10][10];
+};
+static_assert(sizeof(MonsterDesc_MM6) == 148);
+
+
+struct MonsterDesc_MM7 {
+    MonsterDesc_MM7() { memzero(this); }
+
+    void Serialize(const MonsterDesc *);
+    void Deserialize(MonsterDesc *);
+
+    uint16_t uMonsterHeight;
+    uint16_t uMonsterRadius;
+    uint16_t uMovementSpeed;
+    int16_t uToHitRadius;
+    uint32_t sTintColor;
+    uint16_t pSoundSampleIDs[4];
+    char pMonsterName[32];
+    char pSpriteNames[10][10];
+};
+static_assert(sizeof(MonsterDesc_MM7) == 152);
+
+
 struct Actor_MM7 {
     Actor_MM7() { memzero(this); }
 
-    void Serialize(Actor *);
+    void Serialize(const Actor *);
     void Deserialize(Actor *);
 
     char pActorName[32];
@@ -755,7 +793,7 @@ static_assert(sizeof(Actor_MM7) == 0x344);
 struct BLVDoor_MM7 {
     BLVDoor_MM7() { memzero(this); }
 
-    void Serialize(BLVDoor *);
+    void Serialize(const BLVDoor *);
     void Deserialize(BLVDoor *);
 
     uint32_t uAttributes;
@@ -786,7 +824,7 @@ static_assert(sizeof(BLVDoor_MM7) == 0x50);
 struct BLVSector_MM7 {
     BLVSector_MM7() { memzero(this); }
 
-    void Serialize(BLVSector *);
+    void Serialize(const BLVSector *);
     void Deserialize(BLVSector *);
 
     int32_t field_0;
@@ -837,7 +875,7 @@ static_assert(sizeof(BLVSector_MM7) == 0x74);
 struct FontData_MM7 {
     FontData_MM7() { memzero(this); }
 
-    void Serialize(FontData *);
+    void Serialize(const FontData *);
     void Deserialize(FontData *, size_t size);
 
     uint8_t cFirstChar;  // 0
@@ -854,5 +892,44 @@ struct FontData_MM7 {
     uint8_t pFontData[0];  // array of font pixels
 };
 static_assert(sizeof(FontData_MM7) == 0x1020);
+
+
+struct ODMFace_MM7 {
+    ODMFace_MM7() { memzero(this); }
+
+    void Deserialize(ODMFace *);
+
+    Planei pFacePlane;
+    int zCalc1;
+    int zCalc2;
+    int zCalc3;
+    unsigned int uAttributes;
+    std::array<uint16_t, 20> pVertexIDs;
+    std::array<int16_t, 20> pTextureUIDs;
+    std::array<int16_t, 20> pTextureVIDs;
+    std::array<int16_t, 20> pXInterceptDisplacements;
+    std::array<int16_t, 20> pYInterceptDisplacements;
+    std::array<int16_t, 20> pZInterceptDisplacements;
+    int16_t uTextureID;
+    int16_t sTextureDeltaU;
+    int16_t sTextureDeltaV;
+    BBoxs pBoundingBox;
+    int16_t sCogNumber;
+    int16_t sCogTriggeredID;
+    int16_t sCogTriggerType;
+    char field_128;
+    char field_129;
+    uint8_t uGradientVertex1;
+    uint8_t uGradientVertex2;
+    uint8_t uGradientVertex3;
+    uint8_t uGradientVertex4;
+    uint8_t uNumVertices;
+    uint8_t uPolygonType;
+    uint8_t uShadeType;
+    uint8_t bVisible;
+    char field_132;
+    char field_133;
+};
+static_assert(sizeof(ODMFace_MM7) == 308);
 
 #pragma pack(pop)

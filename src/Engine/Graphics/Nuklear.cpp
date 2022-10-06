@@ -3409,24 +3409,23 @@ static int lua_load_raw_from_lod(lua_State *L) {
 
     const char *lod_name = luaL_checkstring(L, 1);
     const char *resource = luaL_checkstring(L, 2);
-    char *content = NULL;
+    Blob content;
 
     if (!strcmp(lod_name, "bitmaps"))
-        content = (char *)pBitmaps_LOD->LoadCompressedTexture(resource);
+        content = pBitmaps_LOD->LoadCompressedTexture(resource);
     else if (!strcmp(lod_name, "events"))
-        content = (char *)pEvents_LOD->LoadCompressedTexture(resource);
+        content = pEvents_LOD->LoadCompressedTexture(resource);
     else if (!strcmp(lod_name, "games"))
-        content = (char *)pGames_LOD->LoadCompressedTexture(resource);
+        content = pGames_LOD->LoadCompressedTexture(resource);
     else if (!strcmp(lod_name, "icons"))
-        content = (char *)pIcons_LOD->LoadCompressedTexture(resource);
+        content = pIcons_LOD->LoadCompressedTexture(resource);
     else if (!strcmp(lod_name, "sprites"))
-        content = (char *)pSprites_LOD->LoadCompressedTexture(resource);
+        content = pSprites_LOD->LoadCompressedTexture(resource);
 
     if (!content)
         return luaL_argerror(L, 2, lua_pushfstring(L, "resource '%s' couldn't be loaded", resource));
 
-    lua_pushstring(L, content);
-    free(content);
+    lua_pushstring(L, std::string(content.string_view()).data());
 
     return 1;
 }

@@ -72,30 +72,6 @@ std::array<const char *, 11> _4E6BDC_loc_names = {
     "mdk01.blv", "mdt01.blv", "mdr01.blv", "mdt10.blv",
     "mdt09.blv", "mdt15.blv", "mdt11.blv"};
 
-bool BLVFace::Deserialize(BLVFace_MM7 *data) {
-    this->pFacePlane = data->pFacePlane;
-    this->pFacePlane_old = data->pFacePlane_old;
-    this->zCalc.Init(this->pFacePlane_old);
-    this->uAttributes = FaceAttributes(data->uAttributes);
-    this->pVertexIDs = nullptr;
-    this->pXInterceptDisplacements = nullptr;
-    this->pYInterceptDisplacements = nullptr;
-    this->pZInterceptDisplacements = nullptr;
-    this->pVertexUIDs = nullptr;
-    this->pVertexVIDs = nullptr;
-    this->uFaceExtraID = data->uFaceExtraID;
-    // uint16_t  uBitmapID;
-    this->uSectorID = data->uSectorID;
-    this->uBackSectorID = data->uBackSectorID;
-    this->pBounding = data->pBounding;
-    this->uPolygonType = (PolygonType)data->uPolygonType;
-    this->uNumVertices = data->uNumVertices;
-    this->field_5E = data->field_5E;
-    this->field_5F = data->field_5F;
-
-    return true;
-}
-
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
     int TorchLightPower;           // eax@4
@@ -519,10 +495,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     if (!Alloc())
         return false;
 
-    size_t blv_size = 0;
-    std::unique_ptr<void, FreeDeleter> rawData;
-    rawData.reset(pGames_LOD->LoadCompressed(blv_filename, &blv_size));
-    MemoryInput stream(rawData.get(), blv_size);
+    MemoryInput stream(pGames_LOD->LoadCompressed(blv_filename));
 
     bLoaded = true;
 
@@ -534,12 +507,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    std::vector<BLVFace_MM7> mm7faces;
-    stream.ReadVector(&mm7faces);
-    pFaces.resize(mm7faces.size());
-    for (unsigned int i = 0; i < mm7faces.size(); ++i)
-        pFaces[i].Deserialize(&mm7faces[i]);
-
+    stream.ReadLegacyVector<BLVFace_MM7>(&pFaces);
     stream.ReadSizedVector(&pLFaces, blv.uFaces_fdata_Size / sizeof(uint16_t));
 
     for (uint i = 0, j = 0; i < pFaces.size(); ++i) {
@@ -608,11 +576,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    std::vector<BLVSector_MM7> mm7sectors;
-    stream.ReadVector(&mm7sectors);
-    pSectors.resize(mm7sectors.size());
-    for (int i = 0; i < mm7sectors.size(); ++i)
-        mm7sectors[i].Deserialize(&pSectors[i]);
+    stream.ReadLegacyVector<BLVSector_MM7>(&pSectors);
 
     pGameLoadingUI_ProgressBar->Progress();
 
@@ -700,10 +664,9 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     dlv_filename.replace(dlv_filename.length() - 4, 4, ".dlv");
 
     bool bResetSpawn = false;
-    size_t dlv_size = 0;
-    rawData.reset(pNew_LOD->LoadCompressed(dlv_filename, &dlv_size));
-    if (rawData) {
-        stream.Reset(rawData.get(), dlv_size);
+    Blob blob = pNew_LOD->LoadCompressed(dlv_filename);
+    if (blob) {
+        stream.Reset(blob);
         stream.ReadRaw(&dlv);
     } else {
         bResetSpawn = true;
@@ -739,8 +702,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
         if (!bResetSpawn) ++dlv.uNumRespawns;
         *(int *)pDest = 1;
 
-        rawData.reset(pGames_LOD->LoadCompressed(dlv_filename, &dlv_size));
-        stream.Reset(rawData.get(), dlv_size);
+        stream.Reset(pGames_LOD->LoadCompressed(dlv_filename));
         stream.Skip(sizeof(DDM_DLV_Header));
     } else {
         *(int*)pDest = 0;
@@ -778,11 +740,9 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    std::vector<Actor_MM7> mm7actors;
-    stream.ReadVector(&mm7actors);
-    pActors.clear();
-    for (int i = 0; i < mm7actors.size(); ++i)
-        mm7actors[i].Deserialize(AllocateActor(true));
+    stream.ReadLegacyVector<Actor_MM7>(&pActors);
+    for(size_t i = 0; i < pActors.size(); i++)
+        pActors[i].id = i;
 
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
@@ -805,11 +765,7 @@ bool IndoorLocation::Load(const std::string &filename, int num_days_played,
     pGameLoadingUI_ProgressBar->Progress();
     pGameLoadingUI_ProgressBar->Progress();
 
-    std::vector<BLVDoor_MM7> mm7doors;
-    stream.ReadSizedVector(&mm7doors, uNumDoors);
-    pDoors.resize(uNumDoors);
-    for (int i = 0; i < uNumDoors; ++i)
-        mm7doors[i].Deserialize(&pDoors[i]);
+    stream.ReadSizedLegacyVector<BLVDoor_MM7>(&pDoors, uNumDoors);
 
     // v201 = (const char *)blv.uDoors_ddata_Size;
     // v200 = (size_t)ptr_0002B4_doors_ddata;
@@ -1071,7 +1027,7 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     Assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
-    if (this->uNumVertices <= 3)
+    if (this->uNumVertices < 3)
         return false; // This does happen.
 
     FaceAttributes plane = override_plane;

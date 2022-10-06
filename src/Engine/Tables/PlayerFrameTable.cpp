@@ -70,20 +70,19 @@ void PlayerFrameTable::ToFile() {
 }
 
 //----- (00494C0F) --------------------------------------------------------
-void PlayerFrameTable::FromFile(void *data_mm6, void *data_mm7,
-                                void *data_mm8) {
-    uint num_mm6_frames = data_mm6 ? *(int *)data_mm6 : 0,
-         num_mm7_frames = data_mm7 ? *(int *)data_mm7 : 0,
-         num_mm8_frames = data_mm8 ? *(int *)data_mm8 : 0;
+void PlayerFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
+    uint num_mm6_frames = data_mm6 ? *(int *)data_mm6.data() : 0,
+         num_mm7_frames = data_mm7 ? *(int *)data_mm7.data() : 0,
+         num_mm8_frames = data_mm8 ? *(int *)data_mm8.data() : 0;
     uNumFrames = num_mm6_frames + num_mm7_frames + num_mm8_frames;
     assert(uNumFrames);
     assert(!num_mm8_frames);
 
     pFrames = (PlayerFrame *)malloc(uNumFrames * sizeof(PlayerFrame));
-    memcpy(pFrames, (char *)data_mm7 + 4, num_mm7_frames * sizeof(PlayerFrame));
-    memcpy(pFrames + num_mm7_frames, (char *)data_mm6 + 4,
+    memcpy(pFrames, (char *)data_mm7.data() + 4, num_mm7_frames * sizeof(PlayerFrame));
+    memcpy(pFrames + num_mm7_frames, (char *)data_mm6.data() + 4,
            num_mm6_frames * sizeof(PlayerFrame));
-    memcpy(pFrames + num_mm6_frames + num_mm7_frames, (char *)data_mm8 + 4,
+    memcpy(pFrames + num_mm6_frames + num_mm7_frames, (char *)data_mm8.data() + 4,
            num_mm8_frames * sizeof(PlayerFrame));
 }
 

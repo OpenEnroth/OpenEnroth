@@ -886,67 +886,40 @@ void LODFile_IconsBitmaps::SetupPalettes(unsigned int uTargetRBits,
     }
 }
 
-void *LOD::File::LoadRaw(const std::string &pContainer, size_t *data_size) {
-    if (data_size != nullptr) {
-        *data_size = 0;
-    }
-
+Blob LOD::File::LoadRaw(const std::string &pContainer) {
     size_t size = 0;
     FILE *File = FindContainer(pContainer, &size);
     if (!File) {
         Error("Unable to load %s", pContainer.c_str());
-        return nullptr;
+        return Blob();
     }
 
-    void *result = malloc(size);
-    if (fread(result, size, 1, File) != 1) {
-        free(result);
-        result = 0;
-        size = 0;
-    }
-
-    if (data_size != nullptr) {
-        *data_size = size;
-    }
+    Blob result = Blob::Allocate(size);
+    if (fread(result.data(), size, 1, File) != 1)
+        return Blob();
 
     return result;
 }
 
-void *LOD::File::LoadCompressedTexture(const std::string &pContainer, size_t *data_size) {
-    uint8_t *result = nullptr;
-    if (data_size != nullptr) {
-        *data_size = 0;
-    }
-
+Blob LOD::File::LoadCompressedTexture(const std::string &pContainer) {
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
         Error("Unable to load %s", pContainer.c_str());
-        return nullptr;
+        return Blob();
     }
 
     TextureHeader DstBuf;
     fread(&DstBuf, 1, sizeof(TextureHeader), File);
 
     if (DstBuf.uDecompressedSize) {
-        result = (uint8_t *)malloc(DstBuf.uDecompressedSize + 1);
-        void *tmp_buf = malloc(DstBuf.uTextureSize);
-        fread(tmp_buf, 1, DstBuf.uTextureSize, File);
-        zlib::Uncompress(result, &DstBuf.uDecompressedSize, tmp_buf,
-                         DstBuf.uTextureSize);
-        DstBuf.uTextureSize = DstBuf.uDecompressedSize;
-        free(tmp_buf);
-        result[DstBuf.uDecompressedSize] = '\0';
+        Blob result = Blob::Allocate(DstBuf.uTextureSize);
+        fread(result.data(), 1, DstBuf.uTextureSize, File);
+        return zlib::Uncompress(result, DstBuf.uDecompressedSize);
     } else {
-        result = (uint8_t*)malloc(DstBuf.uTextureSize + 1);
-        fread(result, 1, DstBuf.uTextureSize, File);
-        result[DstBuf.uTextureSize] = '\0';
+        Blob result = Blob::Allocate(DstBuf.uTextureSize);
+        fread(result.data(), 1, DstBuf.uTextureSize, File);
+        return result;
     }
-
-    if (data_size != nullptr) {
-        *data_size = DstBuf.uTextureSize;
-    }
-
-    return (void*)result;
 }
 
 #pragma pack(push, 1)
@@ -958,44 +931,31 @@ struct CompressedHeader {
 };
 #pragma pack(pop)
 
-void *LOD::File::LoadCompressed(const std::string &pContainer, size_t *data_size) {
+Blob LOD::File::LoadCompressed(const std::string &pContainer) {
     static_assert(sizeof(CompressedHeader) == 16, "Wrong type size");
-
-    void *result = nullptr;
-    if (data_size != nullptr) {
-        *data_size = 0;
-    }
 
     FILE *File = FindContainer(pContainer, 0);
     if (!File) {
         Error("Unable to load %s", pContainer.c_str());
-        return nullptr;
+        return Blob();
     }
 
     CompressedHeader header;
     fread(&header, 1, sizeof(CompressedHeader), File);
     if (header.uVersion != 91969 || (memcmp(&header.pMagic, "mvii", 4) != 0)) {
         Error("Unable to load %s", pContainer.c_str());
-        return nullptr;
+        return Blob();
     }
 
     if (header.uDecompressedSize) {
-        result = malloc(header.uDecompressedSize);
-        void *tmp_buf = malloc(header.uCompressedSize);
-        fread(tmp_buf, 1, header.uCompressedSize, File);
-        zlib::Uncompress(result, &header.uDecompressedSize, tmp_buf, header.uCompressedSize);
-        header.uCompressedSize = header.uDecompressedSize;
-        free(tmp_buf);
+        Blob result = Blob::Allocate(header.uCompressedSize);
+        fread(result.data(), 1, header.uCompressedSize, File);
+        return zlib::Uncompress(result, header.uDecompressedSize);
     } else {
-        result = malloc(header.uCompressedSize);
-        fread(result, 1, header.uCompressedSize, File);
+        Blob result = Blob::Allocate(header.uCompressedSize);
+        fread(result.data(), 1, header.uCompressedSize, File);
+        return result;
     }
-
-    if (data_size != nullptr) {
-        *data_size = header.uCompressedSize;
-    }
-
-    return result;
 }
 
 int LOD::File::GetSubNodeIndex(const std::string &name) const {

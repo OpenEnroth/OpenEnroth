@@ -10,7 +10,31 @@
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time.h"
 
-void Timer_Image_MM7::Serialize(Timer *timer) {
+#include "Utility/Color.h"
+
+void BLVFace_MM7::Deserialize(BLVFace *face) {
+    face->pFacePlane = this->pFacePlane;
+    face->pFacePlane_old = this->pFacePlane_old;
+    face->zCalc.Init(face->pFacePlane_old);
+    face->uAttributes = FaceAttributes(this->uAttributes);
+    face->pVertexIDs = nullptr;
+    face->pXInterceptDisplacements = nullptr;
+    face->pYInterceptDisplacements = nullptr;
+    face->pZInterceptDisplacements = nullptr;
+    face->pVertexUIDs = nullptr;
+    face->pVertexVIDs = nullptr;
+    face->uFaceExtraID = this->uFaceExtraID;
+    face->resource = nullptr;
+    face->uSectorID = this->uSectorID;
+    face->uBackSectorID = this->uBackSectorID;
+    face->pBounding = this->pBounding;
+    face->uPolygonType = PolygonType(this->uPolygonType);
+    face->uNumVertices = this->uNumVertices;
+    face->field_5E = this->field_5E;
+    face->field_5F = this->field_5F;
+}
+
+void Timer_Image_MM7::Serialize(const Timer *timer) {
     memset(this, 0, sizeof(*this));
 
     this->bReady = timer->bReady;
@@ -38,7 +62,7 @@ void Timer_Image_MM7::Deserialize(Timer *timer) {
     timer->uTotalGameTimeElapsed = this->uTotalGameTimeElapsed;
 }
 
-void NPCData_Image_MM7::Serialize(NPCData *npc) {
+void NPCData_Image_MM7::Serialize(const NPCData *npc) {
     memset(this, 0, sizeof(*this));
 
     if (npc->pName) {
@@ -94,7 +118,7 @@ void NPCData_Image_MM7::Deserialize(NPCData *npc) {
     npc->news_topic = this->news_topic;
 }
 
-void OtherOverlayList_Image_MM7::Serialize(OtherOverlayList *list) {
+void OtherOverlayList_Image_MM7::Serialize(const OtherOverlayList *list) {
     memset(this, 0, sizeof(*this));
 
     this->bRedraw = list->bRedraw;
@@ -136,7 +160,7 @@ void OtherOverlayList_Image_MM7::Deserialize(OtherOverlayList *list) {
     }
 }
 
-void SpellBuff_Image_MM7::Serialize(SpellBuff *buff) {
+void SpellBuff_Image_MM7::Serialize(const SpellBuff *buff) {
     memset(this, 0, sizeof(*this));
 
     this->uExpireTime = buff->expire_time.value;
@@ -156,7 +180,7 @@ void SpellBuff_Image_MM7::Deserialize(SpellBuff *buff) {
     buff->uFlags = this->uFlags;
 }
 
-void ItemGen_Image_MM7::Serialize(ItemGen *item) {
+void ItemGen_Image_MM7::Serialize(const ItemGen *item) {
     memset(this, 0, sizeof(*this));
 
     this->uItemID = item->uItemID;
@@ -186,7 +210,7 @@ void ItemGen_Image_MM7::Deserialize(ItemGen *item) {
     item->uExpireTime.value = this->uExpireTime;
 }
 
-void Party_Image_MM7::Serialize(Party *party) {
+void Party_Image_MM7::Serialize(const Party *party) {
     memset(this, 0, sizeof(*this));
 
     this->field_0 = party->field_0_set25_unused;
@@ -529,7 +553,7 @@ void Party_Image_MM7::Deserialize(Party *party) {
     party->flt_TorchlightColorB = this->flt_TorchlightColorB;
 }
 
-void Player_Image_MM7::Serialize(Player *player) {
+void Player_Image_MM7::Serialize(const Player *player) {
     memset(this, 0, sizeof(*this));
 
     for (unsigned int i = 0; i < 20; ++i)
@@ -978,7 +1002,7 @@ void Player_Image_MM7::Deserialize(Player* player) {
     player->field_1B3B_set0_unused = this->field_1B3B;
 }
 
-void IconFrame_MM7::Serialize(Icon *icon) {
+void IconFrame_MM7::Serialize(const Icon *icon) {
     strcpy(pAnimationName, icon->GetAnimationName());
     uAnimLength = icon->GetAnimLength();
 
@@ -996,7 +1020,7 @@ void IconFrame_MM7::Deserialize(Icon *icon) {
     icon->uFlags = uFlags;
 }
 
-void UIAnimation_MM7::Serialize(UIAnimation *anim) {
+void UIAnimation_MM7::Serialize(const UIAnimation *anim) {
     /* 000 */ uIconID = anim->icon->id;
     /* 002 */ field_2 = anim->field_2;
     /* 004 */ uAnimTime = anim->uAnimTime;
@@ -1017,7 +1041,40 @@ void UIAnimation_MM7::Deserialize(UIAnimation *anim) {
     /* 00C */ anim->field_C = field_C;
 }
 
-void Actor_MM7::Serialize(Actor *actor) {
+void MonsterDesc_MM6::Deserialize(MonsterDesc *desc) {
+    desc->uMonsterHeight = this->uMonsterHeight;
+    desc->uMonsterRadius = this->uMonsterRadius;
+    desc->uMovementSpeed = this->uMovementSpeed;
+    desc->uToHitRadius = this->uToHitRadius;
+    desc->sTintColor = colorTable.White.C32();
+    memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
+    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
+    memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
+}
+
+void MonsterDesc_MM7::Serialize(const MonsterDesc *desc) {
+    this->uMonsterHeight = desc->uMonsterHeight;
+    this->uMonsterRadius = desc->uMonsterRadius;
+    this->uMovementSpeed = desc->uMovementSpeed;
+    this->uToHitRadius = desc->uToHitRadius;
+    this->sTintColor = desc->sTintColor;
+    memcpy(this->pSoundSampleIDs, desc->pSoundSampleIDs, sizeof(desc->pSoundSampleIDs));
+    memcpy(this->pMonsterName, desc->pMonsterName, sizeof(desc->pMonsterName));
+    memcpy(this->pSpriteNames, desc->pSpriteNames, sizeof(desc->pSpriteNames));
+}
+
+void MonsterDesc_MM7::Deserialize(MonsterDesc *desc) {
+    desc->uMonsterHeight = this->uMonsterHeight;
+    desc->uMonsterRadius = this->uMonsterRadius;
+    desc->uMovementSpeed = this->uMovementSpeed;
+    desc->uToHitRadius = this->uToHitRadius;
+    desc->sTintColor = this->sTintColor;
+    memcpy(desc->pSoundSampleIDs, this->pSoundSampleIDs, sizeof(this->pSoundSampleIDs));
+    memcpy(desc->pMonsterName, this->pMonsterName, sizeof(this->pMonsterName));
+    memcpy(desc->pSpriteNames, this->pSpriteNames, sizeof(this->pSpriteNames));
+}
+
+void Actor_MM7::Serialize(const Actor *actor) {
     memset(this->pActorName, 0, sizeof(this->pActorName));
     memcpy(this->pActorName, actor->pActorName.data(), std::min(actor->pActorName.size(), sizeof(this->pActorName) - 1));
 
@@ -1245,7 +1302,7 @@ void Actor_MM7::Deserialize(Actor *actor) {
         actor->field_338[i] = this->field_338[i];
 }
 
-void BLVDoor_MM7::Serialize(BLVDoor *door) {
+void BLVDoor_MM7::Serialize(const BLVDoor *door) {
     this->uAttributes = std::to_underlying(door->uAttributes);
     this->uDoorID = door->uDoorID;
     this->uTimeSinceTriggered = door->uTimeSinceTriggered;
@@ -1277,7 +1334,7 @@ void BLVDoor_MM7::Deserialize(BLVDoor *door) {
     door->field_4E = this->field_4E;
 }
 
-void BLVSector_MM7::Serialize(BLVSector *sector) {
+void BLVSector_MM7::Serialize(const BLVSector *sector) {
     this->field_0 = sector->field_0;
     this->uNumFloors = sector->uNumFloors;
     this->field_6 = sector->field_6;
@@ -1345,7 +1402,7 @@ void BLVSector_MM7::Deserialize(BLVSector *sector) {
     sector->pBounding = this->pBounding;
 }
 
-void FontData_MM7::Serialize(FontData *font) {
+void FontData_MM7::Serialize(const FontData *font) {
     this->cFirstChar = font->cFirstChar;
     this->cLastChar = font->cLastChar;
     this->field_2 = font->field_2;
@@ -1381,4 +1438,40 @@ void FontData_MM7::Deserialize(FontData *font, size_t size) {
         font->font_pixels_offset[i] = this->font_pixels_offset[i];
 
     font->pFontData.assign(this->pFontData, &this->pFontData[size - 4128]);
+}
+
+void ODMFace_MM7::Deserialize(ODMFace *face) {
+    face->pFacePlaneOLD = this->pFacePlane;
+    face->pFacePlane.vNormal.x = face->pFacePlaneOLD.vNormal.x / 65536.0;
+    face->pFacePlane.vNormal.y = face->pFacePlaneOLD.vNormal.y / 65536.0;
+    face->pFacePlane.vNormal.z = face->pFacePlaneOLD.vNormal.z / 65536.0;
+    face->pFacePlane.dist = face->pFacePlaneOLD.dist / 65536.0;
+
+    face->zCalc.Init(face->pFacePlaneOLD);
+    face->uAttributes = FaceAttributes(this->uAttributes);
+    face->pVertexIDs = this->pVertexIDs;
+    face->pTextureUIDs = this->pTextureUIDs;
+    face->pTextureVIDs = this->pTextureVIDs;
+    face->pXInterceptDisplacements = this->pXInterceptDisplacements;
+    face->pYInterceptDisplacements = this->pYInterceptDisplacements;
+    face->pZInterceptDisplacements = this->pZInterceptDisplacements;
+    face->resource = nullptr;
+    face->sTextureDeltaU = this->sTextureDeltaU;
+    face->sTextureDeltaV = this->sTextureDeltaV;
+    face->pBoundingBox = this->pBoundingBox;
+    face->sCogNumber = this->sCogNumber;
+    face->sCogTriggeredID = this->sCogTriggeredID;
+    face->sCogTriggerType = this->sCogTriggerType;
+    face->field_128 = this->field_128;
+    face->field_129 = this->field_129;
+    face->uGradientVertex1 = this->uGradientVertex1;
+    face->uGradientVertex2 = this->uGradientVertex2;
+    face->uGradientVertex3 = this->uGradientVertex3;
+    face->uGradientVertex4 = this->uGradientVertex4;
+    face->uNumVertices = this->uNumVertices;
+    face->uPolygonType = PolygonType(this->uPolygonType);
+    face->uShadeType = this->uShadeType;
+    face->bVisible = this->bVisible;
+    face->field_132 = this->field_132;
+    face->field_133 = this->field_133;
 }

@@ -34,10 +34,10 @@ struct ItemsTable {
     char field_EDE0[384];
     uint16_t potion_data[50][50];  // 77B2h*2=EF64h  -102ECh
     uint16_t potion_note[50][50];  // 8176h*2=102ECh -11674h
-    char* pItemsTXT_Raw = nullptr;              // 11674h
-    char* pRndItemsTXT_Raw = nullptr;
-    char* pStdItemsTXT_Raw = nullptr;           // 1167Ch
-    char* pSpcItemsTXT_Raw = nullptr;           // 11680h
+    std::string pItemsTXT_Raw;              // 11674h
+    std::string pRndItemsTXT_Raw;
+    std::string pStdItemsTXT_Raw;           // 1167Ch
+    std::string pSpcItemsTXT_Raw;           // 11680h
     unsigned int uChanceByTreasureLvlSumm[6];   // 11684
     unsigned int uBonusChanceStandart[6];       // 1169c
     unsigned int uBonusChanceSpecial[6];        // 116B4

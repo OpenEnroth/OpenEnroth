@@ -38,7 +38,6 @@ enum class ABILITY_INDEX : char {
     ABILITY_SPELL1 = 2,
     ABILITY_SPELL2 = 3,
     ABILITY_SPECIAL = 4, // E.g. gogs exploding on death
-    ABILITY_UNKNOWN = 5, // TODO: what is this? Can we just drop it?
 };
 using enum ABILITY_INDEX;
 

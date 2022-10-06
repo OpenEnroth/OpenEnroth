@@ -365,27 +365,26 @@ bool SpriteFrame::Deserialize(const struct SpriteFrame_MM7 *data) {
 }
 
 //----- (0044D9D7) --------------------------------------------------------
-void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
-                                void *data_mm8) {
+void SpriteFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
     uint num_mm6_frames = 0;
     uint num_mm6_eframes = 0;
     if (data_mm6) {
-        num_mm6_frames = *(int *)data_mm6;
-        num_mm6_eframes = *((int *)data_mm6 + 1);
+        num_mm6_frames = *(int *)data_mm6.data();
+        num_mm6_eframes = *((int *)data_mm6.data() + 1);
     }
 
     uint num_mm7_frames = 0;
     uint num_mm7_eframes = 0;
     if (data_mm7) {
-        num_mm7_frames = *(int *)data_mm7;
-        num_mm7_eframes = *((int *)data_mm7 + 1);
+        num_mm7_frames = *(int *)data_mm7.data();
+        num_mm7_eframes = *((int *)data_mm7.data() + 1);
     }
 
     uint num_mm8_frames = 0;
     uint num_mm8_eframes = 0;
     if (data_mm8) {
-        num_mm8_frames = *(int *)data_mm8;
-        num_mm8_eframes = *((int *)data_mm8 + 1);
+        num_mm8_frames = *(int *)data_mm8.data();
+        num_mm8_eframes = *((int *)data_mm8.data() + 1);
     }
 
     this->uNumSpriteFrames =
@@ -394,7 +393,7 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
     this->pSpriteSFrames = new SpriteFrame[this->uNumSpriteFrames];
     for (unsigned int i = 0; i < this->uNumSpriteFrames; ++i) {
         auto res = this->pSpriteSFrames[i].Deserialize(
-            (SpriteFrame_MM7 *)((char *)data_mm7 + 8) + i);
+            (SpriteFrame_MM7 *)((char *)data_mm7.data() + 8) + i);
 
         if (!res) {
             logger->Warning("MM7 Sprite %u deserialization failed", i);
@@ -405,7 +404,7 @@ void SpriteFrameTable::FromFile(void *data_mm6, void *data_mm7,
     this->pSpriteEFrames = (int16_t *)malloc(uNumSpriteFrames * sizeof(short));
 
     uint mm7_frames_size = num_mm7_frames * sizeof(SpriteFrame_MM7);
-    memcpy(pSpriteEFrames, (char *)data_mm7 + 8 + mm7_frames_size,
+    memcpy(pSpriteEFrames, (char *)data_mm7.data() + 8 + mm7_frames_size,
            2 * num_mm7_eframes);
 
     pSpritePFrames = (SpriteFrame **)malloc(sizeof(void *) * uNumSpriteFrames);

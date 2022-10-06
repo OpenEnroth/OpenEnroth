@@ -80,10 +80,10 @@ void IconFrameTable::ToFile() {
 }
 
 //----- (00495056) --------------------------------------------------------
-void IconFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
-    uint num_mm6_frames = data_mm6 ? *(int *)data_mm6 : 0,
-         num_mm7_frames = data_mm7 ? *(int *)data_mm7 : 0,
-         num_mm8_frames = data_mm8 ? *(int *)data_mm8 : 0;
+void IconFrameTable::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
+    uint num_mm6_frames = data_mm6 ? *(int *)data_mm6.data() : 0,
+         num_mm7_frames = data_mm7 ? *(int *)data_mm7.data() : 0,
+         num_mm8_frames = data_mm8 ? *(int *)data_mm8.data() : 0;
 
     uNumIcons = num_mm6_frames + num_mm7_frames + num_mm8_frames;
     Assert(uNumIcons);
@@ -97,7 +97,7 @@ void IconFrameTable::FromFile(void *data_mm6, void *data_mm7, void *data_mm8) {
         Error("Malloc");  // is this recoverable
     }
 
-    memcpy(pIcons, (char *)data_mm7 + 4,
+    memcpy(pIcons, (char *)data_mm7.data() + 4,
            num_mm7_frames * sizeof(IconFrame_MM7));
     // memcpy(pIcons + num_mm7_frames,                  (char *)data_mm6 + 4,
     // num_mm6_frames * sizeof(IconFrame_MM7)); memcpy(pIcons + num_mm6_frames +

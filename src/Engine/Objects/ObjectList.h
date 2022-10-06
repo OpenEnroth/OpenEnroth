@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Utility/Blob.h"
+
 enum OBJECT_DESC_FLAGS {
     OBJECT_DESC_NO_SPRITE = 0x1,
     OBJECT_DESC_NO_COLLISION = 0x2,
@@ -42,7 +44,7 @@ class ObjectList {
  public:
     inline ObjectList() : uNumObjects(0), pObjects(nullptr) {}
 
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void InitializeSprites();
     void InitializeColors();
     unsigned int ObjectIDByItemID(unsigned int uItemID);

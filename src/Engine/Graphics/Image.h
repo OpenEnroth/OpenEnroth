@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Utility/IndexedArray.h"
+#include "Utility/Blob.h"
 
 enum class IMAGE_FORMAT {
     IMAGE_FORMAT_R5G6B5 = 0,
@@ -135,7 +136,7 @@ struct TextureFrameTable {
         sNumTextures = 0;
     }
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     void LoadAnimationSequenceAndPalettes(int uIconID);
     Texture *GetFrameTexture(int uFrameID, int time);
     int64_t FindTextureByName(const char *Str2);

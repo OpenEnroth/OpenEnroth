@@ -890,10 +890,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
-    size_t srcSize;
-    std::unique_ptr<void, FreeDeleter> pSrcMem;
-    pSrcMem.reset(pGames_LOD->LoadCompressed(odm_filename, &srcSize));
-    MemoryInput stream(pSrcMem.get(), srcSize);
+    MemoryInput stream(pGames_LOD->LoadCompressed(odm_filename));
 
     stream.ReadSizedString(&this->level_filename, 32);
     stream.ReadSizedString(&this->location_filename, 32);
@@ -963,10 +960,10 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
     std::string ddm_filename = filename;
     ddm_filename = ddm_filename.replace(ddm_filename.length() - 4, 4, ".ddm");
-    pSrcMem.reset(pNew_LOD->LoadCompressed(ddm_filename, &srcSize));
+    Blob blob = pNew_LOD->LoadCompressed(ddm_filename);
 
-    if (pSrcMem) {
-        stream.Reset(pSrcMem.get(), srcSize);
+    if (blob) {
+        stream.Reset(blob);
 
         static_assert(sizeof(DDM_DLV_Header) == 40, "Wrong type size");
         stream.ReadRaw(&ddm);
@@ -1011,8 +1008,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
             ++ddm.uNumRespawns;
 
         *outdoors_was_respawned = true;
-        pSrcMem.reset(pGames_LOD->LoadCompressed(ddm_filename, &srcSize));
-        stream.Reset(pSrcMem.get(), srcSize);
+        stream.Reset(pGames_LOD->LoadCompressed(ddm_filename));
         stream.Skip(sizeof(DDM_DLV_Header));
     } else {
         *outdoors_was_respawned = 0;
@@ -1056,13 +1052,9 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
 
-    static_assert(sizeof(Actor_MM7) == 836);
-
-    std::vector<Actor_MM7> mm7actors;
-    stream.ReadVector(&mm7actors);
-    pActors.clear();
-    for (int i = 0; i < mm7actors.size(); ++i)
-        mm7actors[i].Deserialize(AllocateActor(true));
+    stream.ReadLegacyVector<Actor_MM7>(&pActors);
+    for(size_t i = 0; i < pActors.size(); i++)
+        pActors[i].id = i;
 
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки
     pGameLoadingUI_ProgressBar->Progress();  // прогресс загрузки

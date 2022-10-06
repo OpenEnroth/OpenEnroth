@@ -155,24 +155,16 @@ void ItemGen::UpdateTempBonus(GameTime time) {
 
 //----- (0045814E) --------------------------------------------------------
 void ItemsTable::Release() {
-    free(pMonstersTXT_Raw);
-    free(pMonsterPlacementTXT_Raw);
-    free(pSpcItemsTXT_Raw);
-    free(pStdItemsTXT_Raw);
-    free(pRndItemsTXT_Raw);
-    free(pItemsTXT_Raw);
-    free(pHostileTXT_Raw);
-    free(pHistoryTXT_Raw);
+    pMonstersTXT_Raw.clear();
+    pMonsterPlacementTXT_Raw.clear();
+    pSpcItemsTXT_Raw.clear();
+    pStdItemsTXT_Raw.clear();
+    pRndItemsTXT_Raw.clear();
+    pItemsTXT_Raw.clear();
+    pHostileTXT_Raw.clear();
+    pHistoryTXT_Raw.clear();
     free(pPotionsTXT_Raw);
     free(pPotionNotesTXT_Raw);
-    pMonstersTXT_Raw = nullptr;
-    pMonsterPlacementTXT_Raw = nullptr;
-    pSpcItemsTXT_Raw = nullptr;
-    pStdItemsTXT_Raw = nullptr;
-    pRndItemsTXT_Raw = nullptr;
-    pItemsTXT_Raw = nullptr;
-    pHostileTXT_Raw = nullptr;
-    pHistoryTXT_Raw = nullptr;
     pPotionsTXT_Raw = nullptr;
     pPotionNotesTXT_Raw = nullptr;
 }
@@ -246,8 +238,8 @@ void ItemsTable::Initialize() {
     pStorylineText = new StorylineText;
     pStorylineText->Initialize();
 
-    pStdItemsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("stditems.txt");
-    strtok(pStdItemsTXT_Raw, "\r");
+    pStdItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("stditems.txt").string_view();
+    strtok(pStdItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -282,8 +274,8 @@ void ItemsTable::Initialize() {
         bonus_ranges[i].maxR = atoi(tokens[3]);
     }
 
-    pSpcItemsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("spcitems.txt");
-    strtok(pSpcItemsTXT_Raw, "\r");
+    pSpcItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("spcitems.txt").string_view();
+    strtok(pSpcItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -319,8 +311,8 @@ void ItemsTable::Initialize() {
 
     InitializeBuildingResidents();
 
-    pItemsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("items.txt");
-    strtok(pItemsTXT_Raw, "\r");
+    pItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("items.txt").string_view();
+    strtok(pItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     uAllItemsCount = 0;
     item_counter = 0;
@@ -397,8 +389,8 @@ void ItemsTable::Initialize() {
     }
 
     uAllItemsCount = item_counter;
-    pRndItemsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("rnditems.txt");
-    strtok(pRndItemsTXT_Raw, "\r");
+    pRndItemsTXT_Raw = pEvents_LOD->LoadCompressedTexture("rnditems.txt").string_view();
+    strtok(pRndItemsTXT_Raw.data(), "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
     strtok(NULL, "\r");
@@ -458,8 +450,7 @@ void ItemsTable::Initialize() {
                 break;
         }
     }
-    free(pRndItemsTXT_Raw);
-    pRndItemsTXT_Raw = nullptr;
+    pRndItemsTXT_Raw.clear();
 
     ItemGen::PopulateSpecialBonusMap();
     ItemGen::PopulateArtifactBonusMap();
@@ -498,8 +489,8 @@ void ItemsTable::LoadPotions() {
 
     free(pPotionNotesTXT_Raw);
     std::vector<char *> tokens;
-    char* pPotionsTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("potion.txt");
-    test_string = strtok(pPotionsTXT_Raw, "\r") + 1;
+    std::string pPotionsTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potion.txt").string_view());
+    test_string = strtok(pPotionsTXT_Raw.data(), "\r") + 1;
     while (test_string) {
         tokens = Tokenize(test_string, '\t');
         if (!strcmp(tokens[0], "222")) break;
@@ -545,8 +536,8 @@ void ItemsTable::LoadPotionNotes() {
 
     free(pPotionNotesTXT_Raw);
     std::vector<char *> tokens;
-    char* pPotionNotesTXT_Raw = (char*)pEvents_LOD->LoadCompressedTexture("potnotes.txt");
-    test_string = strtok(pPotionNotesTXT_Raw, "\r") + 1;
+    std::string pPotionNotesTXT_Raw = std::string(pEvents_LOD->LoadCompressedTexture("potnotes.txt").string_view());
+    test_string = strtok(pPotionNotesTXT_Raw.data(), "\r") + 1;
     while (test_string) {
         tokens = Tokenize(test_string, '\t');
         if (!strcmp(tokens[0], "222")) break;

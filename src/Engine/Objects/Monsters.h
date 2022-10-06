@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "Utility/Blob.h"
+
 /*  334 */
 enum MONSTER_TYPE {
     MONSTER_DEVIL_1 = 0x16,
@@ -199,38 +201,26 @@ struct MonsterStats {
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct MonsterDesc_mm6 {
-    uint16_t uMonsterHeight;
-    uint16_t uMonsterRadius;
-    uint16_t uMovementSpeed;
-    int16_t uToHitRadius;
-    uint16_t pSoundSampleIDs[4];
-    char pMonsterName[32];
-    char pSpriteNames[10][10];
-};
-
 struct MonsterDesc {
     uint16_t uMonsterHeight;
     uint16_t uMonsterRadius;
     uint16_t uMovementSpeed;
     int16_t uToHitRadius;
-    unsigned int sTintColor;
+    uint32_t sTintColor;
     uint16_t pSoundSampleIDs[4];
     char pMonsterName[32];
     char pSpriteNames[10][10];
 };
 #pragma pack(pop)
 
-#pragma pack(push, 1)
 struct MonsterList {
     int16_t GetMonsterIDByName(const char *pMonsterName);
     void ToFile();
-    void FromFile(void *data_mm6, void *data_mm7, void *data_mm8);
+    void FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8);
     bool FromFileTxt(const char *Args);
 
     std::vector<MonsterDesc> pMonsters;
 };
-#pragma pack(pop)
 
 extern struct MonsterStats *pMonsterStats;
 extern struct MonsterList *pMonsterList;

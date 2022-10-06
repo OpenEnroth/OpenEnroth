@@ -634,7 +634,7 @@ bool AudioTrackS16::Update() {
     DrainBuffers();
 
     while (uiReservedData < uiReservedDataMinimum) {
-        PMemBuffer buffer = pDataSource->GetNextBuffer();
+        std::shared_ptr<Blob> buffer = pDataSource->GetNextBuffer();
 
         if (!buffer) {
             pDataSource->Close();
@@ -652,7 +652,7 @@ bool AudioTrackS16::Update() {
             return false;
         }
 
-        alBufferData(al_buffer, al_format, buffer->GetData(), buffer->GetSize(), al_sample_rate);
+        alBufferData(al_buffer, al_format, buffer->data(), buffer->size(), al_sample_rate);
         if (CheckError()) {
             return false;
         }
@@ -662,7 +662,7 @@ bool AudioTrackS16::Update() {
             return false;
         }
 
-        uiReservedData += buffer->GetSize();
+        uiReservedData += buffer->size();
     }
 
     return true;
@@ -788,7 +788,7 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
     }
 
     while (true) {
-        PMemBuffer buffer = pDataSource->GetNextBuffer();
+        std::shared_ptr<Blob> buffer = pDataSource->GetNextBuffer();
         if (!buffer) {
             break;
         }
@@ -800,7 +800,7 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
             break;
         }
 
-        alBufferData(al_buffer, al_format, buffer->GetData(), buffer->GetSize(), al_sample_rate);
+        alBufferData(al_buffer, al_format, buffer->data(), buffer->size(), al_sample_rate);
         if (CheckError()) {
             Close();
             break;
@@ -926,7 +926,7 @@ bool AudioSample16::SetVolume(float volume) {
     return true;
 }
 
-PAudioSample CreateAudioSample(PMemBuffer buffer) {
+PAudioSample CreateAudioSample(std::shared_ptr<Blob> buffer) {
     std::shared_ptr<AudioSample16> sample = std::make_shared<AudioSample16>();
 
     PAudioDataSource source = CreateAudioBufferDataSource(buffer);
