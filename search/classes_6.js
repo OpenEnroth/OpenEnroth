@@ -11,5 +11,6 @@ var searchData=
   ['forcepersverts_8',['forcepersverts',['../structforcepersverts.html',1,'']]],
   ['format_9',['Format',['../structFormat.html',1,'']]],
   ['frametabletxtline_10',['FrameTableTxtLine',['../structFrameTableTxtLine.html',1,'']]],
-  ['freedeleter_11',['FreeDeleter',['../structFreeDeleter.html',1,'']]]
+  ['freeblobhandler_11',['FreeBlobHandler',['../classFreeBlobHandler.html',1,'']]],
+  ['freedeleter_12',['FreeDeleter',['../structFreeDeleter.html',1,'']]]
 ];

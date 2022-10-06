@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;7b015bd</span>
+   <div id="projectname">World of Might and Magic<span id="projectnumber">&#160;736c032</span>
    </div>
   </td>
  </tr>
@@ -92,8 +92,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ade0557e68d44c98c395a4b40b78e5728"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a578f41c8cafbd2f951acceaf1f7c7e56"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVAudioStream.html#a578f41c8cafbd2f951acceaf1f7c7e56">open</a> (AVFormatContext *format_ctx)</td></tr>
 <tr class="separator:a578f41c8cafbd2f951acceaf1f7c7e56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d67678edcfeed8479f2c0f47c320076"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MemBuffer_8h.html#a8722c69b0b425d6a28bc23839396f8f5">PMemBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVAudioStream.html#a6d67678edcfeed8479f2c0f47c320076">decode_frame</a> (AVPacket *avpacket)</td></tr>
-<tr class="separator:a6d67678edcfeed8479f2c0f47c320076"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5ba0df28f905b51eb097cc42efe9955"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVAudioStream.html#ae5ba0df28f905b51eb097cc42efe9955">decode_frame</a> (AVPacket *avpacket)</td></tr>
+<tr class="separator:ae5ba0df28f905b51eb097cc42efe9955"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classAVStreamWrapper"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classAVStreamWrapper')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classAVStreamWrapper.html">AVStreamWrapper</a></td></tr>
 <tr class="memitem:ac1b913e7ef16e9da6e7bffbfb5aec591 inherit pub_methods_classAVStreamWrapper"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVStreamWrapper.html#ac1b913e7ef16e9da6e7bffbfb5aec591">AVStreamWrapper</a> ()</td></tr>
 <tr class="separator:ac1b913e7ef16e9da6e7bffbfb5aec591 inherit pub_methods_classAVStreamWrapper"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -126,8 +126,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a9a1e544168b50c6b941f1757af093a40 inherit pub_attribs_classAVStreamWrapper"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac80a1570804999a58ef2624c4aad2d0e inherit pub_attribs_classAVStreamWrapper"><td class="memItemLeft" align="right" valign="top">AVCodecContext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVStreamWrapper.html#ac80a1570804999a58ef2624c4aad2d0e">dec_ctx</a></td></tr>
 <tr class="separator:ac80a1570804999a58ef2624c4aad2d0e inherit pub_attribs_classAVStreamWrapper"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa977e7acd7af8108eb893291a5e72a29 inherit pub_attribs_classAVStreamWrapper"><td class="memItemLeft" align="right" valign="top">std::queue&lt; <a class="el" href="MemBuffer_8h.html#a8722c69b0b425d6a28bc23839396f8f5">PMemBuffer</a>, std::deque&lt; <a class="el" href="MemBuffer_8h.html#a8722c69b0b425d6a28bc23839396f8f5">PMemBuffer</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVStreamWrapper.html#aa977e7acd7af8108eb893291a5e72a29">queue</a></td></tr>
-<tr class="separator:aa977e7acd7af8108eb893291a5e72a29 inherit pub_attribs_classAVStreamWrapper"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5199aa0b20de746a7aae409c1a92eadb inherit pub_attribs_classAVStreamWrapper"><td class="memItemLeft" align="right" valign="top">std::queue&lt; std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt;, std::deque&lt; std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAVStreamWrapper.html#a5199aa0b20de746a7aae409c1a92eadb">queue</a></td></tr>
+<tr class="separator:a5199aa0b20de746a7aae409c1a92eadb inherit pub_attribs_classAVStreamWrapper"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ade0557e68d44c98c395a4b40b78e5728" name="ade0557e68d44c98c395a4b40b78e5728"></a>
@@ -156,8 +156,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6d67678edcfeed8479f2c0f47c320076" name="a6d67678edcfeed8479f2c0f47c320076"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d67678edcfeed8479f2c0f47c320076">&#9670;&#160;</a></span>decode_frame()</h2>
+<a id="ae5ba0df28f905b51eb097cc42efe9955" name="ae5ba0df28f905b51eb097cc42efe9955"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5ba0df28f905b51eb097cc42efe9955">&#9670;&#160;</a></span>decode_frame()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -166,7 +166,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="MemBuffer_8h.html#a8722c69b0b425d6a28bc23839396f8f5">PMemBuffer</a> AVAudioStream::decode_frame </td>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="classBlob.html">Blob</a> &gt; AVAudioStream::decode_frame </td>
           <td>(</td>
           <td class="paramtype">AVPacket *&#160;</td>
           <td class="paramname"><em>avpacket</em></td><td>)</td>

@@ -68,7 +68,7 @@ var searchData=
   ['attrib_5fpos_65',['attrib_pos',['../structRenderOpenGL_1_1nk__device.html#afb85447ad0dc8ee66b8658e26cc97b64',1,'RenderOpenGL::nk_device']]],
   ['attrib_5fuv_66',['attrib_uv',['../structRenderOpenGL_1_1nk__device.html#ae57aee108b58c381834fcbcff913056c',1,'RenderOpenGL::nk_device']]],
   ['attribs_67',['attribs',['../structGLshaderverts.html#a8dbca6f61345af853fa3066e84ed9e58',1,'GLshaderverts::attribs()'],['../structGLdecalverts.html#ad1df370e007ec26e288e66c261558f30',1,'GLdecalverts::attribs()']]],
-  ['attribute_5fdesc_5fraw_68',['attribute_desc_raw',['../classLocalization.html#a73cdc148ea67d7d66f49b091a4871de4',1,'Localization']]],
+  ['attribute_5fdesc_5fraw_68',['attribute_desc_raw',['../classLocalization.html#ad9351880f9d111459fd3e0c1767dfd40',1,'Localization']]],
   ['attribute_5fdescriptions_69',['attribute_descriptions',['../classLocalization.html#a0142b06a7628c0fda57ad1a569b0c539',1,'Localization']]],
   ['attribute_5fnames_70',['attribute_names',['../classLocalization.html#af4a310862330a58c4752aa193a3d5355',1,'Localization']]],
   ['audio_71',['audio',['../classMovie.html#aae9550392fdbe31a88e79b6decc79959',1,'Movie']]],

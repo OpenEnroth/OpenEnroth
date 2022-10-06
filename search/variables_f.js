@@ -5,7 +5,7 @@ var searchData=
   ['object_5fpointers_2',['object_pointers',['../structVis__SelectionList.html#ac5c2865db8a6351150c3ba3feb2a36a9',1,'Vis_SelectionList']]],
   ['object_5fpool_3',['object_pool',['../structVis__SelectionList.html#aa680a7e157b79ed3b0be86e7f4e81ece',1,'Vis_SelectionList']]],
   ['object_5ftype_4',['object_type',['../structVis__SelectionFilter.html#a0cbe861a70212007149579c408f68795',1,'Vis_SelectionFilter::object_type()'],['../structVis__ObjectInfo.html#a1a87c2750a9f1a3bbc3071ffd7536b11',1,'Vis_ObjectInfo::object_type()']]],
-  ['odm_5ffloor_5fface_5fvert_5fcoord_5fx_5',['odm_floor_face_vert_coord_X',['../mm7__data_8h.html#acd30c818848b195f65c28ad3fd70cf62',1,'odm_floor_face_vert_coord_X():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#acd30c818848b195f65c28ad3fd70cf62',1,'odm_floor_face_vert_coord_X():&#160;mm7_data.cpp']]],
+  ['odm_5ffloor_5fface_5fvert_5fcoord_5fx_5',['odm_floor_face_vert_coord_X',['../mm7__data_8cpp.html#acd30c818848b195f65c28ad3fd70cf62',1,'odm_floor_face_vert_coord_X():&#160;mm7_data.cpp'],['../mm7__data_8h.html#acd30c818848b195f65c28ad3fd70cf62',1,'odm_floor_face_vert_coord_X():&#160;mm7_data.cpp']]],
   ['odm_5ffloor_5fface_5fvert_5fcoord_5fy_6',['odm_floor_face_vert_coord_Y',['../mm7__data_8h.html#a9db87cbae4727d73e10560e6babe2d0e',1,'odm_floor_face_vert_coord_Y():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a9db87cbae4727d73e10560e6babe2d0e',1,'odm_floor_face_vert_coord_Y():&#160;mm7_data.cpp']]],
   ['odm_5ffov_5fdeg_7',['odm_fov_deg',['../structCamera3D.html#a160b7b49996d1ad7039854b172404da6',1,'Camera3D']]],
   ['odm_5ffov_5frad_8',['odm_fov_rad',['../structCamera3D.html#a45ba0159fc825eabb2b3e2764a7ad4da',1,'Camera3D']]],
@@ -26,5 +26,6 @@ var searchData=
   ['outbuildvbo_23',['outbuildVBO',['../classRenderOpenGL.html#a4e8a986692103d0e300cf3ac5d054982',1,'RenderOpenGL']]],
   ['outdoor_5fgrid_5fband_5f3_24',['outdoor_grid_band_3',['../structODMRenderParams.html#a62d74700830343a16367bc26f59975a5',1,'ODMRenderParams']]],
   ['outdoor_5fno_5fmist_25',['outdoor_no_mist',['../structODMRenderParams.html#a2815fb81b547a4eaf8606cc99d28add8',1,'ODMRenderParams']]],
-  ['outdoor_5fno_5fwavy_5fwater_26',['outdoor_no_wavy_water',['../structODMRenderParams.html#a6827cf3b9a8b9bd0c1fad130b639280e',1,'ODMRenderParams']]]
+  ['outdoor_5fno_5fwavy_5fwater_26',['outdoor_no_wavy_water',['../structODMRenderParams.html#a6827cf3b9a8b9bd0c1fad130b639280e',1,'ODMRenderParams']]],
+  ['ownedmemory_5f_27',['ownedMemory_',['../classMemoryInput.html#a2bf37d8912bc15d7931e741db445e3ad',1,'MemoryInput']]]
 ];

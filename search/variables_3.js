@@ -29,7 +29,7 @@ var searchData=
   ['charcycle_26',['CharCycle',['../classApplication_1_1GameConfig_1_1Keybindings.html#a93fcc9604228aa5788c8ed397e5b179a',1,'Application::GameConfig::Keybindings']]],
   ['check_5fexit_27',['check_exit',['../structArcomageGame.html#ad1b5fc2de9edaa306ef76b44263395cb',1,'ArcomageGame']]],
   ['check_5fhi_28',['check_hi',['../structCollisionState.html#aa5491e02b7a180941df18a813c6e9cfa',1,'CollisionState']]],
-  ['class_5fdesc_5fraw_29',['class_desc_raw',['../classLocalization.html#ac6b51d389a75bdc8d2a01cbe512e17c0',1,'Localization']]],
+  ['class_5fdesc_5fraw_29',['class_desc_raw',['../classLocalization.html#ad960bf51a35041341abd4d8592f740cb',1,'Localization']]],
   ['class_5fdesciptions_30',['class_desciptions',['../classLocalization.html#a75d64e513f4363e06e7a5a2a1b062851',1,'Localization']]],
   ['class_5fnames_31',['class_names',['../classLocalization.html#a95b2628527657adfc4f6dfae18407dc6',1,'Localization']]],
   ['classtype_32',['classType',['../structPlayer__Image__MM7.html#a547e91173fbd111df86b761bab6729d6',1,'Player_Image_MM7::classType()'],['../structPlayer.html#ac8f124d5a37fcf10126f44fd5727a12b',1,'Player::classType()']]],
