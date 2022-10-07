@@ -1,6 +1,8 @@
-#include <algorithm>
+#include "LegacyImages.h"
 
-#include "Engine/Serialization/LegacyImages.h"
+#include <algorithm>
+#include <string>
+
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
