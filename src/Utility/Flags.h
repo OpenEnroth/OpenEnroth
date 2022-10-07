@@ -133,6 +133,7 @@ class Flags {
 };
 
 
+// TODO: Add MM_ prefix
 #define DECLARE_FLAGS(FLAGS, ENUM)                                              \
     using FLAGS = Flags<ENUM>;
 
