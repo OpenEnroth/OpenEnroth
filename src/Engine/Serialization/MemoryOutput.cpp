@@ -1,6 +1,7 @@
 #include "MemoryOutput.h"
 
 #include <cassert>
+#include <cstring>
 #include <algorithm>
 
 static const size_t InitialSpanSize = 1024;
