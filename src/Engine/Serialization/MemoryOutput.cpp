@@ -1,6 +1,7 @@
 #include "MemoryOutput.h"
 
 #include <cassert>
+#include <algorithm>
 
 static const size_t InitialSpanSize = 1024;
 static const size_t MaxSpanSizeShift = 10; // So max size of a single span is 1Mb
@@ -19,13 +20,13 @@ Blob MemoryOutput::Finish() {
     spans_.back() = spans_.back().subspan(0, pos_);
 
     size_t size = 0;
-    for (const auto &span: spans_)
+    for (const auto &span : spans_)
         size += span.size();
 
     Blob result = Blob::Allocate(size);
 
     size_t pos = 0;
-    for (const auto &span: spans_) {
+    for (const auto &span : spans_) {
         memcpy(static_cast<char *>(result.data()) + pos, span.data(), span.size());
         pos += span.size();
     }
