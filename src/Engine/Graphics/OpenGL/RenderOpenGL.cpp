@@ -83,9 +83,9 @@ RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
 RenderVertexSoft array_507D30[50];
 
-// improved error check
-void GL_Check_Errors(bool breakonerr = true) {
-    GLenum err = glGetError();
+// improved error check - using glad post call back
+void GL_Check_Errors(void *ret, const char *name, GLADapiproc apiproc, int len_args, ...) {
+    GLenum err = glad_glGetError();
 
     while (err != GL_NO_ERROR) {
         static std::string error;
@@ -99,10 +99,9 @@ void GL_Check_Errors(bool breakonerr = true) {
             default:                        error = "Unknown Error";  break;
         }
 
-        logger->Warning("OpenGL error (%u): %s", err, error.c_str());
-        if (breakonerr) __debugbreak();
+        logger->Warning("OpenGL error (%u): %s from function %s", err, error.c_str(), name);
 
-        err = glGetError();
+        err = glad_glGetError();
     }
 }
 
@@ -322,8 +321,6 @@ void RenderOpenGL::BeginLines2D() {
         // colour attribute
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (5 * sizeof(GLfloat)), (void *)(2 * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
-
-        GL_Check_Errors();
     }
 }
 
@@ -335,7 +332,6 @@ void RenderOpenGL::EndLines2D() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(lineshaderstore), NULL, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(linesverts) * linevertscnt, lineshaderstore);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    GL_Check_Errors();
 
     glBindVertexArray(lineVAO);
     glEnableVertexAttribArray(0);
@@ -350,7 +346,6 @@ void RenderOpenGL::EndLines2D() {
 
     glDrawArrays(GL_LINES, 0, (linevertscnt));
     drawcalls++;
-    GL_Check_Errors();
 
     glUseProgram(0);
     glDisableVertexAttribArray(0);
@@ -359,7 +354,6 @@ void RenderOpenGL::EndLines2D() {
     glBindVertexArray(0);
 
     linevertscnt = 0;
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
@@ -397,7 +391,6 @@ void RenderOpenGL::BeginSceneD3D() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     render->uNumBillboardsToDraw = 0;  // moved from drawbillboards - cant reset this until mouse picking finished
-    GL_Check_Errors();
 
     SetFogParametersGL();
 }
@@ -775,8 +768,6 @@ void RenderOpenGL::DrawProjectile(float srcX, float srcY, float srcworldview, fl
     //ErrD3D(pRenderD3D->pDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE));
     glDepthMask(GL_TRUE);
     glEnable(GL_CULL_FACE);
-
-    GL_Check_Errors();
 }
 
 struct twodverts {
@@ -886,8 +877,6 @@ void RenderOpenGL::ScreenFade(unsigned int color, float t) {
     twodshaderstore[twodvertscnt].a = t;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodvertscnt++;
-
-    GL_Check_Errors();
 
     if (twodvertscnt > 490) DrawTwodVerts();
     return;
@@ -1009,8 +998,6 @@ void RenderOpenGL::DrawImage(Image *img, const Rect &rect) {
     twodshaderstore[twodvertscnt].a = 1;
     twodshaderstore[twodvertscnt].texid = gltexid;
     twodvertscnt++;
-
-    GL_Check_Errors();
 
     if (twodvertscnt > 490) DrawTwodVerts();
     return;
@@ -1483,8 +1470,6 @@ void RenderOpenGL::BeginDecals() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    GL_Check_Errors();
-
     // gen buffers
 
     if (decalVAO == 0) {
@@ -1514,7 +1499,6 @@ void RenderOpenGL::BeginDecals() {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-        GL_Check_Errors();
     }
 
     numdecalverts = 0;
@@ -1522,7 +1506,6 @@ void RenderOpenGL::BeginDecals() {
 
 void RenderOpenGL::EndDecals() {
     // draw here
-    GL_Check_Errors();
 
     if (numdecalverts) {
             glBindBuffer(GL_ARRAY_BUFFER, decalVBO);
@@ -1530,12 +1513,10 @@ void RenderOpenGL::EndDecals() {
             glBufferData(GL_ARRAY_BUFFER, sizeof(GLdecalverts) * 10000, NULL, GL_DYNAMIC_DRAW);
             // update buffer
             glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLdecalverts) * numdecalverts, decalshaderstore);
-            GL_Check_Errors();
     } else {
         return;
     }
 
-    GL_Check_Errors();
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // ?
@@ -1573,7 +1554,6 @@ void RenderOpenGL::EndDecals() {
 
     glDrawArrays(GL_TRIANGLES, 0, numdecalverts);
     drawcalls++;
-    GL_Check_Errors();
 
     // unload
     glUseProgram(0);
@@ -1586,13 +1566,10 @@ void RenderOpenGL::EndDecals() {
     //glBindBuffer(GL_ARRAY_BUFFER, 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, NULL);
-    GL_Check_Errors();
 
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
-
-    GL_Check_Errors();
 }
 
 
@@ -1841,7 +1818,6 @@ void RenderOpenGL::DrawFromSpriteSheet(Rect *pSrcRect, Point *pTargetPoint, int 
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
-    GL_Check_Errors();
     return;
 }
 
@@ -2098,8 +2074,6 @@ void RenderOpenGL::Update_Texture(Texture *texture) {
     glBindTexture(GL_TEXTURE_2D, t->GetOpenGlTexture());
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, t->GetWidth(), t->GetHeight(), GL_BGRA, GL_UNSIGNED_BYTE, t->GetPixels(IMAGE_FORMAT_A8R8G8B8));
     glBindTexture(GL_TEXTURE_2D, NULL);
-
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::DeleteTexture(Texture *texture) {
@@ -2110,8 +2084,6 @@ void RenderOpenGL::DeleteTexture(Texture *texture) {
     if (texid != -1) {
         glDeleteTextures(1, &texid);
     }
-
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::RemoveTextureFromDevice(Texture* texture) {
@@ -2149,8 +2121,6 @@ bool RenderOpenGL::MoveTextureToDevice(Texture *texture) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         glBindTexture(GL_TEXTURE_2D, 0);
-
-        GL_Check_Errors();
         return true;
     }
     return false;
@@ -2162,8 +2132,6 @@ void RenderOpenGL::_set_3d_projection_matrix() {
 
     // build projection matrix with glm
     projmat = glm::perspective(glm::radians(pCamera3D->fov_y_deg), pCamera3D->aspect, near_clip, far_clip);
-
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::_set_3d_modelview_matrix() {
@@ -2179,8 +2147,6 @@ void RenderOpenGL::_set_3d_modelview_matrix() {
     glm::vec3 upvec = glm::vec3(0.0f, 0.0f, 1.0f);
 
     viewmat = glm::lookAtLH(campos, eyepos, upvec);
-
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
@@ -2191,13 +2157,11 @@ void RenderOpenGL::_set_ortho_projection(bool gameviewport) {
         glViewport(game_viewport_x, window->GetHeight()-game_viewport_w-1, game_viewport_width, game_viewport_height);
         projmat = glm::ortho(float(game_viewport_x), float(game_viewport_z), float(game_viewport_w), float(game_viewport_y), float(1), float(-1));
     }
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::_set_ortho_modelview() {
     // load identity matrix
     viewmat = glm::mat4x4(1);
-    GL_Check_Errors();
 }
 
 
@@ -2435,8 +2399,6 @@ void RenderOpenGL::DrawTerrainD3D() {
         glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
         glEnableVertexAttribArray(4);
 
-        GL_Check_Errors();
-
         // texture set up - load in all previously found
         for (int unit = 0; unit < 8; unit++) {
             assert(numterraintexloaded[unit] <= 256);
@@ -2479,8 +2441,6 @@ void RenderOpenGL::DrawTerrainD3D() {
             glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-
-            GL_Check_Errors();
         }
     }
 
@@ -2499,7 +2459,6 @@ void RenderOpenGL::DrawTerrainD3D() {
             glActiveTexture(GL_TEXTURE0 + unit);
             glBindTexture(GL_TEXTURE_2D_ARRAY, terraintextures[unit]);
         }
-        GL_Check_Errors();
     }
 
     // load terrain verts
@@ -2512,8 +2471,6 @@ void RenderOpenGL::DrawTerrainD3D() {
 
     // use the terrain shader
     glUseProgram(terrainshader.ID);
-
-    GL_Check_Errors();
 
     // set projection matrix
     glUniformMatrix4fv(glGetUniformLocation(terrainshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
@@ -2635,12 +2592,9 @@ void RenderOpenGL::DrawTerrainD3D() {
         glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
     }
 
-    GL_Check_Errors();
-
     // actually draw the whole terrain
     glDrawArrays(GL_TRIANGLES, 0, (127 * 127 * 6));
     drawcalls++;
-    GL_Check_Errors();
 
     // unload
     glUseProgram(0);
@@ -2657,8 +2611,6 @@ void RenderOpenGL::DrawTerrainD3D() {
     //end terrain debug
     if (engine->config->debug.Terrain.Get())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    GL_Check_Errors();
 
     // stack new decals onto terrain faces ////////////////////////////////////////////////
     // TODO(pskelton): clean up
@@ -2751,7 +2703,6 @@ void RenderOpenGL::DrawTerrainD3D() {
     }
 
     // end of new system test
-    GL_Check_Errors();
     return;
 
     // end shder version
@@ -3057,15 +3008,10 @@ void RenderOpenGL::DrawForcePerVerts() {
         glEnableVertexAttribArray(3);
     }
 
-    GL_Check_Errors();
-
     // update buffer
     glBindBuffer(GL_ARRAY_BUFFER, forceperVBO);
 
-    GL_Check_Errors();
-
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(forcepersverts) * forceperstorecnt, forceperstore);
-    GL_Check_Errors();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -3076,7 +3022,6 @@ void RenderOpenGL::DrawForcePerVerts() {
     glEnableVertexAttribArray(3);
 
     glUseProgram(forcepershader.ID);
-    GL_Check_Errors();
 
     // set sampler to texure0
     glUniform1i(glGetUniformLocation(forcepershader.ID, "texture0"), GLint(0));
@@ -3119,8 +3064,6 @@ void RenderOpenGL::DrawForcePerVerts() {
     glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogend"), GLfloat(fpfogend));
 
 
-    GL_Check_Errors();
-
     //draw 6 for main sky / spell
     glDrawArrays(GL_TRIANGLES, 0, 6);
     ++drawcalls;
@@ -3137,7 +3080,6 @@ void RenderOpenGL::DrawForcePerVerts() {
         ++drawcalls;
     }
 
-    GL_Check_Errors();
     glUseProgram(0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -3149,7 +3091,6 @@ void RenderOpenGL::DrawForcePerVerts() {
     glBindVertexArray(0);
 
     forceperstorecnt = 0;
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::SetFogParametersGL() {
@@ -3354,8 +3295,6 @@ void RenderOpenGL::DoRenderBillboards_D3D() {
 
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
-
-    GL_Check_Errors();
 }
 
 // name better
@@ -3388,15 +3327,10 @@ void RenderOpenGL::DrawBillboards() {
         glEnableVertexAttribArray(3);
     }
 
-    GL_Check_Errors();
-
     // update buffer
     glBindBuffer(GL_ARRAY_BUFFER, billbVBO);
 
-    GL_Check_Errors();
-
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(billbverts) * billbstorecnt, billbstore);
-    GL_Check_Errors();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -3408,7 +3342,6 @@ void RenderOpenGL::DrawBillboards() {
     glEnableVertexAttribArray(4);
 
     glUseProgram(billbshader.ID);
-    GL_Check_Errors();
 
     // set sampler to texure0
     glUniform1i(glGetUniformLocation(billbshader.ID, "texture0"), GLint(0));
@@ -3423,8 +3356,6 @@ void RenderOpenGL::DrawBillboards() {
     glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogstart));
     glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
     glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogend"), GLfloat(fogend));
-
-    GL_Check_Errors();
 
     int offset = 0;
     while (offset < billbstorecnt) {
@@ -3454,7 +3385,6 @@ void RenderOpenGL::DrawBillboards() {
         offset += (3 * cnt);
     }
 
-    GL_Check_Errors();
     glUseProgram(0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -3467,7 +3397,6 @@ void RenderOpenGL::DrawBillboards() {
     glBindVertexArray(0);
 
     billbstorecnt = 0;
-    GL_Check_Errors();
 }
 
 //----- (004A1DA8) --------------------------------------------------------
@@ -3482,8 +3411,6 @@ void RenderOpenGL::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
     this->clip_z = z;
     this->clip_w = w;
     glScissor(x, this->window->GetHeight() -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
-
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::ResetUIClipRect() {
@@ -3506,8 +3433,6 @@ void RenderOpenGL::BeginScene() {
 
     _set_ortho_projection();
     _set_ortho_modelview();
-
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::EndScene() {
@@ -3640,7 +3565,6 @@ void RenderOpenGL::DrawTextureNew(float u, float v, Image *tex, uint32_t colourm
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
-    GL_Check_Errors();
     return;
 }
 
@@ -3763,7 +3687,6 @@ void RenderOpenGL::DrawTextureCustomHeight(float u, float v, class Image *img, i
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
-    GL_Check_Errors();
     return;
 }
 
@@ -3825,11 +3748,7 @@ void RenderOpenGL::EndTextNew() {
         // texid
         glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, (10 * sizeof(GLfloat)), (void *)(9 * sizeof(GLfloat)));
         glEnableVertexAttribArray(3);
-
-        GL_Check_Errors();
     }
-
-    GL_Check_Errors();
 
     // update buffer
     glBindBuffer(GL_ARRAY_BUFFER, textVBO);
@@ -3840,23 +3759,17 @@ void RenderOpenGL::EndTextNew() {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    GL_Check_Errors();
-
     glBindVertexArray(textVAO);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
 
-    GL_Check_Errors();
-
     glUseProgram(textshader.ID);
-    GL_Check_Errors();
 
     // glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    GL_Check_Errors();
 
     // set sampler to texure0
     glUniform1i(glGetUniformLocation(textshader.ID, "texture0"), GLint(0));
@@ -3867,19 +3780,15 @@ void RenderOpenGL::EndTextNew() {
     //// set view
     glUniformMatrix4fv(glGetUniformLocation(textshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
-    GL_Check_Errors();
-
     // set textures
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texmain);
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, texshadow);
-    GL_Check_Errors();
 
     glDrawArrays(GL_TRIANGLES, 0, textvertscnt);
     drawcalls++;
 
-    GL_Check_Errors();
     glUseProgram(0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -3897,7 +3806,6 @@ void RenderOpenGL::EndTextNew() {
     textvertscnt = 0;
     // texmain = 0;
     // texshadow = 0;
-    GL_Check_Errors();
     return;
 }
 
@@ -4005,7 +3913,6 @@ void RenderOpenGL::DrawTextNew(int x, int y, int width, int h, float u1, float v
     textshaderstore[textvertscnt].texid = (isshadow);
     textvertscnt++;
 
-    GL_Check_Errors();
     if (textvertscnt > 9990) EndTextNew();
 }
 
@@ -4029,7 +3936,6 @@ void RenderOpenGL::Present() {
     EndLines2D();
     EndTextNew();
 
-    GL_Check_Errors();
     window->OpenGlSwapBuffers();
 
     if (engine->config->graphics.FPSLimit.Get() > 0) {
@@ -4231,13 +4137,8 @@ void RenderOpenGL::DrawBuildingsD3D() {
             // attribs - not used here yet
             glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void *)(10 * sizeof(GLfloat)));
             glEnableVertexAttribArray(4);
-
-
-            GL_Check_Errors();
         }
 
-
-        GL_Check_Errors();
         // texture set up
 
         // loop over all units
@@ -4252,8 +4153,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
 
             // create blank memory for later texture submission
             glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, outbuildtexturewidths[unit], outbuildtextureheights[unit], numoutbuildtexloaded[unit], 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-            GL_Check_Errors();
 
             std::map<std::string, int>::iterator it = outbuildtexmap.begin();
             while (it != outbuildtexmap.end()) {
@@ -4298,8 +4197,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
             glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
             glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-
-            GL_Check_Errors();
         }
     }
 
@@ -4402,8 +4299,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
             }
         }
 
-        GL_Check_Errors();
-
         for (int l = 0; l < 16; l++) {
             if (numoutbuildverts[l]) {
                 glBindBuffer(GL_ARRAY_BUFFER, outbuildVBO[l]);
@@ -4411,11 +4306,9 @@ void RenderOpenGL::DrawBuildingsD3D() {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
                 // update buffer
                 glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLshaderverts) * numoutbuildverts[l], outbuildshaderstore[l]);
-                GL_Check_Errors();
             }
         }
 
-        GL_Check_Errors();
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // terrain debug
@@ -4580,8 +4473,6 @@ void RenderOpenGL::DrawBuildingsD3D() {
     //end terrain debug
     if (engine->config->debug.Terrain.Get())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    GL_Check_Errors();
 
 
     // TODO(pskelton): clean up
@@ -4873,9 +4764,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                 // attribs - not used here yet
                 glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, (11 * sizeof(GLfloat)), (void*)(10 * sizeof(GLfloat)));
                 glEnableVertexAttribArray(4);
-
-
-                GL_Check_Errors();
             }
 
             // texture set up
@@ -4927,9 +4815,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                 glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
                 glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-
-
-                GL_Check_Errors();;
             }
         }
 
@@ -5094,8 +4979,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                 }
             }
 
-            GL_Check_Errors();
-
             for (int l = 0; l < 16; l++) {
                 if (numBSPverts[l]) {
                     glBindBuffer(GL_ARRAY_BUFFER, bspVBO[l]);
@@ -5103,11 +4986,9 @@ void RenderOpenGL::DrawIndoorFaces() {
                     glBufferData(GL_ARRAY_BUFFER, sizeof(GLshaderverts) * 20000, NULL, GL_DYNAMIC_DRAW);
                     // update buffer
                     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLshaderverts) * numBSPverts[l], BSPshaderstore[l]);
-                    GL_Check_Errors();
                 }
             }
 
-            GL_Check_Errors();
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // terrain debug
@@ -5329,8 +5210,6 @@ void RenderOpenGL::DrawIndoorFaces() {
         }
 
 
-        GL_Check_Errors();
-
 
         // toggle for water faces or not
         glUniform1i(glGetUniformLocation(bspshader.ID, "watertiles"), GLint(1));
@@ -5376,8 +5255,6 @@ void RenderOpenGL::DrawIndoorFaces() {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
-
-        GL_Check_Errors();
 
         // do we need background sky?
         if (drawnsky == true) {
@@ -5469,7 +5346,8 @@ bool RenderOpenGL::Initialize() {
 
     if (window != nullptr) {
         window->OpenGlCreate();
-        GL_Check_Errors();
+
+        gladSetGLPostCallback(GL_Check_Errors);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
         glClearDepth(1.0f);
@@ -5479,7 +5357,6 @@ bool RenderOpenGL::Initialize() {
         glViewport(0, 0, window->GetWidth(), window->GetHeight());
         glScissor(0, 0, window->GetWidth(), window->GetHeight());
         glEnable(GL_SCISSOR_TEST);
-        GL_Check_Errors();
 
         // Swap Buffers (Double Buffering)
         window->OpenGlSwapBuffers();
@@ -5489,7 +5366,6 @@ bool RenderOpenGL::Initialize() {
         this->clip_w = window->GetHeight();
 
         PostInitialization();
-        GL_Check_Errors();
 
         // check gpu gl capability params
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &GPU_MAX_TEX_SIZE);
@@ -5502,7 +5378,6 @@ bool RenderOpenGL::Initialize() {
         assert(GPU_MAX_UNIFORM_COMP >= 1024);
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &GPU_MAX_TOTAL_TEXTURES);
         assert(GPU_MAX_TOTAL_TEXTURES >= 80);
-        GL_Check_Errors();
 
         // initiate shaders
         if (!InitShaders()) {
@@ -5629,7 +5504,6 @@ void RenderOpenGL::FillRectFast(unsigned int uX, unsigned int uY,
     twodvertscnt++;
 
     if (twodvertscnt > 490) DrawTwodVerts();
-    GL_Check_Errors();
     return;
 }
 
@@ -5809,8 +5683,6 @@ void RenderOpenGL::ReleaseTerrain() {
             outbuildshaderstore[i] = nullptr;
         }
     }
-
-    GL_Check_Errors();
 }
 
 void RenderOpenGL::ReleaseBSP() {
@@ -5838,11 +5710,6 @@ void RenderOpenGL::ReleaseBSP() {
             BSPshaderstore[i] = nullptr;
         }
     }
-
-
-
-
-    GL_Check_Errors();
 }
 
 
@@ -5878,33 +5745,24 @@ void RenderOpenGL::DrawTwodVerts() {
         glEnableVertexAttribArray(3);
     }
 
-    GL_Check_Errors();
-
     // update buffer
     glBindBuffer(GL_ARRAY_BUFFER, twodVBO);
 
-    GL_Check_Errors();
-
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(twodverts) * twodvertscnt, twodshaderstore);
-    GL_Check_Errors();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    GL_Check_Errors();
 
     glBindVertexArray(twodVAO);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
-    GL_Check_Errors();
 
     glUseProgram(twodshader.ID);
-    GL_Check_Errors();
 
     // glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    GL_Check_Errors();
     // set sampler to texure0
     glUniform1i(glGetUniformLocation(twodshader.ID, "texture0"), GLint(0));
 
@@ -5912,7 +5770,6 @@ void RenderOpenGL::DrawTwodVerts() {
     glUniformMatrix4fv(glGetUniformLocation(twodshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
     glUniformMatrix4fv(glGetUniformLocation(twodshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
-    GL_Check_Errors();
 
     int offset = 0;
     while (offset < twodvertscnt) {
@@ -5935,7 +5792,6 @@ void RenderOpenGL::DrawTwodVerts() {
         offset += (6*cnt);
     }
 
-    GL_Check_Errors();
     glUseProgram(0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -5947,7 +5803,6 @@ void RenderOpenGL::DrawTwodVerts() {
     glBindVertexArray(0);
 
     twodvertscnt = 0;
-    GL_Check_Errors();
     render->SetUIClipRect(savex, savey, savez, savew);
 }
 
@@ -6068,7 +5923,6 @@ bool RenderOpenGL::NuklearCreateDevice() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    GL_Check_Errors();
     return true;
 }
 
@@ -6186,7 +6040,6 @@ bool RenderOpenGL::NuklearRender(enum nk_anti_aliasing AA, int max_vertex_buffer
     glDisable(GL_BLEND);
     // glDisable(GL_SCISSOR_TEST);
 
-    GL_Check_Errors();
     return true;
 }
 
@@ -6201,8 +6054,6 @@ void RenderOpenGL::NuklearRelease() {
     glDeleteBuffers(1, &nk_dev.vbo);
     glDeleteBuffers(1, &nk_dev.ebo);
     glDeleteVertexArrays(1, &nk_dev.vao);
-
-    GL_Check_Errors();
 
     nk_buffer_free(&nk_dev.cmds);
 
@@ -6247,14 +6098,12 @@ struct nk_tex_font *RenderOpenGL::NuklearFontLoad(const char* font_path, size_t 
     tfont->texid = texid;
     nk_font_atlas_end(&nk_dev.atlas, nk_handle_id(texid), &nk_dev.null);
 
-    GL_Check_Errors();
     return tfont;
 }
 
 void RenderOpenGL::NuklearFontFree(struct nk_tex_font *tfont) {
     if (tfont)
         glDeleteTextures(1, &tfont->texid);
-    GL_Check_Errors();
 }
 
 struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
@@ -6270,8 +6119,6 @@ struct nk_image RenderOpenGL::NuklearImageLoad(Image *img) {
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, t->GetWidth(), t->GetHeight(), 0, /*GL_RGBA*/GL_BGRA, GL_UNSIGNED_BYTE, pixels);
     //glBindTexture(GL_TEXTURE_2D, 0);
-
-    GL_Check_Errors();
     return nk_image_id(texid);
 }
 
@@ -6281,5 +6128,4 @@ void RenderOpenGL::NuklearImageFree(Image *img) {
     if (texid != -1) {
         glDeleteTextures(1, &texid);
     }
-    GL_Check_Errors();
 }
