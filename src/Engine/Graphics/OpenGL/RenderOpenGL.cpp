@@ -369,8 +369,8 @@ void RenderOpenGL::RasterLine2D(signed int uX, signed int uY, signed int uZ,
     lineshaderstore[linevertscnt].b = b;
     linevertscnt++;
 
-    lineshaderstore[linevertscnt].x = uZ + 0.5f;
-    lineshaderstore[linevertscnt].y = uW + 0.5f;
+    lineshaderstore[linevertscnt].x = static_cast<float>(uZ);
+    lineshaderstore[linevertscnt].y = static_cast<float>(uW);
     lineshaderstore[linevertscnt].r = r;
     lineshaderstore[linevertscnt].g = g;
     lineshaderstore[linevertscnt].b = b;
@@ -4790,8 +4790,6 @@ void RenderOpenGL::DrawIndoorFaces() {
                         // get texture
                         auto texture = assets->GetBitmap(it->first);
 
-                        std::cout << "loading  " << it->first << "   into unit " << tunit << " and pos " << tlayer << std::endl;
-
                         glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                             0,
                             0, 0, tlayer,
@@ -4874,7 +4872,8 @@ void RenderOpenGL::DrawIndoorFaces() {
 
                 static stru154 FacePlaneHolder;  // idb
 
-                if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
+                // moved face to camera check to avoid missing minimap outlines
+                if (/*pCamera3D->is_face_faced_to_cameraBLV(face) ||*/ true) {
                     uNumVerticesa = face->uNumVertices;
 
                     // copy to buff in
@@ -4887,82 +4886,65 @@ void RenderOpenGL::DrawIndoorFaces() {
                     }
 
                     // check if this face is visible through current portal node
-                    if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)/* ||  true*/
-                        // pCamera3D->ClipFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4, 0, 0) || true
-                        ) {
-                        ++pBLVRenderParams->uNumFacesRenderedThisFrame;
-
+                    if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
                         face->uAttributes |= FACE_SeenByParty;
 
+                        // check face is towards camera
+                        if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
+                            ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+                            // load up verts here
+                            int texlayer = 0;
+                            int texunit = 0;
+                            int attribflags = 0;
 
-                        // load up verts here
-                        int texlayer = 0;
-                        int texunit = 0;
-                        int attribflags = 0;
+                            if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
+                            if (face->uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
 
-                        if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
-                        if (face->uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+                            if (face->uAttributes & FACE_FlowDown)
+                                attribflags |= 0x400;
+                            else if (face->uAttributes & FACE_FlowUp)
+                                attribflags |= 0x800;
 
-                        if (face->uAttributes & FACE_FlowDown)
-                            attribflags |= 0x400;
-                        else if (face->uAttributes & FACE_FlowUp)
-                            attribflags |= 0x800;
+                            if (face->uAttributes & FACE_FlowRight)
+                                attribflags |= 0x2000;
+                            else if (face->uAttributes & FACE_FlowLeft)
+                                attribflags |= 0x1000;
 
-                        if (face->uAttributes & FACE_FlowRight)
-                            attribflags |= 0x2000;
-                        else if (face->uAttributes & FACE_FlowLeft)
-                            attribflags |= 0x1000;
+                            if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
+                                attribflags |= 0x00010000;
 
-                        if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                            attribflags |= 0x00010000;
+                            texlayer = face->texlayer;
+                            texunit = face->texunit;
 
-                        texlayer = face->texlayer;
-                        texunit = face->texunit;
-
-                        if (texlayer == -1) { // texture has been reset - see if its in the map
-                            TextureOpenGL *tex = (TextureOpenGL *)face->GetTexture();
-                            std::string *texname = tex->GetName();
-                            auto mapiter = bsptexmap.find(*texname);
-                            if (mapiter != bsptexmap.end()) {
-                                // if so, extract unit and layer
-                                int unitlayer = mapiter->second;
-                                face->texlayer = texlayer = unitlayer & 0xFF;
-                                face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
-                            } else {
-                                logger->Warning("Texture not found in map!");
-                                // TODO(pskelton): set to water for now - are there any instances where this will occur??
-                                face->texlayer = 0;
-                                face->texunit = 0;
+                            if (texlayer == -1) { // texture has been reset - see if its in the map
+                                TextureOpenGL *tex = (TextureOpenGL *)face->GetTexture();
+                                std::string *texname = tex->GetName();
+                                auto mapiter = bsptexmap.find(*texname);
+                                if (mapiter != bsptexmap.end()) {
+                                    // if so, extract unit and layer
+                                    int unitlayer = mapiter->second;
+                                    face->texlayer = texlayer = unitlayer & 0xFF;
+                                    face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
+                                } else {
+                                    logger->Warning("Texture not found in map!");
+                                    // TODO(pskelton): set to water for now - are there any instances where this will occur??
+                                    face->texlayer = 0;
+                                    face->texunit = 0;
+                                }
                             }
-                        }
 
 
-                        for (int z = 0; z < (face->uNumVertices - 2); z++) {
-                            // 123, 134, 145, 156..
-                            GLshaderverts* thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
+                            for (int z = 0; z < (face->uNumVertices - 2); z++) {
+                                // 123, 134, 145, 156..
+                                GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
 
 
-                            // copy first
-                            thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
-                            thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
-                            thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
-                            thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
-                            thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
-                            thisvert->texunit = texunit;
-                            thisvert->texturelayer = texlayer;
-                            thisvert->normx = face->pFacePlane.vNormal.x;
-                            thisvert->normy = face->pFacePlane.vNormal.y;
-                            thisvert->normz = face->pFacePlane.vNormal.z;
-                            thisvert->attribs = attribflags;
-                            thisvert++;
-
-                            // copy other two (z+1)(z+2)
-                            for (uint i = 1; i < 3; ++i) {
-                                thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
-                                thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
-                                thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
-                                thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
-                                thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                                // copy first
+                                thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
+                                thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
+                                thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
+                                thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
+                                thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
                                 thisvert->texunit = texunit;
                                 thisvert->texturelayer = texlayer;
                                 thisvert->normx = face->pFacePlane.vNormal.x;
@@ -4970,10 +4952,26 @@ void RenderOpenGL::DrawIndoorFaces() {
                                 thisvert->normz = face->pFacePlane.vNormal.z;
                                 thisvert->attribs = attribflags;
                                 thisvert++;
-                            }
 
-                            numBSPverts[texunit] += 3;
-                            assert(numBSPverts[texunit] <= 19999);
+                                // copy other two (z+1)(z+2)
+                                for (uint i = 1; i < 3; ++i) {
+                                    thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
+                                    thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
+                                    thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
+                                    thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
+                                    thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                                    thisvert->texunit = texunit;
+                                    thisvert->texturelayer = texlayer;
+                                    thisvert->normx = face->pFacePlane.vNormal.x;
+                                    thisvert->normy = face->pFacePlane.vNormal.y;
+                                    thisvert->normz = face->pFacePlane.vNormal.z;
+                                    thisvert->attribs = attribflags;
+                                    thisvert++;
+                                }
+
+                                numBSPverts[texunit] += 3;
+                                assert(numBSPverts[texunit] <= 19999);
+                            }
                         }
                     }
                 }

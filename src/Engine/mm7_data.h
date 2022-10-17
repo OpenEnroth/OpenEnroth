@@ -199,8 +199,9 @@ extern std::array<uint8_t, 5> IsPlayerWearingWatersuit;
 extern std::array<char, 54> party_has_equipment;
 extern std::array<char, 17> byte_5111F6_OwnedArtifacts;
 
-extern unsigned int uNumBlueFacesInBLVMinimap;  // could remove
+extern unsigned int uNumBlueFacesInBLVMinimap;
 extern std::array<uint16_t, 50> pBlueFacesInBLVMinimapIDs;
+
 extern std::array<class Image *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
