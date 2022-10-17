@@ -133,12 +133,11 @@ class Flags {
 };
 
 
-// TODO: Add MM_ prefix
-#define DECLARE_FLAGS(FLAGS, ENUM)                                              \
+#define MM_DECLARE_FLAGS(FLAGS, ENUM)                                           \
     using FLAGS = Flags<ENUM>;
 
 
-#define DECLARE_OPERATORS_FOR_FLAGS(FLAGS)                                      \
+#define MM_DECLARE_OPERATORS_FOR_FLAGS(FLAGS)                                   \
     constexpr inline FLAGS operator|(FLAGS::enumeration_type l, FLAGS::enumeration_type r) { \
         return FLAGS(l) | r;                                                    \
     }                                                                           \

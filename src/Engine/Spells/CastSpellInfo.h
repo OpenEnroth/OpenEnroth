@@ -33,8 +33,8 @@ enum class SpellCastFlag : uint16_t {
         ON_CAST_DarkSacrifice,
 };
 using enum SpellCastFlag;
-DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
-DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
+MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 
 /*  271 */
 #pragma pack(push, 1)
