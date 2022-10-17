@@ -25,7 +25,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Serialization/LegacyImages.h"
-#include "Engine/Serialization/MemoryInput.h"
+#include "Engine/Serialization/Deserializer.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/stru123.h"
 #include "Engine/Tables/TileFrameTable.h"
@@ -890,7 +890,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
     std::string odm_filename = std::string(filename);
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
-    MemoryInput stream(pGames_LOD->LoadCompressed(odm_filename));
+    BlobDeserializer stream(pGames_LOD->LoadCompressed(odm_filename));
 
     stream.ReadSizedString(&this->level_filename, 32);
     stream.ReadSizedString(&this->location_filename, 32);
@@ -1009,7 +1009,7 @@ bool OutdoorLocation::Load(const std::string &filename, int days_played,
 
         *outdoors_was_respawned = true;
         stream.Reset(pGames_LOD->LoadCompressed(ddm_filename));
-        stream.Skip(sizeof(DDM_DLV_Header));
+        stream.SkipBytes(sizeof(DDM_DLV_Header));
     } else {
         *outdoors_was_respawned = 0;
     }

@@ -3,8 +3,8 @@
 #include <string>
 
 #include "Engine/Engine.h"
-#include "Engine/Serialization/MemoryInput.h"
-#include "Engine/Serialization/MemoryOutput.h"
+#include "Engine/Serialization/Deserializer.h"
+#include "Engine/Serialization/Serializer.h"
 #include "Engine/Serialization/LegacyImages.h"
 
 #include "Platform/Api.h"
@@ -393,21 +393,19 @@ bool MonsterList::FromFileTxt(const char *Args) {
 void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blob &data_mm8) {
     Assert(!data_mm8);
 
-    MemoryInput stream;
-
     if (data_mm7) {
-        stream.Reset(data_mm7);
+        BlobDeserializer stream(data_mm7);
         stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters);
     }
 
     if (data_mm6) {
-        stream.Reset(data_mm6);
-        stream.ReadLegacyVector<MonsterDesc_MM6>(&pMonsters, MemoryInput::Append);
+        BlobDeserializer stream(data_mm6);
+        stream.ReadLegacyVector<MonsterDesc_MM6>(&pMonsters, Deserializer::Append);
     }
 
     if (data_mm8) {
-        stream.Reset(data_mm8);
-        stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, MemoryInput::Append);
+        BlobDeserializer stream(data_mm8);
+        stream.ReadLegacyVector<MonsterDesc_MM7>(&pMonsters, Deserializer::Append);
     }
 
     Assert(!pMonsters.empty());
@@ -415,16 +413,9 @@ void MonsterList::FromFile(const Blob &data_mm6, const Blob &data_mm7, const Blo
 
 //----- (00459860) --------------------------------------------------------
 void MonsterList::ToFile() {
-    FILE *v2 = fopen(MakeDataPath("data", "dmonlist.bin").c_str(), "wb");
-    if (!v2)
-        Error("Unable to save dmonlist.bin!");
-
-    MemoryOutput stream;
+    FileSerializer stream(MakeDataPath("data", "dmonlist.bin"));
     stream.WriteLegacyVector<MonsterDesc_MM7>(this->pMonsters);
-    Blob blob = stream.Finish();
-
-    fwrite(blob.data(), blob.size(), 1, v2);
-    fclose(v2);
+    stream.Close();
 }
 
 //----- (004563FF) --------------------------------------------------------

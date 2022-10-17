@@ -1,15 +1,16 @@
 #pragma once
 
-#include <vector>
-#include <string>
+#include <cassert>
 #include <stdexcept>
-#include <memory>
-#include <utility>
 #include <type_traits>
+#include <utility>
 
 #include "Utility/Blob.h"
+#include "Utility/Embedded.h"
+#include "Utility/Streams/InputStream.h"
+#include "Utility/Streams/MemoryInputStream.h"
 
-class MemoryInput {
+class Deserializer {
  public:
     // TODO: gcc chokes if this is turned into enum class, retest with GCC 12.3+
     enum VectorStoreMode {
@@ -17,42 +18,36 @@ class MemoryInput {
         Overwrite
     };
 
-    MemoryInput() {}
-
-    MemoryInput(const void *data, size_t size) {
-        Reset(data, size);
+    Deserializer(InputStream *inputStream) {
+        Reset(inputStream);
     }
 
-    explicit MemoryInput(const Blob &blob) {
-        Reset(blob);
+    void Reset(InputStream *inputStream) {
+        assert(inputStream);
+
+        inputStream_ = inputStream;
     }
 
-    explicit MemoryInput(Blob &&blob) {
-        Reset(std::move(blob));
+    void ReadBytes(void* dst, size_t size) {
+        size_t bytesRead = inputStream_->Read(dst, size);
+        if (bytesRead < size)
+            throw std::runtime_error("Deserialization failed, no more data in stream.");
     }
 
-    void Reset(const void *data, size_t size) {
-        data_ = static_cast<const char *>(data);
-        end_ = static_cast<const char *>(data) + size;
-    }
-
-    void Reset(const Blob &blob) {
-        Reset(blob.data(), blob.size());
-    }
-
-    void Reset(Blob &&blob) {
-        Reset(blob.data(), blob.size());
-        ownedMemory_ = std::make_unique<Blob>(std::move(blob));
+    void SkipBytes(size_t size) {
+        size_t skippedBytes = inputStream_->Skip(size);
+        if (skippedBytes != size)
+            throw std::runtime_error("Deserialization failed, no more data in stream.");
     }
 
     template<class T>
     void ReadRaw(T *dst) {
-        memcpy(dst, MapBytes(sizeof(T)), sizeof(T));
+        ReadBytes(dst, sizeof(T));
     }
 
     template<class T>
     void ReadRawArray(T *dst, size_t size) {
-        memcpy(dst, MapBytes(sizeof(T) * size), sizeof(T) * size);
+        ReadBytes(dst, sizeof(T) * size);
     }
 
     template<class T>
@@ -81,19 +76,6 @@ class MemoryInput {
         dst->resize(strlen(dst->data()));
     }
 
-    void Skip(size_t size) {
-        MapBytes(size);
-    }
-
-    const void *MapBytes(size_t size) {
-        if (size > end_ - data_)
-            throw std::runtime_error(""); // TODO
-
-        const void *result = data_;
-        data_ += size;
-        return result;
-    }
-
  private:
     template<class LegacyT = void, class T>
     void ReadVectorInternal(std::vector<T> *dst, VectorStoreMode mode, size_t explicitSize = static_cast<size_t>(-1)) {
@@ -119,7 +101,32 @@ class MemoryInput {
     }
 
  private:
-    std::unique_ptr<Blob> ownedMemory_;
-    const char *data_ = nullptr;
-    const char *end_ = nullptr;
+    InputStream *inputStream_ = nullptr;
+};
+
+
+class BlobDeserializer: private Embedded<MemoryInputStream>, public Deserializer {
+    using StreamBase = Embedded<MemoryInputStream>;
+public:
+    BlobDeserializer() : Deserializer(&StreamBase::get()) {}
+
+    BlobDeserializer(const Blob &blob) : BlobDeserializer() {
+        Reset(blob);
+    }
+
+    BlobDeserializer(Blob &&blob) : BlobDeserializer() {
+        Reset(std::move(blob));
+    }
+
+    void Reset(const Blob &blob) {
+        StreamBase::get().Reset(blob.data(), blob.size());
+    }
+
+    void Reset(Blob &&blob) {
+        blob_ = std::make_unique<Blob>(std::move(blob));
+        Reset(*blob_);
+    }
+
+private:
+    std::unique_ptr<Blob> blob_;
 };

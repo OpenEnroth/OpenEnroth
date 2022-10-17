@@ -7,7 +7,7 @@
 #include "Engine/VectorTypes.h"
 #include "Utility/Flags.h"
 
-class MemoryInput;
+class Deserializer;
 
 enum class FaceAttribute : uint32_t {
     FACE_IsPortal          = 0x00000001,
@@ -220,5 +220,5 @@ class BSPModel {
 
 class BSPModelList : public std::vector<BSPModel> {
  public:
-    void Load(MemoryInput *stream);
+    void Load(Deserializer *stream);
 };

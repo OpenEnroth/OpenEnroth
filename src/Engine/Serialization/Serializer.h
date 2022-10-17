@@ -1,32 +1,35 @@
 #pragma once
 
-#include <span>
-#include <vector>
+#include <cassert>
 
-#include "Utility/Blob.h"
+#include "Utility/Embedded.h"
+#include "Utility/Streams/FileOutputStream.h"
+#include "Utility/Streams/OutputStream.h"
 
-class MemoryOutput {
+class Serializer {
  public:
-    MemoryOutput() {}
-
-    MemoryOutput(const MemoryOutput &) = delete;
-
-    ~MemoryOutput() {
-        Reset();
+    Serializer(OutputStream *outputStream) {
+        Reset(outputStream);
     }
 
-    void Reset();
+    void Reset(OutputStream *outputStream) {
+        assert(outputStream);
 
-    Blob Finish();
+        outputStream_ = outputStream;
+    }
+
+    void WriteBytes(const void *src, size_t size) {
+        outputStream_->Write(src, size);
+    }
 
     template<class T>
     void WriteRaw(const T *src) {
-        memcpy(Allocate(sizeof(T)), src, sizeof(T));
+        WriteBytes(src, sizeof(T));
     }
 
     template<class T>
     void WriteRawArray(const T *src, size_t size) {
-        memcpy(Allocate(sizeof(T) * size), src, sizeof(T) * size);
+        WriteBytes(src, sizeof(T) * size);
     }
 
     template<class T>
@@ -69,9 +72,20 @@ class MemoryOutput {
         }
     }
 
-    void *Allocate(size_t size);
-
  private:
-    size_t pos_ = 0;
-    std::vector<std::span<std::byte>> spans_;
+    OutputStream *outputStream_ = nullptr;
+};
+
+
+class FileSerializer : private Embedded<FileOutputStream>, public Serializer {
+    using StreamBase = Embedded<FileOutputStream>;
+public:
+    FileSerializer(const std::string &path):
+        StreamBase(path),
+        Serializer(&StreamBase::get())
+    {}
+
+    void Close() {
+        StreamBase::get().Close();
+    }
 };

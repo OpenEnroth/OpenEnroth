@@ -9,12 +9,12 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Time.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Serialization/MemoryInput.h"
+#include "Engine/Serialization/Deserializer.h"
 #include "Engine/Serialization/LegacyImages.h"
 #include "Engine/VectorTypes.h"
 
 
-void BSPModelList::Load(MemoryInput *stream) {
+void BSPModelList::Load(Deserializer *stream) {
     static_assert(sizeof(BSPModelData) == 188, "Wrong type size");
     static_assert(sizeof(BSPNode) == 8, "Wrong type size");
     static_assert(sizeof(Vec3i) == 12, "Wrong type size");
